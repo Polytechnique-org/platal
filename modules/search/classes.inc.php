@@ -221,7 +221,7 @@ class QuickSearch extends SField
     {
         $this->fieldFormName = $_fieldFormName;
         $this->get_request();
-        if (preg_match(":[\]\[{}~/§_`|%$^=+]|\*\*:", $this->value)) {
+        if (preg_match(":[\]\[{}~/§_`|%$^=+]|\*\*:u", $this->value)) {
             new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
         }
     }
@@ -501,7 +501,7 @@ class StringSField extends SField
     function get_request()
     {
         parent::get_request();
-        if (preg_match(":[\]\[<>{}~/§_`|%$^=+]|\*\*:", $this->value)) {
+        if (preg_match(":[\]\[<>{}~/§_`|%$^=+]|\*\*:u", $this->value)) {
             new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
         }
     }
@@ -514,8 +514,9 @@ class StringSField extends SField
      * imposées par l'utilisateur) */
     function length()
     {
-        global $lc_accent,$uc_accent;
-        return strlen($this->value) - strlen(ereg_replace('[a-z'.$lc_accent.$uc_accent.']', '', strtolower($this->value)));
+        $cleaned = replace_accent(strtolower($this->value));
+        $length  = strlen(ereg_replace('[a-z0-9]', '', $cleaned));
+        return strlen($this->value) - $length;
     }
 
     // }}}

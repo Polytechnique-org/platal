@@ -80,7 +80,7 @@ function _send_xnet_mail($user, $body, $mailer, $replyto = null)
 {
     $cher = isset($user['sexe']) ? ($user['sexe'] ? 'Chère' : 'Cher') : 'Cher(e)';
     $nom  = isset($user['nom']) ? $user['nom'] : "";
-    $pnom = isset($user['prenom']) ? $user['prenom'] : preg_replace('!@.*!', '', $user['email']);
+    $pnom = isset($user['prenom']) ? $user['prenom'] : preg_replace('!@.*!u', '', $user['email']);
     $to   = isset($user['prenom']) ? "\"{$user['prenom']} {$user['nom']}\" <{$user['email']}>" : $user['email'];
     
     $text = $body;

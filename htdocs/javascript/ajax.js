@@ -35,7 +35,7 @@ Ajax = {
                 }
             }
             if (Ajax.xml_client == null) {
-                alert("Ton client ne supporte pas Ajax, nécessaire pour certaines fonctionalités de cette page");
+                alert("Ton client ne supporte pas Ajax, nÃ©cessaire pour certaines fonctionalitÃ©s de cette page");
             }
         }
         Ajax.init = true;
@@ -66,3 +66,4 @@ Ajax = {
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

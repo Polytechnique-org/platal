@@ -84,9 +84,9 @@ class PlatalGlobals
 
     function dbconnect()
     {
-        @mysql_connect($this->dbhost, $this->dbuser, $this->dbpwd);
-        @mysql_select_db($this->dbdb);
-        @mysql_query("SET NAMES 'utf8'");
+        XDB::$connec = @mysqli_connect($this->dbhost, $this->dbuser, $this->dbpwd);
+        @mysqli_select_db(XDB::$connec, $this->dbdb);
+        mysqli_set_charset(XDB::$connec, 'utf8');
     }
 
     function setlocale()

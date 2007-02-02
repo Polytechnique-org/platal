@@ -106,7 +106,7 @@ function get_user_login($data, $get_forlife = false) {
             return $get_forlife ? $res->fetchOneCell() : $mbox;
         }
 
-        if (preg_match('/^(.*)\.([0-9]{4})$/', $mbox, $matches)) {
+        if (preg_match('/^(.*)\.([0-9]{4})$/u', $mbox, $matches)) {
             $res = XDB::query("SELECT  a.alias
                                  FROM  aliases AS a
                            INNER JOIN  aliases AS b ON (a.id = b.id AND b.type IN ('alias', 'a_vie') AND b.alias={?})
@@ -669,7 +669,7 @@ function set_user_details($uid, $details) {
     if (isset($details['gpxs']) && is_array($details['gpxs'])) {
         XDB::execute("DELETE FROM groupesx_ins WHERE user_id = {?}", $uid);
         foreach ($details['gpxs'] as $groupex) {
-            if (preg_match('/<a href="[^"]*">([^<]+)</a>/', $groupex, $a)) $groupex = $a[1];
+            if (preg_match('/<a href="[^"]*">([^<]+)</a>/u', $groupex, $a)) $groupex = $a[1];
             XDB::execute(
             "INSERT INTO groupesx_ins (`user_id`, `binet_id`)
                 SELECT {?}, id FROM groupesx_def WHERE text = {?} LIMIT 1",

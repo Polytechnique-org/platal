@@ -21,6 +21,7 @@
 
 class XDB
 {
+    public static $connec = null;
     var $_trace_data = array();
 
     public static function _prepare($args)
@@ -36,7 +37,7 @@ class XDB
         $length = 0;
         foreach ($query as $key=>$line) {
             $local = -2;
-            if (preg_match('/^([A-Z]+(?:\s+(?:JOIN|BY|FROM|INTO))?)\s+(.*)/', $line, $matches)
+            if (preg_match('/^([A-Z]+(?:\s+(?:JOIN|BY|FROM|INTO))?)\s+(.*)/u', $line, $matches)
             && $matches[1] != 'AND' && $matches[1] != 'OR')
             {
                 $local  = strlen($matches[1]);
@@ -59,28 +60,31 @@ class XDB
     {
         global $globals;
 
-        if ($globals->debug & 1) {
-            $_res = mysql_query("EXPLAIN $query");
+        if ($globals->debug & 1 && strpos($query, 'FOUND_ROWS()') === false) {
+            $_res = mysqli_query(XDB::$connec, "EXPLAIN $query");
             $explain = array();
-            while ($row = @mysql_fetch_assoc($_res)) {
+            while ($row = mysqli_fetch_assoc($_res)) {
                 $explain[] = $row;
             }
             $trace_data = array('query' => XDB::_reformatQuery($query), 'explain' => $explain);
-            @mysql_free_result($_res);
+            @mysqli_free_result($_res);
+            $time_start = microtime();
+        } elseif ($globals->debug & 1) {
+            $trace_data = array('query' =>  XDB::_reformatQuery($query), 'explain' => array());
             $time_start = microtime();
         }
 
-        $res = mysql_query($query);
-
+        $res = mysqli_query(XDB::$connec, $query);
+        
         if ($globals->debug & 1) {
             list($ue, $se) = explode(" ", microtime());
             list($us, $ss) = explode(" ", $time_start);
             $time = intval((($ue - $us) + ($se - $ss)) * 1000);            
-            $trace_data['error'] = mysql_error();
+            $trace_data['error'] = mysqli_error(XDB::$connec);
             $trace_data['exectime'] = $time;
-            $trace_data['rows'] = @mysql_num_rows() ? mysql_num_rows() : mysql_affected_rows();
+            $trace_data['rows'] = @mysqli_num_rows($res) ? mysqli_num_rows($res) : mysqli_affected_rows(XDB::$connec);
             $GLOBALS['XDB::trace_data'][] = $trace_data;
-            if (mysql_errno()) {
+            if (mysqli_errno(XDB::$connec)) {
                 $GLOBALS['XDB::error'] = true;
             }
         }
@@ -110,7 +114,7 @@ class XDB
 
     public static function insertId()
     {
-        return mysql_insert_id();
+        return mysqli_insert_id(XDB::$connec);
     }
 
     public static function _db_escape($var)
@@ -158,24 +162,24 @@ class XOrgDBResult
 
     function free()
     {
-        mysql_free_result($this->_res);
+        mysqli_free_result($this->_res);
         unset($this);
     }
 
     function _fetchRow()
     {
-        return mysql_fetch_row($this->_res);
+        return mysqli_fetch_row($this->_res);
     }
 
     function _fetchAssoc()
     {
-        return mysql_fetch_assoc($this->_res);
+        return mysqli_fetch_assoc($this->_res);
     }
 
     function fetchAllRow()
     {
         $result = Array();
-        while ($result[] = mysql_fetch_row($this->_res)) { }
+        while ($result[] = mysqli_fetch_row($this->_res)) { }
         array_pop($result);
         $this->free();
         return $result;
@@ -184,7 +188,7 @@ class XOrgDBResult
     function fetchAllAssoc()
     {
         $result = Array();
-        while ($result[] = mysql_fetch_assoc($this->_res)) { }
+        while ($result[] = mysqli_fetch_assoc($this->_res)) { }
         array_pop($result);
         $this->free();
         return $result;
@@ -229,7 +233,7 @@ class XOrgDBResult
 
     function numRows()
     {
-        return mysql_num_rows($this->_res);
+        return mysqli_num_rows($this->_res);
     }
 }
 

@@ -7,11 +7,11 @@ function url_catcher($texte, $mails = true) {
     $replacement = array();
 
     // url commencant par http, https ou ftp
-    $patterns[] = '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/i';
+    $patterns[] = '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/ui';
     $replacement[] = '<a href="\\0">\\0</a>';
 
     // url commencant par www.
-    $patterns[] = '/(\s|^)www\.((?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/i';
+    $patterns[] = '/(\s|^)www\.((?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/iu';
     $replacement[] = '\\1<a href="http://www.\\2">www.\\2</a>';
 
     if ($mails) {

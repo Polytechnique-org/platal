@@ -1441,3 +1441,4 @@ registerHook("horizontalPlacement", horizontalPlacement, FCHAIN);
 registerHook("verticalPlacement", verticalPlacement, FCHAIN);
 if (olNs4||(olIe5&&isMac)||olKq) olLoaded=1;
 registerNoParameterCommands('sticky,autostatus,autostatuscap,fullhtml,hauto,vauto,closeclick,wrap,followmouse,mouseoff,compatmode');
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

@@ -48,3 +48,4 @@ function hash_xor(a, b) {
         c += a.charAt(k);
     return c;
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

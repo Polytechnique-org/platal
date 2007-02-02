@@ -73,7 +73,7 @@ abstract class MassMailer
             return true;
         } else {
             $css = file_get_contents(dirname(__FILE__) . '/../htdocs/css/' . $this->_css);
-            return preg_replace('@/\*.*?\*/@s', '', $css);
+            return preg_replace('@/\*.*?\*/@us', '', $css);
         }
     }
 

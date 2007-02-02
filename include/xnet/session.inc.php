@@ -170,7 +170,7 @@ function may_update($force = false, $lose = false)
         $res = XDB::query("SELECT  perms
                              FROM  groupex.membres
                             WHERE  uid={?} AND asso_id={?}",
-                          S::v('uid'), $globals->asso('id'));
+                          S::v('uid'), $asso_id);
         $may_update[$asso_id] = ($res->fetchOneCell() == 'admin');
     }
     return $may_update[$asso_id];

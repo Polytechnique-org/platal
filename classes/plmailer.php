@@ -152,7 +152,7 @@ class PlMailer extends Mail_Mime {
     {
         $this->charset = $charset;
         $this->Mail_Mime("\n");
-        $this->mail = @Mail::factory('sendmail', Array('sendmail_args' => '-oi'));
+        $this->mail = Mail::factory('sendmail', Array('sendmail_args' => '-oi'));
         if (!is_null($tpl)) {
             $this->page =& PlMail::get($this, $tpl);
         }
@@ -163,7 +163,7 @@ class PlMailer extends Mail_Mime {
      */
     private function correct_emails($email)
     {
-        return preg_replace('!(^|, *)([^<"]+?) *(<[^>]*>)!', '\1"\2" \3', $email);
+        return preg_replace('!(^|, *)([^<"]+?) *(<[^>]*>)!u', '\1"\2" \3', $email);
     }
 
     public function addTo($email)

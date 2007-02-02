@@ -51,6 +51,18 @@ function quoted_printable_encode($input, $line_max = 76) {
     return trim($output);
 }
 
+/** vérifie si une adresse email est bien formatée
+ * ATTENTION, cette fonction ne doit pas être appelée sur une chaîne ayant subit un addslashes (car elle accepte le "'" qui rait alors un "\'"
+ * @param $email l'adresse email a verifier
+ * @return BOOL
+ */
+function isvalid_email($email) {
+  // la rfc2822 authorise les caractères "a-z", "0-9", "!", "#", "$", "%", "&", "'", "*", "+", "-", "/", "=", "?", "^", "_", `", "{", "|", "}", "~" aussi bien dans la partie locale que dans le domaine.
+  // Pour la partie locale, on réduit cet ensemble car il n'est pas utilisé.
+  // Pour le domaine, le système DNS limite à [a-z0-9.-], on y ajoute le "_" car il est parfois utilisé.
+  return preg_match("/^[a-z0-9_.'+-]+@[a-z0-9._-]+\.[a-z]{2,4}$/i", $email);
+}
+
 /** vérifie si une adresse email convient comme adresse de redirection 
  * @param $email l'adresse email a verifier
  * @return BOOL
@@ -58,6 +70,29 @@ function quoted_printable_encode($input, $line_max = 76) {
 function isvalid_email_redirection($email) {
     return isvalid_email($email) && 
 	!preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
+}
+
+/** Remove accent from a string and replace them by the nearest letter
+ */
+global $lc_convert, $uc_convert;
+$lc_convert = array('é' => 'e', 'è' => 'e', 'ë' => 'e', 'ê' => 'e',
+                    'á' => 'a', 'à' => 'a', 'ä' => 'a', 'â' => 'a', 'å' => 'a', 'ã' => 'a',
+                    'ï' => 'i', 'î' => 'i', 'ì' => 'i', 'í' => 'i',
+                    'ô' => 'o', 'ö' => 'o', 'ò' => 'o', 'ó' => 'o', 'õ' => 'o', 'ø' => 'o',
+                    'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
+                    'ç' => 'c', 'ñ' => 'n');
+$uc_convert = array('É' => 'E', 'È' => 'E', 'Ë' => 'E', 'Ê' => 'E', 
+                    'Á' => 'A', 'À' => 'A', 'Ä' => 'A', 'Â' => 'A', 'Å' => 'A', 'Ã' => 'A', 
+                    'Ï' => 'I', 'Î' => 'I', 'Ì' => 'I', 'Í' => 'I', 
+                    'Ô' => 'O', 'Ö' => 'O', 'Ò' => 'O', 'Ó' => 'O', 'Õ' => 'O', 'Ø' => 'O', 
+                    'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U', 
+                    'Ç' => 'C', 'Ñ' => 'N');
+
+function replace_accent($string)
+{
+    global $lc_convert, $uc_convert;
+    $string = strtr($string, $lc_convert);
+    return strtr($string, $uc_convert);
 }
 
 /* Un soundex en français posté par Frédéric Bouchery
@@ -71,7 +106,11 @@ function soundex_fr($sIn)
     // On met tout en minuscule 
     $sIn = strtoupper( $sIn ); 
     // On supprime les accents 
-    $sIn = strtr( $sIn, 'ÂÄÀÇÈÉÊËŒÎÏÔÖÙÛÜ', 'AAASEEEEEIIOOUUU' ); 
+    global $uc_convert;
+    $accents = $uc_convert;
+    $accents['Ç'] = 'S';
+    $accents['¿'] = 'E';
+    $sIn = strtr( $sIn, $accents); 
     // On supprime tout ce qui n'est pas une lettre 
     $sIn = preg_replace( '`[^A-Z]`', '', $sIn ); 
     // Si la chaîne ne fait qu'un seul caractère, on sort avec. 
@@ -96,7 +135,7 @@ function soundex_fr($sIn)
     // suppression de tous les A sauf en tête 
     $sIn = preg_replace( '`(?!^)A`', '', $sIn ); 
     // on supprime les lettres répétitives 
-    $sIn = preg_replace( '`(.)\1`', '$1', $sIn ); 
+    $sIn = preg_replace( '`(.)\1`u', '$1', $sIn ); 
     // on ne retient que 4 caractères ou on complète avec des blancs 
     return substr( $sIn . '    ', 0, 4); 
 }

@@ -35,8 +35,8 @@ function getNow() {
     
     time   = (mi < 10) ? hr +':0'+mi : hr+':'+mi;
     days   = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-    months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
-           'août', 'septembre', 'octobre', 'novembre', 'décembre']
+    months = ['janvier', 'fÃ©vrier', 'mars', 'avril', 'mai', 'juin', 'juillet',
+           'aoÃ»t', 'septembre', 'octobre', 'novembre', 'dÃ©cembre']
 
     return days[dy]+' '+wd+' '+months[mh]+' '+yr+'<br />'+time;
 }
@@ -158,3 +158,4 @@ if (!attachEvent(window, 'load', auto_links)) {
 
 // }}}
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

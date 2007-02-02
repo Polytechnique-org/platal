@@ -34,7 +34,7 @@ function correctUserName() {
     // jean paul dupont -> jean-paul.dupont
     if (mots.length == 3 && mots[0].toUpperCase() == 'JEAN') { u.value = mots[0]+"-"+mots[1]+"."+mots[2]; return true; }
     
-    alert('Ton email ne doit pas contenir de blanc.\nLe format standard est\n\nprenom.nom.promotion\n\nSi ton nom ou ton prenom est composé,\nsépare les mots par des -');
+    alert('Ton email ne doit pas contenir de blanc.\nLe format standard est\n\nprenom.nom.promotion\n\nSi ton nom ou ton prenom est composÃ©,\nsÃ©pare les mots par des -');
 
     return false;
 }
@@ -59,3 +59,4 @@ function doChallengeResponse() {
     document.forms.loginsub.submit();
 
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

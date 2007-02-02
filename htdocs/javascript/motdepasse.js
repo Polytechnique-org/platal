@@ -27,7 +27,7 @@ function EnCryptedResponse() {
         exit;
     }
     if (pw1.length < 6) {
-        alert ("\nErreur : le nouveau mot de passe doit faire au moins 6 caractères !")
+        alert ("\nErreur : le nouveau mot de passe doit faire au moins 6 caractÃ¨res !")
             return false;
         exit;
     }
@@ -35,7 +35,8 @@ function EnCryptedResponse() {
     str = hash_encrypt(document.forms.changepass.nouveau.value);
     document.forms.changepass2.response2.value = str;
 
-    alert ("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
+    alert ("Le mot de passe que tu as rentrÃ© va Ãªtre chiffrÃ© avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
     document.forms.changepass2.submit();
     return true;
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

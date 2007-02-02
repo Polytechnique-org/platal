@@ -19,9 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-global $lc_accent, $lc_plain, $uc_accent, $uc_plain;
-require_once 'diogenes/diogenes.misc.inc.php';
-
 class Session
 {
     public static function init()
@@ -29,7 +26,7 @@ class Session
         @session_start();
         if (empty($_SESSION['challenge'])) {
             $_SESSION['challenge'] = sha1(uniqid(rand(), true));
-        }
+       }
     }
 
     public static function destroy()

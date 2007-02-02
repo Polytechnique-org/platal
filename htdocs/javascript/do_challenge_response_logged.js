@@ -46,3 +46,4 @@ function doChallengeResponse() {
     document.forms.login.password.value = "";
     document.forms.loginsub.submit();
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
