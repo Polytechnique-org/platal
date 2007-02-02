@@ -40,9 +40,9 @@ function wiki_pagename()
 function wiki_filename($s)
 {
     if (@iconv('utf-8', 'utf-8', $s) == $s) {
-        return utf8_decode($s);
+        return $s;
     }
-    return $s;
+    return utf8_encode($s);
 }
 
 function wiki_work_dir()
