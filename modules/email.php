@@ -278,7 +278,7 @@ class EmailModule extends PLModule
                 $page->trig('Une erreur a été rencontrée lors du transfert du fichier');
                 return;
             }
-            $mime = mime_content_type($upload);
+            $mime = trim(mime_content_type($upload));
             if ($mime != 'text/x-mail' && $mime != 'message/rfc822') {
                 $page->trig('Le fichier ne contient pas un mail complet');
                 return;
