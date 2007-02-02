@@ -65,9 +65,9 @@ class MLBanana extends Banana
         Banana::$msgedit_headers['X-Org-Mail'] = S::v('forlife') . '@' . $globals->mail->domain;
 
         // Build user profile
-        Banana::$profile['headers']['From']         = utf8_encode("$nom <$mail>");
+        Banana::$profile['headers']['From']         = "$nom <$mail>";
         Banana::$profile['headers']['Organization'] = 'Utilisateur de Polytechnique.org';
-        Banana::$profile['signature']               = utf8_encode($sig);
+        Banana::$profile['signature']               = $sig;
         
         // Page design
         Banana::$page->killPage('forums');

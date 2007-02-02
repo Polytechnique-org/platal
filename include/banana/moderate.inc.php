@@ -90,7 +90,7 @@ class ModerationPage extends BananaPage
     {
         global $page;
         if ($page) {
-            $page->trig(utf8_decode($msg));
+            $page->trig($msg);
         }
         return true;
     }
