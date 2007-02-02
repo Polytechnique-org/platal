@@ -98,9 +98,9 @@ class ForumsBanana extends Banana
                    FROM  {$globals->banana->table_prefix}abos
               LEFT JOIN  {$globals->banana->table_prefix}list ON list.fid=abos.fid
                   WHERE  uid={?}", S::i('uid'));
-        Banana::$profile['headers']['From']         = utf8_encode("$nom <$mail>");
+        Banana::$profile['headers']['From']         = "$nom <$mail>";
         Banana::$profile['headers']['Organization'] = 'Utilisateur de Polytechnique.org';
-        Banana::$profile['signature']               = utf8_encode($sig);
+        Banana::$profile['signature']               = $sig;
         Banana::$profile['display']                 = $disp;
         Banana::$profile['autoup']                  = $maj;
         Banana::$profile['lastnews']                = S::v('banana_last');
@@ -121,7 +121,7 @@ class ForumsBanana extends Banana
                                 . 'Marquer tous les messages comme lus'
                                 . '</a>', array('forums', 'thread', 'message'));
         }   
-        Banana::$page->registerPage('profile', utf8_encode('Préférences'), null);
+        Banana::$page->registerPage('profile', 'Préférences', null);
         
 
         // Run Banana
