@@ -49,9 +49,10 @@ class PlatalGlobals
         $this->spoolroot = dirname(dirname(__FILE__));
 
         $this->read_config();
-
-        $this->dbconnect();
         $this->setlocale();
+
+        require_once dirname(__FILE__) . '/../classes/xdb.php';
+        XDB::connect($this->dbhost, $this->dbuser, $this->dbpwd, $this->dbdb, 'utf8', $this->debug);
     }
 
     function read_ini_file($filename)
@@ -80,13 +81,6 @@ class PlatalGlobals
         $this->read_ini_file($this->spoolroot.'/configs/platal.ini');
 
         $this->read_ini_file($this->spoolroot.'/configs/platal.conf');
-    }
-
-    function dbconnect()
-    {
-        XDB::$connec = @mysqli_connect($this->dbhost, $this->dbuser, $this->dbpwd);
-        @mysqli_select_db(XDB::$connec, $this->dbdb);
-        mysqli_set_charset(XDB::$connec, 'utf8');
     }
 
     function setlocale()

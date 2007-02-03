@@ -21,8 +21,21 @@
 
 class XDB
 {
-    public static $connec = null;
-    var $_trace_data = array();
+    private static $mysqli = null;
+
+    public static function connect($host, $user, $pwd, $db, $charset = 'utf8', $debug = 0)
+    {
+        XDB::$mysqli = new mysqli($host, $user, $pwd, $db);
+        if (mysqli_connect_errno() && $debug & 1) {
+            $GLOBALS['XDB::trace_data'][] = array('query' => 'MySQLI connection', 'explain' => array(),
+                                                  'error' => mysqli_connect_error(), 'exectime' => 0, 'rows' => 0);
+            $GLOBALS['XDB::error'] = true;
+            return false;
+        }
+        XDB::$mysqli->autocommit(true);
+        XDB::$mysqli->set_charset($charset);
+        return true;
+    }
 
     public static function _prepare($args)
     {
@@ -63,33 +76,32 @@ class XDB
         if ($globals->debug & 1) {
             $explain = array();
             if (strpos($query, 'FOUND_ROWS()') === false) {
-                $_res = mysqli_query(XDB::$connec, "EXPLAIN $query");
-                if ($_res) {
-                    while ($row = mysqli_fetch_assoc($_res)) {
+                $res = XDB::$mysqli->query("EXPLAIN $query");
+                if ($res) {
+                    while ($row = $res->fetch_assoc()) {
                         $explain[] = $row;
                     }
-                    @mysqli_free_result($_res);
+                    $res->free();
                 }
             }
             $trace_data = array('query' => XDB::_reformatQuery($query), 'explain' => $explain);
             $time_start = microtime();
         }
 
-        $res = mysqli_query(XDB::$connec, $query);
+        $res = XDB::$mysqli->query($query);
         
         if ($globals->debug & 1) {
             list($ue, $se) = explode(" ", microtime());
             list($us, $ss) = explode(" ", $time_start);
             $time = intval((($ue - $us) + ($se - $ss)) * 1000);            
-            $trace_data['error'] = mysqli_error(XDB::$connec);
+            $trace_data['error'] = XDB::$mysqli->error;
             $trace_data['exectime'] = $time;
-            $trace_data['rows'] = @mysqli_num_rows($res) ? mysqli_num_rows($res) : mysqli_affected_rows(XDB::$connec);
+            $trace_data['rows'] = @$res->num_rows ? $res->num_rows : XDB::$mysqli->affected_rows;
             $GLOBALS['XDB::trace_data'][] = $trace_data;
-            if (mysqli_errno(XDB::$connec)) {
+            if (XDB::$mysqli->errno) {
                 $GLOBALS['XDB::error'] = true;
             }
         }
-
         return $res;
     }
 
@@ -115,7 +127,7 @@ class XDB
 
     public static function insertId()
     {
-        return mysqli_insert_id(XDB::$connec);
+        return XDB::$mysqli->insert_id;
     }
 
     public static function _db_escape($var)
@@ -154,7 +166,7 @@ class XDB
 class XOrgDBResult
 {
 
-    var $_res;
+    private $_res;
 
     function XOrgDBResult($query)
     {
@@ -163,24 +175,24 @@ class XOrgDBResult
 
     function free()
     {
-        mysqli_free_result($this->_res);
+        $this->_res->free();
         unset($this);
     }
 
     function _fetchRow()
     {
-        return mysqli_fetch_row($this->_res);
+        return $this->_res->fetch_row();
     }
 
     function _fetchAssoc()
     {
-        return mysqli_fetch_assoc($this->_res);
+        return $this->_res->fetch_assoc();
     }
 
     function fetchAllRow()
     {
         $result = Array();
-        while ($result[] = mysqli_fetch_row($this->_res)) { }
+        while ($result[] = $this->_res->fetch_row());
         array_pop($result);
         $this->free();
         return $result;
@@ -189,7 +201,7 @@ class XOrgDBResult
     function fetchAllAssoc()
     {
         $result = Array();
-        while ($result[] = mysqli_fetch_assoc($this->_res)) { }
+        while ($result[] = $this->_res->fetch_assoc());
         array_pop($result);
         $this->free();
         return $result;
@@ -234,7 +246,7 @@ class XOrgDBResult
 
     function numRows()
     {
-        return mysqli_num_rows($this->_res);
+        return $this->_res->num_rows;
     }
 }
 
