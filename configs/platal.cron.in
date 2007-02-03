@@ -4,9 +4,9 @@ WD=/home/web/prod/platal/bin/cron
 
 # db
 0  5 * * *	web	cd $WD; ./clean.php
-0 21 * * 1-6	web	cd $WD; ./checkdb.php    | mail -e -s "verifications sur la BDD de plat/al @VERSION@"         br@m4x.org
-0 21 * * 0	web	cd $WD; ./checkdb.php -v | mail -e -s "verifications verbose sur la BDD de plat/al @VERSION@" br@m4x.org
-0 20 * * *      web     cd $WD; ./emails.check.php | mail -e -s "recherche d'usurpateurs"                   br@m4x.org
+0 21 * * 1-6	web	cd $WD; ./checkdb.php    | mail -e -s "verifications sur la BDD de plat/al @VERSION@"         br@staff.m4x.org
+0 21 * * 0	web	cd $WD; ./checkdb.php -v | mail -e -s "verifications verbose sur la BDD de plat/al @VERSION@" br@staff.m4x.org
+0 20 * * *      web     cd $WD; ./emails.check.php | mail -e -s "recherche d'usurpateurs"                   br@staff.m4x.org
 
 # inscription report
 0  6 * * 1	web	cd $WD; ./rapports_inscription.php
@@ -19,7 +19,7 @@ WD=/home/web/prod/platal/bin/cron
 0 */3 * * *	web	cd $WD; ./cron_validations.php
 
 # AX spammer
-15 * * * *      web     cd $WD; ./axletter.send.php | mail -e -s "envoi d'un mail de l'AX" br@m4x.org
+15 * * * *      web     cd $WD; ./axletter.send.php | mail -e -s "envoi d'un mail de l'AX" br@staff.m4x.org
 
 # homonymes
 0 0 4 * * *	web	cd $WD; ./homonymes.php
