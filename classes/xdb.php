@@ -23,17 +23,18 @@ class XDB
 {
     private static $mysqli = null;
 
-    public static function connect($host, $user, $pwd, $db, $charset = 'utf8', $debug = 0)
+    public static function connect()
     {
-        XDB::$mysqli = new mysqli($host, $user, $pwd, $db);
-        if (mysqli_connect_errno() && $debug & 1) {
+        global $globals;
+        XDB::$mysqli = new mysqli($globals->dbhost, $globals->dbuser, $globals->dbpwd, $globals->dbdb);
+        if (mysqli_connect_errno() && $globals->debug & 1) {
             $GLOBALS['XDB::trace_data'][] = array('query' => 'MySQLI connection', 'explain' => array(),
                                                   'error' => mysqli_connect_error(), 'exectime' => 0, 'rows' => 0);
             $GLOBALS['XDB::error'] = true;
             return false;
         }
         XDB::$mysqli->autocommit(true);
-        XDB::$mysqli->set_charset($charset);
+        XDB::$mysqli->set_charset($globals->dbcharset);
         return true;
     }
 
@@ -72,6 +73,10 @@ class XDB
     public static function _query($query)
     {
         global $globals;
+
+        if (!XDB::$mysqli && !XDB::connect()) {
+            return false;
+        }
 
         if ($globals->debug & 1) {
             $explain = array();
