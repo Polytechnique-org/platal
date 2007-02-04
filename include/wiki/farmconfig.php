@@ -20,10 +20,13 @@ $Skin             = 'empty';
 @include_once("$FarmD/cookbook/e-protect.php");
 include_once($FarmD.'/scripts/xlpage-utf-8.php');
 
-if ($action == 'rss'  ||
-    $action == 'atom' ||
-    $action == 'rdf'  ||
-    $action == 'dc') include_once("$FarmD/scripts/feeds.php");
+if ($action == 'rss'  || $action == 'atom' || $action == 'rdf'  || $action == 'dc') {
+    include_once("$FarmD/scripts/feeds.php");
+    $FmtPV['$MarkupExcerpt'] = '$page["text"]';
+    $FeedFmt[$action]['item']['title'] = '[$Group] {$Title}';
+    $FeedFmt[$action]['item']['description'] = '$LastModifiedSummary';
+    $FeedFmt[$action]['feed']['title'] = 'Polytechnique.org :: Wiki :: $FullName';
+}
 
 // Theme-ing {{{
 
@@ -59,6 +62,10 @@ $InputTags['e_form'] = array(
 // set profiles to point to plat/al fiche
 Markup('[[~platal', '<[[~', '/\[\[~([^|\]]*)(?:\|([^\]]*))?\]\]/e',
     'PreserveText("=", doPlatalLink("$1", "$2"), "")');
+
+// Preserve javascript
+Markup('[[javascript', '<[[javascript:', '/\[\[javascript:([^\|]*)\|([^\]]*)?\]\]/e',
+       'PreserveText("=", \'<a href="javascript:\' . htmlentities("$1") . \'">\', "") . "$2" . PreserveText("=", "</a>", "")');
 
 // prevent restorelinks before block apply (otherwise [[Sécurité]] will give
 //  .../S<span class='e9curit'>e9'>Sécurité</a>

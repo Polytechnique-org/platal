@@ -51,7 +51,6 @@ class PlatalGlobals
         $this->read_config();
         $this->setlocale();
 
-        require_once dirname(__FILE__) . '/../classes/xdb.php';
         XDB::connect($this->dbhost, $this->dbuser, $this->dbpwd, $this->dbdb, 'utf8', $this->debug);
     }
 

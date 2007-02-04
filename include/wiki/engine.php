@@ -28,9 +28,12 @@ if (!$n) {
 
 new_skinned_page('core/wiki.tpl');
 $perms = wiki_get_perms($n);
+$feed  = false;
 
 // Check user perms
 switch (Env::v('action')) {
+  case 'rss': case 'atom': case 'sdf': case 'dc':
+    $feed = true;
   case '': case 'search': case 'rss': case 'atom': 
     break;
 
@@ -62,7 +65,6 @@ if ($p = Post::v('setwperms')) {
 // Generate cache even if we don't have access rights
 $wiki_cache   = wiki_work_dir().'/cache_'.wiki_filename($n).'.tpl';
 $cache_exists = file_exists($wiki_cache);
-$feed         = in_array(Env::v('action'), array('rss', 'atom', 'sdf', 'dc'));
 if (Env::v('action') || !$cache_exists) {
     if ($cache_exists && !$feed) {
         unlink($wiki_cache);
@@ -84,10 +86,13 @@ if (Env::v('action') || !$cache_exists) {
 
 $wiki_exists = file_exists(wiki_work_dir() . '/' . wiki_filename($n));
 
-if (Env::v('action') && !$feed) {
+if ($feed) {
+    $wikiAll = str_replace('dc:contributor', 'author', $wikiAll);
+    $wikiAll = preg_replace('!<author>.*?\..*?\.(\d{4})\|(.*?)</author>!u', '<author>$2 (X$1)</author>', $wikiAll);
+} elseif (Env::v('action')) {
     $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
     $wikiAll = substr($wikiAll, $j);
-} elseif (!$feed) {
+} else {
     if (!$cache_exists && $wiki_exists) {
         $wikiAll = substr($wikiAll, $j);
         wiki_putfile($wiki_cache, $wikiAll);
