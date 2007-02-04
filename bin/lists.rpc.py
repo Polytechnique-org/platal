@@ -359,7 +359,6 @@ def get_name(member):
     try:
         return quote(mlist.getMemberName(member))
     except:
-        print member
         return ''
 
 def get_members(userdesc, perms, vhost, listname):
