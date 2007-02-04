@@ -27,16 +27,19 @@
 require('./connect.db.inc.php');
 require("Console/Getopt.php");
 
-function check($sql, $commentaire='') {
-    $res = mysql_query($sql);
-    if ($err = mysql_error()) echo $err;
-    if (mysql_num_rows($res)>0) {
+function check($sql, $commentaire='') 
+{
+    $it = XDB::iterRow($sql);
+    if ($err = XDB::error()) echo $err;
+    if ($it->total() > 0) {
         echo "Erreur pour la verification : $commentaire\n$sql\n\n";
         echo "|";
-        while($col = mysql_fetch_field($res)) echo "\t".$col->name."\t|";
+        while($col = $it->nextField()) {
+            echo "\t".$col->name."\t|";
+        }
         echo "\n";
 
-        while ($arr = mysql_fetch_row($res)) {
+        while ($arr = $it->next()) {
             echo "|";
             foreach ($arr as $val) echo "\t$val\t|";
             echo "\n";

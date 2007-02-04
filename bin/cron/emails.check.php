@@ -58,9 +58,9 @@ if (count($conflits) > 0) {
     echo "\n\n";
     $sql = "INSERT IGNORE INTO emails_watch (email, state, detection, last)
                         VALUES " . join(", ", $insert);
-    Xdb::execute($sql);
-    if (mysql_errno() != 0) {
-        echo 'Error : ' . mysql_error() . "\n$sql";
+    XDB::execute($sql);
+    if (XDB::errno() != 0) {
+        echo 'Error : ' . XDB::error() . "\n$sql";
     }
 }
 

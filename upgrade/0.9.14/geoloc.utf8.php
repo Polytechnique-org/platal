@@ -1,7 +1,9 @@
 #!/usr/bin/php5
 <?php
 
+global $globals;
 require_once 'connect.db.inc.php';
+$globals->dbcharset = 'latin1';
 
 function is_utf8($s)
 {
@@ -9,7 +11,6 @@ function is_utf8($s)
 }
 
 $tables = array ('city', 'city_in_maps', 'maps', 'pays', 'region');
-XDB::execute("SET NAMES 'latin1'");
 foreach ($tables as $table) {
     $res = XDB::query("SELECT * FROM geoloc_$table");
     if (!$res) {
@@ -21,10 +22,10 @@ foreach ($tables as $table) {
         $from = array();
         $to   = array();
         foreach ($array as $key=>$value) {
-            $from[] = $key . '="' . mysql_real_escape_string($value) . '"';
+            $from[] = $key . '="' . XDB::_db_escape($value) . '"';
             $valued = utf8_decode($value);
             if (is_utf8($value) && $valued != $value) {
-                $to[] = $key . '="' . mysql_real_escape_string($valued) .'"';
+                $to[] = $key . '="' . XDB::_db_escape($valued) .'"';
             }
         }
         if (!empty($to)) {

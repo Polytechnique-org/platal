@@ -100,6 +100,7 @@ class XDB
             list($us, $ss) = explode(" ", $time_start);
             $time = intval((($ue - $us) + ($se - $ss)) * 1000);            
             $trace_data['error'] = XDB::$mysqli->error;
+            $trace_data['errno'] = XDB::$mysqli->errno;
             $trace_data['exectime'] = $time;
             $trace_data['rows'] = @$res->num_rows ? $res->num_rows : XDB::$mysqli->affected_rows;
             $GLOBALS['XDB::trace_data'][] = $trace_data;
@@ -133,6 +134,37 @@ class XDB
     public static function insertId()
     {
         return XDB::$mysqli->insert_id;
+    }
+
+    public static function errno()
+    {
+        global $globals;
+        if ($globals->debug & 1) {
+            $count = count($GLOBALS['XDB::trace_data']);
+            if (!$count) {
+                return 0;
+            }
+            return $GLOBALS['XDB::trace_data'][$count - 1]['errno'];
+        }
+        return XDB::$mysqli->errno;
+    }
+
+    public static function error()
+    {       
+        global $globals;
+        if ($globals->debug & 1) {
+            $count = count($GLOBALS['XDB::trace_data']);
+            if (!$count) {
+                return null;
+            }
+            return $GLOBALS['XDB::trace_data'][$count - 1]['error'];
+        }   
+        return XDB::$mysqli->error;
+    }
+
+    public static function affectedRows()
+    {
+        return XDB::$mysqli->affected_rows;
     }
 
     public static function _db_escape($var)
@@ -249,9 +281,26 @@ class XOrgDBResult
         return $res;
     }
 
+    function fetchOneField()
+    {
+        return $this->_res->fetch_field();
+    }
+
+    function fetchFields()
+    {
+        $res = array();
+        while ($res[] = $this->fetchOneField());
+        return $res;
+    }
+
     function numRows()
     {
         return $this->_res->num_rows;
+    }
+
+    function fieldCount()
+    {
+        return $this->_res->field_count;
     }
 }
 
@@ -260,6 +309,8 @@ class XOrgDBIterator
     private $_result;
     private $_pos;
     private $_total;
+    private $_fpos;
+    private $_fields;
     private $_mode = MYSQL_ASSOC;
 
     function __construct($query, $mode = MYSQL_ASSOC)
@@ -267,6 +318,8 @@ class XOrgDBIterator
         $this->_result = new XOrgDBResult($query);
         $this->_pos    = 0;
         $this->_total  = $this->_result->numRows();
+        $this->_fpost  = 0;
+        $this->_fields = $this->_result->fieldCount();
         $this->_mode   = $mode;
     }
 
@@ -288,12 +341,36 @@ class XOrgDBIterator
 
     function last()
     {
-        return $this->_last == $this->_total;
+        return $this->_pos == $this->_total;
     }
 
     function total()
     {
         return $this->_total;
+    }
+
+    function nextField()
+    {
+        $this->_fpos++;
+        if ($this->_fpos > $this->_fields) {
+            return null;
+        }
+        return $this->_result->fetchOneField();
+    }
+
+    function firstField()
+    {
+        return $this->_fpos == 1;
+    }
+
+    function lastField()
+    {
+        return $this->_fpos == $this->_fields;
+    }
+
+    function totalFields()
+    {
+        return $this->_fields;
     }
 }
 

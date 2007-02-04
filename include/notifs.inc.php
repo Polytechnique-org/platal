@@ -287,7 +287,7 @@ class WatchSub {
         XDB::execute('DELETE FROM watch_sub WHERE uid={?}', $this->_uid);
         foreach (Env::v($ind) as $key=>$val) {
             XDB::query('INSERT INTO watch_sub SELECT {?},id FROM watch_cat WHERE id={?}', $this->_uid, $key);
-            if(mysql_affected_rows()) {
+            if(XDB::affectedRows()) {
                 $this->_data[$key] = $key;
             }
         }
