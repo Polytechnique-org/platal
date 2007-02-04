@@ -108,7 +108,7 @@ Bienvenue {$smarty.session.prenom}
     <tr class="{cycle values="impair,pair"}">
       <td class="half">
         &bull;
-        <a href="events{if !$ev.nonlu}/unread/{$ev.id}{else}#newsid{$ev.id}{/if}">
+        <a href="events{if !$ev.nonlu}/unread/{$ev.id}{else}#newsid{$ev.id}{/if}" id="link-evt{$ev.id}">
         {if $ev.nonlu}<strong>{/if}
       	 {tidy}
       	   {$ev.titre|nl2br}
@@ -126,7 +126,24 @@ Bienvenue {$smarty.session.prenom}
     {/if}
   </table>
 
+  <script type="text/javascript">
+  {literal}
+  function readEvent(id) {
+  	document.getElementById('content-evt'+id).style.display='none';
+  	var link = document.getElementById('link-evt'+id);
+  	link.setAttribute('href','events/unread/'+id);
+  	for (var i=0; i < link.childNodes.length; i++)
+  	if (link.childNodes[i].nodeName == 'STRONG') {
+  		link.replaceChild(link.childNodes[i].firstChild,link.childNodes[i]);
+  	}
+  	Ajax.update_html(null, 'events/read/'+id);
+  	return false;
+  }
+  {/literal}
+  </script>
+  
   {iterate item=ev from=$evenement}
+  <div id="content-evt{$ev.id}">
   <br />
 
   <table class="bicol">
@@ -136,7 +153,7 @@ Bienvenue {$smarty.session.prenom}
           {if $smarty.session.perms eq 'admin'}
           <a href="admin/events/edit/{$ev.id}">{icon name=page_edit title="Editer cet article"}</a>
           {/if}
-          <a href="events/read/{$ev.id}{if $previd}/newsid{$previd}{/if}">{icon name=cross title="Cacher cet article"}</a>
+          <a href="events/read/{$ev.id}{if $previd}/newsid{$previd}{/if}" onclick="return readEvent('{$ev.id}')">{icon name=cross title="Cacher cet article"}</a>
         </div>
         {assign var="previd" value=$ev.id}
         <a id="newsid{$ev.id}"></a>
@@ -159,6 +176,7 @@ Bienvenue {$smarty.session.prenom}
       </td>
     </tr>
   </table>
+  </div>
   {/iterate}
 
   <p class="smaller">
