@@ -355,6 +355,13 @@ def unsubscribe(userdesc, perms, vhost, listname):
 # users procedures for [ index.php ]
 #
 
+def get_name(member):
+    try:
+        return quote(mlist.getMemberName(member))
+    except:
+        print member
+        return ''
+
 def get_members(userdesc, perms, vhost, listname):
     try:
         mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
@@ -363,7 +370,7 @@ def get_members(userdesc, perms, vhost, listname):
     try:
         details, members = get_list_info(userdesc, perms, mlist)
         members.sort()
-        members = map(lambda member: (quote(mlist.getMemberName(member)) or '', member), members)
+        members = map(lambda member: (get_name(member), member), members)
         return (details, members, mlist.owner)
     except:
         return 0
