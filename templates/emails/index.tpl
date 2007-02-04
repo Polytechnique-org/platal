@@ -24,6 +24,47 @@
 
 <script type="text/javascript" src="javascript/ajax.js">
 </script>
+{literal}
+<script type="text/javascript">
+var bestaliasUpdatedLevel = 0; 
+function setOpacity(elName,opacity) {
+  opacity = (opacity == 100)?99:opacity;
+  el = document.getElementById(elName);
+  // IE
+  el.style.filter = "alpha(opacity:"+opacity+")";
+  // Safari < 1.2, Konqueror
+  el.style.KHTMLOpacity = opacity/100;
+  // Old Mozilla
+  el.style.MozOpacity = opacity/100;
+  // Safari >= 1.2, Firefox and Mozilla, CSS3
+  el.style.opacity = opacity/100
+}
+function bestaliasUpdated(htmltxt, back) {
+	var msg = document.getElementById('bestalias-msg');
+	if (back == null) {
+		msg.innerHTML = "Le changement a bien été effectué.";
+		msg.style.fontWeight="bold";
+		msg.style.color = "green";
+		bestaliasUpdatedLevel++;
+		setOpacity('bestalias-msg', 100);
+		setTimeout("bestaliasUpdated("+bestaliasUpdatedLevel+",20)", 700);
+		return;
+	}
+	if (bestaliasUpdatedLevel != htmltxt) {
+		return;
+	}
+	setOpacity('bestalias-msg', back * 5);
+	if (back > 0)
+	{
+		setTimeout("bestaliasUpdated("+bestaliasUpdatedLevel+","+(back-1)+")", 100);
+	}
+	else
+	{
+		msg.innerHTML = "";
+	}
+}
+</script>	
+{/literal}
 <table class="bicol">
   <tr>
     <th>Mes adresses polytechniciennes à vie</th>
@@ -33,12 +74,13 @@
       Tes adresses polytechniciennes sont :<br /><br />
         <div>
           {iterate from=$aliases item=a}
-          <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='Ajax.update_html(null,"{$globals->baseurl}/emails/best/{$a.alias}")' />
+          <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='Ajax.update_html(null,"{$globals->baseurl}/emails/best/{$a.alias}",bestaliasUpdated)' />
           {if $a.a_vie}(**){/if}{if $a.cent_ans}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et @{#globals.mail.domain2#}
           {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
           <br />
           {/iterate}
         </div>
+      <div id="bestalias-msg" style="position:absolute"></div>
       <br />
       L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche, etc...).
       Coche une autre case pour en changer !

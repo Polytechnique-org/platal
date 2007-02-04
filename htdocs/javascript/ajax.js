@@ -41,7 +41,7 @@ Ajax = {
         Ajax.init = true;
     },
 
-    update_html: function(obj, src)
+    update_html: function(obj, src, func)
     {
         Ajax.prepare_client();
         if (Ajax.xml_client == null) {
@@ -55,6 +55,9 @@ Ajax = {
                     	if (obj != null) {
                         	document.getElementById(obj).innerHTML = Ajax.xml_client.responseText;
                         }
+                      if (func != null) {
+                      		func(Ajax.xml_client.responseText);
+                      	}
                     } else if (Ajax.xml_client.status == 403) {
                         window.location.reload();
                     }
