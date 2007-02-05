@@ -22,9 +22,12 @@
 
 {literal}
 <script type="text/javascript">//<![CDATA[
-function chgMainWinLoc( strPage , iePage) {
+function chgMainWinLoc(strPage) {
+
   if (is_IE) {
-    strPage = iePage;
+    {/literal}
+    strPage = "{$globals->baseurl}/" + strPage;
+    {literal}
   }
   if (parent.opener) {
     parent.opener.document.location = strPage;
@@ -37,7 +40,7 @@ function chgMainWinLoc( strPage , iePage) {
 {/literal}
 
 {if $logged and $x.forlife eq $smarty.session.forlife}
-[<a href="javascript:chgMainWinLoc('profile/edit', 'edit')">Modifier ma fiche</a>]
+[<a href="javascript:chgMainWinLoc('profile/edit')">Modifier ma fiche</a>]
 {/if}
 
 <table id="fiche" cellpadding="0" cellspacing="0">
@@ -51,14 +54,14 @@ function chgMainWinLoc( strPage , iePage) {
         <a href="vcard/{$x.forlife}.vcf">{*
           *}{icon name=vcard title="Afficher la carte de visite"}</a>
         {if !$x.is_contact}
-        <a href="javascript:x()"  onclick="chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
+        <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
           {icon name=add title="Ajouter à mes contacts"}</a>
         {else}
-        <a href="javascript:x()"  onclick="chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}')">
+        <a href="javascript:chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}')">
           {icon name=cross title="Retirer de mes contacts"}</a>
         {/if}
         {if $smarty.session.perms eq admin}
-        <a href="javascript:x()" onclick="chgMainWinLoc('admin/user/{$x.forlife}')">
+        <a href="javascript:chgMainWinLoc('admin/user/{$x.forlife}')">
           {icon name=wrench title="administrer user"}</a>
         {/if}
         {/if}

@@ -197,14 +197,14 @@ class CarnetModule extends PLModule
             case 'retirer':
                 if (is_numeric($user)) {
                     if (XDB::execute('DELETE FROM contacts
-                                                      WHERE uid = {?} AND contact = {?}',
+                                            WHERE uid = {?} AND contact = {?}',
                                                $uid, $user))
                     {
                         $page->trig("Contact retiré !");
                     }
                 } else {
                     if (XDB::execute(
-                                'DELETE FROM  contacts
+                                'DELETE FROM  c
                                        USING  contacts AS c
                                   INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!="homonyme")
                                        WHERE  c.uid = {?} AND a.alias={?}', $uid, $user))
