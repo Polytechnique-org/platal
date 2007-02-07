@@ -123,6 +123,12 @@ function get_annuaire_infos($method, $params) {
                 $age += 1;
             }
             $array['age'] = $age;
+            foreach($array['adresse'] as $id => $adr) {
+                foreach($adr as $key =>$elem) {
+                    if (empty($elem)) unset($array['adresse'][$id][$key]);
+                }
+            }
+
 
             //on commence le cryptage des donnees
             if (manageurs_encrypt_init($params[1]) == 1) {//on a pas trouve la cle pour crypter
