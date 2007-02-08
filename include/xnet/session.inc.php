@@ -101,6 +101,8 @@ class XnetSession
         $_SESSION['auth'] = AUTH_MDP;
         S::kill('challenge');
         S::kill('loginX');
+        S::kill('may_update');
+        S::kill('is_member');
         Get::kill('auth');
         Get::kill('uid');
         $path = Get::v('n');

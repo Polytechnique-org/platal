@@ -156,6 +156,7 @@ table.tinybicol th, table.bicol th {
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
+    background: none;
     background-color: #000;
 }
 
