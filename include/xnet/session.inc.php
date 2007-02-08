@@ -101,6 +101,8 @@ class XnetSession
         $_SESSION['auth'] = AUTH_MDP;
         S::kill('challenge');
         S::kill('loginX');
+        S::kill('may_update');
+        S::kill('is_member');
         Get::kill('auth');
         Get::kill('uid');
         $path = Get::v('n');
@@ -153,7 +155,7 @@ class XnetSession
  */
 function may_update($force = false, $lose = false)
 {
-    if (!isset($_SESSION['may_update'])) {
+    if (empty($_SESSION['may_update'])) {
         $_SESSION['may_update'] = array();
     }
     $may_update =& $_SESSION['may_update'];
@@ -185,7 +187,7 @@ function may_update($force = false, $lose = false)
  */ 
 function is_member($force = false, $lose = false)
 {
-    if (!isset($_SESSION['is_member'])) {
+    if (empty($_SESSION['is_member'])) {
         $_SESSION['is_member'] = array();
     }
     $is_member =& $_SESSION['is_member'];
