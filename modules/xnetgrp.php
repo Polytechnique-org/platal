@@ -602,7 +602,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        require_once 'xnet/mail.inc.php';
+        require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
 
         new_groupadmin_page('xnetgrp/annuaire-admin.tpl');
         $mmlist = new MMList(S::v('uid'), S::v('password'),
