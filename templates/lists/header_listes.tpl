@@ -46,7 +46,7 @@
       {/if}
     </td>
   </tr>
-  {if $details.own || $smarty.session.perms eq admin || $force_list_super}
+  {if $details.own || $smarty.session.perms eq admin || ($it_is_xnet && $is_admin)}
   <tr>
     <td><strong>Administrer la liste :</strong></td>
     <td>
@@ -73,7 +73,8 @@
     </td>
   </tr>
   {/if}
-  {if $smarty.session.perms eq admin || $force_list_super}
+  {if $smarty.session.perms eq admin || ($it_is_xnet && $is_admin)}
+
   <tr>
     <td><strong>Administrer (avancé) :</strong></td>
     <td>
@@ -90,7 +91,7 @@
     </td>
   </tr>
   {/if}
-  {if $it_is_xnet}
+  {if $it_is_xnet && ($details.own || $is_admin)}
   <tr>
     <td><strong>Synchroniser</strong></td>
     {if $on neq sync}

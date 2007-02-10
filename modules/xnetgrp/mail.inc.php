@@ -21,7 +21,7 @@
 
 // {{{ get_all_redirects
 
-function get_all_redirects($membres, $exclude, $mls, &$client)
+function get_all_redirects($membres, $mls, &$client)
 {
     global $globals;
     
