@@ -123,7 +123,6 @@ class XnetListsModule extends ListsModule
         $this->prepare_client($page);
 
         $page->changeTpl('xnetlists/create.tpl');
-        $page->assign('force_list_super', may_update());
 
         if (!Post::has('submit')) {
             return;
