@@ -36,7 +36,7 @@ function visibilityChange(box)
 
 {if $art.texte}
 <div>
-{include file="xnet/groupe/form.announce.tpl" admin=true}
+{include file="xnetgrp/form.announce.tpl" admin=true}
 <br />
 </div>
 {/if}

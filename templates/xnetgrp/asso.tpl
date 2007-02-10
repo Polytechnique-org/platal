@@ -139,7 +139,7 @@
 {if $articles->total()}
 <div>
 {iterate item=art from=$articles}
-{include file="xnet/groupe/form.announce.tpl"}
+{include file="xnetgrp/form.announce.tpl"}
 <br />
 {/iterate}
 </div>
