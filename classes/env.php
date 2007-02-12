@@ -165,8 +165,11 @@ function fix_gpc_magic(&$item, $key) {
 function fix_encoding(&$item, $key = null) {
     if (is_array($item)) {
         array_walk($item, 'fix_encoding');
-    } elseif (preg_match('/[\x80-\x9f]/', $item)) {
-        $item = iconv('CP1252', 'ISO-8859-15//TRANSLIT', $item);
+    } else {
+        $item = str_replace('&#8217;', "'", $item);
+        if (preg_match('/[\x80-\x9f]/', $item)) {
+            $item = iconv('CP1252', 'ISO-8859-15//TRANSLIT', $item);
+        }    
     }
 }
 
