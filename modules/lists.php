@@ -305,11 +305,11 @@ class ListsModule extends PLModule
 
         if (Get::has('del')) {
             $this->client->unsubscribe($liste);
-            pl_redirect('lists/tromi/'.$liste);
+            pl_redirect('lists/trombi/'.$liste);
         }
         if (Get::has('add')) {
             $this->client->subscribe($liste);
-            pl_redirect('lists/tromi/'.$liste);
+            pl_redirect('lists/trombi/'.$liste);
         }
 
         $owners = $this->client->get_owners($liste);
