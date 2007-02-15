@@ -31,6 +31,7 @@ class PhotoReq extends Validate
     var $y;
 
     var $unique = true;
+    var $valid  = false;
 
     var $rules = "Refuser les photos copyrightées, de mineurs, ou ayant
     un caractère pornographique, violent, etc... Si une photo est mal
@@ -45,7 +46,7 @@ class PhotoReq extends Validate
     function PhotoReq($_uid, $_data, $_stamp=0)
     {
         $this->Validate($_uid, true, 'photo', $_stamp);
-        $this->_get_image($_data);
+        $this->valid = $this->_get_image($_data);
     }
 
     // }}}
@@ -111,6 +112,14 @@ class PhotoReq extends Validate
     }
 
     // }}}
+    // {{{ function isValid()
+
+    function isValid()
+    {
+        return $this->valid;
+    }
+
+    // }}}
     // {{{ function get_request()
 
     function get_request($uid)
@@ -140,7 +149,7 @@ class PhotoReq extends Validate
         if (isset($_FILES['userfile']['tmp_name'])) {
             $file = $_FILES['userfile']['tmp_name'];
             if ($data = file_get_contents($file)) {
-                if ($this->_get_image($data)) {
+                if ($this->valid = $this->_get_image($data)) {
                     return true;
                 }
             } else {

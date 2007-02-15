@@ -11,6 +11,9 @@ New:
 
 Bug/Wish:
 
+    * Profile:
+        - Better checks on image type for photos                           -FRU
+
     * Xnet:
         - #639: Fix the number of pages                                    -FRU
 
