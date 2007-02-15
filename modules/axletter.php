@@ -34,7 +34,7 @@ class AXLetterModule extends PLModule
         );
     }
 
-    function handler_out(&$page, $hash)
+    function handler_out(&$page, $hash = null)
     {
         if (!$hash) {
             if (!S::logged()) {
