@@ -44,16 +44,23 @@ function getNow() {
 // }}}
 // {{{ Firefox
 
-function addFirefoxEngine() {
+function addSearchEngine()
+{
+  var searchURI = "http://www.polytechnique.org/xorg.opensearch.xml";
   if ((typeof window.sidebar == "object") && (typeof window.sidebar.addSearchEngine == "function")) {
     window.sidebar.addSearchEngine(
-      "http://www.polytechnique.org/xorg.src",
+      searchURI,
       "http://www.polytechnique.org/images/xorg.png",
-      "Recherche rapide X.org",
+      "Annuaire Polytechnique.org",
       "Academic");
-  } else { alert("Impossible d'installer la barre de recherche Firefox"); }
+  } else {
+    try {
+        window.external.AddSearchProvider(searchURI);
+    } catch(e) {
+        alert("Impossible d'installer la barre de recherche"); 
+    }
+  }
 }
-
 
 // }}}
 // {{{ Events

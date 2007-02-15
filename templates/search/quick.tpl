@@ -52,7 +52,7 @@ sans distinction de casse et sans tenir compte des accents.
 
 {if $smarty.session.auth ge AUTH_COOKIE}
 <h2>Barre de recherche pour Firefox</h2>
-<p>Tu peux <a href="javascript:addFirefoxEngine()">installer</a> la barre de recherche rapide directement dans ton navigateur.
+<p>Tu peux <a href="javascript:addSearchEngine()">installer</a> la barre de recherche rapide directement dans ton navigateur.
 </p>
 {/if}
 
