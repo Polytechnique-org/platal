@@ -314,8 +314,8 @@ class XnetGrpModule extends PLModule
                                     IF(m.origine="X", IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom),
                                      1, 1)) as letter, COUNT(*)
                            FROM  groupex.membres AS m
-                      LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
-                          WHERE  asso_id = {?}
+                      LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid)
+                          WHERE  asso_id = {?} and u.perms != \'pending\'
                        GROUP BY  letter
                        ORDER BY  letter', $globals->asso('id'));
         } else {

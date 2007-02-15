@@ -9,6 +9,11 @@ New:
     * Search:
         - Search Engine IE7 compatible                                     -FRU
 
+Bug/Wish:
+
+    * Xnet:
+        - #639: Fix the number of pages                                    -FRU
+
 ================================================================================
 VERSION 0.9.13                                                        30 01 2007
 
