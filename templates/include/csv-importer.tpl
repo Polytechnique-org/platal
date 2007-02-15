@@ -72,7 +72,7 @@
         {/if}
         {if $csv_page eq 'values'}
         <li class="actif">2 - Définir<br />les valeurs</li>
-        {elseif $csv}
+        {elseif $smarty.session.csv}
         <li><a href="{$csv_path}" onclick="return gotoPage('values');">2 - Définir<br />les valeurs</a></li>
         {else}
         <li>2 - Définir<br />les valeurs</li>
@@ -93,26 +93,26 @@
         <tr>
           <td>
     {if $csv_page eq 'source'}
-      <textarea name="csv_source" rows="20" cols="80">{$csv|default:$smarty.request.csv_source}</textarea><br />
+      <textarea name="csv_source" rows="20" cols="80">{$smarty.session.csv|default:$smarty.session.csv_source}</textarea><br />
       Entrez les données sous la forme suivante (avec
-      <input type="text" name="csv_separator" value="{$smarty.request.csv_separator|default:";"}" maxlength="1" size="1" />
+      <input type="text" name="csv_separator" value="{$smarty.session.csv_separator|default:";"}" maxlength="1" size="1" />
       comme séparateur) :<br/>
-      <pre class="center">TITRE1{$smarty.request.csv_separator|default:";"}TITRE2{$smarty.request.csv_separator|default:";"}...
-val1_1{$smarty.request.csv_separator|default:";"}val1_2{$smarty.request.csv_separator|default:";"}...
-val2_1{$smarty.request.csv_separator|default:";"}val2_2{$smarty.request.csv_separator|default:";"}...
-val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_separator|default:";"}...</pre>
+      <pre class="center">TITRE1{$smarty.session.csv_separator|default:";"}TITRE2{$smarty.session.csv_separator|default:";"}...
+val1_1{$smarty.session.csv_separator|default:";"}val1_2{$smarty.session.csv_separator|default:";"}...
+val2_1{$smarty.session.csv_separator|default:";"}val2_2{$smarty.session.csv_separator|default:";"}...
+val3_1{$smarty.session.csv_separator|default:";"}val3_2{$smarty.session.csv_separator|default:";"}...</pre>
     {elseif $csv_page eq 'values'}
   <div class="center">
     Action à effectuer si l'entrée existe : 
     <select name="csv_action" onchange="this.form.submit()">
-      <option value="insert" {if $smarty.request.csv_action eq 'insert'}selected="selected"{/if}>
+      <option value="insert" {if $smarty.session.csv_action eq 'insert'}selected="selected"{/if}>
         ne rien faire
       </option>
-      <option value="replace" {if $smarty.request.csv_action eq 'replace'}selected="selected"{/if}>
+      <option value="replace" {if $smarty.session.csv_action eq 'replace'}selected="selected"{/if}>
         remplacer par la nouvelle entrée
       </option>
       {if $csv_key}
-      <option value="update" {if $smarty.request.csv_action eq 'update'}selected="selected"{/if}>
+      <option value="update" {if $smarty.session.csv_action eq 'update'}selected="selected"{/if}>
         mettre à jour les champs sélectionnés
       </option>
       {/if}
@@ -122,7 +122,7 @@ val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_sepa
     <tr>
       <th>Champ</th>
       <th colspan="2">Valeur</th>
-      {if $smarty.request.csv_action eq 'update'}
+      {if $smarty.session.csv_action eq 'update'}
       <th>MàJ</th>
     {/if}
     </tr>
@@ -131,78 +131,78 @@ val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_sepa
       <td>{$csv_field_desc[$f]|default:$f}</td>
       <td>
         <select name="csv_value[{$f}]" onchange="showValue('{$f}', this);">
-          <option value="" {if !$smarty.request.csv_value[$f]}selected="selected"{/if}>
+          <option value="" {if !$smarty.session.csv_value[$f]}selected="selected"{/if}>
             Vide
           </option>
-          <option value="user_value" {if $smarty.request.csv_value[$f] eq "user_value"}selected="selected"{/if}>
+          <option value="user_value" {if $smarty.session.csv_value[$f] eq "user_value"}selected="selected"{/if}>
             Entrer la valeur
           </option>
-          <option value="cond_value" {if $smarty.request.csv_value[$f] eq "cond_value"}selected="selected"{/if}>
+          <option value="cond_value" {if $smarty.session.csv_value[$f] eq "cond_value"}selected="selected"{/if}>
             Valeur conditionnelle
           </option>
           <optgroup label="Colonnes du CSV">
             {foreach from=$csv_index item=col}
-            <option value="{$col}" {if $smarty.request.csv_value[$f] eq $col}selected="selected"{/if}>{$col}</option>
+            <option value="{$col}" {if $smarty.session.csv_value[$f] eq $col}selected="selected"{/if}>{$col}</option>
             {/foreach}
           </optgroup>
           {if $csv_functions|count}
           <optgroup label="Fonctions">
             {foreach from=$csv_functions key=func item=desc}
-            <option value="{$func}" {if $smarty.request.csv_value[$f] eq $func}selected="selected"{/if}>{$desc.desc}</option>
+            <option value="{$func}" {if $smarty.session.csv_value[$f] eq $func}selected="selected"{/if}>{$desc.desc}</option>
             {/foreach}
           </optgroup>
           {/if}
         </select>
       </td>
       <td>
-        <span id="csv_user_value_span[{$f}]" {if $smarty.request.csv_value[$f] neq "user_value"}style="display: none"{/if}>
-          <input type="text" name="csv_user_value[{$f}]" value="{$smarty.request.csv_user_value[$f]}" />
+        <span id="csv_user_value_span[{$f}]" {if $smarty.session.csv_value[$f] neq "user_value"}style="display: none"{/if}>
+          <input type="text" name="csv_user_value[{$f}]" value="{$smarty.session.csv_user_value[$f]}" />
         </span>
-        <span id="csv_cond_value_span[{$f}]" {if $smarty.request.csv_value[$f] neq "cond_value"}style="display: none"{/if}>
+        <span id="csv_cond_value_span[{$f}]" {if $smarty.session.csv_value[$f] neq "cond_value"}style="display: none"{/if}>
           Si
           <select name="csv_cond_field[{$f}]">
             {foreach from=$csv_index item=col}
-            <option value="{$col}" {if $smarty.request.csv_cond_field_value[$f] eq $col}selected="selected"{/if}>
+            <option value="{$col}" {if $smarty.session.csv_cond_field_value[$f] eq $col}selected="selected"{/if}>
               {$col}
             </option>
             {/foreach}
           </select>
           <select name="csv_cond[{$f}]" onchange="showCond('{$f}', this)">
-            <option value="defined" {if $smarty.request.csv_cond[$f] eq "defined"}selected="selected"{/if}>
+            <option value="defined" {if $smarty.session.csv_cond[$f] eq "defined"}selected="selected"{/if}>
               défini
             </option>
-            <option value="equals" {if $smarty.request.csv_cond[$f] eq "equals"}selected="selected"{/if}>
+            <option value="equals" {if $smarty.session.csv_cond[$f] eq "equals"}selected="selected"{/if}>
               est égale à
             </option>
-            <option value="contains" {if $smarty.request.csv_cond[$f] eq "contains"}selected="selected"{/if}>
+            <option value="contains" {if $smarty.session.csv_cond[$f] eq "contains"}selected="selected"{/if}>
               contient
             </option>
-            <option value="contained" {if $smarty.request.csv_cond[$f] eq "contained"}selected="selected"{/if}>
+            <option value="contained" {if $smarty.session.csv_cond[$f] eq "contained"}selected="selected"{/if}>
               est contenu dans
             </option>
-            <option value="greater" {if $smarty.request.csv_cond[$f] eq "greater"}selected="selected"{/if}>
+            <option value="greater" {if $smarty.session.csv_cond[$f] eq "greater"}selected="selected"{/if}>
               supérieur à
             </option>
-            <option value="greater_or_equal" {if $smarty.request.csv_cond[$f] eq "greater_or_equal"}selected="selected"{/if}>
+            <option value="greater_or_equal" {if $smarty.session.csv_cond[$f] eq "greater_or_equal"}selected="selected"{/if}>
               supérieur ou égal à
             </option>
-            <option value="lower" {if $smarty.request.csv_cond[$f] eq "lower"}selected="selected"{/if}>
+            <option value="lower" {if $smarty.session.csv_cond[$f] eq "lower"}selected="selected"{/if}>
               inférieur à
             </option>
-            <option value="lower_or_equal" {if $smarty.request.csv_cond[$f] eq "lower_or_equal"}selected="selected"{/if}>
+            <option value="lower_or_equal" {if $smarty.session.csv_cond[$f] eq "lower_or_equal"}selected="selected"{/if}>
               inférieur ou égal à
             </option>
           </select>
-          <span id="csv_cond_value[{$f}]" {if $smarty.request.csv_cond[$f] eq "defined" || !$smarty.request.csv_cond[$f]}style="display: none"{/if}>
-            <input type="text" name="csv_cond_value[{$f}]" value="{$smarty.request.csv_cond_value[$f]}" />
+          <span id="csv_cond_value[{$f}]" {if $smarty.session.csv_cond[$f] eq "defined" || !$smarty.session.csv_cond[$f]}style="display: none"{/if}>
+            <input type="text" name="csv_cond_value[{$f}]" value="{$smarty.session.csv_cond_value[$f]}" />
           </span>
-          <br />Alors <input type="text" name="csv_cond_then[{$f}]" value="{$smarty.request.csv_cond_then[$f]}" />
-          <br />Sinon <input type="text" name="csv_cond_else[{$f}]" value="{$smarty.request.csv_cond_else[$f]}" />
+          <br />Alors <input type="text" name="csv_cond_then[{$f}]" value="{$smarty.session.csv_cond_then[$f]}" />
+          <br />Sinon <input type="text" name="csv_cond_else[{$f}]" value="{$smarty.session.csv_cond_else[$f]}" />
         </span>
       </td>
-      {if $smarty.request.csv_action eq 'update'}
+      {if $smarty.session.csv_action eq 'update'}
       <td class="center">
-        <input type="checkbox" name="csv_update[{$f}]" {if $smarty.request.csv_update[$f]}checked="checked"{/if} />
+        <input type="checkbox" name="csv_update[{$f}]" {if $smarty.session.csv_update[$f]}checked="checked"{/if} />
       </td>
       {/if}
     </tr>
@@ -236,23 +236,6 @@ val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_sepa
     <td class="center">
     <input type="hidden" name="csv_page" value="{$csv_page}" />
     <input type="hidden" id="csv_next_page" name="csv_next_page" value="{$csv_page}" />
-    <input type="hidden" name="csv" value="{$csv}" />
-    {if $csv_page neq 'source'}
-      <input type="hidden" name="csv_separator" value="{$smarty.request.csv_separator}" />
-    {/if}
-    {if $csv_page neq 'values'}
-      <input type="hidden" name="csv_action" value="{$smarty.request.csv_action}" />
-    {foreach from=$csv_fields item=f}
-      <input type="hidden" name="csv_value[{$f}]" value="{$smarty.request.csv_value[$f]}" />
-      <input type="hidden" name="csv_user_value[{$f}]" value="{$smarty.request.csv_user_value[$f]}" />
-      <input type="hidden" name="csv_cond_field[{$f}]" value="{$smarty.request.csv_cond_field[$f]}" />
-      <input type="hidden" name="csv_cond[{$f}]" value="{$smarty.request.csv_cond[$f]}" />
-      <input type="hidden" name="csv_cond_value[{$f}]" value="{$smarty.request.csv_cond_value[$f]}" />
-      <input type="hidden" name="csv_cond_then[{$f}]" value="{$smarty.request.csv_cond_then[$f]}" />
-      <input type="hidden" name="csv_cond_else[{$f}]" value="{$smarty.request.csv_cond_else[$f]}" />
-      <input type="hidden" name="csv_update[{$f}]" value="{$smarty.request.csv_update[$f]}" />
-    {/foreach}
-    {/if}
     {if $csv_page eq 'source'}
     <input type="submit" name="csv_valid" value="Changer le CSV" />
     {elseif $csv_page eq 'values'}

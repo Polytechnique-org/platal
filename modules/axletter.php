@@ -312,7 +312,7 @@ class AXLetterModule extends PLModule
         $importer = new CSVImporter('axletter_ins');
         $importer->registerFunction('user_id', 'email vers Id X.org', array($this, 'idFromMail'));
         $importer->forceValue('hash', array($this, 'createHash'));
-        $importer->apply($page, "admin/axletter", array('user_id', 'email', 'prenom', 'nom', 'promo', 'hash'));
+        $importer->apply($page, "admin/axletter", array('user_id', 'email', 'prenom', 'nom', 'promo', 'flags', 'hash'));
     }
 
     function idFromMail($line, $key)
