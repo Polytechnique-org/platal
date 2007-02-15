@@ -175,11 +175,11 @@ class CSVImporter
         static $fields, $conds, $values, $thens, $elses;
 
         if (!isset($fields)) {
-            $fields = Env::v('csv_cond_field');
-            $conds  = Env::v('csv_cond');
-            $values = Env::v('csv_cond_value');
-            $thens  = Env::v('csv_cond_then');
-            $elses  = Env::v('csv_cond_else');
+            $fields = $_SESSION['csv_cond_field'];
+            $conds  = $_SESSION['csv_cond'];
+            $values = $_SESSION['csv_cond_value'];
+            $thens  = $_SESSION['csv_cond_then'];
+            $elses  = $_SESSION['csv_cond_else'];
         }
         $field = $line[$fields[$key]];
         $cond  = $conds[$key];
@@ -274,12 +274,14 @@ class CSVImporter
             $next = 'values';
         }
         if ($csv) {
-            $sep = Env::v('csv_separator');
-            if (empty($sep)) {
-                $sep = ';';
+            if (Env::has('csv_separator')) {
+                $sep = Env::v('csv_separator');
+                if (empty($sep)) {
+                    $sep = ';';
+                }
+                $_SESSION['csv_separator'] = $sep;
             }
-            $_SESSION['csv_separator'] = $sep;
-            $this->setCSV($csv, null, $sep);
+            $this->setCSV($csv, null, $_SESSION['csv_separator']);
         }
         if ($current == 'values' && Env::has('csv_valid')) {
             $next = 'valid';
@@ -291,16 +293,18 @@ class CSVImporter
             $_SESSION['csv_action'] = Env::v('csv_action');
         } 
         if ($next == 'valid') {
-            $cpyfields = array('csv_value', 'csv_user_value', 'csv_cond_field',
-                               'csv_update', 'csv_action', 'csv_cond_field',
-                               'csv_cond', 'csv_cond_value', 'csv_cond_then',
-                               'csv_cond_else');
-            foreach ($cpyfields as $field) {
-                $_SESSION[$field] = Env::v($field);
+            if ($current != 'valid') {
+                $cpyfields = array('csv_value', 'csv_user_value', 'csv_cond_field',
+                                   'csv_update', 'csv_action', 'csv_cond_field',
+                                   'csv_cond', 'csv_cond_value', 'csv_cond_then',
+                                   'csv_cond_else');
+                foreach ($cpyfields as $field) {
+                    $_SESSION[$field] = Env::v($field);
+                }
             }
-            $insert   = Env::v('csv_value');
-            $values   = Env::v('csv_user_value');
-            $update   = Env::v('csv_update');
+            $insert   = $_SESSION['csv_value'];
+            $values   = $_SESSION['csv_user_value'];
+            $update   = $_SESSION['csv_update'];
             foreach ($insert as $key=>$value) {
                 if (empty($value)) {
                     $insert[$key] = null;
@@ -320,7 +324,7 @@ class CSVImporter
                 $fields[]     = $key;
             }
             if ($current == 'valid' && Env::has('csv_valid')) {
-                $this->run(Env::v('csv_action'), $insert, $update);
+                $this->run($_SESSION['csv_action'], $insert, $update);
                 $page->assign('csv_done', true);
                 $this->cleanSession($sesfields);
             } else {
