@@ -14,6 +14,10 @@ Bug/Wish:
     * Profile:
         - Better checks on image type for photos                           -FRU
 
+    * Lists:
+        - #636: Remove non-X from trombi                                   -FRU
+        - #638: Sort trombi by promo then name                             -FRU
+
     * Xnet:
         - #639: Fix the number of pages                                    -FRU
 

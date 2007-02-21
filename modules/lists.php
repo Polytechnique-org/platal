@@ -283,13 +283,17 @@ class ListsModule extends PLModule
                                                  promo, a.alias AS forlife
                                            FROM  auth_user_md5 AS u
                                      INNER JOIN  aliases AS a ON u.user_id = a.id
+                                     INNER JOIN  photo AS p ON p.uid = u.user_id
                                           WHERE  a.alias = {?}", $m);
             if ($tmp = $res->fetchOneAssoc()) {
                 $membres[$tmp['nom']] = $tmp;
             } else {
-                $membres[$member[0]] = array('addr' => $member[0]);
+                $total--;
             }
         }
+        uasort($membres, create_function('$a,$b', 'return $a["promo"] > $b["promo"] || '
+                                                . '($a["promo"] == $b["promo"] && (strcmp($a["nom"], $b["nom"]) > 0 || '
+                                                . '($a["nom"] == $b["nom"] && strcmp($a["prenom"], $b["prenom"]) > 0)));'));
         return array($total, $membres);
     }
 
