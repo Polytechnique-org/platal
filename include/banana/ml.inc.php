@@ -44,6 +44,8 @@ class MLBanana extends Banana
         Banana::$spool_root = $globals->banana->spool_root;
         Banana::$spool_boxlist = false;
         Banana::$msgedit_canattach = true;
+        Banana::$debug_mbox = ($globals->debug & 1);
+        Banana::$mbox_helper = $globals->banana->mbox_helper;
         if (S::has_perms()) {
             Banana::$msgshow_mimeparts[] = 'source';
         }    

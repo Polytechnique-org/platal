@@ -27,11 +27,12 @@ class XDB
     {
         global $globals;
         XDB::$mysqli = new mysqli($globals->dbhost, $globals->dbuser, $globals->dbpwd, $globals->dbdb);
-        if (mysqli_connect_errno() && $globals->debug & 1) {
-            $GLOBALS['XDB::trace_data'][] = array('query' => 'MySQLI connection', 'explain' => array(),
-                                                  'error' => mysqli_connect_error(), 'exectime' => 0, 'rows' => 0);
-            $GLOBALS['XDB::error'] = true;
-            return false;
+        if ($globals->debug & 1) {
+            $bt = new PlBacktrace('MySQL');
+            if (mysqli_connect_errno()) {
+                $bt->newEvent("MySQLI connection", 0, mysqli_connect_error());
+                return false;
+            }
         }
         XDB::$mysqli->autocommit(true);
         XDB::$mysqli->set_charset($globals->dbcharset);
@@ -89,24 +90,15 @@ class XDB
                     $res->free();
                 }
             }
-            $trace_data = array('query' => XDB::_reformatQuery($query), 'explain' => $explain);
-            $time_start = microtime();
+            PlBacktrace::$bt['MySQL']->start(XDB::_reformatQuery($query));
         }
 
         $res = XDB::$mysqli->query($query);
         
         if ($globals->debug & 1) {
-            list($ue, $se) = explode(" ", microtime());
-            list($us, $ss) = explode(" ", $time_start);
-            $time = intval((($ue - $us) + ($se - $ss)) * 1000);            
-            $trace_data['error'] = XDB::$mysqli->error;
-            $trace_data['errno'] = XDB::$mysqli->errno;
-            $trace_data['exectime'] = $time;
-            $trace_data['rows'] = @$res->num_rows ? $res->num_rows : XDB::$mysqli->affected_rows;
-            $GLOBALS['XDB::trace_data'][] = $trace_data;
-            if (XDB::$mysqli->errno) {
-                $GLOBALS['XDB::error'] = true;
-            }
+            PlBacktrace::$bt['MySQL']->stop(@$res->num_rows ? $res->num_rows : XDB::$mysqli->affected_rows,
+                                            XDB::$mysqli->error,
+                                            $explain);
         }
         return $res;
     }
@@ -138,27 +130,11 @@ class XDB
 
     public static function errno()
     {
-        global $globals;
-        if ($globals->debug & 1) {
-            $count = count($GLOBALS['XDB::trace_data']);
-            if (!$count) {
-                return 0;
-            }
-            return $GLOBALS['XDB::trace_data'][$count - 1]['errno'];
-        }
         return XDB::$mysqli->errno;
     }
 
     public static function error()
     {       
-        global $globals;
-        if ($globals->debug & 1) {
-            $count = count($GLOBALS['XDB::trace_data']);
-            if (!$count) {
-                return null;
-            }
-            return $GLOBALS['XDB::trace_data'][$count - 1]['error'];
-        }   
         return XDB::$mysqli->error;
     }
 
@@ -191,12 +167,6 @@ class XDB
           default:
             die(var_export($var, true).' is not a valid for a database entry');
         }
-    }
-
-    public static function trace_format(&$page, $template = 'skin/common.database-debug.tpl') {
-        $page->assign('trace_data', @$GLOBALS['XDB::trace_data']);
-        $page->assign('db_error', @$GLOBALS['XDB::error']);
-        return $page->fetch($template);
     }
 }
 

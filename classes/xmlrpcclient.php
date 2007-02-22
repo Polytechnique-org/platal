@@ -32,6 +32,7 @@ class XmlrpcClient
 {
     private $url;
     private $urlparts;
+    public $bt = null;
 
     public function __construct($url)
     {
@@ -99,8 +100,21 @@ class XmlrpcClient
     public function __call($method, $args)
     {
         $query  = xmlrpc_encode_request($method, $args);
+        if ($this->bt) {
+            $this->bt->start($method . "\n" . var_export($args, true));
+        }
         $answer = $this->http_post($query, $this->urlparts);
+        if ($this->bt) {
+            $this->bt->stop();
+        }
         $result = $this->find_and_decode_xml($answer);
+        if ($this->bt) {
+            if (isset($result['faultCode'])) {
+                $this->bt->update(0, $result['faultString']);
+            } else {
+                $this->bt->update(count($result));
+            }
+        }
 
         if (is_array($result) && isset($result['faultCode'])) {
             trigger_error("Error in xmlrpc call $function\n".

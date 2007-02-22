@@ -62,6 +62,7 @@ class ForumsBanana extends Banana
         if (S::has_perms()) {
             Banana::$msgshow_mimeparts[] = 'source';
         }
+        Banana::$debug_nntp = ($globals->debug & 1);
         parent::__construct($params);
     }
 

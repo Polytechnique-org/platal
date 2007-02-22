@@ -383,6 +383,7 @@ class ListsModule extends PLModule
             $page->assign('banana', $banana->run());
             $page->addCssInline($banana->css());
             $page->addCssLink('banana.css');
+            new PlBacktrace('MBox', $banana->backtrace(), 'response', 'time');
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
         }

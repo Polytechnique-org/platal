@@ -487,8 +487,8 @@ div.adresse {
 
 #dev a { text-decoration: none; }
 
-#db-trace div.hide       { display: none; }
-#db-trace:hover div.hide { display: block }
+.backtrace div.hide       { display: none; }
+.backtrace:hover div.hide { display: block }
 
 #suid {
     color: red;

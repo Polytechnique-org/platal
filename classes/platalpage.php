@@ -114,17 +114,17 @@ class PlatalPage extends Smarty
         }
 
         if ($globals->debug & 1) {
-            $this->assign('db_trace', XDB::trace_format($this, 'skin/common.database-debug.tpl'));
+            PlBacktrace::clean();
+            $this->assign_by_ref('backtraces', PlBacktrace::$bt);
         }
 
         $this->assign('validate', true);
         error_reporting(0);
         $result = $this->fetch($skin);
-        $ttime  = sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
+        $ttime  = sprintf('Temps total: %.02fs<br />', microtime(true) - $TIME_BEGIN);
         $replc  = "<span class='erreur'>VALIDATION HTML INACTIVE</span><br />";
 
         if ($globals->debug & 2) {
-
             $fd = fopen($this->compile_dir."/valid.html","w");
             fwrite($fd, $result);
             fclose($fd);

@@ -157,6 +157,7 @@ class BananaModule extends PLModule
         $page->assign('banana_res', $res);
         $page->addCssInline($banana->css());
         $page->addCssLink('banana.css');
+        new PlBacktrace('NNTP', $banana->backtrace(), 'response', 'time');
     }
 }
 

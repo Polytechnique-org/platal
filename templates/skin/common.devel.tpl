@@ -21,18 +21,18 @@
 {**************************************************************************}
 
 {if #globals.debug#}
-{if $db_trace && $db_trace neq "\n\n"}
-  <div id="db-trace">
+{foreach from=$backtraces key=bt_name item=trace}
+  <div class="backtrace">
     <h1>
-      {if $db_error}<span style="color: #f00">{/if}
-      Trace de l'exécution de cette page sur mysql (hover me)
-      {if $db_error}</span>{/if}
+      {if $trace->error}<span style="color: #f00">{/if}
+      Exécution de {$bt_name} en {$trace->totaltime|string_format:"%.3f"}s (hover-me pour la trace)
+      {if $trace->error}</span>{/if}
     </h1>
     <div class="hide">
-      {$db_trace|smarty:nodefaults}
+      {include file="skin/common.backtrace.tpl"}
     </div>
   </div>
-{/if}
+{/foreach}
 
 {if $validate}
   <div id="dev">

@@ -28,6 +28,9 @@ class MMList extends XmlrpcClient
         $dom = is_null($fqdn) ? $globals->mail->domain : $fqdn;
         $url = "http://$uid:$pass@{$globals->lists->rpchost}:{$globals->lists->rpcport}/$dom";
         parent::__construct($url);
+        if ($globals->debug & 1) {
+            $this->bt = new PlBacktrace('MMList');
+        }   
     }
 
     function __call($method, $args)

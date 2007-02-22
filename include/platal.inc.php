@@ -19,12 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function microtime_float()
-{
-    list($usec, $sec) = explode(' ', microtime());
-    return ((float)$usec + (float)$sec);
-}
-$TIME_BEGIN = microtime_float();
+$TIME_BEGIN = microtime(true);
 
 date_default_timezone_set('Europe/Paris');
 

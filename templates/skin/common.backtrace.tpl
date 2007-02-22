@@ -21,17 +21,17 @@
 {**************************************************************************}
 
 
-{foreach item=query from=$trace_data}
-{if $query.explain}
-{assign var=cols value=$query.explain[0]|@count}
+{foreach item=query from=$trace->traces}
+{if $query.data}
+{assign var=cols value=$query.data[0]|@count}
 {else}
 {assign var=cols value=1}
 {/if}
 <table class="bicol" style="width: 75%; font-size: smaller; margin-left:2px; margin-top: 3px;">
   <tr class="impair">
     <td colspan="{$cols}">
-      <strong>QUERY:</strong>
-      <pre style="padding: 0; margin: 0;">{$query.query}</pre>
+      <strong>ACTION:</strong>
+      <pre style="padding: 0; margin: 0;">{$query.action}</pre>
       <br/>
     </td>
   </tr>
@@ -46,19 +46,19 @@
   <tr>
     <td colspan="{$cols}">
       <strong>INFO:</strong><br />
-      {$query.rows} enregistrement{if $query.rows > 1}s{/if} en {$query.exectime}ms
+      {$query.rows} ligne{if $query.rows > 1}s{/if} en {$query.exectime|string_format:"%.3f"}s
     </td>
   </tr>
   {/if}
-{if $query.explain}
+{if $query.data}
   <tr>
-    {foreach key=key item=item from=$query.explain[0]}
+    {foreach key=key item=item from=$query.data[0]}
     <th style="font-size: smaller">{$key}</th>
     {/foreach}
   </tr>
-  {foreach item=explain_row from=$query.explain}
+  {foreach item=data_row from=$query.data}
   <tr class="impair">
-    {foreach item=item from=$explain_row}
+    {foreach item=item from=$data_row}
     <td class="center" style="font-size: smaller">{$item}</td>
     {/foreach}
   </tr>

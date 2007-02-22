@@ -236,6 +236,11 @@ class BananaMLInterface implements BananaProtocoleInterface
     {
         return ModerationBanana::$domain . '_' . ModerationBanana::$listname;
     }
+
+    public function backtrace()
+    {
+        return null;
+    }
 }
 
 // vim:set et sw=4 sts=4 ts=4 enc=utf-8:
