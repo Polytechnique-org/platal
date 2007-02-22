@@ -705,7 +705,14 @@ function _user_reindex($uid, $keys, $muls) {
 function user_reindex($uid) {
     XDB::execute("DELETE FROM search_name WHERE uid={?}", $uid);
     $res = XDB::query("SELECT prenom, nom, nom_usage, profile_nick FROM auth_user_md5 INNER JOIN auth_user_quick USING(user_id) WHERE auth_user_md5.user_id = {?}", $uid);
-    _user_reindex($uid, $res->fetchOneRow(), array(1,1,1,0.2));
+    if ($res->numRows()) {
+      _user_reindex($uid, $res->fetchOneRow(), array(1,1,1,0.2));
+    } else { // not in auth_user_quick => still "pending"
+      $res = XDB::query("SELECT prenom, nom, nom_usage FROM auth_user_md5 WHERE auth_user_md5.user_id = {?}", $uid);
+      if ($res->numRows()) {
+          _user_reindex($uid, $res->fetchOneRow(), array(1,1,1));
+      }
+    }
 }
 
 // }}}
