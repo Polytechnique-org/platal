@@ -5,6 +5,7 @@ New:
 
     * Core:
         - UTF-8                                                            -FRU
+        - New Backtrace tool                                               -FRU
 
     * Search:
         - Search Engine IE7 compatible                                     -FRU

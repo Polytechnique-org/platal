@@ -21,8 +21,8 @@
 {**************************************************************************}
 
 <h1>
-  {if $ax->_date}
-  Lettre de l'AX du {$ax->_date|date_format}
+  {if $am->_date}
+  Lettre de l'AX du {$am->_date|date_format}
   {else}
   Lettre de l'AX en préparation
   {/if}
@@ -35,7 +35,7 @@
 {else}
 [<a href='{$platal->pl_self()}?text=1'>version Texte</a>]
 {/if}
-{if !$ax->_date}
+{if !$am->_date}
 [<a href='ax/edit'>éditer</a>]
 {/if}
 </p>

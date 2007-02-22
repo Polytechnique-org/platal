@@ -56,6 +56,9 @@ class AXLetter extends MassMailer
         list($this->_id, $this->_shortname, $this->_title_mail, $this->_title,
              $this->_body, $this->_signature, $this->_promo_min, $this->_promo_max,
              $this->_echeance, $this->_date, $this->_bits) = $id;
+        if ($this->_date == '0000-00-00') {
+            $this->_date = 0;
+        }
     }
 
     protected function assignData(&$smarty)

@@ -62,6 +62,8 @@ class AXLetterModule extends PLModule
 
         $perm = AXLetter::hasPerms();
         if ($perm) {
+            $res = XDB::query("SELECT * FROM axletter_ins");
+            $page->assign('count', $res->numRows());
             $page->assign('new', AXLetter::awaiting());
         }
         $page->assign('axs', AXLetter::subscriptionState());
@@ -155,6 +157,32 @@ class AXLetterModule extends PLModule
                                        SET  id = {?}, shortname = {?}, subject = {?}, title = {?}, body = {?},
                                             signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}",
                              $id, $shortname, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance);
+                if (!$saved) {
+                    $mailer = new PlMailer();
+                    $mailer->setFrom("support@polytechnique.org");
+                    $mailer->setSubject("Un nouveau projet de mail de l'AX vient d'être proposé");
+                    $mailer->setTxtBody("Un nouveau mail vient d'être rédigé en prévision d'un envoi prochain. Vous pouvez "
+                                      . "le modifier jusqu'à ce qu'il soit verrouillé pour l'envoi\n\n"
+                                      . "Le sujet du mail : $subject\n"
+                                      . "L'échéance d'envoi est fixée à $echeance.\n"
+                                      . "Le mail pourra néanmoins partir avant cette échéance si un administrateur de "
+                                      . "Polytechnique.org le valide.\n\n"
+                                      . "Pour modifier, valider ou annuler le mail :\n"
+                                      . "https://www.polytechnique.org/ax/edit\n"
+                                      . "-- \n"
+                                      . "Association Polytechnique.org\n");
+                    $res = XDB::iterRow("SELECT IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
+                                                u.prenom, a.alias AS bestalias
+                                           FROM axletter_rights AS ar
+                                     INNER JOIN auth_user_md5   AS u USING(user_id)
+                                     INNER JOIN aliases         AS a ON (u.user_id = a.id
+                                     AND FIND_IN_SET('bestalias', a.flags))");
+                    global $globals;
+                    while (list($nom, $prenom, $alias) = $res->next()) {
+                        $mailer->addTo("$nom $prenom <$alias@{$globals->mail->domain}>");
+                    }
+                    $mailer->send();
+                }
                 $saved = true;
                 $echeance_date = null;
                 $echeance_time = null;

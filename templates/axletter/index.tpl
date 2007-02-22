@@ -76,5 +76,8 @@ Tu n'es actuellement pas inscrit aux envois exceptionnels de l'AX.
   {/foreach}
 </table>
 
+{if $ax_rights}
+<p>Il y a actuellement {$count} inscrits aux envois</p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
