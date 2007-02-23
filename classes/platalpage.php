@@ -121,7 +121,7 @@ class PlatalPage extends Smarty
         $this->assign('validate', true);
         error_reporting(0);
         $result = $this->fetch($skin);
-        $ttime  = sprintf('Temps total: %.02fs - Mémoire totale : %.02fKo<br />', microtime(true) - $TIME_BEGIN
+        $ttime  = sprintf('Temps total: %.02fs - Mémoire totale : %dKo<br />', microtime(true) - $TIME_BEGIN
                                                                                 , memory_get_peak_usage(true) / 1024);
         $replc  = "<span class='erreur'>VALIDATION HTML INACTIVE</span><br />";
 

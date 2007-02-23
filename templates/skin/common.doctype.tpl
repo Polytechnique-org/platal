@@ -20,58 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file=skin/common.doctype.tpl}
-    <link rel="stylesheet" type="text/css" href="css/default.css" media="all" />
-    <link rel="stylesheet" type="text/css" href="css/liteskin.css" media="all" />
-    {include file=skin/common.header.tpl}
-    {include file=skin/common.bandeau.head.tpl}
-  </head>
-  <body>
-    {include file=skin/common.devel.tpl}
-    {if !$simple}
-      {include file=skin/common.bandeau.tpl}
-    {/if}
-    {if $smarty.session.suid}
-    <div id="suid">
-      <a href="exit">
-        Quitter le SU sur {$smarty.session.forlife} ({$smarty.session.perms})
-      </a>
-    </div>
-    {/if}
-
-  {if $simple}
-
-    <div id="content">
-      {include file="skin/common.content.tpl"}
-    </div>
-
-  {else}
-
-    <table id="body" cellpadding="0" cellspacing="0">
-      <tr>
-        <td id="body-logo">
-          <a href=""><img src="images/skins/liteskin_logo.png" alt="[ LOGO ]" /></a>
-        </td>
-        <td id="body-top">
-          <a href=""><img src="images/skins/liteskin_titre.png" alt="[ Polytechnique.org ]" /></a>
-          {include file="skin/common.title.header.tpl"}
-        </td>
-      </tr>
-      <tr>
-        <td id="body-menu">
-        {include file=skin/common.menu.tpl}
-        </td>
-        <td id="content">
-        {include file="skin/common.content.tpl"}
-        </td>
-      </tr>
-      <tr>
-        <td id="body-bottom" colspan="2">
-          {include file=skin/common.footer.tpl}
-        </td>
-      </tr>
-    </table>
-  {/if}
-  </body>
-</html>
+{if !strpos($smarty.server.HTTP_USER_AGENT, 'MSIE 6')}
+<?xml version="1.0" encoding="utf-8"?>
+{/if}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+      <base href="{$globals->baseurl}/" />
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

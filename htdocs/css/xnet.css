@@ -76,9 +76,9 @@ h2    { font-size: 115%; }
     font-weight: bold;
 }
 
-#db-trace div.hide       { display: none; }
-#db-trace:hover div.hide { display: block }
-#db-trace h1 { margin: 0px; }
+.backtrace div.hide       { display: none; }
+.backtrace:hover div.hide { display: block }
+.backtrace h1 { margin: 0px; }
 
 /***************************************************************************
  * LAYOUT

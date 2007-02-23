@@ -475,8 +475,8 @@ div.adresse strong {
 #dev a { text-decoration: underline; }
 #dev a:hover { color: #003399; background: #c0e0e0; }
 
-#db-trace div.hide       { display: none; }
-#db-trace:hover div.hide { display: block }
+.backtrace div.hide       { display: none; }
+.backtrace:hover div.hide { display: block }
 
 #suid {
     color: red;
