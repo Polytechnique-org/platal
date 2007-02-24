@@ -46,7 +46,7 @@ function user_cmp($prenom, $nom, $_prenom, $_nom)
 // }}}
 // {{{ function check_mat
 
-function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
+function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid, &$watch)
 {
     if (!preg_match('/^[0-9][0-9][0-9][0-9][0-9][0-9]$/', $mat)) {
         return "Le matricule doit comporter 6 chiffres.";
@@ -62,10 +62,10 @@ function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
     }
 
     $res = XDB::query(
-            'SELECT  user_id, promo, perms IN ("admin","user"), nom, prenom 
+            'SELECT  user_id, promo, perms IN ("admin","user"), nom, prenom, FIND_IN_SET(\'watch\', u.flags)
               FROM  auth_user_md5
              WHERE  matricule={?} and deces = 0', $ourmat);
-    list ($uid, $_promo, $_already, $_nom, $_prenom) = $res->fetchOneRow();
+    list ($uid, $_promo, $_already, $_nom, $_prenom, $watch) = $res->fetchOneRow();
     if ($_already) { return "tu es déjà inscrit ou ton matricule est incorrect !"; }
     if ($_promo != $promo) { return "erreur de matricule"; }
 
@@ -80,13 +80,13 @@ function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
 // }}}
 // {{{ function check_old_mat
 
-function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
+function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid, &$watch)
 {
     $res = XDB::iterRow(
-            'SELECT  user_id, nom, prenom, matricule
+            'SELECT  user_id, nom, prenom, matricule, FIND_IN_SET(\'watch\', flags)
                FROM  auth_user_md5
               WHERE  promo={?} AND deces=0 AND perms="pending"', $promo);
-    while (list($_uid, $_nom, $_prenom, $_mat) = $res->next()) {
+    while (list($_uid, $_nom, $_prenom, $_mat, $watch) = $res->next()) {
         if (user_cmp($prenom, $nom, $_prenom, $_nom)) {
             $ourid  = $_uid;
             $ourmat = $_mat;
@@ -95,11 +95,11 @@ function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
     }
 
     $res = XDB::iterRow(
-            'SELECT  user_id, nom, prenom, matricule, alias
+            'SELECT  user_id, nom, prenom, matricule, alias, FIND_IN_SET(\'watch\', u.flags)
                FROM  auth_user_md5 AS u
          INNER JOIN  aliases       AS a ON (u.user_id = a.id and FIND_IN_SET("bestalias", a.flags))
               WHERE  promo={?} AND deces=0 AND perms IN ("user","admin")', $promo);
-    while (list($_uid, $_nom, $_prenom, $_mat, $alias) = $res->next()) {
+    while (list($_uid, $_nom, $_prenom, $_mat, $alias, $watch) = $res->next()) {
         if (user_cmp($prenom, $nom, $_prenom, $_nom)) {
             $ourid  = $_uid;
             $ourmat = $_mat;
@@ -127,9 +127,9 @@ function check_new_user(&$sub)
     $nom     = strtoupper(replace_accent($nom));
 
     if ($promo >= 1996) {
-        $res = check_mat($promo, $mat, $nom, $prenom, $ourmat, $ourid);
+        $res = check_mat($promo, $mat, $nom, $prenom, $ourmat, $ourid, $watch);
     } else {
-        $res = check_old_mat($promo, $mat, $nom, $prenom, $ourmat, $ourid);
+        $res = check_old_mat($promo, $mat, $nom, $prenom, $ourmat, $ourid, $watch);
     }
     if ($res !== true) { return $res; }
 
@@ -137,6 +137,7 @@ function check_new_user(&$sub)
     $sub['prenom'] = $prenom;
     $sub['ourmat'] = $ourmat;
     $sub['uid']    = $ourid;
+    $sub['watch']  = $watch;
 
     return true;
 }

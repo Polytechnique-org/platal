@@ -215,6 +215,11 @@ function check_email($email, $message)
     return false;
 }
 
+function check_account()
+{
+    return S::v('watch');
+}
+
 function check_redirect($red = null)
 {
     require_once 'emails.inc.php';
@@ -222,8 +227,7 @@ function check_redirect($red = null)
         $red = new Redirect(S::v('uid'));
     }    
     $_SESSION['no_redirect'] = !$red->other_active('');
-    $_SESSION['mx_failures'] = $red->get_broken_mx();
-    
+    $_SESSION['mx_failures'] = $red->get_broken_mx();    
 }
 
 function send_warning_mail($title)

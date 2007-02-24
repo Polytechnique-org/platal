@@ -31,7 +31,7 @@ class XorgSession
         if (!S::has('uid')) {
             try_cookie();
         }
-        if (check_ip('dangerous') && S::has('uid')) {
+        if ((check_ip('dangerous') && S::has('uid')) || check_account()) {
             $_SESSION['log']->log("view_page", $_SERVER['REQUEST_URI']);
         }
     }
@@ -224,7 +224,8 @@ function start_connexion ($uid, $identified)
     $res  = XDB::query("
     SELECT  u.user_id AS uid, prenom, nom, perms, promo, matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
                 UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias AS forlife, a2.alias AS bestalias,
-                q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash
+                q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
+                FIND_IN_SET('watch', u.flags) AS watch_account
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
     INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
@@ -250,8 +251,16 @@ function start_connexion ($uid, $identified)
     $_SESSION         = array_merge($_SESSION, $sess);
     $_SESSION['log']  = $logger;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
+    $mail_subject = null;
+    if (check_account()) {
+        $mail_subject = "Connexion d'un utilisateur surveillé";
+    }
     if (check_ip('unsafe')) {
-        send_warning_mail("Une IP surveillee a tente de se connecter");
+        if ($mail_subject) {
+            $mail_subject .= ' - ';
+        }
+        $mail_subject .= "Une IP surveillee a tente de se connecter";
+        send_warning_mail($mail_subject);
         if (check_ip('ban')) {
             $_SESSION = array();
             global $page;
@@ -260,6 +269,9 @@ function start_connexion ($uid, $identified)
                        ."<a href='mailto:support@polytechnique.org'>support@polytechnique.org</a>");
             return false;
         }
+    }
+    if ($mail_subject) {
+        send_warning_mail($mail_subject);
     }
     set_skin();
     check_redirect();

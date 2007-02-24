@@ -58,17 +58,18 @@ class RegisterModule extends PLModule
 
         if ($hash) {
             $res = XDB::query(
-                    "SELECT  m.uid, u.promo, u.nom, u.prenom, u.matricule
+                    "SELECT  m.uid, u.promo, u.nom, u.prenom, u.matricule, FIND_IN_SET('watch', u.flags)
                        FROM  register_marketing AS m
                  INNER JOIN  auth_user_md5      AS u ON u.user_id = m.uid
                       WHERE  m.hash={?}", $hash);
-            if (list($uid, $promo, $nom, $prenom, $ourmat) = $res->fetchOneRow()) {
+            if (list($uid, $promo, $nom, $prenom, $ourmat, $watch) = $res->fetchOneRow()) {
                 $sub_state['uid']    = $uid;
                 $sub_state['hash']   = $hash;
                 $sub_state['promo']  = $promo;
                 $sub_state['nom']    = $nom;
                 $sub_state['prenom'] = $prenom;
                 $sub_state['ourmat'] = $ourmat;
+                $sub_state['watch']  = $watch;
 
                 XDB::execute(
                         "REPLACE INTO  register_mstats (uid,sender,success)
@@ -167,6 +168,9 @@ class RegisterModule extends PLModule
                     }
                     if (count($aliases) != 0) {
                         $alert .= "Email surveille propose a l'inscription - ";
+                    }
+                    if ($sub_state['watch']) {
+                        $alter .= "Inscription d'un utilisateur surveillé - ";
                     }
 
                     if (check_ip('unsafe')) {

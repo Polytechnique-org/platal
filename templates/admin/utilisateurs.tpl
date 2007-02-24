@@ -163,8 +163,8 @@ function act_fwd(fwd, activate) {
         Sexe
       </td>
       <td>
-        femme <input type="radio" name="sexeN" {if $mr.sexe eq 'femme'}checked="checked"{/if} value='femme'/>
-        <input type="radio" name="sexeN" {if $mr.sexe neq 'femme'}checked="checked"{/if} value=''/> homme
+        femme <input type="radio" name="sexeN" {if $mr.sexe}checked="checked"{/if} value='1'/>
+        <input type="radio" name="sexeN" {if !$mr.sexe}checked="checked"{/if} value='0'/> homme
       </td>
     </tr>
     <tr class="pair">
@@ -207,6 +207,17 @@ function act_fwd(fwd, activate) {
       </td>
       <td>
         <input type="text" name="promoN" size="4" maxlength="4" value="{$mr.promo}" />
+      </td>
+    </tr>
+    <tr class "impair">
+      <td class="titre">
+        Surveillance
+      </td>
+      <td>
+        <input type="checkbox" name="watchN" {if $mr.watch}checked="checked"{/if} />
+        Surveiller l'activité de ce compte<br />
+        <span class="smaller">Cette option permet d'avoir des logs complets de l'activité
+        du compte via le logger, et d'être alerté lors des connexions de l'utilisateur</span>
       </td>
     </tr>
     <tr class="impair">
