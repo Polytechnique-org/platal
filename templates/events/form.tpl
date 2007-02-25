@@ -20,27 +20,51 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<script type="text/javascript">
+  {literal}
+  function updatePreview()
+  {
+    var titre = document.getElementById('titre').value;
+    var texte = document.getElementById('texte').value;
+
+    if (titre == '' || texte == '') {
+      document.getElementById('valid').style.display = 'none';
+      document.getElementById('info').style.display = '';
+    } else {
+      document.getElementById('valid').style.display = '';
+      document.getElementById('info').style.display = 'none';
+    }
+    var page  = 'events/preview?titre=' + titre + '&texte=' + texte;
+    if (is_IE) {
+      {/literal}
+      page = "{$globals->baseurl}/" + page;
+      {literal}
+    }
+    Ajax.update_html('preview', page, null);
+    return false;
+  }
+  {/literal}
+</script>
+
+<div id="preview">
+{include file="events/preview.tpl"}
+</div>
+<br />
+
 <form action="{$platal->path}" method="post">
   <table class="bicol">
     <tr>
-      <th colspan="2">Contenu du message</th>
+      <th colspan="2">Contenu de l'annonce</th>
     </tr>
-    {if strlen(trim($texte))}
-    <tr class="pair">
-      <td colspan="2" style="border-bottom: 1px dotted #777">
-        {$texte|smarty:nodefaults|nl2br}
-      </td>
-    </tr>
-    {/if}
     <tr>
       <td class="titre">Titre</td>
       <td>
-        <input type="text" name="titre" size="50" maxlength="200" value="{$titre}" />
+        <input type="text" name="titre" id="titre" size="50" maxlength="200" value="{$titre}" />
       </td>
     </tr>
     <tr>
       <td class="titre">Texte</td>
-      <td><textarea name="texte" rows="10" cols="60" onfocus="update_texte_count(this.form)">{$texte}</textarea></td>
+      <td><textarea name="texte" id="texte" rows="10" cols="60" onfocus="update_texte_count(this.form)">{$texte}</textarea></td>
     </tr>
     <tr>
       <td colspan="2" class="smaller">
@@ -54,15 +78,25 @@
           }
           {/literal}
         </script>
-        Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 800 caractères soit une douzaine de ligne. Tu en es déjà à <input type='text' name='texte_count' size="4"/> caractères.
+        Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 800 caractères soit une douzaine de ligne. Tu en es déjà à <input type='text' name='texte_count' size="4" /> caractères.
       </td>
-    </tr>
-    <tr>
-      <th colspan="2">Informations complémentaires</th>
     </tr>
   </table>
 
+  <div class="center">
+    <input type="submit" name="preview" value="Aperçu" onclick="updatePreview(); return false;" />
+  </div>
+  <p id="info" {if trim($texte) && trim($titre)}style="display: none"{/if}>
+    Le bouton de confirmation n'apparaît que si l'aperçu est concluant.
+  </p>
+  <p class="erreur">
+    N'oublie pas de remplir suivantes&nbsp;:
+  </p>
+
   <table class="bicol">
+    <tr>
+      <th colspan="2">Informations complémentaires</th>
+    </tr>
     <tr class="pair">
       <td colspan="2">
         Tu peux limiter la visibilité de ton annonce aux camarades de certaines promotions :
@@ -99,7 +133,7 @@
     </tr>
   </table>
 
-  <div class="center">
+  <div class="center" {if !trim($texte) || !trim($titre)}style="display: none"{/if} id="valid">
     <input type="hidden" name="evt_id" value="{$smarty.post.evt_id}" />
     <input type="submit" name="action" value="Proposer" />
   </div>

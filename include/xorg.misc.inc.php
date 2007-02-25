@@ -19,7 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function quoted_printable_encode($input, $line_max = 76) {
+function quoted_printable_encode($input, $line_max = 76)
+{
     $lines = preg_split("/(?:\r\n|\r|\n)/", $input);
     $eol = "\n";
     $linebreak = "=0D=0A=\n    ";
@@ -71,6 +72,14 @@ function isvalid_email_redirection($email) {
     return isvalid_email($email) && 
 	!preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
 }
+
+/** Check if the string is utf8
+ */
+function is_utf8($s)
+{
+    return @iconv('utf-8', 'utf-8', $s) == $s;
+}
+
 
 /** Remove accent from a string and replace them by the nearest letter
  */

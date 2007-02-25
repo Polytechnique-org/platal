@@ -26,6 +26,7 @@ class EventsModule extends PLModule
         return array(
             'events'         => $this->make_hook('ev',        AUTH_COOKIE),
             'rss'            => $this->make_hook('rss', AUTH_PUBLIC),
+            'events/preview' => $this->make_hook('preview', AUTH_PUBLIC, '', NO_AUTH),
             'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
             'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
 
@@ -166,11 +167,35 @@ class EventsModule extends PLModule
                   WHERE  u.user_id = {?} AND FIND_IN_SET(e.flags, "valide")
                                          AND peremption >= NOW()', $uid);
         $page->assign('rss', $rss);
-    }   
+    }
+
+    function handler_preview(&$page)
+    {
+        require_once('url_catcher.inc.php');
+        $page->changeTpl('events/preview.tpl', NO_SKIN);
+        $texte = Get::v('texte');
+        if (!is_utf8($texte)) {
+            $texte = utf8_encode($texte);
+        }
+        if (strpos($_SERVER['HTTP_REFERER'], 'admin') === false) {
+            $texte = url_catcher(pl_entities($texte));
+        }
+        $titre = Get::v('titre');
+        if (!is_utf8($titre)) {
+            $titre = utf8_encode($titre);
+        }
+        $page->assign('texte_html', $texte);
+        $page->assign('titre', $titre);
+        header('Content-Type: text/html; charset=utf-8');
+    }
 
     function handler_ev_submit(&$page)
     {
         $page->changeTpl('events/submit.tpl');
+        $page->addJsLink('ajax.js');
+        
+        require_once('wiki.inc.php');
+        wiki_require_page('Xorg.Annonce');
 
         $titre      = Post::v('titre');
         $texte      = Post::v('texte');
@@ -202,7 +227,7 @@ class EventsModule extends PLModule
 
         if ($action && (!trim($texte) || !trim($titre))) {
             $page->trig("L'article doit avoir un titre et un contenu");
-        } elseif ($action == 'Confirmer') {
+        } elseif ($action) {
         	$texte = $texte_catch_url;
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
@@ -257,6 +282,7 @@ class EventsModule extends PLModule
     function handler_admin_events(&$page, $action = 'list', $eid = null) 
     {
         $page->changeTpl('events/admin.tpl');
+        $page->addJsLink('ajax.js');
         $page->assign('xorg_title','Polytechnique.org - Administration - Evenements');
         $page->register_modifier('hde', 'html_entity_decode');
 
@@ -288,6 +314,7 @@ class EventsModule extends PLModule
             list($titre, $texte, $peremption, $promo_min, $promo_max) = $res->fetchOneRow();
             $page->assign('titre',$titre);
             $page->assign('texte',$texte);
+            $page->assign('texte_html', pl_entity_decode($texte));
             $page->assign('promo_min',$promo_min);
             $page->assign('promo_max',$promo_max);
             $page->assign('peremption',$peremption);

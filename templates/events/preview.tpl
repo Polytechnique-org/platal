@@ -20,25 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Proposition d'information événementielle</h1>
-
-{if $ok}
-<p>
-Ta proposition a bien été enregistrée, un administrateur va se charger de la valider aussi rapidement que possible.
-</p>
-<p>
-Merci pour ta contribution à la vie du site!
-</p>
-<p>
-<a href="events">Retour à la page d'accueil</a>
-</p>
-{else}
-
-{include file="events/form.tpl"}
-
-{include file="../spool/wiki.d/cache_Xorg.Annonce.tpl included=1}
-
+{if trim($titre) || trim($texte_html)}
+<table class="bicol">
+  <tr><th><em>Aperçu de : </em>{$titre|nl2br}</th></tr>
+  <tr class="pair"><td>{$texte_html|nl2br|smarty:nodefaults}</td></tr>
+</table>
 {/if}
-
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

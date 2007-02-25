@@ -41,7 +41,7 @@
 
 {if $action eq 'edit'}
 
-{include file="include/form.evenement.tpl"}
+{include file="events/form.tpl"}
 
 {else}
 

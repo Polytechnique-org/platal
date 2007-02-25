@@ -55,7 +55,7 @@ Ajax = {
                     	if (obj != null) {
                         	document.getElementById(obj).innerHTML = Ajax.xml_client.responseText;
                         }
-                      if (func != null) {
+                        if (func != null) {
                       		func(Ajax.xml_client.responseText);
                       	}
                     } else if (Ajax.xml_client.status == 403) {
