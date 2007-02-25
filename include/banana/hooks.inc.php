@@ -69,6 +69,16 @@ function hook_formatDisplayHeader($_header, $_text, $in_spool = false)
     return null;
 }
 
+function hook_platalRSS($group)
+{
+    if ($group) {
+        $group .= '/';
+    } else {
+        $group = '';
+    }
+    return '/rss/' . $group . S::v('forlife') . '/' . S::v('core_rss_hash') . '/rss.xml';
+}
+
 function hook_platalMessageLink($params)
 {
     $base = '';
@@ -113,6 +123,39 @@ function hook_makeImg($img, $alt, $height, $width)
     }
 
     return '<img src="' . $url . '"' . $height . $width . ' alt="' . $alt . '" />';
+}
+
+function hook_makeLink($params)
+{
+    global $globals, $platal;
+    if (Banana::$protocole->name() == 'NNTP') {
+        $base = $globals->baseurl . '/banana';
+        if (@$params['action'] == 'rss' || @$params['action'] == 'rss2' || @$params['action'] == 'atom') {
+            return $base . hook_platalRSS(@$params['group']);
+        }
+        if (isset($params['page'])) {
+            return $base . '/' . $params['page'];
+        }
+        if (@$params['action'] == 'subscribe') {
+            return $base . '/subscription';
+        }
+    
+        if (!isset($params['group'])) {
+            return $base;
+        }
+        $base .= '/' . $params['group'];
+    } else if (Banana::$protocole->name() == 'MLArchives') {
+        $base = $globals->baseurl . '/' . $platal->ns . 'lists/archives';
+        if (@$params['action'] == 'rss' || @$params['action'] == 'rss2' || @$params['action'] == 'atom') {
+            return $base . hook_platalRSS(MLBanana::$listname);
+        }
+        $base .= '/' . MLBanana::$listname;
+    }
+    $base = $base . hook_platalMessageLink($params);
+    if (@$params['action'] == 'showext') {
+        $base .= '?action=showext';
+    }
+    return $base;
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

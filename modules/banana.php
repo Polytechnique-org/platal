@@ -27,7 +27,7 @@ class BananaModule extends PLModule
             'banana'              => $this->make_hook('banana', AUTH_COOKIE),
             'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
             'banana/subscription' => $this->make_hook('subscription', AUTH_COOKIE),
-            'banana/xface'        => $this->make_hook('xface', AUTH_COOKIE),
+            'banana/rss'          => $this->make_hook('rss', AUTH_PUBLIC),
         );
     }
 
@@ -136,12 +136,29 @@ class BananaModule extends PLModule
         return $this->run_banana($page, Array('action' => 'subscribe'));
     }
 
-    function handler_xface(&$page, $face = null)
+    function handler_rss(&$page, $group, $alias, $hash, $file = null)
     {
-        header('Content-Type: image/gif');
-        passthru('echo ' . escapeshellarg(base64_decode(strtr($face, '.:', '+/')))
-                . '| uncompface -X '
-                . '| convert -transparent white xbm:- gif:-');
+        if (is_null($file)) {
+            if (is_null($hash)) {
+                exit;
+            }
+            $this->handler_rss($page, null, $group, $alias, $hash);
+        }
+        require_once('rss.inc.php');
+        $uid = init_rss(null, $alias, $hash);
+        if (!$uid) {
+            exit;
+        }
+        $res = XDB::query("SELECT id AS uid, alias AS forlife
+                             FROM aliases
+                            WHERE type = 'a_vie' AND id = {?}", $uid);
+        $row = $res->fetchOneAssoc();
+        $_SESSION = array_merge($row, $_SESSION);
+
+        require_once 'banana/forum.inc.php';
+        $banana = new ForumsBanana(array('group' => $group, 'action' => 'rss2'));
+        echo $banana->run();
+        exit;
     }
 
     static function run_banana(&$page, $params = null)
@@ -157,6 +174,14 @@ class BananaModule extends PLModule
         $page->assign('banana_res', $res);
         $page->addCssInline($banana->css());
         $page->addCssLink('banana.css');
+        $rss = $banana->feed();
+        if ($rss) {
+            if (@$params['group']) {
+                $page->setRssLink('Banana :: ' . $params['group'], $rss);
+            } else {
+                $page->setRssLink('Banana :: Abonnements', $rss);
+            }
+        }
         new PlBacktrace('NNTP', $banana->backtrace(), 'response', 'time');
     }
 }

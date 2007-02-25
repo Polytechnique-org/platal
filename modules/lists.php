@@ -33,6 +33,7 @@ class ListsModule extends PLModule
             'lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
             'lists/trombi'    => $this->make_hook('trombi',    AUTH_COOKIE),
             'lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
+            'lists/archives/rss' => $this->make_hook('rss',    AUTH_PUBLIC),
 
             'lists/moderate'  => $this->make_hook('moderate',  AUTH_MDP),
             'lists/admin'     => $this->make_hook('admin',     AUTH_MDP),
@@ -383,10 +384,42 @@ class ListsModule extends PLModule
             $page->assign('banana', $banana->run());
             $page->addCssInline($banana->css());
             $page->addCssLink('banana.css');
+            $rss = $banana->feed();
+            if ($rss) {
+                $page->setRssLink('Banana :: ' . $list, $rss);
+            }
             new PlBacktrace('MBox', $banana->backtrace(), 'response', 'time');
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
         }
+    }
+
+    function handler_rss(&$page, $liste = null, $alias = null, $hash = null)
+    {
+        require_once('rss.inc.php');
+        $uid = init_rss(null, $alias, $hash);
+        if (!$uid || !$liste) {
+            exit;
+        }
+
+        $res = XDB::query("SELECT user_id AS uid, password, alias AS forlife
+                             FROM auth_user_md5 AS u
+                       INNER JOIN aliases       AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+                            WHERE u.user_id = {?}", $uid);
+        $row = $res->fetchOneAssoc();
+        $_SESSION = array_merge($row, $_SESSION);
+
+        $domain = $this->prepare_client($page);
+        if (list($det) = $this->client->get_members($liste)) {
+            if (substr($liste,0,5) != 'promo' && ($det['ins'] || $det['priv'])
+                    && !$det['own'] && ($det['sub'] < 2)) {
+                exit;  
+            }
+            require_once('banana/ml.inc.php');
+            $banana = new MLBanana(Array('listname' => $liste, 'domain' => $domain, 'action' => 'rss2'));
+            echo $banana->run();
+        }
+        exit;
     }
 
     function moderate_mail($domain, $liste, $mid)

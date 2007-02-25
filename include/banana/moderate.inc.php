@@ -69,6 +69,7 @@ class ModerationBanana extends Banana
         Banana::$withtabs      = false;
         Banana::$msgshow_externalimages = false;
         Banana::$msgshow_mimeparts[] = 'source';
+        Banana::$feed_active = false;
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
         parent::__construct($params, 'MLInterface', 'ModerationPage');
     }

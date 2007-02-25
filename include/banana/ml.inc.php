@@ -22,17 +22,6 @@
 require_once 'banana/banana.inc.php';
 require_once 'banana/hooks.inc.php';
 
-function hook_makeLink($params)
-{
-    global $globals, $platal;
-    $base = $globals->baseurl . '/' . $platal->ns . 'lists/archives/' . MLBanana::$listname;
-    $base = $base . hook_platalMessageLink($params);
-    if (@$params['action'] == 'showext') {
-        $base .= '?action=showext';
-    }
-    return $base;
-}
-
 class MLBanana extends Banana
 {
     static public $listname;
@@ -50,6 +39,9 @@ class MLBanana extends Banana
             Banana::$msgshow_mimeparts[] = 'source';
         }    
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
+        if (!S::v('core_rss_hash')) {
+            Banana::$feed_active = false;
+        }
 
         MLBanana::$listname = $params['listname'];
         MLBanana::$domain   = $params['domain'];

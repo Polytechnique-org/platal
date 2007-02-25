@@ -12,10 +12,14 @@ New:
 
 Bug/Wish:
 
+    * Banana:
+        - #407: RSS feed                                                   -FRU
+
     * Profile:
         - Better checks on image type for photos                           -FRU
 
     * Lists:
+        - #407: RSS feed                                                   -FRU
         - #636: Remove non-X from trombi                                   -FRU
         - #638: Sort trombi by promo then name                             -FRU
 

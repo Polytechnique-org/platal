@@ -27,28 +27,6 @@ function hook_checkcancel($_headers)
     return ($_headers['x-org-id'] == S::v('forlife') or S::has_perms());
 }
 
-function hook_makeLink($params)
-{
-    global $globals;
-    $base = $globals->baseurl . '/banana';
-    if (isset($params['page'])) {
-        return $base . '/' . $params['page'];
-    }
-    if (@$params['action'] == 'subscribe') {
-        return $base . '/subscription';
-    }
-
-    if (!isset($params['group'])) {
-        return $base;
-    }
-    $base .= '/' . $params['group'];
-    $base = $base . hook_platalMessageLink($params);
-    if (@$params['action'] == 'showext') {
-        $base .= '?action=showext';
-    }
-    return $base;
-}
-
 class ForumsBanana extends Banana
 {
     function __construct($params = null)
@@ -63,6 +41,9 @@ class ForumsBanana extends Banana
             Banana::$msgshow_mimeparts[] = 'source';
         }
         Banana::$debug_nntp = ($globals->debug & 1);
+        if (!S::v('core_rss_hash')) {
+            Banana::$feed_active = false;
+        }
         parent::__construct($params);
     }
 
