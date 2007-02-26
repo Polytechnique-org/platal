@@ -656,11 +656,14 @@ class XnetGrpModule extends PLModule
             return;
         }
 
-        list(,$fqdn) = explode('@', $email);
-        $fqdn = strtolower($fqdn);
-        $x = ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' ||
-              $fqdn == 'm4x.org' || $fqdn == 'melix.net');
-
+        if (strpos($email, '@') === false) {
+            $x = true;
+        } else {
+            list(,$fqdn) = explode('@', $email, 2);
+            $fqdn = strtolower($fqdn);
+            $x = ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' ||
+                  $fqdn == 'm4x.org' || $fqdn == 'melix.net');
+        }
         if ($x) {
             require_once 'user.func.inc.php';
             if ($forlife = get_user_forlife($email)) {
@@ -675,6 +678,7 @@ class XnetGrpModule extends PLModule
                 $page->trig($email." n'est pas un alias polytechnique.org valide");
             }
         } else {
+            require_once 'xorg.misc.inc.php';
             if (isvalid_email($email)) {
                 if (Env::v('x') && Env::has('userid') && Env::i('userid')) {
                     $uid = Env::i('userid');

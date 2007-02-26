@@ -50,7 +50,7 @@ En effet, le moteur de recherche va alors chercher tous les utilisateurs dont le
 contient 'Le' <strong>et</strong> 'Normand' sans distinction de casse et sans tenir compte des accents.
 </p>
 <p>
-Il est conseillé d'omettre les particules car il est possible que celle-ci ne soit pas présente dans
+Il est conseillé d'omettre les particules car il est possible que celles-ci ne soient pas présentes dans
 notre base de données.
 </p>
 

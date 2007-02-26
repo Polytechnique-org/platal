@@ -72,7 +72,17 @@
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
     <a href="Xorg/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
   </p>
-<script type="text/javascript" src="javascript/ajax.js"></script>
+
+  <script type="text/javascript" src="javascript/ajax.js"></script>
+  <script type="text/javascript">//<![CDATA[
+    {literal}
+    function redirectUpdate()
+    {
+        showTempMessage('redirect-msg', "Tes redirections ont été mise à jour.", true);
+    }
+    {/literal}
+  //]]></script>
+  <div id="redirect-msg" style="position:absolute;"></div><br />
   <div class="center">
     <table class="bicol" summary="Adresses de redirection">
       <tr>
@@ -81,7 +91,7 @@
         <th>Réécriture</th>
         <th>&nbsp;</th>
       </tr>
-      {foreach from=$emails item=e}
+      {foreach from=$emails item=e name=redirect}
       <tr class="{cycle values="pair,impair"}">
         <td>
           <strong>
@@ -92,9 +102,12 @@
           </strong>
         </td>
         <td>
-          <input type="checkbox" value="{$e->email}" {if $e->active}checked="checked"{/if} onclick="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/'+(this.checked?'':'in')+'active/{$e->email}')"/></td>
+          <input type="checkbox" value="{$e->email}"
+                 {if $e->active}checked="checked"{/if}
+                 {if $smarty.foreach.redirect.total eq 1}disabled="disabled"{/if}
+                 onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/'+(this.checked?'':'in')+'active/{$e->email}', redirectUpdate)" /></td>
         <td>
-          <select onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/rewrite/{$e->email}/'+this.value)">
+          <select onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/rewrite/{$e->email}/'+this.value, redirectUpdate)">
             <option value=''>--- aucune ---</option>
             {foreach from=$alias item=a}
             <option {if $e->rewrite eq "`$a.alias`@polytechnique.org"}selected='selected'{/if}

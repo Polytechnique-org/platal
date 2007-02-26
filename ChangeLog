@@ -18,6 +18,9 @@ Bug/Wish:
     * Carnet:
         - #510: Use RSS hash to get iCal                                   -FRU
 
+    * Emails:
+        - #595: Update antispam description                                -FRU
+
     * Profile:
         - Better checks on image type for photos                           -FRU
 

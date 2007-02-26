@@ -69,4 +69,44 @@ Ajax = {
     }
 }
 
+var currentTempMessage = 0;
+function setOpacity(obj, opacity)
+{
+  opacity = (opacity == 100)?99:opacity;
+  // IE
+  obj.style.filter = "alpha(opacity:"+opacity+")";
+  // Safari < 1.2, Konqueror
+  obj.style.KHTMLOpacity = opacity/100;
+  // Old Mozilla
+  obj.style.MozOpacity = opacity/100;
+  // Safari >= 1.2, Firefox and Mozilla, CSS3
+  obj.style.opacity = opacity/100
+}
+
+function _showTempMessage(id, state, back)
+{
+    var obj = document.getElementById(id);
+    if (currentTempMessage != state) {
+        return;
+    }   
+    setOpacity(obj, back * 5);
+    if (back > 0) {
+        setTimeout("_showTempMessage('" + id + "', " + currentTempMessage + "," + (back-1) + ")", 100);
+    } else {
+        obj.innerHTML = "";
+    }
+}
+
+function showTempMessage(id, message, success)
+{
+    var obj = document.getElementById(id);
+    obj.innerHTML = (success ? "<img src='images/icons/wand.gif' alt='' /> "
+                             : "<img src='images/icons/error.gif' alt='' /> ") + message;
+    obj.style.fontWeight = "bold";
+    obj.style.color = (success ? "green" : "red");;
+    currentTempMessage++;
+    setOpacity(obj, 100);
+    setTimeout("_showTempMessage('" + id + "', " + currentTempMessage + ", 20)", 700);
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

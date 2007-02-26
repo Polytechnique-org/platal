@@ -26,43 +26,9 @@
 </script>
 {literal}
 <script type="text/javascript">
-var bestaliasUpdatedLevel = 0; 
-function setOpacity(elName,opacity) {
-  opacity = (opacity == 100)?99:opacity;
-  el = document.getElementById(elName);
-  // IE
-  el.style.filter = "alpha(opacity:"+opacity+")";
-  // Safari < 1.2, Konqueror
-  el.style.KHTMLOpacity = opacity/100;
-  // Old Mozilla
-  el.style.MozOpacity = opacity/100;
-  // Safari >= 1.2, Firefox and Mozilla, CSS3
-  el.style.opacity = opacity/100
-}
-function bestaliasUpdated(htmltxt, back) {
-	var msg = document.getElementById('bestalias-msg');
-	if (back == null) {
-		msg.innerHTML = "Le changement a bien été effectué.";
-		msg.style.fontWeight="bold";
-		msg.style.color = "green";
-		bestaliasUpdatedLevel++;
-		setOpacity('bestalias-msg', 100);
-		setTimeout("bestaliasUpdated("+bestaliasUpdatedLevel+",20)", 700);
-		return;
-	}
-	if (bestaliasUpdatedLevel != htmltxt) {
-		return;
-	}
-	setOpacity('bestalias-msg', back * 5);
-	if (back > 0)
-	{
-		setTimeout("bestaliasUpdated("+bestaliasUpdatedLevel+","+(back-1)+")", 100);
-	}
-	else
-	{
-		msg.innerHTML = "";
-	}
-}
+  function bestaliasUpdated() {
+    showTempMessage('bestalias-msg', "Le changement a bien été effectué.", true);
+  }
 </script>	
 {/literal}
 <table class="bicol">
@@ -80,7 +46,7 @@ function bestaliasUpdated(htmltxt, back) {
           <br />
           {/iterate}
         </div>
-      <div id="bestalias-msg" style="position:absolute"></div>
+      <div id="bestalias-msg" style="position:absolute;"></div>
       <br />
       L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche, etc...).
       Coche une autre case pour en changer !
