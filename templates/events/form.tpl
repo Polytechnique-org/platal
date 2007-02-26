@@ -68,7 +68,7 @@
     </tr>
     <tr>
       <td colspan="2" class="smaller">
-        <script type="text/javascript">
+        <script type="text/javascript">//<![CDATA[
           var form_propose_texte = false;
           {literal}
           function update_texte_count(f) {
@@ -77,7 +77,7 @@
             setTimeout("update_texte_count(0)", 100);
           }
           {/literal}
-        </script>
+        //]]></script>
         Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 800 caractères soit une douzaine de ligne. Tu en es déjà à <input type='text' name='texte_count' size="4" /> caractères.
       </td>
     </tr>
@@ -90,8 +90,42 @@
     Le bouton de confirmation n'apparaît que si l'aperçu est concluant.
   </p>
   <p class="erreur">
-    N'oublie pas de remplir suivantes&nbsp;:
+    N'oublie pas de remplir les informations suivantes&nbsp;:
   </p>
+
+  <script type="text/javascript">//<![CDATA[
+    {literal}
+    function updateRange(min, max)
+    {
+      var range = document.getElementById('range');
+      if (min == null) {
+        min = document.getElementById('promo_min').value;
+      }
+      if (max == null) {
+        max = document.getElementById('promo_max').value;
+      }
+      if (isNaN(min) || (min != 0 && (min < 1900 || min > 2020))) {
+        range.innerHTML = '<span class="erreur">La promotion minimum n\'est pas valide</span>';
+        return false;
+      } else if (isNaN(max) || (max != 0 && (max < 1900  || max > 2020))) {
+        range.innerHTML = '<span class="erreur">La promotion maximum n\'est pas valide</span>';
+        return false;
+      } else if (max != 0 && min != 0 && max < min) {
+        range.innerHTML = '<span class="erreur">L\'intervalle de promotion est inversé</span>';
+        return false;
+      } else if (max == 0 && min == 0) {
+        range.innerHTML = 'L\'annonce est destinée à toutes les promotions';
+      } else if (max == 0) {
+        range.innerHTML = 'L\'annonce sera affichée aux promotions plus jeunes que ' + min + ' (incluse)';
+      } else if (min == 0) {
+        range.innerHTML = "L\'annonce sera affichée aux promotions plus anciennes que " + max + ' (incluse)';
+      } else {
+        range.innerHTML = "L\'annonce sera affichées aux promotions de " + min + " à " + max + ' (incluses)';
+      }
+      return true;
+    }
+    {/literal}
+  //]]></script>
 
   <table class="bicol">
     <tr>
@@ -105,15 +139,22 @@
     <tr class="impair">
       <td class="titre">Promotion la plus ancienne</td>
       <td>
-        <input type="text" name="promo_min" size="4" maxlength="4" value="{$promo_min}" /> incluse
+        <input type="text" name="promo_min" id="promo_min" size="4" maxlength="4" value="{$promo_min}"
+               onkeyup="return updateRange(null, null);" /> incluse
         &nbsp;<em>(ex : 1980, 0 signifie pas de minimum)</em>
       </td>
     </tr>
     <tr class="impair">
       <td class="titre">Promotion la plus jeune</td>
       <td>
-        <input type="text" name="promo_max" size="4" maxlength="4" value="{$promo_max}" /> incluse
+        <input type="text" name="promo_max" id="promo_max" size="4" maxlength="4" value="{$promo_max}"
+               onkeyup="return updateRange(null, null);" /> incluse
         &nbsp;<em>(ex : 2000, 0 signifie pas de maximum)</em>
+      </td>
+    </tr>
+    <tr class="impair">
+      <td colspan="2" id="range" class="smaller">
+        <script type="text/javascript">updateRange({$promo_min}, {$promo_max});</script>
       </td>
     </tr>
     <tr class="pair">
