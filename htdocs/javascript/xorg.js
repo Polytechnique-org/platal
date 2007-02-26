@@ -42,7 +42,16 @@ function getNow() {
 }
 
 // }}}
-// {{{ Firefox
+// {{{ Search Engine
+
+function canAddSearchEngine()
+{
+  if (((typeof window.sidebar == "object") && (typeof window.sidebar.addSearchEngine == "function"))
+      || ((typeof window.sidebar == "object") && (typeof window.sidebar.addSearchEngine == "function"))) {
+      return true;
+  }
+  return false;
+}
 
 function addSearchEngine()
 {

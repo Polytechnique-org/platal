@@ -46,15 +46,30 @@ Parfois on ne sait plus si le nom qu'on recherche s'écrit « Lenormand », « L
 </p>
 <p>
 Pour éviter ce genre d'écueils, il suffit de chercher : <code>Le Normand</code><br />
-En effet, le moteur de recherche va alors chercher tous les utilisateurs dont le nom contient 'Le' <strong>et</strong> 'Normand'
-sans distinction de casse et sans tenir compte des accents.
+En effet, le moteur de recherche va alors chercher tous les utilisateurs dont le nom 
+contient 'Le' <strong>et</strong> 'Normand' sans distinction de casse et sans tenir compte des accents.
+</p>
+<p>
+Il est conseillé d'omettre les particules car il est possible que celle-ci ne soit pas présente dans
+notre base de données.
 </p>
 
-{if $smarty.session.auth ge AUTH_COOKIE}
-<h2>Barre de recherche pour Firefox</h2>
-<p>Tu peux <a href="javascript:addSearchEngine()">installer</a> la barre de recherche rapide directement dans ton navigateur.
+<div id="searchbar" style="display: none">
+<h2>Barre de recherche pour ton navigateur</h2>
+<p>
+  Si tu utilises un navigateur moderne tel que Firefox ou Internet Explore 7, tu peux ajouter un module de recherche
+  directement dans ton navigateur. Pour ceci, <a href="javascript:addSearchEngine()">installe</a> la barre de recherche
+  rapide.
 </p>
-{/if}
+</div>
+
+<script type="text/javascript">//<![CDATA[
+  {literal}
+  if (canAddSearchEngine()) {
+    document.getElementById('searchbar').style.display = '';
+  }
+  {/literal}
+//]]></script>
 
 <h2>Polytechniciens des promotions 1919 et précédentes</h2>
 <p>Notre base de données ne contient que les polytechniciens depuis la promotion 1920. Pour effectuer des recherches dans les
