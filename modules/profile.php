@@ -341,11 +341,11 @@ class ProfileModule extends PLModule
 
         //doit-on faire un update ?
         if (Env::has('modifier') || Env::has('suivant')) {
-            require_once "profil/get_{$opened_tab}.inc.php";
-            require_once "profil/verif_{$opened_tab}.inc.php";
+            require_once dirname(__FILE__) . "/profile/get_{$opened_tab}.inc.php";
+            require_once dirname(__FILE__) . "/profile/verif_{$opened_tab}.inc.php";
 
             if($page->nb_errs()) {
-                require_once "profil/assign_{$opened_tab}.inc.php";
+                require_once dirname(__FILE__) . "/profile/assign_{$opened_tab}.inc.php";
                 $page->assign('onglet', $opened_tab);
                 $page->assign('onglet_tpl', "profile/$opened_tab.tpl");
                 return;
@@ -366,7 +366,7 @@ class ProfileModule extends PLModule
             }
 
             // mise a jour des champs relatifs au tab ouvert
-            require_once "profil/update_{$opened_tab}.inc.php";
+            require_once dirname(__FILE__) . "/profile/update_{$opened_tab}.inc.php";
 
             $log =& $_SESSION['log'];
             $log->log('profil', $opened_tab);
@@ -377,9 +377,9 @@ class ProfileModule extends PLModule
             pl_redirect('profile/edit/' . get_next_tab($opened_tab));
         }
 
-        require_once "profil/get_{$opened_tab}.inc.php";
-        require_once "profil/verif_{$opened_tab}.inc.php";
-        require_once "profil/assign_{$opened_tab}.inc.php";
+        require_once dirname(__FILE__) . "/profile/get_{$opened_tab}.inc.php";
+        require_once dirname(__FILE__) . "/profile/verif_{$opened_tab}.inc.php";
+        require_once dirname(__FILE__) . "/profile/assign_{$opened_tab}.inc.php";
 
         $page->assign('onglet', $opened_tab);
         $page->assign('onglet_tpl', "profile/$opened_tab.tpl");
