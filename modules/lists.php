@@ -272,6 +272,17 @@ class ListsModule extends PLModule
         }
     }
 
+    function compare($a, $b)
+    {
+        if ($a['promo'] == $b['promo']) {
+            if ($a['nom'] == $b['nom']) {
+                return strcmp($a['prenom'], $b['prenom']);
+            }
+            return strcmp($a['nom'], $b['nom']);
+        }
+        return $a['promo'] - $b['promo'];
+    }
+
     function _get_list($offset, $limit)
     {
         global $platal;
@@ -292,9 +303,7 @@ class ListsModule extends PLModule
                 $total--;
             }
         }
-        uasort($membres, create_function('$a,$b', 'return $a["promo"] > $b["promo"] || '
-                                                . '($a["promo"] == $b["promo"] && (strcmp($a["nom"], $b["nom"]) > 0 || '
-                                                . '($a["nom"] == $b["nom"] && strcmp($a["prenom"], $b["prenom"]) > 0)));'));
+        uasort($membres, array($this, 'compare'));
         return array($total, $membres);
     }
 
