@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<script type="text/javascript">
+<script type="text/javascript">//<![CDATA[
   {literal}
   function updatePreview()
   {
@@ -34,7 +34,7 @@
       document.getElementById('valid').style.display = '';
       document.getElementById('info').style.display = 'none';
     }
-    var page  = 'events/preview?titre=' + titre + '&texte=' + texte;
+    var page  = 'events/preview?titre=' + encodeURIComponent(titre) + '&texte=' + encodeURIComponent(texte);
     if (is_IE) {
       {/literal}
       page = "{$globals->baseurl}/" + page;
@@ -44,7 +44,7 @@
     return false;
   }
   {/literal}
-</script>
+//]]></script>
 
 <div id="preview">
 {include file="events/preview.tpl"}
