@@ -326,6 +326,8 @@ class RegisterModule extends PLModule
             $mymail->setTxtBody(wordwrap($msg, 72));
             $mymail->send();
         }
+
+        /**** send a mail to X.org administrators ****/
         if ($globals->register->notif) {
             $mymail = new PlMailer();
             $mymail->setSubject("Inscription de $prenom $nom (X$promo)");
@@ -338,7 +340,10 @@ class RegisterModule extends PLModule
                  . " - naissance : $naissance\n"
                  . " - forlife   : $forlife\n"
                  . " - email     : $email\n"
-                 . " - sexe      : $femme\n"; 
+                 . " - sexe      : $femme\n"
+                 . " - ip        : " . (@$_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR']
+                                                                          : $_SERVER['REMOTE_ADDR']) . "\n"
+                 . " - proxy     : " . (@$_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['REMOTE_ADDR'] : "") . "\n";
             $mymail->setTxtBody($msg);
             $mymail->send(); 
         }
