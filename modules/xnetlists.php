@@ -136,7 +136,7 @@ class XnetListsModule extends ListsModule
         $liste = strtolower(Post::v('liste'));
 
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
-            $page->trig('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
+            $page->trig('le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets');
             return;
         }
 

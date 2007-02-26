@@ -192,7 +192,7 @@ class ListsModule extends PLModule
             $page->trig('champs «addresse souhaitée» vide');
         }
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
-            $page->trig('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
+            $page->trig('le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets');
         }
 
         $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);

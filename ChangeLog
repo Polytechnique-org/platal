@@ -20,6 +20,7 @@ Bug/Wish:
 
     * Lists:
         - #407: RSS feed                                                   -FRU
+        - #515: Specify allowed characters in the name of the list         -FRU
         - #636: Remove non-X from trombi                                   -FRU
         - #638: Sort trombi by promo then name                             -FRU
 
