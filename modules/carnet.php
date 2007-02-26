@@ -30,7 +30,7 @@ class CarnetModule extends PLModule
 
             'carnet/contacts'       => $this->make_hook('contacts', AUTH_COOKIE),
             'carnet/contacts/pdf'   => $this->make_hook('pdf',      AUTH_COOKIE),
-            'carnet/contacts/ical'  => $this->make_hook('ical',     AUTH_COOKIE),
+            'carnet/contacts/ical'  => $this->make_hook('ical',     AUTH_PUBLIC),
             'carnet/contacts/vcard' => $this->make_hook('vcard',    AUTH_COOKIE),
 
             'carnet/rss'            => $this->make_hook('rss',      AUTH_PUBLIC),
@@ -333,8 +333,20 @@ class CarnetModule extends PLModule
         $page->assign('notifs', $notifs);
     }
 
-    function handler_ical(&$page)
+    function handler_ical(&$page, $alias = null, $hash = null)
     {
+        require_once 'rss.inc.php';
+        $uid = init_rss(null, $alias, $hash, false);
+        if (S::logged()) {
+            if (!$uid) {
+                $uid = S::i('uid');
+            } else if ($uid != S::i('uid')) {
+                require_once 'xorg.misc.inc.php';
+                send_warning_email("Récupération d\'un autre utilisateur ($uid)");
+            }
+        } else if (!$uid) {
+            exit;
+        }
         require_once 'ical.inc.php';
         $page->changeTpl('carnet/calendar.tpl', NO_SKIN);
         $page->register_function('display_ical', 'display_ical');
@@ -350,7 +362,7 @@ class CarnetModule extends PLModule
                    FROM contacts      AS c
              INNER JOIN auth_user_md5 AS u ON (u.user_id = c.contact)
              INNER JOIN aliases       AS a ON (u.user_id = a.id AND a.type = \'a_vie\')
-                  WHERE c.uid = {?}', S::v('uid'));
+                  WHERE c.uid = {?}', $uid);
 
         $annivs = Array();
         while (list($prenom, $nom, $promo, $naissance, $end, $ts, $forlife) = $res->next()) {

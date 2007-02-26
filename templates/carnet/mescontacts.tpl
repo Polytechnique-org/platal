@@ -61,7 +61,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 <ul>
   <li>
     {icon name=calendar_view_day title='Anniversaires'} 
-    <a href="carnet/contacts/ical/anniv-x.ics">
+    <a href="carnet/contacts/ical/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/anniv-x.ics">
       Le calendrier des anniversaires
     </a>
   </li>

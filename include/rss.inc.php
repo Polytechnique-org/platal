@@ -59,7 +59,9 @@ function init_rss($template, $alias, $hash, $require_uid = true)
         }
     }
 
-    header('Content-Type: application/rss+xml; charset=utf8');
+    if ($template) {
+        header('Content-Type: application/rss+xml; charset=utf8');
+    }    
     return $uid;
 }
 

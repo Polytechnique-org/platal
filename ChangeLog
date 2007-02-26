@@ -15,6 +15,9 @@ Bug/Wish:
     * Banana:
         - #407: RSS feed                                                   -FRU
 
+    * Carnet:
+        - #510: Use RSS hash to get iCal                                   -FRU
+
     * Profile:
         - Better checks on image type for photos                           -FRU
 
