@@ -59,6 +59,41 @@ class EventsModule extends PLModule
         return $res->fetchOneAssoc();
     }
 
+    function get_events($where, $order, array &$array, $name)
+    {
+        // affichage des evenements
+        // annonces promos triées par présence d'une limite sur les promos
+        // puis par dates croissantes d'expiration
+        $promo = S::v('promo');
+        $uid   = S::i('uid'); 
+        $sql = "SELECT  e.id,e.titre, ev.user_id IS NULL AS nonlu
+                  FROM  evenements    AS e
+            LEFT JOIN   evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
+                 WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
+                        AND (e.promo_min = 0 || e.promo_min <= {?})
+                        AND (e.promo_max = 0 || e.promo_max >= {?})
+                        AND $where
+              ORDER BY  $order";
+        $sum = XDB::iterator($sql, $uid, $promo, $promo);
+        if (!$sum->total()) {
+            return false;
+        }
+        $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife
+                  FROM  evenements     AS e
+            INNER JOIN  auth_user_md5  AS a ON e.user_id=a.user_id
+            INNER JOIN  aliases        AS l ON ( a.user_id=l.id AND l.type='a_vie' )
+             LEFT JOIN  evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
+                 WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
+                        AND (e.promo_min = 0 || e.promo_min <= {?})
+                        AND (e.promo_max = 0 || e.promo_max >= {?})
+                        AND ev.user_id IS NULL
+                        AND $where
+              ORDER BY  $order";
+        $evt = XDB::iterator($sql, $uid, $promo, $promo);
+        $array[$name] = array('events' => $evt, 'summary' => $sum);
+        return true;
+    }
+
     function handler_ev(&$page, $action = 'list', $eid = null, $pound = null)
     {
         $page->changeTpl('events/index.tpl');
@@ -66,7 +101,7 @@ class EventsModule extends PLModule
         $page->assign('tips', $this->get_tips());
 
         $res = XDB::query('SELECT date, naissance FROM auth_user_md5
-                                      WHERE user_id={?}', S::v('uid'));
+                            WHERE user_id={?}', S::v('uid'));
         list($date, $naissance) = $res->fetchOneRow();
 
         // incitation à mettre à jour la fiche
@@ -87,7 +122,7 @@ class EventsModule extends PLModule
         // incitation à mettre une photo
 
         $res = XDB::query('SELECT COUNT(*) FROM photo
-                                      WHERE uid={?}', S::v('uid'));
+                            WHERE uid={?}', S::v('uid'));
         $page->assign('photo_incitation', $res->fetchOneCell() == 0);
 
         // Incitation à se géolocaliser
@@ -119,36 +154,16 @@ class EventsModule extends PLModule
             pl_redirect('events#newsid'.$eid);
         }
 
-        // affichage des evenements
-        // annonces promos triées par présence d'une limite sur les promos
-        // puis par dates croissantes d'expiration
-        $promo = S::v('promo');
-        $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife
-                  FROM  evenements     AS e
-            INNER JOIN  auth_user_md5  AS a ON e.user_id=a.user_id
-            INNER JOIN  aliases        AS l ON ( a.user_id=l.id AND l.type='a_vie' )
-             LEFT JOIN  evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
-                 WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
-                        AND (e.promo_min = 0 || e.promo_min <= {?})
-                        AND (e.promo_max = 0 || e.promo_max >= {?})
-                        AND ev.user_id IS NULL
-              ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
-        $page->assign('evenement',
-                      XDB::iterator($sql, S::v('uid'),
-                                              $promo, $promo)
-                      );
-
-        $sql = "SELECT  e.id,e.titre, ev.user_id IS NULL AS nonlu
-                  FROM  evenements    AS e
-            LEFT JOIN   evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
-                 WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
-                        AND (e.promo_min = 0 || e.promo_min <= {?})
-                        AND (e.promo_max = 0 || e.promo_max >= {?})
-              ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
-        $page->assign('evenement_summary',
-                      XDB::iterator($sql, S::v('uid'),
-                                              $promo, $promo)
-                     );
+        $array = array();
+        $this->get_events('e.creation_date > DATE_SUB(CURDATE(), INTERVAL 2 DAY)',
+                          'e.creation_date DESC', $array, 'news');
+        $this->get_events('e.peremption < DATE_ADD(CURDATE(), INTERVAL 2 DAY)
+                          AND e.creation_date <= DATE_SUB(CURDATE(), INTERVAL 2 DAY)',
+                          'e.peremption, e.creation_date DESC', $array, 'end');
+        $this->get_events('e.peremption >= DATE_ADD(CURDATE(), INTERVAL 2 DAY)
+                          AND e.creation_date <= DATE_SUB(CURDATE(), INTERVAL 2 DAY)',
+                          'e.peremption, e.creation_date DESC', $array, 'body');
+        $page->assign_by_ref('events', $array);
     }
 
     function handler_rss(&$page, $user = null, $hash = null)
@@ -300,7 +315,8 @@ class EventsModule extends PLModule
                 $action = 'edit';
             } else {
                 XDB::execute('UPDATE evenements
-                                 SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?}
+                                 SET creation_date = creation_date, 
+                                     titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?}
                                WHERE id = {?}', 
                               Post::v('titre'), Post::v('texte'), Post::v('peremption'),
                               Post::v('promo_min'), Post::v('promo_max'), $eid);

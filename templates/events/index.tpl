@@ -104,8 +104,22 @@ Bienvenue {$smarty.session.prenom}
         Sommaire des informations événementielles
       </th>
     </tr>
-    {iterate item=ev from=$evenement_summary}
-    <tr class="{cycle values="impair,pair"}">
+    {foreach from=$events name=events key=category item=evenement}
+    {if $smarty.foreach.events.total neq 1}
+    <tr class="pair" style="height: 18px">
+      <td class="half titre" style="height: 18px; padding-top: 1px; padding-bottom: 1px;">
+        {if $category eq 'news'}
+          {icon name=bell} Nouvelles annonces&nbsp;:
+        {elseif $category eq 'end'}
+          {icon name=clock} Dernières minutes&nbsp;:
+        {else}
+          {icon name=magnifier} Mais encore...
+        {/if}
+      </td>
+    </tr>
+    {/if}
+    {iterate item=ev from=$evenement.summary}
+    <tr class="impair">
       <td class="half">
         &bull;
         <a href="events{if !$ev.nonlu}/unread/{$ev.id}{else}#newsid{$ev.id}{/if}" id="link-evt{$ev.id}">
@@ -119,6 +133,7 @@ Bienvenue {$smarty.session.prenom}
     </tr>
     {assign var="has_evts" value=true}
     {/iterate}
+    {/foreach}
     {if !$has_evts}
     <tr>
       <td class="half">Aucun article actuellement</td>
@@ -141,14 +156,24 @@ Bienvenue {$smarty.session.prenom}
   }
   {/literal}
   </script>
-  
-  {iterate item=ev from=$evenement}
+ 
+  {foreach from=$events key=category item=evenement}
+  {iterate item=ev from=$evenement.events}
   <div id="content-evt{$ev.id}">
   <br />
 
   <table class="bicol">
     <tr>
       <th>
+        <div style="float: left">
+          {if $category eq 'news'}
+            {icon name=bell title="Nouvelle annonce"}
+          {elseif $category eq 'end'}
+            {icon name=clock title="Bientôt fini"}
+          {else}
+            {icon name=magnifier title="Annonce"}
+          {/if}
+        </div>
         <div style="float:right">
           {if $smarty.session.perms eq 'admin'}
           <a href="admin/events/edit/{$ev.id}">{icon name=page_edit title="Editer cet article"}</a>
@@ -178,6 +203,7 @@ Bienvenue {$smarty.session.prenom}
   </table>
   </div>
   {/iterate}
+  {/foreach}
 
   <p class="smaller">
   Nota Bene : les informations présentées ici n'engagent que leurs auteurs

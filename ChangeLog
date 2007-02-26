@@ -7,6 +7,9 @@ New:
         - UTF-8                                                            -FRU
         - New Backtrace tool                                               -FRU
 
+    * Events:
+        - #643: Sort menu                                                  -FRU
+
     * Search:
         - Search Engine IE7 compatible                                     -FRU
 
