@@ -225,7 +225,7 @@ function start_connexion ($uid, $identified)
     SELECT  u.user_id AS uid, prenom, nom, perms, promo, matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
                 UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias AS forlife, a2.alias AS bestalias,
                 q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
-                FIND_IN_SET('watch', u.flags) AS watch_account
+                FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
     INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')

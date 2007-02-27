@@ -259,6 +259,7 @@ class ProfileModule extends PLModule
         $page->assign('virtualalias', $res->fetchOneCell());
 
         $page->addJsLink('close_on_esc.js');
+        header('Last-Modified: ' . date('r', strtotime($user['date'])));
     }
 
     function handler_p_edit(&$page, $opened_tab = 'general')

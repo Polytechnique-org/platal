@@ -24,9 +24,13 @@
 {if $full}
 <fieldset id="tod">
 {/if}
-  <legend>{icon name=lightbulb}Astuce&nbsp;: {$tips.titre}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <legend>{icon name=lightbulb}{if !$tips.special}
+    Astuce&nbsp;: {$tips.titre}
+  {else}
+    <span style="color: red; font-weight: bold;">{$tips.titre}</span>
+  {/if}
   {if !$nochange}
-  <a href="" onclick="Ajax.update_html('tod', 'ajax/tips/{$tips.id}'); return false">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="" onclick="Ajax.update_html('tod', 'ajax/tips/{$tips.id}'); return false">
     {icon name=resultset_next title="Astuce suivante"}
   </a>
   {/if}
