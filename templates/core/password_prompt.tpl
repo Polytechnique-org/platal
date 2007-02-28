@@ -68,8 +68,8 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
   <table class="bicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <th colspan="2">{if $smarty.server.HTTPS}{icon name=lock}{/if} Identification
-      {if !$smarty.server.HTTPS}
-      (<a href="{$globals->baseurl|replace:"http":"https"}/{$platal->pl_self()}">{icon name=lock_add} Passer en connexion sécurisée</a>)
+      {if !$smarty.server.HTTPS && #globals.core.secure_domain#}
+      (<a href="https://{#globals.core.secure_domain#}{$smarty.server.REQUEST_URI}">{icon name=lock_add} Passer en connexion sécurisée</a>)
       {/if}
       </th>
     </tr>

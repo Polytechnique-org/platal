@@ -21,6 +21,9 @@ Bug/Wish:
     * Carnet:
         - #510: Use RSS hash to get iCal                                   -FRU
 
+    * Core:
+        - #640: Always switch to the good secure server                    -FRU
+
     * Emails:
         - #595: Update antispam description                                -FRU
 
