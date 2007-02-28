@@ -19,21 +19,28 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-global $tidy_config;
-$tidy_config = array(
-    'drop-empty-paras' => true,
-    'drop-font-tags' => true,
-    'drop-proprietary-attributes' => true,
-    'hide-comments' => true,
-    'logical-emphasis' => true,
-    'output-xhtml' => true,
-    'replace-color' => true,
-    'show-body-only' => true,
-    'clean' => false,
-    'join-styles' => false,
-    'join-classes' => false,
-    'alt-text' => '[ inserted by TIDY ]',
-    'wrap' => '120');
+$tidy_on = Array(
+    'drop-empty-paras',
+    'drop-font-tags',
+    'drop-proprietary-attributes',
+    'hide-comments',
+    'logical-emphasis',
+    'output-xhtml',
+    'replace-color',
+    'show-body-only'
+);
+$tidy_off = Array(
+    'clean',
+    'join-styles',
+    'join-classes'
+);
+
+foreach($tidy_on as $opt) { tidy_setopt($opt, true); }
+foreach($tidy_off as $opt) { tidy_setopt($opt, false); }
+tidy_setopt('alt-text', '[ inserted by TIDY ]');
+tidy_setopt('wrap', '120');
+tidy_set_encoding('latin0');
+unset($tidy_o, $tydy_off);
 
 /*
  * Smarty plugin
@@ -46,9 +53,7 @@ $tidy_config = array(
  */
 function smarty_block_tidy($params, $content, &$smarty)
 {
-    global $tidy_config;
-    return tidy_repair_string($content, $tidy_config, 'latin0');
+    return tidy_repair_string($content);
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
