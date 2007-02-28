@@ -25,11 +25,11 @@
 <h1>Bravo !!!</h1>
 
 <p>
-Tu as maintenant accès au site !!!
+Tu as maintenant accès au site !!!<br />
 Ton adresse électronique à vie <strong>{$smarty.session.forlife}@polytechnique.org</strong> est déjà ouverte, essaie-la !
 </p>
-<p>
-  Remarque: m4x.org est un domaine "discret" qui veut dire "mail for X" et
+<p class="smaller">
+  <strong>Remarque :</strong> m4x.org est un domaine "discret" qui veut dire "mail for X" et
   qui comporte exactement les mêmes adresses que le domaine polytechnique.org.
 </p>
 
@@ -83,8 +83,8 @@ Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le f
 <div><input type="hidden" name="response2"  value="" /></div>
 </form>
 
-<p>
-N'oublie pas : si tu perds ton mot de passe, nous n'avons aucun engagement, en
+<p class="smaller">
+<strong>N'oublie pas :</strong> si tu perds ton mot de passe, nous n'avons aucun engagement, en
 particulier en termes de rapidité, mais pas seulement, à te redonner accès au
 site. Cela peut prendre plusieurs semaines, les pertes de mot de passe sont
 traitées avec la priorité minimale.
@@ -104,31 +104,41 @@ traitées avec la priorité minimale.
   les données qu'il contient :
   </p>
 
-  <ul>
-    <li>
-    <strong>vers l'AX</strong> : tu peux choisir dans ton profil sur Polytechnique.org d'automatiquement transmettre à l'AX des parties de ta fiche, au fur et à mesure que tu les modifies.
-    (Les données transmises seront <strong>uniquement</strong> celles que tu as décidé de transmettre).
-    </li>
-    <li>
-    <strong>depuis l'AX</strong> : nous mettons à jour ta fiche depuis les données de l'annuaire de l'AX si tu le souhaites. <br/>
-    (si tu ne le souhaites pas, décoche la case ci contre : <input type='checkbox' value='1' checked="checked" name='register_from_ax_question' />)
-    </li>
-  </ul>
+  <dl>
+    <dt><input type="checkbox" value="1" checked="checked" name="send_to_ax" disabled="disabled" /> vers l'AX</dt>
+    <dd>
+      tu peux choisir dans ton profil sur Polytechnique.org d'automatiquement transmettre à l'AX des parties de ta fiche,
+      au fur et à mesure que tu les modifies.
+      (Les données transmises seront <strong>uniquement</strong> celles que tu as décidé de transmettre).
+    </dd>
+    <dt><input type='checkbox' value='1' checked="checked" name='register_from_ax_question' /> depuis l'AX</dt>
+    <dd>
+    nous mettons à jour ta fiche depuis les données de l'annuaire de l'AX si tu le souhaites. <br/>
+    (si tu ne le souhaites pas, décoche la case ci-dessus)
+    </dd>
+  </dl>
 
   <p>
   Pour profiter pleinement de ta nouvelle inscription, nous te proposons
   </p>
 
-  <ul>
-    <li>
-    <strong>lettre mensuelle</strong> : de recevoir chaque mois la lettre mensuelle de Polytechnique.org contenant les activités et nouvelles de la communauté des X.<br/>
-    (si tu ne le souhaites pas, décoche la case ci contre : <input type='checkbox' value='1' checked="checked" name='add_to_nl' />)
-    </li>
-    <li>
-    <strong>ta promo</strong> : de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.promo}.<br />
-    (si tu ne le souhaites pas, décoche la case ci contre : <input type='checkbox' value='1' checked="checked" name='add_to_promo' />)
-    </li>
-  </ul>
+  <dl>
+    <dt><input type='checkbox' value='1' checked="checked" name='add_to_nl' /> lettre mensuelle*</dt>
+    <dd>
+      de recevoir chaque mois la lettre mensuelle de Polytechnique.org contenant les activités et nouvelles de la communauté des X.
+    </dd>
+    <dt><input type="checkbox" value="1" checked="checked" name="add_to_ax" /> envois de l'AX*</dt>
+    <dd>
+      de recevoir les informations importantes de l'AX.
+    </dd>
+    <dt><input type='checkbox' value='1' checked="checked" name='add_to_promo' /> ta promo*</dt>
+    <dd>
+      de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements
+      qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.promo}.
+    </dd>
+  </dl>
+
+  <p class="smaller">* décoche les cases si tu ne souhaites pas être inscrit à la liste de diffusion correspondante</p>
 
   <div class="center">
     <input type="submit" value="Rejoindre les X sur le Net !" class="erreur" />

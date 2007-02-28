@@ -366,7 +366,7 @@ class RegisterModule extends PLModule
                                      WHERE user_id={?}', $password,
                                    S::v('uid'));
 
-            $log =& S::v('log');
+            $log = S::v('log');
             $log->log('passwd', '');
 
             if (Cookie::v('ORGaccess')) {
