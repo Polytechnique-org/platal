@@ -279,7 +279,7 @@ class ProfileModule extends PLModule
         }
         if (Post::v('add_to_nl')) {
             require_once 'newsletter.inc.php';
-            subscribe_nl();
+            NewsLetter::subscribe();
         }
         if (Post::v('add_to_promo')) {
             $r = XDB::query('SELECT id FROM groupex.asso WHERE diminutif = {?}',
