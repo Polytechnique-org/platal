@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-{foreach from="$users" item=vcard}
+{iterate from=$users item=vcard}
 BEGIN:VCARD
 VERSION:3.0
 {if $vcard.nom_usage}
@@ -87,10 +87,10 @@ X-BINETS:{$vcard.binets_vcardjoin}
 X-GROUPS:{$vcard.gpxs_vcardjoin}
 {/if}
 {if $vcard.photo}
-PHOTO;ENCODING=b;TYPE={$vcard.photo.attachmime}:{$vcard.photo.attach|base64_encode}
+PHOTO;ENCODING=b;TYPE={$vcard.photo.attachmime}:{$vcard.photo.attach|base64_encode|vcard_enc}
 {/if}
 SORT-STRING:{$vcard.nom|vcard_enc}
 REV:{$vcard.date|date_format:"%Y%m%dT000000Z"}
 END:VCARD{"\n"}
-{/foreach}
+{/iterate}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

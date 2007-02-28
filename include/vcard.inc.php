@@ -22,69 +22,57 @@
 require_once('xorg.misc.inc.php');
 require_once('user.func.inc.php');
 
-class VCard
+class VCardIterator
 {
-    var $users = array();
-    var $photos;
+    private $user_list = array();
+    private $count     = 0;
+    private $freetext  = null;
+    private $photos    = true;
 
-    function VCard($users, $photos = true, $freetext = null)
+    public function __construct($photos, $freetext)
     {
-        $this->photos = $photos;
-        if (is_array($users)) {
-            foreach ($users as $user) {
-                $this->add_user($user, $freetext);
-            }
-        } else {
-            $this->add_user($users, $freetext);
+        $this->freetext = $freetext;
+        $this->photos   = $photos;
+    }
+
+    public function add_user($user)
+    {
+        $this->user_list[] = get_user_forlife($user);
+        $this->count++;
+    }
+
+    public function first()
+    {
+        return count($this->user_list) == $this->count - 1;
+    }
+
+    public function last()
+    {
+        return count($this->user_list) == 0;
+    }
+
+    public function total()
+    {
+        return $this->count;
+    }
+
+    public function next()
+    {
+        if (!$this->user_list) {
+            return null;
         }
-    }
-
-    function escape($text)
-    {
-        return preg_replace('/[,;]/', '\\\\$0', $text);
-    }
-
-    function format_adr($params, &$smarty)
-    {
-        // $adr1, $adr2, $adr3, $postcode, $city, $region, $country
-        extract($params['adr']);
-        $adr = trim($adr1);
-        $adr = trim("$adr\n$adr2");
-        $adr = trim("$adr\n$adr3");
-        return $this->text_encode(';;'
-                . $this->escape($adr) . ';'
-                . $this->escape($city) . ';'
-                . $this->escape($region) . ';'
-                . $this->escape($postcode) . ';'
-                . $this->escape($country), false);
-    }
-
-    function text_encode($text, $escape = true)
-    {
-        if (is_array($text)) {
-            return implode(',', array_map(array($this, 'text_encode'), $text));
-        }
-        if ($escape) {
-            $text = $this->escape($text);
-        }
-        return preg_replace("/(\r\n|\n|\r)/", '\n', $text);
-    }
-
-    function add_user($x, $freetext)
-    {
         global $globals;
-
-        $login = get_user_forlife($x);
+        $login = array_shift($this->user_list);
         $user  = get_user_details($login);
 
         if (strlen(trim($user['freetext']))) {
-            $user['freetext'] = html_entity_decode($user['freetext']);
+            $user['freetext'] = pl_entity_decode($user['freetext']);
         }
-        if (!is_null($freetext)) {
+        if ($this->freetext) {
             if (strlen(trim($user['freetext']))) {
-                $user['freetext'] = $freetext . "\n" . $user['freetext'];
+                $user['freetext'] = $this->freetext . "\n" . $user['freetext'];
             } else {
-                $user['freetext'] = $freetext;
+                $user['freetext'] = $this->freetext;
             }
         }
 
@@ -99,10 +87,10 @@ class VCard
                 S::v('uid'),
                 $user['forlife'].'@'.$globals->mail->domain,
                 $user['forlife'].'@'.$globals->mail->domain2);
-
+        
         $user['virtualalias'] = $res->fetchOneCell();
-        $user['gpxs_vcardjoin'] = join(',', array_map(array($this, 'text_encode'), $user['gpxs_name']));
-        $user['binets_vcardjoin'] = join(',', array_map(array($this, 'text_encode'), $user['binets']));
+        $user['gpxs_vcardjoin'] = join(',', array_map(array('VCard', 'text_encode'), $user['gpxs_name']));
+        $user['binets_vcardjoin'] = join(',', array_map(array('VCard', 'text_encode'), $user['binets']));
         // get photo
         if ($this->photos) {
             $res = XDB::query(
@@ -114,21 +102,69 @@ class VCard
                 $user['photo'] = $res->fetchOneAssoc();
             }
         }
-        $this->users[] = $user;
+        return $user;
+    }
+}
+
+class VCard
+{
+    private $iterator = null;
+
+    public function __construct($users, $photos = true, $freetext = null)
+    {
+        $this->iterator = new VCardIterator($photos, $freetext);
+        if (is_array($users)) {
+            foreach ($users as $user) {
+                $this->iterator->add_user($user);
+            }
+        } else {
+            $this->iterator->add_user($users);
+        }
     }
 
-    function do_page(&$page)
+    public static function escape($text)
+    {
+        return preg_replace('/[,;]/', '\\\\$0', $text);
+    }
+
+    public static function format_adr($params, &$smarty)
+    {
+        // $adr1, $adr2, $adr3, $postcode, $city, $region, $country
+        extract($params['adr']);
+        $adr = trim($adr1);
+        $adr = trim("$adr\n$adr2");
+        $adr = trim("$adr\n$adr3");
+        return VCard::text_encode(';;'
+                . VCard::escape($adr) . ';'
+                . VCard::escape($city) . ';'
+                . VCard::escape($region) . ';'
+                . VCard::escape($postcode) . ';'
+                . VCard::escape($country), false);
+    }
+
+    public static function text_encode($text, $escape = true)
+    {
+        if (is_array($text)) {
+            return implode(',', array_map(array('VCard', 'text_encode'), $text));
+        }
+        if ($escape) {
+            $text = VCard::escape($text);
+        }
+        return preg_replace("/(\r\n|\n|\r)/", '\n', $text);
+    }
+
+    public function do_page(&$page)
     {
         $page->changeTpl('core/vcard.tpl', NO_SKIN);
         $page->register_modifier('vcard_enc',  array($this, 'text_encode'));
         $page->register_function('format_adr', array($this, 'format_adr'));
-        $page->assign_by_ref('users', $this->users);
+        $page->assign_by_ref('users', $this->iterator);
 
         header("Pragma: ");
         header("Cache-Control: ");
         header("Content-type: text/x-vcard; charset=UTF-8");
         header("Content-Transfer-Encoding: 8bit");
-    }
+  }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
