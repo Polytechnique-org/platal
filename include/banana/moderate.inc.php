@@ -56,10 +56,10 @@ class ModerationBanana extends Banana
     static public $domain;
     static public $client;
 
-    function __construct($params = null, &$client)
+    function __construct($params = null)
     {
         global $globals;
-        ModerationBanana::$client = $client;
+        ModerationBanana::$client = $params['client'];
         ModerationBanana::$listname = $params['listname'];
         ModerationBanana::$domain = isset($params['domain']) ? $params['domain'] : $globals->mail->domain;
         $params['group'] = ModerationBanana::$listname . '@' . ModerationBanana::$domain;

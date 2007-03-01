@@ -13,6 +13,9 @@ New:
     * Search:
         - Search Engine IE7 compatible                                     -FRU
 
+    * Xnetgrp:
+        - Direct access to the group forum (if exists)                     -FRU
+
 Bug/Wish:
 
     * Banana:

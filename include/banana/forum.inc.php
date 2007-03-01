@@ -96,15 +96,20 @@ class ForumsBanana extends Banana
                          $time, S::i('uid'));
         }
 
-        // Register custom Banana links and tabs
-        if (!Banana::$profile['autoup']) {
-            Banana::$page->registerAction('<a href=\'javascript:dynpostkv("'
-                                . $platal->path . '", "updateall", ' . time() . ')\'>'
-                                . 'Marquer tous les messages comme lus'
-                                . '</a>', array('forums', 'thread', 'message'));
-        }   
-        Banana::$page->registerPage('profile', 'Préférences', null);
-        
+        if (!empty($GLOBALS['IS_XNET_SITE'])) {
+            Banana::$page->killPage('forums');
+            Banana::$page->killPage('subscribe');
+            Banana::$spool_boxlist = false;
+        } else {            
+            // Register custom Banana links and tabs
+            if (!Banana::$profile['autoup']) {
+                Banana::$page->registerAction('<a href=\'javascript:dynpostkv("'
+                                    . $platal->path . '", "updateall", ' . time() . ')\'>'
+                                    . 'Marquer tous les messages comme lus'
+                                    . '</a>', array('forums', 'thread', 'message'));
+            }   
+            Banana::$page->registerPage('profile', 'Préférences', null);
+        }
 
         // Run Banana
         return parent::run();

@@ -59,37 +59,16 @@ class BananaModule extends PLModule
 
     function handler_banana(&$page, $group = null, $action = null, $artid = null)
     {
+        $page->changeTpl('banana/index.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Forums & PA');
+
         $get = Array();
-        if (!is_null($group)) {
-            $get['group'] = $group;
-        }
         if (Post::has('updateall')) {
             $get['updateall'] = Post::v('updateall');
         }
-        if (!is_null($action)) {
-            if ($action == 'new') {
-                $get['action'] = 'new';
-            } elseif (!is_null($artid)) {
-                $get['artid'] = $artid; 
-                if ($action == 'reply') {
-                    $get['action'] = 'new';
-                } elseif ($action == 'cancel') {
-                    $get['action'] = $action;
-                } elseif ($action == 'from') {
-                    $get['first'] = $artid;
-                    unset($get['artid']);
-                } elseif ($action == 'read') {
-                    $get['part']  = @$_GET['part'];
-                } elseif ($action == 'source') {
-                    $get['part'] = 'source';
-                } elseif ($action == 'xface') {
-                    $get['part']  = 'xface';
-                } elseif ($action) {
-                    $get['part'] = str_replace('.', '/', $action);
-                }  
-            }
-        }   
-        return BananaModule::run_banana($page, $get);
+        require_once 'banana/forum.inc.php';
+        get_banana_params($get, $group, $action, $artid);
+        run_banana($page, 'ForumsBanana', $get);
     }
 
     function handler_profile(&$page, $action = null)
@@ -133,7 +112,11 @@ class BananaModule extends PLModule
 
     function handler_subscription(&$page)
     {
-        return $this->run_banana($page, Array('action' => 'subscribe'));
+        $page->changeTpl('banana/index.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Forums & PA');
+
+        require_once 'banana/forum.inc.php';
+        run_banana($page, 'ForumsBanana', Array('action' => 'subscribe'));
     }
 
     function handler_rss(&$page, $group, $alias, $hash, $file = null)
@@ -157,7 +140,7 @@ class BananaModule extends PLModule
 
         require_once 'banana/forum.inc.php';
         $banana = new ForumsBanana(array('group' => $group, 'action' => 'rss2'));
-        echo $banana->run();
+        $banana->run();
         exit;
     }
 
@@ -167,22 +150,7 @@ class BananaModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Forums & PA');
 
         require_once 'banana/forum.inc.php';
-
-        $banana = new ForumsBanana($params);
-        $res = $banana->run();
-        $page->assign_by_ref('banana', $banana);
-        $page->assign('banana_res', $res);
-        $page->addCssInline($banana->css());
-        $page->addCssLink('banana.css');
-        $rss = $banana->feed();
-        if ($rss) {
-            if (@$params['group']) {
-                $page->setRssLink('Banana :: ' . $params['group'], $rss);
-            } else {
-                $page->setRssLink('Banana :: Abonnements', $rss);
-            }
-        }
-        new PlBacktrace('NNTP', $banana->backtrace(), 'response', 'time');
+        run_banana($page, 'ForumsBanana', $params);
     }
 }
 

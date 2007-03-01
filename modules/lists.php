@@ -362,42 +362,9 @@ class ListsModule extends PLModule
             if (Post::has('updateall')) {
                 $get['updateall'] = Post::v('updateall');
             }
-            if (!is_null($action)) {
-                if ($action == 'new') {
-                    $get['action'] = 'new';
-                } elseif (!is_null($artid)) {
-                    $get['artid'] = $artid;
-                    if ($action == 'reply') {
-                        $get['action'] = 'new';
-                    } elseif ($action == 'cancel') {
-                        $get['action'] = $action;
-                    } elseif ($action == 'from') {
-                        $get['first'] = $artid;
-                        unset($get['artid']);
-                    } elseif ($action == 'read') {
-                        $get['part']  = @$_GET['part'];
-                    } elseif ($action == 'source') {
-                        $get['part'] = 'source';
-                    } elseif ($action == 'xface') {
-                        $get['part']  = 'xface';
-                    } elseif ($action) {
-                        $get['part'] = str_replace('.', '/', $action);
-                    }
-                    if (Get::v('action') == 'showext') {
-                        $get['action'] = 'showext';
-                    }   
-                }
-            }
-            require_once('banana/ml.inc.php');
-            $banana = new MLBanana($get);
-            $page->assign('banana', $banana->run());
-            $page->addCssInline($banana->css());
-            $page->addCssLink('banana.css');
-            $rss = $banana->feed();
-            if ($rss) {
-                $page->setRssLink('Banana :: ' . $list, $rss);
-            }
-            new PlBacktrace('MBox', $banana->backtrace(), 'response', 'time');
+            require_once 'banana/ml.inc.php';
+            get_banana_params($get, null, $action, $artid);
+            run_banana($page, 'MLBanana', $get);
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
         }
@@ -426,7 +393,7 @@ class ListsModule extends PLModule
             }
             require_once('banana/ml.inc.php');
             $banana = new MLBanana(Array('listname' => $liste, 'domain' => $domain, 'action' => 'rss2'));
-            echo $banana->run();
+            $banana->run();
         }
         exit;
     }
@@ -503,12 +470,12 @@ class ListsModule extends PLModule
             }
         } elseif (Env::has('mid')) {
             if (Get::has('mid') && !Env::has('mok') && !Env::has('mdel')) {
+                $page->changeTpl('lists/moderate_mail.tpl');
                 require_once('banana/moderate.inc.php');
                 $params = array('listname' => $liste, 'domain' => $domain,
                                 'artid' => Get::i('mid'), 'part' => Get::v('part'), 'action' => Get::v('action'));
-                $banana = new ModerationBanana($params, $this->client);
-                $res    = $banana->run();
-                $page->addCssInline($banana->css());
+                $params['client'] = $this->client;
+                run_banana($page, 'ModerationBanana', $params);
 
                 $msg = file_get_contents('/etc/mailman/fr/refuse.txt');
                 $msg = str_replace("%(adminaddr)s", "$liste-owner@{$domain}", $msg);
@@ -516,10 +483,6 @@ class ListsModule extends PLModule
                 $msg = str_replace("%(reason)s",    "<< TON EXPLICATION >>",  $msg);
                 $msg = str_replace("%(listname)s",  $liste, $msg);
                 $page->assign('msg', $msg);
-                
-                $page->addCssLink('banana.css');
-                $this->changeTpl('lists/moderate_mail.tpl');
-                $page->assign_by_ref('mail', $res);
                 return;
             }
 

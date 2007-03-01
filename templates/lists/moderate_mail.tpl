@@ -26,7 +26,7 @@
   Contenu du mail en attente
 </h1>
 
-{$mail|smarty:nodefaults}
+{$banana|smarty:nodefaults}
 
 <form method='post' action='{$platal->pl_self(1)}'>
   <table class='tinybicol' cellpadding='0' cellspacing='0'>

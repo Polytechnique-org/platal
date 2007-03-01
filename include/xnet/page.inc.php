@@ -82,8 +82,13 @@ class XnetPage extends PlatalPage
                 $sub['trombinoscope'] = "$dim/trombi";
                 $sub['carte'] = "$dim/geoloc";
             }
-            if ((is_member() || may_update()) && $globals->asso('mail_domain')) {
-                $sub['listes de diffusion'] = "$dim/lists";
+            if (is_member() || may_update()) {
+                if ($globals->asso('forum')) {
+                    $sub['forum'] = "$dim/forum";
+                }
+                if ($globals->asso('mail_domain')) {
+                    $sub['listes de diffusion'] = "$dim/lists";
+                }
             }
             $sub['événement'] = "$dim/events";
             if (may_update() || is_member()) {

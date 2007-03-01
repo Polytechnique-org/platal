@@ -125,12 +125,15 @@ function hook_makeImg($img, $alt, $height, $width)
     return '<img src="' . $url . '"' . $height . $width . ' alt="' . $alt . '" />';
 }
 
+if (!function_exists('hook_makeLink')) {
 function hook_makeLink($params)
 {
     global $globals, $platal;
-    if (Banana::$protocole->name() == 'NNTP') {
+    $xnet = !empty($GLOBALS['IS_XNET_SITE']);
+    $feed = (@$params['action'] == 'rss' || @$params['action'] == 'rss2' || @$params['action'] == 'atom');
+    if (Banana::$protocole->name() == 'NNTP' && !$xnet) {
         $base = $globals->baseurl . '/banana';
-        if (@$params['action'] == 'rss' || @$params['action'] == 'rss2' || @$params['action'] == 'atom') {
+        if ($feed) {
             return $base . hook_platalRSS(@$params['group']);
         }
         if (isset($params['page'])) {
@@ -144,9 +147,14 @@ function hook_makeLink($params)
             return $base;
         }
         $base .= '/' . $params['group'];
+    } else if (Banana::$protocole->name() == 'NNTP' && $xnet) {
+        if ($feed) {
+            return 'http://www.polytechnique.org/banana' . hook_platalRSS(@$params['group']);
+        }   
+        $base = $globals->baseurl . '/' . $platal->ns . 'forum';        
     } else if (Banana::$protocole->name() == 'MLArchives') {
         $base = $globals->baseurl . '/' . $platal->ns . 'lists/archives';
-        if (@$params['action'] == 'rss' || @$params['action'] == 'rss2' || @$params['action'] == 'atom') {
+        if ($feed) {
             return $base . hook_platalRSS(MLBanana::$listname);
         }
         $base .= '/' . MLBanana::$listname;
@@ -156,6 +164,60 @@ function hook_makeLink($params)
         $base .= '?action=showext';
     }
     return $base;
+}
+}
+
+function get_banana_params(array &$get, $group = null, $action = null, $artid = null)
+{
+    if (!is_null($group)) {
+        $get['group'] = $group;
+    }
+    if (!is_null($action)) {
+        if ($action == 'new') {
+            $get['action'] = 'new'; 
+        } elseif (!is_null($artid)) {
+            $get['artid'] = $artid; 
+            if ($action == 'reply') {
+                $get['action'] = 'new';
+            } elseif ($action == 'cancel') {
+                $get['action'] = $action;
+            } elseif ($action == 'from') {
+                $get['first'] = $artid;
+                unset($get['artid']);
+            } elseif ($action == 'read') {
+                $get['part']  = @$_GET['part'];
+            } elseif ($action == 'source') {
+                $get['part'] = 'source';
+            } elseif ($action == 'xface') {
+                $get['part']  = 'xface';
+            } elseif ($action) {
+                $get['part'] = str_replace('.', '/', $action);
+            }
+            if (Get::v('action') == 'showext') { 
+                $get['action'] = 'showext'; 
+            }   
+        }
+    }
+}
+
+function run_banana(&$page, $class, array $args)
+{
+    $banana = new $class($args);
+    $page->assign('banana', $banana->run());
+    $page->addCssInline($banana->css());
+    $page->addCssLink('banana.css');
+    $rss = $banana->feed();
+    if ($rss) {
+        if (Banana::$group) {
+            $page->setRssLink('Banana :: ' . Banana::$group, $rss);
+        } else {
+            $page->setRssLink('Banana :: Abonnements', $rss);
+        }
+    }
+    $bt = $banana->backtrace();
+    if ($bt) {
+        new PlBacktrace(Banana::$protocole->name(), $banana->backtrace(), 'response', 'time');
+    }    
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

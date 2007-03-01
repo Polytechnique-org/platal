@@ -53,7 +53,7 @@
       Forum:
     </td>
     <td>
-      <a href="https://www.polytechnique.org/banana/{$asso.forum}">par le web</a>
+      <a href="{$platal->ns}forum">par le web</a>
       ou <a href="news://ssl.polytechnique.org/{$asso.forum}">par nntp</a>
     </td>
   </tr>

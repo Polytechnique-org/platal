@@ -78,6 +78,7 @@ class XnetGrpModule extends PLModule
             '%grp/logo'           => $this->make_hook('logo',      AUTH_PUBLIC),
             '%grp/edit'           => $this->make_hook('edit',      AUTH_MDP),
             '%grp/mail'           => $this->make_hook('mail',      AUTH_MDP),
+            '%grp/forum'          => $this->make_hook('forum',     AUTH_MDP),
             '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP),
             '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP),
             '%grp/trombi'         => $this->make_hook('trombi',    AUTH_MDP),
@@ -292,6 +293,19 @@ class XnetGrpModule extends PLModule
             $page->kill("Mail envoyé !");
             $page->assign('sent', true);
         }
+    }
+
+    function handler_forum(&$page, $group = null, $artid = null)
+    {
+        global $globals;
+        new_group_page('xnetgrp/forum.tpl');
+        if (!$globals->asso('forum')) {
+            return PL_NOT_FOUND;
+        }
+        require_once 'banana/forum.inc.php';
+        $get = array();
+        get_banana_params($get, $globals->asso('forum'), $group, $artid);
+        run_banana($page, 'ForumsBanana', $get);
     }
 
     function handler_annuaire(&$page)

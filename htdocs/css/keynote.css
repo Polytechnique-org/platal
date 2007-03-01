@@ -42,6 +42,7 @@ td    { vertical-align: top; }
 li    { padding-left: 3px; padding-right: 3px; 
         text-align: justify; }
 hr    { text-align: center; }
+dt    { font-weight: bold; }
 
 fieldset {
     border-top: 1px solid #fff;
@@ -536,7 +537,7 @@ div.adresse {
 
 
 #body-bottom {
-    border-top: 1px solid #fff;
+    border-top: 1px solid #aaa;
     text-align: center;
     padding: 4px;
     font-size: 75%;
