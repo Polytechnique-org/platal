@@ -83,7 +83,7 @@ class UsageReq extends Validate
     {
         global $globals;
         if ($isok) {
-            $res = "  La demande de changement de nom d'usage que tu as demandée vient d'être effectuée.";
+            $res = "  Le changement de nom d'usage que tu as demandé vient d'être effectué.";
             if ($this->oldalias) {
                 $res .= "\n\n  Les alias {$this->oldalias}@{$globals->mail->domain} et @{$globals->mail->domain2} ont été supprimés.";
             }
