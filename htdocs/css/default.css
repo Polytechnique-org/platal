@@ -42,8 +42,7 @@ fieldset {
     background: #eeeeee;
     color: inherit;
 
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin: 1em 0 1em 0;
 }
 
 legend {
@@ -137,8 +136,8 @@ table.bicol {
     background: #eeeeee;
     border: 1px solid #336699;
     border-collapse: collapse;
-    width: 98%;
-    margin-left: 1%;
+    width: 100%;
+    margin-left: 0;
 }
 table.tinybicol {
     color: inherit;

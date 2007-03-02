@@ -45,14 +45,18 @@ hr    { text-align: center; }
 dt    { font-weight: bold; }
 
 fieldset {
-    border-top: 1px solid #fff;
-    border-left: 1px solid #fff;
+    border: 1px solid #fff;
+    border-bottom: 0px;
+    border-right: 0px;
     background: url('../images/skins/keynote_bg_lighter.png') #848495 top left repeat-x fixed;
     color: #000;
     margin: 1em 0 1em 0;
 }
 legend {
-    border: 1px solid #fff;
+    border-bottom: 1px solid #666;
+    border-right: 1px solid #666;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
     background: url('../images/skins/keynote_bg_verylighter.png') #bbbbaa top left repeat-x fixed;
     color: #000;
 
@@ -144,7 +148,7 @@ table.bicol, table.tinybicol {
     border-color: #fff;
     border-collapse: collapse;
 }
-table.bicol     { width: 98%; margin-left: 1%; }
+table.bicol     { width: 100%; margin-left: 0; }
 table.tinybicol { width: 70%; margin-left: 15%; }
 
 table.tinybicol tr.pair, table.bicol tr.pair {
@@ -196,8 +200,7 @@ td.action a { padding: 0px 2px 0px 2px; }
     background: url('../images/skins/keynote_bg_lighter.png') #848495 top left repeat-x fixed;
     color: #000;
     border-top: 1px solid #fff;
-    width: 98%;
-    margin-left: 1%;
+    width: 100%;
 }
 #skin td {
     border-bottom: 1px solid #fff;
