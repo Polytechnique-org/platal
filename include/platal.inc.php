@@ -79,6 +79,11 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
         "</div>";
 }
 
+function pl_clear_errors()
+{
+    unset($GLOBALS['pl_errors']);
+}
+
 function pl_dump_env()
 {
     echo "<div class='phperror'><pre>";

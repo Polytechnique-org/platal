@@ -114,6 +114,31 @@ function wiki_may_have_perms($perm) {
     }
 }
 
+function wiki_apply_feed_perms($perm)
+{
+    if ($perm == 'public') {
+        return;
+    }
+
+    require_once 'rss.inc.php';
+    $uid = init_rss(null, Env::v('user'), Env::v('hash'));
+    if (!$uid) {
+        exit;
+    }
+    $res = XDB::query('SELECT user_id, IF (nom_usage <> \'\', nom_usage, nom) AS nom, prenom, perms
+                         FROM auth_user_md5
+                        WHERE user_id = {?}', $uid);
+    if (!$res->numRows()) {
+        exit;
+    }
+    $table = $res->fetchOneAssoc();
+    $_SESSION = array_merge($_SESSION, $table, array('forlife' => Env::v('user')));
+    if ($perm == 'logged' || S::has_perms()) {
+        return;
+    }
+    exit;
+}
+
 function wiki_apply_perms($perm) {
     global $page, $platal, $globals;
 

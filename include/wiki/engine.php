@@ -33,8 +33,9 @@ $feed  = false;
 // Check user perms
 switch (Env::v('action')) {
   case 'rss': case 'atom': case 'sdf': case 'dc':
+    wiki_apply_feed_perms($perms['0']);  
     $feed = true;
-  case '': case 'search': case 'rss': case 'atom': 
+  case '': case 'search': 
     break;
 
   case 'edit':
@@ -106,13 +107,14 @@ if ($feed) {
     }
 }
 
-// Check user perms
-wiki_apply_perms($perms[0]);
-
 if ($feed) {
     echo $wikiAll;
+    pl_clear_errors();
     exit;
 }
+
+// Check user perms
+wiki_apply_perms($perms[0]);
 
 $page->assign('perms', $perms);
 $page->assign('perms_opts', wiki_perms_options());
@@ -130,7 +132,11 @@ if (!$feed && $perms[1] == 'admin' && !Env::v('action') && $wiki_exists) {
 $page->addCssLink('wiki.css');
 $page->addJsLink('wiki.js');
 if (!Env::v('action')) {
-    $page->setRssLink($n, '/' . str_replace('.', '/', $n) . '?action=rss');
+    $url = '/' . str_replace('.', '/', $n) . '?action=rss';
+    if (S::logged()) {
+        $url .= '&user=' . S::v('forlife') . '&hash=' . S::v('core_rss_hash');
+    } 
+    $page->setRssLink($n, $url);
 }
 
 $page->run();

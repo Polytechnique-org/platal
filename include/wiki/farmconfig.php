@@ -21,11 +21,12 @@ $Skin             = 'empty';
 include_once($FarmD.'/scripts/xlpage-utf-8.php');
 
 if ($action == 'rss'  || $action == 'atom' || $action == 'rdf'  || $action == 'dc') {
-    include_once("$FarmD/scripts/feeds.php");
     $FmtPV['$MarkupExcerpt'] = '$page["text"]';
     $FeedFmt[$action]['item']['title'] = '[$Group] {$Title}';
     $FeedFmt[$action]['item']['description'] = '$LastModifiedSummary';
     $FeedFmt[$action]['feed']['title'] = 'Polytechnique.org :: Wiki :: $FullName';
+    $pagelist = null;
+    include_once("$FarmD/scripts/feeds.php");
 }
 
 // Theme-ing {{{
