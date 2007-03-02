@@ -76,6 +76,7 @@ class XnetGrpModule extends PLModule
             '%grp'                => $this->make_hook('index',     AUTH_PUBLIC),
             '%grp/asso.php'       => $this->make_hook('index',     AUTH_PUBLIC),
             '%grp/logo'           => $this->make_hook('logo',      AUTH_PUBLIC),
+            '%grp/site'           => $this->make_hook('site',      AUTH_PUBLIC),
             '%grp/edit'           => $this->make_hook('edit',      AUTH_MDP),
             '%grp/mail'           => $this->make_hook('mail',      AUTH_MDP),
             '%grp/forum'          => $this->make_hook('forum',     AUTH_MDP),
@@ -202,6 +203,18 @@ class XnetGrpModule extends PLModule
             readfile(dirname(__FILE__).'/../htdocs/images/dflt_carre.jpg');
         }
 
+        exit;
+    }
+
+    function handler_site(&$page)
+    {
+        global $globals;
+        $site = $globals->asso('site');
+        if (!$site) {
+            $page->trig('Le groupe n\'a pas de site web');
+            return $this->handler_index($page);
+        }
+        header("Location: $site");
         exit;
     }
 
