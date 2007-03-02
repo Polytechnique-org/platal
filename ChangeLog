@@ -32,6 +32,7 @@ Bug/Wish:
 
     * Profile:
         - Better checks on image type for photos                           -FRU
+        - #646: Don't send a mail to an invalid address                    -FRU
 
     * Lists:
         - #407: RSS feed                                                   -FRU

@@ -718,7 +718,8 @@ function user_reindex($uid) {
 // }}}
 // {{{ function set_new_usage()
 
-function set_new_usage($uid, $usage, $alias=false) { 
+function set_new_usage($uid, $usage, $alias=false)
+{ 
     XDB::execute("UPDATE auth_user_md5 set nom_usage={?} WHERE user_id={?}",$usage ,$uid);
     XDB::execute("DELETE FROM aliases WHERE FIND_IN_SET('usage',flags) AND id={?}", $uid);
     if ($alias && $usage) {
@@ -727,11 +728,12 @@ function set_new_usage($uid, $usage, $alias=false) {
             $alias, $uid);
     }
     $r = XDB::query("SELECT alias FROM aliases WHERE FIND_IN_SET('bestalias', flags) AND id = {?}", $uid);
-    if ($r->fetchOneCell() == "") {
+    if ($r->numRows() == "") {
         XDB::execute("UPDATE aliases SET flags = 1 | flags WHERE id = {?} LIMIT 1", $uid);
+        $r = XDB::query("SELECT alias FROM aliases WHERE FIND_IN_SET('bestalias', flags) AND id = {?}", $uid);
     }
-    require_once 'user.func.inc.php';
     user_reindex($uid);
+    return $r->fetchOneCell();
 }
 
 // }}}

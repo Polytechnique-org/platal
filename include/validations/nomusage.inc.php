@@ -49,6 +49,7 @@ class UsageReq extends Validate
         $this->Validate($_uid, true, 'usage');
         $this->nom_usage  = $_usage;
         $this->reason = $_reason;
+        require_once 'xorg.misc.inc.php';
         $this->alias   = make_username($this->prenom, $this->nom_usage);
         if (!$this->nom_usage) $this->alias = "";
 
@@ -101,7 +102,7 @@ class UsageReq extends Validate
     function commit()
     {
         require_once('user.func.inc.php');
-        set_new_usage($this->uid, $this->nom_usage, $this->alias);
+        $this->bestalias = set_new_usage($this->uid, $this->nom_usage, $this->alias);
         return true;
     }
 

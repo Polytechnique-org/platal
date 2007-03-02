@@ -104,6 +104,29 @@ function replace_accent($string)
     return strtr($string, $uc_convert);
 }
 
+/** creates a username from a first and last name
+*
+* @param $prenom the firstname
+* @param $nom the last name
+*
+* return STRING the corresponding username
+*/
+function make_username($prenom,$nom) {
+    /* on traite le prenom */
+    $prenomUS=replace_accent(trim($prenom));
+    $prenomUS=stripslashes($prenomUS);
+
+    /* on traite le nom */
+    $nomUS=replace_accent(trim($nom));
+    $nomUS=stripslashes($nomUS);
+
+    // calcul du login
+    $username = strtolower($prenomUS.".".$nomUS);
+    $username = str_replace(" ","-",$username);
+    $username = str_replace("'","",$username);
+    return $username;
+}
+
 /* Un soundex en français posté par Frédéric Bouchery
    Voici une adaptation en PHP de la fonction soundex2 francisée de Frédéric BROUARD (http://sqlpro.developpez.com/Soundex/).
    C'est une bonne démonstration de la force des expressions régulières compatible Perl.

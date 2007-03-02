@@ -149,6 +149,7 @@ function create_aliases (&$sub)
 {
     extract ($sub);
 
+    require_once "xorg.misc.inc.php";
     $mailorg  = make_username($prenom, $nom);
     $mailorg2 = $mailorg.sprintf(".%02u", ($promo%100));
     $forlife  = make_forlife($prenom, $nom, $promo);
