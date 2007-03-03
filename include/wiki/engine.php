@@ -90,6 +90,9 @@ $wiki_exists = file_exists(wiki_work_dir() . '/' . wiki_filename($n));
 if ($feed) {
     $wikiAll = str_replace('dc:contributor', 'author', $wikiAll);
     $wikiAll = preg_replace('!<author>.*?\..*?\.(\d{4})\|(.*?)</author>!u', '<author>$2 (X$1)</author>', $wikiAll);
+    echo $wikiAll;
+    pl_clear_errors();
+    exit;
 } elseif (Env::v('action')) {
     $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
     $wikiAll = substr($wikiAll, $j);
@@ -105,12 +108,6 @@ if ($feed) {
     } else {
         $page->changeTpl('core/404.tpl');
     }
-}
-
-if ($feed) {
-    echo $wikiAll;
-    pl_clear_errors();
-    exit;
 }
 
 // Check user perms

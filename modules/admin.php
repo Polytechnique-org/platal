@@ -950,7 +950,7 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/ipwatcher.tpl');
             
         $states = array('safe'      => 'Ne pas surveiller',
-                        'unsafe'    => 'Surveiller les inscription',
+                        'unsafe'    => 'Surveiller les inscriptions',
                         'dangerous' => 'Surveiller tous les accès',
                         'ban'       => 'Bannir cette adresse');
         $page->assign('states', $states);
