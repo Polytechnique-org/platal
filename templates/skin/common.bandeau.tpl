@@ -20,18 +20,21 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<!-- Pour rÃ©cupÃ©rer ce bandeau sur votre site :
+<!-- Pour récupérer ce bandeau sur votre site :
 	incluez le fichier http://www.polytechnique.org/bandeau dans vos php
 	ou http://www.polytechnique.org/bandeau/login pour profiter du login
-	automatique. Et rajoutez Ã  la liste de css de vos pages
-	http://www.polytechnique.org/bandeau.css. -->
+	automatique. Et rajoutez à la liste de css de vos pages
+	http://www.polytechnique.org/bandeau.css.
+        Pour avoir l'icone, pour des raisons de sécurité il n'y a pas d'accès
+        direct, il faut alors rediriger bandeau/icone.png vers celle du site :
+        http://www.polytechnique.org/bandeau/icone.png -->
 
 {if !$login && $smarty.session.auth}
 	{assign var="login" value="true"}
 {/if}
 
 <div id="bandeau-X">
-	<img src="http://www.polytechnique.org/bandeau/icone.png" alt=""/>
+	<img src="bandeau/icone.png" alt=""/>
 	<a href="http://www.polytechnique.fr/">L'&Eacute;cole</a> &middot;
 	<a href="http://www.polytechnique.edu/">Institutional site</a>
 	&tilde;&tilde;
@@ -44,4 +47,4 @@
 	<a href="http://www.manageurs.com/{if $login}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2: *}
