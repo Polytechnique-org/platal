@@ -21,13 +21,13 @@
 
 class XnetPage extends PlatalPage
 {
-    var $nomenu = false;
+    public $nomenu = false;
 
     // {{{ function XnetPage()
 
-    function XnetPage($tpl, $type=SKINNED)
+    public function __construct($tpl, $type=SKINNED)
     {
-        $this->PlatalPage($tpl, $type);
+        parent::__construct($tpl, $type);
 
         $this->register_function('list_all_my_groups', 'list_all_my_groups');
         $this->register_modifier('cat_pp', 'cat_pp');
@@ -41,7 +41,7 @@ class XnetPage extends PlatalPage
     // }}}
     // {{{ function run()
 
-    function run()
+    public function run()
     {
         if (!$this->nomenu) {
             $this->useMenu();
@@ -52,7 +52,7 @@ class XnetPage extends PlatalPage
     // }}}
     // {{{ function setType
 
-    function setType($type)
+    public function setType($type)
     {
         $this->assign('xnet_type', strtolower($type));
     }
@@ -60,7 +60,7 @@ class XnetPage extends PlatalPage
     // }}}
     // {{{ function useMenu
 
-    function useMenu()
+    private function useMenu()
     {
         global $globals;
 

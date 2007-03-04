@@ -21,7 +21,7 @@
 
 class MMList extends XmlrpcClient
 {
-    function __construct($uid, $pass, $fqdn = null)
+    public function __construct($uid, $pass, $fqdn = null)
     {
         global $globals;
 
@@ -33,7 +33,7 @@ class MMList extends XmlrpcClient
         }   
     }
 
-    function __call($method, $args)
+    public function __call($method, $args)
     {
         return parent::__call($method, $args);
     }

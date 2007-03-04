@@ -22,7 +22,7 @@
 require_once('xorg.misc.inc.php');
 require_once('user.func.inc.php');
 
-class VCardIterator
+class VCardIterator implements PlIterator
 {
     private $user_list = array();
     private $count     = 0;

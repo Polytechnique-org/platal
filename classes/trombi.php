@@ -21,47 +21,52 @@
 
 class Trombi extends XOrgPlugin
 {
-    var $_get_vars = array('offset');
-    var $limit = 24;
-    var $admin = false;
-    var $showpromo = true;
+    private $limit = 24;
+    private $admin = false;
+    private $showpromo = true;
 
-    function setNbRows($row)
+    public function __construct($funcname = null, $prefix = null) 
+    {
+        $this->_get_vars = array('offset');
+        parent::__construct($funcname, $prefix);
+    }
+
+    public function setNbRows($row)
     { $this->limit = $row*3; }
 
-    function setAdmin()
+    public function setAdmin()
     { $this->admin = true; }
 
-    function hidePromo()
+    public function hidePromo()
     { $this->showpromo = false; }
 
-    function show()
+    public function show()
     {
-	/* this point is nasty...  but since show() is called from the template ...
-	 * I can't see any more clever way to achieve that
-	 */
-	global $page;
+        /* this point is nasty...  but since show() is called from the template ...
+         * I can't see any more clever way to achieve that
+         */
+        global $page;
 
-	$offset = intval($this->get_value('offset'));
-	list($total, $list) = call_user_func($this->_callback, $offset, $this->limit);
-	$page_max = intval(($total-1)/$this->limit);
+        $offset = intval($this->get_value('offset'));
+        list($total, $list) = call_user_func($this->_callback, $offset, $this->limit);
+        $page_max = intval(($total-1)/$this->limit);
 
-	$links = Array();
-	if ($offset) {
-	    $links[] = Array('u'=> $this->make_url($offset-1), 'i' => $offset-1,  'text' => 'précédent');
-	}
-	for ($i = 0; $i <= $page_max ; $i++) {
-	    $links[] = Array('u'=>$this->make_url($i), 'i' => $i, 'text' => $i+1);
+        $links = Array();
+        if ($offset) {
+            $links[] = Array('u'=> $this->make_url($offset-1), 'i' => $offset-1,  'text' => 'précédent');
         }
-	if ($offset < $page_max) {
-	    $links[] = Array ('u' => $this->make_url($offset+1), 'i' => $offset+1, 'text' => 'suivant');
-	}
+        for ($i = 0; $i <= $page_max ; $i++) {
+            $links[] = Array('u'=>$this->make_url($i), 'i' => $i, 'text' => $i+1);
+        }
+        if ($offset < $page_max) {
+            $links[] = Array ('u' => $this->make_url($offset+1), 'i' => $offset+1, 'text' => 'suivant');
+        }
 
-	$page->assign_by_ref('trombi_show_promo', $this->showpromo);
-	$page->assign_by_ref('trombi_list', $list);
-	$page->assign_by_ref('trombi_links', $links);
-	$page->assign('trombi_admin', $this->admin);
-	return $page->fetch('include/trombi.tpl');
+        $page->assign_by_ref('trombi_show_promo', $this->showpromo);
+        $page->assign_by_ref('trombi_list', $list);
+        $page->assign_by_ref('trombi_links', $links);
+        $page->assign('trombi_admin', $this->admin);
+        return $page->fetch('include/trombi.tpl');
     }
 }
 

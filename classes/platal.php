@@ -25,16 +25,19 @@ define('PL_NOT_FOUND', 404);
 
 class Platal
 {
-    var $__mods;
-    var $__hooks;
+    private $__mods;
+    private $__hooks;
 
-    var $ns;
-    var $path;
-    var $argv;
+    public $ns;
+    public $path;
+    public $argv;
 
-    function Platal()
+    public function __construct()
     {
         $modules    = func_get_args();
+        if (is_array($modules[0])) {
+            $modules = $modules[0];
+        }
         $this->path = trim(Get::_get('n', null), '/');
 
         $this->__mods  = array();
@@ -47,7 +50,7 @@ class Platal
         }
     }
 
-    function pl_self($n = null)
+    public function pl_self($n = null)
     {
         if (is_null($n))
             return $this->path;
@@ -61,7 +64,7 @@ class Platal
         return join('/', array_slice($this->argv, 0, $n));
     }
 
-    function find_hook()
+    protected function find_hook()
     {
         $p = $this->path;
 
@@ -88,7 +91,7 @@ class Platal
         return $hook;
     }
 
-    function find_nearest_key($key, &$array)
+    protected function find_nearest_key($key, array &$array)
     {
         $keys    = array_keys($array);
         if (in_array($key, $keys)) {
@@ -122,7 +125,7 @@ class Platal
         return null;
     }
 
-    function near_hook()
+    protected function near_hook()
     {
         $hooks = array();
         foreach ($this->__hooks as $hook=>$handler) {
@@ -172,7 +175,7 @@ class Platal
         return null;
     }
 
-    function call_hook(&$page)
+    private function call_hook(PlatalPage &$page)
     {
         $hook = $this->find_hook();
         if (empty($hook)) {
@@ -210,7 +213,7 @@ class Platal
         return $val;
     }
 
-    function force_login(&$page)
+    protected function force_login(PlatalPage &$page)
     {
         if (S::logged()) {
             $page->changeTpl('core/password_prompt_logged.tpl');
@@ -223,7 +226,7 @@ class Platal
         $page->run();
     }
 
-    function run()
+    public function run()
     {
         global $page;
 
@@ -248,7 +251,7 @@ class Platal
         $page->run();
     }
 
-    function on_subscribe($forlife, $uid, $promo, $pass)
+    private function on_subscribe($forlife, $uid, $promo, $pass)
     {
         $args = func_get_args();
         foreach ($this->__mods as $mod) {

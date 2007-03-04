@@ -19,64 +19,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('platal.inc.php');
-require_once('globals.inc.php');
-require_once('xorg/session.inc.php');
-$globals = new PlatalGlobals('XorgSession');
-XorgSession::init();
-
-// {{{ class XorgPage
-
-class XorgPage extends PlatalPage
+interface PlIterator
 {
-    public function __construct($tpl, $type = SKINNED)
-    {
-        parent::__construct($tpl, $type);
-    }
-
-    public function run()
-    {
-        global $globals, $platal;
-        $this->assign('globals', $globals);
-        if (isset($platal) && $platal->path == 'register') {
-            $skin = 'register.tpl';
-        } else {
-            $skin = S::v('skin', 'default.tpl');
-        }
-        $this->_run('skin/' . $skin);
-    }
+    public function next();
+    public function total();
+    public function first();
+    public function last();
 }
-
-// }}}
-
-function _new_page($type, $tpl_name, $admin=false)
-{
-    global $page;
-    if (!empty($admin)) {
-        $page = new XorgAdmin($tpl_name, $type);
-    } else {
-        $page = new XorgPage($tpl_name, $type);
-    }
-
-    $page->assign('xorg_tpl', $tpl_name);
-}
-
-// {{{ function new_skinned_page()
-
-function new_skinned_page($tpl_name)
-{
-    _new_page(SKINNED, $tpl_name);
-}
-
-// }}}
-// {{{ function new_admin_page()
-
-function new_admin_page($tpl_name)
-{
-    _new_page(SKINNED, $tpl_name, true);
-}
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -23,10 +23,10 @@ require_once 'smarty/libs/Smarty.class.php';
 
 class PlatalPage extends Smarty
 {
-    var $_page_type;
-    var $_tpl;
-    var $_errors;
-    var $_failure;
+    private $_page_type;
+    private $_tpl;
+    private $_errors;
+    private $_failure;
 
     // defaults
     var $caching          = false;
@@ -35,11 +35,11 @@ class PlatalPage extends Smarty
 
     // {{{ function PlatalPage()
 
-    function PlatalPage($tpl, $type = SKINNED)
+    public function __construct($tpl, $type = SKINNED)
     {
-        global $globals;
+        parent::Smarty();
 
-        $this->Smarty();
+        global $globals;
 
         $this->template_dir  = $globals->spoolroot."/templates/";
         $this->compile_dir   = $globals->spoolroot."/spool/templates_c/";
@@ -62,7 +62,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function changeTpl()
 
-    function changeTpl($tpl, $type = SKINNED)
+    public function changeTpl($tpl, $type = SKINNED)
     {
     	$this->_tpl       = $tpl;
 	    $this->_page_type = $type;
@@ -72,7 +72,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function _run()
 
-    function _run($skin)
+    protected function _run($skin)
     {
         global $globals, $TIME_BEGIN;
 
@@ -150,7 +150,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function nb_errs()
 
-    function nb_errs()
+    public function nb_errs()
     {
         return count($this->_errors);
     }
@@ -158,7 +158,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function trig()
 
-    function trig($msg)
+    public function trig($msg)
     {
         $this->_errors[] = $msg;
     }
@@ -166,7 +166,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function kill()
 
-    function kill($msg)
+    public function kill($msg)
     {
         global $platal;
 
@@ -179,7 +179,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function addJsLink
 
-    function addJsLink($path)
+    public function addJsLink($path)
     {
         $this->append('xorg_js', $path);
     }
@@ -187,7 +187,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function addCssLink
 
-    function addCssLink($path)
+    public function addCssLink($path)
     {
         $this->append('xorg_css', $path);
     }
@@ -195,7 +195,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function addCssInline
 
-    function addCssInline($css)
+    public function addCssInline($css)
     {
         if (!empty($css)) {
             $this->append('xorg_inline_css', $css);
@@ -205,7 +205,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function setRssLink
 
-    function setRssLink($title, $path)
+    public function setRssLink($title, $path)
     {
         $this->assign('xorg_rss', array('title' => $title, 'href' => $path));
     }

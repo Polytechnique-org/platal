@@ -33,25 +33,25 @@
 class XOrgPlugin
 {
     /** have to override, contents the fields names used to drive the plugin */
-    var $_get_vars = array();
+    public $_get_vars = array();
     /** some polymorphism at low cost, may be used, or not */
-    var $_callback;
+    public $_callback;
 
     /** constructor.
      * the constructor override $_get_vars settings by prefixing the names with $prefix
      */
-    function XOrgPlugin($funcname='', $prefix='')
+    public function __construct($funcname='', $prefix='')
     {
-	$this->_callback = $funcname;
-	$this->_prefix = $prefix;
-	foreach ($this->_get_vars as $key=>$val) {
+        $this->_callback = $funcname;
+        $this->_prefix = $prefix;
+        foreach ($this->_get_vars as $key=>$val) {
             $this->_get_vars[$key] = $prefix.$val;
         }
     }
 
     /** transparent access to $_GET, wrt the right $prefix
      */
-    function get_value($key)
+    public function get_value($key)
     {
         return Get::v($this->_prefix.$key);
     }
@@ -59,40 +59,40 @@ class XOrgPlugin
     /** construct an url with the given parameters to drive the plugin.
      * leave all other GET params alone
      */
-    function make_url($params)
+    public function make_url($params)
     {
-	$get = Array();
-	$args = isset($params) ? $params : Array();
+        $get = Array();
+        $args = isset($params) ? $params : Array();
 
-	if (!is_array($args)) {
+        if (!is_array($args)) {
             $args = array($this->_get_vars[0]=>$params);
-	}
+        }
 
-	foreach ($_GET as $key=>$val) {
+        foreach ($_GET as $key=>$val) {
             if ($key == 'n') {
                 continue;
             }
-	    if (in_array($key, $this->_get_vars) && array_key_exists($key, $args)) {
+            if (in_array($key, $this->_get_vars) && array_key_exists($key, $args)) {
                 continue;
             }
-	    $get[] = urlencode($key) . '=' . urlencode($val);
-	}
+            $get[] = urlencode($key) . '=' . urlencode($val);
+        }
 
-	foreach ($this->_get_vars as $key) {
-	    if (array_key_exists($key, $args)) {
-		if ($args[$key]) {
+        foreach ($this->_get_vars as $key) {
+            if (array_key_exists($key, $args)) {
+                if ($args[$key]) {
                     $get[] = urlencode($key) . '=' . urlencode($args[$key]);
                 }
             } elseif (Get::has('key')) {
-		$get[] = urlencode($key) . '=' . urlencode(Get::v($key));
-	    }
-	}
+                $get[] = urlencode($key) . '=' . urlencode(Get::v($key));
+            }
+        }
 
-	return pl_self() . '?' . join('&amp;', $get);
+        return pl_self() . '?' . join('&amp;', $get);
     }
 
     /** need to be overriden.  */
-    function show ()
+    public function show()
     {
         return '';
     }

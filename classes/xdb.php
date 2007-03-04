@@ -274,7 +274,9 @@ class XOrgDBResult
     }
 }
 
-class XOrgDBIterator
+require_once dirname(__FILE__) . '/pliterator.php';
+
+class XOrgDBIterator implements PlIterator
 {
     private $_result;
     private $_pos;

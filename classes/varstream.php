@@ -25,7 +25,7 @@ class VarStream
     private $varname;
     private $position;
 
-    function stream_open($path, $mode, $options, &$opened_path)
+    public function stream_open($path, $mode, $options, &$opened_path)
     {
         $url            = parse_url($path);
         $this->varname  = $url['host'];
@@ -38,18 +38,18 @@ class VarStream
         return true;
     }
 
-    function stream_close()
+    public function stream_close()
     {
     }
 
-    function stream_read($count)
+    public function stream_read($count)
     {
         $ret = substr($GLOBALS[$this->varname], $this->position, $count);
         $this->position += strlen($ret);
         return $ret;
     }
 
-    function stream_write($data)
+    public function stream_write($data)
     {
         $len = strlen($data);
         if ($len > $this->position + strlen($GLOBALS[$this->varname])) {
@@ -60,17 +60,17 @@ class VarStream
         $this->position += $len;
     }
 
-    function stream_eof()
+    public function stream_eof()
     {
         return $this->position >= strlen($GLOBALS[$this->varname]);
     }
 
-    function stream_tell()
+    public function stream_tell()
     {
         return $this->position;
     }
 
-    function stream_seek($offs, $whence)
+    public function stream_seek($offs, $whence)
     {
         switch ($whence) {
             case SEEK_SET:
@@ -93,11 +93,11 @@ class VarStream
         return 0;
     }
 
-    function stream_flush()
+    public function stream_flush()
     {
     }
 
-    static function init()
+    static public function init()
     {
         stream_wrapper_register('var','VarStream');
     }

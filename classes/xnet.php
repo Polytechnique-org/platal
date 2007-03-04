@@ -21,10 +21,10 @@
 
 class Xnet extends Platal
 {
-    function Xnet()
+    public function __construct()
     {
         $modules = func_get_args();
-        call_user_func_array(array(&$this, 'Platal'), $modules);
+        parent::__construct($modules);
 
         global $globals;
         if ($globals->asso()) {
@@ -38,7 +38,7 @@ class Xnet extends Platal
         }
     }
 
-    function find_nearest_key($key, &$array)
+    protected function find_nearest_key($key, array &$array)
     {
         global $globals;
         if (in_array('%grp', array_keys($array)) &&  $key == $globals->asso('diminutif')) {
@@ -47,7 +47,7 @@ class Xnet extends Platal
         return parent::find_nearest_key($key, $array);
     }
 
-    function near_hook()
+    protected function near_hook()
     {
         global $globals;
         $link = str_replace('%grp', $globals->asso('diminutif'), parent::near_hook());
@@ -57,7 +57,7 @@ class Xnet extends Platal
         return null; 
     }
 
-    function find_hook()
+    protected function find_hook()
     {
         $ans = parent::find_hook();
         if ($ans && $this->ns) {
@@ -67,7 +67,7 @@ class Xnet extends Platal
         return $ans;
     }
 
-    function force_login(&$page)
+    protected function force_login(&$page)
     {
         http_redirect(S::v('loginX'));
     }

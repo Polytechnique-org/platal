@@ -21,69 +21,74 @@
 
 /** class for describing flags
  */
-class flagset {
-  /** string that holds the flagset */
-  var $value;
+class Flagset
+{
+    /** string that holds the flagset */
+    private $value;
 
-  /** the boundary between flags */
-  var $sep = ",";
-
-
-  /** set flag
-   * @param $flags services FROM coupures
-   * @return VOID
-   */
-  function flagset( $flags="" ) {
-    $this->value = $flags;
-  }
+    /** the boundary between flags */
+    private $sep = ",";
 
 
-  /** add flag
-   * @param $flag XXX
-   * @return VOID
-   */
-  function addflag($flag) {
-    if (!$flag) return;
-    if (!$this->hasflag($flag)) {
-      if ($this->value)
-        $this->value .= $this->sep;
-      $this->value .= $flag;
+    /** set flag
+     * @param $flags services FROM coupures
+     * @return VOID
+     */
+    public function __construct($flags = "")
+    {
+        $this->value = $flags;
     }
-  }
 
 
-  /** test si flag ou pas
-   * @param $flag XXX
-   * @return 1 || 0
-   */
-  function hasflag($flag) {
-    $tok = strtok($this->value,$this->sep);
-    while ($tok) {
-      if ($tok==$flag) return 1;
-      $tok = strtok($this->sep);
+    /** add flag
+     * @param $flag XXX
+     * @return VOID
+     */
+    public function addflag($flag) 
+    {
+        if (!$flag) return;
+        if (!$this->hasflag($flag)) {
+            if ($this->value)
+                $this->value .= $this->sep;
+            $this->value .= $flag;
+        }
     }
-    return 0;
-  }
 
 
-  /** remove flag
-   * @param $flag XXX
-   * @return VOID
-   */
-  function rmflag($flag) {
-    if (!$flag) return;
-    $newvalue = "";
-    $tok = strtok($this->value,$this->sep);
-    while ($tok) {
-      if ($tok!=$flag) {
-        if ($newvalue)
-         $newvalue .= $this->sep;
-        $newvalue .= $tok;
-      }
-      $tok = strtok($this->sep);
+    /** test si flag ou pas
+     * @param $flag XXX
+     * @return 1 || 0
+     */
+    public function hasflag($flag) 
+    {
+        $tok = strtok($this->value,$this->sep);
+        while ($tok) {
+            if ($tok==$flag) return 1;
+            $tok = strtok($this->sep);
+        }
+        return 0;
     }
-    $this->value=$newvalue;
-  }
+
+
+    /** remove flag
+     * @param $flag XXX
+     * @return VOID
+     */
+    public function rmflag($flag) 
+    {
+        if (!$flag) return;
+        $newvalue = "";
+        $tok = strtok($this->value,$this->sep);
+        while ($tok) {
+            if ($tok!=$flag) {
+                if ($newvalue)
+                    $newvalue .= $this->sep;
+                $newvalue .= $tok;
+            }
+            $tok = strtok($this->sep);
+        }
+        $this->value=$newvalue;
+    }
 
 } 
 

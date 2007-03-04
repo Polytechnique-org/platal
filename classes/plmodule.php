@@ -23,7 +23,7 @@ class PLModule
 {
     function handlers()     { die("implement me"); }
 
-    function make_hook($fun, $auth, $perms = '', $type = DO_AUTH)
+    public function make_hook($fun, $auth, $perms = '', $type = DO_AUTH)
     {
         return array('hook'  => array($this, 'handler_'.$fun),
                      'auth'  => $auth,

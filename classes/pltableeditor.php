@@ -19,32 +19,33 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class PLTableEditor {
+class PLTableEditor 
+{
     // the plat/al name of the page
-    var $pl;
+    public $pl;
     // the table name
-    var $table;
+    public $table;
     // joint tables to delete when deleting an entry
-    var $jtables = array();
+    public $jtables = array();
     // sorting field
-    var $sort = array();
+    public $sort = array();
     // the id field
-    var $idfield;
+    public $idfield;
     // possibility to edit the field
-    var $idfield_editable;
+    public $idfield_editable;
     // vars
-    var $vars;
+    public $vars;
     // number of displayed fields
-    var $nbfields;
+    public $nbfields;
     // the field for sorting entries
-    var $sortfield;
-    var $sortdesc = false;
+    public $sortfield;
+    public $sortdesc = false;
     // action to do to delete row:
-	// null => delete effectively, false => no deletion, SQL
-    var $delete_action;
-    var $delete_message;
+    // null => delete effectively, false => no deletion, SQL
+    public $delete_action;
+    public $delete_message;
     // Should "Save" button return to the list view
-    var $auto_return = true;
+    public $auto_return = true;
 
     /* table editor for platal
      * $plname : the PLname of the page, ex: admin/payments
@@ -52,7 +53,7 @@ class PLTableEditor {
      * $idfield : the field of the table which is the id, ex: id
      * $editid : is the id editable or not (if not, it is considered as an int)
      */
-    function PLTableEditor($plname, $table, $idfield, $editid=false)
+    public function __construct($plname, $table, $idfield, $editid=false)
     {
         $this->pl = $plname;
         $this->table = $table;
@@ -98,8 +99,9 @@ class PLTableEditor {
         }
         $this->vars[$idfield]['desc'] = 'id';
     }
+
     // called before creating a new entry
-    function prepare_new()
+    private function prepare_new()
     {
         $entry = array();
         foreach ($this->vars as $field => $descr) {
@@ -107,8 +109,10 @@ class PLTableEditor {
         }
         return $this->prepare_edit($entry);
     }
+
     // called before editing $entry
-    function prepare_edit(&$entry) {
+    private function prepare_edit(&$entry) 
+    {
         foreach ($this->vars as $field => $descr) {
             if ($descr['Type'] == 'set') {
                 // get the list of options selected
@@ -129,56 +133,65 @@ class PLTableEditor {
         }
         return $entry;
     }
+    
     // set whether the save button show redirect to list view or edit view
-    function list_on_edit($var)
+    public function list_on_edit($var)
     {
         $this->auto_return = $var;
     }
+
     // change display of a field
-    function describe($name, $desc, $display) {
+    public function describe($name, $desc, $display)
+    {
         $this->vars[$name]['desc'] = $desc;
         $this->vars[$name]['display'] = $display;
     }
+    
     // add a join table, when deleting a row corresponding entries will be deleted in these tables
-    function add_join_table($name,$joinid,$joindel,$joinextra="") {
+    public function add_join_table($name,$joinid,$joindel,$joinextra="")
+    {
         if ($joindel)
             $this->jtables[$name] = array("joinid" => $joinid,"joinextra" => $joinextra?(" AND ".$joinextra):"");
     }
+    
     // add a sort key
-    function add_sort_field($key, $desc = false, $default = false)
+    public function add_sort_field($key, $desc = false, $default = false)
     {
-    	if ($default) {
-			$this->sortfield = $key . ($desc ? ' DESC' : '');
-		} else {
-        	$this->sort[] = $key . ($desc ? ' DESC' : '');
+        if ($default) {
+            $this->sortfield = $key . ($desc ? ' DESC' : '');
+        } else {
+            $this->sort[] = $key . ($desc ? ' DESC' : '');
         }
     }
+
     // set an action when trying to delete row
-    function on_delete($action = NULL, $message = NULL)
+    public function on_delete($action = NULL, $message = NULL)
     {
-    	$this->delete_action = $action;
-    	$this->delete_message = $message;
+        $this->delete_action = $action;
+        $this->delete_message = $message;
     }
+
     // call when done
-    function apply(&$page, $action, $id = false) {
+    public function apply(PlatalPage &$page, $action, $id = false)
+    {
         $page->changeTpl('core/table-editor.tpl');
         $list = true;
         if ($action == 'delete') {
-        	if (!isset($this->delete_action)) {
-	            foreach ($this->jtables as $table => $j)
-	                XDB::execute("DELETE FROM {$table} WHERE {$j['joinid']} = {?}{$j['joinextra']}", $id);
-	            XDB::execute("DELETE FROM {$this->table} WHERE {$this->idfield} = {?}",$id);
-	            $page->trig("L'entrée ".$id." a été supprimée.");
-	        } else if ($this->delete_action) {
-	        	XDB::execute($this->delete_action, $id);
-	        	if (isset($this->delete_message)) {
-	            	$page->trig($this->delete_message);
-	        	} else {
-	            	$page->trig("L'entrée ".$id." a été supprimée.");
-				}	        	
-	        } else {
-	            $page->trig("Impossible de supprimer l'entrée.");
-	        }
+            if (!isset($this->delete_action)) {
+                foreach ($this->jtables as $table => $j)
+                    XDB::execute("DELETE FROM {$table} WHERE {$j['joinid']} = {?}{$j['joinextra']}", $id);
+                XDB::execute("DELETE FROM {$this->table} WHERE {$this->idfield} = {?}",$id);
+                $page->trig("L'entrée ".$id." a été supprimée.");
+            } else if ($this->delete_action) {
+                XDB::execute($this->delete_action, $id);
+                if (isset($this->delete_message)) {
+                    $page->trig($this->delete_message);
+                } else {
+                    $page->trig("L'entrée ".$id." a été supprimée.");
+                }	        	
+            } else {
+                $page->trig("Impossible de supprimer l'entrée.");
+            }
         }
         if ($action == 'edit') {
             $r = XDB::query("SELECT * FROM {$this->table} WHERE {$this->idfield} = {?}",$id);
@@ -256,10 +269,10 @@ class PLTableEditor {
             }
         }
         if ($action == 'sort') {
-        	$this->sortfield = $id;
+            $this->sortfield = $id;
         }
         if ($action == 'sortdesc') {
-        	$this->sortfield = $id.' DESC';
+            $this->sortfield = $id.' DESC';
         }
         if ($list) {
             // user can sort by field by clicking the title of the column
