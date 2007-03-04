@@ -178,9 +178,9 @@ class PlatalModule extends PLModule
             $_SESSION['password'] = $password = Post::v('response2');
 
             XDB::execute('UPDATE  auth_user_md5 
-                                       SET  password={?}
-                                     WHERE  user_id={?}', $password,
-                                     S::v('uid'));
+                             SET  password={?}
+                           WHERE  user_id={?}', $password,
+                           S::v('uid'));
 
             $log =& S::v('log');
             $log->log('passwd', '');

@@ -238,7 +238,7 @@ function start_connexion ($uid, $identified)
     $suid = S::v('suid');
 
     if ($suid) {
-        $logger = new CoreLogger($uid, $suid);
+        $logger = new CoreLogger($uid, $suid['uid']);
         $logger->log("suid_start", S::v('forlife')." by {$suid['uid']}");
         $sess['suid'] = $suid;
         $sess['perms'] = $_SESSION['perms'];

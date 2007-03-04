@@ -19,13 +19,14 @@
  */
 
 
-class CoreLogger {
+class CoreLogger
+{
     /** user id */
-    var $uid;
+    private $uid;
     /** id of the session */
-    var $session;
+    private $session;
     /** list of available actions */
-    var $actions;
+    private $actions;
 
     /** The constructor, creates a new entry in the sessions table
      *
@@ -33,7 +34,8 @@ class CoreLogger {
      * @param $suid the id of the administrator who has just su'd to the user
      * @return VOID
      */
-    function CoreLogger($uid, $suid='') {
+    public function __construct($uid, $suid = null)
+    {
         // write the session entry
         $this->uid     = $uid;
         $this->session = $this->writeSession($uid, $suid);
@@ -52,7 +54,7 @@ class CoreLogger {
      * @param $suid the id of the administrator who has just su'd to the user
      * @return session the session id
      */
-    function writeSession($uid, $suid = null)
+    private function writeSession($uid, $suid = null)
     {
         $ip      = $_SERVER['REMOTE_ADDR'];
         $host    = strtolower(gethostbyaddr($_SERVER['REMOTE_ADDR']));
@@ -69,7 +71,7 @@ class CoreLogger {
         }
 
         XDB::execute("INSERT INTO logger.sessions
-                     SET uid={?}, host={?}, ip={?}, forward_ip={?}, forward_host={?}, browser={?}, suid={?}, flags={?}",
+                         SET uid={?}, host={?}, ip={?}, forward_ip={?}, forward_host={?}, browser={?}, suid={?}, flags={?}",
                      $uid, $host, $ip, $forward_ip, $forward_host, $browser, $suid, $proxy);
 
         return XDB::insertId();
@@ -82,13 +84,14 @@ class CoreLogger {
      * @param $data les données (id de liste, etc.)
      * @return VOID
      */
-    function log($action, $data = null) {
+    public function log($action, $data = null)
+    {
         if (isset($this->actions[$action])) {
             XDB::execute("INSERT INTO logger.events
-                         SET session={?}, action={?}, data={?}",
+                             SET session={?}, action={?}, data={?}",
                          $this->session, $this->actions[$action], $data);
         } else {
-            echo "unknown action : $action<br />";
+            trigger_error("CoreLogger: unknown action, $action", E_USER_WARNING);
         }
     }
 }
