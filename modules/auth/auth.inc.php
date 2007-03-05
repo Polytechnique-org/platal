@@ -48,11 +48,16 @@ function gpex_make($chlg, $privkey, $datafields)
             $min_username = $res->fetchOneCell();
             $tohash      .= $min_username;
             $params      .= "&$val=".$min_username;
-        } else if ($val == 'grpauth' && isset($_GET['group'])) {
-        	$res = XDB::query("SELECT perms FROM groupex.membres
-				INNER JOIN groupex.asso ON(id = asso_id) 
-				WHERE uid = {?} AND diminutif = {?}", S::v('uid'), $_GET['group']);
-			$perms = $res->fetchOneCell();
+        } else if ($val == 'grpauth') {
+        	if (isset($_GET['group'])) {
+	        	$res = XDB::query("SELECT perms FROM groupex.membres
+					INNER JOIN groupex.asso ON(id = asso_id) 
+					WHERE uid = {?} AND diminutif = {?}", S::v('uid'), $_GET['group']);
+				$perms = $res->fetchOneCell();
+			} else {
+				// if no group asked, return main rights
+				$perms = Session::has_perms()?'admin':'membre';
+			}
 			$tohash .= $perms;
 			$params .= "&$val=".$perms;
         }
