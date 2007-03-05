@@ -46,7 +46,7 @@
       {/if}
     </td>
   </tr>
-  {if $details.own || $smarty.session.perms eq admin || ($it_is_xnet && $is_admin)}
+  {if $details.own || $smarty.session.perms->hasFlag('admin') || $smarty.session.perms->hasFlag('groupadmin')}
   <tr>
     <td><strong>Administrer la liste :</strong></td>
     <td>
@@ -73,7 +73,7 @@
     </td>
   </tr>
   {/if}
-  {if $smarty.session.perms eq admin || ($it_is_xnet && $is_admin)}
+  {if $smarty.session.perms->hasFlag('admin') || $smarty.session.perms->hasFlag('groupadmin')}
 
   <tr>
     <td><strong>Administrer (avancé) :</strong></td>

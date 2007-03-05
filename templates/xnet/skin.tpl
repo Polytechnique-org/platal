@@ -132,10 +132,10 @@
               <div style="display: inline">
                 <small>voir le site en tant que...
                 <select name="right" onchange="this.form.submit()">
-                  {if $smarty.session.perms eq 'admin' || $smarty.session.suid.perms eq 'admin'}
-                  <option value="admin" {if $smarty.session.perms eq 'admin'}selected="selected"{/if}>Administrateur</option>
+                  {if $smarty.session.perms->hasFlag('admin') || $smarty.session.suid.perms->hasFlag('admin')}
+                  <option value="admin" {if $smarty.session.perms->hasFlag('admin')}selected="selected"{/if}>Administrateur</option>
                   {/if}
-                  <option value="anim" {if $is_admin && $smarty.session.perms neq 'admin'}selected="selected"{/if}>Animateur</option>
+                  <option value="anim" {if $is_admin && !$smarty.session.perms->hasFlag('admin')}selected="selected"{/if}>Animateur</option>
                   <option value="member" {if !$is_admin && $is_member}selected="selected"{/if}>Membre</option>
                   <option value="logged" {if !$is_admin && !$is_member}selected="selected"{/if}>Non-membre</option>
                 </select>
@@ -211,7 +211,7 @@
               {/if}
             </td>
             <td class="right" style="vertical-align: middle">
-              {if $smarty.session.perms eq admin}
+              {if $smarty.session.perms->hasFlag('admin')}
               <a href="admin" title="Administration des groupes">
                 Gérer les groupes
                 {icon name=wrench title="Administration"}

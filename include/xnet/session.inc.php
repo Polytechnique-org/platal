@@ -41,6 +41,20 @@ class XnetSession
             $url .= "&url=".urlencode($returl);
             $_SESSION['loginX'] = $url;
         }
+
+        if (S::logged() && $globals->asso()) {
+            $perms = S::v('perms');
+            $perms->rmFlag('groupadmin');
+            $perms->rmFlag('groupmember');
+            if (may_update()) {
+                $perms->addFlag('groupadmin');
+                $perms->addFlag('groupmember');
+            }
+            if (is_member()) {
+                $perms->addFlag('groupmember');
+            }
+            $_SESSION['perms'] = $perms;
+        }
     }
 
     // }}}
@@ -81,7 +95,8 @@ class XnetSession
     // }}}
     // {{{ doAuthX
 
-    public static function doAuthX() {
+    public static function doAuthX() 
+    {
         global $globals, $page;
 
         if (md5('1'.S::v('challenge').$globals->xnet->secret.Get::i('uid').'1') != Get::v('auth')) {
@@ -99,6 +114,8 @@ class XnetSession
              LIMIT  1", Get::i('uid'));
         $_SESSION = array_merge($_SESSION, $res->fetchOneAssoc());
         $_SESSION['auth'] = AUTH_MDP;
+        require_once 'xorg/session.inc.php';
+        $_SESSION['perms'] =& XorgSession::make_perms(S::v('perms'));
         S::kill('challenge');
         S::kill('loginX');
         S::kill('may_update');
@@ -125,7 +142,8 @@ class XnetSession
         if (!S::has('suid')) {
             $_SESSION['suid'] = $_SESSION;
         }
-        $_SESSION['perms'] = 'user';
+        require_once 'xorg/session.inc.php';
+        $_SESSION['perms'] =& XorgSession::make_perms('user');
     }
 
     // }}}

@@ -101,7 +101,7 @@ class CoreModule extends PLModule
             $_SESSION['log']->log("suid_start", "login by ".S::v('forlife'));
         }    
         $_SESSION['suid'] = $_SESSION;
-        $_SESSION['perms'] = $level;
+        $_SESSION['perms'] =& XorgSession::make_perms($level);
 
         pl_redirect('/');
     }

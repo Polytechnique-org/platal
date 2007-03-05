@@ -31,7 +31,7 @@
       <a href="{if $urlmainsite}{$urlmainsite}{/if}profile/{$p.forlife}" class="popup2">
         <img src="{$globals->baseurl}/photo/{$p.forlife}" width="110" alt=" [ PHOTO ] " />
       </a>
-      {if $trombi_admin && $smarty.session.perms eq 'admin' && !$urlmainsite}
+      {if $trombi_admin && $smarty.session.perms->hasFlag('admin') && !$urlmainsite}
       <a href="admin/trombino/{$p.user_id}">
         {icon name=wrench title="[admin]"}</a>
       {/if}

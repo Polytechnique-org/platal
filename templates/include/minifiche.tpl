@@ -73,7 +73,7 @@
     {/if}
     {/if}
 
-    {if $smarty.session.perms eq admin}
+    {if $smarty.session.perms->hasFlag('admin')}
       [{if !$c.wasinscrit && !$c.dcd}
         <a href="marketing/private/{$c.user_id}">{*
           *}{icon name=email title="marketter user"}</a>

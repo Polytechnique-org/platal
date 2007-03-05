@@ -175,6 +175,31 @@ class Platal
         return null;
     }
 
+    protected function check_perms($perms)
+    {
+        if (!$perms) { // No perms, no check
+            return true;
+        }
+        $s_perms = S::v('perms');
+
+        // hook perms syntax is
+        $perms = explode(',', $perms);
+        foreach ($perms as $perm)
+        {
+            $ok = true;
+            $rights = explode(':', $perm);
+            foreach ($rights as $right) {
+                if (($right{0} == '!' && $s_perms->hasFlag(substr($right, 1))) || !$s_perms->hasFlag($right)) {
+                    $ok = false;
+                }
+            }
+            if ($ok) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function call_hook(PlatalPage &$page)
     {
         $hook = $this->find_hook();
@@ -196,8 +221,7 @@ class Platal
                 return PL_FORBIDDEN;
             }
         }
-
-        if (!empty($hook['perms']) && $hook['perms'] != S::v('perms')) {
+        if ($hook['auth'] != AUTH_PUBLIC && !$this->check_perms($hook['perms'])) {
             return PL_FORBIDDEN;
         }
 

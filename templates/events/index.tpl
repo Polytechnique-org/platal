@@ -175,7 +175,7 @@ Bienvenue {$smarty.session.prenom}
           {/if}
         </div>
         <div style="float:right">
-          {if $smarty.session.perms eq 'admin'}
+          {if $smarty.session.perms->hasFlag('admin')}
           <a href="admin/events/edit/{$ev.id}">{icon name=page_edit title="Editer cet article"}</a>
           {/if}
           <a href="events/read/{$ev.id}{if $previd}/newsid{$previd}{/if}" onclick="return readEvent('{$ev.id}')">{icon name=cross title="Cacher cet article"}</a>

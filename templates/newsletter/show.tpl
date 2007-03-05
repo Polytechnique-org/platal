@@ -31,7 +31,7 @@
 {else}
 [<a href='nl/show/{$nl->id()}?text=1'>version Texte</a>]
 {/if}
-{if $smarty.session.perms eq admin}
+{if $smarty.session.perms->hasFlag('admin')}
 [<a href='admin/newsletter/edit/{$nl->id()}'>Editer</a>]
 {/if}
 </p>

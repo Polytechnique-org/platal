@@ -158,6 +158,7 @@ class XorgSession
      * @param page the calling page (by reference)
      */
     public static function doAuthCookie()
+        
     {
         if (S::logged()) {
             return true;
@@ -172,6 +173,22 @@ class XorgSession
         }
 
         return false;
+    }
+
+    // }}}
+    // {{{ public static function make_perms()
+
+    public static function &make_perms($perm)
+    {
+        $flags = new FlagSet();
+        if ($perm == 'disabled' || $perm == 'ext') {
+            return $flags;
+        }
+        $flags->addFlag(PERMS_USER);
+        if ($perm == 'admin') {
+            $flags->addFlag(PERMS_ADMIN);
+        }
+        return $flags;
     }
 
     // }}}
@@ -250,6 +267,7 @@ function start_connexion ($uid, $identified)
     $_SESSION         = array_merge($_SESSION, $sess);
     $_SESSION['log']  = $logger;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
+    $_SESSION['perms'] =& XorgSession::make_perms($_SESSION['perms']);
     $mail_subject = null;
     if (check_account()) {
         $mail_subject = "Connexion d'un utilisateur surveillé";

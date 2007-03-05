@@ -58,7 +58,7 @@ class Session
 
     public static function has_perms()
     {
-        return Session::logged() && Session::v('perms') == PERMS_ADMIN;
+        return Session::logged() && Session::v('perms')->hasFlag(PERMS_ADMIN);
     }
 
     public static function logged()

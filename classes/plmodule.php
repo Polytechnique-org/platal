@@ -19,11 +19,25 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class PLModule
+abstract class PLModule
 {
-    function handlers()     { die("implement me"); }
+    abstract function handlers();
 
-    public function make_hook($fun, $auth, $perms = '', $type = DO_AUTH)
+    /** Register a hook
+     * @param fun name of the handler (the exact name will be handler_$fun)
+     * @param auth authentification level of needed to run this handler
+     * @param perms permission required to run this handler
+     * @param type additionnal flags
+     *
+     * Perms syntax is the following:
+     * perms = rights(,rights)*
+     * rights = right(:right)*
+     * right is an atomic right permission (like 'admin', 'user', 'groupadmin', 'groupmember'...)
+     *
+     * If type is set to NO_AUTH, the system will return 403 instead of asking auth data
+     * this is useful for Ajax handlers
+     */
+    public function make_hook($fun, $auth, $perms = 'user', $type = DO_AUTH)
     {
         return array('hook'  => array($this, 'handler_'.$fun),
                      'auth'  => $auth,

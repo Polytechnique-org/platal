@@ -44,7 +44,7 @@ class Flagset
      * @param $flag XXX
      * @return VOID
      */
-    public function addflag($flag) 
+    public function addFlag($flag) 
     {
         if (!$flag) return;
         if (!$this->hasflag($flag)) {
@@ -59,7 +59,7 @@ class Flagset
      * @param $flag XXX
      * @return 1 || 0
      */
-    public function hasflag($flag) 
+    public function hasFlag($flag) 
     {
         $tok = strtok($this->value,$this->sep);
         while ($tok) {
@@ -74,7 +74,7 @@ class Flagset
      * @param $flag XXX
      * @return VOID
      */
-    public function rmflag($flag) 
+    public function rmFlag($flag) 
     {
         if (!$flag) return;
         $newvalue = "";
@@ -90,6 +90,12 @@ class Flagset
         $this->value=$newvalue;
     }
 
+    /** return the flagset
+     */
+    public function flags()
+    {
+        return $this->value;
+    }
 } 
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
