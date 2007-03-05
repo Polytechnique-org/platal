@@ -172,6 +172,16 @@
         </select>
       </td>
     </tr>
+    {if $admin_evts}
+    <tr>
+      <td class="titre">
+        Importance
+      </td>
+      <td>
+        <input type="checkbox" name="important" {if $important}checked="checked"{/if}/> Marquer cette annonce comme très importante
+      </td>
+    </tr>
+    {/if}
   </table>
 
   <div class="center" {if !trim($texte) || !trim($titre)}style="display: none"{/if} id="valid">

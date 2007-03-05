@@ -26,8 +26,8 @@ class SearchModule extends PLModule
         return array(
             'search'     => $this->make_hook('quick', AUTH_PUBLIC),
             'search/adv' => $this->make_hook('advanced', AUTH_COOKIE),
-            'search/ajax/region'  => $this->make_hook('region', AUTH_COOKIE, '', NO_AUTH),
-            'search/ajax/grade'   => $this->make_hook('grade',  AUTH_COOKIE, '', NO_AUTH),
+            'search/ajax/region'  => $this->make_hook('region', AUTH_COOKIE, 'user', NO_AUTH),
+            'search/ajax/grade'   => $this->make_hook('grade',  AUTH_COOKIE, 'user', NO_AUTH),
             'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
         );
     }

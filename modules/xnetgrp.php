@@ -96,7 +96,7 @@ class XnetGrpModule extends PLModule
             '%grp/member/new'
                  => $this->make_hook('admin_member_new', AUTH_MDP),
             '%grp/member/new/ajax'
-                 => $this->make_hook('admin_member_new_ajax', AUTH_MDP, '', NO_AUTH),         
+                 => $this->make_hook('admin_member_new_ajax', AUTH_MDP, 'user', NO_AUTH),         
             '%grp/member/del'
                  => $this->make_hook('admin_member_del', AUTH_MDP),
 

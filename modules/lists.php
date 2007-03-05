@@ -27,7 +27,7 @@ class ListsModule extends PLModule
     {
         return array(
             'lists'           => $this->make_hook('lists',     AUTH_MDP),
-            'lists/ajax'      => $this->make_hook('ajax',      AUTH_MDP, '', NO_AUTH),
+            'lists/ajax'      => $this->make_hook('ajax',      AUTH_MDP, 'user', NO_AUTH),
             'lists/create'    => $this->make_hook('create',    AUTH_MDP),
 
             'lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
@@ -42,7 +42,7 @@ class ListsModule extends PLModule
 
             'lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP),
             'lists/check'     => $this->make_hook('check',     AUTH_MDP),
-            'admin/lists'     => $this->make_hook('admin_all',     AUTH_MDP, 'admin'),
+            'admin/lists'     => $this->make_hook('admin_all', AUTH_MDP, 'admin'),
         );
     }
 

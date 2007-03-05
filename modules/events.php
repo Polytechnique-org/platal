@@ -26,11 +26,11 @@ class EventsModule extends PLModule
         return array(
             'events'         => $this->make_hook('ev',        AUTH_COOKIE),
             'rss'            => $this->make_hook('rss', AUTH_PUBLIC),
-            'events/preview' => $this->make_hook('preview', AUTH_PUBLIC, '', NO_AUTH),
+            'events/preview' => $this->make_hook('preview', AUTH_PUBLIC, 'user', NO_AUTH),
             'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
             'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
 
-            'ajax/tips'      => $this->make_hook('tips',      AUTH_COOKIE, '', NO_AUTH),
+            'ajax/tips'      => $this->make_hook('tips',      AUTH_COOKIE, 'user', NO_AUTH),
             'admin/tips'     => $this->make_hook('admin_tips', AUTH_MDP, 'admin'),
         );
     }
@@ -89,7 +89,7 @@ class EventsModule extends PLModule
         $sql = "SELECT  e.id,e.titre, ev.user_id IS NULL AS nonlu
                   FROM  evenements    AS e
             LEFT JOIN   evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
-                 WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
+                 WHERE  FIND_IN_SET('valide', e.flags) AND peremption >= NOW()
                         AND (e.promo_min = 0 || e.promo_min <= {?})
                         AND (e.promo_max = 0 || e.promo_max >= {?})
                         AND $where
@@ -103,7 +103,7 @@ class EventsModule extends PLModule
             INNER JOIN  auth_user_md5  AS a ON e.user_id=a.user_id
             INNER JOIN  aliases        AS l ON ( a.user_id=l.id AND l.type='a_vie' )
              LEFT JOIN  evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
-                 WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
+                 WHERE  FIND_IN_SET('valide', e.flags) AND peremption >= NOW()
                         AND (e.promo_min = 0 || e.promo_min <= {?})
                         AND (e.promo_max = 0 || e.promo_max >= {?})
                         AND ev.user_id IS NULL
@@ -175,13 +175,17 @@ class EventsModule extends PLModule
         }
 
         $array = array();
-        $this->get_events('e.creation_date > DATE_SUB(CURDATE(), INTERVAL 2 DAY)',
+        $this->get_events('FIND_IN_SET(\'important\', e.flags)', 'e.creation_date DESC', $array, 'important');
+        $this->get_events('e.creation_date > DATE_SUB(CURDATE(), INTERVAL 2 DAY)
+                          AND NOT FIND_IN_SET(\'important\', e.flags)',
                           'e.creation_date DESC', $array, 'news');
         $this->get_events('e.peremption < DATE_ADD(CURDATE(), INTERVAL 2 DAY)
-                          AND e.creation_date <= DATE_SUB(CURDATE(), INTERVAL 2 DAY)',
+                          AND e.creation_date <= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
+                          AND NOT FIND_IN_SET(\'important\', e.flags)',
                           'e.peremption, e.creation_date DESC', $array, 'end');
         $this->get_events('e.peremption >= DATE_ADD(CURDATE(), INTERVAL 2 DAY)
-                          AND e.creation_date <= DATE_SUB(CURDATE(), INTERVAL 2 DAY)',
+                          AND e.creation_date <= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
+                          AND NOT FIND_IN_SET(\'important\', e.flags)',
                           'e.peremption, e.creation_date DESC', $array, 'body');
         $page->assign_by_ref('events', $array);
     }
@@ -334,26 +338,36 @@ class EventsModule extends PLModule
                 $page->trig("L'intervalle de promotions $promo_min -> $promo_max n'est pas valide");
                 $action = 'edit';
             } else {
+                $res = XDB::query('SELECT flags FROM evenements WHERE id = {?}', $eid);
+                $flags = new FlagSet($res->fetchOneCell());
+                if (Post::v('important')) {
+                    $flags->addFlag('important');
+                } else {
+                    $flags->rmFlag('important');
+                } 
                 XDB::execute('UPDATE evenements
                                  SET creation_date = creation_date, 
-                                     titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?}
+                                     titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?},
+                                     flags = {?}
                                WHERE id = {?}', 
                               Post::v('titre'), Post::v('texte'), Post::v('peremption'),
-                              Post::v('promo_min'), Post::v('promo_max'), $eid);
+                              Post::v('promo_min'), Post::v('promo_max'),
+                              $flags->flags(), $eid);
             }    
         }
 
         if ($action == 'edit') {
-            $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max
+            $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max, FIND_IN_SET(\'important\', flags)
                                  FROM evenements
                                 WHERE id={?}', $eid);
-            list($titre, $texte, $peremption, $promo_min, $promo_max) = $res->fetchOneRow();
+            list($titre, $texte, $peremption, $promo_min, $promo_max, $important) = $res->fetchOneRow();
             $page->assign('titre',$titre);
             $page->assign('texte',$texte);
             $page->assign('texte_html', pl_entity_decode($texte));
             $page->assign('promo_min',$promo_min);
             $page->assign('promo_max',$promo_max);
             $page->assign('peremption',$peremption);
+            $page->assign('important', $important);
 
             $select = "";
             for ($i = 1 ; $i < 30 ; $i++) {
@@ -417,6 +431,7 @@ class EventsModule extends PLModule
             $page->assign('evs', XDB::iterator($sql));
         }
         $page->assign('arch', $arch);
+        $page->assign('admin_evts', true);
     }   
 }
 

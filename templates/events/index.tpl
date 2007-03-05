@@ -108,7 +108,9 @@ Bienvenue {$smarty.session.prenom}
     {if $smarty.foreach.events.total neq 1}
     <tr class="pair" style="height: 18px">
       <td class="half titre" style="height: 18px; padding-top: 1px; padding-bottom: 1px;">
-        {if $category eq 'news'}
+        {if $category eq 'important'}
+          {icon name=error} Informations prioritaires&nbsp;:
+        {elseif $category eq 'news'}
           {icon name=bell} Nouvelles annonces&nbsp;:
         {elseif $category eq 'end'}
           {icon name=clock} Dernières minutes&nbsp;:
@@ -166,7 +168,9 @@ Bienvenue {$smarty.session.prenom}
     <tr>
       <th>
         <div style="float: left">
-          {if $category eq 'news'}
+          {if $category eq 'important'}
+            {icon name=error title="Important"}
+          {elseif $category eq 'news'}
             {icon name=bell title="Nouvelle annonce"}
           {elseif $category eq 'end'}
             {icon name=clock title="Bientôt fini"}

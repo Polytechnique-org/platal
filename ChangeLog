@@ -9,6 +9,7 @@ New:
 
     * Events:
         - #643: Sort menu                                                  -FRU
+        - Can set events as important                                      -FRU
 
     * Search:
         - Search Engine IE7 compatible                                     -FRU
