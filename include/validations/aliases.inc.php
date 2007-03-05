@@ -25,24 +25,24 @@ class AliasReq extends Validate
 {
     // {{{ properties
 
-    var $alias;
-    var $raison;
-    var $unique = true;
+    public $alias;
+    public $raison;
+    public $unique = true;
 
-    var $old='';
-    var $public='private';
+    public $old='';
+    public $public='private';
     
-    var $rules = "Interdire ce qui peut nous servir (virus@, postmaster@, ...),
+    public $rules = "Interdire ce qui peut nous servir (virus@, postmaster@, ...),
                   les alias vulgaires, et les prenom.nom (sauf si c'est pour l'utilisateur prenom.nom).
                   Pas de contrainte pour les tirets ou les points, en revanche le souligné (_) est interdit";
 
     // }}}
     // {{{ constructor
 
-    function AliasReq ($_uid, $_alias, $_raison, $_public, $_stamp=0)
+    public function __construct($_uid, $_alias, $_raison, $_public, $_stamp=0)
     {
         global $globals;
-        $this->Validate($_uid, true, 'alias', $_stamp);
+        parent::__construct($_uid, true, 'alias', $_stamp);
         $this->alias  = $_alias.'@'.$globals->mail->alias_dom;
         $this->raison = $_raison;
         $this->public = $_public;
@@ -60,7 +60,7 @@ class AliasReq extends Validate
     // }}}
     // {{{ function get_request()
 
-    static function get_request($uid)
+    static public function get_request($uid)
     {
         return parent::get_typed_request($uid,'alias');
     }
@@ -68,13 +68,15 @@ class AliasReq extends Validate
     // }}}
     // {{{ function formu()
 
-    function formu()
-    { return 'include/form.valid.aliases.tpl'; }
+    public function formu()
+    {
+        return 'include/form.valid.aliases.tpl';
+    }
 
     // }}}
     // {{{ function _mail_subj
 
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org/MELIX] Demande de l'alias {$this->alias}";
     }
@@ -82,7 +84,7 @@ class AliasReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         if ($isok) {
             return "  L'adresse mail {$this->alias} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance.".(($this->public == 'public')?" A ta demande, cette adresse apparaît maintenant sur ta fiche.":"");
@@ -94,7 +96,7 @@ class AliasReq extends Validate
     // }}}
     // {{{ function shorter_domain
 
-    function shorter_domain()
+    private function shorter_domain()
     {
         global $globals;
 
@@ -110,7 +112,7 @@ class AliasReq extends Validate
     // }}}
     // {{{ function commit()
 
-    function commit ()
+    public function commit ()
     {
         XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = {?} WHERE user_id = {?}",
                      $this->public, $this->uid);

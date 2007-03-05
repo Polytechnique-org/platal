@@ -25,18 +25,18 @@ class UsageReq extends Validate
 {
     // {{{ properties
 
-    var $unique = true;
+    public $unique = true;
 
-    var $nom_usage;
-    var $alias = '';
+    public $nom_usage;
+    public $alias = '';
 
-    var $oldusage;
-    var $oldalias;
+    public $oldusage;
+    public $oldalias;
 
-    var $homonyme;
-    var $reason;
+    public $homonyme;
+    public $reason;
     
-    var $rules = "Refuser 
+    public $rules = "Refuser 
     tout ce qui n'est visiblement pas un nom de famille (ce qui est 
     extremement rare car à peu près n'importe quoi peut être un nom de 
     famille...)";
@@ -44,9 +44,9 @@ class UsageReq extends Validate
     // }}}
     // {{{ constructor
 
-    function UsageReq($_uid, $_usage, $_reason)
+    public function __construct($_uid, $_usage, $_reason)
     {
-        $this->Validate($_uid, true, 'usage');
+        parent::__construct($_uid, true, 'usage');
         $this->nom_usage  = $_usage;
         $this->reason = $_reason;
         require_once 'xorg.misc.inc.php';
@@ -65,13 +65,15 @@ class UsageReq extends Validate
     // }}}
     // {{{ function formu()
 
-    function formu()
-    { return 'include/form.valid.nomusage.tpl'; }
+    public function formu()
+    {
+        return 'include/form.valid.nomusage.tpl';
+    }
 
     // }}}
     // {{{ function _mail_subj()
 
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org/USAGE] Changement de nom d'usage";
     }
@@ -79,7 +81,7 @@ class UsageReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         global $globals;
         if ($isok) {
@@ -99,7 +101,7 @@ class UsageReq extends Validate
     // }}}
     // {{{ function commit()
 
-    function commit()
+    public function commit()
     {
         require_once('user.func.inc.php');
         $this->bestalias = set_new_usage($this->uid, $this->nom_usage, $this->alias);

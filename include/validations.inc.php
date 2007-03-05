@@ -30,7 +30,7 @@ class ValidateIterator extends XOrgDBIterator
 {
     // {{{ constuctor
 
-    function ValidateIterator ()
+    public function __construct ()
     {
         parent::__construct('SELECT data,stamp FROM requests ORDER BY stamp', MYSQL_NUM);
     }
@@ -38,7 +38,7 @@ class ValidateIterator extends XOrgDBIterator
     // }}}
     // {{{ function next()
 
-    function next ()
+    public function next ()
     {
         if (list($result, $stamp) = parent::next()) {
             $result = unserialize($result);
@@ -54,27 +54,27 @@ class ValidateIterator extends XOrgDBIterator
 
 /** classe "virtuelle" à dériver pour chaque nouvelle implémentation
  */
-class Validate
+abstract class Validate
 {
     // {{{ properties
     
-    var $uid;
-    var $prenom;
-    var $nom;
-    var $promo;
-    var $sexe;
-    var $bestalias;
-    var $forlife;
+    public $uid;
+    public $prenom;
+    public $nom;
+    public $promo;
+    public $sexe;
+    public $bestalias;
+    public $forlife;
 
-    var $stamp;
-    var $unique;
+    public $stamp;
+    public $unique;
     // enable the refuse button
-    var $refuse = true;
+    public $refuse = true;
     
-    var $type;
-    var $comments = Array();
+    public $type;
+    public $comments = Array();
     // the validations rules : comments for admins
-    var $rules = "Mieux vaut laisser une demande de validation à un autre admin que de valider une requête illégale ou que de refuser une demande légitime";
+    public $rules = "Mieux vaut laisser une demande de validation à un autre admin que de valider une requête illégale ou que de refuser une demande légitime";
 
     // }}}
     // {{{ constructor
@@ -84,7 +84,7 @@ class Validate
      * @param       $_unique    requête pouvant être multiple ou non
      * @param       $_type      type de la donnée comme dans le champ type de x4dat.requests
      */
-    function Validate($_uid, $_unique, $_type)
+    public function __construct($_uid, $_unique, $_type)
     {
         $this->uid    = $_uid;
         $this->stamp  = date('YmdHis');
@@ -105,7 +105,7 @@ class Validate
     /** fonction à utiliser pour envoyer les données à la modération
      * cette fonction supprimme les doublons sur un couple ($user,$type) si $this->unique est vrai
      */
-    function submit ()
+    public function submit()
     {
         if ($this->unique) {
             XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
@@ -121,12 +121,11 @@ class Validate
     // }}}
     // {{{ function update()
 
-    function update ()
+    protected function update()
     {
         XDB::execute('UPDATE requests SET data={?}, stamp=stamp
-                                 WHERE user_id={?} AND type={?} AND stamp={?}',
-                                 $this, $this->uid, $this->type, $this->stamp);
-
+                       WHERE user_id={?} AND type={?} AND stamp={?}',
+                     $this, $this->uid, $this->type, $this->stamp);
         return true;
     }
 
@@ -136,7 +135,7 @@ class Validate
     /** fonction à utiliser pour nettoyer l'entrée de la requête dans la table requests
      * attention, tout est supprimé si c'est un unique
      */
-    function clean ()
+    protected function clean()
     {
         if ($this->unique) {
             return XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
@@ -152,7 +151,7 @@ class Validate
     
     /** fonction à réaliser en cas de valistion du formulaire
      */
-    function handle_formu()
+    public function handle_formu()
     {
         if (Env::has('delete')) {
             $this->clean();
@@ -232,7 +231,7 @@ class Validate
     // }}}
     // {{{ function sendmail
 
-    function sendmail($isok)
+    protected function sendmail($isok)
     {
         global $globals;
         $mailer = new PlMailer();
@@ -253,7 +252,8 @@ class Validate
     // }}}
     // {{{ function trig()
     
-    function trig($msg) {
+    protected function trig($msg)
+    {
         global $page;
         $page->trig($msg);
     }
@@ -269,7 +269,7 @@ class Validate
      * XXX fonction "statique" XXX
      * à utiliser uniquement pour récupérer un objet dans la BD avec Validate::get_typed_request(...)
      */
-    static function get_typed_request($uid, $type, $stamp = -1)
+    static public function get_typed_request($uid, $type, $stamp = -1)
     {
         if ($stamp == -1) {
             $res = XDB::query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
@@ -289,7 +289,7 @@ class Validate
 
     /** same as get_typed_request() but return an array of objects
      */
-    static function get_typed_requests($uid, $type)
+    static public function get_typed_requests($uid, $type)
     {
         $res = XDB::iterRow('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
         $array = array();
@@ -302,45 +302,41 @@ class Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
-    {
-    }
+    abstract protected function _mail_body($isok);
     
     // }}}
     // {{{ function _mail_subj
 
-    function _mail_subj()
-    {
-    }
+    abstract protected function _mail_subj();
     
     // }}}
     // {{{ function commit()
     
     /** fonction à utiliser pour insérer les données dans x4dat
-     * XXX la fonction est "virtuelle" XXX
      */
-    function commit ()
-    { }
+    abstract public function commit();
 
     // }}}
     // {{{ function formu()
     
     /** nom du template qui contient le formulaire */
-    function formu()
-    { return null; }
+    abstract public function formu();
 
     // }}}
     // {{{ function editor()
 
     /** nom du formulaire d'édition */
-    function editor()
-    { return null; }
+    public function editor()
+    {
+        return null;
+    }
 
     // }}}
     // {{{ function answers()
 
     /** automatic answers table for this type of validation */
-    function answers() {
+    public function answers()
+    {
         static $answers_table;
         if (!isset($answers_table[$this->type])) {
             $r = XDB::query("SELECT id, title, answer FROM requests_answers WHERE category = {?}", $this->type);
@@ -352,7 +348,7 @@ class Validate
     // }}}
     // {{{ function id()
 
-    function id()
+    public function id()
     {
         return $this->uid . '_' . $this->type . '_' . $this->stamp;
     }

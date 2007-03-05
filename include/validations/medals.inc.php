@@ -25,15 +25,15 @@ class MedalReq extends Validate
 {
     // {{{ properties
 
-    var $mid;
-    var $gid;
+    public $mid;
+    public $gid;
 
     // }}}
     // {{{ constructor
 
-    function MedalReq ($_uid, $_idmedal, $_subidmedal, $_stamp=0)
+    public function __construct($_uid, $_idmedal, $_subidmedal, $_stamp=0)
     {
-        $this->Validate($_uid, false, 'medal', $_stamp);
+        parent::__construct($_uid, false, 'medal', $_stamp);
         $this->mid  = $_idmedal;
         $this->gid = $_subidmedal;
     }
@@ -41,15 +41,15 @@ class MedalReq extends Validate
     // }}}
     // {{{ function formu()
 
-    function formu()
+    public function formu()
     { 
-		return 'include/form.valid.medals.tpl';
-	}
+        return 'include/form.valid.medals.tpl';
+    }
 
     // }}}
     // {{{ function _mail_subj
 
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org/Décoration] Demande de décoration : ".$this->medal_name();
     }
@@ -57,7 +57,7 @@ class MedalReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         if ($isok) {
             return "  La décoration ".$this->medal_name()." vient d'être ajoutée à ta fiche.";
@@ -69,21 +69,21 @@ class MedalReq extends Validate
     // }}}
     // {{{ function medal_name
 
-    function medal_name()
+    public function medal_name()
     {
-    	//var_dump($this);
-    	$r = XDB::query("
-			SELECT IF (g.text IS NOT NULL, CONCAT(m.text,' - ', g.text), m.text) 
-			FROM profile_medals AS m
-				LEFT JOIN profile_medals_grades AS g ON(g.mid = m.id AND g.gid = {?})
-			WHERE m.id = {?}", $this->gid, $this->mid);
-		return $r->fetchOneCell(); 
+        //var_dump($this);
+        $r = XDB::query("
+            SELECT IF (g.text IS NOT NULL, CONCAT(m.text,' - ', g.text), m.text) 
+              FROM profile_medals AS m
+         LEFT JOIN profile_medals_grades AS g ON(g.mid = m.id AND g.gid = {?})
+             WHERE m.id = {?}", $this->gid, $this->mid);
+        return $r->fetchOneCell(); 
     }
 
     // }}}
     // {{{ function submit()
 
-    function submit()
+    public function submit()
     {
         $res = XDB::query("SELECT  FIND_IN_SET(flags, 'validation')
                              FROM  profile_medals
@@ -94,13 +94,13 @@ class MedalReq extends Validate
             $this->commit();
         }
     }
-    
+
     // }}}
     // {{{ function commit()
 
-    function commit ()
+    public function commit ()
     {
-    	return XDB::execute('REPLACE INTO profile_medals_sub VALUES({?}, {?}, {?})', $this->uid, $this->mid, $this->gid);
+        return XDB::execute('REPLACE INTO profile_medals_sub VALUES({?}, {?}, {?})', $this->uid, $this->mid, $this->gid);
     }
 
     // }}}

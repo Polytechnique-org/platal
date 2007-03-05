@@ -25,19 +25,20 @@ class EvtReq extends Validate
 {
     // {{{ properties
 
-    var $evtid;
-    var $titre;
-    var $texte;
-    var $pmin;
-    var $pmax;
-    var $peremption;    
-    var $comment;
+    public $evtid;
+    public $titre;
+    public $texte;
+    public $pmin;
+    public $pmax;
+    public $peremption;    
+    public $comment;
     
     // }}}
     // {{{ constructor
 
-    function EvtReq($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, $_uid) {
-        $this->Validate($_uid, false, 'evts');
+    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, $_uid)
+    {
+        parent::__construct($_uid, false, 'evts');
         $this->titre      = $_titre;
         $this->texte      = $_texte;
         $this->pmin       = $_pmin;
@@ -49,19 +50,23 @@ class EvtReq extends Validate
     // }}}
     // {{{ function formu()
 
-    function formu()
-    { return 'include/form.valid.evts.tpl'; }
+    public function formu()
+    {
+        return 'include/form.valid.evts.tpl';
+    }
 
     // }}}
     // {{{ functon editor()
 
-    function editor()
-    { return 'include/form.valid.edit-evts.tpl'; }
+    public function editor()
+    {
+        return 'include/form.valid.edit-evts.tpl';
+    }
 
     // }}}
     // {{{ function handle_editor()
 
-    function handle_editor()
+    protected function handle_editor()
     {
         $this->titre      = Env::v('titre');
         $this->texte      = Env::v('texte');
@@ -74,7 +79,7 @@ class EvtReq extends Validate
     // }}}
     // {{{ function _mail_subj
     
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org/EVENEMENTS] Proposition d'événement";
     }
@@ -82,7 +87,7 @@ class EvtReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         if ($isok) {
             return "  L'annonce que tu avais proposée ({$this->titre}) vient d'être validée.";
@@ -94,7 +99,7 @@ class EvtReq extends Validate
     // }}}
     // {{{ function commit()
 
-    function commit()
+    public function commit()
     {
         return XDB::execute(
                 "INSERT INTO  evenements

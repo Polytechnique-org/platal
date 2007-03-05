@@ -25,25 +25,25 @@ class ListeReq extends Validate
 {
     // {{{ properties
     
-    var $liste;
-    var $desc;
+    public $liste;
+    public $desc;
 
-    var $advertise;
-    var $modlevel;
-    var $inslevel;
+    public $advertise;
+    public $modlevel;
+    public $inslevel;
 
-    var $owners;
-    var $members;
+    public $owners;
+    public $members;
 
-    var $rules = "Refuser les listes de binets si elles ne sont pas datées (oui : apv2002@, non : apv@).
+    public $rules = "Refuser les listes de binets si elles ne sont pas datées (oui : apv2002@, non : apv@).
         Refuser également des listes qui pourraient nous servir (admin, postmaster,...)";
     // }}}
     // {{{ constructor
     
-    function ListeReq($_uid, $_liste, $_desc, $_advertise, $_modlevel,
-                      $_inslevel, $_owners, $_members, $_stamp=0)
+    public function __construct($_uid, $_liste, $_desc, $_advertise, $_modlevel,
+                                $_inslevel, $_owners, $_members, $_stamp=0)
     {
-        $this->Validate($_uid, true, 'liste', $_stamp);
+        parent::__construct($_uid, true, 'liste', $_stamp);
         
         $this->liste     = $_liste;
         $this->desc      = $_desc;
@@ -57,13 +57,15 @@ class ListeReq extends Validate
     // }}}
     // {{{ function formu()
 
-    function formu()
-    { return 'include/form.valid.listes.tpl'; }
+    public function formu()
+    {
+        return 'include/form.valid.listes.tpl';
+    }
 
     // }}}
     // {{{ function editor()
 
-    function editor()
+    public function editor()
     {
         return 'include/form.valid.edit-listes.tpl';
     }
@@ -71,7 +73,7 @@ class ListeReq extends Validate
     // }}}
     // {{{ function handle_editor()
 
-    function handle_editor()
+    protected function handle_editor()
     {
         if (Env::has('listname')) {
             $this->liste = trim(Env::v('listname'));
@@ -82,7 +84,7 @@ class ListeReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org/LISTES] Demande de la liste {$this->liste}";
     }
@@ -90,7 +92,7 @@ class ListeReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         if ($isok) {
             return "  La mailing list {$this->liste} que tu avais demandée vient d'être créée.";
@@ -102,7 +104,7 @@ class ListeReq extends Validate
     // }}}
     // {{{ function commit()
 
-    function commit()
+    public function commit()
     {
         $list = new MMList(S::v('uid'), S::v('password'));
         $ret = $list->create_list($this->liste, $this->desc, $this->advertise,

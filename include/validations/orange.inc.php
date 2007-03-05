@@ -25,21 +25,21 @@ class OrangeReq extends Validate
 {
     // {{{ properties
 
-    var $unique = true;
+    public $unique = true;
 
-    var $promo;
-    var $promo_sortie;
+    public $promo;
+    public $promo_sortie;
     
-    var $rules = "A priori accepter (la validation sert à repousser les
+    public $rules = "A priori accepter (la validation sert à repousser les
     petits malins). Refuse si tu connais la personne et que tu es sure 
     qu'elle n'est pas orange.";
 
     // }}}
     // {{{ constructor
 
-    function OrangeReq($_uid, $_sortie)
+    public function __construct($_uid, $_sortie)
     {
-        $this->Validate($_uid, true, 'orange');
+        parent::__construct($_uid, true, 'orange');
         $this->promo_sortie  = $_sortie;
         $res = XDB::query("SELECT promo FROM auth_user_md5 WHERE user_id = {?}", $_uid);
         $this->promo = $res->fetchOneCell(); 
@@ -48,13 +48,15 @@ class OrangeReq extends Validate
     // }}}
     // {{{ function formu()
 
-    function formu()
-    { return 'include/form.valid.orange.tpl'; }
+    public function formu()
+    {
+        return 'include/form.valid.orange.tpl';
+    }
 
     // }}}
     // {{{ function _mail_subj()
 
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org/ORANGE] Changement de nom de promo de sortie";
     }
@@ -62,7 +64,7 @@ class OrangeReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         if ($isok) {
             $res = "  La demande de changement de promo de sortie que tu as demandée vient d'être effectuée.";
@@ -75,7 +77,7 @@ class OrangeReq extends Validate
     // }}}
     // {{{ function commit()
 
-    function commit()
+    public function commit()
     {
         XDB::execute("UPDATE auth_user_md5 set promo_sortie={?} WHERE user_id={?}",$this->promo_sortie ,$this->uid);
         return true;

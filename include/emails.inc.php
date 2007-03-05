@@ -38,10 +38,10 @@ function fix_bestalias($uid)
         return;
     }
     XDB::execute("UPDATE  aliases
-                               SET  flags=CONCAT(flags,',','bestalias')
-                 WHERE  id={?} AND type!='homonyme'
-                  ORDER BY  !FIND_IN_SET('usage',flags),alias LIKE '%.%', LENGTH(alias)
-                     LIMIT  1", $uid);
+                     SET  flags=CONCAT(flags,',','bestalias')
+                   WHERE  id={?} AND type!='homonyme'
+                ORDER BY  !FIND_IN_SET('usage',flags),alias LIKE '%.%', LENGTH(alias)
+                   LIMIT  1", $uid);
 }
 
 // }}}
@@ -69,20 +69,20 @@ class Bogo
 {
     // {{{ properties
 
-    var $state;
-    var $_states = Array('let_spams', 'tag_spams', 'tag_and_drop_spams', 'drop_spams');
+    private $state;
+    private $_states = Array('let_spams', 'tag_spams', 'tag_and_drop_spams', 'drop_spams');
 
     // }}}
     // {{{ constructor
 
-    function Bogo($uid)
+    public function __construct($uid)
     {
         if (!$uid) {
             return;
         }
         $res = XDB::query('SELECT email FROM emails WHERE uid={?} AND flags="filter"', $uid);
         if ($res->numRows()) {
-                $this->state = $res->fetchOneCell();
+            $this->state = $res->fetchOneCell();
         } else {
             $this->state = 'tag_and_drop_spams';
             $res = XDB::query("INSERT INTO emails (uid,email,rewrite,panne,flags)
@@ -93,18 +93,20 @@ class Bogo
     // }}}
     // {{{ function change()
 
-    function change($uid, $state)
+    public function change($uid, $state)
     {
-    $this->state = is_int($state) ? $this->_states[$state] : $state;
-    XDB::execute('UPDATE emails SET email={?} WHERE uid={?} AND flags = "filter"',
-                     $this->state, $uid);
+        $this->state = is_int($state) ? $this->_states[$state] : $state;
+        XDB::execute('UPDATE emails SET email={?} WHERE uid={?} AND flags = "filter"',
+            $this->state, $uid);
     }
 
     // }}}
     // {{{ function level()
 
-    function level()
-    { return array_search($this->state, $this->_states); }
+    public function level()
+    {
+        return array_search($this->state, $this->_states);
+    }
 
     // }}}
 }
@@ -115,19 +117,19 @@ class Bogo
 class Email
 {
     // {{{ properties
-    
-    var $email;
-    var $active;
-    var $broken;
-    var $rewrite;
-    var $panne;
-    var $last;
-    var $panne_level;
+
+    public $email;
+    public $active;
+    public $broken;
+    public $rewrite;
+    public $panne;
+    public $last;
+    public $panne_level;
 
     // }}}
     // {{{ constructor
 
-    function Email($row)
+    public function __construct($row)
     {
         list($this->email, $flags, $this->rewrite, $this->panne, $this->last, $this->panne_level) = $row;
         $this->active = ($flags == 'active');
@@ -137,14 +139,14 @@ class Email
     // }}}
     // {{{ function activate()
 
-    function activate($uid)
+    public function activate($uid)
     {
         if (!$this->active) {
             XDB::execute("UPDATE  emails
                              SET  panne_level = IF(flags = 'panne', panne_level - 1, panne_level),
                                   flags = 'active'
                            WHERE  uid={?} AND email={?}", $uid, $this->email);
-        $_SESSION['log']->log("email_on", $this->email.($uid!=S::v('uid') ? "(admin on $uid)" : ""));
+            $_SESSION['log']->log("email_on", $this->email.($uid!=S::v('uid') ? "(admin on $uid)" : ""));
             $this->active = true;
             $this->broken = false;
         }
@@ -153,20 +155,20 @@ class Email
     // }}}
     // {{{ function deactivate()
 
-    function deactivate($uid)
+    public function deactivate($uid)
     {
         if ($this->active) {
             XDB::execute("UPDATE  emails SET flags =''
-                     WHERE  uid={?} AND email={?}", $uid, $this->email);
+                           WHERE  uid={?} AND email={?}", $uid, $this->email);
             $_SESSION['log']->log("email_off",$this->email.($uid!=S::v('uid') ? "(admin on $uid)" : "") );
             $this->active = false;
         }
     }
-    
+
     // }}}
     // {{{ function rewrite()
 
-    function rewrite($rew, $uid)
+    public function rewrite($rew, $uid)
     {
         if ($this->rewrite == $rew) {
             return;
@@ -188,21 +190,22 @@ class Email
 class Redirect
 {
     // {{{ properties
-    
-    var $flag_active = 'active';
-    var $emails;
-    var $bogo;
-    var $uid;
+
+    private $flag_active = 'active';
+    private $uid;
+
+    public $emails;
+    public $bogo;
 
     // }}}
     // {{{ function Redirect()
 
-    function Redirect($_uid)
+    public function __construct($_uid)
     {
         $this->uid=$_uid;
-        $res = XDB::iterRow("
-            SELECT email, flags, rewrite, panne, last, panne_level
-              FROM emails WHERE uid = {?} AND flags != 'filter'", $_uid);
+        $res = XDB::iterRow("SELECT  email, flags, rewrite, panne, last, panne_level
+                               FROM  emails
+                              WHERE  uid = {?} AND flags != 'filter'", $_uid);
         $this->emails=Array();
         while ($row = $res->next()) {
             $this->emails[] = new Email($row);
@@ -213,7 +216,7 @@ class Redirect
     // }}}
     // {{{ function other_active()
 
-    function other_active($email)
+    public function other_active($email)
     {
         foreach ($this->emails as $mail) {
             if ($mail->email!=$email && $mail->active) {
@@ -226,7 +229,7 @@ class Redirect
     // }}}
     // {{{ function delete_email()
 
-    function delete_email($email)
+    public function delete_email($email)
     {
         if (!$this->other_active($email)) {
             return ERROR_INACTIVE_REDIRECTION;
@@ -244,8 +247,8 @@ class Redirect
 
     // }}}
     // {{{ function add_email()
-    
-    function add_email($email)
+
+    public function add_email($email)
     {
         $email_stripped = strtolower(trim($email));
         if (!isvalid_email($email_stripped)) {
@@ -274,7 +277,7 @@ class Redirect
     // }}}
     // {{{ function modify_email()
 
-    function modify_email($emails_actifs,$emails_rewrite)
+    public function modify_email($emails_actifs, $emails_rewrite)
     {
         foreach ($this->emails as $i=>$mail) {
             if (in_array($mail->email,$emails_actifs)) {
@@ -287,7 +290,7 @@ class Redirect
         check_redirect($this);
     }
 
-    function modify_one_email($email, $activate) 
+    public function modify_one_email($email, $activate) 
     {
         $allinactive = true;
         $thisone = false;
@@ -313,23 +316,24 @@ class Redirect
         } 
     }
 
-	function modify_one_email_redirect($email, $redirect) {
-		foreach ($this->emails as $i=>$mail) {
-			if ($mail->email == $email) {
-				$this->emails[$i]->rewrite($redirect, $this->uid);
+    public function modify_one_email_redirect($email, $redirect)
+    {
+        foreach ($this->emails as $i=>$mail) {
+            if ($mail->email == $email) {
+                $this->emails[$i]->rewrite($redirect, $this->uid);
                 check_redirect($this);
                 return;
-			}
-		}
-	}
+            }
+        }
+    }
     // }}}
     // {{{ function get_broken_mx()
 
-    function get_broken_mx()
+    public function get_broken_mx()
     {
         $res = XDB::query("SELECT  host, text
-                             FROM  mx_watch
-                            WHERE  state != 'ok'");
+            FROM  mx_watch
+            WHERE  state != 'ok'");
         if (!$res->numRows()) {
             return array();
         }

@@ -19,57 +19,55 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('validations.inc.php');
+require_once 'validations.inc.php';
 // {{{ class HomonymeReq
 
 class HomonymeReq extends Validate
 {
     // {{{ properties
     
-    var $loginbis;
+    public $loginbis;
 
-    var $warning = true;
+    public $warning = true;
 
-    var $homonymes_forlife;
+    public $homonymes_forlife;
 
-    var $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traité plus ... manuellement";
+    public $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traité plus ... manuellement";
 
     // }}}
     // {{{ constructor
    
-    function HomonymeReq($_uid, $_loginbis, $_homonymes_forlife, $warning=true)
+    public function __construct($_uid, $_loginbis, $_homonymes_forlife, $warning=true)
     {
-        global $global;
-
         $this->warning = $warning;
 
-        $this->Validate($_uid, true, $this->title());
+        parent::__construct($_uid, true, $this->title());
 
         $this->refuse = false;
-
         $this->loginbis = $_loginbis;
-
         $this->homonymes_forlife = $_homonymes_forlife;
-
     }
     
     // }}}
     // {{{ title()
     
-    function title() {
+    private function title()
+    {
         return $this->warning?'alerte alias':'robot répondeur';
     }
 
     // }}}
     // {{{ function formu()
 
-    function formu()
-    { return 'include/form.valid.homonymes.tpl'; }
+    public function formu()
+    {
+        return 'include/form.valid.homonymes.tpl';
+    }
 
     // }}}
     // {{{ function _mail_subj
 
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org/Support] ".($this->warning?"Dans une semaine : suppression de l'alias":"Mise en place du robot")." $loginbis@polytechnique.org";
     }
@@ -77,7 +75,7 @@ class HomonymeReq extends Validate
     // }}}
     // {{{ function _mail_body
     
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         global $globals;
         return
@@ -95,7 +93,7 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     // }}}
     // {{{ function sendmail()
 
-    function sendmail($isok)
+    protected function sendmail($isok)
     {
         if (!$isok) return false;
         global $globals;
@@ -118,7 +116,7 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     // }}}
     // {{{ function commit()
     
-    function commit()
+    public function commit()
     {
         require_once('homonymes.inc.php');
 

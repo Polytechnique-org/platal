@@ -24,24 +24,25 @@ class MarkReq extends Validate
 {
     // {{{ properties
 
-    var $perso;
+    public $perso;
 
-    var $m_id;
-    var $m_email;
-    var $m_nom;
-    var $m_prenom;
-    var $m_promo;
-    var $m_relance;
+    public $m_id;
+    public $m_email;
+    public $m_nom;
+    public $m_prenom;
+    public $m_promo;
+    public $m_relance;
 
-    var $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance). Si le 
+    public $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance). Si le 
     demandeur marque sa propre adresse mail, refuser dans tous les cas.
     Ne pas marqueter au nom de Polytechnique.org plus d'une 
     fois par an.";
     // }}}
     // {{{ constructor
 
-    function MarkReq($sender, $mark_id, $email, $perso = false) {
-        $this->Validate($sender, false, 'marketing');
+    public function __construct($sender, $mark_id, $email, $perso = false)
+    {
+        parent::__construct($sender, false, 'marketing');
         $this->m_id    = $mark_id;
         $this->m_email = $email;
         $this->perso   = $perso;
@@ -56,7 +57,7 @@ class MarkReq extends Validate
     // }}}
     // {{{ function formu()
 
-    function formu()
+    public function formu()
     {
         $res = XDB::query('SELECT  IF(MAX(m.last)>p.relance, MAX(m.last), p.relance)
                              FROM  auth_user_md5      AS u
@@ -71,7 +72,7 @@ class MarkReq extends Validate
     // }}}
     // {{{ function _mail_subj
     
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org] Marketing de {$this->m_prenom} {$this->m_nom} ({$this->m_promo})";
     }
@@ -79,7 +80,7 @@ class MarkReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         if ($isok) {
             return "  Un mail de marketing vient d'être envoyé "
@@ -94,7 +95,7 @@ class MarkReq extends Validate
     // }}}
     // {{{ function commit()
 
-    function commit()
+    public function commit()
     {
         require_once('marketing.inc.php');
         mark_send_mail($this->m_id, $this->m_email,(!$this->perso)?"staff":"user");

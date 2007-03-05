@@ -27,21 +27,22 @@ class NLReq extends Validate
 {
     // {{{ properties
 
-    var $art;
-    var $rules = "Laisser valider par le NL-MASTER";
+    public $art;
+    public $rules = "Laisser valider par le NL-MASTER";
     
     // }}}
     // {{{ constructor
 
-    function NlReq($uid, $title, $body, $append) {
-        $this->Validate($uid, false, 'nl');
+    public function __construct($uid, $title, $body, $append)
+    {
+        parent::__construct($uid, false, 'nl');
         $this->art = new NLArticle($title, $body, $append);
     }
 
     // }}}
     // {{{ function formu()
 
-    function formu()
+    public function formu()
     {
         return 'include/form.valid.nl.tpl';
     }
@@ -49,7 +50,7 @@ class NLReq extends Validate
     // }}}
     // {{{ function editor()
 
-    function editor()
+    public function editor()
     {
         return 'include/form.valid.edit-nl.tpl';
     }
@@ -57,7 +58,7 @@ class NLReq extends Validate
     // }}}
     // {{{ function handle_editor()
 
-    function handle_editor()
+    protected function handle_editor()
     {
         $this->art->_body   = Env::v('nl_body');
         $this->art->_title  = Env::v('nl_title');
@@ -68,7 +69,7 @@ class NLReq extends Validate
     // }}}
     // {{{ function _mail_subj
     
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org/NL] Proposition d'article dans la NL";
     }
@@ -76,7 +77,7 @@ class NLReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         if ($isok) {
             return '  L\'article que tu avais proposé ('.$this->art->title().') vient d\'être validé.';
@@ -88,7 +89,7 @@ class NLReq extends Validate
     // }}}
     // {{{ function commit()
 
-    function commit()
+    public function commit()
     {
         $nl  = new Newsletter();
         $nl->saveArticle($this->art);

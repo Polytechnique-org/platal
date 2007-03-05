@@ -40,14 +40,14 @@ function register_watch_op($uid, $cid, $date='', $info='')
         $date = date('Y-m-d');
     };
     XDB::execute('REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES({?},{?},NOW(),{?},{?})',
-            $uid, $cid, $date, $info);
+        $uid, $cid, $date, $info);
     if($cid == WATCH_FICHE) {
         XDB::execute('UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id={?}', $uid);
     } elseif($cid == WATCH_INSCR) {
         XDB::execute('REPLACE INTO  contacts (uid,contact)
-                                      SELECT  uid,ni_id
-                                        FROM  watch_nonins
-                                       WHERE  ni_id={?}', $uid);
+                            SELECT  uid,ni_id
+                              FROM  watch_nonins
+                             WHERE  ni_id={?}', $uid);
         XDB::execute('DELETE FROM watch_nonins WHERE ni_id={?}', $uid);
     }
 }
@@ -58,33 +58,33 @@ function register_watch_op($uid, $cid, $date='', $info='')
 function _select_notifs_base($table, $mail, $where)
 {
     $cases = Array(
-            'contacts'     => Array('wfield' => 'contact', 'ufield' => 'user_id', 'need_contact' => false,
-                'freq_sql' => '',
-                'contact_sql' => '1'
-            ),
-            'watch_promo'  => Array('wfield' => 'promo',   'ufield' => 'promo',   'need_contact' => true,
-                'freq_sql' => ' AND ( wc.type = "basic" OR wc.type="near" AND (u.promo <= v.promo_sortie-2 AND u.promo_sortie >= v.promo+2) )',
-                'contact_sql' => 'NOT (c.contact IS NULL)'
-            ),
-            'watch_nonins' => Array('wfield' => 'ni_id',   'ufield' => 'user_id', 'need_contact' => false,
-                'freq_sql' => '',
-                'contact_sql' => '0'
-            )
+        'contacts'     => Array('wfield' => 'contact', 'ufield' => 'user_id', 'need_contact' => false,
+            'freq_sql' => '',
+            'contact_sql' => '1'
+        ),
+        'watch_promo'  => Array('wfield' => 'promo',   'ufield' => 'promo',   'need_contact' => true,
+            'freq_sql' => ' AND ( wc.type = "basic" OR wc.type="near" AND (u.promo <= v.promo_sortie-2 AND u.promo_sortie >= v.promo+2) )',
+            'contact_sql' => 'NOT (c.contact IS NULL)'
+        ),
+        'watch_nonins' => Array('wfield' => 'ni_id',   'ufield' => 'user_id', 'need_contact' => false,
+            'freq_sql' => '',
+            'contact_sql' => '0'
+        )
     );
 
     $our   = $cases[$table];
     $sql = "
         (
-          SELECT  u.promo, u.prenom, IF(u.nom_usage='',u.nom,u.nom_usage) AS nom,
-                  u.deces != 0 AS dcd,
-                  a.alias AS bestalias,
-                  wo.*,
-                  {$our['contact_sql']} AS contact,
-                  (u.perms IN('admin','user')) AS inscrit";
+            SELECT  u.promo, u.prenom, IF(u.nom_usage='',u.nom,u.nom_usage) AS nom,
+                    u.deces != 0 AS dcd,
+                    a.alias AS bestalias,
+                    wo.*,
+                    {$our['contact_sql']} AS contact,
+                    (u.perms IN('admin','user')) AS inscrit";
     if ($mail) {
         $sql.=",
-                  w.uid AS aid, v.prenom AS aprenom, IF(v.nom_usage='',v.nom,v.nom_usage) AS anom,
-                  b.alias AS abestalias, (v.flags='femme') AS sexe, q.core_mail_fmt AS mail_fmt";
+            w.uid AS aid, v.prenom AS aprenom, IF(v.nom_usage='',v.nom,v.nom_usage) AS anom,
+            b.alias AS abestalias, (v.flags='femme') AS sexe, q.core_mail_fmt AS mail_fmt";
     }
 
     $sql .= "
@@ -106,8 +106,8 @@ function _select_notifs_base($table, $mail, $where)
       INNER JOIN  watch_sub       AS ws ON(ws.cid = wo.cid AND ws.uid = w.uid)
       INNER JOIN  watch_cat       AS wc ON(wc.id = wo.cid{$our['freq_sql']})
        LEFT JOIN  aliases         AS a  ON(a.id = u.user_id AND FIND_IN_SET('bestalias', a.flags))
-           WHERE  $where
-        )";
+          WHERE  $where
+    )";
 
     return $sql;
 }
@@ -132,7 +132,8 @@ function select_notifs($mail, $uid=null, $last=null, $iterator=true)
 // }}}
 // {{{ function getNbNotifs
 
-function getNbNotifs() {
+function getNbNotifs() 
+{
     if (!S::has('uid')) {
         return 0;
     }
@@ -154,11 +155,13 @@ function getNbNotifs() {
 // }}}
 // {{{ class AllNotifs
 
-class AllNotifs {
-    var $_cats = Array();
-    var $_data = Array();
+class AllNotifs 
+{
+    public $_cats = Array();
+    public $_data = Array();
 
-    function AllNotifs() {
+    public function __construct()
+    {
         $res = XDB::iterator("SELECT * FROM watch_cat");
         while($tmp = $res->next()) {
             $this->_cats[$tmp['id']] = $tmp;
@@ -172,8 +175,8 @@ class AllNotifs {
             $aid = $tmp['aid'];
             if (empty($this->_data[$aid])) {
                 $this->_data[$aid] = Array("prenom" => $tmp['aprenom'], 'nom' => $tmp['anom'],
-                        'bestalias'=>$tmp['abestalias'], 'sexe' => $tmp['sexe'], 'mail_fmt' => $tmp['mail_fmt'],
-                        'dcd'=>$tmp['dcd']);
+                    'bestalias'=>$tmp['abestalias'], 'sexe' => $tmp['sexe'], 'mail_fmt' => $tmp['mail_fmt'],
+                    'dcd'=>$tmp['dcd']);
             }
             unset($tmp['aprenom'], $tmp['anom'], $tmp['abestalias'], $tmp['aid'], $tmp['sexe'], $tmp['mail_fmt'], $tmp['dcd']);
             $this->_data[$aid]['data'][$tmp['cid']][] = $tmp;
@@ -184,12 +187,14 @@ class AllNotifs {
 // }}}
 // {{{ class Notifs
 
-class Notifs {
-    var $_uid;
-    var $_cats = Array();
-    var $_data = Array();
+class Notifs 
+{
+    public $_uid;
+    public $_cats = Array();
+    public $_data = Array();
 
-    function Notifs($uid, $up=false) {
+    function __concstruct($uid, $up=false)
+    {
         $this->_uid = $uid;
 
         $res = XDB::iterator("SELECT * FROM watch_cat");
@@ -215,23 +220,25 @@ class Notifs {
 // }}}
 // {{{ class Watch
 
-class Watch {
-    var $_uid;
-    var $_promos;
-    var $_nonins;
-    var $_cats = Array();
-    var $_subs;
-    var $watch_contacts;
-    var $watch_mail;
+class Watch 
+{
+    public $_uid;
+    public $_promos;
+    public $_nonins;
+    public $_cats = Array();
+    public $_subs;
+    public $watch_contacts;
+    public $watch_mail;
 
-    function Watch($uid) {
+    public function __construct($uid)
+    {
         $this->_uid = $uid;
         $this->_promos = new PromoNotifs($uid);
         $this->_nonins = new NoninsNotifs($uid);
         $this->_subs = new WatchSub($uid);
         $res = XDB::query("SELECT  FIND_IN_SET('contacts',watch_flags),FIND_IN_SET('mail',watch_flags)
-                                       FROM  auth_user_quick
-                                      WHERE  user_id={?}", $uid);
+            FROM  auth_user_quick
+            WHERE  user_id={?}", $uid);
         list($this->watch_contacts,$this->watch_mail) = $res->fetchOneRow();
 
         $res = XDB::iterator("SELECT * FROM watch_cat");
@@ -240,29 +247,34 @@ class Watch {
         }
     }
 
-    function saveFlags() {
+    public function saveFlags()
+    {
         $flags = "";
         if ($this->watch_contacts)
             $flags = "contacts";
         if ($this->watch_mail)
             $flags .= ($flags ? ',' : '')."mail";
         XDB::execute('UPDATE auth_user_quick SET watch_flags={?} WHERE user_id={?}',
-                     $flags, $this->_uid);
+            $flags, $this->_uid);
     }
 
-    function cats() {
+    public function cats()
+    {
         return $this->_cats;
     }
 
-    function subs($i) {
+    public function subs($i)
+    {
         return $this->_subs->_data[$i];
     }
 
-    function promos() {
+    public function promos()
+    {
         return $this->_promos->toRanges();
     }
 
-    function nonins() {
+    public function nonins()
+    {
         return $this->_nonins->_data;
     }
 }
@@ -270,11 +282,13 @@ class Watch {
 // }}}
 // {{{ class WatchSub
 
-class WatchSub {
-    var $_uid;
-    var $_data = Array();
+class WatchSub
+{
+    public $_uid;
+    public $_data = Array();
 
-    function WatchSub($uid) {
+    public function __construct($uid)
+    {
         $this->_uid = $uid;
         $res = XDB::iterRow('SELECT cid FROM watch_sub WHERE uid={?}', $uid);
         while(list($c) = $res->next()) {
@@ -282,7 +296,8 @@ class WatchSub {
         }
     }
 
-    function update($ind) {
+    public function update($ind)
+    {
         $this->_data = Array();
         XDB::execute('DELETE FROM watch_sub WHERE uid={?}', $this->_uid);
         foreach (Env::v($ind) as $key=>$val) {
@@ -297,11 +312,13 @@ class WatchSub {
 // }}}
 // {{{ class PromoNotifs
 
-class PromoNotifs {
-    var $_uid;
-    var $_data = Array();
+class PromoNotifs
+{
+    public $_uid;
+    public $_data = Array();
 
-    function PromoNotifs($uid) {
+    public function __construct($uid)
+    {
         $this->_uid = $uid;
         $res = XDB::iterRow('SELECT promo FROM watch_promo WHERE uid={?} ORDER BY promo', $uid);
         while (list($p) = $res->next()) {
@@ -309,20 +326,23 @@ class PromoNotifs {
         }
     }
 
-    function add($p) {
+    public function add($p)
+    {
         $promo = intval($p);
         XDB::execute('REPLACE INTO watch_promo (uid,promo) VALUES({?},{?})', $this->_uid, $promo);
         $this->_data[$promo] = $promo;
         asort($this->_data);
     }
 
-    function del($p) {
+    public function del($p)
+    {
         $promo = intval($p);
         XDB::execute('DELETE FROM watch_promo WHERE uid={?} AND promo={?}', $this->_uid, $promo);
         unset($this->_data[$promo]);
     }
 
-    function addRange($_p1,$_p2) {
+    public function addRange($_p1,$_p2)
+    {
         $p1 = intval($_p1);
         $p2 = intval($_p2);
         $values = Array();
@@ -334,7 +354,8 @@ class PromoNotifs {
         asort($this->_data);
     }
 
-    function delRange($_p1,$_p2) {
+    public function delRange($_p1,$_p2)
+    {
         $p1 = intval($_p1);
         $p2 = intval($_p2);
         $where = Array();
@@ -345,7 +366,8 @@ class PromoNotifs {
         XDB::execute('DELETE FROM watch_promo WHERE uid={?} AND ('.join(' OR ',$where).')', $this->_uid);
     }
 
-    function toRanges() {
+    public function toRanges()
+    {
         $ranges = Array();
         $I = Array();
         foreach($this->_data as $promo) {
@@ -368,32 +390,36 @@ class PromoNotifs {
 // }}}
 // {{{ class NoninsNotifs
 
-class NoninsNotifs {
-    var $_uid;
-    var $_data = Array();
+class NoninsNotifs
+{
+    public $_uid;
+    public $_data = Array();
 
-    function NoninsNotifs($uid) {
+    public function __construct($uid)
+    {
         $this->_uid = $uid;
         $res = XDB::iterator("SELECT  u.prenom,IF(u.nom_usage='',u.nom,u.nom_usage) AS nom, u.promo, u.user_id
-                                          FROM  watch_nonins  AS w
-                                    INNER JOIN  auth_user_md5 AS u ON (u.user_id = w.ni_id)
-                                         WHERE  w.uid = {?}
-                                      ORDER BY  promo,nom", $uid);
+                                FROM  watch_nonins  AS w
+                          INNER JOIN  auth_user_md5 AS u ON (u.user_id = w.ni_id)
+                               WHERE  w.uid = {?}
+                            ORDER BY  promo,nom", $uid);
         while($tmp = $res->next()) {
             $this->_data[$tmp['user_id']] = $tmp;
         }
     }
 
-    function del($p) {
+    public function del($p)
+    {
         unset($this->_data["$p"]);
         XDB::execute('DELETE FROM watch_nonins WHERE uid={?} AND ni_id={?}', $this->_uid, $p);
     }
 
-    function add($p) {
+    public function add($p)
+    {
         XDB::execute('INSERT INTO watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
         $res = XDB::query('SELECT  prenom,IF(nom_usage="",nom,nom_usage) AS nom,promo,user_id
-                                       FROM  auth_user_md5
-                                      WHERE  user_id={?}', $p);
+                             FROM  auth_user_md5
+                            WHERE  user_id={?}', $p);
         $this->_data["$p"] = $res->fetchOneAssoc();
     }
 }

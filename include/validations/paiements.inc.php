@@ -25,28 +25,28 @@ class PayReq extends Validate
 {
     // {{{ properties
     
-    var $titre;
-    var $site;
+    public $titre;
+    public $site;
 
-    var $montant;
-    var $montant_min;
-    var $montant_max;
+    public $montant;
+    public $montant_min;
+    public $montant_max;
 
-    var $msg_reponse;
-    var $asso_id;
-    var $asso;
-    var $evt;
-    var $evt_intitule;
+    public $msg_reponse;
+    public $asso_id;
+    public $asso;
+    public $evt;
+    public $evt_intitule;
 
-    var $rules = "Laisser la validation à un trésorier";
+    public $rules = "Laisser la validation à un trésorier";
     // }}}
     // {{{ constructor
 
-    function PayReq($_uid, $_intitule, $_site, $_montant, $_msg,
-                    $_montantmin=0, $_montantmax=999, $_asso_id = 0,
-                    $_evt = 0, $_stamp=0)
+    public function __construct($_uid, $_intitule, $_site, $_montant, $_msg,
+                                $_montantmin=0, $_montantmax=999, $_asso_id = 0,
+                                $_evt = 0, $_stamp=0)
     {
-        $this->Validate($_uid, false, 'paiements', $_stamp);
+        parent::__construct($_uid, false, 'paiements', $_stamp);
 
         $this->titre        = $_intitule;
         $this->site         = $_site;
@@ -68,35 +68,40 @@ class PayReq extends Validate
     }
 
     // }}}
-  // {{{ function same_event()
-    static function same_event($evt, $asso_id)
+    // {{{ function same_event()
+
+    static public function same_event($evt, $asso_id)
     {
         $wevt = 's:3:"evt";s:'.strlen($evt+"").':"'.$evt.'"';
         $wassoid = 's:7:"asso_id";s:'.strlen($asso_id + "").':"'.$asso_id.'"';
         $where = "%".$wassoid."%".$wevt."%";
         return $where;
     }
-  // }}}
-  // {{{ function submit() 
-  // supprime les demandes de paiments pour le meme evenement
-    function submit()
+  
+    // }}}
+    // {{{ function submit() 
+  
+    // supprime les demandes de paiments pour le meme evenement
+    public function submit()
     {
         if ($this->evt)
         {
             XDB::execute('DELETE FROM requests WHERE type={?} AND data LIKE {?}', 'paiements', PayReq::same_event($this->evt, $this->asso_id));
         }
-        Validate::submit();
+        parent::submit();
     }
     // }}}
       // {{{ function formu()
 
-    function formu()
-    { return 'include/form.valid.paiements.tpl'; }
+    public function formu()
+    {
+        return 'include/form.valid.paiements.tpl';
+    }
 
     // }}}
     // {{{ function editor()
 
-    function editor()
+    public function editor()
     {
         return 'include/form.valid.edit-paiements.tpl';
     }
@@ -104,7 +109,7 @@ class PayReq extends Validate
     // }}}
     // {{{ function handle_editor()
 
-    function handle_editor()
+    protected function handle_editor()
     {
         $this->titre       = Env::v('pay_titre');
         $this->site        = Env::v('pay_site');
@@ -118,7 +123,7 @@ class PayReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org/Paiments] Demande de création de paiement {$this->titre}";
     }
@@ -126,7 +131,7 @@ class PayReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         if ($isok) {
             return "  Le paiement que tu avais demandé pour {$this->titre} vient d'être créé.".($this->evt?" Il a bien été associé à la gestion de l'événement du groupe":"");
@@ -138,7 +143,7 @@ class PayReq extends Validate
     // }}}
     // {{{ function commit()
     
-    function commit()
+    public function commit()
     {
         global $globals;
         $res = XDB::query("SELECT MAX(id) FROM paiement.paiements");

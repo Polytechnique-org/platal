@@ -21,27 +21,27 @@
 
 class PlatalGlobals
 {
-    var $session;
+    public $session;
 
     /** The x.org version */
-    var $version = '@VERSION@';
-    var $debug   = 0;
+    public $version = '@VERSION@';
+    public $debug   = 0;
 
     /** db params */
-    var $dbdb               = 'x4dat';
-    var $dbhost             = 'localhost';
-    var $dbuser             = 'x4dat';
-    var $dbpwd              = 'x4dat';
-    var $dbcharset          = 'utf8';
+    public $dbdb               = 'x4dat';
+    public $dbhost             = 'localhost';
+    public $dbuser             = 'x4dat';
+    public $dbpwd              = 'x4dat';
+    public $dbcharset          = 'utf8';
 
     /** paths */
-    var $baseurl;
-    var $spoolroot;
+    public $baseurl;
+    public $spoolroot;
 
-    var $locale;
-    var $timezone;
+    public $locale;
+    public $timezone;
 
-    function PlatalGlobals($sess)
+    public function __construct($sess)
     {
         $this->session   = $sess;
 
@@ -53,7 +53,7 @@ class PlatalGlobals
         $this->setlocale();
     }
 
-    function read_ini_file($filename)
+    private function read_ini_file($filename)
     {
         $array = parse_ini_file($filename, true);
         if (!is_array($array)) {
@@ -74,14 +74,13 @@ class PlatalGlobals
         }
     }
 
-    function read_config()
+    private function read_config()
     {
         $this->read_ini_file($this->spoolroot.'/configs/platal.ini');
-
         $this->read_ini_file($this->spoolroot.'/configs/platal.conf');
     }
 
-    function setlocale()
+    private function setlocale()
     {
         setlocale(LC_MESSAGES, $this->locale);
         setlocale(LC_TIME,     $this->locale);
@@ -89,7 +88,7 @@ class PlatalGlobals
         date_default_timezone_set($this->timezone);
     }
 
-    function asso($key=null)
+    public function asso($key=null)
     {
         static $aid = null;
 

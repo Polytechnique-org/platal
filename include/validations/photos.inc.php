@@ -25,25 +25,25 @@ class PhotoReq extends Validate
 {
     // {{{ properties
 
-    var $mimetype;
-    var $data;
-    var $x;
-    var $y;
+    public $mimetype;
+    public $data;
+    public $x;
+    public $y;
 
-    var $unique = true;
-    var $valid  = false;
+    public $unique = true;
+    public $valid  = false;
 
-    var $rules = "Refuser les photos copyrightées, de mineurs, ou ayant
-    un caractère pornographique, violent, etc... Si une photo est mal
-    cadrée (20% de photo et 80% de blanc par exemple), si c'est un
-    camarade antique, on lui arrange sinon on lui
-    refuse en lui expliquant gentiment le problème. Idem si les dimensions de
-    la photo sont archi trop grandes ou archi trop petites.";
+    public $rules = "Refuser les photos copyrightées, de mineurs, ou ayant
+        un caractère pornographique, violent, etc... Si une photo est mal
+        cadrée (20% de photo et 80% de blanc par exemple), si c'est un
+        camarade antique, on lui arrange sinon on lui
+        refuse en lui expliquant gentiment le problème. Idem si les dimensions de
+        la photo sont archi trop grandes ou archi trop petites.";
 
     // }}}
     // {{{ constructor
 
-    function PhotoReq($_uid, $_data, $_stamp=0)
+    public function __construct($_uid, $_data, $_stamp=0)
     {
         $this->Validate($_uid, true, 'photo', $_stamp);
         $this->valid = $this->_get_image($_data);
@@ -52,7 +52,7 @@ class PhotoReq extends Validate
     // }}}
     // {{{ function _get_image()
 
-    function _get_image($_data)
+    private function _get_image($_data)
     {
         global $page;
 
@@ -70,12 +70,12 @@ class PhotoReq extends Validate
         list($this->x, $this->y, $this->mimetype) = $image_infos;
 
         switch ($this->mimetype) {
-            case 1: $this->mimetype = "gif";    break;
-            case 2: $this->mimetype = "jpeg";   break;
-            case 3: $this->mimetype = "png";    break;
-            default:
-                $page->trig("Type d'image invalide");
-                return false;
+        case 1: $this->mimetype = "gif";    break;
+        case 2: $this->mimetype = "jpeg";   break;
+        case 3: $this->mimetype = "png";    break;
+        default:
+            $page->trig("Type d'image invalide");
+            return false;
         }
 
         if (strlen($_data) > SIZE_MAX)  {
@@ -114,7 +114,7 @@ class PhotoReq extends Validate
     // }}}
     // {{{ function isValid()
 
-    function isValid()
+    public function isValid()
     {
         return $this->valid;
     }
@@ -122,7 +122,7 @@ class PhotoReq extends Validate
     // }}}
     // {{{ function get_request()
 
-    function get_request($uid)
+    static public function get_request($uid)
     {
         return parent::get_typed_request($uid,'photo');
     }
@@ -130,13 +130,15 @@ class PhotoReq extends Validate
     // }}}
     // {{{ function formu()
 
-    function formu()
-    { return 'include/form.valid.photos.tpl'; }
+    public function formu()
+    {
+        return 'include/form.valid.photos.tpl';
+    }
 
     // }}}
     // {{{ function editor()
 
-    function editor()
+    public function editor()
     {
         return 'include/form.valid.edit-photo.tpl';
     }
@@ -144,7 +146,7 @@ class PhotoReq extends Validate
     // }}}
     // {{{ function handle_editor()
 
-    function handle_editor()
+    protected function handle_editor()
     {
         if (isset($_FILES['userfile']['tmp_name'])) {
             $file = $_FILES['userfile']['tmp_name'];
@@ -162,7 +164,7 @@ class PhotoReq extends Validate
     // }}}
     // {{{ function _mail_subj
 
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org/PHOTO] Changement de photo";
     }
@@ -170,7 +172,7 @@ class PhotoReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         if ($isok) {
             return "Le changement de photo que tu as demandé vient d'être effectué.";
@@ -182,13 +184,13 @@ class PhotoReq extends Validate
     // }}}
     // {{{ function commit()
 
-    function commit()
+    public function commit()
     {
         XDB::execute('REPLACE INTO  photo (uid, attachmime, attach, x, y)
-                                      VALUES  ({?},{?},{?},{?},{?})',
-                                      $this->uid, $this->mimetype, $this->data, $this->x, $this->y);
-	require_once('notifs.inc.php');
-	register_watch_op($this->uid,WATCH_FICHE);
+                            VALUES  ({?},{?},{?},{?},{?})',
+                     $this->uid, $this->mimetype, $this->data, $this->x, $this->y);
+        require_once('notifs.inc.php');
+        register_watch_op($this->uid, WATCH_FICHE);
         return true;
     }
 

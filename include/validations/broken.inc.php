@@ -24,26 +24,26 @@ class BrokenReq extends Validate
 {
     // {{{ properties
 
-    var $m_forlife;
-    var $m_bestalias;
-    var $m_prenom;
-    var $m_nom;
-    var $m_promo;
-    var $m_sexe;
-    var $m_email;
-    var $old_email;
-    var $m_comment;
+    public $m_forlife;
+    public $m_bestalias;
+    public $m_prenom;
+    public $m_nom;
+    public $m_promo;
+    public $m_sexe;
+    public $m_email;
+    public $old_email;
+    public $m_comment;
 
-    var $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance).
+    public $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance).
     Si le demandeur marque sa propre adresse mail, refuser dans tous les cas.
     Si l'adresse proposée est surveillée, refuser.
     Si le compte associé est désactivé, étudier le cas en fonction de la raison de la désactivation";
     // }}}
     // {{{ constructor
 
-    function BrokenReq($sender, $user, $email, $comment = null)
+    public function __construct($sender, $user, $email, $comment = null)
     {
-        $this->Validate($sender, false, 'broken');
+        parent::__construct($sender, false, 'broken');
         $this->m_email     = $email;
         $this->m_comment   = trim($comment);
         $this->m_forlife   = $user['forlife'];
@@ -58,7 +58,7 @@ class BrokenReq extends Validate
     // }}}
     // {{{ function formu()
 
-    function formu()
+    public function formu()
     {
         return 'include/form.valid.broken.tpl';
     }
@@ -66,7 +66,7 @@ class BrokenReq extends Validate
     // }}}
     // {{{ function _mail_subj
     
-    function _mail_subj()
+    protected function _mail_subj()
     {
         return "[Polytechnique.org] Récupération de {$this->m_prenom} {$this->m_nom} ({$this->m_promo})";
     }
@@ -74,7 +74,7 @@ class BrokenReq extends Validate
     // }}}
     // {{{ function _mail_body
 
-    function _mail_body($isok)
+    protected function _mail_body($isok)
     {
         if ($isok) {
             return "  Un mail de contact vient d'être envoyé "
@@ -89,7 +89,7 @@ class BrokenReq extends Validate
     // }}}
     // {{{ function commit()
 
-    function commit()
+    public function commit()
     {
         global $globals;
         $email =  $this->m_bestalias . '@' . $globals->mail->domain;
