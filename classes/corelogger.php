@@ -34,7 +34,7 @@ class CoreLogger
      * @param $suid the id of the administrator who has just su'd to the user
      * @return VOID
      */
-    public function __construct($uid, $suid = null)
+    public function __construct($uid, $suid = 0)
     {
         // write the session entry
         $this->uid     = $uid;
@@ -54,7 +54,7 @@ class CoreLogger
      * @param $suid the id of the administrator who has just su'd to the user
      * @return session the session id
      */
-    private function writeSession($uid, $suid = null)
+    private function writeSession($uid, $suid = 0)
     {
         $ip      = $_SERVER['REMOTE_ADDR'];
         $host    = strtolower(gethostbyaddr($_SERVER['REMOTE_ADDR']));
