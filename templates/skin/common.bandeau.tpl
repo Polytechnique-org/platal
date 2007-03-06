@@ -20,31 +20,31 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<!-- Pour récupérer ce bandeau sur votre site :
-	incluez le fichier http://www.polytechnique.org/bandeau dans vos php
-	ou http://www.polytechnique.org/bandeau/login pour profiter du login
-	automatique. Et rajoutez à la liste de css de vos pages
-	http://www.polytechnique.org/bandeau.css.
-        Pour avoir l'icone, pour des raisons de sécurité il n'y a pas d'accès
-        direct, il faut alors rediriger bandeau/icone.png vers celle du site :
-        http://www.polytechnique.org/bandeau/icone.png -->
+<!-- Pour rÃ©cupÃ©rer ce bandeau sur votre site :
+  incluez le fichier http://www.polytechnique.org/bandeau dans vos php
+  ou http://www.polytechnique.org/bandeau/login pour profiter du login
+  automatique. Et rajoutez Ã  la liste de css de vos pages
+  http://www.polytechnique.org/bandeau.css.
+  Pour avoir l'icone, pour des raisons de sÃ©curitÃ© il n'y a pas d'accÃ¨s
+  direct, il faut alors rediriger bandeau/icone.png vers celle du site :
+  http://www.polytechnique.org/bandeau/icone.png -->
 
 {if !$login && $smarty.session.auth}
-	{assign var="login" value="true"}
+  {assign var="login" value="true"}
 {/if}
 
 <div id="bandeau-X">
-	<img src="bandeau/icone.png" alt=""/>
-	<a href="http://www.polytechnique.fr/">L'&Eacute;cole</a> &middot;
-	<a href="http://www.polytechnique.edu/">Institutional site</a>
-	&tilde;&tilde;
-	<a href="http://www.fondationx.org/">FX</a> &middot;
-	<a href="http://www.polytechniciens.com/">AX</a>
-	&tilde;&tilde;
-	<a href="http://www.polytechnique.org">Polytechnique.org</a> &middot;
-	<a href="http://www.polytechnique.net{if $login}/login{/if}">Associations polytechniciennes</a> &middot;
-	<a href="http://www.polytechnique.fr/eleves/">&Eacute;l&egrave;ves</a> &middot;
-	<a href="http://www.manageurs.com/{if $login}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
+  <img src="bandeau/icone.png" alt=""/>
+  <a href="http://www.polytechnique.fr/">L'&Eacute;cole</a> &middot;
+  <a href="http://www.polytechnique.edu/">Institutional site</a>
+  &tilde;&tilde;
+  <a href="http://www.fondationx.org/">FX</a> &middot;
+  <a href="http://www.polytechniciens.com/">AX</a>
+  &tilde;&tilde;
+  <a href="http://www.polytechnique.org">Polytechnique.org</a> &middot;
+  <a href="http://www.polytechnique.net{if $login}/login{/if}">Associations polytechniciennes</a> &middot;
+  <a href="http://www.polytechnique.fr/eleves/">&Eacute;l&egrave;ves</a> &middot;
+  <a href="http://www.manageurs.com/{if $login}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf8: *}
