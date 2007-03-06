@@ -28,11 +28,6 @@ class PlatalPage extends Smarty
     private $_errors;
     private $_failure;
 
-    // defaults
-    var $caching          = false;
-    var $config_overwrite = false;
-    var $use_sub_dirs     = false;
-
     // {{{ function PlatalPage()
 
     public function __construct($tpl, $type = SKINNED)
@@ -41,6 +36,9 @@ class PlatalPage extends Smarty
 
         global $globals;
 
+        $this->caching       = false;
+        $this->config_overwrite = false;
+        $this->use_sub_dirs  = false;
         $this->template_dir  = $globals->spoolroot."/templates/";
         $this->compile_dir   = $globals->spoolroot."/spool/templates_c/";
         array_unshift($this->plugins_dir, $globals->spoolroot."/plugins/");
@@ -227,7 +225,7 @@ function escape_html($string)
 {
     if (is_string($string)) {
 	$transtbl = Array('<' => '&lt;', '>' => '&gt;', '"' => '&quot;', '\'' => '&#39;');
-	return preg_replace("/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,4};)/", "&amp;" , strtr($string, $transtbl));
+	return preg_replace("/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,4};)/u", "&amp;", strtr(pl_entities($string), $transtbl));
     } else {
 	return $string;
     }
@@ -265,8 +263,8 @@ function at_to_globals($tpl_source, &$smarty)
 function trimwhitespace($source, &$smarty)
 {
     $tags = '(script|pre|textarea)';
-    preg_match_all("!<$tags.*?>.*?</$tags>!ius", $source, $tagsmatches);
-    $source = preg_replace("!<$tags.*?>.*?</$tags>!ius", "&&&tags&&&", $source);
+    preg_match_all("!<$tags.*?>.*?</(\\1)>!ius", $source, $tagsmatches);
+    $source = preg_replace("!<$tags.*?>.*?</(\\1)>!ius", "&&&tags&&&", $source);
 
     // remove all leading spaces, tabs and carriage returns NOT
     // preceeded by a php close tag.
@@ -301,19 +299,19 @@ function hide_emails($source, &$smarty)
 {
     //prevent email replacement in <script> and <textarea>
     $tags = '(script|textarea|select)';
-    preg_match_all("!<$tags.*?>.*?</$tags>!ius", $source, $tagsmatches);
-    $source = preg_replace("!<$tags.*?>.*?</$tags>!ius", "&&&tags&&&", $source);
+    preg_match_all("!<$tags.*?>.*?</(\\1)>!ius", $source, $tagsmatches);
+    $source = preg_replace("!<$tags.*?>.*?</(\\1)>!ius", "&&&tags&&&", $source);
 
     //catch all emails in <a href="mailto:...">
     preg_match_all("!<a[^>]+href=[\"'][^\"']*[-a-z0-9+_.]+@[-a-z0-9_.]+[^\"']*[\"'].*?>.*?</a>!ius", $source, $ahref);
     $source = preg_replace("!<a[^>]+href=[\"'][^\"']*[-a-z0-9+_.]+@[-a-z0-9_.]+[^\"']*[\"'].*?>.*?</a>!ius", '&&&ahref&&&', $source);
 
     //prevant replacement in tag attributes
-    preg_match_all("!<[^>]+[-a-z0-9_+.]+@[-a-z0-9_.]+.+?>!is", $source, $misc);
-    $source = preg_replace("!<[^>]+[-a-z0-9_+.]+@[-a-z0-9_.]+.+?>!is", '&&&misc&&&', $source);
+    preg_match_all("!<[^>]+[-a-z0-9_+.]+@[-a-z0-9_.]+.+?>!ius", $source, $misc);
+    $source = preg_replace("!<[^>]+[-a-z0-9_+.]+@[-a-z0-9_.]+.+?>!ius", '&&&misc&&&', $source);
 
     //catch !
-    $source = preg_replace('!([-a-z0-9_+.]+@[-a-z0-9_.]+)!ie', '_hide_email("\1")', $source); 
+    $source = preg_replace('!([-a-z0-9_+.]+@[-a-z0-9_.]+)!iue', '_hide_email("\1")', $source); 
     $source = preg_replace('!&&&ahref&&&!e', '_hide_email(array_shift($ahref[0]))', $source);
 
     // restore data

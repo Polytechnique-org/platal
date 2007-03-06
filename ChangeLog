@@ -6,6 +6,7 @@ New:
     * Core:
         - UTF-8                                                            -FRU
         - New Backtrace tool                                               -FRU
+        - New Upload manager                                               -FRU
 
     * Events:
         - #643: Sort menu                                                  -FRU

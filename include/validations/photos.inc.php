@@ -43,74 +43,26 @@ class PhotoReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_uid, $_data, $_stamp=0)
+    public function __construct($_uid, PlUpload &$upload, $_stamp=0)
     {
-        $this->Validate($_uid, true, 'photo', $_stamp);
-        $this->valid = $this->_get_image($_data);
+        parent::__construct($_uid, true, 'photo', $_stamp);
+        $this->read($upload);
     }
 
     // }}}
-    // {{{ function _get_image()
+    // {{{ function read
 
-    private function _get_image($_data)
+    private function read(PlUpload &$upload)
     {
-        global $page;
-
-        VarStream::init();
-
-        // calcul de la taille de l'image
-        $GLOBALS['photoreq'] = $_data;
-        $image_infos = getimagesize('var://photoreq');
-        unset ($GLOBALS['photoreq']);
-
-        if (empty($image_infos)) {
-            $page->trig("Image invalide");
-            return false;
+        $this->valid = $upload->resizeImage(240, 300, 160, 0, SIZE_MAX); 
+        if (!$this->valid) {
+            $this->trig('Le fichier que tu as transmis n\'est pas une image valide, ou est trop gros pour être traité');
         }
-        list($this->x, $this->y, $this->mimetype) = $image_infos;
-
-        switch ($this->mimetype) {
-        case 1: $this->mimetype = "gif";    break;
-        case 2: $this->mimetype = "jpeg";   break;
-        case 3: $this->mimetype = "png";    break;
-        default:
-            $page->trig("Type d'image invalide");
-            return false;
-        }
-
-        if (strlen($_data) > SIZE_MAX)  {
-            $img = imagecreatefromstring($_data);
-            if (!$img) {
-                $page->trig("image trop grande et impossible à retailler automatiquement");
-                return false;
-            }
-
-            $nx = $x = imagesx($img);
-            $ny = $y = imagesy($img);
-
-            if ($nx > 240) { $ny = intval($ny*240/$nx); $nx = 240; }
-            if ($ny > 300) { $ny = intval($nx*300/$nx); $ny = 300; }
-            if ($nx < 160) { $ny = intval($ny*160/$nx); $nx = 160; }
-
-            $comp = '90';
-            $file = tempnam('/tmp', 'photo');
-
-            while (strlen($_data) > SIZE_MAX) {
-                $img2  = imagecreatetruecolor($nx, $ny);
-                imagecopyresampled($img2, $img, 0, 0, 0, 0, $nx, $ny, $x, $y);
-                imagejpeg($img2, $file, $comp);
-                $_data = file_get_contents($file);
-                $this->mimetype = 'jpeg';
-
-                $comp --;
-            }
-
-            unlink($file);
-        }
-        $this->data = $_data;
-        return true;
+        $this->data = $upload->getContents();
+        list($this->x, $this->y, $this->mimetype) = $upload->imageInfo();
+        $upload->rm();
     }
-
+    
     // }}}
     // {{{ function isValid()
 
@@ -148,17 +100,16 @@ class PhotoReq extends Validate
 
     protected function handle_editor()
     {
-        if (isset($_FILES['userfile']['tmp_name'])) {
-            $file = $_FILES['userfile']['tmp_name'];
-            if ($data = file_get_contents($file)) {
-                if ($this->valid = $this->_get_image($data)) {
-                    return true;
-                }
-            } else {
-                $page->trig('Fichier inexistant ou vide');
+        if (isset($_FILES['userfile'])) {
+            $upload =& PlUpload::get($_FILES['userfile'], S::v('forlife'), 'photo');
+            if (!$upload) {
+                $this->trig('Une erreur est survenue lors du téléchargement du fichier');
+                return false;
             }
+            $this->read($upload);
+            return $this->valid;
         }
-        return false; 
+        return false;
     }
 
     // }}}

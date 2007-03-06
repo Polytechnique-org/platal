@@ -124,29 +124,23 @@ class ProfileModule extends PLModule
                     .'/'.S::v('forlife').'.jpg';
 
         if (Env::has('upload')) {
-            if (isset($_FILES['userfile']['tmp_name']) && !is_uploaded_file($_FILES['userfile']['tmp_name'])) {
-                $page->trig('Une erreur s\'est produite lors du transfert du fichier');
-            } elseif (strpos(trim(mime_content_type($_FILES['userfile']['tmp_name'])), 'image/') !== 0) {
-                $page->trig('Le fichier que tu as transmis n\'est pas une image.');
-            } else {            
-                $file = is_uploaded_file($_FILES['userfile']['tmp_name'])
-                        ? $_FILES['userfile']['tmp_name']
-                        : Env::v('photo');
-                if ($data = file_get_contents($file)) {
-                    $myphoto = new PhotoReq(S::v('uid'), $data);
-                    if ($myphoto->isValid()) {
-                        $myphoto->submit();
-                    }
-                } else {
-                    $page->trig('Fichier inexistant ou vide');
+            $upload = new PlUpload(S::v('forlife'), 'photo');
+            if (!$upload->upload($_FILES['userfile']) && !$upload->download(Env::v('photo'))) {
+                $page->trig('Une erreur est survenue lors du téléchargement du fichier');
+            } else {
+                $myphoto = new PhotoReq(S::v('uid'), $upload);
+                if ($myphoto->isValid()) {
+                    $myphoto->submit();
                 }
             }
         } elseif (Env::has('trombi')) {
-            $myphoto = new PhotoReq(S::v('uid'),
-                                    file_get_contents($trombi_x));
-            if ($myphoto->isValid()) {
-                $myphoto->commit();
-                $myphoto->clean();
+            $upload = new PlUpload(S::v('forlife'), 'photo');
+            if ($upload->copyFrom($trombi_x)) {
+                $myphoto = new PhotoReq(S::v('uid'), $upload);
+                if ($myphoto->isValid()) {
+                    $myphoto->commit();
+                    $myphoto->clean();
+                }
             }
         } elseif (Env::v('suppr')) {
             XDB::execute('DELETE FROM photo WHERE uid = {?}',
@@ -161,8 +155,8 @@ class ProfileModule extends PLModule
         }
 
         $sql = XDB::query('SELECT COUNT(*) FROM requests
-                                      WHERE user_id={?} AND type="photo"',
-                                    S::v('uid'));
+                            WHERE user_id={?} AND type="photo"',
+                          S::v('uid'));
         $page->assign('submited', $sql->fetchOneCell());
         $page->assign('has_trombi_x', file_exists($trombi_x));
     }
