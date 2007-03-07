@@ -29,13 +29,17 @@ function hook_checkcancel($_headers)
 
 class ForumsBanana extends Banana
 {
-    function __construct($params = null)
+    private $forlife;
+
+    public function __construct($forlife, $params = null)
     {
+        $this->forlife = $forlife;
+
         global $globals;
         Banana::$msgedit_canattach = false;
         Banana::$spool_root = $globals->banana->spool_root;
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
-        Banana::$nntp_host = 'news://web_'.S::v('forlife')
+        Banana::$nntp_host = 'news://web_'.$forlife
                            . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
         if (S::has_perms()) {
             Banana::$msgshow_mimeparts[] = 'source';
@@ -113,6 +117,20 @@ class ForumsBanana extends Banana
 
         // Run Banana
         return parent::run();
+    }
+
+    public function post($dest, $reply, $subject, $body)
+    {
+        global $globals;
+        $res = XDB::query('SELECT  nom, prenom, promo, b.alias AS bestalias
+                             FROM  auth_user_md5 AS u
+                       INNER JOIN  aliases       AS a ON (a.id = u.user_id)
+                       INNER JOIN  aliases       AS b ON (b.id = a.id AND FIND_IN_SET(\'bestalias\', b.flags))
+                            WHERE  a.alias = {?}', $this->forlife);
+        list($nom, $prenom, $promo, $bestalias) = $res->fetchOneRow();
+        Banana::$profile['headers']['From']         = "$prenom $nom ($promo) <$bestalias@{$globals->mail->domain}>";
+        Banana::$profile['headers']['Organization'] = 'Utilisateur de Polytechnique.org';
+        return parent::post($dest, $reply, $subject, $body);
     }
 
     protected function action_saveSubs($groups)

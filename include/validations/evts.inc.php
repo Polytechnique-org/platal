@@ -139,10 +139,26 @@ class EvtReq extends Validate
                               peremption={?}, promo_min={?}, promo_max={?}, flags=CONCAT(flags,',valide')",
                 $this->uid, $this->titre, $this->texte,
                 $this->peremption, $this->pmin, $this->pmax)) {
+            $eid = XDB::insertId();
             if ($this->img) {
                 XDB::execute("INSERT INTO evenements_photo
                                       SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
                              XDB::insertId(), $this->imgtype, $this->imgx, $this->imgy, $this->img);
+            }
+            global $globals;
+            if ($globals->banana->event_forum) {
+                require_once 'user.func.inc.php';
+                $forlife = get_user_forlife($this->uid);
+                require_once 'banana/forum.inc.php';
+                $banana = new ForumsBanana($forlife);
+                $post = $banana->post($globals->banana->event_forum,
+                                      $globals->banana->event_reply,
+                                      $this->titre, pl_entity_decode(strip_tags($this->texte)));
+                if ($post != -1) {
+                    XDB::execute("UPDATE  evenements
+                                     SET  creation_date = creation_date, post_id = {?}
+                                   WHERE  id = {?}", $post, $eid);
+                }
             }
             return true;
         }

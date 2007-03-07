@@ -1,4 +1,5 @@
 alter table evenements change flags flags set('valide', 'archive', 'important') not null;
+alter table evenements add post_id smallint(4) unsigned default NULL;
 create table evenements_photo (
     eid smallint(4) unsigned not null,
     attachmime enum('jpeg', 'png', 'gif') not null default 'jpeg',

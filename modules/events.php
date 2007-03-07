@@ -99,7 +99,7 @@ class EventsModule extends PLModule
         if (!$sum->total()) {
             return false;
         }
-        $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife,
+        $sql = "SELECT  e.id,e.titre,e.texte,e.post_id,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife,
                         p.x, p.y, p.attach IS NOT NULL AS img
                   FROM  evenements       AS e
              LEFT JOIN  evenements_photo AS p ON (e.id = p.eid)

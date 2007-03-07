@@ -190,11 +190,11 @@ Bienvenue {$smarty.session.prenom}
     <tr class="impair">
       <td class="half">
         <div>
-          {* if $ev.img *}
+          {if $ev.img}
           <div style="float: {$position}; padding-{if $position eq right}left{else}right{/if}: 0.5em">
             <img src="events/photo/{$ev.id}" alt="{$ev.title}" />
           </div>
-          {* /if *}
+          {/if}
           <div style="text-align: justify">
             {tidy}
               {$ev.texte|smarty:nodefaults|nl2br}
@@ -204,16 +204,22 @@ Bienvenue {$smarty.session.prenom}
       </td>
     </tr>
     <tr class="pair">
-      <td class="half">
-        <a href="events#pagetop" style="display:block; float: right; padding-left:1em">
-          <img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/>
-        </a>
-        <span class="smaller">
-          Annonce proposée par
-          <a href="profile/{$ev.forlife}" class="popup2">
-            {$ev.prenom} {$ev.nom} X{$ev.promo}
+      <td class="half smaller">
+        <div style="display:block; float: right; padding-left:1em">
+          <a href="events#pagetop">
+          {if $ev.post_id}
+          <a href="banana/{#globals.banana.event_reply#|default:#globals.banana.event_forum#}/read/{$ev.post_id}">
+            {icon name="comments" title="Discussion"}Suivre la discussion
+          </a> &bull;
+          {/if}
+          <a href="events#pagetop">
+            <img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/>
           </a>
-        </span>
+        </div>
+        Annonce proposée par
+        <a href="profile/{$ev.forlife}" class="popup2">
+          {$ev.prenom} {$ev.nom} X{$ev.promo}
+        </a>
       </td>
     </tr>
   </table>

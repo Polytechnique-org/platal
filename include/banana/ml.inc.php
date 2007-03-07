@@ -27,7 +27,7 @@ class MLBanana extends Banana
     static public $listname;
     static public $domain;
 
-    function __construct($params = null)
+    function __construct($forlife, $params = null)
     {
 		global $globals;
         Banana::$spool_root = $globals->banana->spool_root;

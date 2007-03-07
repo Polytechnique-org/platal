@@ -56,7 +56,7 @@ class ModerationBanana extends Banana
     static public $domain;
     static public $client;
 
-    function __construct($params = null)
+    function __construct($forlife, $params = null)
     {
         global $globals;
         ModerationBanana::$client = $params['client'];

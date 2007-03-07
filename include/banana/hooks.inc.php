@@ -202,7 +202,7 @@ function get_banana_params(array &$get, $group = null, $action = null, $artid = 
 
 function run_banana(&$page, $class, array $args)
 {
-    $banana = new $class($args);
+    $banana = new $class(S::v('forlife'), $args);
     $page->assign('banana', $banana->run());
     $page->addCssInline($banana->css());
     $page->addCssLink('banana.css');
