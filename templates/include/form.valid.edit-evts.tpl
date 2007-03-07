@@ -27,6 +27,7 @@
 <strong>Péremption&nbsp;:</strong> <input type="text" name="peremption" size="10" value="{$valid->peremption}" />
 <strong>Promos&nbsp;:&nbsp;</strong>
 min <input type="text" name="promo_min" size="4" maxlength="4" value="{$valid->pmin}" />
-&nbsp;->&nbsp;max <input type="text" name="promo_max" size="4" maxlength="4" value="{$valid->pmax}" />
+&nbsp;->&nbsp;max <input type="text" name="promo_max" size="4" maxlength="4" value="{$valid->pmax}" /><br />
+<strong>Illustration&nbsp;:</strong> <input type="file" name="image" />
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

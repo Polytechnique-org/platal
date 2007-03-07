@@ -9,6 +9,7 @@ New:
         - New Upload manager                                               -FRU
 
     * Events:
+        - #642: Can add an image                                           -FRU
         - #643: Sort menu                                                  -FRU
         - Can set events as important                                      -FRU
 

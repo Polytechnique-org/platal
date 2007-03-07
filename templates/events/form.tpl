@@ -24,6 +24,9 @@
   {literal}
   function updatePreview()
   {
+    if (document.getElementById('image').value != '' || document.getElementById('image_url').value != '') {
+      return true;
+    }
     var titre = document.getElementById('titre').value;
     var texte = document.getElementById('texte').value;
 
@@ -51,7 +54,7 @@
 </div>
 <br />
 
-<form action="{$platal->path}" method="post">
+<form action="{$platal->path}" method="post" enctype="multipart/form-data">
   <table class="bicol">
     <tr>
       <th colspan="2">Contenu de l'annonce</th>
@@ -81,10 +84,33 @@
         Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 800 caractères soit une douzaine de ligne. Tu en es déjà à <input type='text' name='texte_count' size="4" /> caractères.
       </td>
     </tr>
+    <tr class="pair">
+      <td class="titre">Illustration</td>
+      <td>
+        {if $eid && $img}
+        <div style="float: left; text-align: center">
+          <em>Image actuelle</em><br />
+          <img src="events/photo/{$eid}" alt="Image actuelle" /><br />
+          <input type="submit" name="action" value="Pas d'image" />
+        </div>
+        {/if}
+        {if $upload && $upload->exists()}
+        <div style="float: right; text-align: center">
+          <em>Nouvelle image</em><br />
+          <img src="events/photo" alt="Nouvelle Image" /><br />
+          <input type="submit" name="action" value="Supprimer l'image" />
+        </div>
+        {/if}
+        <div style="clear: both">
+          Choisir un fichier : <input type="file" name="image" id="image" /><br />
+          Indiquer une adresse : <input type="text" name="image_url" id="image_url" value="" />
+        </div>
+      </td>
+    </tr>
   </table>
 
   <div class="center">
-    <input type="submit" name="preview" value="Aperçu" onclick="updatePreview(); return false;" />
+    <input type="submit" name="preview" value="Aperçu" onclick="return updatePreview();" />
   </div>
   <p id="info" {if trim($texte) && trim($titre)}style="display: none"{/if}>
     Le bouton de confirmation n'apparaît que si l'aperçu est concluant.

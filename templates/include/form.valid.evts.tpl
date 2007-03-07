@@ -38,8 +38,14 @@
   <td>{$valid->pmin} - {$valid->pmax}</td>
 </tr>
 <tr class="pair">
-  <td class="titre">Commentaire</td>
-  <td>{$valid->comment}</td>
+  <td class="titre">Illustration</td>
+  <td>
+    {if $valid->imgtype}
+    <img src="events/photo/valid/{$valid->id()}" alt="Image" />
+    {else}
+    Pas d'image définie
+    {/if}
+  </td>
 </tr>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

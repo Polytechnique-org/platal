@@ -27,6 +27,7 @@ class EventsModule extends PLModule
             'events'         => $this->make_hook('ev',        AUTH_COOKIE),
             'rss'            => $this->make_hook('rss', AUTH_PUBLIC),
             'events/preview' => $this->make_hook('preview', AUTH_PUBLIC, 'user', NO_AUTH),
+            'events/photo'   => $this->make_hook('photo', AUTH_COOKIE),
             'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
             'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
 
@@ -35,7 +36,7 @@ class EventsModule extends PLModule
         );
     }
 
-    function get_tips($exclude = null)
+    private function get_tips($exclude = null)
     {
         global $globals;
         // Add a new special tip when changing plat/al version
@@ -79,7 +80,7 @@ class EventsModule extends PLModule
         return $res->fetchOneAssoc();
     }
 
-    function get_events($where, $order, array &$array, $name)
+    private function get_events($where, $order, array &$array, $name)
     {
         // affichage des evenements
         // annonces promos triées par présence d'une limite sur les promos
@@ -98,10 +99,12 @@ class EventsModule extends PLModule
         if (!$sum->total()) {
             return false;
         }
-        $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife
-                  FROM  evenements     AS e
-            INNER JOIN  auth_user_md5  AS a ON e.user_id=a.user_id
-            INNER JOIN  aliases        AS l ON ( a.user_id=l.id AND l.type='a_vie' )
+        $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife,
+                        p.x, p.y, p.attach IS NOT NULL AS img
+                  FROM  evenements       AS e
+             LEFT JOIN  evenements_photo AS p ON (e.id = p.eid)
+            INNER JOIN  auth_user_md5    AS a ON e.user_id=a.user_id
+            INNER JOIN  aliases          AS l ON ( a.user_id=l.id AND l.type='a_vie' )
              LEFT JOIN  evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
                  WHERE  FIND_IN_SET('valide', e.flags) AND peremption >= NOW()
                         AND (e.promo_min = 0 || e.promo_min <= {?})
@@ -111,6 +114,25 @@ class EventsModule extends PLModule
               ORDER BY  $order";
         $evt = XDB::iterator($sql, $uid, $promo, $promo);
         $array[$name] = array('events' => $evt, 'summary' => $sum);
+        return true;
+    }
+
+    private function upload_image(PlatalPage &$page, PlUpload &$upload)
+    {
+        if (@!$_FILES['image']['tmp_name'] && !Env::v('image_url')) {
+            return true;
+        }
+        if (!$upload->upload($_FILES['image'])  && !$upload->download(Env::v('image_url'))) {
+            $page->trig('Impossible de télécharger l\'image');
+            return false;
+        } elseif (!$upload->isType('image')) {
+            $page->trig('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG');
+            $upload->rm();
+            return false;
+        } elseif (!$upload->resizeImage(200, 300, 100, 100, 32284)) {
+            $page->trig('Impossible de retraiter l\'image');
+            return false;
+        }
         return true;
     }
 
@@ -190,6 +212,38 @@ class EventsModule extends PLModule
         $page->assign_by_ref('events', $array);
     }
 
+    function handler_photo(&$page, $eid = null, $valid = null)
+    {
+        if ($eid && $eid != 'valid') {
+            $res = XDB::query("SELECT * FROM evenements_photo WHERE eid = {?}", $eid);
+            if ($res->numRows()) {
+                $photo = $res->fetchOneAssoc();
+                header('Content-Type: image/' . $photo['attachmime']);
+                echo $photo['attach'];
+                exit;
+            }
+        } elseif ($eid == 'valid') {
+            require_once 'validations.inc.php';
+            $valid = Validate::get_request_by_id($valid);
+            if ($valid && $valid->img) {
+                header('Content-Type: image/' . $valid->imgtype);
+                echo $valid->img;
+                exit;
+            }
+        } else {
+            $upload = new PlUpload(S::v('forlife'), 'event');
+            if ($upload->exists() && $upload->isType('image')) {
+                header('Content-Type: ' . $upload->contentType());
+                echo $upload->getContents();
+                exit;
+            }
+        }
+        global $globals;
+        header('Content-Type: image/png');
+        echo file_get_contents($globals->spoolroot . '/htdocs/images/logo.png');
+        exit;
+    }
+
     function handler_rss(&$page, $user = null, $hash = null)
     {       
         require_once 'rss.inc.php';
@@ -243,6 +297,8 @@ class EventsModule extends PLModule
         $peremption = Post::i('peremption');
         $valid_mesg = Post::v('valid_mesg');
         $action     = Post::v('action');
+        $upload     = new PlUpload(S::v('forlife'), 'event');
+        $this->upload_image($page, $upload);
 
         if (($promo_min > $promo_max && $promo_max != 0)||
             ($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
@@ -263,16 +319,22 @@ class EventsModule extends PLModule
         $page->assign('peremption', $peremption);
         $page->assign('valid_mesg', $valid_mesg);
         $page->assign('action', strtolower($action));
+        $page->assign_by_ref('upload', $upload);
 
-        if ($action && (!trim($texte) || !trim($titre))) {
+        if ($action == 'Supprimer l\'image') {
+            $upload->rm();
+            $page->assign('action', false);
+        } elseif ($action && (!trim($texte) || !trim($titre))) {
             $page->trig("L'article doit avoir un titre et un contenu");
         } elseif ($action) {
         	$texte = $texte_catch_url;
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
-                                 $peremption, $valid_mesg, S::v('uid'));
+                                 $peremption, $valid_mesg, S::v('uid'), $upload);
             $evtreq->submit();
             $page->assign('ok', true);
+        } elseif (!Env::v('preview')) {
+            $upload->rm();
         }
 
         $select = '';
@@ -327,8 +389,21 @@ class EventsModule extends PLModule
 
         $arch = $action == 'archives';
         $page->assign('action', $action);
- 
-        if (Post::v('action') == "Proposer" && $eid) {
+
+        $upload = new PlUpload(S::v('forlife'), 'event');
+        if ((Env::has('preview') || Post::v('action') == "Proposer") && $eid) {
+            $action = 'edit';
+            $this->upload_image($page, $upload);
+        }
+
+        if (Post::v('action') == 'Pas d\'image' && $eid) {
+            $upload->rm();
+            XDB::execute("DELETE FROM evenements_photo WHERE eid = {?}", $eid);
+            $action = 'edit';
+        } elseif (Post::v('action') == 'Supprimer l\'image' && $eid) {
+            $upload->rm();
+            $action = 'edit';
+        } elseif (Post::v('action') == "Proposer" && $eid) {
             $promo_min = Post::i('promo_min');
             $promo_max = Post::i('promo_max');
             if ($promo_min > $promo_max ||
@@ -353,14 +428,22 @@ class EventsModule extends PLModule
                               Post::v('titre'), Post::v('texte'), Post::v('peremption'),
                               Post::v('promo_min'), Post::v('promo_max'),
                               $flags->flags(), $eid);
+                if ($upload->exists() && list($x, $y, $type) = $upload->imageInfo()) {
+                    XDB::execute('REPLACE INTO  evenements_photo
+                                           SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}',
+                                 $eid, $type, $x, $y, $upload->getContents());
+                    $upload->rm();
+                }
             }    
         }
 
         if ($action == 'edit') {
-            $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max, FIND_IN_SET(\'important\', flags)
-                                 FROM evenements
+            $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max, FIND_IN_SET(\'important\', flags),
+                                      attach IS NOT NULL
+                                 FROM evenements       AS e
+                            LEFT JOIN evenements_photo AS p ON(e.id = p.eid)
                                 WHERE id={?}', $eid);
-            list($titre, $texte, $peremption, $promo_min, $promo_max, $important) = $res->fetchOneRow();
+            list($titre, $texte, $peremption, $promo_min, $promo_max, $important, $img) = $res->fetchOneRow();
             $page->assign('titre',$titre);
             $page->assign('texte',$texte);
             $page->assign('texte_html', pl_entity_decode($texte));
@@ -368,6 +451,9 @@ class EventsModule extends PLModule
             $page->assign('promo_max',$promo_max);
             $page->assign('peremption',$peremption);
             $page->assign('important', $important);
+            $page->assign('eid', $eid);
+            $page->assign('img', $img);
+            $page->assign_by_ref('upload', $upload);
 
             $select = "";
             for ($i = 1 ; $i < 30 ; $i++) {

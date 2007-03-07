@@ -214,7 +214,7 @@ class XnetGrpModule extends PLModule
             $page->trig('Le groupe n\'a pas de site web');
             return $this->handler_index($page);
         }
-        header("Location: $site");
+        http_redirect($site);
         exit;
     }
 

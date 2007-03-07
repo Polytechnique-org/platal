@@ -89,6 +89,10 @@ class PlUpload
 
     public function download($url)
     {
+        if (!$url || @parse_url($url) === false) {
+            trigger_error('malformed URL given', E_USER_NOTICE);
+            return false;
+        }
         $data = file_get_contents($url);
         if (!$data) {
             return false;
@@ -158,9 +162,28 @@ class PlUpload
         return $this->type;
     }
 
+    public function isType($type, $subtype = null)
+    {
+        list($mytype, $mysubtype) = explode('/', $this->type);
+        if ($mytype != $type || ($subtype && $mysubtype != $subtype)) {
+            return false;
+        }
+        return true;
+    }
+
     public function imageInfo()
     {
-        return getimagesize($this->filename);
+        static $map;
+        if (!isset($map)) {
+            $map = array (1 => 'gif', 2 => 'jpeg', 3 => 'png');
+        }
+        $array = getimagesize($this->filename);
+        $array[2] = @$map[$array[2]];
+        if (!$array[2]) {
+            trigger_error('unknown image type', E_USER_NOTICE);
+            return null;
+        }
+        return $array;
     }
 
     public function resizeImage($max_x = -1, $max_y = -1, $min_x = 0, $min_y = 0, $maxsize = -1)
@@ -170,15 +193,11 @@ class PlUpload
             return false;
         }
         $image_infos = $this->imageInfo();
-        if (empty($image_infos)) {
+        if (!$image_infos) {
             trigger_error('invalid image', E_USER_NOTICE);
             return false;
         }
         list($this->x, $this->y, $mimetype) = $image_infos;
-        if ($mimetype < 1 || $mimetype > 3) { // 1 - gif, 2 - jpeg, 3 - png
-            trigger_error('unknown image type', E_USER_NOTICE);
-            return false;
-        }
         if ($max_x == -1) {
             $max_x = $this->x;
         }

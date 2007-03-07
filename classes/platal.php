@@ -125,7 +125,7 @@ class Platal
         return null;
     }
 
-    protected function near_hook()
+    public function near_hook()
     {
         $hooks = array();
         foreach ($this->__hooks as $hook=>$handler) {

@@ -32,11 +32,16 @@ class EvtReq extends Validate
     public $pmax;
     public $peremption;    
     public $comment;
+
+    public $imgtype;
+    public $imgx;
+    public $imgy;
+    public $img;
     
     // }}}
     // {{{ constructor
 
-    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, $_uid)
+    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, $_uid, PlUpload &$upload = null)
     {
         parent::__construct($_uid, false, 'evts');
         $this->titre      = $_titre;
@@ -45,6 +50,21 @@ class EvtReq extends Validate
         $this->pmax       = $_pmax;
         $this->peremption = $_peremption;
         $this->comment    = $_comment;
+        if ($upload) {
+            $this->readImage($upload);
+        } 
+    }
+
+    // }}}
+    // {{{ function readImage()
+
+    private function readImage(PlUpload &$upload)
+    {
+        if ($upload->exists() && $upload->isType('image')) {
+            list($this->imgx, $this->imgy, $this->imgtype) = $upload->imageInfo();
+            $this->img = $upload->getContents();
+            $upload->rm();
+        }
     }
 
     // }}}
@@ -73,6 +93,19 @@ class EvtReq extends Validate
         $this->pmin       = Env::i('promo_min');
         $this->pmax       = Env::i('promo_max');
         $this->peremption = Env::v('peremption');
+        if (@$_FILES['image']['tmp_name']) {
+            $upload = PlUpload::get($_FILES['image'], S::v('forlife'), 'event');
+            if (!$upload) {
+                $this->trig("Impossible de télécharger le fichier");
+            } elseif (!$upload->isType('image')) {
+                $page->trig('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG');
+                $upload->rm();
+            } elseif (!$upload->resizeImage(200, 300, 100, 100, 32284)) {
+                $page->trig('Impossible de retraiter l\'image');
+            } else {
+                $this->readImage($upload);
+            }
+        }
         return true;
     }
 
@@ -101,12 +134,19 @@ class EvtReq extends Validate
 
     public function commit()
     {
-        return XDB::execute(
-                "INSERT INTO  evenements
+        if (XDB::execute("INSERT INTO  evenements
                          SET  user_id = {?}, creation_date=NOW(), titre={?}, texte={?},
                               peremption={?}, promo_min={?}, promo_max={?}, flags=CONCAT(flags,',valide')",
                 $this->uid, $this->titre, $this->texte,
-                $this->peremption, $this->pmin, $this->pmax);
+                $this->peremption, $this->pmin, $this->pmax)) {
+            if ($this->img) {
+                XDB::execute("INSERT INTO evenements_photo
+                                      SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
+                             XDB::insertId(), $this->imgtype, $this->imgx, $this->imgy, $this->img);
+            }
+            return true;
+        }
+        return false;
     }
 
     // }}}

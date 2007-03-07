@@ -285,6 +285,15 @@ abstract class Validate
     }
 
     // }}}
+    // {{{ function get_request_by_id()
+
+    static public function get_request_by_id($id)
+    {
+        list($uid, $type, $stamp) = explode('_', $id, 3);
+        return Validate::get_typed_request($uid, $type, $stamp);
+    }
+
+    // }}}
     // {{{ function get_typed_requests()
 
     /** same as get_typed_request() but return an array of objects
