@@ -33,7 +33,7 @@ class AXLetter extends MassMailer
 
     function __construct($id)
     {
-        parent::__construct('axletter/letter.tpl', 'ax.css', 'ax/show');
+        parent::__construct('axletter/letter.tpl', 'ax.css', 'ax/show', 'axletter', 'axletter_ins');
         $this->_head = '<cher> <prenom>,';
 
         if (!is_array($id)) {
@@ -182,11 +182,6 @@ class AXLetter extends MassMailer
             return false;
         }
         return XDB::execute("DELETE FROM axletter_rights WHERE user_id = {?}", $uid);
-    }
-
-    protected function subscriptionTable()
-    {
-        return 'axletter_ins';
     }
 
     protected function subscriptionWhere()

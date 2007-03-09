@@ -33,6 +33,10 @@ Bug/Wish:
     * Emails:
         - #595: Update antispam description                                -FRU
 
+    * Newsletter:
+        - #648: Add navigation link in preview page                        -FRU
+        - #649: Fix layout of preview page                                 -FRU
+
     * Profile:
         - Better checks on image type for photos                           -FRU
         - #646: Don't send a mail to an invalid address                    -FRU

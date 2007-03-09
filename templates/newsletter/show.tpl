@@ -20,31 +20,36 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>
+<h1 style="clear: both">
   Lettre de Polytechnique.org du {$nl->_date|date_format}
 </h1>
 
-<p>
-[<a href='nl'>liste des lettres</a>]
-{if $smarty.get.text}
-[<a href='nl/show/{$nl->id()}'>version HTML</a>]
-{else}
-[<a href='nl/show/{$nl->id()}?text=1'>version Texte</a>]
-{/if}
-{if $smarty.session.perms->hasFlag('admin')}
-[<a href='admin/newsletter/edit/{$nl->id()}'>Editer</a>]
-{/if}
+<p style="float: left">
+  {if $smarty.get.text}
+  [<a href='nl/show/{$nl->id()}'>version HTML</a>]
+  {else}
+  [<a href='nl/show/{$nl->id()}?text=1'>version Texte</a>]
+  {/if}
+  {if $smarty.session.perms->hasFlag('admin')}
+  [<a href='admin/newsletter/edit/{$nl->id()}'>Editer</a>]
+  {/if}
 </p>
 
+{include file="include/massmailer-nav.tpl" mm=$nl base=nl}
+
 <form method="post" action="{$platal->path}">
-  <div class='center'>
+  <div class='center' style="clear: both">
     <input type='submit' value="me l'envoyer" name='send' />
   </div>
 </form>
 
-<fieldset>
-<legend>{$nl->title(true)}</legend>
-  {include file="newsletter/nl.tpl"}
-</fieldset>
+<table class="bicol">
+  <tr><th>{$nl->title(true)}</th></tr>
+  <tr>
+    <td>
+      {include file="newsletter/nl.tpl"}
+    </td>
+  </tr>
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

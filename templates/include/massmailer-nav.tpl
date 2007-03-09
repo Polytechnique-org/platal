@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2006 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,40 +20,36 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1 style="clear: both">
-  {if $am->_date}
-  Lettre de l'AX du {$am->_date|date_format}
-  {else}
-  Lettre de l'AX en préparation
-  {/if}
-</h1>
-
-<p style="float: left">
-{if $smarty.get.text}
-[<a href='{$platal->pl_self()}'>version HTML</a>]
-{else}
-[<a href='{$platal->pl_self()}?text=1'>version Texte</a>]
-{/if}
-{if !$am->_date}
-[<a href='ax/edit'>éditer</a>]
-{/if}
-</p>
-
-{include file="include/massmailer-nav.tpl" mm=$am base=ax}
-
-<form method="post" action="{$platal->path}">
-  <div class='center' style="clear: both">
-    <input type='submit' value="me l'envoyer" name='send' />
-  </div>
-</form>
-
-<table class="bicol">
-  <tr><th>{$am->title(true)}</th></tr>
+<table style="float: right; text-align: center" id="letter_nav">
+  <tr>
+    {if $mm->prev() neq null}
+    <td rowspan="2" style="vertical-align: middle">
+      <a href="{$base}/show/{$mm->prev()}">
+      {icon name=resultset_previous title="Lettre précédente"}Lettre précédente
+      </a>
+    </td>
+    {/if}
+    <td>
+      [<a href="{$base}">Liste des lettres</a>]
+    </td>
+    {if $mm->next() neq null}
+    <td rowspan="2" style="vertical-align: middle">
+      <a href="{$base}/show/{$mm->next()}">
+      Lettre suivante{icon name=resultset_next title="Lettre suivante"}
+      </a>
+    </td>
+    {/if}
+  </tr>
+  {if $mm->last() neq null}
   <tr>
     <td>
-      {include file="axletter/letter.tpl"}
+      <a href="{$base}/show/{$mm->last()}">
+        <img src="images/up.png" alt="" title="Liste des lettres" />Dernière lettre<img src="images/up.png" alt="" title="Liste des lettres" />
+      </a>
     </td>
   </tr>
-</fieldset>
+  {/if}
+</table>
+
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

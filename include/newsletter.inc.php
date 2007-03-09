@@ -31,7 +31,7 @@ class NewsLetter extends MassMailer
 
     function __construct($id = null)
     {
-        parent::__construct('newsletter/nl.tpl', 'nl.css', 'nl/show');
+        parent::__construct('newsletter/nl.tpl', 'nl.css', 'nl/show', 'newsletter', 'newsletter_ins');
         if (isset($id)) {
             if ($id == 'last') {
                 $res = XDB::query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
@@ -144,11 +144,6 @@ class NewsLetter extends MassMailer
         $user = is_null($uid) ? S::v('uid') : $uid;
         XDB::execute("REPLACE INTO  newsletter_ins (user_id,last)
                             VALUES  ({?}, 0)", $user);
-    }
-
-    protected function subscriptionTable()
-    {
-        return 'newsletter_ins';
     }
 
     protected function subscriptionWhere()

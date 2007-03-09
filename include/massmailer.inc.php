@@ -36,16 +36,68 @@ abstract class MassMailer
 
     public $_head;
 
-    function __construct($tpl, $css, $prefix)
+    protected $_table;
+    protected $_subscriptionTable;
+
+    function __construct($tpl, $css, $prefix, $tbl, $stbl)
     {
         $this->_tpl    = $tpl;
         $this->_css    = $css;
         $this->_prefix = $prefix;
+        $this->_table  = $tbl;
+        $this->_subscriptionTable = $stbl;
     }
 
     public function id()
     {
         return is_null($this->_shortname) ? $this->_id : $this->_shortname;
+    }
+
+    private function selectId($where)
+    {
+        $res = XDB::query("SELECT  IF (n.short_name IS NULL, n.id, n.short_name)
+                             FROM  {$this->_table} AS n
+                            WHERE  n.bits != 'new' AND {$where}
+                            LIMIT  1"); 
+        if ($res->numRows() != 1) {
+            return null;
+        }
+        return $res->fetchOneCell();
+    }
+
+    public function prev()
+    {
+        static $val;
+        if (!isset($val)) {
+            $val = $this->selectId("n.id < {$this->_id} ORDER BY n.id DESC");
+        }
+        return $val;
+    }
+
+    public function next()
+    {
+        static $val;
+        if (!isset($val)) {
+            $val = $this->selectId("n.id > {$this->_id} ORDER BY n.id");
+        }
+        return $val;
+    }
+
+    public function last()
+    {
+        static $val;
+        if (!isset($val)) {
+            $res = XDB::query("SELECT  MAX(n.id)
+                                 FROM  {$this->_table} AS n
+                                WHERE  n.bits != 'new' AND n.id > {?}",
+                              $this->_id);
+            if ($res->numRows() != 1) {
+                $val = null;
+            } else {
+                $val = $res->fetchOneCell();
+            }
+        }
+        return $val;
     }
 
     public function title($mail = false)
@@ -126,7 +178,7 @@ abstract class MassMailer
                          u.prenom, IF(u.nom_usage='', u.nom, u.nom_usage),
                          FIND_IN_SET('femme', u.flags),
                          q.core_mail_fmt AS pref, 0 AS hash
-                   FROM  {$this->subscriptionTable()}  AS ni
+                   FROM  {$this->_subscriptionTable}  AS ni
              INNER JOIN  auth_user_md5   AS u  USING(user_id)
              INNER JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
              INNER JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
@@ -149,7 +201,7 @@ abstract class MassMailer
                 $sent[] = "(user_id='$uid'" . (!$uid ? " AND email='$bestalias')": ')');
                 $this->sendTo($prenom, $nom, $bestalias, $sexe, $fmt=='html', $hash);
             }
-            XDB::execute("UPDATE  {$this->subscriptionTable()}
+            XDB::execute("UPDATE  {$this->_subscriptionTable}
                              SET  last = {?}
                            WHERE " . implode(' OR ', $sent), $this->_id);
             
@@ -160,7 +212,6 @@ abstract class MassMailer
     abstract protected function assignData(&$smarty);
     abstract protected function setSent();
 
-    abstract protected function subscriptionTable();
     abstract protected function subscriptionWhere();
 }
 
