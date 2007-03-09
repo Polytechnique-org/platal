@@ -237,7 +237,7 @@ class Platal
         return $val;
     }
 
-    protected function force_login(PlatalPage &$page)
+    public function force_login(PlatalPage &$page)
     {
         if (S::logged()) {
             $page->changeTpl('core/password_prompt_logged.tpl');

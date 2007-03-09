@@ -47,7 +47,7 @@ class Xnet extends Platal
         return parent::find_nearest_key($key, $array);
     }
 
-    protected function near_hook()
+    public function near_hook()
     {
         global $globals;
         $link = str_replace('%grp', $globals->asso('diminutif'), parent::near_hook());
@@ -67,7 +67,7 @@ class Xnet extends Platal
         return $ans;
     }
 
-    protected function force_login(&$page)
+    public function force_login(&$page)
     {
         http_redirect(S::v('loginX'));
     }
