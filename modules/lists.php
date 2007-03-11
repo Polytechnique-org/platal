@@ -446,7 +446,7 @@ class ListsModule extends PLModule
     function handler_moderate(&$page, $liste = null)
     {
         if (is_null($liste)) {
-            return PL_NOT_FOUND;
+             return PL_NOT_FOUND;
         }
 
         $domain = $this->prepare_client($page);
@@ -455,12 +455,34 @@ class ListsModule extends PLModule
 
         $page->register_modifier('hdc', 'list_header_decode');
 
-        if (Env::has('sadd')) { /* 4 = SUBSCRIBE */
-            $this->client->handle_request($liste,Env::v('sadd'),4,'');
-            pl_redirect('lists/moderate/'.$liste);
-        }
-        if (Post::has('sdel')) { /* 2 = REJECT */
-            $this->client->handle_request($liste,Post::v('sdel'),2,Post::v('reason'));
+        if (Env::has('sadd') || Env::has('sdel')) {
+            if (Env::has('sadd')) { /* 4 = SUBSCRIBE */
+                $sub = $this->client->get_pending_sub($liste, Env::v('sadd'));
+                $this->client->handle_request($liste,Env::v('sadd'),4,'');
+                $info = "validée";
+            }
+            if (Post::has('sdel')) { /* 2 = REJECT */
+                $sub = $this->client->get_pending_sub($liste, Env::v('sdel'));
+                $this->client->handle_request($liste, Post::v('sdel'), 2, Post::v('reason'));
+                $info = "refusée";
+            }
+            if ($sub) {
+                $mailer = new PlMailer();
+                $mailer->setFrom("$liste-bounces@{$domain}");
+                $mailer->addTo("$liste-owner@{$domain}");
+                $mailer->addHeader('Reply-To', "$liste-owner@{$domain}");
+                $mailer->setSubject("L'inscription de {$sub['name']} a été $info");
+                $text = "L'inscription de {$sub['name']} à la liste $liste@{$domain} a été $info par " . S::v('prenom')  . ' '
+                      . S::v('nom') . '(' . S::v('promo') . ")\n";
+                if (trim(Post::v('reason'))) {
+                    $text .= "\nLa raison invoquée est :\n" . Post::v('reason');
+                }
+                $mailer->setTxtBody(wordwrap($text, 72));
+                $mailer->send();
+            }
+            if (Env::has('sadd')) {
+                pl_redirect('lists/moderate/'.$liste);
+            } 
         }
 
         if (Post::has('moderate_mails') && Post::has('select_mails')) {

@@ -547,7 +547,6 @@ def get_pending_ops(userdesc, perms, vhost, listname):
         return 0
     return (subs, helds)
 
-
 def handle_request(userdesc, perms, vhost, listname, id, value, comment):
     try:
         mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
@@ -565,6 +564,30 @@ def handle_request(userdesc, perms, vhost, listname, id, value, comment):
         mlist.Unlock()
         return 0
 
+def get_pending_sub(userdesc, perms, vhost, listname, id):
+    try:
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+
+        mlist.Lock()
+        sub = 0
+        id = int(id)
+        if id in mlist.GetSubscriptionIds():
+            time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
+            try:
+                login = re.match("^[^.]*\.[^.]*\.\d\d\d\d$", addr.split('@')[0]).group()
+                sub = {'id': id, 'name': quote(fullname), 'addr': addr, 'login': login }
+            except:
+                sub = {'id': id, 'name': quote(fullname), 'addr': addr }
+        mlist.Unlock()
+    except:
+        mlist.Unlock()
+        return 0
+    return sub
 
 def get_pending_mail(userdesc, perms, vhost, listname, id, raw=0):
     try:
@@ -985,6 +1008,7 @@ server.register_function(del_owner)
 # moderate.php
 server.register_function(get_pending_ops)
 server.register_function(handle_request)
+server.register_function(get_pending_sub)
 server.register_function(get_pending_mail)
 # options.php
 server.register_function(get_owner_options)
