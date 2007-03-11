@@ -40,11 +40,33 @@
     {foreach from=$xorg_css item=css}
     <link rel="stylesheet" type="text/css" href="css/{$css}" />
     {/foreach}
+    <script type="text/javascript">
+    if (window.top != window)
+      document.write('<link rel="stylesheet" type="text/css" href="css/onlycontent.css" media="all"/>');
+    </script>
     {foreach from=$xorg_js item=js}
     <script type="text/javascript" src="javascript/{$js}"></script>
     {/foreach}
     <script type="text/javascript" src="javascript/overlib.js"></script>
-
+    <script type="text/javascript" src="http://jquery.com/src/jquery-latest.pack.js"></script>
+    {literal}
+    <script type="text/javascript">
+$(document).ready(function() {
+ $("td.center > a").click(function() {
+   $.ajax({
+    type: "GET",
+    url: $(this).attr("href"),
+    dataType: "xml",
+    success: function (msg) {
+      alert("Data Saved :"+msg);
+    }
+  });
+   return false;
+ });
+});
+    </script>
+    {/literal}
+    
     {if $xorg_rss}
     <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{$xorg_rss.href}" />
     {/if}
@@ -179,9 +201,9 @@
         </td>
       </tr>
       {if !$simple}
-      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
+      <tr class="hideable"><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
-      <tr>
+      <tr class="hideable">
         <td colspan="2">
           <table class="links" summary="liens" cellspacing="0" cellpadding="0">
             <tr>
@@ -197,9 +219,9 @@
       {/if}
       {/if}
     {if !$simple}
-      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
+      <tr class="hideable"><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
-      <tr>
+      <tr class="hideable">
         <td colspan="2">
         <table style="width: 100%">
           <tr>
@@ -227,9 +249,9 @@
         </td>
       </tr>
 
-      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
+      <tr class="hideable"><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
-      <tr>
+      <tr class="hideable">
         <td colspan="2" id="credits">
           <a href="plan">plan du site</a> -
           <a href="Xnet/Services">services proposés</a> -
