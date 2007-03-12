@@ -80,7 +80,17 @@ utiliser une adresse personnalisée, il faut se tourner vers
 
   <br />
 
-  <form action="profile/usage" method="post">
+{literal}
+  <form action="profile/usage" method="post" onsubmit="
+  for (var i=this.reason.length-1; i--; i>=0) {
+    if (this.reason[i].checked) {
+      return true;
+    }
+  }
+  alert('Tu dois préciser une raison motivant ta demande.');
+  return false;
+">
+{/literal}
     <table class="bicol" cellpadding="4" summary="Nom d'usage">
       <tr>
         <th>Nom d'usage</th>
@@ -98,7 +108,7 @@ utiliser une adresse personnalisée, il faut se tourner vers
       </tr>
       <tr>
         <td class="rt">
-          <input type="radio" name="reason" checked="checked" value="époux/se" id="reason_ep" onclick="this.form.other_reason.value=''" /><label for="reason_ep">Nom d'épouse / d'époux</label><br />
+          <input type="radio" name="reason" value="époux/se" id="reason_ep" onclick="this.form.other_reason.value=''" /><label for="reason_ep">Nom d'épouse / d'époux</label><br />
           {if $usage_old}
             <input type="radio" name="reason" value="divorce" id="reason_div" onclick="this.form.other_reason.value=''" /><label for="reason_div">Divorce</label><br />
           {/if}
