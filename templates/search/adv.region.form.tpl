@@ -22,7 +22,7 @@
 
 <select name="region">
 {if $country neq ""}
-  {geoloc_region country=$country region=$region}
+  {geoloc_region country=$country region=$region available=true}
 {else}
   <option value=""></option>
 {/if}

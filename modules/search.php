@@ -90,8 +90,11 @@ class SearchModule extends PLModule
 
         $page->assign('formulaire',1);
         $page->assign('choix_nats',
-                      XDB::iterator('SELECT a2 AS id,IF(nat=\'\',pays,nat) AS text
-                                                 FROM geoloc_pays ORDER BY text'));
+                      XDB::iterator('SELECT  g.a2 AS id, IF(nat=\'\', g.pays, g.nat) AS text
+                                       FROM  geoloc_pays AS g
+                                 INNER JOIN  auth_user_md5 AS u ON (u.nationalite = g.a2)
+                                   GROUP BY  g.a2
+                                   ORDER BY  text'));
         $page->assign('choix_postes',
                       XDB::iterator('SELECT id,fonction_fr FROM fonctions_def
                                              ORDER BY fonction_fr'));

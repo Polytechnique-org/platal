@@ -23,43 +23,69 @@
 /** donne la liste déroulante des pays
  * @param $current pays actuellement selectionné
  */
-function geoloc_country($current) {
-    $res  = XDB::iterRow('SELECT a2,pays FROM geoloc_pays ORDER BY pays');
+function geoloc_country($current, $avail_only = false)
+{
+    if ($avail_only) {
+        $res = XDB::iterRow('SELECT  g.a2, g.pays
+                               FROM  geoloc_pays AS g
+                         INNER JOIN  adresses    AS a ON(a.country = g.a2)
+                           GROUP BY  g.a2
+                           ORDER BY  g.pays');
+    } else {
+        $res = XDB::iterRow('SELECT a2,pays FROM geoloc_pays ORDER BY pays');
+    }
     $html = "";
     while (list($my_id, $my_pays) = $res->next()) {
-	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
-                $my_id, ($current==$my_id?"selected='selected'":""), $my_pays);
+        $html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
+                         $my_id, ($current==$my_id?"selected='selected'":""), $my_pays);
     }
     return $html;
 }
 
-function _geoloc_country_smarty($params){
-  if(!isset($params['country']))
-    return;
-  return geoloc_country($params['country']);
+function _geoloc_country_smarty($params)
+{
+    if(!isset($params['country']))
+        return;
+    return geoloc_country($params['country'], @$params['available']);
 }
+
 $GLOBALS['page']->register_function('geoloc_country', '_geoloc_country_smarty');
 
 /** donne la liste deroulante des regions pour un pays
  * @param $pays le pays dont on veut afficher les regions
  * @param $current la region actuellement selectionnee
  */
-function geoloc_region($country,$current) {
-    $res  = XDB::iterRow('SELECT region,name FROM geoloc_region where a2={?} ORDER BY name', $country);
+function geoloc_region($country, $current, $avail_only = false)
+{
+    if ($avail_only) {
+        $res = XDB::iterRow('SELECT  r.region, r.name
+                               FROM  geoloc_region AS r
+                         INNER JOIN  adresses      AS a ON (a.country = r.a2 AND a.region = r.region)
+                              WHERE  r.a2 = {?}
+                           GROUP BY  r.region
+                           ORDER BY  r.name', $country);
+    } else {
+        $res = XDB::iterRow('SELECT  region,name
+                               FROM  geoloc_region
+                              WHERE  a2 = {?}
+                           ORDER BY  name', $country);
+    }
     $html = "<option value=\"\"></option>";
     while (list($regid, $regname) = $res->next()) {
-	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
-                $regid, ($current==$regid?"selected='selected'":""), $regname);
+        $html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
+                 $regid, ($current==$regid?"selected='selected'":""), $regname);
     }
     return $html;
 
 }
-function _geoloc_region_smarty($params){
-  if(!isset($params['country']))
-    return;
-  if(!isset($params['region']))
-    return;
-  return geoloc_region($params['country'], $params['region']);
+
+function _geoloc_region_smarty($params)
+{
+    if(!isset($params['country']))
+        return;
+    if(!isset($params['region']))
+        return;
+    return geoloc_region($params['country'], $params['region'], @$params['available']);
 }
 $GLOBALS['page']->register_function('geoloc_region', '_geoloc_region_smarty');
 // }}}
@@ -101,7 +127,7 @@ function get_address_infos($txt) {
     if (isset($infos['display']) && $infos['display'])
         XDB::execute("UPDATE geoloc_pays SET display = {?} WHERE a2 = {?}", $infos['display'], $infos['country']);
     if (isset($infos['cityid']))
-    	fix_cities_not_on_map(1, $infos['cityid']);
+        fix_cities_not_on_map(1, $infos['cityid']);
     return $infos;
 }
 // }}}
@@ -318,9 +344,9 @@ function set_smallest_levels() {
 function geoloc_to_x($lon, $lat) { return deg2rad(1) * $lon *100; }
 
 function geoloc_to_y($lon, $lat) {
-	if ($lat < -75) return latToY(-75);
-	if ($lat > 75) return latToY(75);
-  return -100 * log(tan(pi()/4 + deg2rad(1)/2*$lat));	
+    if ($lat < -75) return latToY(-75);
+    if ($lat > 75) return latToY(75);
+  return -100 * log(tan(pi()/4 + deg2rad(1)/2*$lat));   
 }
 
 function size_of_city($nb) { $s = round(log($nb + 1)*2,2); if ($s < 1) return 1; return $s; }
@@ -343,7 +369,7 @@ function geoloc_getData_subcities($mapid, $SFields, &$cities, $direct=true) {
           FROM auth_user_md5 AS u
     INNER JOIN auth_user_quick AS q ON(u.user_id = q.user_id)
             ".$fields->get_select_statement()."
-				 LEFT JOIN geoloc_city AS gc ON(gcim.city_id = gc.id)
+                 LEFT JOIN geoloc_city AS gc ON(gcim.city_id = gc.id)
          WHERE ".($direct?"gcim.infos = 'smallest'":"1")."
          $where
       GROUP BY gc.id,gc.alias ORDER BY pop DESC");
@@ -367,9 +393,9 @@ function geoloc_getData_subcountries($mapid, $SFields, $minentities) {
     $cities = array();
     
     if ($mapid === false)
-    	$wheremapid = "WHERE gm.parent IS NULL";
+        $wheremapid = "WHERE gm.parent IS NULL";
     else
-    	$wheremapid = "WHERE   gm.parent = {?}";
+        $wheremapid = "WHERE   gm.parent = {?}";
     $submapres = XDB::iterator(
         "SELECT  gm.map_id AS id, gm.name, gm.x, gm.y, gm.xclip, gm.yclip, 
                 gm.width, gm.height, gm.scale, 1 AS rat
@@ -389,61 +415,61 @@ function geoloc_getData_subcountries($mapid, $SFields, $minentities) {
     
     if ($mapid === false) return array($countries, $cities);
 
-	geoloc_getData_subcities(Env::i('mapid'), $SFields, $cities);
-	$nbcities = count($cities);
-	$nocity = $nbcities == 0;
+    geoloc_getData_subcities(Env::i('mapid'), $SFields, $cities);
+    $nbcities = count($cities);
+    $nocity = $nbcities == 0;
 
     for ($i_mapfield=0; $i_mapfield < count($SFields) ; $i_mapfield++) if ($SFields[$i_mapfield]->fieldFormName == 'mapid') break;
-	$SFields[$i_mapfield] = new MapSField('mapid', array('map.parent'), array('adresses','geoloc_city_in_maps','geoloc_maps'), array('am','gcim','map'), array(getadr_join('am'), 'am.cityid = gcim.city_id', 'map.map_id = gcim.map_id'));
+    $SFields[$i_mapfield] = new MapSField('mapid', array('map.parent'), array('adresses','geoloc_city_in_maps','geoloc_maps'), array('am','gcim','map'), array(getadr_join('am'), 'am.cityid = gcim.city_id', 'map.map_id = gcim.map_id'));
 
-	$fields = new SFieldGroup(true, $SFields);
-	$where = $fields->get_where_statement();
-	if ($where) $where = " WHERE ".$where;
-		
-	$countryres = XDB::iterator("
-	    SELECT  map.map_id AS id,
-	            COUNT(u.user_id) AS nbPop,
-	            SUM(u.promo % 2) AS yellow,
-	            COUNT(DISTINCT gcim.city_id) AS nbCities,
-	            SUM(IF(u.user_id IS NULL,0,am.glng)) AS lonPop,
-	            SUM(IF(u.user_id IS NULL, 0,am.glat)) AS latPop
-	      FROM  auth_user_md5 AS u
-	INNER JOIN  auth_user_quick AS q ON(u.user_id = q.user_id)
-	            ".$fields->get_select_statement()."
-	     $where
-	  GROUP BY  map.map_id ORDER BY NULL", $hierarchy);
-	
-	$maxpop = 0;
-	$nbentities = $nbcities + $countryres->total();
-	while ($c = $countryres->next())
-	{
-	    $c['latPop'] /= $c['nbPop'];
-	    $c['lonPop'] /= $c['nbPop'];
-	    $c['rad'] = size_of_territory($c['nbPop']);
-	    if ($maxpop < $c['nbPop']) $maxpop = $c['nbPop'];
-	    $c['xPop'] = geoloc_to_x($c['lonPop'], $c['latPop']);
-	    $c['yPop'] = geoloc_to_y($c['lonPop'], $c['latPop']);
-	    $countries[$c['id']] = array_merge($countries[$c['id']], $c);
-	
-	    $nbcities += $c['nbCities'];
-	}
-	
-	if ($nocity && $nbcities < $minentities)
-	{
-	    foreach($countries as $i => $c)
-	    {
-	        $countries[$i]['nbPop'] = 0;
-	        if ($c['nbCities'] > 0)
-	            geoloc_getData_subcities($c['id'], $SFields, $cities, false);
-	    }   
-	}
-	
-	foreach ($countries as $i => $c) if ($c['nbPop'] > 0)
-	{
-	    $lambda = pow($c['nbPop'] / $maxpop,0.3);
-	    $countries[$i]['color'] = 0x0000FF + round((1-$lambda) * 0xFF)*0x010100;
-	}
-	
+    $fields = new SFieldGroup(true, $SFields);
+    $where = $fields->get_where_statement();
+    if ($where) $where = " WHERE ".$where;
+        
+    $countryres = XDB::iterator("
+        SELECT  map.map_id AS id,
+                COUNT(u.user_id) AS nbPop,
+                SUM(u.promo % 2) AS yellow,
+                COUNT(DISTINCT gcim.city_id) AS nbCities,
+                SUM(IF(u.user_id IS NULL,0,am.glng)) AS lonPop,
+                SUM(IF(u.user_id IS NULL, 0,am.glat)) AS latPop
+          FROM  auth_user_md5 AS u
+    INNER JOIN  auth_user_quick AS q ON(u.user_id = q.user_id)
+                ".$fields->get_select_statement()."
+         $where
+      GROUP BY  map.map_id ORDER BY NULL", $hierarchy);
+    
+    $maxpop = 0;
+    $nbentities = $nbcities + $countryres->total();
+    while ($c = $countryres->next())
+    {
+        $c['latPop'] /= $c['nbPop'];
+        $c['lonPop'] /= $c['nbPop'];
+        $c['rad'] = size_of_territory($c['nbPop']);
+        if ($maxpop < $c['nbPop']) $maxpop = $c['nbPop'];
+        $c['xPop'] = geoloc_to_x($c['lonPop'], $c['latPop']);
+        $c['yPop'] = geoloc_to_y($c['lonPop'], $c['latPop']);
+        $countries[$c['id']] = array_merge($countries[$c['id']], $c);
+    
+        $nbcities += $c['nbCities'];
+    }
+    
+    if ($nocity && $nbcities < $minentities)
+    {
+        foreach($countries as $i => $c)
+        {
+            $countries[$i]['nbPop'] = 0;
+            if ($c['nbCities'] > 0)
+                geoloc_getData_subcities($c['id'], $SFields, $cities, false);
+        }   
+    }
+    
+    foreach ($countries as $i => $c) if ($c['nbPop'] > 0)
+    {
+        $lambda = pow($c['nbPop'] / $maxpop,0.3);
+        $countries[$i]['color'] = 0x0000FF + round((1-$lambda) * 0xFF)*0x010100;
+    }
+    
     return array($countries, $cities);   
 } 
 // }}}

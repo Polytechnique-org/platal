@@ -48,6 +48,9 @@ Bug/Wish:
         - #636: Remove non-X from trombi                                   -FRU
         - #638: Sort trombi by promo then name                             -FRU
 
+    * Search:
+        - #173: Show only countries where there is a user                  -FRU
+
     * Xnet:
         - #639: Fix the number of pages                                    -FRU
 

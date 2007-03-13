@@ -158,7 +158,7 @@
         {else}
           {assign var="country" value=""}
         {/if}
-        {geoloc_country country=$country}
+        {geoloc_country country=$country available=true}
         </select>
       </td>
     </tr>
