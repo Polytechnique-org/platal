@@ -959,7 +959,7 @@ class XnetGrpModule extends PLModule
         global $globals;
         require_once('rss.inc.php');
         $uid = init_rss('xnetgrp/announce-rss.tpl', $user, $hash, false);
-        $page->register_modifier('url_catcher', array(MiniWiki,'WikiToHTML'));
+        $page->register_modifier('url_catcher', array('MiniWiki', 'WikiToHTML'));
 
         if ($uid) {
             $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.contacts, a.create_date,

@@ -28,21 +28,11 @@ function _rss_encode_date($d) {
     return date('r', $t);
 }
 
-function to_rss ($s)
-{
-    if(is_string($s)) {
-        return iconv('ISO_8859-15', 'UTF8', $s);
-    } else {
-        return $s;
-    }
-}
-
 function init_rss($template, $alias, $hash, $require_uid = true)
 {
     global $page;
     $page->changeTpl($template, NO_SKIN);
     $page->register_modifier('rss_date', '_rss_encode_date');
-    $page->default_modifiers = Array('@to_rss');
 
     $res = XDB::query(
         'SELECT  a.id

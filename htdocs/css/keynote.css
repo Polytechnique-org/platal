@@ -51,6 +51,7 @@ fieldset {
     background: url('../images/skins/keynote_bg_lighter.png') #848495 top left repeat-x fixed;
     color: #000;
     margin: 1em 0 1em 0;
+    text-align: justify;
 }
 legend {
     border-bottom: 1px solid #666;
