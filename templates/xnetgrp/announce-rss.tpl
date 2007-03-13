@@ -37,7 +37,7 @@
       <title>{$line.titre|strip_tags}</title>
       <guid isPermaLink="false">{$line.id}</guid>
       <link>{#globals.baseurl#}/{$asso.diminutif}/#art{$line.id}</link>
-      <description><![CDATA[{$line.texte|nl2br}{if $line.contacts}<br/><br/><strong>Contacts :</strong><br/>{$line.contacts|url_catcher|nl2br}{/if}]]></description>
+      <description><![CDATA[{$line.texte|url_catcher}{if $line.contacts}<br/><br/><strong>Contacts :</strong><br/>{$line.contacts|url_catcher}{/if}]]></description>
       <author>{$line.prenom} {$line.nom} (X{$line.promo})</author>
       <pubDate>{$line.create_date|rss_date}</pubDate>
     </item>

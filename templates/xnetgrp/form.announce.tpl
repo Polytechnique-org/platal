@@ -39,7 +39,7 @@
   <tr>
     <td style="padding-bottom: 1em">
       {tidy}
-      {$art.texte|nl2br}
+      {$art.texte|url_catcher|smarty:nodefaults}
       {/tidy}
     </td>
   </tr>

@@ -264,14 +264,13 @@ class EventsModule extends PLModule
 
     function handler_preview(&$page)
     {
-        require_once('url_catcher.inc.php');
         $page->changeTpl('events/preview.tpl', NO_SKIN);
         $texte = Get::v('texte');
         if (!is_utf8($texte)) {
             $texte = utf8_encode($texte);
         }
         if (strpos($_SERVER['HTTP_REFERER'], 'admin') === false) {
-            $texte = url_catcher(pl_entities($texte));
+            $texte = MiniWiki::WikiToHTML($texte);
         }
         $titre = Get::v('titre');
         if (!is_utf8($titre)) {
@@ -308,8 +307,7 @@ class EventsModule extends PLModule
             $action = null;
         }
 
-    	require_once('url_catcher.inc.php');
-		$texte_catch_url = url_catcher($texte);
+		$texte_catch_url = MiniWiki::WikiToHTML($texte);
 		
         $page->assign('titre', $titre);
         $page->assign('texte', $texte);

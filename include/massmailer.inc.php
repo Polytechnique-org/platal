@@ -218,93 +218,15 @@ abstract class MassMailer
 // }}}
 // {{{ Functions
 
-function justify($text,$n)
-{
-    $arr = explode("\n",wordwrap($text,$n));
-    $arr = array_map('trim',$arr);
-    $res = '';
-    foreach ($arr as $key => $line) {
-    $nxl       = isset($arr[$key+1]) ? trim($arr[$key+1]) : '';
-    $nxl_split = preg_split('! +!',$nxl);
-    $nxw_len   = count($nxl_split) ? strlen($nxl_split[0]) : 0;
-    $line      = trim($line);
-
-    if (strlen($line)+1+$nxw_len < $n) {
-        $res .= "$line\n";
-        continue;
-    }
-    
-    if (preg_match('![.:;]$!',$line)) {
-        $res .= "$line\n";
-        continue;
-    }
-
-    $tmp   = preg_split('! +!',trim($line));
-    $words = count($tmp);
-    if ($words <= 1) {
-        $res .= "$line\n";
-        continue;
-    }
-
-    $len   = array_sum(array_map('strlen',$tmp));
-    $empty = $n - $len;
-    $sw    = floatval($empty) / floatval($words-1);
-    
-    $cur = 0;
-    $l   = '';
-    foreach ($tmp as $word) {
-        $l   .= $word;
-        $cur += $sw + strlen($word);
-        $l    = str_pad($l,intval($cur+0.5));
-    }
-    $res .= trim($l)."\n";
-    }
-    return trim($res);
-}
-
 function format_text($input, $format, $indent = 0, $width = 68)
 {
     if ($format == 'text') {
-        return enriched_to_text($input, false, true, $indent, $width);
+        return MiniWiki::WikiToText($input, true, $indent, $width, "title");
     }
-    return enriched_to_text($input, true);
+    return MiniWiki::WikiToHTML($input, "title");
 }
 
-function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68)
-{
-    $text = trim($input);
-    if ($html) {
-        $text = htmlspecialchars($text);
-        $text = str_replace('[b]','<strong>', $text);
-        $text = str_replace('[/b]','</strong>', $text);
-        $text = str_replace('[i]','<em>', $text);
-        $text = str_replace('[/i]','</em>', $text);
-        $text = str_replace('[u]','<span style="text-decoration: underline">', $text);
-        $text = str_replace('[/u]','</span>', $text);
-        $text = preg_replace("!(\\s*\n)*\[title\]!",'<h1>',$text);
-        $text = preg_replace("!\[\/title\](\\s*\n)*!", '</h1>',$text);
-        $text = preg_replace("!(\\s*\n)*\[subtitle\]!",'<h2>',$text);
-        $text = preg_replace("!\[\/subtitle\](\\s*\n)*!",'</h2>',$text);
-
-        require_once('url_catcher.inc.php');
-        $text = url_catcher($text);
-        return nl2br($text);
-    } else {
-        $text = preg_replace('!\[\/?b\]!','*',$text);
-        $text = preg_replace('!\[\/?u\]!','_',$text);
-        $text = preg_replace('!\[\/?i\]!','/',$text);
-        $text = preg_replace('!\[\/?title\]!','***', $text);
-        $text = preg_replace('!\[\/?subtitle\]!','**', $text);
-        $text = preg_replace('!(((https?|ftp)://|www\.)[^\r\n\t ]*)!','[\1]', $text);
-        $text = preg_replace('!(([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)(?:\?[^\r\n\t ]*)?)!','[mailto:\1]', $text);
-        $text = $just ? justify($text,$width-$indent) : wordwrap($text,$width-$indent);
-        if($indent) {
-            $ind = str_pad('',$indent);
-            $text = $ind.str_replace("\n","\n$ind",$text);
-        }
-        return $text;
-    }
-}
+// function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68)
 
 // }}}
 

@@ -226,8 +226,8 @@ class NLArticle
     public function toText()
     {
         $title = '*'.$this->title().'*';
-        $body  = enriched_to_text($this->_body,false,true);
-        $app   = enriched_to_text($this->_append,false,false,4);
+        $body  = MiniWiki::WikiToText($this->_body,true);
+        $app   = MiniWiki::WikiToText($this->_append,false,4);
         return trim("$title\n\n$body\n\n$app")."\n";
     }
 
@@ -237,8 +237,8 @@ class NLArticle
     public function toHtml()
     {
         $title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a>".pl_entities($this->title()).'</h2>';
-        $body  = enriched_to_text($this->_body,true);
-        $app   = enriched_to_text($this->_append,true);
+        $body  = MiniWiki::WikiToHTML($this->_body);
+        $app   = MiniWiki::WikiToHTML($this->_append);
     
         $art   = "$title\n";
         $art  .= "<div class='art'>\n$body\n";
@@ -255,7 +255,7 @@ class NLArticle
 
     public function check()
     {
-        $text = enriched_to_text($this->_body);
+        $text = MiniWiki::WikiToText($this->_body);
         $arr  = explode("\n",wordwrap($text,68));
         $c    = 0;
         foreach ($arr as $line) {

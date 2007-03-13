@@ -170,9 +170,8 @@ class XnetGrpModule extends PLModule
             $page->setRssLink("Polytechnique.net :: {$globals->asso("nom")} :: News",
                               'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
         }
-
-        require_once('url_catcher.inc.php');
-        $page->register_modifier('url_catcher', 'url_catcher');
+        
+        $page->register_modifier('url_catcher', array(MiniWiki,'WikiToHTML'));
         $page->assign('articles', $arts);
 
         $page->assign('asso', $globals->asso());
@@ -959,9 +958,8 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         require_once('rss.inc.php');
-        require_once('url_catcher.inc.php');
         $uid = init_rss('xnetgrp/announce-rss.tpl', $user, $hash, false);
-        $page->register_modifier('url_catcher', 'url_catcher');
+        $page->register_modifier('url_catcher', array(MiniWiki,'WikiToHTML'));
 
         if ($uid) {
             $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.contacts, a.create_date,
@@ -988,6 +986,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals, $platal;
         new_groupadmin_page('xnetgrp/announce-edit.tpl');
+        $page->register_modifier('url_catcher', array(MiniWiki,'WikiToHTML'));
         $page->assign('new', is_null($aid));
         $art = array();
 
@@ -1043,9 +1042,8 @@ class XnetGrpModule extends PLModule
                 $aid = XDB::insertId();
                 if ($art['xorg']) {
                     require_once('validations.inc.php');
-                    require_once('url_catcher.inc.php');
                     $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'],
-                                    url_catcher($art['texte'] . (!empty($art['contact_html']) ? "\n\nContacts :\n" . $art['contact_html'] : "")),
+                                    MiniWiki::WikiToHTML($art['texte'] . (!empty($art['contact_html']) ? "\n\nContacts :\n" . $art['contact_html'] : "")),
                                     $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'));
                     $article->submit();
                     $page->trig("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation");
@@ -1113,8 +1111,7 @@ class XnetGrpModule extends PLModule
             }
         } 
 
-        require_once('url_catcher.inc.php');
-        $art['contact_html'] = url_catcher($art['contact_html']);
+        $art['contact_html'] = MiniWiki::WikiToHTML($art['contact_html']);
         $page->assign('art', $art);
     }
 
