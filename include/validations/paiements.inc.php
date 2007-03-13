@@ -79,6 +79,24 @@ class PayReq extends Validate
     }
   
     // }}}
+    // {{{ function accept()
+
+    // check the message
+    public function accept()
+    {
+        // no text [AI JMIAJM IJA MIJ]
+        if (preg_match('/\[[-\'"A-Z ]+\]/', $this->msg_reponse)) {
+            $this->trig("La demande de paiement n'est pas valide. Merci de compléter le texte avant de la soumettre");
+            return false;
+        }
+        if (!preg_match('/<montant>/', $this->msg_reponse)) {
+            $this->trig("Le demande de paiement ne contient pas la balise obligatoire &lt;montant&gt;");
+            return false;
+        }
+        return true;
+    }
+
+    // }}}    
     // {{{ function submit() 
   
     // supprime les demandes de paiments pour le meme evenement

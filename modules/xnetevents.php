@@ -433,13 +433,19 @@ class XnetEventsModule extends PLModule
                                 Post::v('site'), $money_defaut,
                                 Post::v('confirmation'), 0, 999,
                                 $globals->asso('id'), $eid);
-                $p->submit();
+                if ($p->accept()) {
+                    $p->submit();
+                } else {
+                    $page->assign('paiement_message', Post::v('confirmation'));
+                    $page->assign('paiement_site', Post::v('site'));
+                    $error = true;
+                }
             }
 
             // events with no sub-event: add a sub-event with no name
             if ($nb_moments == 0) {
                 XDB::execute("INSERT INTO groupex.evenements_items
-                                        VALUES ({?}, {?}, '', '', 0)", $eid, 1);
+                                   VALUES ({?}, {?}, '', '', 0)", $eid, 1);
             }
 
             if (!$error) {

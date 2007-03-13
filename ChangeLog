@@ -54,6 +54,9 @@ Bug/Wish:
     * Xnet:
         - #639: Fix the number of pages                                    -FRU
 
+    * XnetEvents:
+        - #637: Check payment before submission                            -FRU
+
 ================================================================================
 VERSION 0.9.13                                                        30 01 2007
 

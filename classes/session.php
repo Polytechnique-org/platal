@@ -26,7 +26,10 @@ class Session
         @session_start();
         if (empty($_SESSION['challenge'])) {
             $_SESSION['challenge'] = sha1(uniqid(rand(), true));
-       }
+        }
+        if (!isset($_SESSION['perms'])) {
+            $_SESSION['perms'] = new FlagSet();
+        }
     }
 
     public static function destroy()

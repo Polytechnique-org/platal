@@ -136,12 +136,12 @@ function deadlineChange(box)
     <tr>
       <th colspan="2">
         Paiement&nbsp;:&nbsp;
-        <select name="paiement_id" onchange="document.getElementById('new_pay').style.display=(value &lt; 0?'':'none')">
+        <select name="paiement_id" id="payid"  onchange="document.getElementById('new_pay').style.display=(value &lt; 0?'':'none')">
           {if $evt.paiement_id eq -2}
           <option value='-2'>Paiement en attente de validation</option>
           {/if}
           <option value=''>Pas de paiement</option>
-          <option value='-1'>- Nouveau paiement -</option>
+          <option value='-1' {if $paiement_message}selected="selected"{/if}>- Nouveau paiement -</option>
           {html_options options=$paiements selected=$evt.paiement_id}
         </select>
       </th>
@@ -153,17 +153,21 @@ function deadlineChange(box)
           <li><strong>Remplace les crochets</strong> ([...]) par le texte que tu désires y voir apparaître</li>
           <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt; et &lt;montant&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées</li>
         </ul>
-        <textarea name="confirmation" rows="12" cols="65">&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
+        <textarea name="confirmation" rows="12" cols="65">{if $paiement_message}{$paiement_message}{else}&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
 
     Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien été reçu. 
     [COMPLETE EN PRECISANT LA DATE ET LA PERSONNE A CONTACTER]
 
     A très bientôt,
 
-    {$smarty.session.prenom} {$smarty.session.nom}</textarea><br />
-        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$asso.site|default:$platal->ns}" /><br />
+    {$smarty.session.prenom} {$smarty.session.nom}{/if}</textarea><br />
+        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso.site|default:$platal->ns}" /><br />
         Le nouveau paiement sera activé automatiquement après validation par le trésorier de Polytechnique.org,
         ce qui sera fait sous peu.
+        <script type="text/javascript">//<![CDATA[
+          document.getElementById('new_pay').style.display=
+            (document.getElementById('payid').value < 0?'':'none');
+        //]]></script>
       </td>
     </tr>
   </table>
