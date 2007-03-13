@@ -81,6 +81,43 @@ function is_utf8($s)
 }
 
 
+/** genere une chaine aleatoire de 22 caracteres ou moins
+ * @param $len longueur souhaitée, 22 par défaut
+ * @return la chaine aleatoire qui contient les caractères [A-Za-z0-9+/]
+ */
+function rand_token($len = 22)
+{
+    $len = max(2, $len);
+    $len = min(50, $len);
+    $fp = fopen('/dev/urandom', 'r');
+    // $len * 2 is certainly an overkill,
+    // but HEY, reading 40 bytes from /dev/urandom is not that slow !
+    $token = fread($fp, $len * 2);
+    fclose($fp);
+    $token = base64_encode($token);
+    $token = preg_replace("![Il10O+/]!", "", $token);
+    $token = substr($token,0,$len);
+    return $token;
+}
+
+/** genere une chaine aleatoire convenable pour une url
+ * @param $len longueur souhaitée, 22 par défaut
+ * @return la chaine aleatoire 
+ */
+function rand_url_id($len = 22)
+{
+    return rand_token($len);
+}
+
+
+/** genere une chaine aleatoire convenable pour un mot de passe
+ * @return la chaine aleatoire
+ */
+function rand_pass()
+{
+    return rand_token(8);
+}
+
 /** Remove accent from a string and replace them by the nearest letter
  */
 global $lc_convert, $uc_convert;
