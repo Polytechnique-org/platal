@@ -42,22 +42,12 @@
     	<input type="hidden" name="rechercher" value="Chercher"/>
     	<input type="submit" style="display:none"/>
         <input type="text" name="name" size="32" value="{$smarty.request.name}" />
-        {if $smarty.request.name && !$with_soundex && $smarty.request.recherche}
-        <a class='smaller' href="search/adv?with_soundex=1&amp;{$url_args}">
-          étendre par proximité sonore
-        </a>
-        {/if}
       </td>
     </tr>
     <tr>
       <td>Prénom</td>
       <td>
         <input type="text" name="firstname" size="32" value="{$smarty.request.firstname}" />
-        {if $smarty.request.firstname && !$with_soundex && $smarty.request.recherche}
-        <a class='smaller' href="search/adv?with_soundex=1&amp;{$url_args}">
-          étendre par proximité sonore
-        </a>
-        {/if}
       </td>
     </tr>
     <tr>
@@ -139,11 +129,12 @@
       </td>
     </tr>
     <tr>
-      <th colspan="2">Géographie</th>
-    </tr>
-    <tr>
       <td colspan="2">
-      <label for="only_current"><input name="only_current" id="only_current" type="checkbox"{if $smarty.request.only_current} checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont actuellement.</label></td>
+        <input type="checkbox" name="with_soundex" value="1" {if $smarty.request.with_soundex}checked="checked"{/if} id="sdxn" />
+        <label for="sdxn">étendre par proximité sonore (uniquement sur nom et prénom)</label>
+      </td>
+    <tr>
+      <th colspan="2">Géographie</th>
     </tr>
     <tr>
       <td>Ville</td>
@@ -172,6 +163,11 @@
         {/if}
         {include file="search/adv.region.form.tpl" country=$smarty.request.country}
       </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+      <label for="only_current"><input name="only_current" id="only_current" type="checkbox"{if $smarty.request.only_current}  
+checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont actuellement.</label></td>
     </tr>
     <tr>
       <th colspan="2">Activité</th>

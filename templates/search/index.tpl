@@ -94,10 +94,24 @@
   {/if}
   </div>
   {/if}
-  
+ 
   <p class="noprint">
-  <strong>Astuce:</strong>
-  Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !</p>
+    <strong>{icon name=lightbulb title=Astruce}Astuce&nbsp;:</strong>
+    {if $search_results_nb}
+    Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !
+    {elseif $advanced && $with_soundex && ($smarty.request.name || $smarty.request.firstname)}
+    Si tu n'es pas sur de l'orthographe d'un nom, tu peux essayer la <a href="{$with_soundex}">recherche par
+    proximité sonore</a>
+    {elseif $advanced}
+    Essaye d'élargir tes critères de recherche.
+    {elseif $smarty.session.auth ge AUTH_COOKIE}
+    Essaye la <a href="search/adv">recherche avancée</a>
+    {else}
+    Pour les X inscrits à Polytechnique.org, un module de recherche avancée est disponible permettant de réaliser
+    des recherches fines dans l'annuaire. Si vous êtes un X et que vous n'êtes pas encore inscrit, commencez dès
+    maintenant la <a href="register">procédure</a>.
+    {/if}
+  </p>
   {/if}
 {else}
   {if $advanced}

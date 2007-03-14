@@ -231,15 +231,13 @@ class SearchModule extends PLModule
         if (!Env::has('rechercher')) {
             $this->form_prepare();
         } else {
-
             $search = new XOrgSearch(array($this, 'get_advanced'));
             $search->setNbLines($globals->search->per_page);
 
             $page->assign('url_search_form', $search->make_url(Array('rechercher'=>0)));
-            if (Env::has('with_soundex')) {
-                $page->assign('with_soundex', $search->make_url(Array())."&with_soundex=1");
+            if (!Env::i('with_soundex')) {
+                $page->assign('with_soundex', $search->make_url(Array()) . "&with_soundex=1");
             }
-
             $nb_tot = $search->show();
 
             if ($nb_tot > $globals->search->private_max) {

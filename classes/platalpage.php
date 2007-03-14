@@ -224,10 +224,10 @@ class PlatalPage extends Smarty
 function escape_html($string)
 {
     if (is_string($string)) {
-	$transtbl = Array('<' => '&lt;', '>' => '&gt;', '"' => '&quot;', '\'' => '&#39;');
-	return preg_replace("/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,4};)/u", "&amp;", strtr(pl_entities($string), $transtbl));
+    	$transtbl = Array('<' => '&lt;', '>' => '&gt;', '"' => '&quot;', '\'' => '&#39;');
+	    return strtr($string, $transtbl);
     } else {
-	return $string;
+	    return $string;
     }
 }
 
