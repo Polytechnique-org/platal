@@ -175,18 +175,18 @@ function soundex_fr($sIn)
         global $uc_convert;
         $convGuIn  = array( 'GUI', 'GUE', 'GA', 'GO', 'GU', 'SC', 'CA', 'CO', 'CU', 'QU', 'Q', 'CC', 'CK', 'G', 'ST', 'PH');
         $convGuOut = array( 'KI',  'KE',  'KA', 'KO', 'KU',  'SK', 'KA', 'KO', 'KU', 'K', 'K',  'K',  'K',  'J', 'T', 'F');
-        $convVIn   = array( '/E?(AU)/', '/([EA])?I([NM])([^EAIOUY]|$)/', '/[AE]O?[NM]([^AEIOUY]|$)/',
+        $convVIn   = array( '/E?(AU)/', '/([EA])?[UI]([NM])([^EAIOUY]|$)/', '/[AE]O?[NM]([^AEIOUY]|$)/',
                             '/[EA][IY]([NM]?[^NM]|$)/', '/(^|[^OEUIA])(OEU|OE|EU)([^OEUIA]|$)/', '/OI/',
-                            '/(ILLE?|I)/', '/O(U|W)/', '/O[NM]($|[^EAOUIY])/',
-                            '/([^AEIOUY])[^AEIOUYLKTP]([UAO])([^AEIOUY])/', '/([^AEIOUY]|^)([AUO])[^AEIOUYKTP]([^AEIOUY])/', '/^KN/', 
-                            '/^PF/', '/(SC|S|C)H/', '/^C|C$/',
-                            '/C/', '/Z$/', '/(?!^)Z+/');
+                            '/(ILLE?|I)/', '/O(U|W)/', '/O[NM]($|[^EAOUIY])/', '/(SC|S|C)H/',
+                            '/([^AEIOUY1])[^AEIOUYLKTP]([UAO])([^AEIOUY])/', '/([^AEIOUY]|^)([AUO])[^AEIOUYLKTP]([^AEIOUY1])/', '/^KN/',
+                            '/^PF/', '/(SC|S|C)H/', '/C([^AEIOUY]|$)/',
+                            '/C/', '/Z$/', '/(?!^)Z+/', '/ER$/', '/H/');
         $convVOut  = array( 'O', '1\3', 'A\1',
-                            'E\1', '\1\2', 'O', 
-                            'Y', 'U', 'O\1',
+                            'E\1', '\1E\3', 'O',
+                            'Y', 'U', 'O\1', '9',
                             '\1\2\3', '\1\2\3', 'N',
-                            'F', '9', 'K',
-                            'S', 'SE', 'S');
+                            'F', 'K\1',
+                            'S', 'SE', 'S', 'E', '');
         $accents = $uc_convert;
         $accents['Ç'] = 'S';
         $accents['¿'] = 'E';
@@ -207,12 +207,12 @@ function soundex_fr($sIn)
     $sIn = preg_replace( '`(.)\1`', '$1', $sIn );
     // on réinterprète les voyelles
     $sIn = preg_replace( $convVIn, $convVOut, $sIn);
-    $sIn = strtr($sIn, 'H', '');
+    
     // on supprime les terminaisons T, D, S, X (et le L qui précède si existe) 
     $sIn = preg_replace( '`L?[TDSX]$`', '', $sIn );
     // on supprime les E, A et Y qui ne sont pas en première position
     $sIn = preg_replace( '`(?!^)Y([^AEOU]|$)`', '\1', $sIn);
-    $sIn = preg_replace( '`(?!^)([EA])`', '', $sIn);
+    $sIn = preg_replace( '`(?!^)[EA]`', '', $sIn);
     return substr( $sIn . '    ', 0, 4); 
 }
 

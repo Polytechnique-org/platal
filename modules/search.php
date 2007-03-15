@@ -47,6 +47,9 @@ class SearchModule extends PLModule
     function get_quick($offset, $limit, $order)
     {
         global $globals;
+        if (!S::logged()) {
+            Env::kill('with_soundex');
+        }
         $qSearch = new QuickSearch('quick');
         $fields  = new SFieldGroup(true, array($qSearch));
 
