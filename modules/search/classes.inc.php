@@ -24,49 +24,49 @@ require_once("xorg.misc.inc.php");
 // {{{ Global variables used for the search Queries
 
 $globals->search->result_fields = '
-                u.user_id, u.promo, u.matricule, u.matricule_ax,
-		if(u.nom_usage=\'\', u.nom, u.nom_usage) AS NomSortKey,
-                u.nom_usage,u.date,
-                u.deces!=0 AS dcd,u.deces,
-		u.perms IN (\'admin\',\'user\', \'disabled\') AS inscrit,
-		u.perms != \'pending\' AS wasinscrit,
-		FIND_IN_SET(\'femme\', u.flags) AS sexe,
-                a.alias AS forlife,
-                ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
-                ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-                es.label AS secteur, ef.fonction_fr AS fonction,
-                IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,
-        COUNT(em.email) > 0 AS actif,';
+    u.user_id, u.promo, u.matricule, u.matricule_ax,
+    if(u.nom_usage=\'\', u.nom, u.nom_usage) AS NomSortKey,
+    u.nom_usage,u.date,
+    u.deces!=0 AS dcd,u.deces,
+    u.perms IN (\'admin\',\'user\', \'disabled\') AS inscrit,
+    u.perms != \'pending\' AS wasinscrit,
+    FIND_IN_SET(\'femme\', u.flags) AS sexe,
+    a.alias AS forlife,
+    ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
+    ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
+    es.label AS secteur, ef.fonction_fr AS fonction,
+    IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,
+    COUNT(em.email) > 0 AS actif,';
 // hide private information if not logged
 if (S::logged()) 
-	$globals->search->result_fields .='
-		q.profile_web AS web,
-		q.profile_mobile AS mobile,
-		q.profile_freetext AS freetext,
-                adr.city, gp.pays AS countrytxt, gr.name AS region,
-		e.entreprise,';
+    $globals->search->result_fields .='
+        q.profile_web AS web,
+        q.profile_mobile AS mobile,
+        q.profile_freetext AS freetext,
+        adr.city, gp.pays AS countrytxt, gr.name AS region,
+        e.entreprise,';
 else
-	$globals->search->result_fields .="
-		IF(q.profile_web_pub='public', q.profile_web, '') AS web,
-		IF(q.profile_mobile_pub='public', q.profile_mobile, '') AS mobile,
-		IF(q.profile_freetext_pub='public', q.profile_freetext, '') AS freetext,
-		IF(adr.pub='public', adr.city, '') AS city,
-		IF(adr.pub='public', gp.pays, '') AS countrytxt,
-		IF(adr.pub='public', gr.name, '') AS region,
-		IF(e.pub='public', e.entreprise, '') AS entreprise,";
+    $globals->search->result_fields .="
+    IF(q.profile_web_pub='public', q.profile_web, '') AS web,
+        IF(q.profile_mobile_pub='public', q.profile_mobile, '') AS mobile,
+        IF(q.profile_freetext_pub='public', q.profile_freetext, '') AS freetext,
+        IF(adr.pub='public', adr.city, '') AS city,
+        IF(adr.pub='public', gp.pays, '') AS countrytxt,
+        IF(adr.pub='public', gr.name, '') AS region,
+        IF(e.pub='public', e.entreprise, '') AS entreprise,";
 $globals->search->result_where_statement = '
-                LEFT JOIN  applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
-                LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
-                LEFT JOIN  applis_ins     AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)
-                LEFT JOIN  applis_def     AS ad1 ON (ad1.id = ai1.aid)
-                LEFT JOIN  entreprises    AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
-                LEFT JOIN  emploi_secteur AS es  ON (e.secteur = es.id)
-                LEFT JOIN  fonctions_def  AS ef  ON (e.fonction = ef.id)
-                LEFT JOIN  geoloc_pays    AS n   ON (u.nationalite = n.a2)
-                LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
-                LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
-                LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
-                LEFT JOIN  emails         AS em  ON (em.uid = u.user_id AND em.flags = \'active\')';
+    LEFT JOIN  applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
+    LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
+    LEFT JOIN  applis_ins     AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)
+    LEFT JOIN  applis_def     AS ad1 ON (ad1.id = ai1.aid)
+    LEFT JOIN  entreprises    AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
+    LEFT JOIN  emploi_secteur AS es  ON (e.secteur = es.id)
+    LEFT JOIN  fonctions_def  AS ef  ON (e.fonction = ef.id)
+    LEFT JOIN  geoloc_pays    AS n   ON (u.nationalite = n.a2)
+    LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
+    LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
+    LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
+    LEFT JOIN  emails         AS em  ON (em.uid = u.user_id AND em.flags = \'active\')';
 
 // }}}
 // {{{ function display_lines()
@@ -117,7 +117,7 @@ class ThrowError
 class SField
 {
     // {{{ properties
-    
+
     /** le nom du champ dans le formulaire HTML */
     var $fieldFormName;
     /** champs de la bdd correspondant à ce champ sous forme d'un tableau */
@@ -153,7 +153,7 @@ class SField
 
     // }}}
     // {{{ function get_where_statement()
-    
+
     /** récupérer la clause correspondant au champ dans la clause WHERE de la requête
      * on parcourt l'ensemble des champs de la bdd de $fieldDbName et on associe 
      * à chacun d'entre eux une clause spécifique
@@ -169,7 +169,7 @@ class SField
 
     // }}}
     // {{{ function get_order_statement()
-    
+
     /** récupérer la clause correspondant au champ dans la clause ORDER BY de la requête
      * utilisé par exemple pour placer d'abord le nom égal à la requête avant les approximations */
     function get_order_statement()
@@ -208,7 +208,7 @@ class SField
 class QuickSearch extends SField
 {
     // {{{ properties
-    
+
     /** stores tokens */
     var $strings;
     /** stores numerical ranges */
@@ -216,7 +216,7 @@ class QuickSearch extends SField
 
     // }}}
     // {{{ constructor
-    
+
     function QuickSearch($_fieldFormName)
     {
         $this->fieldFormName = $_fieldFormName;
@@ -231,62 +231,67 @@ class QuickSearch extends SField
 
     function isempty()
     {
-	return empty($this->strings) && empty($this->ranges);
+        return empty($this->strings) && empty($this->ranges);
     }
 
     // }}}
     // {{{ function get_request()
-    
+
     function get_request()
     {
-	parent::get_request();
-	$s = replace_accent(trim($this->value));
-	$s = preg_replace('!\d+!', ' ', $s);
+        parent::get_request();
+        $s = replace_accent(trim($this->value));
+        $s = preg_replace('!\d+!', ' ', $s);
         $s = str_replace('*','%',$s);
-	$this->strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
+        $this->strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
 
-	$s = trim($this->value);
-	$s = preg_replace('! *- *!', '-', $s);
-	$s = preg_replace('!([<>]) *!', ' \1', $s);
-	$s = preg_replace('![^0-9\-><]!', ' ', $s);
-	$s = preg_replace('![<>\-] !', '', $s);
-	$ranges = preg_split('! +!', $s, -1, PREG_SPLIT_NO_EMPTY);
-	$this->ranges=Array();
-	foreach ($ranges as $r) {
-	    if (preg_match('!^([<>]\d{4}|\d{4}(-\d{4})?)$!', $r)) $this->ranges[] = $r;
-	}
+        $s = trim($this->value);
+        $s = preg_replace('! *- *!', '-', $s);
+        $s = preg_replace('!([<>]) *!', ' \1', $s);
+        $s = preg_replace('![^0-9\-><]!', ' ', $s);
+        $s = preg_replace('![<>\-] !', '', $s);
+        $ranges = preg_split('! +!', $s, -1, PREG_SPLIT_NO_EMPTY);
+        $this->ranges=Array();
+        foreach ($ranges as $r) {
+            if (preg_match('!^([<>]\d{4}|\d{4}(-\d{4})?)$!', $r)) $this->ranges[] = $r;
+        }
     }
 
     // }}}
     // {{{ function get_where_statement()
-    
+
     function get_where_statement()
     {
-	$where = Array();
-	foreach ($this->strings as $i => $s) {
-	    $t = str_replace('*', '%', $s).'%';
-	    $t = str_replace('%%', '%', $t);
-	    $where[] = "sn$i.token LIKE '$t'";
-	}
-	
-	$wherep = Array();
-	foreach ($this->ranges as $r) {
-	    if (preg_match('!^\d{4}$!', $r)) {
-		$wherep[] = "u.promo=$r";
-	    } elseif (preg_match('!^(\d{4})-(\d{4})$!', $r, $matches)) {
-		$p1=min(intval($matches[1]), intval($matches[2]));
-		$p2=max(intval($matches[1]), intval($matches[2]));
-		$wherep[] = "(u.promo>=$p1 AND u.promo<=$p2)";
-	    } elseif (preg_match('!^<(\d{4})!', $r, $matches)) {
-		$wherep[] = "u.promo<={$matches[1]}";
-	    } elseif (preg_match('!^>(\d{4})!', $r, $matches)) {
-		$wherep[] = "u.promo>={$matches[1]}";
-	    }
-	}
-	if (!empty($wherep)) {
+        $where = Array();
+        foreach ($this->strings as $i => $s) {
+            if (Env::i('with_soundex')) {
+                $t = soundex_fr($s);
+                $where[] = "sn$i.soundex = '$t'";
+            } else {
+                $t = str_replace('*', '%', $s).'%';
+                $t = str_replace('%%', '%', $t);
+                $where[] = "sn$i.token LIKE '$t'";
+            }
+        }
+
+        $wherep = Array();
+        foreach ($this->ranges as $r) {
+            if (preg_match('!^\d{4}$!', $r)) {
+                $wherep[] = "u.promo=$r";
+            } elseif (preg_match('!^(\d{4})-(\d{4})$!', $r, $matches)) {
+                $p1=min(intval($matches[1]), intval($matches[2]));
+                $p2=max(intval($matches[1]), intval($matches[2]));
+                $wherep[] = "(u.promo>=$p1 AND u.promo<=$p2)";
+            } elseif (preg_match('!^<(\d{4})!', $r, $matches)) {
+                $wherep[] = "u.promo<={$matches[1]}";
+            } elseif (preg_match('!^>(\d{4})!', $r, $matches)) {
+                $wherep[] = "u.promo>={$matches[1]}";
+            }
+        }
+        if (!empty($wherep)) {
             $where[] = '('.join(' OR ',$wherep).')';
         }
-	return join(" AND ", $where);
+        return join(" AND ", $where);
     }
 
     // }}}
@@ -294,14 +299,14 @@ class QuickSearch extends SField
     function get_select_statement()
     {
         $join = "";
-	foreach ($this->strings as $i => $s) {
+        foreach ($this->strings as $i => $s) {
             $join .= "INNER JOIN search_name AS sn$i ON (u.user_id = sn$i.uid)\n";
         }
         return $join;
     }
     // }}}
     // {{{ function get_order_statement()
-    
+
     function get_order_statement()
     {
         return false;
@@ -309,11 +314,11 @@ class QuickSearch extends SField
 
     // }}}
     // {{{ function get_score_statement
-    
+
     function get_score_statement()
     {
         $sum = array('0');
-	foreach ($this->strings as $i => $s) {
+        foreach ($this->strings as $i => $s) {
             $sum[] .= "SUM(sn$i.score + IF('$s'=sn$i.token,5,0))";
         }
         return join('+', $sum).' AS score';
@@ -330,7 +335,7 @@ class QuickSearch extends SField
 class NumericSField extends SField
 {
     // {{{ constructor
-    
+
     /** constructeur
      * (récupère la requête de l'utilisateur pour ce champ) */
     function NumericSField($_fieldFormName)
@@ -341,7 +346,7 @@ class NumericSField extends SField
 
     // }}}
     // {{{ function get_request()
-    
+
     /** récupère la requête de l'utilisateur et échoue s'il ne s'agit pas d'un entier */
     function get_request()
     {
@@ -353,7 +358,7 @@ class NumericSField extends SField
             new ThrowError('Un champ numérique contient des caractères alphanumériques.');
         }
     }
-    
+
     // }}}
 }
 
@@ -363,7 +368,7 @@ class NumericSField extends SField
 class RefSField extends SField
 {
     // {{{ properties
-    
+
     var $refTable;
     var $refAlias;
     var $refCondition;
@@ -385,7 +390,7 @@ class RefSField extends SField
 
     // }}}
     // {{{ function get_request()
-    
+
     function get_request() {
         parent::get_request();
         if ($this->value=='00' || $this->value=='0') {
@@ -446,8 +451,8 @@ class RefSField extends SField
 // {{{ class RefSFieldMultipleTable
 class MapSField extends RefSField
 {
-	var $mapId;
-	
+    var $mapId;
+
     function MapSField($_fieldFormName, $_fieldDbName='', $_refTable, $_refAlias, $_refCondition, $_mapId=false)
     {
         if ($_mapId === false)
@@ -478,10 +483,10 @@ class MapSField extends RefSField
 class RefWithSoundexSField extends RefSField
 {
     // {{{ function compare()
-    
+
     function compare()
     {
-	return "='".soundex_fr($this->value)."'";
+        return "='".soundex_fr($this->value)."'";
     }
 
     // }}}
@@ -495,7 +500,7 @@ class RefWithSoundexSField extends RefSField
 class StringSField extends SField
 {
     // {{{ function get_request()
-    
+
     /** récupère la requête de l'utilisateur et échoue si la chaîne contient des caractères
      * interdits */
     function get_request()
@@ -562,7 +567,7 @@ class StringSField extends SField
 class NameSField extends StringSField
 {
     // {{{ function get_single_where_statement()
-    
+
     function get_single_where_statement($field)
     {
         $regexp = strtr(addslashes($this->value), '-*', '_%');
@@ -571,7 +576,7 @@ class NameSField extends StringSField
 
     // }}}
     // {{{ function get_order_statement()
-    
+
     function get_order_statement()
     {
         if ($this->value!='' && $this->fieldResultName!='') {
@@ -609,7 +614,7 @@ class StringWithSoundexSField extends StringSField
 class PromoSField extends SField
 {
     // {{{ properties
-    
+
     /** opérateur de comparaison (<,>,=) de la promo utilisé pour ce champ de formulaire */
     var $compareField;
 
@@ -692,7 +697,7 @@ class PromoSField extends SField
 class SFieldGroup
 {
     // {{{ properties
-    
+
     /** tableau des classes correspondant aux champs groupés */
     var $fields;
     /** type de groupe : ET ou OU */
@@ -754,7 +759,7 @@ class SFieldGroup
     {
         return $f->get_url();
     }
-    
+
     // }}}
     // {{{ function get_select_statement()
 

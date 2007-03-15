@@ -24,9 +24,12 @@ require('./connect.db.inc.php');
 require('user.func.inc.php');
 
 ini_set('memory_limit', "16M");
-XDB::execute('DELETE FROM search_name');
+$globals->debug = 0; // Do not store backtraces
 
-$res = XDB::iterRow('SELECT auth_user_md5.user_id, nom, prenom, nom_usage, profile_nick FROM auth_user_md5 LEFT JOIN auth_user_quick USING(user_id)');
+XDB::execute('DELETE FROM search_name');
+$res = XDB::iterRow('SELECT  auth_user_md5.user_id, nom, prenom, nom_usage, profile_nick
+                       FROM  auth_user_md5
+                  LEFT JOIN auth_user_quick USING(user_id)');
 $i = 0;
 $muls = array(1, 1, 1, 0.2);
 while ($tmp = $res->next()) {

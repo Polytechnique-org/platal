@@ -169,43 +169,50 @@ function make_username($prenom,$nom) {
    C'est une bonne démonstration de la force des expressions régulières compatible Perl.
    trouvé sur http://expreg.com/voirsource.php?id=40&type=Chaines%20de%20caract%E8res */
 function soundex_fr($sIn)
-{ 
+{
+    static $convVIn, $convVOut, $convGuIn, $convGuOut, $accents;
+    if (!isset($convGuIn)) {
+        global $uc_convert;
+        $convGuIn  = array( 'GUI', 'GUE', 'GA', 'GO', 'GU', 'SC', 'CA', 'CO', 'CU', 'QU', 'Q', 'CC', 'CK', 'G', 'ST', 'PH');
+        $convGuOut = array( 'KI',  'KE',  'KA', 'KO', 'KU',  'SK', 'KA', 'KO', 'KU', 'K', 'K',  'K',  'K',  'J', 'T', 'F');
+        $convVIn   = array( '/E?(AU)/', '/([EA])?I([NM])([^EAIOUY]|$)/', '/[AE]O?[NM]([^AEIOUY]|$)/',
+                            '/[EA][IY]([NM]?[^NM]|$)/', '/(^|[^OEUIA])(OEU|OE|EU)([^OEUIA]|$)/', '/OI/',
+                            '/(ILLE?|I)/', '/O(U|W)/', '/O[NM]($|[^EAOUIY])/',
+                            '/([^AEIOUY])[^AEIOUYLKTP]([UAO])([^AEIOUY])/', '/([^AEIOUY]|^)([AUO])[^AEIOUYKTP]([^AEIOUY])/', '/^KN/', 
+                            '/^PF/', '/(SC|S|C)H/', '/^C|C$/',
+                            '/C/', '/Z$/', '/(?!^)Z+/');
+        $convVOut  = array( 'O', '1\3', 'A\1',
+                            'E\1', '\1\2', 'O', 
+                            'Y', 'U', 'O\1',
+                            '\1\2\3', '\1\2\3', 'N',
+                            'F', '9', 'K',
+                            'S', 'SE', 'S');
+        $accents = $uc_convert;
+        $accents['Ç'] = 'S';
+        $accents['¿'] = 'E';
+    }
     // Si il n'y a pas de mot, on sort immédiatement 
     if ( $sIn === '' ) return '    '; 
     // On met tout en minuscule 
     $sIn = strtoupper( $sIn ); 
     // On supprime les accents 
-    global $uc_convert;
-    $accents = $uc_convert;
-    $accents['Ç'] = 'S';
-    $accents['¿'] = 'E';
     $sIn = strtr( $sIn, $accents); 
     // On supprime tout ce qui n'est pas une lettre 
     $sIn = preg_replace( '`[^A-Z]`', '', $sIn ); 
     // Si la chaîne ne fait qu'un seul caractère, on sort avec. 
     if ( strlen( $sIn ) === 1 ) return $sIn . '   '; 
     // on remplace les consonnances primaires 
-    $convIn = array( 'GUI', 'GUE', 'GA', 'GO', 'GU', 'CA', 'CO', 'CU', 'Q', 'CC', 'CK' ); 
-    $convOut = array( 'KI', 'KE', 'KA', 'KO', 'K', 'KA', 'KO', 'KU', 'K', 'K', 'K' ); 
-    $sIn = str_replace( $convIn, $convOut, $sIn ); 
-    // on remplace les voyelles sauf le Y et sauf la première par A 
-    $sIn = preg_replace( '`(?<!^)[EIOU]`', 'A', $sIn ); 
-    // on remplace les préfixes puis on conserve la première lettre 
-    // et on fait les remplacements complémentaires 
-    $convIn = array( '`^KN`', '`^(PH|PF)`', '`^MAC`', '`^SCH`', '`^ASA`', '`(?<!^)KN`', '`(?<!^)(PH|PF)`', '`(?<!^)MAC`', '`(?<!^)SCH`', '`(?<!^)ASA`' ); 
-    $convOut = array( 'NN', 'FF', 'MCC', 'SSS', 'AZA', 'NN', 'FF', 'MCC', 'SSS', 'AZA' ); 
-    $sIn = preg_replace( $convIn, $convOut, $sIn ); 
-    // suppression des H sauf CH ou SH 
-    $sIn = preg_replace( '`(?<![CS])H`', '', $sIn ); 
-    // suppression des Y sauf précédés d'un A 
-    $sIn = preg_replace( '`(?<!A)Y`', '', $sIn ); 
-    // on supprime les terminaisons A, T, D, S 
-    $sIn = preg_replace( '`[ATDS]$`', '', $sIn ); 
-    // suppression de tous les A sauf en tête 
-    $sIn = preg_replace( '`(?!^)A`', '', $sIn ); 
-    // on supprime les lettres répétitives 
-    $sIn = preg_replace( '`(.)\1`u', '$1', $sIn ); 
-    // on ne retient que 4 caractères ou on complète avec des blancs 
+    $sIn = str_replace( $convGuIn, $convGuOut, $sIn );
+    // on supprime les lettres répétitives
+    $sIn = preg_replace( '`(.)\1`', '$1', $sIn );
+    // on réinterprète les voyelles
+    $sIn = preg_replace( $convVIn, $convVOut, $sIn);
+    $sIn = strtr($sIn, 'H', '');
+    // on supprime les terminaisons T, D, S, X (et le L qui précède si existe) 
+    $sIn = preg_replace( '`L?[TDSX]$`', '', $sIn );
+    // on supprime les E, A et Y qui ne sont pas en première position
+    $sIn = preg_replace( '`(?!^)Y([^AEOU]|$)`', '\1', $sIn);
+    $sIn = preg_replace( '`(?!^)([EA])`', '', $sIn);
     return substr( $sIn . '    ', 0, 4); 
 }
 
@@ -213,7 +220,8 @@ function soundex_fr($sIn)
  * @param $prenom le prénom à formater
  * return STRING le prénom avec les majuscules
  */
-function make_firstname_case($prenom) {
+function make_firstname_case($prenom)
+{
   $prenom = strtolower($prenom);
   $pieces = explode('-',$prenom);
 

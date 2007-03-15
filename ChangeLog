@@ -15,6 +15,7 @@ New:
 
     * Search:
         - Search Engine IE7 compatible                                     -FRU
+        - Add soundex search for quick search                              -FRU
 
     * Xnetgrp:
         - Direct access to the group forum (if exists)                     -FRU
@@ -49,6 +50,7 @@ Bug/Wish:
         - #638: Sort trombi by promo then name                             -FRU
 
     * Search:
+        - #132: Better french soundex                                      -FRU
         - #173: Show only countries where there is a user                  -FRU
 
     * Xnet:

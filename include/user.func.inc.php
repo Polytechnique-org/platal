@@ -682,7 +682,8 @@ function set_user_details($uid, $details) {
 // }}}
 // {{{ function _user_reindex
 
-function _user_reindex($uid, $keys, $muls) {
+function _user_reindex($uid, $keys, $muls)
+{
     foreach ($keys as $i => $key) {
         if ($key == '') {
             continue;
@@ -693,10 +694,29 @@ function _user_reindex($uid, $keys, $muls) {
         while ($toks) {
             $token = strtolower(replace_accent(array_pop($toks) . $token));
             $score = ($toks ? 0 : 10 + $first) * $muls[$i];
-            XDB::execute("REPLACE INTO search_name (token, uid, score) VALUES({?}, {?}, {?})", $token, $uid, $score);
+            XDB::execute("REPLACE INTO  search_name (token, uid, soundex, score)
+                                VALUES  ({?}, {?}, {?}, {?})",
+                         $token, $uid, soundex_fr($token), $score);
             $first = 0;
         }
     }
+    $res = XDB::query("SELECT  nom_ini, nom, nom_usage, prenom_ini, prenom, promo, matricule
+                         FROM  auth_user_md5
+                        WHERE  user_id = {?}", $uid);
+    if (!$res->numRows()) {
+        unset($res);
+        return;
+    }
+    $array = $res->fetchOneRow();
+    $promo = intval(array_pop($array));
+    $mat   = array_shift($array);
+    array_walk($array, 'soundex_fr');
+    XDB::execute("REPLACE INTO  recherche_soundex
+                           SET  matricule = {?}, nom1_soundex = {?}, nom2_soundex= {?}, nom3_soundex = {?},
+                                prenom1_soundex = {?}, prenom2_soundex= {?}, promo = {?}",
+                 $mat, $array[0], $array[1], $array[2], $array[3], $array[4], $promo);
+    unset($res);
+    unset($array);
 }
 
 // }}}
