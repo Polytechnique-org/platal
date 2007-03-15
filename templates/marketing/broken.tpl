@@ -54,7 +54,7 @@
 {/if}
 <p>
   Les adresses email que tu pourras nous donner ne seront pas ajoutées directement aux redirections de {$user.prenom}.
-  Nous allons d'abord prendre contact avec {if $user.sexe}elle{else}lui{/if} pour savoir {if $user.sexe}si elle{else}s'il{/if}
+  Nous allons d'abord prendre contact avec {if $user.sexe}elle{else}lui{/if} pour savoir {if $user.sexe}si elle {else}s'il {/if}
   accepte la mise à jour de sa redirection.
 </p>
 <p>
