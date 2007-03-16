@@ -179,8 +179,8 @@ function soundex_fr($sIn)
                             '/[EA][IY]([NM]?[^NM]|$)/', '/(^|[^OEUIA])(OEU|OE|EU)([^OEUIA]|$)/', '/OI/',
                             '/(ILLE?|I)/', '/O(U|W)/', '/O[NM]($|[^EAOUIY])/', '/(SC|S|C)H/',
                             '/([^AEIOUY1])[^AEIOUYLKTP]([UAO])([^AEIOUY])/', '/([^AEIOUY]|^)([AUO])[^AEIOUYLKTP]([^AEIOUY1])/', '/^KN/',
-                            '/^PF/', '/(SC|S|C)H/', '/C([^AEIOUY]|$)/',
-                            '/C/', '/Z$/', '/(?!^)Z+/', '/ER$/', '/H/');
+                            '/^PF/', '/C([^AEIOUY]|$)/',
+                            '/C/', '/Z$/', '/(?<!^)Z+/', '/ER$/', '/H/');
         $convVOut  = array( 'O', '1\3', 'A\1',
                             'E\1', '\1E\3', 'O',
                             'Y', 'U', 'O\1', '9',
@@ -207,7 +207,6 @@ function soundex_fr($sIn)
     $sIn = preg_replace( '`(.)\1`', '$1', $sIn );
     // on réinterprète les voyelles
     $sIn = preg_replace( $convVIn, $convVOut, $sIn);
-    
     // on supprime les terminaisons T, D, S, X (et le L qui précède si existe) 
     $sIn = preg_replace( '`L?[TDSX]$`', '', $sIn );
     // on supprime les E, A et Y qui ne sont pas en première position

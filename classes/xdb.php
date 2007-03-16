@@ -94,7 +94,7 @@ class XDB
         }
 
         $res = XDB::$mysqli->query($query);
-        
+
         if ($globals->debug & 1) {
             PlBacktrace::$bt['MySQL']->stop(@$res->num_rows ? $res->num_rows : XDB::$mysqli->affected_rows,
                                             XDB::$mysqli->error,
@@ -175,67 +175,75 @@ class XOrgDBResult
 
     private $_res;
 
-    function XOrgDBResult($query)
+    public function __construct($query)
     {
         $this->_res = XDB::_query($query);
     }
 
-    function free()
+    public function free()
     {
-        $this->_res->free();
+        if ($this->_res) {
+            $this->_res->free();
+        }
         unset($this);
     }
 
-    function _fetchRow()
+    protected function _fetchRow()
     {
-        return $this->_res->fetch_row();
+        return $this->_res ? $this->_res->fetch_row() : null;
     }
 
-    function _fetchAssoc()
+    protected function _fetchAssoc()
     {
-        return $this->_res->fetch_assoc();
+        return $this->_res ? $this->_res->fetch_assoc() : null;
     }
 
-    function fetchAllRow()
+    public function fetchAllRow()
     {
         $result = Array();
+        if (!$this->_res) {
+            return $result;
+        }
         while ($result[] = $this->_res->fetch_row());
         array_pop($result);
         $this->free();
         return $result;
     }
 
-    function fetchAllAssoc()
+    public function fetchAllAssoc()
     {
         $result = Array();
+        if (!$this->_res) {
+            return $result;
+        }
         while ($result[] = $this->_res->fetch_assoc());
         array_pop($result);
         $this->free();
         return $result;
     }
 
-    function fetchOneAssoc()
+    public function fetchOneAssoc()
     {
         $tmp = $this->_fetchAssoc();
         $this->free();
         return $tmp;
     }
 
-    function fetchOneRow()
+    public function fetchOneRow()
     {
         $tmp = $this->_fetchRow();
         $this->free();
         return $tmp;
     }
 
-    function fetchOneCell()
+    public function fetchOneCell()
     {
         $tmp = $this->_fetchRow();
         $this->free();
         return $tmp[0];
     }
 
-    function fetchColumn($key = 0)
+    public function fetchColumn($key = 0)
     {
         $res = Array();
         if (is_numeric($key)) {
@@ -251,32 +259,32 @@ class XOrgDBResult
         return $res;
     }
 
-    function fetchOneField()
+    public function fetchOneField()
     {
-        return $this->_res->fetch_field();
+        return $this->_res ? $this->_res->fetch_field() : null;
     }
 
-    function fetchFields()
+    public function fetchFields()
     {
         $res = array();
         while ($res[] = $this->fetchOneField());
         return $res;
     }
 
-    function numRows()
+    public function numRows()
     {
-        return $this->_res->num_rows;
+        return $this->_res ? $this->_res->num_rows : 0;
     }
 
-    function fieldCount()
+    public function fieldCount()
     {
-        return $this->_res->field_count;
+        return $this->_res ? $this->_res->field_count : 0;
     }
 }
 
 require_once dirname(__FILE__) . '/pliterator.php';
 
-class XOrgDBIterator implements PlIterator
+class XOrgDBIterator extends XOrgDBResult implements PlIterator
 {
     private $_result;
     private $_pos;
@@ -285,62 +293,62 @@ class XOrgDBIterator implements PlIterator
     private $_fields;
     private $_mode = MYSQL_ASSOC;
 
-    function __construct($query, $mode = MYSQL_ASSOC)
+    public function __construct($query, $mode = MYSQL_ASSOC)
     {
-        $this->_result = new XOrgDBResult($query);
+        parent::__construct($query);
         $this->_pos    = 0;
-        $this->_total  = $this->_result->numRows();
+        $this->_total  = $this->numRows();
         $this->_fpost  = 0;
-        $this->_fields = $this->_result->fieldCount();
+        $this->_fields = $this->fieldCount();
         $this->_mode   = $mode;
     }
 
-    function next()
+    public function next()
     {
         $this->_pos ++;
         if ($this->_pos > $this->_total) {
-            $this->_result->free();
+            $this->free();
             unset($this);
             return null;
         }
-        return $this->_mode != MYSQL_ASSOC ? $this->_result->_fetchRow() : $this->_result->_fetchAssoc();
+        return $this->_mode != MYSQL_ASSOC ? $this->_fetchRow() : $this->_fetchAssoc();
     }
 
-    function first()
+    public function first()
     {
         return $this->_pos == 1;
     }
 
-    function last()
+    public function last()
     {
         return $this->_pos == $this->_total;
     }
 
-    function total()
+    public function total()
     {
         return $this->_total;
     }
 
-    function nextField()
+    public function nextField()
     {
         $this->_fpos++;
         if ($this->_fpos > $this->_fields) {
             return null;
         }
-        return $this->_result->fetchOneField();
+        return $this->fetchOneField();
     }
 
-    function firstField()
+    public function firstField()
     {
         return $this->_fpos == 1;
     }
 
-    function lastField()
+    public function lastField()
     {
         return $this->_fpos == $this->_fields;
     }
 
-    function totalFields()
+    public function totalFields()
     {
         return $this->_fields;
     }

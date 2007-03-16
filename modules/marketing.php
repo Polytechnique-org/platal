@@ -196,7 +196,16 @@ class MarketingModule extends PLModule
         if (Post::has('valide') && isvalid_email_redirection($email)) {
             // security stuff
             check_email($email, "Proposition d'une adresse surveillee pour " . $user['forlife'] . " par " . S::v('forlife'));
-            if ($user['email'] && !trim(Post::v('comment'))) {
+            $res = XDB::query("SELECT  state
+                                 FROM  emails   AS e
+                           INNER JOIN  aliases  AS a ON (a.id = e.uid)
+                                WHERE  e.email = {?} AND a.alias = {?}", $email, $user['forlife']);
+            $state = $res->numRows() ? $res->fetchOneCell() : null;
+            if ($state == 'panne') {
+                $page->trig("L'adresse que tu as fournie est l'adresse actuelle de {$user['prenom']} et est en panne.");
+            } elseif ($state == 'active') {
+                $page->trig("L'adresse que tu as fournie est l'adresse actuelle de {$user['prenom']}");
+            } elseif ($user['email'] && !trim(Post::v('comment'))) {
                 $page->trig("Il faut que tu ajoutes un commentaire à ta proposition pour justifier le "
                            ."besoin de changer la redirection de " . $user['prenom']);
             } else {
