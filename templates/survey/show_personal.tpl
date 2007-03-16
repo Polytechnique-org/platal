@@ -29,5 +29,4 @@
 {/if}
   <strong>Attention, cocher cette(ces) case(s) d&#233;truit totalement ou en partie l'anonymat de ta r&#233;ponse.</strong>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
-
+{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

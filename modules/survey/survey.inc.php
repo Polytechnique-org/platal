@@ -165,7 +165,7 @@ abstract class SurveyQuestion
     private $question;
     private $comment;
 
-    protected function SurveyQuestion($i, $args)
+    protected function __construct($i, $args)
     {
         $this->id = $i;
         $this->update($args);
@@ -270,7 +270,7 @@ abstract class SurveyTreeable extends SurveyQuestion
     // {{{ common properties, constructor
     private $children;
 
-    protected function SurveyTreeable($i, $args)
+    protected function __construct($i, $args)
     {
         parent::__construct($i, $args);
         $this->children = array();
@@ -430,7 +430,7 @@ class SurveyRoot extends SurveyTreeable
     private $promos;
     private $valid;
 
-    public function SurveyRoot($args)
+    public function __construct($args)
     {
         parent::__construct(0, $args);
         $this->last_id   = 0;

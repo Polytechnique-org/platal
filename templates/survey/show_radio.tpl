@@ -24,5 +24,4 @@
   <input type="radio" name="survey{$survey_id}_{$survey.id}" value="{$choice}" id="{$choice}" {if $survey_mode eq 'edit'}disabled="disabled"{/if}/><label for="{$choice}">{$choice}</label>
 {/foreach}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
-
+{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

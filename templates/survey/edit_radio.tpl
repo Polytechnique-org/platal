@@ -26,5 +26,4 @@
       <td><input type="text" name="survey_question[options]" size="50" maxlength="200" value="{$survey_current.options}"/></td>
     </tr>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
-
+{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

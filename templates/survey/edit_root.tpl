@@ -37,4 +37,4 @@
       <td><input type="text" name="survey_question[promos]" size="50" maxlength="200" value="{$survey_current.promos}"/></td>
     </tr>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

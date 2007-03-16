@@ -41,4 +41,4 @@ Une erreur inconnue est survenue dans l'&#233;dition de ce sondage. N'hésite pa
 <br/>
 <a href="{$survey_link}">Retour</a>
 
-{* vim:set et sw=2 sts=2 ts=8: *}
+{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
