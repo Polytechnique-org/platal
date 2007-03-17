@@ -113,7 +113,8 @@ function hook_platalMessageLink($params)
 
 function hook_makeImg($img, $alt, $height, $width)
 {
-    $url = 'images/banana/' . $img;
+    global $globals;
+    $url = $globals->baseurl . '/images/banana/' . $img;
 
     if (!is_null($width)) {
         $width = ' width="' . $width . '"';

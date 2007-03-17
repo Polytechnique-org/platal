@@ -77,8 +77,8 @@ class XnetGrpModule extends PLModule
             '%grp/asso.php'       => $this->make_hook('index',     AUTH_PUBLIC),
             '%grp/logo'           => $this->make_hook('logo',      AUTH_PUBLIC),
             '%grp/site'           => $this->make_hook('site',      AUTH_PUBLIC),
-            '%grp/edit'           => $this->make_hook('edit',      AUTH_MDP),
-            '%grp/mail'           => $this->make_hook('mail',      AUTH_MDP),
+            '%grp/edit'           => $this->make_hook('edit',      AUTH_MDP, 'groupadmin'),
+            '%grp/mail'           => $this->make_hook('mail',      AUTH_MDP, 'groupadmin'),
             '%grp/forum'          => $this->make_hook('forum',     AUTH_MDP),
             '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP),
             '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP),
@@ -92,18 +92,18 @@ class XnetGrpModule extends PLModule
                  => $this->make_hook('admin_annuaire', AUTH_MDP),
 
             '%grp/member'
-                 => $this->make_hook('admin_member', AUTH_MDP),
+                 => $this->make_hook('admin_member', AUTH_MDP, 'groupadmin'),
             '%grp/member/new'
-                 => $this->make_hook('admin_member_new', AUTH_MDP),
+                 => $this->make_hook('admin_member_new', AUTH_MDP, 'groupadmin'),
             '%grp/member/new/ajax'
                  => $this->make_hook('admin_member_new_ajax', AUTH_MDP, 'user', NO_AUTH),         
             '%grp/member/del'
-                 => $this->make_hook('admin_member_del', AUTH_MDP),
+                 => $this->make_hook('admin_member_del', AUTH_MDP, 'groupadmin'),
 
             '%grp/rss'             => $this->make_hook('rss', AUTH_PUBLIC),         
-            '%grp/announce/new'    => $this->make_hook('edit_announce', AUTH_MDP),
-            '%grp/announce/edit'   => $this->make_hook('edit_announce', AUTH_MDP),
-            '%grp/admin/announces' => $this->make_hook('admin_announce', AUTH_MDP),
+            '%grp/announce/new'    => $this->make_hook('edit_announce', AUTH_MDP,  'groupadmin'),
+            '%grp/announce/edit'   => $this->make_hook('edit_announce', AUTH_MDP,  'groupadmin'),
+            '%grp/admin/announces' => $this->make_hook('admin_announce', AUTH_MDP, 'groupadmin'),
         );
     }
 
@@ -171,7 +171,7 @@ class XnetGrpModule extends PLModule
                               'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
         }
         
-        $page->register_modifier('url_catcher', array(MiniWiki,'WikiToHTML'));
+        $page->register_modifier('url_catcher', array('MiniWiki','WikiToHTML'));
         $page->assign('articles', $arts);
 
         $page->assign('asso', $globals->asso());
@@ -986,7 +986,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals, $platal;
         new_groupadmin_page('xnetgrp/announce-edit.tpl');
-        $page->register_modifier('url_catcher', array(MiniWiki,'WikiToHTML'));
+        $page->register_modifier('url_catcher', array('MiniWiki','WikiToHTML'));
         $page->assign('new', is_null($aid));
         $art = array();
 

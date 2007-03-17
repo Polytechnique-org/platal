@@ -30,7 +30,7 @@ class XnetEventsModule extends PLModule
             '%grp/events/sub'   => $this->make_hook('sub',     AUTH_MDP),
             '%grp/events/csv'   => $this->make_hook('csv',     AUTH_MDP),
             '%grp/events/ical'  => $this->make_hook('ical',    AUTH_MDP),
-            '%grp/events/edit'  => $this->make_hook('edit',    AUTH_MDP),
+            '%grp/events/edit'  => $this->make_hook('edit',    AUTH_MDP, 'groupadmin'),
             '%grp/events/admin' => $this->make_hook('admin',   AUTH_MDP),
         );
     }

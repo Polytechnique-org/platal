@@ -44,8 +44,8 @@ class XnetListsModule extends ListsModule
             '%grp/lists/check'     => $this->make_hook('check',     AUTH_MDP),
             '%grp/lists/sync'      => $this->make_hook('sync',      AUTH_MDP),
 
-            '%grp/alias/admin'     => $this->make_hook('aadmin',    AUTH_MDP),
-            '%grp/alias/create'    => $this->make_hook('acreate',   AUTH_MDP),
+            '%grp/alias/admin'     => $this->make_hook('aadmin',    AUTH_MDP, 'groupadmin'),
+            '%grp/alias/create'    => $this->make_hook('acreate',   AUTH_MDP, 'groupadmin'),
 
             /* hack: lists uses that */
             'profile' => $this->make_hook('profile', AUTH_PUBLIC),
