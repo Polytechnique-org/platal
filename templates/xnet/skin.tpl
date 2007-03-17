@@ -117,7 +117,7 @@
 
       {if $menu && !$simple}
       <tr>
-        <td id="menu">
+        <td id="menu" rowspan="2">
           {foreach from=$menu key=title item=submenu}
             {if $title neq 'no_title'}<h1>{$title}</h1>{/if}
             {foreach from=$submenu key=tit item=url}
@@ -129,13 +129,13 @@
             {/foreach}
           {/foreach}
         </td>
-        <td id="body">
+        <td class="breadcrumb">
           {if $asso && ($is_admin || $smarty.session.suid.perms eq 'admin' || $smarty.session.suid.may_update[$asso.id])}
-          <div style="float: right" class="breadcrumb">
+          <div style="float: right">
             <form method="post" action="{$platal->ns}change_rights">
               <div style="display: inline">
                 <small>voir le site en tant que...
-                <select name="right" onchange="this.form.submit()">
+                <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
                   {if $smarty.session.perms->hasFlag('admin') || $smarty.session.suid.perms->hasFlag('admin')}
                   <option value="admin" {if $smarty.session.perms->hasFlag('admin')}selected="selected"{/if}>Administrateur</option>
                   {/if}
@@ -148,32 +148,32 @@
             </form>
           </div>
           {/if}
-          <div class="breadcrumb">
-            <a href=".">X.net</a> »
-            {if $asso}
-              <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
-              {if $asso.dom}
-                <a href="groups/{$asso.cat}/{$asso.dom}">{$asso.domnom}</a> »
-              {/if}
-              {$asso.nom}
-            {elseif $cat}
-              <a href="groups/{$cat}">{$cat|cat_pp}</a> »
-              {if $dom || !$doms}
-                {if $cat eq 'promotions'}
-                  Choix de la promotion
-                {else}
-                  Choix de l'Asso
-                {/if}
-              {else}
-                Choix du domaine
-              {/if}
-            {elseif $wikipage}
-              <a href="Xnet">Documentation</a>
+          <a href=".">X.net</a> »
+          {if $asso}
+            <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
+            {if $asso.dom}
+              <a href="groups/{$asso.cat}/{$asso.dom}">{$asso.domnom}</a> »
             {/if}
-          </div>
-          <div style="clear: both">
+            {$asso.nom}
+          {elseif $cat}
+            <a href="groups/{$cat}">{$cat|cat_pp}</a> »
+            {if $dom || !$doms}
+              {if $cat eq 'promotions'}
+                Choix de la promotion
+              {else}
+                Choix de l'Asso
+              {/if}
+            {else}
+              Choix du domaine
+            {/if}
+          {elseif $wikipage}
+            <a href="Xnet">Documentation</a>
+          {/if}
+        </td>
+      </tr>
+      <tr>
+        <td id="body">
           {include file="skin/common.content.tpl"}
-          </div>
         </td>
       </tr>
       {else}

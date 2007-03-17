@@ -170,10 +170,10 @@ td#menu {
  * CLASSES
  ***************************************************************************/
 
-div.breadcrumb {
+.breadcrumb {
     font-weight: bold;
     font-size: 90%;
-    padding: 0.5em 0em;
+    padding: 0.5em 0em 0em 0.2em;
 }
 
 .erreur { color: red !important; }
