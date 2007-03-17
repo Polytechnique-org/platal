@@ -21,6 +21,37 @@
 {**************************************************************************}
 
 {include file=search/quick.form.tpl show_js=1}
+
+<h1>Voir le trombi d'une promotion</h1>
+
+<div id="message" style="position:absolute;"></div><br />
+
+<script type="text/javascript" src="javascript/ajax.js"></script>
+<script type="text/javascript">
+  {literal}
+  function showPromo()
+  {
+      var value = document.getElementById('promo').value;
+      if (value < {/literal}{$promo_min}{literal} || value > {/literal}{$promo_max}{literal}) {
+        showTempMessage('message', "La promotion doit être entre {/literal}{$promo_min} et {$promo_max}{literal}.", false);
+        return false;
+      }
+      window.open("http://www.polytechnique.net/login/" + value + "/trombi");
+      return false;
+  }
+  {/literal}
+</script>
+
+<form action="" method="post" onsubmit="return showPromo();">
+<table class="tinybicol" style="width: 30%; margin-right: auto; margin-left: auto">
+  <td class="titre">Promotion :</td>
+  <td>
+    <input type="text" name="promo" id="promo" size="4" value="" />
+    <input type="submit" name="submit_promo" value="Voir" />
+  </td>
+</table>
+</form>
+
 <h1>Comment faire une recherche ?</h1>
 
 <h2>Nom, Prenom, Promo ...</h2>

@@ -52,6 +52,7 @@ Bug/Wish:
     * Search:
         - #132: Better french soundex                                      -FRU
         - #173: Show only countries where there is a user                  -FRU
+        - #627: Link to promotion trombi                                   -FRU
 
     * Xnet:
         - #639: Fix the number of pages                                    -FRU

@@ -211,6 +211,12 @@ class SearchModule extends PLModule
                 new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
             }
         } else {
+            $res = XDB::query("SELECT  MIN(diminutif), MAX(diminutif)
+                                 FROM  groupex.asso
+                                WHERE  cat = 'Promotions'");
+            list($min, $max) = $res->fetchOneRow();
+            $page->assign('promo_min', $min);
+            $page->assign('promo_max', $max); 
             $page->assign('formulaire',1);
         }
 
