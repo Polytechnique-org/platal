@@ -335,6 +335,10 @@ td.oval2 {
 
 .oval a, .oval2 a { color: #d0c198; }
 .oval a.has_site { color: white; }
+.jone a { color: #FF9; }
+.rouje a { color: #D88; }
+.jone a.has_site { color: #FE0; }
+.rouje a.has_site { color: #D00; }
 
 #content td.oval, #content td.oval2 {
     font-size: 90%;
