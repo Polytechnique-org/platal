@@ -48,24 +48,6 @@
     <script type="text/javascript" src="javascript/{$js}"></script>
     {/foreach}
     <script type="text/javascript" src="javascript/overlib.js"></script>
-    <script type="text/javascript" src="http://jquery.com/src/jquery-latest.pack.js"></script>
-    {literal}
-    <script type="text/javascript">
-$(document).ready(function() {
- $("td.center > a").click(function() {
-   $.ajax({
-    type: "GET",
-    url: $(this).attr("href"),
-    dataType: "xml",
-    success: function (msg) {
-      alert("Data Saved :"+msg);
-    }
-  });
-   return false;
- });
-});
-    </script>
-    {/literal}
     
     {if $xorg_rss}
     <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{$xorg_rss.href}" />
