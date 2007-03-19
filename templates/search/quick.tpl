@@ -26,7 +26,6 @@
 
 <div id="message" style="position:absolute;"></div><br />
 
-<script type="text/javascript" src="javascript/ajax.js"></script>
 <script type="text/javascript">
   {literal}
   function showPromo()

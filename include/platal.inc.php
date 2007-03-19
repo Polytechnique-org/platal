@@ -38,7 +38,15 @@ define('DO_AUTH', 1);
 
 function __autoload($cls)
 {
-    @include dirname(dirname(__FILE__)).'/classes/'.strtolower($cls).'.php';
+    $cls  = strtolower($cls);
+    $path = dirname(dirname(__FILE__));
+    if (!@include "$path/classes/$cls.php") {
+        if (substr($cls, -1, 3) == 'req') {
+            @include 'validations.inc.php';
+            return;
+        }
+        @include "$cls.inc.php";
+    }
 }
 __autoload('Env');
 

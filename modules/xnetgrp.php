@@ -467,7 +467,6 @@ class XnetGrpModule extends PLModule
             $res = XDB::query('SELECT uid
                                  FROM groupex.membres
                                 WHERE asso_id = {?}', $globals->asso('id'));
-            require_once('vcard.inc.php');
             $vcard = new VCard($res->fetchColumn(), $photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
             $vcard->do_page($page);
         } else {
@@ -712,22 +711,17 @@ class XnetGrpModule extends PLModule
                                          FROM auth_user_md5
                                         WHERE user_id = {?} AND perms = 'pending'", $uid);
                     if ($res->numRows() == 1) {
-                        XDB::execute('INSERT INTO groupex.membres (uid, asso_id, origine, email)
-                                           VALUES ({?}, {?}, "X", {?})',
-                                               $uid, $globals->asso('id'), $email);
                         if (Env::v('market')) {
-                            $res   = XDB::query('SELECT COUNT(*)
-                                                   FROM register_marketing
-                                                  WHERE uid={?} AND email={?}', $uid, $email);
-                            if (!$res->fetchOneCell()) {
-                                XDB::execute("INSERT INTO  register_marketing (uid,sender,email,date,last,nb,type,hash)
-                                                   VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, '')",
-                                             $uid, S::v('uid'), $email, Env::v('market_from')); 
-                                require_once('validations.inc.php');
-                                $req = new MarkReq(S::v('uid'), $uid, $email, Env::v('market_from') == 'user');
-                                $req->submit();
+                            $market = Marketing::get($uid, $email);
+                            if (!$market) {
+                                $market = new Marketing($uid, $email, 'group', $globals->asso('nom'),
+                                                        Env::v('market_from'), S::v('uid'));
+                                $market->add();
                             }            
                         }
+                        XDB::execute('INSERT INTO groupex.membres (uid, asso_id, origine, email)
+                                           VALUES ({?}, {?}, "X", {?})',
+                                     $uid, $globals->asso('id'), $email);
                         pl_redirect("member/$email");
                     }
                     $page->trig("Utilisateur invalide");

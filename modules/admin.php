@@ -788,11 +788,13 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_validate(&$page, $action = 'list', $id = null) {
+    function handler_validate(&$page, $action = 'list', $id = null)
+    {
         $page->changeTpl('admin/valider.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Valider une demande');
 		$page->addCssLink('nl.css');
-		require_once("validations.inc.php");
+        require_once("validations.inc.php");
+
 
         if ($action == 'edit' and !is_null($id)) {
             $page->assign('preview_id', $id);
@@ -824,6 +826,7 @@ class AdminModule extends PLModule
 
         $page->assign('vit', new ValidateIterator());
     }
+
     function handler_validate_answers(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Réponses automatiques de validation');
         $page->assign('title', 'Gestion des réponses automatiques');

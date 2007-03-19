@@ -87,9 +87,9 @@ class MarketingModule extends PLModule
 
         $page->assign('path', 'marketing/private/'.$uid);
 
-        $res = XDB::query("SELECT nom, prenom, promo, matricule
-                                       FROM auth_user_md5
-                                      WHERE user_id={?} AND perms='pending'", $uid);
+        $res = XDB::query("SELECT  nom, prenom, promo, matricule
+                             FROM  auth_user_md5
+                            WHERE  user_id={?} AND perms='pending'", $uid);
 
         if (list($nom, $prenom, $promo, $matricule) = $res->fetchOneRow()) {
             require_once('user.func.inc.php');
@@ -104,43 +104,46 @@ class MarketingModule extends PLModule
         }
 
         if ($action == 'del') {
-            XDB::execute('DELETE FROM register_marketing WHERE uid={?} AND email={?}',
-                                   $uid, $value);
+            Marketing::clear($uid, $value);
         }
 
         if ($action == 'rel') {
-            require_once('marketing.inc.php');
-            list($to, $title, $text) = mark_text_mail($uid, $value);
-            $from = mark_from_mail($uid, $value);
-            $page->assign('rel_from_user', $from);
-            $page->assign('rel_from_staff',
-                          "\"Equipe Polytechnique.org\" <register@polytechnique.org>");
-            $page->assign('rel_to', $to);
-            $page->assign('rel_title', $title);
-            $page->assign('rel_text', $text);
-            $page->assign('rel_email', $value);
+            $market = Marketing::get($uid, $value);
+            if ($market == null) {
+                $page->trig("Aucun marketing n'a été effectué vers $value");
+            } else {
+                $to    = $market->user['to'];
+                $title = $market->getTitle();
+                $text  = $market->getText();
+                $from  = $market->sender_mail;
+                $page->assign('rel_from_user', $from);
+                $page->assign('rel_from_staff',
+                              '"Equipe Polytechnique.org" <register@polytechnique.org>');
+                $page->assign('rel_to', $to);
+                $page->assign('rel_title', $title);
+                $page->assign('rel_text', $text);
+                $page->assign('rel_email', $value);
+            }
         }
 
         if ($action == 'relforce') {
-            require_once('marketing.inc.php');
-            mark_send_mail($uid, $value, Post::v('from'), Post::v('to'),
-                           Post::v('title'), Post::v('message'));
+            $market = Marketing::get($uid, Post::v('to'));
+            if (is_null($market)) {
+                $market = new Marketing($uid, Post::v('to'), 'default', null, 'staff');
+            }
+            $market->send(Post::v('title'), Post::v('message'));
             $page->trig("Mail envoyé");
         }
 
         if ($action == 'insrel') {
-            require_once 'marketing.inc.php';
-            if (relance($uid)) {
+            if (Marketing::relance($uid)) {
                 $page->trig('relance faite');
             }
         }
 
         if ($action == 'add' && Post::has('email') && Post::has('type')) {
-            XDB::execute(
-                "INSERT INTO register_marketing
-                         SET uid = {?}, sender = {?}, email = {?},
-                             date = NOW(), type = {?}",
-                $uid, S::v('uid'), Post::v('email'), Post::v('type')); 
+            $market = new Marketing($uid, Post::v('email'), 'default', null, Post::v('type'), S::v('uid'));
+            $market->add(false);
         }
 
         $res = XDB::iterator(
@@ -152,7 +155,7 @@ class MarketingModule extends PLModule
         $page->assign('addr', $res);
 
         $res = XDB::query("SELECT date, relance FROM register_pending
-                                      WHERE uid = {?}", $uid);
+                            WHERE uid = {?}", $uid);
         if (list($pending, $relance) = $res->fetchOneRow()) {
             $page->assign('pending', $pending);
             $page->assign('relance', $relance);
@@ -229,7 +232,7 @@ class MarketingModule extends PLModule
         $page->assign('promo', $promo);
 
         $sql = "SELECT  u.user_id, u.nom, u.prenom, u.last_known_email, u.matricule_ax,
-                        IF(MAX(m.last)>p.relance, MAX(m.last), p.relance) AS dern_rel, p.email
+                        IF(MAX(m.last) > p.relance, MAX(m.last), p.relance) AS dern_rel, p.email
                   FROM  auth_user_md5      AS u
              LEFT JOIN  register_pending   AS p ON p.uid = u.user_id
              LEFT JOIN  register_marketing AS m ON m.uid = u.user_id
@@ -257,26 +260,17 @@ class MarketingModule extends PLModule
 
             if (Post::has('valide')) {
                 require_once('xorg.misc.inc.php');
-
                 $email = trim(Post::v('mail'));
-                $res   = XDB::query('SELECT COUNT(*) FROM register_marketing
-                                                WHERE uid={?} AND email={?}', $uid, $email);
-
+                $market = Marketing::get($uid, $emails);
                 if (!isvalid_email_redirection($email)) {
                     $page->trig("Email invalide !");
-                } elseif ($res->fetchOneCell()) {
+                } elseif ($market) {
                     $page->assign('already', true);
                 } else {
                     $page->assign('ok', true);
                     check_email($email, "Une adresse surveillée est proposée au marketing par " . S::v('forlife'));
-                    XDB::execute(
-                            "INSERT INTO  register_marketing (uid,sender,email,date,last,nb,type,hash)
-                                  VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, '')",
-                            $uid, S::v('uid'), $email, Post::v('origine'));
-                    require_once('validations.inc.php');
-                    $req = new MarkReq(S::v('uid'), $uid, $email,
-                                       Post::v('origine')=='user');
-                    $req->submit();
+                    $market = new Marketing($uid, $email, 'default', null, Post::v('origine'), S::v('uid'));
+                    $market->add();
                 }
             }
         }
@@ -325,14 +319,12 @@ class MarketingModule extends PLModule
         $page->changeTpl('marketing/relance.tpl');
 
         if (Post::has('relancer')) {
-            require_once 'marketing.inc.php';
-
             $res   = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
             $nbdix = $res->fetchOneCell();
 
             $sent  = Array();
             foreach (array_keys($_POST['relance']) as $uid) {
-                if ($tmp = relance($uid, $nbdix)) {
+                if ($tmp = Marketing::relance($uid, $nbdix)) {
                     $sent[] = $tmp.' a été relancé';
                 }
             }

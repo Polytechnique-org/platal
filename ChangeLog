@@ -60,6 +60,9 @@ Bug/Wish:
     * XnetEvents:
         - #637: Check payment before submission                            -FRU
 
+    * XnetGrp:
+        - #543: Adapt marketing                                            -FRU
+
 ================================================================================
 VERSION 0.9.13                                                        30 01 2007
 
@@ -992,6 +995,7 @@ ACRONYMS:
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>
     * OG : Olivier Guillaumin               <olivier.guillaumin@m4x.org>
+    * PIK: Fabien Laborde       (pika)      <fabien.laborde@m4x.org>
     * SHK: Jeremy Lainé         (Sharky)    <jeremy.laine@m4x.org>
     * VP : Vincent Palatin                  <vincent.palatin@m4x.org>
     * XdX: Alexandre Hô         (XandreX)   <alexandre.ho@m4x.org>

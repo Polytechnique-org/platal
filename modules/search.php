@@ -218,6 +218,7 @@ class SearchModule extends PLModule
             $page->assign('promo_min', $min);
             $page->assign('promo_max', $max); 
             $page->assign('formulaire',1);
+            $page->addJsLink('ajax.js');
         }
 
         $page->register_modifier('display_lines', 'display_lines');

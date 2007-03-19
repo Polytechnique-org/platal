@@ -702,7 +702,6 @@ class ProfileModule extends PLModule
             $x = substr($x, 0, strlen($x) - 4);
         }
 
-        require_once('vcard.inc.php');
         $vcard = new VCard($x);
         $vcard->do_page($page);
     }

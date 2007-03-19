@@ -52,9 +52,6 @@ class PlatalPage extends Smarty
         $this->_failure   = false;
 
         $this->register_prefilter('at_to_globals');
-        $this->register_prefilter('trimwhitespace');
-        $this->register_prefilter('form_force_encodings');
-        $this->addJsLink('xorg.js');
     }
 
     // }}}
@@ -68,6 +65,16 @@ class PlatalPage extends Smarty
     }
 
     // }}}
+    // {{{ function raw()
+
+    public function raw()
+    {
+        global $globals;
+        $this->assign('globals', $globals);
+        return $this->fetch($this->_tpl);
+    }
+
+    // }}}
     // {{{ function _run()
 
     protected function _run($skin)
@@ -76,6 +83,9 @@ class PlatalPage extends Smarty
 
         session_write_close();
 
+        $this->register_prefilter('trimwhitespace');
+        $this->register_prefilter('form_force_encodings');
+        $this->addJsLink('xorg.js');
         $this->assign('xorg_errors', $this->_errors);
         $this->assign('xorg_failure', $this->_failure);
         $this->assign('globals', $globals);

@@ -32,6 +32,8 @@ class MarkReq extends Validate
     public $m_prenom;
     public $m_promo;
     public $m_relance;
+    public $m_type;
+    public $m_data;
 
     public $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance). Si le 
     demandeur marque sa propre adresse mail, refuser dans tous les cas.
@@ -40,12 +42,14 @@ class MarkReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($sender, $mark_id, $email, $perso = false)
+    public function __construct($sender, $mark_id, $email, $perso, $type, $data)
     {
         parent::__construct($sender, false, 'marketing');
         $this->m_id    = $mark_id;
         $this->m_email = $email;
         $this->perso   = $perso;
+        $this->m_type  = $type;
+        $this->m_data  = $data;
 
         $res = XDB::query('SELECT  u.nom, u.prenom, u.promo
                              FROM  auth_user_md5      AS u
@@ -97,8 +101,11 @@ class MarkReq extends Validate
 
     public function commit()
     {
-        require_once('marketing.inc.php');
-        mark_send_mail($this->m_id, $this->m_email,(!$this->perso)?"staff":"user");
+        $market = Marketing::get($this->m_id, $this->m_email);
+        if ($market == null) {
+            return false;
+        }
+        $market->send(); 
         return true;
     }
 

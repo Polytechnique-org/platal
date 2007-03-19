@@ -348,7 +348,7 @@ class RegisterModule extends PLModule
             $mymail->send(); 
         }
 
-        XDB::execute("DELETE FROM register_marketing WHERE uid = {?}", $uid);
+        Marketing::clear($uid);
 
         pl_redirect('register/success');
         $page->assign('uid', $uid);
