@@ -48,9 +48,8 @@ $MESSAGE .= "\n\n";
 require_once('../../classes/plmailer.php');
 $mailer = new PlMailer();
 $mailer->setSubject("$a confirmées, $b en attente et $c sollicitées");
-$mailer->setFrom('register@polytechnique.org');
-$mailer->addTo('register@polytechnique.org');
-$mailer->addCc('jean-michel.yolin+register@polytechnique.org');
+$mailer->setFrom($globals->register->notif);
+$mailer->addTo($globals->register->notif);
 $mailer->setTxtBody($MESSAGE);
 $mailer->send();
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
