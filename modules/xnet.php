@@ -32,6 +32,7 @@ class XnetModule extends PLModule
             'groupes.php' => $this->make_hook('groups2', AUTH_PUBLIC),
             'plan'      => $this->make_hook('plan',      AUTH_PUBLIC),
             'photo'     => $this->make_hook('photo',     AUTH_MDP),
+            'autologin' => $this->make_hook('autologin', AUTH_MDP),
         );
     }
 
@@ -195,6 +196,13 @@ class XnetModule extends PLModule
         }
 
         $page->setType($cat);
+    }
+    
+    function handler_autologin(&$page)
+    {
+        header("Content-type: text/javascript; charset=utf-8");
+        echo '$.ajax({ url: "index?forceXml=1", dataType: "xml", success: function(xml) { $("body").empty(); $("body",xml).prependTo("body"); }});';
+        exit;
     }
 }
 

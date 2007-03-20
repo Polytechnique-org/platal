@@ -27,6 +27,7 @@ class PlatalPage extends Smarty
     private $_tpl;
     private $_errors;
     private $_failure;
+    private $_jsonVars;
 
     // {{{ function PlatalPage()
 
@@ -49,6 +50,7 @@ class PlatalPage extends Smarty
         $this->_page_type = $type;
         $this->_tpl       = $tpl;
         $this->_errors    = array();
+        $this->_jsonVars  = array();
         $this->_failure   = false;
 
         $this->register_prefilter('at_to_globals');
@@ -90,6 +92,10 @@ class PlatalPage extends Smarty
         $this->assign('xorg_failure', $this->_failure);
         $this->assign('globals', $globals);
 
+        if (Env::has('json') && count($this->_jsonVars)) {
+            return $this->jsonDisplay();
+        }
+        
         if (Env::v('display') == 'light') {
             $this->_page_type = SIMPLE;
         } elseif (Env::v('display') == 'raw') {
@@ -114,6 +120,9 @@ class PlatalPage extends Smarty
         $this->register_outputfilter('hide_emails');
         $this->addJsLink('wiki.js');
         header("Accept-Charset: utf-8");
+        if (Env::v('forceXml')) {
+            header("Content-Type: text/xml; charset=utf-8");
+        }
 
         if (!$globals->debug) {
             error_reporting(0);
@@ -219,6 +228,40 @@ class PlatalPage extends Smarty
     }
 
     // }}}
+    // {{{ function jsonDisplay
+    protected function jsonDisplay()
+    {
+        header("Content-type: text/javascript; charset=utf-8");
+        array_walk_recursive($this->_jsonVars, "escape_xorgDB");
+        $jsonbegin = Env::v('jsonBegin');
+        $jsonend = Env::v('jsonEnd');
+        if (Env::has('jsonVar')) {
+            $jsonbegin = Env::v('jsonVar').' = ';
+            $jsonend = ';';
+        } elseif (Env::has('jsonFunc')) {
+            $jsonbegin = Env::v('jsonFunc').'(';
+            $jsonend = ');';
+        }
+        echo $jsonbegin, json_encode($this->_jsonVars), $jsonend;
+        exit;
+    }
+    // }}}
+    // {{{ function jsonAssign
+    public function jsonAssign($var, $value)
+    {
+        $this->_jsonVars[$var] = $value;
+    }
+}
+
+function escape_xorgDB(&$item, $key)
+{
+    if (is_a($item, 'XOrgDBIterator')) {
+        $expanded = array();
+        while ($a = $item->next()) {
+            $expanded[] = $a;
+        }
+        $item = $expanded;
+    }
 }
 
 // {{{ function escape_html ()

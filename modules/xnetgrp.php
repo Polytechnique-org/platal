@@ -409,7 +409,7 @@ class XnetGrpModule extends PLModule
                            m.perms='admin' AS admin,
                            m.origine='X' AS x,
                            u.perms!='pending' AS inscrit,
-                           m.uid, e.email AS actif
+                           m.uid, IF(e.email IS NULL,NULL,1) AS actif
                      FROM  groupex.membres AS m
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
                 LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
@@ -420,6 +420,7 @@ class XnetGrpModule extends PLModule
                  ORDER BY  $tri
                     LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
         $page->assign('ann', $ann);
+        $page->jsonAssign('ann', $ann);
     }
 
     function handler_trombi(&$page, $num = 1)
