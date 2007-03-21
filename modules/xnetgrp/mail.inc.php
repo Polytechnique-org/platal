@@ -99,7 +99,7 @@ function _send_xnet_mail($user, $body, $mailer, $replyto = null)
 // }}}
 // {{{ send_xnet_mails
 
-function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null, $attach = null)
+function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null, $upload = null, $name = null)
 {
     global $globals;
     $sent = array();
@@ -107,10 +107,8 @@ function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null, $attach = 
     $mailer = new PlMailer();
     $mailer->setSubject($sujet);
     $mailer->setFrom($from);
-    if (is_uploaded_file($attach['tmp_name'])) {
-        $mailer->addAttachment($attach['tmp_name'],
-                               $attach['type'],
-                               $attach['name']);
+    if ($upload && $upload->exists()) {
+        $mailer->addUploadAttachment($upload, $name);
     }
 
     foreach ($tos as $user) {

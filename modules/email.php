@@ -332,8 +332,8 @@ class EmailModule extends PLModule
             $to   = Env::v('to');
             $subj = Env::v('sujet');
             $from = Env::v('from');
-            $cc   = Env::v('cc');
-            $bcc  = Env::v('bcc');
+            $cc   = trim(Env::v('cc'));
+            $bcc  = trim(Env::v('bcc'));
 
             if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
                 $page->trig("Indique au moins un destinataire.");

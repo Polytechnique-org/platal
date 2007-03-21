@@ -22,12 +22,13 @@
 
 {include file=search/quick.form.tpl show_js=1}
 
+{if $smarty.session.perms->hasFlag('user')}
 <h1>Voir le trombi d'une promotion</h1>
 
 <div id="message" style="position:absolute;"></div><br />
 
 <script type="text/javascript">
-  {literal}
+  {liiteral}
   function showPromo()
   {
       var value = document.getElementById('promo').value;
@@ -42,7 +43,7 @@
 </script>
 
 <form action="" method="post" onsubmit="return showPromo();">
-<table class="tinybicol" style="width: 30%; margin-right: auto; margin-left: auto">
+<table class="tinybicol" style="width: 35%; margin-right: auto; margin-left: auto">
   <td class="titre">Promotion :</td>
   <td>
     <input type="text" name="promo" id="promo" size="4" value="" />
@@ -50,6 +51,8 @@
   </td>
 </table>
 </form>
+
+{/if}
 
 <h1>Comment faire une recherche ?</h1>
 
