@@ -300,6 +300,7 @@ class EmailModule extends PLModule
         global $globals;
 
         $page->changeTpl('emails/send.tpl');
+        $page->addJsLink('ajax.js');
 
         $page->assign('xorg_title','Polytechnique.org - Envoyer un email');
 
@@ -319,6 +320,12 @@ class EmailModule extends PLModule
                 return join(', ', $ret);
             }
 
+            foreach ($_FILES as &$file) {
+                if (!PlUpload::get($file, S::v('forlife'), 'emails.send', false)) {
+                    $page->trig("Impossible de télécharger '" . pl_entities($file['name']) . "'");
+                }
+            }
+
             $to2  = getEmails(Env::v('to_contacts'));
             $cc2  = getEmails(Env::v('cc_contacts'));
             $txt  = str_replace('^M', '', Env::v('contenu'));
@@ -330,6 +337,7 @@ class EmailModule extends PLModule
 
             if (empty($to) && empty($cc) && empty($to2)) {
                 $page->trig("Indique au moins un destinataire.");
+                $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
             } else {
                 $mymail = new PlMailer();
                 $mymail->setFrom($from);
@@ -339,20 +347,22 @@ class EmailModule extends PLModule
                 if (!empty($bcc)) { $mymail->addBcc($bcc); }
                 if (!empty($to2)) { $mymail->addTo($to2); }
                 if (!empty($cc2)) { $mymail->addCc($cc2); }
-                if (is_uploaded_file($_FILES['uploaded']['tmp_name'])) {
-                    $mymail->addAttachment($_FILES['uploaded']['tmp_name'],
-                                           $_FILES['uploaded']['type'],
-                                           $_FILES['uploaded']['name']);  
+                $files =& PlUpload::listFiles(S::v('forlife'), 'emails.send');
+                foreach ($files as $name=>&$upload) {
+                    $mymail->addUploadAttachment($upload, $name);
                 }
-                $mymail->setTxtBody(wordwrap($txt,72,"\n"));
+                $mymail->setTxtBody(wordwrap($txt, 78, "\n"));
                 if ($mymail->send()) {
                     $page->trig("Ton mail a bien été envoyé.");
                     $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
+                    PlUpload::clear(S::v('forlife'), 'emails.send');
                 } else {
                     $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
+                    $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
                 }
             }
         } else {
+            PlUpload::clear(S::v('forlife'), 'emails.send');
             $_REQUEST['bcc'] = S::v('bestalias').'@'.$globals->mail->domain;
         }
 

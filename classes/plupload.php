@@ -139,22 +139,46 @@ class PlUpload
         return file_exists($this->filename);
     }
 
-    static public function listFiles($forlife = '*', $category = '*', $basename = false)
+    static public function listRawFiles($forlife = '*', $category = '*', $uniq = false, $basename = false)
     {
         global $globals;
         $filename = $globals->spoolroot . '/spool/uploads/temp/';
         $filename .= $forlife . '-' . $category;
+        if (!$uniq) {
+            $filename .= '-*';
+        }
         $files = glob($filename);
         if ($basename) {
-            array_walk($files, 'basename');
+            $files = array_map('basename', $files);
         }
         return $files;
     }
 
-    static public function clear($user = '*', $category = '*')
+    static public function listFilenames($forlife = '*', $category = '*')
     {
-        $files = PlUpload::listFiles($user, $category, false);
-        array_walk($files, 'unlink');
+        $files = PlUpload::listRawFiles($forlife, $category, false, true);
+        foreach ($files as &$name) {
+            list($forlife, $cat, $fn) = explode('-', $name, 3);
+            $name = $fn;
+        }
+        return $files;
+    }
+
+    static public function &listFiles($forlife = '*', $category = '*', $uniq = false)
+    {
+        $res   = array();
+        $files = PlUpload::listRawFiles($forlife, $category, $uniq, true);
+        foreach ($files as $name) {
+            list($forlife, $cat, $fn) = explode('-', $name, 3);
+            $res[$fn] = new PlUpload($forlife, $cat, $fn);
+        }
+        return $res;
+    }
+
+    static public function clear($user = '*', $category = '*', $uniq = false)
+    {
+        $files = PlUpload::listRawFiles($user, $category, $uniq, false);
+        array_map('unlink', $files);
     }
 
     public function contentType()

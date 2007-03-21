@@ -192,7 +192,26 @@
 -- 
 {$smarty.session.prenom} {$smarty.session.nom}
 {/if}</textarea>
-    <div>
+    <script type="text/javascript">//<![CDATA[
+      {literal}
+      function removeAttachments()
+      {
+          Ajax.update_html(null, 'emails/send', null);
+          document.getElementById('att_already').style.display = 'none';
+          document.getElementById('att_form').style.display = '';
+      }
+      {/literal}
+    //]]></script>
+    {if $uploaded_f|@count}
+    <div id="att_already">
+      <strong>{icon name=email_attach}&nbsp;Pièce jointe&nbsp;:&nbsp;</strong>
+      {$uploaded_f[0]}
+      <a href="javascript:removeAttachments()">
+        <img src="images/icons/bin_empty.gif" alt="Supprimer" title="Supprimer la pièce jointe" />
+      </a>
+    </div>
+    {/if}
+    <div id="att_form" {if $uploaded_f|@count neq 0}style="display: none"{/if}>
       <strong>{icon name=email_attach}&nbsp;Ajouter une pièce jointe&nbsp;:&nbsp;</strong>
       <input type="file" name="uploaded" />
     </div>

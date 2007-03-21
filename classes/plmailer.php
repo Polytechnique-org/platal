@@ -218,6 +218,12 @@ class PlMailer extends Mail_Mime {
         }
     }
 
+    public function addUploadAttachment(PlUpload &$upload, $name)
+    {
+        $encoding = $upload->isType('text') ? 'quoted-printable' : 'base64';
+        $this->addAttachment($upload->getContents(), $upload->contentType(), $name, false, $encoding);
+    }
+
     public function assign($var, $value)
     {
         if (!is_null($this->page)) {
