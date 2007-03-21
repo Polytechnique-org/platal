@@ -321,7 +321,7 @@ class EmailModule extends PLModule
             }
 
             foreach ($_FILES as &$file) {
-                if (!PlUpload::get($file, S::v('forlife'), 'emails.send', false)) {
+                if ($file['name'] && !PlUpload::get($file, S::v('forlife'), 'emails.send', false)) {
                     $page->trig("Impossible de télécharger '" . pl_entities($file['name']) . "'");
                 }
             }
@@ -335,7 +335,7 @@ class EmailModule extends PLModule
             $cc   = Env::v('cc');
             $bcc  = Env::v('bcc');
 
-            if (empty($to) && empty($cc) && empty($to2)) {
+            if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
                 $page->trig("Indique au moins un destinataire.");
                 $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
             } else {
@@ -374,6 +374,7 @@ class EmailModule extends PLModule
                   WHERE  c.uid = {?}
                  ORDER BY u.nom, u.prenom", S::v('uid'));
         $page->assign('contacts', $res->fetchAllAssoc());
+        $page->assign('maxsize', ini_get('post_max_size') . 'o');
     }
 
     function handler_broken(&$page, $warn = null, $email = null)

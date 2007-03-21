@@ -31,12 +31,25 @@
     }
   }
 
-  function check(form) {
+  function check(form)
+  {
+    var send = true;
     _selectAll('to_contacts');
     _selectAll('cc_contacts');
-    if(form.sujet.value == "") {
-      form.sujet.focus();
-      return confirm ("Le sujet du mail est vide, veux tu continuer ?");
+    if(form.sujet.value == "" && !confirm("Le sujet du mail est vide, veux-tu continuer ?")) {
+        form.sujet.focus();
+        return false;
+    }
+    if (form.to.value == "" && form.cc.value == ""
+        && document.getElementById('to_contacts').length == 0 && document.getElementById('cc_contacts').length == 0) {
+      if (form.bcc.value == "") {
+        alert("Il faut définir au moins un destinataire au mail");
+        return false;
+      }
+      if (!confirm("Tous les destinataires sont en copie cachée, veux-tu continuer ?")) {
+        form.to.focus();
+        return false;
+      }
     }
     return true;
   }
@@ -212,7 +225,7 @@
     </div>
     {/if}
     <div id="att_form" {if $uploaded_f|@count neq 0}style="display: none"{/if}>
-      <strong>{icon name=email_attach}&nbsp;Ajouter une pièce jointe&nbsp;:&nbsp;</strong>
+      <strong>{icon name=email_attach}&nbsp;Ajouter une pièce jointe (max. {$maxsize})&nbsp;:&nbsp;</strong>
       <input type="file" name="uploaded" />
     </div>
     <div class="center">
