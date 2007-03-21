@@ -180,7 +180,6 @@ class Marketing
             XDB::execute("DELETE FROM register_marketing WHERE uid = {?}", $uid);
         } else {
             XDB::execute("DELETE FROM register_marketing WHERE uid = {?} AND email = {?}", $uid, $email);        
-            XDB::execute("DELETE FROM register_subs WHERE uid = {?}", $uid);
         }
     }
 

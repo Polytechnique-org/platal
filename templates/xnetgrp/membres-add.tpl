@@ -29,6 +29,8 @@ function xStateChange(box)
     document.getElementById('xprenom').style.display = state;
     document.getElementById('xpromo').style.display = state;
     document.getElementById('xsearch').style.display = state;
+    Ajax.update_html('search_result',
+      '{/literal}{$platal->ns}{literal}member/new/ajax?login=' + document.getElementById('email').value);
 }
 
 var nom;
@@ -69,15 +71,15 @@ function searchX()
   <table class="tinybicol">
     <tr>
       <td class="center" colspan="2">
-        <input type="text" name="email" size="40" value="{$platal->argv[1]}" />
+        <input type="text" id="email" name="email" size="40" value="{$platal->argv[1]}" />
         <input type='submit' value='Ajouter'
           onclick='this.form.action += this.form.email.value' />
       </td>
     </tr>
     <tr>
       <td colspan="2">
-        <input type="checkbox" name="x" onchange="xStateChange(this);" />
-        Coche cette case si il s'agit d'un X non inscrit à Polytechnique.org
+        <input type="checkbox" id="x" name="x" onchange="xStateChange(this);" />
+        <label for="x">Coche cette case si il s'agit d'un X non inscrit à Polytechnique.org</label>
       </td>
     </tr>
     <tr id="xnom" style="display: none">

@@ -76,7 +76,16 @@ function user_clear_all_subs($user_id, $really_del=true)
 // }}}
 // {{{ function get_user_login()
 
-function get_user_login($data, $get_forlife = false) {
+// Defaut callback to call when a login is not found
+function _default_user_callback($login)
+{
+    global $page;
+    $page->trig("Il n'y a pas d'utilisateur avec l'identifiant : $login");
+    return;
+}
+
+function get_user_login($data, $get_forlife = false, $callback = '_default_user_callback')
+{
     global $globals, $page;
 
     if (is_numeric($data)) {
@@ -84,7 +93,7 @@ function get_user_login($data, $get_forlife = false) {
         if ($res->numRows()) {
             return $res->fetchOneCell();
         } else {
-            $page->trig("il n'y a pas d'utilisateur avec cet id");
+            call_user_func($callback, $data);
             return false;
         }
     }
@@ -116,7 +125,7 @@ function get_user_login($data, $get_forlife = false) {
                 return $res->fetchOneCell();
             }
         }
-        $page->trig("il n'y a pas d'utilisateur avec ce login");
+        call_user_func($callback, $data);
         return false;
 
     } elseif ($fqdn == $globals->mail->alias_dom || $fqdn == $globals->mail->alias_dom2) {
@@ -128,11 +137,10 @@ function get_user_login($data, $get_forlife = false) {
         if ($redir = $res->fetchOneCell()) {
             list($alias) = explode('@', $redir);
         } else {
-            $page->trig("il n'y a pas d'utilisateur avec cet alias");
+            call_user_func($callback, $data);
             $alias = false;
         }
         return $alias;
-
     } else {
 
         $res = XDB::query("SELECT  alias
@@ -141,7 +149,7 @@ function get_user_login($data, $get_forlife = false) {
                                       WHERE  e.email={?} AND a.type='a_vie'", $data);
         switch ($i = $res->numRows()) {
             case 0:
-                $page->trig("il n'y a pas d'utilisateur avec cette addresse mail");
+                call_user_func($callback, $data);
                 return false;
                 
             case 1:
@@ -163,14 +171,15 @@ function get_user_login($data, $get_forlife = false) {
 // }}}
 // {{{ function get_user_forlife()
 
-function get_user_forlife($data) {
-    return get_user_login($data, true);
+function get_user_forlife($data, $callback = '_default_user_callback')
+{
+    return get_user_login($data, true, $callback);
 }
 
 // }}}
 // {{{ function get_users_forlife_list()
 
-function get_users_forlife_list($members, $strict = false)
+function get_users_forlife_list($members, $strict = false, $callback = '_default_user_callback')
 {
     if (strlen(trim($members)) == 0) {
         return null;
@@ -179,7 +188,7 @@ function get_users_forlife_list($members, $strict = false)
     if ($members) {
         $list = array();
         foreach ($members as $i => $alias) {
-            if (($login = get_user_forlife($alias)) !== false) {
+            if (($login = get_user_forlife($alias, $callback)) !== false) {
                 $list[$i] = $login;
             } else if(!$strict) {
                 $list[$i] = $alias;
@@ -201,6 +210,38 @@ function has_user_right($pub, $view = 'private') {
     // here we have view = ax or public, and pub = ax or private, and pub != view
     return false;    
 }
+// }}}
+// {{{ function get_not_registered_user()
+
+function get_not_registered_user($login, $iterator = false)
+{
+    global $globals;
+    @list($login, $domain) = explode('@', $login);
+    if ($domain && $domain != $globals->mail->domain && $domain != $globals->mail->domain2) {
+        return null;
+    }
+    @list($prenom, $nom, $promo) = explode('.', $login);
+    $where = 'REPLACE(REPLACE(REPLACE(nom, " ", ""), "-", ""), "\'", "") LIKE CONCAT("%", {?}, "%")
+          AND  REPLACE(REPLACE(REPLACE(prenom, " ", ""), "-", ""), "\'", "") LIKE CONCAT("%", {?}, "%")';
+    if ($promo) {
+        if (preg_match('/^[0-9]{2}$/', $promo)) {
+            $where .= 'AND MOD(promo, 100) = {?}';
+        } elseif (preg_match('/^[0-9]{4}$/', $promo)) {
+            $where .= 'AND promo = {?}';
+        }
+    }
+    $sql = "SELECT  user_id, nom, prenom, promo
+              FROM  auth_user_md5
+             WHERE  $where
+          ORDER BY  promo, nom, prenom"; 
+    if ($iterator) {
+        return XDB::iterator($sql, $nom, $prenom, $promo);
+    } else {
+        $res = XDB::query($sql, $nom, $prenom, $promo);
+        return $res->fetchAllAssoc();
+    }
+}
+
 // }}}
 // {{{ function get_user_details_pro()
 

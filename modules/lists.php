@@ -21,7 +21,7 @@
 
 class ListsModule extends PLModule
 {
-    var $client;
+    protected $client;
 
     function handlers()
     {
@@ -533,6 +533,22 @@ class ListsModule extends PLModule
         }
     }
 
+    static public function no_login_callback($login)
+    {
+        require_once 'user.func.inc.php';
+        global $list_unregistered;
+
+        $users = get_not_registered_user($login, true);
+        if ($users->total()) {
+            if (!isset($list_unregistered)) {
+                $list_unregistered = array();
+            }
+            $list_unregistered[$login] = $users;
+        } else {
+            _default_user_callback($login);
+        }
+    }
+
     function handler_admin(&$page, $liste = null)
     {
         global $globals;
@@ -541,13 +557,43 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client($page);
+        $domain = $this->prepare_client($page);
 
         $this->changeTpl('lists/admin.tpl');
 
+        if (Env::has('send_mark')) {
+            $actions = Env::v('mk_action');
+            $uids    = Env::v('mk_uid');
+            $mails   = Env::v('mk_email');
+            foreach ($actions as $key=>$action) {
+                switch ($action) {
+                  case 'none':
+                    break;
+
+                  case 'marketu': case 'markets':
+                    require_once 'emails.inc.php';
+                    $mail = valide_email($mails[$key]);
+                    if (isvalid_email_redirection($mail)) {
+                        $from = ($action == 'marketu') ? 'user' : 'staff';
+                        $market = Marketing::get($uids[$key], $mail);
+                        if (!$market) {
+                            $market = new Marketing($uids[$key], $mail, 'list', "$liste@$domain", $from, S::v('uid'));
+                            $market->add();
+                            break;
+                        }
+                    }
+
+                  default:
+                    XDB::execute('INSERT IGNORE INTO  register_subs (uid, type, sub, domain)
+                                              VALUES  ({?}, \'list\', {?}, {?})',
+                                  $uids[$key], $liste, $domain);
+                }
+            }
+        }
+
         if (Env::has('add_member')) {
             require_once('user.func.inc.php');
-            $members = get_users_forlife_list(Env::v('add_member'));
+            $members = get_users_forlife_list(Env::v('add_member'), false, array('ListsModule', 'no_login_callback'));
             $arr = $this->client->mass_subscribe($liste, $members);
             if (is_array($arr)) {
                 foreach($arr as $addr) {
@@ -568,7 +614,7 @@ class ListsModule extends PLModule
 
         if (Env::has('add_owner')) {
             require_once('user.func.inc.php');
-            $owners = get_users_forlife_list(Env::v('add_owner'));
+            $owners = get_users_forlife_list(Env::v('add_owner'), false, array('ListsModule', 'no_login_callback'));
             if ($owners) {
                 foreach ($owners as $login) {
                     if ($this->client->add_owner($liste, $login)) {
@@ -588,6 +634,10 @@ class ListsModule extends PLModule
         }
 
         if (list($det,$mem,$own) = $this->client->get_members($liste)) {
+            global $list_unregistered;
+            if ($list_unregistered) {
+                $page->assign_by_ref('unregistered', $list_unregistered);
+            }
             $membres = list_sort_members($mem, @$tri_promo);
             $moderos = list_sort_owners($own, @$tri_promo);
 

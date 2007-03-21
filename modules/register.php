@@ -377,6 +377,23 @@ class RegisterModule extends PLModule
             $page->assign('mdpok', true);
         }
 
+        $res = XDB::iterRow("SELECT  sub, domain
+                               FROM  register_subs
+                              WHERE  uid = {?} AND type = 'list'
+                           ORDER BY  domain",
+                            S::i('uid'));
+        $current_domain = null;
+        $lists = array();
+        while (list($sub, $domain) = $res->next()) {
+            if ($current_domain != $domain) {
+                $current_domain = $domain;
+                $client = new MMList(S::v('uid'), S::v('password'), $domain);
+            }
+            list($details, ) = $client->get_members($sub);
+            $lists["$sub@$domain"] = $details;
+        }
+        $page->assign_by_ref('lists', $lists);
+
         $page->addJsLink('motdepasse.js');
     }
 }

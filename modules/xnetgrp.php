@@ -744,22 +744,29 @@ class XnetGrpModule extends PLModule
     {
         header('Content-Type: text/html; charset="UTF-8"');
         $page->changeTpl('xnetgrp/membres-new-search.tpl', NO_SKIN);
-        list($nom, $prenom) = str_replace(array('-', ' ', "'"), '%', array(Env::v('nom'), Env::v('prenom')));
-        $where = "perms = 'pending'";
-        if (!empty($nom)) {
-            $where .= " AND nom LIKE '%$nom%'";
+        if (Env::has('login')) {
+            require_once 'user.func.inc.php';
+            $res = get_not_registered_user(Env::v('login'), true);
+        } else {
+            list($nom, $prenom) = str_replace(array('-', ' ', "'"), '%', array(Env::v('nom'), Env::v('prenom')));
+            $where = "perms = 'pending'";
+            if (!empty($nom)) {
+                $where .= " AND nom LIKE '%$nom%'";
+            }
+            if (!empty($prenom)) {
+                $where .= " AND prenom LIKE '%$prenom%'";
+            }
+            if (preg_match('/^[0-9]{4}$/', Env::v('promo'))) {
+                $where .= " AND promo = " . Env::i('promo');
+            } elseif (preg_match('/^[0-9]{2}$/', Env::v('promo'))) {
+                $where .= " AND MOD(promo, 100) = " . Env::i('promo');
+            } elseif (Env::has('promo')) {
+                return;
+            }
+            $res = XDB::iterator("SELECT user_id, nom, prenom, promo
+                                    FROM auth_user_md5
+                                   WHERE $where");
         }
-        if (!empty($prenom)) {
-            $where .= " AND prenom LIKE '%$prenom%'";
-        }
-        if (preg_match('/^[0-9]{4}$/', Env::v('promo'))) {
-            $where .= " AND promo = " . Env::i('promo');
-        } elseif (Env::has('promo')) {
-            return;
-        }
-        $res = XDB::iterator("SELECT user_id, nom, prenom, promo
-                                FROM auth_user_md5
-                               WHERE $where");
         if ($res->total() < 30) {
             $page->assign("choix", $res);
         }

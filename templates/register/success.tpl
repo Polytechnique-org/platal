@@ -138,6 +138,23 @@ traitées avec la priorité minimale.
     </dd>
   </dl>
 
+  {if $lists|@count neq 0}
+  <p>
+    Des camarades souhaitent que tu t'inscrives aux listes suivantes :
+  </p>
+
+  <dl>
+    {foreach from=$lists key=list item=details}
+    <dt><input type='checkbox' value='1' checked="checked" name="sub_ml[{$list}]" /> {$list}* : {$details.desc}</dt>
+    {if $details.info}
+    <dd>
+      {$details.info|nl2br}
+    </dd>
+    {/if}
+    {/foreach}
+  </dl>
+  {/if}
+
   <p class="smaller">* décoche les cases si tu ne souhaites pas être inscrit à la liste de diffusion correspondante</p>
 
   <div class="center">

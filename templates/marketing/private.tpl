@@ -103,14 +103,16 @@ sa dernière relance date du {$relance|date_format}
     </tr>
     <tr class="pair">
       <td align="right"><strong>From:</strong></td>
-      {if $rel_from_staff neq $rel_from_user}
-      <td><select name="from">
-        <option value="staff">{$rel_from_staff}</option>
-        <option value="user" selected="selected">{$rel_from_user}</option>
-      </select></td>
-      {else}
-      {$rel_from_staff}<input type="hidden" name="from" value="staff" />
-      {/if}
+      <td>
+        {if $rel_from_staff neq $rel_from_user}
+        <select name="from">
+          <option value="staff">{$rel_from_staff}</option>
+          <option value="user" selected="selected">{$rel_from_user}</option>
+        </select>
+        {else}
+        {$rel_from_staff}<input type="hidden" name="from" value="staff" />
+        {/if}
+      </td>
     </tr>
     <tr class="pair">
       <td align="right"><strong>To:</strong></td>

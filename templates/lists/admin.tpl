@@ -36,6 +36,68 @@ L'icône {icon name=cross title='retirer membre'} permet de désinscrire de la l
 qui y était abonné.
 </p>
 
+{if $unregistered|@count neq 0}
+<h1>Marketing d'utilisateurs non-inscrits</h1>
+
+<p>
+{if $unregistered|@count eq 1}
+L'utilisateur suivant n'est pas inscrit à Polytechnique.org. Tu peux l'y inciter en lui faisant envoyer un mail de marketing. Une fois inscrit à Polytechnique.org, l'inscription à la liste lui sera automatiquement proposée.
+{else}
+Les utilisateurs suivants ne sont pas inscrits à Polytechnique.org. Tu peux les y inciter en leur faisant envoyer des
+mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la liste leur sera automatique proposée.
+{/if}
+<p>
+
+<script type="text/javascript">
+  {literal}
+  function showEmail(val, login)
+  {
+      var span = document.getElementById("mk_s_mail[" + login + "]");
+      var state = (val == 'marketu' || val == 'markets') ? '' : 'none';
+      span.style.display = state;
+  }
+  {/literal}
+</script>
+
+<form method="post" action='{$smarty.server.REQUEST_URI}'>
+  <table class="bicol">
+  {foreach from=$unregistered key=login item=it}
+    <tr class="{cycle values="pair,impair"}">
+      <td>{$login}</td>
+      <td>
+        Camarade :
+        <select name="mk_uid[{$login}]">
+        {iterate from=$it item=user}
+          <option value="{$user.user_id}">{$user.prenom} {$user.nom} (X{$user.promo})</option>
+        {/iterate}
+        </select><br />
+        Action<a href="{$platal->pl_self()}#action_desc">*</a> :
+        <select name="mk_action[{$login}]" onchange="showEmail(this.value, '{$login}');">
+          <option value="none">Aucune</option>
+          <option value="marketu">Envoyer un mail en ton nom</option>
+          <option value="markets">Envoyer un mail au nom de Polytechnique.org</option>
+          <option value="sub">Lui proposer l'inscription</option>
+        </select><br />
+        <span id="mk_s_mail[{$login}]" style="display: none">
+          Email : <input type="text" name="mk_email[{$login}]" value="" />
+        </span>
+      </td>
+    </tr>
+  {/foreach}
+  </table>
+  <p class="center">
+    <input type="submit" name="send_mark" value="Envoyer les marketings !" />
+  </p>
+</form>
+
+<p class="smaller">
+  *: La dernière action ajoute simplement la liste de diffusion aux abonnements qui seront proposés au camarade
+  lors de son inscription à Polytechnique.org sans pour autant lui enovyer de mail de marketing. Cette action est
+  automatique si tu choisis l'envoi de mail.
+</p>
+
+{/if}
+
 <h1>
   modérateurs de la liste
 </h1>

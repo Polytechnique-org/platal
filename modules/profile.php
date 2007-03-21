@@ -293,6 +293,18 @@ class ProfileModule extends PLModule
             $mmlist = new MMList(S::v('uid'), S::v('password'));
             $mmlist->subscribe("promo".S::v('promo'));
         }
+        if (Post::v('sub_ml')) {
+            $subs = array_keys(Post::v('sub_ml'));
+            $current_domain = null;
+            foreach ($subs as $list) {
+                list($sub, $domain) = explode('@', $list);
+                if ($domain != $current_domain) {
+                    $current_domain = $domain;
+                    $client = new MMList(S::v('uid'), S::v('password'), $domain);
+                }
+                $client->subscribe($sub);
+            }
+        }
 
         if (is_ax_key_missing()) {
             $page->assign('no_private_key', true);

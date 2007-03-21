@@ -49,6 +49,9 @@ Bug/Wish:
         - #636: Remove non-X from trombi                                   -FRU
         - #638: Sort trombi by promo then name                             -FRU
 
+    * Register:
+        - #428: Can propose subscription to lists                          -FRU
+
     * Search:
         - #132: Better french soundex                                      -FRU
         - #173: Show only countries where there is a user                  -FRU
