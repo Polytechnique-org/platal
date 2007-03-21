@@ -210,8 +210,12 @@
             <td id="perso">
               {list_all_my_groups}
               {if !$smarty.session.auth}
-              <div>Me connecter :</div>
-              <a class='gp' href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">polytechnicien</a>
+                <div>Me connecter :</div>
+                <a class='gp' href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">polytechnicien</a>
+                {if $platal->pl_self() neq 'exit'}
+                  <script type="text/javascript" src="javascript/jquery.js"></script>
+                  <script type="text/javascript" src="login/autologin/{$platal->pl_self()}?forceXml=1"></script>
+                {/if}
               {/if}
             </td>
             <td class="right" style="vertical-align: middle">

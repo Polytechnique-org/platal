@@ -200,8 +200,11 @@ class XnetModule extends PLModule
     
     function handler_autologin(&$page)
     {
+        $allkeys = func_get_args();
+        unset($allkeys[0]);
+        $url = join('/',$allkeys);
         header("Content-type: text/javascript; charset=utf-8");
-        echo '$.ajax({ url: "index?forceXml=1", dataType: "xml", success: function(xml) { $("body").empty(); $("body",xml).prependTo("body"); }});';
+        echo '$.ajax({ url: "'.$url.'?forceXml=1", dataType: "xml", success: function(xml) { $("body",xml).insertBefore("body"); $("body:eq(1)").remove(); }});';
         exit;
     }
 }

@@ -17,7 +17,7 @@ VCS_FILTER = ! -name .arch-ids ! -name CVS
 
 all: build
 
-build: core banana wiki
+build: core banana wiki jquery
 
 q:
 	@echo -e "Code statistics\n"
@@ -101,6 +101,14 @@ htdocs/images/banana:
 
 htdocs/css/banana.css:
 	cd $(@D) && ln -sf /usr/share/banana/css/style.css $(@F)
+
+##
+## jquery
+##
+
+jquery: htdocs/javascript/jquery.js
+htdocs/javascript/jquery.js:
+	wget http://jquery.com/src/jquery-latest.pack.js -O htdocs/javascript/jquery.js -q
 
 ################################################################################
 
