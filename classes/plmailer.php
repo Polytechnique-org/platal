@@ -289,6 +289,7 @@ class PlMailer extends Mail_Mime {
     
         // very important to do it in THIS order very precisely.
         $body = $this->get(array('text_charset' => $this->charset,
+                                 'text_encoding' => '8bit',
                                  'html_charset' => $this->charset,
                                  'head_charset' => $this->charset));
         $hdrs = $this->headers();
