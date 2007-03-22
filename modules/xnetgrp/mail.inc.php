@@ -76,7 +76,7 @@ function get_all_redirects($membres, $mls, &$client)
 // }}}
 // {{{ _send_xnet_mail
 
-function _send_xnet_mail($user, $body, $mailer, $replyto = null)
+function _send_xnet_mail($user, $body, $wiki, $mailer, $replyto = null)
 {
     $cher = isset($user['sexe']) ? ($user['sexe'] ? 'Chère' : 'Cher') : 'Cher(e)';
     $nom  = isset($user['nom']) ? $user['nom'] : "";
@@ -92,14 +92,18 @@ function _send_xnet_mail($user, $body, $mailer, $replyto = null)
     if ($replyto) {
         $mailer->addHeader('Reply-To', $replyto);
     }
-    $mailer->setTxtBody(wordwrap($text, 72));
+    if ($wiki) {
+        $mailer->setWikiBody($text);
+    } else {
+        $mailer->setTxtBody(wordwrap($text, 72));
+    }
     $mailer->send();
 }
 
 // }}}
 // {{{ send_xnet_mails
 
-function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null, $upload = null, $name = null)
+function send_xnet_mails($from, $sujet, $body, $wiki, $tos, $replyto = null, $upload = null, $name = null)
 {
     global $globals;
     $sent = array();
@@ -113,7 +117,7 @@ function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null, $upload = 
 
     foreach ($tos as $user) {
         if ($sent[$user['email']]) continue;
-        _send_xnet_mail($user, $body, $mailer, $replyto);
+        _send_xnet_mail($user, $body, $wiki, $mailer, $replyto);
         $sent[$user['email']] = true;
     }
 }

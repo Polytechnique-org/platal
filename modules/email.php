@@ -351,7 +351,11 @@ class EmailModule extends PLModule
                 foreach ($files as $name=>&$upload) {
                     $mymail->addUploadAttachment($upload, $name);
                 }
-                $mymail->setTxtBody(wordwrap($txt, 78, "\n"));
+                if (Env::v('nowiki')) {
+                    $mymail->setTxtBody(wordwrap($txt, 78, "\n"));
+                } else {
+                    $mymail->setWikiBody($txt);
+                }
                 if ($mymail->send()) {
                     $page->trig("Ton mail a bien été envoyé.");
                     $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);

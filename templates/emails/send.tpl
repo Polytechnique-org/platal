@@ -198,7 +198,11 @@
 
   <fieldset>
     <legend>Sujet&nbsp;:&nbsp;<input type='text' name='sujet' size='60' value="{$smarty.request.sujet}" /></legend>
-    <div class="center">Ne mets que du texte dans le contenu, pas de tags HTML</div>
+    <div class="center">
+      Tu peux utiliser des marqueurs <em>wiki</em> pour formatter ton texte.<br />
+      <small><input type="checkbox" name="nowiki" value="1" {if $smarty.request.nowiki}checked="checked"{/if} />
+      coche cette case pour envoyer le mail en texte brut, sans formattage</small>
+    </div>
     <textarea name='contenu' rows="30" cols="75">
 {$smarty.request.contenu}
 {if !$smarty.request.contenu}

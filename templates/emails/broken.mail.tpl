@@ -20,10 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$html_version}
 {config_load file="mails.conf" section="emails_broken"}
+{if $mail_part eq 'head'}
 {from full=#from#}
 {subject text=#subject#}
+{elseif $mail_part eq 'text'}
 Bonjour !
 
   Nous t'écrivons car lors de l'envoi de la lettre d'information mensuelle

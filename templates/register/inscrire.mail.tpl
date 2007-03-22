@@ -21,10 +21,11 @@
 {**************************************************************************}
 
 {config_load file="mails.conf" section="inscrire"}
-{if !$html_version}
+{if $mail_part eq 'head'}
 {subject text="$subj"}
 {from full=#from#}
 {to addr="$lemail"}
+{elseif $mail_part eq 'text'}
 Bonjour,
 
 Ton inscription sur Polytechnique.org est presque terminée, un clic sur le lien ci-dessous et c'est fini.

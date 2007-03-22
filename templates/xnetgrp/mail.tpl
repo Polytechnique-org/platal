@@ -89,6 +89,12 @@ masculin ou féminin, par son prénom, ou son nom.
       <td><input type="text" name="sujet" value="{$smarty.request.sujet|default:"remplir le sujet ..."}" size=55 maxlength=70></td>
     </tr>
     <tr>
+      <td colspan="2" class="smaller">
+        <input type="checkbox" name="wiki" value="1" checked="1" />
+        activer la syntaxe wiki pour le formattage du message
+      </td>
+    </tr>
+    <tr>
       <td colspan="2" class="center">
         <textarea name="body" cols="72" rows="25">
 {if $smarty.request.body}

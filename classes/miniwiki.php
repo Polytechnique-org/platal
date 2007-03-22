@@ -36,14 +36,14 @@ class MiniWiki
         // '_subscript_'
         MiniWiki::Markup(7, "/'_(.*?)_'/",'<sub>$1</sub>','$1');
         // {+ underline +}
-        MiniWiki::Markup(8, "/{+(.*?)+}/",'<ins>$1</ins>','_$1_');
+        MiniWiki::Markup(8, "/\\{\\+(.*?)\\+\\}/",'<ins>$1</ins>','_$1_');
         // {- strikeout -}
-        MiniWiki::Markup(9, "/{-(.*?)-}/",'<del>$1</del>','-$1-');
+        MiniWiki::Markup(9, "/\\{-(.*?)-\\}/",'<del>$1</del>','-$1-');
         // [+ big +] [++ bigger ++] [+++ even bigger +++] ...
-        MiniWiki::Markup(10, '/\\[(([-+])+)(.*?)\\1\\]/e',"'<span style=\'font-size:'.(round(pow(6/5,$2strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'");
+        MiniWiki::Markup(10, "/\\[(([-+])+)(.*?)\\1\\]/e","'<span style=\'font-size:'.(round(pow(6/5,$2strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'");
         
         // ----- <hr/>
-        MiniWiki::Markup(11, '/(\n|^)----+/s', '$1<hr/>', '$1----'."\n");
+        MiniWiki::Markup(11, "/(\n|^)--(--+| \n)/s", '$1<hr/>', '$1-- '."\n");
         // titles
         MiniWiki::Markup(12, '/(\n|^)(!+)([^\n]*)/se', "'$1<h'.strlen('$2').'>$3</h'.strlen('$2').'>'", "'$1$3'");
         
@@ -140,4 +140,6 @@ class MiniWiki
 };
 
 MiniWiki::init();
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

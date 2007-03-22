@@ -21,10 +21,11 @@
 {**************************************************************************}
 
 {config_load file="mails.conf" section="listes_promo"}
-{if !$html_version}
+{if $mail_part eq 'head'}
 {from full=#from#}
 {to addr=#to#}
 {subject text="Création de la liste promo $promo"}
+{elseif $mail_part eq 'text'}
 
 Création de la liste promo {$promo} à faire !
 {/if}

@@ -21,10 +21,11 @@
 {**************************************************************************}
 
 {config_load file="mails.conf" section="marketing_relance"}
-{if !$html_version}
+{if $mail_part eq 'head'}
 {subject text="$subj"}
 {from full=#from#}
 {to addr="$lemail"}
+{elseif $mail_part eq 'text'}
 Bonjour,
 
 Il y a quelques temps, le {$fdate}, tu as commencé ton inscription à Polytechnique.org ! Tu n'as toutefois pas tout à fait terminé cette inscription, aussi nous nous permettons de te renvoyer cet email pour te rappeler tes paramètres de connexion, au cas où tu souhaiterais terminer cette inscription, et accéder à l'ensemble des services que nous offrons aux {$nbdix} Polytechniciens déjà inscrits (email à vie, annuaire en ligne, etc...).

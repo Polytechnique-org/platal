@@ -21,12 +21,14 @@
 {**************************************************************************}
 
 {config_load file="mails.conf" section="forums_promo"}
-{if !$html_version}
+{if $mail_part eq 'head'}
 {from full=#from#}
 {to addr=#to#}
 {subject text="Création du forum promo $promo"}
+{elseif $mail_part eq 'text'}
 
 Création du forum promo {$promo} à faire !
 (+ de 20% d'inscrits)
 {/if}
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

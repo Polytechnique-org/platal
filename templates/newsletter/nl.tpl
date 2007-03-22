@@ -20,14 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$html_version}
-{if $is_mail}
 {config_load file="mails.conf" section="newsletter"}
+{if $mail_part eq 'head'}
 {from full=#from#}
 {subject text=$nl->title(true)}
 {if isset(#replyto#)}{add_header name='Reply-To' value=#replyto#}{/if}
 {if isset(#retpath#)}{add_header name='Return-Path' value=#retpath#}{/if}
-{else}
+{elseif $mail_part eq 'html'}
+{if !$is_mail}
 <pre style="width : 72ex; margin: auto">
 {/if}
 ====================================================================
@@ -67,7 +67,7 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
 {if !$is_mail}
 </pre>
 {/if}
-{else}
+{elseif $mail_part eq 'html'}
 {if $is_mail}
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">

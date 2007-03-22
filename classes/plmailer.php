@@ -59,9 +59,9 @@ class PlMail extends Smarty
         return $plmail;
     }
 
-    public function run($html)
+    public function run($version)
     {
-        $this->assign('html_version', $html);
+        $this->assign('mail_part', $version);
         $text = $this->fetch($this->tpl);
         return $text;
     }
@@ -147,6 +147,7 @@ class PlMailer extends Mail_Mime {
     private $mail;
     private $page    = null;
     private $charset;
+    private $wiki    = null;
 
     function __construct($tpl = null, $charset = "UTF-8")
     {
@@ -251,20 +252,36 @@ class PlMailer extends Mail_Mime {
             $this->page->register_function($var, $callback);
         }
     }
+
+    public function setWikiBody($wiki)
+    {
+        $this->wiki = $wiki;
+    }
     
     private function processPage($with_html = true)
     {
         $level = error_reporting(0);
         if (!is_null($this->page)) {
-            $this->setTxtBody($this->page->run(false));
-            if ($with_html) {
-                $html = trim($this->page->run(true));
-                if (!empty($html)) {
-                    $this->setHtmlBody($html);
+            $level = error_reporting(0);
+            $this->page->run('head'); // process page headers
+            $this->wiki = trim($this->page->run('wiki')); // get wiki
+            if (!$this->wiki) {
+                $this->setTxtBody($this->page->run('text'));
+                if ($with_html) {
+                    $html = trim($this->page->run('html'));
+                    if (!empty($html)) {
+                        $this->setHtmlBody($html);
+                    }
                 }
             }
+            error_reporting($level);
         }
-        error_reporting($level);
+        if ($this->wiki) {
+            $this->setTxtBody(MiniWiki::WikiToText($this->wiki, true, 0, 78));
+            if ($with_html) {
+                $this->setHtmlBody(MiniWiki::WikiToHtml($this->wiki, true));
+            }
+        }
     }
 
     public function send($with_html = true)

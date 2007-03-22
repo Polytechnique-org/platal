@@ -20,11 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$html_version}
 {config_load file="mails.conf" section="intervention_admin"}
+{if $mail_part eq 'head'}
 {from full=#from#}
 {to addr=#to#}
 {subject text="INTERVENTION de $user"}
+{elseif $mail_part eq 'text'}
 {$query|regex_replace:"/[ \t]+/":" "}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2: *}

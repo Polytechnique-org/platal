@@ -21,12 +21,13 @@
 {**************************************************************************}
 
 {config_load file="mails.conf" section="inscription"}
-{if !$html_version}
+{if $mail_part eq 'head'}
 {from full=#from#}
 {to addr="$forlife@polytechnique.org"}
 {subject text="Bienvenue parmi les X sur le web !"}
+{elseif $mail_par eq 'text'}
 
-{$prenom}, félicitations pour ton inscription :o))
+{$prenom}, félicitations pour ton inscription !
 
 N'oublie pas de changer ton mot de passe sur le site. C'est très important
 si tu veux garder accès au site et ton e-mail en fonction.
