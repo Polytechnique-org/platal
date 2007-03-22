@@ -29,15 +29,17 @@
   {else}
     <span style="color: red; font-weight: bold;">{$tips.titre}</span>
   {/if}
-  {if !$nochange}
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="" onclick="Ajax.update_html('tod', 'ajax/tips/{$tips.id}'); return false">
-    {icon name=resultset_next title="Astuce suivante"}
-  </a>
-  {/if}
   </legend>
   {tidy}
   {$tips.text|nl2br|smarty:nodefaults}
-  {/tidy} 
+  {/tidy}
+  {if !$nochange}
+  <div class="right">
+    <a href="" onclick="Ajax.update_html('tod', 'ajax/tips/{$tips.id}'); return false" style="text-decoration: none">
+      Astuce suivante {icon name=resultset_next title="Astuce suivante"}
+    </a>
+  </div>
+  {/if}
 {if $full}
 </fieldset>
 {/if}

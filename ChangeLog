@@ -34,6 +34,9 @@ Bug/Wish:
     * Emails:
         - #595: Update antispam description                                -FRU
 
+    * Events:
+        - #651: Less confusing "next tip" link                             -FRU
+
     * Newsletter:
         - #648: Add navigation link in preview page                        -FRU
         - #649: Fix layout of preview page                                 -FRU
