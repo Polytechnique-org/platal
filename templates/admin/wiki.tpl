@@ -35,6 +35,19 @@
     }
     return false;
   }
+  function replie() {
+    var cat=$.trim($(this).parent().text().replace(/(.*)\([0-9]+\)/, "$1"));
+    $("tr[@id^=row/"+cat+"/]").hide();
+    $(this).attr('src', 'images/k1.gif').unbind("click", replie).click(deplie);
+  }
+  function deplie(image) {
+    var cat=$.trim($(this).parent().text().replace(/(.*)\([0-9]+\)/, "$1"));
+    $("tr[@id^=row/"+cat+"/]").show();
+    $(this).attr('src', 'images/k2.gif').unbind("click", deplie).click(replie);
+  }
+  $(document).ready(function() {
+    $("tr.pair img[@alt=-]").css("cursor","pointer").each(replie);
+  });
 // -->
 </script>
 {/literal}
@@ -63,11 +76,11 @@
   <tr class="pair">
     <td colspan="4" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       <img src="images/k2.gif" alt="-" width="9" height="21" />
-      {$cat} <a href="{$cat}/RecentChanges">{icon name=magnifier title="Changements récents"}</a>
+      {$cat} ({$pages|@count}) <a href="{$cat}/RecentChanges">{icon name=magnifier title="Changements récents"}</a>
     </td>
   </tr>
 {foreach from=$pages item=perm key=page name=pages}
-  <tr class="impair" onmouseover="this.className='pair';" onmouseout="this.className='impair';">
+  <tr id="row/{$cat}/{$page}" class="impair" onmouseover="this.className='pair';" onmouseout="this.className='impair';">
     <td style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       {if $smarty.foreach.pages.last}
       <img src="images/L.gif" alt="L" width="12" height="21" />
