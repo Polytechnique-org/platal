@@ -67,7 +67,17 @@
     </tr>
     <tr>
       <td class="titre">Texte</td>
-      <td><textarea name="texte" id="texte" rows="10" cols="60" onfocus="update_texte_count(this.form)">{$texte}</textarea></td>
+      <td>
+        <textarea name="texte" id="texte" rows="10" cols="60" onfocus="update_texte_count(this.form)">{$texte}</textarea>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="smaller">
+        <a href="wiki_help/notitle" class="popup3">
+          {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le texte de l'annonce
+        </a>
+      </td>
     </tr>
     <tr>
       <td colspan="2" class="smaller">

@@ -30,6 +30,7 @@ class CoreModule extends PLModule
             'send_bug'    => $this->make_hook('bug', AUTH_COOKIE),
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
             'get_rights'  => $this->make_hook('get_rights', AUTH_MDP, 'admin'),
+            'wiki_help'   => $this->make_hook('wiki_help', AUTH_PUBLIC),
 
             'valid.html'  => $this->make_hook('valid', AUTH_PUBLIC),
             'favicon.ico' => $this->make_hook('favicon', AUTH_PUBLIC),
@@ -108,7 +109,7 @@ class CoreModule extends PLModule
 
     function handler_bug(&$page)
     {
-        $page->changeTpl('core/bug.tpl',SIMPLE);
+        $page->changeTpl('core/bug.tpl', SIMPLE);
         $page->addJsLink('close_on_esc.js');
         if (Env::has('send') && trim(Env::v('detailed_desc'))) {
             $body = wordwrap(Env::v('detailed_desc'), 78) . "\n\n"
@@ -127,6 +128,12 @@ class CoreModule extends PLModule
         } elseif (Env::has('send')) {
             $page->trig("Merci de remplir une explication du problème rencontré");
         }
+    }
+
+    function handler_wiki_help(&$page, $action = 'title')
+    {
+        $page->changeTpl('core/wiki.help.tpl', SIMPLE);
+        $page->assign('wiki_help', MiniWiki::help($action == 'title'));
     }
 }
 

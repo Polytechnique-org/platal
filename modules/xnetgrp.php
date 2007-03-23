@@ -1117,7 +1117,7 @@ class XnetGrpModule extends PLModule
             }
         } 
 
-        $art['contact_html'] = MiniWiki::WikiToHTML($art['contact_html']);
+        $art['contact_html'] = @MiniWiki::WikiToHTML($art['contact_html']);
         $page->assign('art', $art);
     }
 

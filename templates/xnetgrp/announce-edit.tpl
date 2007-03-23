@@ -97,6 +97,13 @@ function visibilityChange(box)
         <textarea cols="60" rows="6" name='contacts'>{$art.contacts}</textarea>
       </td>
     </tr>
+    <tr style="border-top: 1px solid gray">
+      <td colspan="2" class="center">
+        <a href="wiki_help/notitle" class="popup3">
+          {icon name=information title="Syntaxe wiki"} Voir la liste des marqueurs de mise en forme autorisés
+        </a>
+      </td>
+    </tr>
   </table>
   <br />
 

@@ -113,6 +113,14 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant d
         <textarea cols="68" rows="3" name='append'>{if $art}{$art->append()}{/if}</textarea>
       </td>
     </tr>
+    <tr class="pair smaller">
+      <td></td>
+      <td>
+        <a href="wiki_help/notitle" class="popup3">
+          {icon name=information title="Syntaxe wiki"} Voir les marqueurs de mise en forme autorisés
+        </a>
+      </td>
+    <tr>
     <tr class='pair'>
       <td colspan='2' class='center'>
         <input type='submit' name='see' value='visualiser' />

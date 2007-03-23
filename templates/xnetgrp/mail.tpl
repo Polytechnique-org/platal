@@ -91,7 +91,7 @@ masculin ou féminin, par son prénom, ou son nom.
     <tr>
       <td colspan="2" class="smaller">
         <input type="checkbox" name="wiki" value="1" checked="1" />
-        activer la syntaxe wiki pour le formattage du message
+        activer <a href="wiki_help" class="popup3">la syntaxe wiki</a> pour le formattage du message
       </td>
     </tr>
     <tr>

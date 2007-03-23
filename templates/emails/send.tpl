@@ -199,7 +199,7 @@
   <fieldset>
     <legend>Sujet&nbsp;:&nbsp;<input type='text' name='sujet' size='60' value="{$smarty.request.sujet}" /></legend>
     <div class="center">
-      Tu peux utiliser des marqueurs <em>wiki</em> pour formatter ton texte.<br />
+      Tu peux utiliser des <a href="wiki_help" class="popup3">{icon name=information title="Syntaxe wiki"} marqueurs wiki</a> pour formatter ton texte.<br />
       <small><input type="checkbox" name="nowiki" value="1" {if $smarty.request.nowiki}checked="checked"{/if} />
       coche cette case pour envoyer le mail en texte brut, sans formattage</small>
     </div>

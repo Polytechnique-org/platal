@@ -153,6 +153,9 @@ function auto_links() {
 	if(node.className == 'popup2') {
         node.onclick = function () { popWin(this,840,600); return false; };
 	}
+    if(node.className == 'popup3') {
+        node.onclick = function () { popWin(this, 640, 800); return false; };
+    }
 	if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(node.className)) {
 	    var w = matches[1], h = matches[2];
 	    node.onclick = function () { popWin(this,w,h); return false; };
