@@ -41,7 +41,7 @@
   <a href="http://www.fondationx.org/">FX</a> &middot;
   <a href="http://www.polytechniciens.com/">AX</a>
   &tilde;&tilde;
-  <a href="http://www.polytechnique.org">Polytechnique.org</a> &middot;
+  <a href="https://www.polytechnique.org">Polytechnique.org</a> &middot;
   <a href="http://www.polytechnique.net{if $login}/login{/if}">Associations polytechniciennes</a> &middot;
   <a href="http://www.polytechnique.fr/eleves/">&Eacute;l&egrave;ves</a> &middot;
   <a href="http://www.manageurs.com/{if $login}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
