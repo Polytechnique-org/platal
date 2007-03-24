@@ -93,6 +93,15 @@
   function removeCc() {
     _move('cc_contacts', 'contacts');
   }
+
+  function updateWikiView(box) {
+    if (box.checked) {
+      document.getElementById("preview_bt").style.display = "none";
+      document.getElementById("preview").style.display = "none";
+    } else {
+      document.getElementById("preview_bt").style.display = "";
+    }
+  }
   {/literal}
 //]]>
 </script>
@@ -195,15 +204,22 @@
     </tr>
     {/if}
   </table>
-
   <fieldset>
     <legend>Sujet&nbsp;:&nbsp;<input type='text' name='sujet' size='60' value="{$smarty.request.sujet}" /></legend>
     <div class="center">
       Tu peux utiliser des <a href="wiki_help" class="popup3">{icon name=information title="Syntaxe wiki"} marqueurs wiki</a> pour formatter ton texte.<br />
-      <small><input type="checkbox" name="nowiki" value="1" {if $smarty.request.nowiki}checked="checked"{/if} />
+      <small><input type="checkbox" name="nowiki" value="1" {if $smarty.request.nowiki}checked="checked"{/if} onchange="updateWikiView(this);" />
       coche cette case pour envoyer le mail en texte brut, sans formattage</small>
     </div>
-    <textarea name='contenu' rows="30" cols="75">
+    <div id="preview" style="display: none">
+      <strong>Aperçu du mail :</strong>
+      <div id="mail_preview">
+      </div>
+      <div class="center">
+        <input type="submit" name="submit" value="Envoyer" />
+      </div>
+    </div>
+    <textarea name='contenu' rows="30" cols="75" id="mail_text">
 {$smarty.request.contenu}
 {if !$smarty.request.contenu}
 -- 
@@ -233,6 +249,7 @@
       <input type="file" name="uploaded" />
     </div>
     <div class="center">
+      <input type="submit" name="preview" id="preview_bt" value="Aperçu" onclick="previewWiki('mail_text', 'mail_preview', true, 'preview'); return false;" />
       <input type="submit" name="submit" value="Envoyer" />
     </div>
   </fieldset>

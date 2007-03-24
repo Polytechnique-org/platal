@@ -22,6 +22,14 @@
 
 <h1>Syntaxe wiki</h1>
 
-{$wiki_help|smarty:nodefaults}
+<table class="bicol">
+  <tr><th>Syntaxe</th><th>Apparence</th></tr>
+  {foreach from=$wiki_help key=syntax item=html}
+  <tr class="{cycle values="pair,impair"}">
+    <td>{$syntax|nl2br}</td>
+    <td>{$html|smarty:nodefaults}</td>
+  </tr>
+  {/foreach}
+</table>
 
 {* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}

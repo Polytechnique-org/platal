@@ -109,4 +109,20 @@ function showTempMessage(id, message, success)
     setTimeout("_showTempMessage('" + id + "', " + currentTempMessage + ", 20)", 700);
 }
 
+function previewWiki(idFrom, idTo, withTitle, idShow)
+{
+    var text = encodeURIComponent(document.getElementById(idFrom).value);
+    if (text == "") {
+        return false;
+    }   
+    var url  = "wiki_preview";
+    if (!withTitle) {
+        url += "/notitle";
+    }   
+    Ajax.update_html(idTo, url + "?text=" + text);
+    if (idShow != null) {
+        document.getElementById(idShow).style.display = "";
+    }   
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

@@ -155,17 +155,10 @@ class MiniWiki
             unset(MiniWiki::$info[12]);
         }
 
-        $i = 0;
-        $res = '<table class="bicol">' . "\n";
-        $res .= "<tr><th>Syntaxe</th><th>Apparence</th></tr>\n";
+        $res = array();
         foreach (MiniWiki::$info as $value) {
-            $i++;
-            $res .= '<tr class="' . ($i % 2 ? 'impair' : 'pair') . '">';
-            $res .= '<td>' . nl2br(htmlentities($value)) . '</td>';
-            $res .= '<td>' . MiniWiki::wikiToHtml($value, true) . '</td>';
-            $res .= "</tr>\n";
+            $res[$value] = MiniWiki::wikiToHtml($value, true);
         }
-        $res .= '</table>';
 
         if (!$with_title) {
             MiniWiki::$info[12] = $info12;

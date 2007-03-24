@@ -28,6 +28,19 @@ Ton message peut être personnalisé : si tu rentres les mots &lt;cher&gt;, &lt;
 &lt;nom&gt;, ces mots seront remplacés, pour chacun des destinataires, par "cher" accordé au
 masculin ou féminin, par son prénom, ou son nom.
 </p>
+
+<script type="text/javascript">//<![CDATA[
+  {literal}
+  function updateWikiView(box) {
+    if (!box.checked) {
+      document.getElementById("preview_bt").style.display = "none";
+      document.getElementById("preview").style.display = "none";
+    } else {
+      document.getElementById("preview_bt").style.display = "";
+    }
+  }
+  {/literal}
+//]]></script>
  
 <form action="{$platal->ns}mail" method="post" enctype="multipart/form-data">
   <table class='bicol'>
@@ -90,18 +103,24 @@ masculin ou féminin, par son prénom, ou son nom.
     </tr>
     <tr>
       <td colspan="2" class="smaller">
-        <input type="checkbox" name="wiki" value="1" checked="1" />
+        <input type="checkbox" name="wiki" value="1" checked="1" onchange="updateWikiView(this);" />
         activer <a href="wiki_help" class="popup3">la syntaxe wiki</a> pour le formattage du message
+      </td>
+    </tr>
+    <tr id="preview" class="pair" style="display: none">
+      <td colspan="2" id="mail_preview">
+        <div id="mail_preview"></div>
+        <div class="center"><input type="submit" name="send" value="Envoyer le message"></div>
       </td>
     </tr>
     <tr>
       <td colspan="2" class="center">
-        <textarea name="body" cols="72" rows="25">
+        <textarea name="body" id="mail_text" cols="72" rows="25">
 {if $smarty.request.body}
 {$smarty.request.body}
 {else}
 &lt;cher&gt; &lt;prenom&gt;,
-          
+
 Nous avons le plaisir de t'adresser la lettre mensuelle du groupe {$asso.nom}.
 
 (insérer le texte...)
@@ -120,7 +139,10 @@ Le bureau du groupe {$asso.nom}.
       </td>
     </tr>
     <tr>
-      <td colspan="2" align="center"><input type="submit" name="send" value="Envoyer le message"></td>
+      <td colspan="2" align="center">
+        <input type="submit" name="preview" id="preview_bt" value="Aperçu" onclick="previewWiki('mail_text', 'mail_preview', true, 'preview'); return false;" />
+        <input type="submit" name="send" value="Envoyer le message" />
+      </td>
     </tr>
   </table>
 </form>

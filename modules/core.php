@@ -30,7 +30,9 @@ class CoreModule extends PLModule
             'send_bug'    => $this->make_hook('bug', AUTH_COOKIE),
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
             'get_rights'  => $this->make_hook('get_rights', AUTH_MDP, 'admin'),
-            'wiki_help'   => $this->make_hook('wiki_help', AUTH_PUBLIC),
+
+            'wiki_help'    => $this->make_hook('wiki_help', AUTH_PUBLIC),
+            'wiki_preview' => $this->make_hook('wiki_preview', AUTH_COOKIE, 'user', NO_AUTH),
 
             'valid.html'  => $this->make_hook('valid', AUTH_PUBLIC),
             'favicon.ico' => $this->make_hook('favicon', AUTH_PUBLIC),
@@ -134,6 +136,15 @@ class CoreModule extends PLModule
     {
         $page->changeTpl('core/wiki.help.tpl', SIMPLE);
         $page->assign('wiki_help', MiniWiki::help($action == 'title'));
+    }
+
+    /// Shared handler for wiki syntax result preview
+    function handler_wiki_preview(&$page, $action = 'title')
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $text = Get::v('text');
+        echo MiniWiki::wikiToHtml($text, $action == 'title');
+        exit;
     }
 }
 
