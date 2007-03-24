@@ -343,10 +343,16 @@
     <tr>
       <td class="dcolg">
         <span class="titre">Complément libre</span>
-        <span class="comm">Commentaire? ICQ? etc...</span>
+        <span class="comm">Commentaire ? ICQ ? etc...</span>
       </td>
       <td class="dcold">
         <textarea name="freetext" rows="3" cols="29" >{$freetext}</textarea>
+        <br/>
+        <span class="smaller">
+          <a href="wiki_help/notitle" class="popup3">
+            {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le commentaire
+          </a>
+        </span>
       </td>
     </tr>
   </table>
