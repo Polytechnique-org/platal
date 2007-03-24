@@ -35,15 +35,22 @@
     }
     return false;
   }
+  var toggle = 0;
   function replie() {
+    if (toggle == 1) return;
+    toggle = 2;
     var cat=$.trim($(this).parent().text().replace(/(.*)\([0-9]+\)/, "$1"));
     $("tr[@id^=row/"+cat+"/]").hide();
     $(this).attr('src', 'images/k1.gif').unbind("click", replie).click(deplie);
+    setTimeout("toggle = 0;", 10);
   }
   function deplie(image) {
+    if (toggle == 2) return;
+    toggle = 1;
     var cat=$.trim($(this).parent().text().replace(/(.*)\([0-9]+\)/, "$1"));
     $("tr[@id^=row/"+cat+"/]").show();
     $(this).attr('src', 'images/k2.gif').unbind("click", deplie).click(replie);
+    setTimeout("toggle = 0;", 10);
   }
   $(document).ready(function() {
     $("tr.pair img[@alt=-]").css("cursor","pointer").each(replie);
