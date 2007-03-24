@@ -19,58 +19,30 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-{if $survey.type == 'root'}
-<h1>Sondage : {$survey.question}</h1>
-  {if $survey.comment != ''}
-    {$survey.comment}
-  {/if}
-<br/>Fin du sondage :
-  {if $survey.end eq "#"}
-    erreur
-  {else}
-    {$survey.end|date_format:"%x"}
-  {/if}
-<br/>R&#233;serv&#233; aux promotions :
-  {if $survey.promos eq "#"}
-    erreur
-  {elseif $survey.promos eq ""}
-    aucune restriction
-  {else}
-    {$survey.promos}
-  {/if}
-<br/>
-<a href='./survey/edit/question/{$survey.id}'>Modifier la racine</a> |
-<a href='./survey/edit/nested/{$survey.id}'>Ajouter une question au début</a>
-  {if is_array($survey.children)}
-    {foreach from=$survey.children item=child}
-      {include file='survey/show_survey.tpl' survey=$child recursive=true}
-    {/foreach}
-  {/if}
-<br/><br/>
-<a href='./survey/edit/valid'>{if $survey_adminmode}Enregistrer les modifications{else}Proposer ce sondage{/if}</a> |
-<a href='./survey/edit/cancel'>Annuler {if $survey_adminmode}les modifications{else}totalement la cr&#233;ation de ce sondage{/if}</a>
 
-{else}
 <div>
   <h2>{$survey.question}</h2>
-  {if $survey.comment != ''}
-    {$survey.comment}<br/>
-  {/if}
-  {assign var='survey_type' value=$survey.type}
-  {include file="survey/show_$survey_type.tpl"}
+{if $survey.comment != ''}
+  {$survey.comment}<br/>
+{/if}
+{assign var='survey_type' value=$survey.type}
+{include file="survey/show_$survey_type.tpl"}
   <br/>
+{if $survey_editmode}
   <a href='./survey/edit/question/{$survey.id}'>Modifier cette question</a> |
   <a href='./survey/edit/del/{$survey.id}'>Supprimer cette question</a> |
-  {if is_array($survey.children)}
-  <a href='./survey/edit/nested/{$survey.id}'>Ajouter une question imbriqu&#233;e</a>
-  <div style="padding-left:20px">
-    {foreach from=$survey.children item=child}
-      {include file='survey/show_survey.tpl' survey=$child recursive=true}
-    {/foreach}
-  </div>
-  {/if}
-  <a href='./survey/edit/after/{$survey.id}'>Ajouter une question apr&#232;s</a>
-</div>
 {/if}
+{if is_array($survey.children)}
+  {if $survey_editmode}<a href='./survey/edit/nested/{$survey.id}'>Ajouter une question imbriqu&#233;e</a>{/if}
+  <div style="padding-left:20px">
+  {foreach from=$survey.children item=child}
+    {include file='survey/show_question.tpl' survey=$child recursive=true}
+  {/foreach}
+  </div>
+{/if}
+{if $survey_editmode}
+  <a href='./survey/edit/after/{$survey.id}'>Ajouter une question apr&#232;s</a>
+{/if}
+</div>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

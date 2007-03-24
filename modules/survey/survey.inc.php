@@ -91,6 +91,9 @@ class SurveyDB
                  WHERE survey_id={?}';
         $res = XDB::query($sql, $sid);
         $data = $res->fetchOneAssoc();
+        if (is_null($data) || !is_array($data)) {
+            return null;
+        }
         $survey = unserialize($data['questions']);
         if (isset($data['end'])) {
             $data['end'] = preg_replace('#^(\d{4})-(\d{2})-(\d{2})$#', '\3/\2/\1', $data['end']);
@@ -457,7 +460,7 @@ class SurveyRoot extends SurveyTreeable
 
     public function setValid($v)
     {
-        $this->valid = (intval($v) != 0);
+        $this->valid = (boolean) $v;
     }
 
     public function isValid()
@@ -497,22 +500,22 @@ class SurveyRoot extends SurveyTreeable
     // {{{ methods needing public access
     public function addChildNested($i, $c)
     {
-        return parent::addChildNested($i, $c);
+        return !$this->isValid() && parent::addChildNested($i, $c);
     }
 
     public function addChildAfter($i, $c)
     {
-        return parent::addChildAfter($i, $c);
+        return !$this->isValid() && parent::addChildAfter($i, $c);
     }
 
     public function delChild($i)
     {
-        return parent::delChild($i);
+        return !$this->isValid() && parent::delChild($i);
     }
 
     public function edit($i, $a)
     {
-        return parent::edit($i, $a);
+        return (!$this->isValid() || $this->getId() == $i) && parent::edit($i, $a);
     }
 
     public function toArray()
@@ -533,6 +536,7 @@ class SurveyRoot extends SurveyTreeable
         $rArr['beginning'] = $this->beginning;
         $rArr['end']       = $this->end;
         $rArr['promos']    = $this->promos;
+        $rArr['valid']     = $this->valid;
         return $rArr;
     }
     // }}}

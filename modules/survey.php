@@ -47,28 +47,41 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function handler_admin() : index of admin mode
-    function handler_admin(&$page)
+    function handler_admin(&$page, $id = -1)
     {
         require_once dirname(__FILE__).'/survey/survey.inc.php';
-        $page->changeTpl('survey/admin.tpl');
-        $page->assign('survey_waiting', SurveyDB::retrieveList('w'));
-        $page->assign('survey_current', SurveyDB::retrieveList('c'));
-        $page->assign('survey_old', SurveyDB::retrieveList('o'));
+        $this->clear_session();
+        if ($id == -1) {
+            $page->changeTpl('survey/admin.tpl');
+            $page->assign('survey_waiting', SurveyDB::retrieveList('w'));
+            $page->assign('survey_current', SurveyDB::retrieveList('c'));
+            $page->assign('survey_old', SurveyDB::retrieveList('o'));
+        } else {
+            $survey = SurveyDB::retrieveSurvey($id); // retrieves all survey object structure
+            if ($survey == null) {
+                $this->show_error($page, "Sondage ".$id." introuvable.", 'admin');
+            }
+            //$this->store_session($survey, $id);
+            $page->assign('survey_adminmode', true);
+            $page->assign('survey_id', $id);
+            $this->show_survey($page, $survey);
+        }
     }
     // }}}
 
     // {{{ function handler_adminEdit() : edits a survey in admin mode
-    function handler_adminEdit(&$page, $id)
+    function handler_adminEdit(&$page, $id = -1)
     {
+        if ($id == -1) {
+            return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'admin');
+        }
         require_once dirname(__FILE__).'/survey/survey.inc.php';
         $survey = SurveyDB::retrieveSurvey($id); // retrieves the survey in database
-        S::kill('survey'); // cleans session (in case there would have been a problem before)
-        S::kill('survey_id');
-        if ($survey->isValid()) {
+        $this->clear_session(); // cleans session (in case there would have been a problem before)
+        /*if ($survey->isValid()) {
             return $this->show_error($page, "Il est impossible de modifier un sondage d&#233;j&#224; valid&#233;", 'admin');
-        }
-        $_SESSION['survey']    = serialize($survey);
-        $_SESSION['survey_id'] = $id;
+        }*/
+        $this->store_session($survey, $id);
         $this->handler_edit($page, 'show'); // calls handler_edit, but in admin mode since 'survey_id' is in session
     }
     // }}}
@@ -76,10 +89,11 @@ class SurveyModule extends PLModule
     // {{{ function handler_adminValidate() : validates a survey (admin mode)
     function handler_adminValidate(&$page, $id = -1)
     {
-        if (Post::has('survey_cancel')) { // if the admin cancels the validation, returns to the admin index
-            return $this->handler_admin(&$page);
-        }
         $id = Post::v('survey_id', $id);
+        if (Post::has('survey_cancel')) { // if the admin cancels the validation, returns to the admin index
+            $this->clear_session();
+            return $this->handler_admin(&$page, $id);
+        }
         if ($id == -1) {
             return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'admin');
         }
@@ -98,16 +112,45 @@ class SurveyModule extends PLModule
             $this->show_confirm($page, "&#202;tes-vous certain de vouloir valider le sondage \"".$surveyInfo['title']."\" ? "
                                       ."Les votes seront imm&#233;diatement ouverts.", 'admin/valid', array('id' => $id));
         }
+        /*
+        if ($id == -1 && !(S::has('survey') && S::has('survey_id'))) {
+            return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'admin');
+        }
+        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        if ($id == -1) { // the survey and survey_id are in session, performs the validation
+            $survey = unserialize(S::v('survey'));
+            $surveyInfo = $survey->storeArray();
+            if (Post::has('survey_submit')) { // needs a confirmation before validation
+                if (SurveyDB::validateSurvey(S::v('survey_id'))) { // validates the survey (in the database)
+                    $this->show_success($page, "Le sondage \"".$surveyInfo['question']."\" a bien &#233;t&#233; valid&#233;, les votes sont maintenant ouverts.", 'admin');
+                } else {
+                    $this->show_error($page, '', 'admin');
+                }
+            } else { // asks for a confirmation
+                $this->show_confirm($page, "&#202;tes-vous certain de vouloir valider le sondage \"".$surveyInfo['question']."\" ? "
+                                          ."Les votes seront imm&#233;diatement ouverts.", 'admin/valid');
+            }
+        } else { // a survey id is given, loads this survey for validation
+            $this->clear_session();
+            $survey = SurveyDB::retrieveSurvey($id); // retrieves all survey object structure
+            if ($survey == null) {
+                $this->show_error($page, "Sondage ".$id." introuvable.", 'admin');
+            }
+            $this->store_session($survey, $id);
+            $page->assign('survey_validmode', true);
+            $this->show_survey($page, $survey);
+        }
+         */
     }
     // }}}
 
     // {{{ function handler_adminDelete() : deletes a survey (admin mode)
     function handler_adminDelete(&$page, $id = -1)
     {
-        if (Post::has('survey_cancel')) { // if the admin cancels the suppression, returns to the admin index
-            return $this->handler_admin(&$page);
-        }
         $id = Post::v('survey_id', $id);
+        if (Post::has('survey_cancel')) { // if the admin cancels the suppression, returns to the admin index
+            return $this->handler_admin(&$page, $id);
+        }
         if ($id == -1) {
             return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'admin');
         }
@@ -123,7 +166,7 @@ class SurveyModule extends PLModule
                 $this->show_error($page, '', 'admin');
             }
         } else { // asks for a confirmation
-            $this->show_confirm($page, "&#202;tes-vous certain de vouloir supprimer le sondage \"".$surveyInfo['title']."\" ?", 'admin/delete', array('id' => $id));
+            $this->show_confirm($page, "&#202;tes-vous certain de vouloir supprimer le sondage \"".$surveyInfo['title']."\" ?", 'admin/del', array('id' => $id));
         }
     }
     // }}}
@@ -141,8 +184,9 @@ class SurveyModule extends PLModule
                 return $this->handler_index($page);
             }
         }
+        $page->assign('survey_editmode', true);
         if (S::has('survey_id')) { // if 'survey_id' is in session, it means we are modifying a survey in admin mode
-            $page->assign('survey_adminmode', true);
+            $page->assign('survey_updatemode', true);
         }
         if ($action == 'show' && !S::has('survey')) {
             $action = 'new';
@@ -155,7 +199,7 @@ class SurveyModule extends PLModule
                     return $this->show_error($page, '', 'edit');
                 }
                 $this->show_survey($page, $survey);
-                $_SESSION['survey'] = serialize($survey);
+                $this->store_session($survey);
             } else { // if a form has not been submitted, shows modification form
                 $survey = unserialize(S::v('survey'));
                 $current = $survey->searchToArray($qid); // gets the current parameters of the question
@@ -166,14 +210,12 @@ class SurveyModule extends PLModule
             } // }}}
         } elseif ($action == 'new') { // {{{ create a new survey : actually store the root question
             if (Post::has('survey_submit')) { // if the form has been submitted, creates the survey
-                S::kill('survey');
-                S::kill('survey_id');
+                $this->clear_session();
                 $survey = new SurveyRoot(Post::v('survey_question')); // creates the object structure
                 $this->show_survey($page, $survey);
-                $_SESSION['survey'] = serialize($survey);
+                $this->store_session($survey);
             } else {
-                S::kill('survey');
-                S::kill('survey_id');
+                $this->clear_session();
                 $this->show_form($page, $action, 0, 'root');
             } // }}}
         } elseif ($action == 'nested' || $action == 'after') { // {{{ adds a new question, nested in the current node, or on the same level after it
@@ -190,7 +232,7 @@ class SurveyModule extends PLModule
                     }
                 }
                 $this->show_survey($page, $survey);
-                $_SESSION['survey'] = serialize($survey);
+                $this->store_session($survey);
             } else {
                 $this->show_form($page, $action, $qid);
             } // }}}
@@ -201,7 +243,7 @@ class SurveyModule extends PLModule
                     return $this->show_error($page, '', 'edit');
                 }
                 $this->show_survey($page, $survey);
-                $_SESSION['survey'] = serialize($survey);
+                $this->store_session($survey);
             } else { // if user has not confirmed, shows a confirmation form
                 $survey = unserialize(S::v('survey'));
                 $current = $survey->searchToArray($qid); // needed to get the title of the question to delete (more user-friendly than an id)
@@ -232,8 +274,7 @@ class SurveyModule extends PLModule
                         $this->show_error($page);
                     }
                 }
-                S::kill('survey'); // cleans session
-                S::kill('survey_id');
+                $this->clear_session();
             } else { // asks for a confirmation if it has not been sent
                 $survey = unserialize(S::v('survey'));
                 $errors = $survey->checkSyntax();
@@ -249,11 +290,11 @@ class SurveyModule extends PLModule
             } // }}}
         } elseif ($action == 'cancel') { // {{{ cancels the creation/modification of a survey
             if (Post::has('survey_submit')) { // needs a confirmation
-                S::kill('survey'); // cleans session
                 if (S::has('survey_id')) {              // only possible when modifying a survey in admin mode, still this should be considered again,
-                    S::kill('survey_id');               // maybe some name with "admin" in it, "survey_adminid" or anything that might not be confusing.
+                    $this->clear_session();             // maybe some name with "admin" in it, "survey_adminid" or anything that might not be confusing.
                     return $this->handler_admin($page); // in this case, shows the admin index
                 } else {
+                    $this->clear_session();             // cleans session
                     return $this->handler_index($page); // else shows the 'normal' index
                 }
             } else { // asks for a confirmation if it has not been sent
@@ -278,11 +319,28 @@ class SurveyModule extends PLModule
     }
     // }}}
 
+    // {{{ function clear_session() : clears the data stored in session
+    function clear_session()
+    {
+        S::kill('survey');
+        S::kill('survey_id');
+    }
+    // }}}
+
+    // {{{ function store_session() : serializes and stores survey (and survey_id) in session
+    function store_session($survey, $survey_id = -1)
+    {
+        $_SESSION['survey'] = serialize($survey);
+        if ($survey_id != -1) {
+            $_SESSION['survey_id'] = $survey_id;
+        }
+    }
+    // }}}
+
     // {{{ function show_survey() : calls the template to display a survey, for editing, voting, or consulting the results
     function show_survey(&$page, $survey)
     {
-        $page->changeTpl('survey/show_survey.tpl');
-        $page->assign('survey_mode', 'edit'); // for now, only editing has been completely implemented
+        $page->changeTpl('survey/show_root.tpl');
         $page->assign('survey', $survey->toArray());
     }
     // }}}
@@ -305,7 +363,7 @@ class SurveyModule extends PLModule
     // }}}
     
     // {{{ function show_confirm() : calls the template to display a confirm form
-    function show_confirm(&$page, $message, $formaction, $formhidden)
+    function show_confirm(&$page, $message, $formaction, $formhidden = null)
     {
         $page->changeTpl('survey/confirm.tpl');
         $page->assign('survey_message', $message);

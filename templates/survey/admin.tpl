@@ -32,7 +32,7 @@
   <tr class="{cycle values="impair,pair"}">
     <td class="half">
       &bull;
-      <a href="survey/admin/edit/{$s.survey_id}">
+      <a href="survey/admin/{$s.survey_id}">
         {$s.title} ({$s.end|date_format:"%x"})
       </a>
     </td>
@@ -58,7 +58,7 @@
   <tr class="{cycle values="impair,pair"}">
     <td class="half">
       &bull;
-      <a href="survey/admin/edit/{$s.survey_id}">
+      <a href="survey/admin/{$s.survey_id}">
         {$s.title} ({$s.end|date_format:"%x"})
       </a>
     </td>
@@ -84,7 +84,7 @@
   <tr class="{cycle values="impair,pair"}">
     <td class="half">
       &bull;
-      <a href="survey/admin/edit/{$s.survey_id}">
+      <a href="survey/admin/{$s.survey_id}">
         {$s.title} ({$s.end|date_format:"%x"})
       </a>
     </td>

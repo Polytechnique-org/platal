@@ -20,6 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-  <textarea name="survey{$survey_id}_{$survey.id}" rows="5" cols="60" {if $survey_mode eq 'edit'}disabled="disabled"{/if}></textarea>
+  <textarea name="survey{$survey_id}_{$survey.id}" rows="5" cols="60" {if !$survey_votemode}disabled="disabled"{/if}></textarea>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
