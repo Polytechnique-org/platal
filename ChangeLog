@@ -3,10 +3,14 @@ VERSION 0.9.14                                                        XX XX 2007
 
 New:
 
+    * Admin:
+        - Fold/unfold wiki folders                                         -Car
+
     * Core:
         - UTF-8                                                            -FRU
         - New Backtrace tool                                               -FRU
         - New Upload manager                                               -FRU
+        - #641: Miniwiki syntax                                         -Car/FRU
 
     * Events:
         - #642: Can add an image                                           -FRU
