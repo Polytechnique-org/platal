@@ -39,15 +39,15 @@ class MiniWiki
         // '- small -'
         MiniWiki::Markup(5, "/'\\-(.*?)\\-'/",'<small>$1</small>','$1', "'-petit-'");
         // '^superscript^'
-        MiniWiki::Markup(6, "/'\\^(.*?)\\^'/",'<sup>$1</sup>','$1', "^exposant^");
+        MiniWiki::Markup(6, "/'\\^(.*?)\\^'/",'<sup>$1</sup>','$1', "'^exposant^'");
         // '_subscript_'
-        MiniWiki::Markup(7, "/'_(.*?)_'/",'<sub>$1</sub>','$1', "_indice_");
+        MiniWiki::Markup(7, "/'_(.*?)_'/",'<sub>$1</sub>','$1', "'_indice_'");
         // {+ underline +}
         MiniWiki::Markup(8, "/\\{\\+(.*?)\\+\\}/",'<ins>$1</ins>','_$1_', "{+insertion+}");
         // {- strikeout -}
         MiniWiki::Markup(9, "/\\{-(.*?)-\\}/",'<del>$1</del>','-$1-', "{-suppression-}");
         // [+ big +] [++ bigger ++] [+++ even bigger +++] ...
-        MiniWiki::Markup(10, "/\\[(([-+])+)(.*?)\\1\\]/e","'<span style=\'font-size:'.(round(pow(6/5,$2strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'", "[+ grand +]\n\n[++ plus gros ++]\n\n[+++ encore plus gros +++]");
+        MiniWiki::Markup(10, "/\\[(([-+])+)(.*?)\\1\\]/e","'<span style=\'font-size:'.(round(pow(6/5,$2strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'", "[+ grand +]\n\n[++ plus grand ++]\n\n[+++ encore plus grand +++]");
         
         // ----- <hr/>
         MiniWiki::Markup(11, "/(\n|^)--(--+| \n)/s", '$1<hr/>', '$1-- '."\n", "----\n");
