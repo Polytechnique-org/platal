@@ -27,7 +27,7 @@ class MiniWiki
         MiniWiki::Markup(0, "/(\r\n|\r([^\n]))/", "\n$2", "\n$2");
                 
         // retours à la ligne avec \\
-        MiniWiki::Markup(1, "/\\\\(?>(\\\\*))\n/e", "str_repeat('<br />\n',strlen('$1'))", "str_repeat('\n',strlen('$1'))", "ligne1\\\\\nligne2");
+        MiniWiki::Markup(1, "/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',strlen('$1'))", "str_repeat('\n',strlen('$1'))", "ligne1\\\\\nligne2");
         
         // bold, italic and others
         // ''' bold '''

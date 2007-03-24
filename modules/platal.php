@@ -84,8 +84,16 @@ class PlatalModule extends PLModule
         $page->changeTpl('platal/changeLog.tpl');
 
         $clog = pl_entities(file_get_contents(dirname(__FILE__).'/../ChangeLog'));
-        require_once 'url_catcher.inc.php';
-        $clog = url_catcher($clog);
+        // url catch only (not all wiki syntax)
+        $clog = preg_replace(array(
+            '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/ui',
+            '/(\s|^)www\.((?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/iu',
+            '/(?:mailto:)?([a-z0-9.\-+_]+@([\-.+_]?[a-z0-9])+)/i'),
+          array(
+            '<a href="\\0">\\0</a>',
+            '\\1<a href="http://www.\\2">www.\\2</a>',
+            '<a href="mailto:\\0">\\0</a>'),
+          $clog);
         $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
         $clog = preg_replace('!vim:.*$!', '', $clog);
         $page->assign('ChangeLog', $clog);

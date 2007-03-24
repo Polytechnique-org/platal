@@ -39,7 +39,7 @@
   <tr>
     <td style="padding-bottom: 1em">
       {tidy}
-      {$art.texte|url_catcher|smarty:nodefaults}
+      {$art.texte|wiki_to_html|smarty:nodefaults}
       {/tidy}
     </td>
   </tr>
@@ -53,7 +53,7 @@
       {if $art.contact_html}
       {$art.contact_html|nl2br|smarty:nodefaults}
       {else}
-      {$art.contacts|url_catcher|nl2br|smarty:nodefaults}
+      {$art.contacts|wiki_to_html|nl2br|smarty:nodefaults}
       {/if}
       {/tidy}
     </td>

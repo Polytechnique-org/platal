@@ -171,7 +171,7 @@ class XnetGrpModule extends PLModule
                               'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
         }
         
-        $page->register_modifier('url_catcher', array('MiniWiki','WikiToHTML'));
+        $page->register_modifier('wiki_to_html', array('MiniWiki','WikiToHTML'));
         $page->assign('articles', $arts);
 
         $page->assign('asso', $globals->asso());
@@ -965,7 +965,7 @@ class XnetGrpModule extends PLModule
         global $globals;
         require_once('rss.inc.php');
         $uid = init_rss('xnetgrp/announce-rss.tpl', $user, $hash, false);
-        $page->register_modifier('url_catcher', array('MiniWiki', 'WikiToHTML'));
+        $page->register_modifier('wiki_to_html', array('MiniWiki', 'WikiToHTML'));
 
         if ($uid) {
             $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.contacts, a.create_date,
@@ -992,7 +992,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals, $platal;
         new_groupadmin_page('xnetgrp/announce-edit.tpl');
-        $page->register_modifier('url_catcher', array('MiniWiki','WikiToHTML'));
+        $page->register_modifier('wiki_to_html', array('MiniWiki','WikiToHTML'));
         $page->assign('new', is_null($aid));
         $art = array();
 
