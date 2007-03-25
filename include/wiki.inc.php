@@ -174,5 +174,145 @@ function wiki_require_page($pagename)
     system('wget '.$globals->baseurl.'/'.$pagename_slashes.' -O /dev/null');
 }
 
+function wiki_delete_page($pagename)
+{
+    $pagename_dots = str_replace('/','.',$pagename);
+    if (!strpos($pagename_dots, '.')) {
+        return false;
+    }
+    $file  = wiki_work_dir().'/'.wiki_filename($pagename_dots);
+    $cachefile = wiki_work_dir().'/cache_'.$pagename_dots.'.tpl'; 
+    if (is_file($cachefile)) {
+        unlink($cachefile);
+    }
+    if (!is_file($file)) {
+        return false;
+    }
+    unlink($file);
+    return true;
+}
+
+function wiki_links_in_line($line, $groupname)
+{
+    $links = array();
+    if (preg_match_all('@\[\[([^~][^\]\|\?#]*)((\?|#)[^\]\|]+)?(\\|[^\]]+)?\]\]@', $line, $matches, PREG_OFFSET_CAPTURE)) {
+        foreach ($matches[1] as $j => $link) if (!preg_match('@http://@', $link[0])) {
+            $mylink = str_replace('/','.',trim($link[0]));
+            $sup = trim(substr($matches[2][$j][0],1));
+            $alt = trim(substr($matches[4][$j][0],1));
+            $newlink = str_replace(' ','',ucwords($mylink));
+            if (strpos($newlink,'.') === false) {
+                $newlink = $groupname.'.'.$newlink;
+            }
+            if (!$alt && $mylink != $newlink) {
+                $alt = trim($link[0]);
+            }
+            $links[] = array(
+              'pos' => $matches[0][$j][1],
+              'size' => strlen($matches[0][$j][0]),
+              'href' => $newlink,
+              'sup' => $sup,
+              'alt' => $alt,
+              'group' => substr($mylink, 0, strpos($mylink, '.')));
+        }
+    }
+    return $links;
+}
+
+function wiki_rename_page($pagename, $newname, $changeLinks = true)
+{
+    $pagename_dots = str_replace('/','.',$pagename);
+    $newname_dots = str_replace('/','.',$newname);
+    if (!strpos($pagename_dots, '.') || !strpos($newname_dots, '.')) {
+        return false;
+    }
+    $groupname = substr($pagename_dots, 0, strpos($pagename_dots,'.'));
+    $newgroupname = substr($newname_dots, 0, strpos($pagename_dots,'.'));
+    
+    $file  = wiki_work_dir().'/'.wiki_filename($pagename_dots);
+    $newfile  = wiki_work_dir().'/'.wiki_filename($newname_dots);
+    if (!is_file($file)) {
+        // old page doesn't exist
+        return false;
+    }
+    if (!rename($file, $newfile)) {
+        // impossible to renama page
+        return false;
+    }
+
+    if (!$changeLinks) {
+        return true;
+    }
+
+    $changedLinks = 0;
+    // change name inside this folder and ingroup links if changing group
+    $lines = explode("\n", file_get_contents($newfile));
+    $changed = false;
+    foreach ($lines as $i => $line) {
+        list($k, $v) = explode('=', $line, 2);
+        if ($k == 'name' && $v == $pagename_dots) {
+            $lines[$i] = 'name='.$newname_dots;
+            $changed = true;
+        } else if ($groupname != $newgroupname) {
+            $links = wiki_links_in_line($line, $groupname);
+            $newline = ''; $last = 0;
+            foreach ($links as $link) if ($link['group'] == $groupname) {
+                $newline .= substr($line, $last, $link['pos']);
+                $newline .= '[['.$link['href'].$link['sup'].($link['alt']?(' |'.$link['alt']):'').']]';
+                $last = $link['pos']+$link['size'];
+                $changedLinks++;
+            }
+            if ($last != 0) {
+                $newline .= substr($line, $last);
+                $lines[$i] = $newline;
+                $changed = true;
+            }
+        }
+    }
+    wiki_putfile($newfile, join("\n", $lines));
+
+    // change wiki links in all wiki pages
+    $endname = substr($pagename_dots, strpos($pagename_dots,'.')+1);
+    $pages = array();
+    exec("grep ".$endname."  ".wiki_work_dir()."/* -sc", $pages);
+    foreach($pages as $line) {
+        if (preg_match('%/([^/:]+):([0-9]+)$%', $line, $vals) && $vals[2] > 0) {
+            $inpage = $vals[1];
+            $lines = explode("\n", file_get_contents(wiki_work_dir().'/'.$inpage));
+            $changed = false;
+            // find all wiki links in page and change if linked to this page
+            foreach ($lines as $i => $line) {
+                $links = wiki_links_in_line($line, substr($inpage, 0, strpos($inpage, '.')));
+                $newline = ''; $last = 0;
+                foreach ($links as $link) {
+                    if ($link['href'] == $pagename_dots) {
+                        $newline .= substr($line, $last, $link['pos']);
+                        $newline .= '[['.$newname_dots.$link['sup'].($link['alt']?(' |'.$link['alt']):'').']]';
+                        $last = $link['pos']+$link['size'];
+                        $changedLinks++;
+                    }
+                }
+                if ($last != 0) {
+                    $newline .= substr($line, $last);
+                    $lines[$i] = $newline;
+                    $changed = true;
+                }
+            }
+            if ($changed)
+            {
+                wiki_putfile(wiki_work_dir().'/'.$inpage, join("\n", $lines));
+            }
+        }
+    }
+    if ($changedLinks > 0) {
+        return $changedLinks;
+    }
+    return true;
+}
+
+function wiki_rename_folder($pagename, $newname, $changeLinks = true)
+{
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

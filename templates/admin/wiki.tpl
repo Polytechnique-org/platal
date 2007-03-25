@@ -36,24 +36,32 @@
     return false;
   }
   var toggle = 0;
-  function replie() {
+  function replie(me, cat) {
     if (toggle == 1) return;
     toggle = 2;
-    var cat=$.trim($(this).parent().text().replace(/(.*)\([0-9]+\)/, "$1"));
     $("tr[@id^=row/"+cat+"/]").hide();
-    $(this).attr('src', 'images/k1.gif').unbind("click", replie).click(deplie);
-    setTimeout("toggle = 0;", 10);
+    $(me).attr('src', 'images/k1.gif');
   }
-  function deplie(image) {
+  function deplie(me, cat) {
     if (toggle == 2) return;
     toggle = 1;
-    var cat=$.trim($(this).parent().text().replace(/(.*)\([0-9]+\)/, "$1"));
     $("tr[@id^=row/"+cat+"/]").show();
-    $(this).attr('src', 'images/k2.gif').unbind("click", deplie).click(replie);
+    $(me).attr('src', 'images/k2.gif');
+  }
+  function toggle_folder() {
+    me = this;
+    if ($(this).attr("class") == "wiki_category")
+        me = $("../img.wiki_root", me)[0]; 
+    var cat=$.trim($(me).parent().text().replace(/(.*)\([0-9]+\)/, "$1"));
+    if ($(me).attr('src') == "images/k1.gif") {
+      deplie(me, cat);  
+    }
+    replie(me, cat);
     setTimeout("toggle = 0;", 10);
   }
   $(document).ready(function() {
-    $("tr.pair img[@alt=-]").css("cursor","pointer").each(replie);
+    $("tr.pair img[@alt=-]").css("cursor","pointer").click(toggle_folder).each(toggle_folder);
+    $(".wiki_category").css("cursor","pointer").click(toggle_folder);
   });
 // -->
 </script>
@@ -82,8 +90,8 @@
 {foreach from=$wiki_pages key=cat item=pages}
   <tr class="pair">
     <td colspan="4" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
-      <img src="images/k2.gif" alt="-" width="9" height="21" />
-      {$cat} ({$pages|@count}) <a href="{$cat}/RecentChanges">{icon name=magnifier title="Changements récents"}</a>
+      <img class="wiki_root" src="images/k2.gif" alt="-" width="9" height="21" />
+      <span class="wiki_category">{$cat}</span> ({$pages|@count}) <a href="{$cat}/RecentChanges">{icon name=magnifier title="Changements récents"}</a>
     </td>
   </tr>
 {foreach from=$pages item=perm key=page name=pages}
@@ -103,6 +111,8 @@
       {$perm.edit}
     </td>
     <td class="action" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
+      <a href="admin/wiki/rename/{$cat}.{$page}" onclick="var newname=prompt('Déplacer la page {$cat}.{$page} vers :', '{$cat}.{$page}'); if (!newname) return false; this.href += '/'+newname;">{icon name=book_next title='déplacer'}</a>
+      <a href="admin/wiki/delete/{$cat}.{$page}" onclick="return confirm('Supprimer la page {$cat}.{$page} ?');">{icon name=delete title='supprimer'}</a>
       <input type="checkbox" name="{$cat}/{$page}"/>
     </td>
   </tr>

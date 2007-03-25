@@ -892,7 +892,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_wiki(&$page, $action='list')
+    function handler_wiki(&$page, $action='list', $wikipage='', $wikipage2='')
     {
         require_once 'wiki.inc.php';
 
@@ -911,6 +911,26 @@ class AdminModule extends PLModule
                         $perms1 = $perms_edit;
                     wiki_set_perms($wiki_page, $perms0, $perms1);
                 }
+            }
+        }
+        
+        if ($action == 'delete' && $wikipage != '') {
+            if (wiki_delete_page($wikipage)) {
+                $page->trig("La page ".$wikipage." a été supprimée.");
+            } else {
+                $page->trig("Impossible de supprimer la page ".$wikipage.".");
+            }
+        }
+        
+        if ($action == 'rename' && $wikipage != '' && $wikipage2 != '' && $wikipage != $wikipage2) {
+            if ($changedLinks = wiki_rename_page($wikipage, $wikipage2)) {
+                $s = 'La page <em>'.$wikipage.'</em> a été déplacée en <em>'.$wikipage2.'</em>.';
+                if (is_numeric($changedLinks)) {
+                    $s .= $changedLinks.' lien'.(($changedLinks>1)?'s ont été modifiés.':' a été modifié.');
+                }
+                $page->trig($s);
+            } else {
+                $page->trig("Impossible de déplacer la page ".$wikipage);
             }
         }
 
