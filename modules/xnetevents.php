@@ -624,6 +624,21 @@ class XnetEventsModule extends PLModule
             $page->assign('oubliinscription', $res);
         }
 
+        $absents = XDB::iterator("SELECT  p.uid,
+                                          IF(m.origine = 'X', IF(u.nom_usage != '', u.nom_usage, u.nom), m.nom) AS nom,
+                                          IF(m.origine = 'X', u.prenom, u.prenom) AS prenom,
+                                          IF(m.origine = 'X', u.promo, m.origine) AS promo,
+                                          IF(m.origine = 'X', FIND_IN_SET('femme', u.flags), m.sexe) AS sexe,
+                                          IF(m.origine = 'X', a.alias, m.email) AS email
+                                    FROM  groupex.evenements_participants AS p
+                              INNER JOIN  groupex.membres                 AS m USING(uid)
+                               LEFT JOIN  auth_user_md5                   AS u ON (u.user_id = m.uid)
+                               LEFT JOIN  aliases                         AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+                                   WHERE  p.eid = {?} AND nb = 0
+                                GROUP BY  p.uid
+                                ORDER BY  nom, prenom, promo", $evt['eid']);     
+
+        $page->assign('absents', $absents);
         $page->assign('participants', 
                       get_event_participants($evt, $item_id, $tri,
                                              "LIMIT ".($ofs*NB_PER_PAGE).", ".NB_PER_PAGE));

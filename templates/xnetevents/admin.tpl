@@ -163,6 +163,30 @@ Ils ont payé mais ont oublié de s'inscrire :
 {/foreach}
 </p>
 
+{if $absents->total()}
+
+<hr />
+
+<p>Les personnes suivantes ont indiqué qu'elles ne viendraient pas à l'événement&nbsp;:</p>
+
+<table class="tinybicol">
+  <tr><th>Prénom NOM</th><th>Origine</th></tr>
+  {iterate from=$absents item=m}
+  <tr>
+    <td>
+      <a href="" {if $is_admin}onclick="return remplitAuto('{$m.email}')"{/if}>
+      {if $m.sexe}&bull;{/if}{$m.prenom} {$m.nom}
+      </a>
+    </td>
+    <td>
+      {$m.promo}
+    </td>
+  </tr>
+  {/iterate}
+</table>
+
+{/if}
+
 {if $is_admin}
 
 <p class="descr">

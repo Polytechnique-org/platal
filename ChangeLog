@@ -69,6 +69,7 @@ Bug/Wish:
 
     * XnetEvents:
         - #637: Check payment before submission                            -FRU
+        - #652: Show people who don't come separately                      -FRU
 
     * XnetGrp:
         - #543: Adapt marketing                                            -FRU

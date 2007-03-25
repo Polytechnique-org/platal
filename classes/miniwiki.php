@@ -78,7 +78,9 @@ class MiniWiki
             $oldrule12 = MiniWiki::$replacementHTML[12];
             MiniWiki::$replacementHTML[12] = "'$0'";
         }
-        $html = preg_replace(MiniWiki::$patternsWiki, MiniWiki::$replacementHTML, utf8_encode(htmlentities(utf8_decode(trim($wiki)))));
+        $html = preg_replace(MiniWiki::$patternsWiki,
+                             MiniWiki::$replacementHTML,
+                             htmlentities(trim($wiki), ENT_COMPAT, 'UTF-8'));
         if (!$title) {
             MiniWiki::$replacementHTML[12] = $oldrule12;
         }

@@ -132,7 +132,7 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
 	    LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
         LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
         LEFT JOIN  aliases         AS a ON ( a.id = ep.uid AND a.type='a_vie' )
-            WHERE  ep.eid = {?}
+            WHERE  ep.eid = {?} AND ep.nb > 0
                     ".(($item_id)?" AND item_id = $item_id":"")."
                     $where
          GROUP BY  ep.uid
