@@ -34,7 +34,7 @@ Tu peux les <a href="carnet/panel?read={$now}">marquer comme vus</a> sans te dé
 
 <p>
 Tu peux choisir plus finement les données affichées sur cette page.
-Il faut pour celà se rendre sur la page de <a href='carnet/notifs'>configuration des notifications</a>.
+Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration des notifications</a>.
 </p>
 
 <div class="right">
