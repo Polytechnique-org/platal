@@ -133,7 +133,7 @@ abstract class MassMailer
     {
         $this->css($page);
         $page->assign('is_mail', false);
-        $page->assign('html_version', false);
+        $page->assign('mail_part', 'text');
         $page->assign('prenom', $prenom);
         $page->assign('nom', $nom);
         $page->assign('sexe', $sexe);
@@ -145,7 +145,7 @@ abstract class MassMailer
         $this->css($page);
         $page->assign('prefix', $this->_prefix . '/' . $this->id());
         $page->assign('is_mail', false);
-        $page->assign('html_version', true);
+        $page->assign('mail_part', 'html');
         $page->assign('prenom', $prenom);
         $page->assign('nom', $nom);
         $page->assign('sexe', $sexe);

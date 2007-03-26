@@ -108,6 +108,7 @@ class NewsletterModule extends PLModule
     
     function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {
         $page->changeTpl('newsletter/edit.tpl');
+        $page->addCssLink('nl.css');
         $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Edition'); 
         require_once("newsletter.inc.php");
         

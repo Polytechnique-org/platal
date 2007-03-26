@@ -301,8 +301,8 @@ class XnetListsModule extends ListsModule
                          a.alias
                    FROM  x4dat.virtual_redirect AS vr
              INNER JOIN  x4dat.virtual          AS v  USING(vid)
-              LEFT JOIN  x4dat.aliases          AS a  ON(vr.redirect = CONCAT(a.alias, CONCAT('@', {?}))
-                                                        OR vr.redirect = CONCAT(a.alias, CONCAT('@', {?})))
+              LEFT JOIN  x4dat.aliases          AS a  ON(vr.redirect = CONCAT(a.alias, '@', {?})
+                                                        OR vr.redirect = CONCAT(a.alias, '@', {?}))
               LEFT JOIN  x4dat.auth_user_md5    AS u  ON(a.id = u.user_id)
               LEFT JOIN  groupex.membres        AS m2 ON(u.user_id = m2.uid AND m2.asso_id = {?})
               LEFT JOIN  groupex.membres        AS m  ON(m.email = vr.redirect AND m.asso_id = {?})

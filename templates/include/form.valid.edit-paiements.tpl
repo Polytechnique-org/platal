@@ -22,8 +22,10 @@
 
 <input type="text" name="pay_titre" size="50" maxlength="200" value="{$valid->titre}" />
 <br />
-<textarea rows="10" cols="60" name="pay_msg_reponse">{$valid->msg_reponse}</textarea>
+<div id="preview_{$valid->id()}" style="display: none; text-align: left"></div>
+<textarea rows="10" cols="60" id="msg_{$valid->id()}" name="pay_msg_reponse">{$valid->msg_reponse}</textarea>
 <br />
+<input type="submit" name="preview" value="Aperçu" onclick="previewWiki('msg_{$valid->id()}', 'preview_{$valid->id()}', true, 'preview_{$valid->id()}'); return false;" /><br />
 <strong>Site&nbsp;:</strong> <input type="text" name="pay_site" size="45" value="{$valid->site}" />
 <br>
 <strong>Montant&nbsp;:</strong> <input type="text" name="pay_montant" size="5" value="{$valid->montant}" /> 

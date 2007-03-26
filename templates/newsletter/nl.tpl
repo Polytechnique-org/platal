@@ -26,7 +26,7 @@
 {subject text=$nl->title(true)}
 {if isset(#replyto#)}{add_header name='Reply-To' value=#replyto#}{/if}
 {if isset(#retpath#)}{add_header name='Return-Path' value=#retpath#}{/if}
-{elseif $mail_part eq 'html'}
+{elseif $mail_part eq 'text'}
 {if !$is_mail}
 <pre style="width : 72ex; margin: auto">
 {/if}

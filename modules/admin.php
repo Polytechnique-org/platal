@@ -793,6 +793,7 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/valider.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Valider une demande');
 		$page->addCssLink('nl.css');
+        $page->addJsLink('ajax.js');
         require_once("validations.inc.php");
 
 

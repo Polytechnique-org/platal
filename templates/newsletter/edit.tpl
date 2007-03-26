@@ -194,6 +194,12 @@
         <textarea cols="68" rows="6" name='append'>{$art->append()}</textarea>
       </td>
     </tr>
+    <tr class="pair smaller">
+      <td></td>
+      <td>
+        <a href="wiki_help/notitle" class="popup3">{icon name=information} Voir la documentation du wiki</a>
+      </td>
+    </tr>
     <tr class='pair'>
       <td colspan='2' class='center'>
         <input type='submit' value='visualiser' />
