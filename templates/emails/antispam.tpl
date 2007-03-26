@@ -22,7 +22,7 @@
 
 {include file=../spool/wiki.d/cache_Xorg.Antispam.tpl part=1 included=1}
 
-<script type="text/javascript" src="javascript/ajax.js"></script>
+{javascript name=ajax}
 <script type="text/javascript">//<![CDATA[
   {literal}
   function bogoUpdated()

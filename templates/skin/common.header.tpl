@@ -53,10 +53,10 @@
     {foreach from=$xorg_js item=js}
     <script type="text/javascript" src="javascript/{$js}"></script>
     {/foreach}
-    <script type="text/javascript" src="javascript/overlib.js"></script>
-    <script type="text/javascript" src="javascript/md5.js"></script>
-    <script type="text/javascript" src="javascript/sha1.js"></script>
-    <script type="text/javascript" src="javascript/secure_hash.js"></script>
+    {javascript name=overlib}
+    {javascript name=md5}
+    {javascript name=sha1}
+    {javascript name=secure_hash}
 
     {if $xorg_rss}
     <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{$xorg_rss.href}" />

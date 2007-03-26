@@ -22,8 +22,7 @@
 
 <h1>Gestion de mes courriers électroniques</h1>
 
-<script type="text/javascript" src="javascript/ajax.js">
-</script>
+{javascript name=ajax}
 {literal}
 <script type="text/javascript">
   function bestaliasUpdated() {

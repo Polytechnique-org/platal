@@ -221,7 +221,7 @@
         <span class="comm"><a href="wiki_help" class="popup3">{icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki</a></span>
       </td>
       <td class="dcold">
-        <script type="text/javascript" src="javascript/ajax.js"></script>
+        {javascript name=ajax}
         <div id="cv_preview" style="display: none"></div>
         <textarea name="cv" id="cv" rows="15" cols="40">{$cv}</textarea><br />
         <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('cv',  'cv_preview', true, 'cv_preview'); return false;" />

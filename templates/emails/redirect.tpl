@@ -73,7 +73,7 @@
     <a href="Xorg/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
   </p>
 
-  <script type="text/javascript" src="javascript/ajax.js"></script>
+  {javascript name=ajax}
   <script type="text/javascript">//<![CDATA[
     {literal}
     function redirectUpdate()

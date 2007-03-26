@@ -36,7 +36,7 @@
   </h1>
 
 {if $actuel}
-<script type="text/javascript" src="javascript/ajax.js"></script>
+  {javascript name=ajax}
   <table class="flags">
     <tr>
       <td class="orange">

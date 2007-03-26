@@ -47,8 +47,8 @@
     {foreach from=$xorg_js item=js}
     <script type="text/javascript" src="javascript/{$js}"></script>
     {/foreach}
-    <script type="text/javascript" src="javascript/overlib.js"></script>
-    
+    {javascript name=overlib}
+
     {if $xorg_rss}
     <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{$xorg_rss.href}" />
     {/if}
@@ -213,7 +213,7 @@
                 <div>Me connecter :</div>
                 <a class='gp' href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">polytechnicien</a>
                 {if $platal->pl_self() neq 'exit'}
-                  <script type="text/javascript" src="javascript/jquery.js"></script>
+                  {javascript name=jquery}
                   <script type="text/javascript" src="login/autologin/{$platal->pl_self()}?forceXml=1"></script>
                 {/if}
               {/if}

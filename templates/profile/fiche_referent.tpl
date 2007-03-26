@@ -20,11 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{literal}
-<script type="text/javascript" src="javascript/close_on_esc.js">
-</script>
-{/literal}
-
+{javascript name=ajax}
 <div id="fiche">
   
   <div class="center">
