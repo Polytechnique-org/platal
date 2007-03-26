@@ -16,6 +16,7 @@ New:
         - #642: Can add an image                                           -FRU
         - #643: Sort menu                                                  -FRU
         - Can set events as important                                      -FRU
+        - Hide events on main page without reloading                       -Car
 
     * Search:
         - Search Engine IE7 compatible                                     -FRU
