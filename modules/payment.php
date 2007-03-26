@@ -31,7 +31,8 @@ function cb_erreur($text) {
 }
 
 /* sort en affichant une erreur */
-function paypal_erreur($text, $send=true) {
+function paypal_erreur($text, $send=true)
+{
     global $page, $erreur;
     if ($erreur) return;
     $erreur = $text;
@@ -224,8 +225,8 @@ class PaymentModule extends PLModule
         $mymail->addTo("\"$prenom $nom\" <$forlife@polytechnique.org>");
         $mymail->addCc($conf_mail);
         $mymail->setSubject($conf_title);
-        $mymail->setTxtBody($conf_text);
-        $mymail->send();
+        $mymail->setWikiBody($conf_text);
+        $mymail->send(S::v('mail_fmt') == 'html');
 
         /* on envoie les details de la transaction à telepaiement@ */
         $mymail = new PlMailer();
@@ -317,8 +318,8 @@ class PaymentModule extends PLModule
         $mymail->addTo("\"$prenom $nom\" <$forlife@polytechnique.org>");
         $mymail->addCc($conf_mail);
         $mymail->setSubject($conf_title);
-        $mymail->setTxtBody($conf_text);
-        $mymail->send();
+        $mymail->setWikiBody($conf_text);
+        $mymail->send(S::v('mail_fmt') == 'html');
 
         /* on envoie les details de la transaction à telepaiement@ */
         $mymail = new PlMailer();

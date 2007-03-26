@@ -152,22 +152,32 @@ function deadlineChange(box)
         <ul>
           <li><strong>Remplace les crochets</strong> ([...]) par le texte que tu désires y voir apparaître</li>
           <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt; et &lt;montant&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées</li>
+          <li><a href="wiki_help" class="popup3">{icon name=information} tu peux utiliser une syntaxe wiki pour formatter ton texte</a></li>
         </ul>
-        <textarea name="confirmation" rows="12" cols="65">{if $paiement_message}{$paiement_message}{else}&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
+        {javascript name=ajax}
+        <div id="pay_preview" style="display: none">
+          <strong>Aperçu du texte&nbsp;:</strong>
+          <hr />
+          <div id="preview"></div>
+          <hr />
+        </div>
+        <textarea name="confirmation" id="payment_text" rows="12" cols="65">{if $paiement_message}{$paiement_message}{else}&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
 
-    Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien été reçu. 
-    [COMPLETE EN PRECISANT LA DATE ET LA PERSONNE A CONTACTER]
+Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien été reçu.\\
+[COMPLETE EN PRECISANT LA DATE ET LA PERSONNE A CONTACTER]
 
-    A très bientôt,
+A très bientôt,
 
-    {$smarty.session.prenom} {$smarty.session.nom}{/if}</textarea><br />
+-- 
+{$smarty.session.prenom} {$smarty.session.nom}{/if}</textarea><br />
         Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso.site|default:$platal->ns}" /><br />
         Le nouveau paiement sera activé automatiquement après validation par le trésorier de Polytechnique.org,
         ce qui sera fait sous peu.
         <script type="text/javascript">//<![CDATA[
           document.getElementById('new_pay').style.display=
             (document.getElementById('payid').value < 0?'':'none');
-        //]]></script>
+        //]]></script><br />
+        <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('payment_text', 'preview', true, 'pay_preview'); return false;" />
       </td>
     </tr>
   </table>
