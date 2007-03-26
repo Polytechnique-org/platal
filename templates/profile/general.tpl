@@ -346,13 +346,16 @@
         <span class="comm">Commentaire ? ICQ ? etc...</span>
       </td>
       <td class="dcold">
-        <textarea name="freetext" rows="3" cols="29" >{$freetext}</textarea>
+        <script type="text/javascript" src="javascript/ajax.js"></script>
+        <div id="ft_preview" style="display: none"></div>
+        <textarea name="freetext" id="freetext" rows="3" cols="29" >{$freetext}</textarea>
         <br/>
         <span class="smaller">
           <a href="wiki_help/notitle" class="popup3">
             {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le commentaire
           </a>
-        </span>
+        </span><br />
+        <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('freetext', 'ft_preview', true, 'ft_preview'); return false;" />
       </td>
     </tr>
   </table>

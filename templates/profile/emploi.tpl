@@ -217,10 +217,14 @@
       <td class="dcolg">
         <span class="titre">Curriculum vitae</span><br />
         <span class="comm">Le CV n'est <strong>jamais</strong> public.<br />
-          <a href="Xorg/FAQ?display=light#cv" class="popup_800x480">Comment remplir mon CV ?</a></span>
+          <a href="Xorg/FAQ?display=light#cv" class="popup_800x480">Comment remplir mon CV ?</a></span><br />
+        <span class="comm"><a href="wiki_help" class="popup3">{icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki</a></span>
       </td>
       <td class="dcold">
-        <textarea name="cv" rows="15" cols="33">{$cv}</textarea>
+        <script type="text/javascript" src="javascript/ajax.js"></script>
+        <div id="cv_preview" style="display: none"></div>
+        <textarea name="cv" id="cv" rows="15" cols="40">{$cv}</textarea><br />
+        <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('cv',  'cv_preview', true, 'cv_preview'); return false;" />
       </td>
     </tr>
   </table>

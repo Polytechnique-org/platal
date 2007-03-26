@@ -54,6 +54,7 @@ class PlatalPage extends Smarty
         $this->_failure   = false;
 
         $this->register_prefilter('at_to_globals');
+        $this->addJsLink('xorg.js');
     }
 
     // }}}
@@ -87,7 +88,6 @@ class PlatalPage extends Smarty
 
         $this->register_prefilter('trimwhitespace');
         $this->register_prefilter('form_force_encodings');
-        $this->addJsLink('xorg.js');
         $this->assign('xorg_errors', $this->_errors);
         $this->assign('xorg_failure', $this->_failure);
         $this->assign('globals', $globals);
