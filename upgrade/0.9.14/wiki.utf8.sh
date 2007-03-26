@@ -14,3 +14,5 @@ echo "Verifie que tout c'est bien passe en presse ^D"
 cat
 
 find $WIKISPOOLDIR -name '*.latin1' -exec rm {} ";"
+chown -R www-data:www-data $WIKISPOOLDIR
+
