@@ -112,7 +112,7 @@
     </td>
     <td class="action" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       <a href="admin/wiki/rename/{$cat}.{$page}" onclick="var newname=prompt('Déplacer la page {$cat}.{$page} vers :', '{$cat}.{$page}'); if (!newname) return false; this.href += '/'+newname;">{icon name=book_next title='déplacer'}</a>
-      <a href="admin/wiki/delete/{$cat}.{$page}" onclick="return confirm('Supprimer la page {$cat}.{$page} ?');">{icon name=delete title='supprimer'}</a>
+      <a href="admin/wiki/delete/{$cat}.{$page}" onclick="return confirm('Supprimer la page {$cat}.{$page} ?');">{icon name=bin_empty title='supprimer'}</a>
       <input type="checkbox" name="{$cat}/{$page}"/>
     </td>
   </tr>
