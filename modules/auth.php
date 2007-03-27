@@ -33,7 +33,8 @@ class AuthModule extends PLModule
                                 => $this->make_hook('manageurs',  AUTH_PUBLIC),
 
             'auth-redirect.php' => $this->make_hook('redirect',   AUTH_COOKIE),
-            'auth-groupex.php'  => $this->make_hook('groupex',    AUTH_COOKIE),
+            'auth-groupex.php'  => $this->make_hook('groupex_old',    AUTH_COOKIE),
+            'auth-groupex'      => $this->make_hook('groupex',    AUTH_COOKIE),
             'admin/auth-groupes-x'         => $this->make_hook('admin_authgroupesx', AUTH_MDP, 'admin'),
         );
     }
@@ -124,7 +125,12 @@ class AuthModule extends PLModule
         http_redirect(Env::v('dest', '/'));
     }
 
-    function handler_groupex(&$page)
+    function handler_groupex_old(&$page)
+    {
+        return $this->handler_groupex($page, 'iso-8859-1');
+    }
+
+    function handler_groupex(&$page, $charset = 'utf8')
     {
         require_once dirname(__FILE__).'/auth/auth.inc.php';
         $page->assign('referer', true);
@@ -138,8 +144,9 @@ class AuthModule extends PLModule
         }
 
         /* a-t-on besoin d'ajouter le http:// ? */
-        if (!preg_match("/^(http|https):\/\/.*/",$gpex_url))
+        if (!preg_match("/^(http|https):\/\/.*/",$gpex_url)) {
             $gpex_url = "http://$gpex_url";
+        }
         $gpex_challenge = $_GET["challenge"];
 
         // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
@@ -151,11 +158,11 @@ class AuthModule extends PLModule
         }
 
         /* on parcourt les entrees de groupes_auth */
-        $res = XDB::iterRow('select privkey,name,datafields from groupesx_auth');
+        $res = XDB::iterRow('SELECT privkey, name, datafields FROM groupesx_auth');
 
         while (list($privkey,$name,$datafields) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {
-                $returl = $gpex_url.gpex_make_params($gpex_challenge,$privkey,$datafields);
+                $returl = $gpex_url . gpex_make_params($gpex_challenge, $privkey, $datafields, $charset);
                 http_redirect($returl);
             }
         }
@@ -163,7 +170,9 @@ class AuthModule extends PLModule
         /* si on n'a pas trouvé, on renvoit sur x.org */
         http_redirect('https://www.polytechnique.org/');
     }
-    function handler_admin_authgroupesx(&$page, $action = 'list', $id = null) {
+
+    function handler_admin_authgroupesx(&$page, $action = 'list', $id = null)
+    {
         $page->assign('xorg_title','Polytechnique.org - Administration - Auth groupes X');
         $page->assign('title', 'Gestion de l\'authentification centralisée');
         $table_editor = new PLTableEditor('admin/auth-groupes-x','groupesx_auth','id');

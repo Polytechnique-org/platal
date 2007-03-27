@@ -22,7 +22,7 @@
 class CoreLogger
 {
     /** user id */
-    private $uid;
+    public $uid;
     /** id of the session */
     private $session;
     /** list of available actions */

@@ -19,64 +19,64 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function gpex_make($chlg, $privkey, $datafields)
+function gpex_prepare_param($name, $val, &$to_hash,  $charset)
+{
+    $val = iconv('UTF-8', $charset, $val);
+    $to_hash .= $val;
+    return '&' . $name . '=' . $val;
+}
+
+function gpex_make($chlg, $privkey, $datafields, $charset)
 {
     $tohash   = "1$chlg$privkey";
     $params   = "";
-    $fieldarr = explode(",",$datafields);
+    $fieldarr = explode(',', $datafields);
 
-    $res = XDB::query("SELECT matricule, matricule_ax, promo,
-                                        promo_sortie, flags, deces, nom,
-                                        prenom, nationalite, section,
-                                        naissance
-                                   FROM auth_user_md5 WHERE user_id = {?}",
-                                S::v('uid'));
+    $res = XDB::query("SELECT  matricule, matricule_ax, promo,
+                               promo_sortie, flags, deces, nom,
+                               prenom, nationalite, section,
+                               naissance
+                         FROM  auth_user_md5 WHERE user_id = {?}",
+                       S::v('uid'));
     $personnal_data = $res->fetchOneAssoc();
 
     foreach ($fieldarr as $val) {
         /* on verifie qu'on n'a pas demandÃ© une variable inexistante ! */
         if (S::has($val)) {
-            $tohash .= S::v($val);
-            $params .= "&$val=".S::v($val);
+            $params .= gpex_prepare_param($val, S::v($val), $tohash, $charset);
         } else if (isset($personnal_data[$val])) {
-            $tohash .= $personnal_data[$val];
-            $params .= "&$val=".$personnal_data[$val];
+            $params .= gpex_prepare_param($val, $personnal_data[$val], $tohash, $charset);
         } else if ($val == 'username') {
-            $res = XDB::query("SELECT alias FROM aliases
-                                          WHERE id = {?} AND FIND_IN_SET('bestalias', flags)",
-                                        S::v('uid'));
+            $res = XDB::query("SELECT  alias FROM aliases
+                                WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                              S::v('uid'));
             $min_username = $res->fetchOneCell();
-            $tohash      .= $min_username;
-            $params      .= "&$val=".$min_username;
+            $params      .= gpex_prepare_param($val, $min_username, $tohash, $charset);
         } else if ($val == 'grpauth') {
-        	if (isset($_GET['group'])) {
-	        	$res = XDB::query("SELECT perms FROM groupex.membres
-					INNER JOIN groupex.asso ON(id = asso_id) 
-					WHERE uid = {?} AND diminutif = {?}", S::v('uid'), $_GET['group']);
-				$perms = $res->fetchOneCell();
-			} else {
-				// if no group asked, return main rights
-				$perms = Session::has_perms()?'admin':'membre';
-			}
-			$tohash .= $perms;
-			$params .= "&$val=".$perms;
+            if (isset($_GET['group'])) {
+                $res = XDB::query("SELECT  perms
+                                     FROM  groupex.membres
+                               INNER JOIN  groupex.asso ON(id = asso_id) 
+                                    WHERE  uid = {?} AND diminutif = {?}",
+                                  S::v('uid'), $_GET['group']);
+                $perms = $res->fetchOneCell();
+            } else {
+                // if no group asked, return main rights
+                $perms = Session::has_perms()?'admin':'membre';
+            }
+            $params .= gpex_prepare_param($val, $perms, $tohash, $charset);
         }
     }
     $tohash .= "1";
     $auth = md5($tohash);
-    return array($auth, "&auth=".$auth.$params);
-}
-
-/* cree le champs "auth" renvoye au Groupe X */
-function gpex_make_auth($chlg, $privkey, $datafields) {
-	list ($auth, $param) = gpex_make($chlg, $privkey, $datafields);
-	return $auth;
+    return array($auth, "&auth=" . $auth . $params);
 }
 
 /* cree les parametres de l'URL de retour avec les champs demandes */
-function gpex_make_params($chlg, $privkey, $datafields) {
-	list ($auth, $param) = gpex_make($chlg, $privkey, $datafields);
-	return $param;
+function gpex_make_params($chlg, $privkey, $datafields, $charset)
+{
+    list ($auth, $param) = gpex_make($chlg, $privkey, $datafields, $charset);
+    return $param;
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
