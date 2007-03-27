@@ -251,6 +251,8 @@ class PlatalPage extends Smarty
     {
         $this->_jsonVars[$var] = $value;
     }
+
+    // }}}
 }
 
 function escape_xorgDB(&$item, $key)

@@ -97,9 +97,9 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr>
       <td></td>
-      <td {popup caption='Connexion permanente' width='300' text="Coche cette case pour être automatiquement reconnu à ta prochaine connexion
+      <td {popup caption='Connexion permanente' width='300' text='Coche cette case pour être automatiquement reconnu à ta prochaine connexion
         depuis cet ordinateur.<br />
-        Il n'est pas conseillé de cocher la case si cette machine n'est pas <b>strictement</b> personnelle"}>
+        Il n\'est pas conseillé de cocher la case si cette machine n\'est pas <b>strictement</b> personnelle'}>
         <input type="checkbox" name="remember" /> Garder l'accès aux services après déconnexion
       </td>
     </tr>

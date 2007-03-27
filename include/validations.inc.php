@@ -363,6 +363,14 @@ abstract class Validate
     }
 
     // }}}
+    // {{{ function ruleText()
+
+    public function ruleText()
+    {
+        return str_replace('\'', '\\\'', $this->rules);
+    }
+
+    // }}}
 }
 
 foreach (glob(dirname(__FILE__).'/validations/*.inc.php') as $file) {

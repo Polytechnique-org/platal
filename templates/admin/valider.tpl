@@ -98,7 +98,7 @@
   </tr>
   <tr><th colspan='2'>Réponse</th></tr>
   <tr>
-    <td colspan='2' {popup caption="Règles de validation" text=$valid->rules}>
+    <td colspan='2' {popup caption="Règles de validation" text=$valid->ruleText()}>
       <form action="admin/validate" method="post">
         <div>
           Réponse préremplie :
