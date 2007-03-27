@@ -151,9 +151,14 @@ class EvtReq extends Validate
                 $forlife = get_user_forlife($this->uid);
                 require_once 'banana/forum.inc.php';
                 $banana = new ForumsBanana($forlife);
+                $text = strip_tags($this->texte, '<p><br><li><ul><ol><a>');
+                $text = preg_replace(',<a href="([^"]+)">(.*?)</a>,', '$1', $text);
+                $text = preg_replace('/<li>/', '* ', $text);
+                $text = preg_replace(',</?.+?>,i', "\n", $text);
+                $text = preg_replace("/\n{2,}/", "\n\n", $text);
                 $post = $banana->post($globals->banana->event_forum,
                                       $globals->banana->event_reply,
-                                      $this->titre, pl_entity_decode(strip_tags($this->texte)));
+                                      $this->titre, pl_entity_decode($text));
                 if ($post != -1) {
                     XDB::execute("UPDATE  evenements
                                      SET  creation_date = creation_date, post_id = {?}
