@@ -113,7 +113,8 @@
 {include file=../spool/wiki.d/cache_Xorg.SMTPSécurisé.tpl included=1}
 {else}
 <p>
-  <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.
+  <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
+  <a href="{$platal->pl_self()}?doc=nntp">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.
 </p>
 {/if}
 
