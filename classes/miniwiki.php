@@ -7,16 +7,19 @@ class MiniWiki
     private static $replacementHTML = array();
     private static $replacementText = array();
 
+    private static $title_index = -1;
     private static $info     = array();
 
-    public static function Markup($id, $pattern, $replacement, $replacementTxt, $info = null)
+    public static function Markup($pattern, $replacement, $replacementTxt, $info = null)
     {
+        $id = count(MiniWiki::$patternsWiki);
         MiniWiki::$patternsWiki[$id] = $pattern;
         MiniWiki::$replacementHTML[$id] = $replacement;
         MiniWiki::$replacementText[$id] = $replacementTxt;
         if ($info) {
             MiniWiki::$info[$id] = $info;
         }
+        return $id;
     }
     
     public static function init()
@@ -24,65 +27,68 @@ class MiniWiki
         if (isset(MiniWiki::$patternsWiki[0])) {
             return;
         }
-        MiniWiki::Markup(0, "/(\r\n|\r([^\n]))/", "\n$2", "\n$2");
+        MiniWiki::Markup("/(\r\n|\r([^\n]))/", "\n$2", "\n$2");
                 
         // retours à la ligne avec \\
-        MiniWiki::Markup(1, "/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',strlen('$1'))", "str_repeat('\n',strlen('$1'))", "ligne1\\\\\nligne2");
+        MiniWiki::Markup("/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',strlen('$1'))", "str_repeat('\n',strlen('$1'))", "ligne1\\\\\nligne2");
         
         // bold, italic and others
         // ''' bold '''
-        MiniWiki::Markup(2, "/'''(.*?)'''/",'<strong>$1</strong>','*$1*', "'''gras'''");
+        MiniWiki::Markup("/'''(.*?)'''/",'<strong>$1</strong>','*$1*', "'''gras'''");
         // '' italic ''
-        MiniWiki::Markup(3, "/''(.*?)''/",'<em>$1</em>','/$1/', "''italique''");
+        MiniWiki::Markup("/''(.*?)''/",'<em>$1</em>','/$1/', "''italique''");
         // '+ big +'
-        MiniWiki::Markup(4, "/'\\+(.*?)\\+'/",'<big>$1</big>','*$1*', "'+grand+'");
+        MiniWiki::Markup("/'\\+(.*?)\\+'/",'<big>$1</big>','*$1*', "'+grand+'");
         // '- small -'
-        MiniWiki::Markup(5, "/'\\-(.*?)\\-'/",'<small>$1</small>','$1', "'-petit-'");
+        MiniWiki::Markup("/'\\-(.*?)\\-'/",'<small>$1</small>','$1', "'-petit-'");
         // '^superscript^'
-        MiniWiki::Markup(6, "/'\\^(.*?)\\^'/",'<sup>$1</sup>','$1', "'^exposant^'");
+        MiniWiki::Markup("/'\\^(.*?)\\^'/",'<sup>$1</sup>','$1', "'^exposant^'");
         // '_subscript_'
-        MiniWiki::Markup(7, "/'_(.*?)_'/",'<sub>$1</sub>','$1', "'_indice_'");
+        MiniWiki::Markup("/'_(.*?)_'/",'<sub>$1</sub>','$1', "'_indice_'");
         // {+ underline +}
-        MiniWiki::Markup(8, "/\\{\\+(.*?)\\+\\}/",'<ins>$1</ins>','_$1_', "{+insertion+}");
+        MiniWiki::Markup("/\\{\\+(.*?)\\+\\}/",'<ins>$1</ins>','_$1_', "{+insertion+}");
         // {- strikeout -}
-        MiniWiki::Markup(9, "/\\{-(.*?)-\\}/",'<del>$1</del>','-$1-', "{-suppression-}");
+        MiniWiki::Markup("/\\{-(.*?)-\\}/",'<del>$1</del>','-$1-', "{-suppression-}");
+        // {color| colored text |}
+        MiniWiki::Markup("/\{([a-z]+|\#[0-9a-f]{3,6})\|(.*?)\|\}/i", "<span style='color: $1;'>$2</span>", "$2",
+                         "{red|rouge|} {#ff0|jaune|} {#0000ff|bleu|}");
         // [+ big +] [++ bigger ++] [+++ even bigger +++] ...
-        MiniWiki::Markup(10, "/\\[(([-+])+)(.*?)\\1\\]/e","'<span style=\'font-size:'.(round(pow(6/5,$2strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'", "[+ grand +]\n\n[++ plus grand ++]\n\n[+++ encore plus grand +++]");
+        MiniWiki::Markup("/\\[(([-+])+)(.*?)\\1\\]/e","'<span style=\'font-size:'.(round(pow(6/5,$2strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'", "[+ grand +]\n\n[++ plus grand ++]\n\n[+++ encore plus grand +++]");
         
         // ----- <hr/>
-        MiniWiki::Markup(11, "/(\n|^)--(--+| \n)/s", '$1<hr/>', '$1-- '."\n", "----\n");
+        MiniWiki::Markup("/(\n|^)--(--+| \n)/s", '$1<hr/>', '$1-- '."\n", "----\n");
         // titles
-        MiniWiki::Markup(12, '/(\n|^)(!+)([^\n]*)/se', "'$1<h'.strlen('$2').'>$3</h'.strlen('$2').'>'", "'$1$3'",
-                             "!titre1\n\n!!titre2\n\n!!!titre3");
+        MiniWiki::$title_index = MiniWiki::Markup('/(\n|^)(!+)([^\n]*)/se', "'$1<h'.strlen('$2').'>$3</h'.strlen('$2').'>'",
+                                                  "'$1$3'", "!titre1\n\n!!titre2\n\n!!!titre3");
         
         // * unordered list
-        MiniWiki::Markup(13, "/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se", "'<ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul>'", "$0", "* element1\n* element2\n* element3");
+        MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se", "'<ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul>'", "$0", "* element1\n* element2\n* element3");
         // # unordered list
-        MiniWiki::Markup(14, "/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "$0", "# element1\n# element2\n# element3");
+        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "$0", "# element1\n# element2\n# element3");
         
         // links
-        MiniWiki::Markup(15, '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/ui', '<a href="\\0">\\0</a>', '[\\0]');
-        MiniWiki::Markup(16, '/(\s|^|\\[\\[)www\.((?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/iu', '\\1<a href="http://www.\\2">www.\\2</a>', '[http://www.\\2]');
-        MiniWiki::Markup(17, '/(?:mailto:)?([a-z0-9.\-+_]+@([\-.+_]?[a-z0-9])+)/i', '<a href="mailto:\\0">\\0</a>', '[mailto:\\0]');
-        MiniWiki::Markup(18, '/\\[\\[\\s*<a href="([^>]*)">.*<\/a>\\s*\|([^\\]]+)\\]\\]/i', '<a href="\\1">\\2</a>', '\\2 [\\1]', "[[http://www.example.com|Mon site web]]\n\nhttp://www.example.com\n\ntest@example.com");
+        MiniWiki::Markup('/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/ui', '<a href="\\0">\\0</a>', '[\\0]');
+        MiniWiki::Markup('/(\s|^|\\[\\[)www\.((?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/iu', '\\1<a href="http://www.\\2">www.\\2</a>', '[http://www.\\2]');
+        MiniWiki::Markup('/(?:mailto:)?([a-z0-9.\-+_]+@([\-.+_]?[a-z0-9])+)/i', '<a href="mailto:\\0">\\0</a>', '[mailto:\\0]');
+        MiniWiki::Markup('/\\[\\[\\s*<a href="([^>]*)">.*<\/a>\\s*\|([^\\]]+)\\]\\]/i', '<a href="\\1">\\2</a>', '\\2 [\\1]', "[[http://www.example.com|Mon site web]]\n\nhttp://www.example.com\n\ntest@example.com");
         
         // paragraphs and empty lines
-        MiniWiki::Markup(19, "/\n\n/", '</p><p>', "\n\n", "paragraphe1\n\nparagraphe2");
-        MiniWiki::Markup(20, "/\n/", ' ', "\n");
-        MiniWiki::Markup(21, "/^.*<\/p><p>.*$/s", "<p>$0</p>", "$0");
+        MiniWiki::Markup("/\n\n/", '</p><p>', "\n\n", "paragraphe1\n\nparagraphe2");
+        MiniWiki::Markup("/\n/", ' ', "\n");
+        MiniWiki::Markup("/^.*<\/p><p>.*$/s", "<p>$0</p>", "$0");
     }
 
     public static function WikiToHTML($wiki, $title = false)
     {
         if (!$title) {
-            $oldrule12 = MiniWiki::$replacementHTML[12];
-            MiniWiki::$replacementHTML[12] = "'$0'";
+            $oldrule12 = MiniWiki::$replacementHTML[MiniWiki::$title_index];
+            MiniWiki::$replacementHTML[MiniWiki::$title_index] = "'$0'";
         }
         $html = preg_replace(MiniWiki::$patternsWiki,
                              MiniWiki::$replacementHTML,
                              htmlentities(trim($wiki), ENT_COMPAT, 'UTF-8'));
         if (!$title) {
-            MiniWiki::$replacementHTML[12] = $oldrule12;
+            MiniWiki::$replacementHTML[MiniWiki::$title_index] = $oldrule12;
         }
         return $html;
     }
@@ -135,12 +141,12 @@ class MiniWiki
     public static function WikiToText($wiki, $just=false, $indent=0, $width=68, $title=false)
     {
         if (!$title) {
-            $oldrule12 = MiniWiki::$replacementHTML[12];
-            MiniWiki::$replacementHTML[12] = "'$0'";
+            $oldrule12 = MiniWiki::$replacementHTML[MiniWiki::$title_index];
+            MiniWiki::$replacementHTML[MiniWiki::$title_index] = "'$0'";
         }
         $text = preg_replace(MiniWiki::$patternsWiki, MiniWiki::$replacementText, trim($wiki));
         if (!$title) {
-            MiniWiki::$replacementHTML[12] = $oldrule12;
+            MiniWiki::$replacementHTML[MiniWiki::$title_index] = $oldrule12;
         }
         $text = $just ? MiniWiki::justify($text,$width-$indent) : wordwrap($text,$width-$indent);
         if($indent) {
@@ -153,8 +159,8 @@ class MiniWiki
     static public function help($with_title = false)
     {
         if (!$with_title) {
-            $info12 = MiniWiki::$info[12];
-            unset(MiniWiki::$info[12]);
+            $info12 = MiniWiki::$info[MiniWiki::$title_index];
+            unset(MiniWiki::$info[MiniWiki::$title_index]);
         }
 
         $res = array();
@@ -163,7 +169,7 @@ class MiniWiki
         }
 
         if (!$with_title) {
-            MiniWiki::$info[12] = $info12;
+            MiniWiki::$info[MiniWiki::$title_index] = $info12;
         }
         return $res;
     }

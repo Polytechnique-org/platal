@@ -196,9 +196,7 @@ Bienvenue {$smarty.session.prenom}
           </div>
           {/if}
           <div style="text-align: justify">
-            {tidy}
-              {$ev.texte|smarty:nodefaults|nl2br}
-            {/tidy}
+            {$ev.texte|smarty:nodefaults|nl2br}
           </div>
         </div>
       </td>
