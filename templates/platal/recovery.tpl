@@ -35,6 +35,18 @@ ton adresse en {#globals.mail.domain#}. Ce certificat te permet d'accéder à un
 Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certificat sur cette page.
 </p>
 
+{elseif $no_addr}
+
+<p class="erreur">
+  {icon name=error} Les informations n'ont pas pu être envoyées car ton adresse {#globals.core.sitename#} n'a plus
+  de redirection fonctionnelle.
+</p>
+
+<p>
+  <a href="mailto:register@polytechnique.org">Contacte le support</a> pour que nous puissions régler ton problème
+  au plus vite.
+</p>
+
 {else}
 
 <form action="{$platal->ns}recovery" method="post">
@@ -47,7 +59,7 @@ Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certifi
   Après avoir complété les informations suivantes, tu recevras à ton adresse {#globals.core.sitename#} un
   courrier électronique te permettant de choisir un nouveau mot de passe. Si tu désires que ce mail soit
   envoyé vers une de tes redirections en particulier, tu peux renseigner l'adresse de cette redirection dans
-  le champ facultatif.
+  le champ facultatif (cette adresse doit être une de tes redirections actuelles !).
   </p>
   <p>
   Si tu ne reçois pas ce courrier, n'hésite pas à contacter 

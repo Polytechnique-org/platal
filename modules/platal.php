@@ -272,6 +272,15 @@ class PlatalModule extends PLModule
         list($uid, $naissance) = $res->fetchOneRow();
 
         if ($naissance == $birth) {
+            $res = XDB::query("SELECT  COUNT(*)
+                                 FROM  emails
+                                WHERE  uid = {?} AND flags != 'panne' AND flags != 'filter'", $uid);
+            $count = intval($res->fetchOneCell());
+            if ($count == 0) {
+                $page->assign('no_addr', true);
+                return;
+            }
+
             $page->assign('ok', true);
 
             $url   = rand_url_id(); 
