@@ -50,8 +50,8 @@ class MiniWiki
         // {- strikeout -}
         MiniWiki::Markup("/\\{-(.*?)-\\}/",'<del>$1</del>','-$1-', "{-suppression-}");
         // {color| colored text |}
-        MiniWiki::Markup("/\{([a-z]+|\#[0-9a-f]{3,6})\|(.*?)\|\}/i", "<span style='color: $1;'>$2</span>", "$2",
-                         "{red|rouge|} {#ff0|jaune|} {#0000ff|bleu|}");
+        MiniWiki::Markup("/%([a-z]+|\#[0-9a-f]{3,6})%(.*?)%%/i", "<span style='color: $1;'>$2</span>", "$2",
+                         "%red% texte en rouge %%\\\\\n%#ff0% texte en jaune %%\\\\\n%#0000ff% texte en bleu %%");
         // [+ big +] [++ bigger ++] [+++ even bigger +++] ...
         MiniWiki::Markup("/\\[(([-+])+)(.*?)\\1\\]/e","'<span style=\'font-size:'.(round(pow(6/5,$2strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'", "[+ grand +]\n\n[++ plus grand ++]\n\n[+++ encore plus grand +++]");
         
