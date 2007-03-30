@@ -143,7 +143,7 @@
     <tr>
       <td>Pays</td>
       <td>
-        <select name="country" onchange="return Ajax.update_html('region', '{$platal->ns}search/ajax/region/' + this.value);">
+        <select name="country" onchange="return Ajax.update_html('region', '{#globals.baseurl#}/search/ajax/region/' + this.value);">
         {if $smarty.request.country}
           {assign var="country" value=$smarty.request.country}
         {else}
@@ -272,7 +272,7 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Formation</td>
       <td>
-        <select name="school" onchange="return Ajax.update_html('grade', '{$platal->ns}search/ajax/grade/' + this.value);">
+        <select name="school" onchange="return Ajax.update_html('grade', '{#globals.baseurl#}/search/ajax/grade/' + this.value);">
           <option value="0"></option>
           {iterate item=cs from=$choix_schools}
           <option value="{$cs.id}" {if $smarty.request.school eq $cs.id}selected="selected"{/if}>
