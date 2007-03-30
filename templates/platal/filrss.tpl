@@ -23,17 +23,19 @@
 <h1>Fil RSS</h1>
 
 {if !$smarty.session.core_rss_hash}
-Tu viens de cliquer sur le lien d'activation des fils RSS. Les fils RSS du site <br/>
-ne sont pas activés dans tes préférences.
+<p>
+  Tu viens de cliquer sur le lien d'activation des fils RSS. Les fils RSS du site
+  ne sont pas activés dans tes préférences.
+</p>
 <ul>
   <li>
- Tu peux le faire tout de suite en cliquant sur Activer ci-dessous.
+    Tu peux le faire tout de suite en cliquant sur Activer ci-dessous.
   </li>
   <li>
- Qu'est-ce qu'un <a href="http://www.weblogger.ch/blog/archives/2004/06/23/syndication-pas-pas/">fil RSS</a> ?
+    Qu'est-ce qu'un <a href="Xorg/RSS">fil RSS</a> ?
   </li>
   <li>
- Comment configurer un <a href="http://www.ac-reims.fr/ia52/rss/lire_rss.htm">agregateur RSS</a> ?
+    Comment configurer un <a href="Xorg/RSS">agregateur RSS</a> ?
   </li>
 </ul>
 
