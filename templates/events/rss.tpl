@@ -37,7 +37,22 @@
       <title>{$line.titre|strip_tags}</title>
       <guid isPermaLink="false">{$line.id}</guid>
       <link>{#globals.baseurl#}/events#newsid{$line.id}</link>
-      <description><![CDATA[{$line.texte|nl2br}]]></description>
+      <description><![CDATA[
+        {if $line.photo}
+        <div style="float: left; padding-right: 0.5em">
+          <img src="{#globals.baseurl#}/events/photo/{$line.id}" alt="{$line.title}" />
+        </div>
+        {/if}
+        <div>{$line.texte}</div>
+        {if $line.post_id neq -1}
+        <div style="clear: both">
+          <br />
+          <a href="{#globals.baseurl#}/banana/{#globals.banana.event_reply#|default:#globals.banana.event_forum#}/read/{$line.post_id}">
+          {icon name=comments full=true} Suivre la discussion
+          </a>
+        </div>
+        {/if}
+      ]]></description>
       <author>{$line.prenom} {$line.nom} (X{$line.promo})</author>
       <pubDate>{$line.creation_date|rss_date}</pubDate>
     </item>

@@ -22,10 +22,10 @@ foreach ($tables as $table) {
         $from = array();
         $to   = array();
         foreach ($array as $key=>$value) {
-            $from[] = $key . '="' . XDB::_db_escape($value) . '"';
+            $from[] = $key . '="' . XDB::escape($value) . '"';
             $valued = utf8_decode($value);
             if (is_utf8($value) && $valued != $value) {
-                $to[] = $key . '="' . XDB::_db_escape($valued) .'"';
+                $to[] = $key . '="' . XDB::escape($valued) .'"';
             }
         }
         if (!empty($to)) {

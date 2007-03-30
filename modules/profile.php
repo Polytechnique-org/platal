@@ -265,7 +265,7 @@ class ProfileModule extends PLModule
         $page->addCssLink('profil.css');
         $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
 
-        require_once 'tabs.inc.php';
+        require_once dirname(__FILE__) . '/profile/tabs.inc.php';
         require_once 'profil.func.inc.php';
         require_once 'synchro_ax.inc.php';
 

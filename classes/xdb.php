@@ -41,7 +41,7 @@ class XDB
 
     public static function _prepare($args)
     {
-        $query    = array_map(Array('XDB', '_db_escape'), $args);
+        $query    = array_map(Array('XDB', 'escape'), $args);
         $query[0] = str_replace('{?}', '%s', str_replace('%',   '%%', $args[0]));
         return call_user_func_array('sprintf', $query);
     }
@@ -143,7 +143,7 @@ class XDB
         return XDB::$mysqli->affected_rows;
     }
 
-    public static function _db_escape($var)
+    public static function escape($var)
     {
         switch (gettype($var)) {
           case 'boolean':

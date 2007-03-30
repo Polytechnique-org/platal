@@ -43,7 +43,7 @@ class Marketing
     {
         $this->user         = $this->getUser($uid, $email);
         $this->sender_mail  = $this->getFrom($from, $sender);
-        $this->engine       = $this->getEngine($type, $data, $from == 'user' ? null : $this->sender);
+        $this->engine      =& $this->getEngine($type, $data, $from == 'user' ? null : $this->sender);
 
         $this->type   = $type;
         $this->data   = $data;
@@ -85,13 +85,18 @@ class Marketing
         }
     }
 
-    private function getEngine($type, $data, $from)
+    private function &getEngine($type, $data, $from)
     {
         $class = $type . 'Marketing';
         if (!class_exists($class, false)) {
             $class= 'DefaultMarketing';
         }
-        return new $class($data, $from);
+        if (!is_subclass_of($class, 'MarketingEngine')) {
+            $engine = null;
+        } else {
+            $engine = new $class($data, $from);
+        }
+        return $engine;
     }
 
     public function getTitle()

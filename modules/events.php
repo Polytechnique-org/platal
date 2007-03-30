@@ -27,7 +27,7 @@ class EventsModule extends PLModule
             'events'         => $this->make_hook('ev',        AUTH_COOKIE),
             'rss'            => $this->make_hook('rss', AUTH_PUBLIC),
             'events/preview' => $this->make_hook('preview', AUTH_PUBLIC, 'user', NO_AUTH),
-            'events/photo'   => $this->make_hook('photo', AUTH_COOKIE),
+            'events/photo'   => $this->make_hook('photo', AUTH_PUBLIC),
             'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
             'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
 
@@ -251,11 +251,12 @@ class EventsModule extends PLModule
         $uid = init_rss('events/rss.tpl', $user, $hash);
             
         $rss = XDB::iterator(
-                'SELECT  e.id, e.titre, e.texte, e.creation_date,
+                'SELECT  e.id, e.titre, e.texte, e.creation_date, e.post_id, p.attachmime IS NOT NULL AS photo,
                          IF(u2.nom_usage = "", u2.nom, u2.nom_usage) AS nom, u2.prenom, u2.promo
                    FROM  auth_user_md5   AS u
              INNER JOIN  evenements      AS e ON ( (e.promo_min = 0 || e.promo_min <= u.promo)
                                                  AND (e.promo_max = 0 || e.promo_max >= u.promo) )
+              LEFT JOIN  evenements_photo AS p ON (p.eid = e.id)
              INNER JOIN  auth_user_md5   AS u2 ON (u2.user_id = e.user_id)
                   WHERE  u.user_id = {?} AND FIND_IN_SET(e.flags, "valide")
                                          AND peremption >= NOW()', $uid);

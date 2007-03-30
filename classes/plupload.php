@@ -116,7 +116,7 @@ class PlUpload
     public function rm()
     {
         @unlink($this->filename);
-        clearstatcache();
+        @clearstatcache();
     }
 
     public function rename($fn)
