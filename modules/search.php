@@ -29,6 +29,7 @@ class SearchModule extends PLModule
             'search/ajax/region'  => $this->make_hook('region', AUTH_COOKIE, 'user', NO_AUTH),
             'search/ajax/grade'   => $this->make_hook('grade',  AUTH_COOKIE, 'user', NO_AUTH),
             'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
+            'search/autocomplete' => $this->make_hook('autocomplete', AUTH_PUBLIC),
         );
     }
 
@@ -276,6 +277,41 @@ class SearchModule extends PLModule
         $page->ChangeTpl('search/adv.grade.form.tpl', NO_SKIN);
         $page->assign('grade', '');
         $this->get_diplomas($school);
+    }
+
+    function handler_autocomplete(&$page, $type = null)
+    {
+        // Autocompletion : according to type required, return
+        // a list of results matching with the number of matches.
+        // The output format is :
+        //   result1|nb1
+        //   result2|nb2
+        //   ...
+        header('Content-Type: text/plain; charset="UTF-8"');
+        $q = $_REQUEST['q'];
+        if (!$q) exit();
+        $unique = 'user_id';
+        $db = 'auth_user_md5';
+        switch ($type) {
+        case 'firstname': $field = 'prenom'; break;
+        case 'name': $field = 'nom'; break;
+        case 'nickname': $field = 'profile_nick'; break;
+        case 'entreprise': $db = 'entreprises'; $field = 'entreprise'; $unique='uid'; break;
+        default: exit();
+        }
+
+        $liste = XDB::iterator('SELECT '.$field.' AS field, COUNT(DISTINCT '.$unique.') AS nb FROM '.$db.' WHERE '.$field.' LIKE {?} GROUP BY '.$field.' LIMIT 11', $q.'%');
+        $nbResults = 0;
+        while ($result = $liste->next()) {
+            $nbResults++;
+            if ($nbResults == 11) {
+                echo '...|1'."\n";
+            } else {
+                echo $result['field'].'|'.$result['nb']."\n";
+            }
+        }
+
+        exit();
     }
 }
 

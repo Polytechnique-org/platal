@@ -6,6 +6,9 @@ New:
     * Admin:
         - Fold/unfold wiki folders                                         -Car
 
+    * Banana:
+        - Fold/unfold threads                                              -Car
+
     * Core:
         - UTF-8                                                            -FRU
         - New Backtrace tool                                               -FRU
@@ -21,6 +24,7 @@ New:
     * Search:
         - Search Engine IE7 compatible                                     -FRU
         - Add soundex search for quick search                              -FRU
+        - Add autocompletion for advanced search                           -Car
 
     * Xnetgrp:
         - Direct access to the group forum (if exists)                     -FRU

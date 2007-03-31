@@ -106,9 +106,11 @@ htdocs/css/banana.css:
 ## jquery
 ##
 
-jquery: htdocs/javascript/jquery.js
+jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js
 htdocs/javascript/jquery.js:
 	wget http://jquery.com/src/jquery-latest.pack.js -O htdocs/javascript/jquery.js -q
+htdocs/javascript/jquery.autocomplete.js:
+	wget http://www.dyve.net/jquery/js/jquery.autocomplete.js -O htdocs/javascript/jquery.autocomplete.js -q
 
 ################################################################################
 

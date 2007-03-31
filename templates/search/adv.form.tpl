@@ -23,12 +23,25 @@
 <h1>Recherche dans l'annuaire</h1>
 
 <form id="recherche" action="search/adv" method="get">
+  {javascript name="jquery"}
+  {javascript name="jquery.autocomplete"}
   <script type="text/javascript">{literal}
     function launch_form(url) {
       var f = document.getElementById('recherche');
       f.action = url;
       f.submit();
     }
+    function format_autocomplete(row) {
+      if (row[1] == 1) {
+        return row[0];
+      }
+      return row[0] + ' ('+ row[1] + ')';
+    }
+    $(document).ready(function() {
+      $(".autocomplete").each(function() {
+        $(this).autocomplete("search/autocomplete/"+this.name,{selectOnly:1,formatItem:format_autocomplete});
+      });
+    });
   {/literal}</script>
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
@@ -41,19 +54,19 @@
       <td>
     	<input type="hidden" name="rechercher" value="Chercher"/>
     	<input type="submit" style="display:none"/>
-        <input type="text" name="name" size="32" value="{$smarty.request.name}" />
+        <input type="text" class="autocomplete" name="name" size="32" value="{$smarty.request.name}" />
       </td>
     </tr>
     <tr>
       <td>Prénom</td>
       <td>
-        <input type="text" name="firstname" size="32" value="{$smarty.request.firstname}" />
+        <input class="autocomplete" type="text" name="firstname" size="32" value="{$smarty.request.firstname}" />
       </td>
     </tr>
     <tr>
       <td>Surnom</td>
       <td>
-        <input type="text" name="nickname" size="32" value="{$smarty.request.nickname}" />
+        <input class="autocomplete" type="text" name="nickname" size="32" value="{$smarty.request.nickname}" />
       </td>
     </tr>
     <tr>
@@ -174,7 +187,7 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     </tr>
     <tr>
       <td>Entreprise</td>
-      <td><input type="text" name="entreprise" size="32" value="{$smarty.request.entreprise}" /></td>
+      <td><input type="text" class="autocomplete" name="entreprise" size="32" value="{$smarty.request.entreprise}" /></td>
     </tr>
     <tr>
       <td>Fonction</td>
