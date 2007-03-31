@@ -39,13 +39,13 @@
   function replie(me, cat) {
     if (toggle == 1) return;
     toggle = 2;
-    $("tr[@id^=row/"+cat+"/]").hide();
+    $("tr[@id^=row_"+cat+"_]").hide();
     $(me).attr('src', 'images/k1.gif');
   }
   function deplie(me, cat) {
     if (toggle == 2) return;
     toggle = 1;
-    $("tr[@id^=row/"+cat+"/]").show();
+    $("tr[@id^=row_"+cat+"_]").show();
     $(me).attr('src', 'images/k2.gif');
   }
   function toggle_folder() {
@@ -95,7 +95,7 @@
     </td>
   </tr>
 {foreach from=$pages item=perm key=page name=pages}
-  <tr id="row/{$cat}/{$page}" class="impair" onmouseover="this.className='pair';" onmouseout="this.className='impair';">
+  <tr id="row_{$cat}_{$page}" class="impair" onmouseover="this.className='pair';" onmouseout="this.className='impair';">
     <td style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       {if $smarty.foreach.pages.last}
       <img src="images/L.gif" alt="L" width="12" height="21" />
