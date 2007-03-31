@@ -28,7 +28,7 @@
 <div id="message" style="position:absolute;"></div><br />
 
 <script type="text/javascript">
-  {liiteral}
+  {literal}
   function showPromo()
   {
       var value = document.getElementById('promo').value;
