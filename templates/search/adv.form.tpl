@@ -39,7 +39,7 @@
     }
     $(document).ready(function() {
       $(".autocomplete").each(function() {
-        $(this).autocomplete("search/autocomplete/"+this.name,{selectOnly:1,formatItem:format_autocomplete});
+        $(this).autocomplete("search/autocomplete/"+this.name,{selectOnly:1,formatItem:format_autocomplete,matchSubset:0,width:$(this).width()});
       });
     });
   {/literal}</script>

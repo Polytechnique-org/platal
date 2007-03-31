@@ -18,6 +18,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+.ac_results {
+    background-color: window;
+    border: 1px solid;
+    overflow: hidden;
+    padding:0px;
+}
+
 .ac_results ul {
     padding:0px;
     margin:0px;
@@ -26,12 +33,14 @@
 .ac_results li {
     display:block;
     padding: 2px;
-    background: white;
-    color: black;
     cursor:pointer;
 }
 .ac_results .over {
-    background: yellow;
+    background: highlight;
+    color: highlighttext;
 }
 
+.ac_loading {
+	background:window url(images/wait.gif) no-repeat scroll right center;
+}
 /* vim: set et ts=4 sts=4 sw=4: */

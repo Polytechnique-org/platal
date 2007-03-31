@@ -247,7 +247,7 @@ class SearchModule extends PLModule
 
             $page->assign('url_search_form', $search->make_url(Array('rechercher'=>0)));
             if (!Env::i('with_soundex')) {
-                $page->assign('with_soundex', $search->make_url(Array()) . "&with_soundex=1");
+                $page->assign('with_soundex', $search->make_url(Array()) . "&amp;with_soundex=1");
             }
             $nb_tot = $search->show();
 
@@ -295,7 +295,7 @@ class SearchModule extends PLModule
         switch ($type) {
         case 'firstname': $field = 'prenom'; break;
         case 'name': $field = 'nom'; break;
-        case 'nickname': $field = 'profile_nick'; break;
+        case 'nickname': $field = 'profile_nick'; $db = 'auth_user_quick'; break;
         case 'entreprise': $db = 'entreprises'; $field = 'entreprise'; $unique='uid'; break;
         default: exit();
         }
