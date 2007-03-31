@@ -552,6 +552,10 @@ div.adresse strong {
     text-align: left;
 }
 
+#body-menu .menu_item a {
+		text-decoration:none;
+}
+
 #body-menu .menu_title {
     color: gray;
     background: #eeeeee;
