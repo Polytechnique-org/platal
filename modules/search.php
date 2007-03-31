@@ -247,7 +247,7 @@ class SearchModule extends PLModule
 
             $page->assign('url_search_form', $search->make_url(Array('rechercher'=>0)));
             if (!Env::i('with_soundex')) {
-                $page->assign('with_soundex', $search->make_url(Array()) . "&amp;with_soundex=1");
+                $page->assign('with_soundex', $search->make_url(Array()) . "&with_soundex=1");
             }
             $nb_tot = $search->show();
 
@@ -297,6 +297,8 @@ class SearchModule extends PLModule
         case 'name': $field = 'nom'; break;
         case 'nickname': $field = 'profile_nick'; $db = 'auth_user_quick'; break;
         case 'entreprise': $db = 'entreprises'; $field = 'entreprise'; $unique='uid'; break;
+        case 'city': $db = 'geoloc_city INNER JOIN adresses ON(geoloc_city.id = adresses.cityid)'; $unique='uid'; $field='geoloc_city.name'; break;
+        case 'poste': $db = 'entreprises'; $field = 'poste'; $unique='uid'; break;
         default: exit();
         }
 

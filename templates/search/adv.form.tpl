@@ -154,7 +154,7 @@
     </tr>
     <tr>
       <td>Ville</td>
-      <td><input type="text" name="city" size="32" value="{$smarty.request.city}" /></td>
+      <td><input type="text" class="autocomplete" name="city" size="32" value="{$smarty.request.city}" /></td>
     </tr>
     <tr>
       <td>Pays</td>
@@ -207,7 +207,7 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     </tr>
     <tr>
       <td>Poste</td>
-      <td><input type="text" name="poste" size="32" value="{$smarty.request.poste}" /></td>
+      <td><input type="text" class="autocomplete" name="poste" size="32" value="{$smarty.request.poste}" /></td>
     </tr>
     <tr>
       <td>Secteur</td>
