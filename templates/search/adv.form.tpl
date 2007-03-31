@@ -146,6 +146,7 @@
         <input type="checkbox" name="with_soundex" value="1" {if $smarty.request.with_soundex}checked="checked"{/if} id="sdxn" />
         <label for="sdxn">étendre par proximité sonore (uniquement sur nom et prénom)</label>
       </td>
+    </tr>
     <tr>
       <th colspan="2">Géographie</th>
     </tr>
@@ -251,7 +252,7 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
         <option value="0"></option>
         {iterate item=cb from=$choix_binets}
           <option value="{$cb.id}" {if $smarty.request.binet eq $cb.id}selected="selected"{/if}>
-            {$cb.text}
+            {$cb.text|htmlspecialchars}
           </option>
         {/iterate}
         </select>
@@ -289,7 +290,7 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
           <option value="0"></option>
           {iterate item=cs from=$choix_schools}
           <option value="{$cs.id}" {if $smarty.request.school eq $cs.id}selected="selected"{/if}>
-            {$cs.text}
+            {$cs.text|htmlspecialchars}
           </option>
           {/iterate}
         </select>

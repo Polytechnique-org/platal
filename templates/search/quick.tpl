@@ -28,6 +28,7 @@
 <div id="message" style="position:absolute;"></div><br />
 
 <script type="text/javascript">
+  <!--
   {literal}
   function showPromo()
   {
@@ -40,15 +41,18 @@
       return false;
   }
   {/literal}
+  -->
 </script>
 
 <form action="" method="post" onsubmit="return showPromo();">
 <table class="tinybicol" style="width: 35%; margin-right: auto; margin-left: auto">
-  <td class="titre">Promotion :</td>
-  <td>
-    <input type="text" name="promo" id="promo" size="4" value="" />
-    <input type="submit" name="submit_promo" value="Voir" />
-  </td>
+  <tr>
+    <td class="titre">Promotion :</td>
+    <td>
+      <input type="text" name="promo" id="promo" size="4" value="" />
+      <input type="submit" name="submit_promo" value="Voir" />
+    </td>
+  </tr>
 </table>
 </form>
 

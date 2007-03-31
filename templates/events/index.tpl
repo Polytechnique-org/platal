@@ -140,6 +140,7 @@ Bienvenue {$smarty.session.prenom}
 
   <script type="text/javascript">
   {literal}
+  <!--
   function readEvent(id) {
   	document.getElementById('content-evt'+id).style.display='none';
   	var link = document.getElementById('link-evt'+id);
@@ -151,6 +152,7 @@ Bienvenue {$smarty.session.prenom}
   	Ajax.update_html(null, 'events/read/'+id);
   	return false;
   }
+  -->
   {/literal}
   </script>
  
@@ -204,7 +206,6 @@ Bienvenue {$smarty.session.prenom}
     <tr class="pair">
       <td class="half smaller">
         <div style="display:block; float: right; padding-left:1em">
-          <a href="events#pagetop">
           {if $ev.post_id}
           <a href="banana/{#globals.banana.event_reply#|default:#globals.banana.event_forum#}/read/{$ev.post_id}">
             {icon name="comments" title="Discussion"}Suivre la discussion
