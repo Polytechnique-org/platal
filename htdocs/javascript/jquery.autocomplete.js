@@ -22,6 +22,7 @@ $.autocomplete = function(input, options) {
 		position: "absolute",
 		top: (pos.y + input.offsetHeight) + "px",
 		left: pos.x + "px",
+		minWidth: $(input).width()
 	});
 	// Add to body element
 	$(input).parent().append(results);
@@ -162,8 +163,11 @@ $.autocomplete = function(input, options) {
 				// we put a styled iframe behind the calendar so HTML SELECT elements don't show through
 				$results.append(document.createElement('iframe'));
 			}
-			results.appendChild(dataToDom(data));
+			var datasInDom = dataToDom(data);
+			results.appendChild(datasInDom);
 			$results.show();
+			// set size of ul smaller (for borders) but almost as big as div
+			$(datasInDom).width($results.width()-2);
 		} else {
 			hideResultsNow();
 		}

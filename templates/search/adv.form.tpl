@@ -22,27 +22,29 @@
 
 <h1>Recherche dans l'annuaire</h1>
 
+{javascript name="jquery"}
+{javascript name="jquery.autocomplete"}
+<script type="text/javascript">{literal}
+	// <!--
+	function launch_form(url) {
+	  var f = document.getElementById('recherche');
+	  f.action = url;
+	  f.submit();
+	}
+	function format_autocomplete(row) {
+	  if (row[1] == 1) {
+	    return row[0];
+	  }
+	  return row[0] + ' ('+ row[1] + ')';
+	}
+	$(document).ready(function() {
+	      $(".autocomplete").each(function() {
+	        $(this).autocomplete("search/autocomplete/"+this.name,{selectOnly:1,formatItem:format_autocomplete,matchSubset:0,width:$(this).width()});
+	      });
+	});
+	-->
+{/literal}</script>
 <form id="recherche" action="search/adv" method="get">
-  {javascript name="jquery"}
-  {javascript name="jquery.autocomplete"}
-  <script type="text/javascript">{literal}
-    function launch_form(url) {
-      var f = document.getElementById('recherche');
-      f.action = url;
-      f.submit();
-    }
-    function format_autocomplete(row) {
-      if (row[1] == 1) {
-        return row[0];
-      }
-      return row[0] + ' ('+ row[1] + ')';
-    }
-    $(document).ready(function() {
-      $(".autocomplete").each(function() {
-        $(this).autocomplete("search/autocomplete/"+this.name,{selectOnly:1,formatItem:format_autocomplete,matchSubset:0,width:$(this).width()});
-      });
-    });
-  {/literal}</script>
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <th colspan="2">

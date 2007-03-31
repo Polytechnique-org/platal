@@ -28,12 +28,26 @@
 .ac_results ul {
     padding:0px;
     margin:0px;
+    width:100%;
 }
 
 .ac_results li {
     display:block;
     padding: 2px;
     cursor:pointer;
+    width:100%;
+}
+
+.ac_results iframe {
+		display:none;/*sorry for IE5*/
+		display/**/:block;/*sorry for IE5*/
+		position:absolute;
+		top:0;
+		left:0;
+		z-index:-1;
+		filter:mask();
+		width:3000px;
+		height:3000px;
 }
 .ac_results .over {
     background: highlight;
