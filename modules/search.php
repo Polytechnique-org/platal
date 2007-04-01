@@ -29,7 +29,8 @@ class SearchModule extends PLModule
             'search/ajax/region'  => $this->make_hook('region', AUTH_COOKIE, 'user', NO_AUTH),
             'search/ajax/grade'   => $this->make_hook('grade',  AUTH_COOKIE, 'user', NO_AUTH),
             'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
-            'search/autocomplete' => $this->make_hook('autocomplete', AUTH_PUBLIC),
+            'search/autocomplete' => $this->make_hook('autocomplete', AUTH_COOKIE, 'user', NO_AUTH),
+            'search/list' => $this->make_hook('list', AUTH_COOKIE, 'user', NO_AUTH),
         );
     }
 
@@ -93,25 +94,8 @@ class SearchModule extends PLModule
         global $page;
 
         $page->assign('formulaire',1);
-        $page->assign('choix_nats',
-                      XDB::iterator('SELECT  g.a2 AS id, IF(nat=\'\', g.pays, g.nat) AS text
-                                       FROM  geoloc_pays AS g
-                                 INNER JOIN  auth_user_md5 AS u ON (u.nationalite = g.a2)
-                                   GROUP BY  g.a2
-                                   ORDER BY  text'));
-        $page->assign('choix_postes',
-                      XDB::iterator('SELECT id,fonction_fr FROM fonctions_def
-                                             ORDER BY fonction_fr'));
-        $page->assign('choix_binets',
-                      XDB::iterator('SELECT id,text FROM binets_def ORDER BY text'));
-        $page->assign('choix_groupesx',
-                      XDB::iterator('SELECT id,text FROM groupesx_def ORDER BY text'));
-        $page->assign('choix_sections',
-                      XDB::iterator('SELECT id,text FROM sections ORDER BY text'));
         $page->assign('choix_schools',
                       XDB::iterator('SELECT id,text FROM applis_def ORDER BY text'));
-        $page->assign('choix_secteurs',
-                      XDB::iterator('SELECT id,label FROM emploi_secteur ORDER BY label'));
         $this->get_diplomas();
     }
 
@@ -290,30 +274,133 @@ class SearchModule extends PLModule
         header('Content-Type: text/plain; charset="UTF-8"');
         $q = $_REQUEST['q'];
         if (!$q) exit();
+        // default search
         $unique = 'user_id';
         $db = 'auth_user_md5';
+        $realid = false;
+        $contains = false;
+        
         switch ($type) {
-        case 'firstname': $field = 'prenom'; break;
-        case 'name': $field = 'nom'; break;
-        case 'nickname': $field = 'profile_nick'; $db = 'auth_user_quick'; break;
-        case 'entreprise': $db = 'entreprises'; $field = 'entreprise'; $unique='uid'; break;
+        case 'binetTxt':
+						$db = 'binets_def INNER JOIN binets_ins ON(binets_def.id = binets_ins.binet_id)';
+						$field='binets_def.text';
+						if (strlen($q) > 2)
+								$contains = true;
+						$realid = 'binets_def.id';
+						break;
         case 'city': $db = 'geoloc_city INNER JOIN adresses ON(geoloc_city.id = adresses.cityid)'; $unique='uid'; $field='geoloc_city.name'; break;
+        case 'entreprise': $db = 'entreprises'; $field = 'entreprise'; $unique='uid'; break;
+        case 'firstname': $field = 'prenom'; break;
+        case 'fonctionTxt':
+        		$db = 'fonctions_def INNER JOIN entreprises ON(entreprises.fonction = fonctions_def.id)';
+        		$field = 'fonction_fr';
+        		$unique = 'uid';
+        		$realid = 'fonctions_def.id';
+        		break;
+        case 'groupexTxt':
+						$db = 'groupesx_def INNER JOIN groupesx_ins ON(groupesx_def.id = groupesx_ins.gid)';
+						$field='groupesx_def.text';
+						if (strlen($q) > 2)
+								$contains = true;
+						$realid = 'groupesx_def.id';
+						$unique = 'guid';
+						break;
+        case 'name': $field = 'nom'; break;
+    		case 'nationaliteTxt':
+    				$db = 'geoloc_pays INNER JOIN auth_user_md5 ON(geoloc_pays.a2 = auth_user_md5.nationalite)';
+    				$field = 'IF(geoloc_pays.nat=\'\', geoloc_pays.pays, geoloc_pays.nat)';
+    				$realid = 'geoloc_pays.a2';
+    				break;
+        case 'nickname': $field = 'profile_nick'; $db = 'auth_user_quick'; break;
         case 'poste': $db = 'entreprises'; $field = 'poste'; $unique='uid'; break;
+    		case 'secteurTxt':
+    				$db = 'emploi_secteur INNER JOIN entreprises ON(entreprises.secteur = emploi_secteur.id)';
+    				$field = 'emploi_secteur.label';
+    				$realid = 'emploi_secteur.id';
+    				$unique = 'uid';
+    				break;
+    		case 'sectionTxt':
+    				$db = 'sections INNER JOIN auth_user_md5 ON(auth_user_md5.section = sections.id)';
+    				$field = 'sections.text';
+    				$realid = 'sections.id';
+    				break;
         default: exit();
         }
 
-        $liste = XDB::iterator('SELECT '.$field.' AS field, COUNT(DISTINCT '.$unique.') AS nb FROM '.$db.' WHERE '.$field.' LIKE {?} GROUP BY '.$field.' LIMIT 11', $q.'%');
+        $list = XDB::iterator('
+						SELECT
+								'.$field.' AS field,
+								COUNT(DISTINCT '.$unique.') AS nb
+								'.($realid?(', '.$realid.' AS id'):'').'
+						FROM '.$db.'
+						WHERE '.$field.' LIKE {?}
+						GROUP BY '.$field.'
+						ORDER BY nb DESC
+						LIMIT 11',
+						($contains?'%':'').str_replace('*','%',$q).'%');
         $nbResults = 0;
-        while ($result = $liste->next()) {
+        while ($result = $list->next()) {
             $nbResults++;
             if ($nbResults == 11) {
                 echo '...|1'."\n";
             } else {
-                echo $result['field'].'|'.$result['nb']."\n";
+                echo $result['field'].'|'.$result['nb'].(isset($result['id'])?('|'.$result['id']):'')."\n";
             }
         }
 
         exit();
+    }
+    
+    function handler_list(&$page, $type = null, $idVal = null)
+    {
+    		// Give the list of all values possible of type and builds a select input for it
+				$field = 'text';
+				$id = 'id';
+    		switch ($type) {
+    		case 'binet':
+    				$db = 'binets_def';
+    				break;
+    		case 'fonction':
+    				$db = 'fonctions_def';
+    				$field = 'fonction_fr';
+    				break;
+    		case 'groupex':
+    				$db = 'groupesx_def';
+    				break;
+    		case 'nationalite':
+    				$db = 'geoloc_pays';
+    				$field = 'IF(nat=\'\', pays, nat)';
+    				$id = 'a2';
+    				break;
+    		case 'section':
+    				$db = 'sections';
+    				break;
+    		case 'secteur':
+    				$db = 'emploi_secteur';
+    				$field = 'label';
+    				break;
+    		default: exit();
+    		}
+    		if (isset($idVal)) {
+       			header('Content-Type: text/plain; charset="UTF-8"');
+    				$result = XDB::query('SELECT '.$field.' AS field FROM '.$db.' WHERE '.$id.' = {?} LIMIT 1',$idVal);
+    				echo $result->fetchOneCell();
+    		} else {
+		        header('Content-Type: text/xml; charset="UTF-8"');
+		    		$list = XDB::iterator('
+		    				SELECT
+		    						'.$field.' AS field,
+		    						'.$id.' AS id
+		    				FROM '.$db.'
+		    				ORDER BY '.$field);
+		    		echo '<select name="'.$type.'">';
+		    		while ($result = $list->next()) {
+		    				echo '<option value="'.$result['id'].'">'.htmlspecialchars($result['field']).'</option>';
+		    		}
+		    		echo '</select>';
+				}
+				    		
+    		exit();
     }
 }
 

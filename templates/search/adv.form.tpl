@@ -37,10 +37,48 @@
 	  }
 	  return row[0] + ' ('+ row[1] + ')';
 	}
+	function select_autocomplete(name) {
+	  nameRealField = name.replace(/Txt$/, '');
+	  if (nameRealField == name)
+	  	return null;
+	  return function(i) {
+		nameRealField = this.field.replace(/Txt$/, '');
+	  	$(".autocompleteTarget[@name='"+nameRealField+"']").attr('value',i.extra[1]);
+	  	$(".autocomplete[@name='"+this.field+"']").addClass('hidden_valid');
+	  }
+	}
 	$(document).ready(function() {
-	      $(".autocomplete").each(function() {
-	        $(this).autocomplete("search/autocomplete/"+this.name,{selectOnly:1,formatItem:format_autocomplete,matchSubset:0,width:$(this).width()});
-	      });
+		$(".autocompleteTarget").hide();
+	    $(".autocomplete").show().each(function() {
+		  	targeted = $("../.autocompleteTarget",this)[0];
+		  	if (targeted && targeted.value) {
+			  	me = $(this);
+		  		$.get('search/list/'+ targeted.name +'/'+targeted.value, {},function(textValue) {
+		  			me.attr('value', textValue);
+		  			me.addClass('hidden_valid');
+		  		});
+		  	}
+	      	$(this).autocomplete("search/autocomplete/"+this.name,{
+			  selectOnly:1,
+			  formatItem:format_autocomplete,
+			  field:this.name,
+			  onItemSelect:select_autocomplete(this.name),
+			  matchSubset:0,
+			  width:$(this).width()});
+	    });
+	    $(".autocomplete").change(function() { $(this).removeClass('hidden_valid'); });
+	    $(".autocompleteToSelect").each(function() {
+	    	var fieldName = $(this).attr('href');
+	      	$(this).attr('href','search/list/'+fieldName).click(function() {
+      			var oldval = $("input.autocompleteTarget[@name='"+fieldName+"']")[0].value;
+	      		$(".autocompleteTarget[@name='"+fieldName+"']").parent().load('search/list/'+fieldName,{},function(selectBox) {
+	      			$(".autocompleteTarget[@name='"+fieldName+"']").remove();
+		      		$(".autocomplete[@name='"+fieldName+"Txt']").remove();
+		      		$("select[@name='"+fieldName+"']").attr('value', oldval);
+				  });
+				return false;
+	      	});
+	    });
 	});
 	-->
 {/literal}</script>
@@ -195,14 +233,9 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Fonction</td>
       <td>
-        <select name="fonction">
-          <option value="0"></option>
-          {iterate from=$choix_postes item=cp}
-          <option value="{$cp.id}" {if $smarty.request.fonction eq $cp.id}selected{/if}>
-            {$cp.fonction_fr}
-          </option>
-          {/iterate}
-        </select>
+      	<input name="fonctionTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+		<input name="fonction" class="autocompleteTarget" type="hidden" value="{$smarty.request.fonction}"/>
+		<a href="fonction" class="autocompleteToSelect">{icon name="table" title="Toutes les fonctions"}</a>
       </td>
     </tr>
     <tr>
@@ -212,14 +245,9 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Secteur</td>
       <td>
-        <select name="secteur">
-          <option value="0"></option>
-          {iterate item=cs from=$choix_secteurs}
-          <option value="{$cs.id}" {if $smarty.request.secteur eq $cs.id}selected{/if}>
-            {$cs.label}
-          </option>
-          {/iterate}
-        </select>
+      	<input name="secteurTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+		<input name="secteur" class="autocompleteTarget" type="hidden" value="{$smarty.request.secteur}"/>
+		<a href="secteur" class="autocompleteToSelect">{icon name="table" title="Tous les secteurs"}</a>
       </td>
     </tr>
     <tr>
@@ -238,51 +266,33 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Nationalité</td>
       <td>
-        <select name="nationalite">
-          {iterate from=$choix_nats item=cn}
-          <option value="{$cn.id}" {if $smarty.request.nationalite eq $cn.id}selected="selected"{/if}>
-            {$cn.text}
-          </option>
-          {/iterate}
-        </select>
+      	<input name="nationaliteTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+		<input name="nationalite" class="autocompleteTarget" type="hidden" value="{$smarty.request.nationalite}"/>
+		<a href="nationalite" class="autocompleteToSelect">{icon name="table" title="Toutes les nationalités"}</a>
       </td>
     </tr>
     <tr>
       <td>Binet</td>
       <td>
-        <select name="binet">
-        <option value="0"></option>
-        {iterate item=cb from=$choix_binets}
-          <option value="{$cb.id}" {if $smarty.request.binet eq $cb.id}selected="selected"{/if}>
-            {$cb.text|htmlspecialchars}
-          </option>
-        {/iterate}
-        </select>
+      	<input name="binetTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+		<input name="binet" class="autocompleteTarget" type="hidden" value="{$smarty.request.binet}"/>
+		<a href="binet" class="autocompleteToSelect">{icon name="table" title="Tous les binets"}</a>
       </td>
     </tr>
     <tr>
       <td>Groupe X</td>
       <td>
-        <select name="groupex">
-        <option value="0"></option>
-        {iterate item=cg from=$choix_groupesx}
-          <option value="{$cg.id}" {if $smarty.request.groupex eq $cg.id}selected="selected"{/if}>
-            {$cg.text}
-          </option>
-        {/iterate}
-        </select>
+      	<input name="groupexTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+		<input name="groupex" class="autocompleteTarget" type="hidden" value="{$smarty.request.groupex}"/>
+		<a href="groupex" class="autocompleteToSelect">{icon name="table" title="Tous les groupes X"}</a>
       </td>
     </tr>
     <tr>
       <td>Section</td>
       <td>
-        <select name="section">
-          {iterate item=cs from=$choix_sections}
-          <option value="{$cs.id}" {if $smarty.request.section eq $cs.id}selected="selected"{/if}>
-            {$cs.text}
-          </option>
-          {/iterate}
-        </select>
+      	<input name="sectionTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+		<input name="section" class="autocompleteTarget" type="hidden" value="{$smarty.request.section}"/>
+		<a href="section" class="autocompleteToSelect">{icon name="table" title="Toutes les sections"}</a>
       </td>
     </tr>
     <tr>
