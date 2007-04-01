@@ -23,13 +23,13 @@
 <country id="{$smarty.request.mapid}">
   <countries>
     {foreach from=$countries item="country"}
-    <country id="{$country.id}" name="{$country.name|utf8_encode}">
+    <country id="{$country.id}" name="{$country.name}">
       <file swf="{$country.swf}" scale="{$country.scale}" xclip="{$country.xclip}" yclip="{$country.yclip}">
         <color value="{$country.color}"/>
       </file>
       {if $country.nbPop > 0 or $country.id eq 0}
       <map x="{$country.x}" y="{$country.y}" height="{$country.height}" width="{$country.width}" ratio="{$country.rat}"/>
-      <icon x="{$country.xPop}" y="{$country.yPop}" nb="{$country.nbPop}" size="{$country.rad}" name="{$country.name|utf8_encode}" green="{if $country.nbPop}{$country.yellow/$country.nbPop}{else}0{/if}" blue="0" alpha="0.7"/>
+      <icon x="{$country.xPop}" y="{$country.yPop}" nb="{$country.nbPop}" size="{$country.rad}" name="{$country.name}" green="{if $country.nbPop}{$country.yellow/$country.nbPop}{else}0{/if}" blue="0" alpha="0.7"/>
       <moreinfos url="country?{$searchvars}mapid={$country.id}"/>
       {/if}
     </country>

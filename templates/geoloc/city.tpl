@@ -22,6 +22,6 @@
 <city id="{$smarty.request.cityid}">
   {assign var="beginning" value=true}
   {assign var="nb_displayed" value=0}
-  {iterate from=$users item="user"}{if !$beginning}<br/>{/if}{if $nb_displayed < 10}<a href="javascript:ficheXorg('{$user.alias}');">{$user.prenom|utf8_encode} {$user.nom|strtolower|ucwords|utf8_encode} - {$user.promo}</a>{else}<a href="javascript:clickOnCity({$smarty.request.cityid})">...</a>{/if}{assign var="nb_displayed" value=$nb_displayed+1}{assign var="beginning" value=false}{/iterate}
+  {iterate from=$users item="user"}{if !$beginning}<br/>{/if}{if $nb_displayed < 10}<a href="javascript:ficheXorg('{$user.alias}');">{$user.prenom} {$user.nom|strtolower|ucwords} - {$user.promo}</a>{else}<a href="javascript:clickOnCity({$smarty.request.cityid})">...</a>{/if}{assign var="nb_displayed" value=$nb_displayed+1}{assign var="beginning" value=false}{/iterate}
 </city>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

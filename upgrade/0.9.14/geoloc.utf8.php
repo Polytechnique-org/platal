@@ -5,13 +5,12 @@ global $globals;
 require_once 'connect.db.inc.php';
 $globals->dbcharset = 'latin1';
 
-function is_utf8($s)
-{
-    return @iconv('utf-8', 'utf-8', $s) == $s;
-}
-
-$tables = array ('city', 'city_in_maps', 'maps', 'pays', 'region');
-foreach ($tables as $table) {
+$tables = array ('city' => array('id', 'alias'),
+                 'city_in_maps' => array('city_id', 'map_id', 'infos'),
+                 'maps' => array('map_id'),
+                 'pays' => array('a2'),
+                 'region' => array('a2', 'region'));
+foreach ($tables as $table => $keys) {
     $res = XDB::query("SELECT * FROM geoloc_$table");
     if (!$res) {
         echo "$table\n";
@@ -22,10 +21,12 @@ foreach ($tables as $table) {
         $from = array();
         $to   = array();
         foreach ($array as $key=>$value) {
-            $from[] = $key . '="' . XDB::escape($value) . '"';
+            if (in_array($key, $keys)) {
+                $from[] = $key . '=' . XDB::escape($value);
+            }
             $valued = utf8_decode($value);
             if (is_utf8($value) && $valued != $value) {
-                $to[] = $key . '="' . XDB::escape($valued) .'"';
+                $to[] = $key . '=' . XDB::escape($valued);
             }
         }
         if (!empty($to)) {
@@ -34,6 +35,8 @@ foreach ($tables as $table) {
             $sql = "UPDATE geoloc_$table SET $to WHERE $from";
             if (!XDB::execute($sql)) {
                 echo "Echec : $sql\n";
+            } elseif (XDB::affectedRows() == 0) {
+                echo "$sql\n";
             }
         }
     }

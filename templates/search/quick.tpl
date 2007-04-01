@@ -94,7 +94,7 @@ notre base de données.
 <div id="searchbar" style="display: none">
 <h2>Barre de recherche pour ton navigateur</h2>
 <p>
-  Si tu utilises un navigateur moderne tel que Firefox ou Internet Explore 7, tu peux ajouter un module de recherche
+  Si tu utilises un navigateur moderne tel que Firefox ou Internet Explorer 7, tu peux ajouter un module de recherche
   directement dans ton navigateur. Pour ceci, <a href="javascript:addSearchEngine()">installe</a> la barre de recherche
   rapide.
 </p>
