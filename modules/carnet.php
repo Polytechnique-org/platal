@@ -183,10 +183,8 @@ class CarnetModule extends PLModule
         return Array($total, $list);
     }
 
-    function handler_contacts(&$page, $action = null)
+    function handler_contacts(&$page, $action = null, $subaction = null)
     {
-        $page->changeTpl('carnet/mescontacts.tpl');
-        require_once("applis.func.inc.php");
         $page->assign('xorg_title','Polytechnique.org - Mes contacts');
         $this->_add_rss_link($page);
 
@@ -197,8 +195,8 @@ class CarnetModule extends PLModule
             case 'retirer':
                 if (is_numeric($user)) {
                     if (XDB::execute('DELETE FROM contacts
-                                            WHERE uid = {?} AND contact = {?}',
-                                               $uid, $user))
+                                       WHERE uid = {?} AND contact = {?}',
+                                     $uid, $user))
                     {
                         $page->trig("Contact retiré !");
                     }
@@ -230,66 +228,13 @@ class CarnetModule extends PLModule
                 }
         }
 
-        if ($action == 'trombi') {
-            $trombi = new Trombi(array($this, '_get_list'));
-            $trombi->setNbRows(4);
-            $page->assign_by_ref('trombi',$trombi);
-
-            $order = Get::v('order');
-            if ($order != 'promo' && $order != 'last')
-                $order = 'nom';
-            $page->assign('order', $order);
-            $page->assign('inv', Get::v('inv'));
-
-        } else {
-
-            $order = Get::v('order');
-            $orders = Array(
-                'nom'     => 'sortkey DESC, a.prenom, a.promo',
-                'promo'   => 'promo DESC, sortkey, a.prenom',
-                'last'    => 'a.date DESC, sortkey, a.prenom, promo');
-            if ($order != 'promo' && $order != 'last')
-                $order = 'nom';
-            $page->assign('order', $order);
-            $page->assign('inv', Get::v('inv'));
-            $order = $orders[$order];
-            if (Get::v('inv') == '')
-                $order = str_replace(" DESC,", ",", $order);
-
-            $sql = "SELECT  contact AS id,
-                            a.*, l.alias AS forlife,
-                            1 AS inscrit,
-                            a.perms != 'pending' AS wasinscrit,
-                            a.deces != 0 AS dcd, a.deces, a.matricule_ax,
-                            FIND_IN_SET('femme', a.flags) AS sexe,
-                            e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
-                            IF(n.nat='',n.pays,n.nat) AS nat, n.a2 AS iso3166,
-                            ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
-                            ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-                            adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region,
-                            IF(a.nom_usage<>'',a.nom_usage,a.nom) AS sortkey,
-                            COUNT(em.email) > 0 AS actif
-                      FROM  contacts       AS c
-                INNER JOIN  auth_user_md5  AS a   ON (a.user_id = c.contact)
-                INNER JOIN  aliases        AS l   ON (a.user_id = l.id AND l.type='a_vie')
-                 LEFT JOIN  entreprises    AS e   ON (e.entrid = 0 AND e.uid = a.user_id)
-                 LEFT JOIN  emploi_secteur AS es  ON (e.secteur = es.id)
-                 LEFT JOIN  fonctions_def  AS ef  ON (e.fonction = ef.id)
-                 LEFT JOIN  geoloc_pays    AS n   ON (a.nationalite = n.a2)
-                 LEFT JOIN  applis_ins     AS ai0 ON (a.user_id = ai0.uid AND ai0.ordre = 0)
-                 LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
-                 LEFT JOIN  applis_ins     AS ai1 ON (a.user_id = ai1.uid AND ai1.ordre = 1)
-                 LEFT JOIN  applis_def     AS ad1 ON (ad1.id = ai1.aid)
-                 LEFT JOIN  adresses       AS adr ON (a.user_id = adr.uid
-                                                      AND FIND_IN_SET('active', adr.statut))
-                 LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
-                 LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
-                 LEFT JOIN  emails         AS em  ON (em.uid = a.user_id AND em.flags = 'active')
-                     WHERE  c.uid = $uid
-                  GROUP BY  a.user_id
-                  ORDER BY  ".$order;
-
-            $page->assign('citer', XDB::iterator($sql));
+        $view = new UserSet("INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", " c2.uid = $uid ");
+        $view->addMod('minifiche', 'Mini-Fiches', true);
+        $view->addMod('trombi', 'Trombinoscope', false, array('with_admin' => false, 'with_promo' => true));
+        $view->addMod('geoloc', 'Planisphère');
+        $view->apply('carnet/contacts', $page, $action, $subaction);
+        if ($action != 'geoloc' || !$subaction) {
+            $page->changeTpl('carnet/mescontacts.tpl');
         }
     }
 

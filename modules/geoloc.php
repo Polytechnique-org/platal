@@ -24,12 +24,13 @@ class GeolocModule extends PLModule
     function handlers()
     {
         return array(
+//            'icon.swf'           => $this->make_hook('icon',    AUTH_COOKIE),
             'geoloc'             => $this->make_hook('default', AUTH_COOKIE),
-            'geoloc/icon.swf'    => $this->make_hook('icon',    AUTH_COOKIE),
-            'geoloc/dynamap.swf' => $this->make_hook('dynamap', AUTH_COOKIE),
-            'geoloc/init'        => $this->make_hook('init',    AUTH_COOKIE),
-            'geoloc/city'        => $this->make_hook('city',    AUTH_COOKIE),
-            'geoloc/country'     => $this->make_hook('country', AUTH_COOKIE),
+//            'geoloc/icon.swf'    => $this->make_hook('icon',    AUTH_COOKIE),
+//            'geoloc/dynamap.swf' => $this->make_hook('dynamap', AUTH_COOKIE),
+//            'geoloc/init'        => $this->make_hook('init',    AUTH_COOKIE),
+//            'geoloc/city'        => $this->make_hook('city',    AUTH_COOKIE),
+//            'geoloc/country'     => $this->make_hook('country', AUTH_COOKIE),
             '%grp/geoloc'            => $this->make_hook('default',AUTH_COOKIE),
             '%grp/geoloc/icon.swf'   => $this->make_hook('icon',   AUTH_COOKIE),
             '%grp/geoloc/dynamap.swf'=> $this->make_hook('dynamap',AUTH_COOKIE),
@@ -60,9 +61,14 @@ class GeolocModule extends PLModule
                 is_file(dirname(__FILE__).'/geoloc/icon.swf');
     }
 
-    function handler_default(&$page)
+    function handler_default(&$page, $action = null, $subaction = null)
     {
         global $globals;
+
+        $set = new UserSet();
+        $set->addMod('geoloc', 'Geolocalisation', true);
+        $set->apply('geoloc', $page, $action, $subaction);
+        return;
 
         if (!$this->use_map())
             $page->assign('request_geodesix', 1);

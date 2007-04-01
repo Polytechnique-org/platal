@@ -165,29 +165,24 @@ class SearchModule extends PLModule
         return Array($liste, $nb_tot);
     }
 
-    function handler_quick(&$page)
+    function handler_quick(&$page, $action = null, $subaction = null)
     {
         global $globals;
 
-        require_once dirname(__FILE__).'/search/search.inc.php';
-
-        $page->changeTpl('search/index.tpl');
-
-        $page->assign('xorg_title','Polytechnique.org - Annuaire');
-        require_once("applis.func.inc.php");
-        require_once("geoloc.inc.php");
-
-        $page->assign('baseurl', $globals->baseurl);
-
-        if (Env::has('quick')) {
+        if (Env::has('quick') || $action == 'geoloc') {
             $page->assign('formulaire', 0);
 
-            $search = new XOrgSearch(array($this, 'get_quick'));
-            $search->setNbLines($globals->search->per_page);
-            $search->addOrder('score', 'score', false, 'pertinence', AUTH_PUBLIC, true);
+            require_once 'userset.inc.php';
+            $view = new SearchSet(true, $action == 'geoloc' && substr($subaction, -3) == 'swf');
+            $view->addMod('minifiche', 'Minifiches', true);
+            $view->addMod('trombi', 'Trombinoscope');
+            $view->addMod('geoloc', 'Planishpère');
+            $view->apply('search', $page, $action, $subaction);
 
-            $nb_tot = $search->show();
-
+            $nb_tot = $view->count();
+            if ($subaction) {
+                return;
+            }
             if (!S::logged() && $nb_tot > $globals->search->public_max) {
                 new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
             } elseif ($nb_tot > $globals->search->private_max) {
@@ -206,44 +201,38 @@ class SearchModule extends PLModule
             $page->addJsLink('ajax.js');
         }
 
-        $page->register_modifier('display_lines', 'display_lines');
+        $page->changeTpl('search/index.tpl');            
+        $page->assign('xorg_title','Polytechnique.org - Annuaire');
+        $page->assign('baseurl', $globals->baseurl);
     }
 
     function handler_advanced(&$page, $mode = null)
     {
         global $globals;
-
-        require_once dirname(__FILE__).'/search/search.inc.php';
-        require_once 'applis.func.inc.php';
-        require_once 'geoloc.inc.php';
-
-
-        $page->changeTpl('search/index.tpl', $mode == 'mini' ? SIMPLE : SKINNED);
-
-        $page->assign('advanced',1);
-        $page->assign('public_directory',0);
-
         if (!Env::has('rechercher')) {
             $this->form_prepare();
         } else {
-            $search = new XOrgSearch(array($this, 'get_advanced'));
-            $search->setNbLines($globals->search->per_page);
-
-            $page->assign('url_search_form', $search->make_url(Array('rechercher'=>0)));
-            if (!Env::i('with_soundex')) {
-                $page->assign('with_soundex', $search->make_url(Array()) . "&with_soundex=1");
+            require_once 'userset.inc.php';
+            $view = new SearchSet(false, $action == 'geoloc' && substr($subaction, -3) == 'swf');
+            $view->addMod('minifiche', 'Minifiches', true);
+            $view->addMod('trombi', 'Trombinoscope');
+            $view->addMod('geoloc', 'Planishpère');
+            $view->apply('search', $page, $action, $subaction);
+            
+            if ($subaction) {
+                return;
             }
-            $nb_tot = $search->show();
-
+            $nb_tot = $view->count();
             if ($nb_tot > $globals->search->private_max) {
                 $this->form_prepare();
                 new ThrowError('Recherche trop générale');
             }
-
         }
 
+        $page->changeTpl('search/index.tpl', $mode == 'mini' ? SIMPLE : SKINNED);
         $page->addJsLink('ajax.js');
-        $page->register_modifier('display_lines', 'display_lines');
+        $page->assign('advanced',1);
+        $page->assign('public_directory',0);
     }
 
     function handler_region(&$page, $country = null)

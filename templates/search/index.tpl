@@ -30,45 +30,7 @@
     {/if}
   {/if}
 
-  {if $search_results_nb == 0 or ($advanced and !$simple)}
-  <h1 class='right'>
-    {if $search_results_nb==0}Aucune{else}{$search_results_nb}{/if} réponse{if $search_results_nb>1}s{/if}
-    {if $search_results_nb and $advanced and !$simple}
-    <span class="noprint">
-    &nbsp;(<a href='geoloc/?{$search_vars}'>Voir sur une carte</a>)
-    </span>
-    {/if}
-  </h1>
-  {/if}
-  
-  {if $search_results_nb > 1}
-  <div class="noprint">
-    Trier par :
-    {foreach from=$search_order_link item=tri}
-    [<a href='{$tri.url}'>
-    {if $tri.asc or $tri.desc}<strong>{/if}
-    {$tri.text}
-    {if $tri.desc}<img src='images/up.png' alt='tri ascendant' />{/if}
-    {if  $tri.asc}<img src='images/dn.png' alt='tri descendant' />{/if}
-    {if $tri.asc or $tri.desc}</strong>{/if}
-    </a>]
-    {/foreach}
-  </div>
-  {/if}
-
-  {if $search_results_nb}
-  <div class="contact-list" style="clear:both">
-    {capture name=list}
-    {iterate item=res from=$search_results}
-      {if $res.contact || $res.watch}
-        {include file=include/minifiche.tpl c=$res show_action="retirer"}
-      {else}
-        {include file=include/minifiche.tpl c=$res show_action="ajouter"}
-      {/if}
-    {/iterate}
-    {/capture}
-    {$smarty.capture.list|smarty:nodefaults}
-  </div>
+  {include file='core/plset.tpl'}
 
   {if $search_pages_nb > 1}
   <p>
@@ -80,7 +42,6 @@
     {/if}
     {/foreach}
   </p>
-  {/if}
   {/if}
 
   {if $smarty.session.auth ge AUTH_COOKIE}

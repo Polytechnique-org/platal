@@ -91,10 +91,9 @@ class Marketing
         if (!class_exists($class, false)) {
             $class= 'DefaultMarketing';
         }
-        if (!is_subclass_of($class, 'MarketingEngine')) {
+        $engine = new $class($data, $from);
+        if (!$engine instanceof MarketingEngine) {
             $engine = null;
-        } else {
-            $engine = new $class($data, $from);
         }
         return $engine;
     }

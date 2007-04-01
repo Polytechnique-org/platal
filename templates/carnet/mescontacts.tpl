@@ -39,7 +39,7 @@
   il te suffit de cliquer sur l'icône {icon name=add} en face de son nom dans les résultats !
 </p>  
 
-{if $trombi || $citer->total()}
+{if $plset_count}
 <p>
 Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 (attention, les photos font beaucoup grossir les fichiers !)
@@ -72,43 +72,8 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   </li>
 </ul>
 
-{if $trombi}
-
-<h1>Mon trombino de contacts</h1>
-
-<p>
-Pour afficher la liste détaillée de tes contacts: [<a href="carnet/contacts?order={$order}&inv={$inv}"><strong>vue classique</strong></a>]
-</p>
-
-{include file=carnet/tricontacts.tpl order=$order}
-
-{$trombi->show()|smarty:nodefaults}
-
-{else}
-
-<h1>
-  Vue classique des contacts
-</h1>
-
-<p>
-[<a href="carnet/contacts/trombi?order={$order}&amp;inv={$inv}"><strong>Afficher le trombi de tes contacts</strong></a>]
-</p>
-
-{include file=carnet/tricontacts.tpl order=$order}
-
-<br />
-
-<div class="contact-list">
-{iterate from=$citer item=contact}
-{include file=include/minifiche.tpl c=$contact show_action="retirer"}
-{/iterate}
-</div>
+{include file="core/plset.tpl"}
 
 {/if}
-
-{else}
-<p>Actuellement ta liste de contacts est vide...</p>
-{/if}
-
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
