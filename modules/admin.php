@@ -1079,6 +1079,7 @@ class AdminModule extends PLModule
 								array_push($icons, substr($file, 0, -4));
 						}
 				}
+				sort($icons);
 				$page->assign('icons', $icons);
     }
 }
