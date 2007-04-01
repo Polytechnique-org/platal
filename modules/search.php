@@ -261,8 +261,17 @@ class SearchModule extends PLModule
         //   result2|nb2
         //   ...
         header('Content-Type: text/plain; charset="UTF-8"');
-        $q = $_REQUEST['q'];
+        $q = preg_replace('/\*+$/','',$_REQUEST['q']);
         if (!$q) exit();
+
+				// try to look in cached results        
+        $cache = XDB::query('SELECT result FROM search_autocomplete WHERE name = {?} AND query = {?} AND generated > NOW() - INTERVAL 1 DAY',
+        		$type, $q);
+        if ($res = $cache->fetchOneCell()) {
+        		echo $res;
+        		die();
+        }
+        
         // default search
         $unique = 'user_id';
         $db = 'auth_user_md5';
@@ -328,15 +337,18 @@ class SearchModule extends PLModule
 						LIMIT 11',
 						($contains?'%':'').str_replace('*','%',$q).'%');
         $nbResults = 0;
+        $res = "";
         while ($result = $list->next()) {
             $nbResults++;
             if ($nbResults == 11) {
-                echo '...|1'."\n";
+                $res .= '...|1'."\n";
             } else {
-                echo $result['field'].'|'.$result['nb'].(isset($result['id'])?('|'.$result['id']):'')."\n";
+                $res .= $result['field'].'|'.$result['nb'].(isset($result['id'])?('|'.$result['id']):'')."\n";
             }
         }
-
+        XDB::query('REPLACE INTO search_autocomplete VALUES ({?}, {?}, {?}, NOW())',
+        		$type, $q, $res);
+        echo $res;
         exit();
     }
     
