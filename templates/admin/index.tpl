@@ -78,6 +78,8 @@
       <a href="admin/mx/broken">MX défaillants</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/tips">Astuces</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/icons">Icônes</a>
     </td>
   </tr>
   <tr class="impair">

@@ -45,6 +45,7 @@ class AdminModule extends PLModule
             'admin/validate/answers'       => $this->make_hook('validate_answers', AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
             'admin/ipwatch'                => $this->make_hook('ipwatch', AUTH_MDP, 'admin'),
+            'admin/icons'									 => $this->make_hook('icons', AUTH_MDP, 'admin'),
         );
     }
 
@@ -356,7 +357,7 @@ class AdminModule extends PLModule
         require_once("user.func.inc.php");
 
         if (S::has('suid')) {
-            $page->kill("dÃ©jÃ  en SUID !!!");
+            $page->kill("dÃ©jÃ  en SUID !!!");
         }
 
         if (Env::has('user_id')) {
@@ -693,7 +694,7 @@ class AdminModule extends PLModule
                ORDER BY  u.promo,u.nom,u.prenom');
         $page->assign('diffs', $res->fetchAllAssoc());
 
-        // gens Ã  l'ax mais pas chez nous
+        // gens Ã  l'ax mais pas chez nous
         $res = XDB::query(
                 'SELECT  ia.promo,ia.nom,ia.nom_patro,ia.prenom
                    FROM  identification_ax as ia
@@ -701,7 +702,7 @@ class AdminModule extends PLModule
                   WHERE  u.nom IS NULL');
         $page->assign('mank', $res->fetchAllAssoc());
 
-        // gens chez nous et pas Ã  l'ax
+        // gens chez nous et pas Ã  l'ax
         $res = XDB::query('SELECT promo,nom,prenom FROM auth_user_md5 WHERE matricule_ax IS NULL');
         $page->assign('plus', $res->fetchAllAssoc());
     }
@@ -1063,6 +1064,22 @@ class AdminModule extends PLModule
             }
             $page->assign('ip', $props);
         }
+    }
+    
+    function handler_icons(&$page)
+		{
+				$page->changeTpl('admin/icons.tpl');
+				$dh = opendir('../htdocs/images/icons');
+				if (!$dh) {
+						$page->trig('Dossier des icones introuvables.');
+				}
+				$icons = array();
+				while (($file = readdir($dh)) !== false) {
+						if (strlen($file) > 4 && substr($file,-4) == '.gif') {
+								array_push($icons, substr($file, 0, -4));
+						}
+				}
+				$page->assign('icons', $icons);
     }
 }
 
