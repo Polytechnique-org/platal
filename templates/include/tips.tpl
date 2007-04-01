@@ -24,7 +24,7 @@
 {if $full}
 <fieldset id="tod">
 {/if}
-  <legend>{icon name=lightbulb}{if !$tips.special}
+  <legend>{icon name=lightbulb} {if !$tips.special}
     Astuce&nbsp;: {$tips.titre}
   {else}
     <span style="color: red; font-weight: bold;">{$tips.titre}</span>
