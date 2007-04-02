@@ -31,7 +31,7 @@ class ListsModule extends PLModule
             'lists/create'    => $this->make_hook('create',    AUTH_MDP),
 
             'lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
-            'lists/trombi'    => $this->make_hook('trombi',    AUTH_COOKIE),
+            'lists/annu'      => $this->make_hook('annu',      AUTH_COOKIE),
             'lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
             'lists/archives/rss' => $this->make_hook('rss',    AUTH_PUBLIC),
 
@@ -262,42 +262,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function compare($a, $b)
-    {
-        if ($a['promo'] == $b['promo']) {
-            if ($a['nom'] == $b['nom']) {
-                return strcmp($a['prenom'], $b['prenom']);
-            }
-            return strcmp($a['nom'], $b['nom']);
-        }
-        return $a['promo'] - $b['promo'];
-    }
-
-    function _get_list($offset, $limit)
-    {
-        global $platal;
-        list($total, $members) = $this->client->get_members_limit($platal->argv[1], $offset, $limit);
-
-        $membres = Array();
-        foreach ($members as $member) {
-            list($m) = explode('@',$member[1]);
-            $res = XDB::query("SELECT  prenom,if (nom_usage='', nom, nom_usage) AS nom,
-                                                 promo, a.alias AS forlife
-                                           FROM  auth_user_md5 AS u
-                                     INNER JOIN  aliases AS a ON u.user_id = a.id
-                                     INNER JOIN  photo AS p ON p.uid = u.user_id
-                                          WHERE  a.alias = {?}", $m);
-            if ($tmp = $res->fetchOneAssoc()) {
-                $membres[$tmp['nom']] = $tmp;
-            } else {
-                $total--;
-            }
-        }
-        uasort($membres, array($this, 'compare'));
-        return array($total, $membres);
-    }
-
-    function handler_trombi(&$page, $liste = null)
+    function handler_annu(&$page, $liste = null, $action = null, $subaction = null)
     {
         if (is_null($liste)) {
             return PL_NOT_FOUND;
@@ -305,30 +270,42 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('lists/trombi.tpl');
-
         if (Get::has('del')) {
             $this->client->unsubscribe($liste);
-            pl_redirect('lists/trombi/'.$liste);
+            pl_redirect('lists/annu/'.$liste);
         }
         if (Get::has('add')) {
             $this->client->subscribe($liste);
-            pl_redirect('lists/trombi/'.$liste);
+            pl_redirect('lists/annu/'.$liste);
         }
 
         $owners = $this->client->get_owners($liste);
-
-        if (is_array($owners)) {
-            $moderos = list_sort_owners($owners[1]);
-
-            $page->assign_by_ref('details', $owners[0]);
-            $page->assign_by_ref('owners',  $moderos);
-
-            $trombi = new Trombi(array(&$this, '_get_list'));
-            $page->assign('trombi', $trombi);
-        } else {
+        if (!is_array($owners)) {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
         }
+
+        global $platal;
+        list(,$members) = $this->client->get_members($liste);
+        $users = array();
+        foreach ($members as $m) {
+            $users[] = $m[1];
+        }
+        require_once 'userset.inc.php';
+        $view = new ArraySet($users);
+        $view->addMod('trombi', 'Trombinoscope', true, array('with_promo' => true));
+        if (empty($GLOBALS['IS_XNET_SITE'])) {
+            $view->addMod('minifiche', 'Minifiches', false);
+        }
+        $view->addMod('geoloc', 'Planisphère');
+        $view->apply("lists/annu/$liste", $page, $action, $subaction);
+        if ($action == 'geoloc' && $subaction) {
+            return;
+        }
+
+        $page->changeTpl('lists/annu.tpl');
+        $moderos = list_sort_owners($owners[1]);
+        $page->assign_by_ref('details', $owners[0]);
+        $page->assign_by_ref('owners',  $moderos);
     }
 
     function handler_archives(&$page, $liste = null, $action = null, $artid = null)

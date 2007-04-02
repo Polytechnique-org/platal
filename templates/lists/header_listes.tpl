@@ -35,9 +35,9 @@
       [liste des membres]
       {/if}
       {if $on neq trombi}
-      [<a href='{$platal->ns}lists/trombi/{$platal->argv[1]}'>trombinoscope</a>]
+      [<a href='{$platal->ns}lists/annu/{$platal->argv[1]}'>annuaire/trombi</a>]
       {else}
-      [trombinoscope]
+      [annuaire/trombi]
       {/if}
       {if $on neq archives}
       [<a href='{$platal->ns}lists/archives/{$platal->argv[1]}'>archives</a>]

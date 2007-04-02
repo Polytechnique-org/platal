@@ -84,6 +84,11 @@ function _default_user_callback($login)
     return;
 }
 
+function _silent_user_callback($login)
+{
+    return;
+}
+
 function get_user_login($data, $get_forlife = false, $callback = '_default_user_callback')
 {
     global $globals, $page;
@@ -181,10 +186,12 @@ function get_user_forlife($data, $callback = '_default_user_callback')
 
 function get_users_forlife_list($members, $strict = false, $callback = '_default_user_callback')
 {
-    if (strlen(trim($members)) == 0) {
-        return null;
+    if (!is_array($members)) {
+        if (strlen(trim($members)) == 0) {
+            return null;
+        }
+        $members = explode(' ', $members);
     }
-    $members = explode(' ', $members);
     if ($members) {
         $list = array();
         foreach ($members as $i => $alias) {

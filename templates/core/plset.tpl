@@ -33,9 +33,12 @@
 <h1>
   {$plset_mods[$plset_mod]}
   {if $plset_mods|@count > 1}[
+  {assign var=has_prev value=false}
   {foreach from=$plset_mods key=mod item=desc name=mods}
     {if $mod neq $plset_mod}
-    <a href="{$plset_base}/{$mod}{$plset_search}">{$desc}</a> {if !$smarty.foreach.mods.last}| {/if}
+    {if $has_prev}| {/if}
+    <a href="{$platal->ns}{$plset_base}/{$mod}{$plset_search}">{$desc}</a>
+    {assign var=has_prev value=true}
     {/if}
   {/foreach}
   ]

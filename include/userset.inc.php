@@ -121,6 +121,29 @@ class SearchSet extends UserSet
     }
 }
 
+class ArraySet extends UserSet
+{
+    public function __construct(array $users)
+    {
+        $where = $this->getUids($users);
+        if ($where) {
+            $where = "a.alias IN ($where)";
+        } else {
+            $where = " 0 ";
+        }
+        parent::__construct('', $where);
+    }
+
+    private function getUids(array $users)
+    {
+        $users = get_users_forlife_list($users, true, '_silent_user_callback');
+        if (is_null($users)) {
+            return '';
+        }
+        return '\'' . implode('\', \'', $users) . '\'';
+    }
+}
+
 class MinificheView extends MultipageView
 {
     public function __construct(PlSet &$set, $data, array $params)
@@ -192,7 +215,6 @@ class TrombiView extends MultipageView
         }
         $this->addSortKey('name', array('nom', 'prenom'), 'nom');
         $this->addSortKey('promo', array('-promo', 'nom', 'prenom'), 'promotion');
-        $this->addSortKey('date', array('-watch_last', '-promo', 'nom', 'prenom'), 'dernière modification');
         parent::__construct($set, $data, $params);
     }
 
