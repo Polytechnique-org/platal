@@ -1,50 +1,59 @@
 <?php
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
-    class Ancien {
-        var $NOM_PATR;
-        var $PART_NOM;
-        var $PRENOM;
-        var $NOM_USUEL;
-        var $PART_NOMUS;
-        var $NOM_COMPLET;
-        var $CIVILITE;
-        var $GRADE;
-        var $CORPS;
-        var $PROMO;
-        var $NATIONALITE;
-        var $CORPS_LIBELLE;
-        var $EMAIL;
-        var $TYPE_ANC;
-        var $ADRESSE = array();
-        var $NUM_ADRESSE = 0;
-        var $ACTIVITE = array();
-        var $NUM_ACTIVITE = 0;
-        var $FORMATION = array();
-        var $NUM_FORMATION = 0;
-        var $Erreur;
+function ax_load_object(&$obj, $from)
+{
+    foreach ($from as $k=>$v) {
+        if (property_exists($obj, $k)) {
+            $obj->$k = $v;
+        }
+    }
+}
 
-    function Ancien ($aa) {
-       if ($aa<>'')
-       {
-        foreach ($aa as $k=>$v)
-           $this->$k = $aa[$k];
-       }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+class Ancien 
+{
+    public $NOM_PATR;
+    public $PART_NOM;
+    public $PRENOM;
+    public $NOM_USUEL;
+    public $PART_NOMUS;
+    public $NOM_COMPLET;
+    public $CIVILITE;
+    public $GRADE;
+    public $CORPS;
+    public $PROMO;
+    public $NATIONALITE;
+    public $CORPS_LIBELLE;
+    public $EMAIL;
+    public $TYPE_ANC;
+    public $ADRESSE = array();
+    public $NUM_ADRESSE = 0;
+    public $ACTIVITE = array();
+    public $NUM_ACTIVITE = 0;
+    public $FORMATION = array();
+    public $NUM_FORMATION = 0;
+    public $Erreur;
+
+    public function __construct($aa) 
+    {
+        if ($aa<>'') {
+            ax_load_object($this, $aa);
+        }
     }
     function Ajout_adresse ($adresse,$i) {
-           $this->ADRESSE[$i] = $adresse;
-           $this->NUM_ADRESSE++;
+        $this->ADRESSE[$i] = $adresse;
+        $this->NUM_ADRESSE++;
     }
     function Ajout_activite ($activite,$i) {
-           $this->ACTIVITE[$i] = $activite;
-           $this->NUM_ACTIVITE++;
+        $this->ACTIVITE[$i] = $activite;
+        $this->NUM_ACTIVITE++;
     }
     function Ajout_formation ($formation,$i) {
-           $this->FORMATION[$i] = $formation;
-           $this->NUM_FORMATION++;
+        $this->FORMATION[$i] = $formation;
+        $this->NUM_FORMATION++;
     }
-        function Ajout_erreur ($erreur) {
-           $this->Erreur = $erreur;
+    function Ajout_erreur ($erreur) {
+        $this->Erreur = $erreur;
     }
     function Erreur() {
         return $this->Erreur;
@@ -184,142 +193,146 @@
     function Num_formation() {
         return $this->NUM_FORMATION;
     }
-    }
+}
 
-    class Adresse {
-        var $TYPE;
-        var $ADRESS1;
-        var $ADRESS2;
-        var $ADRESS3;
-        var $CODE_PST;
-        var $VILLE;
-        var $ZIPCEDEX;
-        var $ETATREGION;
-        var $PAYS;
-        var $MOBILE;
-        var $TEL;
-        var $FAX;
+class Adresse
+{
+    public $TYPE;
+    public $ADRESS1;
+    public $ADRESS2;
+    public $ADRESS3;
+    public $CODE_PST;
+    public $VILLE;
+    public $ZIPCEDEX;
+    public $ETATREGION;
+    public $PAYS;
+    public $MOBILE;
+    public $TEL;
+    public $FAX;
 
-    function Adresse ($aa) {
-       foreach ($aa as $k=>$v)
-           $this->$k = $aa[$k];
-    }
-  }
-
-    class Activite {
-        var $ENTREPRISE;
-        var $RAISON_SOCIALE;
-        var $FONCTION;
-        var $TYPE;
-        var $ADRESS1;
-        var $ADRESS2;
-        var $ADRESS3;
-        var $CODE_PST;
-        var $VILLE;
-        var $ZIPCEDEX;
-        var $ETATREGION;
-        var $PAYS;
-        var $MOBILE;
-        var $TEL;
-        var $FAX;
-
-    function Activite ($aa) {
-       foreach ($aa as $k=>$v)
-           $this->$k = $aa[$k];
-    }
-  }
-
-    class Formation {
-        var $LIBELLE;
-
-    function Formation ($aa) {
-       foreach ($aa as $k=>$v)
-           $this->$k = $aa[$k];
-    }
-  }
-
-    function xml_get_children($vals, &$i) {
-        $children = array();
-        if (isset($vals[$i]['value'])) $children[] = $vals[$i]['value'];
-
-        while (++$i < count($vals)) {
-       switch ($vals[$i]['type']) {
-       case 'cdata':
-           $children[] = $vals[$i]['value'];
-           break;
-
-       case 'complete':
-           $children[] = array(
-               'tag'        => $vals[$i]['tag'],
-               'attributes' => isset($vals[$i]['attributes'])?
-                               $vals[$i]['attributes'] : null,
-               'value'      => $vals[$i]['value'],
-           );
-           break;
-
-       case 'open':
-           $children[] = array(
-               'tag'        => $vals[$i]['tag'],
-               'attributes' => isset($vals[$i]['attributes'])?
-                               $vals[$i]['attributes'] : null,
-               'children'  => xml_get_children($vals, $i),
-           );
-           break;
-
-       case 'close':
-           return $children;
-       }
-       }
-    }
-
-    //fonction principale de récupération des données de l'ancien
-    //à indiquer: matricule de l'ancien
-    function recupere_infos_ancien($AX_MATRICULE)
+    public function __construct($aa) 
     {
-        include('config.inc');
+        ax_load_object($this, $aa);
+    }
+}
 
-        $id =14;//14 params persos ancien
-        $id_ad = 11; //12 params adresse
-        $id_ac = 14; //15 params adresse
-        $id_fo = 1; //1 params fonction
+class Activite
+{
+    public $ENTREPRISE;
+    public $RAISON_SOCIALE;
+    public $FONCTION;
+    public $TYPE;
+    public $ADRESS1;
+    public $ADRESS2;
+    public $ADRESS3;
+    public $CODE_PST;
+    public $VILLE;
+    public $ZIPCEDEX;
+    public $ETATREGION;
+    public $PAYS;
+    public $MOBILE;
+    public $TEL;
+    public $FAX;
 
-        $erreur = "";
+    public function __construct($aa)
+    {
+        ax_load_object($this, $aa);
+    }
+}
 
-        // Génération d'un identifiant de "session" inter-serveurs
-        $id_session = md5 (uniqid (rand()));
+class Formation 
+{
+    public $LIBELLE;
 
-        // Connexion au serveur pour lui fournir l'identifiant et lui demander un challenge
-        $challenge = file_get_contents ($nom_script_renvoi_challenge."?id_session=".urlencode($id_session));
-        if ($challenge == 'ERROR')
+    public function __construct($aa) 
+    {
+        ax_load_object($this, $aa);
+    }
+}
+
+function xml_get_children($vals, &$i) 
+{
+    $children = array();
+    if (isset($vals[$i]['value'])) $children[] = $vals[$i]['value'];
+
+    while (++$i < count($vals)) {
+        switch ($vals[$i]['type']) {
+          case 'cdata':
+            $children[] = $vals[$i]['value'];
+            break;
+
+          case 'complete':
+            $children[] = array(
+                'tag'        => $vals[$i]['tag'],
+                'attributes' => isset($vals[$i]['attributes'])?
+                $vals[$i]['attributes'] : null,
+                'value'      => $vals[$i]['value'],
+            );
+            break;
+
+          case 'open':
+            $children[] = array(
+                'tag'        => $vals[$i]['tag'],
+                'attributes' => isset($vals[$i]['attributes'])?
+                $vals[$i]['attributes'] : null,
+                'children'  => xml_get_children($vals, $i),
+            );
+            break;
+
+          case 'close':
+            return $children;
+        }
+    }
+}
+
+//fonction principale de rÃ©cupÃ©ration des donnÃ©es de l'ancien
+//Ã  indiquer: matricule de l'ancien
+function recupere_infos_ancien($AX_MATRICULE)
+{
+    include('config.inc');
+
+    $id =14;//14 params persos ancien
+    $id_ad = 11; //12 params adresse
+    $id_ac = 14; //15 params adresse
+    $id_fo = 1; //1 params fonction
+
+    $erreur = "";
+
+    // GÃ©nÃ©ration d'un identifiant de "session" inter-serveurs
+    $id_session = md5 (uniqid (rand()));
+
+    // Connexion au serveur pour lui fournir l'identifiant et lui demander un challenge
+    $challenge = file_get_contents ($nom_script_renvoi_challenge."?id_session=".urlencode($id_session));
+    if ($challenge == 'ERROR')
+    {
+        $erreur = "Erreur lors de la demande du challenge";
+    }
+    else
+    {
+        // On va relire la clÃ© privÃ©e (codÃ©e)
+        $privkeypass = $phrase;
+        $pkey_txt = file_get_contents ($chemin_cle_privee);
+        if (($pkey_res = openssl_pkey_get_private($pkey_txt, $privkeypass)) == false)
         {
-            $erreur = "Erreur lors de la demande du challenge";
+            $erreur = "Erreur lors de l'ouverture de la clÃ© privÃ©e";
         }
         else
         {
-          // On va relire la clé privée (codée)
-          $privkeypass = $phrase;
-          $pkey_txt = file_get_contents ($chemin_cle_privee);
-          if (($pkey_res = openssl_pkey_get_private($pkey_txt, $privkeypass)) == false)
-          {
-            $erreur = "Erreur lors de l'ouverture de la clé privée";
-          }
-          else
-          {
-            // Signature du challenge (cryptage avec clé privée)
+            // Signature du challenge (cryptage avec clÃ© privÃ©e)
             if ( openssl_private_encrypt($challenge, $response, $pkey_res) == false )
             {
-             $erreur = "Erreur lors du cryptage du challenge avec la clé privée";
+                $erreur = "Erreur lors du cryptage du challenge avec la clÃ© privÃ©e";
             }
             else
             {
-              // Signature du login (cryptage avec clé privée)
-              if ( openssl_private_encrypt($AX_MATRICULE, $AX_MATRICULE_CRYPTE, $pkey_res) == false )
-              {
-                 $erreur = "Erreur lors du cryptage du matricule avec la clé privée";
-              }
-              else
-              {
-                    // Envoi de la réponse au serveur avec l'identifiant de l'ancien dont on veut récupérer les infos
+                // Signature du login (cryptage avec clÃ© privÃ©e)
+                if ( openssl_private_encrypt($AX_MATRICULE, $AX_MATRICULE_CRYPTE, $pkey_res) == false )
+                {
+                    $erreur = "Erreur lors du cryptage du matricule avec la clÃ© privÃ©e";
+                }
+                else
+                {
+                    // Envoi de la rÃ©ponse au serveur avec l'identifiant de l'ancien dont on veut rÃ©cupÃ©rer les infos
                     $reponse_serveur .= file_get_contents ($nom_script_renvoi_infos."?id_session=".urlencode($id_session)."&AX_MATRICULE_CRYPTE=".urlencode($AX_MATRICULE_CRYPTE)."&response=".urlencode($response));
 
                     $parser = xml_parser_create();
@@ -330,18 +343,18 @@
 
                     $tree = array();
                     $tree[] = array(
-                       'tag'        => $vals[0]['tag'],
-                     'attributes' => isset($vals[0]['attributes'])?
-                                       $vals[0]['attributes'] : null,
-                    'children'  => xml_get_children($vals, $i = 0),
-                     );
+                        'tag'        => $vals[0]['tag'],
+                        'attributes' => isset($vals[0]['attributes'])?
+                        $vals[0]['attributes'] : null,
+                        'children'  => xml_get_children($vals, $i = 0),
+                    );
 
                     for ($i=0; $i < $id; $i++)
                     {
                         $val_ancien[$tree[0]['children'][0]['children'][$i]['tag']] = $tree[0]['children'][0]['children'][$i]['value'];
                     }
 
-                   $Ancien_renvoye = new Ancien($val_ancien);
+                    $Ancien_renvoye = new Ancien($val_ancien);
 
                     //adresse while pour nbre d'adresses
                     $num_ad = 0;
@@ -352,15 +365,15 @@
                             $val_adresse[$tree[0]['children'][0]['children'][$id]['children'][$i]['tag']] = $tree[0]['children'][0]['children'][$id]['children'][$i]['value'];
                         }
 
-                       $Adresse_renvoyee = new Adresse($val_adresse);
-                       $Ancien_renvoye->Ajout_adresse($Adresse_renvoyee,$num_ad);
+                        $Adresse_renvoyee = new Adresse($val_adresse);
+                        $Ancien_renvoye->Ajout_adresse($Adresse_renvoyee,$num_ad);
 
                         //prochaine adresse
                         $num_ad = $num_ad + 1;
                         $id = $id+1;
                     }
 
-                    //idem pour activité
+                    //idem pour activitÃ©
                     $num_ac = 0;
                     while ($tree[0]['children'][0]['children'][$id]['tag'] == 'ACTIVITE')
                     {
@@ -374,10 +387,10 @@
                             }
                         }
 
-                       $Activite_renvoyee = new Activite($val_activite);
-                       $Ancien_renvoye->Ajout_activite($Activite_renvoyee,$num_ac);
+                        $Activite_renvoyee = new Activite($val_activite);
+                        $Ancien_renvoye->Ajout_activite($Activite_renvoyee,$num_ac);
 
-                        //prochaine activité
+                        //prochaine activitÃ©
                         $num_ac = $num_ac + 1;
                         $id = $id+1;
                     }
@@ -390,30 +403,31 @@
                             $val_formation[$tree[0]['children'][0]['children'][$id]['children'][$i]['tag']] = $tree[0]['children'][0]['children'][$id]['children'][$i]['value'];
                         }
 
-                       $Formation_renvoyee = new Formation($val_formation);
-                       $Ancien_renvoye->Ajout_formation($Formation_renvoyee,$num_fo);
+                        $Formation_renvoyee = new Formation($val_formation);
+                        $Ancien_renvoye->Ajout_formation($Formation_renvoyee,$num_fo);
 
                         //prochaine formation
                         $num_fo = $num_fo + 1;
                         $id = $id+1;
                     }
-              }
+                }
             }
-          }
         }
-
-        //erreur indiquée
-        if ($erreur)  //erreur ici
-        {
-            $Ancien_renvoye = new Ancien('');
-            $Ancien_renvoye->Ajout_erreur($erreur);
-        }
-        else
-        { //renvoyée par le fichier serveur_renvoie_infos
-            $Ancien_renvoye->Ajout_erreur($tree[0]['children'][1]['value']);
-        }
-
-        return $Ancien_renvoye;
     }
 
+    //erreur indiquÃ©e
+    if ($erreur)  //erreur ici
+    {
+        $Ancien_renvoye = new Ancien('');
+        $Ancien_renvoye->Ajout_erreur($erreur);
+    }
+    else
+    { //renvoyÃ©e par le fichier serveur_renvoie_infos
+        $Ancien_renvoye->Ajout_erreur($tree[0]['children'][1]['value']);
+    }
+
+    return $Ancien_renvoye;
+}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
