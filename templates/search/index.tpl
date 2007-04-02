@@ -29,7 +29,7 @@
     {include file=search/adv.links.tpl do_title=1 with_soundex=$with_soundex}
     {/if}
   {/if}
-
+  
   {include file='core/plset.tpl'}
 
   {if $search_pages_nb > 1}

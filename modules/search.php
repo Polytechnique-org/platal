@@ -129,6 +129,10 @@ class SearchModule extends PLModule
     function handler_advanced(&$page, $action = null, $subaction = null)
     {
         global $globals;
+        require_once 'geoloc.inc.php';
+        require_once dirname(__FILE__) . '/search/search.inc.php';
+        $page->assign('advanced',1);
+
         if (!Env::has('rechercher') && $action != 'geoloc') {
             $this->form_prepare();
         } else {
@@ -149,11 +153,8 @@ class SearchModule extends PLModule
             }
         }
 
-        require_once 'geoloc.inc.php';
-        require_once dirname(__FILE__) . '/search/search.inc.php';
         $page->changeTpl('search/index.tpl', $action == 'mini' ? SIMPLE : SKINNED);
         $page->addJsLink('ajax.js');
-        $page->assign('advanced',1);
         $page->assign('public_directory',0);
         $page->register_modifier('display_lines', 'display_lines');
     }

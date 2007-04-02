@@ -101,7 +101,11 @@ class ThrowError
      */
     function ThrowError($explain)
     {
-        global $page;
+        global $page, $globals;
+        $page->changeTpl('search/index.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Annuaire');
+        $page->assign('baseurl', $globals->baseurl);
+        $page->register_modifier('display_lines', 'display_lines');
         $page->trig('Erreur : '.$explain);
         $page->run();
     }
