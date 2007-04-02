@@ -92,9 +92,9 @@
           </strong>
         </td>
         <td>
-          <input type="checkbox" value="{$e->email}" {if $e->active}checked="checked"{/if} onclick="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/'+(this.checked?'':'in')+'active/{$e->email}')"/></td>
+          <input type="checkbox" value="{$e->email}" {if $e->active}checked="checked"{/if} onclick="Ajax.update_html('changeResult','{$globals->baseurl}/emails/redirect/'+(this.checked?'':'in')+'active/{$e->email}')"/></td>
         <td>
-          <select onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/rewrite/{$e->email}/'+this.value)">
+          <select onchange="Ajax.update_html('changeResult','{$globals->baseurl}/emails/redirect/rewrite/{$e->email}/'+this.value)">
             <option value=''>--- aucune ---</option>
             {foreach from=$alias item=a}
             <option {if $e->rewrite eq "`$a.alias`@polytechnique.org"}selected='selected'{/if}
@@ -110,6 +110,7 @@
       <tr class="{cycle values="pair,impair"}"><td colspan="4">
         <form action="emails/redirect" method="post">
         <div>
+            <div id="changeResult" class="error" style="position:absolute;color:green"></div>
     		&nbsp;<br />
     		Ajouter une adresse email :
             <input type="text" size="35" maxlength="60" name="email" value="" />

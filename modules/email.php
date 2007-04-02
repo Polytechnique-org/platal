@@ -205,15 +205,24 @@ class EmailModule extends PLModule
 		
 		if ($action == 'active' && $email) {
 			$redirect->modify_one_email($email, true);
+			header('Content-Type: text/plain; charset=ISO-8859-15');
+			echo 'L\'adresse '.$email.' a bien été activée.';
+			exit();
 		}
 		
 		if ($action == 'inactive' && $email) {
 			$redirect->modify_one_email($email, false);
+			header('Content-Type: text/plain; charset=ISO-8859-15');
+			echo 'L\'adresse '.$email.' a bien été desactivée.';
+			exit();
 		}
 		
 		if ($action == 'rewrite' && $email) {
 			$rewrite = @func_get_arg(3);
 			$redirect->modify_one_email_redirect($email, $rewrite);
+			header('Content-Type: text/plain; charset=ISO-8859-15');
+			echo 'L\'adresse '.$email.' est maintenant réécrite en '.$rewrite.'.';
+			exit();
 		}
 		
         if (Env::has('emailop')) {
