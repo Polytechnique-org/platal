@@ -15,6 +15,7 @@ New:
         - New Backtrace tool                                               -FRU
         - New Upload manager                                               -FRU
         - #641: Miniwiki syntax                                         -Car/FRU
+        - New PlSet: Model/View tool for displaying a set of user          -FRU
 
     * Events:
         - #642: Can add an image                                           -FRU
@@ -36,6 +37,7 @@ Bug/Wish:
         - #407: RSS feed                                                   -FRU
 
     * Carnet:
+        - #448: Geoloc for contacts                                        -FRU
         - #510: Use RSS hash to get iCal                                   -FRU
 
     * Core:

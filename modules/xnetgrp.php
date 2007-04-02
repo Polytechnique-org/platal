@@ -83,6 +83,7 @@ class XnetGrpModule extends PLModule
             '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP, 'groupannu'),
             '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP, 'groupmember:groupannu'),
             '%grp/trombi'         => $this->make_hook('trombi',    AUTH_MDP, 'groupannu'),
+            '%grp/geoloc'         => $this->make_hook('geoloc',    AUTH_MDP, 'groupannu'),
             '%grp/subscribe'      => $this->make_hook('subscribe', AUTH_MDP),
             '%grp/unsubscribe'    => $this->make_hook('unsubscribe', AUTH_MDP, 'groupmember'),
 
@@ -323,9 +324,19 @@ class XnetGrpModule extends PLModule
         run_banana($page, 'ForumsBanana', $get);
     }
 
-    function handler_annuaire(&$page)
+    function handler_annuaire(&$page, $action = null, $subaction = null)
     {
         global $globals;
+
+        if ($action == 'geoloc' || $action == 'trombi') {
+            $view = new UserSet();
+            $view->addMod('trombi', 'Trombinoscope');
+            $view->addMod('geoloc', 'Planisphère');
+            $view->apply('annuaire', $page, $action, $subaction);
+            if ($action == 'geoloc' && $subaction) {
+                return;
+            }
+        }
         $page->changeTpl('xnetgrp/annuaire.tpl');
 
         $sort = Env::v('order');
@@ -426,11 +437,14 @@ class XnetGrpModule extends PLModule
         $page->jsonAssign('ann', $ann);
     }
 
-    function handler_trombi(&$page, $action = null, $subaction = null)
+    function handler_trombi(&$page)
     {
-        $view = new UserSet();
-        $view->addMod('trombi', 'Trombinoscope', true, array('with_admin' => false, 'with_promo' => true));
-        $view->apply('trombi', $page,  'trombi', $action, $subaction);
+        pl_redirect('annuaire/trombi');
+    }
+
+    function handler_geoloc(&$page)
+    {
+        pl_redirect('annuaire/geoloc');
     }
     
     function handler_vcard(&$page, $photos = null)

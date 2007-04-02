@@ -57,6 +57,10 @@ Tu peux également :
   </li>
 </ul>
 
+{if $plset_base}
+{include file="core/plset.tpl"}
+{else}
+
 <p class="center">
 [<a href="{$platal->ns}annuaire?order={$smarty.request.order}" {if !$only_admin}class="erreur"{/if}>tous les membres</a>]
 [<a href="{$platal->ns}annuaire?order={$smarty.request.order}&amp;admin=1" {if $only_admin}class="erreur"{/if}>administrateurs</a>]<br/>
@@ -141,6 +145,8 @@ Tu peux également :
   plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
   cliquant sur le symbole.
 </p>
+{/if}
+
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
