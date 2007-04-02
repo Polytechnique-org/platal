@@ -47,12 +47,20 @@ class XnetSession
             $perms = S::v('perms');
             $perms->rmFlag('groupadmin');
             $perms->rmFlag('groupmember');
+            $perms->rmFlag('groupannu');
             if (may_update()) {
                 $perms->addFlag('groupadmin');
                 $perms->addFlag('groupmember');
+                $perms->addFlag('groupannu');
             }
             if (is_member()) {
                 $perms->addFlag('groupmember');
+                if ($globals->asso('pub') == 'public') {
+                    $perms->addFlag('groupannu');
+                }
+            }
+            if ($globals->asso('cat') == 'Promotions') {
+                $perms->addFlag('groupannu');
             }
             $_SESSION['perms'] = $perms;
         }

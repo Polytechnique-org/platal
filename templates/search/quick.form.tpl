@@ -39,7 +39,7 @@
       <td style="width: 78%">
         <input type="checkbox" name="with_soundex" value="1" {if $smarty.request.with_soundex}checked="checked"{/if} /> Activer la recherche par proximité sonore
         <br /><input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} /> Mettre les fiches modifiées récemment en premier
-        <br /><input type='checkbox' name='nonins' readonly="readonly" {if $smarty.request.noins}checked='checked'{/if} value='1' /> Chercher uniquement des non inscrits
+        <br /><input type='checkbox' name='nonins' readonly="readonly" {if $smarty.request.nonins}checked='checked'{/if} value='1' /> Chercher uniquement des non inscrits
       </td>
     {else}
     <tr class="noprint">

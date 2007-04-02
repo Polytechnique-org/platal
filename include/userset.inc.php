@@ -24,7 +24,7 @@ require_once('user.func.inc.php');
 
 global $globals;
 
-$globals->search->result_where_statement = '
+@$globals->search->result_where_statement = '
     LEFT JOIN  applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
     LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
     LEFT JOIN  applis_ins     AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)
@@ -57,6 +57,7 @@ class UserSet extends PlSet
 
 class SearchSet extends UserSet
 {
+    private $score = null;
     private $order = null;
     private $quick = false;
 
@@ -88,7 +89,9 @@ class SearchSet extends UserSet
         if ($qSearch->isEmpty()) {
             new ThrowError('Recherche trop générale.');
         }
-        parent::__construct($fields->get_select_statement()  . ' ' . $globals->search->result_where_statement,
+        $this->score = $qSearch->get_score_statement();
+        parent::__construct("{$fields->get_select_statement()}
+                             {$globals->search->result_where_statement}",
                             $fields->get_where_statement() .
                             (S::logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : ''));
 
@@ -108,6 +111,14 @@ class SearchSet extends UserSet
         $this->order = implode(',',array_filter(array($fields->get_order_statement(),
                                                       'promo DESC, NomSortKey, prenom')));
     }
+
+    public function &get($fields, $joins, $where, $groupby, $order, $limitcount = null, $limitfrom = null)
+    {
+        if ($this->score) {
+            $fields .= ', ' . $this->score;
+        }
+        return parent::get($fields, $joins, $where, $groupby, $order, $limitcount, $limitfrom);
+    }
 }
 
 class MinificheView extends MultipageView
@@ -117,7 +128,12 @@ class MinificheView extends MultipageView
         require_once 'applis.func.inc.php';
         global $globals;
         $this->entriesPerPage = $globals->search->per_page;
-        $this->order = explode(',', Env::v('order', 'nom,prenom,promo'));
+        if (@$params['with_score']) {
+            $this->addSortKey('score', array('-score', '-watch_last', '-promo', 'nom', 'prenom'), 'pertinence');
+        }
+        $this->addSortKey('name', array('nom', 'prenom'), 'nom');
+        $this->addSortKey('promo', array('-promo', 'nom', 'prenom'), 'promotion');
+        $this->addSortKey('date', array('-watch_last', '-promo', 'nom', 'prenom'), 'dernière modification');
         parent::__construct($set, $data, $params);
     }
 
@@ -171,6 +187,12 @@ class TrombiView extends MultipageView
     {
         $this->entriesPerPage = 24;
         $this->order = explode(',', Env::v('order', 'nom,prenom,promo'));
+        if (@$params['with_score']) {
+            $this->addSortKey('score', array('-score', '-watch_last', '-promo', 'nom', 'prenom'), 'pertinence');
+        }
+        $this->addSortKey('name', array('nom', 'prenom'), 'nom');
+        $this->addSortKey('promo', array('-promo', 'nom', 'prenom'), 'promotion');
+        $this->addSortKey('date', array('-watch_last', '-promo', 'nom', 'prenom'), 'dernière modification');
         parent::__construct($set, $data, $params);
     }
 
@@ -218,19 +240,12 @@ class GeolocView implements PlView
                is_file(dirname(__FILE__) . '/../modules/geoloc/icon.swf');
     }
 
-    private function make_qs($urlencode = true)
+    public function args()
     {
-        $qs = "";
-        foreach ($_GET as $v=>$a) {
-            if ($v != 'initfile' && $v != 'n' && $v != 'mapid') {
-                if (!$urlencode) {
-                    $qs .= $v . '=' . $a . '&';
-                } else { 
-                    $qs .= urlencode($v) . '=' . urlencode($a) . '&amp;';
-                }
-            }
-        }
-        return $qs;
+        $args = $this->set->args();
+        unset($args['initfile']);
+        unset($args['mapid']);
+        return $args;
     }
 
     public function apply(PlatalPage &$page)
@@ -258,7 +273,6 @@ class GeolocView implements PlView
             if (!empty($GLOBALS['IS_XNET_SITE'])) {
                 $page->assign('background', 0xF2E9D0);
             }
-            $page->assign('querystring', $this->make_qs()); 
             break;
 
           case 'city':
@@ -282,8 +296,6 @@ class GeolocView implements PlView
                 header('Content-Type: text/xml');
                 header('Pragma:');
             }
-            $querystring = $this->make_qs();
-            $page->assign('searchvars', $querystring);
             $mapid = Env::has('mapid') ? Env::i('mapid', -2) : false;
             list($countries, $cities) = geoloc_getData_subcountries($mapid, $this->set, 10);
             $page->assign('countries', $countries);
@@ -300,9 +312,6 @@ class GeolocView implements PlView
             }
             $page->assign('protocole', @$_SERVER['HTTPS'] ? 'https' : 'http');
             $this->set->get('u.user_id', null, "u.perms != 'pending' AND u.deces = 0", "u.user_id", null);
-            $url = '?' . $this->make_qs(false);
-            $page->assign('search_nourlencode', $url);
-            $page->assign('search', urlencode($url));
             return 'include/plview.geoloc.tpl';
         }
     }

@@ -90,9 +90,11 @@ class SearchModule extends PLModule
 
             require_once 'userset.inc.php';
             $view = new SearchSet(true, $action == 'geoloc' && substr($subaction, -3) == 'swf');
-            $view->addMod('minifiche', 'Minifiches', true);
-            $view->addMod('trombi', 'Trombinoscope');
-            $view->addMod('geoloc', 'Planishpère');
+            $view->addMod('minifiche', 'Minifiches', true, array('with_score' => true));
+            if (S::logged() && !Env::i('nonins')) {
+                $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true, 'with_score' => true));
+                $view->addMod('geoloc', 'Planisphère');
+            }
             $view->apply('search', $page, $action, $subaction);
 
             $nb_tot = $view->count();
@@ -133,7 +135,7 @@ class SearchModule extends PLModule
             require_once 'userset.inc.php';
             $view = new SearchSet(false, $action == 'geoloc' && substr($subaction, -3) == 'swf');
             $view->addMod('minifiche', 'Minifiches', true);
-            $view->addMod('trombi', 'Trombinoscope');
+            $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
             $view->addMod('geoloc', 'Planishpère');
             $view->apply('search', $page, $action, $subaction);
             

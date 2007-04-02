@@ -53,9 +53,9 @@ function new_skinned_page($tpl_name)
 {
     global $page;
     if (!$page instanceof XorgPage) {
-        $page = new XorgPage($tpl_name, $type);
+        $page = new XorgPage($tpl_name);
     } else {
-        $page->changeTpl($tpl_name, $type);
+        $page->changeTpl($tpl_name);
     }
 }
 

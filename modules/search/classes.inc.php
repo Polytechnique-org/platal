@@ -23,7 +23,7 @@ require_once("xorg.misc.inc.php");
 
 // {{{ Global variables used for the search Queries
 
-$globals->search->result_fields = '
+@$globals->search->result_fields = '
     u.user_id, u.promo, u.matricule, u.matricule_ax,
     if(u.nom_usage=\'\', u.nom, u.nom_usage) AS NomSortKey,
     u.nom_usage,u.date,
@@ -54,7 +54,7 @@ else
         IF(adr.pub='public', gp.pays, '') AS countrytxt,
         IF(adr.pub='public', gr.name, '') AS region,
         IF(e.pub='public', e.entreprise, '') AS entreprise,";
-$globals->search->result_where_statement = '
+@$globals->search->result_where_statement = '
     LEFT JOIN  applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
     LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
     LEFT JOIN  applis_ins     AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)

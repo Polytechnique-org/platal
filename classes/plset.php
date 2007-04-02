@@ -86,6 +86,27 @@ class PlSet
         return $it;
     }
 
+    public function args()
+    {
+        $get = $_GET;
+        unset($get['n']);
+        return $get;
+    }
+
+    protected function encodeArgs(array $args, $encode = false)
+    {
+        $qs = '?';
+        $sep = $encode ? '&' : '&amp;';
+        foreach ($args as $k=>$v) {
+            if (!$encode) {
+                $k = urlencode($k);
+                $v = urlencode($v);
+            }
+            $qs .= "$k=$v$sep";
+        }
+        return $encode ? urlencode($qs) : $qs;
+    }
+
     public function &get($fields, $joins, $where, $groupby, $order, $limitcount = null, $limitfrom = null)
     {
         if (!is_null($limitcount)) {
@@ -138,10 +159,13 @@ class PlSet
         if (is_null($view)) {
             return false;
         }
+        $args = $view->args();
         $page->changeTpl('core/plset.tpl');
         $page->assign('plset_base', $baseurl);
         $page->assign('plset_mods', $this->mods);
         $page->assign('plset_mod', $this->mod);
+        $page->assign('plset_search', $this->encodeArgs($args));
+        $page->assign('plset_search_enc', $this->encodeArgs($args, true));
         foreach ($this->modParams[$this->mod] as $param=>$value) {
             $page->assign($this->mod . '_' . $param, $value);
         }
@@ -155,6 +179,7 @@ interface PlView
 {
     public function __construct(PlSet &$set, $data, array $params);
     public function apply(PlatalPage &$page);
+    public function args();
 }
 
 abstract class MultipageView implements PlView
@@ -165,9 +190,11 @@ abstract class MultipageView implements PlView
     public $page   = 1;
     public $offset = 0;
 
-    protected $order  = array();
     protected $entriesPerPage = 20;
     protected $params = array();
+
+    protected $sortkeys = array();
+    protected $defaultkey = null;
 
     public function __construct(PlSet &$set, $data, array $params)
     {
@@ -192,20 +219,41 @@ abstract class MultipageView implements PlView
         return null;
     }
 
+    protected function addSortKey($name, array $keys, $desc, $default = false)
+    {
+        $this->sortkeys[$name] = array('keys' => $keys, 'desc' => $desc);
+        if (!$this->defaultkey || $default) {
+            $this->defaultkey = $name;
+        }
+    }
+
     public function order()
     {
-        foreach ($this->order as &$item) {
-            if ($item{0} == '-') {
-                $item = substr($item, 1) . ' DESC';
-            }
+        $order = Env::v('order', $this->defaultkey);
+        $invert = ($order{0} == '-');
+        if ($invert) {
+            $order = substr($order, 1);
         }
-        return implode(', ', $this->order);
+        $list = array();
+        foreach ($this->sortkeys[$order]['keys'] as $item) {
+            $desc = ($item{0} == '-');
+            if ($desc) {
+                $item = substr($item, 1);
+            }
+            if ($desc xor $invert) {
+                $item .= ' DESC';
+            }
+            $list[] = $item;
+        }
+        return implode(', ', $list);
     }
 
     abstract public function templateName();
 
     public function apply(PlatalPage &$page)
     {
+        $page->assign('order', Env::v('order', $this->defaultkey));
+        $page->assign('orders', $this->sortkeys);
         $page->assign_by_ref('plview', $this);
         $page->assign_by_ref('set',
                              $this->set->get($this->fields(),
@@ -217,9 +265,16 @@ abstract class MultipageView implements PlView
                                              $this->offset));
         $count = $this->set->count();
         $this->pages = intval(ceil($count / $this->entriesPerPage));
-
         return 'include/plview.multipage.tpl';
     }
+
+    public function args()
+    {
+        $list = $this->set->args();
+        unset($list['page']);
+        unset($list['order']);
+        return $list;
+    } 
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

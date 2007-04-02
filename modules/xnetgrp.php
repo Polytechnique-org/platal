@@ -80,16 +80,16 @@ class XnetGrpModule extends PLModule
             '%grp/edit'           => $this->make_hook('edit',      AUTH_MDP, 'groupadmin'),
             '%grp/mail'           => $this->make_hook('mail',      AUTH_MDP, 'groupadmin'),
             '%grp/forum'          => $this->make_hook('forum',     AUTH_MDP, 'groupmember'),
-            '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP),
-            '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP),
-            '%grp/trombi'         => $this->make_hook('trombi',    AUTH_MDP),
+            '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP, 'groupannu'),
+            '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP, 'groupmember:groupannu'),
+            '%grp/trombi'         => $this->make_hook('trombi',    AUTH_MDP, 'groupannu'),
             '%grp/subscribe'      => $this->make_hook('subscribe', AUTH_MDP),
             '%grp/unsubscribe'    => $this->make_hook('unsubscribe', AUTH_MDP, 'groupmember'),
 
             '%grp/change_rights'  => $this->make_hook('change_rights', AUTH_MDP),
 
             '%grp/admin/annuaire'
-                 => $this->make_hook('admin_annuaire', AUTH_MDP),
+                 => $this->make_hook('admin_annuaire', AUTH_MDP, 'groupadmin'),
 
             '%grp/member'
                  => $this->make_hook('admin_member', AUTH_MDP, 'groupadmin'),
@@ -326,7 +326,7 @@ class XnetGrpModule extends PLModule
     function handler_annuaire(&$page)
     {
         global $globals;
-        new_annu_page('xnetgrp/annuaire.tpl');
+        $page->changeTpl('xnetgrp/annuaire.tpl');
 
         $sort = Env::v('order');
         switch (Env::v('order')) {
@@ -436,16 +436,11 @@ class XnetGrpModule extends PLModule
     function handler_vcard(&$page, $photos = null)
     {
         global $globals;
-
-        if (($globals->asso('pub') == 'public' && is_member()) || may_update()) {
-            $res = XDB::query('SELECT uid
-                                 FROM groupex.membres
-                                WHERE asso_id = {?}', $globals->asso('id'));
-            $vcard = new VCard($res->fetchColumn(), $photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
-            $vcard->do_page($page);
-        } else {
-            return PL_FORBIDDEN;
-        }
+        $res = XDB::query('SELECT  uid
+                             FROM  groupex.membres
+                            WHERE  asso_id = {?}', $globals->asso('id'));
+        $vcard = new VCard($res->fetchColumn(), $photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
+        $vcard->do_page($page);
     }
 
     function handler_subscribe(&$page, $u = null)

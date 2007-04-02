@@ -35,7 +35,7 @@
   {if $plset_mods|@count > 1}[
   {foreach from=$plset_mods key=mod item=desc name=mods}
     {if $mod neq $plset_mod}
-    <a href="{$plset_base}/{$mod}">{$desc}</a> {if !$smarty.foreach.mods.last}| {/if}
+    <a href="{$plset_base}/{$mod}{$plset_search}">{$desc}</a> {if !$smarty.foreach.mods.last}| {/if}
     {/if}
   {/foreach}
   ]
@@ -43,6 +43,8 @@
 </h1>
 </div>
 
+<div id="plset_content" style="clear: both">
 {include file=$plset_content}
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -60,7 +60,7 @@ function searchMapId(f)
   
   {if $smarty.request.only_current neq 'on'}
   <p class="center">
-    [<a href="{$platal->ns}{$plset_base}/geoloc{$search_nourlencode|smarty:nodefaults}&amp;only_current=on">Ne voir que les adresses principales</a>]
+    [<a href="{$platal->ns}{$plset_base}/geoloc{$plset_search}only_current=on">Ne voir que les adresses principales</a>]
   </p>
   {/if}
   
@@ -75,7 +75,7 @@ function searchMapId(f)
       <param name="bgcolor" value="#ffffff"/>
       <param name="wmode" value="opaque"/>
       <param name="quality" value="high"/>
-      <param name="flashvars" value="initfile={$platal->ns|urlencode}{$plset_base|urlencode}%2Fgeoloc%2Finit{$search|smarty:nodefaults}"/>
+      <param name="flashvars" value="initfile={$platal->ns|urlencode}{$plset_base|urlencode}%2Fgeoloc%2Finit{$plset_search_enc}"/>
       <embed
         src="{$platal->ns}{$plset_base}/geoloc/dynamap.swf"
         quality="high"
@@ -85,7 +85,7 @@ function searchMapId(f)
         name="dynamap"
         id="dynamap"
         align="middle"
-        flashvars="initfile={$platal->ns|urlencode}{$plset_base|urlencode}%2Fgeoloc%2Finit{$search|smarty:nodefaults}"
+        flashvars="initfile={$platal->ns|urlencode}{$plset_base|urlencode}%2Fgeoloc%2Finit{$plset_search_enc}"
         type="application/x-shockwave-flash"
         menu="false"
         wmode="opaque"
