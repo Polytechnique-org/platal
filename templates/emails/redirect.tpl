@@ -82,6 +82,7 @@
     }
     {/literal}
   //]]></script>
+  {javascript name="jquery"}
   <div id="redirect-msg" style="position:absolute;"></div><br />
   <div class="center">
     <table class="bicol" summary="Adresses de redirection">
@@ -92,7 +93,7 @@
         <th>&nbsp;</th>
       </tr>
       {foreach from=$emails item=e name=redirect}
-      <tr class="{cycle values="pair,impair"}">
+      <tr class="{cycle values="pair,impair"}" id="line_{$e->email|replace:'@':'_at_'}">
         <td>
           <strong>
             {if $e->broken}<span class="erreur">{assign var="erreur" value="1"}{/if}
@@ -117,7 +118,11 @@
             {/foreach}
           </select>
         </td>
-        <td><a href="emails/redirect/remove/{$e->email}">{icon name=bin_empty title="retirer"}</a></td>
+        <td>
+		  <a href="emails/redirect/remove/{$e->email}" onclick="if (confirm('Supprimer l\'adresse {$e->email} ?')) $.get(this.href,{literal}{}{/literal},function() {literal}{{/literal} $('tr[@id=line_{$e->email|replace:'@':'_at_'}]').remove();{literal}}{/literal}); return false">
+		    {icon name=bin_empty title="retirer"}
+		  </a>
+		</td>
       </tr>
       {/foreach}
       <tr class="{cycle values="pair,impair"}"><td colspan="4">
