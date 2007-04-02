@@ -37,7 +37,6 @@ class ProfileModule extends PLModule
             'referent'         => $this->make_hook('referent',   AUTH_COOKIE),
             'referent/search'  => $this->make_hook('ref_search', AUTH_COOKIE),
 
-            'trombi'  => $this->make_hook('trombi', AUTH_COOKIE),
             'groupes-x'        => $this->make_hook('xnet',      AUTH_COOKIE),
 
             'vcard'   => $this->make_hook('vcard',  AUTH_COOKIE),
@@ -661,29 +660,6 @@ class ProfileModule extends PLModule
                 $myusage->submit();
                 $page->assign('myusage', $myusage);
             }
-        }
-    }
-
-    function handler_trombi(&$page, $promo = null)
-    {
-        $page->changeTpl('profile/trombipromo.tpl');
-        $page->assign('xorg_title', 'Polytechnique.org - Trombi Promo');
-
-        if (is_null($promo)) {
-            return;
-        }
-
-        $this->promo = $promo = intval($promo);
-
-        if ($promo >= 1900 && ($promo < intval(date('Y')) || ($promo == intval(date('Y')) && intval(date('m')) >= 9))
-        || ($promo == -1 && S::has_perms()))
-        {
-            $trombi = new Trombi(array($this, '_trombi_getlist'));
-            $trombi->hidePromo();
-            $trombi->setAdmin();
-            $page->assign_by_ref('trombi', $trombi);
-        } else {
-            $page->trig('Promotion incorrecte (saisir au format YYYY). Recommence.');
         }
     }
 

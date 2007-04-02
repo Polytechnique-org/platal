@@ -136,7 +136,7 @@ class PlatalPage extends Smarty
         }
 
         $this->assign('validate', true);
-        #error_reporting(0);
+        error_reporting(0);
         $result = $this->fetch($skin);
         $ttime  = sprintf('Temps total: %.02fs - Mémoire totale : %dKo<br />', microtime(true) - $TIME_BEGIN
                                                                                 , memory_get_peak_usage(true) / 1024);

@@ -428,16 +428,11 @@ class XnetGrpModule extends PLModule
         $page->jsonAssign('ann', $ann);
     }
 
-    function handler_trombi(&$page, $num = 1)
+    function handler_trombi(&$page, $action = null, $subaction = null)
     {
-        global $globals;
-        new_annu_page('xnetgrp/trombi.tpl');
-        
-        $page->assign('urlmainsite', "https://www.polytechnique.org/");
-        $trombi = new Trombi(array($this, '_trombi_getlist'));
-        $trombi->hidePromo();
-        $trombi->setAdmin();
-        $page->assign_by_ref('trombi', $trombi);
+        $view = new UserSet();
+        $view->addMod('trombi', 'Trombinoscope', true, array('with_admin' => false, 'with_promo' => true));
+        $view->apply('trombi', $page,  'trombi', $action, $subaction);
     }
 
     function _trombi_getlist($offset, $limit)

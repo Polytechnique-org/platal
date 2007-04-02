@@ -44,6 +44,7 @@ function geoloc_country($current, $avail_only = false)
 
 function _geoloc_country_smarty($params)
 {
+    echo "miqjfmeij";
     if(!isset($params['country'])) {
         return;
     }
@@ -77,10 +78,9 @@ function geoloc_region($country, $current, $avail_only = false)
                  $regid, ($current==$regid?"selected='selected'":""), $regname);
     }
     return $html;
-
 }
 
-function _geoloc_region_smarty($params)
+function _geoloc_region_smarty($params, &$smarty)
 {
     if(!isset($params['country']) || !isset($params['region'])) {
         return;

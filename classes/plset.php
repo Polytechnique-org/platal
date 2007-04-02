@@ -138,7 +138,11 @@ class PlSet
         if (is_null($view)) {
             return false;
         }
-        $page->changeTpl('core/plset.tpl');
+        if (empty($GLOBALS['IS_XNET_SITE'])) {
+            $page->changeTpl('core/plset.tpl');
+        } else {
+            new_group_open_page('core/plset.tpl');
+        }
         $page->assign('plset_base', $baseurl);
         $page->assign('plset_mods', $this->mods);
         $page->assign('plset_mod', $this->mod);

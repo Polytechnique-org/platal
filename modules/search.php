@@ -46,48 +46,6 @@ class SearchModule extends PLModule
         user_reindex($uid);
     }
 
-    function get_quick($offset, $limit, $order)
-    {
-        global $globals;
-        if (!S::logged()) {
-            Env::kill('with_soundex');
-        }
-        $qSearch = new QuickSearch('quick');
-        $fields  = new SFieldGroup(true, array($qSearch));
-
-        if ($qSearch->isempty()) {
-            new ThrowError('Recherche trop générale.');
-        }
-
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS
-            UPPER(IF(u.nom!="",u.nom,u.nom_ini)) AS nom,
-            IF(u.prenom!="",u.prenom,u.prenom_ini) AS prenom,
-            '.$globals->search->result_fields.'
-            c.uid AS contact, w.ni_id AS watch,
-            '.$qSearch->get_score_statement().'
-                FROM  auth_user_md5  AS u
-                '.$fields->get_select_statement().'
-                LEFT JOIN  auth_user_quick AS q  ON (u.user_id = q.user_id)
-                LEFT JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type="a_vie")
-                LEFT JOIN  contacts        AS c  ON (c.uid='.S::i('uid', -1).'
-                                                     AND c.contact=u.user_id)
-                LEFT JOIN  watch_nonins    AS w  ON (w.ni_id=u.user_id
-                                                     AND w.uid='.S::i('uid', -1).')
-                '.$globals->search->result_where_statement.'
-                    WHERE  '.$fields->get_where_statement()
-                    .(S::logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : '')
-                .'
-                 GROUP BY  u.user_id
-                 ORDER BY  '.($order?($order.', '):'')
-                .implode(',',array_filter(array($fields->get_order_statement(),
-                                                'u.promo DESC, NomSortKey, prenom'))).'
-                    LIMIT  '.$offset * $globals->search->per_page.','
-                .$globals->search->per_page;
-        $list    = XDB::iterator($sql);
-        $res     = XDB::query("SELECT  FOUND_ROWS()");
-        $nb_tot  = $res->fetchOneCell();
-        return array($list, $nb_tot);
-    }
 
     function form_prepare()
     {
@@ -121,48 +79,6 @@ class SearchModule extends PLModule
         }
         global $page;
         $page->assign('choix_diplomas', explode(',',$types));
-    }
-
-    function get_advanced($offset, $limit, $order)
-    {
-        $fields = new SFieldGroup(true, advancedSearchFromInput());
-        if ($fields->too_large()) {
-            $this->form_prepare();
-            new ThrowError('Recherche trop générale.');
-        }
-        global $globals, $page;
-
-  			$page->assign('search_vars', $fields->get_url());
-
-        $where = $fields->get_where_statement();
-        if ($where) {
-            $where = "WHERE  $where";
-        }
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT
-                           u.nom, u.prenom,
-                           '.$globals->search->result_fields.'
-                           c.uid AS contact,
-                           w.ni_id AS watch
-                     FROM  auth_user_md5   AS u
-               LEFT JOIN  auth_user_quick AS q USING(user_id)
-                '.$fields->get_select_statement().'
-                '.(Env::has('only_referent') ? ' INNER JOIN mentor AS m ON (m.uid = u.user_id)' : '').'
-                LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
-                LEFT JOIN  contacts       AS c ON (c.uid='.S::v('uid').'
-                                                   AND c.contact=u.user_id)
-                LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id
-                                                   AND w.uid='.S::v('uid').')
-                '.$globals->search->result_where_statement."
-                    $where
-                 GROUP BY  u.user_id
-                 ORDER BY  ".($order?($order.', '):'')
-                .implode(',',array_filter(array($fields->get_order_statement(),
-                                                'promo DESC, NomSortKey, prenom'))).'
-                    LIMIT  '.($offset * $limit).','.$limit;
-        $liste   = XDB::iterator($sql);
-        $res     = XDB::query("SELECT  FOUND_ROWS()");
-        $nb_tot  = $res->fetchOneCell();
-        return Array($liste, $nb_tot);
     }
 
     function handler_quick(&$page, $action = null, $subaction = null)
@@ -201,15 +117,17 @@ class SearchModule extends PLModule
             $page->addJsLink('ajax.js');
         }
 
+        require_once dirname(__FILE__) . '/search/search.inc.php';
         $page->changeTpl('search/index.tpl');            
         $page->assign('xorg_title','Polytechnique.org - Annuaire');
         $page->assign('baseurl', $globals->baseurl);
+        $page->register_modifier('display_lines', 'display_lines');
     }
 
-    function handler_advanced(&$page, $mode = null)
+    function handler_advanced(&$page, $action = null, $subaction = null)
     {
         global $globals;
-        if (!Env::has('rechercher')) {
+        if (!Env::has('rechercher') && $action != 'geoloc') {
             $this->form_prepare();
         } else {
             require_once 'userset.inc.php';
@@ -229,10 +147,13 @@ class SearchModule extends PLModule
             }
         }
 
-        $page->changeTpl('search/index.tpl', $mode == 'mini' ? SIMPLE : SKINNED);
+        require_once 'geoloc.inc.php';
+        require_once dirname(__FILE__) . '/search/search.inc.php';
+        $page->changeTpl('search/index.tpl', $action == 'mini' ? SIMPLE : SKINNED);
         $page->addJsLink('ajax.js');
         $page->assign('advanced',1);
         $page->assign('public_directory',0);
+        $page->register_modifier('display_lines', 'display_lines');
     }
 
     function handler_region(&$page, $country = null)
