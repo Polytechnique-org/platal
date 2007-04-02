@@ -79,12 +79,12 @@ class XnetGrpModule extends PLModule
             '%grp/site'           => $this->make_hook('site',      AUTH_PUBLIC),
             '%grp/edit'           => $this->make_hook('edit',      AUTH_MDP, 'groupadmin'),
             '%grp/mail'           => $this->make_hook('mail',      AUTH_MDP, 'groupadmin'),
-            '%grp/forum'          => $this->make_hook('forum',     AUTH_MDP),
+            '%grp/forum'          => $this->make_hook('forum',     AUTH_MDP, 'groupmember'),
             '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP),
             '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP),
             '%grp/trombi'         => $this->make_hook('trombi',    AUTH_MDP),
             '%grp/subscribe'      => $this->make_hook('subscribe', AUTH_MDP),
-            '%grp/unsubscribe'    => $this->make_hook('unsubscribe', AUTH_MDP),
+            '%grp/unsubscribe'    => $this->make_hook('unsubscribe', AUTH_MDP, 'groupmember'),
 
             '%grp/change_rights'  => $this->make_hook('change_rights', AUTH_MDP),
 
@@ -114,8 +114,7 @@ class XnetGrpModule extends PLModule
         if (!is_null($arg)) {
             return PL_NOT_FOUND;
         }
-
-        new_group_open_page('xnetgrp/asso.tpl');
+        $page->changeTpl('xnetgrp/asso.tpl');
 
         if (S::logged()) {
             if (Env::has('read')) {
@@ -220,8 +219,7 @@ class XnetGrpModule extends PLModule
     function handler_edit(&$page)
     {
         global $globals;
-
-        new_groupadmin_page('xnetgrp/edit.tpl');
+        $page->changeTpl('xnetgrp/edit.tpl');
 
         if (Post::has('submit')) {
             if (S::has_perms()) {
@@ -286,7 +284,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        new_groupadmin_page('xnetgrp/mail.tpl');
+        $page->changeTpl('xnetgrp/mail.tpl');
         $mmlist = new MMList(S::v('uid'), S::v('password'),
                            $globals->asso('mail_domain'));
         $page->assign('listes', $mmlist->get_lists());
@@ -315,7 +313,7 @@ class XnetGrpModule extends PLModule
     function handler_forum(&$page, $group = null, $artid = null)
     {
         global $globals;
-        new_group_page('xnetgrp/forum.tpl');
+        $page->changeTpl('xnetgrp/forum.tpl');
         if (!$globals->asso('forum')) {
             return PL_NOT_FOUND;
         }
@@ -434,31 +432,6 @@ class XnetGrpModule extends PLModule
         $view->addMod('trombi', 'Trombinoscope', true, array('with_admin' => false, 'with_promo' => true));
         $view->apply('trombi', $page,  'trombi', $action, $subaction);
     }
-
-    function _trombi_getlist($offset, $limit)
-    {
-        global $globals;
-        $where  = "WHERE m.asso_id= '".addslashes($globals->asso('id'))."'";
-
-        $res = XDB::query(
-                "SELECT  COUNT(*)
-                   FROM  auth_user_md5 AS u
-             RIGHT JOIN  photo         AS p ON u.user_id=p.uid
-             INNER JOIN  groupex.membres AS m ON (m.uid = u.user_id)
-             $where");
-        $pnb = $res->fetchOneCell();
-        
-        $res = XDB::query("SELECT  promo, user_id, a.alias AS forlife,
-                         IF (nom_usage='', u.nom, nom_usage) AS nom, u.prenom
-                   FROM  photo         AS p
-             INNER JOIN  auth_user_md5 AS u ON u.user_id=p.uid
-             INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
-             INNER JOIN  groupex.membres AS m ON (m.uid = u.user_id)
-                  $where
-               ORDER BY  promo, u.nom, u.prenom LIMIT {?}, {?}", $offset*$limit, $limit);
-        
-        return array($pnb, $res->fetchAllAssoc());
-    }
     
     function handler_vcard(&$page, $photos = null)
     {
@@ -478,8 +451,7 @@ class XnetGrpModule extends PLModule
     function handler_subscribe(&$page, $u = null)
     {
         global $globals;
-
-        new_group_open_page('xnetgrp/inscrire.tpl');
+        $page->changeTpl('xnetgrp/inscrire.tpl');
 
         if (!$globals->asso('inscriptible'))
                 $page->kill("Il n'est pas possible de s'inscire en ligne à ce "
@@ -629,8 +601,7 @@ class XnetGrpModule extends PLModule
         global $globals;
 
         require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
-
-        new_groupadmin_page('xnetgrp/annuaire-admin.tpl');
+        $page->changeTpl('xnetgrp/annuaire-admin.tpl');
         $mmlist = new MMList(S::v('uid'), S::v('password'),
                              $globals->asso('mail_domain'));
         $lists  = $mmlist->get_lists();
@@ -675,7 +646,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        new_groupadmin_page('xnetgrp/membres-add.tpl');
+        $page->changeTpl('xnetgrp/membres-add.tpl');
         $page->addJsLink('ajax.js');
 
         if (is_null($email)) {
@@ -816,7 +787,7 @@ class XnetGrpModule extends PLModule
 
     function handler_unsubscribe(&$page)
     {
-        new_group_page('xnetgrp/membres-del.tpl');
+        $page->changeTpl('xnetgrp/membres-del.tpl');
         $user = get_infos(S::v('forlife'));
         if (empty($user)) {
             return PL_NOT_FOUND;
@@ -838,7 +809,7 @@ class XnetGrpModule extends PLModule
 
     function handler_admin_member_del(&$page, $user = null)
     {
-        new_groupadmin_page('xnetgrp/membres-del.tpl');
+        $page->changeTpl('xnetgrp/membres-del.tpl');
         $user = get_infos($user);
         if (empty($user)) {
             return PL_NOT_FOUND;
@@ -860,7 +831,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        new_groupadmin_page('xnetgrp/membres-edit.tpl');
+        $page->changeTpl('xnetgrp/membres-edit.tpl');
 
         $user = get_infos($user);
         if (empty($user)) {
@@ -987,7 +958,7 @@ class XnetGrpModule extends PLModule
     function handler_edit_announce(&$page, $aid = null)
     {
         global $globals, $platal;
-        new_groupadmin_page('xnetgrp/announce-edit.tpl');
+        $page->changeTpl('xnetgrp/announce-edit.tpl');
         $page->register_modifier('wiki_to_html', array('MiniWiki','WikiToHTML'));
         $page->assign('new', is_null($aid));
         $art = array();
@@ -1120,7 +1091,7 @@ class XnetGrpModule extends PLModule
     function handler_admin_announce(&$page)
     {
         global $globals;
-        new_groupadmin_page('xnetgrp/announce-admin.tpl');
+        $page->changeTpl('xnetgrp/announce-admin.tpl');
 
         if (Env::has('del')) {
             XDB::execute("DELETE FROM groupex.announces

@@ -28,8 +28,8 @@ class XnetListsModule extends ListsModule
     function handlers()
     {
         return array(
-            '%grp/lists'           => $this->make_hook('lists',     AUTH_MDP),
-            '%grp/lists/create'    => $this->make_hook('create',    AUTH_MDP),
+            '%grp/lists'           => $this->make_hook('lists',     AUTH_MDP, 'groupmember'),
+            '%grp/lists/create'    => $this->make_hook('create',    AUTH_MDP, 'groupmember'),
 
             '%grp/lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
             '%grp/lists/trombi'    => $this->make_hook('trombi',    AUTH_COOKIE),
@@ -75,8 +75,7 @@ class XnetListsModule extends ListsModule
             return PL_NOT_FOUND;
         }
         $this->prepare_client($page);
-
-        new_group_page('xnetlists/index.tpl');
+        $page->changeTpl('xnetlists/index.tpl');
 
         if (Get::has('del')) {
             $this->client->unsubscribe(Get::v('del'));
@@ -121,7 +120,6 @@ class XnetListsModule extends ListsModule
             return PL_NOT_FOUND;
         }
         $this->prepare_client($page);
-
         $page->changeTpl('xnetlists/create.tpl');
 
         if (!Post::has('submit')) {
@@ -198,7 +196,6 @@ class XnetListsModule extends ListsModule
             return PL_NOT_FOUND;
         }
         $this->prepare_client($page);
-
         $page->changeTpl('xnetlists/sync.tpl');
 
         if (Env::has('add')) {
@@ -244,8 +241,7 @@ class XnetListsModule extends ListsModule
         if (!$globals->asso('mail_domain') || is_null($lfull)) {
             return PL_NOT_FOUND;
         }
-
-        new_groupadmin_page('xnetlists/alias-admin.tpl');
+        $page->changeTpl('xnetlists/alias-admin.tpl');
 
         if (Env::has('add_member')) {
             $add = Env::v('add_member');
@@ -320,7 +316,7 @@ class XnetListsModule extends ListsModule
         if (!$globals->asso('mail_domain')) {
             return PL_NOT_FOUND;
         }
-        new_groupadmin_page('xnetlists/alias-create.tpl');
+        $page->changeTpl('xnetlists/alias-create.tpl');
 
         if (!Post::has('submit')) {
             return;

@@ -72,7 +72,7 @@ class XnetModule extends PLModule
 
     function handler_admin(&$page)
     {
-        new_admin_page('xnet/admin.tpl');
+        $page->changeTpl('xnet/admin.tpl');
 
         if (Get::has('del')) {
             $res = XDB::query('SELECT id, nom, mail_domain

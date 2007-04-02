@@ -23,7 +23,8 @@ class XnetSession
 {
     // {{{ function init
 
-    public static function init() {
+    public static function init() 
+    {
         global $globals;
 
         S::init();

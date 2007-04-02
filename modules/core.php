@@ -49,22 +49,14 @@ class CoreModule extends PLModule
     {
         global $globals;
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        if (!empty($GLOBALS['IS_XNET_SITE']) && $globals->asso()) {
-            new_skinned_page('core/403.tpl');
-        } else {
-            $page->changeTpl('core/403.tpl');
-        }
+        $page->changeTpl('core/403.tpl');
     }
 
     function handler_404(&$page)
     {
         global $globals, $platal;
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-        if (!empty($GLOBALS['IS_XNET_SITE']) && $globals->asso()) {
-            new_group_open_page('core/404.tpl');
-        } else {
-            $page->changeTpl('core/404.tpl');
-        }
+        $page->changeTpl('core/404.tpl');
         $page->assign('near', $platal->near_hook());
     }
 

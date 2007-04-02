@@ -27,53 +27,18 @@ XnetSession::init();
 
 // {{{ function new_skinned_page()
 
-function new_page($tpl_name, $type = SKINNED)
+function new_skinned_page($tpl_name, $refuse_access = false)
 {
     global $page, $globals;
     require_once("xnet/page.inc.php");
-    $page = new XnetPage($tpl_name, $type);
-    $page->assign('xorg_tpl', $tpl_name);
-    $page->assign('is_logged', S::logged());
-}
-
-function new_skinned_page($tpl_name)
-{
-    return new_page($tpl_name);
-}
-
-// }}}
-// {{{ function new_group_open_page()
-
-function new_group_open_page($tpl_name, $refuse_access = false)
-{
-    global $page, $globals;
-
-    new_page($tpl_name);
-
-    $page->assign('asso', $globals->asso());
-    $page->setType($globals->asso('cat'));
-    $page->assign('is_admin', may_update());
-    $page->assign('is_member', is_member());
-
+    if (!$page instanceof XnetPage) {
+        $page = new XnetPage($tpl_name, $type);
+    } else {
+        $page->changeTpl($tpl_name, $type);
+    }
     if ($refuse_access) {
         $page->kill("Vous n'avez pas les droits suffisants pour accéder à cette page");
     }
-}
-
-// }}}
-// {{{ function new_group_page()
-
-function new_group_page($tpl_name)
-{
-    new_group_open_page($tpl_name, !is_member() && !S::has_perms());
-}
-
-// }}}
-// {{{ function new_groupadmin_page()
-
-function new_groupadmin_page($tpl_name)
-{
-    new_group_open_page($tpl_name, !may_update());
 }
 
 // }}}
@@ -82,27 +47,10 @@ function new_groupadmin_page($tpl_name)
 function new_annu_page($tpl_name)
 {
     global $globals;
-    new_group_open_page($tpl_name, 
-                            !may_update()
-                            && (!is_member()  || $globals->asso('pub') != 'public')
-                            && $globals->asso('cat') != 'Promotions');
-}
-
-// }}}
-// {{{ function new_admin_page()
-
-function new_admin_page($tpl_name)
-{
-    global $page, $globals;
-
-    new_page($tpl_name);
-
-    check_perms();
-
-    if ($globals->asso('cat')) {
-        $page->assign('asso', $globals->asso());
-        $page->setType($globals->asso('cat'));
-    }
+    new_skinned_page($tpl_name, 
+                     !may_update()
+                     && (!is_member()  || $globals->asso('pub') != 'public')
+                     && $globals->asso('cat') != 'Promotions');
 }
 
 // }}}

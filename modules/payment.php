@@ -80,8 +80,8 @@ class PaymentModule extends PLModule
             'payment'               => $this->make_hook('payment', AUTH_MDP),
             'payment/cyber_return'  => $this->make_hook('cyber_return',  AUTH_PUBLIC),
             'payment/paypal_return' => $this->make_hook('paypal_return',  AUTH_PUBLIC),
-            '%grp/paiement'              => $this->make_hook('xnet_payment', AUTH_MDP),
-            '%grp/payment'               => $this->make_hook('xnet_payment', AUTH_MDP),
+            '%grp/paiement'              => $this->make_hook('xnet_payment', AUTH_MDP, 'groupmember'),
+            '%grp/payment'               => $this->make_hook('xnet_payment', AUTH_MDP, 'groupmember'),
             '%grp/payment/cyber_return'  => $this->make_hook('cyber_return', AUTH_PUBLIC),
             '%grp/payment/paypal_return' => $this->make_hook('paypal_return', AUTH_PUBLIC),
             'admin/payments'        => $this->make_hook('admin', AUTH_MDP, 'admin'),
@@ -107,11 +107,9 @@ class PaymentModule extends PLModule
             if (!$res->numRows()) {
                 return PL_FORBIDDEN;
             }
-            new_group_page('payment/index.tpl');
-        } else {
-            $page->changeTpl('payment/index.tpl');
-            $page->assign('xorg_title','Polytechnique.org - Télépaiements');
         }
+        $page->changeTpl('payment/index.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Télépaiements');
 
         // initialisation
         $op   = Env::v('op', 'select');
@@ -347,7 +345,7 @@ class PaymentModule extends PLModule
         if (!is_null($pid)) {
             return  $this->handler_payment($page, $pid);
         }
-        new_group_page('payment/xnet.tpl');
+        $page->changeTpl('payment/xnet.tpl');
         
         $res = XDB::query(
                 "SELECT  id, text, url

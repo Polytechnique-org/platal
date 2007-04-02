@@ -50,6 +50,22 @@ class XnetPage extends PlatalPage
     }
 
     // }}}
+    // {{{ function changeTpl()
+
+    public function changeTpl($tpl, $type = SKINNED)
+    {
+        global $globals;
+        parent::changeTpl($tpl, $type);
+        $this->assign('is_logged', S::logged());
+        if ($globals->asso('id')) {  
+            $this->assign('asso', $globals->asso());
+            $this->setType($globals->asso('cat'));
+            $this->assign('is_admin', may_update());
+            $this->assign('is_member', is_member());
+        }
+    }
+    
+    // }}}
     // {{{ function setType
 
     public function setType($type)

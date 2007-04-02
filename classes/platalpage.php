@@ -21,7 +21,7 @@
 
 require_once 'smarty/libs/Smarty.class.php';
 
-class PlatalPage extends Smarty
+abstract class PlatalPage extends Smarty
 {
     private $_page_type;
     private $_tpl;
@@ -47,8 +47,7 @@ class PlatalPage extends Smarty
 
         $this->compile_check = !empty($globals->debug);
 
-        $this->_page_type = $type;
-        $this->_tpl       = $tpl;
+        $this->changeTpl($tpl, $type);
         $this->_errors    = array();
         $this->_jsonVars  = array();
         $this->_failure   = false;
@@ -163,6 +162,8 @@ class PlatalPage extends Smarty
         echo str_replace("@HOOK@", $ttime.$replc, $result);
         exit;
     }
+
+    abstract public function run();
 
     // }}}
     // {{{ function nb_errs()

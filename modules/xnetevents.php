@@ -31,7 +31,7 @@ class XnetEventsModule extends PLModule
             '%grp/events/csv'   => $this->make_hook('csv',     AUTH_MDP),
             '%grp/events/ical'  => $this->make_hook('ical',    AUTH_MDP),
             '%grp/events/edit'  => $this->make_hook('edit',    AUTH_MDP, 'groupadmin'),
-            '%grp/events/admin' => $this->make_hook('admin',   AUTH_MDP),
+            '%grp/events/admin' => $this->make_hook('admin',   AUTH_MDP, 'groupmember'),
         );
     }
 
@@ -39,15 +39,10 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
-        if ($archive == 'archive') {
-            $archive = true;
-            new_groupadmin_page('xnetevents/index.tpl');
-        } else {
-            $archive = false;
-            new_group_open_page('xnetevents/index.tpl');
-        }
-
+        $page->changeTpl('xnetevents/index.tpl');
         $action = null;
+        $archive = ($archive == 'archive' && may_update());
+
         if (Post::has('del')) {
             $action = 'del';
             $eid = Post::v('del');
@@ -177,8 +172,7 @@ class XnetEventsModule extends PLModule
     function handler_sub(&$page, $eid = null)
     {
         require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
-
-        new_group_open_page('xnetevents/subscribe.tpl');
+        $page->changeTpl('xnetevents/subscribe.tpl');
 
         $evt = get_event_detail($eid);
         if (!$evt) {
@@ -345,7 +339,7 @@ class XnetEventsModule extends PLModule
             }
         }
 
-        new_groupadmin_page('xnetevents/edit.tpl');
+        $page->changeTpl('xnetevents/edit.tpl');
 
         $moments    = range(1, 4);
         $error      = false;
@@ -509,10 +503,9 @@ class XnetEventsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        if ($evt['show_participants']) {
-            new_group_page('xnetevents/admin.tpl');
-        } else {
-            new_groupadmin_page('xnetevents/admin.tpl');
+        $page->changeTpl('xnetevents/admin.tpl');
+        if (!$evt['show_participants'] && !may_update()) {
+            return PL_FORBIDDEN;
         }
 
         if (may_update() && Post::v('adm')) {

@@ -47,36 +47,17 @@ class XorgPage extends PlatalPage
     }
 }
 
-// }}}
-
-function _new_page($type, $tpl_name, $admin=false)
-{
-    global $page;
-    if (!empty($admin)) {
-        $page = new XorgAdmin($tpl_name, $type);
-    } else {
-        $page = new XorgPage($tpl_name, $type);
-    }
-
-    $page->assign('xorg_tpl', $tpl_name);
-}
-
 // {{{ function new_skinned_page()
 
 function new_skinned_page($tpl_name)
 {
-    _new_page(SKINNED, $tpl_name);
+    global $page;
+    if (!$page instanceof XorgPage) {
+        $page = new XorgPage($tpl_name, $type);
+    } else {
+        $page->changeTpl($tpl_name, $type);
+    }
 }
-
-// }}}
-// {{{ function new_admin_page()
-
-function new_admin_page($tpl_name)
-{
-    _new_page(SKINNED, $tpl_name, true);
-}
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

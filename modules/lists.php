@@ -225,16 +225,6 @@ class ListsModule extends PLModule
         }
     }
 
-    function changeTpl($tpl)
-    {
-        if (!empty($GLOBALS['IS_XNET_SITE'])) {
-            new_group_open_page($tpl);
-        } else {
-            global $page;
-            $page->changeTpl($tpl);
-        }
-    }
-
     function handler_members(&$page, $liste = null)
     {
         if (is_null($liste)) {
@@ -243,7 +233,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $this->changeTpl('lists/members.tpl');
+        $page->changeTpl('lists/members.tpl');
 
         if (Get::has('del')) {
             $this->client->unsubscribe($liste);
@@ -315,7 +305,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $this->changeTpl('lists/trombi.tpl');
+        $page->changeTpl('lists/trombi.tpl');
 
         if (Get::has('del')) {
             $this->client->unsubscribe($liste);
@@ -351,7 +341,7 @@ class ListsModule extends PLModule
 
         $domain = $this->prepare_client($page);
 
-        $this->changeTpl('lists/archives.tpl');
+        $page->changeTpl('lists/archives.tpl');
 
         if (list($det) = $this->client->get_members($liste)) {
             if (substr($liste,0,5) != 'promo' && ($det['ins'] || $det['priv'])
@@ -451,7 +441,7 @@ class ListsModule extends PLModule
 
         $domain = $this->prepare_client($page);
 
-        $this->changeTpl('lists/moderate.tpl');
+        $page->changeTpl('lists/moderate.tpl');
 
         $page->register_modifier('hdc', 'list_header_decode');
 
@@ -513,7 +503,7 @@ class ListsModule extends PLModule
             if (list($subs,$mails) = $this->client->get_pending_ops($liste)) {
                 foreach($subs as $user) {
                     if ($user['id'] == Env::v('sid')) {
-                        $this->changeTpl('lists/moderate_sub.tpl');
+                        $page->changeTpl('lists/moderate_sub.tpl');
                         $page->assign('del_user', $user);
                         return;
                     }
@@ -559,7 +549,7 @@ class ListsModule extends PLModule
 
         $domain = $this->prepare_client($page);
 
-        $this->changeTpl('lists/admin.tpl');
+        $page->changeTpl('lists/admin.tpl');
 
         if (Env::has('send_mark')) {
             $actions = Env::v('mk_action');
@@ -661,7 +651,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $this->changeTpl('lists/options.tpl');
+        $page->changeTpl('lists/options.tpl');
 
         if (Post::has('submit')) {
             $values = $_POST;
@@ -723,7 +713,7 @@ class ListsModule extends PLModule
             $type   = 'list';
         }
 
-        $this->changeTpl('lists/delete.tpl');
+        $page->changeTpl('lists/delete.tpl');
         if (Post::v('valid') == 'OUI') {
             if ($this->client->delete_list($liste, Post::b('del_archive'))) {
                 foreach (array('', '-owner', '-admin', '-bounces') as $app) {
@@ -754,7 +744,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $this->changeTpl('lists/soptions.tpl');
+        $page->changeTpl('lists/soptions.tpl');
 
         if (Post::has('submit')) {
             $values = $_POST;
@@ -781,7 +771,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $this->changeTpl('lists/check.tpl');
+        $page->changeTpl('lists/check.tpl');
 
         if (Post::has('correct')) {
             $this->client->check_options($liste, true);
@@ -796,7 +786,7 @@ class ListsModule extends PLModule
     }
 
     function handler_admin_all(&$page) {
-        $this->changeTpl('lists/admin_all.tpl');
+        $page->changeTpl('lists/admin_all.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Mailing lists');
 
         $client = new MMList(S::v('uid'), S::v('password'));
