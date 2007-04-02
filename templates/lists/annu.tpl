@@ -66,6 +66,8 @@
   </tr>
 </table>
 
+{include file="core/plset.tpl"}
+
 <h1>
   modérateurs de la liste
 </h1>
@@ -101,7 +103,5 @@
     <td></td></tr>
   {/if}
 </table>
-
-{include file="core/plset.tpl"}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
