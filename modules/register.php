@@ -58,18 +58,19 @@ class RegisterModule extends PLModule
 
         if ($hash) {
             $res = XDB::query(
-                    "SELECT  m.uid, u.promo, u.nom, u.prenom, u.matricule, FIND_IN_SET('watch', u.flags)
+                    "SELECT  m.uid, u.promo, u.nom, u.prenom, u.matricule, u.naissance_ini, FIND_IN_SET('watch', u.flags)
                        FROM  register_marketing AS m
                  INNER JOIN  auth_user_md5      AS u ON u.user_id = m.uid
                       WHERE  m.hash={?}", $hash);
-            if (list($uid, $promo, $nom, $prenom, $ourmat, $watch) = $res->fetchOneRow()) {
+            if (list($uid, $promo, $nom, $prenom, $ourmat, $naiss, $watch) = $res->fetchOneRow()) {
                 $sub_state['uid']    = $uid;
                 $sub_state['hash']   = $hash;
                 $sub_state['promo']  = $promo;
                 $sub_state['nom']    = $nom;
                 $sub_state['prenom'] = $prenom;
                 $sub_state['ourmat'] = $ourmat;
-                $sub_state['watch']  = $watch;
+                $sub_state['watch']  = $watch; 
+                $sub_state['naissance_ini'] = $naiss;
 
                 XDB::execute(
                         "REPLACE INTO  register_mstats (uid,sender,success)
@@ -184,6 +185,9 @@ class RegisterModule extends PLModule
                                                           substr($birth,4,4),
                                                           substr($birth,2,2),
                                                           substr($birth,0,2));
+                        if ($sub_state['naissance_ini'] != '0000-00-00' && $sub_state['naissance'] != $sub_state['naissance_ini']) {
+                            $alert .= "Date de naissance incorrecte à l'inscription - ";
+                        }
                         $sub_state['email']     = Post::v('email');
                         if (check_ip('unsafe')) {
                             $err = "Une erreur s'est produite lors de l'inscription."
@@ -221,22 +225,31 @@ class RegisterModule extends PLModule
     {
         global $globals;
 
+
         $page->changeTpl('register/end.tpl');
         $_SESSION['sub_state'] = array('step' => 5);
+
+        if (check_ip('unsafe')) {
+            send_warning_mail('Une IP surveillée a tenté de finaliser son inscription');
+            XDB::execute('DELETE FROM  register_pending
+                                WHERE  hash = {?} AND hash != \'INSCRIT\'', $hash);
+            return PL_FORBIDDEN;
+        }
+
         require_once('user.func.inc.php');
 
         if ($hash) {
             $res = XDB::query(
                     "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2,
                              r.password, r.email, r.naissance, u.nom, u.prenom,
-                             u.promo, u.flags
+                             u.promo, FIND_IN_SET('femme', u.flags), u.naissance_ini
                        FROM  register_pending AS r
                  INNER JOIN  auth_user_md5    AS u ON r.uid = u.user_id
                       WHERE  hash={?} AND hash!='INSCRIT'", $hash);
         }
 
         if (!$hash || !list($uid, $forlife, $bestalias, $mailorg2, $password, $email,
-                            $naissance, $nom, $prenom, $promo, $femme) = $res->fetchOneRow())
+                            $naissance, $nom, $prenom, $promo, $femme, $naiss_ini) = $res->fetchOneRow())
         {
             $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
                          <p>Causes probables :</p>
@@ -293,7 +306,7 @@ class RegisterModule extends PLModule
         $mymail->assign('prenom', $prenom);
         $mymail->send();
 
-        if (!start_connexion($uid,false)) {
+        if (!start_connexion($uid, false)) {
             return PL_FORBIDDEN;
         }
         $_SESSION['auth'] = AUTH_MDP;
@@ -317,7 +330,7 @@ class RegisterModule extends PLModule
             $mymail->setFrom('"Marketing Polytechnique.org" <register@polytechnique.org>');
             $mymail->addTo("\"$sprenom $snom\" <$salias@{$globals->mail->domain}>");
             $msg = ($sfemme?'Chère':'Cher')." $sprenom,\n\n"
-                 . "Nous t'écrivons pour t'informer que {$prenom} {$nom} (X{$promo}), "
+                 . "Nous t'écrivons pour t'informer que $prenom $nom (X$promo), "
                  . "que tu avais incité".($femme?'e':'')." à s'inscrire à Polytechnique.org, "
                  . "vient à l'instant de terminer son inscription.\n\n"
                  . "Merci de ta participation active à la reconnaissance de ce site !!!\n\n"
@@ -337,7 +350,7 @@ class RegisterModule extends PLModule
                  . " - nom       : $nom\n"
                  . " - prenom    : $prenom\n"
                  . " - promo     : $promo\n"
-                 . " - naissance : $naissance\n"
+                 . " - naissance : $naissance (date connue : $naiss_ini)\n"
                  . " - forlife   : $forlife\n"
                  . " - email     : $email\n"
                  . " - sexe      : $femme\n"
