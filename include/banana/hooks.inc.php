@@ -168,6 +168,13 @@ function hook_makeLink($params)
 }
 }
 
+function hook_makeJs($src)
+{
+    global $page;
+    $page->addJsLink("$src.js");
+    return ' ';
+}
+
 function get_banana_params(array &$get, $group = null, $action = null, $artid = null)
 {
     if (!is_null($group)) {

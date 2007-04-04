@@ -216,10 +216,10 @@ class CarnetModule extends PLModule
                 require_once('user.func.inc.php');
                 if (($login = get_user_login($user)) !== false) {
                     if (XDB::execute(
-                                'INSERT INTO  contacts (uid, contact)
-                                      SELECT  {?}, id
-                                        FROM  aliases
-                                       WHERE  alias = {?}', $uid, $login))
+                                'REPLACE INTO  contacts (uid, contact)
+                                       SELECT  {?}, id
+                                         FROM  aliases
+                                        WHERE  alias = {?}', $uid, $login))
                     {
                         $page->trig('Contact ajouté !');
                     } else {
