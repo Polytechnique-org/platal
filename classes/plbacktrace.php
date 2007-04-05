@@ -65,8 +65,7 @@ class PlBacktrace
 
     public function start($action)
     {
-        $trace = array('action' => $action, 'starttime' => microtime(true));
-        $this->traces[] =& $trace;
+        $this->traces[] =  array('action' => $action, 'starttime' => microtime(true));;
     }
 
     public function stop($rows = 0, $error = null, array $userdata = array())
@@ -76,9 +75,9 @@ class PlBacktrace
             return;
         }
         $trace =& $this->traces[count($this->traces) - 1];
-        $trace['time'] = $time - $trace['starttime'];
+        $trace['exectime'] = $time - $trace['starttime'];
         unset($trace['starttime']);
-        $this->totaltime += $trace['time'];
+        $this->totaltime += $trace['exectime'];
         $this->update($rows, $error, $userdata);
     }
 

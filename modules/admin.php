@@ -963,8 +963,6 @@ class AdminModule extends PLModule
             $wiki_tree[$cat][$name] = $desc;
         }
 
-
-
         $page->changeTpl('admin/wiki.tpl');
         $page->addJsLink('jquery.js');
         $page->assign('wiki_pages', $wiki_tree);

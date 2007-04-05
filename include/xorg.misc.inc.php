@@ -28,26 +28,26 @@ function quoted_printable_encode($input, $line_max = 76)
     $output = "";
 
     foreach ($lines as $j => $line) {
-	$linlen = strlen($line);
-	$newline = "";
-	for($i = 0; $i < $linlen; $i++) {
-	    $c = $line{$i};
-	    $dec = ord($c);
-	    if ( ($dec == 32) && ($i == ($linlen - 1)) ) {
-		// convert space at eol only
-		$c = "=20";
-	    } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) {
-		// always encode "\t", which is *not* required
-		$c = $escape.strtoupper(sprintf("%02x",$dec));
-	    }
-	    if ( (strlen($newline) + strlen($c)) >= $line_max ) { // CRLF is not counted
-		$output .= $newline.$escape.$eol;
-		$newline = "    ";
-	    }
-	    $newline .= $c;
-	} // end of for
-	$output .= $newline;
-	if ($j<count($lines)-1) $output .= $linebreak;
+        $linlen = strlen($line);
+        $newline = "";
+        for($i = 0; $i < $linlen; $i++) {
+            $c = $line{$i};
+            $dec = ord($c);
+            if ( ($dec == 32) && ($i == ($linlen - 1)) ) {
+                // convert space at eol only
+                $c = "=20";
+            } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) {
+                // always encode "\t", which is *not* required
+                $c = $escape.strtoupper(sprintf("%02x",$dec));
+            }
+            if ( (strlen($newline) + strlen($c)) >= $line_max ) { // CRLF is not counted
+                $output .= $newline.$escape.$eol;
+                $newline = "    ";
+            }
+            $newline .= $c;
+        } // end of for
+        $output .= $newline;
+        if ($j<count($lines)-1) $output .= $linebreak;
     }
     return trim($output);
 }
@@ -57,20 +57,22 @@ function quoted_printable_encode($input, $line_max = 76)
  * @param $email l'adresse email a verifier
  * @return BOOL
  */
-function isvalid_email($email) {
-  // la rfc2822 authorise les caractères "a-z", "0-9", "!", "#", "$", "%", "&", "'", "*", "+", "-", "/", "=", "?", "^", "_", `", "{", "|", "}", "~" aussi bien dans la partie locale que dans le domaine.
-  // Pour la partie locale, on réduit cet ensemble car il n'est pas utilisé.
-  // Pour le domaine, le système DNS limite à [a-z0-9.-], on y ajoute le "_" car il est parfois utilisé.
-  return preg_match("/^[a-z0-9_.'+-]+@[a-z0-9._-]+\.[a-z]{2,4}$/i", $email);
+function isvalid_email($email)
+{
+    // la rfc2822 authorise les caractères "a-z", "0-9", "!", "#", "$", "%", "&", "'", "*", "+", "-", "/", "=", "?", "^", "_", `", "{", "|", "}", "~" aussi bien dans la partie locale que dans le domaine.
+    // Pour la partie locale, on réduit cet ensemble car il n'est pas utilisé.
+    // Pour le domaine, le système DNS limite à [a-z0-9.-], on y ajoute le "_" car il est parfois utilisé.
+    return preg_match("/^[a-z0-9_.'+-]+@[a-z0-9._-]+\.[a-z]{2,4}$/i", $email);
 }
 
 /** vérifie si une adresse email convient comme adresse de redirection 
  * @param $email l'adresse email a verifier
  * @return BOOL
  */
-function isvalid_email_redirection($email) {
+function isvalid_email_redirection($email)
+{
     return isvalid_email($email) && 
-	!preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
+        !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
 }
 
 /** Check if the string is utf8
@@ -122,17 +124,17 @@ function rand_pass()
  */
 global $lc_convert, $uc_convert;
 $lc_convert = array('é' => 'e', 'è' => 'e', 'ë' => 'e', 'ê' => 'e',
-                    'á' => 'a', 'à' => 'a', 'ä' => 'a', 'â' => 'a', 'å' => 'a', 'ã' => 'a',
-                    'ï' => 'i', 'î' => 'i', 'ì' => 'i', 'í' => 'i',
-                    'ô' => 'o', 'ö' => 'o', 'ò' => 'o', 'ó' => 'o', 'õ' => 'o', 'ø' => 'o',
-                    'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
-                    'ç' => 'c', 'ñ' => 'n');
+    'á' => 'a', 'à' => 'a', 'ä' => 'a', 'â' => 'a', 'å' => 'a', 'ã' => 'a',
+    'ï' => 'i', 'î' => 'i', 'ì' => 'i', 'í' => 'i',
+    'ô' => 'o', 'ö' => 'o', 'ò' => 'o', 'ó' => 'o', 'õ' => 'o', 'ø' => 'o',
+    'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
+    'ç' => 'c', 'ñ' => 'n');
 $uc_convert = array('É' => 'E', 'È' => 'E', 'Ë' => 'E', 'Ê' => 'E', 
-                    'Á' => 'A', 'À' => 'A', 'Ä' => 'A', 'Â' => 'A', 'Å' => 'A', 'Ã' => 'A', 
-                    'Ï' => 'I', 'Î' => 'I', 'Ì' => 'I', 'Í' => 'I', 
-                    'Ô' => 'O', 'Ö' => 'O', 'Ò' => 'O', 'Ó' => 'O', 'Õ' => 'O', 'Ø' => 'O', 
-                    'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U', 
-                    'Ç' => 'C', 'Ñ' => 'N');
+    'Á' => 'A', 'À' => 'A', 'Ä' => 'A', 'Â' => 'A', 'Å' => 'A', 'Ã' => 'A', 
+    'Ï' => 'I', 'Î' => 'I', 'Ì' => 'I', 'Í' => 'I', 
+    'Ô' => 'O', 'Ö' => 'O', 'Ò' => 'O', 'Ó' => 'O', 'Õ' => 'O', 'Ø' => 'O', 
+    'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U', 
+    'Ç' => 'C', 'Ñ' => 'N');
 
 function replace_accent($string)
 {
@@ -142,13 +144,14 @@ function replace_accent($string)
 }
 
 /** creates a username from a first and last name
-*
-* @param $prenom the firstname
-* @param $nom the last name
-*
-* return STRING the corresponding username
-*/
-function make_username($prenom,$nom) {
+ *
+ * @param $prenom the firstname
+ * @param $nom the last name
+ *
+ * return STRING the corresponding username
+ */
+function make_username($prenom,$nom)
+{
     /* on traite le prenom */
     $prenomUS=replace_accent(trim($prenom));
     $prenomUS=stripslashes($prenomUS);
@@ -167,36 +170,36 @@ function make_username($prenom,$nom) {
 /* Un soundex en français posté par Frédéric Bouchery
    Voici une adaptation en PHP de la fonction soundex2 francisée de Frédéric BROUARD (http://sqlpro.developpez.com/Soundex/).
    C'est une bonne démonstration de la force des expressions régulières compatible Perl.
-   trouvé sur http://expreg.com/voirsource.php?id=40&type=Chaines%20de%20caract%E8res */
+trouvé sur http://expreg.com/voirsource.php?id=40&type=Chaines%20de%20caract%E8res */
 function soundex_fr($sIn)
 {
     static $convVIn, $convVOut, $convGuIn, $convGuOut, $accents;
     if (!isset($convGuIn)) {
-        global $uc_convert;
+        global $uc_convert, $lc_convert;
         $convGuIn  = array( 'GUI', 'GUE', 'GA', 'GO', 'GU', 'SC', 'CA', 'CO', 'CU', 'QU', 'Q', 'CC', 'CK', 'G', 'ST', 'PH');
         $convGuOut = array( 'KI',  'KE',  'KA', 'KO', 'KU',  'SK', 'KA', 'KO', 'KU', 'K', 'K',  'K',  'K',  'J', 'T', 'F');
         $convVIn   = array( '/E?(AU)/', '/([EA])?[UI]([NM])([^EAIOUY]|$)/', '/[AE]O?[NM]([^AEIOUY]|$)/',
-                            '/[EA][IY]([NM]?[^NM]|$)/', '/(^|[^OEUIA])(OEU|OE|EU)([^OEUIA]|$)/', '/OI/',
-                            '/(ILLE?|I)/', '/O(U|W)/', '/O[NM]($|[^EAOUIY])/', '/(SC|S|C)H/',
-                            '/([^AEIOUY1])[^AEIOUYLKTP]([UAO])([^AEIOUY])/', '/([^AEIOUY]|^)([AUO])[^AEIOUYLKTP]([^AEIOUY1])/', '/^KN/',
-                            '/^PF/', '/C([^AEIOUY]|$)/',
-                            '/C/', '/Z$/', '/(?<!^)Z+/', '/ER$/', '/H/');
+            '/[EA][IY]([NM]?[^NM]|$)/', '/(^|[^OEUIA])(OEU|OE|EU)([^OEUIA]|$)/', '/OI/',
+            '/(ILLE?|I)/', '/O(U|W)/', '/O[NM]($|[^EAOUIY])/', '/(SC|S|C)H/',
+            '/([^AEIOUY1])[^AEIOUYLKTP]([UAO])([^AEIOUY])/', '/([^AEIOUY]|^)([AUO])[^AEIOUYLKTP]([^AEIOUY1])/', '/^KN/',
+            '/^PF/', '/C([^AEIOUY]|$)/',
+            '/C/', '/Z$/', '/(?<!^)Z+/', '/ER$/', '/H/');
         $convVOut  = array( 'O', '1\3', 'A\1',
-                            'E\1', '\1E\3', 'O',
-                            'Y', 'U', 'O\1', '9',
-                            '\1\2\3', '\1\2\3', 'N',
-                            'F', 'K\1',
-                            'S', 'SE', 'S', 'E', '');
-        $accents = $uc_convert;
+            'E\1', '\1E\3', 'O',
+            'Y', 'U', 'O\1', '9',
+            '\1\2\3', '\1\2\3', 'N',
+            'F', 'K\1',
+            'S', 'SE', 'S', 'E', '');
+        $accents = $uc_convert + $lc_convert;
         $accents['Ç'] = 'S';
         $accents['¿'] = 'E';
     }
     // Si il n'y a pas de mot, on sort immédiatement 
     if ( $sIn === '' ) return '    '; 
+    // On supprime les accents 
+    $sIn = strtr( $sIn, $accents);
     // On met tout en minuscule 
     $sIn = strtoupper( $sIn ); 
-    // On supprime les accents 
-    $sIn = strtr( $sIn, $accents); 
     // On supprime tout ce qui n'est pas une lettre 
     $sIn = preg_replace( '`[^A-Z]`', '', $sIn ); 
     // Si la chaîne ne fait qu'un seul caractère, on sort avec. 
@@ -221,21 +224,22 @@ function soundex_fr($sIn)
  */
 function make_firstname_case($prenom)
 {
-  $prenom = strtolower($prenom);
-  $pieces = explode('-',$prenom);
+    $prenom = strtolower($prenom);
+    $pieces = explode('-',$prenom);
 
-  foreach ($pieces as $piece) {
-    $subpieces = explode("'",$piece);
-    $usubpieces="";
-    foreach ($subpieces as $subpiece)
-      $usubpieces[] = ucwords($subpiece);
-    $upieces[] = implode("'",$usubpieces);
-  }
-  return implode('-',$upieces);
+    foreach ($pieces as $piece) {
+        $subpieces = explode("'",$piece);
+        $usubpieces="";
+        foreach ($subpieces as $subpiece)
+            $usubpieces[] = ucwords($subpiece);
+        $upieces[] = implode("'",$usubpieces);
+    }
+    return implode('-',$upieces);
 }
 
 
-function make_forlife($prenom,$nom,$promo) {
+function make_forlife($prenom, $nom, $promo)
+{
     $prenomUS = replace_accent(trim($prenom));
     $nomUS    = replace_accent(trim($nom));
 
@@ -257,12 +261,12 @@ function check_ip($level)
         }
         $ips[] = $_SERVER['REMOTE_ADDR'];
         foreach ($ips as &$ip) {
-            $ip = "ip='$ip'";
+            $ip = "ip LIKE " . XDB::escape($ip);
         }
-        $res = XDB::query('SELECT state
-                             FROM ip_watch
-                            WHERE ' . implode(' OR ', $ips) . '
-                         ORDER BY state DESC');
+        $res = XDB::query('SELECT  state
+                             FROM  ip_watch
+                            WHERE  ' . implode(' OR ', $ips) . '
+                         ORDER BY  state DESC');
         if ($res->numRows()) {
             $_SESSION['check_ip'] = $res->fetchOneCell();
         } else {
@@ -282,8 +286,8 @@ function check_ip($level)
 function check_email($email, $message)
 {
     $res = XDB::query("SELECT state, description
-                         FROM emails_watch
-                        WHERE state != 'safe' AND email = {?}", $email);
+        FROM emails_watch
+        WHERE state != 'safe' AND email = {?}", $email);
     if ($res->numRows()) {
         send_warning_mail($message);
         return true;
@@ -313,7 +317,7 @@ function send_warning_mail($title)
     $mailer->addTo("hotliners@staff.polytechnique.org");
     $mailer->setSubject("[Plat/al Security Alert] $title");
     $mailer->setTxtBody("Identifiants de session :\n" . var_export($_SESSION, true) . "\n\n"
-                       ."Identifiants de connexion :\n" . var_export($_SERVER, true));
+        ."Identifiants de connexion :\n" . var_export($_SERVER, true));
     $mailer->send(); 
 }
 
