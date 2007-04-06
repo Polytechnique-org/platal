@@ -69,6 +69,26 @@ class Flagset
         return 0;
     }
 
+    /** test flag combination
+     */
+    public function hasFlagCombination($flag)
+    {
+        $perms = explode(',', $flag);
+        foreach ($perms as $perm)
+        {   
+            $ok = true; 
+            $rights = explode(':', $perm);
+            foreach ($rights as $right) {
+                if (($right{0} == '!' && $this->hasFlag(substr($right, 1))) || !$this->hasFlag($right)) {
+                    $ok = false;
+                }
+            }
+            if ($ok) {
+                return true;
+            }       
+        }
+        return false; 
+    }
 
     /** remove flag
      * @param $flag XXX

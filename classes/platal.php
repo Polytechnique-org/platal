@@ -181,23 +181,7 @@ class Platal
             return true;
         }
         $s_perms = S::v('perms');
-
-        // hook perms syntax is
-        $perms = explode(',', $perms);
-        foreach ($perms as $perm)
-        {
-            $ok = true;
-            $rights = explode(':', $perm);
-            foreach ($rights as $right) {
-                if (($right{0} == '!' && $s_perms->hasFlag(substr($right, 1))) || !$s_perms->hasFlag($right)) {
-                    $ok = false;
-                }
-            }
-            if ($ok) {
-                return true;
-            }
-        }
-        return false;
+        return $s_perms->hasFlagCombination($perms);
     }
 
     private function call_hook(PlatalPage &$page)
