@@ -151,6 +151,7 @@ class RegisterModule extends PLModule
                         if ($year > $promo - 15 || $year < $promo - 30) {
                             $err[] = "La 'Date de naissance' n'est pas correcte.";
                             $alert = "Date de naissance incorrecte a l'inscription - ";
+                            $sub_state['wrong_naissance'] = $birth;
                         }
                     }
 
@@ -191,7 +192,7 @@ class RegisterModule extends PLModule
                         $sub_state['email']     = Post::v('email');
                         if (check_ip('unsafe')) {
                             $err = "Une erreur s'est produite lors de l'inscription."
-                                 . " Merci de contacter <a href='register@polytechnique.org'>register@polytechnique.org</a>"
+                                 . " Merci de contacter <a href='mailto:register@polytechnique.org'>register@polytechnique.org</a>"
                                  . " pour nous faire part de cette erreur";
                             $alert .= "Tentative d'inscription depuis une IP surveillee";
                         } else {
