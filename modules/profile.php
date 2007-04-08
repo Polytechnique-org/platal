@@ -44,6 +44,8 @@ class ProfileModule extends PLModule
             'admin/medals'     => $this->make_hook('admin_medals', AUTH_MDP, 'admin'),
             'admin/formations' => $this->make_hook('admin_formations', AUTH_MDP, 'admin'),
             'admin/groupes-x'  => $this->make_hook('admin_groupesx', AUTH_MDP, 'admin'),
+            'admin/sections'  => $this->make_hook('admin_sections', AUTH_MDP, 'admin'),
+            'admin/secteurs'  => $this->make_hook('admin_secteurs', AUTH_MDP, 'admin'),
             'admin/trombino'   => $this->make_hook('admin_trombino', AUTH_MDP, 'admin'),
 
         );
@@ -755,6 +757,20 @@ class ProfileModule extends PLModule
         $table_editor->add_join_table('groupesx_ins','gid',true); 
         $table_editor->describe('text','intitulé',true);
         $table_editor->describe('url','site web',false);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_admin_sections(&$page, $action = 'list', $id = null) {
+        $page->assign('xorg_title','Polytechnique.org - Administration - Sections');
+        $page->assign('title', 'Gestion des Sections');
+        $table_editor = new PLTableEditor('admin/sections','sections','id');
+        $table_editor->describe('text','intitulé',true);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_admin_secteurs(&$page, $action = 'list', $id = null) {
+        $page->assign('xorg_title','Polytechnique.org - Administration - Secteurs');
+        $page->assign('title', 'Gestion des Secteurs');
+        $table_editor = new PLTableEditor('admin/secteurs','emploi_secteur','id');
+        $table_editor->describe('label','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }  
     function handler_admin_medals(&$page, $action = 'list', $id = null) {

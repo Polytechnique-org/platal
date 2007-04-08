@@ -94,6 +94,10 @@
       <a href="admin/skins">Skins</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/medals">Décorations</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/sections">Sections</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/secteurs">Secteurs</a>
     </td>
   </tr>
   <tr class="pair">
