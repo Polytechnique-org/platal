@@ -185,7 +185,7 @@ class SearchModule extends PLModule
         //   result2|nb2
         //   ...
         header('Content-Type: text/plain; charset="UTF-8"');
-        $q = preg_replace('/\*+$/','',$_REQUEST['q']);
+        $q = preg_replace(array('/\*+$/','/\*/'),array('','.*'),$_REQUEST['q']);
         if (!$q) exit();
 
 				// try to look in cached results        
@@ -200,19 +200,23 @@ class SearchModule extends PLModule
         $unique = 'user_id';
         $db = 'auth_user_md5';
         $realid = false;
-        $contains = false;
+        $beginwith = true;
         
         switch ($type) {
         case 'binetTxt':
 						$db = 'binets_def INNER JOIN binets_ins ON(binets_def.id = binets_ins.binet_id)';
 						$field='binets_def.text';
 						if (strlen($q) > 2)
-								$contains = true;
+								$beginwith = false;
 						$realid = 'binets_def.id';
 						break;
         case 'city': $db = 'geoloc_city INNER JOIN adresses ON(geoloc_city.id = adresses.cityid)'; $unique='uid'; $field='geoloc_city.name'; break;
         case 'entreprise': $db = 'entreprises'; $field = 'entreprise'; $unique='uid'; break;
-        case 'firstname': $field = 'prenom'; break;
+        case 'firstname':
+						$field = 'prenom';
+						$q = '(^|[ \\-])'.$q;
+						$beginwith = false;
+						break;
         case 'fonctionTxt':
         		$db = 'fonctions_def INNER JOIN entreprises ON(entreprises.fonction = fonctions_def.id)';
         		$field = 'fonction_fr';
@@ -223,11 +227,15 @@ class SearchModule extends PLModule
 						$db = 'groupesx_def INNER JOIN groupesx_ins ON(groupesx_def.id = groupesx_ins.gid)';
 						$field='groupesx_def.text';
 						if (strlen($q) > 2)
-								$contains = true;
+								$beginwith = false;
 						$realid = 'groupesx_def.id';
 						$unique = 'guid';
 						break;
-        case 'name': $field = 'nom'; break;
+        case 'name':
+						$field = 'nom';
+						$q = '(^|[ \\-])'.$q;
+						$beginwith = false;
+						break;
     		case 'nationaliteTxt':
     				$db = 'geoloc_pays INNER JOIN auth_user_md5 ON(geoloc_pays.a2 = auth_user_md5.nationalite)';
     				$field = 'IF(geoloc_pays.nat=\'\', geoloc_pays.pays, geoloc_pays.nat)';
@@ -240,11 +248,13 @@ class SearchModule extends PLModule
     				$field = 'emploi_secteur.label';
     				$realid = 'emploi_secteur.id';
     				$unique = 'uid';
+						$beginwith = false;
     				break;
     		case 'sectionTxt':
     				$db = 'sections INNER JOIN auth_user_md5 ON(auth_user_md5.section = sections.id)';
     				$field = 'sections.text';
     				$realid = 'sections.id';
+						$beginwith = false;
     				break;
         default: exit();
         }
@@ -255,11 +265,11 @@ class SearchModule extends PLModule
 								COUNT(DISTINCT '.$unique.') AS nb
 								'.($realid?(', '.$realid.' AS id'):'').'
 						FROM '.$db.'
-						WHERE '.$field.' LIKE {?}
+						WHERE '.$field.' REGEXP {?}
 						GROUP BY '.$field.'
 						ORDER BY nb DESC
 						LIMIT 11',
-						($contains?'%':'').str_replace('*','%',$q).'%');
+						($beginwith?'^':'').$q);
         $nbResults = 0;
         $res = "";
         while ($result = $list->next()) {
