@@ -28,7 +28,7 @@
     <link rel="index"  href="" />
     <link rel="author" href="changelog" />
     <link rel="search" href="search" />
-    <link rel="search" type="application/opensearchdescription+xml" href="/xorg.opensearch.xml" title="Annuaire Polytechnique.org" />
+    <link rel="search" type="application/opensearchdescription+xml" href="http://www.polytechnique.org/xorg.opensearch.xml" title="Annuaire Polytechnique.org" />
     <link rel="help"   href="Xorg/FAQ" />
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
