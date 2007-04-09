@@ -47,7 +47,7 @@ $tidy_config = array(
 function smarty_block_tidy($params, $content, &$smarty)
 {
     global $tidy_config;
-    return tidy_repair_string($content, $tidy_config, 'latin1');
+    return tidy_repair_string($content, $tidy_config, 'latin0');
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
