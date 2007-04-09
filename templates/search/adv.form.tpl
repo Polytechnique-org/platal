@@ -26,21 +26,74 @@
 {javascript name="jquery.autocomplete"}
 <script type="text/javascript">{literal}
 	// <!--
+	
+	// use same form to send to search or map
 	function launch_form(url) {
 	  var f = document.getElementById('recherche');
 	  f.action = url;
 	  f.submit();
 	}
+	
+	// display an autocomplete row : blabla (nb of found matches)
 	function format_autocomplete(row) {
 	  if (row[1] == 1) {
 	    return row[0];
 	  }
 	  return row[0] + ' ('+ row[1] + ')';
 	}
+	
+	// when changing country, open up region choice
+	function changeCountry(a2) {
+      $(".autocompleteTarget[@name='country']").attr('value',a2);
+	  if (a2) {
+        $(".autocomplete[@name='countryTxt']").addClass('hidden_valid');
+        $("[@name='region']").parent().load('search/list/region/', { country:a2 }, function() {
+            if ($("select[@name='region']").children("option").size() > 1) {
+        	    $("select[@name='region']").attr('value', '{/literal}{$smarty.request.region}{literal}').show();
+        	} else {
+        	    $("select[@name='region']").attr('value', '').hide();
+        	}
+        });
+	  } else {
+        $(".autocomplete[@name='countryTxt']").removeClass('hidden_valid');
+	    $("select[@name='region']").attr('value', '').hide();
+	  }
+	}
+	
+	// when changing school, open diploma choice
+	function changeSchool(schoolId) {
+      $(".autocompleteTarget[@name='school']").attr('value',schoolId);
+	  if (schoolId) {
+        $(".autocomplete[@name='schoolTxt']").addClass('hidden_valid');
+        $("[@name='diploma']").parent().load('search/list/diploma/', { school:schoolId }, function() {
+            if ($("select[@name='diploma']").children("option").size() > 1) {
+        	    $("select[@name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
+        	} else {
+        	    $("select[@name='diploma']").attr('value', '').hide();
+        	}
+        });
+	  } else {
+        $(".autocomplete[@name='schoolTxt']").removeClass('hidden_valid');
+	    $("select[@name='diploma']").attr('value', '').hide();
+	  }
+	}
+	
+	// when choosing autocomplete from list, must validate
 	function select_autocomplete(name) {
 	  nameRealField = name.replace(/Txt$/, '');
+	  // nothing to do if field is not a text field for a list
 	  if (nameRealField == name)
 	  	return null;
+	  // if changing country, might want to open region choice
+	  if (nameRealField == 'country')
+	  	return function(i) {
+	  	  changeCountry(i.extra[1]);
+	    }
+	  if (nameRealField == 'school')
+	  	return function(i) {
+	  	  changeSchool(i.extra[1]);
+	    }
+	  // change field in list and display text field as valid
 	  return function(i) {
 		nameRealField = this.field.replace(/Txt$/, '');
 	  	$(".autocompleteTarget[@name='"+nameRealField+"']").attr('value',i.extra[1]);
@@ -67,6 +120,10 @@
 			  width:$(this).width()});
 	    });
 	    $(".autocomplete").change(function() { $(this).removeClass('hidden_valid'); });
+	    $(".autocomplete[@name='countryTxt']").change(function() { changeCountry(''); });
+	    changeCountry({/literal}'{$smarty.request.country}'{literal});
+	    $(".autocomplete[@name='schoolTxt']").change(function() { changeSchool(''); });
+	    changeSchool({/literal}'{$smarty.request.school}'{literal});
 	    $(".autocompleteToSelect").each(function() {
 	    	var fieldName = $(this).attr('href');
 	      	$(this).attr('href','search/list/'+fieldName).click(function() {
@@ -122,7 +179,7 @@
         <select name="egal2">
           <option value="=" {if $smarty.request.egal2 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
           <option value="&gt;=" {if $smarty.request.egal2 eq "&gt;="}selected="selected"{/if}>&nbsp;&gt;=&nbsp;</option>
-          <option value="&lt;=" {if $smarty.request.egal2 eq "&lt;="}selected="selected"{/if}>&nbsp;&lt;=&nbsp;</option>
+          <option value="&lt;=" {if $smarty.request.egal2 neq "&gt;=" && $smarty.request.egal2 neq "="}selected="selected"{/if}>&nbsp;&lt;=&nbsp;</option>
         </select>
         <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
       </td>
@@ -133,13 +190,13 @@
         <table>
           <tr>
             <td style="width:100px">
-              <input type="radio" name="woman" value="0" {if !$smarty.request.woman}checked="checked"{/if} />Indifférent
+              <input type="radio" name="woman" value="0" {if !$smarty.request.woman}checked="checked"{/if} id="woman0"/><label for="woman0">Indifférent</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="woman" value="1" {if $smarty.request.woman eq 1}checked="checked"{/if} />Homme
+              <input type="radio" name="woman" value="1" {if $smarty.request.woman eq 1}checked="checked"{/if} id="woman1"/><label for="woman1">Homme</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="woman" value="2" {if $smarty.request.woman eq 2}checked="checked"{/if} />Femme
+              <input type="radio" name="woman" value="2" {if $smarty.request.woman eq 2}checked="checked"{/if} id="woman2"/><label for="woman2">Femme</label>
             </td>
           </tr>
         </table>
@@ -151,13 +208,13 @@
         <table>
           <tr>
             <td style="width:100px">
-              <input type="radio" name="subscriber" value="0" {if !$smarty.request.subscriber}checked="checked"{/if} />Indifférent
+              <input type="radio" name="subscriber" value="0" {if !$smarty.request.subscriber}checked="checked"{/if} id="subscriber0"/><label for="subscriber0">Indifférent</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="subscriber" value="1" {if $smarty.request.subscriber eq 1}checked="checked"{/if} />Inscrit
+              <input type="radio" name="subscriber" value="1" {if $smarty.request.subscriber eq 1}checked="checked"{/if} id="subscriber1"/><label for="subscriber1">Inscrit</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="subscriber" value="2" {if $smarty.request.subscriber eq 2}checked="checked"{/if} />Non inscrit
+              <input type="radio" name="subscriber" value="2" {if $smarty.request.subscriber eq 2}checked="checked"{/if} id="subscriber2"/><label for="subscriber2">Non inscrit</label>
             </td>
           </tr>
         </table>
@@ -169,13 +226,13 @@
         <table>
           <tr>
             <td style="width:100px">
-              <input type="radio" name="alive" value="0" {if !$smarty.request.alive}checked="checked"{/if} />Indifférent
+              <input type="radio" name="alive" value="0" {if !$smarty.request.alive}checked="checked"{/if} id="alive0"/><label for="alive0">Indifférent</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="alive" value="1" {if $smarty.request.alive eq 1}checked="checked"{/if} />Vivant
+              <input type="radio" name="alive" value="1" {if $smarty.request.alive eq 1}checked="checked"{/if} id="alive1"/><label for="alive1">Vivant</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="alive" value="2" {if $smarty.request.alive eq 2}checked="checked"{/if} />Décédé
+              <input type="radio" name="alive" value="2" {if $smarty.request.alive eq 2}checked="checked"{/if} id="alive2"/><label for="alive2">Décédé</label>
             </td>
           </tr>
         </table>
@@ -197,25 +254,15 @@
     <tr>
       <td>Pays</td>
       <td>
-        <select name="country" onchange="return Ajax.update_html('region', '{#globals.baseurl#}/search/ajax/region/' + this.value);">
-        {if $smarty.request.country}
-          {assign var="country" value=$smarty.request.country}
-        {else}
-          {assign var="country" value=""}
-        {/if}
-        {geoloc_country country=$country available=true}
-        </select>
+      	<input name="countryTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+		<input name="country" class="autocompleteTarget" type="hidden" value="{$smarty.request.country}"/>
+		<a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
       </td>
     </tr>
     <tr>
       <td>Région ou département</td>
-      <td id="region">
-        {if $smarty.request.region}
-          {assign var="region" value=$smarty.request.region}
-        {else}
-          {assign var="region" value=""}
-        {/if}
-        {include file="search/adv.region.form.tpl" country=$smarty.request.country}
+      <td>
+        <input name="region" type="hidden" size="32" value="{$smarty.request.region}"/>
       </td>
     </tr>
     <tr>
@@ -256,8 +303,8 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     </tr>
     <tr>
       <td colspan="2">
-        <input type='checkbox' name='only_referent' {if $smarty.request.only_referent}checked='checked'{/if} />
-        chercher uniquement parmi les camarades se proposant comme référents
+        <input type='checkbox' name='only_referent' {if $smarty.request.only_referent}checked='checked'{/if} id="only_referent"/>
+        <label for="only_referent">chercher uniquement parmi les camarades se proposant comme référents</label>
       </td>
     </tr>
     <tr>
@@ -298,20 +345,15 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Formation</td>
       <td>
-        <select name="school" onchange="return Ajax.update_html('grade', '{#globals.baseurl#}/search/ajax/grade/' + this.value);">
-          <option value="0"></option>
-          {iterate item=cs from=$choix_schools}
-          <option value="{$cs.id}" {if $smarty.request.school eq $cs.id}selected="selected"{/if}>
-            {$cs.text|htmlspecialchars}
-          </option>
-          {/iterate}
-        </select>
+      	<input name="schoolTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+		<input name="school" class="autocompleteTarget" type="hidden" value="{$smarty.request.school}"/>
+		<a href="school" class="autocompleteToSelect">{icon name="table" title="Toutes les formations"}</a>
       </td>
     </tr>
     <tr>
-      <td></td>
-      <td id="grade">
-        {include file="search/adv.grade.form.tpl" grade=$smarty.request.diploma}
+      <td>Diplôme</td>
+      <td>
+        <input name="diploma" type="hidden" size="32" value="{$smarty.request.diploma}"/>
       </td>
     </tr>
     <tr>
@@ -324,8 +366,8 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
           <input type="button" value="Chercher" onclick="launch_form('search/adv')"/>
         </div>
         {if $smarty.session.auth ge AUTH_COOKIE}
-          <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
-          mettre les fiches modifiées récemment en premier
+          <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} id="order"/>
+          <label for="order">mettre les fiches modifiées récemment en premier</label>
         {/if}
       </td>
     </tr>

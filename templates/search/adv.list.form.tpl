@@ -20,12 +20,9 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<select name="region">
-{if $country neq ""}
-  {geoloc_region country=$country region=$region available=true}
-{else}
-  <option value=""></option>
-{/if}
+<select name="{$name}"{if $onchange} onchange="{$onchange}"{/if}>
+    <option value=""> - </option>
+  {iterate from=$list item='option'}
+    <option value="{$option.id}">{$option.field|htmlspecialchars}</option>
+  {/iterate}
 </select>
-
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

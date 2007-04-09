@@ -26,8 +26,6 @@ class SearchModule extends PLModule
         return array(
             'search'     => $this->make_hook('quick', AUTH_PUBLIC),
             'search/adv' => $this->make_hook('advanced', AUTH_COOKIE),
-            'search/ajax/region'  => $this->make_hook('region', AUTH_COOKIE, 'user', NO_AUTH),
-            'search/ajax/grade'   => $this->make_hook('grade',  AUTH_COOKIE, 'user', NO_AUTH),
             'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
             'search/autocomplete' => $this->make_hook('autocomplete', AUTH_COOKIE, 'user', NO_AUTH),
             'search/list' => $this->make_hook('list', AUTH_COOKIE, 'user', NO_AUTH),
@@ -52,9 +50,6 @@ class SearchModule extends PLModule
         global $page;
 
         $page->assign('formulaire',1);
-        $page->assign('choix_schools',
-                      XDB::iterator('SELECT id,text FROM applis_def ORDER BY text'));
-        $this->get_diplomas();
     }
 
     function get_diplomas($school = null)
@@ -109,9 +104,9 @@ class SearchModule extends PLModule
                 new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
             }
         } else {
-            $res = XDB::query("SELECT  MIN(diminutif), MAX(diminutif)
-                                 FROM  groupex.asso
-                                WHERE  cat = 'Promotions'");
+            $res = XDB::query("SELECT  MIN(`diminutif`), MAX(`diminutif`)
+                                 FROM  `groupex`.`asso`
+                                WHERE  `cat` = 'Promotions'");
             list($min, $max) = $res->fetchOneRow();
             $page->assign('promo_min', $min);
             $page->assign('promo_max', $max); 
@@ -159,23 +154,6 @@ class SearchModule extends PLModule
         $page->register_modifier('display_lines', 'display_lines');
     }
 
-    function handler_region(&$page, $country = null)
-    {
-        header('Content-Type: text/html; charset="UTF-8"');
-        require_once("geoloc.inc.php");
-        $page->ChangeTpl('search/adv.region.form.tpl', NO_SKIN);
-        $page->assign('region', "");
-        $page->assign('country', $country);
-    }
-
-    function handler_grade(&$page, $school = null)
-    {
-        header('Content-Type: text/html; charset="UTF-8"');
-        $page->ChangeTpl('search/adv.grade.form.tpl', NO_SKIN);
-        $page->assign('grade', '');
-        $this->get_diplomas($school);
-    }
-
     function handler_autocomplete(&$page, $type = null)
     {
         // Autocompletion : according to type required, return
@@ -185,11 +163,26 @@ class SearchModule extends PLModule
         //   result2|nb2
         //   ...
         header('Content-Type: text/plain; charset="UTF-8"');
-        $q = preg_replace(array('/\*+$/','/\*/'),array('','.*'),$_REQUEST['q']);
+        $q = preg_replace(
+						array(
+								'/\*+$/', // always look for $q*
+								'/([\^\$\[\]])/', // escape special regexp char
+								'/\*/'), // replace joker by regexp joker
+						array(
+								'',
+								'\\\\\1',
+								'.*'),
+						$_REQUEST['q']);
         if (!$q) exit();
 
 				// try to look in cached results        
-        $cache = XDB::query('SELECT result FROM search_autocomplete WHERE name = {?} AND query = {?} AND generated > NOW() - INTERVAL 1 DAY',
+        $cache = XDB::query('
+						SELECT `result`
+						FROM `search_autocomplete`
+						WHERE
+								`name` = {?} AND
+								`query` = {?} AND
+								`generated` > NOW() - INTERVAL 1 DAY',
         		$type, $q);
         if ($res = $cache->fetchOneCell()) {
         		echo $res;
@@ -197,79 +190,139 @@ class SearchModule extends PLModule
         }
         
         // default search
-        $unique = 'user_id';
-        $db = 'auth_user_md5';
+        $unique = '`user_id`';
+        $db = '`auth_user_md5`';
         $realid = false;
         $beginwith = true;
+        $field2 = false;
+        $qsearch = $q;
         
         switch ($type) {
         case 'binetTxt':
-						$db = 'binets_def INNER JOIN binets_ins ON(binets_def.id = binets_ins.binet_id)';
-						$field='binets_def.text';
+						$db = '`binets_def` INNER JOIN
+								`binets_ins` ON(`binets_def`.`id` = `binets_ins`.`binet_id`)';
+						$field='`binets_def`.`text`';
 						if (strlen($q) > 2)
 								$beginwith = false;
-						$realid = 'binets_def.id';
+						$realid = '`binets_def`.`id`';
 						break;
-        case 'city': $db = 'geoloc_city INNER JOIN adresses ON(geoloc_city.id = adresses.cityid)'; $unique='uid'; $field='geoloc_city.name'; break;
-        case 'entreprise': $db = 'entreprises'; $field = 'entreprise'; $unique='uid'; break;
-        case 'firstname':
-						$field = 'prenom';
+        case 'city':
+						$db = '`geoloc_city` INNER JOIN
+								`adresses` ON(`geoloc_city`.`id` = `adresses`.`cityid`)';
+						$unique='`uid`';
+						$field='`geoloc_city`.`name`';
+						break;
+        case 'countryTxt':
+						$db = '`geoloc_pays` INNER JOIN
+								`adresses` ON(`geoloc_pays`.`a2` = `adresses`.`country`)';
+						$unique='`uid`';
+						$field = '`geoloc_pays`.`pays`';
+						$field2 = '`geoloc_pays`.`country`';
+						$realid='`geoloc_pays`.`a2`';
+						break;
+        case 'entreprise':
+						$db = '`entreprises`';
+						$field = '`entreprise`';
+						$unique='`uid`';
+						break;
+        case '`firstname`':
+						$field = '`prenom`';
 						$q = '(^|[ \\-])'.$q;
 						$beginwith = false;
 						break;
         case 'fonctionTxt':
-        		$db = 'fonctions_def INNER JOIN entreprises ON(entreprises.fonction = fonctions_def.id)';
-        		$field = 'fonction_fr';
-        		$unique = 'uid';
-        		$realid = 'fonctions_def.id';
+        		$db = '`fonctions_def` INNER JOIN
+								`entreprises` ON(`entreprises`.`fonction` = `fonctions_def`.`id`)';
+        		$field = '`fonction_fr`';
+        		$unique = '`uid`';
+        		$realid = '`fonctions_def`.`id`';
+						$qsearch = '(^|[ /\\-])'.$q;
+						$beginwith = false;
         		break;
         case 'groupexTxt':
-						$db = 'groupesx_def INNER JOIN groupesx_ins ON(groupesx_def.id = groupesx_ins.gid)';
-						$field='groupesx_def.text';
+						$db = '`groupesx_def` INNER JOIN
+								`groupesx_ins` ON(`groupesx_def`.`id` = `groupesx_ins`.`gid`)';
+						$field='`groupesx_def`.`text`';
 						if (strlen($q) > 2)
 								$beginwith = false;
-						$realid = 'groupesx_def.id';
-						$unique = 'guid';
+						$realid = '`groupesx_def`.`id`';
+						$unique = '`guid`';
 						break;
         case 'name':
-						$field = 'nom';
-						$q = '(^|[ \\-])'.$q;
+						$field = '`nom`';
+						$field2 = '`nom_usage`';
+						$qsearch = '(^|[ \\-])'.$q;
 						$beginwith = false;
 						break;
     		case 'nationaliteTxt':
-    				$db = 'geoloc_pays INNER JOIN auth_user_md5 ON(geoloc_pays.a2 = auth_user_md5.nationalite)';
-    				$field = 'IF(geoloc_pays.nat=\'\', geoloc_pays.pays, geoloc_pays.nat)';
-    				$realid = 'geoloc_pays.a2';
+    				$db = '`geoloc_pays` INNER JOIN
+								`auth_user_md5` ON(`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite`)';
+    				$field = 'IF(`geoloc_pays`.`nat`=\'\',
+								`geoloc_pays`.`pays`,
+								`geoloc_pays`.`nat`)';
+    				$realid = '`geoloc_pays`.`a2`';
     				break;
-        case 'nickname': $field = 'profile_nick'; $db = 'auth_user_quick'; break;
-        case 'poste': $db = 'entreprises'; $field = 'poste'; $unique='uid'; break;
+        case 'nickname':
+						$field = '`profile_nick`';
+						$db = '`auth_user_quick`';
+						$qsearch = '(^|[ \\-])'.$q;
+						$beginwith = false;
+						break;
+        case 'poste':
+						$db = '`entreprises`';
+						$field = '`poste`';
+						$unique='`uid`';
+						break;
+				case 'schoolTxt':
+						$db = '`applis_def` INNER JOIN
+								`applis_ins` ON(`applis_def`.`id` = `applis_ins`.`aid`)';
+						$field='`applis_def`.`text`';
+						$unique = '`uid`';
+						$realid = '`applis_def`.`id`';
+						if (strlen($q) > 2)
+								$beginwith = false;
+						break;
     		case 'secteurTxt':
-    				$db = 'emploi_secteur INNER JOIN entreprises ON(entreprises.secteur = emploi_secteur.id)';
-    				$field = 'emploi_secteur.label';
-    				$realid = 'emploi_secteur.id';
-    				$unique = 'uid';
+    				$db = '`emploi_secteur` INNER JOIN
+								`entreprises` ON(`entreprises`.`secteur` = `emploi_secteur`.`id`)';
+    				$field = '`emploi_secteur`.`label`';
+    				$realid = '`emploi_secteur`.`id`';
+    				$unique = '`uid`';
 						$beginwith = false;
     				break;
     		case 'sectionTxt':
-    				$db = 'sections INNER JOIN auth_user_md5 ON(auth_user_md5.section = sections.id)';
-    				$field = 'sections.text';
-    				$realid = 'sections.id';
+    				$db = '`sections` INNER JOIN 
+								`auth_user_md5` ON(`auth_user_md5`.`section` = `sections`.`id`)';
+    				$field = '`sections`.`text`';
+    				$realid = '`sections`.`id`';
 						$beginwith = false;
     				break;
         default: exit();
         }
 
+				$field_select = $field;
+				if ($field2) {
+						$field_select = 'IF('.$field.' REGEXP {?}, '.$field.', '.$field2.')';
+				}
+				
+				if ($beginwith) {
+						$qsearch = '^'.$qsearch;
+				}
         $list = XDB::iterator('
 						SELECT
-								'.$field.' AS field,
+								'.$field_select.' AS field,
 								COUNT(DISTINCT '.$unique.') AS nb
 								'.($realid?(', '.$realid.' AS id'):'').'
 						FROM '.$db.'
-						WHERE '.$field.' REGEXP {?}
-						GROUP BY '.$field.'
+						WHERE '.$field.' REGEXP {?}'.
+						($field2?(' OR '.$field2.' REGEXP {?}'):'').'
+						GROUP BY '.$field_select.'
 						ORDER BY nb DESC
 						LIMIT 11',
-						($beginwith?'^':'').$q);
+						$qsearch, 
+						$qsearch,
+						$qsearch,
+						$qsearch);
         $nbResults = 0;
         $res = "";
         while ($result = $list->next()) {
@@ -277,10 +330,17 @@ class SearchModule extends PLModule
             if ($nbResults == 11) {
                 $res .= '...|1'."\n";
             } else {
-                $res .= $result['field'].'|'.$result['nb'].(isset($result['id'])?('|'.$result['id']):'')."\n";
+                $res .= $result['field'].'|';
+								$res .= $result['nb'];
+								if (isset($result['id'])) {
+										$res  .= '|'.$result['id'];
+								}
+								$res .= "\n";
             }
         }
-        XDB::query('REPLACE INTO search_autocomplete VALUES ({?}, {?}, {?}, NOW())',
+        XDB::query('
+						REPLACE INTO `search_autocomplete`
+						VALUES ({?}, {?}, {?}, NOW())',
         		$type, $q, $res);
         echo $res;
         exit();
@@ -289,30 +349,55 @@ class SearchModule extends PLModule
     function handler_list(&$page, $type = null, $idVal = null)
     {
     		// Give the list of all values possible of type and builds a select input for it
-				$field = 'text';
-				$id = 'id';
+				$field = '`text`';
+				$id = '`id`';
+				$where = '';
+				
     		switch ($type) {
     		case 'binet':
-    				$db = 'binets_def';
+    				$db = '`binets_def`';
+    				break;
+    		case 'country':
+    				$db = '`geoloc_pays`';
+    				$field = '`pays`';
+    				$id = '`a2`';
+		        $page->assign('onchange', 'changeCountry(this.value)');
     				break;
     		case 'fonction':
-    				$db = 'fonctions_def';
-    				$field = 'fonction_fr';
+    				$db = '`fonctions_def`';
+    				$field = '`fonction_fr`';
     				break;
+    		case 'diploma':
+            header('Content-Type: text/xml; charset="UTF-8"');
+    		    $this->get_diplomas();
+    		    $page->changeTpl('search/adv.grade.form.tpl', NO_SKIN);
+    		    return;
     		case 'groupex':
-    				$db = 'groupesx_def';
+    				$db = '`groupesx_def`';
     				break;
     		case 'nationalite':
-    				$db = 'geoloc_pays';
-    				$field = 'IF(nat=\'\', pays, nat)';
-    				$id = 'a2';
+    				$db = '`geoloc_pays`';
+    				$field = 'IF(`nat`=\'\', `pays`, `nat`)';
+    				$id = '`a2`';
+    				break;
+    		case 'region':
+    		    $db = '`geoloc_region`';
+    		    $field = '`name`';
+            $id = '`region`'; 
+            if (isset($_REQUEST['country'])) {
+                $where .= ' WHERE `a2` = "'.$_REQUEST['country'].'"';
+            }
+    		    break;
+    		case 'school':
+    				$db = '`applis_def`';
+		        $page->assign('onchange', 'changeSchool(this.value)');
     				break;
     		case 'section':
-    				$db = 'sections';
+    				$db = '`sections`';
     				break;
     		case 'secteur':
-    				$db = 'emploi_secteur';
-    				$field = 'label';
+    				$db = '`emploi_secteur`';
+    				$field = '`label`';
     				break;
     		default: exit();
     		}
@@ -320,22 +405,17 @@ class SearchModule extends PLModule
        			header('Content-Type: text/plain; charset="UTF-8"');
     				$result = XDB::query('SELECT '.$field.' AS field FROM '.$db.' WHERE '.$id.' = {?} LIMIT 1',$idVal);
     				echo $result->fetchOneCell();
-    		} else {
-		        header('Content-Type: text/xml; charset="UTF-8"');
-		    		$list = XDB::iterator('
-		    				SELECT
-		    						'.$field.' AS field,
-		    						'.$id.' AS id
-		    				FROM '.$db.'
-		    				ORDER BY '.$field);
-		    		echo '<select name="'.$type.'">';
-		    		while ($result = $list->next()) {
-		    				echo '<option value="'.$result['id'].'">'.htmlspecialchars($result['field']).'</option>';
-		    		}
-		    		echo '</select>';
-				}
-				    		
-    		exit();
+    				exit();
+    		}
+        header('Content-Type: text/xml; charset="UTF-8"');
+        $page->changeTpl('search/adv.list.form.tpl', NO_SKIN);
+        $page->assign('name', $type);
+    		$page->assign('list', XDB::iterator('
+    				SELECT
+    						'.$field.' AS field,
+    						'.$id.' AS id
+    				FROM '.$db.$where.'
+    				ORDER BY '.$field));
     }
 }
 

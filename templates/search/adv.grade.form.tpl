@@ -21,9 +21,9 @@
 {**************************************************************************}
 
 <select name="diploma">
-<option value="0"></option>
+<option value=""> - </option>
 {section name=diploma loop=$choix_diplomas}
-<option value="{$choix_diplomas[diploma]}" {if $grade eq $choix_diplomas[diploma]}selected="selected"{/if}>
+<option value="{$choix_diplomas[diploma]}">
   {$choix_diplomas[diploma]}
 </option>
 {/section}
