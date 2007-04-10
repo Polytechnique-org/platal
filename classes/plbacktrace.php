@@ -37,10 +37,15 @@ class PlBacktrace
         }
     }
 
+    private function fixCharset($action)
+    {
+        return is_utf8($action) ? $action : utf8_encode($action);
+    }
+
     private function add(array &$entry, $sizef = 'rows', $timef = 'exectime', $errorf = 'error')
     {
         $trace = array();
-        $trace['action'] = $entry['action'];
+        $trace['action'] = $this->fixCharset($entry['action']);
         unset($entry['action']);
         $trace['exectime'] = @$entry[$timef];
         $this->totaltime += $trace['exectime'];
@@ -58,14 +63,14 @@ class PlBacktrace
 
     public function newEvent($action, $rows = 0, $error = null, array $userdata = array())
     {
-        $trace = array('action' => $action, 'time' => 0);
+        $trace = array('action' => $this->fixCharset($action), 'time' => 0);
         $this->traces[] =& $trace;
         $this->update($rows, $error, $userdata);
     }
 
     public function start($action)
     {
-        $this->traces[] =  array('action' => $action, 'starttime' => microtime(true));;
+        $this->traces[] =  array('action' => $this->fixCharset($action), 'starttime' => microtime(true));;
     }
 
     public function stop($rows = 0, $error = null, array $userdata = array())

@@ -199,7 +199,14 @@ class PlUpload
     {
         static $map;
         if (!isset($map)) {
-            $map = array (1 => 'gif', 2 => 'jpeg', 3 => 'png');
+            $tmpmap = array (IMG_GIF => 'gif', IMG_JPG => 'jpeg', IMG_PNG => 'png', IMG_WBMP => 'bmp', IMG_XPM => 'xpm');
+            $map = array();
+            $supported = imagetypes();
+            foreach ($tmpmap as $type=>$mime) {
+                if ($supported & $type) {
+                    $map[$type] = $mime;
+                }
+            }
         }
         $array = getimagesize($this->filename);
         $array[2] = @$map[$array[2]];

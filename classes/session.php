@@ -27,7 +27,7 @@ class Session
         if (empty($_SESSION['challenge'])) {
             $_SESSION['challenge'] = sha1(uniqid(rand(), true));
         }
-        if (!isset($_SESSION['perms'])) {
+        if (!isset($_SESSION['perms']) || !($_SESSION['perms'] instanceof FlagSet)) {
             $_SESSION['perms'] = new FlagSet();
         }
     }
