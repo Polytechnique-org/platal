@@ -105,6 +105,10 @@ function act_fwd(fwd, activate) {
     document.forms.fwds.deactivate_fwd.value = fwd;
   document.forms.fwds.submit();
 }
+function clean_fwd(fwd) {
+  document.forms.fwds.clean_fwd.value = fwd;
+  document.forms.fwds.submit();
+}
 // ]]>
 </script>
 {/literal}
@@ -285,13 +289,13 @@ Pour ceci changer ses permissions en 'disabled'.
       {/if}
     </tr>
     {/iterate}
-    {if $virtual}
+    {iterate from=$virtuals item=virtual}
     <tr class="{cycle values="impair,pair"}">
       <td></td>
-      <td>{$virtual}</td>
+      <td>{$virtual.alias}</td>
       <td></td>
     </tr>
-    {/if}
+    {/iterate}
     <tr class="{cycle values="impair,pair"}">
       <td colspan="2" class="detail">
         <input type="text" name="email" size="29" maxlength="60" value="" />
@@ -316,14 +320,27 @@ Pour ceci changer ses permissions en 'disabled'.
         Redirections
       </th>
     </tr>
+    {assign var=actives value=false} 
+    {assign var=disabled value=false} 
     {foreach item=mail from=$emails}
     {cycle assign=class values="impair,pair"}
     <tr class="{$class}">
+      {if $mail->active}
+        {assign var=actives value=true}
+      {elseif $mail->disabled}
+        {assign var=disabled value=true}
+      {/if}
       <td class="titre">
-        {if $mail->active}active{/if}
+        {if $mail->active}active{elseif $mail->disabled}suspendue{/if}
       </td>
       <td>
-        <span class="smaller"><a href="javascript:act_fwd('{$mail->email}',{if $mail->active}false{else}true{/if})">{if $mail->active}des{elseif $mail->broken}ré{/if}activer</a></span>
+        <span class="smaller">
+          {if !$mail->disabled}
+          <a href="javascript:act_fwd('{$mail->email}',{if $mail->active}false{else}true{/if})">
+            {if $mail->active}des{elseif $mail->broken}ré{/if}activer
+          </a>
+          {/if}
+        </span>
       </td>
       <td>
         {if $mail->broken}<span style="color: #f00">{/if}
@@ -336,15 +353,19 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
     {if $mail->panne && $mail->panne neq "0000-00-00"}
     <tr class="{$class}">
-      <td colspan="4" class="smaller" style="color: #f00">
+      <td colspan="3" class="smaller" style="color: #f00">
         {icon name=error title="Panne"}
         Panne de {$mail->email} le {$mail->panne|date_format}
         {if $mail->panne neq $mail->last}confirmée le {$mail->last|date_format}{/if}
       </td>
+      <td class="action">
+        <a href="javascript:clean_fwd('{$mail->email}')">effacer les pannes</a>
+      </td>
     </tr>
     {/if}
     {/foreach}
-    <tr class="{cycle values="impair,pair"}">
+    {cycle assign=class values="impair,pair"}
+    <tr class="{$class}">
       <td class="titre" colspan="2">
         Ajouter un email
       </td>
@@ -354,9 +375,20 @@ Pour ceci changer ses permissions en 'disabled'.
       <td class="action">
         <input type="hidden" name="user_id" value="{$mr.user_id}" />
         <input type="hidden" name="del_fwd" value="" />
+        <input type="hidden" name="clean_fwd" value="" />
         <input type="hidden" name="activate_fwd" value="" />
         <input type="hidden" name="deactivate_fwd" value="" />
         <input type="submit" name="add_fwd" value="Ajouter" />
+      </td>
+    </tr>
+    <tr class="{$class}">
+      <td colspan="4" class="center">
+        {if $actives}
+        <input type="submit" name="disable_fwd" value="Désactiver la redirection mail" />
+        {/if}
+        {if $disabled}
+        <input type="submit" name="enable_fwd" value="Réactiver la redirection mail" />
+        {/if}
       </td>
     </tr>
   </table>

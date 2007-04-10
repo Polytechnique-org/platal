@@ -45,7 +45,7 @@ class AdminModule extends PLModule
             'admin/validate/answers'       => $this->make_hook('validate_answers', AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
             'admin/ipwatch'                => $this->make_hook('ipwatch', AUTH_MDP, 'admin'),
-            'admin/icons'									 => $this->make_hook('icons', AUTH_MDP, 'admin'),
+            'admin/icons'                                                                        => $this->make_hook('icons', AUTH_MDP, 'admin'),
         );
     }
 
@@ -440,16 +440,27 @@ class AdminModule extends PLModule
                             $page->trig($val." a été supprimé");
                         }
                         break;
-                case "activate_fwd":
-                if (!empty($val)) {
-                    $redirect->modify_one_email($val, true);
-                }
-                break;
-                case "deactivate_fwd":
-                if (!empty($val)) {
-                    $redirect->modify_one_email($val, false);
-                }
-                break;
+                    case "activate_fwd":
+                        if (!empty($val)) {
+                            $redirect->modify_one_email($val, true);
+                        }
+                        break;
+                    case "deactivate_fwd":
+                        if (!empty($val)) {
+                            $redirect->modify_one_email($val, false);
+                        }
+                        break;
+                    case "disable_fwd":
+                        $redirect->disable();
+                        break;
+                    case "enable_fwd":
+                        $redirect->enable();
+                        break;
+                    case "clean_fwd":
+                        if (!empty($val)) {
+                            $redirect->cleanErrors($val);
+                        }
+                        break;
                     case "add_alias":
                         XDB::execute("INSERT INTO  aliases (id,alias,type) VALUES  ({?}, {?}, 'alias')",
                                 $mr['user_id'], Env::v('email'));
@@ -467,45 +478,45 @@ class AdminModule extends PLModule
 
                     // Editer un profil
                     case "u_edit":
-                    require_once('secure_hash.inc.php');
-                    $pass_encrypted = Env::v('newpass_clair') != "********" ? hash_encrypt(Env::v('newpass_clair')) : Env::v('passw');
-                    $naiss = Env::v('naissanceN');
-                    $deces = Env::v('decesN');
-                    $perms = Env::v('permsN');
-                    $prenm = Env::v('prenomN');
-                    $nom   = Env::v('nomN');
-                    $promo = Env::i('promoN');
-                    $sexe  = Env::v('sexeN');
-                    $comm  = trim(Env::v('commentN'));
-                    $watch = Env::v('watchN');
-                    $flags = '';
-                    if ($sexe) {
-                        $flags = 'femme';
-                    }
-                    if ($watch) {
-                        if ($flags) {
-                            $flags .= ',';
+                        require_once('secure_hash.inc.php');
+                        $pass_encrypted = Env::v('newpass_clair') != "********" ? hash_encrypt(Env::v('newpass_clair')) : Env::v('passw');
+                        $naiss = Env::v('naissanceN');
+                        $deces = Env::v('decesN');
+                        $perms = Env::v('permsN');
+                        $prenm = Env::v('prenomN');
+                        $nom   = Env::v('nomN');
+                        $promo = Env::i('promoN');
+                        $sexe  = Env::v('sexeN');
+                        $comm  = trim(Env::v('commentN'));
+                        $watch = Env::v('watchN');
+                        $flags = '';
+                        if ($sexe) {
+                            $flags = 'femme';
                         }
-                        $flags .= 'watch';
-                    }
+                        if ($watch) {
+                            if ($flags) {
+                                $flags .= ',';
+                            }
+                            $flags .= 'watch';
+                        }
 
-                    if ($watch && !$comm) {
-                        $page->trig("Il est nécessaire de mettre un commentaire pour surveiller un compte");
-                        break;
-                    }
+                        if ($watch && !$comm) {
+                            $page->trig("Il est nécessaire de mettre un commentaire pour surveiller un compte");
+                            break;
+                        }
 
-                    $query = "UPDATE auth_user_md5 SET
-                            naissance = '$naiss',
-                            deces     = '$deces',
-                            password  = '$pass_encrypted',
-                            perms     = '$perms',
-                            prenom    = '".addslashes($prenm)."',
-                            nom       = '".addslashes($nom)."',
-                            flags     = '$flags',
-                            promo     = $promo,
-                            comment   = '".addslashes($comm)."'
-                        WHERE user_id = '{$mr['user_id']}'";
-                    if (XDB::execute($query)) {
+                        $query = "UPDATE auth_user_md5 SET
+                                         naissance = '$naiss',
+                                         deces     = '$deces',
+                                         password  = '$pass_encrypted',
+                                         perms     = '$perms',
+                                         prenom    = '".addslashes($prenm)."',
+                                         nom       = '".addslashes($nom)."',
+                                         flags     = '$flags',
+                                         promo     = $promo,
+                                         comment   = '".addslashes($comm)."'
+                                   WHERE user_id = '{$mr['user_id']}'";
+                        if (XDB::execute($query)) {
                             user_reindex($mr['user_id']);
 
                             $mailer = new PlMailer("admin/mail_intervention.tpl");
@@ -551,13 +562,11 @@ class AdminModule extends PLModule
             $page->assign('lastlogin', $lastlogin);
             $page->assign('host', $host);
 
-            $res = XDB::query("SELECT  alias
-                                 FROM  virtual
-                           INNER JOIN  virtual_redirect USING(vid)
-                                WHERE  type = 'user' AND redirect LIKE '" . $login . "@%'");
-            if ($res->numRows()) {
-                $page->assign('virtual', $res->fetchOneCell());
-            }
+            $res = XDB::iterator("SELECT  alias
+                                    FROM  virtual
+                              INNER JOIN  virtual_redirect USING(vid)
+                                   WHERE  type = 'user' AND redirect LIKE '" . $login . "@%'");
+            $page->assign('virtuals', $res);
 
             $page->assign('aliases', XDB::iterator(
                         "SELECT  alias, type='a_vie' AS for_life,FIND_IN_SET('bestalias',flags) AS best,expire
@@ -793,7 +802,7 @@ class AdminModule extends PLModule
     {
         $page->changeTpl('admin/valider.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Valider une demande');
-		$page->addCssLink('nl.css');
+                $page->addCssLink('nl.css');
         $page->addJsLink('ajax.js');
         require_once("validations.inc.php");
 
@@ -1069,20 +1078,20 @@ class AdminModule extends PLModule
     }
     
     function handler_icons(&$page)
-		{
-				$page->changeTpl('admin/icons.tpl');
-				$dh = opendir('../htdocs/images/icons');
-				if (!$dh) {
-						$page->trig('Dossier des icones introuvables.');
-				}
-				$icons = array();
-				while (($file = readdir($dh)) !== false) {
-						if (strlen($file) > 4 && substr($file,-4) == '.gif') {
-								array_push($icons, substr($file, 0, -4));
-						}
-				}
-				sort($icons);
-				$page->assign('icons', $icons);
+                {
+                                $page->changeTpl('admin/icons.tpl');
+                                $dh = opendir('../htdocs/images/icons');
+                                if (!$dh) {
+                                                $page->trig('Dossier des icones introuvables.');
+                                }
+                                $icons = array();
+                                while (($file = readdir($dh)) !== false) {
+                                                if (strlen($file) > 4 && substr($file,-4) == '.gif') {
+                                                                array_push($icons, substr($file, 0, -4));
+                                                }
+                                }
+                                sort($icons);
+                                $page->assign('icons', $icons);
     }
 }
 

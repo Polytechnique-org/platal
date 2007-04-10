@@ -21,15 +21,12 @@
 
 require_once("xorg.misc.inc.php");
 
-// {{{ defines
-
 define("SUCCESS", 1);
 define("ERROR_INACTIVE_REDIRECTION", 2);
 define("ERROR_INVALID_EMAIL", 3);
 define("ERROR_LOOP_EMAIL", 4);
 
-// }}}
-// {{{ function fix_bestalias()
+// function fix_bestalias() {{{1
 
 function fix_bestalias($uid)
 {
@@ -44,8 +41,7 @@ function fix_bestalias($uid)
                    LIMIT  1", $uid);
 }
 
-// }}}
-// {{{ function valide_email()
+// function valide_email() {{{1
 
 function valide_email($str)
 {
@@ -62,18 +58,16 @@ function valide_email($str)
     return $ident . '@' . $dom;
 }
 
-// }}}
-// {{{ class Bogo
+// class Bogo {{{1
 
 class Bogo
 {
-    // {{{ properties
+    // properties {{{2
 
     private $state;
     private $_states = Array('let_spams', 'tag_spams', 'tag_and_drop_spams', 'drop_spams');
 
-    // }}}
-    // {{{ constructor
+    // constructor {{{2
 
     public function __construct($uid)
     {
@@ -90,8 +84,7 @@ class Bogo
         }
     }
 
-    // }}}
-    // {{{ function change()
+    // public function change() {{{2
 
     public function change($uid, $state)
     {
@@ -100,44 +93,40 @@ class Bogo
             $this->state, $uid);
     }
 
-    // }}}
-    // {{{ function level()
+    // pubic function level() {{{2
 
     public function level()
     {
         return array_search($this->state, $this->_states);
     }
-
-    // }}}
 }
 
-// }}}
-// {{{ class Email
+// class Email {{{1
 
 class Email
 {
-    // {{{ properties
+    // properties {{{2
 
     public $email;
     public $active;
     public $broken;
+    public $disabled;
     public $rewrite;
     public $panne;
     public $last;
     public $panne_level;
 
-    // }}}
-    // {{{ constructor
+    // constructor {{{2
 
     public function __construct($row)
     {
         list($this->email, $flags, $this->rewrite, $this->panne, $this->last, $this->panne_level) = $row;
-        $this->active = ($flags == 'active');
-        $this->broken = ($flags == 'panne');
+        $this->active   = ($flags == 'active');
+        $this->broken   = ($flags == 'panne');
+        $this->disabled = ($flags == 'disable');
     }
 
-    // }}}
-    // {{{ function activate()
+    // public function activate() {{{2
 
     public function activate($uid)
     {
@@ -152,8 +141,7 @@ class Email
         }
     }
 
-    // }}}
-    // {{{ function deactivate()
+    // public function deactivate() {{{2
 
     public function deactivate($uid)
     {
@@ -165,8 +153,7 @@ class Email
         }
     }
 
-    // }}}
-    // {{{ function rewrite()
+    // public function rewrite() {{{2
 
     public function rewrite($rew, $uid)
     {
@@ -181,15 +168,28 @@ class Email
         return;
     }
 
-    // }}}
+    // function cleanErrors() {{{2
+
+    public function cleanErrors($uid)
+    {
+        if (!S::has_perms()) {
+            return false;
+        }
+        $this->panne       = 0;
+        $this->panne_level = 0;
+        $this->last        = 0;
+        return XDB::execute("UPDATE  emails
+                                SET  panne_level = 0, panne = 0, last = 0
+                              WHERE  uid = {?} AND email = {?}",
+                            $uid, $this->email);
+    }
 }
 
-// }}}
-// {{{ class Redirect
+// class Redirect {{{1
 
 class Redirect
 {
-    // {{{ properties
+    // properties {{{2
 
     private $flag_active = 'active';
     private $uid;
@@ -197,8 +197,7 @@ class Redirect
     public $emails;
     public $bogo;
 
-    // }}}
-    // {{{ function Redirect()
+    // constructor {{{2
 
     public function __construct($_uid)
     {
@@ -213,8 +212,7 @@ class Redirect
         $this->bogo = new Bogo($_uid);
     }
 
-    // }}}
-    // {{{ function other_active()
+    // public function other_active() {{{2
 
     public function other_active($email)
     {
@@ -226,8 +224,7 @@ class Redirect
         return false;
     }
 
-    // }}}
-    // {{{ function delete_email()
+    // public function delete_email() {{{2
 
     public function delete_email($email)
     {
@@ -245,8 +242,7 @@ class Redirect
         return SUCCESS;
     }
 
-    // }}}
-    // {{{ function add_email()
+    // public function add_email() {{{2
 
     public function add_email($email)
     {
@@ -274,21 +270,22 @@ class Redirect
         return SUCCESS;
     }
 
-    // }}}
-    // {{{ function modify_email()
+    // public function modify_email() {{{2
 
     public function modify_email($emails_actifs, $emails_rewrite)
     {
-        foreach ($this->emails as $i=>$mail) {
-            if (in_array($mail->email,$emails_actifs)) {
-                $this->emails[$i]->activate($this->uid);
+        foreach ($this->emails as &$mail) {
+            if (in_array($mail->email, $emails_actifs)) {
+                $mail->activate($this->uid);
             } else {
-                $this->emails[$i]->deactivate($this->uid);
+                $mail->deactivate($this->uid);
             }
-            $this->emails[$i]->rewrite($emails_rewrite[$mail->email], $this->uid);
+            $mail->rewrite($emails_rewrite[$mail->email], $this->uid);
         }
         check_redirect($this);
     }
+
+    // public function modify_one_email() {{{2
 
     public function modify_one_email($email, $activate) 
     {
@@ -316,18 +313,62 @@ class Redirect
         } 
     }
 
+    // public function modify_one_email_redirect() {{{2
+
     public function modify_one_email_redirect($email, $redirect)
     {
-        foreach ($this->emails as $i=>$mail) {
+        foreach ($this->emails as &$mail) {
             if ($mail->email == $email) {
-                $this->emails[$i]->rewrite($redirect, $this->uid);
+                $mail->rewrite($redirect, $this->uid);
                 check_redirect($this);
                 return;
             }
         }
     }
-    // }}}
-    // {{{ function get_broken_mx()
+
+    // function cleanErrors() {{{2
+
+    public function cleanErrors($email)
+    {
+        foreach ($this->emails as &$mail) {
+            if ($mail->email == $email) {
+                return $mail->cleanErrors($this->uid);
+            }
+        }
+        return false;
+    }
+
+    // function disable() {{{2
+
+    public function disable()
+    {
+        XDB::execute("UPDATE  emails
+                         SET  flags = 'disable'
+                       WHERE  flags = 'active' AND uid = {?}", $this->uid);
+        foreach ($this->emails as &$mail) {
+            if ($mail->active) {
+                $mail->disabled = true;
+                $mail->active   = false;
+            }
+        }
+    }
+
+    // function enable() {{{2
+
+    public function enable()
+    {
+        XDB::execute("UPDATE  emails
+                         SET  flags = 'active'
+                       WHERE  flags = 'disable' AND uid = {?}", $this->uid);
+        foreach ($this->emails as &$mail) {
+            if ($mail->disabled) {
+                $mail->active   = true;
+                $mail->disabled = false;
+            }
+        }
+    }
+
+    // function get_broken_mx() {{{2
 
     public function get_broken_mx()
     {
@@ -362,11 +403,7 @@ class Redirect
         }
         return $mails;
     }
-
-    // }}}
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
