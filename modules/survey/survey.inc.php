@@ -19,9 +19,234 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ class Survey : static database managing functions
-class SurveyDB
+// {{{ class Survey : root of any survey, contains all questions
+class Survey
 {
+    // {{{ static properties and functions, regarding survey modes and question types
+    const MODE_ALL    = 0;
+    const MODE_XANON  = 1;
+    const MODE_XIDENT = 2;
+    private static $longModes = array(self::MODE_ALL    => "sondage ouvert &#224; tout le monde, anonyme",
+                                      self::MODE_XANON  => "sondage restreint aux polytechniciens, anonyme",
+                                      self::MODE_XIDENT => "sondage restreint aux polytechniciens, non anonyme");
+    private static $shortModes = array(self::MODE_ALL    => "tout le monde, anonyme",
+                                       self::MODE_XANON  => "polytechniciens, anonyme",
+                                       self::MODE_XIDENT => "polytechniciens, non anonyme");
+
+    public static function getModes($long = true) {
+        return ($long)? self::$longModes : self::$shortModes;
+    }
+
+    private static $types = array('text'     => 'texte court',
+                                  'textarea' => 'texte long',
+                                  'num'      => 'num&#233;rique',
+                                  'radio'    => 'radio',
+                                  'checkbox' => 'checkbox',
+                                  'personal' => 'informations personnelles');
+
+    public static function getTypes()
+    {
+        return self::$types;
+    }
+
+    public static function isType($t)
+    {
+        return array_key_exists($t, self::$types);
+    }
+    // }}}
+
+    // {{{ properties, constructor and basic methods
+    private $id;
+    private $title;
+    private $description;
+    private $end;
+    private $mode;
+    private $promos;
+    private $valid;
+    private $questions;
+
+    public function __construct($args, $id = -1, $valid = false, $questions = null)
+    {
+        $this->update($args);
+        $this->id = $id;
+        $this->valid = $valid;
+        $this->questions = ($questions == null)? array() : $questions;
+    }
+
+    public function update($args)
+    {
+        $this->title       = $args['title'];
+        $this->description = $args['description'];
+        if (preg_match('#^\d{2}/\d{2}/\d{4}$#', $args['end'])) {
+            $this->end = preg_replace('#^(\d{2})/(\d{2})/(\d{4})$#', '\3-\2-\1', $args['end']);
+        } else {
+            $this->end = (preg_match('#^\d{4}-\d{2}-\d{2}$#', $args['end']))? $args['end'] : '#';
+        }
+        $this->mode    = $args['mode'];
+        if ($args['mode'] == 0) {
+            $args['promos'] = '';
+        }
+        $this->promos  = ($args['promos'] == '' || preg_match('#^(\d{4}-?|(\d{4})?-\d{4})(,(\d{4}-?|(\d{4})?-\d{4}))*$#', $args['promos']))? $args['promos'] : '#';
+    }
+    // }}}
+
+    // {{{ functions to access general information
+    public function isMode($mode)
+    {
+        return ($this->mode == $mode);
+    }
+
+    public function checkPromo($promo)
+    {
+        $promos = explode('|', $this->promos);
+        foreach ($promos as $p) {
+            if ((preg_match('#^\d{4}$#', $p) && $p == $promo) ||
+                (preg_match('#^\d{4}-$#', $p) && intval(substr($p, 0, 4)) <= $promo) ||
+                (preg_match('#^-\d{4}$#', $p) && intval(substr($p, 1)) >= $promo) ||
+                (preg_match('#^\d{4}-\d{4}$#', $p) && intval(substr($p, 0, 4)) <= $promo && intval(substr($p, 5)) >= $promo)) {
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public function isValid()
+    {
+        return $this->valid;
+    }
+
+    public function isEnded()
+    {
+        return (strtotime($this->end) - time() <= 0);
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+    // }}}
+
+    // {{{ function toArray() : converts a question (or the whole survey) to array
+    public function toArray($i = 'all')
+    {
+        if ($i != 'all' && $i != 'root') {
+            $i = intval($i);
+            if (array_key_exists($i, $this->questions)) {
+                return $this->questions[$i]->toArray();
+            } else {
+                return null;
+            }
+        } else {
+            $a = array('title'       => $this->title,
+                       'description' => $this->description,
+                       'end'         => $this->end,
+                       'mode'        => $this->mode,
+                       'promos'      => $this->promos,
+                       'valid'       => $this->valid,
+                       'type'        => 'root');
+            if ($this->id != -1) {
+                $a['id'] = $this->id;
+            }
+            if ($i == 'all' && count($this->questions) > 0) {
+                $qArr = array();
+                for ($k = 0; $k < count($this->questions); $k++) {
+                    $q = $this->questions[$k]->toArray();
+                    $q['id'] = $k;
+                    $qArr[$k] = $q;
+                }
+                $a['questions'] = $qArr;
+            }
+            return $a;
+        }
+    }
+    // }}}
+
+    // {{{ function factory($type, $args) : builds a question according to the given type
+    public function factory($t, $args)
+    {
+        switch ($t) {
+        case 'text':
+            return new SurveyText($args);
+        case 'textarea':
+            return new SurveyTextarea($args);
+        case 'num':
+            return new SurveyNum($args);
+        case 'radio':
+            return new SurveyRadio($args);
+        case 'checkbox':
+            return new SurveyCheckbox($args);
+        case 'personal':
+            return new SurveyPersonal($args);
+        default:
+            return null;
+        }
+    }
+    // }}}
+
+    // {{{ questions manipulation functions
+    public function addQuestion($i, $c)
+    {
+        if ($this->valid || $i > count($this->questions)) {
+            return false;
+        } else {
+            array_splice($this->questions, $i, 0, array($c));
+            return true;
+        }
+    }
+
+    public function delQuestion($i)
+    {
+        if ($this->valid || !array_key_exists($i, $this->questions)) {
+            return false;
+        } else {
+            array_splice($this->questions, $i, 1);
+            return true;
+        }
+    }
+
+    public function editQuestion($i, $a)
+    {
+        if ($i == 'root') {
+            $this->update($a);
+        } else {
+            $i = intval($i);
+            if ($this->valid ||!array_key_exists($i, $this->questions)) {
+                return false;
+            } else {
+                $this->questions[$i]->update($a);
+            }
+        }
+        return true;
+    }
+    // }}}
+
+    // {{{ function checkSyntax() : checks syntax of the questions (currently the root only) before storing the survey in database
+    private static $errorMessages = array(
+        "dateformat"  => "la date de fin de sondage est mal formatt&#233;e : elle doit respecter la syntaxe dd/mm/aaaa",
+        "datepassed"  => "la date de fin de sondage est d&#233;j&#224; d&#233;pass&#233;e : vous devez pr&#233;ciser une date future",
+        "promoformat" => "les restrictions &#224; certaines promotions sont mal formatt&#233;es"
+    );
+
+    public function checkSyntax()
+    {
+        $rArr = array();
+        if (!preg_match('#^\d{4}-\d{2}-\d{2}$#', $this->end)) {
+            $rArr[] = array('question' => 'root', 'error' => self::$errorMessages["dateformat"]);
+        } else {
+            // checks that the end date given is not already passed
+            // (unless the survey has already been validated : an admin can have a validated survey expired)
+            if (!$this->valid && $this->isEnded()) {
+                $rArr[] = array('question' => 'root', 'error' => self::$errorMessages["datepassed"]);
+            }
+        }
+        if ($this->promos != '' && !preg_match('#^(\d{4}-?|(\d{4})?-\d{4})(,(\d{4}-?|(\d{4})?-\d{4}))*$#', $this->promos)) {
+            $rArr[] = array('question' => 'root', 'error' => self::$errorMessages["promoformat"]);
+        }
+        return (empty($rArr))? null : $rArr;
+    }
+    // }}}
+
+    // {{{ functions that manipulates surveys in database
     // {{{ static function retrieveList() : gets the list of available survey (current, old and not validated surveys)
     public static function retrieveList($type, $tpl = true)
     {
@@ -41,8 +266,8 @@ class SurveyDB
         default:
             return null;
         }
-        $sql = 'SELECT survey_id, title, end
-                  FROM survey_questions
+        $sql = 'SELECT id, title, end, mode
+                  FROM survey_surveys
                  WHERE '.$where.';';
         if ($tpl) {
             return XDB::iterator($sql);
@@ -52,54 +277,18 @@ class SurveyDB
     }
     // }}}
 
-    // {{{ static function proposeSurvey() : stores a proposition of survey in database (before validation)
-    public static function proposeSurvey($survey)
-    {
-        $sql = 'INSERT INTO survey_questions
-                        SET questions={?},
-                            title={?},
-                            description={?},
-                            author_id={?},
-                            end={?},
-                            promos={?},
-                            valid=0;';
-        $data = $survey->storeArray();
-        return XDB::execute($sql, serialize($survey), $data['question'], $data['comment'], S::v('uid'), $data['end'], $data['promos']);
-    }
-    // }}}
-
-    // {{{ static function updateSurvey() : updates a survey in database (before validation)
-    public static function updateSurvey($survey, $sid)
-    {
-        $sql = 'UPDATE survey_questions
-                   SET questions={?},
-                       title={?},
-                       description={?},
-                       end={?},
-                       promos={?}
-                 WHERE survey_id={?};';
-        $data = $survey->storeArray();
-        return XDB::execute($sql, serialize($survey), $data['question'], $data['comment'], $data['end'], $data['promos'], $sid);
-    }
-    // }}}
-
     // {{{ static function retrieveSurvey() : gets a survey in database (and unserialize the survey object structure)
     public static function retrieveSurvey($sid)
     {
-        $sql = 'SELECT questions, title, description, end, promos, valid
-                  FROM survey_questions
-                 WHERE survey_id={?}';
+        $sql = 'SELECT questions, title, description, end, mode, promos, valid
+                  FROM survey_surveys
+                 WHERE id={?}';
         $res = XDB::query($sql, $sid);
         $data = $res->fetchOneAssoc();
         if (is_null($data) || !is_array($data)) {
             return null;
         }
-        $survey = unserialize($data['questions']);
-        if (isset($data['end'])) {
-            $data['end'] = preg_replace('#^(\d{4})-(\d{2})-(\d{2})$#', '\3/\2/\1', $data['end']);
-        }
-        $survey->update(array('question' => $data['title'], 'comment' => $data['description'], 'end' => $data['end'], 'promos' => $data['promos']));
-        $survey->setValid($data['valid']);
+        $survey = new Survey($data, $sid, (boolean) $data['valid'], unserialize($data['questions']));
         return $survey;
     }
     // }}}
@@ -107,35 +296,110 @@ class SurveyDB
     // {{{ static function retrieveSurveyInfo() : gets information about a survey (title, description, end date, restrictions) but does not unserialize the survey object structure
     public static function retrieveSurveyInfo($sid)
     {
-        $sql = 'SELECT title, description, end, promos, valid
-                  FROM survey_questions
-                 WHERE survey_id={?}';
+        $sql = 'SELECT title, description, end, mode, promos, valid
+                  FROM survey_surveys
+                 WHERE id={?}';
         $res = XDB::query($sql, $sid);
         return $res->fetchOneAssoc();
+    }
+    // }}}
+
+    // {{{ function proposeSurvey() : stores a proposition of survey in database (before validation)
+    public function proposeSurvey()
+    {
+        $sql = 'INSERT INTO survey_surveys
+                        SET questions={?},
+                            title={?},
+                            description={?},
+                            author_id={?},
+                            end={?},
+                            mode={?},
+                            promos={?},
+                            valid=0;';
+        return XDB::execute($sql, serialize($this->questions), $this->title, $this->description, S::v('uid'), $this->end, $this->mode, $this->promos);
+    }
+    // }}}
+
+    // {{{ function updateSurvey() : updates a survey in database (before validation)
+    public function updateSurvey()
+    {
+        if ($this->id == -1) {
+            return false;
+        }
+        $sql = 'UPDATE survey_surveys
+                   SET questions={?},
+                       title={?},
+                       description={?},
+                       end={?},
+                       mode={?},
+                       promos={?}
+                 WHERE id={?};';
+        return XDB::execute($sql, serialize($this->questions), $this->title, $this->description, $this->end, $this->mode, $this->promos, $this->id);
     }
     // }}}
 
     // {{{ static function validateSurvey() : validates a survey
     public static function validateSurvey($sid)
     {
-        $sql = 'UPDATE survey_questions
+        $sql = 'UPDATE survey_surveys
                    SET valid=1
-                 WHERE survey_id={?};';
+                 WHERE id={?};';
         return XDB::execute($sql, $sid);
+    }
+    // }}}
+
+    // {{{ functions vote() and hasVoted() : handles vote to a survey
+    public function vote($uid, $args)
+    {
+        XDB::execute('INSERT INTO survey_votes
+                              SET survey_id={?}, user_id={?};', $this->id, $uid); // notes the user as having voted
+        $vid = XDB::insertId();
+        for ($i = 0; $i < count($this->questions); $i++) {
+            $ans = $this->questions[$i]->checkAnswer($args[$i]);
+            if ($ans != "") {
+                XDB::execute('INSERT INTO survey_answers
+                                      SET vote_id     = {?},
+                                          question_id = {?},
+                                          answer      = {?}', $vid, $i, $ans);
+            }
+        }
+    }
+
+    public function hasVoted($uid)
+    {
+        $res = XDB::query('SELECT id
+                             FROM survey_votes
+                            WHERE survey_id={?} AND user_id={?};', $this->id, $uid); // checks whether the user has already voted
+        return ($res->numRows() != 0);
     }
     // }}}
 
     // {{{ static function deleteSurvey() : deletes a survey (and all its votes)
     public static function deleteSurvey($sid)
     {
-        $sql1 = 'DELETE FROM survey_questions
-                       WHERE survey_id={?};';
-        $sql2 = 'DELETE FROM survey_answers
-                       WHERE survey_id={?};';
-        $sql3 = 'DELETE FROM survey_votes
-                       WHERE survey_id={?};';
-        return (XDB::execute($sql1, $sid) && XDB::execute($sql2, $sid) && XDB::execute($sql3, $sid));
+        $sql = 'DELETE s.*, v.*, a.*
+                  FROM survey_surveys AS s
+             LEFT JOIN survey_votes AS v
+                    ON v.survey_id=s.id
+             LEFT JOIN survey_answers AS a
+                    ON a.vote_id=v.id
+                 WHERE s.id={?};';
+        return XDB::execute($sql, $sid);
     }
+    // }}}
+
+    // {{{ static function purgeVotes() : clears all votes concerning a survey (I'm not sure whether it's really useful)
+    public static function purgeVotes($sid)
+    {
+        $sql = 'DELETE v.*, a.*
+                  FROM survey_votes AS v
+             LEFT JOIN survey_answers AS a
+                    ON a.vote_id=v.id
+                 WHERE v.survey_id={?};';
+        return XDB::execute($sql, $sid);
+    }
+    // }}}
+
     // }}}
 }
 // }}}
@@ -143,426 +407,47 @@ class SurveyDB
 // {{{ abstract class SurveyQuestion
 abstract class SurveyQuestion
 {
-    // {{{ static properties and methods regarding question types
-    private static $types = array('text'     => 'texte court',
-                                  'textarea' => 'texte long',
-                                  'num'      => 'num&#233;rique',
-                                  'radio'    => 'radio',
-                                  'checkbox' => 'checkbox',
-                                  'personal' => 'informations personnelles');
-
-    public static function getTypes()
-    {
-        return self::$types;
-    }
-
-    public static function isType($t)
-    {
-        return array_key_exists($t, self::$types);
-    }
-    // }}}
-
     // {{{ common properties, constructor, and basic methods
-    private $survey_id;
-    private $id;
     private $question;
     private $comment;
 
-    protected function __construct($i, $args)
+    public function __construct($args)
     {
-        $this->id = $i;
         $this->update($args);
     }
 
-    protected function update($a)
+    public function update($a)
     {
         $this->question = $a['question'];
         $this->comment  = $a['comment'];
     }
 
-    protected function getId()
-    {
-        return $this->id;
-    }
-
     abstract protected function getQuestionType();
     // }}}
 
-    // {{{ tree manipulation methods : not implemented here (but definition needed)
-    protected function addChildNested($i, $c)
+    // {{{ function toArray() : converts to array
+    public function toArray()
     {
-        return false;
-    }
-
-    protected function addChildAfter($i, $c)
-    {
-        return false;
-    }
-
-    protected function delChild($i)
-    {
-        return false;
+        return array('type' => $this->getQuestionType(), 'question' => $this->question, 'comment' => $this->comment);
     }
     // }}}
 
-    // {{{ function edit($i, $a) : searches and edits question $i
-    protected function edit($i, $a)
-    {
-        if ($this->id == $i) {
-            $this->update($a);
-            return true;
-        } else {
-            return false;
-        }
-    }
-    // }}}
-
-    // {{{ functions toArray() and searchToArray($i) : (searches and) converts to array
-    protected function toArray()
-    {
-        return $this->storeArray();
-    }
-
-    protected function searchToArray($i)
-    {
-        if ($this->id == $i) {
-            return $this->storeArray();
-        } else {
-            return null;
-        }
-    }
-
-    protected function storeArray()
-    {
-        return array('type' => $this->getQuestionType(), 'id' => $this->id,  'question' => $this->question, 'comment' => $this->comment);
-    }
-    // }}}
-
-    // {{{ function checkSyntax() : checks question elements (before storing into database)
+    // {{{ function checkSyntax() : checks question elements (before storing into database), not currently needed (with new structure)
     protected function checkSyntax()
     {
         return null;
     }
     // }}}
 
-    // {{{ function vote() : handles vote
-    protected function checkAnswer($ans)
+    // {{{ function checkAnswer : returns a correctly formatted answer (or nothing empty string if error)
+    public function checkAnswer($ans)
     {
         return "";
     }
-
-    function vote($sid, $vid, $a)
-    {
-        $ans = $this->checkAnswer($a[$this->getId]);
-        if ($ans != "") {
-            XDB::execute(
-                'INSERT INTO survey_answers
-                         SET survey_id   = {?},
-                             vote_id     = {?},
-                             question_id = {?},
-                             answer      = "{?}"', $sid, $vid, $id, $ans);
-        }
-    }
-    // }}}
-}
-// }}}
-
-// {{{ abstract class SurveyTreeable extends SurveyQuestion : questions that allow nested ones
-abstract class SurveyTreeable extends SurveyQuestion
-{
-    // {{{ common properties, constructor
-    private $children;
-
-    protected function __construct($i, $args)
-    {
-        parent::__construct($i, $args);
-        $this->children = array();
-    }
     // }}}
 
-    // {{{ tree manipulation functions : actual implementation
-    protected function hasChild()
-    {
-        return !is_null($this->children) && is_array($this->children);
-    }
-
-    protected function addChildNested($i, $c)
-    {
-        if ($this->getId() == $i) {
-            if ($this->hasChild()) {
-                array_unshift($this->children, $c);
-            } else {
-                $this->children = array($c);
-            }
-            return true;
-        } else {
-            foreach ($this->children as $child) {
-                if ($child->addChildNested($i, $c)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    protected function addChildAfter($i, $c)
-    {
-        $found = false;
-        for ($k = 0; $k < count($this->children); $k++) {
-            if ($this->children[$k]->getId() == $i) {
-                $found = true;
-                break;
-            } else {
-                if ($this->children[$k]->addChildAfter($i, $c)) {
-                    return true;
-                }
-            }
-        }
-        if ($found) {
-            array_splice($this->children, $k+1, 0, array($c));
-            return true;
-        }
-        return false;
-    }
-
-    protected function delChild($i)
-    {
-        $found = false;
-        for ($k = 0; $k < count($this->children); $k++) {
-            if ($this->children[$k]->getId() == $i) {
-                $found = true;
-                break;
-            } else {
-                if ($this->children[$k]->delChild($i)) {
-                    return true;
-                }
-            }
-        }
-        if ($found) {
-            array_splice($this->children, $k, 1);
-            return true;
-        }
-        return false;
-    }
-    // }}}
-
-    // {{{ function edit() with tree support
-    protected function edit($i, $a)
-    {
-        if ($this->getId() == $i) {
-            $this->update($a);
-            return true;
-        } else {
-            foreach ($this->children as $child) {
-                if ($child->edit($i, $a)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-    // }}}
-
-    // {{{ functions toArray() and searchToArray() with tree support
-    protected function toArray()
-    {
-        if ($this->hasChild()) {
-            $cArr = array();
-            foreach ($this->children as $child) {
-                $cArr[] = $child->toArray();
-            }
-            $a = $this->storeArray();
-            $a['children'] = $cArr;
-            return $a;
-        } else {
-            return $this->storeArray();
-        }
-    }
-
-    protected function searchToArray($i)
-    {
-        if ($this->getId() == $i) {
-            return $this->storeArray();
-        } else {
-            foreach ($this->children as $child) {
-                $a = $child->searchToArray($i);
-                if (!is_null($a) && is_array($a)) {
-                    return $a;
-                }
-            }
-            return null;
-        }
-    }
-    // }}}
-
-    // {{{ function checkSyntax()
-    protected function checkSyntax()
-    {
-        $rArr = array();
-        foreach ($this->children as $child) {
-            $a = $child->checkSyntax();
-            if ($a != null) {
-                $rArr[] = $a;
-            }
-        }
-        return (empty($rArr))? null : $rArr;
-    }
-    // }}}
-
-    // {{{ function vote()
-    function vote($sid, $vid, $a)
-    {
-        parent::vote($sid, $vid, $a);
-        if ($this->hasChild()) {
-            foreach ($this->children as $c) {
-                $c->vote($sid, $vid, $a);
-            }
-        }
-    }
-    // }}}
-}
-// }}}
-
-// {{{ class SurveyRoot extends SurveyTreeable : root of any survey, actually the only entry point (no public methods outside this class)
-class SurveyRoot extends SurveyTreeable
-{
-    // {{{ properties, constructor and basic methods
-    private $last_id;
-    private $beginning;
-    private $end;
-    private $promos;
-    private $valid;
-
-    public function __construct($args)
-    {
-        parent::__construct(0, $args);
-        $this->last_id   = 0;
-    }
-
-    public function update($args)
-    {
-        parent::update($args);
-        //$this->beginning = $args['beginning_year'] . "-" . $args['beginning_month'] . "-" . $args['beginning_day'];
-        //$this->end       = $args['end_year']       . "-" . $args['end_year']        . "-" . $args['end_day'];
-        if (preg_match('#^\d{2}/\d{2}/\d{4}$#', $args['end'])) {
-            $this->end = preg_replace('#^(\d{2})/(\d{2})/(\d{4})$#', '\3-\2-\1', $args['end']);
-        } else {
-            $this->end = (preg_match('#^\d{4}-\d{2}-\d{2}$#', $args['end']))? $args['end'] : '#';
-        }
-        $this->promos  = ($args['promos'] == '' || preg_match('#^(\d{4}-?|(\d{4})?-\d{4})(,(\d{4}-?|(\d{4})?-\d{4}))*$#', $args['promos']))? $args['promos'] : '#';
-    }
-
-    private function getNextId()
-    {
-        $this->last_id++;
-        return $this->last_id;
-    }
-
-    public function setValid($v)
-    {
-        $this->valid = (boolean) $v;
-    }
-
-    public function isValid()
-    {
-        return $this->valid;
-    }
-
-    protected function getQuestionType()
-    {
-        return "root";
-    }
-    // }}}
-
-    // {{{ function factory($type, $args) : builds a question according to the given type
-    public function factory($t, $args)
-    {
-        $i = $this->getNextId();
-        switch ($t) {
-        case 'text':
-            return new SurveyText($i, $args);
-        case 'textarea':
-            return new SurveyTextarea($i, $args);
-        case 'num':
-            return new SurveyNum($i, $args);
-        case 'radio':
-            return new SurveyRadio($i, $args);
-        case 'checkbox':
-            return new SurveyCheckbox($i, $args);
-        case 'personal':
-            return new SurveyPersonal($i, $args);
-        default:
-            return null;
-        }
-    }
-    // }}}
-
-    // {{{ methods needing public access
-    public function addChildNested($i, $c)
-    {
-        return !$this->isValid() && parent::addChildNested($i, $c);
-    }
-
-    public function addChildAfter($i, $c)
-    {
-        return !$this->isValid() && parent::addChildAfter($i, $c);
-    }
-
-    public function delChild($i)
-    {
-        return !$this->isValid() && parent::delChild($i);
-    }
-
-    public function edit($i, $a)
-    {
-        return (!$this->isValid() || $this->getId() == $i) && parent::edit($i, $a);
-    }
-
-    public function toArray()
-    {
-        return parent::toArray();
-    }
-
-    public function searchToArray($i)
-    {
-        return parent::searchToArray($i);
-    }
-    // }}}
-
-    // {{{ function storeArray()
-    public function storeArray()
-    {
-        $rArr = parent::storeArray();
-        $rArr['beginning'] = $this->beginning;
-        $rArr['end']       = $this->end;
-        $rArr['promos']    = $this->promos;
-        $rArr['valid']     = $this->valid;
-        return $rArr;
-    }
-    // }}}
-
-    // {{{ function checkSyntax()
-    private static $errorMessages = array(
-        "dateformat"  => "la date de fin de sondage est mal formatt&#233;e : elle doit respecter la syntaxe dd/mm/aaaa",
-        "datepassed"  => "la date de fin de sondage est d&#233;j&#224; d&#233;pass&#233;e : vous devez pr&#233;ciser une date future",
-        "promoformat" => "les restrictions &#224; certaines promotions sont mal formatt&#233;es"
-    );
-
-    public function checkSyntax()
-    {
-        $rArr = parent::checkSyntax();
-        if (!preg_match('#^\d{4}-\d{2}-\d{2}$#', $this->end)) {
-            $rArr[] = array('question' => $this->getId(), 'error' => self::$errorMessages["dateformat"]);
-        } else {
-            if (strtotime($this->end) - time() <= 0) {
-                $rArr[] = array('question' => $this->getId(), 'error' => self::$errorMessages["datepassed"]);
-            }
-        }
-        if ($this->promos != '' && !preg_match('#^(\d{4}-?|(\d{4})?-\d{4})(,(\d{4}-?|(\d{4})?-\d{4}))*$#', $this->promos)) {
-            $rArr[] = array('question' => $this->getId(), 'error' => self::$errorMessages["promoformat"]);
-        }
-        return (empty($rArr))? null : $rArr;
-    }
+    // {{{ function resultArray() : statistics on the results of the survey
+    //abstract protected function resultArray($sid, $where);
     // }}}
 }
 // }}}
@@ -570,7 +455,7 @@ class SurveyRoot extends SurveyTreeable
 // {{{ abstract class SurveySimple extends SurveyQuestion : "opened" questions
 abstract class SurveySimple extends SurveyQuestion
 {
-    protected function checkAnswer($ans)
+    public function checkAnswer($ans)
     {
         return $ans;
     }
@@ -579,7 +464,7 @@ abstract class SurveySimple extends SurveyQuestion
 // {{{ class SurveyText extends SurveySimple : simple text field, allowing a few words
 class SurveyText extends SurveySimple
 {
-    protected function getQuestionType()
+    public function getQuestionType()
     {
         return "text";
     }
@@ -589,7 +474,7 @@ class SurveyText extends SurveySimple
 // {{{ class SurveyTextarea extends SurveySimple : textarea field, allowing longer comments
 class SurveyTextarea extends SurveySimple
 {
-    protected function getQuestionType()
+    public function getQuestionType()
     {
         return "textarea";
     }
@@ -599,7 +484,7 @@ class SurveyTextarea extends SurveySimple
 // {{{ class SurveyNum extends SurveySimple : allows numerical answers
 class SurveyNum extends SurveySimple
 {
-    protected function checkAnswer($ans)
+    public function checkAnswer($ans)
     {
         return intval($ans);
     }
@@ -613,19 +498,19 @@ class SurveyNum extends SurveySimple
 // }}}
 
 // {{{ abstract class SurveyList extends SurveyTreeable : restricted questions that allows only a list of possible answers
-abstract class SurveyList extends SurveyTreeable
+abstract class SurveyList extends SurveyQuestion
 {
-    private $choices;
+    protected $choices;
 
-    protected function update($args)
+    public function update($args)
     {
         parent::update($args);
         $this->choices = explode('|', $args['options']);
     }
 
-    protected function storeArray()
+    public function toArray()
     {
-        $rArr = parent::storeArray();
+        $rArr = parent::toArray();
         $rArr['choices'] = $this->choices;
         $rArr['options'] = implode('|', $this->choices);
         return $rArr;
@@ -636,9 +521,9 @@ abstract class SurveyList extends SurveyTreeable
 // {{{ class SurveyRadio extends SurveyList : radio question, allows one answer among the list offered
 class SurveyRadio extends SurveyList
 {
-    protected function checkAnswer($ans)
+    public function checkAnswer($ans)
     {
-        return (in_array($ans, $this->choices)) ? $ans : "";
+        return (array_key_exists($ans, $this->choices)) ? $ans : "";
     }
 
     protected function getQuestionType()
@@ -651,15 +536,14 @@ class SurveyRadio extends SurveyList
 // {{{ class SurveyCheckbox extends SurveyList : checkbox question, allows any number of answers among the list offered
 class SurveyCheckbox extends SurveyList
 {
-    protected function checkAnswer($ans)
+    public function checkAnswer($ans)
     {
-        $rep = "";
-        foreach ($this->choices as $key => $value) {
-            if (array_key_exists($key,$v[$id]) && $v[$id][$key]) {
-                $rep .= "|" . $key;
+        $rep = "|";
+        foreach ($ans as $a) {
+            if (array_key_exists($a,$this->choices)) {
+                $rep .= $a . "|";
             }
         }
-        $rep = (strlen($rep) >= 4) ? substr($rep, 4) : "";
         return $rep;
     }
 
@@ -672,11 +556,13 @@ class SurveyCheckbox extends SurveyList
 // }}}
 
 // {{{ class SurveyPersonal extends SurveyQuestion : allows easy and verified access to user's personal data (promotion, name...)
+// actually this type of question should be suppressed (non anonymous surveys are possible with survey modes)
+// and anyway it is not finished (checkAnswer implementation) : currently it does not store anything when a user votes
 class SurveyPersonal extends SurveyQuestion
 {
     private $perm;
 
-    protected function update($args)
+    public function update($args)
     {
         $args['question'] = "Informations personnelles";
         parent::update($args);
@@ -684,7 +570,7 @@ class SurveyPersonal extends SurveyQuestion
         $this->perm['name'] = isset($args['name'])? 1 : 0;
     }
 
-    protected function checkAnswer($ans)
+    public function checkAnswer($ans)
     {
         if (intval($ans) == 1) {
             // requete mysql qvb
@@ -699,9 +585,9 @@ class SurveyPersonal extends SurveyQuestion
         return "personal";
     }
 
-    protected function storeArray()
+    public function toArray()
     {
-        $a = parent::storeArray();
+        $a = parent::toArray();
         $a['promo'] = $this->perm['promo'];
         $a['name']  = $this->perm['name'];
         return $a;
