@@ -46,6 +46,9 @@
 {if $survey_warning neq ''}
   <br/>{$survey_warning}
 {/if}
+{if $survey_resultmode}
+  <br/>{$survey.votes} personnes ont r&#233;pondu &#224; ce sondage.
+{/if}
 <br/>
 {if $survey_editmode}
   {assign var="survey_rooteditmode" value=true}

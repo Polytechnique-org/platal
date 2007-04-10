@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-<h1>Sondage : erreur</h1>
+<h1>Sondages : erreur</h1>
 
 {if !is_null($survey_errors) && is_array($survey_errors)}
 <table class="bicol">

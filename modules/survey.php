@@ -27,6 +27,7 @@ class SurveyModule extends PLModule
         return array(
             'survey'              => $this->make_hook('index', AUTH_PUBLIC),
             'survey/vote'         => $this->make_hook('vote', AUTH_PUBLIC),
+            'survey/result'       => $this->make_hook('result', AUTH_PUBLIC),
             'survey/edit'         => $this->make_hook('edit', AUTH_COOKIE),
             'survey/ajax'         => $this->make_hook('ajax', AUTH_COOKIE),
             'survey/admin'        => $this->make_hook('admin', AUTH_MDP, 'admin'),
@@ -48,7 +49,7 @@ class SurveyModule extends PLModule
     }
     // }}}
 
-    // {{{ function handler_vote()
+    // {{{ function handler_vote() : handles the vote to a survey
     function handler_vote(&$page, $id = -1)
     {
         if (Post::has('survey_cancel')) { // if the user cancels, returns to index
@@ -65,15 +66,8 @@ class SurveyModule extends PLModule
         } elseif ($survey->isEnded()) {
             return $this->show_error($page, "Le sondage ".$survey->getTitle()." est termin&#233;.");
         }
-        if (!$survey->isMode(Survey::MODE_ALL)) { // if the survey is reserved to alumni
-            global $globals;
-            if (!call_user_func(array($globals->session, 'doAuth'))) { // checks authentification
-                global $platal;
-                $platal->force_login($page);
-            }
-            if ($survey->isMode(Survey::MODE_XIDENT) && !$survey->checkPromo(S::v('promo'))) { // checks promotion
-                return $this->show_error($page, "Tu n'as pas acc&#232;s &#224; ce sondage car il est r&#233;serv&#233; &#224; d'autres promotions.");
-            }
+        if (!$this->check_surveyPerms($page, $survey)) {
+            return;
         }
         if (Post::has('survey_submit')) { // checks if the survey has already been filled in
             $uid = 0;
@@ -94,6 +88,28 @@ class SurveyModule extends PLModule
             //$page->assign('survey_id', $id);
             $this->show_survey($page, $survey);
         }
+    }
+    // }}}
+
+    // {{{ function handler_result() : show the results of the votes to a survey
+    function handler_result($page, $id = -1, $qid = 'all')
+    {
+        $id = intval($id);
+        if ($id == -1) {
+            return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", '');
+        }
+        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $survey = Survey::retrieveSurvey($id); // retrieves the survey object structure
+        if ($survey == null || !$survey->isValid()) {
+            return $this->show_error($page, "Sondage ".$id." introuvable.", '');
+        } elseif (!$survey->isEnded()) {
+            return $this->show_error($page, "Le sondage ".$survey->getTitle()." n'est pas encore termin&#233;.");
+        }
+        if (!$this->check_surveyPerms($page, $survey)) {
+            return;
+        }
+        $page->assign('survey_resultmode', true);
+        $this->show_survey($page, $survey);
     }
     // }}}
 
@@ -345,6 +361,25 @@ class SurveyModule extends PLModule
         if ($survey_id != -1) {
             $_SESSION['survey_id'] = $survey_id;
         }
+    }
+    // }}}
+
+    // {{{ function check_surveyPerms() : checks the particular surveys access permissions
+    function check_surveyPerms(&$page, $survey)
+    {
+        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        if (!$survey->isMode(Survey::MODE_ALL)) { // if the survey is reserved to alumni
+            global $globals;
+            if (!call_user_func(array($globals->session, 'doAuth'))) { // checks authentification
+                global $platal;
+                $platal->force_login($page);
+            }
+            if (!$survey->checkPromo(S::v('promo'))) { // checks promotion
+                $this->show_error($page, "Tu n'as pas acc&#232;s &#224; ce sondage car il est r&#233;serv&#233; &#224; d'autres promotions.");
+                return false;
+            }
+        }
+        return true;
     }
     // }}}
 

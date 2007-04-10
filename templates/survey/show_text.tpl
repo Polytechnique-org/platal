@@ -20,6 +20,15 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if $survey_resultmode}
+  Quelques r&#233;ponses donn&#233;es par les personnes sond&#233;es :
+  <ul>
+  {iterate item=sresult from=$squestion.result}
+    <li>{$sresult.answer}</li>
+  {/iterate}
+  </ul>
+{else}
   <input type="text" name="survey{$survey.id}[{$squestion.id}]" value="" size="50" maxlength="200" {if !$survey_votemode}disabled="disabled"{/if}/>
+{/if}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-<h1>Sondage : confirmation</h1>
+<h1>Sondages : confirmation</h1>
 
 <form action="{$survey_formaction}" method="post">
   {if is_array($survey_formhidden)}

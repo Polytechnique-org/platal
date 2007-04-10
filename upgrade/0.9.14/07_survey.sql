@@ -4,7 +4,7 @@ CREATE TABLE `survey_answers` (
   `question_id` smallint(3) unsigned NOT NULL,
   `answer` text NOT NULL,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `vote` (`vote_id`,`question_id`)
+  KEY `vote` (`vote_id`,`question_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -27,6 +27,7 @@ CREATE TABLE `survey_votes` (
   `survey_id` smallint(4) unsigned NOT NULL,
   `user_id` smallint(5) unsigned NOT NULL,
   PRIMARY KEY  (`id`),
+  KEY `voter` (`survey_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 # vim: set syntax=mysql:

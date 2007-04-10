@@ -126,17 +126,17 @@ class Survey
     }
     // }}}
 
-    // {{{ function toArray() : converts a question (or the whole survey) to array
+    // {{{ function toArray() : converts a question (or the whole survey) to array, with results if the survey is ended
     public function toArray($i = 'all')
     {
-        if ($i != 'all' && $i != 'root') {
+        if ($i != 'all' && $i != 'root') { // if a specific question is requested, then just returns this question converted to array
             $i = intval($i);
             if (array_key_exists($i, $this->questions)) {
                 return $this->questions[$i]->toArray();
             } else {
                 return null;
             }
-        } else {
+        } else { // else returns the root converted to array in any case
             $a = array('title'       => $this->title,
                        'description' => $this->description,
                        'end'         => $this->end,
@@ -147,11 +147,24 @@ class Survey
             if ($this->id != -1) {
                 $a['id'] = $this->id;
             }
-            if ($i == 'all' && count($this->questions) > 0) {
+            if ($this->isEnded()) { // if the survey is ended, then adds here the number of votes
+                $sql = 'SELECT COUNT(id)
+                          FROM survey_votes
+                         WHERE survey_id={?};';
+                $tot = XDB::query($sql, $this->id);
+                $a['votes'] = $tot->fetchOneCell();
+            }
+            if ($i == 'all' && count($this->questions) > 0) { // if the whole survey is requested, then returns all the questions converted to array
                 $qArr = array();
                 for ($k = 0; $k < count($this->questions); $k++) {
                     $q = $this->questions[$k]->toArray();
                     $q['id'] = $k;
+                    if ($this->isEnded()) { // if the survey is ended, then adds here the results of this question
+                        $sql = $this->questions[$k]->buildResultRequest();
+                        if ($sql != '') {
+                            $q['result'] = XDB::iterator($sql, $this->id, $k);
+                        }
+                    }
                     $qArr[$k] = $q;
                 }
                 $a['questions'] = $qArr;
@@ -246,7 +259,7 @@ class Survey
     }
     // }}}
 
-    // {{{ functions that manipulates surveys in database
+    // {{{ functions that manipulate surveys in database
     // {{{ static function retrieveList() : gets the list of available survey (current, old and not validated surveys)
     public static function retrieveList($type, $tpl = true)
     {
@@ -356,11 +369,13 @@ class Survey
         $vid = XDB::insertId();
         for ($i = 0; $i < count($this->questions); $i++) {
             $ans = $this->questions[$i]->checkAnswer($args[$i]);
-            if ($ans != "") {
-                XDB::execute('INSERT INTO survey_answers
-                                      SET vote_id     = {?},
-                                          question_id = {?},
-                                          answer      = {?}', $vid, $i, $ans);
+            if (!is_null($ans) && is_array($ans)) {
+                foreach ($ans as $a) {
+                    XDB::execute('INSERT INTO survey_answers
+                                          SET vote_id     = {?},
+                                              question_id = {?},
+                                              answer      = {?}', $vid, $i, $a);
+                }
             }
         }
     }
@@ -442,24 +457,40 @@ abstract class SurveyQuestion
     // {{{ function checkAnswer : returns a correctly formatted answer (or nothing empty string if error)
     public function checkAnswer($ans)
     {
-        return "";
+        return null;
     }
     // }}}
 
-    // {{{ function resultArray() : statistics on the results of the survey
-    //abstract protected function resultArray($sid, $where);
+    // {{{ function buildResultRequest() : statistics on the results of the survey
+    public function buildResultRequest()
+    {
+        return '';
+    }
     // }}}
 }
 // }}}
 
-// {{{ abstract class SurveySimple extends SurveyQuestion : "opened" questions
+// {{{ abstract class SurveySimple and its derived classes : "opended" questions
+// {{{ abstract class SurveySimple extends SurveyQuestion
 abstract class SurveySimple extends SurveyQuestion
 {
     public function checkAnswer($ans)
     {
-        return $ans;
+        return array($ans);
+    }
+
+    public function buildResultRequest()
+    {
+        $sql = 'SELECT answer
+                  FROM survey_answers
+                 WHERE vote_id IN (SELECT id FROM survey_votes WHERE survey_id={?})
+                   AND question_id={?}
+              ORDER BY RAND()
+                 LIMIT 5;';
+        return $sql;
     }
 }
+// }}}
 
 // {{{ class SurveyText extends SurveySimple : simple text field, allowing a few words
 class SurveyText extends SurveySimple
@@ -486,7 +517,7 @@ class SurveyNum extends SurveySimple
 {
     public function checkAnswer($ans)
     {
-        return intval($ans);
+        return array(intval($ans));
     }
 
     protected function getQuestionType()
@@ -497,7 +528,8 @@ class SurveyNum extends SurveySimple
 // }}}
 // }}}
 
-// {{{ abstract class SurveyList extends SurveyTreeable : restricted questions that allows only a list of possible answers
+// {{{ abstract class SurveyList and its derived classes : restricted questions that allows only a list of possible answers
+// {{{ abstract class SurveyList extends SurveyQuestion
 abstract class SurveyList extends SurveyQuestion
 {
     protected $choices;
@@ -516,14 +548,24 @@ abstract class SurveyList extends SurveyQuestion
         return $rArr;
     }
 
+    public function buildResultRequest()
+    {
+        $sql = 'SELECT answer, COUNT(id) AS count
+                  FROM survey_answers
+                 WHERE vote_id IN (SELECT id FROM survey_votes WHERE survey_id={?})
+                   AND question_id={?}
+              GROUP BY answer ASC';
+        return $sql;
+    }
 }
+// }}}
 
 // {{{ class SurveyRadio extends SurveyList : radio question, allows one answer among the list offered
 class SurveyRadio extends SurveyList
 {
     public function checkAnswer($ans)
     {
-        return (array_key_exists($ans, $this->choices)) ? $ans : "";
+        return (array_key_exists($ans, $this->choices))? array($ans) : null;
     }
 
     protected function getQuestionType()
@@ -538,13 +580,14 @@ class SurveyCheckbox extends SurveyList
 {
     public function checkAnswer($ans)
     {
-        $rep = "|";
+        $rep = array();
         foreach ($ans as $a) {
-            if (array_key_exists($a,$this->choices)) {
-                $rep .= $a . "|";
+            $a = intval($a);
+            if (array_key_exists($a, $this->choices)) {
+                $rep[] = $a;
             }
         }
-        return $rep;
+        return (count($rep) == 0)? null : $rep;
     }
 
     protected function getQuestionType()
@@ -574,9 +617,9 @@ class SurveyPersonal extends SurveyQuestion
     {
         if (intval($ans) == 1) {
             // requete mysql qvb
-            return "";
+            return null;
         } else {
-            return "";
+            return null;
         }
     }
 
