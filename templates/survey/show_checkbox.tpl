@@ -20,8 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{foreach from=$survey.choices item=choice}
-  <input type="checkbox" name="survey{$survey_id}_{$survey.id}_{$choices}" value="1" id="{$choice}" {if !$survey_votemode}disabled="disabled"{/if}/><label for="{$choice}">{$choice}</label>
-{/foreach}
+{assign var=sid value=$survey.id}
+{assign var=sqid value=$squestion.id}
+{if $survey_votemode}
+  {html_checkboxes name="survey$sid[$sqid]" options=$squestion.choices separator='<br/>'}
+{else}
+  {html_checkboxes name="survey$sid[$sqid]" options=$squestion.choices separator='<br/>' disabled='disabled'}
+{/if}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

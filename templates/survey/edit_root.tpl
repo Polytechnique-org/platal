@@ -22,18 +22,23 @@
 
     <tr>
       <td class="titre">Titre</td>
-      <td><input type="text" name="survey_question[question]" size="50" maxlength="200" value="{$survey_current.question}"/></td>
+      <td><input type="text" name="survey_question[title]" size="50" maxlength="200" value="{$survey_current.title}"/></td>
     </tr>
     <tr>
       <td class="titre">Commentaire</td>
-      <td><textarea name="survey_question[comment]" rows="5" cols="60">{$survey_current.comment}</textarea></td>
+      <td><textarea name="survey_question[description]" rows="5" cols="60">{$survey_current.description}</textarea></td>
     </tr>
     <tr>
       <td class="titre">Date de fin</td>
       <td><input type="text" name="survey_question[end]" size="50" maxlength="200" value="{if $survey_current.end eq '#'}#{else}{$survey_current.end|date_format:"%d/%m/%Y"}{/if}"/></td>
     </tr>
     <tr>
-      <td class="titre">Promotions</td>
+      <td class="titre">Type de sondage</td>
+      <td>
+        {html_radios name="survey_question[mode]" options=$survey_modes selected=$survey_current.mode separator='<br/>'}
+      </td>
+    <tr>
+      <td class="titre">Promotions (si restreint aux polytechniciens)</td>
       <td><input type="text" name="survey_question[promos]" size="50" maxlength="200" value="{$survey_current.promos}"/></td>
     </tr>
 

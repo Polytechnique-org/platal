@@ -20,6 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-  <input type="text" name="survey{$survey_id}_{$survey.id}" value="" size="50" maxlength="200" {if !$survey_votemode}disabled="disabled"{/if}/>
+  <input type="text" name="survey{$survey.id}[{$squestion.id}]" value="" size="50" maxlength="200" {if !$survey_votemode}disabled="disabled"{/if}/>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

@@ -29,11 +29,11 @@
     </th>
   </tr>
   {iterate item=s from=$survey_waiting}
-  <tr class="{cycle values="impair,pair"}">
+  <tr class="{cycle name=ws_cycle values="impair,pair"}">
     <td class="half">
       &bull;
-      <a href="survey/admin/{$s.survey_id}">
-        {$s.title} ({$s.end|date_format:"%x"})
+      <a href="survey/admin/{$s.id}">
+        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
       </a>
     </td>
   </tr>
@@ -55,11 +55,11 @@
     </th>
   </tr>
   {iterate item=s from=$survey_current}
-  <tr class="{cycle values="impair,pair"}">
+  <tr class="{cycle name=cs_cycle values="impair,pair"}">
     <td class="half">
       &bull;
-      <a href="survey/admin/{$s.survey_id}">
-        {$s.title} ({$s.end|date_format:"%x"})
+      <a href="survey/admin/{$s.id}">
+        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
       </a>
     </td>
   </tr>
@@ -81,11 +81,11 @@
     </th>
   </tr>
   {iterate item=s from=$survey_old}
-  <tr class="{cycle values="impair,pair"}">
+  <tr class="{cycle name=os_cycle values="impair,pair"}">
     <td class="half">
       &bull;
-      <a href="survey/admin/{$s.survey_id}">
-        {$s.title} ({$s.end|date_format:"%x"})
+      <a href="survey/admin/{$s.id}">
+        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
       </a>
     </td>
   </tr>

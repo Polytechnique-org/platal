@@ -36,7 +36,7 @@
 {elseif $survey_message neq ""}
   {$survey_message}
 {else}
-Une erreur inconnue est survenue dans l'&#233;dition de ce sondage. N'hésite pas &#226; <a href='send_bug'>signaler ce bug</a> si il persiste.
+Une erreur inconnue est survenue dans l'&#233;dition de ce sondage. N'hésite pas &#224; <a href='send_bug'>signaler ce bug</a> si il persiste.
 {/if}
 <br/>
 <a href="{$survey_link}">Retour</a>

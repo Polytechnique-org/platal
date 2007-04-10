@@ -32,8 +32,8 @@
   <tr class="{cycle values="impair,pair"}">
     <td class="half">
       &bull;
-      <a href="survey/show/{$s.survey_id}">
-        {$s.title} ({$s.end|date_format:"%x"})
+      <a href="survey/vote/{$s.id}">
+        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
       </a>
     </td>
   </tr>
@@ -58,8 +58,8 @@
   <tr class="{cycle values="impair,pair"}">
     <td class="half">
       &bull;
-      <a href="survey/show/{$s.survey_id}">
-        {$s.title} ({$s.end|date_format:"%x"})
+      <a href="survey/result/{$s.id}">
+        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
       </a>
     </td>
   </tr>

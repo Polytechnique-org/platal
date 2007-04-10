@@ -20,29 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div>
-  <h2>{$survey.question}</h2>
-{if $survey.comment != ''}
-  {$survey.comment}<br/>
+  <h2>{$squestion.question}</h2>
+{if $squestion.comment != ''}
+  {$squestion.comment}<br/>
 {/if}
-{assign var='survey_type' value=$survey.type}
-{include file="survey/show_$survey_type.tpl"}
-  <br/>
-{if $survey_editmode}
-  <a href='./survey/edit/question/{$survey.id}'>Modifier cette question</a> |
-  <a href='./survey/edit/del/{$survey.id}'>Supprimer cette question</a> |
-{/if}
-{if is_array($survey.children)}
-  {if $survey_editmode}<a href='./survey/edit/nested/{$survey.id}'>Ajouter une question imbriqu&#233;e</a>{/if}
-  <div style="padding-left:20px">
-  {foreach from=$survey.children item=child}
-    {include file='survey/show_question.tpl' survey=$child recursive=true}
-  {/foreach}
-  </div>
-{/if}
-{if $survey_editmode}
-  <a href='./survey/edit/after/{$survey.id}'>Ajouter une question apr&#232;s</a>
-{/if}
-</div>
+{assign var='squestion_type' value=$squestion.type}
+{include file="survey/show_$squestion_type.tpl"}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

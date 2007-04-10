@@ -21,11 +21,13 @@
 {**************************************************************************}
 
 
-{if $survey.promo}
-  <input type="checkbox" name="survey{$survey_id}_{$survey.id}_promo" value="1" id="survey{$survey_id}_{$survey.id}_promo" {if !$survey_votemode}disabled="disabled"{/if}/><label for="survey{$survey_id}_{$survey.id}_promo">Je veux indiquer ma promotion</label><br/>
+{if $squestion.promo}
+  <input type="checkbox" name="survey{$survey.id}[{$squestion.id}][promo]" value="1" id="survey{$survey.id}_{$squestion.id}_promo" {if !$survey_votemode}disabled="disabled"{/if}/>
+  <label for="survey{$survey.id}_{$squestion.id}_promo">Je veux indiquer ma promotion</label><br/>
 {/if}
-{if $survey.name}
-  <input type="checkbox" name="survey{$survey_id}_{$survey.id}_name" value="1" id="survey{$survey_id}_{$survey.id}_name" {if !$survey_votemode}disabled="disabled"{/if}/><label for="survey{$survey_id}_{$survey.id}_name">Je veux indiquer mon nom et mon pr&#233;nom</label><br/>
+{if $squestion.name}
+  <input type="checkbox" name="survey{$survey.id}[{$squestion.id}][name]" value="1" id="survey{$survey.id}_{$squestion.id}_name" {if !$survey_votemode}disabled="disabled"{/if}/>
+  <label for="survey{$survey.id}_{$squestion.id}_name">Je veux indiquer mon nom et mon pr&#233;nom</label><br/>
 {/if}
   <strong>Attention, cocher cette(ces) case(s) d&#233;truit totalement ou en partie l'anonymat de ta r&#233;ponse.</strong>
 

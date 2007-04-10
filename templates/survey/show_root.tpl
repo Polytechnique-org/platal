@@ -20,9 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Sondage : {$survey.question}</h1>
-{if $survey.comment != ''}
-  {$survey.comment}
+<h1>Sondage : {$survey.title}</h1>
+<form action="./survey/vote{if $survey_votemode}/{$survey.id}{/if}" method='post'>
+{if $survey.description != ''}
+  {$survey.description}
 {/if}
 <br/>Fin du sondage :
 {if $survey.end eq "#"}
@@ -30,13 +31,20 @@
 {else}
   {$survey.end|date_format:"%x"}
 {/if}
-<br/>R&#233;serv&#233; aux promotions :
-{if $survey.promos eq "#"}
-  erreur
-{elseif $survey.promos eq ""}
-  aucune restriction
-{else}
-  {$survey.promos}
+<br/>Type de sondage :
+{$survey_modes[$survey.mode]}
+{if $survey.mode != Survey::MODE_ALL}
+  <br/>R&#233;serv&#233; aux promotions :
+  {if $survey.promos eq "#"}
+    erreur
+  {elseif $survey.promos eq ""}
+    aucune restriction
+  {else}
+    {$survey.promos}
+  {/if}
+{/if}
+{if $survey_warning neq ''}
+  <br/>{$survey_warning}
 {/if}
 <br/>
 {if $survey_editmode}
@@ -45,12 +53,17 @@
     {assign var="survey_editmode" value=false}
   {/if}
 {/if}
-{if $survey_rooteditmode}<a href='./survey/edit/question/{$survey.id}'>Modifier la racine</a>{/if}
-{if $survey_editmode} | <a href='./survey/edit/nested/{$survey.id}'>Ajouter une question au début</a>{/if}
-{if is_array($survey.children)}
-  {foreach from=$survey.children item=child}
-    {include file='survey/show_question.tpl' survey=$child recursive=true}
-  {foreachelse}
+{if $survey_rooteditmode}<a href='./survey/edit/question/root'>Modifier la racine</a>{/if}
+{if $survey_editmode} | <a href='./survey/edit/add/0'>Ajouter une question au d&#233;but</a>{/if}
+{if is_array($survey.questions)}
+  {foreach from=$survey.questions item=squestion}
+    {include file='survey/show_question.tpl' squestion=$squestion}
+    {if $survey_editmode}
+      <br/>
+      <a href='./survey/edit/question/{$squestion.id}'>Modifier cette question</a> |
+      <a href='./survey/edit/del/{$squestion.id}'>Supprimer cette question</a> |
+      <a href='./survey/edit/add/{$squestion.id+1}'>Ajouter une question apr&#232;s</a>
+    {/if}
     <br/>
   {/foreach}
 {/if}
@@ -60,10 +73,16 @@
 <a href='./survey/edit/cancel'>Annuler {if $survey_updatemode}les modifications{else}totalement la cr&#233;ation de ce sondage{/if}</a>
 {elseif $survey_adminmode}
 <br/>
-{if !$survey.valid}<a href="./survey/admin/valid/{$survey_id}">Valider ce sondage</a> | {/if}
-<a href="./survey/admin/edit/{$survey_id}">Modifier ce sondage</a> |
-<a href="./survey/admin/del/{$survey_id}">Supprimer ce sondage</a> |
+{if !$survey.valid}<a href="./survey/admin/valid/{$survey.id}">Valider ce sondage</a> | {/if}
+<a href="./survey/admin/edit/{$survey.id}">Modifier ce sondage</a> |
+<a href="./survey/admin/del/{$survey.id}">Supprimer ce sondage</a> |
 <a href="./survey/admin">Retour</a>
+{elseif $survey_votemode}
+<input type='submit' name='survey_submit' value='Voter'/>
+<input type='submit' name='survey_cancel' value='Annuler'/>
+{else}
+<a href="./survey">Retour</a>
 {/if}
+</form>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
