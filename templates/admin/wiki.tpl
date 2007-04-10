@@ -68,7 +68,7 @@
 {/literal}
 
 <p class="center">
-  {icon name=magnifier"} <a href="Site/AllRecentChanges">Voir les changements récents</a>
+   {icon name=magnifier"} <a href="Site/AllRecentChanges">Voir les changements récents</a>
 </p>
 
 <form action="admin/wiki/update" method="post" id="update_pages">

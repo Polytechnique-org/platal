@@ -898,6 +898,10 @@ class AdminModule extends PLModule
     {
         require_once 'wiki.inc.php';
 
+        if (S::v('core_rss_hash')) {
+           $page->setRssLink('Changement Récents',
+                             '/Site/AllRecentChanges?action=rss&user=' . S::v('forlife') . '&hash=' . S::v('core_rss_hash'));
+        }
         // update wiki perms
         if ($action == 'update') {
             $perms_read = Post::v('read');

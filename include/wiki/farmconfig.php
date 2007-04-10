@@ -18,7 +18,7 @@ $InterMapFiles[]  = $globals->spoolroot.'/configs/pmwiki.intermap.txt';
 $Skin             = 'empty';
 
 @include_once("$FarmD/cookbook/e-protect.php");
-include_once($FarmD.'/scripts/xlpage-utf-8.php');
+include_once($FarmD.'/scripts/xlpage-utf-8.php'); 
 
 if ($action == 'rss'  || $action == 'atom' || $action == 'rdf'  || $action == 'dc') {
     $FmtPV['$MarkupExcerpt'] = '$page["text"]';

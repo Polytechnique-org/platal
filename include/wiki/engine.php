@@ -33,7 +33,7 @@ $feed  = false;
 // Check user perms
 switch (Env::v('action')) {
   case 'rss': case 'atom': case 'sdf': case 'dc':
-    wiki_apply_feed_perms($perms['0']);  
+    wiki_apply_feed_perms($perms[0]);
     $feed = true;
   case '': case 'search': 
     break;

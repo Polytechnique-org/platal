@@ -122,10 +122,7 @@ function wiki_apply_feed_perms($perm)
 
     require_once 'rss.inc.php';
     $uid = init_rss(null, Env::v('user'), Env::v('hash'));
-    if (!$uid) {
-        exit;
-    }
-    $res = XDB::query('SELECT user_id, IF (nom_usage <> \'\', nom_usage, nom) AS nom, prenom, perms
+    $res = XDB::query('SELECT user_id AS uid, IF (nom_usage <> \'\', nom_usage, nom) AS nom, prenom, perms
                          FROM auth_user_md5
                         WHERE user_id = {?}', $uid);
     if (!$res->numRows()) {
@@ -133,7 +130,9 @@ function wiki_apply_feed_perms($perm)
     }
     $table = $res->fetchOneAssoc();
     $_SESSION = array_merge($_SESSION, $table, array('forlife' => Env::v('user')));
-    if ($perm == 'logged' || S::has_perms()) {
+    require_once 'xorg/session.inc.php';
+    $_SESSION['perms'] =& XorgSession::make_perms($_SESSION['perms']);
+    if ($perm == 'logged' || $_SESSION['perms']->hasFlag('admin')) {
         return;
     }
     exit;
