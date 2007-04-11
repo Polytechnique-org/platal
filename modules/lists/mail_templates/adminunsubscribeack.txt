@@ -1,0 +1,2 @@
+L'abonnement de %(member)s à %(listname)s a été résilié.
+
