@@ -30,6 +30,7 @@
 <div class="menu_item"><a href="search">Annuaire de l'X</a></div>
 <div class="menu_item"><a href="http://www.polytechnique.net/">Associations X</a></div>
 <div class="menu_item"><a href="http://www.manageurs.com/">Recrutement</a></div>
+<div class="menu_item"><a href="survey">Sondages</a></div>
 
 <div class="menu_title">Informations</div>
 <div class="menu_item"><a href="Equipe/APropos">A propos du site</a></div>
@@ -66,6 +67,7 @@
 <div class="menu_item"><a href="referent/search">Conseil Pro.</a></div>
 <div class="menu_item"><a href="Docs/Emploi">Carrières</a></div>
 <div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
+<div class="menu_item"><a href="survey">Sondages</a></div>
 
 <div class="menu_title">Informations</div>
 <div class="menu_item"><a href="Xorg/">Documentations</a></div>
