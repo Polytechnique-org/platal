@@ -98,6 +98,9 @@ class Survey
 
     public function checkPromo($promo)
     {
+        if ($this->promos == '') {
+            return true;
+        }
         $promos = explode('|', $this->promos);
         foreach ($promos as $p) {
             if ((preg_match('#^\d{4}$#', $p) && $p == $promo) ||
@@ -171,6 +174,70 @@ class Survey
             }
             return $a;
         }
+    }
+    // }}}
+
+    // {{{ function toCSV() : builds a CSV file containing all the results of the survey
+    public function toCSV($sep = ',', $enc = '"', $asep='|')
+    {
+        $nbq = count($this->questions);
+        //require_once dirname(__FILE__) . '/../../classes/varstream.php';
+        VarStream::init();
+        global $csv_output;
+        $csv_output = '';
+        $csv = fopen('var://csv_output', 'w');
+        $line = ($this->isMode(self::MODE_XIDENT))? array('id', 'Nom', 'Prenom', 'Promo') : array('id');
+        for ($qid = 0; $qid < $nbq; $qid++) {
+            $line[] = $this->questions[$qid]->getCSVColumn(); // the fist line contains the questions
+        }
+        $users = array();
+        if ($this->isMode(self::MODE_XIDENT)) { // if the mode is non anonymous
+            $sql = 'SELECT v.id AS vid, a.nom, a.prenom, a.promo
+                      FROM survey_votes AS v
+                INNER JOIN auth_user_md5 AS a
+                        ON a.user_id=v.user_id
+                     WHERE v.survey_id={?}
+                  ORDER BY vid ASC;';
+            $res = XDB::iterator($sql, $this->id); // retrieves all users data
+            for ($u = $res->next(); $u != null; $u = $res->next()) {
+                $users[$u['vid']] = array('nom' => $u['nom'], 'prenom' => $u['prenom'], 'promo' => $u['promo']);
+            }
+        }
+        $sql = 'SELECT v.id AS vid, a.question_id AS qid, a.answer
+                  FROM survey_votes AS v
+             LEFT JOIN survey_answers AS a
+                    ON a.vote_id=v.id
+                 WHERE v.survey_id={?}
+              ORDER BY vid ASC, qid ASC;';
+        $res = XDB::iterator($sql, $this->id); // retrieves all answers from database
+        $cur = $res->next();
+        $vid = -1;
+        $vid_ = 0;
+        $first = ($this->isMode(self::MODE_XIDENT))? 4 : 1;
+        while ($cur != null) {
+            if ($vid != $cur['vid']) { // if the vote id changes, then starts a new line
+                fputcsv($csv, $line, $sep, $enc); // stores the former line into $csv_output
+                $vid = $cur['vid'];
+                $line = array_fill(0, $first + $nbq, ''); // creates an array full of empty string
+                $line[0] = $vid_; // the first field is a 'clean' vote id (not the one stored in database)
+                if ($this->isMode(self::MODE_XIDENT)) { // if the mode is non anonymous
+                    if (array_key_exists($vid, $users) && is_array($users[$vid])) { // and if the user data can be found
+                        $line[1] = $users[$vid]['nom']; // adds the user data (in the first fields of the line)
+                        $line[2] = $users[$vid]['prenom'];
+                        $line[3] = $users[$vid]['promo'];
+                    }
+                }
+                $vid_++;
+            }
+            $fid = $first + $cur['qid']; // computes the field id
+            if ($line[$fid] != '') {  // if this field already contains something
+                $line[$fid] .= $asep; // then adds a separator before adding the new answer
+            }
+            $line[$fid] .= $cur['answer']; // adds the current answer to the correct field
+            $cur = $res->next(); // gets next answer
+        }
+        fputcsv($csv, $line, $sep, $enc); // stores the last line into $csv_output
+        return $csv_output;
     }
     // }}}
 
@@ -461,10 +528,15 @@ abstract class SurveyQuestion
     }
     // }}}
 
-    // {{{ function buildResultRequest() : statistics on the results of the survey
+    // {{{ functions regarding the results of a survey
     public function buildResultRequest()
     {
         return '';
+    }
+
+    public function getCSVColumn()
+    {
+        return $this->question;
     }
     // }}}
 }
@@ -556,6 +628,20 @@ abstract class SurveyList extends SurveyQuestion
                    AND question_id={?}
               GROUP BY answer ASC';
         return $sql;
+    }
+
+    public function getCSVColumn()
+    {
+        $r = parent::getCSVColumn();
+        if (empty($this->choices)) {
+            return $r;
+        }
+        $r .= ' [0 => '.$this->choices[0];
+        for ($k = 1; $k < count($this->choices); $k++) {
+            $r .= ', '.$k.' => '.$this->choices[$k];
+        }
+        $r .= ']';
+        return $r;
     }
 }
 // }}}

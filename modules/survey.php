@@ -92,7 +92,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function handler_result() : show the results of the votes to a survey
-    function handler_result($page, $id = -1, $qid = 'all')
+    function handler_result($page, $id = -1, $show = 'all')
     {
         $id = intval($id);
         if ($id == -1) {
@@ -108,8 +108,14 @@ class SurveyModule extends PLModule
         if (!$this->check_surveyPerms($page, $survey)) {
             return;
         }
-        $page->assign('survey_resultmode', true);
-        $this->show_survey($page, $survey);
+        if ($show == 'csv') {
+            header('Content-Type: text/csv; charset="UTF-8"');
+            echo $survey->toCSV();
+            exit;
+        } else {
+            $page->assign('survey_resultmode', true);
+            $this->show_survey($page, $survey);
+        }
     }
     // }}}
 

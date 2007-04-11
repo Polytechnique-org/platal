@@ -48,6 +48,7 @@
 {/if}
 {if $survey_resultmode}
   <br/>{$survey.votes} personnes ont r&#233;pondu &#224; ce sondage.
+  <br/>R&#233;cup&#233;rer <a href="./survey/result/{$survey.id}/csv">l'ensemble des r&#233;sultats</a> au format csv
 {/if}
 <br/>
 {if $survey_editmode}
