@@ -265,6 +265,7 @@ class Survey
     // {{{ questions manipulation functions
     public function addQuestion($i, $c)
     {
+        $i = intval($i);
         if ($this->valid || $i > count($this->questions)) {
             return false;
         } else {
@@ -275,6 +276,7 @@ class Survey
 
     public function delQuestion($i)
     {
+        $i = intval($i);
         if ($this->valid || !array_key_exists($i, $this->questions)) {
             return false;
         } else {

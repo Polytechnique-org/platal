@@ -131,6 +131,7 @@ class SurveyModule extends PLModule
             $page->assign('survey_old', Survey::retrieveList('o'));
             $page->assign('survey_modes', Survey::getModes(false));
         } else {
+            $id = intval($id);
             $survey = Survey::retrieveSurvey($id); // retrieves all survey object structure
             if ($survey == null) {
                 $this->show_error($page, "Sondage ".$id." introuvable.", 'admin');
@@ -147,6 +148,7 @@ class SurveyModule extends PLModule
         if ($id == -1) {
             return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'admin');
         }
+        $id = intval($id);
         require_once dirname(__FILE__).'/survey/survey.inc.php';
         $survey = Survey::retrieveSurvey($id); // retrieves the survey in database
         $this->clear_session(); // cleans session (in case there would have been a problem before)
@@ -166,6 +168,7 @@ class SurveyModule extends PLModule
         if ($id == -1) {
             return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'admin');
         }
+        $id = intval($id);
         require_once dirname(__FILE__).'/survey/survey.inc.php';
         $surveyInfo = Survey::retrieveSurveyInfo($id); // retrieves information about the survey (does not retrieve and unserialize the object structure)
         if ($surveyInfo == null) {
@@ -194,6 +197,7 @@ class SurveyModule extends PLModule
         if ($id == -1) {
             return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'admin');
         }
+        $id = intval($id);
         require_once dirname(__FILE__).'/survey/survey.inc.php';
         $surveyInfo = Survey::retrieveSurveyInfo($id); // retrieves information about the survey (does not retrieve and unserialize the object structure)
         if ($surveyInfo == null) {
