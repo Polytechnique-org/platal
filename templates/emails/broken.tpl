@@ -55,7 +55,7 @@ correspondant si tu veux que nous puissions te répondre.
     l'idéal étant de l'informer si possible que sa patte Polytechnique.org est cassée...!
   </p>
   <p>
-    Si tu connais une autre adresse email où le contacter, nous pouvez l'inviter à mettre à jour sa redirection
+    Si tu connais une autre adresse email où le contacter, nous pouvons l'inviter à mettre à jour sa redirection
     Polytechnique.org. Pour ceci il suffit que tu remplisses <a href="marketing/broken/{$x.forlife}">ce fomulaire</a>.
   </p>
 {elseif $email}
