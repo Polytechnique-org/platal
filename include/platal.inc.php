@@ -109,6 +109,13 @@ set_error_handler('pl_error_handler', E_ALL | E_STRICT);
 register_shutdown_function('pl_print_errors');
 // register_shutdown_function('pl_dump_env');
 
+/** Check if the string is utf8 
+ */
+function is_utf8($s)
+{
+    return @iconv('utf-8', 'utf-8', $s) == $s;
+}
+
 function pl_url($path, $query = null, $fragment = null)
 {
     global $platal;

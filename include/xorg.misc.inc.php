@@ -75,14 +75,6 @@ function isvalid_email_redirection($email)
         !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
 }
 
-/** Check if the string is utf8
- */
-function is_utf8($s)
-{
-    return @iconv('utf-8', 'utf-8', $s) == $s;
-}
-
-
 /** genere une chaine aleatoire de 22 caracteres ou moins
  * @param $len longueur souhaitée, 22 par défaut
  * @return la chaine aleatoire qui contient les caractères [A-Za-z0-9+/]

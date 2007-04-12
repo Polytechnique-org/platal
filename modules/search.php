@@ -118,7 +118,6 @@ class SearchModule extends PLModule
         $page->changeTpl('search/index.tpl');            
         $page->assign('xorg_title','Polytechnique.org - Annuaire');
         $page->assign('baseurl', $globals->baseurl);
-        $page->register_modifier('display_lines', 'display_lines');
     }
 
     function handler_advanced(&$page, $action = null, $subaction = null)
@@ -151,7 +150,6 @@ class SearchModule extends PLModule
         $page->changeTpl('search/index.tpl', $action == 'mini' ? SIMPLE : SKINNED);
         $page->addJsLink('ajax.js');
         $page->assign('public_directory',0);
-        $page->register_modifier('display_lines', 'display_lines');
     }
 
     function handler_autocomplete(&$page, $type = null)

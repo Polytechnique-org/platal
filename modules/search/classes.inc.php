@@ -69,24 +69,6 @@ else
     LEFT JOIN  emails         AS em  ON (em.uid = u.user_id AND em.flags = \'active\')';
 
 // }}}
-// {{{ function display_lines()
-
-/**
- * This function is a heuristic that approximatively tells
- * how many lines of output the contact list will use.
- */
-function display_lines($text)
-{
-    $n = 0;
-    $tokens = Array('<tr>', '<div class="nom">');
-    foreach ($tokens as $t) {
-        $i = -1;
-        while ( ($i = strpos($text,$t,$i+1))!==false) { $n++; }
-    }
-    return $n;
-}
-
-// }}}
 // {{{ class ThrowError
 
 /** handle errors for end-users queries
@@ -99,13 +81,12 @@ class ThrowError
     /** constuctor
      * @param  $explain string  the error (in natural language)
      */
-    function ThrowError($explain)
+    public function __construct($explain)
     {
         global $page, $globals;
         $page->changeTpl('search/index.tpl');
         $page->assign('xorg_title','Polytechnique.org - Annuaire');
         $page->assign('baseurl', $globals->baseurl);
-        $page->register_modifier('display_lines', 'display_lines');
         $page->trig('Erreur : '.$explain);
         $page->run();
     }

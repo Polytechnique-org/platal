@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-{if $formulaire==0 and !$xorg_errors|count}
+{if $formulaire eq 0 and !$xorg_errors|count}
   {if !$simple}
     {if !$advanced}
     {include file=search/quick.form.tpl show_js=1}
@@ -45,17 +45,6 @@
   {/if}
 
   {if $smarty.session.auth ge AUTH_COOKIE}
-  <br />
-  {if $smarty.capture.list|smarty:nodefaults|display_lines > 20}
-  <div class="noprint">
-  {if $advanced}
-  {include file=search/adv.links.tpl do_title=1}
-  {else}
-  {include file=search/quick.form.tpl}
-  {/if}
-  </div>
-  {/if}
- 
   <p class="noprint">
     <strong>{icon name=lightbulb title=Astruce}Astuce&nbsp;:</strong>
     {if $search_results_nb}
