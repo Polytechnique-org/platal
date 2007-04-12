@@ -29,6 +29,7 @@
     </th>
   </tr>
   {iterate item=s from=$survey_current}
+    {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
   <tr class="{cycle values="impair,pair"}">
     <td class="half">
       &bull;
@@ -37,7 +38,8 @@
       </a>
     </td>
   </tr>
-  {assign var="has_cs" value="true"}
+      {assign var="has_cs" value="true"}
+    {/if}
   {/iterate}
   {if !$has_cs}
   <tr>
@@ -55,6 +57,7 @@
     </th>
   </tr>
   {iterate item=s from=$survey_old}
+    {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
   <tr class="{cycle values="impair,pair"}">
     <td class="half">
       &bull;
@@ -63,7 +66,8 @@
       </a>
     </td>
   </tr>
-  {assign var="has_os" value="true"}
+      {assign var="has_os" value="true"}
+    {/if}
   {/iterate}
   {if !$has_os}
   <tr>

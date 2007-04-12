@@ -41,8 +41,7 @@ class Survey
                                   'textarea' => 'texte long',
                                   'num'      => 'num&#233;rique',
                                   'radio'    => 'radio',
-                                  'checkbox' => 'checkbox',
-                                  'personal' => 'informations personnelles');
+                                  'checkbox' => 'checkbox');
 
     public static function getTypes()
     {
@@ -82,8 +81,8 @@ class Survey
         } else {
             $this->end = (preg_match('#^\d{4}-\d{2}-\d{2}$#', $args['end']))? $args['end'] : '#';
         }
-        $this->mode    = $args['mode'];
-        if ($args['mode'] == 0) {
+        $this->mode    = (isset($args['mode']))? $args['mode'] : self::MODE_ALL;
+        if ($this->mode == self::MODE_ALL) {
             $args['promos'] = '';
         }
         $this->promos  = ($args['promos'] == '' || preg_match('#^(\d{4}-?|(\d{4})?-\d{4})(,(\d{4}-?|(\d{4})?-\d{4}))*$#', $args['promos']))? $args['promos'] : '#';
@@ -682,46 +681,6 @@ class SurveyCheckbox extends SurveyList
     }
 }
 // }}}
-// }}}
-
-// {{{ class SurveyPersonal extends SurveyQuestion : allows easy and verified access to user's personal data (promotion, name...)
-// actually this type of question should be suppressed (non anonymous surveys are possible with survey modes)
-// and anyway it is not finished (checkAnswer implementation) : currently it does not store anything when a user votes
-class SurveyPersonal extends SurveyQuestion
-{
-    private $perm;
-
-    public function update($args)
-    {
-        $args['question'] = "Informations personnelles";
-        parent::update($args);
-        $this->perm['promo'] = isset($args['promo'])? 1 : 0;
-        $this->perm['name'] = isset($args['name'])? 1 : 0;
-    }
-
-    public function checkAnswer($ans)
-    {
-        if (intval($ans) == 1) {
-            // requete mysql qvb
-            return null;
-        } else {
-            return null;
-        }
-    }
-
-    protected function getQuestionType()
-    {
-        return "personal";
-    }
-
-    public function toArray()
-    {
-        $a = parent::toArray();
-        $a['promo'] = $this->perm['promo'];
-        $a['name']  = $this->perm['name'];
-        return $a;
-    }
-}
 // }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
