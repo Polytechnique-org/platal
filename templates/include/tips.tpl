@@ -26,6 +26,9 @@
 {/if}
   <legend>{icon name=lightbulb} {if !$tips.special}
     Astuce&nbsp;: {$tips.titre}
+    {if $smarty.session.perms->hasFlag('admin') && !$tips.special && !$nochange}
+    <a href="admin/tips/edit/{$tips.id}">{icon name="page_edit" title="Editer"}</a>
+    {/if}
   {else}
     <span style="color: red; font-weight: bold;">{$tips.titre}</span>
   {/if}
