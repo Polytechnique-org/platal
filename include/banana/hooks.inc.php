@@ -28,7 +28,7 @@ function hook_formatDisplayHeader($_header, $_text, $in_spool = false)
         $addresses = preg_split("/ *, */", $_text);
         $text = '';
         foreach ($addresses as $address) {
-            $address = BananaMessage::formatFrom(trim($address));
+            $address = BananaMessage::formatFrom(trim($address), Banana::$message->getHeaderValue('subject'));
             if ($_header == 'from') {
                 if ($id = Banana::$message->getHeaderValue('x-org-id')) {
                     return $address . ' <a href="profile/' . $id . '" class="popup2" title="' . $id . '">'
