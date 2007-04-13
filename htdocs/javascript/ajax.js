@@ -18,56 +18,68 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-Ajax = {
-    xml_client: null,
-    init: false,
+function AjaxEngine()
+{
+    this.xml_client = null;
+    this.init = false;
+    this.obj  = null;
+    this.func = null;
 
-    prepare_client: function()
+    this.prepare_client = function()
     {
-        if (!Ajax.init) {
+        if (!this.init) {
             if (window.XMLHttpRequest) {
-                Ajax.xml_client = new XMLHttpRequest();
+                this.xml_client = new XMLHttpRequest();
             } else if (window.ActiveXObject) {
                 try {
-                    Ajax.xml_client = new ActiveXObject("Msxml2.XMLHTTP");
+                    this.xml_client = new ActiveXObject("Msxml2.XMLHTTP");
                 } catch (e) {
-                    Ajax.xml_client = new ActiveXObject("Microsoft.XMLHTTP");
+                    this.xml_client = new ActiveXObject("Microsoft.XMLHTTP");
                 }
             }
-            if (Ajax.xml_client == null) {
+            if (this.xml_client == null) {
                 alert("Ton client ne supporte pas Ajax, nécessaire pour certaines fonctionalités de cette page");
             }
         }
-        Ajax.init = true;
-    },
+        this.init = true;
+    }
 
-    update_html: function(obj, src, func)
+    this.update_html = function(obj, src, func)
     {
-        Ajax.prepare_client();
-        if (Ajax.xml_client == null) {
+        this.prepare_client();
+        if (this.xml_client == null) {
             return true;
         }
-        Ajax.xml_client.abort();
-        Ajax.xml_client.onreadystatechange = function()
-            {
-                if(Ajax.xml_client.readyState == 4) {
-                    if (Ajax.xml_client.status == 200) {
-                    	if (obj != null) {
-                        	document.getElementById(obj).innerHTML = Ajax.xml_client.responseText;
-                        }
-                        if (func != null) {
-                      		func(Ajax.xml_client.responseText);
-                      	}
-                    } else if (Ajax.xml_client.status == 403) {
-                        window.location.reload();
-                    }
-                }
-            };
-        Ajax.xml_client.open ('GET', src, true);
-        Ajax.xml_client.send (null);
+        this.obj = obj;
+        this.func = func;
+        this.xml_client.abort();
+        this.xml_client.onreadystatechange = this.apply_update_html(this);
+        this.xml_client.open ('GET', src, true);
+        this.xml_client.send (null);
         return false;
     }
+
+    this.apply_update_html = function(ajax)
+    {
+        return function()
+        {
+            if(ajax.xml_client.readyState == 4) { 
+                if (ajax.xml_client.status == 200) { 
+                    if (ajax.obj != null) {  
+                        document.getElementById(ajax.obj).innerHTML = ajax.xml_client.responseText; 
+                    }
+                    if (ajax.func != null) { 
+                        ajax.func(ajax.xml_client.responseText); 
+                    }
+                } else if (ajax.xml_client.status == 403) { 
+                    window.location.reload(); 
+                }
+            }
+        };
+    }
 }
+
+var Ajax = new AjaxEngine();
 
 var currentTempMessage = 0;
 function setOpacity(obj, opacity)
