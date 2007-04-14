@@ -24,120 +24,121 @@
 
 {javascript name="jquery"}
 {javascript name="jquery.autocomplete"}
-<script type="text/javascript">{literal}
-	// <!--
-	
-	// use same form to send to search or map
-	function launch_form(url) {
-	  var f = document.getElementById('recherche');
-	  f.action = url;
-	  f.submit();
-	}
-	
-	// display an autocomplete row : blabla (nb of found matches)
-	function format_autocomplete(row) {
-	  if (row[1] == 1) {
-	    return row[0];
-	  }
-	  return row[0] + ' ('+ row[1] + ')';
-	}
-	
-	// when changing country, open up region choice
-	function changeCountry(a2) {
-      $(".autocompleteTarget[@name='country']").attr('value',a2);
-	  if (a2) {
-        $(".autocomplete[@name='countryTxt']").addClass('hidden_valid');
-        $("[@name='region']").parent().load('search/list/region/', { country:a2 }, function() {
-            if ($("select[@name='region']").children("option").size() > 1) {
-        	    $("select[@name='region']").attr('value', '{/literal}{$smarty.request.region}{literal}').show();
-        	} else {
-        	    $("select[@name='region']").attr('value', '').hide();
-        	}
-        });
-	  } else {
-        $(".autocomplete[@name='countryTxt']").removeClass('hidden_valid');
-	    $("select[@name='region']").attr('value', '').hide();
-	  }
-	}
-	
-	// when changing school, open diploma choice
-	function changeSchool(schoolId) {
-      $(".autocompleteTarget[@name='school']").attr('value',schoolId);
-	  if (schoolId) {
-        $(".autocomplete[@name='schoolTxt']").addClass('hidden_valid');
-        $("[@name='diploma']").parent().load('search/list/diploma/', { school:schoolId }, function() {
-            if ($("select[@name='diploma']").children("option").size() > 1) {
-        	    $("select[@name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
-        	} else {
-        	    $("select[@name='diploma']").attr('value', '').hide();
-        	}
-        });
-	  } else {
-        $(".autocomplete[@name='schoolTxt']").removeClass('hidden_valid');
-	    $("select[@name='diploma']").attr('value', '').hide();
-	  }
-	}
-	
-	// when choosing autocomplete from list, must validate
-	function select_autocomplete(name) {
-	  nameRealField = name.replace(/Txt$/, '');
-	  // nothing to do if field is not a text field for a list
-	  if (nameRealField == name)
-	  	return null;
-	  // if changing country, might want to open region choice
-	  if (nameRealField == 'country')
-	  	return function(i) {
-	  	  changeCountry(i.extra[1]);
-	    }
-	  if (nameRealField == 'school')
-	  	return function(i) {
-	  	  changeSchool(i.extra[1]);
-	    }
-	  // change field in list and display text field as valid
-	  return function(i) {
-		nameRealField = this.field.replace(/Txt$/, '');
-	  	$(".autocompleteTarget[@name='"+nameRealField+"']").attr('value',i.extra[1]);
-	  	$(".autocomplete[@name='"+this.field+"']").addClass('hidden_valid');
-	  }
-	}
-	$(document).ready(function() {
-		$(".autocompleteTarget").hide();
-	    $(".autocomplete").show().each(function() {
-		  	targeted = $("../.autocompleteTarget",this)[0];
-		  	if (targeted && targeted.value) {
-			  	me = $(this);
-		  		$.get('search/list/'+ targeted.name +'/'+targeted.value, {},function(textValue) {
-		  			me.attr('value', textValue);
-		  			me.addClass('hidden_valid');
-		  		});
-		  	}
-	      	$(this).autocomplete("search/autocomplete/"+this.name,{
-			  selectOnly:1,
-			  formatItem:format_autocomplete,
-			  field:this.name,
-			  onItemSelect:select_autocomplete(this.name),
-			  matchSubset:0,
-			  width:$(this).width()});
-	    });
-	    $(".autocomplete").change(function() { $(this).removeClass('hidden_valid'); });
-	    $(".autocomplete[@name='countryTxt']").change(function() { changeCountry(''); });
-	    changeCountry({/literal}'{$smarty.request.country}'{literal});
-	    $(".autocomplete[@name='schoolTxt']").change(function() { changeSchool(''); });
-	    changeSchool({/literal}'{$smarty.request.school}'{literal});
-	    $(".autocompleteToSelect").each(function() {
-	    	var fieldName = $(this).attr('href');
-	      	$(this).attr('href','search/list/'+fieldName).click(function() {
-      			var oldval = $("input.autocompleteTarget[@name='"+fieldName+"']")[0].value;
-	      		$(".autocompleteTarget[@name='"+fieldName+"']").parent().load('search/list/'+fieldName,{},function(selectBox) {
-	      			$(".autocompleteTarget[@name='"+fieldName+"']").remove();
-		      		$(".autocomplete[@name='"+fieldName+"Txt']").remove();
-		      		$("select[@name='"+fieldName+"']").attr('value', oldval);
-				  });
-				return false;
-	      	});
-	    });
-	});
-	-->
+<script type="text/javascript">// <!-- 
+        var baseurl = "{#globals.baseurl#}/search/";
+        {literal}
+        
+        // use same form to send to search or map
+        function launch_form(url) {
+          var f = document.getElementById('recherche');
+          f.action = url;
+          f.submit();
+        }
+        
+        // display an autocomplete row : blabla (nb of found matches)
+        function format_autocomplete(row) {
+          if (row[1] == 1) {
+            return row[0];
+          }
+          return row[0] + ' ('+ row[1] + ')';
+        }
+        
+        // when changing country, open up region choice
+        function changeCountry(a2) {
+          $(".autocompleteTarget[@name='country']").attr('value',a2);
+          if (a2) {
+            $(".autocomplete[@name='countryTxt']").addClass('hidden_valid');
+            $("[@name='region']").parent().load(baseurl + 'list/region/', { country:a2 }, function() {
+              if ($("select[@name='region']").children("option").size() > 1) {
+                $("select[@name='region']").attr('value', '{/literal}{$smarty.request.region}{literal}').show();
+              } else {
+                $("select[@name='region']").attr('value', '').hide();
+              }
+            });
+          } else {
+            $(".autocomplete[@name='countryTxt']").removeClass('hidden_valid');
+            $("select[@name='region']").attr('value', '').hide();
+          }
+        }
+        
+        // when changing school, open diploma choice
+        function changeSchool(schoolId) {
+          $(".autocompleteTarget[@name='school']").attr('value',schoolId);
+          if (schoolId) {
+            $(".autocomplete[@name='schoolTxt']").addClass('hidden_valid');
+            $("[@name='diploma']").parent().load(parent + 'list/diploma/', { school:schoolId }, function() {
+              if ($("select[@name='diploma']").children("option").size() > 1) {
+                $("select[@name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
+              } else {
+                $("select[@name='diploma']").attr('value', '').hide();
+              }
+            });
+          } else {
+            $(".autocomplete[@name='schoolTxt']").removeClass('hidden_valid');
+            $("select[@name='diploma']").attr('value', '').hide();
+          }
+        }
+        
+        // when choosing autocomplete from list, must validate
+        function select_autocomplete(name) {
+          nameRealField = name.replace(/Txt$/, '');
+          // nothing to do if field is not a text field for a list
+          if (nameRealField == name)
+            return null;
+          // if changing country, might want to open region choice
+          if (nameRealField == 'country')
+            return function(i) {
+                changeCountry(i.extra[1]);
+              }
+          if (nameRealField == 'school')
+            return function(i) {
+                changeSchool(i.extra[1]);
+              }
+          // change field in list and display text field as valid
+          return function(i) {
+              nameRealField = this.field.replace(/Txt$/, '');
+              $(".autocompleteTarget[@name='"+nameRealField+"']").attr('value',i.extra[1]);
+              $(".autocomplete[@name='"+this.field+"']").addClass('hidden_valid');
+            }
+          }
+          $(document).ready(function() {
+            $(".autocompleteTarget").hide();
+            $(".autocomplete").show().each(function() {
+              targeted = $("../.autocompleteTarget",this)[0];
+              if (targeted && targeted.value) {
+                me = $(this);
+                $.get(baseurl + 'list/'+ targeted.name +'/'+targeted.value, {},function(textValue) {
+                  me.attr('value', textValue);
+                  me.addClass('hidden_valid');
+                });
+              }
+              $(this).autocomplete(baseurl + "autocomplete/"+this.name,{
+                selectOnly:1,
+                formatItem:format_autocomplete,
+                field:this.name,
+                onItemSelect:select_autocomplete(this.name),
+                matchSubset:0,
+                width:$(this).width()});
+              });
+              $(".autocomplete").change(function() { $(this).removeClass('hidden_valid'); });
+              $(".autocomplete[@name='countryTxt']").change(function() { changeCountry(''); });
+              changeCountry({/literal}'{$smarty.request.country}'{literal});
+              $(".autocomplete[@name='schoolTxt']").change(function() { changeSchool(''); });
+              changeSchool({/literal}'{$smarty.request.school}'{literal});
+              $(".autocompleteToSelect").each(function() {
+                var fieldName = $(this).attr('href');
+                $(this).attr('href', baseurl + 'list/'+fieldName).click(function() {
+                  var oldval = $("input.autocompleteTarget[@name='"+fieldName+"']")[0].value;
+                  $(".autocompleteTarget[@name='"+fieldName+"']").parent().load(baseurl + 'list/'+fieldName,{},function(selectBox) {
+                    $(".autocompleteTarget[@name='"+fieldName+"']").remove();
+                    $(".autocomplete[@name='"+fieldName+"Txt']").remove();
+                    $("select[@name='"+fieldName+"']").attr('value', oldval);
+                  });
+                  return false;
+                });
+              });
+            });
+        -->
 {/literal}</script>
 <form id="recherche" action="search/adv" method="get">
   <table class="bicol" cellpadding="3" summary="Recherche">
@@ -149,8 +150,8 @@
     <tr>
       <td>Nom</td>
       <td>
-    	<input type="hidden" name="rechercher" value="Chercher"/>
-    	<input type="submit" style="display:none"/>
+        <input type="hidden" name="rechercher" value="Chercher"/>
+        <input type="submit" style="display:none"/>
         <input type="text" class="autocomplete" name="name" size="32" value="{$smarty.request.name}" />
       </td>
     </tr>
@@ -254,9 +255,9 @@
     <tr>
       <td>Pays</td>
       <td>
-      	<input name="countryTxt" type="text" class="autocomplete" style="display:none" size="32"/>
-		<input name="country" class="autocompleteTarget" type="hidden" value="{$smarty.request.country}"/>
-		<a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
+        <input name="countryTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="country" class="autocompleteTarget" type="hidden" value="{$smarty.request.country}"/>
+        <a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
       </td>
     </tr>
     <tr>
@@ -280,9 +281,9 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Fonction</td>
       <td>
-      	<input name="fonctionTxt" type="text" class="autocomplete" style="display:none" size="32"/>
-		<input name="fonction" class="autocompleteTarget" type="hidden" value="{$smarty.request.fonction}"/>
-		<a href="fonction" class="autocompleteToSelect">{icon name="table" title="Toutes les fonctions"}</a>
+        <input name="fonctionTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="fonction" class="autocompleteTarget" type="hidden" value="{$smarty.request.fonction}"/>
+        <a href="fonction" class="autocompleteToSelect">{icon name="table" title="Toutes les fonctions"}</a>
       </td>
     </tr>
     <tr>
@@ -292,9 +293,9 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Secteur</td>
       <td>
-      	<input name="secteurTxt" type="text" class="autocomplete" style="display:none" size="32"/>
-		<input name="secteur" class="autocompleteTarget" type="hidden" value="{$smarty.request.secteur}"/>
-		<a href="secteur" class="autocompleteToSelect">{icon name="table" title="Tous les secteurs"}</a>
+        <input name="secteurTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="secteur" class="autocompleteTarget" type="hidden" value="{$smarty.request.secteur}"/>
+        <a href="secteur" class="autocompleteToSelect">{icon name="table" title="Tous les secteurs"}</a>
       </td>
     </tr>
     <tr>
@@ -313,41 +314,41 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Nationalité</td>
       <td>
-      	<input name="nationaliteTxt" type="text" class="autocomplete" style="display:none" size="32"/>
-		<input name="nationalite" class="autocompleteTarget" type="hidden" value="{$smarty.request.nationalite}"/>
-		<a href="nationalite" class="autocompleteToSelect">{icon name="table" title="Toutes les nationalités"}</a>
+        <input name="nationaliteTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="nationalite" class="autocompleteTarget" type="hidden" value="{$smarty.request.nationalite}"/>
+        <a href="nationalite" class="autocompleteToSelect">{icon name="table" title="Toutes les nationalités"}</a>
       </td>
     </tr>
     <tr>
       <td>Binet</td>
       <td>
-      	<input name="binetTxt" type="text" class="autocomplete" style="display:none" size="32"/>
-		<input name="binet" class="autocompleteTarget" type="hidden" value="{$smarty.request.binet}"/>
-		<a href="binet" class="autocompleteToSelect">{icon name="table" title="Tous les binets"}</a>
+        <input name="binetTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="binet" class="autocompleteTarget" type="hidden" value="{$smarty.request.binet}"/>
+        <a href="binet" class="autocompleteToSelect">{icon name="table" title="Tous les binets"}</a>
       </td>
     </tr>
     <tr>
       <td>Groupe X</td>
       <td>
-      	<input name="groupexTxt" type="text" class="autocomplete" style="display:none" size="32"/>
-		<input name="groupex" class="autocompleteTarget" type="hidden" value="{$smarty.request.groupex}"/>
-		<a href="groupex" class="autocompleteToSelect">{icon name="table" title="Tous les groupes X"}</a>
+        <input name="groupexTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="groupex" class="autocompleteTarget" type="hidden" value="{$smarty.request.groupex}"/>
+        <a href="groupex" class="autocompleteToSelect">{icon name="table" title="Tous les groupes X"}</a>
       </td>
     </tr>
     <tr>
       <td>Section</td>
       <td>
-      	<input name="sectionTxt" type="text" class="autocomplete" style="display:none" size="32"/>
-		<input name="section" class="autocompleteTarget" type="hidden" value="{$smarty.request.section}"/>
-		<a href="section" class="autocompleteToSelect">{icon name="table" title="Toutes les sections"}</a>
+        <input name="sectionTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="section" class="autocompleteTarget" type="hidden" value="{$smarty.request.section}"/>
+        <a href="section" class="autocompleteToSelect">{icon name="table" title="Toutes les sections"}</a>
       </td>
     </tr>
     <tr>
       <td>Formation</td>
       <td>
-      	<input name="schoolTxt" type="text" class="autocomplete" style="display:none" size="32"/>
-		<input name="school" class="autocompleteTarget" type="hidden" value="{$smarty.request.school}"/>
-		<a href="school" class="autocompleteToSelect">{icon name="table" title="Toutes les formations"}</a>
+        <input name="schoolTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="school" class="autocompleteTarget" type="hidden" value="{$smarty.request.school}"/>
+        <a href="school" class="autocompleteToSelect">{icon name="table" title="Toutes les formations"}</a>
       </td>
     </tr>
     <tr>

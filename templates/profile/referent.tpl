@@ -87,8 +87,9 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#
 
 {javascript name=ajax}
 <script type="text/javascript">//<![CDATA[
-{literal}
 
+var baseurl = "{#globals.baseurl#}/referent/";
+{literal}
 var Ajax2 = new AjaxEngine();
 
 function setSecteur(secteur)
@@ -98,8 +99,8 @@ function setSecteur(secteur)
         document.getElementById('country').style.display = 'none';
         document.getElementById('keywords').style.display = 'none';
     } else {
-        Ajax.update_html('ssect_chg', 'referent/ssect/' + secteur);
-        Ajax2.update_html('country_chg', 'referent/country/' + secteur);
+        Ajax.update_html('ssect_chg', baseurl + 'ssect/' + secteur);
+        Ajax2.update_html('country_chg', baseurl + 'country/' + secteur);
         document.getElementById('scat').style.display = ''; 
         document.getElementById('country').style.display = ''; 
         document.getElementById('keywords').style.display = ''; 
@@ -110,7 +111,7 @@ function setSSecteurs()
 {
     var sect  = document.getElementById('sect_field').value;
     var ssect = document.getElementById('ssect_field').value;
-    Ajax2.update_html('country_chg', 'referent/country/' + sect + '/' + ssect);
+    Ajax2.update_html('country_chg', baseurl + 'country/' + sect + '/' + ssect);
 }
 
 {/literal}
