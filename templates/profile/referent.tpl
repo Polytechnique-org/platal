@@ -21,78 +21,23 @@
 {**************************************************************************}
 
 
-{literal}
-<script type="text/javascript">
-  <!-- Begin
-  function showPage(pNumber) {
-    document.forms.form_result.curpage.value = pNumber;
-    document.forms.form_result.submit();
-  }
-  // End -->
-</script>
-{/literal}
-
-<h1>
-  Rechercher un camarade pouvant m'aider à orienter mon parcours professionnel
-</h1>
-{if $recherche_trop_large}
-<p>
-Les critères de recherche que tu as rentrés n'ont pas produit de résultats,
-sans doute car ta requête était trop générale. Nous t'invitons à
-<a href="referent/search">procéder à une nouvelle recherche</a>, en essayant
-d'être plus précis.
-</p>
-{elseif $personnes}
-<div class="contact-list" style="clear:both" >
-{foreach from=$personnes item=p}
-  <div class="contact">
-    <div class="nom">
-      {$p.nom} {$p.prenom}
-    </div>
-    <div class="appli">
-      X{$p.promo}
-    </div>
-    <div class="bits" style="width: 40%;">
-      <span class='smaller'>
-      <a href="profile/{$p.bestalias}" class="popup2">
-        {icon name=user_suit title="Voir sa fiche"}</a> -
-        <a href="referent/{$p.bestalias}" class="popup2">Voir sa fiche référent</a>
-      </span>
-    </div>
-    <div class="long">
-     <table cellspacing="0" cellpadding="0">
-      <tr>
-        <td class="lt">Expertise :</td>
-        <td class="rt" colspan="2">{$p.expertise|nl2br}</td>
-      </tr>
-     </table>
-    </div>
-  </div>
-{/foreach}
-</div>
-<form action="referent/search" method="post" id="form_result">
-  <p>
-    <input type="hidden" name="secteur"    value="{$secteur_sel}" />
-    <input type="hidden" name="ss_secteur" value="{$ss_secteur_sel}" />
-    <input type="hidden" name="pays"       value="{$pays_sel}" />
-    <input type="hidden" name="expertise"  value="{$expertise_champ}" />
-    <input type="hidden" name="curpage"    value="{$curpage}" />
-    <input type="hidden" name="Chercher"   value="1" />
-
-    Pages&nbsp;:&nbsp;
-    {section name="page_number" start=1 loop=$nb_pages_total+1}
-    {if $smarty.section.page_number.index == $curpage}
-    {$curpage} {else}
-    <a href="javascript:showPage({$smarty.section.page_number.index})">{$smarty.section.page_number.index} </a> 
-    {/if}
-    {/section}
-  </p>
-</form>
+{if $plset_count}
+{include file="core/plset.tpl"}
 {else}
-<span class="erreur">
+<h1> 
+  Rechercher un camarade pouvant m'aider à orienter mon parcours professionnel 
+</h1> 
+
+{if $recherche_trop_large} 
+<p> 
+Les critères de recherche que tu as rentrés n'ont pas produit de résultats, 
+sans doute car ta requête était trop générale.
+</p> 
+{else}
+<p class="erreur">
   Si tu utilises ce service pour la première fois, lis attentivement le texte
   qui suit.
-</span>
+</p>
 <p>
 En <a href="profile/edit">renseignant sa fiche dans l'annuaire</a>, chacun
 d'entre nous a la possibilité de renseigner, dans la section "Mentoring",
@@ -133,49 +78,71 @@ une recherche par mots-clefs.<br />
 Nous t'incitons à prendre plutôt 2 ou 3 contacts qu'un seul, cela te
 permettant certainement d'avoir une vision des choses plus complète.
 </p>
+{/if}
+{/if}
 
 <p>
 Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#globals.core.sitename#}.
 </p>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
+{javascript name=ajax}
+<script type="text/javascript">//<![CDATA[
+{literal}
+
+var Ajax2 = new AjaxEngine();
+
+function setSecteur(secteur)
+{
+    if (secteur == '') {
+        document.getElementById('scat').style.display = 'none';
+        document.getElementById('country').style.display = 'none';
+        document.getElementById('keywords').style.display = 'none';
+    } else {
+        Ajax.update_html('ssect_chg', 'referent/ssect/' + secteur);
+        Ajax2.update_html('country_chg', 'referent/country/' + secteur);
+        document.getElementById('scat').style.display = ''; 
+        document.getElementById('country').style.display = ''; 
+        document.getElementById('keywords').style.display = ''; 
+    }
+}
+
+function setSSecteurs()
+{
+    var sect  = document.getElementById('sect_field').value;
+    var ssect = document.getElementById('ssect_field').value;
+    Ajax2.update_html('country_chg', 'referent/country/' + sect + '/' + ssect);
+}
+
+{/literal}
+//]]></script>
+
+<form action="{$smarty.server.REQUEST_URI}" method="get">
   <table cellpadding="0" cellspacing="0" summary="Formulaire de recherche de referents" class="bicol">
     <tr class="impair">
       <td class="titre">
         Secteur de compétence <br /> du référent
       </td>
-      <td >
-        <select name="secteur" onchange="javascript:submit()">
+      <td>
+        <select name="secteur" id="sect_field" onchange="setSecteur(this.value)">
           {html_options options=$secteurs selected=$secteur_sel}
         </select>
       </td>
     </tr>
-    <tr class="pair">
+    <tr class="impair" style="display: none" id="scat">
       <td class="titre">
         Sous-Secteur
       </td>
-      <td >
-        <select name="ss_secteur">
-          {html_options options=$ss_secteurs selected=$ss_secteur_sel}
-        </select>
+      <td id="ssect_chg">
       </td>
     </tr>
-    <tr class="impair">
+    <tr class="pair" style="display: none" id="country">
       <td class="titre">
         Pays bien connu du référent
       </td>
-      <td >
-        <select name="pays">
-          {html_options options=$pays selected=$pays_sel}
-        </select>
+      <td id="country_chg">
       </td>
     </tr>
-    <tr class="pair">
-      <td colspan="2">
-        &nbsp;
-      </td>
-    </tr>
-    <tr class="impair">
+    <tr class="impair" style="display: none" id="keywords">
       <td class="titre">
         Expertise (rentre un ou plusieurs mots clés)
       </td>
@@ -188,7 +155,5 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#
     <input type="submit" value="Chercher" name="Chercher" />
   </div>
 </form>
-
-{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

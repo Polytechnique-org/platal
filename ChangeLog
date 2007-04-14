@@ -28,6 +28,9 @@ New:
         - Add soundex search for quick search                              -FRU
         - Add autocompletion for advanced search                           -Car
 
+    * Survey:
+        - New module                                                       -PIK
+
     * Xnetgrp:
         - Direct access to the group forum (if exists)                     -FRU
 

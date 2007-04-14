@@ -36,6 +36,8 @@ class ProfileModule extends PLModule
 
             'referent'         => $this->make_hook('referent',   AUTH_COOKIE),
             'referent/search'  => $this->make_hook('ref_search', AUTH_COOKIE),
+            'referent/ssect'   => $this->make_hook('ref_sect',   AUTH_COOKIE, 'user', NO_AUTH),
+            'referent/country' => $this->make_hook('ref_country', AUTH_COOKIE, 'user', NO_AUTH),
 
             'groupes-x'        => $this->make_hook('xnet',      AUTH_COOKIE),
 
@@ -55,30 +57,6 @@ class ProfileModule extends PLModule
     function handler_fiche(&$page)
     {
         return $this->handler_profile($page, Env::v('user'));
-    }
-
-
-    function _trombi_getlist($offset, $limit)
-    {
-        $where  = ( $this->promo > 0 ? "WHERE promo='{$this->promo}'" : "" );
-
-        $res = XDB::query(
-                "SELECT  COUNT(*)
-                   FROM  auth_user_md5 AS u
-             RIGHT JOIN  photo         AS p ON u.user_id=p.uid
-             $where");
-        $pnb = $res->fetchOneCell();
-
-        $res = XDB::query(
-                "SELECT  promo, user_id, a.alias AS forlife,
-                         IF (nom_usage='', nom, nom_usage) AS nom, prenom
-                   FROM  photo         AS p
-             INNER JOIN  auth_user_md5 AS u ON u.user_id=p.uid
-             INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
-                  $where
-               ORDER BY  promo, nom, prenom LIMIT {?}, {?}", $offset*$limit, $limit);
-
-        return array($pnb, $res->fetchAllAssoc());
     }
 
     function handler_photo(&$page, $x = null, $req = null)
@@ -513,21 +491,9 @@ class ProfileModule extends PLModule
         $page->addJsLink('close_on_esc.js');
     }
 
-    function handler_ref_search(&$page)
+    function handler_ref_search(&$page, $action = null, $subaction = null)
     {
-        $page->changeTpl('profile/referent.tpl');
-
         $page->assign('xorg_title', 'Polytechnique.org - Conseil Pro');
-
-        $secteur_sel     = Post::v('secteur');
-        $ss_secteur_sel  = Post::v('ss_secteur');
-        $pays_sel        = Post::v('pays', '00');
-        $expertise_champ = Post::v('expertise');
-
-        $page->assign('pays_sel', $pays_sel);
-        $page->assign('expertise_champ', $expertise_champ);
-        $page->assign('secteur_sel', $secteur_sel);
-        $page->assign('ss_secteur_sel', $ss_secteur_sel);
 
         //recuperation des noms de secteurs
         $res = XDB::iterRow("SELECT id, label FROM emploi_secteur");
@@ -537,92 +503,73 @@ class ProfileModule extends PLModule
         }
         $page->assign_by_ref('secteurs', $secteurs);
 
-        //on recupere les sous-secteurs si necessaire
-        $ss_secteurs[''] = '';
-        if (!empty($secteur_sel)) {
-            $res = XDB::iterRow("SELECT id, label FROM emploi_ss_secteur
-                                          WHERE secteur = {?}", $secteur_sel);
-            while (list($tmp_id, $tmp_label) = $res->next()) {
-                $ss_secteurs[$tmp_id] = $tmp_label;
-            }
-        }
-        $page->assign_by_ref('ss_secteurs', $ss_secteurs);
-
-        //recuperation des noms de pays
-        $res = XDB::iterRow("SELECT a2, pays FROM geoloc_pays
-                                      WHERE pays <> '' ORDER BY pays");
-        $pays['00'] = '';
-        while (list($tmp_id, $tmp_label) = $res->next()) {
-            $pays[$tmp_id] = $tmp_label;
-        }
-        $page->assign_by_ref('pays', $pays);
-
         // nb de mentors
         $res = XDB::query("SELECT count(*) FROM mentor");
         $page->assign('mentors_number', $res->fetchOneCell());
 
-        if (!Env::has('Chercher')) {
-            return;
-        }
-
         // On vient d'un formulaire
-        $where = array();
+        $where           = array();
+        $pays_sel        = XDB::escape(Env::v('pays_sel'));
+        $secteur_sel     = XDB::escape(Env::v('secteur'));
+        $ss_secteur_sel  = XDB::escape(Env::v('ss_secteur'));
+        $expertise_champ = XDB::escape(Env::v('expertise'));
 
-        if ($pays_sel != '00') {
-            $where[] = "mp.pid = '".addslashes($pays_sel)."'";
+        if ($pays_sel != "''") {
+            $where[] = "mp.pid = $pays_sel";
         }
-        if ($secteur_sel) {
-            $where[] = "ms.secteur = '".addslashes($secteur_sel)."'";
-            if ($ss_secteur_sel) {
-                $where[] = "ms.ss_secteur = '".addslashes($ss_secteur_sel)."'";
+        if ($secteur_sel != "''") {
+            $where[] = "ms.secteur = $secteur_sel";
+            if ($ss_secteur_sel != "''") {
+                $where[] = "ms.ss_secteur = $ss_secteur_sel";
             }
         }
-        if ($expertise_champ) {
-            $where[] = "MATCH(m.expertise) AGAINST('".addslashes($expertise_champ)."')";
+        if ($expertise_champ != "''") {
+            $where[] = "MATCH(m.expertise) AGAINST($expertise_champ)";
         }
 
         if ($where) {
             $where = join(' AND ', $where);
 
-            $sql = "SELECT  m.uid, a.prenom, a.nom, a.promo,
-                            l.alias AS bestalias, m.expertise, mp.pid,
-                            ms.secteur, ms.ss_secteur
-                      FROM  mentor        AS m
-                 LEFT JOIN  auth_user_md5 AS a ON(m.uid = a.user_id)
-                INNER JOIN  aliases       AS l ON (a.user_id=l.id AND
-                                                   FIND_IN_SET('bestalias', l.flags))
-                 LEFT JOIN  mentor_pays   AS mp ON(m.uid = mp.uid)
-                 LEFT JOIN  mentor_secteurs AS ms ON(m.uid = ms.uid)
-                     WHERE  $where
-                  GROUP BY  uid
-                  ORDER BY  RAND({?})";
-            $res = XDB::iterator($sql, S::v('uid'));
-
-            if ($res->total() == 0) {
-                $page->assign('recherche_trop_large', true);
-                return;
+            $set = new UserSet("INNER JOIN  mentor          AS m ON (m.uid = u.user_id) 
+                                 LEFT JOIN  mentor_pays     AS mp ON (mp.uid = m.uid) 
+                                 LEFT JOIN  mentor_secteurs AS ms ON (ms.uid = m.uid)",
+                               $where);
+            $set->addMod('mentor', 'Référents');
+            $set->apply('referent/search', $page, $action, $subaction);
+            if ($set->count() > 100) {
+                $page->assign('recherche_trop_large', true); 
             }
-
-            $nb_max_res_total = 100;
-            $nb_max_res_ppage = 10;
-
-            $curpage   = Env::i('curpage', 1);
-            $personnes = array();
-            $i         = 0;
-
-            while (($pers = $res->next()) && count($personnes) < $nb_max_res_total) {
-                $the_page = intval($i / $nb_max_res_ppage) + 1;
-                if ($the_page == $curpage) {
-                    $personnes[] = $pers;
-                }
-                $i ++;
-            }
-
-            $page->assign('personnes', $personnes);
-            $page->assign('curpage',   $curpage);
-            $page->assign('nb_pages_total',
-                          intval($res->total() / $nb_max_res_ppage) + 1);
         }
+        $page->changeTpl('profile/referent.tpl'); 
+    }
+
+    function handler_ref_sect(&$page, $sect) 
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $page->changeTpl('include/select.field.tpl', NO_SKIN);
+        $page->assign('onchange', 'setSSecteurs()');
+        $page->assign('id', 'ssect_field');
+        $page->assign('name', 'ss_secteur');
+        $it = XDB::iterator("SELECT  id,label AS field
+                               FROM  emploi_ss_secteur 
+                              WHERE  secteur = {?}", $sect);
+        $page->assign('list', $it);
+    }
+
+    function handler_ref_country(&$page, $sect, $ssect = '')
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $page->changeTpl('include/select.field.tpl', NO_SKIN);
+        $page->assign('name', 'pays_sel');
+        $where = ($ssect ? ' AND ms.ss_secteur = {?}' : '');
+        $it = XDB::iterator("SELECT  a2 AS id, pays AS field
+                              FROM  geoloc_pays AS g
+                        INNER JOIN  mentor_pays AS mp ON (mp.pid = g.a2)
+                        INNER JOIN  mentor_secteurs AS ms ON (ms.uid = mp.uid)
+                             WHERE  ms.secteur = {?} $where
+                          GROUP BY  a2
+                          ORDER BY  pays", $sect, $ssect);
+        $page->assign('list', $it);
     }
 
     function handler_p_usage(&$page)

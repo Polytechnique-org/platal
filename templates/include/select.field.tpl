@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<select name="{$name}"{if $onchange} onchange="{$onchange}"{/if}>
+<select name="{$name}"{if $onchange} onchange="{$onchange}"{/if}{if $id} id="{$id}"{/if}>
     <option value=""> - </option>
   {iterate from=$list item='option'}
     <option value="{$option.id}">{$option.field|htmlspecialchars}</option>

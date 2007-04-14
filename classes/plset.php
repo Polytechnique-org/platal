@@ -138,7 +138,8 @@ class PlSet
     {
         $view = strtolower($view);
         if (!$view || !class_exists($view . 'View') || !isset($this->mods[$view])) {
-            $view = $this->default ? $this->default : $this->mods[0];
+            reset($this->mods);
+            $view = $this->default ? $this->default : key($this->mods);
         }
         $this->mod = $view;
         $class = $view . 'View';

@@ -204,6 +204,31 @@ class MinificheView extends MultipageView
     }
 }
 
+class MentorView extends MultipageView
+{
+    public function __construct(PlSet &$set, $data, array $params)
+    {
+        $this->entriesPerPage = 10; 
+        $this->addSortKey('rand', array('RAND(' . S::i('uid') . ')'), 'aléatoirement');
+        $this->addSortKey('name', array('nom', 'prenom'), 'nom'); 
+        $this->addSortKey('promo', array('-promo', 'nom', 'prenom'), 'promotion'); 
+        $this->addSortKey('date', array('-watch_last', '-promo', 'nom', 'prenom'), 'dernière modification'); 
+        parent::__construct($set, $data, $params); 
+    }
+
+    public function fields()
+    {
+        return "m.uid, u.prenom, u.nom, u.promo,
+                a.alias AS bestalias, m.expertise, mp.pid,
+                ms.secteur, ms.ss_secteur";
+    }
+
+    public function templateName()
+    {
+        return 'include/plview.referent.tpl';
+    }
+}
+
 class TrombiView extends MultipageView
 {
     public function __construct(PlSet &$set, $data, array $params)
