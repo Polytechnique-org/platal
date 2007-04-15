@@ -335,22 +335,6 @@ class EventsModule extends PLModule
         } elseif (!Env::v('preview')) {
             $upload->rm();
         }
-
-        $select = '';
-        for ($i = 1 ; $i < 30 ; $i++) {
-            $time    = time() + 3600 * 24 * $i;
-            $p_stamp = date('Ymd', $time);
-            $year    = date('Y',   $time);
-            $month   = date('m',   $time);
-            $day     = date('d',   $time);
-
-            $select .= "<option value=\"$p_stamp\"";
-            if ($p_stamp == strtr($peremption, array("-" => ""))) {
-                $select .= " selected='selected'";
-            }
-            $select .= "> $day / $month / $year</option>\n";
-        }
-        $page->assign('select',$select);
     }
 
     function handler_tips(&$page, $tips = null)

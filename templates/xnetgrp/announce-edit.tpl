@@ -111,9 +111,7 @@ function visibilityChange(box)
     <tr>
       <td class="titre">Date de péremption :</td>
       <td>
-        <select name="peremption">
-          {$select|smarty:nodefaults}
-        </select>
+        {valid_date name="peremption" value=$art.peremption}
       </td>
     </tr>
     {if $events}

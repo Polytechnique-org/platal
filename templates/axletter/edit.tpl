@@ -80,7 +80,7 @@
     <tr>
       <td class="titre">Echéance d'envoi</td>
       <td>
-        le <select name="echeance_date">{$echeance_date|smarty:nodefaults}</select>
+        le {valid_date name="echeance_date" value=$echeance_date from=3 to=15}
         vers <select name="echeance_time">{$echeance_time|smarty:nodefaults}</select>
       </td>
     </tr>

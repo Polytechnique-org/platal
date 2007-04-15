@@ -1067,22 +1067,6 @@ class XnetGrpModule extends PLModule
             }
         }
 
-        $select = '';
-        for ($i = 1 ; $i < 30 ; $i++) {
-            $time    = time() + 3600 * 24 * $i;
-            $p_stamp = date('Ymd', $time);
-            $year    = date('Y',   $time);
-            $month   = date('m',   $time);
-            $day     = date('d',   $time);
-
-            $select .= "<option value=\"$p_stamp\"";
-            if ($p_stamp == strtr(@$art['peremption'], array("-" => ""))) {
-                $select .= " selected='selected'";
-            }
-            $select .= "> $day / $month / $year</option>\n";
-        }
-        $page->assign('select', $select);
-
         if (is_null($aid)) {
             $events = XDB::iterator("SELECT *
                                       FROM groupex.evenements

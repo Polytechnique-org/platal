@@ -207,23 +207,6 @@ class AXLetterModule extends PLModule
 
         if (!$saved) {
             $select = '';
-            $time   = time() + 3600 * 24 * 2;
-            for ($i = 0 ; $i < 15 ; $i++) {
-                $time    += 3600 * 24;
-                $p_stamp = date('Ymd', $time);
-                $year    = date('Y',   $time);
-                $month   = date('m',   $time);
-                $day     = date('d',   $time);
-                
-                if ($p_stamp == $echeance_date) {
-                    $sel = ' selected="selected"';
-                } else {
-                    $sel = '';
-                }
-                $select .= "<option value=\"$p_stamp\"$sel> $day / $month / $year</option>\n";
-            }
-            $page->assign('echeance_date', $select);
-            $select = '';
             for ($i = 0 ; $i < 24 ; $i++) {
                 $stamp = sprintf('%02d:00:00', $i);
                 if ($stamp == $echeance_time) {

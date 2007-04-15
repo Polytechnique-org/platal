@@ -203,9 +203,7 @@
         Dernier jour d'affichage
       </td>
       <td>
-        <select name="peremption">
-          {$select|smarty:nodefaults}
-        </select>
+        {valid_date name="peremption" value=$peremption}
       </td>
     </tr>
     {if $admin_evts}
