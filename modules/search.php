@@ -135,7 +135,7 @@ class SearchModule extends PLModule
             $view->addMod('minifiche', 'Minifiches', true);
             $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
             $view->addMod('geoloc', 'Planishpère');
-            $view->apply('search', $page, $action, $subaction);
+            $view->apply('search/adv', $page, $action, $subaction);
             
             if ($subaction) {
                 return;

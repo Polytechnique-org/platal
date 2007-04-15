@@ -57,6 +57,7 @@ class UserSet extends PlSet
 
 class SearchSet extends UserSet
 {
+    public  $advanced = false;
     private $score = null;
     private $order = null;
     private $quick = false;
@@ -90,8 +91,7 @@ class SearchSet extends UserSet
             new ThrowError('Recherche trop générale.');
         }
         $this->score = $qSearch->get_score_statement();
-        parent::__construct("{$fields->get_select_statement()}
-                             {$globals->search->result_where_statement}",
+        parent::__construct("{$fields->get_select_statement()}",
                             $fields->get_where_statement() .
                             (S::logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : ''));
 
@@ -102,11 +102,12 @@ class SearchSet extends UserSet
     private function getAdvanced()
     {
         global $globals;
+        $this->advanced = true;
         $fields = new SFieldGroup(true, advancedSearchFromInput());
         if ($fields->too_large()) {
             new ThrowError('Recherche trop générale.');
         }
-        parent::__construct($fields->get_select_statement() . ' ' . $globals->search->result_where_statement,
+        parent::__construct($fields->get_select_statement(),
                             $fields->get_where_statement());
         $this->order = implode(',',array_filter(array($fields->get_order_statement(),
                                                       'promo DESC, NomSortKey, prenom')));
@@ -179,8 +180,7 @@ class MinificheView extends MultipageView
 
     public function joins()
     {
-        return  ($this->set instanceof SearchSet ? "" :
-                "LEFT JOIN  entreprises    AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
+        return  "LEFT JOIN  entreprises    AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
                  LEFT JOIN  emploi_secteur AS es  ON (e.secteur = es.id)
                  LEFT JOIN  fonctions_def  AS ef  ON (e.fonction = ef.id)
                  LEFT JOIN  geoloc_pays    AS n   ON (u.nationalite = n.a2)
@@ -192,10 +192,10 @@ class MinificheView extends MultipageView
                                                       AND FIND_IN_SET('active', adr.statut))
                  LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
                  LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
-                 LEFT JOIN  emails         AS em  ON (em.uid = u.user_id AND em.flags = 'active')
-                ") . (S::logged() ? 
-                        "LEFT JOIN  contacts       AS c   On (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
-                        : ""); 
+                 LEFT JOIN  emails         AS em  ON (em.uid = u.user_id AND em.flags = 'active')" .
+                (S::logged() ? 
+                 "LEFT JOIN  contacts       AS c   On (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
+                 : "");
     }
 
     public function templateName()

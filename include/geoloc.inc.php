@@ -406,6 +406,7 @@ function geoloc_getData_subcities($mapid, $SFields, &$cities, $direct=true)
                                           $mapid);
     $fields = new SFieldGroup(true, $SFields);
     $where = $fields->get_where_statement();
+    $joins = $fields->get_select_statement();
     if ($where) {
         $where .= ' AND ';
     }
@@ -414,7 +415,7 @@ function geoloc_getData_subcities($mapid, $SFields, &$cities, $direct=true)
                           gc.name,
                           COUNT(u.user_id) AS pop,
                           SUM(u.promo % 2) AS yellow',
-                          "{$fields->get_select_statement()}
+                          "$joins
                           LEFT JOIN  geoloc_city  AS gc ON(gcim.city_id = gc.id)",
                           $where . ($direct ? "gcim.infos = 'smallest'" : '1'),
                           'gc.id, gc.alias',
@@ -483,14 +484,16 @@ function geoloc_getData_subcountries($mapid, $sin, $minentities)
                                           'am.cityid = gcim.city_id', 
                                           'map.map_id = gcim.map_id'));
     $fields = new SFieldGroup(true, $SFields);
+    $where  = $fields->get_where_statement();
+    $joins  = $fields->get_select_statement();
     $countryres = $set->get('map.map_id AS id,
                              COUNT(u.user_id) AS nbPop,
                              SUM(u.promo % 2) AS yellow,
                              COUNT(DISTINCT gcim.city_id) AS nbCities,
                              SUM(IF(u.user_id IS NULL,0,am.glng)) AS lonPop,
                              SUM(IF(u.user_id IS NULL, 0,am.glat)) AS latPop',
-                            $fields->get_select_statement(),
-                            $fields->get_where_statement(),
+                            $joins,
+                            $where,
                             'map.map_id',
                             'NULL');
     
@@ -503,7 +506,7 @@ function geoloc_getData_subcountries($mapid, $sin, $minentities)
         if ($maxpop < $c['nbPop']) $maxpop = $c['nbPop'];
         $c['xPop'] = geoloc_to_x($c['lonPop'], $c['latPop']);
         $c['yPop'] = geoloc_to_y($c['lonPop'], $c['latPop']);
-        $countries[$c['id']] = array_merge($countries[$c['id']], $c);
+        @$countries[$c['id']] = array_merge($countries[$c['id']], $c);
     
         $nbcities += $c['nbCities'];
     } 
@@ -511,7 +514,7 @@ function geoloc_getData_subcountries($mapid, $sin, $minentities)
     if ($nocity && $nbcities < $minentities){
         foreach($countries as $i => $c) {
             $countries[$i]['nbPop'] = 0;
-            if ($c['nbCities'] > 0) {
+            if (@$c['nbCities'] > 0) {
                 geoloc_getData_subcities($c['id'], $sin, $cities, false);
             }   
         }

@@ -27,14 +27,6 @@
 <script type="text/javascript">// <!-- 
         var baseurl = "{#globals.baseurl#}/search/";
         {literal}
-        
-        // use same form to send to search or map
-        function launch_form(url) {
-          var f = document.getElementById('recherche');
-          f.action = url;
-          f.submit();
-        }
-        
         // display an autocomplete row : blabla (nb of found matches)
         function format_autocomplete(row) {
           if (row[1] == 1) {
@@ -364,7 +356,7 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td colspan="2" style="padding-top: 1.5em">
         <div style="float: right">
-          <input type="button" value="Chercher" onclick="launch_form('search/adv')"/>
+          <input type="button" value="Chercher" />
         </div>
         {if $smarty.session.auth ge AUTH_COOKIE}
           <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} id="order"/>
@@ -374,9 +366,6 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     </tr>
   </table>
 </form>
-<p class="center">
-  <input type="button" value="Voir les résultats sur une carte" onclick="launch_form('geoloc/')"/>
-</p>
 <p>
   <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.
 </p>

@@ -25,12 +25,12 @@
 <ul class="noprint">
   {if $with_soundex && ($smarty.request.firstname || $smarty.request.name)}
   <li>Étendre ta recherche par <strong>
-    <a  href="{$with_soundex}">proximité sonore</a>
+    <a  href="search/adv{$plset_search}with_soundex=1">proximité sonore</a>
   </strong>
   </li>
   {/if}
 
-  <li><strong><a href="{$url_search_form}">Modifier</a>
+  <li><strong><a href="search/adv{$plset_search|regex_replace:"/rechercher=[^&]*/":""}">Modifier</a>
   </strong> ta recherche
   </li>
 

@@ -46,7 +46,6 @@ function advancedSearchFromInput()
     $cityIdField    = new RefSField('cityid',array('av.cityid'),'adresses','av',getadr_join('av'));
     $countryField   = new RefSField('country',array('ap.country'),'adresses','ap',getadr_join('ap'));
     $regionField    = new RefSField('region',array('ar.region'),'adresses','ar',getadr_join('ar'));
-    $mapField       = new MapSField('mapid', array('gcim.map_id'), array('adresses','geoloc_city_in_maps'), array('am','gcim'), array(getadr_join('am'), 'am.cityid = gcim.city_id'));
    
     $entrepriseField = new RefSField('entreprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);
     $posteField      = new RefSField('poste',array('ep.poste'),'entreprises','ep','u.user_id=ep.uid', false);
@@ -69,7 +68,7 @@ function advancedSearchFromInput()
                 $townField, $countryField, $regionField, $entrepriseField,
                 $posteField, $secteurField, $cvField, $natField, $binetField,
                 $groupexField, $sectionField, $schoolField, $diplomaField,
-                $freeField, $fonctionField, $cityIdField, $mapField);
+                $freeField, $fonctionField, $cityIdField);
 }
 
 // }}}
