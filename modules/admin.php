@@ -45,7 +45,7 @@ class AdminModule extends PLModule
             'admin/validate/answers'       => $this->make_hook('validate_answers', AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
             'admin/ipwatch'                => $this->make_hook('ipwatch', AUTH_MDP, 'admin'),
-            'admin/icons'                                                                        => $this->make_hook('icons', AUTH_MDP, 'admin'),
+            'admin/icons'                  => $this->make_hook('icons', AUTH_MDP, 'admin'),
         );
     }
 
@@ -1078,20 +1078,20 @@ class AdminModule extends PLModule
     }
     
     function handler_icons(&$page)
-                {
-                                $page->changeTpl('admin/icons.tpl');
-                                $dh = opendir('../htdocs/images/icons');
-                                if (!$dh) {
-                                                $page->trig('Dossier des icones introuvables.');
-                                }
-                                $icons = array();
-                                while (($file = readdir($dh)) !== false) {
-                                                if (strlen($file) > 4 && substr($file,-4) == '.gif') {
-                                                                array_push($icons, substr($file, 0, -4));
-                                                }
-                                }
-                                sort($icons);
-                                $page->assign('icons', $icons);
+    {
+        $page->changeTpl('admin/icons.tpl');
+        $dh = opendir('../htdocs/images/icons');
+        if (!$dh) {
+            $page->trig('Dossier des icones introuvables.');
+        }
+        $icons = array();
+        while (($file = readdir($dh)) !== false) {
+            if (strlen($file) > 4 && substr($file,-4) == '.gif') {
+                array_push($icons, substr($file, 0, -4));
+            }
+        }
+        sort($icons);
+        $page->assign('icons', $icons);
     }
 }
 

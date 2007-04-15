@@ -43,7 +43,7 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/logger/actions">Actions</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/emails/duplicated">Doublons</a>
+      <a href="admin/emails/watch">Emails</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/emails/lost">Perdus de vue</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;

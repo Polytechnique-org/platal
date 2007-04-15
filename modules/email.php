@@ -33,6 +33,7 @@ class EmailModule extends PLModule
             'emails/antispam/submit'  => $this->make_hook('submit', AUTH_COOKIE),
 
             'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
+            'admin/emails/watch'      => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
             'admin/emails/lost' => $this->make_hook('lost', AUTH_MDP, 'admin'),
         );
     }
