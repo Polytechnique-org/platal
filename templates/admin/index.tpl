@@ -45,6 +45,8 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/emails/duplicated">Doublons</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/emails/lost">Perdus de vue</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/ipwatch">IPs</a>
     </td>
   </tr>

@@ -32,7 +32,8 @@ class EmailModule extends PLModule
             'emails/send'     => $this->make_hook('send', AUTH_MDP),
             'emails/antispam/submit'  => $this->make_hook('submit', AUTH_COOKIE),
 
-            'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin')
+            'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
+            'admin/emails/lost' => $this->make_hook('lost', AUTH_MDP, 'admin'),
         );
     }
 
@@ -561,6 +562,18 @@ L'équipe d'administration <support@polytechnique.org>";
             }
             $page->assign('doublon', $props);
         }
+    }
+    function handler_lost(&$page, $action = 'list', $email = null)
+    {
+        $page->changeTpl('emails/lost.tpl');
+        
+        $page->assign('lost_emails', XDB::iterator('
+					SELECT u.user_id,	a.alias
+					FROM auth_user_md5 AS u
+						INNER JOIN aliases AS a ON (a.id = u.user_id AND a.type = "a_vie")
+						LEFT JOIN emails AS e ON (u.user_id=e.uid AND FIND_IN_SET("active",e.flags))
+					WHERE e.uid IS NULL AND u.deces = 0
+					ORDER BY u.promo DESC, u.nom, u.prenom'));
     }
 }
 
