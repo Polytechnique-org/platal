@@ -61,7 +61,7 @@
     </a>
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mdel=1'
         onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mdel=1'));">
-      {icon name=delete title="Détruire"}
+      {icon name=delete title="Spam"}
     </a>
     De : {$m.sender}<br />
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}'>

@@ -48,7 +48,7 @@
           onclick="return confirm('Es-tu sûr de vouloir Envoyer ce mail sur la liste ?')"/>&nbsp;
         <input type='submit' name='mno' value='Refuser !' 
           onclick="return confirm('Es-tu sûr de vouloir Refuser ce mail ?')"/>&nbsp;
-        <input type='submit' name='mdel' value='Détruire !' style='color:red;'
+        <input type='submit' name='mdel' value='Spam !' style='color:red;'
           onclick="return confirm('Es-tu sûr de vouloir Détruire ce mail ?')"/>
       </td>
     </tr>
@@ -56,8 +56,8 @@
   <ul>
     <li>« Refuser » rejette le mail avec un message à son auteur (celui que tu tapes dans le cadre)</li>
     <li>
-    Détruire efface le mail sans autre forme de procès, et c'est à utiliser UNIQUEMENT pour les
-    virus et les courriers indésirables
+    « Spam » détruit efface le mail sans autre forme de procès, et c'est à utiliser <strong>UNIQUEMENT</strong>
+    pour les virus et les courriers indésirables
     </li>
   </ul>
 </form>

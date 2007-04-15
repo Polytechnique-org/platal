@@ -67,7 +67,7 @@
   remplir le formulaire en bas de page.
   </li>
   <li>
-  <strong>{icon name=delete}détruire&nbsp;:</strong> le mail est effacé sans autre forme de procès.
+  <strong>{icon name=delete}spam&nbsp;:</strong> le mail est effacé sans autre forme de procès.
   N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables. <br/>
   </li>
 </ul>
@@ -107,7 +107,7 @@
     </td>
     <td class='action'>
       <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Détruire le message"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Spam !"}</a>
     </td>
   </tr>
   {/foreach}
@@ -116,7 +116,7 @@
   Utilise ces boutons pour appliquer une action à tous les mails sélectionnés.<br />
   <input type="hidden" name="moderate_mails" value="1" />
   <input type="submit" name="mok" value="Accepter" /> 
-  <input type="submit" name="mdel" value="Détruire" />
+  <input type="submit" name="mdel" value="Spam !" />
 </p>
 </form>
 {else}
