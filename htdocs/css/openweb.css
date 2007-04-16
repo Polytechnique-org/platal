@@ -473,14 +473,27 @@ div.adresse div.titre { color: purple; }
 .backtrace:hover div.hide { display: block }
 .backtrace h1 { margin: 0px; }
 
-#suid {
-    color: red;
-    background: #ffc0cb;
-    width: 100%;
-    font-weight: bold;
-}
-#suid td { padding: 2px; }
-#suid a { color: red; }
+#suid { 
+    color: red; 
+    background: #ffc0cb; 
+    width: auto; 
+    font-weight: bold; 
+    text-align: center; 
+} 
+#suid a { 
+    color: red; 
+    background: inherit; 
+    text-decoration: none; 
+    display: block; 
+} 
+#suid:hover { 
+    color: red; 
+    background: #ffffcb; 
+} 
+#suid a:hover { 
+    color: #ff7000; 
+    background: inherit; 
+} 
 
 table#body {
     color: #000;
