@@ -48,7 +48,10 @@ function manageurs_encrypt_close(){
 
 function manageurs_encrypt($message){
   global $tripledes;
-  return base64_encode(mcrypt_generic($tripledes, $message));
+  if (empty($message)) {
+      return $message;
+  }
+  return base64_encode(mcrypt_generic($tripledes, utf8_decode($message)));
 }
 
 function manageurs_decrypt($message){

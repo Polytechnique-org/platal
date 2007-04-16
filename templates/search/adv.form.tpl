@@ -58,7 +58,7 @@
           $(".autocompleteTarget[@name='school']").attr('value',schoolId);
           if (schoolId) {
             $(".autocomplete[@name='schoolTxt']").addClass('hidden_valid');
-            $("[@name='diploma']").parent().load(parent + 'list/diploma/', { school:schoolId }, function() {
+            $("[@name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
               if ($("select[@name='diploma']").children("option").size() > 1) {
                 $("select[@name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
               } else {

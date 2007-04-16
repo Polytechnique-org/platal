@@ -1,10 +1,8 @@
 <?php
 
 require_once 'webservices/manageurs.inc.php';
-require_once dirname(__FILE__).'/../../XmlrpcClient.php';
 
 function get_annuaire_infos($amicale, $id_assoce, $adresse){
-
     $url = '';
 
     $url = 'http://www.polytechniciens.org:80/manageurs.php';

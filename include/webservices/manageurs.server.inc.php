@@ -17,13 +17,10 @@ $error_key = "You didn't provide me with a valid cipher key...";
 function get_annuaire_infos($method, $params) {
     global $error_mat, $error_key, $globals;
 
-      
-
     //verif du mdp
     if(!isset($params[0]) || ($params[0] != $globals->manageurs->manageurs_pass)){return false;}
     //si on a adresse == -1 => on ne recupère aucune adresse
     if(isset($params[2]) && ($params[2] == -1)) unset($params[2]);
-
 
     if( !empty($params[1]) ){ // on verifie qu'on a bien un matricule
 
