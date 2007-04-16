@@ -240,7 +240,7 @@
       <strong>{icon name=email_attach}&nbsp;Pièce jointe&nbsp;:&nbsp;</strong>
       {$uploaded_f[0]}
       <a href="javascript:removeAttachments()">
-        <img src="images/icons/bin_empty.gif" alt="Supprimer" title="Supprimer la pièce jointe" />
+        {icon name=cross alt="Supprimer" title="Supprimer la pièce jointe"}
       </a>
     </div>
     {/if}

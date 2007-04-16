@@ -120,7 +120,7 @@
         </td>
         <td>
 		  <a href="emails/redirect/remove/{$e->email}" onclick="if (confirm('Supprimer l\'adresse {$e->email} ?')) $.get(this.href,{literal}{}{/literal},function() {literal}{{/literal} $('tr[@id=line_{$e->email|replace:'@':'_at_'}]').remove();{literal}}{/literal}); return false">
-		    {icon name=bin_empty title="retirer"}
+		    {icon name=cross title="retirer"}
 		  </a>
 		</td>
       </tr>
