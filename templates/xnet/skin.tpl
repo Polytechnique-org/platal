@@ -73,7 +73,7 @@
         <table cellspacing="0" cellpadding="0" id="top">
           <tr>
             <td style="width: 150px">
-              <a href=""><img src="images/asso-montants.png" alt="Logo Assos" /></a>
+              <a href="{if $is_logged}login{/if}"><img src="images/asso-montants.png" alt="Logo Assos" /></a>
             </td>
             <td style="width: 106px">
               {if $xnet_type}
