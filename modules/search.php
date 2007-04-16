@@ -363,7 +363,8 @@ class SearchModule extends PLModule
             $db = '`groupesx_def`';
             break;
           case 'nationalite':
-            $db = '`geoloc_pays`';
+            $db = '`geoloc_pays` INNER JOIN 
+                   `auth_user_md5` ON (`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite`)';
             $field = 'IF(`nat`=\'\', `pays`, `nat`)';
             $id = '`a2`';
             break;
@@ -400,6 +401,7 @@ class SearchModule extends PLModule
         $page->assign('list', XDB::iterator('SELECT  '.$field.' AS field,
                                                      '.$id.' AS id
                                                FROM  '.$db.$where.'
+                                           GROUP BY  '.$field.'
                                            ORDER BY  '.$field));
     }
 }
