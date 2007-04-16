@@ -90,8 +90,8 @@ class ContactsPDF extends FPDF
         $this->SetFont('Vera Sans', 'B', 20);
         $this->SetTextColor(230);
         $this->Rotate(45, 55, 190);
-        $this->Text(55, 190, "informations limitées à un usage");
-        $this->Text(40, 210, "strictement personnel et non commercial");
+        $this->Text(55, 190, utf8_decode("informations limitées à un usage"));
+        $this->Text(40, 210, utf8_decode("strictement personnel et non commercial"));
         $this->Rotate(0);
 
         $this->setLeftMargin(5);
@@ -317,6 +317,11 @@ class ContactsPDF extends FPDF
 
         foreach ($x['adr'] as $a) {
             $self->Space();
+            foreach ($a as &$value) {
+                if (is_utf8($value)) {
+                    $value = utf8_decode($value);
+                }
+            }
             $self->Address($a);
         }
 
@@ -326,6 +331,11 @@ class ContactsPDF extends FPDF
                         || $a['adr1'] || $a['adr2'] || $a['adr3'] || $a['postcode'] || $a['city']) )
                 {
                     continue;
+                }
+                foreach ($a as &$value) {
+                    if (is_utf8($value)) {
+                        $value = utf8_decode($value);
+                    }
                 }
                 $self->Space();
                 $self->AddressPro($a);

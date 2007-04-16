@@ -261,6 +261,11 @@ class CarnetModule extends PLModule
 
         while (list($alias) = $citer->next()) {
             $user = get_user_details($alias);
+            foreach ($user as &$value) {
+                if (is_utf8($value)) {
+                    $value = utf8_decode($value);
+                }
+            }
             $pdf = ContactsPDF::addContact($pdf, $user, $arg0 == 'photos' || $arg1 == 'photos');
         }
         $pdf->Output();
