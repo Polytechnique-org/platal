@@ -57,7 +57,6 @@ foreach ($adresses as $adrid => $adr) {
                 unset($adresses[$adrid]);
                 continue;
             }
-            echo "Nouveau pas vide";
             XDB::execute("INSERT INTO adresses SET adr1 = {?}, adr2 = {?},
                          adr3 = {?}, postcode = {?}, city = {?}, cityid = {?},
                          country = {?}, region = {?}, regiontxt = {?},
