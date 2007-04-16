@@ -64,8 +64,7 @@
 <div class="menu_title">Communauté X</div>
 <div class="menu_item"><a href="search">Annuaire</a></div>
 <div class="menu_item"><a href="geoloc">Planisphère</a></div>
-<div class="menu_item"><a href="referent/search">Conseil Pro.</a></div>
-<div class="menu_item"><a href="Docs/Emploi">Carrières</a></div>
+<div class="menu_item"><a href="emploi">Emploi &amp; Carrières</a></div>
 <div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
 <div class="menu_item"><a href="survey">Sondages</a></div>
 

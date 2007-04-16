@@ -35,6 +35,7 @@ class ProfileModule extends PLModule
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
 
             'referent'         => $this->make_hook('referent',   AUTH_COOKIE),
+            'emploi'           => $this->make_hook('ref_search', AUTH_COOKIE),
             'referent/search'  => $this->make_hook('ref_search', AUTH_COOKIE),
             'referent/ssect'   => $this->make_hook('ref_sect',   AUTH_COOKIE, 'user', NO_AUTH),
             'referent/country' => $this->make_hook('ref_country', AUTH_COOKIE, 'user', NO_AUTH),
@@ -493,6 +494,8 @@ class ProfileModule extends PLModule
 
     function handler_ref_search(&$page, $action = null, $subaction = null)
     {
+        require_once 'wiki.inc.php';
+        wiki_require_page('Docs.Emploi');
         $page->assign('xorg_title', 'Polytechnique.org - Conseil Pro');
 
         //recuperation des noms de secteurs

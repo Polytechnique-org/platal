@@ -24,61 +24,7 @@
 {if $plset_count}
 {include file="core/plset.tpl"}
 {else}
-<h1> 
-  Rechercher un camarade pouvant m'aider à orienter mon parcours professionnel 
-</h1> 
-
-{if $recherche_trop_large} 
-<p> 
-Les critères de recherche que tu as rentrés n'ont pas produit de résultats, 
-sans doute car ta requête était trop générale.
-</p> 
-{else}
-<p class="erreur">
-  Si tu utilises ce service pour la première fois, lis attentivement le texte
-  qui suit.
-</p>
-<p>
-En <a href="profile/edit">renseignant sa fiche dans l'annuaire</a>, chacun
-d'entre nous a la possibilité de renseigner, dans la section "Mentoring",
-s'il accepte de recevoir des messages de la part de camarades qui pourraient
-souhaiter lui poser quelques questions et recevoir quelques conseils.<br />
-Ces informations sont rentrées par chacun sur la base du volontariat et sont
-totalement déclaratives. Chaque X qui complète cette rubrique accepte alors
-de recevoir un courrier électronique des jeunes camarades qui sont en train
-de bâtir leur projet professionnel, mais aussi des moins jeunes qui cherchent
-à réorienter leur carrière. Bien entendu, chacun se réserve le droit de ne
-pas donner suite à une sollicitation !<br />
-Pour que ce système soit profitable, il est nécessaire que dans ta recherche
-de conseils professionnels, tu agisses sagement, en évitant de contacter
-un trop grand nombre de camarades. De même, pense bien que les quelques
-personnes que tu vas éventuellement contacter suite à ta recherche
-accepteront éventuellement de t'aider et de te guider <strong>sur la base du
-  volontariat</strong>. Il va de soi que plus ton comportement lors de votre
-contact sera éthique et reconnaissant, plus cette pratique de conseil
-inter-générations sera encouragée et bien perçue par ceux qui la pratiquent.
-<br />
-Nous avons peiné à trouver un nom pour désigner ceux qui sont volontaires
-pour guider les camarades qui en ressentent le besoin : nous avons finalement
-retenu le terme de <em>mentors</em> pour désigner ceux qui sont prêts à aider de
-manière suivie un camarade plus jeune, à plusieurs moments de sa carrière,
-et avons appelé <em>référents</em> ceux qui s'impliquent plutôt en tant que
-"relai d'informations", dans le sens où ils ont vécu des expériences
-professionnelles susceptibles d'intéresser certains d'entre nous (expérience
-de stage ou d'emploi à l'étranger), sans forcément souhaiter consacrer
-autant de temps à quelqu'un que le ferait un mentor attentionné.
-La recherche proposée ici permet de trouver les deux types d'aide.
-</p>
-
-<p>
-Dans le formulaire ci-dessous, tu peux rechercher des avis en fonction des
-domaines de compétence recherchés, des cultures professionnelles des pays
-connues par le référent, et enfin une dernière case te permettra de faire
-une recherche par mots-clefs.<br />
-Nous t'incitons à prendre plutôt 2 ou 3 contacts qu'un seul, cela te
-permettant certainement d'avoir une vision des choses plus complète.
-</p>
-{/if}
+{include file=../spool/wiki.d/cache_Docs.Emploi.tpl included=1}
 {/if}
 
 <p>
