@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file=../spool/wiki.d/cache_Xorg.Antispam.tpl part=1 included=1}
+{include wiki=Xorg.Antispam part=1}
 
 {javascript name=ajax}
 <script type="text/javascript">//<![CDATA[
@@ -48,6 +48,6 @@
 
   <div id="bogo-msg" style="position:absolute;"></div><br />
 
-{include file=../spool/wiki.d/cache_Xorg.Antispam.tpl part=2 included=1}
+{include wiki=Xorg.Antispam part=2}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

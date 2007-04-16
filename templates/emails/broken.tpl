@@ -81,6 +81,6 @@ correspondant si tu veux que nous puissions te répondre.
   </form>
 </div>
 
-{include file=../spool/wiki.d/cache_Xorg.PatteCassée.tpl included=1}
+{include wiki=Xorg.PatteCassée}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

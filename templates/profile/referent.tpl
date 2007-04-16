@@ -24,7 +24,7 @@
 {if $plset_count}
 {include file="core/plset.tpl"}
 {else}
-{include file=../spool/wiki.d/cache_Docs.Emploi.tpl included=1}
+{include wiki=Docs.Emploi}
 {/if}
 
 <p>

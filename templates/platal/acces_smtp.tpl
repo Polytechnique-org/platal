@@ -105,12 +105,12 @@
 <p>
   <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
 </p>
-{include file=../spool/wiki.d/cache_Xorg.NNTPSécurisé.tpl included=1}
+{include wiki=Xorg.NNTPSécurisé}
 {elseif $smarty.request.doc eq "smtp"}
 <p> 
   <a href="{$platal->pl_self()}?doc=nntp">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.<br />
 </p>
-{include file=../spool/wiki.d/cache_Xorg.SMTPSécurisé.tpl included=1}
+{include wiki=Xorg.SMTPSécurisé}
 {else}
 <p>
   <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />

@@ -37,7 +37,7 @@ L'enregistrement se déroule <strong>en deux étapes</strong> :
   </li>
 </ul>
 
-{include file=../spool/wiki.d/cache_Reference.Charte.tpl public=1 included=1}
+{include wiki=Reference.Charte public=1}
 
 <form action="register" method="post">
   <div class="center">

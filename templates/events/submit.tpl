@@ -36,9 +36,8 @@ Merci pour ta contribution à la vie du site!
 
 {include file="events/form.tpl"}
 
-{include file="../spool/wiki.d/cache_Xorg.Annonce.tpl included=1}
+{include wiki=Xorg.Annonce}
 
 {/if}
-
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

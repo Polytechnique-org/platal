@@ -87,6 +87,7 @@ abstract class PlatalPage extends Smarty
 
         $this->register_prefilter('trimwhitespace');
         $this->register_prefilter('form_force_encodings');
+        $this->register_prefilter('wiki_include');
         $this->assign('xorg_errors', $this->_errors);
         $this->assign('xorg_failure', $this->_failure);
         $this->assign('globals', $globals);
@@ -328,6 +329,16 @@ function trimwhitespace($source, &$smarty)
     $source = preg_replace("!&&&tags&&&!e",  'array_shift($tagsmatches[0])', $source);
 
     return $source; 
+}
+
+// }}}
+// {{{ function wiki_include
+
+function wiki_include($source, &$smarty)
+{
+    return preg_replace('/\{include( [^}]*)? wiki=([^} ]+)(.*?)\}/ui',
+                        '{include\1 file="../spool/wiki.d/cache_\2.tpl"\3 included=1}',
+                        $source);
 }
 
 // }}}

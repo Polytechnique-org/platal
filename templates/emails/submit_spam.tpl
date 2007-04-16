@@ -56,6 +56,6 @@
   <li><strong>nonspam</strong> : pour soumettre un mail légitime mal reconnu</li>
 </ul>
 
-{include file=../spool/wiki.d/cache_Xorg.Mails.tpl part=clients included=1}
+{include wiki=Xorg.Mails part=clients}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
