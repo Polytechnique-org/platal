@@ -78,7 +78,7 @@
     {literal}
     function redirectUpdate()
     {
-        showTempMessage('redirect-msg', "Tes redirections ont été mise à jour.", true);
+        showTempMessage('redirect-msg', "Tes redirections ont été mises à jour.", true);
     }
     {/literal}
   //]]></script>

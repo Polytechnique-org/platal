@@ -101,9 +101,9 @@ function _showTempMessage(id, state, back)
     if (currentTempMessage != state) {
         return;
     }   
-    setOpacity(obj, back * 5);
+    setOpacity(obj, back * 4);
     if (back > 0) {
-        setTimeout("_showTempMessage('" + id + "', " + currentTempMessage + "," + (back-1) + ")", 100);
+        setTimeout("_showTempMessage('" + id + "', " + currentTempMessage + "," + (back-1) + ")", 125);
     } else {
         obj.innerHTML = "";
     }
@@ -118,7 +118,7 @@ function showTempMessage(id, message, success)
     obj.style.color = (success ? "green" : "red");;
     currentTempMessage++;
     setOpacity(obj, 100);
-    setTimeout("_showTempMessage('" + id + "', " + currentTempMessage + ", 20)", 700);
+    setTimeout("_showTempMessage('" + id + "', " + currentTempMessage + ", 25)", 1000);
 }
 
 function previewWiki(idFrom, idTo, withTitle, idShow)
