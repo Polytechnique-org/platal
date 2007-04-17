@@ -119,17 +119,17 @@
           </select>
         </td>
         <td>
-		  <a href="emails/redirect/remove/{$e->email}" onclick="if (confirm('Supprimer l\'adresse {$e->email} ?')) $.get(this.href,{literal}{}{/literal},function() {literal}{{/literal} $('tr[@id=line_{$e->email|replace:'@':'_at_'}]').remove();{literal}}{/literal}); return false">
-		    {icon name=cross title="retirer"}
-		  </a>
-		</td>
+          <a href="emails/redirect/remove/{$e->email}" onclick="if (confirm('Supprimer l\'adresse {$e->email} ?')) $.get(this.href,{literal}{}{/literal},function() {literal}{{/literal} $('tr[@id=line_{$e->email|replace:'@':'_at_'}]').remove();{literal}}{/literal}); return false">
+            {icon name=cross title="retirer"}
+          </a>
+        </td>
       </tr>
       {/foreach}
       <tr class="{cycle values="pair,impair"}"><td colspan="4">
         <form action="emails/redirect" method="post">
         <div>
-    		&nbsp;<br />
-    		Ajouter une adresse email :
+                &nbsp;<br />
+                Ajouter une adresse email :
             <input type="text" size="35" maxlength="60" name="email" value="" />
             &nbsp;&nbsp;<input type="submit" value="ajouter" name="emailop" />
         </div>

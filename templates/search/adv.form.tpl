@@ -28,11 +28,15 @@
         var baseurl = "{#globals.baseurl#}/search/";
         {literal}
         // display an autocomplete row : blabla (nb of found matches)
-        function format_autocomplete(row) {
-          if (row[1] == 1) {
-            return row[0];
-          }
-          return row[0] + ' ('+ row[1] + ')';
+        function make_format_autocomplete(block) {
+          return function(row) {
+              regexp = new RegExp('(' + block.value + ')', 'i');
+              name = row[0].replace(regexp, '<strong>$1</strong>');
+              if (row[1] == 1) {
+                return name;
+              }
+              return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;'+ row[1] + ' camarades</em>';
+            };
         }
         
         // when changing country, open up region choice
@@ -42,14 +46,17 @@
             $(".autocomplete[@name='countryTxt']").addClass('hidden_valid');
             $("[@name='region']").parent().load(baseurl + 'list/region/', { country:a2 }, function() {
               if ($("select[@name='region']").children("option").size() > 1) {
-                $("select[@name='region']").attr('value', '{/literal}{$smarty.request.region}{literal}').show();
+                $("select[@name='region']").attr('value', '{/literal}{$smarty.request.region}{literal}');
+                $("tr#region_ln").show();
               } else {
-                $("select[@name='region']").attr('value', '').hide();
+                $("select[@name='region']").attr('value', '');
+                $("tr#region_ln").hide();
               }
             });
           } else {
             $(".autocomplete[@name='countryTxt']").removeClass('hidden_valid');
-            $("select[@name='region']").attr('value', '').hide();
+            $("select[@name='region']").attr('value', '');
+            $("tr#region_ln").hide();
           }
         }
         
@@ -61,13 +68,16 @@
             $("[@name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
               if ($("select[@name='diploma']").children("option").size() > 1) {
                 $("select[@name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
+                $("tr#diploma_ln").show();
               } else {
-                $("select[@name='diploma']").attr('value', '').hide();
+                $("select[@name='diploma']").attr('value', '');
+                $("tr#diploma_ln").hide();
               }
             });
           } else {
             $(".autocomplete[@name='schoolTxt']").removeClass('hidden_valid');
-            $("select[@name='diploma']").attr('value', '').hide();
+            $("select[@name='diploma']").attr('value', '');
+            $("tr#diploma_ln").hide();
           }
         }
         
@@ -106,7 +116,7 @@
               }
               $(this).autocomplete(baseurl + "autocomplete/"+this.name,{
                 selectOnly:1,
-                formatItem:format_autocomplete,
+                formatItem:make_format_autocomplete(this),
                 field:this.name,
                 onItemSelect:select_autocomplete(this.name),
                 matchSubset:0,
@@ -252,7 +262,7 @@
         <a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
       </td>
     </tr>
-    <tr>
+    <tr id="region_ln">
       <td>Région ou département</td>
       <td>
         <input name="region" type="hidden" size="32" value="{$smarty.request.region}"/>
@@ -343,7 +353,7 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
         <a href="school" class="autocompleteToSelect">{icon name="table" title="Toutes les formations"}</a>
       </td>
     </tr>
-    <tr>
+    <tr id="diploma_ln">
       <td>Diplôme</td>
       <td>
         <input name="diploma" type="hidden" size="32" value="{$smarty.request.diploma}"/>
