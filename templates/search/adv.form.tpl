@@ -30,7 +30,7 @@
         // display an autocomplete row : blabla (nb of found matches)
         function make_format_autocomplete(block) {
           return function(row) {
-              regexp = new RegExp('(' + block.value + ')', 'i');
+              regexp = new RegExp('(' + RegExp.escape(block.value) + ')', 'i');
               name = row[0].replace(regexp, '<strong>$1</strong>');
               if (row[1] == 1) {
                 return name;

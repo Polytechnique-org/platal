@@ -183,6 +183,7 @@ class SearchModule extends PLModule
         }
         
         // default search
+        $q = preg_quote($q);
         $unique = '`user_id`';
         $db = '`auth_user_md5`';
         $realid = false;
