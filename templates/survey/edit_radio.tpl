@@ -23,7 +23,17 @@
     {include file='survey/edit_question.tpl'}
     <tr>
       <td class="titre">Choix</td>
-      <td><input type="text" name="survey_question[options]" size="50" maxlength="200" value="{$survey_current.options}"/></td>
+      <td>
+        {foreach from=$survey_current.choices key=value item=choice}
+        <div id="choice_t{$value}">
+          <input type="text" name="survey_question[options][t{$value}]" size="50" maxlength="200" value="{$choice}" />
+          <a href="javascript:removeChoice('t{$value}')">{icon name=delete title="Supprimer"}</a>
+        </div>
+        {/foreach}
+        <div id="choice_last">
+          <a href="javascript:newChoice('last')">{icon name=add}</a>
+        </div>
+      </td>
     </tr>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

@@ -27,9 +27,11 @@
   <table class="bicol" id="survey_form">
     {include file="survey/edit_$survey_type.tpl"}
   </table>
-  <input type="submit" name="survey_submit" value="Valider"/>
-  <input type="reset" name="survey_reset" value="R&#233;initialiser"/>
-  <input type="submit" name="survey_cancel" value="Annuler"/>
+  <div class="center">
+    <input type="submit" name="survey_submit" value="Valider"/>
+    <input type="reset" name="survey_reset" value="R&#233;initialiser"/>
+    <input type="submit" name="survey_cancel" value="Annuler"/>
+  </div>
 </form>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

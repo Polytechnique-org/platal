@@ -37,11 +37,11 @@ class Survey
         return ($long)? self::$longModes : self::$shortModes;
     }
 
-    private static $types = array('text'     => 'texte court',
-                                  'textarea' => 'texte long',
-                                  'num'      => 'num&#233;rique',
-                                  'radio'    => 'radio',
-                                  'checkbox' => 'checkbox');
+    private static $types = array('text'     => 'Texte court',
+                                  'textarea' => 'Texte long',
+                                  'num'      => 'Num&#233;rique',
+                                  'radio'    => 'Choix multiples (une réponse)',
+                                  'checkbox' => 'Choix multiples (plusieurs réponses)');
 
     public static function getTypes()
     {
@@ -76,11 +76,7 @@ class Survey
     {
         $this->title       = $args['title'];
         $this->description = $args['description'];
-        if (preg_match('#^\d{2}/\d{2}/\d{4}$#', $args['end'])) {
-            $this->end = preg_replace('#^(\d{2})/(\d{2})/(\d{4})$#', '\3-\2-\1', $args['end']);
-        } else {
-            $this->end = (preg_match('#^\d{4}-\d{2}-\d{2}$#', $args['end']))? $args['end'] : '#';
-        }
+        $this->end         = $args['end'];
         $this->mode    = (isset($args['mode']))? $args['mode'] : self::MODE_ALL;
         if ($this->mode == self::MODE_ALL) {
             $args['promos'] = '';
@@ -303,7 +299,6 @@ class Survey
 
     // {{{ function checkSyntax() : checks syntax of the questions (currently the root only) before storing the survey in database
     private static $errorMessages = array(
-        "dateformat"  => "la date de fin de sondage est mal formatt&#233;e : elle doit respecter la syntaxe dd/mm/aaaa",
         "datepassed"  => "la date de fin de sondage est d&#233;j&#224; d&#233;pass&#233;e : vous devez pr&#233;ciser une date future",
         "promoformat" => "les restrictions &#224; certaines promotions sont mal formatt&#233;es"
     );
@@ -311,14 +306,10 @@ class Survey
     public function checkSyntax()
     {
         $rArr = array();
-        if (!preg_match('#^\d{4}-\d{2}-\d{2}$#', $this->end)) {
-            $rArr[] = array('question' => 'root', 'error' => self::$errorMessages["dateformat"]);
-        } else {
-            // checks that the end date given is not already passed
-            // (unless the survey has already been validated : an admin can have a validated survey expired)
-            if (!$this->valid && $this->isEnded()) {
-                $rArr[] = array('question' => 'root', 'error' => self::$errorMessages["datepassed"]);
-            }
+        // checks that the end date given is not already passed
+        // (unless the survey has already been validated : an admin can have a validated survey expired)
+        if (!$this->valid && $this->isEnded()) {
+            $rArr[] = array('question' => 'root', 'error' => self::$errorMessages["datepassed"]);
         }
         if ($this->promos != '' && !preg_match('#^(\d{4}-?|(\d{4})?-\d{4})(,(\d{4}-?|(\d{4})?-\d{4}))*$#', $this->promos)) {
             $rArr[] = array('question' => 'root', 'error' => self::$errorMessages["promoformat"]);
@@ -610,14 +601,18 @@ abstract class SurveyList extends SurveyQuestion
     public function update($args)
     {
         parent::update($args);
-        $this->choices = explode('|', $args['options']);
+        $this->choices = array();
+        foreach ($args['options'] as $val) {
+            if (trim($val)) {
+                $this->choices[] = $val;
+            }
+        }
     }
 
     public function toArray()
     {
         $rArr = parent::toArray();
         $rArr['choices'] = $this->choices;
-        $rArr['options'] = implode('|', $this->choices);
         return $rArr;
     }
 

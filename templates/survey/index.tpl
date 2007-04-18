@@ -28,8 +28,15 @@
       Sondages en cours
     </th>
   </tr>
+  <tr> 
+    <td>
+      {if $survey_current->total() eq 0}
+      Aucun sondage en cours
+      {/if}
+      <a style="display: block; float: right;" href="survey/edit/new">{icon name=page_edit} Proposer un sondage</a></td> 
+  </tr> 
   {iterate item=s from=$survey_current}
-    {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
+  {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
   <tr class="{cycle values="impair,pair"}">
     <td class="half">
       &bull;
@@ -38,14 +45,8 @@
       </a>
     </td>
   </tr>
-      {assign var="has_cs" value="true"}
-    {/if}
-  {/iterate}
-  {if !$has_cs}
-  <tr>
-    <td class="half">Aucun sondage en cours</td>
-  </tr>
   {/if}
+  {/iterate}
 </table>
 
 <br />
@@ -75,7 +76,5 @@
   </tr>
   {/if}
 </table>
-
-<a href="./survey/edit/new">Proposer un sondage</a>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

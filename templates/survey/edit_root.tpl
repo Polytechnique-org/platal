@@ -30,15 +30,37 @@
     </tr>
     <tr>
       <td class="titre">Date de fin</td>
-      <td><input type="text" name="survey_question[end]" size="50" maxlength="200" value="{if $survey_current.end eq '#'}#{else}{$survey_current.end|date_format:"%d/%m/%Y"}{/if}"/></td>
+      <td>
+        {valid_date name="survey_question[end]" value=$survey_current.end to=90}
+      </td>
     </tr>
+    {javascript name=jquery}
+    <script type="text/javascript">//<![CDATA[
+      {literal}
+      $(document).ready(function() {
+        function hidePromo(value) {
+          if (value == "0" || value == "") { 
+            $("#ln_promo").hide(); 
+          } else { 
+            $("#ln_promo").show(); 
+          } 
+        }
+        $("[@name='survey_question[mode]']").change(function() { hidePromo(this.value); });
+        hidePromo({/literal}"{$survey_current.mode}"{literal});
+      });
+      {/literal}
+    //]]></script>
     <tr>
       <td class="titre">Type de sondage</td>
       <td>
-        {html_radios name="survey_question[mode]" options=$survey_modes selected=$survey_current.mode separator='<br/>'}
+        <select name="survey_question[mode]">
+          {foreach from=$survey_modes item=text key=name}
+          <option value="{$name}" {if $name eq $survey_current.mode}selected="selected"{/if}>{$text}</option>
+          {/foreach}
+        </select>
       </td>
-    <tr>
-      <td class="titre">Promotions (si restreint aux polytechniciens)</td>
+    <tr id="ln_promo">
+      <td class="titre">Promotions</td>
       <td><input type="text" name="survey_question[promos]" size="50" maxlength="200" value="{$survey_current.promos}"/></td>
     </tr>
 

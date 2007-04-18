@@ -28,5 +28,24 @@
       <td class="titre">Commentaire</td>
       <td><textarea name="survey_question[comment]" rows="5" cols="60">{$survey_current.comment}</textarea></td>
     </tr>
+    {javascript name=jquery} 
+    <script type="text/javascript">//<![CDATA[ 
+      var id = {$survey_current.choices|@count};
+      {literal}
+      function newChoice(tid)
+      {
+        fid = "t" + id;
+        $("#choice_" + tid).before('<div id="choice_' + fid + '">' 
+            + '<input type="text" name="survey_question[options][' + fid + ']" size="50" maxlength="200" value="" />&nbsp;'
+            + '<a href="javascript:removeChoice(&quot;' + fid + '&quot;)"><img src="images/icons/delete.gif" alt="" title="Supprimer" /></a>'
+            + '</div>'); 
+        id++; 
+      }
+      function removeChoice(tid)
+      {
+        $("#choice_" + tid).remove();
+      }
+      {/literal} 
+    //]]></script> 
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
