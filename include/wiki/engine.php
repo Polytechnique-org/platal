@@ -80,6 +80,8 @@ if (Env::v('action') || !$cache_exists) {
     require_once($globals->spoolroot.'/wiki/pmwiki.php');
 
     $wikiAll = ob_get_clean();
+    pl_clear_errors();
+
     // the pmwiki skin we are using (almost empty) has these keywords:
     $i = strpos($wikiAll, "<!--/HeaderText-->");
     $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
