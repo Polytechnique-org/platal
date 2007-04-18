@@ -34,7 +34,7 @@
       <a href="{$mainsiteurl}admin/trombino/{$p.user_id}">{icon name=wrench title="[admin]"}</a>
       {/if}
       <br />
-      <a href="{$mainsiteurl}profile/{$.forlife}" class="popup2">
+      <a href="{$mainsiteurl}profile/{$p.forlife}" class="popup2">
         {$p.prenom} {$p.nom}{if $trombi_with_promo} ({$p.promo}){/if}
       </a>
     </td>
