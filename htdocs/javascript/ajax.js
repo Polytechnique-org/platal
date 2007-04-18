@@ -127,7 +127,7 @@ function previewWiki(idFrom, idTo, withTitle, idShow)
     if (text == "") {
         return false;
     }   
-    var url  = "wiki_preview";
+    var url  = platal_baseurl + "wiki_preview";
     if (!withTitle) {
         url += "/notitle";
     }   
