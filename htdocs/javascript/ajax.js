@@ -50,6 +50,9 @@ function AjaxEngine()
         if (this.xml_client == null) {
             return true;
         }
+        if (src.match(/^http/i) == null) {
+            src = platal_baseurl + src;
+        }
         this.obj = obj;
         this.func = func;
         this.xml_client.abort();
@@ -127,7 +130,7 @@ function previewWiki(idFrom, idTo, withTitle, idShow)
     if (text == "") {
         return false;
     }   
-    var url  = platal_baseurl + "wiki_preview";
+    var url  = "wiki_preview";
     if (!withTitle) {
         url += "/notitle";
     }   

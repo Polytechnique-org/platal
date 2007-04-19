@@ -41,6 +41,7 @@
     <link rel="stylesheet" type="text/css" href="css/{$css}" />
     {/foreach}
     <script type="text/javascript">
+    var platal_baseurl = "{#globals.baseurl#}/"
     if (window.top != window)
       document.write('<link rel="stylesheet" type="text/css" href="css/onlycontent.css" media="all"/>');
     </script>
