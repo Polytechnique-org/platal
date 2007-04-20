@@ -144,7 +144,6 @@ class MiniWiki
             $oldrule12 = MiniWiki::$replacementHTML[MiniWiki::$title_index];
             MiniWiki::$replacementHTML[MiniWiki::$title_index] = "'$0'";
         }
-        $text = trim($wiki);
         $text = preg_replace(MiniWiki::$patternsWiki, MiniWiki::$replacementText, trim($wiki));
         if (!$title) {
             MiniWiki::$replacementHTML[MiniWiki::$title_index] = $oldrule12;
