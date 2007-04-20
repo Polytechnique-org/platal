@@ -151,7 +151,7 @@ respectifs et sont publiées à leur initiative. L'association Polytechnique.org
 ne pourrait en aucun cas être tenue responsable de la nature des propos relatés
 sur cet espace d'expression et d'information. Elle se réserve le droit de
 refuser ou de retirer toute information de nature diffamante ou pouvant être
-interprétée comme polémique par un membre de la communauté polytechnicienne.
+interprétée comme polémique par un lecteur.
 </small>
 </p>
 {/if}

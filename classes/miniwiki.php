@@ -32,6 +32,11 @@ class MiniWiki
         // retours à la ligne avec \\
         MiniWiki::Markup("/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',strlen('$1'))", "str_repeat('\n',strlen('$1'))", "ligne1\\\\\nligne2");
         
+        // * unordered list 
+        MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se", "'<ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul>'", "$0", "* element1\n* element2\n* element3"); 
+        // # unordered list 
+        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "$0", "# element1\n# element2\n# element3"); 
+        
         // bold, italic and others
         // ''' bold '''
         MiniWiki::Markup("/'''(.*?)'''/",'<strong>$1</strong>','*$1*', "'''gras'''");
@@ -60,11 +65,6 @@ class MiniWiki
         // titles
         MiniWiki::$title_index = MiniWiki::Markup('/(\n|^)(!+)([^\n]*)/se', "'$1<h'.strlen('$2').'>$3</h'.strlen('$2').'>'",
                                                   "'$1$3'", "!titre1\n\n!!titre2\n\n!!!titre3");
-        
-        // * unordered list
-        MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se", "'<ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul>'", "$0", "* element1\n* element2\n* element3");
-        // # unordered list
-        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "$0", "# element1\n# element2\n# element3");
         
         // links
         MiniWiki::Markup('/((?:https?|ftp):\/\/(?:[\.\,\;\!\:]*[\w@~%$£µ&i#\-+=_\/\?])*)/ui', '<a href="\\0">\\0</a>', '[\\0]');
@@ -144,6 +144,7 @@ class MiniWiki
             $oldrule12 = MiniWiki::$replacementHTML[MiniWiki::$title_index];
             MiniWiki::$replacementHTML[MiniWiki::$title_index] = "'$0'";
         }
+        $text = trim($wiki);
         $text = preg_replace(MiniWiki::$patternsWiki, MiniWiki::$replacementText, trim($wiki));
         if (!$title) {
             MiniWiki::$replacementHTML[MiniWiki::$title_index] = $oldrule12;

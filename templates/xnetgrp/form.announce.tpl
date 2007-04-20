@@ -59,13 +59,20 @@
     </td>
   </tr>
   {/if}
-  <tr class="pair right">
+  <tr class="pair">
     <td>
+      <div style="float: right">
       <small>
         Annonce proposée par
         <a class="popup2" href="https://www.polytechnique.org/profile/{$art.forlife}">
           {$art.prenom} {$art.nom} (X{$art.promo})
         </a>
+      </small>
+      </div>
+      <small>
+      {if $art.post_id}
+      <a href="{$platal->ns}forum/read/{$art.post_id}">{icon name=comments title="Discussions"}Discuter</a>
+      {/if}
       </small>
     </td>
   </tr>

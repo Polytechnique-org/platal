@@ -9,4 +9,8 @@ create table evenements_photo (
     primary key eid (eid)
 ) charset=utf8;
 
+use groupex;
+alter table announces add post_id smallint(4) unsigned default NULL;
+use x4dat;
+
 # vim:set syntax=mysql:

@@ -1015,17 +1015,28 @@ class XnetGrpModule extends PLModule
             $promo_min = ($art['public'] ? 0 : $art['promo_min']);
             $promo_max = ($art['public'] ? 0 : $art['promo_max']);
             if (is_null($aid)) {
+                $fulltext = $art['texte']; 
+                if (!empty($art['contact_html'])) { 
+                    $fulltext .= "\n\n'''Contacts :'''\\\\\n" . $art['contact_html']; 
+                }
+                $post = null;
+                if ($globals->asso('forum')) {
+                    require_once 'banana/forum.inc.php';
+                    $banana = new ForumsBanana(S::v('forlife'));
+                    $post = $banana->post($globals->asso('forum'), null,
+                                          $art['titre'], MiniWiki::wikiToText($fulltext, false, 0, 80));
+                }
                 XDB::query("INSERT INTO groupex.announces
                                  (user_id, asso_id, create_date, titre, texte, contacts,
-                                   peremption, promo_min, promo_max, flags)
-                            VALUES ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?})",
+                                   peremption, promo_min, promo_max, flags, post_id)
+                            VALUES ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
                            S::i('uid'), $globals->asso('id'), $art['titre'], $art['texte'], $art['contact_html'],
-                           $art['peremption'], $promo_min, $promo_max, $art['public'] ? 'public' : '');
+                           $art['peremption'], $promo_min, $promo_max, $art['public'] ? 'public' : '', $post);
                 $aid = XDB::insertId();
                 if ($art['xorg']) {
                     require_once('validations.inc.php');
                     $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'],
-                                    MiniWiki::WikiToHTML($art['texte'] . (!empty($art['contact_html']) ? "\n\nContacts :\n" . $art['contact_html'] : "")),
+                                    MiniWiki::WikiToHTML($fulltext),
                                     $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'));
                     $article->submit();
                     $page->trig("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation");
@@ -1087,14 +1098,14 @@ class XnetGrpModule extends PLModule
         $page->changeTpl('xnetgrp/announce-admin.tpl');
 
         if (Env::has('del')) {
-            XDB::execute("DELETE FROM groupex.announces
-                                WHERE id = {?} AND asso_id = {?}",
+            XDB::execute("DELETE  FROM groupex.announces
+                           WHERE  id = {?} AND asso_id = {?}",
                          Env::i('del'), $globals->asso('id'));
         }
-        $res = XDB::iterator("SELECT a.id, a.titre, a.peremption, a.peremption < CURRENT_DATE() AS perime
-                                FROM groupex.announces AS a
-                                WHERE a.asso_id = {?}
-                             ORDER BY a.peremption DESC",
+        $res = XDB::iterator("SELECT  a.id, a.titre, a.peremption, a.peremption < CURRENT_DATE() AS perime
+                                FROM  groupex.announces AS a
+                               WHERE  a.asso_id = {?}
+                            ORDER BY  a.peremption DESC",
                              $globals->asso('id'));
         $page->assign('articles', $res);
     }
