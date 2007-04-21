@@ -549,7 +549,7 @@ class ProfileModule extends PLModule
     function handler_ref_sect(&$page, $sect) 
     {
         header('Content-Type: text/html; charset=utf-8');
-        $page->changeTpl('include/select.field.tpl', NO_SKIN);
+        $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('onchange', 'setSSecteurs()');
         $page->assign('id', 'ssect_field');
         $page->assign('name', 'ss_secteur');
@@ -562,7 +562,7 @@ class ProfileModule extends PLModule
     function handler_ref_country(&$page, $sect, $ssect = '')
     {
         header('Content-Type: text/html; charset=utf-8');
-        $page->changeTpl('include/select.field.tpl', NO_SKIN);
+        $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', 'pays_sel');
         $where = ($ssect ? ' AND ms.ss_secteur = {?}' : '');
         $it = XDB::iterator("SELECT  a2 AS id, pays AS field

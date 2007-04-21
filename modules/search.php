@@ -397,7 +397,7 @@ class SearchModule extends PLModule
             exit();
         }
         header('Content-Type: text/xml; charset="UTF-8"');
-        $page->changeTpl('include/select.field.tpl', NO_SKIN);
+        $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', $type);
         $page->assign('list', XDB::iterator('SELECT  '.$field.' AS field,
                                                      '.$id.' AS id

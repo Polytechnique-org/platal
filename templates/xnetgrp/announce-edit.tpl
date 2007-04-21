@@ -26,9 +26,9 @@ function visibilityChange(box)
 {
     var state = (box.checked ? 'none' : '');
     document.getElementById('promo_titre').style.display = state;
-    document.getElementById('promo_min').style.display = state;
-    document.getElementById('promo_max').style.display = state;
-    document.getElementById('promo_desc').style.display = state;
+    document.getElementById('promo_min_tr').style.display = state;
+    document.getElementById('promo_max_tr').style.display = state;
+    document.getElementById('promo_range_tr').style.display = state;
 }
 {/literal}
 </script>
@@ -140,25 +140,14 @@ function visibilityChange(box)
     <tr id="promo_titre" {if $art.public}style="display: none"{/if}>
       <th colspan="2">Promotions cibles</th>
     </tr>
-    <tr id="promo_min"  {if $art.public}style="display: none"{/if}>
-      <td class="titre">Promotion minimale :</td>
-      <td>
-        <input type="text" size="4" maxlength="4" name="promo_min" value="{$art.promo_min|default:0}" />
-        incluse*  (ex : 1980)
-      </td>
-    </tr>
-    <tr id="promo_max"  {if $art.public}style="display: none"{/if}>
-      <td class="titre">Promotion maximale :</td>
-      <td>
-        <input type="text" size="4" maxlength="4" name="promo_max" value="{$art.promo_max|default:0}" />
-        incluse*  (ex : 2000)
-      </td>
-    </tr>
-    <tr class="pair" id="promo_desc"  {if $art.public}style="display: none"{/if}>
-      <td colspan="2">
-        <small>* 0 signifie qu'il n'y a pas de limite</small>
-      </td>
-    </tr>
+    {include file="include/field.promo.tpl" promo_min=$art.promo_min promo_max=$art.promo_max}
+    {if $art.public}
+    <script type="text/javascript">//<![CDATA[
+      document.getElementById('promo_min_tr').style.display = 'none';
+      document.getElementById('promo_max_tr').style.display = 'none';
+      document.getElementById('promo_range_tr').style.display = 'none';
+    //]]></script>
+    {/if}
     {if $new}
     <tr>
       <th colspan="2">Demandes de publication</th>

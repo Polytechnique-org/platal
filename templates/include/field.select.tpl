@@ -26,3 +26,5 @@
     <option value="{$option.id}">{$option.field|htmlspecialchars}</option>
   {/iterate}
 </select>
+
+{* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}

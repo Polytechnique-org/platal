@@ -129,40 +129,6 @@
     N'oublie pas de remplir les informations suivantes&nbsp;:
   </p>
 
-  <script type="text/javascript">//<![CDATA[
-    {literal}
-    function updateRange(min, max)
-    {
-      var range = document.getElementById('range');
-      if (min == null) {
-        min = document.getElementById('promo_min').value;
-      }
-      if (max == null) {
-        max = document.getElementById('promo_max').value;
-      }
-      if (isNaN(min) || (min != 0 && (min < 1900 || min > 2020))) {
-        range.innerHTML = '<span class="erreur">La promotion minimum n\'est pas valide</span>';
-        return false;
-      } else if (isNaN(max) || (max != 0 && (max < 1900  || max > 2020))) {
-        range.innerHTML = '<span class="erreur">La promotion maximum n\'est pas valide</span>';
-        return false;
-      } else if (max != 0 && min != 0 && max < min) {
-        range.innerHTML = '<span class="erreur">L\'intervalle de promotion est inversé</span>';
-        return false;
-      } else if (max == 0 && min == 0) {
-        range.innerHTML = 'L\'annonce est destinée à toutes les promotions';
-      } else if (max == 0) {
-        range.innerHTML = 'L\'annonce sera affichée aux promotions plus jeunes que ' + min + ' (incluse)';
-      } else if (min == 0) {
-        range.innerHTML = "L\'annonce sera affichée aux promotions plus anciennes que " + max + ' (incluse)';
-      } else {
-        range.innerHTML = "L\'annonce sera affichées aux promotions de " + min + " à " + max + ' (incluses)';
-      }
-      return true;
-    }
-    {/literal}
-  //]]></script>
-
   <table class="bicol">
     <tr>
       <th colspan="2">Informations complémentaires</th>
@@ -172,27 +138,7 @@
         Tu peux limiter la visibilité de ton annonce aux camarades de certaines promotions :
       </td>
     </tr>
-    <tr class="impair">
-      <td class="titre">Promotion la plus ancienne</td>
-      <td>
-        <input type="text" name="promo_min" id="promo_min" size="4" maxlength="4" value="{$promo_min}"
-               onkeyup="return updateRange(null, null);" /> incluse
-        &nbsp;<em>(ex : 1980, 0 signifie pas de minimum)</em>
-      </td>
-    </tr>
-    <tr class="impair">
-      <td class="titre">Promotion la plus jeune</td>
-      <td>
-        <input type="text" name="promo_max" id="promo_max" size="4" maxlength="4" value="{$promo_max}"
-               onkeyup="return updateRange(null, null);" /> incluse
-        &nbsp;<em>(ex : 2000, 0 signifie pas de maximum)</em>
-      </td>
-    </tr>
-    <tr class="impair">
-      <td colspan="2" id="range" class="smaller">
-        <script type="text/javascript">updateRange({$promo_min}, {$promo_max});</script>
-      </td>
-    </tr>
+    {include file="include/field.promo.tpl"}
     <tr class="pair">
       <td colspan="2">
         Choisis la date d'expiration de ton annonce :

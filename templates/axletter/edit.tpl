@@ -51,7 +51,7 @@
     </p>
   </fieldset>
 
-  <table class="tinybicol">
+  <table class="bicol">
     <tr>
       <th colspan="2">Options du message</th>
     </tr>
@@ -62,20 +62,7 @@
         <span class="smaller">(uniquement lettres, chiffres ou -)</span>
       </td>
     </tr>
-    <tr>
-      <td class="titre">Promo min</td>
-      <td>
-        <input type="text" name="promo_min" value="{$promo_min|default:0}" size="4" maxlength="4" />
-        <span class="smaller">(0 pour pas de minimum... ex: 1947)</span>
-      </td>
-    </tr>
-    <tr>
-      <td class="titre">Promo max</td>
-      <td>
-        <input type="text" name="promo_max" value="{$promo_max|default:0}" size="4" maxlength="4" />
-        <span class="smaller">(0 pour pas de maximum... ex: 2001)</span>
-      </td>
-    </tr>
+    {include file="include/field.promo.tpl" prefix=""}
     {if !$saved}
     <tr>
       <td class="titre">Echéance d'envoi</td>
