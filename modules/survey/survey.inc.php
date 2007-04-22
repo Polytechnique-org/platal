@@ -96,7 +96,7 @@ class Survey
         if ($this->promos == '') {
             return true;
         }
-        $promos = explode('|', $this->promos);
+        $promos = explode(',', $this->promos);
         foreach ($promos as $p) {
             if ((preg_match('#^\d{4}$#', $p) && $p == $promo) ||
                 (preg_match('#^\d{4}-$#', $p) && intval(substr($p, 0, 4)) <= $promo) ||
@@ -534,7 +534,7 @@ abstract class SurveyQuestion
 }
 // }}}
 
-// {{{ abstract class SurveySimple and its derived classes : "opended" questions
+// {{{ abstract class SurveySimple and its derived classes : "open" questions
 // {{{ abstract class SurveySimple extends SurveyQuestion
 abstract class SurveySimple extends SurveyQuestion
 {

@@ -41,8 +41,10 @@
         function hidePromo(value) {
           if (value == "0" || value == "") { 
             $("#ln_promo").hide(); 
+            $("#ln_promo_exp").hide();
           } else { 
-            $("#ln_promo").show(); 
+            $("#ln_promo").show();
+            $("#ln_promo_exp").show();
           } 
         }
         $("[@name='survey_question[mode]']").change(function() { hidePromo(this.value); });
@@ -62,6 +64,13 @@
     <tr id="ln_promo">
       <td class="titre">Promotions</td>
       <td><input type="text" name="survey_question[promos]" size="50" maxlength="200" value="{$survey_current.promos}"/></td>
+    </tr>
+    <tr id="ln_promo_exp">
+      <td></td>
+      <td class="smaller">
+        Exemple : 1954,1986-1989,-1942,2000-&nbsp;&nbsp;&nbsp;restreindra le sondage &#224; toutes les promotions suivantes :<br/>
+        1954, 1986 &#224; 1989, toutes jusqu'à 1942 et toutes à partir 2000 (les bornes sont syst&#233;matiquement incluses)
+      </td>
     </tr>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
