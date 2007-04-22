@@ -26,7 +26,7 @@ while ($tmp = $res->next()) {
     $grades[$tmp['mid']][] = $tmp;
 }
 
-$res    = XDB::iterator("SELECT *, FIND_IN_SET(flags, 'validation') AS validate FROM profile_medals ORDER BY type, text");
+$res    = XDB::iterator("SELECT *, FIND_IN_SET('validation', flags) AS validate FROM profile_medals ORDER BY type, text");
 $mlist  = Array();
 while ($tmp = $res->next()) {
     $mlist[$tmp['type']][] = $tmp;

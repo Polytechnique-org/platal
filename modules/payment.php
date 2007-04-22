@@ -170,7 +170,7 @@ class PaymentModule extends PLModule
 
         /* on extrait les informations sur l'utilisateur */
         $res = XDB::query("
-            SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET(a.flags,'femme')
+            SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET('femme', a.flags)
               FROM  auth_user_md5 AS a
         INNER JOIN  aliases       AS l ON (a.user_id=l.id AND type!='homonyme')
              WHERE  a.user_id={?}", $uid);
@@ -277,7 +277,7 @@ class PaymentModule extends PLModule
 
         /* on extrait les informations sur l'utilisateur */
         $res = XDB::query("
-            SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET(a.flags,'femme')
+            SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET('femme', a.flags)
               FROM  auth_user_md5 AS a
         INNER JOIN  aliases       AS l ON (a.user_id=l.id AND type!='homonyme')
              WHERE  a.user_id={?}", $uid);
@@ -350,7 +350,7 @@ class PaymentModule extends PLModule
         $res = XDB::query(
                 "SELECT  id, text, url
                    FROM  {$globals->money->mpay_tprefix}paiements
-                  WHERE  asso_id = {?} AND NOT FIND_IN_SET(flags, 'old')
+                  WHERE  asso_id = {?} AND NOT FIND_IN_SET('old', flags)
                ORDER BY  id DESC", $globals->asso('id'));
         $tit = $res->fetchAllAssoc();
         $page->assign('titres', $tit);

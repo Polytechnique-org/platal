@@ -85,7 +85,7 @@ class MedalReq extends Validate
 
     public function submit()
     {
-        $res = XDB::query("SELECT  FIND_IN_SET(flags, 'validation')
+        $res = XDB::query("SELECT  FIND_IN_SET('validation', flags)
                              FROM  profile_medals
                             WHERE  id = {?}", $this->mid);
         if ($res->fetchOneCell()) {

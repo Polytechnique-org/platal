@@ -38,7 +38,7 @@ function advancedSearchFromInput()
     
     $promo1Field     = new PromoSField('promo1','egal1',array('u.promo'),'');
     $promo2Field     = new PromoSField('promo2','egal2',array('u.promo'),'');
-    $womanField      = new RefSField('woman',array('FIND_IN_SET(u.flags,\'femme\')+1'),'','','');
+    $womanField      = new RefSField('woman',array('FIND_IN_SET(\'femme\',u.flags)+1'),'','','');
     $subscriberField = new RefSField('subscriber',array('!(u.perms IN (\'admin\',\'user\'))+1'),'','','');
     $aliveField      = new RefSField('alive',array('(u.deces!=0)+1'),'','','');
 

@@ -41,7 +41,7 @@ function get_infos($email)
     if ($res->numRows()) {
         $user = $res->fetchOneAssoc();
         if ($user['origine'] == 'X') {
-            $res = XDB::query("SELECT nom, prenom, promo, FIND_IN_SET(flags, 'femme') AS sexe
+            $res = XDB::query("SELECT nom, prenom, promo, FIND_IN_SET('femme', flags) AS sexe
                                  FROM auth_user_md5
                                 WHERE user_id = {?}", $user['uid']);
             $user = array_merge($user, $res->fetchOneAssoc());
@@ -55,7 +55,7 @@ function get_infos($email)
                          CONCAT(b.alias, '@m4x.org') AS email,
                          CONCAT(b.alias, '@polytechnique.org') AS email2,
                          m.perms='admin' AS perms, m.origine,
-                         FIND_IN_SET(u.flags, 'femme') AS sexe
+                         FIND_IN_SET('femme', u.flags) AS sexe
                    FROM  auth_user_md5   AS u
              INNER JOIN  aliases         AS a ON ( u.user_id = a.id AND a.type != 'homonyme' )
              INNER JOIN  aliases         AS b ON ( u.user_id = b.id AND b.type = 'a_vie' )
@@ -159,7 +159,7 @@ class XnetGrpModule extends PLModule
                                      FROM groupex.announces AS a
                                INNER JOIN auth_user_md5 AS u USING(user_id)
                                     WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
-                                          AND FIND_IN_SET(a.flags, 'public')",
+                                          AND FIND_IN_SET('public', u.flags)",
                                   $globals->asso('id'));
         }
 
@@ -957,7 +957,7 @@ class XnetGrpModule extends PLModule
                                          IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom, u.prenom, u.promo
                                     FROM groupex.announces AS a
                              INNER JOIN auth_user_md5 AS u USING(user_id)
-                             WHERE FIND_IN_SET(a.flags, 'public') AND peremption >= NOW() AND a.asso_id = {?}",
+                             WHERE FIND_IN_SET('public', a.flags) AND peremption >= NOW() AND a.asso_id = {?}",
                                   $globals->asso('id'));
         }
         $page->assign('asso', $globals->asso());
@@ -1064,7 +1064,7 @@ class XnetGrpModule extends PLModule
 
         if (empty($art) && !is_null($aid)) {
             $res = XDB::query("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife,
-                                      FIND_IN_SET(a.flags, 'public') AS public
+                                      FIND_IN_SET('public', a.flags) AS public
                                  FROM groupex.announces AS a
                            INNER JOIN auth_user_md5 AS u USING(user_id)
                            INNER JOIN aliases AS l ON (l.id = u.user_id AND l.type = 'a_vie')

@@ -258,7 +258,7 @@ class EventsModule extends PLModule
                                                  AND (e.promo_max = 0 || e.promo_max >= u.promo) )
               LEFT JOIN  evenements_photo AS p ON (p.eid = e.id)
              INNER JOIN  auth_user_md5   AS u2 ON (u2.user_id = e.user_id)
-                  WHERE  u.user_id = {?} AND FIND_IN_SET(e.flags, "valide")
+                  WHERE  u.user_id = {?} AND FIND_IN_SET("valide", e.flags)
                                          AND peremption >= NOW()', $uid);
         $page->assign('rss', $rss);
     }
