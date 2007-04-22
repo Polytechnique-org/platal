@@ -22,13 +22,9 @@
 
 {literal}
 <script type="text/javascript">//<![CDATA[
-function chgMainWinLoc(strPage) {
-
-  if (is_IE) {
-    {/literal}
-    strPage = "{$globals->baseurl}/" + strPage;
-    {literal}
-  }
+function chgMainWinLoc(strPage)
+{
+  strPage = platal_baseurl + strPage;
   if (parent.opener) {
     parent.opener.document.location = strPage;
     window.close();
@@ -80,10 +76,10 @@ function chgMainWinLoc(strPage) {
           Décédé{if $x.sexe}e{/if} le {$x.deces|date_format}
           {elseif !$x.actif}
           Ce camarade n'a plus d'adresse redirection valide,<br />
-          <a href="marketing/broken/{$x.user_id}" class="popup">clique ici si tu connais son adresse email !</a>
+          <a href="marketing/broken/{$x.forlife}" class="popup">clique ici si tu connais son adresse email !</a>
           {elseif !$x.inscrit}
           Cette personne n'est pas inscrite à Polytechnique.org,<br />
-          <a href="marketing/public/{$x.user_id}" class="popup">clique ici si tu connais son adresse email !</a>
+          <a href="marketing/public/{$x.forlife}" class="popup">clique ici si tu connais son adresse email !</a>
           {else}
           {if $virtualalias}
           <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />

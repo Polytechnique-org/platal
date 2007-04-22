@@ -40,7 +40,7 @@
     {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
     {if $smarty.session.auth ge AUTH_COOKIE}
     {if !$c.dcd && !$c.wasinscrit}
-    <a href="marketing/public/{$c.user_id}" class='popup'>clique ici si tu connais son adresse email !</a>
+    <a href="marketing/public/{$c.forlife}" class='popup'>clique ici si tu connais son adresse email !</a>
     {/if}
     {/if}
   </div>
