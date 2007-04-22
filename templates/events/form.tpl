@@ -20,6 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{assign var=texte value=$smarty.request.texte|default:$texte} 
+{assign var=titre value=$smarty.request.titre|default:$titre} 
+{assign var=promo_min value=$smarty.request.promo_min|default:$promo_min} 
+{assign var=promo_max value=$smarty.request.promo_max|default:$promo_max} 
+{assign var=peremption value=$smarty.request.peremption|default:$peremption}
+{assign var=important value=$smarty.request.important|default:$important}
+
 <script type="text/javascript">//<![CDATA[
   {literal}
   function updatePreview()
@@ -92,6 +99,7 @@
           {/literal}
         //]]></script>
         Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 800 caractères soit une douzaine de ligne. Tu en es déjà à <input type='text' name='texte_count' size="4" /> caractères.
+        <script type="text/javascript">update_texte_count(document.getElementById('texte').form);</script>
       </td>
     </tr>
     <tr class="pair">

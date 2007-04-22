@@ -389,9 +389,8 @@ class EventsModule extends PLModule
         } elseif (Post::v('action') == "Proposer" && $eid) {
             $promo_min = Post::i('promo_min');
             $promo_max = Post::i('promo_max');
-            if ($promo_min > $promo_max ||
-                ($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
-                ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020)))
+            if (($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
+                ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020 || $promo_max < $promo_min)))
             {
                 $page->trig("L'intervalle de promotions $promo_min -> $promo_max n'est pas valide");
                 $action = 'edit';
