@@ -77,9 +77,8 @@ class StatsModule extends PLModule
 
         // la première ligne contient le total des inscrits avant la date de départ (J - $jours)
         list(,$init_nb) = $res->next();
-        $total = $init_nb;
-
-        list($numjour, $nb) = $res->next();
+        $total    = $init_nb;
+        $numjour = - $jours - 1;
 
         for ($i = -$jours; $i<=0; $i++) {
             if ($numjour<$i) {
@@ -96,6 +95,7 @@ class StatsModule extends PLModule
         header( "Content-type: image/png");
 
         $delt = ($total - $init_nb)/10;
+        $delt = $delt ? $delt : 5;
         $ymin = round($init_nb - $delt,0);
         $ymax = round($total   + $delt,0);
 
