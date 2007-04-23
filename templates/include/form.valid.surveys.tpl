@@ -20,56 +20,18 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Sondages</h1>
 
-<table class="bicol">
-  <tr>
-    <th>
-      Sondages en cours
-    </th>
-  </tr>
-  {iterate item=s from=$survey_current}
-  <tr class="{cycle name=cs_cycle values="impair,pair"}">
-    <td class="half">
-      &bull;
-      <a href="survey/admin/{$s.id}">
-        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
-      </a>
-    </td>
-  </tr>
-  {assign var="has_cs" value="true"}
-  {/iterate}
-  {if !$has_cs}
-  <tr>
-    <td class="half">Aucun sondage en cours</td>
-  </tr>
-  {/if}
-</table>
+<tr class="pair">
+  <td class="titre">Titre</td>
+  <td>{$valid->title}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Description</td>
+  <td>{$valid->description}</td>
+</tr>
+<tr class="impair">
+  <td class="titre">Admin</td>
+  <td><a href="survey/admin/edit/req/{$valid->id()}">Voir / &#201;diter le sondage complet</a></td>
+</tr>
 
-<br />
-
-<table class="bicol">
-  <tr>
-    <th>
-      Anciens sondages
-    </th>
-  </tr>
-  {iterate item=s from=$survey_old}
-  <tr class="{cycle name=os_cycle values="impair,pair"}">
-    <td class="half">
-      &bull;
-      <a href="survey/admin/{$s.id}">
-        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
-      </a>
-    </td>
-  </tr>
-  {assign var="has_os" value="true"}
-  {/iterate}
-  {if !$has_os}
-  <tr>
-    <td class="half">Aucun ancien sondage</td>
-  </tr>
-  {/if}
-</table>
-
-{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -17,7 +17,6 @@ CREATE TABLE `survey_surveys` (
   `end` date NOT NULL default '0000-00-00',
   `mode` tinyint(2) unsigned NOT NULL default '0',
   `promos` varchar(255) NOT NULL,
-  `valid` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -29,5 +28,8 @@ CREATE TABLE `survey_votes` (
   PRIMARY KEY  (`id`),
   KEY `voter` (`survey_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `requests_answers` MODIFY `category` enum('alias','liste','usage','photo','evts','marketing','orange','homonyme','nl','paiements','medal','broken','surveys') NOT NULL default 'alias';
 
 # vim: set syntax=mysql:

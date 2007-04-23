@@ -323,17 +323,13 @@ class Survey
     public static function retrieveList($type, $tpl = true)
     {
         switch ($type) {
-        case 'w':
-        case 'waiting' :
-            $where = 'valid=0';
-            break;
         case 'c':
         case 'current':
-            $where = 'valid=1 AND end > NOW()';
+            $where = 'end > NOW()';
             break;
         case 'o':
         case 'old':
-            $where = 'valid=1 AND end <= NOW()';
+            $where = 'end <= NOW()';
             break;
         default:
             return null;
@@ -352,7 +348,7 @@ class Survey
     // {{{ static function retrieveSurvey() : gets a survey in database (and unserialize the survey object structure)
     public static function retrieveSurvey($sid)
     {
-        $sql = 'SELECT questions, title, description, end, mode, promos, valid
+        $sql = 'SELECT questions, title, description, end, mode, promos
                   FROM survey_surveys
                  WHERE id={?}';
         $res = XDB::query($sql, $sid);
@@ -360,7 +356,7 @@ class Survey
         if (is_null($data) || !is_array($data)) {
             return null;
         }
-        $survey = new Survey($data, $sid, (boolean) $data['valid'], unserialize($data['questions']));
+        $survey = new Survey($data, $sid, true, unserialize($data['questions']));
         return $survey;
     }
     // }}}
@@ -368,7 +364,7 @@ class Survey
     // {{{ static function retrieveSurveyInfo() : gets information about a survey (title, description, end date, restrictions) but does not unserialize the survey object structure
     public static function retrieveSurveyInfo($sid)
     {
-        $sql = 'SELECT title, description, end, mode, promos, valid
+        $sql = 'SELECT title, description, end, mode, promos
                   FROM survey_surveys
                  WHERE id={?}';
         $res = XDB::query($sql, $sid);
@@ -376,47 +372,54 @@ class Survey
     }
     // }}}
 
+    // {{{ static function retrieveSurveyReq() : gets a survey request to validate
+    public static function retrieveSurveyReq($id)
+    {
+        require_once 'validations.inc.php';
+        $surveyreq = Validate::get_request_by_id($id);
+        if ($surveyreq == null) {
+            return null;
+        }
+        $data = array('title'       => $surveyreq->title,
+                      'description' => $surveyreq->description,
+                      'end'         => $surveyreq->end,
+                      'mode'        => $surveyreq->mode,
+                      'promos'      => $surveyreq->promos);
+        $survey = new Survey($data, $id, false, $surveyreq->questions);
+        return $survey;
+    }
+    // }}}
+
     // {{{ function proposeSurvey() : stores a proposition of survey in database (before validation)
     public function proposeSurvey()
     {
-        $sql = 'INSERT INTO survey_surveys
-                        SET questions={?},
-                            title={?},
-                            description={?},
-                            author_id={?},
-                            end={?},
-                            mode={?},
-                            promos={?},
-                            valid=0;';
-        return XDB::execute($sql, serialize($this->questions), $this->title, $this->description, S::v('uid'), $this->end, $this->mode, $this->promos);
+        require_once 'validations.inc.php';
+        $surveyreq = new SurveyReq($this->title, $this->description, $this->end, $this->mode, $this->promos, $this->questions, S::v('uid'));
+        return $surveyreq->submit();
     }
     // }}}
 
     // {{{ function updateSurvey() : updates a survey in database (before validation)
     public function updateSurvey()
     {
-        if ($this->id == -1) {
-            return false;
+        if ($this->valid) {
+            $sql = 'UPDATE survey_surveys
+                       SET questions={?},
+                           title={?},
+                           description={?},
+                           end={?},
+                           mode={?},
+                           promos={?}
+                     WHERE id={?};';
+            return XDB::execute($sql, serialize($this->questions), $this->title, $this->description, $this->end, $this->mode, $this->promos, $this->id);
+        } else {
+            require_once 'validations.inc.php';
+            $surveyreq = Validate::get_request_by_id($this->id);
+            if ($surveyreq == null) {
+                return false;
+            }
+            return $surveyreq->updateReq($this->title, $this->description, $this->end, $this->mode, $this->promos, $this->questions);
         }
-        $sql = 'UPDATE survey_surveys
-                   SET questions={?},
-                       title={?},
-                       description={?},
-                       end={?},
-                       mode={?},
-                       promos={?}
-                 WHERE id={?};';
-        return XDB::execute($sql, serialize($this->questions), $this->title, $this->description, $this->end, $this->mode, $this->promos, $this->id);
-    }
-    // }}}
-
-    // {{{ static function validateSurvey() : validates a survey
-    public static function validateSurvey($sid)
-    {
-        $sql = 'UPDATE survey_surveys
-                   SET valid=1
-                 WHERE id={?};';
-        return XDB::execute($sql, $sid);
     }
     // }}}
 
