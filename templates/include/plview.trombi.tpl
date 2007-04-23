@@ -20,6 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if $plset_count eq 0}
+<p class="erreur">
+  Aucun des camarades concernés n'a de photographie sur sa fiche
+</p>
+{else}
 <table cellpadding="8" cellspacing="2" style="width: 100%">
   {iterate from=$set item=p}
   {cycle values="1,2,3" assign="loop"}
@@ -49,5 +54,6 @@
   <td></td></tr>
   {/if}
 </table>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
