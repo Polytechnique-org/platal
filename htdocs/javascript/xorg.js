@@ -169,11 +169,8 @@ function auto_links() {
 	    node.onclick = function () { window.open(this.href); return false; };
 	}
         if (node.href.indexOf(fqdn) > -1 && light) {
-            if (node.href.indexOf('?') > -1) {
-                node.href = node.href + '&display=light';
-            } else {
-                node.href = node.href + '?display=light';
-            }
+            node.href = node.href.replace(/([^\#\?]*)\??([^\#]*)(\#.*)?/,
+                                          "$1?display=light&$2$3");
         }
 	if(node.className == 'popup2') {
         node.onclick = function () { popWin(this,840,600); return false; };
