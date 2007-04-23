@@ -159,14 +159,22 @@ function popWin(theNode,w,h) {
 
 function auto_links() {
     nodes = document.getElementsByTagName('a');
-    fqdn = document.URL;
-    fqdn = fqdn.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
+    url  = document.URL;
+    fqdn = url.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
+    light = (url.indexOf('display=light') > url.indexOf('?'));
     for(var i=0; i<nodes.length; i++) {
 	node = nodes[i];
 	if(!node.href || node.className == 'xdx' || node.href.indexOf('mailto:') > -1 || node.href.indexOf('javascript:')>-1) continue;
-	if(node.href.indexOf(fqdn)<0 || node.className == 'popup') {
+	if (node.href.indexOf(fqdn)<0 || node.className == 'popup') {
 	    node.onclick = function () { window.open(this.href); return false; };
 	}
+        if (node.href.indexOf(fqdn) > -1 && light) {
+            if (node.href.indexOf('?') > -1) {
+                node.href = node.href + '&display=light';
+            } else {
+                node.href = node.href + '?display=light';
+            }
+        }
 	if(node.className == 'popup2') {
         node.onclick = function () { popWin(this,840,600); return false; };
 	}

@@ -60,20 +60,20 @@
 
 <h1>Comment faire une recherche ?</h1>
 
-<h2>Nom, Prenom, Promo ...</h2>
+<h2>Nom, Prenom, Promotion ...</h2>
 
 <p>
 La ligne de recherche ci-dessus accepte non seulement des mélanges de <strong>noms</strong> et de <strong>prénoms</strong> ...
-mais elle accepte de plus la syntaxe suivante pour les <strong>promos</strong> :
+mais elle accepte de plus la syntaxe suivante pour les <strong>promotions</strong> :
 </p>
 <ul>
-  <li><code>1990</code> : signifie appartient à la promo 1990</li>
-  <li><code>1990-2000</code> : signifie sur la promo 1990 à 2000</li>
-  <li><code>&lt;1990</code> : signifie promos inférieures ou égales à 1990</li>
-  <li><code>&gt;1990</code> : signifie promos supérieures ou égales à 1990</li>
+  <li><code>1990</code> : signifie appartient à la promotion 1990</li>
+  <li><code>1990-2000</code> : signifie sur la promotion 1990 à 2000</li>
+  <li><code>&lt;1990</code> : signifie promotions inférieures ou égales à 1990</li>
+  <li><code>&gt;1990</code> : signifie promotions supérieures ou égales à 1990</li>
 </ul>
 <p>
-Ainsi, rechercher tous les "Dupont" sur les promos 1980 à 1990 et sur la promo 2000 se fait avec la recherche :
+Ainsi, rechercher tous les "Dupont" sur les promotions 1980 à 1990 et sur la promotion 2000 se fait avec la recherche :
 <code>Dupont 1980-1990 2000</code>
 </p>
 
@@ -91,6 +91,7 @@ Il est conseillé d'omettre les particules car il est possible que celles-ci ne 
 notre base de données.
 </p>
 
+{if $smarty.session.perms->hasFlag('user')}
 <div id="searchbar" style="display: none">
 <h2>Barre de recherche pour ton navigateur</h2>
 <p>
@@ -107,6 +108,7 @@ notre base de données.
   }
   {/literal}
 //]]></script>
+{/if}
 
 <h2>Polytechniciens des promotions 1919 et précédentes</h2>
 <p>Notre base de données ne contient que les polytechniciens depuis la promotion 1920. Pour effectuer des recherches dans les

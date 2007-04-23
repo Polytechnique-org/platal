@@ -147,7 +147,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
   (<strong>excepté le mot de passe de connexion au site</strong>) circulent en clair entre chez toi et 
   Polytechnique.org. Tu peux basculer sur une connexion sécurisée en cliquant sur le lien
   <div class="center">
-  <a href="{$globals->baseurl|replace:"http":"https"}/{$platal->pl_self()}">
+  <a href="https://{#globals.core.secure_domain#}{$smarty.server.REQUEST_URI}">
     {icon name=lock_add} Passer en connexion sécurisée</a>
   </div><br />
   Plus d'informations sur la connexion sécurisée se trouvent

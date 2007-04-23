@@ -24,7 +24,7 @@
 
 <p>
   {#globals.core.sitename#} est le site qui connecte la communauté des
-  polytechniciens.  Il comporte une partie publique, et une partie privée
+  polytechniciens.  Il comporte une partie publique et une partie privée
   réservée aux polytechniciens.
 </p>
 
