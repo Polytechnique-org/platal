@@ -730,7 +730,7 @@ function set_user_details($uid, $details) {
 // }}}
 // {{{ function _user_reindex
 
-function _user_reindex($uid, $keys, $muls)
+function _user_reindex($uid, $keys, $muls, $pubs)
 {
     foreach ($keys as $i => $key) {
         if ($key == '') {
@@ -742,9 +742,9 @@ function _user_reindex($uid, $keys, $muls)
         while ($toks) {
             $token = strtolower(replace_accent(array_pop($toks) . $token));
             $score = ($toks ? 0 : 10 + $first) * $muls[$i];
-            XDB::execute("REPLACE INTO  search_name (token, uid, soundex, score)
-                                VALUES  ({?}, {?}, {?}, {?})",
-                         $token, $uid, soundex_fr($token), $score);
+            XDB::execute("REPLACE INTO  search_name (token, uid, soundex, score, flags)
+                                VALUES  ({?}, {?}, {?}, {?}, {?})",
+                         $token, $uid, soundex_fr($token), $score, $pubs[$i] ? 'public' : '');
             $first = 0;
         }
     }
@@ -774,11 +774,11 @@ function user_reindex($uid) {
     XDB::execute("DELETE FROM search_name WHERE uid={?}", $uid);
     $res = XDB::query("SELECT prenom, nom, nom_usage, profile_nick FROM auth_user_md5 INNER JOIN auth_user_quick USING(user_id) WHERE auth_user_md5.user_id = {?}", $uid);
     if ($res->numRows()) {
-      _user_reindex($uid, $res->fetchOneRow(), array(1,1,1,0.2));
+      _user_reindex($uid, $res->fetchOneRow(), array(1,1,1,0.2), array(true, true, true, false));
     } else { // not in auth_user_quick => still "pending"
       $res = XDB::query("SELECT prenom, nom, nom_usage FROM auth_user_md5 WHERE auth_user_md5.user_id = {?}", $uid);
       if ($res->numRows()) {
-          _user_reindex($uid, $res->fetchOneRow(), array(1,1,1));
+          _user_reindex($uid, $res->fetchOneRow(), array(1,1,1), array(true, true, true));
       }
     }
 }

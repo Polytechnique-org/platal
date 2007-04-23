@@ -284,8 +284,12 @@ class QuickSearch extends SField
     function get_select_statement()
     {
         $join = "";
+        $and  = '';
         foreach ($this->strings as $i => $s) {
-            $join .= "INNER JOIN search_name AS sn$i ON (u.user_id = sn$i.uid)\n";
+            if (!S::logged()) {
+                $and = "AND FIND_IN_SET('public', sn$i.flags)";
+            } 
+            $join .= "INNER JOIN search_name AS sn$i ON (u.user_id = sn$i.uid $and)\n";
         }
         return $join;
     }

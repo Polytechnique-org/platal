@@ -32,9 +32,10 @@ $res = XDB::iterRow('SELECT  auth_user_md5.user_id, nom, prenom, nom_usage, prof
                   LEFT JOIN auth_user_quick USING(user_id)');
 $i = 0;
 $muls = array(1, 1, 1, 0.2);
+$pub  = array(true, true, true, false);
 while ($tmp = $res->next()) {
     $uid = array_shift($tmp);
-    _user_reindex($uid, $tmp, $muls);
+    _user_reindex($uid, $tmp, $muls, $pub);
     printf("\r%u / %u",  ++$i, $res->total());
 }
 
