@@ -28,16 +28,9 @@
       Sondages en cours
     </th>
   </tr>
-  <tr> 
-    <td>
-      {if $survey_current->total() eq 0}
-      Aucun sondage en cours
-      {/if}
-      <a style="display: block; float: right;" href="survey/edit/new">{icon name=page_edit} Proposer un sondage</a></td> 
-  </tr> 
   {iterate item=s from=$survey_current}
   {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
-  <tr class="{cycle values="impair,pair"}">
+  <tr class="{cycle name=cs_cycle values="impair,pair"}">
     <td class="half">
       &bull;
       <a href="survey/vote/{$s.id}">
@@ -45,8 +38,15 @@
       </a>
     </td>
   </tr>
+    {assign var="has_cs" value="true"}
   {/if}
   {/iterate}
+  <tr class="impair"> 
+    <td class="half">
+      {if !$has_cs}Aucun sondage en cours{/if}
+      {if $smarty.session.auth}<a style="display: block; float: right;" href="survey/edit/new">{icon name=page_edit} Proposer un sondage</a>{/if}
+    </td> 
+  </tr> 
 </table>
 
 <br />
@@ -59,7 +59,7 @@
   </tr>
   {iterate item=s from=$survey_old}
     {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
-  <tr class="{cycle values="impair,pair"}">
+  <tr class="{cycle name=os_cycle values="impair,pair"}">
     <td class="half">
       &bull;
       <a href="survey/result/{$s.id}">
