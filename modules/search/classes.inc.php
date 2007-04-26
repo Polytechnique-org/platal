@@ -249,7 +249,7 @@ class QuickSearch extends SField
     {
         $where = Array();
         foreach ($this->strings as $i => $s) {
-            if (Env::i('with_soundex')) {
+            if (Env::i('with_soundex') && strlen($s) > 1) {
                 $t = soundex_fr($s);
                 $where[] = "sn$i.soundex = '$t'";
             } else {
@@ -285,11 +285,14 @@ class QuickSearch extends SField
     {
         $join = "";
         $and  = '';
+        $uniq = '';
         foreach ($this->strings as $i => $s) {
             if (!S::logged()) {
                 $and = "AND FIND_IN_SET('public', sn$i.flags)";
-            } 
-            $join .= "INNER JOIN search_name AS sn$i ON (u.user_id = sn$i.uid $and)\n";
+            }
+            $myu  = str_replace('snv', "sn$i", $uniq);
+            $join .= "INNER JOIN search_name AS sn$i ON (u.user_id = sn$i.uid $and$myu)\n";
+            $uniq .= " AND sn$i.token != snv.token";
         }
         return $join;
     }
