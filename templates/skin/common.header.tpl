@@ -50,7 +50,7 @@
     {/foreach}
     <link rel="stylesheet" type="text/css" href="css/print.css" media="print"/>
     <script type="text/javascript">
-      var platal_baseurl = "{#globals.baseurl#}/";
+      var platal_baseurl = "{$globals->baseurl}/";
     </script>
     {foreach from=$xorg_js item=js}
     <script type="text/javascript" src="javascript/{$js}"></script>

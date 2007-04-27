@@ -193,7 +193,7 @@ class Notifs
     public $_cats = Array();
     public $_data = Array();
 
-    function __concstruct($uid, $up=false)
+    function __construct($uid, $up=false)
     {
         $this->_uid = $uid;
 
