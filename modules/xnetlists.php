@@ -91,9 +91,9 @@ class XnetListsModule extends ListsModule
             // prevent group admin from erasing aliases from other groups
             $alias = substr($alias, 0, strpos($alias, '@')).'@'.$globals->asso('mail_domain');
             XDB::query(
-                    'DELETE FROM  x4dat.virtual_redirect, x4dat.virtual
+                    'DELETE FROM  r, v
                            USING  x4dat.virtual AS v
-                       LEFT JOIN  x4dat.virtual_redirect USING(vid)
+                       LEFT JOIN  x4dat.virtual_redirect AS r USING(vid)
                            WHERE  v.alias={?}', $alias);
             $page->trig(Post::v('del_alias')." supprimé !");
         }
