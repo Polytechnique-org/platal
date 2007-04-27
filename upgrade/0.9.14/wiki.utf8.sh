@@ -7,7 +7,7 @@ find $WIKISPOOLDIR -name 'cache_*' -or -name 'tmp_*' -exec rm {} ";"
 for i in `find $WIKISPOOLDIR -type f`; do
     CONV=`echo -n $i | iconv -t UTF-8`
     mv $i $i.latin1
-    iconv -t UTF-8 $i.latin1 > $CONV
+    iconv -f latin1 -t UTF-8 $i.latin1 > $CONV
 done
 
 for i in `find $IMAGESPOOLDIR -type f`; do
