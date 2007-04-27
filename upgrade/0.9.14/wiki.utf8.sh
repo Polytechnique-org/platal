@@ -11,7 +11,7 @@ for i in `find $WIKISPOOLDIR -type f`; do
 done
 
 for i in `find $IMAGESPOOLDIR -type f`; do
-    CONV=`echo -n $i | iconv -t UTF-8`
+    CONV=`echo -n $i | iconv -f latin1 -t UTF-8`
     if [ $i != $CONV ]; then
         mv $i $CONV
     fi
