@@ -70,7 +70,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Mot de passe :
+        Mot de passe (15 caractères maximum):
       </td>
       <td>
         <input type="password" size="15" maxlength="15" name="smtppass1" />
