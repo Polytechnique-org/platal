@@ -87,7 +87,7 @@ X-BINETS:{$vcard.binets_vcardjoin}
 X-GROUPS:{$vcard.gpxs_vcardjoin}
 {/if}
 {if $vcard.photo}
-PHOTO;ENCODING=b;TYPE={$vcard.photo.attachmime}:{$vcard.photo.attach|base64_encode|vcard_enc}
+PHOTO;ENCODING=b;TYPE={$vcard.photo.attachmime}:{$vcard.photo.attach|html_entity_decode|base64_encode|vcard_enc}
 {/if}
 SORT-STRING:{$vcard.nom|vcard_enc}
 REV:{$vcard.date|date_format:"%Y%m%dT000000Z"}
