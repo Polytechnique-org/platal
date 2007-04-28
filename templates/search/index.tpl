@@ -46,7 +46,7 @@
 
   {if $smarty.session.auth ge AUTH_COOKIE}
   <p class="noprint">
-    <strong>{icon name=lightbulb title=Astruce}Astuce&nbsp;:</strong>
+    <strong>{icon name=lightbulb title=Astuce}Astuce&nbsp;:</strong>
     {if $search_results_nb}
     Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !
     {elseif $advanced && $with_soundex && ($smarty.request.name || $smarty.request.firstname)}
