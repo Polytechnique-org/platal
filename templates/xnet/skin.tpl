@@ -137,10 +137,10 @@
               <div style="display: inline">
                 <small>voir le site en tant que...
                 <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
-                  {if $smarty.session.perms->hasFlag('admin') || $smarty.session.suid.perms->hasFlag('admin')}
+                  {if $smarty.session.perms->hasFlag('admin') || ($smarty.session.suid && $smarty.session.suid.perms->hasFlag('admin'))}
                   <option value="admin" {if $smarty.session.perms->hasFlag('admin')}selected="selected"{/if}>Administrateur</option>
                   {/if}
-                  <option value="anim" {if $is_admin && !$smarty.session.perms->hasFlag('admin')}selected="selected"{/if}>Animateur</option>
+                  <option value="anim" {if $is_admin && !$smarty.session.perms->hasFlag('groupadmin')}selected="selected"{/if}>Animateur</option>
                   <option value="member" {if !$is_admin && $is_member}selected="selected"{/if}>Membre</option>
                   <option value="logged" {if !$is_admin && !$is_member}selected="selected"{/if}>Non-membre</option>
                 </select>
