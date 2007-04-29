@@ -39,7 +39,7 @@
     <td class="titre" style="width: 20%">Demandeur&nbsp;:</td>
     <td>
       <a href="profile/{$valid->bestalias}" class="popup2">
-        {$valid->prenom|utf8_encode} {$valid->nom|utf8_encode} (X{$valid->promo})
+        {$valid->prenom} {$valid->nom} (X{$valid->promo})
       </a>
     </td>
   </tr>
