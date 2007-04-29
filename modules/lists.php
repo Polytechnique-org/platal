@@ -506,7 +506,7 @@ class ListsModule extends PLModule
         global $list_unregistered;
 
         $users = get_not_registered_user($login, true);
-        if ($users->total()) {
+        if ($users && $users->total()) {
             if (!isset($list_unregistered)) {
                 $list_unregistered = array();
             }
