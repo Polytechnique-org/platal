@@ -82,8 +82,9 @@ utiliser une adresse personnalisée, il faut se tourner vers
 
 {literal}
   <form action="profile/usage" method="post" onsubmit="
-  for (var i=this.reason.length-1; i--; i>=0) {
-    if (this.reason[i].checked) {
+  for (var i=this.reason.length-1; i>=0; i--) {
+    if (this.reason[i].checked && 
+      (this.reason[i].value != 'other' || this.other_reason.value != '')) {
       return true;
     }
   }
