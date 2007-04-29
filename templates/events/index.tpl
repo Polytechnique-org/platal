@@ -30,8 +30,6 @@
 Bienvenue {$smarty.session.prenom}
 {if $birthday}
   et joyeux anniversaire de {$birthday} ans de la part de toute l'équipe !
-{else}
-:o)
 {/if}
 </h1>
 
