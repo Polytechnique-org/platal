@@ -868,7 +868,7 @@ def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, ins
         mlist.subject_prefix = '['+listname+'] '
         mlist.max_message_size = 0
 
-        inverted_listname = '_'.join(listname.split('_', 1)[-1::-1])
+        inverted_listname = listname.lower() + '_' + vhost.lower()
         mlist.msg_footer = "_______________________________________________\n" \
                          + "Liste de diffusion %(real_name)s\n" \
                          + "http://listes.polytechnique.org/members/" + inverted_listname
