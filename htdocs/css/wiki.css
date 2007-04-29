@@ -76,4 +76,9 @@ table.quickref td {
 a.varlink {
     text-decoration: none; 
 }
-
+a.createlink {
+    font-size: smaller;
+    vertical-align: super;
+    line-height: normal;
+    text-decoration: none;
+}
