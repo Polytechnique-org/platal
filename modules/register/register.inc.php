@@ -62,7 +62,7 @@ function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid, &$watch, &$na
     }
 
     $res = XDB::query(
-            'SELECT  user_id, promo, perms IN ("admin","user"), nom, prenom, FIND_IN_SET(\'watch\', u.flags), naissance_ini
+            'SELECT  user_id, promo, perms IN ("admin","user"), nom, prenom, FIND_IN_SET(\'watch\', flags), naissance_ini
               FROM  auth_user_md5
              WHERE  matricule={?} and deces = 0', $ourmat);
     list ($uid, $_promo, $_already, $_nom, $_prenom, $watch, $naiss) = $res->fetchOneRow();

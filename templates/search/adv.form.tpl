@@ -366,7 +366,7 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td colspan="2" style="padding-top: 1.5em">
         <div style="float: right">
-          <input type="button" value="Chercher" />
+          <input type="submit" value="Chercher" />
         </div>
         {if $smarty.session.auth ge AUTH_COOKIE}
           <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} id="order"/>
