@@ -269,7 +269,7 @@ class AnnuaireMarketing implements MarketingEngine
 
     public function getText(array $user)
     {
-        $page = new PlatalPage('marketing/mail.marketing.tpl', NO_SKIN);
+        $page = new XorgPage('marketing/mail.marketing.tpl', NO_SKIN);
         $this->prepareText($page, $user);
         return $page->raw();
     }
