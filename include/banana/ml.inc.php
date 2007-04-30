@@ -85,13 +85,13 @@ class BananaMLArchive extends BananaMBox
     {
         global $globals;
         $spool = $globals->lists->spool . '/';
-        $list = glob($spool . '*.mbox', GLOB_ONLYDIR);
+        $list = glob($spool . '*.mbox/*.mbox');
         if ($list === false) {
             return array();
         }
         $groups = array();
         foreach ($list as $path) {
-            $path = substr($path, strlen($spool));
+            $path = substr($path, strpos($path, 'mbox/') + 5);
             $path = substr($path, 0, -5);
             list($domain, $listname) = explode($globals->lists->vhost_sep, $path, 2);
             $group = $listname . '@' . $domain;
