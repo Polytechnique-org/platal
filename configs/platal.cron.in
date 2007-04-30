@@ -19,7 +19,7 @@ WD=/home/web/prod/platal/bin/cron
 0 */3 * * *	web	cd $WD; ./cron_validations.php
 
 # flux rss de banana
-*/5 * * * *     web     cd $WD; ./banana.feedgen.php > /dev/null
+*/5 * * * *     www-data     cd $WD; ./banana.feedgen.php > /dev/null
 
 # AX spammer
 15 * * * *      web     cd $WD; ./axletter.send.php | mail -e -s "envoi d'un mail de l'AX" br@staff.m4x.org
