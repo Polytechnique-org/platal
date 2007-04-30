@@ -106,7 +106,9 @@ abstract class PlatalPage extends Smarty
 
         switch ($this->_page_type) {
           case NO_SKIN:
-            error_reporting(0);
+            if (!($globals->debug & DEBUG_SMARTY)) {
+                error_reporting(0);
+            }
             $this->display($this->_tpl);
             exit;
 
@@ -130,19 +132,21 @@ abstract class PlatalPage extends Smarty
             exit;
         }
 
-        if ($globals->debug & 1) {
+        if ($globals->debug & DEBUG_BT) {
             PlBacktrace::clean();
             $this->assign_by_ref('backtraces', PlBacktrace::$bt);
         }
 
         $this->assign('validate', true);
-        error_reporting(0);
+        if (!($globals->debug & DEBUG_SMARTY)) {
+            error_reporting(0);
+        }
         $result = $this->fetch($skin);
         $ttime  = sprintf('Temps total: %.02fs - Mémoire totale : %dKo<br />', microtime(true) - $TIME_BEGIN
                                                                                 , memory_get_peak_usage(true) / 1024);
         $replc  = "<span class='erreur'>VALIDATION HTML INACTIVE</span><br />";
 
-        if ($globals->debug & 2) {
+        if ($globals->debug & DEBUG_VALID) {
             $fd = fopen($this->compile_dir."/valid.html","w");
             fwrite($fd, $result);
             fclose($fd);

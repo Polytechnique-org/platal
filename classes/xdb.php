@@ -27,7 +27,7 @@ class XDB
     {
         global $globals;
         XDB::$mysqli = new mysqli($globals->dbhost, $globals->dbuser, $globals->dbpwd, $globals->dbdb);
-        if ($globals->debug & 1) {
+        if ($globals->debug & DEBUG_BT) {
             $bt = new PlBacktrace('MySQL');
             if (mysqli_connect_errno()) {
                 $bt->newEvent("MySQLI connection", 0, mysqli_connect_error());
@@ -79,7 +79,7 @@ class XDB
             return false;
         }
 
-        if ($globals->debug & 1) {
+        if ($globals->debug & DEBUG_BT) {
             $explain = array();
             if (strpos($query, 'FOUND_ROWS()') === false) {
                 $res = XDB::$mysqli->query("EXPLAIN $query");
@@ -95,7 +95,7 @@ class XDB
 
         $res = XDB::$mysqli->query($query);
 
-        if ($globals->debug & 1) {
+        if ($globals->debug & DEBUG_BT) {
             PlBacktrace::$bt['MySQL']->stop(@$res->num_rows ? $res->num_rows : XDB::$mysqli->affected_rows,
                                             XDB::$mysqli->error,
                                             $explain);

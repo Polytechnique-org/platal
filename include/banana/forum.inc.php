@@ -44,7 +44,8 @@ class ForumsBanana extends Banana
         if (S::has_perms()) {
             Banana::$msgshow_mimeparts[] = 'source';
         }
-        Banana::$debug_nntp = ($globals->debug & 1);
+        Banana::$debug_nntp = ($globals->debug & DEBUG_BT);
+        Banana::$debug_smarty = ($globals->debug & DEBUG_SMARTY);
         if (!S::v('core_rss_hash')) {
             Banana::$feed_active = false;
         }

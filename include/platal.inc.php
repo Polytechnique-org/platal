@@ -36,6 +36,10 @@ define('NO_SKIN', 2);
 define('NO_AUTH', 0);
 define('DO_AUTH', 1);
 
+define('DEBUG_BT', 1);
+define('DEBUG_VALID', 2);
+define('DEBUG_SMARTY', 4);
+
 function __autoload($cls)
 {
     $cls  = strtolower($cls);
