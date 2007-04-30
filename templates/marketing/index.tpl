@@ -59,7 +59,7 @@ Soit un pourcentage d'inscrites de : {$stats.inse_rate} % <br />
 </p>
 
 <p>
-Nombre d'<a href="marketing/this_week">inscrits depuis le début de la semaine</a> : {$nbInsSem}<br />
+Nombre d'<a href="marketing/this_week">inscrits ces 7 derniers jours</a> : {$nbInsSem}<br />
 Nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non terminée) : {$nbInsEnCours} <br />
 Nombre d'envois marketing effectués n'ayant pas abouti : {$nbInsMarket}<br />
 Nombre d'envois marketing ayant abouti cette semaine : {$nbInsMarkOK}
