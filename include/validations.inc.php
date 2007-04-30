@@ -32,7 +32,7 @@ class ValidateIterator extends XOrgDBIterator
 
     public function __construct ()
     {
-        parent::__construct('SELECT data,stamp FROM requests ORDER BY stamp', MYSQL_NUM);
+        parent::__construct('SELECT data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s") FROM requests ORDER BY stamp', MYSQL_NUM);
     }
 
     // }}}
@@ -274,7 +274,7 @@ abstract class Validate
         if ($stamp == -1) {
             $res = XDB::query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
         } else {
-            $res = XDB::query("SELECT data, stamp FROM requests WHERE user_id={?} AND type={?} and stamp={?}", $uid, $type, $stamp);
+            $res = XDB::query('SELECT data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s") FROM requests WHERE user_id={?} AND type={?} and stamp={?}', $uid, $type, $stamp);
         }
         if ($result = $res->fetchOneCell()) {
             $result = unserialize($result);
