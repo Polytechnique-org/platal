@@ -259,7 +259,7 @@ class Platal
         $page->run();
     }
 
-    private function on_subscribe($forlife, $uid, $promo, $pass)
+    public function on_subscribe($forlife, $uid, $promo, $pass)
     {
         $args = func_get_args();
         foreach ($this->__mods as $mod) {

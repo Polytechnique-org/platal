@@ -79,7 +79,7 @@ function chgMainWinLoc(strPage)
           <a href="marketing/broken/{$x.forlife}" class="popup">clique ici si tu connais son adresse email !</a>
           {elseif !$x.inscrit}
           Cette personne n'est pas inscrite à Polytechnique.org,<br />
-          <a href="marketing/public/{$x.forlife}" class="popup">clique ici si tu connais son adresse email !</a>
+          <a href="marketing/public/{$x.user_id}" class="popup">clique ici si tu connais son adresse email !</a>
           {else}
           {if $virtualalias}
           <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />
