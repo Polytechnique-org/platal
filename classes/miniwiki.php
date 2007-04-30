@@ -33,9 +33,9 @@ class MiniWiki
         MiniWiki::Markup("/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',strlen('$1'))", "str_repeat('\n',strlen('$1'))", "ligne1\\\\\nligne2");
         
         // * unordered list 
-        MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se", "'<ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul>'", "$0", "* element1\n* element2\n* element3"); 
+        MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se", "'<ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul>'", "'$0'", "* element1\n* element2\n* element3"); 
         // # unordered list 
-        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "$0", "# element1\n# element2\n# element3"); 
+        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "'$0'", "# element1\n# element2\n# element3"); 
         
         // bold, italic and others
         // ''' bold '''
@@ -144,6 +144,11 @@ class MiniWiki
             $oldrule12 = MiniWiki::$replacementHTML[MiniWiki::$title_index];
             MiniWiki::$replacementHTML[MiniWiki::$title_index] = "'$0'";
         }
+        //$text = trim($wiki);
+        //foreach (MiniWiki::$patternsWiki as $key=>$pattern) {
+        //    echo $key . " -  " . $pattern . "\n";
+        //    $text = preg_replace($pattern, MiniWiki::$replacementText[$key], $text);
+        //}
         $text = preg_replace(MiniWiki::$patternsWiki, MiniWiki::$replacementText, trim($wiki));
         if (!$title) {
             MiniWiki::$replacementHTML[MiniWiki::$title_index] = $oldrule12;
