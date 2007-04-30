@@ -37,7 +37,7 @@
         showTempMessage('message', "La promotion doit être entre {/literal}{$promo_min} et {$promo_max}{literal}.", false);
         return false;
       }
-      window.open("http://www.polytechnique.net/login/" + value + "/trombi");
+      window.open("http://www.polytechnique.net/login/" + value + "/annuaire/trombi");
       return false;
   }
   {/literal}

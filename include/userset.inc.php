@@ -330,7 +330,7 @@ class GeolocView implements PlView
                                    "INNER JOIN  adresses AS adrf  ON (adrf.uid = u.user_id)
                                      LEFT JOIN  aliases  AS al   ON (u.user_id = al.id
                                                                    AND FIND_IN_SET('bestalias', al.flags))
-                                    INNER JOIN  adresses AS av ON (" . getadr_join('av') . ")",
+                                    INNER JOIN  adresses AS avg ON (" . getadr_join('avg') . ")",
                                    'adrf.cityid = ' . Env::i('cityid'), null, null, 11);
             $page->assign('users', $it);
             break;

@@ -80,6 +80,13 @@ class SearchModule extends PLModule
     {
         global $globals;
 
+        $res = XDB::query("SELECT  MIN(`diminutif`), MAX(`diminutif`)
+                             FROM  `groupex`.`asso`
+                            WHERE  `cat` = 'Promotions'");
+        list($min, $max) = $res->fetchOneRow();
+        $page->assign('promo_min', $min);
+        $page->assign('promo_max', $max);
+
         if (Env::has('quick') || $action == 'geoloc') {
             $page->assign('formulaire', 0);
 
@@ -104,12 +111,6 @@ class SearchModule extends PLModule
                 new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
             }
         } else {
-            $res = XDB::query("SELECT  MIN(`diminutif`), MAX(`diminutif`)
-                                 FROM  `groupex`.`asso`
-                                WHERE  `cat` = 'Promotions'");
-            list($min, $max) = $res->fetchOneRow();
-            $page->assign('promo_min', $min);
-            $page->assign('promo_max', $max); 
             $page->assign('formulaire',1);
             $page->addJsLink('ajax.js');
         }
@@ -117,7 +118,6 @@ class SearchModule extends PLModule
         require_once dirname(__FILE__) . '/search/search.inc.php';
         $page->changeTpl('search/index.tpl');            
         $page->assign('xorg_title','Polytechnique.org - Annuaire');
-        $page->assign('baseurl', $globals->baseurl);
     }
 
     function handler_advanced(&$page, $action = null, $subaction = null)
