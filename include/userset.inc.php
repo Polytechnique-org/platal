@@ -157,7 +157,7 @@ class MinificheView extends MultipageView
         }
         $this->addSortKey('name', array('nom', 'prenom'), 'nom');
         $this->addSortKey('promo', array('-promo', 'nom', 'prenom'), 'promotion');
-        $this->addSortKey('date', array('-watch_last', '-promo', 'nom', 'prenom'), 'dernière modification');
+        $this->addSortKey('date_mod', array('-watch_last', '-promo', 'nom', 'prenom'), 'dernière modification');
         parent::__construct($set, $data, $params);
     }
 
@@ -212,7 +212,7 @@ class MentorView extends MultipageView
         $this->addSortKey('rand', array('RAND(' . S::i('uid') . ')'), 'aléatoirement');
         $this->addSortKey('name', array('nom', 'prenom'), 'nom'); 
         $this->addSortKey('promo', array('-promo', 'nom', 'prenom'), 'promotion'); 
-        $this->addSortKey('date', array('-watch_last', '-promo', 'nom', 'prenom'), 'dernière modification'); 
+        $this->addSortKey('date_mod', array('-watch_last', '-promo', 'nom', 'prenom'), 'dernière modification'); 
         parent::__construct($set, $data, $params); 
     }
 
