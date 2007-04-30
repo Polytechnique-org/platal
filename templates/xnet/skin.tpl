@@ -40,6 +40,11 @@
     {foreach from=$xorg_css item=css}
     <link rel="stylesheet" type="text/css" href="css/{$css}" />
     {/foreach}
+    {foreach from=$xorg_inline_css item=css} 
+    <style type="text/css"> 
+    {$css|smarty:nodefaults} 
+    </style> 
+    {/foreach} 
     <script type="text/javascript">
     var platal_baseurl = "{$globals->baseurl}/"
     if (window.top != window)

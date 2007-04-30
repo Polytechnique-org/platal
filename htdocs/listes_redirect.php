@@ -21,21 +21,22 @@
 
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
 
-preg_match('/^\/(moderate|admin|members)\/(.*)_([^_]*)$/', $_SERVER['REQUEST_URI'], $matches);
+preg_match('/^\/(moderate|admin|members|archives)\/(.*)_([^_]*)(/.*)?$/', $_SERVER['REQUEST_URI'], $matches);
 
 if ($matches) {
 
     $action = $matches[1];
     $mbox   = $matches[2];
     $fqdn   = strtolower($matches[3]);
-
+    $sup    = $matches[4];
+ 
     if ($fqdn == 'polytechnique.org') {
-        http_redirect("https://www.polytechnique.org/lists/$action/$mbox");
+        http_redirect("https://www.polytechnique.org/lists/$action/$mbox$sup");
     }
 
     $res = XDB::query("select diminutif from groupex.asso where mail_domain = {?}", $fqdn);
     if ($gpx = $res->fetchOneCell()) {
-        http_redirect("http://www.polytechnique.net/$gpx/lists/$action/$mbox");
+        http_redirect("http://www.polytechnique.net/$gpx/lists/$action/$mbox$sup");
     }
 }
 ?>
@@ -50,5 +51,7 @@ if ($matches) {
     <hr>
     <address>Apache Server at www.carva.org Port 80</address>
   </body>
+</html>
+<?php
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
