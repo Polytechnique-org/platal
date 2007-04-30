@@ -25,7 +25,7 @@
 {javascript name="jquery"}
 {javascript name="jquery.autocomplete"}
 <script type="text/javascript">// <!-- 
-        var baseurl = "{#globals.baseurl#}/search/";
+        var baseurl = platal_baseurl + "search/";
         {literal}
         // display an autocomplete row : blabla (nb of found matches)
         function make_format_autocomplete(block) {
