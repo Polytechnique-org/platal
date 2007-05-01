@@ -63,16 +63,13 @@
     </p>
     {/if}
     </td>
-    {if $survey_editmode}
-      {assign var="survey_rooteditmode" value=true}
-      {if $survey.valid}
-        {assign var="survey_editmode" value=false}
-      {/if}
+    {if $survey_editmode && !$survey.valid}
+      {assign var="survey_editallmode" value=true}
     {/if}
     {if $survey_editmode}
     <td>
-      {if $survey_rooteditmode}<a href='survey/edit/question/root'>{icon name=page_edit} Modifier la description</a><br />{/if}
-      <a href='survey/edit/add/0'>{icon name=add} Ajouter une question au d&#233;but</a>
+      <a href='survey/edit/question/root'>{icon name=page_edit} Modifier la description</a>
+      {if $survey_editallmode}<br /><a href='survey/edit/add/0'>{icon name=add} Ajouter une question au d&#233;but</a>{/if}
     </td>
     {/if}
   </tr>
@@ -82,7 +79,7 @@
     <td>
       {include file='survey/show_question.tpl' squestion=$squestion}
     </td>
-    {if $survey_editmode}
+    {if $survey_editallmode}
     <td>
       <a href='survey/edit/question/{$squestion.id}'>{icon name=page_edit} Modifier cette question</a><br />
       <a href='survey/edit/del/{$squestion.id}'>{icon name=delete} Supprimer cette question</a><br />
@@ -94,7 +91,7 @@
   {/if}
 </table>
 <p class="center">
-  {if $survey_rooteditmode}
+  {if $survey_editmode}
   <a href='survey/edit/valid'>
     {icon name=tick} 
     {if $survey_updatemode}Enregistrer les modifications{else}Proposer ce sondage{/if}
