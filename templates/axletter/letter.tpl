@@ -43,8 +43,8 @@
 --------------------------------------------------------------------
 Cette lettre est envoyée par l'AX grâce aux outils de Polytechnique.org.
 
-archives         : [https://www.polytechnique.org/ax]
-ne plus recevoir : [https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}]
+archives         : <https://www.polytechnique.org/ax>
+ne plus recevoir : <https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}>
 
 {if !$is_mail}
 </pre>

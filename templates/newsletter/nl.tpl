@@ -60,9 +60,9 @@
 Cette lettre est envoyée à tous les Polytechniciens sur Internet par
 l'intermédiaire de Polytechnique.org.
 
-archives         : [https://www.polytechnique.org/nl]
-écrire           : [https://www.polytechnique.org/nl/submit]
-ne plus recevoir : [https://www.polytechnique.org/nl/out]
+archives         : <https://www.polytechnique.org/nl>
+écrire           : <https://www.polytechnique.org/nl/submit>
+ne plus recevoir : <https://www.polytechnique.org/nl/out>
 
 {if !$is_mail}
 </pre>
