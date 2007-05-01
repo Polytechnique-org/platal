@@ -606,7 +606,7 @@ abstract class SurveyList extends SurveyQuestion
         parent::update($args);
         $this->choices = array();
         foreach ($args['options'] as $val) {
-            if (trim($val)) {
+            if (trim($val) || trim($val) == '0') {
                 $this->choices[] = $val;
             }
         }
