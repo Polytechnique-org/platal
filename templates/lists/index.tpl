@@ -68,8 +68,8 @@ thématique particulière.
 {include file='lists/listes.inc.tpl' lists=$owner}
 
 <p class='smaller'>
-{icon name=wrench title="Modérateur"} indique que tu es modérateur de la liste, les modérateurs jouent également le rôle de  seionnaire.<br />
-{icon name=error title="Modérateur mais non-membre"} indque que tu es modérateur de la liste, mais que tu n'en es pas membre.
+{icon name=wrench title="Modérateur"} indique que tu es modérateur de la liste, les modérateurs jouent également le rôle de gestionnaire.<br />
+{icon name=error title="Modérateur mais non-membre"} indique que tu es modérateur de la liste, mais que tu n'en es pas membre.
 </p>
 {/if}
 {if $member|@count}
