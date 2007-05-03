@@ -153,11 +153,11 @@ class MinificheView extends MultipageView
         global $globals;
         $this->entriesPerPage = $globals->search->per_page;
         if (@$params['with_score']) {
-            $this->addSortKey('score', array('-score', '-watch_last', '-promo', 'nom', 'prenom'), 'pertinence');
+            $this->addSortKey('score', array('-score', '-date', '-promo', 'nom', 'prenom'), 'pertinence');
         }
         $this->addSortKey('name', array('nom', 'prenom'), 'nom');
         $this->addSortKey('promo', array('-promo', 'nom', 'prenom'), 'promotion');
-        $this->addSortKey('date_mod', array('-watch_last', '-promo', 'nom', 'prenom'), 'dernière modification');
+        $this->addSortKey('date_mod', array('-date', '-promo', 'nom', 'prenom'), 'dernière modification');
         parent::__construct($set, $data, $params);
     }
 
@@ -212,7 +212,7 @@ class MentorView extends MultipageView
         $this->addSortKey('rand', array('RAND(' . S::i('uid') . ')'), 'aléatoirement');
         $this->addSortKey('name', array('nom', 'prenom'), 'nom'); 
         $this->addSortKey('promo', array('-promo', 'nom', 'prenom'), 'promotion'); 
-        $this->addSortKey('date_mod', array('-watch_last', '-promo', 'nom', 'prenom'), 'dernière modification'); 
+        $this->addSortKey('date_mod', array('-date', '-promo', 'nom', 'prenom'), 'dernière modification'); 
         parent::__construct($set, $data, $params); 
     }
 
