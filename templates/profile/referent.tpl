@@ -34,7 +34,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#
 {javascript name=ajax}
 <script type="text/javascript">//<![CDATA[
 
-var baseurl = "{#globals.baseurl#}/referent/";
+var baseurl = platal_baseurl + "referent/";
 {literal}
 var Ajax2 = new AjaxEngine();
 
