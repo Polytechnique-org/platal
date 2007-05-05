@@ -25,7 +25,7 @@
 {from full=#from#}
 {to addr="$forlife@polytechnique.org"}
 {subject text="Bienvenue parmi les X sur le web !"}
-{elseif $mail_par eq 'text'}
+{elseif $mail_part eq 'text'}
 
 {$prenom}, félicitations pour ton inscription !
 

@@ -617,7 +617,7 @@ class AdminModule extends PLModule
         switch ($action) {
           case 'add':
             $fields = array('nom', 'nom_ini', 'prenom',
-                            'prenom_ini', 'promo', 'promo_sortie', 'flags',
+                            'prenom_ini', 'naissance_ini', 'promo', 'promo_sortie', 'flags',
                             'matricule', 'matricule_ax', 'perms');
             $importer->forceValue('promo', $promo);
             $importer->forceValue('promo_sortie', $promo + 3);
