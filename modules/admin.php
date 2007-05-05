@@ -616,7 +616,7 @@ class AdminModule extends PLModule
         $importer->registerFunction('matricule', 'matricle Ecole vers X.org', array($this, 'getMatricule'));
         switch ($action) {
           case 'add':
-            $fields = array('nom', 'nom_ini', 'prenom',
+            $fields = array('nom', 'nom_ini', 'prenom', 'naissance_ini',
                             'prenom_ini', 'promo', 'promo_sortie', 'flags',
                             'matricule', 'matricule_ax', 'perms');
             $importer->forceValue('promo', $promo);

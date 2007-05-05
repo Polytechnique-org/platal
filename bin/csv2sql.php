@@ -20,15 +20,22 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once(dirname(__FILE__) . '/../classes/csvimporter.php'); 
+
 // {{{ function showHelp()
 
-function showHelp($error = null) {
+function showHelp($error = null)
+{
     if ($error) {
         echo 'Ligne de commande non-valide : ' . $error, "\n\n";
     }
-    echo 'csv2sql.php -t table [-i source] [-r phpfile]', "\n\n";
+    echo 'csv2sql.php -t table [-du] [-k keys] [-i source] [-r phpfile]', "\n\n";
     echo 'options:', "\n";
     echo ' -t table: table in which insertion is to be done', "\n";
+    echo ' -d: switch to debug mode', "\n";
+    echo ' -u: switch to update mode', "\n";
+    echo ' -o: switch to update-only mode', "\n";
+    echo ' -k keys: comma-separated list of keys', "\n";
     echo ' -i source: CSV source file (stdin if not defined or if source is \'-\'', "\n";
     echo ' -r phpfile: PHP file which define relations', "\n";
 }
@@ -38,12 +45,26 @@ function showHelp($error = null) {
 
 function processArgs()
 {
-    global $sourceName, $table, $includedFile;
-    $opts = getopt('i:t:r:d:');
+    global $sourceName, $table, $includedFile, $debug, $action, $keys;
+    $opts = getopt('oui:t:r:dk:');
     if ($opts['i'] == '-' || empty($opts['i'])) {
         $sourceName = 'php://stdin';
     } else {
         $sourceName = $opts['i'];
+    }
+
+    if ($opts['k'] && !empty($opts['k'])) {
+        $keys = $opts['k'];
+    }
+
+    if (isset($opts['u'])) {
+        $action = CSV_UPDATE ;
+    } elseif (isset($opts['o'])) {
+        $action = CSV_UPDATEONLY;
+    }
+
+    if (isset($opts['d'])) {
+        $debug = true;
     }
 
     if ($opts['r'] && !empty($opts['r'])) {
@@ -59,20 +80,22 @@ function processArgs()
 
 // }}}
 
+global $debug, $action, $keys;
+$debug           = false; 
+$action          = CSV_INSERT; 
+$keys            = 'id'; 
+
 processArgs();
-require_once(dirname(__FILE__) . '/../classes/csvimporter.php');
 require_once(dirname(__FILE__) . '/../classes/xdb.php');
 
-$source    = file_get_contents($sourceName);
+$source          = file_get_contents($sourceName);
 $insert_relation = null;
 $update_relation = null;
-$debug           = false;
-$action          = CSV_INSERT;
 if (isset($includedFile)) {
     require_once($includedFile);
 }
 
-$translater = new CSVImporter($table, $key, !$debug);
+$translater = new CSVImporter($table, $keys, !$debug);
 $translater->setCSV($source);
 $translater->run($action, $insert_relation, $update_relation);
 

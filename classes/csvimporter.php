@@ -19,9 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-define('CSV_INSERT',  'insert'); // INSERT IGNORE
-define('CSV_REPLACE', 'replace'); // REPLACE
-define('CSV_UPDATE',  'update'); // INSERT and UPDATE on error
+define('CSV_INSERT',     'insert'); // INSERT IGNORE
+define('CSV_REPLACE',    'replace'); // REPLACE
+define('CSV_UPDATE',     'update'); // INSERT and UPDATE on error
+define('CSV_UPDATEONLY', 'updateonly'); // UPDATE
 
 class CSVImporter
 {
@@ -39,7 +40,7 @@ class CSVImporter
     public function __construct($table, $key = 'id', $do_sql = true)
     {
         $this->table     = $table;
-        $this->key       = $key;
+        $this->key       = explode(',', $key);
         $this->do_sql    = $do_sql;
     }
 
@@ -159,11 +160,16 @@ class CSVImporter
               case CSV_REPLACE:
                 $this->execute("REPLACE INTO {$this->table} SET $set");
                 break;
-              case CSV_UPDATE:
-                if (!$this->execute("INSERT INTO {$this->table} SET $set")) {
+              case CSV_UPDATE: case CSV_UPDATEONLY:
+                if ($action == CSV_UPDATEONLY || !$this->execute("INSERT INTO {$this->table} SET $set")) {
                     $ops = $this->makeRequestArgs($line, $update_relation);
                     $set = join(', ', $ops);
-                    $this->execute("UPDATE {$this->table} SET $set WHERE {$ops[$this->key]}");
+                    $where = array();
+                    foreach ($this->key as $key) {
+                        $where[] = $ops[$key];
+                    }
+                    $where = join(' AND ', $where);
+                    $this->execute("UPDATE {$this->table} SET $set WHERE $where");
                 }
                 break;
             }

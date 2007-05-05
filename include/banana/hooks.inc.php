@@ -154,13 +154,12 @@ function hook_makeLink($params)
         }   
         $base = $globals->baseurl . '/' . $platal->ns . 'forum';        
     } else if (Banana::$protocole->name() == 'MLArchives') {
-        $base = $globals->baseurl . '/' . $platal->ns . 'lists/archives';
         if ($feed) {
-            return $base . hook_platalRSS(MLBanana::$listname);
+            return $globals->baseurl . '/' . $platal->ns . hook_platalRSS(MLBanana::$listname);
         } elseif (php_sapi_name() == 'cli') {
             $base = "http://listes.polytechnique.org/archives/" . str_replace('@', '_', $params['group']);
         } else {
-            $base .= '/' . MLBanana::$listname;
+            $base = $globals->baseurl . '/' . $platal->ns . 'lists/archives/' . MLBanana::$listname;
         }
     }
     $base = $base . hook_platalMessageLink($params);
