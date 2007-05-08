@@ -219,7 +219,7 @@ class SearchModule extends PLModule
             $field = '`entreprise`';
             $unique='`uid`';
             break;
-          case '`firstname`':
+          case 'firstname':
             $field = '`prenom`';
             $q = '(^|[ \\-])'.$q;
             $beginwith = false;
