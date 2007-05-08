@@ -20,20 +20,20 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $survey_resultmode}
-  <ul>
-  {foreach item=sresult from=$squestion.result}
-    <li>{$squestion.choices[$sresult.answer]} : {$sresult.count*100/$survey.votes|string_format:"%.1f"}% ({$sresult.count} votes)</li>
-  {/foreach}
-  </ul>
-{else}
-  {assign var=sid value=$survey.id}
-  {assign var=sqid value=$squestion.id}
-  {if $survey_votemode}
-    {html_radios name="survey$sid[$sqid]" options=$squestion.choices separator='<br/>'}
-  {else}
-    {html_radios name="survey$sid[$sqid]" options=$squestion.choices separator='<br/>' disabled='disabled'}
-  {/if}
-{/if}
+{include file='survey/edit_radio.tpl'}
+    <tr>
+      <td class="titre">Sous-questions</td>
+      <td>
+        {foreach from=$survey_current.subquestions key=value item=subquestion}
+        <div id="subquestions_t{$value}">
+          <input type="text" name="survey_question[subquestions][t{$value}]" size="50" maxlength="200" value="{$subquestion}" />
+          <a href="javascript:removeField('subquestions', 't{$value}')">{icon name=delete title="Supprimer"}</a>
+        </div>
+        {/foreach}
+        <div id="subquestions_last">
+          <a href="javascript:newField('subquestions', 'last')">{icon name=add}</a>
+        </div>
+      </td>
+    </tr>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

@@ -23,9 +23,9 @@
 {if $survey_resultmode}
   Quelques r&#233;ponses donn&#233;es par les personnes sond&#233;es :
   <ul>
-  {iterate item=sresult from=$squestion.result}
+  {foreach item=sresult from=$squestion.result}
     <li>{$sresult.answer}</li>
-  {/iterate}
+  {/foreach}
   </ul>
 {else}
   <input type="text" name="survey{$survey.id}[{$squestion.id}]" value="" size="50" maxlength="200" {if !$survey_votemode}disabled="disabled"{/if}/>

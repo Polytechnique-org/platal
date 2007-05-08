@@ -25,13 +25,13 @@
       <td class="titre">Choix</td>
       <td>
         {foreach from=$survey_current.choices key=value item=choice}
-        <div id="choice_t{$value}">
-          <input type="text" name="survey_question[options][t{$value}]" size="50" maxlength="200" value="{$choice}" />
-          <a href="javascript:removeChoice('t{$value}')">{icon name=delete title="Supprimer"}</a>
+        <div id="choices_t{$value}">
+          <input type="text" name="survey_question[choices][t{$value}]" size="50" maxlength="200" value="{$choice}" />
+          <a href="javascript:removeField('choices', 't{$value}')">{icon name=delete title="Supprimer"}</a>
         </div>
         {/foreach}
-        <div id="choice_last">
-          <a href="javascript:newChoice('last')">{icon name=add}</a>
+        <div id="choices_last">
+          <a href="javascript:newField('choices', 'last')">{icon name=add}</a>
         </div>
       </td>
     </tr>

@@ -20,20 +20,32 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $survey_resultmode}
-  <ul>
-  {foreach item=sresult from=$squestion.result}
-    <li>{$squestion.choices[$sresult.answer]} : {$sresult.count*100/$survey.votes|string_format:"%.1f"}% ({$sresult.count} votes)</li>
+<table class="bicol">
+  <tr class="pair">
+    <td></td>
+  {foreach from=$squestion.choices item=schoice}
+    <td>{$schoice}</td>
   {/foreach}
-  </ul>
-{else}
+  </tr>
+{foreach from=$squestion.subquestions item=ssubq key=ssqid}
+  <tr class="{cycle values="impair,pair"}">
+    <td>{$ssubq}</td>
   {assign var=sid value=$survey.id}
   {assign var=sqid value=$squestion.id}
-  {if $survey_votemode}
-    {html_radios name="survey$sid[$sqid]" options=$squestion.choices separator='<br/>'}
+  {if $survey_resultmode}
+    {foreach from=$squestion.choices item=schoice key=value}
+    <td>
+      {$squestion.result.$ssqid.$value*100/$survey.votes|string_format:"%.1f"}% ({$squestion.result.$ssqid.$value} votes)
+    </td>
+    {/foreach}
   {else}
-    {html_radios name="survey$sid[$sqid]" options=$squestion.choices separator='<br/>' disabled='disabled'}
+    {foreach from=$squestion.choices item=schoice key=value}
+    <td>
+      <label><input type="radio" name="survey{$sid}[{$sqid}][{$ssqid}]" value="{$value}" {if !$survey_votemode}disabled="disabled" {/if}/></label>
+    </td>
+    {/foreach}
   {/if}
-{/if}
+{/foreach}
+</table>
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

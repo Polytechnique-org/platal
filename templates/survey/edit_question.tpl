@@ -30,20 +30,23 @@
     </tr>
     {javascript name=jquery} 
     <script type="text/javascript">//<![CDATA[ 
-      var id = {$survey_current.choices|@count};
+      var id = new Array();
+      id['choices'] = {$survey_current.choices|@count};
+      id['subquestions'] = {$survey_current.subquestions|@count};
       {literal}
-      function newChoice(tid)
+      function newField(name, tid)
       {
-        fid = "t" + id;
-        $("#choice_" + tid).before('<div id="choice_' + fid + '">' 
-            + '<input type="text" name="survey_question[options][' + fid + ']" size="50" maxlength="200" value="" />&nbsp;'
-            + '<a href="javascript:removeChoice(&quot;' + fid + '&quot;)"><img src="images/icons/delete.gif" alt="" title="Supprimer" /></a>'
+        fid = "t" + id[name];
+        $("#" + name + "_" + tid).before('<div id="' + name + '_' + fid + '">' 
+            + '<input id="' + name + '_' + fid + '_field" type="text" name="survey_question[' + name + '][' + fid + ']" size="50" maxlength="200" value="" />&nbsp;'
+            + '<a href="javascript:removeField(&quot;' + name + '&quot;, &quot;' + fid + '&quot;)"><img src="images/icons/delete.gif" alt="" title="Supprimer" /></a>'
             + '</div>'); 
-        id++; 
+        id[name]++; 
+        $("#" + name + "_" + fid + "_field").focus();
       }
-      function removeChoice(tid)
+      function removeField(name, tid)
       {
-        $("#choice_" + tid).remove();
+        $("#" + name + "_" + tid).remove();
       }
       {/literal} 
     //]]></script> 

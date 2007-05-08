@@ -37,11 +37,13 @@ class Survey
         return ($long)? self::$longModes : self::$shortModes;
     }
 
-    private static $types = array('text'     => 'Texte court',
-                                  'textarea' => 'Texte long',
-                                  'num'      => 'Num&#233;rique',
-                                  'radio'    => 'Choix multiples (une réponse)',
-                                  'checkbox' => 'Choix multiples (plusieurs réponses)');
+    private static $types = array('text'          => 'Texte court',
+                                  'textarea'      => 'Texte long',
+                                  'num'           => 'Num&#233;rique',
+                                  'radio'         => 'Choix multiples (une r&#233;ponse)',
+                                  'checkbox'      => 'Choix multiples (plusieurs r&#233;ponses)',
+                                  'radiotable'    => 'Questions multiples &#224; choix multiples (une r&#233;ponse)',
+                                  'checkboxtable' => 'Questions multiples &#224; choix mutliples (plusieurs r&#233;ponses)');
 
     public static function getTypes()
     {
@@ -158,10 +160,7 @@ class Survey
                     $q = $this->questions[$k]->toArray();
                     $q['id'] = $k;
                     if ($this->isEnded()) { // if the survey is ended, then adds here the results of this question
-                        $sql = $this->questions[$k]->buildResultRequest();
-                        if ($sql != '') {
-                            $q['result'] = XDB::iterator($sql, $this->id, $k);
-                        }
+                        $q['result'] = $this->questions[$k]->getResultArray($this->id, $k);
                     }
                     $qArr[$k] = $q;
                 }
@@ -250,8 +249,10 @@ class Survey
             return new SurveyRadio($args);
         case 'checkbox':
             return new SurveyCheckbox($args);
-        case 'personal':
-            return new SurveyPersonal($args);
+        case 'radiotable':
+            return new SurveyRadioTable($args);
+        case 'checkboxtable':
+            return new SurveyCheckboxTable($args);
         default:
             return null;
         }
@@ -500,6 +501,11 @@ abstract class SurveyQuestion
     }
 
     abstract protected function getQuestionType();
+
+    protected function getQuestion()
+    {
+        return $this->question;
+    }
     // }}}
 
     // {{{ function toArray() : converts to array
@@ -516,7 +522,7 @@ abstract class SurveyQuestion
     }
     // }}}
 
-    // {{{ function checkAnswer : returns a correctly formatted answer (or nothing empty string if error)
+    // {{{ function checkAnswer : returns a correct answer (or a null value if error)
     public function checkAnswer($ans)
     {
         return null;
@@ -524,10 +530,7 @@ abstract class SurveyQuestion
     // }}}
 
     // {{{ functions regarding the results of a survey
-    public function buildResultRequest()
-    {
-        return '';
-    }
+    abstract public function getResultArray($sid, $qid);
 
     public function getCSVColumn()
     {
@@ -546,7 +549,7 @@ abstract class SurveySimple extends SurveyQuestion
         return array($ans);
     }
 
-    public function buildResultRequest()
+    public function getResultArray($sid, $qid)
     {
         $sql = 'SELECT answer
                   FROM survey_answers
@@ -554,7 +557,8 @@ abstract class SurveySimple extends SurveyQuestion
                    AND question_id={?}
               ORDER BY RAND()
                  LIMIT 5;';
-        return $sql;
+        $res = XDB::query($sql, $sid, $qid);
+        return $res->fetchAllAssoc();
     }
 }
 // }}}
@@ -605,7 +609,7 @@ abstract class SurveyList extends SurveyQuestion
     {
         parent::update($args);
         $this->choices = array();
-        foreach ($args['options'] as $val) {
+        foreach ($args['choices'] as $val) {
             if (trim($val) || trim($val) == '0') {
                 $this->choices[] = $val;
             }
@@ -619,14 +623,15 @@ abstract class SurveyList extends SurveyQuestion
         return $rArr;
     }
 
-    public function buildResultRequest()
+    public function getResultArray($sid, $qid)
     {
         $sql = 'SELECT answer, COUNT(id) AS count
                   FROM survey_answers
                  WHERE vote_id IN (SELECT id FROM survey_votes WHERE survey_id={?})
                    AND question_id={?}
               GROUP BY answer ASC';
-        return $sql;
+        $res = XDB::query($sql, $sid, $qid);
+        return $res->fetchAllAssoc();
     }
 
     public function getCSVColumn()
@@ -650,7 +655,8 @@ class SurveyRadio extends SurveyList
 {
     public function checkAnswer($ans)
     {
-        return (array_key_exists($ans, $this->choices))? array($ans) : null;
+        $a = intval($ans);
+        return (array_key_exists($a, $this->choices))? array($a) : null;
     }
 
     protected function getQuestionType()
@@ -679,6 +685,126 @@ class SurveyCheckbox extends SurveyList
     {
         return "checkbox";
     }
+}
+// }}}
+// }}}
+
+// {{{ abstract class SurveyTable and its derived classes : table question, each column represents a choice, each line represents a question
+// {{{ abstract class SurveyTable extends SurveyList
+abstract class SurveyTable extends SurveyList
+{
+    protected $subquestions;
+
+    public function update($args)
+    {
+        parent::update($args);
+        $this->subquestions = array();
+        foreach ($args['subquestions'] as $val) {
+            if (trim($val) || trim($val) == '0') {
+                $this->subquestions[] = $val;
+            }
+        }
+    }
+
+    public function toArray()
+    {
+        $rArr = parent::toArray();
+        $rArr['subquestions'] = $this->subquestions;
+        return $rArr;
+    }
+
+    public function getResultArray($sid, $qid)
+    {
+        $sql = 'SELECT answer, COUNT(id) AS count
+                  FROM survey_answers
+                 WHERE vote_id IN (SELECT id FROM survey_votes WHERE survey_id={?})
+                   AND question_id={?}
+              GROUP BY answer ASC';
+        $res = XDB::iterator($sql, $sid, $qid);
+        $result = array();
+        for ($i = 0; $i < count($this->subquestions); $i++) {
+            $result[$i] = array_fill(0, count($this->choices), 0);
+        }
+        while ($r = $res->next()) {
+            list($i, $j) = explode(':', $r['answer']);
+            $result[$i][$j] = $r['count'];
+        }
+        return $result;
+    }
+
+    public function getCSVColumn()
+    {
+        $r = $this->getQuestion() . ' (format "sous-question:choix") ';
+        if (!empty($this->subquestions)) {
+            $r .= ' [sous-questions : 0 =>'.$this->subquestions[0];
+            for ($k = 1; $k < count($this->subquestions); $k++) {
+                $r .= ', '.$k.' => '.$this->subquestions[$k];
+            }
+            $r .= ']';
+        }
+        if (!empty($this->choices)) {
+            $r .= ' [choix : 0 => '.$this->choices[0];
+            for ($k = 1; $k < count($this->choices); $k++) {
+                $r .= ', '.$k.' => '.$this->choices[$k];
+            }
+            $r .= ']';
+        }
+        return $r;
+    }
+}
+// }}}
+
+// {{{ class SurveyRadioTable extends SurveyTable : SurveyTable with radio type choices
+class SurveyRadioTable extends SurveyTable
+{
+    public function checkAnswer($ans)
+    {
+        $rep = array();
+        foreach ($ans as $k => $a) {
+            if (!array_key_exists($k, $this->subquestions)) {
+                continue;
+            }
+            $a = intval($a);
+            if (array_key_exists($a, $this->choices)) {
+                $rep[] = $k . ':' . $a;
+            }
+        }
+        return (count($rep) == 0)? null : $rep;
+    }
+
+    protected function getQuestionType()
+    {
+        return "radiotable";
+    }
+
+}
+// }}}
+
+// {{{ class SurveyCheckboxTable extends SurveyTable : SurveyTable with checkbox type choices
+class SurveyCheckboxTable extends SurveyTable
+{
+    public function checkAnswer($ans)
+    {
+        $rep = array();
+        foreach ($ans as $k => $aa) {
+            if (!array_key_exists($k, $this->subquestions)) {
+                continue;
+            }
+            foreach ($aa as $a) {
+                $a = intval($a);
+                if (array_key_exists($a, $this->choices)) {
+                    $rep[] = $k . ':' . $a;
+                }
+            }
+        }
+        return (count($rep) == 0)? null : $rep;
+    }
+
+    protected function getQuestionType()
+    {
+        return "checkboxtable";
+    }
+
 }
 // }}}
 // }}}

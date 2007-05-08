@@ -22,9 +22,9 @@
 
 {if $survey_resultmode}
   <ul>
-  {iterate item=sresult from=$squestion.result}
+  {foreach item=sresult from=$squestion.result}
     <li>{$squestion.choices[$sresult.answer]} : {$sresult.count*100/$survey.votes|string_format:"%.1f"}% ({$sresult.count} votes)</li>
-  {/iterate}
+  {/foreach}
   </ul>
 {else}
   {assign var=sid value=$survey.id}
