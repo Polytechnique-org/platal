@@ -30,6 +30,11 @@ function cb_erreur($text) {
     exit;
 }
 
+// schmurtz : hot bugfix
+function clean_request($param) {
+    return $_REQUEST[$param]; 
+}
+
 /* sort en affichant une erreur */
 function paypal_erreur($text, $send=true)
 {
