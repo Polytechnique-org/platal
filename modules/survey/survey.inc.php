@@ -181,9 +181,12 @@ class Survey
         $csv_output = '';
         $csv = fopen('var://csv_output', 'w');
         $line = ($this->isMode(self::MODE_XIDENT))? array('id', 'Nom', 'Prenom', 'Promo') : array('id');
+        $qids = array();
         for ($qid = 0; $qid < $nbq; $qid++) {
-            $line[] = $this->questions[$qid]->getCSVColumn(); // the fist line contains the questions
+            $qids[$qid] = count($line); // stores the first id of a question (in case of questions with subquestions)
+            array_splice($line, count($line), 0, $this->questions[$qid]->getCSVColumns()); // the first line contains the questions
         }
+        $nbf = count($line);
         $users = array();
         if ($this->isMode(self::MODE_XIDENT)) { // if the mode is non anonymous
             $sql = 'SELECT v.id AS vid, a.nom, a.prenom, a.promo
@@ -197,22 +200,21 @@ class Survey
                 $users[$u['vid']] = array('nom' => $u['nom'], 'prenom' => $u['prenom'], 'promo' => $u['promo']);
             }
         }
-        $sql = 'SELECT v.id AS vid, a.question_id AS qid, a.answer
+        $sql = 'SELECT v.id AS vid, a.question_id AS qid, a.answer AS answer
                   FROM survey_votes AS v
              LEFT JOIN survey_answers AS a
                     ON a.vote_id=v.id
                  WHERE v.survey_id={?}
-              ORDER BY vid ASC, qid ASC;';
+              ORDER BY vid ASC, qid ASC, answer ASC;';
         $res = XDB::iterator($sql, $this->id); // retrieves all answers from database
         $cur = $res->next();
         $vid = -1;
         $vid_ = 0;
-        $first = ($this->isMode(self::MODE_XIDENT))? 4 : 1;
         while ($cur != null) {
             if ($vid != $cur['vid']) { // if the vote id changes, then starts a new line
                 fputcsv($csv, $line, $sep, $enc); // stores the former line into $csv_output
                 $vid = $cur['vid'];
-                $line = array_fill(0, $first + $nbq, ''); // creates an array full of empty string
+                $line = array_fill(0, $nbf, ''); // creates an array full of empty string
                 $line[0] = $vid_; // the first field is a 'clean' vote id (not the one stored in database)
                 if ($this->isMode(self::MODE_XIDENT)) { // if the mode is non anonymous
                     if (array_key_exists($vid, $users) && is_array($users[$vid])) { // and if the user data can be found
@@ -223,11 +225,20 @@ class Survey
                 }
                 $vid_++;
             }
-            $fid = $first + $cur['qid']; // computes the field id
-            if ($line[$fid] != '') {  // if this field already contains something
-                $line[$fid] .= $asep; // then adds a separator before adding the new answer
+            $ans = $this->questions[$cur['qid']]->formatAnswer($cur['answer']); // formats the current answer
+            if (!is_null($ans)) {
+                if (is_array($ans)) {
+                    $fid = $qids[$cur['qid']] + $ans['id']; // computes the field id
+                    $a = $ans['answer'];
+                } else {
+                    $fid = $qids[$cur['qid']];
+                    $a = $ans;
+                }
+                if ($line[$fid] != '') {  // if this field already contains something
+                    $line[$fid] .= $asep; // then adds a separator before adding the new answer
+                }
+                $line[$fid] .= $a; // adds the current answer to the correct field
             }
-            $line[$fid] .= $cur['answer']; // adds the current answer to the correct field
             $cur = $res->next(); // gets next answer
         }
         fputcsv($csv, $line, $sep, $enc); // stores the last line into $csv_output
@@ -337,7 +348,8 @@ class Survey
         }
         $sql = 'SELECT id, title, end, mode
                   FROM survey_surveys
-                 WHERE '.$where.';';
+                 WHERE '.$where.'
+              ORDER BY end DESC;';
         if ($tpl) {
             return XDB::iterator($sql);
         } else {
@@ -501,11 +513,6 @@ abstract class SurveyQuestion
     }
 
     abstract protected function getQuestionType();
-
-    protected function getQuestion()
-    {
-        return $this->question;
-    }
     // }}}
 
     // {{{ function toArray() : converts to array
@@ -532,7 +539,12 @@ abstract class SurveyQuestion
     // {{{ functions regarding the results of a survey
     abstract public function getResultArray($sid, $qid);
 
-    public function getCSVColumn()
+    public function formatAnswer($ans)
+    {
+        return $ans;
+    }
+
+    public function getCSVColumns()
     {
         return $this->question;
     }
@@ -634,18 +646,13 @@ abstract class SurveyList extends SurveyQuestion
         return $res->fetchAllAssoc();
     }
 
-    public function getCSVColumn()
+    public function formatAnswer($ans)
     {
-        $r = parent::getCSVColumn();
-        if (empty($this->choices)) {
-            return $r;
+        if (array_key_exists($ans, $this->choices)) {
+            return $this->choices[$ans];
+        } else {
+            return null;
         }
-        $r .= ' [0 => '.$this->choices[0];
-        for ($k = 1; $k < count($this->choices); $k++) {
-            $r .= ', '.$k.' => '.$this->choices[$k];
-        }
-        $r .= ']';
-        return $r;
     }
 }
 // }}}
@@ -732,24 +739,27 @@ abstract class SurveyTable extends SurveyList
         return $result;
     }
 
-    public function getCSVColumn()
+    public function formatAnswer($ans)
     {
-        $r = $this->getQuestion() . ' (format "sous-question:choix") ';
-        if (!empty($this->subquestions)) {
-            $r .= ' [sous-questions : 0 =>'.$this->subquestions[0];
-            for ($k = 1; $k < count($this->subquestions); $k++) {
-                $r .= ', '.$k.' => '.$this->subquestions[$k];
-            }
-            $r .= ']';
+        list($q, $c) = explode(':', $ans);
+        if (array_key_exists($q, $this->subquestions) && array_key_exists($c, $this->choices)) {
+            return array('id' => $q, 'answer' => $this->choices[$c]);
+        } else {
+            return null;
         }
-        if (!empty($this->choices)) {
-            $r .= ' [choix : 0 => '.$this->choices[0];
-            for ($k = 1; $k < count($this->choices); $k++) {
-                $r .= ', '.$k.' => '.$this->choices[$k];
-            }
-            $r .= ']';
+    }
+
+    public function getCSVColumns()
+    {
+        $q = parent::getCSVColumns();
+        if (empty($this->subquestions)) {
+            return $q;
         }
-        return $r;
+        $a = array();
+        for ($k = 0; $k < count($this->subquestions); $k++) {
+            $a[$k] = $q.' : '.$this->subquestions[$k];
+        }
+        return $a;
     }
 }
 // }}}
