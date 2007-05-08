@@ -318,7 +318,7 @@ class SurveyModule extends PLModule
                 } else { // if no 'survey_id' is in session, we are indeed proposing a new survey
                     if ($survey->proposeSurvey()) { // stores the survey object structure in database
                         $this->show_success($page, "Votre proposition de sondage a bien &#233;t&#233; enregistr&#233;e,
-                                                    elle est en attent de validation par un administrateur du site.", 'survey');
+                                                    elle est en attente de validation par un administrateur du site.", 'survey');
                     } else {
                         $this->show_error($page, '', 'survey');
                     }
