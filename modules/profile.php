@@ -456,7 +456,7 @@ class ProfileModule extends PLModule
         $page->assign('prenom', $prenom);
         $page->assign('nom',    $nom);
         $page->assign('promo',  $promo);
-        $page->assign('cv',     $cv);
+        $page->assign('cv',     MiniWiki::WikiToHTML($cv));
         $page->assign('bestalias', $bestalias);
         $page->assign('adr_pro', get_user_details_pro($user_id));
 
