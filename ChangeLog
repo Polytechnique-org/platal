@@ -1,4 +1,12 @@
 ================================================================================
+VERSION 0.9.15                                                        XX XX 2007
+
+From 0.9.14 branch:
+
+    * Payment:
+        - #662: Fix the attribution of the payments                        -BOB
+
+================================================================================
 VERSION 0.9.14                                                        27 04 2007
 
 New:
@@ -1010,6 +1018,7 @@ ACRONYMS:
 
     * PoT: Polytechnique.org TEAM (see Authors).
 
+    * BOB: Damien Bobillot      (Schmurtz)  <damien.bobillot@m4x.org> 
     * Car: Pascal Corpet        (Caribou)   <pascal.corpet@m4x.org>
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>

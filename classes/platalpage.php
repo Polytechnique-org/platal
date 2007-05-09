@@ -117,7 +117,7 @@ abstract class PlatalPage extends Smarty
 
           case SKINNED:
     	    $this->register_modifier('escape_html', 'escape_html');
-	        $this->default_modifiers = Array('@escape_html');
+	    $this->default_modifiers = Array('@escape_html');
         }
         $this->register_outputfilter('hide_emails');
         $this->addJsLink('wiki.js');

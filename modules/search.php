@@ -134,7 +134,7 @@ class SearchModule extends PLModule
             $view = new SearchSet(false, $action == 'geoloc' && substr($subaction, -3) == 'swf');
             $view->addMod('minifiche', 'Minifiches', true);
             $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
-            $view->addMod('geoloc', 'Planishpère');
+            $view->addMod('geoloc', 'Planisphère');
             $view->apply('search/adv', $page, $action, $subaction);
             
             if ($subaction) {
