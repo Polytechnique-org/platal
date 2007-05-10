@@ -1,6 +1,11 @@
 ================================================================================
 VERSION 0.9.15                                                        XX XX 2007
 
+Bug/Wish:
+
+    * Profile:
+        - #663: Link to Xnet's map from the "My groups" page               -FRU
+
 From 0.9.14 branch:
 
     * Payment:

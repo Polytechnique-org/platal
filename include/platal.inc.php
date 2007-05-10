@@ -56,27 +56,30 @@ __autoload('Env');
 
 function pl_error_handler($errno, $errstr, $errfile, $errline)
 {
+    static $errortype;
     if (!error_reporting())
         return;
 
-    $errortype = array (
-        E_ERROR           => "Error",
-        E_WARNING         => "Warning",
-        E_PARSE           => "Parsing Error",
-        E_NOTICE          => "Notice",
-        E_CORE_ERROR      => "Core Error",
-        E_CORE_WARNING    => "Core Warning",
-        E_COMPILE_ERROR   => "Compile Error",
-        E_COMPILE_WARNING => "Compile Warning",
-        E_USER_ERROR      => "User Error",
-        E_USER_WARNING    => "User Warning",
-        E_USER_NOTICE     => "User Notice",
-        E_STRICT          => "Runtime Notice"
-    );
+    if (!isset($errortype)) {
+        $errortype = array (
+            E_ERROR           => "Error",
+            E_WARNING         => "Warning",
+            E_PARSE           => "Parsing Error",
+            E_NOTICE          => "Notice",
+            E_CORE_ERROR      => "Core Error",
+            E_CORE_WARNING    => "Core Warning",
+            E_COMPILE_ERROR   => "Compile Error",
+            E_COMPILE_WARNING => "Compile Warning",
+            E_USER_ERROR      => "User Error",
+            E_USER_WARNING    => "User Warning",
+            E_USER_NOTICE     => "User Notice",
+            E_STRICT          => "Runtime Notice"
+        );
+    }
 
     global $globals;
     if (isset($globals) && !$globals->debug) {
-        if (strpos($errortype[$errno], 'Notice') !== false) {
+        if ($errno == E_NOTICE || $errno == E_USER_NOTICE || $errno == E_STRICT) {
             return;
         }
     }
@@ -106,7 +109,9 @@ function pl_dump_env()
 
 function pl_print_errors()
 {
-    print join("\n", $GLOBALS['pl_errors']);
+    if (!empty($GLOBALS['pl_errors'])) {
+        print join("\n", $GLOBALS['pl_errors']);
+    }
 }
 
 set_error_handler('pl_error_handler', E_ALL | E_STRICT);

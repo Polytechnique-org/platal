@@ -22,13 +22,18 @@
 
 <h1>Mes groupes X sur Polytechnique.net</h1>
 
+<p class="center"> 
+[<a href="http://www.polytechnique.net/login/plan">Tous les groupes X</a>] 
+</p> 
+
 {foreach from=$assos item="asso"}
 <div style="width:48%;float:left" >
 <fieldset style="margin:0.6em">
     <legend style="padding:4px"><strong><a href="http://www.polytechnique.net/login/{$asso.diminutif}">{$asso.nom}</a></strong></legend>
     {if $asso.has_logo}
-    <img alt="[ LOGO ]" src="http://www.polytechnique.net/{$asso.diminutif}/logo"
-         style="width: 30%; display: block; float: right;" />
+    <a href="http://www.polytechnique.net/login/{$asso.diminutif}" style="width: 30%; display: block; float: right; ">
+      <img alt="[ LOGO ]" src="http://www.polytechnique.net/{$asso.diminutif}/logo" style="width: 100%" />
+    </a>
     {/if}
     <ul style="padding-top:0px;padding-bottom:0px">
         <li><a href="http://www.polytechnique.net/{$asso.diminutif}/annuaire">annuaire</a></li>
@@ -51,9 +56,4 @@
 </div>
 {/foreach}
 
-<div class="spacer"></div>
-
-<p class="center">
-[<a href="http://www.polytechnique.net/login">Tous les groupes X</a>]
-</p>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

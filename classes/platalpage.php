@@ -285,10 +285,9 @@ function escape_xorgDB(&$item, $key)
 function escape_html($string)
 {
     if (is_string($string)) {
-    	$transtbl = Array('<' => '&lt;', '>' => '&gt;', '"' => '&quot;', '\'' => '&#39;');
-	    return strtr($string, $transtbl);
+	return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
     } else {
-	    return $string;
+	return $string;
     }
 }
 
@@ -368,6 +367,10 @@ function _hide_email($source)
 
 function hide_emails($source, &$smarty)
 {
+    if (!strpos($source, '@')) {
+        return $source;
+    }
+
     //prevent email replacement in <script> and <textarea>
     $tags = '(script|textarea|select)';
     preg_match_all("!<$tags.*?>.*?</(\\1)>!ius", $source, $tagsmatches);
