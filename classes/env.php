@@ -41,6 +41,11 @@ class Env
         return Env::_get($key, $default);
     }
 
+    public static function s($key, $default = '') 
+    { 
+        return (string)Env::_get($key, $default); 
+    } 
+
     public static function b($key, $default = false)
     {
         return (bool)Env::_get($key, $default);
@@ -50,6 +55,11 @@ class Env
     {
         $i = Env::_get($key, $default);
         return is_numeric($i) ? intval($i) : $default;
+    }
+
+    public static function l(array $keys)
+    {
+        return array_map(array('Env', 'v'), $keys);
     }
 }
 
@@ -80,10 +90,20 @@ class Post
         return (bool)Post::_get($key, $default);
     }
 
+    public static function s($key, $default = '') 
+    { 
+        return (string)Post::_get($key, $default); 
+    } 
+
     public static function i($key, $default = 0)
     {
         $i = Post::_get($key, $default);
         return is_numeric($i) ? intval($i) : $default;
+    }
+
+     public static function l(array $keys)
+    {
+        return array_map(array('Post', 'v'), $keys);
     }
 }
 
@@ -114,10 +134,20 @@ class Get
         return (bool)Get::_get($key, $default);
     }
 
+    public static function s($key, $default = '')
+    {
+        return (string)Get::_get($key, $default);
+    }
+
     public static function i($key, $default = 0)
     {
         $i = Get::_get($key, $default);
         return is_numeric($i) ? intval($i) : $default;
+    }
+
+    public static function l(array $keys)
+    {
+        return array_map(array('Get', 'v'), $keys);
     }
 }
 
@@ -143,6 +173,11 @@ class Cookie
         return Cookie::_get($key, $default);
     }
 
+    public static function s($key, $default = '') 
+    {
+        return (string)Cookie::_get($key, $default); 
+    }
+
     public static function b($key, $default = false)
     {
         return (bool)Cookie::_get($key, $default);
@@ -152,6 +187,11 @@ class Cookie
     {
         $i = Cookie::_get($key, $default);
         return is_numeric($i) ? intval($i) : $default;
+    }
+
+    public static function l(array $keys)
+    {
+        return array_map(array('Cookie', 'v'), $keys);
     }
 }
 

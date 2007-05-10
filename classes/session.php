@@ -53,10 +53,20 @@ class Session
         return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
     }
 
+    public static function s($key, $default = '') 
+    {
+        return (string)Session::v($key, $default);
+    } 
+
     public static function i($key, $default = 0)
     {
         $i = Session::v($key, $default);
         return is_numeric($i) ? intval($i) : $default;
+    }
+
+    public static function l(array $keys)
+    {
+        return array_map(array('Session', 'v'), $keys);
     }
 
     public static function has_perms()

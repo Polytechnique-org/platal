@@ -30,11 +30,6 @@ function cb_erreur($text) {
     exit;
 }
 
-// schmurtz : hot bugfix
-function clean_request($param) {
-    return $_REQUEST[$param]; 
-}
-
 /* sort en affichant une erreur */
 function paypal_erreur($text, $send=true)
 {
@@ -158,19 +153,19 @@ class PaymentModule extends PLModule
     function handler_cyber_return(&$page, $uid = null)
     {
         /* reference banque (numero de transaction) */
-        $champ901 = clean_request('CHAMP901');
+        $champ901 = Env::s('CHAMP901');
         /* cle d'acceptation */
-        $champ905 = clean_request('CHAMP905');
+        $champ905 = Env::s('CHAMP905');
         /* code retour */
-        $champ906 = clean_request('CHAMP906');
+        $champ906 = Env::s('CHAMP906');
         /* email renvoye par la banque */
-        $champ104 = clean_request('CHAMP104');
+        $champ104 = Env::s('CHAMP104');
         /* reference complete de la commande */
-        $champ200 = clean_request('CHAMP200');
+        $champ200 = Env::s('CHAMP200');
         /* montant de la transaction */
-        $champ201 = clean_request('CHAMP201');
+        $champ201 = Env::s('CHAMP201');
         /* devise */
-        $champ202 = clean_request('CHAMP202');
+        $champ202 = Env::s('CHAMP202');
         $montant = "$champ201 $champ202";
 
         /* on extrait les informations sur l'utilisateur */
@@ -257,19 +252,19 @@ class PaymentModule extends PLModule
         }
 
         /* reference banque (numero de transaction) */
-        $no_transaction = clean_request('tx');
+        $no_transaction = Env::s('tx');
         /* token a renvoyer pour avoir plus d'information */
-        $clef = clean_request('sig');
+        $clef = Env::s('sig');
         /* code retour */
-        $status = clean_request('st');
+        $status = Env::s('st');
         /* raison */
-        $reason = ($status == 'Pending')?clean_request('pending_reason'):clean_request('reason_code');
+        $reason = ($status == 'Pending')? Env::s('pending_reason'): Env::s('reason_code');
         /* reference complete de la commande */
-        $fullref = clean_request('cm');
+        $fullref = Env::s('cm');
         /* montant de la transaction */
-        $montant_nb = clean_request('amt');
+        $montant_nb = Env::s('amt');
         /* devise */
-        $montant_dev = clean_request('cc');
+        $montant_dev = Env::s('cc');
         $montant = "$montant_nb $montant_dev";
 
         /* on extrait le code de retour */
