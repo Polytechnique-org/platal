@@ -217,7 +217,7 @@ class ContactsPDF extends FPDF
         }
 
         if ($a['tel']) {
-            $this->TableRow('Téléphone', $a['tel'], 'Mono');
+            $this->TableRow(utf8_decode('Téléphone'), $a['tel'], 'Mono');
         }
         if ($a['fax']) {
             $this->TableRow('Fax', $a['fax'], 'Mono');
