@@ -88,6 +88,31 @@ class SearchModule extends PLModule
         $page->assign('promo_max', $max);
 
         if (Env::has('quick') || $action == 'geoloc') {
+            $quick = trim(Env::v('quick'));
+            $list = 'profile|prf|fiche|fic|referent|ref|mentor';
+            if (S::has_perms()) {
+                $list .= '|admin|adm|ax';
+            }
+            if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.\d{2,4})?)?)$/',
+                            $quick, $matches)) {
+                $forlife = $matches[2];
+                switch($matches[1]) {
+                  case 'admin': case 'adm':
+                    $base = 'admin/user/';
+                    break;
+                  case 'ax':
+                    $base = 'profile/ax/';
+                    break;
+                  case 'profile': case 'prf': case 'fiche': case 'fic':
+                    $base = 'profile/';
+                    break;
+                  case 'referent': case 'ref': case 'mentor':
+                    $base = 'referent/';
+                    break;
+                }
+                pl_redirect($base . $forlife);
+            }
+            
             $page->assign('formulaire', 0);
 
             require_once 'userset.inc.php';

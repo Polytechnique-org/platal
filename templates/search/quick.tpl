@@ -77,7 +77,7 @@ Ainsi, rechercher tous les "Dupont" sur les promotions 1980 à 1990 et sur la pr
 <code>Dupont 1980-1990 2000</code>
 </p>
 
-<h2>Astuce pour les noms ...</h2>
+<h2>Astuce pour les noms...</h2>
 <p>
 Parfois on ne sait plus si le nom qu'on recherche s'écrit « Lenormand », « Le Normand » ou « Le-Normand » ...
 </p>
@@ -91,8 +91,19 @@ Il est conseillé d'omettre les particules car il est possible que celles-ci ne 
 notre base de données.
 </p>
 
+<h2>Raccourcis...</h2>
+<p>
+  En tapant <code>fiche:prenom.nom.promo</code> tu accèdes directement à la fiche du camarade correspondant.
+  De même <code>ref:prenom.nom.promo</code> t'emmène sur la fiche référent du camarade.
+</p>
+<p>
+  Ces raccourcis fonctionnement également depuis le lien de recherche rapide disponible sur toutes les pages
+  du site<span class="searchbar"> et depuis la barre de recherche de ton navigateur si tu installes le module
+  ci-dessous</span>.
+</p>
+
 {if $smarty.session.perms->hasFlag('user')}
-<div id="searchbar" style="display: none">
+<div class="searchbar">
 <h2>Barre de recherche pour ton navigateur</h2>
 <p>
   Si tu utilises un navigateur moderne tel que Firefox ou Internet Explorer 7, tu peux ajouter un module de recherche
@@ -101,10 +112,11 @@ notre base de données.
 </p>
 </div>
 
+{javascript name=jquery}
 <script type="text/javascript">//<![CDATA[
   {literal}
-  if (canAddSearchEngine()) {
-    document.getElementById('searchbar').style.display = '';
+  if (!canAddSearchEngine()) {
+    $(".searchbar").hide();
   }
   {/literal}
 //]]></script>
