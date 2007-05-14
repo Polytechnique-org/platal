@@ -91,18 +91,27 @@ Il est conseillé d'omettre les particules car il est possible que celles-ci ne 
 notre base de données.
 </p>
 
+{if $smarty.session.perms->hasFlag('user')}
 <h2>Raccourcis...</h2>
 <p>
-  En tapant <code>fiche:prenom.nom.promo</code> tu accèdes directement à la fiche du camarade correspondant.
-  De même <code>ref:prenom.nom.promo</code> t'emmène sur la fiche référent du camarade.
+  Un certain nombre de raccourcis permettent d'accéder plus rapidement au contenu du site :
+  <ul>
+    <li><code>fiche:prenom.nom.promo</code> ouvre la fiche du camarade indiquée</li>
+    <li><code>ref:prenom.nom.promo</code> ouvre la fiche référent du camarade indiquée</li>
+    <li><code>doc:phrase</code> recherche <em>phrase</em> dans la documentation du site</li>
+    {if $smarty.session.perms->hasFlag('admin')}
+    <li><code>admin:prenom.nom.promo</code> ouvre la fiche d'administration du camarade indiquée</li>
+    <li><code>ax:prenom.nom.promo</code> ouvre la fiche ax du camarade concerné</li>
+    {/if}
+  </ul>
 </p>
+
 <p>
   Ces raccourcis fonctionnement également depuis le lien de recherche rapide disponible sur toutes les pages
   du site<span class="searchbar"> et depuis la barre de recherche de ton navigateur si tu installes le module
   ci-dessous</span>.
 </p>
 
-{if $smarty.session.perms->hasFlag('user')}
 <div class="searchbar">
 <h2>Barre de recherche pour ton navigateur</h2>
 <p>

@@ -93,8 +93,7 @@ class SearchModule extends PLModule
             if (S::has_perms()) {
                 $list .= '|admin|adm|ax';
             }
-            if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.\d{2,4})?)?)$/',
-                            $quick, $matches)) {
+            if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.\d{2,4})?)?)$/', $quick, $matches)) {
                 $forlife = $matches[2];
                 switch($matches[1]) {
                   case 'admin': case 'adm':
@@ -111,8 +110,13 @@ class SearchModule extends PLModule
                     break;
                 }
                 pl_redirect($base . $forlife);
+            } elseif (strpos($quick, 'doc:') === 0) {
+                $url = 'Docs/Recherche?';
+                $url .= 'action=search&q=' . urlencode(substr($quick, 4));
+                $url .= '&group=' . urlencode('-Equipe,-Main,-PmWiki,-Site');
+                pl_redirect($url);
             }
-            
+
             $page->assign('formulaire', 0);
 
             require_once 'userset.inc.php';
