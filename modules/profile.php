@@ -30,6 +30,7 @@ class ProfileModule extends PLModule
             'fiche.php'        => $this->make_hook('fiche',      AUTH_PUBLIC),
             'profile'          => $this->make_hook('profile',    AUTH_PUBLIC),
             'profile/private'  => $this->make_hook('profile',    AUTH_COOKIE),
+            'profile/ax'       => $this->make_hook('ax',         AUTH_COOKIE, 'admin'),
             'profile/edit'     => $this->make_hook('p_edit',     AUTH_MDP),
             'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
@@ -234,6 +235,24 @@ class ProfileModule extends PLModule
 
         $page->addJsLink('close_on_esc.js');
         header('Last-Modified: ' . date('r', strtotime($user['date'])));
+    }
+
+    function handler_ax(&$page, $user = null)
+    {
+        require_once 'user.func.inc.php';
+        $user = get_user_forlife($user);
+        if (!$user) {
+            return PL_NOT_FOUND;
+        }
+        $res = XDB::query('SELECT matricule_ax
+                             FROM auth_user_md5 AS u
+                       INNER JOIN aliases       AS a ON (a.type = "a_vie" AND a.id = u.user_id)
+                            WHERE a.alias = {?}', $user);
+        $mat = $res->fetchOneCell();
+        if (!intval($mat)) {
+            $page->kill("Le matricule AX de $user est inconnu");
+        }
+        http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=$mat");
     }
 
     function handler_p_edit(&$page, $opened_tab = 'general')
