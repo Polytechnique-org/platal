@@ -135,7 +135,7 @@ abstract class Validate
     /** fonction à utiliser pour nettoyer l'entrée de la requête dans la table requests
      * attention, tout est supprimé si c'est un unique
      */
-    protected function clean()
+    public function clean()
     {
         if ($this->unique) {
             return XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
