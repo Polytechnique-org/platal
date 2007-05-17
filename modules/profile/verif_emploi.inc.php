@@ -68,12 +68,6 @@ if (strlen(strtok($poste[$i],"<>{}~?!§*`|%$^=+")) < strlen($poste[$i]))
     $page->trig("Le champ 'Poste $j' contient un caractère interdit.");
 }
 
-//validité du CV
-if (strlen(strtok($cv,"<>{}~§`")) < strlen($cv))
-{
-    $page->trig("Le champ 'Curriculum vitae' contient un caractère interdit.");
-}
-
 // correction du champ web si vide
 if ($webpro[$i]=="http://" or $webpro[$i] == '') {
     $webpro[$i]='';
