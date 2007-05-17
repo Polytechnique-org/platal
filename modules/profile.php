@@ -187,7 +187,7 @@ class ProfileModule extends PLModule
         $new   = Env::v('modif') == 'new';
         $user  = get_user_details($login, S::v('uid'), $view);
         $user['freetext'] = MiniWiki::WikiToHTML($user['freetext']);
-        $user['cv']       = MiniWiki::WikiToHTML($user['cv']);
+        $user['cv']       = MiniWiki::WikiToHTML($user['cv'], true);
         $title = $user['prenom'] . ' ' . empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'];
         $page->assign('xorg_title', $title);
 
@@ -475,7 +475,7 @@ class ProfileModule extends PLModule
         $page->assign('prenom', $prenom);
         $page->assign('nom',    $nom);
         $page->assign('promo',  $promo);
-        $page->assign('cv',     $cv);
+        $page->assign('cv',     MiniWiki::WikiToHTML($cv, true));
         $page->assign('bestalias', $bestalias);
         $page->assign('adr_pro', get_user_details_pro($user_id));
 

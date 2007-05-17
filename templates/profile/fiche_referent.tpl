@@ -73,7 +73,7 @@
 
   {if $cv}
   <h2>Curriculum Vitae : </h2>
-  <div>{$cv|nl2br}</div>
+  <div>{$cv|smarty:nodefaults}</div>
   {/if}
 
 
