@@ -162,13 +162,13 @@ function soundex_fr($sIn)
             '/(ILLE?|I)/', '/O(U|W)/', '/O[NM]($|[^EAOUIY])/', '/(SC|S|C)H/',
             '/([^AEIOUY1])[^AEIOUYLKTP]([UAO])([^AEIOUY])/', '/([^AEIOUY]|^)([AUO])[^AEIOUYLKTP]([^AEIOUY1])/', '/^KN/',
             '/^PF/', '/C([^AEIOUY]|$)/',
-            '/C/', '/Z$/', '/(?<!^)Z+/', '/ER$/', '/H/');
+            '/C/', '/Z$/', '/(?<!^)Z+/', '/ER$/', '/H/', '/W/');
         $convVOut  = array( 'O', '1\3', 'A\1',
             'E\1', '\1E\3', 'O',
             'Y', 'U', 'O\1', '9',
             '\1\2\3', '\1\2\3', 'N',
             'F', 'K\1',
-            'S', 'SE', 'S', 'E', '');
+            'S', 'SE', 'S', 'E', '', 'V');
         $accents = $uc_convert + $lc_convert;
         $accents['Ç'] = 'S';
         $accents['¿'] = 'E';
