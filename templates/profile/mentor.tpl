@@ -67,13 +67,13 @@
 Si tu acceptes que ceux de nos camarades qui,
 </p>
 <ul>
-  <li>encore jeunes, sont en train de bÃ¢tir leur projet professionnel,</li>
-  <li>ou bien, plus Ã¢gÃ©s, souhaitent rÃ©orienter leur carriÃ¨re,</li>
+  <li>encore jeunes, sont en train de bâtir leur projet professionnel,</li>
+  <li>ou bien, plus âgés, souhaitent réorienter leur carrière,</li>
 </ul>
 <p>
 te contactent afin de te demander conseil, dans les domaines que tu connais
 bien, et pour lesquels tu pourrais les aider, remplis cette rubrique.<br />
-Tu peux mentionner ici les domaines de compÃ©tences, les expÃ©riences 
+Tu peux mentionner ici les domaines de compétences, les expériences 
 notamment internationales sur la base desquels tu seras identifiable depuis
 <a href="referent/search">la page de recherche d'un conseil professionnel</a>.
 </p>
@@ -96,7 +96,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
               <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              privÃ©
+              privé
             </td>
           </tr>
         </table>
@@ -148,7 +148,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
     summary="Profil: Mentoring">
     <tr>
       <th colspan="3">
-        Secteurs d'activitÃ© dans lesquels tu as beaucoup exercÃ©
+        Secteurs d'activité dans lesquels tu as beaucoup exercé
         <input type="hidden" value="" name="mentor_secteur_op" />
         <input type="hidden" value="" name="mentor_secteur_id" />
         <input type="hidden" value="" name="mentor_secteur_name" />
@@ -164,7 +164,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
               <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              privÃ©
+              privé
             </td>
           </tr>
         </table>
@@ -219,7 +219,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
     summary="Profil: Mentoring">
     <tr>
       <th colspan="3">
-        ExpÃ©rience et expertises que tu acceptes de faire partager
+        Expérience et expertises que tu acceptes de faire partager
       </th>
     </tr>
     <tr>
@@ -230,7 +230,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
               <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              privÃ©
+              privé
             </td>
           </tr>
         </table>
@@ -239,10 +239,10 @@ notamment internationales sur la base desquels tu seras identifiable depuis
     <tr>
       <td colspan="3">
         Dans cette case il te faut indiquer en quelques mots ce qui t'a
-        amenÃ© Ã  acquÃ©rir l'expÃ©rience indiquÃ©e, et dans quelle mesure tu
-        veux bien que ceux de nos camarades qui seraient intÃ©ressÃ©s par un
-        contact avec toi, en prenne l'initiative. <strong>Il est obligatoire de
-          remplir cette derniÃ¨re case pour apparaÃ®tre dans la base de donnÃ©es
+        amené à acquérir l'expérience indiquée, et dans quelle mesure tu
+        veux bien que ceux de nos camarades qui seraient intéressés par un
+        contact avec toi, en prennent l'initiative. <strong>Il est obligatoire de
+          remplir cette dernière case pour apparaître dans la base de données
           des "Mentors".</strong>
         <br />
       </td>
