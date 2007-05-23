@@ -241,7 +241,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
         Dans cette case il te faut indiquer en quelques mots ce qui t'a
         amené à acquérir l'expérience indiquée, et dans quelle mesure tu
         veux bien que ceux de nos camarades qui seraient intéressés par un
-        contact avec toi, en prenne l'initiative. <strong>Il est obligatoire de
+        contact avec toi, en prennent l'initiative. <strong>Il est obligatoire de
           remplir cette dernière case pour apparaître dans la base de données
           des "Mentors".</strong>
         <br />
