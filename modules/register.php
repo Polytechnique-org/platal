@@ -355,9 +355,8 @@ class RegisterModule extends PLModule
                  . " - forlife   : $forlife\n"
                  . " - email     : $email\n"
                  . " - sexe      : $femme\n"
-                 . " - ip        : " . (@$_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR']
-                                                                          : $_SERVER['REMOTE_ADDR']) . "\n"
-                 . " - proxy     : " . (@$_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['REMOTE_ADDR'] : "") . "\n";
+                 . " - ip        : {$logger->ip} ({$logger->host})\n"
+                 . ($logger->proxy_ip ? " - proxy     : {$logger->proxy_ip} ({$logger->proxy_host})\n" : "");
             $mymail->setTxtBody($msg);
             $mymail->send(); 
         }

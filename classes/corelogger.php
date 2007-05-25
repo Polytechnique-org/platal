@@ -28,6 +28,11 @@ class CoreLogger
     /** list of available actions */
     private $actions;
 
+    public $ip;
+    public $host;
+    public $proxy_ip;
+    public $proxy_host;
+
     /** The constructor, creates a new entry in the sessions table
      *
      * @param $uid the id of the logged user
@@ -73,6 +78,15 @@ class CoreLogger
         XDB::execute("INSERT INTO logger.sessions
                          SET uid={?}, host={?}, ip={?}, forward_ip={?}, forward_host={?}, browser={?}, suid={?}, flags={?}",
                      $uid, $host, $ip, $forward_ip, $forward_host, $browser, $suid, $proxy);
+        if ($forward_ip) {
+            $this->proxy_ip = $ip;
+            $this->proxy_host = $host;
+            $this->ip = $forward_ip;
+            $this->host = $forward_host;
+        } else {
+            $this->ip = $ip;
+            $this->host = $host;
+        }
 
         return XDB::insertId();
     }
