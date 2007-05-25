@@ -30,12 +30,15 @@ Le profil du camarade {$old.prenom} {$old.nom} ({$old.promo}) a été édité.\\
 Les champs suivants ont été changés :
 {foreach from=$old item=value key=field}
 {if $value neq $new[$field]}
-* '''{$field}''' : {$value} -> {$new[$field]}{/if}
+* '''{$field}''' : {$value} -> {$new[$field]}
+{/if}
 {/foreach}
 
-Valeur des différents champs :
+Et ceux qui n'ont pas changé :
 {foreach from=$old item=value key=field}
-* '''{$field}''' : {$value} -> {$new[$field]}
+{if $value eq $new[$field]}
+* '''{$field}''' : {$value}
+{/if}
 {/foreach}
 {/if}
 
