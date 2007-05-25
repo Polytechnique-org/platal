@@ -462,8 +462,33 @@ class AdminModule extends PLModule
                         }
                         break;
                     case "add_alias":
-                        XDB::execute("INSERT INTO  aliases (id,alias,type) VALUES  ({?}, {?}, 'alias')",
-                                $mr['user_id'], Env::v('email'));
+                        global $globals;
+                        $alias = trim(Env::v('email'));
+                        if (strpos($alias, '@') !== false) {
+                            list($alias, $domain) = explode('@', $alias);
+                        } else {
+                            $domain = $globals->mail->domain;
+                        }
+                        if (!preg_match('/[-a-z0-9\.]+/s', $alias)) {
+                            $page->trig("'$alias' n'est pas un alias valide");
+                        }
+                        if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
+                            $req = new AliasReq($mr['user_id'], $alias, 'Admin request', false);
+                            if ($req->commit()) {
+                                $page->trig("Nouvel alias '$alias@$domain' attribué");
+                            } else {
+                                $page->trig("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué");
+                            }
+                        } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
+                            if (XDB::execute("INSERT INTO  aliases (id,alias,type) VALUES  ({?}, {?}, 'alias')",
+                                    $mr['user_id'], $alias)) {
+                                $page->trig("Nouvel alias '$alias' ajouté");
+                            } else {
+                                $page->trig("Impossible d'ajouter l'alias '$alias', il est probablement déjà attribué");
+                            }
+                        } else {
+                            $page->trig("Le domaine '$domain' n'est pas valide");
+                        }
                         break;
 
                     case "best":
@@ -575,7 +600,7 @@ class AdminModule extends PLModule
             $res = XDB::iterator("SELECT  alias
                                     FROM  virtual
                               INNER JOIN  virtual_redirect USING(vid)
-                                   WHERE  type = 'user' AND redirect LIKE '" . $login . "@%'");
+                                   WHERE  type = 'user' AND redirect LIKE '" . $mr['forlife'] . "@%'");
             $page->assign('virtuals', $res);
 
             $page->assign('aliases', XDB::iterator(
@@ -583,8 +608,8 @@ class AdminModule extends PLModule
                            FROM  aliases
                           WHERE  id = {?} AND type!='homonyme'
                        ORDER BY  type!= 'a_vie'", $mr["user_id"]));
-            if ($mr['perms'] != 'pending') {
-                $page->assign('emails',$redirect->emails);
+            if ($mr['perms'] != 'pending' && isset($redirect)) {
+                $page->assign('emails', $redirect->emails);
             }
 
             $page->assign('mr',$mr);

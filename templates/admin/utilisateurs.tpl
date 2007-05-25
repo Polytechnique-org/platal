@@ -21,12 +21,6 @@
 {**************************************************************************}
 
 
-{if $smarty.session.suid}
-<p class="erreur">
-Attention, déjà en SUID !!!
-</p>
-{/if}
-
 <h1>
   Gestion des utilisateurs
 </h1>
@@ -193,7 +187,11 @@ function clean_fwd(fwd) {
       </td>
       <td>
         <input type="text" name="naissanceN" size="12" maxlength="10" value="{$mr.naissance}" />
-        {if $mr.naiss_err}<span class="erreur smaller">({icon name=error}Date de naissance incohérente)</span>{/if}
+        {if $mr.naissance_ini neq '0000-00-00' && $mr.naissance neq $mr.naissance_ini}
+          <span class="erreur smaller">({icon name=error}Date de naissance connue : {$mr.naissance_ini})</span>
+        {elseif $mr.naiss_err}
+          <span class="erreur smaller">({icon name=error}Date de naissance incohérente)</span>
+        {/if}
       </td>
     </tr>
     {/if}

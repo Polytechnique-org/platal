@@ -45,7 +45,7 @@ function __autoload($cls)
     $cls  = strtolower($cls);
     $path = dirname(dirname(__FILE__));
     if (!@include "$path/classes/$cls.php") {
-        if (substr($cls, -1, 3) == 'req') {
+        if (substr($cls, -3, 3) == 'req') {
             @include 'validations.inc.php';
             return;
         }
