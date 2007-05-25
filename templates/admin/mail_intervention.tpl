@@ -25,7 +25,18 @@
 {from full=#from#}
 {to addr=#to#}
 {subject text="INTERVENTION de $user"}
-{elseif $mail_part eq 'text'}
-{$query|regex_replace:"/[ \t]+/":" "}
+{elseif $mail_part eq 'wiki'}
+Le profil du camarade {$old.prenom} {$old.nom} ({$old.promo}) a été édité.\\
+Les champs suivants ont été changés :
+{foreach from=$old item=value key=field}
+{if $value neq $new[$field]}
+* '''{$field}''' : {$value} -> {$new[$field]}{/if}
+{/foreach}
+
+Valeur des différents champs :
+{foreach from=$old item=value key=field}
+* '''{$field}''' : {$value} -> {$new[$field]}
+{/foreach}
 {/if}
+
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -63,13 +63,16 @@ class PlMail extends Smarty
     {
         $this->assign('mail_part', $version);
         $text = $this->fetch($this->tpl);
+        if ($version == 'text') {
+            return wordwrap($text, 78);
+        }
         return $text;
     }
 
     /** used to remove the empty lines due to {from ...}, {to ...} ... functions */
     static public function mail_format($output, &$smarty)
     {
-        return wordwrap("\n".trim($output)."\n",75);
+        return "\n".trim($output)."\n";
     }
 
     static protected function format_addr(&$params)

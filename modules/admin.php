@@ -357,7 +357,7 @@ class AdminModule extends PLModule
         require_once("user.func.inc.php");
 
         if (S::has('suid')) {
-            $page->kill("déj�  en SUID !!!");
+            $page->kill("Déjà en SUID !!!");
         }
 
         if (Env::has('user_id')) {
@@ -505,6 +505,12 @@ class AdminModule extends PLModule
                             break;
                         }
 
+                        $watch = 'SELECT naissance, deces, password, perms,
+                                         prenom, nom, flags, promo, comment
+                                    FROM auth_user_md5
+                                   WHERE user_id = ' . $mr['user_id'];
+                        $res = XDB::query($watch);
+                        $old_fields = $res->fetchOneAssoc();
                         $query = "UPDATE auth_user_md5 SET
                                          naissance = '$naiss',
                                          deces     = '$deces',
@@ -519,9 +525,13 @@ class AdminModule extends PLModule
                         if (XDB::execute($query)) {
                             user_reindex($mr['user_id']);
 
+                            $res = XDB::query($watch);
+                            $new_fields = $res->fetchOneAssoc();
+            
                             $mailer = new PlMailer("admin/mail_intervention.tpl");
                             $mailer->assign("user", S::v('forlife'));
-                            $mailer->assign("query", $query);
+                            $mailer->assign('old', $old_fields);
+                            $mailer->assign('new', $new_fields);
                             $mailer->send();
 
                             $page->trig("updaté correctement.");
@@ -703,7 +713,7 @@ class AdminModule extends PLModule
                ORDER BY  u.promo,u.nom,u.prenom');
         $page->assign('diffs', $res->fetchAllAssoc());
 
-        // gens �  l'ax mais pas chez nous
+        // gens à l'ax mais pas chez nous
         $res = XDB::query(
                 'SELECT  ia.promo,ia.nom,ia.nom_patro,ia.prenom
                    FROM  identification_ax as ia
@@ -711,7 +721,7 @@ class AdminModule extends PLModule
                   WHERE  u.nom IS NULL');
         $page->assign('mank', $res->fetchAllAssoc());
 
-        // gens chez nous et pas �  l'ax
+        // gens chez nous et pas à l'ax
         $res = XDB::query('SELECT promo,nom,prenom FROM auth_user_md5 WHERE matricule_ax IS NULL');
         $page->assign('plus', $res->fetchAllAssoc());
     }
