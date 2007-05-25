@@ -198,6 +198,9 @@ class QuickSearch extends SField
     var $strings;
     /** stores numerical ranges */
     var $ranges;
+    /** stores admin searches */
+    var $email;
+    var $ip;
 
     // }}}
     // {{{ constructor
@@ -216,7 +219,7 @@ class QuickSearch extends SField
 
     function isempty()
     {
-        return empty($this->strings) && empty($this->ranges);
+        return empty($this->strings) && empty($this->ranges) && empty($this->email) && empty($this->ip);
     }
 
     // }}}
@@ -226,12 +229,22 @@ class QuickSearch extends SField
     {
         parent::get_request();
         $s = replace_accent(trim($this->value));
+        $r = $s = str_replace('*','%',$s);
+
+        if (S::has_perms() && strpos($s, '@') !== false) {
+            $this->email = $s;
+        } else if (S::has_perms() && preg_match('/[0-9]+\.([0-9]+|%)\.([0-9]+|%)\.([0-9]+|%)/', $s)) {
+            $this->ip = $s;
+        }
+        if ($this->email || $this->ip) {
+            $this->strings = $this->ranges = array();
+            return;
+        }
+
         $s = preg_replace('!\d+!', ' ', $s);
-        $s = str_replace('*','%',$s);
         $this->strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
 
-        $s = trim($this->value);
-        $s = preg_replace('! *- *!', '-', $s);
+        $s = preg_replace('! *- *!', '-', $r);
         $s = preg_replace('!([<>]) *!', ' \1', $s);
         $s = preg_replace('![^0-9\-><]!', ' ', $s);
         $s = preg_replace('![<>\-] !', '', $s);
@@ -276,6 +289,13 @@ class QuickSearch extends SField
         if (!empty($wherep)) {
             $where[] = '('.join(' OR ',$wherep).')';
         }
+        if (!empty($this->email)) {
+            $where[] = 'ems.email = ' . XDB::escape($this->email);
+        }
+        if (!empty($this->ip)) {
+            $ip = XDB::escape($this->ip);
+            $where[] = "( ls.ip = $ip OR ls.forward_ip = $ip )";
+        }
         return join(" AND ", $where);
     }
 
@@ -293,6 +313,12 @@ class QuickSearch extends SField
             $myu  = str_replace('snv', "sn$i", $uniq);
             $join .= "INNER JOIN search_name AS sn$i ON (u.user_id = sn$i.uid $and$myu)\n";
             $uniq .= " AND sn$i.token != snv.token";
+        }
+        if (!empty($this->email)) {
+            $join .= "LEFT JOIN emails AS ems ON (ems.uid = u.user_id)";
+        }
+        if (!empty($this->ip)) {
+            $join .= "INNER JOIN logger.sessions AS ls ON (ls.uid = u.user_id)\n";
         }
         return $join;
     }
