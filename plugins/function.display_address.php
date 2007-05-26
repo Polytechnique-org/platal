@@ -20,7 +20,8 @@
  ***************************************************************************/
 
 
-function smarty_function_display_address($param, &$smarty) {
+function smarty_function_display_address($param, &$smarty)
+{
     require_once('geoloc.inc.php');
     $txtad = get_address_text($param['adr']);
     if (!$txtad &&
@@ -30,8 +31,13 @@ function smarty_function_display_address($param, &$smarty) {
         !$param['adr']['mobile']) return "";
 
     $lines = explode("\n", $txtad);
+    $idt   = array_shift($lines); 
+
     $txthtml = "";
-    $map = "<a href=\"http://maps.google.fr/?q=".urlencode(str_replace('États-Unis d\'Amérique', 'USA', implode(", ", $lines)))."\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
+    $map = "<a href=\"http://maps.google.fr/?q="
+         .   urlencode(str_replace('États-Unis d\'Amérique', 'USA', implode(", ", $lines) . " ($idt)"))
+         . "\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
+    array_unshift($lines, $idt);
     if ($param['titre'])
     {
         if ($param['titre_div'])
