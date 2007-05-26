@@ -124,6 +124,8 @@
       <a href="admin/validate">Valider</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/events">Événements</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/validate/answers">Réponses automatiques</a>
     </td>
   </tr>
   <tr class="impair">
