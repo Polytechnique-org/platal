@@ -90,7 +90,7 @@ Adresses
     Effacer l'adresse {$adr.adrid}.
 {else}
     {if $adr.adrid}Modifier l'adresse {$adr.adrid} :{else}Ajouter l'adresse :{/if}
-  {include file='geoloc/address.tpl' address=$adr no_div=1}
+  {include file='geoloc/address.tpl' address=$adr no_div=1 for="`$x.prenom` `$x.nom`"}
 {/if}
 </td></tr>
 {/foreach}
@@ -127,7 +127,7 @@ Emplois
       <em>Poste : </em> <strong>{$pro.poste}</strong>
     </div>
     {/if}
-  {include file='geoloc/address.tpl' address=$pro no_div=1}
+  {include file='geoloc/address.tpl' address=$pro no_div=1 for=$pro.entreprise}
 {/if}
 </td></tr>
 {/foreach}

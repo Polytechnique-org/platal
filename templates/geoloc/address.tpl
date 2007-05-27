@@ -20,6 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{display_address adr=$address titre=$titre titre_div=$titre_div no_div=$no_div}
+{display_address adr=$address titre=$titre titre_div=$titre_div no_div=$no_div for=$for}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

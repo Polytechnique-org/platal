@@ -19,6 +19,22 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+function display_address_isIdentity($idt, $value, $test_reverse = true)
+{
+    $value = strtolower(replace_accent($value));
+    $idt   = strtolower(replace_accent($idt));
+    $idt   = preg_replace('/[^a-z]/', '', $idt);
+
+    $value = preg_replace('/[^a-z]/', '', $value);
+    if (strpos($value, $idt) !== false || strpos($idt, $value) !== false || levenshtein($value, $idt) < strlen($idt) / 3) {
+        return true;
+    }
+
+    if ($test_reverse) { 
+        return display_address_isIdentity($idt, implode(' ', array_reverse(explode(' ', $value))), false); 
+    }
+    return false;
+}
 
 function smarty_function_display_address($param, &$smarty)
 {
@@ -30,14 +46,24 @@ function smarty_function_display_address($param, &$smarty)
         !$param['adr']['fax'] &&
         !$param['adr']['mobile']) return "";
 
+
     $lines = explode("\n", $txtad);
-    $idt   = array_shift($lines); 
+    $idt   = array_shift($lines);
+    $restore = true;
+
+    if (!display_address_isIdentity($param['for'], $idt)) {
+        array_unshift($lines, $idt);
+        $idt = $param['for'];
+        $restore = false;
+    }
 
     $txthtml = "";
     $map = "<a href=\"http://maps.google.fr/?q="
          .   urlencode(str_replace('États-Unis d\'Amérique', 'USA', implode(", ", $lines) . " ($idt)"))
          . "\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
-    array_unshift($lines, $idt);
+    if ($restore) {
+        array_unshift($lines, $idt);
+    }
     if ($param['titre'])
     {
         if ($param['titre_div'])

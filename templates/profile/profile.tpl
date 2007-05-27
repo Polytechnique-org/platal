@@ -132,11 +132,14 @@ function chgMainWinLoc(strPage)
       <h2>Contact : </h2>
       {foreach from=$x.adr item="address" key="i"}
         {if $address.active}
-        {include file="geoloc/address.tpl" address=$address titre_div=true titre="Mon adresse actuelle :"}
+        {include file="geoloc/address.tpl" address=$address titre_div=true titre="Mon adresse actuelle :"
+                 for="`$x.prenom` `$x.nom`"}
         {elseif $address.secondaire}
-        {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse secondaire :"}
+        {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse secondaire :"
+                 for="`$x.prenom` `$x.nom`"}
         {else}
-        {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse principale :"}
+        {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse principale :"
+                 for="`$x.prenom` `$x.nom`"}
         {/if}
       {/foreach}
       <div class="spacer">&nbsp;</div>
@@ -149,7 +152,7 @@ function chgMainWinLoc(strPage)
       <h2>Informations professionnelles :</h2>
       {foreach from=$x.adr_pro item="address" key="i"}
       {include file="include/emploi.tpl" address=$address}
-      {include file="geoloc/address.tpl" address=$address titre="Adresse : "}
+      {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise}
       <div class="spacer">&nbsp;</div>
       {/foreach}
     </td>

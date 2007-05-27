@@ -66,7 +66,7 @@
   {foreach from=$adr_pro item="address" key="i"}
   <h2>{$address.entreprise}</h2>
   {include file="include/emploi.tpl" address=$address}
-  {include file="geoloc/address.tpl" address=$address titre="Adresse : "}
+  {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise}
   
   <div class="spacer">&nbsp;</div>
   {/foreach}
