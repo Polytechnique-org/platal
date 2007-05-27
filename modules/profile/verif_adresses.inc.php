@@ -169,37 +169,35 @@ if ($opened_tab == 'adresses' && Env::has('modifier')){ // on ne valide que qd o
 $adresses_principales = 0;
 reset($adresses);
 foreach($adresses as $adrid => $adr) {
-  //validité de chaque adresse
-  $description = (($adr['numero_formulaire'] > 0)?"Adresse n°{$adr['numero_formulaire']}":"Nouvelle adresse");
-  if (strlen(strtok($adr['adr1'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['adr1']))
-    {
-      $page->trig("Le champ '$description - Ligne 1' contient un caractère interdit.");
+    //validité de chaque adresse
+    $description = (($adr['numero_formulaire'] > 0)?"Adresse n°{$adr['numero_formulaire']}":"Nouvelle adresse");
+    if (strlen(strtok($adr['adr1'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['adr1'])) {
+        $page->trig("Le champ '$description - Ligne 1' contient un caractère interdit.");
     }
-  if (strlen(strtok($adr['adr2'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['adr2']))
-    {
-      $page->trig("Le champ '$description - Ligne 2' contient un caractère interdit.");
+    if (strlen(strtok($adr['adr2'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['adr2'])) {
+        $page->trig("Le champ '$description - Ligne 2' contient un caractère interdit.");
     }
-  if (strlen(strtok($adr['adr3'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['adr3']))
-    {
-      $page->trig("Le champ '$description - Ligne 3' contient un caractère interdit.");
+    if (strlen(strtok($adr['adr3'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['adr3'])) {
+        $page->trig("Le champ '$description - Ligne 3' contient un caractère interdit.");
     }
-  if (strlen(strtok($adr['postcode'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['postcode']))
-    {
-      $page->trig("Le champ '$description - Code Postal' contient un caractère interdit.");
+    if (strlen(strtok($adr['postcode'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['postcode'])) {
+        $page->trig("Le champ '$description - Code Postal' contient un caractère interdit.");
     }
-  foreach ($adr['tels'] as $tel) {
-    if (strlen(strtok($tel['tel'],"<>{}@&#~:;?,!§*_`[]|%$^=\"")) < strlen($tel['tel']))
-      {
-        $page->trig("Le champ '$description - ".$tel['tel_type']."' contient un caractère interdit.");
-      }
+    if (is_array($adr['tels'])) {
+        foreach ($adr['tels'] as $tel) {
+            if (strlen(strtok($tel['tel'],"<>{}@&#~:;?,!§*_`[]|%$^=\"")) < strlen($tel['tel'])) {
+                $page->trig("Le champ '$description - ".$tel['tel_type']."' contient un caractère interdit.");
+            }
+        }
     }
-  if(!$adr['secondaire']){
-    if($adresses_principales == 1){ //deja une adresse principale
-      $page->trig("Tu ne peux avoir qu'une résidence principale.");
-      $adresses_principales++;//pour eviter de repeter le message plusieurs fois
+    if(!$adr['secondaire']) {
+        if($adresses_principales == 1) { //deja une adresse principale
+            $page->trig("Tu ne peux avoir qu'une résidence principale.");
+            $adresses_principales++; //pour eviter de repeter le message plusieurs fois
+        } else {
+            $adresses_principales = 1;
+        }
     }
-    else $adresses_principales = 1;
-  }
 }
 
 }
