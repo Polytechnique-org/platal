@@ -226,7 +226,7 @@ class NLArticle
     public function toText()
     {
         $title = '*'.$this->title().'*';
-        $body  = MiniWiki::WikiToText($this->_body,true);
+        $body  = MiniWiki::WikiToText($this->_body, true);
         $app   = MiniWiki::WikiToText($this->_append,false,4);
         return trim("$title\n\n$body\n\n$app")."\n";
     }

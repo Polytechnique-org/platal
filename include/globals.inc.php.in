@@ -86,6 +86,7 @@ class PlatalGlobals
         setlocale(LC_TIME,     $this->locale);
         setlocale(LC_CTYPE,    $this->locale);
         date_default_timezone_set($this->timezone);
+        mb_internal_encoding("UTF-8");
     }
 
     public function asso($key=null)
