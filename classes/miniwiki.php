@@ -30,7 +30,7 @@ class MiniWiki
         MiniWiki::Markup("/(\r\n|\r([^\n]))/", "\n$2", "\n$2");
                 
         // retours à la ligne avec \\
-        MiniWiki::Markup("/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',strlen('$1'))", "str_repeat('\n',strlen('$1'))", "ligne1\\\\\nligne2");
+        MiniWiki::Markup("/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',mb_strlen('$1'))", "str_repeat('\n',mb_strlen('$1'))", "ligne1\\\\\nligne2");
         
         // * unordered list 
         MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se", "'<ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul>'", "'$0'", "* element1\n* element2\n* element3"); 
@@ -58,12 +58,12 @@ class MiniWiki
         MiniWiki::Markup("/%([a-z]+|\#[0-9a-f]{3,6})%(.*?)%%/i", "<span style='color: $1;'>$2</span>", "$2",
                          "%red% texte en rouge %%\\\\\n%#ff0% texte en jaune %%\\\\\n%#0000ff% texte en bleu %%");
         // [+ big +] [++ bigger ++] [+++ even bigger +++] ...
-        MiniWiki::Markup("/\\[(([-+])+)(.*?)\\1\\]/e","'<span style=\'font-size:'.(round(pow(6/5,$2strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'", "[+ grand +]\n\n[++ plus grand ++]\n\n[+++ encore plus grand +++]");
+        MiniWiki::Markup("/\\[(([-+])+)(.*?)\\1\\]/e","'<span style=\'font-size:'.(round(pow(6/5,$2mb_strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'", "[+ grand +]\n\n[++ plus grand ++]\n\n[+++ encore plus grand +++]");
         
         // ----- <hr/>
         MiniWiki::Markup("/(\n|^)--(--+| \n)/s", '$1<hr/>', '$1-- '."\n", "----\n");
         // titles
-        MiniWiki::$title_index = MiniWiki::Markup('/(\n|^)(!+)([^\n]*)/se', "'$1<h'.strlen('$2').'>$3</h'.strlen('$2').'>'",
+        MiniWiki::$title_index = MiniWiki::Markup('/(\n|^)(!+)([^\n]*)/se', "'$1<h'.mb_strlen('$2').'>$3</h'.mb_strlen('$2').'>'",
                                                   "'$1$3'", "!titre1\n\n!!titre2\n\n!!!titre3");
         
         // links
@@ -93,35 +93,35 @@ class MiniWiki
         return $html;
     }
     
-    private static function justify($text,$n)
+    private static function justify($text, $n)
     {
-        $arr = explode("\n",wordwrap($text,$n));
-        $arr = array_map('trim',$arr);
+        $arr = explode("\n", wordwrap($text, $n));
+        $arr = array_map('trim', $arr);
         $res = '';
         foreach ($arr as $key => $line) {
             $nxl       = isset($arr[$key+1]) ? trim($arr[$key+1]) : '';
-            $nxl_split = preg_split('! +!',$nxl);
-            $nxw_len   = count($nxl_split) ? strlen($nxl_split[0]) : 0;
+            $nxl_split = preg_split('! +!u', $nxl);
+            $nxw_len   = count($nxl_split) ? mb_strlen($nxl_split[0]) : 0;
             $line      = trim($line);
         
-            if (strlen($line)+1+$nxw_len < $n) {
+            if (mb_strlen($line)+1+$nxw_len < $n) {
                 $res .= "$line\n";
                 continue;
             }
             
-            if (preg_match('![.:;]$!',$line)) {
+            if (preg_match('![.:;]$!u',$line)) {
                 $res .= "$line\n";
                 continue;
             }
         
-            $tmp   = preg_split('! +!',trim($line));
+            $tmp   = preg_split('! +!u', trim($line));
             $words = count($tmp);
             if ($words <= 1) {
                 $res .= "$line\n";
                 continue;
             }
         
-            $len   = array_sum(array_map('strlen',$tmp));
+            $len   = array_sum(array_map('mb_strlen', $tmp));
             $empty = $n - $len;
             $sw    = floatval($empty) / floatval($words-1);
             
@@ -129,8 +129,9 @@ class MiniWiki
             $l   = '';
             foreach ($tmp as $word) {
                 $l   .= $word;
-                $cur += $sw + strlen($word);
-                $l    = str_pad($l,intval($cur+0.5));
+                $cur += $sw + strlen($word); // Use strlen here instead of mb_strlen because it is used by str_pad
+                                             // which is not multibyte compatible
+                $l   = str_pad($l, intval($cur + 0.5));
             }
             $res .= trim($l)."\n";
         }
@@ -153,7 +154,7 @@ class MiniWiki
         if (!$title) {
             MiniWiki::$replacementHTML[MiniWiki::$title_index] = $oldrule12;
         }
-        $text = $just ? MiniWiki::justify($text,$width-$indent) : wordwrap($text,$width-$indent);
+        $text = $just ? MiniWiki::justify($text, $width - $indent) :  wordwrap($text, $width - $indent);
         if($indent) {
             $ind = str_pad('',$indent);
             $text = $ind.str_replace("\n","\n$ind",$text);
