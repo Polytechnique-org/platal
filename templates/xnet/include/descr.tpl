@@ -47,7 +47,7 @@ plateau). Cette appellation, qui peut sembler étrange, est, pour certains, simp
 de "cabinet". Pour d'autres, elle aurait pour origine un certain général Binet, commandant l'Ecole
 Polytechnique, qui aurait le premier autorisé ces regroupements d'élèves. Les binets présents à
 l'Ecole n'ont pas tous leur site web présenté ici. Vous pouvez voir tous les sites des binets en
-cliquant <a href= "http://www.polytechnique.fr/eleves/acces/binets/">ici</a>.
+cliquant <a href= "http://www.polytechnique.fr/eleves/binets.php">ici</a>.
 </p>
 
 {elseif $cat eq institutions}
