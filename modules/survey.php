@@ -57,14 +57,14 @@ class SurveyModule extends PLModule
         }
         $id = intval($id);
         if ($id == -1) {
-            return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'survey');
+            return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey');
         }
         require_once dirname(__FILE__).'/survey/survey.inc.php';
         $survey = Survey::retrieveSurvey($id); // retrieves the survey object structure
         if ($survey == null || !$survey->isValid()) {
             return $this->show_error($page, "Sondage ".$id." introuvable.", 'survey');
         } elseif ($survey->isEnded()) {
-            return $this->show_error($page, "Le sondage ".$survey->getTitle()." est termin&#233;.", 'survey');
+            return $this->show_error($page, "Le sondage ".$survey->getTitle()." est terminé.", 'survey');
         }
         if (!$this->check_surveyPerms($page, $survey)) {
             return;
@@ -74,16 +74,16 @@ class SurveyModule extends PLModule
             if (!$survey->isMode(Survey::MODE_ALL)) { // if survey is restriced to alumni
                 $uid = S::v('uid');
                 if ($survey->hasVoted($uid)) { // checks whether the user has already voted
-                    return $this->show_error($page, "Tu as d&#233;j&#224; vot&#233; &#224; ce sondage.", 'survey');
+                    return $this->show_error($page, "Tu as déjà voté à ce sondage.", 'survey');
                 }
             }
             $survey->vote($uid, Post::v('survey'.$id)); // performs vote
-            $this->show_success($page, "Ta r&#233;ponse a bien &#233;t&#233; prise en compte. Merci d'avoir particip&#233; &#224; ce sondage.", 'survey');
+            $this->show_success($page, "Ta réponse a bien été prise en compte. Merci d'avoir participé à ce sondage.", 'survey');
         } else { // offers to fill in the survey
             if ($survey->isMode(Survey::MODE_ALL) || !$survey->hasVoted(S::v('uid'))) {
                 $page->assign('survey_votemode', true);
             } else {
-                $page->assign('survey_warning', "Tu as d&#233;j&#224; vot&#233; &#224; ce sondage.");
+                $page->assign('survey_warning', "Tu as déjà voté à ce sondage.");
             }
             //$page->assign('survey_id', $id);
             $this->show_survey($page, $survey);
@@ -96,14 +96,14 @@ class SurveyModule extends PLModule
     {
         $id = intval($id);
         if ($id == -1) {
-            return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'survey');
+            return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey');
         }
         require_once dirname(__FILE__).'/survey/survey.inc.php';
         $survey = Survey::retrieveSurvey($id); // retrieves the survey object structure
         if ($survey == null || !$survey->isValid()) {
             return $this->show_error($page, "Sondage ".$id." introuvable.", 'survey');
         } elseif (!$survey->isEnded()) {
-            return $this->show_error($page, "Le sondage ".$survey->getTitle()." n'est pas encore termin&#233;.", 'survey');
+            return $this->show_error($page, "Le sondage ".$survey->getTitle()." n'est pas encore terminé.", 'survey');
         }
         if (!$this->check_surveyPerms($page, $survey)) {
             return;
@@ -146,7 +146,7 @@ class SurveyModule extends PLModule
     function handler_adminEdit(&$page, $id = -1, $req = -1)
     {
         if ($id == -1 || ($id == 'req' && $req == -1)) {
-            return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'survey/admin');
+            return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey/admin');
         }
         require_once dirname(__FILE__).'/survey/survey.inc.php';
         $this->clear_session(); // cleans session (in case there would have been a problem before)
@@ -177,7 +177,7 @@ class SurveyModule extends PLModule
             return $this->handler_admin(&$page, $id);
         }
         if ($id == -1) {
-            return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'survey/admin');
+            return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey/admin');
         }
         $id = intval($id);
         require_once dirname(__FILE__).'/survey/survey.inc.php';
@@ -187,13 +187,13 @@ class SurveyModule extends PLModule
         }
         if (Post::has('survey_submit')) { // needs a confirmation before validation
             if (Survey::validateSurvey($id)) { // validates the survey (in the database)
-                $this->show_success($page, "Le sondage \"".$surveyInfo['title']."\" a bien &#233;t&#233; valid&#233;, les votes sont maintenant ouverts.", 'survey/admin');
+                $this->show_success($page, "Le sondage \"".$surveyInfo['title']."\" a bien été validé, les votes sont maintenant ouverts.", 'survey/admin');
             } else {
                 $this->show_error($page, '', 'survey/admin');
             }
         } else { // asks for a confirmation
-            $this->show_confirm($page, "&#202;tes-vous certain de vouloir valider le sondage \"".$surveyInfo['title']."\" ? "
-                                      ."Les votes seront imm&#233;diatement ouverts.", 'admin/valid', array('id' => $id));
+            $this->show_confirm($page, "Êtes-vous certain de vouloir valider le sondage \"".$surveyInfo['title']."\" ? "
+                                      ."Les votes seront immédiatement ouverts.", 'admin/valid', array('id' => $id));
         }
     }
     // }}}
@@ -206,7 +206,7 @@ class SurveyModule extends PLModule
             return $this->handler_admin(&$page, $id);
         }
         if ($id == -1) {
-            return $this->show_error($page, "Un identifiant de sondage doit &#234;tre pr&#233;cis&#233;.", 'survey/admin');
+            return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey/admin');
         }
         $id = intval($id);
         require_once dirname(__FILE__).'/survey/survey.inc.php';
@@ -216,12 +216,12 @@ class SurveyModule extends PLModule
         }
         if (Post::has('survey_submit')) { // needs a confirmation before suppression
             if (Survey::deleteSurvey($id)) { // deletes survey in database
-                $this->show_success($page, "Le sondage \"".$surveyInfo['title']."\" a bien &#233;t&#233; supprim&#233;, ainsi que tous les votes le concernant.", 'survey/admin');
+                $this->show_success($page, "Le sondage \"".$surveyInfo['title']."\" a bien été supprimé, ainsi que tous les votes le concernant.", 'survey/admin');
             } else {
                 $this->show_error($page, '', 'survey/admin');
             }
         } else { // asks for a confirmation
-            $this->show_confirm($page, "&#202;tes-vous certain de vouloir supprimer le sondage \"".$surveyInfo['title']."\" ?", 'admin/del', array('id' => $id));
+            $this->show_confirm($page, "Êtes-vous certain de vouloir supprimer le sondage \"".$surveyInfo['title']."\" ?", 'admin/del', array('id' => $id));
         }
     }
     // }}}
@@ -298,8 +298,8 @@ class SurveyModule extends PLModule
                 if ($current == null) {
                     return $this->show_error($page, '', 'survey/edit');
                 }
-                $this->show_confirm($page, '&#202;tes-vous certain de vouloir supprimer la question intitul&#233; "'.$current['question'].'" ? '
-                                          .'Attention, cela supprimera en m&#234;me temps toutes les questions qui d&#233;pendent de celle-ci.',
+                $this->show_confirm($page, 'Êtes-vous certain de vouloir supprimer la question intitulé "'.$current['question'].'" ? '
+                                          .'Attention, cela supprimera en même temps toutes les questions qui dépendent de celle-ci.',
                                                 'edit', array('action' => 'del', 'qid' => $qid));
             } // }}}
         } elseif ($action == 'show') { // {{{ simply shows the survey in its current state
@@ -311,13 +311,13 @@ class SurveyModule extends PLModule
                 if (S::has('survey_id')) { // if 'survey_id' is in session, we are modifying an existing survey (in admin mode) instead of proposing a new one
                     $link = (S::has('survey_validate'))? 'admin/validate' : 'survey/admin';
                     if ($survey->updateSurvey()) { // updates the database according the new survey object structure
-                        $this->show_success($page, "Les modifications sur le sondage ont bien &#233;t&#233; enregistr&#233;es.", $link);
+                        $this->show_success($page, "Les modifications sur le sondage ont bien été enregistrées.", $link);
                     } else {
                         $this->show_error($page, '', $link);
                     }
                 } else { // if no 'survey_id' is in session, we are indeed proposing a new survey
                     if ($survey->proposeSurvey()) { // stores the survey object structure in database
-                        $this->show_success($page, "Votre proposition de sondage a bien &#233;t&#233; enregistr&#233;e,
+                        $this->show_success($page, "Votre proposition de sondage a bien été enregistrée,
                                                     elle est en attente de validation par un administrateur du site.", 'survey');
                     } else {
                         $this->show_error($page, '', 'survey');
@@ -331,7 +331,7 @@ class SurveyModule extends PLModule
                     $this->show_error($page, "", 'survey/edit', $errors);
                 } else {
                     if (S::has('survey_id')) {
-                        $this->show_confirm($page, "Veuillez confirmer l'enregistrement des modifications apport&#233;es &#224; ce sondage", 'edit', array('action' => 'valid'));
+                        $this->show_confirm($page, "Veuillez confirmer l'enregistrement des modifications apportées à ce sondage", 'edit', array('action' => 'valid'));
                     } else {
                         $this->show_confirm($page, "Veuillez confirmer l'envoi de cette proposition de sondage.", 'edit', array('action' => 'valid'));
                     }
@@ -342,7 +342,7 @@ class SurveyModule extends PLModule
                 if (S::has('survey_id')) {  // only possible when modifying a survey in admin mode
                     if (S::has('survey_validate')) { // if a link has been supplied, uses it
                         $this->clear_session();
-                        return $this->show_success($page, "Les modifications effectu&#233;es ont &#233;t&#233; annul&#233;es", 'admin/validate');
+                        return $this->show_success($page, "Les modifications effectuées ont été annulées", 'admin/validate');
                     } else { // else shows the admin index
                         $this->clear_session();
                         return $this->handler_admin($page);
@@ -352,8 +352,8 @@ class SurveyModule extends PLModule
                     return $this->handler_index($page); // else shows the 'normal' index
                 }
             } else { // asks for a confirmation if it has not been sent
-                $this->show_confirm(&$page, "&#202;tes-vous certain de vouloir annuler totalement l'&#233;dition de ce sondage ? Attention, "
-                                           ."toutes les donn&#233;es &#233;dit&#233;es jusque l&#224; seront d&#233;finitivement perdues.",
+                $this->show_confirm(&$page, "Êtes-vous certain de vouloir annuler totalement l'édition de ce sondage ? Attention, "
+                                           ."toutes les données éditées jusque là seront définitivement perdues.",
                                                 'edit', array('action' => $action));
             }
         } // }}}
@@ -406,7 +406,7 @@ class SurveyModule extends PLModule
                 $platal->force_login($page);
             }
             if (!$survey->checkPromo(S::v('promo'))) { // checks promotion
-                $this->show_error($page, "Tu n'as pas acc&#232;s &#224; ce sondage car il est r&#233;serv&#233; &#224; d'autres promotions.", 'survey');
+                $this->show_error($page, "Tu n'as pas accès à ce sondage car il est réservé à d'autres promotions.", 'survey');
                 return false;
             }
         }

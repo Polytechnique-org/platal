@@ -26,7 +26,7 @@ class Survey
     const MODE_ALL    = 0;
     const MODE_XANON  = 1;
     const MODE_XIDENT = 2;
-    private static $longModes = array(self::MODE_ALL    => "sondage ouvert &#224; tout le monde, anonyme",
+    private static $longModes = array(self::MODE_ALL    => "sondage ouvert à tout le monde, anonyme",
                                       self::MODE_XANON  => "sondage restreint aux polytechniciens, anonyme",
                                       self::MODE_XIDENT => "sondage restreint aux polytechniciens, non anonyme");
     private static $shortModes = array(self::MODE_ALL    => "tout le monde, anonyme",
@@ -39,11 +39,11 @@ class Survey
 
     private static $types = array('text'          => 'Texte court',
                                   'textarea'      => 'Texte long',
-                                  'num'           => 'Num&#233;rique',
-                                  'radio'         => 'Choix multiples (une r&#233;ponse)',
-                                  'checkbox'      => 'Choix multiples (plusieurs r&#233;ponses)',
-                                  'radiotable'    => 'Questions multiples &#224; choix multiples (une r&#233;ponse)',
-                                  'checkboxtable' => 'Questions multiples &#224; choix mutliples (plusieurs r&#233;ponses)');
+                                  'num'           => 'Numérique',
+                                  'radio'         => 'Choix multiples (une réponse)',
+                                  'checkbox'      => 'Choix multiples (plusieurs réponses)',
+                                  'radiotable'    => 'Questions multiples à choix multiples (une réponse)',
+                                  'checkboxtable' => 'Questions multiples à choix mutliples (plusieurs réponses)');
 
     public static function getTypes()
     {
@@ -311,8 +311,8 @@ class Survey
 
     // {{{ function checkSyntax() : checks syntax of the questions (currently the root only) before storing the survey in database
     private static $errorMessages = array(
-        "datepassed"  => "la date de fin de sondage est d&#233;j&#224; d&#233;pass&#233;e : vous devez pr&#233;ciser une date future",
-        "promoformat" => "les restrictions &#224; certaines promotions sont mal formatt&#233;es"
+        "datepassed"  => "la date de fin de sondage est déjà dépassée : vous devez préciser une date future",
+        "promoformat" => "les restrictions à certaines promotions sont mal formattées"
     );
 
     public function checkSyntax()
