@@ -19,19 +19,13 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-<h1>Sondage : {if $survey_type == 'root'}nouveau sondage{else}nouvelle question{/if}</h1>
 
-<form action="{$survey_formaction}" method="post">
-  <input type="hidden" name="survey_action" value="{$survey_action}"/>
-  <input type="hidden" name="survey_qid" value="{$survey_qid}"/>
-  <table class="bicol" id="survey_form">
-    {include file="survey/edit_$survey_type.tpl"}
-  </table>
-  <div class="center">
-    <input type="submit" name="survey_submit" value="{if $survey_type == 'newsurvey'}Continuer{else}Valider{/if}"/>
-    <input type="reset" name="survey_reset" value="R&#233;initialiser"/>
-    <input type="submit" name="survey_cancel" value="Annuler"/>
-  </div>
-</form>
+    <tr>
+      <td colspan='2'>
+        Remplissez ici une description g&#233;n&#233;rale du sondage, puis cliquer sur "Continuer"
+        pour passer &#224; l'&#233;dition des questions.
+      </td>
+    </tr>
+{include file='survey/edit_root.tpl'}
 
 {* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}

@@ -271,7 +271,7 @@ class SurveyModule extends PLModule
                 $this->store_session($survey);
             } else {
                 $this->clear_session();
-                $this->show_form($page, $action, 'root', 'root');
+                $this->show_form($page, $action, 'root', 'newsurvey');
             } // }}}
         } elseif ($action == 'add') { // {{{ adds a new question
             if (Post::has('survey_submit')) { // if the form has been submitted, adds the question
@@ -437,7 +437,7 @@ class SurveyModule extends PLModule
             $page->addJsLink('ajax.js');
             $page->assign('survey_types', Survey::getTypes());
         }
-        if ($type == 'root') {
+        if ($type == 'root' || $type == 'newsurvey') {
             $page->assign('survey_modes', Survey::getModes());
         }
     }
@@ -475,5 +475,5 @@ class SurveyModule extends PLModule
     // }}}
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+// vim:set et sw=4 sts=4 ts=4 foldmethod=marker enc=utf-8:
 ?>
