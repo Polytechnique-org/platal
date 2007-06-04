@@ -26,7 +26,7 @@
 </h1>
 <p>
   Bonjour,<br />
-  La page que vous avez demandé
+  La page que vous avez demandée
   (<strong>{if $referer}{$smarty.server.HTTP_REFERER}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
   nécessite une authentification.
 </p>
