@@ -33,7 +33,10 @@ class MiniWiki
         MiniWiki::Markup("/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',mb_strlen('$1'))", "str_repeat('\n',mb_strlen('$1'))", "ligne1\\\\\nligne2");
         
         // * unordered list 
-        MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se", "'<ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul>'", "'$0'", "* element1\n* element2\n* element3"); 
+        MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se",
+                         "'</p><ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul><p>'",
+                         "'$0'",
+                         "* element1\n* element2\n* element3"); 
         // # unordered list 
         MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "'$0'", "# element1\n# element2\n# element3"); 
         
@@ -75,7 +78,7 @@ class MiniWiki
         // paragraphs and empty lines
         MiniWiki::Markup("/\n\n/", '</p><p>', "\n\n", "paragraphe1\n\nparagraphe2");
         MiniWiki::Markup("/\n/", ' ', "\n");
-        MiniWiki::Markup("/^.*<\/p><p>.*$/s", "<p>$0</p>", "$0");
+        MiniWiki::Markup("/^.*<\/p>.*<p>.*$/s", "<p>$0</p>", "$0");
     }
 
     public static function WikiToHTML($wiki, $title = false)

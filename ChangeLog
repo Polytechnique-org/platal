@@ -9,6 +9,7 @@ New:
 Bug/Wish:
 
     * Core:
+        - #674: MiniWiki xhtml validation                                  -FRU
         - #678: PlUpload filename detection                                -FRU
 
     * Profile:
