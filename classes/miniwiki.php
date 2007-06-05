@@ -35,7 +35,7 @@ class MiniWiki
         // * unordered list 
         MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se",
                          "'</p><ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul><p>'",
-                         "'$0'",
+                         "'$1 -' . str_replace(\"\\n*\", \"\\n -\", '$2')",
                          "* element1\n* element2\n* element3"); 
         // # unordered list 
         MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "'$0'", "# element1\n# element2\n# element3"); 
@@ -66,14 +66,19 @@ class MiniWiki
         // ----- <hr/>
         MiniWiki::Markup("/(\n|^)--(--+| \n)/s", '$1<hr/>', '$1-- '."\n", "----\n");
         // titles
-        MiniWiki::$title_index = MiniWiki::Markup('/(\n|^)(!+)([^\n]*)/se', "'$1<h'.mb_strlen('$2').'>$3</h'.mb_strlen('$2').'>'",
+        MiniWiki::$title_index = MiniWiki::Markup('/(\n|^)(!+)([^\n]*)/se',
+                                                  "'$1<h'.mb_strlen('$2').'>$3</h'.mb_strlen('$2').'>'",
                                                   "'$1$3'", "!titre1\n\n!!titre2\n\n!!!titre3");
         
         // links
-        MiniWiki::Markup('/((?:https?|ftp):\/\/(?:[\.\,\;\!\:]*[\w@~%$£µ&i#\-+=_\/\?])*)/ui', '<a href="\\0">\\0</a>', '<\\0>');
-        MiniWiki::Markup('/(\s|^|\\[\\[)www\.((?:[\.\,\;\!\:]*[\w@~%$£µ&i#\-+=_\/\?])*)/iu', '\\1<a href="http://www.\\2">www.\\2</a>', '<http://www.\\2>');
+        MiniWiki::Markup('/((?:https?|ftp):\/\/(?:[\.\,\;\!\:]*[\w@~%$£µ&i#\-+=_\/\?])*)/ui',
+                         '<a href="\\0">\\0</a>', '<\\0>');
+        MiniWiki::Markup('/(\s|^|\\[\\[)www\.((?:[\.\,\;\!\:]*[\w@~%$£µ&i#\-+=_\/\?])*)/iu',
+                         '\\1<a href="http://www.\\2">www.\\2</a>', '\\1<http://www.\\2>');
         MiniWiki::Markup('/(?:mailto:)?([a-z0-9.\-+_]+@([\-.+_]?[a-z0-9])+)/i', '<a href="mailto:\\0">\\0</a>', '<\\0>');
-        MiniWiki::Markup('/\\[\\[\\s*<a href="([^>]*)">.*<\/a>\\s*\|([^\\]]+)\\]\\]/i', '<a href="\\1">\\2</a>', '\\2 <\\1>', "[[http://www.example.com|Mon site web]]\n\nhttp://www.example.com\n\ntest@example.com");
+        MiniWiki::Markup('/\\[\\[\\s*<(?:a href=")?([^>]*)(?:">.*<\/a)?>\\s*\|([^\\]]+)\\]\\]/i',
+                         '<a href="\\1">\\2</a>', '\\2 <\\1>',
+                         "[[http://www.example.com|Mon site web]]\n\nhttp://www.example.com\n\ntest@example.com");
         
         // paragraphs and empty lines
         MiniWiki::Markup("/\n\n/", '</p><p>', "\n\n", "paragraphe1\n\nparagraphe2");
