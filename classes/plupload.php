@@ -53,9 +53,9 @@ class PlUpload
                 trigger_error('can\'t create upload directory: ' . $filename, E_USER_ERROR);
             }
         }
-        $filename .= $this->forlife . '-' . $this->category;
+        $filename .= $this->forlife . '--' . $this->category;
         if ($file_id) {
-            $filename .= '-' . $file_id;
+            $filename .= '--' . $file_id;
         }
         return $filename;
     }
@@ -143,9 +143,9 @@ class PlUpload
     {
         global $globals;
         $filename = $globals->spoolroot . '/spool/uploads/temp/';
-        $filename .= $forlife . '-' . $category;
+        $filename .= $forlife . '--' . $category;
         if (!$uniq) {
-            $filename .= '-*';
+            $filename .= '--*';
         }
         $files = glob($filename);
         if ($basename) {
@@ -158,7 +158,7 @@ class PlUpload
     {
         $files = PlUpload::listRawFiles($forlife, $category, false, true);
         foreach ($files as &$name) {
-            list($forlife, $cat, $fn) = explode('-', $name, 3);
+            list($forlife, $cat, $fn) = explode('--', $name, 3);
             $name = $fn;
         }
         return $files;
@@ -169,7 +169,7 @@ class PlUpload
         $res   = array();
         $files = PlUpload::listRawFiles($forlife, $category, $uniq, true);
         foreach ($files as $name) {
-            list($forlife, $cat, $fn) = explode('-', $name, 3);
+            list($forlife, $cat, $fn) = explode('--', $name, 3);
             $res[$fn] = new PlUpload($forlife, $cat, $fn);
         }
         return $res;

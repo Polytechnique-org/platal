@@ -8,6 +8,9 @@ New:
 
 Bug/Wish:
 
+    * Core:
+        - #678: PlUpload filename detection                                -FRU
+
     * Profile:
         - #663: Link to Xnet's map from the "My groups" page               -FRU
         - Fix GoogleMaps links                                             -FRU
