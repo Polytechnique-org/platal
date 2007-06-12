@@ -113,9 +113,10 @@
   </tr>
   <tr class="pair">
     <td>
-      <h3><a href="password/smtp">Activer l'accès SMTP et NNTP</a></h3>
+      <h3><a href="password/smtp">Gérer l'accès SMTP et NNTP</a></h3>
       <div class='explication'>
-        Pour activer ton compte sur le serveur SMTP et NNTP de {#globals.core.sitename#}.
+        Pour activer ton compte sur le serveur SMTP et NNTP de {#globals.core.sitename#},
+        ou changer le mot de passe correspondant si tu as déjà activé l'accès.
         Cela te permet d'envoyer tes mails plus souplement (SMTP), et de consulter
         les forums directement depuis ton logiciel habituel de courrier électronique.
       </div>

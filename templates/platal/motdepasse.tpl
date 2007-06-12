@@ -71,4 +71,11 @@
 </p>
 </form>
 
+<p>
+  Note bien qu'il s'agit là du mot de passe te permettant de t'authentifier sur le site {#globals.core.sitename#} ;
+  le mot de passe te permettant d'utiliser le serveur <a href="./Xorg/SMTPSécurisé">SMTP</a> et <a href="Xorg/NNTPSécurisé">NNTP</a>
+  de {#globals.core.sitename#} (si tu as <a href="./password/smtp">activé l'accès SMTP et NNTP</a>)
+  est indépendant de celui-ci et tu peux le modifier <a href="./password/smtp">ici</a>.
+</p>
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
