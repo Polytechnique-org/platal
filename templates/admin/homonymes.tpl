@@ -123,7 +123,7 @@ nous t'avons retiré de façon définitive l'adresse
 
 Toute personne qui écrit à {$loginbis}@polytechnique.org reçoit la
 réponse d'un robot qui l'informe que {$loginbis}@polytechnique.org
-est ambigu pour des raisons d'homonymie et signale ton email exact
+est ambigu pour des raisons d'homonymie et indique ton email exact.
 
 Tu peux faire l'essai toi-même en écrivant à {$loginbis}@polytechnique.org.
 
