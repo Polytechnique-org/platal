@@ -245,11 +245,7 @@ class PaymentModule extends PLModule
 
     function handler_paypal_return(&$page, $uid = null)
     {
-        if (!empty($GLOBALS['IS_XNET_SITE'])) {
-            new_group_open_page('payment/retour_paypal.tpl');
-        } else {
-            $page->changeTpl('payment/retour_paypal.tpl');
-        }
+        $page->changeTpl('payment/retour_paypal.tpl');
 
         /* reference banque (numero de transaction) */
         $no_transaction = Env::s('tx');
