@@ -89,7 +89,7 @@ class UsageReq extends Validate
             if ($this->oldalias) {
                 $res .= "\n\n  Les alias {$this->oldalias}@{$globals->mail->domain} et @{$globals->mail->domain2} ont été supprimés.";
             }
-            if ($nom_usage) {
+            if ($this->nom_usage) {
                 $res .= "\n\n  Les alias {$this->alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant à ta disposition !";
             }
             return $res;

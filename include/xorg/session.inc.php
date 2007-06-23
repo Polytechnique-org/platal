@@ -239,7 +239,7 @@ function try_cookie()
 function start_connexion ($uid, $identified)
 {
     $res  = XDB::query("
-        SELECT  u.user_id AS uid, prenom, nom, perms, promo, matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
+        SELECT  u.user_id AS uid, prenom, nom, nom_usage, perms, promo, matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
                 UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias AS forlife, a2.alias AS bestalias,
                 q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
                 FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version

@@ -115,7 +115,7 @@ class AliasReq extends Validate
     public function commit ()
     {
         XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = {?} WHERE user_id = {?}",
-                     $this->public, $this->uid)) {
+                     $this->public, $this->uid);
 
         if ($this->old) {
             return XDB::execute('UPDATE virtual SET alias={?} WHERE alias={?}',

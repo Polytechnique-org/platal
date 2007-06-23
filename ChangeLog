@@ -12,6 +12,9 @@ Bug/Wish:
         - #674: MiniWiki xhtml validation                                  -FRU
         - #678: PlUpload filename detection                                -FRU
 
+    * Emails:
+        - #688: From name in the sending form                              -FRU
+
     * Profile:
         - Fix GoogleMaps links                                             -FRU
         - #663: Link to Xnet's map from the "My groups" page               -FRU
