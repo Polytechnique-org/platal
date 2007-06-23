@@ -13,6 +13,7 @@ Bug/Wish:
         - #678: PlUpload filename detection                                -FRU
 
     * Emails:
+        - #687: Don't lose authentication when editing a long mail         -FRU
         - #688: From name in the sending form                              -FRU
 
     * Profile:

@@ -54,6 +54,19 @@
     return true;
   }
 
+  var doAuth = true;
+  function _keepAuth() {
+    doAuth = true;
+  }
+
+  function keepAuth() {
+    if (doAuth) {
+      Ajax.update_html(null, "login", null);
+      doAuth = false;
+      setTimeout("_keepAuth()", 10000);
+    }
+  }
+
   function _move(idFrom, idTo) {
     var from = document.getElementById(idFrom);
     var to   = document.getElementById(idTo);
@@ -219,7 +232,7 @@
         <input type="submit" name="submit" value="Envoyer" />
       </div>
     </div>
-    <textarea name='contenu' rows="30" cols="75" id="mail_text">
+    <textarea name='contenu' rows="30" cols="75" id="mail_text" onkeyup="keepAuth()">
 {$smarty.request.contenu}
 {if !$smarty.request.contenu}
 -- 
