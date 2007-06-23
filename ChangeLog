@@ -13,8 +13,9 @@ Bug/Wish:
         - #678: PlUpload filename detection                                -FRU
 
     * Profile:
-        - #663: Link to Xnet's map from the "My groups" page               -FRU
         - Fix GoogleMaps links                                             -FRU
+        - #663: Link to Xnet's map from the "My groups" page               -FRU
+        - #689: Edit my profile from Xnet                                  -FRU
 
 From 0.9.14 branch:
 

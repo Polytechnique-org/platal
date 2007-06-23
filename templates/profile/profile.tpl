@@ -26,8 +26,12 @@ function chgMainWinLoc(strPage)
 {
   strPage = platal_baseurl + strPage;
   if (parent.opener) {
-    parent.opener.document.location = strPage;
-    window.close();
+    try {
+      parent.opener.document.location = strPage;
+      window.close();
+    } catch(e) {
+      window.open(strPage);
+    }
   } else {
     document.location = strPage;
   }
