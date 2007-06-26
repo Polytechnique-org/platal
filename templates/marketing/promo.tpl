@@ -22,15 +22,15 @@
 
 <form action="marketing/promo/" method="post" onsubmit="this.action += this.promo.value">
   <div class="center">
-    <a href="marketing/promo/{$promo-10}" title="-10"><img src="images/24/first-page.png" alt="[&lt;&lt;]" /></a>
-    <a href="marketing/promo/{$promo-1}" title="-1"><img src="images/24/previous.png" alt="[&lt;]" /></a>
+    <a href="marketing/promo/{$promo-10}" title="-10"><img src="images/icons/resultset_first.gif" alt="[&lt;&lt;]" /></a>
+    <a href="marketing/promo/{$promo-1}" title="-1"><img src="images/icons/resultset_previous.gif" alt="[&lt;]" /></a>
 
     &nbsp;
     Promo:<input type="text" name="promo" value="{$promo}" size="4" maxlength="4" /><input type="submit" value="GO" />
     &nbsp;
 
-    <a href="marketing/promo/{$promo+1}" title="+1"><img src="images/24/next.png" alt="[&gt;]" /></a>
-    <a href="marketing/promo/{$promo+10}" title="+10"><img src="images/24/last-page.png" alt="[&gt;&gt;]" /></a>
+    <a href="marketing/promo/{$promo+1}" title="+1"><img src="images/icons/resultset_next.gif" alt="[&gt;]" /></a>
+    <a href="marketing/promo/{$promo+10}" title="+10"><img src="images/icons/resultset_last.gif" alt="[&gt;&gt;]" /></a>
   </div>
 </form>
 
