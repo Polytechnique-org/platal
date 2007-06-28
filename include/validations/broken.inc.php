@@ -136,13 +136,13 @@ class BrokenReq extends Validate
                 list(, $redirect[]) = explode('@', $red);
             }
             $subject = "Ton adresse $email ne fonctionne plus";
-            $reason  = "Ton adresse $email ne fonctionne plus ";
+            $reason  = "Ton adresse $email ne fonctionne plus";
             if (!count($redirect)) {
                 $reason .= '.';
             } elseif (count($redirect) == 1) {
                 $reason .= ' car sa redirection vers ' . $redirect[0] . ' est hors-service depuis plusiers mois.';
             } else {
-                $reason .= ' cas ses redirections vers ' . implode(', ', $redirect) 
+                $reason .= ' car ses redirections vers ' . implode(', ', $redirect) 
                         . ' sont hors-services depuis plusieurs mois.';
             }
         }
