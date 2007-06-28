@@ -625,10 +625,12 @@ class XnetEventsModule extends PLModule
                                           IF(m.origine = 'X', a.alias, m.email) AS email
                                     FROM  groupex.evenements_participants AS p
                               INNER JOIN  groupex.membres                 AS m USING(uid)
+                               LEFT JOIN  groupex.evenements_participants AS p2 ON (p2.uid = m.uid AND p2.eid = p.eid 
+                                                                                    AND p2.nb != 0)
                                LEFT JOIN  auth_user_md5                   AS u ON (u.user_id = m.uid)
                                LEFT JOIN  aliases                         AS a ON (a.id = u.user_id AND a.type = 'a_vie')
-                                   WHERE  p.eid = {?} AND nb = 0
-                                GROUP BY  p.uid
+                                   WHERE  p.eid = {?} AND p2.eid IS NULL
+                                GROUP BY  m.uid
                                 ORDER BY  nom, prenom, promo", $evt['eid']);     
 
         $page->assign('absents', $absents);
