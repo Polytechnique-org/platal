@@ -21,6 +21,9 @@ Bug/Wish:
         - #663: Link to Xnet's map from the "My groups" page               -FRU
         - #689: Edit my profile from Xnet                                  -FRU
 
+    * Xnet:
+        - #694: Color of 'Promotion' groups                                -ALK
+
 From 0.9.14 branch:
 
     * Payment:
@@ -1038,7 +1041,8 @@ ACRONYMS:
 
     * PoT: Polytechnique.org TEAM (see Authors).
 
-    * BOB: Damien Bobillot      (Schmurtz)  <damien.bobillot@m4x.org> 
+    * ALK: Olivier Le Floch     (Alakazam)  <olivier.le-floch@m4x.org>
+    * BOB: Damien Bobillot      (Schmurtz)  <damien.bobillot@m4x.org>
     * Car: Pascal Corpet        (Caribou)   <pascal.corpet@m4x.org>
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
