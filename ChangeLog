@@ -24,6 +24,9 @@ Bug/Wish:
     * Xnet:
         - #694: Color of 'Promotion' groups                                -ALK
 
+    * XnetEvents:
+        - #695: More details about payments                                -Fru
+
 From 0.9.14 branch:
 
     * Payment:

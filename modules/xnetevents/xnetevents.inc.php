@@ -126,10 +126,10 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
                    IF(m.origine != 'X',m.sexe,FIND_IN_SET('femme', u.flags)) AS femme,
                    m.perms='admin' AS admin,
                    (m.origine = 'X') AS x,
-		           ep.uid, ep.paid, SUM(nb) AS nb 
+		   ep.uid, SUM(ep.paid) AS paid, SUM(nb) AS nb 
              FROM  groupex.evenements_participants AS ep
        INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
-	    LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
+	LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
         LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
         LEFT JOIN  aliases         AS a ON ( a.id = ep.uid AND a.type='a_vie' )
             WHERE  ep.eid = {?} AND ep.nb > 0
@@ -148,6 +148,7 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
     $user = 0;
 
     while ($u = $res->next()) {
+        $u['adminpaid'] = $u['paid'];
         $u['montant'] = 0;
 	if ($money && $pay_id) {
             $res_ = XDB::query(
@@ -161,6 +162,7 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
                     $u['paid'] += trim($p);
             }
 	}
+        $u['telepayment'] = $u['paid'] - $u['adminpaid'];
         $res_ = XDB::iterator(
             "SELECT ep.nb, ep.item_id, ei.montant
                FROM groupex.evenements_participants AS ep

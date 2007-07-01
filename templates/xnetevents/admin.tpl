@@ -100,25 +100,35 @@ Ils ont payé mais ont oublié de s'inscrire :
 
 <table summary="participants a l'evenement" class="{if $tout}large{else}tiny{/if}">
   <tr>
-    <th>Prénom NOM</th>
-    <th>Promo</th>
-    <th>Info</th>
+    {if $is_admin && $evt.paiement_id}
+      {assign var=height value='rowspan="2"'}
+    {/if}
+    <th {$height|smarty:nodefaults}>Prénom NOM</th>
+    <th {$height|smarty:nodefaults}>Promo</th>
+    <th {$height|smarty:nodefaults}>Info</th>
     {if $tout}
       {if $moments}
         {foreach from=$moments item=m}
-          <th>{$m.titre}</th>
+          <th {$height|smarty:nodefaults}>{$m.titre}</th>
         {/foreach}
       {else}
-        <th>Nombre</th>
+        <th {$height|smarty:nodefaults}>Nombre</th>
       {/if}
       {if $is_admin && $evt.money}
-        <th>Montant</th>
-        <th>Payé</th>
+        <th {$height|smarty:nodefaults}>Montant</th>
+        <th colspan="3">Payé</th>
       {/if}
     {else}
-    <th>Nombre</th>
+    <th {$height|smarty:nodefaults}>Nombre</th>
     {/if}
   </tr>
+  {if $is_admin && $evt.paiement_id}
+  <tr>
+    <th>Télépaiement</th>
+    <th>Autre</th>
+    <th>Total</th>
+  </tr>
+  {/if}
   {foreach from=$participants item=m}
   <tr>
     <td>
@@ -146,7 +156,11 @@ Ils ont payé mais ont oublié de s'inscrire :
       {/if}
       {if $is_admin && $evt.money}
         <td {if $m.montant > $m.paid}class="erreur"{/if}>{$m.montant}&euro;</td>
-        <td>{$m.paid}&euro;</td>
+        {if $evt.paiement_id}
+          <td>{$m.telepayment|default:0}&euro;</td>
+          <td>{$m.adminpaid|default:0}&euro;</td>
+        {/if}
+        <td {if $m.montant < $m.paid}class="erreur"{/if}>{$m.paid}&euro;</td>
       {/if}
     {else}
     <td>
