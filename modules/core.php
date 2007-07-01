@@ -116,6 +116,7 @@ class CoreModule extends PLModule
             $mymail = new PlMailer();
             $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
             $mymail->addTo('support+platal@polytechnique.org');
+            $mymail->addCc('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
             $mymail->setSubject('Plat/al '.Env::v('task_type').' : '.Env::v('item_summary'));
             $mymail->setTxtBody($body);
             $mymail->send();
