@@ -166,16 +166,6 @@ info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state
         ORDER BY  a1.alias",
         "donne la liste des emails dangereux ou douteux");
 
-
-/* vérif que tous les inscrits ont bien au moins un email actif */
-info("SELECT  u.user_id, a.alias
-        FROM  auth_user_md5  AS u 
-        INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
-        LEFT JOIN  emails         AS e ON(u.user_id=e.uid AND FIND_IN_SET('active',e.flags))
-        WHERE  e.uid IS NULL AND u.deces = 0
-        ORDER BY u.promo, u.nom, u.prenom",
-        "donne les inscrits qui n'ont pas d'email actif");
-
 /* donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois */
 check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
         FROM  aliases AS a
