@@ -149,8 +149,8 @@ class BrokenReq extends Validate
         $body = ($this->m_sexe ? 'Chère ' : 'Cher ') . $this->m_prenom . ",\n\n"
               . $reason . "\n\n"
               . "L'adresse {$this->m_email} nous a été communiquée, veux-tu que cette adresse devienne ta nouvelle "
-              . "adresse devienne ta nouvelle adresse de redirection ? Si oui, envoie nous des informations qui "
-              . "nous permettrons de nous assurer de ton identité (par exemple ta date de naissance et ta promotion)\n"
+              . "adresse de redirection ? Si oui, envoie nous des informations qui "
+              . "nous permettront de nous assurer de ton identité (par exemple ta date de naissance et ta promotion)\n"
               . "-- \nTrès Cordialement,\nL'Equipe de Polytechnique.org\n";
         $body = wordwrap($body, 78);
         $mailer = new PlMailer();
