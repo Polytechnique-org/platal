@@ -391,7 +391,7 @@ td.conteneur_tab {
 #fiche .part {
     float: left;
     clear: left;
-    width: 75%;
+    width: 70%;
     padding-right: 0em;
     margin-right: 0em;
 }
@@ -401,7 +401,7 @@ td.conteneur_tab {
     padding-left: 0em;
     margin-left: 0em;
     clear: right;
-    width: 25%;
+    width: 30%;
 }
 
 #fiche #photo img {
@@ -449,6 +449,7 @@ td.conteneur_tab {
     clear: left; 
     float: left;
 }
+
 #fiche_identite div.mob {
     float: right;
     clear: right;
@@ -461,10 +462,9 @@ td.conteneur_tab {
 }
 
 div.adresse {
-    float: left;
     min-width: 46%;
     padding: 0px;
-    margin: 0px 1% 1ex 1%;
+    margin: 0px 1% 2ex 2%;
 }
 
 #fiche .medal_frame {
@@ -484,17 +484,20 @@ div.adresse {
 
 /* only for fiche_referent.php*/
 
-#fiche_referent{
-    padding: 10px;
+#fiche_referent .part {
+    width: 100%;
+}
+
+#fiche_referent #fiche_identite div.civilite {
     width: 100%;
 }
 
 #fiche_referent div.rubrique_referent{
     float: left;
-    width: 31%;
+    width: 30%;
     padding: 0px;
-    margin: 0px 1% 1ex 1%;
-
+    margin: 0px 1% 1ex 2%;
+    text-align: justify;
 }
 
 #fiche_referent em {

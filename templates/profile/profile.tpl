@@ -51,7 +51,7 @@ function chgMainWinLoc(strPage)
       {if $x.binets_join}<div><em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span></div>{/if}
       {if $x.gpxs_join}<div><em class="intitule">Groupe(s) X : </em><span>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
     {/if}
-    {if $x.web}<div><em class="intitule">Site Web : </em><a href="{$x.web}" class='popup'>{$x.web}</a></div>{/if}
+    {if $x.web}<div><em class="intitule">Site Web : </em><br /><a href="{$x.web}" class='popup'>{$x.web}</a></div>{/if}
     {if $x.freetext}<div><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|smarty:nodefaults}</span></div>{/if}
   </div>
   <div id="fiche_identite" class="part">
@@ -104,9 +104,11 @@ function chgMainWinLoc(strPage)
         {/if}
       </div>
       {/if}
+      {if $x.mobile}
       <div class="mob">
-        {if $x.mobile}<em class="intitule">Mobile : </em>{$x.mobile}<br />{/if}
+        <em class="intitule">Mobile : </em>{$x.mobile}
       </div>
+      {/if}
       <div class='spacer'></div>
     </div>
     {/if}
@@ -130,15 +132,20 @@ function chgMainWinLoc(strPage)
   <div class="part">
     <h2>Contact : </h2>
     {foreach from=$x.adr item="address" key="i" name=adresses}
+      {if $i is odd}
+        {assign var=pos value="right"}
+      {else}
+        {assign var=pos value="left"}
+      {/if}
       {if $address.active}
       {include file="geoloc/address.tpl" address=$address titre_div=true titre="Mon adresse actuelle :"
-               for="`$x.prenom` `$x.nom`"}
+               for="`$x.prenom` `$x.nom`" pos=$pos}
       {elseif $address.secondaire}
       {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse secondaire :"
-               for="`$x.prenom` `$x.nom`"}
+               for="`$x.prenom` `$x.nom`" pos=$pos}
       {else}
       {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse principale :"
-               for="`$x.prenom` `$x.nom`"}
+               for="`$x.prenom` `$x.nom`" pos=$pos}
       {/if}
       {if $i is odd}<div class="spacer"></div>{/if}
     {/foreach}
@@ -149,7 +156,7 @@ function chgMainWinLoc(strPage)
     <h2>Informations professionnelles :</h2>
     {foreach from=$x.adr_pro item="address" key="i"}
     {include file="include/emploi.tpl" address=$address}
-    {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise}
+    {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise pos="left"}
     <div class="spacer">&nbsp;</div>
     {/foreach}
   </div>
@@ -166,7 +173,7 @@ function chgMainWinLoc(strPage)
     </div>
     {/foreach}
     <div class="spacer">&nbsp;</div>
-  </div class="part">
+  </div>
   {/if}
   {if $logged && $x.cv}
   <div class="part">

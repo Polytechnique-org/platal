@@ -22,17 +22,18 @@
 
 {javascript name=ajax}
 <div id="fiche">
-  
-  <div class="center">
-    <strong>{$prenom} {$nom}</strong><br />
-    <span>X{$promo}&nbsp;-&nbsp;</span> <a href="mailto:{$bestalias}@{#globals.mail.domain#}">{$bestalias}@{#globals.mail.domain#}</a>
+<div id="fiche_referent">
+  <div id="fiche_identite">
+    <div class="civilite">
+      <strong>{$prenom} {$nom}</strong><br />
+      <span>X{$promo}&nbsp;-&nbsp;</span> <a href="mailto:{$bestalias}@{#globals.mail.domain#}">{$bestalias}@{#globals.mail.domain#}</a>
+    </div>
   </div>
+  <div class="spacer"></div>
 
   {if $expertise != '' || $secteurs|count || $pays|count }
-
-  <h2>Informations de référent :</h2>
-  
-  <div id="fiche_referent">
+  <div id="part">
+    <h2>Informations de référent :</h2>
     {if $expertise}
     <div class="rubrique_referent">
       <em>Expertise : </em><br />
@@ -63,20 +64,25 @@
   </div>
   {/if}
 
-  {foreach from=$adr_pro item="address" key="i"}
-  <h2>{$address.entreprise}</h2>
-  {include file="include/emploi.tpl" address=$address}
-  {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise}
-  
-  <div class="spacer">&nbsp;</div>
+  <div class="part">
+    {foreach from=$adr_pro item="address" key="i"}
+    <h2>{$address.entreprise}</h2>
+    {include file="include/emploi.tpl" address=$address}
+    {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise}
+
+    <div class="spacer">&nbsp;</div>
   {/foreach}
+  </div>
 
   {if $cv}
-  <h2>Curriculum Vitae : </h2>
-  <div>{$cv|smarty:nodefaults}</div>
+  <div class="part">
+    <h2>Curriculum Vitae : </h2>
+    <div style="padding: 0 2ex">{$cv|smarty:nodefaults}</div>
+  </div>
   {/if}
 
 
-  
+  <div class="spacer"></div>
+</div>
 </div>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

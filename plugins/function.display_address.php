@@ -59,8 +59,8 @@ function smarty_function_display_address($param, &$smarty)
 
     $txthtml = "";
     $map = "<a href=\"http://maps.google.fr/?q="
-         .   urlencode(str_replace('États-Unis d\'Amérique', 'USA', implode(", ", $lines) . " ($idt)"))
-         . "\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
+        .   urlencode(str_replace('États-Unis d\'Amérique', 'USA', implode(", ", $lines) . " ($idt)"))
+        . "\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
     if ($restore) {
         array_unshift($lines, $idt);
     }
@@ -68,8 +68,8 @@ function smarty_function_display_address($param, &$smarty)
     {
         if ($param['titre_div'])
             $txthtml .= "<div class='titre'>".$param['titre'].$map."</div>\n";
-    else
-           $txthtml .= "<em>".$param['titre']."</em>".$map."<br />\n";
+        else
+            $txthtml .= "<em>".$param['titre']."</em>".$map."<br />\n";
     }
     foreach ($lines as $line)
     {
@@ -85,9 +85,9 @@ function smarty_function_display_address($param, &$smarty)
         foreach ($param['adr']['tels'] as $tel) 
             $txthtml .= "<div>\n<em>".$tel['tel_type']."&nbsp;: </em>\n<strong>".$tel['tel']."</strong>\n</div>\n";
     }
-    if (!$params['nodiv'])
-    {
-        $txthtml = "<div class='adresse'>\n".$txthtml."</div>\n";
+    if (!$param['nodiv']) {
+        $pos = $param['pos'] ? " style='float: " . $param['pos'] . "'" : '';
+        $txthtml = "<div class='adresse' $pos>\n".$txthtml."</div>\n";
     }
     return $txthtml;
 }
