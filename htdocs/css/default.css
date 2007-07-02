@@ -380,12 +380,31 @@ td.conteneur_tab {
     border-bottom: 1px dotted #369;
 }
 
-#fiche_identite {
-    padding: 5px;
-    width: 600px;
+#fiche .part {
+    float: left;
+    clear: left;
+    width: 70%;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
 }
 
-#photo { padding-left: 1em; }
+#fiche #photo {
+    float: right;
+    width: 30%;
+    padding-left: 0;
+    margin-left: 0;
+    clear: right;
+}
+
+#fiche #photo img {
+    width: 100%;
+}
+
+#fiche_identite {
+    padding: 5px;
+}
 
 #fiche_identite div.civilite {
     text-align: center;
@@ -400,6 +419,7 @@ td.conteneur_tab {
     font-size: 75%;
     text-align: right;
     clear: right;
+    padding-bottom: 1ex;
 }
 
 #fiche_identite div.contact {
@@ -425,20 +445,36 @@ td.conteneur_tab {
 }
 
 div.adresse {
-    float: left;
-    width: 48%;
+    min-width: 30%;
     padding: 0px;
-    margin: 0px 0.5% 1ex 1%;
+    margin: 0px 2% 1ex 1%;
 }
 
 div.adresse strong {
     font-size: 90%;
 }
 
+#fiche .medal_frame {
+    float: left;
+    width: 33%;
+}
+
+#fiche .medal_frame img {
+    float: left;
+    padding: 0ex 1ex;
+}
+
 /* only for fiche_referent.php*/
 
+#fiche_referent .part {
+    width: 100%;
+}
+
+#fiche_referent #fiche_identite div.civilite {
+    width: 100%;
+}
+
 #fiche_referent{
-    padding: 10px;
     width: 100%;
 }
 
@@ -447,7 +483,7 @@ div.adresse strong {
     width: 31%;
     padding: 0px;
     margin: 0px 1% 1ex 1%;
-
+    text-align: justify;
 }
 
 #fiche_referent em{color: purple;}

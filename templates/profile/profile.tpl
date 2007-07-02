@@ -155,9 +155,10 @@ function chgMainWinLoc(strPage)
   <div class="part">
     <h2>Informations professionnelles :</h2>
     {foreach from=$x.adr_pro item="address" key="i"}
-    {include file="include/emploi.tpl" address=$address}
-    {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise pos="left"}
-    <div class="spacer">&nbsp;</div>
+      {if $i neq 0}<hr />{/if}
+      {include file="include/emploi.tpl" address=$address}
+      {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise pos="left"}
+      <div class="spacer">&nbsp;</div>
     {/foreach}
   </div>
   {/if}

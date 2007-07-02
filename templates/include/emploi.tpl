@@ -21,7 +21,7 @@
 {**************************************************************************}
 {if $address.entreprise || $address.secteur || $address.fonction ||
   $address.poste || $address.fonction || $address.email || $address.web}
-      <div class="adresse">
+      <div class="adresse" style="float: left">
       	<table>
         {if $address.entreprise || $address.web}
         <tr>

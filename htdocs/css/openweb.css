@@ -369,9 +369,29 @@ div#body {
 
 #fiche em { color: purple; }
 
+#fiche .part {
+    float: left;
+    clear: left;
+    width: 70%;
+    padding: 0em;
+    margin: 0em;
+}
+
+#fiche #photo {
+    float: right;
+    padding-left: 0;
+    padding; 0;
+    margin: 0;
+    clear: right;
+    width: 30%;
+}
+
+#fiche #photo img {
+    width: 100%;
+}
+
 #fiche_identite {
     padding: 5px;
-    width: 600px;
 }
 
 #photo {
@@ -416,13 +436,27 @@ div#body {
 }
 
 div.adresse {
-    float: left;
-    width: 48%;
+    min-width: 30%;
     padding: 0px;
-    margin: 0px 1% 1ex 1%;
+    margin: 0px 2% 2ex 1%;
 }
 
 div.adresse div.titre { color: purple; }
+
+#fiche .medal_frame {
+    float: left;
+    width: 33%;
+}
+
+#fiche .medal_frame img {
+    float: left:
+    padding: 0ex 1ex;
+}
+
+#fiche .medal_text {
+    vertical-align: middle;
+    font-weight: bold;
+}
 
 /* only for fiche_referent.php*/
 
