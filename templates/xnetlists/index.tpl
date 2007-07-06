@@ -22,10 +22,10 @@
 
 {if $smarty.get.del_alias}
 
-<p class="error">Est tu sur de supprimer l'alias {$smarty.get.del_alias} ?</p>
+<p class="error">Es-tu sûr de vouloir supprimer l'alias {$smarty.get.del_alias} ?</p>
 <form action='{$platal->ns}lists' method="post">
   <div class="center">
-    <input type='submit' value="Oui, je suis sur" />
+    <input type='submit' value="Oui, je suis sûr" />
     <input type='hidden' name='del_alias' value="{$smarty.get.del_alias}" />
   </div>
 </form>
