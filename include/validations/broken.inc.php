@@ -79,9 +79,9 @@ class BrokenReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok && !$this->m_reactive) {
-            return "  Un mail de contact vient d'être envoyé "
+            return "  Un mail de contact vient d'être envoyé"
                 ." à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour confirmer sa volonté de"
-                ." mettre à jour sa redirection Polytechnique.org!\n\n"
+                ." mettre à jour sa redirection Polytechnique.org !\n\n"
                 ."Merci de ta participation !\n";
         } elseif ($isok) {
             return "  L'adresse de redirection {$this->m_email} de {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) "
