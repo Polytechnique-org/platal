@@ -36,15 +36,17 @@ if (empty($nb)) {
     exit;
 }
 
+$plural = $nb == 1 ? "" : "s";
+
 $mymail = new PlMailer();
 $mymail->setFrom('validation@polytechnique.org');
 $mymail->addTo("validation@polytechnique.org");
-$mymail->setSubject((empty($nbveryold)?"":"[urgent] ")."il y a $nb validations non effectuées");
+$mymail->setSubject((empty($nbveryold)?"":"[urgent] ")."il y a $nb validation$plural non effectuée$plural");
 
 $message =
-	"il y a $nb validation à effectuer \n"
+	"il y a $nb validation$plural à effectuer \n"
 	.(empty($nbold)?"":"dont $nbold depuis le dernier mail !!!\n")
-	.(empty($nbveryold)?"":"et dont *$nbveryold* sont en retard de plus de 6h !!!")
+	.(empty($nbveryold)?"":"et dont *$nbveryold* ".($nbveryold == 1 ? "est" : "sont")." en retard de plus de 6h !!!")
 	."\n"
 	."https://www.polytechnique.org/admin/validate\n\n"
         ."Par catégorie :\n";
