@@ -679,7 +679,7 @@ class XnetGrpModule extends PLModule
                             FROM  auth_user_md5 AS u
                       INNER JOIN  aliases       AS a ON (u.user_id = a.id)
                            WHERE  a.alias={?}', $globals->asso('id'), $forlife);
-                pl_redirect("member/$email");
+                pl_redirect("member/$forlife");
             } else {
                 $page->trig($email." n'est pas un alias polytechnique.org valide");
             }
