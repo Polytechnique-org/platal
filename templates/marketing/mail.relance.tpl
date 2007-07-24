@@ -49,7 +49,7 @@ En cas de difficulté, nous sommes bien entendu à ton entière disposition !
 
 Bien cordialement,
 Polytechnique.org
-"Le portail des élèves & anciens élèves de l'Ecole polytechnique"
+"Le portail des élèves & anciens élèves de l'École polytechnique"
 
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
