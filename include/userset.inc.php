@@ -62,7 +62,7 @@ class SearchSet extends UserSet
     private $order = null;
     private $quick = false;
 
-    public function __construct($quick = false, $no_search = false)
+    public function __construct($quick = false, $no_search = false, $join = '', $where = '')
     {
         require_once dirname(__FILE__).'/../modules/search/search.inc.php';
 
@@ -72,13 +72,13 @@ class SearchSet extends UserSet
 
         $this->quick = $quick;
         if ($quick) {
-            $this->getQuick();
+            $this->getQuick($join, $where);
         } else {
-            $this->getAdvanced();
+            $this->getAdvanced($join, $where);
         }
     }
 
-    private function getQuick()
+    private function getQuick($join, $where)
     {
         require_once dirname(__FILE__).'/../modules/search/search.inc.php';
         global $globals;
@@ -91,8 +91,8 @@ class SearchSet extends UserSet
             new ThrowError('Recherche trop générale.');
         }
         $this->score = $qSearch->get_score_statement();
-        parent::__construct("{$fields->get_select_statement()}",
-                            $fields->get_where_statement() .
+        parent::__construct($join . ' ' . $fields->get_select_statement(),
+                            $where . ' ' . $fields->get_where_statement() .
                             (S::logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : ''));
 
         $this->order = implode(',',array_filter(array($fields->get_order_statement(),
@@ -107,8 +107,8 @@ class SearchSet extends UserSet
         if ($fields->too_large()) {
             new ThrowError('Recherche trop générale.');
         }
-        parent::__construct($fields->get_select_statement(),
-                            $fields->get_where_statement());
+        parent::__construct($join . ' ' . $fields->get_select_statement(),
+                            $where . ' ' . $fields->get_where_statement());
         $this->order = implode(',',array_filter(array($fields->get_order_statement(),
                                                       'promo DESC, NomSortKey, prenom')));
     }
@@ -326,8 +326,9 @@ class GeolocView implements PlView
             $page->changeTpl('geoloc/city.tpl', NO_SKIN);
             header('Content-Type: text/xml');
             header('Pragma:');
+            $only_current = Env::v('only_current', false)? ' AND FIND_IN_SET(\'active\', adrf.statut)' : '';
             $it =& $this->set->get('u.user_id AS id, u.prenom, u.nom, u.promo, al.alias',
-                                   "INNER JOIN  adresses AS adrf  ON (adrf.uid = u.user_id)
+                                   "INNER JOIN  adresses AS adrf  ON (adrf.uid = u.user_id $only_current)
                                      LEFT JOIN  aliases  AS al   ON (u.user_id = al.id
                                                                    AND FIND_IN_SET('bestalias', al.flags))
                                     INNER JOIN  adresses AS avg ON (" . getadr_join('avg') . ")",
@@ -354,9 +355,7 @@ class GeolocView implements PlView
             if (!$this->use_map()) {
                 $page->assign('request_geodesix', true);
             }
-            if (!empty($GLOBALS['IS_XNET_SITE'])) {
-                $page->assign('no_annu', true);
-            }
+            $page->assign('annu', @$this->params['with_annu']);
             $page->assign('protocole', @$_SERVER['HTTPS'] ? 'https' : 'http');
             $this->set->get('u.user_id', null, "u.perms != 'pending' AND u.deces = 0", "u.user_id", null);
             return 'include/plview.geoloc.tpl';

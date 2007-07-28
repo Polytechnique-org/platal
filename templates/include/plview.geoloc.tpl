@@ -20,41 +20,33 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<script type="text/javascript">
+<script type="text/javascript">//<![CDATA[
 {literal}
 function ficheXorg(id)
 {
-  window.open('{/literal}{if $no_annu}https://{#globals.core.secure_domain#}/{/if}{literal}profile/'+id,'_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=840,height=600');
+  window.open('{/literal}{if !$annu}https://{#globals.core.secure_domain#}/{/if}{literal}profile/'+id,'_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=840,height=600');
 }
 {/literal}
-{if !$no_annu}
+{if $annu}
+var search_url = platal_baseurl + "{$platal->ns}{$annu}{$plset_search|smarty:nodefaults}";
 {literal}
 function clickOnCity(id)
 {
-	var f = document.getElementById('search_form');
-	var url = f.action;
-	f.action += unescape('%26')+'cityid=' + id; 
-	f.submit();
-	f.action = url;
-	document.getElementById('search_results').style.height = '250px';
+    window.open(search_url + unescape('%26')+'cityid=' + id, '_blank', '');
 }
 var mapid = 0;
 function goToCountry(id)
 {
-	mapid = id;
+    mapid = id;
 }
-function searchMapId(f)
+function searchMapId()
 {
-	var url = f.action;
-	f.action += unescape('%26')+'mapid=' + mapid; 
-	f.submit();
-	f.action = url;
-	document.getElementById('search_results').style.height = '250px';
+    window.open(search_url + unescape('%26')+'mapid=' + mapid, '_blank', '');
 }
 {/literal}
 {/if}
 
-</script>
+//]]></script>
 
 {if !$request_geodesix}
   
@@ -93,6 +85,11 @@ function searchMapId(f)
         pluginspage="{$protocole}://www.macromedia.com/go/getflashplayer"/>
     </object>
   </p>
+  {if $annu}
+  <p class="center">
+    <a href="javascript:searchMapId()">Lister les X présents sur cette carte</a>
+  </p>
+  {/if}
   <p class="smaller">Carte fournie gracieusement par <a href="http://www.geodesix.com/">Geodesix</a>.</p>
 {else}
   <p>Le moteur de carte n'a pas été installé sur cette version de plat/al. Veuillez contacter <a href="http://www.geodesix.com/">Geodesix</a>.</p>

@@ -183,7 +183,7 @@ class CarnetModule extends PLModule
         return Array($total, $list);
     }
 
-    function handler_contacts(&$page, $action = null, $subaction = null)
+    function handler_contacts(&$page, $action = null, $subaction = null, $ssaction = null)
     {
         $page->assign('xorg_title','Polytechnique.org - Mes contacts');
         $this->_add_rss_link($page);
@@ -228,12 +228,25 @@ class CarnetModule extends PLModule
                 }
         }
 
-        $view = new UserSet("INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", " c2.uid = $uid ");
+        $search = false;
+        if ($action == 'search') {
+            $action = $subaction;
+            $subaction = $ssaction;
+            $search = true;
+        }
+        if ($search && trim(Env::v('quick'))) {
+            require_once 'userset.inc.php';
+            $base = 'carnet/contacts/search';
+            $view = new SearchSet(true, false, "INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", " c2.uid = $uid AND ");
+        } else {
+            $base = 'carnet/contacts';
+            $view = new UserSet("INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", " c2.uid = $uid ");
+        }
         $view->addMod('minifiche', 'Mini-Fiches', true);
         $view->addMod('trombi', 'Trombinoscope', false, array('with_admin' => false, 'with_promo' => true));
-        $view->addMod('geoloc', 'Planisphère');
-        $view->apply('carnet/contacts', $page, $action, $subaction);
-        if ($action != 'geoloc' || !$subaction) {
+        $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'carnet/contacts/search'));
+        $view->apply($base, $page, $action, $subaction);
+        if ($action != 'geoloc' || ($search && !$ssaction) || (!$search && !$subaction)) {
             $page->changeTpl('carnet/mescontacts.tpl');
         }
     }

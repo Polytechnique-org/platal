@@ -78,10 +78,19 @@ else
  */
 class ThrowError
 {
+    public static $throwHook = array('ThrowError', 'defaultHandler');
+
     /** constuctor
      * @param  $explain string  the error (in natural language)
      */
     public function __construct($explain)
+    {
+        call_user_func(ThrowError::$throwHook, $explain);
+    }
+
+    /** defaut error handler
+     */
+    private static function defaultHandler($explain)
     {
         global $page, $globals;
         $page->changeTpl('search/index.tpl');
@@ -477,8 +486,10 @@ class MapSField extends RefSField
             $this->mapId = Env::v($_fieldFormName, '');
         else
             $this->mapId = $_mapId;
+        $this->value =  $this->mapId;
         $this->RefSField($_fieldFormName, $_fieldDbName, $_refTable, $_refAlias, $_refCondition, true, false);
     }
+    
     function get_select_statement()
     {
         if ($this->mapId === '') return false;
@@ -737,8 +748,8 @@ class SFieldGroup
     function too_large()
     {
         $b = true;
-        for ($i=0; $b && $i<count($this->fields); $i++) {
-            $b &= $this->fields[$i]->too_large();
+        for ($i=0 ; $b && $i<count($this->fields) ; $i++) {
+            $b = $b && $this->fields[$i]->too_large();
         }
         return $b;
     }

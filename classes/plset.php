@@ -96,7 +96,7 @@ class PlSet
     protected function encodeArgs(array $args, $encode = false)
     {
         $qs = '?';
-        $sep = $encode ? '&' : '&amp;';
+        $sep = '&';
         foreach ($args as $k=>$v) {
             if (!$encode) {
                 $k = urlencode($k);
@@ -161,6 +161,9 @@ class PlSet
             return false;
         }
         $args = $view->args();
+        if (!isset($args['rechercher'])) {
+            $args['rechercher'] = 'Chercher';
+        }
         $page->changeTpl('core/plset.tpl');
         $page->assign('plset_base', $baseurl);
         $page->assign('plset_mods', $this->mods);
