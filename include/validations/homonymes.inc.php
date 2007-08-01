@@ -108,7 +108,7 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
         $body = $this->prenom.",\n\n"
               . $this->_mail_body($isok)
               . (Env::has('comm') ? "\n\n".Env::v('comm') : '')
-              . "\n\nCordialement,\nL'équipe Polytechnique.org\n";
+              . "\n\nCordialement,\n\n-- \nL'équipe de Polytechnique.org\n";
 
         $mailer->setTxtBody(wordwrap($body));
         $mailer->send();

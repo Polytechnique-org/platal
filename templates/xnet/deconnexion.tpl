@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1> déconnexion de Polytechnique.net </h1>
+<h1> Déconnexion de Polytechnique.net </h1>
 
 <p class="descr">
-Au revoir  !
+Au revoir !
 <br />
 Tu as bien été déconnecté du site Polytechnique.net.
 </p>

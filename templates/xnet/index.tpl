@@ -29,14 +29,14 @@
     <td>
       <p class="descr">
       Polytechnique.net est le site dédié à toutes les activités associatives des polytechniciens,
-      Élèves ou Anciens.  Il décrit aussi les organismes institutionnels relatifs à l'Ecole
-      Polytechnique et les promotions présentes sur le web.
+      élèves ou anciens.  Il décrit aussi les organismes institutionnels relatifs à l'École
+      polytechnique et les promotions présentes sur le web.
       </p>
       <p class="descr">
       Ce site  vous propose des liens vers les forums de discussions et les sites webs des
       différentes associations, des adresses où les contacter, et tous les renseignements utiles
       pour mieux les connaître. Il offre d'autre part des
-      <a href="Xnet/Services"> outils de gestion de groupe</a> à l'intention de leurs responsables.
+      <a href="Xnet/Services">outils de gestion de groupe</a> à l'intention de leurs responsables.
       </p>
       <p class="descr">
       Si vous recherchez la page d'un groupe particulier, vous pouvez
