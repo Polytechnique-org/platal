@@ -275,13 +275,14 @@ class EmailModule extends PLModule
         $page->changeTpl('emails/submit_spam.tpl');
 
         if (Post::has('send_email')) {
-            $upload = $_FILES['mail']['tmp_name'];
-            if (!is_uploaded_file($upload)) {
+            $upload = PlUpload::get($_FILES['mail'], S::v('forlife'), 'spam.submit', true);
+            if (!$upload) {
                 $page->trig('Une erreur a été rencontrée lors du transfert du fichier');
                 return;
             }
-            $mime = trim(mime_content_type($upload));
+            $mime = $upload->contentType();
             if ($mime != 'text/x-mail' && $mime != 'message/rfc822') {
+                $upload->clear();
                 $page->trig('Le fichier ne contient pas un mail complet');
                 return;
             }
@@ -291,16 +292,16 @@ class EmailModule extends PLModule
             $mailer->addTo($box);
             $mailer->setFrom('"' . S::v('prenom') . ' ' . S::v('nom') . '" <web@' . $globals->mail->domain . '>');
             $mailer->setTxtBody(Post::v('type') . ' soumis par ' . S::v('forlife') . ' via le web');
-            $mailer->addAttachment($upload, 'message/rfc822', $_FILES['mail']['name']);
+            $mailer->addUploadAttachment($upload, Post::v('type') . '.mail');
             $mailer->send();
             $page->trig('Le message a été transmis à ' . $box);
+            $upload->clear();
         }
     }
 
     function handler_send(&$page)
     {
         global $globals;
-
         $page->changeTpl('emails/send.tpl');
         $page->addJsLink('ajax.js');
 
