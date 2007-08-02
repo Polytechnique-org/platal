@@ -43,7 +43,7 @@
     if (form.to.value == "" && form.cc.value == ""
         && document.getElementById('to_contacts').length == 0 && document.getElementById('cc_contacts').length == 0) {
       if (form.bcc.value == "") {
-        alert("Il faut définir au moins un destinataire au mail");
+        alert("Il faut définir au moins un destinataire au mail.");
         return false;
       }
       if (!confirm("Tous les destinataires sont en copie cachée, veux-tu continuer ?")) {
@@ -155,8 +155,8 @@
     </tr>
     <tr class="pair">
       <td colspan="2" class="smaller">
-        &bull;&nbsp;Les destinataires sont simplement séparés par des virgules<br />
-        &bull;&nbsp;Pense à te mettre en copie cachée du mail pour en avoir une trace
+        &bull;&nbsp;Les destinataires sont simplement séparés par des virgules.<br />
+        &bull;&nbsp;Pense à te mettre en copie cachée du mail pour en avoir une trace.
       </td>
     </tr>
     {if $contacts|@count}

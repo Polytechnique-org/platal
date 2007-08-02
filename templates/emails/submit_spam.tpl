@@ -52,8 +52,8 @@
   depuis ton client mail, puis de soumettre ce fichier à l'interface ci-dessus en sélectionnant l'action adaptée :
 </p>
 <ul>
-  <li><strong>spam</strong> : pour soumettre un spam mal reconnu</li>
-  <li><strong>nonspam</strong> : pour soumettre un mail légitime mal reconnu</li>
+  <li><strong>spam</strong> : pour soumettre un spam mal reconnu&nbsp;;</li>
+  <li><strong>nonspam</strong> : pour soumettre un mail légitime mal reconnu.</li>
 </ul>
 
 {include wiki=Xorg.Mails part=clients}

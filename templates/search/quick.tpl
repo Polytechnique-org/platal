@@ -60,17 +60,17 @@
 
 <h1>Comment faire une recherche ?</h1>
 
-<h2>Nom, Prenom, Promotion ...</h2>
+<h2>Nom, Prénom, Promotion...</h2>
 
 <p>
-La ligne de recherche ci-dessus accepte non seulement des mélanges de <strong>noms</strong> et de <strong>prénoms</strong> ...
+La ligne de recherche ci-dessus accepte non seulement des mélanges de <strong>noms</strong> et de <strong>prénoms</strong>...
 mais elle accepte de plus la syntaxe suivante pour les <strong>promotions</strong> :
 </p>
 <ul>
-  <li><code>1990</code> : signifie appartient à la promotion 1990</li>
-  <li><code>1990-2000</code> : signifie sur la promotion 1990 à 2000</li>
-  <li><code>&lt;1990</code> : signifie promotions inférieures ou égales à 1990</li>
-  <li><code>&gt;1990</code> : signifie promotions supérieures ou égales à 1990</li>
+  <li><code>1990</code> : signifie appartient à la promotion 1990&nbsp;;</li>
+  <li><code>1990-2000</code> : signifie sur la promotion 1990 à 2000&nbsp;;</li>
+  <li><code>&lt;1990</code> : signifie promotions inférieures ou égales à 1990&nbsp;;</li>
+  <li><code>&gt;1990</code> : signifie promotions supérieures ou égales à 1990.</li>
 </ul>
 <p>
 Ainsi, rechercher tous les "Dupont" sur les promotions 1980 à 1990 et sur la promotion 2000 se fait avec la recherche :
@@ -79,7 +79,7 @@ Ainsi, rechercher tous les "Dupont" sur les promotions 1980 à 1990 et sur la pr
 
 <h2>Astuce pour les noms...</h2>
 <p>
-Parfois on ne sait plus si le nom qu'on recherche s'écrit « Lenormand », « Le Normand » ou « Le-Normand » ...
+Parfois on ne sait plus si le nom qu'on recherche s'écrit « Lenormand », « Le Normand » ou « Le-Normand »...
 </p>
 <p>
 Pour éviter ce genre d'écueils, il suffit de chercher : <code>Le Normand</code><br />
@@ -96,12 +96,12 @@ notre base de données.
 <p>
   Un certain nombre de raccourcis permettent d'accéder plus rapidement au contenu du site :
   <ul>
-    <li><code>fiche:prenom.nom.promo</code> ouvre la fiche du camarade indiquée</li>
-    <li><code>ref:prenom.nom.promo</code> ouvre la fiche référent du camarade indiquée</li>
-    <li><code>doc:phrase</code> recherche <em>phrase</em> dans la documentation du site</li>
+    <li><code>fiche:prenom.nom.promo</code> ouvre la fiche du camarade indiquée&nbsp;;</li>
+    <li><code>ref:prenom.nom.promo</code> ouvre la fiche référent du camarade indiquée&nbsp;;</li>
+    <li><code>doc:phrase</code> recherche <em>phrase</em> dans la documentation du site&nbsp;;</li>
     {if $smarty.session.perms->hasFlag('admin')}
-    <li><code>admin:prenom.nom.promo</code> ouvre la fiche d'administration du camarade indiquée</li>
-    <li><code>ax:prenom.nom.promo</code> ouvre la fiche ax du camarade concerné</li>
+    <li><code>admin:prenom.nom.promo</code> ouvre la fiche d'administration du camarade indiquée&nbsp;;</li>
+    <li><code>ax:prenom.nom.promo</code> ouvre la fiche ax du camarade concerné.</li>
     {/if}
   </ul>
 </p>

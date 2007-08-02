@@ -27,24 +27,24 @@
 {else}
 
 <h1 id='pagetop'>
-Bienvenue {$smarty.session.prenom}
-{if $birthday}
-  et joyeux anniversaire de {$birthday} ans de la part de toute l'équipe !
+Bienvenue {$smarty.session.prenom}{if !$birthday},
+{else}
+  &nbsp;et joyeux anniversaire de la part de toute l'équipe !
 {/if}
 </h1>
 
 {if $smarty.session.host}
 <div class="smaller">
-  Ta connexion précédente date du
+  {if !$birthday}t{else}T{/if}a connexion précédente date du
   <strong>{$smarty.session.lastlogin|date_format:"%x, %X"}</strong>
-  depuis la machine <strong>{$smarty.session.host}</strong>
+  depuis la machine <strong>{$smarty.session.host}</strong>.
 </div>
 {/if}
 
 {if $smarty.session.no_redirect}
 <p class="erreur">
   Tu n'as plus de redirection valide ce qui rend ton adresse Polytechnique.org
-  inutilisable. Rend-toi au plus vite sur <a href="emails/redirect">la page de 
+  inutilisable. Rends-toi au plus vite sur <a href="emails/redirect">la page de 
   gestion des emails</a> pour corriger ce problème.
 </p>
 {/if}

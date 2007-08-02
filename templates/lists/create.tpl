@@ -109,18 +109,18 @@ liste :
     </tr>
     <tr>
       <td colspan="2">
-        <small>Tu peux entrer une liste de membres en entrant plusieurs adresses séparées par des espaces</small>
+        <small>Tu peux entrer une liste de membres en entrant plusieurs adresses séparées par des espaces.</small>
       </td>
     </tr>
   </table>
   <p>
-  La création de la liste sera soumise à un contrôle manuel avant d'être validée.  Ce contrôle a
+  La création de la liste sera soumise à un contrôle manuel avant d'être validée. Ce contrôle a
   pour but notamment de vérifier qu'il n'y aura pas ambiguité entre les membres de la liste et son
-  identité.  Exemple: n'importe qui ne peut pas ouvrir pointgamma@polytechnique.org, il ne suffit
-  pas d'être le premier à le demander :-)
+  identité. Exemple : n'importe qui ne peut pas ouvrir pointgamma@polytechnique.org, il ne suffit
+  pas d'être le premier à le demander.
   </p>
   <p>
-  La liste est habituellement créée dans les jours qui suivent la demande sauf exception.  Pour plus
+  La liste est habituellement créée dans les jours qui suivent la demande sauf exception. Pour plus
   d'informations écris-nous à l'adresse {mailto address='listes@polytechnique.org'} en mettant dans
   le sujet de ton mail le nom de la liste souhaité afin de faciliter les échanges de mails
   ultérieurs éventuels.

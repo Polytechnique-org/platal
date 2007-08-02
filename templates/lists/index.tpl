@@ -28,11 +28,11 @@
 
 <ul>
   <li>Pour demander ton inscription à une liste de diffusion, il suffit
-    de cliquer sur l'icône {icon name=add} située en fin de ligne</li>
+    de cliquer sur l'icône {icon name=add} située en fin de ligne.</li>
   <li>Si la liste est à inscription modérée, l'icône {icon name=flag_orange title="en cours"} 
-    apparaîtra tant que ton inscription n'aura pas été validée par un modérateur</li>
+    apparaîtra tant que ton inscription n'aura pas été validée par un modérateur.</li>
   <li>Pour te désinscrire d'une liste dont tu es membre, il suffit de cliquer sur la croix
-    {icon name=cross title="désinscription"} située en fin de ligne</li>
+    {icon name=cross title="désinscription"} située en fin de ligne.</li>
 </ul>
 
 <h2>La diffusion sur une liste de diffusion</h2>
@@ -41,10 +41,10 @@ La diffusion a trois niveaux de modération.  La diffusion peut être :
 </p>
 <ul>
   <li><strong>libre :</strong> tout le monde peut y envoyer des mails, la diffusion y est
-  immédiate;</li>
+  immédiate&nbsp;;</li>
   <li><strong>restreinte :</strong> les membres de la liste peuvent envoyer librement des mails,
-  les extérieurs sont modérés;</li>
-  <li><strong>modérée:</strong> l'envoi d'un mail à la liste est alors filtré par des
+  les extérieurs sont modérés&nbsp;;</li>
+  <li><strong>modérée :</strong> l'envoi d'un mail à la liste est alors filtré par des
   modérateurs, eux seuls peuvent accepter un message envoyé à la liste.</li>
 </ul>
 
@@ -78,7 +78,7 @@ thématique particulière.
 {assign var="has_private" value=false}
 {include file='lists/listes.inc.tpl' lists=$member}
 
-<p class="smaller">Attention : Lorsqu'une liste à laquelle tu es abonné est  privée, l'icône {icon name=weather_cloudy} est affichée en début de ligne.  Si tu t'en désinscrits, il ne te sera pas possible de t'y abonner de nouveau  sans l'action d'un modérateur</p>
+<p class="smaller">Attention : lorsqu'une liste à laquelle tu es abonné est privée, l'icône {icon name=weather_cloudy} est affichée en début de ligne. Si tu t'en désinscris, il ne te sera pas possible de t'y abonner de nouveau sans l'action d'un modérateur.</p>
 {/if}
 <h1>Listes de diffusion publiques auxquelles tu peux t'inscrire</h1>
 
@@ -98,7 +98,7 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyt
       <th colspan='2'>Inscription à une liste de diffusion promo</th>
     </tr>
     <tr>
-      <td class='titre'>Promotion:</td>
+      <td class='titre'>Promotion :</td>
       <td>
         <input type='text' size='4' maxlength='4' name='promo_add' />
         &nbsp;

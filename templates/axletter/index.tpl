@@ -29,7 +29,7 @@
 
 {if $axs}
 <p>
-Tu es actuellement inscrit aux envois exceptionnels de l'AX (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des préférences</a>)
+Tu es actuellement inscrit aux envois exceptionnels de l'AX (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des préférences</a>).
 </p>
 <div class='center'>
   [<a href='ax/out'>{icon name=delete} me désinscrire des envois exceptionnels</a>]
@@ -77,7 +77,7 @@ Tu n'es actuellement pas inscrit aux envois exceptionnels de l'AX.
 </table>
 
 {if $ax_rights}
-<p>Il y a actuellement {$count} inscrits aux envois</p>
+<p>Il y a actuellement {$count} inscrits aux envois.</p>
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
