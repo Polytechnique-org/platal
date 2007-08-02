@@ -27,15 +27,15 @@
 {else}
 
 <h1 id='pagetop'>
-Bienvenue {$smarty.session.prenom}{if !$birthday},
-{else}
+Bienvenue {$smarty.session.prenom}{if $birthday}
   &nbsp;et joyeux anniversaire de la part de toute l'équipe !
+{else},
 {/if}
 </h1>
 
 {if $smarty.session.host}
 <div class="smaller">
-  {if !$birthday}t{else}T{/if}a connexion précédente date du
+  {if $birthday}T{else}t{/if}a connexion précédente date du
   <strong>{$smarty.session.lastlogin|date_format:"%x, %X"}</strong>
   depuis la machine <strong>{$smarty.session.host}</strong>.
 </div>
