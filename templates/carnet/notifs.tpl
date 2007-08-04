@@ -42,8 +42,8 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
     <input type='checkbox' name='sub[{$i}]' {if $watch->subs($i)}checked="checked"{/if} />
     {$s.short} {if $s.type eq near}<sup>o</sup>{elseif $s.type eq often}<sup>*</sup>{/if}<br />
     {/foreach}
-    <span class='smaller'><sup>*</sup>: ne concerne pas les promos (événements très fréquents)</span><br />
-    <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$smarty.session.promo-1} et {$promo_sortie-2} que tu surveilles</span>
+    <span class='smaller'><sup>*</sup>: ne concerne pas les promos (événements très fréquents).</span><br />
+    <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$smarty.session.promo-1} et {$promo_sortie-2} que tu surveilles.</span>
   </fieldset>
   <div class='center'>
     <input type='submit' name='subs' value='valider' />
@@ -102,7 +102,7 @@ Si un non-inscrit que tu surveilles s'inscrit, il sera automatiquement ajouté �
 
 <p>
 Pour surveiller des membres non-inscrits, il faut passer par la <a href="search" class='popup'>recherche</a>
-et cliquer sur les icones {icon name=add} pour les ajouter à cette liste
+et cliquer sur les icones {icon name=add} pour les ajouter à cette liste.
 </p>
 
 <fieldset>

@@ -23,7 +23,7 @@
 <h1>Bilan des Notifications</h1>
 
 <p>
-Cette page récapitule tous les événements que tu surveilles de la semaine écoulée
+Cette page récapitule tous les événements que tu surveilles de la semaine écoulée.
 </p>
 
 <p>

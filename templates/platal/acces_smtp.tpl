@@ -70,7 +70,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Mot de passe (15 caractères maximum):
+        Mot de passe (15 caractères maximum) :
       </td>
       <td>
         <input type="password" size="15" maxlength="15" name="smtppass1" />
@@ -78,7 +78,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Retape-le une fois (pour vérification):
+        Retape-le une fois (pour vérification) :
       </td>
       <td>
         <input type="password" size="15" maxlength="15" name="smtppass2" />
@@ -105,12 +105,12 @@
 <p>
   <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
 </p>
-{include wiki=Xorg.NNTPSécurisé}
+{include wiki=Xorg.NNTPSecurise}
 {elseif $smarty.request.doc eq "smtp"}
 <p> 
   <a href="{$platal->pl_self()}?doc=nntp">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.<br />
 </p>
-{include wiki=Xorg.SMTPSécurisé}
+{include wiki=Xorg.SMTPSecurise}
 {else}
 <p>
   <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
