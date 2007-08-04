@@ -81,6 +81,6 @@ correspondant si tu veux que nous puissions te répondre.
   </form>
 </div>
 
-{include wiki=Xorg.PatteCassée}
+{include wiki=Xorg.PatteCassee}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

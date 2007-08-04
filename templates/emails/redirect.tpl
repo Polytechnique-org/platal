@@ -70,7 +70,7 @@
     {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsque le courrier
     passe par nos serveurs. Ceci arrive lorsque tu écris à un camarade sur son adresse {#globals.mail.domain#} ou
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
-    <a href="Xorg/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
+    <a href="Xorg/SMTPSecurise">service d'envoi de courrier SMTP sécurisé</a>.
   </p>
 
   {javascript name=ajax}
@@ -195,8 +195,8 @@
   l'équipe de Polytechnique.org te conseille de rediriger :
 </p>
 <ul>
-  <li>«prenom.nom»@polytechnique.edu vers {$smarty.session.forlife}@{#globals.mail.domain#}</li>
-  <li>{$smarty.session.forlife}@{#globals.mail.domain#} vers «login»@poly.polytechnique.fr</li>
+  <li>«prenom.nom»@polytechnique.edu vers {$smarty.session.forlife}@{#globals.mail.domain#}&nbsp;;</li>
+  <li>{$smarty.session.forlife}@{#globals.mail.domain#} vers «login»@poly.polytechnique.fr.</li>
 </ul>
 <p>
   Attention à ne pas faire une boucle quand tu manipules tes redirections ! Tes emails seraient

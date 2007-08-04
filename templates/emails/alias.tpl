@@ -63,7 +63,7 @@
   <p>
     Pour de plus amples informations sur ce service, nous t'invitons à consulter
     <a href="Xorg/AliasMelix">cette documentation</a> qui répondra
-    sans doute à toutes tes questions
+    sans doute à toutes tes questions.
   </p>
 
   {if $actuel}
