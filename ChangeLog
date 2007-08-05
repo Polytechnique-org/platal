@@ -25,6 +25,9 @@ Bug/Wish:
     * Xnet:
         - #694: Color of 'Promotion' groups                                -ALK
 
+    * XnetGrp:
+        - #696: Don't forget non-X when counting members                   -Fru
+
     * XnetEvents:
         - #695: More details about payments                                -Fru
 

@@ -355,7 +355,7 @@ class XnetGrpModule extends PLModule
                                      1, 1)) as letter, COUNT(*)
                            FROM  groupex.membres AS m
                       LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid)
-                          WHERE  asso_id = {?} and u.perms != \'pending\'
+                          WHERE  asso_id = {?} and (u.perms != \'pending\' OR u.perms IS NULL)
                        GROUP BY  letter
                        ORDER BY  letter', $globals->asso('id'));
         } else {
