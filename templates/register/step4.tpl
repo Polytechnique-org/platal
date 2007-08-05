@@ -29,7 +29,7 @@ La pré-inscription que tu viens de soumettre a été enregistrée.
 </p>
 <p>
 Les instructions te permettant notamment d'activer ton e-mail
-<strong>{$smarty.session.sub_state.forlife}@polytechnique.org</strong>, ainsi que ton mot de passe pour
+<strong>{$smarty.session.sub_state.forlife}@{#globals.mail.domain#}</strong>, ainsi que ton mot de passe pour
 accéder au site viennent de t'être envoyés à l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
 </p>
 <p>

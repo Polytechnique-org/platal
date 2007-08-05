@@ -39,8 +39,8 @@ if (empty($nb)) {
 $plural = $nb == 1 ? "" : "s";
 
 $mymail = new PlMailer();
-$mymail->setFrom('validation@polytechnique.org');
-$mymail->addTo("validation@polytechnique.org");
+$mymail->setFrom('validation@' . $globals->mails->domain);
+$mymail->addTo("validation@" . $globals->mails->domain);
 $mymail->setSubject((empty($nbveryold)?"":"[urgent] ")."il y a $nb validation$plural non effectuée$plural");
 
 $message =

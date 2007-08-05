@@ -31,7 +31,7 @@ BEGIN:VEVENT
 DTSTAMP:{$e.timestamp|date_format:"%Y%m%dT%H%M%SZ"}
 DTSTART;VALUE=DATE:{$e.date}
 DTEND;VALUE=DATE:{$e.tomorrow}
-UID:anniv-{$e.date}-{$e.forlife}@polytechnique.org
+UID:anniv-{$e.date}-{$e.forlife}@{#globals.mail.domain#}
 RRULE:FREQ=YEARLY;INTERVAL=1
 CLASS:PUBLIC
 {display_ical name="summary" value=$e.summary}

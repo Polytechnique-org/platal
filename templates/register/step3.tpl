@@ -30,16 +30,16 @@
   {if $smarty.session.sub_state.mailorg2}
   <p>
   Tu n'as pour le moment aucun homonyme dans notre base de données, nous allons
-  donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@polytechnique.org</strong>,
-  en plus de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@polytechnique.org</strong>.
-  Sache que tu peux perdre l'adresse <strong>{$smarty.session.sub_state.bestalias}@polytechnique.org</strong> 
+  donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong>,
+  en plus de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@{#globals.mail.domain#}</strong>.
+  Sache que tu peux perdre l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong> 
   si un homonyme s'inscrit (même si cela reste assez rare).
   </p>
   {else}
   <p>
   Tu as déjà un homonyme inscrit dans notre base de données mais dans une autre promotion, nous allons
-  donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@polytechnique.org</strong>, en plus
-  de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@polytechnique.org</strong>.
+  donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong>, en plus
+  de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@{#globals.mail.domain#}</strong>.
   </p>
   {/if}
   

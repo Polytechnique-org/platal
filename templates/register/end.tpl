@@ -29,7 +29,7 @@ Une erreur est survenue lors de ton inscription ...
 </p>
 <p>
 Contacte nous au plus vite, en nous indiquant ce nombre : {$uid} sur 
-<a href="mailto:support@m4x.org">support@m4x.org</a>
+<a href="mailto:support@{#globals.mail.domain#}">support@{#globals.mail.domain#}</a>
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

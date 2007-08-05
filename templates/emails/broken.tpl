@@ -26,7 +26,8 @@
 <h2 class='erreur'>Erreur !</h2>
 
 <p>
-Tu as entré une adresse @polytechnique.org, @m4x.org ou @melix, ce qui est invalide.
+Tu as entré une adresse @{#globals.mail.domain#}, @{#globals.mail.domain2#} ou @{#globals.mail.alias_dom#},
+ce qui est invalide.
 </p>
 
 <p>

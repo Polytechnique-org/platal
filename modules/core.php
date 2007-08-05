@@ -114,9 +114,9 @@ class CoreModule extends PLModule
                   . "Skin        : " . S::v('skin') . "\n";
             $page->assign('bug_sent',1);
             $mymail = new PlMailer();
-            $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
-            $mymail->addTo('support+platal@polytechnique.org');
-            $mymail->addCc('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
+            $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@' . $globals->mails->domain . '>');
+            $mymail->addTo('support+platal@' . $globals->mails->domain);
+            $mymail->addCc('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@' . $globals->mails->domain . '>');
             $mymail->setSubject('Plat/al '.Env::v('task_type').' : '.Env::v('item_summary'));
             $mymail->setTxtBody($body);
             $mymail->send();

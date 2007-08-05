@@ -158,7 +158,8 @@ function create_aliases (&$sub)
     $res      = XDB::query('SELECT COUNT(*) FROM aliases WHERE alias={?}', $forlife);
     if ($res->fetchOneCell() > 0) {
         return "Tu as un homonyme dans ta promo, il faut traiter ce cas manuellement.<br />".
-            "envoie un mail à <a href=\"mailto:support@polytechnique.org\">support@polytechnique.org</a> en expliquant ta situation.";
+            "envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}</a>\">" .
+            "support@{$globals->mail->domain}</a> en expliquant ta situation.";
     }
     
     $res      = XDB::query('SELECT id, type, expire FROM aliases WHERE alias={?}', $mailorg);
@@ -175,10 +176,10 @@ function create_aliases (&$sub)
             $als = $res->fetchColumn();
 
             $mailer = new PlMailer();
-            $mailer->setFrom('"Support Polytechnique.org" <support@polytechnique.org>');
-            $mailer->addTo("$mailorg@polytechnique.org");
+            $mailer->setFrom('"Support Polytechnique.org" <support@' . $globals->mails->domain . '>');
+            $mailer->addTo("$mailorg@" . $globals->mails->domain);
             $mailer->setSubject("perte de ton alias $mailorg dans un mois !");
-            $mailer->addCc('"Support Polytechnique.org" <support@polytechnique.org>');
+            $mailer->addCc('"Support Polytechnique.org" <support@' . $globals->mails->domain . '>');
             $msg =
                 "Bonjour,\n\n".
                 
@@ -245,7 +246,7 @@ function finish_ins($sub_state)
     $mymail->assign('pass',    $pass);
     $mymail->assign('baseurl', $globals->baseurl);
     $mymail->assign('hash',    $hash);
-    $mymail->assign('subj',    $bestalias."@polytechnique.org");
+    $mymail->assign('subj',    $bestalias."@" . $globals->mails->domain);
     $mymail->send();
 }
 

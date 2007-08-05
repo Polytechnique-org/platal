@@ -38,9 +38,9 @@
       </div>
     </td>
     <td class="half">
-      <h3><a href="emails/alias">Mon alias mail @melix.net</a></h3>
+      <h3><a href="emails/alias">Mon alias mail @{#globals.mail.alias_dom#}</a></h3>
       <div class='explication'>
-        Pour choisir un alias @melix.net/melix.org (en choisir un nouveau annule l'ancien).
+        Pour choisir un alias @{#globals.mail.alias_dom#}/{#globals.mail.alias_dom2#} (en choisir un nouveau annule l'ancien).
       </div>
     </td>
   </tr>

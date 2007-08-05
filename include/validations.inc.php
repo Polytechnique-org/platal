@@ -187,7 +187,7 @@ abstract class Validate
             $mailer = new PlMailer;
             $mailer->setSubject("Commentaires de validation {$this->type}");
             $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
-            $mailer->addTo("hotliners@staff.polytechnique.org");
+            $mailer->addTo($globals->core->admin_emails);
 
             $body = "Validation {$this->type} pour {$this->prenom} {$this->nom}\n\n"
               . S::v('bestalias')." a ajouté le commentaire :\n\n" 

@@ -85,11 +85,11 @@
 
 Comme nous t'en avons informé par mail il y a quelques temps,
 pour respecter nos engagements en terme d'adresses e-mail devinables,
-tu te verras bientôt retirer l'alias {$loginbis}@polytechnique.org pour
-ne garder que {$forlife}@polytechnique.org.
+tu te verras bientôt retirer l'alias {$loginbis}@{#globals.mail.domain#} pour
+ne garder que {$forlife}@{#globals.mail.domain#}.
 
-Toute personne qui écrira à {$loginbis}@polytechnique.org recevra la
-réponse d'un robot qui l'informera que {$loginbis}@polytechnique.org
+Toute personne qui écrira à {$loginbis}@{#globals.mail.domain#} recevra la
+réponse d'un robot qui l'informera que {$loginbis}@{#globals.mail.domain#}
 est ambigu pour des raisons d'homonymie et signalera ton email exact.
 
 L'équipe Polytechnique.org
@@ -110,7 +110,7 @@ L'équipe Polytechnique.org
 <form method="post" action="admin/homonyms/correct/{$target}">
   <table class="bicol">
     <tr>
-      <th>Mettre en place le robot {$loginbis}@polytechnique.org</th>
+      <th>Mettre en place le robot {$loginbis}@{#globals.mail.domain#}</th>
     </tr>
     <tr>
       <td>
@@ -119,13 +119,13 @@ L'équipe Polytechnique.org
 
 Comme nous t'en avons informé par mail il y a quelques temps,
 nous t'avons retiré de façon définitive l'adresse
-{$loginbis}@polytechnique.org.
+{$loginbis}@{#globals.mail.domain#}.
 
-Toute personne qui écrit à {$loginbis}@polytechnique.org reçoit la
-réponse d'un robot qui l'informe que {$loginbis}@polytechnique.org
+Toute personne qui écrit à {$loginbis}@{#globals.mail.domain#} reçoit la
+réponse d'un robot qui l'informe que {$loginbis}@{#globals.mail.domain#}
 est ambigu pour des raisons d'homonymie et indique ton email exact.
 
-Tu peux faire l'essai toi-même en écrivant à {$loginbis}@polytechnique.org.
+Tu peux faire l'essai toi-même en écrivant à {$loginbis}@{#globals.mail.domain#}.
 
 L'équipe Polytechnique.org
 {#globals.baseurl#}

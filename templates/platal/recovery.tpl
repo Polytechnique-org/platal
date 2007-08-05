@@ -43,7 +43,7 @@ Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certifi
 </p>
 
 <p>
-  <a href="mailto:register@polytechnique.org">Contacte le support</a> pour que nous puissions régler ton problème
+  <a href="mailto:register@{#globals.mail.domain#}">Contacte le support</a> pour que nous puissions régler ton problème
   au plus vite.
 </p>
 
@@ -63,7 +63,7 @@ Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certifi
   </p>
   <p>
   Si tu ne reçois pas ce courrier, n'hésite pas à contacter 
-  <a href="mailto:support@polytechnique.org">le support technique</a>.
+  <a href="mailto:support@{#globals.mail.domain#}">le support technique</a>.
   </p>
   <table class="tinybicol" cellpadding="3" cellspacing="0" summary="Récupération du mot de passe">
     <tr>

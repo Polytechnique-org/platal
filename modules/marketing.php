@@ -118,7 +118,7 @@ class MarketingModule extends PLModule
                 $from  = $market->sender_mail;
                 $page->assign('rel_from_user', $from);
                 $page->assign('rel_from_staff',
-                              '"Equipe Polytechnique.org" <register@polytechnique.org>');
+                              '"Equipe Polytechnique.org" <register@' . $globals->mails->domain . '>');
                 $page->assign('rel_to', $to);
                 $page->assign('rel_title', $title);
                 $page->assign('rel_text', $text);

@@ -75,7 +75,7 @@ foreach ($emails as $_email) {
             echo "$email : seule adresse active de {$x['prenom']} {$x['nom']}\n";
         } else {
             $mail = new PlMailer('emails/broken.mail.tpl');
-            $mail->addTo("\"{$x['prenom']} {$x['nom']}\" <{$x['alias']}@polytechnique.org>");
+            $mail->addTo("\"{$x['prenom']} {$x['nom']}\" <{$x['alias']}@" . $globals->mails->domain . '>');
             $mail->assign('x', $x);
             $mail->assign('email', $email);
             $mail->send();

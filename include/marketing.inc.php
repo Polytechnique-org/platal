@@ -71,17 +71,17 @@ class Marketing
     private function getFrom($from, $sender)
     {
         if ($from == 'staff') {
-            return '"Equipe Polytechnique.org" <register@polytechnique.org>';
+            return '"Equipe Polytechnique.org" <register@' . $globals->mails->domain . '>';
         } else {
             $res = XDB::query("SELECT  u.nom, u.prenom, a.alias
                                  FROM  auth_user_md5 AS u
                            INNER JOIN  aliases       AS a ON (a.id = u.user_id AND FIND_IN_SET('bestalias', a.flags))
                                 WHERE  u.user_id = {?}", $sender);
             if (!$res->numRows()) {
-                return '"Equipe Polytechnique.org" <register@polytechnique.org>';
+                return '"Equipe Polytechnique.org" <register@' . $globals->mails->domain . '>';
             }
             $sender = $res->fetchOneAssoc();
-            return '"' . $sender['prenom'] . ' ' . $sender['nom'] . '" <' . $sender['alias'] . '@polytechnique.org>';
+            return '"' . $sender['prenom'] . ' ' . $sender['nom'] . '" <' . $sender['alias'] . '@' . $globals->mails->domain . '>';
         }
     }
 

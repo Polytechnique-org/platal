@@ -159,7 +159,7 @@ class AXLetterModule extends PLModule
                              $id, $shortname, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance);
                 if (!$saved) {
                     $mailer = new PlMailer();
-                    $mailer->setFrom("support@polytechnique.org");
+                    $mailer->setFrom("support@" . $globals->mails->domain);
                     $mailer->setSubject("Un nouveau projet de mail de l'AX vient d'être proposé");
                     $mailer->setTxtBody("Un nouveau mail vient d'être rédigé en prévision d'un envoi prochain. Vous pouvez "
                                       . "le modifier jusqu'à ce qu'il soit verrouillé pour l'envoi\n\n"

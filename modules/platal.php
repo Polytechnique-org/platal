@@ -299,7 +299,7 @@ class PlatalModule extends PLModule
                 $mails = implode(', ', $res->fetchColumn());
             }
             $mymail = new PlMailer();
-            $mymail->setFrom('"Gestion des mots de passe" <support+password@polytechnique.org>');
+            $mymail->setFrom('"Gestion des mots de passe" <support+password@' . $globals->mails->domain . '>');
             $mymail->addTo($mails);
             $mymail->setSubject('Ton certificat d\'authentification');
             $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
