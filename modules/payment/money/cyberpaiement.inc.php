@@ -75,7 +75,7 @@ class CyberPayment
     		'CHAMP101' => S::v('prenom'),
     		'CHAMP102' => '.',
     		'CHAMP103' => '.',
-    		'CHAMP104' => S::v('bestalias').'@' . $globals->mails->domain,
+    		'CHAMP104' => S::v('bestalias').'@' . $globals->mail->domain,
     		'CHAMP106' => '.',
     		'CHAMP107' => '.',
     		'CHAMP108' => '.',

@@ -107,7 +107,7 @@ class BrokenReq extends Validate
         if (XDB::affectedRows() > 0) {
             $this->m_reactive = true;
             $mailer = new PlMailer();
-            $mailer->setFrom('"Association Polytechnique.org" <register@' . $globals->mails->domain . '>');
+            $mailer->setFrom('"Association Polytechnique.org" <register@' . $globals->mail->domain . '>');
             $mailer->addTo($email);
             $mailer->setSubject("Mise à jour de ton adresse $email");
             $mailer->setTxtBody(wordwrap("Cher Camarade,\n\n"
@@ -154,7 +154,7 @@ class BrokenReq extends Validate
               . "-- \nTrès Cordialement,\nL'Equipe de Polytechnique.org\n";
         $body = wordwrap($body, 78);
         $mailer = new PlMailer();
-        $mailer->setFrom('"Association Polytechnique.org" <register@' . $globals->mails->domain . '>');
+        $mailer->setFrom('"Association Polytechnique.org" <register@' . $globals->mail->domain . '>');
         $mailer->addTo($this->m_email);
         $mailer->setSubject($subject);
         $mailer->setTxtBody($body);

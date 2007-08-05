@@ -23,7 +23,7 @@
 function cb_erreur($text) {
     $mymail = new PlMailer();
     $mymail->addTo($globals->money->email);
-    $mymail->setFrom("webmaster@" . $globals->mails->domain);
+    $mymail->setFrom("webmaster@" . $globals->mail->domain);
     $mymail->setSubject("erreur lors d'un télépaiement (CyberPaiement)");
     $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
     $mymail->send();
@@ -40,7 +40,7 @@ function paypal_erreur($text, $send=true)
 
     $mymail = new PlMailer();
     $mymail->addTo($globals->money->email);
-    $mymail->setFrom("webmaster@" . $globals->mails->domain);
+    $mymail->setFrom("webmaster@" . $globals->mail->domain);
     $mymail->setSubject("erreur lors d'un télépaiement (PayPal)");
     $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
     $mymail->send();
@@ -220,7 +220,7 @@ class PaymentModule extends PLModule
 
         $mymail = new PlMailer();
         $mymail->setFrom($conf_mail);
-        $mymail->addTo("\"$prenom $nom\" <$forlife@" . $globals->mails->domain . '>');
+        $mymail->addTo("\"$prenom $nom\" <$forlife@" . $globals->mail->domain . '>');
         $mymail->addCc($conf_mail);
         $mymail->setSubject($conf_title);
         $mymail->setWikiBody($conf_text);
@@ -228,7 +228,7 @@ class PaymentModule extends PLModule
 
         /* on envoie les details de la transaction à telepaiement@ */
         $mymail = new PlMailer();
-        $mymail->setFrom("webmaster@" . $globals->mails->domain);
+        $mymail->setFrom("webmaster@" . $globals->mail->domain);
         $mymail->addTo($globals->money->email);
         $mymail->setSubject($conf_title);
         $msg = "utilisateur : $prenom $nom ($uid)\n".
@@ -309,7 +309,7 @@ class PaymentModule extends PLModule
 
         $mymail = new PlMailer();
         $mymail->setFrom($conf_mail);
-        $mymail->addTo("\"$prenom $nom\" <$forlife@" . $globals->mails->domain . '>');
+        $mymail->addTo("\"$prenom $nom\" <$forlife@" . $globals->mail->domain . '>');
         $mymail->addCc($conf_mail);
         $mymail->setSubject($conf_title);
         $mymail->setWikiBody($conf_text);
@@ -317,7 +317,7 @@ class PaymentModule extends PLModule
 
         /* on envoie les details de la transaction à telepaiement@ */
         $mymail = new PlMailer();
-        $mymail->setFrom("webmaster@" . $globals->mails->domain);
+        $mymail->setFrom("webmaster@" . $globals->mail->domain);
         $mymail->addTo($globals->money->email);
         $mymail->setSubject($conf_title);
         $msg = "utilisateur : $prenom $nom ($uid)\n".

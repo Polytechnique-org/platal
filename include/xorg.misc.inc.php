@@ -292,7 +292,7 @@ function check_redirect($red = null)
 function send_warning_mail($title)
 {
     $mailer = new PlMailer();
-    $mailer->setFrom("webmaster@" . $globals->mails->domain);
+    $mailer->setFrom("webmaster@" . $globals->mail->domain);
     $mailer->addTo($globals->core->admin_email);
     $mailer->setSubject("[Plat/al Security Alert] $title");
     $mailer->setTxtBody("Identifiants de session :\n" . var_export($_SESSION, true) . "\n\n"

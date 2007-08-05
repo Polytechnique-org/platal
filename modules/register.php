@@ -192,8 +192,8 @@ class RegisterModule extends PLModule
                         $sub_state['email']     = Post::v('email');
                         if (check_ip('unsafe')) {
                             $err = "Une erreur s'est produite lors de l'inscription."
-                                 . " Merci de contacter <a href='mailto:register@{$globals->mails->domain}>"
-                                 . " register@{$globals->mails->domain}</a>"
+                                 . " Merci de contacter <a href='mailto:register@{$globals->mail->domain}>"
+                                 . " register@{$globals->mail->domain}</a>"
                                  . " pour nous faire part de cette erreur";
                             $alert .= "Tentative d'inscription depuis une IP surveillee";
                         } else {
@@ -329,7 +329,7 @@ class RegisterModule extends PLModule
         while (list($salias, $snom, $sprenom, $sfemme) = $res->next()) {
             $mymail = new PlMailer();
             $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
-            $mymail->setFrom('"Marketing Polytechnique.org" <register@' . $globals->mails->domain . '>');
+            $mymail->setFrom('"Marketing Polytechnique.org" <register@' . $globals->mail->domain . '>');
             $mymail->addTo("\"$sprenom $snom\" <$salias@{$globals->mail->domain}>");
             $msg = ($sfemme?'Chère':'Cher')." $sprenom,\n\n"
                  . "Nous t'écrivons pour t'informer que $prenom $nom (X$promo), "
@@ -346,7 +346,7 @@ class RegisterModule extends PLModule
         if ($globals->register->notif) {
             $mymail = new PlMailer();
             $mymail->setSubject("Inscription de $prenom $nom (X$promo)");
-            $mymail->setFrom('"Webmaster Polytechnique.org" <web@' . $globals->mails->domain . '>');
+            $mymail->setFrom('"Webmaster Polytechnique.org" <web@' . $globals->mail->domain . '>');
             $mymail->addTo($globals->register->notif);
             $msg = "$prenom $nom (X$promo) a terminé son inscription avec les données suivantes :\n"
                  . " - nom       : $nom\n"

@@ -29,24 +29,24 @@ function select_if_homonyme($uid) {
 }
 
 function send_warning_homonyme($prenom, $nom, $forlife, $loginbis) {
-    $cc = "support+homonyme@" . $globals->mails->domain;
+    $cc = "support+homonyme@" . $globals->mail->domain;
     $FROM = "\"Support Polytechnique.org\" <$cc>";
     $mymail = new PlMailer();
     $mymail->setFrom($FROM);
-    $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@" . $globals->mails->domain);
-    $mymail->addTo("$prenom $nom <$forlife@" . $globals->mails->domain . '>');
+    $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@" . $globals->mail->domain);
+    $mymail->addTo("$prenom $nom <$forlife@" . $globals->mail->domain . '>');
     $mymail->addCc($cc);
     $mymail->setTxtBody(Env::v('mailbody'));
     $mymail->send();
 }
 
 function send_robot_homonyme($prenom, $nom, $forlife, $loginbis) {
-    $cc = "support+homonyme@" . $globals->mails->domain;
+    $cc = "support+homonyme@" . $globals->mail->domain;
     $FROM = "\"Support Polytechnique.org\" <$cc>";
     $mymail = new PlMailer();
     $mymail->setFrom($FROM);
-    $mymail->setSubject("Mise en place du robot $loginbis@" . $globals->mails->domain);
-    $mymail->addTo("$prenom $nom <$forlife@" . $globals->mails->domain . '>');
+    $mymail->setSubject("Mise en place du robot $loginbis@" . $globals->mail->domain);
+    $mymail->addTo("$prenom $nom <$forlife@" . $globals->mail->domain . '>');
     $mymail->addCc($cc);
     $mymail->setTxtBody(Env::v('mailbody'));
     $mymail->send();

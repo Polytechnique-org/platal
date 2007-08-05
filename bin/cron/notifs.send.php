@@ -83,8 +83,8 @@ EOF;
 EOF;
     
     $mailer = new PlMailer();
-    $mailer->setFrom('Carnet Polytechnicien <support_carnet@' . $globals->mails->domain . '>');
-    $mailer->addTo("\"$u['prenom']} {$u['nom']}\" <{$u['bestalias']}@" . $globals->mails->domain . '>');
+    $mailer->setFrom('Carnet Polytechnicien <support_carnet@' . $globals->mail->domain . '>');
+    $mailer->addTo("\"$u['prenom']} {$u['nom']}\" <{$u['bestalias']}@" . $globals->mail->domain . '>');
     $mailer->setSubject("Notifications de la semaine $week");
     $mailer->setTxtBody($text);
     if ($u['mail_fmt'] == 'html') { $mailer->setHtmlBody($html); }

@@ -214,7 +214,7 @@ class XnetListsModule extends ListsModule
                   "SELECT  if (m.origine='X',if (u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
                            if (m.origine='X',u.prenom,m.prenom) AS prenom,
                            if (m.origine='X',u.promo,'extérieur') AS promo,
-                           if (m.origine='X',CONCAT(a.alias, '@{$globals->mails->domain}),m.email) AS email,
+                           if (m.origine='X',CONCAT(a.alias, '@{$globals->mail->domain}),m.email) AS email,
                            if (m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
                            m.perms='admin' AS admin,
                            m.origine='X' AS x
@@ -267,7 +267,7 @@ class XnetListsModule extends ListsModule
                                WHERE  alias={?}", "$alias@m4x.org", $lfull);
                    $page->trig("$alias@m4x.org ajouté");
                 } else {
-                    $page->trig("$mbox@{$globals->mails->domain} n'existe pas.");
+                    $page->trig("$mbox@{$globals->mail->domain} n'existe pas.");
                 }
             } else {
                 XDB::query(

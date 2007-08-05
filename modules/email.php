@@ -424,11 +424,11 @@ consulter la page <{$globals->baseurl}/emails/broken>.
 
 
 A bientôt sur Polytechnique.org !
-L'équipe d'administration <support@" . $globals->mails->domain . '>';
+L'équipe d'administration <support@" . $globals->mail->domain . '>';
 
                 $mail = new PlMailer();
-                $mail->setFrom('"Polytechnique.org" <support@' . $globals->mails->domain . '>');
-                $mail->addTo("$dest@" . $globals->mails->domain);
+                $mail->setFrom('"Polytechnique.org" <support@' . $globals->mail->domain . '>');
+                $mail->addTo("$dest@" . $globals->mail->domain);
                 $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
                 $mail->setTxtBody($message);
                 $mail->send();

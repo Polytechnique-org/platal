@@ -75,7 +75,7 @@ class PayPal
     	$info_client = Array(
     		'first_name' => S::v('prenom'),
     		'last_name'  => $name,
-    		'email'      => S::v('bestalias').'@' . $globals->mails->domain);
+    		'email'      => S::v('bestalias').'@' . $globals->mail->domain);
 		
     	$res = XDB::query(
     		"SELECT a.adr1 AS address1, a.adr2 AS address2,

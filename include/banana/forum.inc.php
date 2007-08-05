@@ -70,7 +70,7 @@ class ForumsBanana extends Banana
                             WHERE  uid={?}", S::i('uid'));
         if (!(list($nom,$mail,$sig,$disp,$maj) = $req->fetchOneRow())) {
             $nom  = S::v('prenom')." ".S::v('nom');
-            $mail = S::v('forlife')."@" . $globals->mails->domain;
+            $mail = S::v('forlife')."@" . $globals->mail->domain;
             $sig  = $nom." (".S::v('promo').")";
             $disp = 0;
             $maj  = 1;

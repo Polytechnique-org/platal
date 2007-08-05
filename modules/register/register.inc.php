@@ -176,10 +176,10 @@ function create_aliases (&$sub)
             $als = $res->fetchColumn();
 
             $mailer = new PlMailer();
-            $mailer->setFrom('"Support Polytechnique.org" <support@' . $globals->mails->domain . '>');
-            $mailer->addTo("$mailorg@" . $globals->mails->domain);
+            $mailer->setFrom('"Support Polytechnique.org" <support@' . $globals->mail->domain . '>');
+            $mailer->addTo("$mailorg@" . $globals->mail->domain);
             $mailer->setSubject("perte de ton alias $mailorg dans un mois !");
-            $mailer->addCc('"Support Polytechnique.org" <support@' . $globals->mails->domain . '>');
+            $mailer->addCc('"Support Polytechnique.org" <support@' . $globals->mail->domain . '>');
             $msg =
                 "Bonjour,\n\n".
                 
@@ -246,7 +246,7 @@ function finish_ins($sub_state)
     $mymail->assign('pass',    $pass);
     $mymail->assign('baseurl', $globals->baseurl);
     $mymail->assign('hash',    $hash);
-    $mymail->assign('subj',    $bestalias."@" . $globals->mails->domain);
+    $mymail->assign('subj',    $bestalias."@" . $globals->mail->domain);
     $mymail->send();
 }
 
