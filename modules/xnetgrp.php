@@ -724,10 +724,12 @@ class XnetGrpModule extends PLModule
     {
         header('Content-Type: text/html; charset="UTF-8"');
         $page->changeTpl('xnetgrp/membres-new-search.tpl', NO_SKIN);
+        $res = null;
         if (Env::has('login')) {
             require_once 'user.func.inc.php';
             $res = get_not_registered_user(Env::v('login'), true);
-        } else {
+        }
+        if (is_null($res)) {
             list($nom, $prenom) = str_replace(array('-', ' ', "'"), '%', array(Env::v('nom'), Env::v('prenom')));
             $where = "perms = 'pending'";
             if (!empty($nom)) {

@@ -26,10 +26,11 @@ Bug/Wish:
         - #694: Color of 'Promotion' groups                                -ALK
 
     * XnetGrp:
-        - #696: Don't forget non-X when counting members                   -Fru
+        - #696: Don't forget non-X when counting members                   -FRU
+        - #698: Fix the unregister user lister when adding a new member    -FRU
 
     * XnetEvents:
-        - #695: More details about payments                                -Fru
+        - #695: More details about payments                                -FRU
 
 From 0.9.14 branch:
 
