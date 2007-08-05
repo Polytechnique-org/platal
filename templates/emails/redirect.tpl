@@ -132,9 +132,9 @@
           <select onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/rewrite/{$e->email}/'+this.value, redirectUpdate)">
             <option value=''>--- aucune ---</option>
             {foreach from=$alias item=a}
-            <option {if $e->rewrite eq "`$a.alias`@`$globals.mail.domain`"}selected='selected'{/if}
+            <option {if $e->rewrite eq "`$a.alias`@`#globals.mail.domain#`"}selected='selected'{/if}
               value='{$a.alias}@{#globals.mail.domain#}'>{$a.alias}@{#globals.mail.domain#}</option>
-            <option {if $e->rewrite eq "`$a.alias`@`$globals.mail.domain2`"}selected='selected'{/if}
+            <option {if $e->rewrite eq "`$a.alias`@`@globals.mail.domain2#`"}selected='selected'{/if}
               value='{$a.alias}@{#globals.mail.domain2#}'>{$a.alias}@{#globals.mail.domain2#}</option>
             {/foreach}
           </select>
