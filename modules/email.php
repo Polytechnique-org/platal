@@ -200,6 +200,11 @@ class EmailModule extends PLModule
 
         $redirect = new Redirect(S::v('uid'));
 
+        // FS#703 : $_GET is urldecoded twice, hence
+        // + (the data) => %2B (in the url) => + (first decoding) => ' ' (second decoding)
+        // Since there can be no spaces in emails, we can fix this with :
+        $email = str_replace(' ', '+', $email);
+
         if ($action == 'remove' && $email) {
             $retour = $redirect->delete_email($email);
             $page->assign('retour', $retour);
