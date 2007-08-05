@@ -34,6 +34,10 @@ class PlatalGlobals
     public $dbpwd              = 'x4dat';
     public $dbcharset          = 'utf8';
 
+    /** default skin */
+    public $skin;
+    public $register_skin;
+
     /** paths */
     public $baseurl;
     public $spoolroot;
