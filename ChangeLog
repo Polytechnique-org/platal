@@ -15,12 +15,14 @@ Bug/Wish:
     * Emails:
         - #687: Don't lose authentication when editing a long mail         -FRU
         - #688: From name in the sending form                              -FRU
+        - #703: Fix management of mail adresses containing '+'             -ALK
 
     * Profile:
         - Fix GoogleMaps links                                             -FRU
         - #663: Link to Xnet's map from the "My groups" page               -FRU
         - #689: Edit my profile from Xnet                                  -FRU
         - #692: Layout of the profile                                      -FRU
+        - #693: Fix empty description for generic education                -FRU
 
     * Xnet:
         - #694: Color of 'Promotion' groups                                -ALK
@@ -36,6 +38,9 @@ From 0.9.14 branch:
 
     * Payment:
         - #662: Fix the attribution of the payments                        -BOB
+
+    * XnetEvents:
+        - #684: Fix the list of coming members                             -FRU
 
 ================================================================================
 VERSION 0.9.14                                                        27 04 2007

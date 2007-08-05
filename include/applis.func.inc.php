@@ -25,9 +25,9 @@ function applis_options($current=0) {
     $html = '<option value="-1"></option>';
     $res  = XDB::iterator("select * from applis_def order by text");
     while ($arr_appli = $res->next()) { 
-	$html .= '<option value="'.$arr_appli["id"].'"';
-	if ($arr_appli["id"]==$current) $html .= " selected='selected'";
-	$html .= '>'.htmlspecialchars($arr_appli["text"])."</option>\n";
+        $html .= '<option value="'.$arr_appli["id"].'"';
+        if ($arr_appli["id"]==$current) $html .= " selected='selected'";
+        $html .= '>'.htmlspecialchars($arr_appli["text"])."</option>\n";
     }
     return $html;
 }
@@ -35,7 +35,7 @@ function applis_options($current=0) {
  */
 function _applis_options_smarty($params){
     if(!isset($params['selected']))
-	$params['selected'] = 0;
+        $params['selected'] = 0;
     return applis_options($params['selected']);
 }
 $page->register_function('applis_options','_applis_options_smarty');
@@ -47,10 +47,10 @@ function applis_type(){
     $html = "";
     $res=XDB::iterRow("select type from applis_def order by text");
     if (list($appli_type) = $res->next()) {
-	$html .= "new Array('".str_replace(",","','",$appli_type)."')";
+        $html .= "new Array('".str_replace(",","','",$appli_type)."')";
     }
     while (list($appli_type) = $res->next()) {
-	$html .= ",\nnew Array('".str_replace(",","','",$appli_type)."')";
+        $html .= ",\nnew Array('".str_replace(",","','",$appli_type)."')";
     }
     return $html;
 }
@@ -69,14 +69,17 @@ $page->register_function('applis_type_all','applis_type_all');
  */
 function applis_fmt($type, $text, $url) {
     $txt="";
-    if (($type!="Ingénieur")&&($type!="Diplôme"))
-	$txt .= $type;
-    if ($text!="Université") {
-	if ($txt) $txt .= " ";
-	if ($url) 
-	    $txt .= "<a href=\"$url\" onclick=\"return popup(this)\">$text</a>";
-	else 
-	    $txt .= $text;
+    if (($type != "Ingénieur") && ($type != "Diplôme"))
+        $txt .= $type;
+    if ($text != "Université") {
+        if ($txt) $txt .= ' ';
+        if ($url) 
+            $txt .= "<a href=\"$url\" onclick=\"return popup(this)\">$text</a>";
+        else 
+            $txt .= $text;
+    }
+    if (!$txt) {
+        $txt .= $text;
     }
     return $txt;
 }
