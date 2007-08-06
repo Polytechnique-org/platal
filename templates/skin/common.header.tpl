@@ -68,6 +68,6 @@
     {$xorg_extra_header|smarty:nodefaults}
     {/if}
 
-    <title>{$xorg_title|default:"Anciens eleves Polytechnique, annuaire email, Alumni"}</title>
+    <title>{$xorg_title|default:"Polytechnique.org : le site des élèves et anciens élèves de l'École polytechnique"}</title>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
