@@ -261,7 +261,7 @@ class MarketingModule extends PLModule
             if (Post::has('valide')) {
                 require_once('xorg.misc.inc.php');
                 $email = trim(Post::v('mail'));
-                $market = Marketing::get($uid, $emails);
+                $market = Marketing::get($uid, $email);
                 if (!isvalid_email_redirection($email)) {
                     $page->trig("Email invalide !");
                 } elseif ($market) {

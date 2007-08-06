@@ -70,6 +70,8 @@ class Marketing
 
     private function getFrom($from, $sender)
     {
+        global $globals;
+        
         if ($from == 'staff') {
             return '"Equipe Polytechnique.org" <register@' . $globals->mail->domain . '>';
         } else {
