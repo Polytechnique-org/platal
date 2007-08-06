@@ -261,16 +261,21 @@ class MarketingModule extends PLModule
             if (Post::has('valide')) {
                 require_once('xorg.misc.inc.php');
                 $email = trim(Post::v('mail'));
-                $market = Marketing::get($uid, $email);
+
                 if (!isvalid_email_redirection($email)) {
                     $page->trig("Email invalide !");
-                } elseif ($market) {
-                    $page->assign('already', true);
                 } else {
-                    $page->assign('ok', true);
-                    check_email($email, "Une adresse surveillée est proposée au marketing par " . S::v('forlife'));
-                    $market = new Marketing($uid, $email, 'default', null, Post::v('origine'), S::v('uid'));
-                    $market->add();
+                    // On cherche les marketings précédents sur cette adresse
+                    // email, en se restreignant au dernier mois
+                    
+                    if (Marketing::get($uid, $email, true)) {
+                        $page->assign('already', true);
+                    } else {
+                        $page->assign('ok', true);
+                        check_email($email, "Une adresse surveillée est proposée au marketing par " . S::v('forlife'));
+                        $market = new Marketing($uid, $email, 'default', null, Post::v('origine'), S::v('uid'));
+                        $market->add();
+                    }
                 }
             }
         }

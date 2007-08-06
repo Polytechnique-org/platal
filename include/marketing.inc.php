@@ -168,11 +168,14 @@ class Marketing
         return $array;
     }
 
-    static public function get($uid, $email)
+    static public function get($uid, $email, $recentOnly = false)
     {
         $res = XDB::query("SELECT  uid, email, message, message_data, type, sender
                              FROM  register_marketing
-                            WHERE  uid = {?} AND email = {?}", $uid, $email);
+                            WHERE  uid = {?}
+                              AND  email = {?}".(
+              $recentOnly ? ' AND  DATEDIFF(NOW(), last) < 30' : ''), $uid, $email);
+
         if ($res->numRows() == 0) {
             return null;
         }
