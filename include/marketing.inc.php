@@ -43,7 +43,7 @@ class Marketing
     {
         $this->user         = $this->getUser($uid, $email);
         $this->sender_mail  = $this->getFrom($from, $sender);
-        $this->engine      =& $this->getEngine($type, $data, $from == 'user' ? null : $this->sender);
+        $this->engine      =& $this->getEngine($type, $data, $from == 'user' ? $sender : null);
 
         $this->type   = $type;
         $this->data   = $data;
@@ -73,14 +73,14 @@ class Marketing
         global $globals;
         
         if ($from == 'staff') {
-            return '"Equipe Polytechnique.org" <register@' . $globals->mail->domain . '>';
+            return '"L\'équipe de Polytechnique.org" <register@' . $globals->mail->domain . '>';
         } else {
             $res = XDB::query("SELECT  u.nom, u.prenom, a.alias
                                  FROM  auth_user_md5 AS u
                            INNER JOIN  aliases       AS a ON (a.id = u.user_id AND FIND_IN_SET('bestalias', a.flags))
                                 WHERE  u.user_id = {?}", $sender);
             if (!$res->numRows()) {
-                return '"Equipe Polytechnique.org" <register@' . $globals->mail->domain . '>';
+                return '"L\'équipe de Polytechnique.org" <register@' . $globals->mail->domain . '>';
             }
             $sender = $res->fetchOneAssoc();
             return '"' . $sender['prenom'] . ' ' . $sender['nom'] . '" <' . $sender['alias'] . '@' . $globals->mail->domain . '>';
@@ -245,13 +245,20 @@ class AnnuaireMarketing implements MarketingEngine
 {
     protected $titre;
     protected $intro;
+    protected $signature;
 
     public function __construct($data, $from)
     {
-        $this->titre = "Annuaire en ligne des Polytechniciens";
-        $this->intro = "   Ta fiche n'est pas à jour dans l'annuaire des Polytechniciens sur Internet. "
-                     . "Pour la mettre à jour, il te it de visiter cette page ou de copier cette adresse "
+        $this->titre = "Rejoins la communauté polytechnicienne sur Internet";
+        $this->intro = "   Tu n'as pas de fiche dans l'annuaire des polytechniciens sur Internet. "
+                     . "Pour y figurer, il te suffit de visiter cette page ou de copier cette adresse "
                      . "dans la barre de ton navigateur :";
+        if ($from === null) {
+            $this->signature = "L'équipe de Polytechnique.org,\n"
+                             . "Le portail des élèves & anciens élèves de l'École polytechnique";
+        } else {
+            $this->signature = "%%sender%%";
+        }
     }
 
     public function getTitle()
@@ -264,10 +271,16 @@ class AnnuaireMarketing implements MarketingEngine
         return $this->intro;
     }
 
+    public function getSignature()
+    {
+        return $this->signature;
+    }
+
     protected function prepareText(PlatalPage &$page, array $user)
     {
         $page->assign('intro', $this->getIntro());
         $page->assign('u', $user);
+        $page->assign('sign', $this->getSignature());
         $res = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE perms IN ('user', 'admin') AND deces = 0");
         $page->assign('num_users', $res->fetchOneCell());
     }
@@ -292,8 +305,8 @@ class ListMarketing extends AnnuaireMarketing
     {
         list($this->name, $this->domain) = explode('@', $data);
         $res = XDB::query("SELECT  prenom, IF (nom_usage != '', nom_usage, nom)
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?} AND user_id != 0", $from ? $from : 0);
+            FROM  auth_user_md5
+            WHERE  user_id = {?} AND user_id != 0", $from ? $from : 0);
         if ($res->numRows()) {
             list($prenom, $nom) = $res->fetchOneRow();
             $from = "$prenom $nom";
@@ -301,22 +314,22 @@ class ListMarketing extends AnnuaireMarketing
             $from = "Je";
         }
         $this->titre = "Un camarade solicite ton inscription à $data";
-        $this->intro = "Polytechnique.org, l'annuaire des Polytechniciens sur internet, "
-                     . "fournit de nombreux services aux groupes X, ainsi que des listes "
-                     . "de diffusion pour les X en faisant la demande.\n\n"
-                     . "$from solicite ton inscription à la liste <$data>. "
-                     . "Cependant, seuls les X inscrits sur Polytechnique.org peuvent "
-                     . "profiter de l'ensemble de nos services, c'est pourquoi nous te "
-                     . "proposons auparavant de t'inscrire sur notre site. Pour cela, il "
-                     . "te suffit de visiter cette page ou de copier cette adresse dans "
-                     . "la barre de ton navigateur :";
+        $this->intro = "Polytechnique.org, l'annuaire des polytechniciens sur internet, "
+            . "fournit de nombreux services aux groupes X, ainsi que des listes "
+            . "de diffusion pour les X en faisant la demande.\n\n"
+            . "$from solicite ton inscription à la liste <$data>. "
+            . "Cependant, seuls les X inscrits sur Polytechnique.org peuvent "
+            . "profiter de l'ensemble de nos services, c'est pourquoi nous te "
+            . "proposons auparavant de t'inscrire sur notre site. Pour cela, il "
+            . "te suffit de visiter cette page ou de copier cette adresse dans "
+            . "la barre de ton navigateur :";
     }
 
     public function process(array $user)
     {
         return XDB::execute("REPLACE INTO  register_subs (uid, type, sub, domain)
-                                   VALUES  ({?}, 'list', {?}, {?})",
-                            $user['id'], $this->name, $this->domain);
+            VALUES  ({?}, 'list', {?}, {?})",
+                $user['id'], $this->name, $this->domain);
     }
 }
 
@@ -327,8 +340,8 @@ class GroupMarketing extends AnnuaireMarketing
     {
         $this->group = $data;
         $res = XDB::query("SELECT  prenom, IF (nom_usage != '', nom_usage, nom)
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?} AND user_id != 0", $from ? $from : 0);
+            FROM  auth_user_md5
+            WHERE  user_id = {?} AND user_id != 0", $from ? $from : 0);
         if ($res->numRows()) {
             list($prenom, $nom) = $res->fetchOneRow();
             $from = "$prenom $nom vient";
@@ -336,21 +349,21 @@ class GroupMarketing extends AnnuaireMarketing
             $from = "Je viens";
         }
         $this->titre = "Profite de ton inscription au groupe \"$data\" pour découvrir Polytechnique.org";
-        $this->intro = "Polytechnique.org, l'annuaire des Polytechniciens sur internet, fournit "
-                     . "de nombreux services aux groupes X ( listes de diffusion, paiement en "
-                     . "ligne, sites internet...), en particulier pour le groupe \"$data\"\n\n"
-                     . "$from de t'inscrire dans l'annuaire du groupe \"$data\". "
-                     . "Cependant, seuls les X inscrits sur Polytechnique.org peuvent profiter "
-                     . "de l'ensemble de nos services, c'est pourquoi nous te proposons de "
-                     . "t'inscrire sur notre site . Pour cela, il te suffit de visiter cette page "
-                     . "ou de copier cette adresse dans la barre de ton navigateur :";
+        $this->intro = "Polytechnique.org, l'annuaire des polytechniciens sur internet, fournit "
+            . "de nombreux services aux groupes X ( listes de diffusion, paiement en "
+            . "ligne, sites internet...), en particulier pour le groupe \"$data\"\n\n"
+            . "$from de t'inscrire dans l'annuaire du groupe \"$data\". "
+            . "Cependant, seuls les X inscrits sur Polytechnique.org peuvent profiter "
+            . "de l'ensemble de nos services, c'est pourquoi nous te proposons de "
+            . "t'inscrire sur notre site . Pour cela, il te suffit de visiter cette page "
+            . "ou de copier cette adresse dans la barre de ton navigateur :";
     }
 
     public function process(array $user)
     {
         return XDB::execute("REPLACE INTO  register_subs (uid, type, sub, domain)
-                                   VALUES  ({?}, 'group', {?}, '')",
-                            $user['id'], $this->group);
+            VALUES  ({?}, 'group', {?}, '')",
+                $user['id'], $this->group);
     }
 }
 

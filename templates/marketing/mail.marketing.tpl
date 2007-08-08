@@ -27,22 +27,19 @@
 {#globals.baseurl#}/register/%%hash%%
 ==========================================================
 
-Il ne te faut que 5 minutes sur https://www.polytechnique.org/ pour rejoindre les {$num_users} camarades branchés grâce au système de reroutage de l'X et qui permet de joindre un camarade en connaissant seulement son nom et son prénom... et  de bénéficier pour la vie d'une adresse prestigieuse {$u.forlife}@polytechnique.org et son alias discret {$u.forlife}@m4x.org (m4x = mail for X).
+Il ne te faut que 5 minutes sur https://www.polytechnique.org/ pour rejoindre la communauté polytechnicienne sur le web grâce aux services de Polytechnique.org dont profitent déjà {$num_users} camarades. Cela te permettera, entre autres, de contacter un X en connaissant seulement son nom et son prénom et de bénéficier à vie d'une adresse prestigieuse {$u.forlife}@polytechnique.org et de son alias discret {$u.forlife}@m4x.org (m4x = mail for X).
 
-Pas de nouvelle boîte aux lettres à relever, il suffit de la rerouter vers ton adresse personnelle et/ou professionnelle que tu indiques et que tu peux changer tous les jours si tu veux sans imposer à tes correspondants de modifier leur carnet d'adresses...
+Pas de nouvelle boîte aux lettres à relever, il suffit de la rediriger vers ton adresse personnelle et/ou professionnelle que tu indiques et que tu peux changer à ta guise, sans que tes correspondants n'aient à actualiser leur carnet d'adresses.
 
-De plus, le site web offre les services d'annuaire (recherche multi-critères), de forums, de mailing-lists. Ce portail est géré par une dizaine de jeunes camarades, avec le soutien et les conseils de nombreux X de toutes promotions, incluant notamment des camarades de la Kès des élèves de l'X et d'autres de l'AX. Les serveurs sont hébergés au sein même de l'École polytechnique, sur une connexion rapide, et les services évoluent en fonction des besoins exprimés par la communauté sur Internet.
+De plus, le site web offre des services d'annuaire avec recherche multi-critères, de forums, de mailing-lists. Ce portail est géré par une vingtaine de jeunes camarades, avec le soutien et les conseils de nombreux X de toutes promotions, incluant notamment des camarades de la Kès et de l'AX. Les serveurs sont hébergés au sein même de l'École polytechnique, sur une connexion rapide, et les services évoluent en fonction des besoins exprimés par la communauté sur Internet.
 
-N'hésite pas à transmettre ce message à tes camarades ou à nous écrire, nous proposer toute amélioration ou suggestion pour les versions prochaines du site.
+N'hésite pas à parler de Polytechnique.org à nos camarades pas encore inscrits et à nous écrire pour nous proposer toute amélioration ou suggestion.
 
-À bientôt sur https://www.polytechnique.org
-Bien à toi,
-%%sender%%
+À bientôt sur Polytechnique.org <https://www.polytechnique.org>,
+
+Bien cordialement,
 
 -- 
-Polytechnique.org
-"Le portail des élèves & anciens élèves de l'X"
-https://www.polytechnique.org/
-http://www.polytechnique.net
+{$sign}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
