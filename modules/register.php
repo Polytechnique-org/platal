@@ -308,6 +308,9 @@ class RegisterModule extends PLModule
         $mymail->assign('prenom', $prenom);
         $mymail->send();
 
+        require_once('user.func.inc.php');
+        user_reindex($uid);
+
         if (!start_connexion($uid, false)) {
             return PL_FORBIDDEN;
         }
