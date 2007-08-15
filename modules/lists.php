@@ -455,7 +455,7 @@ class ListsModule extends PLModule
         if (Post::has('moderate_mails') && Post::has('select_mails')) {
             $mails = array_keys(Post::v('select_mails'));
             if (count($mails) > 10) {
-                $page->trig("Impossible de réaliser plus de 10 actions à la fois");
+                $page->trig("Le nombre d'actions qui peuvent être effectuées en un seul appel de cette page est limité à 10, car le temps de chargement de celle-ci est autrement trop long. Seules les dix premières actions demandées ont été effectuées.");
                 $mails = array_slice($mails, 0, 10);
             }
             foreach($mails as $mail) {
