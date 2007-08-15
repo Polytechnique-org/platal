@@ -26,15 +26,26 @@
   Ma liste personnelle de contacts
 </h1>
 
-<form action="carnet/contacts" method="post">
-<p>
-  Ajouter la personne suivante à ma liste de contacts (prenom.nom) :<br />
+<div>
+Ajouter la personne suivante à ma liste de contacts :
+<div style="float: right">
+<form id="add_user" action="carnet/contacts" method="post">
+  <div>
   <input type="hidden" name="action" value="ajouter" />
-  <input type="text" name="user" size="20" maxlength="70" />&nbsp;
-  <input type="submit" value="Ajouter" />
+  <input type="text" size="30" name="user" class="quick_search"
+         value="ajouter prenom.nom"
+         onfocus="if (this.value == 'ajouter prenom.nom') this.value=''"
+         onblur="if (this.value == '') this.value='ajouter prenom.nom'"
+         size="20" maxlength="70"/>
+  <a href="" onclick="document.getElementById('add_user').submit(); return false;">
+    {icon name=add title="Ajouter la personne"}
+  </a>
+  </div>
 </p>
 </form>
-<p>
+</div>
+</div>
+<p style="clear: both">
   Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire : 
   il te suffit de cliquer sur l'icône {icon name=add} en face de son nom dans les résultats !
 </p>  
@@ -75,11 +86,13 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 <p>
   <div style="float: right">
     <form action="carnet/contacts/search#plset_content" method="get">
+      <div>
       <input type="text" size="30" name="quick" class="quick_search"
              value="{$smarty.request.quick|default:'recherche dans tes contacts'}"
              onfocus="if (this.value == 'recherche dans tes contacts') this.value=''"
              onblur="if (this.value == '') this.value='recherche dans tes contacts'"/>
       <a href="carnet/contacts">{icon name=cross title='Annuler la recherche'}</a>
+      </div>
     </form>
   </div>
   Tu peux faire une recherche sur tes contacts :
