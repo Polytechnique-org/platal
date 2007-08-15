@@ -454,8 +454,13 @@ class ListsModule extends PLModule
 
         if (Post::has('moderate_mails') && Post::has('select_mails')) {
             $mails = array_keys(Post::v('select_mails'));
+            if (count($mails) > 10) {
+                $page->trig("Impossible de réaliser plus de 10 actions à la fois");
+                $mails = array_slice($mails, 0, 10);
+            }
             foreach($mails as $mail) {
                 $this->moderate_mail($domain, $liste, $mail);
+                usleep(200000);
             }
         } elseif (Env::has('mid')) {
             if (Get::has('mid') && !Env::has('mok') && !Env::has('mdel')) {
