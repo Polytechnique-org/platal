@@ -609,7 +609,7 @@ div.adresse strong {
     vertical-align: top;
 }
 
-#quick_search {
+.quick_search {
     color: gray;
     text-align: right;
 }

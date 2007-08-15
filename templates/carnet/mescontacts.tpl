@@ -39,7 +39,7 @@
   il te suffit de cliquer sur l'icône {icon name=add} en face de son nom dans les résultats !
 </p>  
 
-{if $plset_count}
+{if $plset_count || $smarty.request.quick}
 <p>
 Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 (attention, les photos font beaucoup grossir les fichiers !)
@@ -71,6 +71,19 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
     (<a href="carnet/contacts/vcard/MesContactsXorg.vcf">sans les photos</a>)
   </li>
 </ul>
+
+<p>
+  <div style="float: right">
+    <form action="carnet/contacts/search#plset_content" method="get">
+      <input type="text" size="30" name="quick" class="quick_search"
+             value="{$smarty.request.quick|default:'recherche dans tes contacts'}"
+             onfocus="if (this.value == 'recherche dans tes contacts') this.value=''"
+             onblur="if (this.value == '') this.value='recherche dans tes contacts'"/>
+      <a href="carnet/contacts">{icon name=cross title='Annuler la recherche'}</a>
+    </form>
+  </div>
+  Tu peux faire une recherche sur tes contacts :
+</p>
 
 {include file="core/plset.tpl"}
 

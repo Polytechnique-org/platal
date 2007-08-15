@@ -625,7 +625,7 @@ div.adresse {
     font-size: 95%;
 }
 
-#quick_search {
+.quick_search {
     color: gray;
     background: #fff;
     text-align: right;

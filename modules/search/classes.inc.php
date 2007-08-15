@@ -305,6 +305,7 @@ class QuickSearch extends SField
             $ip = XDB::escape($this->ip);
             $where[] = "( ls.ip = $ip OR ls.forward_ip = $ip )";
         }
+
         return join(" AND ", $where);
     }
 

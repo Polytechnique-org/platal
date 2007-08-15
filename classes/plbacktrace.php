@@ -39,7 +39,11 @@ class PlBacktrace
 
     private function fixCharset($action)
     {
-        return is_utf8($action) ? $action : utf8_encode($action);
+        if (!is_string($action)) {
+            return $action;
+        } else {
+            return is_utf8($action) ? $action : utf8_encode($action);
+        }
     }
 
     private function add(array &$entry, $sizef = 'rows', $timef = 'exectime', $errorf = 'error')
@@ -52,12 +56,12 @@ class PlBacktrace
         unset($entry[$timef]);
         $trace['rows'] = @$entry[$sizef];
         unset($entry[$sizef]);
-        $trace['error'] = @$entry[$errorf];
+        $trace['error'] = $this->fixCharset(@$entry[$errorf]);
         unset($entry[$errorf]);
         if ($trace['error']) {
             $this->error = true;
         }
-        $trace['data'] = array($entry);
+        $trace['data'] = array($this->fixCharset($entry));
         $this->traces[] =& $trace;
     }
 
@@ -90,7 +94,8 @@ class PlBacktrace
     {
         $trace =& $this->traces[count($this->traces) - 1];
         $trace['rows']  = $rows;
-        $trace['error'] = $error;
+        $trace['error'] = $this->fixCharset($error);
+        array_walk_recursive($userdata, array($this, 'fixCharset'));
         $trace['data']  = $userdata;
         if ($trace['error']) {
             $this->error = true;

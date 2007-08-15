@@ -8,6 +8,9 @@ New:
 
 Bug/Wish:
 
+    * Carnet:
+        - #682: Can quick search in contact list                           -FRU
+
     * Core:
         - #674: MiniWiki xhtml validation                                  -FRU
         - #678: PlUpload filename detection                                -FRU

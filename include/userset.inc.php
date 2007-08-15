@@ -91,9 +91,20 @@ class SearchSet extends UserSet
             new ThrowError('Recherche trop générale.');
         }
         $this->score = $qSearch->get_score_statement();
-        parent::__construct($join . ' ' . $fields->get_select_statement(),
-                            $where . ' ' . $fields->get_where_statement() .
-                            (S::logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : ''));
+        $pwhere = $fields->get_where_statement();
+        if (trim($pwhere)) {
+            if (trim($where)) {
+                $where .= ' AND ';
+            }
+            $where .= $pwhere;
+        }
+        if (S::logged() && Env::has('nonins')) {
+            if (trim($where)) {
+                $where .= ' AND ';
+            }
+            $where .= 'u.perms="pending" AND u.deces=0';
+        }
+        parent::__construct($join . ' ' . $fields->get_select_statement(), $where);
 
         $this->order = implode(',',array_filter(array($fields->get_order_statement(),
                                                       'u.promo DESC, NomSortKey, prenom')));

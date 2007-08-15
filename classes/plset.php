@@ -116,7 +116,6 @@ class PlSet
             $limitcount = "LIMIT $limitcount";
         }
         $joins  = $this->joins . ' ' . $joins;
-        $where  = $where;
         if (trim($this->where)) {
             if (trim($where)) {
                 $where .= ' AND ';

@@ -183,6 +183,12 @@ class CarnetModule extends PLModule
         return Array($total, $list);
     }
 
+    function searchErrorHandler($explain) {
+        global $page;
+        $page->trig($explain);
+        $this->handler_contacts($page);
+    }
+
     function handler_contacts(&$page, $action = null, $subaction = null, $ssaction = null)
     {
         $page->assign('xorg_title','Polytechnique.org - Mes contacts');
@@ -237,7 +243,10 @@ class CarnetModule extends PLModule
         if ($search && trim(Env::v('quick'))) {
             require_once 'userset.inc.php';
             $base = 'carnet/contacts/search';
-            $view = new SearchSet(true, false, "INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", " c2.uid = $uid AND ");
+
+            require_once(dirname(__FILE__) . '/search/classes.inc.php');
+            ThrowError::$throwHook = array($this, 'searchErrorHandler');
+            $view = new SearchSet(true, false, "INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", "c2.uid = $uid");
         } else {
             $base = 'carnet/contacts';
             $view = new UserSet("INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", " c2.uid = $uid ");

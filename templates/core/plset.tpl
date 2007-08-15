@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div>
+<div style="clear: both">
 <h1 style="display: block; float: right">
   {if !$plset_count}
   Aucune entrée
