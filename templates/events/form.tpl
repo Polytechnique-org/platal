@@ -157,7 +157,7 @@
         Dernier jour d'affichage
       </td>
       <td>
-        {valid_date name="peremption" value=$peremption}
+        {valid_date name="peremption" value=$peremption to=60}
       </td>
     </tr>
     {if $admin_evts}
