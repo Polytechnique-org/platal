@@ -37,7 +37,7 @@
     {foreach from=$promo item=x}
     <item>
       <title>
-        [{$notifs->_cats[$cid].short}] {$x.prenom} {$x.nom} ({$x.promo}) - le {$x.date|date_format|utf8_encode}
+        [{$notifs->_cats[$cid].short}] {$x.prenom} {$x.nom} ({$x.promo}) - le {$x.date|date_format}
       </title>
       <link>{#globals.baseurl#}/profile/private/{$x.bestalias}</link>
       <guid isPermaLink="false">carnet{$x.known}{$cid}{$x.bestalias}</guid>
