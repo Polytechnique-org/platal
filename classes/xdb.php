@@ -134,7 +134,7 @@ class XDB
     }
 
     public static function error()
-    {       
+    {
         return XDB::$mysqli->error;
     }
 

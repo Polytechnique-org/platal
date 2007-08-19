@@ -26,4 +26,8 @@ WD=/home/web/prod/platal/bin/cron
 
 # homonymes
 0 0 4 * *	web	cd $WD; ./homonymes.php
+
+# ml moderation
+* * * * *       web     cd $WD; ./cron_ml_moderate.php > /dev/null
+
 # vim:set noet syntax=crontab ts=8 sw=8 sts=8 enc=utf-8:

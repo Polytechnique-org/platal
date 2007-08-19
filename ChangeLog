@@ -6,6 +6,9 @@ New:
     * Core:
         - Auto-redirect HTML pages to HTTPS                                -FRU
 
+    * Lists:
+        - Asynchronous mail moderation (should avoid server overload)      -FRU
+
     * Search:
         - Shortcuts to open profiles or search in documentation            -FRU
 

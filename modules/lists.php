@@ -62,6 +62,22 @@ class ListsModule extends PLModule
         return $globals->mail->domain;
     }
 
+    function get_pending_ops($domain, $list)
+    {
+        list($subs,$mails) = $this->client->get_pending_ops($list);
+        $res = XDB::query("SELECT  mid
+                             FROM  ml_moderate
+                            WHERE  ml = {?} AND domain = {?}",
+                          $list, $domain);
+        $mids = $res->fetchColumn();
+        foreach ($mails as $key=>$mail) {
+            if (in_array($mail['id'], $mids)) {
+                unset($mails[$key]);
+            }
+        }
+        return array($subs, $mails);
+    }
+
     function handler_lists(&$page)
     {
         function filter_owner($list)
@@ -74,7 +90,7 @@ class ListsModule extends PLModule
             return $list['sub'];
         }
 
-        $this->prepare_client($page);
+        $domain = $this->prepare_client($page);
 
         $page->changeTpl('lists/index.tpl');
         $page->addJsLink('ajax.js');
@@ -103,7 +119,7 @@ class ListsModule extends PLModule
         $member = array_filter($listes, 'filter_member');
         $listes = array_diff_key($listes, $member);
         foreach ($owner as $key=>$liste) {
-            list($subs,$mails) = $this->client->get_pending_ops($liste['list']);
+            list($subs,$mails) = $this->get_pending_ops($domain, $liste['list']);
             $owner[$key]['subscriptions'] = $subs;
             $owner[$key]['mails'] = $mails;
         }
@@ -133,7 +149,7 @@ class ListsModule extends PLModule
 
         list($liste, $members, $owners) = $this->client->get_members($list);
         if ($liste['own']) {
-            list($subs,$mails) = $this->client->get_pending_ops($list);
+            list($subs,$mails) = $this->get_pending_ops($domain, $list);
             $liste['subscriptions'] = $subs;
             $liste['mails'] = $mails;
         }
@@ -367,47 +383,19 @@ class ListsModule extends PLModule
 
     function moderate_mail($domain, $liste, $mid)
     {
-        $mail   = $this->client->get_pending_mail($liste, $mid);
-        $reason = '';
-
-        $prenom = S::v('prenom');
-        $nom    = S::v('nom');
-
         if (Env::has('mok')) {
-            $action  = 1; /** 2 = ACCEPT **/
-            $subject = "Message accepté";
-            $append .= "a été accepté par $prenom $nom.\n";
+            $action = 'accept';
         } elseif (Env::has('mno')) {
-            $action  = 2; /** 2 = REJECT **/
-            $subject = "Message refusé";
-            $reason  = Post::v('reason');
-            $append  = "a été refusé par $prenom $nom avec la raison :\n\n"
-                        .  $reason;
+            $action = 'refuse';
         } elseif (Env::has('mdel')) {
-            $action  = 3; /** 3 = DISCARD **/
-            $subject = "Message supprimé";
-            $append  = "a été supprimé par $prenom $nom.\n\n"
-                        .  "Rappel: il ne faut utiliser cette opération "
-                        .  "que dans le cas de spams ou de virus !\n";
+            $action = 'delete';
+        } else {
+            return false;
         }
-
-        if (isset($action) && $this->client->handle_request($liste, $mid, $action, $reason)) {
-            $texte = "le message suivant :\n\n"
-                        ."    Auteur: {$mail['sender']}\n"
-                        ."    Sujet : « {$mail['subj']} »\n"
-                        ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
-                        .$append;
-            $mailer = new PlMailer();
-            $mailer->addTo("$liste-owner@{$domain}");
-            $mailer->setFrom("$liste-bounces@{$domain}");
-            $mailer->addHeader('Reply-To', "$liste-owner@{$domain}");
-            $mailer->setSubject($subject);
-            $mailer->setTxtBody(wordwrap($texte,72));
-            $mailer->send();
-            Get::kill('mid');
-        }
-
-        return $mail;
+        Get::kill('mid');
+        return XDB::execute("INSERT IGNORE INTO  ml_moderate
+                                         VALUES  ({?}, {?}, {?}, {?}, {?}, NOW(), {?}, NULL)",
+                            $liste, $domain, $mid, S::i('uid'), $action, Post::v('reason'));
     }
 
     function handler_moderate(&$page, $liste = null)
@@ -454,13 +442,8 @@ class ListsModule extends PLModule
 
         if (Post::has('moderate_mails') && Post::has('select_mails')) {
             $mails = array_keys(Post::v('select_mails'));
-            if (count($mails) > 10) {
-                $page->trig("Le nombre d'actions qui peuvent être effectuées en un seul appel de cette page est limité à 10, car le temps de chargement de celle-ci est autrement trop long. Seules les dix premières actions demandées ont été effectuées.");
-                $mails = array_slice($mails, 0, 10);
-            }
             foreach($mails as $mail) {
                 $this->moderate_mail($domain, $liste, $mail);
-                usleep(200000);
             }
         } elseif (Env::has('mid')) {
             if (Get::has('mid') && !Env::has('mok') && !Env::has('mdel')) {
@@ -482,7 +465,7 @@ class ListsModule extends PLModule
 
             $mail = $this->moderate_mail($domain, $liste, Env::i('mid'));
         } elseif (Env::has('sid')) {
-            if (list($subs,$mails) = $this->client->get_pending_ops($liste)) {
+            if (list($subs,$mails) = $this->get_pending_ops($domain, $liste)) {
                 foreach($subs as $user) {
                     if ($user['id'] == Env::v('sid')) {
                         $page->changeTpl('lists/moderate_sub.tpl');
@@ -494,7 +477,7 @@ class ListsModule extends PLModule
 
         }
 
-        if (list($subs,$mails) = $this->client->get_pending_ops($liste)) {
+        if (list($subs,$mails) = $this->get_pending_ops($domain, $liste)) {
             foreach ($mails as $key=>$mail) {
                 $mails[$key]['stamp'] = strftime("%Y%m%d%H%M%S", $mail['stamp']);
             }
