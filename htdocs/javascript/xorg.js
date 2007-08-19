@@ -151,37 +151,49 @@ RegExp.escape = function(text) {
 
 function popWin(theNode,w,h) {
     window.open(theNode.href, '_blank',
-	'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width='+w+',height='+h);
+  'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width='+w+',height='+h);
 }
 
 // }}}
 // {{{ function auto_links()
 
 function auto_links() {
-    nodes = document.getElementsByTagName('a');
+    auto_links_nodes(document.getElementsByTagName('a'));
+    auto_links_nodes(document.getElementsByTagName('link'));
+}
+
+function auto_links_nodes(nodes) {
     url  = document.URL;
     fqdn = url.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
     light = (url.indexOf('display=light') > url.indexOf('?'));
-    for(var i=0; i<nodes.length; i++) {
-	node = nodes[i];
-	if(!node.href || node.className == 'xdx' || node.href.indexOf('mailto:') > -1 || node.href.indexOf('javascript:')>-1) continue;
-	if (node.href.indexOf(fqdn)<0 || node.className == 'popup') {
-	    node.onclick = function () { window.open(this.href); return false; };
-	}
+    for(var i=0; i < nodes.length; i++) {
+        node = nodes[i];
+        if(!node.href || node.className == 'xdx'
+           || node.href.indexOf('mailto:') > -1 || node.href.indexOf('javascript:') > -1)
+            continue;
+        if (node.href.indexOf(fqdn) < 0 || node.className == 'popup') {
+            node.onclick = function () { window.open(this.href); return false; };
+        }
         if (node.href.indexOf(fqdn) > -1 && light) {
             node.href = node.href.replace(/([^\#\?]*)\??([^\#]*)(\#.*)?/,
                                           "$1?display=light&$2$3");
         }
-	if(node.className == 'popup2') {
+        if (node.href.indexOf('rss') > -1 || node.href.indexOf('ical') > -1) {
+            node.href = node.href.replace(/https/, 'http');
+            if (node.href.indexOf('http') < 0) {
+                node.href = 'http://' + fqdn + '/' + node.href;
+            }
+        }
+        if(node.className == 'popup2') {
             node.onclick = function () { popWin(this,840,600); return false; };
-	}
+        }
         if(node.className == 'popup3') {
             node.onclick = function () { popWin(this, 640, 800); return false; };
         }
-	if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(node.className)) {
-	    var w = matches[1], h = matches[2];
-	    node.onclick = function () { popWin(this,w,h); return false; };
-	}
+        if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(node.className)) {
+            var w = matches[1], h = matches[2];
+            node.onclick = function () { popWin(this,w,h); return false; };
+        }
     }
 }
 
