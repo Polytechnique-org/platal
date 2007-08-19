@@ -27,7 +27,7 @@ class BananaModule extends PLModule
             'banana'              => $this->make_hook('banana', AUTH_COOKIE),
             'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
             'banana/subscription' => $this->make_hook('subscription', AUTH_COOKIE),
-            'banana/rss'          => $this->make_hook('rss', AUTH_PUBLIC),
+            'banana/rss'          => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
         );
     }
 
