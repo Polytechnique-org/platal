@@ -60,6 +60,7 @@ class Xnet extends Platal
     protected function find_hook()
     {
         $ans = parent::find_hook();
+        $this->https = false;
         if ($ans && $this->ns) {
             $this->path    = $this->ns . substr($this->path, 5);
             $this->argv[0] = $this->ns . substr($this->argv[0], 5);

@@ -29,11 +29,11 @@ class CarnetModule extends PLModule
             'carnet/notifs'         => $this->make_hook('notifs',   AUTH_COOKIE),
 
             'carnet/contacts'       => $this->make_hook('contacts', AUTH_COOKIE),
-            'carnet/contacts/pdf'   => $this->make_hook('pdf',      AUTH_COOKIE),
-            'carnet/contacts/ical'  => $this->make_hook('ical',     AUTH_PUBLIC),
-            'carnet/contacts/vcard' => $this->make_hook('vcard',    AUTH_COOKIE),
+            'carnet/contacts/pdf'   => $this->make_hook('pdf',      AUTH_COOKIE, 'user', NO_HTTPS),
+            'carnet/contacts/ical'  => $this->make_hook('ical',     AUTH_PUBLIC, 'user', NO_HTTPS),
+            'carnet/contacts/vcard' => $this->make_hook('vcard',    AUTH_COOKIE, 'user', NO_HTTPS),
 
-            'carnet/rss'            => $this->make_hook('rss',      AUTH_PUBLIC),
+            'carnet/rss'            => $this->make_hook('rss',      AUTH_PUBLIC, 'user', NO_HTTPS),
         );
     }
 

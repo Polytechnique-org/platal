@@ -24,9 +24,9 @@ class BandeauModule extends PLModule
     function handlers()
     {
         return array(
-            'bandeau/icone.png'  => $this->make_hook('icone',AUTH_PUBLIC),
-            'bandeau'            => $this->make_hook('html', AUTH_PUBLIC),
-            'bandeau.css'				 => $this->make_hook('css', AUTH_PUBLIC),
+            'bandeau/icone.png'  => $this->make_hook('icone',AUTH_PUBLIC, 'user', NO_HTTPS),
+            'bandeau'            => $this->make_hook('html', AUTH_PUBLIC, 'user', NO_HTTPS),
+            'bandeau.css'				 => $this->make_hook('css', AUTH_PUBLIC, 'user', NO_HTTPS),
         );
     }
 

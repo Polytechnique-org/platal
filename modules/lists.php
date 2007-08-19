@@ -33,7 +33,7 @@ class ListsModule extends PLModule
             'lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
             'lists/annu'      => $this->make_hook('annu',      AUTH_COOKIE),
             'lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
-            'lists/archives/rss' => $this->make_hook('rss',    AUTH_PUBLIC),
+            'lists/archives/rss' => $this->make_hook('rss',    AUTH_PUBLIC, 'user', NO_HTTPS),
 
             'lists/moderate'  => $this->make_hook('moderate',  AUTH_MDP),
             'lists/admin'     => $this->make_hook('admin',     AUTH_MDP),

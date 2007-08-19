@@ -3,7 +3,9 @@
 ################################################################################
 # definitions
 
-VERSION := $(shell grep VERSION ChangeLog | head -1 | sed -e "s/VERSION //;s/\t.*//;s/ .*//")
+VERSNUM := $(shell grep VERSION ChangeLog | head -1 | sed -e "s/VERSION //;s/ .*//")
+VERSTAG := $(shell grep VERSION ChangeLog | head -1 | grep 'XX' > /dev/null 2> /dev/null && echo 'beta')
+VERSION = $(VERSNUM)$(VERSTAG)
 
 PKG_NAME = platal
 PKG_DIST = $(PKG_NAME)-$(VERSION)

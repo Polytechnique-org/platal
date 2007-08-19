@@ -3,6 +3,9 @@ VERSION 0.9.15                                                        XX XX 2007
 
 New:
 
+    * Core:
+        - Auto-redirect HTML pages to HTTPS                                -FRU
+
     * Search:
         - Shortcuts to open profiles or search in documentation            -FRU
 

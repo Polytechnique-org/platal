@@ -35,7 +35,8 @@ abstract class PLModule
      * right is an atomic right permission (like 'admin', 'user', 'groupadmin', 'groupmember'...)
      *
      * If type is set to NO_AUTH, the system will return 403 instead of asking auth data
-     * this is useful for Ajax handlers
+     * this is useful for Ajax handler
+     * If type is not set to NO_SKIN, the system will consider redirecting the user to https
      */
     public function make_hook($fun, $auth, $perms = 'user', $type = DO_AUTH)
     {

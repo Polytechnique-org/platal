@@ -28,6 +28,8 @@ class Platal
     private $__mods;
     private $__hooks;
 
+    protected $https;
+
     public $ns;
     public $path;
     public $argv;
@@ -86,6 +88,7 @@ class Platal
             return null;
         }
 
+        $this->https = ($hook['type'] & NO_HTTPS) ? false : true;
         $this->argv    = explode('/', substr($this->path, strlen($p)));
         $this->argv[0] = $p;
 
@@ -191,14 +194,16 @@ class Platal
         if (empty($hook)) {
             return PL_NOT_FOUND;
         }
+        global $globals;
+        if ($this->https && !$_SERVER['HTTPS'] && $globals->core->secure_domain) {
+            http_redirect('https://' . $globals->core->secure_domain . $_SERVER['REQUEST_URI']);
+        }
 
         $args    = $this->argv;
         $args[0] = &$page;
 
         if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
-            if ($hook['type'] == DO_AUTH) {
-                global $globals;
-    
+            if ($hook['type'] & DO_AUTH) {
                 if (!call_user_func(array($globals->session, 'doAuth'))) {
                     $this->force_login($page);
                 }
@@ -211,8 +216,7 @@ class Platal
         }
 
         $val = call_user_func_array($hook['hook'], $args);
-        if ($val == PL_DO_AUTH) {
-            global $globals;
+        if ($val & PL_DO_AUTH) {
             // The handler need a better auth with the current args
             if (!call_user_func(array($globals->session, 'doAuth'))) {
                 $this->force_login($page);

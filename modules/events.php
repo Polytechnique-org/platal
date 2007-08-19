@@ -25,7 +25,7 @@ class EventsModule extends PLModule
     {
         return array(
             'events'         => $this->make_hook('ev',        AUTH_COOKIE),
-            'rss'            => $this->make_hook('rss', AUTH_PUBLIC),
+            'rss'            => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
             'events/preview' => $this->make_hook('preview', AUTH_PUBLIC, 'user', NO_AUTH),
             'events/photo'   => $this->make_hook('photo', AUTH_PUBLIC),
             'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),

@@ -58,11 +58,11 @@ interface PlWizardPage
  */
 class PlWizard
 {
-    const FIRST_PAGE    = "bt_first";
-    const NEXT_PAGE     = "bt_next";
-    const CURRENT_PAGE  = "bt_current";
-    const PREVIOUS_PAGE = "bt_previous";
-    const LAST_PAGE     = "bt_last";
+    const FIRST_PAGE    = 'bt_first';
+    const NEXT_PAGE     = 'bt_next';
+    const CURRENT_PAGE  = 'bt_current';
+    const PREVIOUS_PAGE = 'bt_previous';
+    const LAST_PAGE     = 'bt_last';
 
     protected $name;
     protected $layout;
@@ -129,7 +129,7 @@ class PlWizard
         return new $page($this);
     }
 
-    public function apply(PlatalPage &$smarty, $baseurl)
+    public function apply(PlatalPage &$smarty, $baseurl, $pgid = null)
     {
         $curpage =& $_SESSION[$this->name . '_page'];
 
@@ -157,6 +157,9 @@ class PlWizard
             }
         } else {
             $curpage = 0;
+        }
+        if ($this->stateless && (in_array($pgid, $this->lookup) || isset($this->pages[$pgid]))) {
+            $curpage = $pgid;
         }
 
         // Prepare the page

@@ -97,11 +97,11 @@ class XnetGrpModule extends PLModule
             '%grp/member/new'
                  => $this->make_hook('admin_member_new', AUTH_MDP, 'groupadmin'),
             '%grp/member/new/ajax'
-                 => $this->make_hook('admin_member_new_ajax', AUTH_MDP, 'user', NO_AUTH),         
+                 => $this->make_hook('admin_member_new_ajax', AUTH_MDP, 'user', NO_AUTH),
             '%grp/member/del'
                  => $this->make_hook('admin_member_del', AUTH_MDP, 'groupadmin'),
 
-            '%grp/rss'             => $this->make_hook('rss', AUTH_PUBLIC),         
+            '%grp/rss'             => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/announce/new'    => $this->make_hook('edit_announce', AUTH_MDP,  'groupadmin'),
             '%grp/announce/edit'   => $this->make_hook('edit_announce', AUTH_MDP,  'groupadmin'),
             '%grp/admin/announces' => $this->make_hook('admin_announce', AUTH_MDP, 'groupadmin'),
