@@ -291,6 +291,7 @@ function check_redirect($red = null)
 
 function send_warning_mail($title)
 {
+    global $globals;
     $mailer = new PlMailer();
     $mailer->setFrom("webmaster@" . $globals->mail->domain);
     $mailer->addTo($globals->core->admin_email);
