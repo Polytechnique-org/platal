@@ -103,6 +103,7 @@ class CoreModule extends PLModule
 
     function handler_bug(&$page)
     {
+        global $globals;
         $page->changeTpl('core/bug.tpl', SIMPLE);
         $page->addJsLink('close_on_esc.js');
         if (Env::has('send') && trim(Env::v('detailed_desc'))) {
