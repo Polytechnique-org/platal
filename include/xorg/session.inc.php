@@ -277,8 +277,8 @@ function start_connexion ($uid, $identified)
             $mail_subject .= ' - ';
         }
         $mail_subject .= "Une IP surveillee a tente de se connecter";
-        send_warning_mail($mail_subject);
         if (check_ip('ban')) {
+            send_warning_mail($mail_subject);
             $_SESSION = array();
             global $page;
             $page->trig("Une erreur est survenue lors de la procédure d'authentification. "
