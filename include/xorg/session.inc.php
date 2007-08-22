@@ -280,10 +280,20 @@ function start_connexion ($uid, $identified)
         if (check_ip('ban')) {
             send_warning_mail($mail_subject);
             $_SESSION = array();
+            $_SESSION['perms'] = new FlagSet();
             global $page;
+            $newpage = false;
+            if (!$page) {
+                require_once 'xorg.inc.php';
+                new_skinned_page('platal/index.tpl');
+                $newpage = true;
+            }
             $page->trig("Une erreur est survenue lors de la procédure d'authentification. "
                        ."Merci de contacter au plus vite "
                        ."<a href='mailto:support@polytechnique.org'>support@polytechnique.org</a>");
+            if ($newpage) {
+                $page->run();
+            }
             return false;
         }
     }

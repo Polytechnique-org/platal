@@ -199,8 +199,8 @@ class Platal
             http_redirect('https://' . $globals->core->secure_domain . $_SERVER['REQUEST_URI']);
         }
 
-        $args    = $this->argv;
-        $args[0] = &$page;
+        $args    =  $this->argv;
+        $args[0] =& $page;
 
         if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
             if ($hook['type'] & DO_AUTH) {

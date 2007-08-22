@@ -298,7 +298,7 @@ function send_warning_mail($title)
     $mailer->setSubject("[Plat/al Security Alert] $title");
     $mailer->setTxtBody("Identifiants de session :\n" . var_export($_SESSION, true) . "\n\n"
         ."Identifiants de connexion :\n" . var_export($_SERVER, true));
-    $mailer->send(); 
+    $mailer->send();
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

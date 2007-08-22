@@ -23,7 +23,6 @@ require_once('platal.inc.php');
 require_once('globals.inc.php');
 require_once('xorg/session.inc.php');
 $globals = new PlatalGlobals('XorgSession');
-XorgSession::init();
 
 // {{{ class XorgPage
 
@@ -58,6 +57,8 @@ function new_skinned_page($tpl_name)
         $page->changeTpl($tpl_name);
     }
 }
+
+XorgSession::init();
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

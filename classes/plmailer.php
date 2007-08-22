@@ -260,10 +260,9 @@ class PlMailer extends Mail_Mime {
     {
         $this->wiki = $wiki;
     }
-    
+
     private function processPage($with_html = true)
     {
-        $level = error_reporting(0);
         if (!is_null($this->page)) {
             $level = error_reporting(0);
             $this->page->run('head'); // process page headers
