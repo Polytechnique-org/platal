@@ -112,7 +112,7 @@ class XnetEventsModule extends PLModule
                            WHERE eid = {?} AND asso_id = {?}",
                          $eid, $globals->asso('id'));
         }
-        
+
         $page->assign('archive', $archive);
         $evenements = XDB::iterator(
                 "SELECT  e.*, LEFT(10, e.debut) AS debut_day, LEFT(10, e.fin) AS fin_day,
@@ -165,7 +165,7 @@ class XnetEventsModule extends PLModule
             }
             $evts[] = $e;
         }
-        
+
         $page->assign('evenements', $evts);
     }
 
@@ -307,7 +307,7 @@ class XnetEventsModule extends PLModule
         }
         $page->register_function('display_ical', 'display_ical');
         $page->assign_by_ref('e', $evt);
-    
+
         header('Content-Type: text/calendar; charset=utf-8');
     }
 
@@ -415,7 +415,7 @@ class XnetEventsModule extends PLModule
                         $eid, $i, Post::v('titre'.$i),
                         Post::v('details'.$i), $montant);
                 } else {
-                    XDB::execute("DELETE FROM groupex.evenements_items 
+                    XDB::execute("DELETE FROM groupex.evenements_items
                                             WHERE eid = {?} AND item_id = {?}", $eid, $i);
                 }
             }
@@ -547,7 +547,7 @@ class XnetEventsModule extends PLModule
                                  GROUP BY uid",
                                             $member['uid'], $evt['eid']);
                 $u = $res->fetchOneAssoc();
-                $u = $u['cnt'] ? null : $u['nb']; 
+                $u = $u['cnt'] ? null : $u['nb'];
                 subscribe_lists_event($u, $member['uid'], $evt);
             }
 
@@ -571,7 +571,7 @@ class XnetEventsModule extends PLModule
                  INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
                   LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
                   LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
-                      WHERE  ep.eid = {?} '.$whereitemid.'
+                      WHERE  ep.eid = {?} '.$whereitemid . '
                    GROUP BY  UPPER(SUBSTRING(IF(u.nom IS NULL,m.nom,u.nom), 1, 1))', $evt['eid']);
 
         $alphabet = array();
@@ -585,23 +585,6 @@ class XnetEventsModule extends PLModule
         }
         ksort($alphabet);
         $page->assign('alphabet', $alphabet);
-
-        $ofs   = Env::i('offset');
-        $tot   = Env::v('initiale') ? $tot : $nb_tot;
-        $nbp   = intval(($tot-1)/NB_PER_PAGE);
-        $links = array();
-        if ($ofs) {
-            $links['précédent'] = $ofs-1;
-        }
-        for ($i = 0; $i <= $nbp; $i++) {
-            $links[(string)($i+1)] = $i;
-        }
-        if ($ofs < $nbp) {
-            $links['suivant'] = $ofs+1;
-        }
-        if (count($links)>1) {
-            $page->assign('links', $links);
-        }
 
         if ($evt['paiement_id']) {
             $res = XDB::iterator(
@@ -625,16 +608,37 @@ class XnetEventsModule extends PLModule
                                           IF(m.origine = 'X', a.alias, m.email) AS email
                                     FROM  groupex.evenements_participants AS p
                               INNER JOIN  groupex.membres                 AS m USING(uid)
-                               LEFT JOIN  groupex.evenements_participants AS p2 ON (p2.uid = m.uid AND p2.eid = p.eid 
+                               LEFT JOIN  groupex.evenements_participants AS p2 ON (p2.uid = m.uid AND p2.eid = p.eid
                                                                                     AND p2.nb != 0)
                                LEFT JOIN  auth_user_md5                   AS u ON (u.user_id = m.uid)
                                LEFT JOIN  aliases                         AS a ON (a.id = u.user_id AND a.type = 'a_vie')
                                    WHERE  p.eid = {?} AND p2.eid IS NULL
+                                       " . (Env::v('initiale') ? " AND IF(u.nom IS NULL, m.nom,
+                                          IF(u.nom_usage<>'', u.nom_usage, u.nom)) LIKE '" . Env::v('initiale') . "%'"
+                                         : "") . "
                                 GROUP BY  m.uid
-                                ORDER BY  nom, prenom, promo", $evt['eid']);     
+                                ORDER BY  nom, prenom, promo", $evt['eid']);
+
+        $ofs   = Env::i('offset');
+        $tot   = (Env::v('initiale') ? $tot : $nb_tot) - $absents->total();
+        $nbp   = intval(($tot-1)/NB_PER_PAGE);
+        $links = array();
+        if ($ofs) {
+            $links['précédent'] = $ofs-1;
+        }
+        for ($i = 0; $i <= $nbp; $i++) {
+            $links[(string)($i+1)] = $i;
+        }
+        if ($ofs < $nbp) {
+            $links['suivant'] = $ofs+1;
+        }
+        if (count($links)>1) {
+            $page->assign('links', $links);
+        }
+
 
         $page->assign('absents', $absents);
-        $page->assign('participants', 
+        $page->assign('participants',
                       get_event_participants($evt, $item_id, $tri,
                                              "LIMIT ".($ofs*NB_PER_PAGE).", ".NB_PER_PAGE));
     }
