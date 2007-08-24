@@ -1,0 +1,14 @@
+# Ignore banana stuff
+/banana.inc.php
+/feed.inc.php
+/mbox.inc.php
+/message.func.inc.php
+/message.inc.php
+/mimepart.inc.php
+/nntp.inc.php
+/nntpcore.inc.php
+/page.inc.php
+/protocoleinterface.inc.php
+/spool.inc.php
+/text.func.inc.php
+
