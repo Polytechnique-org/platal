@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-{include file="profile/applis.js.tpl"}
+{* include file="profile/applis.js.tpl" *}
 <div class="blocunite_tab">
   <table class="bicol" cellspacing="0" cellpadding="0" 
     summary="Profil : Informations générales">
