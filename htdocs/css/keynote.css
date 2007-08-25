@@ -285,50 +285,7 @@ div.long td.rt { width: 65%; }
     6   Profil
         [ onglets des profils ]
 *******************************************************************************/
-
-.wizard {
-    margin-left: -16px;
-}
-
-.wizard .wiz_header {
-    height: 32px;
-    width: 100%;
-    background-color: #aaa;
-    margin-bottom: 1em;
-}
-
-.wizard .wiz_header .wiz_tab {
-    background-color: #aaa;
-    vertical-align: middle;
-    height: 100%;
-    text-align: center;
-    font-size: 75%;
-    border-right: 1px solid #888;
-}
-
-.wizard .wiz_header .active {
-    background-color: #444;
-    color: #fff;
-}
-
-.wizard .wiz_header .wiz_tab:hover {
-    background-color: #777;
-}
-
-.wizard .wiz_header .wiz_tab a {
-    color: #000;
-    text-decoration: none;
-    vertical-align: middle;
-}
-
-.wizard .wiz_header .active a {
-    color: #fff;
-}
-
-.wizard .wiz_content {
-    margin-left: 16px;
-}
-
+  
 table.flags, tr.flags {
     margin: 0.5em 0 0 0;
     padding: 0;

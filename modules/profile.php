@@ -130,7 +130,7 @@ class ProfileModule extends PLModule
                                      WHERE user_id = {?} AND type="photo"',
                                    S::v('uid'));
         } elseif (Env::v('cancel')) {
-            $sql = XDB::query('DELETE FROM requests
+            $sql = XDB::query('DELETE FROM requests 
                                         WHERE user_id={?} AND type="photo"',
                                         S::v('uid'));
         }
@@ -159,7 +159,7 @@ class ProfileModule extends PLModule
 
         if (is_numeric($x)) {
             $res = XDB::query(
-                    "SELECT  alias
+                    "SELECT  alias 
                        FROM  aliases       AS a
                  INNER JOIN  auth_user_md5 AS u ON (a.id=u.user_id AND a.type='a_vie')
                       WHERE  matricule={?}", $x);
@@ -255,11 +255,19 @@ class ProfileModule extends PLModule
         http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=$mat");
     }
 
-    function handler_p_edit(&$page, $opened_tab = null)
+    function handler_p_edit(&$page, $opened_tab = 'general')
     {
         global $globals;
 
-        // Finish registration procedure
+        $page->changeTpl('profile/edit.tpl');
+
+        $page->addCssLink('profil.css');
+        $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
+
+        require_once dirname(__FILE__) . '/profile/tabs.inc.php';
+        require_once 'profil.func.inc.php';
+        require_once 'synchro_ax.inc.php';
+
         if (Post::v('register_from_ax_question')) {
             XDB::execute('UPDATE auth_user_quick
                                      SET profile_from_ax = 1
@@ -297,32 +305,96 @@ class ProfileModule extends PLModule
             }
         }
 
-        // AX Synchronization
-        require_once 'synchro_ax.inc.php';
         if (is_ax_key_missing()) {
             $page->assign('no_private_key', true);
         }
+
         if (Env::v('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
             ax_synchronize(S::v('bestalias'), S::v('uid'));
             $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
         }
 
-        // Misc checks
-        // TODO: Block if birth date is missing ?
+        // pour tous les tabs, la date de naissance pour verifier
+        // quelle est bien rentree et la date.
+        $res = XDB::query(
+                "SELECT  naissance, DATE_FORMAT(date, '%d.%m.%Y')
+                   FROM  auth_user_md5
+                  WHERE  user_id={?}", S::v('uid'));
+        list($naissance, $date_modif_profil) = $res->fetchOneRow();
 
-        $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true);
-        require_once dirname(__FILE__) . '/profile/page.inc.php';
-        $wiz->addPage('ProfileGeneral', 'Général', 'general');
-        $wiz->addPage('ProfileAddress', 'Adresses personnelles', 'adresses');
-        $wiz->addPage('ProfileGroups', 'Groupes X - Binets', 'poly');
-        $wiz->addPage('ProfileDeco', 'Décorations - Medals', 'deco');
-        $wiz->addPage('ProfilePro', 'Informations professionnelles', 'emploi');
-        $wiz->addPage('ProfileSkills', 'Compétences diverses', 'skill');
-        $wiz->addPage('ProfileMentor', 'Mentoring', 'mentor');
-        $wiz->apply($page, 'profile/edit', $opened_tab);
+        // lorsqu'on n'a pas la date de naissance en base de données
+        if (!$naissance)  {
+            // la date de naissance n'existait pas et vient d'être soumise dans la variable
+            if (Env::has('birth')) {
+                //en cas d'erreur :
+                if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::v('birth'))) {
+                    $page->assign('etat_naissance', 'query');
+                    $page->trig('Date de naissance incorrecte ou incohérente.');
+                    return;
+                }
 
-        $page->addCssLink('profil.css');
-        $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
+                //sinon
+                $birth = sprintf("%s-%s-%s", substr(Env::v('birth'), 4, 4),
+                                 substr(Env::v('birth'), 2, 2),
+                                 substr(Env::v('birth'), 0, 2));
+                XDB::execute("UPDATE auth_user_md5
+                                           SET naissance={?}
+                                         WHERE user_id={?}", $birth,
+                                       S::v('uid'));
+                $page->assign('etat_naissance', 'ok');
+                return;
+            }
+
+            $page->assign('etat_naissance', 'query');
+            return; // on affiche le formulaire pour naissance
+        }
+
+        //doit-on faire un update ?
+        if (Env::has('modifier') || Env::has('suivant')) {
+            require_once dirname(__FILE__) . "/profile/get_{$opened_tab}.inc.php";
+            require_once dirname(__FILE__) . "/profile/verif_{$opened_tab}.inc.php";
+
+            if($page->nb_errs()) {
+                require_once dirname(__FILE__) . "/profile/assign_{$opened_tab}.inc.php";
+                $page->assign('onglet', $opened_tab);
+                $page->assign('onglet_tpl', "profile/$opened_tab.tpl");
+                return;
+            }
+
+            $date=date("Y-m-j");//nouvelle date de mise a jour
+
+            //On sauvegarde l'uid pour l'AX
+            /* on sauvegarde les changements dans user_changes :
+            * on a juste besoin d'insérer le user_id de la personne dans la table
+            */
+            XDB::execute('REPLACE INTO user_changes SET user_id={?}',
+                                   S::v('uid'));
+
+            if (!S::has('suid')) {
+                require_once 'notifs.inc.php';
+                register_watch_op(S::v('uid'), WATCH_FICHE);
+            }
+
+            // mise a jour des champs relatifs au tab ouvert
+            require_once dirname(__FILE__) . "/profile/update_{$opened_tab}.inc.php";
+
+            $log =& $_SESSION['log'];
+            $log->log('profil', $opened_tab);
+            $page->assign('etat_update', 'ok');
+        }
+
+        if (Env::has('suivant')) {
+            pl_redirect('profile/edit/' . get_next_tab($opened_tab));
+        }
+
+        require_once dirname(__FILE__) . "/profile/get_{$opened_tab}.inc.php";
+        require_once dirname(__FILE__) . "/profile/verif_{$opened_tab}.inc.php";
+        require_once dirname(__FILE__) . "/profile/assign_{$opened_tab}.inc.php";
+
+        $page->assign('onglet', $opened_tab);
+        $page->assign('onglet_tpl', "profile/$opened_tab.tpl");
+
+        return;
     }
 
     function handler_p_orange(&$page)
@@ -358,7 +430,7 @@ class ProfileModule extends PLModule
         }
         elseif ($promo_sortie == $promo + 3) {
             XDB::execute(
-                "UPDATE  auth_user_md5 set promo_sortie={?}
+                "UPDATE  auth_user_md5 set promo_sortie={?} 
                   WHERE  user_id={?}", $promo_sortie, S::v('uid'));
                 $page->trig('Ton statut "orange" a été supprimé.');
                 $page->assign('promo_sortie_old', $promo_sortie);
@@ -480,20 +552,20 @@ class ProfileModule extends PLModule
         if ($where) {
             $where = join(' AND ', $where);
 
-            $set = new UserSet("INNER JOIN  mentor          AS m ON (m.uid = u.user_id)
-                                 LEFT JOIN  mentor_pays     AS mp ON (mp.uid = m.uid)
+            $set = new UserSet("INNER JOIN  mentor          AS m ON (m.uid = u.user_id) 
+                                 LEFT JOIN  mentor_pays     AS mp ON (mp.uid = m.uid) 
                                  LEFT JOIN  mentor_secteurs AS ms ON (ms.uid = m.uid)",
                                $where);
             $set->addMod('mentor', 'Référents');
             $set->apply('referent/search', $page, $action, $subaction);
             if ($set->count() > 100) {
-                $page->assign('recherche_trop_large', true);
+                $page->assign('recherche_trop_large', true); 
             }
         }
-        $page->changeTpl('profile/referent.tpl');
+        $page->changeTpl('profile/referent.tpl'); 
     }
 
-    function handler_ref_sect(&$page, $sect)
+    function handler_ref_sect(&$page, $sect) 
     {
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
@@ -501,7 +573,7 @@ class ProfileModule extends PLModule
         $page->assign('id', 'ssect_field');
         $page->assign('name', 'ss_secteur');
         $it = XDB::iterator("SELECT  id,label AS field
-                               FROM  emploi_ss_secteur
+                               FROM  emploi_ss_secteur 
                               WHERE  secteur = {?}", $sect);
         $page->assign('list', $it);
     }
@@ -541,7 +613,7 @@ class ProfileModule extends PLModule
         $page->assign('usage_old', $usage_old);
         $page->assign('alias_old',  $alias_old);
 
-        $nom_usage = replace_accent(trim(Env::v('nom_usage')));
+        $nom_usage = replace_accent(trim(Env::v('nom_usage'))); 
         $nom_usage = strtoupper($nom_usage);
         $page->assign('usage_req', $nom_usage);
 
@@ -566,17 +638,17 @@ class ProfileModule extends PLModule
     {
         $page->changeTpl('profile/groupesx.tpl');
         $page->assign('xorg_title', 'Polytechnique.org - Promo, Groupes X, Binets');
-
+        
         $req = XDB::query('
-            SELECT m.asso_id, a.nom, diminutif, a.logo IS NOT NULL AS has_logo,
+            SELECT m.asso_id, a.nom, diminutif, a.logo IS NOT NULL AS has_logo, 
                    COUNT(e.eid) AS events, mail_domain AS lists
-              FROM groupex.membres AS m
+              FROM groupex.membres AS m 
         INNER JOIN groupex.asso AS a ON(m.asso_id = a.id)
          LEFT JOIN groupex.evenements AS e ON(e.asso_id = m.asso_id AND e.archive = 0)
              WHERE uid = {?} GROUP BY m.asso_id ORDER BY a.nom', S::i('uid'));
         $page->assign('assos', $req->fetchAllAssoc());
     }
-
+    
     function handler_vcard(&$page, $x = null)
     {
         if (is_null($x)) {
@@ -597,22 +669,22 @@ class ProfileModule extends PLModule
         $page->changeTpl('profile/admin_trombino.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Trombino');
         $page->assign('uid', $uid);
-
+        
         $q   = XDB::query(
                 "SELECT  a.alias,promo
                   FROM  auth_user_md5 AS u
             INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND type='a_vie' )
                  WHERE  user_id = {?}", $uid);
         list($forlife, $promo) = $q->fetchOneRow();
-
+        
         switch ($action) {
-
+        
             case "original":
                 header("Content-type: image/jpeg");
         	readfile("/home/web/trombino/photos".$promo."/".$forlife.".jpg");
                 exit;
         	break;
-
+        
             case "new":
                 $data = file_get_contents($_FILES['userfile']['tmp_name']);
             	list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
@@ -622,12 +694,12 @@ class ProfileModule extends PLModule
                         "REPLACE INTO photo SET uid={?}, attachmime = {?}, attach={?}, x={?}, y={?}",
                         $uid, $mimetype, $data, $x, $y);
             	break;
-
+        
             case "delete":
                 XDB::execute('DELETE FROM photo WHERE uid = {?}', $uid);
                 break;
         }
-
+        
         $page->assign('forlife', $forlife);
     }
     function handler_admin_binets(&$page, $action = 'list', $id = null) {
@@ -642,34 +714,34 @@ class ProfileModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Administration - Formations');
         $page->assign('title', 'Gestion des formations');
         $table_editor = new PLTableEditor('admin/formations','applis_def','id');
-        $table_editor->add_join_table('applis_ins','aid',true);
+        $table_editor->add_join_table('applis_ins','aid',true); 
         $table_editor->describe('text','intitulé',true);
         $table_editor->describe('url','site web',false);
         $table_editor->apply($page, $action, $id);
-    }
+    } 
     function handler_admin_groupesx(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Groupes X');
         $page->assign('title', 'Gestion des Groupes X');
         $table_editor = new PLTableEditor('admin/groupes-x','groupesx_def','id');
-        $table_editor->add_join_table('groupesx_ins','gid',true);
+        $table_editor->add_join_table('groupesx_ins','gid',true); 
         $table_editor->describe('text','intitulé',true);
         $table_editor->describe('url','site web',false);
         $table_editor->apply($page, $action, $id);
-    }
+    }  
     function handler_admin_sections(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Sections');
         $page->assign('title', 'Gestion des Sections');
         $table_editor = new PLTableEditor('admin/sections','sections','id');
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
-    }
+    }  
     function handler_admin_secteurs(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Secteurs');
         $page->assign('title', 'Gestion des Secteurs');
         $table_editor = new PLTableEditor('admin/secteurs','emploi_secteur','id');
         $table_editor->describe('label','intitulé',true);
         $table_editor->apply($page, $action, $id);
-    }
+    }  
     function handler_admin_medals(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Distinctions');
         $page->assign('title', 'Gestion des Distinctions');
@@ -680,9 +752,9 @@ class ProfileModule extends PLModule
         $table_editor->apply($page, $action, $id);
         if ($id && $action == 'edit') {
             $page->changeTpl('profile/admin_decos.tpl');
-
+        
             $mid = $id;
-
+        
             if (Post::v('act') == 'del') {
                 XDB::execute('DELETE FROM profile_medals_grades WHERE mid={?} AND gid={?}', $mid, Post::i('gid'));
             } elseif (Post::v('act') == 'new') {
@@ -696,7 +768,7 @@ class ProfileModule extends PLModule
             $res = XDB::iterator('SELECT gid, text, pos FROM profile_medals_grades WHERE mid={?} ORDER BY pos', $mid);
             $page->assign('grades', $res);
         }
-    }
+    }   
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

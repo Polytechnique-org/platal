@@ -69,31 +69,27 @@ class PlWizard
     protected $stateless;
 
     protected $pages;
-    protected $titles;
     protected $lookup;
 
     public function __construct($name, $layout, $stateless = false)
     {
-        $this->name      = 'wiz_' . $name;
-        $this->layout    = $layout;
+        $this->name   = 'wiz_' . $name;
+        $this->layout = $layout;
         $this->stateless = $stateless;
         $this->pages  = array();
         $this->lookup = array();
-        $this->titles = array();
         if (!isset($_SESSION[$this->name])) {
             $_SESSION[$this->name] = array();
         }
-        $_SESSION[$this->name . '_page']  = null;
-        $_SESSION[$this->name . '_stack'] = array();
+        $_SESSION[$this->name . '_page'] = null;
     }
 
-    public function addPage($class, $title,$id = null)
+    public function addPage($class, $id = null)
     {
         if ($id != null) {
             $this->lookup[$id] = count($this->pages);
         }
-        $this->pages[]  = $class;
-        $this->titles[] = $title;
+        $this->pages[] = $class;
     }
 
     public function set($varname, $value)
@@ -127,7 +123,7 @@ class PlWizard
         $_SESSION[$this->name . '_page'] = null;
     }
 
-    private function getPage($id)
+    private function &getPage($id)
     {
         $page = $this->pages[$id];
         return new $page($this);
@@ -141,24 +137,15 @@ class PlWizard
         if (!is_null($curpage)) {
             $page = $this->getPage($curpage);
             $next = $page->process();
-            $last = $curpage;
             switch ($next) {
               case PlWizard::FIRST_PAGE:
                 $curpage = 0;
                 break;
               case PlWizard::PREVIOUS_PAGE:
-                if (!$this->stateless && count($_SESSION[$this->name . '_stack'])) {
-                    $curpage = array_pop($_SESSION[$this->name . '_stack']);
-                } elseif ($curpage && $this->stateless) {
-                    $curpage--;
-                } else {
-                    $curpage = 0;
-                }
+                $curpage--;
                 break;
               case PlWizard::NEXT_PAGE:
-                if ($curpage < count($this->pages) - 1) {
-                    $curpage++;
-                }
+                $curpage++;
                 break;
               case PlWizard::LAST_PAGE:
                 $curpage = count($this->pages) - 1;
@@ -168,25 +155,15 @@ class PlWizard
                 $curpage = is_numeric($next) ? $next : $this->lookup[$curpage];
                 break;
             }
-            if (!$this->stateless) {
-                array_push($_SESSION[$this->name . '_stack'], $last);
-            }
+        } else {
+            $curpage = 0;
         }
         if ($this->stateless && (in_array($pgid, $this->lookup) || isset($this->pages[$pgid]))) {
             $curpage = $pgid;
         }
-        if (is_null($curpage)) {
-            $curpage = 0;
-        }
 
         // Prepare the page
         $page = $this->getPage($curpage);
-        $smarty->changeTpl($this->layout);
-        $smarty->assign('pages', $this->titles);
-        $smarty->assign('current', $curpage);
-        $smarty->assign('stateless', $this->stateless);
-        $smarty->assign('wiz_baseurl', $baseurl);
-        $smarty->assign('tab_width', (int)(99 / count($this->pages)));
         $smarty->assign('wiz_page', $page->template());
         $page->prepare($smarty);
     }
