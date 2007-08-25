@@ -92,6 +92,7 @@ $wiki_exists = file_exists(wiki_work_dir() . '/' . wiki_filename($n));
 if ($feed) {
     $wikiAll = str_replace('dc:contributor', 'author', $wikiAll);
     $wikiAll = preg_replace('!<author>.*?\..*?\.(\d{4})\|(.*?)</author>!u', '<author>$2 (X$1)</author>', $wikiAll);
+    $wikiAll = str_replace('<link>./', '<link>' . $globals->baseurl . '/' . $platal->ns, $wikiAll);
     echo $wikiAll;
     pl_clear_errors();
     exit;
