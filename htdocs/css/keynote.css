@@ -81,6 +81,11 @@ legend {
 p {
     margin-bottom: 0.4em;
     text-align: justify;
+    text-indent: 2em;
+}
+
+p.smaller {
+    text-indent: 0;
 }
 
 .erreur {
@@ -98,9 +103,9 @@ p {
 
 h1 {
     background-color: inherit;
-    margin: 0.5em 0 0.5em 0;
+    margin: 0.5em 0 0.5em -8px;
     text-indent: 0em;
-    padding: 6px 0 0 0px;
+    padding: 20px 0 0 0px;
 
     font-size: 130%;
     font-family: "helvetica", sans-serif;
@@ -111,9 +116,10 @@ h1 {
 }
 
 h2 {
-    padding: 0.5em 0em 0em 0em;
+    padding: 15px 0em 0em 0em;
     margin: 0;
-    font-size: 100%;
+    margin-left: -8px;
+    font-size: 110%;
     font-weight: bold;
     background: inherit;
     color: #77c;
@@ -123,7 +129,7 @@ h3 {
     margin: 0em;
     font-weight: bold;
     padding: 0.25em;
-    font-size: 100%;
+    font-size: 105%;
 }
 
 p.explication, div.explication {
@@ -135,6 +141,12 @@ li.spaced {
     padding-top: 0.2em;
     padding-bottom: 0.3em;
     text-align: justify;
+}
+
+pre {
+    background: url('../images/skins/keynote_bg_lighter.png') #848495 top left repeat-x fixed;
+    margin: 0em 0em;
+    padding: 0.3em 1.5em;
 }
 
 /*******************************************************************************
@@ -562,7 +574,6 @@ div.adresse {
     padding: 1px;
 
     background: url('../images/skins/keynote_bg_verylighter.png') #bbbbaa top left repeat-x fixed;
-    
     color: #000;
     font-weight: bold;
 }
@@ -570,7 +581,8 @@ div.adresse {
 #dev a { text-decoration: none; }
 
 .backtrace div.hide       { display: none; }
-.backtrace:hover div.hide { display: block }
+.backtrace:hover div.hide { display: block; }
+.backtrace h1 { padding: 0; margin: 0; }
 
 #suid {
     color: red;
