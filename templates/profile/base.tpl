@@ -20,21 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div class="wizard" style="clear: both">
-  <div class="wiz_header">
-    {foreach from=$pages item=title key=id}
-    <div class="wiz_tab {if $id eq $current}active{/if} {if !$stateless && $current gt $id}grayed{/if}"
-         style="float: left; width: {$tab_width}%">
-      {if $stateless || $id gt $current}<a href="{$wiz_baseurl}/{$lookup[$id]}">{/if}
-      {$title}
-      {if $stateless || $id gt $current}</a>{/if}
-    </div>
-    {/foreach}
-    <div style="clear: both"></div>
+<form action="{$wiz_baseurl}/{$lookup[$current]}" method="post">
+  <div>
+    {include file=$profile_page}
   </div>
-  <div class="wiz_content" style="clear: both" class="center">
-    {include file=$wiz_page}
+  <div style="clear: both">
+    <input type="submit" name="valid" value="Valider les modifications" />
+    <input type="submit" name="valid_and_next" value="Valider et passer à la page suivante" />
   </div>
-</div>
+</form>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
