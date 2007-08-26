@@ -101,6 +101,10 @@ p.smaller {
     background: inherit;
 }
 
+input.error, textarea.error {
+    background-color: #faa;
+}
+
 h1 {
     background-color: inherit;
     margin: 0.5em 0 0.5em -8px;

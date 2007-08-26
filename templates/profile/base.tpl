@@ -20,13 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<form action="{$wiz_baseurl}/{$lookup[$current]}" method="post">
+<form action="{$wiz_baseurl}/{$lookup[$current]}" method="post" id="prof_annu">
   <div>
     {include file=$profile_page}
   </div>
-  <div style="clear: both">
-    <input type="submit" name="valid" value="Valider les modifications" />
-    <input type="submit" name="valid_and_next" value="Valider et passer à la page suivante" />
+  <div style="clear: both" class="center">
+    <input type="hidden" name="valid_page" value="{$current}" />
+    <input type="submit" name="current_page" value="Valider les modifications" />
+    <input type="submit" name="next_page" value="Valider et passer à la page suivante" />
   </div>
 </form>
 

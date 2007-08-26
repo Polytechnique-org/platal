@@ -43,15 +43,6 @@ abstract class ProfileNoSave implements ProfileSetting
     public function save(ProfilePage &$page, $field, $new_value) { }
 }
 
-class ProfileFixed extends ProfileNoSave
-{
-    public function value(ProfilePage &$page, $field, $value, &$success)
-    {
-        $success = true;
-        return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
-    }
-}
-
 class ProfileWeb extends ProfileNoSave
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -76,10 +67,27 @@ class ProfileTel extends ProfileNoSave
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
         }
-        $success = strlen(strtok($value, '<>{}@&#~\/:;?,!§*_`[]|%$^=')) < strlen($value);
+        $success = strlen(strtok($value, '<>{}@&#~\/:;?,!§*_`[]|%$^=')) == strlen($value);
         if (!$success) {
             global $page;
             $page->trig('Le numéro de téléphone contient un caractère interdit.');
+        }
+        return $value;
+    }
+}
+
+class ProfilePub extends ProfileNoSave
+{
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
+        }
+        if (is_null($value) || !$value) {
+            $value = 'private';
+        } else if ($value == 'on') { // Checkbox
+            $value = 'public';
         }
         return $value;
     }
@@ -90,7 +98,9 @@ abstract class ProfilePage implements PlWizardPage
     protected $wizard;
     protected $pg_template;
     protected $settings = array();  // A set ProfileSetting objects
+    protected $errors   = array();  // A set of boolean with the value check errors
 
+    public $orig     = array();
     public $values   = array();
 
     public function __construct(PlWizard &$wiz)
@@ -100,9 +110,46 @@ abstract class ProfilePage implements PlWizardPage
 
     protected function fetchData()
     {
+        if (count($this->orig) > 0) {
+            $this->values = $this->orig;
+            return;
+        }
+        foreach ($this->settings as $field=>&$setting) {
+            $success = false;
+            if (!is_null($setting)) {
+                $this->values[$field] = $setting->value($this, $field, null, $success);
+            } else if (!isset($this->values[$field])) {
+                $this->values[$field] = S::v($field);
+            }
+            $this->errors[$field] = false;
+        }
+        $this->orig = $this->values;
     }
 
     protected function saveData()
+    {
+        foreach ($this->settings as $field=>&$setting) {
+            if (!is_null($setting)) {
+                $setting->save($this, $field, $this->values[$field]);
+            }
+        }
+    }
+
+    protected function checkChanges()
+    {
+        $newvalues = $this->values;
+        $this->values = array();
+        $this->fetchData();
+        $this->values = $newvalues;
+        foreach ($this->settings as $field=>&$setting) {
+            if ($this->orig[$field] != $this->values[$field]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected function markChange()
     {
     }
 
@@ -115,15 +162,12 @@ abstract class ProfilePage implements PlWizardPage
     {
         if (count($this->values) == 0) {
             $this->fetchData();
-            foreach ($this->settings as $field=>&$setting) {
-                $success = false;
-                $this->values[$field] = $setting->value($this, $field, null, $success);
-            }
         }
         foreach ($this->values as $field=>&$value) {
             $page->assign($field, $value);
         }
         $page->assign('profile_page', $this->pg_template);
+        $page->assign('errors', $this->errors);
     }
 
     public function process()
@@ -132,18 +176,24 @@ abstract class ProfilePage implements PlWizardPage
         $this->fetchData();
         foreach ($this->settings as $field=>&$setting) {
             $success = false;
-            $this->values[$field] = $setting->value($this, $field, Post::v($field), $success);
+            if (!is_null($setting)) {
+                $this->values[$field] = $setting->value($this, $field, Post::v($field), $success);
+            } else {
+                $success = true;
+                $this->values[$field] = Post::v($field);
+            }
+            $this->errors[$field] = !$success;
             $global_success = $global_success && $success;
         }
         if ($global_success) {
-            foreach ($this->settings as $field=>&$setting) {
-                $setting->save($this, $field, $this->values[$field]);
+            if ($this->checkChanges()) {
+                $this->saveData();
+                $this->markChange();
             }
-            $this->saveData();
-            return Post::has('valid_and_next') ? PlWizard::NEXT_PAGE : PlWizard::CURRENT_PAGE;
+            return Post::has('next_page') ? PlWizard::NEXT_PAGE : PlWizard::CURRENT_PAGE;
         }
         global $page;
-        $page->trig("Certains champs n'ont pas pu être validés, merci de corriger les infos "
+        $page->trig("Certains champs n'ont pas pu être validés, merci de corriger les informations "
                   . "de ton profil et de revalider ta demande");
         return PlWizard::CURRENT_PAGE;
     }

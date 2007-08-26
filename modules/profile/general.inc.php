@@ -22,7 +22,7 @@
 class ProfileNom implements ProfileSetting
 {
     private function matchWord($old, $new, $newLen) {
-        return ($i = strpos($ancien, $nouveau)) !== false
+        return ($i = strpos($old, $new)) !== false
             && ($i == 0 || $old{$i-1} == ' ')
             && ($i + $newLen == strlen($old) || $old{$i + $newLen} == ' ');
     }
@@ -73,9 +73,46 @@ class ProfileGeneral extends ProfilePage
         parent::__construct($wiz);
         $this->settings['nom'] = $this->settings['prenom']
                                = new ProfileNom();
-        $this->settings['promo']  = $this->settings['promo_sortie']
-                                  = $this->settings['nom_usage']
-                                  = new ProfileFixed();
+        $this->settings['mobile_pub']
+                                  = $this->settings['web_pub']
+                                  = $this->settings['freetext_pub']
+                                  = new ProfilePub();
+        $this->settings['freetext']
+                                  = $this->settings['appli_id1']
+                                  = $this->settings['appli_id2']
+                                  = $this->settings['nick']
+                                  = null;
+        $this->settings['mobile'] = new ProfileTel();
+        $this->settings['web'] = new ProfileWeb();
+    }
+
+    protected function fetchData()
+    {
+        if (count($this->orig) > 0) {
+            $this->values = $this->orig;
+            return;
+        }
+        $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite,
+                                   q.profile_mobile as mobile, q.profile_mobile_pub as mobile_pub,
+                                   q.profile_web as web, q.profile_web_pub as web_pub,
+                                   q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
+                                   q.profile_nick as nick, q.profile_from_ax, u.matricule_ax,
+                                   IF(a1.aid IS NULL, -1, a1.aid) as appli_id1, a1.type as appli_type1,
+                                   IF(a2.aid IS NULL, -1, a2.aid) as appli_id2, a2.type as appli_type2
+                             FROM  auth_user_md5   AS u
+                       INNER JOIN  auth_user_quick AS q  USING(user_id)
+                        LEFT JOIN  applis_ins      AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)
+                        LEFT JOIN  applis_ins      AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
+                            WHERE  u.user_id = {?}", S::v('uid', -1));
+        $this->values = $res->fetchOneAssoc();
+        parent::fetchData();
+    }
+
+    protected function saveData()
+    {
+        parent::saveData();
+        XDB::execute("UPDATE auth_user_md5 SET nom={?}, prenom={?} WHERE user_id = {?}",
+                     $this->values['nom'], $this->values['prenom'], S::v('uid'));
     }
 
     public function prepare(PlatalPage &$page)

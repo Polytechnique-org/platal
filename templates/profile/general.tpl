@@ -50,7 +50,7 @@
         <span class="comm"></span>
       </td>
       <td class="cold">
-        <input type='text' name='nom' value="{$nom}" />
+        <input type='text' name='nom' {if $errors.nom}class="error"{/if} value="{$nom}" />
       </td>
     </tr>
     <tr>
@@ -59,7 +59,7 @@
         <span class="comm"></span>
       </td>
       <td class="cold">
-        <input type='text' name='prenom' value="{$prenom}" />
+        <input type='text' name='prenom' {if $errors.prenom}class="error"{/if} value="{$prenom}" />
       </td>
     </tr>
     <tr>
@@ -256,7 +256,8 @@
         <span class="titre">Surnom</span>
       </td>
       <td class="cold">
-        <input type="text" size="35" maxlength="64" name="nickname" value="{$nickname}" />
+        <input type="text" size="35" maxlength="64"
+               {if $errors.nick}class="error"{/if} name="nick" value="{$nick}" />
       </td>
     </tr>
     <tr>
@@ -294,7 +295,7 @@
       </td>
       <td class="cold">
         <input type="text" size="18" maxlength="18" name="mobile"
-        value="{$mobile}" />
+               {if $errors.mobile}class="error"{/if} value="{$mobile}" />
       </td>
     </tr>
     <tr>
@@ -320,7 +321,7 @@
       </td>
       <td class="dcold">
         <input type="text" size="35" maxlength="95" name="web"  
-        value="{$web}" />
+               {if $errors.web}class="error"{/if} value="{$web}" />
       </td>
     </tr>
     <tr>
@@ -348,7 +349,7 @@
       <td class="dcold">
         {javascript name=ajax}
         <div id="ft_preview" style="display: none"></div>
-        <textarea name="freetext" id="freetext" rows="3" cols="29" >{$freetext}</textarea>
+        <textarea name="freetext" {if $errors.mobile}class="error"{/if} id="freetext" rows="3" cols="29" >{$freetext}</textarea>
         <br/>
         <span class="smaller">
           <a href="wiki_help/notitle" class="popup3">

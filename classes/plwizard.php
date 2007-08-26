@@ -148,8 +148,9 @@ class PlWizard
         $oldpage = $curpage;
 
         // Process the previous page
-        if (!is_null($curpage)) {
-            $page = $this->getPage($curpage);
+        if (Post::has('valid_page')) {
+            $page = $this->getPage(Post::i('valid_page'));
+            $curpage = Post::i('valid_page');
             $next = $page->process();
             $last = $curpage;
             switch ($next) {
@@ -201,6 +202,7 @@ class PlWizard
         $smarty->assign('wiz_baseurl', $baseurl);
         $smarty->assign('tab_width', (int)(99 / count($this->pages)));
         $smarty->assign('wiz_page', $page->template());
+        $smarty->assign('xorg_no_errors', true);
         $page->prepare($smarty);
     }
 }
