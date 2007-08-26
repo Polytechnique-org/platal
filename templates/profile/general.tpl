@@ -101,17 +101,17 @@
         <span class="comm">(4ème année de l'X)</span>
       </td>
       <td class="cold">
-        <select name="appli_id1" onchange="fillType(this.form.appli_type1, this.selectedIndex-1);">  
-          {applis_options selected=$appli_id1}
+        <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">  
+          {applis_options selected=$appli1.id}
         </select>
         <br />
-        <select name="appli_type1">
+        <select name="appli1[type]">
           <option value=""></option>
         </select>
         <script type="text/javascript">
           <!--
-          fillType(document.forms.prof_annu.appli_type1, document.forms.prof_annu.appli_id1.selectedIndex-1);
-          selectType(document.forms.prof_annu.appli_type1, '{$appli_type1}');
+          fillType(document.forms.prof_annu['appli1[type]'], document.forms.prof_annu['appli1[id]'].selectedIndex-1);
+          selectType(document.forms.prof_annu['appli1[type]'], '{$appli1.type}');
           //-->
         </script>
       </td>
@@ -121,17 +121,17 @@
         <span class="titre">Post-application</span>
       </td>
       <td class="dcold">
-        <select name="appli_id2" onchange="fillType(this.form.appli_type2, this.selectedIndex-1);">   
-          {applis_options selected=$appli_id2}
+        <select name="appli2[id]" onchange="fillType(this.form['appli[type]'], this.selectedIndex-1);">   
+          {applis_options selected=$appli2.id}
         </select>
         <br />
-        <select name="appli_type2">
+        <select name="appli2[type]">
           <option value=""></option>
         </select>
         <script type="text/javascript">
           <!--
-          fillType(document.forms.prof_annu.appli_type2, document.forms.prof_annu.appli_id2.selectedIndex-1);
-          selectType(document.forms.prof_annu.appli_type2, '{$appli_type2}');
+          fillType(document.forms.prof_annu['appli2[type]'], document.forms.prof_annu['appli2[id]'].selectedIndex-1);
+          selectType(document.forms.prof_annu['appli2[type]'], '{$appli2.type}');
           //-->
         </script>
       </td>

@@ -93,12 +93,25 @@ class ProfilePub extends ProfileNoSave
     }
 }
 
+class ProfileBool extends ProfileNoSave
+{
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            $value = $page->values[$field];
+        }
+        return $value ? 1 : 0;
+    }
+}
+
 abstract class ProfilePage implements PlWizardPage
 {
     protected $wizard;
     protected $pg_template;
     protected $settings = array();  // A set ProfileSetting objects
     protected $errors   = array();  // A set of boolean with the value check errors
+    protected $changed  = array();  // A set of boolean indicating wether the value has been changed
 
     public $orig     = array();
     public $values   = array();
@@ -129,10 +142,17 @@ abstract class ProfilePage implements PlWizardPage
     protected function saveData()
     {
         foreach ($this->settings as $field=>&$setting) {
-            if (!is_null($setting)) {
+            if (!is_null($setting) && $this->changed[$field]) {
                 $setting->save($this, $field, $this->values[$field]);
             }
         }
+
+        // Update the last modification date
+        XDB::execute('REPLACE INTO  user_changes
+                               SET  user_id = {?}', S::v('uid'));
+        global $platal;
+        $log =& $_SESSION['log'];
+        $log->log('profil', $platal->pl_self(1));
     }
 
     protected function checkChanges()
@@ -141,12 +161,16 @@ abstract class ProfilePage implements PlWizardPage
         $this->values = array();
         $this->fetchData();
         $this->values = $newvalues;
+        $changes = false;
         foreach ($this->settings as $field=>&$setting) {
             if ($this->orig[$field] != $this->values[$field]) {
-                return true;
+                $this->changed[$field] = true;
+                $changes = true;
+            } else {
+                $this->changed[$field] = false;
             }
         }
-        return false;
+        return $changes;
     }
 
     protected function markChange()

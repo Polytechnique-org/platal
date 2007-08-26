@@ -64,6 +64,32 @@ class ProfileNom implements ProfileSetting
     }
 }
 
+class ProfileAppli implements ProfileSetting
+{
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            return $page->values[$field];
+        }
+        return $value;
+    }
+
+    public function save(ProfilePage &$page, $field, $new_value)
+    {
+        $index = ($field == 'appli1' ? 0 : 1);
+        if ($new_value['id'] > 0) {
+            XDB::execute("REPLACE INTO  applis_ins
+                                   SET  uid = {?}, aid = {?}, type = {?}, ordre = {?}",
+                         S::i('uid'), $new_value['id'], $new_value['type'], $index);
+        } else {
+            XDB::execute("DELETE FROM  applis_ins
+                                WHERE  uid = {?} AND ordre = {?}",
+                         S::i('uid'), $index);
+        }
+    }
+}
+
 class ProfileGeneral extends ProfilePage
 {
     protected $pg_template = 'profile/general.tpl';
@@ -76,14 +102,19 @@ class ProfileGeneral extends ProfilePage
         $this->settings['mobile_pub']
                                   = $this->settings['web_pub']
                                   = $this->settings['freetext_pub']
+                                  = $this->settings['photo_pub']
                                   = new ProfilePub();
         $this->settings['freetext']
-                                  = $this->settings['appli_id1']
-                                  = $this->settings['appli_id2']
+                                  = $this->settings['nationalite']
                                   = $this->settings['nick']
                                   = null;
+        $this->settings['synchro_ax']
+                                  = new ProfileBool();
         $this->settings['mobile'] = new ProfileTel();
         $this->settings['web'] = new ProfileWeb();
+        $this->settings['appli1']
+                                  = $this->settings['appli2']
+                                  = new ProfileAppli();
     }
 
     protected function fetchData()
@@ -92,11 +123,13 @@ class ProfileGeneral extends ProfilePage
             $this->values = $this->orig;
             return;
         }
+
+        // Checkout all data...
         $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite,
                                    q.profile_mobile as mobile, q.profile_mobile_pub as mobile_pub,
                                    q.profile_web as web, q.profile_web_pub as web_pub,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
-                                   q.profile_nick as nick, q.profile_from_ax, u.matricule_ax,
+                                   q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.matricule_ax,
                                    IF(a1.aid IS NULL, -1, a1.aid) as appli_id1, a1.type as appli_type1,
                                    IF(a2.aid IS NULL, -1, a2.aid) as appli_id2, a2.type as appli_type2
                              FROM  auth_user_md5   AS u
@@ -105,14 +138,57 @@ class ProfileGeneral extends ProfilePage
                         LEFT JOIN  applis_ins      AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
                             WHERE  u.user_id = {?}", S::v('uid', -1));
         $this->values = $res->fetchOneAssoc();
+
+        // Reformat formation data
+        $this->values['appli1'] = array('id'    => $this->values['appli_id1'],
+                                        'type'  => $this->values['appli_type1']);
+        unset($this->values['appli_id1']);
+        unset($this->values['appli_type1']);
+        $this->values['appli2'] = array('id'    => $this->values['appli_id2'],
+                                        'type'  => $this->values['appli_type2']);
+        unset($this->values['appli_id2']);
+        unset($this->values['appli_type2']);
+
+        // Retreive photo informations
+        $res = XDB::query("SELECT  pub
+                             FROM  photo
+                            WHERE  uid = {?}", S::v('uid'));
+        $this->values['photo_pub'] = $res->fetchOneCell();
+
+        $res = XDB::query("SELECT  COUNT(*)
+                             FROM  requests
+                            WHERE  type='photo' AND user_id = {?}",
+                          S::v('uid'));
+        $this->values['nouvellephoto'] = $res->fetchOneCell();
         parent::fetchData();
     }
 
     protected function saveData()
     {
         parent::saveData();
-        XDB::execute("UPDATE auth_user_md5 SET nom={?}, prenom={?} WHERE user_id = {?}",
-                     $this->values['nom'], $this->values['prenom'], S::v('uid'));
+        if ($this->changed['nationalite'] || $this->changed['nom'] || $this->changed['prenom']) {
+           XDB::execute("UPDATE  auth_user_md5
+                             SET  nationalite = {?}, nom={?}, prenom={?} WHERE user_id = {?}",
+                         $this->values['nationalite'], $this->values['nom'], $this->values['prenom'], S::v('uid'));
+        }
+        if ($this->changed['nick'] || $this->changed['mobile'] || $this->changed['mobile_pub']
+            || $this->changed['web'] || $this->changed['web_pub'] || $this->changed['freetext']
+            || $this->changed['freetext_pub'] || $this->changed['synchro_ax']) {
+            XDB::execute("UPDATE  auth_user_quick
+                             SET  profile_nick= {?}, profile_mobile={?}, profile_mobile_pub={?}, 
+                                  profile_web={?}, profile_web_pub={?}, profile_freetext={?}, 
+                                  profile_freetext_pub={?}, profile_from_ax = {?} 
+                           WHERE  user_id = {?}", 
+                         $this->values['nick'], $this->values['mobile'], $this->values['mobile_pub'],
+                         $this->values['web'], $this->values['web_pub'],
+                         $this->values['freetext'], $this->values['freetext_pub'],
+                         $this->values['synchro_ax'], S::v('uid'));
+        }
+        if ($this->changed['nick']) {
+            require_once('user.func.inc.php');
+            user_reindex(S::v('uid'));
+        }
+        XDB::execute("UPDATE photo SET pub = {?} WHERE uid = {?}", $this->values['photo_pub'], S::v('uid'));
     }
 
     public function prepare(PlatalPage &$page)
