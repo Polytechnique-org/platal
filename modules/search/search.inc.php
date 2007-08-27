@@ -35,7 +35,7 @@ function advancedSearchFromInput()
         $firstnameField = new StringSField('firstname',array('u.prenom'),'');
     }
     $nicknameField   = new StringSField('nickname',array('q.profile_nick'),'');
-    
+
     $promo1Field     = new PromoSField('promo1','egal1',array('u.promo'),'');
     $promo2Field     = new PromoSField('promo2','egal2',array('u.promo'),'');
     $womanField      = new RefSField('woman',array('FIND_IN_SET(\'femme\',u.flags)+1'),'','','');
@@ -53,17 +53,17 @@ function advancedSearchFromInput()
     $fonctionField   = new RefSField('fonction',array('en.fonction'),'entreprises','en','u.user_id=en.uid');
     $secteurField    = new RefSField('secteur',array('fm.secteur'),'entreprises','fm','u.user_id=fm.uid');
     $cvField         = new RefSField('cv',array('u.cv'),'','','',false);
-   
+
     $natField        = new RefSField('nationalite',array('u.nationalite'),'','','');
     $binetField      = new RefSField('binet',array('b.binet_id'),'binets_ins','b','u.user_id=b.user_id');
     $groupexField    = new RefSField('groupex',array('g.gid'),'groupesx_ins','g','u.user_id=g.guid');
     $sectionField    = new RefSField('section',array('u.section'),'','','');
     $schoolField     = new RefSField('school',array('as.aid'),'applis_ins','`as`','u.user_id=as.uid');
     $diplomaField    = new RefSField('diploma',array('ad.type'),'applis_ins','ad','u.user_id=ad.uid');
-  
+
     $freeField       = new RefSField('free',array('q.profile_freetext'),'','','',false);
-  
-    return array( 
+
+    return array(
                 $nameField, $firstnameField, $nicknameField, $promo1Field,
                 $promo2Field, $womanField, $subscriberField, $aliveField,
                 $townField, $countryField, $regionField, $mapField, $entrepriseField,

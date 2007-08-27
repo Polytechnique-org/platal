@@ -48,7 +48,7 @@ class Marketing
         $this->type   = $type;
         $this->data   = $data;
         $this->from   = $from;
-        $this->sender = $sender; 
+        $this->sender = $sender;
     }
 
     private function getUser($uid, $email)
@@ -59,7 +59,7 @@ class Marketing
                             WHERE  user_id = {?}", $uid);
         if ($res->numRows() == 0) {
             return null;
-        } 
+        }
         $user            = $res->fetchOneAssoc();
         $user['id']      = $uid;
         $user['forlife'] = make_forlife($user['prenom'], $user['nom'], $user['promo']);
@@ -71,7 +71,7 @@ class Marketing
     private function getFrom($from, $sender)
     {
         global $globals;
-        
+
         if ($from == 'staff') {
             return '"L\'équipe de Polytechnique.org" <register@' . $globals->mail->domain . '>';
         } else {
@@ -143,7 +143,7 @@ class Marketing
         if ($valid) {
             require_once 'validations.inc.php';
             $valid = new MarkReq($this->sender, $this->user['id'], $this->user['mail'],
-                                 $this->from == 'user', $this->type, $this->data); 
+                                 $this->from == 'user', $this->type, $this->data);
             $valid->submit();
         }
         return true;
@@ -188,7 +188,7 @@ class Marketing
         if (!$email) {
             XDB::execute("DELETE FROM register_marketing WHERE uid = {?}", $uid);
         } else {
-            XDB::execute("DELETE FROM register_marketing WHERE uid = {?} AND email = {?}", $uid, $email);        
+            XDB::execute("DELETE FROM register_marketing WHERE uid = {?} AND email = {?}", $uid, $email);
         }
     }
 
@@ -200,7 +200,7 @@ class Marketing
             $res = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
             $nbx = $res->fetchOneCell();
         }
-    
+
         $res = XDB::query("SELECT  r.date, u.promo, u.nom, u.prenom, r.email, r.bestalias
                              FROM  register_pending AS r
                        INNER JOIN  auth_user_md5    AS u ON u.user_id = r.uid
@@ -208,13 +208,13 @@ class Marketing
         if (!list($date, $promo, $nom, $prenom, $email, $alias) = $res->fetchOneRow()) {
             return false;
         }
-    
+
         require_once('secure_hash.inc.php');
         $hash     = rand_url_id(12);
         $pass     = rand_pass();
         $pass_encrypted = hash_encrypt($pass);
         $fdate    = strftime('%d %B %Y', strtotime($date));
-    
+
         $mymail = new PlMailer('marketing/mail.relance.tpl');
         $mymail->assign('nbdix',      $nbx);
         $mymail->assign('fdate',      $fdate);
@@ -240,7 +240,7 @@ interface MarketingEngine
     public function process(array $user);
 }
 
-// 
+//
 class AnnuaireMarketing implements MarketingEngine
 {
     protected $titre;

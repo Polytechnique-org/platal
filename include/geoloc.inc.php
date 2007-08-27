@@ -95,7 +95,7 @@ $GLOBALS['page']->register_function('geoloc_region', '_geoloc_region_smarty');
  * store on the fly the info of the city concerned
  * @param $txt the raw text of an address
  */
-function get_address_infos($txt) 
+function get_address_infos($txt)
 {
     global $globals;
     $url = $globals->geoloc->webservice_url."address.php?precise=1&txt=" . urlencode($txt);
@@ -171,7 +171,7 @@ function get_new_maps($url)
 /** make the text of an address that can be read by a mailman
  * @param $adr an array with all the usual fields
  */
-function get_address_text($adr) 
+function get_address_text($adr)
 {
     $t = "";
     if (isset($adr['adr1']) && $adr['adr1']) $t.= $adr['adr1'];
@@ -217,7 +217,7 @@ function compare_addresses_text($a, $b)
 {
     $ta = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"), array("", "\n"), $a));
     $tb = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"), array("", "\n"), $b));
-   
+
     $la = explode("\n", $ta);
     $lb = explode("\n", $tb);
 
@@ -299,7 +299,7 @@ function localize_addresses($uid)
 /** synchronise the local geoloc_city base to geoloc.org
  * @param $id the id of the city to synchronize
  */
-function synchro_city($id) 
+function synchro_city($id)
 {
     global $globals;
     $url = $globals->geoloc->webservice_url."cityFinder.php?method=id&id=".$id."&out=sql";
@@ -318,7 +318,7 @@ function fix_cities_not_on_map($limit=false, $cityid=false)
 {
     $missing = XDB::query("SELECT  c.id
                              FROM  geoloc_city AS c
-                        LEFT JOIN  geoloc_city_in_maps AS m ON(c.id = m.city_id) 
+                        LEFT JOIN  geoloc_city_in_maps AS m ON(c.id = m.city_id)
                             WHERE  m.city_id IS NULL"
                             . ($cityid ? " AND c.id = '" . $cityid . "'" : "" )
                             . ($limit ?  " LIMIT $limit" : "" ));
@@ -368,7 +368,7 @@ function geoloc_to_y($lon, $lat)
     if ($lat > 75) {
         return latToY(75);
     }
-    return -100 * log(tan(pi()/4 + deg2rad(1)/2*$lat));   
+    return -100 * log(tan(pi()/4 + deg2rad(1)/2*$lat));
 }
 
 function size_of_city($nb)
@@ -431,18 +431,18 @@ function geoloc_getData_subcities($mapid, $SFields, &$cities, $direct=true)
     }
 }
 
-function geoloc_getData_subcountries($mapid, $sin, $minentities) 
+function geoloc_getData_subcountries($mapid, $sin, $minentities)
 {
     $countries = array();
     $cities = array();
-    
+
     if ($mapid === false) {
         $wheremapid = "WHERE gm.parent IS NULL";
     } else {
         $wheremapid = "WHERE   gm.parent = {?}";
     }
     $submapres = XDB::iterator(
-        "SELECT  gm.map_id AS id, gm.name, gm.x, gm.y, gm.xclip, gm.yclip, 
+        "SELECT  gm.map_id AS id, gm.name, gm.x, gm.y, gm.xclip, gm.yclip,
                  gm.width, gm.height, gm.scale, 1 AS rat
            FROM  geoloc_maps AS gm
         ". $wheremapid, Env::v('mapid',''));
@@ -455,7 +455,7 @@ function geoloc_getData_subcountries($mapid, $sin, $minentities)
         $country['swf'] = $globals->geoloc->webservice_url."maps/mercator/map_".$c['id'].".swf";
         $countries[$c['id']] = $country;
     }
-    
+
     if ($mapid === false) {
         return array($countries, $cities);
     }
@@ -480,8 +480,8 @@ function geoloc_getData_subcountries($mapid, $sin, $minentities)
                                           array('map.parent'),
                                           array('adresses','geoloc_city_in_maps','geoloc_maps'),
                                           array('am','gcim','map'),
-                                          array(getadr_join('am'), 
-                                          'am.cityid = gcim.city_id', 
+                                          array(getadr_join('am'),
+                                          'am.cityid = gcim.city_id',
                                           'map.map_id = gcim.map_id'));
     $fields = new SFieldGroup(true, $SFields);
     $where  = $fields->get_where_statement();
@@ -496,7 +496,7 @@ function geoloc_getData_subcountries($mapid, $sin, $minentities)
                             $where,
                             'map.map_id',
                             'NULL');
-    
+
     $maxpop = 0;
     $nbentities = $nbcities + $countryres->total();
     while ($c = $countryres->next()) {
@@ -507,28 +507,28 @@ function geoloc_getData_subcountries($mapid, $sin, $minentities)
         $c['xPop'] = geoloc_to_x($c['lonPop'], $c['latPop']);
         $c['yPop'] = geoloc_to_y($c['lonPop'], $c['latPop']);
         @$countries[$c['id']] = array_merge($countries[$c['id']], $c);
-    
+
         $nbcities += $c['nbCities'];
-    } 
-    
+    }
+
     if ($nocity && $nbcities < $minentities){
         foreach($countries as $i => $c) {
             $countries[$i]['nbPop'] = 0;
             if (@$c['nbCities'] > 0) {
                 geoloc_getData_subcities($c['id'], $sin, $cities, false);
-            }   
+            }
         }
     }
-    
+
     foreach ($countries as $i => $c) {
         if ($c['nbPop'] > 0) {
             $lambda = pow($c['nbPop'] / $maxpop,0.3);
             $countries[$i]['color'] = 0x0000FF + round((1-$lambda) * 0xFF)*0x010100;
         }
     }
-    
-    return array($countries, $cities);   
-} 
+
+    return array($countries, $cities);
+}
 // }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

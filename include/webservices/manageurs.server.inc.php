@@ -75,7 +75,7 @@ function get_annuaire_infos($method, $params) {
                         $i++;
                     }
                 }
-                
+
                 // on rajoute les numéros de tél
                 $adrid_index = array();
                 foreach ($array['adresse'] as $i => $a) $adrid_index[$a['adrid']] = $i;
@@ -89,10 +89,10 @@ function get_annuaire_infos($method, $params) {
                 foreach ($array['adresse'] as $i => $adr) {
                     unset($lasttel);
                     foreach($adr['tels'] as $j => $t){
-                        if (!isset($array['adresse'][$i]['tel']) && (strpos($t['tel_type'], 'Tél') === 0)) $array['adresse'][$i]['tel'] = $t['tel']; 
+                        if (!isset($array['adresse'][$i]['tel']) && (strpos($t['tel_type'], 'Tél') === 0)) $array['adresse'][$i]['tel'] = $t['tel'];
                         elseif (!isset($array['adresse'][$i]['fax']) && (strpos($t['tel_type'], 'Fax') === 0)) $array['adresse'][$i]['fax'] = $t['tel'];
                         else $lasttel = $t['tel'];
-                        if (isset($array['adresse'][$i]['tel']) && isset($array['adresse'][$i]['fax'])) break; 
+                        if (isset($array['adresse'][$i]['tel']) && isset($array['adresse'][$i]['fax'])) break;
                     }
                     if (!isset($array['adresse'][$i]['tel']) && isset($lasttel))
                         $array['adresse'][$i]['tel'] = $lasttel;
@@ -137,9 +137,9 @@ function get_annuaire_infos($method, $params) {
         $args  = array("erreur" => 1, "erreurstring" => $error_mat);
         $reply = xmlrpc_encode_request(NULL,$args);
     }
-            
-    return $reply; 
-} 
+
+    return $reply;
+}
 
 function get_nouveau_infos($method, $params) {
     global $error_mat, $error_key, $globals;
@@ -149,14 +149,14 @@ function get_nouveau_infos($method, $params) {
 
         $res = XDB::query(
             "SELECT  a.nom, a.nom_usage,a.prenom, FIND_IN_SET('femme', a.flags) as femme ,a.deces!= 0 as decede ,
-            a.naissance, a.promo, concat(al.alias, '@m4x.org') as mail 
+            a.naissance, a.promo, concat(al.alias, '@m4x.org') as mail
             FROM  auth_user_md5 AS a
             INNER JOIN aliases as al ON a.user_id=al.id
             WHERE al.flags='bestalias' and  a.matricule = {?}",$params[1]);
         $data=$res->fetchOneAssoc();
         //$data['mail'].='@polytechnique.org';
 
-        
+
         //on commence le cryptage des donnees
         if (manageurs_encrypt_init($params[1]) == 1) {//on a pas trouve la cle pour crypter
             $args  = array("erreur" => 3, "erreurstring" => $error_key);

@@ -396,12 +396,12 @@ class AdminModule extends PLModule
                               LEFT JOIN aliases       AS a ON (a.id = u.user_id AND type= 'a_vie')
                                   WHERE u.user_id = {?}", $login);
             } else {
-                $r  = XDB::query("SELECT  *, a.alias AS forlife, 
+                $r  = XDB::query("SELECT  *, a.alias AS forlife,
                                           FIND_IN_SET('watch', u.flags) AS watch, FIND_IN_SET('femme', u.flags) AS sexe,
                                           (year(naissance) > promo - 15 or year(naissance) < promo - 25) AS naiss_err
                                     FROM  auth_user_md5 AS u
                               INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias={?} AND type!='homonyme' )", $login);
-            }   
+            }
             $mr = $r->fetchOneAssoc();
 
             if (!is_numeric($login)) { //user has a forlife
@@ -435,7 +435,7 @@ class AdminModule extends PLModule
                             XDB::execute("UPDATE emails
                                              SET rewrite = ''
                                            WHERE uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
-                                         $mr['user_id'], $val);               
+                                         $mr['user_id'], $val);
                             fix_bestalias($mr['user_id']);
                             $page->trig($val." a été supprimé");
                         }
@@ -552,7 +552,7 @@ class AdminModule extends PLModule
 
                             $res = XDB::query($watch);
                             $new_fields = $res->fetchOneAssoc();
-            
+
                             $mailer = new PlMailer("admin/mail_intervention.tpl");
                             $mailer->assign("user", S::v('forlife'));
                             $mailer->assign('old', $old_fields);
@@ -633,7 +633,7 @@ class AdminModule extends PLModule
     {
         if (Env::has('promo')) {
             if(Env::i('promo') > 1900 && Env::i('promo') < 2050) {
-                $action = Env::v('valid_promo') == 'Ajouter des membres' ? 'add' : 'ax'; 
+                $action = Env::v('valid_promo') == 'Ajouter des membres' ? 'add' : 'ax';
                 pl_redirect('admin/promo/' . $action . '/' . Env::i('promo'));
             } else {
                 $page->trig('Promo non valide');
@@ -963,7 +963,7 @@ class AdminModule extends PLModule
                 }
             }
         }
-        
+
         if ($action == 'delete' && $wikipage != '') {
             if (wiki_delete_page($wikipage)) {
                 $page->trig("La page ".$wikipage." a été supprimée.");
@@ -971,7 +971,7 @@ class AdminModule extends PLModule
                 $page->trig("Impossible de supprimer la page ".$wikipage.".");
             }
         }
-        
+
         if ($action == 'rename' && $wikipage != '' && $wikipage2 != '' && $wikipage != $wikipage2) {
             if ($changedLinks = wiki_rename_page($wikipage, $wikipage2)) {
                 $s = 'La page <em>'.$wikipage.'</em> a été déplacée en <em>'.$wikipage2.'</em>.';
@@ -1018,9 +1018,9 @@ class AdminModule extends PLModule
     }
 
     function handler_ipwatch(&$page, $action = 'list', $ip = null)
-    { 
+    {
         $page->changeTpl('admin/ipwatcher.tpl');
-            
+
         $states = array('safe'      => 'Ne pas surveiller',
                         'unsafe'    => 'Surveiller les inscriptions',
                         'dangerous' => 'Surveiller tous les accès',
@@ -1033,15 +1033,15 @@ class AdminModule extends PLModule
                 Xdb::execute('INSERT IGNORE INTO ip_watch (ip, state, detection, last, uid, description)
                                           VALUES ({?}, {?}, CURDATE(), NOW(), {?}, {?})',
                              trim(Post::v('ipN')), Post::v('stateN'), S::i('uid'), Post::v('descriptionN'));
-            };      
-            break;  
-                                   
-        case 'edit':               
-            Xdb::execute('UPDATE ip_watch 
+            };
+            break;
+
+        case 'edit':
+            Xdb::execute('UPDATE ip_watch
                              SET state = {?}, last = NOW(), uid = {?}, description = {?}
                            WHERE ip = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'), Post::v('ipN'));
             break;
-            
+
         default:
             if ($action == 'delete' && !is_null($ip)) {
                 Xdb::execute('DELETE FROM emails_watch WHERE ip = {?}', $ip);
@@ -1085,7 +1085,7 @@ class AdminModule extends PLModule
             $sql = "SELECT  w.detection, w.state, w.last, w.description,
                             a1.alias AS edit, a2.alias AS forlife, s.host
                       FROM  ip_watch        AS w
-                 LEFT JOIN  aliases         AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')     
+                 LEFT JOIN  aliases         AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
                  LEFT JOIN  logger.sessions AS s  ON (w.ip = s.ip)
                  LEFT JOIN  aliases         AS a2 ON (a2.id = s.uid AND a2.type = 'a_vie')
                      WHERE  w.ip = {?}
@@ -1111,7 +1111,7 @@ class AdminModule extends PLModule
             $page->assign('ip', $props);
         }
     }
-    
+
     function handler_icons(&$page)
     {
         $page->changeTpl('admin/icons.tpl');

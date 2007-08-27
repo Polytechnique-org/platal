@@ -185,7 +185,7 @@ class PlatalModule extends PLModule
 
             $_SESSION['password'] = $password = Post::v('response2');
 
-            XDB::execute('UPDATE  auth_user_md5 
+            XDB::execute('UPDATE  auth_user_md5
                              SET  password={?}
                            WHERE  user_id={?}', $password,
                            S::v('uid'));
@@ -210,7 +210,7 @@ class PlatalModule extends PLModule
     {
         $page->changeTpl('platal/acces_smtp.tpl');
         $page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
-        
+
         require_once 'wiki.inc.php';
         wiki_require_page('Xorg.SMTPSécurisé');
         wiki_require_page('Xorg.NNTPSécurisé');
@@ -219,8 +219,8 @@ class PlatalModule extends PLModule
         $pass = Env::v('smtppass1');
         $log  = S::v('log');
 
-        if (Env::v('op') == "Valider" && strlen($pass) >= 6 
-        &&  Env::v('smtppass1') == Env::v('smtppass2')) 
+        if (Env::v('op') == "Valider" && strlen($pass) >= 6
+        &&  Env::v('smtppass1') == Env::v('smtppass2'))
         {
             XDB::execute('UPDATE auth_user_md5 SET smtppass = {?}
                                      WHERE user_id = {?}', $pass, $uid);
@@ -233,7 +233,7 @@ class PlatalModule extends PLModule
             $log->log("passwd_del");
         }
 
-        $res = XDB::query("SELECT IF(smtppass != '', 'actif', '') 
+        $res = XDB::query("SELECT IF(smtppass != '', 'actif', '')
                                        FROM auth_user_md5
                                       WHERE user_id = {?}", $uid);
         $page->assign('actif', $res->fetchOneCell());
@@ -283,8 +283,8 @@ class PlatalModule extends PLModule
 
             $page->assign('ok', true);
 
-            $url   = rand_url_id(); 
-            XDB::execute('INSERT INTO  perte_pass (certificat,uid,created) 
+            $url   = rand_url_id();
+            XDB::execute('INSERT INTO  perte_pass (certificat,uid,created)
                                VALUES  ({?},{?},NOW())', $url, $uid);
             $res   = XDB::query('SELECT  email
                                    FROM  emails
@@ -307,7 +307,7 @@ class PlatalModule extends PLModule
 
 Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur. Si tu n'as pas utilisé ce lien dans six heures, tu peux tout simplement recommencer cette procédure.
 
--- 
+--
 Polytechnique.org
 \"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"
 

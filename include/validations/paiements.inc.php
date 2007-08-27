@@ -24,7 +24,7 @@
 class PayReq extends Validate
 {
     // {{{ properties
-    
+
     public $titre;
     public $site;
 
@@ -77,7 +77,7 @@ class PayReq extends Validate
         $where = "%".$wassoid."%".$wevt."%";
         return $where;
     }
-  
+
     // }}}
     // {{{ function accept()
 
@@ -96,9 +96,9 @@ class PayReq extends Validate
         return true;
     }
 
-    // }}}    
-    // {{{ function submit() 
-  
+    // }}}
+    // {{{ function submit()
+
     // supprime les demandes de paiments pour le meme evenement
     public function submit()
     {
@@ -160,7 +160,7 @@ class PayReq extends Validate
 
     // }}}
     // {{{ function commit()
-    
+
     public function commit()
     {
         global $globals;
@@ -174,7 +174,7 @@ class PayReq extends Validate
             $id, $this->titre, $this->site,
             $this->montant, $this->montant_min, $this->montant_max,
             $this->bestalias."@".$globals->mail->domain, $this->msg_reponse, $this->asso_id);
-        if ($this->asso_id && $this->evt) 
+        if ($this->asso_id && $this->evt)
             $ret = XDB::execute("UPDATE groupex.evenements SET paiement_id = {?} WHERE asso_id = {?} AND eid = {?}", $id, $this->asso_id, $this->evt);
 
         return $ret;

@@ -40,7 +40,7 @@ function smarty_insert_getUsername()
 	          FROM virtual AS v
 	    INNER JOIN virtual_redirect USING(vid)
 	    INNER JOIN aliases AS a ON(id={?} AND a.type='a_vie')
-                 WHERE redirect = CONCAT(a.alias, {?}) 
+                 WHERE redirect = CONCAT(a.alias, {?})
 		       OR redirect = CONCAT(a.alias, {?})",
 		$id, "@".$globals->mail->domain, "@".$globals->mail->domain2);
 	$alias = $res->fetchOneCell();

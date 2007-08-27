@@ -24,7 +24,7 @@
 class ListeReq extends Validate
 {
     // {{{ properties
-    
+
     public $liste;
     public $desc;
 
@@ -39,12 +39,12 @@ class ListeReq extends Validate
         Refuser également des listes qui pourraient nous servir (admin, postmaster,...)";
     // }}}
     // {{{ constructor
-    
+
     public function __construct($_uid, $_liste, $_desc, $_advertise, $_modlevel,
                                 $_inslevel, $_owners, $_members, $_stamp=0)
     {
         parent::__construct($_uid, true, 'liste', $_stamp);
-        
+
         $this->liste     = $_liste;
         $this->desc      = $_desc;
         $this->advertise = $_advertise;

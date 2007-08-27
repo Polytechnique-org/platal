@@ -95,7 +95,7 @@ abstract class PlatalPage extends Smarty
         if (Env::has('json') && count($this->_jsonVars)) {
             return $this->jsonDisplay();
         }
-        
+
         if (Env::v('display') == 'light') {
             $this->_page_type = SIMPLE;
         } elseif (Env::v('display') == 'raw') {
@@ -222,7 +222,7 @@ abstract class PlatalPage extends Smarty
     {
         if (!empty($css)) {
             $this->append('xorg_inline_css', $css);
-        }    
+        }
     }
 
     // }}}
@@ -276,7 +276,7 @@ function escape_xorgDB(&$item, $key)
 
 /**
  * default smarty plugin, used to auto-escape dangerous html.
- * 
+ *
  * < --> &lt;
  * > --> &gt;
  * " --> &quot;
@@ -331,7 +331,7 @@ function trimwhitespace($source, &$smarty)
     $source = preg_replace('/((?<!\?>)\n)[\s]+/m', '\1', $source);
     $source = preg_replace("!&&&tags&&&!e",  'array_shift($tagsmatches[0])', $source);
 
-    return $source; 
+    return $source;
 }
 
 // }}}
@@ -362,7 +362,7 @@ function _hide_email($source)
     $source = str_replace("\n", '', $source);
     return '<script type="text/javascript">//<![CDATA[' . "\n" .
            'Nix.decode("' . addslashes(str_rot13($source)) . '");' . "\n" .
-           '//]]></script>'; 
+           '//]]></script>';
 }
 
 function hide_emails($source, &$smarty)
@@ -385,7 +385,7 @@ function hide_emails($source, &$smarty)
     $source = preg_replace("!<[^>]+[-a-z0-9_+.]+@[-a-z0-9_.]+.+?>!ius", '&&&misc&&&', $source);
 
     //catch !
-    $source = preg_replace('!([-a-z0-9_+.]+@[-a-z0-9_.]+)!iue', '_hide_email("\1")', $source); 
+    $source = preg_replace('!([-a-z0-9_+.]+@[-a-z0-9_.]+)!iue', '_hide_email("\1")', $source);
     $source = preg_replace('!&&&ahref&&&!e', '_hide_email(array_shift($ahref[0]))', $source);
 
     // restore data

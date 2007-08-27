@@ -76,7 +76,7 @@ class EventsModule extends PLModule
         } while ($priority && !$res->numRows());
         if (!$res->numRows()) {
             return null;
-        } 
+        }
         return $res->fetchOneAssoc();
     }
 
@@ -86,7 +86,7 @@ class EventsModule extends PLModule
         // annonces promos triées par présence d'une limite sur les promos
         // puis par dates croissantes d'expiration
         $promo = S::v('promo');
-        $uid   = S::i('uid'); 
+        $uid   = S::i('uid');
         $sql = "SELECT  e.id,e.titre, ev.user_id IS NULL AS nonlu
                   FROM  evenements    AS e
             LEFT JOIN   evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
@@ -181,7 +181,7 @@ class EventsModule extends PLModule
         // cache les evenements lus et raffiche les evenements a relire
         if ($action == 'read' && $eid) {
             XDB::execute('DELETE evenements_vus.*
-                            FROM evenements_vus AS ev 
+                            FROM evenements_vus AS ev
                       INNER JOIN evenements AS e ON e.id = ev.evt_id
                            WHERE peremption < NOW()');
             XDB::execute('REPLACE INTO evenements_vus VALUES({?},{?})',
@@ -245,11 +245,11 @@ class EventsModule extends PLModule
     }
 
     function handler_rss(&$page, $user = null, $hash = null)
-    {       
+    {
         require_once 'rss.inc.php';
-            
+
         $uid = init_rss('events/rss.tpl', $user, $hash);
-            
+
         $rss = XDB::iterator(
                 'SELECT  e.id, e.titre, e.texte, e.creation_date, e.post_id, p.attachmime IS NOT NULL AS photo,
                          IF(u2.nom_usage = "", u2.nom, u2.nom_usage) AS nom, u2.prenom, u2.promo
@@ -286,7 +286,7 @@ class EventsModule extends PLModule
     {
         $page->changeTpl('events/submit.tpl');
         $page->addJsLink('ajax.js');
-        
+
         require_once('wiki.inc.php');
         wiki_require_page('Xorg.Annonce');
 
@@ -363,7 +363,7 @@ class EventsModule extends PLModule
         }
     }
 
-    function handler_admin_events(&$page, $action = 'list', $eid = null) 
+    function handler_admin_events(&$page, $action = 'list', $eid = null)
     {
         $page->changeTpl('events/admin.tpl');
         $page->addJsLink('ajax.js');
@@ -401,12 +401,12 @@ class EventsModule extends PLModule
                     $flags->addFlag('important');
                 } else {
                     $flags->rmFlag('important');
-                } 
+                }
                 XDB::execute('UPDATE evenements
-                                 SET creation_date = creation_date, 
+                                 SET creation_date = creation_date,
                                      titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?},
                                      flags = {?}
-                               WHERE id = {?}', 
+                               WHERE id = {?}',
                               Post::v('titre'), Post::v('texte'), Post::v('peremption'),
                               Post::v('promo_min'), Post::v('promo_max'),
                               $flags->flags(), $eid);
@@ -416,7 +416,7 @@ class EventsModule extends PLModule
                                  $eid, $type, $x, $y, $upload->getContents());
                     $upload->rm();
                 }
-            }    
+            }
         }
 
         if ($action == 'edit') {
@@ -444,7 +444,7 @@ class EventsModule extends PLModule
                 $month=substr($p_stamp,4,2);
                 $day=substr($p_stamp,6,2);
 
-                $select .= "<option value=\"$p_stamp\"" 
+                $select .= "<option value=\"$p_stamp\""
                         . (($p_stamp == strtr($peremption, array("-" => ""))) ? " selected" : "")
                         . "> $day / $month / $year</option>\n";
             }
@@ -500,7 +500,7 @@ class EventsModule extends PLModule
         }
         $page->assign('arch', $arch);
         $page->assign('admin_evts', true);
-    }   
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

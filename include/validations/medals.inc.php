@@ -42,7 +42,7 @@ class MedalReq extends Validate
     // {{{ function formu()
 
     public function formu()
-    { 
+    {
         return 'include/form.valid.medals.tpl';
     }
 
@@ -73,11 +73,11 @@ class MedalReq extends Validate
     {
         //var_dump($this);
         $r = XDB::query("
-            SELECT IF (g.text IS NOT NULL, CONCAT(m.text,' - ', g.text), m.text) 
+            SELECT IF (g.text IS NOT NULL, CONCAT(m.text,' - ', g.text), m.text)
               FROM profile_medals AS m
          LEFT JOIN profile_medals_grades AS g ON(g.mid = m.id AND g.gid = {?})
              WHERE m.id = {?}", $this->gid, $this->mid);
-        return $r->fetchOneCell(); 
+        return $r->fetchOneCell();
     }
 
     // }}}

@@ -268,7 +268,7 @@ div.long td.rt { width: 65%; }
     6   Profil
         [ onglets des profils ]
 *******************************************************************************/
-  
+
 table.flags {
     margin: 1em 0em 0em 0em;
 }
@@ -507,33 +507,33 @@ div.adresse div.titre { color: purple; }
 .backtrace:hover div.hide { display: block }
 .backtrace h1 { margin: 0px; }
 
-#suid { 
-    color: red; 
-    background: #ffc0cb; 
-    width: auto; 
-    font-weight: bold; 
-    text-align: center; 
-} 
-#suid a { 
-    color: red; 
-    background: inherit; 
-    text-decoration: none; 
-    display: block; 
-} 
-#suid:hover { 
-    color: red; 
-    background: #ffffcb; 
-} 
-#suid a:hover { 
-    color: #ff7000; 
-    background: inherit; 
-} 
+#suid {
+    color: red;
+    background: #ffc0cb;
+    width: auto;
+    font-weight: bold;
+    text-align: center;
+}
+#suid a {
+    color: red;
+    background: inherit;
+    text-decoration: none;
+    display: block;
+}
+#suid:hover {
+    color: red;
+    background: #ffffcb;
+}
+#suid a:hover {
+    color: #ff7000;
+    background: inherit;
+}
 
 table#body {
     color: #000;
     background: #fff;
     border: 3px solid #000;
-    
+
     width: 900px;
     margin: 1em auto;
 }

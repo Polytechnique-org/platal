@@ -97,28 +97,28 @@ class NewsletterModule extends PLModule
         $page->changeTpl('newsletter/admin.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : liste');
         require_once("newsletter.inc.php");
-        
+
         if($new) {
             Newsletter::create();
             pl_redirect("admin/newsletter");
         }
-        
+
         $page->assign('nl_list', Newsletter::listAll());
     }
-    
+
     function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {
         $page->changeTpl('newsletter/edit.tpl');
         $page->addCssLink('nl.css');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Edition'); 
+        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Edition');
         require_once("newsletter.inc.php");
-        
+
         $nl  = new NewsLetter($nid);
-        
+
         if($action == 'delete') {
             $nl->delArticle($aid);
             pl_redirect("admin/newsletter/edit/$nid");
         }
-        
+
         if($aid == 'update') {
             $nl->_title     = Post::v('title');
             $nl->_title_mail= Post::v('title_mail');
@@ -132,14 +132,14 @@ class NewsletterModule extends PLModule
                 pl_redirect('admin/newsletter/edit/' . $nl->_id);
             }
         }
-        
+
         if(Post::v('save')) {
             $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
                     $aid, Post::v('cid'), Post::v('pos'));
             $nl->saveArticle($art);
             pl_redirect("admin/newsletter/edit/$nid");
         }
-        
+
         if($action == 'edit' && $aid != 'update') {
             $eaid = $aid;
             if(Post::has('title')) {
@@ -150,7 +150,7 @@ class NewsletterModule extends PLModule
             }
             $page->assign('art', $art);
         }
-        
+
         $page->assign_by_ref('nl',$nl);
     }
 

@@ -79,7 +79,7 @@ class EmailModule extends PLModule
                 "SELECT  alias
                    FROM  virtual          AS v
              INNER JOIN  virtual_redirect AS vr USING(vid)
-                  WHERE  (redirect={?} OR redirect={?}) 
+                  WHERE  (redirect={?} OR redirect={?})
                          AND alias LIKE '%@{$globals->mail->alias_dom}'",
                 $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
         $page->assign('melix', $res->fetchOneCell());
@@ -115,7 +115,7 @@ class EmailModule extends PLModule
                    FROM  auth_user_quick, virtual
              INNER JOIN  virtual_redirect USING(vid)
                    WHERE ( redirect={?} OR redirect= {?} )
-                         AND alias LIKE '%@{$globals->mail->alias_dom}' AND user_id = {?}", 
+                         AND alias LIKE '%@{$globals->mail->alias_dom}' AND user_id = {?}",
                 $forlife.'@'.$globals->mail->domain,
                 $forlife.'@'.$globals->mail->domain2, S::v('uid'));
         list($alias, $visibility) = $res->fetchOneRow();
@@ -241,7 +241,7 @@ class EmailModule extends PLModule
                    FROM  virtual
              INNER JOIN  virtual_redirect USING(vid)
                   WHERE  (redirect={?} OR redirect={?})
-                         AND alias LIKE '%@{$globals->mail->alias_dom}'", 
+                         AND alias LIKE '%@{$globals->mail->alias_dom}'",
                 $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
         $melix = $res->fetchOneCell();
         if ($melix) {
@@ -454,7 +454,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                         "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails,
                                  u.nom, u.prenom, u.promo, a.alias AS forlife
                            FROM  emails as e1
-                      LEFT JOIN  emails as e2 ON(e1.uid = e2.uid 
+                      LEFT JOIN  emails as e2 ON(e1.uid = e2.uid
                                                  AND FIND_IN_SET('active', e2.flags)
                                                  AND e1.email != e2.email)
                      INNER JOIN  auth_user_md5 as u ON(e1.uid = u.user_id)
@@ -546,7 +546,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
             $sql = "SELECT  w.detection, w.state, w.last, w.description,
                             a1.alias AS edit, a2.alias AS forlife
                       FROM  emails_watch AS w
-                 LEFT JOIN  aliases      AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')     
+                 LEFT JOIN  aliases      AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
                  LEFT JOIN  emails       AS e  ON (w.email = e.email)
                  LEFT JOIN  aliases      AS a2 ON (a2.id = e.uid AND a2.type = 'a_vie')
                      WHERE  w.email = {?}
@@ -573,7 +573,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
     function handler_lost(&$page, $action = 'list', $email = null)
     {
         $page->changeTpl('emails/lost.tpl');
-        
+
         $page->assign('lost_emails', XDB::iterator('
 					SELECT u.user_id,	a.alias
 					FROM auth_user_md5 AS u

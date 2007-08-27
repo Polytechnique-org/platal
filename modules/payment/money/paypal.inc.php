@@ -27,12 +27,12 @@ class PayPal
     var $urlform;
     var $nomsite = "PayPal";
     var $text;
-    
+
     var $infos;
 
     // }}}
     // {{{ constructor
-    
+
     function PayPal($val)
     {
     	$this->val_number = $val;
@@ -68,7 +68,7 @@ class PayPal
     		'return'      => $roboturl,
     		'cn'	      => 'Commentaires',
     		'no_shipping' => 1,
-            'cbt'         => empty($GLOBALS['IS_XNET_SITE']) ? 
+            'cbt'         => empty($GLOBALS['IS_XNET_SITE']) ?
                                 'Revenir sur polytechnique.org' :
                                 'Revenir sur polytechnique.net');
 	

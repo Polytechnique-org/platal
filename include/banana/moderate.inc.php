@@ -108,23 +108,23 @@ class BananaMLInterface implements BananaProtocoleInterface
 
     public function __construct()
     {
-        $this->infos = ModerationBanana::$client->get_members(ModerationBanana::$listname); 
+        $this->infos = ModerationBanana::$client->get_members(ModerationBanana::$listname);
         $this->infos = $this->infos[0];
-        
+
         $mods = ModerationBanana::$client->get_pending_ops(ModerationBanana::$listname);
         $this->helds = $mods[1];
     }
-    
+
     public function isValid()
     {
         return !is_null(ModerationBanana::$client);
     }
-    
+
     public function lastErrNo()
     {
         return 0;
     }
-    
+
     public function lastError()
     {
         return null;

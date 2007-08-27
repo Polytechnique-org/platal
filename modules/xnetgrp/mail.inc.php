@@ -24,9 +24,9 @@
 function get_all_redirects($membres, $mls, &$client)
 {
     global $globals;
-    
+
     $tos = array();
-    
+
     if (!empty($membres)) {
         $membres = array_map(create_function('$str', 'return "\"$str\"";'), $membres);
         $membres = join(',', $membres);
@@ -82,7 +82,7 @@ function _send_xnet_mail($user, $body, $wiki, $mailer, $replyto = null)
     $nom  = isset($user['nom']) ? $user['nom'] : "";
     $pnom = isset($user['prenom']) ? $user['prenom'] : preg_replace('!@.*!u', '', $user['email']);
     $to   = isset($user['prenom']) ? "\"{$user['prenom']} {$user['nom']}\" <{$user['email']}>" : $user['email'];
-    
+
     $text = $body;
     $text = preg_replace('!<cher>!i',   $cher, $text);
     $text = preg_replace('!<nom>!i',    $nom,  $text);

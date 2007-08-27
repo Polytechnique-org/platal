@@ -36,7 +36,7 @@ class BandeauModule extends PLModule
         readfile('../htdocs/images/x.png');
         exit();
     }
-    
+
     function handler_html(&$page, $login = '')
     {
         $page->changeTpl('skin/common.bandeau.tpl', NO_SKIN);
@@ -49,7 +49,7 @@ class BandeauModule extends PLModule
         readfile('../htdocs/css/bandeau.css');
         exit();
     }
-    
+
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

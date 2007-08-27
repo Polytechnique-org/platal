@@ -31,7 +31,7 @@ class CyberPayment
 
     // }}}
     // {{{ constructor
-    
+
     function CyberPayment($val)
     {
         $this->val = strtr(sprintf("%.02f", (float)$val), '.', ',');

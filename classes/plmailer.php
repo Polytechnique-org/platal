@@ -38,7 +38,7 @@ class PlMail extends Smarty
         $this->template_dir  = $globals->spoolroot . "/templates/";
         $this->compile_dir   = $globals->spoolroot . "/spool/mails_c/";
         $this->config_dir    = $globals->spoolroot . "/configs/";
-        
+
 
         $this->register_outputfilter(Array($this, 'mail_format'));
         $this->register_function('from',    Array($this, 'setFrom'));
@@ -123,7 +123,7 @@ class PlMail extends Smarty
     }
 
     /** template function : subject.
-     * {subject text=...} 
+     * {subject text=...}
      */
     public function setSubject($params, &$smarty)
     {
@@ -234,7 +234,7 @@ class PlMailer extends Mail_Mime {
             $this->page->assign($var, $value);
         }
     }
-    
+
     public function assign_by_ref($var, &$value)
     {
         if (!is_null($this->page)) {
@@ -248,7 +248,7 @@ class PlMailer extends Mail_Mime {
             $this->page->register_modifier($var, $callback);
         }
     }
-    
+
     public function register_function($var, $callback)
     {
         if (!is_null($this->page)) {
@@ -306,12 +306,12 @@ class PlMailer extends Mail_Mime {
         if(empty($addrs)) {
             return false;
         }
-    
+
         $dests = Array();
         foreach($addrs as $a) {
             $dests[] = "{$a->mailbox}@{$a->host}";
         }
-    
+
         // very important to do it in THIS order very precisely.
         $body = $this->get(array('text_charset' => $this->charset,
                                  'text_encoding' => '8bit',

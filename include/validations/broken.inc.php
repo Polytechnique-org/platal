@@ -67,7 +67,7 @@ class BrokenReq extends Validate
 
     // }}}
     // {{{ function _mail_subj
-    
+
     protected function _mail_subj()
     {
         return "[Polytechnique.org] Récupération de {$this->m_prenom} {$this->m_nom} ({$this->m_promo})";
@@ -100,7 +100,7 @@ class BrokenReq extends Validate
         global $globals;
         $email =  $this->m_bestalias . '@' . $globals->mail->domain;
 
-        XDB::execute("UPDATE  emails AS e 
+        XDB::execute("UPDATE  emails AS e
                   INNER JOIN  aliases AS a ON (a.id = e.uid)
                          SET  e.flags = 'active'
                        WHERE  a.alias = {?} AND e.email = {?}", $this->m_forlife, $this->m_email);
@@ -121,7 +121,7 @@ class BrokenReq extends Validate
             $mailer->send();
             return true;
         }
-        
+
         $email =  $this->m_bestalias . '@' . $globals->mail->domain;
         if ($this->old_email) {
             $subject = "Ton adresse $email semble ne plus fonctionner";
@@ -142,7 +142,7 @@ class BrokenReq extends Validate
             } elseif (count($redirect) == 1) {
                 $reason .= ' car sa redirection vers ' . $redirect[0] . ' est hors-service depuis plusiers mois.';
             } else {
-                $reason .= ' car ses redirections vers ' . implode(', ', $redirect) 
+                $reason .= ' car ses redirections vers ' . implode(', ', $redirect)
                         . ' sont hors-services depuis plusieurs mois.';
             }
         }

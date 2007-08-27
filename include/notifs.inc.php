@@ -132,7 +132,7 @@ function select_notifs($mail, $uid=null, $last=null, $iterator=true)
 // }}}
 // {{{ function getNbNotifs
 
-function getNbNotifs() 
+function getNbNotifs()
 {
     if (!S::has('uid')) {
         return 0;
@@ -155,7 +155,7 @@ function getNbNotifs()
 // }}}
 // {{{ class AllNotifs
 
-class AllNotifs 
+class AllNotifs
 {
     public $_cats = Array();
     public $_data = Array();
@@ -187,7 +187,7 @@ class AllNotifs
 // }}}
 // {{{ class Notifs
 
-class Notifs 
+class Notifs
 {
     public $_uid;
     public $_cats = Array();
@@ -220,7 +220,7 @@ class Notifs
 // }}}
 // {{{ class Watch
 
-class Watch 
+class Watch
 {
     public $_uid;
     public $_promos;

@@ -28,8 +28,8 @@ function select_options($table,$valeur,$champ="text",$pad=false,
     $order = $champ;
     if ($group) {
         $fields .= ',' . $group;
-        $order = $group . ',' . $order; 
-    } 
+        $order = $group . ',' . $order;
+    }
     $sql = "SELECT $fields FROM $table AS t $join $where ORDER BY $order";
     $res = XDB::iterRow($sql);
     $sel = ' selected="selected"';
@@ -48,7 +48,7 @@ function select_options($table,$valeur,$champ="text",$pad=false,
             $html .= '<optgroup label="' . pl_entities($my_grp, ENT_QUOTES) . '">';
             $optgrp = $my_grp;
         }
-        $html .= sprintf("<option value=\"%s\" %s>%s</option>\n", 
+        $html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
                          $my_id, ($valeur==$my_id?$sel:""), $my_text);
     }
     if (!is_null($optgrp)) {

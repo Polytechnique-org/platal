@@ -201,9 +201,9 @@ def create_list(vhost,listname,desc,advertise,modlevel,inslevel,owners,members):
         mlist.default_member_moderation = int(modlevel) is 2
         mlist.generic_nonmember_action = int(modlevel) > 0
         mlist.subscribe_policy = 2 * (int(inslevel) is 1)
-        
+
         mlist.owner = owners
-        
+
         mlist.subject_prefix = '['+listname+'] '
         mlist.max_message_size = 0
 

@@ -372,7 +372,7 @@ class ListsModule extends PLModule
         if (list($det) = $this->client->get_members($liste)) {
             if (substr($liste,0,5) != 'promo' && ($det['ins'] || $det['priv'])
                     && !$det['own'] && ($det['sub'] < 2)) {
-                exit;  
+                exit;
             }
             require_once('banana/ml.inc.php');
             $banana = new MLBanana(S::v('forlife'), Array('listname' => $liste, 'domain' => $domain, 'action' => 'rss2'));
@@ -437,7 +437,7 @@ class ListsModule extends PLModule
             }
             if (Env::has('sadd')) {
                 pl_redirect('lists/moderate/'.$liste);
-            } 
+            }
         }
 
         if (Post::has('moderate_mails') && Post::has('select_mails')) {

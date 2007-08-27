@@ -180,7 +180,7 @@ function wiki_delete_page($pagename)
         return false;
     }
     $file  = wiki_work_dir().'/'.wiki_filename($pagename_dots);
-    $cachefile = wiki_work_dir().'/cache_'.$pagename_dots.'.tpl'; 
+    $cachefile = wiki_work_dir().'/cache_'.$pagename_dots.'.tpl';
     if (is_file($cachefile)) {
         unlink($cachefile);
     }
@@ -227,7 +227,7 @@ function wiki_rename_page($pagename, $newname, $changeLinks = true)
     }
     $groupname = substr($pagename_dots, 0, strpos($pagename_dots,'.'));
     $newgroupname = substr($newname_dots, 0, strpos($pagename_dots,'.'));
-    
+
     $file  = wiki_work_dir().'/'.wiki_filename($pagename_dots);
     $newfile  = wiki_work_dir().'/'.wiki_filename($newname_dots);
     if (!is_file($file)) {

@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class PLTableEditor 
+class PLTableEditor
 {
     // the plat/al name of the page
     public $pl;
@@ -84,7 +84,7 @@ class PLTableEditor
                     $a['Value'] = $a['List'][0];
                 } else {
                     $a['Type'] = 'set';
-                } 
+                }
             }
             elseif (substr($a['Type'],0,5) == 'enum(') {
                 // get the list of options
@@ -111,7 +111,7 @@ class PLTableEditor
     }
 
     // called before editing $entry
-    private function prepare_edit(&$entry) 
+    private function prepare_edit(&$entry)
     {
         foreach ($this->vars as $field => $descr) {
             if ($descr['Type'] == 'set') {
@@ -133,7 +133,7 @@ class PLTableEditor
         }
         return $entry;
     }
-    
+
     // set whether the save button show redirect to list view or edit view
     public function list_on_edit($var)
     {
@@ -146,14 +146,14 @@ class PLTableEditor
         $this->vars[$name]['desc'] = $desc;
         $this->vars[$name]['display'] = $display;
     }
-    
+
     // add a join table, when deleting a row corresponding entries will be deleted in these tables
     public function add_join_table($name,$joinid,$joindel,$joinextra="")
     {
         if ($joindel)
             $this->jtables[$name] = array("joinid" => $joinid,"joinextra" => $joinextra?(" AND ".$joinextra):"");
     }
-    
+
     // add a sort key
     public function add_sort_field($key, $desc = false, $default = false)
     {

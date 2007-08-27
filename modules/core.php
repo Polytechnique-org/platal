@@ -94,7 +94,7 @@ class CoreModule extends PLModule
 
         if (isset($_SESSION['log'])) {
             $_SESSION['log']->log("suid_start", "login by ".S::v('forlife'));
-        }    
+        }
         $_SESSION['suid'] = $_SESSION;
         $_SESSION['perms'] =& XorgSession::make_perms($level);
 

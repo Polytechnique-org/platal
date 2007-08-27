@@ -68,7 +68,7 @@ class StatsModule extends PLModule
                              TO_DAYS(date_ins)-TO_DAYS(NOW()),
                             ".(-($jours+1)).") AS jour,
                          COUNT(user_id) AS nb
-                   FROM  auth_user_md5 
+                   FROM  auth_user_md5
                   WHERE  perms IN ('admin','user')
                GROUP BY  jour");
 
@@ -188,7 +188,7 @@ EOF2;
                                  TO_DAYS(date_ins)-TO_DAYS(NOW()),
                                 ".(-($jours+1)).") AS jour,
                              COUNT(user_id) AS nb
-                       FROM  auth_user_md5 
+                       FROM  auth_user_md5
                       WHERE  promo = {?} AND perms IN ('admin','user')
                    GROUP BY  jour", $promo);
 

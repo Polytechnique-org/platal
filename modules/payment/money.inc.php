@@ -37,7 +37,7 @@ class Payment
 
     // }}}
     // {{{ constructor
-    
+
     function Payment($ref=-1)
     {
         global $globals;
@@ -46,7 +46,7 @@ class Payment
                                        FROM  {$globals->money->mpay_tprefix}paiements WHERE id={?}", $r);
         list($this->id, $this->text, $this->url, $flags, $this->mail,
                 $this->montant_min, $this->montant_max, $this->montant_def, $this->asso_id) = $res->fetchOneRow();
-        
+
         $this->montant_min = (float)$this->montant_min;
         $this->montant_max = (float)$this->montant_max;
         $this->flags       = new Flagset($flags);
@@ -54,7 +54,7 @@ class Payment
 
     // }}}
     // {{{ function check()
-    
+
     function check($value)
     {
         $v = (float)strtr($value, ',', '.');
@@ -114,7 +114,7 @@ class PayMethod
         $i   = $id==-1 ? $globals->money->mpay_def_meth : $id;
         $res = XDB::query("SELECT id,text,include FROM {$globals->money->mpay_tprefix}methodes WHERE id={?}", $i);
         list($this->id, $this->text, $this->inc) = $res->fetchOneRow();
-    } 
+    }
 
     // }}}
 }

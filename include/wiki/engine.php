@@ -35,7 +35,7 @@ switch (Env::v('action')) {
   case 'rss': case 'atom': case 'sdf': case 'dc':
     wiki_apply_feed_perms($perms[0]);
     $feed = true;
-  case '': case 'search': 
+  case '': case 'search':
     break;
 
   case 'edit':
@@ -135,7 +135,7 @@ if (!Env::v('action')) {
     $url = '/' . str_replace('.', '/', $n) . '?action=rss';
     if (S::logged()) {
         $url .= '&user=' . S::v('forlife') . '&hash=' . S::v('core_rss_hash');
-    } 
+    }
     $page->setRssLink($n, $url);
 }
 

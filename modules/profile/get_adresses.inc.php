@@ -40,7 +40,7 @@ function is_adr_empty($adrid){
   		break;
   	}
   }
-  return ( 
+  return (
     ($adr['adr1'] == '') && ($adr['adr2'] == '') && ($adr['adr3'] == '') &&
     ($adr['postcode'] == '') && ($adr['city'] == '') && ($adr['country'] == '00') &&
     ($emptytel)
@@ -114,7 +114,7 @@ $restels = XDB::iterator(
     t.adrid, telid, tel_type, t.tel_pub, t.tel
     FROM tels AS t INNER JOIN adresses AS a ON(t.uid = a.uid AND t.adrid = a.adrid)
     WHERE t.uid = {?} AND NOT FIND_IN_SET('pro',statut) ORDER BY t.adrid, tel_type DESC, telid"
-, S::v('uid', -1)   
+, S::v('uid', -1)
 );
 while ($tel = $restels->next()) {
     $adrid = $tel['adrid'];

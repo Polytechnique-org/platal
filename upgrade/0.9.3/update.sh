@@ -26,6 +26,6 @@ echo "BE CAREFUL :
 * carva redirects are still in scripts/ but their path and name have changed.
   --> the error page is scripts/webredirect_error.php
   --> the redirect page is scripts/webredirect.php
-  
+
 * mailman : update the conf to use the mhonarc archiver
 "

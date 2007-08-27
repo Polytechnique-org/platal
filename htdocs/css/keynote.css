@@ -39,7 +39,7 @@ a:hover { color: #999; }
 img   { vertical-align: middle; }
 a img { border: 0px; }
 td    { vertical-align: top; }
-li    { padding-left: 3px; padding-right: 3px; 
+li    { padding-left: 3px; padding-right: 3px;
         text-align: justify; }
 hr    { text-align: center; }
 dt    { font-weight: bold; }
@@ -191,7 +191,7 @@ table.tinybicol th, table.bicol th {
 }
 
 table.tinybicol tr:first-child th, table.bicol tr:first-child th {
-    color: #fff; 
+    color: #fff;
     background: url('../images/skins/keynote_title.gif') #000 top left repeat-x;
 }
 
@@ -483,8 +483,8 @@ td.conteneur_tab {
 #fiche_identite div.civilite {
     text-align: center;
     font-weight: bold;
-    width: 80%; 
-    float: left; 
+    width: 80%;
+    float: left;
     color: #fff;
     background: inherit;
     padding-top: 0.5ex;
@@ -518,7 +518,7 @@ td.conteneur_tab {
 
 
 #fiche_identite div.email {
-    clear: left; 
+    clear: left;
     float: left;
 }
 
@@ -530,7 +530,7 @@ td.conteneur_tab {
 
 #fiche_identite div.formation {
     margin: 0em 1em;
-    clear: both;  
+    clear: both;
 }
 
 div.adresse {

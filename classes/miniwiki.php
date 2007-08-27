@@ -21,25 +21,25 @@ class MiniWiki
         }
         return $id;
     }
-    
+
     public static function init()
     {
         if (isset(MiniWiki::$patternsWiki[0])) {
             return;
         }
         MiniWiki::Markup("/(\r\n|\r([^\n]))/", "\n$2", "\n$2");
-                
+
         // retours à la ligne avec \\
         MiniWiki::Markup("/\\\\(?".">(\\\\*))\n/e", "str_repeat('<br />\n',mb_strlen('$1'))", "str_repeat('\n',mb_strlen('$1'))", "ligne1\\\\\nligne2");
-        
-        // * unordered list 
+
+        // * unordered list
         MiniWiki::Markup("/(^|\n)\*(([^\n]*(\n|$))(\*[^\n]*(\n|$))*)/se",
                          "'</p><ul><li>'.str_replace(\"\\n*\",'</li><li>','$2').'</li></ul><p>'",
                          "'$1 -' . str_replace(\"\\n*\", \"\\n -\", '$2')",
-                         "* element1\n* element2\n* element3"); 
-        // # unordered list 
-        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "'$0'", "# element1\n# element2\n# element3"); 
-        
+                         "* element1\n* element2\n* element3");
+        // # unordered list
+        MiniWiki::Markup("/(^|\n)#(([^\n]*(\n|$))(#[^\n]*(\n|$))*)/se", "'<ol><li>'.str_replace(\"\\n#\",'</li><li>','$2').'</li></ol>'", "'$0'", "# element1\n# element2\n# element3");
+
         // bold, italic and others
         // ''' bold '''
         MiniWiki::Markup("/'''(.*?)'''/",'<strong>$1</strong>','*$1*', "'''gras'''");
@@ -62,14 +62,14 @@ class MiniWiki
                          "%red% texte en rouge %%\\\\\n%#ff0% texte en jaune %%\\\\\n%#0000ff% texte en bleu %%");
         // [+ big +] [++ bigger ++] [+++ even bigger +++] ...
         MiniWiki::Markup("/\\[(([-+])+)(.*?)\\1\\]/e","'<span style=\'font-size:'.(round(pow(6/5,$2mb_strlen('$1'))*100,0)).'%\'>$3</span>'", "'$3'", "[+ grand +]\n\n[++ plus grand ++]\n\n[+++ encore plus grand +++]");
-        
+
         // ----- <hr/>
         MiniWiki::Markup("/(\n|^)--(--+| \n)/s", '$1<hr/>', '$1-- '."\n", "----\n");
         // titles
         MiniWiki::$title_index = MiniWiki::Markup('/(\n|^)(!+)([^\n]*)/se',
                                                   "'$1<h'.mb_strlen('$2').'>$3</h'.mb_strlen('$2').'>'",
                                                   "'$1$3'", "!titre1\n\n!!titre2\n\n!!!titre3");
-        
+
         // links
         MiniWiki::Markup('/((?:https?|ftp):\/\/(?:[\.\,\;\!\:]*[\w@~%$£µ&i#\-+=_\/\?])*)/ui',
                          '<a href="\\0">\\0</a>', '<\\0>');
@@ -79,7 +79,7 @@ class MiniWiki
         MiniWiki::Markup('/\\[\\[\\s*<(?:a href=")?([^>]*)(?:">.*<\/a)?>\\s*\|([^\\]]+)\\]\\]/i',
                          '<a href="\\1">\\2</a>', '\\2 <\\1>',
                          "[[http://www.example.com|Mon site web]]\n\nhttp://www.example.com\n\ntest@example.com");
-        
+
         // paragraphs and empty lines
         MiniWiki::Markup("/\n\n/", '</p><p>', "\n\n", "paragraphe1\n\nparagraphe2");
         MiniWiki::Markup("/\n/", ' ', "\n");
@@ -100,7 +100,7 @@ class MiniWiki
         }
         return $html;
     }
-    
+
     private static function justify($text, $n)
     {
         $arr = explode("\n", wordwrap($text, $n));
@@ -111,28 +111,28 @@ class MiniWiki
             $nxl_split = preg_split('! +!u', $nxl);
             $nxw_len   = count($nxl_split) ? mb_strlen($nxl_split[0]) : 0;
             $line      = trim($line);
-        
+
             if (mb_strlen($line)+1+$nxw_len < $n) {
                 $res .= "$line\n";
                 continue;
             }
-            
+
             if (preg_match('![.:;]$!u',$line)) {
                 $res .= "$line\n";
                 continue;
             }
-        
+
             $tmp   = preg_split('! +!u', trim($line));
             $words = count($tmp);
             if ($words <= 1) {
                 $res .= "$line\n";
                 continue;
             }
-        
+
             $len   = array_sum(array_map('mb_strlen', $tmp));
             $empty = $n - $len;
             $sw    = floatval($empty) / floatval($words-1);
-            
+
             $cur = 0;
             $l   = '';
             foreach ($tmp as $word) {
@@ -145,7 +145,7 @@ class MiniWiki
         }
         return trim($res);
     }
-    
+
 
     public static function WikiToText($wiki, $just=false, $indent=0, $width=68, $title=false)
     {

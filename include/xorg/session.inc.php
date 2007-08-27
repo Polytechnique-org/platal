@@ -25,7 +25,7 @@ class XorgSession
 {
     // {{{ public static function init
 
-    public static function init() 
+    public static function init()
     {
         S::init();
         if (!S::has('uid')) {
@@ -158,7 +158,7 @@ class XorgSession
      * @param page the calling page (by reference)
      */
     public static function doAuthCookie()
-        
+
     {
         if (S::logged()) {
             return true;

@@ -25,7 +25,7 @@ require_once 'validations.inc.php';
 class HomonymeReq extends Validate
 {
     // {{{ properties
-    
+
     public $loginbis;
 
     public $warning = true;
@@ -36,7 +36,7 @@ class HomonymeReq extends Validate
 
     // }}}
     // {{{ constructor
-   
+
     public function __construct($_uid, $_loginbis, $_homonymes_forlife, $warning=true)
     {
         $this->warning = $warning;
@@ -47,10 +47,10 @@ class HomonymeReq extends Validate
         $this->loginbis = $_loginbis;
         $this->homonymes_forlife = $_homonymes_forlife;
     }
-    
+
     // }}}
     // {{{ title()
-    
+
     private function title()
     {
         return $this->warning?'alerte alias':'robot répondeur';
@@ -74,7 +74,7 @@ class HomonymeReq extends Validate
 
     // }}}
     // {{{ function _mail_body
-    
+
     protected function _mail_body($isok)
     {
         global $globals;
@@ -115,7 +115,7 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     }
     // }}}
     // {{{ function commit()
-    
+
     public function commit()
     {
         require_once('homonymes.inc.php');
@@ -125,7 +125,7 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
             XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $this->loginbis);
             XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $this->uid, $this->uid);
         }
-        
+
         return true;
     }
 

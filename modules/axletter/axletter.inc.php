@@ -113,7 +113,7 @@ class AXLetter extends MassMailer
                  WHERE  ni.last < {?} AND {$this->subscriptionWhere()}
                         AND (e.email IS NOT NULL OR ni.user_id = 0)
               GROUP BY  u.user_id";
-    }              
+    }
 
     static public function subscriptionState($uid = null)
     {
@@ -122,8 +122,8 @@ class AXLetter extends MassMailer
                              FROM  axletter_ins
                             WHERE  user_id={?}", $user);
         return $res->fetchOneCell();
-    }   
-    
+    }
+
     static public function unsubscribe($uid = null, $hash = false)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
@@ -177,7 +177,7 @@ class AXLetter extends MassMailer
         if (!is_numeric($uid)) {
             $res = XDB::query("SELECT id FROM aliases WHERE alias = {?}", $uid);
             $uid = $res->fetchOneCell();
-        }   
+        }
         if (!$uid) {
             return false;
         }
@@ -222,16 +222,16 @@ class AXLetter extends MassMailer
     }
 
     static public function listSent()
-    {   
+    {
         $res = XDB::query("SELECT  IF(shortname IS NULL, id, shortname) as id, date, subject AS titre
                              FROM  axletter
                             WHERE  NOT (FIND_IN_SET('new', bits))
                          ORDER BY  date DESC");
         return $res->fetchAllAssoc();
     }
-    
+
     static public function listAll()
-    {   
+    {
         $res = XDB::query("SELECT  IF(shortname IS NULL, id, shortname) as id, date, subject AS titre
                              FROM  axletter
                          ORDER BY  date DESC");

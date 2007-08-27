@@ -91,7 +91,7 @@ sub parse_tag($$) {
         if($tag =~ / (checked|disabled|multiple|readonly)( |$)/);
     print STDERR "${red}XHTML error: ${yel}attribut $1 ${blu}($file)${gra}\n"
         if($tag =~ / (align|width|border|color|valign)=/);
-   
+
     # récupération des classes utilisées ...
     if($tag =~ /^(\w+).* class=('{[^}]*}'|"{[^}]*}"|'[^{}']*'|"[^{}"]*")/) {
         my $t = lc($1);
@@ -102,7 +102,7 @@ sub parse_tag($$) {
             foreach my $cl (@cycle) {
                     &class_add($file,$t,$cl) if($cl);
             }
-        } else {   
+        } else {
             &class_add($file,$t,$c);
         }
     }

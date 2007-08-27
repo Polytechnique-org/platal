@@ -56,7 +56,7 @@ class XnetModule extends PLModule
         }
         exit;
     }
-    
+
     function handler_index(&$page)
     {
         $page->nomenu = true;
@@ -197,7 +197,7 @@ class XnetModule extends PLModule
 
         $page->setType($cat);
     }
-    
+
     function handler_autologin(&$page)
     {
         $allkeys = func_get_args();

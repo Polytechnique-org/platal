@@ -35,10 +35,10 @@ class UsageReq extends Validate
 
     public $homonyme;
     public $reason;
-    
-    public $rules = "Refuser 
-    tout ce qui n'est visiblement pas un nom de famille (ce qui est 
-    extremement rare car à peu près n'importe quoi peut être un nom de 
+
+    public $rules = "Refuser
+    tout ce qui n'est visiblement pas un nom de famille (ce qui est
+    extremement rare car à peu près n'importe quoi peut être un nom de
     famille...)";
 
     // }}}

@@ -38,7 +38,7 @@ class MLBanana extends Banana
         Banana::$mbox_helper = $globals->banana->mbox_helper;
         if (S::has_perms()) {
             Banana::$msgshow_mimeparts[] = 'source';
-        }    
+        }
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
         if (!S::v('core_rss_hash')) {
             Banana::$feed_active = false;
@@ -63,10 +63,10 @@ class MLBanana extends Banana
         Banana::$profile['headers']['From']         = "$nom <$mail>";
         Banana::$profile['headers']['Organization'] = 'Utilisateur de Polytechnique.org';
         Banana::$profile['signature']               = $sig;
-        
+
         // Page design
         Banana::$page->killPage('forums');
-        Banana::$page->killPage('subscribe'); 
+        Banana::$page->killPage('subscribe');
 
         // Run Banana
         return parent::run();

@@ -21,7 +21,7 @@
  ***************************************************************************/
 /* vim: set sw=4 ts=4 sts=4 tw=100:
  * vérifie qu'il n'y a pas de validations en cours, et maile si c'est le cas
-*/ 
+*/
 
 $M_PERIOD = "INTERVAL 3 HOUR"; // période d'envoi des mails de 3h
 $R_PERIOD = "INTERVAL 6 HOUR"; // période de réponse moyenne de 6h
@@ -58,7 +58,7 @@ while (list($type, $nb) = $res->next()) {
     $message .= "- $type: $nb\n";
 }
 
-$message = wordwrap($message,78);  
+$message = wordwrap($message,78);
 $mymail->setTxtBody($message);
 $mymail->send();
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

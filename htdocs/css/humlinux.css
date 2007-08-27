@@ -30,7 +30,7 @@ fieldset {
 legend {
     background-color: #dddddd;
 }
-    
+
 
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
@@ -90,7 +90,7 @@ div.contact div.long {
     background-repeat: repeat-y;
     background-position: top left;
 }
-            
+
 #body-logo {
     border-top: none;
     border-bottom: none;

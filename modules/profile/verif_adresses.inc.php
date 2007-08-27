@@ -56,7 +56,7 @@ function generate_new_telid($adr){
   foreach($telid_array as $current_telid)
     if ($current_telid == $new_telid)
       $new_telid ++;
-    else 
+    else
       return $new_telid;//s'ils sont differents, il y a un trou dans la liste des telid donc new_telid convient
   //si aucun convient, on retourne le plus grand des telid actuel + 1
   return $new_telid;
@@ -71,7 +71,7 @@ function replace_ifset_adr($varname, $i){
 function replace_ifset_tel($varname, $i, $t){
   $tab = Env::v($varname.$t, Array());
   if (isset($tab[$i]))
-       $GLOBALS['adresses'][$i]['tels'][$t][$varname] = $tab[$i];  
+       $GLOBALS['adresses'][$i]['tels'][$t][$varname] = $tab[$i];
 }
 
 function get_adr_arg($varname, $i) {
@@ -102,7 +102,7 @@ function replace_address($i){
     $adresses[$i]['nouvelle'] = 'ajout';
     $adresses[$i]['adrid'] = $i;
   }
-  
+
   replace_ifset_adr('secondaire', $i);
   set_flag_adr('courrier', $i);
   replace_ifset_adr('temporaire', $i);
@@ -119,14 +119,14 @@ function replace_address($i){
   replace_ifset_adr('country', $i);
   replace_ifset_adr('region', $i);
   replace_ifset_adr('pub', $i);
-  
+
   for ($telid = 0; $telid <= $nb_tel_max; $telid++) {
     $tab = Env::v('telid'.$telid, Array());
     if(isset($tab[$i])){ //ce telid etait donc present dans le formulaire
       replace_tel($i, $telid);
     }
   }
- 
+
   if (!get_adr_arg('parsevalid', $i)) replace_ifset_adr('txt', $i);
   $tab = Env::v('numero_formulaire', Array());
   if($tab[$i])
@@ -144,7 +144,7 @@ function geoloc_adresse($i) {
 	$adresses[$i] = array_merge($adresses[$i], empty_address());
 	// localize new address
 	$new = get_address_infos($adresses[$i]['txt']);
-	if (compare_addresses_text($adresses[$i]['txt'], $geotxt = get_address_text($new)) || get_adr_arg('parsevalid', $i)) 
+	if (compare_addresses_text($adresses[$i]['txt'], $geotxt = get_address_text($new)) || get_adr_arg('parsevalid', $i))
 		$adresses[$i] = array_merge($adresses[$i], $new);
 	else {
 		$adresses[$i] = array_merge($adresses[$i], cut_address($adresses[$i]['txt']));

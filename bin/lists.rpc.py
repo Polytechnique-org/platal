@@ -172,7 +172,7 @@ def quote(s, is_header=False):
     else:
         h = s
     h = str('').join(re.split('[\x00-\x08\x0B-\x1f]+', h))
-    return Utils.uquote(h.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;')) 
+    return Utils.uquote(h.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;'))
 
 def to_forlife(email):
     try:

@@ -52,7 +52,7 @@ foreach($adresses as $adrid => $adr){
       array('tel' => '', 'tel_pub' => 'private', 'tel_type' => 'Tél.', 'telid' => 0, 'new_tel' => true),
       array('tel' => '', 'tel_pub' => 'private', 'tel_type' => 'Fax', 'telid' => 1, 'new_tel' => true));
   } elseif (count($adr['tels']) < $nb_tel_max) {
-    $adresses[$adrid]['tels'][] = 
+    $adresses[$adrid]['tels'][] =
       array('tel' => '', 'tel_pub' => 'private', 'tel_type' => 'Autre', 'telid' => generate_new_telid($adr), 'new_tel' => true);
   }
 }

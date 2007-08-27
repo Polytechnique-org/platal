@@ -44,10 +44,10 @@ class UserSet extends PlSet
     {
         global $globals;
         parent::__construct('auth_user_md5 AS u',
-                            (!empty($GLOBALS['IS_XNET_SITE']) ? 
-                                'INNER JOIN groupex.membres AS gxm ON (u.user_id = gxm.uid 
+                            (!empty($GLOBALS['IS_XNET_SITE']) ?
+                                'INNER JOIN groupex.membres AS gxm ON (u.user_id = gxm.uid
                                                                        AND gxm.asso_id = ' . $globals->asso('id') . ') ' : '')
-                           . 'LEFT JOIN auth_user_quick AS q USING (user_id) 
+                           . 'LEFT JOIN auth_user_quick AS q USING (user_id)
                               LEFT JOIN aliases         AS a ON (a.id = u.user_id AND type = \'a_vie\')
                               ' . $joins,
                             $where,
@@ -204,7 +204,7 @@ class MinificheView extends MultipageView
                  LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
                  LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
                  LEFT JOIN  emails         AS em  ON (em.uid = u.user_id AND em.flags = 'active')" .
-                (S::logged() ? 
+                (S::logged() ?
                  "LEFT JOIN  contacts       AS c   On (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
                  : "");
     }
@@ -219,12 +219,12 @@ class MentorView extends MultipageView
 {
     public function __construct(PlSet &$set, $data, array $params)
     {
-        $this->entriesPerPage = 10; 
+        $this->entriesPerPage = 10;
         $this->addSortKey('rand', array('RAND(' . S::i('uid') . ')'), 'aléatoirement');
-        $this->addSortKey('name', array('nom', 'prenom'), 'nom'); 
-        $this->addSortKey('promo', array('-promo', 'nom', 'prenom'), 'promotion'); 
-        $this->addSortKey('date_mod', array('-date', '-promo', 'nom', 'prenom'), 'dernière modification'); 
-        parent::__construct($set, $data, $params); 
+        $this->addSortKey('name', array('nom', 'prenom'), 'nom');
+        $this->addSortKey('promo', array('-promo', 'nom', 'prenom'), 'promotion');
+        $this->addSortKey('date_mod', array('-date', '-promo', 'nom', 'prenom'), 'dernière modification');
+        parent::__construct($set, $data, $params);
     }
 
     public function fields()

@@ -66,11 +66,11 @@ foreach ($adresses as $adrid => $adr) {
                          $adr['cityid'], $adr['country'], $adr['region'],
                          $adr['regiontxt'], $adr['pub'], $statut,
                          S::v('uid', -1), $adrid);
-            $telsvalues = "";  		 
+            $telsvalues = "";  		
             foreach ($adr['tels'] as $tel) {
                 insert_new_tel($adrid, $tel);
             }
-        } else { 
+        } else {
             //c'est une mise à jour
             XDB::execute("UPDATE adresses SET adr1 = {?}, adr2 = {?},
                          adr3 = {?}, postcode = {?}, city = {?}, cityid = {?},

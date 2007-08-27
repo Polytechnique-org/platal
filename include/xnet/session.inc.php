@@ -23,7 +23,7 @@ class XnetSession
 {
     // {{{ function init
 
-    public static function init() 
+    public static function init()
     {
         global $globals;
 
@@ -104,7 +104,7 @@ class XnetSession
     // }}}
     // {{{ doAuthX
 
-    public static function doAuthX() 
+    public static function doAuthX()
     {
         global $globals, $page;
 
@@ -159,7 +159,7 @@ class XnetSession
     // {{{ killSuid
 
     public static function killSuid()
-    {   
+    {
         if (!S::has('suid')) {
             return;
         }
@@ -211,7 +211,7 @@ function may_update($force = false, $lose = false)
 /** Get membership informations for the current asso
  * @param force Force membership to be read from database
  * @param lose  Force membership to be false
- */ 
+ */
 function is_member($force = false, $lose = false)
 {
     if (!isset($_SESSION['is_member'])) {

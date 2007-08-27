@@ -80,8 +80,8 @@ class ForumsBanana extends Banana
         }
 
         // Build user profile
-        $req = XDB::query("      
-                 SELECT  nom     
+        $req = XDB::query("
+                 SELECT  nom
                    FROM  {$globals->banana->table_prefix}abos
               LEFT JOIN  {$globals->banana->table_prefix}list ON list.fid=abos.fid
                   WHERE  uid={?}", S::i('uid'));
@@ -93,7 +93,7 @@ class ForumsBanana extends Banana
         Banana::$profile['lastnews']                = S::v('banana_last');
         Banana::$profile['subscribe']               = $req->fetchColumn();
 
-        // Update the "unread limit" 
+        // Update the "unread limit"
         if (!is_null($time)) {
             XDB::execute("UPDATE  auth_user_quick
                              SET  banana_last = FROM_UNIXTIME({?})
@@ -105,14 +105,14 @@ class ForumsBanana extends Banana
             Banana::$page->killPage('forums');
             Banana::$page->killPage('subscribe');
             Banana::$spool_boxlist = false;
-        } else {            
+        } else {
             // Register custom Banana links and tabs
             if (!Banana::$profile['autoup']) {
                 Banana::$page->registerAction('<a href=\'javascript:dynpostkv("'
                                     . $platal->path . '", "updateall", ' . time() . ')\'>'
                                     . 'Marquer tous les messages comme lus'
                                     . '</a>', array('forums', 'thread', 'message'));
-            }   
+            }
             Banana::$page->registerPage('profile', 'Préférences', null);
         }
 

@@ -57,7 +57,7 @@ class ValidateIterator extends XOrgDBIterator
 abstract class Validate
 {
     // {{{ properties
-    
+
     public $uid;
     public $prenom;
     public $nom;
@@ -70,7 +70,7 @@ abstract class Validate
     public $unique;
     // enable the refuse button
     public $refuse = true;
-    
+
     public $type;
     public $comments = Array();
     // the validations rules : comments for admins
@@ -78,7 +78,7 @@ abstract class Validate
 
     // }}}
     // {{{ constructor
-    
+
     /** constructeur
      * @param       $_uid       user id
      * @param       $_unique    requête pouvant être multiple ou non
@@ -98,7 +98,7 @@ abstract class Validate
                   WHERE  u.user_id={?}", $_uid);
         list($this->prenom, $this->nom, $this->promo, $this->sexe, $this->forlife, $this->bestalias) = $res->fetchOneRow();
     }
-    
+
     // }}}
     // {{{ function submit()
 
@@ -110,7 +110,7 @@ abstract class Validate
         if ($this->unique) {
             XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
         }
-       
+
         $this->stamp = date('YmdHis');
         XDB::execute('INSERT INTO requests (user_id, type, data, stamp) VALUES ({?}, {?}, {?}, {?})',
                 $this->uid, $this->type, $this, $this->stamp);
@@ -131,7 +131,7 @@ abstract class Validate
 
     // }}}
     // {{{ function clean()
-    
+
     /** fonction à utiliser pour nettoyer l'entrée de la requête dans la table requests
      * attention, tout est supprimé si c'est un unique
      */
@@ -148,7 +148,7 @@ abstract class Validate
 
     // }}}
     // {{{ function handle_formu()
-    
+
     /** fonction à réaliser en cas de valistion du formulaire
      */
     public function handle_formu()
@@ -190,7 +190,7 @@ abstract class Validate
             $mailer->addTo($globals->core->admin_emails);
 
             $body = "Validation {$this->type} pour {$this->prenom} {$this->nom}\n\n"
-              . S::v('bestalias')." a ajouté le commentaire :\n\n" 
+              . S::v('bestalias')." a ajouté le commentaire :\n\n"
               . Env::v('comm')."\n\n"
               . "cf la discussion sur : ".$globals->baseurl."/admin/validate";
 
@@ -251,13 +251,13 @@ abstract class Validate
 
     // }}}
     // {{{ function trig()
-    
+
     protected function trig($msg)
     {
         global $page;
         $page->trig($msg);
     }
-    
+
     // }}}
     // {{{ function get_typed_request()
 
@@ -312,22 +312,22 @@ abstract class Validate
     // {{{ function _mail_body
 
     abstract protected function _mail_body($isok);
-    
+
     // }}}
     // {{{ function _mail_subj
 
     abstract protected function _mail_subj();
-    
+
     // }}}
     // {{{ function commit()
-    
+
     /** fonction à utiliser pour insérer les données dans x4dat
      */
     abstract public function commit();
 
     // }}}
     // {{{ function formu()
-    
+
     /** nom du template qui contient le formulaire */
     abstract public function formu();
 

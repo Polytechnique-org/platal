@@ -29,7 +29,7 @@ if ($matches) {
     $mbox   = $matches[2];
     $fqdn   = strtolower($matches[3]);
     $sup    = $matches[4];
- 
+
     if ($fqdn == 'polytechnique.org') {
         http_redirect("https://www.polytechnique.org/lists/$action/$mbox$sup");
     }

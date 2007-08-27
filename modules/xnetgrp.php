@@ -46,7 +46,7 @@ function get_infos($email)
                                 WHERE user_id = {?}", $user['uid']);
             $user = array_merge($user, $res->fetchOneAssoc());
         }
-        return $user;                        
+        return $user;
     } elseif ($dom == 'polytechnique.org' || $dom == 'm4x.org') {
         $res = XDB::query(
                 "SELECT  user_id AS uid, u.promo,
@@ -122,7 +122,7 @@ class XnetGrpModule extends PLModule
                 XDB::query('DELETE r.*
                               FROM groupex.announces_read AS r
                         INNER JOIN groupex.announces AS a ON a.id = r.announce_id
-                             WHERE peremption < CURRENT_DATE()');       
+                             WHERE peremption < CURRENT_DATE()');
                 XDB::query('INSERT INTO groupex.announces_read
                                  VALUES ({?}, {?})',
                             Env::i('read'), S::i('uid'));
@@ -170,7 +170,7 @@ class XnetGrpModule extends PLModule
             $page->setRssLink("Polytechnique.net :: {$globals->asso("nom")} :: News",
                               'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
         }
-        
+
         $page->register_modifier('wiki_to_html', array('MiniWiki','WikiToHTML'));
         $page->assign('articles', $arts);
 
@@ -430,7 +430,7 @@ class XnetGrpModule extends PLModule
                 LEFT JOIN  emails          AS e ON ( e.flags = 'active' AND e.uid = m.uid)
                     WHERE  m.asso_id = {?} $ini
                            AND (m.origine != 'X' OR u.perms != 'pending' OR m.email IS NOT NULL)
-                 GROUP BY  m.uid          
+                 GROUP BY  m.uid
                  ORDER BY  $tri
                     LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
         $page->assign('ann', $ann);
@@ -446,7 +446,7 @@ class XnetGrpModule extends PLModule
     {
         pl_redirect('annuaire/geoloc');
     }
-    
+
     function handler_vcard(&$page, $photos = null)
     {
         global $globals;
@@ -582,7 +582,7 @@ class XnetGrpModule extends PLModule
     {
         if (Env::has('right') && (may_update() || S::has('suid'))) {
             switch (Env::v('right')) {
-              case 'admin':              
+              case 'admin':
                 XnetSession::killSuid();
                 break;
               case 'anim':
@@ -591,7 +591,7 @@ class XnetGrpModule extends PLModule
                 is_member(true);
                 break;
               case 'member':
-                XnetSession::doSelfSuid();  
+                XnetSession::doSelfSuid();
                 may_update(false, true);
                 is_member(true);
                 break;
@@ -698,7 +698,7 @@ class XnetGrpModule extends PLModule
                                 $market = new Marketing($uid, $email, 'group', $globals->asso('nom'),
                                                         Env::v('market_from'), S::v('uid'));
                                 $market->add();
-                            }            
+                            }
                         }
                         XDB::execute('INSERT INTO groupex.membres (uid, asso_id, origine, email)
                                            VALUES ({?}, {?}, "X", {?})',
@@ -1017,9 +1017,9 @@ class XnetGrpModule extends PLModule
             $promo_min = ($art['public'] ? 0 : $art['promo_min']);
             $promo_max = ($art['public'] ? 0 : $art['promo_max']);
             if (is_null($aid)) {
-                $fulltext = $art['texte']; 
-                if (!empty($art['contact_html'])) { 
-                    $fulltext .= "\n\n'''Contacts :'''\\\\\n" . $art['contact_html']; 
+                $fulltext = $art['texte'];
+                if (!empty($art['contact_html'])) {
+                    $fulltext .= "\n\n'''Contacts :'''\\\\\n" . $art['contact_html'];
                 }
                 $post = null;
                 if ($globals->asso('forum')) {
@@ -1062,7 +1062,7 @@ class XnetGrpModule extends PLModule
         }
         if (Post::v('valid') == 'Enregistrer' || Post::v('valid') == 'Annuler') {
             pl_redirect("");
-        } 
+        }
 
         if (empty($art) && !is_null($aid)) {
             $res = XDB::query("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife,
@@ -1088,7 +1088,7 @@ class XnetGrpModule extends PLModule
             if ($events->total()) {
                 $page->assign('events', $events);
             }
-        } 
+        }
 
         $art['contact_html'] = @MiniWiki::WikiToHTML($art['contact_html']);
         $page->assign('art', $art);

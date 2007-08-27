@@ -30,7 +30,7 @@ class MMList extends XmlrpcClient
         parent::__construct($url);
         if ($globals->debug & DEBUG_BT) {
             $this->bt = new PlBacktrace('MMList');
-        }   
+        }
     }
 
     public function __call($method, $args)

@@ -13,7 +13,7 @@ my $list   = shift;
 #
 ################################################################################
 # CONSTANTS
-# 
+#
 my $spool  = "/var/spool/platal/archives/";
 my $tmpbox = "mytmpbox.mbox";
 
@@ -64,13 +64,13 @@ while(<>) {
                 # dummy init
                 $odir = 1;
             }
-                
+
             $m = $conv{$1};
             $y = $2;
             open FILE,"> $tmpbox";
         }
     }
-    
+
     print FILE $line;
 }
 

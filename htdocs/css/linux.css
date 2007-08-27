@@ -34,7 +34,7 @@ legend {
     border: 1px #777777 solid;
     color: inherit;
 }
-    
+
 
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
@@ -49,7 +49,7 @@ h1 a:link, h1 a:visited, h1 a:active {
 h1 a:hover {
     color: #cccccc;
 }
-        
+
 h1 {
     color: #eeeeee;
     background-color: #444444;

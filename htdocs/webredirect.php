@@ -24,9 +24,9 @@ require_once dirname(__FILE__).'/../include/xorg.inc.php';
 global $globals;
 list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
 $res = XDB::query(
-        "SELECT  redirecturl 
-           FROM  auth_user_quick AS a 
-     INNER JOIN  aliases         AS al ON (al.id = a.user_id AND (al.type='a_vie' OR al.type='alias')) 
+        "SELECT  redirecturl
+           FROM  auth_user_quick AS a
+     INNER JOIN  aliases         AS al ON (al.id = a.user_id AND (al.type='a_vie' OR al.type='alias'))
       LEFT JOIN  virtuals_redirect AS vr ON (vr.redirect LIKE CONCAT(al.alias, '@%')
      INNER JOIN  virtuals        AS v ON (v.vid = vr.vid)
           WHERE  al.alias = {?} OR v.alias = CONCAT({?}, '@', {?})

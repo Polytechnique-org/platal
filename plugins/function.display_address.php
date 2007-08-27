@@ -30,8 +30,8 @@ function display_address_isIdentity($idt, $value, $test_reverse = true)
         return true;
     }
 
-    if ($test_reverse) { 
-        return display_address_isIdentity($idt, implode(' ', array_reverse(explode(' ', $value))), false); 
+    if ($test_reverse) {
+        return display_address_isIdentity($idt, implode(' ', array_reverse(explode(' ', $value))), false);
     }
     return false;
 }
@@ -82,7 +82,7 @@ function smarty_function_display_address($param, &$smarty)
     if ($param['adr']['mobile'])
         $txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['mobile']."</strong>\n</div>\n";
     if ($param['adr']['tels'] && count($param['adr']['tels'])) {
-        foreach ($param['adr']['tels'] as $tel) 
+        foreach ($param['adr']['tels'] as $tel)
             $txthtml .= "<div>\n<em>".$tel['tel_type']."&nbsp;: </em>\n<strong>".$tel['tel']."</strong>\n</div>\n";
     }
     if (!$param['nodiv']) {
