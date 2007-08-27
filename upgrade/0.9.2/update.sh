@@ -30,6 +30,6 @@ echo "To make statistics work :
       evolution-inscrits-mails, plot-graphs, mailParselog
   - add symlinks :
       in htdocs/stats : ln -s /home/web/stats/graph-* .
-      in templates/stats : ln -s /home/web/stats/lastParselog* . 
+      in templates/stats : ln -s /home/web/stats/lastParselog* .
 
 "

@@ -25,7 +25,7 @@ You now have to :
 
 (*) apt-get install php4-gd2
     add extension=gd.so in /etc/php/apache(2?)/php.ini
-    
+
 (*) apt-get install php-banana (may not be on public servers)
     and add a rewrite rule on www.polytechnique.org (http and https) :
     ^/banana/([^/]*/.*)$    /usr/share/banana/\$1
