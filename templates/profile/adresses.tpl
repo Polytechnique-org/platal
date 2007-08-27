@@ -20,52 +20,48 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<script type="text/javascript">//<![CDATA[
+{literal}
+function removeAddress(id, pref)
+{
+  document.getElementById(id).style.display = "none";
+  document.forms.prof_annu[pref + "[removed]"].value = "1";
+}
 
-<div class="blocunite_tab">
-  <table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Adresses personnelles">
-    <tr>
-      <th colspan="5">
-        Adresses personnelles
-      </th>
-    </tr>
+{/literal}
+//]]></script>
 
+{foreach key=i item=adr from=$addresses}
+{assign var=adpref value="addresses[$i]"}
+{assign var=adid value="addresses_$i"}
+<table class="bicol" id="{$adid}" style="margin-bottom: 1em">
+  <tr>
+    <th>
+      <div style="float: left">
+        <input name="{$adpref}[active]" type="radio" value="{$adr.id}" {if $adr.current}checked="checked"{/if}
+               id="{$adid}_active"/>
+        <label for="{$adid}_active" class="smaller" style="font-weight: normal">actuelle</label>
+      </div>
+      <div style="float: right">
+        <a href="javascript:removeAddress('{$adid}', '{$adpref}')">{icon name=cross title="Supprimer l'adresse"}</a>
+      </div>
+      Adresse n°{$i + 1}
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <div>{include file="include/flags.radio.tpl" name="$adpref[pub]" notable=true val=$adr.pub}</div>
+      <div {if !$adr.geoloc}class="center"{/if}>{include file="geoloc/form.address.tpl" name=$adpref id=$adid adr=$adr}</div>
+    </td>
+  </tr>
+</table>
+<input type="hidden" name="{$adpref}[removed]" value="0"/>
+{/foreach}
+
+{*
     {section name=i loop=$nb_adr start=1 max=$nb_adr}
-    {*
-    $adrid = $ordre_adrid[$i];
-    $adr = &$adresses[$adrid];
-    *}
     {assign var='adrid' value=$ordre_adrid[i]}
     {assign var='adr' value=$adresses.$adrid}
-    <tr>
-      <th colspan="5">
-        <a id='adr{$adrid}'></a>
-        {if $adr.nouvelle != 'new'}Adresse n°{$smarty.section.i.index}{else}Rentre ici une nouvelle adresse{/if}
-        <input type="hidden" name="adrid[{$adrid}]" value="{$adrid}" />
-        {if $adr.nouvelle == 'new'}
-        <input type="hidden" name="numero_formulaire[{$adrid}]" value="0" />
-        {else}
-        <input type="hidden" name="numero_formulaire[{$adrid}]" value="{$smarty.section.i.index}" />
-        {/if}
-        {if $adr.nouvelle != 'new'}
-        <a href="profile/edit/{$onglet}?adrid_del[{$adrid}]=1" style="color:inherit">{icon name=cross title="Supprimer cette adresse"}</a>
-        {/if}
-      </th>
-    </tr>
-    {include file="include/flags.radio.tpl" name="pub[$adrid]" val=$adr.pub}
-    <tr>
-      <td class="left">
-        &nbsp;
-      </td>
-      <td colspan="4" class="right">
-        <em>c'est à cette adresse que je suis actuellement</em>
-        <input name="adrid_active" type="radio" value="{$adrid}" {if $adr.active}checked="checked"{/if} />
-      </td>
-    </tr>
-    {if $adr.nouvelle != 'new'}
-    {assign var="titre" value="Adresse n°`$smarty.section.i.index`&nbsp;:"}
-    {else}
-    {assign var="titre" value="Nouvelle adresse&nbsp;:"}
-    {/if}
     {include file="geoloc/form.address.tpl" adr=$adr titre=$titre}
     <tr>
       <td class="colg">
@@ -120,6 +116,5 @@
     {/section}
     <tr><td colspan="5">&nbsp;</td></tr>
   </table>
-</div>
-
+*}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

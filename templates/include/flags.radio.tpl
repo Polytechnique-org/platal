@@ -20,8 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 {if $display neq "mini"}
+  {if !$notable}
     <tr>
       <td colspan="5" class="pflags">
+  {/if}
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
@@ -47,8 +49,10 @@
             </td>
           </tr>
         </table>
+  {if !$notable}
       </td>
     </tr>
+  {/if}
 {else}
             <td class="vert">
               <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if} />

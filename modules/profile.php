@@ -313,7 +313,7 @@ class ProfileModule extends PLModule
         $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true);
         require_once dirname(__FILE__) . '/profile/page.inc.php';
         $wiz->addPage('ProfileGeneral', 'Général', 'general');
-        $wiz->addPage('ProfileAddress', 'Adresses personnelles', 'adresses');
+        $wiz->addPage('ProfileAddresses', 'Adresses personnelles', 'adresses');
         $wiz->addPage('ProfileGroups', 'Groupes X - Binets', 'poly');
         $wiz->addPage('ProfileDeco', 'Décorations - Medals', 'deco');
         $wiz->addPage('ProfilePro', 'Informations professionnelles', 'emploi');
