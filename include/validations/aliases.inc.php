@@ -31,7 +31,7 @@ class AliasReq extends Validate
 
     public $old='';
     public $public='private';
-    
+
     public $rules = "Interdire ce qui peut nous servir (virus@, postmaster@, ...),
                   les alias vulgaires, et les prenom.nom (sauf si c'est pour l'utilisateur prenom.nom).
                   Pas de contrainte pour les tirets ou les points, en revanche le souligné (_) est interdit";

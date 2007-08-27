@@ -37,7 +37,7 @@ function get_user_ax($matricule_ax, $raw=false)
 
     $userax = Array();
     $userax['matricule_ax'] = $matricule_ax;
-    
+
     $userax['nom'] = strtoupper($ancien->Nom_patr());
     $userax['nom_usage'] = strtoupper($ancien->Nom_usuel());
     if ($userax['nom_usage'] == $userax['nom']) $userax['nom_usage'] = '';
@@ -54,8 +54,8 @@ function get_user_ax($matricule_ax, $raw=false)
         $userax['corps'] = $ancien->Corps();
         $userax['corps_grade'] = $ancien->Grade();
     } */
-    $userax['adr_pro'] = array(); 
-    
+    $userax['adr_pro'] = array();
+
     for ($i = 0; $i < $ancien->Num_Activite(); $i++) {
         $jobax = array();
         $jobax['entreprise'] = $ancien->Entreprise($i);
@@ -100,7 +100,7 @@ function get_user_ax($matricule_ax, $raw=false)
         if ($ancien->Mobile($i)) $userax['mobile'] = $ancien->Mobile($i);
         $userax['adr'][$i] = $adrax;
     }
-    
+
 /*    $userax['formation'] = array();
     for($i=$ancien->Num_formation() - 1; $i >= 0; $i--)
         $userax['formation'][$i] = $ancien->Formation($i);*/

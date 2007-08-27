@@ -32,7 +32,7 @@ $sql = "SELECT  u.nom, u.prenom, u.nom_ini, u.prenom_ini, u.promo, u.promo_sorti
 
 $result = XDB::query($sql, S::v('uid', -1));
 list($nom, $prenom, $nom_ini, $prenom_ini, $promo, $promo_sortie, $nom_usage, $nationalite,
-	$mobile, $mobile_pub, $web, $web_pub, $freetext, $freetext_pub, $nickname, 
+	$mobile, $mobile_pub, $web, $web_pub, $freetext, $freetext_pub, $nickname,
         $synchro_ax, $matricule_ax,
         $appli_id1,$appli_type1, $appli_id2,$appli_type2) = $result->fetchOneRow();
 

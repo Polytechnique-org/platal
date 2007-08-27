@@ -54,7 +54,7 @@ class CoreLogger
     }
 
     /** Creates a new session entry in database and return its ID.
-     * 
+     *
      * @param $uid the id of the logged user
      * @param $suid the id of the administrator who has just su'd to the user
      * @return session the session id

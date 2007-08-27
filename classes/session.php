@@ -53,10 +53,10 @@ class Session
         return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
     }
 
-    public static function s($key, $default = '') 
+    public static function s($key, $default = '')
     {
         return (string)Session::v($key, $default);
-    } 
+    }
 
     public static function i($key, $default = 0)
     {

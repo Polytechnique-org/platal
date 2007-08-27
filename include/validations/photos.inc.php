@@ -54,7 +54,7 @@ class PhotoReq extends Validate
 
     private function read(PlUpload &$upload)
     {
-        $this->valid = $upload->resizeImage(240, 300, 160, 0, SIZE_MAX); 
+        $this->valid = $upload->resizeImage(240, 300, 160, 0, SIZE_MAX);
         if (!$this->valid) {
             $this->trig('Le fichier que tu as transmis n\'est pas une image valide, ou est trop gros pour être traité');
         }
@@ -62,7 +62,7 @@ class PhotoReq extends Validate
         list($this->x, $this->y, $this->mimetype) = $upload->imageInfo();
         $upload->rm();
     }
-    
+
     // }}}
     // {{{ function isValid()
 

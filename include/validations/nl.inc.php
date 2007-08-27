@@ -29,7 +29,7 @@ class NLReq extends Validate
 
     public $art;
     public $rules = "Laisser valider par le NL-MASTER";
-    
+
     // }}}
     // {{{ constructor
 
@@ -68,7 +68,7 @@ class NLReq extends Validate
 
     // }}}
     // {{{ function _mail_subj
-    
+
     protected function _mail_subj()
     {
         return "[Polytechnique.org/NL] Proposition d'article dans la NL";

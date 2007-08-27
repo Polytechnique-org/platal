@@ -41,7 +41,7 @@ if (Post::has('grade')) {
     foreach (Post::v('grade') as $mid=>$gid) {
         XDB::execute('UPDATE profile_medals_sub SET gid={?} WHERE uid={?} AND mid={?}', $gid, S::v('uid'), $mid);
     }
-} 
+}
 
 $res    = XDB::query(
     	"SELECT  m.id, m.text AS medal, m.type, m.img, s.gid

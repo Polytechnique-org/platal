@@ -52,13 +52,13 @@ function quoted_printable_encode($input, $line_max = 76)
     return trim($output);
 }
 
-/** vérifie si une adresse email convient comme adresse de redirection 
+/** vérifie si une adresse email convient comme adresse de redirection
  * @param $email l'adresse email a verifier
  * @return BOOL
  */
 function isvalid_email_redirection($email)
 {
-    return isvalid_email($email) && 
+    return isvalid_email($email) &&
         !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
 }
 
@@ -83,7 +83,7 @@ function rand_token($len = 22)
 
 /** genere une chaine aleatoire convenable pour une url
  * @param $len longueur souhaitée, 22 par défaut
- * @return la chaine aleatoire 
+ * @return la chaine aleatoire
  */
 function rand_url_id($len = 22)
 {
@@ -108,11 +108,11 @@ $lc_convert = array('é' => 'e', 'è' => 'e', 'ë' => 'e', 'ê' => 'e',
     'ô' => 'o', 'ö' => 'o', 'ò' => 'o', 'ó' => 'o', 'õ' => 'o', 'ø' => 'o',
     'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
     'ç' => 'c', 'ñ' => 'n');
-$uc_convert = array('É' => 'E', 'È' => 'E', 'Ë' => 'E', 'Ê' => 'E', 
-    'Á' => 'A', 'À' => 'A', 'Ä' => 'A', 'Â' => 'A', 'Å' => 'A', 'Ã' => 'A', 
-    'Ï' => 'I', 'Î' => 'I', 'Ì' => 'I', 'Í' => 'I', 
-    'Ô' => 'O', 'Ö' => 'O', 'Ò' => 'O', 'Ó' => 'O', 'Õ' => 'O', 'Ø' => 'O', 
-    'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U', 
+$uc_convert = array('É' => 'E', 'È' => 'E', 'Ë' => 'E', 'Ê' => 'E',
+    'Á' => 'A', 'À' => 'A', 'Ä' => 'A', 'Â' => 'A', 'Å' => 'A', 'Ã' => 'A',
+    'Ï' => 'I', 'Î' => 'I', 'Ì' => 'I', 'Í' => 'I',
+    'Ô' => 'O', 'Ö' => 'O', 'Ò' => 'O', 'Ó' => 'O', 'Õ' => 'O', 'Ø' => 'O',
+    'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U',
     'Ç' => 'C', 'Ñ' => 'N');
 
 function replace_accent($string)
@@ -173,28 +173,28 @@ function soundex_fr($sIn)
         $accents['Ç'] = 'S';
         $accents['¿'] = 'E';
     }
-    // Si il n'y a pas de mot, on sort immédiatement 
-    if ( $sIn === '' ) return '    '; 
-    // On supprime les accents 
+    // Si il n'y a pas de mot, on sort immédiatement
+    if ( $sIn === '' ) return '    ';
+    // On supprime les accents
     $sIn = strtr( $sIn, $accents);
-    // On met tout en minuscule 
-    $sIn = strtoupper( $sIn ); 
-    // On supprime tout ce qui n'est pas une lettre 
-    $sIn = preg_replace( '`[^A-Z]`', '', $sIn ); 
-    // Si la chaîne ne fait qu'un seul caractère, on sort avec. 
-    if ( strlen( $sIn ) === 1 ) return $sIn . '   '; 
-    // on remplace les consonnances primaires 
+    // On met tout en minuscule
+    $sIn = strtoupper( $sIn );
+    // On supprime tout ce qui n'est pas une lettre
+    $sIn = preg_replace( '`[^A-Z]`', '', $sIn );
+    // Si la chaîne ne fait qu'un seul caractère, on sort avec.
+    if ( strlen( $sIn ) === 1 ) return $sIn . '   ';
+    // on remplace les consonnances primaires
     $sIn = str_replace( $convGuIn, $convGuOut, $sIn );
     // on supprime les lettres répétitives
     $sIn = preg_replace( '`(.)\1`', '$1', $sIn );
     // on réinterprète les voyelles
     $sIn = preg_replace( $convVIn, $convVOut, $sIn);
-    // on supprime les terminaisons T, D, S, X (et le L qui précède si existe) 
+    // on supprime les terminaisons T, D, S, X (et le L qui précède si existe)
     $sIn = preg_replace( '`L?[TDSX]$`', '', $sIn );
     // on supprime les E, A et Y qui ne sont pas en première position
     $sIn = preg_replace( '`(?!^)Y([^AEOU]|$)`', '\1', $sIn);
     $sIn = preg_replace( '`(?!^)[EA]`', '', $sIn);
-    return substr( $sIn . '    ', 0, 4); 
+    return substr( $sIn . '    ', 0, 4);
 }
 
 /** met les majuscules au debut de chaque atome du prénom
@@ -284,9 +284,9 @@ function check_redirect($red = null)
     require_once 'emails.inc.php';
     if (is_null($red)) {
         $red = new Redirect(S::v('uid'));
-    }    
+    }
     $_SESSION['no_redirect'] = !$red->other_active('');
-    $_SESSION['mx_failures'] = $red->get_broken_mx();    
+    $_SESSION['mx_failures'] = $red->get_broken_mx();
 }
 
 function send_warning_mail($title)

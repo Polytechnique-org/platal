@@ -30,14 +30,14 @@ class EvtReq extends Validate
     public $texte;
     public $pmin;
     public $pmax;
-    public $peremption;    
+    public $peremption;
     public $comment;
 
     public $imgtype;
     public $imgx;
     public $imgy;
     public $img;
-    
+
     // }}}
     // {{{ constructor
 
@@ -52,7 +52,7 @@ class EvtReq extends Validate
         $this->comment    = $_comment;
         if ($upload) {
             $this->readImage($upload);
-        } 
+        }
     }
 
     // }}}
@@ -111,7 +111,7 @@ class EvtReq extends Validate
 
     // }}}
     // {{{ function _mail_subj
-    
+
     protected function _mail_subj()
     {
         return "[Polytechnique.org/EVENEMENTS] Proposition d'événement";

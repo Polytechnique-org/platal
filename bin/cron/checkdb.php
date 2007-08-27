@@ -21,13 +21,13 @@
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
- * 
-*/ 
+ *
+*/
 
 require('./connect.db.inc.php');
 require("Console/Getopt.php");
 
-function check($sql, $commentaire='') 
+function check($sql, $commentaire='')
 {
     $it = XDB::iterRow($sql);
     if ($err = XDB::error()) echo $err;
@@ -43,7 +43,7 @@ function check($sql, $commentaire='')
             echo "|";
             foreach ($arr as $val) echo "\t$val\t|";
             echo "\n";
-        } 
+        }
         echo "\n";
     }
 }
@@ -139,7 +139,7 @@ check("SELECT e.uid, e.country, e.region FROM entreprises AS e LEFT JOIN geoloc_
 /* donne la liste des emails douteux que les administrateurs n'ont pas encore traité */
 check("SELECT  a1.alias, a2.alias, e1.email, e2.flags
         FROM  emails        AS e1
-        INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND 
+        INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND
             (e1.uid<e2.uid  OR  NOT FIND_IN_SET('active', e2.flags))
             )
         INNER JOIN  emails_watch  AS w  ON(w.email = e1.email AND w.state = 'pending')
@@ -154,7 +154,7 @@ check("SELECT  a1.alias, a2.alias, e1.email, e2.flags
 /* donne la liste des emails dangereux ou douteux*/
 info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state
         FROM  emails        AS e1
-        INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND 
+        INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND
             (e1.uid<e2.uid  OR  NOT FIND_IN_SET('active', e2.flags))
             )
         INNER JOIN  emails_watch  AS w  ON(w.email = e1.email AND w.state != 'safe')

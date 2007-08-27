@@ -267,7 +267,7 @@ class MarketingModule extends PLModule
                 } else {
                     // On cherche les marketings précédents sur cette adresse
                     // email, en se restreignant au dernier mois
-                    
+
                     if (Marketing::get($uid, $email, true)) {
                         $page->assign('already', true);
                     } else {

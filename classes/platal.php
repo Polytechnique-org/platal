@@ -142,7 +142,7 @@ class Platal
                 if (!isset($place[$part])) {
                     $place[$part] = array();
                 }
-                $place =& $place[$part]; 
+                $place =& $place[$part];
             }
             $place["#final#"] = array();
         }

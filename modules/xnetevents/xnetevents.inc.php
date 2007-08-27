@@ -40,7 +40,7 @@ function get_event_detail($eid, $item_id = false)
       LEFT JOIN	groupex.evenements_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
       LEFT JOIN virtual AS al ON(al.type = 'evt' AND al.alias = CONCAT(short_name, {?}))
       LEFT JOIN virtual AS pl ON(pl.type = 'evt' AND pl.alias = CONCAT(short_name, {?}))
-          WHERE	(e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?} 
+          WHERE	(e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?}
        GROUP BY ei.item_id",
        '-absents@'.$globals->xnet->evts_domain,
        '-participants@'.$globals->xnet->evts_domain,
@@ -126,7 +126,7 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
                    IF(m.origine != 'X',m.sexe,FIND_IN_SET('femme', u.flags)) AS femme,
                    m.perms='admin' AS admin,
                    (m.origine = 'X') AS x,
-		   ep.uid, SUM(ep.paid) AS paid, SUM(nb) AS nb 
+		   ep.uid, SUM(ep.paid) AS paid, SUM(nb) AS nb
              FROM  groupex.evenements_participants AS ep
        INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
 	LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)

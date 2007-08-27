@@ -44,7 +44,7 @@ class Flagset
      * @param $flag XXX
      * @return VOID
      */
-    public function addFlag($flag) 
+    public function addFlag($flag)
     {
         if (!$flag) return;
         if (!$this->hasflag($flag)) {
@@ -59,7 +59,7 @@ class Flagset
      * @param $flag XXX
      * @return 1 || 0
      */
-    public function hasFlag($flag) 
+    public function hasFlag($flag)
     {
         $tok = strtok($this->value,$this->sep);
         while ($tok) {
@@ -75,8 +75,8 @@ class Flagset
     {
         $perms = explode(',', $flag);
         foreach ($perms as $perm)
-        {   
-            $ok = true; 
+        {
+            $ok = true;
             $rights = explode(':', $perm);
             foreach ($rights as $right) {
                 if (($right{0} == '!' && $this->hasFlag(substr($right, 1))) || !$this->hasFlag($right)) {
@@ -85,16 +85,16 @@ class Flagset
             }
             if ($ok) {
                 return true;
-            }       
+            }
         }
-        return false; 
+        return false;
     }
 
     /** remove flag
      * @param $flag XXX
      * @return VOID
      */
-    public function rmFlag($flag) 
+    public function rmFlag($flag)
     {
         if (!$flag) return;
         $newvalue = "";
@@ -116,7 +116,7 @@ class Flagset
     {
         return $this->value;
     }
-} 
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

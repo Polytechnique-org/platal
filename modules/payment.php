@@ -85,7 +85,7 @@ class PaymentModule extends PLModule
             '%grp/payment/cyber_return'  => $this->make_hook('cyber_return', AUTH_PUBLIC),
             '%grp/payment/paypal_return' => $this->make_hook('paypal_return', AUTH_PUBLIC),
             'admin/payments'        => $this->make_hook('admin', AUTH_MDP, 'admin'),
-        
+
         );
     }
 
@@ -200,7 +200,7 @@ class PaymentModule extends PLModule
                                 WHERE  rcb.id='$champ906'");
             if (list($rcb_text, $c_id, $c_text) = $res->fetchOneRow()) {
                 cb_erreur("erreur lors du paiement : $c_text ($c_id)");
-            } else{ 
+            } else{
                 cb_erreur("erreur inconnue lors du paiement");
             }
         }
@@ -337,12 +337,12 @@ class PaymentModule extends PLModule
     function handler_xnet_payment(&$page, $pid = null)
     {
         global $globals;
-        
+
         if (!is_null($pid)) {
             return  $this->handler_payment($page, $pid);
         }
         $page->changeTpl('payment/xnet.tpl');
-        
+
         $res = XDB::query(
                 "SELECT  id, text, url
                    FROM  {$globals->money->mpay_tprefix}paiements
@@ -436,7 +436,7 @@ class PaymentModule extends PLModule
         $page->assign('trans', $trans);
         $page->assign('event', $event);
     }
-    
+
     function handler_admin(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Paiements');
         $page->assign('title', 'Gestion des télépaiements');
@@ -453,7 +453,7 @@ class PaymentModule extends PLModule
         $table_editor->describe('mail','email contact',true);
         $table_editor->describe('confirmation','message confirmation',false);
         $table_editor->apply($page, $action, $id);
-    }  
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

@@ -56,7 +56,7 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
             if (isset($_GET['group'])) {
                 $res = XDB::query("SELECT  perms
                                      FROM  groupex.membres
-                               INNER JOIN  groupex.asso ON(id = asso_id) 
+                               INNER JOIN  groupex.asso ON(id = asso_id)
                                     WHERE  uid = {?} AND diminutif = {?}",
                                   S::v('uid'), $_GET['group']);
                 $perms = $res->fetchOneCell();

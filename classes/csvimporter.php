@@ -134,7 +134,7 @@ class CSVImporter
         VarStream::init();
         global $csv_source;
         $this->index     = null;
-        
+
         $csv_source = $csv;
         $res        = fopen('var://csv_source', 'r');
 
@@ -291,13 +291,13 @@ class CSVImporter
         }
         if ($current == 'values' && Env::has('csv_valid')) {
             $next = 'valid';
-        }    
+        }
         if (empty($csv)) {
             $next = 'source';
         }
         if (Env::has('csv_action')) {
             $_SESSION['csv_action'] = Env::v('csv_action');
-        } 
+        }
         if ($next == 'valid') {
             if ($current != 'valid') {
                 $cpyfields = array('csv_value', 'csv_user_value', 'csv_cond_field',
@@ -346,7 +346,7 @@ class CSVImporter
         $page->assign('csv_field_desc', $this->field_desc);
         $page->assign('csv_page', $next);
         $page->assign('csv_path', $url);
-        $page->assign('csv_fields', $fields);  
+        $page->assign('csv_fields', $fields);
     }
 }
 

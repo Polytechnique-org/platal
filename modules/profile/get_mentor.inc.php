@@ -40,7 +40,7 @@ if(Post::v('mentor_pays_op', '') == 'retirer') {
 }
 
 //recuperation des pays
-$res = XDB::iterRow("SELECT m.pid, p.pays 
+$res = XDB::iterRow("SELECT m.pid, p.pays
                     FROM mentor_pays AS m
 		    LEFT JOIN geoloc_pays AS p ON(m.pid = p.a2) WHERE m.uid = {?} LIMIT {?}", S::v('uid', -1), $max_mentor_pays);
 $nb_mentor_pays = $res->total();

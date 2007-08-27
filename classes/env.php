@@ -41,10 +41,10 @@ class Env
         return Env::_get($key, $default);
     }
 
-    public static function s($key, $default = '') 
-    { 
-        return (string)Env::_get($key, $default); 
-    } 
+    public static function s($key, $default = '')
+    {
+        return (string)Env::_get($key, $default);
+    }
 
     public static function b($key, $default = false)
     {
@@ -90,10 +90,10 @@ class Post
         return (bool)Post::_get($key, $default);
     }
 
-    public static function s($key, $default = '') 
-    { 
-        return (string)Post::_get($key, $default); 
-    } 
+    public static function s($key, $default = '')
+    {
+        return (string)Post::_get($key, $default);
+    }
 
     public static function i($key, $default = 0)
     {
@@ -173,9 +173,9 @@ class Cookie
         return Cookie::_get($key, $default);
     }
 
-    public static function s($key, $default = '') 
+    public static function s($key, $default = '')
     {
-        return (string)Cookie::_get($key, $default); 
+        return (string)Cookie::_get($key, $default);
     }
 
     public static function b($key, $default = false)

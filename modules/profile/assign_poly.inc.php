@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 $uid = S::v('uid');
- 
+
 $res = XDB::query(
         "SELECT  text,id
            FROM  binets_ins, binets_def

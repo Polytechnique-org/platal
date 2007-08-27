@@ -18,7 +18,7 @@ $InterMapFiles[]  = $globals->spoolroot.'/configs/pmwiki.intermap.txt';
 $Skin             = 'empty';
 
 @include_once("$FarmD/cookbook/e-protect.php");
-include_once($FarmD.'/scripts/xlpage-utf-8.php'); 
+include_once($FarmD.'/scripts/xlpage-utf-8.php');
 ResolvePageName();
 
 if ($action == 'rss'  || $action == 'atom' || $action == 'rdf'  || $action == 'dc') {
@@ -49,16 +49,16 @@ $GUIButtons['ul'] = array(530, '\\n* ', '\\n', '$[Unordered list]',
 $GUIButtons['hr'] = array(540, '\\n----\\n', '', '',
                  '$GUIButtonDirUrlFmt/hr.gif"$[Horizontal rule]"');
 $GUIButtons['table'] = array(600,
-                   '||border=1 width=80%\\n||!Hdr ||!Hdr ||!Hdr ||\\n||     ||     ||     ||\\n||     ||     ||     ||\\n', '', '', 
+                   '||border=1 width=80%\\n||!Hdr ||!Hdr ||!Hdr ||\\n||     ||     ||     ||\\n||     ||     ||     ||\\n', '', '',
                  '$GUIButtonDirUrlFmt/table.gif"$[Table]"');
 
 // set default author
 $Author = $_SESSION['forlife'].'|'.$_SESSION['prenom'].' '.$_SESSION['nom'];
 
 $InputTags['e_form'] = array(
-  ':html' => "<form action='{\$PageUrl}?action=edit' method='post'><div><input 
-    type='hidden' name='action' value='edit' /><input 
-    type='hidden' name='n' value='{\$FullName}' /><input 
+  ':html' => "<form action='{\$PageUrl}?action=edit' method='post'><div><input
+    type='hidden' name='action' value='edit' /><input
+    type='hidden' name='n' value='{\$FullName}' /><input
     type='hidden' name='basetime' value='\$EditBaseTime' /></div>");
 
 // set profiles to point to plat/al fiche
@@ -76,9 +76,9 @@ Markup('restorelinks','<%%',"//", '');
 ## [[#anchor]] in standard XHTML
 Markup('[[#','<[[','/(?>\\[\\[#([A-Za-z][-.:\\w]*))\\]\\]/e',
   "Keep(\"<a id='$1'></a>\",'L')");
-  
+
 Markup('tablebicol', '<block', '/\(:tablebicol ?([a-z_]+)?:\)/e', 'doBicol("$1")');
-Markup('pairrows', '_end', '/class=\'pair\_pmwiki\_([0-9]+)\'/e', 
+Markup('pairrows', '_end', '/class=\'pair\_pmwiki\_([0-9]+)\'/e',
     "($1 == 1)?'':('class=\"'.(($1 % 2 == 0)?'impair':'pair').'\"')");
 Markup('noclassth', '_end', '/<th class=\'[a-z_]+\'/', '<th');
 
@@ -95,7 +95,7 @@ function doBicol($column=false)
 
 function doPlatalLink($link, $text)
 {
-    if (strlen(trim($text)) == 0) { 
+    if (strlen(trim($text)) == 0) {
         $res = XDB::query("SELECT u.nom, u.prenom, u.promo, q.profile_nick AS surnom
                              FROM auth_user_md5   AS u
                        INNER JOIN auth_user_quick AS q USING(user_id)

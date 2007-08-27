@@ -31,7 +31,7 @@ function user_cmp($prenom, $nom, $_prenom, $_nom)
     $prenom  = strtoupper(replace_accent($prenom));
 
     $is_ok   = strtoupper($_prenom) == strtoupper($prenom);
-    
+
     $tokens  = preg_split("/[ \-']/", $nom, -1, PREG_SPLIT_NO_EMPTY);
     $maxlen  = 0;
 
@@ -161,7 +161,7 @@ function create_aliases (&$sub)
             "envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}</a>\">" .
             "support@{$globals->mail->domain}</a> en expliquant ta situation.";
     }
-    
+
     $res      = XDB::query('SELECT id, type, expire FROM aliases WHERE alias={?}', $mailorg);
 
     if ( $res->numRows() ) {
@@ -182,25 +182,25 @@ function create_aliases (&$sub)
             $mailer->addCc('"Support Polytechnique.org" <support@' . $globals->mail->domain . '>');
             $msg =
                 "Bonjour,\n\n".
-                
+
                 "Un homonyme vient de s'inscrire. La politique de Polytechnique.org est de fournir des\n".
                 "adresses mail devinables, nous ne pouvons donc pas conserver ton alias '$mailorg' qui\n".
                 "correspond maintenant à deux personnes.\n\n".
-                
+
                 "Tu gardes tout de même l'usage de cet alias pour un mois encore à compter de ce jour.\n\n".
-                
+
                 "Lorsque cet alias sera désactivé, l'adresse $mailorg@polytechnique.org renverra vers un \n".
                 "robot qui indiquera qu'il y a plusieurs personnes portant le même nom ;\n".
                 "cela évite que l'un des homonymes reçoive des courriels destinés à l'autre.\n\n".
-                
+
                 "Pour te connecter au site, tu pourras utiliser comme identifiant n'importe lequel de tes\n".
                 "autres alias :\n".
                 "    ".join(', ', $als)."\n";
                 "Commence dès aujourd'hui à communiquer à tes correspondants la nouvelle adresse que tu comptes utiliser !\n\n".
-                
+
                 "En nous excusant pour le désagrément occasionné,\n".
                 "Cordialement,\n\n".
-                
+
                 "-- \n".
                 "L'équipe de Polytechnique.org\n".
                 "\"Le portail des élèves & anciens élèves de l'X\"";
@@ -232,7 +232,7 @@ function finish_ins($sub_state)
     $pass     = rand_pass();
     $pass_encrypted = hash_encrypt($pass_clair);
     $hash     = rand_url_id(12);
-  
+
     XDB::execute('UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule = {?}', $email, $mat);
 
     XDB::execute(

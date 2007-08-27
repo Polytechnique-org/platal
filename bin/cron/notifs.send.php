@@ -81,7 +81,7 @@ EOF;
   </body>
 </html>
 EOF;
-    
+
     $mailer = new PlMailer();
     $mailer->setFrom('Carnet Polytechnicien <support_carnet@' . $globals->mail->domain . '>');
     $mailer->addTo("\"$u['prenom']} {$u['nom']}\" <{$u['bestalias']}@" . $globals->mail->domain . '>');

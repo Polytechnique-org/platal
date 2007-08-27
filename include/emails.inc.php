@@ -287,7 +287,7 @@ class Redirect
 
     // public function modify_one_email() {{{2
 
-    public function modify_one_email($email, $activate) 
+    public function modify_one_email($email, $activate)
     {
         $allinactive = true;
         $thisone = false;
@@ -310,7 +310,7 @@ class Redirect
             return ERROR_INACTIVE_REDIRECTION;
         } else {
             return SUCCESS;
-        } 
+        }
     }
 
     // public function modify_one_email_redirect() {{{2

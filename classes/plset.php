@@ -277,7 +277,7 @@ abstract class MultipageView implements PlView
         unset($list['page']);
         unset($list['order']);
         return $list;
-    } 
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

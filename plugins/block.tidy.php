@@ -41,7 +41,7 @@ $tidy_config = array(
  * File:     block.min_perms.php
  * Type:     block
  * Name:     min_perms
- * Purpose:  
+ * Purpose:
  * -------------------------------------------------------------
  */
 function smarty_block_tidy($params, $content, &$smarty)

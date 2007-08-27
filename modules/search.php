@@ -145,7 +145,7 @@ class SearchModule extends PLModule
         }
 
         require_once dirname(__FILE__) . '/search/search.inc.php';
-        $page->changeTpl('search/index.tpl');            
+        $page->changeTpl('search/index.tpl');
         $page->assign('xorg_title','Polytechnique.org - Annuaire');
     }
 
@@ -165,7 +165,7 @@ class SearchModule extends PLModule
             $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
             $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
             $view->apply('search/adv', $page, $action, $subaction);
-            
+
             if ($subaction) {
                 return;
             }
@@ -199,7 +199,7 @@ class SearchModule extends PLModule
                            $_REQUEST['q']);
         if (!$q) exit();
 
-        // try to look in cached results        
+        // try to look in cached results
         $cache = XDB::query('SELECT  `result`
                                FROM  `search_autocomplete`
                               WHERE  `name` = {?} AND
@@ -210,7 +210,7 @@ class SearchModule extends PLModule
             echo $res;
             die();
         }
-        
+
         // default search
         $q = preg_quote($q);
         $unique = '`user_id`';
@@ -219,7 +219,7 @@ class SearchModule extends PLModule
         $beginwith = true;
         $field2 = false;
         $qsearch = $q;
-        
+
         switch ($type) {
           case 'binetTxt':
             $db = '`binets_def` INNER JOIN
@@ -314,7 +314,7 @@ class SearchModule extends PLModule
             $beginwith = false;
             break;
           case 'sectionTxt':
-            $db = '`sections` INNER JOIN 
+            $db = '`sections` INNER JOIN
                    `auth_user_md5` ON(`auth_user_md5`.`section` = `sections`.`id`)';
             $field = '`sections`.`text`';
             $realid = '`sections`.`id`';
@@ -362,7 +362,7 @@ class SearchModule extends PLModule
         echo $res;
         exit();
     }
-    
+
     function handler_list(&$page, $type = null, $idVal = null)
     {
         // Give the list of all values possible of type and builds a select input for it
@@ -393,7 +393,7 @@ class SearchModule extends PLModule
             $db = '`groupesx_def`';
             break;
           case 'nationalite':
-            $db = '`geoloc_pays` INNER JOIN 
+            $db = '`geoloc_pays` INNER JOIN
                    `auth_user_md5` ON (`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite`)';
             $field = 'IF(`nat`=\'\', `pays`, `nat`)';
             $id = '`a2`';
@@ -401,7 +401,7 @@ class SearchModule extends PLModule
           case 'region':
             $db = '`geoloc_region`';
             $field = '`name`';
-            $id = '`region`'; 
+            $id = '`region`';
             if (isset($_REQUEST['country'])) {
                 $where .= ' WHERE `a2` = "'.$_REQUEST['country'].'"';
             }

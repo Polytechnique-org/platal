@@ -217,7 +217,7 @@ class AXLetterModule extends PLModule
                 $select .= "<option value=\"$stamp\"$sel>{$i}h</option>\n";
             }
             $page->assign('echeance_time', $select);
-        }    
+        }
     }
 
     function handler_cancel(&$page, $force = null)
@@ -319,7 +319,7 @@ class AXLetterModule extends PLModule
                           INNER JOIN auth_user_md5   AS u USING(user_id)
                           INNER JOIN aliases         AS a ON (u.user_id = a.id AND a.type = 'a_vie')");
         $page->assign('admins', $res);
-        
+
         $importer = new CSVImporter('axletter_ins');
         $importer->registerFunction('user_id', 'email vers Id X.org', array($this, 'idFromMail'));
         $importer->forceValue('hash', array($this, 'createHash'));
@@ -344,7 +344,7 @@ class AXLetterModule extends PLModule
             $user  = $email;
             $domain = $globals->mail->domain2;
         } else {
-            list($user, $domain) = explode('@', $email);    
+            list($user, $domain) = explode('@', $email);
         }
         if ($domain != $globals->mail->domain && $domain != $globals->mail->domain2
                 && $domain != $globals->mail->alias_dom && $domain != $globals->mail->alias_dom2) {

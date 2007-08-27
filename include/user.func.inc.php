@@ -44,7 +44,7 @@ function user_clear_all_subs($user_id, $really_del=true)
         array_push($tables_to_clear['uid'], 'emails', 'groupex.membres', 'contacts', 'adresses', 'tels',
                                             'photo', 'perte_pass', 'langues_ins', 'forums.abos', 'forums.profils');
         array_push($tables_to_clear['user_id'], 'newsletter_ins', 'auth_user_quick', 'binets_ins');
-        $tables_to_clear['id'] = array('aliases'); 
+        $tables_to_clear['id'] = array('aliases');
         $tables_to_clear['contact'] = array('contacts');
         $tables_to_clear['guid'] = array('groupesx_ins');
         XDB::execute("UPDATE auth_user_md5
@@ -108,7 +108,7 @@ function get_user_login($data, $get_forlife = false, $callback = '_default_user_
     if (strstr($data, '@')===false) {
         $data = $data.'@'.$globals->mail->domain;
     }
-    
+
     list($mbox, $fqdn) = explode('@', $data);
     if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
 
@@ -134,7 +134,7 @@ function get_user_login($data, $get_forlife = false, $callback = '_default_user_
         return false;
 
     } elseif ($fqdn == $globals->mail->alias_dom || $fqdn == $globals->mail->alias_dom2) {
-    
+
         $res = XDB::query("SELECT  redirect
                              FROM  virtual_redirect
                        INNER JOIN  virtual USING(vid)
@@ -156,10 +156,10 @@ function get_user_login($data, $get_forlife = false, $callback = '_default_user_
             case 0:
                 call_user_func($callback, $data);
                 return false;
-                
+
             case 1:
                 return $res->fetchOneCell();
-                
+
             default:
                 if (S::has_perms()) {
                     $aliases = $res->fetchColumn();
@@ -169,7 +169,7 @@ function get_user_login($data, $get_forlife = false, $callback = '_default_user_
                 }
         }
     }
-    
+
     return false;
 }
 
@@ -210,12 +210,12 @@ function get_users_forlife_list($members, $strict = false, $callback = '_default
 // {{{ function has_user_right()
 function has_user_right($pub, $view = 'private') {
     if ($pub == $view) return true;
-    // all infos available for private 
+    // all infos available for private
     if ($view == 'private') return true;
-    // public infos available for all 
+    // public infos available for all
     if ($pub == 'public') return true;
     // here we have view = ax or public, and pub = ax or private, and pub != view
-    return false;    
+    return false;
 }
 // }}}
 // {{{ function get_not_registered_user()
@@ -240,7 +240,7 @@ function get_not_registered_user($login, $iterator = false)
     $sql = "SELECT  user_id, nom, prenom, promo
               FROM  auth_user_md5
              WHERE  $where
-          ORDER BY  promo, nom, prenom"; 
+          ORDER BY  promo, nom, prenom";
     if ($iterator) {
         return XDB::iterator($sql, $nom, $prenom, $promo);
     } else {
@@ -293,7 +293,7 @@ function get_user_details_pro($uid, $view = 'private')
             }
             if (!has_user_right($pro['tel_pub'], $view)) {
                 // if no tel was defined, then the viewer will be able to write it
-                if ($pro['tel'] == '' && 
+                if ($pro['tel'] == '' &&
                     $pro['fax'] == '' &&
                     $pro['mobile'] == '') {
                     $all_pro[$i]['tel_pub'] = $view;
@@ -353,7 +353,7 @@ function get_user_details_adr($uid, $view = 'private') {
         else
             $adrid_index[$adr['adrid']] = $i;
     }
-    
+
     $sql = "SELECT  t.adrid, t.tel_pub, t.tel_type, t.tel, t.telid
               FROM  tels AS t
         INNER JOIN  adresses AS a ON (a.uid = t.uid) AND (a.adrid = t.adrid)
@@ -365,7 +365,7 @@ function get_user_details_adr($uid, $view = 'private') {
             $adrid = $nexttel['adrid'];
             unset($nexttel['adrid']);
             if (isset($adrid_index[$adrid])) {
-                if (!isset($all_adr[$adrid_index[$adrid]]['tels'])) 
+                if (!isset($all_adr[$adrid_index[$adrid]]['tels']))
                     $all_adr[$adrid_index[$adrid]]['tels'] = array($nexttel);
                 else
                     $all_adr[$adrid_index[$adrid]]['tels'][] = $nexttel;
@@ -399,7 +399,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
             LEFT JOIN  contacts        AS c  ON (c.uid = {?} and c.contact = u.user_id)
             LEFT JOIN  geoloc_pays     AS gp ON (gp.a2 = u.nationalite)
            INNER JOIN  sections        AS s  ON (s.id  = u.section)
-            LEFT JOIN  photo           AS p  ON (p.uid = u.user_id) 
+            LEFT JOIN  photo           AS p  ON (p.uid = u.user_id)
             LEFT JOIN  mentor          AS m  ON (m.uid = u.user_id)
             LEFT JOIN  emails          AS e  ON (e.uid = u.user_id AND e.flags='active')
                 WHERE  a.alias = {?}
@@ -447,7 +447,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
         $res  = XDB::query($sql, $uid);
         $user['binets']      = $res->fetchColumn();
         $user['binets_join'] = join(', ', $user['binets']);
-    
+
         $res  = XDB::iterRow("SELECT  text, url
                                 FROM  groupesx_ins
                            LEFT JOIN  groupesx_def ON groupesx_ins.gid = groupesx_def.id
@@ -457,7 +457,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
         while (list($gxt, $gxu) = $res->next()) {
             $user['gpxs'][] = $gxu ? "<a href=\"$gxu\">$gxt</a>" : $gxt;
             $user['gpxs_name'][] = $gxt;
-        } 
+        }
         $user['gpxs_join'] = join(', ', $user['gpxs']);
     }
 
@@ -466,7 +466,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                      INNER JOIN  applis_def ON applis_def.id = applis_ins.aid
                           WHERE  uid={?}
                        ORDER BY  ordre", $uid);
-    
+
     $user['applis_fmt'] = Array();
     $user['formation'] = Array();
     while (list($txt, $url, $type) = $res->next()) {
@@ -514,7 +514,7 @@ function add_user_address($uid, $adrid, $adr) {
 function update_user_address($uid, $adrid, $adr) {
     // update address
     XDB::execute(
-        "UPDATE adresses AS a LEFT JOIN geoloc_pays AS gp ON (gp.pays = {?}) 
+        "UPDATE adresses AS a LEFT JOIN geoloc_pays AS gp ON (gp.pays = {?})
         SET `adr1` = {?}, `adr2` = {?}, `adr3` = {?},
         `postcode` = {?}, `city` = {?}, a.`country` = gp.a2, `datemaj` = NOW(), `pub` = {?}
         WHERE adrid = {?} AND uid = {?}",
@@ -594,7 +594,7 @@ function update_user_pro($uid, $entrid, $pro) {
     $set = "";
     $args_join = array();
     $args_set = array();
-    
+
     $join .= "LEFT JOIN  emploi_secteur AS s ON(s.label LIKE {?})
             LEFT JOIN  emploi_ss_secteur AS ss ON(s.id = ss.secteur AND ss.label LIKE {?})
             LEFT JOIN  fonctions_def AS f ON(f.fonction_fr LIKE {?} OR f.fonction_en LIKE {?})";
@@ -607,7 +607,7 @@ function update_user_pro($uid, $entrid, $pro) {
     $args_set[] = $pro['poste'];
     $args_set[] = $pro['web'];
     $args_set[] = $pro['pub'];
-    
+
     if (isset($pro['adr1'])) {
         $join .= "LEFT JOIN  geoloc_pays AS gp ON (gp.country LIKE {?} OR gp.pays LIKE {?})
                 LEFT JOIN  geoloc_region AS gr ON (gr.a2 = gp.a2 AND gr.name LIKE {?})";
@@ -622,7 +622,7 @@ function update_user_pro($uid, $entrid, $pro) {
         $args_set[] = $pro['city'];
         $args_set[] = $pro['adr_pub'];
     }
-    
+
     if (isset($pro['tel'])) {
         $set .= ", e.`tel` = {?}, e.`fax` = {?}, e.`mobile` = {?}, e.tel_pub = {?}";
         $args_set[] = $pro['tel'];
@@ -634,7 +634,7 @@ function update_user_pro($uid, $entrid, $pro) {
         $set .= ", e.`email` = {?}, e.`email_pub` = {?}";
         $args_set[] = $pro['email'];
         $args_set[] = $pro['email_pub'];
-    }    
+    }
     $query = "UPDATE entreprises AS e ".$join." SET ".substr($set,1)." WHERE e.uid = {?} AND e.entrid = {?}";
     $args_where = array($uid, $entrid);
     $args = array_merge(array($query), $args_join, $args_set, $args_where);
@@ -712,7 +712,7 @@ function set_user_details($uid, $details) {
             XDB::execute(
             "INSERT INTO binets_ins (`user_id`, `binet_id`)
                 SELECT {?}, id FROM binets_def WHERE text = {?} LIMIT 1",
-                $uid, $binet);                
+                $uid, $binet);
     }
     if (isset($details['gpxs']) && is_array($details['gpxs'])) {
         XDB::execute("DELETE FROM groupesx_ins WHERE user_id = {?}", $uid);
@@ -722,7 +722,7 @@ function set_user_details($uid, $details) {
             "INSERT INTO groupesx_ins (`user_id`, `binet_id`)
                 SELECT {?}, id FROM groupesx_def WHERE text = {?} LIMIT 1",
                 $uid, $groupex);
-        }                
+        }
     }
     // applis
     // medals
@@ -787,7 +787,7 @@ function user_reindex($uid) {
 // {{{ function set_new_usage()
 
 function set_new_usage($uid, $usage, $alias=false)
-{ 
+{
     XDB::execute("UPDATE auth_user_md5 set nom_usage={?} WHERE user_id={?}",$usage ,$uid);
     XDB::execute("DELETE FROM aliases WHERE FIND_IN_SET('usage',flags) AND id={?}", $uid);
     if ($alias && $usage) {
@@ -808,15 +808,15 @@ function set_new_usage($uid, $usage, $alias=false)
 // {{{ function get_X_mat
 function get_X_mat($ourmat)
 {
-    if (!preg_match('/^[0-9]{8}$/', $ourmat)) { 
+    if (!preg_match('/^[0-9]{8}$/', $ourmat)) {
         // le matricule de notre base doit comporter 8 chiffres
         return 0;
-    }   
-    
+    }
+
     $year = intval(substr($ourmat, 0, 4));
     $rang = intval(substr($ourmat, 5, 3));
     if ($year < 1996) {
-        return; 
+        return;
     } elseif ($year < 2000) {
         $year = intval(substr(1900 - $year, 1, 3));
         return sprintf('%02u0%03u', $year, $rang);
@@ -824,8 +824,8 @@ function get_X_mat($ourmat)
         $year = intval(substr(1900 - $year, 1, 3));
         return sprintf('%03u%03u', $year, $rang);
     }
-}           
-    
+}
+
 // }}}
 
 

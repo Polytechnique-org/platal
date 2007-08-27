@@ -58,7 +58,7 @@ class NewsLetter extends MassMailer
         while (list($cid, $title) = $res->next()) {
             $this->_cats[$cid] = $title;
         }
-    
+
         $res = XDB::iterRow(
                 "SELECT  a.title,a.body,a.append,a.aid,a.cid,a.pos
                    FROM  newsletter_art AS a
@@ -76,7 +76,7 @@ class NewsLetter extends MassMailer
         XDB::execute('UPDATE newsletter SET date={?},titre={?},titre_mail={?},head={?},short_name={?} WHERE id={?}',
                      $this->_date, $this->_title, $this->_title_mail, $this->_head, $this->_shortname,$this->_id);
     }
-  
+
     public function getArt($aid)
     {
         foreach ($this->_arts as $key=>$artlist) {
@@ -104,7 +104,7 @@ class NewsLetter extends MassMailer
                          $this->_arts['a'.$a->_aid] = $a;
         }
     }
-   
+
     public function delArticle($aid)
     {
         XDB::execute('DELETE FROM newsletter_art WHERE id={?} AND aid={?}', $this->_id, $aid);
@@ -121,7 +121,7 @@ class NewsLetter extends MassMailer
     protected function setSent()
     {
         XDB::execute("UPDATE newsletter  SET bits='sent' WHERE id={?}", $this->_id);
-    }   
+    }
 
     static public function subscriptionState($uid = null)
     {
@@ -130,8 +130,8 @@ class NewsLetter extends MassMailer
                              FROM  newsletter_ins
                             WHERE  user_id={?}", $user);
         return $res->fetchOneCell();
-    }   
-    
+    }
+
     static public function unsubscribe($uid = null)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
@@ -181,7 +181,7 @@ class NewsLetter extends MassMailer
 class NLArticle
 {
     // {{{ properties
-    
+
     var $_aid;
     var $_cid;
     var $_pos;
@@ -191,7 +191,7 @@ class NLArticle
 
     // }}}
     // {{{ constructor
-    
+
     function __construct($title='', $body='', $append='', $aid=-1, $cid=0, $pos=0)
     {
         $this->_body   = $body;
@@ -210,13 +210,13 @@ class NLArticle
 
     // }}}
     // {{{ function body()
-    
+
     public function body()
     { return trim($this->_body); }
-    
+
     // }}}
     // {{{ function append()
-    
+
     public function append()
     { return trim($this->_append); }
 
@@ -239,14 +239,14 @@ class NLArticle
         $title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a>".pl_entities($this->title()).'</h2>';
         $body  = MiniWiki::WikiToHTML($this->_body);
         $app   = MiniWiki::WikiToHTML($this->_append);
-    
+
         $art   = "$title\n";
         $art  .= "<div class='art'>\n$body\n";
         if ($app) {
             $art .= "<div class='app'>$app</div>";
         }
         $art  .= "</div>\n";
-    
+
         return $art;
     }
 

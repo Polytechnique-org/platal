@@ -119,22 +119,22 @@ set_error_handler('pl_error_handler', E_ALL | E_STRICT);
 register_shutdown_function('pl_print_errors');
 // register_shutdown_function('pl_dump_env');
 
-/** Check if the string is utf8 
+/** Check if the string is utf8
  */
 function is_utf8($s)
 {
     return @iconv('utf-8', 'utf-8', $s) == $s;
 }
 
-/** vérifie si une adresse email est bien formatée  * ATTENTION, cette fonction ne doit pas être appelée sur une chaîne ayant subit un addslashes (car elle accepte le "'" qui it alors un "\'" 
- * @param $email l'adresse email a verifier 
+/** vérifie si une adresse email est bien formatée  * ATTENTION, cette fonction ne doit pas être appelée sur une chaîne ayant subit un addslashes (car elle accepte le "'" qui it alors un "\'"
+ * @param $email l'adresse email a verifier
  * @return BOOL  */
-function isvalid_email($email) 
+function isvalid_email($email)
 {
-    // la rfc2822 authorise les caractères "a-z", "0-9", "!", "#", "$", "%", "&", "'", "*", "+", "-", "/", "=", "?", "^",  `", "{", "|", "}", "~" aussi bien dans la partie locale que dans le domaine. 
-    // Pour la partie locale, on réduit cet ensemble car il n'est pas utilisé. 
-    // Pour le domaine, le système DNS limite à [a-z0-9.-], on y ajoute le "_" car il est parfois utilisé. 
-    return preg_match("/^[a-z0-9_.'+-]+@[a-z0-9._-]+\.[a-z]{2,4}$/i", $email); 
+    // la rfc2822 authorise les caractères "a-z", "0-9", "!", "#", "$", "%", "&", "'", "*", "+", "-", "/", "=", "?", "^",  `", "{", "|", "}", "~" aussi bien dans la partie locale que dans le domaine.
+    // Pour la partie locale, on réduit cet ensemble car il n'est pas utilisé.
+    // Pour le domaine, le système DNS limite à [a-z0-9.-], on y ajoute le "_" car il est parfois utilisé.
+    return preg_match("/^[a-z0-9_.'+-]+@[a-z0-9._-]+\.[a-z]{2,4}$/i", $email);
 }
 
 function pl_url($path, $query = null, $fragment = null)

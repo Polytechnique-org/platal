@@ -39,7 +39,7 @@ function hook_formatDisplayHeader($_header, $_text, $in_spool = false)
                         . '<img src="images/icons/user_suit.gif" title="fiche" alt="" /></a>';
                 } else {
                     return $address;
-                }    
+                }
             }
             if (!empty($text)) {
                 $text .= ', ';
@@ -143,7 +143,7 @@ function hook_makeLink($params)
         if (@$params['action'] == 'subscribe') {
             return $base . '/subscription';
         }
-    
+
         if (!isset($params['group'])) {
             return $base;
         }
@@ -151,8 +151,8 @@ function hook_makeLink($params)
     } else if (Banana::$protocole->name() == 'NNTP' && $xnet) {
         if ($feed) {
             return 'http://www.polytechnique.org/banana' . hook_platalRSS(@$params['group']);
-        }   
-        $base = $globals->baseurl . '/' . $platal->ns . 'forum';        
+        }
+        $base = $globals->baseurl . '/' . $platal->ns . 'forum';
     } else if (Banana::$protocole->name() == 'MLArchives') {
         if ($feed) {
             return $globals->baseurl . '/' . $platal->ns . hook_platalRSS(MLBanana::$listname);
@@ -184,9 +184,9 @@ function get_banana_params(array &$get, $group = null, $action = null, $artid = 
     }
     if (!is_null($action)) {
         if ($action == 'new') {
-            $get['action'] = 'new'; 
+            $get['action'] = 'new';
         } elseif (!is_null($artid)) {
-            $get['artid'] = $artid; 
+            $get['artid'] = $artid;
             if ($action == 'reply') {
                 $get['action'] = 'new';
             } elseif ($action == 'cancel') {
@@ -203,9 +203,9 @@ function get_banana_params(array &$get, $group = null, $action = null, $artid = 
             } elseif ($action) {
                 $get['part'] = str_replace('.', '/', $action);
             }
-            if (Get::v('action') == 'showext') { 
-                $get['action'] = 'showext'; 
-            }   
+            if (Get::v('action') == 'showext') {
+                $get['action'] = 'showext';
+            }
         }
     }
 }
@@ -227,7 +227,7 @@ function run_banana(&$page, $class, array $args)
     $bt = $banana->backtrace();
     if ($bt) {
         new PlBacktrace(Banana::$protocole->name(), $banana->backtrace(), 'response', 'time');
-    }    
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

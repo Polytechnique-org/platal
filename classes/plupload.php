@@ -74,7 +74,7 @@ class PlUpload
         } else if (!move_uploaded_file($file['tmp_name'], $this->filename)) {
             return false;
         }
-        $this->checkContentType(); 
+        $this->checkContentType();
         return true;
     }
 

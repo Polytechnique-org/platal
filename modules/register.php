@@ -48,7 +48,7 @@ class RegisterModule extends PLModule
             $sub_state['backs'][] = $state;
             if (count($sub_state['backs']) == 3) {
                 $alert .= "Tentative d'inscription tres hesitante - ";
-            }   
+            }
         }
 
         // Compatibility with old sources, keep it atm
@@ -69,7 +69,7 @@ class RegisterModule extends PLModule
                 $sub_state['nom']    = $nom;
                 $sub_state['prenom'] = $prenom;
                 $sub_state['ourmat'] = $ourmat;
-                $sub_state['watch']  = $watch; 
+                $sub_state['watch']  = $watch;
                 $sub_state['naissance_ini'] = $naiss;
 
                 XDB::execute(
@@ -362,7 +362,7 @@ class RegisterModule extends PLModule
                  . " - ip        : {$logger->ip} ({$logger->host})\n"
                  . ($logger->proxy_ip ? " - proxy     : {$logger->proxy_ip} ({$logger->proxy_host})\n" : "");
             $mymail->setTxtBody($msg);
-            $mymail->send(); 
+            $mymail->send();
         }
 
         Marketing::clear($uid);

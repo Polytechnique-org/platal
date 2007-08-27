@@ -24,7 +24,7 @@ global $page;
 function applis_options($current=0) {
     $html = '<option value="-1"></option>';
     $res  = XDB::iterator("select * from applis_def order by text");
-    while ($arr_appli = $res->next()) { 
+    while ($arr_appli = $res->next()) {
         $html .= '<option value="'.$arr_appli["id"].'"';
         if ($arr_appli["id"]==$current) $html .= " selected='selected'";
         $html .= '>'.htmlspecialchars($arr_appli["text"])."</option>\n";
@@ -73,9 +73,9 @@ function applis_fmt($type, $text, $url) {
         $txt .= $type;
     if ($text != "Université") {
         if ($txt) $txt .= ' ';
-        if ($url) 
+        if ($url)
             $txt .= "<a href=\"$url\" onclick=\"return popup(this)\">$text</a>";
-        else 
+        else
             $txt .= $text;
     }
     if (!$txt) {

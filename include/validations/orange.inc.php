@@ -29,9 +29,9 @@ class OrangeReq extends Validate
 
     public $promo;
     public $promo_sortie;
-    
+
     public $rules = "A priori accepter (la validation sert à repousser les
-    petits malins). Refuse si tu connais la personne et que tu es sure 
+    petits malins). Refuse si tu connais la personne et que tu es sure
     qu'elle n'est pas orange.";
 
     // }}}
@@ -42,7 +42,7 @@ class OrangeReq extends Validate
         parent::__construct($_uid, true, 'orange');
         $this->promo_sortie  = $_sortie;
         $res = XDB::query("SELECT promo FROM auth_user_md5 WHERE user_id = {?}", $_uid);
-        $this->promo = $res->fetchOneCell(); 
+        $this->promo = $res->fetchOneCell();
     }
 
     // }}}

@@ -46,7 +46,7 @@ function put_in_db($string){
 }
 
 // example of use for diff_user_details : get $b from database, $a from other site
-//  calculate diff $c and add $c in database (with set_user_details)            
+//  calculate diff $c and add $c in database (with set_user_details)
 function diff_user_details(&$a, &$b, $view = 'private') { // compute $c = $a - $b
 //    if (!isset($b) || !$b || !is_array($b) || count($b) == 0)
 //        return $a;
@@ -131,11 +131,11 @@ function diff_user_address($a, $b) {
         $a['pub'] = $b['pub'];
     if (isset($b['tels'])) {
         $bvar = $b['tels'];
-        
-        $telids_b = array();
-        foreach ($bvar as $i => $telb) $telids_b[$telb['telid']] = $i; 
 
-        if (isset($a['tels']))            
+        $telids_b = array();
+        foreach ($bvar as $i => $telb) $telids_b[$telb['telid']] = $i;
+
+        if (isset($a['tels']))
             $avar = $a['tels'];
         else
             $avar = array();
@@ -161,7 +161,7 @@ function diff_user_address($a, $b) {
                 }
             }
         }
-        
+
         foreach ($telids_b as $telidb => $i)
             $ctels[] = array('telid' => $telidb, 'remove' => 1);
 
@@ -183,8 +183,8 @@ function diff_user_address($a, $b) {
 function diff_user_addresses(&$a, &$b) {
     $c = $a;
     $adrids_b = array();
-    foreach ($b as $i => $adrb) $adrids_b[$adrb['adrid']] = $i; 
-    
+    foreach ($b as $i => $adrb) $adrids_b[$adrb['adrid']] = $i;
+
     foreach ($a as $j => $adra) {
         if (isset($adra['adrid'])) {
             // if b has an address with the same adrid, compute diff

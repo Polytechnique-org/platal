@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
- 
+
 function strmatch_whole_words($nouveau, $ancien) {
     $nouveau = strtoupper($nouveau);
     $ancien = strtoupper($ancien);

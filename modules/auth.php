@@ -180,7 +180,7 @@ class AuthModule extends PLModule
         $table_editor->describe('privkey','clé privée',false);
         $table_editor->describe('datafields','champs renvoyés',true);
         $table_editor->apply($page, $action, $id);
-    }  
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

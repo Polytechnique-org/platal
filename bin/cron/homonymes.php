@@ -22,7 +22,7 @@
 /* vim: set sw=4 ts=4 sts=4 tw=100:
  * crée des demandes de validation pour les kill d'alias
  * une demande 10 jours avant pour un warning, puis une autre pour le robot
-*/ 
+*/
 
 $W_PERIOD = "INTERVAL 7 DAY"; // temps d'envoi du warning avant la deadline
 

@@ -54,7 +54,7 @@ class SurveyReq extends Validate
 
     // }}}
     // {{{ function _mail_subj
-    
+
     protected function _mail_subj()
     {
         return "[Polytechnique.org/SONDAGES] Proposition de sondage";

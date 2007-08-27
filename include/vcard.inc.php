@@ -87,7 +87,7 @@ class VCardIterator implements PlIterator
                 S::v('uid'),
                 $user['forlife'].'@'.$globals->mail->domain,
                 $user['forlife'].'@'.$globals->mail->domain2);
-        
+
         $user['virtualalias'] = $res->fetchOneCell();
         $user['gpxs_vcardjoin'] = join(',', array_map(array('VCard', 'text_encode'), $user['gpxs_name']));
         $user['binets_vcardjoin'] = join(',', array_map(array('VCard', 'text_encode'), $user['binets']));

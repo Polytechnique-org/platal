@@ -57,7 +57,7 @@ function switch_bestalias($uid, $loginbis) {
     $res = XDB::query("SELECT alias FROM aliases WHERE id = {?} AND FIND_IN_SET('bestalias', flags)", $uid);
     $bestalias = $res->fetchOneCell();
     if ($bestalias && $bestalias != $loginbis) return false;
-    
+
     // select the shortest alias still alive
     $res = XDB::query("SELECT alias FROM aliases WHERE id = {?} AND alias != {?} AND expire IS NULL ORDER BY LENGTH(alias) LIMIT 1", $uid, $loginbis);
     $newbest = $res->fetchOneCell();

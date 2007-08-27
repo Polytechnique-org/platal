@@ -35,9 +35,9 @@ class MarkReq extends Validate
     public $m_type;
     public $m_data;
 
-    public $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance). Si le 
+    public $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance). Si le
     demandeur marque sa propre adresse mail, refuser dans tous les cas.
-    Ne pas marqueter au nom de Polytechnique.org plus d'une 
+    Ne pas marqueter au nom de Polytechnique.org plus d'une
     fois par an.";
     // }}}
     // {{{ constructor
@@ -55,7 +55,7 @@ class MarkReq extends Validate
                              FROM  auth_user_md5      AS u
                             WHERE  user_id = {?}
                          GROUP BY  u.user_id', $mark_id);
-        list ($this->m_nom, $this->m_prenom, $this->m_promo) = $res->fetchOneRow(); 
+        list ($this->m_nom, $this->m_prenom, $this->m_promo) = $res->fetchOneRow();
     }
 
     // }}}
@@ -75,7 +75,7 @@ class MarkReq extends Validate
 
     // }}}
     // {{{ function _mail_subj
-    
+
     protected function _mail_subj()
     {
         return "[Polytechnique.org] Marketing de {$this->m_prenom} {$this->m_nom} ({$this->m_promo})";
@@ -105,7 +105,7 @@ class MarkReq extends Validate
         if ($market == null) {
             return false;
         }
-        $market->send(); 
+        $market->send();
         return true;
     }
 

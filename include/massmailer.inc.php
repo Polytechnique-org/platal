@@ -58,7 +58,7 @@ abstract class MassMailer
         $res = XDB::query("SELECT  IF (n.short_name IS NULL, n.id, n.short_name)
                              FROM  {$this->_table} AS n
                             WHERE  n.bits != 'new' AND {$where}
-                            LIMIT  1"); 
+                            LIMIT  1");
         if ($res->numRows() != 1) {
             return null;
         }
@@ -108,7 +108,7 @@ abstract class MassMailer
     public function head($prenom = null, $nom = null, $sexe = null, $type = 'text')
     {
         if (is_null($prenom)) {
-            return $this->_head; 
+            return $this->_head;
         } else {
             $head = $this->_head;
             $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
@@ -204,7 +204,7 @@ abstract class MassMailer
             XDB::execute("UPDATE  {$this->_subscriptionTable}
                              SET  last = {?}
                            WHERE " . implode(' OR ', $sent), $this->_id);
-            
+
             sleep(60);
         }
     }

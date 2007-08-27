@@ -22,11 +22,11 @@
 
 /*
  * Smarty plugin
- * ------------------------------------------------------------- 
+ * -------------------------------------------------------------
  * File:     insert.mkStats.php
  * Type:     insert
  * Name:     mkStats
- * Purpose:  
+ * Purpose:
  * -------------------------------------------------------------
  */
 function smarty_insert_mkStats($params, &$smarty)

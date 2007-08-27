@@ -38,7 +38,7 @@ require_once("xorg.misc.inc.php");
     IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,
     COUNT(em.email) > 0 AS actif,';
 // hide private information if not logged
-if (S::logged()) 
+if (S::logged())
     $globals->search->result_fields .='
         q.profile_web AS web,
         q.profile_mobile AS mobile,
@@ -138,7 +138,7 @@ class SField
     // }}}
     // {{{ function get_request()
 
-    /** récupérer la requête de l'utilisateur 
+    /** récupérer la requête de l'utilisateur
      * on met une chaîne vide si le champ n'a pas été complété */
     function get_request()
     {
@@ -149,7 +149,7 @@ class SField
     // {{{ function get_where_statement()
 
     /** récupérer la clause correspondant au champ dans la clause WHERE de la requête
-     * on parcourt l'ensemble des champs de la bdd de $fieldDbName et on associe 
+     * on parcourt l'ensemble des champs de la bdd de $fieldDbName et on associe
      * à chacun d'entre eux une clause spécifique
      * la clause totale et la disjonction de ces clauses spécifiques */
     function get_where_statement()
@@ -490,7 +490,7 @@ class MapSField extends RefSField
         $this->value =  $this->mapId;
         $this->RefSField($_fieldFormName, $_fieldDbName, $_refTable, $_refAlias, $_refCondition, true, false);
     }
-    
+
     function get_select_statement()
     {
         if ($this->mapId === '') return false;
@@ -651,7 +651,7 @@ class PromoSField extends SField
     // }}}
     // {{{ constructor
 
-    /** constructeur 
+    /** constructeur
      * compareField est un champ de formulaire très simple qui ne sert qu'à la construction de la
      * clause WHERE de la promo */
     function PromoSField($_fieldFormName, $_compareFieldFormName, $_fieldDbName, $_fieldResultName)

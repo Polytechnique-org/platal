@@ -57,14 +57,14 @@ class XnetPage extends PlatalPage
         global $globals;
         parent::changeTpl($tpl, $type);
         $this->assign('is_logged', S::logged());
-        if ($globals->asso('id')) {  
+        if ($globals->asso('id')) {
             $this->assign('asso', $globals->asso());
             $this->setType($globals->asso('cat'));
             $this->assign('is_admin', may_update());
             $this->assign('is_member', is_member());
         }
     }
-    
+
     // }}}
     // {{{ function setType
 
@@ -85,9 +85,9 @@ class XnetPage extends PlatalPage
         $sub = array();
         $sub['liste des groupes'] = 'plan';
         $sub['documentation']     = 'Xnet';
-        $sub['signaler un bug']   = array('href' => 'send_bug', 'class' => 'popup_840x600'); 
+        $sub['signaler un bug']   = array('href' => 'send_bug', 'class' => 'popup_840x600');
         $menu["no_title"]   = $sub;
-        
+
         if (S::logged() && $globals->asso()) {
             $sub = array();
             $dim = $globals->asso('diminutif');

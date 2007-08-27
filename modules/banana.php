@@ -83,7 +83,7 @@ class BananaModule extends PLModule
         {
             $req = XDB::query("
                 SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
-                        IF(FIND_IN_SET('automaj',flags),'1','0') 
+                        IF(FIND_IN_SET('automaj',flags),'1','0')
                   FROM  forums.profils
                  WHERE  uid = {?}", S::v('uid'));
             if (!(list($nom,$mail,$sig,$disp,$maj) = $req->fetchOneRow())) {

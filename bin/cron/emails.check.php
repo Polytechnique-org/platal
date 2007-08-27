@@ -26,12 +26,12 @@ $panne_level = 3;
 
 require('./connect.db.inc.php');
 
-/* 
+/*
  * Check duplicated addresses
  */
 $sql = "SELECT a1.alias, a2.alias, e1.email
           FROM emails        AS e1
-    INNER JOIN emails        AS e2 ON (e1.email = e2.email AND e1.uid != e2.uid 
+    INNER JOIN emails        AS e2 ON (e1.email = e2.email AND e1.uid != e2.uid
                                        AND (e1.uid < e2.uid OR NOT FIND_IN_SET('active', e2.flags)))
      LEFT JOIN emails_watch  AS w  ON (e1.email = w.email)
     INNER JOIN aliases       AS a1 ON (a1.id = e1.uid AND a1.type = 'a_vie')

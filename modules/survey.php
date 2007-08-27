@@ -359,7 +359,7 @@ class SurveyModule extends PLModule
         } // }}}
     }
     // }}}
- 
+
     // {{{ function handler_ajax() : some ajax in editing a new question (for now, there may be a little more later)
     function handler_ajax(&$page, $type)
     {
@@ -442,7 +442,7 @@ class SurveyModule extends PLModule
         }
     }
     // }}}
-    
+
     // {{{ function show_confirm() : calls the template to display a confirm form
     function show_confirm(&$page, $message, $formaction, $formhidden = null)
     {

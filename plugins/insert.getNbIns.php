@@ -21,11 +21,11 @@
 
 /*
  * Smarty plugin
- * ------------------------------------------------------------- 
+ * -------------------------------------------------------------
  * File:     insert.getNbIns.php
  * Type:     insert
  * Name:     getNbIns
- * Purpose:  
+ * Purpose:
  * -------------------------------------------------------------
  */
 function smarty_insert_getNbIns($params, &$smarty)
