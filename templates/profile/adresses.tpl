@@ -34,6 +34,7 @@ function removeAddress(id, pref)
 {foreach key=i item=adr from=$addresses}
 {assign var=adpref value="addresses[$i]"}
 {assign var=adid value="addresses_$i"}
+<input type="hidden" name="{$adpref}[removed]" value="0"/>
 <table class="bicol" id="{$adid}" style="margin-bottom: 1em">
   <tr>
     <th>
@@ -51,70 +52,46 @@ function removeAddress(id, pref)
   <tr>
     <td>
       <div>{include file="include/flags.radio.tpl" name="$adpref[pub]" notable=true val=$adr.pub}</div>
-      <div {if !$adr.geoloc}class="center"{/if}>{include file="geoloc/form.address.tpl" name=$adpref id=$adid adr=$adr}</div>
+      <div style="clear: both"></div>
+      <div style="float: left">{include file="geoloc/form.address.tpl" name=$adpref id=$adid adr=$adr}</div>
+      <div style="float: right">
+        <div>
+          <input type="radio" name="{$adpref}[temporary]" id="{$adid}_temp_0" value="0"
+                 {if !$adr.temporary}checked="checked"{/if} /><label for="{$adid}_temp_0">permanente</label>
+          <input type="radio" name="{$adpref}[temporary]" id="{$adid}_temp_1" value="1"
+                 {if $adr.temporary}checked="checked"{/if} /><label for="{$adid}_temp_1">temporaire</label>
+        </div>
+        <div>
+          <input type="radio" name="{$adpref}[secondaire]" id="{$adid}_sec_0" value="0"
+                 {if !$adr.secondaire}checked="checked"{/if} /><label for="{$adid}_sec_0">ma résidence principale</label>
+          <input type="radio" name="{$adpref}[secondaire]" id="{$adid}_sec_1" value="1"
+                 {if $adr.secondaire}checked="checked"{/if} /><label for="{$adid}_sec_1">une résidence secondaire</label>
+        </div>
+        <div>
+          <input type="checkbox" name="{$adpref}[mail]" id="{$adid}_mail"
+                 {if $adr.mail}checked="checked"{/if} />
+          <label for="{$adid}_mail">on peut m'y envoyer du courrier par la poste</label>
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      {foreach from=$adr.tel key=t item=tel}
+      {assign var=telpref value="`$adpref`[tel][`$t`]"}
+      {assign var=telid   value="`$adid`_tel_`$t`"}
+      <div id="{$telid}" style="clear: both">
+        <div style="float: right" class="flags">
+          {include file="include/flags.radio.tpl" name="`$telpref`[pub]" val=$tel.pub display="div"}
+        </div>
+        <input type="hidden" name="{$telpref}[removed]" value="0" />
+        <input type="text" size="10" maxlength="30" name="{$telpref}[type]" value="{$tel.type}" />
+        <input type="text" size="19" maxlength="28" name="{$telpref}[tel]" value="{$tel.tel}" />
+      </div>
+      {/foreach}
     </td>
   </tr>
 </table>
-<input type="hidden" name="{$adpref}[removed]" value="0"/>
 {/foreach}
 
-{*
-    {section name=i loop=$nb_adr start=1 max=$nb_adr}
-    {assign var='adrid' value=$ordre_adrid[i]}
-    {assign var='adr' value=$adresses.$adrid}
-    {include file="geoloc/form.address.tpl" adr=$adr titre=$titre}
-    <tr>
-      <td class="colg">
-        <span class="titre">Adresse:</span>
-      </td>
-      <td class="cold" colspan="4">
-        <input type="radio" name="temporaire[{$adrid}]" value="0" {if !$adr.temporaire}checked="checked"{/if} />
-        permanente
-        <input type="radio" name="temporaire[{$adrid}]" value="1" {if $adr.temporaire}checked="checked"{/if} />
-        temporaire
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        &nbsp;
-      </td>
-      <td class="cold" colspan="4">
-        <input type="radio" name="secondaire[{$adrid}]" value="0" {if !$adr.secondaire}checked="checked"{/if} />
-        ma résidence principale
-        <input type="radio" name="secondaire[{$adrid}]" value="1" {if $adr.secondaire}checked="checked"{/if} />
-        une résidence secondaire
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        &nbsp;
-      </td>
-      <td class="cold" colspan="4">
-        <input type="checkbox" name="courrier[{$adrid}]" value="1" {if $adr.courrier}checked="checked"{/if} /> on peut m'y envoyer du courrier par la poste
-      </td>
-    </tr>
-    {foreach from=$adr.tels item="tel"}
-    <tr class="flags">
-      <td class="colg">
-        <input type="hidden" name="telid{$tel.telid}[{$adrid}]" value="{$tel.telid}"/>
-        {if $tel.new_tel && !$tel.tel}
-          <input type="hidden" name="new_tel{$tel.telid}[{$adrid}]" value="1"/>
-        {/if}
-        <span class="titre" onclick="this.style.display='none';var d = document.getElementById('tel_type{$adrid}_{$tel.telid}');d.style.display='inline';d.select();d.focus();">{$tel.tel_type}&nbsp;:</span>
-        <input id="tel_type{$adrid}_{$tel.telid}" style="display:none" type="text" size="5" maxlength="30" name="tel_type{$tel.telid}[{$adrid}]" value="{$tel.tel_type}"/>
-      </td>
-      <td>
-        <input type="text" size="19" maxlength="28" name="tel{$tel.telid}[{$adrid}]" value="{$tel.tel}" />
-        {if $tel.tel}
-        	<a href="profile/edit/{$onglet}?adrid={$adrid}&telid={$tel.telid}&deltel=1">{icon name=cross title="Supprimer ce tél."}</a>
-    	{/if}
-      </td>
-      {include file="include/flags.radio.tpl" name="tel_pub`$tel.telid`[$adrid]" val=$tel.tel_pub display="mini"}
-    </tr>
-    {/foreach}
-    <tr><td colspan="5">&nbsp;</td></tr>
-    {/section}
-    <tr><td colspan="5">&nbsp;</td></tr>
-  </table>
-*}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

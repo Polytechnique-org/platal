@@ -341,28 +341,33 @@ div.long td.rt { width: 65%; }
     margin-left: 16px;
 }
 
-table.flags, tr.flags {
+.flags {
     margin: 0.5em 0 0 0;
     padding: 0;
 }
-table.flags input { margin: 0px 2px; padding: 0px; }
-
-table.flags td.texte, tr.flags td.texte {
+.flags input {
+    margin: 0px 2px;
+    padding: 0px;
+}
+.flags .texte {
     font-size: smaller;
     font-weight: bold;
     padding: 0 8px 0 0;
 }
-table.flags td.vert, tr.flags td.vert {
+.flags .vert {
     background: url('../images/icons/flag_green.gif') top right no-repeat;
     padding: 0 16px 0 0;
+    margin-right: 16px;
 }
-table.flags td.orange, tr.flags td.orange { 
+.flags .orange {
     background: url('../images/icons/flag_orange.gif') top right no-repeat;
     padding: 0 16px 0 0;
+    margin-right: 16px;
 }
-table.flags td.rouge, tr.flags td.rouge {
+.flags .rouge {
     background: url('../images/icons/flag_red.gif') top right no-repeat;
     padding: 0 16px 0 0;
+    margin-right: 16px;
 }
 
 table.cadre_a_onglet{

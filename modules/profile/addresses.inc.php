@@ -21,15 +21,44 @@
 
 class ProfileAddress extends ProfileNoSave
 {
+    private function geolocAddress(&$address, &$success)
+    {
+        require_once 'geoloc.inc.php';
+        if (@$address['parsevalid'] || (@$address['text'] && @$address['changed']) || !@$address['cityid']) {
+            $address = array_merge($address, empty_address());
+            $new = get_address_infos(@$address['text']);
+            if (compare_addresses_text(@$adress['text'], $geotxt = get_address_text($new))
+                || @$address['parsevalid']) {
+                $address = array_merge($address, $new);
+            } else {
+                $success = false;
+                $address = array_merge($address, cut_address(@$address['text']));
+                $address['geoloc'] = $geotxt;
+                $address['geoloc_cityid'] = $new['cityid'];
+            }
+        }
+        $address['text'] = get_address_text($address);
+        unset($address['parsevalid']);
+        unset($address['changed']);
+    }
+
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
-        $success = true;
+        $init = false;
         if (is_null($value)) {
-            return $page->values['addresses'];
+            $value = $page->values['addresses'];
+            $init = true;
         }
         foreach ($value as $key=>&$adr) {
-            if ($adr['removed']) {
+            if (@$adr['removed']) {
                 unset($value[$key]);
+            }
+        }
+        $success = true;
+        foreach ($value as $key=>&$adr) {
+            $this->geolocAddress($adr, $s);
+            if (!$init) {
+                $success = $success && $s;
             }
         }
         return $value;
@@ -53,28 +82,30 @@ class ProfileAddresses extends ProfilePage
             return;
         }
         // Build the addresses tree
-        $res = XDB::query("SELECT  adrid AS id, adr1, adr2, adr3,
-                                   postcode, city, cityid, region, regiontxt,
-                                   fax, glat, glng, datemaj, pub,
-                                   FIND_IN_SET('res-secondaire', statut) AS secondaire,
-                                   FIND_IN_SET('courrier', statut) AS mail,
-                                   FIND_IN_SET('temporary', statut) AS temporary,
-                                   FIND_IN_SET('active', statut) AS current,
-                                   FIND_IN_SET('coord-checked', statut) AS checked,
-                                   FIND_IN_SET('coord-valid', statut) AS valid
-                             FROM  adresses
-                            WHERE  uid = {?}
+        $res = XDB::query("SELECT  a.adrid AS id, a.adr1, a.adr2, a.adr3,
+                                   a.postcode, a.city, a.cityid, a.region, a.regiontxt,
+                                   a.fax, a.glat, a.glng, a.datemaj, a.pub,
+                                   a.country, gp.pays AS countrytxt, gp.display,
+                                   FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
+                                   FIND_IN_SET('courrier', a.statut) AS mail,
+                                   FIND_IN_SET('temporary', a.statut) AS temporary,
+                                   FIND_IN_SET('active', a.statut) AS current
+                             FROM  adresses AS a
+                       INNER JOIN geoloc_pays AS gp ON(gp.a2 = a.country)
+                            WHERE  uid = {?} AND NOT FIND_IN_SET('pro', statut)
                          ORDER BY  adrid",
                            S::i('uid'));
         $this->values['addresses'] = $res->fetchAllAssoc();
 
-        $res = XDB::iterRow("SELECT  adrid, telid, tel_type, tel_pub, tel
-                               FROM  tels
-                              WHERE  uid = {?}
-                           ORDER BY  adrid",
-                            S::i('uid'));
+        $res = XDB::iterator("SELECT  adrid, tel_type AS type, tel_pub AS pub, tel
+                                FROM  tels
+                               WHERE  uid = {?}
+                            ORDER BY  adrid",
+                             S::i('uid'));
         $i = 0;
-        while (list($adrid, $telid, $type, $pub, $tel) = $res->next()) {
+        while ($tel = $res->next()) {
+            $adrid = $tel['adrid'];
+            unset($tel['adrid']);
             while ($this->values['addresses'][$i]['id'] < $adrid) {
                 $i++;
             }
@@ -83,11 +114,11 @@ class ProfileAddresses extends ProfilePage
                 $address['tel'] = array();
             }
             if ($address['id'] == $adrid) {
-                $address['tel'][] = array('id'   => $telid,
-                                          'type' => $type,
-                                          'pub'  => $pub,
-                                          'tel'  => $tel);
+                $address['tel'][] = $tel;
             }
+        }
+        foreach ($this->values['addresses'] as $id=>&$address) {
+            unset($address['id']);
         }
         parent::fetchData();
     }
