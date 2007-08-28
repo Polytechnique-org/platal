@@ -22,7 +22,7 @@
 
 <script type="text/javascript">//<![CDATA[
 {literal}
-function removeAddress(id, pref)
+function removeObject(id, pref)
 {
   document.getElementById(id).style.display = "none";
   document.forms.prof_annu[pref + "[removed]"].value = "1";
@@ -44,7 +44,7 @@ function removeAddress(id, pref)
         <label for="{$adid}_active" class="smaller" style="font-weight: normal">actuelle</label>
       </div>
       <div style="float: right">
-        <a href="javascript:removeAddress('{$adid}', '{$adpref}')">{icon name=cross title="Supprimer l'adresse"}</a>
+        <a href="javascript:removeObject('{$adid}', '{$adpref}')">{icon name=cross title="Supprimer l'adresse"}</a>
       </div>
       Adresse n°{$i + 1}
     </th>
@@ -75,7 +75,7 @@ function removeAddress(id, pref)
       </div>
     </td>
   </tr>
-  <tr>
+  <tr class="pair">
     <td>
       {foreach from=$adr.tel key=t item=tel}
       {assign var=telpref value="`$adpref`[tel][`$t`]"}
@@ -84,9 +84,13 @@ function removeAddress(id, pref)
         <div style="float: right" class="flags">
           {include file="include/flags.radio.tpl" name="`$telpref`[pub]" val=$tel.pub display="div"}
         </div>
+        <span class="titre">N°{$t}</span>
         <input type="hidden" name="{$telpref}[removed]" value="0" />
         <input type="text" size="10" maxlength="30" name="{$telpref}[type]" value="{$tel.type}" />
         <input type="text" size="19" maxlength="28" name="{$telpref}[tel]" value="{$tel.tel}" />
+        <a href="javascript:removeObject('{$telid}', '{$telpref}')">
+          {icon name=cross title="Supprimer ce numéro de téléphone"}
+        </a>
       </div>
       {/foreach}
     </td>

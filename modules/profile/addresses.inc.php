@@ -19,9 +19,18 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileAddress extends ProfileNoSave
+class ProfileAddress
 {
-    private function geolocAddress(&$address, &$success)
+    private $bool;
+    private $pub;
+
+    public function __construct()
+    {
+        $this->bool = new ProfileBool();
+        $this->pub  = new ProfilePub();
+    }
+
+    private function geolocAddress(array &$address, &$success)
     {
         require_once 'geoloc.inc.php';
         if (@$address['parsevalid'] || (@$address['text'] && @$address['changed']) || !@$address['cityid']) {
@@ -37,9 +46,32 @@ class ProfileAddress extends ProfileNoSave
                 $address['geoloc_cityid'] = $new['cityid'];
             }
         }
+        if (@$address['changed']) {
+            $address['datemaj'] = time();
+        }
         $address['text'] = get_address_text($address);
         unset($address['parsevalid']);
         unset($address['changed']);
+    }
+
+    private function cleanAddress(ProfilePage &$page, array &$address)
+    {
+        if (@$address['changed']) {
+            $address['datemaj'] = time();
+        }
+        foreach ($address['tel'] as $t=>&$tel) {
+            if (@$tel['removed']) {
+                unset($address['tel'][$t]);
+            } else {
+                $tel['pub'] = $this->pub->value($page, 'pub', $tel['pub'], $success);
+            }
+        }
+        $success;
+        $address['secondaire'] = $this->bool->value($page, 'secondaire', $address['secondaire'], $success);
+        $address['mail'] = $this->bool->value($page, 'mail', $address['mail'], $success);
+        $address['temporary'] = $this->bool->value($page, 'temporary', $address['temporary'], $success);
+        $address['current'] = $this->bool->value($page, 'current', $address['current'], $success);
+        $address['pub'] = $this->pub->value($page, 'pub', $address['pub'], $success);
     }
 
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -57,11 +89,71 @@ class ProfileAddress extends ProfileNoSave
         $success = true;
         foreach ($value as $key=>&$adr) {
             $this->geolocAddress($adr, $s);
+            $this->cleanAddress($page, $adr);
             if (!$init) {
                 $success = $success && $s;
             }
         }
         return $value;
+    }
+
+    private function saveTel($adrid, $telid, array &$tel)
+    {
+        XDB::execute("INSERT INTO  tels (uid, adrid, telid,
+                                         tel_type, tel_pub, tel)
+                           VALUES  ({?}, {?}, {?},
+                                    {?}, {?}, {?})",
+                    S::i('uid'), $adrid, $telid,
+                    $tel['type'], $tel['pub'], $tel['tel']);
+    }
+
+    private function saveAddress($adrid, array &$address)
+    {
+        $flags = array();
+        if ($address['secondaire']) {
+            $flags[] = 'res-secondaire';
+        }
+        if ($address['mail']) {
+            $flags[] = 'courrier';
+        }
+        if ($address['temporary']) {
+            $flags[] = 'temporaire';
+        }
+        if ($address['current']) {
+            $flags[] = 'active';
+        }
+        $flags = implode(',', $flags);
+        XDB::execute("INSERT INTO  addresses (adr1, adr2, adr3,
+                                              postcode, city, cityid,
+                                              country, region, regiontxt,
+                                              pub, datemaj, statut,
+                                              uid, adrid)
+                           VALUES  ({?}, {?}, {?},
+                                    {?}, {?}, {?},
+                                    {?}, {?}, {?},
+                                    {?}, FROM_UNIXTIME({?}), {?},
+                                    {?}, {?})",
+                     $address['adr1'], $address['adr2'], $address['adr3'],
+                     $address['postcode'], $address['city'], $address['cityid'],
+                     $address['country'], $address['region'], $address['regiontxt'],
+                     $address['pub'], $address['datemaj'], $flags,
+                     S::i('uid'), $adrid);
+        foreach ($address['tel'] as $telid=>&$tel) {
+            $this->saveTel($adrid, $telid, $tel);
+        }
+    }
+
+    public function save(ProfilePage &$page, $field, $value)
+    {
+        XDB::execute("DELETE FROM  adresses
+                            WHERE  uid = {?}",
+                     S::i('uid'));
+        XDB::execute("DELETE FROM  tels
+                            WHERE  uid = {?}",
+                     S::i('uid'));
+        foreach ($value as $adrid=>&$address) {
+            $this->saveAddress($adrid, $address);
+        }
     }
 }
 
@@ -83,12 +175,12 @@ class ProfileAddresses extends ProfilePage
         }
         // Build the addresses tree
         $res = XDB::query("SELECT  a.adrid AS id, a.adr1, a.adr2, a.adr3,
+                                   UNIX_TIMESTAMP(a.datemaj) AS datemaj,
                                    a.postcode, a.city, a.cityid, a.region, a.regiontxt,
-                                   a.fax, a.glat, a.glng, a.datemaj, a.pub,
-                                   a.country, gp.pays AS countrytxt, gp.display,
+                                   a.pub, a.country, gp.pays AS countrytxt, gp.display,
                                    FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
                                    FIND_IN_SET('courrier', a.statut) AS mail,
-                                   FIND_IN_SET('temporary', a.statut) AS temporary,
+                                   FIND_IN_SET('temporaire', a.statut) AS temporary,
                                    FIND_IN_SET('active', a.statut) AS current
                              FROM  adresses AS a
                        INNER JOIN geoloc_pays AS gp ON(gp.a2 = a.country)
@@ -121,16 +213,6 @@ class ProfileAddresses extends ProfilePage
             unset($address['id']);
         }
         parent::fetchData();
-    }
-
-    protected function saveData()
-    {
-        parent::saveData();
-    }
-
-    public function prepare(PlatalPage &$page)
-    {
-        parent::prepare($page);
     }
 }
 
