@@ -33,6 +33,7 @@ class ProfileAddress
     private function geolocAddress(array &$address, &$success)
     {
         require_once 'geoloc.inc.php';
+        $success = true;
         if (@$address['parsevalid'] || (@$address['text'] && @$address['changed']) || !@$address['cityid']) {
             $address = array_merge($address, empty_address());
             $new = get_address_infos(@$address['text']);
@@ -50,8 +51,6 @@ class ProfileAddress
             $address['datemaj'] = time();
         }
         $address['text'] = get_address_text($address);
-        unset($address['parsevalid']);
-        unset($address['changed']);
     }
 
     private function cleanAddress(ProfilePage &$page, array &$address)
@@ -65,13 +64,21 @@ class ProfileAddress
             } else {
                 $tel['pub'] = $this->pub->value($page, 'pub', $tel['pub'], $success);
             }
+            unset($tel['removed']);
         }
-        $success;
+        if (@$address['changed']) {
+            $address['datemaj'] = time();
+        }
+        $success = true;
         $address['secondaire'] = $this->bool->value($page, 'secondaire', $address['secondaire'], $success);
         $address['mail'] = $this->bool->value($page, 'mail', $address['mail'], $success);
         $address['temporary'] = $this->bool->value($page, 'temporary', $address['temporary'], $success);
-        $address['current'] = $this->bool->value($page, 'current', $address['current'], $success);
+        $address['current'] = $this->bool->value($page, 'current', @$address['current'], $success);
         $address['pub'] = $this->pub->value($page, 'pub', $address['pub'], $success);
+        unset($address['parsevalid']);
+        unset($address['changed']);
+        unset($address['removed']);
+        unset($address['display']);
     }
 
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -123,7 +130,7 @@ class ProfileAddress
             $flags[] = 'active';
         }
         $flags = implode(',', $flags);
-        XDB::execute("INSERT INTO  addresses (adr1, adr2, adr3,
+        XDB::execute("INSERT INTO  adresses (adr1, adr2, adr3,
                                               postcode, city, cityid,
                                               country, region, regiontxt,
                                               pub, datemaj, statut,
@@ -187,7 +194,11 @@ class ProfileAddresses extends ProfilePage
                             WHERE  uid = {?} AND NOT FIND_IN_SET('pro', statut)
                          ORDER BY  adrid",
                            S::i('uid'));
-        $this->values['addresses'] = $res->fetchAllAssoc();
+        if ($res->numRows() == 0) {
+            $this->values['addresses'] = array();
+        } else {
+            $this->values['addresses'] = $res->fetchAllAssoc();
+        }
 
         $res = XDB::iterator("SELECT  adrid, tel_type AS type, tel_pub AS pub, tel
                                 FROM  tels
@@ -195,11 +206,15 @@ class ProfileAddresses extends ProfilePage
                             ORDER BY  adrid",
                              S::i('uid'));
         $i = 0;
+        $adrNb = count($this->values['addresses']);
         while ($tel = $res->next()) {
             $adrid = $tel['adrid'];
             unset($tel['adrid']);
-            while ($this->values['addresses'][$i]['id'] < $adrid) {
+            while ($i < $adrNb && $this->values['addresses'][$i]['id'] < $adrid) {
                 $i++;
+            }
+            if ($i >= $adrNb) {
+                break;
             }
             $address =& $this->values['addresses'][$i];
             if (!isset($address['tel'])) {
@@ -210,6 +225,9 @@ class ProfileAddresses extends ProfilePage
             }
         }
         foreach ($this->values['addresses'] as $id=>&$address) {
+            if (!isset($address['tel'])) {
+                $address['tel'] = array();
+            }
             unset($address['id']);
         }
         parent::fetchData();

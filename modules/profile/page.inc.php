@@ -50,7 +50,7 @@ class ProfileWeb extends ProfileNoSave
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
         }
-        $success = preg_match("{^(https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+$}i", $value);
+        $success = !trim($value) || preg_match("{^(https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+$}i", $value);
         if (!$success) {
             global $page;
             $page->trig('URL Incorrecte : une url doit commencer par http:// ou https:// ou ftp://'
@@ -99,7 +99,7 @@ class ProfileBool extends ProfileNoSave
     {
         $success = true;
         if (is_null($value)) {
-            $value = $page->values[$field];
+            $value = @$page->values[$field];
         }
         return $value ? 1 : 0;
     }

@@ -35,11 +35,12 @@ function removeObject(id, pref)
 {assign var=adpref value="addresses[$i]"}
 {assign var=adid value="addresses_$i"}
 <input type="hidden" name="{$adpref}[removed]" value="0"/>
+<input type="hidden" name="{$adpref}[datemaj]" value="{$adr.datemaj}"/>
 <table class="bicol" id="{$adid}" style="margin-bottom: 1em">
   <tr>
     <th>
       <div style="float: left">
-        <input name="{$adpref}[active]" type="radio" value="{$adr.id}" {if $adr.current}checked="checked"{/if}
+        <input name="{$adpref}[current]" type="radio" value="1" {if $adr.current}checked="checked"{/if}
                id="{$adid}_active"/>
         <label for="{$adid}_active" class="smaller" style="font-weight: normal">actuelle</label>
       </div>
@@ -51,7 +52,7 @@ function removeObject(id, pref)
   </tr>
   <tr>
     <td>
-      <div>{include file="include/flags.radio.tpl" name="$adpref[pub]" notable=true val=$adr.pub}</div>
+      <div>{include file="include/flags.radio.tpl" name="`$adpref`[pub]" notable=true val=$adr.pub}</div>
       <div style="clear: both"></div>
       <div style="float: left">{include file="geoloc/form.address.tpl" name=$adpref id=$adid adr=$adr}</div>
       <div style="float: right">

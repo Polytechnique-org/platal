@@ -48,5 +48,7 @@
 <input type="hidden" name="{$name}[postcode]" value="{$adr.postcode}"/>
 <input type="hidden" name="{$name}[city]" value="{$adr.city}" />
 <input type="hidden" name="{$name}[country]" value="{$adr.country}" />
+<input type="hidden" name="{$name}[countrytxt]" value="{$adr.countrytxt}" />
 <input type="hidden" name="{$name}[region]" value="{$adr.region}" />
+<input type="hidden" name="{$name}[regiontxt]" value="{$adr.regiontxt}" />
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
