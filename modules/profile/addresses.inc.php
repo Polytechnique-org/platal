@@ -59,7 +59,7 @@ class ProfileAddress
             $address['datemaj'] = time();
         }
         foreach ($address['tel'] as $t=>&$tel) {
-            if (@$tel['removed']) {
+            if (@$tel['removed'] || !trim($tel['tel'])) {
                 unset($address['tel'][$t]);
             } else {
                 $tel['pub'] = $this->pub->value($page, 'pub', $tel['pub'], $success);
@@ -99,6 +99,9 @@ class ProfileAddress
             $this->cleanAddress($page, $adr);
             if (!$init) {
                 $success = $success && $s;
+            }
+            if (!trim($adr['text'])) {
+                unset($value[$key]);
             }
         }
         return $value;

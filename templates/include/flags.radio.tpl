@@ -27,7 +27,7 @@
   <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if} />
 </td>
 <td class="rouge">
-  <input type="radio" name="{$name}" value="private" {if $val eq 'private'}checked="checked"{/if} />
+  <input type="radio" name="{$name}" value="private" {if $val eq 'private' || !$val}checked="checked"{/if} />
 </td>
 {elseif $display eq "div"}
 <span class="vert">
@@ -37,7 +37,7 @@
   <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if} />
 </span>
 <span class="rouge">
-  <input type="radio" name="{$name}" value="private" {if $val eq 'private'}checked="checked"{/if} />
+  <input type="radio" name="{$name}" value="private" {if $val eq 'private' || !$val}checked="checked"{/if} />
 </span>
 {else}
   {if !$notable}
@@ -59,7 +59,7 @@
               transmis à l'AX
             </td>
             <td class="rouge">
-              <input type="radio" name="{$name}" value="private" {if $val eq 'private'}checked="checked"{/if} />
+              <input type="radio" name="{$name}" value="private" {if $val eq 'private' || !$val}checked="checked"{/if} />
             </td>
             <td class="texte">
               privé

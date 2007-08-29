@@ -20,35 +20,20 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<input type="hidden" name="{$name}[changed]" value="0"/>
-{if $adr.geoloc}
-<div class="erreur">
-  La geolocalisation n'a pas donné un résultat certain, valide la nouvelle adresse
-  ou modifie l'ancienne pour que ton adresse puisse être prise en compte.
+{if $ajaxtel}
+<?xml version="1.0" encoding="utf-8"?>
+{/if}
+{assign var=telpref value="`$adpref`[tel][`$t`]"}
+{assign var=telid value="`$adid`_tel_`$t`"}
+<div style="float: right" class="flags">
+  {include file="include/flags.radio.tpl" name="`$telpref`[pub]" val=$tel.pub display="div"}
 </div>
-<script type="text/javascript">setTimeout("document.location += '#{$adid}'", 10);</script>
-{/if}
-<textarea name="{$name}[text]" cols="30" rows="4"
-          onchange="form['{$name}[changed]'].value=1"
-          {if !$adr.cityid && $adr.datemaj}class="error"{/if}
-          >{$adr.text}</textarea>
-{if $adr.geoloc}
-<textarea cols="30" rows="4"
-          class="valid"
-          onclick="blur()"
-          >{$adr.geoloc}</textarea>
-<p class="center">
-  <input type="submit" name="{$name}[parsevalid]" value="Valider l'adresse" />
-</p>
-{/if}
-<input type="hidden" name="{$name}[cityid]" value="{$adr.cityid}" />
-<input type="hidden" name="{$name}[adr1]" value="{$adr.adr1}" />
-<input type="hidden" name="{$name}[adr2]" value="{$adr.adr2}" />
-<input type="hidden" name="{$name}[adr3]" value="{$adr.adr3}" />
-<input type="hidden" name="{$name}[postcode]" value="{$adr.postcode}"/>
-<input type="hidden" name="{$name}[city]" value="{$adr.city}" />
-<input type="hidden" name="{$name}[country]" value="{$adr.country}" />
-<input type="hidden" name="{$name}[countrytxt]" value="{$adr.countrytxt}" />
-<input type="hidden" name="{$name}[region]" value="{$adr.region}" />
-<input type="hidden" name="{$name}[regiontxt]" value="{$adr.regiontxt}" />
+<span class="titre">N°{$t+1}</span>
+<input type="hidden" name="{$telpref}[removed]" value="0" />
+<input type="text" size="10" maxlength="30" name="{$telpref}[type]" value="{$tel.type|default:"Tél."}" />
+<input type="text" size="19" maxlength="28" name="{$telpref}[tel]" value="{$tel.tel}" />
+<a href="javascript:removeObject('{$telid}', '{$telpref}')">
+  {icon name=cross title="Supprimer ce numéro de téléphone"}
+</a>
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

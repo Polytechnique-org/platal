@@ -32,6 +32,8 @@ class ProfileModule extends PLModule
             'profile/private'  => $this->make_hook('profile',    AUTH_COOKIE),
             'profile/ax'       => $this->make_hook('ax',         AUTH_COOKIE, 'admin'),
             'profile/edit'     => $this->make_hook('p_edit',     AUTH_MDP),
+            'profile/ajax/address' => $this->make_hook('ajax_address', AUTH_PUBLIC, 'user', NO_AUTH),
+            'profile/ajax/tel'     => $this->make_hook('ajax_tel', AUTH_COOKIE, 'user', NO_AUTH),
             'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
 
@@ -310,6 +312,8 @@ class ProfileModule extends PLModule
         // Misc checks
         // TODO: Block if birth date is missing ?
 
+        $page->addJsLink('ajax.js');
+        $page->addJsLink('jquery.js');
         $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true);
         require_once dirname(__FILE__) . '/profile/page.inc.php';
         $wiz->addPage('ProfileGeneral', 'Général', 'general');
@@ -323,6 +327,25 @@ class ProfileModule extends PLModule
 
         $page->addCssLink('profil.css');
         $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
+    }
+
+    function handler_ajax_address(&$page, $adid)
+    {
+        $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
+        $page->assign('i', $adid);
+        $page->assign('adr', array());
+        $page->assign('ajaxadr', true);
+    }
+
+    function handler_ajax_tel(&$page, $adid, $telid)
+    {
+        $page->changeTpl('profile/adresses.tel.tpl', NO_SKIN);
+        $page->assign('i', $adid);
+        $page->assign('adid', "addresses_$adid");
+        $page->assign('adpref', "addresses[$adid]");
+        $page->assign('t', $telid);
+        $page->assign('tel', array());
+        $page->assign('ajaxtel', true);
     }
 
     function handler_p_orange(&$page)
