@@ -216,6 +216,11 @@ td.action {
 }
 td.action a { padding: 0px 2px 0px 2px; }
 
+th.grayed {
+    background: url('../images/skins/keynote_bg_lighter.png') #848495 top left repeat-x fixed;
+    font-style: italic;
+}
+
 /*******************************************************************************
     4   Tableau de choix de skins
         [ Styles pour les tableaux de types de ceux des skins ]

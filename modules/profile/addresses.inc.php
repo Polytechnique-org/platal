@@ -93,7 +93,17 @@ class ProfileAddress
                 unset($value[$key]);
             }
         }
-        $success = true;
+        $current = 0;
+        foreach ($value as $key=>&$adr) {
+            if (@$adr['current']) {
+                $current++;
+            }
+        }
+        if (!$init && $current != 1 && count($value) > 0) {
+            $success = false;
+        } else {
+            $success = true;
+        }
         foreach ($value as $key=>&$adr) {
             $this->geolocAddress($adr, $s);
             $this->cleanAddress($page, $adr);

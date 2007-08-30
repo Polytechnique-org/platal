@@ -28,6 +28,12 @@ function removeObject(id, pref)
   document.forms.prof_annu[pref + "[removed]"].value = "1";
 }
 
+function restoreObject(id, pref)
+{
+  document.getElementById(id).style.display = '';
+  document.forms.prof_annu[pref + "[removed]"].value = "0";
+}
+
 function getAddressElement(adrid, adelement)
 {
   return document.forms.prof_annu["addresses[" + adrid + "][" + adelement + "]"];
@@ -67,6 +73,16 @@ function removeAddress(id, pref)
 {
   removeObject(id, pref);
   checkCurrentAddress(null);
+  if (document.forms.prof_annu[pref + '[datemaj]'].value != '') {
+    document.getElementById(id + '_grayed').style.display = '';
+  }
+}
+
+function restoreAddress(id, pref)
+{
+  document.getElementById(id +  '_grayed').style.display = 'none';
+  checkCurrentAddress(null);
+  restoreObject(id, pref);
 }
 
 function addAddress()
@@ -75,8 +91,8 @@ function addAddress()
   while (getAddressElement(i, 'pub') != null) {
     i++;
   }
-  $("#add_adr").before('<div id="addresses_' + i + '"></div>');
-  Ajax.update_html('addresses_' + i, 'profile/ajax/address/' + i, checkCurrentAddress);
+  $("#add_adr").before('<div id="addresses_' + i + '_cont"></div>');
+  Ajax.update_html('addresses_' + i + '_cont', 'profile/ajax/address/' + i, checkCurrentAddress);
 }
 
 function addTel(id)
@@ -95,7 +111,7 @@ function addTel(id)
 //]]></script>
 
 {foreach key=i item=adr from=$addresses}
-<div id="{"addresses_$i"}">
+<div id="{"addresses_`$i`_cont"}">
 {include file="profile/adresses.address.tpl" i=$i adr=$adr}
 </div>
 {/foreach}

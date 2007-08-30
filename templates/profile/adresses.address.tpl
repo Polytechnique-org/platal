@@ -27,7 +27,17 @@
 {assign var=adid value="addresses_$i"}
 <input type="hidden" name="{$adpref}[removed]" value="0"/>
 <input type="hidden" name="{$adpref}[datemaj]" value="{$adr.datemaj}"/>
-<table class="bicol" style="margin-bottom: 1em">
+<table class="bicol" style="display: none; margin-bottom: 1em" id="{$adid}_grayed">
+  <tr>
+    <th class="grayed">
+      <div style="float: right">
+        <a href="javascript:restoreAddress('{$adid}', '{$adpref}')">{icon name=arrow_refresh title="Restaurer l'adresse"}</a>
+      </div>
+      Restaurer l'adresse n°{$i+1}
+    </th>
+  </tr>
+</table>
+<table class="bicol" style="margin-bottom: 1em" id="{$adid}">
   <tr>
     <th>
       <div style="float: left">
