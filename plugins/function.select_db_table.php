@@ -49,7 +49,7 @@ function select_options($table,$valeur,$champ="text",$pad=false,
             $optgrp = $my_grp;
         }
         $html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
-                         $my_id, ($valeur==$my_id?$sel:""), $my_text);
+                         $my_id, $valeur==$my_id ? $sel : "", pl_entities($my_text));
     }
     if (!is_null($optgrp)) {
         $html .= '</optgroup>';
