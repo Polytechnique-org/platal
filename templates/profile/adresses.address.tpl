@@ -56,7 +56,7 @@
       <div>{include file="include/flags.radio.tpl" name="`$adpref`[pub]" notable=true val=$adr.pub}</div>
       <div style="clear: both"></div>
       <div style="float: left">{include file="geoloc/form.address.tpl" name=$adpref id=$adid adr=$adr}</div>
-      <div style="float: right">
+      <div style="float: left">
         <div>
           <input type="radio" name="{$adpref}[temporary]" id="{$adid}_temp_0" value="0"
                  {if !$adr.temporary}checked="checked"{/if} /><label for="{$adid}_temp_0">permanente</label>

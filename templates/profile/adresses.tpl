@@ -107,6 +107,29 @@ function addTel(id)
   Ajax.update_html(tel + i, 'profile/ajax/tel/' + id + '/' + i);
 }
 
+function validGeoloc(id, pref)
+{
+  document.getElementById(id + '_geoloc').style.display = 'none';
+  document.getElementById(id + '_geoloc_error').style.display = 'none';
+  document.getElementById(id + '_geoloc_valid').style.display = 'none';
+  document.forms.prof_annu[pref + "[parsevalid]"] = "1";
+  document.forms.prof_annu[pref + "[text]"].value = document.forms.prof_annu[pref + "[geoloc]"].value;
+  attachEvent(document.forms.prof_annu[pref + "[text]"], "click",
+              function() { document.forms.prof_annu[pref + "[text]"].blur(); });
+  document.forms.prof_annu[pref + "[text]"].className = '';
+}
+
+function validAddress(id, pref)
+{
+  document.getElementById(id + '_geoloc').style.display = 'none';
+  document.getElementById(id + '_geoloc_error').style.display = 'none';
+  document.getElementById(id + '_geoloc_valid').style.display = 'none';
+  document.forms.prof_annu[pref + "[parsevalid]"] = "0";
+  attachEvent(document.forms.prof_annu[pref + "[text]"], "click",
+              function() { document.forms.prof_annu[pref + "[text]"].blur(); });
+  document.forms.prof_annu[pref + "[text]"].className = '';
+}
+
 {/literal}
 //]]></script>
 

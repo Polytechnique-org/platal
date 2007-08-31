@@ -22,25 +22,33 @@
 
 <input type="hidden" name="{$name}[changed]" value="0"/>
 {if $adr.geoloc}
-<div class="erreur">
+<div class="erreur" id="{$id}_geoloc_error">
   La geolocalisation n'a pas donné un résultat certain, valide la nouvelle adresse
   ou modifie l'ancienne pour que ton adresse puisse être prise en compte.
 </div>
 <script type="text/javascript">setTimeout("document.location += '#{$adid}'", 10);</script>
 {/if}
+<div>
 <textarea name="{$name}[text]" cols="30" rows="4"
           onchange="form['{$name}[changed]'].value=1"
           {if !$adr.cityid && $adr.datemaj}class="error"{/if}
           >{$adr.text}</textarea>
 {if $adr.geoloc}
+<span id="{$id}_geoloc">
 <textarea cols="30" rows="4"
           class="valid"
+          name="{$name}[geoloc]"
           onclick="blur()"
           >{$adr.geoloc}</textarea>
-<p class="center">
-  <input type="submit" name="{$name}[parsevalid]" value="Valider l'adresse" />
-</p>
+<input type="hidden" name="{$name}[parsevalid]" value="0" />
+</span>
+</div>
+<div class="center" id="{$id}_geoloc_valid">
+  <a href="javascript:validAddress('{$id}', '{$name}')">Valider ta version</a>
+  &bull;
+  <a href="javascript:validGeoloc('{$id}', '{$name}')">Valider la version géolocalisée</a>
 {/if}
+</div>
 <input type="hidden" name="{$name}[cityid]" value="{$adr.cityid}" />
 <input type="hidden" name="{$name}[adr1]" value="{$adr.adr1}" />
 <input type="hidden" name="{$name}[adr2]" value="{$adr.adr2}" />

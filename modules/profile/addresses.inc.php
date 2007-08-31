@@ -34,6 +34,8 @@ class ProfileAddress
     {
         require_once 'geoloc.inc.php';
         $success = true;
+        unset($address['geoloc']);
+        unset($address['geoloc_cityid']);
         if (@$address['parsevalid'] || (@$address['text'] && @$address['changed']) || !@$address['cityid']) {
             $address = array_merge($address, empty_address());
             $new = get_address_infos(@$address['text']);
