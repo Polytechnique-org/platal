@@ -21,90 +21,69 @@
 {**************************************************************************}
 
 
-{literal}
 <script type="text/javascript">//<![CDATA[
+{literal}
+var subgrades = new array();
+var names     = new array();
+
 function update()
 {
   var val = document.forms.prof_annu['medal_sel'].value;
   if (val == '' || document.getElementById('medal_' + val) != null) {
-    document.getElementById('medal_add').display.style = 'none';
+    document.getElementById('medal_add').style.display = 'none';
   } else {
-    document.getElementById('medal_add').display.style = '';
+    document.getElementById('medal_add').style.display = '';
   }
 }
 
-  var valid = new array();
-  function medal_add()
-  {
-    var selid = document.forms.prof_annu.medal_sel.selectedIndex;
-    document.forms.prof_annu.medal_id.value = document.forms.prof_annu.medal_sel.options[selid].value;
-    document.forms.prof_annu.grade_id.value = document.forms.prof_annu.grade_sel.value;
-    document.forms.prof_annu.medal_op.value = "ajouter";
-    document.forms.prof_annu.submit();
-  }
+function getMedalName(id)
+{
+  document.getElementById('medal_name_' + id).innerHTML = names[id];
+}
 
-  function medal_del( id )
-  {
-    document.forms.prof_annu.medal_id.value = id;
-    document.forms.prof_annu.medal_op.value = "retirer";
-    document.forms.prof_annu.submit();
-  }
-
-  function medal_cancel(stamp)
-  {
-    document.forms.prof_annu.medal_id.value = stamp;
-    document.forms.prof_annu.medal_op.value = "annuler";
-    document.forms.prof_annu.submit();
-  }
-  var subgrades = new array();
-  function getoption( select_input, j)
-  {
-    if (!document.all)
-    {
-      return select_input.options[j];
-    }
-    else
-    {
-      return j;
-    }
-  }
-  function medal_grades( sel_medal )
-  {
-    var subg = subgrades[sel_medal.selectedIndex];
-    document.getElementById("grade_sel_div").style.display = subg?"inline":"none";
-    if (!subg) return;
-    var select = document.getElementById("grade_sel");
-    while (select.length > 1)
-    {
-      select.remove(1);
+function buildGrade(id, current)
+{
+  var grade;
+  var subg = subgrades[id];
+  var obj  = $('#medal_grade_' + id);
+  if (!subg) {
+    obj.prepend('<input type="hidden" name="medals[' + id + '][grade]" value="0" />');
+  } else {
+    var html = 'Agrafe : <select name="medals[' + id + '][grade]">';
+    html += '<option value="0">Non précisée</option>';
+    for (grade = 0 ; grade < subg.length ; grade++) {
+      html += '<option value="' + subg[grade][0] + '">' + subg[grade][1] + '</option>';
     }
 
-    for (i=0; i < subg.length; i++)
-    {
-      var dmc = document.createElement("option");
-      dmc.text= subg[i][1];
-      dmc.value = subg[i][0];
-      select.add(dmc,getoption(select,i));
-    }
-    var vide = document.createElement("option");
-    vide.text = "";
-    vide.value = 0;
-    select.add(vide,getoption(select,0));
-    select.remove(subg.length+1);
+    html += '</select>';
+    obj.prepend(html);
   }
-  //]]>
+}
+
+function add()
+{
+  var id = document.forms.prof_annu['medal_sel'].value;
+  $.get(platal_baseurl + 'profile/ajax/medal/' + id,
+        function(data) { $('#medals').after(data); update(); });
+}
+
+function remove(id)
+{
+  $("#medal_" + id).remove();
+}
+
 {/literal}
 {foreach from=$medal_list key=type item=list}
-  {foreach from=$list item=m}{if $grades[$m.id]|@count}
+  {foreach from=$list item=m}
+  names[{$m.id}] = "{$m.text}";
+  {if $grades[$m.id]|@count}
+    names[{$m.id}] = "{$m.text}";
     subgrades[{$m.id}] = new array({$grades[$m.id]|@count});
-    i = 0;
     {foreach from=$grades[$m.id] item=g}
-      subgrades[{$m.id}][i] = [{$g.gid},"{$g.text}"];
-      i++;
+      subgrades[{$m.id}][{$g.gid-1}] = [{$g.gid},"{$g.text}"];
     {/foreach}
   {/if}{/foreach}
 {/foreach}
-
 </script>
 
 <table class="bicol">
@@ -123,7 +102,7 @@ function update()
           ces informations sont normalement publiques (JO, ...) mais tu peux choisir de les associer a ta fiche publique
         </div>
       </div>
-      <div style="clear: both; margin-top: 0.2em">
+      <div style="clear: both; margin-top: 0.2em" id="medals">
         <select name="medal_sel" onchange="update()">
           <option value=''></option>
           {foreach from=$medal_list key=type item=list}

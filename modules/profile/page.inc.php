@@ -201,10 +201,10 @@ abstract class ProfilePage implements PlWizardPage
         foreach ($this->settings as $field=>&$setting) {
             $success = false;
             if (!is_null($setting)) {
-                $this->values[$field] = $setting->value($this, $field, Post::v($field), $success);
+                $this->values[$field] = $setting->value($this, $field, Post::v($field, ''), $success);
             } else {
                 $success = true;
-                $this->values[$field] = Post::v($field);
+                $this->values[$field] = Post::v($field, '');
             }
             $this->errors[$field] = !$success;
             $global_success = $global_success && $success;

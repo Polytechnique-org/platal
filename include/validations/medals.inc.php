@@ -104,6 +104,20 @@ class MedalReq extends Validate
     }
 
     // }}}
+    // {{{ function get_request($medal)
+
+    static public function get_request($uid, $type)
+    {
+        $reqs = Validate::get_typed_requests($uid, 'medal');
+        foreach ($reqs as &$req) {
+            if ($req->mid == $type) {
+                return $req;
+            }
+        }
+        return null;
+    }
+
+    // }}}
 }
 
 // }}}

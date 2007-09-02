@@ -32,8 +32,10 @@ class ProfileModule extends PLModule
             'profile/private'  => $this->make_hook('profile',    AUTH_COOKIE),
             'profile/ax'       => $this->make_hook('ax',         AUTH_COOKIE, 'admin'),
             'profile/edit'     => $this->make_hook('p_edit',     AUTH_MDP),
-            'profile/ajax/address' => $this->make_hook('ajax_address', AUTH_PUBLIC, 'user', NO_AUTH),
+            'profile/ajax/address' => $this->make_hook('ajax_address', AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/tel'     => $this->make_hook('ajax_tel', AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/medal'   => $this->make_hook('ajax_medal', AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/medal'    => $this->make_hook('medal', AUTH_PUBLIC),
             'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
 
@@ -94,6 +96,19 @@ class ProfileModule extends PLModule
                 echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
             }
         }
+        exit;
+    }
+
+    function handler_medal(&$page, $mid)
+    {
+        $res = XDB::query("SELECT  img
+                             FROM  profile_medals
+                            WHERE  id = {?}",
+                          $mid);
+        $img  = dirname(__FILE__).'/../htdocs/images/medals/' . $res->fetchOneCell();
+        $type = mime_content_type($img);
+        header("Content-Type: $type");
+        echo file_get_contents($img);
         exit;
     }
 
@@ -346,6 +361,14 @@ class ProfileModule extends PLModule
         $page->assign('t', $telid);
         $page->assign('tel', array());
         $page->assign('ajaxtel', true);
+    }
+
+    function handler_ajax_medal(&$page, $id)
+    {
+        $page->changeTpl('profile/deco.medal.tpl', NO_SKIN);
+        $page->assign('id', $id);
+        $page->assign('medal', array('valid' => 0, 'grade' => 0));
+        $page->assign('ajaxdeco', true);
     }
 
     function handler_p_orange(&$page)

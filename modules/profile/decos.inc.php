@@ -34,15 +34,15 @@ class ProfileDeco implements ProfileSetting
             $value = array();
             while (list($id, $grade) = $res->next()) {
                 $value[$id] = array('grade' => $grade, 
-                                    'valid' => true);
+                                    'valid' => '1');
             }
 
             // Fetch not yet validated medals
             require_once('validations.inc.php');
             $medals = Validate::get_typed_requests(S::i('uid'), 'medal');
             foreach ($medals as &$medal) {
-                $medals[$medal->mid] = array('grade' => $medal->gid,
-                                             'valid' => false);
+                $value[$medal->mid] = array('grade' => $medal->gid,
+                                            'valid' => '0');
             }
         } else if (!is_array($value)) {
             $value = array();
@@ -55,23 +55,27 @@ class ProfileDeco implements ProfileSetting
     {
         require_once('validations.inc.php');
 
+        $orig =& $page->orig[$field];
+
         // Remove old ones
-        foreach ($page->orig as $id=>&$val) {
+        foreach ($orig as $id=>&$val) {
             if (!isset($value[$id]) || $val['grade'] != $value[$id]['grade']) {
                 if ($val['valid']) {
                     XDB::execute("DELETE FROM  profile_medals_sub
-                                        WHERE  uid = {?} AND id = {?}",
+                                        WHERE  uid = {?} AND mid = {?}",
                                  S::i('uid'), $id);
                 } else {
-                    $req = Validate::get_typed_request(S::i('uid'), 'medal', $id);
-                    $req->clean();
+                    $req = MedalReq::get_request(S::i('uid'), $id);
+                    if ($req) {
+                        $req->clean();
+                    }
                 }
             }
         }
 
         // Add new ones
         foreach ($value as $id=>&$val) {
-            if (!isset($this->orig[$id]) || $this->orig[$id]['grade'] != $val['grade']) {
+            if (!isset($orig[$id]) || $orig[$id]['grade'] != $val['grade']) {
                 $req = new MedalReq(S::i('uid'), $id, $val['grade']);
                 $req->submit();
             }
