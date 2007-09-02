@@ -168,7 +168,8 @@ class ProfileGeneral extends ProfilePage
         parent::saveData();
         if ($this->changed['nationalite'] || $this->changed['nom'] || $this->changed['prenom']) {
            XDB::execute("UPDATE  auth_user_md5
-                             SET  nationalite = {?}, nom={?}, prenom={?} WHERE user_id = {?}",
+                            SET  nationalite = {?}, nom={?}, prenom={?}
+                          WHERE  user_id = {?}",
                          $this->values['nationalite'], $this->values['nom'], $this->values['prenom'], S::v('uid'));
         }
         if ($this->changed['nick'] || $this->changed['mobile'] || $this->changed['mobile_pub']
@@ -188,7 +189,12 @@ class ProfileGeneral extends ProfilePage
             require_once('user.func.inc.php');
             user_reindex(S::v('uid'));
         }
-        XDB::execute("UPDATE photo SET pub = {?} WHERE uid = {?}", $this->values['photo_pub'], S::v('uid'));
+        if ($this->changed['photo_pub']) {
+            XDB::execute("UPDATE  photo
+                             SET  pub = {?}
+                           WHERE  uid = {?}",
+                         $this->values['photo_pub'], S::v('uid'));
+        }
     }
 
     public function prepare(PlatalPage &$page)
