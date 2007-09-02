@@ -31,7 +31,7 @@
 <span class="titre">N°{$t+1}</span>
 <input type="hidden" name="{$telpref}[removed]" value="0" />
 <input type="text" size="10" maxlength="30" name="{$telpref}[type]" value="{$tel.type|default:"Tél."}" />
-<input type="text" size="19" maxlength="28" name="{$telpref}[tel]" value="{$tel.tel}" />
+<input type="text" size="19" maxlength="28" name="{$telpref}[tel]" {if $tel.error}class="error"{/if} value="{$tel.tel}" />
 <a href="javascript:removeObject('{$telid}', '{$telpref}')">
   {icon name=cross title="Supprimer ce numéro de téléphone"}
 </a>

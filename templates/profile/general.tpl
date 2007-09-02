@@ -349,7 +349,7 @@
       <td class="dcold">
         {javascript name=ajax}
         <div id="ft_preview" style="display: none"></div>
-        <textarea name="freetext" {if $errors.mobile}class="error"{/if} id="freetext" rows="3" cols="29" >{$freetext}</textarea>
+        <textarea name="freetext" {if $errors.freetext}class="error"{/if} id="freetext" rows="3" cols="29" >{$freetext}</textarea>
         <br/>
         <span class="smaller">
           <a href="wiki_help/notitle" class="popup3">

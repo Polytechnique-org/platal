@@ -23,11 +23,13 @@ class ProfileAddress
 {
     private $bool;
     private $pub;
+    private $tel;
 
     public function __construct()
     {
         $this->bool = new ProfileBool();
         $this->pub  = new ProfilePub();
+        $this->tel  = new ProfileTel();
     }
 
     private function geolocAddress(array &$address, &$success)
@@ -55,28 +57,33 @@ class ProfileAddress
         $address['text'] = get_address_text($address);
     }
 
-    private function cleanAddress(ProfilePage &$page, array &$address)
+    private function cleanAddress(ProfilePage &$page, array &$address, &$success)
     {
         if (@$address['changed']) {
             $address['datemaj'] = time();
         }
+        $success = true;
         foreach ($address['tel'] as $t=>&$tel) {
             if (@$tel['removed'] || !trim($tel['tel'])) {
                 unset($address['tel'][$t]);
             } else {
-                $tel['pub'] = $this->pub->value($page, 'pub', $tel['pub'], $success);
+                $tel['pub'] = $this->pub->value($page, 'pub', $tel['pub'], $s);
+                $tel['tel'] = $this->tel->value($page, 'tel', $tel['tel'], $s);
+                if (!$s) {
+                    $tel['error'] = true;
+                    $success = false;
+                }
             }
             unset($tel['removed']);
         }
         if (@$address['changed']) {
             $address['datemaj'] = time();
         }
-        $success = true;
-        $address['secondaire'] = $this->bool->value($page, 'secondaire', $address['secondaire'], $success);
-        $address['mail'] = $this->bool->value($page, 'mail', $address['mail'], $success);
-        $address['temporary'] = $this->bool->value($page, 'temporary', $address['temporary'], $success);
-        $address['current'] = $this->bool->value($page, 'current', @$address['current'], $success);
-        $address['pub'] = $this->pub->value($page, 'pub', $address['pub'], $success);
+        $address['secondaire'] = $this->bool->value($page, 'secondaire', $address['secondaire'], $s);
+        $address['mail'] = $this->bool->value($page, 'mail', $address['mail'], $s);
+        $address['temporary'] = $this->bool->value($page, 'temporary', $address['temporary'], $s);
+        $address['current'] = $this->bool->value($page, 'current', @$address['current'], $s);
+        $address['pub'] = $this->pub->value($page, 'pub', $address['pub'], $s);
         unset($address['parsevalid']);
         unset($address['changed']);
         unset($address['removed']);
@@ -107,13 +114,15 @@ class ProfileAddress
             $success = true;
         }
         foreach ($value as $key=>&$adr) {
+            $ls = true;
             $this->geolocAddress($adr, $s);
-            $this->cleanAddress($page, $adr);
-            if (!$init) {
-                $success = $success && $s;
-            }
+            $ls = ($ls && $s);
+            $this->cleanAddress($page, $adr, $s);
+            $ls = ($ls && $s);
             if (!trim($adr['text'])) {
                 unset($value[$key]);
+            } else if (!$init) {
+                $success = ($success && $ls);
             }
         }
         return $value;

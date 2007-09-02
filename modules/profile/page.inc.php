@@ -67,10 +67,10 @@ class ProfileTel extends ProfileNoSave
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
         }
-        $success = strlen(strtok($value, '<>{}@&#~\/:;?,!§*_`[]|%$^=')) == strlen($value);
+        $success = !preg_match('/[<>{}@&#~\/:;?,!§*_`\[\]|%$^=]/', $value, $matches);
         if (!$success) {
             global $page;
-            $page->trig('Le numéro de téléphone contient un caractère interdit.');
+            $page->trig('Le numéro de téléphone contient un caractère interdit : ' . pl_entities($matches[0][0]));
         }
         return $value;
     }
