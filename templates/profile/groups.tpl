@@ -42,11 +42,36 @@
 
   function update(type)
   {
-    if (document.forms.prof_annu[type + '_sel'].value == '0') {
+    var val = document.forms.prof_annu[type + '_sel'].value;
+    if (val == '0' || document.getElementById(type + '_' + val) != null) {
       document.getElementById(type + '_add').style.display = 'none';
     } else {
       document.getElementById(type + '_add').style.display = '';
     }
+  }
+
+  function remove(cat, id)
+  {
+    $('#' + cat + '_' + id).remove();
+  }
+
+  function add(cat)
+  {
+    var cb   = document.forms.prof_annu[cat + '_sel'];
+    var id   = cb.value;
+    var text = cb.options[cb.selectedIndex].text;
+    var html = '<tr id="' + cat + '_' + id + '">'
+             + '  <td>'
+             + '    <input type="hidden" name="' + cat + '[' + id + ']" value="' + text + '" />'
+             + '  </td>'
+             + '  <td>'
+             + text
+             + '    <a href="javascript:remove(\'' + cat + '\', ' + id + ')">'
+             + '      <img src="images/icons/cross.gif" alt="cross" title="Supprimer ce groupe" />'
+             + '    </a>'
+             + '  </td>'
+             + '</tr>';
+    $('#' + cat).after(html);
   }
 
   //]]>
@@ -76,32 +101,54 @@
     </td>
   </tr>
   <!-- Binets -->
-  <tr>
+  <tr id="binets">
     <td class="titre">
       <script type="text/javascript">printTitle("Binet(s)")</script>
     </td>
     <td>
-      <select name="binet_sel" onchange="update('binet')">
+      <select name="binets_sel" onchange="update('binets')">
         {select_db_table table="binets_def" valeur=0 champ="text" pad='1'}
       </select>
-      <a id="binet_add" href="javascript:addBinet()">{icon name="add" title="Ajouter ce binet"}</a>
+      <a id="binets_add" href="javascript:add('binets')">{icon name="add" title="Ajouter ce binet"}</a>
     </td>
   </tr>
+  {foreach item=text key=bid from=$binets}
+  <tr id="binets_{$bid}">
+    <td>
+      <input type="hidden" name="binets[{$bid}]" value="{$text}" />
+    </td>
+    <td>
+      {$text}
+      <a href="javascript:remove('binets', {$bid})">{icon name="cross" title="Supprimer ce binet"}</a>
+    </td>
+  </tr>
+  {/foreach}
   <!-- Groupes X -->
-  <tr>
+  <tr id="groupesx">
     <td class="titre">Groupe(s) X</td>
     <td>
-      <select name="groupex_sel" onchange="update('groupex')">
+      <select name="groupesx_sel" onchange="update('groupesx')">
         {select_db_table table="groupesx_def" valeur=0 champ="text" pad='1'}
       </select>
-      <a id="groupex_add" href="javascript:addGroupex()">{icon name="add" title="Ajouter ce groupe X"}</a>
+      <a id="groupesx_add" href="javascript:add('groupesx')">{icon name="add" title="Ajouter ce groupe X"}</a>
     </td>
   </tr>
+  {foreach item=text key=bid from=$groupesx}
+  <tr id="groupesx_{$bid}">
+    <td>
+      <input type="hidden" name="groupesx[{$bid}]" value="{$text}" />
+    </td>
+    <td>
+      {$text}
+      <a href="javascript:remove('groupesx', {$bid})">{icon name="cross" title="Supprimer ce groupe X"}</a>
+    </td>
+  </tr>
+  {/foreach}
 </table>
 
 <script type="text/javascript">
-update('groupex');
-update('binet');
+update('groupesx');
+update('binets');
 </script>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
