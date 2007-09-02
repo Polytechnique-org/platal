@@ -33,10 +33,12 @@
     <div id="medal_grade_{$id}"><input type="hidden" name="medals[{$id}][valid]" value="{$medal.valid}" /></div>
   </div>
   <a href="javascript:remove({$id})" style="vertical-align: middle">{icon name="cross" title="Supprimer cette médaille"}</a>
+  {if !$ajaxdeco}
   <script type="text/javascript">
   getMedalName({$id});
   buildGrade({$id}, {$medal.grade});
   </script>
+  {/if}
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

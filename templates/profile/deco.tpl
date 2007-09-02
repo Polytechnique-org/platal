@@ -60,11 +60,21 @@ function buildGrade(id, current)
   }
 }
 
+function makeAddProcess(id)
+{
+  return function(data)
+         {
+           $('#medals').after(data);
+           update();
+           getMedalName(id);
+           buildGrade(id, 0);
+         };
+}
+
 function add()
 {
   var id = document.forms.prof_annu['medal_sel'].value;
-  $.get(platal_baseurl + 'profile/ajax/medal/' + id,
-        function(data) { $('#medals').after(data); update(); });
+  $.get(platal_baseurl + 'profile/ajax/medal/' + id, makeAddProcess(id));
 }
 
 function remove(id)
