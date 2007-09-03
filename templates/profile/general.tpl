@@ -347,7 +347,6 @@
         <span class="comm">Commentaire ? ICQ ? etc...</span>
       </td>
       <td class="dcold">
-        {javascript name=ajax}
         <div id="ft_preview" style="display: none"></div>
         <textarea name="freetext" {if $errors.freetext}class="error"{/if} id="freetext" rows="3" cols="29" >{$freetext}</textarea>
         <br/>

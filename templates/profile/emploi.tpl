@@ -24,210 +24,170 @@
 {section name=adresses_pro loop=2}
 {assign var='i' value=$smarty.section.adresses_pro.index} 
 
-<div class="blocunite{if !$i}tab{/if}">
-
-  <table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Informations professionnelles - Entreprise n°{$i+1}">
-    <tr>
-      <th colspan="2">
-        Informations professionnelles - Entreprise n°{$i+1}
-      </th>
-    </tr>
-    {include file=include/flags.radio.tpl name="pubpro[$i]" val=$pubpro.$i}
-    <tr>
-      <td class="colg">
-        <span class="titre">Entreprise ou organisme</span>
-      </td>
-      <td class="cold">
-        <input type="text" size="35" maxlength="100" name="entreprise[{$i}]"
-        value="{$entreprise.$i}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Secteur d'activité</span>
-      </td>
-      <td class="cold">
-        <select name="secteur[{$i}]" onchange="this.form.submit();">
-          {select_secteur secteur=$secteur.$i}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Sous-Secteur d'activité</span>
-      </td>
-      <td class="cold">
-        <select name="ss_secteur[{$i}]">
-          {select_ss_secteur secteur=$secteur.$i ss_secteur=$ss_secteur.$i}
-        </select>
-      </td> 
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Poste occupé</span>
-      </td>
-      <td class="cold">
-        <input type="text" size="35" maxlength="120" name="poste[{$i}]"
-        value="{$poste.$i}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Fonction occupée</span>
-      </td>
-      <td class="cold">
-        <select name="fonction[{$i}]">
-          {select_fonction fonction=$fonction.$i}
-        </select>
-      </td>
-    </tr>
-    {include file=include/flags.radio.tpl name="adr_pubpro[$i]" val=$adr_pubpro.$i}
-    <tr>
-      <td class="colg">
-        <span class="titre">Adresse professionnelle</span>
-      </td>
-      <td class="cold">
-        <input type="text" name="adrpro1[{$i}]" size="40" maxlength="88" value="{$adrpro1.$i}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        &nbsp;
-      </td>
-      <td class="cold">
-        <input type="text" name="adrpro2[{$i}]" size="40" maxlength="88" value="{$adrpro2.$i}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        &nbsp;
-      </td>
-      <td class="cold">
-        <input type="text" name="adrpro3[{$i}]" size="40" maxlength="88" value="{$adrpro3.$i}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Code postal</span><br />
-      </td>
-      <td class="cold">
-        <input type="text" name="postcodepro[{$i}]" value="{$postcodepro.$i}" size="8" maxlength="8" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Ville</span><br />
-      </td>
-      <td class="cold">
-        <input type="text" name="citypro[{$i}]" value="{$citypro.$i}" size="40" maxlength="50" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Pays</span>
-      </td>
-      <td class="cold">
-        <select name="countrypro[{$i}]" onchange="this.form.submit();">
-          {geoloc_country country=$countrypro.$i}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Région ou département</span><br />
-        <span class="comm">(selon pays)</span>
-      </td>
-      <td class="cold">
-        <select name="regionpro[{$i}]">
-          {geoloc_region country=$countrypro.$i region=$regionpro.$i}
-        </select>
-      </td>
-    </tr>
-    {include file=include/flags.radio.tpl name="tel_pubpro[$i]" val=$tel_pubpro.$i}
-    <tr>
-      <td class="colg">
-        <span class="titre">Téléphone professionnel</span>
-      </td>
-      <td>
-        <input type="text" size="18" maxlength="18" name="telpro[{$i}]" value="{$telpro.$i}" />
-        &nbsp;
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Fax</span>
-      </td>
-      <td>
-        <input type="text" size="18" maxlength="18" name="faxpro[{$i}]" value="{$faxpro.$i}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Mobile</span>
-      </td>
-      <td>
-        <input type="text" size="18" maxlength="18" name="mobilepro[{$i}]" value="{$mobilepro.$i}" />
-      </td>
-    </tr>
-    {include file=include/flags.radio.tpl name="email_pubpro[$i]" val=$email_pubpro.$i}
-    <tr>
-      <td class="colg">
-        <span class="titre">E-mail</span>
-      </td>
-      <td>
-        <input type="text" size="30" maxlength="60" name="emailpro[{$i}]" value="{$emailpro.$i}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Page web</span>
-      </td>
-      <td>
-        <input type="text" size="30" maxlength="255" name="webpro[{$i}]" value="{$webpro.$i}" />
-      </td>
-    </tr>
-  </table>
-</div>
+<table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Informations professionnelles - Entreprise n°{$i+1}">
+  <tr>
+    <th colspan="2">
+      Informations professionnelles - Entreprise n°{$i+1}
+    </th>
+  </tr>
+  {include file=include/flags.radio.tpl name="pubpro[$i]" val=$pubpro.$i}
+  <tr>
+    <td class="titre">Entreprise ou organisme</td>
+    <td>
+      <input type="text" size="35" maxlength="100" name="entreprise[{$i}]" value="{$entreprise.$i}" />
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Secteur d'activité</td>
+    <td>
+      <select name="secteur[{$i}]" onchange="this.form.submit();">
+        {select_secteur secteur=$secteur.$i}
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Sous-Secteur d'activité</td>
+    <td>
+      <select name="ss_secteur[{$i}]">
+        {select_ss_secteur secteur=$secteur.$i ss_secteur=$ss_secteur.$i}
+      </select>
+    </td> 
+  </tr>
+  <tr>
+    <td class="titre">Poste occupé</td>
+    <td>
+      <input type="text" size="35" maxlength="120" name="poste[{$i}]"
+      value="{$poste.$i}" />
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Fonction occupée</td>
+    <td>
+      <select name="fonction[{$i}]">
+        {select_fonction fonction=$fonction.$i}
+      </select>
+    </td>
+  </tr>
+  {include file=include/flags.radio.tpl name="adr_pubpro[$i]" val=$adr_pubpro.$i}
+  <tr>
+    <td class="titre">Adresse professionnelle</td>
+    <td>
+      <input type="text" name="adrpro1[{$i}]" size="40" maxlength="88" value="{$adrpro1.$i}" />
+    </td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>
+      <input type="text" name="adrpro2[{$i}]" size="40" maxlength="88" value="{$adrpro2.$i}" />
+    </td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>
+      <input type="text" name="adrpro3[{$i}]" size="40" maxlength="88" value="{$adrpro3.$i}" />
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Code postal</td>
+    <td>
+      <input type="text" name="postcodepro[{$i}]" value="{$postcodepro.$i}" size="8" maxlength="8" />
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Ville</td>
+    <td>
+      <input type="text" name="citypro[{$i}]" value="{$citypro.$i}" size="40" maxlength="50" />
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Pays</td>
+    <td>
+      <select name="countrypro[{$i}]" onchange="this.form.submit();">
+        {geoloc_country country=$countrypro.$i}
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <spanv class="titre">Région ou département</span><br />
+      <span class="comm">(selon pays)</span>
+    </td>
+    <td>
+      <select name="regionpro[{$i}]">
+        {geoloc_region country=$countrypro.$i region=$regionpro.$i}
+      </select>
+    </td>
+  </tr>
+  {include file=include/flags.radio.tpl name="tel_pubpro[$i]" val=$tel_pubpro.$i}
+  <tr>
+    <td class="titre">Téléphone professionnel</td>
+    <td>
+      <input type="text" size="18" maxlength="18" name="telpro[{$i}]" value="{$telpro.$i}" />
+      &nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Fax</td>
+    <td>
+      <input type="text" size="18" maxlength="18" name="faxpro[{$i}]" value="{$faxpro.$i}" />
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Mobile</td>
+    <td>
+      <input type="text" size="18" maxlength="18" name="mobilepro[{$i}]" value="{$mobilepro.$i}" />
+    </td>
+  </tr>
+  {include file=include/flags.radio.tpl name="email_pubpro[$i]" val=$email_pubpro.$i}
+  <tr>
+    <td class="titre">E-mail</td>
+    <td>
+      <input type="text" size="30" maxlength="60" name="emailpro[{$i}]" value="{$emailpro.$i}" />
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Page web</td>
+    <td>
+      <input type="text" size="30" maxlength="255" name="webpro[{$i}]" value="{$webpro.$i}" />
+    </td>
+  </tr>
+</table>
 
 {/section}
 
-<div class="blocunite">
-  <table class="bicol" cellspacing="0" cellpadding="0"
-    summary="Profil: Informations professionnelles - CV">
-    <tr>
-      <th colspan="2">
-        Informations professionnelles - CV
-      </th>
-    </tr>
-    <tr>
-      <td colspan="2" class="flags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="rouge">
-              <input type="checkbox" name="accesCV" checked="checked" disabled="disabled" />
-            </td>
-            <td class="texte">
-              privé
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td class="dcolg">
-        <span class="titre">Curriculum vitae</span><br />
-        <span class="comm">Le CV n'est <strong>jamais</strong> public.<br />
-          <a href="Xorg/FAQ?display=light#cv" class="popup_800x480">Comment remplir mon CV ?</a></span><br />
-        <span class="comm"><a href="wiki_help" class="popup3">{icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki</a></span>
-      </td>
-      <td class="dcold">
-        {javascript name=ajax}
-        <div id="cv_preview" style="display: none"></div>
-        <textarea name="cv" id="cv" rows="15" cols="40">{$cv}</textarea><br />
-        <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('cv',  'cv_preview', true, 'cv_preview'); return false;" />
-      </td>
-    </tr>
-  </table>
-</div>
+<table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Informations professionnelles - CV">
+  <tr>
+    <th colspan="2">
+      Informations professionnelles - CV
+    </th>
+  </tr>
+  <tr>
+    <td colspan="2" class="flags">
+      <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="rouge">
+            <input type="checkbox" name="accesCV" checked="checked" disabled="disabled" />
+          </td>
+          <td class="texte">
+            privé
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td class="dcolg">
+      <span class="titre">Curriculum vitae</span><br />
+      <span class="comm">Le CV n'est <strong>jamais</strong> public.<br />
+        <a href="Xorg/FAQ?display=light#cv" class="popup_800x480">Comment remplir mon CV ?</a></span><br />
+      <span class="comm"><a href="wiki_help" class="popup3">{icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki</a></span>
+    </td>
+    <td class="dcold">
+      <div id="cv_preview" style="display: none"></div>
+      <textarea name="cv" id="cv" rows="15" cols="40">{$cv}</textarea><br />
+      <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('cv',  'cv_preview', true, 'cv_preview'); return false;" />
+    </td>
+  </tr>
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
