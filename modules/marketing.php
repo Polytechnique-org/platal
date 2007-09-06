@@ -178,7 +178,8 @@ class MarketingModule extends PLModule
         }
 
         $res = Xdb::query("SELECT  u.nom, u.prenom, u.promo, FIND_IN_SET('femme', u.flags) AS sexe,
-                                   a.alias AS forlife, b.alias AS bestalias, e.email, e.last
+                                   u.deces = '0000-00-00' AS alive, a.alias AS forlife, b.alias AS bestalias,
+                                   e.email, e.last
                              FROM  auth_user_md5 AS u
                        INNER JOIN  aliases       AS a ON (a.id = u.user_id AND a.type = 'a_vie')
                        INNER JOIN  aliases       AS b ON (b.id = u.user_id AND FIND_IN_SET('bestalias', b.flags))

@@ -27,8 +27,15 @@
   Merci de nous avoir communiqué cette information !
 </p>
 
-{elseif $user}
+{elseif $user && !$user.alive}
+<p class="erreur">
+  {$user.prenom} {$user.nom} (X{$user.promo}) est malheureusement décédé{if $user.sexe}e{/if}.
+  Nous ne réaliserons maintenance sur son adresse Polytechnique.org qu'à la demande explicite
+  de sa famille. Pour tout renseignement, merci de <a href="mailto:contact@polytechnique.org">
+  contacter le support</a>.
+</p>
 
+{elseif $user}
 <h1>
   Recherche d'adresses pour {$user.nom} {$user.prenom} (X{$user.promo})
 </h1>
