@@ -53,6 +53,7 @@
   function remove(cat, id)
   {
     $('#' + cat + '_' + id).remove();
+    update(cat);
   }
 
   function add(cat)
@@ -65,13 +66,16 @@
              + '    <input type="hidden" name="' + cat + '[' + id + ']" value="' + text + '" />'
              + '  </td>'
              + '  <td>'
-             + text
+             + '    <div style="float: left; width: 70%">'
+             +        text
+             + '    </div>'
              + '    <a href="javascript:remove(\'' + cat + '\', ' + id + ')">'
              + '      <img src="images/icons/cross.gif" alt="cross" title="Supprimer ce groupe" />'
              + '    </a>'
              + '  </td>'
              + '</tr>';
     $('#' + cat).after(html);
+    update(cat);
   }
 
   //]]>
@@ -118,7 +122,9 @@
       <input type="hidden" name="binets[{$bid}]" value="{$text}" />
     </td>
     <td>
-      {$text}
+      <div style="float: left; width: 70%">
+        {$text}
+      </div>
       <a href="javascript:remove('binets', {$bid})">{icon name="cross" title="Supprimer ce binet"}</a>
     </td>
   </tr>
@@ -139,7 +145,9 @@
       <input type="hidden" name="groupesx[{$bid}]" value="{$text}" />
     </td>
     <td>
-      {$text}
+      <div style="float: left; width: 70%">
+        {$text}
+      </div>
       <a href="javascript:remove('groupesx', {$bid})">{icon name="cross" title="Supprimer ce groupe X"}</a>
     </td>
   </tr>

@@ -80,6 +80,7 @@ function add()
 function remove(id)
 {
   $("#medal_" + id).remove();
+  update();
 }
 
 {/literal}
