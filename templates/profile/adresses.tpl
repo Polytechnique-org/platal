@@ -139,7 +139,7 @@ function validAddress(id, pref)
 </div>
 {/foreach}
 {if $addresses|@count eq 0}
-<div id="addresses_0">
+<div id="addresses_0_cont">
 {include file="profile/adresses.address.tpl" i=0 adr=0}
 </div>
 {/if}

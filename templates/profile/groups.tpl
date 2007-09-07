@@ -95,7 +95,7 @@
     </td>
   </tr>
   <tr class="top">
-    <td class="titre">
+    <td class="titre" style="width: 30%">
       <script type="text/javascript">printTitle("Section")</script>
     </td>
     <td>

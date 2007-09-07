@@ -20,14 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-{section name=adresses_pro loop=2}
-{assign var='i' value=$smarty.section.adresses_pro.index} 
-
-<table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Informations professionnelles - Entreprise n°{$i+1}">
+<table class="bicol" cellspacing="0" cellpadding="0" summary="Entreprise n°{$eid+1}">
   <tr>
     <th colspan="2">
-      Informations professionnelles - Entreprise n°{$i+1}
+      Entreprise n°{$eid+1}
     </th>
   </tr>
   {include file=include/flags.radio.tpl name="pubpro[$i]" val=$pubpro.$i}
@@ -149,43 +145,6 @@
     <td class="titre">Page web</td>
     <td>
       <input type="text" size="30" maxlength="255" name="webpro[{$i}]" value="{$webpro.$i}" />
-    </td>
-  </tr>
-</table>
-
-{/section}
-
-<table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Informations professionnelles - CV">
-  <tr>
-    <th colspan="2">
-      Informations professionnelles - CV
-    </th>
-  </tr>
-  <tr>
-    <td colspan="2" class="flags">
-      <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="rouge">
-            <input type="checkbox" name="accesCV" checked="checked" disabled="disabled" />
-          </td>
-          <td class="texte">
-            privé
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr>
-    <td class="dcolg">
-      <span class="titre">Curriculum vitae</span><br />
-      <span class="comm">Le CV n'est <strong>jamais</strong> public.<br />
-        <a href="Xorg/FAQ?display=light#cv" class="popup_800x480">Comment remplir mon CV ?</a></span><br />
-      <span class="comm"><a href="wiki_help" class="popup3">{icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki</a></span>
-    </td>
-    <td class="dcold">
-      <div id="cv_preview" style="display: none"></div>
-      <textarea name="cv" id="cv" rows="15" cols="40">{$cv}</textarea><br />
-      <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('cv',  'cv_preview', true, 'cv_preview'); return false;" />
     </td>
   </tr>
 </table>

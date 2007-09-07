@@ -335,7 +335,7 @@ class ProfileModule extends PLModule
         $wiz->addPage('ProfileAddresses', 'Adresses personnelles', 'adresses');
         $wiz->addPage('ProfileGroups', 'Groupes X - Binets', 'poly');
         $wiz->addPage('ProfileDecos', 'Décorations - Medailles', 'deco');
-        $wiz->addPage('ProfilePro', 'Informations professionnelles', 'emploi');
+        $wiz->addPage('ProfileJobs', 'Informations professionnelles', 'emploi');
         $wiz->addPage('ProfileSkills', 'Compétences diverses', 'skill');
         $wiz->addPage('ProfileMentor', 'Mentoring', 'mentor');
         $wiz->apply($page, 'profile/edit', $opened_tab);

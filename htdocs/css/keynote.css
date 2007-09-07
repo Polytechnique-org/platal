@@ -203,7 +203,7 @@ table.tinybicol td, table.bicol td {
 table.tinybicol td, table.bicol td, table.tinybicol tr, table.bicol tr { padding: 4px; }
 
 td.half { width: 50%; padding: 4px; }
-td.titre {
+.titre {
     color: #000000;
     background: inherit;
     font-weight: bold;

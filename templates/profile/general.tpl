@@ -218,7 +218,7 @@
               de changer ta photo, celle-ci correspond à ton ancien
               profil car la nouvelle n'a pas encore été validée par un administrateur du site !
               <a href="profile/{$smarty.session.forlife}?modif=new" class="popup2">Ta fiche avec la nouvelle photo</a>)
-              {/if}.
+              {/if} :
             </td>
             <td class="dcolg">
               <img src="photo/{$smarty.session.forlife}" alt=" [ PHOTO ] " />
@@ -343,19 +343,24 @@
     </tr>
     <tr>
       <td class="dcolg">
-        <span class="titre">Complément libre</span>
-        <span class="comm">Commentaire ? ICQ ? etc...</span>
-      </td>
-      <td class="dcold">
-        <div id="ft_preview" style="display: none"></div>
-        <textarea name="freetext" {if $errors.freetext}class="error"{/if} id="freetext" rows="3" cols="29" >{$freetext}</textarea>
-        <br/>
-        <span class="smaller">
+        <div>
+          <span class="titre">Complément libre</span>
+          <span class="comm">Commentaire ? ICQ ? etc...</span>
+        </div>
+        <div class="smaller" style="margin-top: 30px">
           <a href="wiki_help/notitle" class="popup3">
             {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le commentaire
           </a>
-        </span><br />
-        <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('freetext', 'ft_preview', true, 'ft_preview'); return false;" />
+          <div class="center">
+            <input type="submit" name="preview" value="Aperçu" 
+                    onclick="previewWiki('freetext', 'ft_preview', true, 'ft_preview'); return false;" />
+          </div>
+        </div>
+      </td>
+      <td class="dcold">
+        <div id="ft_preview" style="display: none"></div>
+        <textarea name="freetext" {if $errors.freetext}class="error"{/if}
+                  id="freetext" rows="8" cols="35" >{$freetext}</textarea>
       </td>
     </tr>
   </table>
