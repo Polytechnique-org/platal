@@ -47,7 +47,7 @@
 <form action="" method="post" onsubmit="return showPromo();">
 <table class="tinybicol" style="width: 35%; margin-right: auto; margin-left: auto">
   <tr>
-    <td class="titre">Promotion :</td>
+    <td class="titre">Promotion&nbsp;:</td>
     <td>
       <input type="text" name="promo" id="promo" size="4" value="" />
       <input type="submit" name="submit_promo" value="Voir" />
