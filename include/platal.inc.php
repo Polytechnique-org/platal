@@ -134,7 +134,7 @@ function isvalid_email($email)
     // la rfc2822 authorise les caractères "a-z", "0-9", "!", "#", "$", "%", "&", "'", "*", "+", "-", "/", "=", "?", "^",  `", "{", "|", "}", "~" aussi bien dans la partie locale que dans le domaine.
     // Pour la partie locale, on réduit cet ensemble car il n'est pas utilisé.
     // Pour le domaine, le système DNS limite à [a-z0-9.-], on y ajoute le "_" car il est parfois utilisé.
-    return preg_match("/^[a-z0-9_.'+-]+@[a-z0-9._-]+\.[a-z]{2,4}$/i", $email);
+    return preg_match("/^[a-z0-9_.'+-]+@[a-z0-9._-]+\.[a-z]{2,6}$/i", $email);
 }
 
 function pl_url($path, $query = null, $fragment = null)

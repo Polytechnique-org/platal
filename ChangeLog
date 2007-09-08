@@ -20,6 +20,7 @@ Bug/Wish:
     * Core:
         - #674: MiniWiki xhtml validation                                  -FRU
         - #678: PlUpload filename detection                                -FRU
+        - #717: Allow TLD with length up to 6 characters in emails         -FRU
 
     * Emails:
         - #687: Don't lose authentication when editing a long mail         -FRU
