@@ -21,23 +21,29 @@
 {**************************************************************************}
 {if $display eq "mini"}
 <td class="vert">
-  <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if} />
+  <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if} />
 </td>
 <td class="orange">
-  <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if} />
+  <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if}/>
 </td>
 <td class="rouge">
-  <input type="radio" name="{$name}" value="private" {if $val eq 'private' || !$val}checked="checked"{/if} />
+  <input type="radio" name="{$name}" value="private" {if $val eq 'private' || (!$val && !$disabled)}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if}/>
 </td>
 {elseif $display eq "div"}
 <span class="vert">
-  <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if} />
+  <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if}/>
 </span>
 <span class="orange">
-  <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if} />
+  <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if}/>
 </span>
 <span class="rouge">
-  <input type="radio" name="{$name}" value="private" {if $val eq 'private' || !$val}checked="checked"{/if} />
+  <input type="radio" name="{$name}" value="private" {if $val eq 'private' || (!$val && !$disabled)}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if}/>
 </span>
 {else}
   {if !$notable}
@@ -47,19 +53,22 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if} />
+              <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if}
+                     {if $disabled}disabled="disabled"{/if} />
             </td>
             <td class="texte">
               site public
             </td>
             <td class="orange">
-              <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if} />
+              <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if}
+                     {if $disabled}disabled="disabled"{/if}/>
             </td>
             <td class="texte">
               transmis à l'AX
             </td>
             <td class="rouge">
-              <input type="radio" name="{$name}" value="private" {if $val eq 'private' || !$val}checked="checked"{/if} />
+              <input type="radio" name="{$name}" value="private" {if $val eq 'private' || (!$val && !$disabled)}checked="checked"{/if}
+                     {if $disabled}disabled="disabled"{/if} />
             </td>
             <td class="texte">
               privé

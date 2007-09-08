@@ -20,16 +20,64 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<script type="text/javascript">//<![CDATA[
+{literal}
+
+function removeJob(id, pref)
+{
+  document.getElementById(id + '_cont').style.display = 'none';
+  if (document.forms.prof_annu[pref + '[new]'].value == '0') {
+    document.getElementById(id + '_grayed').style.display = '';
+    document.getElementById(id + '_grayed_name').innerHTML =
+      document.forms.prof_annu[pref + "[name]"].value.replace('<', '&lt;');
+  }
+  document.forms.prof_annu[pref + "[removed]"].value = "1";
+}
+
+function restoreJob(id, pref)
+{
+  document.getElementById(id + '_cont').style.display = '';
+  document.getElementById(id + '_grayed').style.display = 'none';
+  document.forms.prof_annu[pref + "[removed]"].value = "0";
+}
+
+function updateSecteur(nb, id, pref, sel)
+{
+  var secteur = document.forms.prof_annu[pref + '[secteur]'].value;
+  if (secteur == '') {
+    secteur = '-1';
+  }
+  Ajax.update_html(id + '_ss_secteur', 'profile/ajax/secteur/' +nb + '/' + secteur + '/' + sel);
+}
+
+function makeAddJob(id)
+{
+  return function(data)
+         {
+           $('#add_job').before(data);
+           updateSecteur('job_' + id, 'job[' + id + ']', '');
+         };
+}
+
+function addJob()
+{
+  var i = 0;
+  while (document.getElementById('job_' + i) != null) {
+    ++i;
+  }
+  $.get(platal_baseurl + 'profile/ajax/job/' + i, makeAddJob(i));
+}
+
+{/literal}
+//]]></script>
 
 {foreach from=$entreprises item=job key=i}
-<div id="{"job_`$i`_cont"}">
-{include file="profile/jobs.job.tpl" i=$i job=$job}
-</div>
+{include file="profile/jobs.job.tpl" i=$i job=$job new=false}
+<script type="text/javascript">updateSecteur({$i}, '{"job_`$i`"}', '{"job[`$i`]"}', '{$job.ss_secteur}');</script>
 {/foreach}
 {if $jobs|@count eq 0}
-<div id="job_0_cont">
-{include file="profile/jobs.job.tpl" i=0 job=0}
-</div>
+{include file="profile/jobs.job.tpl" i=0 job=0 new=true}
+<script type="text/javascript">updateSecteur(0, 'job_0', 'job[0]', '-1');</script></script>
 {/if}
 
 <div id="add_job" class="center">
@@ -38,16 +86,15 @@
   </a>
 </div>
 
-<table class="bicol" summary="CV">
+<table class="bicol" summary="CV" style="margin-top: 1.5em">
   <tr>
     <th>
-      Informations professionnelles - CV
+      Curriculum vitae
     </th>
   </tr>
   <tr>
     <td>
       <div style="float: left; width: 25%">
-        <div class="titre">Curriculum vitae&nbsp;:</div>
         <div class="flags">
           <span class="rouge"><input type="checkbox" name="accesCV" checked="checked" disabled="disabled" /></span>
           <span class="texte">privé</span>

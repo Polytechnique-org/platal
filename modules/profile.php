@@ -33,8 +33,10 @@ class ProfileModule extends PLModule
             'profile/ax'       => $this->make_hook('ax',         AUTH_COOKIE, 'admin'),
             'profile/edit'     => $this->make_hook('p_edit',     AUTH_MDP),
             'profile/ajax/address' => $this->make_hook('ajax_address', AUTH_COOKIE, 'user', NO_AUTH),
-            'profile/ajax/tel'     => $this->make_hook('ajax_tel', AUTH_COOKIE, 'user', NO_AUTH),
-            'profile/ajax/medal'   => $this->make_hook('ajax_medal', AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/tel'     => $this->make_hook('ajax_tel',     AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/medal'   => $this->make_hook('ajax_medal',   AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/job'     => $this->make_hook('ajax_job',     AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/secteur' => $this->make_hook('ajax_secteur', AUTH_COOKIE, 'user', NO_AUTH),
             'profile/medal'    => $this->make_hook('medal', AUTH_PUBLIC),
             'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
@@ -369,6 +371,26 @@ class ProfileModule extends PLModule
         $page->assign('id', $id);
         $page->assign('medal', array('valid' => 0, 'grade' => 0));
         $page->assign('ajaxdeco', true);
+    }
+
+    function handler_ajax_job(&$page, $id)
+    {
+        $page->changeTpl('profile/jobs.job.tpl', NO_SKIN);
+        $page->assign('i', $id);
+        $page->assign('job', array());
+        $page->assign('ajaxjob', true);
+        $page->assign('new', true);
+    }
+
+    function handler_ajax_secteur(&$page, $id, $sect, $ssect = -1)
+    {
+        $res = XDB::iterator("SELECT  id, label
+                                FROM  emploi_ss_secteur
+                               WHERE  secteur = {?}", $sect);
+        $page->changeTpl('profile/jobs.secteur.tpl', NO_SKIN);
+        $page->assign('id', $id);
+        $page->assign('ssecteurs', $res);
+        $page->assign('sel', $ssect);
     }
 
     function handler_p_orange(&$page)

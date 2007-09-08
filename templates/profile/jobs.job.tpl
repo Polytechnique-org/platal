@@ -20,94 +20,128 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if $ajaxjob}
+<?xml version="1.0" encoding="utf-8"?>
+{/if}
 {assign var=jobid value="job_`$i`"}
 {assign var=jobpref value="job[`$i`]"}
-<table class="bicol" cellspacing="0" cellpadding="0" summary="Entreprise n°{$i+1}">
-  <tr>
-    <th colspan="2" style="text-align: right">
-      <div class="flags" style="float: left; text-align: left">
-        {include file="include/flags.radio.tpl" notable=true display="div" name="`$jobpref`[pub]" value=$job.pub}
-      </div>
-      Entreprise n°{$i+1}&nbsp;:
-      <input type="text" size="35" maxlength="100" name="{$jobpref}[name]" value="{$job.name}" />
-    </th>
-  </tr>
-  <tr>
-    <td class="titre">Page Web</td>
-    <td><input type="text" size="35" maxlength="255" name="{$jobpref}[web]" value="{$job.web}" /></td>
-  </tr>
-  <tr>
-    <td class="titre">Secteur d'activité</td>
-    <td>
-      <select name="{$jobpref}[secteur]" onchange="this.form.submit();">
-        {select_secteur secteur=$job.secteur}
-      </select>
-    </td>
-  </tr>
-  <tr>
-    <td class="titre">Sous-Secteur d'activité</td>
-    <td>
-      <select name="{$jobpref}[ss_secteur]">
-        {select_ss_secteur secteur=$job.secteur ss_secteur=$job.ss_secteur}
-      </select>
-    </td> 
-  </tr>
-  <tr>
-    <td class="titre">Poste occupé</td>
-    <td>
-      <input type="text" size="35" maxlength="120" name="{$jobpref}[poste]" value="{$job.poste}" />
-    </td>
-  </tr>
-  <tr>
-    <td class="titre">Fonction occupée</td>
-    <td>
-      <select name="{$jobpref}[fonction]">
-        {select_fonction fonction=$job.fonction}
-      </select>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td colspan="2">
-      <div style="float: left">
-        <div class="flags" style="float: right">
-          {include file="include/flags.radio.tpl" name="`$jobpref`[adr][pub]" val=$job.adr.pub display="div"}
+<div id="{$jobid}">
+  <input type="hidden" name="{$jobpref}[removed]" value="0" />
+  <input type="hidden" name="{$jobpref}[new]" value="{if $new}1{else}0{/if}" />
+  <table id="{$jobid}_grayed" class="bicol" style="display: none; margin-bottom: 1em">
+    <tr>
+      <th class="grayed">
+        <div style="float: right">
+          <a href="javascript:restoreJob('{$jobid}', '{$jobpref}')">{icon name=arrow_refresh title="Restaure l'emploi"}</a>
         </div>
-        <div class="titre">Adresse</div>
-        <div style="margin-top: 20px; clear: both">
-          {include file="geoloc/form.address.tpl" name="`$jobpref`[adr]" id="`$jobpref`_adr" adr=$job.adr}
+        Restaurer l'entreprise n°{$i+1}&nbsp;:<span id="{$jobid}_grayed_name"></span>
+      </th>
+    </tr>
+  </table>
+  <table id="{$jobid}_cont" class="bicol" summary="Entreprise n°{$i+1}" style="margin-bottom: 1em">
+    <tr>
+      <th colspan="2" style="text-align: right">
+        <div class="flags" style="float: left; text-align: left">
+          {include file="include/flags.radio.tpl" notable=true display="div" name="`$jobpref`[pub]" value=$job.pub}
         </div>
-      </div>
-      <div style="float: right; width: 50%">
-        <div class="flags" style="float: right">
-          {include file="include/flags.radio.tpl" name="`$jobpref`[tel_pub]" val=$job.tel_pub display="div"}
+        Entreprise n°{$i+1}&nbsp;:
+        <input type="text" size="35" maxlength="100" name="{$jobpref}[name]" value="{$job.name}" />
+        <a href="javascript:removeJob('{$jobid}', '{$jobpref}')">
+          {icon name=cross title="Supprimer cet emploi"}
+        </a>
+      </th>
+    </tr>
+    <tr>
+      <td class="titre">Page Web</td>
+      <td><input type="text" size="35" maxlength="255" name="{$jobpref}[web]" value="{$job.web}" /></td>
+    </tr>
+    <tr>
+      <td class="titre">Secteur d'activité</td>
+      <td>
+        <select name="{$jobpref}[secteur]" onchange="updateSecteur({$i}, '{$jobid}', '{$jobpref}', ''); return true;">
+          <option value="">&nbsp;</option>
+          {iterate from=$secteurs item=secteur}
+          <option value="{$secteur.id}" {if $secteur.id eq $job.secteur}selected="selected"{/if}>
+            {$secteur.label}
+          </option>
+          {/iterate}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">Sous-Secteur d'activité</td>
+      <td id="{$jobid}_ss_secteur">
+      </td> 
+    </tr>
+    <tr>
+      <td class="titre">Poste occupé</td>
+      <td>
+        <input type="text" size="35" maxlength="120" name="{$jobpref}[poste]" value="{$job.poste}" />
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">Fonction occupée</td>
+      <td id=>
+        <select name="{$jobpref}[fonction]">
+          <option value="">&nbsp;</option>
+          {assign var=ingroup value=false}
+          {iterate from=$fonctions item=fonct}
+          {if $fonct.title}
+            {if $ingroup}</optgroup>{/if}
+            <optgroup label="{$fonct.fonction_fr}">
+            {assign var=ingroup value=true}
+          {/if}
+          <option value="{$fonct.id}" {if $fonct.id eq $job.fonction}selected="selected"{/if}>
+            {$fonct.fonction_fr}
+          </option>
+          {/iterate}
+          {if $ingroup}</optgroup>{/if}
+        </select>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td colspan="2">
+        <span class="titre">E-mail professionnel&nbsp;:</span>
+        <input type="text" size="30" maxlength="60" name="{$jobpref}[email]" value="{$job.email}" />
+        <span class="flags">
+          {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.mail_pub display="div"}
+        </span>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td colspan="2">
+        <div style="float: left">
+          <div class="titre">Adresse</div>
+          <div class="flags">
+            {include file="include/flags.radio.tpl" name="`$jobpref`[adr][pub]" val=$job.adr.pub display="div"}
+          </div>
+          <div style="margin-top: 20px; clear: both">
+            {include file="geoloc/form.address.tpl" name="`$jobpref`[adr]" id="`$jobpref`_adr" adr=$job.adr}
+          </div>
         </div>
-        <span class="titre">Téléphone</span>
-        <table style="clear: both">
-          <tr>
-            <td>Bureau&nbsp;:</td>
-            <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_office]" value="{$job.tel_office}" /></td>
-          </tr>
-          <tr>
-            <td>Fax&nbsp;:</td>
-            <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_fax]" value="{$job.tel_fax}" /></td>
-          </tr>
-          <tr>
-            <td>Mobile&nbsp;:</td>
-            <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_mobile]" value="{$job.tel_mobile}" /></td>
-          </tr>
-        </table>
-      </div>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td colspan="2">
-      <div class="flags" style="float: right">
-        {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.mail_pub display="div"}
-      </div>
-      <span class="titre">E-mail&nbsp;:</span>
-      <input type="text" size="30" maxlength="60" name="{$jobpref}[email]" value="{$job.email}" />
-    </td>
-  </tr>
-</table>
+        <div style="float: right; width: 50%">
+          <div class="titre">Téléphone</div>
+          <div class="flags">
+            {include file="include/flags.radio.tpl" name="`$jobpref`[tel_pub]" val=$job.tel_pub display="div"}
+          </div>
+          <table style="clear: both">
+            <tr>
+              <td>Bureau&nbsp;:</td>
+              <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_office]" value="{$job.tel_office}" /></td>
+            </tr>
+            <tr>
+              <td>Fax&nbsp;:</td>
+              <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_fax]" value="{$job.tel_fax}" /></td>
+            </tr>
+            <tr>
+              <td>Mobile&nbsp;:</td>
+              <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_mobile]" value="{$job.tel_mobile}" /></td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

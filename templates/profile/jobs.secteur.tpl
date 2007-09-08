@@ -20,22 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<form action="{$wiz_baseurl}/{$lookup[$current]}" method="post" id="prof_annu">
-  <div>
-    {icon name=information title="Voir ma fiche"} Tu peux consulter ta fiche telle que la
-    voient <a class="popup2" href="profile/{$smarty.session.forlife}">les X</a>,
-    <a class="popup2" href="profile/{$smarty.session.forlife}?view=ax">l'AX</a> ou
-    <a class="popup2" href="profile/{$smarty.session.forlife}?view=public">n'importe quel internaute</a>.
-    {include file="include/flags.radio.tpl" notable=true disabled=true name="profile_ex_pub"}
-  </div>
-  <div style="margin-top: 1em">
-    {include file=$profile_page}
-  </div>
-  <div style="clear: both" class="center">
-    <input type="hidden" name="valid_page" value="{$current}" />
-    <input type="submit" name="current_page" value="Valider les modifications" />
-    <input type="submit" name="next_page" value="Valider et passer à la page suivante" />
-  </div>
-</form>
+<?xml version="1.0" encoding="utf-8"?>
+<select name="job[{$id}][ss_secteur]">
+  <option value=""></option>
+  {iterate from=$ssecteurs item=ssecteur}
+  <option value="{$ssecteur.id}" {if $ssecteur.id eq $sel}selected="selected"{/if}>{$ssecteur.label}</option>
+  {/iterate}
+</select>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

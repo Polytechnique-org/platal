@@ -27,6 +27,16 @@ class ProfileJobs extends ProfilePage
     {
         parent::__construct($wiz);
     }
+
+    public function prepare(PlatalPage &$page)
+    {
+        parent::prepare($page);
+        $page->assign('secteurs', XDB::iterator("SELECT  id, label
+                                                   FROM  emploi_secteur"));
+        $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
+                                                    FROM  fonctions_def
+                                                ORDER BY  id"));
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

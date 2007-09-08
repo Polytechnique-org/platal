@@ -53,8 +53,8 @@
   </tr>
   <tr>
     <td>
-      <div style="margin-bottom: 0.2em">
-        {include file="include/flags.radio.tpl" name="`$adpref`[pub]" notable=true val=$adr.pub}
+      <div style="margin-bottom: 0.2em" class="flags">
+        {include file="include/flags.radio.tpl" name="`$adpref`[pub]" notable=true val=$adr.pub display="div"}
       </div>
       <div style="clear: both"></div>
       <div style="float: left">{include file="geoloc/form.address.tpl" name=$adpref id=$adid adr=$adr}</div>
