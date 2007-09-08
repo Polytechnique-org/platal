@@ -225,7 +225,7 @@ function compare_addresses_text($a, $b)
         return false;
     }
     foreach ($la as $i=>$l) {
-        if (levenshtein($l, $lb[$i]) > 3) {
+        if (levenshtein(trim($l), trim($lb[$i])) > 3) {
             return false;
         }
     }

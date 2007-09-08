@@ -24,7 +24,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 {/if}
 {assign var=jobid value="job_`$i`"}
-{assign var=jobpref value="job[`$i`]"}
+{assign var=jobpref value="jobs[`$i`]"}
 <div id="{$jobid}">
   <input type="hidden" name="{$jobpref}[removed]" value="0" />
   <input type="hidden" name="{$jobpref}[new]" value="{if $new}1{else}0{/if}" />
@@ -34,7 +34,7 @@
         <div style="float: right">
           <a href="javascript:restoreJob('{$jobid}', '{$jobpref}')">{icon name=arrow_refresh title="Restaure l'emploi"}</a>
         </div>
-        Restaurer l'entreprise n°{$i+1}&nbsp;:<span id="{$jobid}_grayed_name"></span>
+        Restaurer l'entreprise n°{$i+1}&nbsp;:&nbsp;<span id="{$jobid}_grayed_name"></span>
       </th>
     </tr>
   </table>
@@ -45,7 +45,8 @@
           {include file="include/flags.radio.tpl" notable=true display="div" name="`$jobpref`[pub]" value=$job.pub}
         </div>
         Entreprise n°{$i+1}&nbsp;:
-        <input type="text" size="35" maxlength="100" name="{$jobpref}[name]" value="{$job.name}" />
+        <input type="text" {if $job.name_error}class="error"{/if} size="35" maxlength="100"
+               name="{$jobpref}[name]" value="{$job.name}" />
         <a href="javascript:removeJob('{$jobid}', '{$jobpref}')">
           {icon name=cross title="Supprimer cet emploi"}
         </a>
@@ -53,7 +54,10 @@
     </tr>
     <tr>
       <td class="titre">Page Web</td>
-      <td><input type="text" size="35" maxlength="255" name="{$jobpref}[web]" value="{$job.web}" /></td>
+      <td>
+        <input type="text" size="35" maxlength="255" {if $job.web_error}class="error"{/if}
+               name="{$jobpref}[web]" value="{$job.web}" />
+      </td>
     </tr>
     <tr>
       <td class="titre">Secteur d'activité</td>
@@ -76,7 +80,8 @@
     <tr>
       <td class="titre">Poste occupé</td>
       <td>
-        <input type="text" size="35" maxlength="120" name="{$jobpref}[poste]" value="{$job.poste}" />
+        <input type="text" size="35" maxlength="120" {if $job.poste_error}class="error"{/if}
+               name="{$jobpref}[poste]" value="{$job.poste}" />
       </td>
     </tr>
     <tr>
@@ -102,7 +107,8 @@
     <tr class="pair">
       <td colspan="2">
         <span class="titre">E-mail professionnel&nbsp;:</span>
-        <input type="text" size="30" maxlength="60" name="{$jobpref}[email]" value="{$job.email}" />
+        <input type="text" size="30" maxlength="60" {if $job.email_error}class="error"{/if}
+               name="{$jobpref}[email]" value="{$job.email}" />
         <span class="flags">
           {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.mail_pub display="div"}
         </span>
@@ -116,7 +122,7 @@
             {include file="include/flags.radio.tpl" name="`$jobpref`[adr][pub]" val=$job.adr.pub display="div"}
           </div>
           <div style="margin-top: 20px; clear: both">
-            {include file="geoloc/form.address.tpl" name="`$jobpref`[adr]" id="`$jobpref`_adr" adr=$job.adr}
+            {include file="geoloc/form.address.tpl" name="`$jobpref`[adr]" id="`$jobid`_adr" adr=$job.adr}
           </div>
         </div>
         <div style="float: right; width: 50%">
@@ -127,15 +133,23 @@
           <table style="clear: both">
             <tr>
               <td>Bureau&nbsp;:</td>
-              <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_office]" value="{$job.tel_office}" /></td>
+              <td>
+                <input type="text" size="18" maxlength="18" {if $job.tel_error}class="error"{/if}
+                       name="{$jobpref}[tel]" value="{$job.tel}" />
+              </td>
             </tr>
             <tr>
               <td>Fax&nbsp;:</td>
-              <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_fax]" value="{$job.tel_fax}" /></td>
+              <td>
+                <input type="text" size="18" maxlength="18" {if $job.fax_error}class="error"{/if}
+                       name="{$jobpref}[fax]" value="{$job.fax}" /></td>
             </tr>
             <tr>
               <td>Mobile&nbsp;:</td>
-              <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_mobile]" value="{$job.tel_mobile}" /></td>
+              <td>
+                <input type="text" size="18" maxlength="18" {if $job.mobile_error}class="error"{/if}
+                       name="{$jobpref}[mobile]" value="{$job.mobile}" />
+              </td>
             </tr>
           </table>
         </div>

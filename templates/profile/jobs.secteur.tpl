@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 <?xml version="1.0" encoding="utf-8"?>
-<select name="job[{$id}][ss_secteur]">
+<select name="jobs[{$id}][ss_secteur]">
   <option value=""></option>
   {iterate from=$ssecteurs item=ssecteur}
   <option value="{$ssecteur.id}" {if $ssecteur.id eq $sel}selected="selected"{/if}>{$ssecteur.label}</option>

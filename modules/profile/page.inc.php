@@ -50,7 +50,8 @@ class ProfileWeb extends ProfileNoSave
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
         }
-        $success = !trim($value) || preg_match("{^(https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+$}i", $value);
+        $value = trim($value);
+        $success = empty($value) || preg_match("{^(https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+$}i", $value);
         if (!$success) {
             global $page;
             $page->trig('URL Incorrecte : une url doit commencer par http:// ou https:// ou ftp://'
@@ -59,6 +60,25 @@ class ProfileWeb extends ProfileNoSave
         return $value;
     }
 }
+
+class ProfileEmail extends ProfileNoSave
+{
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        if (is_null($value)) {
+            return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
+        }
+        $value = trim($value);
+        require_once 'xorg.misc.inc.php';
+        $success = empty($value) || isvalid_email($value);
+        if (!$success) {
+            global $page;
+            $page->trig('Adresse Email invalide');
+        }
+        return $value;
+    }
+}
+
 
 class ProfileTel extends ProfileNoSave
 {
@@ -104,6 +124,34 @@ class ProfileBool extends ProfileNoSave
         return $value ? 1 : 0;
     }
 }
+
+abstract class ProfileGeoloc implements ProfileSetting
+{
+    protected function geolocAddress(array &$address, &$success)
+    {
+        require_once 'geoloc.inc.php';
+        $success = true;
+        unset($address['geoloc']);
+        unset($address['geoloc_cityid']);
+        if (@$address['parsevalid']
+            || (@$address['text'] && @$address['changed'])
+            || (@$address['text'] && !@$address['cityid'])) {
+            $address = array_merge($address, empty_address());
+            $new = get_address_infos(@$address['text']);
+            if (compare_addresses_text(@$adress['text'], $geotxt = get_address_text($new))
+                || @$address['parsevalid']) {
+                $address = array_merge($address, $new);
+            } else {
+                $success = false;
+                $address = array_merge($address, cut_address(@$address['text']));
+                $address['geoloc'] = $geotxt;
+                $address['geoloc_cityid'] = $new['cityid'];
+            }
+        }
+        $address['text'] = get_address_text($address);
+    }
+}
+
 
 abstract class ProfilePage implements PlWizardPage
 {

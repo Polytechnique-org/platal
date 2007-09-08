@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileAddress
+class ProfileAddress extends ProfileGeoloc
 {
     private $bool;
     private $pub;
@@ -30,31 +30,6 @@ class ProfileAddress
         $this->bool = new ProfileBool();
         $this->pub  = new ProfilePub();
         $this->tel  = new ProfileTel();
-    }
-
-    private function geolocAddress(array &$address, &$success)
-    {
-        require_once 'geoloc.inc.php';
-        $success = true;
-        unset($address['geoloc']);
-        unset($address['geoloc_cityid']);
-        if (@$address['parsevalid'] || (@$address['text'] && @$address['changed']) || !@$address['cityid']) {
-            $address = array_merge($address, empty_address());
-            $new = get_address_infos(@$address['text']);
-            if (compare_addresses_text(@$adress['text'], $geotxt = get_address_text($new))
-                || @$address['parsevalid']) {
-                $address = array_merge($address, $new);
-            } else {
-                $success = false;
-                $address = array_merge($address, cut_address(@$address['text']));
-                $address['geoloc'] = $geotxt;
-                $address['geoloc_cityid'] = $new['cityid'];
-            }
-        }
-        if (@$address['changed']) {
-            $address['datemaj'] = time();
-        }
-        $address['text'] = get_address_text($address);
     }
 
     private function cleanAddress(ProfilePage &$page, array &$address, &$success)
@@ -75,9 +50,6 @@ class ProfileAddress
                 }
             }
             unset($tel['removed']);
-        }
-        if (@$address['changed']) {
-            $address['datemaj'] = time();
         }
         $address['secondaire'] = $this->bool->value($page, 'secondaire', $address['secondaire'], $s);
         $address['mail'] = $this->bool->value($page, 'mail', $address['mail'], $s);
@@ -214,7 +186,7 @@ class ProfileAddresses extends ProfilePage
                                    FIND_IN_SET('temporaire', a.statut) AS temporary,
                                    FIND_IN_SET('active', a.statut) AS current
                              FROM  adresses AS a
-                       INNER JOIN geoloc_pays AS gp ON(gp.a2 = a.country)
+                       INNER JOIN  geoloc_pays AS gp ON(gp.a2 = a.country)
                             WHERE  uid = {?} AND NOT FIND_IN_SET('pro', statut)
                          ORDER BY  adrid",
                            S::i('uid'));

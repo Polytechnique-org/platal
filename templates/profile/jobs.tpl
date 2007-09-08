@@ -55,7 +55,7 @@ function makeAddJob(id)
   return function(data)
          {
            $('#add_job').before(data);
-           updateSecteur('job_' + id, 'job[' + id + ']', '');
+           updateSecteur('job_' + id, 'jobs[' + id + ']', '');
          };
 }
 
@@ -68,16 +68,39 @@ function addJob()
   $.get(platal_baseurl + 'profile/ajax/job/' + i, makeAddJob(i));
 }
 
+function validGeoloc(id, pref)
+{
+  document.getElementById(id + '_geoloc').style.display = 'none';
+  document.getElementById(id + '_geoloc_error').style.display = 'none';
+  document.getElementById(id + '_geoloc_valid').style.display = 'none';
+  document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
+  document.forms.prof_annu[pref + "[text]"].value = document.forms.prof_annu[pref + "[geoloc]"].value;
+  attachEvent(document.forms.prof_annu[pref + "[text]"], "click",
+              function() { document.forms.prof_annu[pref + "[text]"].blur(); });
+  document.forms.prof_annu[pref + "[text]"].className = '';
+}
+
+function validAddress(id, pref)
+{
+  document.getElementById(id + '_geoloc').style.display = 'none';
+  document.getElementById(id + '_geoloc_error').style.display = 'none';
+  document.getElementById(id + '_geoloc_valid').style.display = 'none';
+  document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
+  attachEvent(document.forms.prof_annu[pref + "[text]"], "click",
+              function() { document.forms.prof_annu[pref + "[text]"].blur(); });
+  document.forms.prof_annu[pref + "[text]"].className = '';
+}
+
 {/literal}
 //]]></script>
 
-{foreach from=$entreprises item=job key=i}
+{foreach from=$jobs item=job key=i}
 {include file="profile/jobs.job.tpl" i=$i job=$job new=false}
-<script type="text/javascript">updateSecteur({$i}, '{"job_`$i`"}', '{"job[`$i`]"}', '{$job.ss_secteur}');</script>
+<script type="text/javascript">updateSecteur({$i}, '{"job_`$i`"}', '{"jobs[`$i`]"}', '{$job.ss_secteur}');</script>
 {/foreach}
 {if $jobs|@count eq 0}
 {include file="profile/jobs.job.tpl" i=0 job=0 new=true}
-<script type="text/javascript">updateSecteur(0, 'job_0', 'job[0]', '-1');</script></script>
+<script type="text/javascript">updateSecteur(0, 'job_0', 'jobs[0]', '-1');</script></script>
 {/if}
 
 <div id="add_job" class="center">
@@ -114,7 +137,7 @@ function addJob()
       </div>
       <div style="float: right">
         <div id="cv_preview" style="display: none"></div>
-        <textarea name="cv" id="cv" rows="15" cols="55">{$cv}</textarea>
+        <textarea name="cv" {if $errors.cv}class="error"{/if} id="cv" rows="15" cols="55">{$cv}</textarea>
       </div>
     </td>
   </tr>
