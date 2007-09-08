@@ -75,6 +75,7 @@ function validGeoloc(id, pref)
   document.getElementById(id + '_geoloc_valid').style.display = 'none';
   document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
   document.forms.prof_annu[pref + "[text]"].value = document.forms.prof_annu[pref + "[geoloc]"].value;
+  document.forms.prof_annu[pref + "[cityid]"].value = document.forms.prof_annu[pref + "[geoloc_cityid]"].value;
   attachEvent(document.forms.prof_annu[pref + "[text]"], "click",
               function() { document.forms.prof_annu[pref + "[text]"].blur(); });
   document.forms.prof_annu[pref + "[text]"].className = '';

@@ -68,7 +68,7 @@ class ProfileJob extends ProfileGeoloc
         }
         $success = true;
         foreach ($value as $key=>&$job) {
-            if (@$job['removed']) {
+            if (@$job['removed'] || !trim($job['name'])) {
                 unset($value[$key]);
             }
         }

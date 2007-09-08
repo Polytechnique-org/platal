@@ -138,9 +138,11 @@ abstract class ProfileGeoloc implements ProfileSetting
             || (@$address['text'] && !@$address['cityid'])) {
             $address = array_merge($address, empty_address());
             $new = get_address_infos(@$address['text']);
-            if (compare_addresses_text(@$adress['text'], $geotxt = get_address_text($new))
-                || @$address['parsevalid']) {
+            if (compare_addresses_text(@$address['text'], $geotxt = get_address_text($new))
+                || (@$address['parsevalid'] && @$address['cityid'])) {
                 $address = array_merge($address, $new);
+            } else if (@$address['parsevalid']) {
+                $address = array_merge($address, cut_address(@$address['text']));
             } else {
                 $success = false;
                 $address = array_merge($address, cut_address(@$address['text']));

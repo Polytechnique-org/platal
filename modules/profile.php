@@ -380,6 +380,11 @@ class ProfileModule extends PLModule
         $page->assign('job', array());
         $page->assign('ajaxjob', true);
         $page->assign('new', true);
+        $page->assign('secteurs', XDB::iterator("SELECT  id, label
+                                                   FROM  emploi_secteur"));
+        $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
+                                                    FROM  fonctions_def
+                                                ORDER BY  id"));
     }
 
     function handler_ajax_secteur(&$page, $id, $sect, $ssect = -1)

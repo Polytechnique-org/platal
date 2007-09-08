@@ -40,6 +40,7 @@
           name="{$name}[geoloc]"
           onclick="blur()"
           >{$adr.geoloc}</textarea>
+<input type="hidden" name="{$name}[geoloc_cityid]" value="{$adr.geoloc_cityid}" />
 <input type="hidden" name="{$name}[parsevalid]" value="0" />
 </span>
 </div>
