@@ -67,7 +67,7 @@
       {assign var="survey_editallmode" value=true}
     {/if}
     {if $survey_editmode}
-    <td>
+    <td class="smaller" style="width: 30%">
       <a href='survey/edit/question/root'>{icon name=page_edit} Modifier la description</a>
       {if $survey_editallmode}<br /><a href='survey/edit/add/0'>{icon name=add} Ajouter une question au d&#233;but</a>{/if}
     </td>
@@ -80,7 +80,7 @@
       {include file='survey/show_question.tpl' squestion=$squestion}
     </td>
     {if $survey_editallmode}
-    <td>
+    <td class="smaller" style="width: 30%; vertical-align: middle">
       <a href='survey/edit/question/{$squestion.id}'>{icon name=page_edit} Modifier cette question</a><br />
       <a href='survey/edit/del/{$squestion.id}'>{icon name=delete} Supprimer cette question</a><br />
       <a href='survey/edit/add/{$squestion.id+1}'>{icon name=add} Ajouter une question apr&#232;s</a>
