@@ -362,17 +362,17 @@ div.long td.rt { width: 65%; }
 .flags .vert {
     background: url('../images/icons/flag_green.gif') top right no-repeat;
     padding: 0 16px 0 0;
-    margin-right: 16px;
+    margin-left: 16px;
 }
 .flags .orange {
     background: url('../images/icons/flag_orange.gif') top right no-repeat;
     padding: 0 16px 0 0;
-    margin-right: 16px;
+    margin-left: 16px;
 }
 .flags .rouge {
     background: url('../images/icons/flag_red.gif') top right no-repeat;
     padding: 0 16px 0 0;
-    margin-right: 16px;
+    margin-left: 16px;
 }
 
 table.cadre_a_onglet{

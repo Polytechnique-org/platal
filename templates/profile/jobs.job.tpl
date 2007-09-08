@@ -20,131 +20,92 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<table class="bicol" cellspacing="0" cellpadding="0" summary="Entreprise n°{$eid+1}">
+{assign var=jobid value="job_`$i`"}
+{assign var=jobpref value="job[`$i`]"}
+<table class="bicol" cellspacing="0" cellpadding="0" summary="Entreprise n°{$i+1}">
   <tr>
-    <th colspan="2">
-      Entreprise n°{$eid+1}
+    <th colspan="2" style="text-align: right">
+      <div class="flags" style="float: left; text-align: left">
+        {include file="include/flags.radio.tpl" notable=true display="div" name="`$jobpref`[pub]" value=$job.pub}
+      </div>
+      Entreprise n°{$i+1}&nbsp;:
+      <input type="text" size="35" maxlength="100" name="{$jobpref}[name]" value="{$job.name}" />
     </th>
   </tr>
-  {include file=include/flags.radio.tpl name="pubpro[$i]" val=$pubpro.$i}
   <tr>
-    <td class="titre">Entreprise ou organisme</td>
-    <td>
-      <input type="text" size="35" maxlength="100" name="entreprise[{$i}]" value="{$entreprise.$i}" />
-    </td>
+    <td class="titre">Page Web</td>
+    <td><input type="text" size="35" maxlength="255" name="{$jobpref}[web]" value="{$job.web}" /></td>
   </tr>
   <tr>
     <td class="titre">Secteur d'activité</td>
     <td>
-      <select name="secteur[{$i}]" onchange="this.form.submit();">
-        {select_secteur secteur=$secteur.$i}
+      <select name="{$jobpref}[secteur]" onchange="this.form.submit();">
+        {select_secteur secteur=$job.secteur}
       </select>
     </td>
   </tr>
   <tr>
     <td class="titre">Sous-Secteur d'activité</td>
     <td>
-      <select name="ss_secteur[{$i}]">
-        {select_ss_secteur secteur=$secteur.$i ss_secteur=$ss_secteur.$i}
+      <select name="{$jobpref}[ss_secteur]">
+        {select_ss_secteur secteur=$job.secteur ss_secteur=$job.ss_secteur}
       </select>
     </td> 
   </tr>
   <tr>
     <td class="titre">Poste occupé</td>
     <td>
-      <input type="text" size="35" maxlength="120" name="poste[{$i}]"
-      value="{$poste.$i}" />
+      <input type="text" size="35" maxlength="120" name="{$jobpref}[poste]" value="{$job.poste}" />
     </td>
   </tr>
   <tr>
     <td class="titre">Fonction occupée</td>
     <td>
-      <select name="fonction[{$i}]">
-        {select_fonction fonction=$fonction.$i}
+      <select name="{$jobpref}[fonction]">
+        {select_fonction fonction=$job.fonction}
       </select>
     </td>
   </tr>
-  {include file=include/flags.radio.tpl name="adr_pubpro[$i]" val=$adr_pubpro.$i}
-  <tr>
-    <td class="titre">Adresse professionnelle</td>
-    <td>
-      <input type="text" name="adrpro1[{$i}]" size="40" maxlength="88" value="{$adrpro1.$i}" />
+  <tr class="pair">
+    <td colspan="2">
+      <div style="float: left">
+        <div class="flags" style="float: right">
+          {include file="include/flags.radio.tpl" name="`$jobpref`[adr][pub]" val=$job.adr.pub display="div"}
+        </div>
+        <div class="titre">Adresse</div>
+        <div style="margin-top: 20px; clear: both">
+          {include file="geoloc/form.address.tpl" name="`$jobpref`[adr]" id="`$jobpref`_adr" adr=$job.adr}
+        </div>
+      </div>
+      <div style="float: right; width: 50%">
+        <div class="flags" style="float: right">
+          {include file="include/flags.radio.tpl" name="`$jobpref`[tel_pub]" val=$job.tel_pub display="div"}
+        </div>
+        <span class="titre">Téléphone</span>
+        <table style="clear: both">
+          <tr>
+            <td>Bureau&nbsp;:</td>
+            <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_office]" value="{$job.tel_office}" /></td>
+          </tr>
+          <tr>
+            <td>Fax&nbsp;:</td>
+            <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_fax]" value="{$job.tel_fax}" /></td>
+          </tr>
+          <tr>
+            <td>Mobile&nbsp;:</td>
+            <td><input type="text" size="18" maxlength="18" name="{$jobpref}[tel_mobile]" value="{$job.tel_mobile}" /></td>
+          </tr>
+        </table>
+      </div>
     </td>
   </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>
-      <input type="text" name="adrpro2[{$i}]" size="40" maxlength="88" value="{$adrpro2.$i}" />
-    </td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>
-      <input type="text" name="adrpro3[{$i}]" size="40" maxlength="88" value="{$adrpro3.$i}" />
-    </td>
-  </tr>
-  <tr>
-    <td class="titre">Code postal</td>
-    <td>
-      <input type="text" name="postcodepro[{$i}]" value="{$postcodepro.$i}" size="8" maxlength="8" />
-    </td>
-  </tr>
-  <tr>
-    <td class="titre">Ville</td>
-    <td>
-      <input type="text" name="citypro[{$i}]" value="{$citypro.$i}" size="40" maxlength="50" />
-    </td>
-  </tr>
-  <tr>
-    <td class="titre">Pays</td>
-    <td>
-      <select name="countrypro[{$i}]" onchange="this.form.submit();">
-        {geoloc_country country=$countrypro.$i}
-      </select>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <spanv class="titre">Région ou département</span><br />
-      <span class="comm">(selon pays)</span>
-    </td>
-    <td>
-      <select name="regionpro[{$i}]">
-        {geoloc_region country=$countrypro.$i region=$regionpro.$i}
-      </select>
-    </td>
-  </tr>
-  {include file=include/flags.radio.tpl name="tel_pubpro[$i]" val=$tel_pubpro.$i}
-  <tr>
-    <td class="titre">Téléphone professionnel</td>
-    <td>
-      <input type="text" size="18" maxlength="18" name="telpro[{$i}]" value="{$telpro.$i}" />
-      &nbsp;
-    </td>
-  </tr>
-  <tr>
-    <td class="titre">Fax</td>
-    <td>
-      <input type="text" size="18" maxlength="18" name="faxpro[{$i}]" value="{$faxpro.$i}" />
-    </td>
-  </tr>
-  <tr>
-    <td class="titre">Mobile</td>
-    <td>
-      <input type="text" size="18" maxlength="18" name="mobilepro[{$i}]" value="{$mobilepro.$i}" />
-    </td>
-  </tr>
-  {include file=include/flags.radio.tpl name="email_pubpro[$i]" val=$email_pubpro.$i}
-  <tr>
-    <td class="titre">E-mail</td>
-    <td>
-      <input type="text" size="30" maxlength="60" name="emailpro[{$i}]" value="{$emailpro.$i}" />
-    </td>
-  </tr>
-  <tr>
-    <td class="titre">Page web</td>
-    <td>
-      <input type="text" size="30" maxlength="255" name="webpro[{$i}]" value="{$webpro.$i}" />
+  <tr class="pair">
+    <td colspan="2">
+      <div class="flags" style="float: right">
+        {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.mail_pub display="div"}
+      </div>
+      <span class="titre">E-mail&nbsp;:</span>
+      <input type="text" size="30" maxlength="60" name="{$jobpref}[email]" value="{$job.email}" />
     </td>
   </tr>
 </table>
