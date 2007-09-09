@@ -87,11 +87,7 @@ check("select uid from adresses where pub != 'private' and pub !='ax' and pub !=
 check("select uid from tels where tel_pub != 'private' and tel_pub !='ax' and tel_pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour un numero de telephone");
 
 /* validite de adresses */
-check("select uid, adrid from adresses where FIND_IN_SET('pro',statut)","Utilisateurs ayant encore une adresse pro dans leurs adresses");
 check("select uid, count(adrid) from adresses group by uid having count(adrid) > 7", "Utilisateurs ayant trop d'adresses");
-
-/* Validite de entreprises */
-check("select uid, count(entrid) from entreprises group by uid having count(entrid) > 2","Utilisateurs ayant trop d'entreprises");
 
 /* Validite des tables de langues, competences, mentoring*/
 check("select uid, count(lid) from langues_ins group by uid having count(lid) > 10","Utilisateurs ayant trop de langues");
