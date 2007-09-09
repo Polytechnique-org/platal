@@ -34,6 +34,7 @@ Bug/Wish:
         - #692: Layout of the profile                                      -FRU
         - #693: Fix empty description for generic education                -FRU
         - #708: Fix title (fix by Laurent Penou from Gadz.org)             -FRU
+        - #710: Adding grade do not degrade the database                   -FRU
 
     * Xnet:
         - #694: Color of 'Promotion' groups                                -ALK

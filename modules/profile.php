@@ -778,13 +778,17 @@ class ProfileModule extends PLModule
             $mid = $id;
 
             if (Post::v('act') == 'del') {
-                XDB::execute('DELETE FROM profile_medals_grades WHERE mid={?} AND gid={?}', $mid, Post::i('gid'));
+                XDB::execute('DELETE FROM  profile_medals_grades
+                                    WHERE  mid={?} AND gid={?}', $mid, Post::i('gid'));
             } elseif (Post::v('act') == 'new') {
-                XDB::execute('INSERT INTO profile_medals_grades (mid,gid) VALUES({?},{?})',
+                XDB::execute('INSERT INTO  profile_medals_grades (mid,gid)
+                                   VALUES  ({?},{?})',
                         $mid, max(array_keys(Post::v('grades', array(0))))+1);
             } else {
                 foreach (Post::v('grades', array()) as $gid=>$text) {
-                    XDB::execute('UPDATE profile_medals_grades SET pos={?}, text={?} WHERE gid={?}', $_POST['pos'][$gid], $text, $gid);
+                    XDB::execute('UPDATE  profile_medals_grades
+                                     SET  pos={?}, text={?}
+                                   WHERE  gid={?} AND mid={?}', $_POST['pos'][$gid], $text, $gid, $mid);
                 }
             }
             $res = XDB::iterator('SELECT gid, text, pos FROM profile_medals_grades WHERE mid={?} ORDER BY pos', $mid);
