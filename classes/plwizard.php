@@ -69,27 +69,34 @@ class PlWizard
     protected $stateless;
 
     protected $pages;
+    protected $titles;
     protected $lookup;
+    protected $inv_lookup;
 
     public function __construct($name, $layout, $stateless = false)
     {
-        $this->name   = 'wiz_' . $name;
-        $this->layout = $layout;
+        $this->name      = 'wiz_' . $name;
+        $this->layout    = $layout;
         $this->stateless = $stateless;
         $this->pages  = array();
         $this->lookup = array();
+        $this->titles = array();
         if (!isset($_SESSION[$this->name])) {
             $_SESSION[$this->name] = array();
+            $_SESSION[$this->name . '_page']  = null;
+            $_SESSION[$this->name . '_stack'] = array();
         }
-        $_SESSION[$this->name . '_page'] = null;
     }
 
-    public function addPage($class, $id = null)
+    public function addPage($class, $title, $id = null)
     {
-        if ($id != null) {
-            $this->lookup[$id] = count($this->pages);
+        if ($id == null) {
+            $id = count($this->pages);
         }
-        $this->pages[] = $class;
+        $this->lookup[$id]  = count($this->pages);
+        $this->inv_lookup[] = $id;
+        $this->pages[]      = $class;
+        $this->titles[]     = $title;
     }
 
     public function set($varname, $value)
@@ -123,7 +130,7 @@ class PlWizard
         $_SESSION[$this->name . '_page'] = null;
     }
 
-    private function &getPage($id)
+    private function getPage($id)
     {
         $page = $this->pages[$id];
         return new $page($this);
@@ -131,40 +138,71 @@ class PlWizard
 
     public function apply(PlatalPage &$smarty, $baseurl, $pgid = null)
     {
-        $curpage =& $_SESSION[$this->name . '_page'];
+        if ($this->stateless && (isset($this->lookup[$pgid]) || isset($this->pages[$pgid]))) { 
+            $curpage = is_numeric($pgid) ? $pgid : $this->lookup[$pgid]; 
+        } else if ($this->stateless && is_null($pgid)) {
+            $curpage = 0;
+        } else {
+            $curpage = $_SESSION[$this->name . '_page'];
+        }
+        $oldpage = $curpage;
 
         // Process the previous page
-        if (!is_null($curpage)) {
-            $page = $this->getPage($curpage);
+        if (Post::has('valid_page')) {
+            $page = $this->getPage(Post::i('valid_page'));
+            $curpage = Post::i('valid_page');
             $next = $page->process();
+            $last = $curpage;
             switch ($next) {
               case PlWizard::FIRST_PAGE:
                 $curpage = 0;
                 break;
               case PlWizard::PREVIOUS_PAGE:
-                $curpage--;
+                if (!$this->stateless && count($_SESSION[$this->name . '_stack'])) {
+                    $curpage = array_pop($_SESSION[$this->name . '_stack']);
+                } elseif ($curpage && $this->stateless) {
+                    $curpage--;
+                } else {
+                    $curpage = 0;
+                }
                 break;
               case PlWizard::NEXT_PAGE:
-                $curpage++;
+                if ($curpage < count($this->pages) - 1) {
+                    $curpage++;
+                }
                 break;
               case PlWizard::LAST_PAGE:
                 $curpage = count($this->pages) - 1;
                 break;
               case PlWizard::CURRENT_PAGE: break; // don't change the page
               default:
-                $curpage = is_numeric($next) ? $next : $this->lookup[$curpage];
+                $curpage = is_numeric($next) ? $next : $this->lookup[$next];
                 break;
             }
-        } else {
-            $curpage = 0;
+            if (!$this->stateless) {
+                array_push($_SESSION[$this->name . '_stack'], $last);
+            }
         }
-        if ($this->stateless && (in_array($pgid, $this->lookup) || isset($this->pages[$pgid]))) {
-            $curpage = $pgid;
+        if (is_null($curpage)) {
+            $curpage = 0;
         }
 
         // Prepare the page
-        $page = $this->getPage($curpage);
+        $_SESSION[$this->name . '_page'] = $curpage;
+        if ($curpage != $oldpage) {
+            pl_redirect($baseurl . '/' . $this->inv_lookup[$curpage]);
+        } else if (!isset($page)) {
+            $page = $this->getPage($curpage);
+        }
+        $smarty->changeTpl($this->layout);
+        $smarty->assign('pages', $this->titles);
+        $smarty->assign('current', $curpage);
+        $smarty->assign('lookup', $this->inv_lookup);
+        $smarty->assign('stateless', $this->stateless);
+        $smarty->assign('wiz_baseurl', $baseurl);
+        $smarty->assign('tab_width', (int)(99 / count($this->pages)));
         $smarty->assign('wiz_page', $page->template());
+        $smarty->assign('xorg_no_errors', true);
         $page->prepare($smarty);
     }
 }

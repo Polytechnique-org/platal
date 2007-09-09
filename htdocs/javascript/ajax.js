@@ -103,7 +103,7 @@ function _showTempMessage(id, state, back)
     var obj = document.getElementById(id);
     if (currentTempMessage != state) {
         return;
-    }   
+    }
     setOpacity(obj, back * 4);
     if (back > 0) {
         setTimeout("_showTempMessage('" + id + "', " + currentTempMessage + "," + (back-1) + ")", 125);

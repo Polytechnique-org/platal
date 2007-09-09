@@ -21,194 +21,117 @@
 {**************************************************************************}
 
 
+<script type="text/javascript">//<![CDATA[
 {literal}
-<script type="text/javascript">
-  //<![CDATA[
-  function langue_add()
-  {
-    var selectid = document.forms.prof_annu.langue_sel_add.selectedIndex;
-    document.forms.prof_annu.langue_id.value = document.forms.prof_annu.langue_sel_add.options[selectid].value;
-    var selectid_level = document.forms.prof_annu.langue_level_sel_add.selectedIndex;
-    document.forms.prof_annu.langue_level.value = document.forms.prof_annu.langue_level_sel_add.options[selectid_level].value;
-    document.forms.prof_annu.langue_op.value = "ajouter";
-    document.forms.prof_annu.submit();
-  } // function langue_add()
 
-  function langue_del( lid )
-  {
-    document.forms.prof_annu.langue_id.value = lid;
-    document.forms.prof_annu.langue_op.value = "retirer";
-    document.forms.prof_annu.submit();
-  } // function langue_del( id )
+function update(cat)
+{
+  var val  = document.forms.prof_annu[cat + '_sel'].value;
+  var show = true;
+  if (val == '') {
+    show = false;
+  }
+  if (document.getElementById(cat + '_' + val) != null) {
+    show = false;
+  }
+  document.getElementById(cat + '_add').style.display = show ? '' : 'none';
+}
 
-  function comppros_add()
-  {
-    var selectid = document.forms.prof_annu.comppros_sel_add.selectedIndex;
-    document.forms.prof_annu.comppros_id.value = document.forms.prof_annu.comppros_sel_add.options[selectid].value;
-    var selectid_level = document.forms.prof_annu.comppros_level_sel_add.selectedIndex;
-    document.forms.prof_annu.comppros_level.value = document.forms.prof_annu.comppros_level_sel_add.options[selectid_level].value;
-    document.forms.prof_annu.comppros_op.value = "ajouter";
-    document.forms.prof_annu.submit();
-  } // function langue_add()
+function add(cat)
+{
+  var sel  = document.forms.prof_annu[cat + '_sel'];
+  var val  = sel.value;
+  var text = sel.options[sel.selectedIndex].text;
+  $.get(platal_baseurl + 'profile/ajax/skill/' + cat + '/' + val,
+        function(data) {
+          $('#' + cat).append(data);
+          document.getElementById(cat + '_' + val + '_title').innerHTML = text;
+          update(cat);
+        });
+}
 
-  function comppros_del( cid )
-  {
-    document.forms.prof_annu.comppros_id.value = cid;
-    document.forms.prof_annu.comppros_op.value = "retirer";
-    document.forms.prof_annu.submit();
-  } // function comppros_del( id )
-  //]]>
-</script>
+function remove(cat, id)
+{
+  $('#' + cat + '_' + id).remove();
+  update(cat);
+}
+
 {/literal}
+//]]></script>
 
-<div class="blocunite_tab">
-  <table class="bicol"cellspacing="0" cellpadding="0" 
-    summary="Profil: Compétences professionnelles">
-    <tr>
-      <th colspan="3">
-        Compétences professionnelles
-        <input type="hidden" value="" name="comppros_op" />
-        <input type="hidden" value="" name="comppros_id" />
-        <input type="hidden" value="" name="comppros_level" />
-      </th>
-    </tr>
-    <tr>
-      <td colspan="3" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="rouge">
-              <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
-            </td>
-            <td class="texte">
-              privé
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr class="impair">
-      <td class="colg">
-        <span class="titre">Domaine</span>
-      </td>
-      <td class="colm">
-        <span class="titre">Niveau</span>
-      </td>
-      <td class="cold" style="width:15%">
-        &nbsp;
-      </td>
-    </tr>
-    {foreach from=$cpro_name key=i item=name}
-    <tr class="{cycle values="pair,impair"}">
-      <td class="colg">
-        <span class="valeur">{$name}</span>
-      </td>
-      <td class="colm">
-        <span class="valeur">&nbsp;&nbsp;{$cpro_level.$i}</span>
-      </td>
-      <td class="cold">
-        <span class="lien"><a href="javascript:comppros_del('{$cpro_id.$i}');">retirer</a></span>
-      </td>
-    </tr>
-    {/foreach}
-    {if $nb_cpro < $nb_cpro_max}
-    <tr class="{cycle values="pair,impair"}">
-      <td class="colg">
-        <select name="comppros_sel_add">
+<table class="bicol" style="margin-bottom: 1em">
+  <tr>
+    <th>
+      Compétences professionnelles
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <div class="flags">
+        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+        <span class="texte">privé</span>
+      </div>
+      <div>
+        <span class="titre">Domaine&nbsp;:</span>
+        <select name="competences_sel" onchange="update('competences')">
           <option value=""></option>
-          {foreach from=$comppros_def item=cn key=id}
-          <option value="{$id}">{if $comppros_title.$id}-{else}&nbsp;&nbsp;{/if}&nbsp;{$cn}</option>
-          {/foreach}
+          {assign var=ingroup value=false}
+          {iterate from=$comp_list item=comp}
+          {if $comp.title}
+          {if $ingroup}</optgroup>{/if}
+          <optgroup label="{$comp.text_fr}">
+          {assign var=ingroup value=true}
+          {/if}
+          <option value="{$comp.id}">{$comp.text_fr}</option>
+          {/iterate}
+          {if $ingroup}</optgroup>{/if}
         </select>
-      </td>
-      <td class="colm">
-        <select name="comppros_level_sel_add">
-          <option value=""></option>
-          {foreach from=$comppros_levels item=ln key=l}
-          <option value="{$l}">{$ln}</option>
-          {/foreach}
-        </select>
-      </td>
-      <td class="cold">
-        <span class="lien"><a href="javascript:comppros_add();">ajouter</a></span>
-      </td>
-    </tr>
-    {/if}   
-  </table>
-</div>
+        <span id="competences_add" style="display: none">
+          <a href="javascript:add('competences')">{icon name=add title="Ajouter cette compétence"}</a>
+        </span>
+      </div>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td id="competences">
+      {foreach from=$competences item=competence key=id}
+      {include file="profile/skill.skill.tpl" cat='competences' skill=$competence id=$id levels=$comp_level}
+      {/foreach}
+    </td>
+  </tr>
+</table>
 
-<div class="blocunite">
-  <table class="bicol" cellspacing="0" cellpadding="0" 
-    summary="Profil: Compétences linguistiques">
-    <tr>
-      <th colspan="3">
-        Compétences linguistiques
-        <input type="hidden" value="" name="langue_op" />
-        <input type="hidden" value="" name="langue_id" />
-        <input type="hidden" value="" name="langue_level" />
-      </th>
-    </tr>
-    <tr>
-      <td colspan="3" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="rouge">
-              <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
-            </td>
-            <td class="texte">
-              privé
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr class="impair">
-      <td class="colg">
-        <span class="titre">Langue</span>
-      </td>
-      <td class="colm">
-        <span class="titre">Niveau</span>
-      </td>
-      <td class="cold" style="width:15%">
-        <span class="lien"><a href="Xorg/FAQ?display=light#niveau_langue" class="popup_800x600">Quel niveau ?</a></span>
-      </td>
-    </tr>
-    {foreach from=$langue_name item=name key=i}
-    <tr class="{cycle values="pair,impair"}">
-      <td class="colg">
-        <span class="valeur">{$name}</span>
-      </td>
-      <td class="colm">
-        <span class="valeur">&nbsp;&nbsp;{if $langue_level.$i == 0}-{else}{$langue_level.$i}{/if}</span>
-      </td>
-      <td class="cold">
-        <span class="lien"><a href="javascript:langue_del('{$langue_id.$i}');">retirer</a></span>
-      </td>
-    </tr>
-    {/foreach}
-    {if $nb_lg < $nb_lg_max}
-    <tr class="{cycle values="pair,impair"}">
-      <td class="colg">
-        <select name="langue_sel_add">
+<table class="bicol">
+  <tr>
+    <th>Compétences linguistiques</th>
+  </tr>
+  <tr>
+    <td>
+      <div class="flags">
+        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+        <span class="texte">privé</span>
+      </div>
+      <div>
+        <span class="titre">Domaine&nbsp;:</span>
+        <select name="langues_sel" onchange="update('langues')">
           <option value=""></option>
-          {foreach from=$langues_def item=n key=i}
-          <option value="{$i}">{$n}</option>
-          {/foreach}
+          {iterate from=$lang_list item=lang}
+          <option value="{$lang.id}">{$lang.langue_fr}</option>
+          {/iterate}
         </select>
-      </td>
-      <td class="colm">
-        <select name="langue_level_sel_add">
-          <option value=""></option>
-          {foreach from=$langues_levels item=l key=i}
-          <option value="{$i}">{$l}</option>
-          {/foreach}
-        </select>
-      </td>
-      <td class="cold">
-        <span class="lien"><a href="javascript:langue_add();">ajouter</a></span>
-      </td>
-    </tr>
-    {/if}
-  </table>
-</div>
+        <span id="langues_add" style="display: none">
+          <a href="javascript:add('langues')">{icon name=add title="Ajouter cette langue"}</a>
+        </span>
+      </div>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td id="langues">
+      {foreach from=$langues item=langue key=id}
+      {include file="profile/skill.skill.tpl" cat='langues' skill=$langue id=$id levels=$lang_level}
+      {/foreach}
+    </td>
+  </tr>
+ </table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

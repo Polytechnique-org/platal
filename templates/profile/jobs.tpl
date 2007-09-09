@@ -22,89 +22,50 @@
 
 <script type="text/javascript">//<![CDATA[
 {literal}
-function removeObject(id, pref)
+
+function removeJob(id, pref)
 {
-  document.getElementById(id).style.display = "none";
+  document.getElementById(id + '_cont').style.display = 'none';
+  if (document.forms.prof_annu[pref + '[new]'].value == '0') {
+    document.getElementById(id + '_grayed').style.display = '';
+    document.getElementById(id + '_grayed_name').innerHTML =
+      document.forms.prof_annu[pref + "[name]"].value.replace('<', '&lt;');
+  }
   document.forms.prof_annu[pref + "[removed]"].value = "1";
 }
 
-function restoreObject(id, pref)
+function restoreJob(id, pref)
 {
-  document.getElementById(id).style.display = '';
+  document.getElementById(id + '_cont').style.display = '';
+  document.getElementById(id + '_grayed').style.display = 'none';
   document.forms.prof_annu[pref + "[removed]"].value = "0";
 }
 
-function getAddressElement(adrid, adelement)
+function updateSecteur(nb, id, pref, sel)
 {
-  return document.forms.prof_annu["addresses[" + adrid + "][" + adelement + "]"];
-}
-
-function checkCurrentAddress(newCurrent)
-{
-  var hasCurrent = false;
-  var i = 0;
-  while (getAddressElement(i, 'pub') != null) {
-    var radio = getAddressElement(i, 'current');
-    var removed = getAddressElement(i, 'removed');
-    if (removed.value == "1" && radio.checked) {
-      radio.checked = false;
-    } else if (radio.checked && radio != newCurrent) {
-      radio.checked = false;
-    } else if (radio.checked) {
-      hasCurrent = true;
-    }
-    i++;
+  var secteur = document.forms.prof_annu[pref + '[secteur]'].value;
+  if (secteur == '') {
+    secteur = '-1';
   }
-  if (!hasCurrent) {
-    i = 0;
-    while (getAddressElement(i, 'pub') != null) {
-      var radio = getAddressElement(i, 'current');
-      var removed = getAddressElement(i, 'removed');
-      if (removed.value != "1") {
-        radio.checked= true;
-        return;
-      }
-      i++;
-    }
-  }
+  Ajax.update_html(id + '_ss_secteur', 'profile/ajax/secteur/' +nb + '/' + secteur + '/' + sel);
 }
 
-function removeAddress(id, pref)
+function makeAddJob(id)
 {
-  removeObject(id, pref);
-  checkCurrentAddress(null);
-  if (document.forms.prof_annu[pref + '[datemaj]'].value != '') {
-    document.getElementById(id + '_grayed').style.display = '';
-  }
+  return function(data)
+         {
+           $('#add_job').before(data);
+           updateSecteur('job_' + id, 'jobs[' + id + ']', '');
+         };
 }
 
-function restoreAddress(id, pref)
-{
-  document.getElementById(id +  '_grayed').style.display = 'none';
-  checkCurrentAddress(null);
-  restoreObject(id, pref);
-}
-
-function addAddress()
+function addJob()
 {
   var i = 0;
-  while (getAddressElement(i, 'pub') != null) {
-    i++;
+  while (document.getElementById('job_' + i) != null) {
+    ++i;
   }
-  $("#add_adr").before('<div id="addresses_' + i + '_cont"></div>');
-  Ajax.update_html('addresses_' + i + '_cont', 'profile/ajax/address/' + i, checkCurrentAddress);
-}
-
-function addTel(id)
-{
-  var i = 0;
-  var adid = 'addresses_' + id;
-  var tel  = adid + '_tel_';
-  while (document.getElementById(tel + i) != null) {
-    i++;
-  }
-  $('#' + adid + '_add_tel').before('<div id="' + tel + i + '" style="clear: both"></div>');
-  Ajax.update_html(tel + i, 'profile/ajax/tel/' + id + '/' + i);
+  $.get(platal_baseurl + 'profile/ajax/job/' + i, makeAddJob(i));
 }
 
 function validGeoloc(id, pref)
@@ -114,6 +75,7 @@ function validGeoloc(id, pref)
   document.getElementById(id + '_geoloc_valid').style.display = 'none';
   document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
   document.forms.prof_annu[pref + "[text]"].value = document.forms.prof_annu[pref + "[geoloc]"].value;
+  document.forms.prof_annu[pref + "[cityid]"].value = document.forms.prof_annu[pref + "[geoloc_cityid]"].value;
   attachEvent(document.forms.prof_annu[pref + "[text]"], "click",
               function() { document.forms.prof_annu[pref + "[text]"].blur(); });
   document.forms.prof_annu[pref + "[text]"].className = '';
@@ -124,7 +86,7 @@ function validAddress(id, pref)
   document.getElementById(id + '_geoloc').style.display = 'none';
   document.getElementById(id + '_geoloc_error').style.display = 'none';
   document.getElementById(id + '_geoloc_valid').style.display = 'none';
-  document.forms.prof_annu[pref + "[parsevalid]"].value = "0";
+  document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
   attachEvent(document.forms.prof_annu[pref + "[text]"], "click",
               function() { document.forms.prof_annu[pref + "[text]"].blur(); });
   document.forms.prof_annu[pref + "[text]"].className = '';
@@ -133,21 +95,53 @@ function validAddress(id, pref)
 {/literal}
 //]]></script>
 
-{foreach key=i item=adr from=$addresses}
-<div id="{"addresses_`$i`_cont"}">
-{include file="profile/adresses.address.tpl" i=$i adr=$adr}
-</div>
+{foreach from=$jobs item=job key=i}
+{include file="profile/jobs.job.tpl" i=$i job=$job new=false}
+<script type="text/javascript">updateSecteur({$i}, '{"job_`$i`"}', '{"jobs[`$i`]"}', '{$job.ss_secteur}');</script>
 {/foreach}
-{if $addresses|@count eq 0}
-<div id="addresses_0_cont">
-{include file="profile/adresses.address.tpl" i=0 adr=0}
-</div>
+{if $jobs|@count eq 0}
+{include file="profile/jobs.job.tpl" i=0 job=0 new=true}
+<script type="text/javascript">updateSecteur(0, 'job_0', 'jobs[0]', '-1');</script></script>
 {/if}
 
-<div id="add_adr" class="center">
-  <a href="javascript:addAddress()">
-    {icon name=add title="Ajouter une adresse"} Ajouter une adresse
+<div id="add_job" class="center">
+  <a href="javascript:addJob()">
+    {icon name=add title="Ajouter un emploi"} Ajouter un emploi
   </a>
 </div>
+
+<table class="bicol" summary="CV" style="margin-top: 1.5em">
+  <tr>
+    <th>
+      Curriculum vitae
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <div style="float: left; width: 25%">
+        <div class="flags">
+          <span class="rouge"><input type="checkbox" name="accesCV" checked="checked" disabled="disabled" /></span>
+          <span class="texte">privé</span>
+        </div>
+        <div class="smaller" style="margin-top: 30px">
+          <a href="Xorg/FAQ?display=light#cv" class="popup_800x480">
+            {icon name="lightbulb" title="Astuce"}Comment remplir mon CV&nbsp;?
+          </a><br />
+          <a href="wiki_help" class="popup3">
+            {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki
+          </a>
+          <div class="center">
+            <input type="submit" name="preview" value="Aperçu du CV"
+                   onclick="previewWiki('cv',  'cv_preview', true, 'cv_preview'); return false;" />
+          </div>
+        </div>
+      </div>
+      <div style="float: right">
+        <div id="cv_preview" style="display: none"></div>
+        <textarea name="cv" {if $errors.cv}class="error"{/if} id="cv" rows="15" cols="55">{$cv}</textarea>
+      </div>
+    </td>
+  </tr>
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

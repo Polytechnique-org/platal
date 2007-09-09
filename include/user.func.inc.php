@@ -477,7 +477,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
     $user['applis_join'] = join(', ', $user['applis_fmt']);
 
     if (has_user_right($user['medals_pub'], $view)) {
-        $res = XDB::iterator("SELECT  m.id, m.text AS medal, m.type, m.img, s.gid, g.text AS grade
+        $res = XDB::iterator("SELECT  m.id, m.text AS medal, m.type, s.gid, g.text AS grade
                                 FROM  profile_medals_sub    AS s
                           INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
                            LEFT JOIN  profile_medals_grades AS g ON ( s.mid = g.mid AND s.gid = g.gid )

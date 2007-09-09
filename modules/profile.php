@@ -32,6 +32,13 @@ class ProfileModule extends PLModule
             'profile/private'  => $this->make_hook('profile',    AUTH_COOKIE),
             'profile/ax'       => $this->make_hook('ax',         AUTH_COOKIE, 'admin'),
             'profile/edit'     => $this->make_hook('p_edit',     AUTH_MDP),
+            'profile/ajax/address' => $this->make_hook('ajax_address', AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/tel'     => $this->make_hook('ajax_tel',     AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/medal'   => $this->make_hook('ajax_medal',   AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/job'     => $this->make_hook('ajax_job',     AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/secteur' => $this->make_hook('ajax_secteur', AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/skill'   => $this->make_hook('ajax_skill',   AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/medal'    => $this->make_hook('medal', AUTH_PUBLIC),
             'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
 
@@ -92,6 +99,19 @@ class ProfileModule extends PLModule
                 echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
             }
         }
+        exit;
+    }
+
+    function handler_medal(&$page, $mid)
+    {
+        $res = XDB::query("SELECT  img
+                             FROM  profile_medals
+                            WHERE  id = {?}",
+                          $mid);
+        $img  = dirname(__FILE__).'/../htdocs/images/medals/' . $res->fetchOneCell();
+        $type = mime_content_type($img);
+        header("Content-Type: $type");
+        echo file_get_contents($img);
         exit;
     }
 
@@ -255,19 +275,11 @@ class ProfileModule extends PLModule
         http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=$mat");
     }
 
-    function handler_p_edit(&$page, $opened_tab = 'general')
+    function handler_p_edit(&$page, $opened_tab = null)
     {
         global $globals;
 
-        $page->changeTpl('profile/edit.tpl');
-
-        $page->addCssLink('profil.css');
-        $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
-
-        require_once dirname(__FILE__) . '/profile/tabs.inc.php';
-        require_once 'profil.func.inc.php';
-        require_once 'synchro_ax.inc.php';
-
+        // Finish registration procedure
         if (Post::v('register_from_ax_question')) {
             XDB::execute('UPDATE auth_user_quick
                                      SET profile_from_ax = 1
@@ -305,96 +317,106 @@ class ProfileModule extends PLModule
             }
         }
 
+        // AX Synchronization
+        require_once 'synchro_ax.inc.php';
         if (is_ax_key_missing()) {
             $page->assign('no_private_key', true);
         }
-
         if (Env::v('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
             ax_synchronize(S::v('bestalias'), S::v('uid'));
             $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
         }
 
-        // pour tous les tabs, la date de naissance pour verifier
-        // quelle est bien rentree et la date.
-        $res = XDB::query(
-                "SELECT  naissance, DATE_FORMAT(date, '%d.%m.%Y')
-                   FROM  auth_user_md5
-                  WHERE  user_id={?}", S::v('uid'));
-        list($naissance, $date_modif_profil) = $res->fetchOneRow();
+        // Misc checks
+        // TODO: Block if birth date is missing ?
 
-        // lorsqu'on n'a pas la date de naissance en base de données
-        if (!$naissance)  {
-            // la date de naissance n'existait pas et vient d'être soumise dans la variable
-            if (Env::has('birth')) {
-                //en cas d'erreur :
-                if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::v('birth'))) {
-                    $page->assign('etat_naissance', 'query');
-                    $page->trig('Date de naissance incorrecte ou incohérente.');
-                    return;
-                }
+        $page->addJsLink('ajax.js');
+        $page->addJsLink('jquery.js');
+        $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true);
+        require_once dirname(__FILE__) . '/profile/page.inc.php';
+        $wiz->addPage('ProfileGeneral', 'Général', 'general');
+        $wiz->addPage('ProfileAddresses', 'Adresses personnelles', 'adresses');
+        $wiz->addPage('ProfileGroups', 'Groupes X - Binets', 'poly');
+        $wiz->addPage('ProfileDecos', 'Décorations - Medailles', 'deco');
+        $wiz->addPage('ProfileJobs', 'Informations professionnelles', 'emploi');
+        $wiz->addPage('ProfileSkills', 'Compétences diverses', 'skill');
+        $wiz->addPage('ProfileMentor', 'Mentoring', 'mentor');
+        $wiz->apply($page, 'profile/edit', $opened_tab);
 
-                //sinon
-                $birth = sprintf("%s-%s-%s", substr(Env::v('birth'), 4, 4),
-                                 substr(Env::v('birth'), 2, 2),
-                                 substr(Env::v('birth'), 0, 2));
-                XDB::execute("UPDATE auth_user_md5
-                                           SET naissance={?}
-                                         WHERE user_id={?}", $birth,
-                                       S::v('uid'));
-                $page->assign('etat_naissance', 'ok');
-                return;
-            }
+        $page->addCssLink('profil.css');
+        $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
+    }
 
-            $page->assign('etat_naissance', 'query');
-            return; // on affiche le formulaire pour naissance
+    function handler_ajax_address(&$page, $adid)
+    {
+        $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
+        $page->assign('i', $adid);
+        $page->assign('adr', array());
+        $page->assign('ajaxadr', true);
+    }
+
+    function handler_ajax_tel(&$page, $adid, $telid)
+    {
+        $page->changeTpl('profile/adresses.tel.tpl', NO_SKIN);
+        $page->assign('i', $adid);
+        $page->assign('adid', "addresses_$adid");
+        $page->assign('adpref', "addresses[$adid]");
+        $page->assign('t', $telid);
+        $page->assign('tel', array());
+        $page->assign('ajaxtel', true);
+    }
+
+    function handler_ajax_medal(&$page, $id)
+    {
+        $page->changeTpl('profile/deco.medal.tpl', NO_SKIN);
+        $page->assign('id', $id);
+        $page->assign('medal', array('valid' => 0, 'grade' => 0));
+        $page->assign('ajaxdeco', true);
+    }
+
+    function handler_ajax_job(&$page, $id)
+    {
+        $page->changeTpl('profile/jobs.job.tpl', NO_SKIN);
+        $page->assign('i', $id);
+        $page->assign('job', array());
+        $page->assign('ajaxjob', true);
+        $page->assign('new', true);
+        $page->assign('secteurs', XDB::iterator("SELECT  id, label
+                                                   FROM  emploi_secteur"));
+        $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
+                                                    FROM  fonctions_def
+                                                ORDER BY  id"));
+    }
+
+    function handler_ajax_secteur(&$page, $id, $sect, $ssect = -1)
+    {
+        $res = XDB::iterator("SELECT  id, label
+                                FROM  emploi_ss_secteur
+                               WHERE  secteur = {?}", $sect);
+        $page->changeTpl('profile/jobs.secteur.tpl', NO_SKIN);
+        $page->assign('id', $id);
+        $page->assign('ssecteurs', $res);
+        $page->assign('sel', $ssect);
+    }
+
+    function handler_ajax_skill(&$page, $cat, $id)
+    {
+        $page->changeTpl('profile/skill.skill.tpl', NO_SKIN);
+        $page->assign('ajaxskill', true);
+        $page->assign('cat', $cat);
+        $page->assign('id', $id);
+        if ($cat == 'competences') {
+          $page->assign('levels', array('initié' => 'initié',
+                                        'bonne connaissance' => 'bonne connaissance',
+                                        'expert' => 'expert'));
+        } else {
+          $page->assign('levels', array(1 => 'connaissance basique',
+                                        2 => 'maîtrise des bases',
+                                        3 => 'maîtrise limitée',
+                                        4 => 'maîtrise générale',
+                                        5 => 'bonne maîtrise',
+                                        6 => 'maîtrise complète'));
         }
-
-        //doit-on faire un update ?
-        if (Env::has('modifier') || Env::has('suivant')) {
-            require_once dirname(__FILE__) . "/profile/get_{$opened_tab}.inc.php";
-            require_once dirname(__FILE__) . "/profile/verif_{$opened_tab}.inc.php";
-
-            if($page->nb_errs()) {
-                require_once dirname(__FILE__) . "/profile/assign_{$opened_tab}.inc.php";
-                $page->assign('onglet', $opened_tab);
-                $page->assign('onglet_tpl', "profile/$opened_tab.tpl");
-                return;
-            }
-
-            $date=date("Y-m-j");//nouvelle date de mise a jour
-
-            //On sauvegarde l'uid pour l'AX
-            /* on sauvegarde les changements dans user_changes :
-            * on a juste besoin d'insérer le user_id de la personne dans la table
-            */
-            XDB::execute('REPLACE INTO user_changes SET user_id={?}',
-                                   S::v('uid'));
-
-            if (!S::has('suid')) {
-                require_once 'notifs.inc.php';
-                register_watch_op(S::v('uid'), WATCH_FICHE);
-            }
-
-            // mise a jour des champs relatifs au tab ouvert
-            require_once dirname(__FILE__) . "/profile/update_{$opened_tab}.inc.php";
-
-            $log =& $_SESSION['log'];
-            $log->log('profil', $opened_tab);
-            $page->assign('etat_update', 'ok');
-        }
-
-        if (Env::has('suivant')) {
-            pl_redirect('profile/edit/' . get_next_tab($opened_tab));
-        }
-
-        require_once dirname(__FILE__) . "/profile/get_{$opened_tab}.inc.php";
-        require_once dirname(__FILE__) . "/profile/verif_{$opened_tab}.inc.php";
-        require_once dirname(__FILE__) . "/profile/assign_{$opened_tab}.inc.php";
-
-        $page->assign('onglet', $opened_tab);
-        $page->assign('onglet_tpl', "profile/$opened_tab.tpl");
-
-        return;
     }
 
     function handler_p_orange(&$page)

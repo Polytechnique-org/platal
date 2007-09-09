@@ -50,7 +50,7 @@
         <span class="comm"></span>
       </td>
       <td class="cold">
-        <input type='text' name='nom' value="{$nom}" />
+        <input type='text' name='nom' {if $errors.nom}class="error"{/if} value="{$nom}" />
       </td>
     </tr>
     <tr>
@@ -59,7 +59,7 @@
         <span class="comm"></span>
       </td>
       <td class="cold">
-        <input type='text' name='prenom' value="{$prenom}" />
+        <input type='text' name='prenom' {if $errors.prenom}class="error"{/if} value="{$prenom}" />
       </td>
     </tr>
     <tr>
@@ -101,17 +101,17 @@
         <span class="comm">(4ème année de l'X)</span>
       </td>
       <td class="cold">
-        <select name="appli_id1" onchange="fillType(this.form.appli_type1, this.selectedIndex-1);">  
-          {applis_options selected=$appli_id1}
+        <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">  
+          {applis_options selected=$appli1.id}
         </select>
         <br />
-        <select name="appli_type1">
+        <select name="appli1[type]">
           <option value=""></option>
         </select>
         <script type="text/javascript">
           <!--
-          fillType(document.forms.prof_annu.appli_type1, document.forms.prof_annu.appli_id1.selectedIndex-1);
-          selectType(document.forms.prof_annu.appli_type1, '{$appli_type1}');
+          fillType(document.forms.prof_annu['appli1[type]'], document.forms.prof_annu['appli1[id]'].selectedIndex-1);
+          selectType(document.forms.prof_annu['appli1[type]'], '{$appli1.type}');
           //-->
         </script>
       </td>
@@ -121,17 +121,17 @@
         <span class="titre">Post-application</span>
       </td>
       <td class="dcold">
-        <select name="appli_id2" onchange="fillType(this.form.appli_type2, this.selectedIndex-1);">   
-          {applis_options selected=$appli_id2}
+        <select name="appli2[id]" onchange="fillType(this.form['appli[type]'], this.selectedIndex-1);">   
+          {applis_options selected=$appli2.id}
         </select>
         <br />
-        <select name="appli_type2">
+        <select name="appli2[type]">
           <option value=""></option>
         </select>
         <script type="text/javascript">
           <!--
-          fillType(document.forms.prof_annu.appli_type2, document.forms.prof_annu.appli_id2.selectedIndex-1);
-          selectType(document.forms.prof_annu.appli_type2, '{$appli_type2}');
+          fillType(document.forms.prof_annu['appli2[type]'], document.forms.prof_annu['appli2[id]'].selectedIndex-1);
+          selectType(document.forms.prof_annu['appli2[type]'], '{$appli2.type}');
           //-->
         </script>
       </td>
@@ -218,7 +218,7 @@
               de changer ta photo, celle-ci correspond à ton ancien
               profil car la nouvelle n'a pas encore été validée par un administrateur du site !
               <a href="profile/{$smarty.session.forlife}?modif=new" class="popup2">Ta fiche avec la nouvelle photo</a>)
-              {/if}.
+              {/if} :
             </td>
             <td class="dcolg">
               <img src="photo/{$smarty.session.forlife}" alt=" [ PHOTO ] " />
@@ -256,7 +256,8 @@
         <span class="titre">Surnom</span>
       </td>
       <td class="cold">
-        <input type="text" size="35" maxlength="64" name="nickname" value="{$nickname}" />
+        <input type="text" size="35" maxlength="64"
+               {if $errors.nick}class="error"{/if} name="nick" value="{$nick}" />
       </td>
     </tr>
     <tr>
@@ -294,7 +295,7 @@
       </td>
       <td class="cold">
         <input type="text" size="18" maxlength="18" name="mobile"
-        value="{$mobile}" />
+               {if $errors.mobile}class="error"{/if} value="{$mobile}" />
       </td>
     </tr>
     <tr>
@@ -320,7 +321,7 @@
       </td>
       <td class="dcold">
         <input type="text" size="35" maxlength="95" name="web"  
-        value="{$web}" />
+               {if $errors.web}class="error"{/if} value="{$web}" />
       </td>
     </tr>
     <tr>
@@ -342,20 +343,24 @@
     </tr>
     <tr>
       <td class="dcolg">
-        <span class="titre">Complément libre</span>
-        <span class="comm">Commentaire ? ICQ ? etc...</span>
-      </td>
-      <td class="dcold">
-        {javascript name=ajax}
-        <div id="ft_preview" style="display: none"></div>
-        <textarea name="freetext" id="freetext" rows="3" cols="29" >{$freetext}</textarea>
-        <br/>
-        <span class="smaller">
+        <div>
+          <span class="titre">Complément libre</span>
+          <span class="comm">Commentaire ? ICQ ? etc...</span>
+        </div>
+        <div class="smaller" style="margin-top: 30px">
           <a href="wiki_help/notitle" class="popup3">
             {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le commentaire
           </a>
-        </span><br />
-        <input type="submit" name="preview" value="Aperçu" onclick="previewWiki('freetext', 'ft_preview', true, 'ft_preview'); return false;" />
+          <div class="center">
+            <input type="submit" name="preview" value="Aperçu" 
+                    onclick="previewWiki('freetext', 'ft_preview', true, 'ft_preview'); return false;" />
+          </div>
+        </div>
+      </td>
+      <td class="dcold">
+        <div id="ft_preview" style="display: none"></div>
+        <textarea name="freetext" {if $errors.freetext}class="error"{/if}
+                  id="freetext" rows="8" cols="35" >{$freetext}</textarea>
       </td>
     </tr>
   </table>

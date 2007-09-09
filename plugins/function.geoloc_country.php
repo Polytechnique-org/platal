@@ -19,35 +19,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-
-$GLOBALS['tabname_array'] = Array(
-    "general"  => "Général",
-    "adresses" => "Adresses\npersonnelles",
-    "poly"     => "Groupes X\nBinets",
-    "deco"     => "Décorations\nMédailles",
-    "emploi"   => "Informations\nprofessionnelles",
-    "skill"    => "Compétences\ndiverses",
-    "mentor"   => "Mentoring"
-);
-
-$page->assign('onglets', $GLOBALS['tabname_array']);
-
-function get_next_tab($tabname) {
-    $tabname_array = $GLOBALS['tabname_array'];
-
-    reset ($tabname_array);
-    while (list($current_tab, ) = each($tabname_array)) {
-        if ($current_tab == $tabname){
-            $res = key($tabname_array);// each() sets key to the next element
-            if (is_null($res)) {
-                reset($tabname_array);
-                return key($tabname_array);
-            }
-            return $res;
-        }
+function smarty_function_geoloc_country($params, &$smarty) {
+    require_once 'geoloc.inc.php';
+    if(!isset($params['country'])) {
+        return;
     }
-
-    return null;
+    return geoloc_country($params['country'], @$params['available']);
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

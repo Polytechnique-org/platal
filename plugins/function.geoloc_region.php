@@ -19,34 +19,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-$page->assign('mobile_pub',$mobile_pub);
-$page->assign('web_pub',$web_pub);
-$page->assign('freetext_pub',$freetext_pub);
+function smarty_function_geoloc_region($params, &$smarty) {
+    require_once 'geoloc.inc.php';
+    if(!isset($params['country']) || !isset($params['region'])) {
+        return;
+    }
+    return geoloc_region($params['country'], $params['region'], @$params['available']);
+}
 
-$page->assign('nom', $nom);
-$page->assign('prenom', $prenom);
-$page->assign('promo', $promo);
-$page->assign('promo_sortie', $promo_sortie);
-$page->assign('nom_usage', $nom_usage);
-
-$page->assign('nationalite',$nationalite);
-
-$page->assign('mobile',$mobile);
-
-$page->assign('web',$web);
-
-$page->assign('freetext',$freetext);
-
-$page->assign('appli_id1',$appli_id1);
-$page->assign('appli_id2',$appli_id2);
-$page->assign('appli_type1',$appli_type1);
-$page->assign('appli_type2',$appli_type2);
-
-$page->assign('photo_pub',$photo_pub);
-$page->assign('nouvellephoto', $nouvellephoto);
-$page->assign('nickname', $nickname);
-
-$page->assign('synchro_ax', $synchro_ax);
-$page->assign('matricule_ax', $matricule_ax);
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

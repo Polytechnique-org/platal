@@ -19,25 +19,56 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-{if $display neq "mini"}
+{if $display eq "mini"}
+<td class="vert">
+  <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if} />
+</td>
+<td class="orange">
+  <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if}/>
+</td>
+<td class="rouge">
+  <input type="radio" name="{$name}" value="private" {if $val eq 'private' || (!$val && !$disabled)}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if}/>
+</td>
+{elseif $display eq "div"}
+<span class="vert">
+  <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if}/>
+</span>
+<span class="orange">
+  <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if}/>
+</span>
+<span class="rouge">
+  <input type="radio" name="{$name}" value="private" {if $val eq 'private' || (!$val && !$disabled)}checked="checked"{/if}
+         {if $disabled}disabled="disabled"{/if}/>
+</span>
+{else}
+  {if !$notable}
     <tr>
       <td colspan="5" class="pflags">
+  {/if}
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if} />
+              <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if}
+                     {if $disabled}disabled="disabled"{/if} />
             </td>
             <td class="texte">
               site public
             </td>
             <td class="orange">
-              <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if} />
+              <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if}
+                     {if $disabled}disabled="disabled"{/if}/>
             </td>
             <td class="texte">
               transmis à l'AX
             </td>
             <td class="rouge">
-              <input type="radio" name="{$name}" value="private" {if $val eq 'private'}checked="checked"{/if} />
+              <input type="radio" name="{$name}" value="private" {if $val eq 'private' || (!$val && !$disabled)}checked="checked"{/if}
+                     {if $disabled}disabled="disabled"{/if} />
             </td>
             <td class="texte">
               privé
@@ -47,17 +78,9 @@
             </td>
           </tr>
         </table>
+  {if !$notable}
       </td>
     </tr>
-{else}
-            <td class="vert">
-              <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if} />
-            </td>
-            <td class="orange">
-              <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if} />
-            </td>
-            <td class="rouge">
-              <input type="radio" name="{$name}" value="private" {if $val eq 'private'}checked="checked"{/if} />
-            </td>
+  {/if}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

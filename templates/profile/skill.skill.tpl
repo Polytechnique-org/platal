@@ -20,29 +20,20 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$smarty.server.HTTP_USER_AGENT|regex_replace:"/^Mozilla\/(3|4\.[^0]).*$/":""}
-<h1>ATTENTION !</h1>
-
-<p class="erreur">
-Netscape 4 et certains autres navigateurs très anciens ne sont pas supportés par ce site !!!
-</p>
-<p>
-En effet, ils ne comprenent qu'une trop faible partie des standards du web.
-Il faut donc s'attendre à ce que nombre des fonctionnalités de ce site soient de ce fait indisponnibles.
-</p>
-<p>
-Nous conseillons très vivement d'utiliser des navigateurs récents, tels
-<a href="http://www.mozilla.org/products/firefox/">Firefox</a>
-</p>
-<br />
+{if $ajaxskill}
+<?xml version="1.0" encoding="utf-8"?>
 {/if}
-
-{if !$xorg_no_errors && !$xorg_failure}
-{foreach from=$xorg_errors item=err}
-<div class="erreur">{$err|smarty:nodefaults}</div>
-{/foreach}
-{/if}
-
-{if !$xorg_failure && $xorg_tpl}{include file=$xorg_tpl}{/if}
+<div id="{$cat}_{$id}" style="clear: both; margin-top: 0.5em">
+  <div style="float: left; width: 50%" class="titre" id="{$cat}_{$id}_title">
+    {$skill.text}
+    <input type="hidden" name="{"`$cat`[`$id`][text]"}" value="{$skill.text}" />
+  </div>
+  <select name="{"`$cat`[`$id`][level]"}">
+    {foreach from=$levels item=level key=lid}
+    <option value="{$lid}" {if $skill.level eq $lid}selected="selected"{/if}>{$level}</option>
+    {/foreach}
+  </select>
+  <a href="javascript:remove('{$cat}', '{$id}')">{icon name=cross title="Supprimer"}</a>
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

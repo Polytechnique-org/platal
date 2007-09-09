@@ -20,29 +20,22 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$smarty.server.HTTP_USER_AGENT|regex_replace:"/^Mozilla\/(3|4\.[^0]).*$/":""}
-<h1>ATTENTION !</h1>
-
-<p class="erreur">
-Netscape 4 et certains autres navigateurs très anciens ne sont pas supportés par ce site !!!
-</p>
-<p>
-En effet, ils ne comprenent qu'une trop faible partie des standards du web.
-Il faut donc s'attendre à ce que nombre des fonctionnalités de ce site soient de ce fait indisponnibles.
-</p>
-<p>
-Nous conseillons très vivement d'utiliser des navigateurs récents, tels
-<a href="http://www.mozilla.org/products/firefox/">Firefox</a>
-</p>
-<br />
-{/if}
-
-{if !$xorg_no_errors && !$xorg_failure}
-{foreach from=$xorg_errors item=err}
-<div class="erreur">{$err|smarty:nodefaults}</div>
-{/foreach}
-{/if}
-
-{if !$xorg_failure && $xorg_tpl}{include file=$xorg_tpl}{/if}
+<form action="{$wiz_baseurl}/{$lookup[$current]}" method="post" id="prof_annu">
+  <div>
+    {icon name=information title="Voir ma fiche"} Tu peux consulter ta fiche telle que la
+    voient <a class="popup2" href="profile/{$smarty.session.forlife}">les X</a>,
+    <a class="popup2" href="profile/{$smarty.session.forlife}?view=ax">l'AX</a> ou
+    <a class="popup2" href="profile/{$smarty.session.forlife}?view=public">n'importe quel internaute</a>.
+    {include file="include/flags.radio.tpl" notable=true disabled=true name="profile_ex_pub"}
+  </div>
+  <div style="margin-top: 1em">
+    {include file=$profile_page}
+  </div>
+  <div style="clear: both" class="center">
+    <input type="hidden" name="valid_page" value="{$current}" />
+    <input type="submit" name="current_page" value="Valider les modifications" />
+    <input type="submit" name="next_page" value="Valider et passer à la page suivante" />
+  </div>
+</form>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

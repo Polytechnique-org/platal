@@ -278,30 +278,77 @@ div.long td.rt { width: 65%; }
         [ onglets des profils ]
 *******************************************************************************/
 
-table.flags {
-    margin: 1em 0em 0em 0em;
+.wizard {
+    margin-top: -4px;
+    margin-left: -16px;
 }
-table.flags input { margin: 0px 2px; padding: 0px; }
 
-table.flags td.texte, tr.flags td.texte {
+.wizard .wiz_header {
+    height: 32px;
+    width: 100%;
+    background-color: #aaa;
+    margin-bottom: 1em;
+}
+
+.wizard .wiz_header .wiz_tab {
+    background-color: #aaa;
+    vertical-align: middle;
+    height: 100%;
+    text-align: center;
+    font-size: 75%;
+    border-right: 1px solid #888;
+}
+
+.wizard .wiz_header .active {
+    background-color: #444;
+    color: #fff;
+}
+
+.wizard .wiz_header .wiz_tab:hover {
+    background-color: #777;
+}
+
+.wizard .wiz_header .wiz_tab a {
+    color: #000;
+    text-decoration: none;
+    vertical-align: middle;
+}
+
+.wizard .wiz_header .active a {
+    color: #fff;
+}
+
+.wizard .wiz_content {
+    margin-left: 16px;
+}
+
+.flags {
+    margin: 0.5em 0 0 0;
+    padding: 0;
+}
+.flags input {
+    margin: 0px 2px;
+    padding: 0px;
+}
+.flags .texte {
     font-size: smaller;
     font-weight: bold;
-    padding: 3px;
+    padding: 0 8px 0 0;
 }
-table.flags td.vert, tr.flags td.vert {
-    background: green;
-    padding: 3px;
-    text-align: center;
+.flags .vert {
+    background: url('../images/icons/flag_green.gif') top right no-repeat;
+    padding: 0 16px 0 0;
+    margin-left: 16px;
 }
-table.flags td.orange, tr.flags td.orange {
-    background: #ff9900;
-    padding: 3px;
-    text-align: center;
+.flags .orange {
+    background: url('../images/icons/flag_orange.gif') top right no-repeat;
+    padding: 0 16px 0 0;
+    margin-left: 16px;
 }
-table.flags td.rouge, tr.flags td.rouge {
-    background: red;
-    padding: 3px;
-    text-align: center;
+.flags .rouge {
+    background: url('../images/icons/flag_red.gif') top right no-repeat;
+    padding: 0 16px 0 0;
+    margin-left: 16px;
 }
 
 table.cadre_a_onglet{

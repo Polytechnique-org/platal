@@ -20,29 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$smarty.server.HTTP_USER_AGENT|regex_replace:"/^Mozilla\/(3|4\.[^0]).*$/":""}
-<h1>ATTENTION !</h1>
-
-<p class="erreur">
-Netscape 4 et certains autres navigateurs très anciens ne sont pas supportés par ce site !!!
-</p>
-<p>
-En effet, ils ne comprenent qu'une trop faible partie des standards du web.
-Il faut donc s'attendre à ce que nombre des fonctionnalités de ce site soient de ce fait indisponnibles.
-</p>
-<p>
-Nous conseillons très vivement d'utiliser des navigateurs récents, tels
-<a href="http://www.mozilla.org/products/firefox/">Firefox</a>
-</p>
-<br />
-{/if}
-
-{if !$xorg_no_errors && !$xorg_failure}
-{foreach from=$xorg_errors item=err}
-<div class="erreur">{$err|smarty:nodefaults}</div>
-{/foreach}
-{/if}
-
-{if !$xorg_failure && $xorg_tpl}{include file=$xorg_tpl}{/if}
+<?xml version="1.0" encoding="utf-8"?>
+<select name="jobs[{$id}][ss_secteur]">
+  <option value=""></option>
+  {iterate from=$ssecteurs item=ssecteur}
+  <option value="{$ssecteur.id}" {if $ssecteur.id eq $sel}selected="selected"{/if}>{$ssecteur.label}</option>
+  {/iterate}
+</select>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

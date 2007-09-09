@@ -20,29 +20,25 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$smarty.server.HTTP_USER_AGENT|regex_replace:"/^Mozilla\/(3|4\.[^0]).*$/":""}
-<h1>ATTENTION !</h1>
-
-<p class="erreur">
-Netscape 4 et certains autres navigateurs très anciens ne sont pas supportés par ce site !!!
-</p>
-<p>
-En effet, ils ne comprenent qu'une trop faible partie des standards du web.
-Il faut donc s'attendre à ce que nombre des fonctionnalités de ce site soient de ce fait indisponnibles.
-</p>
-<p>
-Nous conseillons très vivement d'utiliser des navigateurs récents, tels
-<a href="http://www.mozilla.org/products/firefox/">Firefox</a>
-</p>
-<br />
+{if $ajaxdeco}
+<?xml version="1.0" encoding="utf-8"?>
 {/if}
-
-{if !$xorg_no_errors && !$xorg_failure}
-{foreach from=$xorg_errors item=err}
-<div class="erreur">{$err|smarty:nodefaults}</div>
-{/foreach}
-{/if}
-
-{if !$xorg_failure && $xorg_tpl}{include file=$xorg_tpl}{/if}
+<div id="medal_{$id}" style="clear: both; margin-top: 1em; height: 50px; vertical-align: middle">
+  <div style="float: left; margin-right: 0.3em">
+    <img src="profile/medal/{$id}" height="50" />
+  </div>
+  <div style="float: left; width: 70%">
+    <div><b id="medal_name_{$id}"></b>
+    {if !$medal.valid}(en attente de {if $ajaxdeco}validation{else}modération{/if}){/if}</div>
+    <div id="medal_grade_{$id}"><input type="hidden" name="medals[{$id}][valid]" value="{$medal.valid}" /></div>
+  </div>
+  <a href="javascript:remove({$id})" style="vertical-align: middle">{icon name="cross" title="Supprimer cette médaille"}</a>
+  {if !$ajaxdeco}
+  <script type="text/javascript">
+  getMedalName({$id});
+  buildGrade({$id}, {$medal.grade});
+  </script>
+  {/if}
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

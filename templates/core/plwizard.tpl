@@ -20,29 +20,24 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$smarty.server.HTTP_USER_AGENT|regex_replace:"/^Mozilla\/(3|4\.[^0]).*$/":""}
-<h1>ATTENTION !</h1>
-
-<p class="erreur">
-Netscape 4 et certains autres navigateurs très anciens ne sont pas supportés par ce site !!!
-</p>
-<p>
-En effet, ils ne comprenent qu'une trop faible partie des standards du web.
-Il faut donc s'attendre à ce que nombre des fonctionnalités de ce site soient de ce fait indisponnibles.
-</p>
-<p>
-Nous conseillons très vivement d'utiliser des navigateurs récents, tels
-<a href="http://www.mozilla.org/products/firefox/">Firefox</a>
-</p>
-<br />
-{/if}
-
-{if !$xorg_no_errors && !$xorg_failure}
-{foreach from=$xorg_errors item=err}
-<div class="erreur">{$err|smarty:nodefaults}</div>
-{/foreach}
-{/if}
-
-{if !$xorg_failure && $xorg_tpl}{include file=$xorg_tpl}{/if}
+<div class="wizard" style="clear: both">
+  <div class="wiz_header">
+    {foreach from=$pages item=title key=id}
+    <div class="wiz_tab {if $id eq $current}active{/if} {if !$stateless && $current gt $id}grayed{/if}"
+         style="float: left; width: {$tab_width}%">
+      {if $stateless || $id gt $current}<a href="{$wiz_baseurl}/{$lookup[$id]}">{/if}
+      {$title}
+      {if $stateless || $id gt $current}</a>{/if}
+    </div>
+    {/foreach}
+    <div style="clear: both"></div>
+  </div>
+  <div class="wiz_content" style="clear: both">
+    {foreach from=$xorg_errors item=err}
+    <div class="erreur">{$err|smarty:nodefaults}</div>
+    {/foreach}
+    {include file=$wiz_page}
+  </div>
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
