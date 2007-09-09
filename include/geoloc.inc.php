@@ -42,17 +42,6 @@ function geoloc_country($current, $avail_only = false)
     return $html;
 }
 
-function _geoloc_country_smarty($params)
-{
-    echo "miqjfmeij";
-    if(!isset($params['country'])) {
-        return;
-    }
-    return geoloc_country($params['country'], @$params['available']);
-}
-
-$GLOBALS['page']->register_function('geoloc_country', '_geoloc_country_smarty');
-
 /** donne la liste deroulante des regions pour un pays
  * @param $pays le pays dont on veut afficher les regions
  * @param $current la region actuellement selectionnee
@@ -79,15 +68,6 @@ function geoloc_region($country, $current, $avail_only = false)
     }
     return $html;
 }
-
-function _geoloc_region_smarty($params, &$smarty)
-{
-    if(!isset($params['country']) || !isset($params['region'])) {
-        return;
-    }
-    return geoloc_region($params['country'], $params['region'], @$params['available']);
-}
-$GLOBALS['page']->register_function('geoloc_region', '_geoloc_region_smarty');
 // }}}
 
 // {{{ get_address_infos($txt)

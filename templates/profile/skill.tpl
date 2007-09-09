@@ -80,6 +80,7 @@ function remove(cat, id)
           {if $comp.title}
           {if $ingroup}</optgroup>{/if}
           <optgroup label="{$comp.text_fr}">
+          {assign var=ingroup value=true}
           {/if}
           <option value="{$comp.id}">{$comp.text_fr}</option>
           {/iterate}

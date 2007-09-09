@@ -86,7 +86,7 @@
     </tr>
     <tr>
       <td class="titre">Fonction occupée</td>
-      <td id=>
+      <td>
         <select name="{$jobpref}[fonction]">
           <option value="">&nbsp;</option>
           {assign var=ingroup value=false}

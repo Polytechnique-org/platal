@@ -19,16 +19,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-$page->assign('mentor_secteur_id_new', $mentor_secteur_id_new);
-$page->assign('can_add_pays', $nb_mentor_pays < $max_mentor_pays);
-$page->assign('can_add_secteurs', $nb_mentor_secteurs < $max_mentor_secteurs);
-$page->assign('mentor_expertise', $mentor_expertise);
-$page->assign('mentor_pid', $mentor_pid);
-$page->assign('mentor_pays', $mentor_pays);
-$page->assign('mentor_sid', $mentor_sid);
-$page->assign('mentor_secteur', $mentor_secteur);
-$page->assign('mentor_ssid', $mentor_ssid);
-$page->assign('mentor_ss_secteur', $mentor_ss_secteur);
+function smarty_function_geoloc_region($params, &$smarty) {
+    require_once 'geoloc.inc.php';
+    if(!isset($params['country']) || !isset($params['region'])) {
+        return;
+    }
+    return geoloc_region($params['country'], $params['region'], @$params['available']);
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

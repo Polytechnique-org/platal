@@ -19,12 +19,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-//mise a jour d'expertise si nécessaire
-
-if($mentor_expertise != $mentor_expertise_bd) {
-    XDB::execute("REPLACE INTO mentor(uid, expertise) VALUES({?}, {?})", S::v('uid', -1), $mentor_expertise);
+function smarty_function_geoloc_country($params, &$smarty) {
+    require_once 'geoloc.inc.php';
+    if(!isset($params['country'])) {
+        return;
+    }
+    return geoloc_country($params['country'], @$params['available']);
 }
-
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -95,7 +95,7 @@ function remove(id)
     {/foreach}
   {/if}{/foreach}
 {/foreach}
-</script>
+//]]></script>
 
 <table class="bicol">
   <tr>

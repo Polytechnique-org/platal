@@ -20,239 +20,231 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
+<script type="text/javascript">//<![CDATA[
 {literal}
-<script type="text/javascript">
-  //<![CDATA[
-  function mentor_pays_add()
-  {
-    var selid = document.forms.prof_annu.mentor_pays_id_new.selectedIndex;
-    document.forms.prof_annu.mentor_pays_id.value = document.forms.prof_annu.mentor_pays_id_new.options[selid].value;
-    document.forms.prof_annu.mentor_pays_name.value = document.forms.prof_annu.mentor_pays_id_new.options[selid].text;
-    document.forms.prof_annu.mentor_pays_op.value = "ajouter";
-    document.forms.prof_annu.submit();
-  } // function mentor_pays_add()
 
-  function mentor_pays_del( pid )
-  {
-    document.forms.prof_annu.mentor_pays_id.value = pid;
-    document.forms.prof_annu.mentor_pays_op.value = "retirer";
-    document.forms.prof_annu.submit();
-  } // function mentor_pays_del( pid )
+function updateCountry()
+{
+  var val = document.forms.prof_annu.countries_sel.value;
+  var show = true;
+  if (val == '') {
+    show = false;
+  }
+  if (document.getElementById('countries_' + val) != null) {
+    show = false;
+  }
+  document.getElementById('countries_add').style.display = show ? '' : 'none';
+}
 
-  function mentor_secteur_add()
-  {
-    var selid_secteur = document.forms.prof_annu.mentor_secteur_id_new.selectedIndex;
-    document.forms.prof_annu.mentor_secteur_id.value = document.forms.prof_annu.mentor_secteur_id_new.options[selid_secteur].value;
-    document.forms.prof_annu.mentor_secteur_name.value = document.forms.prof_annu.mentor_secteur_id_new.options[selid_secteur].text;
-    var selid_ss_secteur = document.forms.prof_annu.mentor_ss_secteur_id_new.selectedIndex;
-    document.forms.prof_annu.mentor_ss_secteur_id.value = document.forms.prof_annu.mentor_ss_secteur_id_new.options[selid_ss_secteur].value;
-    document.forms.prof_annu.mentor_ss_secteur_name.value = document.forms.prof_annu.mentor_ss_secteur_id_new.options[selid_ss_secteur].text;
-    document.forms.prof_annu.mentor_secteur_op.value = "ajouter";
-    document.forms.prof_annu.submit();
-  } // function mentor_secteur_add()
+function addCountry()
+{
+  var cb   = document.forms.prof_annu.countries_sel;
+  var val  = cb.value;
+  var text = cb.options[cb.selectedIndex].text;
+  var html = '<div id="countries_' + val + '" style="clear: both; margin-bottom: 0.7em">'
+           + '  <div style="float: left; width: 50%">' + text + '</div>'
+           + '  <input type="hidden" name="countries[' + val + ']" value="' + text + '" />'
+           + '  <a href="javascript:removeCountry(\'' + val + '\')">'
+           + '    <img src="images/icons/cross.gif" alt="" title="Supprimer ce pays" />'
+           + '  </a>'
+           + '</div>';
+  $('#countries').append(html);
+  updateCountry();
+}
 
-  function mentor_secteur_del( sid )
-  {
-    document.forms.prof_annu.mentor_secteur_id.value = sid;
-    document.forms.prof_annu.mentor_secteur_op.value = "retirer";
-    document.forms.prof_annu.submit();
-  } // function mentor_secteur_del( sid )
+function removeCountry(id)
+{
+  $('#countries_' + id).remove();
+  updateCountry();
+}
 
-  //]]>
-</script>
+function updateSSecteur()
+{
+  var s  = document.forms.prof_annu.secteur_sel.value;
+  var ss = document.forms.prof_annu['jobs[-1][ss_secteur]'].value;
+  var show = true;
+  if (s == '' || ss == '') {
+    show = false;
+  }
+  if (document.getElementById('secteurs_' + s + '_' + ss) != null) {
+    show = false;
+  }
+  document.getElementById('secteurs_add').style.display = show ? 'block' : 'none';
+}
+
+function updateSecteur()
+{
+  var secteur = document.forms.prof_annu.secteur_sel.value;
+  if (secteur == '') {
+    secteur = '-1';
+  }
+  $.get(platal_baseurl + 'profile/ajax/secteur/-1/' + secteur,
+        function(data) {
+          data = '<a href="javascript:addSecteur()" style="display: none; float: right" id="secteurs_add">'
+               +  '  <img src="images/icons/add.gif" alt="" title="Ajouter ce secteur" />'
+               +  '</a>' + data;
+          document.getElementById('ss_secteur_sel').innerHTML = data;
+          attachEvent(document.forms.prof_annu['jobs[-1][ss_secteur]'], 'change', updateSSecteur);
+        });
+}
+
+function addSecteur()
+{
+  var scb = document.forms.prof_annu.secteur_sel;
+  var s  = scb.value;
+  var st = scb.options[scb.selectedIndex].text;
+
+  var sscb = document.forms.prof_annu['jobs[-1][ss_secteur]'];
+  var ss = sscb.value;
+  var sst = sscb.options[sscb.selectedIndex].text;
+
+  var html = '<div id="secteurs_' + s + '_' + ss + '" style="clear: both; margin-top: 0.5em" class="titre">'
+           + '  <a href="javascript:removeSecteur(\'' + s + '\', \'' + ss + '\')" style="display: block; float: right">'
+           + '    <img src="images/icons/cross.gif" alt="" title="Supprimer ce secteur" />'
+           + '  </a>'
+           + '  <input type="hidden" name="secteurs[' + s + '][' + ss + ']" value="' + sst + '" />'
+           + '  ' + sst
+           + '</div>';
+  $('#secteurs').append(html);
+  updateSSecteur();
+}
+
+function removeSecteur(s, ss)
+{
+  $('#secteurs_' + s + '_' + ss).remove();
+  updateSSecteur();
+}
+
 {/literal}
+//]]></script>
 
 <p>
-Si tu acceptes que ceux de nos camarades qui,
+  Si tu acceptes que ceux des camarades te contactent afin de te demander
+  conseil, dans les domaines que tu connais bien, et pour lesquels tu pourrais
+  les aider, remplis cette rubrique.
 </p>
+<p>
+  Tu peux mentionner ici les domaines de compétences, les expériences
+  notamment internationales sur la base desquels tu seras identifiable depuis
+  <a href="referent/search">la page de recherche d'un conseil professionnel</a>.<br />
+</p>
+<p>Le mentoring est particulièrement important pour les camarades&nbsp;:</p>
 <ul>
   <li>encore jeunes, sont en train de bâtir leur projet professionnel,</li>
   <li>ou bien, plus âgés, souhaitent réorienter leur carrière,</li>
 </ul>
-<p>
-te contactent afin de te demander conseil, dans les domaines que tu connais
-bien, et pour lesquels tu pourrais les aider, remplis cette rubrique.<br />
-Tu peux mentionner ici les domaines de compétences, les expériences 
-notamment internationales sur la base desquels tu seras identifiable depuis
-<a href="referent/search">la page de recherche d'un conseil professionnel</a>.
-</p>
 
-<div class="blocunite_tab">
-  <table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Mentoring">
-    <tr>
-      <th colspan="3">
-        Pays dont tu connais bien la culture professionnelle
-        <input type="hidden" value="" name="mentor_pays_op" />
-        <input type="hidden" value="00" name="mentor_pays_id" />
-        <input type="hidden" value="" name="mentor_pays_name" />
-      </th>
-    </tr>
-    <tr>
-      <td colspan="3" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="rouge">
-              <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
-            </td>
-            <td class="texte">
-              privé
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr class="impair">
-      <td class="colg">
-        <span class="titre">Pays</span>
-      </td>
-      <td class="colm">
-        <span class="titre"></span>
-      </td>
-      <td class="cold" style="width:15%">
-        &nbsp;
-      </td>
-    </tr>
-    {foreach from=$mentor_pays item=pays key=i}
-    <tr class="{cycle values="pair,impair"}">
-      <td class="colg">
-        <span class="valeur">{$pays}</span>
-      </td>
-      <td class="colm">
-        <span class="valeur">&nbsp;&nbsp;</span>
-      </td>
-      <td class="cold">
-        <span class="lien"><a href="javascript:mentor_pays_del('{$mentor_pid.$i}');">retirer</a></span>
-      </td>
-    </tr>
-    {/foreach}
-    {if $can_add_pays}
-    <tr class="{cycle values="pair,impair"}">
-      <td class="colg">
-        <select name="mentor_pays_id_new">
-          {geoloc_country country='00'}
-        </select>
-      </td>
-      <td class="colm">
-      </td>
-      <td class="cold">
-        <span class="lien"><a href="javascript:mentor_pays_add();">ajouter</a></span>
-      </td>
-    </tr>
-    {/if}
-  </table>
-</div>
+<table class="bicol" style="margin-bottom: 1em" summary="Profil: Mentoring">
+  <tr>
+    <th>
+      Pays dont tu connais bien la culture professionnelle
+    </th>
+  </tr>
+  <tr>
+    <td class="flags">
+      <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+      <span class="texte">privé</span>
+    </td>
+  </tr>
+  <tr class="impair">
+    <td>
+      <div style="float: left; width: 30%" class="titre">Pays</div>
+      <div id="countries_add" style="display: none; float: right">
+        <a href="javascript:addCountry()">{icon name=add title="Ajouter ce pays"}</a>
+      </div>
+      <select name="countries_sel" onchange="updateCountry()">
+        {geoloc_country country='00'}
+      </select>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td id="countries">
+      {foreach from=$countries item=country key=i}
+      <div id="countries_{$i}" style="clear: both; margin-bottom: 0.7em">
+        <div style="float: left; width: 50%">{$country}</div>
+        <input type="hidden" name="countries[{$i}]" value="{$country}" />
+        <a href="javascript:removeCountry('{$i}')">{icon name=cross title="Supprimer ce pays"}</a>
+      </div>
+      {/foreach}
+    </td>
+  </tr>
+</table>
 
-<div class="blocunite">
-  <table class="bicol" cellspacing="0" cellpadding="0" 
-    summary="Profil: Mentoring">
-    <tr>
-      <th colspan="3">
-        Secteurs d'activité dans lesquels tu as beaucoup exercé
-        <input type="hidden" value="" name="mentor_secteur_op" />
-        <input type="hidden" value="" name="mentor_secteur_id" />
-        <input type="hidden" value="" name="mentor_secteur_name" />
-        <input type="hidden" value="" name="mentor_ss_secteur_id" />
-        <input type="hidden" value="" name="mentor_ss_secteur_name" />
-      </th>
-    </tr>
-    <tr>
-      <td colspan="3" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="rouge">
-              <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
-            </td>
-            <td class="texte">
-              privé
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr class="impair">
-      <td class="colg">
-        <span class="titre">Secteur</span>
-      </td>
-      <td class="colm">
-        <span class="titre">Sous-Secteur</span>
-      </td>
-      <td class="cold" style="width:15%">
-        &nbsp;
-      </td>
-    </tr>
-    {foreach from=$mentor_secteur item=secteur key=i}
-    <tr class="{cycle values="pair,impair"}">
-      <td class="colg">
-        <span class="valeur">{$secteur}</span>
-      </td>
-      <td class="colm">
-        <span class="valeur">{$mentor_ss_secteur.$i}</span>
-      </td>
-      <td class="cold">
-        <span class="lien"><a href="javascript:mentor_secteur_del('{$mentor_sid.$i}');">retirer</a></span>
-      </td>
-    </tr>
-    {/foreach}
-    {if $can_add_secteurs}
-    <tr class="{cycle values="pair,impair"}">
-      <td class="colg">
-        <select name="mentor_secteur_id_new" onchange="javascript:submit()">
-          {select_secteur secteur=$mentor_secteur_id_new}
-        </select>
-      </td>
-      <td class="colm">
-        <select name="mentor_ss_secteur_id_new">
-          {select_ss_secteur secteur=$mentor_secteur_id_new ss_secteur=''}
-        </select>
-      </td>
-      <td class="cold">
-        <span class="lien"><a href="javascript:mentor_secteur_add();">ajouter</a></span>
-      </td>
-    </tr>
-    {/if}
-  </table>
-</div>
+<table class="bicol" style="margin-bottom: 1em" summary="Profil: Mentoring">
+  <tr>
+    <th>
+      Secteurs d'activité dans lesquels tu as beaucoup exercé
+    </th>
+  </tr>
+  <tr>
+    <td class="flags">
+      <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+      <span class="texte">privé</span>
+    </td>
+  </tr>
+  <tr>
+    <td id="secteur_sel">
+      <div style="float: left; width: 30%" class="titre">Secteur</div>
+      <select name="secteur_sel" onchange="updateSecteur()">
+        <option value="">&nbsp;</option>
+        {iterate from=$secteurs_sel item=secteur}
+        <option value="{$secteur.id}">{$secteur.label}</option>
+        {/iterate}
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div style="float: left; width: 30%" class="titre">Sous-secteur</div>
+      <span id="ss_secteur_sel"></span>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td id="secteurs">
+      {if $secteurs|@count}
+      {foreach from=$secteurs item=secteur key=s}
+      {foreach from=$secteur item=ss_sect key=ss}
+      <div id="secteurs_{$s}_{$ss}" style="clear: both; margin-top: 0.5em" class="titre">
+        <a href="javascript:removeSecteur('{$s}', '{$ss}')" style="display: block; float: right">
+          {icon name=cross title="Supprimer ce secteur"}
+        </a>
+        <input type="hidden" name="secteurs[' + s + '][' + ss + ']" value="{$ss_sect}" />
+        {$ss_sect}
+      </div>
+      {/foreach}
+      {/foreach}
+      {/if}
+    </td>
+  </tr>
+</table>
 
-<div class="blocunite">
-  <table class="bicol" cellspacing="0" cellpadding="0" 
-    summary="Profil: Mentoring">
-    <tr>
-      <th colspan="3">
-        Expérience et expertises que tu acceptes de faire partager
-      </th>
-    </tr>
-    <tr>
-      <td colspan="3" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="rouge">
-              <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
-            </td>
-            <td class="texte">
-              privé
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="3">
-        Dans cette case il te faut indiquer en quelques mots ce qui t'a
-        amené à acquérir l'expérience indiquée, et dans quelle mesure tu
-        veux bien que ceux de nos camarades qui seraient intéressés par un
-        contact avec toi, en prennent l'initiative. <strong>Il est obligatoire de
-          remplir cette dernière case pour apparaître dans la base de données
-          des "Mentors".</strong>
-        <br />
-      </td>
-    </tr>
-    <tr>
-      <td colspan="3">
-        <textarea rows="8" cols="60" name="mentor_expertise">{$mentor_expertise}</textarea>
-      </td>
-    </tr>
-  </table>
-</div>
+<table class="bicol" summary="Profil: Mentoring">
+  <tr>
+    <th>
+      Expérience et expertises que tu acceptes de faire partager
+    </th>
+  </tr>
+  <tr>
+    <td class="flags">
+      <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+      <span class="texte">privé</span>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Dans cette case il te faut indiquer en quelques mots ce qui t'a
+      amené à acquérir l'expérience indiquée, et dans quelle mesure tu
+      veux bien que ceux de nos camarades qui seraient intéressés par un
+      contact avec toi, en prennent l'initiative. <strong>Il est obligatoire de
+      remplir cette dernière case pour apparaître dans la base de données
+      des "Mentors".</strong>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <textarea rows="8" cols="60" name="expertise">{$expertise}</textarea>
+    </td>
+  </tr>
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
