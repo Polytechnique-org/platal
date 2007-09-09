@@ -37,6 +37,7 @@ class ProfileModule extends PLModule
             'profile/ajax/medal'   => $this->make_hook('ajax_medal',   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/job'     => $this->make_hook('ajax_job',     AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/secteur' => $this->make_hook('ajax_secteur', AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/skill'   => $this->make_hook('ajax_skill',   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/medal'    => $this->make_hook('medal', AUTH_PUBLIC),
             'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
@@ -396,6 +397,26 @@ class ProfileModule extends PLModule
         $page->assign('id', $id);
         $page->assign('ssecteurs', $res);
         $page->assign('sel', $ssect);
+    }
+
+    function handler_ajax_skill(&$page, $cat, $id)
+    {
+        $page->changeTpl('profile/skill.skill.tpl', NO_SKIN);
+        $page->assign('ajaxskill', true);
+        $page->assign('cat', $cat);
+        $page->assign('id', $id);
+        if ($cat == 'competences') {
+          $page->assign('levels', array('initié' => 'initié',
+                                        'bonne connaissance' => 'bonne connaissance',
+                                        'expert' => 'expert'));
+        } else {
+          $page->assign('levels', array(1 => 'connaissance basique',
+                                        2 => 'maîtrise des bases',
+                                        3 => 'maîtrise limitée',
+                                        4 => 'maîtrise générale',
+                                        5 => 'bonne maîtrise',
+                                        6 => 'maîtrise complète'));
+        }
     }
 
     function handler_p_orange(&$page)
