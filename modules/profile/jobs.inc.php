@@ -25,6 +25,7 @@ class ProfileJob extends ProfileGeoloc
     private $mail;
     private $web;
     private $tel;
+    private $bool;
     private $checks;
 
     public function __construct()
@@ -33,6 +34,7 @@ class ProfileJob extends ProfileGeoloc
         $this->mail = new ProfileEmail();
         $this->web  = new ProfileWeb();
         $this->tel  = new ProfileTel();
+        $this->bool = new ProfileBool();
         $this->checks = array('web' => array('web'),
                               'mail' => array('email'),
                               'tel' => array('tel', 'fax', 'mobile'),
@@ -52,6 +54,8 @@ class ProfileJob extends ProfileGeoloc
                 }
             }
         }
+        $job['adr']['pub'] = $this->pub->value($page, 'adr_pub', @$job['adr']['pub'], $s);
+        $job['adr']['checked'] = $this->bool->value($page, 'adr_checked', @$job['adr']['checked'], $s);
         unset($job['removed']);
         unset($job['new']);
         unset($job['adr']['changed']);
@@ -96,19 +100,20 @@ class ProfileJob extends ProfileGeoloc
                                                     fonction, poste, adr1, adr2, adr3, postcode,
                                                     city, cityid, country, region, regiontxt,
                                                     tel, fax, mobile, email, web,
-                                                    pub, adr_pub, tel_pub, email_pub)
+                                                    pub, adr_pub, tel_pub, email_pub, flags)
                                VALUES  ({?}, {?}, {?}, {?}, {?},
                                         {?}, {?}, {?}, {?}, {?}, {?},
                                         {?}, {?}, {?}, {?}, {?},
                                         {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, {?}, {?})",
+                                        {?}, {?}, {?}, {?}, {?})",
                          S::i('uid'), $i++, $job['name'], $job['secteur'], $job['ss_secteur'],
                          $job['fonction'], $job['poste'], $job['adr']['adr1'], $job['adr']['adr2'], $job['adr']['adr3'],
                          $job['adr']['postcode'],
                          $job['adr']['city'], $job['adr']['cityid'], $job['adr']['country'], $job['adr']['region'], 
                          $job['adr']['regiontxt'],
                          $job['tel'], $job['fax'], $job['mobile'], $job['email'], $job['web'],
-                         $job['pub'], $job['adr']['pub'], $job['tel_pub'], $job['email_pub']);
+                         $job['pub'], $job['adr']['pub'], $job['tel_pub'], $job['email_pub'],
+                         $job['adr']['checked'] ? 'geoloc' : '');
         }
     }
 }
@@ -142,6 +147,7 @@ class ProfileJobs extends ProfilePage
                                      e.fonction, e.poste, e.adr1, e.adr2, e.adr3,
                                      e.postcode, e.city, e.cityid, e.region, e.regiontxt,
                                      e.country, gp.pays, gp.display,
+                                     FIND_IN_SET('geoloc', flags),
                                      e.tel, e.fax, e.mobile, e.email, e.web, e.pub,
                                      e.adr_pub, e.tel_pub, e.email_pub
                                FROM  entreprises AS e
@@ -152,7 +158,7 @@ class ProfileJobs extends ProfilePage
         while (list($name, $secteur, $ss_secteur, $fonction, $poste,
                     $adr1, $adr2, $adr3, $postcode, $city, $cityid,
                     $region, $regiontxt, $country, $countrytxt, $display,
-                    $tel, $fax, $mobile, $email, $web,
+                    $checked, $tel, $fax, $mobile, $email, $web,
                     $pub, $adr_pub, $tel_pub, $email_pub) = $res->next()) {
             $this->values['jobs'][] = array('name'       => $name,
                                             'secteur'    => $secteur,
@@ -170,7 +176,8 @@ class ProfileJobs extends ProfilePage
                                                                   'country'    => $country,
                                                                   'countrytxt' => $countrytxt,
                                                                   'display'    => $display,
-                                                                  'pub'        => $adr_pub),
+                                                                  'pub'        => $adr_pub,
+                                                                  'checked'    => $checked),
                                             'tel'        => $tel,
                                             'fax'        => $fax,
                                             'mobile'     => $mobile,

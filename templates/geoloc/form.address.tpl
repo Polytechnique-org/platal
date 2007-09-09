@@ -60,4 +60,5 @@
 <input type="hidden" name="{$name}[countrytxt]" value="{$adr.countrytxt}" />
 <input type="hidden" name="{$name}[region]" value="{$adr.region}" />
 <input type="hidden" name="{$name}[regiontxt]" value="{$adr.regiontxt}" />
+<input type="hidden" name="{$name}[checked]" value="{$adr.checked}" />
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

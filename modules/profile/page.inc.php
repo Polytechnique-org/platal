@@ -141,13 +141,23 @@ abstract class ProfileGeoloc implements ProfileSetting
             if (compare_addresses_text(@$address['text'], $geotxt = get_address_text($new))
                 || (@$address['parsevalid'] && @$address['cityid'])) {
                 $address = array_merge($address, $new);
+                $address['checked'] = true;
             } else if (@$address['parsevalid']) {
                 $address = array_merge($address, cut_address(@$address['text']));
-            } else {
+                $address['checked'] = true;
+                $mailer = new PlMailer('geoloc/mail_geoloc.tpl');
+                $mailer->assign('text', get_address_text($address));
+                $mailer->assign('geoloc', $geotxt);
+                $mailer->send();
+            } else if (@$address['changed'] || !@$address['checked']) {
                 $success = false;
                 $address = array_merge($address, cut_address(@$address['text']));
+                $address['checked'] = false;
                 $address['geoloc'] = $geotxt;
                 $address['geoloc_cityid'] = $new['cityid'];
+            } else {
+                $address = array_merge($address, cut_address(@$address['text']));
+                $address['checked'] = true;
             }
         }
         $address['text'] = get_address_text($address);

@@ -51,6 +51,7 @@ class ProfileAddress extends ProfileGeoloc
             }
             unset($tel['removed']);
         }
+        $address['checked'] = $this->bool->value($page, 'checked', $address['checked'], $s);
         $address['secondaire'] = $this->bool->value($page, 'secondaire', $address['secondaire'], $s);
         $address['mail'] = $this->bool->value($page, 'mail', $address['mail'], $s);
         $address['temporary'] = $this->bool->value($page, 'temporary', $address['temporary'], $s);
@@ -125,6 +126,9 @@ class ProfileAddress extends ProfileGeoloc
         if ($address['current']) {
             $flags[] = 'active';
         }
+        if ($address['checked']) {
+            $flags[] = 'coord-checked';
+        }
         $flags = implode(',', $flags);
         XDB::execute("INSERT INTO  adresses (adr1, adr2, adr3,
                                               postcode, city, cityid,
@@ -181,6 +185,7 @@ class ProfileAddresses extends ProfilePage
                                    UNIX_TIMESTAMP(a.datemaj) AS datemaj,
                                    a.postcode, a.city, a.cityid, a.region, a.regiontxt,
                                    a.pub, a.country, gp.pays AS countrytxt, gp.display,
+                                   FIND_IN_SET('coord-checked', a.statut) AS checked,
                                    FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
                                    FIND_IN_SET('courrier', a.statut) AS mail,
                                    FIND_IN_SET('temporaire', a.statut) AS temporary,
