@@ -150,6 +150,7 @@ class AuthModule extends PLModule
         $gpex_challenge = $_GET["challenge"];
 
         // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
+        $uid = S::i('uid');
         if (!isset($_SESSION['suid'])) {
             $logger = (isset($_SESSION['log']) && $_SESSION['log']->uid == $uid)
                             ? $_SESSION['log'] : new CoreLogger($uid);

@@ -14,6 +14,9 @@ New:
 
 Bug/Wish:
 
+    * Auth:
+        - #714: Fix groupex authentication logging                         -FRU
+
     * Carnet:
         - #682: Can quick search in contact list                           -FRU
 
