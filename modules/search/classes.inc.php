@@ -252,6 +252,11 @@ class QuickSearch extends SField
 
         $s = preg_replace('!\d+!', ' ', $s);
         $this->strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
+        if (count($this->strings) > 5) {
+            global $page;
+            $page->trig("Tu as indiqué trop d'éléments dans ta recherche, seuls les 5 premiers seront pris en compte");
+            $this->strings = array_slice($this->strings, 0, 5);
+        }
 
         $s = preg_replace('! *- *!', '-', $r);
         $s = preg_replace('!([<>]) *!', ' \1', $s);

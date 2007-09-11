@@ -39,6 +39,9 @@ Bug/Wish:
         - #708: Fix title (fix by Laurent Penou from Gadz.org)             -FRU
         - #710: Adding grade do not degrade the database                   -FRU
 
+    * Search:
+        - Fix DOS on too large quick searches                              -FRU
+
     * Xnet:
         - #694: Color of 'Promotion' groups                                -ALK
 
