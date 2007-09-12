@@ -96,6 +96,12 @@
   </table>
 </form>
 <p>
+  {icon name=error title="Attention"} Nous te déconseillons fortement d'utiliser le même
+  mot de passe que pour la connexion au site. En effet, contrairement au mot de passe
+  d'accès au site, sera stocké en clair dans notre base de donnée en raison des contraintes
+  technique imposées par les serveurs SMTP et NNTP.
+</p>
+<p>
   Ce mot de passe peut être le même que celui d'accès au site. Il doit faire au
   moins <strong>6 caractères</strong> quelconques. Attention au type de clavier que tu
   utilises (qwerty?) et aux majuscules/minuscules.
@@ -113,6 +119,7 @@
 {include wiki=Xorg.SMTPSecurise}
 {else}
 <p>
+  <br />
   <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
   <a href="{$platal->pl_self()}?doc=nntp">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.
 </p>
