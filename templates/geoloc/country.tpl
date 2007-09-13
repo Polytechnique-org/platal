@@ -30,7 +30,7 @@
       {if $country.nbPop > 0 or $country.id eq 0}
       <map x="{$country.x}" y="{$country.y}" height="{$country.height}" width="{$country.width}" ratio="{$country.rat}"/>
       <icon x="{$country.xPop}" y="{$country.yPop}" nb="{$country.nbPop}" size="{$country.rad}" name="{$country.name}" green="{if $country.nbPop}{$country.yellow/$country.nbPop}{else}0{/if}" blue="0" alpha="0.7"/>
-      <moreinfos url="country{$plset_search}mapid={$country.id}"/>
+      <moreinfos url="country{$plset_search|escape_html}mapid={$country.id}"/>
       {/if}
     </country>
     {/foreach}
@@ -39,7 +39,7 @@
     {foreach from=$cities item="city"}
     <city id="{$city.id}" name="{$city.name}">
       <icon x="{$city.x}" y="{$city.y}" nb="{$city.pop}" size="{$city.size}" name="{$city.name}" green="{if $city.pop}{$city.yellow/$city.pop}{else}0{/if}" blue="0"/>
-      <moreinfos url="city{$plset_search}cityid={$city.id}"/>
+      <moreinfos url="city{$plset_search|escape_html}cityid={$city.id}"/>
     </city>
     {/foreach}
   </cities>

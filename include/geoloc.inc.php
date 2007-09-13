@@ -501,7 +501,7 @@ function geoloc_getData_subcountries($mapid, $sin, $minentities)
     }
 
     foreach ($countries as $i => $c) {
-        if ($c['nbPop'] > 0) {
+        if (@$c['nbPop'] > 0) {
             $lambda = pow($c['nbPop'] / $maxpop,0.3);
             $countries[$i]['color'] = 0x0000FF + round((1-$lambda) * 0xFF)*0x010100;
         }

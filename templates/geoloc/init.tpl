@@ -46,5 +46,5 @@ zoomBarBackgroundColor="{$background}"
 textCopyright="Les règles de l'annuaire s'appliquent aussi à cette application"
 autofolder="true"
 iconSwf="icon.swf"
-scriptInfosArea="country{$plset_search}"/>
+scriptInfosArea="country{$plset_search|escape_html}"/>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -61,9 +61,9 @@ abstract class PlatalPage extends Smarty
 
     public function changeTpl($tpl, $type = SKINNED)
     {
-    	$this->_tpl       = $tpl;
-	    $this->_page_type = $type;
-    	$this->assign('xorg_tpl', $tpl);
+      $this->_tpl       = $tpl;
+      $this->_page_type = $type;
+      $this->assign('xorg_tpl', $tpl);
     }
 
     // }}}
@@ -116,8 +116,8 @@ abstract class PlatalPage extends Smarty
             $this->assign('simple', true);
 
           case SKINNED:
-    	    $this->register_modifier('escape_html', 'escape_html');
-	    $this->default_modifiers = Array('@escape_html');
+          $this->register_modifier('escape_html', 'escape_html');
+          $this->default_modifiers = Array('@escape_html');
         }
         $this->register_outputfilter('hide_emails');
         $this->addJsLink('wiki.js');
@@ -285,9 +285,9 @@ function escape_xorgDB(&$item, $key)
 function escape_html($string)
 {
     if (is_string($string)) {
-	return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
     } else {
-	return $string;
+        return $string;
     }
 }
 

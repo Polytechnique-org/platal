@@ -61,13 +61,8 @@
   Pour activer un compte SMTP/NNTP sur <strong>ssl.polytechnique.org</strong>, tape un mot de passe ci-dessous.
 {/if}
 </p>
-<form action="password/smtp" method="post" id="smtppass_form">
+<form action="password/smtp" method="post" id="smtppass_form" style="margin-top: 1em">
   <table class="tinybicol" cellpadding="3" summary="Définition du mot de passe">
-    <tr>
-      <th colspan="2">
-        Définition du mot de passe
-      </th>
-    </tr>
     <tr>
       <td class="titre">
         Mot de passe (15 caractères maximum) :
@@ -97,9 +92,9 @@
 </form>
 <p>
   {icon name=error title="Attention"} Nous te déconseillons fortement d'utiliser le même
-  mot de passe que pour la connexion au site. En effet, contrairement au mot de passe
-  d'accès au site, sera stocké en clair dans notre base de donnée en raison des contraintes
-  technique imposées par les serveurs SMTP et NNTP.
+  mot de passe que pour la connexion au site. En effet ce mot de passe sert à accéder à des
+  services <em>moins</em> sécurisés qui nécessitent l'enregistrement de celui-ci en clair
+  dans notre base de données.
 </p>
 <p>
   Ce mot de passe peut être le même que celui d'accès au site. Il doit faire au
