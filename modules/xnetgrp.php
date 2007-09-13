@@ -838,6 +838,72 @@ class XnetGrpModule extends PLModule
         }
     }
 
+    private function changeLogin(PlatalPage &$page, array &$user, MMList &$mmlist, $login)
+    {
+        require_once 'user.func.inc.php';
+        // Search the uid of the user...
+        $res = XDB::query("SELECT  f.id, f.alias
+                             FROM  aliases AS a
+                       INNER JOIN  aliases AS f ON (f.id = a.id AND f.type = 'a_vie')
+                            WHERE  a.alias = {?}",
+                          $login);
+        if ($res->numRows() == 0) {
+            $x = get_not_registered_user($login);
+            if (!$x) {
+                $page->trig("Le login $login ne correspond à aucun X");
+                return false;
+            } else if (count($x) > 1) {
+                $page->trig("Le login $login correspond a plusieurs camarades");
+                return false;
+            }
+            $uid = $x[0]['user_id'];
+            $sub = false;
+        } else {
+            list($uid, $login) = $res->fetchOneRow();
+            $sub = true;
+        }
+
+        // Check if the user is already in the group
+        global $globals;
+        $res = XDB::query("SELECT  uid, email
+                             FROM  groupex.membres
+                            WHERE  uid = {?} AND asso_id = {?}",
+                          $uid, $globals->asso('id'));
+        if ($res->numRows()) {
+            list($uid, $email) = $res->fetchOneRow();
+            XDB::execute("DELETE FROM groupex.membres
+                                WHERE uid = {?}",
+                         $user['uid']);
+        } else {
+            $email = $user['email'];
+            XDB::execute("UPDATE  groupex.membres
+                             SET  uid = {?}, origine = 'X'
+                           WHERE  uid = {?} AND asso_id = {?}",
+                         $uid, $user['uid'], $globals->asso('id'));
+        }
+        if ($sub) {
+            $email = $login . '@' . $globals->mail->domain;
+        }
+
+        // Update subscription to aliases
+        if ($email != $user['email']) {
+            XDB::execute("UPDATE IGNORE  virtual_redirect AS vr
+                             INNER JOIN  virtual AS v ON(vr.vid = v.vid AND SUBSTRING_INDEX(alias, '@', 2) = {?})
+                                    SET  vr.redirect = {?}
+                                  WHERE  vr.redirect = {?}",
+                         $globals->asso('mail_domain'), $email, $user['email']);
+            XDB::execute("DELETE  vr.*
+                            FROM  virtual_redirect AS vr
+                      INNER JOIN  virtual AS v ON(vr.vid = v.vid AND SUBSTRING_INDEX(alias, '@', 2) = {?})
+                           WHERE  vr.redirect = {?}",
+                         $globals->asso('mail_domain'), $user['email']);
+            foreach (Env::v('ml1', array()) as $ml => $state) {
+                $mmlist->replace_email($ml, $user['email'], $email);
+            }
+        }
+        return $login;
+    }
+
     function handler_admin_member(&$page, $user)
     {
         global $globals;
@@ -853,6 +919,15 @@ class XnetGrpModule extends PLModule
                              $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
+            // Convert user status to X
+            if ($user['origine'] == 'ext' && trim(Post::v('login_X'))) {
+                $forlife = $this->changeLogin($page, $user, $mmlist, trim(Post::v('login_X')));
+                if ($forlife) {
+                    pl_redirect('member/' . $forlife);
+                }
+            }
+
+            // Update user info
             $email_changed = ($user['origine'] != 'X' && strtolower($user['email']) != strtolower(Post::v('email')));
             $from_email = $user['email'];
             if ($user['origine'] != 'X') {
@@ -880,6 +955,7 @@ class XnetGrpModule extends PLModule
                 $page->trig('permissions modifiées');
             }
 
+            // Update ML subscriptions
             foreach (Env::v('ml1', array()) as $ml => $state) {
                 $ask = empty($_REQUEST['ml2'][$ml]) ? 0 : 2;
                 if ($ask == $state) {
@@ -906,6 +982,7 @@ class XnetGrpModule extends PLModule
                 }
             }
 
+            // Change subscriptioin to aliases
             foreach (Env::v('ml3', array()) as $ml => $state) {
                 $ask = !empty($_REQUEST['ml4'][$ml]);
                 if($state == $ask) continue;

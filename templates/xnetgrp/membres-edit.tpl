@@ -21,14 +21,23 @@
 {**************************************************************************}
 
 <script type="text/javascript">
-  {literal}
-    function showInformations(box)
-    {
-        var state = (box.value == 'ext') ? '' : 'none';
-        document.getElementById('prenom').style.display = state;
-        document.getElementById('sexe').style.display = state;
-    }
-  {/literal}
+{literal}
+  function showInformations(box)
+  {
+      var state = (box.value == 'ext') ? '' : 'none';
+      document.getElementById('prenom').style.display = state;
+      document.getElementById('sexe').style.display = state;
+      document.getElementById('make_X').style.display = state;
+  }
+
+  function showXInput(box)
+  {
+     if (box.checked) {
+       document.getElementById('make_X_cb').style.display = 'none';
+       document.getElementById('make_X_login').style.display = '';
+     }
+  }
+{/literal}
 </script>
 
 <h1>{$asso.nom} : gestion des membres</h1>
@@ -105,6 +114,18 @@
       </td>
       <td>
         <input type="text" value="{$user.email}" name="email" size="40" />
+      </td>
+    </tr>
+    <tr id="make_X" {if $user.origine eq "groupe"}style="display: none"{/if}>
+      <td colspan="2">
+        <span id="make_X_cb">
+          <input type="checkbox" name="is_x" id="is_x" onchange="showXInput(this);" />
+          <label for="is_x">coche cette case si il s'agit d'un X</label>
+        </span>
+        <span id="make_X_login" style="display: none">
+          <span class="titre">Identifiant (prenom.nom.promo)&nbsp;:</span>
+          <input type="text" name="login_X" value="" />
+        </span>
       </td>
     </tr>
     {/if}
