@@ -30,17 +30,13 @@
       </th>
     </tr>
     <tr>
-      <td colspan="2" class="pflags">
-        <table class="flags" cellspacing="0" summary="Flags">
-          <tr>
-            <td class="vert">
-              <input type="checkbox" disabled="disabled" checked="checked" />
-            </td>
-            <td class="texte">
-              site public
-            </td>
-          </tr>
-        </table>
+      <td colspan="2" class="flags">
+        <span class="vert">
+          <input type="checkbox" disabled="disabled" checked="checked" />
+        </span>
+        <span class="texte">
+          site public
+        </span>
       </td>
     </tr>
     <tr>
@@ -69,7 +65,7 @@
         <span class="nom">X{$promo}{if ($promo != $promo_sortie - 3)} - X{math equation="a - b" a=$promo_sortie b=3}{/if}</span>
         <span class="lien"><a href="profile/orange">modifier</a>{if ($promo_sortie -3 == $promo)} pour les oranges{/if}</span>
       </td>
-    </tr>     
+    </tr>
     <tr>
       <td class="colg">
         <span class="titre">Nom d'usage</span><br />
@@ -100,7 +96,7 @@
         <span class="comm">(4ème année de l'X)</span>
       </td>
       <td class="cold">
-        <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">  
+        <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">
           {applis_options selected=$appli1.id}
         </select>
         <br />
@@ -178,48 +174,41 @@
   <table class="bicol"  style="margin-bottom: 1em"
     summary="Profil: Trombinoscope">
     <tr>
-      <th colspan="3">
+      <th colspan="2">
         Trombinoscope
       </th>
     </tr>
     <tr>
-      <td class="col" colspan="3">
-        Pour profiter de cette fonction intéressante, tu dois disposer 
-        quelque part (sur ton ordinateur ou sur Internet) d'une photo
-        d'identité (dans un fichier au format JPEG, PNG ou GIF).<br />
-        <div class="center">
-          <span class="lien">
-            <a href="photo/change">Éditer ta photo</a>
-          </span>
-        </div>
+      <td class="flags" colspan="2">
+        <span class="vert"><input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/></span>
+        <span class="texte">site public</span>
       </td>
     </tr>
     <tr>
-      <td class="col" colspan="3">
-        <table class="flags" cellspacing="0" summary="Flags">
-          <tr>
-            <td class="vert">
-              <input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/>
-            </td>
-            <td class="texte">
-              site public
-            </td>
-          </tr>
-        </table>
-        <table cellspacing="0" cellpadding="0" summary="Trombinoscope">
-          <tr>
-            <td class="dcold">
-              Voilà la photo qui apparaîtra sur la fiche de ton profil{if $nouvellephoto} (tu viens
-              de changer ta photo, celle-ci correspond à ton ancien
-              profil car la nouvelle n'a pas encore été validée par un administrateur du site !
-              <a href="profile/{$smarty.session.forlife}?modif=new" class="popup2">Ta fiche avec la nouvelle photo</a>)
-              {/if} :
-            </td>
-            <td class="dcolg">
-              <img src="photo/{$smarty.session.forlife}" alt=" [ PHOTO ] " />
-            </td>
-          </tr>
-        </table>
+      <td {if !$nouvellephoto}colspan="2"{/if} class="center" style="width: 49%">
+        <div class="titre">Ta photo actuelle</div>
+        <img src="photo/{$smarty.session.forlife}" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
+      </td>
+      {if $nouvellephoto}
+      <td class="center" style="width: 49%">
+        <div class="titre">Photo en attente de validation</div>
+        <div>
+          <a href="profile/{$smarty.session.forlife}?modif=new" class="popup2">
+            Ta fiche avec cette photo
+          </a>
+        </div>
+        <img src="photo/{$smarty.session.forlife}/req" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
+      </td>
+      {/if}
+    </tr>
+    <tr>
+      <td colspan="2">
+        Pour profiter de cette fonction intéressante, tu dois disposer
+        quelque part (sur ton ordinateur ou sur Internet) d'une photo
+        d'identité (dans un fichier au format JPEG, PNG ou GIF).<br />
+        <div class="center">
+          <a href="photo/change">Éditer ta photo</a>
+        </div>
       </td>
     </tr>
   </table>
@@ -313,7 +302,7 @@
         <span class="titre">Page web Perso</span>
       </td>
       <td class="dcold">
-        <input type="text" size="35" maxlength="95" name="web"  
+        <input type="text" size="35" maxlength="95" name="web"
                {if $errors.web}class="error"{/if} value="{$web}" />
       </td>
     </tr>
@@ -345,7 +334,7 @@
             {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le commentaire
           </a>
           <div class="center">
-            <input type="submit" name="preview" value="Aperçu" 
+            <input type="submit" name="preview" value="Aperçu"
                     onclick="previewWiki('freetext', 'ft_preview', true, 'ft_preview'); return false;" />
           </div>
         </div>
