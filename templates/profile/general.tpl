@@ -22,8 +22,7 @@
 
 
 {include file="profile/applis.js.tpl"}
-<div class="blocunite_tab">
-  <table class="bicol" cellspacing="0" cellpadding="0" 
+  <table class="bicol" style="margin-bottom: 1em"
     summary="Profil : Informations générales">
     <tr>
       <th colspan="2">
@@ -121,7 +120,7 @@
         <span class="titre">Post-application</span>
       </td>
       <td class="dcold">
-        <select name="appli2[id]" onchange="fillType(this.form['appli[type]'], this.selectedIndex-1);">   
+        <select name="appli2[id]" onchange="fillType(this.form['appli2[type]'], this.selectedIndex-1);">
           {applis_options selected=$appli2.id}
         </select>
         <br />
@@ -137,11 +136,9 @@
       </td>
     </tr>
   </table>
-</div>
 
 {if !$no_private_key}
-<div class="blocunite">
-  <table class="bicol" cellspacing="0" cellpadding="0" 
+  <table class="bicol"  style="margin-bottom: 1em"
     summary="Profil : Informations générales">
     <tr>
       <th>
@@ -176,11 +173,9 @@
       </td>
     </tr>
   </table>
-</div>
 {/if}
 
-<div class="blocunite">
-  <table class="bicol" cellspacing="0" cellpadding="0"
+  <table class="bicol"  style="margin-bottom: 1em"
     summary="Profil: Trombinoscope">
     <tr>
       <th colspan="3">
@@ -228,9 +223,7 @@
       </td>
     </tr>
   </table>
-</div>
-<div class="blocunite">
-  <table class="bicol" cellspacing="0" cellpadding="0"
+  <table class="bicol" style="margin-bottom: 1em"
     summary="Profil: Divers">
     <tr>
       <th colspan="2">
@@ -364,6 +357,5 @@
       </td>
     </tr>
   </table>
-</div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

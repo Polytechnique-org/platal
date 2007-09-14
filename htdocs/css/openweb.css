@@ -89,6 +89,18 @@ p {
     background: inherit;
 }
 
+input.error, textarea.error {
+    background-color: #faa;
+}
+
+input.valid, textarea.valid {
+    background-color: #afa;
+}
+
+input.warning, textarea.warning {
+    background-color: #fda;
+}
+
 h1 {
     color: #369;
     font-size: 140%;

@@ -23,18 +23,20 @@
 <form action="{$wiz_baseurl}/{$lookup[$current]}" method="post" id="prof_annu">
   <div>
     {icon name=information title="Voir ma fiche"} Tu peux consulter ta fiche telle que la
-    voient <a class="popup2" href="profile/{$smarty.session.forlife}">les X</a>,
+    voient <a class="popup2" href="profile/{$smarty.session.forlife}?view=public">n'importe quel internaute</a>,
     <a class="popup2" href="profile/{$smarty.session.forlife}?view=ax">l'AX</a> ou
-    <a class="popup2" href="profile/{$smarty.session.forlife}?view=public">n'importe quel internaute</a>.
+    <a class="popup2" href="profile/{$smarty.session.forlife}">les X</a>.
     {include file="include/flags.radio.tpl" notable=true disabled=true name="profile_ex_pub"}
   </div>
   <div style="margin-top: 1em">
     {include file=$profile_page}
   </div>
-  <div style="clear: both" class="center">
+  <div style="clear: both; margin-top: 1em" class="center">
     <input type="hidden" name="valid_page" value="{$current}" />
     <input type="submit" name="current_page" value="Valider les modifications" />
+    {if $current neq count($lookup)-1}
     <input type="submit" name="next_page" value="Valider et passer à la page suivante" />
+    {/if}
   </div>
 </form>
 
