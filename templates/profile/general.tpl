@@ -90,7 +90,7 @@
         </select>
       </td>
     </tr>
-    <tr>
+    <tr class="pair">
       <td class="colg">
         <span class="titre">Application</span><br />
         <span class="comm">(4ème année de l'X)</span>
@@ -111,7 +111,7 @@
         </script>
       </td>
     </tr>
-    <tr>
+    <tr class="pair">
       <td class="dcolg">
         <span class="titre">Post-application</span>
       </td>
