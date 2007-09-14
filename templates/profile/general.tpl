@@ -201,7 +201,7 @@
       </td>
       {/if}
     </tr>
-    <tr>
+    <tr class="pair">
       <td colspan="2">
         Pour profiter de cette fonction intéressante, tu dois disposer
         quelque part (sur ton ordinateur ou sur Internet) d'une photo
