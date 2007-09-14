@@ -25,7 +25,7 @@ function get_event_detail($eid, $item_id = false)
 {
     global $globals;
     $res = XDB::query(
-        "SELECT	SUM(nb) AS nb_tot, e.*,
+        "SELECT	SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*,
                 IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
                    1) AS inscr_open,
                 LEFT(10, e.debut) AS debut_day, LEFT(10, e.fin) AS fin_day,

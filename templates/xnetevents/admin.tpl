@@ -23,8 +23,14 @@
 <h1>{$asso.nom} : <a href='{$platal->ns}events'>Evénements</a> </h1>
 
 <p>
-L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera
-{$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
+L'événement {$evt.intitule}
+{if $evt.titre} - {$evt.titre}
+{/if}
+{if $evt.titre || count($moments) eq 0}
+comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
+{else}
+({$evt.nb} personne{if $evt.nb > 1}s{/if} ont réalisé leur inscription).
+{/if}
 </p>
 
 {if $evt.participant_list}
@@ -100,7 +106,7 @@ Ils ont payé mais ont oublié de s'inscrire :
 
 <table summary="participants a l'evenement" class="{if $tout}large{else}tiny{/if}">
   <tr>
-    {if $is_admin && $evt.paiement_id}
+    {if $is_admin && $evt.paiement_id && $tout}
       {assign var=height value='rowspan="2"'}
     {/if}
     <th {$height|smarty:nodefaults}>Prénom NOM</th>
@@ -122,7 +128,7 @@ Ils ont payé mais ont oublié de s'inscrire :
     <th {$height|smarty:nodefaults}>Nombre</th>
     {/if}
   </tr>
-  {if $is_admin && $evt.paiement_id}
+  {if $is_admin && $evt.paiement_id && $tout}
   <tr>
     <th>Télépaiement</th>
     <th>Autre</th>
