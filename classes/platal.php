@@ -117,7 +117,8 @@ class Platal
             }
             $lev = levenshtein($key, $k);
 
-            if ((!isset($val) || $lev < $val) && $lev <= (strlen($k)*2)/3) {
+            if ((!isset($val) || $lev < $val)
+                && ($lev <= strlen($k)/2 || strpos($k, $key) !== false || strpos($key, $k) !== false)) {
                 $val  = $lev;
                 $best = $k;
             }
@@ -133,6 +134,7 @@ class Platal
     public function near_hook()
     {
         $hooks = array();
+        $leafs = array();
         foreach ($this->__hooks as $hook=>$handler) {
             if (!$this->check_perms($handler['perms'])) {
                 continue;
@@ -145,9 +147,18 @@ class Platal
                 }
                 $place =& $place[$part];
             }
+            $leaf = $parts[count($parts)-1];
+            if (!isset($leafs[$leaf])) {
+                $leafs[$leaf] = $hook;
+            } else if (is_array($leafs[$leaf])) {
+                $leafs[$leaf][] = $hook;
+            } else {
+                $leafs[$leaf] = array($hook, $leafs[$leaf]);
+            }
             $place["#final#"] = array();
         }
 
+        // search for the nearest full path
         $p = split('/', $this->path);
         $place =& $hooks;
         $link  = '';
@@ -159,7 +170,8 @@ class Platal
             }
             if ($key == "#final#") {
                 if (!array_key_exists($link, $this->__hooks)) {
-                    return null;
+                    $link = '';
+                    break;
                 }
                 $key = $k;
                 $ended = true;
@@ -171,13 +183,38 @@ class Platal
                 $link .= $key;
                 $place =& $place[$key];
             } else {
-                return null;
+                $link = '';
+                break;
             }
         }
-        if ($link != $this->path) {
+        if ($link == $this->path) {
+            $link = '';
+        }
+        if ($link && levenshtein($link, $this->path) < strlen($link)/3) {
             return $link;
         }
-        return null;
+
+        // search for missing namespace (the given name is a leaf)
+        $leaf = array_shift($p);
+        $args = count($p) ? '/' . implode('/', $p) : '';
+        if (isset($leafs[$leaf]) && !is_array($leafs[$leaf]) && $leafs[$leaf] != $this->path) {
+            return $leafs[$leaf] . $args;
+        }
+        unset($val);
+        $best = null;
+        foreach ($leafs as $k=>&$path) {
+            if (is_array($path)) {
+                continue;
+            }
+            $lev = levenshtein($leaf, $k);
+
+            if ((!isset($val) || $lev < $val)
+                && ($lev <= strlen($k)/2 || strpos($k, $leaf) !== false || strpos($leaf, $k) !== false)) {
+                $val  = $lev;
+                $best = $path;
+            }
+        }
+        return $best == null ? ( $link ? $link : null ) : $best . $args;
     }
 
     protected function check_perms($perms)
