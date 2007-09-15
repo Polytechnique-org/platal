@@ -30,14 +30,14 @@ BEGIN:VEVENT
 DSTAMP:{$timestamp|date_format:"%Y%m%dT%H%M%SZ"}
 DTSTART;VALUE=DATE;TZID=Europe/Paris:{$e.debut}
 DTEND;VALUE=DATE;TZID=Europe/Paris:{$e.fin}
-ORGANIZER;CN="{$e.prenom|utf8_encode} {$e.nom|utf8_encode}":MAILTO:{$e.alias}@polytechnique.org
+ORGANIZER;CN="{$e.prenom} {$e.nom}":MAILTO:{$e.alias}@polytechnique.org
 UID:event-{$e.short_name}-{$e.eid}@{$asso.diminutif}.polytechnique.org
 {if $admin}
 {foreach from=$participants item=m}
 {if $m.x}
-ATTENDEE;CN="{$m.prenom|utf8_encode} {$m.nom|utf8_encode} (X{$m.promo})":MAILTO:{$m.email}@{#globals.mail.domain#}
+ATTENDEE;CN="{$m.prenom} {$m.nom} (X{$m.promo})":MAILTO:{$m.email}@{#globals.mail.domain#}
 {else}
-ATTENDEE;CN="{$m.prenom|utf8_encode} {$m.nom|utf8_encode} (non-X)":MAILTO:{$m.email}
+ATTENDEE;CN="{$m.prenom} {$m.nom} (non-X)":MAILTO:{$m.email}
 {/if}
 {/foreach}
 {/if}
