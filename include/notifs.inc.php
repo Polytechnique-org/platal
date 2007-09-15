@@ -53,6 +53,45 @@ function register_watch_op($uid, $cid, $date='', $info='')
 }
 
 // }}}
+// {{{ function _select_notifs_count
+
+function _select_notifs_count($table)
+{
+    $cases = Array(
+        'contacts'     => Array('wfield' => 'contact',
+                                'ufield' => 'user_id',
+                                'freq_sql' => '',
+                                'where' => 'AND (q.watch_flags=1 OR q.watch_flags=3)'
+        ),
+        'watch_promo'  => Array('wfield' => 'promo',
+                                'ufield' => 'promo',
+                                'freq_sql' => ' AND ( wc.type = "basic" OR wc.type="near" 
+                                                     AND (u.promo <= v.promo_sortie-2 AND u.promo_sortie >= v.promo+2) )',
+                                'where' => '',
+        ),
+        'watch_nonins' => Array('wfield' => 'ni_id',
+                                'ufield' => 'user_id',
+                                'freq_sql' => '',
+                                'where' => '',
+        )
+    );
+    $our = $cases[$table];
+    $sql = "
+        (
+            SELECT  COUNT(1)        AS count
+              FROM  $table          AS w
+        INNER JOIN  auth_user_md5   AS u  ON(u.{$our['ufield']} = w.{$our['wfield']})
+        INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
+        INNER JOIN  auth_user_md5   AS v  ON(v.user_id = q.user_id)
+        INNER JOIN  watch_ops       AS wo ON(wo.uid = u.user_id AND wo.known > q.watch_last)
+        INNER JOIN  watch_sub       AS ws ON(ws.cid = wo.cid AND ws.uid = w.uid)
+        INNER JOIN  watch_cat       AS wc ON(wc.id = wo.cid{$our['freq_sql']})
+             WHERE  w.uid = {?} {$our['where']}
+    )";
+    return $sql;
+}
+
+// }}}
 // {{{ function _select_notifs_base
 
 function _select_notifs_base($table, $mail, $where)
@@ -137,14 +176,14 @@ function getNbNotifs()
     if (!S::has('uid')) {
         return 0;
     }
-    $uid       = S::v('uid', -1);
-    $watchlast = S::v('watch_last');
+    $uid       = S::i('uid');
 
     // selectionne les notifs de uid, sans detail sur le watcher, depuis
     // $watchlast, meme ceux sans surveillance, non ordonnés
-    $res = select_notifs(false, $uid, $watchlast, false);
-    $n   = $res->numRows();
-    $res->free();
+    $res = XDB::query(_select_notifs_count('contacts') . ' UNION DISTINCT '
+                    . _select_notifs_count('watch_promo') . ' UNION DISTINCT '
+                    . _select_notifs_count('watch_nonins'), $uid, $uid, $uid);
+    $n = array_sum($res->fetchColumn());
     if ($n == 0) {
         return;
     }

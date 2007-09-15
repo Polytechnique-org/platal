@@ -22,9 +22,9 @@
 
 function smarty_insert_getNbNotifs($params, &$smarty)
 {
-    if(S::logged()) {
-	require_once('notifs.inc.php');
-	return getNbNotifs();
+    if (S::logged()) {
+        require_once('notifs.inc.php');
+        return getNbNotifs();
     }
 }
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
