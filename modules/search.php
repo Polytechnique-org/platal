@@ -129,6 +129,7 @@ class SearchModule extends PLModule
             $view->apply('search', $page, $action, $subaction);
 
             $nb_tot = $view->count();
+            $page->assign('search_results_nb', $nb_tot);
             if ($subaction) {
                 return;
             }

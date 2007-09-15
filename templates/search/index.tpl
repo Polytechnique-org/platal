@@ -44,13 +44,26 @@
   </p>
   {/if}
 
+  {if $search_results_nb eq 1}{literal}
+    <script type="text/javascript">
+      // popup automatically if only one result
+      var alinks = document.getElementById('content').getElementsByTagName('a');
+      for (i = 0; i < alinks.length; i++) {
+        if (alinks[i].className == 'popup2') {
+          popWin(alinks[i], 840, 600);
+          break;
+        }
+      }
+    </script>
+  {/literal}{/if}
+
   {if $smarty.session.auth ge AUTH_COOKIE}
   <p class="noprint">
     <strong>{icon name=lightbulb title=Astuce}Astuce&nbsp;:</strong>
     {if $search_results_nb}
     Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !
     {elseif $advanced && $with_soundex && ($smarty.request.name || $smarty.request.firstname)}
-    Si tu n'es pas sur de l'orthographe d'un nom, tu peux essayer la <a href="{$with_soundex}">recherche par
+    Si tu n'es pas sûr de l'orthographe d'un nom, tu peux essayer la <a href="{$with_soundex}">recherche par
     proximité sonore</a>
     {elseif $advanced}
     Essaye d'élargir tes critères de recherche.
