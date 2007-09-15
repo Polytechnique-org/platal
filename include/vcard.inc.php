@@ -108,11 +108,13 @@ class VCardIterator implements PlIterator
 
 class VCard
 {
+    static private $windows = false;
     private $iterator = null;
 
     public function __construct($users, $photos = true, $freetext = null)
     {
         $this->iterator = new VCardIterator($photos, $freetext);
+        VCard::$windows  = (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false);
         if (is_array($users)) {
             foreach ($users as $user) {
                 $this->iterator->add_user($user);
@@ -124,7 +126,11 @@ class VCard
 
     public static function escape($text)
     {
-        return preg_replace('/[,;]/', '\\\\$0', $text);
+        if (VCard::$windows) {
+            return preg_replace('/;/', '\\\\$0', $text);
+        } else {
+            return preg_replace('/[,;]/', '\\\\$0', $text);
+        }
     }
 
     public static function format_adr($params, &$smarty)
@@ -149,6 +155,9 @@ class VCard
         }
         if ($escape) {
             $text = VCard::escape($text);
+        }
+        if (VCard::$windows) {
+            $text = utf8_decode($text);
         }
         return preg_replace("/(\r\n|\n|\r)/", '\n', $text);
     }
