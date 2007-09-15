@@ -116,6 +116,7 @@ class Platal
                 continue;
             }
             $lev = levenshtein($key, $k);
+
             if ((!isset($val) || $lev < $val) && $lev <= (strlen($k)*2)/3) {
                 $val  = $lev;
                 $best = $k;
@@ -123,7 +124,7 @@ class Platal
         }
         if (!isset($best) && $has_end) {
             return "#final#";
-        } else {
+        } else if (isset($best)) {
             return $best;
         }
         return null;
@@ -133,7 +134,7 @@ class Platal
     {
         $hooks = array();
         foreach ($this->__hooks as $hook=>$handler) {
-            if (!empty($handler['perms']) && $handler['perms'] != S::v('perms')) {
+            if (!$this->check_perms($handler['perms'])) {
                 continue;
             }
             $parts = split('/', $hook);
