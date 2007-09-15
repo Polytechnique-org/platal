@@ -21,6 +21,7 @@ Bug/Wish:
         - #682: Can quick search in contact list                           -FRU
 
     * Core:
+        - #665: Fix text alignment                                         -FRU
         - #674: MiniWiki xhtml validation                                  -FRU
         - #678: PlUpload filename detection                                -FRU
         - #690: Improves SMTP pass privacy policy                          -FRU

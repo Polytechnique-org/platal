@@ -21,16 +21,7 @@
 {**************************************************************************}
 
 <div style="clear: both">
-<h1 style="display: block; float: right">
-  {if !$plset_count}
-  Aucune entrée
-  {elseif $plset_count eq 1}
-  1 entrée
-  {else}
-  {$plset_count} entrées
-  {/if}
-</h1>
-<h1>
+<h1 style="display: block; float: left">
   {$plset_mods[$plset_mod]}
   {if $plset_mods|@count > 1}[
   {assign var=has_prev value=false}
@@ -44,6 +35,15 @@
   ]
   {/if}
 </h1>
+<h1 style="display: block; float: right"> 
+  {if !$plset_count} 
+  Aucune entrée 
+  {elseif $plset_count eq 1} 
+  1 entrée 
+  {else} 
+  {$plset_count} entrées 
+  {/if} 
+</h1> 
 </div>
 
 <div id="plset_content" style="clear: both">
