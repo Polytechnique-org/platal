@@ -52,6 +52,10 @@ abstract class PlatalPage extends Smarty
         $this->_jsonVars  = array();
         $this->_failure   = false;
 
+        if ($globals->mode != 'rw') {
+            $this->_errors[] = "En raison d'une maintenance, une partie des fonctionnalités du site sont actuellement"
+                             . " désactivée, en particuliers aucune donnée ne sera sauvegardée";
+        }
         $this->register_prefilter('at_to_globals');
         $this->addJsLink('xorg.js');
     }

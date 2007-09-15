@@ -51,6 +51,11 @@ class Platal
             $this->__mods[$module] = $m = PLModule::factory($module);
             $this->__hooks += $m->handlers();
         }
+
+        global $globals;
+        if ($globals->mode == '') {
+            pl_redirect('index.html');
+        }
     }
 
     public function pl_self($n = null)

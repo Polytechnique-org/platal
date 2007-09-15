@@ -110,7 +110,12 @@ class XDB
 
     public static function execute()
     {
-        return XDB::_query(XDB::_prepare(func_get_args()));
+        global $globals;
+        $args = func_get_args();
+        if ($globals->mode != 'rw' && !strpos($args[0], 'logger')) {
+            return;
+        }
+        return XDB::_query(XDB::_prepare($args));
     }
 
     public static function iterator()

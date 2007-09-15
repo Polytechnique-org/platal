@@ -19,6 +19,7 @@ Bug/Wish:
 
     * Carnet:
         - #682: Can quick search in contact list                           -FRU
+        - #713: Can run the site in a degraded mode                        -FRU
 
     * Core:
         - #665: Fix text alignment                                         -FRU
