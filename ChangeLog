@@ -52,6 +52,7 @@ Bug/Wish:
         - #694: Color of 'Promotion' groups                                -ALK
 
     * XnetGrp:
+        - #481: Can list user of a city or a map from the geoloc           -FRU
         - #658: Admins can convert 'non-X' into X                          -FRU
         - #696: Don't forget non-X when counting members                   -FRU
         - #698: Fix the unregister user lister when adding a new member    -FRU

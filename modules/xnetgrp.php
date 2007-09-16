@@ -328,10 +328,13 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        if ($action == 'geoloc' || $action == 'trombi') {
+        if ($action == 'search') {
+            http_redirect("https://www.polytechnique.org/search/adv?rechercher=Chercher&groupex={$globals->asso('id')}"
+                        . "&cityid=" . Env::v('cityid') . "&mapid=" . Env::v('mapid'));
+        } else if ($action == 'geoloc' || $action == 'trombi') {
             $view = new UserSet();
             $view->addMod('trombi', 'Trombinoscope');
-            $view->addMod('geoloc', 'Planisphère');
+            $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'annuaire/search'));
             $view->apply('annuaire', $page, $action, $subaction);
             if ($action == 'geoloc' && $subaction) {
                 return;
