@@ -186,6 +186,11 @@ class XnetEventsModule extends PLModule
             $page->kill('Cet événement est fermé aux non-membres du groupe');
         }
 
+        global $globals;
+        $res = XDB::query("SELECT  stamp FROM requests
+                            WHERE  type = 'paiements' AND data LIKE {?}",
+                           PayReq::same_event($evt['eid'], $globals->asso('id')));
+        $page->assign('validation', $res->numRows());
         $page->assign('event', $evt);
 
         if (!Post::has('submit')) {
@@ -229,8 +234,8 @@ class XnetEventsModule extends PLModule
             if ($nb >= 0) {
                 XDB::execute(
                     "REPLACE INTO  groupex.evenements_participants
-                           VALUES  ({?}, {?}, {?}, {?}, {?})",
-                    $eid, S::v('uid'), $j, $nb, $paid);
+                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?})",
+                    $eid, S::v('uid'), $j, $nb, Env::has('notify_payment') ? 'notify_payment' : '', $paid);
                 $updated = $eid;
             } else {
                 XDB::execute(
@@ -537,8 +542,8 @@ class XnetEventsModule extends PLModule
                 foreach ($nbs as $id => $nb) {
                     $nb = max(intval($nb), 0);
                     XDB::execute("REPLACE INTO groupex.evenements_participants
-                                        VALUES ({?}, {?}, {?}, {?}, {?})",
-                                  $evt['eid'], $member['uid'], $id, $nb, $paid);
+                                        VALUES ({?}, {?}, {?}, {?}, {?}, {?})",
+                                  $evt['eid'], $member['uid'], $id, $nb, '', $paid);
                 }
 
                 $res = XDB::query("SELECT COUNT(uid) AS cnt, SUM(nb) AS nb

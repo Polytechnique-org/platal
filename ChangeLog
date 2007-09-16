@@ -15,6 +15,9 @@ New:
     * Search:
         - Shortcuts to open profiles or search in documentation            -FRU
 
+    * XnetEvents:
+        - #702: Be notified of the availability of the payment             -FRU
+
 Bug/Wish:
 
     * Auth:

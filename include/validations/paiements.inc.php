@@ -51,8 +51,8 @@ class PayReq extends Validate
         $this->titre        = $_intitule;
         $this->site         = $_site;
         $this->msg_reponse  = $_msg;
-        $this->asso_id      = $_asso_id;
-        $this->evt          = $_evt;
+        $this->asso_id      = (string)$_asso_id;
+        $this->evt          = (string)$_evt;
         $this->montant      = $_montant;
         $this->montant_min  = $_montantmin;
         $this->montant_max  = $_montantmax;
@@ -174,9 +174,37 @@ class PayReq extends Validate
             $id, $this->titre, $this->site,
             $this->montant, $this->montant_min, $this->montant_max,
             $this->bestalias."@".$globals->mail->domain, $this->msg_reponse, $this->asso_id);
-        if ($this->asso_id && $this->evt)
-            $ret = XDB::execute("UPDATE groupex.evenements SET paiement_id = {?} WHERE asso_id = {?} AND eid = {?}", $id, $this->asso_id, $this->evt);
-
+        if ($this->asso_id && $this->evt) {
+            XDB::execute("UPDATE  groupex.evenements
+                             SET  paiement_id = {?}
+                           WHERE  asso_id = {?} AND eid = {?}",
+                         $id, $this->asso_id, $this->evt);
+            $res = XDB::query("SELECT  a.nom, a.diminutif, e.intitule
+                                 FROM  groupex.asso AS a
+                           INNER JOIN  groupex.evenements AS e ON (a.id = e.asso_id)
+                                WHERE  e.eid = {?}",
+                              $this->evt);
+            list($nom, $diminutif, $evt) = $res->fetchOneRow();
+            $mailer = new PlMailer('xnetevents/mail.new_payment.tpl');
+            $mailer->assign('asso', $nom);
+            $mailer->assign('diminutif', $diminutif);
+            $mailer->assign('evt', $evt);
+            $mailer->assign('payment', $id);
+            require_once dirname(__FILE__) . '/../../modules/xnetevents/xnetevents.inc.php';
+            $participants = get_event_participants(get_event_detail($this->evt, false, $this->asso_id), null, 'nom');
+            foreach ($participants as &$u) {
+                if (!$u['notify_payment']) {
+                    continue;
+                }
+                $topay = $u['montant'] - $u['paid'];
+                if ($topay > 0) {
+                    $mailer->assign('prenom', $u['prenom']);
+                    $mailer->assign('topay', $topay);
+                    $mailer->assign('to', $u['email']);
+                    $mailer->send();
+                }
+            }
+        }
         return $ret;
     }
 

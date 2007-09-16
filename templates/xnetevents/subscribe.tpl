@@ -104,7 +104,7 @@
     <tr>
       <td>
         {if $event.topay}
-        <span class="error">
+        <div class="error">
           {if !$event.paid}
           Tu dois payer {$event.topay|replace:'.':','}&nbsp;&euro;.
           {elseif $event.paid < $event.topay}
@@ -112,12 +112,18 @@
           (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;)
           {else} 
           Tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro; pour ton inscription.
-          {/if} 
+          {/if}
+        </div>
+        <div>
           {if $event.paiement_id &&  $event.paid < $event.topay}
           [<a href="{$platal->ns}payment/{$event.paiement_id}?montant={math equation="a-b" a=$event.topay b=$event.paid}">
           Payer en ligne</a>]
+          {elseif $validation && $event.paid < $event.topay}
+          <br />Le télépaiement pour cet événement est en instance de validation&nbsp;:<br />
+          <input type="checkbox" name="notify_payment" {if $event.notify_payment}checked="checked"{/if} id="notify" />
+          <label for="notify">être prévenu lorsque le télépaiment pour cet événement sera disponible</label>
           {/if}
-        </span>
+        </div>
         {else}
         Rien à payer
         {if $event.paid > 0}
