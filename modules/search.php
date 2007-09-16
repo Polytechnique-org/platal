@@ -160,6 +160,26 @@ class SearchModule extends PLModule
         if (!Env::has('rechercher') && $action != 'geoloc') {
             $this->form_prepare();
         } else {
+            $textFields = array(
+                'country' => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'pays', 'exact' => false),
+                'fonction' => array('field' => 'id', 'table' => 'fonctions_def', 'text' => 'fonction_fr', 'exact' => true),
+                'secteur' => array('field' => 'id', 'table' => 'emploi_secteur', 'text' => 'label', 'exact' => false),
+                'nationalite' => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'nat', 'exact' => 'false'),
+                'binet' => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
+                'groupex' => array('field' => 'id', 'table' => 'groupesx_def', 'text' => 'text', 'exact' => false),
+                'section' => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
+                'school' => array('field' => 'id', 'table' => 'applis_def', 'text' => 'text', 'exact' => false)
+            );
+            foreach ($textFields as $field=>&$query) {
+                if (!Env::v($field) && Env::v($field . 'Txt')) {
+                    $res = XDB::query("SELECT  {$query['field']}
+                                         FROM  {$query['table']}
+                                        WHERE  {$query['text']} " . ($query['exact'] ? " = {?}" : " LIKE CONCAT({?}, '%')"),
+                                      Env::v($field . 'Txt'));
+                    $_REQUEST[$field] = $res->fetchOneCell();
+                }
+            }
+
             require_once 'userset.inc.php';
             $view = new SearchSet(false, $action == 'geoloc' && substr($subaction, -3) == 'swf');
             $view->addMod('minifiche', 'Minifiches', true);

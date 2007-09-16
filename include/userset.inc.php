@@ -118,8 +118,8 @@ class SearchSet extends UserSet
         if ($fields->too_large()) {
             new ThrowError('Recherche trop générale.');
         }
-        parent::__construct($join . ' ' . $fields->get_select_statement(),
-                            $where . ' ' . $fields->get_where_statement());
+        parent::__construct(@$join . ' ' . $fields->get_select_statement(),
+                            @$where . ' ' . $fields->get_where_statement());
         $this->order = implode(',',array_filter(array($fields->get_order_statement(),
                                                       'promo DESC, NomSortKey, prenom')));
     }

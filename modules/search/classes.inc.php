@@ -473,7 +473,16 @@ class RefSField extends SField
             return false;
         }
         $res = implode(' OR ', array_filter(array_map(array($this, 'get_single_match_statement'), $this->fieldDbName)));
-        return "INNER JOIN {$this->refTable} AS {$this->refAlias} ON ({$this->refCondition} AND ($res) )";
+        if (is_array($this->refTable)) {
+           foreach ($this->refTable as $i => $refT)
+               $last = $i;
+           $inner = "";
+            foreach ($this->refTable as $i => $refT)
+                $inner .= " INNER JOIN {$refT} AS {$this->refAlias[$i]} ON ({$this->refCondition[$i]} ".(($i == $last)?"AND ($res) ":"").")\n";
+            return $inner;
+        } else {
+            return "INNER JOIN {$this->refTable} AS {$this->refAlias} ON ({$this->refCondition} AND ($res) )";
+        }
     }
 
     // }}}

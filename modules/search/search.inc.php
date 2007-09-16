@@ -50,7 +50,7 @@ function advancedSearchFromInput()
 
     $entrepriseField = new RefSField('entreprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);
     $posteField      = new RefSField('poste',array('ep.poste'),'entreprises','ep','u.user_id=ep.uid', false);
-    $fonctionField   = new RefSField('fonction',array('en.fonction'),'entreprises','en','u.user_id=en.uid');
+    $fonctionField = new RefSField('fonction',array('en.fonction'),'entreprises','en','u.user_id=en.uid');
     $secteurField    = new RefSField('secteur',array('fm.secteur'),'entreprises','fm','u.user_id=fm.uid');
     $cvField         = new RefSField('cv',array('u.cv'),'','','',false);
 

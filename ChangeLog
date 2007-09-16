@@ -43,7 +43,7 @@ Bug/Wish:
         - #710: Adding grade do not degrade the database                   -FRU
 
     * Search:
-        - Fix DOS on too large quick searches                              -FRU
+        - #711: Fix search when autocompletion is not explicitly validated -FRU
 
     * Xnet:
         - #694: Color of 'Promotion' groups                                -ALK
@@ -61,6 +61,9 @@ From 0.9.14 branch:
 
     * Payment:
         - #662: Fix the attribution of the payments                        -BOB
+
+    * Search:
+        - Fix DOS on too large quick searches                              -FRU
 
     * XnetEvents:
         - #684: Fix the list of coming members                             -FRU
