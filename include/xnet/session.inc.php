@@ -55,7 +55,7 @@ class XnetSession
             }
             if (is_member()) {
                 $perms->addFlag('groupmember');
-                if ($globals->asso('pub') == 'public') {
+                if ($globals->asso('pub') != 'private') {
                     $perms->addFlag('groupannu');
                 }
             }

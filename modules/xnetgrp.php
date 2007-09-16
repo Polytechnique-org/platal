@@ -240,7 +240,7 @@ class XnetGrpModule extends PLModule
                       Post::v('descr'), Post::v('site'),
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::v('mail_domain'),
-                      Post::has('ax'), Post::has('pub')?'private':'public',
+                      Post::has('ax'), Post::v('pub'),
                       Post::v('sub_url'), Post::v('inscriptible'),
                       Post::v('unsub_url'),$globals->asso('id'));
                 if (Post::v('mail_domain')) {
@@ -257,7 +257,7 @@ class XnetGrpModule extends PLModule
                       Post::v('descr'), Post::v('site'),
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::has('ax'),
-                      Post::has('pub')?'private':'public',
+                      Post::has('pub'),
                       Post::v('sub_url'), Post::v('unsub_url'),
                       $globals->asso('id'));
             }

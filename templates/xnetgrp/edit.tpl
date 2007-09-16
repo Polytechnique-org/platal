@@ -169,8 +169,12 @@
 
     <tr>
       <td class="titre center" colspan="2">
-        <input type="checkbox" value="1" name="pub" {if $asso.pub eq 'private'}checked="checked"{/if} />
-        liste des membres privée
+        Diffusion de la liste des membres&nbsp;:
+        <select name="pub">
+          <option value="public" {if $asso.pub eq 'public'}selected="selected"{/if}>Publique</option>
+          <option value="membre" {if $asso.pub eq 'membre'}selected="selected"{/if}>Aux membres du groupe</option>
+          <option value="private" {if $asso.pub eq 'private'}selected="selected"{/if}>Aux administrateurs du groupe</option>
+        </select>
       </td>
     </tr>
   </table>

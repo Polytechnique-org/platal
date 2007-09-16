@@ -88,17 +88,17 @@ class XnetPage extends PlatalPage
         $sub['signaler un bug']   = array('href' => 'send_bug', 'class' => 'popup_840x600');
         $menu["no_title"]   = $sub;
 
+        $perms = S::v('perms');
         if (S::logged() && $globals->asso()) {
             $sub = array();
             $dim = $globals->asso('diminutif');
             $sub['présentation'] = "login/$dim/";
-            if (may_update() || (is_member()  && $globals->asso('pub') == 'public')
-                || $globals->asso('cat') == 'Promotions') {
+            if ($perms->hasFlag('groupannu')) {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
                 $sub['trombinoscope'] = "$dim/trombi";
                 $sub['carte'] = "$dim/geoloc";
             }
-            if (is_member() || may_update()) {
+            if ($perms->hasFlag('groupmember')) {
                 if ($globals->asso('forum')) {
                     $sub['forum'] = "$dim/forum";
                 }
@@ -107,14 +107,14 @@ class XnetPage extends PlatalPage
                 }
             }
             $sub['événement'] = "$dim/events";
-            if (may_update() || is_member()) {
+            if ($perms->hasFlag('groupmember')) {
                 $sub['télépaiement'] = "$dim/payment";
             }
 
             $menu[$globals->asso('nom')] = $sub;
         }
 
-        if (S::logged() && may_update()) {
+        if (is_object($perms) && $perms->hasFlag('groupadmin')) {
             $sub = array();
             $sub['modifier l\'accueil'] = "$dim/edit";
             $sub['gérer les annonces'] = "$dim/admin/announces";
