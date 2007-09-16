@@ -166,7 +166,9 @@ class SearchModule extends PLModule
                 'secteur' => array('field' => 'id', 'table' => 'emploi_secteur', 'text' => 'label', 'exact' => false),
                 'nationalite' => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'nat', 'exact' => 'false'),
                 'binet' => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
-                'groupex' => array('field' => 'id', 'table' => 'groupesx_def', 'text' => 'text', 'exact' => false),
+                'groupex' => array('field' => 'id', 'table' => 'groupex.asso',
+                                   'text' => "(a.cat = 'GroupesX' OR a.cat = 'Institutions') AND pub = 'public' AND nom",
+                                   'exact' => false),
                 'section' => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
                 'school' => array('field' => 'id', 'table' => 'applis_def', 'text' => 'text', 'exact' => false)
             );
@@ -174,7 +176,8 @@ class SearchModule extends PLModule
                 if (!Env::v($field) && Env::v($field . 'Txt')) {
                     $res = XDB::query("SELECT  {$query['field']}
                                          FROM  {$query['table']}
-                                        WHERE  {$query['text']} " . ($query['exact'] ? " = {?}" : " LIKE CONCAT({?}, '%')"),
+                                        WHERE  {$query['text']} " . ($query['exact'] ? " = {?}" :
+                                                                    " LIKE CONCAT('%', {?}, '%')"),
                                       Env::v($field . 'Txt'));
                     $_REQUEST[$field] = $res->fetchOneCell();
                 }
@@ -284,13 +287,16 @@ class SearchModule extends PLModule
             $beginwith = false;
             break;
           case 'groupexTxt':
-            $db = '`groupesx_def` INNER JOIN
-                   `groupesx_ins` ON(`groupesx_def`.`id` = `groupesx_ins`.`gid`)';
-            $field='`groupesx_def`.`text`';
+            $db = "groupex.asso AS a INNER JOIN
+                   groupex.membres AS m ON(a.id = m.asso_id
+                                           AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')
+                                           AND a.pub = 'public')";
+            $field='a.nom';
+            $field2 = 'a.diminutif';
             if (strlen($q) > 2)
                 $beginwith = false;
-            $realid = '`groupesx_def`.`id`';
-            $unique = '`guid`';
+            $realid = 'a.id';
+            $unique = 'm.uid';
             break;
           case 'name':
             $field = '`nom`';
@@ -411,7 +417,9 @@ class SearchModule extends PLModule
             $page->changeTpl('search/adv.grade.form.tpl', NO_SKIN);
             return;
           case 'groupex':
-            $db = '`groupesx_def`';
+            $db = 'groupex.asso';
+            $where = " WHERE (cat = 'GroupesX' OR cat = 'Institutions') AND pub = 'public'";
+            $field = 'nom';
             break;
           case 'nationalite':
             $db = '`geoloc_pays` INNER JOIN
