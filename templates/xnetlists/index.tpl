@@ -71,7 +71,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
       {/if}
       <a href='{$platal->ns}lists/members/{$l.list}'>{$l.list}</a>
     </td>
-    <td>{$l.desc}</td>
+    <td>{$l.desc|smarty:nodefaults}</td>
     <td class='center'>
       {if $l.diff eq 2}modérée{elseif $l.diff eq 1}restreinte{else}libre{/if}
     </td>

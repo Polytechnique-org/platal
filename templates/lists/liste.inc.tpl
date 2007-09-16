@@ -33,7 +33,7 @@
   <a href='{$platal->ns}lists/members/{$liste.list}'>{$liste.list}</a> 
 </td>
 <td>
-  {$liste.desc}<br/>
+  {$liste.desc|smarty:nodefaults}<br/>
   {if $liste.subscriptions|@count}
   <strong>&bull; Demandes d'inscription</strong><br />
   {foreach from=$liste.subscriptions item=s}
@@ -67,7 +67,7 @@
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}'>
       {icon name=magnifier title="Voir le message"}
     </a>
-    Sujet : {$m.subj|hdc|default:"[pas de sujet]"}<br />
+    Sujet : {$m.subj|hdc|smarty:nodefaults|default:"[pas de sujet]"}<br />
   {/foreach}
   </span>
   {/if}

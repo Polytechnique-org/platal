@@ -34,7 +34,7 @@
   </tr>
   <tr>
     <td class='titre'> Sujet </td>
-    <td>{$details.desc}</td>
+    <td>{$details.desc|smarty:nodefaults}</td>
   </tr>
   <tr>
     <td class='titre'> Visibilité </td>
@@ -74,7 +74,7 @@
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   <tr><th colspan='2'>Informations sur la liste</th></tr>
   <tr>
-    <td colspan='2'>{$details.info|nl2br}</td>
+    <td colspan='2'>{$details.info|smarty:nodefaults|nl2br}</td>
   </tr>
 </table>
 {/if}

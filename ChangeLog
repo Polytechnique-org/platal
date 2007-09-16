@@ -36,6 +36,9 @@ Bug/Wish:
         - #688: From name in the sending form                              -FRU
         - #703: Fix management of mail adresses containing '+'             -ALK
 
+    * Lists:
+        - #700: Fix several encoding issues                                -FRU
+
     * Profile:
         - Fix GoogleMaps links                                             -FRU
         - #663: Link to Xnet's map from the "My groups" page               -FRU

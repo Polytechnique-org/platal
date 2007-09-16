@@ -218,7 +218,7 @@ class ListsModule extends PLModule
             $page->trig('cet alias est déjà pris');
         }
 
-        if (!Post::v(desc)) {
+        if (!Post::v('desc')) {
             $page->trig('le sujet est vide');
         }
 

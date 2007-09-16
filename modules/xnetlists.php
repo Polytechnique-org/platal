@@ -140,10 +140,9 @@ class XnetListsModule extends ListsModule
         }
 
         $new = $liste.'@'.$globals->asso('mail_domain');
-        $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
-        $n   = $res->fetchOneCell();
+        $res = XDB::query('SELECT alias FROM x4dat.virtual WHERE alias={?}', $new);
 
-        if ($n) {
+        if ($res->numRows()) {
             $page->trig('cet alias est déjà pris');
             return;
         }
@@ -153,9 +152,9 @@ class XnetListsModule extends ListsModule
         }
 
         $ret = $this->client->create_list(
-                    $liste, Post::v('desc'), Post::v('advertise'),
+                    $liste, utf8_decode(Post::v('desc')), Post::v('advertise'),
                     Post::v('modlevel'), Post::v('inslevel'),
-                    array(S::v('forlife')), array());
+                    array(S::v('forlife')), array(S::v('forlife')));
 
         $dom = strtolower($globals->asso("mail_domain"));
         $red = $dom.'_'.$liste;
