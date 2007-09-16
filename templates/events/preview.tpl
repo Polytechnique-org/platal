@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if trim($titre) || trim($texte_html)}
+{if trim($titre) || trim($texte)}
 <table class="bicol">
   <tr><th><em>Aperçu de : </em>{$titre|nl2br}</th></tr>
-  <tr class="pair"><td>{$texte_html|nl2br|smarty:nodefaults}</td></tr>
+  <tr class="pair"><td>{$texte|miniwiki|smarty:nodefaults}</td></tr>
 </table>
 {/if}
 

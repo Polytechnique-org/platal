@@ -205,8 +205,6 @@ class ProfileModule extends PLModule
 
         $new   = Env::v('modif') == 'new';
         $user  = get_user_details($login, S::v('uid'), $view);
-        $user['freetext'] = MiniWiki::WikiToHTML($user['freetext']);
-        $user['cv']       = MiniWiki::WikiToHTML($user['cv'], true);
         $title = $user['prenom'] . ' ' . ( empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'] );
         $page->assign('xorg_title', $title);
 

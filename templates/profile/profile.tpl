@@ -52,7 +52,7 @@ function chgMainWinLoc(strPage)
       {if $x.gpxs_join}<div><em class="intitule">Groupe(s) et institution(s) X : </em><span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
     {/if}
     {if $x.web}<div><em class="intitule">Site Web : </em><br /><a href="{$x.web}" class='popup'>{$x.web}</a></div>{/if}
-    {if $x.freetext}<div><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|smarty:nodefaults}</span></div>{/if}
+    {if $x.freetext}<div><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|miniwiki|smarty:nodefaults}</span></div>{/if}
   </div>
   <div id="fiche_identite" class="part">
     <div class="civilite">
@@ -179,7 +179,7 @@ function chgMainWinLoc(strPage)
   {if $logged && $x.cv}
   <div class="part">
     <h2>Curriculum Vitae :</h2>
-    {$x.cv|smarty:nodefaults}
+    {$x.cv|miniwiki:title|smarty:nodefaults}
   </div>
   {/if}
   {if !$logged}

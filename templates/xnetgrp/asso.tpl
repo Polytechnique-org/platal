@@ -91,7 +91,11 @@
 <br />
 
 <div style="text-align: justify">
+  {if $asso.wiki_desc}
+  {$asso.descr|miniwiki:title|smarty:nodefaults}
+  {else}
   {$asso.descr|smarty:nodefaults}
+  {/if}
 </div>
 
 <br />

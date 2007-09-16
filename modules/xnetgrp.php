@@ -171,10 +171,7 @@ class XnetGrpModule extends PLModule
                               'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
         }
 
-        $page->register_modifier('wiki_to_html', array('MiniWiki','WikiToHTML'));
         $page->assign('articles', $arts);
-
-        $page->assign('asso', $globals->asso());
     }
 
     function handler_logo(&$page)
@@ -233,7 +230,8 @@ class XnetGrpModule extends PLModule
                         SET  nom={?}, diminutif={?}, cat={?}, dom={?},
                              descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, mail_domain={?}, ax={?}, pub={?},
-                             sub_url={?}, inscriptible={?}, unsub_url={?}
+                             sub_url={?}, inscriptible={?}, unsub_url={?},
+                             flags='wiki_desc'
                       WHERE  id={?}",
                       Post::v('nom'), Post::v('diminutif'),
                       Post::v('cat'), Post::i('dom'),
@@ -252,7 +250,7 @@ class XnetGrpModule extends PLModule
                     "UPDATE  groupex.asso
                         SET  descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, ax={?}, pub= {?}, sub_url={?},
-                             unsub_url={?}
+                             unsub_url={?},flags='wiki_desc'
                       WHERE  id={?}",
                       Post::v('descr'), Post::v('site'),
                       Post::v('mail'), Post::v('resp'),
@@ -266,9 +264,9 @@ class XnetGrpModule extends PLModule
                 $logo = file_get_contents($_FILES['logo']['tmp_name']);
                 $mime = $_FILES['logo']['type'];
                 XDB::execute('UPDATE groupex.asso
-                                           SET logo={?}, logo_mime={?}
-                                         WHERE id={?}', $logo, $mime,
-                                        $globals->asso('id'));
+                                 SET logo={?}, logo_mime={?}
+                               WHERE id={?}', $logo, $mime,
+                             $globals->asso('id'));
             }
 
             pl_redirect('../'.Post::v('diminutif', $globals->asso('diminutif')).'/edit');
@@ -278,6 +276,11 @@ class XnetGrpModule extends PLModule
             $dom = XDB::iterator('SELECT * FROM groupex.dom ORDER BY nom');
             $page->assign('dom', $dom);
             $page->assign('super', true);
+        }
+        if (!$globals->asso('wiki_desc') && $globals->asso('descr')) {
+            $page->trig("Attention, le format de la description a changé et utilise désormais la syntaxe wiki "
+                      . "intégrée au site. Il te faudra probablement adapter le formatage du texte actuelle pour "
+                      . "qu'il s'affiche correctement avec cette nouvelle syntaxe.");
         }
     }
 
@@ -1023,7 +1026,6 @@ class XnetGrpModule extends PLModule
         global $globals;
         require_once('rss.inc.php');
         $uid = init_rss('xnetgrp/announce-rss.tpl', $user, $hash, false);
-        $page->register_modifier('wiki_to_html', array('MiniWiki', 'WikiToHTML'));
 
         if ($uid) {
             $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.contacts, a.create_date,
@@ -1050,7 +1052,6 @@ class XnetGrpModule extends PLModule
     {
         global $globals, $platal;
         $page->changeTpl('xnetgrp/announce-edit.tpl');
-        $page->register_modifier('wiki_to_html', array('MiniWiki','WikiToHTML'));
         $page->assign('new', is_null($aid));
         $art = array();
 
@@ -1117,8 +1118,7 @@ class XnetGrpModule extends PLModule
                 $aid = XDB::insertId();
                 if ($art['xorg']) {
                     require_once('validations.inc.php');
-                    $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'],
-                                    MiniWiki::WikiToHTML($fulltext),
+                    $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'], $fulltext,
                                     $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'));
                     $article->submit();
                     $page->trig("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation");

@@ -100,7 +100,7 @@ class EventsModule extends PLModule
             return false;
         }
         $sql = "SELECT  e.id,e.titre,e.texte,e.post_id,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife,
-                        p.x, p.y, p.attach IS NOT NULL AS img
+                        p.x, p.y, p.attach IS NOT NULL AS img, FIND_IN_SET('wiki', e.flags) AS wiki
                   FROM  evenements       AS e
              LEFT JOIN  evenements_photo AS p ON (e.id = p.eid)
             INNER JOIN  auth_user_md5    AS a ON e.user_id=a.user_id
@@ -270,14 +270,11 @@ class EventsModule extends PLModule
         if (!is_utf8($texte)) {
             $texte = utf8_encode($texte);
         }
-        if (strpos($_SERVER['HTTP_REFERER'], 'admin') === false) {
-            $texte = MiniWiki::WikiToHTML($texte);
-        }
         $titre = Get::v('titre');
         if (!is_utf8($titre)) {
             $titre = utf8_encode($titre);
         }
-        $page->assign('texte_html', $texte);
+        $page->assign('texte', $texte);
         $page->assign('titre', $titre);
         header('Content-Type: text/html; charset=utf-8');
     }
@@ -308,11 +305,8 @@ class EventsModule extends PLModule
             $action = null;
         }
 
-		$texte_catch_url = MiniWiki::WikiToHTML($texte);
-		
         $page->assign('titre', $titre);
         $page->assign('texte', $texte);
-        $page->assign('texte_html', $texte_catch_url);
         $page->assign('promo_min', $promo_min);
         $page->assign('promo_max', $promo_max);
         $page->assign('peremption', $peremption);
@@ -326,7 +320,6 @@ class EventsModule extends PLModule
         } elseif ($action && (!trim($texte) || !trim($titre))) {
             $page->trig("L'article doit avoir un titre et un contenu");
         } elseif ($action) {
-        	$texte = $texte_catch_url;
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
                                  $peremption, $valid_mesg, S::v('uid'), $upload);
@@ -397,11 +390,13 @@ class EventsModule extends PLModule
             } else {
                 $res = XDB::query('SELECT flags FROM evenements WHERE id = {?}', $eid);
                 $flags = new FlagSet($res->fetchOneCell());
+                $flags->addFlag('wiki');
                 if (Post::v('important')) {
                     $flags->addFlag('important');
                 } else {
                     $flags->rmFlag('important');
                 }
+
                 XDB::execute('UPDATE evenements
                                  SET creation_date = creation_date,
                                      titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?},
@@ -428,7 +423,6 @@ class EventsModule extends PLModule
             list($titre, $texte, $peremption, $promo_min, $promo_max, $important, $img) = $res->fetchOneRow();
             $page->assign('titre',$titre);
             $page->assign('texte',$texte);
-            $page->assign('texte_html', pl_entity_decode($texte));
             $page->assign('promo_min',$promo_min);
             $page->assign('promo_max',$promo_max);
             $page->assign('peremption',$peremption);
@@ -490,7 +484,8 @@ class EventsModule extends PLModule
                             e.promo_min, e.promo_max,
                             FIND_IN_SET('valide', e.flags) AS fvalide,
                             FIND_IN_SET('archive', e.flags) AS farch,
-                            u.promo, u.nom, u.prenom, a.alias AS forlife
+                            u.promo, u.nom, u.prenom, a.alias AS forlife,
+                            FIND_IN_SET('wiki', flags) AS wiki
                       FROM  evenements    AS e
                 INNER JOIN  auth_user_md5 AS u ON(e.user_id = u.user_id)
                 INNER JOIN  aliases AS a ON (u.user_id = a.id AND a.type='a_vie')

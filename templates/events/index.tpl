@@ -196,7 +196,11 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
           </div>
           {/if}
           <div style="text-align: justify">
+            {if !$ev.wiki}
             {$ev.texte|smarty:nodefaults|nl2br}
+            {else}
+            {$ev.texte|miniwiki|smarty:nodefaults}
+            {/if}
           </div>
         </div>
       </td>

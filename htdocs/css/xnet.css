@@ -68,6 +68,19 @@ h2    { font-size: 115%; }
     font-style: italic;
 }
 
+input.error, textarea.error {
+    background-color: #faa;
+}
+
+input.valid, textarea.valid {
+    background-color: #afa;
+}
+
+input.warning, textarea.warning {
+    background-color: #fda;
+}
+
+
 /***************************************************************************
  * DEBUG
  ***************************************************************************/

@@ -38,9 +38,7 @@
   </tr>
   <tr>
     <td style="padding-bottom: 1em">
-      {tidy}
-      {$art.texte|wiki_to_html|smarty:nodefaults}
-      {/tidy}
+      {$art.texte|miniwiki|smarty:nodefaults}
     </td>
   </tr>
   {if ($is_logged || $admin) && $art.contacts}
@@ -49,13 +47,13 @@
   </tr>
   <tr class="pair">
     <td style="padding-left: 20px">
-      {tidy}
       {if $art.contact_html}
+      {tidy}
       {$art.contact_html|nl2br|smarty:nodefaults}
-      {else}
-      {$art.contacts|wiki_to_html|nl2br|smarty:nodefaults}
-      {/if}
       {/tidy}
+      {else}
+      {$art.contacts|miniwiki|smarty:nodefaults}
+      {/if}
     </td>
   </tr>
   {/if}

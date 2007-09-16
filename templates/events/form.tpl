@@ -20,10 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{assign var=texte value=$smarty.request.texte|default:$texte} 
-{assign var=titre value=$smarty.request.titre|default:$titre} 
-{assign var=promo_min value=$smarty.request.promo_min|default:$promo_min} 
-{assign var=promo_max value=$smarty.request.promo_max|default:$promo_max} 
+{if $smarty.request.texte}
+{assign var=texte value=$smarty.request.texte}
+{/if}
+{assign var=titre value=$smarty.request.titre|default:$titre}
+{assign var=promo_min value=$smarty.request.promo_min|default:$promo_min}
+{assign var=promo_max value=$smarty.request.promo_max|default:$promo_max}
 {assign var=peremption value=$smarty.request.peremption|default:$peremption}
 {assign var=important value=$smarty.request.important|default:$important}
 
