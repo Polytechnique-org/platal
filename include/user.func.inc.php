@@ -46,7 +46,6 @@ function user_clear_all_subs($user_id, $really_del=true)
         array_push($tables_to_clear['user_id'], 'newsletter_ins', 'auth_user_quick', 'binets_ins');
         $tables_to_clear['id'] = array('aliases');
         $tables_to_clear['contact'] = array('contacts');
-        $tables_to_clear['guid'] = array('groupesx_ins');
         XDB::execute("UPDATE auth_user_md5
                          SET date_ins = 0, promo_sortie = 0, nom_usage = '',  password = '', perms = 'pending',
                              nationalite = '', cv = '', section = 0, date = 0, smtppass = ''
@@ -448,14 +447,18 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
         $user['binets']      = $res->fetchColumn();
         $user['binets_join'] = join(', ', $user['binets']);
 
-        $res  = XDB::iterRow("SELECT  text, url
-                                FROM  groupesx_ins
-                           LEFT JOIN  groupesx_def ON groupesx_ins.gid = groupesx_def.id
-                               WHERE  guid = {?}", $uid);
+        $res  = XDB::iterRow("SELECT  a.diminutif, a.nom, a.site
+                                FROM  groupex.asso    AS a
+                           LEFT JOIN  groupex.membres AS m ON (m.asso_id = a.id)
+                               WHERE  m.uid = {?} AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')
+                                      AND pub = 'public'", $uid);
         $user['gpxs'] = Array();
         $user['gpxs_name'] = Array();
-        while (list($gxt, $gxu) = $res->next()) {
-            $user['gpxs'][] = $gxu ? "<a href=\"$gxu\">$gxt</a>" : $gxt;
+        while (list($gxd, $gxt, $gxu) = $res->next()) {
+            if (!$gxu) {
+                $gxu = 'http://www.polytechnique.net/' . $gxd;
+            }
+            $user['gpxs'][] = '<span title="' . pl_entities($gxt) . "\"><a href=\"$gxu\">$gxd</a></span>";
             $user['gpxs_name'][] = $gxt;
         }
         $user['gpxs_join'] = join(', ', $user['gpxs']);

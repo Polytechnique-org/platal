@@ -54,7 +54,6 @@ class ProfileModule extends PLModule
             'admin/binets'     => $this->make_hook('admin_binets', AUTH_MDP, 'admin'),
             'admin/medals'     => $this->make_hook('admin_medals', AUTH_MDP, 'admin'),
             'admin/formations' => $this->make_hook('admin_formations', AUTH_MDP, 'admin'),
-            'admin/groupes-x'  => $this->make_hook('admin_groupesx', AUTH_MDP, 'admin'),
             'admin/sections'  => $this->make_hook('admin_sections', AUTH_MDP, 'admin'),
             'admin/secteurs'  => $this->make_hook('admin_secteurs', AUTH_MDP, 'admin'),
             'admin/trombino'   => $this->make_hook('admin_trombino', AUTH_MDP, 'admin'),
@@ -737,15 +736,6 @@ class ProfileModule extends PLModule
         $page->assign('title', 'Gestion des formations');
         $table_editor = new PLTableEditor('admin/formations','applis_def','id');
         $table_editor->add_join_table('applis_ins','aid',true);
-        $table_editor->describe('text','intitulé',true);
-        $table_editor->describe('url','site web',false);
-        $table_editor->apply($page, $action, $id);
-    }
-    function handler_admin_groupesx(&$page, $action = 'list', $id = null) {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Groupes X');
-        $page->assign('title', 'Gestion des Groupes X');
-        $table_editor = new PLTableEditor('admin/groupes-x','groupesx_def','id');
-        $table_editor->add_join_table('groupesx_ins','gid',true);
         $table_editor->describe('text','intitulé',true);
         $table_editor->describe('url','site web',false);
         $table_editor->apply($page, $action, $id);

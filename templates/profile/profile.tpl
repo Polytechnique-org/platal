@@ -49,7 +49,7 @@ function chgMainWinLoc(strPage)
     {if $logged}
       {if $x.section}<div><em class="intitule">Section : </em><span>{$x.section}</span></div>{/if}
       {if $x.binets_join}<div><em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span></div>{/if}
-      {if $x.gpxs_join}<div><em class="intitule">Groupe(s) X : </em><span>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
+      {if $x.gpxs_join}<div><em class="intitule">Groupe(s) et institution(s) X : </em><span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
     {/if}
     {if $x.web}<div><em class="intitule">Site Web : </em><br /><a href="{$x.web}" class='popup'>{$x.web}</a></div>{/if}
     {if $x.freetext}<div><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|smarty:nodefaults}</span></div>{/if}

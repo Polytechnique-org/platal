@@ -103,7 +103,23 @@ class ProfileGroups extends ProfilePage
         parent::__construct($wiz);
         $this->settings['section']  = new ProfileSection();
         $this->settings['binets']   = new ProfileGroup('binets', 'user_id', 'binet_id');
-        $this->settings['groupesx'] = new ProfileGroup('groupesx', 'guid', 'gid');
+    }
+
+    public function prepare(PlatalPage &$page)
+    {
+        parent::prepare($page);
+        $page->assign('mygroups', XDB::iterator("SELECT  a.nom, a.site, a.diminutif, a.unsub_url, a.pub, m.perms
+                                                   FROM  groupex.asso    AS a
+                                             INNER JOIN  groupex.membres AS m ON (m.asso_id = a.id)
+                                                  WHERE  m.uid = {?} AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')",
+                                                  S::i('uid')));
+        $page->assign('listgroups', XDB::iterator("SELECT  a.nom, a.diminutif, a.sub_url,
+                                                           IF (a.cat = 'Institutions', a.cat, d.nom) AS dom
+                                                     FROM  groupex.asso  AS a
+                                                LEFT JOIN  groupex.dom   AS d ON (d.id = a.dom)
+                                                    WHERE  a.inscriptible != 0
+                                                           AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')
+                                                 ORDER BY  a.cat, a.dom, a.nom"));
     }
 }
 

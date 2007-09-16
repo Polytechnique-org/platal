@@ -91,8 +91,6 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/binets">Binets</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/groupes-x">Groupes X</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/skins">Skins</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/medals">Décorations</a>
