@@ -257,7 +257,8 @@
     <tr>
       <td>Pays</td>
       <td>
-        <input name="countryTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="countryTxt" type="text" class="autocomplete" style="display:none" size="32"
+               value="{$smarty.request.countryTxt}"/>
         <input name="country" class="autocompleteTarget" type="hidden" value="{$smarty.request.country}"/>
         <a href="country" class="autocompleteToSelect">{icon name="table" title="Tous les pays"}</a>
       </td>
@@ -283,7 +284,8 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Fonction</td>
       <td>
-        <input name="fonctionTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="fonctionTxt" type="text" class="autocomplete" style="display:none" size="32"
+               value="{$smarty.request.fonctionTxt}"/>
         <input name="fonction" class="autocompleteTarget" type="hidden" value="{$smarty.request.fonction}"/>
         <a href="fonction" class="autocompleteToSelect">{icon name="table" title="Toutes les fonctions"}</a>
       </td>
@@ -295,7 +297,8 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Secteur</td>
       <td>
-        <input name="secteurTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="secteurTxt" type="text" class="autocomplete" style="display:none" size="32"
+               value="{$smarty.request.secteurTxt}"/>
         <input name="secteur" class="autocompleteTarget" type="hidden" value="{$smarty.request.secteur}"/>
         <a href="secteur" class="autocompleteToSelect">{icon name="table" title="Tous les secteurs"}</a>
       </td>
@@ -316,7 +319,8 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Nationalité</td>
       <td>
-        <input name="nationaliteTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="nationaliteTxt" type="text" class="autocomplete" style="display:none" size="32"
+               value="{$smarty.request.nationaliteTxt}"/>
         <input name="nationalite" class="autocompleteTarget" type="hidden" value="{$smarty.request.nationalite}"/>
         <a href="nationalite" class="autocompleteToSelect">{icon name="table" title="Toutes les nationalités"}</a>
       </td>
@@ -324,7 +328,8 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Binet</td>
       <td>
-        <input name="binetTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="binetTxt" type="text" class="autocomplete" style="display:none" size="32"
+               value="{$smarty.request.binetTxt}"/>
         <input name="binet" class="autocompleteTarget" type="hidden" value="{$smarty.request.binet}"/>
         <a href="binet" class="autocompleteToSelect">{icon name="table" title="Tous les binets"}</a>
       </td>
@@ -332,7 +337,8 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Groupe X</td>
       <td>
-        <input name="groupexTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="groupexTxt" type="text" class="autocomplete" style="display:none" size="32"
+               value="{$smarty.request.groupexTxt}"/>
         <input name="groupex" class="autocompleteTarget" type="hidden" value="{$smarty.request.groupex}"/>
         <a href="groupex" class="autocompleteToSelect">{icon name="table" title="Tous les groupes X"}</a>
       </td>
@@ -340,7 +346,8 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Section</td>
       <td>
-        <input name="sectionTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="sectionTxt" type="text" class="autocomplete" style="display:none" size="32"
+               value="{$smarty.request.sectionTxt}"/>
         <input name="section" class="autocompleteTarget" type="hidden" value="{$smarty.request.section}"/>
         <a href="section" class="autocompleteToSelect">{icon name="table" title="Toutes les sections"}</a>
       </td>
@@ -348,7 +355,8 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Formation</td>
       <td>
-        <input name="schoolTxt" type="text" class="autocomplete" style="display:none" size="32"/>
+        <input name="schoolTxt" type="text" class="autocomplete" style="display:none" size="32"
+               value="{$smarty.request.schoolTxt}"/>
         <input name="school" class="autocompleteTarget" type="hidden" value="{$smarty.request.school}"/>
         <a href="school" class="autocompleteToSelect">{icon name="table" title="Toutes les formations"}</a>
       </td>

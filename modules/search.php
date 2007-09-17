@@ -462,6 +462,8 @@ class SearchModule extends PLModule
                                                FROM  '.$db.$where.'
                                            GROUP BY  '.$field.'
                                            ORDER BY  '.$field));
+        $page->assign('with_text_value', true);
+        $page->assign('onchange', "document.forms.recherche.{$type}Txt.value = this.options[this.selectedIndex].text");
     }
 }
 

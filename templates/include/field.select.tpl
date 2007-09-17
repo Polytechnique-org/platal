@@ -20,11 +20,18 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if $with_text_value}
+<div>
+{/if}
 <select name="{$name}"{if $onchange} onchange="{$onchange}"{/if}{if $id} id="{$id}"{/if}>
     <option value=""> - </option>
   {iterate from=$list item='option'}
     <option value="{$option.id}">{$option.field|htmlspecialchars}</option>
   {/iterate}
 </select>
+{if $with_text_value}
+<input type="hidden" value="" name="{$name}Txt" />
+</div>
+{/if}
 
 {* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}

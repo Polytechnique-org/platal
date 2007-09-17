@@ -116,8 +116,8 @@
         </div>
         <div>
           {if $event.paiement_id &&  $event.paid < $event.topay}
-          [<a href="{$platal->ns}payment/{$event.paiement_id}?montant={math equation="a-b" a=$event.topay b=$event.paid}">
-          Payer en ligne</a>]
+          <a href="{$platal->ns}payment/{$event.paiement_id}?montant={math equation="a-b" a=$event.topay b=$event.paid}">
+          {icon name=money} Payer en ligne</a>
           {elseif $validation && $event.paid < $event.topay}
           <br />Le télépaiement pour cet événement est en instance de validation&nbsp;:<br />
           <input type="checkbox" name="notify_payment" {if $event.notify_payment}checked="checked"{/if} id="notify" />
