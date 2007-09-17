@@ -127,9 +127,9 @@ class VCard
     public static function escape($text)
     {
         if (VCard::$windows) {
-            return preg_replace('/;/', '\\\\$0', $text);
+            return str_replace(';', '\\\\;', $text);
         } else {
-            return preg_replace('/[,;]/', '\\\\$0', $text);
+            return str_replace(array(';', ','), array('\\\\;', '\\\\,'), $text);
         }
     }
 
@@ -159,7 +159,7 @@ class VCard
         if (VCard::$windows) {
             $text = utf8_decode($text);
         }
-        return preg_replace("/(\r\n|\n|\r)/", '\n', $text);
+        return str_replace(array("\r\n", "\n", "\r"), '\n', $text);
     }
 
     public function do_page(&$page)
