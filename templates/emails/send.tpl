@@ -56,6 +56,28 @@
     return true;
   }
 
+  function saveMessage() {
+    var form = document.forms.form_mail;
+    var toc = "";
+    var ccc = "";
+    for (var i = 0 ; i < form['to_contacts[]'].length ; ++i) {
+      toc += form['to_contacts[]'].options[i].value + ";";
+    }
+    for (var i = 0 ; i < form['cc_contacts[]'].length ; ++i) {
+      ccc += form['cc_contacts[]'].options[i].value + ";";
+    }
+    $.post(platal_baseurl + "emails/send",
+           { save: true,
+             from: form.from.value,
+             to_contacts: toc,
+             cc_contacts: ccc,
+             contenu: form.contenu.value,
+             to: form.to.value,
+             sujet: form.sujet.value,
+             cc: form.cc.value,
+             bcc: form.bcc.value });
+  }
+
   var doAuth = true;
   function _keepAuth() {
     doAuth = true;
@@ -63,7 +85,7 @@
 
   function keepAuth() {
     if (doAuth) {
-      Ajax.update_html(null, "login", null);
+      saveMessage();
       doAuth = false;
       setTimeout("_keepAuth()", 10000);
     }
@@ -125,25 +147,7 @@
       if (sent) {
         return true;
       }
-      var form = document.forms.form_mail;
-      var toc = "";
-      var ccc = "";
-      for (var i = 0 ; i < form['to_contacts[]'].length ; ++i) {
-        toc += form['to_contacts[]'].options[i].value + ";";
-      }
-      for (var i = 0 ; i < form['cc_contacts[]'].length ; ++i) {
-        ccc += form['cc_contacts[]'].options[i].value + ";";
-      }
-      $.post(platal_baseurl + "emails/send",
-             { save: true,
-               from: form.from.value,
-               to_contacts: toc,
-               cc_contacts: ccc,
-               contenu: form.contenu.value,
-               to: form.to.value,
-               sujet: form.sujet.value,
-               cc: form.cc.value,
-               bcc: form.bcc.value });
+      saveMessage();
       return true;
     });
   {/literal}
