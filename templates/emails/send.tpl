@@ -22,6 +22,7 @@
 
 <h1>Envoyer un mail</h1>
 
+{javascript name="jquery"}
 <script type="text/javascript">//<![CDATA[
   {literal}
   function _selectAll(id) {
@@ -31,9 +32,9 @@
     }
   }
 
+  var sent = false;
   function check(form)
   {
-    var send = true;
     _selectAll('to_contacts');
     _selectAll('cc_contacts');
     if(form.sujet.value == "" && !confirm("Le sujet du mail est vide, veux-tu continuer ?")) {
@@ -51,6 +52,7 @@
         return false;
       }
     }
+    sent = true;
     return true;
   }
 
@@ -111,15 +113,44 @@
     if (box.checked) {
       document.getElementById("preview_bt").style.display = "none";
       document.getElementById("preview").style.display = "none";
+      document.getElementById("preview_pv").style.display = "none";
     } else {
       document.getElementById("preview_bt").style.display = "";
+      document.getElementById("preview").style.display = "";
     }
   }
+
+  $(window).unload(
+    function() {
+      if (sent) {
+        return true;
+      }
+      var form = document.forms.form_mail;
+      var toc = "";
+      var ccc = "";
+      for (var i = 0 ; i < form['to_contacts[]'].length ; ++i) {
+        toc += form['to_contacts[]'].options[i].value + ";";
+      }
+      for (var i = 0 ; i < form['cc_contacts[]'].length ; ++i) {
+        ccc += form['cc_contacts[]'].options[i].value + ";";
+      }
+      $.post(platal_baseurl + "emails/send",
+             { save: true,
+               from: form.from.value,
+               to_contacts: toc,
+               cc_contacts: ccc,
+               contenu: form.contenu.value,
+               to: form.to.value,
+               sujet: form.sujet.value,
+               cc: form.cc.value,
+               bcc: form.bcc.value });
+      return true;
+    });
   {/literal}
 //]]>
 </script>
 
-<form action="emails/send" method="post" enctype="multipart/form-data" onsubmit="return check(this);">
+<form action="emails/send" method="post" enctype="multipart/form-data" id="form_mail" onsubmit="return check(this);">
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr> 
       <th colspan="2">Destinataires</th>
@@ -224,12 +255,18 @@
       <small><input type="checkbox" name="nowiki" value="1" {if $smarty.request.nowiki}checked="checked"{/if} onchange="updateWikiView(this);" />
       coche cette case pour envoyer le mail en texte brut, sans formattage</small>
     </div>
-    <div id="preview" style="display: none">
-      <strong>Aperçu du mail :</strong>
-      <div id="mail_preview">
+    <div id="preview">
+      <div id="preview_pv" style="display: none">
+        <strong>Aperçu du mail :</strong>
+        <div id="mail_preview">
+        </div>
+        <div class="center">
+          <input type="submit" name="submit" value="Envoyer" />
+        </div>
       </div>
       <div class="center">
-        <input type="submit" name="submit" value="Envoyer" />
+        <input type="submit" name="preview" id="preview_bt_top" value="Aperçu"
+               onclick="previewWiki('mail_text', 'mail_preview', true, 'preview_pv'); return false;" />
       </div>
     </div>
     <textarea name='contenu' rows="30" cols="75" id="mail_text" onkeyup="keepAuth()">
@@ -262,7 +299,8 @@
       <input type="file" name="uploaded" />
     </div>
     <div class="center">
-      <input type="submit" name="preview" id="preview_bt" value="Aperçu" onclick="previewWiki('mail_text', 'mail_preview', true, 'preview'); return false;" />
+      <input type="submit" name="preview" id="preview_bt" value="Aperçu"
+             onclick="previewWiki('mail_text', 'mail_preview', true, 'preview_pv'); return false;" />
       <input type="submit" name="submit" value="Envoyer" />
     </div>
   </fieldset>

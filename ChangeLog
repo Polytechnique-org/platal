@@ -38,6 +38,7 @@ Bug/Wish:
         - #687: Don't lose authentication when editing a long mail         -FRU
         - #688: From name in the sending form                              -FRU
         - #703: Fix management of mail adresses containing '+'             -ALK
+        - #720: Save not sent mail at exit                                 -FRU
 
     * Lists:
         - #700: Fix several encoding issues                                -FRU

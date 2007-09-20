@@ -313,8 +313,17 @@ class EmailModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Envoyer un email');
 
         // action si on recoit un formulaire
-        if (Env::v('submit') == 'Envoyer')
-        {
+        if (Post::has('save')) {
+            unset($_POST['save']);
+            if (trim(preg_replace('/-- .*/', '', Post::v('contenu'))) != "") {
+                $_POST['to_contacts'] = explode(';', @$_POST['to_contacts']);
+                $_POST['cc_contacts'] = explode(';', @$_POST['cc_contacts']);
+                $data = serialize($_POST);
+                XDB::execute("REPLACE INTO  email_send_save
+                                    VALUES  ({?}, {?})", S::i('uid'), $data);
+            }
+            exit;
+        } else if (Env::v('submit') == 'Envoyer') {
             function getEmails($aliases)
             {
                 if (!is_array($aliases)) {
@@ -333,6 +342,9 @@ class EmailModule extends PLModule
                     $page->trig("Impossible de télécharger '" . pl_entities($file['name']) . "'");
                 }
             }
+
+            XDB::execute("DELETE FROM  email_send_save
+                                WHERE  uid = {?}", S::i('uid'));
 
             $to2  = getEmails(Env::v('to_contacts'));
             $cc2  = getEmails(Env::v('cc_contacts'));
@@ -374,8 +386,16 @@ class EmailModule extends PLModule
                 }
             }
         } else {
-            PlUpload::clear(S::v('forlife'), 'emails.send');
-            $_REQUEST['bcc'] = S::v('bestalias').'@'.$globals->mail->domain;
+            $res = XDB::query("SELECT  data
+                                 FROM  email_send_save
+                                WHERE  uid = {?}", S::i('uid'));
+            if ($res->numRows() == 0) {
+                PlUpload::clear(S::v('forlife'), 'emails.send');
+                $_REQUEST['bcc'] = S::v('bestalias').'@'.$globals->mail->domain;
+            } else {
+                $data = unserialize($res->fetchOneCell());
+                $_REQUEST = array_merge($_REQUEST, $data);
+            }
         }
 
         $res = XDB::query(
