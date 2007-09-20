@@ -340,7 +340,6 @@ class ProfileModule extends PLModule
         $wiz->addPage('ProfileMentor', 'Mentoring', 'mentor');
         $wiz->apply($page, 'profile/edit', $opened_tab);
 
-        $page->addCssLink('profil.css');
         $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
     }
 

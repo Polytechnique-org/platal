@@ -39,7 +39,7 @@ class PlatalModule extends PLModule
     {
         return array(
             'index'       => $this->make_hook('index',     AUTH_PUBLIC),
-    	    'cacert.pem'  => $this->make_hook('cacert',    AUTH_PUBLIC),
+            'cacert.pem'  => $this->make_hook('cacert',    AUTH_PUBLIC),
             'changelog'   => $this->make_hook('changelog', AUTH_PUBLIC),
 
             // Preferences thingies
@@ -55,6 +55,7 @@ class PlatalModule extends PLModule
             'password/smtp' => $this->make_hook('smtppass',  AUTH_MDP),
             'recovery'      => $this->make_hook('recovery',  AUTH_PUBLIC),
             'exit'          => $this->make_hook('exit', AUTH_PUBLIC),
+            'review'        => $this->make_hook('review', AUTH_PUBLIC),
             'deconnexion.php' => $this->make_hook('exit', AUTH_PUBLIC),
         );
     }
@@ -417,6 +418,39 @@ Adresse de secours : " . Post::v('email') : ""));
             $page->changeTpl('platal/exit.tpl');
         }
     }
+
+    function handler_review(&$page, $action = null) 
+    {
+        require_once 'wiki.inc.php';
+        $dir = wiki_work_dir();
+        $dom = 'Review';
+        if (@$GLOBALS['IS_XNET_SITE']) {
+            $dom .= 'Xnet';
+        }
+        if (!is_dir($dir)) {
+            $page->kill("Impossible de trouver le wiki");
+        }
+        if (!file_exists($dir . '/' . $dom . '.Admin')) {
+            $page->kill("Impossible de trouver la page d'administration");
+        }
+        $conf = preg_grep('/^text=/', explode("\n", file_get_contents($dir . '/' . $dom . '.Admin')));
+        $conf = preg_split('/(text\=|\%0a)/', array_shift($conf), -1, PREG_SPLIT_NO_EMPTY);
+        $wiz = new PlWizard('Tour d\'horizon', 'core/plwizard.tpl', true);
+        foreach ($conf as $line) {
+            $list = preg_split('/\s*[*|]\s*/', $line, -1, PREG_SPLIT_NO_EMPTY);
+            $wiz->addPage('ReviewPage', $list[0], $list[1]);
+        }
+        $wiz->apply($page, 'review', $action);
+    }
+}
+
+__autoload('PlWizard');
+class ReviewPage implements PlWizardPage
+{
+    public function __construct(PlWizard &$wiz) { }
+    public function template() { return 'platal/index.tpl'; }
+    public function prepare(PlatalPage &$page) { }
+    public function process() { }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
