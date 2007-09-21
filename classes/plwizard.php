@@ -37,7 +37,7 @@ interface PlWizardPage
 
     /** Prepare the page by assigning to it any useful value.
      */
-    public function prepare(PlatalPage &$page);
+    public function prepare(PlatalPage &$page, $id);
 
     /** Process information resulting of the application of the page.
      * This function must return a clue indicating the next page to show.
@@ -67,13 +67,14 @@ class PlWizard
     protected $name;
     protected $layout;
     protected $stateless;
+    protected $ajax;
 
     protected $pages;
     protected $titles;
     protected $lookup;
     protected $inv_lookup;
 
-    public function __construct($name, $layout, $stateless = false)
+    public function __construct($name, $layout, $stateless = false, $ajax = true)
     {
         $this->name      = 'wiz_' . $name;
         $this->layout    = $layout;
@@ -81,6 +82,7 @@ class PlWizard
         $this->pages  = array();
         $this->lookup = array();
         $this->titles = array();
+        $this->ajax   = $ajax;
         if (!isset($_SESSION[$this->name])) {
             $_SESSION[$this->name] = array();
             $_SESSION[$this->name . '_page']  = null;
@@ -136,7 +138,7 @@ class PlWizard
         return new $page($this);
     }
 
-    public function apply(PlatalPage &$smarty, $baseurl, $pgid = null)
+    public function apply(PlatalPage &$smarty, $baseurl, $pgid = null, $mode = 'normal')
     {
         if ($this->stateless && (isset($this->lookup[$pgid]) || isset($this->pages[$pgid]))) { 
             $curpage = is_numeric($pgid) ? $pgid : $this->lookup[$pgid]; 
@@ -194,16 +196,22 @@ class PlWizard
         } else if (!isset($page)) {
             $page = $this->getPage($curpage);
         }
-        $smarty->changeTpl($this->layout);
+        if ($mode == 'ajax') {
+            header('Content-Type: text/html; charset=utf-8');
+            $smarty->changeTpl($page->template(), NO_SKIN);
+        } else {
+            $smarty->changeTpl($this->layout);
+        }
         $smarty->assign('pages', $this->titles);
         $smarty->assign('current', $curpage);
         $smarty->assign('lookup', $this->inv_lookup);
         $smarty->assign('stateless', $this->stateless);
         $smarty->assign('wiz_baseurl', $baseurl);
+        $smarty->assign('wiz_ajax', $this->ajax);
         $smarty->assign('tab_width', (int)(99 / count($this->pages)));
         $smarty->assign('wiz_page', $page->template());
         $smarty->assign('xorg_no_errors', true);
-        $page->prepare($smarty);
+        $page->prepare($smarty, isset($this->inv_lookup[$curpage]) ? $this->inv_lookup[$curpage] : $curpage);
     }
 }
 

@@ -329,7 +329,7 @@ class ProfileModule extends PLModule
 
         $page->addJsLink('ajax.js');
         $page->addJsLink('jquery.js');
-        $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true);
+        $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true, false);
         require_once dirname(__FILE__) . '/profile/page.inc.php';
         $wiz->addPage('ProfileGeneral', 'Général', 'general');
         $wiz->addPage('ProfileAddresses', 'Adresses personnelles', 'adresses');

@@ -202,9 +202,9 @@ class ProfileJobs extends ProfilePage
         parent::saveData();
     }
 
-    public function prepare(PlatalPage &$page)
+    public function prepare(PlatalPage &$page, $id)
     {
-        parent::prepare($page);
+        parent::prepare($page, $id);
         $page->assign('secteurs', XDB::iterator("SELECT  id, label
                                                    FROM  emploi_secteur"));
         $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title

@@ -19,57 +19,9 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-{javascript name="jquery"}
-<script type="text/javascript">//<![CDATA[
-  {if ($stateless || $id gt $current) && $wiz_ajax}
-  {literal}
-  function changePage(obj, id)
-  {
-    var myUrl = obj.href;
-    $.ajax({ url: myUrl + "/ajax",
-             global: false,
-             dataTye: 'html',
-             error: function(request, error) {
-                      document.location = myUrl;
-                    },
-             success: function(data) {
-                        $(".wiz_content").empty().prepend(data);
-                        $(".wiz_tab").removeClass("active");
-                        $("#wiz_tab_" + id).addClass("active");
-                      }
-          });
-    return false;
-  }
-  {/literal}
-  {else}
-  {literal}
-  function changePage(obj)
-  {
-    return true;
-  }
-  {/literal}
-  {/if}
-//]]></script>
 
-<div class="wizard" style="clear: both">
-  <div class="wiz_header">
-    {foreach from=$pages item=title key=id}
-    <div class="wiz_tab {if $id eq $current}active{/if} {if !$stateless && $current gt $id}grayed{/if}"
-         style="float: left; width: {$tab_width}%" id="wiz_tab_{$lookup[$id]}">
-      {if $stateless || $id gt $current}
-        <a href="{$wiz_baseurl}/{$lookup[$id]}" onclick="return changePage(this, '{$lookup[$id]}')">{/if}
-      {$title}
-      {if $stateless || $id gt $current}</a>{/if}
-    </div>
-    {/foreach}
-    <div style="clear: both"></div>
-  </div>
-  <div class="wiz_content" style="clear: both">
-    {foreach from=$xorg_errors item=err}
-    <div class="erreur">{$err|smarty:nodefaults}</div>
-    {/foreach}
-    {include file=$wiz_page}
-  </div>
+<div>
+  {include wiki=$article}
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

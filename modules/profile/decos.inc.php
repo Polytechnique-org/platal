@@ -115,9 +115,9 @@ class ProfileDecos extends ProfilePage
         }
     }
 
-    public function prepare(PlatalPage &$page)
+    public function prepare(PlatalPage &$page, $id)
     {
-        parent::prepare($page);
+        parent::prepare($page, $id);
         $res    = XDB::iterator("SELECT  *
                                    FROM  profile_medals_grades
                                ORDER BY  mid, pos");

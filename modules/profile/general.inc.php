@@ -197,9 +197,9 @@ class ProfileGeneral extends ProfilePage
         }
     }
 
-    public function prepare(PlatalPage &$page)
+    public function prepare(PlatalPage &$page, $id)
     {
-        parent::prepare($page);
+        parent::prepare($page, $id);
         require_once "applis.func.inc.php";
     }
 }

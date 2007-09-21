@@ -148,9 +148,9 @@ class ProfileMentor extends ProfilePage
         }
     }
 
-    public function prepare(PlatalPage &$page)
+    public function prepare(PlatalPage &$page, $id)
     {
-        parent::prepare($page);
+        parent::prepare($page, $id);
         $page->assign('secteurs_sel', XDB::iterator("SELECT  id, label
                                                        FROM  emploi_secteur"));
     }

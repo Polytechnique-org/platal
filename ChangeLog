@@ -9,6 +9,9 @@ New:
     * Lists:
         - Asynchronous mail moderation (should avoid server overload)      -FRU
 
+    * Platal:
+        - New default page with a flexible multi-topic presentation        -FRU
+
     * Profile:
         - #28: Use group/subscription list from Xnet                       -FRU
 
