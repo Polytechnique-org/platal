@@ -21,18 +21,7 @@
 {**************************************************************************}
 
 {if #globals.debug#}
-{foreach from=$backtraces key=bt_name item=trace}
-  <div class="backtrace">
-    <h1>
-      {if $trace->error}<span style="color: #f00">{/if}
-      Exécution de {$bt_name} : {$trace->traces|@count} actions en {$trace->totaltime|string_format:"%.3f"}s (hover-me pour la trace)
-      {if $trace->error}</span>{/if}
-    </h1>
-    <div class="hide">
-      {include file="skin/common.backtrace.tpl"}
-    </div>
-  </div>
-{/foreach}
+@@BACKTRACE@@
 
 {if $validate}
   <div id="dev">

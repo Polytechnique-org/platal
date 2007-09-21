@@ -180,8 +180,8 @@ function getNbNotifs()
 
     // selectionne les notifs de uid, sans detail sur le watcher, depuis
     // $watchlast, meme ceux sans surveillance, non ordonnés
-    $res = XDB::query(_select_notifs_count('contacts') . ' UNION DISTINCT '
-                    . _select_notifs_count('watch_promo') . ' UNION DISTINCT '
+    $res = XDB::query(_select_notifs_count('contacts') . ' UNION '
+                    . _select_notifs_count('watch_promo') . ' UNION '
                     . _select_notifs_count('watch_nonins'), $uid, $uid, $uid);
     $n = array_sum($res->fetchColumn());
     if ($n == 0) {

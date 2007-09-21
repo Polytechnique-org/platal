@@ -120,8 +120,8 @@ abstract class PlatalPage extends Smarty
             $this->assign('simple', true);
 
           case SKINNED:
-          $this->register_modifier('escape_html', 'escape_html');
-          $this->default_modifiers = Array('@escape_html');
+            $this->register_modifier('escape_html', 'escape_html');
+            $this->default_modifiers = Array('@escape_html');
         }
         $this->register_outputfilter('hide_emails');
         $this->addJsLink('wiki.js');
@@ -136,11 +136,6 @@ abstract class PlatalPage extends Smarty
             exit;
         }
 
-        if ($globals->debug & DEBUG_BT) {
-            PlBacktrace::clean();
-            $this->assign_by_ref('backtraces', PlBacktrace::$bt);
-        }
-
         $this->assign('validate', true);
         if (!($globals->debug & DEBUG_SMARTY)) {
             error_reporting(0);
@@ -148,8 +143,15 @@ abstract class PlatalPage extends Smarty
         $result = $this->fetch($skin);
         $ttime  = sprintf('Temps total: %.02fs - Mémoire totale : %dKo<br />', microtime(true) - $TIME_BEGIN
                                                                                 , memory_get_peak_usage(true) / 1024);
-        $replc  = "<span class='erreur'>VALIDATION HTML INACTIVE</span><br />";
+        if ($globals->debug & DEBUG_BT) {
+            PlBacktrace::clean();
+            $this->assign_by_ref('backtraces', PlBacktrace::$bt);
+            $result = str_replace('@@BACKTRACE@@', $this->fetch('skin/common.backtrace.tpl'), $result);
+        } else {
+            $result = str_replace('@@BACKTRACE@@', '', $result);
+        }
 
+        $replc  = "<span class='erreur'>VALIDATION HTML INACTIVE</span><br />";
         if ($globals->debug & DEBUG_VALID) {
             $fd = fopen($this->compile_dir."/valid.html","w");
             fwrite($fd, $result);

@@ -20,7 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
+{foreach from=$backtraces key=bt_name item=trace}
+<div class="backtrace">
+  <h1>
+    {if $trace->error}<span style="color: #f00">{/if}
+    Exécution de {$bt_name} : {$trace->traces|@count} actions en {$trace->totaltime|string_format:"%.3f"}s (hover-me pour la trace)
+    {if $trace->error}</span>{/if}
+  </h1>
+  <div class="hide">
 {foreach item=query from=$trace->traces}
 {if $query.data}
 {assign var=cols value=$query.data[0]|@count}
@@ -65,6 +72,9 @@
   {/foreach}
 {/if}
 </table>
+{/foreach}
+</div>
+</div>
 {/foreach}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
