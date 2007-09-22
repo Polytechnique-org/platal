@@ -21,6 +21,7 @@
  ***************************************************************************/
 
 require('./connect.db.inc.php');
+ini_set('max_execution_time', '75');
 $sent_mails = 0;
 $handler    = time();
 
