@@ -32,7 +32,7 @@ class ReviewPage implements PlWizardPage
         require_once 'wiki.inc.php';
         $dom = (@$GLOBALS['IS_XNET_SITE'] ? 'ReviewXnet' : 'Review') . '.' . ucfirst($id);
         wiki_require_page($dom);
-        $page->assign('cacheExists', file_exists(dirname(__FILE__) . '/../../spool/wiki.d/cache_' . $dom . '.tpl'));
+        $page->assign('cacheExists', wiki_work_dir() . '/cache_' . $dom . '.tpl');
         $page->assign('article', $dom);
     }
 }

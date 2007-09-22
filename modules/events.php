@@ -40,7 +40,7 @@ class EventsModule extends PLModule
     {
         global $globals;
         // Add a new special tip when changing plat/al version
-        if ($globals->version != S::v('last_version') && is_null($exclude)) {
+//        if ($globals->version != S::v('last_version') && is_null($exclude)) {
             XDB::execute('UPDATE auth_user_quick
                              SET last_version = {?}
                            WHERE user_id = {?}',
@@ -48,17 +48,16 @@ class EventsModule extends PLModule
             return array('id' => 0,
                          'titre' => 'Bienvenue sur la nouvelle version du site !',
                          'text' => 'Le site a été mis à jour depuis ta dernière visite vers la version ' . $globals->version
-                                   . '. Nous t\'invitons à en découvrir les nouveautés en te rendant sur '
-                                   . '<a href="banana/xorg.m4x.innovation">nos forums</a> ou en consultant '
-                                   . '<a href="changelog">la liste exhaustive des modifications</a>.<br /><br />'
-                                   . 'Tu peux également consulter le <a href="review">panorama des services</a> '
-                                   . 'fournis par le site.',
+                                   . '.<br /> Nous t\'invitons à <a href="review">faire un tour d\'horizon des '
+                                   . 'nouveautés</a>.<br /><br />'
+                                   . 'Tu peux également retrouver ces informations sur <a href="banana/xorg.m4x.innovation">'
+                                   . 'les fora</a>, ou sur <a href="changelog">la liste exhaustive des modifications</a>',
                          'priorite' => 255,
                          'promo_min' => 0,
                          'promo_max' => 0,
                          'state'     => 'active',
                          'special'   => true);
-        }
+  //      }
 
         $exclude  = is_null($exclude) ? '' : ' AND id != ' . $exclude . ' ';
         $priority = rand(0, 510);
