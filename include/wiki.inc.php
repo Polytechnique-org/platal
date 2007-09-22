@@ -169,8 +169,10 @@ function wiki_require_page($pagename)
     global $globals;
     $pagename_slashes = str_replace('.','/',$pagename);
     $pagename_dots = str_replace('/','.',$pagename);
-    if (is_file(wiki_work_dir().'/cache_'.$pagename_dots.'.tpl')) return;
-    system('wget '.$globals->baseurl.'/'.$pagename_slashes.' -O /dev/null');
+    if (is_file(wiki_work_dir().'/cache_'.$pagename_dots.'.tpl')) {
+        return;
+    }
+    system('wget --no-check-certificate '. escapeshellarg($globals->baseurl.'/'.$pagename_slashes) . ' -O /dev/null');
 }
 
 function wiki_delete_page($pagename)
