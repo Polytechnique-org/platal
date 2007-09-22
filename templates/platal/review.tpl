@@ -20,9 +20,15 @@
 {*                                                                        *}
 {**************************************************************************}
 
+
 {if $cacheExists}
 {include wiki=$article}
-{elseif $smarty.session.perms->hasFlag('admin')}
+{if hasPerm('admin')}
+<div class="center">
+  <a href="{$article|replace:'.':'/'}?action=edit">{icon name="page_edit" title="Editer la page"} Mettre à jour la page</a>
+</div>
+{/if}
+{elseif hasPerm('admin')}
 La page wiki associée n'existe pas. <a href="{$article|replace:'.':'/'}?action=edit">Il faut l'éditer</a>.
 {else}
 <p class="erreur">La page n'existe pas</p>

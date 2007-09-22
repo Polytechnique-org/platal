@@ -69,7 +69,7 @@ function chgMainWinLoc(strPage)
       <a href="javascript:chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}')">
         {icon name=cross title="Retirer de mes contacts"}</a>
       {/if}
-      {if $smarty.session.perms->hasFlag('admin')}
+      {if hasPerm('admin')}
       <a href="javascript:chgMainWinLoc('admin/user/{$x.forlife}')">
         {icon name=wrench title="administrer user"}</a>
       {/if}

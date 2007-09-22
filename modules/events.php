@@ -40,7 +40,7 @@ class EventsModule extends PLModule
     {
         global $globals;
         // Add a new special tip when changing plat/al version
-//        if ($globals->version != S::v('last_version') && is_null($exclude)) {
+        if ($globals->version != S::v('last_version') && is_null($exclude)) {
             XDB::execute('UPDATE auth_user_quick
                              SET last_version = {?}
                            WHERE user_id = {?}',
@@ -57,7 +57,7 @@ class EventsModule extends PLModule
                          'promo_max' => 0,
                          'state'     => 'active',
                          'special'   => true);
-  //      }
+        }
 
         $exclude  = is_null($exclude) ? '' : ' AND id != ' . $exclude . ' ';
         $priority = rand(0, 510);

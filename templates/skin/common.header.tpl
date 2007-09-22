@@ -28,7 +28,7 @@
     <link rel="index"  href="" />
     <link rel="author" href="changelog" />
     <link rel="search" href="search" />
-    {if $smarty.session.perms->hasFlag('user')}
+    {if hasPerm('user')}
     <link rel="search" type="application/opensearchdescription+xml" href="http://www.polytechnique.org/xorg.opensearch.xml" title="Annuaire Polytechnique.org" />
     {/if}
     <link rel="help"   href="Xorg/FAQ" />

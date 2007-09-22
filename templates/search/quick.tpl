@@ -22,7 +22,7 @@
 
 {include file=search/quick.form.tpl show_js=1}
 
-{if $smarty.session.perms->hasFlag('user')}
+{if hasPerm('user')}
 <h1>Voir le trombi d'une promotion</h1>
 
 <div id="message" style="position:absolute;"></div><br />
@@ -91,7 +91,7 @@ Il est conseillé d'omettre les particules car il est possible que celles-ci ne 
 notre base de données.
 </p>
 
-{if $smarty.session.perms->hasFlag('user')}
+{if hasPerm('user')}
 <h2>Raccourcis...</h2>
 <p>
   Un certain nombre de raccourcis permettent d'accéder plus rapidement au contenu du site :
@@ -99,7 +99,7 @@ notre base de données.
     <li><code>fiche:prenom.nom.promo</code> ouvre la fiche du camarade indiquée&nbsp;;</li>
     <li><code>ref:prenom.nom.promo</code> ouvre la fiche référent du camarade indiquée&nbsp;;</li>
     <li><code>doc:phrase</code> recherche <em>phrase</em> dans la documentation du site&nbsp;;</li>
-    {if $smarty.session.perms->hasFlag('admin')}
+    {if hasPerm('admin')}
     <li><code>admin:prenom.nom.promo</code> ouvre la fiche d'administration du camarade indiquée&nbsp;;</li>
     <li><code>ax:prenom.nom.promo</code> ouvre la fiche ax du camarade concerné.</li>
     {/if}

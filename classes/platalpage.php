@@ -92,6 +92,7 @@ abstract class PlatalPage extends Smarty
         $this->register_prefilter('trimwhitespace');
         $this->register_prefilter('form_force_encodings');
         $this->register_prefilter('wiki_include');
+        $this->register_prefilter('if_has_perms');
         $this->assign('xorg_errors', $this->_errors);
         $this->assign('xorg_failure', $this->_failure);
         $this->assign('globals', $globals);
@@ -347,6 +348,19 @@ function wiki_include($source, &$smarty)
 {
     return preg_replace('/\{include( [^}]*)? wiki=([^} ]+)(.*?)\}/ui',
                         '{include\1 file="../spool/wiki.d/cache_\2.tpl"\3 included=1}',
+                        $source);
+}
+
+// }}}
+//{{{ function hasPerm
+
+function if_has_perms($source, &$smarty)
+{
+    $source = preg_replace('/\{if([^}]*) (\!?)hasPerms\(([^)]+)\)([^}]*)\}/',
+                           '{if\1 \2$smarty.session.perms->hasFlagCombination(\3)\4}',
+                           $source);
+    return preg_replace('/\{if([^}]*) (\!?)hasPerm\(([^)]+)\)([^}]*)\}/',
+                        '{if\1 \2($smarty.session.perms && $smarty.session.perms->hasFlag(\3))\4}',
                         $source);
 }
 

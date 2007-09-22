@@ -57,13 +57,21 @@
 <div class="wizard" style="clear: both">
   <div class="wiz_header">
     {foreach from=$pages item=title key=id}
-    <div class="wiz_tab {if $id eq $current}active{/if} {if !$stateless && $current gt $id}grayed{/if}"
-         style="float: left; width: {$tab_width}%" id="wiz_tab_{$lookup[$id]}">
-      {if $stateless || $id gt $current}
-        <a href="{$wiz_baseurl}/{$lookup[$id]}" onclick="return changePage(this, '{$lookup[$id]}')">{/if}
-      {$title}
-      {if $stateless || $id gt $current}</a>{/if}
-    </div>
+    {if $stateless || $id gt $current}
+    {assign var=tag value="a"}
+    {else}
+    {assign var=tag value="div"}
+    {/if}
+    <{$tag} class="wiz_tab {if $id eq $current}active{/if} {if !$stateless && $current gt $id}grayed{/if}"
+            style="display: block; float: left; width: {$tab_width}%; vertical-align: middle"
+            id="wiz_tab_{$lookup[$id]}"
+            {if $tag eq "a"}
+            href="{$wiz_baseurl}/{$lookup[$id]}"
+            onclick="return changePage(this, '{$lookup[$id]}')"
+            {/if}
+            >
+      <span style="vertical-align: middle">{$title}</span>
+    </{$tag}>
     {/foreach}
     <div style="clear: both"></div>
   </div>

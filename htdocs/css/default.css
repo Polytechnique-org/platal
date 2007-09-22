@@ -320,13 +320,13 @@ div.long td.rt { width: 65%; }
     background-color: #777;
 }
 
-.wizard .wiz_header .wiz_tab a {
+.wizard .wiz_header a {
     color: #000;
     text-decoration: none;
     vertical-align: middle;
 }
 
-.wizard .wiz_header .active a {
+.wizard .wiz_header a.active {
     color: #fff;
 }
 

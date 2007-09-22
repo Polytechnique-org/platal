@@ -28,13 +28,13 @@ Bug/Wish:
 
     * Carnet:
         - #682: Can quick search in contact list                           -FRU
-        - #713: Can run the site in a degraded mode                        -FRU
 
     * Core:
         - #665: Fix text alignment                                         -FRU
         - #674: MiniWiki xhtml validation                                  -FRU
         - #678: PlUpload filename detection                                -FRU
         - #690: Improves SMTP pass privacy policy                          -FRU
+        - #713: Can run the site in a degraded mode                        -FRU
         - #717: Allow TLD with length up to 6 characters in emails         -FRU
 
     * Emails:

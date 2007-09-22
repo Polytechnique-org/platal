@@ -46,7 +46,7 @@
       {/if}
     </td>
   </tr>
-  {if $details.own || $smarty.session.perms->hasFlagCombination('admin,groupadmin')}
+  {if $details.own || hasPerms('admin,groupadmin')}
   <tr>
     <td><strong>Administrer la liste :</strong></td>
     <td>
@@ -73,7 +73,7 @@
     </td>
   </tr>
   {/if}
-  {if $smarty.session.perms->hasFlagCombination('admin,groupadmin')}
+  {if hasPerms('admin,groupadmin')}
 
   <tr>
     <td><strong>Administrer (avancé) :</strong></td>

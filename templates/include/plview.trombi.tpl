@@ -35,7 +35,7 @@
       <a href="{$mainsiteurl}profile/{$p.forlife}" class="popup2">
         <img src="photo/{$p.forlife}" width="110" alt=" [ PHOTO ] " />
       </a>
-      {if $trombi_with_admin && $smarty.session.perms->hasFlag('admin')}
+      {if $trombi_with_admin && hasPerm('admin')}
       <a href="{$mainsiteurl}admin/trombino/{$p.user_id}">{icon name=wrench title="[admin]"}</a>
       {/if}
       <br />

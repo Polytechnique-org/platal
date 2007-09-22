@@ -136,16 +136,16 @@
           {/foreach}
         </td>
         <td class="breadcrumb">
-          {if $asso && ($is_admin || $smarty.session.suid.perms eq 'admin' || $smarty.session.suid.may_update[$asso.id])}
+          {if $asso && ($is_admin || $smarty.session.suid.perms->hasFlag('admin') || $smarty.session.suid.may_update[$asso.id])}
           <div style="float: right">
             <form method="post" action="{$platal->ns}change_rights">
               <div style="display: inline">
                 <small>voir le site en tant que...
                 <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
-                  {if $smarty.session.perms->hasFlag('admin') || $smarty.session.suid.perms->hasFlag('admin')}
-                  <option value="admin" {if $smarty.session.perms->hasFlag('admin')}selected="selected"{/if}>Administrateur</option>
+                  {if hasPerm('admin') || $smarty.session.suid.perms->hasFlag('admin')}
+                  <option value="admin" {if hasPerm('admin')}selected="selected"{/if}>Administrateur</option>
                   {/if}
-                  <option value="anim" {if $is_admin && !$smarty.session.perms->hasFlag('admin')}selected="selected"{/if}>Animateur</option>
+                  <option value="anim" {if $is_admin && !hasPerm('admin')}selected="selected"{/if}>Animateur</option>
                   <option value="member" {if !$is_admin && $is_member}selected="selected"{/if}>Membre</option>
                   <option value="logged" {if !$is_admin && !$is_member}selected="selected"{/if}>Non-membre</option>
                 </select>
@@ -225,7 +225,7 @@
               {/if}
             </td>
             <td class="right" style="vertical-align: middle">
-              {if $smarty.session.perms->hasFlag('admin')}
+              {if hasPerm('admin')}
               <a href="admin" title="Administration des groupes">
                 Gérer les groupes
                 {icon name=wrench title="Administration"}

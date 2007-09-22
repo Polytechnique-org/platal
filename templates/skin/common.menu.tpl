@@ -75,7 +75,7 @@
 <div class="menu_item"><a href="Xorg/NousContacter">Nous contacter</a></div>
 <div class="menu_item"><a href="send_bug" class="popup2">Signaler un bug</a></div>
 
-{if $smarty.session.perms->hasFlag('admin')}
+{if hasPerm('admin')}
 <div class="menu_title">***</div>
 <div class="menu_item"><a href="marketing">Marketing</a></div>
 <div class="menu_item"><a href="admin/">Administration</a></div>
