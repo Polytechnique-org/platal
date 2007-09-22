@@ -50,7 +50,9 @@ class EventsModule extends PLModule
                          'text' => 'Le site a été mis à jour depuis ta dernière visite vers la version ' . $globals->version
                                    . '. Nous t\'invitons à en découvrir les nouveautés en te rendant sur '
                                    . '<a href="banana/xorg.m4x.innovation">nos forums</a> ou en consultant '
-                                   . '<a href="changelog">la liste exhaustive des modifications</a>',
+                                   . '<a href="changelog">la liste exhaustive des modifications</a>.<br /><br />'
+                                   . 'Tu peux également consulter le <a href="review">panorama des services</a> '
+                                   . 'fournis par le site.',
                          'priorite' => 255,
                          'promo_min' => 0,
                          'promo_max' => 0,

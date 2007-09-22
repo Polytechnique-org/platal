@@ -20,8 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div>
-  {include wiki=$article}
-</div>
+{if $cacheExists}
+{include wiki=$article}
+{elseif $smarty.session.perms->hasFlag('admin')}
+La page wiki associée n'existe pas. <a href="{$article|replace:'.':'/'}?action=edit">Il faut l'éditer</a>.
+{else}
+<p class="erreur">La page n'existe pas</p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

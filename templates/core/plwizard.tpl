@@ -33,9 +33,12 @@
                       document.location = myUrl;
                     },
              success: function(data) {
-                        $(".wiz_content").empty().prepend(data);
-                        $(".wiz_tab").removeClass("active");
-                        $("#wiz_tab_" + id).addClass("active");
+                        $(".wiz_content").fadeOut('normal',
+                            function() {
+                              $(".wiz_tab").removeClass("active");
+                              $("#wiz_tab_" + id).addClass("active");
+                              $(".wiz_content").html(data).fadeIn('normal');
+                            });
                       }
           });
     return false;
