@@ -28,6 +28,7 @@ class RegisterModule extends PLModule
             'register/end'     => $this->make_hook('end',      AUTH_PUBLIC),
             'register/end.php' => $this->make_hook('end_old',  AUTH_PUBLIC),
             'register/success' => $this->make_hook('success',  AUTH_MDP),
+            'register/save'    => $this->make_hook('save',     AUTH_MDP),
         );
     }
 
@@ -412,6 +413,51 @@ class RegisterModule extends PLModule
         $page->assign_by_ref('lists', $lists);
 
         $page->addJsLink('motdepasse.js');
+    }
+
+    function handler_save(&$page)
+    {
+        global $globals;
+
+        // Finish registration procedure
+        if (Post::v('register_from_ax_question')) {
+            XDB::execute('UPDATE auth_user_quick
+                                     SET profile_from_ax = 1
+                                   WHERE user_id = {?}',
+                                 S::v('uid'));
+        }
+        if (Post::v('add_to_nl')) {
+            require_once 'newsletter.inc.php';
+            NewsLetter::subscribe();
+        }
+        if (Post::v('add_to_ax')) {
+            require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+            AXLetter::subscribe();
+        }
+        if (Post::v('add_to_promo')) {
+            $r = XDB::query('SELECT id FROM groupex.asso WHERE diminutif = {?}',
+                S::v('promo'));
+            $asso_id = $r->fetchOneCell();
+            XDB::execute('REPLACE INTO groupex.membres (uid,asso_id)
+                                     VALUES ({?}, {?})',
+                                 S::v('uid'), $asso_id);
+            $mmlist = new MMList(S::v('uid'), S::v('password'));
+            $mmlist->subscribe("promo".S::v('promo'));
+        }
+        if (Post::v('sub_ml')) {
+            $subs = array_keys(Post::v('sub_ml'));
+            $current_domain = null;
+            foreach ($subs as $list) {
+                list($sub, $domain) = explode('@', $list);
+                if ($domain != $current_domain) {
+                    $current_domain = $domain;
+                    $client = new MMList(S::v('uid'), S::v('password'), $domain);
+                }
+                $client->subscribe($sub);
+            }
+        }
+
+        pl_redirect('profile/edit');
     }
 }
 

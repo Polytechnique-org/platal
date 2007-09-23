@@ -94,7 +94,7 @@ traitées avec la priorité minimale.
 
 <h2>Rejoindre la communauté</h2>
 
-<form action='profile/edit' method='post'>
+<form action='register/save' method='post'>
   <p>
   Pour rejoindre la communauté des X sur le web, nous te convions le plus vivement à remplir ton profil !!!
   </p>
