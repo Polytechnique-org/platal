@@ -20,9 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $ajaxtel}
-<?xml version="1.0" encoding="utf-8"?>
-{/if}
 {assign var=telpref value="`$adpref`[tel][`$t`]"}
 {assign var=telid value="`$adid`_tel_`$t`"}
 <div style="float: right" class="flags">

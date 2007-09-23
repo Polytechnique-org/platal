@@ -20,74 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-{literal}
-<script type="text/javascript">//<![CDATA[
-  var gdt = new Date();
-  var year = gdt.getYear();
-  if (year < 1000) {
-    year += 1900;
-  }
-
-  var oldMate = year >= {/literal}{$smarty.session.promo_sortie}{literal};
-
-  function printTitle(text)
-  {
-    if (oldMate) {
-      document.write("ex-" + text);
-    } else {
-      document.write(text);
-    }
-  }
-
-  function update(type)
-  {
-    var val = document.forms.prof_annu[type + '_sel'].value;
-    if (val == '0' || document.getElementById(type + '_' + val) != null) {
-      document.getElementById(type + '_add').style.display = 'none';
-    } else {
-      document.getElementById(type + '_add').style.display = '';
-    }
-  }
-
-  function remove(cat, id)
-  {
-    $('#' + cat + '_' + id).remove();
-    update(cat);
-  }
-
-  function add(cat)
-  {
-    var cb   = document.forms.prof_annu[cat + '_sel'];
-    var id   = cb.value;
-    var text = cb.options[cb.selectedIndex].text;
-    var html = '<tr id="' + cat + '_' + id + '">'
-             + '  <td>'
-             + '    <input type="hidden" name="' + cat + '[' + id + ']" value="' + text + '" />'
-             + '  </td>'
-             + '  <td>'
-             + '    <div style="float: left; width: 70%">'
-             +        text
-             + '    </div>'
-             + '    <a href="javascript:remove(\'' + cat + '\', ' + id + ')">'
-             + '      <img src="images/icons/cross.gif" alt="cross" title="Supprimer ce groupe" />'
-             + '    </a>'
-             + '  </td>'
-             + '</tr>';
-    $('#' + cat).after(html);
-    update(cat);
-  }
-
-  function updateSubLink(cb)
-  {
-    var href = cb.value ? cb.value : "http://www.polytechnique.net";
-    document.getElementById("groupesx_sub").href = href;
-  }
-
-  //]]>
-</script>
-{/literal}
-
 <table class="bicol" style="margin-bottom: 1em" summary="Profil: Informations Polytechniciennes">
   <tr>
     <th colspan="2">
@@ -101,9 +33,7 @@
     </td>
   </tr>
   <tr class="top">
-    <td class="titre" style="width: 30%">
-      <script type="text/javascript">printTitle("Section")</script>
-    </td>
+    <td class="titre" style="width: 30%">{if $old}ex-{/if}Section</td>
     <td>
       <select name="section">
         {select_db_table table="sections" valeur=$section}
@@ -112,14 +42,13 @@
   </tr>
   <!-- Binets -->
   <tr id="binets">
-    <td class="titre">
-      <script type="text/javascript">printTitle("Binet(s)")</script>
-    </td>
+    <td class="titre">{if $old}ex-{/if}Binet(s)</td>
     <td>
-      <select name="binets_sel" onchange="update('binets')">
+      <select name="binets_sel" onchange="updateGroup('binets')">
         {select_db_table table="binets_def" valeur=0 champ="text" pad='1'}
       </select>
-      <a id="binets_add" href="javascript:add('binets')">{icon name="add" title="Ajouter ce binet"}</a>
+      <a id="binets_add" style="display: none"
+         href="javascript:addGroup('binets')">{icon name="add" title="Ajouter ce binet"}</a>
     </td>
   </tr>
   {foreach item=text key=bid from=$binets}
@@ -131,7 +60,7 @@
       <div style="float: left; width: 70%">
         {$text}
       </div>
-      <a href="javascript:remove('binets', {$bid})">{icon name="cross" title="Supprimer ce binet"}</a>
+      <a href="javascript:removeGroup('binets', {$bid})">{icon name="cross" title="Supprimer ce binet"}</a>
     </td>
   </tr>
   {/foreach}
@@ -213,10 +142,5 @@
     </td>
   </tr>
 </table>
-
-<script type="text/javascript">
-update('binets');
-updateSubLink(document.forms.prof_annu.groupesx_sub);
-</script>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

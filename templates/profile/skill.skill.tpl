@@ -20,9 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $ajaxskill}
-<?xml version="1.0" encoding="utf-8"?>
-{/if}
 <div id="{$cat}_{$id}" style="clear: both; margin-top: 0.5em">
   <div style="float: left; width: 50%" class="titre" id="{$cat}_{$id}_title">
     {$skill.text}
@@ -33,7 +30,7 @@
     <option value="{$lid}" {if $skill.level eq $lid}selected="selected"{/if}>{$level}</option>
     {/foreach}
   </select>
-  <a href="javascript:remove('{$cat}', '{$id}')">{icon name=cross title="Supprimer"}</a>
+  <a href="javascript:removeSkill('{$cat}', '{$id}')">{icon name=cross title="Supprimer"}</a>
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

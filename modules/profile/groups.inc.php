@@ -120,6 +120,7 @@ class ProfileGroups extends ProfilePage
                                                     WHERE  a.inscriptible != 0
                                                            AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')
                                                  ORDER BY  a.cat, a.dom, a.nom"));
+        $page->assign('old', (int)date('Y') >= S::i('promo_sortie'));
     }
 }
 

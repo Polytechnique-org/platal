@@ -20,21 +20,18 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{foreach key=i item=adr from=$addresses}
-<div id="{"addresses_`$i`_cont"}">
-{include file="profile/adresses.address.tpl" i=$i adr=$adr}
-</div>
+subgrades = new Array();
+names     = new Array();
+{foreach from=$medal_list key=type item=list}
+{foreach from=$list item=m}
+names[{$m.id}] = "{$m.text}";
+{if $grades[$m.id]|@count}
+names[{$m.id}] = "{$m.text}";
+subgrades[{$m.id}] = new Array({$grades[$m.id]|@count});
+{foreach from=$grades[$m.id] item=g}
+subgrades[{$m.id}][{$g.gid-1}] = [{$g.gid},"{$g.text}"];
 {/foreach}
-{if $addresses|@count eq 0}
-<div id="addresses_0_cont">
-{include file="profile/adresses.address.tpl" i=0 adr=0}
-</div>
-{/if}
-
-<div id="add_adr" class="center">
-  <a href="javascript:addAddress()">
-    {icon name=add title="Ajouter une adresse"} Ajouter une adresse
-  </a>
-</div>
+{/if}{/foreach}
+{/foreach}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

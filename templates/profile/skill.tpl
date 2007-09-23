@@ -20,45 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<script type="text/javascript">//<![CDATA[
-{literal}
-
-function update(cat)
-{
-  var val  = document.forms.prof_annu[cat + '_sel'].value;
-  var show = true;
-  if (val == '') {
-    show = false;
-  }
-  if (document.getElementById(cat + '_' + val) != null) {
-    show = false;
-  }
-  document.getElementById(cat + '_add').style.display = show ? '' : 'none';
-}
-
-function add(cat)
-{
-  var sel  = document.forms.prof_annu[cat + '_sel'];
-  var val  = sel.value;
-  var text = sel.options[sel.selectedIndex].text;
-  $.get(platal_baseurl + 'profile/ajax/skill/' + cat + '/' + val,
-        function(data) {
-          $('#' + cat).append(data);
-          document.getElementById(cat + '_' + val + '_title').innerHTML = text;
-          update(cat);
-        });
-}
-
-function remove(cat, id)
-{
-  $('#' + cat + '_' + id).remove();
-  update(cat);
-}
-
-{/literal}
-//]]></script>
-
 <table class="bicol" style="margin-bottom: 1em">
   <tr>
     <th>
@@ -73,7 +34,7 @@ function remove(cat, id)
       </div>
       <div>
         <span class="titre">Domaine&nbsp;:</span>
-        <select name="competences_sel" onchange="update('competences')">
+        <select name="competences_sel" onchange="updateSkill('competences')">
           <option value=""></option>
           {assign var=ingroup value=false}
           {iterate from=$comp_list item=comp}
@@ -87,7 +48,7 @@ function remove(cat, id)
           {if $ingroup}</optgroup>{/if}
         </select>
         <span id="competences_add" style="display: none">
-          <a href="javascript:add('competences')">{icon name=add title="Ajouter cette compétence"}</a>
+          <a href="javascript:addSkill('competences')">{icon name=add title="Ajouter cette compétence"}</a>
         </span>
       </div>
     </td>
@@ -113,14 +74,14 @@ function remove(cat, id)
       </div>
       <div>
         <span class="titre">Domaine&nbsp;:</span>
-        <select name="langues_sel" onchange="update('langues')">
+        <select name="langues_sel" onchange="updateSkill('langues')">
           <option value=""></option>
           {iterate from=$lang_list item=lang}
           <option value="{$lang.id}">{$lang.langue_fr}</option>
           {/iterate}
         </select>
         <span id="langues_add" style="display: none">
-          <a href="javascript:add('langues')">{icon name=add title="Ajouter cette langue"}</a>
+          <a href="javascript:addSkill('langues')">{icon name=add title="Ajouter cette langue"}</a>
         </span>
       </div>
     </td>

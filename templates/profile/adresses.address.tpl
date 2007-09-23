@@ -20,9 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $ajaxadr}
-<?xml version="1.0" encoding="utf-8"?>
-{/if}
 {assign var=adpref value="addresses[$i]"}
 {assign var=adid value="addresses_$i"}
 <input type="hidden" name="{$adpref}[removed]" value="0"/>

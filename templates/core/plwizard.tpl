@@ -38,6 +38,9 @@
                               $(".wiz_tab").removeClass("active");
                               $("#wiz_tab_" + id).addClass("active");
                               $(".wiz_content").html(data).fadeIn('normal');
+                              if (typeof wizPage_onLoad == 'function') {
+                                wizPage_onLoad(id);
+                              }
                             });
                       }
           });
@@ -52,6 +55,14 @@
   }
   {/literal}
   {/if}
+  {literal}
+  $(document).ready(
+    function() {
+      if (typeof wizPage_onLoad == 'function') {
+        wizPage_onLoad({/literal}'{$lookup[$current]}'{literal});
+      }
+    });
+  {/literal}
 //]]></script>
 
 <div class="wizard" style="clear: both">

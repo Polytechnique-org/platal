@@ -20,331 +20,320 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-{include file="profile/applis.js.tpl"}
-  <table class="bicol" style="margin-bottom: 1em"
-    summary="Profil : Informations générales">
-    <tr>
-      <th colspan="2">
-        Informations générales
-      </th>
-    </tr>
-    <tr>
-      <td colspan="2" class="flags">
-        <span class="vert">
-          <input type="checkbox" disabled="disabled" checked="checked" />
-        </span>
-        <span class="texte">
-          site public
-        </span>
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Nom</span>
-        <span class="comm"></span>
-      </td>
-      <td class="cold">
-        <input type='text' name='nom' {if $errors.nom}class="error"{/if} value="{$nom}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Prénom</span>
-        <span class="comm"></span>
-      </td>
-      <td class="cold">
-        <input type='text' name='prenom' {if $errors.prenom}class="error"{/if} value="{$prenom}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Promotion</span>
-      </td>
-      <td class="cold">
-        <span class="nom">X{$promo}{if ($promo != $promo_sortie - 3)} - X{math equation="a - b" a=$promo_sortie b=3}{/if}</span>
-        <span class="lien"><a href="profile/orange">modifier</a>{if ($promo_sortie -3 == $promo)} pour les oranges{/if}</span>
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Nom d'usage</span><br />
-        {if $smarty.session.sexe}
-        <span class="comm">(Notamment nom d'épouse)</span>
-        {else}
-        <span class="comm">(si différent de {$nom} seulement)</span>
-        {/if}
-      </td>
-      <td class="cold">
-        <span class="nom">{$nom_usage|default:"Aucun"}</span>
-        <span class="lien"><a href="profile/usage">modifier</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Nationalité</span>
-      </td>
-      <td class="cold">
-        <select name="nationalite">
-          {select_nat valeur=$nationalite}
-        </select>
-      </td>
-    </tr>
-    <tr class="pair">
-      <td class="colg">
-        <span class="titre">Application</span><br />
-        <span class="comm">(4ème année de l'X)</span>
-      </td>
-      <td class="cold">
-        <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">
-          {applis_options selected=$appli1.id}
-        </select>
-        <br />
-        <select name="appli1[type]">
-          <option value=""></option>
-        </select>
-        <script type="text/javascript">
-          <!--
-          fillType(document.forms.prof_annu['appli1[type]'], document.forms.prof_annu['appli1[id]'].selectedIndex-1);
-          selectType(document.forms.prof_annu['appli1[type]'], '{$appli1.type}');
-          //-->
-        </script>
-      </td>
-    </tr>
-    <tr class="pair">
-      <td class="dcolg">
-        <span class="titre">Post-application</span>
-      </td>
-      <td class="dcold">
-        <select name="appli2[id]" onchange="fillType(this.form['appli2[type]'], this.selectedIndex-1);">
-          {applis_options selected=$appli2.id}
-        </select>
-        <br />
-        <select name="appli2[type]">
-          <option value=""></option>
-        </select>
-        <script type="text/javascript">
-          <!--
-          fillType(document.forms.prof_annu['appli2[type]'], document.forms.prof_annu['appli2[id]'].selectedIndex-1);
-          selectType(document.forms.prof_annu['appli2[type]'], '{$appli2.type}');
-          //-->
-        </script>
-      </td>
-    </tr>
-  </table>
+<table class="bicol" style="margin-bottom: 1em"
+  summary="Profil : Informations générales">
+  <tr>
+    <th colspan="2">
+      Informations générales
+    </th>
+  </tr>
+  <tr>
+    <td colspan="2" class="flags">
+      <span class="vert">
+        <input type="checkbox" disabled="disabled" checked="checked" />
+      </span>
+      <span class="texte">
+        site public
+      </span>
+    </td>
+  </tr>
+  <tr>
+    <td class="colg">
+      <span class="titre">Nom</span>
+      <span class="comm"></span>
+    </td>
+    <td class="cold">
+      <input type='text' name='nom' {if $errors.nom}class="error"{/if} value="{$nom}" />
+    </td>
+  </tr>
+  <tr>
+    <td class="colg">
+      <span class="titre">Prénom</span>
+      <span class="comm"></span>
+    </td>
+    <td class="cold">
+      <input type='text' name='prenom' {if $errors.prenom}class="error"{/if} value="{$prenom}" />
+    </td>
+  </tr>
+  <tr>
+    <td class="colg">
+      <span class="titre">Promotion</span>
+    </td>
+    <td class="cold">
+      <span class="nom">X{$promo}{if ($promo != $promo_sortie - 3)} - X{math equation="a - b" a=$promo_sortie b=3}{/if}</span>
+      <span class="lien"><a href="profile/orange">modifier</a>{if ($promo_sortie -3 == $promo)} pour les oranges{/if}</span>
+    </td>
+  </tr>
+  <tr>
+    <td class="colg">
+      <span class="titre">Nom d'usage</span><br />
+      {if $smarty.session.sexe}
+      <span class="comm">(Notamment nom d'épouse)</span>
+      {else}
+      <span class="comm">(si différent de {$nom} seulement)</span>
+      {/if}
+    </td>
+    <td class="cold">
+      <span class="nom">{$nom_usage|default:"Aucun"}</span>
+      <span class="lien"><a href="profile/usage">modifier</a></span>
+    </td>
+  </tr>
+  <tr>
+    <td class="colg">
+      <span class="titre">Nationalité</span>
+    </td>
+    <td class="cold">
+      <select name="nationalite">
+        {select_nat valeur=$nationalite}
+      </select>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td class="colg">
+      <span class="titre">Application</span><br />
+      <span class="comm">(4ème année de l'X)</span>
+    </td>
+    <td class="cold">
+      <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">
+        {applis_options selected=$appli1.id}
+      </select>
+      <br />
+      <input type="hidden" name="appli1_tmp" value="{$appli1.type}" />
+      <select name="appli1[type]">
+        <option value=""></option>
+      </select>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td class="dcolg">
+      <span class="titre">Post-application</span>
+    </td>
+    <td class="dcold">
+      <select name="appli2[id]" onchange="fillType(this.form['appli2[type]'], this.selectedIndex-1);">
+        {applis_options selected=$appli2.id}
+      </select>
+      <br />
+      <input type="hidden" name="appli2_tmp" value="{$appli2.type}" />
+      <select name="appli2[type]">
+        <option value=""></option>
+      </select>
+    </td>
+  </tr>
+</table>
 
 {if !$no_private_key}
-  <table class="bicol"  style="margin-bottom: 1em"
-    summary="Profil : Informations générales">
-    <tr>
-      <th>
-        Synchronisation avec l'AX
-      </th>
-    </tr>
-    <tr>
-      <td>
-        <p>
-          Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met à jour l'annuaire papier à partir des informations que tu lui fournis. Tu peux choisir ici d'envoyer directement les données de ta fiche Polytechnique.org vers ta <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a>.
-        </p>
-        <p>
-          L'opération de synchronisation prend en compte toutes les informations que tu as marquées comme transmises à l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations sur ta <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a> selon ce qui s'y trouve déjà.
-        </p>
-        <p class="center">
-          <a href="profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td class="col">
-        <table class="flags" cellspacing="0" summary="Flags">
-          <tr>
-            <td class="orange">
-              <input type="checkbox" name="synchro_ax" {if $synchro_ax}checked="checked" {/if}/>
-            </td>
-            <td class="texte">
-              Autoriser la synchronisation vers l'AX par des administrateurs ou des scripts automatiques.
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+<table class="bicol"  style="margin-bottom: 1em"
+  summary="Profil : Informations générales">
+  <tr>
+    <th>
+      Synchronisation avec l'AX
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <p>
+        Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met à jour l'annuaire papier à partir des informations que tu lui fournis. Tu peux choisir ici d'envoyer directement les données de ta fiche Polytechnique.org vers ta <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a>.
+      </p>
+      <p>
+        L'opération de synchronisation prend en compte toutes les informations que tu as marquées comme transmises à l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations sur ta <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a> selon ce qui s'y trouve déjà.
+      </p>
+      <p class="center">
+        <a href="profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td class="col">
+      <table class="flags" cellspacing="0" summary="Flags">
+        <tr>
+          <td class="orange">
+            <input type="checkbox" name="synchro_ax" {if $synchro_ax}checked="checked" {/if}/>
+          </td>
+          <td class="texte">
+            Autoriser la synchronisation vers l'AX par des administrateurs ou des scripts automatiques.
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
 {/if}
 
-  <table class="bicol"  style="margin-bottom: 1em"
-    summary="Profil: Trombinoscope">
-    <tr>
-      <th colspan="2">
-        Trombinoscope
-      </th>
-    </tr>
-    <tr>
-      <td class="flags" colspan="2">
-        <span class="vert"><input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/></span>
-        <span class="texte">site public</span>
-      </td>
-    </tr>
-    <tr>
-      <td {if !$nouvellephoto}colspan="2"{/if} class="center" style="width: 49%">
-        <div class="titre">Ta photo actuelle</div>
-        <img src="photo/{$smarty.session.forlife}" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
-      </td>
-      {if $nouvellephoto}
-      <td class="center" style="width: 49%">
-        <div class="titre">Photo en attente de validation</div>
-        <div>
-          <a href="profile/{$smarty.session.forlife}?modif=new" class="popup2">
-            Ta fiche avec cette photo
-          </a>
-        </div>
-        <img src="photo/{$smarty.session.forlife}/req" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
-      </td>
-      {/if}
-    </tr>
-    <tr class="pair">
-      <td colspan="2">
-        Pour profiter de cette fonction intéressante, tu dois disposer
-        quelque part (sur ton ordinateur ou sur Internet) d'une photo
-        d'identité (dans un fichier au format JPEG, PNG ou GIF).<br />
+<table class="bicol"  style="margin-bottom: 1em"
+  summary="Profil: Trombinoscope">
+  <tr>
+    <th colspan="2">
+      Trombinoscope
+    </th>
+  </tr>
+  <tr>
+    <td class="flags" colspan="2">
+      <span class="vert"><input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/></span>
+      <span class="texte">site public</span>
+    </td>
+  </tr>
+  <tr>
+    <td {if !$nouvellephoto}colspan="2"{/if} class="center" style="width: 49%">
+      <div class="titre">Ta photo actuelle</div>
+      <img src="photo/{$smarty.session.forlife}" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
+    </td>
+    {if $nouvellephoto}
+    <td class="center" style="width: 49%">
+      <div class="titre">Photo en attente de validation</div>
+      <div>
+        <a href="profile/{$smarty.session.forlife}?modif=new" class="popup2">
+          Ta fiche avec cette photo
+        </a>
+      </div>
+      <img src="photo/{$smarty.session.forlife}/req" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
+    </td>
+    {/if}
+  </tr>
+  <tr class="pair">
+    <td colspan="2">
+      Pour profiter de cette fonction intéressante, tu dois disposer
+      quelque part (sur ton ordinateur ou sur Internet) d'une photo
+      d'identité (dans un fichier au format JPEG, PNG ou GIF).<br />
+      <div class="center">
+        <a href="photo/change">Éditer ta photo</a>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<table class="bicol" style="margin-bottom: 1em"
+  summary="Profil: Divers">
+  <tr>
+    <th colspan="2">
+      Divers
+    </th>
+  </tr>
+  <tr>
+    <td colspan="2" class="pflags">
+      <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="rouge">
+            <input type="checkbox" disabled="disabled" checked="checked" />
+          </td>
+          <td class="texte">
+            privé
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td class="colg">
+      <span class="titre">Surnom</span>
+    </td>
+    <td class="cold">
+      <input type="text" size="35" maxlength="64"
+             {if $errors.nick}class="error"{/if} name="nick" value="{$nick}" />
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="pflags">
+      <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="vert">
+            <input type="radio" name="mobile_pub" {if $mobile_pub eq 'public'}checked="checked"{/if} value='public' />
+          </td>
+          <td class="texte">
+            site public
+          </td>
+          <td class="orange">
+            <input type="radio" name="mobile_pub" {if $mobile_pub eq 'ax'}checked="checked"{/if} value='ax' />
+          </td>
+          <td class="texte">
+            transmis à l'AX
+          </td>
+          <td class="rouge">
+            <input type="radio" name="mobile_pub" {if $mobile_pub eq 'private'}checked="checked"{/if} value='private' />
+          </td>
+          <td class="texte">
+            privé
+          </td>
+          <td class="texte">
+            <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td class="colg">
+      <span class="titre">Téléphone mobile</span>
+    </td>
+    <td class="cold">
+      <input type="text" size="18" maxlength="18" name="mobile"
+             {if $errors.mobile}class="error"{/if} value="{$mobile}" />
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="flags">
+      <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="vert">
+            <input type="checkbox" name="web_pub" {if $web_pub eq 'public'}checked="checked"{/if} />
+          </td>
+          <td class="texte">
+            site public
+          </td>
+          <td class="texte">
+            <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td class="dcolg">
+      <span class="titre">Page web Perso</span>
+    </td>
+    <td class="dcold">
+      <input type="text" size="35" maxlength="95" name="web"
+             {if $errors.web}class="error"{/if} value="{$web}" />
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="pflags">
+      <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="vert">
+            <input type="checkbox" name="freetext_pub" {if $freetext_pub eq 'public'}checked="checked"{/if} />
+          </td>
+          <td class="texte">
+            site public
+          </td>
+          <td class="texte">
+            <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td class="dcolg">
+      <div>
+        <span class="titre">Complément libre</span>
+        <span class="comm">Commentaire ? ICQ ? etc...</span>
+      </div>
+      <div class="smaller" style="margin-top: 30px">
+        <a href="wiki_help/notitle" class="popup3">
+          {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le commentaire
+        </a>
         <div class="center">
-          <a href="photo/change">Éditer ta photo</a>
+          <input type="submit" name="preview" value="Aperçu"
+                  onclick="previewWiki('freetext', 'ft_preview', true, 'ft_preview'); return false;" />
         </div>
-      </td>
-    </tr>
-  </table>
-  <table class="bicol" style="margin-bottom: 1em"
-    summary="Profil: Divers">
-    <tr>
-      <th colspan="2">
-        Divers
-      </th>
-    </tr>
-    <tr>
-      <td colspan="2" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="rouge">
-              <input type="checkbox" disabled="disabled" checked="checked" />
-            </td>
-            <td class="texte">
-              privé
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Surnom</span>
-      </td>
-      <td class="cold">
-        <input type="text" size="35" maxlength="64"
-               {if $errors.nick}class="error"{/if} name="nick" value="{$nick}" />
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="vert">
-              <input type="radio" name="mobile_pub" {if $mobile_pub eq 'public'}checked="checked"{/if} value='public' />
-            </td>
-            <td class="texte">
-              site public
-            </td>
-            <td class="orange">
-              <input type="radio" name="mobile_pub" {if $mobile_pub eq 'ax'}checked="checked"{/if} value='ax' />
-            </td>
-            <td class="texte">
-              transmis à l'AX
-            </td>
-            <td class="rouge">
-              <input type="radio" name="mobile_pub" {if $mobile_pub eq 'private'}checked="checked"{/if} value='private' />
-            </td>
-            <td class="texte">
-              privé
-            </td>
-            <td class="texte">
-              <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Téléphone mobile</span>
-      </td>
-      <td class="cold">
-        <input type="text" size="18" maxlength="18" name="mobile"
-               {if $errors.mobile}class="error"{/if} value="{$mobile}" />
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" class="flags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="vert">
-              <input type="checkbox" name="web_pub" {if $web_pub eq 'public'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              site public
-            </td>
-            <td class="texte">
-              <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td class="dcolg">
-        <span class="titre">Page web Perso</span>
-      </td>
-      <td class="dcold">
-        <input type="text" size="35" maxlength="95" name="web"
-               {if $errors.web}class="error"{/if} value="{$web}" />
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="vert">
-              <input type="checkbox" name="freetext_pub" {if $freetext_pub eq 'public'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              site public
-            </td>
-            <td class="texte">
-              <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td class="dcolg">
-        <div>
-          <span class="titre">Complément libre</span>
-          <span class="comm">Commentaire ? ICQ ? etc...</span>
-        </div>
-        <div class="smaller" style="margin-top: 30px">
-          <a href="wiki_help/notitle" class="popup3">
-            {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le commentaire
-          </a>
-          <div class="center">
-            <input type="submit" name="preview" value="Aperçu"
-                    onclick="previewWiki('freetext', 'ft_preview', true, 'ft_preview'); return false;" />
-          </div>
-        </div>
-      </td>
-      <td class="dcold">
-        <div id="ft_preview" style="display: none"></div>
-        <textarea name="freetext" {if $errors.freetext}class="error"{/if}
-                  id="freetext" rows="8" cols="35" >{$freetext}</textarea>
-      </td>
-    </tr>
-  </table>
+      </div>
+    </td>
+    <td class="dcold">
+      <div id="ft_preview" style="display: none"></div>
+      <textarea name="freetext" {if $errors.freetext}class="error"{/if}
+                id="freetext" rows="8" cols="35" >{$freetext}</textarea>
+    </td>
+  </tr>
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

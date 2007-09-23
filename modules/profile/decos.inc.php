@@ -33,7 +33,7 @@ class ProfileDeco implements ProfileSetting
                                 S::i('uid'));
             $value = array();
             while (list($id, $grade) = $res->next()) {
-                $value[$id] = array('grade' => $grade, 
+                $value[$id] = array('grade' => $grade,
                                     'valid' => '1');
             }
 
@@ -118,15 +118,6 @@ class ProfileDecos extends ProfilePage
     public function prepare(PlatalPage &$page, $id)
     {
         parent::prepare($page, $id);
-        $res    = XDB::iterator("SELECT  *
-                                   FROM  profile_medals_grades
-                               ORDER BY  mid, pos");
-        $grades = array();
-        while ($tmp = $res->next()) {
-            $grades[$tmp['mid']][] = $tmp;
-        }
-        $page->assign('grades', $grades);
-
         $res    = XDB::iterator("SELECT  *, FIND_IN_SET('validation', flags) AS validate
                                    FROM  profile_medals
                                ORDER BY  type, text");
@@ -135,7 +126,6 @@ class ProfileDecos extends ProfilePage
             $mlist[$tmp['type']][] = $tmp;
         }
         $page->assign('medal_list', $mlist);
-
         $trad = Array('ordre'      => 'Ordres',
                       'croix'      => 'Croix',
                       'militaire'  => 'Médailles militaires',

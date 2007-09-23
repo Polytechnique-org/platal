@@ -38,6 +38,8 @@ class ProfileModule extends PLModule
             'profile/ajax/job'     => $this->make_hook('ajax_job',     AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/secteur' => $this->make_hook('ajax_secteur', AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'   => $this->make_hook('ajax_skill',   AUTH_COOKIE, 'user', NO_AUTH),
+            'javascript/applis.js' => $this->make_hook('applis_js', AUTH_COOKIE),
+            'javascript/grades.js' => $this->make_hook('grades_js', AUTH_COOKIE),
             'profile/medal'    => $this->make_hook('medal', AUTH_PUBLIC),
             'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
@@ -272,7 +274,7 @@ class ProfileModule extends PLModule
         http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=$mat");
     }
 
-    function handler_p_edit(&$page, $opened_tab = null)
+    function handler_p_edit(&$page, $opened_tab = null, $mode = null)
     {
         global $globals;
 
@@ -328,8 +330,10 @@ class ProfileModule extends PLModule
         // TODO: Block if birth date is missing ?
 
         $page->addJsLink('ajax.js');
-        $page->addJsLink('jquery.js');
-        $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true, false);
+        $page->addJsLink('profile.js');
+        $page->addJsLink('applis.js');
+        $page->addJsLink('grades.js');
+        $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true, true);
         require_once dirname(__FILE__) . '/profile/page.inc.php';
         $wiz->addPage('ProfileGeneral', 'Général', 'general');
         $wiz->addPage('ProfileAddresses', 'Adresses personnelles', 'adresses');
@@ -338,44 +342,82 @@ class ProfileModule extends PLModule
         $wiz->addPage('ProfileJobs', 'Informations professionnelles', 'emploi');
         $wiz->addPage('ProfileSkills', 'Compétences diverses', 'skill');
         $wiz->addPage('ProfileMentor', 'Mentoring', 'mentor');
-        $wiz->apply($page, 'profile/edit', $opened_tab);
+        $wiz->apply($page, 'profile/edit', $opened_tab, $mode);
 
         $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
     }
 
+    function handler_applis_js(&$page)
+    {
+        header('Content-Type: text/javascript; charset=utf-8');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Pragma: no-cache');
+        $page->changeTpl('profile/applis.js.tpl', NO_SKIN);
+        require_once "applis.func.inc.php";
+    }
+
+    function handler_grades_js(&$page)
+    {
+        header('Content-Type: text/javascript; charset=utf-8');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Pragma: no-cache');
+        $page->changeTpl('profile/grades.js.tpl', NO_SKIN);
+        $res    = XDB::iterator("SELECT  *
+                                   FROM  profile_medals_grades
+                               ORDER BY  mid, pos");
+        $grades = array();
+        while ($tmp = $res->next()) {
+            $grades[$tmp['mid']][] = $tmp;
+        }
+        $page->assign('grades', $grades);
+
+        $res    = XDB::iterator("SELECT  *, FIND_IN_SET('validation', flags) AS validate
+                                   FROM  profile_medals
+                               ORDER BY  type, text");
+        $mlist  = array();
+        while ($tmp = $res->next()) {
+            $mlist[$tmp['type']][] = $tmp;
+        }
+        $page->assign('medal_list', $mlist);
+    }
+
     function handler_ajax_address(&$page, $adid)
     {
+        header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
         $page->assign('i', $adid);
         $page->assign('adr', array());
-        $page->assign('ajaxadr', true);
     }
 
     function handler_ajax_tel(&$page, $adid, $telid)
     {
+        header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/adresses.tel.tpl', NO_SKIN);
         $page->assign('i', $adid);
         $page->assign('adid', "addresses_$adid");
         $page->assign('adpref', "addresses[$adid]");
         $page->assign('t', $telid);
         $page->assign('tel', array());
-        $page->assign('ajaxtel', true);
     }
 
     function handler_ajax_medal(&$page, $id)
     {
+        header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/deco.medal.tpl', NO_SKIN);
         $page->assign('id', $id);
         $page->assign('medal', array('valid' => 0, 'grade' => 0));
-        $page->assign('ajaxdeco', true);
     }
 
     function handler_ajax_job(&$page, $id)
     {
+        header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/jobs.job.tpl', NO_SKIN);
         $page->assign('i', $id);
         $page->assign('job', array());
-        $page->assign('ajaxjob', true);
         $page->assign('new', true);
         $page->assign('secteurs', XDB::iterator("SELECT  id, label
                                                    FROM  emploi_secteur"));
@@ -386,6 +428,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_secteur(&$page, $id, $sect, $ssect = -1)
     {
+        header('Content-Type: text/html; charset=utf-8');
         $res = XDB::iterator("SELECT  id, label
                                 FROM  emploi_ss_secteur
                                WHERE  secteur = {?}", $sect);
@@ -397,8 +440,8 @@ class ProfileModule extends PLModule
 
     function handler_ajax_skill(&$page, $cat, $id)
     {
+        header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/skill.skill.tpl', NO_SKIN);
-        $page->assign('ajaxskill', true);
         $page->assign('cat', $cat);
         $page->assign('id', $id);
         if ($cat == 'competences') {

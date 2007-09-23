@@ -20,9 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $ajaxjob}
-<?xml version="1.0" encoding="utf-8"?>
-{/if}
 {assign var=jobid value="job_`$i`"}
 {assign var=jobpref value="jobs[`$i`]"}
 <div id="{$jobid}">
@@ -62,7 +59,7 @@
     <tr>
       <td class="titre">Secteur d'activité</td>
       <td>
-        <select name="{$jobpref}[secteur]" onchange="updateSecteur({$i}, '{$jobid}', '{$jobpref}', ''); return true;">
+        <select name="{$jobpref}[secteur]" onchange="updateJobSecteur({$i}, '{$jobid}', '{$jobpref}', ''); return true;">
           <option value="">&nbsp;</option>
           {iterate from=$secteurs item=secteur}
           <option value="{$secteur.id}" {if $secteur.id eq $job.secteur}selected="selected"{/if}>
@@ -75,6 +72,7 @@
     <tr>
       <td class="titre">Sous-Secteur d'activité</td>
       <td id="{$jobid}_ss_secteur">
+        <input type="hidden" name="{$jobpref}[ss_secteur]" value="{$job.ss_secteur|default='-1'}" />
       </td> 
     </tr>
     <tr>
