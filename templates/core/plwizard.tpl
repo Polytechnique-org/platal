@@ -33,15 +33,26 @@
                       document.location = myUrl;
                     },
              success: function(data) {
-                        $(".wiz_content").fadeOut('normal',
-                            function() {
-                              $(".wiz_tab").removeClass("active");
-                              $("#wiz_tab_" + id).addClass("active");
-                              $(".wiz_content").html(data).fadeIn('normal');
-                              if (typeof wizPage_onLoad == 'function') {
-                                wizPage_onLoad(id);
-                              }
-                            });
+                        if (is_IE) {
+                          $(".wiz_tab").removeClass("active");
+                          $("#wiz_tab_" + id).addClass("active");
+                          $(".wiz_content").html(data);
+                          if (typeof wizPage_onLoad == 'function') {
+                              wizPage_onLoad(id);
+                          }
+                          auto_links();
+                        } else {
+                          $(".wiz_content").fadeOut('normal',
+                              function() {
+                                $(".wiz_tab").removeClass("active");
+                                $("#wiz_tab_" + id).addClass("active");
+                                $(".wiz_content").html(data).fadeIn('normal');
+                                if (typeof wizPage_onLoad == 'function') {
+                                  wizPage_onLoad(id);
+                                }
+                                auto_links();
+                              });
+                        }
                       }
           });
     return false;
@@ -55,14 +66,6 @@
   }
   {/literal}
   {/if}
-  {literal}
-  $(document).ready(
-    function() {
-      if (typeof wizPage_onLoad == 'function') {
-        wizPage_onLoad({/literal}'{$lookup[$current]}'{literal});
-      }
-    });
-  {/literal}
 //]]></script>
 
 <div class="wizard" style="clear: both">
@@ -93,5 +96,13 @@
     {include file=$wiz_page}
   </div>
 </div>
+
+<script type="text/javascript">
+{literal}
+if (typeof wizPage_onLoad == 'function') {
+    wizPage_onLoad({/literal}'{$lookup[$current]}'{literal});
+}
+{/literal}
+</script>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
