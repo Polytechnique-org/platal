@@ -52,7 +52,11 @@ function buildGrade(id, current)
     var html = 'Agrafe : <select name="medals[' + id + '][grade]">';
     html += '<option value="0">Non précisée</option>';
     for (grade = 0 ; grade < subg.length ; grade++) {
-      html += '<option value="' + subg[grade][0] + '">' + subg[grade][1] + '</option>';
+      html += '<option value="' + subg[grade][0] + '"';
+      if (subg[grade][0] == current) {
+        html += ' selected="selected"';
+      }
+      html += '>' + subg[grade][1] + '</option>';
     }
 
     html += '</select>';
