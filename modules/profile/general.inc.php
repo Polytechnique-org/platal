@@ -99,6 +99,7 @@ class ProfileGeneral extends ProfilePage
         parent::__construct($wiz);
         $this->settings['nom'] = $this->settings['prenom']
                                = new ProfileNom();
+        $this->settings['naissance'] = new ProfileDate();
         $this->settings['mobile_pub']
                                   = $this->settings['web_pub']
                                   = $this->settings['freetext_pub']
@@ -120,7 +121,7 @@ class ProfileGeneral extends ProfilePage
     protected function _fetchData()
     {
         // Checkout all data...
-        $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite,
+        $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite, u.naissance,
                                    q.profile_mobile as mobile, q.profile_mobile_pub as mobile_pub,
                                    q.profile_web as web, q.profile_web_pub as web_pub,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
@@ -159,11 +160,14 @@ class ProfileGeneral extends ProfilePage
 
     protected function _saveData()
     {
-        if ($this->changed['nationalite'] || $this->changed['nom'] || $this->changed['prenom']) {
+        if ($this->changed['nationalite'] || $this->changed['nom'] || $this->changed['prenom']
+            || $this->changed['naissance']) {
            XDB::execute("UPDATE  auth_user_md5
-                            SET  nationalite = {?}, nom={?}, prenom={?}
+                            SET  nationalite = {?}, nom={?}, prenom={?}, naissance={?}
                           WHERE  user_id = {?}",
-                         $this->values['nationalite'], $this->values['nom'], $this->values['prenom'], S::v('uid'));
+                         $this->values['nationalite'], $this->values['nom'], $this->values['prenom'],
+                         preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['naissance']),
+                         S::v('uid'));
         }
         if ($this->changed['nick'] || $this->changed['mobile'] || $this->changed['mobile_pub']
             || $this->changed['web'] || $this->changed['web_pub'] || $this->changed['freetext']

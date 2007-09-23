@@ -125,6 +125,33 @@ class ProfileBool extends ProfileNoSave
     }
 }
 
+class ProfileDate extends ProfileNoSave
+{
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            $value = preg_replace('/(\d{4})-(\d{2})-(\d{2})/', '\3/\2/\1', @$page->values[$field]);
+        } else {
+            $success = preg_match('@(\d{2})/(\d{2})/(\d{4})@', $value, $matches);
+            if (!$success) {
+                global $page;
+                $page->trig("Les dates doivent être au format jj/mm/aaaa");
+           } else {
+                $day   = (int)$matches[1];
+                $month = (int)$matches[2];
+                $year  = (int)$matches[3];
+                $success = ($day > 0 && $day <= 31) && ($month > 0 && $month <= 12) && ($year > 1900 && $year <= 2020);
+                if (!$success) {
+                    global $page;
+                    $page->trig("La date n'a pas une valeur valide");
+                }
+            }
+        }
+        return $value;
+    }
+}
+
 abstract class ProfileGeoloc implements ProfileSetting
 {
     protected function geolocAddress(array &$address, &$success)

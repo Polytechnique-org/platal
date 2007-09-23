@@ -326,9 +326,7 @@ class ProfileModule extends PLModule
             $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
         }
 
-        // Misc checks
-        // TODO: Block if birth date is missing ?
-
+        // Build the page
         $page->addJsLink('ajax.js');
         $page->addJsLink('profile.js');
         $page->addJsLink('applis.js');
@@ -344,7 +342,16 @@ class ProfileModule extends PLModule
         $wiz->addPage('ProfileMentor', 'Mentoring', 'mentor');
         $wiz->apply($page, 'profile/edit', $opened_tab, $mode);
 
-        $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
+         // Misc checks
+        $res = XDB::query("SELECT  user_id
+                             FROM  auth_user_md5
+                            WHERE  user_id = {?} AND naissance = '0000-00-00'", S::i('uid'));
+        if ($res->numRows()) {
+            $page->trig("Ta date de naissance n'est pas renseignée, ce qui t'empêcheras de réaliser"
+                      . " la procédure de récupération de mot de passe si un jour tu le perdais");
+        }
+
+       $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
     }
 
     function handler_applis_js(&$page)

@@ -79,6 +79,10 @@
     </td>
   </tr>
   <tr>
+    <td class="titre">Date de naissance</td>
+    <td><input type="text" {if $errors.naissance}class="error"{/if} name="naissance" value="{$naissance}" /></td>
+  </tr>
+  <tr>
     <td class="colg">
       <span class="titre">Nationalité</span>
     </td>
