@@ -181,12 +181,18 @@ abstract class ProfilePage implements PlWizardPage
         $this->wizard =& $wiz;
     }
 
+    protected function _fetchData()
+    {
+    }
+
     protected function fetchData()
     {
         if (count($this->orig) > 0) {
             $this->values = $this->orig;
             return;
         }
+
+        $this->_fetchData();
         foreach ($this->settings as $field=>&$setting) {
             $success = false;
             if (!is_null($setting)) {
@@ -199,6 +205,10 @@ abstract class ProfilePage implements PlWizardPage
         $this->orig = $this->values;
     }
 
+    protected function _saveData()
+    {
+    }
+
     protected function saveData()
     {
         foreach ($this->settings as $field=>&$setting) {
@@ -206,6 +216,7 @@ abstract class ProfilePage implements PlWizardPage
                 $setting->save($this, $field, $this->values[$field]);
             }
         }
+        $this->_saveData();
 
         // Update the last modification date
         XDB::execute('REPLACE INTO  user_changes
@@ -242,6 +253,10 @@ abstract class ProfilePage implements PlWizardPage
         return 'profile/base.tpl';
     }
 
+    protected function _prepare(PlatalPage &$page, $id)
+    {
+    }
+
     public function prepare(PlatalPage &$page, $id)
     {
         if (count($this->values) == 0) {
@@ -250,6 +265,7 @@ abstract class ProfilePage implements PlWizardPage
         foreach ($this->values as $field=>&$value) {
             $page->assign($field, $value);
         }
+        $this->_prepare($page, $id);
         $page->assign('profile_page', $this->pg_template);
         $page->assign('errors', $this->errors);
     }

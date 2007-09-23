@@ -117,13 +117,8 @@ class ProfileGeneral extends ProfilePage
                                   = new ProfileAppli();
     }
 
-    protected function fetchData()
+    protected function _fetchData()
     {
-        if (count($this->orig) > 0) {
-            $this->values = $this->orig;
-            return;
-        }
-
         // Checkout all data...
         $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite,
                                    q.profile_mobile as mobile, q.profile_mobile_pub as mobile_pub,
@@ -160,12 +155,10 @@ class ProfileGeneral extends ProfilePage
                             WHERE  type='photo' AND user_id = {?}",
                           S::v('uid'));
         $this->values['nouvellephoto'] = $res->fetchOneCell();
-        parent::fetchData();
     }
 
-    protected function saveData()
+    protected function _saveData()
     {
-        parent::saveData();
         if ($this->changed['nationalite'] || $this->changed['nom'] || $this->changed['prenom']) {
            XDB::execute("UPDATE  auth_user_md5
                             SET  nationalite = {?}, nom={?}, prenom={?}
@@ -197,9 +190,8 @@ class ProfileGeneral extends ProfilePage
         }
     }
 
-    public function prepare(PlatalPage &$page, $id)
+    public function _prepare(PlatalPage &$page, $id)
     {
-        parent::prepare($page, $id);
         require_once "applis.func.inc.php";
     }
 }

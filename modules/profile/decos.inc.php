@@ -94,19 +94,17 @@ class ProfileDecos extends ProfilePage
         $this->settings['medals_pub'] = new ProfilePub();
     }
 
-    protected function fetchData()
+    protected function _fetchData()
     {
         $res = XDB::query("SELECT  profile_medals_pub
                              FROM  auth_user_quick
                             WHERE  user_id = {?}",
                           S::i('uid'));
         $this->values['medals_pub'] = $res->fetchOneCell();
-        parent::fetchData();
     }
 
-    protected function saveData()
+    protected function _saveData()
     {
-        parent::saveData();
         if ($this->changed['medals_pub']) {
             XDB::execute("UPDATE  auth_user_quick
                              SET  profile_medals_pub = {?}
@@ -115,9 +113,8 @@ class ProfileDecos extends ProfilePage
         }
     }
 
-    public function prepare(PlatalPage &$page, $id)
+    public function _prepare(PlatalPage &$page, $id)
     {
-        parent::prepare($page, $id);
         $res    = XDB::iterator("SELECT  *, FIND_IN_SET('validation', flags) AS validate
                                    FROM  profile_medals
                                ORDER BY  type, text");

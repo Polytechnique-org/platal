@@ -124,23 +124,17 @@ class ProfileMentor extends ProfilePage
         $this->settings['countries'] = new ProfileCountry();
     }
 
-    protected function fetchData()
+    protected function _fetchData()
     {
-        if (count($this->orig) > 0) {
-            $this->values = $this->orig;
-            return;
-        }
         $res = XDB::query("SELECT  expertise
                              FROM  mentor
                             WHERE  uid = {?}",
                           S::i('uid'));
         $this->value['expertise'] = $res->fetchOneCell();
-        parent::fetchData();
     }
 
-    protected function saveData()
+    protected function _saveData()
     {
-        parent::saveData();
         if ($this->changed['expertise']) {
             XDB::execute("REPLACE INTO  mentor (uid, expertise)
                                 VALUES  ({?}, {?})",
@@ -148,9 +142,8 @@ class ProfileMentor extends ProfilePage
         }
     }
 
-    public function prepare(PlatalPage &$page, $id)
+    public function _prepare(PlatalPage &$page, $id)
     {
-        parent::prepare($page, $id);
         $page->assign('secteurs_sel', XDB::iterator("SELECT  id, label
                                                        FROM  emploi_secteur"));
     }

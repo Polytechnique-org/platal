@@ -105,9 +105,8 @@ class ProfileGroups extends ProfilePage
         $this->settings['binets']   = new ProfileGroup('binets', 'user_id', 'binet_id');
     }
 
-    public function prepare(PlatalPage &$page, $id)
+    public function _prepare(PlatalPage &$page, $id)
     {
-        parent::prepare($page, $id);
         $page->assign('mygroups', XDB::iterator("SELECT  a.nom, a.site, a.diminutif, a.unsub_url, a.pub, m.perms
                                                    FROM  groupex.asso    AS a
                                              INNER JOIN  groupex.membres AS m ON (m.asso_id = a.id)

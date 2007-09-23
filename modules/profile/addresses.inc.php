@@ -174,12 +174,8 @@ class ProfileAddresses extends ProfilePage
         $this->settings['addresses'] = new ProfileAddress();
     }
 
-    protected function fetchData()
+    protected function _fetchData()
     {
-        if (count($this->orig) > 0) {
-            $this->values = $this->orig;
-            return;
-        }
         // Build the addresses tree
         $res = XDB::query("SELECT  a.adrid AS id, a.adr1, a.adr2, a.adr3,
                                    UNIX_TIMESTAMP(a.datemaj) AS datemaj,
@@ -231,7 +227,6 @@ class ProfileAddresses extends ProfilePage
             }
             unset($address['id']);
         }
-        parent::fetchData();
     }
 }
 

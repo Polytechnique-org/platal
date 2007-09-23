@@ -129,12 +129,8 @@ class ProfileJobs extends ProfilePage
         $this->settings['jobs'] = new ProfileJob();
     }
 
-    protected function fetchData()
+    protected function _fetchData()
     {
-        if (count($this->orig) > 0) {
-            $this->values = $this->orig;
-            return;
-        }
         // Checkout the CV
         $res = XDB::query("SELECT  cv
                              FROM  auth_user_md5
@@ -188,10 +184,9 @@ class ProfileJobs extends ProfilePage
                                             'tel_pub'    => $tel_pub,
                                             'email_pub'  => $email_pub);
         }
-        parent::fetchData();
     }
 
-    protected function saveData()
+    protected function _saveData()
     {
         if ($this->changed['cv']) {
             XDB::execute("UPDATE  auth_user_md5
@@ -199,12 +194,10 @@ class ProfileJobs extends ProfilePage
                            WHERE  user_id = {?}",
                          $this->values['cv'], S::i('uid'));
         }
-        parent::saveData();
     }
 
-    public function prepare(PlatalPage &$page, $id)
+    public function _prepare(PlatalPage &$page, $id)
     {
-        parent::prepare($page, $id);
         $page->assign('secteurs', XDB::iterator("SELECT  id, label
                                                    FROM  emploi_secteur"));
         $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
