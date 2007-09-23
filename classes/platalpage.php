@@ -141,9 +141,11 @@ abstract class PlatalPage extends Smarty
         if (!($globals->debug & DEBUG_SMARTY)) {
             error_reporting(0);
         }
+        $START_SMARTY = microtime(true);
         $result = $this->fetch($skin);
-        $ttime  = sprintf('Temps total: %.02fs - Mémoire totale : %dKo<br />', microtime(true) - $TIME_BEGIN
-                                                                                , memory_get_peak_usage(true) / 1024);
+        $ttime  = sprintf('Temps total: %.02fs (Smarty %.02fs) - Mémoire totale : %dKo<br />',
+                          microtime(true) - $TIME_BEGIN, microtime(true) - $START_SMARTY,
+                          memory_get_peak_usage(true) / 1024);
         if ($globals->debug & DEBUG_BT) {
             PlBacktrace::clean();
             $this->assign_by_ref('backtraces', PlBacktrace::$bt);
