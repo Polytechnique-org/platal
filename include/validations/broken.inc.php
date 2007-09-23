@@ -117,7 +117,7 @@ class BrokenReq extends Validate
                              . "https://www.polytechnique.org/emails/redirect\n"
                              . "Si tu as perdu ton mot de passe d'accès au site, tu peux également effectuer la procédure de récupération à l'adresse :\n"
                              . "https://www.polytechnique.org/recovery\n"
-                             . "-- \nTrès Cordialement,\nL'Equipe de Polytechnique.org\n"));
+                             . "-- \nTrès Cordialement,\nL'Équipe de Polytechnique.org\n"));
             $mailer->send();
             return true;
         }
@@ -140,7 +140,7 @@ class BrokenReq extends Validate
             if (!count($redirect)) {
                 $reason .= '.';
             } elseif (count($redirect) == 1) {
-                $reason .= ' car sa redirection vers ' . $redirect[0] . ' est hors-service depuis plusiers mois.';
+                $reason .= ' car sa redirection vers ' . $redirect[0] . ' est hors-service depuis plusieurs mois.';
             } else {
                 $reason .= ' car ses redirections vers ' . implode(', ', $redirect)
                         . ' sont hors-services depuis plusieurs mois.';
@@ -151,7 +151,7 @@ class BrokenReq extends Validate
               . "L'adresse {$this->m_email} nous a été communiquée, veux-tu que cette adresse devienne ta nouvelle "
               . "adresse de redirection ? Si oui, envoie nous des informations qui "
               . "nous permettront de nous assurer de ton identité (par exemple ta date de naissance et ta promotion)\n"
-              . "-- \nTrès Cordialement,\nL'Equipe de Polytechnique.org\n";
+              . "-- \nTrès Cordialement,\nL'Équipe de Polytechnique.org\n";
         $body = wordwrap($body, 78);
         $mailer = new PlMailer();
         $mailer->setFrom('"Association Polytechnique.org" <register@' . $globals->mail->domain . '>');
