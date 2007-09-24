@@ -9,7 +9,7 @@
  ********************************************************************************/
 
 require_once 'connect.db.inc.php';
-require_once dirname(__FILE__).'/../include/banana/ml.inc.php';
+require_once dirname(__FILE__).'/../../include/banana/ml.inc.php';
 
 Banana::$mbox_helper = $globals->banana->mbox_helper;
 Banana::$spool_root = $globals->banana->spool_root;
