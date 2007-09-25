@@ -183,6 +183,17 @@
   le problème est résolu, tu peux les réactiver, mais l'adresse sera redésactivée si les problèmes persistent.
 </p>
 {/if}
+{if $smarty.session.mx_failures|@count}
+<fieldset>
+  <legend>{icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes</legend>
+  {foreach from=$smarty.session.mx_failures item=mail}
+  <div>
+    <span class="erreur">{$mail.mail}</span>
+    <div class="explication">{$mail.text}</div>
+  </div>
+  {/foreach}
+</fieldset>
+{/if}
 
 {if $eleve}
 <h1>Pour les Élèves (non encore diplômés)</h1>

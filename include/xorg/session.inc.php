@@ -250,14 +250,12 @@ function start_connexion ($uid, $identified)
     INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
          WHERE  u.user_id = {?} AND u.perms IN('admin','user')", $uid);
     $sess = $res->fetchOneAssoc();
-    $res->free();
     $res = XDB::query("SELECT  UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
                          FROM  logger.sessions AS s
                         WHERE  s.uid = {?} AND s.suid = 0
                      ORDER BY  s.start DESC
                         LIMIT  1", $uid);
     $sess = array_merge($sess, $res->fetchOneAssoc());
-    $res->free();
     $suid = S::v('suid');
 
     if ($suid) {

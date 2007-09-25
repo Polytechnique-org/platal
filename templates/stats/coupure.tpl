@@ -74,6 +74,7 @@
     <th>résumé</th>
     <th>services affectés</th>
   </tr>
+{if $coupures->total()}
 {iterate item=cp from=$coupures}
   <tr class="{cycle values="impair,pair"}">
     <td>
@@ -93,6 +94,13 @@
     </td>
   </tr>
 {/iterate}
+{else}
+  <tr>
+    <td colspan="3">
+      Il n'y a eu aucune coupure de service récemment
+    </td>
+  </tr>
+{/if}
 </table>
 
 <h1>Problèmes avec les autres fournisseurs de services</h1>

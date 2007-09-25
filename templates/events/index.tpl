@@ -51,17 +51,17 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
 
 {if $smarty.session.mx_failures|@count}
 <fieldset>
-  <legend>{icon name=error}Des problèmes sont actuellement recontrés sur tes redirections suivantes</legend>
+  <legend>{icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes</legend>
   {foreach from=$smarty.session.mx_failures item=mail}
   <div>
     <span class="erreur">{$mail.mail}</span>
     <div class="explication">{$mail.text}</div>
   </div>
-{/foreach}
+  {/foreach}
+  <div><a href="emails/redirect">Gérer mes adresses de redirection</a></div>
 </fieldset>
 {/if}
 
-  
 {if $fiche_incitation}
   <p>La dernière mise à jour de ta
   <a href="profile/{$smarty.session.forlife}" class="popup2">fiche</a>
