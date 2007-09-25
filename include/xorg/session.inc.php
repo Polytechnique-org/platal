@@ -241,18 +241,23 @@ function start_connexion ($uid, $identified)
     $res  = XDB::query("
         SELECT  u.user_id AS uid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
                 matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
-                UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias AS forlife, a2.alias AS bestalias,
+                a.alias AS forlife, a2.alias AS bestalias,
                 q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
                 FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
     INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
     INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
-     LEFT JOIN  logger.sessions AS s  ON (s.uid=u.user_id AND s.suid=0)
-         WHERE  u.user_id = {?} AND u.perms IN('admin','user')
-      ORDER BY  s.start DESC
-         LIMIT  1", $uid);
+         WHERE  u.user_id = {?} AND u.perms IN('admin','user')", $uid);
     $sess = $res->fetchOneAssoc();
+    $res->free();
+    $res = XDB::query("SELECT  UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
+                         FROM  logger.sessions AS s
+                        WHERE  s.uid = {?} AND s.suid = 0
+                     ORDER BY  s.start DESC
+                        LIMIT  1", $uid);
+    $sess = array_merge($sess, $res->fetchOneAssoc());
+    $res->free();
     $suid = S::v('suid');
 
     if ($suid) {
