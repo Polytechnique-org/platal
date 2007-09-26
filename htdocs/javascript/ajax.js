@@ -66,16 +66,16 @@ function AjaxEngine()
     {
         return function()
         {
-            if(ajax.xml_client.readyState == 4) { 
-                if (ajax.xml_client.status == 200) { 
-                    if (ajax.obj != null) {  
-                        document.getElementById(ajax.obj).innerHTML = ajax.xml_client.responseText; 
+            if(ajax.xml_client.readyState == 4) {
+                if (ajax.xml_client.status == 200) {
+                    if (ajax.obj != null) {
+                        document.getElementById(ajax.obj).innerHTML = ajax.xml_client.responseText;
                     }
-                    if (ajax.func != null) { 
-                        ajax.func(ajax.xml_client.responseText); 
+                    if (ajax.func != null) {
+                        ajax.func(ajax.xml_client.responseText);
                     }
-                } else if (ajax.xml_client.status == 403) { 
-                    window.location.reload(); 
+                } else if (ajax.xml_client.status == 403) {
+                    window.location.reload();
                 }
             }
         };
@@ -129,15 +129,25 @@ function previewWiki(idFrom, idTo, withTitle, idShow)
     var text = encodeURIComponent(document.getElementById(idFrom).value);
     if (text == "") {
         return false;
-    }   
+    }
     var url  = "wiki_preview";
     if (!withTitle) {
         url += "/notitle";
-    }   
+    }
     Ajax.update_html(idTo, url + "?text=" + text);
     if (idShow != null) {
         document.getElementById(idShow).style.display = "";
-    }   
+    }
+}
+
+function sendTestEmail(forlife)
+{
+    Ajax.update_html(null, 'emails/test' + (forlife == null ? '' : '/' + forlife),
+                     function() {
+                        showTempMessage('mail_sent', "Un mail a été envoyé avec succès"
+                                        + (forlife == null ? " sur ton adresse." : " sur l'adresse de " + forlife),
+                                        true); });
+    return false;
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

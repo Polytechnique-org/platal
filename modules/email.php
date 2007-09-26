@@ -31,10 +31,11 @@ class EmailModule extends PLModule
             'emails/redirect' => $this->make_hook('redirect', AUTH_MDP),
             'emails/send'     => $this->make_hook('send', AUTH_MDP),
             'emails/antispam/submit'  => $this->make_hook('submit', AUTH_COOKIE),
+            'emails/test'     => $this->make_hook('test', AUTH_PUBLIC),
 
             'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
             'admin/emails/watch'      => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
-            'admin/emails/lost' => $this->make_hook('lost', AUTH_MDP, 'admin'),
+            'admin/emails/lost'       => $this->make_hook('lost', AUTH_MDP, 'admin'),
         );
     }
 
@@ -407,6 +408,31 @@ class EmailModule extends PLModule
                  ORDER BY u.nom, u.prenom", S::v('uid'));
         $page->assign('contacts', $res->fetchAllAssoc());
         $page->assign('maxsize', ini_get('post_max_size') . 'o');
+    }
+
+    function handler_test(&$page, $forlife = null)
+    {
+        global $globals;
+        if (!S::has_perms() || !$forlife) {
+            $forlife = S::v('bestalias');
+        }
+        $mailer = new PlMailer('emails/mail.test.tpl');
+        $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
+        $iterator = XDB::iterator("SELECT  email
+                                     FROM  emails AS e
+                               INNER JOIN  aliases AS a ON (e.uid = a.id)
+                                    WHERE  FIND_IN_SET('active', e.flags) AND a.alias = {?}",
+                                  $forlife);
+        $mailer->assign('redirects', $iterator);
+        $res = XDB::query("SELECT  FIND_IN_SET('femme', u.flags), prenom
+                             FROM  auth_user_md5 AS u
+                       INNER JOIN  aliases AS a ON (a.id = u.user_id)
+                            WHERE  a.alias = {?}", $forlife);
+        list($sexe, $prenom) = $res->fetchOneRow();
+        $mailer->assign('sexe', $sexe);
+        $mailer->assign('prenom', $prenom);
+        $mailer->send();
+        exit;
     }
 
     function handler_broken(&$page, $warn = null, $email = null)

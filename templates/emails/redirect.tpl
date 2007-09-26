@@ -104,6 +104,7 @@
     {/literal}
   //]]></script>
   {javascript name="jquery"}
+  {test_email}
   <div id="redirect-msg" style="position:absolute;"></div><br />
   <div class="center">
     <table class="bicol" summary="Adresses de redirection">
@@ -129,7 +130,7 @@
                  {if $smarty.foreach.redirect.total eq 1}disabled="disabled"{/if}
                  onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/'+(this.checked?'':'in')+'active/{$e->email}', redirectUpdate)" /></td>
         <td>
-          <select onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/rewrite/{$e->email}/'+this.value, redirectUpdate)">
+          <select onchange="Ajax.update_html(null,'emails/redirect/rewrite/{$e->email}/'+this.value, redirectUpdate)">
             <option value=''>--- aucune ---</option>
             {assign var=dom1 value=#globals.mail.domain#}
             {assign var=dom2 value=#globals.mail.domain2#}

@@ -6,6 +6,9 @@ New:
     * Core:
         - Auto-redirect HTML pages to HTTPS                                -FRU
 
+    * Emails:
+        - #722: Can send a test email to check mail routing                -FRU
+
     * Lists:
         - Asynchronous mail moderation (should avoid server overload)      -FRU
 

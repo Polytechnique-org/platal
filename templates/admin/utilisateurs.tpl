@@ -311,6 +311,9 @@ Pour ceci changer ses permissions en 'disabled'.
 <strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
 </p>
 
+{javascript name="ajax"}
+{test_email forlife=$mr.forlife}
+
 <form id="fwds" method="post" action="admin/user#fwds">
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr>
