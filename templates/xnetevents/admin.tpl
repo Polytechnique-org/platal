@@ -33,7 +33,7 @@ comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
 {/if}
 </p>
 
-{if $evt.participant_list}
+{if $evt.participant_list && $is_admin}
 <p class="center">
 [<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un mail à ceux qui viennent</a>]
 -
