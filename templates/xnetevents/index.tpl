@@ -61,7 +61,7 @@
   <tr>
     <th colspan="2"{if !$e.inscr_open} class="grayed"{/if}>
       <a href="{$platal->ns}events/ical/{$e.short_name|default:$e.eid}/{$e.short_name|default:$e.eid}.ics" style="display: block; float: left;">
-        {icon name=calendar_view_day title="Evénement iCal"}
+        {icon name=calendar_view_day title="Événement iCal"}
       </a>
       {$e.intitule}
       {if !$e.inscr_open}
@@ -71,7 +71,7 @@
       <br />
       [<a href="{$platal->ns}events/edit/{$e.short_name|default:$e.eid}">
         modifier
-        {icon name=date_edit title="Edition de l'événement"}</a>]
+        {icon name=date_edit title="Édition de l'événement"}</a>]
       &nbsp;
       [<a href="javascript:dynpostkv('{$platal->pl_self()}', {if !$archive}'archive'{else}'unarchive'{/if}, {$e.eid})">
         {if !$archive}
@@ -203,8 +203,8 @@
 
 {if $evenements}
 <p class="descr">
-  En cliquant sur l'icône {icon name=calendar_view_day title="Evénement iCal"} associée à un événement
-  tu peux télécharger la version iCal de l'événement qui permet de l'ajouter dans ton agenda électronique
+  En cliquant sur l'icône {icon name=calendar_view_day title="Événement iCal"} associée à un événement
+  tu peux télécharger la version iCal de l'événement qui permet de l'ajouter dans ton agenda électronique.
 </p>
 {/if}
 
