@@ -136,13 +136,15 @@
           {/foreach}
         </td>
         <td class="breadcrumb">
-          {if $asso && ($is_admin || $smarty.session.suid.perms->hasFlag('admin') || $smarty.session.suid.may_update[$asso.id])}
+          {if $asso && ($is_admin ||
+                        ($smarty.session.suid && ($smarty.session.suid.perms->hasFlag('admin') ||
+                                                  $smarty.session.suid.may_update[$asso.id])))}
           <div style="float: right">
             <form method="post" action="{$platal->ns}change_rights">
               <div style="display: inline">
                 <small>voir le site en tant que...
                 <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
-                  {if hasPerm('admin') || $smarty.session.suid.perms->hasFlag('admin')}
+                  {if hasPerm('admin') || ($smarty.session.suid && $smarty.session.suid.perms->hasFlag('admin'))}
                   <option value="admin" {if hasPerm('admin')}selected="selected"{/if}>Administrateur</option>
                   {/if}
                   <option value="anim" {if $is_admin && !hasPerm('admin')}selected="selected"{/if}>Animateur</option>
