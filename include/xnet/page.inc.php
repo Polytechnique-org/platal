@@ -114,7 +114,7 @@ class XnetPage extends PlatalPage
             $menu[$globals->asso('nom')] = $sub;
         }
 
-        if (is_object($perms) && $perms->hasFlag('groupadmin')) {
+        if ($globals->asso() && is_object($perms) && $perms->hasFlag('groupadmin')) {
             $sub = array();
             $sub['modifier l\'accueil'] = "$dim/edit";
             $sub['gérer les annonces'] = "$dim/admin/announces";
