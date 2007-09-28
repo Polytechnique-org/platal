@@ -89,9 +89,9 @@ class XnetPage extends PlatalPage
         $menu["no_title"]   = $sub;
 
         $perms = S::v('perms');
+        $dim = $globals->asso('diminutif');
         if (S::logged() && $globals->asso()) {
             $sub = array();
-            $dim = $globals->asso('diminutif');
             $sub['présentation'] = "login/$dim/";
             if ($perms->hasFlag('groupannu')) {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
