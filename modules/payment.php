@@ -80,8 +80,8 @@ class PaymentModule extends PLModule
             'payment'               => $this->make_hook('payment', AUTH_MDP),
             'payment/cyber_return'  => $this->make_hook('cyber_return',  AUTH_PUBLIC),
             'payment/paypal_return' => $this->make_hook('paypal_return',  AUTH_PUBLIC),
-            '%grp/paiement'              => $this->make_hook('xnet_payment', AUTH_MDP, 'groupmember'),
-            '%grp/payment'               => $this->make_hook('xnet_payment', AUTH_MDP, 'groupmember'),
+            '%grp/paiement'              => $this->make_hook('xnet_payment', AUTH_MDP),
+            '%grp/payment'               => $this->make_hook('xnet_payment', AUTH_MDP),
             '%grp/payment/cyber_return'  => $this->make_hook('cyber_return', AUTH_PUBLIC),
             '%grp/payment/paypal_return' => $this->make_hook('paypal_return', AUTH_PUBLIC),
             'admin/payments'        => $this->make_hook('admin', AUTH_MDP, 'admin'),
@@ -337,6 +337,21 @@ class PaymentModule extends PLModule
     function handler_xnet_payment(&$page, $pid = null)
     {
         global $globals;
+
+        $perms = S::v('perms');
+        if (!$perms->hasFlag('groupmember')) {
+            if (is_null($pid)) {
+                return PL_FORBIDDEN;
+            }
+            $res = XDB::query("SELECT  1
+                                 FROM  groupex.evenements AS e
+                           INNER JOIN  groupex.evenements_participants AS ep ON (ep.eid = e.eid AND uid = {?})
+                                WHERE  e.paiement_id = {?} AND e.asso_id = {?}",
+                              S::i('uid'), $pid, $globals->asso('id'));
+            if ($res->numRows() == 0) {
+                return PL_FORBIDDEN;
+            }
+        }
 
         if (!is_null($pid)) {
             return  $this->handler_payment($page, $pid);
