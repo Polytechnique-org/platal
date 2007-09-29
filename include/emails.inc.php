@@ -397,6 +397,7 @@ class Redirect
                     }
                     if ($broken) {
                         $mails[] = array('mail' => $mail->email, 'text' => $broken);
+                        break;
                     }
                 }
             }
