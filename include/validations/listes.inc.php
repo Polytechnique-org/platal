@@ -43,7 +43,7 @@ class ListeReq extends Validate
     public function __construct($_uid, $_liste, $_desc, $_advertise, $_modlevel,
                                 $_inslevel, $_owners, $_members, $_stamp=0)
     {
-        parent::__construct($_uid, true, 'liste', $_stamp);
+        parent::__construct($_uid, false, 'liste', $_stamp);
 
         $this->liste     = $_liste;
         $this->desc      = $_desc;
