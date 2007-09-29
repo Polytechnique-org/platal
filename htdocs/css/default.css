@@ -311,13 +311,13 @@ div.long td.rt { width: 65%; }
     border-right: 1px solid #888;
 }
 
-.wizard .wiz_header .active {
-    background: url('../images/skins/wiz_active.png') #444 top left repeat-x;
+.wizard .wiz_header .wiz_tab:hover {
+    background: url('../images/skins/wiz_hover.png') #777 top left repeat-x;
     color: #fff;
 }
 
-.wizard .wiz_header .wiz_tab:hover {
-    background: url('../images/skins/wiz_hover.png') #777 top left repeat-x;
+.wizard .wiz_header .active {
+    background: url('../images/skins/wiz_active.png') #444 top left repeat-x;
     color: #fff;
 }
 
@@ -335,13 +335,9 @@ div.long td.rt { width: 65%; }
     margin-left: 16px;
 }
 
-.flags {
-    margin: 0.5em 0 0 0;
-    padding: 0;
-}
 .flags input {
-    margin: 0px 2px;
-    padding: 0px;
+    padding: 0 0px 0 16px;
+    width: 32px;
 }
 .flags .texte {
     font-size: smaller;
@@ -350,18 +346,12 @@ div.long td.rt { width: 65%; }
 }
 .flags .vert {
     background: url('../images/icons/flag_green.gif') top right no-repeat;
-    padding: 0 16px 0 0;
-    margin-left: 16px;
 }
 .flags .orange {
     background: url('../images/icons/flag_orange.gif') top right no-repeat;
-    padding: 0 16px 0 0;
-    margin-left: 16px;
 }
 .flags .rouge {
     background: url('../images/icons/flag_red.gif') top right no-repeat;
-    padding: 0 16px 0 0;
-    margin-left: 16px;
 }
 
 table.cadre_a_onglet{
