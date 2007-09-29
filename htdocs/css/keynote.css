@@ -310,12 +310,12 @@ div.long td.rt { width: 65%; }
 .wizard .wiz_header {
     height: 32px;
     width: 100%;
-    background-color: #aaa;
+    background: url('../images/skins/wiz_background.png') top right repeat-x;
     margin-bottom: 1em;
 }
 
 .wizard .wiz_header .wiz_tab {
-    background-color: #aaa;
+    background; url('../images/skins/wiz_normal.png') #aaa top left repeat-x;
     vertical-align: middle;
     height: 100%;
     text-align: center;
@@ -324,12 +324,13 @@ div.long td.rt { width: 65%; }
 }
 
 .wizard .wiz_header .active {
-    background-color: #444;
+    background: url('../images/skins/wiz_active.png') #444 top left repeat-x;
     color: #fff;
 }
 
 .wizard .wiz_header .wiz_tab:hover {
-    background-color: #777;
+    background: url('../images/skins/wiz_hover.png') #777 top left repeat-x;
+    color: #fff;
 }
 
 .wizard .wiz_header a {
