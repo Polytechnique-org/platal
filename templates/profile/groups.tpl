@@ -23,14 +23,11 @@
 <table class="bicol" style="margin-bottom: 1em" summary="Profil: Informations Polytechniciennes">
   <tr>
     <th colspan="2">
+      <div class="flags" style="float: left">
+        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+      </div>
       Informations polytechniciennes
     </th>
-  </tr>
-  <tr>
-    <td colspan="2" class="flags">
-      <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
-      <span class="texte">privé</span>
-    </td>
   </tr>
   <tr class="top">
     <td class="titre" style="width: 30%">{if $old}ex-{/if}Section</td>

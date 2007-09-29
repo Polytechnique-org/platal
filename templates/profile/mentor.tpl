@@ -39,14 +39,11 @@
 <table class="bicol" style="margin-bottom: 1em" summary="Profil: Mentoring">
   <tr>
     <th>
+      <div class="flags" style="float: left">
+        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+      </div>
       Pays dont tu connais bien la culture professionnelle
     </th>
-  </tr>
-  <tr>
-    <td class="flags">
-      <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
-      <span class="texte">privé</span>
-    </td>
   </tr>
   <tr class="impair">
     <td>
@@ -75,14 +72,11 @@
 <table class="bicol" style="margin-bottom: 1em" summary="Profil: Mentoring">
   <tr>
     <th>
+      <div class="flags" style="float: left">
+        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+      </div>
       Secteurs d'activité dans lesquels tu as beaucoup exercé
     </th>
-  </tr>
-  <tr>
-    <td class="flags">
-      <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
-      <span class="texte">privé</span>
-    </td>
   </tr>
   <tr>
     <td id="secteur_sel">
@@ -123,14 +117,11 @@
 <table class="bicol" summary="Profil: Mentoring">
   <tr>
     <th>
+      <div class="flags" style="float: left">
+        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+      </div>
       Expérience et expertises que tu acceptes de faire partager
     </th>
-  </tr>
-  <tr>
-    <td class="flags">
-      <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
-      <span class="texte">privé</span>
-    </td>
   </tr>
   <tr>
     <td>

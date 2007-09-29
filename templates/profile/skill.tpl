@@ -23,34 +23,31 @@
 <table class="bicol" style="margin-bottom: 1em">
   <tr>
     <th>
+      <div class="flags" style="float: left">
+        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+      </div>
       Compétences professionnelles
     </th>
   </tr>
   <tr>
     <td>
-      <div class="flags">
-        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
-        <span class="texte">privé</span>
-      </div>
-      <div>
-        <span class="titre">Domaine&nbsp;:</span>
-        <select name="competences_sel" onchange="updateSkill('competences')">
-          <option value=""></option>
-          {assign var=ingroup value=false}
-          {iterate from=$comp_list item=comp}
-          {if $comp.title}
-          {if $ingroup}</optgroup>{/if}
-          <optgroup label="{$comp.text_fr}">
-          {assign var=ingroup value=true}
-          {/if}
-          <option value="{$comp.id}">{$comp.text_fr}</option>
-          {/iterate}
-          {if $ingroup}</optgroup>{/if}
-        </select>
-        <span id="competences_add" style="display: none">
-          <a href="javascript:addSkill('competences')">{icon name=add title="Ajouter cette compétence"}</a>
-        </span>
-      </div>
+      <span class="titre">Domaine&nbsp;:</span>
+      <select name="competences_sel" onchange="updateSkill('competences')">
+        <option value=""></option>
+        {assign var=ingroup value=false}
+        {iterate from=$comp_list item=comp}
+        {if $comp.title}
+        {if $ingroup}</optgroup>{/if}
+        <optgroup label="{$comp.text_fr}">
+        {assign var=ingroup value=true}
+        {/if}
+        <option value="{$comp.id}">{$comp.text_fr}</option>
+        {/iterate}
+        {if $ingroup}</optgroup>{/if}
+      </select>
+      <span id="competences_add" style="display: none">
+        <a href="javascript:addSkill('competences')">{icon name=add title="Ajouter cette compétence"}</a>
+      </span>
     </td>
   </tr>
   <tr class="pair">
@@ -64,26 +61,25 @@
 
 <table class="bicol">
   <tr>
-    <th>Compétences linguistiques</th>
+    <th>
+      <div class="flags" style="float: left">
+        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+      </div>
+      Compétences linguistiques
+    </th>
   </tr>
   <tr>
     <td>
-      <div class="flags">
-        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
-        <span class="texte">privé</span>
-      </div>
-      <div>
-        <span class="titre">Domaine&nbsp;:</span>
-        <select name="langues_sel" onchange="updateSkill('langues')">
-          <option value=""></option>
-          {iterate from=$lang_list item=lang}
-          <option value="{$lang.id}">{$lang.langue_fr}</option>
-          {/iterate}
-        </select>
-        <span id="langues_add" style="display: none">
-          <a href="javascript:addSkill('langues')">{icon name=add title="Ajouter cette langue"}</a>
-        </span>
-      </div>
+      <span class="titre">Domaine&nbsp;:</span>
+      <select name="langues_sel" onchange="updateSkill('langues')">
+        <option value=""></option>
+        {iterate from=$lang_list item=lang}
+        <option value="{$lang.id}">{$lang.langue_fr}</option>
+        {/iterate}
+      </select>
+      <span id="langues_add" style="display: none">
+        <a href="javascript:addSkill('langues')">{icon name=add title="Ajouter cette langue"}</a>
+      </span>
     </td>
   </tr>
   <tr class="pair">

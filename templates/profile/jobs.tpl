@@ -36,17 +36,16 @@
 <table class="bicol" summary="CV" style="margin-top: 1.5em">
   <tr>
     <th>
+      <div class="flags" style="float: left">
+        <span class="rouge"><input type="checkbox" name="accesCV" checked="checked" disabled="disabled" /></span>
+      </div>
       Curriculum vitae
     </th>
   </tr>
   <tr>
     <td>
       <div style="float: left; width: 25%">
-        <div class="flags">
-          <span class="rouge"><input type="checkbox" name="accesCV" checked="checked" disabled="disabled" /></span>
-          <span class="texte">privé</span>
-        </div>
-        <div class="smaller" style="margin-top: 30px">
+        <div class="smaller" style="margin-top: 40px">
           <a href="Xorg/FAQ?display=light#cv" class="popup_800x480">
             {icon name="lightbulb" title="Astuce"}Comment remplir mon CV&nbsp;?
           </a><br />

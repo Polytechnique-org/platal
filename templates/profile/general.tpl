@@ -24,48 +24,43 @@
   summary="Profil : Informations générales">
   <tr>
     <th colspan="2">
+      <div class="flags" style="float: left">
+        <span class="vert">
+          <input type="checkbox" disabled="disabled" checked="checked" />
+        </span>
+      </div>
       Informations générales
     </th>
   </tr>
   <tr>
-    <td colspan="2" class="flags">
-      <span class="vert">
-        <input type="checkbox" disabled="disabled" checked="checked" />
-      </span>
-      <span class="texte">
-        site public
-      </span>
-    </td>
-  </tr>
-  <tr>
-    <td class="colg">
+    <td>
       <span class="titre">Nom</span>
       <span class="comm"></span>
     </td>
-    <td class="cold">
+    <td>
       <input type='text' name='nom' {if $errors.nom}class="error"{/if} value="{$nom}" />
     </td>
   </tr>
   <tr>
-    <td class="colg">
+    <td>
       <span class="titre">Prénom</span>
       <span class="comm"></span>
     </td>
-    <td class="cold">
+    <td>
       <input type='text' name='prenom' {if $errors.prenom}class="error"{/if} value="{$prenom}" />
     </td>
   </tr>
   <tr>
-    <td class="colg">
+    <td>
       <span class="titre">Promotion</span>
     </td>
-    <td class="cold">
+    <td>
       <span class="nom">X{$promo}{if ($promo != $promo_sortie - 3)} - X{math equation="a - b" a=$promo_sortie b=3}{/if}</span>
       <span class="lien"><a href="profile/orange">modifier</a>{if ($promo_sortie -3 == $promo)} pour les oranges{/if}</span>
     </td>
   </tr>
   <tr>
-    <td class="colg">
+    <td>
       <span class="titre">Nom d'usage</span><br />
       {if $smarty.session.sexe}
       <span class="comm">(Notamment nom d'épouse)</span>
@@ -73,7 +68,7 @@
       <span class="comm">(si différent de {$nom} seulement)</span>
       {/if}
     </td>
-    <td class="cold">
+    <td>
       <span class="nom">{$nom_usage|default:"Aucun"}</span>
       <span class="lien"><a href="profile/usage">modifier</a></span>
     </td>
@@ -83,21 +78,21 @@
     <td><input type="text" {if $errors.naissance}class="error"{/if} name="naissance" value="{$naissance}" /></td>
   </tr>
   <tr>
-    <td class="colg">
+    <td>
       <span class="titre">Nationalité</span>
     </td>
-    <td class="cold">
+    <td>
       <select name="nationalite">
         {select_nat valeur=$nationalite}
       </select>
     </td>
   </tr>
   <tr class="pair">
-    <td class="colg">
+    <td>
       <span class="titre">Application</span><br />
       <span class="comm">(4ème année de l'X)</span>
     </td>
-    <td class="cold">
+    <td>
       <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">
         {applis_options selected=$appli1.id}
       </select>
@@ -109,10 +104,10 @@
     </td>
   </tr>
   <tr class="pair">
-    <td class="dcolg">
+    <td>
       <span class="titre">Post-application</span>
     </td>
-    <td class="dcold">
+    <td>
       <select name="appli2[id]" onchange="fillType(this.form['appli2[type]'], this.selectedIndex-1);">
         {applis_options selected=$appli2.id}
       </select>
@@ -134,6 +129,16 @@
     </th>
   </tr>
   <tr>
+    <td class="flags">
+      <span class="orange">
+        <input type="checkbox" name="synchro_ax" {if $synchro_ax}checked="checked" {/if}/>
+      </span>
+      <span class="texte">
+        Autoriser la synchronisation vers l'AX par des administrateurs ou des scripts automatiques.
+      </span>
+    </td>
+  </tr>
+  <tr>
     <td>
       <p>
         Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met à jour l'annuaire papier à partir des informations que tu lui fournis. Tu peux choisir ici d'envoyer directement les données de ta fiche Polytechnique.org vers ta <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a>.
@@ -146,20 +151,6 @@
       </p>
     </td>
   </tr>
-  <tr>
-    <td class="col">
-      <table class="flags" cellspacing="0" summary="Flags">
-        <tr>
-          <td class="orange">
-            <input type="checkbox" name="synchro_ax" {if $synchro_ax}checked="checked" {/if}/>
-          </td>
-          <td class="texte">
-            Autoriser la synchronisation vers l'AX par des administrateurs ou des scripts automatiques.
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
 </table>
 {/if}
 
@@ -167,14 +158,11 @@
   summary="Profil: Trombinoscope">
   <tr>
     <th colspan="2">
+      <div class="flags" style="float: left">
+        <span class="vert"><input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/></span>
+      </div>
       Trombinoscope
     </th>
-  </tr>
-  <tr>
-    <td class="flags" colspan="2">
-      <span class="vert"><input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/></span>
-      <span class="texte">site public</span>
-    </td>
   </tr>
   <tr>
     <td {if !$nouvellephoto}colspan="2"{/if} class="center" style="width: 49%">
@@ -213,113 +201,54 @@
     </th>
   </tr>
   <tr>
-    <td colspan="2" class="pflags">
-      <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="rouge">
-            <input type="checkbox" disabled="disabled" checked="checked" />
-          </td>
-          <td class="texte">
-            privé
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr>
-    <td class="colg">
+    <td>
+      <span class="flags">
+        <span class="rouge">
+        <input type="checkbox" checked="checked" disabled="disabled" />
+        </span>
+      </span>&nbsp;
       <span class="titre">Surnom</span>
     </td>
-    <td class="cold">
+    <td>
       <input type="text" size="35" maxlength="64"
              {if $errors.nick}class="error"{/if} name="nick" value="{$nick}" />
     </td>
   </tr>
   <tr>
-    <td colspan="2" class="pflags">
-      <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="vert">
-            <input type="radio" name="mobile_pub" {if $mobile_pub eq 'public'}checked="checked"{/if} value='public' />
-          </td>
-          <td class="texte">
-            site public
-          </td>
-          <td class="orange">
-            <input type="radio" name="mobile_pub" {if $mobile_pub eq 'ax'}checked="checked"{/if} value='ax' />
-          </td>
-          <td class="texte">
-            transmis à l'AX
-          </td>
-          <td class="rouge">
-            <input type="radio" name="mobile_pub" {if $mobile_pub eq 'private'}checked="checked"{/if} value='private' />
-          </td>
-          <td class="texte">
-            privé
-          </td>
-          <td class="texte">
-            <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr>
-    <td class="colg">
+    <td>
       <span class="titre">Téléphone mobile</span>
     </td>
-    <td class="cold">
+    <td>
       <input type="text" size="18" maxlength="18" name="mobile"
              {if $errors.mobile}class="error"{/if} value="{$mobile}" />
+      <span class="flags">
+        {include file="include/flags.radio.tpl" name="mobile_pub" notable="true" var=$mobile_pub display="div"}
+      </span>
     </td>
   </tr>
   <tr>
-    <td colspan="2" class="flags">
-      <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="vert">
-            <input type="checkbox" name="web_pub" {if $web_pub eq 'public'}checked="checked"{/if} />
-          </td>
-          <td class="texte">
-            site public
-          </td>
-          <td class="texte">
-            <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr>
-    <td class="dcolg">
+    <td>
+      <span class="flags">
+        <span class="vert">
+        <input type="checkbox" name="web_pub" {if $web_pub eq 'public'}checked="checked"{/if} />
+        </span>
+      </span>&nbsp;
       <span class="titre">Page web Perso</span>
     </td>
-    <td class="dcold">
+    <td>
       <input type="text" size="35" maxlength="95" name="web"
              {if $errors.web}class="error"{/if} value="{$web}" />
     </td>
   </tr>
   <tr>
-    <td colspan="2" class="pflags">
-      <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="vert">
-            <input type="checkbox" name="freetext_pub" {if $freetext_pub eq 'public'}checked="checked"{/if} />
-          </td>
-          <td class="texte">
-            site public
-          </td>
-          <td class="texte">
-            <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr>
-    <td class="dcolg">
+    <td>
       <div>
-        <span class="titre">Complément libre</span>
+        <span class="flags">
+          <span class="vert">
+          <input type="checkbox" name="freetext_pub" {if $freetext_pub eq 'public'}checked="checked"{/if} />
+          </span>
+        </span>&nbsp;
+        <span class="titre">Complément libre</span><br />
         <span class="comm">Commentaire ? ICQ ? etc...</span>
       </div>
       <div class="smaller" style="margin-top: 30px">
@@ -332,7 +261,7 @@
         </div>
       </div>
     </td>
-    <td class="dcold">
+    <td>
       <div id="ft_preview" style="display: none"></div>
       <textarea name="freetext" {if $errors.freetext}class="error"{/if}
                 id="freetext" rows="8" cols="35" >{$freetext}</textarea>
