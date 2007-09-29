@@ -49,7 +49,8 @@ class ProfileNom implements ProfileSetting
         $new = $this->prepareField($value);
         $newLen = strlen($new);
         $success = $this->matchWord($old, $new, $newLen)
-                || $this->matchWord($ini, $new, $newLen);
+                || $this->matchWord($ini, $new, $newLen)
+                || ($field == 'nom' && $new == 'DE ' . $old);
         if (!$success) {
             global $page;
             $page->trig("Le $field que tu as choisi ($value) est trop loin de ton $field initial ($init)"
