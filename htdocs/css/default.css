@@ -316,7 +316,7 @@ div.long td.rt { width: 65%; }
     color: #fff;
 }
 
-.wizard .wiz_header .active {
+.wizard .wiz_header .active, .wizard .wiz_header .active:hover {
     background: url('../images/skins/wiz_active.png') #444 top left repeat-x;
     color: #fff;
 }
