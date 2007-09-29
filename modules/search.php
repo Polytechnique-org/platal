@@ -93,7 +93,7 @@ class SearchModule extends PLModule
             if (S::has_perms()) {
                 $list .= '|admin|adm|ax';
             }
-            if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.\d{2,4})?)?)$/', $quick, $matches)) {
+            if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.\d{2,4})?)?)$/', replace_accent($quick), $matches)) {
                 $forlife = $matches[2];
                 switch($matches[1]) {
                   case 'admin': case 'adm':
