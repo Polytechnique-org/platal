@@ -1,2 +1,3 @@
 platal.conf
 platal.cron
+*.pem
