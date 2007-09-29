@@ -271,6 +271,7 @@ class Platal
 
     public function force_login(PlatalPage &$page)
     {
+        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
         if (S::logged()) {
             $page->changeTpl('core/password_prompt_logged.tpl');
             $page->addJsLink('do_challenge_response_logged.js');
