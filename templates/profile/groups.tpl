@@ -73,42 +73,17 @@
         <a href="http://www.polytechnique.net">Polytechnique.net</a>. Pour faire apparaître un groupe sur ta fiche
         il faut que soit inscrit dans ce groupe sur l'annuaire sur Polytechnique.net.
       </p>
-      <p>
-        Tu es actuellement inscrit aux groupes X suivants&nbsp;:
-      </p>
     </td>
   </tr>
-  {iterate from=$mygroups item=group}
   <tr>
-    <td class="titre">
-      {if $group.pub neq 'public'}{icon name=error title="Liste de membres a accès restreint"}{/if}
-      {if $group.perms eq 'admin'}{icon name=wrench title="Tu es administrateur du groupe"}{/if}
-      {if $group.site}<a href="{$group.site}">{else}<a href="http://www.polytechnique.net/{$group.diminutif}">{/if}
-      {$group.nom}
-      </a>
-    </td>
-    <td style="text-align: right; width: 30%">
-      <a href="{if $group.unsub_url}{$group.unsub_url}{else}http://www.polytechnique.net/{$group.diminutif}/unsubscribe{/if}">
-        {icon name=cross title="Demander désinscription"} Demander ta désinscription
-      </a>
-    </td>
-  </tr>
-  {/iterate}
-  <tr>
-    <td colspan="2" class="smaller">
-      <div class="titre">Signification des symboles&nbsp;:</div>
-      {icon name=error} L'annuaire du groupe est à visibilité restreinte et ce groupe n'apparaîtra pas sur ta fiche<br />
-      {icon name=wrench} Tu es administrateur du groupe
-    </td>
-  </tr>
-  <tr class="pair">
     <td colspan="2">
       <p>
         Tu peux demander ton inscription aux groupes X qui t'intéressent. Voici la liste de ceux disponibles actuellement
         sur Polytechnique.net et qui autorisent les demandes d'inscription&nbsp;:
       </p>
     </td>
-  <tr class="pair">
+  </tr>
+  <tr>
     <td>
       {assign var=groupcat value=""}
       {assign var=ingroup value=false}
@@ -138,6 +113,46 @@
       </a>
     </td>
   </tr>
+  {if $mygroups->total()}
+  <tr class="pair">
+    <td colspan="2">Tu es actuellement dans les groupes suivants :</td>
+  </tr>
+  {/if}
+  {assign var=grp_admin value=false}
+  {assign var=grp_public value=false}
+  {iterate from=$mygroups item=group}
+  <tr class="pair">
+    <td class="titre">
+      {if $group.pub neq 'public'}
+        {icon name=error title="Liste de membres a accès restreint"}
+        {assign var=grp_public value=true}
+      {/if}
+      {if $group.perms eq 'admin'}
+        {icon name=wrench title="Tu es administrateur du groupe"}
+        {assign var=grp_admin value=true}
+      {/if}
+      {if $group.site}<a href="{$group.site}">{else}<a href="http://www.polytechnique.net/{$group.diminutif}">{/if}
+      {$group.nom}
+      </a>
+    </td>
+    <td style="text-align: right; width: 30%">
+      <a href="{if $group.unsub_url}{$group.unsub_url}{else}http://www.polytechnique.net/{$group.diminutif}/unsubscribe{/if}">
+        {icon name=cross title="Demander désinscription"} Demander ta désinscription
+      </a>
+    </td>
+  </tr>
+  {/iterate}
+  {if $grp_admin || $grp_public}
+  <tr class="pair">
+    <td colspan="2" class="smaller">
+      <div class="titre">Signification des symboles&nbsp;:</div>
+      {if $grp_public}{icon name=error} L'annuaire du groupe est à visibilité restreinte et ce groupe n'apparaîtra pas sur ta
+      fiche{/if}
+      {if $grp_public && $grp_admin}<br />{/if}
+      {if $grp_admin}{icon name=wrench} Tu es administrateur du groupe{/if}
+    </td>
+  </tr>
+  {/if}
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

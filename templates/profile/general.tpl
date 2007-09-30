@@ -240,7 +240,7 @@
              {if $errors.web}class="error"{/if} value="{$web}" />
     </td>
   </tr>
-  <tr>
+  <tr class="pair">
     <td>
       <div>
         <span class="flags">
@@ -253,7 +253,7 @@
       </div>
       <div class="smaller" style="margin-top: 30px">
         <a href="wiki_help/notitle" class="popup3">
-          {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le commentaire
+          {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée
         </a>
         <div class="center">
           <input type="submit" name="preview" value="Aperçu"
@@ -264,7 +264,7 @@
     <td>
       <div id="ft_preview" style="display: none"></div>
       <textarea name="freetext" {if $errors.freetext}class="error"{/if}
-                id="freetext" rows="8" cols="35" >{$freetext}</textarea>
+                id="freetext" rows="8" cols="50" >{$freetext}</textarea>
     </td>
   </tr>
 </table>
