@@ -195,7 +195,7 @@ class ContactsPDF extends FPDF
         if (!empty($a['tels'])) {
             foreach ($a['tels'] as $tel) {
                 if (!empty($tel['tel'])) {
-                    $this->TableRow($tel['tel_type'], $tel['tel'], 'Mono');
+                    $this->TableRow(utf8_decode($tel['tel_type']), $tel['tel'], 'Mono');
                 }
             }
         }
