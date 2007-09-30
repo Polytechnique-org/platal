@@ -82,31 +82,42 @@ class BananaModule extends PLModule
         && Post::has('bananaupdate') && Post::v('action')=="OK" ))
         {
             $req = XDB::query("
-                SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
-                        IF(FIND_IN_SET('automaj',flags),'1','0')
+                SELECT  nom, mail, sig,
+                        FIND_IN_SET('threads', flags),
+                        FIND_IN_SET('automaj', flags),
+                        FIND_IN_SET('xface', flags)
                   FROM  forums.profils
                  WHERE  uid = {?}", S::v('uid'));
-            if (!(list($nom,$mail,$sig,$disp,$maj) = $req->fetchOneRow())) {
-                $nom  = S::v('prenom').' '.S::v('nom');
-                $mail = S::v('forlife').'@'.$globals->mail->domain;
-                $sig  = $nom.' ('.S::v('promo').')';
-                $disp = 0;
-                $maj  = 0;
+            if (!(list($nom, $mail, $sig, $disp, $maj, $xface) = $req->fetchOneRow())) {
+                $nom   = S::v('prenom').' '.S::v('nom');
+                $mail  = S::v('forlife').'@'.$globals->mail->domain;
+                $sig   = $nom.' ('.S::v('promo').')';
+                $disp  = 0;
+                $maj   = 0;
+                $xface = 0;
             }
-            $page->assign('nom' , $nom);
-            $page->assign('mail', $mail);
-            $page->assign('sig' , $sig);
-            $page->assign('disp', $disp);
-            $page->assign('maj' , $maj);
+            $page->assign('nom' ,  $nom);
+            $page->assign('mail',  $mail);
+            $page->assign('sig',   $sig);
+            $page->assign('disp',  $disp);
+            $page->assign('maj',   $maj);
+            $page->assign('xface', $xface);
         } else {
-            XDB::execute(
-                'REPLACE INTO  forums.profils (uid,sig,mail,nom,flags)
-                       VALUES  ({?},{?},{?},{?},{?})',
-                S::v('uid'), Post::v('bananasig'),
-                Post::v('bananamail'), Post::v('banananame'),
-                (Post::b('bananadisplay') ? 'threads,' : '') .
-                (Post::b('bananaupdate') ? 'automaj' : '')
-            );
+            $flags = array();
+            if (Post::b('bananadisplay')) {
+                $flags[] = 'threads';
+            }
+            if (Post::b('bananaupdate')) {
+                $flags[] = 'automaj';
+            }
+            if (Post::b('bananaxface')) {
+                $flags[] = 'xface';
+            }
+            XDB::execute("REPLACE INTO  forums.profils (uid, sig, mail, nom, flags)
+                                VALUES  ({?}, {?}, {?}, {?}, {?})",
+                         S::v('uid'), Post::v('bananasig'),
+                         Post::v('bananamail'), Post::v('banananame'),
+                         implode(',', $flags));
         }
     }
 

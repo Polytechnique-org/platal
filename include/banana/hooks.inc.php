@@ -170,6 +170,33 @@ function hook_makeLink($params)
 }
 }
 
+function hook_hasXFace($headers)
+{
+    return isset($headers['x-org-id']) || isset($headers['x-org-mail']);
+}
+
+function hook_getXFace($headers)
+{
+    $login = @$headers['x-org-id'];
+    if (!$login) {
+        @list($login, ) = explode('@', $headers['x-org-mail']);
+    }
+    if (!$login) {
+        return false;
+    }
+    if (isset($headers['x-face'])) {
+        $res = XDB::query("SELECT  p.uid
+                             FROM  forums.profils AS p
+                       INNER JOIN  aliases AS a ON (p.uid = a.id)
+                            WHERE  FIND_IN_SET('xface', p.flags) AND a.alias = {?}",
+                          $login);
+        if ($res->numRows()) {
+            return false;
+        }
+    }
+    pl_redirect('photo/' . $login);
+}
+
 function hook_makeJs($src)
 {
     global $page;

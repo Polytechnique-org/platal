@@ -3,6 +3,9 @@ VERSION 0.9.15                                                        XX XX 2007
 
 New:
 
+    * Banana:
+        - Show poster photo                                                -FRU
+
     * Core:
         - Auto-redirect HTML pages to HTTPS                                -FRU
 

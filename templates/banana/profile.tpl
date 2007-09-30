@@ -38,7 +38,7 @@
 {if !$smarty.post.action}
 
       <p class="normal">
-        Tu peux régler quelques paramètres qui apparaîtront sur les messages lorsque 
+        Tu peux régler quelques paramètres qui apparaîtront sur les messages lorsque
         tu posteras sur les forums. Cela ne te permettra pas d'être anonyme, puisque
         tout le monde pourra remonter à ton identité en regardant ta fiche. L'objectif
         est simplement de permettre plus de convivialité.
@@ -53,66 +53,50 @@
       <form action="banana/profile" method="post">
         <table class="bicol" cellpadding="3" cellspacing="0" summary="Configuration de Banana">
           <tr>
-            <th colspan="2">
-              Profil Banana
-            </th>
+            <th colspan="2">Profil Banana</th>
+          </tr>
+          <tr>
+            <td class="titre">Nom</td>
+            <td><input type="text" name="banananame" value="{$nom}" /></td>
+          </tr>
+          <tr>
+            <td class="titre">Adresse électronique</td>
+            <td><input type="text" name="bananamail" value="{$mail}" /></td>
+          </tr>
+          <tr>
+            <td class="titre">Signature</td>
+            <td><textarea name="bananasig" cols="50" rows="4">{$sig}</textarea></td>
           </tr>
           <tr class="pair">
-            <td class="bicoltitre">
-              Nom
-            </td>
+            <td class="titre">Affichage des fils de discussion</td>
             <td>
-              <input type="text" name="banananame" value="{$nom}" />
-            </td>
-          </tr>
-          <tr class="impair">
-            <td class="bicoltitre">
-              Adresse électronique
-            </td>
-            <td>
-              <input type="text" name="bananamail" value="{$mail}" />
-            </td>
-          </tr>
-          <tr class="pair">
-            <td class="bicoltitre">
-              Signature
-            </td>
-            <td>
-              <textarea name="bananasig" cols="50" rows="4">{$sig}</textarea>
-            </td>
-          </tr>
-          <tr class="impair">
-            <td class="bicoltitre">
-              Affichage des fils de discussion
-            </td>
-            <td>
-              <input type="radio" name="bananadisplay" value="0" 
-              {if !$disp}checked="checked"{/if} /> Afficher tous 
+              <input type="radio" name="bananadisplay" value="0"
+              {if !$disp}checked="checked"{/if} /> Afficher tous
               les messages
               <br />
-              <input type="radio" name="bananadisplay" value="1" 
-              {if $disp}checked="checked"{/if} /> Afficher 
-              seulement les fils de discussion contenant des messages non lus 
+              <input type="radio" name="bananadisplay" value="1"
+              {if $disp}checked="checked"{/if} /> Afficher
+              seulement les fils de discussion contenant des messages non lus
             </td>
           </tr>
           <tr class="pair">
-            <td class="bicoltitre">
-              Mise à jour des messages non lus
-            </td>
+            <td class="titre">Mise à jour des messages non lus</td>
             <td>
-              <input type="radio" name="bananaupdate" value="1" 
+              <input type="radio" name="bananaupdate" value="1"
               {if $maj}checked="checked"{/if} /> Automatique
               <br />
-              <input type="radio" name="bananaupdate" value="0" 
+              <input type="radio" name="bananaupdate" value="0"
               {if !$maj}checked="checked"{/if} /> Manuelle
             </td>
           </tr>
-          <tr class="impair">
-            <td class="bouton" colspan="2">
-              <input type="submit" name="action" value="OK" />
+          <tr class="pair">
+            <td class="titre" colspan="2">
+              <input type="checkbox" {if $xface}checked="checked"{/if} name="bananaxface" id="xface" />
+              <label for="xface">Afficher mon X-Face plutôt que ma photo si il est disponible</label>
             </td>
           </tr>
         </table>
+        <div class="center"><input type="submit" name="action" value="Enregistrer" /></div>
       </form>
 
 {else}
@@ -124,5 +108,13 @@
     </td>
   </tr>
 </table>
+
+<p class="smaller">
+  {icon name="lightbulb" title="Astuce"}Astuce&nbsp;:
+  Tu peux également consulter les fora en utilisant un client NNTP tel que
+  Outlook Express ou Thunderbird.<br />N'hésite pas à <a href="password/smtp?doc=nntp">
+  consulter la documentation et à activer ton accès</a> pour utiliser ce service.
+</p>
+
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
