@@ -42,8 +42,11 @@ function advancedSearchFromInput()
     $subscriberField = new RefSField('subscriber',array('!(u.perms IN (\'admin\',\'user\'))+1'),'','','');
     $aliveField      = new RefSField('alive',array('(u.deces!=0)+1'),'','','');
 
-    $townField      = new RefSField('city',array('ac.city'),'adresses','ac',getadr_join('ac'),false);
-    $cityIdField    = new RefSField('cityid',array('av.cityid'),'adresses','av',getadr_join('av'));
+    if (!Env::i('cityid')) {
+        $townField      = new RefSField('city',array('ac.city'),'adresses','ac',getadr_join('ac'),false);
+    } else {
+        $townField    = new RefSField('cityid',array('av.cityid'),'adresses','av',getadr_join('av'));
+    }
     $countryField   = new RefSField('country',array('ap.country'),'adresses','ap',getadr_join('ap'));
     $regionField    = new RefSField('region',array('ar.region'),'adresses','ar',getadr_join('ar'));
     $mapField       = new MapSField('mapid', array('sgcim.map_id'), array('adresses','geoloc_city_in_maps'), array('amp','sgcim'), array(getadr_join('amp'), 'amp.cityid = sgcim.city_id'));
@@ -71,7 +74,7 @@ function advancedSearchFromInput()
                 $townField, $countryField, $regionField, $mapField, $entrepriseField,
                 $posteField, $secteurField, $cvField, $natField, $binetField,
                 $groupexField, $sectionField, $schoolField, $diplomaField,
-                $freeField, $fonctionField, $cityIdField);
+                $freeField, $fonctionField);
 }
 
 // }}}
