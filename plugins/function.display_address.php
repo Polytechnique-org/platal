@@ -59,7 +59,7 @@ function smarty_function_display_address($param, &$smarty)
 
     $txthtml = "";
     $map = "<a href=\"http://maps.google.fr/?q="
-        .   urlencode(str_replace('États-Unis d\'Amérique', 'USA', implode(", ", $lines) . " ($idt)"))
+        .   urlencode(implode(", ", $lines) . " ($idt)")
         . "\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
     if ($restore) {
         array_unshift($lines, $idt);
