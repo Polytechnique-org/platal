@@ -51,7 +51,7 @@ class EventsModule extends PLModule
                                    . '.<br /> Nous t\'invitons à <a href="review">faire un tour d\'horizon des '
                                    . 'nouveautés</a>.<br /><br />'
                                    . 'Tu peux également retrouver ces informations sur <a href="banana/xorg.m4x.innovation">'
-                                   . 'les fora</a>, ou sur <a href="changelog">la liste exhaustive des modifications</a>',
+                                   . 'les fora</a>, ou sur <a href="changelog">la liste exhaustive des modifications</a>.',
                          'priorite' => 255,
                          'promo_min' => 0,
                          'promo_max' => 0,
@@ -127,7 +127,7 @@ class EventsModule extends PLModule
             $page->trig('Impossible de télécharger l\'image');
             return false;
         } elseif (!$upload->isType('image')) {
-            $page->trig('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG');
+            $page->trig('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG.');
             $upload->rm();
             return false;
         } elseif (!$upload->resizeImage(200, 300, 100, 100, 32284)) {
