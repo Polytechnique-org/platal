@@ -109,11 +109,18 @@ class SearchModule extends PLModule
                     $base = 'referent/';
                     break;
                 }
-                pl_redirect($base . $forlife);
+
+                require_once 'user.func.inc.php';
+                $login = get_user_forlife($forlife, '_silent_user_callback');
+                if ($login) {
+                    pl_redirect($base . $login);
+                }
+                $_REQUEST['quick'] = $forlife;
+                $_GET['quick'] = $forlife;
             } elseif (strpos($quick, 'doc:') === 0) {
                 $url = 'Docs/Recherche?';
                 $url .= 'action=search&q=' . urlencode(substr($quick, 4));
-                $url .= '&group=' . urlencode('-Equipe,-Main,-PmWiki,-Site');
+                $url .= '&group=' . urlencode('-Equipe,-Main,-PmWiki,-Site,-Review');
                 pl_redirect($url);
             }
 
