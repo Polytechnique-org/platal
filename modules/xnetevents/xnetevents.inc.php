@@ -130,7 +130,7 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
                    IF(m.origine != 'X' OR u.perms = 'pending',m.email,a.alias) AS email,
                    IF(m.origine != 'X',m.sexe,FIND_IN_SET('femme', u.flags)) AS femme,
                    m.perms='admin' AS admin,
-                   (m.origine = 'X') AS x,
+                   (m.origine = 'X' OR m.origine IS NULL) AS x,
                    ep.uid, SUM(ep.paid) AS paid, SUM(nb) AS nb,
                    FIND_IN_SET('notify_payment', ep.flags) AS notify_payment
              FROM  groupex.evenements_participants AS ep
