@@ -31,7 +31,7 @@ class EmailModule extends PLModule
             'emails/redirect' => $this->make_hook('redirect', AUTH_MDP),
             'emails/send'     => $this->make_hook('send', AUTH_MDP),
             'emails/antispam/submit'  => $this->make_hook('submit', AUTH_COOKIE),
-            'emails/test'     => $this->make_hook('test', AUTH_PUBLIC),
+            'emails/test'     => $this->make_hook('test', AUTH_COOKIE, 'user', NO_AUTH),
 
             'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
             'admin/emails/watch'      => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
