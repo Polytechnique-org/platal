@@ -52,37 +52,19 @@ function searchMapId()
   
   {if $smarty.request.only_current neq 'on'}
   <p class="center">
-    [<a href="{$platal->ns}{$plset_base}{$plset_search}only_current=on">Ne voir que les adresses principales</a>]
+    [<a href="{$platal->ns}{$plset_base}/geoloc{$plset_search}only_current=on">Ne voir que les adresses principales</a>]
   </p>
   {/if}
   
   <p class="center">
   <object
-    classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
-    codebase="{$protocole}://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
+    type="application/x-shockwave-flash"
+    data="{$platal->ns}{$plset_base}/geoloc/dynamap.swf"
     width="600"
-    height="450"
-    align="middle">
-      <param name="movie" value="{$platal->ns}{$plset_base}/dynamap.swf"/>
-      <param name="bgcolor" value="#ffffff"/>
-      <param name="wmode" value="opaque"/>
-      <param name="quality" value="high"/>
-      <param name="flashvars" value="initfile={$platal->ns|urlencode}{$plset_base|urlencode}%2Finit{$plset_search_enc}"/>
-      <embed
-        src="{$platal->ns}{$plset_base}/dynamap.swf"
-        quality="high"
-        bgcolor="#ffffff"
-        width="600"
-        height="450"
-        name="dynamap"
-        id="dynamap"
-        align="middle"
-        flashvars="initfile={$platal->ns|urlencode}{$plset_base|urlencode}%2Finit{$plset_search_enc}"
-        type="application/x-shockwave-flash"
-        menu="false"
-        wmode="opaque"
-        salign="tl"
-        pluginspage="{$protocole}://www.macromedia.com/go/getflashplayer"/>
+    height="450">
+      <param name="movie" value="{$platal->ns}{$plset_base}/geoloc/dynamap.swf"/>
+      <param name="wmode" value="transparent"/>
+      <param name="flashvars" value="initfile=init{$plset_search_enc}"/>
     </object>
   </p>
   {if $annu}

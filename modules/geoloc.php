@@ -36,7 +36,7 @@ class GeolocModule extends PLModule
 
         $set = new UserSet();
         $set->addMod('geoloc', 'Geolocalisation', true);
-        $set->apply('geoloc', $page, 'geoloc', $action);
+        $set->apply('geoloc', $page, $action, $subaction);
     }
 
     function handler_admin(&$page, $action = false) {

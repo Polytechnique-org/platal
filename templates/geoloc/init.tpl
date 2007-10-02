@@ -46,5 +46,14 @@ zoomBarBackgroundColor="{$background}"
 textCopyright="Les règles de l'annuaire s'appliquent aussi à cette application"
 autofolder="true"
 iconSwf="icon.swf"
-scriptInfosArea="country{$plset_search|escape_html}"/>
+scriptInfosArea="country{$plset_search|escape_html}">
+<translation>
+  <text name="Hide/Show labels" value="Montrer/Cacher les étiquettes"/>
+  <text name="- You are in " value="Vous êtes dans "/>
+  <text name="Loading first part of XML data" value="Chargement des données"/>
+  <text name="Loading own map" value="Chargement de la carte principale"/>
+  <text name="Loading XML data" value="Chargement des données"/>
+  <text name="Loading maps of sub-countries" value="Chargement des cartes"/>
+</translation>
+</config>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
