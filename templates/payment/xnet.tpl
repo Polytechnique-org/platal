@@ -122,7 +122,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
       <a href="mailto:{$p.alias}@{#globals.mail.domain#}">{icon name=email title="mail"}</a>
     </td>
     <td class="center">{$p.promo}</td>
-    <td>{$p.comment}</td>
+    <td>{$p.comment|urldecode}</td>
     <td class="right">{$p.montant}</td>
   </tr>
   {elseif $smarty.foreach.people.first}
