@@ -64,7 +64,6 @@ function remplitAuto(mail) {
   var f = document.getElementById('montant');
   if (f)
       f.mail.value=mail;
-  return false;
 }
 </script>
 {/literal}
