@@ -325,23 +325,14 @@ div.long td.rt { width: 65%; }
     margin-right: 1em;
 }
 
-.flags input {
-    padding: 0 0px 0 16px;
-    width: 32px;
-}
 .flags .texte {
     font-size: smaller;
     font-weight: bold;
-    padding: 0 8px 0 0;
+    margin-left: -6px;
+    padding: 0 12px 0 0;
 }
-.flags .vert {
-    background: url('../images/icons/flag_green.gif') top right no-repeat;
-}
-.flags .orange {
-    background: url('../images/icons/flag_orange.gif') top right no-repeat;
-}
-.flags .rouge {
-    background: url('../images/icons/flag_red.gif') top right no-repeat;
+.flags img {
+    padding: 0 6px 0 0;
 }
 
 table.cadre_a_onglet{

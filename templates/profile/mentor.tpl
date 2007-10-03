@@ -40,7 +40,8 @@
   <tr>
     <th>
       <div class="flags" style="float: left">
-        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+        <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
+        {icon name="flag_red" title="privé"}
       </div>
       Pays dont tu connais bien la culture professionnelle
     </th>
@@ -73,7 +74,8 @@
   <tr>
     <th>
       <div class="flags" style="float: left">
-        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+        <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
+        {icon name="flag_red" value="privé"}
       </div>
       Secteurs d'activité dans lesquels tu as beaucoup exercé
     </th>
@@ -118,7 +120,8 @@
   <tr>
     <th>
       <div class="flags" style="float: left">
-        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+        <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
+        {icon name="flag_red" title="privé"}
       </div>
       Expérience et expertises que tu acceptes de faire partager
     </th>

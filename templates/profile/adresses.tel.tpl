@@ -23,7 +23,7 @@
 {assign var=telpref value="`$adpref`[tel][`$t`]"}
 {assign var=telid value="`$adid`_tel_`$t`"}
 <div style="float: right" class="flags">
-  {include file="include/flags.radio.tpl" name="`$telpref`[pub]" val=$tel.pub display="div"}
+  {include file="include/flags.radio.tpl" name="`$telpref`[pub]" val=$tel.pub}
 </div>
 <span class="titre">N°{$t+1}</span>
 <input type="hidden" name="{$telpref}[removed]" value="0" />

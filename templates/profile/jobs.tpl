@@ -37,7 +37,8 @@
   <tr>
     <th>
       <div class="flags" style="float: left">
-        <span class="rouge"><input type="checkbox" name="accesCV" checked="checked" disabled="disabled" /></span>
+        <input type="checkbox" name="accesCV" checked="checked" disabled="disabled" />
+        {icon name="flag_red" title="privé"}
       </div>
       Curriculum vitae
     </th>

@@ -121,7 +121,7 @@ class ProfileBool extends ProfileNoSave
         if (is_null($value)) {
             $value = @$page->values[$field];
         }
-        return $value ? 1 : 0;
+        return $value ? "1" : "";
     }
 }
 

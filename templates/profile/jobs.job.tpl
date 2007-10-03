@@ -39,7 +39,7 @@
     <tr>
       <th colspan="2" style="text-align: right">
         <div class="flags" style="float: left; text-align: left">
-          {include file="include/flags.radio.tpl" notable=true display="div" name="`$jobpref`[pub]" value=$job.pub}
+          {include file="include/flags.radio.tpl" name="`$jobpref`[pub]" val=$job.pub}
         </div>
         Entreprise n°{$i+1}&nbsp;:
         <input type="text" {if $job.name_error}class="error"{/if} size="35" maxlength="100"
@@ -108,7 +108,7 @@
         <input type="text" size="30" maxlength="60" {if $job.email_error}class="error"{/if}
                name="{$jobpref}[email]" value="{$job.email}" />
         <span class="flags">
-          {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.mail_pub display="div"}
+          {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.mail_pub}
         </span>
       </td>
     </tr>
@@ -117,7 +117,7 @@
         <div style="float: left">
           <div class="titre">Adresse</div>
           <div class="flags">
-            {include file="include/flags.radio.tpl" name="`$jobpref`[adr][pub]" val=$job.adr.pub display="div"}
+            {include file="include/flags.radio.tpl" name="`$jobpref`[adr][pub]" val=$job.adr.pub}
           </div>
           <div style="margin-top: 20px; clear: both">
             {include file="geoloc/form.address.tpl" name="`$jobpref`[adr]" id="`$jobid`_adr" adr=$job.adr}
@@ -126,7 +126,7 @@
         <div style="float: right; width: 50%">
           <div class="titre">Téléphone</div>
           <div class="flags">
-            {include file="include/flags.radio.tpl" name="`$jobpref`[tel_pub]" val=$job.tel_pub display="div"}
+            {include file="include/flags.radio.tpl" name="`$jobpref`[tel_pub]" val=$job.tel_pub}
           </div>
           <table style="clear: both">
             <tr>

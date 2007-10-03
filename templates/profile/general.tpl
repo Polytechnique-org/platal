@@ -25,9 +25,8 @@
   <tr>
     <th colspan="2">
       <div class="flags" style="float: left">
-        <span class="vert">
-          <input type="checkbox" disabled="disabled" checked="checked" />
-        </span>
+        <input type="checkbox" disabled="disabled" checked="checked" />
+        {icon name="flag_green" title="site public"}
       </div>
       Informations générales
     </th>
@@ -130,9 +129,8 @@
   </tr>
   <tr>
     <td class="flags">
-      <span class="orange">
-        <input type="checkbox" name="synchro_ax" {if $synchro_ax}checked="checked" {/if}/>
-      </span>
+      <input type="checkbox" name="synchro_ax" {if $synchro_ax}checked="checked" {/if}/>
+      {icon name="flag_orange" title="transmis à l'AX"}
       <span class="texte">
         Autoriser la synchronisation vers l'AX par des administrateurs ou des scripts automatiques.
       </span>
@@ -159,7 +157,8 @@
   <tr>
     <th colspan="2">
       <div class="flags" style="float: left">
-        <span class="vert"><input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/></span>
+        <input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/>
+        {icon name="flag_green" title="site public"}
       </div>
       Trombinoscope
     </th>
@@ -203,9 +202,8 @@
   <tr>
     <td>
       <span class="flags">
-        <span class="rouge">
         <input type="checkbox" checked="checked" disabled="disabled" />
-        </span>
+        {icon name="flag_red" title="privé"}
       </span>&nbsp;
       <span class="titre">Surnom</span>
     </td>
@@ -222,16 +220,15 @@
       <input type="text" size="18" maxlength="18" name="mobile"
              {if $errors.mobile}class="error"{/if} value="{$mobile}" />
       <span class="flags">
-        {include file="include/flags.radio.tpl" name="mobile_pub" notable="true" var=$mobile_pub display="div"}
+        {include file="include/flags.radio.tpl" name="mobile_pub" val=$mobile_pub}
       </span>
     </td>
   </tr>
   <tr>
     <td>
       <span class="flags">
-        <span class="vert">
         <input type="checkbox" name="web_pub" {if $web_pub eq 'public'}checked="checked"{/if} />
-        </span>
+        {icon name="flag_green" title="site public"}
       </span>&nbsp;
       <span class="titre">Page web Perso</span>
     </td>
@@ -244,9 +241,8 @@
     <td>
       <div>
         <span class="flags">
-          <span class="vert">
           <input type="checkbox" name="freetext_pub" {if $freetext_pub eq 'public'}checked="checked"{/if} />
-          </span>
+          {icon name="flag_green" title="site public"}
         </span>&nbsp;
         <span class="titre">Complément libre</span><br />
         <span class="comm">Commentaire ? ICQ ? etc...</span>

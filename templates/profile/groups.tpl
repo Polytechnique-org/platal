@@ -24,7 +24,8 @@
   <tr>
     <th colspan="2">
       <div class="flags" style="float: left">
-        <span class="rouge"><input type="checkbox" name="accesX" checked="checked" disabled="disabled" /></span>
+        <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
+        {icon name="flag_red" title="privé"}
       </div>
       Informations polytechniciennes
     </th>

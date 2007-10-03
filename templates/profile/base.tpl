@@ -26,7 +26,9 @@
     voient <a class="popup2" href="profile/{$smarty.session.forlife}?view=public">n'importe quel internaute</a>,
     <a class="popup2" href="profile/{$smarty.session.forlife}?view=ax">l'AX</a> ou
     <a class="popup2" href="profile/{$smarty.session.forlife}">les X</a>.
-    {include file="include/flags.radio.tpl" notable=true disabled=true name="profile_ex_pub"}
+  </div>
+  <div class="flags">
+  {include file="include/flags.radio.tpl" disabled=true withtext=true name="profile_ex_pub"}
   </div>
   <div style="margin-top: 1em">
     {include file=$profile_page}
