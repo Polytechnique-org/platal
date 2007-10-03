@@ -87,8 +87,14 @@ class Payment
     function event()
     {
         if ($this->asso_id) {
-            $res = XDB::query("SELECT eid, a.diminutif FROM groupex.evenements AS e, groupex.asso AS a WHERE e.asso_id = {?} AND a.id = {?}", $this->asso_id, $this->asso_id);
-            return $res->fetchOneAssoc();
+            $res = XDB::query("SELECT  e.eid, a.diminutif
+                                 FROM  groupex.evenements AS e
+                           INNER JOIN  groupex.asso AS a ON (e.asso_id = a.id)
+                            LEFT JOIN  groupex.evenements_participants AS p ON (p.eid = e.eid AND p.uid = {?})
+                                WHERE  e.paiement_id = {?} AND p.uid IS NULL", S::i('uid'), $this->id);
+            if ($res->numRows()) {
+                return $res->fetchOneAssoc();
+            }
         }
         return null;
     }
