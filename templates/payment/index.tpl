@@ -157,7 +157,7 @@ function payment_submit(form)
 </form>
 
 {if $transactions}
-<p class="descr">Tu as déjà effecuté des paiements pour cette transaction :</p>
+<p class="descr">Tu as déjà effectué des paiements pour cette transaction :</p>
 <table class="bicol">
 <tr><th>Date</th><th>Montant</th></tr>
 {iterate from=$transactions item=t}
