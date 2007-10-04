@@ -194,7 +194,8 @@ function hook_getXFace($headers)
             return false;
         }
     }
-    pl_redirect('photo/' . $login);
+    global $globals;
+    http_redirect($global->baseurl . '/photo/' . $login);
 }
 
 function hook_makeJs($src)
