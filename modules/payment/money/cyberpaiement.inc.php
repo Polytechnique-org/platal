@@ -68,11 +68,11 @@ class CyberPayment
             'CHAMP004' => "Polytechnique.org",
             'CHAMP005' => $roboturl,
             'CHAMP006' => "Polytechnique.org",
-            'CHAMP007' => $globals->baseurl . '/' . $platal->ns,
+            'CHAMP007' => $pay->url ? $pay->url : $globals->baseurl . '/' . $platal->ns,
             'CHAMP008' => $pay->mail);
         $this->infos['client'] = Array(
-            'CHAMP100' => $name,
-            'CHAMP101' => S::v('prenom'),
+            'CHAMP100' => replace_accent($name),
+            'CHAMP101' => replace_accent(S::v('prenom')),
             'CHAMP102' => '.',
             'CHAMP103' => '.',
             'CHAMP104' => S::v('bestalias').'@' . $globals->mail->domain,

@@ -53,8 +53,8 @@ class PayPal
 
         $this->urlform = 'https://'.$globals->money->paypal_site.'/cgi-bin/webscr';
         $req = XDB::query("SELECT  IF(nom_usage!='', nom_usage, nom) AS nom
-                          FROM  auth_user_md5
-                          WHERE  user_id = {?}",S::v('uid'));
+                             FROM  auth_user_md5
+                            WHERE  user_id = {?}",S::v('uid'));
         $name = $req->fetchOneCell();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
@@ -86,20 +86,20 @@ class PayPal
           LEFT JOIN tels        AS t ON (t.uid = a.uid AND t.adrid = a.adrid)
               WHERE q.user_id = {?}
               LIMIT 1", S::v('uid'));
-            $this->infos['client'] = array_merge($info_client, $res->fetchOneAssoc());
+        $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
 
-            // on constuit la reference de la transaction
-            require_once 'xorg.misc.inc.php';
-            $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
-            $fullref = substr("$prefix-xorg-{$pay->id}",-15);
+        // on constuit la reference de la transaction
+        require_once 'xorg.misc.inc.php';
+        $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
+        $fullref = substr("$prefix-xorg-{$pay->id}",-15);
 
-            $this->infos['commande'] = Array(
-                'item_name' => $pay->text,
-                'amount'  => $this->val_number,
-                'currency_code' => 'EUR',
-                'custom'  => $fullref);
+        $this->infos['commande'] = Array(
+            'item_name' => replace_accent($pay->text),
+            'amount'  => $this->val_number,
+            'currency_code' => 'EUR',
+            'custom'  => $fullref);
 
-            $this->infos['divers'] = Array('cmd' => '_xclick');
+        $this->infos['divers'] = Array('cmd' => '_xclick');
     }
 
     // }}}
