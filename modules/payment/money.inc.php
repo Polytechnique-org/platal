@@ -43,9 +43,9 @@ class Payment
         global $globals;
         $r   = $ref==-1 ? $globals->money->mpay_def_id : $ref;
         $res = XDB::query("SELECT  id, text, url, flags, mail, montant_min, montant_max, montant_def, asso_id
-                                       FROM  {$globals->money->mpay_tprefix}paiements WHERE id={?}", $r);
+                             FROM  {$globals->money->mpay_tprefix}paiements WHERE id={?}", $r);
         list($this->id, $this->text, $this->url, $flags, $this->mail,
-                $this->montant_min, $this->montant_max, $this->montant_def, $this->asso_id) = $res->fetchOneRow();
+             $this->montant_min, $this->montant_max, $this->montant_def, $this->asso_id) = $res->fetchOneRow();
 
         $this->montant_min = (float)$this->montant_min;
         $this->montant_max = (float)$this->montant_max;

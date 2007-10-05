@@ -35,7 +35,7 @@ class PayPal
 
     function PayPal($val)
     {
-    	$this->val_number = $val;
+        $this->val_number = $val;
     }
 
     // }}}
@@ -43,63 +43,63 @@ class PayPal
 
     function prepareform(&$pay)
     {
-    	// toute la doc sur :
-    	// https://www.paypal.com/fr_FR/pdf/integration_guide.pdf
-    	// attention : le renvoi automatique ne fonctionne que si
-    	// on oblige les gens à créer un compte paypal
-    	// nous ne l'utilisons pas ; il faut donc que l'utilisateur
-    	// revienne sur le site
+        // toute la doc sur :
+        // https://www.paypal.com/fr_FR/pdf/integration_guide.pdf
+        // attention : le renvoi automatique ne fonctionne que si
+        // on oblige les gens à créer un compte paypal
+        // nous ne l'utilisons pas ; il faut donc que l'utilisateur
+        // revienne sur le site
         global $globals, $platal;
 
-    	$this->urlform = 'https://'.$globals->money->paypal_site.'/cgi-bin/webscr';
+        $this->urlform = 'https://'.$globals->money->paypal_site.'/cgi-bin/webscr';
         $req = XDB::query("SELECT  IF(nom_usage!='', nom_usage, nom) AS nom
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?}",S::v('uid'));
-    	$name = $req->fetchOneCell();
+                          FROM  auth_user_md5
+                          WHERE  user_id = {?}",S::v('uid'));
+        $name = $req->fetchOneCell();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
             . '/' . $platal->ns . "payment/paypal_return/".S::v('uid')."?comment=".urlencode(Env::v('comment'));
 
-    	$this->infos = Array();
-	
-    	$this->infos['commercant'] = Array(
-    		'business'    => $globals->money->paypal_compte,
-    		'rm' 	      => 2,
-    		'return'      => $roboturl,
-    		'cn'	      => 'Commentaires',
-    		'no_shipping' => 1,
+        $this->infos = Array();
+
+        $this->infos['commercant'] = Array(
+            'business'    => $globals->money->paypal_compte,
+            'rm'        => 2,
+            'return'      => $roboturl,
+            'cn'        => 'Commentaires',
+            'no_shipping' => 1,
             'cbt'         => empty($GLOBALS['IS_XNET_SITE']) ?
-                                'Revenir sur polytechnique.org' :
-                                'Revenir sur polytechnique.net');
-	
-    	$info_client = Array(
-    		'first_name' => S::v('prenom'),
-    		'last_name'  => $name,
-    		'email'      => S::v('bestalias').'@' . $globals->mail->domain);
-		
-    	$res = XDB::query(
-    		"SELECT a.adr1 AS address1, a.adr2 AS address2,
-        			a.city, a.postcode AS zip, a.country,
-    	    		IF(t.tel, t.tel, q.profile_mobile) AS night_phone_b
-    		   FROM auth_user_quick AS q
-    	  LEFT JOIN adresses	AS a ON (q.user_id = a.uid AND FIND_IN_SET('active', a.statut))
+            'Revenir sur polytechnique.org' :
+            'Revenir sur polytechnique.net');
+
+        $info_client = Array(
+            'first_name' => S::v('prenom'),
+            'last_name'  => $name,
+            'email'      => S::v('bestalias').'@' . $globals->mail->domain);
+
+        $res = XDB::query(
+            "SELECT a.adr1 AS address1, a.adr2 AS address2,
+                    a.city, a.postcode AS zip, a.country,
+                    IF(t.tel, t.tel, q.profile_mobile) AS night_phone_b
+               FROM auth_user_quick AS q
+          LEFT JOIN adresses  AS a ON (q.user_id = a.uid AND FIND_IN_SET('active', a.statut))
           LEFT JOIN tels        AS t ON (t.uid = a.uid AND t.adrid = a.adrid)
-	          WHERE q.user_id = {?}
-    		  LIMIT 1", S::v('uid'));
-    	$this->infos['client'] = array_merge($info_client, $res->fetchOneAssoc());
+              WHERE q.user_id = {?}
+              LIMIT 1", S::v('uid'));
+            $this->infos['client'] = array_merge($info_client, $res->fetchOneAssoc());
 
-        // on constuit la reference de la transaction
-        require_once 'xorg.misc.inc.php';
-        $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
-        $fullref = substr("$prefix-xorg-{$pay->id}",-15);
+            // on constuit la reference de la transaction
+            require_once 'xorg.misc.inc.php';
+            $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
+            $fullref = substr("$prefix-xorg-{$pay->id}",-15);
 
-    	$this->infos['commande'] = Array(
-    		'item_name'	=> $pay->text,
-    		'amount'	=> $this->val_number,
-    		'currency_code' => 'EUR',
-    		'custom'	=> $fullref);
+            $this->infos['commande'] = Array(
+                'item_name' => $pay->text,
+                'amount'  => $this->val_number,
+                'currency_code' => 'EUR',
+                'custom'  => $fullref);
 
-    	$this->infos['divers'] = Array('cmd' => '_xclick');
+            $this->infos['divers'] = Array('cmd' => '_xclick');
     }
 
     // }}}
