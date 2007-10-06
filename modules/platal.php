@@ -87,7 +87,7 @@ class PlatalModule extends PLModule
         $page->changeTpl('platal/changeLog.tpl');
 
         $clog = pl_entities(file_get_contents(dirname(__FILE__).'/../ChangeLog'));
-        $clog = preg_replace('/=+\s*/', '<hr />', $clog);
+        $clog = preg_replace('/=+\s*/', '</pre><hr /><pre>', $clog);
         // url catch only (not all wiki syntax)
         $clog = preg_replace(array(
             '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/ui',
