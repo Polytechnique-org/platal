@@ -244,13 +244,12 @@ class SearchModule extends PLModule
         }
 
         // default search
-        $q = preg_quote($q);
         $unique = '`user_id`';
         $db = '`auth_user_md5`';
         $realid = false;
         $beginwith = true;
         $field2 = false;
-        $qsearch = $q;
+        $qsearch = str_replace(array('%', '_'), '', $q);
 
         switch ($type) {
           case 'binetTxt':
@@ -282,7 +281,6 @@ class SearchModule extends PLModule
             break;
           case 'firstname':
             $field = '`prenom`';
-            $q = '(^|[ \\-])'.$q;
             $beginwith = false;
             break;
           case 'fonctionTxt':
@@ -291,7 +289,6 @@ class SearchModule extends PLModule
             $field = '`fonction_fr`';
             $unique = '`uid`';
             $realid = '`fonctions_def`.`id`';
-            $qsearch = '(^|[ /\\-])'.$q;
             $beginwith = false;
             break;
           case 'groupexTxt':
@@ -309,7 +306,6 @@ class SearchModule extends PLModule
           case 'name':
             $field = '`nom`';
             $field2 = '`nom_usage`';
-            $qsearch = '(^|[ \\-])'.$q;
             $beginwith = false;
             break;
           case 'nationaliteTxt':
@@ -323,7 +319,6 @@ class SearchModule extends PLModule
           case 'nickname':
             $field = '`profile_nick`';
             $db = '`auth_user_quick`';
-            $qsearch = '(^|[ \\-])'.$q;
             $beginwith = false;
             break;
           case 'poste':
@@ -358,24 +353,31 @@ class SearchModule extends PLModule
           default: exit();
         }
 
+        function make_field_test($fields, $beginwith) {
+            $tests = array();
+            $tests[] = $fields . ' LIKE CONCAT({?}, \'%\')';
+            if (!$beginwith) {
+                $tests[] = $fields . ' LIKE CONCAT(\'% \', {?}, \'%\')';
+                $tests[] = $fields . ' LIKE CONCAT(\'%-\', {?}, \'%\')';
+            }
+            return '(' . implode(' OR ', $tests) . ')';
+        }
         $field_select = $field;
+        $field_t = make_field_test($field, $beginwith);
         if ($field2) {
-            $field_select = 'IF('.$field.' REGEXP {?}, '.$field.', '.$field2.')';
+            $field2_t = make_field_test($field2, $beginwith);
+            $field_select = 'IF(' . $field_t . ', ' . $field . ', ' . $field2. ')';
         }
-
-        if ($beginwith) {
-            $qsearch = '^'.$qsearch;
-        }
-        $list = XDB::iterator('SELECT  '.$field_select.' AS field,
-                                       COUNT(DISTINCT '.$unique.') AS nb
-                                       '.($realid?(', '.$realid.' AS id'):'').'
-                                 FROM  '.$db.'
-                                WHERE  '.$field.' REGEXP {?}'.
-                                        ($field2?(' OR '.$field2.' REGEXP {?}'):'').'
-                             GROUP BY  '.$field_select.'
+        $list = XDB::iterator('SELECT  ' . $field_select . ' AS field,
+                                       COUNT(DISTINCT ' . $unique . ') AS nb
+                                       ' . ($realid ? (', ' . $realid . ' AS id') : '') . '
+                                 FROM  ' . $db . '
+                                WHERE  ' . $field_t .
+                                        ($field2 ? (' OR ' . $field2_t) : '') . '
+                             GROUP BY  ' . $field_select . '
                              ORDER BY  nb DESC
                                 LIMIT  11',
-                               $qsearch, $qsearch, $qsearch, $qsearch);
+                               $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch);
         $nbResults = 0;
         $res = "";
         while ($result = $list->next()) {
