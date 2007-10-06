@@ -566,6 +566,8 @@ class AdminModule extends PLModule
                             set_new_usage($mr['user_id'], Env::v('nomusageN'), make_username(Env::v('prenomN'), Env::v('nomusageN')));
                         }
                         if (Env::v('decesN') != $mr['deces']) {
+                            require_once 'notifs.inc.php';
+                            register_watch_op($mr['user_id'], WATCH_DEATH, $mr['deces']);
                             user_clear_all_subs($mr['user_id'], false);
                         }
                         $r = XDB::query("SELECT *, a.alias AS forlife,

@@ -248,6 +248,10 @@ abstract class ProfilePage implements PlWizardPage
         // Update the last modification date
         XDB::execute('REPLACE INTO  user_changes
                                SET  user_id = {?}', S::v('uid'));
+        if (!S::has('suid')) {
+            require_once 'notifs.inc.php';
+            register_watch_op(S::i('uid'), WATCH_FICHE);
+        }
         global $platal;
         $log =& $_SESSION['log'];
         $log->log('profil', $platal->pl_self(1));

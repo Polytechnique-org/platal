@@ -103,11 +103,11 @@ function _select_notifs_base($table, $mail, $where)
         ),
         'watch_promo'  => Array('wfield' => 'promo',   'ufield' => 'promo',   'need_contact' => true,
             'freq_sql' => ' AND ( wc.type = "basic" OR wc.type="near" AND (u.promo <= v.promo_sortie-2 AND u.promo_sortie >= v.promo+2) )',
-            'contact_sql' => 'NOT (c.contact IS NULL)'
+            'contact_sql' => 'IF(c.contact IS NULL, 0, 1)'
         ),
-        'watch_nonins' => Array('wfield' => 'ni_id',   'ufield' => 'user_id', 'need_contact' => false,
+        'watch_nonins' => Array('wfield' => 'ni_id',   'ufield' => 'user_id', 'need_contact' => true,
             'freq_sql' => '',
-            'contact_sql' => '0'
+            'contact_sql' => 'IF(c.contact IS NULL, 0, 1)'
         )
     );
 
@@ -276,8 +276,8 @@ class Watch
         $this->_nonins = new NoninsNotifs($uid);
         $this->_subs = new WatchSub($uid);
         $res = XDB::query("SELECT  FIND_IN_SET('contacts',watch_flags),FIND_IN_SET('mail',watch_flags)
-            FROM  auth_user_quick
-            WHERE  user_id={?}", $uid);
+                             FROM  auth_user_quick
+                            WHERE  user_id={?}", $uid);
         list($this->watch_contacts,$this->watch_mail) = $res->fetchOneRow();
 
         $res = XDB::iterator("SELECT * FROM watch_cat");
@@ -450,12 +450,12 @@ class NoninsNotifs
     public function del($p)
     {
         unset($this->_data["$p"]);
-        XDB::execute('DELETE FROM watch_nonins WHERE uid={?} AND ni_id={?}', $this->_uid, $p);
+        XDB::execute('DELETE FROM  watch_nonins WHERE uid={?} AND ni_id={?}', $this->_uid, $p);
     }
 
     public function add($p)
     {
-        XDB::execute('INSERT INTO watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
+        XDB::execute('INSERT INTO  watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
         $res = XDB::query('SELECT  prenom,IF(nom_usage="",nom,nom_usage) AS nom,promo,user_id
                              FROM  auth_user_md5
                             WHERE  user_id={?}', $p);
