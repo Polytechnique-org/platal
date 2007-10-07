@@ -186,7 +186,6 @@ class ProfileJobs extends ProfilePage
                                             'email'      => $email,
                                             'web'        => $web,
                                             'pub'        => $pub,
-                                            'adr_pub'    => $adr_pub,
                                             'tel_pub'    => $tel_pub,
                                             'email_pub'  => $email_pub);
         }
