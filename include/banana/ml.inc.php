@@ -61,7 +61,7 @@ class MLBanana extends Banana
 
         // Build user profile
         Banana::$profile['headers']['From']         = "$nom <$mail>";
-        Banana::$profile['headers']['Organization'] = 'Utilisateur de Polytechnique.org';
+        Banana::$profile['headers']['Organization'] = make_Organization();
         Banana::$profile['signature']               = $sig;
 
         // Page design

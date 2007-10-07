@@ -205,6 +205,21 @@ function hook_makeJs($src)
     return ' ';
 }
 
+function make_Organization()
+{
+    global $globals;
+    $perms = S::v('perms');
+    $group = $globals->asso('nom');
+    if (S::has_perms()) {
+        return "Administrateur de Polytechnique.org";
+    } else if ($group && $perms->hasFlag('groupadmin')) {
+        return "Animateur de $group";
+    } else if ($group && $perms->hasFlag('groupmember')) {
+        return "Membre de $group";
+    }
+    return "Utilisateur de Polytechnique.org";
+}
+
 function get_banana_params(array &$get, $group = null, $action = null, $artid = null)
 {
     if (!is_null($group)) {

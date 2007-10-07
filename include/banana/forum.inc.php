@@ -86,7 +86,7 @@ class ForumsBanana extends Banana
               LEFT JOIN  {$globals->banana->table_prefix}list ON list.fid=abos.fid
                   WHERE  uid={?}", S::i('uid'));
         Banana::$profile['headers']['From']         = "$nom <$mail>";
-        Banana::$profile['headers']['Organization'] = 'Utilisateur de Polytechnique.org';
+        Banana::$profile['headers']['Organization'] = make_Organization();
         Banana::$profile['signature']               = $sig;
         Banana::$profile['display']                 = $disp;
         Banana::$profile['autoup']                  = $maj;
@@ -130,7 +130,7 @@ class ForumsBanana extends Banana
                             WHERE  a.alias = {?}', $this->forlife);
         list($nom, $prenom, $promo, $bestalias) = $res->fetchOneRow();
         Banana::$profile['headers']['From']         = "$prenom $nom ($promo) <$bestalias@{$globals->mail->domain}>";
-        Banana::$profile['headers']['Organization'] = 'Utilisateur de Polytechnique.org';
+        Banana::$profile['headers']['Organization'] = make_Organization();
         return parent::post($dest, $reply, $subject, $body);
     }
 
