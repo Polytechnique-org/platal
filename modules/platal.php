@@ -100,6 +100,7 @@ class PlatalModule extends PLModule
           $clog);
         $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
         $clog = preg_replace('!vim:.*$!', '', $clog);
+        $clog = preg_replace("!(<hr />(\\s|\n)*)?<pre>(\s|\n)*</pre>((\\s|\n)*<hr />)?!m", "", "<pre>$clog</pre>");
         $page->assign('ChangeLog', $clog);
     }
 

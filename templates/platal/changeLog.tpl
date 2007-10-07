@@ -21,7 +21,5 @@
 {**************************************************************************}
 <h1>ChangeLog</h1>
 <p>Voici la liste des modifications faites sur <a href="http://opensource.polytechnique.org/platal/">plat/al</a>, le support libre de ce site.</p>
-<pre>
 {$ChangeLog|smarty:nodefaults}
-</pre>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
