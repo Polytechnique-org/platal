@@ -377,7 +377,8 @@ class SearchModule extends PLModule
                              GROUP BY  ' . $field_select . '
                              ORDER BY  nb DESC
                                 LIMIT  11',
-                               $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch);
+                               $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch,
+                               $qsearch, $qsearch, $qsearch);
         $nbResults = 0;
         $res = "";
         while ($result = $list->next()) {
