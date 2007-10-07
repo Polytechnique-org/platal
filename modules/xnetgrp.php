@@ -279,7 +279,7 @@ class XnetGrpModule extends PLModule
         }
         if (!$globals->asso('wiki_desc') && $globals->asso('descr')) {
             $page->trig("Attention, le format de la description a changé et utilise désormais la syntaxe wiki "
-                      . "intégrée au site. Il te faudra probablement adapter le formatage du texte actuelle pour "
+                      . "intégrée au site. Il te faudra probablement adapter le formatage du texte actuel pour "
                       . "qu'il s'affiche correctement avec cette nouvelle syntaxe.");
         }
     }
@@ -817,7 +817,7 @@ class XnetGrpModule extends PLModule
         }
 
         if ($this->unsubscribe($user)) {
-            $page->trig('Vous avez été désinscrit du groupe avec succès');
+            $page->trig('Vous avez été désinscrit du groupe avec succès.');
         } else {
             $page->trig('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des mailing-lists.');
         }

@@ -32,8 +32,8 @@
 </p>
 <p>Le mentoring est particulièrement important pour les camarades&nbsp;:</p>
 <ul>
-  <li>encore jeunes, sont en train de bâtir leur projet professionnel,</li>
-  <li>ou bien, plus âgés, souhaitent réorienter leur carrière,</li>
+  <li>encore jeunes, qui sont en train de bâtir leur projet professionnel ;</li>
+  <li>ou bien, plus âgés, qui souhaitent réorienter leur carrière.</li>
 </ul>
 
 <table class="bicol" style="margin-bottom: 1em" summary="Profil: Mentoring">
