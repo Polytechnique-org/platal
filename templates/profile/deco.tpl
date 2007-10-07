@@ -32,7 +32,7 @@
         <input type="checkbox" name="medals_pub"{if $medals_pub eq 'public'} checked="checked"{/if} />
         {icon name="flag_green" title="site public"}
         <span class="texte">
-          ces informations sont normalement publiques (JO, ...) mais tu peux choisir de les associer a ta fiche publique
+          bien que publiques (JO, ...), tu peux choisir de ne pas associer ces informations à ta fiche publique
         </span>
       </div>
       <div style="clear: both; margin-top: 0.2em" id="medals">
