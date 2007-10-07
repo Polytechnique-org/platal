@@ -100,12 +100,14 @@ class ProfileJob extends ProfileGeoloc
                                                     fonction, poste, adr1, adr2, adr3, postcode,
                                                     city, cityid, country, region, regiontxt,
                                                     tel, fax, mobile, email, web,
-                                                    pub, adr_pub, tel_pub, email_pub, flags)
+                                                    pub, adr_pub, tel_pub, email_pub, flags,
+                                                    glat, glng)
                                VALUES  ({?}, {?}, {?}, {?}, {?},
                                         {?}, {?}, {?}, {?}, {?}, {?},
                                         {?}, {?}, {?}, {?}, {?},
                                         {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, {?}, {?}, {?})",
+                                        {?}, {?}, {?}, {?}, {?},
+                                        {?}, {?})",
                          S::i('uid'), $i++, $job['name'], $job['secteur'], $job['ss_secteur'],
                          $job['fonction'], $job['poste'], $job['adr']['adr1'], $job['adr']['adr2'], $job['adr']['adr3'],
                          $job['adr']['postcode'],
@@ -113,7 +115,8 @@ class ProfileJob extends ProfileGeoloc
                          $job['adr']['regiontxt'],
                          $job['tel'], $job['fax'], $job['mobile'], $job['email'], $job['web'],
                          $job['pub'], $job['adr']['pub'], $job['tel_pub'], $job['email_pub'],
-                         $job['adr']['checked'] ? 'geoloc' : '');
+                         $job['adr']['checked'] ? 'geoloc' : '', $job['adr']['precise_lat'],
+                         $job['adr']['precise_lon']);
         }
     }
 }
@@ -145,7 +148,8 @@ class ProfileJobs extends ProfilePage
                                      e.country, gp.pays, gp.display,
                                      FIND_IN_SET('geoloc', flags),
                                      e.tel, e.fax, e.mobile, e.email, e.web, e.pub,
-                                     e.adr_pub, e.tel_pub, e.email_pub
+                                     e.adr_pub, e.tel_pub, e.email_pub,
+                                     e.glat AS precise_lat, e.glng AS precise_lon
                                FROM  entreprises AS e
                          INNER JOIN  geoloc_pays AS gp ON(gp.a2 = e.country)
                               WHERE  uid = {?} AND entreprise != ''
@@ -155,7 +159,7 @@ class ProfileJobs extends ProfilePage
                     $adr1, $adr2, $adr3, $postcode, $city, $cityid,
                     $region, $regiontxt, $country, $countrytxt, $display,
                     $checked, $tel, $fax, $mobile, $email, $web,
-                    $pub, $adr_pub, $tel_pub, $email_pub) = $res->next()) {
+                    $pub, $adr_pub, $tel_pub, $email_pub, $glat, $glng) = $res->next()) {
             $this->values['jobs'][] = array('name'       => $name,
                                             'secteur'    => $secteur,
                                             'ss_secteur' => $ss_secteur,
@@ -173,7 +177,9 @@ class ProfileJobs extends ProfilePage
                                                                   'countrytxt' => $countrytxt,
                                                                   'display'    => $display,
                                                                   'pub'        => $adr_pub,
-                                                                  'checked'    => $checked),
+                                                                  'checked'    => $checked,
+                                                                  'precise_lat'=> $glat,
+                                                                  'precise_lon'=> $glng),
                                             'tel'        => $tel,
                                             'fax'        => $fax,
                                             'mobile'     => $mobile,

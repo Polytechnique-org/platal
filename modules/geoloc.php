@@ -79,7 +79,9 @@ class GeolocModule extends PLModule
         }
 
         if ($action == 'precise_coordinates') {
-            XDB::execute("UPDATE adresses AS a INNER JOIN geoloc_city AS c ON(a.cityid = c.id) SET a.glat = c.lat / 100000, a.glng = c.lon / 100000");
+            XDB::execute("UPDATE  adresses AS a
+                      INNER JOIN  geoloc_city AS c ON(a.cityid = c.id)
+                             SET  a.glat = c.lat / 100000, a.glng = c.lon / 100000");
         }
 
         if ($action == 'newmaps') {

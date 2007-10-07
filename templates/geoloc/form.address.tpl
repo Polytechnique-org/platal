@@ -61,4 +61,6 @@
 <input type="hidden" name="{$name}[region]" value="{$adr.region}" />
 <input type="hidden" name="{$name}[regiontxt]" value="{$adr.regiontxt}" />
 <input type="hidden" name="{$name}[checked]" value="{$adr.checked}" />
+<input type="hidden" name="{$name}[precise_lat]" value="{$adr.precise_lat}" />
+<input type="hidden" name="{$name}[precise_lon]" value="{$adr.precise_lon}" />
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

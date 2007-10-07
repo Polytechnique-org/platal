@@ -187,6 +187,8 @@ abstract class ProfileGeoloc implements ProfileSetting
                 $address['checked'] = true;
             }
         }
+        $address['precise_lat'] = rtrim($address['precise_lat'], '.0');
+        $address['precise_lon'] = rtrim($address['precise_lon'], '.0'); 
         $address['text'] = get_address_text($address);
     }
 }

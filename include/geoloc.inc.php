@@ -94,11 +94,25 @@ function get_address_infos($txt)
         }
     }
     if (isset($infos['sql']) && $infos['sql'])
-       XDB::execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
+       XDB::execute("REPLACE INTO  geoloc_city
+                           VALUES  ".$infos['sql']);
     if (isset($infos['display']) && $infos['display'])
-        XDB::execute("UPDATE geoloc_pays SET display = {?} WHERE a2 = {?}", $infos['display'], $infos['country']);
-    if (isset($infos['cityid']))
+        XDB::execute("UPDATE  geoloc_pays
+                         SET  display = {?}
+                       WHERE  a2 = {?}", $infos['display'], $infos['country']);
+    if (isset($infos['cityid'])) {
         fix_cities_not_on_map(1, $infos['cityid']);
+        if (floatval($infos['precise_lat']) && floatval($infos['precise_lon'])) {
+            $res = XDB::query("SELECT  c.lat / 100000, c.lon / 100000
+                                 FROM  geoloc_city AS c
+                                WHERE  c.id = {?}", $infos['cityid']);
+            if ($res->numRows()) {
+                list($glat, $glng) = $res->fetchOneRow();
+                $infos['precise_lat'] = $glat;
+                $infos['precise_lon'] = $glng;
+            }
+        }
+    }
     return $infos;
 }
 // }}}
@@ -225,7 +239,9 @@ function empty_address() {
         "region" => "",
         "regiontxt" => "",
         "country" => "00",
-        "countrytxt" => "");
+        "countrytxt" => "",
+        "precise_lat" => "",
+        "precise_lon" => "");
 }
 
 // create a simple address from a text without geoloc
