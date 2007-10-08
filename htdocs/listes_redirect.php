@@ -21,7 +21,7 @@
 
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
 
-preg_match('/^\/(moderate|admin|members|archives)\/(.*)_([^_]*)(/.*)?$/', $_SERVER['REQUEST_URI'], $matches);
+preg_match('!^/(moderate|admin|members|archives)/(.*)_([^_]*)(/.*)?$!', $_SERVER['REQUEST_URI'], $matches);
 
 if ($matches) {
 
