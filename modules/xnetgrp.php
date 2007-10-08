@@ -755,7 +755,7 @@ class XnetGrpModule extends PLModule
                                     FROM auth_user_md5
                                    WHERE $where");
         }
-        if ($res->total() < 30) {
+        if ($res && $res->total() < 30) {
             $page->assign("choix", $res);
         }
     }
