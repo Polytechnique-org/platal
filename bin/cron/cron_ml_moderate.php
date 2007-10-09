@@ -69,7 +69,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
         $append  = "a été supprimé par $prenom $nom.\n\n"
                  . "Rappel: il ne faut utiliser cette opération "
                  . "que dans le cas de spams ou de virus !\n";
-        $count += $count($own);
+        $count += count($own);
         break;
     }
 
