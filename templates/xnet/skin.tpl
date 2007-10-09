@@ -222,7 +222,7 @@
                 <a class='gp' href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">polytechnicien</a>
                 {if $platal->pl_self() neq 'exit'}
                   {javascript name=jquery}
-                  <script type="text/javascript" src="login/autologin/{$platal->pl_self()}?forceXml=1"></script>
+                  <!-- <script type="text/javascript" src="login/autologin/{$platal->pl_self()}?forceXml=1"></script> -->
                 {/if}
               {/if}
             </td>
@@ -250,7 +250,7 @@
           <a href="plan">plan du site</a> -
           <a href="Xnet/Services">services proposés</a> -
           <a href="Xnet/APropos">à propos de ce site</a> -
-          {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
+          <a href="mailto:contact@polytechnique.org">nous contacter</a>
           {if $smarty.session.auth}
             - <a href="send_bug" class="popup_840x600">signaler un bug</a>
           {/if}
