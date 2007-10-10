@@ -71,6 +71,16 @@ function cle_accept($d1,$d2,$d3,$d4,$d5)
     return $alpha{$n-1}.$m1.$m2.$m3.$m4;
 }
 
+/* decode the comment */
+function comment_decode($comment) {
+    $comment = urldecode($comment);
+    if (is_utf8($comment)) {
+        return $comment;
+    } else {
+        return utf8_encode($comment);
+    }
+}
+
 
 class PaymentModule extends PLModule
 {
@@ -448,6 +458,7 @@ class PaymentModule extends PLModule
                 $event[$pid]['paid'] += trim($p);
             }
         }
+        $page->register_modifier('decode_comment', 'decode_comment');
         $page->assign('trans', $trans);
         $page->assign('event', $event);
     }
