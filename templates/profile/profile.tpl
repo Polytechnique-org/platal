@@ -88,7 +88,7 @@ function chgMainWinLoc(strPage)
         {if $x.dcd}
         Décédé{if $x.sexe}e{/if} le {$x.deces|date_format}
         {elseif !$x.actif}
-        Ce camarade n'a plus d'adresse redirection valide,<br />
+        Ce camarade n'a plus d'adresse de redirection valide,<br />
         <a href="marketing/broken/{$x.forlife}" class="popup">clique ici si tu connais son adresse email !</a>
         {elseif !$x.inscrit}
         Cette personne n'est pas inscrite à Polytechnique.org,<br />
