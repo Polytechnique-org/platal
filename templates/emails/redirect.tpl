@@ -76,9 +76,20 @@
   {javascript name=ajax}
   <script type="text/javascript">//<![CDATA[
     {literal}
+    function activeEnable()
+    {
+      var remove = $(".active_email:checked");
+      if (remove.length <= 1) {
+        remove.attr("disabled", "disabled");
+      } else {
+        remove.removeAttr("disabled");
+      }
+    }
+
     function redirectUpdate()
     {
         showTempMessage('redirect-msg', "Tes redirections ont été mises à jour.", true);
+        activeEnable();
     }
 
     function removeRedirect(link, email)
@@ -101,6 +112,7 @@
             removeLinks.show();
         }
     }
+
     {/literal}
   //]]></script>
   {javascript name="jquery"}
@@ -125,7 +137,7 @@
           </strong>
         </td>
         <td>
-          <input type="checkbox" value="{$e->email}"
+          <input type="checkbox" value="{$e->email}" class="active_email"
                  {if $e->active}checked="checked"{/if}
                  {if $smarty.foreach.redirect.total eq 1}disabled="disabled"{/if}
                  onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/'+(this.checked?'':'in')+'active/{$e->email}', redirectUpdate)" /></td>
@@ -151,7 +163,7 @@
         </td>
       </tr>
       {/foreach}
-      <script type="text/javascript">showRemove();</script>
+      <script type="text/javascript">activeEnable(); showRemove();</script>
       <tr class="{cycle values="pair,impair"}"><td colspan="4">
         <form action="emails/redirect" method="post">
         <div>
