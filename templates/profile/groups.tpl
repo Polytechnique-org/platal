@@ -88,7 +88,7 @@
     <td>
       {assign var=groupcat value=""}
       {assign var=ingroup value=false}
-      <select name="groupesx_sub" onchange="updateSubLink(this)">
+      <select name="groupesx_sub" onchange="updateGroupSubLink(this)">
         {iterate from=$listgroups item=group}
         {if $group.dom neq $groupcat}
           {if $ingroup}
