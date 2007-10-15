@@ -184,10 +184,10 @@ abstract class Validate
 
             // envoi d'un mail à hotliners
             global $globals;
-            $mailer = new PlMailer;
+            $mailer = new PlMailer();
             $mailer->setSubject("Commentaires de validation {$this->type}");
             $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
-            $mailer->addTo($globals->core->admin_emails);
+            $mailer->addTo($globals->core->admin_email);
 
             $body = "Validation {$this->type} pour {$this->prenom} {$this->nom}\n\n"
               . S::v('bestalias')." a ajouté le commentaire :\n\n"
