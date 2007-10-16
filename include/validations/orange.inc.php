@@ -58,7 +58,7 @@ class OrangeReq extends Validate
 
     protected function _mail_subj()
     {
-        return "[Polytechnique.org/ORANGE] Changement de nom de promo de sortie";
+        return "[Polytechnique.org/ORANGE] Changement de promo de sortie";
     }
 
     // }}}
