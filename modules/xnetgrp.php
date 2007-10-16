@@ -483,11 +483,10 @@ class XnetGrpModule extends PLModule
 
             if (list($nom, $prenom, $promo, $uid) = $res->fetchOneRow()) {
                 $res = XDB::query("SELECT  COUNT(*)
-                                               FROM  groupex.membres AS m
-                                         INNER JOIN  aliases  AS a ON (m.uid = a.id
-                                                                       AND a.type != 'homonyme')
-                                              WHERE  a.alias = {?} AND m.asso_id = {?}",
-                                            $u, $globals->asso('id'));
+                                     FROM  groupex.membres AS m
+                               INNER JOIN  aliases  AS a ON (m.uid = a.id AND a.type != 'homonyme')
+                                    WHERE  a.alias = {?} AND m.asso_id = {?}",
+                                  $u, $globals->asso('id'));
                 $n   = $res->fetchOneCell();
                 if ($n) {
                     $page->kill("$prenom $nom est déjà membre du groupe !");
@@ -495,8 +494,8 @@ class XnetGrpModule extends PLModule
                 }
                 elseif (Env::has('accept'))
                 {
-                    XDB::execute("INSERT INTO groupex.membres
-                                            VALUES ({?}, {?}, 'membre', 'X', NULL, NULL, NULL, NULL, NULL)",
+                    XDB::execute("INSERT INTO  groupex.membres (asso_id, uid)
+                                       VALUES  ({?}, {?})",
                                             $globals->asso('id'), $uid);
                     $mailer = new PlMailer();
                     $mailer->addTo("$u@polytechnique.org");
