@@ -37,7 +37,7 @@ Nous conseillons très vivement d'utiliser des navigateurs récents, tels
 <br />
 {/if}
 
-{if !$xorg_no_errors && !$xorg_failure}
+{if !$xorg_no_errors || $xorg_failure}
 {foreach from=$xorg_errors item=err}
 <div class="erreur">{$err|smarty:nodefaults}</div>
 {/foreach}
