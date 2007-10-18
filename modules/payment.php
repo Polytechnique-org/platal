@@ -228,6 +228,7 @@ class PaymentModule extends PLModule
         $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
         $conf_text = str_replace("<cher>",$femme ? "Chère" : "Cher",$conf_text);
 
+        global $globals;
         $mymail = new PlMailer();
         $mymail->setFrom($conf_mail);
         $mymail->addTo("\"$prenom $nom\" <$forlife@" . $globals->mail->domain . '>');
@@ -317,6 +318,7 @@ class PaymentModule extends PLModule
         $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
         $conf_text = str_replace("<cher>",$femme ? "Chère" : "Cher",$conf_text);
 
+        global $globals;
         $mymail = new PlMailer();
         $mymail->setFrom($conf_mail);
         $mymail->addTo("\"$prenom $nom\" <$forlife@" . $globals->mail->domain . '>');
