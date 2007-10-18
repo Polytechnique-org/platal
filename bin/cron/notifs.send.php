@@ -92,5 +92,8 @@ EOF;
     $mailer->send();
 }
 
+XDB::execute("DELETE FROM  watch_profile
+                    WHERE  ts < DATE_SUB(CURRENT_DATE, INTERVAL 15 DAY)");
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
