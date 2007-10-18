@@ -332,6 +332,7 @@ class Redirect
     {
         foreach ($this->emails as &$mail) {
             if ($mail->email == $email) {
+                check_redirect($this);
                 return $mail->cleanErrors($this->uid);
             }
         }
@@ -351,6 +352,7 @@ class Redirect
                 $mail->active   = false;
             }
         }
+        check_redirect($this);
     }
 
     // function enable() {{{2
@@ -365,6 +367,7 @@ class Redirect
                 $mail->active   = true;
                 $mail->disabled = false;
             }
+            check_redirect($this);
         }
     }
 

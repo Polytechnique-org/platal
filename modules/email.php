@@ -65,9 +65,9 @@ class EmailModule extends PLModule
               ORDER BY  LENGTH(alias)";
         $page->assign('aliases', XDB::iterator($sql, $uid));
 
-		$homonyme = XDB::query("SELECT alias FROM aliases INNER JOIN homonymes ON (id = homonyme_id) WHERE user_id = {?} AND type = 'homonyme'", $uid);
-		$page->assign('homonyme', $homonyme->fetchOneCell());
-		
+    $homonyme = XDB::query("SELECT alias FROM aliases INNER JOIN homonymes ON (id = homonyme_id) WHERE user_id = {?} AND type = 'homonyme'", $uid);
+    $page->assign('homonyme', $homonyme->fetchOneCell());
+
         $sql = "SELECT email
                 FROM emails
                 WHERE uid = {?} AND FIND_IN_SET('active', flags)";
@@ -210,20 +210,20 @@ class EmailModule extends PLModule
             $retour = $redirect->delete_email($email);
             $page->assign('retour', $retour);
         }
-		
-		if ($action == 'active' && $email) {
-			$redirect->modify_one_email($email, true);
-		}
-		
-		if ($action == 'inactive' && $email) {
-			$redirect->modify_one_email($email, false);
-		}
-		
-		if ($action == 'rewrite' && $email) {
-			$rewrite = @func_get_arg(3);
-			$redirect->modify_one_email_redirect($email, $rewrite);
-		}
-		
+
+        if ($action == 'active' && $email) {
+            $redirect->modify_one_email($email, true);
+        }
+
+        if ($action == 'inactive' && $email) {
+            $redirect->modify_one_email($email, false);
+        }
+
+        if ($action == 'rewrite' && $email) {
+            $rewrite = @func_get_arg(3);
+            $redirect->modify_one_email_redirect($email, $rewrite);
+        }
+
         if (Env::has('emailop')) {
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
@@ -255,6 +255,7 @@ class EmailModule extends PLModule
                    FROM  aliases
                   WHERE  id={?} AND (type='a_vie' OR type='alias')
                ORDER BY  !FIND_IN_SET('usage',flags), LENGTH(alias)", $uid);
+        
         $page->assign('alias', $res->fetchAllAssoc());
         $page->assign('emails',$redirect->emails);
     }
@@ -621,12 +622,12 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
         $page->changeTpl('emails/lost.tpl');
 
         $page->assign('lost_emails', XDB::iterator('
-					SELECT u.user_id,	a.alias
-					FROM auth_user_md5 AS u
-						INNER JOIN aliases AS a ON (a.id = u.user_id AND a.type = "a_vie")
-						LEFT JOIN emails AS e ON (u.user_id=e.uid AND FIND_IN_SET("active",e.flags))
-					WHERE e.uid IS NULL AND u.deces = 0
-					ORDER BY u.promo DESC, u.nom, u.prenom'));
+          SELECT u.user_id, a.alias
+          FROM auth_user_md5 AS u
+            INNER JOIN aliases AS a ON (a.id = u.user_id AND a.type = "a_vie")
+            LEFT JOIN emails AS e ON (u.user_id=e.uid AND FIND_IN_SET("active",e.flags))
+          WHERE e.uid IS NULL AND u.deces = 0
+          ORDER BY u.promo DESC, u.nom, u.prenom'));
     }
 }
 
