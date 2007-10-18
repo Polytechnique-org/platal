@@ -201,6 +201,7 @@ abstract class ProfilePage implements PlWizardPage
     protected $settings = array();  // A set ProfileSetting objects
     protected $errors   = array();  // A set of boolean with the value check errors
     protected $changed  = array();  // A set of boolean indicating wether the value has been changed
+    protected $watched  = array();  // A set of boolean indicating the fields that are watched
 
     public $orig     = array();
     public $values   = array();
@@ -240,9 +241,13 @@ abstract class ProfilePage implements PlWizardPage
 
     protected function saveData()
     {
+        require_once 'notifs.inc.php';
         foreach ($this->settings as $field=>&$setting) {
             if (!is_null($setting) && $this->changed[$field]) {
                 $setting->save($this, $field, $this->values[$field]);
+            }
+            if ($this->changed[$field] && @$this->watched[$field]) {
+                register_profile_update(S::i('uid'), $field);
             }
         }
         $this->_saveData();
@@ -251,7 +256,6 @@ abstract class ProfilePage implements PlWizardPage
         XDB::execute('REPLACE INTO  user_changes
                                SET  user_id = {?}', S::v('uid'));
         if (!S::has('suid')) {
-            require_once 'notifs.inc.php';
             register_watch_op(S::i('uid'), WATCH_FICHE);
         }
         global $platal;

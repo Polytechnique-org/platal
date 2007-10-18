@@ -62,7 +62,7 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
   {foreach from=$c key=p item=promo}
   {section name=row loop=$promo}
   <tr {if ( $promo[row].known > $smarty.session.watch_last ) || ( $promo[row].date eq $today ) }style="font-weight: bold"{/if}>
-    <td class='titre' style="width:15%">{if $smarty.section.row.first}{$p}{/if}</td>
+    <td class='titre' style="width:15%" {if $promo[row].data}rowspan="2"{/if}>{if $smarty.section.row.first}{$p}{/if}</td>
     <td>
       {if $promo[row].inscrit}
       <a href="profile/{$promo[row].bestalias}" class="popup2">
@@ -76,9 +76,12 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
       {$promo[row].prenom} {$promo[row].nom}
       {/if}
     </td>
-    <td style="width:25%">
+    <td style="width:25%" {if $promo[row].data}rowspan="2"{/if}>
       {$promo[row].date|date_format}
     </td>
+    {if $promo[row].data}
+    <tr><td>{$promo[row].data|smarty:nodefaults}</td></tr>
+    {/if}
   </tr>
   {/section}
   {/foreach}

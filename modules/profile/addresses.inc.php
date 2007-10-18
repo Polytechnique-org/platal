@@ -172,6 +172,7 @@ class ProfileAddresses extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['addresses'] = new ProfileAddress();
+        $this->watched['addresses'] = true;
     }
 
     protected function _fetchData()

@@ -130,6 +130,7 @@ class ProfileJobs extends ProfilePage
         parent::__construct($wiz);
         $this->settings['cv'] = null;
         $this->settings['jobs'] = new ProfileJob();
+        $this->watched['cv'] = $this->watched['jobs'] = true;
     }
 
     protected function _fetchData()

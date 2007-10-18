@@ -100,7 +100,11 @@ class MedalReq extends Validate
 
     public function commit ()
     {
-        return XDB::execute('REPLACE INTO profile_medals_sub VALUES({?}, {?}, {?})', $this->uid, $this->mid, $this->gid);
+        require_once 'notifs.inc.php';
+        register_watch_op($this->uid, WATCH_FICHE, 'medals');
+        return XDB::execute('REPLACE INTO  profile_medals_sub
+                                   VALUES  ({?}, {?}, {?})',
+                            $this->uid, $this->mid, $this->gid);
     }
 
     // }}}

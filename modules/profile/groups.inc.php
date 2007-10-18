@@ -103,6 +103,7 @@ class ProfileGroups extends ProfilePage
         parent::__construct($wiz);
         $this->settings['section']  = new ProfileSection();
         $this->settings['binets']   = new ProfileGroup('binets', 'user_id', 'binet_id');
+        $this->watched['section'] = $this->watched['binets'] = true;
     }
 
     public function _prepare(PlatalPage &$page, $id)

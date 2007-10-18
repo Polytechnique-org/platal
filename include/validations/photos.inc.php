@@ -137,11 +137,11 @@ class PhotoReq extends Validate
 
     public function commit()
     {
+        require_once 'notifs.inc.php';
         XDB::execute('REPLACE INTO  photo (uid, attachmime, attach, x, y)
                             VALUES  ({?},{?},{?},{?},{?})',
                      $this->uid, $this->mimetype, $this->data, $this->x, $this->y);
-        require_once('notifs.inc.php');
-        register_watch_op($this->uid, WATCH_FICHE);
+        register_watch_op($this->uid, WATCH_FICHE, 'photo');
         return true;
     }
 

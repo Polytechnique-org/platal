@@ -92,6 +92,7 @@ class ProfileDecos extends ProfilePage
         parent::__construct($wiz);
         $this->settings['medals'] = new ProfileDeco();
         $this->settings['medals_pub'] = new ProfilePub();
+        $this->watched['medals'] = true;
     }
 
     protected function _fetchData()

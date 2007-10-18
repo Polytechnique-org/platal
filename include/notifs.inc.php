@@ -39,9 +39,13 @@ function register_watch_op($uid, $cid, $date='', $info='')
     if (empty($date)) {
         $date = date('Y-m-d');
     };
-    XDB::execute('REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES({?},{?},NOW(),{?},{?})',
-        $uid, $cid, $date, $info);
+    XDB::execute('REPLACE INTO  watch_ops (uid,cid,known,date,info)
+                        VALUES  ({?}, {?}, NOW(), {?}, {?})',
+                 $uid, $cid, $date, $info);
     if($cid == WATCH_FICHE) {
+        if ($info) {
+            register_profile_update($uid, $info);
+        }
         XDB::execute('UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id={?}', $uid);
     } elseif($cid == WATCH_INSCR) {
         XDB::execute('REPLACE INTO  contacts (uid,contact)
@@ -153,6 +157,51 @@ function getNbNotifs()
 }
 
 // }}}
+// {{{
+
+global $prf_desc;
+$prf_desc = array('nom' => 'Son patronyme',
+                  'freetext' => 'Le texte libre',
+                  'mobile' => 'Son numéro de téléphone portable',
+                  'nationalite' => 'Sa nationalité',
+                  'nick' => 'Son surnom',
+                  'web' => 'L\'adresse de son site web',
+                  'appli1' => 'Son école d\'application',
+                  'appli2' => 'Son école de post-application',
+                  'addresses' => 'Ses adresses',
+                  'section' => 'Sa section sportive',
+                  'binets' => 'La liste de ses binets',
+                  'medals' => 'Ses décorations',
+                  'cv' => 'Son Curriculum Vitae',
+                  'jobs' => 'Ses informations professionnelles',
+                  'photo' => 'Sa photographie');
+
+function get_profile_change_details($event, $limit) {
+    global $prf_desc;
+    $res = XDB::iterRow("SELECT  field
+                           FROM  watch_profile
+                          WHERE  uid = {?} AND ts > {?}
+                       ORDER BY  ts DESC",
+                         $event['uid'], $limit);
+    if ($res->total() > 0) {
+        $data = array();
+        while (list($field) = $res->next()) {
+            $data[] .= $prf_desc[$field];
+        }
+        return '<ul><li>' . implode('</li><li>', $data) . '</li></ul>';
+    }
+    return null;
+}
+
+// }}}
+// {{{ function register_profile_update
+
+function register_profile_update($uid, $field) {
+    XDB::execute("REPLACE INTO  watch_profile (uid, ts, field)
+                        VALUES  ({?}, NOW(), {?})",
+                 $uid, $field);
+}
+
 // {{{ class AllNotifs
 
 class AllNotifs
@@ -208,6 +257,9 @@ class Notifs
         // depuis la semaine dernière, meme ceux sans surveillance, ordonnés
         $res = select_notifs(false, $uid, $lastweek);
         while($tmp = $res->next()) {
+            if ($tmp['cid'] == WATCH_FICHE) {
+                $tmp['data'] = get_profile_change_details($tmp, $lastweek);
+            }
             $this->_data[$tmp['cid']][$tmp['promo']][] = $tmp;
         }
 

@@ -117,6 +117,8 @@ class ProfileGeneral extends ProfilePage
         $this->settings['appli1']
                                   = $this->settings['appli2']
                                   = new ProfileAppli();
+        $this->watched= array('nom' => true, 'freetext' => true, 'mobile' => true, 'web' => true,
+                       'appli1' => true, 'appli2' => true, 'nationalite' => true, 'nick' => true);
     }
 
     protected function _fetchData()

@@ -42,6 +42,7 @@
       <link>{#globals.baseurl#}/profile/private/{$x.bestalias}</link>
       <guid isPermaLink="false">carnet{$x.known}{$cid}{$x.bestalias}</guid>
       <description><![CDATA[
+        {if $x.data}{$x.prenom} {$x.nom} a mis à jours les données suivantes&nbsp;:<br />{$x.data}<br />{/if}
         {if !$x.contact and !$x.dcd}
         <a href="{#globals.baseurl#}/carnet/contacts?action=ajouter&amp;user={$x.bestalias}">
           {icon name=add title="Ajouter" full=true} Ajouter &agrave; mes contacts
