@@ -79,7 +79,7 @@ class BananaModule extends PLModule
 
         if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig')
         && Post::has('bananadisplay') && Post::has('bananamail')
-        && Post::has('bananaupdate') && Post::v('action')=="OK" ))
+        && Post::has('bananaupdate') && Post::v('action')=="Enregistrer" ))
         {
             $req = XDB::query("
                 SELECT  nom, mail, sig,
