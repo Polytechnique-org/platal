@@ -39,7 +39,7 @@ class BrokenReq extends Validate
     public $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance).
     Si le demandeur marque sa propre adresse mail, refuser dans tous les cas.
     Si l'adresse proposée est surveillée, refuser.
-    Si le compte associé est désactivé, étudier le cas en fonction de la raison de la désactivation";
+    Si le compte associé est désactivé, étudier le cas en fonction de la raison de la désactivation.";
     // }}}
     // {{{ constructor
 
@@ -116,7 +116,7 @@ class BrokenReq extends Validate
                              . "N'hésite pas à aller gérer toi-même tes redirections en te rendant à la page :\n"
                              . "https://www.polytechnique.org/emails/redirect\n"
                              . "Si tu as perdu ton mot de passe d'accès au site, tu peux également effectuer la procédure de récupération à l'adresse :\n"
-                             . "https://www.polytechnique.org/recovery\n"
+                             . "https://www.polytechnique.org/recovery\n\n"
                              . "-- \nTrès Cordialement,\nL'Équipe de Polytechnique.org\n"));
             $mailer->send();
             return true;
@@ -150,7 +150,7 @@ class BrokenReq extends Validate
               . $reason . "\n\n"
               . "L'adresse {$this->m_email} nous a été communiquée, veux-tu que cette adresse devienne ta nouvelle "
               . "adresse de redirection ? Si oui, envoie nous des informations qui "
-              . "nous permettront de nous assurer de ton identité (par exemple ta date de naissance et ta promotion)\n"
+              . "nous permettront de nous assurer de ton identité (par exemple ta date de naissance et ta promotion).\n\n"
               . "-- \nTrès Cordialement,\nL'Équipe de Polytechnique.org\n";
         $body = wordwrap($body, 78);
         $mailer = new PlMailer();
