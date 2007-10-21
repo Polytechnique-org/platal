@@ -141,11 +141,11 @@ class VCard
         $adr = trim("$adr\n$adr2");
         $adr = trim("$adr\n$adr3");
         return VCard::text_encode(';;'
-                . VCard::escape($adr) . ';'
-                . VCard::escape($city) . ';'
-                . VCard::escape($region) . ';'
-                . VCard::escape($postcode) . ';'
-                . VCard::escape($country), false);
+                . (VCard::$windows ? VCard::escape($adr) : $adr) . ';'
+                . (VCard::$windows ? VCard::escape($city) : $city) . ';'
+                . (VCard::$windows ? VCard::escape($region) : $region) . ';'
+                . (VCard::$windows ? VCard::escape($postcode) : $postcode) . ';'
+                . (VCard::$windows ? VCard::escape($country) : $country), false);
     }
 
     public static function text_encode($text, $escape = true)
