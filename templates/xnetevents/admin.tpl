@@ -193,9 +193,9 @@ Ils ont payé mais ont oublié de s'inscrire :
   {iterate from=$absents item=m}
   <tr>
     <td>
-      <a href="" {if $is_admin}onclick="return remplitAuto('{$m.email}')"{/if}>
+      {if $is_admin}<a href="javascript:remplitAuto('{$m.email}')">{/if}
       {if $m.sexe}&bull;{/if}{$m.prenom} {$m.nom}
-      </a>
+      {if $is_admin}</a>{/if}
     </td>
     <td>
       {$m.promo}
