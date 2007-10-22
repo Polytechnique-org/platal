@@ -54,12 +54,12 @@ function get_infos($email)
                          u.prenom, b.alias,
                          CONCAT(b.alias, '@m4x.org') AS email,
                          CONCAT(b.alias, '@polytechnique.org') AS email2,
-                         m.perms='admin' AS perms, m.origine,
+                         m.perms = 'admin' AS perms, m.origine,
                          FIND_IN_SET('femme', u.flags) AS sexe
                    FROM  auth_user_md5   AS u
              INNER JOIN  aliases         AS a ON ( u.user_id = a.id AND a.type != 'homonyme' )
              INNER JOIN  aliases         AS b ON ( u.user_id = b.id AND b.type = 'a_vie' )
-             INNER JOIN  groupex.membres AS m ON ( m.uid = u.user_id AND asso_id={?})
+              LEFT JOIN  groupex.membres AS m ON ( m.uid = u.user_id AND asso_id={?})
                   WHERE  a.alias = {?} AND u.user_id < 50000", $globals->asso('id'), $mbox);
         return $res->fetchOneAssoc();
     }
