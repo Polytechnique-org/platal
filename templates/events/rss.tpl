@@ -43,7 +43,7 @@
           <img src="{#globals.baseurl#}/events/photo/{$line.id}" alt="{$line.title}" />
         </div>
         {/if}
-        <div>{$line.texte}</div>
+        <div>{if $line.wiki}{$line.texte|miniwiki}{else}{$line.texte}{/if}</div>
         {if $line.post_id neq -1}
         <div style="clear: both">
           <br />
