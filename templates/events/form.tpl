@@ -21,13 +21,23 @@
 {**************************************************************************}
 
 {if $smarty.request.texte}
-{assign var=texte value=$smarty.request.texte}
+{assign var=texte value=$smarty.request.texte|smarty:nodefaults}
 {/if}
-{assign var=titre value=$smarty.request.titre|default:$titre}
-{assign var=promo_min value=$smarty.request.promo_min|default:$promo_min}
-{assign var=promo_max value=$smarty.request.promo_max|default:$promo_max}
-{assign var=peremption value=$smarty.request.peremption|default:$peremption}
-{assign var=important value=$smarty.request.important|default:$important}
+{if $smarty.request.titre}
+{assign var=titre value=$smarty.request.titre|smarty:nodefaults}
+{/if}
+{if $smarty.request.promo_min}
+{assign var=promo_min value=$smarty.request.promo_min|smarty:nodefaults}
+{/if}
+{if $smarty.request.promo_max}
+{assign var=promo_max value=$smarty.request.promo_max|smarty:nodefaults}
+{/if}
+{if $smarty.request.peremption}
+{assign var=peremption value=$smarty.request.peremption|smarty:nodefaults}
+{/if}
+{if $smarty.request.important}
+{assign var=important value=$smarty.request.important|smarty:nodefaults}
+{/if}
 
 <script type="text/javascript">//<![CDATA[
   {literal}
