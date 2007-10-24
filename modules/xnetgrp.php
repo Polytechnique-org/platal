@@ -475,13 +475,12 @@ class XnetGrpModule extends PLModule
 
         if (!is_null($u) && may_update()) {
             $page->assign('u', $u);
-            $res = XDB::query("SELECT nom, prenom, promo, user_id
-                                           FROM auth_user_md5 AS u
-                                     INNER JOIN aliases AS al ON (al.id = u.user_id
-                                                                  AND al.type != 'liste')
-                                          WHERE al.alias = {?}", $u);
+            $res = XDB::query("SELECT  u.nom, u.prenom, u.promo, u.user_id, FIND_IN_SET('femme', u.flags)
+                                 FROM  auth_user_md5 AS u
+                           INNER JOIN  aliases AS al ON (al.id = u.user_id AND al.type != 'liste')
+                                WHERE  al.alias = {?}", $u);
 
-            if (list($nom, $prenom, $promo, $uid) = $res->fetchOneRow()) {
+            if (list($nom, $prenom, $promo, $uid, $sexe) = $res->fetchOneRow()) {
                 $res = XDB::query("SELECT  COUNT(*)
                                      FROM  groupex.membres AS m
                                INNER JOIN  aliases  AS a ON (m.uid = a.id AND a.type != 'homonyme')
@@ -502,7 +501,7 @@ class XnetGrpModule extends PLModule
                     $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
                                      .'" <'.S::v('forlife').'@polytechnique.org>');
                     $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription');
-                    $message = "Cher Camarade,\n"
+                    $message = ($sexe ? 'Chère' : 'Cher') . " Camarade,\n"
                              . "\n"
                              . "  Suite à ta demande d'adhésion à ".$globals->asso('nom').",\n"
                              . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
@@ -511,7 +510,7 @@ class XnetGrpModule extends PLModule
                              . "{$_SESSION["prenom"]} {$_SESSION["nom"]}.";
                     $mailer->setTxtBody($message);
                     $mailer->send();
-                    $page->kill("$prenom $nom a bien été inscrit");
+                    $page->kill("$prenom $nom a bien été inscrit" . ($sexe ? 'e' : ''));
                 }
                 elseif (Env::has('refuse'))
                 {

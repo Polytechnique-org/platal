@@ -6,6 +6,11 @@ New:
     * Carnet:
         - List updated fields in notifications                             -FRU
 
+Bug/Wish:
+
+    * XnetGrp:
+        - #732: Adapt subscription text to sex                             -FRU
+
 
 ================================================================================
 VERSION 0.9.15                                                        08 10 2007
