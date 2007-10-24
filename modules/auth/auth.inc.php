@@ -23,7 +23,7 @@ function gpex_prepare_param($name, $val, &$to_hash,  $charset)
 {
     $val = iconv('UTF-8', $charset, $val);
     $to_hash .= $val;
-    return '&' . $name . '=' . $val;
+    return '&' . $name . '=' . urlencode($val);
 }
 
 function gpex_make($chlg, $privkey, $datafields, $charset)
