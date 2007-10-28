@@ -64,9 +64,8 @@ if ( PEAR::isError($opts) ) {
     $opts = $opts[0];
     foreach ( $opts as $opt) {
         switch ($opt[0]) {
-            case "v":
-                $opt_verbose=true;
-            echo "Mode verbeux\n";
+          case "v":
+            $opt_verbose=true;
             break;
         }
     }
