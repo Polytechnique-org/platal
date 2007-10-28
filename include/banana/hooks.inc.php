@@ -150,7 +150,7 @@ function hook_makeLink($params)
         $base .= '/' . $params['group'];
     } else if (Banana::$protocole->name() == 'NNTP' && $xnet) {
         if ($feed) {
-            return 'http://www.polytechnique.org/banana' . hook_platalRSS(@$params['group']);
+            return $globals->baseurl . '/banana' . hook_platalRSS(@$params['group']);
         }
         $base = $globals->baseurl . '/' . $platal->ns . 'forum';
     } else if (Banana::$protocole->name() == 'MLArchives') {

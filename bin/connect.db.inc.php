@@ -26,6 +26,5 @@ require_once('xorg.misc.inc.php');
 
 require_once 'xdb.php';
 
-$globals->baseurl = "https://www.polytechnique.org";
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
