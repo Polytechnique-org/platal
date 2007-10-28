@@ -558,6 +558,9 @@ class AdminModule extends PLModule
                             $mailer->assign('old', $old_fields);
                             $mailer->assign('new', $new_fields);
                             $mailer->send();
+                            
+                            // update number of subscribers (perms or deceased may have changed)
+                            update_NbIns();
 
                             $page->trig("updaté correctement.");
                         }
@@ -581,6 +584,8 @@ class AdminModule extends PLModule
                     // DELETE FROM auth_user_md5
                     case "u_kill":
                         user_clear_all_subs($mr['user_id']);
+                        // update number of subscribers (perms or deceased may have changed)
+                        update_NbIns();
                         $page->trig("'{$mr['user_id']}' a été désinscrit !");
                         $mailer = new PlMailer("admin/mail_intervention.tpl");
                         $mailer->assign("user", S::v('forlife'));

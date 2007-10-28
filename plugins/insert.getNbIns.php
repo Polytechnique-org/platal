@@ -28,10 +28,15 @@
  * Purpose:
  * -------------------------------------------------------------
  */
+ 
 function smarty_insert_getNbIns($params, &$smarty)
 {
-    $res = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE perms IN ('admin','user') AND deces=0");
-    $cnt = $res->fetchOneCell();
+    global $globals;
+    $cnt = $globals->core->NbIns;
+    if ($cnt == 0) {
+        update_NbIns();
+        $cnt = $globals->core->NbIns;
+    }
     return number_format($cnt, 0, ",", ".");
 }
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
