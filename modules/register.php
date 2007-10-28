@@ -312,6 +312,9 @@ class RegisterModule extends PLModule
         require_once('user.func.inc.php');
         user_reindex($uid);
 
+        // update number of subscribers (perms has changed)
+        update_NbIns();
+
         if (!start_connexion($uid, false)) {
             return PL_FORBIDDEN;
         }
