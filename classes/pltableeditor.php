@@ -37,6 +37,8 @@ class PLTableEditor
     public $vars;
     // number of displayed fields
     public $nbfields;
+    // a where clause to restrict table
+    public $whereclause;
     // the field for sorting entries
     public $sortfield;
     public $sortdesc = false;
@@ -60,6 +62,7 @@ class PLTableEditor
         $this->idfield = $idfield;
         $this->sortfield = $idfield;
         $this->idfield_editable = $editid;
+        $this->whereclause = '1';
         $r = XDB::iterator("SHOW COLUMNS FROM $table");
         $this->vars = array();
         while ($a = $r->next()) {
@@ -164,6 +167,12 @@ class PLTableEditor
         }
     }
 
+    // add a where clause to limit table listing
+    public function set_where_clause($whereclause="1")
+    {
+        $this->whereclause = $whereclause;
+    }
+    
     // set an action when trying to delete row
     public function on_delete($action = NULL, $message = NULL)
     {
@@ -194,7 +203,7 @@ class PLTableEditor
             }
         }
         if ($action == 'edit') {
-            $r = XDB::query("SELECT * FROM {$this->table} WHERE {$this->idfield} = {?}",$id);
+            $r = XDB::query("SELECT * FROM {$this->table} WHERE {$this->idfield} = {?} AND {$this->whereclause}",$id);
             $entry = $r->fetchOneAssoc();
             $page->assign('entry', $this->prepare_edit($entry));
             $page->assign('id', $id);
@@ -254,7 +263,7 @@ class PLTableEditor
             }
             if (!$cancel) {
                 if ($this->idfield_editable && ($id != Post::v($this->idfield)) && $action != 'new')
-                    XDB::execute("UPDATE {$this->table} SET {$this->idfield} = {?} WHERE {$this->idfield} = {?}", Post::v($this->idfield), $id);
+                    XDB::execute("UPDATE {$this->table} SET {$this->idfield} = {?} WHERE {$this->idfield} = {?} AND {$this->whereclause}", Post::v($this->idfield), $id);
                 XDB::execute("REPLACE INTO {$this->table} VALUES ($values)");
                 if ($id !== false)
                     $page->trig("L'entrée ".$id." a été mise à jour.");
@@ -287,7 +296,7 @@ class PLTableEditor
             if (count($this->sort) > 0) {
                 $sort = 'ORDER BY ' . join($this->sort, ',');
             }
-            $it = XDB::iterator("SELECT * FROM {$this->table} $sort");
+            $it = XDB::iterator("SELECT * FROM {$this->table} WHERE {$this->whereclause} $sort");
             $this->nbfields = 0;
             foreach ($this->vars as $field => $descr)
                 if ($descr['display']) $this->nbfields++;
