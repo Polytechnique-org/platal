@@ -74,7 +74,8 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
             E_USER_ERROR      => "User Error",
             E_USER_WARNING    => "User Warning",
             E_USER_NOTICE     => "User Notice",
-            E_STRICT          => "Runtime Notice"
+            E_STRICT          => "Runtime Notice",
+            E_RECOVERABLE_ERROR => "Recoverable Error"
         );
     }
 
@@ -85,10 +86,11 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
         }
     }
 
+    $type = isset($errortype[$errno]) ? $errortype[$errno] : $errno;
     $errstr = utf8_encode(htmlentities($errstr));
     $GLOBALS['pl_errors'][] =
         "<div class='phperror'>".
-        "<strong>{$errortype[$errno]}</strong> <em>$errstr</em><br />".
+        "<strong>{$type}</strong> <em>$errstr</em><br />".
         "<tt>$errfile : $errline</tt>".
         "</div>";
 }
