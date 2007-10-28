@@ -49,6 +49,10 @@ function __autoload($cls)
         if (substr($cls, -3, 3) == 'req') {
             @include 'validations.inc.php';
             return;
+        } else if (substr($cls, 0, 6) == 'banana') {
+            require_once 'banana/banana.inc.php';
+            Banana::load(substr($cls, 6));
+            return;
         }
         @include "$cls.inc.php";
     }
