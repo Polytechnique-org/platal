@@ -19,25 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-/*
- * Smarty plugin
- * -------------------------------------------------------------
- * File:     insert.getNbIns.php
- * Type:     insert
- * Name:     getNbIns
- * Purpose:
- * -------------------------------------------------------------
- */
- 
-function smarty_insert_getNbIns($params, &$smarty)
+function smarty_modifier_number_format($string, $decimal = 0)
 {
-    global $globals;
-    $cnt = $globals->core->NbIns;
-    if ($cnt == 0) {
-        update_NbIns();
-        $cnt = $globals->core->NbIns;
-    }
-    return number_format($cnt, 0, ",", ".");
+    return number_format($string, $decimal, ',', '.');
 }
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
