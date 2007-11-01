@@ -315,13 +315,19 @@ function send_warning_mail($title)
     $mailer->send();
 }
 
-    
 function update_NbIns()
 {
     global $globals;
     $res = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE perms IN ('admin','user') AND deces=0");
     $cnt = $res->fetchOneCell();
     $globals->change_dynamic_config(array('NbIns' => $cnt));
+}
+
+function update_NbNotifs()
+{
+    require_once 'notifs.inc.php';
+    $n = select_notifs(false, S::i('uid'), S::v('watch_last'), false);
+    $_SESSION['notifs'] = $n->numRows();
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

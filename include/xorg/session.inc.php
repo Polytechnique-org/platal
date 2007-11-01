@@ -305,6 +305,7 @@ function start_connexion ($uid, $identified)
         send_warning_mail($mail_subject);
     }
     set_skin();
+    update_NbNotifs();
     check_redirect();
     return true;
 }

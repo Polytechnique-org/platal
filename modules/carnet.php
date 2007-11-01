@@ -66,6 +66,7 @@ class CarnetModule extends PLModule
 
         if (Get::has('read')) {
             $_SESSION['watch_last'] = Get::v('read');
+            update_NbNotifs();
             pl_redirect('carnet/panel');
         }
 

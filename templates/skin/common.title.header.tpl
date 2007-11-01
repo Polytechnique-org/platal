@@ -32,10 +32,15 @@
                 {insert name="getNbIns"} polytechniciens sur le web
                 <form action="search" method="get">
                     <div>
-                        <input type="text" size="30" name="quick" class="quick_search" value="{$smarty.request.quick|default:"recherche dans l'annuaire"}" onfocus="if (this.value == '{$smarty.request.quick|default:"recherche dans l'annuaire"|escape:javascript}') this.value=''" onblur="if (this.value == '') this.value='{$smarty.request.quick|default:"recherche dans l'annuaire"|escape:javascript}'"/>                        
+                        <input type="text" size="30" name="quick" class="quick_search"
+                               value="{$smarty.request.quick|default:"recherche dans l'annuaire"}"
+                               onfocus="if (this.value == '{$smarty.request.quick|default:"recherche dans l'annuaire"|escape:javascript}') this.value=''"
+                               onblur="if (this.value == '') this.value='{$smarty.request.quick|default:"recherche dans l'annuaire"|escape:javascript}'"/>                        
                     </div>
                 </form>
-                {insert name="getNbNotifs"}
+                {if $smarty.session.auth gt AUTH_PUBLIC && $smarty.session.notifs}
+                <a href="carnet/panel">{$smarty.session.notifs} événement{if $smarty.session.notifs gt 1}s{/if}</a>
+                {/if}
               </td>
             </tr>
           </table>

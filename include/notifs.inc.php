@@ -54,6 +54,8 @@ function register_watch_op($uid, $cid, $date='', $info='')
                              WHERE  ni_id={?}', $uid);
         XDB::execute('DELETE FROM watch_nonins WHERE ni_id={?}', $uid);
     }
+    require_once 'xorg.misc.inc.php';
+    update_NbNotifs();
 }
 
 // }}}
@@ -131,29 +133,6 @@ function select_notifs($mail, $uid=null, $last=null, $iterator=true)
     } else {
         return XDB::query($sql, $last, $uid, $last, $uid, $last, $uid);
     }
-}
-
-// }}}
-// {{{ function getNbNotifs
-
-function getNbNotifs()
-{
-    if (!S::has('uid')) {
-        return 0;
-    }
-    $uid       = S::v('uid', -1);
-    $watchlast = S::v('watch_last');
-
-    // selectionne les notifs de uid, sans detail sur le watcher, depuis
-    // $watchlast, meme ceux sans surveillance, non ordonnés
-    $res = select_notifs(false, $uid, $watchlast, false);
-    $n   = $res->numRows();
-    $res->free();
-    if ($n == 0) {
-        return;
-    }
-
-    return "<a href='carnet/panel'>$n événement".($n > 1 ? 's' : '')." !</a>";
 }
 
 // }}}
