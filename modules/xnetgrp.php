@@ -606,7 +606,7 @@ class XnetGrpModule extends PLModule
                 break;
             }
         }
-        pl_redirect("");
+        http_redirect($_SERVER['HTTP_REFERER']);
     }
 
     function handler_admin_annuaire(&$page)
