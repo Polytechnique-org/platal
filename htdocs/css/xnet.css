@@ -188,12 +188,6 @@ td#menu {
  * CLASSES
  ***************************************************************************/
 
-.breadcrumb {
-    font-weight: bold;
-    font-size: 90%;
-    padding: 0.5em 0em 0em 0.2em;
-}
-
 .erreur { color: red !important; }
 .error  { color: red !important; }
 .center { text-align: center; }
@@ -392,8 +386,8 @@ td.infos {
  ***************************************************************************/
 
 .wizard {
+    margin-top: 0px;
     margin-left: -1em;
-    margin-top: -0.5em;
 }
 
 .wizard .wiz_header {

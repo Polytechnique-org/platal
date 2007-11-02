@@ -123,7 +123,7 @@
 
       {if $menu && !$simple}
       <tr>
-        <td id="menu" rowspan="2">
+        <td id="menu">
           {foreach from=$menu key=title item=submenu}
             {if $title neq 'no_title'}<h1>{$title}</h1>{/if}
             {foreach from=$submenu key=tit item=url}
@@ -134,52 +134,22 @@
               {/if}
             {/foreach}
           {/foreach}
-        </td>
-        <td class="breadcrumb">
           {if $asso && ($is_admin ||
-                        ($smarty.session.suid && ($smarty.session.suid.perms->hasFlag('admin') ||
-                                                  $smarty.session.suid.may_update[$asso.id])))}
-          <div style="float: right">
-            <form method="post" action="{$platal->ns}change_rights">
-              <div style="display: inline">
-                <small>voir le site en tant que...
-                <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
-                  {if hasPerm('admin') || ($smarty.session.suid && $smarty.session.suid.perms->hasFlag('admin'))}
-                  <option value="admin" {if hasPerm('admin')}selected="selected"{/if}>Administrateur</option>
-                  {/if}
-                  <option value="anim" {if $is_admin && !hasPerm('admin')}selected="selected"{/if}>Animateur</option>
-                  <option value="member" {if !$is_admin && $is_member}selected="selected"{/if}>Membre</option>
-                  <option value="logged" {if !$is_admin && !$is_member}selected="selected"{/if}>Non-membre</option>
-                </select>
-                </small>
-              </div>
-            </form>
-          </div>
-          {/if}
-          <a href=".">X.net</a> »
-          {if $asso}
-            <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
-            {if $asso.dom}
-              <a href="groups/{$asso.cat}/{$asso.dom}">{$asso.domnom}</a> »
-            {/if}
-            {$asso.nom}
-          {elseif $cat}
-            <a href="groups/{$cat}">{$cat|cat_pp}</a> »
-            {if $dom || !$doms}
-              {if $cat eq 'promotions'}
-                Choix de la promotion
-              {else}
-                Choix de l'Asso
+                      ($smarty.session.suid && ($smarty.session.suid.perms->hasFlag('admin') ||
+                                                $smarty.session.suid.may_update[$asso.id])))}
+          <h1>Voir le site comme...</h1>
+          <form method="post" action="{$platal->ns}change_rights">
+            <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
+              {if hasPerm('admin') || ($smarty.session.suid && $smarty.session.suid.perms->hasFlag('admin'))}
+              <option value="admin" {if hasPerm('admin')}selected="selected"{/if}>Administrateur</option>
               {/if}
-            {else}
-              Choix du domaine
-            {/if}
-          {elseif $wikipage}
-            <a href="Xnet">Documentation</a>
+              <option value="anim" {if $is_admin && !hasPerm('admin')}selected="selected"{/if}>Animateur</option>
+              <option value="member" {if !$is_admin && $is_member}selected="selected"{/if}>Membre</option>
+              <option value="logged" {if !$is_admin && !$is_member}selected="selected"{/if}>Non-membre</option>
+            </select>
+          </form>
           {/if}
         </td>
-      </tr>
-      <tr>
         <td id="body">
           {include file="skin/common.content.tpl"}
         </td>
@@ -260,6 +230,6 @@
       </tr>
     {/if}
     </table>
-  </body>
+ </body>
 </html>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
