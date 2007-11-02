@@ -122,29 +122,6 @@ div.contact div.long {
         [ onglets des profils ]
 *******************************************************************************/
 
-td.conteneur_tab {
-    border-color: #0067fe;
-    background-color: #eeffdd;
-}
-
-#onglet li {
-    border-color: #0067fe;
-    background-color: #ccddff;
-}
-
-#onglet li:hover {
-    background-color:
-}
-
-#onglet li.actif {
-    background-color: #eeffdd;
-}
-
-#onglet li a:hover {
-    color: #ff0000;
-    text-decoration: none;
-}
-
 /*******************************************************************************
     7   fiche.php
         [ cas de la fiche ]
