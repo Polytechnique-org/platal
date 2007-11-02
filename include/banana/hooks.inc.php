@@ -230,6 +230,9 @@ function get_banana_params(array &$get, $group = null, $action = null, $artid = 
         $action = 'read';
         $group  = S::v('banana_group');
         $artid  = S::i('banana_artid');
+    } else if ($action == 'message') {
+        $action = 'read';
+        $artid  = S::i('banana_artid');
     } else if ($group == 'subscribe' || $group == 'subscription') {
         $group  = null;
         $action = null;
