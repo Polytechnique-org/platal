@@ -222,6 +222,23 @@ function make_Organization()
 
 function get_banana_params(array &$get, $group = null, $action = null, $artid = null)
 {
+    if ($group == 'forums') {
+        $group = null;
+    } else if ($group == 'thread') {
+        $group = S::v('banana_group');
+    } else if ($group == 'message') {
+        $action = 'read';
+        $group  = S::v('banana_group');
+        $artid  = S::i('banana_artid');
+    } else if ($group == 'subscribe' || $group == 'subscription') {
+        $group  = null;
+        $action = null;
+        $get['action'] = 'subscribe';
+    } else if ($group == 'profile') {
+        $group  = null;
+        $action = null;
+        $get['action'] = 'profile';
+    }
     if (!is_null($group)) {
         $get['group'] = $group;
     }
@@ -267,7 +284,11 @@ class PlatalBananaPage extends BananaPage
         global $wiz, $page;
         $wiz = new PlWizard('Banana', 'core/plwizard.tpl', true, false);
         foreach ($this->pages as $name=>&$mpage) {
-            $wiz->addPage('BananaHandler', $mpage['text'], $name);
+            if ($text == 'profile') {
+                $wiz->addPage('BananaProfile', $mpage['text'], $name);
+            } else {
+                $wiz->addPage('BananaHandler', $mpage['text'], $name);
+            }
         }
         $wiz->apply($page, 'banana', $this->page);
         return $tpl;

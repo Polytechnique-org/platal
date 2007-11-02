@@ -25,11 +25,8 @@ class BananaModule extends PLModule
     {
         return array(
             'banana'              => $this->make_hook('banana', AUTH_COOKIE),
-            'banana/forums'       => $this->make_hook('banana', AUTH_COOKIE),
-            'banana/message'      => $this->make_hook('message', AUTH_COOKIE),
-            'banana/thread'       => $this->make_hook('thread', AUTH_COOKIE),
-            'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
-            'banana/subscribe'    => $this->make_hook('subscription', AUTH_COOKIE),
+//            'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
+//            'banana/subscribe'    => $this->make_hook('subscription', AUTH_COOKIE),
             'banana/rss'          => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
         );
     }
@@ -72,16 +69,6 @@ class BananaModule extends PLModule
         require_once 'banana/forum.inc.php';
         get_banana_params($get, $group, $action, $artid);
         run_banana($page, 'ForumsBanana', $get);
-    }
-
-    function handler_message(&$page)
-    {
-        pl_redirect('banana/' . S::v('banana_group') . '/read/' . S::i('banana_artid'));
-    }
-
-    function handler_thread(&$page)
-    {
-        pl_redirect('banana/' . S::v('banana_group'));
     }
 
     function handler_profile(&$page, $action = null)
@@ -132,15 +119,6 @@ class BananaModule extends PLModule
                          Post::v('bananamail'), Post::v('banananame'),
                          implode(',', $flags));
         }
-    }
-
-    function handler_subscription(&$page)
-    {
-        $page->changeTpl('banana/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Forums & PA');
-
-        require_once 'banana/forum.inc.php';
-        run_banana($page, 'ForumsBanana', Array('action' => 'subscribe'));
     }
 
     function handler_rss(&$page, $group, $alias, $hash, $file = null)
