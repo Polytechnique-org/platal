@@ -22,6 +22,25 @@
 require_once 'banana/banana.inc.php';
 require_once 'banana/hooks.inc.php';
 
+class PlatalBananaMLPage extends PlatalBananaPage
+{
+    public function __construct()
+    {
+        parent::__construct();
+        global $platal;
+        $this->handler = 'BananaMLHandler';
+        $this->base    = $platal->pl_self(1);
+    }
+}
+
+class BananaMLHandler extends BananaHandler
+{
+    public function template()
+    {
+        return 'lists/archives.tpl';
+    }
+}
+
 class MLBanana extends Banana
 {
     static public $listname;
@@ -47,7 +66,7 @@ class MLBanana extends Banana
         MLBanana::$listname = $params['listname'];
         MLBanana::$domain   = $params['domain'];
         $params['group'] = $params['listname'] . '@' . $params['domain'];
-        parent::__construct($params, 'MLArchive');
+        parent::__construct($params, 'MLArchive', 'PlatalBananaMLPage');
     }
 
     public function run()

@@ -272,9 +272,15 @@ function get_banana_params(array &$get, $group = null, $action = null, $artid = 
 
 class PlatalBananaPage extends BananaPage
 {
+    protected $handler;
+    protected $base;
+
     public function __construct()
     {
+        global $platal;
         Banana::$withtabs = false;
+        $this->handler = 'BananaHandler';
+        $this->base    = $platal->pl_self(0);
         parent::__construct();
     }
 
@@ -284,13 +290,9 @@ class PlatalBananaPage extends BananaPage
         global $wiz, $page;
         $wiz = new PlWizard('Banana', 'core/plwizard.tpl', true, false);
         foreach ($this->pages as $name=>&$mpage) {
-            if ($text == 'profile') {
-                $wiz->addPage('BananaProfile', $mpage['text'], $name);
-            } else {
-                $wiz->addPage('BananaHandler', $mpage['text'], $name);
-            }
+            $wiz->addPage($this->handler, $mpage['text'], $name);
         }
-        $wiz->apply($page, 'banana', $this->page);
+        $wiz->apply($page, $this->base, $this->page);
         return $tpl;
     }
 }
