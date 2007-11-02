@@ -50,7 +50,7 @@ class ForumsBanana extends Banana
             Banana::$feed_active = false;
         }
         parent::__construct($params, 'NNTP', 'PlatalBananaPage');
-        if ($params['action'] == 'profile') {
+        if (@$params['action'] == 'profile') {
             Banana::$action = 'profile';
         }
     }
