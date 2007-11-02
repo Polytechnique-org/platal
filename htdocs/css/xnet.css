@@ -393,43 +393,38 @@ td.infos {
 
 .wizard {
     margin-left: -1em;
+    margin-top: -0.5em;
 }
 
 .wizard .wiz_header {
-    height: 32px;
+    height: 30px;
     width: 100%;
-    background: url('../images/skins/wiz_background.png') top right repeat-x;
+    background: url('../images/skins/wiz_xnet_background.png') bottom left no-repeat;
     margin-bottom: 1em;
 }
 
 .wizard .wiz_header .wiz_tab {
-    background; url('../images/skins/wiz_normal.png') #aaa top left repeat-x;
     height: 100%;
     text-align: center;
     font-size: 75%;
-    border-right: 1px solid #888;
 }
 
 .wizard .wiz_header .wiz_tab:hover {
-    background: url('../images/skins/wiz_hover.png') #777 top left repeat-x;
-    color: #fff;
+    color: #5c81aa;
+    font-weight: bold;
 }
 
 .wizard .wiz_header .active, .wizard .wiz_header .active:hover {
-    background: url('../images/skins/wiz_active.png') #444 top left repeat-x;
-    color: #fff;
 }
 
 .wizard .wiz_header a {
     color: #000;
     text-decoration: none;
+    margin-top: 5px;
+    vertical-align: bottom;
 }
 
 .wizard .wiz_header a.active {
-    color: #fff;
-}
-
-.wizard .wiz_content {
-    margin-left: 1em;
+    font-weight: bold;
 }
 
