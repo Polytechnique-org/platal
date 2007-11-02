@@ -49,7 +49,7 @@ class ForumsBanana extends Banana
         if (!S::v('core_rss_hash')) {
             Banana::$feed_active = false;
         }
-        parent::__construct($params);
+        parent::__construct($params, 'NNTP', 'PlatalBananaPage');
     }
 
     public function run()

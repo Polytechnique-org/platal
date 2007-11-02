@@ -141,7 +141,7 @@ function hook_makeLink($params)
             return $base . '/' . $params['page'];
         }
         if (@$params['action'] == 'subscribe') {
-            return $base . '/subscription';
+            return $base . '/subscribe';
         }
 
         if (!isset($params['group'])) {
@@ -250,6 +250,48 @@ function get_banana_params(array &$get, $group = null, $action = null, $artid = 
                 $get['action'] = 'showext';
             }
         }
+    }
+}
+
+class PlatalBananaPage extends BananaPage
+{
+    public function __construct()
+    {
+        Banana::$withtabs = false;
+        parent::__construct();
+    }
+
+    protected function prepare()
+    {
+        $tpl = parent::prepare();
+        global $wiz, $page;
+        $wiz = new PlWizard('Banana', 'core/plwizard.tpl', true, false);
+        foreach ($this->pages as $name=>&$mpage) {
+            $wiz->addPage('BananaHandler', $mpage['text'], $name);
+        }
+        $wiz->apply($page, 'banana', $this->page);
+        return $tpl;
+    }
+}
+
+class BananaHandler
+{
+    public function __construct(PlWizard &$wiz)
+    {
+    }
+
+    public function template()
+    {
+        return 'banana/index.tpl';
+    }
+
+    public function prepare(PlatalPage &$page, $id)
+    {
+    }
+
+    public function process()
+    {
+        return PlWizard::CURRENT_PAGE;
     }
 }
 

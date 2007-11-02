@@ -76,8 +76,6 @@ class ModerationBanana extends Banana
     }
 }
 
-require_once('banana/page.inc.php');
-
 class ModerationPage extends BananaPage
 {
     protected function prepare()
@@ -97,9 +95,6 @@ class ModerationPage extends BananaPage
         return true;
     }
 }
-
-require_once('banana/protocoleinterface.inc.php');
-require_once('banana/message.inc.php');
 
 class BananaMLInterface implements BananaProtocoleInterface
 {
