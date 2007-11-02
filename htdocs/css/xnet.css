@@ -391,39 +391,45 @@ td.infos {
 /***************************************************************************
  ***************************************************************************/
 
-td.conteneur_tab {
-    border: none;
-    padding-top: 1em;
+.wizard {
+    margin-left: -1em;
 }
 
-#onglet {
-    display : block;
-    margin : 0;
-    padding : 0;
+.wizard .wiz_header {
+    height: 32px;
+    width: 100%;
+    background: url('../images/skins/wiz_background.png') top right repeat-x;
+    margin-bottom: 1em;
 }
 
-#onglet li {
-    display : block;
-    float : left;
-    border: none;
-    background: inherit;
-    width: auto;
+.wizard .wiz_header .wiz_tab {
+    background; url('../images/skins/wiz_normal.png') #aaa top left repeat-x;
+    height: 100%;
+    text-align: center;
+    font-size: 75%;
+    border-right: 1px solid #888;
 }
 
-#onglet li.actif {
-    font-weight: bold;
+.wizard .wiz_header .wiz_tab:hover {
+    background: url('../images/skins/wiz_hover.png') #777 top left repeat-x;
+    color: #fff;
 }
 
-#onglet li:before {
-    font-weight: normal;
-    content: '» ';
-    padding-left: 1ex;
+.wizard .wiz_header .active, .wizard .wiz_header .active:hover {
+    background: url('../images/skins/wiz_active.png') #444 top left repeat-x;
+    color: #fff;
 }
 
-#onglet li:first-child:before {
-    content: '';
+.wizard .wiz_header a {
+    color: #000;
+    text-decoration: none;
 }
 
-#onglet li img { margin-right: 2px; }
+.wizard .wiz_header a.active {
+    color: #fff;
+}
 
+.wizard .wiz_content {
+    margin-left: 1em;
+}
 
