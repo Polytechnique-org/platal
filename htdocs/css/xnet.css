@@ -392,7 +392,8 @@ td.infos {
 
 .wizard .wiz_header {
     height: 30px;
-    width: 100%;
+    width: 635px;
+    padding: 0 2px;
     background: url('../images/skins/wiz_xnet_background.png') bottom left no-repeat;
     margin-bottom: 1em;
 }

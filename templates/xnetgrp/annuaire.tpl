@@ -23,16 +23,9 @@
 <h1>{$asso.nom} : Annuaire du groupe </h1>
 
 <p class="descr">
-Le groupe {$asso.nom} compte {$nb_tot} membres.
+Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
 </p>
 
-<p class="descr">
-Les membres extérieurs du groupe sont intégrés à cette liste, et repérés par l'inscription 'extérieur' dans la colonne promotion.
-</p>
-
-<p class="descr">
-Tu peux également :
-</p>
 <ul class="descr">
   {if $is_admin}
   <li>
