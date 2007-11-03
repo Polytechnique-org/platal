@@ -41,6 +41,7 @@ class FusionAxModule extends PLModule{
         } 
     }
     
+    /** Import de l'annuaire de l'AX depuis l'export situé sur leur serveur */
     function handler_import(&$page, $action = 'index', $fileSQL = '')
     {
         if ($action == 'index') {
@@ -55,64 +56,93 @@ class FusionAxModule extends PLModule{
             }
             return;
         }
-        $report = array();
+        
+        // toutes les actions sont faites en ajax en utilisant jquery
         header("Content-type: text/javascript; charset=utf-8");
+        
+        // log des actions
+        $report = array();
+        
+        // création d'un fichier temporaire si nécessaire
         if (Env::has('tmpdir')) {
             $tmpdir = Env::v('tmpdir');
         } else {
-            exec('rm /tmp/fusionax* -rf');
             $tmpdir = tempnam('/tmp', 'fusionax');
             unlink($tmpdir);
             mkdir($tmpdir);
-            chmod($tmpdir, 0777);
+            chmod($tmpdir, 0700);
+            // copie la clef d'authentification (paire de clef RSA dont la partie publique est sur polytechniciens.com)
             if (!copy(dirname(__FILE__).'/../configs/ax_xorg_rsa',$tmpdir.'/ax_xorg_rsa'))
                 $report[] = 'Impossible de copier la clef pour se logger sur le serveur AX';
             chmod($tmpdir.'/ax_xorg_rsa', 0600);
         }
+        
         $modulepath = realpath(dirname(__FILE__).'/fusionax/').'/';
         $olddir = getcwd();
         chdir($tmpdir);
+        
         if ($action == 'launch') {
+            // lancement : connexion en ssh et récupération du fichier depuis polyechniciens.com
+            // décompression de l'archive et séparation en fichiers par tables
             exec($modulepath.'import-ax.sh', $report);
             $report[] = utf8_decode('Récupération du fichier terminé.');
             $report[] = 'Import dans la base en cours...';
             $next = 'integrateSQL';
         } else if ($action == 'integrateSQL') {
-            $filesSQL = array('Activites.sql', 'Adresses.sql', 'Anciens.sql', 'Formations.sql', 'Entreprises.sql');
+            // intégration des données dans la base MySQL
+            // liste des fichiers sql à exécuter
+            $filesSQL = array(
+                'Activites.sql',
+                'Adresses.sql',
+                'Anciens.sql',
+                'Formations.sql',
+                'Entreprises.sql');
             if ($fileSQL != '') {
-                $trans = array_flip($filesSQL);
-                $nextfile = $trans[$fileSQL] + 1;
+                // récupère le contenu du fichier sql
                 $queries = explode(';',file_get_contents($modulepath.$fileSQL));
                 foreach ($queries as $q) if (trim($q)) {
+                    // coupe le fichier en requêtes individuelles
                     if (substr($q,0,2) == '--') {
+                        // affiche les commentaires dans le report
                         $lines = explode("\n",$q);
                         $l = $lines[0];
                         $report[] = addslashes(utf8_decode($l));
                     }
+                    // exécute la requête
                     XDB::execute($q);
                 }
+                // trouve le prochain fichier à exécuter
+                $trans = array_flip($filesSQL);
+                $nextfile = $trans[$fileSQL] + 1;
             } else {
                 $nextfile = 0;
             }
             if (!isset($filesSQL[$nextfile])) {
+                // tous les fichiers ont été exécutés, on passe à l'étape suivante
                 $next = 'clean';
             } else {
+                // on passe au fichier suivant
                 $next = 'integrateSQL/'.$filesSQL[$nextfile];
             }
         } else if ($action == 'clean') {
+            // nettoyage du fichier temporaire
             chdir($olddir);
             exec("rm -rf $tmpdir", $report);
             $report[] = 'Fin de l\'import';
             global $globals;
+            // met à jour la date de dernier import
             $globals->change_dynamic_config(array('LastUpdate' => time()), 'FusionAx');
         }
         $tmpdir = getcwd();
         chdir($olddir);
         foreach($report as $t)
+            // affiche les lignes de report
             echo "$('#fusionax_import').append('".utf8_encode($t)."<br/>');\n";
         if (isset($next)) {
+            // lance le prochain script s'il y en a un
             echo "$.getScript('fusionax/import/".$next."?tmpdir=".urlencode($tmpdir)."');";
         }
+        // exit pour ne pas afficher la page template par défaut
         exit;
     }
     
@@ -133,19 +163,28 @@ class FusionAxModule extends PLModule{
     private static function find_easy_to_link($limit = 10)
     {
         return XDB::iterator("SELECT 
-            xorg.prenom, xorg.nom, xorg.promo, xorg.user_id, ax.id_ancien
+            xorg.prenom, xorg.nom, xorg.promo, xorg.user_id, ax.id_ancien,
+            CONCAT(ax.prenom,' ',ax.nom_complet,' (X ',ax.promotion_etude,')') AS nom_ax,
+            COUNT(*) AS nbMatches
             FROM fusionax_anciens AS ax
             INNER JOIN fusionax_import AS i ON (i.id_ancien = ax.id_ancien AND i.user_id IS NULL)
-            INNER JOIN auth_user_md5 AS xorg
-            WHERE 
+            LEFT JOIN auth_user_md5 AS xorg ON (
                 xorg.matricule_ax IS NULL AND 
-                xorg.promo = ax.promotion_etude AND 
-                xorg.prenom LIKE ax.prenom AND 
-                xorg.nom LIKE ax.Nom_complet
+                (ax.Nom_complet = xorg.nom
+                     OR ax.Nom_complet LIKE CONCAT(xorg.nom,' %')
+                     OR ax.Nom_complet LIKE CONCAT(xorg.nom,'-%')
+                     OR xorg.nom LIKE CONCAT('%-',ax.Nom_usuel)
+                     OR ax.Nom_usuel = xorg.nom) AND
+                xorg.promo < ax.promotion_etude + 5 AND
+                xorg.promo > ax.promotion_etude - 5)
+            GROUP BY xorg.user_id
+            HAVING
+                xorg.user_id IS NOT NULL AND
+                nbMatches = 1
             ".($limit?('LIMIT '.$limit):''));
     }
     
-    function handler_ids(&$page, $part = 'main')
+    function handler_ids(&$page, $part = 'main', $user_id = null, $matricule_ax = null)
     {
         global $globals;
         $globals->change_dynamic_config(array('LastUpdate' => time()), 'FusionAX');
@@ -177,7 +216,7 @@ class FusionAxModule extends PLModule{
         }
         if ($part == 'link')
         {
-            FusionAxModule::link_by_ids(Env::i('user_id'),Env::v('matricule_ax'));
+            FusionAxModule::link_by_ids($user_id,$matricule_ax);
         }
         if ($part == 'linknext')
         {

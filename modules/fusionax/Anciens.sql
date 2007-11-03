@@ -41,6 +41,7 @@ SET
     `Date_maj` = CONCAT(SUBSTRING(@StringDate_maj,7),'-',SUBSTRING(@StringDate_maj,4,2),'-',SUBSTRING(@StringDate_maj,1,2)),
     `Date_deces` = CONCAT(SUBSTRING(@StringDate_deces,7),'-',SUBSTRING(@StringDate_deces,4,2),'-',SUBSTRING(@StringDate_deces,1,2));
 
+-- Correspondances entre fiches X.org et fiches AX
 DROP TABLE IF EXISTS `fusionax_import`;
  
 CREATE TABLE IF NOT EXISTS `fusionax_import` (
@@ -52,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `fusionax_import` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `fusionax_import` ( SELECT `id_ancien`, NULL, NULL FROM `fusionax_anciens` );
+REPLACE INTO `fusionax_import` ( SELECT `matricule_ax`, `user_id`, NOW() FROM `auth_user_md5` );
 
 DROP VIEW IF EXISTS `fusionax_deceased`;
 
