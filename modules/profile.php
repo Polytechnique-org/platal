@@ -145,19 +145,23 @@ class ProfileModule extends PLModule
                 }
             }
         } elseif (Env::v('suppr')) {
-            XDB::execute('DELETE FROM photo WHERE uid = {?}',
-                                   S::v('uid'));
-            XDB::execute('DELETE FROM requests
-                                     WHERE user_id = {?} AND type="photo"',
-                                   S::v('uid'));
+            XDB::execute('DELETE FROM  photo
+                                WHERE  uid = {?}',
+                         S::v('uid'));
+            XDB::execute('DELETE FROM  requests
+                                WHERE  user_id = {?} AND type="photo"',
+                         S::v('uid'));
+            update_NbValid();
         } elseif (Env::v('cancel')) {
-            $sql = XDB::query('DELETE FROM requests
-                                        WHERE user_id={?} AND type="photo"',
-                                        S::v('uid'));
+            $sql = XDB::query('DELETE FROM  requests
+                                     WHERE  user_id={?} AND type="photo"',
+                              S::v('uid'));
+            update_NbValid();
         }
 
-        $sql = XDB::query('SELECT COUNT(*) FROM requests
-                            WHERE user_id={?} AND type="photo"',
+        $sql = XDB::query('SELECT  COUNT(*)
+                             FROM  requests
+                            WHERE  user_id={?} AND type="photo"',
                           S::v('uid'));
         $page->assign('submited', $sql->fetchOneCell());
         $page->assign('has_trombi_x', file_exists($trombi_x));
