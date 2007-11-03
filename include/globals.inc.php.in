@@ -87,7 +87,9 @@ class PlatalGlobals
     {
         $this->read_ini_file($this->spoolroot.'/configs/platal.ini');
         $this->read_ini_file($this->spoolroot.'/configs/platal.conf');
-        $this->read_ini_file($this->spoolroot.'/spool/conf/platal.dynamic.conf');
+        if (file_exists($this->spoolroot.'/spool/conf/platal.dynamic.conf')) {
+            $this->read_ini_file($this->spoolroot.'/spool/conf/platal.dynamic.conf');
+        }
     }
     
     /** Writes an ini file separated in categories
@@ -121,7 +123,11 @@ class PlatalGlobals
     public function change_dynamic_config($conf, $category = 'Core')
     {
         $dynamicfile = $this->spoolroot.'/spool/conf/platal.dynamic.conf';
-        $array = parse_ini_file($dynamicfile, true);
+        if (file_exists($dynamicfile)) {
+            $array = parse_ini_file($dynamicfile, true);
+        } else {
+            $array = null;
+        }
         if (!is_array($array)) {
             // dynamic conf is empty
             $array = array($category => $conf);
