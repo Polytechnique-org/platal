@@ -91,7 +91,7 @@ class PlatalGlobals
             $this->read_ini_file($this->spoolroot.'/spool/conf/platal.dynamic.conf');
         }
     }
-    
+
     /** Writes an ini file separated in categories
      * @param filename the name of the file to write (overwrite existing)
      * @param categories an array of categories (array of keys and values)
@@ -112,7 +112,7 @@ class PlatalGlobals
         fwrite($f, '; vim:set syntax=dosini foldmethod=marker:'."\n");
         fclose($f);
     }
-    
+
     /** Change dynamic config file
      * @param conf array of keys and values to add or replace
      * @param category name of category to change
@@ -169,6 +169,21 @@ class PlatalGlobals
         PlatalGlobals::write_ini_file($dynamicfile, $array);
         // rereads the new config to correctly set vars
         $this->read_ini_file($dynamicfile);
+    }
+
+    public function bootstrap($conf, $callback, $category = 'Core')
+    {
+        $bootstrap = false;
+        $category = strtolower($category);
+        foreach ($conf as $key) {
+            if (!isset($this->$category->$key)) {
+                $bootstrap = true;
+                break;
+            }
+        }
+        if ($bootstrap) {
+            call_user_func($callback);
+        }
     }
 
     private function setlocale()
