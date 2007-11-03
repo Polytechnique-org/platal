@@ -149,7 +149,7 @@
       <td>
         <a href='{$platal->ns}lists/members/{$liste.list}'>{$liste.list}</a>
       </td>
-      <td>{$liste.desc}</td>
+      <td>{$liste.desc|smarty:nodefaults}</td>
       <td class='right'>{$liste.nbsub}</td>
     </tr>
     {foreachelse}

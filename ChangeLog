@@ -10,6 +10,7 @@ Bug/Wish:
 
     * XnetGrp:
         - #732: Adapt subscription text to sex                             -FRU
+        - #735: Encoding of list description in member edition form        -FRU
 
 
 ================================================================================
