@@ -139,14 +139,16 @@
                                                 $smarty.session.suid.may_update[$asso.id])))}
           <h1>Voir le site comme...</h1>
           <form method="post" action="{$platal->ns}change_rights">
-            <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
-              {if hasPerm('admin') || ($smarty.session.suid && $smarty.session.suid.perms->hasFlag('admin'))}
-              <option value="admin" {if hasPerm('admin')}selected="selected"{/if}>Administrateur</option>
-              {/if}
-              <option value="anim" {if $is_admin && !hasPerm('admin')}selected="selected"{/if}>Animateur</option>
-              <option value="member" {if !$is_admin && $is_member}selected="selected"{/if}>Membre</option>
-              <option value="logged" {if !$is_admin && !$is_member}selected="selected"{/if}>Non-membre</option>
-            </select>
+            <div>
+              <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">
+                {if hasPerm('admin') || ($smarty.session.suid && $smarty.session.suid.perms->hasFlag('admin'))}
+                <option value="admin" {if hasPerm('admin')}selected="selected"{/if}>Administrateur</option>
+                {/if}
+                <option value="anim" {if $is_admin && !hasPerm('admin')}selected="selected"{/if}>Animateur</option>
+                <option value="member" {if !$is_admin && $is_member}selected="selected"{/if}>Membre</option>
+                <option value="logged" {if !$is_admin && !$is_member}selected="selected"{/if}>Non-membre</option>
+              </select>
+            </div>
           </form>
           {/if}
         </td>

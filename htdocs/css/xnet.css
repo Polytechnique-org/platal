@@ -177,7 +177,7 @@ td#menu {
     background-color: #d0c198;
 }
 
-#menu a {
+#menu a, #menu form {
     display: block;
     padding: 0.2em 0em 0.2em 15px;
     font-size: 89%;
