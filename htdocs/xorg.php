@@ -27,7 +27,7 @@ if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
     $platal = new Platal('auth', 'banana', 'carnet', 'email', 'events',
                          'geoloc', 'lists', 'marketing', 'payment', 'platal',
                          'profile', 'register', 'search', 'stats', 'admin',
-                         'newsletter', 'axletter', 'bandeau', 'survey');
+                         'newsletter', 'axletter', 'bandeau', 'survey', 'fusionax');
     $platal->run();
 
     exit;
