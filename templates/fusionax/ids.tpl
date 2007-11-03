@@ -46,11 +46,32 @@ trouver une correspondance entre les personnes renseignés dans ces annuaires.</
 </form>
 
 <p></p>
-<h3 id="autolink" name="autolink">Mise en correspondance automatique</h3>
+<div id="autolink" name="autolink">
+<h3>Mise en correspondance automatique</h3>
 {if $easyToLink}
 <p>Ces anciens sont probablement les mêmes (à peu près mêmes nom, prénom, promo)</p>
 {include file="fusionax/listFusion.tpl" fusionList=$easyToLink fusionAction="fusionax/ids/link" name="lier" field1="nom_ax" namefield1="Ancien AX"}
-<p><a href="fusionax/ids/linknext">Lier toutes les fiches affichées</a></p>
+<p><a href="fusionax/ids/linknext">Lier toutes les fiches affichées</a> <span id="fusion-reload" style="display:none"> - <a href="fusionax/ids#autolink">Trouver d'autres correspondances</a></span></p>
+<script type="text/javascript">
+{literal}
+//<!--
+$(document).ready(function() {
+    $('#autolink a.fusion-action').click(function(a){
+        $.get(a.currentTarget.href,{},function(){
+            $(a.currentTarget).hide();
+            $('#fusion-reload').show();
+            $('#fusion-reload a').click(function(a) {
+                document.location = a.currentTarget.href;
+                document.location.reload();
+            }); 
+        });
+        return false;
+    });
+});
+//-->
+{/literal}
+</script>
 {else}
 <p>Aucune correspondance automatique n'a été trouvée (mêmes nom, prénom, promo d'étude).</p>
 {/if}
+</div>

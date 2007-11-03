@@ -49,7 +49,7 @@
         <td>{$c.$field2}</td>
         {/if}
         {if $fusionAction}
-        <td><a href="{$fusionAction}/{$c.user_id}/{$c.id_ancien}">{$name}</a></td>
+        <td><a class="fusion-action" href="{$fusionAction}/{$c.user_id}/{$c.id_ancien}">{$name}</a></td>
         {/if}
     </tr>
 {/iterate}

@@ -31,15 +31,15 @@ décès.</p>
 
 <p>Anciens déclarés décédés dans l'annuaire AX mais pas sur Xorg</p>
 
-{include file='fusionax/listFusion.tpl' fusionList=$deceasedMissingInXorg field1='Date_décès' namefield1='Décès AX'}
+{include file='fusionax/listFusion.tpl' fusionList=$deceasedMissingInXorg field1='deces_ax' namefield1='Décès AX'}
 
 <p>Anciens déclarés décédés dans l'annuaire Xorg mais pas chez l'AX</p>
 
-{include file='fusionax/listFusion.tpl' fusionList=$deceasedMissingInAX field1='deces' namefield1='Décès X.org'}
+{include file='fusionax/listFusion.tpl' fusionList=$deceasedMissingInAX field1='deces_xorg' namefield1='Décès X.org'}
 
 <p>Anciens déclarés décédés dans les deux annuaires mais pas avec la même date</p>
 
-{include file='fusionax/listFusion.tpl' fusionList=$deceasedDifferent field1='deces' field2='Date_décès' namefield1='Décès X.org' namefield2='Décès AX'}
+{include file='fusionax/listFusion.tpl' fusionList=$deceasedDifferent field1='deces_xorg' field2='deces_ax' namefield1='Décès X.org' namefield2='Décès AX'}
 
 {else}
 

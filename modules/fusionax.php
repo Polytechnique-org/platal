@@ -146,6 +146,11 @@ class FusionAxModule extends PLModule{
         exit;
     }
     
+    /** Lier les identifiants d'un ancien dans les deux annuaires
+     * @param user_id identifiant dans l'annuaire X.org
+     * @param matricule_ax identifiant dans l'annuaire de l'AX
+     * @return 0 si la liaison a échoué, 1 sinon
+     */          
     private static function link_by_ids($user_id, $matricule_ax)
     {
         if (!XDB::execute("UPDATE fusionax_import AS i INNER JOIN auth_user_md5 AS u 
@@ -160,8 +165,32 @@ class FusionAxModule extends PLModule{
         return XDB::affectedRows() / 2;  
     }
     
-    private static function find_easy_to_link($limit = 10)
+    /** Recherche automatique d'anciens à lier entre les deux annuaires
+     * @param limit nombre d'anciens à trouver au max
+     * @param sure si true, ne trouve que des anciens qui sont quasi sûrs
+     * @return un XOrgDBIterator sur les entrées avec prenom, nom, promo, user_id, id_ancien et nom_ax     
+     */              
+    private static function find_easy_to_link($limit = 10, $sure = false)
     {
+        $easy_to_link = XDB::iterator("SELECT 
+            xorg.prenom, xorg.nom, xorg.promo, xorg.user_id, ax.id_ancien,
+            CONCAT(ax.prenom,' ',ax.nom_complet,' (X ',ax.promotion_etude,')') AS nom_ax,
+            COUNT(*) AS nbMatches
+            FROM fusionax_anciens AS ax
+            INNER JOIN fusionax_import AS i ON (i.id_ancien = ax.id_ancien AND i.user_id IS NULL)
+            LEFT JOIN auth_user_md5 AS xorg ON (
+                xorg.matricule_ax IS NULL AND 
+                ax.Nom_complet = xorg.nom AND
+                ax.prenom = xorg.prenom AND
+                xorg.promo = ax.promotion_etude)
+            GROUP BY xorg.user_id
+            HAVING
+                xorg.user_id IS NOT NULL AND
+                nbMatches = 1
+            ".($limit?('LIMIT '.$limit):''));
+        if ($easy_to_link->total() > 0 || $sure) {
+            return $easy_to_link;
+        }
         return XDB::iterator("SELECT 
             xorg.prenom, xorg.nom, xorg.promo, xorg.user_id, ax.id_ancien,
             CONCAT(ax.prenom,' ',ax.nom_complet,' (X ',ax.promotion_etude,')') AS nom_ax,
@@ -173,10 +202,9 @@ class FusionAxModule extends PLModule{
                 (ax.Nom_complet = xorg.nom
                      OR ax.Nom_complet LIKE CONCAT(xorg.nom,' %')
                      OR ax.Nom_complet LIKE CONCAT(xorg.nom,'-%')
-                     OR xorg.nom LIKE CONCAT('%-',ax.Nom_usuel)
                      OR ax.Nom_usuel = xorg.nom) AND
-                xorg.promo < ax.promotion_etude + 5 AND
-                xorg.promo > ax.promotion_etude - 5)
+                xorg.promo < ax.promotion_etude + 2 AND
+                xorg.promo > ax.promotion_etude - 2)
             GROUP BY xorg.user_id
             HAVING
                 xorg.user_id IS NOT NULL AND
@@ -184,10 +212,12 @@ class FusionAxModule extends PLModule{
             ".($limit?('LIMIT '.$limit):''));
     }
     
+    /** Module de mise en correspondance les ids */
     function handler_ids(&$page, $part = 'main', $user_id = null, $matricule_ax = null)
     {
         global $globals;
         $globals->change_dynamic_config(array('LastUpdate' => time()), 'FusionAX');
+        $page->addJsLink('jquery.js');
         
         $page->assign('xorg_title','Polytechnique.org - Fusion des annuaires - Mise en correspondance simple');
         if ($part == 'missingInAX')
@@ -217,6 +247,7 @@ class FusionAxModule extends PLModule{
         if ($part == 'link')
         {
             FusionAxModule::link_by_ids($user_id,$matricule_ax);
+            exit;
         }
         if ($part == 'linknext')
         {
@@ -225,6 +256,7 @@ class FusionAxModule extends PLModule{
             {
                 FusionAxModule::link_by_ids($l['user_id'],$l['id_ancien']);
             }
+            pl_redirect('fusionax/ids#autolink');
         }
         if ($part == 'linkall')
         {
@@ -259,9 +291,9 @@ class FusionAxModule extends PLModule{
         // deceased
         $deceasedErrorsSql = XDB::query('SELECT COUNT(*) FROM fusionax_deceased');
         $page->assign('deceasedErrors',$deceasedErrorsSql->fetchOneCell());
-        $page->assign('deceasedMissingInXorg',XDB::iterator('SELECT user_id,id_ancien,nom,prenom,promo,Date_décès FROM fusionax_deceased WHERE deces = "0000-00-00" LIMIT 10'));
-        $page->assign('deceasedMissingInAX',XDB::iterator('SELECT user_id,id_ancien,nom,prenom,promo,deces FROM fusionax_deceased WHERE Date_décès = "0000-00-00" LIMIT 10'));
-        $page->assign('deceasedDifferent',XDB::iterator('SELECT user_id,id_ancien,nom,prenom,promo,Date_décès,deces FROM fusionax_deceased WHERE deces != "0000-00-00" AND Date_décès != "0000-00-00" LIMIT 10'));
+        $page->assign('deceasedMissingInXorg',XDB::iterator('SELECT user_id,id_ancien,nom,prenom,promo,deces_ax FROM fusionax_deceased WHERE deces_xorg = "0000-00-00" LIMIT 10'));
+        $page->assign('deceasedMissingInAX',XDB::iterator('SELECT user_id,id_ancien,nom,prenom,promo,deces_xorg FROM fusionax_deceased WHERE deces_ax = "0000-00-00" LIMIT 10'));
+        $page->assign('deceasedDifferent',XDB::iterator('SELECT user_id,id_ancien,nom,prenom,promo,deces_ax,deces_xorg FROM fusionax_deceased WHERE deces_xorg != "0000-00-00" AND deces_ax != "0000-00-00" LIMIT 10'));
     }
 }
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:?>
