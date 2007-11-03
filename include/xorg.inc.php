@@ -23,6 +23,9 @@ require_once('platal.inc.php');
 require_once('globals.inc.php');
 require_once('xorg/session.inc.php');
 $globals = new PlatalGlobals('XorgSession');
+if (!isset($globals->core->NbIns) || $globals->core->NbIns == 0) {
+    update_NbIns();
+}
 
 // {{{ class XorgPage
 
