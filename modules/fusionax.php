@@ -202,7 +202,8 @@ class FusionAxModule extends PLModule{
                 (ax.Nom_complet = xorg.nom
                      OR ax.Nom_complet LIKE CONCAT(xorg.nom,' %')
                      OR ax.Nom_complet LIKE CONCAT(xorg.nom,'-%')
-                     OR ax.Nom_usuel = xorg.nom) AND
+                     OR ax.Nom_usuel = xorg.nom
+                     OR xorg.nom LIKE CONCAT('% ',ax.Nom_complet)) AND
                 xorg.promo < ax.promotion_etude + 2 AND
                 xorg.promo > ax.promotion_etude - 2)
             GROUP BY xorg.user_id
@@ -285,6 +286,7 @@ class FusionAxModule extends PLModule{
             }
         }
     }
+    
     function handler_misc(&$page)
     {
         $page->changeTpl('fusionax/misc.tpl');
