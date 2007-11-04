@@ -281,7 +281,7 @@ class PlMailer extends Mail_Mime {
         if ($this->wiki) {
             $this->setTxtBody(MiniWiki::WikiToText($this->wiki, true, 0, 78));
             if ($with_html) {
-                $this->setHtmlBody(MiniWiki::WikiToHtml($this->wiki, true));
+                $this->setHtmlBody('<html><body>' . MiniWiki::WikiToHtml($this->wiki, true) . '</body></html>');
             }
         }
     }
