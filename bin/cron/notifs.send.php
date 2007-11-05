@@ -26,70 +26,14 @@ require_once("../../include/notifs.inc.php");
 
 $all = new AllNotifs();
 
-foreach($all->_data as $u) {
-    $week   = date("W - Y");
-
-    $text =  "  ".($u['sexe'] ? 'Chère' : 'Cher')." {$u['prenom']},\n\n"
-          .  "  Voici les événements survenus dans la semaine écoulée,\n"
-          .  "et depuis ta dernière visite sur le site.\n\n"
-          .  "Tu trouveras les mêmes informations sur la page :\n"
-          .  "    https://www.polytechnique.org/carnet/panel\n\n"
-          .  "------------------------------------------------------------------------\n\n";
-
-    $html  = <<<EOF
-<html>
-  <head>
-    <title>Notifications de la semaine $week</title>
-  </head>
-  <body>
-    <p>Voici les événements survenus dans la semaine écoulée, et depuis ta dernière visite sur le site.</p>
-    <p>Tu trouveras les mêmes informations sur <a href='https://www.polytechnique.org/carnet/panel'>cette page</a></p>
-EOF;
-
-    foreach($u['data'] as $cid=>$d) {
-        $text .= "  {$all->_cats[$cid][(count($d)==1)?'mail_sg':'mail']} :\n\n";
-        $html .= "<h1 style='font-size: 120%'>{$all->_cats[$cid][(count($d)==1)?'mail_sg':'mail']} :</h1>\n<ul>\n";
-
-        foreach($d as $promo=>$x) {
-            require_once('../../plugins/modifier.date_format.php');
-            $date  = smarty_modifier_date_format($x['date'], '%d %b %Y');
-            $text .= "    - (X{$x['promo']}) {$x['prenom']} {$x['nom']} le $date\n";
-            $text .= "      https://www.polytechnique.org/profile/private/{$x['bestalias']}\n\n";
-            $html .= "<li>(X{$x['promo']}) <a href='https://www.polytechnique.org/profile/private/{$x['bestalias']}'>{$x['prenom']} {$x['nom']}</a> le $date</li>\n";
-        }
-        $text .= "\n";
-        $html .= "</ul>\n";
-    }
-
-    $text .= "-- \n"
-           . "L'équipe de Polytechnique.org\n\n"
-           . "------------------------------------------------------------------------\n\n"
-           . "Tu recois ce mail car tu as activé la notification automatique \n"
-           . "par mail des événements que tu surveilles.\n\n"
-           . "Tu peux changer cette option sur :\n"
-           . "    https://www.polytechnique.org/carnet/notifs";
-    $html .= <<<EOF
-    <hr />
-    <p>L'équipe de Polytechnique.org</p>
-    <br />
-    <p>
-    Tu recois ce mail car tu as activé la notification automatique par mail des événements que tu surveilles.
-    </p>
-    <p>Tu peux changer cette option sur la <a href="https://www.polytechnique.org/carnet/notifs">page
-    de configuration des notifications</a>
-    </p>
-  </body>
-</html>
-EOF;
-
-    global $globals;
-    $mailer = new PlMailer();
-    $mailer->setFrom('Carnet Polytechnicien <support_carnet@' . $globals->mail->domain . '>');
-    $mailer->addTo("\"{$u['prenom']} {$u['nom']}\" <{$u['bestalias']}@" . $globals->mail->domain . '>');
-    $mailer->setSubject("Notifications de la semaine $week");
-    $mailer->setTxtBody($text);
-    if ($u['mail_fmt'] == 'html') { $mailer->setHtmlBody($html); }
-    $mailer->send();
+$mailer = new PlMailer('carnet/mail.notif.tpl');
+foreach ($all->_data as $u) {
+    $mailer = new PlMailer('carnet/mail.notif.tpl');
+    $mailer->assign('u', $u);
+    $mailer->assign('week', date("W - Y"));
+    $mailer->assign('cats', $all->_cats);
+    $mailer->addTo('"' . $u['prenom'] . ' ' . $u['nom'] . '" <' . $u['bestalias'] . '@polytechnique.org>');
+    $mailer->send($u['mail_fmt'] == 'html');
 }
 
 XDB::execute("DELETE FROM  watch_profile
