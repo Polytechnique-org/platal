@@ -102,8 +102,8 @@
     <td>
       Créer un nouvel article ...
     </td>
-    <td style='vertical-align:middle; border-left: 1px gray solid'>
-      [<a href="admin/newsletter/edit/{$nl->_id}/new#edit">créer</a>]
+    <td style='vertical-align:middle; border-left: 1px gray solid' class="center">
+      <a href="admin/newsletter/edit/{$nl->_id}/new#edit">{icon name=add title="créer"}</a>
     </td>
   </tr>
   {foreach from=$nl->_arts item=arts key=cat}
@@ -116,12 +116,12 @@
   {foreach from=$arts item=art}
   <tr class="{cycle values="impair,pair"}">
     <td>
-      <pre>{$art->toText($smarty.session.prenom,$smarty.session.nom,$smarty.session.femme)|smarty:nodefaults}</pre>
+      <pre>{$art->toText($smarty.session.prenom,$smarty.session.nom,$smarty.session.femme)}</pre>
     </td>
     <td style='vertical-align:middle; border-left: 1px gray solid'>
-      <strong>Pos: {$art->_pos}</strong><br />
-      [<a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/edit#edit">edit</a>]<br />
-      [<a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/delete">delete</a>]
+      <small><strong>Pos: {$art->_pos}</strong></small><br />
+      <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/edit#edit">{icon name="page_edit" title="Editer"}</a>
+      <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/delete">{icon name="delete" title="Supprimer"}</a>
     </td>
   </tr>
   {/foreach}
