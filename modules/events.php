@@ -81,43 +81,6 @@ class EventsModule extends PLModule
         return $res->fetchOneAssoc();
     }
 
-    private function get_events($where, $order, array &$array, $name)
-    {
-        // affichage des evenements
-        // annonces promos triées par présence d'une limite sur les promos
-        // puis par dates croissantes d'expiration
-        $promo = S::v('promo');
-        $uid   = S::i('uid');
-        $sql = "SELECT  e.id,e.titre, ev.user_id IS NULL AS nonlu
-                  FROM  evenements    AS e
-            LEFT JOIN   evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
-                 WHERE  FIND_IN_SET('valide', e.flags) AND peremption >= NOW()
-                        AND (e.promo_min = 0 || e.promo_min <= {?})
-                        AND (e.promo_max = 0 || e.promo_max >= {?})
-                        AND $where
-              ORDER BY  $order";
-        $sum = XDB::iterator($sql, $uid, $promo, $promo);
-        if (!$sum->total()) {
-            return false;
-        }
-        $sql = "SELECT  e.id,e.titre,e.texte,e.post_id,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife,
-                        p.x, p.y, p.attach IS NOT NULL AS img, FIND_IN_SET('wiki', e.flags) AS wiki
-                  FROM  evenements       AS e
-             LEFT JOIN  evenements_photo AS p ON (e.id = p.eid)
-            INNER JOIN  auth_user_md5    AS a ON e.user_id=a.user_id
-            INNER JOIN  aliases          AS l ON ( a.user_id=l.id AND l.type='a_vie' )
-             LEFT JOIN  evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
-                 WHERE  FIND_IN_SET('valide', e.flags) AND peremption >= NOW()
-                        AND (e.promo_min = 0 || e.promo_min <= {?})
-                        AND (e.promo_max = 0 || e.promo_max >= {?})
-                        AND ev.user_id IS NULL
-                        AND $where
-              ORDER BY  $order";
-        $evt = XDB::iterator($sql, $uid, $promo, $promo);
-        $array[$name] = array('events' => $evt, 'summary' => $sum);
-        return true;
-    }
-
     private function upload_image(PlatalPage &$page, PlUpload &$upload)
     {
         if (@!$_FILES['image']['tmp_name'] && !Env::v('image_url')) {
@@ -198,18 +161,41 @@ class EventsModule extends PLModule
         }
 
         $array = array();
-        $this->get_events('FIND_IN_SET(\'important\', e.flags)', 'e.creation_date DESC', $array, 'important');
-        $this->get_events('e.creation_date > DATE_SUB(CURDATE(), INTERVAL 2 DAY)
-                          AND NOT FIND_IN_SET(\'important\', e.flags)',
-                          'e.creation_date DESC', $array, 'news');
-        $this->get_events('e.peremption < DATE_ADD(CURDATE(), INTERVAL 2 DAY)
-                          AND e.creation_date <= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
-                          AND NOT FIND_IN_SET(\'important\', e.flags)',
-                          'e.peremption, e.creation_date DESC', $array, 'end');
-        $this->get_events('e.peremption >= DATE_ADD(CURDATE(), INTERVAL 2 DAY)
-                          AND e.creation_date <= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
-                          AND NOT FIND_IN_SET(\'important\', e.flags)',
-                          'e.peremption, e.creation_date DESC', $array, 'body');
+        $it = XDB::iterator("SELECT  e.id,e.titre,e.texte,e.post_id,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife,
+                                     p.x, p.y, p.attach IS NOT NULL AS img, FIND_IN_SET('wiki', e.flags) AS wiki,
+                                     FIND_IN_SET('important', e.flags) AS important,
+                                     e.creation_date > DATE_SUB(CURDATE(), INTERVAL 2 DAY) AS news,
+                                     e.peremption < DATE_ADD(CURDATE(), INTERVAL 2 DAY) AS end,
+                                     ev.user_id IS NULL AS nonlu
+                               FROM  evenements       AS e
+                          LEFT JOIN  evenements_photo AS p ON (e.id = p.eid)
+                         INNER JOIN  auth_user_md5    AS a ON e.user_id=a.user_id
+                         INNER JOIN  aliases          AS l ON ( a.user_id=l.id AND l.type='a_vie' )
+                          LEFT JOIN  evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
+                              WHERE  FIND_IN_SET('valide', e.flags) AND peremption >= NOW()
+                                     AND (e.promo_min = 0 || e.promo_min <= {?})
+                                     AND (e.promo_max = 0 || e.promo_max >= {?})
+                           ORDER BY  important DESC, news DESC, end DESC, e.peremption, e.creation_date DESC",
+                            S::i('uid'), S::i('promo'), S::i('promo'));
+        $cats = array('important', 'news', 'end', 'body');
+        $body  = $it->next();
+        foreach ($cats as $cat) {
+            $data = array();
+            if (!$body) {
+                continue;
+            }
+            do {
+                if ($cat == 'body' || $body[$cat]) {
+                    $data[] = $body;
+                } else {
+                    break;
+                }
+                $body = $it->next();
+            } while ($body);
+            if (!empty($data)) {
+                $array[$cat] = $data;
+            }
+        }
         $page->assign_by_ref('events', $array);
     }
 
@@ -487,7 +473,7 @@ class EventsModule extends PLModule
                             FIND_IN_SET('valide', e.flags) AS fvalide,
                             FIND_IN_SET('archive', e.flags) AS farch,
                             u.promo, u.nom, u.prenom, a.alias AS forlife,
-                            FIND_IN_SET('wiki', flags) AS wiki
+                            FIND_IN_SET('wiki', e.flags) AS wiki
                       FROM  evenements    AS e
                 INNER JOIN  auth_user_md5 AS u ON(e.user_id = u.user_id)
                 INNER JOIN  aliases AS a ON (u.user_id = a.id AND a.type='a_vie')

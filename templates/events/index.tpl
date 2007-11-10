@@ -113,7 +113,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
         {/if}
       </td>
     </tr>
-    {iterate item=ev from=$evenement.summary}
+    {foreach item=ev from=$evenement}
     <tr class="impair">
       <td class="half">
         &bull;
@@ -127,7 +127,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
       </td>
     </tr>
     {assign var="has_evts" value=true}
-    {/iterate}
+    {/foreach}
     {/foreach}
     {if !$has_evts}
     <tr>
@@ -155,7 +155,8 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
   </script>
  
   {foreach from=$events key=category item=evenement}
-  {iterate item=ev from=$evenement.events}
+  {foreach item=ev from=$evenement}
+  {if $ev.nonlu}
   <div id="content-evt{$ev.id}">
   <br />
 
@@ -225,7 +226,8 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
     </tr>
   </table>
   </div>
-  {/iterate}
+  {/if}
+  {/foreach}
   {/foreach}
 
   <p class="smaller">
