@@ -34,6 +34,12 @@ class PlProfiler
         return true;
     }
 
+    static public function step($name, $info = "action")
+    {
+        PlProfiler::stop($name);
+        PlProfiler::start($name, $info);
+    }
+
     static public function stop($name)
     {
         global $globals;
