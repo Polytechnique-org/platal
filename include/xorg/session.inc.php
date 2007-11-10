@@ -255,7 +255,9 @@ function start_connexion ($uid, $identified)
                         WHERE  s.uid = {?} AND s.suid = 0
                      ORDER BY  s.start DESC
                         LIMIT  1", $uid);
-    $sess = array_merge($sess, $res->fetchOneAssoc());
+    if ($res->numRows()) {
+        $sess = array_merge($sess, $res->fetchOneAssoc());
+    }
     $suid = S::v('suid');
 
     if ($suid) {
