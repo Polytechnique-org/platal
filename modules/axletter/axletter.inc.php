@@ -45,7 +45,7 @@ class AXLetter extends MassMailer
             } else {
                 $res = XDB::query("SELECT  *
                                      FROM  axletter
-                                    WHERE  id = {?} OR shortname = {?}", $id, $id);
+                                    WHERE  id = {?} OR short_name = {?}", $id, $id);
             }
             if (!$res->numRows()) {
                 $this->_id = null;
@@ -223,7 +223,7 @@ class AXLetter extends MassMailer
 
     static public function listSent()
     {
-        $res = XDB::query("SELECT  IF(shortname IS NULL, id, shortname) as id, date, subject AS titre
+        $res = XDB::query("SELECT  IF(short_name IS NULL, id, short_name) as id, date, subject AS titre
                              FROM  axletter
                             WHERE  NOT (FIND_IN_SET('new', bits))
                          ORDER BY  date DESC");
@@ -232,7 +232,7 @@ class AXLetter extends MassMailer
 
     static public function listAll()
     {
-        $res = XDB::query("SELECT  IF(shortname IS NULL, id, shortname) as id, date, subject AS titre
+        $res = XDB::query("SELECT  IF(short_name IS NULL, id, short_name) as id, date, subject AS titre
                              FROM  axletter
                          ORDER BY  date DESC");
         return $res->fetchAllAssoc();
