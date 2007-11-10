@@ -382,7 +382,7 @@ class AdminModule extends PLModule
             $_SESSION['suid'] = $_SESSION;
             $r = XDB::query("SELECT id FROM aliases WHERE alias={?}", $login);
             if($uid = $r->fetchOneCell()) {
-                start_connexion($uid,true);
+                start_connexion($uid, true);
                 pl_redirect("");
             }
         }
