@@ -3,11 +3,11 @@ VERSION 0.9.16                                                        XX XX 2007
 
 New:
 
-    * Core:
-        - New PlProfiler tool                                              -FRU
-
     * Carnet:
         - List updated fields in notifications                             -FRU
+
+    * Core:
+        - New PlProfiler tool                                              -FRU
 
 Bug/Wish:
 
