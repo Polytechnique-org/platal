@@ -50,7 +50,7 @@ trouver une correspondance entre les personnes renseignés dans ces annuaires.</
 <h3>Mise en correspondance automatique</h3>
 {if $easyToLink}
 <p>Ces anciens sont probablement les mêmes (à peu près mêmes nom, prénom, promo)</p>
-{include file="fusionax/listFusion.tpl" fusionList=$easyToLink fusionAction="fusionax/ids/link" name="lier" field1="nom_ax" namefield1="Ancien AX"}
+{include file="fusionax/listFusion.tpl" fusionList=$easyToLink fusionAction="fusionax/ids/link" name="lier" field1="display_name_ax" namefield1="Ancien AX"}
 <p><a href="fusionax/ids/linknext">Lier toutes les fiches affichées</a> <span id="fusion-reload" style="display:none"> - <a href="fusionax/ids#autolink">Trouver d'autres correspondances</a></span></p>
 <script type="text/javascript">
 {literal}

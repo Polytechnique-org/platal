@@ -37,7 +37,7 @@
 {if $fusionList}
 {iterate from=$fusionList item=c}
     <tr class="{cycle values="pair,impair"}">
-        <td>{$c.prenom} {$c.nom} (X {$c.promo})</td>
+        <td>{$c.display_name} (X {$c.promo})</td>
         <td style="text-align:center">
             {if $c.user_id}<a href="admin/user/{$c.user_id}" class="popup2">{icon name="user_suit" title="Administrer utilisateur"}</a>{/if}
             {if $c.id_ancien}<a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.id_ancien}" class="popup2">{icon name="user_gray" title="fiche AX"}</a>{/if}
