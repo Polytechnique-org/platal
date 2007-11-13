@@ -27,7 +27,7 @@
 {#globals.baseurl#}/register/%%hash%%
 ==========================================================
 
-Il ne te faut que 5 minutes sur https://www.polytechnique.org/ pour rejoindre la communauté polytechnicienne sur le web grâce aux services de Polytechnique.org dont profitent déjà {$num_users} camarades. Cela te permettera, entre autres, de contacter un X en connaissant seulement son nom et son prénom et de bénéficier à vie d'une adresse prestigieuse {$u.forlife}@polytechnique.org et de son alias discret {$u.forlife}@m4x.org (m4x = mail for X).
+Il ne te faut que 5 minutes sur https://www.polytechnique.org/ pour rejoindre la communauté polytechnicienne sur le web grâce aux services de Polytechnique.org dont profitent déjà {$num_users} camarades. Cela te permettra, entre autres, de contacter un X en connaissant seulement son nom et son prénom et de bénéficier à vie d'une adresse prestigieuse {$u.forlife}@polytechnique.org et de son alias discret {$u.forlife}@m4x.org (m4x = mail for X).
 
 Pas de nouvelle boîte aux lettres à relever, il suffit de la rediriger vers ton adresse personnelle et/ou professionnelle que tu indiques et que tu peux changer à ta guise, sans que tes correspondants n'aient à actualiser leur carnet d'adresses.
 
