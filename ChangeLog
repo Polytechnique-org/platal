@@ -11,6 +11,9 @@ New:
 
 Bug/Wish:
 
+    * Profile:
+        - #729: Fix positioning of addresses on public profile             -FRU
+
     * XnetGrp:
         - #732: Adapt subscription text to sex                             -FRU
         - #735: Encoding of list description in member edition form        -FRU

@@ -131,8 +131,8 @@ function chgMainWinLoc(strPage)
   {if $x.adr}
   <div class="part">
     <h2>Contact : </h2>
-    {foreach from=$x.adr item="address" key="i" name=adresses}
-      {if $i is odd}
+    {foreach from=$x.adr item="address" name=adresses}
+      {if $smarty.foreach.adresses.iteration is even}
         {assign var=pos value="right"}
       {else}
         {assign var=pos value="left"}
@@ -147,7 +147,7 @@ function chgMainWinLoc(strPage)
       {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse principale :"
                for="`$x.prenom` `$x.nom`" pos=$pos}
       {/if}
-      {if $i is odd}<div class="spacer"></div>{/if}
+      {if $smarty.foreach.adresses.iteration is even}<div class="spacer"></div>{/if}
     {/foreach}
   </div>
   {/if}
