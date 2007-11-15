@@ -39,28 +39,30 @@ function chgMainWinLoc(strPage)
 //]]></script>
 {/literal}
 
-{if $logged and $x.forlife eq $smarty.session.forlife}
-[<a href="javascript:chgMainWinLoc('profile/edit')">Modifier ma fiche</a>]
-{/if}
-
 <div id="fiche">
   <div id="photo" class="part">
     {if $photo_url}<img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}"/>{/if}
-    {if $logged}
+    {if $logged && ( $x.section|smarty:nodefaults || $x.binets_join|smarty:nodefaults || $x.gpxs_join|smarty:nodefaults)}
+      <h2>A l'X...</h2>
       {if $x.section}<div><em class="intitule">Section : </em><span>{$x.section}</span></div>{/if}
       {if $x.binets_join}<div><em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span></div>{/if}
       {if $x.gpxs_join}<div><em class="intitule">Groupe(s) et institution(s) X : </em><span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
     {/if}
-    {if $x.web}<div><em class="intitule">Site Web : </em><br /><a href="{$x.web}" class='popup'>{$x.web}</a></div>{/if}
-    {if $x.freetext}<div><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|miniwiki|smarty:nodefaults}</span></div>{/if}
+    {if $x.freetext}
+    <h2>Commentaires&nbsp;:</h2>
+    <span>{$x.freetext|miniwiki|smarty:nodefaults}</span>
+    {/if}
   </div>
   <div id="fiche_identite" class="part">
     <div class="civilite">
       {if $x.sexe}&bull;{/if}
       {$x.prenom} {if $x.nom_usage eq ""}{$x.nom}{else}{$x.nom_usage} ({$x.nom}){/if}
       {if $logged}
-      {if $x.nickname} (alias {$x.nickname}){/if}&nbsp;
-      <a href="vcard/{$x.forlife}.vcf">{*
+      {if $x.nickname} (alias {$x.nickname}){/if}
+      {/if}
+      {if $x.web}&nbsp;<a href="{$x.web}">{icon name="world_go" title="Site Web"}</a>{/if}
+      {if $logged}
+      &nbsp;<a href="vcard/{$x.forlife}.vcf">{*
         *}{icon name=vcard title="Afficher la carte de visite"}</a>
       {if !$x.is_contact}
       <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
@@ -72,6 +74,9 @@ function chgMainWinLoc(strPage)
       {if hasPerm('admin')}
       <a href="javascript:chgMainWinLoc('admin/user/{$x.forlife}')">
         {icon name=wrench title="administrer user"}</a>
+      {/if}
+      {if $x.forlife eq $smarty.session.forlife}
+      <a href="javascript:chgMainWinLoc('profile/edit')">{icon name="user_edit" title="Modifier ma fiche"}</a>
       {/if}
       {/if}
     </div>
@@ -184,8 +189,10 @@ function chgMainWinLoc(strPage)
   {/if}
   {if !$logged}
   <div class="part">
+    <small>
     Cette fiche est publique et visible par tout internaute,<br />
     vous pouvez aussi voir <a href="profile/private/{$x.forlife}?display=light">celle&nbsp;réservée&nbsp;aux&nbsp;X</a>.
+    </small>
   </div>
   {/if}
   <div class="spacer"></div>
