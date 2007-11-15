@@ -97,9 +97,11 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
          WHERE ref = {?} AND uid = {?}", $evt['paiement_id'], S::v('uid'));
     $montants = $req->fetchColumn();
 
+    $evt['telepaid'] = 0;
     foreach ($montants as $m) {
         $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
         $evt['paid'] += trim($p);
+        $evt['telepaid'] += trim($p);
     }
 
     return $evt;
