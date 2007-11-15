@@ -230,12 +230,14 @@ class XnetEventsModule extends PLModule
         $updated = false;
         $total   = 0;
         $paid    = $evt['paid'] ? $evt['paid'] : 0;
+        $telepaid= $evt['telepaid'] ? $evt['telepaid'] : 0;
         foreach ($subs as $j => $nb) {
             if ($nb >= 0) {
                 XDB::execute(
                     "REPLACE INTO  groupex.evenements_participants
                            VALUES  ({?}, {?}, {?}, {?}, {?}, {?})",
-                    $eid, S::v('uid'), $j, $nb, Env::has('notify_payment') ? 'notify_payment' : '', $paid);
+                    $eid, S::v('uid'), $j, $nb, Env::has('notify_payment') ? 'notify_payment' : '',
+                    $j == 1 ? $paid - $telepaid : 0);
                 $updated = $eid;
             } else {
                 XDB::execute(
