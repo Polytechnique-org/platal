@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 require_once 'banana/banana.inc.php';
+require_once 'banana/message.func.inc.php';
 require_once 'banana/hooks.inc.php';
 
 function hook_checkcancel($_headers)
