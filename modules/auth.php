@@ -27,10 +27,10 @@ class AuthModule extends PLModule
             'groupex/donne-chall.php'
                                 => $this->make_hook('chall',      AUTH_PUBLIC),
             'groupex/export-econfiance.php'
-                                => $this->make_hook('econf',      AUTH_PUBLIC),
+                                => $this->make_hook('econf',      AUTH_PUBLIC, 'user', NO_HTTPS),
 
             'webservices/manageurs.php'
-                                => $this->make_hook('manageurs',  AUTH_PUBLIC),
+                                => $this->make_hook('manageurs',  AUTH_PUBLIC, 'user', NO_HTTPS),
 
             'auth-redirect.php' => $this->make_hook('redirect',   AUTH_COOKIE),
             'auth-groupex.php'  => $this->make_hook('groupex_old',    AUTH_COOKIE),
