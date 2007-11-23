@@ -685,7 +685,7 @@ class XnetGrpModule extends PLModule
                            WHERE  a.alias={?}', $globals->asso('id'), $forlife);
                 pl_redirect("member/$forlife");
             } else {
-                $page->trig($email." n'est pas un alias polytechnique.org valide");
+                $page->trig($email." n'est pas un alias polytechnique.org valide.");
             }
         } else {
             require_once 'xorg.misc.inc.php';
