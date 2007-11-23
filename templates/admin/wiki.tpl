@@ -127,7 +127,7 @@
   </tr>
   <tr class="pair">
     <td>
-      Attribue les permissions aux pages cochées :
+      Attribue les permissions aux pages cochées&nbsp;:
     </td>
     <td>
       <select name="read">
