@@ -133,14 +133,14 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
                    IF(m.origine != 'X',m.sexe,FIND_IN_SET('femme', u.flags)) AS femme,
                    m.perms='admin' AS admin,
                    (m.origine = 'X' OR m.origine IS NULL) AS x,
-                   ep.uid, SUM(ep.paid) AS paid, SUM(nb) AS nb,
+                   ep.uid, SUM(ep.paid) AS paid, SUM(ep.nb) AS nb,
                    FIND_IN_SET('notify_payment', ep.flags) AS notify_payment
              FROM  groupex.evenements_participants AS ep
        INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
         LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
         LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
         LEFT JOIN  aliases         AS a ON ( a.id = ep.uid AND a.type='a_vie' )
-            WHERE  ep.eid = {?} AND ep.nb > 0
+            WHERE  ep.eid = {?}
                     ".(($item_id)?" AND item_id = $item_id":"")."
                     $where
          GROUP BY  ep.uid
@@ -156,6 +156,9 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
     $user = 0;
 
     while ($u = $res->next()) {
+        if ($u['nb'] == 0) {
+            continue;
+        }
         $u['adminpaid'] = $u['paid'];
         $u['montant'] = 0;
         if ($money && $pay_id) {
