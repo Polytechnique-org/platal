@@ -545,7 +545,7 @@ class XnetEventsModule extends PLModule
                     $nb = max(intval($nb), 0);
                     XDB::execute("REPLACE INTO groupex.evenements_participants
                                         VALUES ({?}, {?}, {?}, {?}, {?}, {?})",
-                                  $evt['eid'], $member['uid'], $id, $nb, '', $paid);
+                                  $evt['eid'], $member['uid'], $id, $nb, '', $id == 1 ? $paid : 0);
                 }
 
                 $res = XDB::query("SELECT COUNT(uid) AS cnt, SUM(nb) AS nb
