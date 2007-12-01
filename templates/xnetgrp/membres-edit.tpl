@@ -119,7 +119,7 @@
     <tr id="make_X" {if $user.origine eq "groupe"}style="display: none"{/if}>
       <td colspan="2">
         <span id="make_X_cb">
-          <input type="checkbox" name="is_x" id="is_x" onchange="showXInput(this);" />
+          <input type="checkbox" name="is_x" id="is_x" onclick="showXInput(this);" onchange="showXInput(this);" />
           <label for="is_x">coche cette case si il s'agit d'un X</label>
         </span>
         <span id="make_X_login" style="display: none">
