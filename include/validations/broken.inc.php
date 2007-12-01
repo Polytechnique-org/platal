@@ -102,7 +102,7 @@ class BrokenReq extends Validate
 
         XDB::execute("UPDATE  emails AS e
                   INNER JOIN  aliases AS a ON (a.id = e.uid)
-                         SET  e.flags = 'active'
+                         SET  e.flags = 'active', panne_level = 2
                        WHERE  a.alias = {?} AND e.email = {?}", $this->m_forlife, $this->m_email);
         if (XDB::affectedRows() > 0) {
             $this->m_reactive = true;
