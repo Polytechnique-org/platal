@@ -199,7 +199,7 @@ function subscribe_lists_event($participate, $uid, $evt)
     $participant_list = $evt['participant_list'];
     $absent_list      = $evt['absent_list'];
 
-    $email = get_user_forlife($uid);
+    $email = get_user_forlife($uid, '_silent_user_callback');
 
     if ($email) {
         $email .= '@'.$globals->mail->domain;

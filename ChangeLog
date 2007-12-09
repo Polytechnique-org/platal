@@ -18,6 +18,9 @@ Bug/Wish:
     * Search:
         - #741: Mentor search in advanced search                           -FRU
 
+    * XnetEvent:
+        - #743: Don't show a warning when subscriber has no forlife        -FRU
+
     * XnetGrp:
         - #732: Adapt subscription text to sex                             -FRU
         - #735: Encoding of list description in member edition form        -FRU
