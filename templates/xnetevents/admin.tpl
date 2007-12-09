@@ -84,7 +84,11 @@ Ils ont payé mais ont oublié de s'inscrire :
   <tr class="pair">
     <td>
       <a href="" {if $is_admin}onclick="return remplitAuto('{$m.email}')"{/if}>
-      {$m.prenom} {$m.nom}
+        {if !$m.prenom && !$m.nom}
+        {$m.email}
+        {else}
+        {$m.prenom} {$m.nom}
+        {/if}
       </a>
     </td>
     <td>{$m.promo}</td>
@@ -138,7 +142,7 @@ Ils ont payé mais ont oublié de s'inscrire :
   <tr>
     <td>
       {if $is_admin}<a href="javascript:remplitAuto('{$m.email}')">{/if}
-        {if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}
+        {if $m.femme}&bull;{/if}{if !$m.prenom && !$m.nom}{$m.email}{else}{$m.prenom} {$m.nom}{/if}
       {if $is_admin}</a>{/if}
     </td>
     <td>{$m.promo}</td>
