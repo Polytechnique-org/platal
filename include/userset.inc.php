@@ -110,7 +110,7 @@ class SearchSet extends UserSet
                                                       'u.promo DESC, NomSortKey, prenom')));
     }
 
-    private function getAdvanced()
+    private function getAdvanced($join, $where)
     {
         global $globals;
         $this->advanced = true;

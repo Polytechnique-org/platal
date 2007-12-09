@@ -755,6 +755,11 @@ class SFieldGroup
     {
         $this->fields = $_fields;
         $this->and    = $_and;
+        foreach ($this->fields as $key=>&$field) {
+            if (is_null($field)) {
+                unset($this->fields[$key]);
+            }
+        }
     }
 
     // }}}
@@ -764,7 +769,9 @@ class SFieldGroup
     {
         $b = true;
         for ($i=0 ; $b && $i<count($this->fields) ; $i++) {
-            $b = $b && $this->fields[$i]->too_large();
+            if (!is_null($this->fields[$i])) {
+                $b = $b && $this->fields[$i]->too_large();
+            }
         }
         return $b;
     }

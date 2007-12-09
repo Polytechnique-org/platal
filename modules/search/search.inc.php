@@ -41,6 +41,11 @@ function advancedSearchFromInput()
     $womanField      = new RefSField('woman',array('FIND_IN_SET(\'femme\',u.flags)+1'),'','','');
     $subscriberField = new RefSField('subscriber',array('!(u.perms IN (\'admin\',\'user\'))+1'),'','','');
     $aliveField      = new RefSField('alive',array('(u.deces!=0)+1'),'','','');
+    if (Env::v('only_referent') == 'on') {
+        $referentField = new RefSField('only_referent', array('"on"'), 'mentor', 'mt', 'mt.expertise != "" AND mt.uid=u.user_id');
+    } else {
+        $referentField = null;
+    }
 
     if (!Env::i('cityid')) {
         $townField      = new RefSField('city',array('ac.city'),'adresses','ac',getadr_join('ac'),false);
@@ -70,7 +75,7 @@ function advancedSearchFromInput()
 
     return array(
                 $nameField, $firstnameField, $nicknameField, $promo1Field,
-                $promo2Field, $womanField, $subscriberField, $aliveField,
+                $promo2Field, $womanField, $subscriberField, $aliveField, $referentField,
                 $townField, $countryField, $regionField, $mapField, $entrepriseField,
                 $posteField, $secteurField, $cvField, $natField, $binetField,
                 $groupexField, $sectionField, $schoolField, $diplomaField,
