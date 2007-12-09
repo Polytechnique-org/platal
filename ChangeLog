@@ -13,11 +13,16 @@ Bug/Wish:
 
     * Profile:
         - #729: Fix positioning of addresses on public profile             -FRU
+        - #742: Sub domain was hidden when editing profile                 -FRU
 
     * XnetGrp:
         - #732: Adapt subscription text to sex                             -FRU
         - #735: Encoding of list description in member edition form        -FRU
 
+From 0.9.15 branch:
+
+    * XnetEvents:
+        - #738: Duplicated payments in certain conditions                  -FRU
 
 ================================================================================
 VERSION 0.9.15                                                        08 10 2007
