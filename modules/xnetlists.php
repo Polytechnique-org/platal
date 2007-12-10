@@ -164,27 +164,15 @@ class XnetListsModule extends ListsModule
                         ."<a href='mailto:support@m4x.org'>support@m4x.org</a>");
             return;
         }
-        XDB::execute('INSERT INTO x4dat.virtual (alias,type)
-                                VALUES({?},{?})', $liste.'@'.$dom, 'list');
-        XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', XDB::insertId(),
-                               "$red+post@listes.polytechnique.org");
-        XDB::execute('INSERT INTO x4dat.virtual (alias,type)
-                                VALUES({?},{?})', $liste.'-owner@'.$dom, 'list');
-        XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', XDB::insertId(),
-                               "$red+owner@listes.polytechnique.org");
-        XDB::execute('INSERT INTO x4dat.virtual (alias,type)
-                                VALUES({?},{?})', $liste.'-admin@'.$dom, 'list');
-        XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', XDB::insertId(),
-                               "$red+admin@listes.polytechnique.org");
-        XDB::execute('INSERT INTO x4dat.virtual (alias,type)
-                                VALUES({?},{?})', $liste.'-bounces@'.$dom, 'list');
-        XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', XDB::insertId(),
-                                "$red+bounces@listes.polytechnique.org");
-
+        foreach (array('', 'owner', 'admin', 'bounces', 'unsubscribe') as $app) {
+            $mdir = $app == '' ? '+post' : '+' . $app;
+            $app  = '-' . $app;
+            XDB::execute('INSERT INTO x4dat.virtual (alias,type)
+                                    VALUES({?},{?})', $liste. $app . '@'.$dom, 'list');
+            XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
+                                    VALUES ({?}, {?})', XDB::insertId(),
+                                   $red . $mdir . '@listes.polytechnique.org');
+        }
         pl_redirect('lists/admin/'.$liste);
     }
 

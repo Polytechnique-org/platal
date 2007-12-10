@@ -112,7 +112,7 @@ class ListeReq extends Validate
                                   $this->owners, $this->members);
         $liste = strtolower($this->liste);
         if ($ret) {
-            foreach(Array($liste, $liste."-owner", $liste."-admin", $liste."-bounces") as $l) {
+            foreach(Array($liste, $liste."-owner", $liste."-admin", $liste."-bounces", $liste."-unsubscribe") as $l) {
                 XDB::execute("INSERT INTO aliases (alias,type) VALUES({?}, 'liste')", $l);
             }
         }
