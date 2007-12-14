@@ -38,7 +38,7 @@ class PlMail extends Smarty
         $this->template_dir  = $globals->spoolroot . "/templates/";
         $this->compile_dir   = $globals->spoolroot . "/spool/mails_c/";
         $this->config_dir    = $globals->spoolroot . "/configs/";
-
+        array_unshift($this->plugins_dir, $globals->spoolroot."/plugins/");
 
         $this->register_outputfilter(Array($this, 'mail_format'));
         $this->register_function('from',    Array($this, 'setFrom'));
