@@ -35,7 +35,7 @@ function deadlineChange(box)
 {/literal}
 </script>
 
-<h1>{$asso.nom} : {$evt.intitule|default:"Nouvel événement"}</h1>
+<h1>{$asso.nom}&nbsp;: {$evt.intitule|default:"Nouvel événement"}</h1>
 
 <p class="descr">
   Un événement peut être une réunion, un séminaire, une conférence, un voyage promo,
@@ -118,17 +118,17 @@ function deadlineChange(box)
         Options&nbsp;:
       </td>
       <td>
-        Montrer la liste des inscrits aux membres :
+        Montrer la liste des inscrits aux membres&nbsp;:
         <input type="radio" name="show_participants" value="1" {if $evt.show_participants}checked="checked"{/if} /> oui
         <input type="radio" name="show_participants" value="0" {if !$evt.show_participants}checked="checked"{/if}/> non
 
         <br />
-        Autoriser les non-membres :
+        Autoriser les non-membres&nbsp;:
         <input type="radio" name="accept_nonmembre" value="1" {if $evt.accept_nonmembre}checked="checked"{/if} /> oui
         <input type="radio" name="accept_nonmembre" value="0" {if !$evt.accept_nonmembre}checked="checked"{/if}/> non
 
         <br />
-        Autoriser les invités :
+        Autoriser les invités&nbsp;:
         <input type="radio" name="noinvite" value="0" {if !$evt.noinvite}checked="checked"{/if} /> oui
         <input type="radio" name="noinvite" value="1" {if $evt.noinvite}checked="checked"{/if}/> non
       </td>
@@ -148,7 +148,7 @@ function deadlineChange(box)
     </tr>
     <tr id="new_pay" style="display:none">
       <td colspan="2">
-        Il faut que tu définisses le texte du mail de confirmation de paiement. Pour ceci, tu peux adapter le modèle qui suit :
+        Il faut que tu définisses le texte du mail de confirmation de paiement. Pour ceci, tu peux adapter le modèle qui suit&nbsp;:
         <ul>
           <li><strong>Remplace les crochets</strong> ([...]) par le texte que tu désires y voir apparaître</li>
           <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt; et &lt;montant&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées</li>
@@ -192,7 +192,7 @@ A très bientôt,
     </colgroup>
     <tr>
       <td class='titre'>
-        Début :
+        Début&nbsp;:
       </td>
       <td>
         le {html_select_date prefix='deb_' end_year='+5' day_value_format='%02d'
@@ -203,7 +203,7 @@ A très bientôt,
     </tr>
     <tr>
       <td class='titre'>
-        Fin :
+        Fin&nbsp;:
       </td>
       <td>
         le {html_select_date prefix='fin_' end_year='+5' day_value_format='%02d'
@@ -219,15 +219,15 @@ A très bientôt,
       <th colspan="2">Moment {$i}</th>
     </tr>
     <tr>
-      <td class="titre">Intitulé :</td>
+      <td class="titre">Intitulé&nbsp;:</td>
       <td><input type="text" name="titre{$i}" value="{$moment.titre}" size="45" maxlength="100" /></td>
     </tr>
     <tr>
-      <td class="titre">Détails pratiques :</td>
+      <td class="titre">Détails pratiques&nbsp;:</td>
       <td><textarea name="details{$i}" rows="6" cols="45">{$moment.details}</textarea></td>
     </tr>
     <tr>
-      <td class="titre">Tarif :<br /><small>(par participant)</small></td>
+      <td class="titre">Tarif&nbsp;:<br /><small>(par participant)</small></td>
       <td><input type="text" name="montant{$i}" value="{if $moment.montant}{$moment.montant|replace:".":","}{else}0,00{/if}" size="7" maxlength="7" /> &#8364; <small>(0 si gratuit)</small></td>
     </tr>
   {/foreach}

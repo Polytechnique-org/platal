@@ -68,7 +68,7 @@
     <tr id="ln_promo_exp">
       <td></td>
       <td class="smaller">
-        Exemple : 1954,1986-1989,-1942,2000-&nbsp;&nbsp;&nbsp;restreindra le sondage &#224; toutes les promotions suivantes :<br/>
+        Exemple&nbsp;: 1954,1986-1989,-1942,2000-&nbsp;&nbsp;&nbsp;restreindra le sondage &#224; toutes les promotions suivantes&nbsp;:<br/>
         1954, 1986 &#224; 1989, toutes jusqu'à 1942 et toutes à partir 2000 (les bornes sont syst&#233;matiquement incluses)
       </td>
     </tr>

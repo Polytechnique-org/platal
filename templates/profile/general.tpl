@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 <table class="bicol" style="margin-bottom: 1em"
-  summary="Profil : Informations générales">
+  summary="Profil&nbsp;: Informations générales">
   <tr>
     <th colspan="2">
       <div class="flags" style="float: left">
@@ -121,7 +121,7 @@
 
 {if !$no_private_key}
 <table class="bicol"  style="margin-bottom: 1em"
-  summary="Profil : Informations générales">
+  summary="Profil&nbsp;: Informations générales">
   <tr>
     <th>
       Synchronisation avec l'AX

@@ -64,7 +64,7 @@
       <input type="text" name="{$min_field_name|default:"promo_min"}" id="{$prefix}promo_min"
              size="4" maxlength="4" value="{$promo_min|default:0}" 
              onkeyup="return updateRange();" onchange="return updateRange();" /> incluse 
-      &nbsp;<span class="smaller">(ex : 1980)</span> 
+      &nbsp;<span class="smaller">(ex&nbsp;: 1980)</span> 
     </td> 
   </tr> 
   <tr id="{$prefix}promo_max_tr" class="impair"> 
@@ -73,7 +73,7 @@
       <input type="text" name="{$max_field_name|default:"promo_max"}" id="{$prefix}promo_max"
              size="4" maxlength="4" value="{$promo_max|default:0}" 
              onkeyup="return updateRange();" onchange="return updateRange();" /> incluse 
-      &nbsp;<span class="smaller">(ex : 2000)</span> 
+      &nbsp;<span class="smaller">(ex&nbsp;: 2000)</span> 
     </td> 
   </tr> 
   <tr id="{$prefix}promo_range_tr" class="impair"> 

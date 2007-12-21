@@ -30,11 +30,11 @@
   <td>{$valid->alias}</td>
 </tr>
 <tr class="pair">
-  <td class="titre">Visibilité :</td>
+  <td class="titre">Visibilité&nbsp;:</td>
   <td>{$valid->public}</td>
 </tr>
 <tr class="pair">
-  <td class="titre">Motif :</td>
+  <td class="titre">Motif&nbsp;:</td>
   <td>{$valid->raison|nl2br}</td>
 </tr>
 

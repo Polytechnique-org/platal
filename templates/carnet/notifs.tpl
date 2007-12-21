@@ -67,14 +67,14 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 <h2>Surveiller des promos</h2>
 
 <p>
-Attention : pour les promos, tu n'es pas notifié des événements trop fréquents (par exemple les changements de fiche).
+Attention&nbsp;: pour les promos, tu n'es pas notifié des événements trop fréquents (par exemple les changements de fiche).
 </p>
 
 <form action="carnet/notifs/" method="post">
   <fieldset>
     <legend>Ajouter une promo</legend>
     Tu peux surveiller des promos (mettre la promo sur 4 chiffres),
-    ou des plages de promos (par ex. 1990-1992) : <br />
+    ou des plages de promos (par ex. 1990-1992)&nbsp;: <br />
     <input type='text' name='promo' />
     <input type='submit' name='add_promo' value='ajouter'
       onclick="this.form.action += 'add_promo/' + this.form.promo.value;" />
@@ -84,7 +84,7 @@ Attention : pour les promos, tu n'es pas notifié des événements trop fréquen
     {if $watch->promos()|@count eq 0}
     <p>Tu ne surveilles actuellement aucune promo.</p>
     {else}
-    <p>Tu surveilles les promos suivantes :</p>
+    <p>Tu surveilles les promos suivantes&nbsp;:</p>
     <ul>
       {foreach from=$watch->promos() item=p}
       <li>{if $p.0 eq $p.1}{$p.0}{else}{$p.0} à {$p.1}{/if}</li>
@@ -110,7 +110,7 @@ et cliquer sur les icones {icon name=add} pour les ajouter à cette liste.
     {if $watch->nonins()|@count eq 0}
     Tu ne surveilles actuellement aucun non-inscrit.
     {elseif $watch->nonins()|@count}
-    Tu surveilles {if $watch->nonins()|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :
+    Tu surveilles {if $watch->nonins()|@count eq 1}le non-inscrit{else}les non-inscrits{/if}&nbsp;:
     <ul>
     {foreach from=$watch->nonins() item=p}
     <li>

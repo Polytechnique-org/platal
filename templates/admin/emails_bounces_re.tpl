@@ -24,7 +24,7 @@
 <h1>Regexps pour les détections de bounces</h1>
 
 <p>
-Rappel sur les niveaux :
+Rappel sur les niveaux&nbsp;:
 </p>
 <ul>
   <li>0: IGNORE == ignorer le bounce</li>

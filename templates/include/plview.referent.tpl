@@ -39,7 +39,7 @@
     <div class="long"> 
      <table cellspacing="0" cellpadding="0"> 
       <tr> 
-        <td class="lt">Expertise :</td> 
+        <td class="lt">Expertise&nbsp;:</td> 
         <td class="rt" colspan="2">{$p.expertise|nl2br}</td> 
       </tr> 
      </table> 

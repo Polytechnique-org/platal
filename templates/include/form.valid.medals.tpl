@@ -22,7 +22,7 @@
 
 
 <tr class="pair">
-  <td class="titre">Médaille :</td>
+  <td class="titre">Médaille&nbsp;:</td>
   <td>{$valid->medal_name()}</td>
 </tr>
 

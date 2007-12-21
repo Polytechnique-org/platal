@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Création d'une liste de diffusion</h1>
+<h1>{$asso.nom}&nbsp;: Création d'une liste de diffusion</h1>
 
 <p class="descr">
-<strong>Note :</strong> Les listes de diffusion sont un outil particulièrement adapté pour des
+<strong>Note&nbsp;:</strong> Les listes de diffusion sont un outil particulièrement adapté pour des
 échanges entre 6 personnes, ou plus (newsletter, débat interne au groupe ...). En revanche, elles
 s'avèrent peu praticables pour des discussions plus restreintes.  Il est alors préférable
 d'utiliser <a href="{$platal->ns}alias/create">un alias</a>, à la gestion beaucoup plus souple.
@@ -45,17 +45,17 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement<
       </td>
     </tr>
     <tr>
-      <td><strong>Sujet (bref) :</strong></td>
+      <td><strong>Sujet (bref)&nbsp;:</strong></td>
       <td>
         <input type='text' name='desc' size='40' value="{$smarty.post.desc}" />
       </td>
     </tr>
     <tr>
-      <td><strong>Propriétés :</strong></td>
+      <td><strong>Propriétés&nbsp;:</strong></td>
       <td>
         <table style='width: 100%' class="normal">
           <tr>
-            <td>visibilité :</td>
+            <td>visibilité&nbsp;:</td>
             <td>
               <input type='radio' name='advertise' value='0'
               {if $smarty.post.advertise && $smarty.post}checked='checked'{/if} />publique
@@ -67,7 +67,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement<
             <td></td>
           </tr>
           <tr>
-            <td>diffusion :</td>
+            <td>diffusion&nbsp;:</td>
             <td>
               <input type='radio' name='modlevel' value='0'
               {if !$smarty.post.modlevel}checked='checked'{/if} />libre
@@ -81,7 +81,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement<
             </td>
           </tr>
           <tr>
-            <td>inscription :</td>
+            <td>inscription&nbsp;:</td>
             <td>
               <input type='radio' name='inslevel' value='0'
               {if !$smarty.post.inslevel && $smarty.post}checked='checked'{/if} />libre

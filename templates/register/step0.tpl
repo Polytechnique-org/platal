@@ -25,7 +25,7 @@
 <h1>Conditions générales</h1>
 
 <p>
-L'enregistrement se déroule <strong>en deux étapes</strong> :
+L'enregistrement se déroule <strong>en deux étapes</strong>&nbsp;:
 </p>
 <ul>
   <li>

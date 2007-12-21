@@ -54,7 +54,7 @@
 <strong>ATTENTION !  Cet utilisateur n'a pas accepté la synchronisation</strong>
 </div>
 {/if}
-<div>Les fiches de cet utilisateur :
+<div>Les fiches de cet utilisateur&nbsp;:
 <ul>
 <li><a href='profile/{$x.user_id}' class='popup2'>polytechnique.org</a></li>
 <li><a href='http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$x.matricule_ax}'>polytechniciens.com</a></li>
@@ -89,7 +89,7 @@ Adresses
 {if $adr.remove}
     Effacer l'adresse {$adr.adrid}.
 {else}
-    {if $adr.adrid}Modifier l'adresse {$adr.adrid} :{else}Ajouter l'adresse :{/if}
+    {if $adr.adrid}Modifier l'adresse {$adr.adrid}&nbsp;:{else}Ajouter l'adresse&nbsp;:{/if}
   {include file='geoloc/address.tpl' address=$adr no_div=1 for="`$x.prenom` `$x.nom`"}
 {/if}
 </td></tr>
@@ -105,26 +105,26 @@ Emplois
 {if $pro.remove}
     Effacer l'emploi {$pro.entrid}.
 {else}
-    {if $pro.entrid || $pro.entrid === 0}Modifier l'emploi {$pro.entrid} :{else}Ajouter l'emploi :{/if}
+    {if $pro.entrid || $pro.entrid === 0}Modifier l'emploi {$pro.entrid}&nbsp;:{else}Ajouter l'emploi&nbsp;:{/if}
     {if $pro.entreprise}
     <div>
-      <em>Entreprise/Organisme : </em> <strong>{$pro.entreprise}</strong>
+      <em>Entreprise/Organisme&nbsp;: </em> <strong>{$pro.entreprise}</strong>
     </div>
     {/if}
     {if $pro.secteur}
     <div>
-      <em>Secteur : </em>
+      <em>Secteur&nbsp;: </em>
       <strong>{$pro.secteur}{if $pro.ss_secteur} ({$pro.ss_secteur}){/if}</strong>
     </div>
     {/if}
     {if $pro.fonction}
     <div>
-      <em>Fonction : </em> <strong>{$pro.fonction}</strong>
+      <em>Fonction&nbsp;: </em> <strong>{$pro.fonction}</strong>
     </div>
     {/if}
     {if $pro.poste}
     <div>
-      <em>Poste : </em> <strong>{$pro.poste}</strong>
+      <em>Poste&nbsp;: </em> <strong>{$pro.poste}</strong>
     </div>
     {/if}
   {include file='geoloc/address.tpl' address=$pro no_div=1 for=$pro.entreprise}

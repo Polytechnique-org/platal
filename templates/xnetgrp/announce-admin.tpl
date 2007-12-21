@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Administration des announces</h1>
+<h1>{$asso.nom}&nbsp;: Administration des announces</h1>
 
 <table class="bicol">
   <tr>

@@ -32,7 +32,7 @@ function visibilityChange(box)
 }
 {/literal}
 </script>
-<h1>{$asso.nom} : Edition d'une annonce</h1>
+<h1>{$asso.nom}&nbsp;: Edition d'une annonce</h1>
 
 {if $art.texte}
 <div>
@@ -48,11 +48,11 @@ function visibilityChange(box)
       <th colspan="2">Editer une annonce</th>
     </tr>
     <tr class="pair">
-      <td class="titre">Titre :</td>
+      <td class="titre">Titre&nbsp;:</td>
       <td><input type="text" name="titre" value="{$art.titre}" size="50" maxlength="200" /></td>
     </tr>
     <tr>
-      <td class="titre">Contenu de l'annonce :</td>
+      <td class="titre">Contenu de l'annonce&nbsp;:</td>
       <td>
         <small>
           Le contenu est destiné à recevoir la descriptioin de ce qui est annoncé.
@@ -83,7 +83,7 @@ function visibilityChange(box)
       </td>
     </tr>
     <tr style="border-top: 1px solid gray">
-      <td class="titre">Contacts :</td>
+      <td class="titre">Contacts&nbsp;:</td>
       <td>
         <small>
           La section "contacts" sert à noter les informations telles que les adresses mails de contact, les sites web.
@@ -109,14 +109,14 @@ function visibilityChange(box)
 
   <table class="tinybicol">
     <tr>
-      <td class="titre">Date de péremption :</td>
+      <td class="titre">Date de péremption&nbsp;:</td>
       <td>
         {valid_date name="peremption" value=$art.peremption}
       </td>
     </tr>
     {if $events}
     <tr>
-      <td class="titre">Attacher à un événement :</td>
+      <td class="titre">Attacher à un événement&nbsp;:</td>
       <td>
         <select name="event">
           <option value="" {if !$art.event}selected="selected"{/if}>-- Aucun --</option>
@@ -131,7 +131,7 @@ function visibilityChange(box)
     </tr>
     {/if}
     <tr>
-      <td class="titre">Visibilité :</td>
+      <td class="titre">Visibilité&nbsp;:</td>
       <td>
         <input type="checkbox" name="public" {if $art.public}checked="checked"{/if} onchange="visibilityChange(this)" />
         Rendre cette annonce publique

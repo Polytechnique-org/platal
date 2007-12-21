@@ -67,7 +67,7 @@
 
 <br />
 
-<p><strong>Dans tous les cas,</strong> vous pouvez :</p>
+<p><strong>Dans tous les cas,</strong> vous pouvez&nbsp;:</p>
 <ul>
   <li class="spaced">
     <strong><a href="search"> rechercher un ancien élève ou un

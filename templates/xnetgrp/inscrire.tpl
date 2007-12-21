@@ -25,7 +25,7 @@
 {if $u && $is_admin && $show_form}
 
 <h2>
-  Demande de la part de : {$prenom} {$nom} (X{$promo})
+  Demande de la part de&nbsp;: {$prenom} {$nom} (X{$promo})
   <a href="https://www.polytechnique.org/profile/{$u}">Voir sa fiche</a>
 </h2>
 <form action="{$platal->ns}subscribe/{$u}" method="post">
@@ -57,7 +57,7 @@ formulaire ci-dessous. Vérifie et corrige au besoin les différents champs, pui
   <strong>OUI, je souhaite être inscrit au groupe {$asso.nom}</strong>
   </p>
   <p class="descr">
-  Indique ci-après <strong>tes motivations</strong> qui seront communiquées aux animateurs du groupe :
+  Indique ci-après <strong>tes motivations</strong> qui seront communiquées aux animateurs du groupe&nbsp;:
   </p> <textarea cols=80 rows=12 name="message">
 Chers Camarades,
 
@@ -69,7 +69,7 @@ Bien cordialement,
 {$smarty.session.prenom} {$smarty.session.nom} (X{$smarty.session.promo})
 
 --
-Ma fiche sur Polytechnique.org :
+Ma fiche sur Polytechnique.org&nbsp;:
 https://www.polytechnique.org/profile/{$smarty.session.forlife}
 </textarea>
   <div class="center">

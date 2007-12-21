@@ -23,7 +23,7 @@
 <h1>Marketing volontaire</h1>
 
 <p>
-Choix de la promo :
+Choix de la promo&nbsp;:
 </p>
 <p>
 {foreach from=$promos item=p}

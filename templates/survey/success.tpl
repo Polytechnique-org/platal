@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-<h1>Sondages : succ&#232;s</h1>
+<h1>Sondages&nbsp;: succ&#232;s</h1>
 
 {if $survey_message neq ""}
   {$survey_message}

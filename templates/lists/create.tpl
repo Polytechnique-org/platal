@@ -34,7 +34,7 @@
 <p>
 N'importe qui peut faire la demande de création d'une mailing-list, il suffit pour cela d'être au
 moins 4 polytechniciens inscrits sur le site, et de fournir les informations suivantes concernant la
-liste :
+liste&nbsp;:
 </p>
 
 <form action='lists/create' method='post'>
@@ -49,17 +49,17 @@ liste :
       </td>
     </tr>
     <tr>
-      <td class='titre'>Sujet (bref) :</td>
+      <td class='titre'>Sujet (bref)&nbsp;:</td>
       <td>
         <input type='text' name='desc' size='50' value="{$smarty.post.desc}" />
       </td>
     </tr>
     <tr>
-      <td class='titre'>Propriétés :</td>
+      <td class='titre'>Propriétés&nbsp;:</td>
       <td>
         <table style='width: 100%'>
           <tr>
-            <td>visibilité :</td>
+            <td>visibilité&nbsp;:</td>
             <td><input type='radio' name='advertise' value='0'
               {if $smarty.post.advertise eq 0 && $smarty.post}checked='checked'{/if} />publique</td>
             <td><input type='radio' name='advertise' value='1'
@@ -67,7 +67,7 @@ liste :
             <td></td>
           </tr>
           <tr>
-            <td>diffusion :</td>
+            <td>diffusion&nbsp;:</td>
             <td><input type='radio' name='modlevel' value='0'
               {if !$smarty.post.modlevel}checked='checked'{/if} />libre</td>
             <td><input type='radio' name='modlevel' value='1'
@@ -76,7 +76,7 @@ liste :
               {if $smarty.post.modlevel eq 2}checked='checked'{/if} />modérée</td>
           </tr>
           <tr>
-            <td>inscription :</td>
+            <td>inscription&nbsp;:</td>
             <td><input type='radio' name='inslevel' value='0'
               {if $smarty.post.inslevel eq 0 && $smarty.post}checked='checked'{/if} />libre</td>
             <td><input type='radio' name='inslevel' value='1'
@@ -116,7 +116,7 @@ liste :
   <p>
   La création de la liste sera soumise à un contrôle manuel avant d'être validée. Ce contrôle a
   pour but notamment de vérifier qu'il n'y aura pas ambiguité entre les membres de la liste et son
-  identité. Exemple : n'importe qui ne peut pas ouvrir pointgamma@polytechnique.org, il ne suffit
+  identité. Exemple&nbsp;: n'importe qui ne peut pas ouvrir pointgamma@polytechnique.org, il ne suffit
   pas d'être le premier à le demander.
   </p>
   <p>

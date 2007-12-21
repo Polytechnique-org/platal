@@ -44,9 +44,9 @@ function chgMainWinLoc(strPage)
     {if $photo_url}<img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}"/>{/if}
     {if $logged && ( $x.section|smarty:nodefaults || $x.binets_join|smarty:nodefaults || $x.gpxs_join|smarty:nodefaults)}
       <h2>A l'X...</h2>
-      {if $x.section}<div><em class="intitule">Section : </em><span>{$x.section}</span></div>{/if}
-      {if $x.binets_join}<div><em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span></div>{/if}
-      {if $x.gpxs_join}<div><em class="intitule">Groupe(s) et institution(s) X : </em><span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
+      {if $x.section}<div><em class="intitule">Section&nbsp;: </em><span>{$x.section}</span></div>{/if}
+      {if $x.binets_join}<div><em class="intitule">Binet(s)&nbsp;: </em><span>{$x.binets_join}</span></div>{/if}
+      {if $x.gpxs_join}<div><em class="intitule">Groupe(s) et institution(s) X&nbsp;: </em><span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
     {/if}
     {if $x.freetext}
     <h2>Commentaires&nbsp;:</h2>
@@ -111,7 +111,7 @@ function chgMainWinLoc(strPage)
       {/if}
       {if $x.mobile}
       <div class="mob">
-        <em class="intitule">Mobile : </em>{$x.mobile}
+        <em class="intitule">Mobile&nbsp;: </em>{$x.mobile}
       </div>
       {/if}
       <div class='spacer'></div>
@@ -135,7 +135,7 @@ function chgMainWinLoc(strPage)
   </div>
   {if $x.adr}
   <div class="part">
-    <h2>Contact : </h2>
+    <h2>Contact&nbsp;: </h2>
     {foreach from=$x.adr item="address" name=adresses}
       {if $smarty.foreach.adresses.iteration is even}
         {assign var=pos value="right"}
@@ -143,13 +143,13 @@ function chgMainWinLoc(strPage)
         {assign var=pos value="left"}
       {/if}
       {if $address.active}
-      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Mon adresse actuelle :"
+      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Mon adresse actuelle&nbsp;:"
                for="`$x.prenom` `$x.nom`" pos=$pos}
       {elseif $address.secondaire}
-      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse secondaire :"
+      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse secondaire&nbsp;:"
                for="`$x.prenom` `$x.nom`" pos=$pos}
       {else}
-      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse principale :"
+      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse principale&nbsp;:"
                for="`$x.prenom` `$x.nom`" pos=$pos}
       {/if}
       {if $smarty.foreach.adresses.iteration is even}<div class="spacer"></div>{/if}
@@ -158,18 +158,18 @@ function chgMainWinLoc(strPage)
   {/if}
   {if $x.adr_pro}
   <div class="part">
-    <h2>Informations professionnelles :</h2>
+    <h2>Informations professionnelles&nbsp;:</h2>
     {foreach from=$x.adr_pro item="address" key="i"}
       {if $i neq 0}<hr />{/if}
       {include file="include/emploi.tpl" address=$address}
-      {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise pos="left"}
+      {include file="geoloc/address.tpl" address=$address titre="Adresse&nbsp;: " for=$address.entreprise pos="left"}
       <div class="spacer">&nbsp;</div>
     {/foreach}
   </div>
   {/if}
   {if $x.medals}
   <div class="part">
-    <h2>Distinctions : </h2>
+    <h2>Distinctions&nbsp;: </h2>
     {foreach from=$x.medals item=m}
     <div class="medal_frame">
       <img src="profile/medal/{$m.id}" width="24" alt="{$m.medal}" title="{$m.medal}" style='float: left;' />
@@ -183,7 +183,7 @@ function chgMainWinLoc(strPage)
   {/if}
   {if $logged && $x.cv}
   <div class="part">
-    <h2>Curriculum Vitae :</h2>
+    <h2>Curriculum Vitae&nbsp;:</h2>
     {$x.cv|miniwiki:title|smarty:nodefaults}
   </div>
   {/if}

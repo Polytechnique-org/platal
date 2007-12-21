@@ -44,7 +44,7 @@
 <tr class="impair">
   <td colspan="{$t->nbfields}">
     <strong>
-      Nouvelles entrées : <a href="{$t->pl}/new">Manuellement</a> &bull; <a href="{$t->pl}/massadd">Depuis un CSV</a>
+      Nouvelles entrées&nbsp;: <a href="{$t->pl}/new">Manuellement</a> &bull; <a href="{$t->pl}/massadd">Depuis un CSV</a>
     </strong>
   </td>
   <td class="right">

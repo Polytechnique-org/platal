@@ -111,7 +111,7 @@
       {$perm.edit}
     </td>
     <td class="action" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
-      <a href="admin/wiki/rename/{$cat}.{$page}" onclick="var newname=prompt('Déplacer la page {$cat}.{$page} vers :', '{$cat}.{$page}'); if (!newname) return false; this.href += '/'+newname;">{icon name=book_next title='déplacer'}</a>
+      <a href="admin/wiki/rename/{$cat}.{$page}" onclick="var newname=prompt('Déplacer la page {$cat}.{$page} vers&nbsp;:', '{$cat}.{$page}'); if (!newname) return false; this.href += '/'+newname;">{icon name=book_next title='déplacer'}</a>
       <a href="admin/wiki/delete/{$cat}.{$page}" onclick="return confirm('Supprimer la page {$cat}.{$page} ?');">{icon name=cross title='supprimer'}</a>
       <input type="checkbox" name="{$cat}/{$page}"/>
     </td>
@@ -149,6 +149,6 @@
 </form>
 
 <p class="smaller">
-  * : les pages marquées d'une astérisque sont actuellement disponibles en cache (accès plus rapide)
+  *&nbsp;: les pages marquées d'une astérisque sont actuellement disponibles en cache (accès plus rapide)
 </p>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

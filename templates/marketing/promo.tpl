@@ -60,7 +60,7 @@
         {if $it.dern_rel && $it.dern_rel != '0000-00-00'}
         Relance le: {$it.dern_rel}
         {elseif $it.email}
-        En cours : {$it.email}
+        En cours&nbsp;: {$it.email}
         {else}
         -
         {/if}

@@ -65,13 +65,13 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
     <tr class="{cycle values="pair,impair"}">
       <td>{$login}</td>
       <td>
-        Camarade :
+        Camarade&nbsp;:
         <select name="mk_uid[{$login}]">
         {iterate from=$it item=user}
           <option value="{$user.user_id}">{$user.prenom} {$user.nom} (X{$user.promo})</option>
         {/iterate}
         </select><br />
-        Action<a href="{$platal->pl_self()}#action_desc">*</a> :
+        Action<a href="{$platal->pl_self()}#action_desc">*</a>&nbsp;:
         <select name="mk_action[{$login}]" onchange="showEmail(this.value, '{$login}');">
           <option value="none">Aucune</option>
           <option value="marketu">Envoyer un mail en ton nom</option>
@@ -79,7 +79,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
           <option value="sub">Lui proposer l'inscription</option>
         </select><br />
         <span id="mk_s_mail[{$login}]" style="display: none">
-          Email : <input type="text" name="mk_email[{$login}]" value="" />
+          Email&nbsp;: <input type="text" name="mk_email[{$login}]" value="" />
         </span>
       </td>
     </tr>

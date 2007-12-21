@@ -49,7 +49,7 @@
 {capture name=order}
 {if $plset_count > 1}
 <div>
-  Trier par :
+  Trier par&nbsp;:
   {foreach from=$orders key=name item=sort}
   [
   {if $name eq $order}

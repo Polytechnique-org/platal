@@ -30,7 +30,7 @@
 
 <form action='admin/geoloc' method='post'>
 <p>
-La ville dont l'id est : <input size="6" name="id" />
+La ville dont l'id est&nbsp;: <input size="6" name="id" />
 </p>
 </form>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

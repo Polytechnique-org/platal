@@ -22,7 +22,7 @@
 
 {assign var="step" value=$smarty.session.sub_state.step}
 <div class="descr center">
-  <strong>Procédure d'inscription :</strong>
+  <strong>Procédure d'inscription&nbsp;:</strong>
   {if !$step}<span class="erreur">{/if}Charte{if !$step}</span>{/if} »
   {if $step eq 1 || $step eq 2}<span class="erreur">{/if}Identification{if $step eq 1 || $step eq 2}</span>{/if} »
   {if $step eq 4 || $step eq 3}<span class="erreur">{/if}Pré-Inscription{if $step eq 4 || $step eq 3}</span>{/if} »

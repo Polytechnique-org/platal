@@ -231,7 +231,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
   {/foreach}
 
   <p class="smaller">
-  Nota Bene : les informations présentées ici n'engagent que leurs auteurs
+  Nota Bene&nbsp;: les informations présentées ici n'engagent que leurs auteurs
   respectifs et sont publiées à leur initiative. L'association Polytechnique.org
   ne pourrait en aucun cas être tenue responsable de la nature des propos relatés
   sur cet espace d'expression et d'information. Elle se réserve le droit de

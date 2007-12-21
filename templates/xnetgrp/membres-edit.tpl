@@ -40,7 +40,7 @@
 {/literal}
 </script>
 
-<h1>{$asso.nom} : gestion des membres</h1>
+<h1>{$asso.nom}&nbsp;: gestion des membres</h1>
 
 <p>
 [<a href='{$platal->ns}annuaire'>Retour à l'annuaire</a>]
@@ -72,7 +72,7 @@
     {if $user.origine neq X}
     <tr class="impair">
       <td class="titre">
-        Type d'utilisateur :
+        Type d'utilisateur&nbsp;:
       </td>
       <td>
         <select name="origine" onchange="showInformations(this); return true">
@@ -83,7 +83,7 @@
     </tr>
     <tr id="prenom" class="impair" {if $user.origine eq "groupe"}style="display: none"{/if}>
       <td class="titre">
-        Prénom :
+        Prénom&nbsp;:
       </td>
       <td>
         <input type="text" value="{$user.prenom}" name="prenom" size="40" />
@@ -91,7 +91,7 @@
     </tr>
     <tr class="impair">
       <td class="titre">
-        Nom :
+        Nom&nbsp;:
       </td>
       <td>
         <input type="text" value="{$user.nom}" name="nom" size="40" />
@@ -99,7 +99,7 @@
     </tr>
     <tr id="sexe" class="impair" {if $user.origine eq "groupe"}style="display: none"{/if}>
       <td class="titre">
-        Sexe :
+        Sexe&nbsp;:
       </td>
       <td>
         <select name="sexe">

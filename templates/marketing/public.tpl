@@ -75,17 +75,17 @@ peut sans aucun doute l'aider à se décider !
 
 <form method="post" action="{$platal->path}">
   <table class="bicol" summary="Fiche camarade">
-    <tr class="impair"><td>Nom :</td><td>{$nom}</td></tr>
-    <tr class="pair"><td>Prénom :</td><td>{$prenom}</td></tr>
-    <tr class="impair"><td>Promo :</td><td>{$promo}</td></tr>
+    <tr class="impair"><td>Nom&nbsp;:</td><td>{$nom}</td></tr>
+    <tr class="pair"><td>Prénom&nbsp;:</td><td>{$prenom}</td></tr>
+    <tr class="impair"><td>Promo&nbsp;:</td><td>{$promo}</td></tr>
     <tr class="pair">
-      <td>Adresse email :</td>
+      <td>Adresse email&nbsp;:</td>
       <td>
         <input type="text" name="mail" size="30" maxlength="50" />
       </td>
     </tr>
     <tr class="impair">
-      <td>Nous lui écrirons :</td>
+      <td>Nous lui écrirons&nbsp;:</td>
       <td>
         <input type="radio" name="origine" value="user" checked="checked" /> en ton nom<br />
         <input type="radio" name="origine" value="staff" /> au nom de l'équipe Polytechnique.org

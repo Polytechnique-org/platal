@@ -49,11 +49,11 @@
 <p>
   Pour soumettre un (non-)spam mal détecté par notre <a href="emails/antispam">antispam</a>, il suffit d'enregistrer
   les sources (regarde dans la documentation de ton client mail dans la liste ci-dessous) du mail en tant que fichier
-  depuis ton client mail, puis de soumettre ce fichier à l'interface ci-dessus en sélectionnant l'action adaptée :
+  depuis ton client mail, puis de soumettre ce fichier à l'interface ci-dessus en sélectionnant l'action adaptée&nbsp;:
 </p>
 <ul>
-  <li><strong>spam</strong> : pour soumettre un spam mal reconnu&nbsp;;</li>
-  <li><strong>nonspam</strong> : pour soumettre un mail légitime mal reconnu.</li>
+  <li><strong>spam</strong>&nbsp;: pour soumettre un spam mal reconnu&nbsp;;</li>
+  <li><strong>nonspam</strong>&nbsp;: pour soumettre un mail légitime mal reconnu.</li>
 </ul>
 
 {include wiki=Xorg.Mails part=clients}

@@ -25,7 +25,7 @@
   {elseif !$choix->total()}
   Aucun camarade non-inscrit ne correspond aux informations fournies
   {elseif $choix->total()}
-  Camarades correspondants :
+  Camarades correspondants&nbsp;:
   <select name="userid" onchange="document.getElementById('marketing').style.display = (this.value == 0 ? 'none' : '')">
     <option value="0"></option>
     {iterate item=x from=$choix}

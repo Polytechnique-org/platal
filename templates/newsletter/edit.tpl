@@ -52,7 +52,7 @@
       </td>
       <td>
         <input type='text' size='16' name='shortname' value="{$nl->_shortname}" />
-        <span class="smaller">(Ex : 2006-06 pour la NL de juin 2006)</span>
+        <span class="smaller">(Ex&nbsp;: 2006-06 pour la NL de juin 2006)</span>
       </td>
     </tr>
     <tr>

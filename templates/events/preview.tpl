@@ -22,7 +22,7 @@
 
 {if trim($titre) || trim($texte)}
 <table class="bicol">
-  <tr><th><em>Aperçu de : </em>{$titre|nl2br}</th></tr>
+  <tr><th><em>Aperçu de&nbsp;: </em>{$titre|nl2br}</th></tr>
   <tr class="pair"><td>{$texte|miniwiki|smarty:nodefaults}</td></tr>
 </table>
 {/if}

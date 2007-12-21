@@ -22,7 +22,7 @@
 
 
 <p>
-Trier par :
+Trier par&nbsp;:
 {if ($order eq 'nom') and not($smarty.request.inv)}
 [<a href='carnet/contacts?order=nom&amp;trombi={$smarty.request.trombi}&amp;inv=1'><strong>nom <img src='images/dn.png' alt='decr.' /></strong></a>]
 {else}

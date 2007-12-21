@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Accueil</h1>
+<h1>{$asso.nom}&nbsp;: Accueil</h1>
 
 <table cellpadding="0" cellspacing="0" class='tiny'>
   {if $asso.site}
@@ -62,7 +62,7 @@
   {if !$is_member && $is_logged && $asso.inscriptible && $xnet_type != 'promotions'}
   <tr>
     <td class="titre">
-      M'inscrire :
+      M'inscrire&nbsp;:
     </td>
     <td>
       <a href="{if $asso.sub_url}{$asso.sub_url}{else}{$platal->ns}subscribe{/if}">m'inscrire</a>
@@ -71,7 +71,7 @@
   {elseif $is_member}
   <tr>
     <td class="titre">
-      Me désinscrire :
+      Me désinscrire&nbsp;:
     </td>
     <td>
       <a href="{if $asso.unsub_url}{$asso.unsub_url}{else}{$platal->ns}unsubscribe{/if}">me désinscrire</a>
@@ -150,7 +150,7 @@
 
 <p style="text-align: justify;">
 <small>
-<em>Nota Bene :</em> les informations présentées ici n'engagent que leurs auteurs
+<em>Nota Bene&nbsp;:</em> les informations présentées ici n'engagent que leurs auteurs
 respectifs et sont publiées à leur initiative. L'association Polytechnique.org
 ne pourrait en aucun cas être tenue responsable de la nature des propos relatés
 sur cet espace d'expression et d'information. Elle se réserve le droit de

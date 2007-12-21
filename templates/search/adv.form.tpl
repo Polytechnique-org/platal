@@ -27,7 +27,7 @@
 <script type="text/javascript">// <!-- 
         var baseurl = platal_baseurl + "search/";
         {literal}
-        // display an autocomplete row : blabla (nb of found matches)
+        // display an autocomplete row&nbsp;: blabla (nb of found matches)
         function make_format_autocomplete(block) {
           return function(row) {
               regexp = new RegExp('(' + RegExp.escape(block.value) + ')', 'i');

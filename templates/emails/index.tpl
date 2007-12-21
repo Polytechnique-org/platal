@@ -36,7 +36,7 @@
   </tr>
   <tr class="impair">
     <td>
-      Tes adresses polytechniciennes sont :<br /><br />
+      Tes adresses polytechniciennes sont&nbsp;:<br /><br />
         <div>
           {iterate from=$aliases item=a}
           <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='Ajax.update_html(null,"{$globals->baseurl}/emails/best/{$a.alias}",bestaliasUpdated)' />
@@ -131,7 +131,7 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
 
 <table class="bicol">
   <tr>
-    <th>Un alias sympathique : {#globals.mail.alias_dom#} !</th>
+    <th>Un alias sympathique&nbsp;: {#globals.mail.alias_dom#} !</th>
   </tr>
   <tr class="impair">
     <td>

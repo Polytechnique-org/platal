@@ -25,7 +25,7 @@
 <p>
 Tu n'aimes pas les couleurs ou l'apparence de {#globals.core.sitename#} ? Normal, les goûts et les
 couleurs, ça ne se discute pas. Certains préfèrent une page sérieuse, d'autres plus
-fantaisiste. A toi de voir :)
+fantaisiste. A toi de voir&nbsp;:)
 </p>
 <p>
 Note aux utilisateurs du navigateur Netscape 4.x ou équivalent.

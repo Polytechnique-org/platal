@@ -25,7 +25,7 @@
 <form method='post' action='{$platal->pl_self(1)}'>
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
     <tr>
-      <th class='titre'>refuser l'inscription de :</th>
+      <th class='titre'>refuser l'inscription de&nbsp;:</th>
     </tr>
     <tr>
       <td>{$del_user.name}</td>

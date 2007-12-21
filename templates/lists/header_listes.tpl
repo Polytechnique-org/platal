@@ -27,7 +27,7 @@
     </td>
   </tr>
   <tr>
-    <td><strong>Liste {$platal->argv[1]} :</strong></td>
+    <td><strong>Liste {$platal->argv[1]}&nbsp;:</strong></td>
     <td>
       {if $on neq members}
       [<a href='{$platal->ns}lists/members/{$platal->argv[1]}'>liste des membres</a>]
@@ -48,7 +48,7 @@
   </tr>
   {if $details.own || hasPerms('admin,groupadmin')}
   <tr>
-    <td><strong>Administrer la liste :</strong></td>
+    <td><strong>Administrer la liste&nbsp;:</strong></td>
     <td>
       {if $on neq moderate}
       [<a href='{$platal->ns}lists/moderate/{$platal->argv[1]}'>modération</a>]
@@ -76,7 +76,7 @@
   {if hasPerms('admin,groupadmin')}
 
   <tr>
-    <td><strong>Administrer (avancé) :</strong></td>
+    <td><strong>Administrer (avancé)&nbsp;:</strong></td>
     <td>
       {if $on neq soptions}
       [<a href='{$platal->ns}lists/soptions/{$platal->argv[1]}'>options avancées</a>]

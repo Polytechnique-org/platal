@@ -114,7 +114,7 @@ utiliser une adresse personnalisée, il faut se tourner vers
             <input type="radio" name="reason" value="divorce" id="reason_div" onclick="this.form.other_reason.value=''" /><label for="reason_div">Divorce</label><br />
           {/if}
           <input type="radio" name="reason" value="raccourci" id="reason_rac" onclick="this.form.other_reason.value=''" /><label for="reason_rac">Nom d'état civil simplifié, le nom officiel étant trop long</label><br />
-          <input type="radio" name="reason" value="other" id="reason_oth" /><label for="reason_oth">Autre :</label><br />
+          <input type="radio" name="reason" value="other" id="reason_oth" /><label for="reason_oth">Autre&nbsp;:</label><br />
           <input type="text" name="other_reason" onfocus="document.getElementById('reason_oth').checked='checked'" size="60" />
         </td>
       </tr>

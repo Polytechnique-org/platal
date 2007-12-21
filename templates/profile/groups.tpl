@@ -116,7 +116,7 @@
   </tr>
   {if $mygroups->total()}
   <tr class="pair">
-    <td colspan="2">Tu es actuellement dans les groupes suivants :</td>
+    <td colspan="2">Tu es actuellement dans les groupes suivants&nbsp;:</td>
   </tr>
   {/if}
   {assign var=grp_admin value=false}

@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Evénement {$event.intitule}</h1>
+<h1>{$asso.nom}&nbsp;: Evénement {$event.intitule}</h1>
 
 <p>
   [<a href="{$platal->ns}events">Revenir à la liste des événements</a>]

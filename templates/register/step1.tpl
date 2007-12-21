@@ -26,7 +26,7 @@
 
 <form action="register" method="post">
   <p>
-    Avant toute chose, il te faut nous donner ta promotion :
+    Avant toute chose, il te faut nous donner ta promotion&nbsp;:
   </p>
   <table class="tinybicol">
     <tr>
@@ -36,7 +36,7 @@
     </tr>
     <tr>
       <td>
-        Donne ta promotion sur 4 chiffres : 
+        Donne ta promotion sur 4 chiffres&nbsp;: 
         <input type="text" size="4" maxlength="4" name="promo" value="{$smarty.post.promo}" />
       </td>
     </tr>

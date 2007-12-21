@@ -22,11 +22,11 @@
 
 <h1>Création d'un alias</h1>
 <p class='descr'>
-Les alias sont concus pour répondre aux problèmes suivants :
+Les alias sont concus pour répondre aux problèmes suivants&nbsp;:
 </p>
 <ul class='descr'>
   <li>
-  redirections pour les postes des gens au sein du groupe : par exemple il est pratique d'avoir un alias
+  redirections pour les postes des gens au sein du groupe&nbsp;: par exemple il est pratique d'avoir un alias
   president@..., ou bien tresorier@... qui pointent tout le temps vers la bonne personne du groupe.
   Une sorte d'adresse de «redirection à vie».
   </li>

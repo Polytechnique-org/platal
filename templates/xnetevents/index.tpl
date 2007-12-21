@@ -21,10 +21,10 @@
 {**************************************************************************}
 
 {if !$is_admin}
-<h1>{$asso.nom} : Evénements</h1>
+<h1>{$asso.nom}&nbsp;: Evénements</h1>
 {else}
 <h1>
-  {$asso.nom} : 
+  {$asso.nom}&nbsp;: 
   {if $archive}[<a href="{$platal->ns}events">Evénements</a>] {else}Evénements {/if}
   {if $archive}Archives {else}[<a href="{$platal->ns}events/archive">Archives</a>] {/if}
 </h1>
@@ -91,7 +91,7 @@
   </tr>
 
   <tr>
-    <td class="titre">date :</td>
+    <td class="titre">date&nbsp;:</td>
     <td>
       {if $e.fin and $e.fin neq $e.debut}
         {if $e.debut_day eq $e.fin_day}
@@ -107,7 +107,7 @@
   </tr>
 
   <tr>
-    <td class="titre">annonceur :</td>
+    <td class="titre">annonceur&nbsp;:</td>
     <td>
       <a href='https://www.polytechnique.org/profile/{$e.alias}' class='popup2'>{$e.prenom} {$e.nom} ({$e.promo})</a>
     </td>
@@ -115,7 +115,7 @@
 
   {if $is_admin || $e.show_participants || ($e.deadline_inscription && $e.inscr_open)}
   <tr>
-    <td class="titre">Informations :</td>
+    <td class="titre">Informations&nbsp;:</td>
     <td class='actions'>
       {if $is_admin || $e.show_participants}
       <a href="{$platal->ns}events/admin/{$e.short_name|default:$e.eid}">

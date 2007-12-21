@@ -45,13 +45,13 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
 
 {foreach from=$notifs->_data item=c key=cid}
 <h2>{if ($c|@count) > 1}
-{$notifs->_cats[$cid].mail} :
+{$notifs->_cats[$cid].mail}&nbsp;:
 {else}
   {foreach from=$c item=promo}
     {if ($promo|@count) > 1}
-      {$notifs->_cats[$cid].mail} :
+      {$notifs->_cats[$cid].mail}&nbsp;:
     {else}
-      {$notifs->_cats[$cid].mail_sg} :
+      {$notifs->_cats[$cid].mail_sg}&nbsp;:
     {/if}
   {/foreach}
 {/if}</h2>

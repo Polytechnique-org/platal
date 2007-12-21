@@ -261,7 +261,7 @@
     </div>
     <div id="preview">
       <div id="preview_pv" style="display: none">
-        <strong>Aperçu du mail :</strong>
+        <strong>Aperçu du mail&nbsp;:</strong>
         <div id="mail_preview">
         </div>
         <div class="center">

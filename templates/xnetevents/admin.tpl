@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : <a href='{$platal->ns}events'>Evénements</a> </h1>
+<h1>{$asso.nom}&nbsp;: <a href='{$platal->ns}events'>Evénements</a> </h1>
 
 <p>
 L'événement {$evt.intitule}
@@ -70,7 +70,7 @@ function remplitAuto(mail) {
 
 {if $oublis}
 <p class="erreur">
-Ils ont payé mais ont oublié de s'inscrire :
+Ils ont payé mais ont oublié de s'inscrire&nbsp;:
 </p>
 
 <table summary="payé mais non inscrits" class="tinybicol">

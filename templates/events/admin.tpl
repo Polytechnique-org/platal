@@ -23,7 +23,7 @@
 
 
 <h1>
-  Gestion des événements :
+  Gestion des événements&nbsp;:
   [&nbsp;
   {if $arch || $action eq 'edit'}
   <a href="admin/events">Actualités</a>

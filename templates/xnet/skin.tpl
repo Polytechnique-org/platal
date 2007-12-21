@@ -190,7 +190,7 @@
             <td id="perso">
               {list_all_my_groups}
               {if !$smarty.session.auth}
-                <div>Me connecter :</div>
+                <div>Me connecter&nbsp;:</div>
                 <a class='gp' href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">polytechnicien</a>
                 {if $platal->pl_self() neq 'exit'}
                   {javascript name=jquery}

@@ -35,7 +35,7 @@
       </td>
       <td><input type="submit" value="&lt;"  name="sub01" /></td>
       <td>
-        Promotion :
+        Promotion&nbsp;:
         <input type="text" name="promo" value="{$promo}" size="4" maxlength="4" />
         <input type="submit" value="GO" />
       </td>

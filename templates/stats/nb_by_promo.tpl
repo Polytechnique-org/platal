@@ -23,7 +23,7 @@
 <h1>Inscrits par promo</h1>
 
 <p>
-Voici le nombre d'inscrits par promo :
+Voici le nombre d'inscrits par promo&nbsp;:
 </p>
 
 <table class="bicol" cellpadding="3" cellspacing="0" summary="Statistiques">

@@ -96,14 +96,14 @@
       <textarea name="csv_source" rows="20" cols="80">{$smarty.session.csv|default:$smarty.session.csv_source}</textarea><br />
       Entrez les données sous la forme suivante (avec
       <input type="text" name="csv_separator" value="{$smarty.session.csv_separator|default:";"}" maxlength="1" size="1" />
-      comme séparateur) :<br/>
+      comme séparateur)&nbsp;:<br/>
       <pre class="center">TITRE1{$smarty.session.csv_separator|default:";"}TITRE2{$smarty.session.csv_separator|default:";"}...
 val1_1{$smarty.session.csv_separator|default:";"}val1_2{$smarty.session.csv_separator|default:";"}...
 val2_1{$smarty.session.csv_separator|default:";"}val2_2{$smarty.session.csv_separator|default:";"}...
 val3_1{$smarty.session.csv_separator|default:";"}val3_2{$smarty.session.csv_separator|default:";"}...</pre>
     {elseif $csv_page eq 'values'}
   <div class="center">
-    Action à effectuer si l'entrée existe : 
+    Action à effectuer si l'entrée existe&nbsp;: 
     <select name="csv_action" onchange="this.form.submit()">
       <option value="insert" {if $smarty.session.csv_action eq 'insert'}selected="selected"{/if}>
         ne rien faire

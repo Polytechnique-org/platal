@@ -63,11 +63,11 @@
         onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mdel=1'));">
       {icon name=delete title="Spam"}
     </a>
-    De : {$m.sender}<br />
+    De&nbsp;: {$m.sender}<br />
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}'>
       {icon name=magnifier title="Voir le message"}
     </a>
-    Sujet : {$m.subj|hdc|smarty:nodefaults|default:"[pas de sujet]"}<br />
+    Sujet&nbsp;: {$m.subj|hdc|smarty:nodefaults|default:"[pas de sujet]"}<br />
   {/foreach}
   </span>
   {/if}
