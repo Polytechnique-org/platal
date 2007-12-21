@@ -84,6 +84,9 @@ class MiniWiki
         MiniWiki::Markup("/\n\n/", '</p><p>', "\n\n", "paragraphe1\n\nparagraphe2");
         MiniWiki::Markup("/\n/", ' ', "\n");
         MiniWiki::Markup("/^.*<\/p>.*<p>.*$/s", "<p>$0</p>", "$0");
+
+        // french typo rules, unbreakable spaces
+        MiniWiki::Markup("/ +([!?:;])/", "&nbsp;$1", "$0");
     }
 
     public static function WikiToHTML($wiki, $title = false)
