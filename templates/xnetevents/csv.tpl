@@ -19,13 +19,15 @@
 {*  59 Temple Place, Suite 330; Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-Nom;Prénom;Promotion{if $tout}{foreach from=$moments item=m};{$m.titre}{/foreach}{if $admin && $money};À payer;Payé{/if}{else};Nombre{/if}
+Nom;Prénom;Promotion{if $tout}{foreach from=$moments item=m};{$m.titre}{/foreach}{if $admin && $money};À payer;{if
+$telepayment}Télépaiement;Liquide/Chèque;{/if}Payé{/if}{else};Nombre{/if}
 
 {if $participants}
 {foreach from=$participants item=m}
 
 ;
-{$m.nom};{$m.prenom};{$m.promo}{if $tout}{foreach from=$moments item=i};{$m[$i.item_id]}{/foreach}{if $admin && $money};{$m.montant};{$m.paid}{/if}{else};{$m.nb}{/if}
+{$m.nom};{$m.prenom};{$m.promo}{if $tout}{foreach from=$moments item=i};{$m[$i.item_id]}{/foreach}{if $admin &&
+$money};{$m.montant};{if $telepayment}{$m.telepayment};{$m.adminpaid};{/if}{$m.paid}{/if}{else};{$m.nb}{/if}
 
 {/foreach}
 ;

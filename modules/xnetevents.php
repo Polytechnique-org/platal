@@ -284,6 +284,7 @@ class XnetEventsModule extends PLModule
         $page->assign('admin', $admin);
         $page->assign('moments', $evt['moments']);
         $page->assign('money', $evt['money']);
+        $page->assign('telepayment', $evt['paiement_id']);
         $page->assign('tout', !Env::v('item_id', false));
     }
 

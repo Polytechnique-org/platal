@@ -23,6 +23,7 @@ Bug/Wish:
         - #741: Mentor search in advanced search                           -FRU
 
     * XnetEvent:
+        - #728: Update CSV                                                 -FRU
         - #743: Don't show a warning when subscriber has no forlife        -FRU
 
     * XnetGrp:
