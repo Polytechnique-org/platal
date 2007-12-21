@@ -47,7 +47,7 @@
   <tr><th>{$nl->title(true)}</th></tr>
   <tr>
     <td>
-      {include file="newsletter/nl.tpl"}
+      {include file="newsletter/nl.mail.tpl"}
     </td>
   </tr>
 </table>

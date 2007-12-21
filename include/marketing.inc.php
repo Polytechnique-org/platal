@@ -215,7 +215,7 @@ class Marketing
         $pass_encrypted = hash_encrypt($pass);
         $fdate    = strftime('%d %B %Y', strtotime($date));
 
-        $mymail = new PlMailer('marketing/mail.relance.tpl');
+        $mymail = new PlMailer('marketing/relance.mail.tpl');
         $mymail->assign('nbdix',      $nbx);
         $mymail->assign('fdate',      $fdate);
         $mymail->assign('lusername',  $alias);
@@ -287,7 +287,7 @@ class AnnuaireMarketing implements MarketingEngine
 
     public function getText(array $user)
     {
-        $page = new XorgPage('marketing/mail.marketing.tpl', NO_SKIN);
+        $page = new XorgPage('marketing/marketing.mail.tpl', NO_SKIN);
         $this->prepareText($page, $user);
         return $page->raw();
     }

@@ -33,7 +33,7 @@ class AXLetter extends MassMailer
 
     function __construct($id)
     {
-        parent::__construct('axletter/letter.tpl', 'ax.css', 'ax/show', 'axletter', 'axletter_ins');
+        parent::__construct('axletter/letter.mail.tpl', 'ax.css', 'ax/show', 'axletter', 'axletter_ins');
         $this->_head = '<cher> <prenom>,';
 
         if (!is_array($id)) {

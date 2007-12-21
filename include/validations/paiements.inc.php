@@ -185,7 +185,7 @@ class PayReq extends Validate
                                 WHERE  e.eid = {?}",
                               $this->evt);
             list($nom, $diminutif, $evt) = $res->fetchOneRow();
-            $mailer = new PlMailer('xnetevents/mail.new_payment.tpl');
+            $mailer = new PlMailer('xnetevents/newpayment.mail.tpl');
             $mailer->assign('asso', $nom);
             $mailer->assign('diminutif', $diminutif);
             $mailer->assign('evt', $evt);

@@ -26,9 +26,9 @@ require_once("../../include/notifs.inc.php");
 
 $all = new AllNotifs();
 
-$mailer = new PlMailer('carnet/mail.notif.tpl');
+$mailer = new PlMailer('carnet/notif.mail.tpl');
 foreach ($all->_data as $u) {
-    $mailer = new PlMailer('carnet/mail.notif.tpl');
+    $mailer = new PlMailer('carnet/notif.mail.tpl');
     $mailer->assign('u', $u);
     $mailer->assign('week', date("W - Y"));
     $mailer->assign('cats', $all->_cats);

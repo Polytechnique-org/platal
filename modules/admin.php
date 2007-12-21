@@ -553,7 +553,7 @@ class AdminModule extends PLModule
                             $res = XDB::query($watch);
                             $new_fields = $res->fetchOneAssoc();
 
-                            $mailer = new PlMailer("admin/mail_intervention.tpl");
+                            $mailer = new PlMailer("admin/useredit.mail.tpl");
                             $mailer->assign("user", S::v('forlife'));
                             $mailer->assign('old', $old_fields);
                             $mailer->assign('new', $new_fields);
@@ -587,7 +587,7 @@ class AdminModule extends PLModule
                         // update number of subscribers (perms or deceased may have changed)
                         update_NbIns();
                         $page->trig("'{$mr['user_id']}' a été désinscrit !");
-                        $mailer = new PlMailer("admin/mail_intervention.tpl");
+                        $mailer = new PlMailer("admin/useredit.mail.tpl");
                         $mailer->assign("user", S::v('forlife'));
                         $mailer->assign("query", "\nUtilisateur $login désinscrit");
                         $mailer->send();

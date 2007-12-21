@@ -31,7 +31,7 @@ class NewsLetter extends MassMailer
 
     function __construct($id = null)
     {
-        parent::__construct('newsletter/nl.tpl', 'nl.css', 'nl/show', 'newsletter', 'newsletter_ins');
+        parent::__construct('newsletter/nl.mail.tpl', 'nl.css', 'nl/show', 'newsletter', 'newsletter_ins');
         if (isset($id)) {
             if ($id == 'last') {
                 $res = XDB::query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
