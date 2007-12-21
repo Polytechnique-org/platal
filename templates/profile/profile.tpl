@@ -62,8 +62,8 @@ function chgMainWinLoc(strPage)
       {/if}
       {if $x.web}&nbsp;<a href="{$x.web}">{icon name="world_go" title="Site Web"}</a>{/if}
       {if $logged}
-      &nbsp;<a href="vcard/{$x.forlife}.vcf">{*
-        *}{icon name=vcard title="Afficher la carte de visite"}</a>
+      &nbsp;{if !$x.dcd}<a href="vcard/{$x.forlife}.vcf">{*
+        *}{icon name=vcard title="Afficher la carte de visite"}</a>{/if}
       {if !$x.is_contact}
       <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
         {icon name=add title="Ajouter à mes contacts"}</a>

@@ -17,6 +17,7 @@ Bug/Wish:
     * Profile:
         - #729: Fix positioning of addresses on public profile             -FRU
         - #742: Sub domain was hidden when editing profile                 -FRU
+        - #752: Don't show vcard link on profile when the person is dead   -FRU
 
     * Search:
         - #741: Mentor search in advanced search                           -FRU
