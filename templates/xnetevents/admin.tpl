@@ -178,6 +178,18 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
     {/if}
   </tr>
   {/foreach}
+  {if $is_admin && $evt.money}
+  <tr>
+    {assign var=cols value=$moments|@count}
+    <td colspan="{$cols+3}" class="right"><strong>Total</strong></td>
+    <td>{$evt.topay}&euro;</td>
+    {if $evt.paiement_id}
+    <td>{$evt.telepaid|default:0}&euro;</td>
+    <td>{$evt.adminpaid|default:0}&euro;</td>
+    {/if}
+    <td>{$evt.paid}&euro;</td>
+  </tr>
+  {/if}
 </table>
 
 <p class="descr">

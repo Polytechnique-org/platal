@@ -110,7 +110,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 // }}}
 
 // {{{ function get_event_participants()
-function get_event_participants($evt, $item_id, $tri, $limit = '') {
+function get_event_participants(&$evt, $item_id, $tri, $limit = '') {
     global $globals;
 
     if (Env::has('initiale')) {
@@ -155,6 +155,10 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
     $tab = array();
     $user = 0;
 
+    $evt['adminpaid'] = 0;
+    $evt['telepaid']  = 0;
+    $evt['topay']     = 0;
+    $evt['paid']      = 0;
     while ($u = $res->next()) {
         if ($u['nb'] == 0) {
             continue;
@@ -169,8 +173,8 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
                 $pay_id, $u['uid']);
             $montants = $res_->fetchColumn();
             foreach ($montants as $m) {
-                    $p = strtr(substr($m, 0, strpos($m, "EUR")), ",", ".");
-                    $u['paid'] += trim($p);
+                $p = strtr(substr($m, 0, strpos($m, "EUR")), ",", ".");
+                $u['paid'] += trim($p);
             }
         }
         $u['telepayment'] = $u['paid'] - $u['adminpaid'];
@@ -185,6 +189,10 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
             $u['montant'] += $i['montant']*$i['nb'];
         }
         $tab[] = $u;
+        $evt['telepaid']  += $u['telepayment'];
+        $evt['adminpaid'] += $u['adminpaid'];
+        $evt['paid']      += $u['paid'];
+        $evt['topay']     += $u['montant'];
     }
     return $tab;
 }

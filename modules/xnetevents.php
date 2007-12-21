@@ -562,7 +562,7 @@ class XnetEventsModule extends PLModule
             $evt = get_event_detail($eid, $item_id);
         }
 
-        $page->assign('evt', $evt);
+        $page->assign_by_ref('evt', $evt);
         $page->assign('tout', is_null($item_id));
 
         if (count($evt['moments'])) {
