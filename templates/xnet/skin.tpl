@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -227,7 +227,7 @@
             - <a href="send_bug" class="popup_840x600">signaler un bug</a>
           {/if}
           <br />
-          © Copyright 2000-2007 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
+          © Copyright 2000-2008 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
         </td>
       </tr>
     {/if}
