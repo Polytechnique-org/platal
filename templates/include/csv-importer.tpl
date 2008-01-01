@@ -61,47 +61,42 @@
 {/literal}
 //]]></script>
 <form action="{$csv_path}" method="post" id="csv_form">
-<table class="cadre_a_onglet" cellpadding="0" cellspacing="0" style="width: 98%; margin-left:1%;">
-  <tr>
-    <td>
-      <ul id="onglet">
-        {if $csv_page eq 'source'}
-        <li class="actif">1 - Choisir<br />la source</li>
-        {else}
-        <li><a href="{$csv_path}" onclick="return gotoPage('source');">1 - Choisir<br />la source</a></li>
-        {/if}
-        {if $csv_page eq 'values'}
-        <li class="actif">2 - Définir<br />les valeurs</li>
-        {elseif $smarty.session.csv}
-        <li><a href="{$csv_path}" onclick="return gotoPage('values');">2 - Définir<br />les valeurs</a></li>
-        {else}
-        <li>2 - Définir<br />les valeurs</li>
-        {/if}
-        {if $csv_page eq 'valid'}
-        <li class="actif">3 - Vérifier<br />et valider</li>
-        {elseif $csv_action}
-        <li><a href="{$csv_path}" onclick="return gotoPage('valid');">3 - Vérifier<br />et valider</a></li>
-        {else}
-        <li>3 - Vérifier<br />et valider</li>
-        {/if}
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td class="conteneur_tab">
-      <table style="width: 100%">
-        <tr>
-          <td>
+  <div class="center" style="padding-bottom: 1em">
+    Import d'un CSV&nbsp;:
     {if $csv_page eq 'source'}
-      <textarea name="csv_source" rows="20" cols="80">{$smarty.session.csv|default:$smarty.session.csv_source}</textarea><br />
-      Entrez les données sous la forme suivante (avec
-      <input type="text" name="csv_separator" value="{$smarty.session.csv_separator|default:";"}" maxlength="1" size="1" />
-      comme séparateur)&nbsp;:<br/>
-      <pre class="center">TITRE1{$smarty.session.csv_separator|default:";"}TITRE2{$smarty.session.csv_separator|default:";"}...
+    <span class="erreur">Choisir la source</span>
+    {else}
+    <a href="{$csv_path}" onclick="return gotoPage('source');">Choisir la source</a>
+    {/if}
+    »
+    {if $csv_page eq 'values'}
+    <span class="erreur">Définir les valeurs</span>
+    {elseif $smarty.session.csv}
+    <a href="{$csv_path}" onclick="return gotoPage('values');">Définir les valeurs</a>
+    {else}
+    Définir les valeurs
+    {/if}
+    »
+    {if $csv_page eq 'valid'}
+    <span class="erreur">Vérifier et valider</span>
+    {elseif $csv_action}
+    <a href="{$csv_path}" onclick="return gotoPage('valid');">Vérifier et valider</a>
+    {else}
+    Vérifier et valider
+    {/if}
+  </div>
+  {if $csv_page eq 'source'}
+  <div>
+    <textarea name="csv_source" rows="20" cols="80">{$smarty.session.csv|default:$smarty.session.csv_source}</textarea><br />
+    Entrez les données sous la forme suivante (avec
+    <input type="text" name="csv_separator" value="{$smarty.session.csv_separator|default:";"}" maxlength="1" size="1" />
+    comme séparateur)&nbsp;:<br/>
+    <pre class="center">TITRE1{$smarty.session.csv_separator|default:";"}TITRE2{$smarty.session.csv_separator|default:";"}...
 val1_1{$smarty.session.csv_separator|default:";"}val1_2{$smarty.session.csv_separator|default:";"}...
 val2_1{$smarty.session.csv_separator|default:";"}val2_2{$smarty.session.csv_separator|default:";"}...
 val3_1{$smarty.session.csv_separator|default:";"}val3_2{$smarty.session.csv_separator|default:";"}...</pre>
-    {elseif $csv_page eq 'values'}
+  </div>
+  {elseif $csv_page eq 'values'}
   <div class="center">
     Action à effectuer si l'entrée existe&nbsp;: 
     <select name="csv_action" onchange="this.form.submit()">
@@ -228,12 +223,9 @@ val3_1{$smarty.session.csv_separator|default:";"}val3_2{$smarty.session.csv_sepa
   Les données ont été ajoutées.
   {/if}
   {/if}
-    </td>
-  </tr>
 
   {if !$csv_done}
-  <tr>
-    <td class="center">
+  <div class="center">
     <input type="hidden" name="csv_page" value="{$csv_page}" />
     <input type="hidden" id="csv_next_page" name="csv_next_page" value="{$csv_page}" />
     {if $csv_page eq 'source'}
@@ -243,13 +235,8 @@ val3_1{$smarty.session.csv_separator|default:";"}val3_2{$smarty.session.csv_sepa
     {elseif $csv_page eq 'valid'}
     <input type="submit" name="csv_valid" value="Valider" />
     {/if}
-    </td>
-  </tr>
+  </div>
   {/if}
-  </table>
-    </td>
-  </tr>
-</table>
 </form>
 
 {* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}
