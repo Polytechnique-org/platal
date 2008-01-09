@@ -67,9 +67,9 @@ function smarty_function_display_address($param, &$smarty)
     if ($param['titre'])
     {
         if ($param['titre_div'])
-            $txthtml .= "<div class='titre'>".$param['titre'].$map."</div>\n";
+            $txthtml .= "<div class='titre'>".pl_entity_decode($param['titre'])."&nbsp;".$map."</div>\n";
         else
-            $txthtml .= "<em>".$param['titre']."</em>".$map."<br />\n";
+            $txthtml .= "<em>".pl_entity_decode($param['titre'])."&nbsp;</em>".$map."<br />\n";
     }
     foreach ($lines as $line)
     {
