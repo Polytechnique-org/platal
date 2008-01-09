@@ -130,7 +130,7 @@ class ProfileMentor extends ProfilePage
                              FROM  mentor
                             WHERE  uid = {?}",
                           S::i('uid'));
-        $this->value['expertise'] = $res->fetchOneCell();
+        $this->values['expertise'] = $res->fetchOneCell();
     }
 
     protected function _saveData()
