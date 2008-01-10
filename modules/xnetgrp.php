@@ -511,7 +511,7 @@ class XnetGrpModule extends PLModule
                              . "{$_SESSION["prenom"]} {$_SESSION["nom"]}.";
                     $mailer->setTxtBody($message);
                     $mailer->send();
-                    $page->kill("$prenom $nom a bien été inscrit" . ($sexe ? 'e' : ''));
+                    $page->kill("$prenom $nom a bien été inscrit" . ($sexe ? 'e' : '') . ".");
                 }
                 elseif (Env::has('refuse'))
                 {
