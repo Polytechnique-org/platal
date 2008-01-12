@@ -23,6 +23,18 @@
  */
 class XNetEventPart
 {
+    private $id;
+    private $title;
+    private $description;
+
+    private $begin;
+    private $end;
+    private $where;  /* Geolocalize ? Addresse ==> google map
+                        Each asso sould have its list of reusable addresses
+                        and UI should list previous (recent) addresses. */
+
+    private $extras; // Can be use to store attachments or URL
+
     public function __construct(array $data) {
     }
 }
@@ -44,6 +56,11 @@ class XNetEvent
     private $description;
     private $subscriptionLimit;
 
+    private $closed;
+    private $memberOnly;
+    private $invite;
+
+    private $categories;
     private $parts;
 
     public function __construct($id = null) {
