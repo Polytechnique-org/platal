@@ -48,7 +48,7 @@ class UserSet extends PlSet
                                 'INNER JOIN groupex.membres AS gxm ON (u.user_id = gxm.uid
                                                                        AND gxm.asso_id = ' . $globals->asso('id') . ') ' : '')
                            . 'LEFT JOIN auth_user_quick AS q USING (user_id)
-                              LEFT JOIN aliases         AS a ON (a.id = u.user_id AND type = \'a_vie\')
+                              LEFT JOIN aliases         AS a ON (a.id = u.user_id AND a.type = \'a_vie\')
                               ' . $joins,
                             $where,
                             'u.user_id');
