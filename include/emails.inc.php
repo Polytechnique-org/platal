@@ -375,7 +375,7 @@ class Redirect
 
     public function get_broken_mx()
     {
-        $res = XDB::query("SELECT  host, text, state
+        $res = XDB::query("SELECT  host, text
                              FROM  mx_watch
                             WHERE  state != 'ok'");
         if (!$res->numRows()) {
@@ -391,17 +391,15 @@ class Redirect
                     $lcl_mxs = array($domain);
                 }
                 $broken = false;
-                $state  = false;
                 foreach ($mxs as &$mx) {
                     foreach ($lcl_mxs as $lcl) {
                         if (fnmatch($mx['host'], $lcl)) {
                             $broken = $mx['text'];
-                            $state  = $mx['state'];
                             break;
                         }
                     }
                     if ($broken) {
-                        $mails[] = array('mail' => $mail->email, 'text' => $broken, 'state' => $state);
+                        $mails[] = array('mail' => $mail->email, 'text' => $broken);
                         break;
                     }
                 }

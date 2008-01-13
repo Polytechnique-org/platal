@@ -287,20 +287,6 @@ function check_redirect($red = null)
     }
     $_SESSION['no_redirect'] = !$red->other_active('');
     $_SESSION['mx_failures'] = $red->get_broken_mx();
-    $warning = 0;
-    foreach ($red->emails as &$mail) {
-        if ($mail->active) {
-            $warning++;
-        }
-    }
-    foreach ($_SESSION['mx_failures'] as &$fail) {
-        if ($fail['state'] == 'broken') {
-            $warning -= 99999;
-        } else if ($fail['state'] == 'warning') {
-            $warning--;
-        }
-    }
-    $_SESSION['email_is_warning'] = ($warning <= 0 ? true : false);
 }
 
 function send_warning_mail($title)

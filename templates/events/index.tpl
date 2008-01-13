@@ -49,7 +49,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
 </p>
 {/if}
 
-{if $smarty.session.email_is_warning}
+{if $smarty.session.mx_failures|@count}
 <fieldset>
   <legend>{icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes</legend>
   {foreach from=$smarty.session.mx_failures item=mail}
