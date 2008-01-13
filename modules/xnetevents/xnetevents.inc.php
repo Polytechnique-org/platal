@@ -27,7 +27,7 @@ class XNetEventPart
     public $title           = null;
     public $description     = null;
     public $url             = null;
-    public $where           = null;  /* Geolocalize ? Addresse ==> google map
+    public $place           = null;  /* Geolocalize ? Addresse ==> google map
                                         Each asso sould have its list of reusable addresses
                                         and UI should list previous (recent) addresses. */
     public $begin           = null;
@@ -36,7 +36,13 @@ class XNetEventPart
     public $prices          = null;
     public $useCategories   = null;
 
-    public function __construct(array $data) {
+    public function __construct(array $data = null) {
+        if (!is_null($data)) {
+            foreach ($data as $name => $value) {
+                $this->$name = $value;
+            }
+            $this->prices = explode(',', $this->prices);
+        }
     }
 }
 
@@ -49,15 +55,25 @@ class XNetEvent
     const PAYMENT_TELEPAYMENT       = 'telepayment';
     const PAYMENT_MONEY             = 'money';
 
-    private $tofetch;
+    private $tofetch                = null;
 
     public $id                      = null;
+
+    public $respoUID                = null;
+    public $respoForlife            = null;
+    public $respoNom                = null;
+    public $respoPrenom             = null;
+    public $respoPromo              = null;
+    public $respoSexe               = null;
+
     public $shortname               = null;
     public $title                   = null;
     public $description             = null;
     public $subscriptionLimit       = null;
 
     public $closed                  = null;
+    public $prepared                = null;
+
     public $memberOnly              = null;
     public $invite                  = null;
     public $publicList              = null;
@@ -68,18 +84,46 @@ class XNetEvent
 
     public function __construct($id = null) {
         $this->tofetch = $id;
-        $this->id = -1;
-        $this->shortname   = null;
-        $this->title       = null;
-        $this->description = null;
-        $this->subscriptionLimit = null;
     }
 
     private function fetchData() {
-        if ($this->id >= 0) {
-            return;
+        if (!is_null($this->id) || is_null($this->tofetch)) {
+            return !is_null($this->id);
         }
-        // TODO: fetch data from database
+        global $globals;
+        $it = XDB::query("SELECT  e.id, e.shortname, e.title, e.description,
+                                  e.uid AS respoUID, u.prenom AS respoPrenom,
+                                  IF(u.nom_usage != '', u.nom_usage, u.nom) AS respoNom,
+                                  u.promo AS respoPromo, FIND_IN_SET('femme', u.flags) AS respoSexe,
+                                  e.sublimit AS subscriptionLimit, e.categories,
+                                  FIND_IN_SET('invite', e.flags) AS invite,
+                                  FIND_IN_SET('memberonly', e.flags) AS memberOnly,
+                                  FIND_IN_SET('publiclist', e.flags) AS publicList,
+                                  FIND_IN_SET('paymentissubscription', e.flags) AS paymentIsSubscription,
+                                  e.state IN ('close', 'archive') AS closed,
+                                  e.state != 'prepare' AS prepared
+                            FROM  groupex.events AS e
+                      INNER JOIN  auth_user_md5 AS u ON(e.uid = u.user_id)
+                           WHERE  e.asso_id = {?} AND (e.id = {?} OR e.shortname = {?})",
+                          $globals->asso('id'), $this->tofetch, $this->tofetch);
+        if (!($data = $it->fetchOneAssoc())) {
+            return false;
+        }
+        foreach ($data as $name => $value) {
+            $this->$name = $value;
+        }
+        $this->categories = explode(',', $this->categories);
+        $this->parts = array();
+        $it = XDB::iterator("SELECT  ep.part_id AS id, ep.title, ep.description,
+                                     ep.url, ep.place, ep.begin, ep.end, ep.prices,
+                                     NOT FIND_IN_SET('nocategories', ep.flags) AS useCategories
+                               FROM  events_part
+                              WHERE  ep.event_id = {?}",
+                            $this->id);
+        while (($data = $it->next())) {
+            $this->parts[$data['id']] = new XNetEventPart($data);
+        }
+        return true;
     }
 
     private function saveData() {
