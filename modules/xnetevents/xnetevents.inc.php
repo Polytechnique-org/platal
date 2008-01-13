@@ -23,17 +23,18 @@
  */
 class XNetEventPart
 {
-    private $id;
-    private $title;
-    private $description;
+    public $id              = null;
+    public $title           = null;
+    public $description     = null;
+    public $url             = null;
+    public $where           = null;  /* Geolocalize ? Addresse ==> google map
+                                        Each asso sould have its list of reusable addresses
+                                        and UI should list previous (recent) addresses. */
+    public $begin           = null;
+    public $end             = null;
 
-    private $begin;
-    private $end;
-    private $where;  /* Geolocalize ? Addresse ==> google map
-                        Each asso sould have its list of reusable addresses
-                        and UI should list previous (recent) addresses. */
-
-    private $extras; // Can be use to store attachments or URL
+    public $prices          = null;
+    public $useCategories   = null;
 
     public function __construct(array $data) {
     }
@@ -45,23 +46,25 @@ class XNetEventPart
 class XNetEvent
 {
     /* Payment types */
-    const PAYMENT_TELEPAYMENT;
-    const PAYMENT_MONEY;
+    const PAYMENT_TELEPAYMENT       = 'telepayment';
+    const PAYMENT_MONEY             = 'money';
 
     private $tofetch;
 
-    private $id;
-    private $shortname;
-    private $title;
-    private $description;
-    private $subscriptionLimit;
+    public $id                      = null;
+    public $shortname               = null;
+    public $title                   = null;
+    public $description             = null;
+    public $subscriptionLimit       = null;
 
-    private $closed;
-    private $memberOnly;
-    private $invite;
+    public $closed                  = null;
+    public $memberOnly              = null;
+    public $invite                  = null;
+    public $publicList              = null;
+    public $paymentIsSubscription   = null;
 
-    private $categories;
-    private $parts;
+    public $categories              = null;
+    public $parts                   = null;
 
     public function __construct($id = null) {
         $this->tofetch = $id;
