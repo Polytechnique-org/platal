@@ -23,6 +23,8 @@
  */
 class XNetEventPart
 {
+    private $changed        = false;
+
     public $id              = null;
     public $title           = null;
     public $description     = null;
@@ -42,6 +44,20 @@ class XNetEventPart
                 $this->$name = $value;
             }
             $this->prices = explode(',', $this->prices);
+        } else {
+            $this->changed = true;
+        }
+    }
+
+    public function save($event) {
+        if ($this->changed) {
+            XDB::execute("REPLACE INTO  groupex.events_part (event_id, part_id, title, description,
+                                        url, place, begin, end, prices, flags)
+                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
+                        $event, $this->id, $this->title, $this->description, $this->url, $this->place,
+                        $this->begin, $this->end, implode(',', $this->prices),
+                        $this->useCategories ? '' : 'nocategories');
+            // TODO: update corresponding subscriptions !!!
         }
     }
 }
@@ -56,6 +72,8 @@ class XNetEvent
     const PAYMENT_MONEY             = 'money';
 
     private $tofetch                = null;
+    private $changed                = false;
+    private $partCount              = 0;
 
     public $id                      = null;
 
@@ -84,6 +102,7 @@ class XNetEvent
 
     public function __construct($id = null) {
         $this->tofetch = $id;
+        $this->changed = is_null($id);
     }
 
     private function fetchData() {
@@ -123,11 +142,56 @@ class XNetEvent
         while (($data = $it->next())) {
             $this->parts[$data['id']] = new XNetEventPart($data);
         }
+        $this->partsCount = count($this->parts);
         return true;
     }
 
     private function saveData() {
-        // TODO: update database
+        $cats = implode(',', $this->categories);
+        $dogs = array(); // Noting to do with animals, but previous variable was 'cats'
+        if ($this->memberOnly) {
+            $dogs[] = 'memberonly';
+        }
+        if ($this->invite) {
+            $dogs[] = 'invite';
+        }
+        if ($this->publicList) {
+            $dogs[] = 'publicList';
+        }
+        if ($this->paymentIsSubscription) {
+            $dogs[] = 'paymentissubscription';
+        }
+        $dogs = implode(',', $dogs);
+        global $globals;
+        if (is_null($this->id)) {
+            if (!XDB::execute("INSERT INTO  groupex.events
+                                           (asso_id, respo_uid, shortname, title, description,
+                                            sublimit, categories, flags, state)
+                                   VALUES  ({?}, {?}. {?}, {?}, {?}, {?}, {?}, {?}, 'prepare')",
+                             $globals->asso('id'), $this->respoUID, $this->shortname, $this->title,
+                             $this->description, $this->subscriptionLimit, $cats, $dogs)) {
+                return false;
+            }
+            $this->id = XDB::insertId();
+        } else if ($this->changed) {
+            if (!XDB::execute("UPDATE  groupex.events
+                                  SET  shortname = {?}, title = {?}, description = {?}, sublimit = {?},
+                                       categories = {?}, flags = {?}
+                                WHERE  id = {?} AND asso_id = {?}",
+                              $this->shortname, $this->title, $this->description, $this->sublimit,
+                              $cats, $dogs, $this->id, $globals->asso('id'))) {
+                return false;
+            }
+        }
+        foreach ($this->parts as &$part) {
+            $part->save($this->id);
+        }
+        if ($this->partsCount > count($this->parts)) {
+            XDB::execute("DELETE FROM  groupex.events_part
+                                WHERE  event_id = {?} AND asso_id = {?} AND part_id > {?}",
+                         $this->id, $globals->asso('id'), max(array_keys($this->parts)));
+        }
+        return true;
     }
 
 
@@ -135,18 +199,22 @@ class XNetEvent
 
     public function setShortname($newname = null) {
         // TODO: do not forget to update partitipants/absents aliases
+        $this->changed = true;
     }
 
     public function setTitle($title) {
         $this->title = $title;
+        $this->changed = true;
     }
 
     public function setDescription($description) {
         $this->description = $description;
+        $this->changed = true;
     }
 
     public function setSubscriptionLimit($date) {
         $this->subscriptionLimit = $date;
+        $this->changed = true;
     }
 
 
