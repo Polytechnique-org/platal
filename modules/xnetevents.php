@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -97,6 +97,7 @@ class XnetEventsModule extends PLModule
             XDB::execute("DELETE FROM requests
                                     WHERE type = 'paiements' AND data LIKE {?}",
                                    PayReq::same_event($eid, $globals->asso('id')));
+            update_NbValid();
         }
 
         if ($action == 'archive') {
@@ -230,12 +231,14 @@ class XnetEventsModule extends PLModule
         $updated = false;
         $total   = 0;
         $paid    = $evt['paid'] ? $evt['paid'] : 0;
+        $telepaid= $evt['telepaid'] ? $evt['telepaid'] : 0;
         foreach ($subs as $j => $nb) {
             if ($nb >= 0) {
                 XDB::execute(
                     "REPLACE INTO  groupex.evenements_participants
                            VALUES  ({?}, {?}, {?}, {?}, {?}, {?})",
-                    $eid, S::v('uid'), $j, $nb, Env::has('notify_payment') ? 'notify_payment' : '', $paid);
+                    $eid, S::v('uid'), $j, $nb, Env::has('notify_payment') ? 'notify_payment' : '',
+                    $j == 1 ? $paid - $telepaid : 0);
                 $updated = $eid;
             } else {
                 XDB::execute(
@@ -281,6 +284,7 @@ class XnetEventsModule extends PLModule
         $page->assign('admin', $admin);
         $page->assign('moments', $evt['moments']);
         $page->assign('money', $evt['money']);
+        $page->assign('telepayment', $evt['paiement_id']);
         $page->assign('tout', !Env::v('item_id', false));
     }
 
@@ -523,7 +527,7 @@ class XnetEventsModule extends PLModule
             if (Env::v('adm') == 'prix' && $member) {
                 XDB::execute("UPDATE groupex.evenements_participants
                                  SET paid = IF(paid + {?} > 0, paid + {?}, 0)
-                               WHERE uid = {?} AND eid = {?}",
+                               WHERE uid = {?} AND eid = {?} AND item_id = 1",
                         strtr(Env::v('montant'), ',', '.'),
                         strtr(Env::v('montant'), ',', '.'),
                         $member['uid'], $evt['eid']);
@@ -543,7 +547,7 @@ class XnetEventsModule extends PLModule
                     $nb = max(intval($nb), 0);
                     XDB::execute("REPLACE INTO groupex.evenements_participants
                                         VALUES ({?}, {?}, {?}, {?}, {?}, {?})",
-                                  $evt['eid'], $member['uid'], $id, $nb, '', $paid);
+                                  $evt['eid'], $member['uid'], $id, $nb, '', $id == 1 ? $paid : 0);
                 }
 
                 $res = XDB::query("SELECT COUNT(uid) AS cnt, SUM(nb) AS nb
@@ -559,7 +563,7 @@ class XnetEventsModule extends PLModule
             $evt = get_event_detail($eid, $item_id);
         }
 
-        $page->assign('evt', $evt);
+        $page->assign_by_ref('evt', $evt);
         $page->assign('tout', is_null($item_id));
 
         if (count($evt['moments'])) {

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -141,7 +141,7 @@ function hook_makeLink($params)
             return $base . '/' . $params['page'];
         }
         if (@$params['action'] == 'subscribe') {
-            return $base . '/subscription';
+            return $base . '/subscribe';
         }
 
         if (!isset($params['group'])) {
@@ -150,7 +150,7 @@ function hook_makeLink($params)
         $base .= '/' . $params['group'];
     } else if (Banana::$protocole->name() == 'NNTP' && $xnet) {
         if ($feed) {
-            return 'http://www.polytechnique.org/banana' . hook_platalRSS(@$params['group']);
+            return $globals->baseurl . '/banana' . hook_platalRSS(@$params['group']);
         }
         $base = $globals->baseurl . '/' . $platal->ns . 'forum';
     } else if (Banana::$protocole->name() == 'MLArchives') {
@@ -222,6 +222,26 @@ function make_Organization()
 
 function get_banana_params(array &$get, $group = null, $action = null, $artid = null)
 {
+    if ($group == 'forums') {
+        $group = null;
+    } else if ($group == 'thread') {
+        $group = S::v('banana_group');
+    } else if ($group == 'message') {
+        $action = 'read';
+        $group  = S::v('banana_group');
+        $artid  = S::i('banana_artid');
+    } else if ($action == 'message') {
+        $action = 'read';
+        $artid  = S::i('banana_artid');
+    } else if ($group == 'subscribe' || $group == 'subscription') {
+        $group  = null;
+        $action = null;
+        $get['action'] = 'subscribe';
+    } else if ($group == 'profile') {
+        $group  = null;
+        $action = null;
+        $get['action'] = 'profile';
+    }
     if (!is_null($group)) {
         $get['group'] = $group;
     }
@@ -250,6 +270,54 @@ function get_banana_params(array &$get, $group = null, $action = null, $artid = 
                 $get['action'] = 'showext';
             }
         }
+    }
+}
+
+class PlatalBananaPage extends BananaPage
+{
+    protected $handler;
+    protected $base;
+
+    public function __construct()
+    {
+        global $platal;
+        Banana::$withtabs = false;
+        $this->handler = 'BananaHandler';
+        $this->base    = $platal->pl_self(0);
+        parent::__construct();
+    }
+
+    protected function prepare()
+    {
+        $tpl = parent::prepare();
+        global $wiz, $page;
+        $wiz = new PlWizard('Banana', 'core/plwizard.tpl', true, false);
+        foreach ($this->pages as $name=>&$mpage) {
+            $wiz->addPage($this->handler, $mpage['text'], $name);
+        }
+        $wiz->apply($page, $this->base, $this->page);
+        return $tpl;
+    }
+}
+
+class BananaHandler
+{
+    public function __construct(PlWizard &$wiz)
+    {
+    }
+
+    public function template()
+    {
+        return 'banana/index.tpl';
+    }
+
+    public function prepare(PlatalPage &$page, $id)
+    {
+    }
+
+    public function process()
+    {
+        return PlWizard::CURRENT_PAGE;
     }
 }
 

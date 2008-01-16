@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -152,7 +152,7 @@ class ProfileJobs extends ProfilePage
                                      e.adr_pub, e.tel_pub, e.email_pub,
                                      e.glat AS precise_lat, e.glng AS precise_lon
                                FROM  entreprises AS e
-                         INNER JOIN  geoloc_pays AS gp ON(gp.a2 = e.country)
+                          LEFT JOIN  geoloc_pays AS gp ON(gp.a2 = e.country)
                               WHERE  uid = {?} AND entreprise != ''
                            ORDER BY  entrid", S::i('uid'));
         $this->values['jobs'] = array();

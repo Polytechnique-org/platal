@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -44,7 +44,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Nouveau mot de passe :
+        Nouveau mot de passe&nbsp;:
       </td>
       <td>
         <input type="password" size="10" maxlength="10" name="nouveau" />
@@ -52,7 +52,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Retape-le une fois :
+        Retape-le une fois&nbsp;:
       </td>
       <td>
         <input type="password" size="10" maxlength="10" name="nouveau2" />

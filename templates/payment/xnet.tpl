@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Gestion des télépaiements </h1>
+<h1>{$asso.nom}&nbsp;: Gestion des télépaiements </h1>
 
 <p class="descr">
 Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 require_once 'banana/banana.inc.php';
+require_once 'banana/message.func.inc.php';
 require_once 'banana/hooks.inc.php';
 
 function hook_checkcancel($_headers)
@@ -76,8 +77,6 @@ class ModerationBanana extends Banana
     }
 }
 
-require_once('banana/page.inc.php');
-
 class ModerationPage extends BananaPage
 {
     protected function prepare()
@@ -97,9 +96,6 @@ class ModerationPage extends BananaPage
         return true;
     }
 }
-
-require_once('banana/protocoleinterface.inc.php');
-require_once('banana/message.inc.php');
 
 class BananaMLInterface implements BananaProtocoleInterface
 {

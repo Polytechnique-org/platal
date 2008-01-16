@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -125,7 +125,7 @@ EOF2;
     {
         if ($promo == 'all') {
             // date de départ
-            $depart = 1920;
+            $depart = 1930;
 
             //recupere le nombre d'inscriptions par jour sur la plage concernée
             $res = XDB::iterRow(
@@ -164,7 +164,7 @@ set timefmt "%d/%m/%y"
 set xr [$depart:$fin]
 set yr [0:100]
 
-set title "Nombre d'inscrits par promotion depuis $depart."
+set title "Proportion d'inscrits par promotion depuis $depart, en %."
 
 plot "-" using 1:2 title 'inscrits' with boxes;
 {$inscrits}

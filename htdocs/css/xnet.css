@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -177,7 +177,7 @@ td#menu {
     background-color: #d0c198;
 }
 
-#menu a {
+#menu a, #menu form {
     display: block;
     padding: 0.2em 0em 0.2em 15px;
     font-size: 89%;
@@ -187,12 +187,6 @@ td#menu {
 /***************************************************************************
  * CLASSES
  ***************************************************************************/
-
-.breadcrumb {
-    font-weight: bold;
-    font-size: 90%;
-    padding: 0.5em 0em 0em 0.2em;
-}
 
 .erreur { color: red !important; }
 .error  { color: red !important; }
@@ -391,39 +385,41 @@ td.infos {
 /***************************************************************************
  ***************************************************************************/
 
-td.conteneur_tab {
-    border: none;
-    padding-top: 1em;
+.wizard {
+    margin-top: 0px;
+    margin-left: -1em;
 }
 
-#onglet {
-    display : block;
-    margin : 0;
-    padding : 0;
+.wizard .wiz_header {
+    height: 30px;
+    width: 635px;
+    padding: 0 2px;
+    background: url('../images/skins/wiz_xnet_background.png') bottom left no-repeat;
+    margin-bottom: 1em;
 }
 
-#onglet li {
-    display : block;
-    float : left;
-    border: none;
-    background: inherit;
-    width: auto;
+.wizard .wiz_header .wiz_tab {
+    height: 100%;
+    text-align: center;
+    font-size: 75%;
 }
 
-#onglet li.actif {
+.wizard .wiz_header .wiz_tab:hover {
+    color: #5c81aa;
     font-weight: bold;
 }
 
-#onglet li:before {
-    font-weight: normal;
-    content: '» ';
-    padding-left: 1ex;
+.wizard .wiz_header .active, .wizard .wiz_header .active:hover {
 }
 
-#onglet li:first-child:before {
-    content: '';
+.wizard .wiz_header a {
+    color: #000;
+    text-decoration: none;
+    margin-top: 2px;
+    vertical-align: bottom;
 }
 
-#onglet li img { margin-right: 2px; }
-
+.wizard .wiz_header a.active {
+    font-weight: bold;
+}
 

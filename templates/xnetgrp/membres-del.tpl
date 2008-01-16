@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -32,10 +32,10 @@
 
 {else}
  
-<h1>{$asso.nom} : gestion des membres</h1>
+<h1>{$asso.nom}&nbsp;: gestion des membres</h1>
 
 <h2>
-  Suppression du membre : {$user.prenom} {$user.nom}
+  Suppression du membre&nbsp;: {$user.prenom} {$user.nom}
 </h2>
 
 

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -44,7 +44,7 @@
 <tr class="impair">
   <td colspan="{$t->nbfields}">
     <strong>
-      Nouvelles entrées : <a href="{$t->pl}/new">Manuellement</a> &bull; <a href="{$t->pl}/massadd">Depuis un CSV</a>
+      Nouvelles entrées&nbsp;: <a href="{$t->pl}/new">Manuellement</a> &bull; <a href="{$t->pl}/massadd">Depuis un CSV</a>
     </strong>
   </td>
   <td class="right">

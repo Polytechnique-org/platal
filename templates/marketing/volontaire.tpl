@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -23,7 +23,7 @@
 <h1>Marketing volontaire</h1>
 
 <p>
-Choix de la promo :
+Choix de la promo&nbsp;:
 </p>
 <p>
 {foreach from=$promos item=p}

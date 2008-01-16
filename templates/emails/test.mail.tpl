@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,26 +20,34 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="intervention_admin"}
+{config_load file="mails.conf" section="test_email"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{to addr=#to#}
-{subject text="INTERVENTION de $user"}
+{to addr=$email}
+{subject text="Test de ton adresse `$email`"}
 {elseif $mail_part eq 'wiki'}
-Le profil du camarade {$old.prenom} {$old.nom} ({$old.promo}) a été édité.\\
-Les champs suivants ont été changés :
-{foreach from=$old item=value key=field}
-{if $value neq $new[$field]}
-* '''{$field}''' : {$value} -> {$new[$field]}
-{/if}
-{/foreach}
+{if $sexe}Chère{else}Cher{/if} {$prenom},
 
-Et ceux qui n'ont pas changé :
-{foreach from=$old item=value key=field}
-{if $value eq $new[$field]}
-* '''{$field}''' : {$value}
+Tu reçois ce mail car tu as demandé la confirmation du bon fonctionnement de ton adresse polytechnicienne {$email}.
+{if $redirects->total() gt 1}Si toutes tes redirections fonctionnent correctement tu devrais recevoir une copie de ce mail
+des boîtes suivantes :
+{iterate from=$redirects item=mail}
+* {$mail.email}
+{/iterate}
 {/if}
-{/foreach}
+
+Tu trouveras sur le site divers outils pour gérer ton adresse email :
+* [[https://www.polytechnique.org/emails/redirect|La gestion de tes redirections]]
+* [[https://www.polytechnique.org/emails/antispam|La gestion de ton antispam]]
+* [[https://www.polytechnique.org/emails/send|Un formulaire pour envoyer des mails d'où que tu sois]]
+
+N'hésite pas à venir découvrir ou redécouvrir les services du site grâce au [[https://www.polytechnique.org/review|tour d'horizon]].
+
+Merci encore de la confiance que tu portes à nos services.
+
+-- \\
+Très Cordialement,\\
+L'Équipe de Polytechnique.org
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

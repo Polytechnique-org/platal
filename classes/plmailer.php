@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -38,7 +38,7 @@ class PlMail extends Smarty
         $this->template_dir  = $globals->spoolroot . "/templates/";
         $this->compile_dir   = $globals->spoolroot . "/spool/mails_c/";
         $this->config_dir    = $globals->spoolroot . "/configs/";
-
+        array_unshift($this->plugins_dir, $globals->spoolroot."/plugins/");
 
         $this->register_outputfilter(Array($this, 'mail_format'));
         $this->register_function('from',    Array($this, 'setFrom'));
@@ -279,9 +279,9 @@ class PlMailer extends Mail_Mime {
             error_reporting($level);
         }
         if ($this->wiki) {
-            $this->setTxtBody(MiniWiki::WikiToText($this->wiki, true, 0, 78));
+            $this->setTxtBody(MiniWiki::WikiToText($this->wiki, false, 0, 78));
             if ($with_html) {
-                $this->setHtmlBody(MiniWiki::WikiToHtml($this->wiki, true));
+                $this->setHtmlBody('<html><body>' . MiniWiki::WikiToHtml($this->wiki, true) . '</body></html>');
             }
         }
     }

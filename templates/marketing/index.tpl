@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -40,29 +40,29 @@
 <br />
 
 <p>
-Nombre d'X vivants d'après notre base de données : {$stats.vivants}<br />
-Nombre d'X vivants inscrits à Polytechnique.org : {$stats.inscrits}<br />
-Soit un pourcentage d'inscrits de : {$stats.ins_rate} %<br />
+Nombre d'X vivants d'après notre base de données&nbsp;: {$stats.vivants}<br />
+Nombre d'X vivants inscrits à Polytechnique.org&nbsp;: {$stats.inscrits}<br />
+Soit un pourcentage d'inscrits de&nbsp;: {$stats.ins_rate} %<br />
 </p>
 
 <p>
-Parmi ceux-ci :<br />
-Nombre d'X vivants depuis 1972 d'après notre base de données : {$stats.vivants72}<br />
-Nombre d'X vivants depuis 1972 inscrits à Polytechnique.org : {$stats.inscrits72}<br />
-Soit un pourcentage d'inscrits de : {$stats.ins72_rate} % <br />
+Parmi ceux-ci&nbsp;:<br />
+Nombre d'X vivants depuis 1972 d'après notre base de données&nbsp;: {$stats.vivants72}<br />
+Nombre d'X vivants depuis 1972 inscrits à Polytechnique.org&nbsp;: {$stats.inscrits72}<br />
+Soit un pourcentage d'inscrits de&nbsp;: {$stats.ins72_rate} % <br />
 </p>
 
 <p>
-Nombre de Polytechniciennes vivantes : {$stats.vivantes}<br />
-Nombre de Polytechniciennes vivantes et inscrites : {$stats.inscrites} <br />
-Soit un pourcentage d'inscrites de : {$stats.inse_rate} % <br />
+Nombre de Polytechniciennes vivantes&nbsp;: {$stats.vivantes}<br />
+Nombre de Polytechniciennes vivantes et inscrites&nbsp;: {$stats.inscrites} <br />
+Soit un pourcentage d'inscrites de&nbsp;: {$stats.inse_rate} % <br />
 </p>
 
 <p>
-Nombre d'<a href="marketing/this_week">inscrits ces 7 derniers jours</a> : {$nbInsSem}<br />
-Nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non terminée) : {$nbInsEnCours} <br />
-Nombre d'envois marketing effectués n'ayant pas abouti : {$nbInsMarket}<br />
-Nombre d'envois marketing ayant abouti cette semaine : {$nbInsMarkOK}
+Nombre d'<a href="marketing/this_week">inscrits ces 7 derniers jours</a>&nbsp;: {$nbInsSem}<br />
+Nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non terminée)&nbsp;: {$nbInsEnCours} <br />
+Nombre d'envois marketing effectués n'ayant pas abouti&nbsp;: {$nbInsMarket}<br />
+Nombre d'envois marketing ayant abouti cette semaine&nbsp;: {$nbInsMarkOK}
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

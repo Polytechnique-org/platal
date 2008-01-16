@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -25,8 +25,8 @@ class BananaModule extends PLModule
     {
         return array(
             'banana'              => $this->make_hook('banana', AUTH_COOKIE),
-            'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
-            'banana/subscription' => $this->make_hook('subscription', AUTH_COOKIE),
+//            'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
+//            'banana/subscribe'    => $this->make_hook('subscription', AUTH_COOKIE),
             'banana/rss'          => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
         );
     }
@@ -45,7 +45,7 @@ class BananaModule extends PLModule
                                  FROM  auth_user_md5 WHERE promo={?}", $promo);
             list($effau, $effid) = $res->fetchOneRow();
             if (5*$effau>$effid) { // + de 20% d'inscrits
-                $mymail = new PlMailer('mails/forums.promo.tpl');
+                $mymail = new PlMailer('admin/forums-promo.mail.tpl');
                 $mymail->assign('promo', $promo);
                 $mymail->send();
             }
@@ -119,15 +119,6 @@ class BananaModule extends PLModule
                          Post::v('bananamail'), Post::v('banananame'),
                          implode(',', $flags));
         }
-    }
-
-    function handler_subscription(&$page)
-    {
-        $page->changeTpl('banana/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Forums & PA');
-
-        require_once 'banana/forum.inc.php';
-        run_banana($page, 'ForumsBanana', Array('action' => 'subscribe'));
     }
 
     function handler_rss(&$page, $group, $alias, $hash, $file = null)

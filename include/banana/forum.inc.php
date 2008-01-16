@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -49,7 +49,10 @@ class ForumsBanana extends Banana
         if (!S::v('core_rss_hash')) {
             Banana::$feed_active = false;
         }
-        parent::__construct($params);
+        parent::__construct($params, 'NNTP', 'PlatalBananaPage');
+        if (@$params['action'] == 'profile') {
+            Banana::$action = 'profile';
+        }
     }
 
     public function run()
@@ -116,8 +119,13 @@ class ForumsBanana extends Banana
             Banana::$page->registerPage('profile', 'Préférences', null);
         }
 
-        // Run Banana
-        return parent::run();
+        // Run Bananai
+        if (Banana::$action == 'profile') {
+            Banana::$page->run();
+            return $this->action_updateProfile();
+        } else {
+            return parent::run();
+        }
     }
 
     public function post($dest, $reply, $subject, $body)
@@ -162,6 +170,55 @@ class ForumsBanana extends Banana
                          $fids[$g], $uid);
             Banana::$profile['subscribe'][] = $g;
         }
+    }
+
+    protected function action_updateProfile()
+    {
+        global $page, $globals;
+
+        if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig')
+        && Post::has('bananadisplay') && Post::has('bananamail')
+        && Post::has('bananaupdate') && Post::v('action')=="Enregistrer" ))
+        {
+            $req = XDB::query("
+                SELECT  nom, mail, sig,
+                        FIND_IN_SET('threads', flags),
+                        FIND_IN_SET('automaj', flags),
+                        FIND_IN_SET('xface', flags)
+                  FROM  forums.profils
+                 WHERE  uid = {?}", S::v('uid'));
+            if (!(list($nom, $mail, $sig, $disp, $maj, $xface) = $req->fetchOneRow())) {
+                $nom   = S::v('prenom').' '.S::v('nom');
+                $mail  = S::v('forlife').'@'.$globals->mail->domain;
+                $sig   = $nom.' ('.S::v('promo').')';
+                $disp  = 0;
+                $maj   = 0;
+                $xface = 0;
+            }
+            $page->assign('nom' ,  $nom);
+            $page->assign('mail',  $mail);
+            $page->assign('sig',   $sig);
+            $page->assign('disp',  $disp);
+            $page->assign('maj',   $maj);
+            $page->assign('xface', $xface);
+        } else {
+            $flags = array();
+            if (Post::b('bananadisplay')) {
+                $flags[] = 'threads';
+            }
+            if (Post::b('bananaupdate')) {
+                $flags[] = 'automaj';
+            }
+            if (Post::b('bananaxface')) {
+                $flags[] = 'xface';
+            }
+            XDB::execute("REPLACE INTO  forums.profils (uid, sig, mail, nom, flags)
+                                VALUES  ({?}, {?}, {?}, {?}, {?})",
+                         S::v('uid'), Post::v('bananasig'),
+                         Post::v('bananamail'), Post::v('banananame'),
+                         implode(',', $flags));
+        }
+        return null;
     }
 }
 

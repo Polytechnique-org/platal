@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -21,13 +21,23 @@
 {**************************************************************************}
 
 {if $smarty.request.texte}
-{assign var=texte value=$smarty.request.texte}
+{assign var=texte value=$smarty.request.texte|smarty:nodefaults}
 {/if}
-{assign var=titre value=$smarty.request.titre|default:$titre}
-{assign var=promo_min value=$smarty.request.promo_min|default:$promo_min}
-{assign var=promo_max value=$smarty.request.promo_max|default:$promo_max}
-{assign var=peremption value=$smarty.request.peremption|default:$peremption}
-{assign var=important value=$smarty.request.important|default:$important}
+{if $smarty.request.titre}
+{assign var=titre value=$smarty.request.titre|smarty:nodefaults}
+{/if}
+{if $smarty.request.promo_min}
+{assign var=promo_min value=$smarty.request.promo_min|smarty:nodefaults}
+{/if}
+{if $smarty.request.promo_max}
+{assign var=promo_max value=$smarty.request.promo_max|smarty:nodefaults}
+{/if}
+{if $smarty.request.peremption}
+{assign var=peremption value=$smarty.request.peremption|smarty:nodefaults}
+{/if}
+{if $smarty.request.important}
+{assign var=important value=$smarty.request.important|smarty:nodefaults}
+{/if}
 
 <script type="text/javascript">//<![CDATA[
   {literal}
@@ -122,8 +132,8 @@
         </div>
         {/if}
         <div style="clear: both">
-          Choisir un fichier : <input type="file" name="image" id="image" /><br />
-          Indiquer une adresse : <input type="text" name="image_url" id="image_url" value="" />
+          Choisir un fichier&nbsp;: <input type="file" name="image" id="image" /><br />
+          Indiquer une adresse&nbsp;: <input type="text" name="image_url" id="image_url" value="" />
         </div>
       </td>
     </tr>
@@ -145,13 +155,13 @@
     </tr>
     <tr class="pair">
       <td colspan="2">
-        Tu peux limiter la visibilité de ton annonce aux camarades de certaines promotions :
+        Tu peux limiter la visibilité de ton annonce aux camarades de certaines promotions&nbsp;:
       </td>
     </tr>
     {include file="include/field.promo.tpl"}
     <tr class="pair">
       <td colspan="2">
-        Choisis la date d'expiration de ton annonce :
+        Choisis la date d'expiration de ton annonce&nbsp;:
       </td>
     </tr>
     <tr>

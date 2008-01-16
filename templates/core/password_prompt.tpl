@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -82,7 +82,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr style="white-space: nowrap">
       <td class="titre">
-        Adresse email :
+        Adresse email&nbsp;:
       </td>
       <td>
         <input type="text" name="username" size="20" maxlength="50" value="{insert name="getUserName"}" />&nbsp;@&nbsp;<select name="domain">

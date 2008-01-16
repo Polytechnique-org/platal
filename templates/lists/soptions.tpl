@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -32,7 +32,7 @@
     <tr><th colspan='2'>Options de la liste {$details.addr}</th></tr>
     <tr class='impair'>
       <td>
-        <strong>msg_header :</strong><br />
+        <strong>msg_header&nbsp;:</strong><br />
         <span class='smaller'>ajouté au début de tous les messages.</span>
       </td>
       <td>
@@ -41,7 +41,7 @@
     </tr>
     <tr class='impair'>
       <td>
-        <strong>msg_footer :</strong><br />
+        <strong>msg_footer&nbsp;:</strong><br />
         <span class='smaller'>ajouté à la fin de tous les messages.</span>
       </td>
       <td>
@@ -51,7 +51,7 @@
     <tr><th colspan='2'>Options avancées de la liste {$details.addr}</th></tr>
     <tr class='impair'>
       <td>
-        <strong>visibilité :</strong><br />
+        <strong>visibilité&nbsp;:</strong><br />
         <span class='smaller'>si coché, la liste sera listée dans la page de l'ensemble des listes.
           (les listes d'admin doivent être décochées)</span>
       </td>
@@ -62,7 +62,7 @@
     </tr>
     <tr class='pair'>
       <td>
-        <strong>archive :</strong><br />
+        <strong>archive&nbsp;:</strong><br />
         <span class='smaller'>Liste archivée ?</span>
       </td>
       <td>
@@ -72,7 +72,7 @@
     </tr>
     <tr class='impair'>
       <td>
-        <strong>max_message_size :</strong><br />
+        <strong>max_message_size&nbsp;:</strong><br />
         <span class='smaller'>Taille maximale des posts en Ko:</span>
       </td>
       <td>

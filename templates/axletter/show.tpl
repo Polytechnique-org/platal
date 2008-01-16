@@ -54,6 +54,6 @@
       {include file="axletter/letter.tpl"}
     </td>
   </tr>
-</fieldset>
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

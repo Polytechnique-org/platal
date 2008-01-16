@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,15 +20,26 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="forums_promo"}
+{config_load file="mails.conf" section="intervention_admin"}
 {if $mail_part eq 'head'}
 {from full=#from#}
 {to addr=#to#}
-{subject text="Création du forum promo $promo"}
-{elseif $mail_part eq 'text'}
+{subject text="INTERVENTION de $user"}
+{elseif $mail_part eq 'wiki'}
+Le profil du camarade {$old.prenom} {$old.nom} ({$old.promo}) a été édité.\\
+Les champs suivants ont été changés :
+{foreach from=$old item=value key=field}
+{if $value neq $new[$field]}
+* '''{$field}''' : {$value} -> {$new[$field]}
+{/if}
+{/foreach}
 
-Création du forum promo {$promo} à faire !
-(+ de 20% d'inscrits)
+Et ceux qui n'ont pas changé :
+{foreach from=$old item=value key=field}
+{if $value eq $new[$field]}
+* '''{$field}''' : {$value}
+{/if}
+{/foreach}
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2: *}

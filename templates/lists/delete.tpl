@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -45,7 +45,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr class='impair'>
       <td>
         Veux tu réellement détruire la liste {$details.addr} ?<br />
-        Pour valider ton choix, écris en majuscules (sans espace) « OUI » :
+        Pour valider ton choix, écris en majuscules (sans espace) « OUI »&nbsp;:
         <input type='text' size='3' maxlength='3' name="valid" />
       </td>
     </tr>

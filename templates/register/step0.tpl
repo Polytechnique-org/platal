@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -25,7 +25,7 @@
 <h1>Conditions générales</h1>
 
 <p>
-L'enregistrement se déroule <strong>en deux étapes</strong> :
+L'enregistrement se déroule <strong>en deux étapes</strong>&nbsp;:
 </p>
 <ul>
   <li>

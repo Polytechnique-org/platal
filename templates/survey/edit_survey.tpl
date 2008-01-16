@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-<h1>Sondage : {if $survey_type == 'root'}nouveau sondage{else}nouvelle question{/if}</h1>
+<h1>Sondage&nbsp;: {if $survey_type == 'root'}nouveau sondage{else}nouvelle question{/if}</h1>
 
 <form action="{$survey_formaction}" method="post">
   <input type="hidden" name="survey_action" value="{$survey_action}"/>

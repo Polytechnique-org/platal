@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,13 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<!-- Pour récupérer ce bandeau sur votre site :
+<!-- Pour récupérer ce bandeau sur votre site&nbsp;:
   incluez le fichier http://www.polytechnique.org/bandeau dans vos php
   ou http://www.polytechnique.org/bandeau/login pour profiter du login
   automatique. Et rajoutez à la liste de css de vos pages
   http://www.polytechnique.org/bandeau.css.
   Pour avoir l'icone, pour des raisons de sécurité il n'y a pas d'accès
-  direct, il faut alors rediriger bandeau/icone.png vers celle du site :
+  direct, il faut alors rediriger bandeau/icone.png vers celle du site&nbsp;:
   http://www.polytechnique.org/bandeau/icone.png -->
 
 {if !$login && $smarty.session.auth}

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -22,6 +22,25 @@
 require_once 'banana/banana.inc.php';
 require_once 'banana/hooks.inc.php';
 
+class PlatalBananaMLPage extends PlatalBananaPage
+{
+    public function __construct()
+    {
+        parent::__construct();
+        global $platal;
+        $this->handler = 'BananaMLHandler';
+        $this->base    = $platal->pl_self(1);
+    }
+}
+
+class BananaMLHandler extends BananaHandler
+{
+    public function template()
+    {
+        return 'lists/archives.tpl';
+    }
+}
+
 class MLBanana extends Banana
 {
     static public $listname;
@@ -29,13 +48,14 @@ class MLBanana extends Banana
 
     function __construct($forlife, $params = null)
     {
-		global $globals;
+        global $globals;
         Banana::$spool_root = $globals->banana->spool_root;
         Banana::$spool_boxlist = false;
         Banana::$msgedit_canattach = true;
         Banana::$debug_mbox = ($globals->debug & DEBUG_BT);
         Banana::$debug_smarty = ($globals->debug & DEBUG_SMARTY);
         Banana::$mbox_helper = $globals->banana->mbox_helper;
+        Banana::$feed_updateOnDemand = true;
         if (S::has_perms()) {
             Banana::$msgshow_mimeparts[] = 'source';
         }
@@ -47,7 +67,7 @@ class MLBanana extends Banana
         MLBanana::$listname = $params['listname'];
         MLBanana::$domain   = $params['domain'];
         $params['group'] = $params['listname'] . '@' . $params['domain'];
-        parent::__construct($params, 'MLArchive');
+        parent::__construct($params, 'MLArchive', 'PlatalBananaMLPage');
     }
 
     public function run()

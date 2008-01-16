@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -49,6 +49,10 @@ function __autoload($cls)
         if (substr($cls, -3, 3) == 'req') {
             @include 'validations.inc.php';
             return;
+        } else if (substr($cls, 0, 6) == 'banana') {
+            require_once 'banana/banana.inc.php';
+            Banana::load(substr($cls, 6));
+            return;
         }
         @include "$cls.inc.php";
     }
@@ -74,7 +78,8 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
             E_USER_ERROR      => "User Error",
             E_USER_WARNING    => "User Warning",
             E_USER_NOTICE     => "User Notice",
-            E_STRICT          => "Runtime Notice"
+            E_STRICT          => "Runtime Notice",
+            E_RECOVERABLE_ERROR => "Recoverable Error"
         );
     }
 
@@ -85,10 +90,11 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
         }
     }
 
+    $type = isset($errortype[$errno]) ? $errortype[$errno] : $errno;
     $errstr = utf8_encode(htmlentities($errstr));
     $GLOBALS['pl_errors'][] =
         "<div class='phperror'>".
-        "<strong>{$errortype[$errno]}</strong> <em>$errstr</em><br />".
+        "<strong>{$type}</strong> <em>$errstr</em><br />".
         "<tt>$errfile : $errline</tt>".
         "</div>";
 }

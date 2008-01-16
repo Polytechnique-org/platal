@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -255,7 +255,9 @@ function start_connexion ($uid, $identified)
                         WHERE  s.uid = {?} AND s.suid = 0
                      ORDER BY  s.start DESC
                         LIMIT  1", $uid);
-    $sess = array_merge($sess, $res->fetchOneAssoc());
+    if ($res->numRows()) {
+        $sess = array_merge($sess, $res->fetchOneAssoc());
+    }
     $suid = S::v('suid');
 
     if ($suid) {
@@ -305,6 +307,7 @@ function start_connexion ($uid, $identified)
         send_warning_mail($mail_subject);
     }
     set_skin();
+    update_NbNotifs();
     check_redirect();
     return true;
 }

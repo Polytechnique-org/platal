@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : <a href='{$platal->ns}events'>Evénements</a> </h1>
+<h1>{$asso.nom}&nbsp;: <a href='{$platal->ns}events'>Evénements</a> </h1>
 
 <p>
 L'événement {$evt.intitule}
@@ -70,7 +70,7 @@ function remplitAuto(mail) {
 
 {if $oublis}
 <p class="erreur">
-Ils ont payé mais ont oublié de s'inscrire :
+Ils ont payé mais ont oublié de s'inscrire&nbsp;:
 </p>
 
 <table summary="payé mais non inscrits" class="tinybicol">
@@ -84,7 +84,11 @@ Ils ont payé mais ont oublié de s'inscrire :
   <tr class="pair">
     <td>
       <a href="" {if $is_admin}onclick="return remplitAuto('{$m.email}')"{/if}>
-      {$m.prenom} {$m.nom}
+        {if !$m.prenom && !$m.nom}
+        {$m.email}
+        {else}
+        {$m.prenom} {$m.nom}
+        {/if}
       </a>
     </td>
     <td>{$m.promo}</td>
@@ -138,7 +142,7 @@ Ils ont payé mais ont oublié de s'inscrire :
   <tr>
     <td>
       {if $is_admin}<a href="javascript:remplitAuto('{$m.email}')">{/if}
-        {if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}
+        {if $m.femme}&bull;{/if}{if !$m.prenom && !$m.nom}{$m.email}{else}{$m.prenom} {$m.nom}{/if}
       {if $is_admin}</a>{/if}
     </td>
     <td>{$m.promo}</td>
@@ -174,6 +178,18 @@ Ils ont payé mais ont oublié de s'inscrire :
     {/if}
   </tr>
   {/foreach}
+  {if $is_admin && $evt.money}
+  <tr>
+    {assign var=cols value=$moments|@count}
+    <td colspan="{$cols+3}" class="right"><strong>Total</strong></td>
+    <td>{$evt.topay}&euro;</td>
+    {if $evt.paiement_id}
+    <td>{$evt.telepaid|default:0}&euro;</td>
+    <td>{$evt.adminpaid|default:0}&euro;</td>
+    {/if}
+    <td>{$evt.paid}&euro;</td>
+  </tr>
+  {/if}
 </table>
 
 <p class="descr">
@@ -193,9 +209,9 @@ Ils ont payé mais ont oublié de s'inscrire :
   {iterate from=$absents item=m}
   <tr>
     <td>
-      <a href="" {if $is_admin}onclick="return remplitAuto('{$m.email}')"{/if}>
+      {if $is_admin}<a href="javascript:remplitAuto('{$m.email}')">{/if}
       {if $m.sexe}&bull;{/if}{$m.prenom} {$m.nom}
-      </a>
+      {if $is_admin}</a>{/if}
     </td>
     <td>
       {$m.promo}

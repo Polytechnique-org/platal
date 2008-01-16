@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -124,7 +124,9 @@ abstract class PlatalPage extends Smarty
             $this->register_modifier('escape_html', 'escape_html');
             $this->default_modifiers = Array('@escape_html');
         }
-        $this->register_outputfilter('hide_emails');
+        if (S::i('auth') <= AUTH_PUBLIC) {
+            $this->register_outputfilter('hide_emails');
+        }
         $this->addJsLink('wiki.js');
         header("Accept-Charset: utf-8");
         if (Env::v('forceXml')) {

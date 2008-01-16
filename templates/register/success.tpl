@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -29,7 +29,7 @@ Tu as maintenant accès au site !!!<br />
 Ton adresse électronique à vie <strong>{$smarty.session.forlife}@{#globals.mail.domain#}</strong> est déjà ouverte, essaie-la !
 </p>
 <p class="smaller">
-  <strong>Remarque :</strong> m4x.org est un domaine "discret" qui veut dire "mail for X" et
+  <strong>Remarque&nbsp;:</strong> m4x.org est un domaine "discret" qui veut dire "mail for X" et
   qui comporte exactement les mêmes adresses que le domaine polytechnique.org.
 </p>
 
@@ -45,7 +45,7 @@ ton mot de passe a bien été mis à jour !
 {else}
 
 <p>
-Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le faire ici :
+Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le faire ici&nbsp;:
 </p>
 
 <form action="register/success" method="post" id="changepass">
@@ -57,7 +57,7 @@ Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le f
     </tr>
     <tr>
       <td class="titre">
-        Nouveau mot de passe :
+        Nouveau mot de passe&nbsp;:
       </td>
       <td>
         <input type="password" size="10" maxlength="10" name="nouveau" />
@@ -65,7 +65,7 @@ Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le f
     </tr>
     <tr>
       <td class="titre">
-        Retape-le une fois :
+        Retape-le une fois&nbsp;:
       </td>
       <td>
         <input type="password" size="10" maxlength="10" name="nouveau2" />
@@ -84,7 +84,7 @@ Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le f
 </form>
 
 <p class="smaller">
-<strong>N'oublie pas :</strong> si tu perds ton mot de passe, nous n'avons aucun engagement, en
+<strong>N'oublie pas&nbsp;:</strong> si tu perds ton mot de passe, nous n'avons aucun engagement, en
 particulier en termes de rapidité, mais pas seulement, à te redonner accès au
 site. Cela peut prendre plusieurs semaines, les pertes de mot de passe sont
 traitées avec la priorité minimale.
@@ -101,7 +101,7 @@ traitées avec la priorité minimale.
 
   <p>
   Cette fonctionnalité n'est pas du tout redondante avec l'annuaire de l'AX, car nous pouvons synchroniser pour toi
-  les données qu'il contient :
+  les données qu'il contient&nbsp;:
   </p>
 
   <dl>
@@ -140,12 +140,12 @@ traitées avec la priorité minimale.
 
   {if $lists|@count neq 0}
   <p>
-    Des camarades souhaitent que tu t'inscrives aux listes suivantes :
+    Des camarades souhaitent que tu t'inscrives aux listes suivantes&nbsp;:
   </p>
 
   <dl>
     {foreach from=$lists key=list item=details}
-    <dt><input type='checkbox' value='1' checked="checked" name="sub_ml[{$list}]" /> {$list}* : {$details.desc}</dt>
+    <dt><input type='checkbox' value='1' checked="checked" name="sub_ml[{$list}]" /> {$list}*&nbsp;: {$details.desc}</dt>
     {if $details.info}
     <dd>
       {$details.info|nl2br}

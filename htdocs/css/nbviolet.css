@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -119,29 +119,6 @@ div.contact div.long {
     6   Profil
         [ onglets des profils ]
 *******************************************************************************/
-
-td.conteneur_tab {
-    background: #efddff;
-    border-color: #800080;
-}
-
-#onglet li {
-    background: #ecd0ff;
-    border-color: #800080;
-}
-
-#onglet li:hover {
-    background: #c0c0c0;
-}
-
-#onglet li a:hover {
-    color: #800080;
-    text-decoration: none;
-}
-
-#onglet li.actif {
-    background: #efddff;
-}
 
 /*******************************************************************************
     7   fiche.php

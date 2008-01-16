@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -46,7 +46,7 @@
     {if !$smarty.request.login && !$mr.forlife}
     <tr class="pair">
       <td class="center">
-        Il est possible d'entrer ici n'importe quelle adresse mail : redirection, melix, ou alias.
+        Il est possible d'entrer ici n'importe quelle adresse mail&nbsp;: redirection, melix, ou alias.
       </td>
     </tr>
     {/if}
@@ -188,7 +188,7 @@ function clean_fwd(fwd) {
       <td>
         <input type="text" name="naissanceN" size="12" maxlength="10" value="{$mr.naissance}" />
         {if $mr.naissance_ini neq '0000-00-00' && $mr.naissance neq $mr.naissance_ini}
-          <span class="erreur smaller">({icon name=error}Date de naissance connue : {$mr.naissance_ini})</span>
+          <span class="erreur smaller">({icon name=error}Date de naissance connue&nbsp;: {$mr.naissance_ini})</span>
         {elseif $mr.naiss_err}
           <span class="erreur smaller">({icon name=error}Date de naissance incohérente)</span>
         {/if}

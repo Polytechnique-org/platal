@@ -1,11 +1,40 @@
 ================================================================================
-VERSION 0.9.16                                                        XX XX 2007
+VERSION 0.9.16                                                        XX XX 2008
 
 New:
 
     * Carnet:
         - List updated fields in notifications                             -FRU
 
+    * Core:
+        - New PlProfiler tool                                              -FRU
+
+Bug/Wish:
+
+    * Emails:
+        - #750: Fix email list in test email                               -FRU
+
+    * Profile:
+        - #729: Fix positioning of addresses on public profile             -FRU
+        - #742: Sub domain was hidden when editing profile                 -FRU
+        - #752: Don't show vcard link on profile when the person is dead   -FRU
+        - #764: Fix mentoring edition page                                 -FRU
+
+    * Search:
+        - #741: Mentor search in advanced search                           -FRU
+
+    * XnetEvent:
+        - #728: Update CSV                                                 -FRU
+        - #743: Don't show a warning when subscriber has no forlife        -FRU
+
+    * XnetGrp:
+        - #732: Adapt subscription text to sex                             -FRU
+        - #735: Encoding of list description in member edition form        -FRU
+
+From 0.9.15 branch:
+
+    * XnetEvents:
+        - #738: Duplicated payments in certain conditions                  -FRU
 
 ================================================================================
 VERSION 0.9.15                                                        08 10 2007

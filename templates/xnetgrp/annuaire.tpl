@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,19 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Annuaire du groupe </h1>
+<h1>{$asso.nom}&nbsp;: Annuaire du groupe </h1>
 
 <p class="descr">
-Le groupe {$asso.nom} compte {$nb_tot} membres.
+Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
 </p>
 
-<p class="descr">
-Les membres extérieurs du groupe sont intégrés à cette liste, et repérés par l'inscription 'extérieur' dans la colonne promotion.
-</p>
-
-<p class="descr">
-Tu peux également :
-</p>
 <ul class="descr">
   {if $is_admin}
   <li>
@@ -141,7 +134,7 @@ Tu peux également :
 
 {if $broken}
 <p class="smaller">
-  {icon name=error} : Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
+  {icon name=error}&nbsp;: Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
   plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
   cliquant sur le symbole.
 </p>

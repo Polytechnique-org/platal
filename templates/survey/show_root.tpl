@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Sondage : {$survey.title}</h1>
+<h1>Sondage&nbsp;: {$survey.title}</h1>
 <form action="survey/vote{if $survey_votemode}/{$survey.id}{/if}" method='post'>
 <table style="width: 100%">
   <tr>
@@ -30,16 +30,16 @@
         <td colspan="2">{$survey.description}</td>
       </tr>
       <tr>
-        <td class="titre">Fin du sondage :</td>
+        <td class="titre">Fin du sondage&nbsp;:</td>
         <td>{$survey.end|date_format:"%x"}</td>
       </tr>
       <tr>
-        <td class="titre">Type de sondage :</td>
+        <td class="titre">Type de sondage&nbsp;:</td>
         <td>{$survey_modes[$survey.mode]}</td>
       </tr>
       {if $survey.mode != Survey::MODE_ALL} 
       <tr>
-        <td class="titre">Promotions :</td> 
+        <td class="titre">Promotions&nbsp;:</td> 
         <td>
           {if $survey.promos eq "#"} 
           erreur 

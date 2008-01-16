@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -343,58 +343,6 @@ div.long td.rt { width: 65%; }
     padding: 0 6px 0 0;
 }
 
-table.cadre_a_onglet{
-    border-width: 0;
-    padding : 0;
-    margin: 0;
-}
-
-td.conteneur_tab {
-    border-width : 1px 2px 2px 1px;
-    border-style : solid;
-    border-color : #999;
-    padding : 4px 4px 4px 4px;
-    background : #eceade;
-}
-
-#onglet {
-    display : block;
-    margin : 0;
-    padding : 0;
-}
-
-#onglet li {
-    display : block;
-    float : left;
-    padding : 0.4ex;
-    margin : 0 0.3ex -1px 0;
-    background : #D2E0E6  repeat-x 0 100%;
-    border-width : 1px 1px 0px 1px;
-    border-style : solid;
-    border-color : #999;
-    border-bottom-color : #999;
-    width: auto;
-    height: 5ex;
-    text-align: center;
-}
-
-#onglet li:hover { background : #fc3 repeat-x 0 100%; }
-
-#onglet li.actif {
-    background : #eceade;
-    border-bottom-color : #eceade;
-    font-weight: bold;
-}
-
-#onglet li a {
-    font-size: 80%;
-    font-weight : normal;
-    text-decoration : none;
-    color : #000;
-}
-
-#onglet li a:hover { text-decoration: underline; }
-#onglet li img { margin-right : 2px; }
 
 /*******************************************************************************
     7   fiche.php & fiche_referent.php

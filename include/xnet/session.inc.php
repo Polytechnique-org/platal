@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -35,7 +35,7 @@ class XnetSession
                 $returl = "http://{$_SERVER['SERVER_NAME']}".substr($_SERVER['REQUEST_URI'], 0, $i);
             else
                 $returl = "http://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
-            $url  = "https://www.polytechnique.org/auth-groupex.php";
+            $url  = "https://www.polytechnique.org/auth-groupex";
             $url .= "?session=" . session_id();
             $url .= "&challenge=" . S::v('challenge');
             $url .= "&pass=" . md5(S::v('challenge') . $globals->xnet->secret);

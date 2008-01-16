@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -112,7 +112,7 @@ class ListeReq extends Validate
                                   $this->owners, $this->members);
         $liste = strtolower($this->liste);
         if ($ret) {
-            foreach(Array($liste, $liste."-owner", $liste."-admin", $liste."-bounces") as $l) {
+            foreach(Array($liste, $liste."-owner", $liste."-admin", $liste."-bounces", $liste."-unsubscribe") as $l) {
                 XDB::execute("INSERT INTO aliases (alias,type) VALUES({?}, 'liste')", $l);
             }
         }

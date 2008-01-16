@@ -1,7 +1,7 @@
 #!/usr/bin/php5 -q
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -29,8 +29,27 @@ $R_PERIOD = "INTERVAL 6 HOUR"; // période de réponse moyenne de 6h
 require('./connect.db.inc.php');
 require('plmailer.php');
 
-$res = XDB::query("SELECT count(stamp), sum(stamp < NOW() - $M_PERIOD), sum(stamp < NOW() - $R_PERIOD) FROM x4dat.requests");
-list($nb,$nbold,$nbveryold) = $res->fetchOneRow();
+$res = XDB::query("SELECT  count(r.stamp), UNIX_TIMESTAMP(MIN(r.stamp)),
+                           sum(r.stamp < NOW() - $M_PERIOD), sum(r.stamp < NOW() - $R_PERIOD)
+                     FROM  x4dat.requests AS r");
+list($nb, $age, $nbold, $nbveryold) = $res->fetchOneRow();
+
+$age = (time() - intval($age)) / 86400;
+$head = "";
+if ($age > 15) {
+    $head = "[autodestruction du serveur] ";
+} elseif ($age > 7) {
+    $head = "[armageddon imminent] ";
+} elseif ($age > 5) {
+    $head = "[guerre nucléaire] ";
+} elseif ($age > 3) {
+    $head = "[ET Téléphone maison] ";
+} elseif ($age > 1) {
+    $head = "[réveil !] ";
+} elseif (!empty($nbveryold)) {
+    $head = "[urgent] ";
+}
+
 
 if (empty($nb)) {
     exit;
@@ -41,7 +60,7 @@ $plural = $nb == 1 ? "" : "s";
 $mymail = new PlMailer();
 $mymail->setFrom('validation@' . $globals->mail->domain);
 $mymail->addTo("validation@" . $globals->mail->domain);
-$mymail->setSubject((empty($nbveryold)?"":"[urgent] ")."il y a $nb validation$plural non effectuée$plural");
+$mymail->setSubject($head . "il y a $nb validation$plural non effectuée$plural");
 
 $message =
 	"il y a $nb validation$plural à effectuer \n"

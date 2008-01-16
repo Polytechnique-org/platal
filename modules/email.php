@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -417,7 +417,7 @@ class EmailModule extends PLModule
         if (!S::has_perms() || !$forlife) {
             $forlife = S::v('bestalias');
         }
-        $mailer = new PlMailer('emails/mail.test.tpl');
+        $mailer = new PlMailer('emails/test.mail.tpl');
         $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
         $iterator = XDB::iterator("SELECT  email
                                      FROM  emails AS e

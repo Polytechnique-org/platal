@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -32,7 +32,7 @@
       </div>
       {/if}
       {tidy}
-      {if $admin}Aperçu de : {/if}{$art.titre}
+      {if $admin}Aperçu de&nbsp;: {/if}{$art.titre}
       {/tidy}
     </th>
   </tr>
@@ -43,7 +43,7 @@
   </tr>
   {if ($is_logged || $admin) && $art.contacts}
   <tr class="pair">
-    <td class="titre">Contacts :</td>
+    <td class="titre">Contacts&nbsp;:</td>
   </tr>
   <tr class="pair">
     <td style="padding-left: 20px">

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -60,7 +60,7 @@
         {if $it.dern_rel && $it.dern_rel != '0000-00-00'}
         Relance le: {$it.dern_rel}
         {elseif $it.email}
-        En cours : {$it.email}
+        En cours&nbsp;: {$it.email}
         {else}
         -
         {/if}

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -37,14 +37,14 @@
 
 <h2>La diffusion sur une liste de diffusion</h2>
 <p>
-La diffusion a trois niveaux de modération.  La diffusion peut être :
+La diffusion a trois niveaux de modération.  La diffusion peut être&nbsp;:
 </p>
 <ul>
-  <li><strong>libre :</strong> tout le monde peut y envoyer des mails, la diffusion y est
+  <li><strong>libre&nbsp;:</strong> tout le monde peut y envoyer des mails, la diffusion y est
   immédiate&nbsp;;</li>
-  <li><strong>restreinte :</strong> les membres de la liste peuvent envoyer librement des mails,
+  <li><strong>restreinte&nbsp;:</strong> les membres de la liste peuvent envoyer librement des mails,
   les extérieurs sont modérés&nbsp;;</li>
-  <li><strong>modérée :</strong> l'envoi d'un mail à la liste est alors filtré par des
+  <li><strong>modérée&nbsp;:</strong> l'envoi d'un mail à la liste est alors filtré par des
   modérateurs, eux seuls peuvent accepter un message envoyé à la liste.</li>
 </ul>
 
@@ -78,7 +78,7 @@ thématique particulière.
 {assign var="has_private" value=false}
 {include file='lists/listes.inc.tpl' lists=$member}
 
-<p class="smaller">Attention : lorsqu'une liste à laquelle tu es abonné est privée, l'icône {icon name=weather_cloudy} est affichée en début de ligne. Si tu t'en désinscris, il ne te sera pas possible de t'y abonner de nouveau sans l'action d'un modérateur.</p>
+<p class="smaller">Attention&nbsp;: lorsqu'une liste à laquelle tu es abonné est privée, l'icône {icon name=weather_cloudy} est affichée en début de ligne. Si tu t'en désinscris, il ne te sera pas possible de t'y abonner de nouveau sans l'action d'un modérateur.</p>
 {/if}
 <h1>Listes de diffusion publiques auxquelles tu peux t'inscrire</h1>
 
@@ -98,7 +98,7 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyt
       <th colspan='2'>Inscription à une liste de diffusion promo</th>
     </tr>
     <tr>
-      <td class='titre'>Promotion :</td>
+      <td class='titre'>Promotion&nbsp;:</td>
       <td>
         <input type='text' size='4' maxlength='4' name='promo_add' />
         &nbsp;

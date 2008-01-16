@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -101,7 +101,7 @@
     <td colspan='2' {popup caption="Règles de validation" text=$valid->ruleText()}>
       <form action="admin/validate" method="post">
         <div>
-          Réponse préremplie :
+          Réponse préremplie&nbsp;:
           <select onchange="this.form.comm.value=this.value">
             <option value=""></option>
             {foreach from=$valid->answers() item=automatic_answer}
@@ -111,7 +111,7 @@
           <a href="admin/validate/answers">{icon name="page_edit" title="Editer les réponses automatiques"}</a>
         </div>
         <div class='center'>
-          Ajouté dans l'email :<br />
+          Ajouté dans l'email&nbsp;:<br />
           <textarea rows="5" cols="50" name="comm"></textarea><br />
 
           <input type="hidden" name="uid"    value="{$valid->uid}" />
@@ -141,7 +141,7 @@
 {/if}
 
 <p>
-  Afficher seulement les validation suivantes :
+  Afficher seulement les validation suivantes&nbsp;:
 </p>
 
 <form action="admin/validate" method="post">

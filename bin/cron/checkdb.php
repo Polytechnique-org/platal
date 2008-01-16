@@ -1,7 +1,7 @@
 #!/usr/bin/php5 -q
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -64,9 +64,8 @@ if ( PEAR::isError($opts) ) {
     $opts = $opts[0];
     foreach ( $opts as $opt) {
         switch ($opt[0]) {
-            case "v":
-                $opt_verbose=true;
-            echo "Mode verbeux\n";
+          case "v":
+            $opt_verbose=true;
             break;
         }
     }
@@ -130,7 +129,7 @@ check("select p.* from photo as p left join auth_user_md5 as u on u.user_id=p.ui
 /* validite des champ pays et region */
 check("SELECT a.uid, a.country FROM adresses AS a LEFT JOIN geoloc_pays AS gp ON a.country = gp.a2 WHERE gp.pays IS NULL","donne la liste des pays dans les profils qui n'ont pas d'entree correspondante dans geoloc_pays");
 /* les régions ne sont valides que dans les adresses pros */
-check("SELECT e.uid, e.country, e.region FROM entreprises AS e LEFT JOIN geoloc_region AS gr ON (e.country = gr.a2 AND e.region = gr.region) WHERE e.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils pros qui n'ont pas d'entree correspondante dans geoloc_region");
+//check("SELECT e.uid, e.country, e.region FROM entreprises AS e LEFT JOIN geoloc_region AS gr ON (e.country = gr.a2 AND e.region = gr.region) WHERE e.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils pros qui n'ont pas d'entree correspondante dans geoloc_region");
 
 /* donne la liste des emails douteux que les administrateurs n'ont pas encore traité */
 check("SELECT  a1.alias, a2.alias, e1.email, e2.flags

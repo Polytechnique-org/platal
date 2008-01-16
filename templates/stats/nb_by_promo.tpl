@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -23,7 +23,7 @@
 <h1>Inscrits par promo</h1>
 
 <p>
-Voici le nombre d'inscrits par promo :
+Voici le nombre d'inscrits par promo&nbsp;:
 </p>
 
 <table class="bicol" cellpadding="3" cellspacing="0" summary="Statistiques">

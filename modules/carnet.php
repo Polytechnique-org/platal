@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -66,6 +66,7 @@ class CarnetModule extends PLModule
 
         if (Get::has('read')) {
             $_SESSION['watch_last'] = Get::v('read');
+            update_NbNotifs();
             pl_redirect('carnet/panel');
         }
 

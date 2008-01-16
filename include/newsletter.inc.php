@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -31,7 +31,7 @@ class NewsLetter extends MassMailer
 
     function __construct($id = null)
     {
-        parent::__construct('newsletter/nl.tpl', 'nl.css', 'nl/show', 'newsletter', 'newsletter_ins');
+        parent::__construct('newsletter/nl.mail.tpl', 'nl.css', 'nl/show', 'newsletter', 'newsletter_ins');
         if (isset($id)) {
             if ($id == 'last') {
                 $res = XDB::query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");

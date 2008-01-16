@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -97,9 +97,11 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
          WHERE ref = {?} AND uid = {?}", $evt['paiement_id'], S::v('uid'));
     $montants = $req->fetchColumn();
 
+    $evt['telepaid'] = 0;
     foreach ($montants as $m) {
         $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
         $evt['paid'] += trim($p);
+        $evt['telepaid'] += trim($p);
     }
 
     return $evt;
@@ -108,7 +110,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 // }}}
 
 // {{{ function get_event_participants()
-function get_event_participants($evt, $item_id, $tri, $limit = '') {
+function get_event_participants(&$evt, $item_id, $tri, $limit = '') {
     global $globals;
 
     if (Env::has('initiale')) {
@@ -131,14 +133,14 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
                    IF(m.origine != 'X',m.sexe,FIND_IN_SET('femme', u.flags)) AS femme,
                    m.perms='admin' AS admin,
                    (m.origine = 'X' OR m.origine IS NULL) AS x,
-                   ep.uid, SUM(ep.paid) AS paid, SUM(nb) AS nb,
+                   ep.uid, SUM(ep.paid) AS paid, SUM(ep.nb) AS nb,
                    FIND_IN_SET('notify_payment', ep.flags) AS notify_payment
              FROM  groupex.evenements_participants AS ep
        INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
         LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
         LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
         LEFT JOIN  aliases         AS a ON ( a.id = ep.uid AND a.type='a_vie' )
-            WHERE  ep.eid = {?} AND ep.nb > 0
+            WHERE  ep.eid = {?}
                     ".(($item_id)?" AND item_id = $item_id":"")."
                     $where
          GROUP BY  ep.uid
@@ -153,7 +155,14 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
     $tab = array();
     $user = 0;
 
+    $evt['adminpaid'] = 0;
+    $evt['telepaid']  = 0;
+    $evt['topay']     = 0;
+    $evt['paid']      = 0;
     while ($u = $res->next()) {
+        if ($u['nb'] == 0) {
+            continue;
+        }
         $u['adminpaid'] = $u['paid'];
         $u['montant'] = 0;
         if ($money && $pay_id) {
@@ -164,8 +173,8 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
                 $pay_id, $u['uid']);
             $montants = $res_->fetchColumn();
             foreach ($montants as $m) {
-                    $p = strtr(substr($m, 0, strpos($m, "EUR")), ",", ".");
-                    $u['paid'] += trim($p);
+                $p = strtr(substr($m, 0, strpos($m, "EUR")), ",", ".");
+                $u['paid'] += trim($p);
             }
         }
         $u['telepayment'] = $u['paid'] - $u['adminpaid'];
@@ -180,6 +189,10 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
             $u['montant'] += $i['montant']*$i['nb'];
         }
         $tab[] = $u;
+        $evt['telepaid']  += $u['telepayment'];
+        $evt['adminpaid'] += $u['adminpaid'];
+        $evt['paid']      += $u['paid'];
+        $evt['topay']     += $u['montant'];
     }
     return $tab;
 }
@@ -194,7 +207,7 @@ function subscribe_lists_event($participate, $uid, $evt)
     $participant_list = $evt['participant_list'];
     $absent_list      = $evt['absent_list'];
 
-    $email = get_user_forlife($uid);
+    $email = get_user_forlife($uid, '_silent_user_callback');
 
     if ($email) {
         $email .= '@'.$globals->mail->domain;

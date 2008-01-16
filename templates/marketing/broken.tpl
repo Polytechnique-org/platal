@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -72,14 +72,14 @@
   <table class="bicol" summary="Fiche camarade">
     <tr><th colspan="2">Proposition d'adresse pour<br />{$user.nom} {$user.prenom} (X{$user.promo})</th></tr>
     <tr class="pair">
-      <td>Adresse email :</td>
+      <td>Adresse email&nbsp;:</td>
       <td>
         <input type="text" name="mail" size="30" maxlength="50" value="{$smarty.post.mail}" />
       </td>
     </tr>
     {if $user.email}
     <tr class="impair">
-      <td>Explication :</td>
+      <td>Explication&nbsp;:</td>
       <td><textarea name="comment" cols="50" rows="4">{$smarty.post.comment}</textarea></td>
     </tr>
     {/if}

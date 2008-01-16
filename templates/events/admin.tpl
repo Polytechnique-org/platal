@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -23,7 +23,7 @@
 
 
 <h1>
-  Gestion des événements :
+  Gestion des événements&nbsp;:
   [&nbsp;
   {if $arch || $action eq 'edit'}
   <a href="admin/events">Actualités</a>

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -61,9 +61,10 @@
     <td id="countries">
       {foreach from=$countries item=country key=i}
       <div id="countries_{$i}" style="clear: both; margin-bottom: 0.7em">
-        <div style="float: left; width: 50%">{$country}</div>
+        <a style="display: block; float: right"
+           href="javascript:removeCountry('{$i}')">{icon name=cross title="Supprimer ce pays"}</a>
+        <div class="titre">{$country}</div>
         <input type="hidden" name="countries[{$i}]" value="{$country}" />
-        <a href="javascript:removeCountry('{$i}')">{icon name=cross title="Supprimer ce pays"}</a>
       </div>
       {/foreach}
     </td>
@@ -106,7 +107,7 @@
         <a href="javascript:removeSecteur('{$s}', '{$ss}')" style="display: block; float: right">
           {icon name=cross title="Supprimer ce secteur"}
         </a>
-        <input type="hidden" name="secteurs[' + s + '][' + ss + ']" value="{$ss_sect}" />
+        <input type="hidden" name="secteurs[{$s}][{$ss}]" value="{$ss_sect}" />
         {$ss_sect}
       </div>
       {/foreach}

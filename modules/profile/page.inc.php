@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -172,7 +172,7 @@ abstract class ProfileGeoloc implements ProfileSetting
             } else if (@$address['parsevalid']) {
                 $address = array_merge($address, cut_address(@$address['text']));
                 $address['checked'] = true;
-                $mailer = new PlMailer('geoloc/mail_geoloc.tpl');
+                $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
                 $mailer->assign('text', get_address_text($address));
                 $mailer->assign('geoloc', $geotxt);
                 $mailer->send();

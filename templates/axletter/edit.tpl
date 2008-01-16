@@ -40,14 +40,14 @@
   {/if}
 
   <fieldset>
-    <legend>Sujet du mail : <input type="text" name="subject" value="{$subject}" size="60"/></legend>
+    <legend>Sujet du mail&nbsp;: <input type="text" name="subject" value="{$subject}" size="60"/></legend>
     <p class="center">
       <a href="wiki_help" class="popup3">
         {icon name=information title="Syntaxe wiki"} Voir les marqueurs de mise en forme autorisés
       </a><br />
-      <strong>Titre : </strong><input type="text" name="title" value="{$title}" size="60" /><br />
+      <strong>Titre&nbsp;: </strong><input type="text" name="title" value="{$title}" size="60" /><br />
       <textarea name="body" rows="30" cols="78">{$body}</textarea><br />
-      <strong>Signature : </strong><input type="text" name="signature" value="{$signature}" size="60" />
+      <strong>Signature&nbsp;: </strong><input type="text" name="signature" value="{$signature}" size="60" />
     </p>
   </fieldset>
 

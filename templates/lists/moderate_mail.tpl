@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -34,7 +34,7 @@
       <th class='titre'>Modérer le mail</th>
     </tr>
     <tr>
-      <td>raison (pour les refus) :
+      <td>raison (pour les refus)&nbsp;:
         <textarea cols='50' rows='10' name='reason' id='raison'>
 -- 
 {$smarty.session.prenom} {$smarty.session.nom} (X{$smarty.session.promo})
@@ -62,7 +62,7 @@
   </ul>
 </form>
 <p>
-En cas de refus, le mail envoyé à l'auteur du mail que tu modères actuellement sera de la forme suivante :
+En cas de refus, le mail envoyé à l'auteur du mail que tu modères actuellement sera de la forme suivante&nbsp;:
 </p>
 <pre>{$msg|utf8_encode}</pre>
 

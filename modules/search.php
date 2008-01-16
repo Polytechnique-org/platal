@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -195,7 +195,7 @@ class SearchModule extends PLModule
             $view = new SearchSet(false, $action == 'geoloc' && substr($subaction, -3) == 'swf');
             $view->addMod('minifiche', 'Minifiches', true);
             $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
-            $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+            //$view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
             $view->apply('search/adv', $page, $action, $subaction);
 
             if ($subaction) {

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -24,8 +24,12 @@ function smarty_compiler_icon($tag_attrs, &$compiler)
 {
     extract($compiler->_parse_attrs($tag_attrs));
 
+    $alt = 'alt=""';
+    
     if (isset($title)) {
-        $title = 'title="'. pl_entities(trim($title, '\'"'), ENT_QUOTES).'" ';
+        $title = pl_entities(trim($title, '\'"'), ENT_QUOTES);
+        $alt = 'alt="'.$title.'"';
+        $title = 'title="'. $title.'" ';
     }
 
     $name = pl_entities(trim($name, '\'"'), ENT_QUOTES);
@@ -35,7 +39,7 @@ function smarty_compiler_icon($tag_attrs, &$compiler)
         $name = $globals->baseurl . '/' . $name;
     }
 
-    return "?><img src='$name' alt='' $title /><?php";
+    return "?><img src='$name' $alt $title /><?php";
 }
 
 /* vim: set expandtab enc=utf-8: */

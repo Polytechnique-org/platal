@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -48,14 +48,14 @@
 </form>
 
 {else}
-En voici les adresses :
+En voici les adresses&nbsp;:
 <ul>
   <li>
-  Anonces sur la page d'entrée :
+  Anonces sur la page d'entrée&nbsp;:
   <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
   </li>
   <li>
-  Ton carnet polytechnicien :
+  Ton carnet polytechnicien&nbsp;:
   <a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
   </li>
 </ul>

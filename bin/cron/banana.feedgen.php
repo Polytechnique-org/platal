@@ -10,11 +10,12 @@
 
 require_once 'connect.db.inc.php';
 require_once dirname(__FILE__).'/../../include/banana/ml.inc.php';
+ini_set('memory_limit', '128M');
 
 Banana::$mbox_helper = $globals->banana->mbox_helper;
 Banana::$spool_root = $globals->banana->spool_root;
 Banana::$nntp_host = "news://{$globals->banana->web_user}:{$globals->banana->web_pass}@{$globals->banana->server}:{$globals->banana->port}/";
-Banana::refreshAllFeeds(array('NNTP', 'MLArchive'));
+Banana::refreshAllFeeds(array('NNTP'));
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

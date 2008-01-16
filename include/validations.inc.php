@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -115,6 +115,8 @@ abstract class Validate
         XDB::execute('INSERT INTO requests (user_id, type, data, stamp) VALUES ({?}, {?}, {?}, {?})',
                 $this->uid, $this->type, $this, $this->stamp);
 
+        global $globals;
+        update_NbValid();
         return true;
     }
 
@@ -138,12 +140,14 @@ abstract class Validate
     public function clean()
     {
         if ($this->unique) {
-            return XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
-                    $this->uid, $this->type);
+            $success = XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
+                                    $this->uid, $this->type);
         } else {
-            return XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
-                    $this->uid, $this->type, $this->stamp);
+            $success =  XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
+                                      $this->uid, $this->type, $this->stamp);
         }
+        update_NbValid();
+        return $success;
     }
 
     // }}}

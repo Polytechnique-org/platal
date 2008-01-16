@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -311,6 +311,9 @@ class RegisterModule extends PLModule
 
         require_once('user.func.inc.php');
         user_reindex($uid);
+
+        // update number of subscribers (perms has changed)
+        update_NbIns();
 
         if (!start_connexion($uid, false)) {
             return PL_FORBIDDEN;

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -287,20 +287,6 @@ function check_redirect($red = null)
     }
     $_SESSION['no_redirect'] = !$red->other_active('');
     $_SESSION['mx_failures'] = $red->get_broken_mx();
-    $warning = 0;
-    foreach ($red->emails as &$mail) {
-        if ($mail->active) {
-            $warning++;
-        }
-    }
-    foreach ($_SESSION['mx_failures'] as &$fail) {
-        if ($fail['state'] == 'broken') {
-            $warning -= 99999;
-        } else if ($fail['state'] == 'warning') {
-            $warning--;
-        }
-    }
-    $_SESSION['email_is_warning'] = ($warning <= 0 ? true : false);
 }
 
 function send_warning_mail($title)
@@ -313,6 +299,31 @@ function send_warning_mail($title)
     $mailer->setTxtBody("Identifiants de session :\n" . var_export($_SESSION, true) . "\n\n"
         ."Identifiants de connexion :\n" . var_export($_SERVER, true));
     $mailer->send();
+}
+
+function update_NbIns()
+{
+    global $globals;
+    $res = XDB::query("SELECT  COUNT(*)
+                         FROM  auth_user_md5
+                        WHERE  perms IN ('admin','user') AND deces=0");
+    $cnt = $res->fetchOneCell();
+    $globals->change_dynamic_config(array('NbIns' => $cnt));
+}
+
+function update_NbValid()
+{
+    global $globals;
+    $res = XDB::query("SELECT  COUNT(*)
+                         FROM  requests");
+    $globals->change_dynamic_config(array('NbValid' => $res->fetchOneCell()));
+}
+
+function update_NbNotifs()
+{
+    require_once 'notifs.inc.php';
+    $n = select_notifs(false, S::i('uid'), S::v('watch_last'), false);
+    $_SESSION['notifs'] = $n->numRows();
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

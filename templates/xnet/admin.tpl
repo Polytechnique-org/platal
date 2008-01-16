@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -37,7 +37,7 @@
 <form action="admin" method="post">
   <p class="descr">
   Pour ajouter un groupe, choisir ici le diminutif qu'il va utiliser,
-  tu seras ensuite redirigé vers une page te permettant d'éditer le groupe :
+  tu seras ensuite redirigé vers une page te permettant d'éditer le groupe&nbsp;:
   </p>
   <div class="center">
     <input type="text" name="diminutif" value="{$smarty.request.diminutif}" />

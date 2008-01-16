@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -49,7 +49,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
 </p>
 {/if}
 
-{if $smarty.session.email_is_warning}
+{if $smarty.session.mx_failures|@count}
 <fieldset>
   <legend>{icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes</legend>
   {foreach from=$smarty.session.mx_failures item=mail}
@@ -113,7 +113,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
         {/if}
       </td>
     </tr>
-    {iterate item=ev from=$evenement.summary}
+    {foreach item=ev from=$evenement}
     <tr class="impair">
       <td class="half">
         &bull;
@@ -127,7 +127,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
       </td>
     </tr>
     {assign var="has_evts" value=true}
-    {/iterate}
+    {/foreach}
     {/foreach}
     {if !$has_evts}
     <tr>
@@ -155,7 +155,8 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
   </script>
  
   {foreach from=$events key=category item=evenement}
-  {iterate item=ev from=$evenement.events}
+  {foreach item=ev from=$evenement}
+  {if $ev.nonlu}
   <div id="content-evt{$ev.id}">
   <br />
 
@@ -225,11 +226,12 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
     </tr>
   </table>
   </div>
-  {/iterate}
+  {/if}
+  {/foreach}
   {/foreach}
 
   <p class="smaller">
-  Nota Bene : les informations présentées ici n'engagent que leurs auteurs
+  Nota Bene&nbsp;: les informations présentées ici n'engagent que leurs auteurs
   respectifs et sont publiées à leur initiative. L'association Polytechnique.org
   ne pourrait en aucun cas être tenue responsable de la nature des propos relatés
   sur cet espace d'expression et d'information. Elle se réserve le droit de

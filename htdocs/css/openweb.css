@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -333,49 +333,6 @@ div.long td.rt { width: 65%; }
 }
 .flags img {
     padding: 0 6px 0 0;
-}
-
-table.cadre_a_onglet{
-    border-width: 0px;
-    padding : 0px;
-    margin: 0px;
-}
-
-td.conteneur_tab {
-    border-width : 1px 2px 2px 1px;
-    border-style : solid;
-    border-color : #999;
-    padding : 4px 0px 0px 4px;
-    background : #fff;
-}
-
-#onglet { display : block; margin : 0px; padding : 0px; }
-
-#onglet li {
-    display : block;
-    float : left;
-    padding : 0.5ex;
-    margin : 0px 4px -1px 0px;
-    background : #d2e0e6;
-    width: auto;
-    height: 6ex;
-    text-align: center;
-    border: 1px solid #999;
-}
-
-#onglet li:hover { background : #ffecce; }
-
-#onglet li.actif {
-    background : #fff;
-    font-weight: bold;
-    border-bottom: 1px solid #fff;
-}
-
-#onglet li a {
-    font-size: 90%;
-    font-weight : normal;
-    text-decoration : none;
-    color : #000;
 }
 
 /*******************************************************************************

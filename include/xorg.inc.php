@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -23,6 +23,8 @@ require_once('platal.inc.php');
 require_once('globals.inc.php');
 require_once('xorg/session.inc.php');
 $globals = new PlatalGlobals('XorgSession');
+$globals->bootstrap(array('NbIns'), 'update_NbIns');
+$globals->bootstrap(array('NbValid'), 'update_NbValid');
 
 // {{{ class XorgPage
 

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -43,7 +43,7 @@
           <img src="{#globals.baseurl#}/events/photo/{$line.id}" alt="{$line.title}" />
         </div>
         {/if}
-        <div>{$line.texte}</div>
+        <div>{if $line.wiki}{$line.texte|miniwiki}{else}{$line.texte}{/if}</div>
         {if $line.post_id neq -1}
         <div style="clear: both">
           <br />

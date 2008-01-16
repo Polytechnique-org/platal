@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -375,7 +375,7 @@ class Redirect
 
     public function get_broken_mx()
     {
-        $res = XDB::query("SELECT  host, text, state
+        $res = XDB::query("SELECT  host, text
                              FROM  mx_watch
                             WHERE  state != 'ok'");
         if (!$res->numRows()) {
@@ -391,17 +391,15 @@ class Redirect
                     $lcl_mxs = array($domain);
                 }
                 $broken = false;
-                $state  = false;
                 foreach ($mxs as &$mx) {
                     foreach ($lcl_mxs as $lcl) {
                         if (fnmatch($mx['host'], $lcl)) {
                             $broken = $mx['text'];
-                            $state  = $mx['state'];
                             break;
                         }
                     }
                     if ($broken) {
-                        $mails[] = array('mail' => $mail->email, 'text' => $broken, 'state' => $state);
+                        $mails[] = array('mail' => $mail->email, 'text' => $broken);
                         break;
                     }
                 }

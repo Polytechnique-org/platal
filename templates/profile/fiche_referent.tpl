@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -33,16 +33,16 @@
 
   {if $expertise != '' || $secteurs|count || $pays|count }
   <div id="part">
-    <h2>Informations de référent :</h2>
+    <h2>Informations de référent&nbsp;:</h2>
     {if $expertise}
     <div class="rubrique_referent">
-      <em>Expertise : </em><br />
+      <em>Expertise&nbsp;: </em><br />
       <span>{$expertise|nl2br}</span>
     </div>
     {/if}
     {if $secteurs|count}
     <div class="rubrique_referent">
-      <em>Secteurs :</em><br />
+      <em>Secteurs&nbsp;:</em><br />
       <ul>
         {foreach from=$secteurs item="secteur" key="i"}
         <li>{$secteur}{if $ss_secteurs.$i != ''} ({$ss_secteurs.$i}){/if}</li>
@@ -52,7 +52,7 @@
     {/if}
     {if $pays|count}
     <div class="rubrique_referent">
-      <em>Pays :</em>
+      <em>Pays&nbsp;:</em>
       <ul>
         {foreach from=$pays item="pays_i"}
         <li>{$pays_i}</li>
@@ -68,7 +68,7 @@
     {foreach from=$adr_pro item="address" key="i"}
     <h2>{$address.entreprise}</h2>
     {include file="include/emploi.tpl" address=$address}
-    {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise}
+    {include file="geoloc/address.tpl" address=$address titre="Adresse&nbsp;: " for=$address.entreprise}
 
     <div class="spacer">&nbsp;</div>
   {/foreach}
@@ -76,7 +76,7 @@
 
   {if $cv}
   <div class="part">
-    <h2>Curriculum Vitae : </h2>
+    <h2>Curriculum Vitae&nbsp;: </h2>
     <div style="padding: 0 2ex">{$cv|smarty:nodefaults}</div>
   </div>
   {/if}

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -67,7 +67,7 @@
 
 <br />
 
-<p><strong>Dans tous les cas,</strong> vous pouvez :</p>
+<p><strong>Dans tous les cas,</strong> vous pouvez&nbsp;:</p>
 <ul>
   <li class="spaced">
     <strong><a href="search"> rechercher un ancien élève ou un

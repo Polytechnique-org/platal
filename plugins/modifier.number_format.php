@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -19,13 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-
-function smarty_insert_getNbNotifs($params, &$smarty)
+function smarty_modifier_number_format($string, $decimal = 0)
 {
-    if(S::logged()) {
-	require_once('notifs.inc.php');
-	return getNbNotifs();
-    }
+    return number_format($string, $decimal, ',', '.');
 }
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

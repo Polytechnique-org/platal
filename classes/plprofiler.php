@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -19,21 +19,37 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-
-/*
- * Smarty plugin
- * -------------------------------------------------------------
- * File:     insert.mkStats.php
- * Type:     insert
- * Name:     mkStats
- * Purpose:
- * -------------------------------------------------------------
- */
-function smarty_insert_mkStats($params, &$smarty)
+class PlProfiler
 {
-    $res = XDB::query('select count(*) from requests');
-    $cnt = $res->fetchOneCell();
-    return ($cnt ? $cnt : '-');
+    static public function start($name, $info = "action")
+    {
+        global $globals;
+        if (!($globals->debug & DEBUG_BT)) {
+            return false;
+        }
+        if (!isset(PlBacktrace::$bt[$name])) {
+            new PlBacktrace($name);
+        }
+        PlBacktrace::$bt[$name]->start($info);
+        return true;
+    }
+
+    static public function step($name, $info = "action")
+    {
+        PlProfiler::stop($name);
+        PlProfiler::start($name, $info);
+    }
+
+    static public function stop($name)
+    {
+        global $globals;
+        if (!($globals->debug & DEBUG_BT)) {
+            return false;
+        }
+        PlBacktrace::$bt[$name]->stop();
+        return true;
+    }
 }
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

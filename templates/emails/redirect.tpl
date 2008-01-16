@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -41,7 +41,7 @@
     Tes adresses de redirection
   </h1>
   <p>
-  Tu configures ici les adresses emails vers lesquelles tes adresses (listées ci-dessous) sont dirigées :
+  Tu configures ici les adresses emails vers lesquelles tes adresses (listées ci-dessous) sont dirigées&nbsp;:
   </p>
   <ul>
     {if $melix}
@@ -168,7 +168,7 @@
         <form action="emails/redirect" method="post">
         <div>
           &nbsp;<br />
-          Ajouter une adresse email :
+          Ajouter une adresse email&nbsp;:
           <input type="text" size="35" maxlength="60" name="email" value="" />
           &nbsp;&nbsp;<input type="submit" value="ajouter" name="emailop" />
         </div>
@@ -218,7 +218,7 @@
 </p>
 <p>
   Si tu utilises le service POP de poly pour récupérer tes mails dans ton logiciel de courrier,
-  l'équipe de Polytechnique.org te conseille de rediriger :
+  l'équipe de Polytechnique.org te conseille de rediriger&nbsp;:
 </p>
 <ul>
   <li>«prenom.nom»@polytechnique.edu vers {$smarty.session.forlife}@{#globals.mail.domain#}&nbsp;;</li>

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -54,12 +54,12 @@ function get_infos($email)
                          u.prenom, b.alias,
                          CONCAT(b.alias, '@m4x.org') AS email,
                          CONCAT(b.alias, '@polytechnique.org') AS email2,
-                         m.perms='admin' AS perms, m.origine,
+                         m.perms = 'admin' AS perms, m.origine,
                          FIND_IN_SET('femme', u.flags) AS sexe
                    FROM  auth_user_md5   AS u
              INNER JOIN  aliases         AS a ON ( u.user_id = a.id AND a.type != 'homonyme' )
              INNER JOIN  aliases         AS b ON ( u.user_id = b.id AND b.type = 'a_vie' )
-             INNER JOIN  groupex.membres AS m ON ( m.uid = u.user_id AND asso_id={?})
+              LEFT JOIN  groupex.membres AS m ON ( m.uid = u.user_id AND asso_id={?})
                   WHERE  a.alias = {?} AND u.user_id < 50000", $globals->asso('id'), $mbox);
         return $res->fetchOneAssoc();
     }
@@ -303,6 +303,7 @@ class XnetGrpModule extends PLModule
             $mbr = array_keys(Env::v('membres', array()));
 
             require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
+            set_time_limit(120);
             $tos = get_all_redirects($mbr,  $mls, $mmlist);
             $upload = PlUpload::get($_FILES['uploaded'], S::v('forlife'), 'xnet.emails', true);
             send_xnet_mails($from, $sujet, $body, Env::v('wiki'), $tos, Post::v('replyto'), $upload, @$_FILES['uploaded']['name']);
@@ -475,13 +476,12 @@ class XnetGrpModule extends PLModule
 
         if (!is_null($u) && may_update()) {
             $page->assign('u', $u);
-            $res = XDB::query("SELECT nom, prenom, promo, user_id
-                                           FROM auth_user_md5 AS u
-                                     INNER JOIN aliases AS al ON (al.id = u.user_id
-                                                                  AND al.type != 'liste')
-                                          WHERE al.alias = {?}", $u);
+            $res = XDB::query("SELECT  u.nom, u.prenom, u.promo, u.user_id, FIND_IN_SET('femme', u.flags)
+                                 FROM  auth_user_md5 AS u
+                           INNER JOIN  aliases AS al ON (al.id = u.user_id AND al.type != 'liste')
+                                WHERE  al.alias = {?}", $u);
 
-            if (list($nom, $prenom, $promo, $uid) = $res->fetchOneRow()) {
+            if (list($nom, $prenom, $promo, $uid, $sexe) = $res->fetchOneRow()) {
                 $res = XDB::query("SELECT  COUNT(*)
                                      FROM  groupex.membres AS m
                                INNER JOIN  aliases  AS a ON (m.uid = a.id AND a.type != 'homonyme')
@@ -502,7 +502,7 @@ class XnetGrpModule extends PLModule
                     $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
                                      .'" <'.S::v('forlife').'@polytechnique.org>');
                     $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription');
-                    $message = "Cher Camarade,\n"
+                    $message = ($sexe ? 'Chère' : 'Cher') . " Camarade,\n"
                              . "\n"
                              . "  Suite à ta demande d'adhésion à ".$globals->asso('nom').",\n"
                              . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
@@ -511,7 +511,7 @@ class XnetGrpModule extends PLModule
                              . "{$_SESSION["prenom"]} {$_SESSION["nom"]}.";
                     $mailer->setTxtBody($message);
                     $mailer->send();
-                    $page->kill("$prenom $nom a bien été inscrit");
+                    $page->kill("$prenom $nom a bien été inscrit" . ($sexe ? 'e' : '') . ".");
                 }
                 elseif (Env::has('refuse'))
                 {
@@ -607,7 +607,7 @@ class XnetGrpModule extends PLModule
                 break;
             }
         }
-        pl_redirect("");
+        http_redirect($_SERVER['HTTP_REFERER']);
     }
 
     function handler_admin_annuaire(&$page)
@@ -686,7 +686,7 @@ class XnetGrpModule extends PLModule
                            WHERE  a.alias={?}', $globals->asso('id'), $forlife);
                 pl_redirect("member/$forlife");
             } else {
-                $page->trig($email." n'est pas un alias polytechnique.org valide");
+                $page->trig($email." n'est pas un alias polytechnique.org valide.");
             }
         } else {
             require_once 'xorg.misc.inc.php';

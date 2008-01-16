@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -33,7 +33,7 @@ class AXLetter extends MassMailer
 
     function __construct($id)
     {
-        parent::__construct('axletter/letter.tpl', 'ax.css', 'ax/show', 'axletter', 'axletter_ins');
+        parent::__construct('axletter/letter.mail.tpl', 'ax.css', 'ax/show', 'axletter', 'axletter_ins');
         $this->_head = '<cher> <prenom>,';
 
         if (!is_array($id)) {
@@ -45,7 +45,7 @@ class AXLetter extends MassMailer
             } else {
                 $res = XDB::query("SELECT  *
                                      FROM  axletter
-                                    WHERE  id = {?} OR shortname = {?}", $id, $id);
+                                    WHERE  id = {?} OR short_name = {?}", $id, $id);
             }
             if (!$res->numRows()) {
                 $this->_id = null;
@@ -223,7 +223,7 @@ class AXLetter extends MassMailer
 
     static public function listSent()
     {
-        $res = XDB::query("SELECT  IF(shortname IS NULL, id, shortname) as id, date, subject AS titre
+        $res = XDB::query("SELECT  IF(short_name IS NULL, id, short_name) as id, date, subject AS titre
                              FROM  axletter
                             WHERE  NOT (FIND_IN_SET('new', bits))
                          ORDER BY  date DESC");
@@ -232,7 +232,7 @@ class AXLetter extends MassMailer
 
     static public function listAll()
     {
-        $res = XDB::query("SELECT  IF(shortname IS NULL, id, shortname) as id, date, subject AS titre
+        $res = XDB::query("SELECT  IF(short_name IS NULL, id, short_name) as id, date, subject AS titre
                              FROM  axletter
                          ORDER BY  date DESC");
         return $res->fetchAllAssoc();
