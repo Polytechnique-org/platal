@@ -30,7 +30,7 @@
 
 Tu reçois ce mail car tu as demandé la confirmation du bon fonctionnement de ton adresse polytechnicienne {$email}.
 {if $redirects->total() gt 1}Si toutes tes redirections fonctionnent correctement tu devrais recevoir une copie de ce mail
-des boîtes suivantes :
+dans les boîtes suivantes :
 {iterate from=$redirects item=mail}
 * {$mail.email}
 {/iterate}
