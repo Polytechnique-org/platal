@@ -62,6 +62,13 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 </ul>
 {/if}
 
+{if $smarty.request.response}<!-- failed login code //-->
+<br />
+<div class="erreur">
+  Erreur d'identification. Essaie à nouveau !
+</div>
+{/if}
+
 <br />
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;" style="display: none">
@@ -97,20 +104,25 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr>
       <td></td>
-      <td {popup caption='Connexion permanente' width='300' text='Coche cette case pour être automatiquement reconnu à ta prochaine connexion
-        depuis cet ordinateur.<br />
-        Il n\'est pas conseillé de cocher la case si cette machine n\'est pas <b>strictement</b> personnelle'}>
+      <td>
         <input type="checkbox" name="remember" id="remember" /><label for="remember">Garder l'accès aux services après déconnexion</label>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        Coche la case ci-dessus pour être automatiquement reconnu lors de ta prochaine connexion depuis cet ordinateur.
+        Il n'est pas conseillé de la cocher si cette machine n'est pas <b>strictement</b> personnelle.
       </td>
     </tr>
     <tr>
       <td colspan="2">
       <table width="100%"><tr>
       <td>
-        <a href="recovery">mot de passe perdu ?</a>
+        <a href="recovery">Mot de passe perdu ?</a>
       </td>
       <td class="right">
-        <input type="submit" name="submitbtn" value="Envoyer" />
+        <input type="submit" name="submitbtn" value="Me connecter" />
       </td>
       </tr></table>
       </td>
@@ -154,13 +166,6 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
   <a href="Xorg/CertificatDeSécurité?display=light" class="popup2">sur cette page</a>.
   {/if}
 </div>
-
-{if $smarty.request.response}<!-- failed login code //-->
-<br />
-<div class="erreur">
-  Erreur d'identification. Essaie à nouveau !
-</div>
-{/if}
 
 <!-- Set up the form with the challenge value and an empty reply value //-->
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
