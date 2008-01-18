@@ -165,10 +165,10 @@ class XnetGrpModule extends PLModule
 
         if (!S::has('core_rss_hash')) {
             $page->setRssLink("Polytechnique.net :: {$globals->asso("nom")} :: News publiques",
-                              "rss/rss.xml");
+                              $platal->ns . "rss/rss.xml");
         } else {
             $page->setRssLink("Polytechnique.net :: {$globals->asso("nom")} :: News",
-                              'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
+                              $platal->ns . 'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
         }
 
         $page->assign('articles', $arts);
