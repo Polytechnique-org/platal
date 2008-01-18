@@ -71,10 +71,10 @@
     <tr>
       <td class="titre">
         Date de naissance<br />
-        <span class="smaller">(Format JJMMAAAA)</span>
+        <span class="smaller">jour/mois/année</span>
       </td>
       <td>
-        <input type="text" size="8" maxlength="8" name="naissance"  value="{$smarty.post.naissance}" />
+        <input type="text" size="10" maxlength="10" name="naissance"  value="{$smarty.post.naissance}" />
         (demandée si perte de mot de passe)
       </td>
     </tr>

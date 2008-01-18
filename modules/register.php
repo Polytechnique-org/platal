@@ -144,10 +144,12 @@ class RegisterModule extends PLModule
                             "valide, en particulier, il ne peut pas être renvoyé vers lui-même.";
                     }
                     $birth = trim(Env::v('naissance'));
-                    if (!preg_match('/^[0-3][0-9][01][0-9][12][90][0-9][0-9]$/', $birth)) {
+                    if (!preg_match('@^[0-3]?\d/[01]?\d/(19|20)?\d{2}$@', $birth)) {
                         $err[] = "La 'Date de naissance' n'est pas correcte.";
                     } else {
-                        $year  = (int)substr($birth, 4, 4);
+                        $birth = explode('/', $birth, 3);
+                        $year  = intval($birth[2]);
+                        if ($year < 100) $year += 1900;
                         $promo = (int)$sub_state['promo'];
                         if ($year > $promo - 15 || $year < $promo - 30) {
                             $err[] = "La 'Date de naissance' n'est pas correcte.";
@@ -183,10 +185,8 @@ class RegisterModule extends PLModule
                     if (isset($err)) {
                         $err = join('<br />', $err);
                     } else {
-                        $sub_state['naissance'] = sprintf("%s-%s-%s",
-                                                          substr($birth,4,4),
-                                                          substr($birth,2,2),
-                                                          substr($birth,0,2));
+                        $sub_state['naissance'] = sprintf("%04d-%02d-%02d",
+                                                          intval($birth[2]), intval($birth[1]), intval($birth[0]));
                         if ($sub_state['naissance_ini'] != '0000-00-00' && $sub_state['naissance'] != $sub_state['naissance_ini']) {
                             $alert .= "Date de naissance incorrecte à l'inscription - ";
                         }
