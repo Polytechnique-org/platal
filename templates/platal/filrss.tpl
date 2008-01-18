@@ -52,11 +52,11 @@ En voici les adresses&nbsp;:
 <ul>
   <li>
   Anonces sur la page d'entrée&nbsp;:
-  <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
+  <a href="rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml" title="Annonces">{icon name=feed title='fil rss'}</a>
   </li>
   <li>
   Ton carnet polytechnicien&nbsp;:
-  <a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
+  <a href="carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml" title="Notifications">{icon name=feed title='fil rss'}</a>
   </li>
 </ul>
 <p>

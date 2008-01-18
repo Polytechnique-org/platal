@@ -93,7 +93,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
       <td class="half titre" style="height: 18px; padding-top: 1px; padding-bottom: 1px;">
         {if $smarty.foreach.events.first}
         {if $smarty.session.core_rss_hash}
-        <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml' style="display:block;float:right">
+        <a href="rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml" style="display:block;float:right" title="Annonces">
           {icon name=feed title='fil rss'}
         </a>
         {else}

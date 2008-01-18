@@ -155,6 +155,70 @@ function popWin(theNode,w,h) {
 }
 
 // }}}
+// {{{ function goodiesPopup()
+
+function goodiesPopup(node) {
+    if (node.href.indexOf('ical') > -1) {
+        __goodies_popup(node, __goodies_ical_sites, 'Calendrier iCal');
+    } else if (node.href.indexOf('rss') > -1 && (node.href.indexOf('xml') > -1 || node.href.indexOf('hash'))) {
+        __goodies_popup(node, __goodies_rss_sites, 'Fil rss');
+    }
+}
+
+var __goodies_ical_sites = [
+    {'url_prefix': '',
+     'img': 'images/icons/calendar_view_day.gif',
+     'title': 'Calendrier iCal'},
+    {'url_prefix': 'http://www.google.com/calendar/render?cid=',
+     'img': 'images/goodies/add-google-calendar.gif',
+     'title': 'Ajouter à Google Calendar'}
+];
+var __goodies_rss_sites = [
+    {'url_prefix': '',
+     'img': 'images/icons/feed.gif',
+     'title': 'Fil rss'},
+    {'url_prefix': 'http://fusion.google.com/add?feedurl=',
+     'img': 'images/goodies/add-google.gif',
+     'alt': 'Add to Google',
+     'title': 'Ajouter à iGoogle/Google Reader'},
+    {'url_prefix': 'http://www.netvibes.com/subscribe.php?url=',
+     'img': 'images/goodies/add-netvibes.gif',
+     'title': 'Ajouter à Netvibes'},
+    {'url_prefix': 'http://add.my.yahoo.com/content?.intl=fr&url=',
+     'img': 'images/goodies/add-yahoo.gif',
+     'alt': 'Add to My Yahoo!',
+     'title': 'Ajouter à My Yahoo!'}
+];
+
+function __goodies_popupText(url, sites) {
+    var text = '<div style="text-align: center; line-height: 2.2">';
+    for (var site in sites) {
+        var s_alt = (sites[site]["alt"] ? sites[site]["alt"] : "");
+        var s_img = sites[site]["img"];
+        var s_title = (sites[site]["title"] ? sites[site]["title"] : "");
+        var s_url = (sites[site]["url_prefix"].length > 0 ? sites[site]["url_prefix"] + escape(url) : url);
+
+        text += '<a href="' + s_url + '"><img src="' + s_img + '" title="' + s_title + '" alt="' + s_alt + '"></a><br />';
+    }
+    text += '<a href="https://www.polytechnique.org/Xorg/Goodies">Plus de bonus</a> ...</div>'
+    return text;
+}
+
+function __goodies_popup(node, sites, default_title) {
+    var mouseover_cb = function() {
+        var rss_text = __goodies_popupText(node.href, sites);
+        var rss_title = (node.title ? node.title : default_title);
+        return overlib(rss_text, CAPTION, rss_title, CLOSETEXT, 'Fermer', DELAY, 800, STICKY, WIDTH, 150);
+    }
+    var mouseout_cb = function() {
+        nd();
+    }
+
+    node.onmouseover = mouseover_cb;
+    node.onmouseout = mouseout_cb;
+}
+
+// }}}
 // {{{ function auto_links()
 
 function auto_links() {
@@ -182,6 +246,9 @@ function auto_links_nodes(nodes) {
             node.href = node.href.replace(/https/, 'http');
             if (node.href.indexOf('http') < 0) {
                 node.href = 'http://' + fqdn + '/' + node.href;
+            }
+            if (node.nodeName.toLowerCase() == 'a') {
+                goodiesPopup(node);
             }
         }
         if(node.className == 'popup2') {
