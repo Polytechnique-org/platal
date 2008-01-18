@@ -1,4 +1,3 @@
-<?php
 /***************************************************************************
  *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -19,24 +18,20 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/../include/xorg.inc.php';
-global $globals, $platal, $page;
-
-if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
-
-    $platal = new Platal('auth', 'banana', 'carnet', 'email', 'events',
-                         'geoloc', 'lists', 'marketing', 'payment', 'platal',
-                         'profile', 'register', 'search', 'stats', 'admin',
-                         'newsletter', 'axletter', 'bandeau', 'survey',
-                         'gadgets');
-    $platal->run();
-
-    exit;
+function igOnLoadHandler()
+{
+    if (typeof(_IG_AdjustIFrameHeight) != 'undefined') {
+        _IG_AdjustIFrameHeight();
+    }
 }
 
-/*** WIKI CODE ***/
-
-include 'wiki/engine.php';
+function markEventAsRead(event_id)
+{
+    _toggle(_gel("mark-read-" + event_id));
+    _gel("evt-" + event_id).setAttribute("class", "read");
+    _gel("link-" + event_id).setAttribute("href", "events/unread/" + event_id);
+    Ajax.update_html(null, "events/read/" + event_id);
+    return false;
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
-?>

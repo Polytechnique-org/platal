@@ -9,6 +9,9 @@ New:
     * Core:
         - New PlProfiler tool                                              -FRU
 
+    * Goodies:
+        - iGoogle gadgets for latest events and directory search           -VZA
+
 Bug/Wish:
 
     * Emails:
@@ -1152,6 +1155,7 @@ ACRONYMS:
     * SHK: Jeremy Lainé         (Sharky)    <jeremy.laine@m4x.org>
     * VP : Vincent Palatin                  <vincent.palatin@m4x.org>
     * XdX: Alexandre Hô         (XandreX)   <alexandre.ho@m4x.org>
+    * VZA: Vincent Zanotti      (vinZ2)     <vincent.zanotti@m4x.org>
 
 ================================================================================
 vim:et:ts=4:sw=4:tw=80:enc=utf-8:

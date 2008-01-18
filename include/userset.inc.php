@@ -374,5 +374,47 @@ class GeolocView implements PlView
     }
 }
 
+class GadgetView implements PlView
+{
+    public function __construct(PlSet &$set, $data, array $params)
+    {
+        $this->set =& $set;
+    }
+
+    public function fields()
+    {
+        return "u.user_id AS id,
+                u.*, a.alias AS forlife," .
+                (S::logged() ? "q.profile_mobile AS mobile, " : "IF(q.profile_mobile_pub = 'public', q.profile_mobile, NULL) as mobile, ") .
+               "u.perms != 'pending' AS inscrit,
+                u.perms != 'pending' AS wasinscrit,
+                u.deces != 0 AS dcd, u.deces,
+                FIND_IN_SET('femme', u.flags) AS sexe,
+                adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region" .
+                (S::logged() ? ", c.contact AS contact" : '');
+    }
+
+    public function joins()
+    {
+        return  "LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : " AND adr.pub = 'public'").")
+                 LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
+                 LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)" .
+                (S::logged() ?
+                 "LEFT JOIN  contacts       AS c   On (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
+                 : "");
+    }
+
+    public function apply(PlatalPage &$page)
+    {
+        $page->assign_by_ref('set',
+          $this->set->get($this->fields(), $this->joins(), null, null, null, 5, 0));
+    }
+
+    public function args()
+    {
+        return null;
+    }
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

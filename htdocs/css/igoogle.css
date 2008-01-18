@@ -1,4 +1,3 @@
-<?php
 /***************************************************************************
  *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -19,24 +18,80 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/../include/xorg.inc.php';
-global $globals, $platal, $page;
-
-if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
-
-    $platal = new Platal('auth', 'banana', 'carnet', 'email', 'events',
-                         'geoloc', 'lists', 'marketing', 'payment', 'platal',
-                         'profile', 'register', 'search', 'stats', 'admin',
-                         'newsletter', 'axletter', 'bandeau', 'survey',
-                         'gadgets');
-    $platal->run();
-
-    exit;
+body {
+    font-family: "Arial", sans-serif;
+    font-size: small;
+    color: #000000;
+    background: #ffffff;
+    background-position: center;
+    margin: 0.2em 0em;
 }
 
-/*** WIKI CODE ***/
+a:link, a:visited, a:active, a:hover { color: #003399; background: none; }
+img   { vertical-align: middle; }
+a img { border: 0px; }
+td    { vertical-align: top; }
+div.more { font-size: x-small; text-align: right; }
 
-include 'wiki/engine.php';
+/* Events */
+div.events ul { margin: 0; padding: 0 0.2em 0 1em; }
+div.events ul li { margin: 0.5em 0.2em; padding: 0; }
+li.unread { font-weight: bold; }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
-?>
+/* Search gadget: frame */
+div.welcome {
+    text-align: center;
+}
+
+div.search {
+    text-align: center;
+    margin-top: 1em;
+}
+
+div.error {
+    color: red;
+    font-weight: bold;
+}
+
+/* Search gadget: result page */
+div.contact-list div.contact {
+    width: 100%;
+    text-align: left;
+    border-top: 1px solid #003399;
+    background: #F4D09C;
+    color: inherit;
+}
+
+div.grayed {
+    color: #444444;
+    font-style: italic;
+}
+
+div.grayed div.contact {
+    background: #eee;
+}
+
+div.contact div.nom {
+    font-weight: bold;
+    float: left;
+}
+
+div.contact div.autre {
+    text-align: right;
+    float: right;
+}
+
+div.contact div.long {
+    width: 100%;
+    clear: both;
+    background: white;
+    color: inherit;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+div.long table { width: 100%; }
+div.long td.lt { width: 35%; }
+div.long td.rt { width: 65%; }
+
+/* vim: set et ts=4 sts=4 sw=4: */

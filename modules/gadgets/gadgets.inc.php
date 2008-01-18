@@ -19,24 +19,42 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/../include/xorg.inc.php';
-global $globals, $platal, $page;
+// iGoogle gadgets helpers.
+function init_igoogle_xml($template)
+{
+    global $page;
+    $page->changeTpl($template, NO_SKIN);
 
-if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
-
-    $platal = new Platal('auth', 'banana', 'carnet', 'email', 'events',
-                         'geoloc', 'lists', 'marketing', 'payment', 'platal',
-                         'profile', 'register', 'search', 'stats', 'admin',
-                         'newsletter', 'axletter', 'bandeau', 'survey',
-                         'gadgets');
-    $platal->run();
-
-    exit;
+    header('Content-Type: application/xml; charset=utf-8');
 }
 
-/*** WIKI CODE ***/
+function init_igoogle_html($template, $auth = AUTH_PUBLIC)
+{
+    global $page;
+    $page->changeTpl('gadgets/ig-skin.tpl', NO_SKIN);
+    $page->register_modifier('escape_html', 'escape_html');
+    $page->default_modifiers = Array('@escape_html');
+    header('Accept-Charset: utf-8');
 
-include 'wiki/engine.php';
+    // Adds external JavaScript libraries provided by iGoogle to the page.
+    if (Env::has('libs')) {
+        $libs = split(',', Env::s('libs'));
+        foreach ($libs as $lib) {
+            if (preg_match('@^[a-z0-9/._-]+$@i', $lib) && !preg_match('@([.][.])|([.]/)|(//)@', $lib)) {
+                $page->append('gadget_js', 'https://www.google.com/ig/f/' . $lib);
+            }
+        }
+    }
+
+    // Redirects the user to the login pagin if required.
+    if ($auth >  S::v('auth', AUTH_PUBLIC)) {
+        $page->assign('gadget_tpl', 'gadgets/ig-login.tpl');
+        return false;
+    }
+
+    $page->assign('gadget_tpl', $template);
+    return true;
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
