@@ -708,14 +708,14 @@ def set_bogo_level(userdesc, perms, vhost, listname, level):
             return 0
         hfr = []
         if int(level) is 1:
-            hfr.append(('X-Spam-Flag: Unsure', mm_cfg.HOLD, False))
+            hfr.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
             hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
         elif int(level) is 2:
-            hfr.append(('X-Spam-Flag: Unsure', mm_cfg.HOLD, False))
+            hfr.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
             hfr.append(('X-Spam-Flag: Yes, tests=bogofilter, spamicity=(0\.999999|1\.000000)', mm_cfg.DISCARD, False))
             hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
         elif int(level) is 3:
-            hfr.append(('X-Spam-Flag: Unsure', mm_cfg.HOLD, False))
+            hfr.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
             hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.DISCARD, False))
         if mlist.header_filter_rules != hfr:
             mlist.Lock()
