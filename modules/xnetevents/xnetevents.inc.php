@@ -38,24 +38,26 @@ class XNetEventPart
     public $prices          = null;
     public $useCategories   = null;
 
-    public function __construct(array $data = null) {
+    public function __construct(array $data = null)
+    {
         if (!is_null($data)) {
             foreach ($data as $name => $value) {
                 $this->$name = $value;
             }
-            $this->prices = explode(',', $this->prices);
+            $this->prices = explode(';', $this->prices);
         } else {
             $this->changed = true;
         }
     }
 
-    public function save($event) {
+    public function save($event)
+    {
         if ($this->changed) {
             XDB::execute("REPLACE INTO  groupex.events_part (event_id, part_id, title, description,
                                         url, place, begin, end, prices, flags)
                                 VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
                         $event, $this->id, $this->title, $this->description, $this->url, $this->place,
-                        $this->begin, $this->end, implode(',', $this->prices),
+                        $this->begin, $this->end, implode(';', $this->prices),
                         $this->useCategories ? '' : 'nocategories');
             // TODO: update corresponding subscriptions !!!
         }
@@ -100,12 +102,14 @@ class XNetEvent
     public $categories              = null;
     public $parts                   = null;
 
-    public function __construct($id = null) {
+    public function __construct($id = null)
+    {
         $this->tofetch = $id;
         $this->changed = is_null($id);
     }
 
-    private function fetchData() {
+    private function fetchData()
+    {
         if (!is_null($this->id) || is_null($this->tofetch)) {
             return !is_null($this->id);
         }
@@ -131,7 +135,7 @@ class XNetEvent
         foreach ($data as $name => $value) {
             $this->$name = $value;
         }
-        $this->categories = explode(',', $this->categories);
+        $this->categories = explode(';', $this->categories);
         $this->parts = array();
         $it = XDB::iterator("SELECT  ep.part_id AS id, ep.title, ep.description,
                                      ep.url, ep.place, ep.begin, ep.end, ep.prices,
@@ -146,8 +150,9 @@ class XNetEvent
         return true;
     }
 
-    private function saveData() {
-        $cats = implode(',', $this->categories);
+    private function saveData()
+    {
+        $cats = implode(';', $this->categories);
         $dogs = array(); // Noting to do with animals, but previous variable was 'cats'
         if ($this->memberOnly) {
             $dogs[] = 'memberonly';
@@ -202,7 +207,8 @@ class XNetEvent
 
     // Event edition functions {{{2
 
-    public function setShortname($newname) {
+    public function setShortname($newname)
+    {
         if (!$this->renameEventLists($this->shortname, $newname)) {
             return false;
         }
@@ -211,19 +217,22 @@ class XNetEvent
         return true;
     }
 
-    public function setTitle($title) {
+    public function setTitle($title)
+    {
         $this->title = $title;
         $this->changed = true;
         return true;
     }
 
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
         $this->changed = true;
         return true;
     }
 
-    public function setSubscriptionLimit($date) {
+    public function setSubscriptionLimit($date)
+    {
         $this->subscriptionLimit = $date;
         $this->changed = true;
         return true;
@@ -239,7 +248,8 @@ class XNetEvent
      *
      * This function MUST succeed in order to add an event to the databse.
      */
-    private function bootstrapEventLists() {
+    private function bootstrapEventLists()
+    {
         global $globals, $page;
         $participants = -1;
         $absents      = -1;
@@ -278,7 +288,8 @@ class XNetEvent
     /** Change the name of the aliases used to send informations to members.
      * Success is a prerequist to any shortname change.
      */
-    private function renameEventLists($oldname, $newname) {
+    private function renameEventLists($oldname, $newname)
+    {
         if (strtolower($oldname) == strtolower($newname)) {
             return true;
         }
@@ -308,22 +319,110 @@ class XNetEvent
         return true;
     }
 
+    /** Update subscription of the given address to the given list.
+     */
+    private function subscribeToList($email, $list, $sub)
+    {
+        $res = XDB::query("SELECT  vid
+                             FROM  virtual
+                            WHERE  alias = {?}",
+                          $this->shortname . '-' . $list . '@' . $globals->xnet->evts_domain);
+        $vid = $res->fetchOneCell();
+        if ($sub) {
+            XDB::execute("INSERT IGNORE INTO  virtual_redirect (vid, redirect)
+                                      VALUES  ({?}, {?})",
+                         $vid, $email);
+        } else {
+            XDB::execute("DELETE FROM  virtual_redirect
+                                WHERE  vid = {?} AND email = {?}",
+                         $vid, $email);
+        }
+        return true;
+    }
+
+    /** Update subscription of the given address.
+     */
+    private function subscribeToEventsList($email, $participants, $absents)
+    {
+        assert(!$absents || !$participants);
+        return $this->subscribeToList($email, "participants", $participants)
+            && $this->subscribeToList($email, "absents", $absents);
+    }
 
     // User action events {{{2
 
-    public function subscribe($login, $present, array $moments) {
+    public function subscribe($login, array $moments)
+    {
         if ($this->id >= 0) {
             return false;
         }
-        // TODO: do not forget to update participants/absents aliases
+        global $globals;
+        $uid = 0;
+        if (strpos('@', $login) === false) {
+            $domain = $globals->xnet->domain;
+        } else {
+            list($login, $domain) = explode('@', $login, 2);
+        }
+        if ($domain == $globals->xnet->domain || $domain == $globals->xnet->domain2) {
+            $domain = strlen($globals->mail->domain) < strlen($globals->mail->domain2) ? $globals->mail->domain
+                                                                                       : $globals->mail->domain2;
+            $res = XDB::query("SELECT  id
+                                 FROM  aliases
+                                WHERE  alias = {?} AND type = 'alias' OR type = 'a_vie'",
+                              $login);
+        } else {
+            $res = XDB::query("SELECT  uid
+                                 FROM  groupex.membres
+                                WHERE  email = {?}",
+                              $login);
+        }
+        if ($res->numRows() == 0) {
+            return false;
+        }
+        $email = $login . '@' . $domain;
+        $uid   = $res->fetchOneCell();
+        $participants = false;
+        foreach ($moments as $moment) {
+            foreach ($moment as $count) {
+                if ($count > 0) {
+                    $participants = true;
+                    break;
+                }
+            }
+            if ($participants) {
+                break;
+            }
+        }
+        $this->subscribeToEventsList($email, $participants, false);
+        XDB::execute("DELETE FROM  groupex.events_subscription
+                            WHERE  event_id = {?} AND uid = {?}",
+                     $this->id, $uid);
+        foreach ($moments as $mid=>$moment) {
+            $total = array_sum($moment);
+            if ($this->parts[$mid]->useCategories) {
+                $cats = array();
+                foreach ($this->categories as $cat) {
+                    $cats[] = $moment[$cat];
+                }
+                $cats = implode(';', $cats);
+            } else {
+                $cats = "$total";
+            }
+            XDB::execute("INSERT INTO  groupex.events_subscription (event_id, part_id, uid, comers, bycat)
+                               VALUES  ({?}, {?}, {?}, {?}, {?})",
+                         $this->id, $mid, $uid, $total, $cats);
+        }
+        return true;
     }
 
-    public function canSubscribe() {
+    public function canSubscribe()
+    {
         global $globals;
         return $this->nonmembre || $globals->perms->hasFlag('groupmember');
     }
 
-    public function payment($login, $value, $method) {
+    public function payment($login, $value, $method)
+    {
         if ($this->id >= 0) {
             return false;
         }
