@@ -2,6 +2,9 @@
 
 . ../inc/pervasive.sh
 
+echo "Upgrading bogofilter settings for ML"
+sudo -u list ./upgrade_lists.py
+
 mailman_stop
 mailman_templates
 mailman_start

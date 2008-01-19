@@ -8,10 +8,11 @@ New:
 
     * Core:
         - New PlProfiler tool                                              -FRU
-
-    * Goodies:
         - Integration of goodies/external tools with local rss/iCal        -VZA
         - iGoogle gadgets for latest events and directory search           -VZA
+
+    * Lists:
+        - Unsure mails are moderated                                       -FRU
 
 Bug/Wish:
 
