@@ -35,7 +35,7 @@ class XnetEventsModule extends PLModule
         );
     }
 
-    function handler_events(&$page, $group)
+    function handler_events(&$page, $group = null)
     {
         $page->changeTpl('xnetevents/index.tpl');
         require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
@@ -54,8 +54,15 @@ class XnetEventsModule extends PLModule
     {
     }
 
-    function handler_edit(&$page, $eid = null)
+    function handler_edit(&$page, $eid = null, $tab = null)
     {
+        $page->changeTpl('xnetevents/edit.tpl');
+        require_once dirname(__FILE__) . '/xnetevents/xnetevents.editionsteps.inc.php';
+
+        global $globals;
+        $wiz = new PlWizard('XNetEvent_' . $globals->asso('diminutif'), 'core/plwizard.tpl', false, false);
+        $wiz->addPage('XNetEventEditStart', 'Nouvel événement', 'start');
+        $wiz->apply($page, 'events/edit/' . $eid, $tab)
     }
 
     function handler_admin(&$page, $eid = null, $item_id = null)
