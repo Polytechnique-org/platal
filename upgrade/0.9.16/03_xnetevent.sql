@@ -55,8 +55,19 @@ create table events_payment (
   key user_payment (event_id, uid)
 ) charset=utf8;
 
-# Event subscriptions
+# Event subscription
 create table events_subscription (
+  event_id    smallint(5) unsigned not null,
+  uid         smallint(5) unsigned not null,
+
+  topay       smallint(5) unsigned not null,
+  flags       set('dontcome', 'warnpayment') not null default '',
+
+  primary key id (event_id, uid)
+) charset=utf8;
+
+# Event part subscriptions
+create table events_part_subscription (
   event_id    smallint(5) unsigned not null,
   part_id     smallint(5) unsigned not null,
   uid         smallint(5) unsigned not null,

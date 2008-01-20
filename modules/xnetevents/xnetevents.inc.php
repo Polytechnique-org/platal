@@ -115,7 +115,7 @@ class XNetEvent
         }
         global $globals;
         $it = XDB::query("SELECT  e.id, e.shortname, e.title, e.description,
-                                  e.uid AS respoUID, u.prenom AS respoPrenom,
+                                  e.respo_uid AS respoUID, u.prenom AS respoPrenom,
                                   IF(u.nom_usage != '', u.nom_usage, u.nom) AS respoNom,
                                   u.promo AS respoPromo, FIND_IN_SET('femme', u.flags) AS respoSexe,
                                   e.sublimit AS subscriptionLimit, e.categories,
@@ -126,12 +126,17 @@ class XNetEvent
                                   e.state IN ('close', 'archive') AS closed,
                                   e.state != 'prepare' AS prepared
                             FROM  groupex.events AS e
-                      INNER JOIN  auth_user_md5 AS u ON(e.uid = u.user_id)
+                      INNER JOIN  auth_user_md5 AS u ON(e.respo_uid = u.user_id)
                            WHERE  e.asso_id = {?} AND (e.id = {?} OR e.shortname = {?})",
                           $globals->asso('id'), $this->tofetch, $this->tofetch);
         if (!($data = $it->fetchOneAssoc())) {
             return false;
         }
+        $this->buildEvent($data);
+    }
+
+    private function buildEvent(array $data)
+    {
         foreach ($data as $name => $value) {
             $this->$name = $value;
         }
@@ -351,7 +356,7 @@ class XNetEvent
 
     // User action events {{{2
 
-    public function subscribe($login, array $moments)
+    public function subscribe($login, array $moments, $warnonpayment)
     {
         if ($this->id >= 0) {
             return false;
@@ -382,19 +387,27 @@ class XNetEvent
         $email = $login . '@' . $domain;
         $uid   = $res->fetchOneCell();
         $participants = false;
-        foreach ($moments as $moment) {
-            foreach ($moment as $count) {
+        $topay        = 0;
+        foreach ($moments as $mid=>$moment) {
+            foreach ($moment as $cat=>$count) {
                 if ($count > 0) {
                     $participants = true;
-                    break;
                 }
-            }
-            if ($participants) {
-                break;
+                $topay += $count * $this->parts[$mid]->prices[$cat];
             }
         }
         $this->subscribeToEventsList($email, $participants, false);
-        XDB::execute("DELETE FROM  groupex.events_subscription
+        $flags = array();
+        if ($warnonpayment) {
+            $flags[] = 'warnpayment';
+        }
+        if (!$participants) {
+            $flags[] = 'dontcome';
+        }
+        XDB::execute("REPLACE INTO  groupex.event_subscription
+                               SET  event_id = {?}, uid = {?}, topay = {?}, flags = {?}",
+                     $this->id, $uid, $topay, implode(',', $flags));
+        XDB::execute("DELETE FROM  groupex.events_part_subscription
                             WHERE  event_id = {?} AND uid = {?}",
                      $this->id, $uid);
         foreach ($moments as $mid=>$moment) {
@@ -426,6 +439,42 @@ class XNetEvent
         if ($this->id >= 0) {
             return false;
         }
+    }
+
+    // Event listing {{{2
+
+    public static function listEvents($prepare = false, $archive = false)
+    {
+        global $globals;
+        if ($prepare) {
+            $flags = "'prepare'";
+        } else if ($archive) {
+            $flags = "'archive'";
+        } else {
+            $flags = "'open', 'close'";
+        }
+        $it = XDB::iterator("SELECT  e.id, e.shortname, e.title, e.description,
+                                     e.respo_uid AS respoUID, u.prenom AS respoPrenom,
+                                     IF(u.nom_usage != '', u.nom_usage, u.nom) AS respoNom,
+                                     u.promo AS respoPromo, FIND_IN_SET('femme', u.flags) AS respoSexe,
+                                     e.sublimit AS subscriptionLimit, e.categories,
+                                     FIND_IN_SET('invite', e.flags) AS invite,
+                                     FIND_IN_SET('memberonly', e.flags) AS memberOnly,
+                                     FIND_IN_SET('publiclist', e.flags) AS publicList,
+                                     FIND_IN_SET('paymentissubscription', e.flags) AS paymentIsSubscription,
+                                     e.state IN ('close', 'archive') AS closed,
+                                     e.state != 'prepare' AS prepared
+                               FROM  groupex.events AS e
+                         INNER JOIN  auth_user_md5 AS u ON(e.respo_uid = u.user_id)
+                              WHERE  e.asso_id = {?} AND e.flags IN ($flags)",
+                           $globals->asso('id'));
+        $events = array();
+        while (($data = $it->next())) {
+            $event = new XNetEvent();
+            $event->buildEvent($data);
+            $events[] =& $event;
+        }
+        return $events;
     }
 }
 
