@@ -7,4 +7,7 @@ create table watch_profile (
   primary key field (uid, field)
 ) charset=utf8;
 
+
+alter table auth_user_quick change column profile_freetext profile_freetext mediumtext;
+
 # vim:set syntax=mysql:
