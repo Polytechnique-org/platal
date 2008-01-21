@@ -381,10 +381,12 @@ class XNetEvent
                                 WHERE  email = {?}",
                               $login);
         }
+        $email = $login . '@' . $domain;
         if ($res->numRows() == 0) {
+            global $page;
+            $page->trig("Aucun utilisateur ne correspond à $email.");
             return false;
         }
-        $email = $login . '@' . $domain;
         $uid   = $res->fetchOneCell();
         $participants = false;
         $topay        = 0;
