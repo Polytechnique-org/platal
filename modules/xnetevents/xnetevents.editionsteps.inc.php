@@ -20,23 +20,50 @@
  ***************************************************************************/
 
 __autoload('PlWizard');
+require_once dirname(__FILE__) . '/xnetevents.inc.php';
 
 
-// Welcome page {{{1
+// Generic page template {{{1
 
-class XNetEventEditStart implements PlWizardPage
+abstract class XNetEventEditPage implements PlWizardPage
 {
+    protected $pg_template;
+    public $event;
+
     public function __construct(PlWizard &$wiz)
     {
+        if (!isset($_SESSION['new_xnetevent'])) {
+            $_SESSION['new_xnetevent'] = new XNetEvent();
+        }
+        $this->event =& $_SESSION['new_xnetevent'];
     }
 
     public function template()
     {
-        return 'xnetevents/edit-start.tpl';
+        return 'xnetevents/edit.tpl';
     }
 
     public function prepare(PlatalPage &$page, $id)
     {
+        $this->_prepare($page, $id);
+        $page->assign('edit_event_page', $this->pg_template);
+    }
+
+    protected function _prepare(PlatalPage &$page, $id)
+    {
+    }
+}
+
+
+// Welcome page {{{1
+
+class XNetEventEditStart extends XNetEventEditPage
+{
+    protected $pg_template = 'xnetevents/edit-start.tpl';
+
+    public function __construct(PlWizard &$wiz)
+    {
+        parent::__construct($wiz);
     }
 
     public function process()

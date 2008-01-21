@@ -62,7 +62,7 @@ class XnetEventsModule extends PLModule
         global $globals;
         $wiz = new PlWizard('XNetEvent_' . $globals->asso('diminutif'), 'core/plwizard.tpl', false, false);
         $wiz->addPage('XNetEventEditStart', 'Nouvel événement', 'start');
-        $wiz->apply($page, 'events/edit/' . $eid, $tab)
+        $wiz->apply($page, 'events/edit/' . $eid, $tab);
     }
 
     function handler_admin(&$page, $eid = null, $item_id = null)
