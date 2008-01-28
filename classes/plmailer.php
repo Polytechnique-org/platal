@@ -47,6 +47,7 @@ class PlMail extends Smarty
         $this->register_function('bcc',     Array($this, 'addBcc'));
         $this->register_function('subject', Array($this, 'setSubject'));
         $this->register_function('add_header', Array($this, 'addHeader'));
+        $this->assign_by_ref('globals', $globals);
     }
 
     public static function &get(&$mailer, $tpl)

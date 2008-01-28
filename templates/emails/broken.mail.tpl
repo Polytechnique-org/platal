@@ -30,7 +30,7 @@ Bonjour !
   Nous t'écrivons car lors de l'envoi de la lettre d'information mensuelle
 de Polytechnique.org à ton adresse polytechnicienne :
 
-    {$x.alias}@{#globals.mail.domain#},
+    {$x.alias}@{$globals->mail->domain},
 
 l'adresse {$email}, sur laquelle tu rediriges ton courrier, ne fonctionnait pas.
 
