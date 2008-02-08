@@ -88,7 +88,7 @@ class SearchSet extends UserSet
         $qSearch = new QuickSearch('quick');
         $fields  = new SFieldGroup(true, array($qSearch));
         if ($qSearch->isEmpty()) {
-            new ThrowError('Recherche trop générale.');
+            new ThrowError('Aucun critère de recherche n\'est spécifié.');
         }
         $this->score = $qSearch->get_score_statement();
         $pwhere = $fields->get_where_statement();
