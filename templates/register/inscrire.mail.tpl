@@ -35,7 +35,7 @@ Après activation, tes paramètres seront :
 login        : {$mailorg}
 mot de passe : {$pass}
 
-Rends-toi sur la page web suivante afin d'activer ta pré-inscription, et de changer ton mot de passe en quelque chose de plus facile à mémoriser :
+Rends-toi sur la page web suivante afin d'activer ta pré-inscription et de changer obligatoirement ce mot de passe provisoire en un mot de passe de ton choix :
 
 {$baseurl}/register/end/{$hash}
 

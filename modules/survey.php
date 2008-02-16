@@ -331,7 +331,7 @@ class SurveyModule extends PLModule
                     $this->show_error($page, "", 'survey/edit', $errors);
                 } else {
                     if (S::has('survey_id')) {
-                        $this->show_confirm($page, "Veuillez confirmer l'enregistrement des modifications apportées à ce sondage", 'edit', array('action' => 'valid'));
+                        $this->show_confirm($page, "Veuillez confirmer l'enregistrement des modifications apportées à ce sondage.", 'edit', array('action' => 'valid'));
                     } else {
                         $this->show_confirm($page, "Veuillez confirmer l'envoi de cette proposition de sondage.", 'edit', array('action' => 'valid'));
                     }
