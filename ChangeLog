@@ -19,6 +19,9 @@ Bug/Wish:
     * Emails:
         - #750: Fix email list in test email                               -FRU
 
+    * Lists:
+        - #793: Show broken members on ML                                  -FRU
+
     * Profile:
         - #729: Fix positioning of addresses on public profile             -FRU
         - #742: Sub domain was hidden when editing profile                 -FRU
