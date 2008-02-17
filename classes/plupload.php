@@ -30,6 +30,8 @@ class PlUpload
     private $filename;
     private $type;
 
+    static public $lastError;
+
     /** For images
      */
     private $x;
@@ -69,6 +71,21 @@ class PlUpload
 
     public function upload(array &$file)
     {
+        if (@$file['error']) {
+            PlUpload::$lastError = 'Erreur de téléchargement de ' . $file['name'] . ' : ';
+            switch ($file['error']) {
+              case UPLOAD_ERR_INI_SIZE: case UPLOAD_ERR_FORM_SIZE:
+                PlUpload::$lastError .= 'le fichier est trop gros (limite : ' . ini_get('upload_max_filesize') . ')';
+                break;
+              case UPLOAD_ERR_PARTIAL: case UPLOAD_ERR_NO_FILE:
+                PlUpload::$lastError .= 'le fichier n\'a pas été transmis intégralement';
+                break;
+              default:
+                PlUpload::$lastError .= 'erreur interne';
+                break;
+            }
+            return false;
+        }
         if (!is_uploaded_file($file['tmp_name'])) {
             return false;
         } else if (!move_uploaded_file($file['tmp_name'], $this->filename)) {
