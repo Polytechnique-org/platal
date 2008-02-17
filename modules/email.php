@@ -339,52 +339,57 @@ class EmailModule extends PLModule
                 return join(', ', $ret);
             }
 
+            $error = false;
             foreach ($_FILES as &$file) {
                 if ($file['name'] && !PlUpload::get($file, S::v('forlife'), 'emails.send', false)) {
-                    $page->trig("Impossible de télécharger '" . pl_entities($file['name']) . "'");
+                    $page->trig(PlUpload::$lastError);
+                    $error = true;
+                    break;
                 }
             }
 
-            XDB::execute("DELETE FROM  email_send_save
-                                WHERE  uid = {?}", S::i('uid'));
+            if (!$error) {
+                XDB::execute("DELETE FROM  email_send_save
+                                    WHERE  uid = {?}", S::i('uid'));
 
-            $to2  = getEmails(Env::v('to_contacts'));
-            $cc2  = getEmails(Env::v('cc_contacts'));
-            $txt  = str_replace('^M', '', Env::v('contenu'));
-            $to   = Env::v('to');
-            $subj = Env::v('sujet');
-            $from = Env::v('from');
-            $cc   = trim(Env::v('cc'));
-            $bcc  = trim(Env::v('bcc'));
+                $to2  = getEmails(Env::v('to_contacts'));
+                $cc2  = getEmails(Env::v('cc_contacts'));
+                $txt  = str_replace('^M', '', Env::v('contenu'));
+                $to   = Env::v('to');
+                $subj = Env::v('sujet');
+                $from = Env::v('from');
+                $cc   = trim(Env::v('cc'));
+                $bcc  = trim(Env::v('bcc'));
 
-            if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
-                $page->trig("Indique au moins un destinataire.");
-                $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
-            } else {
-                $mymail = new PlMailer();
-                $mymail->setFrom($from);
-                $mymail->setSubject($subj);
-                if (!empty($to))  { $mymail->addTo($to); }
-                if (!empty($cc))  { $mymail->addCc($cc); }
-                if (!empty($bcc)) { $mymail->addBcc($bcc); }
-                if (!empty($to2)) { $mymail->addTo($to2); }
-                if (!empty($cc2)) { $mymail->addCc($cc2); }
-                $files =& PlUpload::listFiles(S::v('forlife'), 'emails.send');
-                foreach ($files as $name=>&$upload) {
-                    $mymail->addUploadAttachment($upload, $name);
-                }
-                if (Env::v('nowiki')) {
-                    $mymail->setTxtBody(wordwrap($txt, 78, "\n"));
-                } else {
-                    $mymail->setWikiBody($txt);
-                }
-                if ($mymail->send()) {
-                    $page->trig("Ton mail a bien été envoyé.");
-                    $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
-                    PlUpload::clear(S::v('forlife'), 'emails.send');
-                } else {
-                    $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
+                if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
+                    $page->trig("Indique au moins un destinataire.");
                     $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
+                } else {
+                    $mymail = new PlMailer();
+                    $mymail->setFrom($from);
+                    $mymail->setSubject($subj);
+                    if (!empty($to))  { $mymail->addTo($to); }
+                    if (!empty($cc))  { $mymail->addCc($cc); }
+                    if (!empty($bcc)) { $mymail->addBcc($bcc); }
+                    if (!empty($to2)) { $mymail->addTo($to2); }
+                    if (!empty($cc2)) { $mymail->addCc($cc2); }
+                    $files =& PlUpload::listFiles(S::v('forlife'), 'emails.send');
+                    foreach ($files as $name=>&$upload) {
+                        $mymail->addUploadAttachment($upload, $name);
+                    }
+                    if (Env::v('nowiki')) {
+                        $mymail->setTxtBody(wordwrap($txt, 78, "\n"));
+                    } else {
+                        $mymail->setWikiBody($txt);
+                    }
+                    if ($mymail->send()) {
+                        $page->trig("Ton mail a bien été envoyé.");
+                        $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
+                        PlUpload::clear(S::v('forlife'), 'emails.send');
+                    } else {
+                        $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
+                        $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
+                    }
                 }
             }
         } else {
@@ -408,7 +413,7 @@ class EmailModule extends PLModule
                   WHERE  c.uid = {?}
                  ORDER BY u.nom, u.prenom", S::v('uid'));
         $page->assign('contacts', $res->fetchAllAssoc());
-        $page->assign('maxsize', ini_get('post_max_size') . 'o');
+        $page->assign('maxsize', ini_get('upload_max_filesize') . 'o');
     }
 
     function handler_test(&$page, $forlife = null)
