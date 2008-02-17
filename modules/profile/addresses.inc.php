@@ -76,15 +76,19 @@ class ProfileAddress extends ProfileGeoloc
             }
         }
         $current = 0;
+        $success = true;
         foreach ($value as $key=>&$adr) {
             if (@$adr['current']) {
                 $current++;
             }
         }
-        if (!$init && $current != 1 && count($value) > 0) {
+        if ($current == 0 && count($value) > 0) {
+            foreach ($value as $key=>&$adr) {
+                $adr['current'] = true;
+                break;
+            }
+        } else if ($current > 1) {
             $success = false;
-        } else {
-            $success = true;
         }
         foreach ($value as $key=>&$adr) {
             $ls = true;
