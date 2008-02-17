@@ -27,6 +27,7 @@
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="icon" href="images/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="images/logo-xnet.png" type="image/png" />
 
     <link rel="stylesheet" type="text/css" href="css/xnet.css" media="screen" />
 
