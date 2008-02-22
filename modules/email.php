@@ -68,11 +68,18 @@ class EmailModule extends PLModule
     $homonyme = XDB::query("SELECT alias FROM aliases INNER JOIN homonymes ON (id = homonyme_id) WHERE user_id = {?} AND type = 'homonyme'", $uid);
     $page->assign('homonyme', $homonyme->fetchOneCell());
 
+        // Affichage des redirections de l'utilisateur.
         $sql = "SELECT email
                 FROM emails
                 WHERE uid = {?} AND FIND_IN_SET('active', flags)";
         $page->assign('mails', XDB::iterator($sql, $uid));
 
+        // Affichage des backends actifs de stockage des emails.
+        $sql = "SELECT  mail_storage
+                  FROM  auth_user_md5
+                 WHERE  user_id = {?}";
+        $storages = XDB::query($sql, $uid)->fetchOneCell();
+        $page->assign('storage', explode(',', $storages));
 
         // on regarde si l'utilisateur a un alias et si oui on l'affiche !
         $forlife = S::v('forlife');
@@ -224,6 +231,17 @@ class EmailModule extends PLModule
             $redirect->modify_one_email_redirect($email, $rewrite);
         }
 
+        if ($action == 'storage' && $email == 'imap') {
+            $storage = new MailStorageIMAP(S::v('uid'));
+            $subaction = @func_get_arg(3);
+            if ($subaction == 'active') {
+                $storage->enable();
+            }
+            if ($subaction == 'inactive') {
+                $storage->disable();
+            }
+        }
+
         if (Env::has('emailop')) {
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
@@ -258,6 +276,12 @@ class EmailModule extends PLModule
         
         $page->assign('alias', $res->fetchAllAssoc());
         $page->assign('emails',$redirect->emails);
+
+        $res = XDB::query(
+                "SELECT  mail_storage
+                   FROM  auth_user_md5
+                  WHERE  user_id = {?}", $uid);
+        $page->assign('storage', explode(',', $res->fetchOneCell()));
     }
 
     function handler_antispam(&$page, $statut_filtre = null)

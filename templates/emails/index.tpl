@@ -92,16 +92,32 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
       </p>
       {else}
       Actuellement, tout courrier électronique qui t'y est adressé, est envoyé
-      {if $mails->total() eq 1} à l'adresse {else} aux adresses {/if}
+      {if $mails->total() eq 1} à l'adresse{else} aux adresses{/if}&nbsp;:
       <ul>
         {iterate from=$mails item=m}
         <li><strong>{$m.email}</strong></li>
         {/iterate}
       </ul>
       {/if}
+      {if count($storage) neq 0}
+      Ton courrier est également stocké sur {if count($storage) eq 1}le compte suivant{else} les comptes suivants{/if}&nbsp;:
+      <ul>
+        {foreach from=$storage item=s}
+        {if in_array('googleapps', $storage)}
+        <li><a href="https://www.polytechnique.org/Xorg/GoogleApps">
+          <strong>Compte Google Apps / GMail de Polytechnique.org</strong>
+        </a></li>
+        {elseif in_array('imap', $storage)}
+        <li><a href="https://www.polytechnique.org/Xorg/IMAP">
+          <strong>Accès de secours aux emails (IMAP)</strong>
+        </a></li>
+        {/if}
+        {/foreach}
+      </ul>
+      {/if}
       {test_email}
       Si tu souhaites <strong>modifier ce reroutage de ton courrier,</strong>
-      <a href="emails/redirect">il te suffit de te rendre ici !</a>
+      <a href="emails/redirect">il te suffit de te rendre ici&nbsp;!</a>
     </td>
   </tr>
 </table>

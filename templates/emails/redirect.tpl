@@ -208,6 +208,36 @@
 </fieldset>
 {/if}
 
+<h1>Tes comptes de stockage de courrier</h1>
+<p>
+  Polytechnique.org te propose de conserver les mails que tu reçois, pendant une durée limitée (environ 30 jours).
+  Grâce à ce service, tu disposes d'une sauvegarde de tes mails en secours, au cas où, par exemple, tu effacerais
+  un mail par erreur.<br />
+  <strong>Attention :</strong> il ne s'agit que d'un service de secours, dont la disponibilité n'est pas garantie.
+</p>
+
+<table class="bicol" summary="Compte de stockage">
+  <tr>
+    <th colspan="2">Compte de stockage</th>
+  </tr>
+  <tr class="pair">
+    <td>
+      <a href="https://www.polytechnique.org/Xorg/IMAP">
+        <strong>Accès de secours aux emails (IMAP)</strong>
+      </a><br />Hébergé par Polytechnique.org
+    </td>
+    <td>
+      <form action="emails/redirect/storage/imap/{if in_array('imap', $storage)}inactive{else}active{/if}" method="post">
+        {if in_array('imap', $storage)}
+        <input type="submit" value="Désactiver" />
+        {else}
+        <input type="submit" value="Activer" />
+        {/if}
+      </form>
+    </td>
+  </tr>
+</table>
+
 {if $eleve}
 <h1>Pour les Élèves (non encore diplômés)</h1>
 <p>
