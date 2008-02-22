@@ -1,4 +1,3 @@
-ALTER TABLE auth_user_md5 ADD COLUMN mail_storage SET('imap', 'googleapps') DEFAULT '' NOT NULL AFTER smtppass;
-UPDATE auth_user_md5 SET mail_storage = 'imap' WHERE mail_storage = '';
+ALTER TABLE auth_user_md5 ADD COLUMN mail_storage SET('imap', 'googleapps') DEFAULT 'imap' NOT NULL AFTER smtppass;
 
 # vim:set syntax=mysql:

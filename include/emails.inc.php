@@ -413,34 +413,33 @@ class Redirect
 class MailStorage {
     protected $uid;
     protected $name;
+    protected $storage;
 
     public function __construct($_uid, $_name)
     {
         $this->uid = $_uid;
         $this->name = $_name;
+
+        $res = XDB::query("SELECT  mail_storage
+                             FROM  auth_user_md5
+                            WHERE  user_id = {?}", $this->uid);
+        $this->storages = new FlagSet($res->fetchOneCell());
     }
 
     public function disable()
     {
-        $res = XDB::query("SELECT  mail_storage
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?}", $this->uid);
-        $storages = explode(',', $res->fetchOneCell());
-
-        if (in_array($this->name, $storages)) {
-            array_splice($storages, array_search($this->name, $storages), 1);
-            XDB::execute("UPDATE  auth_user_md5
-                             SET  mail_storage = {?}
-                           WHERE  user_id = {?}", implode(',', $storages), $this->uid);
-        }
+        $this->storages->rmFlag($this->name);
+        XDB::execute("UPDATE  auth_user_md5
+                         SET  mail_storage = {?}
+                       WHERE  user_id = {?}", $this->storages->flags(), $this->uid);
     }
 
     public function enable()
     {
+        $this->storages->addFlag($this->name);
         XDB::execute("UPDATE  auth_user_md5
-                         SET  mail_storage = CONCAT_WS(',', IF(mail_storage = '', NULL, mail_storage), {?})
-                       WHERE  user_id = {?} AND
-                              FIND_IN_SET({?}, mail_storage) = 0", $this->name, $this->uid, $this->name);
+                         SET  mail_storage = {?}
+                       WHERE  user_id = {?}", $this->storages->flags(), $this->uid);
     }
 }
 
