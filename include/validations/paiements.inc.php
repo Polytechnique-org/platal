@@ -185,11 +185,6 @@ class PayReq extends Validate
                                 WHERE  e.eid = {?}",
                               $this->evt);
             list($nom, $diminutif, $evt) = $res->fetchOneRow();
-            $mailer = new PlMailer('xnetevents/mail.new_payment.tpl');
-            $mailer->assign('asso', $nom);
-            $mailer->assign('diminutif', $diminutif);
-            $mailer->assign('evt', $evt);
-            $mailer->assign('payment', $id);
             require_once dirname(__FILE__) . '/../../modules/xnetevents/xnetevents.inc.php';
             $participants = get_event_participants(get_event_detail($this->evt, false, $this->asso_id), null, 'nom');
             foreach ($participants as &$u) {
@@ -198,6 +193,11 @@ class PayReq extends Validate
                 }
                 $topay = $u['montant'] - $u['paid'];
                 if ($topay > 0) {
+                    $mailer = new PlMailer('xnetevents/mail.new_payment.tpl');
+                    $mailer->assign('asso', $nom);
+                    $mailer->assign('diminutif', $diminutif);
+                    $mailer->assign('evt', $evt);
+                    $mailer->assign('payment', $id);
                     $mailer->assign('prenom', $u['prenom']);
                     $mailer->assign('topay', $topay);
                     $mailer->assign('to', $u['email']);
