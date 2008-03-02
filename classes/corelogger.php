@@ -77,7 +77,7 @@ class CoreLogger
 
         XDB::execute("INSERT INTO logger.sessions
                          SET uid={?}, host={?}, ip={?}, forward_ip={?}, forward_host={?}, browser={?}, suid={?}, flags={?}",
-                     $uid, $host, $ip, $forward_ip, $forward_host, $browser, $suid, $proxy);
+                     $uid, $host, ip_to_uint($ip), ip_to_uint($forward_ip), $forward_host, $browser, $suid, $proxy);
         if ($forward_ip) {
             $this->proxy_ip = $ip;
             $this->proxy_host = $host;

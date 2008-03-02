@@ -228,6 +228,35 @@ function make_forlife($prenom, $nom, $promo)
     return $forlife;
 }
 
+/** Convert ip to uint (to store it in a database)
+ */
+function ip_to_uint($ip)
+{
+    $part = explode('.', $ip);
+    $v = 0;
+    $fact = 0x1000000;
+    for ($i = 0 ; $i < 4 ; ++$i) {
+        $v += $fact * $part[$i];
+        $fact >>= 8;
+    }
+    return $v;
+}
+
+/** Convert uint to ip (to build a human understandable ip)
+ */
+function uint_to_ip($uint)
+{
+    return sprintf('%d.%d.%d.%d', ($uint / 16777216) % 0xff,
+                                  ($uint / 65536) & 0xff,
+                                  ($uint / 256)  & 0xff,
+                                  ($uint / 1.0) & 0xff);
+}
+
+
+/******************************************************************************
+ * Security functions
+ *****************************************************************************/
+
 function check_ip($level)
 {
     if (empty($_SERVER['REMOTE_ADDR'])) {
@@ -240,7 +269,7 @@ function check_ip($level)
         }
         $ips[] = $_SERVER['REMOTE_ADDR'];
         foreach ($ips as &$ip) {
-            $ip = "ip LIKE " . XDB::escape($ip);
+            $ip = "ip = " . ip_to_uint($ip);
         }
         $res = XDB::query('SELECT  state
                              FROM  ip_watch
@@ -300,6 +329,11 @@ function send_warning_mail($title)
         ."Identifiants de connexion :\n" . var_export($_SERVER, true));
     $mailer->send();
 }
+
+
+/******************************************************************************
+ * Dynamic configuration update/edition stuff
+ *****************************************************************************/
 
 function update_NbIns()
 {

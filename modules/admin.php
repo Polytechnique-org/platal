@@ -1039,19 +1039,20 @@ class AdminModule extends PLModule
             if (trim(Post::v('ipN')) != '') {
                 Xdb::execute('INSERT IGNORE INTO ip_watch (ip, state, detection, last, uid, description)
                                           VALUES ({?}, {?}, CURDATE(), NOW(), {?}, {?})',
-                             trim(Post::v('ipN')), Post::v('stateN'), S::i('uid'), Post::v('descriptionN'));
+                             ip_to_uint(trim(Post::v('ipN'))), Post::v('stateN'), S::i('uid'), Post::v('descriptionN'));
             };
             break;
 
         case 'edit':
             Xdb::execute('UPDATE ip_watch
                              SET state = {?}, last = NOW(), uid = {?}, description = {?}
-                           WHERE ip = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'), Post::v('ipN'));
+                           WHERE ip = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'),
+                          ip_to_uint(Post::v('ipN')));
             break;
 
         default:
             if ($action == 'delete' && !is_null($ip)) {
-                Xdb::execute('DELETE FROM emails_watch WHERE ip = {?}', $ip);
+                Xdb::execute('DELETE FROM ip_watch WHERE ip = {?}', ip_to_uint($ip));
             }
         }
         if ($action != 'create' && $action != 'edit') {
@@ -1060,10 +1061,14 @@ class AdminModule extends PLModule
         $page->assign('action', $action);
 
         if ($action == 'list') {
-            $sql = "SELECT  w.ip, IF(w.ip = s.ip, s.host, s.forward_host), w.detection, w.state, a.alias AS forlife
+            $sql = "SELECT  w.ip, IF(s.ip IS NULL,
+                                     IF(w.ip = s2.ip, s2.host, s2.forward_host),
+                                     IF(w.ip = s.ip, s.host, s.forward_host)),
+                             w.detection, w.state, a.alias AS forlife
                       FROM  ip_watch        AS w
-                 LEFT JOIN  logger.sessions AS s ON (s.ip = w.ip OR s.forward_ip = w.ip)
-                 LEFT JOIN  aliases         AS a ON (a.id = s.uid AND a.type = 'a_vie')
+                 LEFT JOIN  logger.sessions AS s  ON (s.ip = w.ip)
+                 LEFT JOIN  logger.sessions AS s2 ON (s2.forward_ip = w.ip)
+                 LEFT JOIN  aliases         AS a  ON (a.id = s.uid AND a.type = 'a_vie')
                   GROUP BY  w.ip, a.alias
                   ORDER BY  w.state, w.ip, a.alias";
             $it = Xdb::iterRow($sql);
@@ -1071,6 +1076,7 @@ class AdminModule extends PLModule
             $table = array();
             $props = array();
             while (list($ip, $host, $date, $state, $forlife) = $it->next()) {
+                $ip = uint_to_ip($ip);
                 if (count($props) == 0 || $props['ip'] != $ip) {
                     if (count($props) > 0) {
                         $table[] = $props;
@@ -1098,7 +1104,7 @@ class AdminModule extends PLModule
                      WHERE  w.ip = {?}
                   GROUP BY  a2.alias
                   ORDER BY  a2.alias";
-            $it = Xdb::iterRow($sql, $ip);
+            $it = Xdb::iterRow($sql, ip_to_uint($ip));
 
             $props = array();
             while (list($detection, $state, $last, $description, $edit, $forlife, $host) = $it->next()) {

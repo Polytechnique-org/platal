@@ -307,7 +307,7 @@ class QuickSearch extends SField
             $where[] = 'ems.email = ' . XDB::escape($this->email);
         }
         if (!empty($this->ip)) {
-            $ip = XDB::escape($this->ip);
+            $ip = ip_to_uint($this->ip);
             $where[] = "( ls.ip = $ip OR ls.forward_ip = $ip )";
         }
 
