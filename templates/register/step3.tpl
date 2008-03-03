@@ -45,11 +45,11 @@
   
   <p>
   Ces adresses sont des redirections vers des adresses e-mail de ton choix.
-  Indique-s-en un pour commencer (tu pourras indiquer les autres une fois l'inscription terminée) et pouvoir
+  Indique-s-en une pour commencer (tu pourras indiquer les autres une fois l'inscription terminée) et pouvoir
   terminer ton inscription.
   </p>
   <p>
-  Attention, il doit <strong>impérativement être correct</strong> pour que nous puissions 
+  Attention, elle doit <strong>impérativement être correcte</strong> pour que nous puissions 
   t'envoyer ton mot de passe.
   </p>
 
@@ -62,7 +62,7 @@
     <tr>
       <td class="titre">
         E-mail<br />
-        <span class="smaller">(Première redirection)</span>
+        <span class="smaller">(Première adresse de ton choix)</span>
       </td>
       <td>
         <input type="text" size="35" maxlength="50" name="email" value="{$smarty.post.email}" />
