@@ -1055,10 +1055,14 @@ class AdminModule extends PLModule
         $page->assign('action', $action);
 
         if ($action == 'list') {
-            $sql = "SELECT  w.ip, IF(w.ip = s.ip, s.host, s.forward_host), w.detection, w.state, a.alias AS forlife
+            $sql = "SELECT  w.ip, IF(s.ip IS NULL,
+                                     IF(w.ip = s2.ip, s2.host, s2.forward_host),
+                                     IF(w.ip = s.ip, s.host, s.forward_host)),
+                             w.detection, w.state, a.alias AS forlife
                       FROM  ip_watch        AS w
-                 LEFT JOIN  logger.sessions AS s ON (s.ip = w.ip OR s.forward_ip = w.ip)
-                 LEFT JOIN  aliases         AS a ON (a.id = s.uid AND a.type = 'a_vie')
+                 LEFT JOIN  logger.sessions AS s  ON (s.ip = w.ip)
+                 LEFT JOIN  logger.sessions AS s2 ON (s2.forward_ip = w.ip)
+                 LEFT JOIN  aliases         AS a  ON (a.id = s.uid AND a.type = 'a_vie')
                   GROUP BY  w.ip, a.alias
                   ORDER BY  w.state, w.ip, a.alias";
             $it = Xdb::iterRow($sql);
