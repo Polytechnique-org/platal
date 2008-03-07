@@ -102,12 +102,6 @@ function payment_submit(form)
 </script>
 
 <form method="post" action="{$platal->pl_self()}">
-  <p> Si tu ne souhaites pas utiliser notre interface de
-  télépaiement, tu peux virer directement la somme de ton choix sur notre compte
-  <strong>30004 00314 00010016782 60</strong>. Nous veillerons à ce que ton paiement parvienne à
-  son destinataire.  Pense toutefois à le préciser dans le motif du
-  versement.
-  <br /><br />
   </p>
   <table class="bicol">
     <tr>
