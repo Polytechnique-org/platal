@@ -1030,7 +1030,8 @@ class XnetGrpModule extends PLModule
 
         if ($uid) {
             $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.contacts, a.create_date,
-                                         IF(u2.nom_usage != '', u2.nom_usage, u2.nom) AS nom, u2.prenom, u2.promo
+                                         IF(u2.nom_usage != '', u2.nom_usage, u2.nom) AS nom, u2.prenom, u2.promo,
+                                         FIND_IN_SET('photo', a.flags) AS photo
                                    FROM auth_user_md5 AS u
                              INNER JOIN groupex.announces AS a ON ( (a.promo_min = 0 OR a.promo_min <= u.promo)
                                                                   AND (a.promo_max = 0 OR a.promo_max <= u.promo))
