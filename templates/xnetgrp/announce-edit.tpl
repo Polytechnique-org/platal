@@ -100,14 +100,15 @@ function visibilityChange(box)
     <tr style="border-top: 1px solid gray">
       <td class="titre">Illustration</td>
       <td>
-        {if $art.id && $art.img}
+        {if $art.id && $art.photo}
         <div style="float: left; text-align: center">
           <em>Image actuelle</em><br />
           <img src="{$platal->ns}announce/photo/{$art.id}" alt="Image actuelle" /><br />
           <input type="submit" name="valid" value="Pas d'image" />
+          <input type="hidden" name="photo" value="1" />
         </div>
         {/if}
-        {if $upload && $art.photo}
+        {if $upload && $upload->exists()}
         <div style="float: right; text-align: center">
           <em>Nouvelle image</em><br />
           <img src="{$platal->ns}announce/photo" alt="Nouvelle Image" /><br />

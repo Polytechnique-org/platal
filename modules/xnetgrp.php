@@ -1099,7 +1099,7 @@ class XnetGrpModule extends PLModule
         $art = array();
 
         if (Post::v('valid') == 'Visualiser' || Post::v('valid') == 'Enregistrer'
-            || Post::v('valid') == 'Supprimer l\'image') {
+            || Post::v('valid') == 'Supprimer l\'image' || Post::v('valid') == 'Pas d\'image') {
             if (!is_null($aid)) {
                 $art['id'] = $aid;
             }
@@ -1143,7 +1143,13 @@ class XnetGrpModule extends PLModule
                 $upload->rm();
                 Post::kill('valid');
             }
-            $art['photo'] = $upload->exists();
+            $art['photo'] = $upload->exists() || Post::i('photo');
+            if (Post::v('valid') == 'Pas d\'image' && !is_null($aid)) {
+                XDB::query("DELETE FROM groupex.announces_photo WHERE eid = {?}", $aid);
+                $upload->rm();
+                Post::kill('valid');
+                $art['photo'] = false;
+            }
         }
 
         if (Post::v('valid') == 'Enregistrer') {
@@ -1207,6 +1213,13 @@ class XnetGrpModule extends PLModule
                            $art['titre'], $art['texte'], $art['contacts'], $art['peremption'],
                            $promo_min, $promo_max,  $flags,
                            $art['id'], $globals->asso('id'));
+                if ($art['photo'] && $upload->exists()) {
+                    list($imgx, $imgy, $imgtype) = $upload->imageInfo();
+                    XDB::execute("REPLACE INTO groupex.announces_photo
+                                          SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
+                                 $aid, $imgtype, $imgx, $imgy, $upload->getContents());
+                    $upload->rm();
+                }
             }
         }
         if (Post::v('valid') == 'Enregistrer' || Post::v('valid') == 'Annuler') {
@@ -1215,7 +1228,8 @@ class XnetGrpModule extends PLModule
 
         if (empty($art) && !is_null($aid)) {
             $res = XDB::query("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife,
-                                      FIND_IN_SET('public', a.flags) AS public
+                                      FIND_IN_SET('public', a.flags) AS public,
+                                      FIND_IN_SET('photo', a.flags) AS photo
                                  FROM groupex.announces AS a
                            INNER JOIN auth_user_md5 AS u USING(user_id)
                            INNER JOIN aliases AS l ON (l.id = u.user_id AND l.type = 'a_vie')
