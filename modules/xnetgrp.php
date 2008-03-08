@@ -104,6 +104,7 @@ class XnetGrpModule extends PLModule
             '%grp/rss'             => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/announce/new'    => $this->make_hook('edit_announce', AUTH_MDP,  'groupadmin'),
             '%grp/announce/edit'   => $this->make_hook('edit_announce', AUTH_MDP,  'groupadmin'),
+            '%grp/announce/photo'  => $this->make_hook('photo_announce', AUTH_PUBLIC),
             '%grp/admin/announces' => $this->make_hook('admin_announce', AUTH_MDP, 'groupadmin'),
         );
     }
@@ -134,7 +135,8 @@ class XnetGrpModule extends PLModule
                             Env::i('unread'), S::i('uid'));
                 pl_redirect("#art" . Env::i('unread'));
             }
-            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife
+            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife,
+                                          FIND_IN_SET('photo', a.flags) AS photo
                                      FROM groupex.announces AS a
                                INNER JOIN auth_user_md5 AS u USING(user_id)
                                INNER JOIN aliases AS l ON (u.user_id = l.id AND l.type = 'a_vie')
@@ -155,7 +157,7 @@ class XnetGrpModule extends PLModule
                                    S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
             $page->assign('article_index', $index);
         } else {
-            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo
+            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, FIND_IN_SET('photo', a.flags) AS photo
                                      FROM groupex.announces AS a
                                INNER JOIN auth_user_md5 AS u USING(user_id)
                                     WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
@@ -1047,6 +1049,48 @@ class XnetGrpModule extends PLModule
         $page->assign('rss', $rss);
     }
 
+    private function upload_image(PlatalPage &$page, PlUpload &$upload)
+    {
+        if (@!$_FILES['image']['tmp_name'] && !Env::v('image_url')) {
+            return true;
+        }
+        if (!$upload->upload($_FILES['image'])  && !$upload->download(Env::v('image_url'))) {
+            $page->trig('Impossible de télécharger l\'image');
+            return false;
+        } elseif (!$upload->isType('image')) {
+            $page->trig('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG.');
+            $upload->rm();
+            return false;
+        } elseif (!$upload->resizeImage(200, 300, 100, 100, 32284)) {
+            $page->trig('Impossible de retraiter l\'image');
+            return false;
+        }
+        return true;
+    }
+
+    function handler_photo_announce(&$page, $eid = null) {
+        if ($eid) {
+            $res = XDB::query("SELECT * FROM groupex.announces_photo WHERE eid = {?}", $eid);
+            if ($res->numRows()) {
+                $photo = $res->fetchOneAssoc();
+                header('Content-Type: image/' . $photo['attachmime']);
+                echo $photo['attach'];
+                exit;
+            }
+        } else {
+            $upload = new PlUpload(S::v('forlife'), 'xnetannounce');
+            if ($upload->exists() && $upload->isType('image')) {
+                header('Content-Type: ' . $upload->contentType());
+                echo $upload->getContents();
+                exit;
+            }
+        }
+        global $globals;
+        header('Content-Type: image/png');
+        echo file_get_contents($globals->spoolroot . '/htdocs/images/logo.png');
+        exit;
+    }
+
     function handler_edit_announce(&$page, $aid = null)
     {
         global $globals, $platal;
@@ -1054,7 +1098,8 @@ class XnetGrpModule extends PLModule
         $page->assign('new', is_null($aid));
         $art = array();
 
-        if (Post::v('valid') == 'Visualiser' || Post::v('valid') == 'Enregistrer') {
+        if (Post::v('valid') == 'Visualiser' || Post::v('valid') == 'Enregistrer'
+            || Post::v('valid') == 'Supprimer l\'image') {
             if (!is_null($aid)) {
                 $art['id'] = $aid;
             }
@@ -1072,6 +1117,8 @@ class XnetGrpModule extends PLModule
             $art['xorg']       = Post::has('xorg');
             $art['nl']         = Post::has('nl');
             $art['event']      = Post::v('event');
+            $upload     = new PlUpload(S::v('forlife'), 'xnetannounce');
+            $this->upload_image($page, $upload);
 
             $art['contact_html'] = $art['contacts'];
             if ($art['event']) {
@@ -1091,36 +1138,59 @@ class XnetGrpModule extends PLModule
                 $page->trig("L'article doit avoir un titre et un contenu");
                 Post::kill('valid');
             }
+
+            if (Post::v('valid') == 'Supprimer l\'image') {
+                $upload->rm();
+                Post::kill('valid');
+            }
+            $art['photo'] = $upload->exists();
         }
 
         if (Post::v('valid') == 'Enregistrer') {
             $promo_min = ($art['public'] ? 0 : $art['promo_min']);
             $promo_max = ($art['public'] ? 0 : $art['promo_max']);
+            $flags = array();
+            if ($art['public']) {
+                $flags[] = 'public';
+            }
+            if ($art['photo']) {
+                $flags[] = 'photo';
+            }
+            $flags = implode(',', $flags);
             if (is_null($aid)) {
                 $fulltext = $art['texte'];
                 if (!empty($art['contact_html'])) {
                     $fulltext .= "\n\n'''Contacts :'''\\\\\n" . $art['contact_html'];
                 }
-                $post = null;
+                $post = null;/*
                 if ($globals->asso('forum')) {
                     require_once 'banana/forum.inc.php';
                     $banana = new ForumsBanana(S::v('forlife'));
                     $post = $banana->post($globals->asso('forum'), null,
                                           $art['titre'], MiniWiki::wikiToText($fulltext, false, 0, 80));
-                }
+                }*/
                 XDB::query("INSERT INTO groupex.announces
                                  (user_id, asso_id, create_date, titre, texte, contacts,
                                    peremption, promo_min, promo_max, flags, post_id)
                             VALUES ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
                            S::i('uid'), $globals->asso('id'), $art['titre'], $art['texte'], $art['contact_html'],
-                           $art['peremption'], $promo_min, $promo_max, $art['public'] ? 'public' : '', $post);
+                           $art['peremption'], $promo_min, $promo_max, $flags, $post);
                 $aid = XDB::insertId();
+                if ($art['photo']) {
+                    list($imgx, $imgy, $imgtype) = $upload->imageInfo();
+                    XDB::execute("INSERT INTO groupex.announces_photo
+                                          SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
+                                 $aid, $imgtype, $imgx, $imgy, $upload->getContents());
+                }
                 if ($art['xorg']) {
                     require_once('validations.inc.php');
                     $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'], $fulltext,
-                                    $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'));
+                                    $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'),
+                                    $upload);
                     $article->submit();
                     $page->trig("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation");
+                } else if ($upload && $upload->exists()) {
+                    $upload->rm();
                 }
                 if ($art['nl']) {
                     require_once('validations.inc.php');
@@ -1135,7 +1205,7 @@ class XnetGrpModule extends PLModule
                                    promo_min={?}, promo_max={?}, flags={?}
                              WHERE id={?} AND asso_id={?}",
                            $art['titre'], $art['texte'], $art['contacts'], $art['peremption'],
-                           $promo_min, $promo_max,  $art['public'] ? 'public' : '',
+                           $promo_min, $promo_max,  $flags,
                            $art['id'], $globals->asso('id'));
             }
         }
@@ -1171,6 +1241,7 @@ class XnetGrpModule extends PLModule
 
         $art['contact_html'] = @MiniWiki::WikiToHTML($art['contact_html']);
         $page->assign('art', $art);
+        $page->assign_by_ref('upload', $upload);
     }
 
     function handler_admin_announce(&$page)

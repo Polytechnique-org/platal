@@ -228,6 +228,10 @@ class PlUpload
         $array = getimagesize($this->filename);
         $array[2] = @$map[$array[2]];
         if (!$array[2]) {
+            list($image, $type) = explode('/', $array['mime']);
+            $array[2] = $type;
+        }
+        if (!$array[2]) {
             trigger_error('unknown image type', E_USER_NOTICE);
             return null;
         }

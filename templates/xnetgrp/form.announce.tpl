@@ -22,7 +22,7 @@
 
 <table class="tinybicol" id="art{$art.id}">
   <tr>
-    <th>
+    <th {if $art.photo}colspan="2"{/if}>
       {if $is_logged && !$admin}
       <div style="float: right">
         {if $is_admin}
@@ -37,6 +37,11 @@
     </th>
   </tr>
   <tr>
+    {if $art.photo}
+    <td rowspan="{if ($is_logged || $admin) && $art.contacts}3{else}2{/if}" style="width: 100px">
+      <img src="{$platal->ns}announce/photo/{$art.id}" alt="{$art.titre}" style="width: 100px" /> 
+    </td>
+    {/if}
     <td style="padding-bottom: 1em">
       {$art.texte|miniwiki|smarty:nodefaults}
     </td>
@@ -58,7 +63,7 @@
   </tr>
   {/if}
   <tr class="pair">
-    <td>
+    <td {if $art.photo}colspan="2"{/if}>
       <div style="float: right">
       <small>
         Annonce proposée par
