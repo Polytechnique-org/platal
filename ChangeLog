@@ -11,6 +11,9 @@ New:
         - Integration of goodies/external tools with local rss/iCal        -VZA
         - iGoogle gadgets for latest events and directory search           -VZA
 
+    * Emails:
+        - Imap mail storage can be activated/deactivated from interface    -VZA
+
     * Lists:
         - Unsure mails are moderated                                       -FRU
 
