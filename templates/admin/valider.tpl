@@ -15,13 +15,23 @@
 {*                                                                        *}
 {*  You should have received a copy of the GNU General Public License     *}
 {*  along with this program; if not, write to the Free Software           *}
-{*  Foundation, Inc.,                                                     *}
+
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
 
+{javascript name="jquery"}
+<script type="text/javascript">//<![CDATA[
+{literal}
+function activateField(name, id, obj) {
+  $("#" + name + "_" + id).show();
+  return true;
+}
+{/literal}
+//]]></script>
+
 <h1>Validation</h1>
- 
+
 
 {if $vit->total()}
 
@@ -52,9 +62,18 @@
   {include file=$valid->formu()}
   {if $valid->editor()}
   <tr>
+    <th colspan="2">
+     {if $preview_id neq $valid->id()}
+      <div style="float: left">
+        <a href="javascript:activateField('edit', '{$valid->id()}')">{icon name="add"}</a>
+      </div>
+      {/if}
+      Editer
+    </th>
+  </tr>
+  <tr {if $preview_id neq $valid->id()}style="display: none"{/if} id="edit_{$valid->id()}">
     <td colspan="2" class="center">
-      {if $preview_id == $valid->id()}
-      <form enctype="multipart/form-data" action="{$platal->pl_self()}#valid{$valid->id()}" method="post">
+      <form enctype="multipart/form-data" action="{$platal->pl_self(0)}/edit/{$valid->id()}#valid{$valid->id()}" method="post">
         <div>
           {include file=$valid->editor()}
           <input type="hidden" name="uid"    value="{$valid->uid}" />
@@ -64,15 +83,19 @@
           <input type="submit" name="edit"   value="Editer" />
         </div>
       </form>
-      {else}
-      <span class="smaller">
-        <a href="admin/validate/edit/{$valid->id()}#valid{$valid->id()}">{icon name=page_edit}Editer cette demande avant validation</a>
-      </span>
-      {/if}
     </td>
   </tr>
   {/if}
-  <tr><th colspan='2'>Commentaires</th></tr>
+  <tr>
+    <th colspan='2'>
+      {if $valid->comments|@count eq 0}
+      <div style="float: left">
+        <a href="javascript:activateField('comment', '{$valid->id()}')">{icon name="add"}</a>
+      </div>
+      {/if}
+      Commentaires
+    </th>
+  </tr>
   {foreach from=$valid->comments item=c}
   <tr class="{cycle values="impair,pair"}">
     <td class="titre">
@@ -81,7 +104,7 @@
     <td>{$c[1]|nl2br}</td>
   </tr>
   {/foreach}
-  <tr>
+  <tr {if $valid->comments|@count eq 0}style="display: none"{/if} id="comment_{$valid->id()}">
     <td colspan='2' class='center'>
       <form action="admin/validate" method="post">
         <div>
