@@ -40,6 +40,7 @@ Bug/Wish:
     * XnetGrp:
         - #732: Adapt subscription text to sex                             -FRU
         - #735: Encoding of list description in member edition form        -FRU
+        - #740: Can add a picture in the announces                         -FRU
 
 From 0.9.15 branch:
 
