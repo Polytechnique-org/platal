@@ -25,7 +25,7 @@
 <h1>Bravo !!!</h1>
 
 <p>
-Tu as maintenant accès au site !!!<br />
+Tu as maintenant accès au site !<br />
 Ton adresse électronique à vie <strong>{$smarty.session.forlife}@{#globals.mail.domain#}</strong> est déjà ouverte, essaie-la !
 </p>
 <p class="smaller">
@@ -84,10 +84,10 @@ Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le f
 </form>
 
 <p class="smaller">
-<strong>N'oublie pas&nbsp;:</strong> si tu perds ton mot de passe, nous n'avons aucun engagement, en
-particulier en termes de rapidité, mais pas seulement, à te redonner accès au
-site. Cela peut prendre plusieurs semaines, les pertes de mot de passe sont
-traitées avec la priorité minimale.
+<strong>N'oublie pas&nbsp;:</strong> en cas de perte de ton mot de passe,
+il existe une procédure de récupération automatique ; mais elle nécessite
+que ton adresse email sur le site soit toujours valable. Dans le cas contraire,
+il te faudra contacter l'équipe support.
 </p>
 
 {/if}
@@ -96,18 +96,18 @@ traitées avec la priorité minimale.
 
 <form action='register/save' method='post'>
   <p>
-  Pour rejoindre la communauté des X sur le web, nous te convions le plus vivement à remplir ton profil !!!
+  Pour rejoindre la communauté des X sur le web, nous t'invitons vivement à remplir ton profil !
   </p>
 
   <p>
-  Cette fonctionnalité n'est pas du tout redondante avec l'annuaire de l'AX, car nous pouvons synchroniser pour toi
-  les données qu'il contient&nbsp;:
+  Cet annuaire n'est pas redondant avec l'annuaire de l'AX ; il est synchronisé automatiquement,
+  d'une manière que tu choisis&nbsp;:
   </p>
 
   <dl>
     <dt><input type="checkbox" value="1" checked="checked" name="send_to_ax" disabled="disabled" /> vers l'AX</dt>
     <dd>
-      tu peux choisir dans ton profil sur Polytechnique.org d'automatiquement transmettre à l'AX des parties de ta fiche,
+      tu peux choisir dans ton profil sur Polytechnique.org de transmettre automatiquement à l'AX certains éléments de ta fiche,
       au fur et à mesure que tu les modifies.
       (Les données transmises seront <strong>uniquement</strong> celles que tu as décidé de transmettre).
     </dd>
