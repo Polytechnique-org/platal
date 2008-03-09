@@ -30,7 +30,6 @@
 <div class="menu_item"><a href="search">Annuaire de l'X</a></div>
 <div class="menu_item"><a href="http://www.polytechnique.net/">Associations X</a></div>
 <div class="menu_item"><a href="http://www.manageurs.com/">Recrutement</a></div>
-<div class="menu_item"><a href="survey">Sondages</a></div>
 
 <div class="menu_title">Informations</div>
 <div class="menu_item"><a href="Equipe/APropos">A propos du site</a></div>
