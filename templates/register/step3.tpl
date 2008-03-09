@@ -29,28 +29,28 @@
 <form action="register" method="post">
   {if $smarty.session.sub_state.mailorg2}
   <p>
-  Tu n'as pour le moment aucun homonyme dans notre base de données, nous allons
+  Tu n'as pour le moment aucun homonyme dans notre base de données. Nous allons
   donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong>,
   en plus de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@{#globals.mail.domain#}</strong>.
-  Sache que tu peux perdre l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong> 
-  si un homonyme s'inscrit (même si cela reste assez rare).
+  Note que tu pourrais perdre l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong> 
+  si un homonyme s'inscrivait &mdash; cela reste assez rare.
   </p>
   {else}
   <p>
-  Tu as déjà un homonyme inscrit dans notre base de données mais dans une autre promotion, nous allons
+  Tu as déjà un homonyme inscrit dans notre base de données, dans une autre promotion. Nous allons
   donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong>, en plus
   de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@{#globals.mail.domain#}</strong>.
   </p>
   {/if}
   
   <p>
-  Ces adresses sont des redirections vers des adresses e-mail de ton choix.
-  Indique-s-en une pour commencer (tu pourras indiquer les autres une fois l'inscription terminée) et pouvoir
-  terminer ton inscription.
+  Ces adresses sont des redirections vers une ou plusieurs adresses e-mail de ton choix.
+  Indiques-en une pour terminer ton inscription. Tu pourras la modifier ou ajouter d'autres
+  adresses une fois inscrit.
   </p>
   <p>
-  Attention, elle doit <strong>impérativement être correcte</strong> pour que nous puissions 
-  t'envoyer ton mot de passe.
+  Attention, cette adresse doit <strong>impérativement être valide</strong> pour que nous puissions 
+  t'envoyer tes informations de connexion.
   </p>
 
   <table class="bicol">
@@ -62,7 +62,7 @@
     <tr>
       <td class="titre">
         E-mail<br />
-        <span class="smaller">(Première adresse de ton choix)</span>
+        <span class="smaller">(adresse de ton choix pour reçevoir tes emails)</span>
       </td>
       <td>
         <input type="text" size="35" maxlength="50" name="email" value="{$smarty.post.email}" />
@@ -75,7 +75,7 @@
       </td>
       <td>
         <input type="text" size="10" maxlength="10" name="naissance"  value="{$smarty.post.naissance}" />
-        (demandée si perte de mot de passe)
+        (demandée si tu perds ton mot de passe)
       </td>
     </tr>
     <tr>
