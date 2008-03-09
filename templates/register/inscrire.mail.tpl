@@ -28,14 +28,14 @@
 {elseif $mail_part eq 'text'}
 Bonjour,
 
-Ton inscription sur Polytechnique.org est presque terminée : il ne te reste plus qu'à cliquer sur le lien ci-dessous !
+Ton inscription sur Polytechnique.org est presque terminée !
 
 Après activation, tes paramètres de connexion seront :
 
 login        : {$mailorg}
 mot de passe : {$pass}
 
-Tu devras remplacer de mot de passe temporaire par un mot de passe de ton choix.
+Nous te proposerons de remplacer de mot de passe temporaire par un mot de passe de ton choix.
 
 Rends-toi maintenant sur la page web suivante afin d'activer ta pré-inscription :
 
