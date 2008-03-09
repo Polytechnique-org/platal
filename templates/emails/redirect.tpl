@@ -208,6 +208,7 @@
 </fieldset>
 {/if}
 
+{if count($storage) neq 0 or #globals.mailstorage.imap_active# or hasPerm('admin')}
 <h1>Tes comptes de stockage de courrier</h1>
 <p>
   Polytechnique.org te propose de conserver les mails que tu reçois, pendant une durée limitée (environ 30 jours).
@@ -237,6 +238,7 @@
     </td>
   </tr>
 </table>
+{/if}
 
 {if $eleve}
 <h1>Pour les Élèves (non encore diplômés)</h1>
