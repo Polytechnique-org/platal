@@ -148,8 +148,10 @@ class RegisterModule extends PLModule
                         $err[] = "La 'Date de naissance' n'est pas correcte.";
                     } else {
                         $birth = explode('/', $birth, 3);
-                        $year  = intval($birth[2]);
-                        if ($year < 100) $year += 1900;
+                        for ($i = 0; $i < 3; $i++)
+                            $birth[$i] = intval($birth[$i]);
+                        if ($birth[2] < 100) $birth[2] += 1900;
+                        $year  = $birth[2];
                         $promo = (int)$sub_state['promo'];
                         if ($year > $promo - 15 || $year < $promo - 30) {
                             $err[] = "La 'Date de naissance' n'est pas correcte.";
