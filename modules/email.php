@@ -231,14 +231,23 @@ class EmailModule extends PLModule
             $redirect->modify_one_email_redirect($email, $rewrite);
         }
 
-        if ($action == 'storage' && $email == 'imap') {
-            $storage = new MailStorageIMAP(S::v('uid'));
-            $subaction = @func_get_arg(3);
-            if ($subaction == 'active') {
-                $storage->enable();
+        if ($action == 'storage') {
+            if ($email == 'imap') {
+                $storage = new MailStorageIMAP(S::v('uid'));
+            } else if ($email == 'googleapps') {
+                $storage = new MailStorageGoogleApps(S::v('uid'));
+            } else {
+                $storage = NULL;
             }
-            if ($subaction == 'inactive') {
-                $storage->disable();
+
+            if ($storage) {
+                $subaction = @func_get_arg(3);
+                if ($subaction == 'active') {
+                    $storage->enable();
+                }
+                if ($subaction == 'inactive') {
+                    $storage->disable();
+                }
             }
         }
 
@@ -273,7 +282,7 @@ class EmailModule extends PLModule
                    FROM  aliases
                   WHERE  id={?} AND (type='a_vie' OR type='alias')
                ORDER BY  !FIND_IN_SET('usage',flags), LENGTH(alias)", $uid);
-        
+
         $page->assign('alias', $res->fetchAllAssoc());
         $page->assign('emails',$redirect->emails);
 
@@ -282,6 +291,12 @@ class EmailModule extends PLModule
                    FROM  auth_user_md5
                   WHERE  user_id = {?}", $uid);
         $page->assign('storage', explode(',', $res->fetchOneCell()));
+
+        $res = XDB::query(
+                "SELECT  g_status
+                   FROM  gapps_accounts
+                  WHERE  l_userid = {?}", $uid);
+        $page->assign('googleapps', ($res->numRows() > 0 ? $res->fetchOneCell() : false));
     }
 
     function handler_antispam(&$page, $statut_filtre = null)

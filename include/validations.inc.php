@@ -313,6 +313,17 @@ abstract class Validate
     }
 
     // }}}
+    // {{{ function get_typed_requests_count()
+
+    /** same as get_typed_requests() but return the count of available requests.
+     */
+    static public function get_typed_requests_count($uid, $type)
+    {
+        $res = XDB::query('SELECT COUNT(data) FROM requests WHERE user_id={?} and type={?}', $uid, $type);
+        return $res->fetchOneCell();
+    }
+
+    // }}}
     // {{{ function _mail_body
 
     abstract protected function _mail_body($isok);

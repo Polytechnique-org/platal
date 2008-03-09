@@ -432,6 +432,7 @@ class MailStorage {
         XDB::execute("UPDATE  auth_user_md5
                          SET  mail_storage = {?}
                        WHERE  user_id = {?}", $this->storages->flags(), $this->uid);
+        return true;
     }
 
     public function enable()
@@ -440,6 +441,12 @@ class MailStorage {
         XDB::execute("UPDATE  auth_user_md5
                          SET  mail_storage = {?}
                        WHERE  user_id = {?}", $this->storages->flags(), $this->uid);
+        return true;
+    }
+
+    public function active()
+    {
+        return $this->storages->hasFlag($this->name);
     }
 }
 
@@ -447,6 +454,22 @@ class MailStorageIMAP extends MailStorage {
     public function __construct($_uid)
     {
         parent::__construct($_uid, 'imap');
+    }
+}
+
+class MailStorageGoogleApps extends MailStorage {
+    public function __construct($_uid)
+    {
+        parent::__construct($_uid, 'googleapps');
+    }
+    
+    public function disable() {
+        $redirect = new Redirect(S::v('uid'));
+        if (!$redirect->other_active(NULL)) {
+            return false;
+        }
+        
+        return parent::disable();
     }
 }
 

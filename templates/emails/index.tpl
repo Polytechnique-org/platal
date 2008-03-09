@@ -28,7 +28,7 @@
   function bestaliasUpdated() {
     showTempMessage('bestalias-msg', "Le changement a bien été effectué.", true);
   }
-</script>	
+</script>
 {/literal}
 <table class="bicol">
   <tr>
@@ -103,14 +103,10 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
       Ton courrier est également stocké sur {if count($storage) eq 1}le compte suivant{else} les comptes suivants{/if}&nbsp;:
       <ul>
         {if in_array('googleapps', $storage)}
-        <li><a href="https://www.polytechnique.org/Xorg/GoogleApps">
-          <strong>Compte Google Apps / GMail de Polytechnique.org</strong>
-        </a></li>
+        <li><a href="googleapps"><strong>Compte Google Apps / GMail de Polytechnique.org</strong></a></li>
         {/if}
         {if in_array('imap', $storage)}
-        <li><a href="https://www.polytechnique.org/Xorg/IMAP">
-          <strong>Accès de secours aux emails (IMAP)</strong>
-        </a></li>
+        <li><a href="Xorg/IMAP"><strong>Accès de secours aux emails (IMAP)</strong></a></li>
         {/if}
       </ul>
       {/if}

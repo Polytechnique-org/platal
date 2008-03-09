@@ -66,7 +66,7 @@
   </p>
   <p>
     Enfin, la <strong>réécriture</strong> consiste à substituer à ton adresse email habituelle
-    (adresse wanadoo, yahoo, free, ou autre) ton adresse {#globals.mail.domain#} ou
+    (adresse gmail, orange, free, ou autre) ton adresse {#globals.mail.domain#} ou
     {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsque le courrier
     passe par nos serveurs. Ceci arrive lorsque tu écris à un camarade sur son adresse {#globals.mail.domain#} ou
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
@@ -163,6 +163,19 @@
         </td>
       </tr>
       {/foreach}
+      {if $googleapps eq 'active'}
+      <tr class="{cycle values="pair,impair"}">
+        <td><strong>Compte GMail / Google Apps</strong></td>
+        <td>
+          <input type="checkbox" value="googleapps" disabled="disabled"
+                 {if in_array('googleapps', $storage)}checked="checked"{/if} />
+        </td>
+        <td>-</td>
+        <td>
+          <a href="emails/redirect#googleapps">{icon name=information title="Plus d'informations"}</a>
+        </td>
+      </tr>
+      {/if}
       <script type="text/javascript">activeEnable(); showRemove();</script>
       <tr class="{cycle values="pair,impair"}"><td colspan="4">
         <form action="emails/redirect" method="post">
@@ -208,8 +221,22 @@
 </fieldset>
 {/if}
 
-{if count($storage) neq 0 or #globals.mailstorage.imap_active# or hasPerm('admin')}
+{* TODO(vincent.zanotti): remove the following block of code when both IMAP and GApps will be active. *}
+{if in_array('imap', $storage) neq 0 or #globals.mailstorage.imap_active# or hasPerm('admin')}
+  {assign var=has_imap value=true}
+{else}
+  {assign var=has_imap value=false}
+{/if}
+{if $googleapps or #globals.mailstorage.googleapps_active# or hasPerm('admin')}
+  {assign var=has_googleapps value=true}
+{else}
+  {assign var=has_googleapps value=false}
+{/if}
+
+{if $has_imap or $has_googleapps}
 <h1>Tes comptes de stockage de courrier</h1>
+{/if}
+{if $has_imap}
 <p>
   Polytechnique.org te propose de conserver les mails que tu reçois, pendant une durée limitée (environ 30 jours).
   Grâce à ce service, tu disposes d'une sauvegarde de tes mails en secours, au cas où, par exemple, tu effacerais
@@ -218,16 +245,18 @@
 </p>
 
 <table class="bicol" summary="Compte de stockage">
+  <col width="75%" />
+  <col width="25%" />
   <tr>
     <th colspan="2">Compte de stockage</th>
   </tr>
   <tr class="pair">
     <td>
-      <a href="https://www.polytechnique.org/Xorg/IMAP">
+      <a href="Xorg/IMAP">
         <strong>Accès de secours aux emails (IMAP)</strong>
       </a><br />Hébergé par Polytechnique.org
     </td>
-    <td>
+    <td style="text-align: center; vertical-align: middle">
       <form action="emails/redirect/storage/imap/{if in_array('imap', $storage)}inactive{else}active{/if}" method="post">
         {if in_array('imap', $storage)}
         <input type="submit" value="Désactiver" />
@@ -236,6 +265,50 @@
         {/if}
       </form>
     </td>
+  </tr>
+</table>
+{/if}
+
+{if $has_googleapps}
+<br />
+<p>
+  Grâce à un partenariat avec Google, Polytechnique.org te propose également un compte
+  <b>Google Apps</b>, qui te permet de disposer des services Google (GMail pour
+  tes emails, Google Calendar, Google Docs, ...) sur une adresse polytechnique.org.
+</p>
+
+<table class="bicol" summary="Compte de stockage" id="googleapps">
+  <col width="75%" />
+  <col width="25%" />
+  <tr>
+    <th colspan="2">Compte de stockage</th>
+  </tr>
+  <tr class="pair">
+    {if $googleapps eq 'active'}
+    <td>
+      <a href="googleapps">
+        <strong>Redirection des emails vers GMail / Google Apps</strong>
+      </a><br />Hébergé par Google
+    </td>
+    <td style="text-align: center; vertical-align: middle">
+      <form action="emails/redirect/storage/googleapps/{if in_array('googleapps', $storage)}inactive{else}active{/if}" method="post">
+        {if in_array('googleapps', $storage)}
+        <input type="submit" value="Désactiver" />
+        {else}
+        <input type="submit" value="Activer" />
+        {/if}
+      </form>
+    </td>
+    {else}
+    <td colspan="2">
+      {if $googleapps eq 'disabled'}
+      Ton compte Google Apps est actuellement inactif.<br />
+      {else}
+      Tu n'as pas encore de compte Google Apps sur Polytechnique.org.<br />
+      {/if}
+      <a href="googleapps">Plus d'informations &hellip;</a>
+    </td>
+    {/if}
   </tr>
 </table>
 {/if}

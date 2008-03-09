@@ -28,7 +28,7 @@ if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
                          'geoloc', 'lists', 'marketing', 'payment', 'platal',
                          'profile', 'register', 'search', 'stats', 'admin',
                          'newsletter', 'axletter', 'bandeau', 'survey',
-                         'gadgets');
+                         'gadgets', 'googleapps');
     $platal->run();
 
     exit;
