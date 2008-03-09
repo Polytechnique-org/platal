@@ -35,7 +35,7 @@ Après activation, tes paramètres de connexion seront :
 login        : {$mailorg}
 mot de passe : {$pass}
 
-Nous te proposerons de remplacer de mot de passe temporaire par un mot de passe de ton choix.
+Nous te proposerons de remplacer ce mot de passe temporaire par un mot de passe de ton choix.
 
 Rends-toi maintenant sur la page web suivante afin d'activer ta pré-inscription :
 
