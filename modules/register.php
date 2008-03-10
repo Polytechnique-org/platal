@@ -468,6 +468,11 @@ class RegisterModule extends PLModule
                 $client->subscribe($sub);
             }
         }
+        if (Post::v('imap')) {
+            require_once 'emails.inc.php';
+            $storage = new MailStorageIMAP(S::v('uid'));
+            $storage->enable();
+        }
 
         pl_redirect('profile/edit');
     }

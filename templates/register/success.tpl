@@ -45,7 +45,7 @@ ton mot de passe a bien été mis à jour !
 {else}
 
 <p>
-Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le faire ici&nbsp;:
+Tu as reçu un mot de passe par défaut, si tu souhaites en changer, tu peux le faire ici&nbsp;:
 </p>
 
 <form action="register/success" method="post" id="changepass">
@@ -135,6 +135,10 @@ il te faudra contacter l'équipe support.
     <dd>
       de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements
       qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.promo}.
+    </dd>
+    <dt><input type='checkbox' value='1' checked="checked" name='imap' />imap</dt>
+    <dd>
+      d'avoir un accès de secours aux 30 derniers jours de mail reçus sur ton adresse Polytechnique.org.
     </dd>
   </dl>
 
