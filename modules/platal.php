@@ -185,6 +185,8 @@ class PlatalModule extends PLModule
 
     function handler_password(&$page)
     {
+        global $globals;
+
         if (Post::has('response2'))  {
             require_once 'secure_hash.inc.php';
 
@@ -194,6 +196,16 @@ class PlatalModule extends PLModule
                              SET  password={?}
                            WHERE  user_id={?}', $password,
                            S::v('uid'));
+
+            // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
+            // updates the Google Apps password as well.
+            if ($globals->mailstorage->googleapps_domain) {
+                require_once 'googleapps.inc.php';
+                $account = new GoogleAppsAccount(S::v('uid'), S::v('forlife'));
+                if ($account->g_status == 'active' && $account->sync_password) {
+                    $account->set_password($password);
+                }
+            }
 
             $log =& S::v('log');
             $log->log('passwd', '');
@@ -331,6 +343,7 @@ Adresse de secours : " . Post::v('email') : ""));
 
     function handler_tmpPWD(&$page, $certif = null)
     {
+        global $globals;
         XDB::execute('DELETE FROM perte_pass
                                       WHERE DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
 
@@ -344,11 +357,24 @@ Adresse de secours : " . Post::v('email') : ""));
         $uid = $ligne["uid"];
         if (Post::has('response2')) {
             $password = Post::v('response2');
-            $logger   = new CoreLogger($uid);
             XDB::query('UPDATE  auth_user_md5 SET password={?}
                                    WHERE  user_id={?} AND perms IN("admin","user")',
                                  $password, $uid);
             XDB::query('DELETE FROM perte_pass WHERE certificat={?}', $certif);
+
+            // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
+            // updates the Google Apps password as well.
+            if ($globals->mailstorage->googleapps_domain) {
+                require_once 'googleapps.inc.php';
+                require_once 'user.func.inc.php';
+                $forlife = get_user_forlife($uid, '_silent_user_callback');
+                $account = new GoogleAppsAccount($uid, $forlife);
+                if ($account->g_status == 'active' && $account->sync_password) {
+                    $account->set_password($password);
+                }
+            }
+
+            $logger = new CoreLogger($uid);
             $logger->log("passwd","");
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {

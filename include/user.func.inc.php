@@ -70,6 +70,13 @@ function user_clear_all_subs($user_id, $really_del=true)
 
     $mmlist = new MMList(S::v('uid'), S::v('password'));
     $mmlist->kill($alias, $really_del);
+
+    // Deactivates, when available, the Google Apps account of the user.
+    if ($globals->mailstorage->googleapps_domain) {
+        require_once 'googleapps.inc.php';
+        $account = new GoogleAppsAccount($uid, $alias);
+        $account->suspend();
+    }
 }
 
 // }}}

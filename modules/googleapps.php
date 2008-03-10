@@ -60,7 +60,7 @@ class GoogleAppsModule extends PLModule
             if ($action == 'password') {
                 if ($subaction == 'sync') {
                     $account->set_password_sync(true);
-                    $account->set_password($_SESSION['password']);
+                    $account->set_password(S::v('password'));
                     $page->trig("Ton mot de passe Google Apps sera dorénavant synchronisé avec ton mot de passe Polytechnique.org.");
                 } else if ($subaction == 'nosync') {
                     $account->set_password_sync(false);
@@ -94,7 +94,7 @@ class GoogleAppsModule extends PLModule
                 $password_sync = Post::b('password_sync');
                 $redirect_mails = Post::b('redirect_mails');
                 if ($password_sync) {
-                    $password = $_SESSION['password'];
+                    $password = S::v('password');
                 } else {
                     $password = Post::v('response2');
                 }

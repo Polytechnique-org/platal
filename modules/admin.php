@@ -351,6 +351,7 @@ class AdminModule extends PLModule
 
     function handler_user(&$page, $login = false)
     {
+        global $globals;
         $page->changeTpl('admin/utilisateurs.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Edit/Su/Log');
         require_once("emails.inc.php");
@@ -579,6 +580,25 @@ class AdminModule extends PLModule
                                       LEFT JOIN aliases       AS a ON (a.id = u.user_id AND type= 'a_vie')
                                           WHERE u.user_id = {?}", $mr['user_id']);
                         $mr = $r->fetchOneAssoc();
+
+                        // If GoogleApps is enabled, the user did choose to use synchronized passwords,
+                        // and the password was changed, updates the Google Apps password as well.
+                        if ($globals->mailstorage->googleapps_domain && Env::v('newpass_clair') != "********") {
+                            require_once 'googleapps.inc.php';
+                            $account = new GoogleAppsAccount($mr['user_id'], $mr['forlife']);
+                            if ($account->g_status == 'active' && $account->sync_password) {
+                                $account->set_password($pass_encrypted);
+                            }
+                        }
+
+                        // If GoogleApps is enabled, and the user is now disabled, disables the Google Apps account as well.
+                        if ($globals->mailstorage->googleapps_domain &&
+                            $new_fields['perms'] == 'disabled' &&
+                            $new_fields['perms'] != $old_fields['perms']) {
+                            require_once 'googleapps.inc.php';
+                            $account = new GoogleAppsAccount($mr['user_id'], $mr['forlife']);
+                            $account->suspend();
+                        }
                         break;
 
                     // DELETE FROM auth_user_md5

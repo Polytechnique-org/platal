@@ -386,6 +386,7 @@ class RegisterModule extends PLModule
 
     function handler_success(&$page)
     {
+        global $globals;
         $page->changeTpl('register/success.tpl');
 
         $_SESSION['sub_state'] = array('step' => 5);
@@ -395,6 +396,17 @@ class RegisterModule extends PLModule
             XDB::execute('UPDATE auth_user_md5 SET password={?}
                                      WHERE user_id={?}', $password,
                                    S::v('uid'));
+
+            // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
+            // and if the (stupid) user has decided to user /register/success another time,
+            // updates the Google Apps password as well.
+            if ($globals->mailstorage->googleapps_domain) {
+                require_once 'googleapps.inc.php';
+                $account = new GoogleAppsAccount(S::v('uid'), S::v('forlife'));
+                if ($account->g_status == 'active' && $account->sync_password) {
+                    $account->set_password($password);
+                }
+            }
 
             $log = S::v('log');
             $log->log('passwd', '');
