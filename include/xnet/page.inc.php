@@ -96,7 +96,7 @@ class XnetPage extends PlatalPage
             if ($perms->hasFlag('groupannu')) {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
                 $sub['trombinoscope'] = "$dim/trombi";
-                $sub['carte'] = "$dim/geoloc";
+                $subp['planisphère'] = "$dim/geoloc";
             }
             if ($perms->hasFlag('groupmember')) {
                 if ($globals->asso('forum')) {
