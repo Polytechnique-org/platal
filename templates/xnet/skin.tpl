@@ -97,7 +97,7 @@
             </td>
             {if $xnet_type}
             <td style="width: 280px">
-              <img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" />
+              <a href="{if $xnet_type eq plan}plan{else}groups/{$xnet_type}{/if}"><img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" /></a>
             </td>
             {if $asso}
             <td class="logo">
