@@ -105,13 +105,13 @@ get-wiki:
 
 banana: htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php
 htdocs/images/banana:
-	cd $(@D) && ln -sf $(BANANA)/img $(@F)
+	cd $(@D) && ln -snf $(BANANA)/img $(@F)
 
 htdocs/css/banana.css:
-	cd $(@D) && ln -sf $(BANANA)/css/style.css $(@F)
+	cd $(@D) && ln -snf $(BANANA)/css/style.css $(@F)
 
 include/banana/banana.inc.php:
-	cd $(@D) && find $(BANANA)/banana/ -name '*.php' -exec ln -sf {} . ";"
+	cd $(@D) && find $(BANANA)/banana/ -name '*.php' -exec ln -snf {} . ";"
 
 
 
@@ -125,5 +125,5 @@ htdocs/javascript/jquery.js:
 
 ################################################################################
 
-.PHONY: build dist clean wiki build-wiki banana
+.PHONY: build dist clean wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php
 
