@@ -250,7 +250,7 @@ function subscribe_lists_event($participate, $uid, $evt)
 }
 // }}}
 
-function event_change_shortname(&$page, $old, $new)
+function event_change_shortname(&$page, $eid, $old, $new)
 {
     global $globals;
 
@@ -307,7 +307,7 @@ function event_change_shortname(&$page, $old, $new)
              LEFT JOIN groupex.membres AS m ON (ep.uid = m.uid)
              LEFT JOIN auth_user_md5   AS u ON (u.user_id = ep.uid)
              LEFT JOIN aliases         AS a ON (a.id = ep.uid AND a.type = 'a_vie')
-                 WHERE ep.eid = {?}
+                 WHERE ep.eid = {?} AND ep.nb > 0
               GROUP BY ep.uid)",
               $lastid, '@'.$globals->mail->domain, $eid);
 
@@ -318,12 +318,12 @@ function event_change_shortname(&$page, $old, $new)
         XDB::execute("INSERT INTO virtual_redirect (
             SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
                   FROM groupex.membres AS m
-             LEFT JOIN groupex.evenements_participants AS ep ON (ep.uid = m.uid)
+             LEFT JOIN groupex.evenements_participants AS ep ON (ep.uid = m.uid AND ep.eid = {?})
              LEFT JOIN auth_user_md5   AS u ON (u.user_id = m.uid)
              LEFT JOIN aliases         AS a ON (a.id = m.uid AND a.type = 'a_vie')
                  WHERE m.asso_id = {?} AND ep.uid IS NULL
               GROUP BY m.uid)",
-             $lastid, "@".$globals->mail->domain, $globals->asso('id'));
+             $lastid, "@".$globals->mail->domain, $eid, $globals->asso('id'));
 
         return $new;
     }

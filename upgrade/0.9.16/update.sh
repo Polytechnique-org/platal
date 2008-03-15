@@ -9,8 +9,16 @@ mailman_stop
 mailman_templates
 mailman_start
 
+###########################################################
+
+echo "fixing the xnetevents aliases (this may be a long operation)"
+
+./xnetevents.list.php
 
 ###########################################################
+
+echo "upgrading the database"
+
 for sql in *.sql
 do
     echo -n $sql

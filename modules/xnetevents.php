@@ -244,7 +244,7 @@ class XnetEventsModule extends PLModule
                 XDB::execute(
                     "DELETE FROM  groupex.evenements_participants
                            WHERE  eid = {?} AND uid = {?} AND item_id = {?}",
-                    $eid, S::v("uid"), $j);		
+                    $eid, S::v("uid"), $j);
                 $updated = $eid;
             }
             $total += $nb;
@@ -356,7 +356,8 @@ class XnetEventsModule extends PLModule
 
         if (Post::v('intitule')) {
             require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
-            $short_name = event_change_shortname($page, $infos['short_name'],
+            $short_name = event_change_shortname($page, $eid,
+                                                 $infos['short_name'],
                                                  Env::v('short_name', ''));
             if ($short_name != Env::v('short_name')) {
                 $error = true;
@@ -556,7 +557,7 @@ class XnetEventsModule extends PLModule
                                  GROUP BY uid",
                                             $member['uid'], $evt['eid']);
                 $u = $res->fetchOneAssoc();
-                $u = $u['cnt'] ? null : $u['nb'];
+                $u = $u['cnt'] ? $u['nb'] : null;
                 subscribe_lists_event($u, $member['uid'], $evt);
             }
 
