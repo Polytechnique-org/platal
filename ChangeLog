@@ -40,6 +40,7 @@ Bug/Wish:
     * XnetEvent:
         - #728: Update CSV                                                 -FRU
         - #743: Don't show a warning when subscriber has no forlife        -FRU
+        - #730: XnetEvents are not synchronized with aliases               -VZA
 
     * XnetGrp:
         - #732: Adapt subscription text to sex                             -FRU
