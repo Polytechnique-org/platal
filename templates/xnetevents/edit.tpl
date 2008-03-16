@@ -45,15 +45,23 @@ function deadlineChange(box)
 <p class="descr">
   Tu as la possibilité, pour un événement donné, de distinguer plusieurs "moments"
   distincts. Par exemple, dans le cas d'une réunion suivie d'un dîner, il peut être
-  utile de comptabiliser les présents à la réunion d'une part, et de compter ceux
+  utile de comptabiliser les présents à la réunion d'une part et de compter ceux
   qui s'inscrivent au repas d'autre part (en général certains participants à la réunion
   ne restent pas pour le dîner...), de sorte que tu sauras combien de chaises prévoir
-  pour le premier "moment" (la réunion), et pour combien de personnes réserver le
+  pour le premier "moment" (la réunion) et pour combien de personnes réserver le
   restaurant.
 </p>
 
 <hr />
 <h2>Description de l'événement</h2>
+
+{if $evt.eid}
+<p class='erreur'>
+  <strong>Attention :</strong> si tu souhaites modifier la structure d'un événement alors
+  que des personnes y sont déjà inscrites, contacte préalablement
+  <a href='mailto:contact@polytechnique.org'>l'équipe de Polytechnique.org</a>.
+</p>
+{/if}
 
 <form method="post" action="{$platal->ns}events/edit/{$url_ref}">
   <table class='bicol' cellspacing='0' cellpadding='0'>
