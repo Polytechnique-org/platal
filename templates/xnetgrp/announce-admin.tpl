@@ -41,7 +41,7 @@
   <tr>
     <td colspan="3" class="center">
       <a href="{$platal->ns}announce/new">
-        {icon name=add title="Nouvelle annonce"} Ecrire une nouvelle annonce
+        {icon name=add title="Nouvelle annonce"} Écrire une nouvelle annonce.
       </a>
     </td>
   </tr>

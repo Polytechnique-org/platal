@@ -45,7 +45,7 @@ masculin ou féminin, par son prénom, ou son nom.
 <form action="{$platal->ns}mail" method="post" enctype="multipart/form-data">
   <table class='bicol'>
     <tr>
-      <th colspan="2">Ecrire un mail&nbsp;:</th>
+      <th colspan="2">Écrire un mail&nbsp;:</th>
     </tr>
     <tr>
       <td class="titre">Expéditeur&nbsp;:</td>

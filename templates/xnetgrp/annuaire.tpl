@@ -37,7 +37,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
   <li>
     <a href="{$platal->ns}admin/annuaire">
       {icon name=wand title="Synchroniser"} 
-      Synchroniser annuaire et Listes de diffusion
+      Synchroniser annuaire et listes de diffusion
     </a>
   </li>
   {/if}
@@ -56,7 +56,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
 
 <p class="center">
 [<a href="{$platal->ns}annuaire?order={$smarty.request.order}" {if !$only_admin}class="erreur"{/if}>tous les membres</a>]
-[<a href="{$platal->ns}annuaire?order={$smarty.request.order}&amp;admin=1" {if $only_admin}class="erreur"{/if}>administrateurs</a>]<br/>
+[<a href="{$platal->ns}annuaire?order={$smarty.request.order}&amp;admin=1" {if $only_admin}class="erreur"{/if}>animateurs</a>]<br/>
 {foreach from=$alphabet item=c}
 {if $c}
 [<a href="{$platal->ns}annuaire?{$group}={$c}&amp;order={$smarty.request.order}{if $only_admin}&amp;admin=1{/if}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]

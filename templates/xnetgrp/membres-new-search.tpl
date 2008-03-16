@@ -21,9 +21,9 @@
 {**************************************************************************}
 
   {if !$choix}
-  Les critères de recherche ne sont pas assez précis
+  Les critères de recherche ne sont pas assez précis.
   {elseif !$choix->total()}
-  Aucun camarade non-inscrit ne correspond aux informations fournies
+  Aucun camarade non-inscrit ne correspond aux informations fournies.
   {elseif $choix->total()}
   Camarades correspondants&nbsp;:
   <select name="userid" onchange="document.getElementById('marketing').style.display = (this.value == 0 ? 'none' : '')">
@@ -37,8 +37,8 @@
         onchange="document.getElementById('from').style.display = (this.checked ? '' : 'none')"/>
     Lui envoyer un marketing
     <select name="market_from" id="from">
-      <option value="user" selected="selected">de ta part</option>
-      <option value="staff">de la part de Polytechnique.org</option>
+      <option value="user" selected="selected">de ta part.</option>
+      <option value="staff">de la part de Polytechnique.org.</option>
     </select>
   </span>
   {/if}

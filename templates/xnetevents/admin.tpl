@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: <a href='{$platal->ns}events'>Evénements</a> </h1>
+<h1>{$asso.nom}&nbsp;: <a href='{$platal->ns}events'>Événements</a> </h1>
 
 <p>
 L'événement {$evt.intitule}
@@ -29,7 +29,7 @@ L'événement {$evt.intitule}
 {if $evt.titre || count($moments) eq 0}
 comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
 {else}
-({$evt.nb} personne{if $evt.nb > 1}s{/if} ont réalisé leur inscription).
+({$evt.nb} personne{if $evt.nb > 1}s ont réalisé leur{else} a réalisé son{/if} inscription).
 {/if}
 </p>
 
@@ -239,15 +239,15 @@ Donne ici son mail, ainsi que le nombre de participants.
   <p class="descr">
     <input type="hidden" name="adm" value="nbs" />
 
-    Mail: <input name="mail" size="20" />
+    Mail&nbsp;: <input name="mail" size="20" />
 
     {if $platal->argv[2]}
-    {$evt.titre}: <input name="nb[{$platal->argv[2]}]" size="1" value="1" />
+    {$evt.titre}&nbsp;: <input name="nb[{$platal->argv[2]}]" size="1" value="1" />
     {else}
     {foreach from=$moments item=m}
-    {$m.titre}: <input name="nb[{$m.item_id}]" size="1" value="1"/>
+    {$m.titre}&nbsp;: <input name="nb[{$m.item_id}]" size="1" value="1"/>
     {foreachelse}
-    Nombre: <input name="nb[1]" size="1" value="1" />
+    Nombre&nbsp;: <input name="nb[1]" size="1" value="1" />
     {/foreach}
     {/if}
     <input type="submit" />
@@ -265,14 +265,14 @@ entrer un montant négatif.
 </p>
 
 <p class="descr">
-Note que tu peux cliquer sur les noms des membres pour remplir automatiquement la case ci-dessous
+Note que tu peux cliquer sur les noms des membres pour remplir automatiquement la case ci-dessous.
 </p>
 
 <form action="{$platal->pl_self()}" method="post" id="montant">
   <p class="descr">
   <input type="hidden" name="adm" value="prix" />
-  Mail: <input name="mail" size="20" />
-  montant: <input name="montant" size="3" value="0,00" /> &euro;
+  Mail&nbsp;: <input name="mail" size="20" />
+  montant&nbsp;: <input name="montant" size="3" value="0,00" /> &euro;
   <input type="submit" />
   </p>
 </form>

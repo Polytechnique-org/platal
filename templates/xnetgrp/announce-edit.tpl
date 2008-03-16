@@ -32,7 +32,7 @@ function visibilityChange(box)
 }
 {/literal}
 </script>
-<h1>{$asso.nom}&nbsp;: Edition d'une annonce</h1>
+<h1>{$asso.nom}&nbsp;: Édition d'une annonce</h1>
 
 {if $art.texte}
 <div>
@@ -45,7 +45,7 @@ function visibilityChange(box)
 <div>
   <table class="bicol">
     <tr>
-      <th colspan="2">Editer une annonce</th>
+      <th colspan="2">Éditer une annonce</th>
     </tr>
     <tr class="pair">
       <td class="titre">Titre&nbsp;:</td>
@@ -76,7 +76,7 @@ function visibilityChange(box)
           {/literal}
         </script>
         <small>
-          Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 600 caractères soit une dizaine de ligne.
+          Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 600 caractères soit une dizaine de lignes.
           Tu en es déjà à <input type='text' name='texte_count' size="4"/> caractères.
           Si tu veux proposer cette annonce pour la Lettre Mensuelle, il faut te limiter à 8 lignes.
         </small>
@@ -98,7 +98,7 @@ function visibilityChange(box)
       </td>
     </tr>
     <tr style="border-top: 1px solid gray">
-      <td class="titre">Illustration</td>
+      <td class="titre">Illustration&nbsp;:</td>
       <td>
         {if $art.id && $art.photo}
         <div style="float: left; text-align: center">
@@ -124,7 +124,7 @@ function visibilityChange(box)
     <tr style="border-top: 1px solid gray">
       <td colspan="2" class="center">
         <a href="wiki_help/notitle" class="popup3">
-          {icon name=information title="Syntaxe wiki"} Voir la liste des marqueurs de mise en forme autorisés
+          {icon name=information title="Syntaxe wiki"} Voir la liste des marqueurs de mise en forme autorisés.
         </a>
       </td>
     </tr>
@@ -158,7 +158,7 @@ function visibilityChange(box)
       <td class="titre">Visibilité&nbsp;:</td>
       <td>
         <input type="checkbox" name="public" {if $art.public}checked="checked"{/if} onchange="visibilityChange(this)" />
-        Rendre cette annonce publique
+        Rendre cette annonce publique.
       </td>
     </tr>
     <tr id="promo_titre" {if $art.public}style="display: none"{/if}>
@@ -191,7 +191,7 @@ function visibilityChange(box)
     <tr class="pair">
       <td colspan="2">
         <small>Les demandes de publication sont soumises à validation par l'équipe
-        de Polytechnique.org</small>
+        de Polytechnique.org.</small>
       </td>
     </tr>
     {/if}

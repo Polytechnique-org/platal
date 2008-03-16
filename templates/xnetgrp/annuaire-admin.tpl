@@ -32,7 +32,7 @@
   {/foreach}
 </ul>
 
-<h2>non Polytechniciens</h2>
+<h2>Non polytechniciens</h2>
 <ul>
   {foreach from=$not_in_group_ext item=n}
   <li>{$n} [<a href='{$platal->ns}member/new/{$n}' class='popup'>l'inscrire</a>]</li>
@@ -41,7 +41,7 @@
   {/foreach}
 </ul>
 
-<h2>Comparer une liste et l'annuaire</h2>
+<h1>Comparer une liste et l'annuaire</h1>
 
 <table cellspacing="2" cellpadding="0" class="tiny">
   <tr>

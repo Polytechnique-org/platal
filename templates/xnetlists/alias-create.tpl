@@ -22,19 +22,19 @@
 
 <h1>Création d'un alias</h1>
 <p class='descr'>
-Les alias sont concus pour répondre aux problèmes suivants&nbsp;:
+Les alias sont conçus pour répondre aux problèmes suivants&nbsp;:
 </p>
 <ul class='descr'>
   <li>
   redirections pour les postes des gens au sein du groupe&nbsp;: par exemple il est pratique d'avoir un alias
-  president@..., ou bien tresorier@... qui pointent tout le temps vers la bonne personne du groupe.
-  Une sorte d'adresse de «redirection à vie».
+  president@... ou bien tresorier@... qui pointent tout le temps vers la bonne personne du groupe.
+  Une sorte d'adresse de «redirection à vie» ;
   </li>
   <li>
-  listes de diffusions pour de petits nombres de personnes (bureau@ ...)
+  listes de diffusions pour de petits nombres de personnes (bureau@ ...) ;
   </li>
   <li>
-  listes à vie courte (liste créée pour l'organisation d'un évenement ponctuel par exemple)
+  listes à vie courte (liste créée pour l'organisation d'un évenement ponctuel par exemple) ;
   </li>
   <li>
   fédérer plusieurs listes/alias sous un même nom (ce que ne peuvent faire les listes de diffusion).
@@ -42,7 +42,7 @@ Les alias sont concus pour répondre aux problèmes suivants&nbsp;:
 </ul>
 
 <p class='descr'>
-Pour les autres besoins de communications (notament pour un grand nombre de personnes, et pour bénéficier des outils
+Pour les autres besoins de communications (notament pour un grand nombre de personnes et pour bénéficier des outils
 de modération), il est recommandé de créer <a href="{$platal->ns}lists/create">une liste de diffusion</a>.
 </p>
 <form action='{$platal->ns}alias/create' method='post'>

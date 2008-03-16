@@ -50,7 +50,7 @@
 <p class="descr">
 Pour t'inscrire à {$asso.nom}, il te faut en demander l'autorisation aux animateurs du groupe via le
 formulaire ci-dessous. Vérifie et corrige au besoin les différents champs, puis clique sur
-[&nbsp;m'inscrire&nbsp;].
+[&nbsp;M'inscrire&nbsp;!&nbsp;].
 </p>
 <form action="{$platal->ns}subscribe" method="post">
   <p class="descr">

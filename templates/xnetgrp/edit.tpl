@@ -27,7 +27,7 @@
   <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>
       <td class="titre">
-        Nom:
+        Nom&nbsp;:
       </td>
       <td>
         <input type="text" size="40" value="{$asso.nom}" name="nom" />
@@ -35,7 +35,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Diminutif:
+        Diminutif&nbsp;:
       </td>
       <td>
         <input type="text" size="40" value="{$asso.diminutif}" name="diminutif" />
@@ -43,7 +43,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Domaine DNS:
+        Domaine DNS&nbsp;:
       </td>
       <td>
         <input type="text" size="40" value="{$asso.mail_domain}" name="mail_domain" />
@@ -64,7 +64,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Domaine:
+        Domaine&nbsp;:
       </td>
       <td>
         <select name="dom">
@@ -81,7 +81,7 @@
   <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>
       <td class="titre">
-        Logo:
+        Logo&nbsp;:
       </td>
       <td>
         <input type="file" name="logo" />
@@ -90,7 +90,7 @@
 
     <tr>
       <td class="titre">
-        Site Web:
+        Site web&nbsp;:
       </td>
       <td>
         <input type="text" size="40" value="{$asso.site}" name="site" />
@@ -99,7 +99,7 @@
 
     <tr>
       <td class="titre">
-        Contact:
+        Contact&nbsp;:
       </td>
       <td>
         <input type="text" size="40" name="resp" value="{$asso.resp}" />
@@ -108,7 +108,7 @@
 
     <tr>
       <td class="titre">
-        Adresse mail:
+        Adresse mail&nbsp;:
       </td>
       <td>
         <input type="text" size="40" name="mail" value="{$asso.mail}" />
@@ -117,7 +117,7 @@
 
     <tr>
       <td class="titre">
-        Forum:
+        Forum&nbsp;:
       </td>
       <td>
         <input type="text" size="40" name="forum" value="{$asso.forum}" />
@@ -126,7 +126,7 @@
 
     <tr>
       <td class="titre">
-        Inscription possible:
+        Inscription possible&nbsp;:
       </td>
       <td>
         <input type="radio" value="1" id="inscr_yes"
@@ -142,7 +142,7 @@
 
     <tr>
       <td class="titre">
-        Lien pour l'inscription:<br />
+        Lien pour l'inscription&nbsp;:<br />
         <em>laisser vide par défaut</em>
       </td>
       <td>
@@ -152,7 +152,7 @@
 
     <tr>
       <td class="titre">
-        Lien pour la désinscription:<br/>
+        Lien pour la désinscription&nbsp;:<br/>
         <em>laisser vide par défaut</em>
       </td>
       <td>
@@ -188,7 +188,7 @@
     <div id="preview_descr" style="display: none; text-align: justify"></div>
     <br />
     <a href="wiki_help" class="popup3">
-      {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour la description
+      {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour la description.
     </a>
     <textarea name="descr" cols="70" rows="15" id="descr"
               {if !$asso.wiki_desc && $asso.descr}class="error"{/if}>{$asso.descr}</textarea>

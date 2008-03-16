@@ -43,11 +43,11 @@
   <div class="center">
     <p class="descr">
     {if $self}
-    Etes-vous sûr de vouloir vous désinscrire du groupe {$asso.nom} et de toutes
+    Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso.nom} et de toutes
     les listes de diffusion associées ?
     {else}
-    Etes-vous sûr de vouloir supprimer {$user.prenom} {$user.nom} du groupe,
-    lui retirer tous les droits associés à son statut de membre,
+    Êtes-vous sûr de vouloir supprimer {$user.prenom} {$user.nom} du groupe,
+    lui retirer tous les droits associés à son statut de membre
     et le désabonner de toutes les listes de diffusion du groupe ?
     {/if}
     </p>

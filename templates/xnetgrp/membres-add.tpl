@@ -58,7 +58,7 @@ function searchX()
   <ul class='descr'>
     <li>
       Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses
-      adresses mail @polytechnique.org. Si il n'est pas inscrit à Polytechnique.org
+      adresses mail @polytechnique.org. S'il n'est pas inscrit à Polytechnique.org
       coche la case qui se trouve sous le formulaire et indique ses noms, prénoms et
       promotions.
     </li>
@@ -79,7 +79,7 @@ function searchX()
     <tr>
       <td colspan="2">
         <input type="checkbox" id="x" name="x" onchange="xStateChange(this);" />
-        <label for="x">Coche cette case si il s'agit d'un X non inscrit à Polytechnique.org</label>
+        <label for="x">Coche cette case si il s'agit d'un X non inscrit à Polytechnique.org.</label>
       </td>
     </tr>
     <tr id="xnom" style="display: none">
