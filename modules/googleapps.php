@@ -47,7 +47,7 @@ class GoogleAppsModule extends PLModule
         $page->assign('redirect_active', false);
         $page->assign('redirect_unique', true);
 
-        if ($account->g_status == 'active') {
+        if ($account->active()) {
             $redirect = new Redirect(S::v('uid'));
             $page->assign('redirect_unique', !$redirect->other_active(NULL));
 
@@ -69,7 +69,7 @@ class GoogleAppsModule extends PLModule
                 }
             }
 
-            if ($action == 'suspend' && Post::has('suspend') && $account->g_status == 'active') {
+            if ($action == 'suspend' && Post::has('suspend') && $account->active()) {
                 if ($account->pending_update_suspension) {
                     $page->trig("Ton compte est déjà en cours de désactivation.");
                 } else {
@@ -81,7 +81,7 @@ class GoogleAppsModule extends PLModule
                         $page->trig("Ton compte Google Apps est ta seule adresse de redirection. Ton compte ne peux pas être désactivé.");
                     }
                 }
-            } elseif ($action == 'unsuspend' && Post::has('unsuspend') && $account->g_status == 'disabled') {
+            } elseif ($action == 'unsuspend' && Post::has('unsuspend') && $account->suspended()) {
                 $account->unsuspend(Post::b('redirect_mails', true));
                 $page->trig("Ta demande de réactivation a bien été prise en compte.");
             }

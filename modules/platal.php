@@ -202,7 +202,7 @@ class PlatalModule extends PLModule
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
                 $account = new GoogleAppsAccount(S::v('uid'), S::v('forlife'));
-                if ($account->g_status == 'active' && $account->sync_password) {
+                if ($account->active() && $account->sync_password) {
                     $account->set_password($password);
                 }
             }
@@ -366,10 +366,8 @@ Adresse de secours : " . Post::v('email') : ""));
             // updates the Google Apps password as well.
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
-                require_once 'user.func.inc.php';
-                $forlife = get_user_forlife($uid, '_silent_user_callback');
-                $account = new GoogleAppsAccount($uid, $forlife);
-                if ($account->g_status == 'active' && $account->sync_password) {
+                $account = new GoogleAppsAccount($uid);
+                if ($account->active() && $account->sync_password) {
                     $account->set_password($password);
                 }
             }

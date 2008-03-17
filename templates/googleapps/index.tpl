@@ -189,7 +189,7 @@
   </tr>
 </table>
 
-{elseif $account->g_status eq 'disabled' or $account->pending_update_suspension}
+{elseif $account->suspended() or $account->pending_update_suspension}
 <br />
 <table class="bicol" id="status">
   <tr>
@@ -201,14 +201,14 @@
       message sur ce compte.
     </td>
   </tr>
-  {if $account->pending_validation_unsuspend or ($account->g_status eq 'disabled' and $account->pending_update_suspension)}
+  {if $account->pending_validation_unsuspend or ($account->suspended() and $account->pending_update_suspension)}
   <tr class="pair">
     <td>
       La réactivation de ton compte est en attente de validation.<br />
       Tu recevras un email dès que l'opération sera terminée.
     </td>
   </tr>
-  {elseif $account->g_status neq 'disabled' and $account->pending_update_suspension}
+  {elseif !$account->suspended() and $account->pending_update_suspension}
   <tr class="pair">
     <td>
       Les opérations de désactivation de ton compte Google Apps ne sont pas terminées, tu ne peux donc pas encore demander sa réactivation.

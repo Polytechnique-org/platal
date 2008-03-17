@@ -292,11 +292,8 @@ class EmailModule extends PLModule
                   WHERE  user_id = {?}", $uid);
         $page->assign('storage', explode(',', $res->fetchOneCell()));
 
-        $res = XDB::query(
-                "SELECT  g_status
-                   FROM  gapps_accounts
-                  WHERE  l_userid = {?}", $uid);
-        $page->assign('googleapps', ($res->numRows() > 0 ? $res->fetchOneCell() : false));
+        require_once 'googleapps.inc.php';
+        $page->assign('googleapps', GoogleAppsAccount::account_status($uid));
     }
 
     function handler_antispam(&$page, $statut_filtre = null)

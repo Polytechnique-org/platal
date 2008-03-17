@@ -587,7 +587,7 @@ class AdminModule extends PLModule
                         if ($globals->mailstorage->googleapps_domain && Env::v('newpass_clair') != "********") {
                             require_once 'googleapps.inc.php';
                             $account = new GoogleAppsAccount($mr['user_id'], $mr['forlife']);
-                            if ($account->g_status == 'active' && $account->sync_password) {
+                            if ($account->active() && $account->sync_password) {
                                 $account->set_password($pass_encrypted);
                             }
                         }

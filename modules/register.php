@@ -403,7 +403,7 @@ class RegisterModule extends PLModule
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
                 $account = new GoogleAppsAccount(S::v('uid'), S::v('forlife'));
-                if ($account->g_status == 'active' && $account->sync_password) {
+                if ($account->active() && $account->sync_password) {
                     $account->set_password($password);
                 }
             }
