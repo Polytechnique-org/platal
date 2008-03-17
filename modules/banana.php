@@ -28,6 +28,7 @@ class BananaModule extends PLModule
 //            'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
 //            'banana/subscribe'    => $this->make_hook('subscription', AUTH_COOKIE),
             'banana/rss'          => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
+            'admin/forums'   => $this->make_hook('forums_bans', AUTH_MDP, 'admin'),
         );
     }
 
@@ -144,6 +145,21 @@ class BananaModule extends PLModule
         $banana = new ForumsBanana(S::v('forlife'), array('group' => $group, 'action' => 'rss2'));
         $banana->run();
         exit;
+    }
+
+    function handler_forums_bans(&$page, $action = 'list', $id = null)
+    {
+        $page->assign('xorg_title','Polytechnique.org - Administration - Bannissements des forums');
+        $page->assign('title', 'Gestion des mises au ban');
+        $table_editor = new PLTableEditor('admin/forums','forums.innd','id_innd');
+        $table_editor->describe('ipmin','min plage IP',true);
+        $table_editor->describe('ipmax','max plage IP',true);
+        $table_editor->describe('uid','utilisateur',true);
+        $table_editor->describe('write_perm','perm. poster',true);
+        $table_editor->describe('read_perm','perm. lire',true);
+        $table_editor->describe('priority','priorite',true);
+        $table_editor->describe('comment','commentaire',true);
+        $table_editor->apply($page, $action, $id);
     }
 
     static function run_banana(&$page, $params = null)

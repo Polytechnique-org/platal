@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-<h1>Télépaiments</h1>
+<h1>Télépaiements</h1>
 
 {if $erreur}
 <p>Aucun paiement n'a été effectué.</p>

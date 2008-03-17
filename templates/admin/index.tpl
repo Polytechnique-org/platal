@@ -160,6 +160,12 @@
       <a href="survey/admin">Gestion des sondages</a>
     </td>
   </tr>
+  <tr class="pair">
+    <td>
+      <strong>Forums&nbsp;:</strong>&nbsp;&nbsp;
+      <a href="admin/forums">Gestion des mises au ban</a>
+    </td>
+  </tr>
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

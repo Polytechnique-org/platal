@@ -612,6 +612,21 @@ class AdminModule extends PLModule
                         $mailer->assign("deletion", true);
                         $mailer->send();
                         break;
+
+                    case "b_edit":
+                        XDB::execute("DELETE FROM forums.innd WHERE uid = {?}", $mr['user_id']);
+                        if (Env::v('write_perm') != "" || Env::v('read_perm') != ""  || Env::v('commentaire') != "" ) {
+                          XDB::execute("INSERT INTO forums.innd
+                                                SET ipmin = '0',
+                                                    ipmax = '4294967295',
+                                                    write_perm = {?},
+                                                    read_perm = {?},
+                                                    comment = {?},
+                                                    priority = '200',
+                                                    uid = {?}",
+                                       Env::v('write_perm'), Env::v('read_perm'), Env::v('comment'), $mr['user_id']);
+                        }
+                        break;
                 }
             }
 
@@ -640,6 +655,13 @@ class AdminModule extends PLModule
             }
 
             $page->assign('mr',$mr);
+
+            // Bans forums
+            $res = XDB::query("SELECT  write_perm, read_perm, comment
+                                 FROM  forums.innd
+                                WHERE  uid = {?}", $mr['user_id']);
+            $bans = $res->fetchOneAssoc();
+            $page->assign('bans', $bans);
         }
     }
 
@@ -921,6 +943,7 @@ class AdminModule extends PLModule
         $table_editor->describe('ext','extension du screenshot',false);
         $table_editor->apply($page, $action, $id);
     }
+
     function handler_postfix_blacklist(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Blacklist');
         $page->assign('title', 'Blacklist de postfix');

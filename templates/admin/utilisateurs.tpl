@@ -70,7 +70,7 @@
 {if $mr}
 
 <p class="smaller">
-Derniére connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
+Dernière connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
 depuis <strong>{$host}</strong>
 </p>
 
@@ -103,6 +103,15 @@ function clean_fwd(fwd) {
   document.forms.fwds.clean_fwd.value = fwd;
   document.forms.fwds.submit();
 }
+function ban_write()
+{
+    document.forms.bans.write_perm.value = "!xorg.*";
+}
+function ban_read()
+{
+    document.forms.bans.read_perm.value = "!xorg.*";
+}
+
 // ]]>
 </script>
 {/literal}
@@ -211,7 +220,7 @@ function clean_fwd(fwd) {
         <input type="text" name="promoN" size="4" maxlength="4" value="{$mr.promo}" />
       </td>
     </tr>
-    <tr class "impair">
+    <tr class="impair">
       <td class="titre">
         Surveillance
       </td>
@@ -302,6 +311,53 @@ Pour ceci changer ses permissions en 'disabled'.
         <input type="hidden" name="user_id" value="{$mr.user_id}" />
         <input type="hidden" name="del_alias" value="" />
         <input type="submit" name="add_alias" value="Ajouter" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+<form id="bans" method="post" action="admin/user">
+  <table cellspacing="0" cellpadding="2" class="tinybicol">
+    <tr>
+      <th colspan="4">
+        Permissions sur les forums
+      </th>
+    </tr>
+    <tr class="impair">
+      <td class="titre">
+        Poster :
+      </td>
+      <td>
+        <input type="text" name="write_perm" size="40" maxlength="255" value="{$bans.write_perm}" />
+      </td>
+      <td class="action">
+        <a href="javascript:ban_write()">Bannir</a>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
+        Lire :
+      </td>
+      <td>
+        <input type="text" name="read_perm" size="40" maxlength="255" value="{$bans.read_perm}" />
+      </td>
+      <td class="action">
+        <a href="javascript:ban_read()">Bannir</a>
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">
+        Commentaire
+      </td>
+      <td>
+        <input type="text" name="comment" size="40" maxlength="255" value="{$bans.comment}" />
+      </td>
+      <td/>
+    </tr>
+    <tr class="center">
+      <td colspan="3">
+        <input type="hidden" name="user_id" value="{$mr.user_id}" />
+        <input type="submit" name="b_edit" value="Modifier" />
       </td>
     </tr>
   </table>
