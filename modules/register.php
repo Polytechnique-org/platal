@@ -328,7 +328,7 @@ class RegisterModule extends PLModule
         $res = XDB::iterRow(
                 "SELECT  sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom,
                          s.prenom, FIND_IN_SET('femme', s.flags) AS femme,
-                         GROUP_CONCAT(m.email) AS mails
+                         GROUP_CONCAT(m.email) AS mails, MAX(m.last) AS dateDernier
                    FROM  register_marketing AS m
              INNER JOIN  auth_user_md5      AS s  ON ( m.sender = s.user_id )
              INNER JOIN  aliases            AS sa ON ( sa.id = m.sender
@@ -338,8 +338,8 @@ class RegisterModule extends PLModule
         XDB::execute("UPDATE register_mstats SET success=NOW() WHERE uid={?}", $uid);
 
         $market = array();
-        while (list($salias, $snom, $sprenom, $sfemme, $mails) = $res->next()) {
-            $market[] = " - par $snom $sprenom sur $mails";
+        while (list($salias, $snom, $sprenom, $sfemme, $mails, $dateDernier) = $res->next()) {
+            $market[] = " - par $snom $sprenom sur $mails (le plus récemment le $dateDernier)";
             $mymail = new PlMailer();
             $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
             $mymail->setFrom('"Marketing Polytechnique.org" <register@' . $globals->mail->domain . '>');
