@@ -23,8 +23,8 @@
 <h1>{$asso.nom}&nbsp;: Création d'une liste de diffusion</h1>
 
 <p class="descr">
-<strong>Note&nbsp;:</strong> Les listes de diffusion sont un outil particulièrement adapté pour des
-échanges entre 6 personnes, ou plus (newsletter, débat interne au groupe ...). En revanche, elles
+<strong>Note&nbsp;:</strong> les listes de diffusion sont un outil particulièrement adapté pour des
+échanges entre 6 personnes ou plus (newsletter, débat interne au groupe ...). En revanche, elles
 s'avèrent peu praticables pour des discussions plus restreintes.  Il est alors préférable
 d'utiliser <a href="{$platal->ns}alias/create">un alias</a>, à la gestion beaucoup plus souple.
 </p>
@@ -36,63 +36,74 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement<
 <form action='{$platal->ns}lists/create' method='post'>
   <table class="large">
     <tr>
-      <th colspan='2'>Caractéristiques de la Liste</th>
+      <th colspan='4'>Caractéristiques de la Liste</th>
     </tr>
     <tr>
       <td><strong>Addresse&nbsp;souhaitée&nbsp;:</strong></td>
-      <td>
+      <td colspan='3'>
         <input type='text' name='liste' value='{$smarty.post.liste}' />@{$asso.mail_domain}
       </td>
     </tr>
     <tr>
       <td><strong>Sujet (bref)&nbsp;:</strong></td>
-      <td>
+      <td colspan='3'>
         <input type='text' name='desc' size='40' value="{$smarty.post.desc}" />
       </td>
     </tr>
     <tr>
-      <td><strong>Propriétés&nbsp;:</strong></td>
-      <td>
-        <table style='width: 100%' class="normal">
-          <tr>
-            <td>visibilité&nbsp;:</td>
-            <td>
-              <input type='radio' name='advertise' value='0'
-              {if $smarty.post.advertise && $smarty.post}checked='checked'{/if} />publique
-            </td>
-            <td>
-              <input type='radio' name='advertise' value='1'
-              {if !$smarty.post.advertise || !$smarty.post}checked='checked'{/if} />privée
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>diffusion&nbsp;:</td>
-            <td>
-              <input type='radio' name='modlevel' value='0'
-              {if !$smarty.post.modlevel}checked='checked'{/if} />libre
-            </td>
-            <td>
-              <input type='radio' name='modlevel' value='1'
-              {if $smarty.post.modlevel eq 1}checked='checked'{/if} />restreinte
-            </td>
-            <td><input type='radio' name='modlevel' value='2'
-              {if $smarty.post.modlevel eq 2}checked='checked'{/if} />modérée
-            </td>
-          </tr>
-          <tr>
-            <td>inscription&nbsp;:</td>
-            <td>
-              <input type='radio' name='inslevel' value='0'
-              {if !$smarty.post.inslevel && $smarty.post}checked='checked'{/if} />libre
-            </td>
-            <td>
-              <input type='radio' name='inslevel' value='1'
-              {if $smarty.post.inslevel || !$smarty.post}checked='checked'{/if} />modérée
-            </td>
-            <td></td>
-          </tr>
-        </table>
+      <td style="border: 0; border-right: 1px solid gray"><strong>Propriétés&nbsp;:</strong></td>
+      <td colspan='3' style="border: 0"></td>
+    </tr>
+    <tr>
+      <td style="border: 0; border-right: 1px solid gray">
+        visibilité&nbsp;:<br/><span style='font-size: xx-small;'>
+        (qui peut la voir dans la liste des listes&nbsp;?)</span>
+      </td>
+      <td style="border: 0">
+        <label><input type='radio' name='advertise' value='0'
+        {if $smarty.post.advertise && $smarty.post}checked='checked'{/if} />publique<br/>
+        <span style='font-size: xx-small;'>(tous les membres)</span></label>
+      </td>
+      <td colspan='2' style="border: 0">
+        <label><input type='radio' name='advertise' value='1'
+        {if !$smarty.post.advertise || !$smarty.post}checked='checked'{/if} />privée<br/>
+        <span style='font-size: xx-small;'>(seuls ceux inscrits à cette liste)</span></label>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 0; border-right: 1px solid gray">
+        diffusion&nbsp;:<br/><span style='font-size: xx-small;'>
+        (l'envoi d'un mail à cette liste est-il modéré&nbsp;?)</span>
+      </td>
+      <td style="border: 0">
+        <label><input type='radio' name='modlevel' value='0'
+        {if !$smarty.post.modlevel}checked='checked'{/if} />libre<br/><small>(non)</small></label>
+      </td>
+      <td style="border: 0">
+        <label><input type='radio' name='modlevel' value='1'
+        {if $smarty.post.modlevel eq 1}checked='checked'{/if} />restreinte<br/>
+        <small>(oui, si l'expéditeur n'appartient pas à la liste)</small></label>
+      </td>
+      <td style="border: 0">
+        <label><input type='radio' name='modlevel' value='2'
+        {if $smarty.post.modlevel eq 2}checked='checked'{/if} />modérée<br/>
+        <small>(oui, tout le temps)</small></label>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 0; border-right: 1px solid gray">
+        inscription&nbsp;:<br/><span style='font-size: xx-small;'>
+        (l'inscription à cette liste est-elle modérée&nbsp;?)</span>
+      </td>
+      <td style="border: 0">
+        <label><input type='radio' name='inslevel' value='0'
+        {if !$smarty.post.inslevel && $smarty.post}checked='checked'{/if} />libre<br/>
+        <small>(non)</small></label>
+      </td>
+      <td colspan='2' style="border: 0">
+        <label><input type='radio' name='inslevel' value='1'
+        {if $smarty.post.inslevel || !$smarty.post}checked='checked'{/if} />modérée<br/>
+        <small>(oui)</small></label>
       </td>
     </tr>
   </table>
