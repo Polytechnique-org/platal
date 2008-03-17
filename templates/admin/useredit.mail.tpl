@@ -26,6 +26,9 @@
 {to addr=#to#}
 {subject text="INTERVENTION de $user"}
 {elseif $mail_part eq 'wiki'}
+{if $deletion}
+L'utilisateur {$user} a été désinscrit.
+{else}
 Le profil du camarade {$old.prenom} {$old.nom} ({$old.promo}) a été édité.\\
 Les champs suivants ont été changés :
 {foreach from=$old item=value key=field}
@@ -40,6 +43,7 @@ Et ceux qui n'ont pas changé :
 * '''{$field}''' : {$value}
 {/if}
 {/foreach}
+{/if}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

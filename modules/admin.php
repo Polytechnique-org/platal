@@ -609,7 +609,7 @@ class AdminModule extends PLModule
                         $page->trig("'{$mr['user_id']}' a été désinscrit !");
                         $mailer = new PlMailer("admin/useredit.mail.tpl");
                         $mailer->assign("user", S::v('forlife'));
-                        $mailer->assign("query", "\nUtilisateur $login désinscrit");
+                        $mailer->assign("deletion", true);
                         $mailer->send();
                         break;
                 }
