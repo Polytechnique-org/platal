@@ -308,7 +308,7 @@ class QuickSearch extends SField
         }
         if (!empty($this->ip)) {
             $ip = ip_to_uint($this->ip);
-            $where[] = "( ls.ip = $ip OR ls.forward_ip = $ip )";
+            $where[] = "( ls.ip = $ip OR ls.forward_ip = $ip ) AND ls.suid = 0";
         }
 
         return join(" AND ", $where);
