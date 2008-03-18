@@ -28,7 +28,8 @@ class BananaModule extends PLModule
 //            'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
 //            'banana/subscribe'    => $this->make_hook('subscription', AUTH_COOKIE),
             'banana/rss'          => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
-            'admin/forums'   => $this->make_hook('forums_bans', AUTH_MDP, 'admin'),
+            'admin/forums'        => $this->make_hook('forums_bans', AUTH_MDP, 'admin'),
+            'forums/bans/service'    => $this->make_hook('forums_bans_service', AUTH_PUBLIC)
         );
     }
 
@@ -160,6 +161,25 @@ class BananaModule extends PLModule
         $table_editor->describe('priority','priorite',true);
         $table_editor->describe('comment','commentaire',true);
         $table_editor->apply($page, $action, $id);
+    }
+
+    function handler_forums_bans_service(&$page, $action = 'list', $id = null)
+    {
+        global $globals;
+
+        $ips = array_flip(explode(' ', $globals->banana->bans_authorized_ips));
+
+        if ($ips && isset($ips[$_SERVER['REMOTE_ADDR']])) {
+
+          $res = XDB::query("SELECT priority, read_perm, write_perm, comment
+                             FROM forums.innd AS i
+                             INNER JOIN  x4dat.aliases       AS a ON ( a.id = i.uid AND a.type='a_vie' )
+                             INNER JOIN  x4dat.aliases       AS b ON ( b.id = a.id AND b.type != 'homonyme' )
+                             WHERE  b.alias = '".addslashes(Env::v('forlife'))."'");
+          $ban = $res->fetchOneAssoc();
+          echo "$res['priority']\n$res['read_perm']\n$res['write_perm']\n$res['comment']\n";
+        }
+        exit();
     }
 
     static function run_banana(&$page, $params = null)
