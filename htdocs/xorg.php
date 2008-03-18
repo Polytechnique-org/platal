@@ -24,7 +24,7 @@ global $globals, $platal, $page;
 
 if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
 
-    $platal = new Platal('auth', 'banana', 'carnet', 'email', 'events',
+    $platal = new Platal('auth', 'carnet', 'email', 'events', 'forums',
                          'geoloc', 'lists', 'marketing', 'payment', 'platal',
                          'profile', 'register', 'search', 'stats', 'admin',
                          'newsletter', 'axletter', 'bandeau', 'survey',

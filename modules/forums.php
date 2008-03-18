@@ -19,14 +19,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class BananaModule extends PLModule
+class ForumsModule extends PLModule
 {
     function handlers()
     {
         return array(
             'banana'              => $this->make_hook('banana', AUTH_COOKIE),
-//            'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
-//            'banana/subscribe'    => $this->make_hook('subscription', AUTH_COOKIE),
             'banana/rss'          => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
             'admin/forums'   => $this->make_hook('forums_bans', AUTH_MDP, 'admin'),
         );
