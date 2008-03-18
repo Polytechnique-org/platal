@@ -177,7 +177,7 @@ class BananaModule extends PLModule
                              INNER JOIN  x4dat.aliases       AS b ON ( b.id = a.id AND b.type != 'homonyme' )
                              WHERE  b.alias = '".addslashes(Env::v('forlife'))."'");
           $ban = $res->fetchOneAssoc();
-          echo "$res['priority']\n$res['read_perm']\n$res['write_perm']\n$res['comment']\n";
+          echo $res['priority']."\n".$res['read_perm']."\n".$res['write_perm']."\n".$res['comment']."\n";
         }
         exit();
     }
