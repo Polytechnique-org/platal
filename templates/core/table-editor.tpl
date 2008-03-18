@@ -64,6 +64,8 @@
       <span class="smaller">{$myrow.$myfield|date_format:"%x %X"}</span>
     {elseif $myval.Type eq 'checkbox'}
       <input type="checkbox" disabled="disabled"{if $myrow.$myfield} checked="checked"{/if}/>
+    {elseif $myval.Type eq 'ip_address'}
+      {$myrow.$myfield|uint_to_ip}
     {else}
       {$myrow.$myfield}
     {/if}

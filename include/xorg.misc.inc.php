@@ -232,24 +232,14 @@ function make_forlife($prenom, $nom, $promo)
  */
 function ip_to_uint($ip)
 {
-    $part = explode('.', $ip);
-    $v = 0;
-    $fact = 0x1000000;
-    for ($i = 0 ; $i < 4 ; ++$i) {
-        $v += $fact * $part[$i];
-        $fact >>= 8;
-    }
-    return $v;
+    return ip2long($ip);
 }
 
 /** Convert uint to ip (to build a human understandable ip)
  */
 function uint_to_ip($uint)
 {
-    return sprintf('%d.%d.%d.%d', ($uint / 16777216) % 0xff,
-                                  ($uint / 65536) & 0xff,
-                                  ($uint / 256)  & 0xff,
-                                  ($uint / 1.0) & 0xff);
+    return long2ip($uint);
 }
 
 
