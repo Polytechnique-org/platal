@@ -66,6 +66,9 @@ class PlUpload
     {
         if ($this->exists()) {
             $this->type = trim(mime_content_type($this->filename));
+            if ($this->type == 'text/plain') { // Workaround a bug of php 5.2.0+etch10 (mime_content_type fallback is 'text/plain')
+                $this->type = trim(exec("file -bi " . escapeshellarg($this->filename)));
+            }
         }
     }
 
