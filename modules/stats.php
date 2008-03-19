@@ -69,7 +69,7 @@ class StatsModule extends PLModule
                             ".(-($jours+1)).") AS jour,
                          COUNT(user_id) AS nb
                    FROM  auth_user_md5
-                  WHERE  perms IN ('admin','user')
+                  WHERE  perms IN ('admin','user') AND deces = 0
                GROUP BY  jour");
 
         //genere des donnees compatibles avec GNUPLOT
@@ -175,11 +175,11 @@ EOF2;
             //nombre de jours sur le graph
             $jours = 365;
             define('DUREEJOUR',24*3600);
-            $res = XDB::query("SELECT min(TO_DAYS(date_ins)-TO_DAYS(now()))
-                                           FROM auth_user_md5
-                                          WHERE promo = {?}
-                                                AND perms IN ('admin', 'user')",
-                                        $promo);
+            $res = XDB::query(
+                    "SELECT  min(TO_DAYS(date_ins)-TO_DAYS(now()))
+                       FROM  auth_user_md5
+                      WHERE  promo = {?} AND perms IN ('admin', 'user') AND deces = 0",
+                    $promo);
             $jours = -$res->fetchOneCell();
 
             //recupere le nombre d'inscriptions par jour sur la plage concernée
@@ -189,7 +189,7 @@ EOF2;
                                 ".(-($jours+1)).") AS jour,
                              COUNT(user_id) AS nb
                        FROM  auth_user_md5
-                      WHERE  promo = {?} AND perms IN ('admin','user')
+                      WHERE  promo = {?} AND perms IN ('admin','user') AND deces = 0
                    GROUP BY  jour", $promo);
 
             //genere des donnees compatibles avec GNUPLOT
@@ -249,7 +249,7 @@ EOF2;
         $res = XDB::iterRow(
                 "SELECT  promo,COUNT(*)
                    FROM  auth_user_md5
-                  WHERE  promo > 1900 AND perms IN ('admin','user')
+                  WHERE  promo > 1900 AND perms IN ('admin','user') AND deces = 0
                GROUP BY  promo
                ORDER BY  promo");
         $max=0; $min=3000;
