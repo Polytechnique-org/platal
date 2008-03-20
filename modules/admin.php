@@ -27,6 +27,7 @@ class AdminModule extends PLModule
             'phpinfo'                      => $this->make_hook('phpinfo', AUTH_MDP, 'admin'),
             'admin'                        => $this->make_hook('default', AUTH_MDP, 'admin'),
             'admin/ax-xorg'                => $this->make_hook('ax_xorg', AUTH_MDP, 'admin'),
+            'admin/dead-but-active'        => $this->make_hook('dead_but_active', AUTH_MDP, 'admin'),
             'admin/deaths'                 => $this->make_hook('deaths', AUTH_MDP, 'admin'),
             'admin/downtime'               => $this->make_hook('downtime', AUTH_MDP, 'admin'),
             'admin/homonyms'               => $this->make_hook('homonyms', AUTH_MDP, 'admin'),
@@ -833,6 +834,20 @@ class AdminModule extends PLModule
 
         $res = XDB::iterator('SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = {?} ORDER BY nom,prenom', $promo);
         $page->assign('decedes', $res);
+    }
+
+    function handler_dead_but_active(&$page) {
+        $page->changeTpl('admin/dead_but_active.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Décédés');
+
+        $res = XDB::iterator(
+                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.matricule_ax, a.alias,
+                         DATEDIFF(NOW(), u.deces) AS days
+                   FROM  auth_user_md5 AS u
+              LEFT JOIN  aliases AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+                  WHERE  perms IN ('admin', 'user') AND deces <> 0
+               ORDER BY  u.promo, u.nom");
+        $page->assign('dead', $res);
     }
 
     function handler_synchro_ax(&$page, $user = null, $action = null) {

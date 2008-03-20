@@ -69,6 +69,8 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;      
       <a href="admin/deaths">Décès</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/dead-but-active">Décédés actifs</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/synchro_ax">Synchro AX</a>
     </td>
   </tr>
