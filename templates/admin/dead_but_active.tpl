@@ -29,10 +29,10 @@
 
 <table class="bicol">
   <tr>
-    <th>Promotion</th>
+    <th>Promo</th>
     <th colspan="2">État civil</th>
-    <th>Date de décès</th>
-    <th>depuis</th>
+    <th>Décès</th>
+    <th>Dernière activité</th>
   </tr>
   {iterate from=$dead item=d}
   <tr class="{cycle values="impair,pair"}">
@@ -46,13 +46,7 @@
     <td>{$d.prenom} {$d.nom}</td>
     <td style="text-align: center">{$d.deces}</td>
     <td style="text-align: center">
-      {if $d.days gt 730}
-        <strong>{$d.days/365|string_format:"%d"} ans</strong>
-      {elseif $d.days gt 365}
-        1 an
-      {else}
-        {$d.days/30.5|string_format:"%d"} mois
-      {/if}
+      {if $d.last gt $d.deces}<strong>{$d.last}</strong>{elseif $d.last}{$d.last}{else}-{/if}
     </td>
   </tr>
   {/iterate}

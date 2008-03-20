@@ -841,11 +841,12 @@ class AdminModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Administration - Décédés');
 
         $res = XDB::iterator(
-                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.matricule_ax, a.alias,
-                         DATEDIFF(NOW(), u.deces) AS days
+                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.matricule_ax, a.alias, DATE(MAX(s.start)) AS last
                    FROM  auth_user_md5 AS u
               LEFT JOIN  aliases AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+              LEFT JOIN  logger.sessions AS s ON (s.uid = u.user_id AND suid = 0)
                   WHERE  perms IN ('admin', 'user') AND deces <> 0
+               GROUP BY  u.user_id
                ORDER BY  u.promo, u.nom");
         $page->assign('dead', $res);
     }
