@@ -181,7 +181,10 @@ class GoogleAppsModule extends PLModule
         $page->changeTpl('googleapps/admin.user.tpl');
         $page->assign('xorg_title', 'Polytechnique.org - Administration Google Apps');
         $page->assign('googleapps_admin', GoogleAppsAccount::is_administrator(S::v('uid')));
-        
+
+        if (!$user && Post::has('login')) {
+            $user = Post::v('login');
+        }
         if ($user && !is_numeric($user)) {
             $res = XDB::query("SELECT id FROM aliases WHERE alias = {?} AND type != 'homonyme'", $user);
             $user = $res->fetchOneCell();
