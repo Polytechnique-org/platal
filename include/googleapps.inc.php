@@ -289,6 +289,7 @@ class GoogleAppsAccount
 
         if (!$this->pending_update_password) {
             $this->create_queue_job('u_update', array('password' => $password));
+            $this->pending_update_password = true;
         }
     }
 

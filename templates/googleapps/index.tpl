@@ -366,7 +366,8 @@
           <form action="googleapps/password#password" method="post" id="changepass2">
             <input type="hidden" name="response2"  value="" />
           </form><br />
-          Pour une sécurité optimale, ton mot de passe circule de manière cryptée (https) et est stocké crypté irréversiblement sur nos serveurs, ainsi que sur ceux de Google.
+          Pour une sécurité optimale, ton mot de passe circule de manière sécurisée (https).
+          Il est chiffré irréversiblement sur nos serveurs, ainsi que sur ceux de Google.
         </li>
       </ul>
     </td>
