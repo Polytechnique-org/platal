@@ -161,24 +161,18 @@ class RegisterModule extends PLModule
                     }
 
                     // Check if the given email is known as dangerous
-                    $res = Xdb::iterRow("SELECT  w.state, w.description, a.alias
-                                           FROM  emails       AS e
-                                     INNER JOIN  emails_watch AS w ON (e.email = w.email AND w.state != 'safe')
-                                     INNER JOIN  aliases      AS a ON (e.uid = a.id AND a.type = 'a_vie')
-                                          WHERE  e.email = {?}
-                                       ORDER BY  a.alias", Post::v('email'));
-                    $aliases = array();
+                    $res = XDB::query("SELECT  w.state, w.description
+                                         FROM  emails_watch AS w
+                                        WHERE  w.email = {?} AND w.state != 'safe'",
+                                        Post::v('email'));
                     $email_banned = false;
-                    while(list($gstate, $gdescription, $alias) = $res->next()) {
-                        $state       = $gstate;
+                    if ($res->numRows()) {
+                        list($state, $description) = $res->fetchOneRow();
+                        $alert .= "Email surveille propose a l'inscription - ";
+                        $sub_state['email_desc'] = $description;
                         if ($state == 'dangerous') {
                             $email_banned = true;
                         }
-                        $description = $gdescription;
-                        $aliases[]   = $alias;
-                    }
-                    if (count($aliases) != 0) {
-                        $alert .= "Email surveille propose a l'inscription - ";
                     }
                     if ($sub_state['watch']) {
                         $alter .= "Inscription d'un utilisateur surveillé - ";
