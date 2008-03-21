@@ -168,8 +168,12 @@ class RegisterModule extends PLModule
                                           WHERE  e.email = {?}
                                        ORDER BY  a.alias", Post::v('email'));
                     $aliases = array();
+                    $email_banned = false;
                     while(list($gstate, $gdescription, $alias) = $res->next()) {
                         $state       = $gstate;
+                        if ($state == 'dangerous') {
+                            $email_banned = true;
+                        }
                         $description = $gdescription;
                         $aliases[]   = $alias;
                     }
@@ -193,12 +197,15 @@ class RegisterModule extends PLModule
                             $alert .= "Date de naissance incorrecte à l'inscription - ";
                         }
                         $sub_state['email']     = Post::v('email');
-                        if (check_ip('unsafe')) {
+                        $ip_banned = check_ip('unsafe');
+                        if ($ip_banned) {
+                            $alert .= "Tentative d'inscription depuis une IP surveillee";
+                        }
+                        if ($email_banned || $ip_banned) {
                             $err = "Une erreur s'est produite lors de l'inscription."
                                  . " Merci de contacter <a href='mailto:register@{$globals->mail->domain}>"
                                  . " register@{$globals->mail->domain}</a>"
                                  . " pour nous faire part de cette erreur";
-                            $alert .= "Tentative d'inscription depuis une IP surveillee";
                         } else {
                             $sub_state['step'] = 4;
                             if (count($sub_state['backs']) >= 3) {
