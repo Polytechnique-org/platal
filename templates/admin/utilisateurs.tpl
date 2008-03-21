@@ -316,6 +316,8 @@ Pour ceci changer ses permissions en 'disabled'.
   </table>
 </form>
 
+<p><strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong></p>
+
 <form id="bans" method="post" action="admin/user">
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>
@@ -325,10 +327,10 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
     <tr class="impair">
       <td class="titre">
-        Poster :
+        Poster
       </td>
       <td>
-        <input type="text" name="write_perm" size="40" maxlength="255" value="{$bans.write_perm}" />
+        <input type="text" name="write_perm" size="32" maxlength="255" value="{$bans.write_perm}" />
       </td>
       <td class="action">
         <a href="javascript:ban_write()">Bannir</a>
@@ -336,10 +338,10 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
     <tr class="pair">
       <td class="titre">
-        Lire :
+        Lire
       </td>
       <td>
-        <input type="text" name="read_perm" size="40" maxlength="255" value="{$bans.read_perm}" />
+        <input type="text" name="read_perm" size="32" maxlength="255" value="{$bans.read_perm}" />
       </td>
       <td class="action">
         <a href="javascript:ban_read()">Bannir</a>
@@ -349,10 +351,9 @@ Pour ceci changer ses permissions en 'disabled'.
       <td class="titre">
         Commentaire
       </td>
-      <td>
+      <td colspan="2">
         <input type="text" name="comment" size="40" maxlength="255" value="{$bans.comment}" />
       </td>
-      <td/>
     </tr>
     <tr class="center">
       <td colspan="3">
@@ -362,10 +363,6 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
   </table>
 </form>
-
-<p>
-<strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
-</p>
 
 {javascript name="ajax"}
 {test_email forlife=$mr.forlife}
