@@ -116,6 +116,7 @@ class GoogleAppsAccount
     public $activate_mail_redirection;
 
     // Account status, obtained from Google Apps provisioning & reporting APIs.
+    public $g_account_id;
     public $g_status;
     public $g_suspension;
     public $r_disk_usage;
@@ -151,7 +152,7 @@ class GoogleAppsAccount
 
         $res = XDB::query(
             "SELECT  l_sync_password, l_activate_mail_redirection,
-                     g_account_name, g_status, g_suspension, r_disk_usage,
+                     g_account_name, g_account_id, g_status, g_suspension, r_disk_usage,
                      UNIX_TIMESTAMP(r_creation) as r_creation,
                      UNIX_TIMESTAMP(r_last_login) as r_last_login,
                      UNIX_TIMESTAMP(r_last_webmail) as r_last_webmail
@@ -161,6 +162,7 @@ class GoogleAppsAccount
         if ($account = $res->fetchOneAssoc()) {
             $this->sync_password = $account['l_sync_password'];
             $this->activate_mail_redirection = $account['l_activate_mail_redirection'];
+            $this->g_account_id = $account['g_account_id'];
             $this->g_status = $account['g_status'];
             $this->g_suspension = $account['g_suspension'];
             $this->r_disk_usage = $account['r_disk_usage'];
