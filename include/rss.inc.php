@@ -37,7 +37,8 @@ function init_rss($template, $alias, $hash, $require_uid = true)
     $res = XDB::query(
         'SELECT  a.id
            FROM  aliases         AS a
-     INNER JOIN  auth_user_quick AS q ON ( a.id = q.user_id AND q.core_rss_hash = {?} )
+     INNER JOIN  auth_user_md5   AS u ON (a.id = u.user_id AND u.perms IN ("admin", "user"))
+     INNER JOIN  auth_user_quick AS q ON (a.id = q.user_id AND q.core_rss_hash = {?})
           WHERE  a.alias = {?} AND a.type != "homonyme"', $hash, $alias);
     $uid = $res->fetchOneCell();
 
