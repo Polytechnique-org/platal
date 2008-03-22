@@ -319,6 +319,11 @@ class GoogleAppsAccount
         if (!$this->pending_update_suspension) {
             $this->create_queue_job('u_update', array('suspended' => true));
             $this->pending_update_suspension = true;
+            XDB::execute(
+                "UPDATE  gapps_accounts
+                    SET  g_status = 'disabled'
+                  WHERE  g_account_name = {?} AND g_status = 'active'",
+                $this->g_account_name);
         }
     }
 
