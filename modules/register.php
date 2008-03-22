@@ -484,7 +484,7 @@ class RegisterModule extends PLModule
         if (Post::v('imap')) {
             require_once 'emails.inc.php';
             $storage = new EmailStorage(S::v('uid'), 'imap');
-            $storage->enable();
+            $storage->activate();
         }
 
         pl_redirect('profile/edit');

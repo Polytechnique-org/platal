@@ -37,7 +37,7 @@ function post_queue_u_create($job) {
     if ($account->activate_mail_redirection) {
         require_once('emails.inc.php');
         $storage = new EmailStorage($userid, 'googleapps');
-        $storage->enable();
+        $storage->activate();
     }
 
     // Sends the 'account created' email to the user, with basic documentation.
@@ -79,7 +79,7 @@ function post_queue_u_update($job) {
             // Re-adds the email redirection (if the user did request it).
             if ($account->activate_mail_redirection) {
                 $storage = new EmailStorage($userid, 'googleapps');
-                $storage->enable();
+                $storage->activate();
             }
 
             // Sends an email to the account owner.
