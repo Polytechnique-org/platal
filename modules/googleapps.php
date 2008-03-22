@@ -52,10 +52,10 @@ class GoogleAppsModule extends PLModule
 
         if ($account->active()) {
             $redirect = new Redirect(S::v('uid'));
-            $page->assign('redirect_unique', !$redirect->other_active(NULL));
+            $page->assign('redirect_unique', !$redirect->other_active('googleapps'));
 
-            $storage = new MailStorageGoogleApps(S::v('uid'));
-            $page->assign('redirect_active', $storage->active());
+            $storage = new EmailStorage(S::v('uid'), 'googleapps');
+            $page->assign('redirect_active', $storage->active);
         }
 
         // Updates the Google Apps account as required.
@@ -76,8 +76,7 @@ class GoogleAppsModule extends PLModule
                 if ($account->pending_update_suspension) {
                     $page->trig("Ton compte est déjà en cours de désactivation.");
                 } else {
-                    $storage = new MailStorageGoogleApps(S::v('uid'));
-                    if ($storage->disable()) {
+                    if ($redirect->modify_one_email('googleapps', false) == SUCCESS) {
                         $account->suspend();
                         $page->trig("Ton compte Google Apps est dorénavant désactivé.");
                     } else {
@@ -192,7 +191,7 @@ class GoogleAppsModule extends PLModule
 
         if ($user) {
             $account = new GoogleAppsAccount($user);
-            $storage = new MailStorageGoogleApps($user);
+            $storage = new EmailStorage($user, 'googleapps');
 
             // Force synchronization of plat/al and Google Apps passwords.
             if ($action == 'forcesync' && $account->sync_password) {
@@ -204,7 +203,7 @@ class GoogleAppsModule extends PLModule
             // Displays basic account information.
             $page->assign('account', $account);
             $page->assign('admin_account', GoogleAppsAccount::is_administrator($user));
-            $page->assign('googleapps_storage', $storage->active());
+            $page->assign('googleapps_storage', $storage->active);
             $page->assign('user', $user);
 
             // Retrieves user's pending requests.

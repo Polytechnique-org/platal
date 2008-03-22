@@ -483,7 +483,7 @@ class RegisterModule extends PLModule
         }
         if (Post::v('imap')) {
             require_once 'emails.inc.php';
-            $storage = new MailStorageIMAP(S::v('uid'));
+            $storage = new EmailStorage(S::v('uid'), 'imap');
             $storage->enable();
         }
 

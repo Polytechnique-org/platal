@@ -36,7 +36,7 @@ function post_queue_u_create($job) {
     $account = new GoogleAppsAccount($userid, $forlife);
     if ($account->activate_mail_redirection) {
         require_once('emails.inc.php');
-        $storage = new MailStorageGoogleApps($userid);
+        $storage = new EmailStorage($userid, 'googleapps');
         $storage->enable();
     }
 
@@ -78,7 +78,7 @@ function post_queue_u_update($job) {
         if ($account->active()) {
             // Re-adds the email redirection (if the user did request it).
             if ($account->activate_mail_redirection) {
-                $storage = new MailStorageGoogleApps($userid);
+                $storage = new EmailStorage($userid, 'googleapps');
                 $storage->enable();
             }
 

@@ -121,7 +121,7 @@
   <div class="center">
     <table class="bicol" summary="Adresses de redirection">
       <tr>
-        <th>Email</th>
+        <th>Redirection</th>
         <th>Actif</th>
         <th>Réécriture</th>
         <th>&nbsp;</th>
@@ -165,23 +165,13 @@
              onclick="return removeRedirect(this, &quot;{$e->email}&quot;);" >
             {icon name=cross title="Supprimer"}
           </a>
+          {else}
+          {if $e->sufficient}<span class="remove_email"></span>{/if}
+          <a href="emails/redirect#{$e->email}">{icon name=information title="Plus d'informations"}</a>
           {/if}
         </td>
       </tr>
       {/foreach}
-      {if $googleapps eq 'active'}
-      <tr class="{cycle values="pair,impair"}">
-        <td><strong>Compte GMail / Google Apps</strong></td>
-        <td>
-          <input type="checkbox" value="googleapps" disabled="disabled"
-                 {if in_array('googleapps', $storage)}checked="checked"{/if} />
-        </td>
-        <td>-</td>
-        <td>
-          <a href="emails/redirect#googleapps">{icon name=information title="Plus d'informations"}</a>
-        </td>
-      </tr>
-      {/if}
       <script type="text/javascript">activeEnable(); showRemove();</script>
       <tr class="{cycle values="pair,impair"}"><td colspan="4">
         <form action="emails/redirect" method="post">
@@ -227,22 +217,10 @@
 </fieldset>
 {/if}
 
-{* TODO(vincent.zanotti): remove the following block of code when both IMAP and GApps will be active. *}
-{if in_array('imap', $storage) neq 0 or #globals.mailstorage.imap_active# or hasPerm('admin')}
-  {assign var=has_imap value=true}
-{else}
-  {assign var=has_imap value=false}
-{/if}
-{if $googleapps or #globals.mailstorage.googleapps_active# or hasPerm('admin')}
-  {assign var=has_googleapps value=true}
-{else}
-  {assign var=has_googleapps value=false}
-{/if}
-
-{if $has_imap or $has_googleapps}
+{if #globals.mailstorage.googleapps_active# or #globals.mailstorage.imap_active# or hasPerm('admin') or $googleapps}
 <h1>Tes comptes de stockage de courrier</h1>
 {/if}
-{if $has_imap}
+{if #globals.mailstorage.imap_active# or hasPerm('admin')}
 <p>
   Polytechnique.org te propose de conserver les mails que tu reçois, pendant une durée limitée (environ 30 jours).
   Grâce à ce service, tu disposes d'une sauvegarde de tes mails en secours, au cas où, par exemple, tu effacerais
@@ -251,8 +229,8 @@
 </p>
 
 <table class="bicol" summary="Compte de stockage">
-  <col width="75%" />
-  <col width="25%" />
+  <col width="55%" />
+  <col width="45%" />
   <tr>
     <th colspan="2">Compte de stockage</th>
   </tr>
@@ -263,19 +241,13 @@
       </a><br />Hébergé par Polytechnique.org
     </td>
     <td style="text-align: center; vertical-align: middle">
-      <form action="emails/redirect/storage/imap/{if in_array('imap', $storage)}inactive{else}active{/if}" method="post">
-        {if in_array('imap', $storage)}
-        <input type="submit" value="Désactiver" />
-        {else}
-        <input type="submit" value="Activer" />
-        {/if}
-      </form>
+      <a href="emails/redirect#line_imap">Voir l'état de la redirection vers l'IMAP</a>
     </td>
   </tr>
 </table>
 {/if}
 
-{if $has_googleapps}
+{if #globals.mailstorage.googleapps_active# or hasPerm('admin') or $googleapps}
 <br />
 <p>
   Grâce à un partenariat avec Google, Polytechnique.org te propose également un compte
@@ -284,8 +256,8 @@
 </p>
 
 <table class="bicol" summary="Compte de stockage" id="googleapps">
-  <col width="75%" />
-  <col width="25%" />
+  <col width="55%" />
+  <col width="45%" />
   <tr>
     <th colspan="2">Compte de stockage</th>
   </tr>
@@ -293,17 +265,12 @@
     {if $googleapps eq 'active'}
     <td>
       <a href="googleapps">
-        <strong>Redirection des emails vers GMail / Google Apps</strong>
+        <strong>Compte GMail / Google Apps</strong>
       </a><br />Hébergé par Google
     </td>
     <td style="text-align: center; vertical-align: middle">
-      <form action="emails/redirect/storage/googleapps/{if in_array('googleapps', $storage)}inactive{else}active{/if}" method="post">
-        {if in_array('googleapps', $storage)}
-        <input type="submit" value="Désactiver" />
-        {else}
-        <input type="submit" value="Activer" />
-        {/if}
-      </form>
+      Ton compte Google Apps est actif.<br />
+      <a href="emails/redirect#line_googleapps">Voir l'état de la redirection vers GMail</a>
     </td>
     {else}
     <td colspan="2">

@@ -231,26 +231,6 @@ class EmailModule extends PLModule
             $redirect->modify_one_email_redirect($email, $rewrite);
         }
 
-        if ($action == 'storage') {
-            if ($email == 'imap') {
-                $storage = new MailStorageIMAP(S::v('uid'));
-            } else if ($email == 'googleapps') {
-                $storage = new MailStorageGoogleApps(S::v('uid'));
-            } else {
-                $storage = NULL;
-            }
-
-            if ($storage) {
-                $subaction = @func_get_arg(3);
-                if ($subaction == 'active') {
-                    $storage->enable();
-                }
-                if ($subaction == 'inactive') {
-                    $storage->disable();
-                }
-            }
-        }
-
         if (Env::has('emailop')) {
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
@@ -285,12 +265,6 @@ class EmailModule extends PLModule
 
         $page->assign('alias', $res->fetchAllAssoc());
         $page->assign('emails',$redirect->emails);
-
-        $res = XDB::query(
-                "SELECT  mail_storage
-                   FROM  auth_user_md5
-                  WHERE  user_id = {?}", $uid);
-        $page->assign('storage', explode(',', $res->fetchOneCell()));
 
         require_once 'googleapps.inc.php';
         $page->assign('googleapps', GoogleAppsAccount::account_status($uid));

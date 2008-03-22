@@ -379,9 +379,9 @@ Pour ceci changer ses permissions en 'disabled'.
     {foreach item=mail from=$emails}
     {cycle assign=class values="impair,pair"}
     <tr class="{$class}">
-      {if $mail->active}
+      {if $mail->active && $mail->has_disable()}
         {assign var=actives value=true}
-      {elseif $mail->disabled}
+      {elseif $mail->disabled && $mail->has_disable()}
         {assign var=disabled value=true}
       {/if}
       <td class="titre">
@@ -402,7 +402,9 @@ Pour ceci changer ses permissions en 'disabled'.
         {if $mail->broken}<em> (en panne)</em></span>{/if}
       </td>
       <td class="action">
+        {if $mail->is_removable()}
         <a href="javascript:del_fwd('{$mail->email}')">delete</a>
+        {/if}
       </td>
     </tr>
     {if $mail->panne && $mail->panne neq "0000-00-00"}

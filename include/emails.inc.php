@@ -257,6 +257,105 @@ class EmailRedirection extends Email
     }
 }
 
+// class EmailStorage {{{1
+// Implementation of Email for email storage backends from Polytechnique.org.
+class EmailStorage extends Email
+{
+    // Shortname to realname mapping for known mail storage backends.
+    private $display_names = array(
+        'imap'       => 'Accès de secours aux emails (IMAP)',
+        'googleapps' => 'Compte GMail / Google Apps',
+    );
+
+    // Retrieves the current list of actives storages.
+    private function get_storages()
+    {
+        $res = XDB::query("SELECT  mail_storage
+                             FROM  auth_user_md5
+                            WHERE  user_id = {?}", $this->uid);
+        return new FlagSet($res->fetchOneCell());
+    }
+
+    // Updates the list of active storages.
+    private function set_storages($storages)
+    {
+        XDB::execute("UPDATE  auth_user_md5
+                         SET  mail_storage = {?}
+                       WHERE  user_id = {?}", $storages->flags(), $this->uid);
+    }
+
+    // Returns the list of allowed storages for the @p user.
+    static public function get_allowed_storages($uid)
+    {
+        global $globals;
+        $storages = array();
+
+        // Google Apps storage is available for users with valid Google Apps account.
+        require_once 'googleapps.inc.php';
+        if ($globals->mailstorage->googleapps_domain &&
+            GoogleAppsAccount::account_status($uid) == 'active') {
+            $storages[] = 'googleapps';
+        }
+
+        // IMAP storage is always visible to administrators, and is allowed for
+        // everyone when the service is marked as 'active'.
+        if ($globals->mailstorage->imap_active || S::has_perms()) {
+            $storages[] = 'imap';
+        }
+
+        return $storages;
+    }
+
+
+    public function __construct($uid, $name)
+    {
+        $this->uid = $uid;
+        $this->email = $name;
+        $this->display_email = (isset($this->display_names[$name]) ? $this->display_names[$name] : $name);
+
+        $storages = $this->get_storages();
+        $this->sufficient = ($name == 'googleapps');
+        $this->active = $storages->hasFlag($name);
+        $this->broken = false;
+        $this->disabled = false;
+        $this->rewrite = '';
+        $this->panne = $this->last = $this->panne_level = 0;
+    }
+
+    public function activate()
+    {
+        if (!$this->active) {
+            $storages = $this->get_storages();
+            $storages->addFlag($this->email);
+            $this->set_storages($storages);
+            $this->active = true;
+        }
+    }
+
+    public function deactivate()
+    {
+        if ($this->active) {
+            $storages = $this->get_storages();
+            $storages->rmFlag($this->email);
+            $this->set_storages($storages);
+            $this->active = false;
+        }
+
+    }
+
+    // Source rewrite can't be enabled for email storage addresses.
+    public function set_rewrite($rewrite) {}
+
+    // Email storage are not supposed to be broken, hence not supposed to be
+    // cleaned-up.
+    public function clean_errors() {}
+
+    // Capabilities.
+    public function has_rewrite() { return false; }
+    public function is_removable() { return false; }
+    public function has_disable() { return false; }
+}
+
 // class Redirect {{{1
 // Redirect is a placeholder class for an user's active redirections (third-party
 // redirection email, or Polytechnique.org mail storages).
@@ -275,7 +374,9 @@ class Redirect
     public function __construct($_uid)
     {
         $this->uid = $_uid;
+        $this->bogo = new Bogo($_uid);
 
+        // Adds third-party email redirections.
         $res = XDB::iterRow("SELECT  email, flags, rewrite, panne, last, panne_level
                                FROM  emails
                               WHERE  uid = {?} AND flags != 'filter'", $_uid);
@@ -283,7 +384,11 @@ class Redirect
         while ($row = $res->next()) {
             $this->emails[] = new EmailRedirection($_uid, $row);
         }
-        $this->bogo = new Bogo($_uid);
+
+        // Adds local email storage backends.
+        foreach (EmailStorage::get_allowed_storages($_uid) as $storage) {
+            $this->emails[] = new EmailStorage($_uid, $storage);
+        }
     }
 
     // public function other_active() {{{2
@@ -480,70 +585,6 @@ class Redirect
             }
         }
         return $mails;
-    }
-}
-
-// class MailStorage {{{1
-class MailStorage {
-    protected $uid;
-    protected $name;
-    protected $storage;
-
-    public function __construct($_uid, $_name)
-    {
-        $this->uid = $_uid;
-        $this->name = $_name;
-
-        $res = XDB::query("SELECT  mail_storage
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?}", $this->uid);
-        $this->storages = new FlagSet($res->fetchOneCell());
-    }
-
-    public function disable()
-    {
-        $this->storages->rmFlag($this->name);
-        XDB::execute("UPDATE  auth_user_md5
-                         SET  mail_storage = {?}
-                       WHERE  user_id = {?}", $this->storages->flags(), $this->uid);
-        return true;
-    }
-
-    public function enable()
-    {
-        $this->storages->addFlag($this->name);
-        XDB::execute("UPDATE  auth_user_md5
-                         SET  mail_storage = {?}
-                       WHERE  user_id = {?}", $this->storages->flags(), $this->uid);
-        return true;
-    }
-
-    public function active()
-    {
-        return $this->storages->hasFlag($this->name);
-    }
-}
-
-class MailStorageIMAP extends MailStorage {
-    public function __construct($_uid)
-    {
-        parent::__construct($_uid, 'imap');
-    }
-}
-
-class MailStorageGoogleApps extends MailStorage {
-    public function __construct($_uid)
-    {
-        parent::__construct($_uid, 'googleapps');
-    }
-
-    public function disable() {
-        $redirect = new Redirect(S::v('uid'));
-        if (!$redirect->other_active(NULL)) {
-            return false;
-        }
-
-        return parent::disable();
     }
 }
 
