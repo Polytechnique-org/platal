@@ -29,10 +29,11 @@ function list_sort_owners(&$members, $tri_promo = true) {
     foreach($members as $mem) {
         list($m, $dom) = explode('@',$mem);
         if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
-            $res = XDB::query('SELECT  prenom, IF(nom_usage="", nom, nom_usage), promo, e.uid IS NULL
+            $res = XDB::query('SELECT  prenom, IF(nom_usage="", nom, nom_usage), promo,
+                                       (e.uid IS NULL AND FIND_IN_SET("googleapps", u.mail_storage) = 0)
                                  FROM  auth_user_md5 AS u
                            INNER JOIN  aliases AS a ON u.user_id = a.id
-                            LEFT JOIN  emails AS e ON ( e.flags = \'active\' AND e.uid = u.user_id)
+                            LEFT JOIN  emails AS e ON (e.flags = "active" AND e.uid = u.user_id)
                                 WHERE  a.alias = {?}
                              GROUP BY  u.user_id', $m);
             if(list($prenom, $nom, $promo, $broken) = $res->fetchOneRow()) {

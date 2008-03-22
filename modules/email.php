@@ -637,12 +637,14 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
         $page->changeTpl('emails/lost.tpl');
 
         $page->assign('lost_emails', XDB::iterator('
-          SELECT u.user_id, a.alias
-          FROM auth_user_md5 AS u
-            INNER JOIN aliases AS a ON (a.id = u.user_id AND a.type = "a_vie")
-            LEFT JOIN emails AS e ON (u.user_id=e.uid AND FIND_IN_SET("active",e.flags))
-          WHERE e.uid IS NULL AND u.deces = 0
-          ORDER BY u.promo DESC, u.nom, u.prenom'));
+            SELECT  u.user_id, a.alias
+              FROM  auth_user_md5 AS u
+        INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type = "a_vie")
+         LEFT JOIN  emails  AS e ON (u.user_id=e.uid AND FIND_IN_SET("active",e.flags))
+             WHERE  e.uid IS NULL AND
+                    FIND_IN_SET("googleapps", u.mail_storage) = 0 AND
+                    u.deces = 0
+          ORDER BY  u.promo DESC, u.nom, u.prenom'));
     }
 }
 

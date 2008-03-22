@@ -48,7 +48,7 @@ function user_clear_all_subs($user_id, $really_del=true)
         $tables_to_clear['contact'] = array('contacts');
         XDB::execute("UPDATE auth_user_md5
                          SET date_ins = 0, promo_sortie = 0, nom_usage = '',  password = '', perms = 'pending',
-                             nationalite = '', cv = '', section = 0, date = 0, smtppass = ''
+                             nationalite = '', cv = '', section = 0, date = 0, smtppass = '', mail_storage = ''
                        WHERE user_id = {?}", $uid);
         XDB::execute("DELETE virtual.* FROM virtual INNER JOIN virtual_redirect AS r USING(vid) WHERE redirect = {?}",
                      $alias.'@'.$globals->mail->domain);
@@ -397,7 +397,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                        s.text AS section, p.x, p.y, p.pub AS photo_pub,
                        u.matricule_ax,
                        m.expertise != '' AS is_referent,
-                       COUNT(e.email) > 0 AS actif
+                       (COUNT(e.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif
                  FROM  auth_user_md5   AS u
            INNER JOIN  auth_user_quick AS q  USING(user_id)
            INNER JOIN  aliases         AS a  ON (u.user_id=a.id AND a.type='a_vie')

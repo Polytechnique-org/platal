@@ -186,7 +186,8 @@ class MinificheView extends MultipageView
                 ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                 adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region,
                 IF(u.nom_usage<>'',u.nom_usage,u.nom) AS sortkey,
-                COUNT(em.email) > 0 AS actif" . (S::logged() ? ", c.contact AS contact" : '');
+                (COUNT(em.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif" .
+                (S::logged() ? ", c.contact AS contact" : '');
     }
 
     public function joins()

@@ -432,7 +432,7 @@ class XnetGrpModule extends PLModule
                            m.perms='admin' AS admin,
                            m.origine='X' AS x,
                            u.perms!='pending' AS inscrit,
-                           m.uid, IF(e.email IS NULL,NULL,1) AS actif
+                           m.uid, IF(e.email IS NULL AND FIND_IN_SET('googleapps', u.mail_storage) = 0, NULL, 1) AS actif
                      FROM  groupex.membres AS m
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
                 LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
