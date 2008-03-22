@@ -23,9 +23,8 @@
 {javascript name="jquery"}
 <script type="text/javascript">//<![CDATA[
 {literal}
-function activateField(name, id, obj) {
-  $("#" + name + "_" + id).show();
-  return true;
+function toggleField(name, id, obj) {
+  $("#" + name + "_" + id).toggle();
 }
 {/literal}
 //]]></script>
@@ -63,9 +62,9 @@ function activateField(name, id, obj) {
   {if $valid->editor()}
   <tr>
     <th colspan="2">
-     {if $preview_id neq $valid->id()}
+      {if $preview_id neq $valid->id()}
       <div style="float: left">
-        <a href="javascript:activateField('edit', '{$valid->id()}')">{icon name="add"}</a>
+        <a href="javascript:toggleField('edit', '{$valid->id()}')">{icon name="add"}</a>
       </div>
       {/if}
       Editer
@@ -90,7 +89,7 @@ function activateField(name, id, obj) {
     <th colspan='2'>
       {if $valid->comments|@count eq 0}
       <div style="float: left">
-        <a href="javascript:activateField('comment', '{$valid->id()}')">{icon name="add"}</a>
+        <a href="javascript:toggleField('comment', '{$valid->id()}')">{icon name="add"}</a>
       </div>
       {/if}
       Commentaires
