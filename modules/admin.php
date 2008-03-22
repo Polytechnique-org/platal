@@ -460,7 +460,7 @@ class AdminModule extends PLModule
                         break;
                     case "clean_fwd":
                         if (!empty($val)) {
-                            $redirect->cleanErrors($val);
+                            $redirect->clean_errors($val);
                         }
                         break;
                     case "add_alias":
@@ -560,7 +560,7 @@ class AdminModule extends PLModule
                             $mailer->assign('old', $old_fields);
                             $mailer->assign('new', $new_fields);
                             $mailer->send();
-                            
+
                             // update number of subscribers (perms or deceased may have changed)
                             update_NbIns();
 

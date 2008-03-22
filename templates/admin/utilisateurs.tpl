@@ -374,8 +374,8 @@ Pour ceci changer ses permissions en 'disabled'.
         Redirections
       </th>
     </tr>
-    {assign var=actives value=false} 
-    {assign var=disabled value=false} 
+    {assign var=actives value=false}
+    {assign var=disabled value=false}
     {foreach item=mail from=$emails}
     {cycle assign=class values="impair,pair"}
     <tr class="{$class}">
@@ -398,7 +398,7 @@ Pour ceci changer ses permissions en 'disabled'.
       </td>
       <td>
         {if $mail->broken}<span style="color: #f00">{/if}
-        {$mail->email}
+        {$mail->display_email}
         {if $mail->broken}<em> (en panne)</em></span>{/if}
       </td>
       <td class="action">
@@ -409,7 +409,7 @@ Pour ceci changer ses permissions en 'disabled'.
     <tr class="{$class}">
       <td colspan="3" class="smaller" style="color: #f00">
         {icon name=error title="Panne"}
-        Panne de {$mail->email} le {$mail->panne|date_format}
+        Panne de {$mail->display_email} le {$mail->panne|date_format}
         {if $mail->panne neq $mail->last}confirmée le {$mail->last|date_format}{/if}
       </td>
       <td class="action">

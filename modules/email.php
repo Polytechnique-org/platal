@@ -306,7 +306,7 @@ class EmailModule extends PLModule
 
         $bogo = new Bogo(S::v('uid'));
         if (isset($statut_filtre)) {
-            $bogo->change(S::v('uid'), $statut_filtre + 0);
+            $bogo->change($statut_filtre + 0);
         }
         $page->assign('filtre',$bogo->level());
     }

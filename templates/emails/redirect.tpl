@@ -132,16 +132,17 @@
           <strong>
             {if $e->broken}<span class="erreur">{assign var="erreur" value="1"}{/if}
             {if $e->panne neq '0000-00-00'}{assign var="panne" value="1"}{icon name=error title="En panne"}{/if}
-            {$e->email}
+            {$e->display_email}
             {if $e->broken}</span>{/if}
           </strong>
         </td>
         <td>
-          <input type="checkbox" value="{$e->email}" class="active_email"
+          <input type="checkbox" value="{$e->email}" {if $e->sufficient}class="active_email"{/if}
                  {if $e->active}checked="checked"{/if}
                  {if $smarty.foreach.redirect.total eq 1}disabled="disabled"{/if}
                  onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/'+(this.checked?'':'in')+'active/{$e->email}', redirectUpdate)" /></td>
         <td>
+          {if $e->has_rewrite()}
           <select onchange="Ajax.update_html(null,'emails/redirect/rewrite/{$e->email}/'+this.value, redirectUpdate)">
             <option value=''>--- aucune ---</option>
             {assign var=dom1 value=#globals.mail.domain#}
@@ -153,13 +154,18 @@
               value='{$a.alias}@{#globals.mail.domain2#}'>{$a.alias}@{#globals.mail.domain2#}</option>
             {/foreach}
           </select>
+          {else}
+          <em>pas de réécriture</em>
+          {/if}
         </td>
         <td>
+          {if $e->is_removable()}
           <a href="emails/redirect/remove/{$e->email}"
              class="remove_email"
              onclick="return removeRedirect(this, &quot;{$e->email}&quot;);" >
             {icon name=cross title="Supprimer"}
           </a>
+          {/if}
         </td>
       </tr>
       {/foreach}
