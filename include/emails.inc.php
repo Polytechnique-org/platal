@@ -586,6 +586,19 @@ class Redirect
         }
         return $mails;
     }
+
+    // function active_emails() {{{2
+
+    public function active_emails()
+    {
+        $emails = array();
+        foreach ($this->emails as $mail) {
+            if ($mail->active) {
+                $emails[] = $mail;
+            }
+        }
+        return $emails;
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

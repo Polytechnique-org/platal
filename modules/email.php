@@ -42,6 +42,7 @@ class EmailModule extends PLModule
     function handler_emails(&$page, $action = null, $email = null)
     {
         global $globals;
+        require_once 'emails.inc.php';
 
         $page->changeTpl('emails/index.tpl');
         $page->assign('xorg_title','Polytechnique.org - Mes emails');
@@ -65,21 +66,12 @@ class EmailModule extends PLModule
               ORDER BY  LENGTH(alias)";
         $page->assign('aliases', XDB::iterator($sql, $uid));
 
-    $homonyme = XDB::query("SELECT alias FROM aliases INNER JOIN homonymes ON (id = homonyme_id) WHERE user_id = {?} AND type = 'homonyme'", $uid);
-    $page->assign('homonyme', $homonyme->fetchOneCell());
+        $homonyme = XDB::query("SELECT alias FROM aliases INNER JOIN homonymes ON (id = homonyme_id) WHERE user_id = {?} AND type = 'homonyme'", $uid);
+        $page->assign('homonyme', $homonyme->fetchOneCell());
 
         // Affichage des redirections de l'utilisateur.
-        $sql = "SELECT email
-                FROM emails
-                WHERE uid = {?} AND FIND_IN_SET('active', flags)";
-        $page->assign('mails', XDB::iterator($sql, $uid));
-
-        // Affichage des backends actifs de stockage des emails.
-        $sql = "SELECT  mail_storage
-                  FROM  auth_user_md5
-                 WHERE  user_id = {?}";
-        $storages = XDB::query($sql, $uid)->fetchOneCell();
-        $page->assign('storage', explode(',', $storages));
+        $redirect = new Redirect($uid);
+        $page->assign('mails', $redirect->active_emails());
 
         // on regarde si l'utilisateur a un alias et si oui on l'affiche !
         $forlife = S::v('forlife');

@@ -85,29 +85,18 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
   </tr>
   <tr class="impair">
     <td>
-      {if $mails->total() eq 0}
+      {if count($mails) eq 0}
       <p class="erreur">
         Tu n'as actuellement aucune adressse de redirection. Tout courrier électronique qui t'es adresses
         ci-dessus génère une erreur. Modifie au plus vite ta liste de redirection.<br/>
       </p>
       {else}
       Actuellement, tout courrier électronique qui t'y est adressé, est envoyé
-      {if $mails->total() eq 1} à l'adresse{else} aux adresses{/if}&nbsp;:
+      {if count($mails) eq 1} à l'adresse{else} aux adresses{/if}&nbsp;:
       <ul>
-        {iterate from=$mails item=m}
-        <li><strong>{$m.email}</strong></li>
-        {/iterate}
-      </ul>
-      {/if}
-      {if count($storage) neq 0}
-      Ton courrier est également stocké sur {if count($storage) eq 1}le compte suivant{else} les comptes suivants{/if}&nbsp;:
-      <ul>
-        {if in_array('googleapps', $storage)}
-        <li><a href="googleapps"><strong>Compte Google Apps / GMail de Polytechnique.org</strong></a></li>
-        {/if}
-        {if in_array('imap', $storage)}
-        <li><a href="Xorg/IMAP"><strong>Accès de secours aux emails (IMAP)</strong></a></li>
-        {/if}
+        {foreach from=$mails item=m}
+        <li><strong>{$m->display_email}</strong></li>
+        {/foreach}
       </ul>
       {/if}
       {test_email}
