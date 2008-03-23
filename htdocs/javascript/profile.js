@@ -454,6 +454,8 @@ function updateSecteur()
     var secteur = document.forms.prof_annu.secteur_sel.value;
     if (secteur == '') {
         secteur = '-1';
+        document.getElementById('ss_secteur_sel').innerHTML = '';
+        return;
     }
     $.get(platal_baseurl + 'profile/ajax/secteur/-1/' + secteur,
           function(data) {
