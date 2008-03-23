@@ -182,5 +182,14 @@ check("SELECT  matricule,nom,prenom,matricule_ax,COUNT(matricule_ax) AS c
         WHERE  matricule_ax != '0'
         GROUP BY  matricule_ax
         having  c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (auth_user_md5) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
+
+/* verifie qu'il n'y a pas d'utilisateurs ayant un compte Google Apps désactivé et une redirection encore active vers Google Apps */
+check("SELECT  a.alias, g.g_status, u.mail_storage
+         FROM  auth_user_md5 AS u
+   INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+   INNER JOIN  gapps_accounts AS g ON (g.l_userid = u.user_id)
+        WHERE  FIND_IN_SET('googleapps', u.mail_storage) > 0 AND g.g_status != 'active'",
+      "utilisateurs ayant une redirection vers Google Apps alors que leur compte GApps n'est pas actif");
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
