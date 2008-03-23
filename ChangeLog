@@ -28,6 +28,7 @@ Bug/Wish:
         - #726: Don't send the email if an attachment can't be downloaded  -FRU
         - #750: Fix email list in test email                               -FRU
         - #802: Fix upload content type checking on some buggy PHP         -FRU
+        - #803: Prevents UI from allowing 'last active alias deletion'     -Car
 
     * Lists:
         - #793: Show broken members on ML                                  -FRU
