@@ -60,14 +60,14 @@ function toggleField(name, id, obj) {
   </tr>
   {include file=$valid->formu()}
   {if $valid->editor()}
-  <tr>
+  <tr onclick="toggleField('edit', '{$valid->id()}')" style="cursor: pointer">
     <th colspan="2">
       {if $preview_id neq $valid->id()}
       <div style="float: left">
-        <a href="javascript:toggleField('edit', '{$valid->id()}')">{icon name="add"}</a>
+        {icon name="add"}
       </div>
       {/if}
-      Editer
+      Éditer
     </th>
   </tr>
   <tr {if $preview_id neq $valid->id()}style="display: none"{/if} id="edit_{$valid->id()}">
@@ -79,17 +79,17 @@ function toggleField(name, id, obj) {
           <input type="hidden" name="type"   value="{$valid->type}" />
           <input type="hidden" name="stamp"  value="{$valid->stamp}" />
           <br />
-          <input type="submit" name="edit"   value="Editer" />
+          <input type="submit" name="edit"   value="Éditer" />
         </div>
       </form>
     </td>
   </tr>
   {/if}
-  <tr>
+  <tr onclick="toggleField('comment', '{$valid->id()}')" style="cursor: pointer">
     <th colspan='2'>
       {if $valid->comments|@count eq 0}
       <div style="float: left">
-        <a href="javascript:toggleField('comment', '{$valid->id()}')">{icon name="add"}</a>
+        {icon name="add"}
       </div>
       {/if}
       Commentaires
@@ -118,7 +118,16 @@ function toggleField(name, id, obj) {
       </form>
     </td>
   </tr>
-  <tr><th colspan='2'>Réponse</th></tr>
+  <tr>
+    <th colspan='2'>
+      {if $preview_id neq $valid->id()}
+      <div style="float: left">
+        {icon name="null"}
+      </div>
+      {/if}
+      Réponse
+    </th>
+  </tr>
   <tr>
     <td colspan='2' {popup caption="Règles de validation" text=$valid->ruleText()}>
       <form action="admin/validate" method="post">
@@ -130,7 +139,7 @@ function toggleField(name, id, obj) {
               <option value="{$automatic_answer.answer}">{$automatic_answer.title}</option>
             {/foreach}
           </select>
-          <a href="admin/validate/answers">{icon name="page_edit" title="Editer les réponses automatiques"}</a>
+          <a href="admin/validate/answers">{icon name="page_edit" title="Éditer les réponses automatiques"}</a>
         </div>
         <div class='center'>
           Ajouté dans l'email&nbsp;:<br />
