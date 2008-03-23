@@ -43,33 +43,12 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 </p>
 {/if}
 
-{if !$smarty.session.auth}
-<p>
-<strong>Tu ne connais pas ton mot de passe ?</strong>
-</p>
-<ul>
-  <li>
-  Si tu viens de terminer ta pré-inscription, <strong>il est dans le mail</strong> que
-  nous t'avons envoyé (expéditeur pre-inscription@{#globals.mail.domain#}).
-  </li>
-  <li>
-  Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
-    nous</strong> pour obtenir un accès. {#globals.core.sitename#} c'est l'e-mail des X,
-  l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accès le plus
-  rapidement possible. <strong> <a href="register/">Clique ici pour nous demander tes
-      paramètres personnels.</a></strong>
-  </li>
-</ul>
-{/if}
-
 {if $smarty.request.response}<!-- failed login code //-->
-<br />
 <div class="erreur">
   Erreur d'identification. Essaie à nouveau !
 </div>
-{/if}
-
 <br />
+{/if}
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;" style="display: none">
   <table class="bicol" cellpadding="4" summary="Formulaire de login">
@@ -104,23 +83,18 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr>
       <td></td>
-      {if stripos($smarty.server.HTTP_USER_AGENT,'iPhone')}
-        {assign var='iPhone' value=true}
-      {/if}
-      <td {if !$iPhone}{popup caption='Connexion permanente' width='300' text='Coche cette case pour être automatiquement reconnu à ta prochaine connexion depuis cet ordinateur.<br/>
-      Il n\'est pas conseillé de cocher la case si cette machine n\'est pas <b>strictement</b> personnelle'}{/if}>
-        <input type="checkbox" name="remember" id="remember" /><label for="remember">Garder l'accès aux services après déconnexion</label>
-      </td>
-    </tr>
-    {if $iPhone}
-    <tr>
-      <td></td>
       <td>
-        Coche la case ci-dessus pour être automatiquement reconnu lors de ta prochaine connexion depuis cet ordinateur.
-        Il n'est pas conseillé de la cocher si cette machine n'est pas <b>strictement</b> personnelle.
+        <script type="text/javascript">{literal}
+          function confirm_remember(input) {
+            if (input.checked && !confirm('Cocher cette case te permet d\'être automatiquement reconnu à ta prochaine connexion depuis cet ordinateur. '
+            + 'Il n\'est pas conseillé de cocher la case si cette machine n\'est pas strictement personnelle.\n\nVeux-tu vraiment cocher cette case ?')) {
+              input.checked = false;
+            }
+          }
+        {/literal}</script>
+        <input type="checkbox" name="remember" id="remember" onchange="return confirm_remember(this);" /><label for="remember">Garder l'accès aux services après déconnexion</label>
       </td>
     </tr>
-    {/if}
     <tr>
       <td colspan="2">
       <table width="100%"><tr>
@@ -134,10 +108,26 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
       </td>
     </tr>
   </table>
-  <p>     
-    Problème de connexion ? <a href="Xorg/FAQ?display=light#connect" class="popup2">La réponse est là.</a>
-  </p>
 </form>
+
+{if !$smarty.session.auth}
+<p>
+<strong>Tu ne connais pas ton mot de passe ?</strong>
+</p>
+<ul>
+  <li>
+  Si tu viens de terminer ta pré-inscription, <strong>il est dans le mail</strong> que
+  nous t'avons envoyé (expéditeur pre-inscription@{#globals.mail.domain#}).
+  </li>
+  <li>
+  Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
+    nous</strong> pour obtenir un accès. {#globals.core.sitename#} c'est l'e-mail des X,
+  l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accès le plus
+  rapidement possible. <strong> <a href="register/">Clique ici pour nous demander tes
+      paramètres personnels.</a></strong>
+  </li>
+</ul>
+{/if}
 
 <div id="nologin" style="background: #fcc; color: red">
   Pour assurer la confidentialité de ton mot de passe, il est chiffré sur ta machine
@@ -148,6 +138,10 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     <strong>Active le javascript et recharge cette page pour pouvoir te connecter.</strong>
   </div>
 </div>
+
+<p>     
+  <strong>Problème de connexion ?</strong> <a href="Xorg/FAQ?display=light#connect" class="popup2">La réponse est là.</a>
+</p>
 
 <script type="text/javascript">
   document.getElementById('login').style.display="";
