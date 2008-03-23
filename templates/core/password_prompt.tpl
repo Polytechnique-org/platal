@@ -104,10 +104,15 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr>
       <td></td>
-      <td>
+      {if stripos($smarty.server.HTTP_USER_AGENT,'iPhone')}
+        {assign var='iPhone' value=true}
+      {/if}
+      <td {if !$iPhone}{popup caption='Connexion permanente' width='300' text='Coche cette case pour être automatiquement reconnu à ta prochaine connexion depuis cet ordinateur.<br/>
+      Il n\'est pas conseillé de cocher la case si cette machine n\'est pas <b>strictement</b> personnelle'}{/if}>
         <input type="checkbox" name="remember" id="remember" /><label for="remember">Garder l'accès aux services après déconnexion</label>
       </td>
     </tr>
+    {if $iPhone}
     <tr>
       <td></td>
       <td>
@@ -115,6 +120,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
         Il n'est pas conseillé de la cocher si cette machine n'est pas <b>strictement</b> personnelle.
       </td>
     </tr>
+    {/if}
     <tr>
       <td colspan="2">
       <table width="100%"><tr>
