@@ -40,5 +40,18 @@ Les différentes règles sont appliquées par ordre de priorité décroissante.
 
 {include file="core/table-editor.tpl"}
 
+{literal}
+<script type="text/javascript">
+  $('#body td table tr').each(function() { 
+    var uidcell = $('td:eq(3)',this);
+    if (uidcell.length != 1) {
+      return;
+    }
+    var uid = uidcell.text().replace(/^\s+/g,'').replace(/\s+$/g,'');
+    uidcell.replaceWith('<'+'a href="admin/user/'+uid+'">'+uid+'</'+'a>');
+  });
+</script>
+{/literal}
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
 
