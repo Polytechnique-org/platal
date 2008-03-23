@@ -20,6 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<p>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$smarty.session.forlife}">fiche référent</a> qui n'est accessible que par les X.
+</p>
 <p>
   Si tu acceptes que ceux des camarades te contactent afin de te demander
   conseil, dans les domaines que tu connais bien, et pour lesquels tu pourrais
@@ -28,7 +30,7 @@
 <p>
   Tu peux mentionner ici les domaines de compétences, les expériences
   notamment internationales sur la base desquels tu seras identifiable depuis
-  <a href="referent/search">la page de recherche d'un conseil professionnel</a>.<br />
+  <a href="referent/search#mentors">la page de recherche d'un conseil professionnel</a>.<br />
 </p>
 <p>Le mentoring est particulièrement important pour les camarades&nbsp;:</p>
 <ul>
