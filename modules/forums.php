@@ -150,14 +150,13 @@ class ForumsModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Administration - Bannissements des forums');
         $page->assign('title', 'Gestion des mises au ban');
         $table_editor = new PLTableEditor('admin/forums','forums.innd','id_innd');
-        $table_editor->describe('ipmin','min plage IP',true);
-        $table_editor->describe('ipmax','max plage IP',true);
-        $table_editor->describe('uid','id utilisateur',true);
-        $table_editor->describe('write_perm','masque des forums autorisés en lecture',true);
-        $table_editor->describe('read_perm','masque des forums autorisés en écriture',true);
+        $table_editor->add_sort_field('priority', true, true);
+        $table_editor->describe('read_perm','lecture',true);
+        $table_editor->describe('write_perm','écriture',true);
         $table_editor->describe('priority','priorité',true);
         $table_editor->describe('comment','commentaire',true);
         $table_editor->apply($page, $action, $id);
+        $page->changeTpl('forums/admin.tpl');
     }
 
     static function run_banana(&$page, $params = null)
