@@ -152,10 +152,10 @@ class ForumsModule extends PLModule
         $table_editor = new PLTableEditor('admin/forums','forums.innd','id_innd');
         $table_editor->describe('ipmin','min plage IP',true);
         $table_editor->describe('ipmax','max plage IP',true);
-        $table_editor->describe('uid','utilisateur',true);
-        $table_editor->describe('write_perm','perm. poster',true);
-        $table_editor->describe('read_perm','perm. lire',true);
-        $table_editor->describe('priority','priorite',true);
+        $table_editor->describe('uid','id utilisateur',true);
+        $table_editor->describe('write_perm','masque des forums autorisés en lecture',true);
+        $table_editor->describe('read_perm','masque des forums autorisés en écriture',true);
+        $table_editor->describe('priority','priorité',true);
         $table_editor->describe('comment','commentaire',true);
         $table_editor->apply($page, $action, $id);
     }
