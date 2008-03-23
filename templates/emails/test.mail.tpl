@@ -29,11 +29,11 @@
 {if $sexe}Chère{else}Cher{/if} {$prenom},
 
 Tu reçois ce mail car tu as demandé la confirmation du bon fonctionnement de ton adresse polytechnicienne {$email}.
-{if $redirects->total() gt 1}Si toutes tes redirections fonctionnent correctement tu devrais recevoir une copie de ce mail
+{if count($redirects) gt 1}Si toutes tes redirections fonctionnent correctement tu devrais recevoir une copie de ce mail
 dans les boîtes suivantes :
-{iterate from=$redirects item=mail}
-* {$mail.email}
-{/iterate}
+{foreach from=$redirects item=mail}
+* {$mail->display_email}
+{/foreach}
 {/if}
 
 Tu trouveras sur le site divers outils pour gérer ton adresse email :

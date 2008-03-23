@@ -421,22 +421,22 @@ class EmailModule extends PLModule
     function handler_test(&$page, $forlife = null)
     {
         global $globals;
+        require_once 'emails.inc.php';
+
         if (!S::has_perms() || !$forlife) {
             $forlife = S::v('bestalias');
         }
-        $mailer = new PlMailer('emails/test.mail.tpl');
-        $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
-        $iterator = XDB::iterator("SELECT  email
-                                     FROM  emails AS e
-                               INNER JOIN  aliases AS a ON (e.uid = a.id)
-                                    WHERE  FIND_IN_SET('active', e.flags) AND a.alias = {?}",
-                                  $forlife);
-        $mailer->assign('redirects', $iterator);
-        $res = XDB::query("SELECT  FIND_IN_SET('femme', u.flags), prenom
+
+        $res = XDB::query("SELECT  FIND_IN_SET('femme', u.flags), prenom, user_id
                              FROM  auth_user_md5 AS u
                        INNER JOIN  aliases AS a ON (a.id = u.user_id)
                             WHERE  a.alias = {?}", $forlife);
-        list($sexe, $prenom) = $res->fetchOneRow();
+        list($sexe, $prenom, $uid) = $res->fetchOneRow();
+        $redirect = new Redirect($uid);
+
+        $mailer = new PlMailer('emails/test.mail.tpl');
+        $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
+        $mailer->assign('redirects', $redirect->active_emails());
         $mailer->assign('sexe', $sexe);
         $mailer->assign('prenom', $prenom);
         $mailer->send();
