@@ -81,8 +81,10 @@
       var remove = $(".active_email:checked");
       if (remove.length <= 1) {
         remove.attr("disabled", "disabled");
+        remove.parent('td').parent('tr').children('td').children('.remove_email').hide();
       } else {
         remove.removeAttr("disabled");
+        $('.remove_email').show();
       }
     }
 
@@ -98,6 +100,7 @@
           $.get(link.href, {},function() {
             $('tr[@id=line_' + email.replace('@', '_at_') + ']').remove();
             showRemove();
+            activeEnable();
           });
         }
         return false;
@@ -172,7 +175,6 @@
         </td>
       </tr>
       {/foreach}
-      <script type="text/javascript">activeEnable(); showRemove();</script>
       <tr class="{cycle values="pair,impair"}"><td colspan="4">
         <form action="emails/redirect" method="post">
         <div>
@@ -184,6 +186,7 @@
         </form>
       </td></tr>
     </table>
+    <script type="text/javascript">activeEnable(); showRemove();</script>
   </div>
 {if $panne}
 <p class="smaller">
