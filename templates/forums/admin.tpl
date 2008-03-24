@@ -27,7 +27,7 @@ Chaque ligne permet de gérer les accès limités à :
 <li>une plage d'adresses IP donnée (entre ipmin et ipmax),</li>
 <li>à tout le monde (uid=0) ou seulement à un utilisateur donné,</li>
 <li>en restreignant l'accès en lecture à un ensemble de forums décrits par un masque,</li>
-<li>en restreingant l'accès en écriture à un ensemble de forums décrits par un masque.</li>
+<li>en restreignant l'accès en écriture à un ensemble de forums décrits par un masque.</li>
 </ul>
 
 <p>
