@@ -52,6 +52,7 @@ Bug/Wish:
         - #732: Adapt subscription text to sex                             -FRU
         - #735: Encoding of list description in member edition form        -FRU
         - #740: Can add a picture in the announces                         -FRU
+        - #799: Improve asked inscription interface                        -JAC
 
 From 0.9.15 branch:
 
@@ -1166,6 +1167,7 @@ ACRONYMS:
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
     * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
+    * JAC: Stéphane Jacob       (jacou)     <stephane.jacob@m4x.org>
     * JS : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>
