@@ -24,6 +24,9 @@ New:
 
 Bug/Wish:
 
+    * Carnet:
+        - #734: Fix notification emails and carnet for female users        -VZA
+
     * Emails:
         - #726: Don't send the email if an attachment can't be downloaded  -FRU
         - #750: Fix email list in test email                               -FRU

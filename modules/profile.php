@@ -208,6 +208,9 @@ class ProfileModule extends PLModule
             }
             return PL_NOT_FOUND;
         }
+        if (S::logged()) {
+            $_SESSION['log']->log('view_profile', $login);
+        }
 
         $new   = Env::v('modif') == 'new';
         $user  = get_user_details($login, S::v('uid'), $view);
