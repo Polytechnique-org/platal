@@ -89,6 +89,9 @@ class SearchModule extends PLModule
 
         if (Env::has('quick') || $action == 'geoloc') {
             $quick = trim(Env::v('quick'));
+            if (S::logged() && !Env:has('page')) {
+                $_SESSION['log']->log('search', 'quick=' . $quick);
+            }
             $list = 'profile|prf|fiche|fic|referent|ref|mentor';
             if (S::has_perms()) {
                 $list .= '|admin|adm|ax';
@@ -180,6 +183,9 @@ class SearchModule extends PLModule
                 'school' => array('field' => 'id', 'table' => 'applis_def', 'text' => 'text', 'exact' => false),
                 'city' => array('table' => 'geoloc_city', 'text' => 'name', 'exact' => false)
             );
+            if (!Env::has('page')) {
+                $_SESSION['log']->log('search', 'adv=' . var_export($_GET, true));
+            }
             foreach ($textFields as $field=>&$query) {
                 if (!Env::v($field) && Env::v($field . 'Txt')) {
                     $res = XDB::query("SELECT  {$query['field']}
