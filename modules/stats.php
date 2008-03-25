@@ -42,6 +42,7 @@ class StatsModule extends PLModule
             'stats/graph/evolution'
                               => $this->make_hook('graph_evo', AUTH_COOKIE),
             'stats/promos'    => $this->make_hook('promos',    AUTH_COOKIE),
+            'stats/profile'   => $this->make_hook('profile',   AUTH_COOKIE),
 
             'stats/coupures'  => $this->make_hook('coupures',  AUTH_PUBLIC),
         );
@@ -294,6 +295,30 @@ EOF2;
                                    WHERE  state != 'ok'");
             $page->assign('mxs', $res);
         }
+    }
+
+    function handler_profile(&$page, $period = 'overall')
+    {
+        $page->changeTpl('stats/profile.tpl');
+
+        $time = '';
+        switch ($period) {
+          case 'week': case 'month': case 'year':
+            $time = ' AND e.stamp > DATE_SUB(CURDATE(), INTERVAL 1 ' . strtoupper($period) . ')';
+            break;
+        }
+        $rows = XDB::iterator("SELECT  IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
+                                       u.prenom, u.promo, e.data AS forlife, COUNT(*) AS count
+                                 FROM  logger.events AS e
+                           INNER JOIN  logger.actions AS act ON (e.action = act.id)
+                           INNER JOIN  aliases AS a ON (a.alias = e.data)
+                           INNER JOIN  auth_user_md5 AS u ON (u.user_id = a.id)
+                                WHERE  act.text = 'view_profile' $time
+                             GROUP BY  e.data
+                             ORDER BY  count DESC
+                                LIMIT  10");
+        $page->assign('profiles', $rows);
+        $page->assign('period', $period);
     }
 }
 
