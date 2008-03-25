@@ -127,13 +127,18 @@ class XnetEventsModule extends PLModule
              LEFT JOIN  groupex.evenements_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
                  WHERE  asso_id = {?}
                    AND  archive = " . ($archive ? "1 " : "0 ")
-            . (is_member() || may_update() ? "" : " AND accept_nonmembre != 0 ")
               . "GROUP BY  e.eid
                  ORDER BY  inscr_open DESC, debut DESC", S::v('uid'), $globals->asso('id'));
 
         $evts = array();
+        $undisplayed_events = 0;
 
         while ($e = $evenements->next()) {
+            if (!is_member() && !may_update() && !$e['accept_nonmembre']) {
+                $undisplayed_events ++;
+                continue;
+            }
+
             $e['show_participants'] = ($e['show_participants'] && (is_member() || may_update()));
             $res = XDB::query(
                 "SELECT titre, details, montant, ei.item_id, nb, ep.paid
@@ -168,6 +173,7 @@ class XnetEventsModule extends PLModule
         }
 
         $page->assign('evenements', $evts);
+        $page->assign('undisplayed_events', $undisplayed_events);
     }
 
     function handler_sub(&$page, $eid = null)

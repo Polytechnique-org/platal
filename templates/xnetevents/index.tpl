@@ -190,7 +190,6 @@
 
 {foreachelse}
 
-
 <p class="descr">
 {if $archive}
   Aucun événement n'a été archivé par les animateurs du groupe.
@@ -200,6 +199,13 @@
 </p>
 
 {/foreach}
+
+{if $undisplayed_events neq 0}
+<p class="descr">
+  Il y a {$undisplayed_events} événement{if $undisplayed_events > 1}s non affichés car ils sont réservés
+  {else} non affiché car il est réservé{/if} aux membres de ce groupe.
+</p>
+{/if}
 
 {if $evenements}
 <p class="descr">
