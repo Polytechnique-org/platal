@@ -89,7 +89,7 @@ class SearchModule extends PLModule
 
         if (Env::has('quick') || $action == 'geoloc') {
             $quick = trim(Env::v('quick'));
-            if (S::logged() && !Env:has('page')) {
+            if (S::logged() && !Env::has('page')) {
                 $_SESSION['log']->log('search', 'quick=' . $quick);
             }
             $list = 'profile|prf|fiche|fic|referent|ref|mentor';
