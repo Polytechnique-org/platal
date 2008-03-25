@@ -60,10 +60,15 @@
 Cette lettre est envoyée à tous les Polytechniciens sur Internet par
 l'intermédiaire de Polytechnique.org.
 
+{if $is_mail}
 archives         : <https://www.polytechnique.org/nl>
 écrire           : <https://www.polytechnique.org/nl/submit>
 ne plus recevoir : <https://www.polytechnique.org/nl/out>
-
+{else}
+archives         : &lt;https://www.polytechnique.org/nl&gt;
+écrire           : &lt;https://www.polytechnique.org/nl/submit&gt;
+ne plus recevoir : &lt;https://www.polytechnique.org/nl/out&gt;
+{/if}
 {if !$is_mail}
 </pre>
 {/if}
