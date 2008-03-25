@@ -89,7 +89,9 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
             if (input.checked && !confirm('Cocher cette case te permet d\'être automatiquement reconnu à ta prochaine connexion depuis cet ordinateur. '
             + 'Il n\'est pas conseillé de cocher la case si cette machine n\'est pas strictement personnelle.\n\nVeux-tu vraiment cocher cette case ?')) {
               input.checked = false;
+              return false;
             }
+            return true;
           }
         {/literal}</script>
         <input type="checkbox" name="remember" id="remember" onchange="return confirm_remember(this);" /><label for="remember">Garder l'accès aux services après déconnexion</label>
