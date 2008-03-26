@@ -51,7 +51,7 @@
   <tr><th>{$am->title(true)}</th></tr>
   <tr>
     <td>
-      {include file="axletter/letter.tpl"}
+      {include file="axletter/letter.mail.tpl"}
     </td>
   </tr>
 </table>
