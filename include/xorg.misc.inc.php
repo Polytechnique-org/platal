@@ -320,6 +320,12 @@ function send_warning_mail($title)
     $mailer->send();
 }
 
+function kill_sessions()
+{
+    assert(S::has_perms());
+    shell_exec('sudo -u root ' . dirname(dirname(__FILE__)) . '/bin/kill_sessions.sh');
+}
+
 
 /******************************************************************************
  * Dynamic configuration update/edition stuff

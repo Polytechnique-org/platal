@@ -29,6 +29,7 @@ class CoreModule extends PLModule
             'login'       => $this->make_hook('login',      AUTH_COOKIE),
             'send_bug'    => $this->make_hook('bug', AUTH_COOKIE),
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
+            'kill_sessions' => $this->make_hook('kill_sessions', AUTH_COOKIE, 'admin'),
             'get_rights'  => $this->make_hook('get_rights', AUTH_MDP, 'admin'),
 
             'wiki_help'    => $this->make_hook('wiki_help', AUTH_PUBLIC),
@@ -84,6 +85,11 @@ class CoreModule extends PLModule
         wiki_clear_all_cache();
 
         http_redirect(empty($_SERVER['HTTP_REFERER']) ? './' : $_SERVER['HTTP_REFERER']);
+    }
+
+    function handler_kill_sessions(&$page)
+    {
+        kill_sessions();
     }
 
     function handler_get_rights(&$page, $level)

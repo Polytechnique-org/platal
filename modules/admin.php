@@ -549,6 +549,11 @@ class AdminModule extends PLModule
                                          promo     = $promo,
                                          comment   = '".addslashes($comm)."'
                                    WHERE user_id = '{$mr['user_id']}'";
+                        if ($perms == 'disabled' && $old_fields['perms'] != 'disabled') {
+                            // A user has been banned ==> ensure his php session has been killed
+                            // This solution is ugly and overkill, but, it should be efficient.
+                            kill_sessions();
+                        }
                         if (XDB::execute($query)) {
                             user_reindex($mr['user_id']);
 
