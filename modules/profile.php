@@ -190,11 +190,15 @@ class ProfileModule extends PLModule
                       WHERE  matricule={?}", $x);
             $login = $res->fetchOneCell();
         } else {
-            $login = get_user_forlife($x);
+            $login = get_user_forlife($x, S::logged() ? '_default_user_callback'
+                                                      : '_silent_user_callback');
         }
 
         if (empty($login)) {
-            if (preg_match('/([-a-z]+)\.([-a-z]+)\.([0-9]{4})/i', $x, $matches)) {
+            if (!S::logged()) {
+                $page->kill("Ce camarade n'a pas de fiche publique.");
+                return;
+            } else if (preg_match('/([-a-z]+)\.([-a-z]+)\.([0-9]{4})/i', $x, $matches)) {
                 $matches = str_replace('-', '_', $matches);
                 $res = XDB::query("SELECT user_id
                                      FROM auth_user_md5
