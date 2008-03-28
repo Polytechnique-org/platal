@@ -39,13 +39,9 @@ q:
 
 core: spool/templates_c spool/mails_c include/globals.inc.php configs/platal.cron htdocs/.htaccess spool/conf
 
-spool/templates_c spool/mails_c spool/uploads spool/conf spool/uploads/temp:
+spool/templates_c spool/mails_c spool/uploads spool/conf:
 	mkdir -p $@
 	chmod o+w $@
-
-spool/uploads/temp/.htaccess: spool/uploads/temp Makefile
-	echo "Order deny,allow" > $@
-	echo "Deny from all" >> $@
 
 htdocs/.htaccess: htdocs/.htaccess.in Makefile
 	@REWRITE_BASE="/~$$(id -un)"; \
@@ -68,7 +64,7 @@ wiki: get-wiki build-wiki
 
 build-wiki: $(WIKI_NEEDS) | get-wiki
 
-htdocs/uploads: spool/uploads/temp/.htaccess
+htdocs/uploads:
 	cd htdocs && ln -sf ../spool/uploads
 
 htdocs/wiki:
