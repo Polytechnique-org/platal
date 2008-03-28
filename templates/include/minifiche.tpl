@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-{if !$c.inscrit || $c.dcd}<div class='grayed'>{/if}
+{if (!$c.inscrit && $smarty.session.auth ge AUTH_COOKIE) || $c.dcd}<div class='grayed'>{/if}
 <div class="contact" {if $c.inscrit}{if $smarty.session.auth ge AUTH_COOKIE}title="fiche mise à jour le {$c.date|date_format}"{/if}{/if}>
 
   <div class="nom">
@@ -139,6 +139,6 @@
   </div>
 
 </div>
-{if !$c.inscrit || $c.dcd}</div>{/if}
+{if (!$c.inscrit && $smarty.session.auth ge AUTH_COOKIE) || $c.dcd}</div>{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
