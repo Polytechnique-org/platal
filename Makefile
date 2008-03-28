@@ -37,9 +37,9 @@ q:
 ## core
 ##
 
-core: spool/templates_c spool/mails_c include/globals.inc.php configs/platal.cron htdocs/.htaccess spool/conf
+core: spool/templates_c spool/mails_c include/globals.inc.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp
 
-spool/templates_c spool/mails_c spool/uploads spool/conf:
+spool/templates_c spool/mails_c spool/uploads spool/conf spool/tmp:
 	mkdir -p $@
 	chmod o+w $@
 
