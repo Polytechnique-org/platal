@@ -85,13 +85,6 @@ check("SELECT  u.user_id, nom, prenom, promo,
 check("select uid from adresses where pub != 'private' and pub !='ax' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour une adresse");
 check("select uid from tels where tel_pub != 'private' and tel_pub !='ax' and tel_pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour un numero de telephone");
 
-/* validite de adresses */
-check("select uid, count(adrid) from adresses group by uid having count(adrid) > 7", "Utilisateurs ayant trop d'adresses");
-
-/* Validite des tables de langues, competences, mentoring*/
-check("select uid, count(lid) from langues_ins group by uid having count(lid) > 10","Utilisateurs ayant trop de langues");
-check("select uid, count(cid) from competences_ins group by uid having count(cid) > 20","Utilisateurs ayant trop de competences");
-
 /* validite de aliases */
 check("SELECT a.*
         FROM aliases       AS a
