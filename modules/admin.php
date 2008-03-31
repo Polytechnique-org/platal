@@ -1101,17 +1101,18 @@ class AdminModule extends PLModule
         switch (Post::v('action')) {
         case 'create':
             if (trim(Post::v('ipN')) != '') {
-                Xdb::execute('INSERT IGNORE INTO ip_watch (ip, state, detection, last, uid, description)
-                                          VALUES ({?}, {?}, CURDATE(), NOW(), {?}, {?})',
-                             ip_to_uint(trim(Post::v('ipN'))), Post::v('stateN'), S::i('uid'), Post::v('descriptionN'));
+                Xdb::execute('INSERT IGNORE INTO ip_watch (ip, mask, state, detection, last, uid, description)
+                                          VALUES ({?}, {?}, {?}, CURDATE(), NOW(), {?}, {?})',
+                             ip_to_uint(trim(Post::v('ipN'))), ip_to_uint(trim(Post::v('maskN'))),
+                             Post::v('stateN'), S::i('uid'), Post::v('descriptionN'));
             };
             break;
 
         case 'edit':
             Xdb::execute('UPDATE ip_watch
-                             SET state = {?}, last = NOW(), uid = {?}, description = {?}
+                             SET state = {?}, last = NOW(), uid = {?}, description = {?}, mask = {?}
                            WHERE ip = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'),
-                          ip_to_uint(Post::v('ipN')));
+                          ip_to_uint(Post::v('maskN')), ip_to_uint(Post::v('ipN')));
             break;
 
         default:
@@ -1128,7 +1129,7 @@ class AdminModule extends PLModule
             $sql = "SELECT  w.ip, IF(s.ip IS NULL,
                                      IF(w.ip = s2.ip, s2.host, s2.forward_host),
                                      IF(w.ip = s.ip, s.host, s.forward_host)),
-                             w.detection, w.state, a.alias AS forlife
+                            w.mask, w.detection, w.state, a.alias AS forlife
                       FROM  ip_watch        AS w
                  LEFT JOIN  logger.sessions AS s  ON (s.ip = w.ip)
                  LEFT JOIN  logger.sessions AS s2 ON (s2.forward_ip = w.ip)
@@ -1139,13 +1140,15 @@ class AdminModule extends PLModule
 
             $table = array();
             $props = array();
-            while (list($ip, $host, $date, $state, $forlife) = $it->next()) {
+            while (list($ip, $host, $mask, $date, $state, $forlife) = $it->next()) {
                 $ip = uint_to_ip($ip);
+                $mask = uint_to_ip($mask);
                 if (count($props) == 0 || $props['ip'] != $ip) {
                     if (count($props) > 0) {
                         $table[] = $props;
                     }
                     $props = array('ip'        => $ip,
+                                   'mask'      => $mask,
                                    'host'      => $host,
                                    'detection' => $date,
                                    'state'     => $state,
@@ -1159,7 +1162,7 @@ class AdminModule extends PLModule
             }
             $page->assign('table', $table);
         } elseif ($action == 'edit') {
-            $sql = "SELECT  w.detection, w.state, w.last, w.description,
+            $sql = "SELECT  w.detection, w.state, w.last, w.description, w.mask,
                             a1.alias AS edit, a2.alias AS forlife, s.host
                       FROM  ip_watch        AS w
                  LEFT JOIN  aliases         AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
@@ -1171,9 +1174,10 @@ class AdminModule extends PLModule
             $it = Xdb::iterRow($sql, ip_to_uint($ip));
 
             $props = array();
-            while (list($detection, $state, $last, $description, $edit, $forlife, $host) = $it->next()) {
+            while (list($detection, $state, $last, $description, $mask, $edit, $forlife, $host) = $it->next()) {
                 if (count($props) == 0) {
                     $props = array('ip'          => $ip,
+                                   'mask'        => uint_to_ip($mask),
                                    'host'        => $host,
                                    'detection'   => $detection,
                                    'state'       => $state,

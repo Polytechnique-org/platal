@@ -234,7 +234,14 @@ function make_forlife($prenom, $nom, $promo)
  */
 function ip_to_uint($ip)
 {
-    return ip2long($ip);
+    $part = explode('.', $ip);
+    $v = 0;
+    $fact = 0x1000000;
+    for ($i = 0 ; $i < 4 ; ++$i) {
+        $v += $fact * $part[$i];
+        $fact >>= 8;
+    }
+    return $v;
 }
 
 /** Convert uint to ip (to build a human understandable ip)
@@ -261,14 +268,16 @@ function check_ip($level)
         }
         $ips[] = $_SERVER['REMOTE_ADDR'];
         foreach ($ips as &$ip) {
-            $ip = "ip = " . ip_to_uint($ip);
+            $ip = '(ip & mask) = (' . ip_to_uint($ip) . '& mask)';
         }
-        $res = XDB::query('SELECT  state
+        $res = XDB::query('SELECT  state, description
                              FROM  ip_watch
                             WHERE  ' . implode(' OR ', $ips) . '
                          ORDER BY  state DESC');
         if ($res->numRows()) {
-            $_SESSION['check_ip'] = $res->fetchOneCell();
+            $state = $res->fetchOneAssoc();
+            $_SESSION['check_ip'] = $state['state'];
+            $_SESSION['check_ip_desc'] = $state['description'];
         } else {
             $_SESSION['check_ip'] = 'safe';
         }
