@@ -64,7 +64,7 @@ function searchMapId()
     height="450">
       <param name="movie" value="{$platal->ns}{$plset_base}/geoloc/dynamap.swf"/>
       <param name="wmode" value="transparent"/>
-      <param name="flashvars" value="initfile={$platal->ns}{$plset_base}/geoloc/init{$plset_search_enc}"/>
+      <param name="flashvars" value="initfile=init{$plset_search_enc}"/>
     </object>
   </p>
   {if $annu}
