@@ -41,6 +41,4 @@ ADD COLUMN mask uint(11) NOT NULL DEFAULT 4294967295,
 ADD PRIMARY KEY ip (ip)
 ADD INDEX network (ip, mask);
 
-ALTER TABLE ip_watch ADD COLUMN mask uint(11) NOT NULL DEFAULT 4294967295;
-
 # vim:set syntax=mysql:
