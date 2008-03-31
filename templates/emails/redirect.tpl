@@ -116,6 +116,12 @@
         }
     }
 
+    function updateRedirect(checked, email)
+    {
+        activeEnable();
+        Ajax.update_html(null, 'emails/redirect/' + (checked ? '' : 'in') + 'active/' + email, redirectUpdate);
+    }
+
     {/literal}
   //]]></script>
   {javascript name="jquery"}
@@ -143,7 +149,7 @@
           <input type="checkbox" value="{$e->email}" {if $e->sufficient}class="active_email"{/if}
                  {if $e->active}checked="checked"{/if}
                  {if $smarty.foreach.redirect.total eq 1}disabled="disabled"{/if}
-                 onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/'+(this.checked?'':'in')+'active/{$e->email}', redirectUpdate)" /></td>
+                 onchange="updateRedirect(this.checked, '{$e->email}')" /></td>
         <td>
           {if $e->has_rewrite()}
           <select onchange="Ajax.update_html(null,'emails/redirect/rewrite/{$e->email}/'+this.value, redirectUpdate)">
