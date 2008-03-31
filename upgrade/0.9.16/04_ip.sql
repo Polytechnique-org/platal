@@ -38,7 +38,7 @@ DROP PRIMARY KEY,
 DROP COLUMN ip,
 CHANGE COLUMN ip2 ip INT(11) UNSIGNED NOT NULL,
 ADD COLUMN mask uint(11) NOT NULL DEFAULT 4294967295,
-ADD PRIMARY KEY ip (ip)
+ADD PRIMARY KEY ip (ip),
 ADD INDEX network (ip, mask);
 
 # vim:set syntax=mysql:
