@@ -257,6 +257,7 @@ class ProfileModule extends PLModule
                 $user['forlife'].'@'.$globals->mail->domain,
                 $user['forlife'].'@'.$globals->mail->domain2);
         $page->assign('virtualalias', $res->fetchOneCell());
+        $page->assign('view', $view);
 
         $page->addJsLink('close_on_esc.js');
         header('Last-Modified: ' . date('r', strtotime($user['date'])));

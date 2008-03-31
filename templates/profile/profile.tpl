@@ -187,11 +187,17 @@ function chgMainWinLoc(strPage)
     {$x.cv|miniwiki:title|smarty:nodefaults}
   </div>
   {/if}
-  {if !$logged}
+  {if $view eq 'public'}
   <div class="part">
     <small>
     Cette fiche est publique et visible par tout internaute,<br />
     vous pouvez aussi voir <a href="profile/private/{$x.forlife}?display=light">celle&nbsp;réservée&nbsp;aux&nbsp;X</a>.
+    </small>
+  </div>
+  {elseif $view eq 'ax'}
+  <div class="part">
+    <small>
+    Cette fiche est privée et ne recense que les informations transmises à l'AX.
     </small>
   </div>
   {/if}
