@@ -195,29 +195,24 @@ class ProfileModule extends PLModule
         }
 
         if (empty($login)) {
-            if (!S::logged()) {
-                $page->kill("Ce camarade n'a pas de fiche publique.");
-                return;
-            } else if (preg_match('/([-a-z]+)\.([-a-z]+)\.([0-9]{4})/i', $x, $matches)) {
-                $matches = str_replace('-', '_', $matches);
-                $res = XDB::query("SELECT user_id
-                                     FROM auth_user_md5
-                                    WHERE prenom LIKE {?} AND nom LIKE {?} AND promo = {?}
-                                          AND perms = 'pending'",
-                                  $matches[1], $matches[2], $matches[3]);
-                if ($res->numRows() == 1) {
-                    $uid = $res->fetchOneCell();
-                    pl_redirect('marketing/public/' . $uid);
-                }
+            $user = get_not_registered_user($x, true);
+            if ($user->total() != 1) {
+                return PL_NOT_FOUND;
             }
-            return PL_NOT_FOUND;
+            $user = $user->next();
+            if (S::logged()) {
+                pl_redirect('marketing/public/' . $user['user_id']);
+            }
+            $user['forlife'] = $x;
+        } else {
+            $new   = Env::v('modif') == 'new';
+            $user  = get_user_details($login, S::v('uid'), $view);
         }
+
         if (S::logged()) {
             $_SESSION['log']->log('view_profile', $login);
         }
 
-        $new   = Env::v('modif') == 'new';
-        $user  = get_user_details($login, S::v('uid'), $view);
         $title = $user['prenom'] . ' ' . ( empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'] );
         $page->assign('xorg_title', $title);
 
