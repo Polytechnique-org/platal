@@ -165,6 +165,11 @@ function goodiesPopup(node) {
     }
 }
 
+function disableGoodiesPopups() {
+    __goodies_active = false;
+}
+
+var __goodies_active = true;
 var __goodies_ical_sites = [
     {'url_prefix': '',
      'img': 'images/icons/calendar_view_day.gif',
@@ -206,9 +211,11 @@ function __goodies_popupText(url, sites) {
 
 function __goodies_popup(node, sites, default_title) {
     var mouseover_cb = function() {
-        var rss_text = __goodies_popupText(node.href, sites);
-        var rss_title = (node.title ? node.title : default_title);
-        return overlib(rss_text, CAPTION, rss_title, CLOSETEXT, 'Fermer', DELAY, 800, STICKY, WIDTH, 150);
+        if (__goodies_active) {
+            var rss_text = __goodies_popupText(node.href, sites);
+            var rss_title = (node.title ? node.title : default_title);
+            return overlib(rss_text, CAPTION, rss_title, CLOSETEXT, 'Fermer', DELAY, 800, STICKY, WIDTH, 150);
+        }
     }
     var mouseout_cb = function() {
         nd();
