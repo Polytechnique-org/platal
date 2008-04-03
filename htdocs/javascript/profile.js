@@ -88,7 +88,26 @@ function selectType(selectCtrl, type)
     }
 }
 
+function addSearchName()
+{
+  var i = 0;
+  while (document.getElementById('search_name_' + i) != null) {
+      i++;
+  }
+  $('#add_search_name').before('<div id="search_name_' + i + '" style="padding:2px" class="center"></div>');
+  Ajax.update_html('search_name_' + i, 'profile/ajax/searchname/' + i,function(){
+    $('#search_name_'+i+' input')[1].focus();
+  });
+}
 
+function removeSearchName(i)
+{
+  if (document.getElementById('search_name_'+i+'_new') != null) {
+    $('#search_name_'+i).remove();
+  } else {
+    removeObject('search_name_'+i, 'search_name['+i+']');
+  }
+}
 
 // Addresses
 

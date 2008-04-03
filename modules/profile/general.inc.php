@@ -65,6 +65,22 @@ class ProfileNom implements ProfileSetting
     }
 }
 
+class ProfileSearchName implements ProfileSetting
+{
+
+    public function __construct()
+    {
+    }
+
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+    }
+
+    public function save(ProfilePage &$page, $field, $new_value)
+    {
+    }
+}
+
 class ProfileAppli implements ProfileSetting
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -109,6 +125,10 @@ class ProfileGeneral extends ProfilePage
         $this->settings['freetext']
                                   = $this->settings['nationalite']
                                   = $this->settings['nick']
+                                  = $this->settings['yourself']
+                                  = $this->settings['display_name']
+                                  = $this->settings['sort_name']
+                                  = $this->settings['tooltip_name']
                                   = null;
         $this->settings['synchro_ax']
                                   = new ProfileBool();
@@ -130,9 +150,12 @@ class ProfileGeneral extends ProfilePage
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
                                    q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.matricule_ax,
                                    IF(a1.aid IS NULL, -1, a1.aid) as appli_id1, a1.type as appli_type1,
-                                   IF(a2.aid IS NULL, -1, a2.aid) as appli_id2, a2.type as appli_type2
+                                   IF(a2.aid IS NULL, -1, a2.aid) as appli_id2, a2.type as appli_type2,
+                                   n.yourself, n.display AS display_name, n.sort AS sort_name,
+                                   n.tooltip AS tooltip_name
                              FROM  auth_user_md5   AS u
-                       INNER JOIN  auth_user_quick AS q  USING(user_id)
+                       INNER JOIN  auth_user_quick AS q  ON(u.user_id = q.user_id)
+                       INNER JOIN  profile_names_display AS n ON(n.user_id = u.user_id)
                         LEFT JOIN  applis_ins      AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)
                         LEFT JOIN  applis_ins      AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
                             WHERE  u.user_id = {?}", S::v('uid', -1));
@@ -159,6 +182,14 @@ class ProfileGeneral extends ProfilePage
                             WHERE  type='photo' AND user_id = {?}",
                           S::v('uid'));
         $this->values['nouvellephoto'] = $res->fetchOneCell();
+        
+        // Retreive search names info
+        $this->values['search_names'] = XDB::iterator("
+                              SELECT sn.search_name, sn.name_type, sn.pub, sn.sn_id
+                                FROM profile_names_search AS sn
+                               WHERE sn.user_id = {?}
+                            ORDER BY sn.name_type, search_score, search_name",
+                          S::v('uid'));
     }
 
     protected function _saveData()
@@ -194,6 +225,20 @@ class ProfileGeneral extends ProfilePage
                              SET  pub = {?}
                            WHERE  uid = {?}",
                          $this->values['photo_pub'], S::v('uid'));
+        }
+        if ($this->changed['yourself'] || $this->changed['sort_name'] ||
+            $this-> changed['display_name'] || $this->changed['tooltip_name']) {
+          XDB::execute("UPDATE profile_names_display AS n
+                           SET n.yourself = {?},
+                               n.sort = {?}, ". // SET
+                              "n.display = {?}, ". // SET
+                              "n.tooltip = {?} ". // SET
+                        "WHERE n.user_id = {?}",
+                       $this->values['yourself'],
+                       $this->values['sort_name'],
+                       $this->values['display_name'],
+                       $this->values['tooltip_name'],
+                        S::v('uid'));
         }
     }
 
