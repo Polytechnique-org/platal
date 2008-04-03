@@ -345,20 +345,23 @@ class FusionAxModule extends PLModule{
         $page->assign('deceasedErrors',$deceasedErrorsSql->fetchOneCell());
         $page->assign('deceasedMissingInXorg',XDB::iterator(
             'SELECT
-                d.user_id,d.id_ancien,d.nom,d.prenom,d.promo,d.deces_ax
+                d.user_id,d.id_ancien,d.nom,d.prenom,d.promo,d.deces_ax,
+                CONCAT(d.prenom, " ", d.nom) AS display_name
             FROM fusionax_deceased AS d
             WHERE d.deces_xorg = "0000-00-00"
             LIMIT 10'));
         $page->assign('deceasedMissingInAX',XDB::iterator(
             'SELECT
-                d.user_id,d.id_ancien,d.nom,d.prenom,d.promo,d.deces_xorg
+                d.user_id,d.id_ancien,d.nom,d.prenom,d.promo,d.deces_xorg,
+                CONCAT(d.prenom, " ", d.nom) AS display_name
             FROM fusionax_deceased AD d
             WHERE d.deces_ax = "0000-00-00"
             LIMIT 10'));
         $page->assign('deceasedDifferent',XDB::iterator(
             'SELECT
                 d.user_id,d.id_ancien,d.nom,d.prenom,d.promo,
-                d.deces_ax,d.deces_xorg
+                d.deces_ax,d.deces_xorg,
+                CONCAT(d.prenom, " ", d.nom) AS display_name
             FROM fusionax_deceased AS d
             WHERE d.deces_xorg != "0000-00-00" AND d.deces_ax != "0000-00-00"
             LIMIT 10'));
