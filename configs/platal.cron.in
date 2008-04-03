@@ -30,4 +30,7 @@ WD=/home/web/prod/platal/bin/cron
 # ml moderation
 * * * * *       web     cd $WD; ./cron_ml_moderate.php > /dev/null
 
+# synchronisation google apps - plat/al
+12,42 * * * *	web	cd $WD; ./google_apps.php
+
 # vim:set noet syntax=crontab ts=8 sw=8 sts=8 enc=utf-8:

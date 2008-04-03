@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -259,7 +259,7 @@ class Platal
         }
 
         $val = call_user_func_array($hook['hook'], $args);
-        if ($val & PL_DO_AUTH) {
+        if ($val == PL_DO_AUTH) {
             // The handler need a better auth with the current args
             if (!call_user_func(array($globals->session, 'doAuth'))) {
                 $this->force_login($page);

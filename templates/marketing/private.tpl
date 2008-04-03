@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -24,10 +24,10 @@
 
 <h2>Matricules</h2>
 
-Matricule polytechnique.org : {$matricule}
+Matricule polytechnique.org&nbsp;: {$matricule}
 {if $matricule_X}
 <br />
-Matricule &Eacute;cole (à rentrer lors de l'inscription) : <strong>{$matricule_X}</strong>
+Matricule &Eacute;cole (à rentrer lors de l'inscription)&nbsp;: <strong>{$matricule_X}</strong>
 {/if}
 
 {if $pending}

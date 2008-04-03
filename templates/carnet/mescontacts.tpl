@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -27,7 +27,7 @@
 </h1>
 
 <div>
-Ajouter la personne suivante à ma liste de contacts :
+Ajouter la personne suivante à ma liste de contacts&nbsp;:
 <div style="float: right">
 <form id="add_user" action="carnet/contacts" method="post">
   <div>
@@ -46,33 +46,33 @@ Ajouter la personne suivante à ma liste de contacts :
 </div>
 </div>
 <p style="clear: both">
-  Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire : 
+  Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire&nbsp;: 
   il te suffit de cliquer sur l'icône {icon name=add} en face de son nom dans les résultats !
 </p>  
 
 {if $plset_count || $smarty.request.quick}
 <p>
-Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
+Pour récupérer ta liste de contacts dans un PDF imprimable&nbsp;:<br />
 (attention, les photos font beaucoup grossir les fichiers !)
 </p>
 <ul>
-  <li>avec les photos :
+  <li>avec les photos&nbsp;:
   [<a href="carnet/contacts/pdf/promo/photos/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
   [<a href="carnet/contacts/pdf/photos/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
   </li>
-  <li>sans les photos :
+  <li>sans les photos&nbsp;:
   [<a href="carnet/contacts/pdf/promo/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
   [<a href="carnet/contacts/pdf/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
   </li>
 </ul>
 
 <p>
-  Tu peux télécharger des informations sur tes contacts :
+  Tu peux télécharger des informations sur tes contacts&nbsp;:
 </p>
 <ul>
   <li>
     {icon name=calendar_view_day title='Anniversaires'} 
-    <a href="carnet/contacts/ical/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/anniv-x.ics">
+    <a href="carnet/contacts/ical/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/anniv-x.ics" title="Anniversaires">
       Le calendrier des anniversaires
     </a>
   </li>
@@ -95,7 +95,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
       </div>
     </form>
   </div>
-  Tu peux faire une recherche sur tes contacts :
+  Tu peux faire une recherche sur tes contacts&nbsp;:
 </p>
 
 {include file="core/plset.tpl"}

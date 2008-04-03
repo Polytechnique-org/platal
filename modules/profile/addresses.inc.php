@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -76,15 +76,19 @@ class ProfileAddress extends ProfileGeoloc
             }
         }
         $current = 0;
+        $success = true;
         foreach ($value as $key=>&$adr) {
             if (@$adr['current']) {
                 $current++;
             }
         }
-        if (!$init && $current != 1 && count($value) > 0) {
+        if ($current == 0 && count($value) > 0) {
+            foreach ($value as $key=>&$adr) {
+                $adr['current'] = true;
+                break;
+            }
+        } else if ($current > 1) {
             $success = false;
-        } else {
-            $success = true;
         }
         foreach ($value as $key=>&$adr) {
             $ls = true;

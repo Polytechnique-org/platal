@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -82,7 +82,7 @@ function _select_notifs_base($table, $mail, $where)
     $sql = "
         (
             SELECT  u.promo, u.prenom, IF(u.nom_usage='',u.nom,u.nom_usage) AS nom,
-                    u.deces != 0 AS dcd,
+                    u.deces != 0 AS dcd, (u.flags = 'femme') AS sexe,
                     a.alias AS bestalias,
                     wo.*,
                     {$our['contact_sql']} AS contact,
@@ -90,7 +90,7 @@ function _select_notifs_base($table, $mail, $where)
     if ($mail) {
         $sql.=",
             w.uid AS aid, v.prenom AS aprenom, IF(v.nom_usage='',v.nom,v.nom_usage) AS anom,
-            b.alias AS abestalias, (v.flags='femme') AS sexe, q.core_mail_fmt AS mail_fmt";
+            b.alias AS abestalias, (v.flags='femme') AS asexe, q.core_mail_fmt AS mail_fmt";
     }
 
     $sql .= "
@@ -203,10 +203,10 @@ class AllNotifs
             $aid = $tmp['aid'];
             if (empty($this->_data[$aid])) {
                 $this->_data[$aid] = Array("prenom" => $tmp['aprenom'], 'nom' => $tmp['anom'],
-                    'bestalias'=>$tmp['abestalias'], 'sexe' => $tmp['sexe'], 'mail_fmt' => $tmp['mail_fmt'],
+                    'bestalias'=>$tmp['abestalias'], 'sexe' => $tmp['asexe'], 'mail_fmt' => $tmp['mail_fmt'],
                     'dcd'=>$tmp['dcd']);
             }
-            unset($tmp['aprenom'], $tmp['anom'], $tmp['abestalias'], $tmp['aid'], $tmp['sexe'], $tmp['mail_fmt'], $tmp['dcd']);
+            unset($tmp['aprenom'], $tmp['anom'], $tmp['abestalias'], $tmp['aid'], $tmp['asexe'], $tmp['mail_fmt'], $tmp['dcd']);
             $this->_data[$aid]['data'][$tmp['cid']][] = $tmp;
         }
     }

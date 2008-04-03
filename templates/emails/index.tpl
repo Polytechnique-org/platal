@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -28,7 +28,7 @@
   function bestaliasUpdated() {
     showTempMessage('bestalias-msg', "Le changement a bien été effectué.", true);
   }
-</script>	
+</script>
 {/literal}
 <table class="bicol">
   <tr>
@@ -36,7 +36,7 @@
   </tr>
   <tr class="impair">
     <td>
-      Tes adresses polytechniciennes sont :<br /><br />
+      Tes adresses polytechniciennes sont&nbsp;:<br /><br />
         <div>
           {iterate from=$aliases item=a}
           <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='Ajax.update_html(null,"{$globals->baseurl}/emails/best/{$a.alias}",bestaliasUpdated)' />
@@ -85,23 +85,23 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
   </tr>
   <tr class="impair">
     <td>
-      {if $mails->total() eq 0}
+      {if count($mails) eq 0}
       <p class="erreur">
         Tu n'as actuellement aucune adressse de redirection. Tout courrier électronique qui t'es adresses
         ci-dessus génère une erreur. Modifie au plus vite ta liste de redirection.<br/>
       </p>
       {else}
       Actuellement, tout courrier électronique qui t'y est adressé, est envoyé
-      {if $mails->total() eq 1} à l'adresse {else} aux adresses {/if}
+      {if count($mails) eq 1} à l'adresse{else} aux adresses{/if}&nbsp;:
       <ul>
-        {iterate from=$mails item=m}
-        <li><strong>{$m.email}</strong></li>
-        {/iterate}
+        {foreach from=$mails item=m}
+        <li><strong>{$m->display_email}</strong></li>
+        {/foreach}
       </ul>
       {/if}
       {test_email}
       Si tu souhaites <strong>modifier ce reroutage de ton courrier,</strong>
-      <a href="emails/redirect">il te suffit de te rendre ici !</a>
+      <a href="emails/redirect">il te suffit de te rendre ici&nbsp;!</a>
     </td>
   </tr>
 </table>
@@ -131,7 +131,7 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
 
 <table class="bicol">
   <tr>
-    <th>Un alias sympathique : {#globals.mail.alias_dom#} !</th>
+    <th>Un alias sympathique&nbsp;: {#globals.mail.alias_dom#} !</th>
   </tr>
   <tr class="impair">
     <td>

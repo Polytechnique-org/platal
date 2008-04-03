@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -36,16 +36,16 @@
 {if $session.forward_ip}
 <tr class="pair">
   <td class="titre">Hôte</td>
-  <td><em>{$session.forward_host}</em> <tt>IP: {$session.forward_ip}</tt></td>
+  <td><em>{$session.forward_host}</em> <tt>IP: {$session.forward_ip|uint_to_ip}</tt></td>
 </tr>
 <tr class="pair">
   <td class="titre">Proxy</td>
-  <td><em>{$session.host}</em> <tt>IP: {$session.ip}</tt></td>
+  <td><em>{$session.host}</em> <tt>IP: {$session.ip|uint_to_ip}</tt></td>
 </tr>
 {else}
 <tr class="pair">
   <td class="titre">{if $session.flags}Proxy{else}Hôte{/if}</td>
-  <td><em>{$session.host}</em> <tt>IP: {$session.ip}</tt></td>
+  <td><em>{$session.host}</em> <tt>IP: {$session.ip|uint_to_ip}</tt></td>
 </tr>
 {/if}
 <tr class="impair">

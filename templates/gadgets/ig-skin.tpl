@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,15 +20,22 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="forums_promo"}
-{if $mail_part eq 'head'}
-{from full=#from#}
-{to addr=#to#}
-{subject text="Création du forum promo $promo"}
-{elseif $mail_part eq 'text'}
-
-Création du forum promo {$promo} à faire !
-(+ de 20% d'inscrits)
-{/if}
+{include file="skin/common.doctype.tpl"}
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="css/base.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="css/igoogle.css" media="all"/>
+    <script type="text/javascript" src="javascript/ajax.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/igoogle.js"></script>
+    <script type="text/javascript" src="javascript/xorg.js"></script>
+    {foreach from=$gadget_js item=js}
+    <script type="text/javascript" src="{$js}"></script>
+    {/foreach}
+    <script type="text/javascript">var platal_baseurl = "{$globals->baseurl}/";</script>
+  </head>
+  <body onload="igOnLoadHandler();">
+{if $gadget_tpl}{include file=$gadget_tpl}{/if}
+  </body>
+</html>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

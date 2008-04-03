@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -155,12 +155,14 @@ function soundex_fr($sIn)
     static $convVIn, $convVOut, $convGuIn, $convGuOut, $accents;
     if (!isset($convGuIn)) {
         global $uc_convert, $lc_convert;
-        $convGuIn  = array( 'GUI', 'GUE', 'GA', 'GO', 'GU', 'SC', 'CA', 'CO', 'CU', 'QU', 'Q', 'CC', 'CK', 'G', 'ST', 'PH');
-        $convGuOut = array( 'KI',  'KE',  'KA', 'KO', 'KU',  'SK', 'KA', 'KO', 'KU', 'K', 'K',  'K',  'K',  'J', 'T', 'F');
+        $convGuIn  = array( 'GUI', 'GUE', 'GA', 'GO', 'GU', 'SCI', 'SCE', 'SC', 'CA', 'CO',
+                            'CU', 'QU', 'Q', 'CC', 'CK', 'G', 'ST', 'PH');
+        $convGuOut = array( 'KI', 'KE', 'KA', 'KO', 'K', 'SI', 'SE', 'SK', 'KA', 'KO',
+                            'KU', 'K', 'K', 'K', 'K', 'J', 'T', 'F');
         $convVIn   = array( '/E?(AU)/', '/([EA])?[UI]([NM])([^EAIOUY]|$)/', '/[AE]O?[NM]([^AEIOUY]|$)/',
             '/[EA][IY]([NM]?[^NM]|$)/', '/(^|[^OEUIA])(OEU|OE|EU)([^OEUIA]|$)/', '/OI/',
             '/(ILLE?|I)/', '/O(U|W)/', '/O[NM]($|[^EAOUIY])/', '/(SC|S|C)H/',
-            '/([^AEIOUY1])[^AEIOUYLKTP]([UAO])([^AEIOUY])/', '/([^AEIOUY]|^)([AUO])[^AEIOUYLKTP]([^AEIOUY1])/', '/^KN/',
+            '/([^AEIOUY1])[^AEIOUYLKTPNR]([UAO])([^AEIOUY])/', '/([^AEIOUY]|^)([AUO])[^AEIOUYLKTP]([^AEIOUY1])/', '/^KN/',
             '/^PF/', '/C([^AEIOUY]|$)/',
             '/C/', '/Z$/', '/(?<!^)Z+/', '/ER$/', '/H/', '/W/');
         $convVOut  = array( 'O', '1\3', 'A\1',
@@ -190,7 +192,7 @@ function soundex_fr($sIn)
     // on réinterprète les voyelles
     $sIn = preg_replace( $convVIn, $convVOut, $sIn);
     // on supprime les terminaisons T, D, S, X (et le L qui précède si existe)
-    $sIn = preg_replace( '`L?[TDSX]$`', '', $sIn );
+    $sIn = preg_replace( '`L?[TDX]S?$`', '', $sIn );
     // on supprime les E, A et Y qui ne sont pas en première position
     $sIn = preg_replace( '`(?!^)Y([^AEOU]|$)`', '\1', $sIn);
     $sIn = preg_replace( '`(?!^)[EA]`', '', $sIn);
@@ -228,6 +230,32 @@ function make_forlife($prenom, $nom, $promo)
     return $forlife;
 }
 
+/** Convert ip to uint (to store it in a database)
+ */
+function ip_to_uint($ip)
+{
+    $part = explode('.', $ip);
+    $v = 0;
+    $fact = 0x1000000;
+    for ($i = 0 ; $i < 4 ; ++$i) {
+        $v += $fact * $part[$i];
+        $fact >>= 8;
+    }
+    return $v;
+}
+
+/** Convert uint to ip (to build a human understandable ip)
+ */
+function uint_to_ip($uint)
+{
+    return long2ip($uint);
+}
+
+
+/******************************************************************************
+ * Security functions
+ *****************************************************************************/
+
 function check_ip($level)
 {
     if (empty($_SERVER['REMOTE_ADDR'])) {
@@ -240,14 +268,16 @@ function check_ip($level)
         }
         $ips[] = $_SERVER['REMOTE_ADDR'];
         foreach ($ips as &$ip) {
-            $ip = "ip LIKE " . XDB::escape($ip);
+            $ip = '(ip & mask) = (' . ip_to_uint($ip) . '& mask)';
         }
-        $res = XDB::query('SELECT  state
+        $res = XDB::query('SELECT  state, description
                              FROM  ip_watch
                             WHERE  ' . implode(' OR ', $ips) . '
                          ORDER BY  state DESC');
         if ($res->numRows()) {
-            $_SESSION['check_ip'] = $res->fetchOneCell();
+            $state = $res->fetchOneAssoc();
+            $_SESSION['check_ip'] = $state['state'];
+            $_SESSION['check_ip_desc'] = $state['description'];
         } else {
             $_SESSION['check_ip'] = 'safe';
         }
@@ -287,20 +317,6 @@ function check_redirect($red = null)
     }
     $_SESSION['no_redirect'] = !$red->other_active('');
     $_SESSION['mx_failures'] = $red->get_broken_mx();
-    $warning = 0;
-    foreach ($red->emails as &$mail) {
-        if ($mail->active) {
-            $warning++;
-        }
-    }
-    foreach ($_SESSION['mx_failures'] as &$fail) {
-        if ($fail['state'] == 'broken') {
-            $warning -= 99999;
-        } else if ($fail['state'] == 'warning') {
-            $warning--;
-        }
-    }
-    $_SESSION['email_is_warning'] = ($warning <= 0 ? true : false);
 }
 
 function send_warning_mail($title)
@@ -315,12 +331,33 @@ function send_warning_mail($title)
     $mailer->send();
 }
 
+function kill_sessions()
+{
+    assert(S::has_perms());
+    shell_exec('sudo -u root ' . dirname(dirname(__FILE__)) . '/bin/kill_sessions.sh');
+}
+
+
+/******************************************************************************
+ * Dynamic configuration update/edition stuff
+ *****************************************************************************/
+
 function update_NbIns()
 {
     global $globals;
-    $res = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE perms IN ('admin','user') AND deces=0");
+    $res = XDB::query("SELECT  COUNT(*)
+                         FROM  auth_user_md5
+                        WHERE  perms IN ('admin','user') AND deces=0");
     $cnt = $res->fetchOneCell();
     $globals->change_dynamic_config(array('NbIns' => $cnt));
+}
+
+function update_NbValid()
+{
+    global $globals;
+    $res = XDB::query("SELECT  COUNT(*)
+                         FROM  requests");
+    $globals->change_dynamic_config(array('NbValid' => $res->fetchOneCell()));
 }
 
 function update_NbNotifs()

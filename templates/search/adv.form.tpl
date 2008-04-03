@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -27,7 +27,7 @@
 <script type="text/javascript">// <!-- 
         var baseurl = platal_baseurl + "search/";
         {literal}
-        // display an autocomplete row : blabla (nb of found matches)
+        // display an autocomplete row&nbsp;: blabla (nb of found matches)
         function make_format_autocomplete(block) {
           return function(row) {
               regexp = new RegExp('(' + RegExp.escape(block.value) + ')', 'i');

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -37,7 +37,13 @@
       <title>{$line.titre|strip_tags}</title>
       <guid isPermaLink="false">{$line.id}</guid>
       <link>{#globals.baseurl#}/{$asso.diminutif}/#art{$line.id}</link>
-      <description><![CDATA[{$line.texte|miniwiki}{if $line.contacts}<br/><br/><strong>Contacts :</strong><br/>{$line.contacts|miniwiki}{/if}]]></description>
+      <description><![CDATA[
+        {if $line.photo}
+        <div style="float: left; padding-right: 0.5em">
+          <img src="{#globals.baseurl#}/{$asso.diminutif}/announce/photo/{$line.id}" alt="{$line.titre|strip_tags}" />
+        </div>
+        {/if}
+        <div>{$line.texte|miniwiki}{if $line.contacts}<br/><br/><strong>Contacts&nbsp;:</strong><br/>{$line.contacts|miniwiki}{/if}</div>]]></description>
       <author>{$line.prenom} {$line.nom} (X{$line.promo})</author>
       <pubDate>{$line.create_date|rss_date}</pubDate>
     </item>

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -48,7 +48,7 @@ class UserSet extends PlSet
                                 'INNER JOIN groupex.membres AS gxm ON (u.user_id = gxm.uid
                                                                        AND gxm.asso_id = ' . $globals->asso('id') . ') ' : '')
                            . 'LEFT JOIN auth_user_quick AS q USING (user_id)
-                              LEFT JOIN aliases         AS a ON (a.id = u.user_id AND type = \'a_vie\')
+                              LEFT JOIN aliases         AS a ON (a.id = u.user_id AND a.type = \'a_vie\')
                               ' . $joins,
                             $where,
                             'u.user_id');
@@ -88,7 +88,7 @@ class SearchSet extends UserSet
         $qSearch = new QuickSearch('quick');
         $fields  = new SFieldGroup(true, array($qSearch));
         if ($qSearch->isEmpty()) {
-            new ThrowError('Recherche trop générale.');
+            new ThrowError('Aucun critère de recherche n\'est spécifié.');
         }
         $this->score = $qSearch->get_score_statement();
         $pwhere = $fields->get_where_statement();
@@ -110,7 +110,7 @@ class SearchSet extends UserSet
                                                       'u.promo DESC, NomSortKey, prenom')));
     }
 
-    private function getAdvanced()
+    private function getAdvanced($join, $where)
     {
         global $globals;
         $this->advanced = true;
@@ -186,7 +186,8 @@ class MinificheView extends MultipageView
                 ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                 adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region,
                 IF(u.nom_usage<>'',u.nom_usage,u.nom) AS sortkey,
-                COUNT(em.email) > 0 AS actif" . (S::logged() ? ", c.contact AS contact" : '');
+                (COUNT(em.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif" .
+                (S::logged() ? ", c.contact AS contact" : '');
     }
 
     public function joins()
@@ -371,6 +372,48 @@ class GeolocView implements PlView
             $this->set->get('u.user_id', null, "u.perms != 'pending' AND u.deces = 0", "u.user_id", null);
             return 'include/plview.geoloc.tpl';
         }
+    }
+}
+
+class GadgetView implements PlView
+{
+    public function __construct(PlSet &$set, $data, array $params)
+    {
+        $this->set =& $set;
+    }
+
+    public function fields()
+    {
+        return "u.user_id AS id,
+                u.*, a.alias AS forlife," .
+                (S::logged() ? "q.profile_mobile AS mobile, " : "IF(q.profile_mobile_pub = 'public', q.profile_mobile, NULL) as mobile, ") .
+               "u.perms != 'pending' AS inscrit,
+                u.perms != 'pending' AS wasinscrit,
+                u.deces != 0 AS dcd, u.deces,
+                FIND_IN_SET('femme', u.flags) AS sexe,
+                adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region" .
+                (S::logged() ? ", c.contact AS contact" : '');
+    }
+
+    public function joins()
+    {
+        return  "LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : " AND adr.pub = 'public'").")
+                 LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
+                 LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)" .
+                (S::logged() ?
+                 "LEFT JOIN  contacts       AS c   On (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
+                 : "");
+    }
+
+    public function apply(PlatalPage &$page)
+    {
+        $page->assign_by_ref('set',
+          $this->set->get($this->fields(), $this->joins(), null, null, null, 5, 0));
+    }
+
+    public function args()
+    {
+        return null;
     }
 }
 

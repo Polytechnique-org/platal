@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -26,7 +26,7 @@
 <table class="tinybicol">
   <tr>
     <td class="center">
-      <strong>Promotion :</strong>
+      <strong>Promotion&nbsp;:</strong>
       <input type="text" size="4" name="promo" value="{$promo}" /><br />
       <input type="submit" name="valid_promo" value="Ajouter des membres" />
       <input type="submit" name="valid_promo" value="Mettre à jour les matricules AX" />

@@ -5,6 +5,8 @@
 
 VERSNUM := $(shell grep VERSION ChangeLog | head -1 | sed -e "s/VERSION //;s/ .*//")
 VERSTAG := $(shell grep VERSION ChangeLog | head -1 | grep 'XX' > /dev/null 2> /dev/null && echo 'beta')
+BANANA  := $(shell ( [ -d ../banana ] && echo `pwd`"/../banana" ) || echo "/home/web/dev/banana")
+
 VERSION = $(VERSNUM)$(VERSTAG)
 
 PKG_NAME = platal
@@ -35,9 +37,9 @@ q:
 ## core
 ##
 
-core: spool/templates_c spool/mails_c include/globals.inc.php configs/platal.cron htdocs/.htaccess spool/conf
+core: spool/templates_c spool/mails_c include/globals.inc.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp
 
-spool/templates_c spool/mails_c spool/uploads spool/conf:
+spool/templates_c spool/mails_c spool/uploads spool/conf spool/tmp:
 	mkdir -p $@
 	chmod o+w $@
 
@@ -62,7 +64,7 @@ wiki: get-wiki build-wiki
 
 build-wiki: $(WIKI_NEEDS) | get-wiki
 
-htdocs/uploads: spool/uploads
+htdocs/uploads:
 	cd htdocs && ln -sf ../spool/uploads
 
 htdocs/wiki:
@@ -97,12 +99,17 @@ get-wiki:
 ## banana
 ##
 
-banana: htdocs/images/banana htdocs/css/banana.css
+banana: htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php
 htdocs/images/banana:
-	cd $(@D) && ln -sf /usr/share/banana/img $(@F)
+	cd $(@D) && ln -snf $(BANANA)/img $(@F)
 
 htdocs/css/banana.css:
-	cd $(@D) && ln -sf /usr/share/banana/css/style.css $(@F)
+	cd $(@D) && ln -snf $(BANANA)/css/style.css $(@F)
+
+include/banana/banana.inc.php:
+	cd $(@D) && find $(BANANA)/banana/ -name '*.php' -exec ln -snf {} . ";"
+
+
 
 ##
 ## jquery
@@ -114,5 +121,5 @@ htdocs/javascript/jquery.js:
 
 ################################################################################
 
-.PHONY: build dist clean wiki build-wiki banana
+.PHONY: build dist clean wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php
 

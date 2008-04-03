@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -255,7 +255,9 @@ function start_connexion ($uid, $identified)
                         WHERE  s.uid = {?} AND s.suid = 0
                      ORDER BY  s.start DESC
                         LIMIT  1", $uid);
-    $sess = array_merge($sess, $res->fetchOneAssoc());
+    if ($res->numRows()) {
+        $sess = array_merge($sess, $res->fetchOneAssoc());
+    }
     $suid = S::v('suid');
 
     if ($suid) {
@@ -315,13 +317,13 @@ function start_connexion ($uid, $identified)
 function set_skin()
 {
     global $globals;
-    if (S::logged() && !S::has('skin')) {
+    if (S::logged() && (!S::has('skin') || S::has('suid'))) {
         $uid = S::v('uid');
-    $res = XDB::query("SELECT  skin_tpl
-                             FROM  auth_user_quick AS a
-                       INNER JOIN  skins           AS s ON a.skin = s.id
-                            WHERE  user_id = {?} AND skin_tpl != ''", $uid);
-    if ($_SESSION['skin'] = $res->fetchOneCell()) {
+        $res = XDB::query("SELECT  skin_tpl
+                          FROM  auth_user_quick AS a
+                          INNER JOIN  skins           AS s ON a.skin = s.id
+                          WHERE  user_id = {?} AND skin_tpl != ''", $uid);
+        if ($_SESSION['skin'] = $res->fetchOneCell()) {
             return;
         }
     }

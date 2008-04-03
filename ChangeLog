@@ -1,16 +1,71 @@
 ================================================================================
-VERSION 0.9.16                                                        XX XX 2007
+VERSION 0.9.17                                                        XX XX 2008
+
+
+================================================================================
+VERSION 0.9.16                                                        31 03 2008
 
 New:
 
     * Carnet:
         - List updated fields in notifications                             -FRU
 
+    * Core:
+        - New PlProfiler tool                                              -FRU
+        - Integration of goodies/external tools with local rss/iCal        -VZA
+        - iGoogle gadgets for latest events and directory search           -VZA
+        - Integration of Google Apps accounts                              -VZA
+
+    * Emails:
+        - Imap mail storage can be activated/deactivated from interface    -VZA
+        - Mail storage backends are now integrated with redirections       -VZA
+
+    * Lists:
+        - Unsure mails are moderated                                       -FRU
+
+    * Forums:
+        - Ban system                                                       -THD
+
 Bug/Wish:
+
+    * Carnet:
+        - #734: Fix notification emails and carnet for female users        -VZA
+
+    * Emails:
+        - #726: Don't send the email if an attachment can't be downloaded  -FRU
+        - #750: Fix email list in test email                               -FRU
+        - #802: Fix upload content type checking on some buggy PHP         -FRU
+        - #803: Prevents UI from allowing 'last active alias deletion'     -Car
+
+    * Lists:
+        - #793: Show broken members on ML                                  -FRU
+
+    * Profile:
+        - #729: Fix positioning of addresses on public profile             -FRU
+        - #742: Sub domain was hidden when editing profile                 -FRU
+        - #752: Don't show vcard link on profile when the person is dead   -FRU
+        - #764: Fix mentoring edition page                                 -FRU
+        - #790: Ensure we always have a current address                    -FRU
+
+    * Search:
+        - #741: Mentor search in advanced search                           -FRU
+
+    * XnetEvent:
+        - #728: Update CSV                                                 -FRU
+        - #743: Don't show a warning when subscriber has no forlife        -FRU
+        - #730: XnetEvents are not synchronized with aliases               -VZA
+        - #772: Indicate there are members-only events for non-members     -JAC
 
     * XnetGrp:
         - #732: Adapt subscription text to sex                             -FRU
+        - #735: Encoding of list description in member edition form        -FRU
+        - #740: Can add a picture in the announces                         -FRU
+        - #799: Improve asked inscription interface                        -JAC
 
+From 0.9.15 branch:
+
+    * XnetEvents:
+        - #738: Duplicated payments in certain conditions                  -FRU
 
 ================================================================================
 VERSION 0.9.15                                                        08 10 2007
@@ -1120,14 +1175,17 @@ ACRONYMS:
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
     * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
+    * JAC: Stéphane Jacob       (jacou)     <stephane.jacob@m4x.org>
     * JS : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>
     * OG : Olivier Guillaumin               <olivier.guillaumin@m4x.org>
     * PIK: Fabien Laborde       (pika)      <fabien.laborde@m4x.org>
     * SHK: Jeremy Lainé         (Sharky)    <jeremy.laine@m4x.org>
+    * THD: Thomas Deniau        (Totom)     <thomas.deniau@m4x.org>
     * VP : Vincent Palatin                  <vincent.palatin@m4x.org>
     * XdX: Alexandre Hô         (XandreX)   <alexandre.ho@m4x.org>
+    * VZA: Vincent Zanotti      (vinZ2)     <vincent.zanotti@m4x.org>
 
 ================================================================================
 vim:et:ts=4:sw=4:tw=80:enc=utf-8:

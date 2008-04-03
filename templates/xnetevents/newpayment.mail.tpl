@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,26 +20,19 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="intervention_admin"}
+{config_load file="mails.conf" section="payment_ready"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{to addr=#to#}
-{subject text="INTERVENTION de $user"}
+{to addr=$to}
+{subject text="[`$asso`] Paiement activé"}
 {elseif $mail_part eq 'wiki'}
-Le profil du camarade {$old.prenom} {$old.nom} ({$old.promo}) a été édité.\\
-Les champs suivants ont été changés :
-{foreach from=$old item=value key=field}
-{if $value neq $new[$field]}
-* '''{$field}''' : {$value} -> {$new[$field]}
-{/if}
-{/foreach}
+Cher {$prenom},
 
-Et ceux qui n'ont pas changé :
-{foreach from=$old item=value key=field}
-{if $value eq $new[$field]}
-* '''{$field}''' : {$value}
-{/if}
-{/foreach}
-{/if}
+Nous t'écrivons pour t'informer que le télépaiement associé à l'événement '''{$evt}''' du groupe {$asso} vient d'être activé. Tu peux donc finaliser ton inscription.
 
+Pour ceci, va simplement sur [[http://www.polytechnique.net/{$diminutif}/payment/{$payment}?montant={$topay}|cette page]].
+
+Cordialement,\\
+L'Equipe de Polytechnique.org
+{/if}
 {* vim:set et sw=2 sts=2 sws=2: *}

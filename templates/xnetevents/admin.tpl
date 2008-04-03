@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : <a href='{$platal->ns}events'>Evénements</a> </h1>
+<h1>{$asso.nom}&nbsp;: <a href='{$platal->ns}events'>Événements</a> </h1>
 
 <p>
 L'événement {$evt.intitule}
@@ -29,7 +29,7 @@ L'événement {$evt.intitule}
 {if $evt.titre || count($moments) eq 0}
 comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
 {else}
-({$evt.nb} personne{if $evt.nb > 1}s{/if} ont réalisé leur inscription).
+({$evt.nb} personne{if $evt.nb > 1}s ont réalisé leur{else} a réalisé son{/if} inscription).
 {/if}
 </p>
 
@@ -70,7 +70,7 @@ function remplitAuto(mail) {
 
 {if $oublis}
 <p class="erreur">
-Ils ont payé mais ont oublié de s'inscrire :
+Ils ont payé mais ont oublié de s'inscrire&nbsp;:
 </p>
 
 <table summary="payé mais non inscrits" class="tinybicol">
@@ -84,7 +84,11 @@ Ils ont payé mais ont oublié de s'inscrire :
   <tr class="pair">
     <td>
       <a href="" {if $is_admin}onclick="return remplitAuto('{$m.email}')"{/if}>
-      {$m.prenom} {$m.nom}
+        {if !$m.prenom && !$m.nom}
+        {$m.email}
+        {else}
+        {$m.prenom} {$m.nom}
+        {/if}
       </a>
     </td>
     <td>{$m.promo}</td>
@@ -138,7 +142,7 @@ Ils ont payé mais ont oublié de s'inscrire :
   <tr>
     <td>
       {if $is_admin}<a href="javascript:remplitAuto('{$m.email}')">{/if}
-        {if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}
+        {if $m.femme}&bull;{/if}{if !$m.prenom && !$m.nom}{$m.email}{else}{$m.prenom} {$m.nom}{/if}
       {if $is_admin}</a>{/if}
     </td>
     <td>{$m.promo}</td>
@@ -174,6 +178,18 @@ Ils ont payé mais ont oublié de s'inscrire :
     {/if}
   </tr>
   {/foreach}
+  {if $is_admin && $evt.money}
+  <tr>
+    {assign var=cols value=$moments|@count}
+    <td colspan="{$cols+3}" class="right"><strong>Total</strong></td>
+    <td>{$evt.topay}&euro;</td>
+    {if $evt.paiement_id}
+    <td>{$evt.telepaid|default:0}&euro;</td>
+    <td>{$evt.adminpaid|default:0}&euro;</td>
+    {/if}
+    <td>{$evt.paid}&euro;</td>
+  </tr>
+  {/if}
 </table>
 
 <p class="descr">
@@ -223,15 +239,15 @@ Donne ici son mail, ainsi que le nombre de participants.
   <p class="descr">
     <input type="hidden" name="adm" value="nbs" />
 
-    Mail: <input name="mail" size="20" />
+    Mail&nbsp;: <input name="mail" size="20" />
 
     {if $platal->argv[2]}
-    {$evt.titre}: <input name="nb[{$platal->argv[2]}]" size="1" value="1" />
+    {$evt.titre}&nbsp;: <input name="nb[{$platal->argv[2]}]" size="1" value="1" />
     {else}
     {foreach from=$moments item=m}
-    {$m.titre}: <input name="nb[{$m.item_id}]" size="1" value="1"/>
+    {$m.titre}&nbsp;: <input name="nb[{$m.item_id}]" size="1" value="1"/>
     {foreachelse}
-    Nombre: <input name="nb[1]" size="1" value="1" />
+    Nombre&nbsp;: <input name="nb[1]" size="1" value="1" />
     {/foreach}
     {/if}
     <input type="submit" />
@@ -249,14 +265,14 @@ entrer un montant négatif.
 </p>
 
 <p class="descr">
-Note que tu peux cliquer sur les noms des membres pour remplir automatiquement la case ci-dessous
+Note que tu peux cliquer sur les noms des membres pour remplir automatiquement la case ci-dessous.
 </p>
 
 <form action="{$platal->pl_self()}" method="post" id="montant">
   <p class="descr">
   <input type="hidden" name="adm" value="prix" />
-  Mail: <input name="mail" size="20" />
-  montant: <input name="montant" size="3" value="0,00" /> &euro;
+  Mail&nbsp;: <input name="mail" size="20" />
+  montant&nbsp;: <input name="montant" size="3" value="0,00" /> &euro;
   <input type="submit" />
   </p>
 </form>

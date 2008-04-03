@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -41,7 +41,7 @@
   {foreach from=$table item=ip}
   <tr class="{cycle values="pair,impair"}">
     <td>
-      <strong>{$ip.ip}</strong><br />
+      <strong>{$ip.ip}/{$ip.mask}</strong><br />
       <small>{$ip.host}</small><br />
       Ajoutée le {$ip.detection|date_format}
     </td>
@@ -97,6 +97,10 @@
     <td class="titre">Date de détection</td>
     <td>{$ip.detection|date_format}</td>
   {/if}
+  </tr>
+  <tr class="pair">
+    <td class="titre">Masque d'influence</td>
+    <td><input type="text" name="maskN" value="{$ip.mask}" /></td>
   </tr>
   <tr class="pair">
     <td class="titre">Danger</td>

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -38,7 +38,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr><th colspan='2'>Options de la liste {$details.addr}</th></tr>
     <tr class='impair'>
       <td>
-        <strong>description courte :</strong><br />
+        <strong>description courte&nbsp;:</strong><br />
         <span class='smaller'>une courte phrase pour décrire la liste.</span>
       </td>
       <td>
@@ -47,7 +47,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>description longue :</strong><br />
+        <strong>description longue&nbsp;:</strong><br />
         <span class='smaller'>une description plus longue de la liste.</span>
       </td>
       <td>
@@ -56,7 +56,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='pair'>
       <td>
-        <strong>message de bienvenue :</strong><br />
+        <strong>message de bienvenue&nbsp;:</strong><br />
         <span class='smaller'>un texte de bienvenue incorporé au mail envoyé aux nouveaux
          abonnés à la liste.</span>
       </td>
@@ -66,7 +66,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>message d'adieu :</strong><br />
+        <strong>message d'adieu&nbsp;:</strong><br />
         <span class='smaller'>un texte d'au revoir incorporé au mail de départ envoyé aux
           utilisateurs qui se désinscrivent.  Ce mail peut être désactivé.</span>
       </td>
@@ -79,7 +79,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr><th colspan='2'>Options avancées de la liste {$details.addr}</th></tr>
     <tr class='impair'>
     <td>
-        <strong>ajout dans le sujet :</strong><br />
+        <strong>ajout dans le sujet&nbsp;:</strong><br />
         <span class='smaller'>Un préfixe (optionnel) ajouté dans le sujet de chaque mail envoyé sur la liste te permet de trier plus facilement ton courrier.</span>
       </td>
       <td>
@@ -88,7 +88,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>notification de (dés)abonnement :</strong><br />
+        <strong>notification de (dés)abonnement&nbsp;:</strong><br />
         <span class='smaller'>notifier les modérateurs des inscriptions/désinscriptions d'utilisateurs sur cette liste.</span>
       </td>
       <td>
@@ -98,7 +98,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>diffusion :</strong>
+        <strong>diffusion&nbsp;:</strong>
       </td>
       <td>
         <input type='radio' name='moderate' value='0'
@@ -114,7 +114,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>inscription libre ou modérée :</strong><br />
+        <strong>inscription libre ou modérée&nbsp;:</strong><br />
         <span class='smaller'>détermine si les inscriptions à la liste sont modérées ou non.</span>
       </td>
       <td>
@@ -124,7 +124,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>antispam :</strong><br />
+        <strong>antispam&nbsp;:</strong><br />
         <span class='smaller'>détermine la politique de l'antispam sur cette liste.</span>
       </td>
       <td>
@@ -158,7 +158,7 @@ Les envois des personnes utilisant ces adresses ne sont pas modérés.
 </p>
 
 <p class='erreur'>
-Attention, cette liste est à utiliser pour des non-X ou des non-inscrits à la liste :
+Attention, cette liste est à utiliser pour des non-X ou des non-inscrits à la liste&nbsp;:
 </p>
 <p>
 les X inscrits à la liste doivent ajouter leurs adresses usuelles parmis leurs adresses de

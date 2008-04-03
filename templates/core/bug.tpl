@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -51,8 +51,14 @@ function fillContent()
 
 <div style="width:800px;height:600px">
 {if $bug_sent}
-<script type="text/javascript">window.close();</script>
-{/if}
+<p class="erreur">
+  Ton message a bien été envoyé au support de Polytechnique.org, tu devrais en
+  recevoir une copie d'ici quelques minutes. Nous allons le traiter et y répondre
+  dans les plus brefs délais.
+</p>
+
+<div class="center"><input type="submit" onclick="window.close()" name="close" value="Fermer" /></div>
+{else}
 <form action="send_bug" method="post" onsubmit="cleanContent()">
   <h1>Signaler un bug ou demander une amélioration</h1>
   <div style="margin-left:10%;margin-right:10%">
@@ -61,12 +67,12 @@ function fillContent()
       <option value="wish">Souhait</option>
       <option value="help">Aide/Dépannage</option>
     </select>
-    &nbsp;&nbsp;Sujet : <input type="text" name="item_summary" id="flyspray_title" value="sur la page {$smarty.server.HTTP_REFERER}" size="50" maxlength="100"/>
+    &nbsp;&nbsp;Sujet&nbsp;: <input type="text" name="item_summary" id="flyspray_title" value="sur la page {$smarty.server.HTTP_REFERER}" size="50" maxlength="100"/>
     <textarea name="detailed_desc" id="flyspray_detail" cols="70" rows="10" style="width:100%;margin-top:10px;margin-bottom:10px;height:400px;display:block;" onFocus="cleanContent()" onBlur="fillContent()"></textarea>
     <input type="hidden" name="page" value="{$smarty.server.HTTP_REFERER|default:$smarty.request.page}" />
     <div class="center">
-      <input type="button" value="Fermer" onclick="window.close()"/>
-      <input type="submit" name="send" value="Signaler le bug"/>
+      <input type="button" value="Abandonner" onclick="window.close()"/>
+      <input type="submit" name="send" value="Envoyer"/>
     </div>
   </div>
 </form>
@@ -74,5 +80,6 @@ function fillContent()
   fillContent();
 </script>
 </div>
+{/if}
 
 {* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -27,6 +27,7 @@
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="icon" href="images/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="images/logo-xnet.png" type="image/png" />
 
     <link rel="stylesheet" type="text/css" href="css/xnet.css" media="screen" />
 
@@ -96,7 +97,7 @@
             </td>
             {if $xnet_type}
             <td style="width: 280px">
-              <img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" />
+              <a href="{if $xnet_type eq plan}plan{else}groups/{$xnet_type}{/if}"><img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" /></a>
             </td>
             {if $asso}
             <td class="logo">
@@ -190,7 +191,7 @@
             <td id="perso">
               {list_all_my_groups}
               {if !$smarty.session.auth}
-                <div>Me connecter :</div>
+                <div>Me connecter&nbsp;:</div>
                 <a class='gp' href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">polytechnicien</a>
                 {if $platal->pl_self() neq 'exit'}
                   {javascript name=jquery}
@@ -227,7 +228,7 @@
             - <a href="send_bug" class="popup_840x600">signaler un bug</a>
           {/if}
           <br />
-          © Copyright 2000-2007 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
+          Plat/al {#globals.version#} - © Copyright 2000-2008 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
         </td>
       </tr>
     {/if}

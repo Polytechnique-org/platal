@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Annuaire du groupe </h1>
+<h1>{$asso.nom}&nbsp;: Annuaire du groupe </h1>
 
 <p class="descr">
 Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
@@ -37,7 +37,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
   <li>
     <a href="{$platal->ns}admin/annuaire">
       {icon name=wand title="Synchroniser"} 
-      Synchroniser annuaire et Listes de diffusion
+      Synchroniser annuaire et listes de diffusion
     </a>
   </li>
   {/if}
@@ -56,7 +56,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
 
 <p class="center">
 [<a href="{$platal->ns}annuaire?order={$smarty.request.order}" {if !$only_admin}class="erreur"{/if}>tous les membres</a>]
-[<a href="{$platal->ns}annuaire?order={$smarty.request.order}&amp;admin=1" {if $only_admin}class="erreur"{/if}>administrateurs</a>]<br/>
+[<a href="{$platal->ns}annuaire?order={$smarty.request.order}&amp;admin=1" {if $only_admin}class="erreur"{/if}>animateurs</a>]<br/>
 {foreach from=$alphabet item=c}
 {if $c}
 [<a href="{$platal->ns}annuaire?{$group}={$c}&amp;order={$smarty.request.order}{if $only_admin}&amp;admin=1{/if}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
@@ -134,7 +134,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
 
 {if $broken}
 <p class="smaller">
-  {icon name=error} : Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
+  {icon name=error}&nbsp;: Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
   plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
   cliquant sur le symbole.
 </p>

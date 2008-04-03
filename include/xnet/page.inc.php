@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -96,7 +96,7 @@ class XnetPage extends PlatalPage
             if ($perms->hasFlag('groupannu')) {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
                 $sub['trombinoscope'] = "$dim/trombi";
-                $sub['carte'] = "$dim/geoloc";
+                $sub['planisphère'] = "$dim/geoloc";
             }
             if ($perms->hasFlag('groupmember')) {
                 if ($globals->asso('forum')) {

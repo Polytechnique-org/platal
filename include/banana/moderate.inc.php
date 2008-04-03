@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 require_once 'banana/banana.inc.php';
+require_once 'banana/message.func.inc.php';
 require_once 'banana/hooks.inc.php';
 
 function hook_checkcancel($_headers)

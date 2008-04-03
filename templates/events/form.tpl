@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -132,8 +132,8 @@
         </div>
         {/if}
         <div style="clear: both">
-          Choisir un fichier : <input type="file" name="image" id="image" /><br />
-          Indiquer une adresse : <input type="text" name="image_url" id="image_url" value="" />
+          Choisir un fichier&nbsp;: <input type="file" name="image" id="image" /><br />
+          Indiquer une adresse&nbsp;: <input type="text" name="image_url" id="image_url" value="" />
         </div>
       </td>
     </tr>
@@ -155,13 +155,13 @@
     </tr>
     <tr class="pair">
       <td colspan="2">
-        Tu peux limiter la visibilité de ton annonce aux camarades de certaines promotions :
+        Tu peux limiter la visibilité de ton annonce aux camarades de certaines promotions&nbsp;:
       </td>
     </tr>
     {include file="include/field.promo.tpl"}
     <tr class="pair">
       <td colspan="2">
-        Choisis la date d'expiration de ton annonce :
+        Choisis la date d'expiration de ton annonce&nbsp;:
       </td>
     </tr>
     <tr>

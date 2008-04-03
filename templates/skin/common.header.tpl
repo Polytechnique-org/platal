@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -25,6 +25,7 @@
     <meta name="keywords" content="Ecole polytechnique, anciens eleves, portail, alumni, AX, X, routage, reroutage, e-mail, email, mail" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="icon" href="/images/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="images/logo.png" type="image/png" />
     <link rel="index"  href="" />
     <link rel="author" href="changelog" />
     <link rel="search" href="search" />
@@ -68,6 +69,6 @@
     {$xorg_extra_header|smarty:nodefaults}
     {/if}
 
-    <title>{$xorg_title|default:"Polytechnique.org : le site des élèves et anciens élèves de l'École polytechnique"}</title>
+    <title>{$xorg_title|default:"Polytechnique.org&nbsp;: le site des élèves et anciens élèves de l'École polytechnique"}</title>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

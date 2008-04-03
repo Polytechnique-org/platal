@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -102,12 +102,6 @@ function payment_submit(form)
 </script>
 
 <form method="post" action="{$platal->pl_self()}">
-  <p> Si tu ne souhaites pas utiliser notre interface de
-  télépaiement, tu peux virer directement la somme de ton choix sur notre compte
-  <strong>30004 00314 00010016782 60</strong>. Nous veillerons à ce que ton paiement parvienne à
-  son destinataire.  Pense toutefois à le préciser dans le motif du
-  versement.
-  <br /><br />
   </p>
   <table class="bicol">
     <tr>
@@ -157,7 +151,7 @@ function payment_submit(form)
 </form>
 
 {if $transactions}
-<p class="descr">Tu as déjà effectué des paiements pour cette transaction :</p>
+<p class="descr">Tu as déjà effectué des paiements pour cette transaction&nbsp;:</p>
 <table class="bicol">
 <tr><th>Date</th><th>Montant</th></tr>
 {iterate from=$transactions item=t}

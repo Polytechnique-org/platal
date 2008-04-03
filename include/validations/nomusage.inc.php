@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -91,6 +91,13 @@ class UsageReq extends Validate
             }
             if ($this->nom_usage) {
                 $res .= "\n\n  Les alias {$this->alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant à ta disposition !";
+            }
+            if ($globals->mailstorage->googleapps_domain) {
+                require_once 'googleapps.inc.php';
+                $account = new GoogleAppsAccount(S::v('uid'), S::v('forlife'));
+                if ($account->active()) {
+                    $res .= "\n\n  Si tu utilises Google Apps, tu peux changer ton nom d'usage sur https://mail.google.com/a/polytechnique.org/#settings/accounts";
+                }
             }
             return $res;
         } else {

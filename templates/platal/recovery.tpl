@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -73,7 +73,7 @@ Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certifi
     </tr>
     <tr>
       <td class="titre">
-        Login :<br />
+        Login&nbsp;:<br />
         <span class="smaller">"prenom.nom" ou "prenom.nom.promo"</span>
       </td>
       <td>
@@ -82,7 +82,7 @@ Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certifi
     </tr>
     <tr>
       <td class="titre">
-        Date de naissance :<br />
+        Date de naissance&nbsp;:<br />
         <span class="smaller">format JJMMAAAA soit 01032000<br />pour 1<sup>er</sup> mars 2000</span>
       </td>
       <td>
@@ -91,7 +91,7 @@ Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certifi
     </tr>
     <tr>
       <td class="titre">
-        Adresse électronique : <span class="smaller">(facultatif)</span>
+        Adresse électronique&nbsp;: <span class="smaller">(facultatif)</span>
       </td>
       <td>
         <input type="text" size="20" maxlength="50" name="email" />

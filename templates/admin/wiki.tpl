@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -68,6 +68,7 @@
 {/literal}
 
 <p class="center">
+   <a href="Site/AllRecentChanges?action=rss&user={$smarty.session.forlife}&hash={$smarty.session.core_rss_hash}" style="display:block;float:right" title="Changements">{icon name=feed title='fil rss'}</a>
    {icon name=magnifier} <a href="Site/AllRecentChanges">Voir les changements récents</a>
 </p>
 
@@ -111,7 +112,7 @@
       {$perm.edit}
     </td>
     <td class="action" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
-      <a href="admin/wiki/rename/{$cat}.{$page}" onclick="var newname=prompt('Déplacer la page {$cat}.{$page} vers :', '{$cat}.{$page}'); if (!newname) return false; this.href += '/'+newname;">{icon name=book_next title='déplacer'}</a>
+      <a href="admin/wiki/rename/{$cat}.{$page}" onclick="var newname=prompt('Déplacer la page {$cat}.{$page} vers&nbsp;:', '{$cat}.{$page}'); if (!newname) return false; this.href += '/'+newname;">{icon name=book_next title='déplacer'}</a>
       <a href="admin/wiki/delete/{$cat}.{$page}" onclick="return confirm('Supprimer la page {$cat}.{$page} ?');">{icon name=cross title='supprimer'}</a>
       <input type="checkbox" name="{$cat}/{$page}"/>
     </td>
@@ -127,7 +128,7 @@
   </tr>
   <tr class="pair">
     <td>
-      Attribue les permissions aux pages cochées :
+      Attribue les permissions aux pages cochées&nbsp;:
     </td>
     <td>
       <select name="read">
@@ -149,6 +150,6 @@
 </form>
 
 <p class="smaller">
-  * : les pages marquées d'une astérisque sont actuellement disponibles en cache (accès plus rapide)
+  *&nbsp;: les pages marquées d'une astérisque sont actuellement disponibles en cache (accès plus rapide)
 </p>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

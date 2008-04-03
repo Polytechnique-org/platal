@@ -1,7 +1,7 @@
 #!/usr/bin/php5 -q
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -84,13 +84,6 @@ check("SELECT  u.user_id, nom, prenom, promo,
     "Utilisateur n'ayant pas de flag de publicite pour leurs donnees de profil");
 check("select uid from adresses where pub != 'private' and pub !='ax' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour une adresse");
 check("select uid from tels where tel_pub != 'private' and tel_pub !='ax' and tel_pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour un numero de telephone");
-
-/* validite de adresses */
-check("select uid, count(adrid) from adresses group by uid having count(adrid) > 7", "Utilisateurs ayant trop d'adresses");
-
-/* Validite des tables de langues, competences, mentoring*/
-check("select uid, count(lid) from langues_ins group by uid having count(lid) > 10","Utilisateurs ayant trop de langues");
-check("select uid, count(cid) from competences_ins group by uid having count(cid) > 20","Utilisateurs ayant trop de competences");
 
 /* validite de aliases */
 check("SELECT a.*
@@ -201,5 +194,13 @@ check("SELECT u.`user_id`, u.`nom`, u.`prenom`
         INNER JOIN `profile_names_search` AS n USING(`user_id`)
         WHERE n.`search_name` = ''", "liste des personnes qui ont un de leur nom de recherche vide");
         
+/* verifie qu'il n'y a pas d'utilisateurs ayant un compte Google Apps désactivé et une redirection encore active vers Google Apps */
+check("SELECT  a.alias, g.g_status, u.mail_storage
+         FROM  auth_user_md5 AS u
+   INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+   INNER JOIN  gapps_accounts AS g ON (g.l_userid = u.user_id)
+        WHERE  FIND_IN_SET('googleapps', u.mail_storage) > 0 AND g.g_status != 'active'",
+      "utilisateurs ayant une redirection vers Google Apps alors que leur compte GApps n'est pas actif");
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

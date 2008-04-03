@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -681,7 +681,7 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/delete.tpl');
         if (Post::v('valid') == 'OUI') {
             if ($this->client->delete_list($liste, Post::b('del_archive'))) {
-                foreach (array('', '-owner', '-admin', '-bounces') as $app) {
+                foreach (array('', '-owner', '-admin', '-bounces', '-unsubscribe') as $app) {
                     XDB::execute("DELETE FROM  $table
                                         WHERE  type={?} AND alias={?}",
                                  $type, $liste.$app.$domain);

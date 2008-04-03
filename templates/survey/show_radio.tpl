@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -23,7 +23,7 @@
 {if $survey_resultmode}
   <ul>
   {foreach item=sresult from=$squestion.result}
-    <li>{$squestion.choices[$sresult.answer]} : {$sresult.count*100/$survey.votes|string_format:"%.1f"}% ({$sresult.count} votes)</li>
+    <li>{$squestion.choices[$sresult.answer]}&nbsp;: {$sresult.count*100/$survey.votes|string_format:"%.1f"}% ({$sresult.count} votes)</li>
   {/foreach}
   </ul>
 {else}

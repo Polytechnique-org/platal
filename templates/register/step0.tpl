@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -25,15 +25,15 @@
 <h1>Conditions générales</h1>
 
 <p>
-L'enregistrement se déroule <strong>en deux étapes</strong> :
+L'enregistrement se déroule <strong>en deux étapes</strong>&nbsp;:
 </p>
 <ul>
   <li>
-  la pré-inscription quit te prendra moins de 5 minutes ;
+  tu te pré-inscris, ce qui te prendra moins de 5 minutes ;
   </li>
   <li>
-  suivi d'un envoi d'un mail de notre part (immédiat !) qui te permettra
-  de te connecter au site !
+  nous t'envoyons immédiatement un email qui te permettra
+  de te connecter au site.
   </li>
 </ul>
 

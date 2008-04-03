@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -35,7 +35,7 @@
       </td>
       <td><input type="submit" value="&lt;"  name="sub01" /></td>
       <td>
-        Promotion :
+        Promotion&nbsp;:
         <input type="text" name="promo" value="{$promo}" size="4" maxlength="4" />
         <input type="submit" value="GO" />
       </td>

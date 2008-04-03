@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -21,11 +21,11 @@
 {**************************************************************************}
 
 {if !$is_admin}
-<h1>{$asso.nom} : Evénements</h1>
+<h1>{$asso.nom}&nbsp;: Événements</h1>
 {else}
 <h1>
-  {$asso.nom} : 
-  {if $archive}[<a href="{$platal->ns}events">Evénements</a>] {else}Evénements {/if}
+  {$asso.nom}&nbsp;: 
+  {if $archive}[<a href="{$platal->ns}events">Événements</a>] {else}Événements {/if}
   {if $archive}Archives {else}[<a href="{$platal->ns}events/archive">Archives</a>] {/if}
 </h1>
 
@@ -91,7 +91,7 @@
   </tr>
 
   <tr>
-    <td class="titre">date :</td>
+    <td class="titre">Date&nbsp;:</td>
     <td>
       {if $e.fin and $e.fin neq $e.debut}
         {if $e.debut_day eq $e.fin_day}
@@ -107,7 +107,7 @@
   </tr>
 
   <tr>
-    <td class="titre">annonceur :</td>
+    <td class="titre">Annonceur&nbsp;:</td>
     <td>
       <a href='https://www.polytechnique.org/profile/{$e.alias}' class='popup2'>{$e.prenom} {$e.nom} ({$e.promo})</a>
     </td>
@@ -115,7 +115,7 @@
 
   {if $is_admin || $e.show_participants || ($e.deadline_inscription && $e.inscr_open)}
   <tr>
-    <td class="titre">Informations :</td>
+    <td class="titre">Informations&nbsp;:</td>
     <td class='actions'>
       {if $is_admin || $e.show_participants}
       <a href="{$platal->ns}events/admin/{$e.short_name|default:$e.eid}">
@@ -133,7 +133,7 @@
 
   <tr>
     <td class="titre">
-      État inscription
+      État inscription&nbsp;:
       {if $e.inscr_open}
         <input type="hidden" name="evt_{counter}" value="{$e.eid}" />
       {/if}
@@ -149,7 +149,7 @@
         Tu viendras seul
         {else}
         Tu viendras avec {$m.nb-1} personne{if $m.nb > 2}s{/if}
-        {/if} à <em>{$m.titre}</em><br />
+        {/if} à <em>{$m.titre}</em>.<br />
         {/foreach}
       {/if}
 
@@ -159,7 +159,7 @@
         Tu dois payer {$e.topay|replace:'.':','}&nbsp;&euro;.
         {elseif $e.paid < $e.topay}
         Tu dois encore payer {math equation="a-b" a=$e.topay b=$e.paid|replace:'.':','}&nbsp;&euro;
-        (tu as déjà payé {$e.paid|replace:'.':','}&nbsp;&euro;)
+        (tu as déjà payé {$e.paid|replace:'.':','}&nbsp;&euro;).
         {else}
         Tu as déjà payé les {$e.paid|replace:'.':','}&nbsp;&euro; de ton inscription.
         {/if}
@@ -190,7 +190,6 @@
 
 {foreachelse}
 
-
 <p class="descr">
 {if $archive}
   Aucun événement n'a été archivé par les animateurs du groupe.
@@ -201,9 +200,16 @@
 
 {/foreach}
 
+{if $undisplayed_events neq 0}
+<p class="descr">
+  Il y a {$undisplayed_events} événement{if $undisplayed_events > 1}s non affichés car ils sont réservés
+  {else} non affiché car il est réservé{/if} aux membres de ce groupe.
+</p>
+{/if}
+
 {if $evenements}
 <p class="descr">
-  En cliquant sur l'icône {icon name=calendar_view_day title="Événement iCal"} associée à un événement
+  En cliquant sur l'icône {icon name=calendar_view_day title="Événement iCal"} associée à un événement,
   tu peux télécharger la version iCal de l'événement qui permet de l'ajouter dans ton agenda électronique.
 </p>
 {/if}

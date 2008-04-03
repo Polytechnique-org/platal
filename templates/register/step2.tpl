@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -37,7 +37,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Matricule X :
+        Matricule X&nbsp;:
       </td>
       <td>
         <input type="text" size="6" maxlength="6" name="mat" 
@@ -54,7 +54,7 @@
         {math equation="(promo % 100) + 100" promo=$promo}532)<br />
         {/if}
         Voir sur le GU ou un bulletin de solde pour trouver cette information<br /><br />
-        Pour les élèves étrangers voie 2, il est du type :
+        Pour les élèves étrangers voie 2, il est du type&nbsp;:
         {if $promo < 1999}
         {math equation="(promo + 1) % 100" promo=$promo}0XXX
         {else}

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,15 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-{if !$c.inscrit || $c.dcd}<div class='grayed'>{/if}
+{if (!$c.inscrit && $smarty.session.auth ge AUTH_COOKIE) || $c.dcd}<div class='grayed'>{/if}
 <div class="contact" {if $c.inscrit}{if $smarty.session.auth ge AUTH_COOKIE}title="fiche mise à jour le {$c.date|date_format}"{/if}{/if}>
 
   <div class="nom">
     {if $c.sexe}&bull;{/if}
-    {if !$c.dcd && $c.inscrit}<a href="profile/{$c.forlife}" class="popup2">{/if}
+    {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}<a href="profile/{if $c.inscrit}{$c.forlife}{else}{make_forlife nom=$c.nom prenom=$c.prenom promo=$c.promo}{/if}" class="popup2">{/if}
     {if $c.nom_usage}{$c.nom_usage} {$c.prenom}<br />({$c.nom}){else}{$c.nom} {$c.prenom}{/if}
-    {if !$c.dcd && $c.inscrit}</a>{/if}
+    {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}</a>{/if}
   </div>
 
   <div class="appli">
@@ -139,6 +138,6 @@
   </div>
 
 </div>
-{if !$c.inscrit || $c.dcd}</div>{/if}
+{if (!$c.inscrit && $smarty.session.auth ge AUTH_COOKIE) || $c.dcd}</div>{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,6 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<p>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$smarty.session.forlife}">fiche référent</a> qui n'est accessible que par les X.
+</p>
 <p>
   Si tu acceptes que ceux des camarades te contactent afin de te demander
   conseil, dans les domaines que tu connais bien, et pour lesquels tu pourrais
@@ -28,7 +30,7 @@
 <p>
   Tu peux mentionner ici les domaines de compétences, les expériences
   notamment internationales sur la base desquels tu seras identifiable depuis
-  <a href="referent/search">la page de recherche d'un conseil professionnel</a>.<br />
+  <a href="referent/search#mentors">la page de recherche d'un conseil professionnel</a>.<br />
 </p>
 <p>Le mentoring est particulièrement important pour les camarades&nbsp;:</p>
 <ul>
@@ -61,9 +63,10 @@
     <td id="countries">
       {foreach from=$countries item=country key=i}
       <div id="countries_{$i}" style="clear: both; margin-bottom: 0.7em">
-        <div style="float: left; width: 50%">{$country}</div>
+        <a style="display: block; float: right"
+           href="javascript:removeCountry('{$i}')">{icon name=cross title="Supprimer ce pays"}</a>
+        <div class="titre">{$country}</div>
         <input type="hidden" name="countries[{$i}]" value="{$country}" />
-        <a href="javascript:removeCountry('{$i}')">{icon name=cross title="Supprimer ce pays"}</a>
       </div>
       {/foreach}
     </td>
@@ -106,7 +109,7 @@
         <a href="javascript:removeSecteur('{$s}', '{$ss}')" style="display: block; float: right">
           {icon name=cross title="Supprimer ce secteur"}
         </a>
-        <input type="hidden" name="secteurs[' + s + '][' + ss + ']" value="{$ss_sect}" />
+        <input type="hidden" name="secteurs[{$s}][{$ss}]" value="{$ss_sect}" />
         {$ss_sect}
       </div>
       {/foreach}

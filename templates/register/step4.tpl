@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -28,16 +28,17 @@
 La pré-inscription que tu viens de soumettre a été enregistrée.
 </p>
 <p>
-Les instructions te permettant notamment d'activer ton e-mail
-<strong>{$smarty.session.sub_state.forlife}@{#globals.mail.domain#}</strong>, ainsi que ton mot de passe pour
+Les instructions te permettant de valider ton inscription et ton mot de passe pour
 accéder au site viennent de t'être envoyés à l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
 </p>
 <p>
-Tu n'as que quelques jours pour suivre ces instructions après quoi la pré-inscription
-est effacée automatiquement de nos bases et il faut tout recommencer.
+Tu n'as que quelques jours pour suivre ces instructions. Ensuite, la pré-inscription
+est effacée automatiquement de notre base de données et il faut tout recommencer.
 </p>
 <p>
 Si tu ne reçois rien, vérifie bien l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
+En particulier, vérifie si l'e-mail n'a pas été rejeté par ton filtre anti-spam. L'adresse
+d'expéditeur est <code>register@polytechnique.org</code>.
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

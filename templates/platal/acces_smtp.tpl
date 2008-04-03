@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -32,12 +32,12 @@
     pw1 = document.forms.smtppass_form.smtppass1.value;
     pw2 = document.forms.smtppass_form.smtppass2.value;
     if (pw1 != pw2) {
-      alert ("\nErreur : les deux champs ne sont pas identiques !");
+      alert ("\nErreur&nbsp;: les deux champs ne sont pas identiques !");
       exit;
       return false;
     }
     if (pw1.length < 6) {
-      alert ("\nErreur : le nouveau mot de passe doit faire au moins 6 caractères !");
+      alert ("\nErreur&nbsp;: le nouveau mot de passe doit faire au moins 6 caractères !");
       exit;
       return false;
     }
@@ -65,7 +65,7 @@
   <table class="tinybicol" cellpadding="3" summary="Définition du mot de passe">
     <tr>
       <td class="titre">
-        Mot de passe (15 caractères maximum) :
+        Mot de passe (15 caractères maximum)&nbsp;:
       </td>
       <td>
         <input type="password" size="15" maxlength="15" name="smtppass1" />
@@ -73,7 +73,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Retape-le une fois (pour vérification) :
+        Retape-le une fois (pour vérification)&nbsp;:
       </td>
       <td>
         <input type="password" size="15" maxlength="15" name="smtppass2" />

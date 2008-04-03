@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -39,29 +39,31 @@ function chgMainWinLoc(strPage)
 //]]></script>
 {/literal}
 
-{if $logged and $x.forlife eq $smarty.session.forlife}
-[<a href="javascript:chgMainWinLoc('profile/edit')">Modifier ma fiche</a>]
-{/if}
-
 <div id="fiche">
   <div id="photo" class="part">
     {if $photo_url}<img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}"/>{/if}
-    {if $logged}
-      {if $x.section}<div><em class="intitule">Section : </em><span>{$x.section}</span></div>{/if}
-      {if $x.binets_join}<div><em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span></div>{/if}
-      {if $x.gpxs_join}<div><em class="intitule">Groupe(s) et institution(s) X : </em><span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
+    {if $logged && ( $x.section|smarty:nodefaults || $x.binets_join|smarty:nodefaults || $x.gpxs_join|smarty:nodefaults)}
+      <h2>A l'X...</h2>
+      {if $x.section}<div><em class="intitule">Section&nbsp;: </em><span>{$x.section}</span></div>{/if}
+      {if $x.binets_join}<div><em class="intitule">Binet(s)&nbsp;: </em><span>{$x.binets_join}</span></div>{/if}
+      {if $x.gpxs_join}<div><em class="intitule">Groupe(s) et institution(s) X&nbsp;: </em><span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
     {/if}
-    {if $x.web}<div><em class="intitule">Site Web : </em><br /><a href="{$x.web}" class='popup'>{$x.web}</a></div>{/if}
-    {if $x.freetext}<div><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|miniwiki|smarty:nodefaults}</span></div>{/if}
+    {if $x.freetext}
+    <h2>Commentaires&nbsp;:</h2>
+    <span>{$x.freetext|miniwiki|smarty:nodefaults}</span>
+    {/if}
   </div>
   <div id="fiche_identite" class="part">
     <div class="civilite">
       {if $x.sexe}&bull;{/if}
       {$x.prenom} {if $x.nom_usage eq ""}{$x.nom}{else}{$x.nom_usage} ({$x.nom}){/if}
       {if $logged}
-      {if $x.nickname} (alias {$x.nickname}){/if}&nbsp;
-      <a href="vcard/{$x.forlife}.vcf">{*
-        *}{icon name=vcard title="Afficher la carte de visite"}</a>
+      {if $x.nickname} (alias {$x.nickname}){/if}
+      {/if}
+      {if $x.web}&nbsp;<a href="{$x.web}">{icon name="world_go" title="Site Web"}</a>{/if}
+      {if $logged}
+      &nbsp;{if !$x.dcd}<a href="vcard/{$x.forlife}.vcf">{*
+        *}{icon name=vcard title="Afficher la carte de visite"}</a>{/if}
       {if !$x.is_contact}
       <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
         {icon name=add title="Ajouter à mes contacts"}</a>
@@ -72,6 +74,9 @@ function chgMainWinLoc(strPage)
       {if hasPerm('admin')}
       <a href="javascript:chgMainWinLoc('admin/user/{$x.forlife}')">
         {icon name=wrench title="administrer user"}</a>
+      {/if}
+      {if $x.forlife eq $smarty.session.forlife}
+      <a href="javascript:chgMainWinLoc('profile/edit')">{icon name="user_edit" title="Modifier ma fiche"}</a>
       {/if}
       {/if}
     </div>
@@ -106,7 +111,7 @@ function chgMainWinLoc(strPage)
       {/if}
       {if $x.mobile}
       <div class="mob">
-        <em class="intitule">Mobile : </em>{$x.mobile}
+        <em class="intitule">Mobile&nbsp;: </em>{$x.mobile}
       </div>
       {/if}
       <div class='spacer'></div>
@@ -130,41 +135,41 @@ function chgMainWinLoc(strPage)
   </div>
   {if $x.adr}
   <div class="part">
-    <h2>Contact : </h2>
-    {foreach from=$x.adr item="address" key="i" name=adresses}
-      {if $i is odd}
+    <h2>Contact&nbsp;: </h2>
+    {foreach from=$x.adr item="address" name=adresses}
+      {if $smarty.foreach.adresses.iteration is even}
         {assign var=pos value="right"}
       {else}
         {assign var=pos value="left"}
       {/if}
       {if $address.active}
-      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Mon adresse actuelle :"
+      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Mon adresse actuelle&nbsp;:"
                for="`$x.prenom` `$x.nom`" pos=$pos}
       {elseif $address.secondaire}
-      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse secondaire :"
+      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse secondaire&nbsp;:"
                for="`$x.prenom` `$x.nom`" pos=$pos}
       {else}
-      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse principale :"
+      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse principale&nbsp;:"
                for="`$x.prenom` `$x.nom`" pos=$pos}
       {/if}
-      {if $i is odd}<div class="spacer"></div>{/if}
+      {if $smarty.foreach.adresses.iteration is even}<div class="spacer"></div>{/if}
     {/foreach}
   </div>
   {/if}
   {if $x.adr_pro}
   <div class="part">
-    <h2>Informations professionnelles :</h2>
+    <h2>Informations professionnelles&nbsp;:</h2>
     {foreach from=$x.adr_pro item="address" key="i"}
       {if $i neq 0}<hr />{/if}
       {include file="include/emploi.tpl" address=$address}
-      {include file="geoloc/address.tpl" address=$address titre="Adresse : " for=$address.entreprise pos="left"}
+      {include file="geoloc/address.tpl" address=$address titre="Adresse&nbsp;: " for=$address.entreprise pos="left"}
       <div class="spacer">&nbsp;</div>
     {/foreach}
   </div>
   {/if}
   {if $x.medals}
   <div class="part">
-    <h2>Distinctions : </h2>
+    <h2>Distinctions&nbsp;: </h2>
     {foreach from=$x.medals item=m}
     <div class="medal_frame">
       <img src="profile/medal/{$m.id}" width="24" alt="{$m.medal}" title="{$m.medal}" style='float: left;' />
@@ -178,14 +183,22 @@ function chgMainWinLoc(strPage)
   {/if}
   {if $logged && $x.cv}
   <div class="part">
-    <h2>Curriculum Vitae :</h2>
+    <h2>Curriculum Vitae&nbsp;:</h2>
     {$x.cv|miniwiki:title|smarty:nodefaults}
   </div>
   {/if}
-  {if !$logged}
+  {if $view eq 'public'}
   <div class="part">
+    <small>
     Cette fiche est publique et visible par tout internaute,<br />
     vous pouvez aussi voir <a href="profile/private/{$x.forlife}?display=light">celle&nbsp;réservée&nbsp;aux&nbsp;X</a>.
+    </small>
+  </div>
+  {elseif $view eq 'ax'}
+  <div class="part">
+    <small>
+    Cette fiche est privée et ne recense que les informations transmises à l'AX.
+    </small>
   </div>
   {/if}
   <div class="spacer"></div>

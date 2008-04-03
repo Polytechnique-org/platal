@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -39,7 +39,7 @@
     <div class="long"> 
      <table cellspacing="0" cellpadding="0"> 
       <tr> 
-        <td class="lt">Expertise :</td> 
+        <td class="lt">Expertise&nbsp;:</td> 
         <td class="rt" colspan="2">{$p.expertise|nl2br}</td> 
       </tr> 
      </table> 

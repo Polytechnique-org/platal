@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -33,9 +33,9 @@
 
 {else}
 
-<h1>{$asso.nom} : Listes de diffusion</h1>
+<h1>{$asso.nom}&nbsp;: Listes de diffusion</h1>
 
-<h2>Listes de diffusion du groupe {$asso.nom} :</h2>
+<h2>Listes de diffusion du groupe {$asso.nom}&nbsp;:</h2>
 
 <p class="descr">
 Une liste dont <strong>la diffusion</strong> est modérée est une liste dont les mails sont validés
@@ -100,12 +100,12 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
 </table>
 
 <p class="descr">
-{icon name=wrench title="Modérateur"} tu es {if $smarty.session.femme}modératrice{else}moderateur{/if} sur cette liste<br />
+{icon name=wrench title="Modérateur"} tu es {if $smarty.session.femme}modératrice{else}moderateur{/if} sur cette liste.<br />
 {icon name=weather_cloudy title="Liste privée"} cette liste est invisible aux non-membres de la liste. S'en désabonner
 t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
 </p>
         
-<h2>Voici les alias existants pour le groupe {$asso.nom} :</h2>
+<h2>Voici les alias existants pour le groupe {$asso.nom}&nbsp;:</h2>
 
 <table cellspacing="0" cellpadding="0" class='large'>
   <tr>

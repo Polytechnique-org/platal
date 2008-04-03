@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -42,6 +42,7 @@ class EmailModule extends PLModule
     function handler_emails(&$page, $action = null, $email = null)
     {
         global $globals;
+        require_once 'emails.inc.php';
 
         $page->changeTpl('emails/index.tpl');
         $page->assign('xorg_title','Polytechnique.org - Mes emails');
@@ -65,14 +66,12 @@ class EmailModule extends PLModule
               ORDER BY  LENGTH(alias)";
         $page->assign('aliases', XDB::iterator($sql, $uid));
 
-    $homonyme = XDB::query("SELECT alias FROM aliases INNER JOIN homonymes ON (id = homonyme_id) WHERE user_id = {?} AND type = 'homonyme'", $uid);
-    $page->assign('homonyme', $homonyme->fetchOneCell());
+        $homonyme = XDB::query("SELECT alias FROM aliases INNER JOIN homonymes ON (id = homonyme_id) WHERE user_id = {?} AND type = 'homonyme'", $uid);
+        $page->assign('homonyme', $homonyme->fetchOneCell());
 
-        $sql = "SELECT email
-                FROM emails
-                WHERE uid = {?} AND FIND_IN_SET('active', flags)";
-        $page->assign('mails', XDB::iterator($sql, $uid));
-
+        // Affichage des redirections de l'utilisateur.
+        $redirect = new Redirect($uid);
+        $page->assign('mails', $redirect->active_emails());
 
         // on regarde si l'utilisateur a un alias et si oui on l'affiche !
         $forlife = S::v('forlife');
@@ -255,9 +254,12 @@ class EmailModule extends PLModule
                    FROM  aliases
                   WHERE  id={?} AND (type='a_vie' OR type='alias')
                ORDER BY  !FIND_IN_SET('usage',flags), LENGTH(alias)", $uid);
-        
+
         $page->assign('alias', $res->fetchAllAssoc());
         $page->assign('emails',$redirect->emails);
+
+        require_once 'googleapps.inc.php';
+        $page->assign('googleapps', GoogleAppsAccount::account_status($uid));
     }
 
     function handler_antispam(&$page, $statut_filtre = null)
@@ -270,7 +272,7 @@ class EmailModule extends PLModule
 
         $bogo = new Bogo(S::v('uid'));
         if (isset($statut_filtre)) {
-            $bogo->change(S::v('uid'), $statut_filtre + 0);
+            $bogo->change($statut_filtre + 0);
         }
         $page->assign('filtre',$bogo->level());
     }
@@ -339,52 +341,57 @@ class EmailModule extends PLModule
                 return join(', ', $ret);
             }
 
+            $error = false;
             foreach ($_FILES as &$file) {
                 if ($file['name'] && !PlUpload::get($file, S::v('forlife'), 'emails.send', false)) {
-                    $page->trig("Impossible de télécharger '" . pl_entities($file['name']) . "'");
+                    $page->trig(PlUpload::$lastError);
+                    $error = true;
+                    break;
                 }
             }
 
-            XDB::execute("DELETE FROM  email_send_save
-                                WHERE  uid = {?}", S::i('uid'));
+            if (!$error) {
+                XDB::execute("DELETE FROM  email_send_save
+                                    WHERE  uid = {?}", S::i('uid'));
 
-            $to2  = getEmails(Env::v('to_contacts'));
-            $cc2  = getEmails(Env::v('cc_contacts'));
-            $txt  = str_replace('^M', '', Env::v('contenu'));
-            $to   = Env::v('to');
-            $subj = Env::v('sujet');
-            $from = Env::v('from');
-            $cc   = trim(Env::v('cc'));
-            $bcc  = trim(Env::v('bcc'));
+                $to2  = getEmails(Env::v('to_contacts'));
+                $cc2  = getEmails(Env::v('cc_contacts'));
+                $txt  = str_replace('^M', '', Env::v('contenu'));
+                $to   = Env::v('to');
+                $subj = Env::v('sujet');
+                $from = Env::v('from');
+                $cc   = trim(Env::v('cc'));
+                $bcc  = trim(Env::v('bcc'));
 
-            if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
-                $page->trig("Indique au moins un destinataire.");
-                $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
-            } else {
-                $mymail = new PlMailer();
-                $mymail->setFrom($from);
-                $mymail->setSubject($subj);
-                if (!empty($to))  { $mymail->addTo($to); }
-                if (!empty($cc))  { $mymail->addCc($cc); }
-                if (!empty($bcc)) { $mymail->addBcc($bcc); }
-                if (!empty($to2)) { $mymail->addTo($to2); }
-                if (!empty($cc2)) { $mymail->addCc($cc2); }
-                $files =& PlUpload::listFiles(S::v('forlife'), 'emails.send');
-                foreach ($files as $name=>&$upload) {
-                    $mymail->addUploadAttachment($upload, $name);
-                }
-                if (Env::v('nowiki')) {
-                    $mymail->setTxtBody(wordwrap($txt, 78, "\n"));
-                } else {
-                    $mymail->setWikiBody($txt);
-                }
-                if ($mymail->send()) {
-                    $page->trig("Ton mail a bien été envoyé.");
-                    $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
-                    PlUpload::clear(S::v('forlife'), 'emails.send');
-                } else {
-                    $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
+                if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
+                    $page->trig("Indique au moins un destinataire.");
                     $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
+                } else {
+                    $mymail = new PlMailer();
+                    $mymail->setFrom($from);
+                    $mymail->setSubject($subj);
+                    if (!empty($to))  { $mymail->addTo($to); }
+                    if (!empty($cc))  { $mymail->addCc($cc); }
+                    if (!empty($bcc)) { $mymail->addBcc($bcc); }
+                    if (!empty($to2)) { $mymail->addTo($to2); }
+                    if (!empty($cc2)) { $mymail->addCc($cc2); }
+                    $files =& PlUpload::listFiles(S::v('forlife'), 'emails.send');
+                    foreach ($files as $name=>&$upload) {
+                        $mymail->addUploadAttachment($upload, $name);
+                    }
+                    if (Env::v('nowiki')) {
+                        $mymail->setTxtBody(wordwrap($txt, 78, "\n"));
+                    } else {
+                        $mymail->setWikiBody($txt);
+                    }
+                    if ($mymail->send()) {
+                        $page->trig("Ton mail a bien été envoyé.");
+                        $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
+                        PlUpload::clear(S::v('forlife'), 'emails.send');
+                    } else {
+                        $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
+                        $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
+                    }
                 }
             }
         } else {
@@ -408,28 +415,28 @@ class EmailModule extends PLModule
                   WHERE  c.uid = {?}
                  ORDER BY u.nom, u.prenom", S::v('uid'));
         $page->assign('contacts', $res->fetchAllAssoc());
-        $page->assign('maxsize', ini_get('post_max_size') . 'o');
+        $page->assign('maxsize', ini_get('upload_max_filesize') . 'o');
     }
 
     function handler_test(&$page, $forlife = null)
     {
         global $globals;
+        require_once 'emails.inc.php';
+
         if (!S::has_perms() || !$forlife) {
             $forlife = S::v('bestalias');
         }
-        $mailer = new PlMailer('emails/mail.test.tpl');
-        $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
-        $iterator = XDB::iterator("SELECT  email
-                                     FROM  emails AS e
-                               INNER JOIN  aliases AS a ON (e.uid = a.id)
-                                    WHERE  FIND_IN_SET('active', e.flags) AND a.alias = {?}",
-                                  $forlife);
-        $mailer->assign('redirects', $iterator);
-        $res = XDB::query("SELECT  FIND_IN_SET('femme', u.flags), prenom
+
+        $res = XDB::query("SELECT  FIND_IN_SET('femme', u.flags), prenom, user_id
                              FROM  auth_user_md5 AS u
                        INNER JOIN  aliases AS a ON (a.id = u.user_id)
                             WHERE  a.alias = {?}", $forlife);
-        list($sexe, $prenom) = $res->fetchOneRow();
+        list($sexe, $prenom, $uid) = $res->fetchOneRow();
+        $redirect = new Redirect($uid);
+
+        $mailer = new PlMailer('emails/test.mail.tpl');
+        $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
+        $mailer->assign('redirects', $redirect->active_emails());
         $mailer->assign('sexe', $sexe);
         $mailer->assign('prenom', $prenom);
         $mailer->send();
@@ -622,12 +629,14 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
         $page->changeTpl('emails/lost.tpl');
 
         $page->assign('lost_emails', XDB::iterator('
-          SELECT u.user_id, a.alias
-          FROM auth_user_md5 AS u
-            INNER JOIN aliases AS a ON (a.id = u.user_id AND a.type = "a_vie")
-            LEFT JOIN emails AS e ON (u.user_id=e.uid AND FIND_IN_SET("active",e.flags))
-          WHERE e.uid IS NULL AND u.deces = 0
-          ORDER BY u.promo DESC, u.nom, u.prenom'));
+            SELECT  u.user_id, a.alias
+              FROM  auth_user_md5 AS u
+        INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type = "a_vie")
+         LEFT JOIN  emails  AS e ON (u.user_id=e.uid AND FIND_IN_SET("active",e.flags))
+             WHERE  e.uid IS NULL AND
+                    FIND_IN_SET("googleapps", u.mail_storage) = 0 AND
+                    u.deces = 0
+          ORDER BY  u.promo DESC, u.nom, u.prenom'));
     }
 }
 

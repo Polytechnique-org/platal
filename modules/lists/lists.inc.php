@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -29,21 +29,25 @@ function list_sort_owners(&$members, $tri_promo = true) {
     foreach($members as $mem) {
         list($m, $dom) = explode('@',$mem);
         if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
-            $res = XDB::query('SELECT  prenom,IF(nom_usage="", nom, nom_usage), promo
-                                           FROM  auth_user_md5 AS u
-                                     INNER JOIN  aliases AS a ON u.user_id = a.id
-                                          WHERE  a.alias = {?}', $m);
-            if(list($prenom, $nom, $promo) = $res->fetchOneRow()) {
+            $res = XDB::query('SELECT  prenom, IF(nom_usage="", nom, nom_usage), promo,
+                                       (e.uid IS NULL AND FIND_IN_SET("googleapps", u.mail_storage) = 0)
+                                 FROM  auth_user_md5 AS u
+                           INNER JOIN  aliases AS a ON u.user_id = a.id
+                            LEFT JOIN  emails AS e ON (e.flags = "active" AND e.uid = u.user_id)
+                                WHERE  a.alias = {?}
+                             GROUP BY  u.user_id', $m);
+            if(list($prenom, $nom, $promo, $broken) = $res->fetchOneRow()) {
                 $key = $tri_promo ? $promo : strtoupper($nom{0});
-                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $m, 'p' => (!$tri_promo ? $promo : null));
+                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $m, 'p' => (!$tri_promo ? $promo : null), 'b' => $broken);
             } else {
-                $membres[0][] = Array('l' => $mem);
+                $membres[0][] = Array('l' => $mem, 'b' => $broken);
             }
         } else {
             $res = XDB::query('SELECT m2.uid,
                                       IF(m2.origine="X", u.prenom, m1.prenom) AS prenom,
                                       IF(m2.origine="X", u.nom, m1.nom) AS nom,
-                                      IF(m2.origine="X", u.promo, "non-X") AS promo
+                                      IF(m2.origine="X", u.promo, "non-X") AS promo,
+                                      0
                                  FROM groupex.membres AS m1
                             LEFT JOIN groupex.membres AS m2 ON(m1.email=m2.email AND m2.asso_id={?})
                             LEFT JOIN auth_user_md5   AS u  ON(m2.origine = "X" AND m2.uid = u.user_id)

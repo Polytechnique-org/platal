@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -63,7 +63,7 @@ class PLTableEditor
         $this->sortfield = $idfield;
         $this->idfield_editable = $editid;
         $this->whereclause = '1';
-        $r = XDB::iterator("SHOW COLUMNS FROM $table");
+        $r = XDB::iterator("SHOW FULL COLUMNS FROM $table");
         $this->vars = array();
         while ($a = $r->next()) {
             // desc will be the title of the column
@@ -96,6 +96,9 @@ class PLTableEditor
             }
             elseif (substr($a['Type'],0,10) == 'timestamp(' || $a['Type'] == 'datetime') {
                 $a['Type'] = 'timestamp';
+            }
+            elseif ($a['Comment'] == 'ip_address') {
+                $a['Type']='ip_address';
             }
 
             $this->vars[$a['Field']] = $a;
@@ -132,6 +135,10 @@ class PLTableEditor
             if ($descr['Type'] == 'date') {
                 $date =& $entry[$field];
                 $date = preg_replace('/([0-9]{4})-?([0-9]{2})-?([0-9]{2})/', '\3/\2/\1', $date);
+            }
+            if ($descr['Type'] == 'ip_address') {
+                $ip = & $entry[$field];
+                $ip = long2ip($ip);
             }
         }
         return $entry;
@@ -197,7 +204,7 @@ class PLTableEditor
                     $page->trig($this->delete_message);
                 } else {
                     $page->trig("L'entrée ".$id." a été supprimée.");
-                }	        	
+                }
             } else {
                 $page->trig("Impossible de supprimer l'entrée.");
             }
@@ -254,6 +261,9 @@ class PLTableEditor
                     elseif ($descr['Type'] == 'date') {
                         $val = preg_replace('/([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})/', '\3-\2-\1', $val);
                     }
+                    elseif ($descr['Type'] == 'ip_address') {
+                        $val = ip2long($val);
+                    }
                     $val = "'".addslashes($val)."'";
                 } else {
                     $cancel = true;
@@ -272,7 +282,7 @@ class PLTableEditor
                     $id = XDB::insertId();
                 }
             } else
-                $page->trig("Impossible de mette à jour.");
+                $page->trig("Impossible de mettre à jour.");
             if (!$this->auto_return) {
                 return $this->apply($page, 'edit', $id);
             }

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -22,7 +22,7 @@
 
 <table class="tinybicol" id="art{$art.id}">
   <tr>
-    <th>
+    <th {if $art.photo}colspan="2"{/if}>
       {if $is_logged && !$admin}
       <div style="float: right">
         {if $is_admin}
@@ -32,18 +32,23 @@
       </div>
       {/if}
       {tidy}
-      {if $admin}Aperçu de : {/if}{$art.titre}
+      {if $admin}Aperçu de&nbsp;: {/if}{$art.titre}
       {/tidy}
     </th>
   </tr>
   <tr>
+    {if $art.photo}
+    <td rowspan="{if ($is_logged || $admin) && $art.contacts}3{else}2{/if}" style="width: 100px">
+      <img src="{$platal->ns}announce/photo/{$art.id}" alt="{$art.titre}" style="width: 100px" /> 
+    </td>
+    {/if}
     <td style="padding-bottom: 1em">
       {$art.texte|miniwiki|smarty:nodefaults}
     </td>
   </tr>
   {if ($is_logged || $admin) && $art.contacts}
   <tr class="pair">
-    <td class="titre">Contacts :</td>
+    <td class="titre">Contacts&nbsp;:</td>
   </tr>
   <tr class="pair">
     <td style="padding-left: 20px">
@@ -58,7 +63,7 @@
   </tr>
   {/if}
   <tr class="pair">
-    <td>
+    <td {if $art.photo}colspan="2"{/if}>
       <div style="float: right">
       <small>
         Annonce proposée par

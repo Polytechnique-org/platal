@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -28,23 +28,25 @@
 {elseif $mail_part eq 'text'}
 Bonjour,
 
-Ton inscription sur Polytechnique.org est presque terminée, un clic sur le lien ci-dessous et c'est fini.
+Ton inscription sur Polytechnique.org est presque terminée !
 
-Après activation, tes paramètres seront :
+Après activation, tes paramètres de connexion seront :
 
 login        : {$mailorg}
 mot de passe : {$pass}
 
-Rends-toi sur la page web suivante afin d'activer ta pré-inscription, et de changer ton mot de passe en quelque chose de plus facile à mémoriser :
+Nous te proposerons de remplacer ce mot de passe temporaire par un mot de passe de ton choix.
+
+Rends-toi maintenant sur la page web suivante afin d'activer ta pré-inscription :
 
 {$baseurl}/register/end/{$hash}
 
-Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.
+Si en cliquant dessus tu n'y arrives pas, copie intégralement ce lien dans la barre d'adresse de ton navigateur.
 
-Nous espérons que tu profiteras pleinement des services en ligne de Polytechnique.org : s'ils te convainquent, n'oublie pas d'en parler aux camarades autour de toi !
+Nous espérons que tu profiteras pleinement des services en ligne de Polytechnique.org ; s'ils te convainquent, n'oublie pas d'en parler aux camarades autour de toi !
 
 Bien cordialement,
-Polytechnique.org
-"Le portail des élèves & anciens élèves de l'Ecole polytechnique"
+L'équipe de Polytechnique.org,
+Le portail des élèves et anciens élèves de l'École polytechnique
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

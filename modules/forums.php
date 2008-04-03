@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -19,15 +19,14 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class BananaModule extends PLModule
+class ForumsModule extends PLModule
 {
     function handlers()
     {
         return array(
             'banana'              => $this->make_hook('banana', AUTH_COOKIE),
-//            'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
-//            'banana/subscribe'    => $this->make_hook('subscription', AUTH_COOKIE),
             'banana/rss'          => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
+            'admin/forums'   => $this->make_hook('forums_bans', AUTH_MDP, 'admin'),
         );
     }
 
@@ -45,7 +44,7 @@ class BananaModule extends PLModule
                                  FROM  auth_user_md5 WHERE promo={?}", $promo);
             list($effau, $effid) = $res->fetchOneRow();
             if (5*$effau>$effid) { // + de 20% d'inscrits
-                $mymail = new PlMailer('mails/forums.promo.tpl');
+                $mymail = new PlMailer('admin/forums-promo.mail.tpl');
                 $mymail->assign('promo', $promo);
                 $mymail->send();
             }
@@ -144,6 +143,21 @@ class BananaModule extends PLModule
         $banana = new ForumsBanana(S::v('forlife'), array('group' => $group, 'action' => 'rss2'));
         $banana->run();
         exit;
+    }
+
+    function handler_forums_bans(&$page, $action = 'list', $id = null)
+    {
+        $page->assign('xorg_title','Polytechnique.org - Administration - Bannissements des forums');
+        $page->assign('title', 'Gestion des mises au ban');
+        $table_editor = new PLTableEditor('admin/forums','forums.innd','id_innd');
+        $table_editor->add_sort_field('priority', true, true);
+        $table_editor->describe('read_perm','lecture',true);
+        $table_editor->describe('write_perm','écriture',true);
+        $table_editor->describe('priority','priorité',true);
+        $table_editor->describe('comment','commentaire',true);
+        $table_editor->apply($page, $action, $id);
+        $page->changeTpl('forums/admin.tpl');
+        $page->addJsLink('jquery.js');
     }
 
     static function run_banana(&$page, $params = null)

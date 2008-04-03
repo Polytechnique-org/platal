@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 #***************************************************************************
-#*  Copyright (C) 2003-2007 Polytechnique.org                              *
+#*  Copyright (C) 2003-2008 Polytechnique.org                              *
 #*  http://opensource.polytechnique.org/                                   *
 #*                                                                         *
 #*  This program is free software; you can redistribute it and/or modify   *

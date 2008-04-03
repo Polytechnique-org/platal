@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -27,6 +27,7 @@ class AdminModule extends PLModule
             'phpinfo'                      => $this->make_hook('phpinfo', AUTH_MDP, 'admin'),
             'admin'                        => $this->make_hook('default', AUTH_MDP, 'admin'),
             'admin/ax-xorg'                => $this->make_hook('ax_xorg', AUTH_MDP, 'admin'),
+            'admin/dead-but-active'        => $this->make_hook('dead_but_active', AUTH_MDP, 'admin'),
             'admin/deaths'                 => $this->make_hook('deaths', AUTH_MDP, 'admin'),
             'admin/downtime'               => $this->make_hook('downtime', AUTH_MDP, 'admin'),
             'admin/homonyms'               => $this->make_hook('homonyms', AUTH_MDP, 'admin'),
@@ -351,6 +352,7 @@ class AdminModule extends PLModule
 
     function handler_user(&$page, $login = false)
     {
+        global $globals;
         $page->changeTpl('admin/utilisateurs.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Edit/Su/Log');
         require_once("emails.inc.php");
@@ -382,7 +384,7 @@ class AdminModule extends PLModule
             $_SESSION['suid'] = $_SESSION;
             $r = XDB::query("SELECT id FROM aliases WHERE alias={?}", $login);
             if($uid = $r->fetchOneCell()) {
-                start_connexion($uid,true);
+                start_connexion($uid, true);
                 pl_redirect("");
             }
         }
@@ -458,7 +460,7 @@ class AdminModule extends PLModule
                         break;
                     case "clean_fwd":
                         if (!empty($val)) {
-                            $redirect->cleanErrors($val);
+                            $redirect->clean_errors($val);
                         }
                         break;
                     case "add_alias":
@@ -547,18 +549,23 @@ class AdminModule extends PLModule
                                          promo     = $promo,
                                          comment   = '".addslashes($comm)."'
                                    WHERE user_id = '{$mr['user_id']}'";
+                        if ($perms == 'disabled' && $old_fields['perms'] != 'disabled') {
+                            // A user has been banned ==> ensure his php session has been killed
+                            // This solution is ugly and overkill, but, it should be efficient.
+                            kill_sessions();
+                        }
                         if (XDB::execute($query)) {
                             user_reindex($mr['user_id']);
 
                             $res = XDB::query($watch);
                             $new_fields = $res->fetchOneAssoc();
 
-                            $mailer = new PlMailer("admin/mail_intervention.tpl");
+                            $mailer = new PlMailer("admin/useredit.mail.tpl");
                             $mailer->assign("user", S::v('forlife'));
                             $mailer->assign('old', $old_fields);
                             $mailer->assign('new', $new_fields);
                             $mailer->send();
-                            
+
                             // update number of subscribers (perms or deceased may have changed)
                             update_NbIns();
 
@@ -579,6 +586,25 @@ class AdminModule extends PLModule
                                       LEFT JOIN aliases       AS a ON (a.id = u.user_id AND type= 'a_vie')
                                           WHERE u.user_id = {?}", $mr['user_id']);
                         $mr = $r->fetchOneAssoc();
+
+                        // If GoogleApps is enabled, the user did choose to use synchronized passwords,
+                        // and the password was changed, updates the Google Apps password as well.
+                        if ($globals->mailstorage->googleapps_domain && Env::v('newpass_clair') != "********") {
+                            require_once 'googleapps.inc.php';
+                            $account = new GoogleAppsAccount($mr['user_id'], $mr['forlife']);
+                            if ($account->active() && $account->sync_password) {
+                                $account->set_password($pass_encrypted);
+                            }
+                        }
+
+                        // If GoogleApps is enabled, and the user is now disabled, disables the Google Apps account as well.
+                        if ($globals->mailstorage->googleapps_domain &&
+                            $new_fields['perms'] == 'disabled' &&
+                            $new_fields['perms'] != $old_fields['perms']) {
+                            require_once 'googleapps.inc.php';
+                            $account = new GoogleAppsAccount($mr['user_id'], $mr['forlife']);
+                            $account->suspend();
+                        }
                         break;
 
                     // DELETE FROM auth_user_md5
@@ -587,10 +613,25 @@ class AdminModule extends PLModule
                         // update number of subscribers (perms or deceased may have changed)
                         update_NbIns();
                         $page->trig("'{$mr['user_id']}' a été désinscrit !");
-                        $mailer = new PlMailer("admin/mail_intervention.tpl");
+                        $mailer = new PlMailer("admin/useredit.mail.tpl");
                         $mailer->assign("user", S::v('forlife'));
-                        $mailer->assign("query", "\nUtilisateur $login désinscrit");
+                        $mailer->assign("deletion", true);
                         $mailer->send();
+                        break;
+
+                    case "b_edit":
+                        XDB::execute("DELETE FROM forums.innd WHERE uid = {?}", $mr['user_id']);
+                        if (Env::v('write_perm') != "" || Env::v('read_perm') != ""  || Env::v('commentaire') != "" ) {
+                          XDB::execute("INSERT INTO forums.innd
+                                                SET ipmin = '0',
+                                                    ipmax = '4294967295',
+                                                    write_perm = {?},
+                                                    read_perm = {?},
+                                                    comment = {?},
+                                                    priority = '200',
+                                                    uid = {?}",
+                                       Env::v('write_perm'), Env::v('read_perm'), Env::v('comment'), $mr['user_id']);
+                        }
                         break;
                 }
             }
@@ -620,6 +661,13 @@ class AdminModule extends PLModule
             }
 
             $page->assign('mr',$mr);
+
+            // Bans forums
+            $res = XDB::query("SELECT  write_perm, read_perm, comment
+                                 FROM  forums.innd
+                                WHERE  uid = {?}", $mr['user_id']);
+            $bans = $res->fetchOneAssoc();
+            $page->assign('bans', $bans);
         }
     }
 
@@ -793,6 +841,21 @@ class AdminModule extends PLModule
         $page->assign('decedes', $res);
     }
 
+    function handler_dead_but_active(&$page) {
+        $page->changeTpl('admin/dead_but_active.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Décédés');
+
+        $res = XDB::iterator(
+                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.matricule_ax, a.alias, DATE(MAX(s.start)) AS last
+                   FROM  auth_user_md5 AS u
+              LEFT JOIN  aliases AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+              LEFT JOIN  logger.sessions AS s ON (s.uid = u.user_id AND suid = 0)
+                  WHERE  perms IN ('admin', 'user') AND deces <> 0
+               GROUP BY  u.user_id
+               ORDER BY  u.promo, u.nom");
+        $page->assign('dead', $res);
+    }
+
     function handler_synchro_ax(&$page, $user = null, $action = null) {
         $page->changeTpl('admin/synchro_ax.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Synchro AX');
@@ -901,6 +964,7 @@ class AdminModule extends PLModule
         $table_editor->describe('ext','extension du screenshot',false);
         $table_editor->apply($page, $action, $id);
     }
+
     function handler_postfix_blacklist(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Blacklist');
         $page->assign('title', 'Blacklist de postfix');
@@ -1037,21 +1101,23 @@ class AdminModule extends PLModule
         switch (Post::v('action')) {
         case 'create':
             if (trim(Post::v('ipN')) != '') {
-                Xdb::execute('INSERT IGNORE INTO ip_watch (ip, state, detection, last, uid, description)
-                                          VALUES ({?}, {?}, CURDATE(), NOW(), {?}, {?})',
-                             trim(Post::v('ipN')), Post::v('stateN'), S::i('uid'), Post::v('descriptionN'));
+                Xdb::execute('INSERT IGNORE INTO ip_watch (ip, mask, state, detection, last, uid, description)
+                                          VALUES ({?}, {?}, {?}, CURDATE(), NOW(), {?}, {?})',
+                             ip_to_uint(trim(Post::v('ipN'))), ip_to_uint(trim(Post::v('maskN'))),
+                             Post::v('stateN'), S::i('uid'), Post::v('descriptionN'));
             };
             break;
 
         case 'edit':
             Xdb::execute('UPDATE ip_watch
-                             SET state = {?}, last = NOW(), uid = {?}, description = {?}
-                           WHERE ip = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'), Post::v('ipN'));
+                             SET state = {?}, last = NOW(), uid = {?}, description = {?}, mask = {?}
+                           WHERE ip = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'),
+                          ip_to_uint(Post::v('maskN')), ip_to_uint(Post::v('ipN')));
             break;
 
         default:
             if ($action == 'delete' && !is_null($ip)) {
-                Xdb::execute('DELETE FROM emails_watch WHERE ip = {?}', $ip);
+                Xdb::execute('DELETE FROM ip_watch WHERE ip = {?}', ip_to_uint($ip));
             }
         }
         if ($action != 'create' && $action != 'edit') {
@@ -1060,22 +1126,29 @@ class AdminModule extends PLModule
         $page->assign('action', $action);
 
         if ($action == 'list') {
-            $sql = "SELECT  w.ip, IF(w.ip = s.ip, s.host, s.forward_host), w.detection, w.state, a.alias AS forlife
+            $sql = "SELECT  w.ip, IF(s.ip IS NULL,
+                                     IF(w.ip = s2.ip, s2.host, s2.forward_host),
+                                     IF(w.ip = s.ip, s.host, s.forward_host)),
+                            w.mask, w.detection, w.state, a.alias AS forlife
                       FROM  ip_watch        AS w
-                 LEFT JOIN  logger.sessions AS s ON (s.ip = w.ip OR s.forward_ip = w.ip)
-                 LEFT JOIN  aliases         AS a ON (a.id = s.uid AND a.type = 'a_vie')
+                 LEFT JOIN  logger.sessions AS s  ON (s.ip = w.ip)
+                 LEFT JOIN  logger.sessions AS s2 ON (s2.forward_ip = w.ip)
+                 LEFT JOIN  aliases         AS a  ON (a.id = s.uid AND a.type = 'a_vie')
                   GROUP BY  w.ip, a.alias
                   ORDER BY  w.state, w.ip, a.alias";
             $it = Xdb::iterRow($sql);
 
             $table = array();
             $props = array();
-            while (list($ip, $host, $date, $state, $forlife) = $it->next()) {
+            while (list($ip, $host, $mask, $date, $state, $forlife) = $it->next()) {
+                $ip = uint_to_ip($ip);
+                $mask = uint_to_ip($mask);
                 if (count($props) == 0 || $props['ip'] != $ip) {
                     if (count($props) > 0) {
                         $table[] = $props;
                     }
                     $props = array('ip'        => $ip,
+                                   'mask'      => $mask,
                                    'host'      => $host,
                                    'detection' => $date,
                                    'state'     => $state,
@@ -1089,7 +1162,7 @@ class AdminModule extends PLModule
             }
             $page->assign('table', $table);
         } elseif ($action == 'edit') {
-            $sql = "SELECT  w.detection, w.state, w.last, w.description,
+            $sql = "SELECT  w.detection, w.state, w.last, w.description, w.mask,
                             a1.alias AS edit, a2.alias AS forlife, s.host
                       FROM  ip_watch        AS w
                  LEFT JOIN  aliases         AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
@@ -1098,12 +1171,13 @@ class AdminModule extends PLModule
                      WHERE  w.ip = {?}
                   GROUP BY  a2.alias
                   ORDER BY  a2.alias";
-            $it = Xdb::iterRow($sql, $ip);
+            $it = Xdb::iterRow($sql, ip_to_uint($ip));
 
             $props = array();
-            while (list($detection, $state, $last, $description, $edit, $forlife, $host) = $it->next()) {
+            while (list($detection, $state, $last, $description, $mask, $edit, $forlife, $host) = $it->next()) {
                 if (count($props) == 0) {
                     $props = array('ip'          => $ip,
+                                   'mask'        => uint_to_ip($mask),
                                    'host'        => $host,
                                    'detection'   => $detection,
                                    'state'       => $state,

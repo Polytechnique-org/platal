@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -24,10 +24,12 @@ global $globals, $platal, $page;
 
 if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
 
-    $platal = new Platal('auth', 'banana', 'carnet', 'email', 'events',
+    $platal = new Platal('auth', 'carnet', 'email', 'events', 'forums',
                          'geoloc', 'lists', 'marketing', 'payment', 'platal',
                          'profile', 'register', 'search', 'stats', 'admin',
-                         'newsletter', 'axletter', 'bandeau', 'survey', 'fusionax');
+                         'newsletter', 'axletter', 'bandeau', 'survey',
+                         'fusionax',
+                         'gadgets', 'googleapps');
     $platal->run();
 
     exit;

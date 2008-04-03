@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -22,7 +22,7 @@
 
 
 <p>
-Trier par :
+Trier par&nbsp;:
 {if ($order eq 'nom') and not($smarty.request.inv)}
 [<a href='carnet/contacts?order=nom&amp;trombi={$smarty.request.trombi}&amp;inv=1'><strong>nom <img src='images/dn.png' alt='decr.' /></strong></a>]
 {else}

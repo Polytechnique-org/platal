@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -44,7 +44,7 @@
 <tr class="impair">
   <td colspan="{$t->nbfields}">
     <strong>
-      Nouvelles entrées : <a href="{$t->pl}/new">Manuellement</a> &bull; <a href="{$t->pl}/massadd">Depuis un CSV</a>
+      Nouvelles entrées&nbsp;: <a href="{$t->pl}/new">Manuellement</a> &bull; <a href="{$t->pl}/massadd">Depuis un CSV</a>
     </strong>
   </td>
   <td class="right">
@@ -64,6 +64,8 @@
       <span class="smaller">{$myrow.$myfield|date_format:"%x %X"}</span>
     {elseif $myval.Type eq 'checkbox'}
       <input type="checkbox" disabled="disabled"{if $myrow.$myfield} checked="checked"{/if}/>
+    {elseif $myval.Type eq 'ip_address'}
+      {$myrow.$myfield|uint_to_ip}
     {else}
       {$myrow.$myfield}
     {/if}

@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -72,7 +72,7 @@
     <tr>
       <td class="titre">Sous-Secteur d'activité</td>
       <td id="{$jobid}_ss_secteur">
-        <input type="hidden" name="{$jobpref}[ss_secteur]" value="{$job.ss_secteur|default='-1'}" />
+        <input type="hidden" name="{$jobpref}[ss_secteur]" value="{$job.ss_secteur|default:'-1'}" />
       </td> 
     </tr>
     <tr>

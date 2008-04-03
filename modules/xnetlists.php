@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -164,27 +164,15 @@ class XnetListsModule extends ListsModule
                         ."<a href='mailto:support@m4x.org'>support@m4x.org</a>");
             return;
         }
-        XDB::execute('INSERT INTO x4dat.virtual (alias,type)
-                                VALUES({?},{?})', $liste.'@'.$dom, 'list');
-        XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', XDB::insertId(),
-                               "$red+post@listes.polytechnique.org");
-        XDB::execute('INSERT INTO x4dat.virtual (alias,type)
-                                VALUES({?},{?})', $liste.'-owner@'.$dom, 'list');
-        XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', XDB::insertId(),
-                               "$red+owner@listes.polytechnique.org");
-        XDB::execute('INSERT INTO x4dat.virtual (alias,type)
-                                VALUES({?},{?})', $liste.'-admin@'.$dom, 'list');
-        XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', XDB::insertId(),
-                               "$red+admin@listes.polytechnique.org");
-        XDB::execute('INSERT INTO x4dat.virtual (alias,type)
-                                VALUES({?},{?})', $liste.'-bounces@'.$dom, 'list');
-        XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', XDB::insertId(),
-                                "$red+bounces@listes.polytechnique.org");
-
+        foreach (array('', 'owner', 'admin', 'bounces', 'unsubscribe') as $app) {
+            $mdir = $app == '' ? '+post' : '+' . $app;
+            $app  = '-' . $app;
+            XDB::execute('INSERT INTO x4dat.virtual (alias,type)
+                                    VALUES({?},{?})', $liste. $app . '@'.$dom, 'list');
+            XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
+                                    VALUES ({?}, {?})', XDB::insertId(),
+                                   $red . $mdir . '@listes.polytechnique.org');
+        }
         pl_redirect('lists/admin/'.$liste);
     }
 
@@ -288,24 +276,22 @@ class XnetListsModule extends ListsModule
         }
 
         global $globals;
-        $res = XDB::iterator(
-                "SELECT  redirect,
-                         IF(u.nom IS NOT NULL, IF(u.nom_usage<>'', u.nom_usage, u.nom), m.nom) AS nom,
-                         IF(u.prenom IS NOT NULL, u.prenom, m.prenom) AS prenom,
-                         IF(u.promo IS NOT NULL, u.promo, 'extérieur') AS promo,
-                         IF(m2.perms, m2.perms = 'admin', m.perms = 'admin') AS admin,
-                         a.alias
-                   FROM  x4dat.virtual_redirect AS vr
-             INNER JOIN  x4dat.virtual          AS v  USING(vid)
-              LEFT JOIN  x4dat.aliases          AS a  ON(vr.redirect = CONCAT(a.alias, '@', {?})
-                                                        OR vr.redirect = CONCAT(a.alias, '@', {?}))
-              LEFT JOIN  x4dat.auth_user_md5    AS u  ON(a.id = u.user_id)
-              LEFT JOIN  groupex.membres        AS m2 ON(u.user_id = m2.uid AND m2.asso_id = {?})
-              LEFT JOIN  groupex.membres        AS m  ON(m.email = vr.redirect AND m.asso_id = {?})
-                  WHERE  v.alias={?}
-               ORDER BY  redirect",
-               $globals->mail->domain, $globals->mail->domain2,
-               $globals->asso('id'), $globals->asso('id'), $lfull);
+        $res = XDB::iterator("SELECT  IF(r.login IS NULL, m.nom, IF(u.nom_usage != '', u.nom_usage, u.nom)) AS nom,
+                                      IF(r.login IS NULL, m.prenom, u.prenom) AS prenom,
+                                      IF(r.login IS NULL, 'extérieur', u.promo) AS promo,
+                                      m.perms = 'admin' AS admin, r.redirect, r.login AS alias
+                                FROM  (SELECT  redirect AS redirect,
+                                               IF(SUBSTRING_INDEX(redirect, '@', -1) IN ({?}, {?}),
+                                                  SUBSTRING_INDEX(redirect, '@', 1), NULL) AS login
+                                         FROM  x4dat.virtual_redirect AS vr
+                                   INNER JOIN  x4dat.virtual          AS v  USING(vid)
+                                        WHERE  v.alias = {?}
+                                     ORDER BY  redirect) AS r
+                           LEFT JOIN  aliases AS a ON (r.login IS NOT NULL AND r.login = a.alias)
+                           LEFT JOIN  auth_user_md5 AS u ON (u.user_id = a.id)
+                           LEFT JOIN groupex.membres AS m ON (m.asso_id = {?} AND IF(r.login IS NULL, m.email = r.redirect, m.uid = u.user_id))",
+                $globals->mail->domain, $globals->mail->domain2,
+                $lfull, $globals->asso('id'));
         $page->assign('mem', $res);
     }
 

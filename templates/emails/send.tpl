@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -261,7 +261,7 @@
     </div>
     <div id="preview">
       <div id="preview_pv" style="display: none">
-        <strong>Aperçu du mail :</strong>
+        <strong>Aperçu du mail&nbsp;:</strong>
         <div id="mail_preview">
         </div>
         <div class="center">

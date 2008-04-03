@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -22,7 +22,7 @@
 
 {if $valid->m_relance neq '0000-00-00' && $valid->m_relance neq ''}
   <tr class="pair">
-    <td class="titre">Dernière relance le :</td>
+    <td class="titre">Dernière relance le&nbsp;:</td>
     <td>{$valid->m_relance|date_format}</td>
   </tr>
 {/if}

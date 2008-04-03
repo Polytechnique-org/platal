@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -46,7 +46,7 @@
     {if !$smarty.request.login && !$mr.forlife}
     <tr class="pair">
       <td class="center">
-        Il est possible d'entrer ici n'importe quelle adresse mail : redirection, melix, ou alias.
+        Il est possible d'entrer ici n'importe quelle adresse mail&nbsp;: redirection, melix, ou alias.
       </td>
     </tr>
     {/if}
@@ -70,7 +70,7 @@
 {if $mr}
 
 <p class="smaller">
-Derniére connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
+Dernière connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
 depuis <strong>{$host}</strong>
 </p>
 
@@ -103,6 +103,15 @@ function clean_fwd(fwd) {
   document.forms.fwds.clean_fwd.value = fwd;
   document.forms.fwds.submit();
 }
+function ban_write()
+{
+    document.forms.bans.write_perm.value = "!xorg.*";
+}
+function ban_read()
+{
+    document.forms.bans.read_perm.value = "!xorg.*";
+}
+
 // ]]>
 </script>
 {/literal}
@@ -188,7 +197,7 @@ function clean_fwd(fwd) {
       <td>
         <input type="text" name="naissanceN" size="12" maxlength="10" value="{$mr.naissance}" />
         {if $mr.naissance_ini neq '0000-00-00' && $mr.naissance neq $mr.naissance_ini}
-          <span class="erreur smaller">({icon name=error}Date de naissance connue : {$mr.naissance_ini})</span>
+          <span class="erreur smaller">({icon name=error}Date de naissance connue&nbsp;: {$mr.naissance_ini})</span>
         {elseif $mr.naiss_err}
           <span class="erreur smaller">({icon name=error}Date de naissance incohérente)</span>
         {/if}
@@ -211,7 +220,7 @@ function clean_fwd(fwd) {
         <input type="text" name="promoN" size="4" maxlength="4" value="{$mr.promo}" />
       </td>
     </tr>
-    <tr class "impair">
+    <tr class="impair">
       <td class="titre">
         Surveillance
       </td>
@@ -307,9 +316,53 @@ Pour ceci changer ses permissions en 'disabled'.
   </table>
 </form>
 
-<p>
-<strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
-</p>
+<p><strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong></p>
+
+<form id="bans" method="post" action="admin/user">
+  <table cellspacing="0" cellpadding="2" class="tinybicol">
+    <tr>
+      <th colspan="4">
+        Permissions sur les forums
+      </th>
+    </tr>
+    <tr class="impair">
+      <td class="titre">
+        Poster
+      </td>
+      <td>
+        <input type="text" name="write_perm" size="32" maxlength="255" value="{$bans.write_perm}" />
+      </td>
+      <td class="action">
+        <a href="javascript:ban_write()">Bannir</a>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
+        Lire
+      </td>
+      <td>
+        <input type="text" name="read_perm" size="32" maxlength="255" value="{$bans.read_perm}" />
+      </td>
+      <td class="action">
+        <a href="javascript:ban_read()">Bannir</a>
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">
+        Commentaire
+      </td>
+      <td colspan="2">
+        <input type="text" name="comment" size="40" maxlength="255" value="{$bans.comment}" />
+      </td>
+    </tr>
+    <tr class="center">
+      <td colspan="3">
+        <input type="hidden" name="user_id" value="{$mr.user_id}" />
+        <input type="submit" name="b_edit" value="Modifier" />
+      </td>
+    </tr>
+  </table>
+</form>
 
 {javascript name="ajax"}
 {test_email forlife=$mr.forlife}
@@ -321,14 +374,14 @@ Pour ceci changer ses permissions en 'disabled'.
         Redirections
       </th>
     </tr>
-    {assign var=actives value=false} 
-    {assign var=disabled value=false} 
+    {assign var=actives value=false}
+    {assign var=disabled value=false}
     {foreach item=mail from=$emails}
     {cycle assign=class values="impair,pair"}
     <tr class="{$class}">
-      {if $mail->active}
+      {if $mail->active && $mail->has_disable()}
         {assign var=actives value=true}
-      {elseif $mail->disabled}
+      {elseif $mail->disabled && $mail->has_disable()}
         {assign var=disabled value=true}
       {/if}
       <td class="titre">
@@ -345,18 +398,20 @@ Pour ceci changer ses permissions en 'disabled'.
       </td>
       <td>
         {if $mail->broken}<span style="color: #f00">{/if}
-        {$mail->email}
+        {$mail->display_email}
         {if $mail->broken}<em> (en panne)</em></span>{/if}
       </td>
       <td class="action">
+        {if $mail->is_removable()}
         <a href="javascript:del_fwd('{$mail->email}')">delete</a>
+        {/if}
       </td>
     </tr>
     {if $mail->panne && $mail->panne neq "0000-00-00"}
     <tr class="{$class}">
       <td colspan="3" class="smaller" style="color: #f00">
         {icon name=error title="Panne"}
-        Panne de {$mail->email} le {$mail->panne|date_format}
+        Panne de {$mail->display_email} le {$mail->panne|date_format}
         {if $mail->panne neq $mail->last}confirmée le {$mail->last|date_format}{/if}
       </td>
       <td class="action">

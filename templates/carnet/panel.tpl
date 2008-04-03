@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -39,19 +39,23 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
 
 <div class="right">
 {if $smarty.session.core_rss_hash}
-<a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
+<a href="carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml" title="Notifications">{icon name=feed title='fil rss'}</a>
 {/if}
 </div>
 
 {foreach from=$notifs->_data item=c key=cid}
 <h2>{if ($c|@count) > 1}
-{$notifs->_cats[$cid].mail} :
+{$notifs->_cats[$cid].mail}&nbsp;:
 {else}
   {foreach from=$c item=promo}
     {if ($promo|@count) > 1}
-      {$notifs->_cats[$cid].mail} :
+      {$notifs->_cats[$cid].mail}&nbsp;:
     {else}
-      {$notifs->_cats[$cid].mail_sg} :
+      {if $promo[0].sexe}
+        {$notifs->_cats[$cid].mail_sg_xette}&nbsp;:
+      {else}
+        {$notifs->_cats[$cid].mail_sg}&nbsp;:
+      {/if}
     {/if}
   {/foreach}
 {/if}</h2>
@@ -80,7 +84,7 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
       {$promo[row].date|date_format}
     </td>
     {if $promo[row].data}
-    <tr><td>{$promo[row].data|smarty:nodefaults}</td></tr>
+    </tr><tr><td>{$promo[row].data|smarty:nodefaults}</td>
     {/if}
   </tr>
   {/section}

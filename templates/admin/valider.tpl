@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -15,13 +15,22 @@
 {*                                                                        *}
 {*  You should have received a copy of the GNU General Public License     *}
 {*  along with this program; if not, write to the Free Software           *}
-{*  Foundation, Inc.,                                                     *}
+
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
 
+{javascript name="jquery"}
+<script type="text/javascript">//<![CDATA[
+{literal}
+function toggleField(name, id, obj) {
+  $("#" + name + "_" + id).toggle();
+}
+{/literal}
+//]]></script>
+
 <h1>Validation</h1>
- 
+
 
 {if $vit->total()}
 
@@ -51,28 +60,41 @@
   </tr>
   {include file=$valid->formu()}
   {if $valid->editor()}
-  <tr>
+  <tr onclick="toggleField('edit', '{$valid->id()}')" style="cursor: pointer">
+    <th colspan="2">
+      {if $preview_id neq $valid->id()}
+      <div style="float: left">
+        {icon name="add"}
+      </div>
+      {/if}
+      Éditer
+    </th>
+  </tr>
+  <tr {if $preview_id neq $valid->id()}style="display: none"{/if} id="edit_{$valid->id()}">
     <td colspan="2" class="center">
-      {if $preview_id == $valid->id()}
-      <form enctype="multipart/form-data" action="{$platal->pl_self()}#valid{$valid->id()}" method="post">
+      <form enctype="multipart/form-data" action="{$platal->pl_self(0)}/edit/{$valid->id()}#valid{$valid->id()}" method="post">
         <div>
           {include file=$valid->editor()}
           <input type="hidden" name="uid"    value="{$valid->uid}" />
           <input type="hidden" name="type"   value="{$valid->type}" />
           <input type="hidden" name="stamp"  value="{$valid->stamp}" />
           <br />
-          <input type="submit" name="edit"   value="Editer" />
+          <input type="submit" name="edit"   value="Éditer" />
         </div>
       </form>
-      {else}
-      <span class="smaller">
-        <a href="admin/validate/edit/{$valid->id()}#valid{$valid->id()}">{icon name=page_edit}Editer cette demande avant validation</a>
-      </span>
-      {/if}
     </td>
   </tr>
   {/if}
-  <tr><th colspan='2'>Commentaires</th></tr>
+  <tr onclick="toggleField('comment', '{$valid->id()}')" style="cursor: pointer">
+    <th colspan='2'>
+      {if $valid->comments|@count eq 0}
+      <div style="float: left">
+        {icon name="add"}
+      </div>
+      {/if}
+      Commentaires
+    </th>
+  </tr>
   {foreach from=$valid->comments item=c}
   <tr class="{cycle values="impair,pair"}">
     <td class="titre">
@@ -81,7 +103,7 @@
     <td>{$c[1]|nl2br}</td>
   </tr>
   {/foreach}
-  <tr>
+  <tr {if $valid->comments|@count eq 0}style="display: none"{/if} id="comment_{$valid->id()}">
     <td colspan='2' class='center'>
       <form action="admin/validate" method="post">
         <div>
@@ -96,22 +118,31 @@
       </form>
     </td>
   </tr>
-  <tr><th colspan='2'>Réponse</th></tr>
+  <tr>
+    <th colspan='2'>
+      {if $preview_id neq $valid->id()}
+      <div style="float: left">
+        {icon name="null"}
+      </div>
+      {/if}
+      Réponse
+    </th>
+  </tr>
   <tr>
     <td colspan='2' {popup caption="Règles de validation" text=$valid->ruleText()}>
       <form action="admin/validate" method="post">
         <div>
-          Réponse préremplie :
+          Réponse préremplie&nbsp;:
           <select onchange="this.form.comm.value=this.value">
             <option value=""></option>
             {foreach from=$valid->answers() item=automatic_answer}
               <option value="{$automatic_answer.answer}">{$automatic_answer.title}</option>
             {/foreach}
           </select>
-          <a href="admin/validate/answers">{icon name="page_edit" title="Editer les réponses automatiques"}</a>
+          <a href="admin/validate/answers">{icon name="page_edit" title="Éditer les réponses automatiques"}</a>
         </div>
         <div class='center'>
-          Ajouté dans l'email :<br />
+          Ajouté dans l'email&nbsp;:<br />
           <textarea rows="5" cols="50" name="comm"></textarea><br />
 
           <input type="hidden" name="uid"    value="{$valid->uid}" />
@@ -141,7 +172,7 @@
 {/if}
 
 <p>
-  Afficher seulement les validation suivantes :
+  Afficher seulement les validation suivantes&nbsp;:
 </p>
 
 <form action="admin/validate" method="post">

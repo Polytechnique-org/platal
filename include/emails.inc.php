@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -27,13 +27,18 @@ define("ERROR_INVALID_EMAIL", 3);
 define("ERROR_LOOP_EMAIL", 4);
 
 // function fix_bestalias() {{{1
-
+// Checks for an existing 'bestalias' among the the current user's aliases, and
+// eventually selects a new bestalias when required.
 function fix_bestalias($uid)
 {
-    $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE id={?} AND FIND_IN_SET('bestalias',flags) AND type!='homonyme'", $uid);
-    if ($n = $res->fetchOneCell()) {
+    $res = XDB::query("SELECT  COUNT(*)
+                         FROM  aliases
+                        WHERE  id = {?} AND FIND_IN_SET('bestalias', flags) AND type != 'homonyme'",
+                      $uid);
+    if ($res->fetchOneCell()) {
         return;
     }
+
     XDB::execute("UPDATE  aliases
                      SET  flags=CONCAT(flags,',','bestalias')
                    WHERE  id={?} AND type!='homonyme'
@@ -42,7 +47,9 @@ function fix_bestalias($uid)
 }
 
 // function valide_email() {{{1
-
+// Returns a cleaned-up version of the @p email string. It removes garbage
+// characters, and determines the canonical form (without _ and +) for
+// Polytechnique.org email addresses.
 function valide_email($str)
 {
     global $globals;
@@ -59,11 +66,12 @@ function valide_email($str)
 }
 
 // class Bogo {{{1
-
+// The Bogo class represents a spam filtering level in plat/al architecture.
 class Bogo
 {
     // properties {{{2
 
+    private $uid;
     private $state;
     private $_states = Array('let_spams', 'tag_spams', 'tag_and_drop_spams', 'drop_spams');
 
@@ -74,6 +82,8 @@ class Bogo
         if (!$uid) {
             return;
         }
+
+        $this->uid = $uid;
         $res = XDB::query('SELECT email FROM emails WHERE uid={?} AND flags="filter"', $uid);
         if ($res->numRows()) {
             $this->state = $res->fetchOneCell();
@@ -86,11 +96,11 @@ class Bogo
 
     // public function change() {{{2
 
-    public function change($uid, $state)
+    public function change($state)
     {
         $this->state = is_int($state) ? $this->_states[$state] : $state;
         XDB::execute('UPDATE emails SET email={?} WHERE uid={?} AND flags = "filter"',
-            $this->state, $uid);
+                     $this->state, $this->uid);
     }
 
     // pubic function level() {{{2
@@ -102,25 +112,66 @@ class Bogo
 }
 
 // class Email {{{1
-
-class Email
+// Represents an "email address" used as final recipient for plat/al-managed
+// addresses; it can be subclasses a Redirection emails (third-party) or as
+// Storage emails (Polytechnique.org).
+abstract class Email
 {
-    // properties {{{2
+    protected $uid;
 
+    // Basic email properties; $sufficient indicates if the email can be used as
+    // an unique redirection; $email contains the delivery email address.
+    public $type;
+    public $sufficient;
     public $email;
+    public $display_email;
+
+    // Redirection status properties.
     public $active;
     public $broken;
     public $disabled;
     public $rewrite;
+
+    // Redirection bounces stats.
     public $panne;
     public $last;
     public $panne_level;
 
+    // Activates the email address as a redirection.
+    public abstract function activate();
+
+    // Deactivates the email address as a redirection.
+    public abstract function deactivate();
+
+    // Sets the rewrite rule for the given address.
+    public abstract function set_rewrite($rewrite);
+
+    // Resets the error counts associated with the redirection.
+    public abstract function clean_errors();
+
+    // Email backend capabilities ('rewrite' refers to From: rewrite for mails
+    // forwarded by Polytechnique.org's MXs; 'removable' indicates if the email
+    // can be definitively removed; 'disable' indicates if the email has a third
+    // status 'disabled' in addition to 'active' and 'inactive').
+    public abstract function has_rewrite();
+    public abstract function is_removable();
+    public abstract function has_disable();
+}
+
+// class EmailRedirection {{{1
+// Implementation of Email for third-party redirection (redirection of emails to
+// external user-supplied addresses).
+class EmailRedirection extends Email
+{
     // constructor {{{2
 
-    public function __construct($row)
+    public function __construct($uid, $row)
     {
+        $this->uid = $uid;
+        $this->sufficient = true;
+
         list($this->email, $flags, $this->rewrite, $this->panne, $this->last, $this->panne_level) = $row;
+        $this->display_email = $this->email;
         $this->active   = ($flags == 'active');
         $this->broken   = ($flags == 'panne');
         $this->disabled = ($flags == 'disable');
@@ -128,14 +179,14 @@ class Email
 
     // public function activate() {{{2
 
-    public function activate($uid)
+    public function activate()
     {
         if (!$this->active) {
             XDB::execute("UPDATE  emails
                              SET  panne_level = IF(flags = 'panne', panne_level - 1, panne_level),
                                   flags = 'active'
-                           WHERE  uid={?} AND email={?}", $uid, $this->email);
-            $_SESSION['log']->log("email_on", $this->email.($uid!=S::v('uid') ? "(admin on $uid)" : ""));
+                           WHERE  uid={?} AND email={?}", $this->uid, $this->email);
+            $_SESSION['log']->log("email_on", $this->email.($this->uid!=S::v('uid') ? "(admin on {$this->uid})" : ""));
             $this->active = true;
             $this->broken = false;
         }
@@ -143,34 +194,34 @@ class Email
 
     // public function deactivate() {{{2
 
-    public function deactivate($uid)
+    public function deactivate()
     {
         if ($this->active) {
             XDB::execute("UPDATE  emails SET flags =''
-                           WHERE  uid={?} AND email={?}", $uid, $this->email);
-            $_SESSION['log']->log("email_off",$this->email.($uid!=S::v('uid') ? "(admin on $uid)" : "") );
+                           WHERE  uid={?} AND email={?}", $this->uid, $this->email);
+            $_SESSION['log']->log("email_off",$this->email.($this->uid != S::v('uid') ? "(admin on {$this->uid})" : "") );
             $this->active = false;
         }
     }
 
-    // public function rewrite() {{{2
+    // public function set_rewrite() {{{2
 
-    public function rewrite($rew, $uid)
+    public function set_rewrite($rewrite)
     {
-        if ($this->rewrite == $rew) {
+        if ($this->rewrite == $rewrite) {
             return;
         }
-        if (!$rew || !isvalid_email($rew)) {
-            $rew = '';
+        if (!$rewrite || !isvalid_email($rewrite)) {
+            $rewrite = '';
         }
-        XDB::execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rew, $uid, $this->email);
-        $this->rewrite = $rew;
+        XDB::execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rewrite, $this->uid, $this->email);
+        $this->rewrite = $rewrite;
         return;
     }
 
-    // function cleanErrors() {{{2
+    // public function clean_errors() {{{2
 
-    public function cleanErrors($uid)
+    public function clean_errors()
     {
         if (!S::has_perms()) {
             return false;
@@ -181,12 +232,133 @@ class Email
         return XDB::execute("UPDATE  emails
                                 SET  panne_level = 0, panne = 0, last = 0
                               WHERE  uid = {?} AND email = {?}",
-                            $uid, $this->email);
+                            $this->uid, $this->email);
+    }
+
+    // public function has_rewrite() {{{2
+
+    public function has_rewrite()
+    {
+        return true;
+    }
+
+    // public function is_removable() {{{2
+
+    public function is_removable()
+    {
+        return true;
+    }
+
+    // public function has_disable() {{{2
+
+    public function has_disable()
+    {
+        return true;
     }
 }
 
-// class Redirect {{{1
+// class EmailStorage {{{1
+// Implementation of Email for email storage backends from Polytechnique.org.
+class EmailStorage extends Email
+{
+    // Shortname to realname mapping for known mail storage backends.
+    private $display_names = array(
+        'imap'       => 'Accès de secours aux emails (IMAP)',
+        'googleapps' => 'Compte GMail / Google Apps',
+    );
 
+    // Retrieves the current list of actives storages.
+    private function get_storages()
+    {
+        $res = XDB::query("SELECT  mail_storage
+                             FROM  auth_user_md5
+                            WHERE  user_id = {?}", $this->uid);
+        return new FlagSet($res->fetchOneCell());
+    }
+
+    // Updates the list of active storages.
+    private function set_storages($storages)
+    {
+        XDB::execute("UPDATE  auth_user_md5
+                         SET  mail_storage = {?}
+                       WHERE  user_id = {?}", $storages->flags(), $this->uid);
+    }
+
+    // Returns the list of allowed storages for the @p user.
+    static public function get_allowed_storages($uid)
+    {
+        global $globals;
+        $storages = array();
+
+        // Google Apps storage is available for users with valid Google Apps account.
+        require_once 'googleapps.inc.php';
+        if ($globals->mailstorage->googleapps_domain &&
+            GoogleAppsAccount::account_status($uid) == 'active') {
+            $storages[] = 'googleapps';
+        }
+
+        // IMAP storage is always visible to administrators, and is allowed for
+        // everyone when the service is marked as 'active'.
+        if ($globals->mailstorage->imap_active || S::has_perms()) {
+            $storages[] = 'imap';
+        }
+
+        return $storages;
+    }
+
+
+    public function __construct($uid, $name)
+    {
+        $this->uid = $uid;
+        $this->email = $name;
+        $this->display_email = (isset($this->display_names[$name]) ? $this->display_names[$name] : $name);
+
+        $storages = $this->get_storages();
+        $this->sufficient = ($name == 'googleapps');
+        $this->active = $storages->hasFlag($name);
+        $this->broken = false;
+        $this->disabled = false;
+        $this->rewrite = '';
+        $this->panne = $this->last = $this->panne_level = 0;
+    }
+
+    public function activate()
+    {
+        if (!$this->active) {
+            $storages = $this->get_storages();
+            $storages->addFlag($this->email);
+            $this->set_storages($storages);
+            $this->active = true;
+        }
+    }
+
+    public function deactivate()
+    {
+        if ($this->active) {
+            $storages = $this->get_storages();
+            $storages->rmFlag($this->email);
+            $this->set_storages($storages);
+            $this->active = false;
+        }
+
+    }
+
+    // Source rewrite can't be enabled for email storage addresses.
+    public function set_rewrite($rewrite) {}
+
+    // Email storage are not supposed to be broken, hence not supposed to be
+    // cleaned-up.
+    public function clean_errors() {}
+
+    // Capabilities.
+    public function has_rewrite() { return false; }
+    public function is_removable() { return false; }
+    public function has_disable() { return false; }
+}
+
+// class Redirect {{{1
+// Redirect is a placeholder class for an user's active redirections (third-party
+// redirection email, or Polytechnique.org mail storages).
 class Redirect
 {
     // properties {{{2
@@ -201,15 +373,22 @@ class Redirect
 
     public function __construct($_uid)
     {
-        $this->uid=$_uid;
+        $this->uid = $_uid;
+        $this->bogo = new Bogo($_uid);
+
+        // Adds third-party email redirections.
         $res = XDB::iterRow("SELECT  email, flags, rewrite, panne, last, panne_level
                                FROM  emails
                               WHERE  uid = {?} AND flags != 'filter'", $_uid);
-        $this->emails=Array();
+        $this->emails = Array();
         while ($row = $res->next()) {
-            $this->emails[] = new Email($row);
+            $this->emails[] = new EmailRedirection($_uid, $row);
         }
-        $this->bogo = new Bogo($_uid);
+
+        // Adds local email storage backends.
+        foreach (EmailStorage::get_allowed_storages($_uid) as $storage) {
+            $this->emails[] = new EmailStorage($_uid, $storage);
+        }
     }
 
     // public function other_active() {{{2
@@ -217,7 +396,7 @@ class Redirect
     public function other_active($email)
     {
         foreach ($this->emails as $mail) {
-            if ($mail->email!=$email && $mail->active) {
+            if ($mail->email != $email && $mail->active && $mail->sufficient) {
                 return true;
             }
         }
@@ -233,8 +412,8 @@ class Redirect
         }
         XDB::execute('DELETE FROM emails WHERE uid={?} AND email={?}', $this->uid, $email);
         $_SESSION['log']->log('email_del',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
-        foreach ($this->emails as $i=>$mail) {
-            if ($email==$mail->email) {
+        foreach ($this->emails as $i => $mail) {
+            if ($email == $mail->email) {
                 unset($this->emails[$i]);
             }
         }
@@ -262,7 +441,7 @@ class Redirect
                 return SUCCESS;
             }
         }
-        $this->emails[] = new Email(array($email, 'active', '', '0000-00-00', '0000-00-00', 0));
+        $this->emails[] = new EmailRedirection($this->uid, array($email, 'active', '', '0000-00-00', '0000-00-00', 0));
 
         // security stuff
         check_email($email, "Ajout d'une adresse surveillée aux redirections de " . $this->uid);
@@ -276,11 +455,11 @@ class Redirect
     {
         foreach ($this->emails as &$mail) {
             if (in_array($mail->email, $emails_actifs)) {
-                $mail->activate($this->uid);
+                $mail->activate();
             } else {
-                $mail->deactivate($this->uid);
+                $mail->deactivate();
             }
-            $mail->rewrite($emails_rewrite[$mail->email], $this->uid);
+            $mail->set_rewrite($emails_rewrite[$mail->email]);
         }
         check_redirect($this);
     }
@@ -295,15 +474,15 @@ class Redirect
             if ($mail->email == $email) {
                 $thisone = $i;
             }
-            $allinactive &= !$mail->active || $mail->email == $email;
+            $allinactive &= !$mail->active || !$mail->sufficient || $mail->email == $email;
         }
         if ($thisone === false) {
             return ERROR_INVALID_EMAIL;
         }
         if ($allinactive || $activate) {
-            $this->emails[$thisone]->activate($this->uid);
+            $this->emails[$thisone]->activate();
         } else {
-            $this->emails[$thisone]->deactivate($this->uid);
+            $this->emails[$thisone]->deactivate();
         }
         check_redirect($this);
         if ($allinactive && !$activate) {
@@ -319,21 +498,21 @@ class Redirect
     {
         foreach ($this->emails as &$mail) {
             if ($mail->email == $email) {
-                $mail->rewrite($redirect, $this->uid);
+                $mail->set_rewrite($redirect);
                 check_redirect($this);
                 return;
             }
         }
     }
 
-    // function cleanErrors() {{{2
+    // function clean_errors() {{{2
 
-    public function cleanErrors($email)
+    public function clean_errors($email)
     {
         foreach ($this->emails as &$mail) {
             if ($mail->email == $email) {
                 check_redirect($this);
-                return $mail->cleanErrors($this->uid);
+                return $mail->clean_errors();
             }
         }
         return false;
@@ -347,7 +526,7 @@ class Redirect
                          SET  flags = 'disable'
                        WHERE  flags = 'active' AND uid = {?}", $this->uid);
         foreach ($this->emails as &$mail) {
-            if ($mail->active) {
+            if ($mail->active && $mail->has_disable()) {
                 $mail->disabled = true;
                 $mail->active   = false;
             }
@@ -375,7 +554,7 @@ class Redirect
 
     public function get_broken_mx()
     {
-        $res = XDB::query("SELECT  host, text, state
+        $res = XDB::query("SELECT  host, text
                              FROM  mx_watch
                             WHERE  state != 'ok'");
         if (!$res->numRows()) {
@@ -384,30 +563,41 @@ class Redirect
         $mxs = $res->fetchAllAssoc();
         $mails = array();
         foreach ($this->emails as &$mail) {
-            if ($mail->active) {
+            if ($mail->active && strstr($mail->email, '@') !== false) {
                 list(,$domain) = explode('@', $mail->email);
                 getmxrr($domain, $lcl_mxs);
                 if (empty($lcl_mxs)) {
                     $lcl_mxs = array($domain);
                 }
                 $broken = false;
-                $state  = false;
                 foreach ($mxs as &$mx) {
                     foreach ($lcl_mxs as $lcl) {
                         if (fnmatch($mx['host'], $lcl)) {
                             $broken = $mx['text'];
-                            $state  = $mx['state'];
                             break;
                         }
                     }
                     if ($broken) {
-                        $mails[] = array('mail' => $mail->email, 'text' => $broken, 'state' => $state);
+                        $mails[] = array('mail' => $mail->email, 'text' => $broken);
                         break;
                     }
                 }
             }
         }
         return $mails;
+    }
+
+    // function active_emails() {{{2
+
+    public function active_emails()
+    {
+        $emails = array();
+        foreach ($this->emails as $mail) {
+            if ($mail->active) {
+                $emails[] = $mail;
+            }
+        }
+        return $emails;
     }
 }
 

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -89,6 +89,9 @@ class SearchModule extends PLModule
 
         if (Env::has('quick') || $action == 'geoloc') {
             $quick = trim(Env::v('quick'));
+            if (S::logged() && !Env::has('page')) {
+                $_SESSION['log']->log('search', 'quick=' . $quick);
+            }
             $list = 'profile|prf|fiche|fic|referent|ref|mentor';
             if (S::has_perms()) {
                 $list .= '|admin|adm|ax';
@@ -143,9 +146,9 @@ class SearchModule extends PLModule
             if (!S::logged() && $nb_tot > $globals->search->public_max) {
                 new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
             } elseif ($nb_tot > $globals->search->private_max) {
-                new ThrowError('Recherche trop générale');
+                new ThrowError('Recherche trop générale. Une <a href="search/adv">recherche avancée</a> permet de préciser la recherche.');
             } elseif (empty($nb_tot)) {
-                new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
+                new ThrowError('Il n\'existe personne correspondant à ces critères dans la base !');
             }
         } else {
             $page->assign('formulaire',1);
@@ -180,6 +183,9 @@ class SearchModule extends PLModule
                 'school' => array('field' => 'id', 'table' => 'applis_def', 'text' => 'text', 'exact' => false),
                 'city' => array('table' => 'geoloc_city', 'text' => 'name', 'exact' => false)
             );
+            if (!Env::has('page')) {
+                $_SESSION['log']->log('search', 'adv=' . var_export($_GET, true));
+            }
             foreach ($textFields as $field=>&$query) {
                 if (!Env::v($field) && Env::v($field . 'Txt')) {
                     $res = XDB::query("SELECT  {$query['field']}
@@ -195,7 +201,7 @@ class SearchModule extends PLModule
             $view = new SearchSet(false, $action == 'geoloc' && substr($subaction, -3) == 'swf');
             $view->addMod('minifiche', 'Minifiches', true);
             $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
-            $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+            //$view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
             $view->apply('search/adv', $page, $action, $subaction);
 
             if ($subaction) {
@@ -204,7 +210,7 @@ class SearchModule extends PLModule
             $nb_tot = $view->count();
             if ($nb_tot > $globals->search->private_max) {
                 $this->form_prepare();
-                new ThrowError('Recherche trop générale');
+                new ThrowError('Recherche trop générale.');
             }
         }
 

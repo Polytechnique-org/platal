@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -25,10 +25,10 @@
 <h1>:'(</h1>
 
 <p class="erreur">
-Une erreur est survenue lors de ton inscription ...
+Une erreur est survenue lors de ton inscription...
 </p>
 <p>
-Contacte nous au plus vite, en nous indiquant ce nombre : {$uid} sur 
+Contacte nous au plus vite, en nous indiquant ce nombre&nbsp;: {$uid} à l'adresse 
 <a href="mailto:support@{#globals.mail.domain#}">support@{#globals.mail.domain#}</a>
 </p>
 

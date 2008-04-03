@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -104,6 +104,7 @@ class XnetGrpModule extends PLModule
             '%grp/rss'             => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/announce/new'    => $this->make_hook('edit_announce', AUTH_MDP,  'groupadmin'),
             '%grp/announce/edit'   => $this->make_hook('edit_announce', AUTH_MDP,  'groupadmin'),
+            '%grp/announce/photo'  => $this->make_hook('photo_announce', AUTH_PUBLIC),
             '%grp/admin/announces' => $this->make_hook('admin_announce', AUTH_MDP, 'groupadmin'),
         );
     }
@@ -134,7 +135,8 @@ class XnetGrpModule extends PLModule
                             Env::i('unread'), S::i('uid'));
                 pl_redirect("#art" . Env::i('unread'));
             }
-            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife
+            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife,
+                                          FIND_IN_SET('photo', a.flags) AS photo
                                      FROM groupex.announces AS a
                                INNER JOIN auth_user_md5 AS u USING(user_id)
                                INNER JOIN aliases AS l ON (u.user_id = l.id AND l.type = 'a_vie')
@@ -155,7 +157,7 @@ class XnetGrpModule extends PLModule
                                    S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
             $page->assign('article_index', $index);
         } else {
-            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo
+            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, FIND_IN_SET('photo', a.flags) AS photo
                                      FROM groupex.announces AS a
                                INNER JOIN auth_user_md5 AS u USING(user_id)
                                     WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
@@ -165,10 +167,10 @@ class XnetGrpModule extends PLModule
 
         if (!S::has('core_rss_hash')) {
             $page->setRssLink("Polytechnique.net :: {$globals->asso("nom")} :: News publiques",
-                              "rss/rss.xml");
+                              $platal->ns . "rss/rss.xml");
         } else {
             $page->setRssLink("Polytechnique.net :: {$globals->asso("nom")} :: News",
-                              'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
+                              $platal->ns . 'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
         }
 
         $page->assign('articles', $arts);
@@ -207,7 +209,7 @@ class XnetGrpModule extends PLModule
         global $globals;
         $site = $globals->asso('site');
         if (!$site) {
-            $page->trig('Le groupe n\'a pas de site web');
+            $page->trig('Le groupe n\'a pas de site web.');
             return $this->handler_index($page);
         }
         http_redirect($site);
@@ -303,6 +305,7 @@ class XnetGrpModule extends PLModule
             $mbr = array_keys(Env::v('membres', array()));
 
             require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
+            set_time_limit(120);
             $tos = get_all_redirects($mbr,  $mls, $mmlist);
             $upload = PlUpload::get($_FILES['uploaded'], S::v('forlife'), 'xnet.emails', true);
             send_xnet_mails($from, $sujet, $body, Env::v('wiki'), $tos, Post::v('replyto'), $upload, @$_FILES['uploaded']['name']);
@@ -429,7 +432,7 @@ class XnetGrpModule extends PLModule
                            m.perms='admin' AS admin,
                            m.origine='X' AS x,
                            u.perms!='pending' AS inscrit,
-                           m.uid, IF(e.email IS NULL,NULL,1) AS actif
+                           m.uid, IF(e.email IS NULL AND FIND_IN_SET('googleapps', u.mail_storage) = 0, NULL, 1) AS actif
                      FROM  groupex.membres AS m
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
                 LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
@@ -507,10 +510,11 @@ class XnetGrpModule extends PLModule
                              . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
                              . "\n"
                              . "Bien cordialement,\n"
+                             . "-- \n"
                              . "{$_SESSION["prenom"]} {$_SESSION["nom"]}.";
                     $mailer->setTxtBody($message);
                     $mailer->send();
-                    $page->kill("$prenom $nom a bien été inscrit" . ($sexe ? 'e' : ''));
+                    pl_redirect("member/$u");
                 }
                 elseif (Env::has('refuse'))
                 {
@@ -521,7 +525,7 @@ class XnetGrpModule extends PLModule
                     $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
                     $mailer->setTxtBody(Env::v('motif'));
                     $mailer->send();
-                    $page->kill("la demande $prenom $nom a bien été refusée");
+                    $page->kill("La demande de $prenom $nom a bien été refusée.");
                 } else {
                     $page->assign('show_form', true);
                     $page->assign('prenom', $prenom);
@@ -535,7 +539,7 @@ class XnetGrpModule extends PLModule
         }
 
         if (is_member()) {
-            $page->kill("tu es déjà membre !");
+            $page->kill("Tu es déjà membre !");
             return;
         }
 
@@ -685,7 +689,7 @@ class XnetGrpModule extends PLModule
                            WHERE  a.alias={?}', $globals->asso('id'), $forlife);
                 pl_redirect("member/$forlife");
             } else {
-                $page->trig($email." n'est pas un alias polytechnique.org valide");
+                $page->trig($email." n'est pas un alias polytechnique.org valide.");
             }
         } else {
             require_once 'xorg.misc.inc.php';
@@ -719,7 +723,7 @@ class XnetGrpModule extends PLModule
                     pl_redirect("member/$email");
                 }
             } else {
-                $page->trig("« <strong>$email</strong> » n'est pas une adresse mail valide");
+                $page->trig("« <strong>$email</strong> » n'est pas une adresse mail valide.");
             }
         }
     }
@@ -854,10 +858,10 @@ class XnetGrpModule extends PLModule
         if ($res->numRows() == 0) {
             $x = get_not_registered_user($login);
             if (!$x) {
-                $page->trig("Le login $login ne correspond à aucun X");
+                $page->trig("Le login $login ne correspond à aucun X.");
                 return false;
             } else if (count($x) > 1) {
-                $page->trig("Le login $login correspond a plusieurs camarades");
+                $page->trig("Le login $login correspond a plusieurs camarades.");
                 return false;
             }
             $uid = $x[0]['user_id'];
@@ -956,7 +960,7 @@ class XnetGrpModule extends PLModule
                             $perms ? 'admin' : 'membre',
                             $user['uid'], $globals->asso('id'));
                 $user['perms'] = $perms;
-                $page->trig('permissions modifiées');
+                $page->trig('Permissions modifiées !');
             }
 
             // Update ML subscriptions
@@ -965,7 +969,7 @@ class XnetGrpModule extends PLModule
                 if ($ask == $state) {
                     if ($state && $email_changed) {
                         $mmlist->replace_email($ml, $from_email, $user['email2']);
-                        $page->trig("L'abonnement de {$user['prenom']} {$user['nom']} à $ml@ a été mis à jour");
+                        $page->trig("L'abonnement de {$user['prenom']} {$user['nom']} à $ml@ a été mis à jour.");
                     }
                     continue;
                 }
@@ -975,14 +979,14 @@ class XnetGrpModule extends PLModule
                                ."cours sur <strong>$ml@</strong> !!!");
                 } elseif ($ask) {
                     $mmlist->mass_subscribe($ml, Array($user['email2']));
-                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml@");
+                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml@.");
                 } else {
                     if ($email_changed) {
                         $mmlist->mass_unsubscribe($ml, Array($from_email));
                     } else {
                         $mmlist->mass_unsubscribe($ml, Array($user['email2']));
                     }
-                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml@");
+                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml@.");
                 }
             }
 
@@ -994,14 +998,14 @@ class XnetGrpModule extends PLModule
                     XDB::query("INSERT INTO  virtual_redirect (vid,redirect)
                                      SELECT  vid,{?} FROM virtual WHERE alias={?}",
                                $user['email'], $ml);
-                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml");
+                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml.");
                 } else {
                     XDB::query("DELETE FROM  virtual_redirect
                                       USING  virtual_redirect
                                  INNER JOIN  virtual USING(vid)
                                       WHERE  redirect={?} AND alias={?}",
                                $user['email'], $ml);
-                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml");
+                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml.");
                 }
             }
         }
@@ -1027,7 +1031,8 @@ class XnetGrpModule extends PLModule
 
         if ($uid) {
             $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.contacts, a.create_date,
-                                         IF(u2.nom_usage != '', u2.nom_usage, u2.nom) AS nom, u2.prenom, u2.promo
+                                         IF(u2.nom_usage != '', u2.nom_usage, u2.nom) AS nom, u2.prenom, u2.promo,
+                                         FIND_IN_SET('photo', a.flags) AS photo
                                    FROM auth_user_md5 AS u
                              INNER JOIN groupex.announces AS a ON ( (a.promo_min = 0 OR a.promo_min <= u.promo)
                                                                   AND (a.promo_max = 0 OR a.promo_max <= u.promo))
@@ -1046,6 +1051,48 @@ class XnetGrpModule extends PLModule
         $page->assign('rss', $rss);
     }
 
+    private function upload_image(PlatalPage &$page, PlUpload &$upload)
+    {
+        if (@!$_FILES['image']['tmp_name'] && !Env::v('image_url')) {
+            return true;
+        }
+        if (!$upload->upload($_FILES['image'])  && !$upload->download(Env::v('image_url'))) {
+            $page->trig('Impossible de télécharger l\'image');
+            return false;
+        } elseif (!$upload->isType('image')) {
+            $page->trig('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG.');
+            $upload->rm();
+            return false;
+        } elseif (!$upload->resizeImage(200, 300, 100, 100, 32284)) {
+            $page->trig('Impossible de retraiter l\'image');
+            return false;
+        }
+        return true;
+    }
+
+    function handler_photo_announce(&$page, $eid = null) {
+        if ($eid) {
+            $res = XDB::query("SELECT * FROM groupex.announces_photo WHERE eid = {?}", $eid);
+            if ($res->numRows()) {
+                $photo = $res->fetchOneAssoc();
+                header('Content-Type: image/' . $photo['attachmime']);
+                echo $photo['attach'];
+                exit;
+            }
+        } else {
+            $upload = new PlUpload(S::v('forlife'), 'xnetannounce');
+            if ($upload->exists() && $upload->isType('image')) {
+                header('Content-Type: ' . $upload->contentType());
+                echo $upload->getContents();
+                exit;
+            }
+        }
+        global $globals;
+        header('Content-Type: image/png');
+        echo file_get_contents($globals->spoolroot . '/htdocs/images/logo.png');
+        exit;
+    }
+
     function handler_edit_announce(&$page, $aid = null)
     {
         global $globals, $platal;
@@ -1053,7 +1100,8 @@ class XnetGrpModule extends PLModule
         $page->assign('new', is_null($aid));
         $art = array();
 
-        if (Post::v('valid') == 'Visualiser' || Post::v('valid') == 'Enregistrer') {
+        if (Post::v('valid') == 'Visualiser' || Post::v('valid') == 'Enregistrer'
+            || Post::v('valid') == 'Supprimer l\'image' || Post::v('valid') == 'Pas d\'image') {
             if (!is_null($aid)) {
                 $art['id'] = $aid;
             }
@@ -1071,6 +1119,8 @@ class XnetGrpModule extends PLModule
             $art['xorg']       = Post::has('xorg');
             $art['nl']         = Post::has('nl');
             $art['event']      = Post::v('event');
+            $upload     = new PlUpload(S::v('forlife'), 'xnetannounce');
+            $this->upload_image($page, $upload);
 
             $art['contact_html'] = $art['contacts'];
             if ($art['event']) {
@@ -1082,51 +1132,80 @@ class XnetGrpModule extends PLModule
                  ($art['promo_min'] != 0 && ($art['promo_min'] <= 1900 || $art['promo_min'] >= 2020)) ||
                  ($art['promo_max'] != 0 && ($art['promo_max'] <= 1900 || $art['promo_max'] >= 2020))))
             {
-                $page->trig("L'intervalle de promotions est invalide");
+                $page->trig("L'intervalle de promotions est invalide.");
                 Post::kill('valid');
             }
 
             if (!trim($art['titre']) || !trim($art['texte'])) {
-                $page->trig("L'article doit avoir un titre et un contenu");
+                $page->trig("L'article doit avoir un titre et un contenu.");
                 Post::kill('valid');
+            }
+
+            if (Post::v('valid') == 'Supprimer l\'image') {
+                $upload->rm();
+                Post::kill('valid');
+            }
+            $art['photo'] = $upload->exists() || Post::i('photo');
+            if (Post::v('valid') == 'Pas d\'image' && !is_null($aid)) {
+                XDB::query("DELETE FROM groupex.announces_photo WHERE eid = {?}", $aid);
+                $upload->rm();
+                Post::kill('valid');
+                $art['photo'] = false;
             }
         }
 
         if (Post::v('valid') == 'Enregistrer') {
             $promo_min = ($art['public'] ? 0 : $art['promo_min']);
             $promo_max = ($art['public'] ? 0 : $art['promo_max']);
+            $flags = array();
+            if ($art['public']) {
+                $flags[] = 'public';
+            }
+            if ($art['photo']) {
+                $flags[] = 'photo';
+            }
+            $flags = implode(',', $flags);
             if (is_null($aid)) {
                 $fulltext = $art['texte'];
                 if (!empty($art['contact_html'])) {
                     $fulltext .= "\n\n'''Contacts :'''\\\\\n" . $art['contact_html'];
                 }
-                $post = null;
+                $post = null;/*
                 if ($globals->asso('forum')) {
                     require_once 'banana/forum.inc.php';
                     $banana = new ForumsBanana(S::v('forlife'));
                     $post = $banana->post($globals->asso('forum'), null,
                                           $art['titre'], MiniWiki::wikiToText($fulltext, false, 0, 80));
-                }
+                }*/
                 XDB::query("INSERT INTO groupex.announces
                                  (user_id, asso_id, create_date, titre, texte, contacts,
                                    peremption, promo_min, promo_max, flags, post_id)
                             VALUES ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
                            S::i('uid'), $globals->asso('id'), $art['titre'], $art['texte'], $art['contact_html'],
-                           $art['peremption'], $promo_min, $promo_max, $art['public'] ? 'public' : '', $post);
+                           $art['peremption'], $promo_min, $promo_max, $flags, $post);
                 $aid = XDB::insertId();
+                if ($art['photo']) {
+                    list($imgx, $imgy, $imgtype) = $upload->imageInfo();
+                    XDB::execute("INSERT INTO groupex.announces_photo
+                                          SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
+                                 $aid, $imgtype, $imgx, $imgy, $upload->getContents());
+                }
                 if ($art['xorg']) {
                     require_once('validations.inc.php');
                     $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'], $fulltext,
-                                    $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'));
+                                    $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'),
+                                    $upload);
                     $article->submit();
-                    $page->trig("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation");
+                    $page->trig("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation.");
+                } else if ($upload && $upload->exists()) {
+                    $upload->rm();
                 }
                 if ($art['nl']) {
                     require_once('validations.inc.php');
                     $article = new NLReq(S::v('uid'), $globals->asso('nom') . " : " .$art['titre'],
                                          $art['texte'], $art['contact_html']);
                     $article->submit();
-                    $page->trig("La parution dans la Lettre Mensuelle est en attente de validation");
+                    $page->trig("La parution dans la Lettre Mensuelle est en attente de validation.");
                 }
             } else {
                 XDB::query("UPDATE groupex.announces
@@ -1134,8 +1213,15 @@ class XnetGrpModule extends PLModule
                                    promo_min={?}, promo_max={?}, flags={?}
                              WHERE id={?} AND asso_id={?}",
                            $art['titre'], $art['texte'], $art['contacts'], $art['peremption'],
-                           $promo_min, $promo_max,  $art['public'] ? 'public' : '',
+                           $promo_min, $promo_max,  $flags,
                            $art['id'], $globals->asso('id'));
+                if ($art['photo'] && $upload->exists()) {
+                    list($imgx, $imgy, $imgtype) = $upload->imageInfo();
+                    XDB::execute("REPLACE INTO groupex.announces_photo
+                                          SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
+                                 $aid, $imgtype, $imgx, $imgy, $upload->getContents());
+                    $upload->rm();
+                }
             }
         }
         if (Post::v('valid') == 'Enregistrer' || Post::v('valid') == 'Annuler') {
@@ -1144,7 +1230,8 @@ class XnetGrpModule extends PLModule
 
         if (empty($art) && !is_null($aid)) {
             $res = XDB::query("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife,
-                                      FIND_IN_SET('public', a.flags) AS public
+                                      FIND_IN_SET('public', a.flags) AS public,
+                                      FIND_IN_SET('photo', a.flags) AS photo
                                  FROM groupex.announces AS a
                            INNER JOIN auth_user_md5 AS u USING(user_id)
                            INNER JOIN aliases AS l ON (l.id = u.user_id AND l.type = 'a_vie')
@@ -1154,7 +1241,7 @@ class XnetGrpModule extends PLModule
                 $art = $res->fetchOneAssoc();
                 $art['contact_html'] = $art['contacts'];
             } else {
-                $page->kill("Aucun article correspond à l'identifiant indiqué");
+                $page->kill("Aucun article correspond à l'identifiant indiqué.");
             }
         }
 
@@ -1170,6 +1257,7 @@ class XnetGrpModule extends PLModule
 
         $art['contact_html'] = @MiniWiki::WikiToHTML($art['contact_html']);
         $page->assign('art', $art);
+        $page->assign_by_ref('upload', $upload);
     }
 
     function handler_admin_announce(&$page)

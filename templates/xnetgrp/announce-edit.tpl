@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -32,7 +32,7 @@ function visibilityChange(box)
 }
 {/literal}
 </script>
-<h1>{$asso.nom} : Edition d'une annonce</h1>
+<h1>{$asso.nom}&nbsp;: Édition d'une annonce</h1>
 
 {if $art.texte}
 <div>
@@ -41,18 +41,18 @@ function visibilityChange(box)
 </div>
 {/if}
 
-<form method="post" action="{$platal->ns}announce/{if $new}new{else}edit/{$art.id}{/if}">
+<form method="post" action="{$platal->ns}announce/{if $new}new{else}edit/{$art.id}{/if}" enctype="multipart/form-data">
 <div>
   <table class="bicol">
     <tr>
-      <th colspan="2">Editer une annonce</th>
+      <th colspan="2">Éditer une annonce</th>
     </tr>
     <tr class="pair">
-      <td class="titre">Titre :</td>
+      <td class="titre">Titre&nbsp;:</td>
       <td><input type="text" name="titre" value="{$art.titre}" size="50" maxlength="200" /></td>
     </tr>
     <tr>
-      <td class="titre">Contenu de l'annonce :</td>
+      <td class="titre">Contenu de l'annonce&nbsp;:</td>
       <td>
         <small>
           Le contenu est destiné à recevoir la descriptioin de ce qui est annoncé.
@@ -76,14 +76,14 @@ function visibilityChange(box)
           {/literal}
         </script>
         <small>
-          Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 600 caractères soit une dizaine de ligne.
+          Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 600 caractères soit une dizaine de lignes.
           Tu en es déjà à <input type='text' name='texte_count' size="4"/> caractères.
           Si tu veux proposer cette annonce pour la Lettre Mensuelle, il faut te limiter à 8 lignes.
         </small>
       </td>
     </tr>
     <tr style="border-top: 1px solid gray">
-      <td class="titre">Contacts :</td>
+      <td class="titre">Contacts&nbsp;:</td>
       <td>
         <small>
           La section "contacts" sert à noter les informations telles que les adresses mails de contact, les sites web.
@@ -98,9 +98,33 @@ function visibilityChange(box)
       </td>
     </tr>
     <tr style="border-top: 1px solid gray">
+      <td class="titre">Illustration&nbsp;:</td>
+      <td>
+        {if $art.id && $art.photo}
+        <div style="float: left; text-align: center">
+          <em>Image actuelle</em><br />
+          <img src="{$platal->ns}announce/photo/{$art.id}" alt="Image actuelle" /><br />
+          <input type="submit" name="valid" value="Pas d'image" />
+          <input type="hidden" name="photo" value="1" />
+        </div>
+        {/if}
+        {if $upload && $upload->exists()}
+        <div style="float: right; text-align: center">
+          <em>Nouvelle image</em><br />
+          <img src="{$platal->ns}announce/photo" alt="Nouvelle Image" /><br />
+          <input type="submit" name="valid" value="Supprimer l'image" />
+        </div>
+        {/if}
+        <div style="clear: both">
+          Choisir un fichier&nbsp;: <input type="file" name="image" id="image" /><br />
+          Indiquer une adresse&nbsp;: <input type="text" name="image_url" id="image_url" value="" />
+        </div>
+      </td>
+    </tr>
+    <tr style="border-top: 1px solid gray">
       <td colspan="2" class="center">
         <a href="wiki_help/notitle" class="popup3">
-          {icon name=information title="Syntaxe wiki"} Voir la liste des marqueurs de mise en forme autorisés
+          {icon name=information title="Syntaxe wiki"} Voir la liste des marqueurs de mise en forme autorisés.
         </a>
       </td>
     </tr>
@@ -109,19 +133,19 @@ function visibilityChange(box)
 
   <table class="tinybicol">
     <tr>
-      <td class="titre">Date de péremption :</td>
+      <td class="titre">Date de péremption&nbsp;:</td>
       <td>
         {valid_date name="peremption" value=$art.peremption}
       </td>
     </tr>
     {if $events}
     <tr>
-      <td class="titre">Attacher à un événement :</td>
+      <td class="titre">Attacher à un événement&nbsp;:</td>
       <td>
         <select name="event">
           <option value="" {if !$art.event}selected="selected"{/if}>-- Aucun --</option>
           {iterate item=evt from=$events}
-          <option value="{$evt.short_name|default:$evt.eid}" 
+          <option value="{$evt.short_name|default:$evt.eid}"
             {if $art.event eq $evt.short_name|default:$evt.eid}selected="selected"{/if}>
             {$evt.intitule}
           </option>
@@ -131,10 +155,10 @@ function visibilityChange(box)
     </tr>
     {/if}
     <tr>
-      <td class="titre">Visibilité :</td>
+      <td class="titre">Visibilité&nbsp;:</td>
       <td>
         <input type="checkbox" name="public" {if $art.public}checked="checked"{/if} onchange="visibilityChange(this)" />
-        Rendre cette annonce publique
+        Rendre cette annonce publique.
       </td>
     </tr>
     <tr id="promo_titre" {if $art.public}style="display: none"{/if}>
@@ -167,7 +191,7 @@ function visibilityChange(box)
     <tr class="pair">
       <td colspan="2">
         <small>Les demandes de publication sont soumises à validation par l'équipe
-        de Polytechnique.org</small>
+        de Polytechnique.org.</small>
       </td>
     </tr>
     {/if}
@@ -179,7 +203,7 @@ function visibilityChange(box)
     {/if}
     <input type="submit" name="valid" value="Visualiser" /><br />
     {if $art.texte}
-    <input type="submit" name="valid" value="Enregistrer" /> 
+    <input type="submit" name="valid" value="Enregistrer" />
     {if !$new}
     <input type="submit" name="valid" value="Annuler" />
     {/if}

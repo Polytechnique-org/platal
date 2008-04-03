@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -52,13 +52,13 @@ function searchX()
 {/literal}
 //]]></script>
 
-<h1>{$asso.nom} : Ajout d'un membre</h1>
+<h1>{$asso.nom}&nbsp;: Ajout d'un membre</h1>
 
 <form method="post" action="{$platal->ns}member/new/">
   <ul class='descr'>
     <li>
       Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses
-      adresses mail @polytechnique.org. Si il n'est pas inscrit à Polytechnique.org
+      adresses mail @polytechnique.org. S'il n'est pas inscrit à Polytechnique.org
       coche la case qui se trouve sous le formulaire et indique ses noms, prénoms et
       promotions.
     </li>
@@ -79,19 +79,19 @@ function searchX()
     <tr>
       <td colspan="2">
         <input type="checkbox" id="x" name="x" onchange="xStateChange(this);" />
-        <label for="x">Coche cette case si il s'agit d'un X non inscrit à Polytechnique.org</label>
+        <label for="x">Coche cette case si il s'agit d'un X non inscrit à Polytechnique.org.</label>
       </td>
     </tr>
     <tr id="xnom" style="display: none">
-      <td class="titre">Nom :</td>
+      <td class="titre">Nom&nbsp;:</td>
       <td><input type="text" id="nom" name="nom" size="20" value="" onkeyup="searchX();" /></td>
     </tr>
     <tr id="xprenom" style="display: none">
-      <td class="titre">Prénom :</td>
+      <td class="titre">Prénom&nbsp;:</td>
       <td><input type="text" id="prenom" name="prenom" size="20" value="" onkeyup="searchX();" /></td>
     </tr>
     <tr id="xpromo" style="display: none">
-      <td class="titre">Promotion :</td>
+      <td class="titre">Promotion&nbsp;:</td>
       <td><input type="text" id="promo" name="promo" size="4" value="" onkeyup="searchX();" /></td>
     </tr>
     <tr id="xsearch" style="display: none" class="pair">

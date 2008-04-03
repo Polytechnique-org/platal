@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -55,6 +55,7 @@ class MLBanana extends Banana
         Banana::$debug_mbox = ($globals->debug & DEBUG_BT);
         Banana::$debug_smarty = ($globals->debug & DEBUG_SMARTY);
         Banana::$mbox_helper = $globals->banana->mbox_helper;
+        Banana::$feed_updateOnDemand = true;
         if (S::has_perms()) {
             Banana::$msgshow_mimeparts[] = 'source';
         }

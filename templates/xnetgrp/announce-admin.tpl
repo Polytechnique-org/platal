@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Administration des announces</h1>
+<h1>{$asso.nom}&nbsp;: Administration des announces</h1>
 
 <table class="bicol">
   <tr>
@@ -41,7 +41,7 @@
   <tr>
     <td colspan="3" class="center">
       <a href="{$platal->ns}announce/new">
-        {icon name=add title="Nouvelle annonce"} Ecrire une nouvelle annonce
+        {icon name=add title="Nouvelle annonce"} Écrire une nouvelle annonce.
       </a>
     </td>
   </tr>

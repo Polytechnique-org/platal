@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -68,7 +68,7 @@
     </tr>
     <tr>
       <td {if !$submited}colspan="2"{/if} class="center">
-        Si tu ne souhaites plus montrer cette photo tu peux aussi l'effacer en la remplaçant par : <br />
+        Si tu ne souhaites plus montrer cette photo tu peux aussi l'effacer en la remplaçant par&nbsp;: <br />
         {if $has_trombi_x}
         <input type="submit" value="Trombino de l'X" name="trombi" /><br />
         {/if}
@@ -76,7 +76,7 @@
       </td>
       {if $submited}
       <td class="center">
-        Tu peux annuler ta soumission et garder ta photo actuelle : <br />
+        Tu peux annuler ta soumission et garder ta photo actuelle&nbsp;: <br />
         <input type="submit" value="Annuler ta soumission" name="cancel" />
       </td>
       {/if}
@@ -95,7 +95,7 @@
         </p>
         <p>
         Si elle est sur Internet, choisis la seconde solution et nos robots iront la télécharger
-        directement où il faut :-)
+        directement où il faut&nbsp;:-)
         </p>
       </td>
     </tr>

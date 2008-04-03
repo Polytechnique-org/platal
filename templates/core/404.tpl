@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -23,7 +23,7 @@
 <h1 class="erreur">Cette page n'existe pas !!!</h1>
 
 {if $near}
-<p>L'adresse suivante semble correspondre à ta demande :<br />
+<p>L'adresse suivante semble correspondre à ta demande&nbsp;:<br />
 {icon name="lightbulb" title="Cherchais-tu ?"} <a href="{$globals->baseurl}/{$near}">{$globals->baseurl}/{$near}</a>
 </p>
 {/if}

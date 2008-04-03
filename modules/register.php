@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -144,10 +144,14 @@ class RegisterModule extends PLModule
                             "valide, en particulier, il ne peut pas être renvoyé vers lui-même.";
                     }
                     $birth = trim(Env::v('naissance'));
-                    if (!preg_match('/^[0-3][0-9][01][0-9][12][90][0-9][0-9]$/', $birth)) {
+                    if (!preg_match('@^[0-3]?\d/[01]?\d/(19|20)?\d{2}$@', $birth)) {
                         $err[] = "La 'Date de naissance' n'est pas correcte.";
                     } else {
-                        $year  = (int)substr($birth, 4, 4);
+                        $birth = explode('/', $birth, 3);
+                        for ($i = 0; $i < 3; $i++)
+                            $birth[$i] = intval($birth[$i]);
+                        if ($birth[2] < 100) $birth[2] += 1900;
+                        $year  = $birth[2];
                         $promo = (int)$sub_state['promo'];
                         if ($year > $promo - 15 || $year < $promo - 30) {
                             $err[] = "La 'Date de naissance' n'est pas correcte.";
@@ -157,20 +161,18 @@ class RegisterModule extends PLModule
                     }
 
                     // Check if the given email is known as dangerous
-                    $res = Xdb::iterRow("SELECT  w.state, w.description, a.alias
-                                           FROM  emails       AS e
-                                     INNER JOIN  emails_watch AS w ON (e.email = w.email AND w.state != 'safe')
-                                     INNER JOIN  aliases      AS a ON (e.uid = a.id AND a.type = 'a_vie')
-                                          WHERE  e.email = {?}
-                                       ORDER BY  a.alias", Post::v('email'));
-                    $aliases = array();
-                    while(list($gstate, $gdescription, $alias) = $res->next()) {
-                        $state       = $gstate;
-                        $description = $gdescription;
-                        $aliases[]   = $alias;
-                    }
-                    if (count($aliases) != 0) {
+                    $res = XDB::query("SELECT  w.state, w.description
+                                         FROM  emails_watch AS w
+                                        WHERE  w.email = {?} AND w.state != 'safe'",
+                                        Post::v('email'));
+                    $email_banned = false;
+                    if ($res->numRows()) {
+                        list($state, $description) = $res->fetchOneRow();
                         $alert .= "Email surveille propose a l'inscription - ";
+                        $sub_state['email_desc'] = $description;
+                        if ($state == 'dangerous') {
+                            $email_banned = true;
+                        }
                     }
                     if ($sub_state['watch']) {
                         $alter .= "Inscription d'un utilisateur surveillé - ";
@@ -183,20 +185,21 @@ class RegisterModule extends PLModule
                     if (isset($err)) {
                         $err = join('<br />', $err);
                     } else {
-                        $sub_state['naissance'] = sprintf("%s-%s-%s",
-                                                          substr($birth,4,4),
-                                                          substr($birth,2,2),
-                                                          substr($birth,0,2));
+                        $sub_state['naissance'] = sprintf("%04d-%02d-%02d",
+                                                          intval($birth[2]), intval($birth[1]), intval($birth[0]));
                         if ($sub_state['naissance_ini'] != '0000-00-00' && $sub_state['naissance'] != $sub_state['naissance_ini']) {
                             $alert .= "Date de naissance incorrecte à l'inscription - ";
                         }
                         $sub_state['email']     = Post::v('email');
-                        if (check_ip('unsafe')) {
+                        $ip_banned = check_ip('unsafe');
+                        if ($ip_banned) {
+                            $alert .= "Tentative d'inscription depuis une IP surveillee";
+                        }
+                        if ($email_banned || $ip_banned) {
                             $err = "Une erreur s'est produite lors de l'inscription."
                                  . " Merci de contacter <a href='mailto:register@{$globals->mail->domain}>"
                                  . " register@{$globals->mail->domain}</a>"
                                  . " pour nous faire part de cette erreur";
-                            $alert .= "Tentative d'inscription depuis une IP surveillee";
                         } else {
                             $sub_state['step'] = 4;
                             if (count($sub_state['backs']) >= 3) {
@@ -324,16 +327,20 @@ class RegisterModule extends PLModule
         /************* envoi d'un mail au démarcheur ***************/
         /***********************************************************/
         $res = XDB::iterRow(
-                "SELECT  DISTINCT sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom,
-                         s.prenom, FIND_IN_SET('femme', s.flags) AS femme
+                "SELECT  sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom,
+                         s.prenom, FIND_IN_SET('femme', s.flags) AS femme,
+                         GROUP_CONCAT(m.email) AS mails, MAX(m.last) AS dateDernier
                    FROM  register_marketing AS m
              INNER JOIN  auth_user_md5      AS s  ON ( m.sender = s.user_id )
              INNER JOIN  aliases            AS sa ON ( sa.id = m.sender
                                                        AND FIND_IN_SET('bestalias', sa.flags) )
-                  WHERE  m.uid = {?}", $uid);
+                  WHERE  m.uid = {?}
+               GROUP BY  m.sender", $uid);
         XDB::execute("UPDATE register_mstats SET success=NOW() WHERE uid={?}", $uid);
 
-        while (list($salias, $snom, $sprenom, $sfemme) = $res->next()) {
+        $market = array();
+        while (list($salias, $snom, $sprenom, $sfemme, $mails, $dateDernier) = $res->next()) {
+            $market[] = " - par $snom $sprenom sur $mails (le plus récemment le $dateDernier)";
             $mymail = new PlMailer();
             $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
             $mymail->setFrom('"Marketing Polytechnique.org" <register@' . $globals->mail->domain . '>');
@@ -364,7 +371,10 @@ class RegisterModule extends PLModule
                  . " - email     : $email\n"
                  . " - sexe      : $femme\n"
                  . " - ip        : {$logger->ip} ({$logger->host})\n"
-                 . ($logger->proxy_ip ? " - proxy     : {$logger->proxy_ip} ({$logger->proxy_host})\n" : "");
+                 . ($logger->proxy_ip ? " - proxy     : {$logger->proxy_ip} ({$logger->proxy_host})\n" : "")
+                 . "\n\n"
+                 . "Les marketings suivants avaient été effectués :\n"
+                 . implode("\n", $market);
             $mymail->setTxtBody($msg);
             $mymail->send();
         }
@@ -377,6 +387,7 @@ class RegisterModule extends PLModule
 
     function handler_success(&$page)
     {
+        global $globals;
         $page->changeTpl('register/success.tpl');
 
         $_SESSION['sub_state'] = array('step' => 5);
@@ -386,6 +397,17 @@ class RegisterModule extends PLModule
             XDB::execute('UPDATE auth_user_md5 SET password={?}
                                      WHERE user_id={?}', $password,
                                    S::v('uid'));
+
+            // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
+            // and if the (stupid) user has decided to user /register/success another time,
+            // updates the Google Apps password as well.
+            if ($globals->mailstorage->googleapps_domain) {
+                require_once 'googleapps.inc.php';
+                $account = new GoogleAppsAccount(S::v('uid'), S::v('forlife'));
+                if ($account->active() && $account->sync_password) {
+                    $account->set_password($password);
+                }
+            }
 
             $log = S::v('log');
             $log->log('passwd', '');
@@ -458,6 +480,11 @@ class RegisterModule extends PLModule
                 }
                 $client->subscribe($sub);
             }
+        }
+        if (Post::v('imap')) {
+            require_once 'emails.inc.php';
+            $storage = new EmailStorage(S::v('uid'), 'imap');
+            $storage->activate();
         }
 
         pl_redirect('profile/edit');

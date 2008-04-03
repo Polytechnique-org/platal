@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -24,7 +24,7 @@
 <div class="backtrace">
   <h1>
     {if $trace->error}<span style="color: #f00">{/if}
-    Exécution de {$bt_name} : {$trace->traces|@count} actions en {$trace->totaltime|string_format:"%.3f"}s (hover-me pour la trace)
+    Exécution de {$bt_name}&nbsp;: {$trace->traces|@count} actions en {$trace->totaltime|string_format:"%.3f"}s (hover-me pour la trace)
     {if $trace->error}</span>{/if}
   </h1>
   <div class="hide">

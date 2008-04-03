@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -34,7 +34,7 @@
 <p class="normal">
   Tu pourras voir dans les forums les nouveaux messages mis en valeur (en
   général en gras). Si tu consultes les forums régulièrement, tu peux en avoir
-  assez de voir tout le contenu du forum : la dernière option te permet de
+  assez de voir tout le contenu du forum&nbsp;: la dernière option te permet de
   n'afficher que les fils de discussion contenant des messages lus.
 </p>
 

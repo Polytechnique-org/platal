@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,13 +20,34 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="listes_promo"}
+{config_load file="mails.conf" section="carnet"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{to addr=#to#}
-{subject text="Création de la liste promo $promo"}
-{elseif $mail_part eq 'text'}
+{subject text="Notifications de la semaine `$week`"}
+{if isset(#replyto#)}{add_header name='Reply-To' value=#replyto#}{/if}
+{if isset(#retpath#)}{add_header name='Return-Path' value=#retpath#}{/if}
+{elseif $mail_part eq 'wiki'}
+{if $u.sexe}Chère{else}Cher{/if} {$u.prenom},
 
-Création de la liste promo {$promo} à faire !
+Voici les événements survenus dans la semaine écoulée, et depuis ta dernière visite sur le site.
+
+Tu trouveras les mêmes informations sur [[https://www.polytechnique.org/carnet/panel|cette page]].
+
+{foreach from=$u.data key=cid item=d}
+
+!{if $d|@count eq 1}{if $d[0].sexe}{$cats[$cid].mail_sg_xette}{else}{$cats[$cid].mail_sg}{/if}{else}{$cats[$cid].mail}{/if}:
+
+{foreach from=$d item=x}
+* (X{$x.promo}), le {$x.date|date_format:"%d %B %Y"}, [[https://www.polytechnique.org/profile/private/{$x.bestalias}|{$x.prenom} {$x.nom}]]
+{/foreach}
+
+{/foreach}
+--
+L'Équipe de Polytechnique.org
+
+'''''Note:'''''  Tu reçois ce mail ce mail car tu as activé la notification automatique par mail des événements que tu surveilles.\\
+Tu peux changer cette options sur la [[https://www.polytechnique.org/carnet/notifs|page de configuration des notifications]].
+
 {/if}
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

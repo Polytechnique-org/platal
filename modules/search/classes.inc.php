@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -36,7 +36,7 @@ require_once("xorg.misc.inc.php");
     ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
     es.label AS secteur, ef.fonction_fr AS fonction,
     IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,
-    COUNT(em.email) > 0 AS actif,';
+    (COUNT(em.email) > 0 OR FIND_IN_SET("googleapps", u.mail_storage) > 0) AS actif,';
 // hide private information if not logged
 if (S::logged())
     $globals->search->result_fields .='
@@ -307,8 +307,8 @@ class QuickSearch extends SField
             $where[] = 'ems.email = ' . XDB::escape($this->email);
         }
         if (!empty($this->ip)) {
-            $ip = XDB::escape($this->ip);
-            $where[] = "( ls.ip = $ip OR ls.forward_ip = $ip )";
+            $ip = ip_to_uint($this->ip);
+            $where[] = "( ls.ip = $ip OR ls.forward_ip = $ip ) AND ls.suid = 0";
         }
 
         return join(" AND ", $where);
@@ -755,6 +755,11 @@ class SFieldGroup
     {
         $this->fields = $_fields;
         $this->and    = $_and;
+        foreach ($this->fields as $key=>&$field) {
+            if (is_null($field)) {
+                unset($this->fields[$key]);
+            }
+        }
     }
 
     // }}}
@@ -764,7 +769,9 @@ class SFieldGroup
     {
         $b = true;
         for ($i=0 ; $b && $i<count($this->fields) ; $i++) {
-            $b = $b && $this->fields[$i]->too_large();
+            if (!is_null($this->fields[$i])) {
+                $b = $b && $this->fields[$i]->too_large();
+            }
         }
         return $b;
     }

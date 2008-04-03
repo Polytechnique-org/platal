@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,23 +20,28 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="geoloc_error"}
+{config_load file="mails.conf" section="googleapps"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{to addr=#to#}
-{subject text="Adresse impossible à geolocaliser"}
+{to addr=$email}
+{cc full=#from#}
+{subject text="[Polytechnique.org] Réactivation de ton compte Google Apps"}
 {elseif $mail_part eq 'wiki'}
-Un camarade {$smarty.session.forlife} a forcé l'utilisation de l'adresse entrée
-à la main et a refusé la version geolocalisée :
+{if $sexe}Chère{else}Cher{/if} {$prenom},
 
-'''Version utilisateur (validée) :'''\\
-{$text|replace:"\n":"\\\\\n"}
+Ton compte Google Apps pour Polytechnique.org vient d'être réactivé.\\
+Ton nom d'utilisateur pour ces services Google est '''{$account->g_account_name}'''
+{if $account->sync_password}
+et ton mot de passe est celui de Polytechnique.org.
+{else}
+et ton mot de passe est celui que tu as choisi lors de ta demande de compte.
+{/if}
 
-'''Version geoloc (refusée) :'''\\
-{$geoloc|replace:"\n":"\\\\\n"}
+Tu trouvera plus d'information dans la [[https://www.polytechnique.org/Xorg/GoogleApps|documentation]] sur Polytechnique.org.
 
+Cordialement,\\
 -- \\
-Webmaster de Polytechnique.org
+L'équipe de Polytechnique.org
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

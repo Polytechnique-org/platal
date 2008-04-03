@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -159,6 +159,10 @@ pre {
     background: url('../images/skins/keynote_bg_lighter.png') #848495 top left repeat-x fixed;
     margin: 0em 0em;
     padding: 0.3em 1.5em;
+}
+
+.pair pre {
+    background: inherit;
 }
 
 

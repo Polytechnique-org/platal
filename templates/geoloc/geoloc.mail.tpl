@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,19 +20,23 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="payment_ready"}
+{config_load file="mails.conf" section="geoloc_error"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{to addr=$to}
-{subject text="[`$asso`] Paiement activé"}
+{to addr=#to#}
+{subject text="Adresse impossible à geolocaliser"}
 {elseif $mail_part eq 'wiki'}
-Cher {$prenom},
+Un camarade {$smarty.session.forlife} a forcé l'utilisation de l'adresse entrée
+à la main et a refusé la version geolocalisée :
 
-Nous t'écrivons pour t'informer que le télépaiement associé à l'événement '''{$evt}''' du groupe {$asso} vient d'être activé. Tu peux donc finaliser ton inscription.
+'''Version utilisateur (validée) :'''\\
+{$text|replace:"\n":"\\\\\n"}
 
-Pour ceci, va simplement sur [[http://www.polytechnique.net/{$diminutif}/payment/{$payment}?montant={$topay}|cette page]].
+'''Version geoloc (refusée) :'''\\
+{$geoloc|replace:"\n":"\\\\\n"}
 
-Cordialement,\\
-L'Equipe de Polytechnique.org
+-- \\
+Webmaster de Polytechnique.org
 {/if}
+
 {* vim:set et sw=2 sts=2 sws=2: *}

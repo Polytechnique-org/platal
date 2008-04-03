@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,14 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Forum</h1>
+<h1>{$asso.nom}&nbsp;: Forum</h1>
 
 {$banana|smarty:nodefaults}
 
 <p>
   Cette page utilise les <a href="https://www.polytechnique.org/banana/profile">préférences</a> de Polytechnique.org.<br />
   Tu peux également retrouver tous les forums en te rendant à la rubrique
-  <a href="https://www.polytechnique.org/banana">Forums &amp; PA</a>
+  <a href="https://www.polytechnique.org/banana">Forums &amp; PA</a>.
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

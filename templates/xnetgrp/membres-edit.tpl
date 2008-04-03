@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -40,7 +40,7 @@
 {/literal}
 </script>
 
-<h1>{$asso.nom} : gestion des membres</h1>
+<h1>{$asso.nom}&nbsp;: gestion des membres</h1>
 
 <p>
 [<a href='{$platal->ns}annuaire'>Retour à l'annuaire</a>]
@@ -72,7 +72,7 @@
     {if $user.origine neq X}
     <tr class="impair">
       <td class="titre">
-        Type d'utilisateur :
+        Type d'utilisateur&nbsp;:
       </td>
       <td>
         <select name="origine" onchange="showInformations(this); return true">
@@ -83,7 +83,7 @@
     </tr>
     <tr id="prenom" class="impair" {if $user.origine eq "groupe"}style="display: none"{/if}>
       <td class="titre">
-        Prénom :
+        Prénom&nbsp;:
       </td>
       <td>
         <input type="text" value="{$user.prenom}" name="prenom" size="40" />
@@ -91,7 +91,7 @@
     </tr>
     <tr class="impair">
       <td class="titre">
-        Nom :
+        Nom&nbsp;:
       </td>
       <td>
         <input type="text" value="{$user.nom}" name="nom" size="40" />
@@ -99,7 +99,7 @@
     </tr>
     <tr id="sexe" class="impair" {if $user.origine eq "groupe"}style="display: none"{/if}>
       <td class="titre">
-        Sexe :
+        Sexe&nbsp;:
       </td>
       <td>
         <select name="sexe">
@@ -119,7 +119,7 @@
     <tr id="make_X" {if $user.origine eq "groupe"}style="display: none"{/if}>
       <td colspan="2">
         <span id="make_X_cb">
-          <input type="checkbox" name="is_x" id="is_x" onchange="showXInput(this);" />
+          <input type="checkbox" name="is_x" id="is_x" onclick="showXInput(this);" onchange="showXInput(this);" />
           <label for="is_x">coche cette case si il s'agit d'un X</label>
         </span>
         <span id="make_X_login" style="display: none">
@@ -149,7 +149,7 @@
       <td>
         <a href='{$platal->ns}lists/members/{$liste.list}'>{$liste.list}</a>
       </td>
-      <td>{$liste.desc}</td>
+      <td>{$liste.desc|smarty:nodefaults}</td>
       <td class='right'>{$liste.nbsub}</td>
     </tr>
     {foreachelse}

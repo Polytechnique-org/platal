@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 <table class="bicol" style="margin-bottom: 1em"
-  summary="Profil : Informations générales">
+  summary="Profil&nbsp;: Informations générales">
   <tr>
     <th colspan="2">
       <div class="flags" style="float: left">
@@ -200,7 +200,7 @@ pour les premières lettres : <strong>Alfred&nbsp;de&nbsp;Musset</strong>" width
 
 {if !$no_private_key}
 <table class="bicol"  style="margin-bottom: 1em"
-  summary="Profil : Informations générales">
+  summary="Profil&nbsp;: Informations générales">
   <tr>
     <th>
       Synchronisation avec l'AX

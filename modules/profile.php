@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -146,19 +146,23 @@ class ProfileModule extends PLModule
                 }
             }
         } elseif (Env::v('suppr')) {
-            XDB::execute('DELETE FROM photo WHERE uid = {?}',
-                                   S::v('uid'));
-            XDB::execute('DELETE FROM requests
-                                     WHERE user_id = {?} AND type="photo"',
-                                   S::v('uid'));
+            XDB::execute('DELETE FROM  photo
+                                WHERE  uid = {?}',
+                         S::v('uid'));
+            XDB::execute('DELETE FROM  requests
+                                WHERE  user_id = {?} AND type="photo"',
+                         S::v('uid'));
+            update_NbValid();
         } elseif (Env::v('cancel')) {
-            $sql = XDB::query('DELETE FROM requests
-                                        WHERE user_id={?} AND type="photo"',
-                                        S::v('uid'));
+            $sql = XDB::query('DELETE FROM  requests
+                                     WHERE  user_id={?} AND type="photo"',
+                              S::v('uid'));
+            update_NbValid();
         }
 
-        $sql = XDB::query('SELECT COUNT(*) FROM requests
-                            WHERE user_id={?} AND type="photo"',
+        $sql = XDB::query('SELECT  COUNT(*)
+                             FROM  requests
+                            WHERE  user_id={?} AND type="photo"',
                           S::v('uid'));
         $page->assign('submited', $sql->fetchOneCell());
         $page->assign('has_trombi_x', file_exists($trombi_x));
@@ -187,27 +191,29 @@ class ProfileModule extends PLModule
                       WHERE  matricule={?}", $x);
             $login = $res->fetchOneCell();
         } else {
-            $login = get_user_forlife($x);
+            $login = get_user_forlife($x, S::logged() ? '_default_user_callback'
+                                                      : '_silent_user_callback');
         }
 
         if (empty($login)) {
-            if (preg_match('/([-a-z]+)\.([-a-z]+)\.([0-9]{4})/i', $x, $matches)) {
-                $matches = str_replace('-', '_', $matches);
-                $res = XDB::query("SELECT user_id
-                                     FROM auth_user_md5
-                                    WHERE prenom LIKE {?} AND nom LIKE {?} AND promo = {?}
-                                          AND perms = 'pending'",
-                                  $matches[1], $matches[2], $matches[3]);
-                if ($res->numRows() == 1) {
-                    $uid = $res->fetchOneCell();
-                    pl_redirect('marketing/public/' . $uid);
-                }
+            $user = get_not_registered_user($x, true);
+            if ($user->total() != 1) {
+                return PL_NOT_FOUND;
             }
-            return PL_NOT_FOUND;
+            $user = $user->next();
+            if (S::logged()) {
+                pl_redirect('marketing/public/' . $user['user_id']);
+            }
+            $user['forlife'] = $x;
+        } else {
+            $new   = Env::v('modif') == 'new';
+            $user  = get_user_details($login, S::v('uid'), $view);
         }
 
-        $new   = Env::v('modif') == 'new';
-        $user  = get_user_details($login, S::v('uid'), $view);
+        if (S::logged()) {
+            $_SESSION['log']->log('view_profile', $login);
+        }
+
         $title = $user['prenom'] . ' ' . ( empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'] );
         $page->assign('xorg_title', $title);
 
@@ -252,6 +258,7 @@ class ProfileModule extends PLModule
                 $user['forlife'].'@'.$globals->mail->domain,
                 $user['forlife'].'@'.$globals->mail->domain2);
         $page->assign('virtualalias', $res->fetchOneCell());
+        $page->assign('view', $view);
 
         $page->addJsLink('close_on_esc.js');
         header('Last-Modified: ' . date('r', strtotime($user['date'])));

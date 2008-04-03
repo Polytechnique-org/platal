@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -42,6 +42,7 @@ class StatsModule extends PLModule
             'stats/graph/evolution'
                               => $this->make_hook('graph_evo', AUTH_COOKIE),
             'stats/promos'    => $this->make_hook('promos',    AUTH_COOKIE),
+            'stats/profile'   => $this->make_hook('profile',   AUTH_COOKIE),
 
             'stats/coupures'  => $this->make_hook('coupures',  AUTH_PUBLIC),
         );
@@ -69,7 +70,7 @@ class StatsModule extends PLModule
                             ".(-($jours+1)).") AS jour,
                          COUNT(user_id) AS nb
                    FROM  auth_user_md5
-                  WHERE  perms IN ('admin','user')
+                  WHERE  perms IN ('admin','user') AND deces = 0
                GROUP BY  jour");
 
         //genere des donnees compatibles avec GNUPLOT
@@ -175,11 +176,11 @@ EOF2;
             //nombre de jours sur le graph
             $jours = 365;
             define('DUREEJOUR',24*3600);
-            $res = XDB::query("SELECT min(TO_DAYS(date_ins)-TO_DAYS(now()))
-                                           FROM auth_user_md5
-                                          WHERE promo = {?}
-                                                AND perms IN ('admin', 'user')",
-                                        $promo);
+            $res = XDB::query(
+                    "SELECT  min(TO_DAYS(date_ins)-TO_DAYS(now()))
+                       FROM  auth_user_md5
+                      WHERE  promo = {?} AND perms IN ('admin', 'user') AND deces = 0",
+                    $promo);
             $jours = -$res->fetchOneCell();
 
             //recupere le nombre d'inscriptions par jour sur la plage concernée
@@ -189,7 +190,7 @@ EOF2;
                                 ".(-($jours+1)).") AS jour,
                              COUNT(user_id) AS nb
                        FROM  auth_user_md5
-                      WHERE  promo = {?} AND perms IN ('admin','user')
+                      WHERE  promo = {?} AND perms IN ('admin','user') AND deces = 0
                    GROUP BY  jour", $promo);
 
             //genere des donnees compatibles avec GNUPLOT
@@ -249,7 +250,7 @@ EOF2;
         $res = XDB::iterRow(
                 "SELECT  promo,COUNT(*)
                    FROM  auth_user_md5
-                  WHERE  promo > 1900 AND perms IN ('admin','user')
+                  WHERE  promo > 1900 AND perms IN ('admin','user') AND deces = 0
                GROUP BY  promo
                ORDER BY  promo");
         $max=0; $min=3000;
@@ -294,6 +295,30 @@ EOF2;
                                    WHERE  state != 'ok'");
             $page->assign('mxs', $res);
         }
+    }
+
+    function handler_profile(&$page, $period = 'overall')
+    {
+        $page->changeTpl('stats/profile.tpl');
+
+        $time = '';
+        switch ($period) {
+          case 'week': case 'month': case 'year':
+            $time = ' AND e.stamp > DATE_SUB(CURDATE(), INTERVAL 1 ' . strtoupper($period) . ')';
+            break;
+        }
+        $rows = XDB::iterator("SELECT  IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
+                                       u.prenom, u.promo, e.data AS forlife, COUNT(*) AS count
+                                 FROM  logger.events AS e
+                           INNER JOIN  logger.actions AS act ON (e.action = act.id)
+                           INNER JOIN  aliases AS a ON (a.alias = e.data)
+                           INNER JOIN  auth_user_md5 AS u ON (u.user_id = a.id)
+                                WHERE  act.text = 'view_profile' $time
+                             GROUP BY  e.data
+                             ORDER BY  count DESC
+                                LIMIT  10");
+        $page->assign('profiles', $rows);
+        $page->assign('period', $period);
     }
 }
 

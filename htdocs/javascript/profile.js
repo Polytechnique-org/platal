@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -424,7 +424,7 @@ function updateCountry()
 {
     var val = document.forms.prof_annu.countries_sel.value;
     var show = true;
-    if (val == '') {
+    if (val == '' || val == '00') {
         show = false;
     }
     if (document.getElementById('countries_' + val) != null) {
@@ -439,11 +439,11 @@ function addCountry()
     var val  = cb.value;
     var text = cb.options[cb.selectedIndex].text;
     var html = '<div id="countries_' + val + '" style="clear: both; margin-bottom: 0.7em">'
-        + '  <div style="float: left; width: 50%">' + text + '</div>'
-        + '  <input type="hidden" name="countries[' + val + ']" value="' + text + '" />'
-        + '  <a href="javascript:removeCountry(\'' + val + '\')">'
+        + '  <a href="javascript:removeCountry(\'' + val + '\')" style="display: block; float:right">'
         + '    <img src="images/icons/cross.gif" alt="" title="Supprimer ce pays" />'
         + '  </a>'
+        + '  <div style="float: left; width: 50%">' + text + '</div>'
+        + '  <input type="hidden" name="countries[' + val + ']" value="' + text + '" />'
         + '</div>';
     $('#countries').append(html);
     updateCountry();
@@ -473,6 +473,8 @@ function updateSecteur()
     var secteur = document.forms.prof_annu.secteur_sel.value;
     if (secteur == '') {
         secteur = '-1';
+        document.getElementById('ss_secteur_sel').innerHTML = '';
+        return;
     }
     $.get(platal_baseurl + 'profile/ajax/secteur/-1/' + secteur,
           function(data) {

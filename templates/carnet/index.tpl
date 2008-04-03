@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -54,7 +54,7 @@
   <tr>
     <th colspan="2">
       {if $smarty.session.core_rss_hash}
-      <a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml' style="display:block;float:right">
+      <a href="carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml" style="display:block;float:right" title="Notifications">
         {icon name=feed title='fil rss'}
       </a>
       {else}

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -30,6 +30,8 @@ class PlUpload
     private $filename;
     private $type;
 
+    static public $lastError;
+
     /** For images
      */
     private $x;
@@ -47,7 +49,7 @@ class PlUpload
     private function makeFilename($file_id)
     {
         global $globals;
-        $filename = $globals->spoolroot . '/spool/uploads/temp/';
+        $filename = $globals->spoolroot . '/spool/tmp/';
         if (!file_exists($filename)) {
             if (!mkdir($filename)) {
                 trigger_error('can\'t create upload directory: ' . $filename, E_USER_ERROR);
@@ -64,11 +66,29 @@ class PlUpload
     {
         if ($this->exists()) {
             $this->type = trim(mime_content_type($this->filename));
+            if ($this->type == 'text/plain') { // Workaround a bug of php 5.2.0+etch10 (mime_content_type fallback is 'text/plain')
+                $this->type = preg_replace('/;.*/', '', trim(shell_exec('file -bi ' . escapeshellarg($this->filename))));
+            }
         }
     }
 
     public function upload(array &$file)
     {
+        if (@$file['error']) {
+            PlUpload::$lastError = 'Erreur de téléchargement de ' . $file['name'] . ' : ';
+            switch ($file['error']) {
+              case UPLOAD_ERR_INI_SIZE: case UPLOAD_ERR_FORM_SIZE:
+                PlUpload::$lastError .= 'le fichier est trop gros (limite : ' . ini_get('upload_max_filesize') . ')';
+                break;
+              case UPLOAD_ERR_PARTIAL: case UPLOAD_ERR_NO_FILE:
+                PlUpload::$lastError .= 'le fichier n\'a pas été transmis intégralement';
+                break;
+              default:
+                PlUpload::$lastError .= 'erreur interne';
+                break;
+            }
+            return false;
+        }
         if (!is_uploaded_file($file['tmp_name'])) {
             return false;
         } else if (!move_uploaded_file($file['tmp_name'], $this->filename)) {
@@ -142,7 +162,7 @@ class PlUpload
     static public function listRawFiles($forlife = '*', $category = '*', $uniq = false, $basename = false)
     {
         global $globals;
-        $filename = $globals->spoolroot . '/spool/uploads/temp/';
+        $filename = $globals->spoolroot . '/spool/tmp/';
         $filename .= $forlife . '--' . $category;
         if (!$uniq) {
             $filename .= '--*';
@@ -210,6 +230,10 @@ class PlUpload
         }
         $array = getimagesize($this->filename);
         $array[2] = @$map[$array[2]];
+        if (!$array[2]) {
+            list($image, $type) = explode('/', $array['mime']);
+            $array[2] = $type;
+        }
         if (!$array[2]) {
             trigger_error('unknown image type', E_USER_NOTICE);
             return null;

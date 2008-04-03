@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -32,7 +32,7 @@
   {/literal}
 </script>
   <fieldset>
-    <legend><strong>Choisis ton propre réglage :</strong></legend>
+    <legend><strong>Choisis ton propre réglage&nbsp;:</strong></legend>
     <input id='s0' type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value, bogoUpdated)" />
     <label for='s0'>(1) le filtre anti-spam n'agit pas sur tes mails</label>
     <br />

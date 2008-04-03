@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Evénement {$event.intitule}</h1>
+<h1>{$asso.nom}&nbsp;: Evénement {$event.intitule}</h1>
 
 <p>
   [<a href="{$platal->ns}events">Revenir à la liste des événements</a>]
@@ -42,7 +42,7 @@
   </strong>
   et a été proposé par
   <a href='https://www.polytechnique.org/profile/{$event.alias}' class='popup2'>
-    {$event.prenom} {$event.nom} ({$event.promo})
+    {$event.prenom} {$event.nom} ({$event.promo}).
   </a>
 </p>
 
@@ -93,7 +93,7 @@
           {elseif $m.nb eq 1}
             Je viendrai{if !$event.noinvite} seul{/if}.
           {else}
-            Je viendrai avec {$m.nb} personne{if $m.nb > 2}s{/if}
+            Je viendrai avec {$m.nb} personne{if $m.nb > 2}s{/if}.
           {/if}
         {/if}
       </td>
@@ -109,7 +109,7 @@
           Tu dois payer {$event.topay|replace:'.':','}&nbsp;&euro;.
           {elseif $event.paid < $event.topay}
           Tu dois encore payer {math equation="a-b" a=$event.topay b=$event.paid|replace:'.':','}&nbsp;&euro;
-          (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;)
+          (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;).
           {else} 
           Tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro; pour ton inscription.
           {/if}
@@ -121,13 +121,13 @@
           {elseif $validation && $event.paid < $event.topay}
           <br />Le télépaiement pour cet événement est en instance de validation&nbsp;:<br />
           <input type="checkbox" name="notify_payment" {if $event.notify_payment}checked="checked"{/if} id="notify" />
-          <label for="notify">être prévenu lorsque le télépaiment pour cet événement sera disponible</label>
+          <label for="notify">être prévenu lorsque le télépaiment pour cet événement sera disponible.</label>
           {/if}
         </div>
         {else}
         Rien à payer
         {if $event.paid > 0}
-        (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;)
+        (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;).
         {/if}.
         {/if}
       </td>

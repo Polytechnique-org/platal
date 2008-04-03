@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -21,10 +21,10 @@
 {**************************************************************************}
 
 
-<h1>{$asso.nom} : Envoyer un mail</h1>
+<h1>{$asso.nom}&nbsp;: Envoyer un mail</h1>
 
 <p class="descr">
-Ton message peut être personnalisé : si tu rentres les mots &lt;cher&gt;, &lt;prenom&gt;,
+Ton message peut être personnalisé&nbsp;: si tu rentres les mots &lt;cher&gt;, &lt;prenom&gt;,
 &lt;nom&gt;, ces mots seront remplacés, pour chacun des destinataires, par "cher" accordé au
 masculin ou féminin, par son prénom, ou son nom.
 </p>
@@ -45,17 +45,17 @@ masculin ou féminin, par son prénom, ou son nom.
 <form action="{$platal->ns}mail" method="post" enctype="multipart/form-data">
   <table class='bicol'>
     <tr>
-      <th colspan="2">Ecrire un mail :</th>
+      <th colspan="2">Écrire un mail&nbsp;:</th>
     </tr>
     <tr>
-      <td class="titre">Expéditeur :</td>
+      <td class="titre">Expéditeur&nbsp;:</td>
       <td>
         <input type="text" name="from" size="55" maxlength="70"
           value="{if $smarty.request.from}{$smarty.request.from}{else}&quot;{$smarty.session.prenom} {$smarty.session.nom}&quot; <{$smarty.session.bestalias}@polytechnique.org>{/if}" />
       </td>
     </tr>
     <tr>
-      <td class="titre">Répondre à :</td>
+      <td class="titre">Répondre à&nbsp;:</td>
       <td>
         <input type="text" name="replyto" size="55" maxlength="70" value="{$smarty.request.replyto}" />
       </td>
@@ -97,7 +97,7 @@ masculin ou féminin, par son prénom, ou son nom.
     </tr>
     <tr>
       <td class="titre">
-        Sujet :
+        Sujet&nbsp;:
       </td>
       <td><input type="text" name="sujet" value="{$smarty.request.sujet|default:"remplir le sujet ..."}" size=55 maxlength=70></td>
     </tr>

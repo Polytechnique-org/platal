@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Gestion des télépaiements </h1>
+<h1>{$asso.nom}&nbsp;: Gestion des télépaiements </h1>
 
 <p class="descr">
-Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
+Voici la liste des paiements en ligne possible pour le groupe {$asso.nom} :
 </p>
 
 {foreach from=$titres item=p}
@@ -48,7 +48,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
       {elseif $ev.topay eq $ev.paid}
       Tu as déjà réglé l'intégralité de ton inscription ({$ev.topay}&euro;).
       {else}
-      Tu as réglé {$ev.paid}&euro; alors que tu n'en devais que {$ev.topay}&euro;
+      Tu as réglé {$ev.paid}&euro; alors que tu n'en devais que {$ev.topay}&euro;.
       {/if}
     {else}
     <a href="{$platal->ns}events/sub/{$ev.eid}">Tu peux t'inscire à cet événement.</a>
@@ -127,7 +127,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
   </tr>
   {elseif $smarty.foreach.people.first}
   <tr>
-    <td colspan="6" class="center">Personne n'a encore payé pour ce télépaiement</td>
+    <td colspan="6" class="center">Personne n'a encore payé pour ce télépaiement.</td>
   </tr>
   {else}
   <tr class="pair">

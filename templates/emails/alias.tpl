@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -47,7 +47,7 @@
             " />
       </td>
       <td>
-        Ton alias est actuellement : <strong>{$actuel}</strong>. Il est pour l'instant
+        Ton alias est actuellement&nbsp;: <strong>{$actuel}</strong>. Il est pour l'instant
         <span id="mail_public">{if $mail_public}public et apparaît donc sur ta fiche.{else}privé et n'apparaît nulle part sur le site.{/if}</span>
       </td>
     </tr>
@@ -68,14 +68,14 @@
 
   {if $actuel}
   <p>
-  <strong>Note : tu as déjà l'alias {$actuel}, or tu ne peux avoir qu'un seul alias à la fois.
+  <strong>Note&nbsp;: tu as déjà l'alias {$actuel}, or tu ne peux avoir qu'un seul alias à la fois.
     Si tu effectues une nouvelle demande l'ancien alias sera effacé.</strong>
   </p>
   {/if}
 
   {if $demande}
   <p>
-  <strong>Note : tu as déjà effectué une demande pour {$demande->alias}, dont le traitement est
+  <strong>Note&nbsp;: tu as déjà effectué une demande pour {$demande->alias}, dont le traitement est
     en cours. Si tu souhaites modifier ceci refais une demande, sinon ce n'est pas la peine.</strong>
   </p>
   {/if}
@@ -87,7 +87,7 @@
         <th>Demande d'alias</th>
       </tr>
       <tr>
-        <td>Alias demandé :</td>
+        <td>Alias demandé&nbsp;:</td>
       </tr>
       <tr>
         <td><input type="text" name="alias" value="{$r_alias}" />@{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#}</td>
@@ -107,7 +107,7 @@
         </td>
       </tr>
       <tr>
-        <td>Brève explication :</td>
+        <td>Brève explication&nbsp;:</td>
       </tr>
       <tr>
         <td><textarea rows="5" cols="50" name="raison">{$r_raison}</textarea></td>

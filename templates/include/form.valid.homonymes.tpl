@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -21,13 +21,13 @@
 {**************************************************************************}
 
 <tr class="pair">
-  <td class="titre">Adresse litigieuse :</td>
+  <td class="titre">Adresse litigieuse&nbsp;:</td>
   <td>
     {$valid->loginbis}@polytechnique.org
   </td>
 </tr>
 <tr class="pair">
-  <td class="titre">Homonymes :</td>
+  <td class="titre">Homonymes&nbsp;:</td>
   <td>
     {foreach from=$valid->homonymes_forlife item=o}
     <a href='profile/{$o}' class='popup2'>{$o}</a>

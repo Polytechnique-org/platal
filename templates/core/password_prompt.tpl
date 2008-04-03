@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -43,26 +43,12 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 </p>
 {/if}
 
-{if !$smarty.session.auth}
-<p>
-<strong>Tu ne connais pas ton mot de passe ?</strong>
-</p>
-<ul>
-  <li>
-  Si tu viens de terminer ta pré-inscription, <strong>il est dans le mail</strong> que
-  nous t'avons envoyé (expéditeur pre-inscription@{#globals.mail.domain#}).
-  </li>
-  <li>
-  Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
-    nous</strong> pour obtenir un accès. {#globals.core.sitename#} c'est l'e-mail des X,
-  l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accès le plus
-  rapidement possible. <strong> <a href="register/">Clique ici pour nous demander tes
-      paramètres personnels.</a></strong>
-  </li>
-</ul>
-{/if}
-
+{if $smarty.request.response}<!-- failed login code //-->
+<div class="erreur">
+  Erreur d'identification. Essaie à nouveau !
+</div>
 <br />
+{/if}
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;" style="display: none">
   <table class="bicol" cellpadding="4" summary="Formulaire de login">
@@ -75,7 +61,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr style="white-space: nowrap">
       <td class="titre">
-        Adresse email :
+        Adresse email&nbsp;:
       </td>
       <td>
         <input type="text" name="username" size="20" maxlength="50" value="{insert name="getUserName"}" />&nbsp;@&nbsp;<select name="domain">
@@ -97,29 +83,53 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr>
       <td></td>
-      <td {popup caption='Connexion permanente' width='300' text='Coche cette case pour être automatiquement reconnu à ta prochaine connexion
-        depuis cet ordinateur.<br />
-        Il n\'est pas conseillé de cocher la case si cette machine n\'est pas <b>strictement</b> personnelle'}>
-        <input type="checkbox" name="remember" id="remember" /><label for="remember">Garder l'accès aux services après déconnexion</label>
+      <td>
+        <script type="text/javascript">{literal}
+          function confirm_remember(input) {
+            if (input.checked && !confirm('Cocher cette case te permet d\'être automatiquement reconnu à ta prochaine connexion depuis cet ordinateur. '
+            + 'Il n\'est pas conseillé de cocher la case si cette machine n\'est pas strictement personnelle.\n\nVeux-tu vraiment cocher cette case ?')) {
+              input.checked = false;
+              return false;
+            }
+            return true;
+          }
+        {/literal}</script>
+        <input type="checkbox" name="remember" id="remember" onchange="return confirm_remember(this);" /><label for="remember">Garder l'accès aux services après déconnexion</label>
       </td>
     </tr>
     <tr>
       <td colspan="2">
       <table width="100%"><tr>
       <td>
-        <a href="recovery">mot de passe perdu ?</a>
+        <a href="recovery">Mot de passe perdu ?</a>
       </td>
       <td class="right">
-        <input type="submit" name="submitbtn" value="Envoyer" />
+        <input type="submit" name="submitbtn" value="Me connecter" />
       </td>
       </tr></table>
       </td>
     </tr>
   </table>
-  <p>     
-    Problème de connexion ? <a href="Xorg/FAQ?display=light#connect" class="popup2">La réponse est là.</a>
-  </p>
 </form>
+
+{if !$smarty.session.auth}
+<p>
+<strong>Tu ne connais pas ton mot de passe ?</strong>
+</p>
+<ul>
+  <li>
+  Si tu viens de terminer ta pré-inscription, <strong>il est dans le mail</strong> que
+  nous t'avons envoyé (expéditeur pre-inscription@{#globals.mail.domain#}).
+  </li>
+  <li>
+  Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
+    nous</strong> pour obtenir un accès. {#globals.core.sitename#} c'est l'e-mail des X,
+  l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accès le plus
+  rapidement possible. <strong> <a href="register/">Clique ici pour nous demander tes
+      paramètres personnels.</a></strong>
+  </li>
+</ul>
+{/if}
 
 <div id="nologin" style="background: #fcc; color: red">
   Pour assurer la confidentialité de ton mot de passe, il est chiffré sur ta machine
@@ -130,6 +140,10 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     <strong>Active le javascript et recharge cette page pour pouvoir te connecter.</strong>
   </div>
 </div>
+
+<p>     
+  <strong>Problème de connexion ?</strong> <a href="Xorg/FAQ?display=light#connect" class="popup2">La réponse est là.</a>
+</p>
 
 <script type="text/javascript">
   document.getElementById('login').style.display="";
@@ -154,13 +168,6 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
   <a href="Xorg/CertificatDeSécurité?display=light" class="popup2">sur cette page</a>.
   {/if}
 </div>
-
-{if $smarty.request.response}<!-- failed login code //-->
-<br />
-<div class="erreur">
-  Erreur d'identification. Essaie à nouveau !
-</div>
-{/if}
 
 <!-- Set up the form with the challenge value and an empty reply value //-->
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">

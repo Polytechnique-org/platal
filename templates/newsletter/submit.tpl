@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -46,12 +46,11 @@ Il te faut te limiter à 8 lignes de 68 caractères.
 {/if}
 
 <form action="nl/submit" method='post'>
-  <table class='tinybicol'>
+  <table class='bicol'>
     <tr><th>Version texte</th></tr>
     <tr id='text'>
     <td><pre>{$art->toText()}</pre></td>
     </tr>
-    {if $art->check()}
     <tr><th>Version html</th></tr>
     <tr id='html'>
       <td>
@@ -60,6 +59,7 @@ Il te faut te limiter à 8 lignes de 68 caractères.
         </div>
       </td>
     </tr>
+    {if $art->check()}
     <tr>
       <th>Soumettre</th>
     </tr>
@@ -120,7 +120,7 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant d
           {icon name=information title="Syntaxe wiki"} Voir les marqueurs de mise en forme autorisés
         </a>
       </td>
-    <tr>
+    </tr>
     <tr class='pair'>
       <td colspan='2' class='center'>
         <input type='submit' name='see' value='visualiser' />
