@@ -33,7 +33,7 @@
 //-->
 {/literal}
 </script> 
-<h2><a href="fusionax">Fusion des annuaires X.org - AX<a></h2>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX</a></h2>
 
 <h2>Import de l'annuaire AX</h2>
 {if $lastimport}
