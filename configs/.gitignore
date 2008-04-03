@@ -1,3 +1,4 @@
 platal.conf
 platal.cron
+ax_xorg_rsa.pem
 *.pem
