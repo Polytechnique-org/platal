@@ -19,9 +19,26 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+/**
+ * @brief Module to merge data from AX database
+ *
+ * Module to import data from another database of alumni that had
+ * different schemas. The organization that used this db is called AX
+ * hence the name of this module.
+ *
+ * Datas are stored in an external server and you need a private key
+ * to connect to their server.
+ */
 class FusionAxModule extends PLModule{
 
-    var $ax_xorg_rsa_key = dirname(__FILE__).'/../configs/ax_xorg_rsa.pem';
+    /// path ok private key file to connect to AX server
+    var $ax_xorg_rsa_key;
+
+    function __construct()
+    {
+        $this->ax_xorg_rsa_key =
+            dirname(__FILE__).'/../configs/ax_xorg_rsa.pem';
+    }
 
     function handlers()
     {
@@ -32,7 +49,8 @@ class FusionAxModule extends PLModule{
             'fusionax/misc'     => $this->make_hook('misc', AUTH_MDP, 'admin'),
         );
     }
-    
+
+
     function handler_index(&$page)
     {
         global $globals;
