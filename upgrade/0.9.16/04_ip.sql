@@ -37,6 +37,8 @@ ALTER TABLE ip_watch
 DROP PRIMARY KEY,
 DROP COLUMN ip,
 CHANGE COLUMN ip2 ip INT(11) UNSIGNED NOT NULL,
-ADD PRIMARY KEY ip (ip);
+ADD COLUMN mask int(11) unsigned NOT NULL DEFAULT 4294967295,
+ADD PRIMARY KEY ip (ip),
+ADD INDEX network (ip, mask);
 
 # vim:set syntax=mysql:

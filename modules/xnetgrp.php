@@ -209,7 +209,7 @@ class XnetGrpModule extends PLModule
         global $globals;
         $site = $globals->asso('site');
         if (!$site) {
-            $page->trig('Le groupe n\'a pas de site web');
+            $page->trig('Le groupe n\'a pas de site web.');
             return $this->handler_index($page);
         }
         http_redirect($site);
@@ -432,7 +432,7 @@ class XnetGrpModule extends PLModule
                            m.perms='admin' AS admin,
                            m.origine='X' AS x,
                            u.perms!='pending' AS inscrit,
-                           m.uid, IF(e.email IS NULL,NULL,1) AS actif
+                           m.uid, IF(e.email IS NULL AND FIND_IN_SET('googleapps', u.mail_storage) = 0, NULL, 1) AS actif
                      FROM  groupex.membres AS m
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
                 LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
@@ -510,10 +510,11 @@ class XnetGrpModule extends PLModule
                              . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
                              . "\n"
                              . "Bien cordialement,\n"
+                             . "-- \n"
                              . "{$_SESSION["prenom"]} {$_SESSION["nom"]}.";
                     $mailer->setTxtBody($message);
                     $mailer->send();
-                    $page->kill("$prenom $nom a bien été inscrit" . ($sexe ? 'e' : '') . ".");
+                    pl_redirect("member/$u");
                 }
                 elseif (Env::has('refuse'))
                 {
@@ -524,7 +525,7 @@ class XnetGrpModule extends PLModule
                     $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
                     $mailer->setTxtBody(Env::v('motif'));
                     $mailer->send();
-                    $page->kill("la demande $prenom $nom a bien été refusée");
+                    $page->kill("La demande de $prenom $nom a bien été refusée.");
                 } else {
                     $page->assign('show_form', true);
                     $page->assign('prenom', $prenom);
@@ -538,7 +539,7 @@ class XnetGrpModule extends PLModule
         }
 
         if (is_member()) {
-            $page->kill("tu es déjà membre !");
+            $page->kill("Tu es déjà membre !");
             return;
         }
 
@@ -722,7 +723,7 @@ class XnetGrpModule extends PLModule
                     pl_redirect("member/$email");
                 }
             } else {
-                $page->trig("« <strong>$email</strong> » n'est pas une adresse mail valide");
+                $page->trig("« <strong>$email</strong> » n'est pas une adresse mail valide.");
             }
         }
     }
@@ -857,10 +858,10 @@ class XnetGrpModule extends PLModule
         if ($res->numRows() == 0) {
             $x = get_not_registered_user($login);
             if (!$x) {
-                $page->trig("Le login $login ne correspond à aucun X");
+                $page->trig("Le login $login ne correspond à aucun X.");
                 return false;
             } else if (count($x) > 1) {
-                $page->trig("Le login $login correspond a plusieurs camarades");
+                $page->trig("Le login $login correspond a plusieurs camarades.");
                 return false;
             }
             $uid = $x[0]['user_id'];
@@ -959,7 +960,7 @@ class XnetGrpModule extends PLModule
                             $perms ? 'admin' : 'membre',
                             $user['uid'], $globals->asso('id'));
                 $user['perms'] = $perms;
-                $page->trig('permissions modifiées');
+                $page->trig('Permissions modifiées !');
             }
 
             // Update ML subscriptions
@@ -968,7 +969,7 @@ class XnetGrpModule extends PLModule
                 if ($ask == $state) {
                     if ($state && $email_changed) {
                         $mmlist->replace_email($ml, $from_email, $user['email2']);
-                        $page->trig("L'abonnement de {$user['prenom']} {$user['nom']} à $ml@ a été mis à jour");
+                        $page->trig("L'abonnement de {$user['prenom']} {$user['nom']} à $ml@ a été mis à jour.");
                     }
                     continue;
                 }
@@ -978,14 +979,14 @@ class XnetGrpModule extends PLModule
                                ."cours sur <strong>$ml@</strong> !!!");
                 } elseif ($ask) {
                     $mmlist->mass_subscribe($ml, Array($user['email2']));
-                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml@");
+                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml@.");
                 } else {
                     if ($email_changed) {
                         $mmlist->mass_unsubscribe($ml, Array($from_email));
                     } else {
                         $mmlist->mass_unsubscribe($ml, Array($user['email2']));
                     }
-                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml@");
+                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml@.");
                 }
             }
 
@@ -997,14 +998,14 @@ class XnetGrpModule extends PLModule
                     XDB::query("INSERT INTO  virtual_redirect (vid,redirect)
                                      SELECT  vid,{?} FROM virtual WHERE alias={?}",
                                $user['email'], $ml);
-                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml");
+                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml.");
                 } else {
                     XDB::query("DELETE FROM  virtual_redirect
                                       USING  virtual_redirect
                                  INNER JOIN  virtual USING(vid)
                                       WHERE  redirect={?} AND alias={?}",
                                $user['email'], $ml);
-                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml");
+                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml.");
                 }
             }
         }
@@ -1131,12 +1132,12 @@ class XnetGrpModule extends PLModule
                  ($art['promo_min'] != 0 && ($art['promo_min'] <= 1900 || $art['promo_min'] >= 2020)) ||
                  ($art['promo_max'] != 0 && ($art['promo_max'] <= 1900 || $art['promo_max'] >= 2020))))
             {
-                $page->trig("L'intervalle de promotions est invalide");
+                $page->trig("L'intervalle de promotions est invalide.");
                 Post::kill('valid');
             }
 
             if (!trim($art['titre']) || !trim($art['texte'])) {
-                $page->trig("L'article doit avoir un titre et un contenu");
+                $page->trig("L'article doit avoir un titre et un contenu.");
                 Post::kill('valid');
             }
 
@@ -1195,7 +1196,7 @@ class XnetGrpModule extends PLModule
                                     $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'),
                                     $upload);
                     $article->submit();
-                    $page->trig("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation");
+                    $page->trig("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation.");
                 } else if ($upload && $upload->exists()) {
                     $upload->rm();
                 }
@@ -1204,7 +1205,7 @@ class XnetGrpModule extends PLModule
                     $article = new NLReq(S::v('uid'), $globals->asso('nom') . " : " .$art['titre'],
                                          $art['texte'], $art['contact_html']);
                     $article->submit();
-                    $page->trig("La parution dans la Lettre Mensuelle est en attente de validation");
+                    $page->trig("La parution dans la Lettre Mensuelle est en attente de validation.");
                 }
             } else {
                 XDB::query("UPDATE groupex.announces
@@ -1240,7 +1241,7 @@ class XnetGrpModule extends PLModule
                 $art = $res->fetchOneAssoc();
                 $art['contact_html'] = $art['contacts'];
             } else {
-                $page->kill("Aucun article correspond à l'identifiant indiqué");
+                $page->kill("Aucun article correspond à l'identifiant indiqué.");
             }
         }
 

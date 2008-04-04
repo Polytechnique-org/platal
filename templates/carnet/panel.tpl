@@ -51,7 +51,11 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
     {if ($promo|@count) > 1}
       {$notifs->_cats[$cid].mail}&nbsp;:
     {else}
-      {$notifs->_cats[$cid].mail_sg}&nbsp;:
+      {if $promo[0].sexe}
+        {$notifs->_cats[$cid].mail_sg_xette}&nbsp;:
+      {else}
+        {$notifs->_cats[$cid].mail_sg}&nbsp;:
+      {/if}
     {/if}
   {/foreach}
 {/if}</h2>
@@ -80,7 +84,7 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
       {$promo[row].date|date_format}
     </td>
     {if $promo[row].data}
-    <tr><td>{$promo[row].data|smarty:nodefaults}</td></tr>
+    </tr><tr><td>{$promo[row].data|smarty:nodefaults}</td>
     {/if}
   </tr>
   {/section}

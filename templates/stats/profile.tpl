@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2006 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,40 +20,46 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1 style="clear: both">
-  {if $am->_date}
-  Lettre de l'AX du {$am->_date|date_format}
-  {else}
-  Lettre de l'AX en préparation
-  {/if}
+
+<h1>
+  Fiches les plus consultées
 </h1>
 
-<p style="float: left">
-{if $smarty.get.text}
-[<a href='{$platal->pl_self()}'>version HTML</a>]
-{else}
-[<a href='{$platal->pl_self()}?text=1'>version Texte</a>]
-{/if}
-{if !$am->_date}
-[<a href='ax/edit'>éditer</a>]
-{/if}
-</p>
+<ul>
+  <li>
+    {if $period neq 'overall'}<a href="stats/profile/overall">{/if}
+    Classement de tous les temps
+    {if $period neq 'overall'}</a>{/if}
+  </li>
+  <li>
+    {if $period neq 'year'}<a href="stats/profile/year">{/if}
+    Classement sur l'année écoulée
+    {if $period neq 'year'}</a>{/if}
+ </li>
+ <li>
+    {if $period neq 'month'}<a href="stats/profile/month">{/if}
+    Classement sur le mois écoulé
+    {if $period neq 'month'}</a>{/if}
+ </li>
+ <li>
+    {if $period neq 'week'}<a href="stats/profile/week">{/if}
+    Classement sur la semaine écoulée
+    {if $period neq 'week'}</a>{/if}
+ </li>
 
-{include file="include/massmailer-nav.tpl" mm=$am base=ax}
+</ul>
 
-<form method="post" action="{$platal->path}">
-  <div class='center' style="clear: both">
-    <input type='submit' value="me l'envoyer" name='send' />
-  </div>
-</form>
-
-<table class="bicol">
-  <tr><th>{$am->title(true)}</th></tr>
+<table class="tinybicol">
   <tr>
-    <td>
-      {include file="axletter/letter.mail.tpl"}
-    </td>
+    <th>Nom</th>
+    {if hasPerms('admin')}<th>Consultations</th>{/if}
   </tr>
+  {iterate from=$profiles item=profile}
+  <tr class="{cycle values="pair,impair"}">
+    <td><a href="profile/{$profile.forlife}" class="popup">{$profile.prenom} {$profile.nom} (X{$profile.promo})</a></td>
+    {if hasPerms('admin')}<td class="right">{$profile.count}</td>{/if}
+  </tr>
+  {/iterate}
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

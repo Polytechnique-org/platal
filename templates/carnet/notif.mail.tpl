@@ -35,17 +35,17 @@ Tu trouveras les mêmes informations sur [[https://www.polytechnique.org/carnet/
 
 {foreach from=$u.data key=cid item=d}
 
-!{if $d|@count eq 1}{$cats[$cid].mail_sg}{else}{$cats[$cid].mail}{/if}&nbsp;:
+!{if $d|@count eq 1}{if $d[0].sexe}{$cats[$cid].mail_sg_xette}{else}{$cats[$cid].mail_sg}{/if}{else}{$cats[$cid].mail}{/if}:
 
-{foreach from=$d key=promo item=x}
-* (X{$x.promo}), le {$x.date|date_format:"%d %b %Y"}, [[https://www.polytechnique.org/profile/private/{$x.bestalias}|{$x.prenom} {$x.nom}]]
+{foreach from=$d item=x}
+* (X{$x.promo}), le {$x.date|date_format:"%d %B %Y"}, [[https://www.polytechnique.org/profile/private/{$x.bestalias}|{$x.prenom} {$x.nom}]]
 {/foreach}
 
 {/foreach}
--- 
+--
 L'Équipe de Polytechnique.org
 
-'''''Note&nbsp;:'''''  Tu reçois ce mail ce mail car tu as activé la notification automatique par mail des événements que tu surveilles.\\
+'''''Note:'''''  Tu reçois ce mail ce mail car tu as activé la notification automatique par mail des événements que tu surveilles.\\
 Tu peux changer cette options sur la [[https://www.polytechnique.org/carnet/notifs|page de configuration des notifications]].
 
 {/if}

@@ -131,7 +131,18 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
     {/foreach}
     {if !$has_evts}
     <tr>
-      <td class="half">Aucun article actuellement</td>
+      <td class="half">
+        {if $smarty.session.core_rss_hash}
+        <a href="rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml" style="display:block;float:right" title="Annonces">
+          {icon name=feed title='fil rss'}
+        </a>
+        {else}
+        <a href='prefs/rss?referer=events'  style="display:block;float:right">
+          {icon name=feed_add title='Activer mon fil rss'}
+        </a>
+        {/if}
+        Aucun article actuellement
+      </td>
     </tr>
     {/if}
   </table>

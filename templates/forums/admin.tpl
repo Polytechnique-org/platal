@@ -20,50 +20,38 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Recherche dans l'annuaire</h1>
+Le tableau suivant permet de gérer la mise au ban (le bannissement) de certains utilisateurs aux forums.
 
-<form action="search" method="get"{if $show_js} id="quick_form"{/if}>
-  <table class="bicol" cellspacing="0" cellpadding="4">
-    {if $smarty.session.auth ge AUTH_COOKIE}
-    <tr>
-      <th colspan="2">
-        Recherche simple <span class="noprint">[<a href="search/adv">&gt;&gt;&gt;&nbsp;Recherche&nbsp;avancée</a>]</span>
-      </th>
-    </tr>
-    <tr>
-      <td colspan="2">
-        <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
-      </td>
-    </tr>
-    <tr class="noprint">
-      <td style="width: 78%">
-        <input type="checkbox" name="with_soundex" id="with_soundex" value="1" {if $smarty.request.with_soundex}checked="checked"{/if} /> <label for="with_soundex">Activer la recherche par proximité sonore.</label>
-        <br /><input type='checkbox' name='order' id="order" value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} /> <label for="order">Mettre les fiches modifiées récemment en premier.</label>
-        <br /><input type='checkbox' name='nonins' id="nonins" {if $smarty.request.nonins}checked='checked'{/if} value='1' /> <label for="nonins">Chercher uniquement des non inscrits.</label>
-      </td>
-    {else}
-    <tr class="noprint">
-      <td style="width: 78%">
-        <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
-      </td>
-    {/if}
-      <td class="right" style="vertical-align: middle">
-        <input type="submit" value="Chercher" />
-      </td>
-    </tr>
-  </table>
-</form>
+Chaque ligne permet de gérer les accès limités à :
+<ul>
+<li>une plage d'adresses IP donnée (entre ipmin et ipmax),</li>
+<li>à tout le monde (uid=0) ou seulement à un utilisateur donné,</li>
+<li>en restreignant l'accès en lecture à un ensemble de forums décrits par un masque,</li>
+<li>en restreignant l'accès en écriture à un ensemble de forums décrits par un masque.</li>
+</ul>
 
-<br />
+<p>
+Dans les masques le <strong>*</strong> remplace n'importe quel texte et le <strong>!</strong> bloque l'accès au lieu de l'autoriser. Par exemple : <code>xorg.*,!xorg.prive.*</code> autorise tous les forums xorg sauf ceux qui s'appellent xorg.prive.qqchose.
+</p>
 
-{if $show_js}
+<p>
+Les différentes règles sont appliquées par ordre de priorité décroissante.
+</p>
+
+{include file="core/table-editor.tpl"}
+
 {literal}
 <script type="text/javascript">
-  <!--
-  // Activate the first search input field.
-  document.getElementById("quick_form").quick.focus();
-  // -->
+  $('#body td table tr').each(function() { 
+    var uidcell = $('td:eq(3)',this);
+    if (uidcell.length != 1) {
+      return;
+    }
+    var uid = uidcell.text().replace(/^\s+/g,'').replace(/\s+$/g,'');
+    uidcell.replaceWith('<'+'a href="admin/user/'+uid+'">'+uid+'</'+'a>');
+  });
 </script>
 {/literal}
-{/if}
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+

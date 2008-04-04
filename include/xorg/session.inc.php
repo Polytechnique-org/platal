@@ -317,13 +317,13 @@ function start_connexion ($uid, $identified)
 function set_skin()
 {
     global $globals;
-    if (S::logged() && !S::has('skin')) {
+    if (S::logged() && (!S::has('skin') || S::has('suid'))) {
         $uid = S::v('uid');
-    $res = XDB::query("SELECT  skin_tpl
-                             FROM  auth_user_quick AS a
-                       INNER JOIN  skins           AS s ON a.skin = s.id
-                            WHERE  user_id = {?} AND skin_tpl != ''", $uid);
-    if ($_SESSION['skin'] = $res->fetchOneCell()) {
+        $res = XDB::query("SELECT  skin_tpl
+                          FROM  auth_user_quick AS a
+                          INNER JOIN  skins           AS s ON a.skin = s.id
+                          WHERE  user_id = {?} AND skin_tpl != ''", $uid);
+        if ($_SESSION['skin'] = $res->fetchOneCell()) {
             return;
         }
     }

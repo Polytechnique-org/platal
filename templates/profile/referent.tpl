@@ -27,6 +27,8 @@
 {include wiki=Docs.Emploi}
 {/if}
 
+<a name="mentors"></a>
+
 <p>
 Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#globals.core.sitename#}.
 </p>

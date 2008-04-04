@@ -36,7 +36,7 @@ require_once("xorg.misc.inc.php");
     ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
     es.label AS secteur, ef.fonction_fr AS fonction,
     IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,
-    COUNT(em.email) > 0 AS actif,';
+    (COUNT(em.email) > 0 OR FIND_IN_SET("googleapps", u.mail_storage) > 0) AS actif,';
 // hide private information if not logged
 if (S::logged())
     $globals->search->result_fields .='

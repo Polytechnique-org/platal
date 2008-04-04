@@ -1,5 +1,9 @@
 ================================================================================
-VERSION 0.9.16                                                        XX XX 2008
+VERSION 0.9.17                                                        XX XX 2008
+
+
+================================================================================
+VERSION 0.9.16                                                        31 03 2008
 
 New:
 
@@ -14,6 +18,7 @@ New:
 
     * Emails:
         - Imap mail storage can be activated/deactivated from interface    -VZA
+        - Mail storage backends are now integrated with redirections       -VZA
 
     * Lists:
         - Unsure mails are moderated                                       -FRU
@@ -23,10 +28,14 @@ New:
 
 Bug/Wish:
 
+    * Carnet:
+        - #734: Fix notification emails and carnet for female users        -VZA
+
     * Emails:
         - #726: Don't send the email if an attachment can't be downloaded  -FRU
         - #750: Fix email list in test email                               -FRU
         - #802: Fix upload content type checking on some buggy PHP         -FRU
+        - #803: Prevents UI from allowing 'last active alias deletion'     -Car
 
     * Lists:
         - #793: Show broken members on ML                                  -FRU
@@ -45,11 +54,13 @@ Bug/Wish:
         - #728: Update CSV                                                 -FRU
         - #743: Don't show a warning when subscriber has no forlife        -FRU
         - #730: XnetEvents are not synchronized with aliases               -VZA
+        - #772: Indicate there are members-only events for non-members     -JAC
 
     * XnetGrp:
         - #732: Adapt subscription text to sex                             -FRU
         - #735: Encoding of list description in member edition form        -FRU
         - #740: Can add a picture in the announces                         -FRU
+        - #799: Improve asked inscription interface                        -JAC
 
 From 0.9.15 branch:
 
@@ -1164,6 +1175,7 @@ ACRONYMS:
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
     * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
+    * JAC: Stéphane Jacob       (jacou)     <stephane.jacob@m4x.org>
     * JS : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>

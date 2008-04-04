@@ -161,20 +161,18 @@ class RegisterModule extends PLModule
                     }
 
                     // Check if the given email is known as dangerous
-                    $res = Xdb::iterRow("SELECT  w.state, w.description, a.alias
-                                           FROM  emails       AS e
-                                     INNER JOIN  emails_watch AS w ON (e.email = w.email AND w.state != 'safe')
-                                     INNER JOIN  aliases      AS a ON (e.uid = a.id AND a.type = 'a_vie')
-                                          WHERE  e.email = {?}
-                                       ORDER BY  a.alias", Post::v('email'));
-                    $aliases = array();
-                    while(list($gstate, $gdescription, $alias) = $res->next()) {
-                        $state       = $gstate;
-                        $description = $gdescription;
-                        $aliases[]   = $alias;
-                    }
-                    if (count($aliases) != 0) {
+                    $res = XDB::query("SELECT  w.state, w.description
+                                         FROM  emails_watch AS w
+                                        WHERE  w.email = {?} AND w.state != 'safe'",
+                                        Post::v('email'));
+                    $email_banned = false;
+                    if ($res->numRows()) {
+                        list($state, $description) = $res->fetchOneRow();
                         $alert .= "Email surveille propose a l'inscription - ";
+                        $sub_state['email_desc'] = $description;
+                        if ($state == 'dangerous') {
+                            $email_banned = true;
+                        }
                     }
                     if ($sub_state['watch']) {
                         $alter .= "Inscription d'un utilisateur surveillé - ";
@@ -193,12 +191,15 @@ class RegisterModule extends PLModule
                             $alert .= "Date de naissance incorrecte à l'inscription - ";
                         }
                         $sub_state['email']     = Post::v('email');
-                        if (check_ip('unsafe')) {
+                        $ip_banned = check_ip('unsafe');
+                        if ($ip_banned) {
+                            $alert .= "Tentative d'inscription depuis une IP surveillee";
+                        }
+                        if ($email_banned || $ip_banned) {
                             $err = "Une erreur s'est produite lors de l'inscription."
                                  . " Merci de contacter <a href='mailto:register@{$globals->mail->domain}>"
                                  . " register@{$globals->mail->domain}</a>"
                                  . " pour nous faire part de cette erreur";
-                            $alert .= "Tentative d'inscription depuis une IP surveillee";
                         } else {
                             $sub_state['step'] = 4;
                             if (count($sub_state['backs']) >= 3) {
@@ -403,7 +404,7 @@ class RegisterModule extends PLModule
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
                 $account = new GoogleAppsAccount(S::v('uid'), S::v('forlife'));
-                if ($account->g_status == 'active' && $account->sync_password) {
+                if ($account->active() && $account->sync_password) {
                     $account->set_password($password);
                 }
             }
@@ -482,8 +483,8 @@ class RegisterModule extends PLModule
         }
         if (Post::v('imap')) {
             require_once 'emails.inc.php';
-            $storage = new MailStorageIMAP(S::v('uid'));
-            $storage->enable();
+            $storage = new EmailStorage(S::v('uid'), 'imap');
+            $storage->activate();
         }
 
         pl_redirect('profile/edit');

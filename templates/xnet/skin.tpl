@@ -228,7 +228,7 @@
             - <a href="send_bug" class="popup_840x600">signaler un bug</a>
           {/if}
           <br />
-          © Copyright 2000-2008 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
+          Plat/al {#globals.version#} - © Copyright 2000-2008 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
         </td>
       </tr>
     {/if}

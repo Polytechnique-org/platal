@@ -316,6 +316,8 @@ Pour ceci changer ses permissions en 'disabled'.
   </table>
 </form>
 
+<p><strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong></p>
+
 <form id="bans" method="post" action="admin/user">
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>
@@ -325,10 +327,10 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
     <tr class="impair">
       <td class="titre">
-        Poster :
+        Poster
       </td>
       <td>
-        <input type="text" name="write_perm" size="40" maxlength="255" value="{$bans.write_perm}" />
+        <input type="text" name="write_perm" size="32" maxlength="255" value="{$bans.write_perm}" />
       </td>
       <td class="action">
         <a href="javascript:ban_write()">Bannir</a>
@@ -336,10 +338,10 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
     <tr class="pair">
       <td class="titre">
-        Lire :
+        Lire
       </td>
       <td>
-        <input type="text" name="read_perm" size="40" maxlength="255" value="{$bans.read_perm}" />
+        <input type="text" name="read_perm" size="32" maxlength="255" value="{$bans.read_perm}" />
       </td>
       <td class="action">
         <a href="javascript:ban_read()">Bannir</a>
@@ -349,10 +351,9 @@ Pour ceci changer ses permissions en 'disabled'.
       <td class="titre">
         Commentaire
       </td>
-      <td>
+      <td colspan="2">
         <input type="text" name="comment" size="40" maxlength="255" value="{$bans.comment}" />
       </td>
-      <td/>
     </tr>
     <tr class="center">
       <td colspan="3">
@@ -362,10 +363,6 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
   </table>
 </form>
-
-<p>
-<strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
-</p>
 
 {javascript name="ajax"}
 {test_email forlife=$mr.forlife}
@@ -377,14 +374,14 @@ Pour ceci changer ses permissions en 'disabled'.
         Redirections
       </th>
     </tr>
-    {assign var=actives value=false} 
-    {assign var=disabled value=false} 
+    {assign var=actives value=false}
+    {assign var=disabled value=false}
     {foreach item=mail from=$emails}
     {cycle assign=class values="impair,pair"}
     <tr class="{$class}">
-      {if $mail->active}
+      {if $mail->active && $mail->has_disable()}
         {assign var=actives value=true}
-      {elseif $mail->disabled}
+      {elseif $mail->disabled && $mail->has_disable()}
         {assign var=disabled value=true}
       {/if}
       <td class="titre">
@@ -401,18 +398,20 @@ Pour ceci changer ses permissions en 'disabled'.
       </td>
       <td>
         {if $mail->broken}<span style="color: #f00">{/if}
-        {$mail->email}
+        {$mail->display_email}
         {if $mail->broken}<em> (en panne)</em></span>{/if}
       </td>
       <td class="action">
+        {if $mail->is_removable()}
         <a href="javascript:del_fwd('{$mail->email}')">delete</a>
+        {/if}
       </td>
     </tr>
     {if $mail->panne && $mail->panne neq "0000-00-00"}
     <tr class="{$class}">
       <td colspan="3" class="smaller" style="color: #f00">
         {icon name=error title="Panne"}
-        Panne de {$mail->email} le {$mail->panne|date_format}
+        Panne de {$mail->display_email} le {$mail->panne|date_format}
         {if $mail->panne neq $mail->last}confirmée le {$mail->last|date_format}{/if}
       </td>
       <td class="action">

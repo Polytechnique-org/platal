@@ -49,7 +49,7 @@ class PlUpload
     private function makeFilename($file_id)
     {
         global $globals;
-        $filename = $globals->spoolroot . '/spool/uploads/temp/';
+        $filename = $globals->spoolroot . '/spool/tmp/';
         if (!file_exists($filename)) {
             if (!mkdir($filename)) {
                 trigger_error('can\'t create upload directory: ' . $filename, E_USER_ERROR);
@@ -162,7 +162,7 @@ class PlUpload
     static public function listRawFiles($forlife = '*', $category = '*', $uniq = false, $basename = false)
     {
         global $globals;
-        $filename = $globals->spoolroot . '/spool/uploads/temp/';
+        $filename = $globals->spoolroot . '/spool/tmp/';
         $filename .= $forlife . '--' . $category;
         if (!$uniq) {
             $filename .= '--*';

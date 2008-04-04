@@ -42,6 +42,7 @@ class EmailModule extends PLModule
     function handler_emails(&$page, $action = null, $email = null)
     {
         global $globals;
+        require_once 'emails.inc.php';
 
         $page->changeTpl('emails/index.tpl');
         $page->assign('xorg_title','Polytechnique.org - Mes emails');
@@ -65,21 +66,12 @@ class EmailModule extends PLModule
               ORDER BY  LENGTH(alias)";
         $page->assign('aliases', XDB::iterator($sql, $uid));
 
-    $homonyme = XDB::query("SELECT alias FROM aliases INNER JOIN homonymes ON (id = homonyme_id) WHERE user_id = {?} AND type = 'homonyme'", $uid);
-    $page->assign('homonyme', $homonyme->fetchOneCell());
+        $homonyme = XDB::query("SELECT alias FROM aliases INNER JOIN homonymes ON (id = homonyme_id) WHERE user_id = {?} AND type = 'homonyme'", $uid);
+        $page->assign('homonyme', $homonyme->fetchOneCell());
 
         // Affichage des redirections de l'utilisateur.
-        $sql = "SELECT email
-                FROM emails
-                WHERE uid = {?} AND FIND_IN_SET('active', flags)";
-        $page->assign('mails', XDB::iterator($sql, $uid));
-
-        // Affichage des backends actifs de stockage des emails.
-        $sql = "SELECT  mail_storage
-                  FROM  auth_user_md5
-                 WHERE  user_id = {?}";
-        $storages = XDB::query($sql, $uid)->fetchOneCell();
-        $page->assign('storage', explode(',', $storages));
+        $redirect = new Redirect($uid);
+        $page->assign('mails', $redirect->active_emails());
 
         // on regarde si l'utilisateur a un alias et si oui on l'affiche !
         $forlife = S::v('forlife');
@@ -231,26 +223,6 @@ class EmailModule extends PLModule
             $redirect->modify_one_email_redirect($email, $rewrite);
         }
 
-        if ($action == 'storage') {
-            if ($email == 'imap') {
-                $storage = new MailStorageIMAP(S::v('uid'));
-            } else if ($email == 'googleapps') {
-                $storage = new MailStorageGoogleApps(S::v('uid'));
-            } else {
-                $storage = NULL;
-            }
-
-            if ($storage) {
-                $subaction = @func_get_arg(3);
-                if ($subaction == 'active') {
-                    $storage->enable();
-                }
-                if ($subaction == 'inactive') {
-                    $storage->disable();
-                }
-            }
-        }
-
         if (Env::has('emailop')) {
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
@@ -286,17 +258,8 @@ class EmailModule extends PLModule
         $page->assign('alias', $res->fetchAllAssoc());
         $page->assign('emails',$redirect->emails);
 
-        $res = XDB::query(
-                "SELECT  mail_storage
-                   FROM  auth_user_md5
-                  WHERE  user_id = {?}", $uid);
-        $page->assign('storage', explode(',', $res->fetchOneCell()));
-
-        $res = XDB::query(
-                "SELECT  g_status
-                   FROM  gapps_accounts
-                  WHERE  l_userid = {?}", $uid);
-        $page->assign('googleapps', ($res->numRows() > 0 ? $res->fetchOneCell() : false));
+        require_once 'googleapps.inc.php';
+        $page->assign('googleapps', GoogleAppsAccount::account_status($uid));
     }
 
     function handler_antispam(&$page, $statut_filtre = null)
@@ -309,7 +272,7 @@ class EmailModule extends PLModule
 
         $bogo = new Bogo(S::v('uid'));
         if (isset($statut_filtre)) {
-            $bogo->change(S::v('uid'), $statut_filtre + 0);
+            $bogo->change($statut_filtre + 0);
         }
         $page->assign('filtre',$bogo->level());
     }
@@ -458,22 +421,22 @@ class EmailModule extends PLModule
     function handler_test(&$page, $forlife = null)
     {
         global $globals;
+        require_once 'emails.inc.php';
+
         if (!S::has_perms() || !$forlife) {
             $forlife = S::v('bestalias');
         }
-        $mailer = new PlMailer('emails/test.mail.tpl');
-        $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
-        $iterator = XDB::iterator("SELECT  email
-                                     FROM  emails AS e
-                               INNER JOIN  aliases AS a ON (e.uid = a.id)
-                                    WHERE  FIND_IN_SET('active', e.flags) AND a.alias = {?}",
-                                  $forlife);
-        $mailer->assign('redirects', $iterator);
-        $res = XDB::query("SELECT  FIND_IN_SET('femme', u.flags), prenom
+
+        $res = XDB::query("SELECT  FIND_IN_SET('femme', u.flags), prenom, user_id
                              FROM  auth_user_md5 AS u
                        INNER JOIN  aliases AS a ON (a.id = u.user_id)
                             WHERE  a.alias = {?}", $forlife);
-        list($sexe, $prenom) = $res->fetchOneRow();
+        list($sexe, $prenom, $uid) = $res->fetchOneRow();
+        $redirect = new Redirect($uid);
+
+        $mailer = new PlMailer('emails/test.mail.tpl');
+        $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
+        $mailer->assign('redirects', $redirect->active_emails());
         $mailer->assign('sexe', $sexe);
         $mailer->assign('prenom', $prenom);
         $mailer->send();
@@ -666,12 +629,14 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
         $page->changeTpl('emails/lost.tpl');
 
         $page->assign('lost_emails', XDB::iterator('
-          SELECT u.user_id, a.alias
-          FROM auth_user_md5 AS u
-            INNER JOIN aliases AS a ON (a.id = u.user_id AND a.type = "a_vie")
-            LEFT JOIN emails AS e ON (u.user_id=e.uid AND FIND_IN_SET("active",e.flags))
-          WHERE e.uid IS NULL AND u.deces = 0
-          ORDER BY u.promo DESC, u.nom, u.prenom'));
+            SELECT  u.user_id, a.alias
+              FROM  auth_user_md5 AS u
+        INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type = "a_vie")
+         LEFT JOIN  emails  AS e ON (u.user_id=e.uid AND FIND_IN_SET("active",e.flags))
+             WHERE  e.uid IS NULL AND
+                    FIND_IN_SET("googleapps", u.mail_storage) = 0 AND
+                    u.deces = 0
+          ORDER BY  u.promo DESC, u.nom, u.prenom'));
     }
 }
 

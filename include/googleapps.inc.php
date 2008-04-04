@@ -19,27 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// Checks the admin status of the @p account_name.
-function is_google_apps_administrator($account_name) {
-    static $last_account_name = null;
-    static $last_result = null;
-
-    if ($last_account_name == $account_name) {
-        return $last_result;
-    }
-
-    $res = XDB::query(
-        "SELECT  g_admin
-           FROM  gapps_accounts
-          WHERE  g_account_name = {?} AND g_status = 'active'",
-        $account_name);
-    $last_account_name = $account_name;
-    $last_result = ($res->numRows() > 0 ? (bool)$res->fetchOneRow() : false);
-    return $last_result;
-}
-
-// Post-queue job cleanup functions; they are used to update the plat/al database
-// when a specific Google Apps queue job enters 'success' state.
+// Post-processes the successful Google Apps account creation queue job.
 function post_queue_u_create($job) {
     global $globals;
 
@@ -51,15 +31,16 @@ function post_queue_u_create($job) {
         return;
     }
 
-    // Adds a redirection to the Google Apps delivery address.
+    // Adds a redirection to the Google Apps delivery address, if requested by
+    // the user at creation time.
     $account = new GoogleAppsAccount($userid, $forlife);
     if ($account->activate_mail_redirection) {
         require_once('emails.inc.php');
-        $storage = new MailStorageGoogleApps($userid);
-        $storage->enable();
+        $storage = new EmailStorage($userid, 'googleapps');
+        $storage->activate();
     }
 
-    // Sends an email to the account owner.
+    // Sends the 'account created' email to the user, with basic documentation.
     $res = XDB::query(
         "SELECT  FIND_IN_SET('femme', u.flags), prenom
            FROM  auth_user_md5 AS u
@@ -77,6 +58,7 @@ function post_queue_u_create($job) {
     $mailer->send();
 }
 
+// Post-processes the successful Google Apps account update queue job.
 function post_queue_u_update($job) {
     global $globals;
 
@@ -93,11 +75,11 @@ function post_queue_u_update($job) {
     if (isset($parameters['suspended']) && $parameters['suspended'] == false) {
         require_once('emails.inc.php');
         $account = new GoogleAppsAccount($userid, $forlife);
-        if ($account->g_status == 'active') {
+        if ($account->active()) {
             // Re-adds the email redirection (if the user did request it).
             if ($account->activate_mail_redirection) {
-                $storage = new MailStorageGoogleApps($userid);
-                $storage->enable();
+                $storage = new EmailStorage($userid, 'googleapps');
+                $storage->activate();
             }
 
             // Sends an email to the account owner.
@@ -120,13 +102,21 @@ function post_queue_u_update($job) {
 }
 
 // Reprensentation of an SQL-stored Google Apps account.
+// This class is the interface with the gappsd SQL tables: gappsd is the python
+// daemon which deals with Google Apps provisioning APIs.
+// TODO(vincent.zanotti): add the url of gappsd, when available.
 class GoogleAppsAccount
 {
+    // User identification: user id, and forlife.
     private $uid;
     public $g_account_name;
 
+    // Local account parameters.
     public $sync_password;
     public $activate_mail_redirection;
+
+    // Account status, obtained from Google Apps provisioning & reporting APIs.
+    public $g_account_id;
     public $g_status;
     public $g_suspension;
     public $r_disk_usage;
@@ -135,6 +125,7 @@ class GoogleAppsAccount
     public $r_last_webmail;
     public $reporting_date;
 
+    // Pending requests in the gappsd job queue (cf. top note).
     public $pending_create;
     public $pending_delete;
     public $pending_update;
@@ -143,17 +134,25 @@ class GoogleAppsAccount
     public $pending_update_password;
     public $pending_update_suspension;
 
+    // Pending requests in plat/al validation queue.
     public $pending_validation_unsuspend;
 
-    public function __construct($uid, $account_name)
+    // Constructs the account object, by retrieving all informations from the
+    // GApps account table, from GApps job queue, and from plat/al validation queue.
+    public function __construct($uid, $account_name = NULL)
     {
+        if ($account_name == NULL) {
+            require_once 'user.func.inc.php';
+            $account_name = get_user_forlife($uid, '_silent_user_callback');
+        }
+
         $this->uid = $uid;
         $this->g_account_name = $account_name;
         $this->g_status = NULL;
 
         $res = XDB::query(
             "SELECT  l_sync_password, l_activate_mail_redirection,
-                     g_account_name, g_status, g_suspension, r_disk_usage,
+                     g_account_name, g_account_id, g_status, g_suspension, r_disk_usage,
                      UNIX_TIMESTAMP(r_creation) as r_creation,
                      UNIX_TIMESTAMP(r_last_login) as r_last_login,
                      UNIX_TIMESTAMP(r_last_webmail) as r_last_webmail
@@ -163,6 +162,7 @@ class GoogleAppsAccount
         if ($account = $res->fetchOneAssoc()) {
             $this->sync_password = $account['l_sync_password'];
             $this->activate_mail_redirection = $account['l_activate_mail_redirection'];
+            $this->g_account_id = $account['g_account_id'];
             $this->g_status = $account['g_status'];
             $this->g_suspension = $account['g_suspension'];
             $this->r_disk_usage = $account['r_disk_usage'];
@@ -181,11 +181,10 @@ class GoogleAppsAccount
         }
     }
 
-    // Account object initialization methods.
+    // Determines if changes to the Google Account are currently waiting in the
+    // GApps job queue, and initializes the local values accordingly.
     private function load_pending_counts()
     {
-        // Determines if changes to the Google Account are currently waiting
-        // in the Google Apps queue.
         $res = XDB::query(
             "SELECT  SUM(j_type = 'u_create') AS pending_create,
                      SUM(j_type = 'u_update') AS pending_update,
@@ -206,6 +205,8 @@ class GoogleAppsAccount
         $this->pending_update_suspension = false;
     }
 
+    // Checks for unsuspend requests waiting for validation in plat/al
+    // validation queue.
     private function load_pending_validations()
     {
         require_once('validations.inc.php');
@@ -213,10 +214,11 @@ class GoogleAppsAccount
             Validate::get_typed_requests_count($this->uid, 'gapps-unsuspend');
     }
 
+    // Retrieves all the pending update job in the gappsd queue for the current
+    // user, and analyzes the scope of the update (ie. the fields in the user
+    // account which are going to be updated).
     private function load_pending_updates()
     {
-        // If updates are pending, determines their nature (more specifically:
-        // determines which part of the account is concerned).
         $res = XDB::iterator(
             "SELECT  j_parameters
                FROM  gapps_queue
@@ -240,7 +242,10 @@ class GoogleAppsAccount
     }
 
     // Creates a queue job of the @p type, for the user represented by this
-    // GoogleAppsAccount object, using @p parameters.
+    // GoogleAppsAccount object, using @p parameters. @p parameters is supposed
+    // to be a one-dimension array of key-value mappings.
+    // The created job as a 'normal' priority, and is scheduled for immediate
+    // execution.
     private function create_queue_job($type, $parameters) {
         $parameters["username"] = $this->g_account_name;
         XDB::execute(
@@ -255,21 +260,44 @@ class GoogleAppsAccount
             json_encode($parameters));
     }
 
+
+    // Returns true if the account is currently active.
+    public function active()
+    {
+        return $this->g_status == 'active';
+    }
+
+    // Returns true if the account exists in Google Apps.
+    public function provisioned()
+    {
+        return $this->g_status == 'active' or $this->g_status == 'disabled';
+    }
+
+    // Returns true if the account exists, but cannot be used (user-requested
+    // suspension, or Google-requested suspension).
+    public function suspended()
+    {
+        return $this->g_status == 'disabled';
+    }
+
+
     // Changes the GoogleApps password.
     public function set_password($password) {
-        if ($this->g_status == NULL || $this->g_status == 'unprovisioned') {
+        if (!$this->provisioned()) {
             return;
         }
 
         if (!$this->pending_update_password) {
             $this->create_queue_job('u_update', array('password' => $password));
+            $this->pending_update_password = true;
         }
     }
+
 
     // Changes the password synchronization status ("sync = true" means that the
     // Polytechnique.org password will be replicated to the Google Apps account).
     public function set_password_sync($sync) {
-        if ($this->g_status == NULL || $this->g_status == 'unprovisioned') {
+        if (!$this->provisioned()) {
             return;
         }
 
@@ -284,19 +312,24 @@ class GoogleAppsAccount
 
     // Suspends the Google Apps account.
     public function suspend() {
-        if ($this->g_status == NULL || $this->g_status == 'unprovisioned') {
+        if (!$this->provisioned()) {
             return;
         }
 
         if (!$this->pending_update_suspension) {
             $this->create_queue_job('u_update', array('suspended' => true));
             $this->pending_update_suspension = true;
+            XDB::execute(
+                "UPDATE  gapps_accounts
+                    SET  g_status = 'disabled'
+                  WHERE  g_account_name = {?} AND g_status = 'active'",
+                $this->g_account_name);
         }
     }
 
     // Adds an unsuspension request to the validation queue (used on user-request).
     public function unsuspend($activate_mail_redirection = NULL) {
-        if ($this->g_status == NULL || $this->g_status == 'unprovisioned') {
+        if (!$this->provisioned()) {
             return;
         }
         if ($activate_mail_redirection !== NULL) {
@@ -305,7 +338,8 @@ class GoogleAppsAccount
                 "UPDATE  gapps_accounts
                     SET  l_activate_mail_redirection = {?}
                   WHERE  g_account_name = {?}",
-                $activate_mail_redirection);
+                $activate_mail_redirection,
+                $this->g_account_name);
         }
 
         if (!$this->pending_update_suspension && !$this->pending_validation_unsuspend) {
@@ -319,7 +353,7 @@ class GoogleAppsAccount
     // Unsuspends the Google Apps account (used on admin-request, or on validation of
     // an user-request).
     public function do_unsuspend() {
-        if ($this->g_status == NULL || $this->g_status == 'unprovisioned') {
+        if (!$this->provisioned()) {
             return;
         }
 
@@ -346,7 +380,7 @@ class GoogleAppsAccount
         return false;
     }
 
-    // Adds a creation request in the job queue.
+    // Creates a new Google Apps account with the @p local parameters.
     public function create($password_sync, $password, $redirect_mails) {
         if ($this->g_status != NULL) {
             return;
@@ -361,7 +395,7 @@ class GoogleAppsAccount
                 $this->uid);
             list($nom, $nom_usage, $prenom) = $res->fetchOneRow();
 
-            // Adds an entry in the gapps_accounts table.
+            // Adds an 'unprovisioned' entry in the gapps_accounts table.
             XDB::execute(
                 "INSERT  INTO gapps_accounts
                     SET  l_userid = {?},
@@ -391,6 +425,26 @@ class GoogleAppsAccount
             // Updates the GoogleAppsAccount status.
             $this->__construct($this->uid, $this->g_account_name);
         }
+    }
+
+
+    // Returns the status of the Google Apps account for @p user, or false
+    // when no account exists.
+    static public function account_status($uid) {
+        $res = XDB::query(
+            "SELECT  g_status
+               FROM  gapps_accounts
+              WHERE  l_userid = {?}", $uid);
+        return ($res->numRows() > 0 ? $res->fetchOneCell() : false);
+    }
+
+    // Returns true if the @p user is an administrator of the Google Apps domain.
+    static public function is_administrator($uid) {
+        $res = XDB::query(
+            "SELECT  g_admin
+               FROM  gapps_accounts
+              WHERE  l_userid = {?} AND g_status = 'active'", $uid);
+        return ($res->numRows() > 0 ? (bool)$res->fetchOneRow() : false);
     }
 }
 
