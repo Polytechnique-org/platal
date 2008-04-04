@@ -21,7 +21,7 @@
 
 class FusionAxModule extends PLModule{
 
-    var $ax_xorg_rsa_key = 'ax_xorg_rsa.pem';
+    var $ax_xorg_rsa_key = dirname(__FILE__).'/../configs/ax_xorg_rsa.pem';
 
     function handlers()
     {
@@ -59,10 +59,10 @@ class FusionAxModule extends PLModule{
                     'lastimport',
                     "le ".date("d/m/Y à H:i",$globals->fusionax->LastUpdate));
             }
-            if (!file_exists(dirname(__FILE__).'/../configs/'.$this->ax_xorg_rsa_key)) {
+            if (!file_exists($this->ax_xorg_rsa_key)) {
                 $page->assign(
                     'keymissing',
-                    realpath(dirname(__FILE__).'/../configs/').'/'.$this->ax_xorg_rsa_key);
+                    $this->ax_xorg_rsa_key);
             }
             return;
         }
@@ -84,7 +84,7 @@ class FusionAxModule extends PLModule{
             // copie la clef d'authentification (paire de clef RSA dont la
             // partie publique est sur polytechniciens.com)
             if (!copy(
-                dirname(__FILE__).'/../configs/'.$this->ax_xorg_rsa_key,
+                $this->ax_xorg_rsa_key,
                 $tmpdir.'/ax_xorg_rsa'))
                 $report[] = 'Impossible de copier la clef pour se logger '.
                     'au serveur AX';
