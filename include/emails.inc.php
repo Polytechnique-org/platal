@@ -599,6 +599,13 @@ class Redirect
         }
         return $emails;
     }
+
+    // function get_uid() {{{2
+
+    public function get_uid()
+    {
+        return $this->uid;
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
