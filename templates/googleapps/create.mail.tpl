@@ -24,7 +24,7 @@
 {if $mail_part eq 'head'}
 {from full=#from#}
 {to addr=$email}
-{cc full=#from#}
+{cc full=#cc#}
 {subject text="[Polytechnique.org] Création de ton compte Google Apps"}
 {elseif $mail_part eq 'wiki'}
 {if $sexe}Chère{else}Cher{/if} {$prenom},
