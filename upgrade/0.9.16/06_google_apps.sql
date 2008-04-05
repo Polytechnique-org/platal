@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS `gapps_accounts` (
 CREATE TABLE IF NOT EXISTS `gapps_queue` (
   -- Queue identification fields.
   q_id INT NOT NULL AUTO_INCREMENT,
-  q_owner_id SMALLINT DEFAULT NULL,
-  q_recipient_id SMALLINT DEFAULT NULL,
+  q_owner_id SMALLINT UNSIGNED DEFAULT NULL,
+  q_recipient_id SMALLINT UNSIGNED DEFAULT NULL,
 
   -- Queue management information.
   p_entry_date DATETIME NOT NULL,
