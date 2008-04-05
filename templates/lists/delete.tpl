@@ -44,7 +44,7 @@ Tu n'es pas administrateur de la liste, mais du site.
   <table class='tinybicol' cellpadding='2' cellspacing='0'>
     <tr class='impair'>
       <td>
-        Veux tu réellement détruire la liste {$details.addr} ?<br />
+        Veux tu réellement détruire la liste {$details.addr}&nbsp;?<br />
         Pour valider ton choix, écris en majuscules (sans espace) « OUI »&nbsp;:
         <input type='text' size='3' maxlength='3' name="valid" />
       </td>

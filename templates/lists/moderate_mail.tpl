@@ -54,10 +54,10 @@
     </tr>
   </table>
   <ul>
-    <li>« Refuser » rejette le mail avec un message à son auteur (celui que tu tapes dans le cadre)</li>
+    <li>« Refuser » rejette le mail avec un message à son auteur (celui que tu tapes dans le cadre).</li>
     <li>
     « Spam » détruit efface le mail sans autre forme de procès, et c'est à utiliser <strong>UNIQUEMENT</strong>
-    pour les virus et les courriers indésirables
+    pour les virus et les courriers indésirables.
     </li>
   </ul>
 </form>
