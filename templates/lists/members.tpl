@@ -95,7 +95,7 @@
     </td>
     <td>
       {if $promo && strpos($x.l, '@') === false}
-      {if $x.b}<a href="marketing/broken/{$x.l}">{icon name=error}</a>{/if}
+      {if $x.b}<a href="https://www.polytechnique.org/marketing/broken/{$x.l}">{icon name=error}</a>{/if}
       <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
       {elseif $x.x}
       <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
@@ -137,7 +137,7 @@
     </td>
     <td>
       {if $promo && strpos($x.l, '@') === false}
-      {if $x.b}<a href="marketing/broken/{$x.l}">{icon name=error}</a>{/if}
+      {if $x.b}<a href="https://www.polytechnique.org/marketing/broken/{$x.l}">{icon name=error}</a>{/if}
       <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
       {elseif $x.x}
       <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
