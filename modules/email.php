@@ -459,7 +459,6 @@ class EmailModule extends PLModule
             $sel = XDB::query(
                     "SELECT  e.uid, a.alias
                        FROM  emails        AS e
-                 INNER JOIN  auth_user_md5 AS u ON e.uid = u.user_id
                  INNER JOIN  aliases       AS a ON (e.uid = a.id AND type!='homonyme'
                                                     AND FIND_IN_SET('bestalias',a.flags))
                       WHERE  e.email={?}", $email);
