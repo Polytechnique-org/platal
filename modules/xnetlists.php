@@ -166,7 +166,9 @@ class XnetListsModule extends ListsModule
         }
         foreach (array('', 'owner', 'admin', 'bounces', 'unsubscribe') as $app) {
             $mdir = $app == '' ? '+post' : '+' . $app;
-            $app  = '-' . $app;
+            if (!empty($app)) {
+                $app  = '-' . $app;
+            }
             XDB::execute('INSERT INTO x4dat.virtual (alias,type)
                                     VALUES({?},{?})', $liste. $app . '@'.$dom, 'list');
             XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)

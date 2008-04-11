@@ -93,11 +93,11 @@
   {/if}
   {if $it_is_xnet && ($details.own || $is_admin)}
   <tr>
-    <td><strong>Synchroniser</strong></td>
+    <td><strong>Synchroniser&nbsp;:</strong></td>
     {if $on neq sync}
-    <td>[<a href="{$platal->ns}lists/sync/{$platal->argv[1]}">Synchroniser avec l'annuaire</a>]</td>
+    <td>[<a href="{$platal->ns}lists/sync/{$platal->argv[1]}">synchroniser avec l'annuaire</a>]</td>
     {else}
-    <td>[Synchroniser avec l'annuaire]</td>
+    <td>[synchroniser avec l'annuaire]</td>
     {/if}
   </tr>
   {/if}

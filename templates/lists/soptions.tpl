@@ -52,8 +52,8 @@
     <tr class='impair'>
       <td>
         <strong>visibilité&nbsp;:</strong><br />
-        <span class='smaller'>si coché, la liste sera listée dans la page de l'ensemble des listes.
-          (les listes d'admin doivent être décochées)</span>
+        <span class='smaller'>si coché, la liste sera listée dans la page de l'ensemble des listes
+          (les listes d'admin doivent être décochées).</span>
       </td>
       <td>
         <input type='checkbox' name='advertised' {if $options.advertised}checked='checked'{/if} />
@@ -63,7 +63,7 @@
     <tr class='pair'>
       <td>
         <strong>archive&nbsp;:</strong><br />
-        <span class='smaller'>Liste archivée ?</span>
+        <span class='smaller'>liste archivée ?</span>
       </td>
       <td>
         <input type='checkbox' name='archive' {if $options.archive}checked='checked'{/if} />
@@ -73,7 +73,7 @@
     <tr class='impair'>
       <td>
         <strong>max_message_size&nbsp;:</strong><br />
-        <span class='smaller'>Taille maximale des posts en Ko:</span>
+        <span class='smaller'>taille maximale des posts en Ko.</span>
       </td>
       <td>
         <input type='text' name='max_message_size' value='{$options.max_message_size}' /> Ko

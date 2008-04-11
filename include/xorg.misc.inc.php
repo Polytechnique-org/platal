@@ -315,8 +315,10 @@ function check_redirect($red = null)
     if (is_null($red)) {
         $red = new Redirect(S::v('uid'));
     }
-    $_SESSION['no_redirect'] = !$red->other_active('');
-    $_SESSION['mx_failures'] = $red->get_broken_mx();
+    if ($red->get_uid() == S::v('uid')) {
+        $_SESSION['no_redirect'] = !$red->other_active('');
+        $_SESSION['mx_failures'] = $red->get_broken_mx();
+    }
 }
 
 function send_warning_mail($title)
