@@ -22,7 +22,7 @@ require_once 'platal.inc.php';
 
 function smarty_function_make_forlife($params, &$smarty)
 {
-  return make_forlife($params['nom'], $params['prenom'], $params['promo']);
+  return make_forlife($params['prenom'], $params['nom'], $params['promo']);
 }
 
 /* vim: set expandtab enc=utf-8: */
