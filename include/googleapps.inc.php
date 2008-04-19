@@ -444,7 +444,7 @@ class GoogleAppsAccount
             "SELECT  g_admin
                FROM  gapps_accounts
               WHERE  l_userid = {?} AND g_status = 'active'", $uid);
-        return ($res->numRows() > 0 ? (bool)$res->fetchOneRow() : false);
+        return ($res->numRows() > 0 ? (bool)$res->fetchOneCell() : false);
     }
 }
 
