@@ -192,7 +192,7 @@
         </form>
       </td></tr>
     </table>
-    <script type="text/javascript">activeEnable(); showRemove();</script>
+    <script type="text/javascript">showRemove(); activeEnable();</script>
   </div>
 {if $panne}
 <p class="smaller">
