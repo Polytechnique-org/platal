@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: Éditer l'accueil</h1>
+<h1>{if $asso.nom}{$asso.nom}&nbsp;: {/if}Éditer l'accueil</h1>
 
 <form method="post" action="{$platal->ns}edit" enctype="multipart/form-data">
   {if $super}

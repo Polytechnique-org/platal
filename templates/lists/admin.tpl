@@ -71,7 +71,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
           <option value="{$user.user_id}">{$user.prenom} {$user.nom} (X{$user.promo})</option>
         {/iterate}
         </select><br />
-        Action<a href="{$platal->pl_self()}#action_desc">*</a>&nbsp;:
+        Action*&nbsp;:
         <select name="mk_action[{$login}]" onchange="showEmail(this.value, '{$login}');">
           <option value="none">Aucune</option>
           <option value="marketu">Envoyer un mail en ton nom</option>
@@ -91,7 +91,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
 </form>
 
 <p class="smaller">
-  *: La dernière action ajoute simplement la liste de diffusion aux abonnements qui seront proposés au camarade
+  *La dernière action ajoute simplement la liste de diffusion aux abonnements qui seront proposés au camarade
   lors de son inscription à Polytechnique.org sans pour autant lui enovyer de mail de marketing. Cette action est
   automatique si tu choisis l'envoi de mail.
 </p>
@@ -137,7 +137,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
 
 
 <h1>
-  {$np_m|default:"0"} membre(s) dans la liste
+  {$np_m|default:"0"} membre{if $np_m > 1}s{/if} dans la liste
 </h1>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>

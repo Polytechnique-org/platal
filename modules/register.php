@@ -372,9 +372,13 @@ class RegisterModule extends PLModule
                  . " - sexe      : $femme\n"
                  . " - ip        : {$logger->ip} ({$logger->host})\n"
                  . ($logger->proxy_ip ? " - proxy     : {$logger->proxy_ip} ({$logger->proxy_host})\n" : "")
-                 . "\n\n"
-                 . "Les marketings suivants avaient été effectués :\n"
-                 . implode("\n", $market);
+                 . "\n\n";
+            if (count($market) > 0) {
+                $msg .= "Les marketings suivants avaient été effectués :\n"
+                     . implode("\n", $market);
+            } else {
+                $msg .= "$prenom $nom n'a jamais reçu de mail de marketing.";
+            }
             $mymail->setTxtBody($msg);
             $mymail->send();
         }

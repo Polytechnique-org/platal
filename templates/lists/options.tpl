@@ -68,7 +68,7 @@ Tu n'es pas administrateur de la liste, mais du site.
       <td>
         <strong>message d'adieu&nbsp;:</strong><br />
         <span class='smaller'>un texte d'au revoir incorporé au mail de départ envoyé aux
-          utilisateurs qui se désinscrivent.  Ce mail peut être désactivé.</span>
+          utilisateurs qui se désinscrivent. Ce mail peut être désactivé.</span>
       </td>
       <td>
         <input type='checkbox' name='send_goodbye_msg'
@@ -80,7 +80,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr class='impair'>
     <td>
         <strong>ajout dans le sujet&nbsp;:</strong><br />
-        <span class='smaller'>Un préfixe (optionnel) ajouté dans le sujet de chaque mail envoyé sur la liste te permet de trier plus facilement ton courrier.</span>
+        <span class='smaller'>un préfixe (optionnel) ajouté dans le sujet de chaque mail envoyé sur la liste te permet de trier plus facilement ton courrier.</span>
       </td>
       <td>
         <input type='text' name='subject_prefix' size='40' value="{$options.subject_prefix|utf8_encode}" />
@@ -89,16 +89,18 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr class='impair'>
       <td>
         <strong>notification de (dés)abonnement&nbsp;:</strong><br />
-        <span class='smaller'>notifier les modérateurs des inscriptions/désinscriptions d'utilisateurs sur cette liste.</span>
+        <span class='smaller'>notifier les modérateurs des (dés)inscriptions d'utilisateurs sur cette liste.</span>
       </td>
       <td>
         <input type='checkbox' name='admin_notify_mchanges'
-        {if $options.admin_notify_mchanges}checked='checked'{/if} /> Notification activée.
+        {if $options.admin_notify_mchanges}checked='checked'{/if} /> notifier les modérateurs.
       </td>
     </tr>
     <tr class='impair'>
       <td>
-        <strong>diffusion&nbsp;:</strong>
+        <strong>diffusion&nbsp;:</strong><br />
+        <span class='smaller'>l'envoi d'un mail à cette liste est-il libre, modéré lorsque l'expéditeur n'appartient pas à la liste
+        ou modéré dans tous les cas ?</span>
       </td>
       <td>
         <input type='radio' name='moderate' value='0'
@@ -106,7 +108,7 @@ Tu n'es pas administrateur de la liste, mais du site.
         checked='checked'{/if} />libre<br />
         <input type='radio' name='moderate' value='1'
         {if $options.generic_nonmember_action && !$options.default_member_moderation}
-        checked='checked'{/if} />modérée aux extérieurs<br />
+        checked='checked'{/if} />modérée pour les extérieurs<br />
         <input type='radio' name='moderate' value='2'
         {if $options.generic_nonmember_action && $options.default_member_moderation}
         checked='checked'{/if} />modérée
@@ -119,7 +121,7 @@ Tu n'es pas administrateur de la liste, mais du site.
       </td>
       <td>
         <input type='checkbox' name='subscribe_policy'
-        {if $options.subscribe_policy eq 2}checked='checked'{/if} /> Inscription modérée.
+        {if $options.subscribe_policy eq 2}checked='checked'{/if} /> inscription modérée.
       </td>
     </tr>
     <tr class='impair'>
@@ -129,15 +131,17 @@ Tu n'es pas administrateur de la liste, mais du site.
       </td>
       <td>
         <em><a name='antispam' id='antispam'></a>que faire des mails marqués « [spam probable] » ?</em><br />
-        <input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer<br />
+        <input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer&nbsp;;<br />
         <input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les envoyer aux modérateurs pour approbation...<br />
-        <input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> ... après suppression des plus probables*<br />
-        <input type='radio' name='bogo_level' value='3' {if $bogo_level eq 3}checked='checked'{/if} /> tous les supprimer
+        <input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> ... après suppression des
+        spams les plus probables*&nbsp;;<br />
+        <input type='radio' name='bogo_level' value='3' {if $bogo_level eq 3}checked='checked'{/if} /> tous les supprimer.
       </td>
     </tr>
     <tr>
       <td colspan="2" class="smaller">
-        *La troisième option permet de supprimer automatique les spams sûr à plus de 99,9999% qui sont peu susceptibles de produire des faux-positifs.
+        *La troisième option permet de supprimer automatiquement les spams sûrs à plus de 99,9999%, qui sont donc peu susceptibles
+        d'être des faux-positifs.
       </td>
     </tr>
   </table>

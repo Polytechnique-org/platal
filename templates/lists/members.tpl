@@ -29,36 +29,36 @@
 
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   <tr>
-    <td class='titre'> Adresse </td>
+    <td class='titre'>Adresse&nbsp;:</td>
     <td>{mailto address=$details.addr}</td>
   </tr>
   <tr>
-    <td class='titre'> Sujet </td>
+    <td class='titre'>Sujet&nbsp;:</td>
     <td>{$details.desc|smarty:nodefaults}</td>
   </tr>
   <tr>
-    <td class='titre'> Visibilité </td>
+    <td class='titre'>Visibilité&nbsp;:</td>
     <td>{if $details.priv eq 0}publique{elseif $details.priv eq 1}privée{else}admin{/if}</td>
   </tr>
   <tr>
-    <td class='titre'> Diffusion </td>
+    <td class='titre'>Diffusion&nbsp;:</td>
     <td>{if $details.diff eq 2}modérée{elseif $details.diff}restreinte{else}libre{/if}</td>
   </tr>
   <tr>
-    <td class='titre'> Inscription </td>
+    <td class='titre'>Inscription&nbsp;:</td>
     <td>{if $details.ins}modérée{else}libre{/if}</td>
   </tr>
   <tr>
-    <td class='titre'>Nb. membres:</td>
+    <td class='titre'>Nb. membres&nbsp;:</td>
     <td>{$nb_m|default:"0"}</td>
   </tr>
   <tr class="pair">
-    <td class="titre">Ton statut:</td>
+    <td class="titre">Ton statut&nbsp;:</td>
     <td>
       {if $details.sub>1}
       Tu es inscrit sur la liste.<br />
       Te désinscrire&nbsp;:
-      <a href='{$platal->pl_self(1)}?del=1'>{icon name=cross title="me désinsiscrire"}</a>
+      <a href='{$platal->pl_self(1)}?del=1'>{icon name=cross title="me désinscrire"}</a>
       {elseif $details.sub eq 1}
       Ta demande d'inscription est en cours de validation.
       {else}
@@ -95,7 +95,7 @@
     </td>
     <td>
       {if $promo && strpos($x.l, '@') === false}
-      {if $x.b}<a href="marketing/broken/{$x.l}">{icon name=error}</a>{/if}
+      {if $x.b}<a href="https://www.polytechnique.org/marketing/broken/{$x.l}">{icon name=error}</a>{/if}
       <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
       {elseif $x.x}
       <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
@@ -137,7 +137,7 @@
     </td>
     <td>
       {if $promo && strpos($x.l, '@') === false}
-      {if $x.b}<a href="marketing/broken/{$x.l}">{icon name=error}</a>{/if}
+      {if $x.b}<a href="https://www.polytechnique.org/marketing/broken/{$x.l}">{icon name=error}</a>{/if}
       <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
       {elseif $x.x}
       <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>

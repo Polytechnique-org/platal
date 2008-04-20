@@ -29,27 +29,27 @@
 
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   <tr>
-    <td class='titre'> Adresse </td>
+    <td class='titre'>Adresse&nbsp;:</td>
     <td>{mailto address=$details.addr}</td>
   </tr>
   <tr>
-    <td class='titre'> Sujet </td>
+    <td class='titre'>Sujet&nbsp;:</td>
     <td>{$details.desc}</td>
   </tr>
   <tr>
-    <td class='titre'> Visibilité </td>
+    <td class='titre'>Visibilité&nbsp;:</td>
     <td>{if $details.priv eq 0}publique{elseif $details.priv eq 1}privée{else}admin{/if}</td>
   </tr>
   <tr>
-    <td class='titre'> Diffusion </td>
+    <td class='titre'>Diffusion&nbsp;:</td>
     <td>{if $details.diff eq 2}modérée{elseif $details.diff}restreinte{else}libre{/if}</td>
   </tr>
   <tr>
-    <td class='titre'> Inscription </td>
+    <td class='titre'>Inscription&nbsp;:</td>
     <td>{if $details.ins}modérée{else}libre{/if}</td>
   </tr>
   <tr class="pair">
-    <td class="titre">Ton statut:</td>
+    <td class="titre">Ton statut&nbsp;:</td>
     <td>
       {if $details.sub>1}
       Tu es inscrit sur la liste.<br />

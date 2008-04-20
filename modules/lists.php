@@ -339,7 +339,7 @@ class ListsModule extends PLModule
         if (list($det) = $this->client->get_members($liste)) {
             if (substr($liste,0,5) != 'promo' && ($det['ins'] || $det['priv'])
                     && !$det['own'] && ($det['sub'] < 2)) {
-                $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
+                $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter.");
             }
             $get = Array('listname' => $liste, 'domain' => $domain);
             if (Post::has('updateall')) {
@@ -349,7 +349,7 @@ class ListsModule extends PLModule
             get_banana_params($get, null, $action, $artid);
             run_banana($page, 'MLBanana', $get);
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter.");
         }
     }
 
