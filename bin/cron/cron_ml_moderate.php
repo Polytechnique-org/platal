@@ -101,7 +101,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
         $end_of_headers = strpos($raw_mail, "\n\n");
     }
     $x_spam_flag = '';
-    if (preg_match('/^X-Spam-Flag: ([a-zA-Z]+), tests=bogofilter/m', substr($raw_mail, 0, $end_of_headers + 1), $matches) {
+    if (preg_match('/^X-Spam-Flag: ([a-zA-Z]+), tests=bogofilter/m', substr($raw_mail, 0, $end_of_headers + 1), $matches)) {
         $x_spam_flag = $matches[1];
     }
     if ($x_spam_flag == 'Unsure') {
