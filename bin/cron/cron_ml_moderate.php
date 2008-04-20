@@ -55,12 +55,14 @@ while ($sent_mails < $globals->lists->max_mail_per_min
         $action = 1;    /** 1 = ACCEPT **/
         $subject = "Message accepté";
         $append  = "a été accepté par $prenom $nom.\n";
+        $type = 'nonspam';
         $count += count($mem) + count($own);
         break;
       case 'refuse':
         $action = 2;    /** 2 = REJECT **/
         $subject = "Message refusé";
         $append  = "a été refusé par $prenom $nom avec la raison :\n\n" . $reason;
+        $type = 'nonspam';
         $count += count($own) + 1;
         break;
       case 'delete':
@@ -69,6 +71,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
         $append  = "a été supprimé par $prenom $nom.\n\n"
                  . "Rappel: il ne faut utiliser cette opération "
                  . "que dans le cas de spams ou de virus !\n";
+        $type = 'spam';
         $count += count($own);
         break;
     }
@@ -88,6 +91,24 @@ while ($sent_mails < $globals->lists->max_mail_per_min
         $mailer->setTxtBody($texte);
         $mailer->send();
     }
+
+    // if the mail was classified as Unsure, feed bogo
+    $raw_mail = html_entity_decode($client->get_pending_mail($list, $mid, 1));
+    // search for the X-Spam-Flag header
+    $end_of_headers = strpos($raw_mail, "\r\n\r\n");
+    if ($end_of_headers === false)     // sometimes headers are separated by \n
+        $end_of_headers = strpos($raw_mail, "\n\n");
+    $x_spam_flag = '';
+    if (preg_match('/^X-Spam-Flag: ([a-zA-Z]+), tests=bogofilter/m', substr($raw_mail, 0, $end_of_headers + 1), $matches))
+        $x_spam_flag = $matches[1];
+    if ($x_spam_flag == 'Unsure') {
+            $mailer = new PlMailer();
+            $mailer->addTo($type . '@' . $globals->mail->domain);
+            $mailer->setFrom('"' . $prenom . ' ' . $nom . '" <web@' . $globals->mail->domain . '>');
+            $mailer->setTxtBody($type . ' soumis par ' . $prenom . ' ' . $nom . ' via la modération de la liste ' . $list . '@' . $domain);
+            $mailer->addAttachment($raw_mail, 'message/rfc822', $type . '.mail', false);
+            $mailer->send();
+        }
 
     // release the lock
     XDB::execute("DELETE FROM ml_moderate WHERE handler = {?}",
