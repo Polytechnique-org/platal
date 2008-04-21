@@ -153,7 +153,7 @@ abstract class Validate
     // }}}
     // {{{ function handle_formu()
 
-    /** fonction à réaliser en cas de valistion du formulaire
+    /** fonction à réaliser en cas de validation du formulaire
      */
     public function handle_formu()
     {
