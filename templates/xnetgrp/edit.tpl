@@ -173,7 +173,7 @@
         <select name="pub">
           <option value="public" {if $asso.pub eq 'public'}selected="selected"{/if}>Publique</option>
           <option value="membre" {if $asso.pub eq 'membre'}selected="selected"{/if}>Aux membres du groupe</option>
-          <option value="private" {if $asso.pub eq 'private'}selected="selected"{/if}>Aux administrateurs du groupe</option>
+          <option value="private" {if $asso.pub eq 'private'}selected="selected"{/if}>Aux animateurs du groupe</option>
         </select>
       </td>
     </tr>
