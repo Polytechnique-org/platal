@@ -406,7 +406,8 @@ class AdminModule extends PLModule
             }
             $mr = $r->fetchOneAssoc();
 
-            if (!is_numeric($login)) { //user has a forlife
+            // Checks the user has a forlife, as non-registered user can't have redirections.
+            if ($mr['forlife']) {
                 $redirect = new Redirect($mr['user_id']);
             }
 
