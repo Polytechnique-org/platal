@@ -74,8 +74,10 @@ function user_clear_all_subs($user_id, $really_del=true)
     // Deactivates, when available, the Google Apps account of the user.
     if ($globals->mailstorage->googleapps_domain) {
         require_once 'googleapps.inc.php';
-        $account = new GoogleAppsAccount($uid, $alias);
-        $account->suspend();
+        if (GoogleAppsAccount::account_status($uid)) {
+            $account = new GoogleAppsAccount($uid, $alias);
+            $account->suspend();
+        }
     }
 }
 
