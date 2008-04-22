@@ -149,6 +149,9 @@ class GoogleAppsAccount
         $this->uid = $uid;
         $this->g_account_name = $account_name;
         $this->g_status = NULL;
+        if (!$this->g_account_name) {
+            return;
+        }
 
         $res = XDB::query(
             "SELECT  l_sync_password, l_activate_mail_redirection,
