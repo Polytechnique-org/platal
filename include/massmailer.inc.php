@@ -183,7 +183,8 @@ abstract class MassMailer
              INNER JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
              INNER JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
               LEFT JOIN  emails          AS e  ON(e.uid=u.user_id AND e.flags='active')
-                  WHERE  ni.last < {?} AND ({$this->subscriptionWhere()}) AND e.email IS NOT NULL
+                  WHERE  ni.last < {?} AND ({$this->subscriptionWhere()}) AND
+                         (e.email IS NOT NULL OR FIND_IN_SET('googleapps', u.mail_storage))
                GROUP BY  u.user_id";
     }
 
