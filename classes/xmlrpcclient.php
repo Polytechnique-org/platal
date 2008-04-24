@@ -109,7 +109,7 @@ class XmlrpcClient
         }
         $result = $this->find_and_decode_xml($answer);
         if ($this->bt) {
-            if (isset($result['faultCode'])) {
+            if (is_array($result) && isset($result['faultCode'])) {
                 $this->bt->update(0, $result['faultString']);
             } else {
                 $this->bt->update(count($result));
