@@ -74,7 +74,7 @@
 <p>
   S'il y a trop d'indésirables, il est probablement plus rapide pour la suite de les
   jeter directement et non de les modérer en modifant le réglage de
-  l'<a href="{$platal->ns}lists/options/{$platal->argv[1]}#antispam">antispam</a>. 
+  l'<a href="{$platal->ns}lists/options/{$platal->argv[1]}#antispam">antispam</a>.
 </p>
 
 {javascript name="jquery"}
@@ -94,6 +94,51 @@ function toggleAll() {
 //]]></script>
 
 <form method="post" action="{$platal->pl_self(1)}">
+{if $with_fromx}
+<table class="bicol" style="margin-bottom: 1ex">
+  <tr>
+    <th colspan="2"></th>
+    <th>Mail</th>
+    <th>Infos</th>
+    <th colspan="2"></th>
+  </tr>
+  <tr>
+    <th class="smaller" colspan="6">
+      Les mails suivants proviennent d'adresses identifiées comme étant celles de camarades.
+    </th>
+  </tr>
+  {foreach from=$mails item=m name=mail}
+  {if $m.fromx}
+  <tr class='{cycle values="pair,impair"}'>
+    <td>
+      <input type="checkbox" name="select_mails[{$m.id}]" {if $smarty.foreach.mail.total eq 1}checked="checked"{/if}/>
+    </td>
+    <td>
+      <strong>De&nbsp;:</strong><br />
+      <strong>Sujet&nbsp;:</strong>
+    </td>
+    <td>
+      {$m.sender}<br />
+      {$m.subj|hdc|smarty:nodefaults}
+    </td>
+    <td class='right'>
+      <small>le {$m.stamp|date_format:"%x"} à {$m.stamp|date_format:"%X"}<br />
+      {$m.size} octets</small>
+    </td>
+    <td class='action'>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>{icon name=add title="Accepter le message"}</a>
+    </td>
+    <td class='action'>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Spam !"}</a>
+    </td>
+  </tr>
+  {/if}
+  {/foreach}
+</table>
+{/if}
+
+{if $with_nonfromx}
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>
     <th>
@@ -105,6 +150,7 @@ function toggleAll() {
     <th colspan="2"></th>
   </tr>
   {foreach from=$mails item=m name=mail}
+  {if !$m.fromx}
   <tr class='{cycle values="pair,impair"}'>
     <td>
       <input type="checkbox" class="moderate_email" name="select_mails[{$m.id}]" {if $smarty.foreach.mail.total eq 1}checked="checked"{/if}/>
@@ -129,12 +175,15 @@ function toggleAll() {
       <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Spam !"}</a>
     </td>
   </tr>
+  {/if}
   {/foreach}
 </table>
+{/if}
+
 <p class="center desc">
   Utilise ces boutons pour appliquer une action à tous les mails sélectionnés.<br />
   <input type="hidden" name="moderate_mails" value="1" />
-  <input type="submit" name="mok" value="Accepter" /> 
+  <input type="submit" name="mok" value="Accepter" />
   <input type="submit" name="mdel" value="Spam !" />
 </p>
 </form>

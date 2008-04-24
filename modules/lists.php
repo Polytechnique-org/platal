@@ -480,6 +480,11 @@ class ListsModule extends PLModule
         if (list($subs,$mails) = $this->get_pending_ops($domain, $liste)) {
             foreach ($mails as $key=>$mail) {
                 $mails[$key]['stamp'] = strftime("%Y%m%d%H%M%S", $mail['stamp']);
+                if ($mail['fromx']) {
+                    $page->assign('with_fromx', true);
+                } else {
+                    $page->assign('with_nonfromx', true);
+                }
             }
             $page->assign_by_ref('subs', $subs);
             $page->assign_by_ref('mails', $mails);
