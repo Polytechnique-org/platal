@@ -274,7 +274,7 @@
     {if $googleapps eq 'active'}
     <td>
       <a href="googleapps">
-        <strong>Compte GMail / Google Apps</strong>
+        <strong>Compte Google Apps / Polytechnique.org</strong>
       </a><br />Hébergé par Google
     </td>
     <td style="text-align: center; vertical-align: middle">
@@ -286,7 +286,7 @@
       {if $googleapps eq 'disabled'}
       Ton compte Google Apps est actuellement inactif.<br />
       {else}
-      Tu n'as pas encore de compte Google Apps sur Polytechnique.org.<br />
+      Tu n'as pas encore de compte Google Apps pour Polytechnique.org.<br />
       {/if}
       <a href="googleapps">Plus d'informations &hellip;</a>
     </td>

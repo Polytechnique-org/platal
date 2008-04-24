@@ -20,29 +20,31 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Ton compte Google Apps / Polytechnique.org</h1>
+<h1>Ton compte Google Apps pour Polytechnique.org</h1>
 
 <p>Polytechnique.org te fournit un compte <b>Google Apps</b> qui te permet de disposer
   des applications web de Google (<a href="http://mail.google.com/a/polytechnique.org/">GMail</a>,
   <a href="http://www.google.com/calendar/hosted/polytechnique.org/">Google Calendar</a>,
   <a href="http://docs.google.com/a/polytechnique.org/">Google Docs</a>, et bien d'autres)
-  sur ton adresse Polytechnique.org habituelle (<a href="Xorg/GoogleApps">plus d'informations</a>).
+  sur ton adresse Polytechnique.org habituelle (<a href="Xorg/GoogleApps">en savoir plus</a>).
 </p>
 
 {if !$account->g_status}
-<p>Tu peux créer ton compte <i>Google Apps / Polytechnique.org</i> en utilisant le
+{if !$has_password_sync}
+<p>Tu peux créer ce compte indépendant <i>Google Apps pour Polytechnique.org</i> en utilisant le
   formulaire ci-dessous.
 </p>
 <p><b>Attention :</b> ce compte Google Apps est hébergé par <b>Google</b>, et non
-  par Polytechnique.org. Nous te déconseillons d'y ranger des informations
+  par Polytechnique.org. Nous te déconseillons d'y conserver des informations
   confidentielles ou sensibles !<br />&nbsp;
 </p>
+{/if}
 
 <table class="bicol" id="create">
   <col width="8%" />
   <col width="92%" />
   <tr>
-    <th colspan="2">Création d'un compte Google Apps</th>
+    <th colspan="2">Création de ton compte Google Apps</th>
   </tr>
 
   {if !$has_password_sync}
@@ -55,10 +57,12 @@
         <input type="radio" name="password_sync" value="1" checked="checked" id="pwsync_true" />
       </td>
       <td>
-        <label for="pwsync_true">Utiliser le même mot de passe pour Google Apps et Polytechnique.org.</label><br />
+        <label for="pwsync_true">Utiliser ton mot de passe Polytechnique.org pour ton compte Google Apps.</label><br />
         <span style="font-size: smaller; font-style: italic;">
-          Tes futurs changements de mot de passe seront synchronisés avec ton compte Google Apps.
-          Ton mot de passe ne sera jamais transmis non-chiffré par Polytechnique.org.
+          Les futurs changements de ton mot de passe seront répercutés sur ton compte Google Apps.
+        </span><br />
+        <span style="font-size: smaller; font-weight: bold;">
+          Réglage recommandé par Polytechnique.org.
         </span>
       </td>
     </tr>
@@ -67,7 +71,7 @@
         <input type="radio" name="password_sync" value="0" id="pwsync_false" />
       </td>
       <td>
-        <label for="pwsync_false">Utiliser un mot de passe différent pour Google Apps.</label>
+        <label for="pwsync_false">Utiliser un nouveau mot de passe pour ton compte Google Apps.</label>
       </td>
     </tr>
     <tr class="impair">
@@ -126,15 +130,17 @@
         <input type="radio" name="redirect_mails" value="1" checked="checked" id="redirection_true" />
       </td>
       <td>
-        <label for="redirection_true">Rediriger mes emails vers mon compte Google Apps.</label><br />
+        <label for="redirection_true">Ajouter une redirection de mes emails vers mon compte Google Apps.</label><br />
         <span style="font-size: smaller;">
-          Tes emails <i>Polytechnique.org</i> seront redirigés vers ton webmail <i>GMail</i> de Google Apps,
-          en plus d'être redirigés vers tes adresses actuelles.<br /><br />
-          <b>Attention : ton compte Google Apps est hébergé par <i>Google, Inc.</i></b><br />
-          Nous te déconseillons donc de rediriger tes emails vers Google Apps si tu utilises tes adresses Polytechnique.org
-          à des fin professionnelles ou pour des communications confidentielles.
+          Tes <em>Polytechnique.org</em> seront redirigés vers ton nouveau webmail, en plus de tes redirections actuelles.<br /><br />
+          <strong>Attention : ton compte Google Apps est hébergé par <em>Google</em>.</strong><br />
+          Si tu utilises tes adresses <em>Polytechnique.org</em> pour des communications confidentielles ou dans un cadre professionnel,
+          nous te déconseillons donc de rediriger tes emails vers Google Apps.
         </span>
       </td>
+    </tr>
+    <tr class="pair">
+      <td colspan="2" style="text-align: center">- ou -</td>
     </tr>
     <tr class="pair">
       <td style="text-align: center">
@@ -143,10 +149,19 @@
       <td>
         <label for="redirection_false">Ne <i>pas</i> rediriger mes emails vers mon compte Google Apps.</label><br />
         <span style="font-size: smaller;">
+          Tu ne pourras pas lire tes emails dans ton nouveau webmail Google Apps.<br />
+          <strong>Ce réglage n'est pas recommandé par Polytechnique.org.</strong>
         </span>
       </td>
     </tr>
 
+    <tr class="impair">
+      <td colspan="2"><b>Création du compte :</b></td>
+    </tr>
+    <tr class="impair">
+      <td></td>
+      <td>La mise en place du compte Google Apps prends quelques minutes. Tu recevras un email explicatif dès l'opération terminée.</td>
+    </tr>
     <tr class="impair">
       <td colspan="2" style="text-align:center">
         <input type="hidden" name="password_sync" value="{$password_sync}" />
@@ -317,7 +332,7 @@
     <td>
       <ul style="margin-top: 0">
         <li><a href="password">Changer ce mot de passe commun</a></li>
-        <li><a href="googleapps/password/nosync#password">Choisir d'avoir des mots de passe indépendants</a></li>
+        <li><a href="googleapps/password/nosync#password">Ne plus répercuter les changements de mot de passe vers Google Apps</a></li>
       </ul>
     </td>
   </tr>
@@ -384,11 +399,11 @@
 
   <tr class="impair">
     {if $redirect_active and !$redirect_unique}
-    <td>Tu reçois tes emails Polytechnique.org entre autres sur ton compte mail Google Apps.</td>
+    <td>Tes emails Polytechnique.org sont redirigés vers Google Apps, en plus de tes autres redirections.</td>
     {elseif $redirect_active}
-    <td>Tu ne reçois tes emails Polytechnique.org <em>que</em> sur ton compte mail Google Apps.</td>
+    <td>Tes emails Polytechnique.org ne sont redirigés que vers Google Apps.</td>
     {else}
-    <td>Tu ne reçois <em>pas</em> tes emails Polytechnique.org sur ton compte mail Google Apps.</td>
+    <td>Tu ne reçois <em>pas</em> tes emails Polytechnique.org sur ton webmail Google Apps.</td>
     {/if}
   </tr>
   <tr class="pair">

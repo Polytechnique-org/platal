@@ -264,7 +264,7 @@ class EmailStorage extends Email
     // Shortname to realname mapping for known mail storage backends.
     private $display_names = array(
         'imap'       => 'Accès de secours aux emails (IMAP)',
-        'googleapps' => 'Compte GMail / Google Apps',
+        'googleapps' => 'Compte Google Apps',
     );
 
     // Retrieves the current list of actives storages.
