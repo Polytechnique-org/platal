@@ -77,10 +77,29 @@
   l'<a href="{$platal->ns}lists/options/{$platal->argv[1]}#antispam">antispam</a>. 
 </p>
 
+{javascript name="jquery"}
+<script type="text/javascript">//<![CDATA[
+{literal}
+var toggleState = false;
+function toggleAll() {
+  toggleState = !toggleState;
+  var boxes = $(":checkbox.moderate_email");
+  if (toggleState) {
+    boxes.attr("checked", "checked");
+  } else {
+    boxes.removeAttr("checked");
+  }
+}
+{/literal}
+//]]></script>
+
 <form method="post" action="{$platal->pl_self(1)}">
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>
-    <th colspan="2"></th>
+    <th>
+      <a href="javascript:toggleAll()">{icon name="arrow_refresh" title="Tout (dé)cocher"}</a>
+    </th>
+    <th></th>
     <th>Mail</th>
     <th>Infos</th>
     <th colspan="2"></th>
@@ -88,7 +107,7 @@
   {foreach from=$mails item=m name=mail}
   <tr class='{cycle values="pair,impair"}'>
     <td>
-      <input type="checkbox" name="select_mails[{$m.id}]" {if $smarty.foreach.mail.total eq 1}checked="checked"{/if}/>
+      <input type="checkbox" class="moderate_email" name="select_mails[{$m.id}]" {if $smarty.foreach.mail.total eq 1}checked="checked"{/if}/>
     </td>
     <td>
       <strong>De&nbsp;:</strong><br />
