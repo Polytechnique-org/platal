@@ -67,6 +67,7 @@
 </form>
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass2">
 <p>
+{xsrf_token_field}
 <input type="hidden" name="response2"  value="" />
 </p>
 </form>

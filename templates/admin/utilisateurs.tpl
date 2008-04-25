@@ -28,6 +28,7 @@
 
 {if $smarty.post.u_kill_conf}
 <form method="post" action="admin/user">
+  {xsrf_token_field}
   <div class="center">
     <input type="hidden" name="user_id" value="{$smarty.request.user_id}" />
     Confirmer la suppression de {$smarty.request.user_id}&nbsp;&nbsp;
@@ -37,6 +38,7 @@
 {else}
 
 <form method="post" action="admin/user">
+  {xsrf_token_field}
   <table class="tinybicol" cellspacing="0" cellpadding="2">
     <tr>
       <th>
@@ -117,6 +119,7 @@ function ban_read()
 {/literal}
 
 <form id="auth" method="post" action="admin/user">
+  {xsrf_token_field}
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>
       <th colspan="2">
@@ -272,6 +275,7 @@ Ne pas utiliser [Désinscrire] si le but est d'exclure la personne.
 Pour ceci changer ses permissions en 'disabled'.
 </p>
 <form id="alias" method="post" action="admin/user">
+  {xsrf_token_field}
   <table class="tinybicol" cellpadding="2" cellspacing="0">
     <tr>
       <th class="alias" colspan="3">
@@ -319,6 +323,7 @@ Pour ceci changer ses permissions en 'disabled'.
 <p><strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong></p>
 
 <form id="bans" method="post" action="admin/user">
+  {xsrf_token_field}
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>
       <th colspan="4">
@@ -368,6 +373,7 @@ Pour ceci changer ses permissions en 'disabled'.
 {test_email forlife=$mr.forlife}
 
 <form id="fwds" method="post" action="admin/user#fwds">
+  {xsrf_token_field}
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr>
       <th colspan="4">

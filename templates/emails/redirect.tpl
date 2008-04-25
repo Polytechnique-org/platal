@@ -188,6 +188,7 @@
           Ajouter une adresse email&nbsp;:
           <input type="text" size="35" maxlength="60" name="email" value="" />
           &nbsp;&nbsp;<input type="submit" value="ajouter" name="emailop" />
+          {xsrf_token_field}
         </div>
         </form>
       </td></tr>

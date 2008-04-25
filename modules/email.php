@@ -223,7 +223,7 @@ class EmailModule extends PLModule
             $redirect->modify_one_email_redirect($email, $rewrite);
         }
 
-        if (Env::has('emailop')) {
+        if (Env::has('emailop') && Session::has_xsrf_token()) {
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
@@ -234,6 +234,8 @@ class EmailModule extends PLModule
                 $page->assign('retour', $redirect->modify_email($actifs,
                     Env::v('emails_rewrite',Array())));
             }
+        } else if (Env::has('emailop')) {
+            $page->trig('L\'ajout d\'une nouvelle redirection a échoué, merci de réessayer.');
         }
 
         $res = XDB::query(

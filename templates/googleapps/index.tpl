@@ -122,6 +122,7 @@
     {/if}
 
     <form action="googleapps/create" method="post" id="changepass2">
+    {xsrf_token_field}
     <tr class="pair">
       <td colspan="2"><b>Redirection des emails :</b></td>
     </tr>
@@ -295,6 +296,7 @@
       Si tu ne souhaites plus utiliser ton compte, tu peux le désactiver :<br /><br />
       <div class="center">
         <form action="googleapps/suspend" method="post">
+          {xsrf_token_field}
           <input type="submit" name="suspend" value="Désactiver mon compte Google Apps" />
         </form>
       </div>
@@ -379,6 +381,7 @@
             </table>
           </form>
           <form action="googleapps/password#password" method="post" id="changepass2">
+            {xsrf_token_field}
             <input type="hidden" name="response2"  value="" />
           </form><br />
           Pour une sécurité optimale, ton mot de passe circule de manière sécurisée (https).

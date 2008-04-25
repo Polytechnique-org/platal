@@ -413,6 +413,9 @@ class AdminModule extends PLModule
 
             // Check if there was a submission
             foreach($_POST as $key => $val) {
+                if (!Session::has_xsrf_token()) {
+                    $page->kill("L'opération de modification de l'utilisateur a échouée, merci de réessayer.");
+                }
                 switch ($key) {
                     case "add_fwd":
                         $email = trim(Env::v('email'));
@@ -820,22 +823,27 @@ class AdminModule extends PLModule
 
         $page->assign('promo',$promo);
 
-        if ($validate) {
+        if ($validate && Session::has_xsrf_token()) {
             $new_deces = array();
             $res = XDB::iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
             while (list($uid,$mat,$nom,$prenom,$deces) = $res->next()) {
                 $val = Env::v($mat);
-            if($val == $deces || empty($val)) continue;
-            XDB::execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
-            $new_deces[] = array('name' => "$prenom $nom", 'date' => "$val");
-            if($deces=='0000-00-00' or empty($deces)) {
-                require_once('notifs.inc.php');
-                register_watch_op($uid, WATCH_DEATH, $val);
-                require_once('user.func.inc.php');
-                user_clear_all_subs($uid, false);   // by default, dead ppl do not loose their email
-            }
+                if($val == $deces || empty($val)) {
+                    continue;
+                }
+
+                XDB::execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
+                $new_deces[] = array('name' => "$prenom $nom", 'date' => "$val");
+                if($deces == '0000-00-00' || empty($deces)) {
+                    require_once('notifs.inc.php');
+                    register_watch_op($uid, WATCH_DEATH, $val);
+                    require_once('user.func.inc.php');
+                    user_clear_all_subs($uid, false);   // by default, dead ppl do not loose their email
+                }
             }
             $page->assign('new_deces',$new_deces);
+        } else if (!$validate) {
+            $page->trig("La mise à jour des dates de decès à échouée, merci de réessayer.");
         }
 
         $res = XDB::iterator('SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = {?} ORDER BY nom,prenom', $promo);
@@ -919,7 +927,11 @@ class AdminModule extends PLModule
 
         if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
             $req = Validate::get_typed_request(Env::v('uid'), Env::v('type'), Env::v('stamp'));
-            if($req) { $req->handle_formu(); }
+            if($req && Session::has_xsrf_token()) {
+                $req->handle_formu();
+            } else if ($req) {
+                $page->trig("L'opération a échoué, merci de réessayer.");
+            }
         }
 
         $r = XDB::iterator('SHOW COLUMNS FROM requests_answers');
@@ -1018,6 +1030,7 @@ class AdminModule extends PLModule
            $page->setRssLink('Changement Récents',
                              '/Site/AllRecentChanges?action=rss&user=' . S::v('forlife') . '&hash=' . S::v('core_rss_hash'));
         }
+
         // update wiki perms
         if ($action == 'update') {
             $perms_read = Post::v('read');
@@ -1100,8 +1113,12 @@ class AdminModule extends PLModule
         $page->assign('states', $states);
 
         switch (Post::v('action')) {
-        case 'create':
+          case 'create':
             if (trim(Post::v('ipN')) != '') {
+                if (!Session::has_xsrf_token()) {
+                    $page->trig("L'ajout d'une IP à surveiller a échoué, merci de réessayer.");
+                    break;
+                }
                 Xdb::execute('INSERT IGNORE INTO ip_watch (ip, mask, state, detection, last, uid, description)
                                           VALUES ({?}, {?}, {?}, CURDATE(), NOW(), {?}, {?})',
                              ip_to_uint(trim(Post::v('ipN'))), ip_to_uint(trim(Post::v('maskN'))),
@@ -1109,16 +1126,24 @@ class AdminModule extends PLModule
             };
             break;
 
-        case 'edit':
+          case 'edit':
+            if (!Session::has_xsrf_token()) {
+                $page->trig("L'édition de l'IP a échoué, merci de réessayer.");
+                break;
+            }
             Xdb::execute('UPDATE ip_watch
                              SET state = {?}, last = NOW(), uid = {?}, description = {?}, mask = {?}
                            WHERE ip = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'),
                           ip_to_uint(Post::v('maskN')), ip_to_uint(Post::v('ipN')));
             break;
 
-        default:
+          default:
             if ($action == 'delete' && !is_null($ip)) {
-                Xdb::execute('DELETE FROM ip_watch WHERE ip = {?}', ip_to_uint($ip));
+                if (Session::has_xsrf_token()) {
+                    Xdb::execute('DELETE FROM ip_watch WHERE ip = {?}', ip_to_uint($ip));
+                } else {
+                    $page->trig("La suppression de l'adresse IP a échouée, merci de réssayer.");
+                }
             }
         }
         if ($action != 'create' && $action != 'edit') {

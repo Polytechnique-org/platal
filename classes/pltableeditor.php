@@ -192,7 +192,8 @@ class PLTableEditor
     {
         $page->changeTpl('core/table-editor.tpl');
         $list = true;
-        if ($action == 'delete') {
+
+        if ($action == 'delete' && Session::has_xsrf_token()) {
             if (!isset($this->delete_action)) {
                 foreach ($this->jtables as $table => $j)
                     XDB::execute("DELETE FROM {$table} WHERE {$j['joinid']} = {?}{$j['joinextra']}", $id);
@@ -208,6 +209,8 @@ class PLTableEditor
             } else {
                 $page->trig("Impossible de supprimer l'entrée.");
             }
+        } else if ($action == 'delete') {
+            $page->trig("Impossible de supprimer l'entrée, merci de réessayer.");
         }
         if ($action == 'edit') {
             $r = XDB::query("SELECT * FROM {$this->table} WHERE {$this->idfield} = {?} AND {$this->whereclause}",$id);
@@ -237,7 +240,7 @@ class PLTableEditor
             }
             $list = false;
         }
-        if ($action == 'update') {
+        if ($action == 'update' && Session::has_xsrf_token()) {
             $values = "";
             $cancel = false;
             foreach ($this->vars as $field => $descr) {
@@ -286,6 +289,8 @@ class PLTableEditor
             if (!$this->auto_return) {
                 return $this->apply($page, 'edit', $id);
             }
+        } else if ($action == 'update') {
+            $page->trig("Impossible de mettre à jour, merci de réessayer.");
         }
         if ($action == 'sort') {
             $this->sortfield = $id;

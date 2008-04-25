@@ -59,7 +59,7 @@
     </td>
     <td class="right">
       <a href="admin/ipwatch/edit/{$ip.ip}">{icon name=page_edit title="Editer"}</a>
-      <a href="admin/ipwatch/delete/{$ip.ip}">{icon name=delete title="Supprimer"}</a>
+      <a href="admin/ipwatch/delete/{$ip.ip}?token={xsrf_token}">{icon name=delete title="Supprimer"}</a>
     </td>
   </tr>
   {/foreach}
@@ -67,6 +67,7 @@
 {elseif $action eq "create" || $action eq "edit"}
 [<a href="admin/ipwatch">Retour à la liste des IPs surveillées</a>]<br /><br />
 <form method="post" action="admin/ipwatch">
+{xsrf_token_field}
 <table class="tinybicol">
   <tr>
     <th colspan="2">Commenter une adresse IP</th>

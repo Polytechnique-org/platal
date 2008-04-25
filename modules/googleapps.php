@@ -68,12 +68,18 @@ class GoogleAppsModule extends PLModule
                 } else if ($subaction == 'nosync') {
                     $account->set_password_sync(false);
                 } else if (Post::has('response2') && !$account->sync_password) {
-                    $account->set_password(Post::v('response2'));
+                    if (Session::has_xsrf_token()) {
+                        $account->set_password(Post::v('response2'));
+                    } else {
+                        $page->trig("Le changement de ton mot de passe Google Apps a échoué, merci de réessayer.");
+                    }
                 }
             }
 
             if ($action == 'suspend' && Post::has('suspend') && $account->active()) {
-                if ($account->pending_update_suspension) {
+                if (!Session::has_xsrf_token()) {
+                    $page->trig("La demande de suspension de ton compte a échouée, merci de réessayer.");
+                } else if ($account->pending_update_suspension) {
                     $page->trig("Ton compte est déjà en cours de désactivation.");
                 } else {
                     if ($redirect->modify_one_email('googleapps', false) == SUCCESS) {
@@ -101,8 +107,12 @@ class GoogleAppsModule extends PLModule
                     $password = Post::v('response2');
                 }
 
-                $account->create($password_sync, $password, $redirect_mails);
-                $page->trig("La demande de création de ton compte Google Apps a bien été enregistrée.");
+                if (Session::has_xsrf_token()) {
+                    $account->create($password_sync, $password, $redirect_mails);
+                    $page->trig("La demande de création de ton compte Google Apps a bien été enregistrée.");
+                } else {
+                    $page->trig("La demande de création de ton compte Google Apps a échouée, merci de réessayer.");
+                }
             }
         }
 
