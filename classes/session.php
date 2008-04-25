@@ -28,6 +28,7 @@ class Session
             $_SESSION['challenge'] = sha1(uniqid(rand(), true));
         }
         if (empty($_SESSION['xsrf_token'])) {
+            require_once 'xorg.misc.inc.php';
             $_SESSION['xsrf_token'] = rand_url_id();
         }
         if (!isset($_SESSION['perms']) || !($_SESSION['perms'] instanceof FlagSet)) {
