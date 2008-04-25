@@ -187,7 +187,7 @@ class PlatalModule extends PLModule
     {
         global $globals;
 
-        if (Post::has('response2') && Session::has_xsrf_token())  {
+        if (Post::has('response2') && S::has_xsrf_token())  {
             require_once 'secure_hash.inc.php';
 
             $_SESSION['password'] = $password = Post::v('response2');

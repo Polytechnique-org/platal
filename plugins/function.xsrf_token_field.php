@@ -20,8 +20,8 @@
  ***************************************************************************/
 
 function smarty_function_xsrf_token_field($params, &$smarty) {
-    if (Session::has('xsrf_token')) {
-        return '<input type="hidden" name="token" value="' . Session::v('xsrf_token') . '" />';
+    if (S::has('xsrf_token')) {
+        return '<input type="hidden" name="token" value="' . S::v('xsrf_token') . '" />';
     }
     return '';
 }

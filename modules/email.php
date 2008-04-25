@@ -223,7 +223,7 @@ class EmailModule extends PLModule
             $redirect->modify_one_email_redirect($email, $rewrite);
         }
 
-        if (Env::has('emailop') && Session::has_xsrf_token()) {
+        if (Env::has('emailop') && S::has_xsrf_token()) {
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {

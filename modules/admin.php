@@ -413,7 +413,7 @@ class AdminModule extends PLModule
 
             // Check if there was a submission
             foreach($_POST as $key => $val) {
-                if (!Session::has_xsrf_token()) {
+                if (!S::has_xsrf_token()) {
                     $page->kill("L'opération de modification de l'utilisateur a échouée, merci de réessayer.");
                 }
                 switch ($key) {
@@ -823,7 +823,7 @@ class AdminModule extends PLModule
 
         $page->assign('promo',$promo);
 
-        if ($validate && Session::has_xsrf_token()) {
+        if ($validate && S::has_xsrf_token()) {
             $new_deces = array();
             $res = XDB::iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
             while (list($uid,$mat,$nom,$prenom,$deces) = $res->next()) {
@@ -927,7 +927,7 @@ class AdminModule extends PLModule
 
         if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
             $req = Validate::get_typed_request(Env::v('uid'), Env::v('type'), Env::v('stamp'));
-            if($req && Session::has_xsrf_token()) {
+            if($req && S::has_xsrf_token()) {
                 $req->handle_formu();
             } else if ($req) {
                 $page->trig("L'opération a échoué, merci de réessayer.");
@@ -1115,7 +1115,7 @@ class AdminModule extends PLModule
         switch (Post::v('action')) {
           case 'create':
             if (trim(Post::v('ipN')) != '') {
-                if (!Session::has_xsrf_token()) {
+                if (!S::has_xsrf_token()) {
                     $page->trig("L'ajout d'une IP à surveiller a échoué, merci de réessayer.");
                     break;
                 }
@@ -1127,7 +1127,7 @@ class AdminModule extends PLModule
             break;
 
           case 'edit':
-            if (!Session::has_xsrf_token()) {
+            if (!S::has_xsrf_token()) {
                 $page->trig("L'édition de l'IP a échoué, merci de réessayer.");
                 break;
             }
@@ -1139,7 +1139,7 @@ class AdminModule extends PLModule
 
           default:
             if ($action == 'delete' && !is_null($ip)) {
-                if (Session::has_xsrf_token()) {
+                if (S::has_xsrf_token()) {
                     Xdb::execute('DELETE FROM ip_watch WHERE ip = {?}', ip_to_uint($ip));
                 } else {
                     $page->trig("La suppression de l'adresse IP a échouée, merci de réssayer.");

@@ -193,7 +193,7 @@ class PLTableEditor
         $page->changeTpl('core/table-editor.tpl');
         $list = true;
 
-        if ($action == 'delete' && Session::has_xsrf_token()) {
+        if ($action == 'delete' && S::has_xsrf_token()) {
             if (!isset($this->delete_action)) {
                 foreach ($this->jtables as $table => $j)
                     XDB::execute("DELETE FROM {$table} WHERE {$j['joinid']} = {?}{$j['joinextra']}", $id);
@@ -240,7 +240,7 @@ class PLTableEditor
             }
             $list = false;
         }
-        if ($action == 'update' && Session::has_xsrf_token()) {
+        if ($action == 'update' && S::has_xsrf_token()) {
             $values = "";
             $cancel = false;
             foreach ($this->vars as $field => $descr) {

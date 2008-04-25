@@ -221,7 +221,7 @@ class XnetGrpModule extends PLModule
         global $globals;
         $page->changeTpl('xnetgrp/edit.tpl');
 
-        if (Post::has('submit') && Session::has_xsrf_token()) {
+        if (Post::has('submit') && S::has_xsrf_token()) {
             if (S::has_perms()) {
                 if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
                     $page->trig("le domaine doit être un FQDN (aucune modif effectuée) !!!");

@@ -330,7 +330,7 @@ class CSVImporter
                 $fields[]     = $key;
             }
             if ($current == 'valid' && Env::has('csv_valid')) {
-                if (!Session::has_xsrf_token()) {
+                if (!S::has_xsrf_token()) {
                     $page->kill("L'opération n'a pas pu être effectuée, merci de réessayer.");
                 }
                 $this->run($_SESSION['csv_action'], $insert, $update);

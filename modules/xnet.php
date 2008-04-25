@@ -80,7 +80,7 @@ class XnetModule extends PLModule
                                         Get::v('del'));
             list($id, $nom, $domain) = $res->fetchOneRow();
             $page->assign('nom', $nom);
-            if ($id && Post::has('del') && Session::has_xsrf_token()) {
+            if ($id && Post::has('del') && S::has_xsrf_token()) {
                 XDB::query('DELETE FROM groupex.membres WHERE asso_id={?}', $id);
                 $page->trig('membres supprimés');
 
@@ -111,7 +111,7 @@ class XnetModule extends PLModule
             }
         }
 
-        if (Post::has('diminutif') && Session::has_xsrf_token()) {
+        if (Post::has('diminutif') && S::has_xsrf_token()) {
             XDB::query('INSERT INTO groupex.asso (id,diminutif)
                                  VALUES(NULL,{?})', Post::v('diminutif'));
             pl_redirect('../'.Post::v('diminutif').'/edit');
