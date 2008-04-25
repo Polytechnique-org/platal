@@ -27,6 +27,9 @@ class Session
         if (empty($_SESSION['challenge'])) {
             $_SESSION['challenge'] = sha1(uniqid(rand(), true));
         }
+        if (empty($_SESSION['xsrf_token'])) {
+            $_SESSION['xsrf_token'] = rand_url_id();
+        }
         if (!isset($_SESSION['perms']) || !($_SESSION['perms'] instanceof FlagSet)) {
             $_SESSION['perms'] = new FlagSet();
         }
@@ -72,6 +75,11 @@ class Session
     public static function has_perms()
     {
         return Session::logged() && Session::v('perms')->hasFlag(PERMS_ADMIN);
+    }
+
+    public static function has_xsrf_token()
+    {
+        return Session::has('xsrf_token') && Session::v('xsrf_token') == Env::v('token');
     }
 
     public static function logged()
