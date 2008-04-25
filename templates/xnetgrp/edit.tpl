@@ -23,6 +23,7 @@
 <h1>{if $asso.nom}{$asso.nom}&nbsp;: {/if}Éditer l'accueil</h1>
 
 <form method="post" action="{$platal->ns}edit" enctype="multipart/form-data">
+  {xsrf_token_field}
   {if $super}
   <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>
