@@ -43,7 +43,7 @@
         return 1;
       } else if (char >= 'A' && char <= 'Z') {
         return 2;
-      } else if (char >= '1' && char <= '2') {
+      } else if (char >= '0' && char <= '9') {
         return 3;
       } else {
         return 4;
