@@ -362,6 +362,7 @@ class RegisterModule extends PLModule
             $mymail->setSubject("Inscription de $prenom $nom (X$promo)");
             $mymail->setFrom('"Webmaster Polytechnique.org" <web@' . $globals->mail->domain . '>');
             $mymail->addTo($globals->register->notif);
+            $mymail->addHeader('Reply-To', $globals->register->notif);
             $msg = "$prenom $nom (X$promo) a terminé son inscription avec les données suivantes :\n"
                  . " - nom       : $nom\n"
                  . " - prenom    : $prenom\n"
