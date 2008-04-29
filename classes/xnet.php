@@ -57,6 +57,12 @@ class Xnet extends Platal
         return null;
     }
 
+    public function pl_self($n = null)
+    {
+        global $globals;
+        return str_replace('%grp', $globals->asso('diminutif'), parent::pl_self($n));
+    }
+
     protected function find_hook()
     {
         $ans = parent::find_hook();
