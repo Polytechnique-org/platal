@@ -109,6 +109,7 @@ class XnetSession
         global $globals, $page;
 
         if (md5('1'.S::v('challenge').$globals->xnet->secret.Get::i('uid').'1') != Get::v('auth')) {
+            Get::kill('auth');
             if (!$page) {
                 require_once 'xnet.inc.php';
                 new_skinned_page('platal/index.tpl');
