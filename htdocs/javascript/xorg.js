@@ -192,7 +192,11 @@ var __goodies_rss_sites = [
     {'url_prefix': 'http://add.my.yahoo.com/content?.intl=fr&url=',
      'img': 'images/goodies/add-yahoo.gif',
      'alt': 'Add to My Yahoo!',
-     'title': 'Ajouter à My Yahoo!'}
+     'title': 'Ajouter à My Yahoo!'},
+    {'url_prefix': 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=',
+     'img': 'images/goodies/add-newsgator.gif',
+     'alt': 'Subscribe in NewsGator Online',
+     'title': 'Ajouter à Newsgator'}
 ];
 
 function __goodies_popupText(url, sites) {
