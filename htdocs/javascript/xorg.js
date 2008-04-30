@@ -176,7 +176,10 @@ var __goodies_ical_sites = [
      'title': 'Calendrier iCal'},
     {'url_prefix': 'http://www.google.com/calendar/render?cid=',
      'img': 'images/goodies/add-google-calendar.gif',
-     'title': 'Ajouter à Google Calendar'}
+     'title': 'Ajouter à Google Calendar'},
+    {'url_prefix': 'https://www.google.com/calendar/hosted/polytechnique.org/render?cid=',
+     'img': 'images/goodies/add-google-calendar.gif',
+     'title': 'Ajouter à Google Apps / Calendar'}
 ];
 var __goodies_rss_sites = [
     {'url_prefix': '',
