@@ -247,7 +247,7 @@ class GoogleAppsAccount
     // Creates a queue job of the @p type, for the user represented by this
     // GoogleAppsAccount object, using @p parameters. @p parameters is supposed
     // to be a one-dimension array of key-value mappings.
-    // The created job as a 'normal' priority, and is scheduled for immediate
+    // The created job as a 'immediate' priority, and is scheduled for immediate
     // execution.
     private function create_queue_job($type, $parameters) {
         $parameters["username"] = $this->g_account_name;
@@ -255,7 +255,7 @@ class GoogleAppsAccount
             "INSERT  INTO gapps_queue
                 SET  q_owner_id = {?}, q_recipient_id = {?},
                      p_entry_date = NOW(), p_notbefore_date = NOW(),
-                     p_priority = 'normal',
+                     p_priority = 'immediate',
                      j_type = {?}, j_parameters = {?}",
             S::v('uid'),
             $this->uid,
