@@ -32,7 +32,7 @@ function getNow() {
     if (yr<1000) yr += 1900;
     hr = dt.getHours();
     mi = dt.getMinutes();
-    
+
     time   = (mi < 10) ? hr +':0'+mi : hr+':'+mi;
     days   = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
     months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
@@ -66,7 +66,7 @@ function addSearchEngine()
     try {
         window.external.AddSearchProvider(searchURI);
     } catch(e) {
-        alert("Impossible d'installer la barre de recherche"); 
+        alert("Impossible d'installer la barre de recherche");
     }
   }
 }
@@ -89,7 +89,7 @@ function attachEvent(obj, evt, f, useCapture) {
         return true;
     } else if (obj.attachEvent) {
         return obj.attachEvent("on"+evt, f);
-    } 
+    }
     return false;
 }
 
@@ -279,6 +279,61 @@ function auto_links_nodes(nodes) {
 }
 
 // }}}
+
+
+/***************************************************************************
+ * Password check
+ */
+
+// {{{ function checkPassword
+
+function getType(char) {
+    if (char >= 'a' && char <= 'z') {
+        return 1;
+    } else if (char >= 'A' && char <= 'Z') {
+        return 2;
+    } else if (char >= '0' && char <= '9') {
+        return 3;
+    } else {
+        return 4;
+    }
+}
+
+function checkPassword(box) {
+    var prev = 0;
+    var prop = 0;
+    var pass = box.value;
+    var types = Array(0, 0, 0, 0, 0);
+    for (i = 0 ; i < pass.length ; ++i) {
+        type = getType(pass.charAt(i));
+        if (prev != 0 && prev != type) {
+            prop += 5;
+        }
+        if (i >= 5) {
+            prop += 5;
+        }
+        if (types[type] == 0) {
+            prop += 10;
+        }
+        types[type]++;
+        prev = type;
+    }
+    if (prop > 100) {
+        prop = 100;
+    } else if (prop < 0) {
+        prop = 0;
+    }
+    ok = (prop >= 60);
+    $("#passwords_measure").width(prop + "%").css("background-color", ok ? "green" : "red");
+    if (ok) {
+        $(":submit").removeAttr("disabled");
+    } else {
+        $(":submit").attr("disabled", "disabled");
+    }
+}
+
+// }}}
+
 
 /***************************************************************************
  * The real OnLoad

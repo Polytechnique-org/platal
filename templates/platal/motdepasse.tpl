@@ -35,54 +35,6 @@
 </p>
 <br />
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass">
-  {javascript name="jquery"}
-  <script type="text/javascript">//<![CDATA[
-  {literal}
-    function getType(char) {
-      if (char >= 'a' && char <= 'z') {
-        return 1;
-      } else if (char >= 'A' && char <= 'Z') {
-        return 2;
-      } else if (char >= '0' && char <= '9') {
-        return 3;
-      } else {
-        return 4;
-      }
-    }
-    function checkPassword(box) {
-      var prev = 0;
-      var prop = 0;
-      var pass = box.value;
-      var types = Array(0, 0, 0, 0, 0);
-      for (i = 0 ; i < pass.length ; ++i) {
-        type = getType(pass.charAt(i));
-        if (prev != 0 && prev != type) {
-          prop += 5;
-        }
-        if (i >= 5) {
-          prop += 5;
-        }
-        if (types[type] == 0) {
-          prop += 10;
-        }
-        types[type]++;
-        prev = type;
-      }
-      if (prop > 100) {
-        prop = 100;
-      } else if (prop < 0) {
-        prop = 0;
-      }
-      ok = (prop >= 60);
-      $("#passwords").width(prop + "%").css("background-color", ok ? "green" : "red");
-      if (ok) {
-        $(":submit").removeAttr("disabled");
-      } else {
-        $(":submit").attr("disabled", "disabled");
-      }
-    }
-    {/literal}
-  //]]></script>
   <table class="tinybicol" cellpadding="3" cellspacing="0"
     summary="Formulaire de mot de passe">
     <tr>
@@ -95,7 +47,7 @@
         Nouveau mot de passe&nbsp;:
       </td>
       <td>
-        <input type="password" size="10" maxlength="10" name="nouveau" onkeyup="checkPassword(this)" />
+        <input type="password" size="10" maxlength="10" name="nouveau" />
       </td>
     </tr>
     <tr>
@@ -111,9 +63,7 @@
         Sécurité
       </td>
       <td>
-        <div style="border: 1px solid white; width: 250px; height: 7px; background-color: #444">
-          <div id="passwords" style="height: 100%; background-color: red; width: 0px"></div>
-        </div>
+        {checkpasswd id="nouveau"}
       </td>
     </tr>
     <tr>
