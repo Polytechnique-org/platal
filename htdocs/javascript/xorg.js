@@ -326,9 +326,9 @@ function checkPassword(box) {
     ok = (prop >= 60);
     $("#passwords_measure").width(prop + "%").css("background-color", ok ? "green" : "red");
     if (ok) {
-        $(":submit").removeAttr("disabled");
+        $(":submit[@name='" + passwordprompt_submit + "']").removeAttr("disabled");
     } else {
-        $(":submit").attr("disabled", "disabled");
+        $(":submit[@name='" + passwordprompt_submit + "']").attr("disabled", "disabled");
     }
 }
 

@@ -26,13 +26,21 @@ function smarty_compiler_checkpasswd($tag_attrs, &$compiler)
     if (!isset($width)) {
       $width = '250px';
     }
-    if (!isset($id)) {
-      $id = "newpassword";
+    if (!isset($prompt)) {
+      $prompt = "'nouveau'";
+    }
+    if (!isset($submit)) {
+      $submit = "'submitn'";
     }
 
     return '?><script type="text/javascript" src="javascript/jquery.js" ></script>
               <script type="text/javascript">//<![CDATA[
-                $(":input[@name=' . $id . ']").keyup(function(event) { checkPassword(event.target); });
+                var passwordprompt_name = '.  $prompt . ';
+                var passwordprompt_submit = ' . $submit . ';
+                $(":input[@name=' . $prompt . ']").keyup(function(event) { checkPassword(event.target); });
+                $(document).ready(function() {
+                  $(":submit[@name=' . $submit . ']").attr("disabled", "disabled");
+                });
               //]]></script>
               <div style="border: 1px solid white; width: ' . $width . '; height: 7px; background-color: #444">
                 <div id="passwords_measure" style="height: 100%; background-color: red; width: 0px"></div>
