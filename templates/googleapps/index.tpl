@@ -379,8 +379,12 @@
                 <td><input type="password" name="nouveau2" /></td>
               </tr>
               <tr>
+                <td class="titre">Sécurité</td>
+                <td>{checkpasswd prompt="nouveau" submit="create_account"}</td>
+              </tr>
+              <tr>
                 <td></td>
-                <td><input type="submit" value="Changer" onclick="EnCryptedResponse(); return false;" /></td>
+                <td><input type="submit" name="create_account" value="Changer" onclick="EnCryptedResponse(); return false;" /></td>
               </tr>
             </table>
           </form>
