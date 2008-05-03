@@ -72,6 +72,10 @@ Tu as reçu un mot de passe par défaut, si tu souhaites en changer, tu peux le 
       </td>
     </tr>
     <tr>
+      <td class="titre">Sécurité</td>
+      <td>{checkpasswd prompt="nouveau" submit="submitn"}</td>
+    </tr>
+    <tr>
       <td colspan="2" class="center">
         <input type="submit" value="Changer" name="submitn" onclick="EnCryptedResponse(); return false;" />
       </td>

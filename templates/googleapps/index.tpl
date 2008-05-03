@@ -109,6 +109,10 @@
               <td class="titre">Vérification</td>
               <td><input type="password" name="nouveau2" onfocus="document.forms.changepass2.password_sync[1].checked = true;" /></td>
             </tr>
+            <tr>
+              <td class="titre">Sécurité</td>
+              <td>{checkpasswd prompt="nouveau" submit="create_account"}</td>
+            </tr>
           </table>
           </form>
         </td>
@@ -170,7 +174,7 @@
           <input type="submit" value="Créer mon compte !" />
         {else}
           <input type="hidden" name="response2"  value="" />
-          <input type="submit" value="Créer mon compte !" onclick="EnCryptedResponse(); return false;" />
+          <input type="submit" name="create_account" value="Créer mon compte !" onclick="EnCryptedResponse(); return false;" />
         {/if}
       </td>
     </tr>

@@ -63,13 +63,12 @@
         Sécurité
       </td>
       <td>
-        {checkpasswd id="nouveau"}
+        {checkpasswd prompt="nouveau" submit="submitn"}
       </td>
     </tr>
     <tr>
       <td colspan="2" class="center">
-        <input type="submit" value="Changer" name="submitn" disabled="disabled"
-               onclick="EnCryptedResponse(); return false;" />
+        <input type="submit" value="Changer" name="submitn" onclick="EnCryptedResponse(); return false;" />
       </td>
     </tr>
   </table>

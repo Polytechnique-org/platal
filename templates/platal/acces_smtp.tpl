@@ -80,9 +80,13 @@
       </td>
     </tr>
     <tr>
+      <td class="titre">Sécurité</td>
+      <td>{checkpasswd prompt="smtppass1" submit="valid"}</td>
+    </tr>
+    <tr>
       <td colspan="2" class="center">
         <input type="hidden" name="op" value="" />
-        <input type="submit" value="Valider" onclick="CheckResponse(); return false;" />
+        <input type="submit" value="Valider" name="valid" onclick="CheckResponse(); return false;" />
 {if $actif}
         &nbsp;&nbsp;<input type="submit" value="Supprimer" onclick="SupprimerMdp();" />
 {/if}
