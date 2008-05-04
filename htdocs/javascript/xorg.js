@@ -320,7 +320,7 @@ function checkPassword(box) {
         prev = type;
     }
     if (pass.length < 6) {
-        prop *= 0.8;
+        prop *= 0.75;
     }
     if (prop > 100) {
         prop = 100;
