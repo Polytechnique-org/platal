@@ -115,9 +115,12 @@ include/banana/banana.inc.php:
 ## jquery
 ##
 
-jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js
+jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js htdocs/javascript/jquery.color.js
 htdocs/javascript/jquery.js:
 	wget http://jquery.com/src/jquery-latest.pack.js -O $@ -q || ($(RM) $@; exit 1)
+
+htdocs/javascript/jquery.color.js:
+	wget http://plugins.jquery.com/files/jquery.color.js.txt -O $@ -q || ($(RM) $@; exit 1)
 
 ################################################################################
 

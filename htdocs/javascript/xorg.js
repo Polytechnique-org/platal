@@ -323,12 +323,30 @@ function checkPassword(box) {
     } else if (prop < 0) {
         prop = 0;
     }
-    ok = (prop >= 60);
-    $("#passwords_measure").width(prop + "%").css("background-color", ok ? "green" : "red");
-    if (ok) {
-        $(":submit[@name='" + passwordprompt_submit + "']").removeAttr("disabled");
+    if (prop >= 60) {
+        if (prop == 100) {
+            color = "#47f";
+        } else {
+            color = "#4f4";
+        }
+        ok = true;
+    } else if (prop >= 40) {
+        color = "#ff4";
+        ok = false;
     } else {
-        $(":submit[@name='" + passwordprompt_submit + "']").attr("disabled", "disabled");
+        color = "#f20";
+        ok = false;
+    }
+    $("#passwords_measure")
+        .stop()
+        .animate({ width: prop + "%",
+                   backgroundColor: color
+                 }, 750);
+    var submitButton = $(":submit[@name='" + passwordprompt_submit + "']");
+    if (ok) {
+        submitButton.removeAttr("disabled");
+    } else {
+        submitButton.attr("disabled", "disabled");
     }
 }
 
