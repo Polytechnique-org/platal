@@ -304,19 +304,23 @@ function checkPassword(box) {
     var prop = 0;
     var pass = box.value;
     var types = Array(0, 0, 0, 0, 0);
+    var firstType = true;
     for (i = 0 ; i < pass.length ; ++i) {
         type = getType(pass.charAt(i));
         if (prev != 0 && prev != type) {
             prop += 5;
         }
-        if (i >= 5) {
-            prop += 5;
-        }
-        if (types[type] == 0) {
-            prop += 10;
+        prop += i;
+        if (types[type] == 0 && !firstType) {
+            prop += 15;
+        } else {
+            firstType = false;
         }
         types[type]++;
         prev = type;
+    }
+    if (pass.length < 6) {
+        prop *= 0.8;
     }
     if (prop > 100) {
         prop = 100;
