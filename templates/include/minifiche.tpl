@@ -23,10 +23,12 @@
 <div class="contact {if (!$c.inscrit && $smarty.session.auth ge AUTH_COOKIE) || $c.dcd}grayed{/if}"
      {if $c.inscrit}{if $smarty.session.auth ge AUTH_COOKIE}title="fiche mise à jour le {$c.date|date_format}"{/if}{/if}>
   <div class="identity">
+    {if $smarty.session.auth ge AUTH_COOKIE}
     <div class="photo">
       <img src="photo/{if $c.inscrit}{$c.forlife}{else}{make_forlife nom=$c.nom prenom=$c.prenom promo=$c.promo}{/if}"
            alt="{$c.prenom} {$c.nom}" />
     </div>
+    {/if}
 
     <div class="nom">
       {if $c.sexe}&bull;{/if}
@@ -50,9 +52,9 @@
     </div>
   </div>
 
+  {if $smarty.session.auth ge AUTH_COOKIE}
   <div class="noprint bits">
     <div>
-    {if $smarty.session.auth ge AUTH_COOKIE}
       {if !$c.wasinscrit && !$c.dcd}
         {if $show_action eq ajouter}
     <a href="carnet/notifs/add_nonins/{$c.user_id}">{*
@@ -76,7 +78,6 @@
           {/if}
         {/if}
       {/if}
-    {/if}
     </div>
 
     {if hasPerm('admin')}
@@ -92,6 +93,7 @@
     {/if}
     </div>
   </div>
+  {/if}
 
   <div class="long">
   {if $c.wasinscrit}
