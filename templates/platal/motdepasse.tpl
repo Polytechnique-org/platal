@@ -26,7 +26,7 @@
 </h1>
 
 <p>
-  Ton mot de passe doit faire au moins <strong>6 caractères</strong> quelconques. Attention
+  Ton mot de passe doit faire au moins <strong>6 caractères</strong> quelconques et au plus 10 caractères. Attention
   au type de clavier que tu utilises (qwerty?) et aux majuscules/minuscules.
 </p>
 <p>
