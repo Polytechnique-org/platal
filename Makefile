@@ -16,6 +16,11 @@ PKG_DIRS = configs htdocs include install.d plugins po scripts templates upgrade
 
 VCS_FILTER = ! -name .arch-ids ! -name CVS
 
+define download
+@echo "Downloading $@ from $(DOWNLOAD_SRC)"
+wget $(DOWNLOAD_SRC) -O $@ -q || ($(RM) $@; exit 1)
+endef
+
 ################################################################################
 # global targets
 
@@ -115,14 +120,20 @@ include/banana/banana.inc.php:
 ## jquery
 ##
 
-jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js htdocs/javascript/jquery.color.js
-htdocs/javascript/jquery.js:
-	wget http://jquery.com/src/jquery-latest.pack.js -O $@ -q || ($(RM) $@; exit 1)
+JQUERY_PLUGINS=autocomplete color
+JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
-htdocs/javascript/jquery.color.js:
-	wget http://plugins.jquery.com/files/jquery.color.js.txt -O $@ -q || ($(RM) $@; exit 1)
+jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES)
+
+htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-latest.pack.js
+htdocs/javascript/jquery.js:
+	@$(download)
+
+$(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F).txt
+$(JQUERY_PLUGINS_PATHES):
+	@$(download)
 
 ################################################################################
 
-.PHONY: build dist clean wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php
+.PHONY: build dist clean wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http*
 
