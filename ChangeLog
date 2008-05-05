@@ -1,6 +1,20 @@
 ================================================================================
 VERSION 0.9.17                                                        XX XX 2008
 
+New:
+
+    * Core:
+        - Password strength checker                                        -FRU
+        - Show user picture on the mini-profile                            -FRU
+
+From 0.9.16 branch:
+
+    * Core:
+        - Fix authentication level required by 403/404 error pages         -FRU
+        - Fix default password on subscription                             -VZA
+
+    * GoogleApps:
+        - Enable service                                                   -VZA
 
 ================================================================================
 VERSION 0.9.16                                                        31 03 2008
