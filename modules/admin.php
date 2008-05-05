@@ -953,6 +953,9 @@ class AdminModule extends PLModule
         }
         $page->assign('hide_requests', $hidden);
 
+        // Update the count of item to validate here... useful in development configuration
+        // where several copies of the site use the same DB, but not the same "dynamic configuration"
+        update_NbValid();
         $page->assign('vit', new ValidateIterator());
     }
 
