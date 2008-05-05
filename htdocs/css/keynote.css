@@ -286,10 +286,6 @@ div.contact-list div.contact:hover {
     margin-right: 4px;
 }
 
-.contact .profile_content {
-    float: left;
-}
-
 div.contact div.identity {
     float: left;
     width: 70%;
