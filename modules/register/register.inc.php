@@ -230,7 +230,7 @@ function finish_ins($sub_state)
     require_once('secure_hash.inc.php');
 
     $pass     = rand_pass();
-    $pass_encrypted = hash_encrypt($pass_clair);
+    $pass_encrypted = hash_encrypt($pass);
     $hash     = rand_url_id(12);
 
     XDB::execute('UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule = {?}', $email, $mat);
