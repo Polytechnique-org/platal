@@ -65,7 +65,8 @@
   <table class="tinybicol" cellpadding="3" summary="Définition du mot de passe">
     <tr>
       <td class="titre">
-        Mot de passe (15 caractères maximum)&nbsp;:
+        Mot de passe&nbsp;:<br />
+        <small>15 caractères max.</small>
       </td>
       <td>
         <input type="password" size="15" maxlength="15" name="smtppass1" />
@@ -73,7 +74,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Retape-le une fois (pour vérification)&nbsp;:
+        Retape-le une fois&nbsp;:
       </td>
       <td>
         <input type="password" size="15" maxlength="15" name="smtppass2" />

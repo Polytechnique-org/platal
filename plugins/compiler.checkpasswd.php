@@ -24,7 +24,7 @@ function smarty_compiler_checkpasswd($tag_attrs, &$compiler)
 {
     extract($compiler->_parse_attrs($tag_attrs));
     if (!isset($width)) {
-      $width = '240px';
+      $width = '230px';
     }
     if (!isset($prompt)) {
       $prompt = "'nouveau'";
