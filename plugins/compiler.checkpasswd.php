@@ -24,7 +24,7 @@ function smarty_compiler_checkpasswd($tag_attrs, &$compiler)
 {
     extract($compiler->_parse_attrs($tag_attrs));
     if (!isset($width)) {
-      $width = '250px';
+      $width = '240px';
     }
     if (!isset($prompt)) {
       $prompt = "'nouveau'";
@@ -43,8 +43,13 @@ function smarty_compiler_checkpasswd($tag_attrs, &$compiler)
                   $(":submit[@name=' . $submit . ']").attr("disabled", "disabled");
                 });
               //]]></script>
-              <div style="border: 1px solid white; width: ' . $width . '; height: 7px; background-color: #444">
-                <div id="passwords_measure" style="height: 100%; background-color: red; width: 0px"></div>
+              <div>
+                <div style="border: 1px solid white; width: ' . $width . '; height: 7px; background-color: #444; margin-top: 4px; float: left">
+                  <div id="passwords_measure" style="height: 100%; background-color: red; width: 0px"></div>
+                </div>
+                <a href="Xorg/MDP?display=light" style="display: block; float: left; margin-left: 4px;" class="popup_600x800">
+                  <img src="images/icons/information.gif" alt="Aide" title="Comment construire un mot de passe fort..." />
+                </a>
               </div><?php';
 }
 
