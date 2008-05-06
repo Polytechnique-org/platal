@@ -30,8 +30,8 @@
   au type de clavier que tu utilises (qwerty?) et aux majuscules/minuscules.
 </p>
 <p>
-  Pour une sécurité optimale, ton mot de passe circule de manière cryptée (https) et est
-  stocké crypté irréversiblement sur nos serveurs.
+  Pour une sécurité optimale, ton mot de passe circule de manière chiffrée (https) et est
+  stocké chiffrée irréversiblement sur nos serveurs.
 </p>
 <br />
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass">
