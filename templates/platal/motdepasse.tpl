@@ -44,7 +44,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Nouveau mot de passe&nbsp;:
+        Mot de passe&nbsp;:
       </td>
       <td>
         <input type="password" size="10" maxlength="10" name="nouveau" />

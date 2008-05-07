@@ -328,24 +328,25 @@ function checkPassword(box) {
         prop = 0;
     }
     if (prop >= 60) {
-        if (prop == 100) {
-            color = "#47f";
-        } else {
-            color = "#4f4";
-        }
+        color = "#4f4";
+        bgcolor = "#050";
         ok = true;
     } else if (prop >= 40) {
         color = "#ff4";
+        bgcolor = "#750";
         ok = false;
     } else {
         color = "#f20";
+        bgcolor = "#700";
         ok = false;
     }
     $("#passwords_measure")
-        .stop()
-        .animate({ width: prop + "%",
-                   backgroundColor: color
-                 }, 750);
+           .stop()
+           .animate({ width: prop + "%",
+                      backgroundColor: color
+                    }, 750)
+           .parent().stop()
+                    .animate({ backgroundColor: bgcolor }, 750);
     var submitButton = $(":submit[@name='" + passwordprompt_submit + "']");
     if (ok) {
         submitButton.removeAttr("disabled");

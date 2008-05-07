@@ -40,7 +40,7 @@ function smarty_compiler_checkpasswd($tag_attrs, &$compiler)
                 var passwordprompt_submit = ' . $submit . ';
                 $(":input[@name=' . $prompt . ']").keyup(function(event) { checkPassword(event.target); });
                 $(document).ready(function() {
-                  $(":submit[@name=' . $submit . ']").attr("disabled", "disabled");
+                  checkPassword($(":input[@name=' . $prompt . ']").get(0));
                 });
               //]]></script>
               <div>
