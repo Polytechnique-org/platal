@@ -618,6 +618,7 @@ class AdminModule extends PLModule
                         update_NbIns();
                         $page->trig("'{$mr['user_id']}' a été désinscrit !");
                         $mailer = new PlMailer("admin/useredit.mail.tpl");
+                        $mailer->assign("admin", S::v('forlife'));
                         $mailer->assign("user", $mr['forlife']);
                         $mailer->assign("deletion", true);
                         $mailer->send();
