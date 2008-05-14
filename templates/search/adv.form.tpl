@@ -178,7 +178,7 @@
           <option value="&lt;=" {if $smarty.request.egal1 eq "&lt;="}selected="selected"{/if}>&nbsp;&lt;=&nbsp;</option>
         </select>
         <input type="text" name="promo1" size="4" maxlength="4" value="{$smarty.request.promo1}" />
-        &nbsp;ET&nbsp;
+        &nbsp;et&nbsp;
         <select name="egal2">
           <option value="=" {if $smarty.request.egal2 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
           <option value="&gt;=" {if $smarty.request.egal2 eq "&gt;="}selected="selected"{/if}>&nbsp;&gt;=&nbsp;</option>
@@ -193,31 +193,31 @@
         <table>
           <tr>
             <td style="width:100px">
-              <input type="radio" name="woman" value="0" {if !$smarty.request.woman}checked="checked"{/if} id="woman0"/><label for="woman0">Indifférent</label>
+              <input type="radio" name="woman" value="0" {if !$smarty.request.woman}checked="checked"{/if} id="woman0"/><label for="woman0">indifférent</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="woman" value="1" {if $smarty.request.woman eq 1}checked="checked"{/if} id="woman1"/><label for="woman1">Homme</label>
+              <input type="radio" name="woman" value="1" {if $smarty.request.woman eq 1}checked="checked"{/if} id="woman1"/><label for="woman1">homme</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="woman" value="2" {if $smarty.request.woman eq 2}checked="checked"{/if} id="woman2"/><label for="woman2">Femme</label>
+              <input type="radio" name="woman" value="2" {if $smarty.request.woman eq 2}checked="checked"{/if} id="woman2"/><label for="woman2">femme</label>
             </td>
           </tr>
         </table>
       </td>
     </tr>
     <tr>
-      <td>Sur polytechnique.org</td>
+      <td>Sur Polytechnique.org</td>
       <td>
         <table>
           <tr>
             <td style="width:100px">
-              <input type="radio" name="subscriber" value="0" {if !$smarty.request.subscriber}checked="checked"{/if} id="subscriber0"/><label for="subscriber0">Indifférent</label>
+              <input type="radio" name="subscriber" value="0" {if !$smarty.request.subscriber}checked="checked"{/if} id="subscriber0"/><label for="subscriber0">indifférent</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="subscriber" value="1" {if $smarty.request.subscriber eq 1}checked="checked"{/if} id="subscriber1"/><label for="subscriber1">Inscrit</label>
+              <input type="radio" name="subscriber" value="1" {if $smarty.request.subscriber eq 1}checked="checked"{/if} id="subscriber1"/><label for="subscriber1">inscrit</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="subscriber" value="2" {if $smarty.request.subscriber eq 2}checked="checked"{/if} id="subscriber2"/><label for="subscriber2">Non inscrit</label>
+              <input type="radio" name="subscriber" value="2" {if $smarty.request.subscriber eq 2}checked="checked"{/if} id="subscriber2"/><label for="subscriber2">non inscrit</label>
             </td>
           </tr>
         </table>
@@ -229,13 +229,13 @@
         <table>
           <tr>
             <td style="width:100px">
-              <input type="radio" name="alive" value="0" {if !$smarty.request.alive}checked="checked"{/if} id="alive0"/><label for="alive0">Indifférent</label>
+              <input type="radio" name="alive" value="0" {if !$smarty.request.alive}checked="checked"{/if} id="alive0"/><label for="alive0">indifférent</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="alive" value="1" {if $smarty.request.alive eq 1}checked="checked"{/if} id="alive1"/><label for="alive1">Vivant</label>
+              <input type="radio" name="alive" value="1" {if $smarty.request.alive eq 1}checked="checked"{/if} id="alive1"/><label for="alive1">vivant</label>
             </td>
             <td style="width:100px">
-              <input type="radio" name="alive" value="2" {if $smarty.request.alive eq 2}checked="checked"{/if} id="alive2"/><label for="alive2">Décédé</label>
+              <input type="radio" name="alive" value="2" {if $smarty.request.alive eq 2}checked="checked"{/if} id="alive2"/><label for="alive2">décédé</label>
             </td>
           </tr>
         </table>
@@ -244,7 +244,7 @@
     <tr>
       <td colspan="2">
         <input type="checkbox" name="with_soundex" value="1" {if $smarty.request.with_soundex}checked="checked"{/if} id="sdxn" />
-        <label for="sdxn">étendre par proximité sonore (uniquement sur nom et prénom)</label>
+        <label for="sdxn">Étendre par proximité sonore (uniquement sur nom et prénom).</label>
       </td>
     </tr>
     <tr>
@@ -272,7 +272,7 @@
     <tr>
       <td colspan="2">
       <label for="only_current"><input name="only_current" id="only_current" type="checkbox"{if $smarty.request.only_current}  
-checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont actuellement.</label></td>
+checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont actuellement.</label></td>
     </tr>
     <tr>
       <th colspan="2">Activité</th>
@@ -310,7 +310,7 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
     <tr>
       <td colspan="2">
         <input type='checkbox' name='only_referent' {if $smarty.request.only_referent}checked='checked'{/if} id="only_referent"/>
-        <label for="only_referent">chercher uniquement parmi les camarades se proposant comme référents</label>
+        <label for="only_referent">Chercher uniquement parmi les camarades se proposant comme référents.</label>
       </td>
     </tr>
     <tr>
@@ -371,21 +371,24 @@ checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont 
       <td>Commentaire contient</td>
       <td><input type="text" name="free" size="32" value="{$smarty.request.free}" /></td>
     </tr>
-    <tr>
-      <td colspan="2" style="padding-top: 1.5em">
-        <div style="float: right">
-          <input type="submit" value="Chercher" />
-        </div>
         {if $smarty.session.auth ge AUTH_COOKIE}
+    <tr>
+      <td colspan="2">
           <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} id="order"/>
-          <label for="order">mettre les fiches modifiées récemment en premier</label>
+          <label for="order">Mettre les fiches modifiées récemment en premier.</label>
+      </td>
+    </tr>
         {/if}
+    <tr><td colspan="2"></td></tr>
+    <tr>
+      <td colspan="2" style="text-align: center">
+          <input type="submit" value="Chercher" />
       </td>
     </tr>
   </table>
 </form>
 <p>
-  <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.
+  <small><strong>N.B. :</strong> le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.</small>
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
