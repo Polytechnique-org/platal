@@ -45,7 +45,7 @@
 </script>
 
 <form action="" method="post" onsubmit="return showPromo();">
-<table class="tinybicol" style="width: 35%; margin-right: auto; margin-left: auto">
+<table class="tinybicol" style="width: auto; margin: auto">
   <tr>
     <td class="titre">Promotion&nbsp;:</td>
     <td>
