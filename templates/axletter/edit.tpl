@@ -23,6 +23,7 @@
 <h1>Edition de message</h1>
 
 <form action="{$platal->pl_self()}" method="post">
+  {xsrf_token_field}
   {if $am}
   {include file="axletter/letter.tpl"}
 
@@ -76,10 +77,10 @@
       <td colspan="2" class="center">
         Envoi au plus tard le {$echeance|date_format:"%x vers %Hh"}<br />
         {if $is_xorg}
-        [<a href="ax/edit/valid" onclick="return confirm('Es-tu sûr de voiloir valider l\'envoi de ce message ?');">{*
+        [<a href="ax/edit/valid?token={xsrf_token}" onclick="return confirm('Es-tu sûr de vouloir valider l\'envoi de ce message ?');">{*
           *}{icon name=thumb_up} Valider l'envoi</a>]
         {else}
-        [<a href="ax/edit/cancel" onclick="return confirm('Es-tu sûr de vouloir annuler l\'envoi de ce message ?');">{*
+        [<a href="ax/edit/cancel?token={xsrf_token}" onclick="return confirm('Es-tu sûr de vouloir annuler l\'envoi de ce message ?');">{*
           *}{icon name=thumb_down} Annuler l'envoi</a>]
         {/if}
       </td>

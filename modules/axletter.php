@@ -109,7 +109,7 @@ class AXLetterModule extends PLModule
                 $saved = false;
                 $new   = true;
             }
-        } elseif (Post::has('valid')) {
+        } elseif (Post::has('valid') && S::has_xsrf_token()) {
             if (!$subject && $title) {
                 $subject = $title;
             }
@@ -190,6 +190,8 @@ class AXLetterModule extends PLModule
                 pl_redirect('ax');
                 break;
             }
+        } elseif (Post::has('valid')) {
+            $page->trig("L'opération a échouée, merci de réessayer.");
         }
         $page->assign('id', $id);
         $page->assign('short_name', $short_name);
@@ -224,17 +226,12 @@ class AXLetterModule extends PLModule
     function handler_cancel(&$page, $force = null)
     {
         require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
-        if (!AXLetter::hasPerms()) {
-            return PL_FORBIDDEN;
-        }
-
-        $url = parse_url($_SERVER['HTTP_REFERER']);
-        if ($force != 'force' && trim($url['path'], '/') != 'ax/edit') {
+        if (!AXLetter::hasPerms() || !S::has_xsrf_token()) {
             return PL_FORBIDDEN;
         }
 
         $al = AXLetter::awaiting();
-        if (!$alg) {
+        if (!$al) {
             $page->kill("Aucune lettre en attente");
             return;
         }
@@ -249,12 +246,7 @@ class AXLetterModule extends PLModule
     function handler_valid(&$page, $force = null)
     {
         require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
-        if (!AXLetter::hasPerms()) {
-            return PL_FORBIDDEN;
-        }
-
-        $url = parse_url($_SERVER['HTTP_REFERER']);
-        if ($force != 'force' && trim($url['path'], '/') != 'ax/edit') {
+        if (!AXLetter::hasPerms() || !S::has_xsrf_token()) {
             return PL_FORBIDDEN;
         }
 
@@ -296,7 +288,7 @@ class AXLetterModule extends PLModule
             $action = Post::v('action');
             $uid    = Post::v('uid');
         }
-        if ($uid) {
+        if ($uid && S::has_xsrf_token()) {
             $uids   = preg_split('/ *[,;\: ] */', $uid);
             foreach ($uids as $uid) {
                 switch ($action) {
@@ -308,9 +300,11 @@ class AXLetterModule extends PLModule
                     break;
                 }
                 if (!$res) {
-                    $page->trig("Personne ne oorrespond à l'identifiant '$uid'");
+                    $page->trig("Personne ne correspond à l'identifiant '$uid'");
                 }
             }
+        } elseif ($uid) {
+            $page->trig("L'opération sur la liste des administrateurs AX a échouée, merci de réessayer.");
         }
 
         $page->changeTpl('axletter/admin.tpl');
