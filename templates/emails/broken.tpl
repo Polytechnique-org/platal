@@ -44,7 +44,7 @@ correspondant si tu veux que nous puissions te répondre.
   <p>
     Nous pensons qu'il serait une bonne idée de le prévenir que cette adresse email ne fonctionne plus.
     Si tu veux que nous lui envoyions un mail automatique de ta part pour le prévenir,
-    <a href="emails/broken/warn/{$email}">clique sur ce lien</a>.
+    <a href="emails/broken/warn/{$email}?token={xsrf_token}">clique sur ce lien</a>.
   </p>
 {elseif $x}
 <h2>Patte Cassée</h2>
@@ -68,6 +68,7 @@ correspondant si tu veux que nous puissions te répondre.
 <br />
 <div class="center">
   <form action="emails/broken" method="post">
+  {xsrf_token_field}
   <table class="tinybicol" cellpadding="3" summary="Saisie email en panne">
     <tr>
       <th>Adresse email défectueuse</th>

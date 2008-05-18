@@ -57,7 +57,7 @@
     </td>
     <td class="right">
       <a href="admin/emails/duplicated/edit/{$doublon.mail}">{icon name=page_edit title="Editer"}</a>
-      <a href="admin/emails/duplicated/delete/{$doublon.mail}">{icon name=delete title="Supprimer"}</a>
+      <a href="admin/emails/duplicated/delete/{$doublon.mail}?token={xsrf_token}">{icon name=delete title="Supprimer"}</a>
     </td>
   </tr>
   {/foreach}
@@ -65,6 +65,7 @@
 {elseif $action eq "create" || $action eq "edit"}
 [<a href="admin/emails/duplicated">Retour à la liste des doublons</a>]<br /><br />
 <form method="post" action="admin/emails/duplicated">
+{xsrf_token_field}
 <table class="tinybicol">
   <tr>
     <th colspan="2">Commenter le doublon</th>

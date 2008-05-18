@@ -68,6 +68,7 @@
     }
     $.post(platal_baseurl + "emails/send",
            { save: true,
+             token: '{xsrf_token}',
              from: form.from.value,
              to_contacts: toc,
              cc_contacts: ccc,
@@ -155,6 +156,7 @@
 </script>
 
 <form action="emails/send" method="post" enctype="multipart/form-data" id="form_mail" onsubmit="return check(this);">
+  {xsrf_token_field}
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr> 
       <th colspan="2">Destinataires</th>
