@@ -225,7 +225,7 @@ class AXLetter extends MassMailer
     {
         $res = XDB::query("SELECT  IF(short_name IS NULL, id, short_name) as id, date, subject AS titre
                              FROM  axletter
-                            WHERE  NOT (FIND_IN_SET('new', bits))
+                            WHERE  NOT FIND_IN_SET('new', bits) AND NOT FIND_IN_SET('invalid', bits)
                          ORDER BY  date DESC");
         return $res->fetchAllAssoc();
     }
