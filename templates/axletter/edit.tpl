@@ -28,7 +28,7 @@
 
   <p class="center">
     <input type="hidden" name="id" value="{$id}" />
-    <input type="hidden" name="old_shortname" value="{$shortname}" />
+    <input type="hidden" name="old_short_name" value="{$short_name}" />
     <input type="hidden" name="saved" value="{$saved}" />
     {if $echeance}
     <input type="hidden" name="echeance" value="{$echeance}" />
@@ -58,7 +58,7 @@
     <tr>
       <td class="titre">Nom raccourci</td>
       <td>
-        <input type="text" name="shortname" value="{$shortname}" size="16" maxlength="16" />
+        <input type="text" name="short_name" value="{$short_name}" size="16" maxlength="16" />
         <span class="smaller">(uniquement lettres, chiffres ou -)</span>
       </td>
     </tr>
@@ -89,7 +89,7 @@
 
   <p class="center">
     <input type="hidden" name="id" value="{$id}" />
-    <input type="hidden" name="old_shortname" value="{$shortname}" />
+    <input type="hidden" name="old_short_name" value="{$short_name}" />
     <input type="hidden" name="saved" value="{$saved}" />
     {if $echeance}
     <input type="hidden" name="echeance" value="{$echeance}" />
