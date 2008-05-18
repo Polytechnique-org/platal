@@ -26,7 +26,7 @@
 L'événement {$evt.intitule}
 {if $evt.titre} - {$evt.titre}
 {/if}
-{if $evt.titre || count($moments) eq 0}
+{if $evt.titre || count($moments) eq 1}
 comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
 {else}
 ({$evt.nb} personne{if $evt.nb > 1}s ont réalisé leur{else} a réalisé son{/if} inscription).
