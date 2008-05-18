@@ -60,6 +60,7 @@ function fillContent()
 <div class="center"><input type="submit" onclick="window.close()" name="close" value="Fermer" /></div>
 {else}
 <form action="send_bug" method="post" onsubmit="cleanContent()">
+  {xsrf_token_field}
   <h1>Signaler un bug ou demander une amélioration</h1>
   <div style="margin-left:10%;margin-right:10%">
     <select name="task_type">
