@@ -196,6 +196,7 @@ class RegisterModule extends PLModule
                             $alert .= "Tentative d'inscription depuis une IP surveillee";
                         }
                         if ($email_banned || $ip_banned) {
+                            global $globals;
                             $err = "Une erreur s'est produite lors de l'inscription."
                                  . " Merci de contacter <a href='mailto:register@{$globals->mail->domain}>"
                                  . " register@{$globals->mail->domain}</a>"

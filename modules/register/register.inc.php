@@ -148,6 +148,7 @@ function check_new_user(&$sub)
 
 function create_aliases (&$sub)
 {
+    global $globals;
     extract ($sub);
 
     require_once "xorg.misc.inc.php";

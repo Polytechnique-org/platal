@@ -79,6 +79,7 @@ class MarketingModule extends PLModule
     function handler_private(&$page, $uid = null,
                              $action = null, $value = null)
     {
+        global $globals;
         $page->changeTpl('marketing/private.tpl');
 
         if (is_null($uid)) {

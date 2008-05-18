@@ -21,6 +21,7 @@
 
 /* sort en affichant une erreur */
 function cb_erreur($text) {
+    global $globals;
     $mymail = new PlMailer();
     $mymail->addTo($globals->money->email);
     $mymail->setFrom("webmaster@" . $globals->mail->domain);
@@ -33,7 +34,7 @@ function cb_erreur($text) {
 /* sort en affichant une erreur */
 function paypal_erreur($text, $send=true)
 {
-    global $page, $erreur;
+    global $page, $erreur, $globals;
     if ($erreur) return;
     $erreur = $text;
     if (!$send) return;

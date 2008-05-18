@@ -6,6 +6,11 @@ New:
     * Core:
         - Password strength checker                                        -FRU
         - Show user picture on the mini-profile                            -FRU
+        - Add an anti-XSRF framework, and add protection to most pages     -VZA
+
+Bug/Wish:
+    * Core:
+        - Fix email sending, correcting bugs introduced in r1897           -VZA
 
 From 0.9.16 branch:
 

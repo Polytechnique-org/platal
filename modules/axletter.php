@@ -158,6 +158,7 @@ class AXLetterModule extends PLModule
                                             signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}",
                              $id, $shortname, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance);
                 if (!$saved) {
+                    global $globals;
                     $mailer = new PlMailer();
                     $mailer->setFrom("support@" . $globals->mail->domain);
                     $mailer->setSubject("Un nouveau projet de mail de l'AX vient d'être proposé");
@@ -177,7 +178,6 @@ class AXLetterModule extends PLModule
                                      INNER JOIN auth_user_md5   AS u USING(user_id)
                                      INNER JOIN aliases         AS a ON (u.user_id = a.id
                                      AND FIND_IN_SET('bestalias', a.flags))");
-                    global $globals;
                     while (list($nom, $prenom, $alias) = $res->next()) {
                         $mailer->addTo("$nom $prenom <$alias@{$globals->mail->domain}>");
                     }
