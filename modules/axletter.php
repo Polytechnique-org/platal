@@ -134,7 +134,7 @@ class AXLetterModule extends PLModule
                           . "que de chiffres, lettres et tirets");
                 Post::kill('valid');
             } elseif ($shortname != Post::v('old_shortname')) {
-                $res = XDB::query("SELECT id FROM axletter WHERE  shortname = {?}", $shortname);
+                $res = XDB::query("SELECT id FROM axletter WHERE short_name = {?}", $shortname);
                 if ($res->numRows() && $res->fetchOneCell() != $id) {
                     $page->trig("Le nom $shortname est déjà utilisé, merci d'en choisir un autre");
                     $shortname = Post::v('old_shortname');
@@ -154,7 +154,7 @@ class AXLetterModule extends PLModule
 
               case 'Confirmer':
                 XDB::execute("REPLACE INTO  axletter
-                                       SET  id = {?}, shortname = {?}, subject = {?}, title = {?}, body = {?},
+                                       SET  id = {?}, short_name = {?}, subject = {?}, title = {?}, body = {?},
                                             signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}",
                              $id, $shortname, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance);
                 if (!$saved) {
