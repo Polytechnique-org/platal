@@ -740,24 +740,34 @@ class AdminModule extends PLModule
             }
         }
 
-        $page->assign('op',$op);
-        $page->assign('target',$target);
+        $page->assign('op', $op);
+        $page->assign('target', $target);
 
         // on a un $target valide, on prepare les mails
         if ($target) {
-
             // on examine l'op a effectuer
             switch ($op) {
                 case 'mail':
-                send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
-                switch_bestalias($target, $loginbis);
+                    if (S::has_xsrf_token()) {
+                        send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
+                        switch_bestalias($target, $loginbis);
+                    } else {
+                        $page->assign('op', 'list');
+                        $page->trig("L'envoi du mail d'homonymie a échoué, merci de réessayer.");
+                    }
                     $op = 'list';
                     break;
+
                 case 'correct':
-                switch_bestalias($target, $loginbis);
-                    XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
-                    XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
-                send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
+                    if (S::has_xsrf_token()) {
+                        switch_bestalias($target, $loginbis);
+                        XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
+                        XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
+                        send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
+                    } else {
+                        $page->assign('op', 'list');
+                        $page->trig("La correction de l'homonymie a échouée, merci de réessayer.");
+                    }
                     $op = 'list';
                     break;
             }
@@ -843,7 +853,7 @@ class AdminModule extends PLModule
                 }
             }
             $page->assign('new_deces',$new_deces);
-        } else if (!$validate) {
+        } else if ($validate) {
             $page->trig("La mise à jour des dates de decès à échouée, merci de réessayer.");
         }
 
@@ -1036,7 +1046,7 @@ class AdminModule extends PLModule
         }
 
         // update wiki perms
-        if ($action == 'update') {
+        if ($action == 'update' && S::has_xsrf_token()) {
             $perms_read = Post::v('read');
             $perms_edot = Post::v('edit');
             if ($perms_read || $perms_edit) {
@@ -1051,17 +1061,21 @@ class AdminModule extends PLModule
                     wiki_set_perms($wiki_page, $perms0, $perms1);
                 }
             }
+        } elseif ($action == 'update') {
+            $page->trig("La mise à jour des permissions wiki a échouée, merci de réessayer.");
         }
 
-        if ($action == 'delete' && $wikipage != '') {
+        if ($action == 'delete' && $wikipage != '' && S::has_xsrf_token()) {
             if (wiki_delete_page($wikipage)) {
                 $page->trig("La page ".$wikipage." a été supprimée.");
             } else {
                 $page->trig("Impossible de supprimer la page ".$wikipage.".");
             }
+        } elseif ($action == 'delete' && $wikipage != '') {
+            $page->trig("La suppression de la page wiki a échouée, merci de réessayer.");
         }
 
-        if ($action == 'rename' && $wikipage != '' && $wikipage2 != '' && $wikipage != $wikipage2) {
+        if ($action == 'rename' && $wikipage != '' && $wikipage2 != '' && $wikipage != $wikipage2 && S::has_xsrf_token()) {
             if ($changedLinks = wiki_rename_page($wikipage, $wikipage2)) {
                 $s = 'La page <em>'.$wikipage.'</em> a été déplacée en <em>'.$wikipage2.'</em>.';
                 if (is_numeric($changedLinks)) {
@@ -1071,6 +1085,8 @@ class AdminModule extends PLModule
             } else {
                 $page->trig("Impossible de déplacer la page ".$wikipage);
             }
+        } elseif ($action == 'rename' && $wikipage != '' && $wikipage2 != '' && $wikipage != $wikipage2) {
+            $page->trig("Le renommage de la page wiki a échoué, merci de réessayer.");
         }
 
         $perms = wiki_perms_options();
@@ -1146,7 +1162,7 @@ class AdminModule extends PLModule
                 if (S::has_xsrf_token()) {
                     Xdb::execute('DELETE FROM ip_watch WHERE ip = {?}', ip_to_uint($ip));
                 } else {
-                    $page->trig("La suppression de l'adresse IP a échouée, merci de réssayer.");
+                    $page->trig("La suppression de l'adresse IP a échouée, merci de réessayer.");
                 }
             }
         }

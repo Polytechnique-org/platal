@@ -73,6 +73,7 @@
 {elseif $op eq 'mail-conf'}
 
 <form method="post" action="admin/homonyms/mail/{$target}">
+  {xsrf_token_field}
   <table class="bicol">
     <tr>
       <th>Envoyer un mail pour prévenir l'utilisateur</th>
@@ -108,6 +109,7 @@ L'équipe Polytechnique.org
 {elseif $op eq 'correct-conf'}
 
 <form method="post" action="admin/homonyms/correct/{$target}">
+  {xsrf_token_field}
   <table class="bicol">
     <tr>
       <th>Mettre en place le robot {$loginbis}@{#globals.mail.domain#}</th>
