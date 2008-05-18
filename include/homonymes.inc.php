@@ -29,6 +29,7 @@ function select_if_homonyme($uid) {
 }
 
 function send_warning_homonyme($prenom, $nom, $forlife, $loginbis) {
+    global $globals;
     $cc = "support+homonyme@" . $globals->mail->domain;
     $FROM = "\"Support Polytechnique.org\" <$cc>";
     $mymail = new PlMailer();
@@ -41,6 +42,7 @@ function send_warning_homonyme($prenom, $nom, $forlife, $loginbis) {
 }
 
 function send_robot_homonyme($prenom, $nom, $forlife, $loginbis) {
+    global $globals;
     $cc = "support+homonyme@" . $globals->mail->domain;
     $FROM = "\"Support Polytechnique.org\" <$cc>";
     $mymail = new PlMailer();
