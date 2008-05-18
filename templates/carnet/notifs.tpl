@@ -27,6 +27,7 @@
 S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 
 <form action="carnet/notifs" method="post">
+  {xsrf_token_field}
   <fieldset>
     <legend>Mail</legend>
     <input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
@@ -36,6 +37,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 </form>
 
 <form action="carnet/notifs" method="post">
+  {xsrf_token_field}
   <fieldset>
     <legend>Événements à surveiller</legend>
     {foreach from=$watch->cats() item=s key=i}
@@ -55,6 +57,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 <h2>Surveiller ses contacts</h2>
 
 <form action="carnet/notifs#middle" method="post">
+  {xsrf_token_field}
   <fieldset>
     <legend>Contacts</legend>
     <input type='checkbox' name='contacts' onclick="this.form.submit();" {if $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts<br />
@@ -71,6 +74,7 @@ Attention&nbsp;: pour les promos, tu n'es pas notifié des événements trop fr�
 </p>
 
 <form action="carnet/notifs/" method="post">
+  {xsrf_token_field}
   <fieldset>
     <legend>Ajouter une promo</legend>
     Tu peux surveiller des promos (mettre la promo sur 4 chiffres),
@@ -114,7 +118,7 @@ et cliquer sur les icones {icon name=add} pour les ajouter à cette liste.
     <ul>
     {foreach from=$watch->nonins() item=p}
     <li>
-      {$p.prenom} {$p.nom} ({$p.promo}) <a href="carnet/notifs/del_nonins/{$p.user_id}">{icon name='cross' title='retirer'}/<>
+      {$p.prenom} {$p.nom} ({$p.promo}) <a href="carnet/notifs/del_nonins/{$p.user_id}?token={xsrf_token}">{icon name='cross' title='retirer'}</a>
     </li>
     {/foreach}
   </ul>

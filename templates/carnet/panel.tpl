@@ -73,7 +73,7 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
         {$promo[row].prenom} {$promo[row].nom}
       </a>
       {if !$promo[row].contact}
-      <a href="carnet/contacts?action=ajouter&amp;user={$promo[row].bestalias}">{*
+      <a href="carnet/contacts?action=ajouter&amp;user={$promo[row].bestalias}&amp;token={xsrf_token}">{*
         *}{icon name=add title="ajouter à mes contacts"}</a>
       {/if}
       {else}

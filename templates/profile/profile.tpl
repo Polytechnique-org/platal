@@ -65,10 +65,10 @@ function chgMainWinLoc(strPage)
       &nbsp;{if !$x.dcd}<a href="vcard/{$x.forlife}.vcf">{*
         *}{icon name=vcard title="Afficher la carte de visite"}</a>{/if}
       {if !$x.is_contact}
-      <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
+      <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}&amp;token={xsrf_token}')">
         {icon name=add title="Ajouter à mes contacts"}</a>
       {else}
-      <a href="javascript:chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}')">
+      <a href="javascript:chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}&amp;token={xsrf_token}')">
         {icon name=cross title="Retirer de mes contacts"}</a>
       {/if}
       {if hasPerm('admin')}

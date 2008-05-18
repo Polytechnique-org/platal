@@ -51,6 +51,7 @@ function init_rss($template, $alias, $hash, $require_uid = true)
     }
 
     if ($template) {
+        $page->assign('rss_hash', $hash);
         header('Content-Type: application/rss+xml; charset=utf8');
     }
     return $uid;

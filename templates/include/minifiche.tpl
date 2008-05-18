@@ -57,10 +57,10 @@
     <div>
       {if !$c.wasinscrit && !$c.dcd}
         {if $show_action eq ajouter}
-    <a href="carnet/notifs/add_nonins/{$c.user_id}">{*
+    <a href="carnet/notifs/add_nonins/{$c.user_id}?token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
         {else}
-    <a href="carnet/notifs/del_nonins/{$c.user_id}">{*
+    <a href="carnet/notifs/del_nonins/{$c.user_id}?token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
         {/if}
       {elseif $c.wasinscrit}
@@ -70,10 +70,10 @@
     <a href="vcard/{$c.forlife}.vcf">{*
     *}{icon name=vcard title="Afficher la carte de visite"}</a>
           {if $show_action eq ajouter}
-    <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
+    <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}&amp;token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à mes contacts"}</a>
           {else}
-    <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
+    <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}&amp;token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de mes contacts"}</a>
           {/if}
         {/if}

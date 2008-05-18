@@ -127,6 +127,10 @@ class CarnetModule extends PLModule
         $promo_sortie = $res->fetchOneCell();
         $page->assign('promo_sortie', $promo_sortie);
 
+        if ($action && !S::has_xsrf_token()) {
+            $page->trig("La mise à jour des notifications a échouée, merci de réessayer.");
+            $action = false;
+        }
         switch ($action) {
           case 'add_promo':
           case 'del_promo':
@@ -142,14 +146,24 @@ class CarnetModule extends PLModule
             break;
         }
 
-        if (Env::has('subs'))       $watch->_subs->update('sub');
-        if (Env::has('flags_contacts')) {
+        if (Env::has('subs') && S::has_xsrf_token()) {
+            $watch->_subs->update('sub');
+        } elseif (Env::has('subs')) {
+            $page->trig("La mise à jour des notifications a échouée, merci de réessayer.");
+        }
+
+        if (Env::has('flags_contacts') && S::has_xsrf_token()) {
             $watch->watch_contacts = Env::b('contacts');
             $watch->saveFlags();
+        } elseif (Env::has('flags_contacts')) {
+            $page->trig("La mise à jour des notifications a échouée, merci de réessayer.");
         }
-        if (Env::has('flags_mail')) {
-            $watch->watch_mail     = Env::b('mail');
+
+        if (Env::has('flags_mail') && S::has_xsrf_token()) {
+            $watch->watch_mail = Env::b('mail');
             $watch->saveFlags();
+        } elseif (Env::has('flags_mail')) {
+            $page->trig("La mise à jour des notifications a échouée, merci de réessayer.");
         }
 
         $page->assign_by_ref('watch', $watch);
@@ -198,8 +212,11 @@ class CarnetModule extends PLModule
         $uid  = S::v('uid');
         $user = Env::v('user');
 
-        switch (Env::v('action')) {
-            case 'retirer':
+        // For XSRF protection, checks both the normal xsrf token, and the special RSS token.
+        // It allows direct linking to contact adding in the RSS feed.
+        if (Env::v('action') && (S::has_xsrf_token() || Env::v('token') === S::v('core_rss_hash'))) {
+            switch (Env::v('action')) {
+              case 'retirer':
                 if (is_numeric($user)) {
                     if (XDB::execute('DELETE FROM contacts
                                        WHERE uid = {?} AND contact = {?}',
@@ -219,7 +236,7 @@ class CarnetModule extends PLModule
                 }
                 break;
 
-            case 'ajouter':
+              case 'ajouter':
                 require_once('user.func.inc.php');
                 if (($login = get_user_login($user)) !== false) {
                     if (XDB::execute(
@@ -233,6 +250,9 @@ class CarnetModule extends PLModule
                         $page->trig('Contact déjà dans la liste !');
                     }
                 }
+            }
+        } elseif (Env::v('action')) {
+            $page->trig("La modification du contact a échouée, merci de réessayer.");
         }
 
         $search = false;
