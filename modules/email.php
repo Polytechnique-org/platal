@@ -103,7 +103,9 @@ class EmailModule extends PLModule
 
         $page->assign('demande', AliasReq::get_request($uid));
 
-        if ($action == 'delete' && $value && S::has_xsrf_token()) {
+        if ($action == 'delete' && $value) {
+            S::assert_xsrf_token();
+
             //Suppression d'un alias
             XDB::execute(
                 'DELETE virtual, virtual_redirect
@@ -111,8 +113,6 @@ class EmailModule extends PLModule
              INNER JOIN virtual_redirect USING (vid)
                   WHERE alias = {?} AND (redirect = {?} OR redirect = {?})', $value,
                 $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
-        } elseif ($action == 'delete' && $value) {
-            $page->trig("La suppression de ton alias a échouée, merci de réessayer.");
         }
 
         //Récupération des alias éventuellement existants
@@ -127,9 +127,10 @@ class EmailModule extends PLModule
         list($alias, $visibility) = $res->fetchOneRow();
         $page->assign('actuel', $alias);
 
-        if ($action == 'ask' && Env::has('alias') && Env::has('raison') && S::has_xsrf_token()) {
-            //Si l'utilisateur vient de faire une damande
+        if ($action == 'ask' && Env::has('alias') && Env::has('raison')) {
+            S::assert_xsrf_token();
 
+            //Si l'utilisateur vient de faire une damande
             $alias  = Env::v('alias');
             $raison = Env::v('raison');
             $public = (Env::v('public', 'off') == 'on')?"public":"private";
@@ -173,8 +174,6 @@ class EmailModule extends PLModule
                 $page->assign('success',$alias);
                 return;
             }
-        } elseif ($action == 'ask' && Env::has('alias') && Env::has('raison')) {
-            $page->trig("Ta demande d'alias n'a pas pu être enregistrée, merci de réessayer.");
         } elseif ($action == 'set' && ($value == 'public' || $value == 'private')) {
             if (!S::has_xsrf_token()) {
                 return PL_FORBIDDEN;
@@ -232,7 +231,9 @@ class EmailModule extends PLModule
             $redirect->modify_one_email_redirect($email, $rewrite);
         }
 
-        if (Env::has('emailop') && S::has_xsrf_token()) {
+        if (Env::has('emailop')) {
+            S::assert_xsrf_token();
+
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
@@ -243,8 +244,6 @@ class EmailModule extends PLModule
                 $page->assign('retour', $redirect->modify_email($actifs,
                     Env::v('emails_rewrite',Array())));
             }
-        } else if (Env::has('emailop')) {
-            $page->trig('L\'ajout d\'une nouvelle redirection a échoué, merci de réessayer.');
         }
 
         $res = XDB::query(
@@ -294,7 +293,9 @@ class EmailModule extends PLModule
         wiki_require_page('Xorg.Mails');
         $page->changeTpl('emails/submit_spam.tpl');
 
-        if (Post::has('send_email') && S::has_xsrf_token()) {
+        if (Post::has('send_email')) {
+            S::assert_xsrf_token();
+
             $upload = PlUpload::get($_FILES['mail'], S::v('forlife'), 'spam.submit', true);
             if (!$upload) {
                 $page->trig('Une erreur a été rencontrée lors du transfert du fichier');
@@ -316,8 +317,6 @@ class EmailModule extends PLModule
             $mailer->send();
             $page->trig('Le message a été transmis à ' . $box);
             $upload->clear();
-        } elseif (Post::has('send_email')) {
-            $page->trig("La soumission du spam a échouée, merci de réessayer.");
         }
     }
 
@@ -344,7 +343,9 @@ class EmailModule extends PLModule
                                     VALUES  ({?}, {?})", S::i('uid'), $data);
             }
             exit;
-        } else if (Env::v('submit') == 'Envoyer' && S::has_xsrf_token()) {
+        } else if (Env::v('submit') == 'Envoyer') {
+            S::assert_xsrf_token();
+
             function getEmails($aliases)
             {
                 if (!is_array($aliases)) {
@@ -411,8 +412,6 @@ class EmailModule extends PLModule
                     }
                 }
             }
-        } else if (Env::v('submit') == 'Envoyer') {
-            $page->trig("L'envoi de l'email a échoué, merci de réessayer.");
         } else {
             $res = XDB::query("SELECT  data
                                  FROM  email_send_save
@@ -475,7 +474,9 @@ class EmailModule extends PLModule
 
         $page->changeTpl('emails/broken.tpl');
 
-        if ($warn == 'warn' && $email && S::has_xsrf_token()) {
+        if ($warn == 'warn' && $email) {
+            S::assert_xsrf_token();
+
             $email = valide_email($email);
             // vérifications d'usage
             $sel = XDB::query(
@@ -514,16 +515,14 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                 $mail->send();
                 $page->trig("Mail envoyé ! :o)");
             }
-        } elseif ($warn == 'warn' && $email) {
-            $page->trig("Nous n'avons pas pu prévenir ton correspondant, merci de réessayer.");
-        } elseif (Post::has('email') && S::has_xsrf_token()) {
+        } elseif (Post::has('email')) {
+            S::assert_xsrf_token();
+
             $email = valide_email(Post::v('email'));
 
             list(,$fqdn) = explode('@', $email);
             $fqdn = strtolower($fqdn);
-            if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org'
-            ||  $fqdn == 'm4x.org' || $fqdn == 'melix.net')
-            {
+            if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' ||  $fqdn == 'm4x.org' || $fqdn == 'melix.net') {
                 $page->assign('neuneu', true);
             } else {
                 $page->assign('email',$email);
@@ -554,8 +553,6 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                     $page->assign_by_ref('x', $x);
                 }
             }
-        } elseif (Post::has('email')) {
-            $page->trig("Nous n'avons pas réussi à satisfaire ta demande, merci de réessayer.");
         }
     }
 
@@ -569,8 +566,8 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                         'dangerous' => 'Usurpations par cette adresse');
         $page->assign('states', $states);
 
-        if (Post::has('action') && !S::has_xsrf_token()) {
-            $page->kill("L'action n'a pas pu être réalisée, merci de réessayer.");
+        if (Post::has('action')) {
+            S::assert_xsrf_token();
         }
         switch (Post::v('action')) {
           case 'create':

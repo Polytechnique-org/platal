@@ -413,9 +413,8 @@ class AdminModule extends PLModule
 
             // Check if there was a submission
             foreach($_POST as $key => $val) {
-                if (!S::has_xsrf_token()) {
-                    $page->kill("L'opération de modification de l'utilisateur a échouée, merci de réessayer.");
-                }
+                S::assert_xsrf_token();
+
                 switch ($key) {
                     case "add_fwd":
                         $email = trim(Env::v('email'));
@@ -748,26 +747,20 @@ class AdminModule extends PLModule
             // on examine l'op a effectuer
             switch ($op) {
                 case 'mail':
-                    if (S::has_xsrf_token()) {
-                        send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
-                        switch_bestalias($target, $loginbis);
-                    } else {
-                        $page->assign('op', 'list');
-                        $page->trig("L'envoi du mail d'homonymie a échoué, merci de réessayer.");
-                    }
+                    S::assert_xsrf_token();
+
+                    send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
+                    switch_bestalias($target, $loginbis);
                     $op = 'list';
                     break;
 
                 case 'correct':
-                    if (S::has_xsrf_token()) {
-                        switch_bestalias($target, $loginbis);
-                        XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
-                        XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
-                        send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
-                    } else {
-                        $page->assign('op', 'list');
-                        $page->trig("La correction de l'homonymie a échouée, merci de réessayer.");
-                    }
+                    S::assert_xsrf_token();
+
+                    switch_bestalias($target, $loginbis);
+                    XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
+                    XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
+                    send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
                     $op = 'list';
                     break;
             }
@@ -834,7 +827,9 @@ class AdminModule extends PLModule
 
         $page->assign('promo',$promo);
 
-        if ($validate && S::has_xsrf_token()) {
+        if ($validate) {
+            S::assert_xsrf_token();
+
             $new_deces = array();
             $res = XDB::iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
             while (list($uid,$mat,$nom,$prenom,$deces) = $res->next()) {
@@ -853,8 +848,6 @@ class AdminModule extends PLModule
                 }
             }
             $page->assign('new_deces',$new_deces);
-        } else if ($validate) {
-            $page->trig("La mise à jour des dates de decès à échouée, merci de réessayer.");
         }
 
         $res = XDB::iterator('SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = {?} ORDER BY nom,prenom', $promo);
@@ -937,12 +930,10 @@ class AdminModule extends PLModule
         }
 
         if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
+            S::assert_xsrf_token();
+
             $req = Validate::get_typed_request(Env::v('uid'), Env::v('type'), Env::v('stamp'));
-            if($req && S::has_xsrf_token()) {
-                $req->handle_formu();
-            } else if ($req) {
-                $page->trig("L'opération a échoué, merci de réessayer.");
-            }
+            $req->handle_formu();
         }
 
         $r = XDB::iterator('SHOW COLUMNS FROM requests_answers');
@@ -1046,7 +1037,9 @@ class AdminModule extends PLModule
         }
 
         // update wiki perms
-        if ($action == 'update' && S::has_xsrf_token()) {
+        if ($action == 'update') {
+            S::assert_xsrf_token();
+
             $perms_read = Post::v('read');
             $perms_edot = Post::v('edit');
             if ($perms_read || $perms_edit) {
@@ -1061,21 +1054,21 @@ class AdminModule extends PLModule
                     wiki_set_perms($wiki_page, $perms0, $perms1);
                 }
             }
-        } elseif ($action == 'update') {
-            $page->trig("La mise à jour des permissions wiki a échouée, merci de réessayer.");
         }
 
-        if ($action == 'delete' && $wikipage != '' && S::has_xsrf_token()) {
+        if ($action == 'delete' && $wikipage != '') {
+            S::assert_xsrf_token();
+
             if (wiki_delete_page($wikipage)) {
                 $page->trig("La page ".$wikipage." a été supprimée.");
             } else {
                 $page->trig("Impossible de supprimer la page ".$wikipage.".");
             }
-        } elseif ($action == 'delete' && $wikipage != '') {
-            $page->trig("La suppression de la page wiki a échouée, merci de réessayer.");
         }
 
-        if ($action == 'rename' && $wikipage != '' && $wikipage2 != '' && $wikipage != $wikipage2 && S::has_xsrf_token()) {
+        if ($action == 'rename' && $wikipage != '' && $wikipage2 != '' && $wikipage != $wikipage2) {
+            S::assert_xsrf_token();
+
             if ($changedLinks = wiki_rename_page($wikipage, $wikipage2)) {
                 $s = 'La page <em>'.$wikipage.'</em> a été déplacée en <em>'.$wikipage2.'</em>.';
                 if (is_numeric($changedLinks)) {
@@ -1085,8 +1078,6 @@ class AdminModule extends PLModule
             } else {
                 $page->trig("Impossible de déplacer la page ".$wikipage);
             }
-        } elseif ($action == 'rename' && $wikipage != '' && $wikipage2 != '' && $wikipage != $wikipage2) {
-            $page->trig("Le renommage de la page wiki a échoué, merci de réessayer.");
         }
 
         $perms = wiki_perms_options();
@@ -1135,10 +1126,7 @@ class AdminModule extends PLModule
         switch (Post::v('action')) {
           case 'create':
             if (trim(Post::v('ipN')) != '') {
-                if (!S::has_xsrf_token()) {
-                    $page->trig("L'ajout d'une IP à surveiller a échoué, merci de réessayer.");
-                    break;
-                }
+                S::assert_xsrf_token();
                 Xdb::execute('INSERT IGNORE INTO ip_watch (ip, mask, state, detection, last, uid, description)
                                           VALUES ({?}, {?}, {?}, CURDATE(), NOW(), {?}, {?})',
                              ip_to_uint(trim(Post::v('ipN'))), ip_to_uint(trim(Post::v('maskN'))),
@@ -1147,10 +1135,7 @@ class AdminModule extends PLModule
             break;
 
           case 'edit':
-            if (!S::has_xsrf_token()) {
-                $page->trig("L'édition de l'IP a échoué, merci de réessayer.");
-                break;
-            }
+            S::assert_xsrf_token();
             Xdb::execute('UPDATE ip_watch
                              SET state = {?}, last = NOW(), uid = {?}, description = {?}, mask = {?}
                            WHERE ip = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'),
@@ -1159,11 +1144,8 @@ class AdminModule extends PLModule
 
           default:
             if ($action == 'delete' && !is_null($ip)) {
-                if (S::has_xsrf_token()) {
-                    Xdb::execute('DELETE FROM ip_watch WHERE ip = {?}', ip_to_uint($ip));
-                } else {
-                    $page->trig("La suppression de l'adresse IP a échouée, merci de réessayer.");
-                }
+                S::assert_xsrf_token();
+                Xdb::execute('DELETE FROM ip_watch WHERE ip = {?}', ip_to_uint($ip));
             }
         }
         if ($action != 'create' && $action != 'edit') {

@@ -78,11 +78,6 @@ class Session
         return Session::logged() && Session::v('perms')->hasFlag(PERMS_ADMIN);
     }
 
-    public static function has_xsrf_token()
-    {
-        return Session::has('xsrf_token') && Session::v('xsrf_token') == Env::v('token');
-    }
-
     public static function logged()
     {
         return Session::v('auth', AUTH_PUBLIC) >= AUTH_COOKIE;
@@ -91,6 +86,22 @@ class Session
     public static function identified()
     {
         return Session::v('auth', AUTH_PUBLIC) >= AUTH_MDP;
+    }
+
+    // Anti-XSRF protections.
+    public static function has_xsrf_token()
+    {
+        return Session::has('xsrf_token') && Session::v('xsrf_token') == Env::v('token');
+    }
+
+    public static function assert_xsrf_token()
+    {
+        if (!Session::has_xsrf_token()) {
+            global $page;
+            if ($page instanceof PlatalPage) {
+                $page->kill("L'opération n'a pas pu aboutir, merci de réessayer.");
+            }
+        }
     }
 }
 

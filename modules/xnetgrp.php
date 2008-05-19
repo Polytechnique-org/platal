@@ -221,7 +221,9 @@ class XnetGrpModule extends PLModule
         global $globals;
         $page->changeTpl('xnetgrp/edit.tpl');
 
-        if (Post::has('submit') && S::has_xsrf_token()) {
+        if (Post::has('submit')) {
+            S::assert_xsrf_token();
+
             if (S::has_perms()) {
                 if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
                     $page->trig("le domaine doit être un FQDN (aucune modif effectuée) !!!");
@@ -272,8 +274,6 @@ class XnetGrpModule extends PLModule
             }
 
             pl_redirect('../'.Post::v('diminutif', $globals->asso('diminutif')).'/edit');
-        } else if (Post::has('submit')) {
-            $page->trig("La mise à jour des paramètres du groupe a échouée, merci de réssayer.");
         }
 
         if (S::has_perms()) {

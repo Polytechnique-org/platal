@@ -187,8 +187,9 @@ class PlatalModule extends PLModule
     {
         global $globals;
 
-        if (Post::has('response2') && S::has_xsrf_token())  {
+        if (Post::has('response2'))  {
             require_once 'secure_hash.inc.php';
+            S::assert_xsrf_token();
 
             $_SESSION['password'] = $password = Post::v('response2');
 
@@ -216,8 +217,6 @@ class PlatalModule extends PLModule
 
             $page->changeTpl('platal/motdepasse.success.tpl');
             $page->run();
-        } else if (Post::has('response2')) {
-            $page->trig('Le changement de ton mot de passe a échoué, merci de réessayer.');
         }
 
         $page->changeTpl('platal/motdepasse.tpl');

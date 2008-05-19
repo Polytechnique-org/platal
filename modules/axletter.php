@@ -109,7 +109,9 @@ class AXLetterModule extends PLModule
                 $saved = false;
                 $new   = true;
             }
-        } elseif (Post::has('valid') && S::has_xsrf_token()) {
+        } elseif (Post::has('valid')) {
+            S::assert_xsrf_token();
+
             if (!$subject && $title) {
                 $subject = $title;
             }
@@ -190,8 +192,6 @@ class AXLetterModule extends PLModule
                 pl_redirect('ax');
                 break;
             }
-        } elseif (Post::has('valid')) {
-            $page->trig("L'opération a échouée, merci de réessayer.");
         }
         $page->assign('id', $id);
         $page->assign('short_name', $short_name);
@@ -288,7 +288,9 @@ class AXLetterModule extends PLModule
             $action = Post::v('action');
             $uid    = Post::v('uid');
         }
-        if ($uid && S::has_xsrf_token()) {
+        if ($uid) {
+            S::assert_xsrf_token();
+
             $uids   = preg_split('/ *[,;\: ] */', $uid);
             foreach ($uids as $uid) {
                 switch ($action) {
@@ -303,8 +305,6 @@ class AXLetterModule extends PLModule
                     $page->trig("Personne ne correspond à l'identifiant '$uid'");
                 }
             }
-        } elseif ($uid) {
-            $page->trig("L'opération sur la liste des administrateurs AX a échouée, merci de réessayer.");
         }
 
         $page->changeTpl('axletter/admin.tpl');

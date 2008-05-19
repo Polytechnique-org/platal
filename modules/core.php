@@ -79,16 +79,13 @@ class CoreModule extends PLModule
 
     function handler_purge_cache(&$page)
     {
-        if (S::has_xsrf_token()) {
-            require_once 'wiki.inc.php';
+        require_once 'wiki.inc.php';
+        S::assert_xsrf_token();
 
-            $page->clear_compiled_tpl();
-            wiki_clear_all_cache();
+        $page->clear_compiled_tpl();
+        wiki_clear_all_cache();
 
-            http_redirect(empty($_SERVER['HTTP_REFERER']) ? './' : $_SERVER['HTTP_REFERER']);
-        } else {
-            $page->kill("La purge du cache a échouée, merci de réessayer.");
-        }
+        http_redirect(empty($_SERVER['HTTP_REFERER']) ? './' : $_SERVER['HTTP_REFERER']);
     }
 
     function handler_kill_sessions(&$page)
@@ -116,7 +113,9 @@ class CoreModule extends PLModule
         global $globals;
         $page->changeTpl('core/bug.tpl', SIMPLE);
         $page->addJsLink('close_on_esc.js');
-        if (Env::has('send') && trim(Env::v('detailed_desc')) && S::has_xsrf_token()) {
+        if (Env::has('send') && trim(Env::v('detailed_desc'))) {
+            S::assert_xsrf_token();
+
             $body = wordwrap(Env::v('detailed_desc'), 78) . "\n\n"
                   . "----------------------------\n"
                   . "Page        : " . Env::v('page') . "\n\n"
@@ -131,10 +130,8 @@ class CoreModule extends PLModule
             $mymail->setSubject('Plat/al '.Env::v('task_type').' : '.Env::v('item_summary'));
             $mymail->setTxtBody($body);
             $mymail->send();
-        } elseif (Env::has('send') && S::has_xsrf_token()) {
-            $page->trig("Merci de remplir une explication du problème rencontré");
         } elseif (Env::has('send')) {
-            $page->trig("L'envoi du bug a échoué, merci de réessayer.");
+            $page->trig("Merci de remplir une explication du problème rencontré");
         }
     }
 

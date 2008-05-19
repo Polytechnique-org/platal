@@ -68,18 +68,15 @@ class GoogleAppsModule extends PLModule
                 } else if ($subaction == 'nosync') {
                     $account->set_password_sync(false);
                 } else if (Post::has('response2') && !$account->sync_password) {
-                    if (S::has_xsrf_token()) {
-                        $account->set_password(Post::v('response2'));
-                    } else {
-                        $page->trig("Le changement de ton mot de passe Google Apps a échoué, merci de réessayer.");
-                    }
+                    S::assert_xsrf_token();
+                    $account->set_password(Post::v('response2'));
                 }
             }
 
             if ($action == 'suspend' && Post::has('suspend') && $account->active()) {
-                if (!S::has_xsrf_token()) {
-                    $page->trig("La demande de suspension de ton compte a échouée, merci de réessayer.");
-                } else if ($account->pending_update_suspension) {
+                S::assert_xsrf_token();
+
+                if ($account->pending_update_suspension) {
                     $page->trig("Ton compte est déjà en cours de désactivation.");
                 } else {
                     if ($redirect->modify_one_email('googleapps', false) == SUCCESS) {
@@ -99,6 +96,8 @@ class GoogleAppsModule extends PLModule
                 $page->assign('password_sync', Get::b('password_sync', true));
             }
             if ($action == 'create' && Post::has('password_sync') && Post::has('redirect_mails')) {
+                S::assert_xsrf_token();
+
                 $password_sync = Post::b('password_sync');
                 $redirect_mails = Post::b('redirect_mails');
                 if ($password_sync) {
@@ -107,12 +106,8 @@ class GoogleAppsModule extends PLModule
                     $password = Post::v('response2');
                 }
 
-                if (S::has_xsrf_token()) {
-                    $account->create($password_sync, $password, $redirect_mails);
-                    $page->trig("La demande de création de ton compte Google Apps a bien été enregistrée.");
-                } else {
-                    $page->trig("La demande de création de ton compte Google Apps a échouée, merci de réessayer.");
-                }
+                $account->create($password_sync, $password, $redirect_mails);
+                $page->trig("La demande de création de ton compte Google Apps a bien été enregistrée.");
             }
         }
 
