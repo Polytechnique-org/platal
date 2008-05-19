@@ -30,7 +30,7 @@
   <tr>
     <th colspan="2" style="text-align: left">
       <div style="float: left; text-align: left">
-        Compte = {$a->g_account_name}
+        Compte = <a href="admin/user/{$a->g_account_name}">{$a->g_account_name}</a>
       </div>
       <div style="float: right; text-align: right">
         Google id = {$a->g_account_id}<br />

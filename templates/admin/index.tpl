@@ -72,6 +72,8 @@
       <a href="admin/dead-but-active">Décédés actifs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/synchro_ax">Synchro AX</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/googleapps">Google Apps</a>
     </td>
   </tr>
   <tr class="pair">

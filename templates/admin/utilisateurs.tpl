@@ -409,7 +409,9 @@ Pour ceci changer ses permissions en 'disabled'.
       </td>
       <td>
         {if $mail->broken}<span style="color: #f00">{/if}
+        {if $mail->email == 'googleapps'}<a href="admin/googleapps/user/{$mr.forlife}">{/if}
         {$mail->display_email}
+        {if $mail->email == 'googleapps'}</a>{/if}
         {if $mail->broken}<em> (en panne)</em></span>{/if}
       </td>
       <td class="action">
