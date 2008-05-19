@@ -73,7 +73,7 @@
 
 <p class="smaller">
 Dernière connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
-depuis <strong>{$host}</strong>
+depuis <strong>{$host}</strong>.
 </p>
 
 {literal}
@@ -236,7 +236,7 @@ function ban_read()
         <input type="checkbox" name="watchN" {if $mr.watch}checked="checked"{/if} />
         Surveiller l'activité de ce compte<br />
         <span class="smaller">Cette option permet d'avoir des logs complets de l'activité
-        du compte via le logger, et d'être alerté lors des connexions de l'utilisateur</span>
+        du compte via le logger, et d'être alerté lors des connexions de l'utilisateur.</span>
       </td>
     </tr>
     <tr class="impair">

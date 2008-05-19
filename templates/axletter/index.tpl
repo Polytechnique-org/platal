@@ -58,7 +58,7 @@ Tu n'es actuellement pas inscrit aux envois exceptionnels de l'AX.
   </tr>
   {elseif $ax_rights && $new}
   <tr class="pair">
-    <td><a href="ax/edit">{icon name=page_edit} Editer la demande</a></td>
+    <td><a href="ax/edit">{icon name=page_edit} Éditer la demande</a></td>
     <td>
       {if $new->title()}
       <a href="ax/show/{$new->id()}"><strong>{$new->title(true)}</strong></a>

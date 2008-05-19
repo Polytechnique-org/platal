@@ -500,11 +500,11 @@ Nous te suggérons de vérifier cette adresse, et le cas échéant de mettre
 à jour sur le site <{$globals->baseurl}/emails> tes adresses
 de redirection...
 
-Pour plus de rensignements sur le service de patte cassée, n'hésites pas à
+Pour plus de renseignements sur le service de patte cassée, n'hésite pas à
 consulter la page <{$globals->baseurl}/emails/broken>.
 
 
-A bientôt sur Polytechnique.org !
+À bientôt sur Polytechnique.org !
 L'équipe d'administration <support@" . $globals->mail->domain . '>';
 
                 $mail = new PlMailer();

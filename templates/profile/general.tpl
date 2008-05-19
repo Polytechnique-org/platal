@@ -89,7 +89,7 @@
   <tr class="pair">
     <td>
       <span class="titre">Application</span><br />
-      <span class="comm">(4ème année de l'X)</span>
+      <span class="comm">(4e année de l'X)</span>
     </td>
     <td>
       <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">

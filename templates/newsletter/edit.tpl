@@ -156,7 +156,7 @@
   <table class='bicol'>
     <tr>
       <th colspan='2'>
-        <a id='edit'></a>Editer un article
+        <a id='edit'></a>Éditer un article
       </th>
     </tr>
     <tr class="impair">

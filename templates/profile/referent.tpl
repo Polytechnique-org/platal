@@ -79,7 +79,7 @@ function setSSecteurs()
     </tr>
     <tr class="impair" style="display: none" id="scat">
       <td class="titre">
-        Sous-Secteur
+        Sous-secteur
       </td>
       <td id="ssect_chg">
       </td>

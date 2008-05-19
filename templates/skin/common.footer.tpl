@@ -25,9 +25,9 @@
   &nbsp;-&nbsp;
   <a href="Reference/Convention-AX">Lien avec l'AX</a>
   &nbsp;-&nbsp;
-  <a href="Equipe/APropos">A propos de ce site et ses équipes</a>
+  <a href="Equipe/APropos">À propos de ce site et ses équipes</a>
 <br />
-  <a href="Docs/Ethique">Services et Ethique</a>
+  <a href="Docs/Ethique">Services et éthique</a>
   | <a href="Reference/Charte">Charte</a>
 {if $smarty.session.auth ge AUTH_COOKIE}
   | <a href="stats/coupures">Disponibilité</a>

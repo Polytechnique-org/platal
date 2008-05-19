@@ -32,7 +32,7 @@
 <div class="menu_item"><a href="http://www.manageurs.com/">Recrutement</a></div>
 
 <div class="menu_title">Informations</div>
-<div class="menu_item"><a href="Equipe/APropos">A propos du site</a></div>
+<div class="menu_item"><a href="Equipe/APropos">À propos du site</a></div>
 <div class="menu_item"><a href="Xorg/NousContacter">Nous contacter</a></div>
 <div class="menu_item"><a href="Xorg/FAQ">FAQ</a></div>
 

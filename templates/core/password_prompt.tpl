@@ -26,7 +26,7 @@
 </h1>
 <p>
   Bonjour,<br />
-  La page que vous avez demandée
+  la page que vous avez demandée
   (<strong>{if $referer}{$smarty.server.HTTP_REFERER}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
   nécessite une authentification.
 </p>
@@ -75,7 +75,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr>
       <td class="titre">
-        Mot de passe:
+        Mot de passe&nbsp;:
       </td>
       <td>
         <input type="password" name="password" size="10" maxlength="10" />
@@ -94,7 +94,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
             return true;
           }
         {/literal}</script>
-        <input type="checkbox" name="remember" id="remember" onchange="return confirm_remember(this);" /><label for="remember">Garder l'accès aux services après déconnexion</label>
+        <input type="checkbox" name="remember" id="remember" onchange="return confirm_remember(this);" /><label for="remember">Garder l'accès aux services après déconnexion.</label>
       </td>
     </tr>
     <tr>

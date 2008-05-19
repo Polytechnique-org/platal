@@ -70,7 +70,7 @@
       </td>
     </tr>
     <tr>
-      <td class="titre">Sous-Secteur d'activité</td>
+      <td class="titre">Sous-secteur d'activité</td>
       <td id="{$jobid}_ss_secteur">
         <input type="hidden" name="{$jobpref}[ss_secteur]" value="{$job.ss_secteur|default:'-1'}" />
       </td> 

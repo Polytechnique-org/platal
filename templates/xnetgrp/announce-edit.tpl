@@ -55,7 +55,7 @@ function visibilityChange(box)
       <td class="titre">Contenu de l'annonce&nbsp;:</td>
       <td>
         <small>
-          Le contenu est destiné à recevoir la descriptioin de ce qui est annoncé.
+          Le contenu est destiné à recevoir la description de ce qui est annoncé.
           Il faut éviter d'y mettre des adresses mails ou web (surtout si l'annonce est publique),
           qui devront être placées dans la section "contacts".
         </small>

@@ -91,7 +91,7 @@
 {if !$it_is_xnet}
 <p class="smaller">
   {icon name="lightbulb" title="Astuce"}Astuce&nbsp;:
-  Tu peux également consulter les fora en utilisant un client NNTP tel que
+  tu peux également consulter les forums en utilisant un client NNTP tel que
   Outlook Express ou Thunderbird.<br />N'hésite pas à <a href="password/smtp?doc=nntp">
   consulter la documentation et à activer ton accès</a> pour utiliser ce service.
 </p>

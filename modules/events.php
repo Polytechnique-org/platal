@@ -51,7 +51,7 @@ class EventsModule extends PLModule
                                    . '.<br /> Nous t\'invitons à <a href="review">faire un tour d\'horizon des '
                                    . 'nouveautés</a>.<br /><br />'
                                    . 'Tu peux également retrouver ces informations sur <a href="banana/xorg.m4x.innovation">'
-                                   . 'les fora</a>, ou sur <a href="changelog">la liste exhaustive des modifications</a>.',
+                                   . 'les forums</a>, ou sur <a href="changelog">la liste exhaustive des modifications</a>.',
                          'priorite' => 255,
                          'promo_min' => 0,
                          'promo_max' => 0,

@@ -25,7 +25,7 @@
 {if $submited}
 
 <p>
-ton article a bien été pris en compte.
+Ton article a bien été pris en compte.
 </p>
 
 <p>
@@ -66,7 +66,7 @@ Il te faut te limiter à 8 lignes de 68 caractères.
     <tr>
       <td>
         Si tu es content de ton article, tu peux le soumettre.
-        Sinon, tu peux continuer à l'éditer en dessous
+        Sinon, tu peux continuer à l'éditer en dessous.
       </td>
     </tr>
     <tr>
@@ -74,7 +74,7 @@ Il te faut te limiter à 8 lignes de 68 caractères.
         <input type='hidden' value="{$smarty.request.title}" name='title' />
         <input type='hidden' value="{$art->body()}" name="body" />
         <input type='hidden' value="{$art->append()}" name='append' />
-        <input type='submit' name='valid' value='soumettre' />
+        <input type='submit' name='valid' value='Soumettre' />
       </td>
     </tr>
     {/if}
@@ -123,7 +123,7 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant d
     </tr>
     <tr class='pair'>
       <td colspan='2' class='center'>
-        <input type='submit' name='see' value='visualiser' />
+        <input type='submit' name='see' value='Visualiser' />
       </td>
     </tr>
   </table>
