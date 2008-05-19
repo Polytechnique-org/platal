@@ -527,7 +527,8 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
             } else {
                 $page->assign('email',$email);
                 $sel = XDB::query(
-                        "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails,
+                        "SELECT  e1.uid, e1.panne != 0 AS panne,
+                                 (count(e2.uid) + IF(FIND_IN_SET('googleapps', u.mail_storage), 1, 0)) AS nb_mails,
                                  u.nom, u.prenom, u.promo, a.alias AS forlife
                            FROM  emails as e1
                       LEFT JOIN  emails as e2 ON(e1.uid = e2.uid
