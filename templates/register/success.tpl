@@ -167,7 +167,7 @@ il te faudra contacter l'équipe support.
   <p class="smaller">* décoche les cases si tu ne souhaites pas être inscrit à la liste de diffusion correspondante</p>
 
   <div class="center">
-    <input type="submit" value="Rejoindre les X sur le Net !" class="erreur" />
+    <input type="submit" value="Rejoindre les X sur le Net !" class="erreur" style="background-color: #fff" />
   </div>
 </form>
 
