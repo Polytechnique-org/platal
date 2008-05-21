@@ -7,6 +7,7 @@ New:
         - Password strength checker                                        -FRU
         - Show user picture on the mini-profile                            -FRU
         - Add an anti-XSRF framework, and add protection to most pages     -VZA
+        - Add a 'disallow all' robots.txt in development working copies.   -VZA
 
 Bug/Wish:
     * Core:

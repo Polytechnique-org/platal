@@ -37,6 +37,7 @@ class CoreModule extends PLModule
 
             'valid.html'  => $this->make_hook('valid', AUTH_PUBLIC),
             'favicon.ico' => $this->make_hook('favicon', AUTH_PUBLIC),
+            'robots.txt'  => $this->make_hook('robotstxt', AUTH_PUBLIC, 'user', NO_HTTPS),
         );
     }
 
@@ -74,6 +75,19 @@ class CoreModule extends PLModule
         $data = file_get_contents(dirname(__FILE__).'/../htdocs/images/favicon.ico');
         header('Content-Type: image/x-icon');
         echo $data;
+        exit;
+    }
+
+    function handler_robotstxt(&$page)
+    {
+        global $globals;
+        if (!$globals->core->restricted_platal) {
+            return PL_NOT_FOUND;
+        }
+
+        header('Content-Type: text/plain');
+        echo "User-agent: *\n";
+        echo "Disallow: /\n";
         exit;
     }
 
