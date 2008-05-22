@@ -120,7 +120,7 @@ include/banana/banana.inc.php:
 ## jquery
 ##
 
-JQUERY_PLUGINS=autocomplete color
+JQUERY_PLUGINS=color
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
 jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES)

@@ -1,2 +1,3 @@
-# jQuery and its plugin is downloaded by the Makefile
-/jquery*.js
+# jQuery and some of its plugins are downloaded by the Makefile
+/jquery.js
+/jquery.color.js
