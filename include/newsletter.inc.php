@@ -223,18 +223,24 @@ class NLArticle
     // }}}
     // {{{ function toText()
 
-    public function toText()
+    public function toText($hash = null, $login = null)
     {
         $title = '*'.$this->title().'*';
         $body  = MiniWiki::WikiToText($this->_body, true);
         $app   = MiniWiki::WikiToText($this->_append,false,4);
-        return trim("$title\n\n$body\n\n$app")."\n";
+        $text = trim("$title\n\n$body\n\n$app")."\n";
+        if (!is_null($hash) && !is_null($login)) {
+            $text = str_replace('%HASH%', "$hash/$login", $text);
+        } else {
+            $text = str_replace('%HASH%', '', $text);
+        }
+        return $text;
     }
 
     // }}}
     // {{{ function toHtml()
 
-    public function toHtml()
+    public function toHtml($hash = null, $login = null)
     {
         $title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a>".pl_entities($this->title()).'</h2>';
         $body  = MiniWiki::WikiToHTML($this->_body);
@@ -246,6 +252,11 @@ class NLArticle
             $art .= "<div class='app'>$app</div>";
         }
         $art  .= "</div>\n";
+        if (!is_null($hash) && !is_null($login)) {
+            $art = str_replace('%HASH%', "$hash/$login", $art);
+        } else {
+            $art = str_replace('%HASH%', '', $art);
+        }
 
         return $art;
     }

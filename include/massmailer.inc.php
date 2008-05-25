@@ -185,6 +185,8 @@ abstract class MassMailer
         $mailer->assign('sexe',    $sexe);
         $mailer->assign('prefix',  null);
         $mailer->assign('hash',    $hash);
+        $mailer->assign('email',   $login);
+        $mailer->assign('alias',   $alias);
         $mailer->addTo("\"$prenom $nom\" <$login>");
         $mailer->send($html);
     }
