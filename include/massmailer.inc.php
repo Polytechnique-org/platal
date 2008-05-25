@@ -152,11 +152,29 @@ abstract class MassMailer
         $this->assignData($page);
     }
 
+    private function createHash($line, $key = null)
+    {
+        $hash = implode(time(), $line) . rand();
+        $hash = md5($hash);
+        return $hash;
+    }
+
     public function sendTo($prenom, $nom, $login, $sexe, $html, $hash = 0)
     {
         global $globals;
+        $alias = $login;
         if (strpos($login, '@') === false) {
+            $alias = $login;
             $login = "$login@{$globals->mail->domain}";
+        }
+        if (strpos($alias, '@') === false && (is_null($hash) || $hash == 0)) {
+
+            $hash = $this->createHash(array($prenom, $nom, $login, $sexe, $html, rand(), "X.org rulez"));
+            XDB::query("UPDATE  {$this->_subscriptionTable} as ni
+                    INNER JOIN  aliases AS a ON (ni.user_id = a.id)
+                           SET  ni.hash = {?}
+                         WHERE  ni.user_id != 0 AND a.alias = {?}",
+                       $hash, $alias);
         }
 
         $mailer = new PlMailer($this->_tpl);
@@ -177,7 +195,7 @@ abstract class MassMailer
         return  "SELECT  u.user_id, CONCAT(a.alias, '@{$globals->mail->domain}'),
                          u.prenom, IF(u.nom_usage='', u.nom, u.nom_usage),
                          FIND_IN_SET('femme', u.flags),
-                         q.core_mail_fmt AS pref, 0 AS hash
+                         q.core_mail_fmt AS pref, ni.hash AS hash
                    FROM  {$this->_subscriptionTable}  AS ni
              INNER JOIN  auth_user_md5   AS u  USING(user_id)
              INNER JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
