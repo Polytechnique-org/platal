@@ -33,6 +33,8 @@ class EmailModule extends PLModule
             'emails/antispam/submit'  => $this->make_hook('submit', AUTH_COOKIE),
             'emails/test'     => $this->make_hook('test', AUTH_COOKIE, 'user', NO_AUTH),
 
+            'emails/imap/in'  => $this->make_hook('imap_in', AUTH_PUBLIC),
+
             'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
             'admin/emails/watch'      => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
             'admin/emails/lost'       => $this->make_hook('lost', AUTH_MDP, 'admin'),
@@ -441,6 +443,34 @@ class EmailModule extends PLModule
         $mailer->assign('prenom', $prenom);
         $mailer->send();
         exit;
+    }
+
+    function handler_imap_in(&$page, $hash = null, $login = null)
+    {
+        $page->changeTpl('emails/imap_register.tpl');
+        $id = null;
+        if (!empty($hash) || !empty($login)) {
+            $req = XDB::query("SELECT  u.prenom, id
+                                 FROM  aliases AS a
+                           INNER JOIN  newsletter_ins AS ni ON (a.id = ni.user_id)
+                           INNER JOIN  auth_user_md5 AS u ON (u.user_id = a.id)
+                                WHERE  a.alias = {?} AND ni.hash = {?}", $login, $hash);
+            list($prenom, $id) = $req->fetchOneRow();
+        }
+
+        require_once('emails.inc.php');
+        $page->assign('ok', false);
+        if (S::logged() && (is_null($id) || $id == S::i('uid'))) {
+            $storage = new EmailStorage(S::i('uid'), 'imap');
+            $storage->activate();
+            $page->assign('ok', true);
+            $page->assign('prenom', S::v('prenom'));
+        } else if (!S::logged() && $id) {
+            $storage = new EmailStorage($id, 'imap');
+            $storage->activate();
+            $page->assign('ok', true);
+            $page->assign('prenom', $prenom);
+        }
     }
 
     function handler_broken(&$page, $warn = null, $email = null)
