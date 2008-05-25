@@ -164,8 +164,12 @@ abstract class MassMailer
         global $globals;
         $alias = $login;
         if (strpos($login, '@') === false) {
-            $alias = $login;
             $login = "$login@{$globals->mail->domain}";
+        }
+        require_once('user.func.inc.php');
+        $forlife = get_user_forlife($login, '_silent_user_callback');
+        if ($forlife) {
+            $alias = $forlife;
         }
         if (strpos($alias, '@') === false && (is_null($hash) || $hash == 0)) {
 
