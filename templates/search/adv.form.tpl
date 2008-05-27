@@ -31,114 +31,114 @@
   function make_format_autocomplete(block) {
     return function(row) {
         regexp = new RegExp('(' + RegExp.escape(block.value) + ')', 'i');
-        
+
         name = row[0].replace(regexp, '<strong>$1<\/strong>');
-        
+
         if (row[1] == 1) {
           return name;
         }
-        
+
         return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1] + ' camarades<\/em>';
       };
   }
-  
+
   // when changing country, open up region choice
   function changeCountry(a2) {
     $(".autocompleteTarget[@name='country']").attr('value',a2);
-    
+
     if (a2) {
       $(".autocomplete[@name='countryTxt']").addClass('hidden_valid');
-      
+
       $("[@name='region']").parent().load(baseurl + 'list/region/', { country:a2 }, function() {
           if ($("select[@name='region']").children("option").size() > 1) {
             $("select[@name='region']").attr('value', '{/literal}{$smarty.request.region}{literal}');
-          
+
             $("tr#region_ln").show();
           } else {
             $("select[@name='region']").attr('value', '');
-          
+
             $("tr#region_ln").hide();
           }
         });
     } else {
       $(".autocomplete[@name='countryTxt']").removeClass('hidden_valid');
-      
+
       $("select[@name='region']").attr('value', '');
-      
+
       $("tr#region_ln").hide();
     }
   }
-  
+
   // when changing school, open diploma choice
   function changeSchool(schoolId) {
     $(".autocompleteTarget[@name='school']").attr('value',schoolId);
-    
+
     if (schoolId) {
       $(".autocomplete[@name='schoolTxt']").addClass('hidden_valid');
-      
+
       $("[@name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
           if ($("select[@name='diploma']").children("option").size() > 1) {
             $("select[@name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
-          
+
             $("tr#diploma_ln").show();
           } else {
             $("select[@name='diploma']").attr('value', '');
-          
+
             $("tr#diploma_ln").hide();
           }
         });
     } else {
       $(".autocomplete[@name='schoolTxt']").removeClass('hidden_valid');
-      
+
       $("select[@name='diploma']").attr('value', '');
-      
+
       $("tr#diploma_ln").hide();
     }
   }
-  
+
   // when choosing autocomplete from list, must validate
   function select_autocomplete(name) {
       nameRealField = name.replace(/Txt$/, '');
-      
+
       // nothing to do if field is not a text field for a list
       if (nameRealField == name)
         return null;
-      
+
       // if changing country, might want to open region choice
       if (nameRealField == 'country')
         return function(i) {
             changeCountry(i.extra[1]);
           }
-      
+
       if (nameRealField == 'school')
         return function(i) {
             changeSchool(i.extra[1]);
           }
-      
+
       // change field in list and display text field as valid
       return function(i) {
         nameRealField = this.field.replace(/Txt$/, '');
-        
+
         $(".autocompleteTarget[@name='"+nameRealField+"']").attr('value',i.extra[1]);
-        
+
         $(".autocomplete[@name='"+this.field+"']").addClass('hidden_valid');
       }
     }
-    
+
   $(document).ready(function() {
       $(".autocompleteTarget").hide();
       $(".autocomplete").show().each(function() {
         targeted = $("../.autocompleteTarget",this)[0];
-      
+
         if (targeted && targeted.value) {
           me = $(this);
-          
+
           $.get(baseurl + 'list/'+ targeted.name +'/'+targeted.value, {},function(textValue) {
             me.attr('value', textValue);
             me.addClass('hidden_valid');
           });
         }
-      
+
         $(this).autocomplete(baseurl + "autocomplete/"+this.name,{
           selectOnly:1,
           formatItem:make_format_autocomplete(this),
@@ -147,30 +147,30 @@
           matchSubset:0,
           width:$(this).width()});
         });
-      
+
       $(".autocomplete").change(function() { $(this).removeClass('hidden_valid'); });
-      
+
       $(".autocomplete[@name='countryTxt']").change(function() { changeCountry(''); });
-      
+
       changeCountry({/literal}'{$smarty.request.country}'{literal});
-      
+
       $(".autocomplete[@name='schoolTxt']").change(function() { changeSchool(''); });
-      
+
       changeSchool({/literal}'{$smarty.request.school}'{literal});
-      
+
       $(".autocompleteToSelect").each(function() {
           var fieldName = $(this).attr('href');
-          
+
           $(this).attr('href', baseurl + 'list/'+fieldName).click(function() {
               var oldval = $("input.autocompleteTarget[@name='"+fieldName+"']")[0].value;
-              
+
               $(".autocompleteTarget[@name='"+fieldName+"']").parent().load(baseurl + 'list/'+fieldName,{},
                 function(selectBox) {
                   $(".autocompleteTarget[@name='"+fieldName+"']").remove();
                   $(".autocomplete[@name='"+fieldName+"Txt']").remove();
                   $("select[@name='"+fieldName+"']").attr('value', oldval);
                 });
-              
+
               return false;
             });
         });
