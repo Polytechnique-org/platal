@@ -123,10 +123,14 @@ include/banana/banana.inc.php:
 JQUERY_PLUGINS=color
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
-jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES)
+jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js $(JQUERY_PLUGINS_PATHES)
 
 htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-latest.pack.js
 htdocs/javascript/jquery.js:
+	@$(download)
+
+htdocs/javascript/jquery.autocomplete.js: DOWNLOAD_SRC = http://jquery-autocomplete.googlecode.com/svn/trunk/jquery.autocomplete.js
+htdocs/javascript/jquery.autocomplete.js:
 	@$(download)
 
 $(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F).txt

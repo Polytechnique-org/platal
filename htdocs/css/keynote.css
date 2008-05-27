@@ -661,11 +661,7 @@ div#content {
 }
 
 .ac_results {
-    font-size: 90%;
-    background: #fff;
+	color:  black;
 }
 
-.ac_results li.over {
-    color: #777;
-}
 /* vim: set et ts=4 sts=4 sw=4: */
