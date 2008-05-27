@@ -116,7 +116,7 @@
   {foreach from=$arts item=art}
   <tr class="{cycle values="impair,pair"}">
     <td>
-      <pre>{$art->toText($smarty.session.prenom,$smarty.session.nom,$smarty.session.femme)}</pre>
+      <pre>{$art->toText('%hash%','%login%')}</pre>
     </td>
     <td style='vertical-align:middle; border-left: 1px gray solid'>
       <small><strong>Pos: {$art->_pos}</strong></small><br />
