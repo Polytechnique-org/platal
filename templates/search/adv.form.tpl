@@ -32,13 +32,13 @@
     return function(row) {
         regexp = new RegExp('(' + RegExp.escape(block.value) + ')', 'i');
         
-        name = row[0].replace(regexp, '<strong>$1</strong>');
+        name = row[0].replace(regexp, '<strong>$1<\/strong>');
         
         if (row[1] == 1) {
           return name;
         }
         
-        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;'+ row[1] + ' camarades</em>';
+        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1] + ' camarades<\/em>';
       };
   }
   
