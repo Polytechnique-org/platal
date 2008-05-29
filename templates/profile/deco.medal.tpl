@@ -22,7 +22,7 @@
 
 <div id="medal_{$id}" style="clear: both; margin-top: 1em; height: 50px; vertical-align: middle">
   <div style="float: left; margin-right: 0.3em">
-    <img src="profile/medal/{$id}" height="50" />
+    <img src="profile/medal/thumb/{$id}" height="50px" />
   </div>
   <div style="float: left; width: 70%">
     <div><b id="medal_name_{$id}"></b>

@@ -26,7 +26,7 @@ endef
 
 all: build
 
-build: core banana wiki jquery
+build: core banana wiki medals jquery
 
 q:
 	@echo -e "Code statistics\n"
@@ -114,7 +114,16 @@ htdocs/css/banana.css:
 include/banana/banana.inc.php:
 	cd $(@D) && find $(BANANA)/banana/ -name '*.php' -exec ln -snf {} . ";"
 
+##
+## Medal thumbnails
+##
+MEDAL_PICTURES=$(wildcard htdocs/images/medals/*.jpg)
+MEDAL_THUMBNAILS=$(subst /medals/,/medals/thumb/,$(MEDAL_PICTURES))
 
+medals: $(MEDAL_THUMBNAILS)
+
+$(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
+	convert -resize x50 $(subst /medals/thumb/,/medals/,$@) $@
 
 ##
 ## jquery

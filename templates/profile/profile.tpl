@@ -172,7 +172,7 @@ function chgMainWinLoc(strPage)
     <h2>Distinctions&nbsp;: </h2>
     {foreach from=$x.medals item=m}
     <div class="medal_frame">
-      <img src="profile/medal/{$m.id}" width="24" alt="{$m.medal}" title="{$m.medal}" style='float: left;' />
+      <img src="profile/medal/thumb/{$m.id}" height="50px" alt="{$m.medal}" title="{$m.medal}" style='float: left;' />
       <div class="medal_text">
         {$m.medal}<br />{$m.grade}
       </div>

@@ -105,11 +105,16 @@ class ProfileModule extends PLModule
 
     function handler_medal(&$page, $mid)
     {
+        $thumb = ($mid == 'thumb');
+        $mid = $thumb ? @func_get_arg(2) : $mid;
+
         $res = XDB::query("SELECT  img
                              FROM  profile_medals
                             WHERE  id = {?}",
                           $mid);
-        $img  = dirname(__FILE__).'/../htdocs/images/medals/' . $res->fetchOneCell();
+        $img  = $thumb ?
+            dirname(__FILE__).'/../htdocs/images/medals/thumb/' . $res->fetchOneCell() :
+            dirname(__FILE__).'/../htdocs/images/medals/' . $res->fetchOneCell();
         $type = mime_content_type($img);
         header("Content-Type: $type");
         echo file_get_contents($img);
