@@ -94,7 +94,17 @@
 
 <div style="text-align: center">
   <img src="images/googleapps/activity-yearly.png" alt="Activité Google Apps - 1 an" width="500 height="250" />
-  <br /><em>Utilisation des comptes Google Apps sur les 12 derniers mois</em>.
+  <br /><em>Utilisation disque des comptes sur les 12 derniers mois</em>.
+</div>
+
+<div style="text-align: center">
+  <img src="images/googleapps/usage-monthly.png" alt="Utilisation disque - 1 mois" width="500 height="250" />
+  <br /><em>Utilisation des comptes Google Apps sur les 31 derniers jours</em>.
+</div>
+
+<div style="text-align: center">
+  <img src="images/googleapps/usage-yearly.png" alt="Utilisation disque - 1 an" width="500 height="250" />
+  <br /><em>Utilisation disque des comptes sur les 12 derniers mois</em>.
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
