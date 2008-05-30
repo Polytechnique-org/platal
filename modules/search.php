@@ -390,7 +390,7 @@ class SearchModule extends PLModule
         while ($result = $list->next()) {
             $nbResults++;
             if ($nbResults == 11) {
-                $res .= '...|1'."\n";
+                $res .= $q."|-1\n";
             } else {
                 $res .= $result['field'].'|';
                 $res .= $result['nb'];

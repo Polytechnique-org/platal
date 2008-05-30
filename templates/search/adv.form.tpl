@@ -34,8 +34,8 @@
 
         name = row[0].replace(regexp, '<strong>$1<\/strong>');
 
-        if (row[1] == 1) {
-          return name;
+        if (row[1] === "-1") {
+          return '...';
         }
 
         return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1] + ' camarades<\/em>';
