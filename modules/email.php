@@ -471,12 +471,12 @@ class EmailModule extends PLModule
         $page->changeTpl('emails/imap_register.tpl');
         $id = null;
         if (!empty($hash) || !empty($login)) {
-            $req = XDB::query("SELECT  u.prenom, id
+            $req = XDB::query("SELECT  u.prenom, FIND_IN_SET('femme', u.flags) AS sexe, a.id
                                  FROM  aliases AS a
                            INNER JOIN  newsletter_ins AS ni ON (a.id = ni.user_id)
                            INNER JOIN  auth_user_md5 AS u ON (u.user_id = a.id)
                                 WHERE  a.alias = {?} AND ni.hash = {?}", $login, $hash);
-            list($prenom, $id) = $req->fetchOneRow();
+            list($prenom, $sexe, $id) = $req->fetchOneRow();
         }
 
         require_once('emails.inc.php');
@@ -486,11 +486,13 @@ class EmailModule extends PLModule
             $storage->activate();
             $page->assign('ok', true);
             $page->assign('prenom', S::v('prenom'));
+            $page->assign('sexe', S::v('femme'));
         } else if (!S::logged() && $id) {
             $storage = new EmailStorage($id, 'imap');
             $storage->activate();
             $page->assign('ok', true);
             $page->assign('prenom', $prenom);
+            $page->assign('sexe', $sexe);
         }
     }
 

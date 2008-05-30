@@ -22,11 +22,11 @@
 
 {if $ok}
 <p>
-  Cher {$prenom},
+  {if $sexe}Chère{else}Cher{/if} {$prenom},
 </p>
 
 <p>
-le stockage de secours de tes emails a été activé avec succès. Tu trouveras d'avantages d'informations à ce
+le stockage de secours de tes emails a été activé avec succès. Tu trouveras davantage d'informations à ce
 sujet sur la page de <a href="Xorg/IMAP">documentation</a>.
 </p>
 
