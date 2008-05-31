@@ -42,7 +42,9 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
 
     foreach ($fieldarr as $val) {
         /* on verifie qu'on n'a pas demandÃ© une variable inexistante ! */
-        if (S::has($val)) {
+        if ($val == 'perms') {
+            $params .= gpex_prepare_param($val, S::has_perms() ? 'admin' : 'user', $tohash, $charset);
+        } else if (S::has($val)) {
             $params .= gpex_prepare_param($val, S::v($val), $tohash, $charset);
         } else if (isset($personnal_data[$val])) {
             $params .= gpex_prepare_param($val, $personnal_data[$val], $tohash, $charset);
