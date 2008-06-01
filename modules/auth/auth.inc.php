@@ -62,9 +62,6 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
                                     WHERE  uid = {?} AND diminutif = {?}",
                                   S::v('uid'), $_GET['group']);
                 $perms = $res->fetchOneCell();
-                if (S::has_perms()) {
-                    $perms = 'admin';
-                }
             } else {
                 // if no group asked, return main rights
                 $perms = S::has_perms() ? 'admin' : 'membre';
