@@ -23,7 +23,7 @@
 <p>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$smarty.session.forlife}">fiche référent</a> qui n'est accessible que par les X.
 </p>
 <p>
-  Si tu acceptes que ceux des camarades te contactent afin de te demander
+  Si tu acceptes que des camarades te contactent afin de te demander
   conseil, dans les domaines que tu connais bien, et pour lesquels tu pourrais
   les aider, remplis cette rubrique.
 </p>
@@ -126,7 +126,7 @@
         <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
         {icon name="flag_red" title="privé"}
       </div>
-      Expérience et expertises que tu acceptes de faire partager
+      Expériences et expertises que tu acceptes de faire partager
     </th>
   </tr>
   <tr>

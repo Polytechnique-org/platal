@@ -43,10 +43,12 @@ function chgMainWinLoc(strPage)
   <div id="photo" class="part">
     {if $photo_url}<img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}"/>{/if}
     {if $logged && ( $x.section|smarty:nodefaults || $x.binets_join|smarty:nodefaults || $x.gpxs_join|smarty:nodefaults)}
-      <h2>A l'X...</h2>
+      <h2>À l'X...</h2>
       {if $x.section}<div><em class="intitule">Section&nbsp;: </em><span>{$x.section}</span></div>{/if}
-      {if $x.binets_join}<div><em class="intitule">Binet(s)&nbsp;: </em><span>{$x.binets_join}</span></div>{/if}
-      {if $x.gpxs_join}<div><em class="intitule">Groupe(s) et institution(s) X&nbsp;: </em><span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
+      {if $x.binets_join}<div><em class="intitule">Binet{if count($x.binets) > 1}s{/if}&nbsp;: </em>
+      <span>{$x.binets_join}</span></div>{/if}
+      {if $x.gpxs_join}<div><em class="intitule">Groupe{if count($x.gpxs) > 1}s{/if} et institution{if count($x.gpxs) > 1}s{/if} X&nbsp;: </em>
+      <span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
     {/if}
     {if $x.freetext}
     <h2>Commentaires&nbsp;:</h2>

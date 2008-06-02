@@ -201,7 +201,7 @@
     {icon name=error title="En panne"}
     <a href="Xorg/Pannes">Panne&nbsp;:</a>
   </strong>
-  Les adresses marquées de cette icône sont des adresses de redirection pour lesquelles une panne
+  les adresses marquées de cette icône sont des adresses de redirection pour lesquelles une panne
   a été détectée. Si le problème persiste, la redirection vers ces adresses sera désactivée.
 </p>
 {/if}
@@ -211,7 +211,7 @@
     {icon name=error title="En panne"}
     <a href="Xorg/Pannes" style="color: #f00">Panne durable&nbsp;:</a>
   </strong>
-  Les adresses en rouge sont des adresses qui ont été désactivées en raison d'un grand nombre de pannes. Si tu penses que
+  les adresses en rouge sont des adresses qui ont été désactivées en raison d'un grand nombre de pannes. Si tu penses que
   le problème est résolu, tu peux les réactiver, mais l'adresse sera redésactivée si les problèmes persistent.
 </p>
 {/if}

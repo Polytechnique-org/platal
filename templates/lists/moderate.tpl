@@ -49,7 +49,7 @@
   {/foreach}
 </table>
 {else}
-<p>pas d'inscriptions en attente de modération</p>
+<p>Il n'y a pas d'inscriptions en attente de modération.</p>
 {/if}
 
 <h1>
@@ -188,7 +188,7 @@ function toggleAll() {
 </p>
 </form>
 {else}
-<p>pas de mails en attente de modération</p>
+<p>Il n'y a pas de mails en attente de modération.</p>
 {/if}
 
 
