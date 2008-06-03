@@ -73,6 +73,10 @@
                  {if $adr.mail}checked="checked"{/if} />
           <label for="{$adid}_mail">on peut m'y envoyer du courrier par la poste</label>
         </div>
+        <div>
+          <label for="{$adpref}[comment]">Commentaire : </label>
+          <input type="text" size="35" maxlength="100" name="{$adpref}[comment]" id="{$adpref}_comment" value="{$adr.comment}" />
+        </div>
       </div>
     </td>
   </tr>

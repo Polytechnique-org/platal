@@ -61,15 +61,29 @@ function smarty_function_display_address($param, &$smarty)
     $map = "<a href=\"http://maps.google.fr/?q="
         .   urlencode(implode(", ", $lines) . " ($idt)")
         . "\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
+    $comment = "";
+    if ($param['adr']['comment'] != "")
+    {
+        $commentHtml = str_replace(array('&', '"'), array('&amp;', '&quot;'), $param['adr']['comment']);
+        $commentJs = str_replace(array('\\', '\''), array('\\\\', '\\\''), $commentHtml);
+        $comment = "<img style=\"margin-left: 5px;\" src=\"images/icons/comments.gif\""
+            . " onmouseover=\"return overlib('"
+            . $commentJs
+            . "',WIDTH,250);\""
+            . " onmouseout=\"nd();\""
+            . " alt=\"Commentaire\" title=\""
+            . $commentHtml
+            . "\"/>";
+    }
     if ($restore) {
         array_unshift($lines, $idt);
     }
     if ($param['titre'])
     {
         if ($param['titre_div'])
-            $txthtml .= "<div class='titre'>".pl_entity_decode($param['titre'])."&nbsp;".$map."</div>\n";
+            $txthtml .= "<div class='titre'>".pl_entity_decode($param['titre'])."&nbsp;".$map.$comment."</div>\n";
         else
-            $txthtml .= "<em>".pl_entity_decode($param['titre'])."&nbsp;</em>".$map."<br />\n";
+            $txthtml .= "<em>".pl_entity_decode($param['titre'])."&nbsp;</em>".$map.$comment."<br />\n";
     }
     foreach ($lines as $line)
     {

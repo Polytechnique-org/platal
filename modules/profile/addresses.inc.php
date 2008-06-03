@@ -138,17 +138,17 @@ class ProfileAddress extends ProfileGeoloc
                                               postcode, city, cityid,
                                               country, region, regiontxt,
                                               pub, datemaj, statut,
-                                              uid, adrid, glat, glng)
+                                              uid, adrid, glat, glng, comment)
                            VALUES  ({?}, {?}, {?},
                                     {?}, {?}, {?},
                                     {?}, {?}, {?},
                                     {?}, FROM_UNIXTIME({?}), {?},
-                                    {?}, {?}, {?}, {?})",
+                                    {?}, {?}, {?}, {?}, {?})",
                      $address['adr1'], $address['adr2'], $address['adr3'],
                      $address['postcode'], $address['city'], $address['cityid'],
                      $address['country'], $address['region'], $address['regiontxt'],
                      $address['pub'], $address['datemaj'], $flags,
-                     S::i('uid'), $adrid, $address['precise_lat'], $address['precise_lon']);
+                     S::i('uid'), $adrid, $address['precise_lat'], $address['precise_lon'], $address['comment']);
         foreach ($address['tel'] as $telid=>&$tel) {
             $this->saveTel($adrid, $telid, $tel);
         }
@@ -191,7 +191,8 @@ class ProfileAddresses extends ProfilePage
                                    FIND_IN_SET('courrier', a.statut) AS mail,
                                    FIND_IN_SET('temporaire', a.statut) AS temporary,
                                    FIND_IN_SET('active', a.statut) AS current,
-                                   a.glat AS precise_lat, a.glng AS precise_lon
+                                   a.glat AS precise_lat, a.glng AS precise_lon,
+                                   a.comment
                              FROM  adresses AS a
                        INNER JOIN  geoloc_pays AS gp ON(gp.a2 = a.country)
                             WHERE  uid = {?} AND NOT FIND_IN_SET('pro', statut)
