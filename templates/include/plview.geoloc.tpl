@@ -49,13 +49,15 @@ function searchMapId()
 //]]></script>
 
 {if !$request_geodesix}
-  
-  {if $smarty.request.only_current neq 'on'}
+
   <p class="center">
+  {if $smarty.request.only_current neq 'on'}
     [<a href="{$platal->ns}{$plset_base}/geoloc{$plset_search}only_current=on">Ne voir que les adresses principales</a>]
-  </p>
+  {else}
+    [<a href="{$platal->ns}{$plset_base}">Voir toutes les adresses</a>]
   {/if}
-  
+  </p>
+
   <p class="center">
   <object
     type="application/x-shockwave-flash"
