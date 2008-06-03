@@ -54,7 +54,7 @@ function searchMapId()
   {if $smarty.request.only_current neq 'on'}
     [<a href="{$platal->ns}{$plset_base}/geoloc{$plset_search}only_current=on">Ne voir que les adresses principales</a>]
   {else}
-    [<a href="{$platal->ns}{$plset_base}">Voir toutes les adresses</a>]
+    [<a href="{$platal->ns}{$plset_base}/geoloc{$plset_search|replace:'only_current=on':''}">Voir toutes les adresses</a>]
   {/if}
   </p>
 
