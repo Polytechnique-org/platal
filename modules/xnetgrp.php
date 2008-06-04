@@ -898,13 +898,13 @@ class XnetGrpModule extends PLModule
         // Update subscription to aliases
         if ($email != $user['email']) {
             XDB::execute("UPDATE IGNORE  virtual_redirect AS vr
-                             INNER JOIN  virtual AS v ON(vr.vid = v.vid AND SUBSTRING_INDEX(alias, '@', 2) = {?})
+                             INNER JOIN  virtual AS v ON(vr.vid = v.vid AND SUBSTRING_INDEX(alias, '@', -1) = {?})
                                     SET  vr.redirect = {?}
                                   WHERE  vr.redirect = {?}",
                          $globals->asso('mail_domain'), $email, $user['email']);
             XDB::execute("DELETE  vr.*
                             FROM  virtual_redirect AS vr
-                      INNER JOIN  virtual AS v ON(vr.vid = v.vid AND SUBSTRING_INDEX(alias, '@', 2) = {?})
+                      INNER JOIN  virtual AS v ON(vr.vid = v.vid AND SUBSTRING_INDEX(alias, '@', -1) = {?})
                            WHERE  vr.redirect = {?}",
                          $globals->asso('mail_domain'), $user['email']);
             foreach (Env::v('ml1', array()) as $ml => $state) {
@@ -1016,15 +1016,16 @@ class XnetGrpModule extends PLModule
         }
 
         $page->assign('user', $user);
+        echo $user['email2'];
         $listes = $mmlist->get_lists($user['email2']);
         $page->assign('listes', $listes);
 
         $res = XDB::query(
                 'SELECT  alias, redirect IS NOT NULL as sub
                    FROM  virtual          AS v
-              LEFT JOIN  virtual_redirect AS vr ON(v.vid=vr.vid AND redirect={?})
+              LEFT JOIN  virtual_redirect AS vr ON(v.vid=vr.vid AND (redirect = {?} OR redirect = {?}))
                   WHERE  alias LIKE {?} AND type="user"',
-                $user['email'], '%@'.$globals->asso('mail_domain'));
+                $user['email'], $user['email2'], '%@'.$globals->asso('mail_domain'));
         $page->assign('alias', $res->fetchAllAssoc());
     }
 
