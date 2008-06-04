@@ -259,7 +259,7 @@ class XnetGrpModule extends PLModule
                       Post::v('descr'), Post::v('site'),
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::has('ax'),
-                      Post::has('pub'),
+                      Post::v('pub'),
                       Post::v('sub_url'), Post::v('unsub_url'),
                       $globals->asso('id'));
             }
