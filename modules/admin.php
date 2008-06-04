@@ -510,16 +510,17 @@ class AdminModule extends PLModule
                     case "u_edit":
                         require_once('secure_hash.inc.php');
                         $pass_encrypted = Env::v('newpass_clair') != "********" ? hash_encrypt(Env::v('newpass_clair')) : Env::v('passw');
-                        $naiss = Env::v('naissanceN');
-                        $deces = Env::v('decesN');
-                        $perms = Env::v('permsN');
-                        $prenm = Env::v('prenomN');
-                        $nom   = Env::v('nomN');
-                        $promo = Env::i('promoN');
-                        $sexe  = Env::v('sexeN');
-                        $comm  = trim(Env::v('commentN'));
-                        $watch = Env::v('watchN');
-                        $flags = '';
+                        $naiss    = Env::v('naissanceN');
+                        $deces    = Env::v('decesN');
+                        $perms    = Env::v('permsN');
+                        $prenm    = Env::v('prenomN');
+                        $nom      = Env::v('nomN');
+                        $nomusage = Env::v('nomusageN');
+                        $promo    = Env::i('promoN');
+                        $sexe     = Env::v('sexeN');
+                        $comm     = trim(Env::v('commentN'));
+                        $watch    = Env::v('watchN');
+                        $flags    = '';
                         if ($sexe) {
                             $flags = 'femme';
                         }
@@ -535,7 +536,7 @@ class AdminModule extends PLModule
                             break;
                         }
 
-                        $watch = 'SELECT naissance, deces, password, perms,
+                        $watch = 'SELECT naissance, deces, password, perms, nom_usage,
                                          prenom, nom, flags, promo, comment
                                     FROM auth_user_md5
                                    WHERE user_id = ' . $mr['user_id'];
@@ -548,6 +549,7 @@ class AdminModule extends PLModule
                                          perms     = '$perms',
                                          prenom    = '".addslashes($prenm)."',
                                          nom       = '".addslashes($nom)."',
+                                         nom_usage = '".addslashes($nomusage)."',
                                          flags     = '$flags',
                                          promo     = $promo,
                                          comment   = '".addslashes($comm)."'
@@ -564,7 +566,8 @@ class AdminModule extends PLModule
                             $new_fields = $res->fetchOneAssoc();
 
                             $mailer = new PlMailer("admin/useredit.mail.tpl");
-                            $mailer->assign("user", S::v('forlife'));
+                            $mailer->assign("admin", S::v('forlife'));
+                            $mailer->assign("user", $mr['forlife']);
                             $mailer->assign('old', $old_fields);
                             $mailer->assign('new', $new_fields);
                             $mailer->send();
