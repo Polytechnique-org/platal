@@ -24,6 +24,9 @@ Bug/Wish:
     * Xnet:
         - #821: Fix infinite loop when user can't be authenticated         -FRU
 
+    * XnetGrp:
+        - #806: Unsubscribe from MLs when leaving the group                -FRU
+
     * XnetEvents:
         - #825: Show the number of comers when the events contains 1 part  -FRU
 
