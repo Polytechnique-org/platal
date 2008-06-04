@@ -14,6 +14,7 @@ Bug/Wish:
         - Fix email sending, correcting bugs introduced in r1897           -VZA
 
     * Lists:
+        - #810: Fix encoding of admin pages                                -FRU
         - #839: Fix warning when adding an external address                -FRU
 
     * Profile:
