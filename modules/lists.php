@@ -496,7 +496,7 @@ class ListsModule extends PLModule
     static public function no_login_callback($login)
     {
         require_once 'user.func.inc.php';
-        global $list_unregistered;
+        global $list_unregistered, $globals;
 
         $users = get_not_registered_user($login, true);
         if ($users && $users->total()) {
@@ -505,7 +505,10 @@ class ListsModule extends PLModule
             }
             $list_unregistered[$login] = $users;
         } else {
-            _default_user_callback($login);
+            list($name, $dom) = @explode('@', $login);
+            if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
+                _default_user_callback($login);
+            }
         }
     }
 
@@ -553,7 +556,9 @@ class ListsModule extends PLModule
 
         if (Env::has('add_member')) {
             require_once('user.func.inc.php');
-            $members = get_users_forlife_list(Env::v('add_member'), false, array('ListsModule', 'no_login_callback'));
+            $members = get_users_forlife_list(Env::v('add_member'),
+                                              false,
+                                              array('ListsModule', 'no_login_callback'));
             $arr = $this->client->mass_subscribe($liste, $members);
             if (is_array($arr)) {
                 foreach($arr as $addr) {
