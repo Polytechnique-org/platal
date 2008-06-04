@@ -26,6 +26,7 @@ Bug/Wish:
 
     * XnetGrp:
         - #806: Unsubscribe from MLs when leaving the group                -FRU
+        - #824: Fix redirection when changing status of the user           -FRU
 
     * XnetEvents:
         - #825: Show the number of comers when the events contains 1 part  -FRU
