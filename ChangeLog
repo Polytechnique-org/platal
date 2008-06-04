@@ -13,6 +13,9 @@ Bug/Wish:
     * Core:
         - Fix email sending, correcting bugs introduced in r1897           -VZA
 
+    * Lists:
+        - #839: Fix warning when adding an external address                -FRU
+
     * Profile:
         - #805: Improves mentoring edition page                            -JAC
         - #840: Remove mentor entry when "expertise" is empty              -FRU
