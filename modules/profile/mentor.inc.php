@@ -136,9 +136,18 @@ class ProfileMentor extends ProfilePage
     protected function _saveData()
     {
         if ($this->changed['expertise']) {
-            XDB::execute("REPLACE INTO  mentor (uid, expertise)
-                                VALUES  ({?}, {?})",
-                         S::i('uid'), $this->values['expertise']);
+            $expertise = trim($this->values['expertise']);
+            if (empty($expertise)) {
+                XDB::execute("DELETE FROM  mentor
+                                    WHERE  uid = {?}",
+                             S::i('uid'));
+                $this->values['expertise'] = null;
+            } else {
+                XDB::execute("REPLACE INTO  mentor (uid, expertise)
+                                    VALUES  ({?}, {?})",
+                             S::i('uid'), $expertise);
+                $this->values['expertise'] = $expertise;
+            }
         }
     }
 
