@@ -42,7 +42,7 @@ Tu n'es pas administrateur de la liste, mais du site.
         <span class='smaller'>une courte phrase pour décrire la liste.</span>
       </td>
       <td>
-        <input type='text' size='40' name='description' value="{$options.description|utf8_encode}" />
+        <input type='text' size='40' name='description' value="{$options.description|smarty:nodefaults|utf8_encode}" />
       </td>
     </tr>
     <tr class='impair'>
@@ -51,7 +51,7 @@ Tu n'es pas administrateur de la liste, mais du site.
         <span class='smaller'>une description plus longue de la liste.</span>
       </td>
       <td>
-        <textarea cols='40' rows='8' name='info'>{$options.info|utf8_encode}</textarea>
+        <textarea cols='40' rows='8' name='info'>{$options.info|smarty:nodefaults|utf8_encode}</textarea>
       </td>
     </tr>
     <tr class='pair'>
@@ -61,7 +61,7 @@ Tu n'es pas administrateur de la liste, mais du site.
          abonnés à la liste.</span>
       </td>
       <td>
-        <textarea cols='40' rows='8' name='welcome_msg'>{$options.welcome_msg|utf8_encode}</textarea>
+        <textarea cols='40' rows='8' name='welcome_msg'>{$options.welcome_msg|smarty:nodefaults|utf8_encode}</textarea>
       </td>
     </tr>
     <tr class='impair'>
@@ -73,7 +73,7 @@ Tu n'es pas administrateur de la liste, mais du site.
       <td>
         <input type='checkbox' name='send_goodbye_msg'
         {if $options.send_goodbye_msg}checked='checked'{/if} /> activer le mail d'adieu.  <br />
-        <textarea cols='40' rows='8' name='goodbye_msg'>{$options.goodbye_msg|utf8_encode}</textarea>
+        <textarea cols='40' rows='8' name='goodbye_msg'>{$options.goodbye_msg|smarty:nodefaults|utf8_encode}</textarea>
       </td>
     </tr>
     <tr><th colspan='2'>Options avancées de la liste {$details.addr}</th></tr>
@@ -83,7 +83,7 @@ Tu n'es pas administrateur de la liste, mais du site.
         <span class='smaller'>un préfixe (optionnel) ajouté dans le sujet de chaque mail envoyé sur la liste te permet de trier plus facilement ton courrier.</span>
       </td>
       <td>
-        <input type='text' name='subject_prefix' size='40' value="{$options.subject_prefix|utf8_encode}" />
+        <input type='text' name='subject_prefix' size='40' value="{$options.subject_prefix|smarty:nodefaults|utf8_encode}" />
       </td>
     </tr>
     <tr class='impair'>
