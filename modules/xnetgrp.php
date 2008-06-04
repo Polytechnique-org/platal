@@ -774,7 +774,7 @@ class XnetGrpModule extends PLModule
         $user_same_email = get_infos($user['email']);
         $domain = $globals->asso('mail_domain');
 
-        if (!$domain || !empty($user_same_email)) {
+        if (!$domain || (!empty($user_same_email) && $user_same_email['uid'] != $user['uid'])) {
             return true;
         }
 
