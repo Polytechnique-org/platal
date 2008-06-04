@@ -117,7 +117,13 @@
       </select>
     </td>
   </tr>
-</table>
+  <tr class="pair">
+    <td class="center" colspan="2">
+      <small>Si ta formation ne figure pas dans la liste,
+      <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small>
+    </td>
+  </tr>
+ </table>
 
 {if !$no_private_key}
 <table class="bicol"  style="margin-bottom: 1em"

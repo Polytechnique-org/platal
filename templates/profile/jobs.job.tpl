@@ -102,6 +102,12 @@
         </select>
       </td>
     </tr>
+    <tr class="titre">
+      <td class="center" colspan="2">
+        <small>Si des informations font défaut dans les listes ci-dessus,
+        <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small>
+      </td>
+    </tr>
     <tr class="pair">
       <td colspan="2">
         <span class="titre">E-mail professionnel&nbsp;:</span>
