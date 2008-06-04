@@ -69,7 +69,7 @@ correspondant si tu veux que nous puissions te répondre.
 <div class="center">
   <form action="emails/broken" method="post">
   {xsrf_token_field}
-  <table class="tinybicol" cellpadding="3" summary="Saisie email en panne">
+  <table class="tinybicol" cellpadding="3" summary="Saisie email en panne" style="margin: auto">
     <tr>
       <th>Adresse email défectueuse</th>
     </tr>
