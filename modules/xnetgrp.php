@@ -911,7 +911,10 @@ class XnetGrpModule extends PLModule
                 $mmlist->replace_email($ml, $user['email'], $email);
             }
         }
-        return $login;
+        if ($sub) {
+            return $login;
+        }
+        return $user['email'];
     }
 
     function handler_admin_member(&$page, $user)
