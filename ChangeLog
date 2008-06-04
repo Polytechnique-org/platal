@@ -13,7 +13,20 @@ Bug/Wish:
     * Core:
         - Fix email sending, correcting bugs introduced in r1897           -VZA
 
+    * Profile:
+        - #805: Improves mentoring edition page                            -JAC
+        - #840: Remove mentor entry when "expertise" is empty              -FRU
+
+    * Xnet:
+        - #821: Fix infinite loop when user can't be authenticated         -FRU
+
+    * XnetEvents:
+        - #825: Show the number of comers when the events contains 1 part  -FRU
+
 From 0.9.16 branch:
+
+    * Admin:
+        - #745: Fix invalid warnings when editing user profile             -VZA
 
     * Core:
         - Fix authentication level required by 403/404 error pages         -FRU
