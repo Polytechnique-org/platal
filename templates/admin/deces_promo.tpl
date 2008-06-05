@@ -49,6 +49,7 @@
 </form>
 
 <form action="admin/deaths/{$promo}/validate" method="post">
+  {xsrf_token_field}
   <table class="bicol" summary="liste des dates de décès">
     <tr>
       <th>Nom</th>
