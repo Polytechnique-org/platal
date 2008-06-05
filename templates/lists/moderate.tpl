@@ -110,18 +110,18 @@ function toggleAll() {
   {foreach from=$mails item=m name=mail}
   {if $m.fromx}
   <tr class='{cycle values="pair,impair"}'>
-    <td>
+    <td class="checkboxToggle">
       <input type="checkbox" name="select_mails[{$m.id}]" {if $smarty.foreach.mail.total eq 1}checked="checked"{/if}/>
     </td>
-    <td>
+    <td class="checkboxToggle">
       <strong>De&nbsp;:</strong><br />
       <strong>Sujet&nbsp;:</strong>
     </td>
-    <td>
+    <td class="checkboxToggle">
       {$m.sender}<br />
       {$m.subj|hdc|smarty:nodefaults}
     </td>
-    <td class='right'>
+    <td class='right checkboxToggle'>
       <small>le {$m.stamp|date_format:"%x"} à {$m.stamp|date_format:"%X"}<br />
       {$m.size} octets</small>
     </td>
@@ -152,18 +152,18 @@ function toggleAll() {
   {foreach from=$mails item=m name=mail}
   {if !$m.fromx}
   <tr class='{cycle values="pair,impair"}'>
-    <td>
+    <td class="checkboxToggle">
       <input type="checkbox" class="moderate_email" name="select_mails[{$m.id}]" {if $smarty.foreach.mail.total eq 1}checked="checked"{/if}/>
     </td>
-    <td>
+    <td class='checkboxToggle'>
       <strong>De&nbsp;:</strong><br />
       <strong>Sujet&nbsp;:</strong>
     </td>
-    <td>
+    <td class='checkboxToggle'>
       {$m.sender}<br />
       {$m.subj|hdc|smarty:nodefaults}
     </td>
-    <td class='right'>
+    <td class='right checkboxToggle'>
       <small>le {$m.stamp|date_format:"%x"} à {$m.stamp|date_format:"%X"}<br />
       {$m.size} octets</small>
     </td>
@@ -179,6 +179,24 @@ function toggleAll() {
   {/foreach}
 </table>
 {/if}
+
+<script type="text/javascript">//<![CDATA[
+{literal}
+$('.checkboxToggle').click(function (event)
+  {
+    // Don't uncheck the checkbox when clicking it
+    if (event.target.tagName === 'INPUT') {
+      return;
+    }
+    
+    var checkbox = $(this).parent().find(':checkbox');
+    
+    checkbox = checkbox.attr('checked', !checkbox.attr('checked'));
+    
+    event.stopPropagation();
+  });
+{/literal}
+//]]></script>
 
 <p class="center desc">
   Utilise ces boutons pour appliquer une action à tous les mails sélectionnés.<br />
