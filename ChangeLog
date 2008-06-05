@@ -15,12 +15,17 @@ Bug/Wish:
 
     * Lists:
         - #810: Fix encoding of admin pages                                -FRU
-        - #839: Fix warning when adding an external address                -FRU
         - #813: Fix display of the sample mail refusal message             -JAC
+        - #839: Fix warning when adding an external address                -FRU
+        - Larger click target to toggle emails in the validation interface -ALK
 
     * Profile:
         - #805: Improves mentoring edition page                            -JAC
         - #840: Remove mentor entry when "expertise" is empty              -FRU
+
+    * Search:
+        - Fix display of autocompletion menu (use plugin's latest version) -ALK
+        - Clicking on the "..." entry no longer replaces search with "..." -ALK
 
     * Xnet:
         - #821: Fix infinite loop when user can't be authenticated         -FRU
