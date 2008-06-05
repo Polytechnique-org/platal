@@ -20,6 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 {javascript name="jquery"}
+{javascript name="jquery.autocomplete"}
+
 <script type="text/javascript">//<![CDATA[
   {if ($stateless || $id gt $current) && $wiz_ajax}
   {literal}

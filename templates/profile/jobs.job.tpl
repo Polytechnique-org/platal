@@ -42,7 +42,7 @@
           {include file="include/flags.radio.tpl" name="`$jobpref`[pub]" val=$job.pub}
         </div>
         Entreprise n°{$i+1}&nbsp;:
-        <input type="text" {if $job.name_error}class="error"{/if} size="35" maxlength="100"
+        <input type="text" class="enterprise_name {if $job.name_error}error{/if}" size="35" maxlength="100"
                name="{$jobpref}[name]" value="{$job.name}" />
         <a href="javascript:removeJob('{$jobid}', '{$jobpref}')">
           {icon name=cross title="Supprimer cet emploi"}

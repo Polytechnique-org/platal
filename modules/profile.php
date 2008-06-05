@@ -302,9 +302,9 @@ class ProfileModule extends PLModule
 
         // Build the page
         $page->addJsLink('ajax.js');
-        $page->addJsLink('profile.js');
         $page->addJsLink('applis.js');
         $page->addJsLink('grades.js');
+        $page->addJsLink('profile.js');
         $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true, true);
         require_once dirname(__FILE__) . '/profile/page.inc.php';
         $wiz->addPage('ProfileGeneral', 'Général', 'general');
