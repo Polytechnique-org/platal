@@ -171,7 +171,7 @@ redirection en mode 'inactif'. le logiciel de mailing list saura se débrouiller
 
 <form method='post' action='{$platal->pl_self(1)}'>
   <table class='tinybicol' cellpadding='2' cellspacing='0'>
-    <tr><th>Addresses non modérées</th></tr>
+    <tr><th>Adresses non modérées</th></tr>
     <tr>
       <td>
         {if $options.accept_these_nonmembers|@count}

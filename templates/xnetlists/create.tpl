@@ -39,7 +39,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement<
       <th colspan='4'>Caractéristiques de la Liste</th>
     </tr>
     <tr>
-      <td><strong>Addresse&nbsp;souhaitée&nbsp;:</strong></td>
+      <td><strong>Adresse&nbsp;souhaitée&nbsp;:</strong></td>
       <td colspan='3'>
         <input type='text' name='liste' value='{$smarty.post.liste}' />@{$asso.mail_domain}
       </td>

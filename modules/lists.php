@@ -205,7 +205,7 @@ class ListsModule extends PLModule
         $liste = Post::v('liste');
 
         if (empty($liste)) {
-            $page->trig('champs «addresse souhaitée» vide');
+            $page->trig('champs «adresse souhaitée» vide');
         }
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
             $page->trig('le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets');

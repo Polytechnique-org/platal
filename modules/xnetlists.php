@@ -128,7 +128,7 @@ class XnetListsModule extends ListsModule
         }
 
         if (!Post::has('liste')) {
-            $page->trig('champs «addresse souhaitée» vide');
+            $page->trig('champs «adresse souhaitée» vide');
             return;
         }
 
@@ -311,7 +311,7 @@ class XnetListsModule extends ListsModule
         }
 
         if (!Post::has('liste')) {
-            $page->trig('champs «addresse souhaitée» vide');
+            $page->trig('champs «adresse souhaitée» vide');
             return;
         }
         $liste = Post::v('liste');

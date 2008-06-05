@@ -51,7 +51,7 @@ de modération), il est recommandé de créer <a href="{$platal->ns}lists/create
       <th colspan='2'>Caractéristiques de l'alias</th>
     </tr>
     <tr>
-      <td><strong>Addresse&nbsp;souhaitée&nbsp;:</strong></td>
+      <td><strong>Adresse&nbsp;souhaitée&nbsp;:</strong></td>
       <td>
         <input type='text' name='liste' value='{$smarty.post.liste}' />@{$asso.mail_domain}
       </td>
