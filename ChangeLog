@@ -21,6 +21,7 @@ Bug/Wish:
 
     * Profile:
         - #805: Improves mentoring edition page                            -JAC
+        - #836: Autocomplete enterprise name in profile edition page       -FRU
         - #840: Remove mentor entry when "expertise" is empty              -FRU
 
     * Search:
