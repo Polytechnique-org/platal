@@ -12,6 +12,7 @@ New:
 Bug/Wish:
     * Core:
         - Fix email sending, correcting bugs introduced in r1897           -VZA
+        - #841: Improves contrast of links in legends in skin 'Espace'     -FRU
 
     * Lists:
         - #810: Fix encoding of admin pages                                -FRU
