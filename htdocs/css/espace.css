@@ -39,6 +39,11 @@ legend {
     color: #ffffff;
 }
 
+legend a:link, legend a:visited, legend a:active, legend a:hover {
+    color: #99F;
+    background: inherit;
+}
+
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
         [ styles classiques d'effets de texte ]
