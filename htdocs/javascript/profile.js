@@ -498,10 +498,8 @@ function removeSecteur(s, ss)
 
 function registerEnterpriseAutocomplete(id)
 {
-    alert("coucou");
     $(".enterprise_name").each(
       function() {
-        alert(this.name);
         if (id == -1 || this.name == "jobs[" + id + "][name]") {
             $(this).autocomplete(platal_baseurl + "search/autocomplete/entreprise",
                                  {
