@@ -791,15 +791,24 @@ class ProfileModule extends PLModule
             if (Post::v('act') == 'del') {
                 XDB::execute('DELETE FROM  profile_medals_grades
                                     WHERE  mid={?} AND gid={?}', $mid, Post::i('gid'));
-            } elseif (Post::v('act') == 'new') {
-                XDB::execute('INSERT INTO  profile_medals_grades (mid,gid)
-                                   VALUES  ({?},{?})',
-                        $mid, max(array_keys(Post::v('grades', array(0))))+1);
             } else {
                 foreach (Post::v('grades', array()) as $gid=>$text) {
-                    XDB::execute('UPDATE  profile_medals_grades
-                                     SET  pos={?}, text={?}
-                                   WHERE  gid={?} AND mid={?}', $_POST['pos'][$gid], $text, $gid, $mid);
+                    if ($gid === 0) {
+                        if (!empty($text)) {
+                            $res = XDB::query('SELECT  MAX(gid)
+                                                 FROM  profile_medals_grades
+                                                WHERE  mid = {?}', $mid);
+                            $gid = $res->fetchOneCell() + 1;
+
+                            XDB::execute('INSERT INTO  profile_medals_grades (mid, gid, text, pos)
+                                               VALUES  ({?}, {?}, {?}, {?})',
+                                $mid, $gid, $text, $_POST['pos']['0']);
+                        }
+                    } else {
+                        XDB::execute('UPDATE  profile_medals_grades
+                                         SET  pos={?}, text={?}
+                                       WHERE  gid={?} AND mid={?}', $_POST['pos'][$gid], $text, $gid, $mid);
+                    }
                 }
             }
             $res = XDB::iterator('SELECT gid, text, pos FROM profile_medals_grades WHERE mid={?} ORDER BY pos', $mid);

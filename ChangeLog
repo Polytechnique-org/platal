@@ -10,6 +10,10 @@ New:
         - Add a 'disallow all' robots.txt in development working copies.   -VZA
 
 Bug/Wish:
+
+    * Admin:
+        - #811: Improve interface to add medal ranks and avoid losing data -ALK
+
     * Core:
         - Fix email sending, correcting bugs introduced in r1897           -VZA
         - #841: Improves contrast of links in legends in skin 'Espace'     -FRU
