@@ -19,6 +19,7 @@ Bug/Wish:
         - #841: Improves contrast of links in legends in skin 'Espace'     -FRU
 
     * Lists:
+        - #761: Fix user comment in moderation mail sent by mailman        -FRU
         - #810: Fix encoding of admin pages                                -FRU
         - #813: Fix display of the sample mail refusal message             -JAC
         - #839: Fix warning when adding an external address                -FRU
