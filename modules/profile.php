@@ -59,6 +59,8 @@ class ProfileModule extends PLModule
             'admin/sections'  => $this->make_hook('admin_sections', AUTH_MDP, 'admin'),
             'admin/secteurs'  => $this->make_hook('admin_secteurs', AUTH_MDP, 'admin'),
             'admin/trombino'   => $this->make_hook('admin_trombino', AUTH_MDP, 'admin'),
+            'admin/ss_secteurs'  => $this->make_hook('admin_ss_secteurs', AUTH_MDP, 'admin'),
+            'admin/fonctions'  => $this->make_hook('admin_fonctions', AUTH_MDP, 'admin'),
 
         );
     }
@@ -763,16 +765,32 @@ class ProfileModule extends PLModule
     }
     function handler_admin_sections(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Sections');
-        $page->assign('title', 'Gestion des Sections');
+        $page->assign('title', 'Gestion des sections');
         $table_editor = new PLTableEditor('admin/sections','sections','id');
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }
+    function handler_admin_ss_secteurs(&$page, $action = 'list', $id = null) {
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - Sous-secteurs');
+        $page->assign('title', 'Gestion des sous-secteurs');
+        $table_editor = new PLTableEditor('admin/ss_secteurs', 'emploi_ss_secteur', 'id', true);
+        $table_editor->describe('label', 'intitulé', true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_admin_fonctions(&$page, $action = 'list', $id = null) {
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - Fonctions');
+        $page->assign('title', 'Gestion des fonctions');
+        $table_editor = new PLTableEditor('admin/fonctions', 'fonctions_def', 'id', true);
+        $table_editor->describe('fonction_fr', 'intitulé', true);
+        $table_editor->describe('fonction_en', 'intitulé (ang)', true);
+        $table_editor->describe('flags', 'titre', true);
+        $table_editor->apply($page, $action, $id);
+    }
     function handler_admin_secteurs(&$page, $action = 'list', $id = null) {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Secteurs');
-        $page->assign('title', 'Gestion des Secteurs');
-        $table_editor = new PLTableEditor('admin/secteurs','emploi_secteur','id');
-        $table_editor->describe('label','intitulé',true);
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - Secteurs');
+        $page->assign('title', 'Gestion des secteurs');
+        $table_editor = new PLTableEditor('admin/secteurs', 'emploi_secteur', 'id', true);
+        $table_editor->describe('label', 'intitulé', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_medals(&$page, $action = 'list', $id = null) {
