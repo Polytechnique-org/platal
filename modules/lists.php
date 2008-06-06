@@ -418,7 +418,7 @@ class ListsModule extends PLModule
             }
             if (Post::has('sdel')) { /* 2 = REJECT */
                 $sub = $this->client->get_pending_sub($liste, Env::v('sdel'));
-                $this->client->handle_request($liste, Post::v('sdel'), 2, Post::v('reason'));
+                $this->client->handle_request($liste, Post::v('sdel'), 2, utf8_decode(Post::v('reason')));
                 $info = "refusée";
             }
             if ($sub) {

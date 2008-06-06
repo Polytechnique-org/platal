@@ -77,7 +77,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
         break;
     }
 
-    if ($client->handle_request($list, $mid, $action, $reason)) {
+    if ($client->handle_request($list, $mid, $action, utf8_decode($reason))) {
         $sent_mails += $count;
         $texte = "le message suivant :\n\n"
                . "    Auteur: {$mail['sender']}\n"
