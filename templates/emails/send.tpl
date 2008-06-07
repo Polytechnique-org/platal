@@ -22,7 +22,6 @@
 
 <h1>Envoyer un mail</h1>
 
-{javascript name="jquery"}
 <script type="text/javascript">//<![CDATA[
   {literal}
   function _selectAll(id) {

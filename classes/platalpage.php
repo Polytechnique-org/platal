@@ -58,6 +58,7 @@ abstract class PlatalPage extends Smarty
         }
         $this->register_prefilter('at_to_globals');
         $this->addJsLink('xorg.js');
+        $this->addJsLink('jquery.js');
     }
 
     // }}}

@@ -166,6 +166,7 @@ class SearchModule extends PLModule
         require_once 'geoloc.inc.php';
         require_once dirname(__FILE__) . '/search/search.inc.php';
         $page->assign('advanced',1);
+        $page->addJsLink('jquery.autocomplete.js');
 
         if (!Env::has('rechercher') && $action != 'geoloc') {
             $this->form_prepare();

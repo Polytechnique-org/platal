@@ -307,6 +307,7 @@ class ProfileModule extends PLModule
         $page->addJsLink('applis.js');
         $page->addJsLink('grades.js');
         $page->addJsLink('profile.js');
+        $page->addJsLink('jquery.autocomplete.js');
         $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true, true);
         require_once dirname(__FILE__) . '/profile/page.inc.php';
         $wiz->addPage('ProfileGeneral', 'Général', 'general');

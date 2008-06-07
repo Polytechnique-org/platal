@@ -28,7 +28,6 @@
       <td class="titre">Commentaire</td>
       <td><textarea name="survey_question[comment]" rows="5" cols="60">{$survey_current.comment}</textarea></td>
     </tr>
-    {javascript name=jquery} 
     <script type="text/javascript">//<![CDATA[ 
       var id = new Array();
       id['choices'] = {$survey_current.choices|@count};

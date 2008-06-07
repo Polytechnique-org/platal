@@ -34,7 +34,6 @@
         {valid_date name="survey_question[end]" value=$survey_current.end to=90}
       </td>
     </tr>
-    {javascript name=jquery}
     <script type="text/javascript">//<![CDATA[
       {literal}
       $(document).ready(function() {

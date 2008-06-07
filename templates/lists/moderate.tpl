@@ -77,7 +77,6 @@
   l'<a href="{$platal->ns}lists/options/{$platal->argv[1]}#antispam">antispam</a>.
 </p>
 
-{javascript name="jquery"}
 <script type="text/javascript">//<![CDATA[
 {literal}
 var toggleState = false;

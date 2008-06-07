@@ -121,7 +121,6 @@ notre base de données.
 </p>
 </div>
 
-{javascript name=jquery}
 <script type="text/javascript">//<![CDATA[
   {literal}
   if (!canAddSearchEngine()) {

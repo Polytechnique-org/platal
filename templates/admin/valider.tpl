@@ -20,7 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{javascript name="jquery"}
 <script type="text/javascript">//<![CDATA[
 {literal}
 function toggleField(name, id, obj) {

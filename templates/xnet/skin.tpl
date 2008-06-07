@@ -194,7 +194,6 @@
                 <div>Me connecter&nbsp;:</div>
                 <a class='gp' href="login/{if $platal->pl_self() eq 'exit'}index{else}{$platal->pl_self()}{/if}">polytechnicien</a>
                 {if $platal->pl_self() neq 'exit'}
-                  {javascript name=jquery}
                   <!-- <script type="text/javascript" src="login/autologin/{$platal->pl_self()}?forceXml=1"></script> -->
                 {/if}
               {/if}

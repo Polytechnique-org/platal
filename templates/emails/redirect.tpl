@@ -124,7 +124,6 @@
 
     {/literal}
   //]]></script>
-  {javascript name="jquery"}
   {test_email}
   <div id="redirect-msg" style="position:absolute;"></div><br />
   <div class="center">

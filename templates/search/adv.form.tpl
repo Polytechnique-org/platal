@@ -22,8 +22,6 @@
 
 <h1>Recherche dans l'annuaire</h1>
 
-{javascript name="jquery"}
-{javascript name="jquery.autocomplete"}
 <script type="text/javascript">// <!--
   var baseurl = platal_baseurl + "search/";
   {literal}
