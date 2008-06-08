@@ -294,7 +294,7 @@ function start_connexion ($uid, $identified)
                 new_skinned_page('platal/index.tpl');
                 $newpage = true;
             }
-            $page->trig("Une erreur est survenue lors de la procédure d'authentification. "
+            $page->trigError("Une erreur est survenue lors de la procédure d'authentification. "
                        ."Merci de contacter au plus vite "
                        ."<a href='mailto:support@polytechnique.org'>support@polytechnique.org</a>");
             if ($newpage) {

@@ -159,7 +159,7 @@ abstract class Validate
     {
         if (Env::has('delete')) {
             $this->clean();
-            $this->trig('requete supprimée');
+            $this->trigSuccess('Requête supprimée');
             return true;
         }
 
@@ -167,7 +167,7 @@ abstract class Validate
         if (Env::has('edit')) {
             if ($this->handle_editor()) {
                 $this->update();
-                $this->trig('requête mise à jour');
+                $this->trigSuccess('Requête mise à jour');
                 return true;
             }
             return false;
@@ -202,7 +202,7 @@ abstract class Validate
             $mailer->send();
 
             $this->update();
-            $this->trig('commentaire ajouté');
+            $this->trigSuccess('Commentaire ajouté');
             return true;
         }
 
@@ -210,10 +210,10 @@ abstract class Validate
             if ($this->commit()) {
                 $this->sendmail(true);
                 $this->clean();
-                $this->trig('mail envoyé');
+                $this->trigSuccess('Mail de validation envoyé');
                 return true;
             } else {
-                $this->trig('erreur lors de la validation');
+                $this->trigError('Erreur lors de la validation');
                 return false;
             }
         }
@@ -222,10 +222,10 @@ abstract class Validate
             if (Env::v('comm')) {
                 $this->sendmail(false);
                 $this->clean();
-                $this->trig('mail envoyé');
+                $this->trigSuccess('Mail de refus envoyé');
                 return true;
             } else {
-                $this->trig('pas de motivation pour le refus !!!');
+                $this->trigError('pas de motivation pour le refus !!!');
             }
         }
 
@@ -256,10 +256,22 @@ abstract class Validate
     // }}}
     // {{{ function trig()
 
-    protected function trig($msg)
+    protected function trigError($msg)
     {
         global $page;
-        $page->trig($msg);
+        $page->trigError($msg);
+    }
+
+    protected function trigWarning($msg)
+    {
+        global $page;
+        $page->trigWarning($msg);
+    }
+
+    protected function trigSuccess($msg)
+    {
+        global $page;
+        $page->trigSuccess($msg);
     }
 
     // }}}

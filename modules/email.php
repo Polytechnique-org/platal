@@ -145,17 +145,17 @@ class EmailModule extends PLModule
 
             //Quelques vérifications sur l'alias (caractères spéciaux)
             if (!preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $alias)) {
-                $page->trig("L'adresse demandée n'est pas valide.
-                            Vérifie qu'elle comporte entre 3 et 20 caractères
-                            et qu'elle ne contient que des lettres non accentuées,
-                            des chiffres ou les caractères - et .");
+                $page->trigError("L'adresse demandée n'est pas valide."
+                            . " Vérifie qu'elle comporte entre 3 et 20 caractères"
+                            . " et qu'elle ne contient que des lettres non accentuées,"
+                            . " des chiffres ou les caractères - et .");
                 return;
             } else {
                 //vérifier que l'alias n'est pas déja pris
                 $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}',
                                             $alias.'@'.$globals->mail->alias_dom);
                 if ($res->fetchOneCell() > 0) {
-                    $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
+                    $page->trigError("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
                                 Tu ne peux donc pas l'obtenir.");
                     return;
                 }
@@ -164,7 +164,7 @@ class EmailModule extends PLModule
                 $it = new ValidateIterator ();
                 while($req = $it->next()) {
                     if ($req->type == "alias" and $req->alias == $alias . '@' . $globals->mail->alias_dom) {
-                        $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
+                        $page->trigError("L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
                                     Tu ne peux donc pas l'obtenir pour l'instant.");
                         return ;
                     }
@@ -300,13 +300,13 @@ class EmailModule extends PLModule
 
             $upload = PlUpload::get($_FILES['mail'], S::v('forlife'), 'spam.submit', true);
             if (!$upload) {
-                $page->trig('Une erreur a été rencontrée lors du transfert du fichier');
+                $page->trigError('Une erreur a été rencontrée lors du transfert du fichier');
                 return;
             }
             $mime = $upload->contentType();
             if ($mime != 'text/x-mail' && $mime != 'message/rfc822') {
                 $upload->clear();
-                $page->trig('Le fichier ne contient pas un mail complet');
+                $page->trigError('Le fichier ne contient pas un mail complet');
                 return;
             }
             global $globals;
@@ -317,7 +317,7 @@ class EmailModule extends PLModule
             $mailer->setTxtBody(Post::v('type') . ' soumis par ' . S::v('forlife') . ' via le web');
             $mailer->addUploadAttachment($upload, Post::v('type') . '.mail');
             $mailer->send();
-            $page->trig('Le message a été transmis à ' . $box);
+            $page->trigSuccess('Le message a été transmis à ' . $box);
             $upload->clear();
         }
     }
@@ -364,7 +364,7 @@ class EmailModule extends PLModule
             $error = false;
             foreach ($_FILES as &$file) {
                 if ($file['name'] && !PlUpload::get($file, S::v('forlife'), 'emails.send', false)) {
-                    $page->trig(PlUpload::$lastError);
+                    $page->trigError(PlUpload::$lastError);
                     $error = true;
                     break;
                 }
@@ -384,7 +384,7 @@ class EmailModule extends PLModule
                 $bcc  = trim(Env::v('bcc'));
 
                 if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
-                    $page->trig("Indique au moins un destinataire.");
+                    $page->trigError("Indique au moins un destinataire.");
                     $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
                 } else {
                     $mymail = new PlMailer();
@@ -405,11 +405,11 @@ class EmailModule extends PLModule
                         $mymail->setWikiBody($txt);
                     }
                     if ($mymail->send()) {
-                        $page->trig("Ton mail a bien été envoyé.");
+                        $page->trigSuccess("Ton mail a bien été envoyé.");
                         $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
                         PlUpload::clear(S::v('forlife'), 'emails.send');
                     } else {
-                        $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
+                        $page->trigError("Erreur lors de l'envoi du courriel, réessaye.");
                         $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
                     }
                 }
@@ -545,7 +545,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                 $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
                 $mail->setTxtBody($message);
                 $mail->send();
-                $page->trig("Mail envoyé ! :o)");
+                $page->trigSuccess("Mail envoyé !");
             }
         } elseif (Post::has('email')) {
             S::assert_xsrf_token();

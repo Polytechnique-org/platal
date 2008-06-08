@@ -153,7 +153,7 @@ class PlatalModule extends PLModule
                                        SET redirecturl = {?} WHERE user_id = {?}',
                                    $url, S::v('uid'));
             $log->log('carva_add', 'http://'.Env::v('url'));
-            $page->trig("Redirection activée vers <a href='http://$url'>$url</a>");
+            $page->trigSuccess("Redirection activée vers <a href='http://$url'>$url</a>");
         } elseif (Env::v('submit') == "Supprimer") {
             XDB::execute("UPDATE auth_user_quick
                                        SET redirecturl = ''
@@ -161,7 +161,7 @@ class PlatalModule extends PLModule
                                    S::v('uid'));
             $log->log("carva_del", $url);
             Post::kill('url');
-            $page->trig('Redirection supprimée');
+            $page->trigSuccess('Redirection supprimée');
         }
 
         $res = XDB::query('SELECT redirecturl
@@ -179,7 +179,7 @@ class PlatalModule extends PLModule
 
         if (Env::v('act_rss') == 'Activer') {
             $this->__set_rss_state(true);
-            $page->trig("Ton Fil RSS est activé.");
+            $page->trigSuccess("Ton Fil RSS est activé.");
         }
     }
 
@@ -242,12 +242,12 @@ class PlatalModule extends PLModule
         {
             XDB::execute('UPDATE auth_user_md5 SET smtppass = {?}
                                      WHERE user_id = {?}', $pass, $uid);
-            $page->trig('Mot de passe enregistré');
+            $page->trigSuccess('Mot de passe enregistré');
             $log->log("passwd_ssl");
         } elseif (Env::v('op') == "Supprimer") {
             XDB::execute('UPDATE auth_user_md5 SET smtppass = ""
                                      WHERE user_id = {?}', $uid);
-            $page->trig('Compte SMTP et NNTP supprimé');
+            $page->trigSuccess('Compte SMTP et NNTP supprimé');
             $log->log("passwd_del");
         }
 
@@ -268,7 +268,7 @@ class PlatalModule extends PLModule
         }
 
         if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::v('birth'))) {
-            $page->trig('Date de naissance incorrecte ou incohérente');
+            $page->trigError('Date de naissance incorrecte ou incohérente');
             return;
         }
 
@@ -337,7 +337,7 @@ Adresse de secours : " . Post::v('email') : ""));
             $logger = $_SESSION['log'] = new CoreLogger($uid);
             $logger->log('recovery', $mails);
         } else {
-            $page->trig('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
+            $page->trigError('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
                         'Si tu as un homonyme, utilise prenom.nom.promo comme login');
         }
     }

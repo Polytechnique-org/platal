@@ -43,7 +43,7 @@ class ProfileSecteurs implements ProfileSetting
             $value = array();
         } else if (count($value) > 10) {
             global $page;
-            $page->trig("Le nombre de secteurs d'expertise est limité à 10");
+            $page->trigError("Le nombre de secteurs d'expertise est limité à 10");
             $success = false;
         }
         ksort($value);
@@ -91,7 +91,7 @@ class ProfileCountry implements ProfileSetting
             $value = array();
         } else if (count($value) > 10) {
             global $page;
-            $page->trig("Le nombre de secteurs d'expertise est limité à 10");
+            $page->trigError("Le nombre de secteurs d'expertise est limité à 10");
             $success = false;
         }
         ksort($value);

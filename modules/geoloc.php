@@ -56,7 +56,7 @@ class GeolocModule extends PLModule
         }
 
         if ($nb_synchro)
-            $page->trig(($nb_synchro > 1)?($nb_synchro." villes ont été synchronisées"):"Une ville a été synchronisée");
+            $page->trigSuccess(($nb_synchro > 1)?($nb_synchro." villes ont été synchronisées"):"Une ville a été synchronisée");
 
         $res = XDB::query("SELECT COUNT(*) FROM geoloc_city WHERE lat = 0 AND lon = 0");
         $page->assign("nb_missinglat", $res->fetchOneCell());
@@ -68,7 +68,7 @@ class GeolocModule extends PLModule
         if ($action == 'cities_not_on_map') {
             require_once('geoloc.inc.php');
             if (!fix_cities_not_on_map(20))
-                $page->trig("Impossible d'accéder au webservice");
+                $page->trigError("Impossible d'accéder au webservice");
             else
                 $refresh = true;
         }
@@ -87,7 +87,7 @@ class GeolocModule extends PLModule
         if ($action == 'newmaps') {
             require_once('geoloc.inc.php');
             if (!get_new_maps(Env::v('url')))
-                $page->trig("Impossible d'accéder aux nouvelles cartes");
+                $page->trigError("Impossible d'accéder aux nouvelles cartes");
         }
 
         $countMissing = XDB::query("SELECT COUNT(*) FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL");

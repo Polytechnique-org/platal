@@ -53,7 +53,7 @@ abstract class PlatalPage extends Smarty
         $this->_failure   = false;
 
         if ($globals->mode != 'rw') {
-            $this->trig("En raison d'une maintenance, une partie des fonctionnalités du site sont"
+            $this->trigError("En raison d'une maintenance, une partie des fonctionnalités du site sont"
                       . " actuellement désactivée, en particuliers aucune donnée ne sera sauvegardée");
         }
         $this->register_prefilter('at_to_globals');
@@ -194,7 +194,7 @@ abstract class PlatalPage extends Smarty
     // }}}
     // {{{ function trig()
 
-    public function trig($msg, $type = 'errors')
+    private function trig($msg, $type = 'errors')
     {
         if (!isset($this->_errors[$type])) {
             $this->_errors[$type] = array();
@@ -225,7 +225,7 @@ abstract class PlatalPage extends Smarty
         global $platal;
 
         $this->assign('platal', $platal);
-        $this->trig($msg);
+        $this->trigError($msg);
         $this->_failure = true;
         $this->run();
     }

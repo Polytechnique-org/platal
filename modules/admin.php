@@ -70,11 +70,11 @@ class AdminModule extends PLModule
         if (Env::has('del')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'del' WHERE crc = {?}", $crc);
-            $page->trig($crc." verra tous ses mails supprimés !");
+            $page->trigSuccess($crc." verra tous ses mails supprimés !");
         } elseif (Env::has('ok')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = {?}", $crc);
-            $page->trig($crc." a le droit de passer !");
+            $page->trigSuccess($crc." a le droit de passer !");
         }
 
         $sql = XDB::iterator(
@@ -419,10 +419,10 @@ class AdminModule extends PLModule
                     case "add_fwd":
                         $email = trim(Env::v('email'));
                         if (!isvalid_email_redirection($email)) {
-                            $page->trig("invalid email $email");
+                            $page->trigError("Email non valide: $email");
                         } else {
                             $redirect->add_email($email);
-                            $page->trig("Ajout de $email effectué");
+                            $page->trigSuccess("Ajout de $email effectué");
                         }
                         break;
 
@@ -442,7 +442,7 @@ class AdminModule extends PLModule
                                            WHERE uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
                                          $mr['user_id'], $val);
                             fix_bestalias($mr['user_id']);
-                            $page->trig($val." a été supprimé");
+                            $page->trigSuccess($val." a été supprimé");
                         }
                         break;
                     case "activate_fwd":
@@ -475,24 +475,24 @@ class AdminModule extends PLModule
                             $domain = $globals->mail->domain;
                         }
                         if (!preg_match('/[-a-z0-9\.]+/s', $alias)) {
-                            $page->trig("'$alias' n'est pas un alias valide");
+                            $page->trigError("'$alias' n'est pas un alias valide");
                         }
                         if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
                             $req = new AliasReq($mr['user_id'], $alias, 'Admin request', false);
                             if ($req->commit()) {
-                                $page->trig("Nouvel alias '$alias@$domain' attribué");
+                                $page->trigSuccess("Nouvel alias '$alias@$domain' attribué");
                             } else {
-                                $page->trig("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué");
+                                $page->trigError("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué");
                             }
                         } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
                             if (XDB::execute("INSERT INTO  aliases (id,alias,type) VALUES  ({?}, {?}, 'alias')",
                                     $mr['user_id'], $alias)) {
-                                $page->trig("Nouvel alias '$alias' ajouté");
+                                $page->trigSuccess("Nouvel alias '$alias' ajouté");
                             } else {
-                                $page->trig("Impossible d'ajouter l'alias '$alias', il est probablement déjà attribué");
+                                $page->trigError("Impossible d'ajouter l'alias '$alias', il est probablement déjà attribué");
                             }
                         } else {
-                            $page->trig("Le domaine '$domain' n'est pas valide");
+                            $page->trigError("Le domaine '$domain' n'est pas valide");
                         }
                         break;
 
@@ -532,7 +532,7 @@ class AdminModule extends PLModule
                         }
 
                         if ($watch && !$comm) {
-                            $page->trig("Il est nécessaire de mettre un commentaire pour surveiller un compte");
+                            $page->trigError("Il est nécessaire de mettre un commentaire pour surveiller un compte");
                             break;
                         }
 
@@ -575,7 +575,7 @@ class AdminModule extends PLModule
                             // update number of subscribers (perms or deceased may have changed)
                             update_NbIns();
 
-                            $page->trig("updaté correctement.");
+                            $page->trigSuccess("updaté correctement.");
                         }
                         if (Env::v('nomusageN') != $mr['nom_usage']) {
                             require_once "xorg.misc.inc.php";
@@ -618,7 +618,7 @@ class AdminModule extends PLModule
                         user_clear_all_subs($mr['user_id']);
                         // update number of subscribers (perms or deceased may have changed)
                         update_NbIns();
-                        $page->trig("'{$mr['user_id']}' a été désinscrit !");
+                        $page->trigSuccess("'{$mr['user_id']}' a été désinscrit !");
                         $mailer = new PlMailer("admin/useredit.mail.tpl");
                         $mailer->assign("admin", S::v('forlife'));
                         $mailer->assign("user", $mr['forlife']);
@@ -698,7 +698,7 @@ class AdminModule extends PLModule
                 $action = Env::v('valid_promo') == 'Ajouter des membres' ? 'add' : 'ax';
                 pl_redirect('admin/promo/' . $action . '/' . Env::i('promo'));
             } else {
-                $page->trig('Promo non valide');
+                $page->trigError('Promo non valide');
             }
         }
 
@@ -1063,9 +1063,9 @@ class AdminModule extends PLModule
             S::assert_xsrf_token();
 
             if (wiki_delete_page($wikipage)) {
-                $page->trig("La page ".$wikipage." a été supprimée.");
+                $page->trigSuccess("La page ".$wikipage." a été supprimée.");
             } else {
-                $page->trig("Impossible de supprimer la page ".$wikipage.".");
+                $page->trigError("Impossible de supprimer la page ".$wikipage.".");
             }
         }
 
@@ -1077,9 +1077,9 @@ class AdminModule extends PLModule
                 if (is_numeric($changedLinks)) {
                     $s .= $changedLinks.' lien'.(($changedLinks>1)?'s ont été modifiés.':' a été modifié.');
                 }
-                $page->trig($s);
+                $page->trigSuccess($s);
             } else {
-                $page->trig("Impossible de déplacer la page ".$wikipage);
+                $page->trigError("Impossible de déplacer la page ".$wikipage);
             }
         }
 
@@ -1229,7 +1229,7 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/icons.tpl');
         $dh = opendir('../htdocs/images/icons');
         if (!$dh) {
-            $page->trig('Dossier des icones introuvables.');
+            $page->trigError('Dossier des icones introuvables.');
         }
         $icons = array();
         while (($file = readdir($dh)) !== false) {

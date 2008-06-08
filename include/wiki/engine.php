@@ -51,7 +51,7 @@ if ($p = Post::v('setrperms')) {
     wiki_apply_perms('admin');
     if (wiki_set_perms($n, $p, $perms[1])) {
         $perms = wiki_get_perms($n);
-        $page->trig('Permissions mises à jour');
+        $page->trigSuccess('Permissions mises à jour');
     }
 }
 
@@ -59,7 +59,7 @@ if ($p = Post::v('setwperms')) {
     wiki_apply_perms('admin');
     if (wiki_set_perms($n, $perms[0], $p)) {
         $perms = wiki_get_perms($n);
-        $page->trig('Permissions mises à jour');
+        $page->trigSuccess('Permissions mises à jour');
     }
 }
 

@@ -135,7 +135,7 @@ class ProfileModule extends PLModule
         if (Env::has('upload')) {
             $upload = new PlUpload(S::v('forlife'), 'photo');
             if (!$upload->upload($_FILES['userfile']) && !$upload->download(Env::v('photo'))) {
-                $page->trig('Une erreur est survenue lors du téléchargement du fichier');
+                $page->trigError('Une erreur est survenue lors du téléchargement du fichier');
             } else {
                 $myphoto = new PhotoReq(S::v('uid'), $upload);
                 if ($myphoto->isValid()) {
@@ -299,7 +299,7 @@ class ProfileModule extends PLModule
         }
         if (Env::v('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
             ax_synchronize(S::v('bestalias'), S::v('uid'));
-            $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
+            $page->trigSuccess('Ton profil a été synchronisé avec celui du site polytechniciens.com');
         }
 
         // Build the page
@@ -324,7 +324,7 @@ class ProfileModule extends PLModule
                              FROM  auth_user_md5
                             WHERE  user_id = {?} AND naissance = '0000-00-00'", S::i('uid'));
         if ($res->numRows()) {
-            $page->trig("Ta date de naissance n'est pas renseignée, ce qui t'empêcheras de réaliser"
+            $page->trigWarning("Ta date de naissance n'est pas renseignée, ce qui t'empêcheras de réaliser"
                       . " la procédure de récupération de mot de passe si un jour tu le perdais");
         }
 
@@ -465,19 +465,19 @@ class ProfileModule extends PLModule
         $promo_sortie = Env::i('promo_sortie');
 
         if ($promo_sortie < 1000 || $promo_sortie > 9999) {
-            $page->trig('L\'année de sortie doit être un nombre de quatre chiffres');
+            $page->trigError('L\'année de sortie doit être un nombre de quatre chiffres');
         }
         elseif ($promo_sortie < $promo + 3) {
-            $page->trig('Trop tôt');
+            $page->trigError('Trop tôt');
         }
         elseif ($promo_sortie == $promo_sortie_old) {
-            $page->trig('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
+            $page->trigWarning('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
         }
         elseif ($promo_sortie == $promo + 3) {
             XDB::execute(
                 "UPDATE  auth_user_md5 set promo_sortie={?}
                   WHERE  user_id={?}", $promo_sortie, S::v('uid'));
-                $page->trig('Ton statut "orange" a été supprimé.');
+                $page->trigSuccess('Ton statut "orange" a été supprimé.');
                 $page->assign('promo_sortie_old', $promo_sortie);
         }
         else {

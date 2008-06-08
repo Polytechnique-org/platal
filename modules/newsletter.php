@@ -81,7 +81,7 @@ class NewsletterModule extends PLModule
 
         if (Post::has('see') || (Post::has('valid') && (!trim(Post::v('title')) || !trim(Post::v('body'))))) {
             if (!Post::has('see')) {
-                $page->trig("L'article doit avoir un titre et un contenu");
+                $page->trigError("L'article doit avoir un titre et un contenu");
             }
             $art = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'));
             $page->assign('art', $art);
@@ -130,7 +130,7 @@ class NewsletterModule extends PLModule
             if (preg_match('/^[-a-z0-9]*$/i', $nl->_shortname) && !is_numeric($nl->_shortname)) {
                 $nl->save();
             } else {
-                $page->trig('Le nom de la NL n\'est pas valide');
+                $page->trigError('Le nom de la NL n\'est pas valide');
                 pl_redirect('admin/newsletter/edit/' . $nl->_id);
             }
         }

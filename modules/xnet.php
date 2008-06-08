@@ -84,26 +84,26 @@ class XnetModule extends PLModule
                 S::assert_xsrf_token();
 
                 XDB::query('DELETE FROM groupex.membres WHERE asso_id={?}', $id);
-                $page->trig('membres supprimés');
+                $page->trigSuccess('membres supprimés');
 
                 if ($domain) {
                     XDB::query('DELETE FROM  virtual_domains WHERE domain={?}', $domain);
                     XDB::query('DELETE FROM  virtual, virtual_redirect
                                                 USING  virtual INNER JOIN virtual_redirect USING (vid)
                                                 WHERE  alias LIKE {?}', '%@'.$domain);
-                    $page->trig('suppression des alias mails');
+                    $page->trigSuccess('suppression des alias mails');
 
                     $mmlist = new MMList(S::v('uid'), S::v('password'), $domain);
                     if ($listes = $mmlist->get_lists()) {
                         foreach ($listes as $l) {
                             $mmlist->delete_list($l['list'], true);
                         }
-                        $page->trig('mail lists surpprimées');
+                        $page->trigSuccess('mail lists surpprimées');
                     }
                 }
 
                 XDB::query('DELETE FROM groupex.asso WHERE id={?}', $id);
-                $page->trig("Groupe $nom supprimé");
+                $page->trigSuccess("Groupe $nom supprimé");
                 Get::kill('del');
             }
             if (!$id) {

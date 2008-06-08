@@ -111,7 +111,7 @@ class MarketingModule extends PLModule
         if ($action == 'rel') {
             $market = Marketing::get($uid, $value);
             if ($market == null) {
-                $page->trig("Aucun marketing n'a été effectué vers $value");
+                $page->trigWarning("Aucun marketing n'a été effectué vers $value");
             } else {
                 $to    = $market->user['to'];
                 $title = $market->getTitle();
@@ -133,12 +133,12 @@ class MarketingModule extends PLModule
                 $market = new Marketing($uid, Post::v('to'), 'default', null, 'staff');
             }
             $market->send(Post::v('title'), Post::v('message'));
-            $page->trig("Mail envoyé");
+            $page->trigSuccess("Mail envoyé");
         }
 
         if ($action == 'insrel') {
             if (Marketing::relance($uid)) {
-                $page->trig('relance faite');
+                $page->trigSuccess('relance faite');
             }
         }
 
@@ -207,11 +207,11 @@ class MarketingModule extends PLModule
                                 WHERE  e.email = {?} AND a.alias = {?}", $email, $user['forlife']);
             $state = $res->numRows() ? $res->fetchOneCell() : null;
             if ($state == 'panne') {
-                $page->trig("L'adresse que tu as fournie est l'adresse actuelle de {$user['prenom']} et est en panne.");
+                $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user['prenom']} et est en panne.");
             } elseif ($state == 'active') {
-                $page->trig("L'adresse que tu as fournie est l'adresse actuelle de {$user['prenom']}");
+                $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user['prenom']}");
             } elseif ($user['email'] && !trim(Post::v('comment'))) {
-                $page->trig("Il faut que tu ajoutes un commentaire à ta proposition pour justifier le "
+                $page->trigError("Il faut que tu ajoutes un commentaire à ta proposition pour justifier le "
                            ."besoin de changer la redirection de " . $user['prenom']);
             } else {
                 require_once 'validations.inc.php';
@@ -220,7 +220,7 @@ class MarketingModule extends PLModule
                 $page->assign('sent', true);
             }
         } elseif ($email) {
-            $page->trig("L'adresse proposée n'est pas une adresse acceptable pour une redirection");
+            $page->trigError("L'adresse proposée n'est pas une adresse acceptable pour une redirection");
         }
     }
 
@@ -265,7 +265,7 @@ class MarketingModule extends PLModule
                 $email = trim(Post::v('mail'));
 
                 if (!isvalid_email_redirection($email)) {
-                    $page->trig("Email invalide !");
+                    $page->trigError("Email invalide !");
                 } else {
                     // On cherche les marketings précédents sur cette adresse
                     // email, en se restreignant au dernier mois

@@ -96,12 +96,12 @@ class EvtReq extends Validate
         if (@$_FILES['image']['tmp_name']) {
             $upload = PlUpload::get($_FILES['image'], S::v('forlife'), 'event');
             if (!$upload) {
-                $this->trig("Impossible de télécharger le fichier");
+                $this->trigError("Impossible de télécharger le fichier");
             } elseif (!$upload->isType('image')) {
-                $page->trig('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG');
+                $page->trigError('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG');
                 $upload->rm();
             } elseif (!$upload->resizeImage(200, 300, 100, 100, 32284)) {
-                $page->trig('Impossible de retraiter l\'image');
+                $page->trigError('Impossible de retraiter l\'image');
             } else {
                 $this->readImage($upload);
             }

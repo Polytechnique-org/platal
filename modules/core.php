@@ -145,7 +145,7 @@ class CoreModule extends PLModule
             $mymail->setTxtBody($body);
             $mymail->send();
         } elseif (Env::has('send')) {
-            $page->trig("Merci de remplir une explication du problème rencontré");
+            $page->trigError("Merci de remplir une explication du problème rencontré");
         }
     }
 

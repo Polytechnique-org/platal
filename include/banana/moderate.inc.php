@@ -91,7 +91,7 @@ class ModerationPage extends BananaPage
     {
         global $page;
         if ($page) {
-            $page->trig($msg);
+            $page->trigError($msg);
         }
         return true;
     }

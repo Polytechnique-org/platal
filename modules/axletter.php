@@ -119,27 +119,27 @@ class AXLetterModule extends PLModule
                 $title = $subject;
             }
             if (!$subject || !$title || !$body) {
-                $page->trig("L'article doit avoir un sujet et un contenu");
+                $page->trigError("L'article doit avoir un sujet et un contenu");
                 Post::kill('valid');
             }
             if (($promo_min > $promo_max && $promo_max != 0)||
                 ($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
                 ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020)))
             {
-                $page->trig("L'intervalle de promotions n'est pas valide");
+                $page->trigError("L'intervalle de promotions n'est pas valide");
                 Post::kill('valid');
             }
             if (empty($short_name)) {
-                $page->trig("L'annonce doit avoir un nom raccourci pour simplifier la navigation dans les archives");
+                $page->trigError("L'annonce doit avoir un nom raccourci pour simplifier la navigation dans les archives");
                 Post::kill('valid');
             } elseif (!preg_match('/^[a-z][-a-z0-9]*[a-z0-9]$/', $short_name)) {
-                $page->trig("Le nom raccourci n'est pas valide, il doit comporter au moins 2 caractères et n'être composé "
+                $page->trigError("Le nom raccourci n'est pas valide, il doit comporter au moins 2 caractères et n'être composé "
                           . "que de chiffres, lettres et tirets");
                 Post::kill('valid');
             } elseif ($short_name != Post::v('old_short_name')) {
                 $res = XDB::query("SELECT id FROM axletter WHERE short_name = {?}", $short_name);
                 if ($res->numRows() && $res->fetchOneCell() != $id) {
-                    $page->trig("Le nom $short_name est déjà utilisé, merci d'en choisir un autre");
+                    $page->trigError("Le nom $short_name est déjà utilisé, merci d'en choisir un autre");
                     $short_name = Post::v('old_short_name');
                     if (empty($short_name)) {
                         Post::kill('valid');
@@ -302,7 +302,7 @@ class AXLetterModule extends PLModule
                     break;
                 }
                 if (!$res) {
-                    $page->trig("Personne ne correspond à l'identifiant '$uid'");
+                    $page->trigError("Personne ne correspond à l'identifiant '$uid'");
                 }
             }
         }

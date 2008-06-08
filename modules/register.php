@@ -219,7 +219,7 @@ class RegisterModule extends PLModule
         }
         $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
         if (isset($err)) {
-            $page->trig($err);
+            $page->trigError($err);
         }
     }
 

@@ -96,7 +96,7 @@ class XnetListsModule extends ListsModule
                            USING  x4dat.virtual AS v
                        LEFT JOIN  x4dat.virtual_redirect AS r USING(vid)
                            WHERE  v.alias={?}', $alias);
-            $page->trig(Post::v('del_alias')." supprimé !");
+            $page->trigSuccess(Post::v('del_alias')." supprimé !");
         }
 
         $listes = $this->client->get_lists();
@@ -128,14 +128,14 @@ class XnetListsModule extends ListsModule
         }
 
         if (!Post::has('liste')) {
-            $page->trig('champs «adresse souhaitée» vide');
+            $page->trigError('champs «adresse souhaitée» vide');
             return;
         }
 
         $liste = strtolower(Post::v('liste'));
 
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
-            $page->trig('le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets');
+            $page->trigError('le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets');
             return;
         }
 
@@ -143,11 +143,11 @@ class XnetListsModule extends ListsModule
         $res = XDB::query('SELECT alias FROM x4dat.virtual WHERE alias={?}', $new);
 
         if ($res->numRows()) {
-            $page->trig('cet alias est déjà pris');
+            $page->trigError('cet alias est déjà pris');
             return;
         }
         if (!Post::v('desc')) {
-            $page->trig('le sujet est vide');
+            $page->trigError('le sujet est vide');
             return;
         }
 
@@ -254,9 +254,9 @@ class XnetListsModule extends ListsModule
                               SELECT  vid, {?}
                                 FROM  x4dat.virtual
                                WHERE  alias={?}", "$alias@m4x.org", $lfull);
-                   $page->trig("$alias@m4x.org ajouté");
+                   $page->trigSuccess("$alias@m4x.org ajouté");
                 } else {
-                    $page->trig("$mbox@{$globals->mail->domain} n'existe pas.");
+                    $page->trigError("$mbox@{$globals->mail->domain} n'existe pas.");
                 }
             } else {
                 XDB::query(
@@ -264,7 +264,7 @@ class XnetListsModule extends ListsModule
                               SELECT  vid,{?}
                                 FROM  x4dat.virtual
                                WHERE  alias={?}", "$mbox@$dom", $lfull);
-                $page->trig("$mbox@$dom ajouté");
+                $page->trigSuccess("$mbox@$dom ajouté");
             }
         }
 
@@ -311,13 +311,13 @@ class XnetListsModule extends ListsModule
         }
 
         if (!Post::has('liste')) {
-            $page->trig('champs «adresse souhaitée» vide');
+            $page->trigError('champs «adresse souhaitée» vide');
             return;
         }
         $liste = Post::v('liste');
         if (!preg_match("/^[a-zA-Z0-9\-\.]*$/", $liste)) {
-            $page->trig('le nom de l\'alias ne doit contenir que des lettres,'
-                        .' chiffres, tirets et points');
+            $page->trigError('le nom de l\'alias ne doit contenir que des lettres,'
+                            .' chiffres, tirets et points');
             return;
         }
 
@@ -325,7 +325,7 @@ class XnetListsModule extends ListsModule
         $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
         $n   = $res->fetchOneCell();
         if ($n) {
-            $page->trig('cet alias est déjà pris');
+            $page->trigError('cet alias est déjà pris');
             return;
         }
 

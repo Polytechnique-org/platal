@@ -216,7 +216,7 @@ class XnetEventsModule extends PLModule
                 if (!isset($pers[$j]) || !is_numeric($pers[$j])
                 ||  $pers[$j] < 0)
                 {
-                    $page->trig('Tu dois choisir un nombre d\'invités correct !');
+                    $page->trigError('Tu dois choisir un nombre d\'invités correct !');
                     return;
                 }
                 $subs[$j] = 1 + $pers[$j];
@@ -225,11 +225,11 @@ class XnetEventsModule extends PLModule
 
         // impossible to unsubscribe if you already paid sthing
         if (!array_sum($subs) && $evt['paid'] != 0) {
-            $page->trig("Impossible de te désinscrire complètement ".
-                        "parce que tu as fait un paiement par ".
-                        "chèque ou par liquide. Contacte un ".
-                        "administrateur du groupe si tu es sûr de ".
-                        "ne pas venir");
+            $page->trigError("Impossible de te désinscrire complètement ".
+                            "parce que tu as fait un paiement par ".
+                            "chèque ou par liquide. Contacte un ".
+                            "administrateur du groupe si tu es sûr de ".
+                            "ne pas venir");
             return;
         }
 
@@ -527,7 +527,7 @@ class XnetEventsModule extends PLModule
         if (may_update() && Post::v('adm')) {
             $member = get_infos(Post::v('mail'));
             if (!$member) {
-                $page->trig("Membre introuvable");
+                $page->trigError("Membre introuvable");
             }
 
             // change the price paid by a participant

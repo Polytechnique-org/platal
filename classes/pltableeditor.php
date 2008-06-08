@@ -199,16 +199,16 @@ class PLTableEditor
                 foreach ($this->jtables as $table => $j)
                     XDB::execute("DELETE FROM {$table} WHERE {$j['joinid']} = {?}{$j['joinextra']}", $id);
                 XDB::execute("DELETE FROM {$this->table} WHERE {$this->idfield} = {?}",$id);
-                $page->trig("L'entrée ".$id." a été supprimée.");
+                $page->trigSuccess("L'entrée ".$id." a été supprimée.");
             } else if ($this->delete_action) {
                 XDB::execute($this->delete_action, $id);
                 if (isset($this->delete_message)) {
-                    $page->trig($this->delete_message);
+                    $page->trigSuccess($this->delete_message);
                 } else {
-                    $page->trig("L'entrée ".$id." a été supprimée.");
+                    $page->trigSuccess("L'entrée ".$id." a été supprimée.");
                 }
             } else {
-                $page->trig("Impossible de supprimer l'entrée.");
+                $page->trigError("Impossible de supprimer l'entrée.");
             }
         }
         if ($action == 'edit') {
@@ -271,7 +271,7 @@ class PLTableEditor
                     $val = "'".addslashes($val)."'";
                 } else {
                     $cancel = true;
-                    $page->trig("Il manque le champ ".$field);
+                    $page->trigError("Il manque le champ ".$field);
                 }
                 $values .= $val;
             }
@@ -280,13 +280,13 @@ class PLTableEditor
                     XDB::execute("UPDATE {$this->table} SET {$this->idfield} = {?} WHERE {$this->idfield} = {?} AND {$this->whereclause}", Post::v($this->idfield), $id);
                 XDB::execute("REPLACE INTO {$this->table} VALUES ($values)");
                 if ($id !== false)
-                    $page->trig("L'entrée ".$id." a été mise à jour.");
+                    $page->trigSuccess("L'entrée ".$id." a été mise à jour.");
                 else {
-                    $page->trig("Une nouvelle entrée a été créée.");
+                    $page->trigSuccess("Une nouvelle entrée a été créée.");
                     $id = XDB::insertId();
                 }
             } else
-                $page->trig("Impossible de mettre à jour.");
+                $page->trigError("Impossible de mettre à jour.");
             if (!$this->auto_return) {
                 return $this->apply($page, 'edit', $id);
             }

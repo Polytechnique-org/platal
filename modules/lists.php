@@ -110,7 +110,7 @@ class ListsModule extends PLModule
             if ($promo >= 1900 and $promo < 2100) {
                 $this->client->subscribe("promo$promo");
             } else {
-                $page->trig("promo incorrecte, il faut une promo sur 4 chiffres.");
+                $page->trigSuccess("promo incorrecte, il faut une promo sur 4 chiffres.");
             }
         }
         $listes = $this->client->get_lists();
@@ -205,29 +205,29 @@ class ListsModule extends PLModule
         $liste = Post::v('liste');
 
         if (empty($liste)) {
-            $page->trig('champs «adresse souhaitée» vide');
+            $page->trigError('champs «adresse souhaitée» vide');
         }
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
-            $page->trig('le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets');
+            $page->trigError('le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets');
         }
 
         $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
         $n   = $res->fetchOneCell();
 
         if ($n) {
-            $page->trig('cet alias est déjà pris');
+            $page->trigError('cet alias est déjà pris');
         }
 
         if (!Post::v('desc')) {
-            $page->trig('le sujet est vide');
+            $page->trigError('le sujet est vide');
         }
 
         if (!count($owners)) {
-            $page->trig('pas de gestionnaire');
+            $page->trigError('pas de gestionnaire');
         }
 
         if (count($members)<4) {
-            $page->trig('pas assez de membres');
+            $page->trigError('pas assez de membres');
         }
 
         if (!$page->nb_errs()) {
@@ -562,7 +562,7 @@ class ListsModule extends PLModule
             $arr = $this->client->mass_subscribe($liste, $members);
             if (is_array($arr)) {
                 foreach($arr as $addr) {
-                    $page->trig("{$addr[0]} inscrit.");
+                    $page->trigSuccess("{$addr[0]} inscrit.");
                 }
             }
         }
@@ -583,7 +583,7 @@ class ListsModule extends PLModule
             if ($owners) {
                 foreach ($owners as $login) {
                     if ($this->client->add_owner($liste, $login)) {
-                        $page->trig($alias." ajouté aux modérateurs.");
+                        $page->trigSuccess($alias." ajouté aux modérateurs.");
                     }
                 }
             }

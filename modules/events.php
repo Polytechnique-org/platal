@@ -87,14 +87,14 @@ class EventsModule extends PLModule
             return true;
         }
         if (!$upload->upload($_FILES['image'])  && !$upload->download(Env::v('image_url'))) {
-            $page->trig('Impossible de télécharger l\'image');
+            $page->trigError('Impossible de télécharger l\'image');
             return false;
         } elseif (!$upload->isType('image')) {
-            $page->trig('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG.');
+            $page->trigError('Le fichier n\'est pas une image valide au format JPEG, GIF ou PNG.');
             $upload->rm();
             return false;
         } elseif (!$upload->resizeImage(200, 300, 100, 100, 32284)) {
-            $page->trig('Impossible de retraiter l\'image');
+            $page->trigError('Impossible de retraiter l\'image');
             return false;
         }
         return true;
@@ -289,7 +289,7 @@ class EventsModule extends PLModule
             ($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
             ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020)))
         {
-            $page->trig("L'intervalle de promotions n'est pas valide");
+            $page->trigError("L'intervalle de promotions n'est pas valide");
             $action = null;
         }
 
@@ -306,7 +306,7 @@ class EventsModule extends PLModule
             $upload->rm();
             $page->assign('action', false);
         } elseif ($action && (!trim($texte) || !trim($titre))) {
-            $page->trig("L'article doit avoir un titre et un contenu");
+            $page->trigError("L'article doit avoir un titre et un contenu");
         } elseif ($action) {
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
@@ -373,7 +373,7 @@ class EventsModule extends PLModule
             if (($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
                 ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020 || $promo_max < $promo_min)))
             {
-                $page->trig("L'intervalle de promotions $promo_min -> $promo_max n'est pas valide");
+                $page->trigError("L'intervalle de promotions $promo_min -> $promo_max n'est pas valide");
                 $action = 'edit';
             } else {
                 $res = XDB::query('SELECT flags FROM evenements WHERE id = {?}', $eid);
