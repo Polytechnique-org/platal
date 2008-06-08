@@ -26,6 +26,9 @@ $date  = date('Y-m-d', time() + 7 * 24*60*60);
 $stamp = date('Ymd000000');
 $like  = date('%-m-d', time() + 7 * 24*60*60);
 
+XDB::execute("DELETE FROM  watch_ops
+                    WHERE  cid = 4 AND date < CURDATE()");
+
 XDB::execute("INSERT INTO  watch_ops (uid, cid, known, date)
                    SELECT  user_id, 4, $stamp, '$date'
                      FROM  auth_user_md5
