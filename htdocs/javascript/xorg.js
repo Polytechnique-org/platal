@@ -334,7 +334,7 @@ function checkPassword(box) {
     } else if (prop >= 40) {
         color = "#ff4";
         bgcolor = "#750";
-        ok = false;
+        ok = true;
     } else {
         color = "#f20";
         bgcolor = "#700";
@@ -348,7 +348,7 @@ function checkPassword(box) {
            .parent().stop()
                     .animate({ backgroundColor: bgcolor }, 750);
     var submitButton = $(":submit[@name='" + passwordprompt_submit + "']");
-    if (ok) {
+    if (ok && pass.length >= 6) {
         submitButton.removeAttr("disabled");
     } else {
         submitButton.attr("disabled", "disabled");
