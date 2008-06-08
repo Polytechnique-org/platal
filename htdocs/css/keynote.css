@@ -88,6 +88,20 @@ p.smaller {
     text-indent: 0;
 }
 
+.errors {
+    width: 98%;
+    border: 1px solid #f00;
+    margin-top: 10px;
+    background-color: #200;
+}
+
+.success {
+    width: 98%;
+    border: 1px solid #0d3;
+    margin-top: 10px;
+    background-color: #021;
+}
+
 .erreur {
     font-weight: bold;
     color: #d00;

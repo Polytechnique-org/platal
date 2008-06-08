@@ -48,13 +48,13 @@ abstract class PlatalPage extends Smarty
         $this->compile_check = !empty($globals->debug);
 
         $this->changeTpl($tpl, $type);
-        $this->_errors    = array();
+        $this->_errors    = array('errors' => array());
         $this->_jsonVars  = array();
         $this->_failure   = false;
 
         if ($globals->mode != 'rw') {
-            $this->_errors[] = "En raison d'une maintenance, une partie des fonctionnalités du site sont actuellement"
-                             . " désactivée, en particuliers aucune donnée ne sera sauvegardée";
+            $this->trig("En raison d'une maintenance, une partie des fonctionnalités du site sont"
+                      . " actuellement désactivée, en particuliers aucune donnée ne sera sauvegardée");
         }
         $this->register_prefilter('at_to_globals');
         $this->addJsLink('xorg.js');
@@ -94,7 +94,8 @@ abstract class PlatalPage extends Smarty
         $this->register_prefilter('form_force_encodings');
         $this->register_prefilter('wiki_include');
         $this->register_prefilter('if_has_perms');
-        $this->assign('xorg_errors', $this->_errors);
+        $this->assign('xorg_triggers', $this->_errors);
+        $this->assign('xorg_errors', $this->nb_errs());
         $this->assign('xorg_failure', $this->_failure);
         $this->assign('globals', $globals);
 
@@ -187,15 +188,28 @@ abstract class PlatalPage extends Smarty
 
     public function nb_errs()
     {
-        return count($this->_errors);
+        return count($this->_errors['errors']);
     }
 
     // }}}
     // {{{ function trig()
 
-    public function trig($msg)
+    public function trig($msg, $type = 'errors')
     {
-        $this->_errors[] = $msg;
+        if (!isset($this->_errors[$type])) {
+            $this->_errors[$type] = array();
+        }
+        $this->_errors[$type][] = $msg;
+    }
+
+    public function trigError($msg)
+    {
+        $this->trig($msg, 'errors');
+    }
+
+    public function trigSuccess($msg)
+    {
+        $this->trig($msg, 'success');
     }
 
     // }}}

@@ -73,6 +73,20 @@ p {
     text-align: justify;
 }
 
+.errors {
+    margin-top: 10px;
+    border: 1px solid #f00;
+    background-color: #fcc;
+    width: 98%;
+}
+
+.success {
+    margin-top: 10px;
+    border: 1px solid #0d2;
+    background-color: #cfd;
+    width: 98%;
+}
+
 .erreur {
     font-weight: bold;
     color: #ff0000;

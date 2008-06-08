@@ -90,9 +90,7 @@
     <div style="clear: both"></div>
   </div>
   <div class="wiz_content" style="clear: both">
-    {foreach from=$xorg_errors item=err}
-    <div class="erreur">{$err|smarty:nodefaults}</div>
-    {/foreach}
+    {include file="skin/common.triggers.tpl"}
     {include file=$wiz_page}
   </div>
 </div>
