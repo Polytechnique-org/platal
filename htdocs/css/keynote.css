@@ -95,6 +95,13 @@ p.smaller {
     background-color: #200;
 }
 
+.warnings {
+    width: 98%;
+    border: 1px solid #ff0;
+    margin-top: 10px;
+    background-color: #220;
+}
+
 .success {
     width: 98%;
     border: 1px solid #0d3;

@@ -80,6 +80,13 @@ p {
     width: 98%;
 }
 
+.warnings {
+    margin-top: 10px;
+    border: 1px solid #ed0;
+    background-color: #ffc;
+    width: 98%;
+}
+
 .success {
     margin-top: 10px;
     border: 1px solid #0d2;

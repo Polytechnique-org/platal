@@ -188,6 +188,27 @@ td#menu {
  * CLASSES
  ***************************************************************************/
 
+.errors {
+    margin-top: 10px;
+    border: 1px solid #f00;
+    background-color: #faa;
+    width: 98%;
+}
+
+.warnings {
+    margin-top: 10px;
+    border: 1px solid #dc0;
+    background-color: #ee7;
+    width: 98%;
+}
+
+.success {
+    margin-top: 10px;
+    border: 1px solid #0d2;
+    background-color: #7fa;
+    width: 98%;
+}
+
 .erreur { color: red !important; }
 .error  { color: red !important; }
 .center { text-align: center; }

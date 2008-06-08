@@ -207,6 +207,11 @@ abstract class PlatalPage extends Smarty
         $this->trig($msg, 'errors');
     }
 
+    public function trigWarning($msg)
+    {
+        $this->trig($msg, 'warnings');
+    }
+
     public function trigSuccess($msg)
     {
         $this->trig($msg, 'success');
