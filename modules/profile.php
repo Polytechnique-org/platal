@@ -60,6 +60,8 @@ class ProfileModule extends PLModule
             'admin/sections'  => $this->make_hook('admin_sections', AUTH_MDP, 'admin'),
             'admin/secteurs'  => $this->make_hook('admin_secteurs', AUTH_MDP, 'admin'),
             'admin/trombino'   => $this->make_hook('admin_trombino', AUTH_MDP, 'admin'),
+            'admin/ss_secteurs'  => $this->make_hook('admin_ss_secteurs', AUTH_MDP, 'admin'),
+            'admin/fonctions'  => $this->make_hook('admin_fonctions', AUTH_MDP, 'admin'),
 
         );
     }
@@ -106,11 +108,16 @@ class ProfileModule extends PLModule
 
     function handler_medal(&$page, $mid)
     {
+        $thumb = ($mid == 'thumb');
+        $mid = $thumb ? @func_get_arg(2) : $mid;
+
         $res = XDB::query("SELECT  img
                              FROM  profile_medals
                             WHERE  id = {?}",
                           $mid);
-        $img  = dirname(__FILE__).'/../htdocs/images/medals/' . $res->fetchOneCell();
+        $img  = $thumb ?
+            dirname(__FILE__).'/../htdocs/images/medals/thumb/' . $res->fetchOneCell() :
+            dirname(__FILE__).'/../htdocs/images/medals/' . $res->fetchOneCell();
         $type = mime_content_type($img);
         header("Content-Type: $type");
         echo file_get_contents($img);
@@ -129,7 +136,7 @@ class ProfileModule extends PLModule
         if (Env::has('upload')) {
             $upload = new PlUpload(S::v('forlife'), 'photo');
             if (!$upload->upload($_FILES['userfile']) && !$upload->download(Env::v('photo'))) {
-                $page->trig('Une erreur est survenue lors du téléchargement du fichier');
+                $page->trigError('Une erreur est survenue lors du téléchargement du fichier');
             } else {
                 $myphoto = new PhotoReq(S::v('uid'), $upload);
                 if ($myphoto->isValid()) {
@@ -293,14 +300,15 @@ class ProfileModule extends PLModule
         }
         if (Env::v('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
             ax_synchronize(S::v('bestalias'), S::v('uid'));
-            $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
+            $page->trigSuccess('Ton profil a été synchronisé avec celui du site polytechniciens.com');
         }
 
         // Build the page
         $page->addJsLink('ajax.js');
-        $page->addJsLink('profile.js');
         $page->addJsLink('applis.js');
         $page->addJsLink('grades.js');
+        $page->addJsLink('profile.js');
+        $page->addJsLink('jquery.autocomplete.js');
         $wiz = new PlWizard('Profil', 'core/plwizard.tpl', true, true);
         require_once dirname(__FILE__) . '/profile/page.inc.php';
         $wiz->addPage('ProfileGeneral', 'Général', 'general');
@@ -317,7 +325,7 @@ class ProfileModule extends PLModule
                              FROM  auth_user_md5
                             WHERE  user_id = {?} AND naissance = '0000-00-00'", S::i('uid'));
         if ($res->numRows()) {
-            $page->trig("Ta date de naissance n'est pas renseignée, ce qui t'empêcheras de réaliser"
+            $page->trigWarning("Ta date de naissance n'est pas renseignée, ce qui t'empêcheras de réaliser"
                       . " la procédure de récupération de mot de passe si un jour tu le perdais");
         }
 
@@ -467,19 +475,19 @@ class ProfileModule extends PLModule
         $promo_sortie = Env::i('promo_sortie');
 
         if ($promo_sortie < 1000 || $promo_sortie > 9999) {
-            $page->trig('L\'année de sortie doit être un nombre de quatre chiffres');
+            $page->trigError('L\'année de sortie doit être un nombre de quatre chiffres');
         }
         elseif ($promo_sortie < $promo + 3) {
-            $page->trig('Trop tôt');
+            $page->trigError('Trop tôt');
         }
         elseif ($promo_sortie == $promo_sortie_old) {
-            $page->trig('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
+            $page->trigWarning('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
         }
         elseif ($promo_sortie == $promo + 3) {
             XDB::execute(
                 "UPDATE  auth_user_md5 set promo_sortie={?}
                   WHERE  user_id={?}", $promo_sortie, S::v('uid'));
-                $page->trig('Ton statut "orange" a été supprimé.');
+                $page->trigSuccess('Ton statut "orange" a été supprimé.');
                 $page->assign('promo_sortie_old', $promo_sortie);
         }
         else {
@@ -768,16 +776,32 @@ class ProfileModule extends PLModule
     }
     function handler_admin_sections(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Sections');
-        $page->assign('title', 'Gestion des Sections');
+        $page->assign('title', 'Gestion des sections');
         $table_editor = new PLTableEditor('admin/sections','sections','id');
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }
+    function handler_admin_ss_secteurs(&$page, $action = 'list', $id = null) {
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - Sous-secteurs');
+        $page->assign('title', 'Gestion des sous-secteurs');
+        $table_editor = new PLTableEditor('admin/ss_secteurs', 'emploi_ss_secteur', 'id', true);
+        $table_editor->describe('label', 'intitulé', true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_admin_fonctions(&$page, $action = 'list', $id = null) {
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - Fonctions');
+        $page->assign('title', 'Gestion des fonctions');
+        $table_editor = new PLTableEditor('admin/fonctions', 'fonctions_def', 'id', true);
+        $table_editor->describe('fonction_fr', 'intitulé', true);
+        $table_editor->describe('fonction_en', 'intitulé (ang)', true);
+        $table_editor->describe('flags', 'titre', true);
+        $table_editor->apply($page, $action, $id);
+    }
     function handler_admin_secteurs(&$page, $action = 'list', $id = null) {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Secteurs');
-        $page->assign('title', 'Gestion des Secteurs');
-        $table_editor = new PLTableEditor('admin/secteurs','emploi_secteur','id');
-        $table_editor->describe('label','intitulé',true);
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - Secteurs');
+        $page->assign('title', 'Gestion des secteurs');
+        $table_editor = new PLTableEditor('admin/secteurs', 'emploi_secteur', 'id', true);
+        $table_editor->describe('label', 'intitulé', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_medals(&$page, $action = 'list', $id = null) {
@@ -796,15 +820,24 @@ class ProfileModule extends PLModule
             if (Post::v('act') == 'del') {
                 XDB::execute('DELETE FROM  profile_medals_grades
                                     WHERE  mid={?} AND gid={?}', $mid, Post::i('gid'));
-            } elseif (Post::v('act') == 'new') {
-                XDB::execute('INSERT INTO  profile_medals_grades (mid,gid)
-                                   VALUES  ({?},{?})',
-                        $mid, max(array_keys(Post::v('grades', array(0))))+1);
             } else {
                 foreach (Post::v('grades', array()) as $gid=>$text) {
-                    XDB::execute('UPDATE  profile_medals_grades
-                                     SET  pos={?}, text={?}
-                                   WHERE  gid={?} AND mid={?}', $_POST['pos'][$gid], $text, $gid, $mid);
+                    if ($gid === 0) {
+                        if (!empty($text)) {
+                            $res = XDB::query('SELECT  MAX(gid)
+                                                 FROM  profile_medals_grades
+                                                WHERE  mid = {?}', $mid);
+                            $gid = $res->fetchOneCell() + 1;
+
+                            XDB::execute('INSERT INTO  profile_medals_grades (mid, gid, text, pos)
+                                               VALUES  ({?}, {?}, {?}, {?})',
+                                $mid, $gid, $text, $_POST['pos']['0']);
+                        }
+                    } else {
+                        XDB::execute('UPDATE  profile_medals_grades
+                                         SET  pos={?}, text={?}
+                                       WHERE  gid={?} AND mid={?}', $_POST['pos'][$gid], $text, $gid, $mid);
+                    }
                 }
             }
             $res = XDB::iterator('SELECT gid, text, pos FROM profile_medals_grades WHERE mid={?} ORDER BY pos', $mid);

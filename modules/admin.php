@@ -70,11 +70,11 @@ class AdminModule extends PLModule
         if (Env::has('del')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'del' WHERE crc = {?}", $crc);
-            $page->trig($crc." verra tous ses mails supprimés !");
+            $page->trigSuccess($crc." verra tous ses mails supprimés !");
         } elseif (Env::has('ok')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = {?}", $crc);
-            $page->trig($crc." a le droit de passer !");
+            $page->trigSuccess($crc." a le droit de passer !");
         }
 
         $sql = XDB::iterator(
@@ -406,20 +406,23 @@ class AdminModule extends PLModule
             }
             $mr = $r->fetchOneAssoc();
 
-            if (!is_numeric($login)) { //user has a forlife
+            // Checks the user has a forlife, as non-registered user can't have redirections.
+            if ($mr['forlife']) {
                 $redirect = new Redirect($mr['user_id']);
             }
 
             // Check if there was a submission
             foreach($_POST as $key => $val) {
+                S::assert_xsrf_token();
+
                 switch ($key) {
                     case "add_fwd":
                         $email = trim(Env::v('email'));
                         if (!isvalid_email_redirection($email)) {
-                            $page->trig("invalid email $email");
+                            $page->trigError("Email non valide: $email");
                         } else {
                             $redirect->add_email($email);
-                            $page->trig("Ajout de $email effectué");
+                            $page->trigSuccess("Ajout de $email effectué");
                         }
                         break;
 
@@ -439,7 +442,7 @@ class AdminModule extends PLModule
                                            WHERE uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
                                          $mr['user_id'], $val);
                             fix_bestalias($mr['user_id']);
-                            $page->trig($val." a été supprimé");
+                            $page->trigSuccess($val." a été supprimé");
                         }
                         break;
                     case "activate_fwd":
@@ -472,24 +475,24 @@ class AdminModule extends PLModule
                             $domain = $globals->mail->domain;
                         }
                         if (!preg_match('/[-a-z0-9\.]+/s', $alias)) {
-                            $page->trig("'$alias' n'est pas un alias valide");
+                            $page->trigError("'$alias' n'est pas un alias valide");
                         }
                         if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
                             $req = new AliasReq($mr['user_id'], $alias, 'Admin request', false);
                             if ($req->commit()) {
-                                $page->trig("Nouvel alias '$alias@$domain' attribué");
+                                $page->trigSuccess("Nouvel alias '$alias@$domain' attribué");
                             } else {
-                                $page->trig("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué");
+                                $page->trigError("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué");
                             }
                         } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
                             if (XDB::execute("INSERT INTO  aliases (id,alias,type) VALUES  ({?}, {?}, 'alias')",
                                     $mr['user_id'], $alias)) {
-                                $page->trig("Nouvel alias '$alias' ajouté");
+                                $page->trigSuccess("Nouvel alias '$alias' ajouté");
                             } else {
-                                $page->trig("Impossible d'ajouter l'alias '$alias', il est probablement déjà attribué");
+                                $page->trigError("Impossible d'ajouter l'alias '$alias', il est probablement déjà attribué");
                             }
                         } else {
-                            $page->trig("Le domaine '$domain' n'est pas valide");
+                            $page->trigError("Le domaine '$domain' n'est pas valide");
                         }
                         break;
 
@@ -507,16 +510,17 @@ class AdminModule extends PLModule
                     case "u_edit":
                         require_once('secure_hash.inc.php');
                         $pass_encrypted = Env::v('newpass_clair') != "********" ? hash_encrypt(Env::v('newpass_clair')) : Env::v('passw');
-                        $naiss = Env::v('naissanceN');
-                        $deces = Env::v('decesN');
-                        $perms = Env::v('permsN');
-                        $prenm = Env::v('prenomN');
-                        $nom   = Env::v('nomN');
-                        $promo = Env::i('promoN');
-                        $sexe  = Env::v('sexeN');
-                        $comm  = trim(Env::v('commentN'));
-                        $watch = Env::v('watchN');
-                        $flags = '';
+                        $naiss    = Env::v('naissanceN');
+                        $deces    = Env::v('decesN');
+                        $perms    = Env::v('permsN');
+                        $prenm    = Env::v('prenomN');
+                        $nom      = Env::v('nomN');
+                        $nomusage = Env::v('nomusageN');
+                        $promo    = Env::i('promoN');
+                        $sexe     = Env::v('sexeN');
+                        $comm     = trim(Env::v('commentN'));
+                        $watch    = Env::v('watchN');
+                        $flags    = '';
                         if ($sexe) {
                             $flags = 'femme';
                         }
@@ -528,11 +532,11 @@ class AdminModule extends PLModule
                         }
 
                         if ($watch && !$comm) {
-                            $page->trig("Il est nécessaire de mettre un commentaire pour surveiller un compte");
+                            $page->trigError("Il est nécessaire de mettre un commentaire pour surveiller un compte");
                             break;
                         }
 
-                        $watch = 'SELECT naissance, deces, password, perms,
+                        $watch = 'SELECT naissance, deces, password, perms, nom_usage,
                                          prenom, nom, flags, promo, comment
                                     FROM auth_user_md5
                                    WHERE user_id = ' . $mr['user_id'];
@@ -545,6 +549,7 @@ class AdminModule extends PLModule
                                          perms     = '$perms',
                                          prenom    = '".addslashes($prenm)."',
                                          nom       = '".addslashes($nom)."',
+                                         nom_usage = '".addslashes($nomusage)."',
                                          flags     = '$flags',
                                          promo     = $promo,
                                          comment   = '".addslashes($comm)."'
@@ -561,7 +566,8 @@ class AdminModule extends PLModule
                             $new_fields = $res->fetchOneAssoc();
 
                             $mailer = new PlMailer("admin/useredit.mail.tpl");
-                            $mailer->assign("user", S::v('forlife'));
+                            $mailer->assign("admin", S::v('forlife'));
+                            $mailer->assign("user", $mr['forlife']);
                             $mailer->assign('old', $old_fields);
                             $mailer->assign('new', $new_fields);
                             $mailer->send();
@@ -569,7 +575,7 @@ class AdminModule extends PLModule
                             // update number of subscribers (perms or deceased may have changed)
                             update_NbIns();
 
-                            $page->trig("updaté correctement.");
+                            $page->trigSuccess("updaté correctement.");
                         }
                         if (Env::v('nomusageN') != $mr['nom_usage']) {
                             require_once "xorg.misc.inc.php";
@@ -612,9 +618,10 @@ class AdminModule extends PLModule
                         user_clear_all_subs($mr['user_id']);
                         // update number of subscribers (perms or deceased may have changed)
                         update_NbIns();
-                        $page->trig("'{$mr['user_id']}' a été désinscrit !");
+                        $page->trigSuccess("'{$mr['user_id']}' a été désinscrit !");
                         $mailer = new PlMailer("admin/useredit.mail.tpl");
-                        $mailer->assign("user", S::v('forlife'));
+                        $mailer->assign("admin", S::v('forlife'));
+                        $mailer->assign("user", $mr['forlife']);
                         $mailer->assign("deletion", true);
                         $mailer->send();
                         break;
@@ -691,7 +698,7 @@ class AdminModule extends PLModule
                 $action = Env::v('valid_promo') == 'Ajouter des membres' ? 'add' : 'ax';
                 pl_redirect('admin/promo/' . $action . '/' . Env::i('promo'));
             } else {
-                $page->trig('Promo non valide');
+                $page->trigError('Promo non valide');
             }
         }
 
@@ -735,24 +742,28 @@ class AdminModule extends PLModule
             }
         }
 
-        $page->assign('op',$op);
-        $page->assign('target',$target);
+        $page->assign('op', $op);
+        $page->assign('target', $target);
 
         // on a un $target valide, on prepare les mails
         if ($target) {
-
             // on examine l'op a effectuer
             switch ($op) {
                 case 'mail':
-                send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
-                switch_bestalias($target, $loginbis);
+                    S::assert_xsrf_token();
+
+                    send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
+                    switch_bestalias($target, $loginbis);
                     $op = 'list';
                     break;
+
                 case 'correct':
-                switch_bestalias($target, $loginbis);
+                    S::assert_xsrf_token();
+
+                    switch_bestalias($target, $loginbis);
                     XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
                     XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
-                send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
+                    send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
                     $op = 'list';
                     break;
             }
@@ -820,19 +831,24 @@ class AdminModule extends PLModule
         $page->assign('promo',$promo);
 
         if ($validate) {
+            S::assert_xsrf_token();
+
             $new_deces = array();
             $res = XDB::iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
             while (list($uid,$mat,$nom,$prenom,$deces) = $res->next()) {
                 $val = Env::v($mat);
-            if($val == $deces || empty($val)) continue;
-            XDB::execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
-            $new_deces[] = array('name' => "$prenom $nom", 'date' => "$val");
-            if($deces=='0000-00-00' or empty($deces)) {
-                require_once('notifs.inc.php');
-                register_watch_op($uid, WATCH_DEATH, $val);
-                require_once('user.func.inc.php');
-                user_clear_all_subs($uid, false);   // by default, dead ppl do not loose their email
-            }
+                if($val == $deces || empty($val)) {
+                    continue;
+                }
+
+                XDB::execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
+                $new_deces[] = array('name' => "$prenom $nom", 'date' => "$val");
+                if($deces == '0000-00-00' || empty($deces)) {
+                    require_once('notifs.inc.php');
+                    register_watch_op($uid, WATCH_DEATH, $val);
+                    require_once('user.func.inc.php');
+                    user_clear_all_subs($uid, false);   // by default, dead ppl do not loose their email
+                }
             }
             $page->assign('new_deces',$new_deces);
         }
@@ -917,8 +933,10 @@ class AdminModule extends PLModule
         }
 
         if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
+            S::assert_xsrf_token();
+
             $req = Validate::get_typed_request(Env::v('uid'), Env::v('type'), Env::v('stamp'));
-            if($req) { $req->handle_formu(); }
+            $req->handle_formu();
         }
 
         $r = XDB::iterator('SHOW COLUMNS FROM requests_answers');
@@ -940,6 +958,9 @@ class AdminModule extends PLModule
         }
         $page->assign('hide_requests', $hidden);
 
+        // Update the count of item to validate here... useful in development configuration
+        // where several copies of the site use the same DB, but not the same "dynamic configuration"
+        update_NbValid();
         $page->assign('vit', new ValidateIterator());
     }
 
@@ -1017,8 +1038,11 @@ class AdminModule extends PLModule
            $page->setRssLink('Changement Récents',
                              '/Site/AllRecentChanges?action=rss&user=' . S::v('forlife') . '&hash=' . S::v('core_rss_hash'));
         }
+
         // update wiki perms
         if ($action == 'update') {
+            S::assert_xsrf_token();
+
             $perms_read = Post::v('read');
             $perms_edot = Post::v('edit');
             if ($perms_read || $perms_edit) {
@@ -1036,22 +1060,26 @@ class AdminModule extends PLModule
         }
 
         if ($action == 'delete' && $wikipage != '') {
+            S::assert_xsrf_token();
+
             if (wiki_delete_page($wikipage)) {
-                $page->trig("La page ".$wikipage." a été supprimée.");
+                $page->trigSuccess("La page ".$wikipage." a été supprimée.");
             } else {
-                $page->trig("Impossible de supprimer la page ".$wikipage.".");
+                $page->trigError("Impossible de supprimer la page ".$wikipage.".");
             }
         }
 
         if ($action == 'rename' && $wikipage != '' && $wikipage2 != '' && $wikipage != $wikipage2) {
+            S::assert_xsrf_token();
+
             if ($changedLinks = wiki_rename_page($wikipage, $wikipage2)) {
                 $s = 'La page <em>'.$wikipage.'</em> a été déplacée en <em>'.$wikipage2.'</em>.';
                 if (is_numeric($changedLinks)) {
                     $s .= $changedLinks.' lien'.(($changedLinks>1)?'s ont été modifiés.':' a été modifié.');
                 }
-                $page->trig($s);
+                $page->trigSuccess($s);
             } else {
-                $page->trig("Impossible de déplacer la page ".$wikipage);
+                $page->trigError("Impossible de déplacer la page ".$wikipage);
             }
         }
 
@@ -1099,8 +1127,9 @@ class AdminModule extends PLModule
         $page->assign('states', $states);
 
         switch (Post::v('action')) {
-        case 'create':
+          case 'create':
             if (trim(Post::v('ipN')) != '') {
+                S::assert_xsrf_token();
                 Xdb::execute('INSERT IGNORE INTO ip_watch (ip, mask, state, detection, last, uid, description)
                                           VALUES ({?}, {?}, {?}, CURDATE(), NOW(), {?}, {?})',
                              ip_to_uint(trim(Post::v('ipN'))), ip_to_uint(trim(Post::v('maskN'))),
@@ -1108,15 +1137,17 @@ class AdminModule extends PLModule
             };
             break;
 
-        case 'edit':
+          case 'edit':
+            S::assert_xsrf_token();
             Xdb::execute('UPDATE ip_watch
                              SET state = {?}, last = NOW(), uid = {?}, description = {?}, mask = {?}
                            WHERE ip = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'),
                           ip_to_uint(Post::v('maskN')), ip_to_uint(Post::v('ipN')));
             break;
 
-        default:
+          default:
             if ($action == 'delete' && !is_null($ip)) {
+                S::assert_xsrf_token();
                 Xdb::execute('DELETE FROM ip_watch WHERE ip = {?}', ip_to_uint($ip));
             }
         }
@@ -1198,7 +1229,7 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/icons.tpl');
         $dh = opendir('../htdocs/images/icons');
         if (!$dh) {
-            $page->trig('Dossier des icones introuvables.');
+            $page->trigError('Dossier des icones introuvables.');
         }
         $icons = array();
         while (($file = readdir($dh)) !== false) {

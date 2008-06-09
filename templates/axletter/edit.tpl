@@ -23,12 +23,13 @@
 <h1>Edition de message</h1>
 
 <form action="{$platal->pl_self()}" method="post">
+  {xsrf_token_field}
   {if $am}
   {include file="axletter/letter.tpl"}
 
   <p class="center">
     <input type="hidden" name="id" value="{$id}" />
-    <input type="hidden" name="old_shortname" value="{$shortname}" />
+    <input type="hidden" name="old_short_name" value="{$short_name}" />
     <input type="hidden" name="saved" value="{$saved}" />
     {if $echeance}
     <input type="hidden" name="echeance" value="{$echeance}" />
@@ -58,7 +59,7 @@
     <tr>
       <td class="titre">Nom raccourci</td>
       <td>
-        <input type="text" name="shortname" value="{$shortname}" size="16" maxlength="16" />
+        <input type="text" name="short_name" value="{$short_name}" size="16" maxlength="16" />
         <span class="smaller">(uniquement lettres, chiffres ou -)</span>
       </td>
     </tr>
@@ -76,10 +77,10 @@
       <td colspan="2" class="center">
         Envoi au plus tard le {$echeance|date_format:"%x vers %Hh"}<br />
         {if $is_xorg}
-        [<a href="ax/edit/valid" onclick="return confirm('Es-tu sûr de voiloir valider l\'envoi de ce message ?');">{*
+        [<a href="ax/edit/valid?token={xsrf_token}" onclick="return confirm('Es-tu sûr de vouloir valider l\'envoi de ce message ?');">{*
           *}{icon name=thumb_up} Valider l'envoi</a>]
         {else}
-        [<a href="ax/edit/cancel" onclick="return confirm('Es-tu sûr de vouloir annuler l\'envoi de ce message ?');">{*
+        [<a href="ax/edit/cancel?token={xsrf_token}" onclick="return confirm('Es-tu sûr de vouloir annuler l\'envoi de ce message ?');">{*
           *}{icon name=thumb_down} Annuler l'envoi</a>]
         {/if}
       </td>
@@ -89,7 +90,7 @@
 
   <p class="center">
     <input type="hidden" name="id" value="{$id}" />
-    <input type="hidden" name="old_shortname" value="{$shortname}" />
+    <input type="hidden" name="old_short_name" value="{$short_name}" />
     <input type="hidden" name="saved" value="{$saved}" />
     {if $echeance}
     <input type="hidden" name="echeance" value="{$echeance}" />

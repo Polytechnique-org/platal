@@ -80,18 +80,19 @@ class AXLetterModule extends PLModule
 
         $page->changeTpl('axletter/edit.tpl');
 
-        $saved     = Post::i('saved');
-        $new       = false;
-        $id        = Post::i('id');
-        $shortname = trim(Post::v('shortname'));
-        $subject   = trim(Post::v('subject'));
-        $title     = trim(Post::v('title'));
-        $body      = rtrim(Post::v('body'));
-        $signature = trim(Post::v('signature'));
-        $promo_min = Post::i('promo_min');
-        $promo_max = Post::i('promo_max');
-        $echeance  = Post::has('echeance_date') ? Post::v('echeance_date') . ' ' . Post::v('echeance_time')
-                                                : Post::v('echeance');
+        $saved      = Post::i('saved');
+        $new        = false;
+        $id         = Post::i('id');
+        $short_name = trim(Post::v('short_name'));
+        $subject    = trim(Post::v('subject'));
+        $title      = trim(Post::v('title'));
+        $body       = rtrim(Post::v('body'));
+        $signature  = trim(Post::v('signature'));
+        $promo_min  = Post::i('promo_min');
+        $promo_max  = Post::i('promo_max');
+        $echeance   = Post::has('echeance_date') ?
+              preg_replace('/^(\d\d\d\d)(\d\d)(\d\d)$/', '\1-\2-\3', Post::v('echeance_date')) . ' ' . Post::v('echeance_time')
+            : Post::v('echeance');
         $echeance_date = Post::v('echeance_date');
         $echeance_time = Post::v('echeance_time');
 
@@ -109,6 +110,8 @@ class AXLetterModule extends PLModule
                 $new   = true;
             }
         } elseif (Post::has('valid')) {
+            S::assert_xsrf_token();
+
             if (!$subject && $title) {
                 $subject = $title;
             }
@@ -116,29 +119,29 @@ class AXLetterModule extends PLModule
                 $title = $subject;
             }
             if (!$subject || !$title || !$body) {
-                $page->trig("L'article doit avoir un sujet et un contenu");
+                $page->trigError("L'article doit avoir un sujet et un contenu");
                 Post::kill('valid');
             }
             if (($promo_min > $promo_max && $promo_max != 0)||
                 ($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
                 ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020)))
             {
-                $page->trig("L'intervalle de promotions n'est pas valide");
+                $page->trigError("L'intervalle de promotions n'est pas valide");
                 Post::kill('valid');
             }
-            if (empty($shortname)) {
-                $page->trig("L'annonce doit avoir un nom raccourci pour simplifier la navigation dans les archives");
+            if (empty($short_name)) {
+                $page->trigError("L'annonce doit avoir un nom raccourci pour simplifier la navigation dans les archives");
                 Post::kill('valid');
-            } elseif (!preg_match('/^[a-z][-a-z0-9]*[a-z0-9]$/', $shortname)) {
-                $page->trig("Le nom raccourci n'est pas valide, il doit comporter au moins 2 caractères et n'être composé "
+            } elseif (!preg_match('/^[a-z][-a-z0-9]*[a-z0-9]$/', $short_name)) {
+                $page->trigError("Le nom raccourci n'est pas valide, il doit comporter au moins 2 caractères et n'être composé "
                           . "que de chiffres, lettres et tirets");
                 Post::kill('valid');
-            } elseif ($shortname != Post::v('old_shortname')) {
-                $res = XDB::query("SELECT id FROM axletter WHERE  shortname = {?}", $shortname);
+            } elseif ($short_name != Post::v('old_short_name')) {
+                $res = XDB::query("SELECT id FROM axletter WHERE short_name = {?}", $short_name);
                 if ($res->numRows() && $res->fetchOneCell() != $id) {
-                    $page->trig("Le nom $shortname est déjà utilisé, merci d'en choisir un autre");
-                    $shortname = Post::v('old_shortname');
-                    if (empty($shortname)) {
+                    $page->trigError("Le nom $short_name est déjà utilisé, merci d'en choisir un autre");
+                    $short_name = Post::v('old_short_name');
+                    if (empty($short_name)) {
                         Post::kill('valid');
                     }
                 }
@@ -147,17 +150,18 @@ class AXLetterModule extends PLModule
             switch (@Post::v('valid')) {
               case 'Aperçu':
                 require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
-                $al = new AXLetter(array($id, $shortname, $subject, $title, $body, $signature,
+                $al = new AXLetter(array($id, $short_name, $subject, $title, $body, $signature,
                                          $promo_min, $promo_max, $echeance, 0, 'new'));
                 $al->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
                 break;
 
               case 'Confirmer':
                 XDB::execute("REPLACE INTO  axletter
-                                       SET  id = {?}, shortname = {?}, subject = {?}, title = {?}, body = {?},
+                                       SET  id = {?}, short_name = {?}, subject = {?}, title = {?}, body = {?},
                                             signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}",
-                             $id, $shortname, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance);
+                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance);
                 if (!$saved) {
+                    global $globals;
                     $mailer = new PlMailer();
                     $mailer->setFrom("support@" . $globals->mail->domain);
                     $mailer->setSubject("Un nouveau projet de mail de l'AX vient d'être proposé");
@@ -177,7 +181,6 @@ class AXLetterModule extends PLModule
                                      INNER JOIN auth_user_md5   AS u USING(user_id)
                                      INNER JOIN aliases         AS a ON (u.user_id = a.id
                                      AND FIND_IN_SET('bestalias', a.flags))");
-                    global $globals;
                     while (list($nom, $prenom, $alias) = $res->next()) {
                         $mailer->addTo("$nom $prenom <$alias@{$globals->mail->domain}>");
                     }
@@ -191,7 +194,7 @@ class AXLetterModule extends PLModule
             }
         }
         $page->assign('id', $id);
-        $page->assign('shortname', $shortname);
+        $page->assign('short_name', $short_name);
         $page->assign('subject', $subject);
         $page->assign('title', $title);
         $page->assign('body', $body);
@@ -223,17 +226,12 @@ class AXLetterModule extends PLModule
     function handler_cancel(&$page, $force = null)
     {
         require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
-        if (!AXLetter::hasPerms()) {
-            return PL_FORBIDDEN;
-        }
-
-        $url = parse_url($_SERVER['HTTP_REFERER']);
-        if ($force != 'force' && trim($url['path'], '/') != 'ax/edit') {
+        if (!AXLetter::hasPerms() || !S::has_xsrf_token()) {
             return PL_FORBIDDEN;
         }
 
         $al = AXLetter::awaiting();
-        if (!$alg) {
+        if (!$al) {
             $page->kill("Aucune lettre en attente");
             return;
         }
@@ -248,12 +246,7 @@ class AXLetterModule extends PLModule
     function handler_valid(&$page, $force = null)
     {
         require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
-        if (!AXLetter::hasPerms()) {
-            return PL_FORBIDDEN;
-        }
-
-        $url = parse_url($_SERVER['HTTP_REFERER']);
-        if ($force != 'force' && trim($url['path'], '/') != 'ax/edit') {
+        if (!AXLetter::hasPerms() || !S::has_xsrf_token()) {
             return PL_FORBIDDEN;
         }
 
@@ -296,6 +289,8 @@ class AXLetterModule extends PLModule
             $uid    = Post::v('uid');
         }
         if ($uid) {
+            S::assert_xsrf_token();
+
             $uids   = preg_split('/ *[,;\: ] */', $uid);
             foreach ($uids as $uid) {
                 switch ($action) {
@@ -307,7 +302,7 @@ class AXLetterModule extends PLModule
                     break;
                 }
                 if (!$res) {
-                    $page->trig("Personne ne oorrespond à l'identifiant '$uid'");
+                    $page->trigError("Personne ne correspond à l'identifiant '$uid'");
                 }
             }
         }

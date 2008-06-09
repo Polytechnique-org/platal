@@ -149,6 +149,9 @@ class GoogleAppsAccount
         $this->uid = $uid;
         $this->g_account_name = $account_name;
         $this->g_status = NULL;
+        if (!$this->g_account_name) {
+            return;
+        }
 
         $res = XDB::query(
             "SELECT  l_sync_password, l_activate_mail_redirection,
@@ -244,7 +247,7 @@ class GoogleAppsAccount
     // Creates a queue job of the @p type, for the user represented by this
     // GoogleAppsAccount object, using @p parameters. @p parameters is supposed
     // to be a one-dimension array of key-value mappings.
-    // The created job as a 'normal' priority, and is scheduled for immediate
+    // The created job as a 'immediate' priority, and is scheduled for immediate
     // execution.
     private function create_queue_job($type, $parameters) {
         $parameters["username"] = $this->g_account_name;
@@ -252,7 +255,7 @@ class GoogleAppsAccount
             "INSERT  INTO gapps_queue
                 SET  q_owner_id = {?}, q_recipient_id = {?},
                      p_entry_date = NOW(), p_notbefore_date = NOW(),
-                     p_priority = 'normal',
+                     p_priority = 'immediate',
                      j_type = {?}, j_parameters = {?}",
             S::v('uid'),
             $this->uid,
@@ -444,7 +447,7 @@ class GoogleAppsAccount
             "SELECT  g_admin
                FROM  gapps_accounts
               WHERE  l_userid = {?} AND g_status = 'active'", $uid);
-        return ($res->numRows() > 0 ? (bool)$res->fetchOneRow() : false);
+        return ($res->numRows() > 0 ? (bool)$res->fetchOneCell() : false);
     }
 }
 

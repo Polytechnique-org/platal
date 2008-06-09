@@ -65,7 +65,7 @@
       <td>
         <select name="is_admin">
           <option value="0" {if !$user.perms}selected="selected"{/if}>Membre</option>
-          <option value="1" {if $user.perms}selected="selected"{/if}>Administrateur</option>
+          <option value="1" {if $user.perms}selected="selected"{/if}>Animateur</option>
         </select>
       </td>
     </tr>

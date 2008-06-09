@@ -70,6 +70,12 @@ div.contact-list div.contact {
     color: inherit;
 }
 
+div.contact-list div.grayed {
+    color: #444;
+    font-style: italic;
+    background: #eee;
+}
+
 div.contact div.long {
     background: #ffffff;
     color: inherit;

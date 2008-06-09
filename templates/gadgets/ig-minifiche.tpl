@@ -37,20 +37,20 @@
     {if $smarty.session.auth ge AUTH_COOKIE}
     {if !$c.wasinscrit && !$c.dcd}
       {if $show_action eq ajouter}
-        <a href="carnet/notifs/add_nonins/{$c.user_id}" target="_top">{*
+        <a href="carnet/notifs/add_nonins/{$c.user_id}?token={xsrf_token}" target="_top">{*
         *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
       {else}
-        <a href="carnet/notifs/del_nonins/{$c.user_id}" target="_top">{*
+        <a href="carnet/notifs/del_nonins/{$c.user_id}?token={xsrf_token}" target="_top">{*
         *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
       {/if}
     {elseif $c.wasinscrit && !$c.dcd}
         <a href="vcard/{$c.forlife}.vcf">{*
         *}{icon name=vcard title="Afficher la carte de visite"}</a>
       {if $show_action eq ajouter}
-        <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}" target="_top">{*
+        <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}&amp;token={xsrf_token}" target="_top">{*
         *}{icon name=add title="Ajouter à mes contacts"}</a>
       {else}
-        <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}" target="_top">{*
+        <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}&amp;token={xsrf_token}" target="_top">{*
         *}{icon name=cross title="Retirer de mes contacts"}</a>
       {/if}
     {/if}

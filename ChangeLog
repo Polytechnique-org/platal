@@ -1,6 +1,64 @@
 ================================================================================
 VERSION 0.9.17                                                        XX XX 2008
 
+New:
+
+    * Core:
+        - Password strength checker                                        -FRU
+        - Show user picture on the mini-profile                            -FRU
+        - Add an anti-XSRF framework, and add protection to most pages     -VZA
+        - Add a 'disallow all' robots.txt in development working copies.   -VZA
+
+Bug/Wish:
+
+    * Admin:
+        - #811: Improve interface to add medal ranks and avoid losing data -ALK
+
+    * Carnet:
+        - #831: Don't be notified of birthdays of the previous day         -FRU
+
+    * Core:
+        - Fix email sending, correcting bugs introduced in r1897           -VZA
+        - #841: Improves contrast of links in legends in skin 'Espace'     -FRU
+
+    * Lists:
+        - #761: Fix user comment in moderation mail sent by mailman        -FRU
+        - #810: Fix encoding of admin pages                                -FRU
+        - #813: Fix display of the sample mail refusal message             -JAC
+        - #839: Fix warning when adding an external address                -FRU
+        - Larger click target to toggle emails in the validation interface -ALK
+
+    * Profile:
+        - #805: Improves mentoring edition page                            -JAC
+        - #836: Autocomplete enterprise name in profile edition page       -FRU
+        - #840: Remove mentor entry when "expertise" is empty              -FRU
+
+    * Search:
+        - Fix display of autocompletion menu (use plugin's latest version) -ALK
+        - Clicking on the "..." entry no longer replaces search with "..." -ALK
+
+    * Xnet:
+        - #821: Fix infinite loop when user can't be authenticated         -FRU
+
+    * XnetGrp:
+        - #806: Unsubscribe from MLs when leaving the group                -FRU
+        - #814: Group managers can change the visibility of the group      -FRU
+        - #824: Fix redirection when changing status of the user           -FRU
+
+    * XnetEvents:
+        - #825: Show the number of comers when the events contains 1 part  -FRU
+
+From 0.9.16 branch:
+
+    * Admin:
+        - #745: Fix invalid warnings when editing user profile             -VZA
+
+    * Core:
+        - Fix authentication level required by 403/404 error pages         -FRU
+        - Fix default password on subscription                             -VZA
+
+    * GoogleApps:
+        - Enable service                                                   -VZA
 
 ================================================================================
 VERSION 0.9.16                                                        31 03 2008

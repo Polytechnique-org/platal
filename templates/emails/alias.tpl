@@ -42,7 +42,7 @@
       <td class="orange">
         <input type="checkbox" {if $mail_public}checked="checked"{/if}
             onclick="
-                Ajax.update_html(null,'{$globals->baseurl}/emails/alias/set/'+(this.checked?'public':'private'));
+                Ajax.update_html(null,'{$globals->baseurl}/emails/alias/set/'+(this.checked?'public':'private')+'?token={xsrf_token}');
                 document.getElementById('mail_public').innerHTML = (this.checked?'public et apparaît donc sur ta fiche':'privé et n\'apparaît nulle part sur le site') + '.';
             " />
       </td>
@@ -82,6 +82,7 @@
 
   <br />
   <form action="emails/alias/ask" method="post">
+    {xsrf_token_field}
     <table class="bicol" cellpadding="4" summary="Demande d'alias">
       <tr>
         <th>Demande d'alias</th>
@@ -120,6 +121,7 @@
   {if $actuel}
   <form action="emails/alias/delete/{$actuel}" method="post"
       onsubmit="return confirm('Es-tu sûr de vouloir supprimer {$actuel} ?')">
+    {xsrf_token_field}
     <table class="bicol" cellpadding="4" summary="Suppression d'alias">
       <tr>
         <th>Suppression d'alias</th>

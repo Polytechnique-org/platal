@@ -528,17 +528,24 @@ def get_pending_ops(userdesc, perms, vhost, listname):
         helds = []
         for id in mlist.GetHeldMessageIds():
             ptime, sender, subject, reason, filename, msgdata = mlist.GetRecord(id)
+            fpath = os.path.join(mm_cfg.DATA_DIR, filename)
             try:
-                size = os.path.getsize(os.path.join(mm_cfg.DATA_DIR, filename))
+                size = os.path.getsize(fpath)
             except OSError, e:
                 if e.errno <> errno.ENOENT: raise
                 continue
+            try:
+                msg = readMessage(fpath)
+                fromX = msg.has_key("X-Org-Mail")
+            except:
+                pass
             helds.append({
                     'id'    : id,
                     'sender': quote(sender, True),
                     'size'  : size,
                     'subj'  : quote(subject, True),
-                    'stamp' : ptime
+                    'stamp' : ptime,
+                    'fromx' : fromX
                     })
         if dosave: mlist.Save()
         mlist.Unlock()

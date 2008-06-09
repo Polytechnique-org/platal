@@ -51,7 +51,7 @@
 --------------------------------------------------------------------
 
 {foreach from=$arts item=art}
-{$art->toText()}
+{$art->toText($hash, $alias)}
 
 {/foreach}
 {/foreach}
@@ -109,7 +109,7 @@ ne plus recevoir : &lt;https://www.polytechnique.org/nl/out&gt;
         {$nl->_cats[$cid]}
       </h1>
       {foreach from=$arts item=art}
-        {$art->toHtml()|smarty:nodefaults}
+        {$art->toHtml($hash, $alias)|smarty:nodefaults}
         <div class="top_lnk"><a href="{$prefix}#top_lnk">Revenir au sommaire</a></div>
       {/foreach}
       {/foreach}

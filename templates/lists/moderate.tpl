@@ -49,7 +49,7 @@
   {/foreach}
 </table>
 {else}
-<p>pas d'inscriptions en attente de modération</p>
+<p>Il n'y a pas d'inscriptions en attente de modération.</p>
 {/if}
 
 <h1>
@@ -74,31 +74,53 @@
 <p>
   S'il y a trop d'indésirables, il est probablement plus rapide pour la suite de les
   jeter directement et non de les modérer en modifant le réglage de
-  l'<a href="{$platal->ns}lists/options/{$platal->argv[1]}#antispam">antispam</a>. 
+  l'<a href="{$platal->ns}lists/options/{$platal->argv[1]}#antispam">antispam</a>.
 </p>
 
+<script type="text/javascript">//<![CDATA[
+{literal}
+var toggleState = false;
+function toggleAll() {
+  toggleState = !toggleState;
+  var boxes = $(":checkbox.moderate_email");
+  if (toggleState) {
+    boxes.attr("checked", "checked");
+  } else {
+    boxes.removeAttr("checked");
+  }
+}
+{/literal}
+//]]></script>
+
 <form method="post" action="{$platal->pl_self(1)}">
-<table class='bicol' cellpadding='0' cellspacing='0'>
+{if $with_fromx}
+<table class="bicol" style="margin-bottom: 1ex">
   <tr>
     <th colspan="2"></th>
     <th>Mail</th>
     <th>Infos</th>
     <th colspan="2"></th>
   </tr>
+  <tr>
+    <th class="smaller" colspan="6">
+      Les mails suivants proviennent d'adresses identifiées comme étant celles de camarades.
+    </th>
+  </tr>
   {foreach from=$mails item=m name=mail}
+  {if $m.fromx}
   <tr class='{cycle values="pair,impair"}'>
-    <td>
+    <td class="checkboxToggle">
       <input type="checkbox" name="select_mails[{$m.id}]" {if $smarty.foreach.mail.total eq 1}checked="checked"{/if}/>
     </td>
-    <td>
+    <td class="checkboxToggle">
       <strong>De&nbsp;:</strong><br />
       <strong>Sujet&nbsp;:</strong>
     </td>
-    <td>
+    <td class="checkboxToggle">
       {$m.sender}<br />
       {$m.subj|hdc|smarty:nodefaults}
     </td>
-    <td class='right'>
+    <td class='right checkboxToggle'>
       <small>le {$m.stamp|date_format:"%x"} à {$m.stamp|date_format:"%X"}<br />
       {$m.size} octets</small>
     </td>
@@ -110,17 +132,80 @@
       <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Spam !"}</a>
     </td>
   </tr>
+  {/if}
   {/foreach}
 </table>
+{/if}
+
+{if $with_nonfromx}
+<table class='bicol' cellpadding='0' cellspacing='0'>
+  <tr>
+    <th>
+      <a href="javascript:toggleAll()">{icon name="arrow_refresh" title="Tout (dé)cocher"}</a>
+    </th>
+    <th></th>
+    <th>Mail</th>
+    <th>Infos</th>
+    <th colspan="2"></th>
+  </tr>
+  {foreach from=$mails item=m name=mail}
+  {if !$m.fromx}
+  <tr class='{cycle values="pair,impair"}'>
+    <td class="checkboxToggle">
+      <input type="checkbox" class="moderate_email" name="select_mails[{$m.id}]" {if $smarty.foreach.mail.total eq 1}checked="checked"{/if}/>
+    </td>
+    <td class='checkboxToggle'>
+      <strong>De&nbsp;:</strong><br />
+      <strong>Sujet&nbsp;:</strong>
+    </td>
+    <td class='checkboxToggle'>
+      {$m.sender}<br />
+      {$m.subj|hdc|smarty:nodefaults}
+    </td>
+    <td class='right checkboxToggle'>
+      <small>le {$m.stamp|date_format:"%x"} à {$m.stamp|date_format:"%X"}<br />
+      {$m.size} octets</small>
+    </td>
+    <td class='action'>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>{icon name=add title="Accepter le message"}</a>
+    </td>
+    <td class='action'>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Spam !"}</a>
+    </td>
+  </tr>
+  {/if}
+  {/foreach}
+</table>
+{/if}
+
+<script type="text/javascript">//<![CDATA[
+{literal}
+$('.checkboxToggle').click(function (event)
+  {
+    // Don't uncheck the checkbox when clicking it
+    if (event.target.tagName === 'INPUT') {
+      return;
+    }
+    
+    var checkbox = $(this).parent().find(':checkbox');
+    
+    checkbox = checkbox.attr('checked', !checkbox.attr('checked'));
+    
+    event.stopPropagation();
+  });
+{/literal}
+//]]></script>
+
 <p class="center desc">
   Utilise ces boutons pour appliquer une action à tous les mails sélectionnés.<br />
   <input type="hidden" name="moderate_mails" value="1" />
-  <input type="submit" name="mok" value="Accepter" /> 
+  <input type="submit" name="mok" value="Accepter" />
   <input type="submit" name="mdel" value="Spam !" />
 </p>
 </form>
 {else}
-<p>pas de mails en attente de modération</p>
+<p>Il n'y a pas de mails en attente de modération.</p>
 {/if}
 
 

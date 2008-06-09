@@ -111,7 +111,7 @@ class AXLetter extends MassMailer
              LEFT JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
              LEFT JOIN  emails          AS e  ON(e.uid=u.user_id AND e.flags='active')
                  WHERE  ni.last < {?} AND {$this->subscriptionWhere()}
-                        AND (e.email IS NOT NULL OR ni.user_id = 0)
+                        AND (e.email IS NOT NULL OR FIND_IN_SET('googleapps', u.mail_storage) OR ni.user_id = 0)
               GROUP BY  u.user_id";
     }
 
@@ -225,7 +225,7 @@ class AXLetter extends MassMailer
     {
         $res = XDB::query("SELECT  IF(short_name IS NULL, id, short_name) as id, date, subject AS titre
                              FROM  axletter
-                            WHERE  NOT (FIND_IN_SET('new', bits))
+                            WHERE  NOT FIND_IN_SET('new', bits) AND NOT FIND_IN_SET('invalid', bits)
                          ORDER BY  date DESC");
         return $res->fetchAllAssoc();
     }

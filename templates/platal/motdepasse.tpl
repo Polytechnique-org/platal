@@ -26,12 +26,12 @@
 </h1>
 
 <p>
-  Ton mot de passe doit faire au moins <strong>6 caractères</strong> quelconques. Attention
+  Ton mot de passe doit faire au moins <strong>6 caractères</strong> quelconques et au plus 10 caractères. Attention
   au type de clavier que tu utilises (qwerty?) et aux majuscules/minuscules.
 </p>
 <p>
-  Pour une sécurité optimale, ton mot de passe circule de manière cryptée (https) et est
-  stocké crypté irréversiblement sur nos serveurs.
+  Pour une sécurité optimale, ton mot de passe circule de manière chiffrée (https) et est
+  stocké chiffrée irréversiblement sur nos serveurs.
 </p>
 <br />
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass">
@@ -44,7 +44,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Nouveau mot de passe&nbsp;:
+        Mot de passe&nbsp;:
       </td>
       <td>
         <input type="password" size="10" maxlength="10" name="nouveau" />
@@ -59,6 +59,14 @@
       </td>
     </tr>
     <tr>
+      <td class="titre">
+        Sécurité
+      </td>
+      <td>
+        {checkpasswd prompt="nouveau" submit="submitn"}
+      </td>
+    </tr>
+    <tr>
       <td colspan="2" class="center">
         <input type="submit" value="Changer" name="submitn" onclick="EnCryptedResponse(); return false;" />
       </td>
@@ -67,6 +75,7 @@
 </form>
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass2">
 <p>
+{xsrf_token_field}
 <input type="hidden" name="response2"  value="" />
 </p>
 </form>

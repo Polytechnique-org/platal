@@ -56,7 +56,7 @@ class PhotoReq extends Validate
     {
         $this->valid = $upload->resizeImage(240, 300, 160, 0, SIZE_MAX);
         if (!$this->valid) {
-            $this->trig('Le fichier que tu as transmis n\'est pas une image valide, ou est trop gros pour être traité');
+            $this->trigError('Le fichier que tu as transmis n\'est pas une image valide, ou est trop gros pour être traité');
         }
         $this->data = $upload->getContents();
         list($this->x, $this->y, $this->mimetype) = $upload->imageInfo();
@@ -103,7 +103,7 @@ class PhotoReq extends Validate
         if (isset($_FILES['userfile'])) {
             $upload =& PlUpload::get($_FILES['userfile'], S::v('forlife'), 'photo');
             if (!$upload) {
-                $this->trig('Une erreur est survenue lors du téléchargement du fichier');
+                $this->trigError('Une erreur est survenue lors du téléchargement du fichier');
                 return false;
             }
             $this->read($upload);

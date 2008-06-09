@@ -65,7 +65,8 @@
   <table class="tinybicol" cellpadding="3" summary="Définition du mot de passe">
     <tr>
       <td class="titre">
-        Mot de passe (15 caractères maximum)&nbsp;:
+        Mot de passe&nbsp;:<br />
+        <small>15 caractères max.</small>
       </td>
       <td>
         <input type="password" size="15" maxlength="15" name="smtppass1" />
@@ -73,16 +74,20 @@
     </tr>
     <tr>
       <td class="titre">
-        Retape-le une fois (pour vérification)&nbsp;:
+        Retape-le une fois&nbsp;:
       </td>
       <td>
         <input type="password" size="15" maxlength="15" name="smtppass2" />
       </td>
     </tr>
     <tr>
+      <td class="titre">Sécurité</td>
+      <td>{checkpasswd prompt="smtppass1" submit="valid"}</td>
+    </tr>
+    <tr>
       <td colspan="2" class="center">
         <input type="hidden" name="op" value="" />
-        <input type="submit" value="Valider" onclick="CheckResponse(); return false;" />
+        <input type="submit" value="Valider" name="valid" onclick="CheckResponse(); return false;" />
 {if $actif}
         &nbsp;&nbsp;<input type="submit" value="Supprimer" onclick="SupprimerMdp();" />
 {/if}

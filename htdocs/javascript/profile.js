@@ -47,6 +47,7 @@ function wizPage_onLoad(id)
             updateJobSecteur(i, 'job_' + i, 'jobs[' + i + ']',
                              document.forms.prof_annu["jobs[" + i + "][ss_secteur]"].value);
         }
+        registerEnterpriseAutocomplete(-1);
         break;
     }
 }
@@ -369,6 +370,7 @@ function makeAddJob(id)
     return function(data)
     {
         $('#add_job').before(data);
+        registerEnterpriseAutocomplete(id);
         updateSecteur('job_' + id, 'jobs[' + id + ']', '');
     };
 }
@@ -511,6 +513,23 @@ function removeSecteur(s, ss)
 {
     $('#secteurs_' + s + '_' + ss).remove();
     updateSSecteur();
+}
+
+function registerEnterpriseAutocomplete(id)
+{
+    $(".enterprise_name").each(
+      function() {
+        if (id == -1 || this.name == "jobs[" + id + "][name]") {
+            $(this).autocomplete(platal_baseurl + "search/autocomplete/entreprise",
+                                 {
+                                   selectOnly:1,
+                                   field:this.name,
+                                   matchSubset:0,
+                                   width:$(this).width()
+                                 });
+        }
+      }
+    );
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

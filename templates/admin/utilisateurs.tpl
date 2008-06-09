@@ -28,6 +28,7 @@
 
 {if $smarty.post.u_kill_conf}
 <form method="post" action="admin/user">
+  {xsrf_token_field}
   <div class="center">
     <input type="hidden" name="user_id" value="{$smarty.request.user_id}" />
     Confirmer la suppression de {$smarty.request.user_id}&nbsp;&nbsp;
@@ -37,6 +38,7 @@
 {else}
 
 <form method="post" action="admin/user">
+  {xsrf_token_field}
   <table class="tinybicol" cellspacing="0" cellpadding="2">
     <tr>
       <th>
@@ -71,7 +73,7 @@
 
 <p class="smaller">
 Dernière connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
-depuis <strong>{$host}</strong>
+depuis <strong>{$host}</strong>.
 </p>
 
 {literal}
@@ -117,6 +119,7 @@ function ban_read()
 {/literal}
 
 <form id="auth" method="post" action="admin/user">
+  {xsrf_token_field}
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>
       <th colspan="2">
@@ -136,9 +139,14 @@ function ban_read()
         Mot de passe
       </td>
       <td>
-        <input type="text" name="newpass_clair" size="10" maxlength="10" value="********" />
-        <input type="hidden" name="passw" size="32" maxlength="32" value="{$mr.password}" />
-        <input type="hidden" name="hashpass" value="" />
+        <div style="float: left">
+          <input type="text" name="newpass_clair" size="10" maxlength="10" value="********" />
+          <input type="hidden" name="passw" size="32" maxlength="32" value="{$mr.password}" />
+          <input type="hidden" name="hashpass" value="" />
+        </div>
+        <div style="float: left; margin-top: 5px;">
+          {checkpasswd prompt="newpass_clair" submit="dummy_none"}
+        </div>
       </td>
     </tr>
     <tr class="pair">
@@ -228,7 +236,7 @@ function ban_read()
         <input type="checkbox" name="watchN" {if $mr.watch}checked="checked"{/if} />
         Surveiller l'activité de ce compte<br />
         <span class="smaller">Cette option permet d'avoir des logs complets de l'activité
-        du compte via le logger, et d'être alerté lors des connexions de l'utilisateur</span>
+        du compte via le logger, et d'être alerté lors des connexions de l'utilisateur.</span>
       </td>
     </tr>
     <tr class="impair">
@@ -272,6 +280,7 @@ Ne pas utiliser [Désinscrire] si le but est d'exclure la personne.
 Pour ceci changer ses permissions en 'disabled'.
 </p>
 <form id="alias" method="post" action="admin/user">
+  {xsrf_token_field}
   <table class="tinybicol" cellpadding="2" cellspacing="0">
     <tr>
       <th class="alias" colspan="3">
@@ -319,6 +328,7 @@ Pour ceci changer ses permissions en 'disabled'.
 <p><strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong></p>
 
 <form id="bans" method="post" action="admin/user">
+  {xsrf_token_field}
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>
       <th colspan="4">
@@ -368,6 +378,7 @@ Pour ceci changer ses permissions en 'disabled'.
 {test_email forlife=$mr.forlife}
 
 <form id="fwds" method="post" action="admin/user#fwds">
+  {xsrf_token_field}
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr>
       <th colspan="4">
@@ -398,7 +409,9 @@ Pour ceci changer ses permissions en 'disabled'.
       </td>
       <td>
         {if $mail->broken}<span style="color: #f00">{/if}
+        {if $mail->email == 'googleapps'}<a href="admin/googleapps/user/{$mr.forlife}">{/if}
         {$mail->display_email}
+        {if $mail->email == 'googleapps'}</a>{/if}
         {if $mail->broken}<em> (en panne)</em></span>{/if}
       </td>
       <td class="action">

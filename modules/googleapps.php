@@ -68,24 +68,27 @@ class GoogleAppsModule extends PLModule
                 } else if ($subaction == 'nosync') {
                     $account->set_password_sync(false);
                 } else if (Post::has('response2') && !$account->sync_password) {
+                    S::assert_xsrf_token();
                     $account->set_password(Post::v('response2'));
                 }
             }
 
             if ($action == 'suspend' && Post::has('suspend') && $account->active()) {
+                S::assert_xsrf_token();
+
                 if ($account->pending_update_suspension) {
-                    $page->trig("Ton compte est déjà en cours de désactivation.");
+                    $page->trigWarning("Ton compte est déjà en cours de désactivation.");
                 } else {
                     if ($redirect->modify_one_email('googleapps', false) == SUCCESS) {
                         $account->suspend();
-                        $page->trig("Ton compte Google Apps est dorénavant désactivé.");
+                        $page->trigSuccess("Ton compte Google Apps est dorénavant désactivé.");
                     } else {
-                        $page->trig("Ton compte Google Apps est ta seule adresse de redirection. Ton compte ne peux pas être désactivé.");
+                        $page->trigError("Ton compte Google Apps est ta seule adresse de redirection. Ton compte ne peux pas être désactivé.");
                     }
                 }
             } elseif ($action == 'unsuspend' && Post::has('unsuspend') && $account->suspended()) {
                 $account->unsuspend(Post::b('redirect_mails', true));
-                $page->trig("Ta demande de réactivation a bien été prise en compte.");
+                $page->trigSuccess("Ta demande de réactivation a bien été prise en compte.");
             }
 
             if ($action == 'create') {
@@ -93,6 +96,8 @@ class GoogleAppsModule extends PLModule
                 $page->assign('password_sync', Get::b('password_sync', true));
             }
             if ($action == 'create' && Post::has('password_sync') && Post::has('redirect_mails')) {
+                S::assert_xsrf_token();
+
                 $password_sync = Post::b('password_sync');
                 $redirect_mails = Post::b('redirect_mails');
                 if ($password_sync) {
@@ -102,7 +107,7 @@ class GoogleAppsModule extends PLModule
                 }
 
                 $account->create($password_sync, $password, $redirect_mails);
-                $page->trig("La demande de création de ton compte Google Apps a bien été enregistrée.");
+                $page->trigSuccess("La demande de création de ton compte Google Apps a bien été enregistrée.");
             }
         }
 
@@ -121,7 +126,7 @@ class GoogleAppsModule extends PLModule
                 XDB::execute(
                     "DELETE FROM  gapps_queue
                            WHERE  q_id = {?} AND p_status = 'hardfail'", $qid);
-                $page->trig("La requête échouée a bien été retirée.");
+                $page->trigSuccess("La requête échouée a bien été retirée.");
             }
         }
 
@@ -197,7 +202,7 @@ class GoogleAppsModule extends PLModule
             if ($action == 'forcesync' && $account->sync_password) {
                 $res = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id = {?}", $user);
                 $account->set_password($res->fetchOneCell());
-                $page->trig('Le mot de passe a été synchronisé.');
+                $page->trigSuccess('Le mot de passe a été synchronisé.');
             }
 
             // Displays basic account information.

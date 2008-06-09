@@ -1,4 +1,2 @@
-/jquery.js
-
-# Hide banana stuff
-/spool_toggle.js
+# jQuery and its plugins are downloaded by the Makefile
+/jquery.*js

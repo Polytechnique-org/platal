@@ -69,6 +69,7 @@ class HomonymeReq extends Validate
 
     protected function _mail_subj()
     {
+        global $globals;
         return "[Polytechnique.org/Support] ".($this->warning?"Dans une semaine : suppression de l'alias":"Mise en place du robot")." $loginbis@" . $globals->mail->domain;
     }
 

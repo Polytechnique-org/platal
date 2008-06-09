@@ -27,6 +27,10 @@ class Session
         if (empty($_SESSION['challenge'])) {
             $_SESSION['challenge'] = sha1(uniqid(rand(), true));
         }
+        if (empty($_SESSION['xsrf_token'])) {
+            require_once 'xorg.misc.inc.php';
+            $_SESSION['xsrf_token'] = rand_url_id();
+        }
         if (!isset($_SESSION['perms']) || !($_SESSION['perms'] instanceof FlagSet)) {
             $_SESSION['perms'] = new FlagSet();
         }
@@ -82,6 +86,22 @@ class Session
     public static function identified()
     {
         return Session::v('auth', AUTH_PUBLIC) >= AUTH_MDP;
+    }
+
+    // Anti-XSRF protections.
+    public static function has_xsrf_token()
+    {
+        return Session::has('xsrf_token') && Session::v('xsrf_token') == Env::v('token');
+    }
+
+    public static function assert_xsrf_token()
+    {
+        if (!Session::has_xsrf_token()) {
+            global $page;
+            if ($page instanceof PlatalPage) {
+                $page->kill("L'opération n'a pas pu aboutir, merci de réessayer.");
+            }
+        }
     }
 }
 

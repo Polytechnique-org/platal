@@ -86,7 +86,7 @@
   <tr class="pair">
     <td>
       <span class="titre">Application</span><br />
-      <span class="comm">(4ème année de l'X)</span>
+      <span class="comm">(4e année de l'X)</span>
     </td>
     <td>
       <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">
@@ -114,7 +114,13 @@
       </select>
     </td>
   </tr>
-</table>
+  <tr class="pair">
+    <td class="center" colspan="2">
+      <small>Si ta formation ne figure pas dans la liste,
+      <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small>
+    </td>
+  </tr>
+ </table>
 
 <table class="bicol" style="margin-bottom: 1em;display:none"
   summary="Profil : Noms" id="names_advanced">

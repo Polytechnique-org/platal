@@ -166,6 +166,7 @@ class SearchModule extends PLModule
         require_once 'geoloc.inc.php';
         require_once dirname(__FILE__) . '/search/search.inc.php';
         $page->assign('advanced',1);
+        $page->addJsLink('jquery.autocomplete.js');
 
         if (!Env::has('rechercher') && $action != 'geoloc') {
             $this->form_prepare();
@@ -390,7 +391,7 @@ class SearchModule extends PLModule
         while ($result = $list->next()) {
             $nbResults++;
             if ($nbResults == 11) {
-                $res .= '...|1'."\n";
+                $res .= $q."|-1\n";
             } else {
                 $res .= $result['field'].'|';
                 $res .= $result['nb'];

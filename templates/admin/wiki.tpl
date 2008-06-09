@@ -73,6 +73,7 @@
 </p>
 
 <form action="admin/wiki/update" method="post" id="update_pages">
+{xsrf_token_field}
 <table class="bicol">
   <tr>
     <th>
@@ -112,8 +113,8 @@
       {$perm.edit}
     </td>
     <td class="action" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
-      <a href="admin/wiki/rename/{$cat}.{$page}" onclick="var newname=prompt('Déplacer la page {$cat}.{$page} vers&nbsp;:', '{$cat}.{$page}'); if (!newname) return false; this.href += '/'+newname;">{icon name=book_next title='déplacer'}</a>
-      <a href="admin/wiki/delete/{$cat}.{$page}" onclick="return confirm('Supprimer la page {$cat}.{$page} ?');">{icon name=cross title='supprimer'}</a>
+      <a href="admin/wiki/rename/{$cat}.{$page}" onclick="var newname=prompt('Déplacer la page {$cat}.{$page} vers&nbsp;:', '{$cat}.{$page}'); if (!newname) return false; this.href += '/' + newname + '?token={xsrf_token}';">{icon name=book_next title='déplacer'}</a>
+      <a href="admin/wiki/delete/{$cat}.{$page}?token={xsrf_token}" onclick="return confirm('Supprimer la page {$cat}.{$page} ?');">{icon name=cross title='supprimer'}</a>
       <input type="checkbox" name="{$cat}/{$page}"/>
     </td>
   </tr>

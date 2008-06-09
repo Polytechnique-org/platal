@@ -85,7 +85,7 @@ class CarnetModule extends PLModule
         if(preg_match('!^ *(\d{4}) *$!', $arg, $matches)) {
             $p = intval($matches[1]);
             if($p<1900 || $p>2100) {
-                $page->trig("la promo entrée est invalide");
+                $page->trigError("la promo entrée est invalide");
             } else {
                 if ($action == 'add_promo') {
                     $watch->_promos->add($p);
@@ -97,9 +97,9 @@ class CarnetModule extends PLModule
             $p1 = intval($matches[1]);
             $p2 = intval($matches[2]);
             if($p1<1900 || $p1>2100) {
-                $page->trig('la première promo de la plage entrée est invalide');
+                $page->trigError('la première promo de la plage entrée est invalide');
             } elseif($p2<1900 || $p2>2100) {
-                $page->trig('la seconde promo de la plage entrée est invalide');
+                $page->trigError('la seconde promo de la plage entrée est invalide');
             } else {
                 if ($action == 'add_promo') {
                     $watch->_promos->addRange($p1, $p2);
@@ -108,7 +108,7 @@ class CarnetModule extends PLModule
                 }
             }
         } else {
-            $page->trig("La promo (ou la plage de promo) entrée est dans un format incorrect.");
+            $page->trigError("La promo (ou la plage de promo) entrée est dans un format incorrect.");
         }
     }
 
@@ -127,6 +127,9 @@ class CarnetModule extends PLModule
         $promo_sortie = $res->fetchOneCell();
         $page->assign('promo_sortie', $promo_sortie);
 
+        if ($action) {
+            S::assert_xsrf_token();
+        }
         switch ($action) {
           case 'add_promo':
           case 'del_promo':
@@ -142,13 +145,20 @@ class CarnetModule extends PLModule
             break;
         }
 
-        if (Env::has('subs'))       $watch->_subs->update('sub');
+        if (Env::has('subs')) {
+            S::assert_xsrf_token();
+            $watch->_subs->update('sub');
+        }
+
         if (Env::has('flags_contacts')) {
+            S::assert_xsrf_token();
             $watch->watch_contacts = Env::b('contacts');
             $watch->saveFlags();
         }
+
         if (Env::has('flags_mail')) {
-            $watch->watch_mail     = Env::b('mail');
+            S::assert_xsrf_token();
+            $watch->watch_mail = Env::b('mail');
             $watch->saveFlags();
         }
 
@@ -186,7 +196,7 @@ class CarnetModule extends PLModule
 
     function searchErrorHandler($explain) {
         global $page;
-        $page->trig($explain);
+        $page->trigError($explain);
         $this->handler_contacts($page);
     }
 
@@ -198,6 +208,11 @@ class CarnetModule extends PLModule
         $uid  = S::v('uid');
         $user = Env::v('user');
 
+        // For XSRF protection, checks both the normal xsrf token, and the special RSS token.
+        // It allows direct linking to contact adding in the RSS feed.
+        if (Env::v('action') && Env::v('token') !== S::v('core_rss_hash')) {
+            S::assert_xsrf_token();
+        }
         switch (Env::v('action')) {
             case 'retirer':
                 if (is_numeric($user)) {
@@ -205,7 +220,7 @@ class CarnetModule extends PLModule
                                        WHERE uid = {?} AND contact = {?}',
                                      $uid, $user))
                     {
-                        $page->trig("Contact retiré !");
+                        $page->trigSuccess("Contact retiré !");
                     }
                 } else {
                     if (XDB::execute(
@@ -214,7 +229,7 @@ class CarnetModule extends PLModule
                                   INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!="homonyme")
                                        WHERE  c.uid = {?} AND a.alias={?}', $uid, $user))
                     {
-                        $page->trig("Contact retiré !");
+                        $page->trigSuccess("Contact retiré !");
                     }
                 }
                 break;
@@ -228,9 +243,9 @@ class CarnetModule extends PLModule
                                          FROM  aliases
                                         WHERE  alias = {?}', $uid, $login))
                     {
-                        $page->trig('Contact ajouté !');
+                        $page->trigSuccess('Contact ajouté !');
                     } else {
-                        $page->trig('Contact déjà dans la liste !');
+                        $page->trigWarning('Contact déjà dans la liste !');
                     }
                 }
         }

@@ -20,7 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{javascript name="jquery"}
 <script type="text/javascript">//<![CDATA[
 {literal}
 function toggleField(name, id, obj) {
@@ -73,6 +72,7 @@ function toggleField(name, id, obj) {
   <tr {if $preview_id neq $valid->id()}style="display: none"{/if} id="edit_{$valid->id()}">
     <td colspan="2" class="center">
       <form enctype="multipart/form-data" action="{$platal->pl_self(0)}/edit/{$valid->id()}#valid{$valid->id()}" method="post">
+        {xsrf_token_field}
         <div>
           {include file=$valid->editor()}
           <input type="hidden" name="uid"    value="{$valid->uid}" />
@@ -106,6 +106,7 @@ function toggleField(name, id, obj) {
   <tr {if $valid->comments|@count eq 0}style="display: none"{/if} id="comment_{$valid->id()}">
     <td colspan='2' class='center'>
       <form action="admin/validate" method="post">
+        {xsrf_token_field}
         <div>
           <input type="hidden" name="uid"    value="{$valid->uid}" />
           <input type="hidden" name="type"   value="{$valid->type}" />
@@ -131,6 +132,7 @@ function toggleField(name, id, obj) {
   <tr>
     <td colspan='2' {popup caption="Règles de validation" text=$valid->ruleText()}>
       <form action="admin/validate" method="post">
+        {xsrf_token_field}
         <div>
           Réponse préremplie&nbsp;:
           <select onchange="this.form.comm.value=this.value">

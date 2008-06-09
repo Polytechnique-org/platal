@@ -96,7 +96,7 @@ class ThrowError
         $page->changeTpl('search/index.tpl');
         $page->assign('xorg_title','Polytechnique.org - Annuaire');
         $page->assign('baseurl', $globals->baseurl);
-        $page->trig('Erreur : '.$explain);
+        $page->trigError($explain);
         $page->run();
     }
 }
@@ -254,7 +254,7 @@ class QuickSearch extends SField
         $this->strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
         if (count($this->strings) > 5) {
             global $page;
-            $page->trig("Tu as indiqué trop d'éléments dans ta recherche, seuls les 5 premiers seront pris en compte");
+            $page->trigWarning("Tu as indiqué trop d'éléments dans ta recherche, seuls les 5 premiers seront pris en compte");
             $this->strings = array_slice($this->strings, 0, 5);
         }
 

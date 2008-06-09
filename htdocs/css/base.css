@@ -22,7 +22,7 @@
     background-color: window;
     border: 1px solid;
     overflow: hidden;
-    padding:0px;
+    padding: 0px;
 }
 
 .ac_results ul {
@@ -35,31 +35,32 @@
     display:block;
     padding: 2px;
     cursor:pointer;
-    width:100%;
+    font-size: 90%;
 }
 
 .ac_results iframe {
-		display:none;/*sorry for IE5*/
-		display/**/:block;/*sorry for IE5*/
-		position:absolute;
-		top:0;
-		left:0;
-		z-index:-1;
-		filter:mask();
-		width:3000px;
-		height:3000px;
+    display:none;/*sorry for IE5*/
+    display/**/:block;/*sorry for IE5*/
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:-1;
+    filter:mask();
+    width:3000px;
+    height:3000px;
 }
-.ac_results .over {
+
+.ac_over {
     background: highlight;
     color: highlighttext;
 }
 
 .ac_loading {
-	background:window url(../images/wait.gif) no-repeat scroll right center;
+    background: window url(../images/wait.gif) no-repeat scroll right center;
 }
 
 .hidden_valid {
-	background-color: #bfb;
+    background-color: #bfb;
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */

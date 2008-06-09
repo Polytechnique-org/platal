@@ -235,6 +235,9 @@ function make_forlife($prenom, $nom, $promo)
 function ip_to_uint($ip)
 {
     $part = explode('.', $ip);
+    if (count($part) != 4) {
+        return null;
+    }
     $v = 0;
     $fact = 0x1000000;
     for ($i = 0 ; $i < 4 ; ++$i) {

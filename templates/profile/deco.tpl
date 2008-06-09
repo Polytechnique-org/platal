@@ -53,6 +53,8 @@
       {foreach from=$medals item=medal key=id}
       {include file="profile/deco.medal.tpl" medal=$medal id=$id}
       {/foreach}
+      <div class="center"><small>Si ta décoration ou ta médaille ne figure pas dans la liste,
+      <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small></div>
     </td>
   </tr>
 </table>

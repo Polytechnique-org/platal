@@ -74,8 +74,10 @@ function user_clear_all_subs($user_id, $really_del=true)
     // Deactivates, when available, the Google Apps account of the user.
     if ($globals->mailstorage->googleapps_domain) {
         require_once 'googleapps.inc.php';
-        $account = new GoogleAppsAccount($uid, $alias);
-        $account->suspend();
+        if (GoogleAppsAccount::account_status($uid)) {
+            $account = new GoogleAppsAccount($uid, $alias);
+            $account->suspend();
+        }
     }
 }
 
@@ -86,7 +88,7 @@ function user_clear_all_subs($user_id, $really_del=true)
 function _default_user_callback($login)
 {
     global $page;
-    $page->trig("Il n'y a pas d'utilisateur avec l'identifiant : $login");
+    $page->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
     return;
 }
 
@@ -169,7 +171,7 @@ function get_user_login($data, $get_forlife = false, $callback = '_default_user_
             default:
                 if (S::has_perms()) {
                     $aliases = $res->fetchColumn();
-                    $page->trig("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
+                    $page->trigError("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
                 } else {
                     $res->free();
                 }

@@ -30,6 +30,7 @@
 Ajouter la personne suivante à ma liste de contacts&nbsp;:
 <div style="float: right">
 <form id="add_user" action="carnet/contacts" method="post">
+  {xsrf_token_field}
   <div>
   <input type="hidden" name="action" value="ajouter" />
   <input type="text" size="30" name="user" class="quick_search"

@@ -124,7 +124,6 @@
 
     {/literal}
   //]]></script>
-  {javascript name="jquery"}
   {test_email}
   <div id="redirect-msg" style="position:absolute;"></div><br />
   <div class="center">
@@ -188,11 +187,12 @@
           Ajouter une adresse email&nbsp;:
           <input type="text" size="35" maxlength="60" name="email" value="" />
           &nbsp;&nbsp;<input type="submit" value="ajouter" name="emailop" />
+          {xsrf_token_field}
         </div>
         </form>
       </td></tr>
     </table>
-    <script type="text/javascript">activeEnable(); showRemove();</script>
+    <script type="text/javascript">showRemove(); activeEnable();</script>
   </div>
 {if $panne}
 <p class="smaller">
@@ -200,7 +200,7 @@
     {icon name=error title="En panne"}
     <a href="Xorg/Pannes">Panne&nbsp;:</a>
   </strong>
-  Les adresses marquées de cette icône sont des adresses de redirection pour lesquelles une panne
+  les adresses marquées de cette icône sont des adresses de redirection pour lesquelles une panne
   a été détectée. Si le problème persiste, la redirection vers ces adresses sera désactivée.
 </p>
 {/if}
@@ -210,7 +210,7 @@
     {icon name=error title="En panne"}
     <a href="Xorg/Pannes" style="color: #f00">Panne durable&nbsp;:</a>
   </strong>
-  Les adresses en rouge sont des adresses qui ont été désactivées en raison d'un grand nombre de pannes. Si tu penses que
+  les adresses en rouge sont des adresses qui ont été désactivées en raison d'un grand nombre de pannes. Si tu penses que
   le problème est résolu, tu peux les réactiver, mais l'adresse sera redésactivée si les problèmes persistent.
 </p>
 {/if}
@@ -274,7 +274,7 @@
     {if $googleapps eq 'active'}
     <td>
       <a href="googleapps">
-        <strong>Compte GMail / Google Apps</strong>
+        <strong>Compte Google Apps / Polytechnique.org</strong>
       </a><br />Hébergé par Google
     </td>
     <td style="text-align: center; vertical-align: middle">
@@ -286,7 +286,7 @@
       {if $googleapps eq 'disabled'}
       Ton compte Google Apps est actuellement inactif.<br />
       {else}
-      Tu n'as pas encore de compte Google Apps sur Polytechnique.org.<br />
+      Tu n'as pas encore de compte Google Apps pour Polytechnique.org.<br />
       {/if}
       <a href="googleapps">Plus d'informations &hellip;</a>
     </td>

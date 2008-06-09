@@ -63,9 +63,11 @@ class NewsletterModule extends PLModule
             $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
         }
         if (Post::has('send')) {
+            $res = XDB::query("SELECT hash FROM newsletter_ins WHERE user_id = {?}", S::i('uid'));
             $nl->sendTo(S::v('prenom'), S::v('nom'),
                         S::v('bestalias'), S::v('femme'),
-                        S::v('mail_fmt') != 'texte');
+                        S::v('mail_fmt') != 'texte',
+                        $res->fetchOneCell());
         }
     }
 
@@ -79,7 +81,7 @@ class NewsletterModule extends PLModule
 
         if (Post::has('see') || (Post::has('valid') && (!trim(Post::v('title')) || !trim(Post::v('body'))))) {
             if (!Post::has('see')) {
-                $page->trig("L'article doit avoir un titre et un contenu");
+                $page->trigError("L'article doit avoir un titre et un contenu");
             }
             $art = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'));
             $page->assign('art', $art);
@@ -128,7 +130,7 @@ class NewsletterModule extends PLModule
             if (preg_match('/^[-a-z0-9]*$/i', $nl->_shortname) && !is_numeric($nl->_shortname)) {
                 $nl->save();
             } else {
-                $page->trig('Le nom de la NL n\'est pas valide');
+                $page->trigError('Le nom de la NL n\'est pas valide');
                 pl_redirect('admin/newsletter/edit/' . $nl->_id);
             }
         }

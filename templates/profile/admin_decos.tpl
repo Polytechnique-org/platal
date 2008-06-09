@@ -27,12 +27,6 @@
 {literal}
 <script type="text/javascript">
   <!--
-  function new_grade() {
-    document.forms.form_grade.act.value = "new";
-    document.forms.form_grade.submit();
-    return true;
-  }
-
   function del_grade( myid ) {
     if (confirm ("You are about to delete this entry. Do you want to proceed?")) {
       document.forms.form_grade.act.value = "del";
@@ -53,14 +47,6 @@
       <th>ordre</th>
       <th>&nbsp;</th>
     </tr>
-    <tr>
-      <td colspan='3'>
-        Nouveau ...
-      </td>
-      <td  class='action'>
-        <a href='javascript:new_grade()'>nouveau{icon name=add title='nouveau grade'}</a>
-      </td>
-    </tr>
     {iterate from=$grades item=g}
     <tr class="{cycle values="pair,impair"}">
       <td>{$g.gid}</td>
@@ -76,12 +62,24 @@
     </tr>
     {/iterate}
     <tr class="{cycle values="impair,pair"}">
+      <td></td>
+      <td>
+        <input type='text' size='65' name="grades[0]" />
+      </td>
+      <td>
+        <input type='text' maxlength='2' name="pos[0]" value="0" />
+      </td>
+      <td class='action'>
+        <a href='javascript:document.forms.form_grade.submit()'>{icon name=add title='nouveau grade'}</a>
+      </td>
+    </tr>
+    <tr class="{cycle values="impair,pair"}">
       <td colspan='4' class="center">
         <input type='hidden' name='frm_id' value='{$smarty.post.frm_id}' />
         <input type='hidden' name='action' value='{$smarty.post.action}' />
         <input type='hidden' name='act' value='' />
         <input type='hidden' name='gid' value='' />
-        <input type='submit' name='gr_sub' value='Sauver' />
+        <input type='submit' name='gr_sub' value='Enregistrer' />
       </td>
     </tr>
   </table>

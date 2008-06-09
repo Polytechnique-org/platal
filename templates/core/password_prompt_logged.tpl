@@ -47,7 +47,7 @@
   <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <td class="titre">
-        Mot de passe:
+        Mot de passe&nbsp;:
       </td>
       <td>
         <input type="password" name="password" size="10" maxlength="10" />
@@ -60,7 +60,7 @@
     <tr>
       <td {popup caption='Connexion permanente' width='300' text='Décoche cette case pour que le site oublie ce navigateur.<br />
         Il est conseillé de décocher la case si cette machine n\'est pas <b>strictement</b> personnelle'} colspan="2">
-        <input type="checkbox" name="remember" checked="checked" /> Garder l'accès aux services après déconnexion
+        <input type="checkbox" name="remember" checked="checked" /> Garder l'accès aux services après déconnexion.
       </td>
     </tr>
   </table>
@@ -75,6 +75,7 @@
 <!-- Set up the form with the challenge value and an empty reply value -->
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
   <div>
+    {xsrf_token_field}
     <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
     <input type="hidden" name="username"  value="{$smarty.cookies.ORGuid}" />
     <input type="hidden" name="xorpass"  value="" />

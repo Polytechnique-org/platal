@@ -31,7 +31,7 @@
   [<a href='nl/show/{$nl->id()}?text=1'>version Texte</a>]
   {/if}
   {if hasPerm('admin')}
-  [<a href='admin/newsletter/edit/{$nl->id()}'>Editer</a>]
+  [<a href='admin/newsletter/edit/{$nl->id()}'>Éditer</a>]
   {/if}
 </p>
 

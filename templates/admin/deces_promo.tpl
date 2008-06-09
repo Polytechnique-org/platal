@@ -48,7 +48,8 @@
   </table>
 </form>
 
-<form action="admin/deaths/{$promo}/validate" method="post">
+<form action="admin/deaths/{$promo}/validate" id="deathDateList" method="post">
+  {xsrf_token_field}
   <table class="bicol" summary="liste des dates de décès">
     <tr>
       <th>Nom</th>
@@ -58,7 +59,7 @@
     <tr class="{cycle values="impair,pair"}">
       <td>{$x.nom} {$x.prenom}</td>
       <td class="center">
-        <input type="text" name="{$x.matricule}" value="{$x.deces}" size="10" maxlength="10" />
+        <input type="text" class="deathDate" name="{$x.matricule}" value="{$x.deces}" size="10" maxlength="10" />
       </td>
     </tr>
     {/iterate}
@@ -69,5 +70,24 @@
     </tr>
   </table>
 </form>
+
+<script type='text/javascript' src='javascript/jquery.js'></script>
+<script type="text/javascript">//<![CDATA[
+  {literal}
+  $('input.deathDate').change(
+    function ()
+    {
+      $(this).addClass('sendDate');
+    });
+  
+  $('#deathDateList').submit(
+    function ()
+    {
+      // Avoid sending useless data to the webserver
+      $('input.deathDate').not('.sendDate').attr('disabled', true);
+    });
+  {/literal}
+//]]></script>
+
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

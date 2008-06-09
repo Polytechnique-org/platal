@@ -43,7 +43,7 @@ liste&nbsp;:
       <th colspan='2'>Caractéristiques de la Liste</th>
     </tr>
     <tr>
-      <td class='titre'>Addresse&nbsp;souhaitée&nbsp;:</td>
+      <td class='titre'>Adresse&nbsp;souhaitée&nbsp;:</td>
       <td>
         <input type='text' name='liste' value='{$smarty.post.liste}' />@polytechnique.org
       </td>

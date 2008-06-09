@@ -38,9 +38,7 @@ Nous conseillons très vivement d'utiliser des navigateurs récents, tels
 {/if}
 
 {if !$xorg_no_errors || $xorg_failure}
-{foreach from=$xorg_errors item=err}
-<div class="erreur">{$err|smarty:nodefaults}</div>
-{/foreach}
+{include file="skin/common.triggers.tpl"}
 {/if}
 
 {if !$xorg_failure && $xorg_tpl}{include file=$xorg_tpl}{/if}

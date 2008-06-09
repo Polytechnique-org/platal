@@ -33,6 +33,8 @@ class EmailModule extends PLModule
             'emails/antispam/submit'  => $this->make_hook('submit', AUTH_COOKIE),
             'emails/test'     => $this->make_hook('test', AUTH_COOKIE, 'user', NO_AUTH),
 
+            'emails/imap/in'  => $this->make_hook('imap_in', AUTH_PUBLIC),
+
             'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
             'admin/emails/watch'      => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
             'admin/emails/lost'       => $this->make_hook('lost', AUTH_MDP, 'admin'),
@@ -50,6 +52,10 @@ class EmailModule extends PLModule
         $uid = S::v('uid');
 
         if ($action == 'best' && $email) {
+            if (!S::has_xsrf_token()) {
+                return PL_FORBIDDEN;
+            }
+
             // bestalias is the first bit : 1
             // there will be maximum 8 bits in flags : 255
             XDB::execute("UPDATE  aliases SET flags=flags & (255 - 1) WHERE id={?}", $uid);
@@ -100,6 +106,8 @@ class EmailModule extends PLModule
         $page->assign('demande', AliasReq::get_request($uid));
 
         if ($action == 'delete' && $value) {
+            S::assert_xsrf_token();
+
             //Suppression d'un alias
             XDB::execute(
                 'DELETE virtual, virtual_redirect
@@ -121,9 +129,10 @@ class EmailModule extends PLModule
         list($alias, $visibility) = $res->fetchOneRow();
         $page->assign('actuel', $alias);
 
-        if ($action == 'ask' && Env::has('alias') and Env::has('raison')) {
-            //Si l'utilisateur vient de faire une damande
+        if ($action == 'ask' && Env::has('alias') && Env::has('raison')) {
+            S::assert_xsrf_token();
 
+            //Si l'utilisateur vient de faire une damande
             $alias  = Env::v('alias');
             $raison = Env::v('raison');
             $public = (Env::v('public', 'off') == 'on')?"public":"private";
@@ -136,17 +145,17 @@ class EmailModule extends PLModule
 
             //Quelques vérifications sur l'alias (caractères spéciaux)
             if (!preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $alias)) {
-                $page->trig("L'adresse demandée n'est pas valide.
-                            Vérifie qu'elle comporte entre 3 et 20 caractères
-                            et qu'elle ne contient que des lettres non accentuées,
-                            des chiffres ou les caractères - et .");
+                $page->trigError("L'adresse demandée n'est pas valide."
+                            . " Vérifie qu'elle comporte entre 3 et 20 caractères"
+                            . " et qu'elle ne contient que des lettres non accentuées,"
+                            . " des chiffres ou les caractères - et .");
                 return;
             } else {
                 //vérifier que l'alias n'est pas déja pris
                 $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}',
                                             $alias.'@'.$globals->mail->alias_dom);
                 if ($res->fetchOneCell() > 0) {
-                    $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
+                    $page->trigError("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
                                 Tu ne peux donc pas l'obtenir.");
                     return;
                 }
@@ -155,7 +164,7 @@ class EmailModule extends PLModule
                 $it = new ValidateIterator ();
                 while($req = $it->next()) {
                     if ($req->type == "alias" and $req->alias == $alias . '@' . $globals->mail->alias_dom) {
-                        $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
+                        $page->trigError("L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
                                     Tu ne peux donc pas l'obtenir pour l'instant.");
                         return ;
                     }
@@ -167,10 +176,11 @@ class EmailModule extends PLModule
                 $page->assign('success',$alias);
                 return;
             }
-        }
-        elseif ($action == 'set'
-            && ($value == 'public' || $value == 'private'))
-        {
+        } elseif ($action == 'set' && ($value == 'public' || $value == 'private')) {
+            if (!S::has_xsrf_token()) {
+                return PL_FORBIDDEN;
+            }
+
             if ($value == 'public') {
                 XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = 'public'
                                          WHERE user_id = {?}", S::v('uid'));
@@ -224,6 +234,8 @@ class EmailModule extends PLModule
         }
 
         if (Env::has('emailop')) {
+            S::assert_xsrf_token();
+
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
@@ -284,15 +296,17 @@ class EmailModule extends PLModule
         $page->changeTpl('emails/submit_spam.tpl');
 
         if (Post::has('send_email')) {
+            S::assert_xsrf_token();
+
             $upload = PlUpload::get($_FILES['mail'], S::v('forlife'), 'spam.submit', true);
             if (!$upload) {
-                $page->trig('Une erreur a été rencontrée lors du transfert du fichier');
+                $page->trigError('Une erreur a été rencontrée lors du transfert du fichier');
                 return;
             }
             $mime = $upload->contentType();
             if ($mime != 'text/x-mail' && $mime != 'message/rfc822') {
                 $upload->clear();
-                $page->trig('Le fichier ne contient pas un mail complet');
+                $page->trigError('Le fichier ne contient pas un mail complet');
                 return;
             }
             global $globals;
@@ -303,7 +317,7 @@ class EmailModule extends PLModule
             $mailer->setTxtBody(Post::v('type') . ' soumis par ' . S::v('forlife') . ' via le web');
             $mailer->addUploadAttachment($upload, Post::v('type') . '.mail');
             $mailer->send();
-            $page->trig('Le message a été transmis à ' . $box);
+            $page->trigSuccess('Le message a été transmis à ' . $box);
             $upload->clear();
         }
     }
@@ -318,6 +332,10 @@ class EmailModule extends PLModule
 
         // action si on recoit un formulaire
         if (Post::has('save')) {
+            if (!S::has_xsrf_token()) {
+                return PL_FORBIDDEN;
+            }
+
             unset($_POST['save']);
             if (trim(preg_replace('/-- .*/', '', Post::v('contenu'))) != "") {
                 $_POST['to_contacts'] = explode(';', @$_POST['to_contacts']);
@@ -328,6 +346,8 @@ class EmailModule extends PLModule
             }
             exit;
         } else if (Env::v('submit') == 'Envoyer') {
+            S::assert_xsrf_token();
+
             function getEmails($aliases)
             {
                 if (!is_array($aliases)) {
@@ -344,7 +364,7 @@ class EmailModule extends PLModule
             $error = false;
             foreach ($_FILES as &$file) {
                 if ($file['name'] && !PlUpload::get($file, S::v('forlife'), 'emails.send', false)) {
-                    $page->trig(PlUpload::$lastError);
+                    $page->trigError(PlUpload::$lastError);
                     $error = true;
                     break;
                 }
@@ -364,7 +384,7 @@ class EmailModule extends PLModule
                 $bcc  = trim(Env::v('bcc'));
 
                 if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
-                    $page->trig("Indique au moins un destinataire.");
+                    $page->trigError("Indique au moins un destinataire.");
                     $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
                 } else {
                     $mymail = new PlMailer();
@@ -385,11 +405,11 @@ class EmailModule extends PLModule
                         $mymail->setWikiBody($txt);
                     }
                     if ($mymail->send()) {
-                        $page->trig("Ton mail a bien été envoyé.");
+                        $page->trigSuccess("Ton mail a bien été envoyé.");
                         $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
                         PlUpload::clear(S::v('forlife'), 'emails.send');
                     } else {
-                        $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
+                        $page->trigError("Erreur lors de l'envoi du courriel, réessaye.");
                         $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
                     }
                 }
@@ -423,6 +443,9 @@ class EmailModule extends PLModule
         global $globals;
         require_once 'emails.inc.php';
 
+        if (!S::has_xsrf_token()) {
+            return PL_FORBIDDEN;
+        }
         if (!S::has_perms() || !$forlife) {
             $forlife = S::v('bestalias');
         }
@@ -443,6 +466,36 @@ class EmailModule extends PLModule
         exit;
     }
 
+    function handler_imap_in(&$page, $hash = null, $login = null)
+    {
+        $page->changeTpl('emails/imap_register.tpl');
+        $id = null;
+        if (!empty($hash) || !empty($login)) {
+            $req = XDB::query("SELECT  u.prenom, FIND_IN_SET('femme', u.flags) AS sexe, a.id
+                                 FROM  aliases AS a
+                           INNER JOIN  newsletter_ins AS ni ON (a.id = ni.user_id)
+                           INNER JOIN  auth_user_md5 AS u ON (u.user_id = a.id)
+                                WHERE  a.alias = {?} AND ni.hash = {?}", $login, $hash);
+            list($prenom, $sexe, $id) = $req->fetchOneRow();
+        }
+
+        require_once('emails.inc.php');
+        $page->assign('ok', false);
+        if (S::logged() && (is_null($id) || $id == S::i('uid'))) {
+            $storage = new EmailStorage(S::i('uid'), 'imap');
+            $storage->activate();
+            $page->assign('ok', true);
+            $page->assign('prenom', S::v('prenom'));
+            $page->assign('sexe', S::v('femme'));
+        } else if (!S::logged() && $id) {
+            $storage = new EmailStorage($id, 'imap');
+            $storage->activate();
+            $page->assign('ok', true);
+            $page->assign('prenom', $prenom);
+            $page->assign('sexe', $sexe);
+        }
+    }
+
     function handler_broken(&$page, $warn = null, $email = null)
     {
         require_once 'emails.inc.php';
@@ -454,6 +507,8 @@ class EmailModule extends PLModule
         $page->changeTpl('emails/broken.tpl');
 
         if ($warn == 'warn' && $email) {
+            S::assert_xsrf_token();
+
             $email = valide_email($email);
             // vérifications d'usage
             $sel = XDB::query(
@@ -477,11 +532,11 @@ Nous te suggérons de vérifier cette adresse, et le cas échéant de mettre
 à jour sur le site <{$globals->baseurl}/emails> tes adresses
 de redirection...
 
-Pour plus de rensignements sur le service de patte cassée, n'hésites pas à
+Pour plus de renseignements sur le service de patte cassée, n'hésite pas à
 consulter la page <{$globals->baseurl}/emails/broken>.
 
 
-A bientôt sur Polytechnique.org !
+À bientôt sur Polytechnique.org !
 L'équipe d'administration <support@" . $globals->mail->domain . '>';
 
                 $mail = new PlMailer();
@@ -490,21 +545,22 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                 $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
                 $mail->setTxtBody($message);
                 $mail->send();
-                $page->trig("Mail envoyé ! :o)");
+                $page->trigSuccess("Mail envoyé !");
             }
         } elseif (Post::has('email')) {
+            S::assert_xsrf_token();
+
             $email = valide_email(Post::v('email'));
 
             list(,$fqdn) = explode('@', $email);
             $fqdn = strtolower($fqdn);
-            if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org'
-            ||  $fqdn == 'm4x.org' || $fqdn == 'melix.net')
-            {
+            if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' ||  $fqdn == 'm4x.org' || $fqdn == 'melix.net') {
                 $page->assign('neuneu', true);
             } else {
                 $page->assign('email',$email);
                 $sel = XDB::query(
-                        "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails,
+                        "SELECT  e1.uid, e1.panne != 0 AS panne,
+                                 (count(e2.uid) + IF(FIND_IN_SET('googleapps', u.mail_storage), 1, 0)) AS nb_mails,
                                  u.nom, u.prenom, u.promo, a.alias AS forlife
                            FROM  emails as e1
                       LEFT JOIN  emails as e2 ON(e1.uid = e2.uid
@@ -543,8 +599,11 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                         'dangerous' => 'Usurpations par cette adresse');
         $page->assign('states', $states);
 
+        if (Post::has('action')) {
+            S::assert_xsrf_token();
+        }
         switch (Post::v('action')) {
-        case 'create':
+          case 'create':
             if (trim(Post::v('emailN')) != '') {
                 Xdb::execute('INSERT IGNORE INTO emails_watch (email, state, detection, last, uid, description)
                                           VALUES ({?}, {?}, CURDATE(), NOW(), {?}, {?})',
@@ -552,13 +611,13 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
             };
             break;
 
-        case 'edit':
+          case 'edit':
             Xdb::execute('UPDATE emails_watch
                              SET state = {?}, last = NOW(), uid = {?}, description = {?}
                            WHERE email = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'), Post::v('emailN'));
             break;
 
-        default:
+          default:
             if ($action == 'delete' && !is_null($email)) {
                 Xdb::execute('DELETE FROM emails_watch WHERE email = {?}', $email);
             }

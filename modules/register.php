@@ -196,6 +196,7 @@ class RegisterModule extends PLModule
                             $alert .= "Tentative d'inscription depuis une IP surveillee";
                         }
                         if ($email_banned || $ip_banned) {
+                            global $globals;
                             $err = "Une erreur s'est produite lors de l'inscription."
                                  . " Merci de contacter <a href='mailto:register@{$globals->mail->domain}>"
                                  . " register@{$globals->mail->domain}</a>"
@@ -218,7 +219,7 @@ class RegisterModule extends PLModule
         }
         $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
         if (isset($err)) {
-            $page->trig($err);
+            $page->trigError($err);
         }
     }
 
@@ -362,6 +363,7 @@ class RegisterModule extends PLModule
             $mymail->setSubject("Inscription de $prenom $nom (X$promo)");
             $mymail->setFrom('"Webmaster Polytechnique.org" <web@' . $globals->mail->domain . '>');
             $mymail->addTo($globals->register->notif);
+            $mymail->addHeader('Reply-To', $globals->register->notif);
             $msg = "$prenom $nom (X$promo) a terminé son inscription avec les données suivantes :\n"
                  . " - nom       : $nom\n"
                  . " - prenom    : $prenom\n"

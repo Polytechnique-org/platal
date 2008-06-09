@@ -24,10 +24,10 @@
 {if $mail_part eq 'head'}
 {from full=#from#}
 {to addr=#to#}
-{subject text="INTERVENTION de $user"}
+{subject text="INTERVENTION de $admin"}
 {elseif $mail_part eq 'wiki'}
 {if $deletion}
-L'utilisateur {$user} a été désinscrit.
+L'utilisateur {$user} a été désinscrit de plat/al.
 {else}
 Le profil du camarade {$old.prenom} {$old.nom} ({$old.promo}) a été édité.\\
 Les champs suivants ont été changés :

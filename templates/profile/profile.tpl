@@ -43,10 +43,12 @@ function chgMainWinLoc(strPage)
   <div id="photo" class="part">
     {if $photo_url}<img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}"/>{/if}
     {if $logged && ( $x.section|smarty:nodefaults || $x.binets_join|smarty:nodefaults || $x.gpxs_join|smarty:nodefaults)}
-      <h2>A l'X...</h2>
+      <h2>À l'X...</h2>
       {if $x.section}<div><em class="intitule">Section&nbsp;: </em><span>{$x.section}</span></div>{/if}
-      {if $x.binets_join}<div><em class="intitule">Binet(s)&nbsp;: </em><span>{$x.binets_join}</span></div>{/if}
-      {if $x.gpxs_join}<div><em class="intitule">Groupe(s) et institution(s) X&nbsp;: </em><span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
+      {if $x.binets_join}<div><em class="intitule">Binet{if count($x.binets) > 1}s{/if}&nbsp;: </em>
+      <span>{$x.binets_join}</span></div>{/if}
+      {if $x.gpxs_join}<div><em class="intitule">Groupe{if count($x.gpxs) > 1}s{/if} et institution{if count($x.gpxs) > 1}s{/if} X&nbsp;: </em>
+      <span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
     {/if}
     {if $x.freetext}
     <h2>Commentaires&nbsp;:</h2>
@@ -65,10 +67,10 @@ function chgMainWinLoc(strPage)
       &nbsp;{if !$x.dcd}<a href="vcard/{$x.forlife}.vcf">{*
         *}{icon name=vcard title="Afficher la carte de visite"}</a>{/if}
       {if !$x.is_contact}
-      <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
+      <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}&amp;token={xsrf_token}')">
         {icon name=add title="Ajouter à mes contacts"}</a>
       {else}
-      <a href="javascript:chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}')">
+      <a href="javascript:chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}&amp;token={xsrf_token}')">
         {icon name=cross title="Retirer de mes contacts"}</a>
       {/if}
       {if hasPerm('admin')}
@@ -172,7 +174,7 @@ function chgMainWinLoc(strPage)
     <h2>Distinctions&nbsp;: </h2>
     {foreach from=$x.medals item=m}
     <div class="medal_frame">
-      <img src="profile/medal/{$m.id}" width="24" alt="{$m.medal}" title="{$m.medal}" style='float: left;' />
+      <img src="profile/medal/thumb/{$m.id}" height="50px" alt="{$m.medal}" title="{$m.medal}" style='float: left;' />
       <div class="medal_text">
         {$m.medal}<br />{$m.grade}
       </div>

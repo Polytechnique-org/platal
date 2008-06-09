@@ -23,6 +23,7 @@
 <h1>Soumettre un spam</h1>
 
 <form method="post" action="{$platal->pl_self()}" enctype="multipart/form-data">
+  {xsrf_token_field}
   <table class="tinybicol">
     <tr>
       <td>

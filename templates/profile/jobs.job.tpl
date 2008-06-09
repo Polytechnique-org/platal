@@ -42,7 +42,7 @@
           {include file="include/flags.radio.tpl" name="`$jobpref`[pub]" val=$job.pub}
         </div>
         Entreprise n°{$i+1}&nbsp;:
-        <input type="text" {if $job.name_error}class="error"{/if} size="35" maxlength="100"
+        <input type="text" class="enterprise_name {if $job.name_error}error{/if}" size="35" maxlength="100"
                name="{$jobpref}[name]" value="{$job.name}" />
         <a href="javascript:removeJob('{$jobid}', '{$jobpref}')">
           {icon name=cross title="Supprimer cet emploi"}
@@ -70,7 +70,7 @@
       </td>
     </tr>
     <tr>
-      <td class="titre">Sous-Secteur d'activité</td>
+      <td class="titre">Sous-secteur d'activité</td>
       <td id="{$jobid}_ss_secteur">
         <input type="hidden" name="{$jobpref}[ss_secteur]" value="{$job.ss_secteur|default:'-1'}" />
       </td> 
@@ -100,6 +100,12 @@
           {/iterate}
           {if $ingroup}</optgroup>{/if}
         </select>
+      </td>
+    </tr>
+    <tr class="titre">
+      <td class="center" colspan="2">
+        <small>Si des informations font défaut dans les listes ci-dessus,
+        <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small>
       </td>
     </tr>
     <tr class="pair">

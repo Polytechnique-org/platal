@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-{javascript name="jquery"}
+
 <script type="text/javascript">//<![CDATA[
   {if ($stateless || $id gt $current) && $wiz_ajax}
   {literal}
@@ -90,9 +90,7 @@
     <div style="clear: both"></div>
   </div>
   <div class="wiz_content" style="clear: both">
-    {foreach from=$xorg_errors item=err}
-    <div class="erreur">{$err|smarty:nodefaults}</div>
-    {/foreach}
+    {include file="skin/common.triggers.tpl"}
     {include file=$wiz_page}
   </div>
 </div>

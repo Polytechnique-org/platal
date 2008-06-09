@@ -39,7 +39,7 @@
       Tes adresses polytechniciennes sont&nbsp;:<br /><br />
         <div>
           {iterate from=$aliases item=a}
-          <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='Ajax.update_html(null,"{$globals->baseurl}/emails/best/{$a.alias}",bestaliasUpdated)' />
+          <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='Ajax.update_html(null,"{$globals->baseurl}/emails/best/{$a.alias}?token={xsrf_token}",bestaliasUpdated)' />
           {if $a.a_vie}(**){/if}{if $a.cent_ans}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et @{#globals.mail.domain2#}
           {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
           <br />

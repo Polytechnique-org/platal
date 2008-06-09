@@ -32,7 +32,7 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="marketing/promo">Marketing promo</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="marketing/volontaire">Addresses données par les inscrits</a>
+      <a href="marketing/volontaire">Adresses données par les inscrits</a>
     </td>
   </tr>
 </table>

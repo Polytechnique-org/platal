@@ -88,7 +88,7 @@ foreach ($emails as $_email) {
             $list[$x['alias']][] = $email;
         }
     } else {
-        echo "$email : cette addresse n'est pas dans la base\n";
+        echo "$email : cette adresse n'est pas dans la base\n";
     }
 }
 

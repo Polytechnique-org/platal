@@ -75,7 +75,7 @@
   <td class="action">
     {if !$readonly}
     <a href="{$t->pl}/edit/{$idval}">{icon name=page_edit title='éditer'}</a>
-    <a href="{$t->pl}/delete/{$idval}">{icon name=delete title='supprimer'}</a>
+    <a href="{$t->pl}/delete/{$idval}?token={xsrf_token}">{icon name=delete title='supprimer'}</a>
     {/if}
   </td>
   {/if}
@@ -100,6 +100,7 @@
 {else}
 
 <form method="post" action="{$t->pl}/update/{$id}">
+  {xsrf_token_field}
   <table class="bicol">
     <tr class="impair">
       <th colspan="2">

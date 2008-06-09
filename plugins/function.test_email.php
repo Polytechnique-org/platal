@@ -21,10 +21,12 @@
 
 function smarty_function_test_email($params, &$smarty) {
     $label = isset($params['title']) ? $params['title'] : 'Envoyer un mail de test';
+    $token = "'" . S::v('xsrf_token') . (isset($params['forlife']) ? "', " : "'");
     $forlife = isset($params['forlife']) ? "'" . $params['forlife'] . "'" : '';
     return '<div class="center">'
          . '  <div id="mail_sent" style="position: absolute;"></div><br />'
-         . '  <form action="emails/test" method="get" onsubmit="return sendTestEmail(' . $forlife . ')">'
+         . '  <form action="emails/test" method="get" onsubmit="return sendTestEmail(' . $token . $forlife . ')">'
+         . '    <input type="hidden" name="token" value="' . S::v('xsrf_token') . '" />'
          . '    <div><input type="submit" name="send" value="' . $label . '" /></div>'
          . '  </form>'
          . '</div>';

@@ -16,12 +16,17 @@ PKG_DIRS = configs htdocs include install.d plugins po scripts templates upgrade
 
 VCS_FILTER = ! -name .arch-ids ! -name CVS
 
+define download
+@echo "Downloading $@ from $(DOWNLOAD_SRC)"
+wget $(DOWNLOAD_SRC) -O $@ -q || ($(RM) $@; exit 1)
+endef
+
 ################################################################################
 # global targets
 
 all: build
 
-build: core banana wiki jquery
+build: core banana wiki medals jquery
 
 q:
 	@echo -e "Code statistics\n"
@@ -109,17 +114,39 @@ htdocs/css/banana.css:
 include/banana/banana.inc.php:
 	cd $(@D) && find $(BANANA)/banana/ -name '*.php' -exec ln -snf {} . ";"
 
+##
+## Medal thumbnails
+##
+MEDAL_PICTURES=$(wildcard htdocs/images/medals/*.jpg)
+MEDAL_THUMBNAILS=$(subst /medals/,/medals/thumb/,$(MEDAL_PICTURES))
 
+medals: $(MEDAL_THUMBNAILS)
+
+$(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
+	convert -resize x50 $(subst /medals/thumb/,/medals/,$@) $@
 
 ##
 ## jquery
 ##
 
-jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js
+JQUERY_PLUGINS=color
+JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
+
+jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js $(JQUERY_PLUGINS_PATHES)
+
+htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-latest.pack.js
 htdocs/javascript/jquery.js:
-	wget http://jquery.com/src/jquery-latest.pack.js -O $@ -q || ($(RM) $@; exit 1)
+	@$(download)
+
+htdocs/javascript/jquery.autocomplete.js: DOWNLOAD_SRC = http://jquery-autocomplete.googlecode.com/svn/trunk/jquery.autocomplete.js
+htdocs/javascript/jquery.autocomplete.js:
+	@$(download)
+
+$(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F).txt
+$(JQUERY_PLUGINS_PATHES):
+	@$(download)
 
 ################################################################################
 
-.PHONY: build dist clean wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php
+.PHONY: build dist clean wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http*
 

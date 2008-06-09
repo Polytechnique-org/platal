@@ -259,7 +259,7 @@ function event_change_shortname(&$page, $eid, $old, $new)
     }
     // Quelques vérifications sur l'alias (caractères spéciaux)
     if ($new && !preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $new)) {
-        $page->trig("Le raccourci demandé n'est pas valide.
+        $page->trigError("Le raccourci demandé n'est pas valide.
                     Vérifie qu'il comporte entre 3 et 20 caractères
                     et qu'il ne contient que des lettres non accentuées,
                     des chiffres ou les caractères - et .");
@@ -273,7 +273,7 @@ function event_change_shortname(&$page, $eid, $old, $new)
                             WHERE short_name = {?}',
                            $new);
         if ($res->fetchOneCell() > 0) {
-            $page->trig("Le raccourci demandé est déjà utilisé. Choisis en un autre.");
+            $page->trigError("Le raccourci demandé est déjà utilisé. Choisis en un autre.");
             return $old;
         }
     }

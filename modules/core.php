@@ -37,6 +37,7 @@ class CoreModule extends PLModule
 
             'valid.html'  => $this->make_hook('valid', AUTH_PUBLIC),
             'favicon.ico' => $this->make_hook('favicon', AUTH_PUBLIC),
+            'robots.txt'  => $this->make_hook('robotstxt', AUTH_PUBLIC, 'user', NO_HTTPS),
         );
     }
 
@@ -77,9 +78,23 @@ class CoreModule extends PLModule
         exit;
     }
 
+    function handler_robotstxt(&$page)
+    {
+        global $globals;
+        if (!$globals->core->restricted_platal) {
+            return PL_NOT_FOUND;
+        }
+
+        header('Content-Type: text/plain');
+        echo "User-agent: *\n";
+        echo "Disallow: /\n";
+        exit;
+    }
+
     function handler_purge_cache(&$page)
     {
         require_once 'wiki.inc.php';
+        S::assert_xsrf_token();
 
         $page->clear_compiled_tpl();
         wiki_clear_all_cache();
@@ -113,6 +128,8 @@ class CoreModule extends PLModule
         $page->changeTpl('core/bug.tpl', SIMPLE);
         $page->addJsLink('close_on_esc.js');
         if (Env::has('send') && trim(Env::v('detailed_desc'))) {
+            S::assert_xsrf_token();
+
             $body = wordwrap(Env::v('detailed_desc'), 78) . "\n\n"
                   . "----------------------------\n"
                   . "Page        : " . Env::v('page') . "\n\n"
@@ -128,7 +145,7 @@ class CoreModule extends PLModule
             $mymail->setTxtBody($body);
             $mymail->send();
         } elseif (Env::has('send')) {
-            $page->trig("Merci de remplir une explication du problème rencontré");
+            $page->trigError("Merci de remplir une explication du problème rencontré");
         }
     }
 

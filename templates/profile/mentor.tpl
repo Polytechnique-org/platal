@@ -22,8 +22,14 @@
 
 <p>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$smarty.session.forlife}">fiche référent</a> qui n'est accessible que par les X.
 </p>
+{if (!$expertise)||(!($secteurs|@count))}
+  <p>
+    <strong>Attention : pour figurer dans la base de données des mentors, il faut remplir la
+    dernière case en bas de cette page et avoir au moins un secteur d'activité de prédilection.</strong><br />
+  </p>
+{/if}
 <p>
-  Si tu acceptes que ceux des camarades te contactent afin de te demander
+  Si tu acceptes que des camarades te contactent afin de te demander
   conseil, dans les domaines que tu connais bien, et pour lesquels tu pourrais
   les aider, remplis cette rubrique.
 </p>
@@ -34,7 +40,7 @@
 </p>
 <p>Le mentoring est particulièrement important pour les camarades&nbsp;:</p>
 <ul>
-  <li>encore jeunes, qui sont en train de bâtir leur projet professionnel ;</li>
+  <li>encore jeunes, qui sont en train de bâtir leur projet professionnel&nbsp;;</li>
   <li>ou bien, plus âgés, qui souhaitent réorienter leur carrière.</li>
 </ul>
 
@@ -126,7 +132,7 @@
         <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
         {icon name="flag_red" title="privé"}
       </div>
-      Expérience et expertises que tu acceptes de faire partager
+      Expériences et expertises que tu acceptes de faire partager
     </th>
   </tr>
   <tr>

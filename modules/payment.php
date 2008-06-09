@@ -21,6 +21,7 @@
 
 /* sort en affichant une erreur */
 function cb_erreur($text) {
+    global $globals;
     $mymail = new PlMailer();
     $mymail->addTo($globals->money->email);
     $mymail->setFrom("webmaster@" . $globals->mail->domain);
@@ -33,7 +34,7 @@ function cb_erreur($text) {
 /* sort en affichant une erreur */
 function paypal_erreur($text, $send=true)
 {
-    global $page, $erreur;
+    global $page, $erreur, $globals;
     if ($erreur) return;
     $erreur = $text;
     if (!$send) return;
@@ -45,7 +46,7 @@ function paypal_erreur($text, $send=true)
     $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
     $mymail->send();
 
-    $page->trig($text);
+    $page->trigError($text);
 }
 
 /* http://fr.wikipedia.org/wiki/Formule_de_Luhn */
@@ -127,13 +128,13 @@ class PaymentModule extends PLModule
         $pay  = new Payment($ref);
 
         if($pay->flags->hasflag('old')){
-            $page->trig("La transaction selectionnée est périmée.");
+            $page->trigError("La transaction selectionnée est périmée.");
             $pay = new Payment();
         }
         $val = Env::v('montant') != 0 ? Env::v('montant') : $pay->montant_def;
 
         if (($e = $pay->check($val)) !== true) {
-            $page->trig($e);
+            $page->trigError($e);
         }
 
         if ($op=='submit') {

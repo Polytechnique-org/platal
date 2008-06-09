@@ -76,6 +76,27 @@ p {
     text-align: justify;
 }
 
+.errors {
+    margin-top: 10px;
+    border: 1px solid #f00;
+    background-color: #fcc;
+    width: 98%;
+}
+
+.warnings {
+    margin-top: 10px;
+    border: 1px solid #ed0;
+    background-color: #ffc;
+    width: 98%;
+}
+
+.success {
+    margin-top: 10px;
+    border: 1px solid #0d2;
+    background-color: #cfd;
+    width: 98%;
+}
+
 .erreur {
     font-weight: bold;
     color: #ff0000;
@@ -238,24 +259,28 @@ div.contact-list div.contact {
     color: inherit;
 }
 
-div.grayed {
+div.contact-list div.grayed {
     color: #444444;
+    background: #eee;
     font-style: italic;
 }
 
-div.grayed div.contact {
-    background: #eee;
+div.contact div.photo {
+    float: left;
+}
+
+div.contact div.photo img {
+    width: 60px;
+    margin-right: 4px;
+}
+
+div.contact div.identity {
+    float: left;
+    width: 90%;
 }
 
 div.contact div.nom {
     font-weight: bold;
-    width: 35%;
-    float: left;
-    padding-left: 2px;
-}
-
-div.contact div.appli {
-    float: left;
 }
 
 div.contact div.bits {

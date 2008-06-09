@@ -32,7 +32,7 @@ function getNow() {
     if (yr<1000) yr += 1900;
     hr = dt.getHours();
     mi = dt.getMinutes();
-    
+
     time   = (mi < 10) ? hr +':0'+mi : hr+':'+mi;
     days   = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
     months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
@@ -66,7 +66,7 @@ function addSearchEngine()
     try {
         window.external.AddSearchProvider(searchURI);
     } catch(e) {
-        alert("Impossible d'installer la barre de recherche"); 
+        alert("Impossible d'installer la barre de recherche");
     }
   }
 }
@@ -89,7 +89,7 @@ function attachEvent(obj, evt, f, useCapture) {
         return true;
     } else if (obj.attachEvent) {
         return obj.attachEvent("on"+evt, f);
-    } 
+    }
     return false;
 }
 
@@ -176,7 +176,10 @@ var __goodies_ical_sites = [
      'title': 'Calendrier iCal'},
     {'url_prefix': 'http://www.google.com/calendar/render?cid=',
      'img': 'images/goodies/add-google-calendar.gif',
-     'title': 'Ajouter à Google Calendar'}
+     'title': 'Ajouter à Google Calendar'},
+    {'url_prefix': 'https://www.google.com/calendar/hosted/polytechnique.org/render?cid=',
+     'img': 'images/goodies/add-google-calendar.gif',
+     'title': 'Ajouter à Google Apps / Calendar'}
 ];
 var __goodies_rss_sites = [
     {'url_prefix': '',
@@ -192,7 +195,11 @@ var __goodies_rss_sites = [
     {'url_prefix': 'http://add.my.yahoo.com/content?.intl=fr&url=',
      'img': 'images/goodies/add-yahoo.gif',
      'alt': 'Add to My Yahoo!',
-     'title': 'Ajouter à My Yahoo!'}
+     'title': 'Ajouter à My Yahoo!'},
+    {'url_prefix': 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=',
+     'img': 'images/goodies/add-newsgator.gif',
+     'alt': 'Subscribe in NewsGator Online',
+     'title': 'Ajouter à Newsgator'}
 ];
 
 function __goodies_popupText(url, sites) {
@@ -272,6 +279,84 @@ function auto_links_nodes(nodes) {
 }
 
 // }}}
+
+
+/***************************************************************************
+ * Password check
+ */
+
+// {{{ function checkPassword
+
+function getType(char) {
+    if (char >= 'a' && char <= 'z') {
+        return 1;
+    } else if (char >= 'A' && char <= 'Z') {
+        return 2;
+    } else if (char >= '0' && char <= '9') {
+        return 3;
+    } else {
+        return 4;
+    }
+}
+
+function checkPassword(box) {
+    var prev = 0;
+    var prop = 0;
+    var pass = box.value;
+    var types = Array(0, 0, 0, 0, 0);
+    var firstType = true;
+    for (i = 0 ; i < pass.length ; ++i) {
+        type = getType(pass.charAt(i));
+        if (prev != 0 && prev != type) {
+            prop += 5;
+        }
+        prop += i;
+        if (types[type] == 0 && !firstType) {
+            prop += 15;
+        } else {
+            firstType = false;
+        }
+        types[type]++;
+        prev = type;
+    }
+    if (pass.length < 6) {
+        prop *= 0.75;
+    }
+    if (prop > 100) {
+        prop = 100;
+    } else if (prop < 0) {
+        prop = 0;
+    }
+    if (prop >= 60) {
+        color = "#4f4";
+        bgcolor = "#050";
+        ok = true;
+    } else if (prop >= 40) {
+        color = "#ff4";
+        bgcolor = "#750";
+        ok = true;
+    } else {
+        color = "#f20";
+        bgcolor = "#700";
+        ok = false;
+    }
+    $("#passwords_measure")
+           .stop()
+           .animate({ width: prop + "%",
+                      backgroundColor: color
+                    }, 750)
+           .parent().stop()
+                    .animate({ backgroundColor: bgcolor }, 750);
+    var submitButton = $(":submit[@name='" + passwordprompt_submit + "']");
+    if (ok && pass.length >= 6) {
+        submitButton.removeAttr("disabled");
+    } else {
+        submitButton.attr("disabled", "disabled");
+    }
+}
+
+// }}}
+
 
 /***************************************************************************
  * The real OnLoad

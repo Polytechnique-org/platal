@@ -39,13 +39,14 @@ Ton adresse électronique à vie <strong>{$smarty.session.forlife}@{#globals.mai
 {if $mdpok}
 
 <p class="erreur">
-ton mot de passe a bien été mis à jour !
+Ton mot de passe a bien été mis à jour !
 </p>
 
 {else}
 
 <p>
-Tu as reçu un mot de passe par défaut, si tu souhaites en changer, tu peux le faire ici&nbsp;:
+  Tu as reçu un mot de passe par défaut, si tu souhaites en changer, tu peux le faire ici&nbsp;:<br />
+  <strong>Remarque&nbsp;:</strong> il doit faire au moins <strong>6 caractères</strong> quelconques et au plus 10 caractères.
 </p>
 
 <form action="register/success" method="post" id="changepass">
@@ -70,6 +71,10 @@ Tu as reçu un mot de passe par défaut, si tu souhaites en changer, tu peux le 
       <td>
         <input type="password" size="10" maxlength="10" name="nouveau2" />
       </td>
+    </tr>
+    <tr>
+      <td class="titre">Sécurité</td>
+      <td>{checkpasswd prompt="nouveau" submit="submitn"}</td>
     </tr>
     <tr>
       <td colspan="2" class="center">
@@ -162,7 +167,7 @@ il te faudra contacter l'équipe support.
   <p class="smaller">* décoche les cases si tu ne souhaites pas être inscrit à la liste de diffusion correspondante</p>
 
   <div class="center">
-    <input type="submit" value="Rejoindre les X sur le Net !" class="erreur" />
+    <input type="submit" value="Rejoindre les X sur le Net !" class="erreur" style="background-color: #fff" />
   </div>
 </form>
 

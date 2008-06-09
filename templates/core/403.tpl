@@ -20,6 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1 class="erreur">Tu n'as pas les permissions nécessaires pour accéder à cette page</h1>
+<h1 class="erreur">Tu n'as pas les permissions nécessaires pour accéder à cette page.</h1>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

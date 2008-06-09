@@ -25,6 +25,7 @@
 <h1>Suppression du groupe {$nom}</h1>
 
 <form action="admin?del={$smarty.request.del}" method="post">
+  {xsrf_token_field}
   <div class="center">
     <input type="submit" name="del" value="Oui, je veux supprimer ce groupe" />
   </div>
@@ -35,6 +36,7 @@
 <h1>Ajouter un groupe</h1>
 
 <form action="admin" method="post">
+  {xsrf_token_field}
   <p class="descr">
   Pour ajouter un groupe, choisir ici le diminutif qu'il va utiliser,
   tu seras ensuite redirigé vers une page te permettant d'éditer le groupe&nbsp;:

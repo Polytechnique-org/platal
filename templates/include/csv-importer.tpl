@@ -61,6 +61,7 @@
 {/literal}
 //]]></script>
 <form action="{$csv_path}" method="post" id="csv_form">
+  {xsrf_token_field}
   <div class="center" style="padding-bottom: 1em">
     Import d'un CSV&nbsp;:
     {if $csv_page eq 'source'}

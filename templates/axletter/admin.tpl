@@ -23,6 +23,7 @@
 <h1>Droits d'administration des lettres de l'AX</h1>
 
 <form action="admin/axletter" method="post">
+  {xsrf_token_field}
   <table class="tinybicol">
     <tr>
       <th>Nom</th>
@@ -37,7 +38,7 @@
     {iterate item=a from=$admins}
     <tr class="{cycle values="impair, pair"}">
       <td><a href="profile/{$a.forlife}" class="popup2">{$a.prenom} {$a.nom} (X{$a.promo}){icon name=user_suit}</a></td>
-      <td class="right"><a href="admin/axletter/del/{$a.forlife}">{icon name=cross title="Retirer"}</a></td>
+      <td class="right"><a href="admin/axletter/del/{$a.forlife}?token={xsrf_token}">{icon name=cross title="Retirer"}</a></td>
     </tr>
     {/iterate}
   </table>
