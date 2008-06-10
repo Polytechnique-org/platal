@@ -12,7 +12,9 @@ New:
 Bug/Wish:
 
     * Admin:
+        - #770: Keeps hidden validation preferences in the database        -JAC
         - #811: Improve interface to add medal ranks and avoid losing data -ALK
+        - #830: Adds admnistration pages for sub-sectors and functions     -JAC
 
     * Carnet:
         - #831: Don't be notified of birthdays of the previous day         -FRU

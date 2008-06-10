@@ -944,6 +944,8 @@ class AdminModule extends PLModule
         $page->assign('categories', $categories = explode(',', str_replace("'", '', substr($a['Type'], 5, -1))));
 
         $hidden = array();
+        $res = XDB::query('SELECT hidden_requests FROM requests_hidden WHERE user_id = {?}', S::v('uid'));
+        $hide_requests = $res->fetchOneCell();
         if (Post::has('hide')) {
             $hide = array();
             foreach ($categories as $cat)
@@ -951,9 +953,11 @@ class AdminModule extends PLModule
                     $hidden[$cat] = 1;
                     $hide[] = $cat;
                 }
-            setcookie('hide_requests', join(',',$hide), time()+(count($hide)?25920000:(-3600)), '/', '', 0);
-        } elseif (Env::has('hide_requests'))  {
-            foreach (explode(',',Env::v('hide_requests')) as $hide_type)
+            $hide_requests = join(',', $hide);
+            XDB::query('REPLACE INTO requests_hidden (user_id, hidden_requests) VALUES({?}, {?})',
+                       S::v('uid'), $hide_requests);
+        } elseif ($hide_requests)  {
+            foreach (explode(',', $hide_requests) as $hide_type)
                 $hidden[$hide_type] = true;
         }
         $page->assign('hide_requests', $hidden);
