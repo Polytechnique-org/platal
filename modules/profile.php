@@ -59,6 +59,7 @@ class ProfileModule extends PLModule
             'admin/formations' => $this->make_hook('admin_formations', AUTH_MDP, 'admin'),
             'admin/sections'  => $this->make_hook('admin_sections', AUTH_MDP, 'admin'),
             'admin/secteurs'  => $this->make_hook('admin_secteurs', AUTH_MDP, 'admin'),
+            'admin/networking' => $this->make_hook('admin_networking', AUTH_MDP, 'admin'),
             'admin/trombino'   => $this->make_hook('admin_trombino', AUTH_MDP, 'admin'),
             'admin/ss_secteurs'  => $this->make_hook('admin_ss_secteurs', AUTH_MDP, 'admin'),
             'admin/fonctions'  => $this->make_hook('admin_fonctions', AUTH_MDP, 'admin'),
@@ -802,6 +803,15 @@ class ProfileModule extends PLModule
         $page->assign('title', 'Gestion des secteurs');
         $table_editor = new PLTableEditor('admin/secteurs', 'emploi_secteur', 'id', true);
         $table_editor->describe('label', 'intitulé', true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_admin_networking(&$page, $action = 'list', $id = null) {
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - Networking');
+        $page->assign('title', 'Gestion des types de networking');
+        $table_editor = new PLTableEditor('admin/networking', 'profile_networking_enum', 'network_type');
+        $table_editor->describe('name', 'intitulé', true);
+        $table_editor->describe('icon', 'nom de l\'icône', false);
+        $table_editor->describe('filter', 'nom du filtre à appliquer', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_medals(&$page, $action = 'list', $id = null) {

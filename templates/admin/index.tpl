@@ -106,6 +106,8 @@
       <a href="admin/ss_secteurs">Sous-secteurs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/fonctions">Fonctions</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/networking">Networking</a>
     </td>
   </tr>
   <tr class="pair">
