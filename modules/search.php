@@ -168,6 +168,11 @@ class SearchModule extends PLModule
         $page->assign('advanced',1);
         $page->addJsLink('jquery.autocomplete.js');
 
+        $res = XDB::iterator("SELECT  nw.network_type AS type, nw.name
+                                FROM  profile_networking_enum AS nw
+                            ORDER BY  name ;");
+        $page->assign('network_list', $res->fetchAllAssoc());
+
         if (!Env::has('rechercher') && $action != 'geoloc') {
             $this->form_prepare();
         } else {

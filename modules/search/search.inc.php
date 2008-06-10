@@ -73,13 +73,20 @@ function advancedSearchFromInput()
 
     $freeField       = new RefSField('free',array('q.profile_freetext'),'','','',false);
 
+    $nwAddressField  = new RefSField('networking_address', array('nw.address'), 'profile_networking', 'nw', 'nw.uid=u.user_id', false);
+    if (Env::v('networking_address') == '') {
+        $nwTypeField     = new RefSField('networking_type', array('nwe.name'), array('profile_networking', 'profile_networking_enum'), array('nw', 'nwe'), array('nw.uid = u.user_id', 'nwe.network_type = nw.network_type'), true);
+    } else {
+        $nwTypeField     = new RefSField('networking_type', array('nwe.name'), 'profile_networking_enum', 'nwe', 'nwe.network_type = nw.network_type', true);
+    }
     return array(
                 $nameField, $firstnameField, $nicknameField, $promo1Field,
-                $promo2Field, $womanField, $subscriberField, $aliveField, $referentField,
+                $promo2Field, $womanField, $subscriberField, $aliveField,
                 $townField, $countryField, $regionField, $mapField, $entrepriseField,
                 $posteField, $secteurField, $cvField, $natField, $binetField,
                 $groupexField, $sectionField, $schoolField, $diplomaField,
-                $freeField, $fonctionField);
+                $freeField, $fonctionField, $nwAddressField, $nwTypeField,
+                $referentField);
 }
 
 // }}}

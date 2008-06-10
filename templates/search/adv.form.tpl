@@ -404,6 +404,34 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
       <td>Commentaire contient</td>
       <td><input type="text" name="free" size="32" value="{$smarty.request.free}" /></td>
     </tr>
+    <tr>
+      <td colspan="2">Messageries, networking et sites webs</td>
+    </tr>
+    <tr>
+      <td>
+        <span style="margin-left:2em">Adresse</span>
+      </td>
+      <td>
+        <input type="text" name="networking_address" size="32" value="{$smarty.request.networking_address}" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <span style="margin-left:2em">Type</span>
+      </td>
+      <td>
+        <select name="networking_type">
+          <option value="" {if $smarty.request.networking_type eq ""} selected="selected"{/if}>
+            Tout
+          </option>
+        {foreach from=$network_list item=network}
+          <option value="{$network.name}" {if $smarty.request.networking_type eq $network.name} selected="selected" {/if}>
+            {$network.name}
+          </option>
+        {/foreach}
+        </select>
+      </td>
+    </tr>
         {if $smarty.session.auth ge AUTH_COOKIE}
     <tr>
       <td colspan="2">
