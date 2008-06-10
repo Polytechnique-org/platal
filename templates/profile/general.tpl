@@ -327,8 +327,7 @@ pour les premières lettres : <strong>Alfred&nbsp;de&nbsp;Musset</strong>" width
           <input type="checkbox" name="freetext_pub" {if $freetext_pub eq 'public'}checked="checked"{/if} />
           {icon name="flag_green" title="site public"}
         </span>&nbsp;
-        <span class="titre">Complément libre</span><br />
-        <span class="comm">Commentaire ? ICQ ? etc...</span>
+        <span class="titre">Commentaire</span>
       </div>
       <div class="smaller" style="margin-top: 30px">
         <a href="wiki_help/notitle" class="popup3">

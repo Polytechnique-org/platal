@@ -70,8 +70,6 @@ function diff_user_details(&$a, &$b, $view = 'private') { // compute $c = $a - $
     // don't modify mobile if you don't have the right
     if (isset($b['mobile_pub']) && !has_user_right($b['mobile_pub'], $view) && isset($c['mobile']))
         unset($c['mobile']);
-    if (isset($b['web_pub']) && !has_user_right($b['web_pub'], $view) && isset($c['web']))
-        unset($c['web']);
     if (isset($b['freetext_pub']) && !has_user_right($b['freetext_pub'], $view) && isset($c['freetext']))
         unset($c['freetext']);
     if (!count($c))

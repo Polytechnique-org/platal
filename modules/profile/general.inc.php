@@ -191,7 +191,6 @@ class ProfileGeneral extends ProfilePage
                                = new ProfileNom();
         $this->settings['naissance'] = new ProfileDate();
         $this->settings['mobile_pub']
-                                  = $this->settings['web_pub']
                                   = $this->settings['freetext_pub']
                                   = $this->settings['photo_pub']
                                   = new ProfilePub();
@@ -206,12 +205,11 @@ class ProfileGeneral extends ProfilePage
         $this->settings['synchro_ax']
                                   = new ProfileBool();
         $this->settings['mobile'] = new ProfileTel();
-        $this->settings['web'] = new ProfileWeb();
         $this->settings['networking'] = new ProfileNetworking();
         $this->settings['appli1']
                                   = $this->settings['appli2']
                                   = new ProfileAppli();
-        $this->watched= array('nom' => true, 'freetext' => true, 'mobile' => true, 'web' => true,
+        $this->watched= array('nom' => true, 'freetext' => true, 'mobile' => true, 'networking' => true,
                        'appli1' => true, 'appli2' => true, 'nationalite' => true, 'nick' => true);
     }
 
@@ -220,7 +218,6 @@ class ProfileGeneral extends ProfilePage
         // Checkout all data...
         $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite, u.naissance,
                                    q.profile_mobile as mobile, q.profile_mobile_pub as mobile_pub,
-                                   q.profile_web as web, q.profile_web_pub as web_pub,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
                                    q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.matricule_ax,
                                    IF(a1.aid IS NULL, -1, a1.aid) as appli_id1, a1.type as appli_type1,
@@ -278,15 +275,14 @@ class ProfileGeneral extends ProfilePage
                          S::v('uid'));
         }
         if ($this->changed['nick'] || $this->changed['mobile'] || $this->changed['mobile_pub']
-            || $this->changed['web'] || $this->changed['web_pub'] || $this->changed['freetext']
+            || $this->changed['freetext']
             || $this->changed['freetext_pub'] || $this->changed['synchro_ax']) {
             XDB::execute("UPDATE  auth_user_quick
                              SET  profile_nick= {?}, profile_mobile={?}, profile_mobile_pub={?}, 
-                                  profile_web={?}, profile_web_pub={?}, profile_freetext={?}, 
+                                  profile_freetext={?},
                                   profile_freetext_pub={?}, profile_from_ax = {?} 
                            WHERE  user_id = {?}", 
                          $this->values['nick'], $this->values['mobile'], $this->values['mobile_pub'],
-                         $this->values['web'], $this->values['web_pub'],
                          $this->values['freetext'], $this->values['freetext_pub'],
                          $this->values['synchro_ax'], S::v('uid'));
         }

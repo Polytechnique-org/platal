@@ -69,9 +69,11 @@ ADR;TYPE=home{if $adr.courier},postal{/if}:{format_adr adr=$adr}
 {/if}
 {/foreach}
 {/foreach}
-{if $vcard.web}
-URL:{$vcard.web}
+{foreach from=$vcard.networking item=nw}
+{if $nw.filter eq 'web'}
+URL:{$nw.address}
 {/if}
+{/foreach}
 {if strlen(trim($vcard.freetext)) == 0}
 NOTE:(X{$vcard.promo})
 {else}
