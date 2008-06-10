@@ -35,6 +35,7 @@ class ProfileModule extends PLModule
             'profile/ajax/address' => $this->make_hook('ajax_address', AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/tel'     => $this->make_hook('ajax_tel',     AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/medal'   => $this->make_hook('ajax_medal',   AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/networking'   => $this->make_hook('networking',   AUTH_PUBLIC),
             'profile/ajax/job'     => $this->make_hook('ajax_job',     AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/secteur' => $this->make_hook('ajax_secteur', AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'   => $this->make_hook('ajax_skill',   AUTH_COOKIE, 'user', NO_AUTH),
@@ -119,6 +120,19 @@ class ProfileModule extends PLModule
         $img  = $thumb ?
             dirname(__FILE__).'/../htdocs/images/medals/thumb/' . $res->fetchOneCell() :
             dirname(__FILE__).'/../htdocs/images/medals/' . $res->fetchOneCell();
+        $type = mime_content_type($img);
+        header("Content-Type: $type");
+        echo file_get_contents($img);
+        exit;
+    }
+
+    function handler_networking(&$page, $mid)
+    {
+        $res = XDB::query("SELECT  icon
+                             FROM  profile_networking_enum
+                            WHERE  network_type = {?}",
+                          $mid);
+        $img  = dirname(__FILE__) . '/../htdocs/images/networking/' . $res->fetchOneCell();
         $type = mime_content_type($img);
         header("Content-Type: $type");
         echo file_get_contents($img);
