@@ -50,6 +50,18 @@ function chgMainWinLoc(strPage)
       {if $x.gpxs_join}<div><em class="intitule">Groupe{if count($x.gpxs) > 1}s{/if} et institution{if count($x.gpxs) > 1}s{/if} X&nbsp;: </em>
       <span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
     {/if}
+    {if $x.networking}
+      <h2>Messageries, networking et sites web&nbsp;:</h2>
+      {foreach from=$x.networking item=network}
+        <img style="width: auto; padding: 0" src="profile/networking/{$network.type}" alt="{$network.name}" title="{$network.name}"/>
+        {if $network.filter == 'web'}
+          <a href="{$network.address}">{$network.address}</a>
+        {else}
+          {$network.address}
+        {/if}
+        <br/>
+      {/foreach}
+    {/if}
     {if $x.freetext}
     <h2>Commentaires&nbsp;:</h2>
     <span>{$x.freetext|miniwiki|smarty:nodefaults}</span>
@@ -62,7 +74,6 @@ function chgMainWinLoc(strPage)
       {if $logged}
       {if $x.nickname} (alias {$x.nickname}){/if}
       {/if}
-      {if $x.web}&nbsp;<a href="{$x.web}">{icon name="world_go" title="Site Web"}</a>{/if}
       {if $logged}
       &nbsp;{if !$x.dcd}<a href="vcard/{$x.forlife}.vcf">{*
         *}{icon name=vcard title="Afficher la carte de visite"}</a>{/if}

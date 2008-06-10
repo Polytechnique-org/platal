@@ -107,6 +107,79 @@ class ProfileAppli implements ProfileSetting
     }
 }
 
+class ProfileNetworking implements ProfileSetting
+{
+    private $email;
+    private $pub;
+    private $web;
+
+    public function __construct()
+    {
+        $this->email  = new ProfileEmail();
+        $this->pub    = new ProfilePub();
+        $this->web    = new ProfileWeb();
+    }
+
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        if (is_null($value)) {
+            $value = array();
+            $res = XDB::iterator("SELECT  n.address, n.network_type AS type, n.pub, m.name
+                                    FROM  profile_networking AS n
+                              INNER JOIN  profile_networking_enum AS m ON (n.network_type = m.network_type)
+                                   WHERE  n.uid = {?}",
+                                 S::i('uid'));
+            while($network = $res->next()) {
+                $value[] = $network;
+            }
+        }
+        if (!is_array($value)) {
+            $value = array();
+        }
+        $res = XDB::iterator("SELECT filter, network_type AS type
+                                FROM profile_networking_enum;");
+        $filters = array();
+        while($filter = $res->next()) {
+            $filters[$filter['type']] = $filter['filter'];
+        }
+        $success = true;
+        foreach($value as $i=>&$network) {
+            if(!isset($network['pub'])) {
+                $network['pub'] = 'private';
+            }
+            $network['error'] = false;
+            $network['pub'] = $this->pub->value($page, 'pub', $network['pub'], $s);
+            $s = true;
+            if ($filters[$network['type']] == 'web') {
+                $network['address'] = $this->web->value($page, 'address', $network['address'], $s);
+            } elseif ($filters[$network['type']] == 'email') {
+                $network['address'] = $this->email->value($page, 'address', $network['address'], $s);
+            }
+            if (!$s) {
+                $success = false;
+                $network['error'] = true;
+            }
+        }
+        return $value;
+    }
+
+    public function save(ProfilePage &$page, $field, $value)
+    {
+        XDB::execute("DELETE FROM profile_networking
+                            WHERE uid = {?}",
+                     S::i('uid'));
+        if (!count($value)) {
+            return;
+        }
+        $insert = array();
+        foreach ($value as $id=>$network) {
+            XDB::execute("INSERT INTO  profile_networking (uid, nwid, network_type, address, pub)
+                               VALUES  ({?}, {?}, {?}, {?}, {?})",
+                         S::i('uid'), $id, $network['type'], $network['address'], $network['pub']);
+        }
+    }
+}
+
 class ProfileGeneral extends ProfilePage
 {
     protected $pg_template = 'profile/general.tpl';
@@ -134,6 +207,7 @@ class ProfileGeneral extends ProfilePage
                                   = new ProfileBool();
         $this->settings['mobile'] = new ProfileTel();
         $this->settings['web'] = new ProfileWeb();
+        $this->settings['networking'] = new ProfileNetworking();
         $this->settings['appli1']
                                   = $this->settings['appli2']
                                   = new ProfileAppli();
@@ -245,6 +319,11 @@ class ProfileGeneral extends ProfilePage
     public function _prepare(PlatalPage &$page, $id)
     {
         require_once "applis.func.inc.php";
+
+        $res = XDB::iterator("SELECT nw.network_type AS type, nw.name
+                                FROM profile_networking_enum AS nw
+                            ORDER BY name");
+        $page->assign('network_list', $res->fetchAllAssoc());
     }
 }
 

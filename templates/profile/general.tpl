@@ -297,18 +297,29 @@ pour les premières lettres : <strong>Alfred&nbsp;de&nbsp;Musset</strong>" width
     </td>
   </tr>
   <tr>
-    <td>
-      <span class="flags">
-        <input type="checkbox" name="web_pub" {if $web_pub eq 'public'}checked="checked"{/if} />
-        {icon name="flag_green" title="site public"}
-      </span>&nbsp;
-      <span class="titre">Page web Perso</span>
-    </td>
-    <td>
-      <input type="text" size="35" maxlength="95" name="web"
-             {if $errors.web}class="error"{/if} value="{$web}" />
+    <td colspan="2">
+      <span class="titre">Messageries, networking et sites web</span>
     </td>
   </tr>
+  <tr id="networking">
+    <td>
+      <span class="titre" style="margin-left:1em;">Type à ajouter</span>
+    </td>
+    <td>
+      <select name="nw_type" onchange="updateNetworking()">
+        <option value=""></option>
+        {foreach from=$network_list item=network}
+          <option value="{$network.type}">{$network.name}</option>
+        {/foreach}
+      </select>
+      <span id="nw_add" style="display: none">
+        <a href="javascript:addNetworking();">{icon name=add title="Ajouter cette adresse"}</a>
+      </span>
+    </td>
+  </tr>
+  {foreach from=$networking item=network key=id}
+    {include file="profile/general.networking.tpl" nw=$network i=$id}
+  {/foreach}
   <tr class="pair">
     <td>
       <div>

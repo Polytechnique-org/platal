@@ -110,6 +110,59 @@ function removeSearchName(i)
   }
 }
 
+function addNetworking()
+{
+    var i = 0;
+    var nw = 'networking_';
+    while (document.getElementById(nw + i) != null) {
+        i++;
+    }
+    var cb   = document.forms.prof_annu['nw_type'];
+    var id   = cb.value;
+    var text = cb.options[cb.selectedIndex].text;
+    var html = '<tr id="networking_' + i + '">'
+        + '  <td>'
+        + '    <span class="flags">'
+        + '      <input type="checkbox" name="networking[' + i + '][pub]"/>'
+        + '      <img src="images/icons/flag_green.gif" alt="site public" title="site public">'
+        + '    </span>&nbsp;'
+        + '    <input type="hidden" name="networking[' + i + '][type]" value="' + id + '"/>'
+        + '    <input type="hidden" name="networking[' + i + '][name]" value="' + text + '"/>'
+        + '    <img src="profile/networking/' + id + '" alt="' + text + '" title="' + text + '" />'
+        + '    <span class="title">'
+        + text
+        + '    </span>'
+        + '  </td>'
+        + '  <td>'
+        + '    <input type="text" name="networking[' + i + '][address]" value="" size="30"/>'
+        + '    <a href="javascript:removeNetworking(' + i + ')">'
+        + '      <img src="images/icons/cross.gif" alt="cross" title="Supprimer cet élément"/>'
+        + '    </a>'
+        + '  </td>'
+        + '</tr>';
+
+    if (i == 0) {
+        $('#networking').after(html);
+    } else {
+        $('#networking_'+(i-1)).after(html);
+    }
+}
+
+function removeNetworking(id)
+{
+    $('#networking_' + id).remove();
+}
+
+function updateNetworking()
+{
+    var val = document.forms.prof_annu['nw_type'].value;
+    if (val == '') {
+        document.getElementById('nw_add').style.display = 'none';
+    } else {
+        document.getElementById('nw_add').style.display = '';
+    }
+}
+
 // Addresses
 
 function removeObject(id, pref)
