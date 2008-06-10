@@ -354,7 +354,7 @@ div.long td.rt { width: 75%; }
 }
 
 .wizard .wiz_header .wiz_tab {
-    background; url('../images/skins/wiz_normal.png') #aaa top left repeat-x;
+    background: url('../images/skins/wiz_normal.png') #aaa top left repeat-x;
     height: 100%;
     text-align: center;
     font-size: 75%;
