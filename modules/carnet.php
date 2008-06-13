@@ -236,7 +236,7 @@ class CarnetModule extends PLModule
 
             case 'ajouter':
                 require_once('user.func.inc.php');
-                if (($login = get_user_login($user)) !== false) {
+                if (($login = get_user_forlife($user)) !== false) {
                     if (XDB::execute(
                                 'REPLACE INTO  contacts (uid, contact)
                                        SELECT  {?}, id
