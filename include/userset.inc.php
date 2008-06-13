@@ -231,7 +231,7 @@ class MentorView extends MultipageView
     public function fields()
     {
         return "m.uid, u.prenom, u.nom, u.promo,
-                a.alias AS bestalias, m.expertise, mp.pid,
+                a.alias AS forlife, m.expertise, mp.pid,
                 ms.secteur, ms.ss_secteur";
     }
 
