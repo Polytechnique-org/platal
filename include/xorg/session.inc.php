@@ -245,7 +245,7 @@ function start_connexion ($uid, $identified)
                 q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
                 FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version,
                 nd.display AS display_name, nd.yourself AS yourself_name,
-                nd.first_name AS prenom, nd.last_name AS nom
+                nd.firstname AS prenom, nd.lastname AS nom
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
     INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
