@@ -65,7 +65,7 @@ class XorgSession
         // ou passwordpromptscreenlogged.tpl
         if (S::has('suid')) {
             $suid = S::v('suid');
-            $login = $uname = $suid['forlife'];
+            $login = $uname = $suid['hruid'];
             $redirect = false;
         } else {
             $uname = Env::v('username');
@@ -241,13 +241,13 @@ function start_connexion ($uid, $identified)
     $res  = XDB::query("
         SELECT  u.user_id AS uid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
                 matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
-                a.alias AS forlife, a2.alias AS bestalias,
+                u.hruid, a.alias AS forlife, a2.alias AS bestalias,
                 q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
                 FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
-    INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
-    INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
+    INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type = 'a_vie')
+    INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias', a2.flags))
          WHERE  u.user_id = {?} AND u.perms IN('admin','user')", $uid);
     $sess = $res->fetchOneAssoc();
     $res = XDB::query("SELECT  UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
@@ -262,7 +262,7 @@ function start_connexion ($uid, $identified)
 
     if ($suid) {
         $logger = new CoreLogger($uid, $suid['uid']);
-        $logger->log("suid_start", S::v('forlife')." by {$suid['uid']}");
+        $logger->log("suid_start", S::v('hruid') . " by {$suid['uid']}");
         $sess['suid'] = $suid;
     } else {
         $logger = S::v('log', new CoreLogger($uid));
