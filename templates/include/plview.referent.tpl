@@ -31,9 +31,9 @@
     </div> 
     <div class="bits" style="width: 40%;"> 
       <span class='smaller'> 
-      <a href="profile/{$p.bestalias}" class="popup2"> 
+      <a href="profile/{$p.forlife}" class="popup2">
         {icon name=user_suit title="Voir sa fiche"}</a> - 
-        <a href="referent/{$p.bestalias}" class="popup2">Voir sa fiche référent</a> 
+        <a href="referent/{$p.forlife}" class="popup2">Voir sa fiche référent</a>
       </span> 
     </div> 
     <div class="long"> 
