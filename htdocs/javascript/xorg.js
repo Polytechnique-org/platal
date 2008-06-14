@@ -160,7 +160,7 @@ function popWin(theNode,w,h) {
 function goodiesPopup(node) {
     if (node.href.indexOf('ical') > -1) {
         __goodies_popup(node, __goodies_ical_sites, 'Calendrier iCal');
-    } else if (node.href.indexOf('rss') > -1 && (node.href.indexOf('xml') > -1 || node.href.indexOf('hash'))) {
+    } else if (node.href.indexOf('rss') > -1 && node.href.indexOf('prefs/rss') < 0 &&  (node.href.indexOf('xml') > -1 || node.href.indexOf('hash'))) {
         __goodies_popup(node, __goodies_rss_sites, 'Fil rss');
     }
 }
