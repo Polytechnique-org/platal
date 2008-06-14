@@ -55,7 +55,7 @@
     </td>
     <td>
       {if $tooltip_name}<span title="{$tooltip_name}" style="border-bottom: 1px dashed black;">{$display_name}</span>{else}{$display_name}{/if}
-      <a href="profile/edit#names_advanced" onclick="$('#names_advanced').show('normal', {literal}function(){document.location = document.location + '#names_advanced';}{/literal});return false">
+      <a href="profile/edit#names_advanced" onclick="$('#names_advanced').show();$(this).hide();document.location = document.location + '#names_advanced';return false">
         {icon name="page_edit" title="Plus de détail"}
       </a>
     </td>
@@ -129,68 +129,54 @@
       Noms
     </th>
   </tr>
-  <tr class="impair" {popup caption="Affichage courant de ton nom" text="Ceci
-est le nom qui s'affichera partout sur le site quand ton nom est mentionné dans
-une liste, en haut de ta fiche ou lorsque tu proposes une annonce. On utilise
-généralement le prénom usuel suivi du nom usuel avec des majuscules seulement
-pour les premières lettres : <strong>Alfred&nbsp;de&nbsp;Musset</strong>" width="400"}>
+  <tr class="impair">
     <td>
       <span class="flags">
         <input type="checkbox" checked="checked" disabled="disabled" />
         {icon name="flag_green" title="site public"}
       </span>&nbsp;
       <span class="titre">Affichage courant de ton nom</span>
+      <a class="popup3" href="Xorg/Profil#name_displayed">{icon name="information" title="aide"}</a>
     </td>
     <td>
       <input type="text" name="display_name" value="{$display_name}" size="40"/>
     </td>
   </tr>
-  <tr class="impair" {popup caption="Explication du nom" text="Tu peux rajouter une
-  brêve explication de ton nom si par exemple il arrive qu'on confonde ton prénom
-  et ton nom, ou bien que vous êtes deux de la même promo à porter le même nom.
-  <strong>Prénom&nbsp;:&nbsp;Martin&nbsp;-&nbsp;Nom&nbsp;:&nbsp;Bernard</strong>" width="400"}>
+  <tr class="impair">
     <td>
       <span class="titre">explication</span>
+      <a class="popup3" href="Xorg/Profil#name_tooltip">{icon name="information" title="aide"}</a>
     </td>
     <td>
       <input type="text" name="tooltip_name" value="{$tooltip_name}" size="40"/>
     </td>
   </tr>
-  <tr class="impair" {popup caption="Rangement du nom" text="Dans une liste d'anciens
- ton nom sera rangé selon l'ordre alphabétique grâce à ce champs. On utilise
- généralement le nom (sans particule) suivi d'une virgule et du prénom : <strong>
- Dupont,&nbsp;Georges</strong>" width="400"}>
+  <tr class="impair">
     <td>
       <span class="titre">ranger ce nom à</span>
+      <a class="popup3" href="Xorg/Profil#name_order">{icon name="information" title="aide"}</a>
     </td>
     <td>
       <input type="text" name="sort_name" value="{$sort_name}" size="40"/>
     </td>
   </tr>
-  <tr class="impair" {popup caption="Comment doit-on t'appeler ?" text="Lorsque
-  nous t'envoyons un e-mail, nous nous adressons à toi par ton prénom. Le champs
-  suivant permet de changer cela. C'est surtout utile lorsque les e-mails sont
-  envoyés à une tierce personne (veuf ou veuve par exemple)" width="400"}>
+  <tr class="impair">
     <td>
       <span class="flags">
         <input type="checkbox" checked="checked" disabled="disabled" />
         {icon name="flag_red" title="privé"}
       </span>&nbsp;
       <span class="titre">Comment on doit t'appeller</span>
-      <div class="smaller">dans les mails que nous t'envoyons</div>
+      <a class="popup3" href="Xorg/Profil#name_yourself">{icon name="information" title="aide"}</a>
     </td>
     <td>
       <input type="text" name="yourself" value="{$yourself}" size="40"/>
     </td>
   </tr>
-  <tr class="impair" {popup caption="Noms de recherche" text="Tu peux ajouter ici
-  des noms pour apparaître dans les recherches. Tu peux par exemple ajouter le
-  nom que tu portais à l'école si tu as changé depuis ou bien un nom de scène, un
-  surnom ou encore le nom de ton conjoint. Les recherches ne fonctionneront que
-  sur la partie privée du site sauf si tu coches la case verte." width="400"}>
+  <tr class="impair">
     <td colspan="2">
-      <span class="titre">Recherche</span>
-      <span class="smaller">, ta fiche apparaît quand on cherche un de ces noms</span>
+      <span class="titre">Recherche</span><span class="smaller">, ta fiche apparaît quand on cherche un de ces noms</span>
+      <a class="popup3" href="Xorg/Profil#name_search">{icon name="information" title="aide"}</a>
       {iterate from=$search_names item="sn"}
       <div id="search_name_{$sn.sn_id}" style="padding:2px" class="center">
         {include file="profile/general.searchname.tpl" i=$sn.sn_id sn=$sn}
