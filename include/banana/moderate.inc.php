@@ -25,7 +25,7 @@ require_once 'banana/hooks.inc.php';
 
 function hook_checkcancel($_headers)
 {
-    return ($_headers['x-org-id'] == S::v('forlife') or S::has_perms());
+    return ($_headers['x-org-id'] == S::v('hruid') or S::has_perms());
 }
 
 function hook_makeLink($params)
@@ -57,7 +57,7 @@ class ModerationBanana extends Banana
     static public $domain;
     static public $client;
 
-    function __construct($forlife, $params = null)
+    function __construct(User &$user, $params = null)
     {
         global $globals;
         ModerationBanana::$client = $params['client'];

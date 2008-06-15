@@ -89,7 +89,7 @@ class ForumsModule extends PLModule
                  WHERE  uid = {?}", S::v('uid'));
             if (!(list($nom, $mail, $sig, $disp, $maj, $xface) = $req->fetchOneRow())) {
                 $nom   = S::v('prenom').' '.S::v('nom');
-                $mail  = S::v('forlife').'@'.$globals->mail->domain;
+                $mail  = S::user()->forlifeEmail();
                 $sig   = $nom.' ('.S::v('promo').')';
                 $disp  = 0;
                 $maj   = 0;
@@ -140,7 +140,7 @@ class ForumsModule extends PLModule
         $_SESSION = array_merge($row, $_SESSION);
 
         require_once 'banana/forum.inc.php';
-        $banana = new ForumsBanana(S::v('forlife'), array('group' => $group, 'action' => 'rss2'));
+        $banana = new ForumsBanana(S::user(), array('group' => $group, 'action' => 'rss2'));
         $banana->run();
         exit;
     }

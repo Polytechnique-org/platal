@@ -24,22 +24,22 @@ require_once 'banana/hooks.inc.php';
 
 function hook_checkcancel($_headers)
 {
-    return ($_headers['x-org-id'] == S::v('forlife') or S::has_perms());
+    return ($_headers['x-org-id'] == S::v('hruid') or S::has_perms());
 }
 
 class ForumsBanana extends Banana
 {
-    private $forlife;
+    private $user;
 
-    public function __construct($forlife, $params = null)
+    public function __construct(User &$user, $params = null)
     {
-        $this->forlife = $forlife;
+        $this->user = &$user;
 
         global $globals;
         Banana::$msgedit_canattach = false;
         Banana::$spool_root = $globals->banana->spool_root;
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
-        Banana::$nntp_host = 'news://web_'.$forlife
+        Banana::$nntp_host = 'news://web_' . $user->login()
                            . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
         if (S::has_perms()) {
             Banana::$msgshow_mimeparts[] = 'source';
@@ -73,7 +73,7 @@ class ForumsBanana extends Banana
                             WHERE  uid={?}", S::i('uid'));
         if (!(list($nom,$mail,$sig,$disp,$maj) = $req->fetchOneRow())) {
             $nom  = S::v('prenom')." ".S::v('nom');
-            $mail = S::v('forlife')."@" . $globals->mail->domain;
+            $mail = $this->user->forlifeEmail();
             $sig  = $nom." (".S::v('promo').")";
             $disp = 0;
             $maj  = 1;
@@ -131,13 +131,11 @@ class ForumsBanana extends Banana
     public function post($dest, $reply, $subject, $body)
     {
         global $globals;
-        $res = XDB::query('SELECT  nom, prenom, promo, b.alias AS bestalias
+        $res = XDB::query('SELECT  nom, prenom, promo
                              FROM  auth_user_md5 AS u
-                       INNER JOIN  aliases       AS a ON (a.id = u.user_id)
-                       INNER JOIN  aliases       AS b ON (b.id = a.id AND FIND_IN_SET(\'bestalias\', b.flags))
-                            WHERE  a.alias = {?}', $this->forlife);
-        list($nom, $prenom, $promo, $bestalias) = $res->fetchOneRow();
-        Banana::$profile['headers']['From']         = "$prenom $nom ($promo) <$bestalias@{$globals->mail->domain}>";
+                            WHERE  u.user_id = {?}', $this->user->id());
+        list($nom, $prenom, $promo) = $res->fetchOneRow();
+        Banana::$profile['headers']['From']         = "$prenom $nom ($promo) <{$this->user->bestEmail()}>";
         Banana::$profile['headers']['Organization'] = make_Organization();
         return parent::post($dest, $reply, $subject, $body);
     }
@@ -189,7 +187,7 @@ class ForumsBanana extends Banana
                  WHERE  uid = {?}", S::v('uid'));
             if (!(list($nom, $mail, $sig, $disp, $maj, $xface) = $req->fetchOneRow())) {
                 $nom   = S::v('prenom').' '.S::v('nom');
-                $mail  = S::v('forlife').'@'.$globals->mail->domain;
+                $mail  = $this->user->forlifeEmail();
                 $sig   = $nom.' ('.S::v('promo').')';
                 $disp  = 0;
                 $maj   = 0;

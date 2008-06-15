@@ -147,10 +147,8 @@ class EvtReq extends Validate
             }
             global $globals;
             if ($globals->banana->event_forum) {
-                require_once 'user.func.inc.php';
-                $forlife = get_user_forlife($this->uid);
                 require_once 'banana/forum.inc.php';
-                $banana = new ForumsBanana($forlife);
+                $banana = new ForumsBanana(User::getSilent($this->uid));
                 $post = $banana->post($globals->banana->event_forum,
                                       $globals->banana->event_reply,
                                       $this->titre, MiniWiki::wikiToText($this->texte, false, 0, 80));

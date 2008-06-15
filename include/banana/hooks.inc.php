@@ -76,7 +76,7 @@ function hook_platalRSS($group)
     } else {
         $group = '';
     }
-    return '/rss/' . $group . S::v('forlife') . '/' . S::v('core_rss_hash') . '/rss.xml';
+    return '/rss/' . $group . S::v('hruid') . '/' . S::v('core_rss_hash') . '/rss.xml';
 }
 
 function hook_platalMessageLink($params)
@@ -323,7 +323,7 @@ class BananaHandler
 
 function run_banana(&$page, $class, array $args)
 {
-    $banana = new $class(S::v('forlife'), $args);
+    $banana = new $class(S::user(), $args);
     $page->assign('banana', $banana->run());
     $page->addCssInline($banana->css());
     $page->addCssLink('banana.css');

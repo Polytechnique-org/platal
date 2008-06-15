@@ -46,7 +46,7 @@ class MLBanana extends Banana
     static public $listname;
     static public $domain;
 
-    function __construct($forlife, $params = null)
+    function __construct(User &$user, $params = null)
     {
         global $globals;
         Banana::$spool_root = $globals->banana->spool_root;
@@ -75,9 +75,9 @@ class MLBanana extends Banana
         global $platal, $globals;
 
         $nom  = S::v('prenom') . ' ' . S::v('nom');
-        $mail = S::v('bestalias') . '@' . $globals->mail->domain;
+        $mail = $user->bestEmail();
         $sig  = $nom . ' (' . S::v('promo') . ')';
-        Banana::$msgedit_headers['X-Org-Mail'] = S::v('forlife') . '@' . $globals->mail->domain;
+        Banana::$msgedit_headers['X-Org-Mail'] = $user->forlifeEmail();
 
         // Build user profile
         Banana::$profile['headers']['From']         = "$nom <$mail>";

@@ -1179,7 +1179,7 @@ class XnetGrpModule extends PLModule
                 $post = null;/*
                 if ($globals->asso('forum')) {
                     require_once 'banana/forum.inc.php';
-                    $banana = new ForumsBanana(S::v('forlife'));
+                    $banana = new ForumsBanana(S::user());
                     $post = $banana->post($globals->asso('forum'), null,
                                           $art['titre'], MiniWiki::wikiToText($fulltext, false, 0, 80));
                 }*/

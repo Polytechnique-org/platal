@@ -375,7 +375,7 @@ class ListsModule extends PLModule
                 exit;
             }
             require_once('banana/ml.inc.php');
-            $banana = new MLBanana(S::v('forlife'), Array('listname' => $liste, 'domain' => $domain, 'action' => 'rss2'));
+            $banana = new MLBanana(S::user(), Array('listname' => $liste, 'domain' => $domain, 'action' => 'rss2'));
             $banana->run();
         }
         exit;
