@@ -771,6 +771,23 @@ class XnetGrpModule extends PLModule
                 "DELETE FROM  groupex.membres WHERE uid={?} AND asso_id={?}",
                 $user['uid'], $globals->asso('id'));
 
+        $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
+        $res = XDB::iterRow("SELECT  a.alias, u.prenom, IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom
+                               FROM  groupex.membres AS m
+                         INNER JOIN  aliases AS a ON (m.uid = a.id AND FIND_IN_SET('bestalias', a.flags))
+                         INNER JOIn  auth_user_md5 AS u ON (u.user_id = a.id)
+                              WHERE  m.asso_id = {?} AND m.perms = 'admin'",
+                              $globals->asso('id'));
+        while (list($alias, $prenom, $nom) = $res->next()) {
+            $mailer->addTo("\"$prenom $nom\" <$alias@{$globals->mail->domain}>");
+        }
+        $mailer->assign('group', $globals->asso('nom'));
+        $mailer->assign('prenom', $user['prenom']);
+        $mailer->assign('nom', $user['nom']);
+        $mailer->assign('mail', $user['email2']);
+        $mailer->assign('selfdone', $user['uid'] == S::i('uid'));
+        $mailer->send();
+
         $user_same_email = get_infos($user['email']);
         $domain = $globals->asso('mail_domain');
 
