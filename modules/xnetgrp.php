@@ -248,9 +248,9 @@ class XnetGrpModule extends PLModule
                       Post::v('forum'), Post::v('mail_domain'),
                       Post::has('ax'), Post::v('pub'),
                       Post::v('sub_url'), Post::v('inscriptible'),
-                      Post::v('unsub_url'), $flags->flags(), $globals->asso('id'));
+                      Post::v('unsub_url'), $flags, $globals->asso('id'));
                 if (Post::v('mail_domain')) {
-                    XDB::execute('INSERT INTO virtual_domains (domain) VALUES({?})',
+                    XDB::execute('INSERT IGNORE INTO virtual_domains (domain) VALUES({?})',
                                            Post::v('mail_domain'));
                 }
             } else {
@@ -265,7 +265,7 @@ class XnetGrpModule extends PLModule
                       Post::v('forum'), Post::has('ax'),
                       Post::v('pub'),
                       Post::v('sub_url'), Post::v('unsub_url'),
-                      $flags->flags(), $globals->asso('id'));
+                      $flags, $globals->asso('id'));
             }
 
             if ($_FILES['logo']['name']) {
