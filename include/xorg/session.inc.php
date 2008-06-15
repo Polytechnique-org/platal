@@ -238,10 +238,13 @@ function try_cookie()
  */
 function start_connexion ($uid, $identified)
 {
+    global $globals;
+
+    // Fetches user's data.
     $res  = XDB::query("
         SELECT  u.user_id AS uid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
                 matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
-                u.hruid, a.alias AS forlife, a2.alias AS bestalias,
+                u.hruid, CONCAT(a.alias, '@{$globals->mail->domain}') AS forlife, CONCAT(a2.alias, '@{$globals->mail->domain}') AS bestalias,
                 q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
                 FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version
           FROM  auth_user_md5   AS u
@@ -249,6 +252,8 @@ function start_connexion ($uid, $identified)
     INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type = 'a_vie')
     INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias', a2.flags))
          WHERE  u.user_id = {?} AND u.perms IN('admin','user')", $uid);
+
+    // Fetches last connection information.
     $sess = $res->fetchOneAssoc();
     $res = XDB::query("SELECT  UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
                          FROM  logger.sessions AS s
@@ -258,8 +263,9 @@ function start_connexion ($uid, $identified)
     if ($res->numRows()) {
         $sess = array_merge($sess, $res->fetchOneAssoc());
     }
-    $suid = S::v('suid');
 
+    // Sets up special environment for suid sessions, and sets up the logger.
+    $suid = S::v('suid');
     if ($suid) {
         $logger = new CoreLogger($uid, $suid['uid']);
         $logger->log("suid_start", S::v('hruid') . " by {$suid['uid']}");
@@ -270,10 +276,13 @@ function start_connexion ($uid, $identified)
         setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
     }
 
+    // Finally sets up the PHP session.
     $_SESSION         = array_merge($_SESSION, $sess);
     $_SESSION['log']  = $logger;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
     $_SESSION['perms'] =& XorgSession::make_perms($_SESSION['perms']);
+
+    // Checks for watched users / ip addresses.
     $mail_subject = null;
     if (check_account()) {
         $mail_subject = "Connexion d'un utilisateur surveillé";
@@ -306,6 +315,8 @@ function start_connexion ($uid, $identified)
     if ($mail_subject) {
         send_warning_mail($mail_subject);
     }
+
+    // Miscellaneous environment setup.
     set_skin();
     update_NbNotifs();
     check_redirect();

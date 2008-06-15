@@ -88,6 +88,11 @@ class Session
         return Session::v('auth', AUTH_PUBLIC) >= AUTH_MDP;
     }
 
+    public static function rssActivated()
+    {
+        return Session::has('core_rss_hash') && Session::v('core_rss_hash');
+    }
+
     // Anti-XSRF protections.
     public static function has_xsrf_token()
     {
@@ -104,9 +109,17 @@ class Session
         }
     }
 
-    public static function rssActivated()
+    // In-session User object.
+    private static $user = null;
+    public static function &user()
     {
-        return Session::has('core_rss_hash') && Session::v('core_rss_hash');
+        if (!isset(self::$user)) {
+            self::$user = User::getWithValues(
+                Session::i('uid'),
+                $_SESSION,
+                array('User', '_silent_user_callback'));
+        }
+        return self::$user;
     }
 }
 
