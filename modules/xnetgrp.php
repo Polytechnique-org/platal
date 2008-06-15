@@ -224,6 +224,10 @@ class XnetGrpModule extends PLModule
         if (Post::has('submit')) {
             S::assert_xsrf_token();
 
+            $flags = new FlagSet('wiki_desc');
+            if (Post::has('notif_unsub') && Post::i('notif_unsub') == 1) {
+                $flags->addFlag('notif_unsub');
+            }
             if (S::has_perms()) {
                 if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
                     $page->trigError("le domaine doit être un FQDN (aucune modif effectuée) !!!");
@@ -235,7 +239,7 @@ class XnetGrpModule extends PLModule
                              descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, mail_domain={?}, ax={?}, pub={?},
                              sub_url={?}, inscriptible={?}, unsub_url={?},
-                             flags='wiki_desc'
+                             flags={?}
                       WHERE  id={?}",
                       Post::v('nom'), Post::v('diminutif'),
                       Post::v('cat'), Post::i('dom'),
@@ -244,7 +248,7 @@ class XnetGrpModule extends PLModule
                       Post::v('forum'), Post::v('mail_domain'),
                       Post::has('ax'), Post::v('pub'),
                       Post::v('sub_url'), Post::v('inscriptible'),
-                      Post::v('unsub_url'),$globals->asso('id'));
+                      Post::v('unsub_url'), $flags->flags(), $globals->asso('id'));
                 if (Post::v('mail_domain')) {
                     XDB::execute('INSERT INTO virtual_domains (domain) VALUES({?})',
                                            Post::v('mail_domain'));
@@ -254,14 +258,14 @@ class XnetGrpModule extends PLModule
                     "UPDATE  groupex.asso
                         SET  descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, ax={?}, pub= {?}, sub_url={?},
-                             unsub_url={?},flags='wiki_desc'
+                             unsub_url={?},flags={?}
                       WHERE  id={?}",
                       Post::v('descr'), Post::v('site'),
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::has('ax'),
                       Post::v('pub'),
                       Post::v('sub_url'), Post::v('unsub_url'),
-                      $globals->asso('id'));
+                      $flags->flags(), $globals->asso('id'));
             }
 
             if ($_FILES['logo']['name']) {
@@ -771,22 +775,24 @@ class XnetGrpModule extends PLModule
                 "DELETE FROM  groupex.membres WHERE uid={?} AND asso_id={?}",
                 $user['uid'], $globals->asso('id'));
 
-        $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
-        $res = XDB::iterRow("SELECT  a.alias, u.prenom, IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom
-                               FROM  groupex.membres AS m
-                         INNER JOIN  aliases AS a ON (m.uid = a.id AND FIND_IN_SET('bestalias', a.flags))
-                         INNER JOIn  auth_user_md5 AS u ON (u.user_id = a.id)
-                              WHERE  m.asso_id = {?} AND m.perms = 'admin'",
-                              $globals->asso('id'));
-        while (list($alias, $prenom, $nom) = $res->next()) {
-            $mailer->addTo("\"$prenom $nom\" <$alias@{$globals->mail->domain}>");
+        if ($globals->asso('notif_unsub')) {
+            $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
+            $res = XDB::iterRow("SELECT  a.alias, u.prenom, IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom
+                                   FROM  groupex.membres AS m
+                             INNER JOIN  aliases AS a ON (m.uid = a.id AND FIND_IN_SET('bestalias', a.flags))
+                             INNER JOIn  auth_user_md5 AS u ON (u.user_id = a.id)
+                                  WHERE  m.asso_id = {?} AND m.perms = 'admin'",
+                                  $globals->asso('id'));
+            while (list($alias, $prenom, $nom) = $res->next()) {
+                $mailer->addTo("\"$prenom $nom\" <$alias@{$globals->mail->domain}>");
+            }
+            $mailer->assign('group', $globals->asso('nom'));
+            $mailer->assign('prenom', $user['prenom']);
+            $mailer->assign('nom', $user['nom']);
+            $mailer->assign('mail', $user['email2']);
+            $mailer->assign('selfdone', $user['uid'] == S::i('uid'));
+            $mailer->send();
         }
-        $mailer->assign('group', $globals->asso('nom'));
-        $mailer->assign('prenom', $user['prenom']);
-        $mailer->assign('nom', $user['nom']);
-        $mailer->assign('mail', $user['email2']);
-        $mailer->assign('selfdone', $user['uid'] == S::i('uid'));
-        $mailer->send();
 
         $user_same_email = get_infos($user['email']);
         $domain = $globals->asso('mail_domain');
