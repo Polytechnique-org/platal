@@ -52,8 +52,10 @@ abstract class PlUser
     // redirection) and an optionnal array of known user properties.
     public function __construct($login, $values = array())
     {
-        list($this->user_id, $this->hruid) = $this->getLogin($login);
         $this->fillFromArray($values);
+        if (!isset($this->user_id) || !isset($this->hruid)) {
+            list($this->user_id, $this->hruid) = $this->getLogin($login);
+        }
     }
 
 
