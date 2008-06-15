@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// UserNotFound is raised when a given id cannot be linked to an existing user.
+// PlUserNotFound is raised when a given id cannot be linked to an existing user.
 // The @p results give the list hruids (useful when several users are found).
 class UserNotFoundException extends Exception
 {
@@ -33,8 +33,8 @@ class UserNotFoundException extends Exception
 // Represents an user of the system, with a special focus on its identification
 // (hruid, forlife, and bestalias).
 // Note: each implementation of platal-core MUST create a subclass 'User' of
-// this abstract CoreUser class.
-abstract class CoreUser
+// this abstract PlUser class.
+abstract class PlUser
 {
     // User's data storage. By convention, null means the information hasn't
     // been fetched yet, and false means the information is not available.
