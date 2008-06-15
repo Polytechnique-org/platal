@@ -44,6 +44,7 @@ Bug/Wish:
 
     * XnetGrp:
         - #806: Unsubscribe from MLs when leaving the group                -FRU
+        - #807: Notify groupes managers of unsubscriptions                 -FRU
         - #814: Group managers can change the visibility of the group      -FRU
         - #824: Fix redirection when changing status of the user           -FRU
 
