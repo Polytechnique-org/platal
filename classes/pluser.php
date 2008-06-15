@@ -74,6 +74,13 @@ abstract class PlUser
     // The use case is for arrays got directly from anoter SQL request.
     protected function fillFromArray(array $values)
     {
+        // It might happen that the 'user_id' field is called uid in some places
+        // (eg. in sessions), so we hard link uid to user_id to prevent useless
+        // SQL requests.
+        if (!isset($values['user_id']) && isset($values['uid'])) {
+            $values['user_id'] = $values['uid'];
+        }
+
         foreach ($values as $key => $value) {
             if (property_exists($this, $key) && !isset($this->$key)) {
                 $this->$key = $value;
