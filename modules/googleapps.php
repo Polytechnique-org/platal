@@ -44,7 +44,7 @@ class GoogleAppsModule extends PLModule
         $page->addJsLink('motdepasse.js');
         $page->assign('xorg_title', 'Polytechnique.org - Compte Google Apps');
 
-        $account = new GoogleAppsAccount(S::v('uid'), S::v('forlife'));
+        $account = new GoogleAppsAccount(S::user());
 
         // Fills up the 'is Google Apps redirection active' variable.
         $page->assign('redirect_active', false);
@@ -189,34 +189,31 @@ class GoogleAppsModule extends PLModule
         if (!$user && Post::has('login')) {
             $user = Post::v('login');
         }
-        if ($user && !is_numeric($user)) {
-            $res = XDB::query("SELECT id FROM aliases WHERE alias = {?} AND type != 'homonyme'", $user);
-            $user = $res->fetchOneCell();
-        }
+        $user = User::get($user);
 
         if ($user) {
             $account = new GoogleAppsAccount($user);
-            $storage = new EmailStorage($user, 'googleapps');
+            $storage = new EmailStorage($user->id(), 'googleapps');
 
             // Force synchronization of plat/al and Google Apps passwords.
             if ($action == 'forcesync' && $account->sync_password) {
-                $res = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id = {?}", $user);
+                $res = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id = {?}", $user->id());
                 $account->set_password($res->fetchOneCell());
                 $page->trigSuccess('Le mot de passe a été synchronisé.');
             }
 
             // Displays basic account information.
             $page->assign('account', $account);
-            $page->assign('admin_account', GoogleAppsAccount::is_administrator($user));
+            $page->assign('admin_account', GoogleAppsAccount::is_administrator($user->id()));
             $page->assign('googleapps_storage', $storage->active);
-            $page->assign('user', $user);
+            $page->assign('user', $user->id());
 
             // Retrieves user's pending requests.
             $res = XDB::iterator(
                 "SELECT  q_id, q_recipient_id, p_status, j_type, UNIX_TIMESTAMP(p_entry_date) AS p_entry_date
                    FROM  gapps_queue
                   WHERE  q_recipient_id = {?}
-               ORDER BY  p_entry_date DESC", $user);
+               ORDER BY  p_entry_date DESC", $user->id());
             $page->assign('requests', $res);
         }
     }

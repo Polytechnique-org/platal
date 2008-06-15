@@ -597,7 +597,7 @@ class AdminModule extends PLModule
                         // and the password was changed, updates the Google Apps password as well.
                         if ($globals->mailstorage->googleapps_domain && Env::v('newpass_clair') != "********") {
                             require_once 'googleapps.inc.php';
-                            $account = new GoogleAppsAccount($mr['user_id'], $mr['forlife']);
+                            $account = new GoogleAppsAccount(User::get($mr['forlife']));
                             if ($account->active() && $account->sync_password) {
                                 $account->set_password($pass_encrypted);
                             }
@@ -608,7 +608,7 @@ class AdminModule extends PLModule
                             $new_fields['perms'] == 'disabled' &&
                             $new_fields['perms'] != $old_fields['perms']) {
                             require_once 'googleapps.inc.php';
-                            $account = new GoogleAppsAccount($mr['user_id'], $mr['forlife']);
+                            $account = new GoogleAppsAccount(User::get($mr['forlife']));
                             $account->suspend();
                         }
                         break;

@@ -23,20 +23,19 @@
 function post_queue_u_create($job) {
     global $globals;
 
-    // Retrieves the user parameters (userid and forlife).
+    // Retrieves the user parameters (GoogleApps username and user_id).
     $parameters = json_decode($job['j_parameters'], true);
-    $forlife = isset($parameters['username']) ? $parameters['username'] : null;
-    $userid = $job['q_recipient_id'];
-    if (!$forlife || !$userid) {
+    $username = isset($parameters['username']) ? $parameters['username'] : null;
+    if (!($user = User::getSilent($username))) {
         return;
     }
 
     // Adds a redirection to the Google Apps delivery address, if requested by
     // the user at creation time.
-    $account = new GoogleAppsAccount($userid, $forlife);
+    $account = new GoogleAppsAccount($user);
     if ($account->activate_mail_redirection) {
         require_once('emails.inc.php');
-        $storage = new EmailStorage($userid, 'googleapps');
+        $storage = new EmailStorage($user->id(), 'googleapps');
         $storage->activate();
     }
 
@@ -44,14 +43,12 @@ function post_queue_u_create($job) {
     $res = XDB::query(
         "SELECT  FIND_IN_SET('femme', u.flags), prenom
            FROM  auth_user_md5 AS u
-     INNER JOIN  aliases AS a ON (a.id = u.user_id)
-          WHERE  a.alias = {?}",
-        $forlife);
+          WHERE  u.user_id = {?}", $user->id());
     list($sexe, $prenom) = $res->fetchOneRow();
 
     $mailer = new PlMailer('googleapps/create.mail.tpl');
     $mailer->assign('account', $account);
-    $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
+    $mailer->assign('email', $user->bestEmail());
     $mailer->assign('googleapps_domain', $globals->mailstorage->googleapps_domain);
     $mailer->assign('prenom', $prenom);
     $mailer->assign('sexe', $sexe);
@@ -66,19 +63,18 @@ function post_queue_u_update($job) {
     // to the Google Apps delivery address, provided the account is active (it might
     // have been deleted between the unsuspension and the post-queue processing).
     $parameters = json_decode($job['j_parameters'], true);
-    $forlife = isset($parameters['username']) ? $parameters['username'] : null;
-    $userid = $job['q_recipient_id'];
-    if (!$forlife || !$userid) {
+    $username = isset($parameters['username']) ? $parameters['username'] : null;
+    if (!($user = User::getSilent($username))) {
         return;
     }
 
     if (isset($parameters['suspended']) && $parameters['suspended'] == false) {
         require_once('emails.inc.php');
-        $account = new GoogleAppsAccount($userid, $forlife);
+        $account = new GoogleAppsAccount($user);
         if ($account->active()) {
             // Re-adds the email redirection (if the user did request it).
             if ($account->activate_mail_redirection) {
-                $storage = new EmailStorage($userid, 'googleapps');
+                $storage = new EmailStorage($user->id, 'googleapps');
                 $storage->activate();
             }
 
@@ -86,14 +82,12 @@ function post_queue_u_update($job) {
             $res = XDB::query(
                 "SELECT  FIND_IN_SET('femme', u.flags), prenom
                    FROM  auth_user_md5 AS u
-             INNER JOIN  aliases AS a ON (a.id = u.user_id)
-                  WHERE  a.alias = {?}",
-                $forlife);
+                  WHERE  u.user_id = {?}", $user->id());
             list($sexe, $prenom) = $res->fetchOneRow();
 
             $mailer = new PlMailer('googleapps/unsuspend.mail.tpl');
             $mailer->assign('account', $account);
-            $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
+            $mailer->assign('email', $user->bestEmail());
             $mailer->assign('prenom', $prenom);
             $mailer->assign('sexe', $sexe);
             $mailer->send();
@@ -108,7 +102,7 @@ function post_queue_u_update($job) {
 class GoogleAppsAccount
 {
     // User identification: user id, and forlife.
-    private $uid;
+    private $user;
     public $g_account_name;
 
     // Local account parameters.
@@ -139,19 +133,17 @@ class GoogleAppsAccount
 
     // Constructs the account object, by retrieving all informations from the
     // GApps account table, from GApps job queue, and from plat/al validation queue.
-    public function __construct($uid, $account_name = NULL)
+    public function __construct(User &$user)
     {
-        if ($account_name == NULL) {
-            require_once 'user.func.inc.php';
-            $account_name = get_user_forlife($uid, '_silent_user_callback');
-        }
-
-        $this->uid = $uid;
-        $this->g_account_name = $account_name;
-        $this->g_status = NULL;
-        if (!$this->g_account_name) {
+        $this->user = &$user;
+        if (!$this->user || !$this->user->login()) {
             return;
         }
+
+        // TODO: switch to multi-domain Google Apps, and use $this->user->forlifeEmail()
+        // as Google Apps idenfiant (requires changes in gappsd).
+        $this->g_account_name = $this->user->login();
+        $this->g_status = NULL;
 
         $res = XDB::query(
             "SELECT  l_sync_password, l_activate_mail_redirection,
@@ -160,8 +152,7 @@ class GoogleAppsAccount
                      UNIX_TIMESTAMP(r_last_login) as r_last_login,
                      UNIX_TIMESTAMP(r_last_webmail) as r_last_webmail
                FROM  gapps_accounts
-              WHERE  g_account_name = {?}",
-            $account_name);
+              WHERE  g_account_name = {?}", $this->g_account_name);
         if ($account = $res->fetchOneAssoc()) {
             $this->sync_password = $account['l_sync_password'];
             $this->activate_mail_redirection = $account['l_activate_mail_redirection'];
@@ -195,8 +186,7 @@ class GoogleAppsAccount
                FROM  gapps_queue
               WHERE  q_recipient_id = {?} AND
                      p_status IN ('idle', 'active', 'softfail')
-           GROUP BY  j_type",
-            $this->uid);
+           GROUP BY  j_type", $this->user->id());
         $pending = $res->fetchOneAssoc();
         $this->pending_create = $pending['pending_create'];
         $this->pending_update = $pending['pending_update'];
@@ -214,7 +204,7 @@ class GoogleAppsAccount
     {
         require_once('validations.inc.php');
         $this->pending_validation_unsuspend =
-            Validate::get_typed_requests_count($this->uid, 'gapps-unsuspend');
+            Validate::get_typed_requests_count($this->user->id(), 'gapps-unsuspend');
     }
 
     // Retrieves all the pending update job in the gappsd queue for the current
@@ -227,8 +217,7 @@ class GoogleAppsAccount
                FROM  gapps_queue
               WHERE  q_recipient_id = {?} AND
                      p_status IN ('idle', 'active', 'softfail') AND
-                     j_type = 'u_update'",
-            $this->uid);
+                     j_type = 'u_update'", $this->user->id());
         while ($update = $res->next()) {
             $update_data = json_decode($update["j_parameters"], true);
 
@@ -258,7 +247,7 @@ class GoogleAppsAccount
                      p_priority = 'immediate',
                      j_type = {?}, j_parameters = {?}",
             S::v('uid'),
-            $this->uid,
+            $this->user->id(),
             $type,
             json_encode($parameters));
     }
@@ -347,7 +336,7 @@ class GoogleAppsAccount
 
         if (!$this->pending_update_suspension && !$this->pending_validation_unsuspend) {
             require_once('validations.inc.php');
-            $unsuspend = new GoogleAppsUnsuspendReq($this->uid);
+            $unsuspend = new GoogleAppsUnsuspendReq($this->user->id());
             $unsuspend->submit();
             $this->pending_validation_unsuspend = true;
         }
@@ -365,8 +354,7 @@ class GoogleAppsAccount
                 $res = XDB::query(
                     "SELECT  password
                        FROM  auth_user_md5
-                      WHERE  user_id = {?}",
-                    $this->uid);
+                      WHERE  user_id = {?}", $this->user->id());
                 $password = ($res->numRows() > 0 ? $res->fetchOneCell() : false);
             } else {
                 $password = false;
@@ -394,8 +382,7 @@ class GoogleAppsAccount
             $res = XDB::query(
                 "SELECT  nom, nom_usage, prenom
                    FROM  auth_user_md5
-                  WHERE  user_id = {?}",
-                $this->uid);
+                  WHERE  user_id = {?}", $this->user->id());
             list($nom, $nom_usage, $prenom) = $res->fetchOneRow();
 
             // Adds an 'unprovisioned' entry in the gapps_accounts table.
@@ -408,7 +395,7 @@ class GoogleAppsAccount
                          g_first_name = {?},
                          g_last_name = {?},
                          g_status = 'unprovisioned'",
-                $this->uid,
+                $this->user->id(),
                 $password_sync,
                 $redirect_mails,
                 $this->g_account_name,
@@ -426,7 +413,7 @@ class GoogleAppsAccount
                 ));
 
             // Updates the GoogleAppsAccount status.
-            $this->__construct($this->uid, $this->g_account_name);
+            $this->__construct($this->user);
         }
     }
 

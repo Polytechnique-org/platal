@@ -61,7 +61,7 @@ class GoogleAppsUnsuspendReq extends Validate
     public function commit()
     {
         require_once dirname(__FILE__) . '/../googleapps.inc.php';
-        $account = new GoogleAppsAccount($this->uid, $this->forlife);
+        $account = new GoogleAppsAccount(User::get($this->forlife));
         return $account->do_unsuspend();
     }
 

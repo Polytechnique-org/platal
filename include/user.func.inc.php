@@ -32,9 +32,9 @@ function user_clear_all_subs($user_id, $really_del=true)
     // + delete maillists
 
     global $globals;
-    $uid   = intval($user_id);
-    $res   = XDB::query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $uid);
-    $alias = $res->fetchOneCell();
+    $uid = intval($user_id);
+    $user = User::getSilent($uid);
+    list($alias) = explode('@', $user->forlifeEmail());
 
     $tables_to_clear = array('uid' => array('competences_ins', 'entreprises', 'langues_ins', 'mentor_pays',
                                             'mentor_secteurs', 'mentor', 'perte_pass', 'watch_sub'),
@@ -75,7 +75,7 @@ function user_clear_all_subs($user_id, $really_del=true)
     if ($globals->mailstorage->googleapps_domain) {
         require_once 'googleapps.inc.php';
         if (GoogleAppsAccount::account_status($uid)) {
-            $account = new GoogleAppsAccount($uid, $alias);
+            $account = new GoogleAppsAccount($user);
             $account->suspend();
         }
     }
