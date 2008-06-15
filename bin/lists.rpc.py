@@ -684,6 +684,7 @@ def del_from_wl(userdesc, perms, vhost, listname, addr):
         return 0
 
 def get_bogo_level(userdesc, perms, vhost, listname):
+    """ Compute bogo level from the filtering rules set up on the list. """
     try:
         mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
     except:
@@ -691,21 +692,37 @@ def get_bogo_level(userdesc, perms, vhost, listname):
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
-        if mlist.header_filter_rules == []:
+        if len(mlist.header_filter_rules) == 0:
             return 0
+
+        unsurelevel = 0
+        filterlevel = 0
+        filterbase = 0
+
+        # The first rule filters Unsure mails
+        if mlist.header_filter_rules[0][0] == 'X-Spam-Flag: Unsure, tests=bogofilter':
+            unsurelevel = 1
+            filterbase = 1
+
+        # Check the other rules:
+        #  - we have 2 rules: this is level 2 (drop > 0.999999, moderate Yes)
+        #  - we have only one rule with HOLD directive : this is level 1 (moderate spams)
+        #  - we have only one rule with DISCARD directive : this is level 3 (drop spams)
         try:
-            action = mlist.header_filter_rules[2][1]
-            return 2
+            action = mlist.header_filter_rules[filterbase + 1][1]
+            filterlevel = 2
         except:
-            action = mlist.header_filter_rules[1][1]
+            action = mlist.header_filter_rules[filterbase][1]
             if action == mm_cfg.HOLD:
-                return 1
-            if action == mm_cfg.DISCARD:
-                return 3
+                filterlevel = 1
+            elif action == mm_cfg.DISCARD:
+                filterlevel = 3
+        return (filterlevel << 1) + unsurelevel
     except:
         return 0
 
 def set_bogo_level(userdesc, perms, vhost, listname, level):
+    """ set filter to the specify level. """
     try:
         mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
     except:
@@ -714,16 +731,29 @@ def set_bogo_level(userdesc, perms, vhost, listname, level):
         if not is_admin_on(userdesc, perms, mlist):
             return 0
         hfr = []
-        if int(level) is 1:
+
+        # The level is a combination of a spam filtering level and unsure filtering level
+        #   - the unsure filtering level is only 1 bit (1 = HOLD unsures, 0 = Accept unsures)
+        #   - the spam filtering level is a number growing with filtering strength
+        #     (0 = no filtering, 1 = moderate spam, 2 = drop 0.999999 and moderate others, 3 = drop spams)
+        bogolevel = int(level)
+        filterlevel = bogolevel >> 1
+        unsurelevel = bogolevel & 1
+
+        # Set up unusre filtering
+        if unsurelevel == 1:
             hfr.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
+
+        # Set up spam filtering
+        if filterlevel is 1:
             hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
-        elif int(level) is 2:
-            hfr.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
+        elif filterlevel is 2:
             hfr.append(('X-Spam-Flag: Yes, tests=bogofilter, spamicity=(0\.999999|1\.000000)', mm_cfg.DISCARD, False))
             hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
-        elif int(level) is 3:
-            hfr.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
+        elif filterlevel is 3:
             hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.DISCARD, False))
+
+        # save configuration
         if mlist.header_filter_rules != hfr:
             mlist.Lock()
             mlist.header_filter_rules = hfr
@@ -884,6 +914,7 @@ def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, ins
                          + "http://listes.polytechnique.org/members/" + inverted_listname
 
         mlist.header_filter_rules = []
+        mlist.header_filter_rules.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
         mlist.header_filter_rules.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
 
         mlist.Save()
@@ -1041,4 +1072,4 @@ server.register_function(kill)
 
 server.serve_forever()
 
-# vim:set et:
+# vim:set et sw=4 sts=4 sws=4:
