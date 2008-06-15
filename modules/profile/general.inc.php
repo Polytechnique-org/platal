@@ -112,12 +112,14 @@ class ProfileNetworking implements ProfileSetting
     private $email;
     private $pub;
     private $web;
+    private $number;
 
     public function __construct()
     {
         $this->email  = new ProfileEmail();
         $this->pub    = new ProfilePub();
         $this->web    = new ProfileWeb();
+        $this->number = new ProfileNumber();
     }
 
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -154,6 +156,8 @@ class ProfileNetworking implements ProfileSetting
                 $network['address'] = $this->web->value($page, 'address', $network['address'], $s);
             } elseif ($filters[$network['type']] == 'email') {
                 $network['address'] = $this->email->value($page, 'address', $network['address'], $s);
+            } elseif ($filters[$network['type']] == 'number') {
+                $network['address'] = $this->number->value($page, 'address', $network['address'], $s);
             }
             if (!$s) {
                 $success = false;

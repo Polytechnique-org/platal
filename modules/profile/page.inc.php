@@ -79,6 +79,23 @@ class ProfileEmail extends ProfileNoSave
     }
 }
 
+class ProfileNumber extends ProfileNoSave
+{
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        if (is_null($value)) {
+            return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
+        }
+        $value = trim($value);
+        $success = empty($value) || is_numeric($value);
+        if (!$success) {
+            global $page;
+            $page->trigError('Numéro invalide');
+        }
+        return $value;
+    }
+}
+
 
 class ProfileTel extends ProfileNoSave
 {

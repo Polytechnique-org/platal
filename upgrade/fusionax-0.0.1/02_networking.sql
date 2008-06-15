@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `profile_networking_enum` (
     `network_type` tinyint unsigned NOT NULL,
     `name` varchar(30) NOT NULL,
     `icon` varchar(50) NOT NULL COMMENT 'icon filename',
-    `filter` enum('email','web','none') NOT NULL DEFAULT 'none' COMMENT 'filter type for addresses',
+    `filter` enum('email','web','number','none') NOT NULL DEFAULT 'none' COMMENT 'filter type for addresses',
     PRIMARY KEY (`network_type`)
 ) CHARSET=utf8 COMMENT='types of networking addresses';
 
