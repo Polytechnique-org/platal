@@ -265,7 +265,10 @@ class PlMailer extends Mail_Mime {
     private function processPage($with_html = true)
     {
         if (!is_null($this->page)) {
-            $level = error_reporting(0);
+            global $globals;
+            if (!($globals->debug & DEBUG_SMARTY)) {
+                $level = error_reporting(0);
+            }
             $this->page->run('head'); // process page headers
             $this->wiki = trim($this->page->run('wiki')); // get wiki
             if (!$this->wiki) {
@@ -277,7 +280,9 @@ class PlMailer extends Mail_Mime {
                     }
                 }
             }
-            error_reporting($level);
+            if (!($globals->debug & DEBUG_SMARTY)) {
+                error_reporting($level);
+            }
         }
         if ($this->wiki) {
             $this->setTxtBody(MiniWiki::WikiToText($this->wiki, false, 0, 78));
