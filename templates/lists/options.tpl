@@ -132,34 +132,29 @@ Tu n'es pas administrateur de la liste, mais du site.
       <td>
         <div id="spamlevel">
           <em><a name='antispam' id='antispam'></a>que faire des mails marqués « [spam probable] » ?</em><br />
-          <input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer&nbsp;;<br />
-          <input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les envoyer aux modérateurs pour approbation...<br />
-          <input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> ... après suppression des
-        spams les plus probables*&nbsp;;<br />
-          <input type='radio' name='bogo_level' value='3' {if $bogo_level eq 3}checked='checked'{/if} /> tous les supprimer.
+          <label><input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer&nbsp;;</label><br />
+          <label><input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les envoyer aux modérateurs pour approbation...</label><br />
+          <label><input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> ... après suppression des
+        spams les plus probables*&nbsp;;</label><br />
+          <label><input type='radio' name='bogo_level' value='3' {if $bogo_level eq 3}checked='checked'{/if} /> tous les supprimer.</label>
         </div>
         <div id="unsurelevel">
           <em>que faire des mails dont le classement est indéterminé** ?</em><br />
-          <input type='radio' name='unsure_level' value='0' {if !$unsure_level}checked='checked'{/if} /> les laisser
-          passer&nbsp;;<br />
-          <input type='radio' name='unsure_level' value='1' {if $unsure_level eq 1}checked='checked'{/if} /> les modérer.
+          <label><input type='radio' name='unsure_level' value='0' {if !$unsure_level}checked='checked'{/if} /> les laisser
+          passer&nbsp;;</label><br />
+          <label><input type='radio' name='unsure_level' value='1' {if $unsure_level eq 1}checked='checked'{/if} /> les modérer.</label>
         </div>
         <script type="text/javascript">//<![CDATA[
           {literal}
-          function hideUnsure() {
-            if ($(":radio[@name=bogo_level]:checked").val() == 0) {
-              $("#unsurelevel").hide();
-            } else {
-              $("#unsurelevel").show();
-            }
-          }
-
-          $(document).ready(
-            function() {
-              hideUnsure();
-              $(":radio[@name=bogo_level]").change(function() { hideUnsure(); });
-            }
-          );
+          $(function() {
+            $(":radio[@name=bogo_level]").change(function() {
+              if ($(":radio[@name=bogo_level]:checked").val() == 0) {
+                $("#unsurelevel").hide();
+              } else {
+                $("#unsurelevel").show();
+              }
+            }).change();
+          });
           {/literal}
         // ]]></script>
       </td>
@@ -170,7 +165,7 @@ Tu n'es pas administrateur de la liste, mais du site.
         d'être des faux-positifs.<br />
         **Certains mails ne sont pas classables par l'antispam qui le signale en indiquant que le mail est "Unsure". Ces
         mails contiennent statistiquement autant de spams que de non-spams, mais ceci peut varier d'une adresse à l'autre.
-        Cette option the permet de choisir si tu préfères que les mails 'Unsures' soient modérés ou envoyés diretement
+        Cette option te permet de choisir si tu préfères que les mails 'Unsures' soient modérés ou envoyés directement
         à la liste.
       </td>
     </tr>

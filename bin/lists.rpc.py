@@ -722,7 +722,7 @@ def get_bogo_level(userdesc, perms, vhost, listname):
         return 0
 
 def set_bogo_level(userdesc, perms, vhost, listname, level):
-    """ set filter to the specify level. """
+    """ set filter to the specified level. """
     try:
         mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
     except:
