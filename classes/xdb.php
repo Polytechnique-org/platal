@@ -166,6 +166,9 @@ class XDB
             return 'NULL';
 
           case 'object':
+            if ($var instanceof FlagSet) {
+                return "'" . addslashes($var->flags()) . "'";
+            }
           case 'array':
             return "'".addslashes(serialize($var))."'";
 
