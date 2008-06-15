@@ -137,7 +137,7 @@ class EventsModule extends PLModule
         $page->assign('geoloc_incitation', count($res));
 
         // ajout du lien RSS
-        if (S::has('core_rss_hash')) {
+        if (S::rssActivated()) {
             $page->setRssLink('Polytechnique.org :: News',
                               '/rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
         }

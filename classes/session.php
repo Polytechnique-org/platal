@@ -103,6 +103,11 @@ class Session
             }
         }
     }
+
+    public static function rssActivated()
+    {
+        return Session::has('core_rss_hash') && Session::v('core_rss_hash');
+    }
 }
 
 // {{{ function check_perms()

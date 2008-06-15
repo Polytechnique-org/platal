@@ -631,7 +631,16 @@ class ListsModule extends PLModule
         if (Post::has('submit')) {
             $values = $_POST;
             $values = array_map('utf8_decode', $values);
-            $this->client->set_bogo_level($liste, intval($values['bogo_level']));
+            $spamlevel = intval($values['bogo_level']);
+            $unsurelevel = intval($values['unsure_level']);
+            if ($spamlevel == 0) {
+                $unsurelevel = 0;
+            }
+            if ($spamlevel > 3 || $spamlevel < 0 || $unsurelevel < 0 || $unsurelevel > 1) {
+                $page->trigError("Réglage de l'antispam non valide");
+            } else {
+                $this->client->set_bogo_level($liste, ($spamlevel << 1) + $unsurelevel);
+            }
             switch($values['moderate']) {
                 case '0':
                     $values['generic_nonmember_action']  = 0;
@@ -664,7 +673,9 @@ class ListsModule extends PLModule
         if (list($details,$options) = $this->client->get_owner_options($liste)) {
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
-            $page->assign('bogo_level', $this->client->get_bogo_level($liste));
+            $bogo_level = intval($this->client->get_bogo_level($liste));
+            $page->assign('unsure_level', $bogo_level & 1);
+            $page->assign('bogo_level', $bogo_level >> 1);
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
         }
