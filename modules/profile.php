@@ -268,18 +268,17 @@ class ProfileModule extends PLModule
 
     function handler_ax(&$page, $user = null)
     {
-        require_once 'user.func.inc.php';
-        $user = get_user_forlife($user);
+        $user = User::get($user);
         if (!$user) {
             return PL_NOT_FOUND;
         }
-        $res = XDB::query('SELECT matricule_ax
-                             FROM auth_user_md5 AS u
-                       INNER JOIN aliases       AS a ON (a.type = "a_vie" AND a.id = u.user_id)
-                            WHERE a.alias = {?}', $user);
+
+        $res = XDB::query("SELECT  matricule_ax
+                             FROM  auth_user_md5
+                            WHERE  user_id = {?}", $user->id());
         $mat = $res->fetchOneCell();
         if (!intval($mat)) {
-            $page->kill("Le matricule AX de $user est inconnu");
+            $page->kill("Le matricule AX de {$user->login()} est inconnu");
         }
         http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=$mat");
     }
