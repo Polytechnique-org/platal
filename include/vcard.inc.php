@@ -37,7 +37,7 @@ class VCardIterator implements PlIterator
 
     public function add_user($user)
     {
-        $this->user_list[] = get_user_forlife($user);
+        $this->user_list[] = User::get($user);
         $this->count++;
     }
 
@@ -63,7 +63,7 @@ class VCardIterator implements PlIterator
         }
         global $globals;
         $login = array_shift($this->user_list);
-        $user  = get_user_details($login);
+        $user  = get_user_details($login->login());
 
         if (strlen(trim($user['freetext']))) {
             $user['freetext'] = pl_entity_decode($user['freetext']);
@@ -94,10 +94,9 @@ class VCardIterator implements PlIterator
         // get photo
         if ($this->photos) {
             $res = XDB::query(
-                    "SELECT attach, attachmime
-                       FROM photo   AS p
-                 INNER JOIN aliases AS a ON (a.id = p.uid AND a.type = 'a_vie')
-                      WHERE a.alias = {?}", $login);
+                    "SELECT  attach, attachmime
+                       FROM  photo AS p
+                      WHERE  u.user_id = {?}", $login->id());
             if ($res->numRows()) {
                 $user['photo'] = $res->fetchOneAssoc();
             }
