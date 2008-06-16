@@ -215,39 +215,24 @@ class CarnetModule extends PLModule
         }
         switch (Env::v('action')) {
             case 'retirer':
-                if (is_numeric($user)) {
-                    if (XDB::execute('DELETE FROM contacts
-                                       WHERE uid = {?} AND contact = {?}',
-                                     $uid, $user))
-                    {
-                        $page->trigSuccess("Contact retiré !");
-                    }
-                } else {
-                    if (XDB::execute(
-                                'DELETE FROM  c
-                                       USING  contacts AS c
-                                  INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!="homonyme")
-                                       WHERE  c.uid = {?} AND a.alias={?}', $uid, $user))
-                    {
+                if (($user = User::get(Env::v('user')))) {
+                    if (XDB::execute("DELETE FROM  contacts
+                                            WHERE  uid = {?} AND contact = {?}", $uid, $user->id())) {
                         $page->trigSuccess("Contact retiré !");
                     }
                 }
                 break;
 
             case 'ajouter':
-                require_once('user.func.inc.php');
-                if (($login = get_user_forlife($user)) !== false) {
-                    if (XDB::execute(
-                                'REPLACE INTO  contacts (uid, contact)
-                                       SELECT  {?}, id
-                                         FROM  aliases
-                                        WHERE  alias = {?}', $uid, $login))
-                    {
+                if (($user = User::get(Env::v('user')))) {
+                    if (XDB::execute("REPLACE INTO  contacts (uid, contact)
+                                            VALUES  ({?}, {?})", $uid, $user->id())) {
                         $page->trigSuccess('Contact ajouté !');
                     } else {
                         $page->trigWarning('Contact déjà dans la liste !');
                     }
                 }
+                break;
         }
 
         $search = false;
