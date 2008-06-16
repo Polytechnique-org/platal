@@ -282,5 +282,62 @@ function diff_user_pros(&$a, &$b, $view = 'private') {
     return $c;
 }
 
+function format_phone_number($tel)
+{
+    $tel = trim($tel);
+    if (substr($tel, 0, 3) === '(0)') {
+        $tel = '33' . $tel;
+    }
+    $tel = preg_replace('/\(0\)/',  '', $tel);
+    $tel = preg_replace('/[^0-9]/', '', $tel);
+    if (substr($tel, 0, 2) === '00') {
+        $tel = substr($tel, 2);
+    } else if(substr($tel, 0, 1) === '0') {
+        $tel = '33' . substr($tel, 1);
+    }
+    return $tel;
+}
+
+function format_display_number($tel, &$error)
+{
+    $error = false;
+    $ret = '';
+    $tel_length = strlen($tel);
+    $res = XDB::query("SELECT phoneprf, format
+                         FROM phone_formats
+                        WHERE phoneprf = {?} OR phoneprf = {?} OR phoneprf = {?}",
+                      substr($tel, 0, 1), substr($tel, 0, 2), substr($tel, 0, 3));
+    if ($res->numRows() == 0) {
+        $error = true;
+        return '*+' . $tel;
+    }
+    $format = $res->fetchOneAssoc();
+    if ($format['format'] == '') {
+        $format['format'] = '+p';
+    }
+    $j = 0;
+    $i = strlen($format['phoneprf']);
+    $length_format = strlen($format['format']);
+    while (($i < $tel_length) && ($j < $length_format)){
+        if ($format['format'][$j] == '#'){
+            $ret .= $tel[$i];
+            $i++;
+        } else if ($format['format'][$j] == 'p') {
+            $ret .= $format['phoneprf'];
+        } else {
+            $ret .= $format['format'][$j];
+        }
+        $j++;
+    }
+    for (; $i < $tel_length - 1; $i += 2) {
+        $ret .= ' ' . substr($tel, $i, 2);
+    }
+    //appends last alone number to the last block
+    if ($i < $tel_length) {
+        $ret .= substr($tel, $i);
+    }
+    return $ret;
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

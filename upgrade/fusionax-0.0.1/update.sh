@@ -17,6 +17,12 @@ done
 
 ###########################################################
 
+echo "Importing phone numbers"
+
+./phones.php
+
+###########################################################
+
 echo "we will now upgrade the search table (this may be a long operation)
 
 please hit ^D to continue
