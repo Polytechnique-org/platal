@@ -405,6 +405,10 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
       <td><input type="text" name="free" size="32" value="{$smarty.request.free}" /></td>
     </tr>
     <tr>
+      <td>Numéro de téléphone</td>
+      <td><input type="text" name="phone_number" size="32" value="{$smarty.request.phone_number}"/></td>
+    </tr>
+    <tr>
       <td colspan="2">Messageries, networking et sites webs</td>
     </tr>
     <tr>

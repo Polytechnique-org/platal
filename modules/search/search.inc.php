@@ -79,6 +79,7 @@ function advancedSearchFromInput()
     } else {
         $nwTypeField     = new RefSField('networking_type', array('nwe.name'), 'profile_networking_enum', 'nwe', 'nwe.network_type = nw.network_type', true);
     }
+    $nwPhoneField  = new PhoneSField('phone_number', array('t.search_tel'), 'telephone', 't', 't.uid=u.user_id');
     return array(
                 $nameField, $firstnameField, $nicknameField, $promo1Field,
                 $promo2Field, $womanField, $subscriberField, $aliveField,
@@ -86,7 +87,7 @@ function advancedSearchFromInput()
                 $posteField, $secteurField, $cvField, $natField, $binetField,
                 $groupexField, $sectionField, $schoolField, $diplomaField,
                 $freeField, $fonctionField, $nwAddressField, $nwTypeField,
-                $referentField);
+                $nwPhoneField, $referentField);
 }
 
 // }}}

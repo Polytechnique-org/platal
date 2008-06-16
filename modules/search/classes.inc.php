@@ -495,6 +495,26 @@ class RefSField extends SField
 // }}}
 
 // {{{ class RefSFieldMultipleTable
+class PhoneSField extends RefSField
+{
+    function PhoneSField($_fieldFormName, $_fieldDbName='', $_refTable, $_refAlias, $_refCondition)
+    {
+        $this->RefSField($_fieldFormName, $_fieldDbName, $_refTable, $_refAlias, $_refCondition, true);
+    }
+
+    function get_request()
+    {
+        require_once("profil.func.inc.php");
+        $this->value = trim(Env::v($this->fieldFormName));
+        $this->value = format_phone_number($this->value);
+    }
+
+    function compare()
+    {
+        return " LIKE '" . addslashes($this->value) . "%'";
+    }
+}
+
 class MapSField extends RefSField
 {
     var $mapId;
