@@ -165,33 +165,33 @@ class MarketingModule extends PLModule
 
     function handler_broken(&$page, $uid = null)
     {
-        require_once('user.func.inc.php');
         $page->changeTpl('marketing/broken.tpl');
 
         if (is_null($uid)) {
             return PL_NOT_FOUND;
         }
-        $forlife = get_user_forlife($uid);
-        if (!$forlife) {
+
+        $user = User::get($uid);
+        if (!$user) {
             return PL_NOT_FOUND;
-        } elseif ($forlife == S::v('forlife')) {
+        } elseif ($user->login() == S::user()->login()) {
             pl_redirect('emails/redirect');
         }
 
         $res = Xdb::query("SELECT  u.nom, u.prenom, u.promo, FIND_IN_SET('femme', u.flags) AS sexe,
-                                   u.deces = '0000-00-00' AS alive, a.alias AS forlife, b.alias AS bestalias,
+                                   u.deces = '0000-00-00' AS alive, u.hruid, a.alias AS forlife, b.alias AS bestalias,
                                    IF(e.email IS NOT NULL, e.email, IF(FIND_IN_SET('googleapps', u.mail_storage), 'googleapps', NULL)) AS email, e.last
                              FROM  auth_user_md5 AS u
                        INNER JOIN  aliases       AS a ON (a.id = u.user_id AND a.type = 'a_vie')
                        INNER JOIN  aliases       AS b ON (b.id = u.user_id AND FIND_IN_SET('bestalias', b.flags))
                         LEFT JOIN  emails        AS e ON (e.flags = 'active' AND e.uid = u.user_id)
-                            WHERE  a.alias = {?}
-                         ORDER BY  e.panne_level, e.last", $forlife);
+                            WHERE  u.hruid = {?}
+                         ORDER BY  e.panne_level, e.last", $user->login());
         if (!$res->numRows()) {
             return PL_NOT_FOUND;
         }
-        $user = $res->fetchOneAssoc();
-        $page->assign('user', $user);
+        $user_data = $res->fetchOneAssoc();
+        $page->assign('user', $user_data);
 
         $email = null;
         if (Post::has('mail')) {
@@ -200,22 +200,21 @@ class MarketingModule extends PLModule
         }
         if (Post::has('valide') && isvalid_email_redirection($email)) {
             // security stuff
-            check_email($email, "Proposition d'une adresse surveillee pour " . $user['forlife'] . " par " . S::v('forlife'));
-            $res = XDB::query("SELECT  e.flags
-                                 FROM  emails   AS e
-                           INNER JOIN  aliases  AS a ON (a.id = e.uid)
-                                WHERE  e.email = {?} AND a.alias = {?}", $email, $user['forlife']);
+            check_email($email, "Proposition d'une adresse surveillee pour " . $user->login() . " par " . S::user()->login());
+            $res = XDB::query("SELECT  flags
+                                 FROM  emails
+                                WHERE  email = {?} AND uid = {?}", $email, $user->id());
             $state = $res->numRows() ? $res->fetchOneCell() : null;
             if ($state == 'panne') {
-                $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user['prenom']} et est en panne.");
+                $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user_data['prenom']} et est en panne.");
             } elseif ($state == 'active') {
-                $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user['prenom']}");
-            } elseif ($user['email'] && !trim(Post::v('comment'))) {
+                $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user_data['prenom']}");
+            } elseif ($user_data['email'] && !trim(Post::v('comment'))) {
                 $page->trigError("Il faut que tu ajoutes un commentaire à ta proposition pour justifier le "
-                           ."besoin de changer la redirection de " . $user['prenom']);
+                               . "besoin de changer la redirection de " . $user_data['prenom']);
             } else {
                 require_once 'validations.inc.php';
-                $valid = new BrokenReq(S::i('uid'), $user, $email, trim(Post::v('comment')));
+                $valid = new BrokenReq(S::i('uid'), $user_data, $email, trim(Post::v('comment')));
                 $valid->submit();
                 $page->assign('sent', true);
             }
