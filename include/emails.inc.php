@@ -281,7 +281,7 @@ class EmailStorage extends Email
     {
         XDB::execute("UPDATE  auth_user_md5
                          SET  mail_storage = {?}
-                       WHERE  user_id = {?}", $storages->flags(), $this->uid);
+                       WHERE  user_id = {?}", $storages, $this->uid);
     }
 
     // Returns the list of allowed storages for the @p user.
