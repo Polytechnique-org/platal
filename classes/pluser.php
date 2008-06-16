@@ -99,7 +99,7 @@ abstract class PlUser
     public static function getWithValues($login, $values, $callback = false)
     {
         if (!$callback) {
-            $callback = array(__CLASS__, '_default_user_callback');
+            $callback = array('User', '_default_user_callback');
         }
 
         try {
@@ -112,7 +112,7 @@ abstract class PlUser
     // Alias on get() with the silent callback.
     public static function getSilent($login)
     {
-        return User::getWithValues($login, array(), array(__CLASS__, '_silent_user_callback'));
+        return User::getWithValues($login, array(), array('User', '_silent_user_callback'));
     }
 
     // Returns the forlife emails for @p members. If @p strict mode is enabled,
