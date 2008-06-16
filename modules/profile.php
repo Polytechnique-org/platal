@@ -260,7 +260,7 @@ class ProfileModule extends PLModule
              INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
                   WHERE ( redirect={?} OR redirect={?} )
                         AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                S::v('uid'),
+                $user['user_id'],
                 $user['forlife'].'@'.$globals->mail->domain,
                 $user['forlife'].'@'.$globals->mail->domain2);
         $page->assign('virtualalias', $res->fetchOneCell());
