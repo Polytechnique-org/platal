@@ -174,48 +174,51 @@ class ForumsBanana extends Banana
     {
         global $page, $globals;
 
-        if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig')
-        && Post::has('bananadisplay') && Post::has('bananamail')
-        && Post::has('bananaupdate') && Post::v('action')=="Enregistrer" ))
-        {
-            $req = XDB::query("
-                SELECT  nom, mail, sig,
-                        FIND_IN_SET('threads', flags),
-                        FIND_IN_SET('automaj', flags),
-                        FIND_IN_SET('xface', flags)
-                  FROM  forums.profils
-                 WHERE  uid = {?}", S::v('uid'));
-            if (!(list($nom, $mail, $sig, $disp, $maj, $xface) = $req->fetchOneRow())) {
-                $nom   = S::v('prenom').' '.S::v('nom');
-                $mail  = $this->user->forlifeEmail();
-                $sig   = $nom.' ('.S::v('promo').')';
-                $disp  = 0;
-                $maj   = 0;
-                $xface = 0;
-            }
-            $page->assign('nom' ,  $nom);
-            $page->assign('mail',  $mail);
-            $page->assign('sig',   $sig);
-            $page->assign('disp',  $disp);
-            $page->assign('maj',   $maj);
-            $page->assign('xface', $xface);
-        } else {
-            $flags = array();
+        if (Post::has('action') && Post::has('banananame') && Post::has('bananasig')
+                && Post::has('bananadisplay') && Post::has('bananamail')
+                && Post::has('bananaupdate') && Post::v('action')=="Enregistrer" ) {
+            $flags = new FlagSet();
             if (Post::b('bananadisplay')) {
-                $flags[] = 'threads';
+                $flags->addFlag('threads');
             }
             if (Post::b('bananaupdate')) {
-                $flags[] = 'automaj';
+                $flags->addFlag('automaj');
             }
             if (Post::b('bananaxface')) {
-                $flags[] = 'xface';
+                $flags->addFlag('xface');
             }
-            XDB::execute("REPLACE INTO  forums.profils (uid, sig, mail, nom, flags)
+            if (XDB::execute("REPLACE INTO  forums.profils (uid, sig, mail, nom, flags)
                                 VALUES  ({?}, {?}, {?}, {?}, {?})",
                          S::v('uid'), Post::v('bananasig'),
                          Post::v('bananamail'), Post::v('banananame'),
-                         implode(',', $flags));
+                         $flags)) {
+                $page->trigSuccess("Ton profil a été enregistré avec succès.");
+            } else {
+                $page->trigError("Une erreur s'est produite lors de l'enregistrement de ton profil");
+            }
         }
+
+        $req = XDB::query("
+            SELECT  nom, mail, sig,
+                    FIND_IN_SET('threads', flags),
+                    FIND_IN_SET('automaj', flags),
+                    FIND_IN_SET('xface', flags)
+              FROM  forums.profils
+             WHERE  uid = {?}", S::v('uid'));
+        if (!(list($nom, $mail, $sig, $disp, $maj, $xface) = $req->fetchOneRow())) {
+            $nom   = S::v('prenom').' '.S::v('nom');
+            $mail  = S::user()->forlifeEmail();
+            $sig   = $nom.' ('.S::v('promo').')';
+            $disp  = 0;
+            $maj   = 0;
+            $xface = 0;
+        }
+        $page->assign('nom' ,  $nom);
+        $page->assign('mail',  $mail);
+        $page->assign('sig',   $sig);
+        $page->assign('disp',  $disp);
+        $page->assign('maj',   $maj);
+        $page->assign('xface', $xface);
         return null;
     }
 }

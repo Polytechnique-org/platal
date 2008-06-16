@@ -1186,14 +1186,13 @@ class XnetGrpModule extends PLModule
         if (Post::v('valid') == 'Enregistrer') {
             $promo_min = ($art['public'] ? 0 : $art['promo_min']);
             $promo_max = ($art['public'] ? 0 : $art['promo_max']);
-            $flags = array();
+            $flags = new FlagSet();
             if ($art['public']) {
-                $flags[] = 'public';
+                $flags->addFlag('public');
             }
             if ($art['photo']) {
-                $flags[] = 'photo';
+                $flags->addFlag('photo');
             }
-            $flags = implode(',', $flags);
             if (is_null($aid)) {
                 $fulltext = $art['texte'];
                 if (!empty($art['contact_html'])) {

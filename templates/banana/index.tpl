@@ -24,7 +24,6 @@
 {$banana|smarty:nodefaults}
 {else}
 
-{if !$smarty.post.action}
 <p class="normal">
   Tu peux régler quelques paramètres qui apparaîtront sur les messages lorsque
   tu posteras sur les forums. Cela ne te permettra pas d'être anonyme, puisque
@@ -82,11 +81,6 @@
   </table>
   <div class="center"><input type="submit" name="action" value="Enregistrer" /></div>
 </form>
-{else}
-<p class="normal">
-  Ton profil est enregistré !!!
-</p>
-{/if}
 {/if}
 {if !$it_is_xnet}
 <p class="smaller">

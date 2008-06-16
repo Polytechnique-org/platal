@@ -392,7 +392,7 @@ class EventsModule extends PLModule
                                WHERE id = {?}',
                               Post::v('titre'), Post::v('texte'), Post::v('peremption'),
                               Post::v('promo_min'), Post::v('promo_max'),
-                              $flags->flags(), $eid);
+                              $flags, $eid);
                 if ($upload->exists() && list($x, $y, $type) = $upload->imageInfo()) {
                     XDB::execute('REPLACE INTO  evenements_photo
                                            SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}',
