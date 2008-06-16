@@ -201,7 +201,7 @@ class MarketingModule extends PLModule
         if (Post::has('valide') && isvalid_email_redirection($email)) {
             // security stuff
             check_email($email, "Proposition d'une adresse surveillee pour " . $user['forlife'] . " par " . S::v('forlife'));
-            $res = XDB::query("SELECT  state
+            $res = XDB::query("SELECT  e.flags
                                  FROM  emails   AS e
                            INNER JOIN  aliases  AS a ON (a.id = e.uid)
                                 WHERE  e.email = {?} AND a.alias = {?}", $email, $user['forlife']);
