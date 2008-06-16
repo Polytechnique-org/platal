@@ -189,19 +189,15 @@ class ProfileModule extends PLModule
         if (!S::logged() || Env::v('view') == 'public') $view = 'public';
         if (S::logged() && Env::v('view') == 'ax')      $view = 'ax';
 
-        if (is_numeric($x)) {
-            $res = XDB::query(
-                    "SELECT  alias
-                       FROM  aliases       AS a
-                 INNER JOIN  auth_user_md5 AS u ON (a.id=u.user_id AND a.type='a_vie')
-                      WHERE  matricule={?}", $x);
-            $login = $res->fetchOneCell();
-        } else {
-            $login = get_user_forlife($x, S::logged() ? '_default_user_callback'
-                                                      : '_silent_user_callback');
+        $login = S::logged() ? User::get($x) : User::getSilent($x);
+        if (!$login) {
+            return PL_NOT_FOUND;
         }
 
-        if (empty($login)) {
+        $res = XDB::query("SELECT  perms IN ('admin','user','disabled')
+                             FROM  auth_user_md5
+                            WHERE  user_id = {?}", $login->id());
+        if (!$res->fetchOneCell()) {
             $user = get_not_registered_user($x, true);
             if ($user->total() != 1) {
                 return PL_NOT_FOUND;
@@ -213,11 +209,11 @@ class ProfileModule extends PLModule
             $user['forlife'] = $x;
         } else {
             $new   = Env::v('modif') == 'new';
-            $user  = get_user_details($login, S::v('uid'), $view);
+            $user  = get_user_details($login->login(), S::v('uid'), $view);
         }
 
         if (S::logged()) {
-            $_SESSION['log']->log('view_profile', $login);
+            $_SESSION['log']->log('view_profile', $login->login());
         }
 
         $title = $user['prenom'] . ' ' . ( empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'] );
