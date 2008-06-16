@@ -64,6 +64,7 @@ class ProfileModule extends PLModule
             'admin/trombino'   => $this->make_hook('admin_trombino', AUTH_MDP, 'admin'),
             'admin/ss_secteurs'  => $this->make_hook('admin_ss_secteurs', AUTH_MDP, 'admin'),
             'admin/fonctions'  => $this->make_hook('admin_fonctions', AUTH_MDP, 'admin'),
+            'admin/phones_format_display'  => $this->make_hook('admin_phones_format_display', AUTH_MDP, 'admin'),
 
         );
     }
@@ -826,6 +827,68 @@ class ProfileModule extends PLModule
         $table_editor->describe('name', 'intitulé', true);
         $table_editor->describe('icon', 'nom de l\'icône', false);
         $table_editor->describe('filter', 'nom du filtre à appliquer', true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_admin_phones_format_display(&$page, $action = 'list', $id = null) {
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - Format d\'affichage des numéros de téléphone ');
+        $page->assign('title', 'Gestion des formats d\'affichage des numéros de téléphone');
+        $table_editor = new PLTableEditor('admin/phones_format_display', 'phone_formats', 'phoneprf',true);
+        $table_editor->describe('format', 'format d\'Affichage (ex: (+p) ### ## ## ##)', true);
+        if ($action == 'update') {
+            if ((Post::has('phoneprf')) && (Post::v('phoneprf') == $id)) {
+                $res = XDB::query("SELECT format
+                                     FROM phone_formats
+                                    WHERE phoneprf = {?}",
+                                  $id);
+                $old_val = $res->fetchOneCell();
+                if (Post::has('format')) {
+                    $new_val = Post::v('format');
+                } else {
+                    $new_val = '';
+                }
+                if ($new_val != $old_val){
+                    require_once("profil.func.inc.php");
+                    XDB::execute("UPDATE  phone_formats
+                                     SET  format = {?}
+                                   WHERE  phoneprf = {?}",
+                                   $new_val, $id);
+                    $prefixe = $id . '%';
+                    $res = XDB::iterator("SELECT  uid, link_type, link_id, tel_id, tel_type, search_tel, pub
+                                            FROM  telephone
+                                           WHERE  search_tel LIKE {?}",
+                                           $prefixe);
+                    $req = '';
+                    $i = 0;
+                    while($phonenumber = $res->next()) {
+                        if ($req != '') {
+                            $req .= ",\n";
+                        }
+                        $req .= "('" . addslashes($phonenumber['uid']) . "', '" . addslashes($phonenumber['link_type']) . "', '" . addslashes($phonenumber['link_id'])
+                                . "', '" . addslashes($phonenumber['tel_id']) . "', '" . addslashes($phonenumber['tel_type'])
+                                . "', '" . addslashes($phonenumber['search_tel']) . "', '"
+                                . addslashes(format_display_number($phonenumber['search_tel'], &$erreur, array('format' => $new_val, 'phoneprf' => $id)))
+                                . "', '" . addslashes($phonenumber['pub']) . "')";
+                        $i++;
+                        if( $i == 1000) {
+                            XDB::execute("INSERT INTO  telephone(uid, link_type, link_id, tel_id ,tel_type,
+                                                                 search_tel, display_tel, pub)
+                                               VALUES  " . $req . "
+                              ON DUPLICATE KEY UPDATE  display_tel = VALUES(display_tel)");
+                            $req = '';
+                            $i = 0;
+                        }
+                    }
+                    if ($req != '') {
+                        XDB::execute("INSERT INTO  telephone(uid, link_type, link_id, tel_id ,tel_type,
+                                                             search_tel, display_tel, pub)
+                                           VALUES  " . $req . "
+                          ON DUPLICATE KEY UPDATE  display_tel = VALUES(display_tel)");
+                    }
+                }
+            }
+            $action = 'list';
+            $id = null;
+        }
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_medals(&$page, $action = 'list', $id = null) {

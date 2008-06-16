@@ -108,6 +108,8 @@
       <a href="admin/fonctions">Fonctions</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/networking">Networking</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/phones_format_display">Format d'affichage des numéros de téléphone</a>
     </td>
   </tr>
   <tr class="pair">

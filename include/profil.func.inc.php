@@ -298,20 +298,22 @@ function format_phone_number($tel)
     return $tel;
 }
 
-function format_display_number($tel, &$error)
+function format_display_number($tel, &$error, $format = array('format'=>'','phoneprf'=>''))
 {
     $error = false;
     $ret = '';
     $tel_length = strlen($tel);
-    $res = XDB::query("SELECT phoneprf, format
-                         FROM phone_formats
-                        WHERE phoneprf = {?} OR phoneprf = {?} OR phoneprf = {?}",
-                      substr($tel, 0, 1), substr($tel, 0, 2), substr($tel, 0, 3));
-    if ($res->numRows() == 0) {
-        $error = true;
-        return '*+' . $tel;
+    if((!isset($format['phoneprf'])) || ($format['phoneprf'] == '')) {
+        $res = XDB::query("SELECT phoneprf, format
+                             FROM phone_formats
+                            WHERE phoneprf = {?} OR phoneprf = {?} OR phoneprf = {?}",
+                          substr($tel, 0, 1), substr($tel, 0, 2), substr($tel, 0, 3));
+        if ($res->numRows() == 0) {
+            $error = true;
+            return '*+' . $tel;
+        }
+        $format = $res->fetchOneAssoc();
     }
-    $format = $res->fetchOneAssoc();
     if ($format['format'] == '') {
         $format['format'] = '+p';
     }
