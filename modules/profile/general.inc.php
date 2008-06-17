@@ -259,7 +259,7 @@ class ProfileGeneral extends ProfilePage
     {
         // Checkout all data...
         $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite, u.naissance,
-                                   q.profile_mobile as mobile, q.profile_mobile_pub as mobile_pub,
+                                   t.display_tel as mobile, t.pub as mobile_pub,
                                    d.email_directory as email_directory,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
                                    q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.matricule_ax,
@@ -270,6 +270,7 @@ class ProfileGeneral extends ProfilePage
                              FROM  auth_user_md5         AS u
                        INNER JOIN  auth_user_quick       AS q  ON(u.user_id = q.user_id)
                        INNER JOIN  profile_names_display AS n  ON(n.user_id = u.user_id)
+                        LEFT JOIN  telephone             AS t  ON(u.user_id = t.uid AND link_type = 'user')
                         LEFT JOIN  profile_directory     AS d  ON(d.uid = u.user_id)
                         LEFT JOIN  applis_ins            AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)
                         LEFT JOIN  applis_ins            AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
@@ -318,15 +319,13 @@ class ProfileGeneral extends ProfilePage
                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['naissance']),
                          S::v('uid'));
         }
-        if ($this->changed['nick'] || $this->changed['mobile'] || $this->changed['mobile_pub']
-            || $this->changed['freetext']
-            || $this->changed['freetext_pub'] || $this->changed['synchro_ax']) {
+        if ($this->changed['nick'] || $this->changed['freetext'] || $this->changed['freetext_pub'] || $this->changed['synchro_ax']) {
             XDB::execute("UPDATE  auth_user_quick
-                             SET  profile_nick= {?}, profile_mobile={?}, profile_mobile_pub={?}, 
+                             SET  profile_nick= {?},
                                   profile_freetext={?},
                                   profile_freetext_pub={?}, profile_from_ax = {?} 
                            WHERE  user_id = {?}", 
-                         $this->values['nick'], $this->values['mobile'], $this->values['mobile_pub'],
+                         $this->values['nick'],
                          $this->values['freetext'], $this->values['freetext_pub'],
                          $this->values['synchro_ax'], S::v('uid'));
         }
@@ -336,6 +335,18 @@ class ProfileGeneral extends ProfilePage
             XDB::execute("REPLACE INTO  profile_directory (uid, email_directory)
                                 VALUES  ({?}, {?})",
                          S::v('uid'), $new_email);
+        }
+        if ($this->changed['mobile'] || $this->changed['mobile_pub']) {
+            require_once('profil.func.inc.php');
+            $fmt_phone  = format_phone_number($this->values['mobile']);
+            XDB::execute("DELETE FROM telephone
+                                WHERE uid = {?} AND link_type = 'user'",
+                         S::v('uid'));
+            if ($fmt_phone != '') {
+                XDB::execute("INSERT INTO telephone (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
+                                   VALUES ({?}, 'user', '0', '0', 'mobile', {?}, {?}, {?})",
+                             S::v('uid'), $fmt_phone, $this->values['mobile'], $this->values['mobile_pub']);
+            }
         }
         if ($this->changed['nick']) {
             require_once('user.func.inc.php');

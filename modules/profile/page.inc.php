@@ -104,10 +104,17 @@ class ProfileTel extends ProfileNoSave
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
         }
-        $success = !preg_match('/[<>{}@&#~\/:;?,!§*_`\[\]|%$^=]/', $value, $matches);
+        require_once('profil.func.inc.php');
+        $value = format_phone_number($value);
+        if($value == '') {
+            $success = true;
+            return $value;
+        }
+        $value = format_display_number($value,$error);
+        $success = !$error;
         if (!$success) {
             global $page;
-            $page->trigError('Le numéro de téléphone contient un caractère interdit : ' . pl_entities($matches[0][0]));
+            $page->trigError('Le préfixe international du numéro de téléphone est inconnu. ');
         }
         return $value;
     }

@@ -41,7 +41,7 @@ function user_clear_all_subs($user_id, $really_del=true)
                              'user_id' => array('requests', 'user_changes'));
 
     if ($really_del) {
-        array_push($tables_to_clear['uid'], 'emails', 'groupex.membres', 'contacts', 'adresses', 'tels',
+        array_push($tables_to_clear['uid'], 'emails', 'groupex.membres', 'contacts', 'adresses', 'telephone',
                                             'photo', 'perte_pass', 'langues_ins', 'forums.abos', 'forums.profils');
         array_push($tables_to_clear['user_id'], 'newsletter_ins', 'auth_user_quick', 'binets_ins');
         $tables_to_clear['id'] = array('aliases');
@@ -264,14 +264,18 @@ function get_user_details_pro($uid, $view = 'private')
 {
     $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
                      e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city, e.entrid,
-                     gp.pays AS countrytxt, gr.name AS region, e.tel, e.fax, e.mobile, e.entrid,
-                     e.pub, e.adr_pub, e.tel_pub, e.email, e.email_pub, e.web
+                     gp.pays AS countrytxt, gr.name AS region, tt.display_tel AS tel,
+                     tf.display_tel AS fax, tm.display_tel AS mobile, e.entrid,
+                     e.pub, e.adr_pub, tt.pub AS tel_pub, e.email, e.email_pub, e.web
                FROM  entreprises AS e
           LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
           LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)
           LEFT JOIN  fonctions_def AS f ON(e.fonction = f.id)
           LEFT JOIN  geoloc_pays AS gp ON (gp.a2 = e.country)
           LEFT JOIN  geoloc_region AS gr ON (gr.a2 = e.country and gr.region = e.region)
+          LEFT JOIN  telephone AS tt ON(tt.uid = e.uid AND tt.link_type = 'pro' AND tt.link_id = entrid AND tt.tel_id = 0)
+          LEFT JOIN  telephone AS tf ON(tf.uid = e.uid AND tf.link_type = 'pro' AND tf.link_id = entrid AND tf.tel_id = 1)
+          LEFT JOIN  telephone AS tm ON(tm.uid = e.uid AND tm.link_type = 'pro' AND tm.link_id = entrid AND tm.tel_id = 2)
               WHERE  e.uid = {?}
            ORDER BY  e.entrid";
     $res  = XDB::query($sql, $uid);
@@ -362,11 +366,10 @@ function get_user_details_adr($uid, $view = 'private') {
             $adrid_index[$adr['adrid']] = $i;
     }
 
-    $sql = "SELECT  t.adrid, t.tel_pub, t.tel_type, t.tel, t.telid
-              FROM  tels AS t
-        INNER JOIN  adresses AS a ON (a.uid = t.uid) AND (a.adrid = t.adrid)
-             WHERE  t.uid = {?} AND NOT FIND_IN_SET('pro',a.statut)
-          ORDER BY  t.adrid, t.tel_type DESC, t.telid";
+    $sql = "SELECT  link_id AS adrid, pub AS tel_pub, tel_type, display_tel AS tel, tel_id
+              FROM  telephone AS t
+             WHERE  uid = {?} AND link_type = 'address'
+          ORDER BY  link_id, tel_type DESC, tel_id";
     $restel = XDB::iterator($sql, $uid);
     while ($nexttel = $restel->next()) {
         if (has_user_right($nexttel['tel_pub'], $view)) {
@@ -390,8 +393,8 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
 {
     $reqsql = "SELECT  u.user_id, u.promo, u.promo_sortie, u.prenom, u.nom, u.nom_usage, u.date, u.cv,
                        u.perms IN ('admin','user','disabled') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
-                       q.profile_nick AS nickname, q.profile_from_ax, q.profile_mobile AS mobile, q.profile_freetext AS freetext,
-                       q.profile_mobile_pub AS mobile_pub, q.profile_freetext_pub AS freetext_pub,
+                       q.profile_nick AS nickname, q.profile_from_ax, t.display_tel AS mobile, q.profile_freetext AS freetext,
+                       t.pub AS mobile_pub, q.profile_freetext_pub AS freetext_pub,
                        q.profile_medals_pub AS medals_pub,
                        IF(gp.nat='',gp.pays,gp.nat) AS nationalite, gp.a2 AS iso3166,
                        a.alias AS forlife, a2.alias AS bestalias,
@@ -410,6 +413,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
             LEFT JOIN  photo           AS p  ON (p.uid = u.user_id)
             LEFT JOIN  mentor          AS m  ON (m.uid = u.user_id)
             LEFT JOIN  emails          AS e  ON (e.uid = u.user_id AND e.flags='active')
+            LEFT JOIN  telephone       AS t  ON (t.uid = u.user_id AND link_type = 'user' AND link_id = 0 AND tel_id = 0)
                 WHERE  a.alias = {?}
              GROUP BY  u.user_id";
     $res  = XDB::query($reqsql, $from_uid, $login);
@@ -540,7 +544,7 @@ function update_user_address($uid, $adrid, $adr) {
         $adr['adr1'], $adr['adr2'], $adr['adr3'],
         $adr['postcode'], $adr['city'], $adr['pub'], $adrid, $uid);
     if (isset($adr['tels']) && is_array($adr['tels'])) {
-        $res = XDB::query("SELECT telid FROM tels WHERE uid = {?} AND adrid = {?} ORDER BY telid", $uid, $adrid);
+        $res = XDB::query("SELECT tel_id FROM telephone WHERE uid = {?} AND link_type = 'address' AND link_id = {?} ORDER BY tel_id", $uid, $adrid);
         $telids = $res->fetchColumn();
         foreach ($adr['tels'] as $tel) {
             if (isset($tel['telid']) && isset($tel['remove']) && $tel['remove']) {
@@ -559,28 +563,33 @@ function update_user_address($uid, $adrid, $adr) {
 // {{{ function remove_user_address()
 function remove_user_address($uid, $adrid) {
     XDB::execute("DELETE FROM adresses WHERE adrid = {?} AND uid = {?}", $adrid, $uid);
-    XDB::execute("DELETE FROM tels WHERE adrid = {?} AND uid = {?}", $adrid, $uid);
+    XDB::execute("DELETE FROM telephone WHERE adrid = {?} AND uid = {?} AND link_type = 'address'", $adrid, $uid);
 }
 // }}}
 // {{{ function add_user_tel()
 function add_user_tel($uid, $adrid, $telid, $tel) {
-    XDB::execute(
-        "INSERT INTO tels SET uid = {?}, adrid = {?}, telid = {?}, tel = {?}, tel_type = {?}, tel_pub = {?}",
-        $uid, $adrid, $telid, $tel['tel'], $tel['tel_type'], $tel['tel_pub']);
+    require('profil.func.inc.php');
+    $fmt_phone  = format_phone_number($tel['tel']);
+    $disp_phone = format_display_number($fmt_phone, $error);
+    XDB::execute("INSERT INTO telephone (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
+                       VALUES ({?}, 'address', {?}, {?}, {?}, {?}, {?}, {?})",
+                 $uid, $adrid, $telid, $tel['tel_type'], $fmt_phone, $disp_phone, $tel['tel_pub']);
 }
 // }}}
 // {{{ function update_user_tel()
 function update_user_tel($uid, $adrid, $telid, $tel) {
-    XDB::execute(
-        "UPDATE tels SET tel = {?}, tel_type = {?}, tel_pub = {?}
-        WHERE telid = {?} AND adrid = {?} AND uid = {?}",
-        $tel['tel'], $tel['tel_type'], $tel['tel_pub'],
-        $telid, $adrid, $uid);
+    require('profil.func.inc.php');
+    $fmt_phone  = format_phone_number($tel['tel']);
+    $disp_phone = format_display_number($fmt_phone, $error);
+    XDB::execute("UPDATE telephone SET search_tel = {?}, display_tel = {?}, tel_type = {?}, pub = {?}
+                   WHERE link_type = 'address' AND tel_id = {?} AND link_id = {?} AND uid = {?}",
+                 $fmt_phone, $disp_phone, $tel['tel_type'], $tel['tel_pub'],
+                 $telid, $adrid, $uid);
 }
 // }}}
 // {{{ function remove_user_tel()
 function remove_user_tel($uid, $adrid, $telid) {
-    XDB::execute("DELETE FROM tels WHERE telid = {?} AND adrid = {?} AND uid = {?}",
+    XDB::execute("DELETE FROM telephone WHERE tel_id = {?} AND link_id = {?} AND uid = {?} AND link_type = 'address'",
                  $telid, $adrid, $uid);
 }
 // }}}

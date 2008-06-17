@@ -101,8 +101,12 @@ class ProfileJob extends ProfileGeoloc
 
     public function save(ProfilePage &$page, $field, $value)
     {
+        require_once('profil.func.inc.php');
         XDB::execute("DELETE FROM  entreprises
                             WHERE  uid = {?}",
+                     S::i('uid'));
+        XDB::execute("DELETE FROM  telephone
+                            WHERE  uid = {?} AND link_type = 'pro'",
                      S::i('uid'));
         $i = 0;
         foreach ($value as &$job) {
@@ -113,24 +117,46 @@ class ProfileJob extends ProfileGeoloc
             XDB::execute("INSERT INTO  entreprises (uid, entrid, entreprise, secteur, ss_secteur,
                                                     fonction, poste, adr1, adr2, adr3, postcode,
                                                     city, cityid, country, region, regiontxt,
-                                                    tel, fax, mobile, email, web,
-                                                    pub, adr_pub, tel_pub, email_pub, flags,
+                                                    email, web,
+                                                    pub, adr_pub, email_pub, flags,
                                                     glat, glng)
                                VALUES  ({?}, {?}, {?}, {?}, {?},
                                         {?}, {?}, {?}, {?}, {?}, {?},
                                         {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, {?}, {?}, {?},
+                                        {?}, {?},
+                                        {?}, {?}, {?}, {?},
                                         {?}, {?})",
-                         S::i('uid'), $i++, $job['name'], $job['secteur'], $job['ss_secteur'],
+                         S::i('uid'), $i, $job['name'], $job['secteur'], $job['ss_secteur'],
                          $job['fonction'], $job['poste'], $job['adr']['adr1'], $job['adr']['adr2'], $job['adr']['adr3'],
                          $job['adr']['postcode'],
                          $job['adr']['city'], $job['adr']['cityid'], $job['adr']['country'], $job['adr']['region'], 
                          $job['adr']['regiontxt'],
-                         $job['tel'], $job['fax'], $job['mobile'], $job['email'], $job['web'],
-                         $job['pub'], $job['adr']['pub'], $job['tel_pub'], $job['email_pub'],
+                         $job['email'], $job['web'],
+                         $job['pub'], $job['adr']['pub'], $job['email_pub'],
                          $job['adr']['checked'] ? 'geoloc' : '', $job['adr']['precise_lat'],
                          $job['adr']['precise_lon']);
+            if ($job['tel'] != '') {
+                XDB::execute("INSERT INTO  telephone (uid, link_type, link_id, tel_id,
+                                                      tel_type, search_tel, display_tel, pub)
+                                   VALUES  ({?}, 'pro', {?}, 0,
+                                            'fixed', {?}, {?}, {?})",
+                             S::i('uid'), $i, format_phone_number($job['tel']), $job['tel'], $job['tel_pub']);
+            }
+            if ($job['fax'] != '') {
+                XDB::execute("INSERT INTO  telephone (uid, link_type, link_id, tel_id,
+                                                      tel_type, search_tel, display_tel, pub)
+                                   VALUES  ({?}, 'pro', {?}, 1,
+                                            'fax', {?}, {?}, {?})",
+                             S::i('uid'), $i, format_phone_number($job['fax']), $job['fax'], $job['tel_pub']);
+            }
+            if ($job['mobile'] != '') {
+                XDB::execute("INSERT INTO  telephone (uid, link_type, link_id, tel_id,
+                                                      tel_type, search_tel, display_tel, pub)
+                                   VALUES  ({?}, 'pro', {?}, 2,
+                                            'mobile', {?}, {?}, {?})",
+                             S::i('uid'), $i, format_phone_number($job['mobile']), $job['mobile'], $job['tel_pub']);
+            }
+            $i++;
         }
     }
 }
@@ -162,19 +188,25 @@ class ProfileJobs extends ProfilePage
                                      e.postcode, e.city, e.cityid, e.region, e.regiontxt,
                                      e.country, gp.pays, gp.display,
                                      FIND_IN_SET('geoloc', flags),
-                                     e.tel, e.fax, e.mobile, e.email, e.web, e.pub,
-                                     e.adr_pub, e.tel_pub, e.email_pub,
-                                     e.glat AS precise_lat, e.glng AS precise_lon
+                                     e.email, e.web, e.pub,
+                                     e.adr_pub, e.email_pub,
+                                     e.glat AS precise_lat, e.glng AS precise_lon,
+                                     tt.display_tel AS tel, tt.pub AS tel_pub,
+                                     tf.display_tel AS fax, tm.display_tel AS mobile
                                FROM  entreprises AS e
                           LEFT JOIN  geoloc_pays AS gp ON(gp.a2 = e.country)
-                              WHERE  uid = {?} AND entreprise != ''
+                          LEFT JOIN  telephone AS tt ON(tt.uid = e.uid AND tt.link_type = 'pro' AND tt.link_id = entrid AND tt.tel_id = 0)
+                          LEFT JOIN  telephone AS tf ON(tf.uid = e.uid AND tf.link_type = 'pro' AND tf.link_id = entrid AND tf.tel_id = 1)
+                          LEFT JOIN  telephone AS tm ON(tm.uid = e.uid AND tm.link_type = 'pro' AND tm.link_id = entrid AND tm.tel_id = 2)
+                              WHERE  e.uid = {?} AND entreprise != ''
                            ORDER BY  entrid", S::i('uid'));
         $this->values['jobs'] = array();
         while (list($name, $secteur, $ss_secteur, $fonction, $poste,
                     $adr1, $adr2, $adr3, $postcode, $city, $cityid,
                     $region, $regiontxt, $country, $countrytxt, $display,
-                    $checked, $tel, $fax, $mobile, $email, $web,
-                    $pub, $adr_pub, $tel_pub, $email_pub, $glat, $glng) = $res->next()) {
+                    $checked, $email, $web,
+                    $pub, $adr_pub, $email_pub, $glat, $glng,
+                    $tel, $tel_pub, $fax, $mobile) = $res->next()) {
             $this->values['jobs'][] = array('name'       => $name,
                                             'secteur'    => $secteur,
                                             'ss_secteur' => $ss_secteur,

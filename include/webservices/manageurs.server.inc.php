@@ -81,10 +81,10 @@ function get_annuaire_infos($method, $params) {
                 foreach ($array['adresse'] as $i => $a) $adrid_index[$a['adrid']] = $i;
                 // on rajoute les numéros de tels
                 $restel = XDB::iterator(
-                    "SELECT t.tel, t.tel_type, t.adrid
-                       FROM tels AS t
-                 INNER JOIN adresses AS a ON (t.adrid = a.adrid AND t.uid = a.uid)
-                      WHERE t.uid = {?} AND NOT FIND_IN_SET('pro', a.statut)", $uid);
+                    "SELECT t.display_tel AS tel, t.tel_type, t.link_id as adrid
+                       FROM telephone AS t
+                 INNER JOIN adresses AS a ON (t.link_id = a.adrid AND t.uid = a.uid)
+                      WHERE t.uid = {?} AND t.link_type = 'address' AND NOT FIND_IN_SET('pro', a.statut)", $uid);
                 while ($tel = $restel->next()) $array['adresse'][$adrid_index[$tel['adrid']]]['tels'][] = $tel;
                 foreach ($array['adresse'] as $i => $adr) {
                     unset($lasttel);

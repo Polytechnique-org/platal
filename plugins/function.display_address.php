@@ -46,7 +46,6 @@ function smarty_function_display_address($param, &$smarty)
         !$param['adr']['fax'] &&
         !$param['adr']['mobile']) return "";
 
-
     $lines = explode("\n", $txtad);
     $idt   = array_shift($lines);
     $restore = true;
@@ -94,10 +93,24 @@ function smarty_function_display_address($param, &$smarty)
     if ($param['adr']['fax'])
         $txthtml .= "<div>\n<em>Fax : </em>\n<strong>".$param['adr']['fax']."</strong>\n</div>\n";
     if ($param['adr']['mobile'])
-        $txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['mobile']."</strong>\n</div>\n";
+        $txthtml .= "<div>\n<em>Mob : </em>\n<strong>".$param['adr']['mobile']."</strong>\n</div>\n";
     if ($param['adr']['tels'] && count($param['adr']['tels'])) {
-        foreach ($param['adr']['tels'] as $tel)
-            $txthtml .= "<div>\n<em>".$tel['tel_type']."&nbsp;: </em>\n<strong>".$tel['tel']."</strong>\n</div>\n";
+        foreach ($param['adr']['tels'] as $tel) {
+            switch ($tel['tel_type']) {
+            case 'fixed':
+                $tel_type = 'Tél';
+                break;
+            case 'fax':
+                $tel_type = 'Fax';
+                break;
+            case 'mobile':
+                $tel_type = 'Mob';
+                break;
+            default:
+                $tel_type = $tel['tel_type'];
+            }
+            $txthtml .= "<div>\n<em>" . $tel_type . "&nbsp;: </em>\n<strong>" . $tel['tel'] . "</strong>\n</div>\n";
+        }
     }
     if (!$param['nodiv']) {
         $pos = $param['pos'] ? " style='float: " . $param['pos'] . "'" : '';

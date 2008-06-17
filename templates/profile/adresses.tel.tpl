@@ -27,7 +27,11 @@
 </div>
 <span class="titre">N°{$t+1}</span>
 <input type="hidden" name="{$telpref}[removed]" value="0" />
-<input type="text" size="10" maxlength="30" name="{$telpref}[type]" value="{$tel.type|default:"Tél."}" />
+<select name="{$telpref}[type]">
+  <option value="fixed"{if $tel.type eq 'fixed'} selected="selected"{/if}>Fixe</option>
+  <option value="mobile"{if $tel.type eq 'mobile'} selected="selected"{/if}>Mobile</option>
+  <option value="fax"{if $tel.type eq 'fax'} selected="selected"{/if}>Fax</option>
+</select>
 <input type="text" size="19" maxlength="28" name="{$telpref}[tel]" {if $tel.error}class="error"{/if} value="{$tel.tel}" />
 <a href="javascript:removeObject('{$telid}', '{$telpref}')">
   {icon name=cross title="Supprimer ce numéro de téléphone"}

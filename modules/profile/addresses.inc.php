@@ -44,6 +44,10 @@ class ProfileAddress extends ProfileGeoloc
             } else {
                 $tel['pub'] = $this->pub->value($page, 'pub', $tel['pub'], $s);
                 $tel['tel'] = $this->tel->value($page, 'tel', $tel['tel'], $s);
+                if(!isset($tel['type']) || ($tel['type'] != 'fixed' && $tel['type'] != 'mobile' && $tel['type'] != 'fax')) {
+                    $tel['type'] = 'fixed';
+                    $s = false;
+                }
                 if (!$s) {
                     $tel['error'] = true;
                     $success = false;
@@ -107,12 +111,12 @@ class ProfileAddress extends ProfileGeoloc
 
     private function saveTel($adrid, $telid, array &$tel)
     {
-        XDB::execute("INSERT INTO  tels (uid, adrid, telid,
-                                         tel_type, tel_pub, tel)
-                           VALUES  ({?}, {?}, {?},
+        XDB::execute("INSERT INTO  telephone (uid, link_type, link_id, tel_id, tel_type,
+                                              search_tel, display_tel, pub)
+                           VALUES  ({?}, 'address', {?}, {?}, {?},
                                     {?}, {?}, {?})",
-                    S::i('uid'), $adrid, $telid,
-                    $tel['type'], $tel['pub'], $tel['tel']);
+                    S::i('uid'), $adrid, $telid, $tel['type'],
+                    format_phone_number($tel['tel']), $tel['tel'], $tel['pub']);
     }
 
     private function saveAddress($adrid, array &$address)
@@ -159,8 +163,8 @@ class ProfileAddress extends ProfileGeoloc
         XDB::execute("DELETE FROM  adresses
                             WHERE  uid = {?}",
                      S::i('uid'));
-        XDB::execute("DELETE FROM  tels
-                            WHERE  uid = {?}",
+        XDB::execute("DELETE FROM  telephone
+                            WHERE  uid = {?} AND link_type = 'address'",
                      S::i('uid'));
         foreach ($value as $adrid=>&$address) {
             $this->saveAddress($adrid, $address);
@@ -204,10 +208,10 @@ class ProfileAddresses extends ProfilePage
             $this->values['addresses'] = $res->fetchAllAssoc();
         }
 
-        $res = XDB::iterator("SELECT  adrid, tel_type AS type, tel_pub AS pub, tel
-                                FROM  tels
-                               WHERE  uid = {?}
-                            ORDER BY  adrid",
+        $res = XDB::iterator("SELECT  link_id AS adrid, tel_type AS type, pub, display_tel AS tel
+                                FROM  telephone
+                               WHERE  uid = {?} AND link_type = 'address'
+                            ORDER BY  link_id",
                              S::i('uid'));
         $i = 0;
         $adrNb = count($this->values['addresses']);

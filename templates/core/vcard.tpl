@@ -65,7 +65,7 @@ ADR;TYPE=work:{format_adr adr=$vcard.adr_pro[0]}
 ADR;TYPE=home{if $adr.courier},postal{/if}:{format_adr adr=$adr}
 {foreach item=tel from=$adr.tels}
 {if $tel.tel}
-{if $tel.tel_type neq 'Fax'}TEL{else}FAX{/if};TYPE=home:{$tel.tel}
+{if $tel.tel_type neq 'fax'}TEL{else}FAX{/if};TYPE=home:{$tel.tel}
 {/if}
 {/foreach}
 {/foreach}
