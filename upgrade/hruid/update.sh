@@ -16,4 +16,9 @@ do
 done
 
 ###########################################################
+echo "Creating forlife ids for unregistered user (takes a while)."
+
+./hruid.update.php
+
+###########################################################
 
