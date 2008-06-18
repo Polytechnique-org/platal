@@ -17,7 +17,7 @@ EOF;
 $promo = intval($opt['p']);
 $owner = $opt['o'];
 
-$req = new ListeReq(0, "promo$promo", "Liste de la promotion $promo",
+$req = new ListeReq(0, false, "promo$promo", "polytechnique.org", "Liste de la promotion $promo",
                     1 /*private*/, 2 /*moderate*/, 0 /*free subscription*/,
                     array($owner), array());
 $req->submit();

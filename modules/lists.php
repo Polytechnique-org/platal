@@ -202,38 +202,68 @@ class ListsModule extends PLModule
             return;
         }
 
+        $asso = Post::v('asso');
         $liste = Post::v('liste');
 
         if (empty($liste)) {
-            $page->trigError('champs «adresse souhaitée» vide');
+            $page->trigError('Le champ «adresse souhaitée» est vide.');
         }
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
-            $page->trigError('le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets');
+            $page->trigError('Le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets.');
         }
 
-        $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
-        $n   = $res->fetchOneCell();
+        if (($asso == "binet") || ($asso == "alias")) {
+            $promo = Post::i('promo');
+            $domain = $promo . '.polytechnique.org';
+
+            if (($promo < 1921) || ($promo > date('Y'))) {
+                $page->trigError('La promotion est mal renseignée, elle doit être du type : 2004.');
+            }
+
+            $new = $liste . '@' . $domain;
+            $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+
+        } else {
+            if ($asso == "groupex") {
+                $groupex_name = Post::v('groupex_name');
+
+                $res_groupe = XDB::query('SELECT mail_domain FROM groupex.asso WHERE nom={?}', $groupex_name);
+                $domain = $res_groupe->fetchOneCell();
+
+                if (!$domain) {
+                    $page->trigError('Il n\'y a aucun groupe de ce nom sur Polytechnique.net.');
+                }
+
+                $new = $liste . '@' . $domain;
+                $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+            } else {
+                $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
+                $domain = "polytechnique.org";
+            }
+        }
+
+        $n = $res->fetchOneCell();
 
         if ($n) {
-            $page->trigError('cet alias est déjà pris');
+            $page->trigError('Cette «adresse souhaitée» est déjà prise.');
         }
 
         if (!Post::v('desc')) {
-            $page->trigError('le sujet est vide');
+            $page->trigError('Le sujet est vide.');
         }
 
         if (!count($owners)) {
-            $page->trigError('pas de gestionnaire');
+            $page->trigError('Il n\'y a pas de gestionnaire.');
         }
 
         if (count($members)<4) {
-            $page->trigError('pas assez de membres');
+            $page->trigError('Il n\'y a pas assez de membres.');
         }
 
         if (!$page->nb_errs()) {
             $page->assign('created', true);
             require_once 'validations.inc.php';
-            $req = new ListeReq(S::v('uid'), $liste,
+            $req = new ListeReq(S::v('uid'), $asso, $liste, $domain,
                                 Post::v('desc'), Post::i('advertise'),
                                 Post::i('modlevel'), Post::i('inslevel'),
                                 $owners, $members);
