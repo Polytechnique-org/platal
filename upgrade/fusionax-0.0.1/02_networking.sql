@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `profile_networking_enum` (
 ) CHARSET=utf8 COMMENT='types of networking addresses';
 
 CREATE TABLE IF NOT EXISTS `profile_networking` (
-    `uid` smallint unsigned NOT NULL COMMENT 'user id',
+    `uid` int NOT NULL COMMENT 'user id',
     `nwid` tinyint unsigned NOT NULL COMMENT 'number of the address for the user',
     `network_type` tinyint unsigned NOT NULL,
     `address` varchar(255) NOT NULL,
