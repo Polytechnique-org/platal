@@ -22,6 +22,7 @@ Bug/Wish:
     * Core:
         - Fix email sending, correcting bugs introduced in r1897           -VZA
         - #841: Improves contrast of links in legends in skin 'Espace'     -FRU
+        - #844: Uses INT in MySQL to store user ids                        -VZA
 
     * Lists:
         - #761: Fix user comment in moderation mail sent by mailman        -FRU
