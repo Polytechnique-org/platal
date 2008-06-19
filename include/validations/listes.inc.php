@@ -79,6 +79,8 @@ class ListeReq extends Validate
 
     protected function handle_editor()
     {
+        global $globals;
+
         if (Env::has('listname')) {
             $this->liste = trim(Env::v('listname'));
         }
@@ -89,7 +91,7 @@ class ListeReq extends Validate
             $this->asso = trim(Env::v('assotype'));
         }
         if (!$this->asso) {
-            $this->domain = "polytechnique.org";
+            $this->domain = $globals->mail->domain;
         }
         return true;
     }
@@ -150,21 +152,19 @@ class ListeReq extends Validate
             foreach(Array($liste, $liste . "-owner", $liste . "-admin", $liste . "-bounces", $liste . "-unsubscribe") as $l) {
                 XDB::execute("INSERT INTO aliases (alias,type) VALUES({?}, 'liste')", $l);
             }
-        } else {
-            if ($ret) {
-                foreach (Array('', 'owner', 'admin', 'bounces', 'unsubscribe') as $app) {
-                    $mdir = $app == '' ? '+post' : '+' . $app;
-                    if (!empty($app)) {
-                        $app  = '-' . $app;
-                    }
-                    $red = $this->domain . '_' . $liste;
-                    XDB::execute('INSERT INTO x4dat.virtual (alias,type)
-                                            VALUES({?},{?})', $liste . $app . '@' . $this->domain, 'list');
-                    XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                            VALUES ({?}, {?})', XDB::insertId(),
-                                           $red . $mdir . '@listes.polytechnique.org');
-                    $list->mass_subscribe($liste, join(' ', $this->members));
+        } elseif ($ret) {
+            foreach (Array('', 'owner', 'admin', 'bounces', 'unsubscribe') as $app) {
+                $mdir = $app == '' ? '+post' : '+' . $app;
+                if (!empty($app)) {
+                    $app  = '-' . $app;
                 }
+                $red = $this->domain . '_' . $liste;
+                XDB::execute('INSERT INTO x4dat.virtual (alias,type)
+                                        VALUES({?},{?})', $liste . $app . '@' . $this->domain, 'list');
+                XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
+                                        VALUES ({?}, {?})', XDB::insertId(),
+                                       $red . $mdir . '@listes.polytechnique.org');
+                $list->mass_subscribe($liste, join(' ', $this->members));
             }
         }
         return $ret;

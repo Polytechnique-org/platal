@@ -80,17 +80,16 @@ liste&nbsp;:
       {literal}
       $(function() {
         $(":radio[@name=asso]").change(function() {
-          if (($(":radio[@name=asso]:checked").val() == "binet") || ($(":radio[@name=asso]:checked").val() == "alias")) {
+          var asso = $(":radio[@name=asso]:checked").val();
+          if ((asso == "binet") || (asso == "alias")) {
             $(".groupex").hide();
             $(".promo").show();
+          } else if (asso == "groupex") {
+            $(".promo").hide();
+            $(".groupex").show();
           } else {
-            if ($(":radio[@name=asso]:checked").val() == "groupex") {
-              $(".groupex").show();
-              $(".promo").hide();
-            } else {
-              $(".groupex").hide();
-              $(".promo").hide();
-            }
+            $(".groupex").hide();
+            $(".promo").hide();
           }
         }).change();
       });

@@ -159,6 +159,8 @@ class ListsModule extends PLModule
 
     function handler_create(&$page)
     {
+        global $globals;
+
         $page->changeTpl('lists/create.tpl');
 
         $owners  = preg_split("/[\s]+/", Post::v('owners'), -1, PREG_SPLIT_NO_EMPTY);
@@ -214,7 +216,7 @@ class ListsModule extends PLModule
 
         if (($asso == "binet") || ($asso == "alias")) {
             $promo = Post::i('promo');
-            $domain = $promo . '.polytechnique.org';
+            $domain = $promo . '.' . $globals->mail->domain;
 
             if (($promo < 1921) || ($promo > date('Y'))) {
                 $page->trigError('La promotion est mal renseignée, elle doit être du type : 2004.');
@@ -238,14 +240,14 @@ class ListsModule extends PLModule
                 $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
             } else {
                 $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
-                $domain = "polytechnique.org";
+                $domain = $globals->mail->domain;
             }
         }
 
         $n = $res->fetchOneCell();
 
         if ($n) {
-            $page->trigError('Cette «adresse souhaitée» est déjà prise.');
+            $page->trigError('L\'«adresse souhaitée» est déjà prise.');
         }
 
         if (!Post::v('desc')) {
