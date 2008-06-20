@@ -409,31 +409,22 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
       <td><input type="text" name="phone_number" size="32" value="{$smarty.request.phone_number}"/></td>
     </tr>
     <tr>
-      <td colspan="2">Messageries, networking et sites webs</td>
-    </tr>
-    <tr>
-      <td>
-        <span style="margin-left:2em">Adresse</span>
+      <td style="vertical-align: middle">
+        <span>Networking et sites webs</span>
       </td>
       <td>
-        <input type="text" name="networking_address" size="32" value="{$smarty.request.networking_address}" />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <span style="margin-left:2em">Type</span>
-      </td>
-      <td>
-        <select name="networking_type">
-          <option value="" {if $smarty.request.networking_type eq ""} selected="selected"{/if}>
-            Tout
-          </option>
-        {foreach from=$network_list item=network}
-          <option value="{$network.name}" {if $smarty.request.networking_type eq $network.name} selected="selected" {/if}>
-            {$network.name}
-          </option>
-        {/foreach}
-        </select>
+        <table>
+          <tr>
+            <td style="padding-left: 0px;">
+              <input type="text" name="networking_address" size="32" value="{$smarty.request.networking_address}" />
+            </td>
+            <td>
+              <input type="text" name="networking_typeTxt" class="autocomplete" size="10" value="{$smarty.request.networking_typeTxt}" />
+              <input name="networking_type" class="autocompleteTarget" type="hidden" value="{$smarty.request.networking_type}"/>
+              <a href="networking_type" class="autocompleteToSelect">{icon name="table" title="Tous les types d'adresse"}</a>
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
         {if $smarty.session.auth ge AUTH_COOKIE}

@@ -51,7 +51,7 @@ function chgMainWinLoc(strPage)
       <span><br/>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
     {/if}
     {if $x.networking}
-      <h2>Messageries, networking et sites web&nbsp;:</h2>
+      <h2>Sur le web...</h2>
       {foreach from=$x.networking item=network}
         <img style="width: auto; padding: 0" src="profile/networking/{$network.type}" alt="{$network.name}" title="{$network.name}"/>
         {if $network.filter == 'web'}

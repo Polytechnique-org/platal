@@ -75,9 +75,9 @@ function advancedSearchFromInput()
 
     $nwAddressField  = new RefSField('networking_address', array('nw.address'), 'profile_networking', 'nw', 'nw.uid=u.user_id', false);
     if (Env::v('networking_address') == '') {
-        $nwTypeField     = new RefSField('networking_type', array('nwe.name'), array('profile_networking', 'profile_networking_enum'), array('nw', 'nwe'), array('nw.uid = u.user_id', 'nwe.network_type = nw.network_type'), true);
+        $nwTypeField     = new IndexSField('networking_type', array('nwe.network_type'), array('profile_networking', 'profile_networking_enum'), array('nw', 'nwe'), array('nw.uid = u.user_id', 'nwe.network_type = nw.network_type'));
     } else {
-        $nwTypeField     = new RefSField('networking_type', array('nwe.name'), 'profile_networking_enum', 'nwe', 'nwe.network_type = nw.network_type', true);
+        $nwTypeField     = new IndexSField('networking_type', array('nwe.network_type'), 'profile_networking_enum', 'nwe', 'nwe.network_type = nw.network_type');
     }
     $nwPhoneField  = new PhoneSField('phone_number', array('t.search_tel'), 'telephone', 't', 't.uid=u.user_id');
     return array(

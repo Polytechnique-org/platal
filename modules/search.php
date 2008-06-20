@@ -168,11 +168,6 @@ class SearchModule extends PLModule
         $page->assign('advanced',1);
         $page->addJsLink('jquery.autocomplete.js');
 
-        $res = XDB::iterator("SELECT  nw.network_type AS type, nw.name
-                                FROM  profile_networking_enum AS nw
-                            ORDER BY  name ;");
-        $page->assign('network_list', $res->fetchAllAssoc());
-
         if (!Env::has('rechercher') && $action != 'geoloc') {
             $this->form_prepare();
         } else {
@@ -182,6 +177,8 @@ class SearchModule extends PLModule
                 'secteur' => array('field' => 'id', 'table' => 'emploi_secteur', 'text' => 'label', 'exact' => false),
                 'nationalite' => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'nat', 'exact' => 'false'),
                 'binet' => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
+                'networking_type' => array('field' => 'network_type', 'table' => 'profile_networking_enum',
+                                           'text' => 'name', 'exact' => false),
                 'groupex' => array('field' => 'id', 'table' => 'groupex.asso',
                                    'text' => "(a.cat = 'GroupesX' OR a.cat = 'Institutions') AND pub = 'public' AND nom",
                                    'exact' => false),
@@ -271,6 +268,13 @@ class SearchModule extends PLModule
             if (strlen($q) > 2)
                 $beginwith = false;
             $realid = '`binets_def`.`id`';
+            break;
+          case 'networking_typeTxt':
+            $db = '`profile_networking_enum` INNER JOIN
+                   `profile_networking` ON(`profile_networking`.`network_type` = `profile_networking_enum`.`network_type`)';
+            $field = '`profile_networking_enum`.`name`';
+            $unique = 'uid';
+            $realid = '`profile_networking_enum`.`network_type`';
             break;
           case 'city':
             $db = '`geoloc_city` INNER JOIN
@@ -423,6 +427,11 @@ class SearchModule extends PLModule
         switch ($type) {
           case 'binet':
             $db = '`binets_def`';
+            break;
+          case 'networking_type':
+            $db = '`profile_networking_enum`';
+            $field = '`name`';
+            $id = '`network_type`';
             break;
           case 'country':
             $db = '`geoloc_pays`';

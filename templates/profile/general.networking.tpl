@@ -21,25 +21,27 @@
 {**************************************************************************}
 
 <tr id="networking_{$i}">
-  <td>
-    <span class="flags">
-      <input type="checkbox"
-        {if $nw.pub neq 'private'} checked="checked"{/if}
-        name="networking[{$i}][pub]"/>
-      {icon name="flag_green" title="site public"}
-    </span>&nbsp;
-    <input type="hidden" name="networking[{$i}][type]" value="{$nw.type}"/>
-    <input type="hidden" name="networking[{$i}][name]" value="{$nw.name}"/>
-    <img src="profile/networking/{$nw.type}" alt="{nw.name}" title="{nw.name}" />
-    <span class="title">{$nw.name}</span>
-  </td>
-  <td>
-    <input type="text" name="networking[{$i}][address]" value="{$nw.address}"
-    {if $nw.error} class="error" {/if}
-    size="30"/>
-    <a href="javascript:removeNetworking({$i})">
-      {icon name=cross title="Supprimer cet élément"}
-    </a>
+  <td colspan="2">
+    <div style="float: left; width: 200px;">
+      <span class="flags">
+        <input type="checkbox"
+          {if $nw.pub neq 'private'} checked="checked"{/if}
+          name="networking[{$i}][pub]"/>
+        {icon name="flag_green" title="site public"}
+      </span>&nbsp;
+      <input type="hidden" name="networking[{$i}][type]" value="{$nw.type}"/>
+      <input type="hidden" name="networking[{$i}][name]" value="{$nw.name}"/>
+      <img src="profile/networking/{$nw.type}" alt="{$nw.name}" title="{$nw.name}" />
+      <span style="">{$nw.name}</span>
+    </div>
+    <div style="float: left">
+      <input type="text" name="networking[{$i}][address]" value="{$nw.address}"
+        {if $nw.error} class="error" {/if}
+        size="30"/>
+      <a href="javascript:removeNetworking({$i})">
+        {icon name=cross title="Supprimer cet élément"}
+      </a>
+    </div>
   </td>
 </tr>
 

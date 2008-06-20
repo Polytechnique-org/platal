@@ -109,7 +109,7 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/networking">Networking</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/phones_format_display">Format d'affichage des numéros de téléphone</a>
+      <a href="admin/phones_format_display">Téléphone</a>
     </td>
   </tr>
   <tr class="pair">

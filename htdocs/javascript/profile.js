@@ -113,39 +113,38 @@ function removeSearchName(i)
 function addNetworking()
 {
     var i = 0;
-    var nw = 'networking_';
-    while (document.getElementById(nw + i) != null) {
+    var nws = 'networking_';
+    while (document.getElementById(nws + i) != null) {
         i++;
     }
-    var cb   = document.forms.prof_annu['nw_type'];
-    var id   = cb.value;
-    var text = cb.options[cb.selectedIndex].text;
+    var namefirst = '';
     var html = '<tr id="networking_' + i + '">'
-        + '  <td>'
-        + '    <span class="flags">'
-        + '      <input type="checkbox" name="networking[' + i + '][pub]"/>'
-        + '      <img src="images/icons/flag_green.gif" alt="site public" title="site public">'
-        + '    </span>&nbsp;'
-        + '    <input type="hidden" name="networking[' + i + '][type]" value="' + id + '"/>'
-        + '    <input type="hidden" name="networking[' + i + '][name]" value="' + text + '"/>'
-        + '    <img src="profile/networking/' + id + '" alt="' + text + '" title="' + text + '" />'
-        + '    <span class="title">'
-        + text
-        + '    </span>'
-        + '  </td>'
-        + '  <td>'
-        + '    <input type="text" name="networking[' + i + '][address]" value="" size="30"/>'
-        + '    <a href="javascript:removeNetworking(' + i + ')">'
-        + '      <img src="images/icons/cross.gif" alt="cross" title="Supprimer cet élément"/>'
-        + '    </a>'
+        + '  <td colspan="2">'
+        + '    <div style="float: left; width: 200px;">'
+        + '      <span class="flags">'
+        + '        <input type="checkbox" name="networking[' + i + '][pub]"/>'
+        + '        <img src="images/icons/flag_green.gif" alt="site public" title="site public">'
+        + '      </span>&nbsp;'
+        + '      <select id="networking_type_' + i + '" name="networking[' + i + '][type]" onchange="javascript:updateNetworking(' + i + ');">';
+    for (nw in nw_list) {
+        if (namefirst == '') {
+            namefirst = nw;
+        }
+        html += '  <option value="' + nw_list[nw] + '">' + nw + '</option>';
+    }
+    html += '</select>'
+        + '      <input type="hidden" id="networking_name_' + i + '" name="networking[' + i + '][name]" value="' + namefirst + '"/>'
+        + '    </div>'
+        + '    <div style="float: left">'
+        + '      <input type="text" name="networking[' + i + '][address]" value="" size="30"/>'
+        + '      <a href="javascript:removeNetworking(' + i + ')">'
+        + '        <img src="images/icons/cross.gif" alt="cross" title="Supprimer cet élément"/>'
+        + '      </a>'
+        + '    </div>'
         + '  </td>'
         + '</tr>';
 
-    if (i == 0) {
-        $('#networking').after(html);
-    } else {
-        $('#networking_'+(i-1)).after(html);
-    }
+    $('#networking').before(html);
 }
 
 function removeNetworking(id)
@@ -153,14 +152,14 @@ function removeNetworking(id)
     $('#networking_' + id).remove();
 }
 
-function updateNetworking()
+function updateNetworking(i)
 {
-    var val = document.forms.prof_annu['nw_type'].value;
-    if (val == '') {
-        document.getElementById('nw_add').style.display = 'none';
-    } else {
-        document.getElementById('nw_add').style.display = '';
+    var name = document.getElementById('networking_name_' + i);
+    var type = document.getElementById('networking_type_' + i);
+    if (type != null && name != null) {
+        name.value = type.options[type.selectedIndex].text;
     }
+
 }
 
 // Addresses

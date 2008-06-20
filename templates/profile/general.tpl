@@ -290,25 +290,38 @@
       <span class="titre">Messageries, networking et sites web</span>
     </td>
   </tr>
-  <tr id="networking">
-    <td>
-      <span class="titre" style="margin-left:1em;">Type à ajouter</span>
-    </td>
-    <td>
-      <select name="nw_type" onchange="updateNetworking()">
-        <option value=""></option>
-        {foreach from=$network_list item=network}
-          <option value="{$network.type}">{$network.name}</option>
-        {/foreach}
-      </select>
-      <span id="nw_add" style="display: none">
-        <a href="javascript:addNetworking();">{icon name=add title="Ajouter cette adresse"}</a>
-      </span>
-    </td>
-  </tr>
   {foreach from=$networking item=network key=id}
     {include file="profile/general.networking.tpl" nw=$network i=$id}
   {/foreach}
+  <tr id="networking">
+    <script type="text/javascript">//<![CDATA[
+      var nw_list = new Array();
+      {foreach from=$network_list item=network}
+        nw_list['{$network.name}'] = {$network.type};
+      {/foreach}
+    //]]></script>
+    <td colspan="2">
+      <div id="nw_add" class="center">
+        <a href="javascript:addNetworking();">
+          {icon name=add title="Ajouter une adresse"} Ajouter une adresse
+        </a>
+      </div>
+    </td>
+  </tr>
+<!--  <tr id="networking">
+    <td colspan="2">
+      <div style="float: left; width: 200px;">
+        <span class="titre" style="margin-left:1em;">Type à ajouter</span>
+      </div>
+      <div style="float: left;">
+        <div id="nw_type_ac" style="background-color: white; border: solid 1px black; position: absolute; width: 208px; display: none">TEST</div>
+        <input type="text" size="30" id="nw_type" name="nw_type" onkeyup="updateNetworking()">
+        <span id="nw_add" style="display: none">
+          <a href="javascript:addNetworking();">{icon name=add title="Ajouter cette adresse"}</a>
+        </span>
+      </div>
+    </td>
+  </tr>-->
   <tr class="pair">
     <td>
       <div>

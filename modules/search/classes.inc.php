@@ -515,6 +515,19 @@ class PhoneSField extends RefSField
     }
 }
 
+class IndexSField extends RefSField
+{
+    function IndexSField($_fieldFormName, $_fieldDbName='', $_refTable, $_refAlias, $_refCondition)
+    {
+        $this->RefSField($_fieldFormName, $_fieldDbName, $_refTable, $_refAlias, $_refCondition, true);
+    }
+
+    function get_request()
+    {
+        $this->value = trim(Env::v($this->fieldFormName));
+    }
+}
+
 class MapSField extends RefSField
 {
     var $mapId;

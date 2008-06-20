@@ -179,22 +179,26 @@ class ProfileNetworking implements ProfileSetting
         }
         $success = true;
         foreach($value as $i=>&$network) {
-            if(!isset($network['pub'])) {
-                $network['pub'] = 'private';
-            }
-            $network['error'] = false;
-            $network['pub'] = $this->pub->value($page, 'pub', $network['pub'], $s);
-            $s = true;
-            if ($filters[$network['type']] == 'web') {
-                $network['address'] = $this->web->value($page, 'address', $network['address'], $s);
-            } elseif ($filters[$network['type']] == 'email') {
-                $network['address'] = $this->email->value($page, 'address', $network['address'], $s);
-            } elseif ($filters[$network['type']] == 'number') {
-                $network['address'] = $this->number->value($page, 'address', $network['address'], $s);
-            }
-            if (!$s) {
-                $success = false;
-                $network['error'] = true;
+            if (!trim($network['address'])) {
+                unset($value[$i]);
+            } else {
+                if (!isset($network['pub'])) {
+                    $network['pub'] = 'private';
+                }
+                $network['error'] = false;
+                $network['pub'] = $this->pub->value($page, 'pub', $network['pub'], $s);
+                $s = true;
+                if ($filters[$network['type']] == 'web') {
+                    $network['address'] = $this->web->value($page, 'address', $network['address'], $s);
+                } elseif ($filters[$network['type']] == 'email') {
+                    $network['address'] = $this->email->value($page, 'address', $network['address'], $s);
+                } elseif ($filters[$network['type']] == 'number') {
+                    $network['address'] = $this->number->value($page, 'address', $network['address'], $s);
+                }
+                if (!$s) {
+                    $success = false;
+                    $network['error'] = true;
+                }
             }
         }
         return $value;

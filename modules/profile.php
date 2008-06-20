@@ -833,6 +833,7 @@ class ProfileModule extends PLModule
         $page->assign('xorg_title', 'Polytechnique.org - Administration - Format d\'affichage des numéros de téléphone ');
         $page->assign('title', 'Gestion des formats d\'affichage des numéros de téléphone');
         $table_editor = new PLTableEditor('admin/phones_format_display', 'phone_formats', 'phoneprf',true);
+        $table_editor->describe('phoneprf', 'Préfixe International', true);
         $table_editor->describe('format', 'format d\'Affichage (ex: (+p) ### ## ## ##)', true);
         if ($action == 'update') {
             if ((Post::has('phoneprf')) && (Post::v('phoneprf') == $id)) {
