@@ -56,6 +56,8 @@ function chgMainWinLoc(strPage)
         <img style="width: auto; padding: 0" src="profile/networking/{$network.type}" alt="{$network.name}" title="{$network.name}"/>
         {if $network.filter == 'web'}
           <a href="{$network.address}">{$network.address}</a>
+        {elseif $network.link != ''}
+          <a href="{$network.link}">{$network.address}</a>
         {else}
           {$network.address}
         {/if}

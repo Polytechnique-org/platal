@@ -499,13 +499,14 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
     }
 
     $user['networking'] = Array();
-    $res = XDB::iterator("SELECT  n.address, n.pub, m.network_type AS type, m.name, m.filter
+    $res = XDB::iterator("SELECT  n.address, n.pub, m.network_type AS type, m.name, m.filter, m.link
                             FROM  profile_networking AS n
                       INNER JOIN  profile_networking_enum AS m ON (n.network_type = m.network_type)
                            WHERE  n.uid = {?}", $uid);
     while($network = $res->next())
     {
         if (has_user_right($network['pub'], $view)) {
+            $network['link'] = str_replace('%s', $network['address'], $network['link']);
             $user['networking'][] = $network;
         }
     }

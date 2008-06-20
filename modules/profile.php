@@ -826,7 +826,8 @@ class ProfileModule extends PLModule
         $table_editor = new PLTableEditor('admin/networking', 'profile_networking_enum', 'network_type');
         $table_editor->describe('name', 'intitulé', true);
         $table_editor->describe('icon', 'nom de l\'icône', false);
-        $table_editor->describe('filter', 'nom du filtre à appliquer', true);
+        $table_editor->describe('filter', 'filtre', true);
+        $table_editor->describe('link', 'lien web', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_phones_format_display(&$page, $action = 'list', $id = null) {

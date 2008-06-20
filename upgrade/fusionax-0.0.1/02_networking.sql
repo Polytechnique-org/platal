@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `profile_networking_enum` (
     `name` varchar(30) NOT NULL,
     `icon` varchar(50) NOT NULL COMMENT 'icon filename',
     `filter` enum('email','web','number','none') NOT NULL DEFAULT 'none' COMMENT 'filter type for addresses',
+    `link` varchar(255) NOT NULL COMMENT 'string used to forge an URL linking to the the profile page',
     PRIMARY KEY (`network_type`)
 ) CHARSET=utf8 COMMENT='types of networking addresses';
 
