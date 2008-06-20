@@ -214,6 +214,8 @@ class QuickSearch extends SField
     /** stores admin searches */
     var $email;
     var $ip;
+    /** stores phone number */
+    var $phone;
 
     // }}}
     // {{{ constructor
@@ -232,7 +234,7 @@ class QuickSearch extends SField
 
     function isempty()
     {
-        return empty($this->strings) && empty($this->ranges) && empty($this->email) && empty($this->ip);
+        return empty($this->strings) && empty($this->ranges) && empty($this->email) && empty($this->ip) && empty($this->phone);
     }
 
     // }}}
@@ -270,6 +272,12 @@ class QuickSearch extends SField
         $this->ranges=Array();
         foreach ($ranges as $r) {
             if (preg_match('!^([<>]\d{4}|\d{4}(-\d{4})?)$!', $r)) $this->ranges[] = $r;
+        }
+
+        $t = preg_replace('!(\d{4}-\d{4}|>\d{4}|<\d{4})!', '', $s);
+        $t = preg_replace('![<>\- ]!', '', $t);
+        if (strlen($t) > 4) {
+            $this->phone = $t;
         }
     }
 
@@ -314,6 +322,11 @@ class QuickSearch extends SField
             $ip = ip_to_uint($this->ip);
             $where[] = "( ls.ip = $ip OR ls.forward_ip = $ip ) AND ls.suid = 0";
         }
+        if (!empty($this->phone)){
+            require_once("profil.func.inc.php");
+            $phone = format_phone_number($this->phone) . "%";
+            $where[] = 't.search_tel LIKE ' . XDB::escape($phone);
+        }
 
         return join(" AND ", $where);
     }
@@ -338,6 +351,13 @@ class QuickSearch extends SField
         }
         if (!empty($this->ip)) {
             $join .= "INNER JOIN logger.sessions AS ls ON (ls.uid = u.user_id)\n";
+        }
+        if (!empty($this->phone)) {
+            if (!S::logged()) {
+                $join .= "INNER JOIN telephone AS t ON (t.uid = u.user_id AND t.pub = 'public')";
+            } else {
+                $join .= "INNER JOIN telephone AS t ON (t.uid = u.user_id)";
+            }
         }
         return $join;
     }
