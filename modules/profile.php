@@ -654,7 +654,7 @@ class ProfileModule extends PLModule
                   WHERE  user_id={?}", S::v('uid'));
 
         list($nom, $usage_old, $flags, $alias_old) = $res->fetchOneRow();
-        $flags = new flagset($flags);
+        $flags = new PlFlagSet($flags);
         $page->assign('usage_old', $usage_old);
         $page->assign('alias_old',  $alias_old);
 

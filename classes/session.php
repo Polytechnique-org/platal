@@ -31,8 +31,8 @@ class Session
             require_once 'xorg.misc.inc.php';
             $_SESSION['xsrf_token'] = rand_url_id();
         }
-        if (!isset($_SESSION['perms']) || !($_SESSION['perms'] instanceof FlagSet)) {
-            $_SESSION['perms'] = new FlagSet();
+        if (!isset($_SESSION['perms']) || !($_SESSION['perms'] instanceof PlFlagSet)) {
+            $_SESSION['perms'] = new PlFlagSet();
         }
     }
 

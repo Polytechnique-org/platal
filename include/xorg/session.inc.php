@@ -180,7 +180,7 @@ class XorgSession
 
     public static function &make_perms($perm)
     {
-        $flags = new FlagSet();
+        $flags = new PlFlagSet();
         if ($perm == 'disabled' || $perm == 'ext') {
             return $flags;
         }
@@ -286,7 +286,7 @@ function start_connexion ($uid, $identified)
         if (check_ip('ban')) {
             send_warning_mail($mail_subject);
             $_SESSION = array();
-            $_SESSION['perms'] = new FlagSet();
+            $_SESSION['perms'] = new PlFlagSet();
             global $page;
             $newpage = false;
             if (!$page) {

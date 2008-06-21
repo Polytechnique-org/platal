@@ -117,7 +117,7 @@ class ProfileAddress extends ProfileGeoloc
 
     private function saveAddress($adrid, array &$address)
     {
-        $flags = new FlagSet();
+        $flags = new PlFlagSet();
         if ($address['secondaire']) {
             $flags->addFlag('res-secondaire');
         }

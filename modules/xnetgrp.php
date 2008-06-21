@@ -224,7 +224,7 @@ class XnetGrpModule extends PLModule
         if (Post::has('submit')) {
             S::assert_xsrf_token();
 
-            $flags = new FlagSet('wiki_desc');
+            $flags = new PlFlagSet('wiki_desc');
             if (Post::has('notif_unsub') && Post::i('notif_unsub') == 1) {
                 $flags->addFlag('notif_unsub');
             }
@@ -1186,7 +1186,7 @@ class XnetGrpModule extends PLModule
         if (Post::v('valid') == 'Enregistrer') {
             $promo_min = ($art['public'] ? 0 : $art['promo_min']);
             $promo_max = ($art['public'] ? 0 : $art['promo_max']);
-            $flags = new FlagSet();
+            $flags = new PlFlagSet();
             if ($art['public']) {
                 $flags->addFlag('public');
             }

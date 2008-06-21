@@ -166,7 +166,7 @@ class XDB
             return 'NULL';
 
           case 'object':
-            if ($var instanceof FlagSet) {
+            if ($var instanceof PlFlagSet) {
                 return "'" . addslashes($var->flags()) . "'";
             }
           case 'array':

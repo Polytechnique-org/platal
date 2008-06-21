@@ -377,7 +377,7 @@ class EventsModule extends PLModule
                 $action = 'edit';
             } else {
                 $res = XDB::query('SELECT flags FROM evenements WHERE id = {?}', $eid);
-                $flags = new FlagSet($res->fetchOneCell());
+                $flags = new PlFlagSet($res->fetchOneCell());
                 $flags->addFlag('wiki');
                 if (Post::v('important')) {
                     $flags->addFlag('important');

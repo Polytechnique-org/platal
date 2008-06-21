@@ -179,7 +179,7 @@ class ForumsBanana extends Banana
         if (Post::has('action') && Post::has('banananame') && Post::has('bananasig')
                 && Post::has('bananadisplay') && Post::has('bananamail')
                 && Post::has('bananaupdate') && Post::v('action')=="Enregistrer" ) {
-            $flags = new FlagSet();
+            $flags = new PlFlagSet();
             if (Post::b('bananadisplay')) {
                 $flags->addFlag('threads');
             }

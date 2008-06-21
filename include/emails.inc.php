@@ -273,7 +273,7 @@ class EmailStorage extends Email
         $res = XDB::query("SELECT  mail_storage
                              FROM  auth_user_md5
                             WHERE  user_id = {?}", $this->uid);
-        return new FlagSet($res->fetchOneCell());
+        return new PlFlagSet($res->fetchOneCell());
     }
 
     // Updates the list of active storages.

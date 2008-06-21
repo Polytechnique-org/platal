@@ -21,22 +21,26 @@
 
 /** class for describing flags
  */
-class Flagset
+class PlFlagSet
 {
-    /** string that holds the flagset */
-    private $value;
+    /** string that holds the PlFlagSet */
+    private $values = array();
 
     /** the boundary between flags */
-    private $sep = ",";
+    private $sep;
 
 
     /** set flag
      * @param $flags services FROM coupures
      * @return VOID
      */
-    public function __construct($flags = "")
+    public function __construct($flags = '', $sep = ',')
     {
-        $this->value = $flags;
+        $this->sep = $sep;
+        $splitted = explode($sep, $flags);
+        foreach ($splitted as $part) {
+            $this->values[$part] = true;
+        }
     }
 
 
@@ -46,12 +50,10 @@ class Flagset
      */
     public function addFlag($flag)
     {
-        if (!$flag) return;
-        if (!$this->hasflag($flag)) {
-            if ($this->value)
-                $this->value .= $this->sep;
-            $this->value .= $flag;
+        if (empty($flag)) {
+            return;
         }
+        $this->values[$flag] = true;
     }
 
 
@@ -61,12 +63,7 @@ class Flagset
      */
     public function hasFlag($flag)
     {
-        $tok = strtok($this->value,$this->sep);
-        while ($tok) {
-            if ($tok==$flag) return 1;
-            $tok = strtok($this->sep);
-        }
-        return 0;
+        return !empty($flag) && isset($this->values[$flag]) && $this->values[$flag];
     }
 
     /** test flag combination
@@ -96,25 +93,29 @@ class Flagset
      */
     public function rmFlag($flag)
     {
-        if (!$flag) return;
-        $newvalue = "";
-        $tok = strtok($this->value,$this->sep);
-        while ($tok) {
-            if ($tok!=$flag) {
-                if ($newvalue)
-                    $newvalue .= $this->sep;
-                $newvalue .= $tok;
-            }
-            $tok = strtok($this->sep);
+        if (empty($flag)) {
+            return;
         }
-        $this->value=$newvalue;
+        if (isset($this->values[$flag])) {
+            unset($this->values[$flag]);
+        }
     }
 
-    /** return the flagset
+
+    /** return the PlFlagSet
      */
     public function flags()
     {
-        return $this->value;
+        $flags = '';
+        foreach ($this->values as $key=>$value) {
+            if (!empty($flags)) {
+                $flags .= $this->sep;
+            }
+            if ($value) {
+                $flags .= $key;
+            }
+        }
+        return $flags;
     }
 }
 
