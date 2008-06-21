@@ -31,7 +31,7 @@ abstract class PlPage extends Smarty
 
     // {{{ function PlPage()
 
-    public function __construct($tpl, $type = SKINNED)
+    public function __construct()
     {
         parent::Smarty();
 
@@ -47,7 +47,6 @@ abstract class PlPage extends Smarty
 
         $this->compile_check = !empty($globals->debug);
 
-        $this->changeTpl($tpl, $type);
         $this->_errors    = array('errors' => array());
         $this->_jsonVars  = array();
         $this->_failure   = false;

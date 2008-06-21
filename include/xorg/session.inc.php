@@ -23,6 +23,10 @@ require_once 'xorg.misc.inc.php';
 
 class XorgSession
 {
+    public function __construct() {
+        XorgSession::init();
+    }
+
     // {{{ public static function init
 
     public static function init()

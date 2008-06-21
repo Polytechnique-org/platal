@@ -43,8 +43,9 @@ class PlatalGlobals extends PlGlobals
 
     public function __construct($sess)
     {
-        $this->session = $sess; /* XXX Remove references to session from $globals */
         parent::__construct(array('platal.ini', 'platal.conf'));
+        $globals->bootstrap(array('NbIns'), 'update_NbIns');i
+        $globals->bootstrap(array('NbValid'), 'update_NbValid');
     }
 
     public function asso($key=null)

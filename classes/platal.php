@@ -34,8 +34,17 @@ class Platal
     public $path;
     public $argv;
 
+    static private $_page = null;
+
     public function __construct()
     {
+        global $platal, $globals, $session;
+        $platal  =& $this;
+        $globalclass = PL_GLOBALS_CLASS;
+        $globals = new $globalclass();
+        $sessionclass = PL_SESSION_CLASS;
+        $session = new $sessionclass();
+
         $modules    = func_get_args();
         if (is_array($modules[0])) {
             $modules = $modules[0];
@@ -237,7 +246,7 @@ class Platal
         if (empty($hook)) {
             return PL_NOT_FOUND;
         }
-        global $globals;
+        global $globals, $session;
         if ($this->https && !$_SERVER['HTTPS'] && $globals->core->secure_domain) {
             http_redirect('https://' . $globals->core->secure_domain . $_SERVER['REQUEST_URI']);
         }
@@ -247,7 +256,7 @@ class Platal
 
         if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
             if ($hook['type'] & DO_AUTH) {
-                if (!call_user_func(array($globals->session, 'doAuth'))) {
+                if (!$session->doAuth()) {
                     $this->force_login($page);
                 }
             } else {
@@ -261,7 +270,7 @@ class Platal
         $val = call_user_func_array($hook['hook'], $args);
         if ($val == PL_DO_AUTH) {
             // The handler need a better auth with the current args
-            if (!call_user_func(array($globals->session, 'doAuth'))) {
+            if (!$session->doAuth()) {
                 $this->force_login($page);
             }
             $val = call_user_func_array($hook['hook'], $args);
@@ -285,9 +294,7 @@ class Platal
 
     public function run()
     {
-        global $page;
-
-        new_skinned_page('platal/index.tpl');
+        $page =& self::page();
 
         if (empty($this->path)) {
             $this->path = 'index';
@@ -316,6 +323,17 @@ class Platal
                 continue;
             call_user_func_array(array($mod, 'on_subscribe'), $args);
         }
+    }
+
+    static public function &page()
+    {
+        global $platal, $page;
+        if (is_null(self::$_page)) {
+            $pageclass = PL_PAGE_CLASS;
+            $page = new $pageclass();
+            self::$_page =& $page;
+        }
+        return self::$_page;
     }
 }
 
