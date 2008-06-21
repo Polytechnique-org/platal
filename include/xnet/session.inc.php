@@ -21,6 +21,11 @@
 
 class XnetSession
 {
+    public function __construct()
+    {
+        self::init();
+    }
+
     // {{{ function init
 
     public static function init()
@@ -28,6 +33,10 @@ class XnetSession
         global $globals;
 
         S::init();
+
+        if (!S::logged() && Get::has('auth')) {
+            XnetSession::doAuthX();
+        }
 
         if (!S::logged()) {
             // prevent connexion to be linked to deconnexion

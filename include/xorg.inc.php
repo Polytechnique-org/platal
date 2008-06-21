@@ -27,7 +27,6 @@ require_once('platal.inc.php');
 require_once('globals.inc.php');
 require_once('xorg/session.inc.php');
 
-$globals = new PlatalGlobals();
 // {{{ class XorgPage
 
 class XorgPage extends PlPage
