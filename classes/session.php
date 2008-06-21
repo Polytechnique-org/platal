@@ -98,7 +98,7 @@ class Session
     {
         if (!Session::has_xsrf_token()) {
             global $page;
-            if ($page instanceof PlatalPage) {
+            if ($page instanceof PlPage) {
                 $page->kill("L'opération n'a pas pu aboutir, merci de réessayer.");
             }
         }

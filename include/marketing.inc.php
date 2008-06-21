@@ -276,7 +276,7 @@ class AnnuaireMarketing implements MarketingEngine
         return $this->signature;
     }
 
-    protected function prepareText(PlatalPage &$page, array $user)
+    protected function prepareText(PlPage &$page, array $user)
     {
         $page->assign('intro', $this->getIntro());
         $page->assign('u', $user);

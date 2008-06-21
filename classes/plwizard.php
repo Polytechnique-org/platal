@@ -37,7 +37,7 @@ interface PlWizardPage
 
     /** Prepare the page by assigning to it any useful value.
      */
-    public function prepare(PlatalPage &$page, $id);
+    public function prepare(PlPage &$page, $id);
 
     /** Process information resulting of the application of the page.
      * This function must return a clue indicating the next page to show.
@@ -138,7 +138,7 @@ class PlWizard
         return new $page($this);
     }
 
-    public function apply(PlatalPage &$smarty, $baseurl, $pgid = null, $mode = 'normal')
+    public function apply(PlPage &$smarty, $baseurl, $pgid = null, $mode = 'normal')
     {
         if ($this->stateless && (isset($this->lookup[$pgid]) || isset($this->pages[$pgid]))) { 
             $curpage = is_numeric($pgid) ? $pgid : $this->lookup[$pgid]; 

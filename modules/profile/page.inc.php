@@ -290,11 +290,11 @@ abstract class ProfilePage implements PlWizardPage
         return 'profile/base.tpl';
     }
 
-    protected function _prepare(PlatalPage &$page, $id)
+    protected function _prepare(PlPage &$page, $id)
     {
     }
 
-    public function prepare(PlatalPage &$page, $id)
+    public function prepare(PlPage &$page, $id)
     {
         if (count($this->values) == 0) {
             $this->fetchData();

@@ -188,7 +188,7 @@ class PLTableEditor
     }
 
     // call when done
-    public function apply(PlatalPage &$page, $action, $id = false)
+    public function apply(PlPage &$page, $action, $id = false)
     {
         $page->changeTpl('core/table-editor.tpl');
         $list = true;

@@ -239,7 +239,7 @@ class CSVImporter
     }
 
     /** Handle insertion form
-     * @param $page  PlatalPage to process
+     * @param $page  PlPage to process
      * @param $url   URI of the page
      * @param $field Editable fields
      */

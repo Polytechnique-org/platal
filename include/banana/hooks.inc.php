@@ -311,7 +311,7 @@ class BananaHandler
         return 'banana/index.tpl';
     }
 
-    public function prepare(PlatalPage &$page, $id)
+    public function prepare(PlPage &$page, $id)
     {
     }
 

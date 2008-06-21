@@ -270,7 +270,7 @@ class TrombiView extends MultipageView
         return 'include/plview.trombi.tpl';
     }
 
-    public function apply(PlatalPage &$page)
+    public function apply(PlPage &$page)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
             global $globals;
@@ -307,7 +307,7 @@ class GeolocView implements PlView
         return $args;
     }
 
-    public function apply(PlatalPage &$page)
+    public function apply(PlPage &$page)
     {
         require_once 'geoloc.inc.php';
         require_once '../modules/search/search.inc.php';
@@ -405,7 +405,7 @@ class GadgetView implements PlView
                  : "");
     }
 
-    public function apply(PlatalPage &$page)
+    public function apply(PlPage &$page)
     {
         $page->assign_by_ref('set',
           $this->set->get($this->fields(), $this->joins(), null, null, null, 5, 0));

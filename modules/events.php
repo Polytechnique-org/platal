@@ -81,7 +81,7 @@ class EventsModule extends PLModule
         return $res->fetchOneAssoc();
     }
 
-    private function upload_image(PlatalPage &$page, PlUpload &$upload)
+    private function upload_image(PlPage &$page, PlUpload &$upload)
     {
         if (@!$_FILES['image']['tmp_name'] && !Env::v('image_url')) {
             return true;

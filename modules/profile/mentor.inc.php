@@ -151,7 +151,7 @@ class ProfileMentor extends ProfilePage
         }
     }
 
-    public function _prepare(PlatalPage &$page, $id)
+    public function _prepare(PlPage &$page, $id)
     {
         $page->assign('secteurs_sel', XDB::iterator("SELECT  id, label
                                                        FROM  emploi_secteur"));

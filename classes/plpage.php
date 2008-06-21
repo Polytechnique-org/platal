@@ -21,7 +21,7 @@
 
 require_once 'smarty/libs/Smarty.class.php';
 
-abstract class PlatalPage extends Smarty
+abstract class PlPage extends Smarty
 {
     private $_page_type;
     private $_tpl;
@@ -29,7 +29,7 @@ abstract class PlatalPage extends Smarty
     private $_failure;
     private $_jsonVars;
 
-    // {{{ function PlatalPage()
+    // {{{ function PlPage()
 
     public function __construct($tpl, $type = SKINNED)
     {

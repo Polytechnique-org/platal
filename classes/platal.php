@@ -231,7 +231,7 @@ class Platal
         return $s_perms->hasFlagCombination($perms);
     }
 
-    private function call_hook(PlatalPage &$page)
+    private function call_hook(PlPage &$page)
     {
         $hook = $this->find_hook();
         if (empty($hook)) {
@@ -269,7 +269,7 @@ class Platal
         return $val;
     }
 
-    public function force_login(PlatalPage &$page)
+    public function force_login(PlPage &$page)
     {
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
         if (S::logged()) {

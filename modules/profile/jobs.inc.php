@@ -202,7 +202,7 @@ class ProfileJobs extends ProfilePage
         }
     }
 
-    public function _prepare(PlatalPage &$page, $id)
+    public function _prepare(PlPage &$page, $id)
     {
         $page->assign('secteurs', XDB::iterator("SELECT  id, label
                                                    FROM  emploi_secteur"));

@@ -28,7 +28,7 @@ $globals->bootstrap(array('NbValid'), 'update_NbValid');
 
 // {{{ class XorgPage
 
-class XorgPage extends PlatalPage
+class XorgPage extends PlPage
 {
     public function __construct($tpl, $type = SKINNED)
     {

@@ -871,7 +871,7 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    private function changeLogin(PlatalPage &$page, array &$user, MMList &$mmlist, $login)
+    private function changeLogin(PlPage &$page, array &$user, MMList &$mmlist, $login)
     {
         require_once 'user.func.inc.php';
         // Search the uid of the user...
@@ -1080,7 +1080,7 @@ class XnetGrpModule extends PLModule
         $page->assign('rss', $rss);
     }
 
-    private function upload_image(PlatalPage &$page, PlUpload &$upload)
+    private function upload_image(PlPage &$page, PlUpload &$upload)
     {
         if (@!$_FILES['image']['tmp_name'] && !Env::v('image_url')) {
             return true;
