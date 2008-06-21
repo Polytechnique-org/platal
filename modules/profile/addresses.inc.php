@@ -111,7 +111,7 @@ class ProfileAddress extends ProfileGeoloc
 
     private function saveTel($adrid, $telid, array &$tel)
     {
-        XDB::execute("INSERT INTO  telephone (uid, link_type, link_id, tel_id, tel_type,
+        XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
                                               search_tel, display_tel, pub)
                            VALUES  ({?}, 'address', {?}, {?}, {?},
                                     {?}, {?}, {?})",
@@ -163,7 +163,7 @@ class ProfileAddress extends ProfileGeoloc
         XDB::execute("DELETE FROM  adresses
                             WHERE  uid = {?}",
                      S::i('uid'));
-        XDB::execute("DELETE FROM  telephone
+        XDB::execute("DELETE FROM  profile_phones
                             WHERE  uid = {?} AND link_type = 'address'",
                      S::i('uid'));
         foreach ($value as $adrid=>&$address) {
@@ -209,7 +209,7 @@ class ProfileAddresses extends ProfilePage
         }
 
         $res = XDB::iterator("SELECT  link_id AS adrid, tel_type AS type, pub, display_tel AS tel
-                                FROM  telephone
+                                FROM  profile_phones
                                WHERE  uid = {?} AND link_type = 'address'
                             ORDER BY  link_id",
                              S::i('uid'));

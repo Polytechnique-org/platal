@@ -27,6 +27,7 @@ class GeolocModule extends PLModule
             'geoloc'             => $this->make_hook('default', AUTH_COOKIE),
             'admin/geoloc'           => $this->make_hook('admin', AUTH_MDP, 'admin'),
             'admin/geoloc/dynamap'   => $this->make_hook('admin_dynamap', AUTH_MDP, 'admin'),
+            'admin/geoloc/country'   => $this->make_hook('admin_country',  AUTH_MDP, 'admin')
         );
     }
 
@@ -105,6 +106,51 @@ class GeolocModule extends PLModule
         $page->assign("nb_cities_not_on_map", $missing);
         $page->assign("no_smallest", $noSmallest);
         $page->assign("no_coordinates", $noCoordinates);
+    }
+
+    function handler_admin_country(&$page, $action = 'list', $id = null)
+    {
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - Pays');
+        $page->assign('title', 'Gestion des pays');
+        $table_editor = new PLTableEditor('admin/geoloc/country', 'geoloc_pays', 'a2', true);
+        $table_editor->describe('a2', 'alpha-2', true);
+        $table_editor->describe('a3', 'alpha-3', false);
+        $table_editor->describe('n3', 'ISO numeric', false);
+        $table_editor->describe('num', 'num', false);
+        $table_editor->describe('worldrgn', 'Continent', false);
+        $table_editor->describe('subd', 'Subdivisions territoriales', false);
+        $table_editor->describe('post', 'post', false);
+        $table_editor->describe('pays', 'Nom (fr)', true);
+        $table_editor->describe('country', 'Nom (en)', true);
+        $table_editor->describe('phoneprf', 'Préfixe téléphonique', true);
+        $table_editor->describe('phoneformat', 'Format du téléphone (ex: (+p) ### ## ## ##)', false);
+        $table_editor->describe('capital', 'Capitale', true);
+        $table_editor->describe('nat', 'Nationalité', true);
+        $table_editor->describe('display', 'Format des adresses', false);
+
+        if ($action == 'update') {
+            if (Post::has('a2') && (Post::v('a2') == $id) && Post::has('phoneprf') && (Post::v('phoneprf') != '')) {
+                if (Post::has('phoneformat')) {
+                    $new_format = Post::v('phoneformat');
+                } else {
+                    $new_format = '';
+                }
+                $res = XDB::query("SELECT phoneformat
+                                     FROM geoloc_pays
+                                    WHERE phoneprf = {?}
+                                    LIMIT 1",
+                                  Post::v('phoneprf'));
+                $old_format = $res->fetchOneCell();
+                if ($new_format != $old_format) {
+                    require_once("profil.func.inc.php");
+                    XDB::execute("UPDATE  geoloc_pays
+                                     SET  phoneformat = {?}
+                                   WHERE  phoneprf = {?}",
+                                 $new_format, Post::v('phoneprf'));
+                }
+            }
+        }
+        $table_editor->apply($page, $action, $id);
     }
 
 }

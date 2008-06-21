@@ -386,7 +386,6 @@ class GadgetView implements PlView
     {
         return "u.user_id AS id,
                 u.*, a.alias AS forlife," .
-                (S::logged() ? "q.profile_mobile AS mobile, " : "IF(q.profile_mobile_pub = 'public', q.profile_mobile, NULL) as mobile, ") .
                "u.perms != 'pending' AS inscrit,
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces,

@@ -40,7 +40,6 @@ require_once("xorg.misc.inc.php");
 // hide private information if not logged
 if (S::logged())
     $globals->search->result_fields .='
-        q.profile_mobile AS mobile,
         q.profile_freetext AS freetext,
         adr.city, gp.pays AS countrytxt, gr.name AS region,
         e.entreprise,
@@ -48,7 +47,6 @@ if (S::logged())
         nwe.name AS networking_name,';
 else
     $globals->search->result_fields .="
-        IF(q.profile_mobile_pub='public', q.profile_mobile, '') AS mobile,
         IF(q.profile_freetext_pub='public', q.profile_freetext, '') AS freetext,
         IF(adr.pub='public', adr.city, '') AS city,
         IF(adr.pub='public', gp.pays, '') AS countrytxt,
@@ -354,9 +352,9 @@ class QuickSearch extends SField
         }
         if (!empty($this->phone)) {
             if (!S::logged()) {
-                $join .= "INNER JOIN telephone AS t ON (t.uid = u.user_id AND t.pub = 'public')";
+                $join .= "INNER JOIN profile_phones AS t ON (t.uid = u.user_id AND t.pub = 'public')";
             } else {
-                $join .= "INNER JOIN telephone AS t ON (t.uid = u.user_id)";
+                $join .= "INNER JOIN profile_phones AS t ON (t.uid = u.user_id)";
             }
         }
         return $join;

@@ -27,15 +27,16 @@ function get_annuaire_infos($method, $params) {
         //on ne recupere pas les adresses inutilement
         if(!isset($params[2])){
             $res = XDB::iterRow(
-                    "SELECT  q.profile_mobile AS cell, a.naissance AS age
-                    FROM  auth_user_md5 AS a
-                    INNER JOIN auth_user_quick AS q USING (user_id)
-                    WHERE  a.matricule = {?}", $params[1]);
+                    "SELECT  ph.display_tel  AS cell, a.naissance AS age
+                       FROM  auth_user_md5   AS a
+                 INNER JOIN  auth_user_quick AS q USING (user_id)
+                  LEFT JOIN  profile_phones  AS ph ON (ph.uid = a.user_id AND link_type='user' AND tel_type = 'mobile')
+                      WHERE  a.matricule = {?} LIMIT 1", $params[1]);
             $array = $res->next();
         }
         else{
             $res = XDB::iterRow(
-                 "SELECT     q.profile_mobile AS cell, a.naissance AS age,
+                 "SELECT     a.naissance AS age,
                              adr.adr1, adr.adr2, adr.adr3,
                              adr.postcode, adr.city, adr.country,
                              adr.uid, adr.adrid
@@ -48,10 +49,18 @@ function get_annuaire_infos($method, $params) {
                              FIND_IN_SET('res-secondaire', adr.statut),
                              NOT FIND_IN_SET('courrier', adr.statut)", $params[1]);
             //traitement des adresses si necessaire
-            if(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['cp'], $adr['ville'],
+            if(list($age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['cp'], $adr['ville'],
                         $adr['pays'], $uid, $adr['adrid']) = $res->next())
             {
-                $array['cell']      = $cell;
+                $sql = XDB::query("SELECT display_tel
+                                     FROM profile_phones
+                                    WHERE uid ={?} AND link_type = 'user' AND tel_type = 'mobile'
+                                    LIMIT 1", $uid);
+                if ($sql->numRows()>0) {
+                    $array['cell'] = $sql->fetchOneCell();
+                } else {
+                    $array['cell'] ='';
+                }
                 $array['age']       = $age;
                 $array['adresse'][] = $adr;
 
@@ -61,7 +70,7 @@ function get_annuaire_infos($method, $params) {
 
                 if ($adresse != 1) { //on ne veut pas la premiere adresse
                     $i = 2;
-                    while(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['cp'], $adr['ville'],
+                    while(list($age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['cp'], $adr['ville'],
                                 $adr['pays'], , $adr['adrid']) = $res->next())
                     {
                         if($adresse == $i){//si on veut cette adresse en particulier
@@ -82,7 +91,7 @@ function get_annuaire_infos($method, $params) {
                 // on rajoute les numéros de tels
                 $restel = XDB::iterator(
                     "SELECT t.display_tel AS tel, t.tel_type, t.link_id as adrid
-                       FROM telephone AS t
+                       FROM profile_phones AS t
                  INNER JOIN adresses AS a ON (t.link_id = a.adrid AND t.uid = a.uid)
                       WHERE t.uid = {?} AND t.link_type = 'address' AND NOT FIND_IN_SET('pro', a.statut)", $uid);
                 while ($tel = $restel->next()) $array['adresse'][$adrid_index[$tel['adrid']]]['tels'][] = $tel;

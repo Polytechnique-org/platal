@@ -62,14 +62,12 @@ function diff_user_details(&$a, &$b, $view = 'private') { // compute $c = $a - $
                 switch ($val) {
                     case 'adr' : if (!($c['adr'] = diff_user_addresses($a[$val], $bvar, $view))) unset($c['adr']); break;
                     case 'adr_pro' : if (!($c['adr_pro'] = diff_user_pros($a[$val], $bvar, $view))) unset($c['adr_pro']); break;
-                    case 'mobile' : if (same_tel($a[$val], $bvar)) unset($c['mobile']); break;
+                    case 'tels' : if (!($c['tels'] = diff_user_tels($a[$val], $bvar, $view))) unset($c['tels']); break;
                 }
             }
         }
     }
-    // don't modify mobile if you don't have the right
-    if (isset($b['mobile_pub']) && !has_user_right($b['mobile_pub'], $view) && isset($c['mobile']))
-        unset($c['mobile']);
+    // don't modify freetext if you don't have the right
     if (isset($b['freetext_pub']) && !has_user_right($b['freetext_pub'], $view) && isset($c['freetext']))
         unset($c['freetext']);
     if (!count($c))
@@ -124,49 +122,57 @@ function diff_user_tel(&$a, &$b) {
     return $c;
 }
 
+function diff_user_tels(&$a, &$b)
+{
+    $c = $a;
+    $telids_b = array();
+    foreach ($b as $i => $telb) $telids_b[$telb['telid']] = $i;
+
+    foreach ($a as $j => $tela) {
+        if (isset($tela['telid'])) {
+            // if b has a tel with the same telid, compute diff
+            if (isset($telids_b[$tela['telid']])) {
+                if (!($c[$j] = diff_user_tel($tela, $b[$telids_b[$tela['adrid']]]))) {
+                    unset($c[$j]);
+                }
+                unset($telids_b[$tela['telid']]);
+            }
+        } else {
+            // try to find a match in b
+            foreach ($b as $i => $telb) {
+                if (same_tel($tela['tel'], $telb['tel'])) {
+                    $tela['telid'] = $telb['telid'];
+                    if (!($c[$j] = diff_user_tel($tela, $telb))) {
+                        unset($c[$j]);
+                    }
+                    unset($telids_b[$tela['telid']]);
+                    break;
+                }
+            }
+        }
+    }
+
+    foreach ($telids_b as $telidb => $i)
+        $c[] = array('telid' => $telidb, 'remove' => 1);
+    return $c;
+}
+
 function diff_user_address($a, $b) {
     if (isset($b['pub']) && isset($a['pub']) && has_user_right($b['pub'], $a['pub']))
         $a['pub'] = $b['pub'];
     if (isset($b['tels'])) {
-        $bvar = $b['tels'];
-
-        $telids_b = array();
-        foreach ($bvar as $i => $telb) $telids_b[$telb['telid']] = $i;
-
-        if (isset($a['tels']))
+        if (isset($a['tels'])) {
             $avar = $a['tels'];
-        else
+        } else {
             $avar = array();
-        $ctels = $avar;
-        foreach ($avar as $j => $tela) {
-            if (isset($tela['telid'])) {
-                // if b has a tel with the same telid, compute diff
-                if (isset($telids_b[$tela['telid']])) {
-                    if (!($ctels[$j] = diff_user_tel($tela, $varb[$telids_b[$tela['adrid']]])))
-                        unset($ctels[$j]);
-                    unset($telids_b[$tela['telid']]);
-                }
-            } else {
-                // try to find a match in b
-                foreach ($bvar as $i => $telb) {
-                    if (same_tel($tela['tel'], $telb['tel'])) {
-                        $tela['telid'] = $telb['telid'];
-                        if (!($ctels[$j] = diff_user_tel($tela, $telb)))
-                            unset($ctels[$j]);
-                        unset($telids_b[$tela['telid']]);
-                        break;
-                    }
-                }
-            }
         }
-
-        foreach ($telids_b as $telidb => $i)
-            $ctels[] = array('telid' => $telidb, 'remove' => 1);
+        $ctels = diff_user_tels($avar, $b['tels']);
 
         if (!count($ctels)) {
             $b['tels'] = $avar;
-        } else
+        } else {
             $a['tels'] = $ctels;
+        }
     }
 
     foreach ($a as $val => $avar) {
@@ -227,13 +233,18 @@ function diff_user_pro($a, &$b, $view = 'private') {
     }
     if (isset($b['adr_pub']) && isset($a['adr_pub']) && has_user_right($b['adr_pub'], $a['adr_pub']))
         $a['adr_pub'] = $b['adr_pub'];
-    if (isset($b['tel_pub']) && !has_user_right($b['tel_pub'], $view)) {
-        unset($a['tel']);
-        unset($a['fax']);
-        unset($a['mobile']);
+    if (isset($b['tels'])) {
+        if (isset($a['tels']))
+            $avar = $a['tels'];
+        else
+            $avar = array();
+        $ctels = diff_user_tels($avar, $b['tels']);
+
+        if (!count($ctels)) {
+            $b['tels'] = $avar;
+        } else
+            $a['tels'] = $ctels;
     }
-    if (isset($b['tel_pub']) && isset($a['tel_pub']) && has_user_right($b['tel_pub'], $a['tel_pub']))
-        $a['tel_pub'] = $b['tel_pub'];
     if (isset($b['email_pub']) && !has_user_right($b['email_pub'], $view))
         unset($a['email']);
     if (isset($b['email_pub']) && isset($a['email_pub']) && has_user_right($b['email_pub'], $a['email_pub']))
@@ -304,9 +315,10 @@ function format_display_number($tel, &$error, $format = array('format'=>'','phon
     $ret = '';
     $tel_length = strlen($tel);
     if((!isset($format['phoneprf'])) || ($format['phoneprf'] == '')) {
-        $res = XDB::query("SELECT phoneprf, format
-                             FROM phone_formats
-                            WHERE phoneprf = {?} OR phoneprf = {?} OR phoneprf = {?}",
+        $res = XDB::query("SELECT phoneprf, phoneformat AS format
+                             FROM geoloc_pays
+                            WHERE phoneprf = {?} OR phoneprf = {?} OR phoneprf = {?}
+                            LIMIT 1",
                           substr($tel, 0, 1), substr($tel, 0, 2), substr($tel, 0, 3));
         if ($res->numRows() == 0) {
             $error = true;

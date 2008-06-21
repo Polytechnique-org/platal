@@ -79,7 +79,7 @@ function advancedSearchFromInput()
     } else {
         $nwTypeField     = new IndexSField('networking_type', array('nwe.network_type'), 'profile_networking_enum', 'nwe', 'nwe.network_type = nw.network_type');
     }
-    $nwPhoneField  = new PhoneSField('phone_number', array('t.search_tel'), 'telephone', 't', 't.uid=u.user_id');
+    $nwPhoneField  = new PhoneSField('phone_number', array('t.search_tel'), 'profile_phones', 't', 't.uid=u.user_id');
     return array(
                 $nameField, $firstnameField, $nicknameField, $promo1Field,
                 $promo2Field, $womanField, $subscriberField, $aliveField,

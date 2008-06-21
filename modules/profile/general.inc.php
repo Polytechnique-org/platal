@@ -274,7 +274,7 @@ class ProfileGeneral extends ProfilePage
                              FROM  auth_user_md5         AS u
                        INNER JOIN  auth_user_quick       AS q  ON(u.user_id = q.user_id)
                        INNER JOIN  profile_names_display AS n  ON(n.user_id = u.user_id)
-                        LEFT JOIN  telephone             AS t  ON(u.user_id = t.uid AND link_type = 'user')
+                        LEFT JOIN  profile_phones        AS t  ON(u.user_id = t.uid AND link_type = 'user')
                         LEFT JOIN  profile_directory     AS d  ON(d.uid = u.user_id)
                         LEFT JOIN  applis_ins            AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)
                         LEFT JOIN  applis_ins            AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
@@ -343,11 +343,11 @@ class ProfileGeneral extends ProfilePage
         if ($this->changed['mobile'] || $this->changed['mobile_pub']) {
             require_once('profil.func.inc.php');
             $fmt_phone  = format_phone_number($this->values['mobile']);
-            XDB::execute("DELETE FROM telephone
+            XDB::execute("DELETE FROM profile_phones
                                 WHERE uid = {?} AND link_type = 'user'",
                          S::v('uid'));
             if ($fmt_phone != '') {
-                XDB::execute("INSERT INTO telephone (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
+                XDB::execute("INSERT INTO profile_phones (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
                                    VALUES ({?}, 'user', '0', '0', 'mobile', {?}, {?}, {?})",
                              S::v('uid'), $fmt_phone, $this->values['mobile'], $this->values['mobile_pub']);
             }

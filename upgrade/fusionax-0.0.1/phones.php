@@ -10,6 +10,39 @@ require_once 'profil.func.inc.php';
 
 $globals->debug = 0; //do not store backtraces
 
+
+// Convert phone prefixes from varchar to int
+$prefixes = XDB::iterRow("SELECT a2, phoneprf FROM geoloc_pays WHERE phoneprf IS NOT NULL");
+while (list($id, $pref) = $prefixes->next()) {
+    $pref = preg_replace('/[^0-9]/', '', $pref);
+    if ($pref[0] == '1') {
+        $pref = '1';
+    }
+    if ($pref[0] == '7') {
+        $pref = '7';
+    }
+    if ($pref != '' && strlen($pref) < 4) {
+        XDB::execute("UPDATE geoloc_pays SET tmp_phoneprf = {?} WHERE a2 = {?}", $pref, $id);
+    }
+}
+
+// geoloc_pays post operations
+// Drops old prfix column
+XDB::execute("ALTER TABLE geoloc_pays DROP COLUMN phoneprf");
+// Renames temporary column
+XDB::execute("ALTER TABLE geoloc_pays CHANGE COLUMN tmp_phoneprf phoneprf smallint unsigned NULL AFTER nat");
+// Adds an index on phoneprf column
+XDB::execute("ALTER TABLE geoloc_pays ADD INDEX (phoneprf)");
+// Adds French phone prefix
+XDB::execute("UPDATE geoloc_pays SET phoneprf = '33' WHERE a2 = 'FR'");
+// Adds some phone formats
+XDB::execute("UPDATE geoloc_pays SET phoneformat = '0# ## ## ## ##' WHERE phoneprf = '33'");    //France
+XDB::execute("UPDATE geoloc_pays SET phoneformat = '(+p) ### ### ####' WHERE phoneprf = '1'");  //USA and NANP countries
+
+
+
+//Phone number import
+
 $warnings = 0;
 
 // Import from auth_user_quick
@@ -17,10 +50,9 @@ echo "\nImporting mobile phone numbers from auth_user_quick...\n";
 $phones = XDB::iterRow("SELECT user_id, profile_mobile_pub, profile_mobile FROM auth_user_quick WHERE profile_mobile <> ''");
 while (list($uid, $pub, $phone) = $phones->next()) {
     $fmt_phone = format_phone_number($phone);
-    if($fmt_phone != '')
-    {
+    if ($fmt_phone != '') {
         $display   = format_display_number($fmt_phone, $error);
-        if (!XDB::execute("INSERT INTO telephone (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
+        if (!XDB::execute("INSERT INTO profile_phones (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
                                 VALUES ({?}, 'user', 0, 0, 'mobile', {?}, {?}, {?})", $uid, $fmt_phone, $display, $pub)) {
             echo "WARNING: insert of profile mobile phone number failed for user $uid.\n";
             $warnings++;
@@ -33,29 +65,26 @@ while (list($uid, $pub, $phone) = $phones->next()) {
 echo "\nImporting professional phone numbers from entreprises...\n";
 $phones = XDB::iterator("SELECT uid, entrid, tel, fax, mobile, tel_pub FROM entreprises ORDER BY uid");
 while ($row = $phones->next()) {
-    $request = "INSERT INTO telephone (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
+    $request = "INSERT INTO profile_phones (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
                      VALUES ({?}, 'pro', {?}, {?}, {?}, {?}, {?}, {?})";
     $fmt_fixed   = format_phone_number($row['tel']);
     $fmt_mobile  = format_phone_number($row['mobile']);
     $fmt_fax     = format_phone_number($row['fax']);
-    if ($fmt_fixed != '')
-    {
+    if ($fmt_fixed != '') {
         $disp_fixed  = format_display_number($fmt_fixed, $error);
         if (!XDB::execute($request, $row['uid'], $row['entrid'], 0, 'fixed', $fmt_fixed, $disp_fixed, $row['tel_pub'])) {
             echo 'WARNING: insert of professional fixed phone number failed for user ' . $row['uid'] . ' and entreprise ' . $row['entrid'] . ".\n";
             $warnings++;
         }
     }
-    if ($fmt_mobile != '')
-    {
+    if ($fmt_mobile != '') {
         $disp_mobile = format_display_number($fmt_mobile, $error);
         if (!XDB::execute($request, $row['uid'], $row['entrid'], 1, 'mobile', $fmt_mobile, $disp_mobile, $row['tel_pub'])) {
             echo 'WARNING: insert of professional mobile number failed for user ' . $row['uid'] . ' and entreprise ' . $row['entrid'] . ".\n";
             $warnings++;
         }
     }
-    if ($fmt_fax != '')
-    {
+    if ($fmt_fax != '') {
         $disp_fax    = format_display_number($fmt_fax, $error);
         if (!XDB::execute($request, $row['uid'], $row['entrid'], 2, 'fax', $fmt_fax, $disp_fax, $row['tel_pub'])) {
             echo 'WARNING: insert of professional fax number failed for user ' . $row['uid'] . ' and entreprise ' . $row['entrid'] . ".\n";
@@ -80,7 +109,7 @@ while ($row = $phones->next()) {
         case 'fixed':
         case 'fax':
         case 'mobile':
-            if (!XDB::execute("INSERT INTO telephone (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
+            if (!XDB::execute("INSERT INTO profile_phones (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
                                     VALUES ({?}, 'address', {?}, {?}, {?}, {?}, {?}, {?})",
                               $row['uid'], $row['adrid'], $row['telid'], $guess_type, $fmt_phone, $display, $row['tel_pub'])) {
                 echo  'WARNING: insert of address phone number failed for user ' . $row['uid'] . ', address ' . $row['adrid']
@@ -149,7 +178,7 @@ function guess_phone_type($str_type, $phone)
         }
     }
 
-    if ((strpos($str_type, 'mob') !== false) || (strpos($str_type, 'cell') !== false) || (strpos($str_type, 'port') !== false)) {
+    if ((strpos($str_type, 'mob') !== false) || (strpos($str_type, 'cell') !== false) || (strpos($str_type, 'port') !== false)) || (strpos($str_type, 'ptb') !== false) {
         if (substr($phone, 3) == '336' || substr($phone, 2) != '33') {
             return 'mobile';      //for France check if number is a mobile one
         } else {
@@ -157,14 +186,14 @@ function guess_phone_type($str_type, $phone)
         }
     }
     if (strpos($str_type, 'fax') !== false) {
-        if(substr($phone, 3) == '336') {
+        if (substr($phone, 3) == '336') {
             return 'conflict';
         } else {
             return 'fax';
         }
     }
-    if ((strpos($str_type, 'fixe') !== false) || (strpos($str_type, 'tél') !== false) || (strpos($str_type, 'tel') !== false)) {
-        if(substr($phone, 3) == '336') {
+    if ((strpos($str_type, 'fixe') !== false) || (strpos($str_type, 'tél') !== false) || (strpos($str_type, 'tel') !== false) || (strpos($str_type, 'free') !== false)) {
+        if (substr($phone, 3) == '336') {
             return 'conflict';
         } else {
             return 'fixed';

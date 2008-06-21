@@ -108,8 +108,6 @@
       <a href="admin/fonctions">Fonctions</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/networking">Networking</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/phones_format_display">Téléphone</a>
     </td>
   </tr>
   <tr class="pair">
@@ -150,6 +148,8 @@
       <a href="admin/geoloc">Synchro</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/geoloc/dynamap">Dynamap</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/geoloc/country">Pays</a>
     </td>
   </tr>
   <tr class="impair">

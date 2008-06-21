@@ -105,7 +105,7 @@ class ProfileJob extends ProfileGeoloc
         XDB::execute("DELETE FROM  entreprises
                             WHERE  uid = {?}",
                      S::i('uid'));
-        XDB::execute("DELETE FROM  telephone
+        XDB::execute("DELETE FROM  profile_phones
                             WHERE  uid = {?} AND link_type = 'pro'",
                      S::i('uid'));
         $i = 0;
@@ -136,21 +136,21 @@ class ProfileJob extends ProfileGeoloc
                          $job['adr']['checked'] ? 'geoloc' : '', $job['adr']['precise_lat'],
                          $job['adr']['precise_lon']);
             if ($job['tel'] != '') {
-                XDB::execute("INSERT INTO  telephone (uid, link_type, link_id, tel_id,
+                XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id,
                                                       tel_type, search_tel, display_tel, pub)
                                    VALUES  ({?}, 'pro', {?}, 0,
                                             'fixed', {?}, {?}, {?})",
                              S::i('uid'), $i, format_phone_number($job['tel']), $job['tel'], $job['tel_pub']);
             }
             if ($job['fax'] != '') {
-                XDB::execute("INSERT INTO  telephone (uid, link_type, link_id, tel_id,
+                XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id,
                                                       tel_type, search_tel, display_tel, pub)
                                    VALUES  ({?}, 'pro', {?}, 1,
                                             'fax', {?}, {?}, {?})",
                              S::i('uid'), $i, format_phone_number($job['fax']), $job['fax'], $job['tel_pub']);
             }
             if ($job['mobile'] != '') {
-                XDB::execute("INSERT INTO  telephone (uid, link_type, link_id, tel_id,
+                XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id,
                                                       tel_type, search_tel, display_tel, pub)
                                    VALUES  ({?}, 'pro', {?}, 2,
                                             'mobile', {?}, {?}, {?})",
@@ -195,9 +195,9 @@ class ProfileJobs extends ProfilePage
                                      tf.display_tel AS fax, tm.display_tel AS mobile
                                FROM  entreprises AS e
                           LEFT JOIN  geoloc_pays AS gp ON(gp.a2 = e.country)
-                          LEFT JOIN  telephone AS tt ON(tt.uid = e.uid AND tt.link_type = 'pro' AND tt.link_id = entrid AND tt.tel_id = 0)
-                          LEFT JOIN  telephone AS tf ON(tf.uid = e.uid AND tf.link_type = 'pro' AND tf.link_id = entrid AND tf.tel_id = 1)
-                          LEFT JOIN  telephone AS tm ON(tm.uid = e.uid AND tm.link_type = 'pro' AND tm.link_id = entrid AND tm.tel_id = 2)
+                          LEFT JOIN  profile_phones AS tt ON(tt.uid = e.uid AND tt.link_type = 'pro' AND tt.link_id = entrid AND tt.tel_id = 0)
+                          LEFT JOIN  profile_phones AS tf ON(tf.uid = e.uid AND tf.link_type = 'pro' AND tf.link_id = entrid AND tf.tel_id = 1)
+                          LEFT JOIN  profile_phones AS tm ON(tm.uid = e.uid AND tm.link_type = 'pro' AND tm.link_id = entrid AND tm.tel_id = 2)
                               WHERE  e.uid = {?} AND entreprise != ''
                            ORDER BY  entrid", S::i('uid'));
         $this->values['jobs'] = array();

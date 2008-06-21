@@ -83,8 +83,8 @@ class PayPal
                     IF(t1.display_tel != '', t1.display_tel, t2.display_tel) AS night_phone_b
                FROM auth_user_quick AS q
           LEFT JOIN adresses  AS a ON (q.user_id = a.uid AND FIND_IN_SET('active', a.statut))
-          LEFT JOIN telephone AS t1 ON (t1.uid = a.uid AND t1.link_type = 'address' AND t1.link_id = a.adrid)
-          LEFT JOIN telephone AS t2 ON (t2.uid = a.uid AND t2.link_type = 'user' AND t2.link_id = 0)
+          LEFT JOIN profile_phones AS t1 ON (t1.uid = a.uid AND t1.link_type = 'address' AND t1.link_id = a.adrid)
+          LEFT JOIN profile_phones AS t2 ON (t2.uid = a.uid AND t2.link_type = 'user' AND t2.link_id = 0)
               WHERE q.user_id = {?}
               LIMIT 1", S::v('uid'));
         $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
