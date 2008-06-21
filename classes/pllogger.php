@@ -19,7 +19,7 @@
  */
 
 
-class CoreLogger
+class PlLogger
 {
     /** user id */
     public $uid;
@@ -105,7 +105,7 @@ class CoreLogger
                              SET session={?}, action={?}, data={?}",
                          $this->session, $this->actions[$action], $data);
         } else {
-            trigger_error("CoreLogger: unknown action, $action", E_USER_WARNING);
+            trigger_error("PlLogger: unknown action, $action", E_USER_WARNING);
         }
     }
 }

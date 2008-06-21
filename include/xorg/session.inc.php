@@ -261,11 +261,11 @@ function start_connexion ($uid, $identified)
     $suid = S::v('suid');
 
     if ($suid) {
-        $logger = new CoreLogger($uid, $suid['uid']);
+        $logger = new PlLogger($uid, $suid['uid']);
         $logger->log("suid_start", S::v('forlife')." by {$suid['uid']}");
         $sess['suid'] = $suid;
     } else {
-        $logger = S::v('log', new CoreLogger($uid));
+        $logger = S::v('log', new PlLogger($uid));
         $logger->log("connexion", Env::v('n'));
         setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
     }

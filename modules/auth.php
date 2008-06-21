@@ -153,7 +153,7 @@ class AuthModule extends PLModule
         $uid = S::i('uid');
         if (!isset($_SESSION['suid'])) {
             $logger = (isset($_SESSION['log']) && $_SESSION['log']->uid == $uid)
-                            ? $_SESSION['log'] : new CoreLogger($uid);
+                            ? $_SESSION['log'] : new PlLogger($uid);
             global $platal;
             $logger->log('connexion_auth_ext', $platal->path);
         }
