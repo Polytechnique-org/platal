@@ -171,6 +171,10 @@
 
               return false;
             });
+        }).parent().find('.autocomplete').change(function() {
+          // If we change the value in the type="text" field, then the value in the 'integer id' field must not be used,
+          // to ensure that, we unset it
+          $(this).parent().find('.autocompleteTarget').val('');
         });
     });
 -->
