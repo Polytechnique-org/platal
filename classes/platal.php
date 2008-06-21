@@ -38,12 +38,15 @@ class Platal
 
     public function __construct()
     {
-        global $platal, $globals, $session;
+        global $platal, $session, $globals;
         $platal  =& $this;
         $globalclass = PL_GLOBALS_CLASS;
         $globals = new $globalclass();
         $sessionclass = PL_SESSION_CLASS;
         $session = new $sessionclass();
+        if (!$session->startAvailableAuth()) {
+            Platal::page()->trigError('Données d\'authentification invalide.');
+        }
 
         $modules    = func_get_args();
         if (is_array($modules[0])) {
@@ -61,7 +64,6 @@ class Platal
             $this->__hooks += $m->handlers();
         }
 
-        global $globals;
         if ($globals->mode == '') {
             pl_redirect('index.html');
         }
@@ -256,7 +258,7 @@ class Platal
 
         if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
             if ($hook['type'] & DO_AUTH) {
-                if (!$session->doAuth()) {
+                if (!$session->start($hook['auth'])) {
                     $this->force_login($page);
                 }
             } else {
@@ -270,7 +272,7 @@ class Platal
         $val = call_user_func_array($hook['hook'], $args);
         if ($val == PL_DO_AUTH) {
             // The handler need a better auth with the current args
-            if (!$session->doAuth()) {
+            if (!$session->start($hook['auth'])) {
                 $this->force_login($page);
             }
             $val = call_user_func_array($hook['hook'], $args);

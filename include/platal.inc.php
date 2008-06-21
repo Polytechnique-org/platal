@@ -107,11 +107,12 @@ function pl_clear_errors()
 function pl_dump_env()
 {
     echo "<div class='phperror'><pre>";
-    echo "\nSESSION: "; var_export($_SESSION);
-    echo "\nPOST:    "; var_export($_POST);
-    echo "\nGET:     "; var_export($_GET);
-    echo "\nCOOKIE:  "; var_export($_COOKIE);
+    echo "\nSESSION: "; var_dump($_SESSION);
+    echo "\nPOST:    "; var_dump($_POST);
+    echo "\nGET:     "; var_dump($_GET);
+    echo "\nCOOKIE:  "; var_dump($_COOKIE);
     echo "</pre></div>";
+    pl_print_errors();
 }
 
 function pl_print_errors()
@@ -122,8 +123,8 @@ function pl_print_errors()
 }
 
 set_error_handler('pl_error_handler', E_ALL | E_STRICT);
-register_shutdown_function('pl_print_errors');
-// register_shutdown_function('pl_dump_env');
+//register_shutdown_function('pl_print_errors');
+register_shutdown_function('pl_dump_env');
 
 /** Check if the string is utf8
  */

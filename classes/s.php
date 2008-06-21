@@ -60,16 +60,29 @@ class S
         return array_map(array('S', 'v'), $keys);
     }
 
-    public static function set($key, &$value)
+    public static function set($key, $value)
     {
         $_SESSION[$key] =& $value;
     }
 
-    public static function bootstrap($key, &$value)
+    public static function bootstrap($key, $value)
     {
         if (!S::has($key)) {
             S::set($key, $value);
         }
+    }
+
+    public static function logger($uid)
+    {
+        if (!S::has('log')) {
+            if (S::has('suid')) {
+                $suid = S::v('suid');
+                S::set('log', new PlLogger(S::v('uid'), $suid['uid']));
+            } else if (S::has('suid')) {
+                S::set('log', new PlLogger(S::v('uid', $uid)));
+            }
+        }
+        return S::v('log');
     }
 
     public static function has_perms()

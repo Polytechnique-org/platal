@@ -19,72 +19,139 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'xorg.misc.inc.php';
-
-class XorgSession
+class XorgSession extends PlSession
 {
-    public function __construct() {
-        XorgSession::init();
+    public function __construct()
+    {
+        parent::__construct();
+        S::bootstrap('perms_backup', new PlFlagSet());
     }
 
-    // {{{ public static function init
-
-    public static function init()
+    public function startAvailableAuth()
     {
-        S::init();
-        if (!S::has('uid')) {
-            try_cookie();
+        if (!(S::v('perms') instanceof PlFlagSet)) {
+            S::set('perms', S::v('perms_backup'));
+        }
+        if (!S::logged()) {
+            $cookie = $this->tryCookie();
+            if ($cookie == 0) {
+                return $this->start(AUTH_COOKIE);
+            } else if ($cookie == 1 || $cooke == -2) {
+                return false;
+            }
         }
         if ((check_ip('dangerous') && S::has('uid')) || check_account()) {
             $_SESSION['log']->log("view_page", $_SERVER['REQUEST_URI']);
         }
+        return true;
     }
 
-    // }}}
-    // {{{ public static function destroy()
-
-    public static function destroy()
+    /** Check the cookie and set the associated user_id in the auth_by_cookie session variable.
+     */
+    private function tryCookie()
     {
-        S::destroy();
-        XorgSession::init();
+        S::kill('auth_by_cookie');
+        if (Cookie::v('ORGaccess') == '' || !Cookie::has('ORGuid')) {
+            return -1;
+        }
+
+        $res = XDB::query('SELECT  user_id, password
+                             FROM  auth_user_md5
+                            WHERE  user_id = {?} AND perms IN(\'admin\', \'user\')',
+                         Cookie::i('ORGuid'));
+        if ($res->numRows() != 0) {
+            list($uid, $password) = $res->fetchOneRow();
+            require_once 'secure_hash.inc.php';
+            $expected_value = hash_encrypt($password);
+            if ($expected_value == Cookie::v('ORGaccess')) {
+                S::set('auth_by_cookie', $uid);
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+        return -2;
     }
 
-    // }}}
-    // {{{ public static function doAuth()
+    private function checkPassword($uname, $login, $response, $login_type)
+    {
+        $res = XDB::query('SELECT  u.user_id, u.password
+                             FROM  auth_user_md5 AS u
+                       INNER JOIN  aliases       AS a ON (a.id = u.user_id AND type != \'homonyme\')
+                             WHERE  a.' . $login_type . ' = {?} AND u.perms IN(\'admin\', \'user\')',
+                          $login);
+        if (list($uid, $password) = $res->fetchOneRow()) {
+            require_once 'secure_hash.inc.php';
+            $expected_response = hash_encrypt("$uname:$password:" . S::v('challenge'));
+            if ($response != $expected_response) {
+                $new_password = hash_xor(Env::v('xorpass'), $password);
+                $expected_response = hash_encrypt("$uname:$new_password:" . S::v('challenge'));
+                if ($response == $expected_response) {
+                      XDB::execute('UPDATE  auth_user_md5
+                                       SET  password = {?}
+                                     WHERE  user_id = {?}',
+                                   $new_password, $uid);
+                }
+            }
+            if ($response != $expected_response) {
+                echo $response . '<br />';
+                echo $expected_response . '<br />';
+                echo $uname . '<br />' . $password . '<br />';
+//                $logger = S::logger($uid);
+//                $logger->log('auth_fail', 'bad password');
+                return null;
+            }
+            return $uid;
+        }
+        return null;
+    }
 
-    public static function doAuth($new_name = false)
+
+    /** Check auth.
+     */
+    protected function doAuth($level)
     {
         global $globals;
-        if (S::identified()) { // ok, c'est bon, on n'a rien à faire
-            return true;
+
+        /* Cookie authentication
+         */
+        if ($level == AUTH_COOKIE && !S::has('auth_by_cookie')) {
+            $this->tryCookie();
+        }
+        if ($level == AUTH_COOKIE && S::has('auth_by_cookie')) {
+            if (!S::logged()) {
+                S::set('auth', AUTH_COOKIE);
+            }
+            return S::i('auth_by_cookie');
         }
 
-        if (!Env::has('username') || !Env::has('response')
-        ||  !S::has('challenge'))
-        {
-            return false;
+
+        /* We want to do auth... we must have infos from a form.
+         */
+        if (!Env::has('username') || !Env::has('response') || !S::has('challenge')) {
+            return null;
         }
 
-        // si on vient de recevoir une identification par passwordpromptscreen.tpl
-        // ou passwordpromptscreenlogged.tpl
+        /** We come from an authentication form.
+         */
         if (S::has('suid')) {
-            $suid = S::v('suid');
+            $suid  = S::v('suid');
             $login = $uname = $suid['forlife'];
             $redirect = false;
         } else {
             $uname = Env::v('username');
 
             if (Env::v('domain') == "alias") {
-                $res = XDB::query(
-                    "SELECT redirect
-                       FROM virtual
-                 INNER JOIN virtual_redirect USING(vid)
-                      WHERE alias LIKE {?}", $uname."@".$globals->mail->alias_dom);
+                $res = XDB::query('SELECT  redirect
+                                     FROM  virtual
+                               INNER JOIN  virtual_redirect USING(vid)
+                                    WHERE  alias LIKE {?}',
+                                   $uname . '@' . $globals->mail->alias_dom);
                 $redirect = $res->fetchOneCell();
                 if ($redirect) {
                     $login = substr($redirect, 0, strpos($redirect, '@'));
                 } else {
-                    $login = "";
+                    $login = '';
                 }
             } else {
                 $login = $uname;
@@ -92,97 +159,115 @@ class XorgSession
             }
         }
 
-        $field = (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias';
-        $res   = XDB::query(
-                    "SELECT  u.user_id, u.password
-                       FROM  auth_user_md5 AS u
-                 INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
-                      WHERE  a.$field = {?} AND u.perms IN('admin','user')", $login);
-
-        $logger = S::v('log');
-        if (list($uid, $password) = $res->fetchOneRow()) {
-            require_once('secure_hash.inc.php');
-            $expected_response = hash_encrypt("$uname:$password:".S::v('challenge'));
-            // le password de la base est peut-être encore encodé en md5
-            if (Env::v('response') != $expected_response) {
-                $new_password = hash_xor(Env::v('xorpass'), $password);
-                $expected_response = hash_encrypt("$uname:$new_password:".S::v('challenge'));
-                if (Env::v('response') == $expected_response) {
-                      XDB::execute("UPDATE auth_user_md5 SET password = {?} WHERE user_id = {?}",
-                                   $new_password, $uid);
-                }
-            }
-            if (Env::v('response') == $expected_response) {
-                if (Env::has('domain')) {
-                    if (($domain = Env::v('domain', 'login')) == 'alias') {
-                        setcookie('ORGdomain', "alias", (time()+25920000), '/', '', 0);
-                    } else {
-                        setcookie('ORGdomain', '', (time()-3600), '/', '', 0);
-                    }
-                    // pour que la modification soit effective dans le reste de la page
-                    $_COOKIE['ORGdomain'] = $domain;
-                }
-
-                S::kill('challenge');
-                if ($logger) {
-                    $logger->log('auth_ok');
-                }
-                if (!start_connexion($uid, true)) {
-                    return false;
-                }
-                if (Env::v('remember', 'false') == 'true') {
-                    $cookie = hash_encrypt(S::v('password'));
-                    setcookie('ORGaccess',$cookie,(time()+25920000),'/','',0);
-                    if ($logger) {
-                        $logger->log("cookie_on");
-                    }
+        $logger = S::logger();
+        $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias');
+        if (!is_null($uid)) {
+            S::set('auth', AUTH_MDP);
+            if (Post::has('domain')) {
+                if (($domain = Post::v('domain', 'login')) == 'alias') {
+                    setcookie('ORGdomain', "alias", (time() + 25920000), '/', '', 0);
                 } else {
-                    setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
-
-                    if ($logger) {
-                        $logger->log("cookie_off");
-                    }
+                    setcookie('ORGdomain', '', (time() - 3600), '/', '', 0);
                 }
-                return true;
-            } elseif ($logger) {
-                $logger->log('auth_fail','bad password');
+                // pour que la modification soit effective dans le reste de la page
+                $_COOKIE['ORGdomain'] = $domain;
             }
-        } elseif ($logger) {
-            $logger->log('auth_fail','bad login');
+            S::kill('challenge');
+            if ($logger) {
+                $logger->log('auth_ok');
+            }
         }
-
-        return false;
+        return $uid;
     }
 
-    // }}}
-    // {{{ public static function doAuthCookie()
-
-    /** Try to do a cookie-based authentication.
-     *
-     * @param page the calling page (by reference)
-     */
-    public static function doAuthCookie()
-
+    protected function startSessionAs($uid, $level)
     {
-        if (S::logged()) {
+        if ((!is_null(S::v('user')) && S::i('user') != $uid) || (S::has('uid') && S::i('uid') != $uid)) {
+            return false;
+        } else if (S::has('uid')) {
             return true;
         }
+        if ($level == -1) {
+            S::set('auth', AUTH_COOKIE);
+        }
+        unset($_SESSION['log']);
+        $res  = XDB::query('SELECT  u.user_id AS uid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
+                                    matricule, password, FIND_IN_SET(\'femme\', u.flags) AS femme,
+                                    a.alias AS forlife, a2.alias AS bestalias,
+                                    q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
+                                    FIND_IN_SET(\'watch\', u.flags) AS watch_account, q.last_version
+                              FROM  auth_user_md5   AS u
+                        INNER JOIN  auth_user_quick AS q  USING(user_id)
+                        INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type = \'a_vie\')
+                        INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET(\'bestalias\', a2.flags))
+                             WHERE  u.user_id = {?} AND u.perms IN(\'admin\', \'user\')', $uid);
+        $sess = $res->fetchOneAssoc();
+        $perms = $sess['perms'];
+        unset($sess['perms']);
+        $res = XDB::query('SELECT  UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
+                             FROM  logger.sessions AS s
+                            WHERE  s.uid = {?} AND s.suid = 0
+                         ORDER BY  s.start DESC
+                            LIMIT  1', $uid);
+        if ($res->numRows()) {
+            $sess = array_merge($sess, $res->fetchOneAssoc());
+        }
+        $suid = S::v('suid');
 
-        if (Env::has('username') and Env::has('response')) {
-            return XorgSession::doAuth();
+        if ($suid) {
+            $logger = S::logger();
+            $logger->log("suid_start", S::v('forlife')." by {$suid['uid']}");
+            $sess['suid'] = $suid;
+        } else {
+            $logger = S::logger();
+            //$logger->log("connexion", Env::v('n'));
+            setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
+            if (Post::v('remember', 'false') == 'true') {
+                $cookie = hash_encrypt($sess['password']);
+                setcookie('ORGaccess', $cookie, (time() + 25920000), '/', '', 0);
+                if ($logger) {
+                    $logger->log("cookie_on");
+                }
+            } else {
+                setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
+                if ($logger) {
+                    $logger->log("cookie_off");
+                }
+            }
         }
 
-        if ($r = try_cookie()) {
-            return XorgSession::doAuth(($r > 0));
-        }
-
-        return false;
+        $_SESSION = array_merge($_SESSION, $sess);
+        $this->makePerms($perms);
+        $this->securityChecks();
+        $this->setSkin();
+        update_NbNotifs();
+        check_redirect();
+        return true;
     }
 
-    // }}}
-    // {{{ public static function make_perms()
+    private function securityChecks()
+    {
+        $mail_subject = array();
+        if (check_account()) {
+            $mail_subject[] = 'Connexion d\'un utilisateur surveillé';
+        }
+        if (check_ip('unsafe')) {
+            $mail_subject[] = 'Une IP surveillee a tente de se connecter';
+            if (check_ip('ban')) {
+                send_warning_mail(implode(' - ', $mail_subject));
+                $this->destroy();
+                Platal::page()->kill('Une erreur est survenue lors de la procédure d\'authentification. '
+                                    . 'Merci de contacter au plus vite '
+                                    . '<a href="mailto:support@polytechnique.org">support@polytechnique.org</a>');
+                return false;
+            }
+        }
+        if (count($mail_subject)) {
+            send_warning_mail(implode(' - ', $mail_subject));
+        }
+    }
 
-    public static function &make_perms($perm)
+    private function makePerms($perm)
     {
         $flags = new PlFlagSet();
         if ($perm == 'disabled' || $perm == 'ext') {
@@ -192,143 +277,26 @@ class XorgSession
         if ($perm == 'admin') {
             $flags->addFlag(PERMS_ADMIN);
         }
-        return $flags;
+        S::set('perms', $flags);
+        S::set('perms_backup', $flags);
     }
 
-    // }}}
-}
-
-// {{{ function try_cookie()
-
-/** réalise la récupération de $_SESSION pour qqn avec cookie
- * @return  int     0 if all OK, -1 if no cookie, 1 if cookie with bad hash,
- *                  -2 should not happen
- */
-function try_cookie()
-{
-    if (Cookie::v('ORGaccess') == '' or !Cookie::has('ORGuid')) {
-        return -1;
-    }
-
-    $res = @XDB::query(
-            "SELECT user_id,password FROM auth_user_md5
-              WHERE user_id = {?} AND perms IN('admin','user')",
-            Cookie::i('ORGuid'));
-
-    if ($res->numRows() != 0) {
-        list($uid, $password) = $res->fetchOneRow();
-        require_once('secure_hash.inc.php');
-        $expected_value       = hash_encrypt($password);
-        if ($expected_value == Cookie::v('ORGaccess')) {
-            if (!start_connexion($uid, false)) {
-                return -3;
-            }
-            return 0;
-        } else {
-            return 1;
+    public function setSkin()
+    {
+        global $globals;
+        if (S::logged() && (!S::has('skin') || S::has('suid'))) {
+            $uid = S::v('uid');
+            $res = XDB::query("SELECT  skin_tpl
+                                 FROM  auth_user_quick AS a
+                           INNER JOIN  skins           AS s ON a.skin = s.id
+                                WHERE  user_id = {?} AND skin_tpl != ''", $uid);
+            S::set('skin', $res->fetchOneCell());
         }
     }
 
-    return -2;
-}
-
-// }}}
-// {{{ function start_connexion()
-
-/** place les variables de session dépendants de auth_user_md5
- * et met à jour les dates de dernière connexion si nécessaire
- * @return void
- * @see controlpermanent.inc.php controlauthentication.inc.php
- */
-function start_connexion ($uid, $identified)
-{
-    $res  = XDB::query("
-        SELECT  u.user_id AS uid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
-                matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
-                a.alias AS forlife, a2.alias AS bestalias,
-                q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
-                FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version
-          FROM  auth_user_md5   AS u
-    INNER JOIN  auth_user_quick AS q  USING(user_id)
-    INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
-    INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
-         WHERE  u.user_id = {?} AND u.perms IN('admin','user')", $uid);
-    $sess = $res->fetchOneAssoc();
-    $res = XDB::query("SELECT  UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
-                         FROM  logger.sessions AS s
-                        WHERE  s.uid = {?} AND s.suid = 0
-                     ORDER BY  s.start DESC
-                        LIMIT  1", $uid);
-    if ($res->numRows()) {
-        $sess = array_merge($sess, $res->fetchOneAssoc());
-    }
-    $suid = S::v('suid');
-
-    if ($suid) {
-        $logger = new PlLogger($uid, $suid['uid']);
-        $logger->log("suid_start", S::v('forlife')." by {$suid['uid']}");
-        $sess['suid'] = $suid;
-    } else {
-        $logger = S::v('log', new PlLogger($uid));
-        $logger->log("connexion", Env::v('n'));
-        setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
-    }
-
-    $_SESSION         = array_merge($_SESSION, $sess);
-    $_SESSION['log']  = $logger;
-    $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
-    $_SESSION['perms'] =& XorgSession::make_perms($_SESSION['perms']);
-    $mail_subject = null;
-    if (check_account()) {
-        $mail_subject = "Connexion d'un utilisateur surveillé";
-    }
-    if (check_ip('unsafe')) {
-        if ($mail_subject) {
-            $mail_subject .= ' - ';
-        }
-        $mail_subject .= "Une IP surveillee a tente de se connecter";
-        if (check_ip('ban')) {
-            send_warning_mail($mail_subject);
-            $_SESSION = array();
-            $_SESSION['perms'] = new PlFlagSet();
-            global $page;
-            $newpage = false;
-            if (!$page) {
-                $page =& Platal::page();
-                $newpage = true;
-            }
-            $page->trigError("Une erreur est survenue lors de la procédure d'authentification. "
-                       ."Merci de contacter au plus vite "
-                       ."<a href='mailto:support@polytechnique.org'>support@polytechnique.org</a>");
-            if ($newpage) {
-                $page->run();
-            }
-            return false;
-        }
-    }
-    if ($mail_subject) {
-        send_warning_mail($mail_subject);
-    }
-    set_skin();
-    update_NbNotifs();
-    check_redirect();
-    return true;
-}
-
-// }}}
-
-function set_skin()
-{
-    global $globals;
-    if (S::logged() && (!S::has('skin') || S::has('suid'))) {
-        $uid = S::v('uid');
-        $res = XDB::query("SELECT  skin_tpl
-                          FROM  auth_user_quick AS a
-                          INNER JOIN  skins           AS s ON a.skin = s.id
-                          WHERE  user_id = {?} AND skin_tpl != ''", $uid);
-        if ($_SESSION['skin'] = $res->fetchOneCell()) {
-            return;
-        }
+    public function sureLevel()
+    {
+        return AUTH_MDP;
     }
 }
 

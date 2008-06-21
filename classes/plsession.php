@@ -38,8 +38,7 @@ abstract class PlSession
      */
     public function __construct()
     {
-        session_start();
-        $this->fillSession();
+        $this->create();
     }
 
     /** Build the session structure with system fields.
@@ -60,12 +59,21 @@ abstract class PlSession
         session_write_close();
     }
 
+    /** Create a new session
+     */
+    private function create()
+    {
+        session_start();
+        $this->fillSession();
+    }
+
     /** Kill the current session.
      */
     public function destroy()
     {
         session_destroy();
         unset($_SESSION);
+        $this->create();
     }
 
     /** Check if the user has at least the given authentication level.
@@ -86,11 +94,16 @@ abstract class PlSession
      */
     public function start($level)
     {
+        $backup = S::i($level);
         if ($this->checkAuth($level)) {
             return true;
         }
         $user = $this->doAuth($level);
-        if (is_null($user) || !$this->checkAuth($level)) {
+        if (is_null($user)) {
+            return false;
+        }
+        if (!$this->checkAuth($level)) {
+            $this->destroy();
             return false;
         }
         if ($this->startSessionAs($user, $level)) {
@@ -106,6 +119,19 @@ abstract class PlSession
 
 
     /*** Abstract methods ***/
+
+    /** Function that check authentication at build time of the session object.
+     * This is useful to perform authentication from a cookie or when coming
+     * back from a authentication service.
+     *
+     * This function must NOT try to launch a new authenticatioin procedure. It
+     * just tests if the environment contains sufficient information to start
+     * a user session.
+     *
+     * This function return false if informations are available but lead to an
+     * authentication failure (invalid cookie, invalid service return data...)
+     */
+    abstract public function startAvailableAuth();
 
     /** Run the effectively authentication procedure to reach the given user.
      * This method must return a user object (that will be used to fill the
