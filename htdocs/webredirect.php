@@ -19,7 +19,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/../include/xorg.inc.php';
+require_once 'xorg.inc.php';
+
+new Platal('core');
 
 global $globals;
 list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
@@ -53,5 +55,7 @@ header("HTTP/1.0 404 Not Found");
     <hr>
     <address>Apache Server at www.carva.org Port 80</address>
   </body>
+</html>
+<?php
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

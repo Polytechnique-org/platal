@@ -41,7 +41,7 @@ define('DEBUG_BT', 1);
 define('DEBUG_VALID', 2);
 define('DEBUG_SMARTY', 4);
 
-function __autoload($cls)
+function pl_autoload($cls)
 {
     $cls  = strtolower($cls);
     $path = dirname(dirname(__FILE__));
@@ -57,7 +57,7 @@ function __autoload($cls)
         @include "$cls.inc.php";
     }
 }
-__autoload('Env');
+pl_autoload('Env');
 
 function pl_error_handler($errno, $errstr, $errfile, $errline)
 {

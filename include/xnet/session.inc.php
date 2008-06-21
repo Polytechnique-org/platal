@@ -115,14 +115,11 @@ class XnetSession
 
     public static function doAuthX()
     {
-        global $globals, $page;
+        global $globals;
 
         if (md5('1'.S::v('challenge').$globals->xnet->secret.Get::i('uid').'1') != Get::v('auth')) {
             Get::kill('auth');
-            if (!$page) {
-                require_once 'xnet.inc.php';
-                new_skinned_page('platal/index.tpl');
-            }
+            $page =& Platal::page();
             $page->kill("Erreur d'authentification avec polytechnique.org !");
         }
 

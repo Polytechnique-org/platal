@@ -294,8 +294,7 @@ function start_connexion ($uid, $identified)
             global $page;
             $newpage = false;
             if (!$page) {
-                require_once 'xorg.inc.php';
-                new_skinned_page('platal/index.tpl');
+                $page =& Platal::page();
                 $newpage = true;
             }
             $page->trigError("Une erreur est survenue lors de la procédure d'authentification. "

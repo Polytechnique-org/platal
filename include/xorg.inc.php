@@ -24,8 +24,14 @@ define('PL_SESSION_CLASS', 'XorgSession');
 define('PL_PAGE_CLASS', 'XorgPage');
 
 require_once('platal.inc.php');
+require_once('xorg.misc.inc.php');
 require_once('globals.inc.php');
 require_once('xorg/session.inc.php');
+
+function __autoload($cls)
+{
+    pl_autoload($cls);
+}
 
 // {{{ class XorgPage
 
@@ -42,7 +48,6 @@ class XorgPage extends PlPage
     public function run()
     {
         global $globals, $platal;
-        $this->assign_by_ref('globals', $globals);
         if (isset($platal) && $platal->path == 'register') {
             $skin = $globals->register_skin . ".tpl";
         } else {

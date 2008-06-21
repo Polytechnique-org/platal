@@ -96,7 +96,7 @@ abstract class PlPage extends Smarty
         $this->assign('xorg_triggers', $this->_errors);
         $this->assign('xorg_errors', $this->nb_errs());
         $this->assign('xorg_failure', $this->_failure);
-        $this->assign('globals', $globals);
+        $this->assign_by_ref('globals', $globals);
 
         if (Env::has('json') && count($this->_jsonVars)) {
             return $this->jsonDisplay();
