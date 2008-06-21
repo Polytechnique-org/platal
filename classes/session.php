@@ -123,7 +123,7 @@ function check_perms()
         if ($_SESSION['log']) {
             $_SESSION['log']->log("noperms",$_SERVER['PHP_SELF']);
         }
-	$page->kill("Tu n'as pas les permissions nécessaires pour accéder à cette page.");
+        $page->kill("Tu n'as pas les permissions nécessaires pour accéder à cette page.");
     }
 }
 
