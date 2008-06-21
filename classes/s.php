@@ -19,7 +19,93 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class S extends Session {
+class S
+{
+    /** Set a constructor because this is called prior to S::s(), so we can
+     * define S::s() for other usages.
+     */
+    private function __construct()
+    {
+        assert(false);
+    }
+
+    public static function has($key)
+    {
+        return isset($_SESSION[$key]);
+    }
+
+    public static function kill($key)
+    {
+        unset($_SESSION[$key]);
+    }
+
+    public static function v($key, $default = null)
+    {
+        return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
+    }
+
+    public static function s($key, $default = '')
+    {
+        return (string)S::v($key, $default);
+    }
+
+    public static function i($key, $default = 0)
+    {
+        $i = S::v($key, $default);
+        return is_numeric($i) ? intval($i) : $default;
+    }
+
+    public static function l(array $keys)
+    {
+        return array_map(array('S', 'v'), $keys);
+    }
+
+    public static function set($key, &$value)
+    {
+        $_SESSION[$key] =& $value;
+    }
+
+    public static function bootstrap($key, &$value)
+    {
+        if (!S::has($key)) {
+            S::set($key, $value);
+        }
+    }
+
+    public static function has_perms()
+    {
+        global $session;
+        return $session->checkPerms(PERMS_ADMIN);
+    }
+
+    public static function logged()
+    {
+        return S::v('auth', AUTH_PUBLIC) > AUTH_PUBLIC;
+    }
+
+    public static function identified()
+    {
+        global $session;
+        return S::v('auth', AUTH_PUBLIC) >= $session->sureLevel();
+    }
+
+    // Anti-XSRF protections.
+    public static function has_xsrf_token()
+    {
+        return S::has('xsrf_token') && S::v('xsrf_token') == Env::v('token');
+    }
+
+    public static function assert_xsrf_token()
+    {
+        if (!S::has_xsrf_token()) {
+            Platal::page()->kill('L\'opération n\'a pas pu aboutir, merci de réessayer.');
+        }
+    }
+
+    public static function rssActivated()
+    {
+        return S::has('core_rss_hash') && S::v('core_rss_hash');
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
