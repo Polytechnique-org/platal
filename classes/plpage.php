@@ -232,6 +232,14 @@ abstract class PlPage extends Smarty
     }
 
     // }}}
+    // {{{ function setTitle
+
+    public function setTitle($title)
+    {
+        $this->assign('pl_title', $title);
+    }
+
+    // }}}
     // {{{ function addJsLink
 
     public function addJsLink($path)
