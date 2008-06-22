@@ -122,7 +122,7 @@ class PlatalModule extends PLModule
     function handler_prefs(&$page)
     {
         $page->changeTpl('platal/preferences.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Mes préférences');
+        $page->assign('pl_title','Polytechnique.org - Mes préférences');
 
         if (Post::has('mail_fmt')) {
             $fmt = Post::v('mail_fmt');
@@ -143,7 +143,7 @@ class PlatalModule extends PLModule
     {
         $page->changeTpl('platal/webredirect.tpl');
 
-        $page->assign('xorg_title','Polytechnique.org - Redirection de page WEB');
+        $page->assign('pl_title','Polytechnique.org - Redirection de page WEB');
 
         $log =& S::v('log');
         $url = Env::v('url');
@@ -221,13 +221,13 @@ class PlatalModule extends PLModule
 
         $page->changeTpl('platal/motdepasse.tpl');
         $page->addJsLink('motdepasse.js');
-        $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
+        $page->assign('pl_title','Polytechnique.org - Mon mot de passe');
     }
 
     function handler_smtppass(&$page)
     {
         $page->changeTpl('platal/acces_smtp.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
+        $page->assign('pl_title','Polytechnique.org - Acces SMTP/NNTP');
 
         require_once 'wiki.inc.php';
         wiki_require_page('Xorg.SMTPSécurisé');
@@ -387,7 +387,7 @@ Adresse de secours : " . Post::v('email') : ""));
         global $globals;
 
         $page->changeTpl('platal/skins.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Skins');
+        $page->assign('pl_title','Polytechnique.org - Skins');
 
         if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
             XDB::execute('UPDATE auth_user_quick

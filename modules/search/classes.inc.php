@@ -95,7 +95,7 @@ class ThrowError
         global $globals;
         $page =& Platal::page();
         $page->changeTpl('search/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Annuaire');
+        $page->assign('pl_title','Polytechnique.org - Annuaire');
         $page->assign('baseurl', $globals->baseurl);
         $page->trigError($explain);
         $page->run();

@@ -53,7 +53,7 @@ class AXLetterModule extends PLModule
         require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
 
         $page->changeTpl('axletter/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Envois de l\'AX');
+        $page->assign('pl_title','Polytechnique.org - Envois de l\'AX');
 
         switch ($action) {
           case 'in':  AXLetter::subscribe(); break;

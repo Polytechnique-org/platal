@@ -42,7 +42,7 @@ class GeolocModule extends PLModule
     function handler_admin(&$page, $action = false) {
         $page->changeTpl('geoloc/admin.tpl');
         require_once("geoloc.inc.php");
-        $page->assign('xorg_title','Polytechnique.org - Administration - Geolocalisation');
+        $page->assign('pl_title','Polytechnique.org - Administration - Geolocalisation');
 
         $nb_synchro = 0;
 
@@ -100,7 +100,7 @@ class GeolocModule extends PLModule
         $noCoordinates = $countNoCoordinates->fetchOneCell();
 
         if (isset($refresh) && $missing) {
-            $page->assign("xorg_extra_header", "<meta http-equiv='Refresh' content='3'/>");
+            $page->assign("pl_extra_header", "<meta http-equiv='Refresh' content='3'/>");
         }
         $page->assign("nb_cities_not_on_map", $missing);
         $page->assign("no_smallest", $noSmallest);

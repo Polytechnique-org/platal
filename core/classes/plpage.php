@@ -55,7 +55,7 @@ abstract class PlPage extends Smarty
 
         if ($globals->mode != 'rw') {
             $this->trigError("En raison d'une maintenance, une partie des fonctionnalités du site sont"
-                      . " actuellement désactivée, en particuliers aucune donnée ne sera sauvegardée");
+                             . " actuellement désactivée, en particuliers aucune donnée ne sera sauvegardée");
         }
         $this->register_prefilter('at_to_globals');
         $this->addJsLink('xorg.js');
@@ -67,9 +67,9 @@ abstract class PlPage extends Smarty
 
     public function changeTpl($tpl, $type = SKINNED)
     {
-      $this->_tpl       = $tpl;
-      $this->_page_type = $type;
-      $this->assign('xorg_tpl', $tpl);
+        $this->_tpl       = $tpl;
+        $this->_page_type = $type;
+        $this->assign('pl_tpl', $tpl);
     }
 
     // }}}
@@ -95,9 +95,9 @@ abstract class PlPage extends Smarty
         $this->register_prefilter('form_force_encodings');
         $this->register_prefilter('wiki_include');
         $this->register_prefilter('if_has_perms');
-        $this->assign('xorg_triggers', $this->_errors);
-        $this->assign('xorg_errors', $this->nb_errs());
-        $this->assign('xorg_failure', $this->_failure);
+        $this->assign('pl_triggers', $this->_errors);
+        $this->assign('pl_errors', $this->nb_errs());
+        $this->assign('pl_failure', $this->_failure);
         $this->assign_by_ref('globals', $globals);
 
         if (Env::has('json') && count($this->_jsonVars)) {
@@ -236,7 +236,7 @@ abstract class PlPage extends Smarty
 
     public function addJsLink($path)
     {
-        $this->append('xorg_js', $path);
+        $this->append('pl_js', $path);
     }
 
     // }}}
@@ -244,7 +244,7 @@ abstract class PlPage extends Smarty
 
     public function addCssLink($path)
     {
-        $this->append('xorg_css', $path);
+        $this->append('pl_css', $path);
     }
 
     // }}}
@@ -253,7 +253,7 @@ abstract class PlPage extends Smarty
     public function addCssInline($css)
     {
         if (!empty($css)) {
-            $this->append('xorg_inline_css', $css);
+            $this->append('pl_inline_css', $css);
         }
     }
 
@@ -262,7 +262,7 @@ abstract class PlPage extends Smarty
 
     public function setRssLink($title, $path)
     {
-        $this->assign('xorg_rss', array('title' => $title, 'href' => $path));
+        $this->assign('pl_rss', array('title' => $title, 'href' => $path));
     }
 
     // }}}
@@ -347,27 +347,27 @@ function _to_globals($s) {
 function at_to_globals($tpl_source, &$smarty)
 {
     return preg_replace('/#globals\.([a-zA-Z0-9_.]+?)#/e', '_to_globals(\'\\1\')', $tpl_source);
-}
+                        }
 
-// }}}
-// {{{  function trimwhitespace
+                        // }}}
+                        // {{{  function trimwhitespace
 
-function trimwhitespace($source, &$smarty)
-{
-    $tags = '(script|pre|textarea)';
-    preg_match_all("!<$tags.*?>.*?</(\\1)>!ius", $source, $tagsmatches);
-    $source = preg_replace("!<$tags.*?>.*?</(\\1)>!ius", "&&&tags&&&", $source);
+                        function trimwhitespace($source, &$smarty)
+                        {
+                        $tags = '(script|pre|textarea)';
+                        preg_match_all("!<$tags.*?>.*?</(\\1)>!ius", $source, $tagsmatches);
+                        $source = preg_replace("!<$tags.*?>.*?</(\\1)>!ius", "&&&tags&&&", $source);
 
-    // remove all leading spaces, tabs and carriage returns NOT
-    // preceeded by a php close tag.
-    $source = preg_replace('/((?<!\?>)\n)[\s]+/m', '\1', $source);
-    $source = preg_replace("!&&&tags&&&!e",  'array_shift($tagsmatches[0])', $source);
+                        // remove all leading spaces, tabs and carriage returns NOT
+                        // preceeded by a php close tag.
+                        $source = preg_replace('/((?<!\?>)\n)[\s]+/m', '\1', $source);
+                        $source = preg_replace("!&&&tags&&&!e",  'array_shift($tagsmatches[0])', $source);
 
-    return $source;
-}
+                        return $source;
+                        }
 
-// }}}
-// {{{ function wiki_include
+                        // }}}
+                        // {{{ function wiki_include
 
 function wiki_include($source, &$smarty)
 {
@@ -382,11 +382,11 @@ function wiki_include($source, &$smarty)
 function if_has_perms($source, &$smarty)
 {
     $source = preg_replace('/\{if([^}]*) (\!?)hasPerms\(([^)]+)\)([^}]*)\}/',
-                           '{if\1 \2$smarty.session.perms->hasFlagCombination(\3)\4}',
-                           $source);
-    return preg_replace('/\{if([^}]*) (\!?)hasPerm\(([^)]+)\)([^}]*)\}/',
-                        '{if\1 \2($smarty.session.perms && $smarty.session.perms->hasFlag(\3))\4}',
-                        $source);
+    '{if\1 \2$smarty.session.perms->hasFlagCombination(\3)\4}',
+    $source);
+return preg_replace('/\{if([^}]*) (\!?)hasPerm\(([^)]+)\)([^}]*)\}/',
+       '{if\1 \2($smarty.session.perms && $smarty.session.perms->hasFlag(\3))\4}',
+       $source);
 }
 
 // }}}
@@ -406,8 +406,8 @@ function _hide_email($source)
 {
     $source = str_replace("\n", '', $source);
     return '<script type="text/javascript">//<![CDATA[' . "\n" .
-           'Nix.decode("' . addslashes(str_rot13($source)) . '");' . "\n" .
-           '//]]></script>';
+        'Nix.decode("' . addslashes(str_rot13($source)) . '");' . "\n" .
+        '//]]></script>';
 }
 
 function hide_emails($source, &$smarty)

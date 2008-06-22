@@ -41,10 +41,10 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     <link rel="stylesheet" type="text/css" href="css/base.css" media="all"/>
-    {foreach from=$xorg_css item=css}
+    {foreach from=$pl_css item=css}
     <link rel="stylesheet" type="text/css" href="css/{$css}" media="all"/>
     {/foreach}
-    {foreach from=$xorg_inline_css item=css}
+    {foreach from=$pl_inline_css item=css}
     <style type="text/css">
     {$css|smarty:nodefaults}
     </style>
@@ -53,7 +53,7 @@
     <script type="text/javascript">
       var platal_baseurl = "{$globals->baseurl}/";
     </script>
-    {foreach from=$xorg_js item=js}
+    {foreach from=$pl_js item=js}
     <script type="text/javascript" src="javascript/{$js}"></script>
     {/foreach}
     {javascript name=overlib}
@@ -61,14 +61,14 @@
     {javascript name=sha1}
     {javascript name=secure_hash}
 
-    {if $xorg_rss}
-    <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{$xorg_rss.href}" />
+    {if $pl_rss}
+    <link rel="alternate" type="application/rss+xml" title="{$pl_rss.title}" href="{$pl_rss.href}" />
     {/if}
 
-    {if $xorg_extra_header}
-    {$xorg_extra_header|smarty:nodefaults}
+    {if $pl_extra_header}
+    {$pl_extra_header|smarty:nodefaults}
     {/if}
 
-    <title>{$xorg_title|default:"Polytechnique.org&nbsp;: le site des élèves et anciens élèves de l'École polytechnique"}</title>
+    <title>{$pl_title|default:"Polytechnique.org&nbsp;: le site des élèves et anciens élèves de l'École polytechnique"}</title>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

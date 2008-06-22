@@ -37,10 +37,10 @@ Nous conseillons très vivement d'utiliser des navigateurs récents, tels
 <br />
 {/if}
 
-{if !$xorg_no_errors || $xorg_failure}
+{if !$pl_no_errors || $pl_failure}
 {include file="skin/common.triggers.tpl"}
 {/if}
 
-{if !$xorg_failure && $xorg_tpl}{include file=$xorg_tpl}{/if}
+{if !$pl_failure && $pl_tpl}{include file=$pl_tpl}{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

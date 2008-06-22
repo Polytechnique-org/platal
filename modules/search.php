@@ -154,7 +154,7 @@ class SearchModule extends PLModule
 
         require_once dirname(__FILE__) . '/search/search.inc.php';
         $page->changeTpl('search/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Annuaire');
+        $page->assign('pl_title','Polytechnique.org - Annuaire');
     }
 
     function handler_advanced(&$page, $action = null, $subaction = null)

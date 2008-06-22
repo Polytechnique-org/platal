@@ -210,7 +210,7 @@ class PlWizard
         $smarty->assign('wiz_ajax', $this->ajax);
         $smarty->assign('tab_width', (int)(99 / count($this->pages)));
         $smarty->assign('wiz_page', $page->template());
-        $smarty->assign('xorg_no_errors', true);
+        $smarty->assign('pl_no_errors', true);
         $page->prepare($smarty, isset($this->inv_lookup[$curpage]) ? $this->inv_lookup[$curpage] : $curpage);
     }
 }

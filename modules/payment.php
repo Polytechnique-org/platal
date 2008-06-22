@@ -120,7 +120,7 @@ class PaymentModule extends PLModule
             }
         }
         $page->changeTpl('payment/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Télépaiements');
+        $page->assign('pl_title','Polytechnique.org - Télépaiements');
 
         // initialisation
         $op   = Env::v('op', 'select');
@@ -467,7 +467,7 @@ class PaymentModule extends PLModule
     }
 
     function handler_admin(&$page, $action = 'list', $id = null) {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Paiements');
+        $page->assign('pl_title','Polytechnique.org - Administration - Paiements');
         $page->assign('title', 'Gestion des télépaiements');
         $table_editor = new PLTableEditor('admin/payments','paiement.paiements','id');
         $table_editor->add_join_table('paiement.transactions','ref',true);
