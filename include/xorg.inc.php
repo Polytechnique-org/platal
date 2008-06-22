@@ -25,7 +25,6 @@ define('PL_PAGE_CLASS', 'XorgPage');
 
 require_once dirname(dirname(__FILE__)) . '/core/include/platal.inc.php';
 require_once 'security.inc.php';
-require_once 'globals.inc.php';
 
 function __autoload($cls)
 {
