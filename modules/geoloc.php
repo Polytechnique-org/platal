@@ -42,7 +42,7 @@ class GeolocModule extends PLModule
     function handler_admin(&$page, $action = false) {
         $page->changeTpl('geoloc/admin.tpl');
         require_once("geoloc.inc.php");
-        $page->assign('pl_title','Polytechnique.org - Administration - Geolocalisation');
+        $page->setTitle('Polytechnique.org - Administration - Geolocalisation');
 
         $nb_synchro = 0;
 

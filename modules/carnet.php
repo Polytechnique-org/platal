@@ -56,7 +56,7 @@ class CarnetModule extends PLModule
     function handler_index(&$page)
     {
         $page->changeTpl('carnet/index.tpl');
-        $page->assign('pl_title','Polytechnique.org - Mon carnet');
+        $page->setTitle('Polytechnique.org - Mon carnet');
         $this->_add_rss_link($page);
     }
 
@@ -202,7 +202,7 @@ class CarnetModule extends PLModule
 
     function handler_contacts(&$page, $action = null, $subaction = null, $ssaction = null)
     {
-        $page->assign('pl_title','Polytechnique.org - Mes contacts');
+        $page->setTitle('Polytechnique.org - Mes contacts');
         $this->_add_rss_link($page);
 
         $uid  = S::v('uid');

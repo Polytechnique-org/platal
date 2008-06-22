@@ -59,13 +59,13 @@ class AdminModule extends PLModule
     function handler_default(&$page)
     {
         $page->changeTpl('admin/index.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration');
+        $page->setTitle('Polytechnique.org - Administration');
     }
 
     function handler_postfix_delayed(&$page)
     {
         $page->changeTpl('admin/postfix_delayed.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration - Postfix : Retardés');
+        $page->setTitle('Polytechnique.org - Administration - Postfix : Retardés');
 
         if (Env::has('del')) {
             $crc = Env::v('crc');
@@ -90,7 +90,7 @@ class AdminModule extends PLModule
 
     function handler_postfix_regexpsbounces(&$page, $new = null) {
         $page->changeTpl('admin/emails_bounces_re.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration - Postfix : Regexps Bounces');
+        $page->setTitle('Polytechnique.org - Administration - Postfix : Regexps Bounces');
         $page->assign('new', $new);
 
         if (Post::has('submit')) {
@@ -347,14 +347,14 @@ class AdminModule extends PLModule
 
         $page->changeTpl('admin/logger-view.tpl');
 
-        $page->assign('pl_title','Polytechnique.org - Administration - Logs des sessions');
+        $page->setTitle('Polytechnique.org - Administration - Logs des sessions');
     }
 
     function handler_user(&$page, $login = false)
     {
         global $globals;
         $page->changeTpl('admin/utilisateurs.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration - Edit/Su/Log');
+        $page->setTitle('Polytechnique.org - Administration - Edit/Su/Log');
         require_once("emails.inc.php");
         require_once("user.func.inc.php");
 
@@ -732,7 +732,7 @@ class AdminModule extends PLModule
 
     function handler_homonyms(&$page, $op = 'list', $target = null) {
         $page->changeTpl('admin/homonymes.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration - Homonymes');
+        $page->setTitle('Polytechnique.org - Administration - Homonymes');
         require_once("homonymes.inc.php");
 
         if ($target) {
@@ -795,7 +795,7 @@ class AdminModule extends PLModule
 
     function handler_ax_xorg(&$page) {
         $page->changeTpl('admin/ax-xorg.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration - AX/X.org');
+        $page->setTitle('Polytechnique.org - Administration - AX/X.org');
 
         // liste des différences
         $res = XDB::query(
@@ -823,7 +823,7 @@ class AdminModule extends PLModule
 
     function handler_deaths(&$page, $promo = 0, $validate = false) {
         $page->changeTpl('admin/deces_promo.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration - Deces');
+        $page->setTitle('Polytechnique.org - Administration - Deces');
 
         if (!$promo)
             $promo = Env::i('promo');
@@ -863,7 +863,7 @@ class AdminModule extends PLModule
 
     function handler_dead_but_active(&$page) {
         $page->changeTpl('admin/dead_but_active.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration - Décédés');
+        $page->setTitle('Polytechnique.org - Administration - Décédés');
 
         $res = XDB::iterator(
                 "SELECT  u.promo, u.nom, u.prenom, u.deces, u.matricule_ax, a.alias, DATE(MAX(s.start)) AS last
@@ -878,7 +878,7 @@ class AdminModule extends PLModule
 
     function handler_synchro_ax(&$page, $user = null, $action = null) {
         $page->changeTpl('admin/synchro_ax.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration - Synchro AX');
+        $page->setTitle('Polytechnique.org - Administration - Synchro AX');
 
         require_once('synchro_ax.inc.php');
 
@@ -926,7 +926,7 @@ class AdminModule extends PLModule
     function handler_validate(&$page, $action = 'list', $id = null)
     {
         $page->changeTpl('admin/valider.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration - Valider une demande');
+        $page->setTitle('Polytechnique.org - Administration - Valider une demande');
                 $page->addCssLink('nl.css');
         $page->addJsLink('ajax.js');
         require_once("validations.inc.php");
@@ -974,7 +974,7 @@ class AdminModule extends PLModule
     }
 
     function handler_validate_answers(&$page, $action = 'list', $id = null) {
-        $page->assign('pl_title','Polytechnique.org - Administration - Réponses automatiques de validation');
+        $page->setTitle('Polytechnique.org - Administration - Réponses automatiques de validation');
         $page->assign('title', 'Gestion des réponses automatiques');
         $table_editor = new PLTableEditor('admin/validate/answers','requests_answers','id');
         $table_editor->describe('category','catégorie',true);
@@ -983,7 +983,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_skins(&$page, $action = 'list', $id = null) {
-        $page->assign('pl_title','Polytechnique.org - Administration - Skins');
+        $page->setTitle('Polytechnique.org - Administration - Skins');
         $page->assign('title', 'Gestion des skins');
         $table_editor = new PLTableEditor('admin/skins','skins','id');
         $table_editor->describe('name','nom',true);
@@ -996,7 +996,7 @@ class AdminModule extends PLModule
     }
 
     function handler_postfix_blacklist(&$page, $action = 'list', $id = null) {
-        $page->assign('pl_title','Polytechnique.org - Administration - Postfix : Blacklist');
+        $page->setTitle('Polytechnique.org - Administration - Postfix : Blacklist');
         $page->assign('title', 'Blacklist de postfix');
         $table_editor = new PLTableEditor('admin/postfix/blacklist','postfix_blacklist','email', true);
         $table_editor->describe('reject_text','Texte de rejet',true);
@@ -1004,14 +1004,14 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_postfix_whitelist(&$page, $action = 'list', $id = null) {
-        $page->assign('pl_title','Polytechnique.org - Administration - Postfix : Whitelist');
+        $page->setTitle('Polytechnique.org - Administration - Postfix : Whitelist');
         $page->assign('title', 'Whitelist de postfix');
         $table_editor = new PLTableEditor('admin/postfix/whitelist','postfix_whitelist','email', true);
         $table_editor->describe('email','email',true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_mx_broken(&$page, $action = 'list', $id = null) {
-        $page->assign('pl_title', 'Polytechnique.org - Administration - MX Défaillants');
+        $page->setTitle('Polytechnique.org - Administration - MX Défaillants');
         $page->assign('title', 'MX Défaillant');
         $table_editor = new PLTableEditor('admin/mx/broken', 'mx_watch', 'host', true);
         $table_editor->describe('host', 'Masque', true);
@@ -1020,7 +1020,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_logger_actions(&$page, $action = 'list', $id = null) {
-        $page->assign('pl_title','Polytechnique.org - Administration - Actions');
+        $page->setTitle('Polytechnique.org - Administration - Actions');
         $page->assign('title', 'Gestion des actions de logger');
         $table_editor = new PLTableEditor('admin/logger/actions','logger.actions','id');
         $table_editor->describe('text','intitulé',true);
@@ -1028,7 +1028,7 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_downtime(&$page, $action = 'list', $id = null) {
-        $page->assign('pl_title','Polytechnique.org - Administration - Coupures');
+        $page->setTitle('Polytechnique.org - Administration - Coupures');
         $page->assign('title', 'Gestion des coupures');
         $table_editor = new PLTableEditor('admin/downtime','coupures','id');
         $table_editor->describe('debut','date',true);

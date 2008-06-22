@@ -327,7 +327,7 @@ class EventsModule extends PLModule
 
     function handler_admin_tips(&$page, $action = 'list', $id = null)
     {
-        $page->assign('pl_title', 'Polytechnique.org - Administration - Astuces');
+        $page->setTitle('Polytechnique.org - Administration - Astuces');
         $page->assign('title', 'Gestion des Astuces');
         $table_editor = new PLTableEditor('admin/tips', 'tips', 'id');
         $table_editor->describe('peremption', 'date de péremption', true);
@@ -348,7 +348,7 @@ class EventsModule extends PLModule
     {
         $page->changeTpl('events/admin.tpl');
         $page->addJsLink('ajax.js');
-        $page->assign('pl_title','Polytechnique.org - Administration - Evenements');
+        $page->setTitle('Polytechnique.org - Administration - Evenements');
         $page->register_modifier('hde', 'html_entity_decode');
 
         $arch = $action == 'archives';

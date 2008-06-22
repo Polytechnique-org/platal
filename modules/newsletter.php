@@ -38,7 +38,7 @@ class NewsletterModule extends PLModule
         require_once 'newsletter.inc.php';
 
         $page->changeTpl('newsletter/index.tpl');
-        $page->assign('pl_title','Polytechnique.org - Lettres mensuelles');
+        $page->setTitle('Polytechnique.org - Lettres mensuelles');
 
         switch ($action) {
           case 'out': Newsletter::unsubscribe(); break;
@@ -97,7 +97,7 @@ class NewsletterModule extends PLModule
 
     function handler_admin_nl(&$page, $new = false) {
         $page->changeTpl('newsletter/admin.tpl');
-        $page->assign('pl_title','Polytechnique.org - Administration - Newsletter : liste');
+        $page->setTitle('Polytechnique.org - Administration - Newsletter : liste');
         require_once("newsletter.inc.php");
 
         if($new) {
@@ -111,7 +111,7 @@ class NewsletterModule extends PLModule
     function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {
         $page->changeTpl('newsletter/edit.tpl');
         $page->addCssLink('nl.css');
-        $page->assign('pl_title','Polytechnique.org - Administration - Newsletter : Edition');
+        $page->setTitle('Polytechnique.org - Administration - Newsletter : Edition');
         require_once("newsletter.inc.php");
 
         $nl  = new NewsLetter($nid);
@@ -157,7 +157,7 @@ class NewsletterModule extends PLModule
     }
 
     function handler_admin_nl_cat(&$page, $action = 'list', $id = null) {
-        $page->assign('pl_title','Polytechnique.org - Administration - Newsletter : Catégories');
+        $page->setTitle('Polytechnique.org - Administration - Newsletter : Catégories');
         $page->assign('title', 'Gestion des catégories de la newsletter');
         $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
         $table_editor->describe('titre','intitulé',true);
