@@ -50,7 +50,6 @@ class XorgSession extends PlSession
      */
     private function tryCookie()
     {
-        Platal::page()->trigError("Trying cookie");
         S::kill('auth_by_cookie');
         if (Cookie::v('ORGaccess') == '' || !Cookie::has('ORGuid')) {
             return -1;
@@ -125,7 +124,7 @@ class XorgSession extends PlSession
 
         /* We want to do auth... we must have infos from a form.
          */
-        if (!Env::has('username') || !Env::has('response') || !S::has('challenge')) {
+        if (!Post::has('username') || !Post::has('response') || !S::has('challenge')) {
             return null;
         }
 
