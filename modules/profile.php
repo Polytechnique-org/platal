@@ -125,6 +125,7 @@ class ProfileModule extends PLModule
 
     function handler_photo_change(&$page)
     {
+        global $globals;
         $page->changeTpl('profile/trombino.tpl');
 
         require_once('validations.inc.php');
@@ -158,12 +159,12 @@ class ProfileModule extends PLModule
             XDB::execute('DELETE FROM  requests
                                 WHERE  user_id = {?} AND type="photo"',
                          S::v('uid'));
-            update_NbValid();
+            $globals->updateNbValid();
         } elseif (Env::v('cancel')) {
             $sql = XDB::query('DELETE FROM  requests
                                      WHERE  user_id={?} AND type="photo"',
                               S::v('uid'));
-            update_NbValid();
+            $globals->updateNbValid();
         }
 
         $sql = XDB::query('SELECT  COUNT(*)

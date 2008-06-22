@@ -65,8 +65,8 @@ class CarnetModule extends PLModule
         $page->changeTpl('carnet/panel.tpl');
 
         if (Get::has('read')) {
-            $_SESSION['watch_last'] = Get::v('read');
-            update_NbNotifs();
+            S::set('watch_last', Get::v('read'));
+            Platal::session()->updateNbNotifs();
             pl_redirect('carnet/panel');
         }
 

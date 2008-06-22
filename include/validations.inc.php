@@ -117,7 +117,7 @@ abstract class Validate
                 $this->uid, $this->type, $this, $this->stamp);
 
         global $globals;
-        update_NbValid();
+        $globals->updateNbValid();
         return true;
     }
 
@@ -147,7 +147,7 @@ abstract class Validate
             $success =  XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
                                       $this->uid, $this->type, $this->stamp);
         }
-        update_NbValid();
+        $globals->updateNbValid();
         return $success;
     }
 

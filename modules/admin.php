@@ -578,7 +578,7 @@ class AdminModule extends PLModule
                             $mailer->send();
 
                             // update number of subscribers (perms or deceased may have changed)
-                            update_NbIns();
+                            $globals->updateNbIns();
 
                             $page->trigSuccess("updaté correctement.");
                         }
@@ -621,7 +621,7 @@ class AdminModule extends PLModule
                     case "u_kill":
                         user_clear_all_subs($mr['user_id']);
                         // update number of subscribers (perms or deceased may have changed)
-                        update_NbIns();
+                        $globals->updateNbIns();
                         $page->trigSuccess("'{$mr['user_id']}' a été désinscrit !");
                         $mailer = new PlMailer("admin/useredit.mail.tpl");
                         $mailer->assign("admin", S::v('forlife'));
@@ -968,7 +968,8 @@ class AdminModule extends PLModule
 
         // Update the count of item to validate here... useful in development configuration
         // where several copies of the site use the same DB, but not the same "dynamic configuration"
-        update_NbValid();
+        global $globals;
+        $globals->updateNbValid();
         $page->assign('vit', new ValidateIterator());
     }
 

@@ -233,7 +233,7 @@ class XorgSession extends PlSession
         $this->makePerms($perms);
         $this->securityChecks();
         $this->setSkin();
-        update_NbNotifs();
+        $this->updateNbNotifs();
         check_redirect();
         return true;
     }
@@ -292,6 +292,14 @@ class XorgSession extends PlSession
     public function sureLevel()
     {
         return AUTH_MDP;
+    }
+
+
+    public function updateNbNotifs()
+    {
+        require_once 'notifs.inc.php';
+        $n = select_notifs(false, S::i('uid'), S::v('watch_last'), false);
+        S::set('notifs', $n->numRows());
     }
 }
 

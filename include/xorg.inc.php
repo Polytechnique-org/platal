@@ -25,51 +25,7 @@ define('PL_PAGE_CLASS', 'XorgPage');
 
 require_once dirname(dirname(__FILE__)) . '/core/include/platal.inc.php';
 require_once 'security.inc.php';
-
-function __autoload($cls)
-{
-    $cls = strtolower($cls);
-    if (!pl_autoload($cls)) {
-        if (substr($cls, -3, 3) == 'req') {
-            @include 'validations.inc.php';
-            return;
-        } else if (substr($cls, 0, 6) == 'banana') {
-            require_once 'banana/banana.inc.php';
-            Banana::load(substr($cls, 6));
-            return;
-        }
-        @include "$cls.inc.php";
-    }
-}
-
-/******************************************************************************
- * Dynamic configuration update/edition stuff
- *****************************************************************************/
-
-function update_NbIns()
-{
-    global $globals;
-    $res = XDB::query("SELECT  COUNT(*)
-                         FROM  auth_user_md5
-                        WHERE  perms IN ('admin','user') AND deces=0");
-    $cnt = $res->fetchOneCell();
-    $globals->changeDynamicConfig(array('NbIns' => $cnt));
-}
-
-function update_NbValid()
-{
-    global $globals;
-    $res = XDB::query("SELECT  COUNT(*)
-                         FROM  requests");
-    $globals->changeDynamicConfig(array('NbValid' => $res->fetchOneCell()));
-}
-
-function update_NbNotifs()
-{
-    require_once 'notifs.inc.php';
-    $n = select_notifs(false, S::i('uid'), S::v('watch_last'), false);
-    $_SESSION['notifs'] = $n->numRows();
-}
+require_once 'common.inc.php';
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

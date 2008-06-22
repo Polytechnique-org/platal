@@ -317,7 +317,7 @@ class RegisterModule extends PLModule
         user_reindex($uid);
 
         // update number of subscribers (perms has changed)
-        update_NbIns();
+        $globals->updateNbIns();
 
         if (!start_connexion($uid, false)) {
             return PL_FORBIDDEN;

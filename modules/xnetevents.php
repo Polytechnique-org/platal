@@ -97,7 +97,7 @@ class XnetEventsModule extends PLModule
             XDB::execute("DELETE FROM requests
                                     WHERE type = 'paiements' AND data LIKE {?}",
                                    PayReq::same_event($eid, $globals->asso('id')));
-            update_NbValid();
+            $globals->updateNbValid();
         }
 
         if ($action == 'archive') {
