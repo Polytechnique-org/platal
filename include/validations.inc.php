@@ -21,7 +21,8 @@
 
 define('SIZE_MAX', 32768);
 
-require_once dirname(__FILE__) . '/../classes/xdb.php';
+global $globals;
+require_once $globals->spoolroot . '/core/classes/xdb.php';
 
 /**
  * Iterator class, that lists objects through the database
