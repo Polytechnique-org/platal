@@ -329,7 +329,6 @@ class CarnetModule extends PLModule
             if (!$uid) {
                 $uid = S::i('uid');
             } else if ($uid != S::i('uid')) {
-                require_once 'xorg.misc.inc.php';
                 send_warning_email("Récupération d\'un autre utilisateur ($uid)");
             }
         } else if (!$uid) {

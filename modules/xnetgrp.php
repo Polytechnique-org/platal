@@ -699,7 +699,6 @@ class XnetGrpModule extends PLModule
                 $page->trigError($email." n'est pas un alias polytechnique.org valide.");
             }
         } else {
-            require_once 'xorg.misc.inc.php';
             if (isvalid_email($email)) {
                 if (Env::v('x') && Env::has('userid') && Env::i('userid')) {
                     $uid = Env::i('userid');

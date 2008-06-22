@@ -24,10 +24,9 @@ define('PL_SESSION_CLASS', 'XnetSession');
 define('PL_PAGE_CLASS', 'XnetPage');
 
 require_once dirname(dirname(__FILE__)) . '/core/include/platal.inc.php';
-require_once('xorg.misc.inc.php');
-require_once('globals.inc.php');
-require_once('xnet/session.inc.php');
-require_once('xnet/page.inc.php');
+require_once 'globals.inc.php';
+require_once 'xnet/session.inc.php';
+require_once 'xnet/page.inc.php';
 
 function __autoload($cls)
 {

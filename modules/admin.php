@@ -583,7 +583,6 @@ class AdminModule extends PLModule
                             $page->trigSuccess("updaté correctement.");
                         }
                         if (Env::v('nomusageN') != $mr['nom_usage']) {
-                            require_once "xorg.misc.inc.php";
                             set_new_usage($mr['user_id'], Env::v('nomusageN'), make_username(Env::v('prenomN'), Env::v('nomusageN')));
                         }
                         if (Env::v('decesN') != $mr['deces']) {

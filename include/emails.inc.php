@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.misc.inc.php");
-
 define("SUCCESS", 1);
 define("ERROR_INACTIVE_REDIRECTION", 2);
 define("ERROR_INVALID_EMAIL", 3);

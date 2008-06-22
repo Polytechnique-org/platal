@@ -53,7 +53,6 @@ class Marketing
 
     private function getUser($uid, $email)
     {
-        require_once("xorg.misc.inc.php");
         $res = XDB::query("SELECT  FIND_IN_SET('femme', flags) AS sexe, nom, prenom, promo
                              FROM  auth_user_md5
                             WHERE  user_id = {?}", $uid);
@@ -287,7 +286,8 @@ class AnnuaireMarketing implements MarketingEngine
 
     public function getText(array $user)
     {
-        $page = new XorgPage('marketing/marketing.mail.tpl', NO_SKIN);
+        $page = new XorgPage();
+        $page->changeTpl('marketing/marketing.mail.tpl', NO_SKIN);
         $this->prepareText($page, $user);
         return $page->raw();
     }

@@ -261,7 +261,6 @@ class MarketingModule extends PLModule
             $page->assign('promo', $promo);
 
             if (Post::has('valide')) {
-                require_once('xorg.misc.inc.php');
                 $email = trim(Post::v('mail'));
 
                 if (!isvalid_email_redirection($email)) {

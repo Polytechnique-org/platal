@@ -21,6 +21,8 @@
 
 $TIME_BEGIN = microtime(true);
 
+require_once dirname(__FILE__) . '/misc.inc.php';
+
 define('PERMS_EXT',   'ext');
 define('PERMS_USER',  'user');
 define('PERMS_ADMIN', 'admin');

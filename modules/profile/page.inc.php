@@ -68,7 +68,6 @@ class ProfileEmail extends ProfileNoSave
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
         }
         $value = trim($value);
-        require_once 'xorg.misc.inc.php';
         $success = empty($value) || isvalid_email($value);
         if (!$success) {
             Platal::page()->trigError('Adresse Email invalide');

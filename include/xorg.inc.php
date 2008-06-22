@@ -24,9 +24,9 @@ define('PL_SESSION_CLASS', 'XorgSession');
 define('PL_PAGE_CLASS', 'XorgPage');
 
 require_once dirname(dirname(__FILE__)) . '/core/include/platal.inc.php';
-require_once('xorg.misc.inc.php');
-require_once('globals.inc.php');
-require_once('xorg/session.inc.php');
+require_once 'security.inc.php';
+require_once 'globals.inc.php';
+require_once 'xorg/session.inc.php';
 
 function __autoload($cls)
 {
@@ -42,6 +42,37 @@ function __autoload($cls)
         @include "$cls.inc.php";
     }
 }
+
+/******************************************************************************
+ * Dynamic configuration update/edition stuff
+ *****************************************************************************/
+
+function update_NbIns()
+{
+    global $globals;
+    $res = XDB::query("SELECT  COUNT(*)
+                         FROM  auth_user_md5
+                        WHERE  perms IN ('admin','user') AND deces=0");
+    $cnt = $res->fetchOneCell();
+    $globals->changeDynamicConfig(array('NbIns' => $cnt));
+}
+
+function update_NbValid()
+{
+    global $globals;
+    $res = XDB::query("SELECT  COUNT(*)
+                         FROM  requests");
+    $globals->changeDynamicConfig(array('NbValid' => $res->fetchOneCell()));
+}
+
+function update_NbNotifs()
+{
+    require_once 'notifs.inc.php';
+    $n = select_notifs(false, S::i('uid'), S::v('watch_last'), false);
+    $_SESSION['notifs'] = $n->numRows();
+}
+
+
 
 // {{{ class XorgPage
 
