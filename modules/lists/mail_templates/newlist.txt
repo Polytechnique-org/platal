@@ -1,7 +1,0 @@
-La liste de diffusion {{{LIST}}} vient d'être créée pour vous.
-
-Vous pouvez en régler les paramètres depuis la page web : 
-
-    {{{ADMIN}}}
-
-Pour toute question adressez-vous à support@polytechnique.org.

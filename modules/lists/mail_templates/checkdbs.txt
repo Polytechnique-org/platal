@@ -1,8 +1,0 @@
-La liste {{{LIST}}} a %(count)d requête(s) en attente
-d'une action de votre part sur la page web : 
-
-    {{{MODERATE}}}
-
-Merci de bien vouloir prendre le temps de les traiter.
-Cet avis de requête(s) en attente vous sera envoyé
-chaque jour où des messages sont en attente de modération.

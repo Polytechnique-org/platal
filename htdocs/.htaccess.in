@@ -1,8 +1,0 @@
-RewriteEngine on
-
-RewriteBase @REWRITE_BASE@
-
-# Rewrite URLs of the form 'index.php?q=x':
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ ?n=$1 [L,QSA]
