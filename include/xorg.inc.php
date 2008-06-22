@@ -26,10 +26,10 @@ define('PL_PAGE_CLASS', 'XorgPage');
 require_once dirname(dirname(__FILE__)) . '/core/include/platal.inc.php';
 require_once 'security.inc.php';
 require_once 'globals.inc.php';
-require_once 'xorg/session.inc.php';
 
 function __autoload($cls)
 {
+    $cls = strtolower($cls);
     if (!pl_autoload($cls)) {
         if (substr($cls, -3, 3) == 'req') {
             @include 'validations.inc.php';
@@ -70,32 +70,6 @@ function update_NbNotifs()
     require_once 'notifs.inc.php';
     $n = select_notifs(false, S::i('uid'), S::v('watch_last'), false);
     $_SESSION['notifs'] = $n->numRows();
-}
-
-
-
-// {{{ class XorgPage
-
-class XorgPage extends PlPage
-{
-    public function __construct()
-    {
-        parent::__construct();
-
-        // Set the default page
-        $this->changeTpl('platal/index.tpl');
-    }
-
-    public function run()
-    {
-        global $globals, $platal;
-        if (isset($platal) && $platal->path == 'register') {
-            $skin = $globals->register_skin . ".tpl";
-        } else {
-            $skin = S::v('skin', $globals->skin . ".tpl");
-        }
-        $this->_run('skin/' . $skin);
-    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

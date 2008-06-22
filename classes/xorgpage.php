@@ -19,26 +19,25 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-define('PL_GLOBALS_CLASS', 'PlatalGlobals');
-define('PL_SESSION_CLASS', 'XnetSession');
-define('PL_PAGE_CLASS', 'XnetPage');
-
-require_once dirname(dirname(__FILE__)) . '/core/include/platal.inc.php';
-require_once 'globals.inc.php';
-
-function __autoload($cls)
+class XorgPage extends PlPage
 {
-    $cls = strtolower($cls);
-    if (!pl_autoload($cls)) {
-        if (substr($cls, -3, 3) == 'req') {
-            @include 'validations.inc.php';
-            return;
-        } else if (substr($cls, 0, 6) == 'banana') {
-            require_once 'banana/banana.inc.php';
-            Banana::load(substr($cls, 6));
-            return;
+    public function __construct()
+    {
+        parent::__construct();
+
+        // Set the default page
+        $this->changeTpl('platal/index.tpl');
+    }
+
+    public function run()
+    {
+        global $globals, $platal;
+        if (isset($platal) && $platal->path == 'register') {
+            $skin = $globals->register_skin . ".tpl";
+        } else {
+            $skin = S::v('skin', $globals->skin . ".tpl");
         }
-        @include "$cls.inc.php";
+        $this->_run('skin/' . $skin);
     }
 }
 

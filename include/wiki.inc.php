@@ -130,7 +130,6 @@ function wiki_apply_feed_perms($perm)
     }
     $table = $res->fetchOneAssoc();
     $_SESSION = array_merge($_SESSION, $table, array('forlife' => Env::v('user')));
-    require_once 'xorg/session.inc.php';
     $_SESSION['perms'] =& XorgSession::make_perms($_SESSION['perms']);
     if ($perm == 'logged' || $_SESSION['perms']->hasFlag('admin')) {
         return;
