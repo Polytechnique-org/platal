@@ -138,8 +138,10 @@ function wiki_apply_feed_perms($perm)
     exit;
 }
 
-function wiki_apply_perms($perm) {
-    global $page, $platal, $globals;
+function wiki_apply_perms($perm)
+{
+    global $platal, $globals;
+    $page =& Platal::page();
 
     switch ($perm) {
       case 'public':

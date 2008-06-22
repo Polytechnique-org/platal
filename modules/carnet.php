@@ -195,7 +195,7 @@ class CarnetModule extends PLModule
     }
 
     function searchErrorHandler($explain) {
-        global $page;
+        $page =& Platal::page();
         $page->trigError($explain);
         $this->handler_contacts($page);
     }

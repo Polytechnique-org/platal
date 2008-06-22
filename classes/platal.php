@@ -329,11 +329,10 @@ class Platal
 
     static public function &page()
     {
-        global $platal, $page;
+        global $platal;
         if (is_null(self::$_page)) {
             $pageclass = PL_PAGE_CLASS;
-            $page = new $pageclass();
-            self::$_page =& $page;
+            self::$_page = $pageclass();
         }
         return self::$_page;
     }

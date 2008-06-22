@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-global $page;
-
 function applis_options($current=0) {
     $html = '<option value="-1"></option>';
     $res  = XDB::iterator("select * from applis_def order by text");
@@ -38,7 +36,7 @@ function _applis_options_smarty($params){
         $params['selected'] = 0;
     return applis_options($params['selected']);
 }
-$page->register_function('applis_options','_applis_options_smarty');
+Platal::page()->register_function('applis_options','_applis_options_smarty');
 
 
 /** affiche un Array javascript contenant les types de chaque appli
@@ -54,7 +52,7 @@ function applis_type(){
     }
     return $html;
 }
-$page->register_function('applis_type','applis_type');
+Platal::page()->register_function('applis_type','applis_type');
 
 /** affiche tous les types possibles d'applis
  */
@@ -63,7 +61,7 @@ function applis_type_all(){
     $arr_appli = $res->fetchOneAssoc();
     return str_replace(")","",str_replace("set(","",$arr_appli["Type"]));
 }
-$page->register_function('applis_type_all','applis_type_all');
+Platal::page()->register_function('applis_type_all','applis_type_all');
 
 /** formatte une ecole d'appli pour l'affichage
  */
@@ -87,7 +85,7 @@ function _applis_fmt($params, &$smarty) {
     extract($params);
     return applis_fmt($type, $text, $url);
 }
-$page->register_function('applis_fmt','_applis_fmt');
+Platal::page()->register_function('applis_fmt','_applis_fmt');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

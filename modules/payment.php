@@ -34,7 +34,7 @@ function cb_erreur($text) {
 /* sort en affichant une erreur */
 function paypal_erreur($text, $send=true)
 {
-    global $page, $erreur, $globals;
+    global $erreur, $globals;
     if ($erreur) return;
     $erreur = $text;
     if (!$send) return;
@@ -46,7 +46,7 @@ function paypal_erreur($text, $send=true)
     $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
     $mymail->send();
 
-    $page->trigError($text);
+    Platal::page()->trigError($text);
 }
 
 /* http://fr.wikipedia.org/wiki/Formule_de_Luhn */

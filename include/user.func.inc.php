@@ -87,8 +87,7 @@ function user_clear_all_subs($user_id, $really_del=true)
 // Defaut callback to call when a login is not found
 function _default_user_callback($login)
 {
-    global $page;
-    $page->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
+    Platal::page()->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
     return;
 }
 
@@ -99,7 +98,7 @@ function _silent_user_callback($login)
 
 function get_user_login($data, $get_forlife = false, $callback = '_default_user_callback')
 {
-    global $globals, $page;
+    global $globals;
 
     if (is_numeric($data)) {
         $res = XDB::query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $data);
@@ -171,7 +170,7 @@ function get_user_login($data, $get_forlife = false, $callback = '_default_user_
             default:
                 if (S::has_perms()) {
                     $aliases = $res->fetchColumn();
-                    $page->trigError("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
+                    Platal::page()->trigError("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
                 } else {
                     $res->free();
                 }

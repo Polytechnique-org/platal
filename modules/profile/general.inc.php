@@ -52,9 +52,8 @@ class ProfileNom implements ProfileSetting
                 || $this->matchWord($ini, $new, $newLen)
                 || ($field == 'nom' && $new == 'DE ' . $old);
         if (!$success) {
-            global $page;
-            $page->trigError("Le $field que tu as choisi ($value) est trop loin de ton $field initial ($init)"
-                       . (($init == $current)? "" : " et de ton prénom précédent ($current)"));
+            Platal::page()->trigError("Le $field que tu as choisi ($value) est trop loin de ton $field initial ($init)"
+                                    . (($init == $current)? "" : " et de ton prénom précédent ($current)"));
         }
         return $success ? $value : $current;
     }

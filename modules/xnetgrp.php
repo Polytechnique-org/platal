@@ -771,7 +771,7 @@ class XnetGrpModule extends PLModule
 
     function unsubscribe(&$user)
     {
-        global $globals, $page;
+        global $globals;
         XDB::execute(
                 "DELETE FROM  groupex.membres WHERE uid={?} AND asso_id={?}",
                 $user['uid'], $globals->asso('id'));
@@ -815,9 +815,9 @@ class XnetGrpModule extends PLModule
                     $mmlist->unsubscribe($liste['list']);
                 }
             } elseif ($liste['sub']) {
-                $page->trigWarning("{$user['prenom']} {$user['nom']} a une"
-                                  ." demande d'inscription en cours sur la"
-                                  ." liste {$liste['list']}@ !");
+                Platal::page()->trigWarning("{$user['prenom']} {$user['nom']} a une"
+                                           ." demande d'inscription en cours sur la"
+                                           ." liste {$liste['list']}@ !");
                 $warning = true;
             }
         }

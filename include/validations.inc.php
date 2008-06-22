@@ -258,20 +258,17 @@ abstract class Validate
 
     protected function trigError($msg)
     {
-        global $page;
-        $page->trigError($msg);
+        Platal::page()->trigError($msg);
     }
 
     protected function trigWarning($msg)
     {
-        global $page;
-        $page->trigWarning($msg);
+        Platal::page()->trigWarning($msg);
     }
 
     protected function trigSuccess($msg)
     {
-        global $page;
-        $page->trigSuccess($msg);
+        Platal::page()->trigSuccess($msg);
     }
 
     // }}}

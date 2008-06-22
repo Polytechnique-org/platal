@@ -174,7 +174,8 @@ class ForumsBanana extends Banana
 
     protected function action_updateProfile()
     {
-        global $page, $globals;
+        global $globals;
+        $page = Platal::page();
 
         if (Post::has('action') && Post::has('banananame') && Post::has('bananasig')
                 && Post::has('bananadisplay') && Post::has('bananamail')

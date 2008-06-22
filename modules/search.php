@@ -47,9 +47,7 @@ class SearchModule extends PLModule
 
     function form_prepare()
     {
-        global $page;
-
-        $page->assign('formulaire',1);
+        Platal::page()->assign('formulaire',1);
     }
 
     function get_diplomas($school = null)
@@ -72,8 +70,7 @@ class SearchModule extends PLModule
             $types = explode('(',$row[1]);
             $types = str_replace("'","",substr($types[1],0,-1));
         }
-        global $page;
-        $page->assign('choix_diplomas', explode(',',$types));
+        Platal::page()->assign('choix_diplomas', explode(',',$types));
     }
 
     function handler_quick(&$page, $action = null, $subaction = null)
