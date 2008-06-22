@@ -87,7 +87,7 @@ abstract class PlPage extends Smarty
     {
         global $globals, $TIME_BEGIN;
 
-        session_write_close();
+        Platal::session()->close();
 
         $this->register_prefilter('trimwhitespace');
         $this->register_prefilter('form_force_encodings');

@@ -50,6 +50,7 @@ class XorgSession extends PlSession
      */
     private function tryCookie()
     {
+        Platal::page()->trigError("Trying cookie");
         S::kill('auth_by_cookie');
         if (Cookie::v('ORGaccess') == '' || !Cookie::has('ORGuid')) {
             return -1;
@@ -94,11 +95,7 @@ class XorgSession extends PlSession
                 }
             }
             if ($response != $expected_response) {
-                echo $response . '<br />';
-                echo $expected_response . '<br />';
-                echo $uname . '<br />' . $password . '<br />';
-//                $logger = S::logger($uid);
-//                $logger->log('auth_fail', 'bad password');
+                S::logger($uid)->log('auth_fail', 'bad password');
                 return null;
             }
             return $uid;
@@ -159,7 +156,6 @@ class XorgSession extends PlSession
             }
         }
 
-        $logger = S::logger();
         $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias');
         if (!is_null($uid)) {
             S::set('auth', AUTH_MDP);
@@ -173,9 +169,7 @@ class XorgSession extends PlSession
                 $_COOKIE['ORGdomain'] = $domain;
             }
             S::kill('challenge');
-            if ($logger) {
-                $logger->log('auth_ok');
-            }
+            S::logger($uid)->log('auth_ok');
         }
         return $uid;
     }
@@ -267,7 +261,7 @@ class XorgSession extends PlSession
         }
     }
 
-    private function makePerms($perm)
+    public function makePerms($perm)
     {
         $flags = new PlFlagSet();
         if ($perm == 'disabled' || $perm == 'ext') {

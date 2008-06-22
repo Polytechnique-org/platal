@@ -281,7 +281,7 @@ class CarnetModule extends PLModule
         require_once dirname(__FILE__).'/carnet/contacts.pdf.inc.php';
         require_once 'user.func.inc.php';
 
-        session_write_close();
+        Platal::session()->close();
 
         $sql = "SELECT  a.alias
                   FROM  aliases       AS a

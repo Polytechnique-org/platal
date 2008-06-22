@@ -152,14 +152,14 @@ class PlatalModule extends PLModule
             XDB::execute('UPDATE auth_user_quick
                                        SET redirecturl = {?} WHERE user_id = {?}',
                                    $url, S::v('uid'));
-            $log->log('carva_add', 'http://'.Env::v('url'));
+            S::logger()->log('carva_add', 'http://'.Env::v('url'));
             $page->trigSuccess("Redirection activée vers <a href='http://$url'>$url</a>");
         } elseif (Env::v('submit') == "Supprimer") {
             XDB::execute("UPDATE auth_user_quick
                                        SET redirecturl = ''
                                      WHERE user_id = {?}",
                                    S::v('uid'));
-            $log->log("carva_del", $url);
+            S::logger()->log("carva_del", $url);
             Post::kill('url');
             $page->trigSuccess('Redirection supprimée');
         }
@@ -209,7 +209,7 @@ class PlatalModule extends PLModule
             }
 
             $log =& S::v('log');
-            $log->log('passwd', '');
+            S::logger()->log('passwd', '');
 
             if (Cookie::v('ORGaccess')) {
                 setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
@@ -243,12 +243,12 @@ class PlatalModule extends PLModule
             XDB::execute('UPDATE auth_user_md5 SET smtppass = {?}
                                      WHERE user_id = {?}', $pass, $uid);
             $page->trigSuccess('Mot de passe enregistré');
-            $log->log("passwd_ssl");
+            S::logger()->log("passwd_ssl");
         } elseif (Env::v('op') == "Supprimer") {
             XDB::execute('UPDATE auth_user_md5 SET smtppass = ""
                                      WHERE user_id = {?}', $uid);
             $page->trigSuccess('Compte SMTP et NNTP supprimé');
-            $log->log("passwd_del");
+            S::logger()->log("passwd_del");
         }
 
         $res = XDB::query("SELECT IF(smtppass != '', 'actif', '')
@@ -335,7 +335,7 @@ Adresse de secours : " . Post::v('email') : ""));
 
             // on cree un objet logger et on log l'evenement
             $logger = $_SESSION['log'] = new PlLogger($uid);
-            $logger->log('recovery', $mails);
+            S::logger()->log('recovery', $mails);
         } else {
             $page->trigError('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
                         'Si tu as un homonyme, utilise prenom.nom.promo comme login');
@@ -374,7 +374,7 @@ Adresse de secours : " . Post::v('email') : ""));
             }
 
             $logger = new PlLogger($uid);
-            $logger->log("passwd","");
+            S::logger()->log("passwd","");
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
             $page->changeTpl('platal/motdepasse.tpl');
@@ -414,7 +414,7 @@ Adresse de secours : " . Post::v('email') : ""));
             $a4l  = S::v('forlife');
             $suid = S::v('suid');
             $log  = S::v('log');
-            $log->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
+            S::logger()->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
             Platal::session()->stopSUID();
             pl_redirect('admin/user/' . $a4l);
         }
@@ -423,7 +423,7 @@ Adresse de secours : " . Post::v('email') : ""));
             setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
             Cookie::kill('ORGaccess');
             if (isset($_SESSION['log']))
-                $_SESSION['log']->log("cookie_off");
+                S::logger()->log("cookie_off");
         }
 
         if ($level == 'forgetuid' || $level == 'forgetall') {
@@ -435,7 +435,7 @@ Adresse de secours : " . Post::v('email') : ""));
 
         if (isset($_SESSION['log'])) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-            $_SESSION['log']->log('deconnexion',$ref);
+            S::logger()->log('deconnexion',$ref);
         }
         Platal::session()->destroy();
 

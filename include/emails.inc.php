@@ -186,7 +186,7 @@ class EmailRedirection extends Email
                              SET  panne_level = IF(flags = 'panne', panne_level - 1, panne_level),
                                   flags = 'active'
                            WHERE  uid={?} AND email={?}", $this->uid, $this->email);
-            $_SESSION['log']->log("email_on", $this->email.($this->uid!=S::v('uid') ? "(admin on {$this->uid})" : ""));
+            S::logger()->log("email_on", $this->email.($this->uid!=S::v('uid') ? "(admin on {$this->uid})" : ""));
             $this->active = true;
             $this->broken = false;
         }
@@ -199,7 +199,7 @@ class EmailRedirection extends Email
         if ($this->active) {
             XDB::execute("UPDATE  emails SET flags =''
                            WHERE  uid={?} AND email={?}", $this->uid, $this->email);
-            $_SESSION['log']->log("email_off",$this->email.($this->uid != S::v('uid') ? "(admin on {$this->uid})" : "") );
+            S::logger()->log("email_off",$this->email.($this->uid != S::v('uid') ? "(admin on {$this->uid})" : "") );
             $this->active = false;
         }
     }
@@ -411,7 +411,7 @@ class Redirect
             return ERROR_INACTIVE_REDIRECTION;
         }
         XDB::execute('DELETE FROM emails WHERE uid={?} AND email={?}', $this->uid, $email);
-        $_SESSION['log']->log('email_del',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
+        S::logger()->log('email_del',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
         foreach ($this->emails as $i => $mail) {
             if ($email == $mail->email) {
                 unset($this->emails[$i]);
@@ -434,7 +434,7 @@ class Redirect
         }
         XDB::execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},"active")', $this->uid, $email);
         if ($logger = S::v('log', null)) { // may be absent --> step4.php
-            $logger->log('email_add',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
+            S::logger()->log('email_add',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
         }
         foreach ($this->emails as $mail) {
             if ($mail->email == $email_stripped) {

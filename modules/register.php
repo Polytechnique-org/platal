@@ -301,7 +301,7 @@ class RegisterModule extends PLModule
 
         // on cree un objet logger et on log l'inscription
         $logger = new PlLogger($uid);
-        $logger->log('inscription', $email);
+        S::logger()->log('inscription', $email);
 
         XDB::execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}', $uid);
 
@@ -416,7 +416,7 @@ class RegisterModule extends PLModule
             }
 
             $log = S::v('log');
-            $log->log('passwd', '');
+            S::logger()->log('passwd', '');
 
             if (Cookie::v('ORGaccess')) {
                 require_once('secure_hash.inc.php');

@@ -166,18 +166,18 @@ abstract class PlSession
      */
     public function startSUID($user)
     {
-        if (isset($_SESSION['suid'])) {
+        if (S::has('suid')) {
             return false;
         }
-        $newsession = array();
-        $backup   =& $_SESSION;
-        $_SESSION =& $newsession;
+        $backup   = $_SESSION;
+        $_SESSION = array();
         $this->fillSession();
         S::set('suid', $backup);
         if (!$this->startSessionAs($user, -1)) {
             $this->stopSUID();
             return false;
         }
+        S::set('user', $user);
         return true;
     }
 
@@ -185,10 +185,10 @@ abstract class PlSession
      */
     public function stopSUID()
     {
-        if (!isset($_SESSION['suid'])) {
+        if (!S::has('suid')) {
             return false;
         }
-        $_SESSION =& $_SESSION['suid'];
+        $_SESSION = $_SESSION['suid'];
         return true;
     }
 

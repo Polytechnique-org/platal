@@ -33,10 +33,6 @@ define('NO_AUTH', 0);
 define('DO_AUTH', 1);
 define('NO_HTTPS', 2);
 
-define('DEBUG_BT', 1);
-define('DEBUG_VALID', 2);
-define('DEBUG_SMARTY', 4);
-
 function pl_autoload($cls)
 {
     $cls  = strtolower($cls);
@@ -103,12 +99,11 @@ function pl_clear_errors()
 function pl_dump_env()
 {
     echo "<div class='phperror'><pre>";
-    echo "\nSESSION: "; var_dump($_SESSION);
+    echo "\nSESSION: " . session_id(); var_dump($_SESSION);
     echo "\nPOST:    "; var_dump($_POST);
     echo "\nGET:     "; var_dump($_GET);
     echo "\nCOOKIE:  "; var_dump($_COOKIE);
     echo "</pre></div>";
-    pl_print_errors();
 }
 
 function pl_print_errors()
@@ -155,10 +150,8 @@ function pl_self($n = null) {
 
 function http_redirect($fullurl)
 {
-    if (count($_SESSION)) {
-        session_write_close();
-    }
-    header('Location: '.$fullurl);
+    Platal::session()->close();
+    header('Location: '. $fullurl);
     exit;
 }
 

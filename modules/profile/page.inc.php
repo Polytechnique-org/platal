@@ -260,7 +260,7 @@ abstract class ProfilePage implements PlWizardPage
         }
         global $platal;
         $log =& $_SESSION['log'];
-        $log->log('profil', $platal->pl_self(1));
+        S::logger()->log('profil', $platal->pl_self(1));
     }
 
     protected function checkChanges()

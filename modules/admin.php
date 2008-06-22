@@ -380,12 +380,17 @@ class AdminModule extends PLModule
         }
 
         if(Env::has('suid_button') && $login) {
-            $_SESSION['log']->log("suid_start", "login by ".S::v('forlife'));
-            $_SESSION['suid'] = $_SESSION;
-            $r = XDB::query("SELECT id FROM aliases WHERE alias={?}", $login);
+            S::logger()->log("suid_start", "login by ".S::v('forlife'));
+            $r = XDB::query("SELECT  id
+                               FROM  aliases
+                              WHERE  alias={?}", $login);
             if($uid = $r->fetchOneCell()) {
-                start_connexion($uid, true);
-                pl_redirect("");
+                if (!Platal::session()->startSUID($uid)) {
+                    $page->trigError('Impossible d\'effectuer un SUID sur ' . $uid);
+                } else {
+                    $page->kill("coucou");
+                    pl_redirect("");
+                }
             }
         }
 

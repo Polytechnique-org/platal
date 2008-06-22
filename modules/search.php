@@ -90,7 +90,7 @@ class SearchModule extends PLModule
         if (Env::has('quick') || $action == 'geoloc') {
             $quick = trim(Env::v('quick'));
             if (S::logged() && !Env::has('page')) {
-                $_SESSION['log']->log('search', 'quick=' . $quick);
+                S::logger()->log('search', 'quick=' . $quick);
             }
             $list = 'profile|prf|fiche|fic|referent|ref|mentor';
             if (S::has_perms()) {
@@ -185,7 +185,7 @@ class SearchModule extends PLModule
                 'city' => array('table' => 'geoloc_city', 'text' => 'name', 'exact' => false)
             );
             if (!Env::has('page')) {
-                $_SESSION['log']->log('search', 'adv=' . var_export($_GET, true));
+                S::logger()->log('search', 'adv=' . var_export($_GET, true));
             }
             foreach ($textFields as $field=>&$query) {
                 if (!Env::v($field) && Env::v($field . 'Txt')) {

@@ -217,7 +217,7 @@ class ProfileModule extends PLModule
         }
 
         if (S::logged()) {
-            $_SESSION['log']->log('view_profile', $login);
+            S::logger()->log('view_profile', $login);
         }
 
         $title = $user['prenom'] . ' ' . ( empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'] );
