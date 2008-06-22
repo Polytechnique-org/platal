@@ -332,7 +332,7 @@ class Platal
         global $platal;
         if (is_null(self::$_page)) {
             $pageclass = PL_PAGE_CLASS;
-            self::$_page = $pageclass();
+            self::$_page = new $pageclass();
         }
         return self::$_page;
     }
