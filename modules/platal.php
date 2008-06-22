@@ -394,7 +394,7 @@ Adresse de secours : " . Post::v('email') : ""));
                              SET skin={?} WHERE user_id={?}',
                          Env::i('newskin'), S::v('uid'));
             S::kill('skin');
-            set_skin();
+            Platal::session()->setSkin();
         }
 
         $res = XDB::query('SELECT id FROM skins WHERE skin_tpl={?}', S::v('skin'));
@@ -410,13 +410,12 @@ Adresse de secours : " . Post::v('email') : ""));
 
     function handler_exit(&$page, $level = null)
     {
-        global $session;
         if (S::has('suid')) {
             $a4l  = S::v('forlife');
             $suid = S::v('suid');
             $log  = S::v('log');
             $log->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
-            $session->stopSUID();
+            Platal::session()->stopSUID();
             pl_redirect('admin/user/' . $a4l);
         }
 
@@ -438,7 +437,7 @@ Adresse de secours : " . Post::v('email') : ""));
             $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
             $_SESSION['log']->log('deconnexion',$ref);
         }
-        $session->destroy();
+        Platal::session()->destroy();
 
         if (Get::has('redirect')) {
             http_redirect(rawurldecode(Get::v('redirect')));

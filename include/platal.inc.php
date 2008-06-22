@@ -21,10 +21,6 @@
 
 $TIME_BEGIN = microtime(true);
 
-define('AUTH_PUBLIC', 0);
-define('AUTH_COOKIE', 1);
-define('AUTH_MDP',    2);
-
 define('PERMS_EXT',   'ext');
 define('PERMS_USER',  'user');
 define('PERMS_ADMIN', 'admin');
@@ -123,8 +119,8 @@ function pl_print_errors()
 }
 
 set_error_handler('pl_error_handler', E_ALL | E_STRICT);
-//register_shutdown_function('pl_print_errors');
-register_shutdown_function('pl_dump_env');
+register_shutdown_function('pl_print_errors');
+//register_shutdown_function('pl_dump_env');
 
 /** Check if the string is utf8
  */

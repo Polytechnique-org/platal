@@ -72,7 +72,7 @@ class S
         }
     }
 
-    public static function logger($uid)
+    public static function logger($uid = null)
     {
         if (!S::has('log')) {
             if (S::has('suid')) {
@@ -87,8 +87,7 @@ class S
 
     public static function has_perms()
     {
-        global $session;
-        return $session->checkPerms(PERMS_ADMIN);
+        return Platal::session()->checkPerms(PERMS_ADMIN);
     }
 
     public static function logged()
@@ -98,8 +97,7 @@ class S
 
     public static function identified()
     {
-        global $session;
-        return S::v('auth', AUTH_PUBLIC) >= $session->sureLevel();
+        return S::v('auth', AUTH_PUBLIC) >= Platal::session()->sureLevel();
     }
 
     // Anti-XSRF protections.

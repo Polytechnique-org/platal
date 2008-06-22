@@ -354,7 +354,7 @@ function update_NbIns()
                          FROM  auth_user_md5
                         WHERE  perms IN ('admin','user') AND deces=0");
     $cnt = $res->fetchOneCell();
-    $globals->change_dynamic_config(array('NbIns' => $cnt));
+    $globals->changeDynamicConfig(array('NbIns' => $cnt));
 }
 
 function update_NbValid()
@@ -362,7 +362,7 @@ function update_NbValid()
     global $globals;
     $res = XDB::query("SELECT  COUNT(*)
                          FROM  requests");
-    $globals->change_dynamic_config(array('NbValid' => $res->fetchOneCell()));
+    $globals->changeDynamicConfig(array('NbValid' => $res->fetchOneCell()));
 }
 
 function update_NbNotifs()

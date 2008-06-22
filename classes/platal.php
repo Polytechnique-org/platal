@@ -337,6 +337,18 @@ class Platal
         }
         return self::$_page;
     }
+
+    static public function &session()
+    {
+        global $session;
+        return $session;
+    }
+
+    static public function &globals()
+    {
+        global $globals;
+        return $globals;
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

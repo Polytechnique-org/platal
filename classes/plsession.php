@@ -19,6 +19,14 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+/** Authentication level.
+ * Only AUTH_PUBLIC is mandatory. The others are defined as useful values,
+ * but can be overwritten by others auth levels definitions.
+ */
+define('AUTH_PUBLIC', 0);
+define('AUTH_COOKIE', 1);
+define('AUTH_MDP',    2);
+
 
 /** The PlSession is a wrapper around the user session management.
  */

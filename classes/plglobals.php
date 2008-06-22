@@ -18,6 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
+/** Debug levels:
+ * DEBUG_BT     = show the backtraces (SQL/XMLRPC/...)
+ * DEBUG_VALID  = run html validation
+ * DEBUG_SMARTY = don't hide smarty errors/warnings/notices
+ */
+define('DEBUG_BT', 1);
+define('DEBUG_VALID', 2);
+define('DEBUG_SMARTY', 4);
 
 /** PlGlobals provides functions to read a set of configuration files and gives
  * access to this configurations.
@@ -40,6 +48,21 @@
 class PlGlobals
 {
     public $coreVersion = '0.9.17';
+
+    /** Debug level.
+     * This is a combination of the DEBUG_ flags. As soon as at least
+     * one flag is set, the debug mode is activated, this means:
+     *   - debug panel on the top of the pages
+     *   - don't hide php notices
+     *   - recompile templates when they have been changed
+     */
+    public $debug   = 0;
+
+    /** Access mode.
+     */
+    public $mode    = 'rw';    // 'rw' => read/write,
+                               // 'r'  => read/only
+                               // ''   => site down
 
     /** BaseURL of the site.
      * This is read from the HTTP headers if available but you MUST give a

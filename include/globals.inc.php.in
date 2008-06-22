@@ -21,14 +21,8 @@
 
 class PlatalGlobals extends PlGlobals
 {
-    public $session;
-
     /** The x.org version */
     public $version = '@VERSION@';
-    public $debug   = 0;
-    public $mode    = 'rw';    // 'rw' => read/write,
-                               // 'r'  => read/only
-                               // ''   => site down
 
     /** db params */
     public $dbdb               = 'x4dat';
@@ -41,11 +35,11 @@ class PlatalGlobals extends PlGlobals
     public $skin;
     public $register_skin;
 
-    public function __construct($sess)
+    public function __construct()
     {
         parent::__construct(array('platal.ini', 'platal.conf'));
-        $globals->bootstrap(array('NbIns'), 'update_NbIns');i
-        $globals->bootstrap(array('NbValid'), 'update_NbValid');
+        $this->bootstrap(array('NbIns'), 'update_NbIns');
+        $this->bootstrap(array('NbValid'), 'update_NbValid');
     }
 
     public function asso($key=null)
