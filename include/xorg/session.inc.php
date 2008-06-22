@@ -265,7 +265,9 @@ class XorgSession extends PlSession
     {
         $flags = new PlFlagSet();
         if ($perm == 'disabled' || $perm == 'ext') {
-            return $flags;
+            S::set('perms', $flags);
+            S::set('perms_backup', $flags);
+            return;
         }
         $flags->addFlag(PERMS_USER);
         if ($perm == 'admin') {

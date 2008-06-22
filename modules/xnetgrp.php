@@ -597,25 +597,26 @@ class XnetGrpModule extends PLModule
         if (Env::has('right') && (may_update() || S::has('suid'))) {
             switch (Env::v('right')) {
               case 'admin':
-                XnetSession::killSuid();
+                Platal::session()->stopSUID();
                 break;
               case 'anim':
-                XnetSession::doSelfSuid();
+                Platal::session()->doSelfSuid();
                 may_update(true);
                 is_member(true);
                 break;
               case 'member':
-                XnetSession::doSelfSuid();
+                Platal::session()->doSelfSuid();
                 may_update(false, true);
                 is_member(true);
                 break;
               case 'logged':
-                XnetSession::doSelfSuid();
+                Platal::session()->doSelfSuid();
                 may_update(false, true);
                 is_member(false, true);
                 break;
             }
         }
+//        var_dump($_SESSION);
         http_redirect($_SERVER['HTTP_REFERER']);
     }
 
