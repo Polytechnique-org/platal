@@ -50,7 +50,12 @@ abstract class PLModule
 
     public static function factory($modname)
     {
-        $mod_path = dirname(__FILE__) . '/../modules/' . $modname . '.php';
+        global $globals;
+        if ($modname == 'core') {
+            $mod_path = $globals->spoolroot  . '/core/modules/' . $modname . '.php';
+        } else {
+            $mod_path = $globals->spoolroot . '/modules/' . $modname . '.php';
+        }
         $class    = ucfirst($modname) . 'Module';
 
         require_once $mod_path;

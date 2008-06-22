@@ -33,21 +33,18 @@ define('NO_AUTH', 0);
 define('DO_AUTH', 1);
 define('NO_HTTPS', 2);
 
-function pl_autoload($cls)
+function pl_autoload($cls, array $pathes = array())
 {
     $cls  = strtolower($cls);
-    $path = dirname(dirname(__FILE__));
-    if (!@include "$path/classes/$cls.php") {
-        if (substr($cls, -3, 3) == 'req') {
-            @include 'validations.inc.php';
-            return;
-        } else if (substr($cls, 0, 6) == 'banana') {
-            require_once 'banana/banana.inc.php';
-            Banana::load(substr($cls, 6));
-            return;
+    $basepath = dirname(dirname(dirname(__FILE__)));
+
+    array_unshift($pathes, 'core/classes', 'classes');
+    foreach ($pathes as $path) {
+        if (@include_once "$basepath/$path/$cls.php") {
+            return true;
         }
-        @include "$cls.inc.php";
     }
+    return false;
 }
 pl_autoload('Env');
 

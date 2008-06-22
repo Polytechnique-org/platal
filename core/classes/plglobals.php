@@ -92,7 +92,7 @@ class PlGlobals
      */
     public function __construct(array $files)
     {
-        $this->spoolroot = dirname(dirname(__FILE__));
+        $this->spoolroot = dirname(dirname(dirname(__FILE__)));
 
         $this->readConfig($files);
         if (isset($_SERVER) && isset($_SERVER['SERVER_NAME'])) {

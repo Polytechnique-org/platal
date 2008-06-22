@@ -23,14 +23,24 @@ define('PL_GLOBALS_CLASS', 'PlatalGlobals');
 define('PL_SESSION_CLASS', 'XorgSession');
 define('PL_PAGE_CLASS', 'XorgPage');
 
-require_once('platal.inc.php');
+require_once dirname(dirname(__FILE__)) . '/core/include/platal.inc.php';
 require_once('xorg.misc.inc.php');
 require_once('globals.inc.php');
 require_once('xorg/session.inc.php');
 
 function __autoload($cls)
 {
-    pl_autoload($cls);
+    if (!pl_autoload($cls)) {
+        if (substr($cls, -3, 3) == 'req') {
+            @include 'validations.inc.php';
+            return;
+        } else if (substr($cls, 0, 6) == 'banana') {
+            require_once 'banana/banana.inc.php';
+            Banana::load(substr($cls, 6));
+            return;
+        }
+        @include "$cls.inc.php";
+    }
 }
 
 // {{{ class XorgPage
