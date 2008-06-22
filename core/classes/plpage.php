@@ -40,10 +40,12 @@ abstract class PlPage extends Smarty
         $this->caching       = false;
         $this->config_overwrite = false;
         $this->use_sub_dirs  = false;
-        $this->template_dir  = $globals->spoolroot."/templates/";
-        $this->compile_dir   = $globals->spoolroot."/spool/templates_c/";
-        array_unshift($this->plugins_dir, $globals->spoolroot."/plugins/");
-        $this->config_dir    = $globals->spoolroot."/configs/";
+        $this->template_dir  = $globals->spoolroot . '/templates/';
+        $this->compile_dir   = $globals->spoolroot . '/spool/templates_c/';
+        array_unshift($this->plugins_dir,
+                      $globals->spoolroot . '/core/plugins/',
+                      $globals->spoolroot . '/plugins/');
+        $this->config_dir    = $globals->spoolroot . '/configs/';
 
         $this->compile_check = !empty($globals->debug);
 

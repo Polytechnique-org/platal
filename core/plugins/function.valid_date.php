@@ -18,25 +18,41 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
-require_once 'platal.inc.php';
 
-function smarty_compiler_javascript($tag_attrs, &$compiler)
+function smarty_function_valid_date($params, &$smarty)
 {
-    extract($compiler->_parse_attrs($tag_attrs));
+    extract($params);
 
     if (!isset($name)) {
-        return null;
+        $name = 'valid_date';
     }
-    $name = pl_entities(trim($name, '\'"'), ENT_QUOTES);
-    $name = "javascript/$name.js";
-    if ($full) {
-        global $globals;
-        $name = $globals->baseurl . '/' . $name;
+    $text = "<select name=\"$name\">";
+    if (!isset($from)) {
+        $from = 1;
     }
-
-    return "?><script type='text/javascript' src='$name'></script><?php";
+    if (!isset($to)) {
+        $to = 30;
+    }
+    $value = strtr($value, array('-' => ''));
+    $time = time() + 3600 * 24 * $from;
+    $mth  = '';
+    for ($i = $from ; $i <= $to ; $i++) {
+        $p_stamp = date('Ymd', $time);
+        $date    = date('d / m / Y', $time);
+        $select  = ($p_stamp == $value) ? 'selected="selected"' : '';
+        $month   = pl_entities(strftime('%B', $time), ENT_QUOTES);
+        if ($mth != $month) {
+            if ($i != $from) {
+                $text .= '</optgroup>';
+            }
+            $text .= "<optgroup label=\"$month\">";
+            $mth = $month;
+        }
+        $time += 3600 * 24;
+        $text .= "<option value=\"$p_stamp\" $select>$date</option>";
+    }
+    return $text . "</optgroup></select>";
 }
 
 /* vim: set expandtab enc=utf-8: */
-
 ?>

@@ -18,42 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
-require_once 'platal.inc.php';
 
-function smarty_function_valid_date($params, &$smarty)
+function smarty_modifier_htmlentities($string, $format = ENT_COMPAT)
 {
-    extract($params);
-
-    if (!isset($name)) {
-        $name = 'valid_date';
-    }
-    $text = "<select name=\"$name\">";
-    if (!isset($from)) {
-        $from = 1;
-    }
-    if (!isset($to)) {
-        $to = 30;
-    }
-    $value = strtr($value, array('-' => ''));
-    $time = time() + 3600 * 24 * $from;
-    $mth  = '';
-    for ($i = $from ; $i <= $to ; $i++) {
-        $p_stamp = date('Ymd', $time);
-        $date    = date('d / m / Y', $time);
-        $select  = ($p_stamp == $value) ? 'selected="selected"' : '';
-        $month   = pl_entities(strftime('%B', $time), ENT_QUOTES);
-        if ($mth != $month) {
-            if ($i != $from) {
-                $text .= '</optgroup>';
-            }
-            $text .= "<optgroup label=\"$month\">";
-            $mth = $month;
-        }
-        $time += 3600 * 24;
-        $text .= "<option value=\"$p_stamp\" $select>$date</option>";
-    }
-    return $text . "</optgroup></select>";
+    return pl_entities($string, $format);
 }
 
-/* vim: set expandtab enc=utf-8: */
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -19,12 +19,23 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'platal.inc.php';
-
-function smarty_modifier_miniwiki($string, $format = 'no_title')
+function smarty_compiler_javascript($tag_attrs, &$compiler)
 {
-    return MiniWiki::wikiToHTML($string, $format == 'title');
+    extract($compiler->_parse_attrs($tag_attrs));
+
+    if (!isset($name)) {
+        return null;
+    }
+    $name = pl_entities(trim($name, '\'"'), ENT_QUOTES);
+    $name = "javascript/$name.js";
+    if ($full) {
+        global $globals;
+        $name = $globals->baseurl . '/' . $name;
+    }
+
+    return "?><script type='text/javascript' src='$name'></script><?php";
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+/* vim: set expandtab enc=utf-8: */
+
 ?>
