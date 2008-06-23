@@ -175,7 +175,7 @@ class RegisterModule extends PLModule
                         }
                     }
                     if ($sub_state['watch']) {
-                        $alter .= "Inscription d'un utilisateur surveillé - ";
+                        $alert .= "Inscription d'un utilisateur surveillé - ";
                     }
 
                     if (check_ip('unsafe')) {
@@ -213,7 +213,7 @@ class RegisterModule extends PLModule
         }
 
         $_SESSION['sub_state'] = $sub_state;
-        if ($alert) {
+        if (!empty($alert)) {
             send_warning_mail($alert);
         }
         $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
