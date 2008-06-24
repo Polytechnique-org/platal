@@ -223,6 +223,12 @@ abstract class PlPage extends Smarty
 
     public function kill($msg)
     {
+        // PHP is used on command line... do not run the whole page stuff.
+        if (php_sapi_name() == 'cli') {
+            echo $msg . "\n";
+            exit;
+        }
+
         global $platal;
 
         $this->assign('platal', $platal);
