@@ -76,7 +76,8 @@ class XDB
         global $globals;
 
         if (!XDB::$mysqli && !XDB::connect()) {
-            return false;
+            Platal::page()->kill('Impossible de se connecter à la base de données.');
+            exit;
         }
 
         if ($globals->debug & DEBUG_BT) {
@@ -99,6 +100,16 @@ class XDB
             PlBacktrace::$bt['MySQL']->stop(@$res->num_rows ? $res->num_rows : XDB::$mysqli->affected_rows,
                                             XDB::$mysqli->error,
                                             $explain);
+        }
+
+        if ($res === false) {
+            if (strpos($query, 'INSERT') === false && strpos($query, 'UPDATE') === false
+                && strpos($query, 'REPLACE') === false && strpos($query, 'DELETE') === false) {
+                Platal::page()->kill('Erreur lors de l\'interrogation de la base de données');
+            } else {
+                Platal::page()->kill('Erreur lors de l\'écriture dans la base de données');
+            }
+            exit;
         }
         return $res;
     }
