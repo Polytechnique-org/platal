@@ -40,8 +40,10 @@ EMAIL;TYPE=internet:{$vcard.forlife}@{#globals.mail.domain2#}
 {if $vcard.virtualalias}
 EMAIL;TYPE=internet:{$vcard.virtualalias}
 {/if}
-{if $vcard.mobile}
-TEL;TYPE=cell:{$vcard.mobile|vcard_enc}
+{if $vcard.tels}
+{foreach item=tel from=$vcard.tels}
+{if $tel.tel_type eq 'mobile'}TEL;TYPE=cell{else}{if $tel.tel_type eq 'fax'}FAX{else}TEL{/if};TYPE=home{/if}:{$tel.tel|vcard_enc}
+{/foreach}
 {/if}
 {if $vcard.adr_pro}
 {if $vcard.adr_pro[0].entreprise}
@@ -53,21 +55,20 @@ TITLE:{$vcard.adr_pro[0].poste|vcard_enc}
 {if $vcard.adr_pro[0].fonction}
 ROLE:{$vcard.adr_pro[0].fonction|vcard_enc}
 {/if}
-{if $vcard.adr_pro[0].tel}
-TEL;TYPE=work:{$vcard.adr_pro[0].tel|vcard_enc}
-{/if}
-{if $vcard.adr_pro[0].fax}
-FAX;TYPE=work:{$vcard.adr_pro[0].fax|vcard_enc}
+{if $vcard.adr_pro[0].tels}
+{foreach item=tel from=$vcard.adr_pro[0].tels}
+{if $tel.tel_type eq 'mobile'}TEL;TYPE=cell,work{else}{if $tel.tel_type eq 'fax'}FAX{else}TEL{/if};TYPE=work{/if}:{$tel.tel|vcard_enc}
+{/foreach}
 {/if}
 ADR;TYPE=work:{format_adr adr=$vcard.adr_pro[0]}
 {/if}
 {foreach item=adr from=$vcard.adr}
 ADR;TYPE=home{if $adr.courier},postal{/if}:{format_adr adr=$adr}
+{if $adr.tels}
 {foreach item=tel from=$adr.tels}
-{if $tel.tel}
-{if $tel.tel_type neq 'fax'}TEL{else}FAX{/if};TYPE=home:{$tel.tel}
-{/if}
+{if $tel.tel_type eq 'mobile'}TEL;TYPE=cell,home{else}{if $tel.tel_type eq 'fax'}FAX{else}TEL{/if};TYPE=home{/if}:{$tel.tel|vcard_enc}
 {/foreach}
+{/if}
 {/foreach}
 {foreach from=$vcard.networking item=nw}
 {if $nw.filter eq 'web'}

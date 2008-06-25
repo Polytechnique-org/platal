@@ -271,15 +271,27 @@
     </th>
   </tr>
   <tr>
-    <td>
-      <span class="titre">Téléphone mobile</span>
+    <td colspan="2">
+      <span class="titre">Téléphones personnels</span>
     </td>
-    <td>
-      <input type="text" size="18" maxlength="18" name="mobile"
-             {if $errors.mobile}class="error"{/if} value="{$mobile}" />
-      <span class="flags">
-        {include file="include/flags.radio.tpl" name="mobile_pub" val=$mobile_pub}
-      </span>
+  </tr>
+  <tr>
+    <td colspan="2">
+      {foreach from=$tels key=telid item=tel}
+        <div id="tels_{$telid}" style="clear: both; padding-top: 4px; padding-bottom: 4px">
+          {include file="profile/phone.tpl" prefname='tels' prefid='tels' telid=$telid tel=$tel}
+        </div>
+      {/foreach}
+      {if $tels|@count eq 0}
+        <div id="tels_0" style="clear: both; padding-top: 4px; padding-bottom: 4px">
+          {include file="profile/phone.tpl" prefname='tels' preid='tels' telid=0 tel=0}
+        </div>
+      {/if}
+      <div id="tels_add" class="center" style="clear: both; padding-top: 4px;">
+        <a href="javascript:addTel('tels', 'tels');">
+          {icon name=add title="Ajouter un téléphone"}Ajouter un téléphone
+        </a>
+      </div>
     </td>
   </tr>
   {if $email_error}

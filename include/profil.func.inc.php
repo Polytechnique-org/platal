@@ -76,15 +76,15 @@ function diff_user_details(&$a, &$b, $view = 'private') { // compute $c = $a - $
 }
 
 function same_tel(&$a, &$b) {
-    $numbera = preg_replace('/[^0-9]/', '', (string) $a);
-    $numberb = preg_replace('/[^0-9]/', '', (string) $b);
+    $numbera = format_phone_number((string) $a);
+    $numberb = format_phone_number((string) $b);
     return $numbera === $numberb;
 }
 function same_address(&$a, &$b) {
     return
         (same_field($a['adr1'],$b['adr1'])) &&
-        (same_field($a['adr1'],$b['adr1'])) &&
-        (same_field($a['adr1'],$b['adr1'])) &&
+        (same_field($a['adr2'],$b['adr2'])) &&
+        (same_field($a['adr3'],$b['adr3'])) &&
         (same_field($a['postcode'],$b['postcode'])) &&
         (same_field($a['city'],$b['city'])) &&
         (same_field($a['countrytxt'],$b['countrytxt'])) &&
@@ -322,7 +322,7 @@ function format_display_number($tel, &$error, $format = array('format'=>'','phon
                           substr($tel, 0, 1), substr($tel, 0, 2), substr($tel, 0, 3));
         if ($res->numRows() == 0) {
             $error = true;
-            return '*+' . $tel;
+            return '+' . $tel;
         }
         $format = $res->fetchOneAssoc();
     }

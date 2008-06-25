@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `profile_phones` (
     `search_tel` varchar(25) NOT NULL COMMENT 'search number in an international format with only digits and the initial +',
     `display_tel` varchar(30) NOT NULL COMMENT 'display number',
     `pub` enum('private', 'ax', 'public') NOT NULL DEFAULT 'private',
+    `comment` varchar(80) NOT NULL,
     PRIMARY KEY(`uid`, `link_type`, `link_id`, `tel_id`),
     INDEX (`search_tel`)
 );

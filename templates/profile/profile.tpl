@@ -101,7 +101,7 @@ function chgMainWinLoc(strPage)
       le {$x.date|date_format}
     </div>
     {/if}
-    {if $logged || $x.mobile}
+    {if $logged || $x.tels}
     <div class="contact">
       {if $logged}
       <div class='email'>
@@ -124,10 +124,8 @@ function chgMainWinLoc(strPage)
         {/if}
       </div>
       {/if}
-      {if $x.mobile}
-      <div class="mob">
-        <em class="intitule">Mobile&nbsp;: </em>{$x.mobile}
-      </div>
+      {if $x.tels}
+        {display_phones tels=$x.tels}
       {/if}
       <div class='spacer'></div>
     </div>

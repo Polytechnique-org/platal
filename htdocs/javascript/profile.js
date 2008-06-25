@@ -237,18 +237,34 @@ function addAddress()
     Ajax.update_html('addresses_' + i + '_cont', 'profile/ajax/address/' + i, checkCurrentAddress);
 }
 
-function addTel(id)
+function addTel(prefid, prefname)
 {
     var i = 0;
-    var adid = 'addresses_' + id;
-    var tel  = adid + '_tel_';
-    while (document.getElementById(tel + i) != null) {
+    var prefix  = prefid + '_';
+    while (document.getElementById(prefix + i) != null) {
         i++;
     }
-    $('#' + adid + '_add_tel').before('<div id="' + tel + i + '" style="clear: both"></div>');
-    Ajax.update_html(tel + i, 'profile/ajax/tel/' + id + '/' + i);
+    $('#' + prefix + 'add').before('<div id="' + prefix + i + '" style="clear: both; padding-top: 4px; padding-bottom: 4px"></div>');
+    Ajax.update_html(prefix + i, 'profile/ajax/tel/' + prefid + '/' + prefname + '/' + i);
 }
 
+function removeTel(id)
+{
+    $('#' + id).remove();
+}
+
+function addPhoneComment(id, pref)
+{
+    document.getElementById(id+'_comment').style.display = '';
+    document.getElementById(id+'_addComment').style.display = 'none';
+}
+
+function removePhoneComment(id, pref)
+{
+    document.getElementById(id+'_comment').style.display = 'none';
+    document.forms.prof_annu[pref+ '[comment]'].value = '';
+    document.getElementById(id+'_addComment').style.display = '';
+}
 
 // Geoloc
 

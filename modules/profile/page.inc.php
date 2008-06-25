@@ -120,6 +120,81 @@ class ProfileTel extends ProfileNoSave
     }
 }
 
+class ProfilePhones implements ProfileSetting
+{
+    private $tel;
+    private $pub;
+    protected $link_type;
+    protected $link_id;
+
+    public function __construct($type, $id)
+    {
+        $this->tel = new ProfileTel();
+        $this->pub = new ProfilePub();
+        $this->link_type = $type;
+        $this->link_id = $id;
+    }
+
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            $value = isset($page->values[$field]) ? $page->values[$field] : array();
+        }
+        if (!is_array($value)) {
+            $value = array();
+        }
+        foreach ($value as $key=>&$phone) {
+            if (@$phone['removed']) {
+                unset($value[$key]);
+            } else {
+                $phone['pub'] = $this->pub->value($page, 'pub', $phone['pub'], $s);
+                $phone['tel'] = $this->tel->value($page, 'tel', $phone['tel'], $s);
+                if(!isset($phone['type']) || ($phone['type'] != 'fixed' && $phone['type'] != 'mobile' && $phone['type'] != 'fax')) {
+                    $phone['type'] = 'fixed';
+                    $s = false;
+                }
+                if (!$s) {
+                    $phone['error'] = true;
+                    $success = false;
+                }
+                if (!isset($phone['comment'])) {
+                    $phone['comment'] = '';
+                }
+            }
+        }
+        return $value;
+    }
+
+    private function saveTel($telid, array &$phone)
+    {
+        if ($phone['tel'] != '') {
+            XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
+                                       search_tel, display_tel, pub, comment)
+                               VALUES  ({?}, {?}, {?}, {?}, {?},
+                                       {?}, {?}, {?}, {?})",
+                         S::i('uid'), $this->link_type, $this->link_id, $telid, $phone['type'],
+                        format_phone_number($phone['tel']), $phone['tel'], $phone['pub'], $phone['comment']);
+        }
+    }
+
+    public function save(ProfilePage &$page, $field, $value)
+    {
+        XDB::execute("DELETE FROM  profile_phones
+                            WHERE  uid = {?} AND link_type = {?} AND link_id = {?}",
+                            S::i('uid'), $this->link_type, $this->link_id);
+        $this->saveTels($field, $value);
+    }
+
+    //Only saves phones without a delete operation
+    public function saveTels($field, $value)
+    {
+        foreach ($value as $telid=>&$phone) {
+            $this->saveTel($telid, $phone);
+        }
+    }
+}
+
 class ProfilePub extends ProfileNoSave
 {
     public function value(ProfilePage &$page, $field, $value, &$success)

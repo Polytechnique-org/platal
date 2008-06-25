@@ -264,18 +264,14 @@ function get_user_details_pro($uid, $view = 'private')
 {
     $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
                      e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city, e.entrid,
-                     gp.pays AS countrytxt, gr.name AS region, tt.display_tel AS tel,
-                     tf.display_tel AS fax, tm.display_tel AS mobile, e.entrid,
-                     e.pub, e.adr_pub, tt.pub AS tel_pub, e.email, e.email_pub, e.web
+                     gp.pays AS countrytxt, gr.name AS region, e.entrid,
+                     e.pub, e.adr_pub, e.email, e.email_pub, e.web
                FROM  entreprises AS e
           LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
           LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)
           LEFT JOIN  fonctions_def AS f ON(e.fonction = f.id)
           LEFT JOIN  geoloc_pays AS gp ON (gp.a2 = e.country)
           LEFT JOIN  geoloc_region AS gr ON (gr.a2 = e.country and gr.region = e.region)
-          LEFT JOIN  profile_phones AS tt ON(tt.uid = e.uid AND tt.link_type = 'pro' AND tt.link_id = entrid AND tt.tel_id = 0)
-          LEFT JOIN  profile_phones AS tf ON(tf.uid = e.uid AND tf.link_type = 'pro' AND tf.link_id = entrid AND tf.tel_id = 1)
-          LEFT JOIN  profile_phones AS tm ON(tm.uid = e.uid AND tm.link_type = 'pro' AND tm.link_id = entrid AND tm.tel_id = 2)
               WHERE  e.uid = {?}
            ORDER BY  e.entrid";
     $res  = XDB::query($sql, $uid);
@@ -303,16 +299,18 @@ function get_user_details_pro($uid, $view = 'private')
                     $all_pro[$i]['region'] = '';
                 }
             }
-            if (!has_user_right($pro['tel_pub'], $view)) {
-                // if no tel was defined, then the viewer will be able to write it
-                if ($pro['tel'] == '' &&
-                    $pro['fax'] == '' &&
-                    $pro['mobile'] == '') {
-                    $all_pro[$i]['tel_pub'] = $view;
-                } else {
-                    $all_pro[$i]['tel'] = '';
-                    $all_pro[$i]['fax'] = '';
-                    $all_pro[$i]['mobile'] = '';
+            $sql = "SELECT  pub AS tel_pub, tel_type, display_tel AS tel, comment
+                      FROM  profile_phones AS t
+                     WHERE  uid = {?} AND link_type = 'pro' AND link_id = {?}
+                  ORDER BY  link_id, tel_type DESC, tel_id";
+            $restel = XDB::iterator($sql, $uid, $pro['entrid']);
+            while ($nexttel = $restel->next()) {
+                if (has_user_right($nexttel['tel_pub'], $view)) {
+                    if (!isset($all_pro[$i]['tels'])) {
+                        $all_pro[$i]['tels'] = array($nexttel);
+                    } else {
+                        $all_pro[$i]['tels'][] = $nexttel;
+                    }
                 }
             }
             if (!has_user_right($pro['email_pub'], $view)) {
@@ -332,9 +330,7 @@ function get_user_details_pro($uid, $view = 'private')
                 $all_pro[$i]['fonction'] == '' &&
                 $all_pro[$i]['secteur'] == '' &&
                 $all_pro[$i]['poste'] == '' &&
-                $all_pro[$i]['tel'] == '' &&
-                $all_pro[$i]['fax'] == '' &&
-                $all_pro[$i]['mobile'] == '' &&
+                (!isset($all_pro[$i]['tels'])) &&
                 $all_pro[$i]['email'] == '')
                 unset($all_pro[$i]);
         }
@@ -366,7 +362,7 @@ function get_user_details_adr($uid, $view = 'private') {
             $adrid_index[$adr['adrid']] = $i;
     }
 
-    $sql = "SELECT  link_id AS adrid, pub AS tel_pub, tel_type, display_tel AS tel, tel_id AS telid
+    $sql = "SELECT  link_id AS adrid, pub AS tel_pub, tel_type, display_tel AS tel, tel_id AS telid, comment
               FROM  profile_phones AS t
              WHERE  uid = {?} AND link_type = 'address'
           ORDER BY  link_id, tel_type DESC, tel_id";
@@ -393,8 +389,8 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
 {
     $reqsql = "SELECT  u.user_id, u.promo, u.promo_sortie, u.prenom, u.nom, u.nom_usage, u.date, u.cv,
                        u.perms IN ('admin','user','disabled') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
-                       q.profile_nick AS nickname, q.profile_from_ax, t.display_tel AS mobile, q.profile_freetext AS freetext,
-                       t.pub AS mobile_pub, q.profile_freetext_pub AS freetext_pub,
+                       q.profile_nick AS nickname, q.profile_from_ax, q.profile_freetext AS freetext,
+                       q.profile_freetext_pub AS freetext_pub,
                        q.profile_medals_pub AS medals_pub,
                        IF(gp.nat='',gp.pays,gp.nat) AS nationalite, gp.a2 AS iso3166,
                        a.alias AS forlife, a2.alias AS bestalias,
@@ -413,7 +409,6 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
             LEFT JOIN  photo           AS p  ON (p.uid = u.user_id)
             LEFT JOIN  mentor          AS m  ON (m.uid = u.user_id)
             LEFT JOIN  emails          AS e  ON (e.uid = u.user_id AND e.flags='active')
-            LEFT JOIN  profile_phones  AS t  ON (t.uid = u.user_id AND link_type = 'user' AND link_id = 0 AND tel_id = 0)
                 WHERE  a.alias = {?}
              GROUP BY  u.user_id";
     $res  = XDB::query($reqsql, $from_uid, $login);
@@ -426,13 +421,6 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
         $user['nickname'] = '';
         $user['section'] = '';
     }
-    // hide mobile
-    if (!has_user_right($user['mobile_pub'], $view)) {
-        if ($user['mobile'] == '')
-            $user['mobile_pub'] = $view;
-        else
-            $user['mobile'] = '';
-    }
 
     // hide freetext
     if (!has_user_right($user['freetext_pub'], $view)) {
@@ -440,6 +428,21 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
             $user['freetext_pub'] = $view;
         else
             $user['freetext'] = '';
+    }
+
+    $sql = "SELECT  pub AS tel_pub, tel_type, display_tel AS tel, comment
+              FROM  profile_phones AS t
+             WHERE  uid = {?} AND link_type = 'user'
+          ORDER BY  tel_type DESC, tel_id";
+    $restel = XDB::iterator($sql, $uid);
+    while ($nexttel = $restel->next()) {
+        if (has_user_right($nexttel['tel_pub'], $view)) {
+            if (!isset($user['tels'])) {
+                $user['tels'] = array($nexttel);
+            } else {
+                $user['tels'][] = $nexttel;
+            }
+        }
     }
 
     $user['adr_pro'] = get_user_details_pro($uid, $view);

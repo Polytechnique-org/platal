@@ -25,7 +25,6 @@ class ProfileJob extends ProfileGeoloc
     private $mail_new;
     private $mail;
     private $web;
-    private $tel;
     private $bool;
     private $checks;
 
@@ -36,16 +35,14 @@ class ProfileJob extends ProfileGeoloc
                     = $this->mail_new
                     = new ProfileEmail();
         $this->web  = new ProfileWeb();
-        $this->tel  = new ProfileTel();
         $this->bool = new ProfileBool();
         $this->checks = array('web' => array('web'),
                               'mail_new' => array('email_new'),
                               'mail' => array('email'),
-                              'tel' => array('tel', 'fax', 'mobile'),
-                              'pub' => array('pub', 'tel_pub', 'email_pub'));
+                              'pub' => array('pub', 'email_pub'));
     }
 
-    private function cleanJob(ProfilePage &$page, array &$job, &$success)
+    private function cleanJob(ProfilePage &$page,$jobid, array &$job, &$success)
     {
         $success = true;
         foreach ($this->checks as $obj=>&$fields) {
@@ -66,6 +63,11 @@ class ProfileJob extends ProfileGeoloc
         }
         $job['adr']['pub'] = $this->pub->value($page, 'adr_pub', @$job['adr']['pub'], $s);
         $job['adr']['checked'] = $this->bool->value($page, 'adr_checked', @$job['adr']['checked'], $s);
+        if (!isset($job['tel'])) {
+            $job['tel'] = array();
+        }
+        $profiletel = new ProfilePhones('pro', $jobid);
+        $job['tel'] = $profiletel->value($page, 'tel', $job['tel'], $s);
         unset($job['removed']);
         unset($job['new']);
         unset($job['adr']['changed']);
@@ -90,7 +92,7 @@ class ProfileJob extends ProfileGeoloc
             $ls = true;
             $this->geolocAddress($job['adr'], $s);
             $ls = ($ls && $s);
-            $this->cleanJob($page, $job, $s);
+            $this->cleanJob($page, $key, $job, $s);
             $ls = ($ls && $s);
             if (!$init) {
                 $success = ($success && $ls);
@@ -109,11 +111,10 @@ class ProfileJob extends ProfileGeoloc
                             WHERE  uid = {?} AND link_type = 'pro'",
                      S::i('uid'));
         $i = 0;
-        foreach ($value as &$job) {
+        foreach ($value as $jobid=>&$job) {
             if ($job['email'] == "new@new.new") {
                 $job['email'] = $job['email_new'];
             }
-
             XDB::execute("INSERT INTO  entreprises (uid, entrid, entreprise, secteur, ss_secteur,
                                                     fonction, poste, adr1, adr2, adr3, postcode,
                                                     city, cityid, country, region, regiontxt,
@@ -135,27 +136,8 @@ class ProfileJob extends ProfileGeoloc
                          $job['pub'], $job['adr']['pub'], $job['email_pub'],
                          $job['adr']['checked'] ? 'geoloc' : '', $job['adr']['precise_lat'],
                          $job['adr']['precise_lon']);
-            if ($job['tel'] != '') {
-                XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id,
-                                                      tel_type, search_tel, display_tel, pub)
-                                   VALUES  ({?}, 'pro', {?}, 0,
-                                            'fixed', {?}, {?}, {?})",
-                             S::i('uid'), $i, format_phone_number($job['tel']), $job['tel'], $job['tel_pub']);
-            }
-            if ($job['fax'] != '') {
-                XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id,
-                                                      tel_type, search_tel, display_tel, pub)
-                                   VALUES  ({?}, 'pro', {?}, 1,
-                                            'fax', {?}, {?}, {?})",
-                             S::i('uid'), $i, format_phone_number($job['fax']), $job['fax'], $job['tel_pub']);
-            }
-            if ($job['mobile'] != '') {
-                XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id,
-                                                      tel_type, search_tel, display_tel, pub)
-                                   VALUES  ({?}, 'pro', {?}, 2,
-                                            'mobile', {?}, {?}, {?})",
-                             S::i('uid'), $i, format_phone_number($job['mobile']), $job['mobile'], $job['tel_pub']);
-            }
+            $profiletel = new ProfilePhones('pro', $jobid);
+            $profiletel->saveTels('tel', $job['tel']);
             $i++;
         }
     }
@@ -183,31 +165,27 @@ class ProfileJobs extends ProfilePage
         $this->values['cv'] = $res->fetchOneCell();
 
         // Build the jobs tree
-        $res = XDB::iterRow("SELECT  e.entreprise, e.secteur, e.ss_secteur,
+        $res = XDB::iterRow("SELECT  e.entrid, e.entreprise, e.secteur, e.ss_secteur,
                                      e.fonction, e.poste, e.adr1, e.adr2, e.adr3,
                                      e.postcode, e.city, e.cityid, e.region, e.regiontxt,
                                      e.country, gp.pays, gp.display,
                                      FIND_IN_SET('geoloc', flags),
                                      e.email, e.web, e.pub,
                                      e.adr_pub, e.email_pub,
-                                     e.glat AS precise_lat, e.glng AS precise_lon,
-                                     tt.display_tel AS tel, tt.pub AS tel_pub,
-                                     tf.display_tel AS fax, tm.display_tel AS mobile
+                                     e.glat AS precise_lat, e.glng AS precise_lon
                                FROM  entreprises AS e
                           LEFT JOIN  geoloc_pays AS gp ON(gp.a2 = e.country)
-                          LEFT JOIN  profile_phones AS tt ON(tt.uid = e.uid AND tt.link_type = 'pro' AND tt.link_id = entrid AND tt.tel_id = 0)
-                          LEFT JOIN  profile_phones AS tf ON(tf.uid = e.uid AND tf.link_type = 'pro' AND tf.link_id = entrid AND tf.tel_id = 1)
-                          LEFT JOIN  profile_phones AS tm ON(tm.uid = e.uid AND tm.link_type = 'pro' AND tm.link_id = entrid AND tm.tel_id = 2)
                               WHERE  e.uid = {?} AND entreprise != ''
                            ORDER BY  entrid", S::i('uid'));
         $this->values['jobs'] = array();
-        while (list($name, $secteur, $ss_secteur, $fonction, $poste,
+        while (list($id, $name, $secteur, $ss_secteur, $fonction, $poste,
                     $adr1, $adr2, $adr3, $postcode, $city, $cityid,
                     $region, $regiontxt, $country, $countrytxt, $display,
                     $checked, $email, $web,
-                    $pub, $adr_pub, $email_pub, $glat, $glng,
-                    $tel, $tel_pub, $fax, $mobile) = $res->next()) {
-            $this->values['jobs'][] = array('name'       => $name,
+                    $pub, $adr_pub, $email_pub, $glat, $glng
+                   ) = $res->next()) {
+            $this->values['jobs'][] = array('id'         => $id,
+                                            'name'       => $name,
                                             'secteur'    => $secteur,
                                             'ss_secteur' => $ss_secteur,
                                             'fonction'   => $fonction,
@@ -227,14 +205,41 @@ class ProfileJobs extends ProfilePage
                                                                   'checked'    => $checked,
                                                                   'precise_lat'=> $glat,
                                                                   'precise_lon'=> $glng),
-                                            'tel'        => $tel,
-                                            'fax'        => $fax,
-                                            'mobile'     => $mobile,
                                             'email'      => $email,
                                             'web'        => $web,
                                             'pub'        => $pub,
-                                            'tel_pub'    => $tel_pub,
                                             'email_pub'  => $email_pub);
+        }
+
+        $res = XDB::iterator("SELECT  link_id AS jobid, tel_type AS type, pub, display_tel AS tel, comment
+                                FROM  profile_phones
+                               WHERE  uid = {?} AND link_type = 'pro'
+                            ORDER BY  link_id",
+                             S::i('uid'));
+        $i = 0;
+        $jobNb = count($this->values['jobs']);
+        while ($tel = $res->next()) {
+            $jobid = $tel['jobid'];
+            unset($tel['jobid']);
+            while ($i < $jobNb && $this->values['jobs'][$i]['id'] < $jobid) {
+                $i++;
+            }
+            if ($i >= $jobNb) {
+                break;
+            }
+            $job =& $this->values['jobs'][$i];
+            if (!isset($job['tel'])) {
+                $job['tel'] = array();
+            }
+            if ($job['id'] == $jobid) {
+                $job['tel'][] = $tel;
+            }
+        }
+        foreach ($this->values['jobs'] as $id=>&$job) {
+            if (!isset($job['tel'])) {
+                $job['tel'] = array();
+            }
+            unset($job['id']);
         }
     }
 

@@ -231,8 +231,7 @@ class ProfileGeneral extends ProfilePage
         $this->settings['nom']    = $this->settings['prenom']
                                   = new ProfileNom();
         $this->settings['naissance'] = new ProfileDate();
-        $this->settings['mobile_pub']
-                                  = $this->settings['freetext_pub']
+        $this->settings['freetext_pub']
                                   = $this->settings['photo_pub']
                                   = new ProfilePub();
         $this->settings['freetext']
@@ -245,16 +244,16 @@ class ProfileGeneral extends ProfilePage
                                   = null;
         $this->settings['synchro_ax']
                                   = new ProfileBool();
-        $this->settings['mobile'] = new ProfileTel();
         $this->settings['email_directory']
                                   = new ProfileEmail();
         $this->settings['email_directory_new']
                                   = new ProfileEmailDirectory();
         $this->settings['networking'] = new ProfileNetworking();
+        $this->settings['tels'] = new ProfilePhones('user', 0);
         $this->settings['appli1']
                                   = $this->settings['appli2']
                                   = new ProfileAppli();
-        $this->watched= array('nom' => true, 'freetext' => true, 'mobile' => true,
+        $this->watched= array('nom' => true, 'freetext' => true, 'tels' => true,
                               'networking' => true, 'appli1' => true, 'appli2' => true,
                               'nationalite' => true, 'nick' => true);
     }
@@ -310,6 +309,14 @@ class ProfileGeneral extends ProfilePage
                                WHERE  sn.user_id = {?}
                             ORDER BY  sn.name_type, search_score, search_name",
                           S::v('uid'));
+
+        // Retreive phones
+        $res = XDB::iterator("SELECT t.display_tel AS tel, t.tel_type AS type, t.pub, t.comment
+                                FROM profile_phones AS t
+                               WHERE t.uid = {?} AND t.link_type = 'user'
+                            ORDER BY t.tel_id",
+                             S::v('uid'));
+        $this->values['tels'] = $res->fetchAllAssoc();
     }
 
     protected function _saveData()
@@ -339,18 +346,6 @@ class ProfileGeneral extends ProfilePage
             XDB::execute("REPLACE INTO  profile_directory (uid, email_directory)
                                 VALUES  ({?}, {?})",
                          S::v('uid'), $new_email);
-        }
-        if ($this->changed['mobile'] || $this->changed['mobile_pub']) {
-            require_once('profil.func.inc.php');
-            $fmt_phone  = format_phone_number($this->values['mobile']);
-            XDB::execute("DELETE FROM profile_phones
-                                WHERE uid = {?} AND link_type = 'user'",
-                         S::v('uid'));
-            if ($fmt_phone != '') {
-                XDB::execute("INSERT INTO profile_phones (uid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
-                                   VALUES ({?}, 'user', '0', '0', 'mobile', {?}, {?}, {?})",
-                             S::v('uid'), $fmt_phone, $this->values['mobile'], $this->values['mobile_pub']);
-            }
         }
         if ($this->changed['nick']) {
             require_once('user.func.inc.php');

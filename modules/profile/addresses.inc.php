@@ -23,38 +23,24 @@ class ProfileAddress extends ProfileGeoloc
 {
     private $bool;
     private $pub;
-    private $tel;
 
     public function __construct()
     {
         $this->bool = new ProfileBool();
         $this->pub  = new ProfilePub();
-        $this->tel  = new ProfileTel();
     }
 
-    private function cleanAddress(ProfilePage &$page, array &$address, &$success)
+    private function cleanAddress(ProfilePage &$page, $adrid, array &$address, &$success)
     {
         if (@$address['changed']) {
             $address['datemaj'] = time();
         }
         $success = true;
-        foreach ($address['tel'] as $t=>&$tel) {
-            if (@$tel['removed'] || !trim($tel['tel'])) {
-                unset($address['tel'][$t]);
-            } else {
-                $tel['pub'] = $this->pub->value($page, 'pub', $tel['pub'], $s);
-                $tel['tel'] = $this->tel->value($page, 'tel', $tel['tel'], $s);
-                if(!isset($tel['type']) || ($tel['type'] != 'fixed' && $tel['type'] != 'mobile' && $tel['type'] != 'fax')) {
-                    $tel['type'] = 'fixed';
-                    $s = false;
-                }
-                if (!$s) {
-                    $tel['error'] = true;
-                    $success = false;
-                }
-            }
-            unset($tel['removed']);
+        if (!isset($address['tel'])) {
+            $address['tel'] = array();
         }
+        $profiletel  = new ProfilePhones('address', $adrid);
+        $address['tel'] = $profiletel->value($page, 'tel', $address['tel'], $s);
         $address['checked'] = $this->bool->value($page, 'checked', $address['checked'], $s);
         $address['secondaire'] = $this->bool->value($page, 'secondaire', $address['secondaire'], $s);
         $address['mail'] = $this->bool->value($page, 'mail', $address['mail'], $s);
@@ -98,7 +84,7 @@ class ProfileAddress extends ProfileGeoloc
             $ls = true;
             $this->geolocAddress($adr, $s);
             $ls = ($ls && $s);
-            $this->cleanAddress($page, $adr, $s);
+            $this->cleanAddress($page, $key, $adr, $s);
             $ls = ($ls && $s);
             if (!trim($adr['text'])) {
                 unset($value[$key]);
@@ -153,9 +139,6 @@ class ProfileAddress extends ProfileGeoloc
                      $address['country'], $address['region'], $address['regiontxt'],
                      $address['pub'], $address['datemaj'], $flags,
                      S::i('uid'), $adrid, $address['precise_lat'], $address['precise_lon'], $address['comment']);
-        foreach ($address['tel'] as $telid=>&$tel) {
-            $this->saveTel($adrid, $telid, $tel);
-        }
     }
 
     public function save(ProfilePage &$page, $field, $value)
@@ -168,6 +151,8 @@ class ProfileAddress extends ProfileGeoloc
                      S::i('uid'));
         foreach ($value as $adrid=>&$address) {
             $this->saveAddress($adrid, $address);
+            $profiletel = new ProfilePhones('address', $adrid);
+            $profiletel->saveTels('tel', $address['tel']);
         }
     }
 }
@@ -208,7 +193,7 @@ class ProfileAddresses extends ProfilePage
             $this->values['addresses'] = $res->fetchAllAssoc();
         }
 
-        $res = XDB::iterator("SELECT  link_id AS adrid, tel_type AS type, pub, display_tel AS tel
+        $res = XDB::iterator("SELECT  link_id AS adrid, tel_type AS type, pub, display_tel AS tel, comment
                                 FROM  profile_phones
                                WHERE  uid = {?} AND link_type = 'address'
                             ORDER BY  link_id",

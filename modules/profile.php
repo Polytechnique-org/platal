@@ -393,14 +393,13 @@ class ProfileModule extends PLModule
         $page->assign('adr', array());
     }
 
-    function handler_ajax_tel(&$page, $adid, $telid)
+    function handler_ajax_tel(&$page, $prefid, $prefname, $telid)
     {
         header('Content-Type: text/html; charset=utf-8');
-        $page->changeTpl('profile/adresses.tel.tpl', NO_SKIN);
-        $page->assign('i', $adid);
-        $page->assign('adid', "addresses_$adid");
-        $page->assign('adpref', "addresses[$adid]");
-        $page->assign('t', $telid);
+        $page->changeTpl('profile/phone.tpl', NO_SKIN);
+        $page->assign('prefid', $prefid);
+        $page->assign('prefname', $prefname);
+        $page->assign('telid', $telid);
         $page->assign('tel', array());
     }
 

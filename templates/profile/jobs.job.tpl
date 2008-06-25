@@ -120,33 +120,24 @@
             {include file="geoloc/form.address.tpl" name="`$jobpref`[adr]" id="`$jobid`_adr" adr=$job.adr}
           </div>
         </div>
-        <div style="float: right; width: 50%">
-          <div class="titre">Téléphone</div>
-          <div class="flags">
-            {include file="include/flags.radio.tpl" name="`$jobpref`[tel_pub]" val=$job.tel_pub}
+      </td>
+    </tr>
+    <tr class="pair">
+      <td colspan="2">
+        {foreach from=$job.tel key=t item=tel}
+          <div id="{"`$jobid`_tel_`$t`"}" style="clear: both">
+            {include file="profile/phone.tpl" prefname="`$jobpref`[tel]" prefid="`$jobid`_tel" telid=$t tel=$tel}
           </div>
-          <table style="clear: both">
-            <tr>
-              <td>Bureau&nbsp;:</td>
-              <td>
-                <input type="text" size="18" maxlength="18" {if $job.tel_error}class="error"{/if}
-                       name="{$jobpref}[tel]" value="{$job.tel}" />
-              </td>
-            </tr>
-            <tr>
-              <td>Fax&nbsp;:</td>
-              <td>
-                <input type="text" size="18" maxlength="18" {if $job.fax_error}class="error"{/if}
-                       name="{$jobpref}[fax]" value="{$job.fax}" /></td>
-            </tr>
-            <tr>
-              <td>Mobile&nbsp;:</td>
-              <td>
-                <input type="text" size="18" maxlength="18" {if $job.mobile_error}class="error"{/if}
-                       name="{$jobpref}[mobile]" value="{$job.mobile}" />
-              </td>
-            </tr>
-          </table>
+        {/foreach}
+        {if $job.tel|@count eq 0}
+          <div id="{"`$jobid`_tel_0"}" style="clear: both">
+            {include file="profile/phone.tpl" prefname="`$jobpref`[tel]" prefid="`$jobid`_tel" telid=0 tel=0}
+          </div>
+        {/if}
+        <div id="{$jobid}_tel_add" class="center" style="clear: both; padding-top: 4px;">
+          <a href="javascript:addTel('{$jobid}_tel', '{$jobpref}[tel]')">
+            {icon name=add title="Ajouter un numéro de téléphone"} Ajouter un numéro de téléphone
+          </a>
         </div>
       </td>
     </tr>
