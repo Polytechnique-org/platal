@@ -50,6 +50,9 @@ Bug/Wish:
         - #807: Notify groupes managers of unsubscriptions                 -FRU
         - #814: Group managers can change the visibility of the group      -FRU
         - #824: Fix redirection when changing status of the user           -FRU
+        - #846: Don't export users without a forlife in the vcard          -FRU
+        - #847: Can export the directory as .csv file                      -FRU
+        - #848: Add a free text field in user profile                      -FRU
 
     * XnetEvents:
         - #825: Show the number of comers when the events contains 1 part  -FRU
