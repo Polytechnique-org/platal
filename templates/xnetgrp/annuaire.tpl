@@ -64,7 +64,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
 {/foreach}
 </p>
 
-<table summary="membres du groupe" class="tinybicol">
+<table summary="membres du groupe" class="bicol">
   <tr>
     <th>
       <a href="{$platal->ns}annuaire?order=alpha{if $sort neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}{if $only_admin}&amp;admin=1{/if}">
@@ -86,7 +86,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
         Promo
       </a>
     </th>
-    <th>Infos</th>
+    <th colspan="2">Infos</th>
     {if $is_admin}
     <th>Actions</th>
     {/if}
@@ -108,7 +108,10 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
       {assign var=broken value=true}
       {/if}</td>
     <td>{if $m.admin}<strong>{/if}{$m.promo}{if $m.admin}</strong>{/if}</td>
-    <td class="center">
+    {if $m.comm}
+    <td>{$m.comm}</td>
+    {/if}
+    <td class="center" {if !$m.comm}colspan="2"{/if}>
       {if $m.inscrit}
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="[vcard]"}</a>
       <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="mail"}</a>

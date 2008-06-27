@@ -34,7 +34,7 @@ function get_infos($email)
     }
 
     $res = XDB::query(
-            "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine, sexe
+            "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine, comm, sexe
                FROM  groupex.membres
               WHERE  $field = {?} AND asso_id = {?}", $email, $globals->asso('id'));
 
@@ -54,7 +54,7 @@ function get_infos($email)
                          u.prenom, b.alias,
                          CONCAT(b.alias, '@m4x.org') AS email,
                          CONCAT(b.alias, '@polytechnique.org') AS email2,
-                         m.perms = 'admin' AS perms, m.origine,
+                         m.perms = 'admin' AS perms, m.origine, m.comm,
                          FIND_IN_SET('femme', u.flags) AS sexe
                    FROM  auth_user_md5   AS u
              INNER JOIN  aliases         AS a ON ( u.user_id = a.id AND a.type != 'homonyme' )
@@ -438,6 +438,7 @@ class XnetGrpModule extends PLModule
                            m.perms='admin' AS admin,
                            m.origine='X' AS x,
                            u.perms!='pending' AS inscrit,
+                           m.comm as comm,
                            m.uid, IF(e.email IS NULL AND FIND_IN_SET('googleapps', u.mail_storage) = 0, NULL, 1) AS actif
                      FROM  groupex.membres AS m
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
@@ -975,20 +976,29 @@ class XnetGrpModule extends PLModule
                                SET prenom={?}, nom={?}, email={?}, sexe={?}, origine={?}
                              WHERE uid={?} AND asso_id={?}',
                            $user['prenom'], $user['nom'], Post::v('email'),
-                           $user['sexe'], $user['origine'], $user['uid'],
-                           $globals->asso('id'));
+                           $user['sexe'], $user['origine'],
+                           $user['uid'], $globals->asso('id'));
                 $user['email']   = Post::v('email');
                 $user['email2']  = Post::v('email');
+                $page->trigSuccess('Données de l\'utilisateur mise à jour.');
             }
 
             $perms = Post::i('is_admin');
-            if ($user['perms'] != $perms) {
-                XDB::query('UPDATE groupex.membres SET perms={?}
+            $comm  = trim(Post::s('comm'));
+            if ($user['perms'] != $perms || $user['comm'] != $comm) {
+                XDB::query('UPDATE groupex.membres
+                               SET perms={?}, comm={?}
                              WHERE uid={?} AND asso_id={?}',
-                            $perms ? 'admin' : 'membre',
+                            $perms ? 'admin' : 'membre', $comm,
                             $user['uid'], $globals->asso('id'));
+                if ($perms != $user['perms']) {
+                    $page->trigSuccess('Permissions modifiées !');
+                }
+                if ($comm != $user['comm']) {
+                    $page->trigSuccess('Commentaire mis à jour.');
+                }
                 $user['perms'] = $perms;
-                $page->trigSuccess('Permissions modifiées !');
+                $user['comm'] = $comm;
             }
 
             // Update ML subscriptions
@@ -1039,7 +1049,6 @@ class XnetGrpModule extends PLModule
         }
 
         $page->assign('user', $user);
-        echo $user['email2'];
         $listes = $mmlist->get_lists($user['email2']);
         $page->assign('listes', $listes);
 

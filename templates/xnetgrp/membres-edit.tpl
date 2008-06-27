@@ -60,7 +60,7 @@
   <table cellpadding="0" cellspacing="0" class='tinybicol'>
     <tr class="pair">
       <td class="titre">
-        Permissions:
+        Permissions&nbsp;:
       </td>
       <td>
         <select name="is_admin">
@@ -110,12 +110,23 @@
     </tr>
     <tr class="impair">
       <td class="titre">
-        Email:
+        Email&nbsp;:
       </td>
       <td>
         <input type="text" value="{$user.email}" name="email" size="40" />
       </td>
     </tr>
+    {/if}
+    <tr class="impair">
+      <td class="titre">
+        Commentaire&nbsp;:
+      </td>
+      <td>
+        <input type="text" name="comm" value="{$user.comm}" size="40" maxlength="255" /><br />
+        <small>Poste, origine, ... (accessible à toutes les personnes autorisées à consulter l'annuaire)</small>
+      </td>
+    </tr>
+    {if $user.origine neq X}
     <tr id="make_X" {if $user.origine eq "groupe"}style="display: none"{/if}>
       <td colspan="2">
         <span id="make_X_cb">
