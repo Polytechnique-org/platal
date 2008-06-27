@@ -37,8 +37,11 @@ class VCardIterator implements PlIterator
 
     public function add_user($user)
     {
-        $this->user_list[] = get_user_forlife($user);
-        $this->count++;
+        $forlife = get_user_forlife($user, '_silent_user_callback');
+        if ($forlife) {
+            $this->user_list[] = get_user_forlife($user);
+            $this->count++;
+        }
     }
 
     public function first()
@@ -172,7 +175,6 @@ class VCard
         header("Pragma: ");
         header("Cache-Control: ");
         header("Content-type: text/x-vcard; charset=UTF-8");
-        header("Content-Transfer-Encoding: 8bit");
   }
 }
 
