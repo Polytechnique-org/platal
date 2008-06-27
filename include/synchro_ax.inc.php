@@ -19,9 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-
-require_once("xorg.inc.php");
-
 require_once('user.func.inc.php');
 
 function is_ax_key_missing() {

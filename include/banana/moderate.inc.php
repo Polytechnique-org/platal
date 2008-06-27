@@ -89,10 +89,7 @@ class ModerationPage extends BananaPage
 
     public function trig($msg)
     {
-        global $page;
-        if ($page) {
-            $page->trigError($msg);
-        }
+        Platal::page()->trigError($msg);
         return true;
     }
 }

@@ -27,7 +27,7 @@ class ReviewPage implements PlWizardPage
     public function template() { return 'platal/review.tpl'; }
     public function process() { }
 
-    public function prepare(PlatalPage &$page, $id)
+    public function prepare(PlPage &$page, $id)
     {
         require_once 'wiki.inc.php';
         $dom = (@$GLOBALS['IS_XNET_SITE'] ? 'ReviewXnet' : 'Review') . '.' . ucfirst($id);

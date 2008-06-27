@@ -1,5 +1,5 @@
 CREATE TABLE requests_hidden (
-  user_id SMALLINT UNSIGNED NOT NULL,
+  user_id INT NOT NULL,
   hidden_requests TEXT NOT NULL,
   PRIMARY KEY(user_id)
 ) CHARSET=utf8;

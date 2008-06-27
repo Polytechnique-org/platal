@@ -40,7 +40,7 @@ class MarketingModule extends PLModule
     {
         $page->changeTpl('marketing/index.tpl');
 
-        $page->assign('xorg_title','Polytechnique.org - Marketing');
+        $page->setTitle('Polytechnique.org - Marketing');
 
         // Quelques statistiques
 
@@ -260,7 +260,6 @@ class MarketingModule extends PLModule
             $page->assign('promo', $promo);
 
             if (Post::has('valide')) {
-                require_once('xorg.misc.inc.php');
                 $email = trim(Post::v('mail'));
 
                 if (!isvalid_email_redirection($email)) {

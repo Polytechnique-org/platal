@@ -19,22 +19,27 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class XnetPage extends PlatalPage
+class XnetPage extends PlPage
 {
     public $nomenu = false;
 
     // {{{ function XnetPage()
 
-    public function __construct($tpl, $type=SKINNED)
+    public function __construct()
     {
-        parent::__construct($tpl, $type);
+        parent::__construct();
 
         $this->register_function('list_all_my_groups', 'list_all_my_groups');
         $this->register_modifier('cat_pp', 'cat_pp');
         $this->assign('it_is_xnet', true);
 
-        if (!S::logged() && Get::has('auth')) {
-            XnetSession::doAuthX();
+        global $globals;
+        $this->assign('is_logged', S::logged());
+        if ($globals->asso('id')) {
+            $this->assign('asso', $globals->asso());
+            $this->setType($globals->asso('cat'));
+            $this->assign('is_admin', may_update());
+            $this->assign('is_member', is_member());
         }
     }
 
@@ -47,22 +52,6 @@ class XnetPage extends PlatalPage
             $this->useMenu();
         }
         $this->_run('xnet/skin.tpl');
-    }
-
-    // }}}
-    // {{{ function changeTpl()
-
-    public function changeTpl($tpl, $type = SKINNED)
-    {
-        global $globals;
-        parent::changeTpl($tpl, $type);
-        $this->assign('is_logged', S::logged());
-        if ($globals->asso('id')) {
-            $this->assign('asso', $globals->asso());
-            $this->setType($globals->asso('cat'));
-            $this->assign('is_admin', may_update());
-            $this->assign('is_member', is_member());
-        }
     }
 
     // }}}

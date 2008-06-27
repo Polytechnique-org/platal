@@ -49,7 +49,6 @@ class UsageReq extends Validate
         parent::__construct($_uid, true, 'usage');
         $this->nom_usage  = $_usage;
         $this->reason = $_reason;
-        require_once 'xorg.misc.inc.php';
         $this->alias   = make_username($this->prenom, $this->nom_usage);
         if (!$this->nom_usage) $this->alias = "";
 

@@ -200,8 +200,7 @@ function hook_getXFace($headers)
 
 function hook_makeJs($src)
 {
-    global $page;
-    $page->addJsLink("$src.js");
+    Platal::page()->addJsLink("$src.js");
     return ' ';
 }
 
@@ -290,12 +289,12 @@ class PlatalBananaPage extends BananaPage
     protected function prepare()
     {
         $tpl = parent::prepare();
-        global $wiz, $page;
+        global $wiz;
         $wiz = new PlWizard('Banana', 'core/plwizard.tpl', true, false);
         foreach ($this->pages as $name=>&$mpage) {
             $wiz->addPage($this->handler, $mpage['text'], $name);
         }
-        $wiz->apply($page, $this->base, $this->page);
+        $wiz->apply(Platal::page(), $this->base, $this->page);
         return $tpl;
     }
 }
@@ -311,7 +310,7 @@ class BananaHandler
         return 'banana/index.tpl';
     }
 
-    public function prepare(PlatalPage &$page, $id)
+    public function prepare(PlPage &$page, $id)
     {
     }
 

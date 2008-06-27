@@ -42,7 +42,7 @@ class GoogleAppsModule extends PLModule
         require_once("googleapps.inc.php");
         $page->changeTpl('googleapps/index.tpl');
         $page->addJsLink('motdepasse.js');
-        $page->assign('xorg_title', 'Polytechnique.org - Compte Google Apps');
+        $page->setTitle('Polytechnique.org - Compte Google Apps');
 
         $account = new GoogleAppsAccount(S::user());
 
@@ -117,7 +117,7 @@ class GoogleAppsModule extends PLModule
     function handler_admin(&$page, $action = null) {
         require_once("googleapps.inc.php");
         $page->changeTpl('googleapps/admin.tpl');
-        $page->assign('xorg_title', 'Polytechnique.org - Administration Google Apps');
+        $page->setTitle('Polytechnique.org - Administration Google Apps');
         $page->assign('googleapps_admin', GoogleAppsAccount::is_administrator(S::v('uid')));
 
         if ($action == 'ack') {
@@ -163,7 +163,7 @@ class GoogleAppsModule extends PLModule
     function handler_admin_job(&$page, $job = null) {
         require_once("googleapps.inc.php");
         $page->changeTpl('googleapps/admin.job.tpl');
-        $page->assign('xorg_title', 'Polytechnique.org - Administration Google Apps');
+        $page->setTitle('Polytechnique.org - Administration Google Apps');
         $page->assign('googleapps_admin', GoogleAppsAccount::is_administrator(S::v('uid')));
 
         if ($job) {
@@ -183,7 +183,7 @@ class GoogleAppsModule extends PLModule
         require_once("emails.inc.php");
         require_once("googleapps.inc.php");
         $page->changeTpl('googleapps/admin.user.tpl');
-        $page->assign('xorg_title', 'Polytechnique.org - Administration Google Apps');
+        $page->setTitle('Polytechnique.org - Administration Google Apps');
         $page->assign('googleapps_admin', GoogleAppsAccount::is_administrator(S::v('uid')));
 
         if (!$user && Post::has('login')) {

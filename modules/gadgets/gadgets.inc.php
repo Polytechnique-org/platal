@@ -22,15 +22,14 @@
 // iGoogle gadgets helpers.
 function init_igoogle_xml($template)
 {
-    global $page;
-    $page->changeTpl($template, NO_SKIN);
+    Platal::page()->changeTpl($template, NO_SKIN);
 
     header('Content-Type: application/xml; charset=utf-8');
 }
 
 function init_igoogle_html($template, $auth = AUTH_PUBLIC)
 {
-    global $page;
+    $page =& Platal::page();
     $page->changeTpl('gadgets/ig-skin.tpl', NO_SKIN);
     $page->register_modifier('escape_html', 'escape_html');
     $page->default_modifiers = Array('@escape_html');

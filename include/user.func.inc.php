@@ -87,8 +87,7 @@ function user_clear_all_subs($user_id, $really_del=true)
 // Defaut callback to call when a login is not found
 function _default_user_callback($login)
 {
-    global $page;
-    $page->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
+    Platal::page()->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
     return;
 }
 
@@ -104,7 +103,7 @@ function _silent_user_callback($login)
 // When no user is found, calls @p callback, and eventually returns false.
 function get_user_login($data, $get_forlife = false, $callback = '_default_user_callback')
 {
-    global $globals, $page;
+    global $globals;
 
     // In order to reduce the code size & complexity, we define once for all the
     // field to be returned. By convention if will be "u.hruid" for the hruid
@@ -210,7 +209,7 @@ function get_user_login($data, $get_forlife = false, $callback = '_default_user_
             return $res->fetchOneCell();
         } else if ($res->numRows() > 0) {
             if (S::has_perms()) {
-                $page->trigError("Il y a $user_count utilisateurs avec cette adresse mail : " . join(', ', $res->fetchColumn()));
+                Platal::page()->trigError("Il y a $user_count utilisateurs avec cette adresse mail : " . join(', ', $res->fetchColumn()));
             } else {
                 $res->free();
             }

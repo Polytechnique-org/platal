@@ -53,9 +53,8 @@ class ProfileWeb extends ProfileNoSave
         $value = trim($value);
         $success = empty($value) || preg_match("{^(https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+$}i", $value);
         if (!$success) {
-            global $page;
-            $page->trigError('URL Incorrecte : une url doit commencer par http:// ou https:// ou ftp://'
-                      . ' et ne pas contenir de caractères interdits');
+            Platal::page()->trigError('URL Incorrecte : une url doit commencer par http:// ou https:// ou ftp://'
+                                    . ' et ne pas contenir de caractères interdits');
         }
         return $value;
     }
@@ -69,11 +68,9 @@ class ProfileEmail extends ProfileNoSave
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
         }
         $value = trim($value);
-        require_once 'xorg.misc.inc.php';
         $success = empty($value) || isvalid_email($value);
         if (!$success) {
-            global $page;
-            $page->trigError('Adresse Email invalide');
+            Platal::page()->trigError('Adresse Email invalide');
         }
         return $value;
     }
@@ -89,8 +86,7 @@ class ProfileTel extends ProfileNoSave
         }
         $success = !preg_match('/[<>{}@&#~\/:;?,!§*_`\[\]|%$^=]/', $value, $matches);
         if (!$success) {
-            global $page;
-            $page->trigError('Le numéro de téléphone contient un caractère interdit : ' . pl_entities($matches[0][0]));
+            Platal::page()->trigError('Le numéro de téléphone contient un caractère interdit : ' . pl_entities($matches[0][0]));
         }
         return $value;
     }
@@ -135,16 +131,14 @@ class ProfileDate extends ProfileNoSave
         } else {
             $success = preg_match('@(\d{2})/(\d{2})/(\d{4})@', $value, $matches);
             if (!$success) {
-                global $page;
-                $page->trigError("Les dates doivent être au format jj/mm/aaaa");
+                Platal::page()->trigError("Les dates doivent être au format jj/mm/aaaa");
            } else {
                 $day   = (int)$matches[1];
                 $month = (int)$matches[2];
                 $year  = (int)$matches[3];
                 $success = ($day > 0 && $day <= 31) && ($month > 0 && $month <= 12) && ($year > 1900 && $year <= 2020);
                 if (!$success) {
-                    global $page;
-                    $page->trigError("La date n'a pas une valeur valide");
+                    Platal::page()->trigError("La date n'a pas une valeur valide");
                 }
             }
         }
@@ -260,7 +254,7 @@ abstract class ProfilePage implements PlWizardPage
         }
         global $platal;
         $log =& $_SESSION['log'];
-        $log->log('profil', $platal->pl_self(1));
+        S::logger()->log('profil', $platal->pl_self(1));
     }
 
     protected function checkChanges()
@@ -290,11 +284,11 @@ abstract class ProfilePage implements PlWizardPage
         return 'profile/base.tpl';
     }
 
-    protected function _prepare(PlatalPage &$page, $id)
+    protected function _prepare(PlPage &$page, $id)
     {
     }
 
-    public function prepare(PlatalPage &$page, $id)
+    public function prepare(PlPage &$page, $id)
     {
         if (count($this->values) == 0) {
             $this->fetchData();
@@ -329,9 +323,8 @@ abstract class ProfilePage implements PlWizardPage
             }
             return Post::has('next_page') ? PlWizard::NEXT_PAGE : PlWizard::CURRENT_PAGE;
         }
-        global $page;
-        $page->trigError("Certains champs n'ont pas pu être validés, merci de corriger les informations "
-                  . "de ton profil et de revalider ta demande");
+        Platal::page()->trigError("Certains champs n'ont pas pu être validés, merci de corriger les informations "
+                                . "de ton profil et de revalider ta demande");
         return PlWizard::CURRENT_PAGE;
     }
 }

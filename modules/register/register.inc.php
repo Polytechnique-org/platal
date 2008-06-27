@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'xorg.misc.inc.php';
-
 // {{{ function user_cmp
 
 function user_cmp($prenom, $nom, $_prenom, $_nom)
@@ -151,7 +149,6 @@ function create_aliases (&$sub)
     global $globals;
     extract ($sub);
 
-    require_once "xorg.misc.inc.php";
     $mailorg  = make_username($prenom, $nom);
     $mailorg2 = $mailorg.sprintf(".%02u", ($promo%100));
     $forlife  = make_forlife($prenom, $nom, $promo);

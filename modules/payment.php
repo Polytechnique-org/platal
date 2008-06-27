@@ -34,7 +34,7 @@ function cb_erreur($text) {
 /* sort en affichant une erreur */
 function paypal_erreur($text, $send=true)
 {
-    global $page, $erreur, $globals;
+    global $erreur, $globals;
     if ($erreur) return;
     $erreur = $text;
     if (!$send) return;
@@ -46,7 +46,7 @@ function paypal_erreur($text, $send=true)
     $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
     $mymail->send();
 
-    $page->trigError($text);
+    Platal::page()->trigError($text);
 }
 
 /* http://fr.wikipedia.org/wiki/Formule_de_Luhn */
@@ -120,7 +120,7 @@ class PaymentModule extends PLModule
             }
         }
         $page->changeTpl('payment/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Télépaiements');
+        $page->setTitle('Polytechnique.org - Télépaiements');
 
         // initialisation
         $op   = Env::v('op', 'select');
@@ -467,7 +467,7 @@ class PaymentModule extends PLModule
     }
 
     function handler_admin(&$page, $action = 'list', $id = null) {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Paiements');
+        $page->setTitle('Polytechnique.org - Administration - Paiements');
         $page->assign('title', 'Gestion des télépaiements');
         $table_editor = new PLTableEditor('admin/payments','paiement.paiements','id');
         $table_editor->add_join_table('paiement.transactions','ref',true);

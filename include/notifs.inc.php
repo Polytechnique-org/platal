@@ -54,8 +54,7 @@ function register_watch_op($uid, $cid, $date='', $info='')
                              WHERE  ni_id={?}', $uid);
         XDB::execute('DELETE FROM watch_nonins WHERE ni_id={?}', $uid);
     }
-    require_once 'xorg.misc.inc.php';
-    update_NbNotifs();
+    Platal::session()->updateNbNotifs();
 }
 
 // }}}

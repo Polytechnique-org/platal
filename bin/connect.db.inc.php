@@ -19,12 +19,14 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-ini_set('include_path',dirname(__FILE__).'/../include:' . dirname(__FILE__).'/../classes:/usr/share/php');
-
+ini_set('include_path', dirname(__FILE__) . '/../core/include:'
+                      . dirname(__FILE__) . '/../include:'
+                      . dirname(__FILE__) . '/../core/classes:'
+                      . dirname(__FILE__) . '/../classes:'
+                      . '/usr/share/php');
 require_once('xorg.inc.php');
-require_once('xorg.misc.inc.php');
 
-require_once 'xdb.php';
+new Platal('core');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

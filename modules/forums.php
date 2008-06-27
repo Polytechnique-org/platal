@@ -59,7 +59,7 @@ class ForumsModule extends PLModule
     function handler_banana(&$page, $group = null, $action = null, $artid = null)
     {
         $page->changeTpl('banana/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Forums & PA');
+        $page->setTitle('Polytechnique.org - Forums & PA');
 
         $get = Array();
         if (Post::has('updateall')) {
@@ -97,7 +97,7 @@ class ForumsModule extends PLModule
 
     function handler_forums_bans(&$page, $action = 'list', $id = null)
     {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Bannissements des forums');
+        $page->setTitle('Polytechnique.org - Administration - Bannissements des forums');
         $page->assign('title', 'Gestion des mises au ban');
         $table_editor = new PLTableEditor('admin/forums','forums.innd','id_innd');
         $table_editor->add_sort_field('priority', true, true);
@@ -113,7 +113,7 @@ class ForumsModule extends PLModule
     static function run_banana(&$page, $params = null)
     {
         $page->changeTpl('banana/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Forums & PA');
+        $page->setTitle('Polytechnique.org - Forums & PA');
 
         require_once 'banana/forum.inc.php';
         run_banana($page, 'ForumsBanana', $params);

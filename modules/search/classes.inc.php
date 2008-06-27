@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.misc.inc.php");
-
 // {{{ Global variables used for the search Queries
 
 @$globals->search->result_fields = '
@@ -92,9 +90,10 @@ class ThrowError
      */
     private static function defaultHandler($explain)
     {
-        global $page, $globals;
+        global $globals;
+        $page =& Platal::page();
         $page->changeTpl('search/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Annuaire');
+        $page->setTitle('Polytechnique.org - Annuaire');
         $page->assign('baseurl', $globals->baseurl);
         $page->trigError($explain);
         $page->run();
@@ -253,8 +252,7 @@ class QuickSearch extends SField
         $s = preg_replace('!\d+!', ' ', $s);
         $this->strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
         if (count($this->strings) > 5) {
-            global $page;
-            $page->trigWarning("Tu as indiqué trop d'éléments dans ta recherche, seuls les 5 premiers seront pris en compte");
+            Platal::page()->trigWarning("Tu as indiqué trop d'éléments dans ta recherche, seuls les 5 premiers seront pris en compte");
             $this->strings = array_slice($this->strings, 0, 5);
         }
 

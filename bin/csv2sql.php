@@ -20,7 +20,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once(dirname(__FILE__) . '/../classes/csvimporter.php');
+require_once(dirname(__FILE__) . '/../core/classes/csvimporter.php');
 
 // {{{ function showHelp()
 
@@ -86,7 +86,7 @@ $action          = CSV_INSERT;
 $keys            = 'id';
 
 processArgs();
-require_once(dirname(__FILE__) . '/../classes/xdb.php');
+require_once(dirname(__FILE__) . '/../core/classes/xdb.php');
 
 $source          = file_get_contents($sourceName);
 $insert_relation = null;

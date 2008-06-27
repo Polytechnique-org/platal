@@ -19,18 +19,29 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class XnetSession
+class XnetSession extends PlSession
 {
-    // {{{ function init
-
-    public static function init()
+    public function __construct()
     {
+        parent::__construct();
+        S::bootstrap('perms_backup', new PlFlagSet());
+    }
+
+    public function startAvailableAuth()
+    {
+        if (!(S::v('perms') instanceof PlFlagSet)) {
+            S::set('perms', S::v('perms_backup'));
+        }
+
+        if (!S::logged() && Get::has('auth')) {
+            if (!$this->start(AUTH_MDP)) {
+                return false;
+            }
+        }
+
         global $globals;
-
-        S::init();
-
         if (!S::logged()) {
-            // prevent connexion to be linked to deconnexion
+            // prevent connection to be linked to disconnection
             if (($i = strpos($_SERVER['REQUEST_URI'], 'exit')) !== false)
                 $returl = "http://{$_SERVER['SERVER_NAME']}".substr($_SERVER['REQUEST_URI'], 0, $i);
             else
@@ -40,7 +51,7 @@ class XnetSession
             $url .= "&challenge=" . S::v('challenge');
             $url .= "&pass=" . md5(S::v('challenge') . $globals->xnet->secret);
             $url .= "&url=".urlencode($returl);
-            $_SESSION['loginX'] = $url;
+            S::set('loginX', $url);
         }
 
         if (S::logged() && $globals->asso()) {
@@ -62,132 +73,108 @@ class XnetSession
             if ($globals->asso('cat') == 'Promotions') {
                 $perms->addFlag('groupannu');
             }
-            $_SESSION['perms'] = $perms;
+            S::set('perms', $perms);
+            S::set('perms_backup', $perms);
         }
+        return true;
     }
 
-    // }}}
-    // {{{ public static function destroy()
-
-    public static function destroy() {
-        S::destroy();
-        XnetSession::init();
-    }
-
-    // }}}
-    // {{{ public static function doAuth()
-
-    /** Try to do an authentication.
-     *
-     * @param page the calling page (by reference)
-     */
-    public static function doAuth()
+    protected function doAuth($level)
     {
-    	if (S::identified()) { // ok, c'est bon, on n'a rien à faire
-	        return true;
-    	}
-
-        if (Get::has('auth')) {
-            return XnetSession::doAuthX();
+        if (S::identified()) { // ok, c'est bon, on n'a rien à faire
+            return S::i('uid');
         }
-
-        return false;
+        if (!Get::has('auth')) {
+            return null;
+        }
+        global $globals;
+        if (md5('1' . S::v('challenge') . $globals->xnet->secret . Get::i('uid') . '1') != Get::v('auth')) {
+            return null;
+        }
+        Get::kill('auth');
+        S::set('auth', AUTH_MDP);
+        return Get::i('uid');
     }
 
-    // }}}
-    // {{{ doAuthCookie
-
-    public static function doAuthCookie() {
-        return XnetSession::doAuth();
-    }
-
-    // }}}
-    // {{{ doAuthX
-
-    public static function doAuthX()
+    protected function startSessionAs($user, $level)
     {
-        global $globals, $page;
+        global $globals;
 
-        // Checks the SSO control token value.
-        if (md5('1'.S::v('challenge').$globals->xnet->secret.Get::i('uid').'1') != Get::v('auth')) {
-            Get::kill('auth');
-            if (!$page) {
-                require_once 'xnet.inc.php';
-                new_skinned_page('platal/index.tpl');
-            }
-            $page->kill("Erreur d'authentification avec polytechnique.org !");
+        if ($level == -1) {
+            S::set('auth', AUTH_MDP);
         }
-
-        // Fetches user's data.
-        $res  = XDB::query("
-            SELECT  u.user_id AS uid, prenom, nom, perms, promo, password, FIND_IN_SET('femme', u.flags) AS femme,
-                    u.hruid, CONCAT(a.alias, '@{$globals->mail->domain}') AS forlife, CONCAT(a2.alias, '@{$globals->mail->domain}') AS bestalias,
-                    q.core_mail_fmt AS mail_fmt, q.core_rss_hash
-              FROM  auth_user_md5   AS u
-        INNER JOIN  auth_user_quick AS q  USING(user_id)
-        INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type = 'a_vie')
-        INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias', a2.flags))
-             WHERE  u.user_id = {?} AND u.perms IN('admin','user')
-             LIMIT  1", Get::i('uid'));
-
-        // Sets up the session, using fetched data and Xorg's permission system.
-        $_SESSION = array_merge($_SESSION, $res->fetchOneAssoc());
-        $_SESSION['auth'] = AUTH_MDP;
-        require_once 'xorg/session.inc.php';
-        $_SESSION['perms'] =& XorgSession::make_perms(S::v('perms'));
-
-        // Removes session values which are of no interest in Xnet context.
+        $res  = XDB::query('SELECT  u.user_id AS uid, prenom, nom, perms, promo, password, FIND_IN_SET(\'femme\', u.flags) AS femme,
+                                    a.alias AS forlife, a2.alias AS bestalias, q.core_mail_fmt AS mail_fmt, q.core_rss_hash
+                              FROM  auth_user_md5   AS u
+                        INNER JOIN  auth_user_quick AS q  USING(user_id)
+                        INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type = \'a_vie\')
+                        INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET(\'bestalias\', a2.flags))
+                             WHERE  u.user_id = {?} AND u.perms IN(\'admin\', \'user\')
+                             LIMIT  1', $user);
+        $sess = $res->fetchOneAssoc();
+        $perms = $sess['perms'];
+        unset($sess['perms']);
+        $_SESSION = array_merge($_SESSION, $sess);
+        $this->makePerms($perms);
         S::kill('challenge');
         S::kill('loginX');
         S::kill('may_update');
         S::kill('is_member');
-
-        // Builds the Xnet destination URL, and redirects the user.
-        Get::kill('auth');
         Get::kill('uid');
-        $path = Get::v('n');
-        Get::kill('n');
         Get::kill('PHPSESSID');
 
         $args = array();
         foreach($_GET as $key => $val) {
-            $args[] = urlencode($key).'='.urlencode($val);
+            $args[] = urlencode($key). '=' .urlencode($val);
         }
-
-        http_redirect($globals->baseurl . '/' . $path, join('&', $args));
+        return true;
     }
 
-    // }}}
-    // {{{ doSelfSuid
-
-    public static function doSelfSuid()
+    public function doSelfSuid()
     {
-        if (!S::has('suid')) {
-            $_SESSION['suid'] = $_SESSION;
+        if (!$this->startSUID(S::i('uid'))) {
+            return false;
         }
-        require_once 'xorg/session.inc.php';
-        $_SESSION['perms'] =& XorgSession::make_perms('user');
+        $this->makePerms('user');
+        return true;
     }
 
-    // }}}
-    // {{{ killSuid
-
-    public static function killSuid()
+    public function stopSUID()
     {
-        if (!S::has('suid')) {
-            return;
-        }
         $suid = S::v('suid');
+        if (!parent::stopSUID()) {
+            return false;
+        }
         S::kill('suid');
         S::kill('may_update');
         S::kill('is_member');
-        $_SESSION['perms'] = $suid['perms'];
+        S::set('perms', $suid['perms']);
+        S::set('perms_backup', $suid['perms_backup']);
+        return true;
     }
 
-    // }}}
+    public function makePerms($perm)
+    {
+        $flags = new PlFlagSet();
+        if ($perm == 'disabled' || $perm == 'ext') {
+            S::set('perms', $flags);
+            S::set('perms_backup', $flags);
+            return;
+        }
+        $flags->addFlag(PERMS_USER);
+        if ($perm == 'admin') {
+            $flags->addFlag(PERMS_ADMIN);
+        }
+        S::set('perms', $flags);
+        S::set('perms_backup', $flags);
+    }
+
+    public function sureLevel()
+    {
+        return AUTH_MDP;
+    }
 }
 
-// }}}
 // {{{ function may_update
 
 /** Return administration rights for the current asso

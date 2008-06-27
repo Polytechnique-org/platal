@@ -20,6 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<input type="text" name="listname" size="25" maxlength="200" value="{$valid->liste}" />
+<strong>Nom de la liste&nbsp;:</strong>
+<input type="text" name="listname" size="25" maxlength="200" value="{$valid->liste}" /><br />
+<strong>Type de liste&nbsp;:</strong>
+<label><input type="radio" name="assotype" value="binet" {if $valid->asso eq "binet"}checked="checked"{/if} />binet</label>
+<label><input type="radio" name="assotype" value="" {if !$valid->asso}checked="checked"{/if} />quelconque</label>
+<label><input type="radio" name="assotype" value="alias" {if $valid->asso eq "alias"}checked="checked"{/if} />alias</label>
+<label><input type="radio" name="assotype" value="groupex" {if $valid->asso eq "groupex"}checked="checked"{/if} />groupe X</label><br />
+<strong>Domaine&nbsp;:</strong> <input type="text" name="domainname" size="25" maxlength="200" value="{$valid->domain}" />
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

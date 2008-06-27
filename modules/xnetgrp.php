@@ -224,7 +224,7 @@ class XnetGrpModule extends PLModule
         if (Post::has('submit')) {
             S::assert_xsrf_token();
 
-            $flags = new FlagSet('wiki_desc');
+            $flags = new PlFlagSet('wiki_desc');
             if (Post::has('notif_unsub') && Post::i('notif_unsub') == 1) {
                 $flags->addFlag('notif_unsub');
             }
@@ -597,25 +597,26 @@ class XnetGrpModule extends PLModule
         if (Env::has('right') && (may_update() || S::has('suid'))) {
             switch (Env::v('right')) {
               case 'admin':
-                XnetSession::killSuid();
+                Platal::session()->stopSUID();
                 break;
               case 'anim':
-                XnetSession::doSelfSuid();
+                Platal::session()->doSelfSuid();
                 may_update(true);
                 is_member(true);
                 break;
               case 'member':
-                XnetSession::doSelfSuid();
+                Platal::session()->doSelfSuid();
                 may_update(false, true);
                 is_member(true);
                 break;
               case 'logged':
-                XnetSession::doSelfSuid();
+                Platal::session()->doSelfSuid();
                 may_update(false, true);
                 is_member(false, true);
                 break;
             }
         }
+//        var_dump($_SESSION);
         http_redirect($_SERVER['HTTP_REFERER']);
     }
 
@@ -698,7 +699,6 @@ class XnetGrpModule extends PLModule
                 $page->trigError($email." n'est pas un alias polytechnique.org valide.");
             }
         } else {
-            require_once 'xorg.misc.inc.php';
             if (isvalid_email($email)) {
                 if (Env::v('x') && Env::has('userid') && Env::i('userid')) {
                     $uid = Env::i('userid');
@@ -770,7 +770,7 @@ class XnetGrpModule extends PLModule
 
     function unsubscribe(&$user)
     {
-        global $globals, $page;
+        global $globals;
         XDB::execute(
                 "DELETE FROM  groupex.membres WHERE uid={?} AND asso_id={?}",
                 $user['uid'], $globals->asso('id'));
@@ -814,9 +814,9 @@ class XnetGrpModule extends PLModule
                     $mmlist->unsubscribe($liste['list']);
                 }
             } elseif ($liste['sub']) {
-                $page->trigWarning("{$user['prenom']} {$user['nom']} a une"
-                                  ." demande d'inscription en cours sur la"
-                                  ." liste {$liste['list']}@ !");
+                Platal::page()->trigWarning("{$user['prenom']} {$user['nom']} a une"
+                                           ." demande d'inscription en cours sur la"
+                                           ." liste {$liste['list']}@ !");
                 $warning = true;
             }
         }
@@ -871,7 +871,7 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    private function changeLogin(PlatalPage &$page, array &$user, MMList &$mmlist, $login)
+    private function changeLogin(PlPage &$page, array &$user, MMList &$mmlist, $login)
     {
         require_once 'user.func.inc.php';
         // Search the uid of the user...
@@ -1080,7 +1080,7 @@ class XnetGrpModule extends PLModule
         $page->assign('rss', $rss);
     }
 
-    private function upload_image(PlatalPage &$page, PlUpload &$upload)
+    private function upload_image(PlPage &$page, PlUpload &$upload)
     {
         if (@!$_FILES['image']['tmp_name'] && !Env::v('image_url')) {
             return true;
@@ -1186,7 +1186,7 @@ class XnetGrpModule extends PLModule
         if (Post::v('valid') == 'Enregistrer') {
             $promo_min = ($art['public'] ? 0 : $art['promo_min']);
             $promo_max = ($art['public'] ? 0 : $art['promo_max']);
-            $flags = new FlagSet();
+            $flags = new PlFlagSet();
             if ($art['public']) {
                 $flags->addFlag('public');
             }

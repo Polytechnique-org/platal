@@ -23,7 +23,7 @@
 
 <h1>Télépaiements</h1>
 
-{if $smarty.request.op eq "submit" and !$xorg_errors}
+{if $smarty.request.op eq "submit" and !$pl_errors}
 
 <table class="bicol">
   <tr>
