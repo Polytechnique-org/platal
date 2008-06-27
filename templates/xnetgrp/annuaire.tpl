@@ -42,6 +42,12 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
   </li>
   {/if}
   <li>
+    <a href="{$platal->ns}annuaire/csv/{$asso.diminutif}.csv">
+      {icon name=page_excel title="Fichier Excel"} 
+      Obtenir au format Excel
+    </a>
+  </li>
+  <li>
     <a href="{$platal->ns}annuaire/vcard/photos/{$asso.diminutif}.vcf">
       {icon name=vcard title="Carte de visite"} 
       Ajouter les membres à ton carnet d'adresse

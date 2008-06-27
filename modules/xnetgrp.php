@@ -82,6 +82,7 @@ class XnetGrpModule extends PLModule
             '%grp/forum'          => $this->make_hook('forum',     AUTH_MDP, 'groupmember'),
             '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP, 'groupannu'),
             '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP, 'groupmember:groupannu'),
+            '%grp/annuaire/csv'   => $this->make_hook('csv',       AUTH_MDP, 'groupmember:groupannu'),
             '%grp/trombi'         => $this->make_hook('trombi',    AUTH_MDP, 'groupannu'),
             '%grp/geoloc'         => $this->make_hook('geoloc',    AUTH_MDP, 'groupannu'),
             '%grp/subscribe'      => $this->make_hook('subscribe', AUTH_MDP),
@@ -471,6 +472,34 @@ class XnetGrpModule extends PLModule
                             WHERE  asso_id = {?}', $globals->asso('id'));
         $vcard = new VCard($res->fetchColumn(), $photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
         $vcard->do_page($page);
+    }
+
+    function handler_csv(&$page, $filename = null)
+    {
+        global $globals;
+        if (is_null($filename)) {
+            $filename = $globals->asso('diminutif') . '.csv';
+        }
+        $ann = XDB::iterator(
+                  "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
+                           IF(m.origine='X',u.prenom,m.prenom) AS prenom,
+                           IF(m.origine='X', u.promo, IF(m.origine='ext', 'extérieur', 'personne morale')) AS promo,
+                           IF(m.origine='X' AND u.perms != 'pending',CONCAT(a.alias, '@', {?}), m.email) AS email,
+                           IF(m.origine='X',FIND_IN_SET('femme', u.flags), m.sexe) AS femme,
+                           m.comm as comm
+                     FROM  groupex.membres AS m
+                LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
+                LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type = 'a_vie' )
+                    WHERE  m.asso_id = {?}
+                           AND (m.origine != 'X' OR u.perms != 'pending' OR m.email IS NOT NULL)
+                 GROUP BY  m.uid
+                 ORDER BY  nom, prenom",
+                 $globals->mail->domain, $globals->asso('id'));
+        header('Content-Type: text/x-csv; charset=utf-8;');
+        header('Pragma: ');
+        header('Cache-Control: ');
+        $page->changeTpl('xnetgrp/annuaire-csv.tpl', NO_SKIN);
+        $page->assign('ann', $ann);
     }
 
     function handler_subscribe(&$page, $u = null)
