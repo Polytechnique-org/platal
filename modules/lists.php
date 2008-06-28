@@ -184,11 +184,22 @@ class ListsModule extends PLModule
         }
 
         // click on validate button 'add_member_sub'
+        require_once('user.func.inc.php');
         if (Post::has('add_member_sub') && Post::has('add_member')) {
-            require_once('user.func.inc.php');
-            $forlifes = get_users_forlife_list(Post::v('add_member'), true);
+            $forlifes = get_users_forlife_list(Post::v('add_member'), false);
             if (!is_null($forlifes)) {
                 $members = array_merge($members, $forlifes);
+            }
+        }
+        if (Post::has('add_member_sub') && isset($_FILES['add_member_file']) && $_FILES['add_member_file']['tmp_name']) {
+            $upload =& PlUpload::get($_FILES['add_member_file'], S::v('forlife'), 'list.addmember', true);
+            if (!$upload) {
+                $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
+            } else {
+                $forlifes = get_users_forlife_list($upload->getContents(), false);
+                if (!is_null($forlifes)) {
+                    $members = array_merge($members, $forlifes);
+                }
             }
         }
 
@@ -197,8 +208,8 @@ class ListsModule extends PLModule
         ksort($members);
         $members = array_unique($members);
 
-        $page->assign('owners', join(' ', $owners));
-        $page->assign('members', join(' ', $members));
+        $page->assign('owners', join("\n", $owners));
+        $page->assign('members', join("\n", $members));
 
         if (!Post::has('submit')) {
             return;
