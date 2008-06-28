@@ -31,6 +31,7 @@ Bug/Wish:
         - #813: Fix display of the sample mail refusal message             -JAC
         - #817: Automation of the management of associations' ML           -JAC
         - #839: Fix warning when adding an external address                -FRU
+        - #849: Don't list registrated user in unregistrated list          -FRU
         - Larger click target to toggle emails in the validation interface -ALK
 
     * Profile:
