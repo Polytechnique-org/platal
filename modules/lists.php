@@ -599,6 +599,23 @@ class ListsModule extends PLModule
             }
         }
 
+        if (isset($_FILES['add_member_file']) && $_FILES['add_member_file']['tmp_name']) {
+            $upload =& PlUpload::get($_FILES['add_member_file'], S::v('forlife'), 'list.addmember', true);
+            if (!$upload) {
+                $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
+            } else {
+                $members = get_users_forlife_list($upload->getContents(),
+                                                  false,
+                                                  array('ListsModule', 'no_login_callback'));
+                $arr = $this->client->mass_subscribe($liste, $members);
+                if (is_array($arr)) {
+                    foreach($arr as $addr) {
+                        $page->trigSuccess("{$addr[0]} inscrit.");
+                    }
+                }
+            }
+        }
+
         if (Env::has('del_member')) {
             if (strpos(Env::v('del_member'), '@') === false) {
                 $this->client->mass_unsubscribe(

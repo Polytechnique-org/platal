@@ -198,11 +198,15 @@ function get_users_forlife_list($members, $strict = false, $callback = '_default
         if (strlen(trim($members)) == 0) {
             return null;
         }
-        $members = explode(' ', $members);
+        $members = split("[; ,\r\n\|]+", $members);
     }
     if ($members) {
         $list = array();
         foreach ($members as $i => $alias) {
+            $alias = trim($alias);
+            if (empty($alias)) {
+                continue;
+            }
             if (($login = get_user_forlife($alias, $callback)) !== false) {
                 $list[$i] = $login;
             } else if(!$strict) {
