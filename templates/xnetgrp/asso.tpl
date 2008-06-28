@@ -86,6 +86,14 @@
     </td>
   </tr>
   {/if}
+
+  {if $is_admin && $requests}
+  <tr>
+    <td class="titre center" colspan="2">
+      <a href="{$platal->ns}subscribe/valid">{$requests} demande{if $requests gt 1}s{/if} d'inscription en attente</a>
+    </td>
+  </tr>
+  {/if}
 </table>
 
 <br />
