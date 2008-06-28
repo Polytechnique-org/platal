@@ -51,6 +51,7 @@ Bug/Wish:
         - #806: Unsubscribe from MLs when leaving the group                -FRU
         - #807: Notify groupes managers of unsubscriptions                 -FRU
         - #814: Group managers can change the visibility of the group      -FRU
+        - #823: Store the subscription requests                            -FRU
         - #824: Fix redirection when changing status of the user           -FRU
         - #846: Don't export users without a forlife in the vcard          -FRU
         - #847: Can export the directory as .csv file                      -FRU
