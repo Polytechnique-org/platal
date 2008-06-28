@@ -24,7 +24,7 @@
 {iterate from=$set item=p} 
   <div class="contact"> 
     <div class="nom"> 
-      {$p.nom} {$p.prenom} 
+      <span {if $p.name_tooltip}class="hinted" title="{$p.name_tooltip}"{/if}>{$p.name_display}</span>
     </div> 
     <div class="appli"> 
       X{$p.promo} 

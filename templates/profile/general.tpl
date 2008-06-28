@@ -54,7 +54,7 @@
       <span class="titre">Affichage de ton nom</span>
     </td>
     <td>
-      {if $tooltip_name}<span title="{$tooltip_name}" style="border-bottom: 1px dashed black;">{$display_name}</span>{else}{$display_name}{/if}
+      {if $tooltip_name}<span title="{$tooltip_name}" class="hint">{$display_name}</span>{else}{$display_name}{/if}
       <a href="profile/edit#names_advanced" onclick="$('#names_advanced').show();$(this).hide();document.location = document.location + '#names_advanced';return false">
         {icon name="page_edit" title="Plus de détail"}
       </a>

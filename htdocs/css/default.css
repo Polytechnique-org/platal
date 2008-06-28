@@ -107,6 +107,10 @@ p {
     background: inherit;
 }
 
+.hinted {
+    border-bottom: 1px dashed black;
+}
+
 input.error, textarea.error {
     background-color: #faa;
 }

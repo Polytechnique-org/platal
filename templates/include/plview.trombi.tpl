@@ -40,7 +40,7 @@
       {/if}
       <br />
       <a href="{$mainsiteurl}profile/{$p.forlife}" class="popup2">
-        {$p.prenom} {$p.nom}{if $trombi_with_promo} ({$p.promo}){/if}
+        <span {if $p.name_tooltip}class="hinted" title="{$p.name_tooltip}"{/if}>{$p.name_display}</span>{if $trombi_with_promo} ({$p.promo}){/if}
       </a>
     </td>
   {if $loop eq "3"}

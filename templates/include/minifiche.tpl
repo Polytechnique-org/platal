@@ -26,14 +26,14 @@
     {if $smarty.session.auth ge AUTH_COOKIE}
     <div class="photo">
       <img src="photo/{if $c.inscrit}{$c.forlife}{else}{make_forlife nom=$c.nom prenom=$c.prenom promo=$c.promo}{/if}"
-           alt="{$c.prenom} {$c.nom}" />
+           alt="{$c.name_display}" />
     </div>
     {/if}
 
     <div class="nom">
       {if $c.sexe}&bull;{/if}
       {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}<a href="profile/{if $c.inscrit}{$c.forlife}{else}{make_forlife nom=$c.nom prenom=$c.prenom promo=$c.promo}{/if}" class="popup2">{/if}
-      {if $c.nom_usage}{$c.nom_usage} {$c.prenom}<br />({$c.nom}){else}{$c.nom} {$c.prenom}{/if}
+      <span {if $c.name_tooltip}class="hinted" title="{$c.name_tooltip}"{/if}>{$c.name_display}</span>
       {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}</a>{/if}
     </div>
 

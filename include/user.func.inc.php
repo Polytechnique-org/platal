@@ -398,7 +398,8 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                        s.text AS section, p.x, p.y, p.pub AS photo_pub,
                        u.matricule_ax,
                        m.expertise != '' AS is_referent,
-                       (COUNT(e.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif
+                       (COUNT(e.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif,
+                       nd.display AS name_display, nd.tooltip AS name_tooltip
                  FROM  auth_user_md5   AS u
            INNER JOIN  auth_user_quick AS q  USING(user_id)
            INNER JOIN  aliases         AS a  ON (u.user_id=a.id AND a.type='a_vie')
@@ -409,6 +410,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
             LEFT JOIN  photo           AS p  ON (p.uid = u.user_id)
             LEFT JOIN  mentor          AS m  ON (m.uid = u.user_id)
             LEFT JOIN  emails          AS e  ON (e.uid = u.user_id AND e.flags='active')
+           INNER JOIN  profile_names_display AS nd ON (nd.user_id = u.user_id)
                 WHERE  a.alias = {?}
              GROUP BY  u.user_id";
     $res  = XDB::query($reqsql, $from_uid, $login);

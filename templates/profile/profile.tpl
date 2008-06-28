@@ -72,7 +72,7 @@ function chgMainWinLoc(strPage)
   <div id="fiche_identite" class="part">
     <div class="civilite">
       {if $x.sexe}&bull;{/if}
-      {$x.prenom} {if $x.nom_usage eq ""}{$x.nom}{else}{$x.nom_usage} ({$x.nom}){/if}
+      <span {if $x.name_tooltip neq ""}class="hinted" title="{$x.name_tooltip}"{/if}>{$x.name_display}</span>
       {if $logged}
       {if $x.nickname} (alias {$x.nickname}){/if}
       {/if}
