@@ -186,7 +186,7 @@ class ListsModule extends PLModule
         // click on validate button 'add_member_sub'
         require_once('user.func.inc.php');
         if (Post::has('add_member_sub') && Post::has('add_member')) {
-            $forlifes = get_users_forlife_list(Post::v('add_member'), false);
+            $forlifes = get_users_forlife_list(Post::v('add_member'), true);
             if (!is_null($forlifes)) {
                 $members = array_merge($members, $forlifes);
             }
@@ -196,7 +196,7 @@ class ListsModule extends PLModule
             if (!$upload) {
                 $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
             } else {
-                $forlifes = get_users_forlife_list($upload->getContents(), false);
+                $forlifes = get_users_forlife_list($upload->getContents(), true);
                 if (!is_null($forlifes)) {
                     $members = array_merge($members, $forlifes);
                 }
