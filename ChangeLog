@@ -25,6 +25,7 @@ Bug/Wish:
         - #844: Uses INT in MySQL to store user ids                        -VZA
 
     * Lists:
+        - #756: Can build the list of members from a file                  -FRU
         - #761: Fix user comment in moderation mail sent by mailman        -FRU
         - #810: Fix encoding of admin pages                                -FRU
         - #813: Fix display of the sample mail refusal message             -JAC
