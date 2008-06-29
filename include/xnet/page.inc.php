@@ -125,13 +125,13 @@ class XnetPage extends PlatalPage
             }
             if (S::has_perms()) {
                 $sub['gérer les groupes'] = array('href' => 'admin', 'style' => 'color: gray;');
-                $sub['clear cache'] = array('href' => 'purge_cache', 'style' => 'color: gray;');
+                $sub['clear cache'] = array('href' => 'purge_cache?token=' . S::v('xsrf_token'), 'style' => 'color: gray;');
             }
             $menu['Administrer'] = $sub;
         } elseif (S::has_perms()) {
             $sub = array();
             $sub['gérer les groupes'] = 'admin';
-            $sub['clear cache'] = 'purge_cache';
+            $sub['clear cache'] = 'purge_cache?token=' . S::v('xsrf_token');
             $menu['Administrer'] = $sub;
         }
 
