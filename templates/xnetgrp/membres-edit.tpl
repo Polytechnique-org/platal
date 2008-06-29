@@ -57,6 +57,7 @@
 </h2>
 
 <form method="post" action="{$platal->ns}member/{$platal->argv[1]}">
+  {xsrf_token_field}
   <table cellpadding="0" cellspacing="0" class='tinybicol'>
     <tr class="pair">
       <td class="titre">

@@ -43,6 +43,7 @@ masculin ou féminin, par son prénom, ou son nom.
 //]]></script>
  
 <form action="{$platal->ns}mail" method="post" enctype="multipart/form-data">
+  {xsrf_token_field}
   <table class='bicol'>
     <tr>
       <th colspan="2">Écrire un mail&nbsp;:</th>

@@ -36,6 +36,7 @@
 {/if}
 
 <form action="{$platal->ns}subscribe/{$u}" method="post">
+  {xsrf_token_field}
   <table class="bicol">
     <tr>
       <td>Raison (en cas de refus)&nbsp;:</td>
@@ -71,6 +72,7 @@ formulaire ci-dessous. Vérifie et corrige au besoin les différents champs, pui
 [&nbsp;M'inscrire&nbsp;!&nbsp;].
 </p>
 <form action="{$platal->ns}subscribe" method="post">
+  {xsrf_token_field}
   <p class="descr">
   <strong>OUI, je souhaite être inscrit au groupe {$asso.nom}.</strong>
   </p>

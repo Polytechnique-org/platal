@@ -312,6 +312,7 @@ class XnetGrpModule extends PLModule
         $page->addJsLink('ajax.js');
 
         if (Post::has('send')) {
+            S::assert_xsrf_token();
             $from  = Post::v('from');
             $sujet = Post::v('sujet');
             $body  = Post::v('body');
@@ -571,14 +572,14 @@ class XnetGrpModule extends PLModule
                     $this->removeSubscriptionRequest($uid);
                     $page->kill("$prenom $nom est déjà membre du groupe !");
                     return;
-                }
-                elseif (Env::has('accept'))
-                {
+                } elseif (Env::has('accept')) {
+                    S::assert_xsrf_token();
+
                     $this->validSubscription($nom, $prenom, $sexe, $uid, $u);
                     pl_redirect("member/$u");
-                }
-                elseif (Env::has('refuse'))
-                {
+                } elseif (Env::has('refuse')) {
+                    S::assert_xsrf_token();
+
                     $this->removeSubscriptionRequest($uid);
                     $mailer = new PlMailer();
                     $mailer->addTo("$u@polytechnique.org");
@@ -616,6 +617,8 @@ class XnetGrpModule extends PLModule
         }
 
         if (Post::has('inscrire')) {
+            S::assert_xsrf_token();
+
             XDB::execute("INSERT INTO  groupex.membres_sub_requests (asso_id, uid, ts, reason)
                                VALUES  ({?}, {?}, NOW(), {?})",
                          $globals->asso('id'), S::i('uid'), Post::v('message'));
@@ -782,6 +785,8 @@ class XnetGrpModule extends PLModule
 
         if (is_null($email)) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         if (strpos($email, '@') === false) {
@@ -950,6 +955,8 @@ class XnetGrpModule extends PLModule
 
         if (!Post::has('confirm')) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         if ($this->unsubscribe($user)) {
@@ -971,6 +978,8 @@ class XnetGrpModule extends PLModule
 
         if (!Post::has('confirm')) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         if ($this->unsubscribe($user)) {
@@ -1064,6 +1073,8 @@ class XnetGrpModule extends PLModule
                              $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
+            S::assert_xsrf_token();
+
             // Convert user status to X
             if ($user['origine'] == 'ext' && trim(Post::v('login_X'))) {
                 $forlife = $this->changeLogin($page, $user, $mmlist, trim(Post::v('login_X')));
@@ -1248,6 +1259,8 @@ class XnetGrpModule extends PLModule
 
         if (Post::v('valid') == 'Visualiser' || Post::v('valid') == 'Enregistrer'
             || Post::v('valid') == 'Supprimer l\'image' || Post::v('valid') == 'Pas d\'image') {
+            S::assert_xsrf_token();
+
             if (!is_null($aid)) {
                 $art['id'] = $aid;
             }
@@ -1411,6 +1424,7 @@ class XnetGrpModule extends PLModule
         $page->changeTpl('xnetgrp/announce-admin.tpl');
 
         if (Env::has('del')) {
+            S::assert_xsrf_token();
             XDB::execute("DELETE  FROM groupex.announces
                            WHERE  id = {?} AND asso_id = {?}",
                          Env::i('del'), $globals->asso('id'));
