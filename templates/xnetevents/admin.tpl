@@ -178,7 +178,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
     {/if}
   </tr>
   {/foreach}
-  {if $is_admin && $evt.money}
+  {if $is_admin && $evt.money && $tout}
   <tr>
     {assign var=cols value=$moments|@count}
     <td colspan="{$cols+3}" class="right"><strong>Total</strong></td>
@@ -225,7 +225,9 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
 {if $is_admin}
 
 <p class="descr">
-[<a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">Télécharger le fichier Excel</a>]
+  <a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">
+    {icon name=page_excel title="Télécharger au format Excel"} Télécharger le fichier Excel
+  </a>
 </p>
 
 <hr />
