@@ -151,6 +151,8 @@ class PlWizard
 
         // Process the previous page
         if (Post::has('valid_page')) {
+            S::assert_xsrf_token();
+
             $page = $this->getPage(Post::i('valid_page'));
             $curpage = Post::i('valid_page');
             $next = $page->process();

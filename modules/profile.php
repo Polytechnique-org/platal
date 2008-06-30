@@ -133,6 +133,8 @@ class ProfileModule extends PLModule
                     .'/'.S::v('forlife').'.jpg';
 
         if (Env::has('upload')) {
+            S::assert_xsrf_token();
+
             $upload = new PlUpload(S::v('forlife'), 'photo');
             if (!$upload->upload($_FILES['userfile']) && !$upload->download(Env::v('photo'))) {
                 $page->trigError('Une erreur est survenue lors du téléchargement du fichier');
@@ -143,6 +145,8 @@ class ProfileModule extends PLModule
                 }
             }
         } elseif (Env::has('trombi')) {
+            S::assert_xsrf_token();
+
             $upload = new PlUpload(S::v('forlife'), 'photo');
             if ($upload->copyFrom($trombi_x)) {
                 $myphoto = new PhotoReq(S::v('uid'), $upload);
@@ -152,6 +156,8 @@ class ProfileModule extends PLModule
                 }
             }
         } elseif (Env::v('suppr')) {
+            S::assert_xsrf_token();
+
             XDB::execute('DELETE FROM  photo
                                 WHERE  uid = {?}',
                          S::v('uid'));
@@ -160,6 +166,8 @@ class ProfileModule extends PLModule
                          S::v('uid'));
             update_NbValid();
         } elseif (Env::v('cancel')) {
+            S::assert_xsrf_token();
+
             $sql = XDB::query('DELETE FROM  requests
                                      WHERE  user_id={?} AND type="photo"',
                               S::v('uid'));
@@ -460,6 +468,8 @@ class ProfileModule extends PLModule
 
         if (!Env::has('promo_sortie')) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         $promo_sortie = Env::i('promo_sortie');
@@ -663,6 +673,8 @@ class ProfileModule extends PLModule
         $page->assign('usage_req', $nom_usage);
 
         if (Env::has('submit') && ($nom_usage != $usage_old)) {
+            S::assert_xsrf_token();
+
             // on vient de recevoir une requete, differente de l'ancien nom d'usage
             if ($nom_usage == $nom) {
                 $page->assign('same', true);
@@ -723,7 +735,6 @@ class ProfileModule extends PLModule
         list($forlife, $promo) = $q->fetchOneRow();
 
         switch ($action) {
-
             case "original":
                 header("Content-type: image/jpeg");
         	readfile("/home/web/trombino/photos".$promo."/".$forlife.".jpg");
@@ -731,6 +742,8 @@ class ProfileModule extends PLModule
         	break;
 
             case "new":
+                S::assert_xsrf_token();
+
                 $data = file_get_contents($_FILES['userfile']['tmp_name']);
             	list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
             	$mimetype = substr($_FILES['userfile']['type'], 6);
@@ -741,6 +754,8 @@ class ProfileModule extends PLModule
             	break;
 
             case "delete":
+                S::assert_xsrf_token();
+
                 XDB::execute('DELETE FROM photo WHERE uid = {?}', $uid);
                 break;
         }
