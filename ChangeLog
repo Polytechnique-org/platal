@@ -23,6 +23,7 @@ Bug/Wish:
         - Fix email sending, correcting bugs introduced in r1897           -VZA
         - #841: Improves contrast of links in legends in skin 'Espace'     -FRU
         - #844: Uses INT in MySQL to store user ids                        -VZA
+        - #851: Adds a direct link to GApps for gapps-active users         -VZA
 
     * Lists:
         - #756: Can build the list of members from a file                  -FRU
