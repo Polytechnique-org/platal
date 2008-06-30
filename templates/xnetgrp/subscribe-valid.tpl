@@ -20,33 +20,51 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<h1>{$asso.nom}&nbsp;: Validation des inscriptions</h1>
 
-<h1>
-  Gestion du trombino
-</h1>
+<script type="text/javascript">//<![CDATA[
+{literal}
+  var toggleState = false;
+  function toggleSelection()
+  {
+    toggleState = !toggleState;
+    var boxes = $(':checkbox.select_sub');
+    if (toggleState) {
+      boxes.attr("checked", "checked");
+    } else {
+      boxes.removeAttr("checked");
+    }
+    return true;
+  }
+{/literal}
+//]]></script>
 
-<p>
-Photo actuelle de {$forlife}
-</p>
+<form action="{$platal->ns}subscribe/valid" method="post">
+  <table class="tinybicol">
+    <tr>
+      <th><a href="javascript:toggleSelection()">{icon name="arrow_refresh" title="Inverser la sélection"}</a></th> 
+      <th>Prénom Nom</th>
+      <th>Date de demande</th>
+      <th></th>
+    </tr>
+    {iterate from=$valid item=user}
+    <tr>
+      <td><input type="checkbox" name="subs[{$user.forlife}]" value="1" class="select_sub" /></td>
+      <td><a href="profile/{$user.forlife}" class="popup2">{$user.prenom} {$user.nom} (X{$user.promo})</a></td>
+      <td>{$user.date|date_format}</td>
+      <td><a href="{$platal->ns}subscribe/{$user.forlife}">{icon name=magnifier title="Détails"}</a></td>
+    </tr>
+    {/iterate}
+  </table>
 
-<img src="photo/{$forlife}" alt="[ PHOTO ]" />
-<br />
+  <div class="center">
+    {xsrf_token_field}
+    <input type="submit" name="valid" value="Accepter" />
+  </div>
 
-<p>
-<a href="admin/trombino/{$uid}/delete?token={xsrf_token}">Supprimer cette photo</a>
-</p>
-
-<p>
-<a href="admin/trombino/{$uid}/original">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
-</p>
-
-<form action="admin/trombino/{$uid}/new" method="post" enctype="multipart/form-data">
-  {xsrf_token_field}
   <div>
-    <input name="userfile" type="file" size="20" maxlength="150" />
-    <input type="submit" value="Envoyer" />
+    Pour voir le détail sur une demande, clique sur le lien {icon name=magnifier title="Détails"}.<br />
+    Pour refuser une demande, tu dois aller consulter les détails et remplir la raison du refus.
   </div>
 </form>
-
-
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

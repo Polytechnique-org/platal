@@ -47,7 +47,7 @@
 </p>
 
 <h2>
-  Édition du profil de {$user.prenom} {$user.nom}
+  Édition du profil de {if "`$user.prenom` `$user.nom`"|trim}{$user.prenom} {$user.nom}{else}{$user.email}{/if}
   {if $user.origine eq 'X'}
   (X{$user.promo})
   <a href="https://www.polytechnique.org/profile/{$user.alias}">{icon name=user_suit title="fiche"}</a>
@@ -57,6 +57,7 @@
 </h2>
 
 <form method="post" action="{$platal->ns}member/{$platal->argv[1]}">
+  {xsrf_token_field}
   <table cellpadding="0" cellspacing="0" class='tinybicol'>
     <tr class="pair">
       <td class="titre">

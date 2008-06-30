@@ -53,7 +53,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
                             LEFT JOIN auth_user_md5   AS u  ON(m2.origine = "X" AND m2.uid = u.user_id)
                                 WHERE m1.email={?}', $globals->asso('id'), $mem);
             if (list($uid, $prenom, $nom, $promo) = $res->fetchOneRow()) {
-                $key = $tri_promo ? ($promo != 'non-X' ? $promo : 0) : strtoupper($nom{0});
+                $key = $tri_promo ? ($promo != 'non-X' ? $promo : 0) : strtoupper(@$nom{0});
                 if ($tri_promo) {
                     $promo = null;
                 }

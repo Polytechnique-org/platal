@@ -42,6 +42,7 @@ function visibilityChange(box)
 {/if}
 
 <form method="post" action="{$platal->ns}announce/{if $new}new{else}edit/{$art.id}{/if}" enctype="multipart/form-data">
+{xsrf_token_field}
 <div>
   <table class="bicol">
     <tr>

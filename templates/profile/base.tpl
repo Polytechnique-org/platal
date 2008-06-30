@@ -21,6 +21,7 @@
 {**************************************************************************}
 
 <form action="{$wiz_baseurl}/{$lookup[$current]}" method="post" id="prof_annu">
+  {xsrf_token_field}
   <div>
     {icon name=information title="Voir ma fiche"} Tu peux consulter ta fiche telle que la
     voient <a class="popup2" href="profile/{$smarty.session.forlife}?view=public">n'importe quel internaute</a>,

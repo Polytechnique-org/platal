@@ -37,7 +37,7 @@ moins 4 polytechniciens inscrits sur le site, et de fournir les informations sui
 liste&nbsp;:
 </p>
 
-<form action='lists/create' method='post'>
+<form action='lists/create' method='post' enctype="multipart/form-data">
   <table class='bicol' cellspacing='0' cellpadding='2'>
     <tr>
       <th colspan='5'>Caractéristiques de la liste</th>
@@ -166,13 +166,17 @@ liste&nbsp;:
         <input type='hidden' name='members' value='{$members}' />
         {$members|nl2br|default:"<span class='erreur'>pas de membres</span>"}
         <br />
-        <input type='text' name='add_member' />
+        <input type='text' name='add_member' /><br />
+        <input type="file" name="add_member_file" /><br />
         <input type='submit' name='add_member_sub' value='Ajouter' />
       </td>
     </tr>
     <tr>
       <td colspan='5'>
-        <small>Tu peux entrer une liste de membres en entrant plusieurs adresses séparées par des espaces.</small>
+        <small>
+          Tu peux entrer une liste de membres en entrant plusieurs adresses séparées par des espaces, des virgules ou des point-virgules.
+          Tu peux aussi fournir un fichier avec une adresse email par ligne.
+        </small>
       </td>
     </tr>
   </table>

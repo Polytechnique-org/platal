@@ -41,6 +41,7 @@
 <br />
 
 <form action="profile/orange" method="post">
+  {xsrf_token_field}
   <table class="bicol" cellpadding="4" summary="Année de sortie">
     <tr>
       <th>Année de sortie</th>

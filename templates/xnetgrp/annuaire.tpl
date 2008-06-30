@@ -117,7 +117,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
     {if $m.comm}
     <td>{$m.comm}</td>
     {/if}
-    <td class="center" {if !$m.comm}colspan="2"{/if}>
+    <td class="right" {if !$m.comm}colspan="2"{/if}>
       {if $m.inscrit}
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="[vcard]"}</a>
       <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="mail"}</a>
