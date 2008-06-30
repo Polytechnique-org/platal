@@ -34,7 +34,7 @@ function get_infos($email)
     }
 
     $res = XDB::query(
-            "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine, sexe
+            "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine, comm, sexe
                FROM  groupex.membres
               WHERE  $field = {?} AND asso_id = {?}", $email, $globals->asso('id'));
 
@@ -54,7 +54,7 @@ function get_infos($email)
                          u.prenom, b.alias,
                          CONCAT(b.alias, '@m4x.org') AS email,
                          CONCAT(b.alias, '@polytechnique.org') AS email2,
-                         m.perms = 'admin' AS perms, m.origine,
+                         m.perms = 'admin' AS perms, m.origine, m.comm,
                          FIND_IN_SET('femme', u.flags) AS sexe
                    FROM  auth_user_md5   AS u
              INNER JOIN  aliases         AS a ON ( u.user_id = a.id AND a.type != 'homonyme' )
@@ -82,9 +82,11 @@ class XnetGrpModule extends PLModule
             '%grp/forum'          => $this->make_hook('forum',     AUTH_MDP, 'groupmember'),
             '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP, 'groupannu'),
             '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP, 'groupmember:groupannu'),
+            '%grp/annuaire/csv'   => $this->make_hook('csv',       AUTH_MDP, 'groupmember:groupannu'),
             '%grp/trombi'         => $this->make_hook('trombi',    AUTH_MDP, 'groupannu'),
             '%grp/geoloc'         => $this->make_hook('geoloc',    AUTH_MDP, 'groupannu'),
             '%grp/subscribe'      => $this->make_hook('subscribe', AUTH_MDP),
+            '%grp/subscribe/valid' => $this->make_hook('subscribe_valid', AUTH_MDP, 'groupadmin'),
             '%grp/unsubscribe'    => $this->make_hook('unsubscribe', AUTH_MDP, 'groupmember'),
 
             '%grp/change_rights'  => $this->make_hook('change_rights', AUTH_MDP),
@@ -163,6 +165,13 @@ class XnetGrpModule extends PLModule
                                     WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
                                           AND FIND_IN_SET('public', u.flags)",
                                   $globals->asso('id'));
+        }
+        if (may_update()) {
+            $subs_valid = XDB::query("SELECT  uid
+                                        FROM  groupex.membres_sub_requests
+                                       WHERE  asso_id = {?}",
+                                     $globals->asso('id'));
+            $page->assign('requests', $subs_valid->numRows());
         }
 
         if (!S::has('core_rss_hash')) {
@@ -303,6 +312,7 @@ class XnetGrpModule extends PLModule
         $page->addJsLink('ajax.js');
 
         if (Post::has('send')) {
+            S::assert_xsrf_token();
             $from  = Post::v('from');
             $sujet = Post::v('sujet');
             $body  = Post::v('body');
@@ -438,6 +448,7 @@ class XnetGrpModule extends PLModule
                            m.perms='admin' AS admin,
                            m.origine='X' AS x,
                            u.perms!='pending' AS inscrit,
+                           m.comm as comm,
                            m.uid, IF(e.email IS NULL AND FIND_IN_SET('googleapps', u.mail_storage) = 0, NULL, 1) AS actif
                      FROM  groupex.membres AS m
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
@@ -472,6 +483,66 @@ class XnetGrpModule extends PLModule
         $vcard->do_page($page);
     }
 
+    function handler_csv(&$page, $filename = null)
+    {
+        global $globals;
+        if (is_null($filename)) {
+            $filename = $globals->asso('diminutif') . '.csv';
+        }
+        $ann = XDB::iterator(
+                  "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
+                           IF(m.origine='X',u.prenom,m.prenom) AS prenom,
+                           IF(m.origine='X', u.promo, IF(m.origine='ext', 'extérieur', 'personne morale')) AS promo,
+                           IF(m.origine='X' AND u.perms != 'pending',CONCAT(a.alias, '@', {?}), m.email) AS email,
+                           IF(m.origine='X',FIND_IN_SET('femme', u.flags), m.sexe) AS femme,
+                           m.comm as comm
+                     FROM  groupex.membres AS m
+                LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
+                LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type = 'a_vie' )
+                    WHERE  m.asso_id = {?}
+                           AND (m.origine != 'X' OR u.perms != 'pending' OR m.email IS NOT NULL)
+                 GROUP BY  m.uid
+                 ORDER BY  nom, prenom",
+                 $globals->mail->domain, $globals->asso('id'));
+        header('Content-Type: text/x-csv; charset=utf-8;');
+        header('Pragma: ');
+        header('Cache-Control: ');
+        $page->changeTpl('xnetgrp/annuaire-csv.tpl', NO_SKIN);
+        $page->assign('ann', $ann);
+    }
+
+    private function removeSubscriptionRequest($uid)
+    {
+        global $globals;
+        XDB::execute("DELETE FROM groupex.membres_sub_requests
+                            WHERE asso_id = {?} AND uid = {?}",
+                     $globals->asso('id'), $uid);
+    }
+
+    private function validSubscription($nom, $prenom, $sexe, $uid, $forlife)
+    {
+        global $globals;
+        $this->removeSubscriptionRequest($uid);
+        XDB::execute("INSERT INTO  groupex.membres (asso_id, uid)
+                           VALUES  ({?}, {?})",
+                     $globals->asso('id'), $uid);
+        $mailer = new PlMailer();
+        $mailer->addTo("$forlife@polytechnique.org");
+        $mailer->setFrom('"' . S::v('prenom') . ' ' . S::v('nom')
+                         . '" <' . S::v('forlife') . '@polytechnique.org>');
+        $mailer->setSubject('[' . $globals->asso('nom') . '] Demande d\'inscription');
+        $message = ($sexe ? 'Chère' : 'Cher') . " Camarade,\n"
+                 . "\n"
+                 . "  Suite à ta demande d'adhésion à " . $globals->asso('nom') . ",\n"
+                 . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
+                 . "\n"
+                 . "Bien cordialement,\n"
+                 . "-- \n"
+                 . S::s('prenom') . ' ' . S::s('nom') . '.';
+        $mailer->setTxtBody($message);
+        $mailer->send();
+    }
+
     function handler_subscribe(&$page, $u = null)
     {
         global $globals;
@@ -484,12 +555,13 @@ class XnetGrpModule extends PLModule
 
         if (!is_null($u) && may_update()) {
             $page->assign('u', $u);
-            $res = XDB::query("SELECT  u.nom, u.prenom, u.promo, u.user_id, FIND_IN_SET('femme', u.flags)
+            $res = XDB::query("SELECT  u.nom, u.prenom, u.promo, u.user_id, FIND_IN_SET('femme', u.flags), s.reason
                                  FROM  auth_user_md5 AS u
                            INNER JOIN  aliases AS al ON (al.id = u.user_id AND al.type != 'liste')
-                                WHERE  al.alias = {?}", $u);
+                            LEFT JOIN  groupex.membres_sub_requests AS s ON (u.user_id = s.uid AND s.asso_id = {?})
+                                WHERE  al.alias = {?}", $globals->asso('id'), $u);
 
-            if (list($nom, $prenom, $promo, $uid, $sexe) = $res->fetchOneRow()) {
+            if (list($nom, $prenom, $promo, $uid, $sexe, $reason) = $res->fetchOneRow()) {
                 $res = XDB::query("SELECT  COUNT(*)
                                      FROM  groupex.membres AS m
                                INNER JOIN  aliases  AS a ON (m.uid = a.id AND a.type != 'homonyme')
@@ -497,33 +569,18 @@ class XnetGrpModule extends PLModule
                                   $u, $globals->asso('id'));
                 $n   = $res->fetchOneCell();
                 if ($n) {
+                    $this->removeSubscriptionRequest($uid);
                     $page->kill("$prenom $nom est déjà membre du groupe !");
                     return;
-                }
-                elseif (Env::has('accept'))
-                {
-                    XDB::execute("INSERT INTO  groupex.membres (asso_id, uid)
-                                       VALUES  ({?}, {?})",
-                                            $globals->asso('id'), $uid);
-                    $mailer = new PlMailer();
-                    $mailer->addTo("$u@polytechnique.org");
-                    $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
-                                     .'" <'.S::v('forlife').'@polytechnique.org>');
-                    $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription');
-                    $message = ($sexe ? 'Chère' : 'Cher') . " Camarade,\n"
-                             . "\n"
-                             . "  Suite à ta demande d'adhésion à ".$globals->asso('nom').",\n"
-                             . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
-                             . "\n"
-                             . "Bien cordialement,\n"
-                             . "-- \n"
-                             . "{$_SESSION["prenom"]} {$_SESSION["nom"]}.";
-                    $mailer->setTxtBody($message);
-                    $mailer->send();
+                } elseif (Env::has('accept')) {
+                    S::assert_xsrf_token();
+
+                    $this->validSubscription($nom, $prenom, $sexe, $uid, $u);
                     pl_redirect("member/$u");
-                }
-                elseif (Env::has('refuse'))
-                {
+                } elseif (Env::has('refuse')) {
+                    S::assert_xsrf_token();
+
+                    $this->removeSubscriptionRequest($uid);
                     $mailer = new PlMailer();
                     $mailer->addTo("$u@polytechnique.org");
                     $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
@@ -538,6 +595,7 @@ class XnetGrpModule extends PLModule
                     $page->assign('nom', $nom);
                     $page->assign('promo', $promo);
                     $page->assign('uid', $uid);
+                    $page->assign('reason', $reason);
                 }
                 return;
             }
@@ -549,15 +607,29 @@ class XnetGrpModule extends PLModule
             return;
         }
 
+        $res = XDB::query("SELECT  uid
+                             FROM  groupex.membres_sub_requests
+                            WHERE  uid = {?} AND asso_id = {?}",
+                         S::i('uid'), $globals->asso('id'));
+        if ($res->numRows() != 0) {
+            $page->kill("Tu as déjà demandé ton inscription à ce groupe. Cette demande est actuellement en attente de validation.");
+            return;
+        }
+
         if (Post::has('inscrire')) {
+            S::assert_xsrf_token();
+
+            XDB::execute("INSERT INTO  groupex.membres_sub_requests (asso_id, uid, ts, reason)
+                               VALUES  ({?}, {?}, NOW(), {?})",
+                         $globals->asso('id'), S::i('uid'), Post::v('message'));
             $res = XDB::query('SELECT  IF(m.email IS NULL,
-                                                    CONCAT(al.alias,"@polytechnique.org"),
-                                                    m.email)
-                                           FROM  groupex.membres AS m
-                                     INNER JOIN  aliases         AS al ON (al.type = "a_vie"
-                                                                           AND al.id = m.uid)
-                                          WHERE  perms="admin" AND m.asso_id = {?}',
-                                         $globals->asso('id'));
+                                          CONCAT(al.alias,"@polytechnique.org"),
+                                           m.email)
+                                 FROM  groupex.membres AS m
+                           INNER JOIN  aliases         AS al ON (al.type = "a_vie"
+                                                                 AND al.id = m.uid)
+                                WHERE  perms="admin" AND m.asso_id = {?}',
+                             $globals->asso('id'));
             $emails = $res->fetchColumn();
             $to     = implode(',', $emails);
 
@@ -590,6 +662,45 @@ class XnetGrpModule extends PLModule
             $mailer->setTxtBody(Post::v('message').$append);
             $mailer->send();
         }
+    }
+
+    function handler_subscribe_valid(&$page)
+    {
+        global $globals;
+
+        if (Post::has('valid')) {
+            S::assert_xsrf_token();
+            $subs = Post::v('subs');
+            if (is_array($subs)) {
+                $users = array();
+                foreach ($subs as $forlife => $val) {
+                    if ($val == '1') {
+                        $res = XDB::query("SELECT  IF(u.nom_usage != '', u.nom_usage, u.nom) AS u,
+                                                   u.prenom, FIND_IN_SET('femme', u.flags) AS sexe,
+                                                   u.user_id
+                                             FROM  auth_user_md5 AS u
+                                       INNER JOIN  aliases AS a ON (a.id = u.user_id)
+                                            WHERE  a.alias = {?}", $forlife);
+                        if ($res->numRows() == 1) {
+                            list($nom, $prenom, $sexe, $uid) = $res->fetchOneRow();
+                            $this->validSubscription($nom, $prenom, $sexe, $uid, $forlife);
+                        }
+                    }
+                }
+            }
+        }
+
+        $it = XDB::iterator("SELECT  IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
+                                     u.prenom, u.promo, a.alias AS forlife, s.ts AS date
+                               FROM  groupex.membres_sub_requests AS s
+                         INNER JOIN  auth_user_md5 AS u ON (s.uid = u.user_id)
+                         INNER JOIN  aliases AS a ON (a.id = s.uid AND a.type = 'a_vie')
+                              WHERE  asso_id = {?}
+                           ORDER BY  nom, prenom",
+                           $globals->asso('id'));
+
+        $page->changeTpl('xnetgrp/subscribe-valid.tpl');
+        $page->assign('valid', $it);
     }
 
     function handler_change_rights(&$page)
@@ -675,6 +786,8 @@ class XnetGrpModule extends PLModule
 
         if (is_null($email)) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         if (strpos($email, '@') === false) {
@@ -717,6 +830,7 @@ class XnetGrpModule extends PLModule
                         XDB::execute('INSERT INTO groupex.membres (uid, asso_id, origine, email)
                                            VALUES ({?}, {?}, "X", {?})',
                                      $uid, $globals->asso('id'), $email);
+                        $this->removeSubscriptionRequest($uid);
                         pl_redirect("member/$email");
                     }
                     $page->trigError("Utilisateur invalide");
@@ -841,6 +955,8 @@ class XnetGrpModule extends PLModule
 
         if (!Post::has('confirm')) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         if ($this->unsubscribe($user)) {
@@ -862,6 +978,8 @@ class XnetGrpModule extends PLModule
 
         if (!Post::has('confirm')) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         if ($this->unsubscribe($user)) {
@@ -955,6 +1073,8 @@ class XnetGrpModule extends PLModule
                              $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
+            S::assert_xsrf_token();
+
             // Convert user status to X
             if ($user['origine'] == 'ext' && trim(Post::v('login_X'))) {
                 $forlife = $this->changeLogin($page, $user, $mmlist, trim(Post::v('login_X')));
@@ -975,20 +1095,29 @@ class XnetGrpModule extends PLModule
                                SET prenom={?}, nom={?}, email={?}, sexe={?}, origine={?}
                              WHERE uid={?} AND asso_id={?}',
                            $user['prenom'], $user['nom'], Post::v('email'),
-                           $user['sexe'], $user['origine'], $user['uid'],
-                           $globals->asso('id'));
+                           $user['sexe'], $user['origine'],
+                           $user['uid'], $globals->asso('id'));
                 $user['email']   = Post::v('email');
                 $user['email2']  = Post::v('email');
+                $page->trigSuccess('Données de l\'utilisateur mise à jour.');
             }
 
             $perms = Post::i('is_admin');
-            if ($user['perms'] != $perms) {
-                XDB::query('UPDATE groupex.membres SET perms={?}
+            $comm  = trim(Post::s('comm'));
+            if ($user['perms'] != $perms || $user['comm'] != $comm) {
+                XDB::query('UPDATE groupex.membres
+                               SET perms={?}, comm={?}
                              WHERE uid={?} AND asso_id={?}',
-                            $perms ? 'admin' : 'membre',
+                            $perms ? 'admin' : 'membre', $comm,
                             $user['uid'], $globals->asso('id'));
+                if ($perms != $user['perms']) {
+                    $page->trigSuccess('Permissions modifiées !');
+                }
+                if ($comm != $user['comm']) {
+                    $page->trigSuccess('Commentaire mis à jour.');
+                }
                 $user['perms'] = $perms;
-                $page->trigSuccess('Permissions modifiées !');
+                $user['comm'] = $comm;
             }
 
             // Update ML subscriptions
@@ -1039,7 +1168,6 @@ class XnetGrpModule extends PLModule
         }
 
         $page->assign('user', $user);
-        echo $user['email2'];
         $listes = $mmlist->get_lists($user['email2']);
         $page->assign('listes', $listes);
 
@@ -1131,6 +1259,8 @@ class XnetGrpModule extends PLModule
 
         if (Post::v('valid') == 'Visualiser' || Post::v('valid') == 'Enregistrer'
             || Post::v('valid') == 'Supprimer l\'image' || Post::v('valid') == 'Pas d\'image') {
+            S::assert_xsrf_token();
+
             if (!is_null($aid)) {
                 $art['id'] = $aid;
             }
@@ -1294,6 +1424,7 @@ class XnetGrpModule extends PLModule
         $page->changeTpl('xnetgrp/announce-admin.tpl');
 
         if (Env::has('del')) {
+            S::assert_xsrf_token();
             XDB::execute("DELETE  FROM groupex.announces
                            WHERE  id = {?} AND asso_id = {?}",
                          Env::i('del'), $globals->asso('id'));

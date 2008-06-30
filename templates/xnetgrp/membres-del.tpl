@@ -40,6 +40,7 @@
 
 
 <form method="post" action="{$platal->pl_self()}">
+  {xsrf_token_field}
   <div class="center">
     <p class="descr">
     {if $self}

@@ -25,18 +25,37 @@
 {if $u && $is_admin && $show_form}
 
 <h2>
-  Demande de la part de&nbsp;: {$prenom} {$nom} (X{$promo})
-  <a href="https://www.polytechnique.org/profile/{$u}">Voir sa fiche</a>
+  Demande de la part de&nbsp;: <a href="profile/{$u}" class="popup2">{$prenom} {$nom} (X{$promo})</a>
 </h2>
+
+{if $reason}
+<fieldset>
+  <legend>Motif de la demande</legend>
+  {$reason|nl2br}
+</fieldset>
+{/if}
+
 <form action="{$platal->ns}subscribe/{$u}" method="post">
-  <input type="submit" value="Accepter" name="accept" />
-  <br />
-  ou bien
-  <br />
-  <input type="submit" value="Refuser avec le motif ci-dessous" name="refuse" />
-  <textarea cols="70" rows="8" name="motif"></textarea>
-  <br />
+  {xsrf_token_field}
+  <table class="bicol">
+    <tr>
+      <td>Raison (en cas de refus)&nbsp;:</td>
+    </tr>
+    <tr>
+      <td>
+        <textarea cols="70" rows="8" name="motif"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td class="center">
+        <input type="submit" value="Accepter" name="accept" />
+        <input type="submit" value="Refuser" name="refuse" />
+      </td>
+    </tr>
+  </table>
 </form>
+
+<div><a href="{$platal->ns}/subscribe/valid">Revenir à la liste des validations en attente</a></div>
 
 {elseif $smarty.post.inscrire}
 
@@ -53,6 +72,7 @@ formulaire ci-dessous. Vérifie et corrige au besoin les différents champs, pui
 [&nbsp;M'inscrire&nbsp;!&nbsp;].
 </p>
 <form action="{$platal->ns}subscribe" method="post">
+  {xsrf_token_field}
   <p class="descr">
   <strong>OUI, je souhaite être inscrit au groupe {$asso.nom}.</strong>
   </p>

@@ -241,16 +241,28 @@ function get_users_login_list($members, $strict = false, $get_forlife = false, $
         if (strlen(trim($members)) == 0) {
             return null;
         }
-        $members = explode(' ', $members);
+        $members = split("[; ,\r\n\|]+", $members);
     }
 
     if ($members) {
         $list = array();
         foreach ($members as $i => $alias) {
+            $alias = trim($alias);
+            if (empty($alias)) {
+                continue;
+            }
             if (($login = get_user_login($alias, $get_forlife, $callback)) !== false) {
                 $list[$i] = $login;
-            } else if(!$strict) {
+            } else if (!$strict) {
                 $list[$i] = $alias;
+            } else {
+                global $globals;
+                if (strpos($alias, '@') !== false) {
+                    list($user, $dom) = explode('@', $alias);
+                    if ($dom != $globals->mail->domain && $dom != $globals->mail->domain2) {
+                        $list[$i] = $alias;
+                    }
+                }
             }
         }
         return $list;
@@ -323,7 +335,7 @@ function get_not_registered_user($login, $iterator = false)
     }
     $sql = "SELECT  user_id, nom, prenom, promo
               FROM  auth_user_md5
-             WHERE  $where
+             WHERE  $where AND perms = 'pending'
           ORDER BY  promo, nom, prenom";
     if ($iterator) {
         return XDB::iterator($sql, $nom, $prenom, $promo);

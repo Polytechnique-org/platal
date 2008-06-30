@@ -55,6 +55,7 @@ function searchX()
 <h1>{$asso.nom}&nbsp;: Ajout d'un membre</h1>
 
 <form method="post" action="{$platal->ns}member/new/">
+  {xsrf_token_field}
   <ul class='descr'>
     <li>
       Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses

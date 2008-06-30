@@ -112,7 +112,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
         {if $promo && strpos($x.l, '@') === false}
         <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
         {elseif $x.x}
-        <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
+        <a href="{$platal->ns}member/{$x.x}">{if $x.n|trim}{$x.n}{else}{$x.l}{/if}</a>
         {elseif $x.n}
         {$x.n}
         {else}
@@ -124,11 +124,10 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
       </td>
     </tr>
     {/foreach}
-    <tr>
-      <td class='titre'>Ajouter ... </td>
+    <tr class="pair">
+      <td class='titre'>Ajouter</td>
       <td>
         <input type='text' size='30' name='add_owner' />
-        &nbsp;
         <input type='submit' value='ajouter' />
       </td>
     </tr>
@@ -140,7 +139,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
   {$np_m|default:"0"} membre{if $np_m > 1}s{/if} dans la liste
 </h1>
 
-<form method='post' action='{$smarty.server.REQUEST_URI}'>
+<form method='post' action='{$smarty.server.REQUEST_URI}' enctype="multipart/form-data">
   <table class='bicol' cellpadding='0' cellspacing='0'>
     {foreach from=$members item=xs key=promo}
     <tr>
@@ -150,7 +149,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
         {if $promo && strpos($x.l, '@') === false}
         <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
         {elseif $x.x}
-        <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
+        <a href="{$platal->ns}member/{$x.x}">{if $x.n|trim}{$x.n}{else}{$x.l}{/if}</a>
         {elseif $x.n}
         {$x.n}
         {else}
@@ -163,15 +162,32 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
     </tr>
     {/foreach}
     <tr>
-      <td class='titre'>Ajouter ...</td>
+      <th colspan="2">Ajouter</th>
+    </tr>
+    <tr class="pair">
+      <td class="titre">Liste</td>
       <td>
         <input type='text' size='40' name='add_member' />
-        &nbsp;
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">ou fichier(*)</td>
+      <td>
+        <input type="file" name="add_member_file" />*
+      </td>
+    </tr>
+    <tr class="pair">
+      <td colspan="2" class="center">
         <input type='submit' value='ajouter' />
       </td>
     </tr>
   </table>
 </form>
+
+<div class="smaller">
+ * Le fichier doit contenir une adresse e-mail par ligne. Les X doivent être identifiés par une adresse
+ @polytechnique.org, @m4x.org ou @melix.net/org.
+</div>
 
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
