@@ -154,6 +154,11 @@
 //]]>
 </script>
 
+<p>
+  <small>{icon name=information title="Envoi de mail"} Pour envoyer un email, tu peux soit le faire depuis l'interface
+  ci-dessous, soit utiliser <a href="Xorg/SMTPSecurise">notre serveur d'envoi SMTP<a>.</small>
+</p>
+
 <form action="emails/send" method="post" enctype="multipart/form-data" id="form_mail" onsubmit="return check(this);">
   {xsrf_token_field}
   <table class="bicol" cellpadding="2" cellspacing="0">
