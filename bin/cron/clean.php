@@ -43,6 +43,8 @@ query("ALTER TABLE groupesx_def ORDER BY text");
 query("ALTER TABLE secteur ORDER BY text");
 query("ALTER TABLE sections ORDER BY text");
 
+// Prunes older autocomplete queries.
+query("DELETE FROM search_autocomplete WHERE generated < DATE_SUB(NOW(), INTERVAL 1 DAY)");
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
