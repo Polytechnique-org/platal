@@ -42,7 +42,7 @@
     </td>
     <td>{$s.addr}</td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?sadd={$s.id}'>{icon name=add title="Valider l'inscription"}</a>
+      <a href='{$platal->pl_self(1)}?sadd={$s.id}&amp;token={xsrf_token}'>{icon name=add title="Valider l'inscription"}</a>
       <a href='{$platal->pl_self(1)}?sid={$s.id}'>{icon name=delete title="Refuser l'inscription"}</a>
     </td>
   </tr>
@@ -93,6 +93,7 @@ function toggleAll() {
 //]]></script>
 
 <form method="post" action="{$platal->pl_self(1)}">
+{xsrf_token_field}
 {if $with_fromx}
 <table class="bicol" style="margin-bottom: 1ex">
   <tr>
@@ -125,11 +126,11 @@ function toggleAll() {
       {$m.size} octets</small>
     </td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>{icon name=add title="Accepter le message"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'>{icon name=add title="Accepter le message"}</a>
     </td>
     <td class='action'>
       <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Spam !"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1&amp;token={xsrf_token}'>{icon name=delete title="Spam !"}</a>
     </td>
   </tr>
   {/if}
@@ -167,11 +168,11 @@ function toggleAll() {
       {$m.size} octets</small>
     </td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>{icon name=add title="Accepter le message"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'>{icon name=add title="Accepter le message"}</a>
     </td>
     <td class='action'>
       <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Spam !"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1&amp;token={xsrf_token}'>{icon name=delete title="Spam !"}</a>
     </td>
   </tr>
   {/if}

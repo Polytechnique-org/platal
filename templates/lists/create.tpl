@@ -38,6 +38,7 @@ liste&nbsp;:
 </p>
 
 <form action='lists/create' method='post' enctype="multipart/form-data">
+  {xsrf_token_field}
   <table class='bicol' cellspacing='0' cellpadding='2'>
     <tr>
       <th colspan='5'>Caractéristiques de la liste</th>

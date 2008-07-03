@@ -93,6 +93,7 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyt
 {/if}
 
 <form method='post' action='lists'>
+  {xsrf_token_field}
   <table class='tinybicol' cellspacing='0' cellpadding='2'>
     <tr>
       <th colspan='2'>Inscription à une liste de diffusion promo</th>

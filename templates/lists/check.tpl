@@ -36,6 +36,7 @@
   {/foreach}
 </table>
 <form action='{$platal->pl_self(1)}' method='post'>
+  {xsrf_token_field}
   <div class='center'>
     <br />
     <input type='submit' name='correct' value='Corriger les valeurs !' />
