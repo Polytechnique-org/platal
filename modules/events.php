@@ -59,7 +59,7 @@ class EventsModule extends PLModule
                          'special'   => true);
         }
 
-        $exclude  = is_null($exclude) ? '' : ' AND id != ' . $exclude . ' ';
+        $exclude  = is_null($exclude) ? '' : ' AND id != ' . intval($exclude) . ' ';
         $priority = rand(0, 510);
         do {
             $priority = (int)($priority/2);
