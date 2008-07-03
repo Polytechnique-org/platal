@@ -34,6 +34,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement<
 <a href="{$platal->ns}alias/create">un alias</a> qui, lui, est capable de regrouper plusieurs listes.
 </p>
 <form action='{$platal->ns}lists/create' method='post'>
+  {xsrf_token_field}
   <table class="large">
     <tr>
       <th colspan='4'>Caractéristiques de la Liste</th>

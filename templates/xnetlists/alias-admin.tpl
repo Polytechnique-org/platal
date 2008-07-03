@@ -45,7 +45,7 @@
       {if $m.admin}</strong>{/if}
     </td>
     <td class="center">
-      <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.redirect|urlencode}'>
+      <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.redirect|urlencode}&amp;token={xsrf_token}'>
       {icon name=delete title='retirer membre'}
       </a>
     </td>
@@ -64,6 +64,7 @@
   <tr>
     <td colspan="3" class="center">
       <form method="post" action="{$platal->ns}alias/admin/{$platal->argv[1]}">
+        {xsrf_token_field}
         <div>
         <input type='text' name='add_member' />
         &nbsp;
