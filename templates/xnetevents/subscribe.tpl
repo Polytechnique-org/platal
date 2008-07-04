@@ -61,6 +61,7 @@
 {/if}
 
 <form action="{$platal->ns}events/sub/{$event.eid}" method="post">
+  {xsrf_token_field}
   <table class="tiny" cellspacing="0" cellpadding="0">
     {foreach from=$event.moments item=m}
     <tr><th>{$m.titre} ({$m.montant} &euro;)</th></tr>

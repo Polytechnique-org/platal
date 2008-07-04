@@ -239,6 +239,7 @@ Donne ici son mail, ainsi que le nombre de participants.
 </p>
 
 <form action="{$platal->pl_self()}" method="post" id="inscription">
+  {xsrf_token_field}
   <p class="descr">
     <input type="hidden" name="adm" value="nbs" />
 
@@ -272,6 +273,7 @@ Note que tu peux cliquer sur les noms des membres pour remplir automatiquement l
 </p>
 
 <form action="{$platal->pl_self()}" method="post" id="montant">
+  {xsrf_token_field}
   <p class="descr">
   <input type="hidden" name="adm" value="prix" />
   Mail&nbsp;: <input name="mail" size="20" />
