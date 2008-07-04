@@ -74,6 +74,7 @@ peut sans aucun doute l'aider à se décider !
 </p>
 
 <form method="post" action="{$platal->path}">
+  {xsrf_token_field}
   <table class="bicol" summary="Fiche camarade">
     <tr class="impair"><td>Nom&nbsp;:</td><td>{$nom}</td></tr>
     <tr class="pair"><td>Prénom&nbsp;:</td><td>{$prenom}</td></tr>
