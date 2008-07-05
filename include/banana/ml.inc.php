@@ -84,7 +84,7 @@ class MLBanana extends Banana
                              FROM  {$globals->banana->table_prefix}profils
                             WHERE  uid={?}", S::i('uid'));
         if (!(list($unread, $read) = $req->fetchOneRow())) {
-            $unread = 'b';
+            $unread = 'o';
             $read = 'dg';
         }
         Banana::$tree_unread = $unread;

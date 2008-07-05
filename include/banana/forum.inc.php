@@ -78,7 +78,7 @@ class ForumsBanana extends Banana
             $sig  = $nom." (".S::v('promo').")";
             $disp = 0;
             $maj  = 1;
-            $unread = 'b';
+            $unread = 'o';
             $read   = 'dg';
         }
         if ($maj) {
@@ -231,7 +231,7 @@ class ForumsBanana extends Banana
             $disp  = 0;
             $maj   = 0;
             $xface = 0;
-            $unread = 'b';
+            $unread = 'o';
             $read  = 'dg';
         }
         $page->assign('nom' ,  $nom);
