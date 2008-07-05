@@ -75,7 +75,7 @@ URL:{$vcard.web}
 {if strlen(trim($vcard.freetext)) == 0}
 NOTE:(X{$vcard.promo})
 {else}
-NOTE:(X{$vcard.promo})\n{$vcard.freetext|vcard_enc}
+NOTE:(X{$vcard.promo})\n{$vcard.freetext|miniwiki:'no_title':'text'|vcard_enc}
 {/if}
 {if $vcard.section}
 X-SECTION:{$vcard.section}
