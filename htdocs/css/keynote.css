@@ -317,6 +317,11 @@ div.contact div.nom {
     padding-left: 2px;
 }
 
+div.contact div.nom a {
+    text-decoration: none;
+    font-size: 100%;
+}
+
 div.contact div.appli {
 }
 
