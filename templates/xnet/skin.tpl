@@ -224,7 +224,7 @@
           <a href="Xnet/APropos">à propos de ce site</a> -
           <a href="mailto:contact@polytechnique.org">nous contacter</a>
           {if $smarty.session.auth}
-            - <a href="send_bug" class="popup_840x600">signaler un bug</a>
+            - <a href="send_bug/{ $smarty.server.REQUEST_URI }" class="popup_840x600">signaler un bug</a>
           {/if}
           <br />
           Plat/al {#globals.version#} - © Copyright 2000-2008 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
