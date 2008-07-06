@@ -21,7 +21,7 @@
 
 function smarty_function_xsrf_token_field($params, &$smarty) {
     if (S::has('xsrf_token')) {
-        return '<input type="hidden" name="token" value="' . S::v('xsrf_token') . '" />';
+        return '<div style="display: none"><input type="hidden" name="token" value="' . S::v('xsrf_token') . '" /></div>';
     }
     return '';
 }
