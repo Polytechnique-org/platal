@@ -9,6 +9,9 @@ New:
         - Add an anti-XSRF framework, and add protection to most pages     -VZA
         - Add a 'disallow all' robots.txt in development working copies.   -VZA
 
+    * Forums:
+        - Can choose the color of the branches                             -FRU
+
 Bug/Wish:
 
     * Admin:
