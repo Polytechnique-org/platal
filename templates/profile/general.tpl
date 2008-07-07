@@ -282,6 +282,9 @@
       </span>
     </td>
   </tr>
+  {if $email_error}
+    {include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory_error error=$email_error}
+  {else}{include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory error=$email_error}{/if}
   <tr>
     <td colspan="2">
       <span class="titre">Messageries, networking et sites web</span>

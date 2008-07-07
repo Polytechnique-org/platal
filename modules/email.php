@@ -239,7 +239,15 @@ class EmailModule extends PLModule
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
-                $page->assign('retour', $redirect->add_email(Env::v('email')));
+                $new_email = Env::v('email');
+                if ($new_email == "new@new.new") {
+                    $new_email = Env::v('email_new');
+                }
+                $retour = $redirect->add_email($new_email);
+                if ($retour == ERROR_INVALID_EMAIL) {
+                    $page->assign('email', $new_email);
+                }
+                $page->assign('retour', $retour);
             } elseif (empty($actifs)) {
                 $page->assign('retour', ERROR_INACTIVE_REDIRECTION);
             } elseif (is_array($actifs)) {
@@ -272,6 +280,9 @@ class EmailModule extends PLModule
 
         require_once 'googleapps.inc.php';
         $page->assign('googleapps', GoogleAppsAccount::account_status($uid));
+
+        require_once 'emails.combobox.inc.php';
+        fill_email_combobox($page);
     }
 
     function handler_antispam(&$page, $statut_filtre = null)

@@ -108,16 +108,7 @@
         <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small>
       </td>
     </tr>
-    <tr class="pair">
-      <td colspan="2">
-        <span class="titre">E-mail professionnel&nbsp;:</span>
-        <input type="text" size="30" maxlength="60" {if $job.email_error}class="error"{/if}
-               name="{$jobpref}[email]" value="{$job.email}" />
-        <span class="flags">
-          {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.mail_pub}
-        </span>
-      </td>
-    </tr>
+    {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[email]' val=$job.email class="pair" i=$i error=$job.email_error}
     <tr class="pair">
       <td colspan="2">
         <div style="float: left">

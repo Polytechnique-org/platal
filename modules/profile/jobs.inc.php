@@ -22,6 +22,7 @@
 class ProfileJob extends ProfileGeoloc
 {
     private $pub;
+    private $mail_new;
     private $mail;
     private $web;
     private $tel;
@@ -31,11 +32,14 @@ class ProfileJob extends ProfileGeoloc
     public function __construct()
     {
         $this->pub  = new ProfilePub();
-        $this->mail = new ProfileEmail();
+        $this->mail
+                    = $this->mail_new
+                    = new ProfileEmail();
         $this->web  = new ProfileWeb();
         $this->tel  = new ProfileTel();
         $this->bool = new ProfileBool();
         $this->checks = array('web' => array('web'),
+                              'mail_new' => array('email_new'),
                               'mail' => array('email'),
                               'tel' => array('tel', 'fax', 'mobile'),
                               'pub' => array('pub', 'tel_pub', 'email_pub'));
@@ -47,6 +51,12 @@ class ProfileJob extends ProfileGeoloc
         foreach ($this->checks as $obj=>&$fields) {
             $chk =& $this->$obj;
             foreach ($fields as $field) {
+                if ($field == "email_new") {
+                    if ($job['email'] == "new@new.new") {
+                        $job['email'] = $job[$field];
+                    }
+                    continue;
+                }
                 $job[$field] = $chk->value($page, $field, $job[$field], $s);
                 if (!$s) {
                     $success = false;
@@ -96,6 +106,10 @@ class ProfileJob extends ProfileGeoloc
                      S::i('uid'));
         $i = 0;
         foreach ($value as &$job) {
+            if ($job['email'] == "new@new.new") {
+                $job['email'] = $job['email_new'];
+            }
+
             XDB::execute("INSERT INTO  entreprises (uid, entrid, entreprise, secteur, ss_secteur,
                                                     fonction, poste, adr1, adr2, adr3, postcode,
                                                     city, cityid, country, region, regiontxt,
@@ -204,6 +218,9 @@ class ProfileJobs extends ProfilePage
 
     public function _prepare(PlatalPage &$page, $id)
     {
+        require_once "emails.combobox.inc.php";
+        fill_email_combobox($page);
+
         $page->assign('secteurs', XDB::iterator("SELECT  id, label
                                                    FROM  emploi_secteur"));
         $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title

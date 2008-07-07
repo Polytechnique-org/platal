@@ -27,6 +27,7 @@
   </p>
 {/if}
 {if $retour == $smarty.const.ERROR_INVALID_EMAIL}
+  {assign var='error_email' value='1'}
   <p class="erreur">
   Erreur: l'email n'est pas valide.
   </p>
@@ -180,17 +181,14 @@
         </td>
       </tr>
       {/foreach}
-      <tr class="{cycle values="pair,impair"}"><td colspan="4">
-        <form action="emails/redirect" method="post">
-        <div>
-          &nbsp;<br />
-          Ajouter une adresse email&nbsp;:
-          <input type="text" size="35" maxlength="60" name="email" value="" />
-          &nbsp;&nbsp;<input type="submit" value="ajouter" name="emailop" />
+      <form action="emails/redirect" method="post">
+        {cycle values="pair,impair" assign=class_combobox}
+        {include file="include/emails.combobox.tpl" name="email" val=$email class=$class_combobox error=$error_email}
+        <tr class=$class_combobox><td colspan="4"><div>
+          <input type="submit" value="ajouter" name="emailop" />
           {xsrf_token_field}
-        </div>
-        </form>
-      </td></tr>
+        </div></td></tr>
+      </form>
     </table>
     <script type="text/javascript">showRemove(); activeEnable();</script>
   </div>

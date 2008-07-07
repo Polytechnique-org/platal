@@ -150,7 +150,7 @@ class MarketingModule extends PLModule
         $res = XDB::iterator(
                 "SELECT  r.*, a.alias
                    FROM  register_marketing AS r
-             INNER JOIN  aliases            AS a ON (r.sender=a.id AND a.type = 'a_vie')
+              LEFT JOIN  aliases            AS a ON (r.sender=a.id AND a.type = 'a_vie')
                   WHERE  uid={?}
                ORDER BY  date", $uid);
         $page->assign('addr', $res);

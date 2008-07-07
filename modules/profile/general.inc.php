@@ -107,6 +107,39 @@ class ProfileAppli implements ProfileSetting
     }
 }
 
+class ProfileEmailDirectory implements ProfileSetting
+{
+    private $email;
+
+    public function __construct()
+    {
+    }
+
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        $p = $page;
+        global $page;
+
+        $success = true;
+        if (!is_null($value)) {
+            $email_stripped = strtolower(trim($value));
+            if ((!isvalid_email($email_stripped)) && ($email_stripped) && ($p->values['email_directory'] == "new@new.new")) {
+                $page->assign('email_error', '1');
+                $page->assign('email_directory_error', $email_stripped);
+                $page->trigError('Adresse Email invalide');
+                $success = false;
+            } else {
+                $page->assign('email_error', '0');
+            }
+        }
+        return $value;
+    }
+
+    public function save(ProfilePage &$page, $field, $value)
+    {
+    }
+}
+
 class ProfileNetworking implements ProfileSetting
 {
     private $email;
@@ -138,8 +171,8 @@ class ProfileNetworking implements ProfileSetting
         if (!is_array($value)) {
             $value = array();
         }
-        $res = XDB::iterator("SELECT filter, network_type AS type
-                                FROM profile_networking_enum;");
+        $res = XDB::iterator("SELECT  filter, network_type AS type
+                                FROM  profile_networking_enum;");
         $filters = array();
         while($filter = $res->next()) {
             $filters[$filter['type']] = $filter['filter'];
@@ -191,8 +224,8 @@ class ProfileGeneral extends ProfilePage
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['nom'] = $this->settings['prenom']
-                               = new ProfileNom();
+        $this->settings['nom']    = $this->settings['prenom']
+                                  = new ProfileNom();
         $this->settings['naissance'] = new ProfileDate();
         $this->settings['mobile_pub']
                                   = $this->settings['freetext_pub']
@@ -209,12 +242,17 @@ class ProfileGeneral extends ProfilePage
         $this->settings['synchro_ax']
                                   = new ProfileBool();
         $this->settings['mobile'] = new ProfileTel();
+        $this->settings['email_directory']
+                                  = new ProfileEmail();
+        $this->settings['email_directory_new']
+                                  = new ProfileEmailDirectory();
         $this->settings['networking'] = new ProfileNetworking();
         $this->settings['appli1']
                                   = $this->settings['appli2']
                                   = new ProfileAppli();
-        $this->watched= array('nom' => true, 'freetext' => true, 'mobile' => true, 'networking' => true,
-                       'appli1' => true, 'appli2' => true, 'nationalite' => true, 'nick' => true);
+        $this->watched= array('nom' => true, 'freetext' => true, 'mobile' => true,
+                              'networking' => true, 'appli1' => true, 'appli2' => true,
+                              'nationalite' => true, 'nick' => true);
     }
 
     protected function _fetchData()
@@ -222,17 +260,19 @@ class ProfileGeneral extends ProfilePage
         // Checkout all data...
         $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite, u.naissance,
                                    q.profile_mobile as mobile, q.profile_mobile_pub as mobile_pub,
+                                   d.email_directory as email_directory,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
                                    q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.matricule_ax,
                                    IF(a1.aid IS NULL, -1, a1.aid) as appli_id1, a1.type as appli_type1,
                                    IF(a2.aid IS NULL, -1, a2.aid) as appli_id2, a2.type as appli_type2,
                                    n.yourself, n.display AS display_name, n.sort AS sort_name,
                                    n.tooltip AS tooltip_name
-                             FROM  auth_user_md5   AS u
-                       INNER JOIN  auth_user_quick AS q  ON(u.user_id = q.user_id)
-                       INNER JOIN  profile_names_display AS n ON(n.user_id = u.user_id)
-                        LEFT JOIN  applis_ins      AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)
-                        LEFT JOIN  applis_ins      AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
+                             FROM  auth_user_md5         AS u
+                       INNER JOIN  auth_user_quick       AS q  ON(u.user_id = q.user_id)
+                       INNER JOIN  profile_names_display AS n  ON(n.user_id = u.user_id)
+                        LEFT JOIN  profile_directory     AS d  ON(d.uid = u.user_id)
+                        LEFT JOIN  applis_ins            AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)
+                        LEFT JOIN  applis_ins            AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
                             WHERE  u.user_id = {?}", S::v('uid', -1));
         $this->values = $res->fetchOneAssoc();
 
@@ -257,13 +297,13 @@ class ProfileGeneral extends ProfilePage
                             WHERE  type='photo' AND user_id = {?}",
                           S::v('uid'));
         $this->values['nouvellephoto'] = $res->fetchOneCell();
-        
+
         // Retreive search names info
         $this->values['search_names'] = XDB::iterator("
-                              SELECT sn.search_name, sn.name_type, sn.pub, sn.sn_id
-                                FROM profile_names_search AS sn
-                               WHERE sn.user_id = {?}
-                            ORDER BY sn.name_type, search_score, search_name",
+                              SELECT  sn.search_name, sn.name_type, sn.pub, sn.sn_id
+                                FROM  profile_names_search AS sn
+                               WHERE  sn.user_id = {?}
+                            ORDER BY  sn.name_type, search_score, search_name",
                           S::v('uid'));
     }
 
@@ -290,6 +330,13 @@ class ProfileGeneral extends ProfilePage
                          $this->values['freetext'], $this->values['freetext_pub'],
                          $this->values['synchro_ax'], S::v('uid'));
         }
+        if ($this->changed['email_directory']) {
+            $new_email = ($this->values['email_directory'] == "new@new.new") ?
+                $this->values['email_directory_new'] : $this->values['email_directory'];
+            XDB::execute("REPLACE INTO  profile_directory (uid, email_directory)
+                                VALUES  ({?}, {?})",
+                         S::v('uid'), $new_email);
+        }
         if ($this->changed['nick']) {
             require_once('user.func.inc.php');
             user_reindex(S::v('uid'));
@@ -302,12 +349,12 @@ class ProfileGeneral extends ProfilePage
         }
         if ($this->changed['yourself'] || $this->changed['sort_name'] ||
             $this-> changed['display_name'] || $this->changed['tooltip_name']) {
-          XDB::execute("UPDATE profile_names_display AS n
-                           SET n.yourself = {?},
-                               n.sort = {?}, ". // SET
-                              "n.display = {?}, ". // SET
-                              "n.tooltip = {?} ". // SET
-                        "WHERE n.user_id = {?}",
+          XDB::execute("UPDATE  profile_names_display AS n
+                           SET  n.yourself = {?},
+                                n.sort = {?}, ". // SET
+                               "n.display = {?}, ". // SET
+                               "n.tooltip = {?} ". // SET
+                        "WHERE  n.user_id = {?}",
                        $this->values['yourself'],
                        $this->values['sort_name'],
                        $this->values['display_name'],
@@ -320,9 +367,12 @@ class ProfileGeneral extends ProfilePage
     {
         require_once "applis.func.inc.php";
 
-        $res = XDB::iterator("SELECT nw.network_type AS type, nw.name
-                                FROM profile_networking_enum AS nw
-                            ORDER BY name");
+        require_once "emails.combobox.inc.php";
+        fill_email_combobox($page);
+
+        $res = XDB::iterator("SELECT  nw.network_type AS type, nw.name
+                                FROM  profile_networking_enum AS nw
+                            ORDER BY  name");
         $page->assign('network_list', $res->fetchAllAssoc());
     }
 }
