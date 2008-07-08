@@ -131,7 +131,7 @@
       <tr>
         <td class="smaller" colspan="2">
           {if !$c.wasinscrit}
-          Ce{if $c.sexe}tte{/if} camarade n'est pas inscrit.
+          Ce{if $c.sexe}tte{/if} camarade n'est pas inscrit{if $c.sexe}e{/if}.
           <a href="marketing/public/{$c.user_id}" class='popup'>Si tu connais son adresse email,
           <strong>n'hésite pas à nous la transmettre !</a>
           {elseif !$c.actif}
