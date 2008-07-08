@@ -42,13 +42,8 @@
       <img src='images/flags/{$c.iso3166}.gif' alt='{$c.nat}' height='11' title='{$c.nat}' />&nbsp;
       {/if}
       X {$c.promo}{if $c.app0text}, {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}{*
-      *}{/if}{if $c.app1text}, {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}{/if}
-      {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
-      {if $smarty.session.auth ge AUTH_COOKIE}
-      {if !$c.dcd && !$c.wasinscrit}
-      <a href="marketing/public/{$c.user_id}" class='popup'>clique ici si tu connais son adresse email !</a>
-      {/if}
-      {/if}
+      *}{/if}{if $c.app1text}, {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}{/if}{*
+      *}{if $c.dcd}, décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
     </div>
   </div>
 
@@ -96,7 +91,7 @@
   {/if}
 
   <div class="long">
-  {if $c.wasinscrit}
+  {if $c.wasinscrit || !$c.dcd}
     {if $c.web || $c.mobile || $c.countrytxt || $c.city || $c.region || $c.entreprise || $c.freetext || (!$c.dcd && !$c.actif )}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
@@ -132,13 +127,19 @@
         <td class="rt">{$c.freetext|nl2br}</td>
       </tr>
       {/if}
-      {if !$c.dcd && !$c.actif && $c.wasinscrit && $smarty.session.auth ge AUTH_COOKIE}
+      {if !$c.dcd && (!$c.actif || !$c.wasinscrit) && $smarty.session.auth ge AUTH_COOKIE}
       <tr>
         <td class="smaller" colspan="2">
+          {if !$c.wasinscrit}
+          Ce camarade n'est pas inscrit.
+          <a href="marketing/public/{$c.user_id}" class='popup'>Si tu connais son adresse email,
+          <strong>n'hésite pas à nous la transmettre !</a>
+          {elseif !$c.actif}
           Ce camarade n'a plus d'adresse de redirection valide.
           <a href="marketing/broken/{$c.forlife}">
             Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>.
           </a>
+          {/if}
         </td>
       </tr>
       {/if}
