@@ -101,25 +101,25 @@
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
       <tr>
-        <td class="lt">Page web:</td>
+        <td class="lt">Page web&nbsp;:</td>
         <td class="rt"><a href="{$c.web}">{$c.web}</a></td>
       </tr>
       {/if}
       {if $c.countrytxt || $c.city}
       <tr>
-        <td class="lt">Géographie:</td>
+        <td class="lt">Géographie&nbsp;:</td>
         <td class="rt">{$c.city}{if $c.city && $c.countrytxt}, {/if}{$c.countrytxt}</td>
       </tr>
       {/if}
       {if $c.mobile && !$c.dcd}
       <tr>
-        <td class="lt">Mobile:</td>
+        <td class="lt">Mobile&nbsp;:</td>
         <td class="rt">{$c.mobile}</td>
       </tr>
       {/if}
       {if $c.entreprise}
       <tr>
-        <td class="lt">Profession:</td>
+        <td class="lt">Profession&nbsp;:</td>
         <td class="rt">
           {$c.entreprise} {if $c.secteur}({$c.secteur}){/if}
           {if $c.fonction}<br />{$c.fonction}{/if}
@@ -128,7 +128,7 @@
       {/if}
       {if $c.freetext}
       <tr>
-        <td class="lt">Commentaire:</td>
+        <td class="lt">Commentaire&nbsp;:</td>
         <td class="rt">{$c.freetext|nl2br}</td>
       </tr>
       {/if}
@@ -137,7 +137,7 @@
         <td class="smaller" colspan="2">
           Ce camarade n'a plus d'adresse de redirection valide.
           <a href="marketing/broken/{$c.forlife}">
-            Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>
+            Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>.
           </a>
         </td>
       </tr>
