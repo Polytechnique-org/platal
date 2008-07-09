@@ -286,7 +286,7 @@ div.contact-list div.grayed {
 
 div.contact div.identity {
     float: left;
-    width: 90%;
+    width: 89%;
 }
 
 div.contact div.nom {
@@ -296,6 +296,7 @@ div.contact div.nom {
 div.contact div.bits {
     text-align: right;
     float: right;
+    width: 10%;
 }
 
 div.contact div.long {
