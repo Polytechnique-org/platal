@@ -125,8 +125,20 @@ class CoreModule extends PLModule
     function handler_bug(&$page)
     {
         global $globals;
+
+        if (empty($_SERVER['HTTP_REFERER'])) {
+            // We don't have a valid referer, we need to use the url
+            list($currentPage, $location) = explode('//', $_SERVER['REQUEST_URI'], 2);
+
+            $location = 'http'.(empty($_SERVER['HTTPS']) ? '' : 's').'://'.$_SERVER['SERVER_NAME'].'/'.$location;
+        } else {
+            $location = $_SERVER['HTTP_REFERER'];
+        }
+
         $page->changeTpl('core/bug.tpl', SIMPLE);
+        $page->assign('location', $location);
         $page->addJsLink('close_on_esc.js');
+
         if (Env::has('send') && trim(Env::v('detailed_desc'))) {
             S::assert_xsrf_token();
 

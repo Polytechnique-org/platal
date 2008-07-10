@@ -19,9 +19,15 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_modifier_miniwiki($string, $format = 'no_title')
+require_once 'platal.inc.php';
+
+function smarty_modifier_miniwiki($string, $format = 'no_title', $type = 'html')
 {
-    return MiniWiki::wikiToHTML($string, $format == 'title');
+    if ($type == 'html') {
+        return MiniWiki::wikiToHTML($string, $format == 'title');
+    } else {
+        return MiniWiki::wikiToText($string, false, 0, 80, $format == 'title');
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
