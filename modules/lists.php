@@ -98,14 +98,18 @@ class ListsModule extends PLModule
 
 
         if (Get::has('del')) {
+            S::assert_xsrf_token();
             $this->client->unsubscribe(Get::v('del'));
             pl_redirect('lists');
         }
         if (Get::has('add')) {
+            S::assert_xsrf_token();
             $this->client->subscribe(Get::v('add'));
             pl_redirect('lists');
         }
         if (Post::has('promo_add')) {
+            S::assert_xsrf_token();
+
             $promo = Post::i('promo_add');
             if ($promo >= 1900 and $promo < 2100) {
                 $this->client->subscribe("promo$promo");
@@ -113,6 +117,7 @@ class ListsModule extends PLModule
                 $page->trigSuccess("promo incorrecte, il faut une promo sur 4 chiffres.");
             }
         }
+
         $listes = $this->client->get_lists();
         $owner  = array_filter($listes, 'filter_owner');
         $listes = array_diff_key($listes, $owner);
@@ -134,6 +139,8 @@ class ListsModule extends PLModule
         header('Content-Type: text/html; charset="UTF-8"');
         $domain = $this->prepare_client($page);
         $page->changeTpl('lists/liste.inc.tpl', NO_SKIN);
+        S::assert_xsrf_token();
+
         if (Get::has('unsubscribe')) {
             $this->client->unsubscribe($list);
         }
@@ -213,6 +220,8 @@ class ListsModule extends PLModule
 
         if (!Post::has('submit')) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         $asso = Post::v('asso');
@@ -295,11 +304,13 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/members.tpl');
 
         if (Get::has('del')) {
+            S::assert_xsrf_token();
             $this->client->unsubscribe($liste);
             pl_redirect('lists/members/'.$liste);
         }
 
         if (Get::has('add')) {
+            S::assert_xsrf_token();
             $this->client->subscribe($liste);
             pl_redirect('lists/members/'.$liste);
         }
@@ -330,10 +341,12 @@ class ListsModule extends PLModule
         $this->prepare_client($page);
 
         if (Get::has('del')) {
+            S::assert_xsrf_token();
             $this->client->unsubscribe($liste);
             pl_redirect('lists/annu/'.$liste);
         }
         if (Get::has('add')) {
+            S::assert_xsrf_token();
             $this->client->subscribe($liste);
             pl_redirect('lists/annu/'.$liste);
         }
@@ -454,6 +467,8 @@ class ListsModule extends PLModule
         $page->register_modifier('hdc', 'list_header_decode');
 
         if (Env::has('sadd') || Env::has('sdel')) {
+            S::assert_xsrf_token();
+
             if (Env::has('sadd')) { /* 4 = SUBSCRIBE */
                 $sub = $this->client->get_pending_sub($liste, Env::v('sadd'));
                 $this->client->handle_request($liste,Env::v('sadd'),4,'');
@@ -484,6 +499,8 @@ class ListsModule extends PLModule
         }
 
         if (Post::has('moderate_mails') && Post::has('select_mails')) {
+            S::assert_xsrf_token();
+
             $mails = array_keys(Post::v('select_mails'));
             foreach($mails as $mail) {
                 $this->moderate_mail($domain, $liste, $mail);
@@ -568,6 +585,8 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/admin.tpl');
 
         if (Env::has('send_mark')) {
+            S::assert_xsrf_token();
+
             $actions = Env::v('mk_action');
             $uids    = Env::v('mk_uid');
             $mails   = Env::v('mk_email');
@@ -598,6 +617,8 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('add_member')) {
+            S::assert_xsrf_token();
+
             require_once('user.func.inc.php');
             $members = get_users_forlife_list(Env::v('add_member'),
                                               false,
@@ -611,6 +632,8 @@ class ListsModule extends PLModule
         }
 
         if (isset($_FILES['add_member_file']) && $_FILES['add_member_file']['tmp_name']) {
+            S::assert_xsrf_token();
+
             $upload =& PlUpload::get($_FILES['add_member_file'], S::v('forlife'), 'list.addmember', true);
             if (!$upload) {
                 $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
@@ -628,6 +651,8 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('del_member')) {
+            S::assert_xsrf_token();
+
             if (strpos(Env::v('del_member'), '@') === false) {
                 $this->client->mass_unsubscribe(
                     $liste, array(Env::v('del_member').'@'.$globals->mail->domain));
@@ -638,6 +663,8 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('add_owner')) {
+            S::assert_xsrf_token();
+
             require_once('user.func.inc.php');
             $owners = get_users_forlife_list(Env::v('add_owner'), false, array('ListsModule', 'no_login_callback'));
             if ($owners) {
@@ -650,6 +677,8 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('del_owner')) {
+            S::assert_xsrf_token();
+
             if (strpos(Env::v('del_owner'), '@') === false) {
                 $this->client->del_owner($liste, Env::v('del_owner').'@'.$globals->mail->domain);
             } else {
@@ -689,6 +718,8 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/options.tpl');
 
         if (Post::has('submit')) {
+            S::assert_xsrf_token();
+
             $values = $_POST;
             $values = array_map('utf8_decode', $values);
             $spamlevel = intval($values['bogo_level']);
@@ -724,8 +755,10 @@ class ListsModule extends PLModule
             }
             $this->client->set_owner_options($liste, $values);
         } elseif (isvalid_email(Post::v('atn_add'))) {
+            S::assert_xsrf_token();
             $this->client->add_to_wl($liste, Post::v('atn_add'));
         } elseif (Get::has('atn_del')) {
+            S::assert_xsrf_token();
             $this->client->del_from_wl($liste, Get::v('atn_del'));
             pl_redirect('lists/options/'.$liste);
         }
@@ -761,6 +794,8 @@ class ListsModule extends PLModule
 
         $page->changeTpl('lists/delete.tpl');
         if (Post::v('valid') == 'OUI') {
+            S::assert_xsrf_token();
+
             if ($this->client->delete_list($liste, Post::b('del_archive'))) {
                 foreach (array('', '-owner', '-admin', '-bounces', '-unsubscribe') as $app) {
                     XDB::execute("DELETE FROM  $table
@@ -793,6 +828,8 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/soptions.tpl');
 
         if (Post::has('submit')) {
+            S::assert_xsrf_token();
+
             $values = $_POST;
             $values = array_map('utf8_decode', $values);
             unset($values['submit']);
@@ -820,6 +857,7 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/check.tpl');
 
         if (Post::has('correct')) {
+            S::assert_xsrf_token();
             $this->client->check_options($liste, true);
         }
 

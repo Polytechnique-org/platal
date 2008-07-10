@@ -309,12 +309,17 @@ div.contact-list div.contact:hover {
 
 div.contact div.identity {
     float: left;
-    width: 70%;
+    width: 89%;
 }
 
 div.contact div.nom {
     font-weight: bold;
     padding-left: 2px;
+}
+
+div.contact div.nom a {
+    text-decoration: none;
+    font-size: 100%;
 }
 
 div.contact div.appli {
@@ -334,8 +339,8 @@ div.contact div.long {
 }
 
 div.long table { width: 100%; }
-div.long td.lt { width: 25%; font-style: italic; }
-div.long td.rt { width: 75%; }
+div.long td.lt { width: 15%; font-style: italic; }
+div.long td.rt { width: 85%; }
 
 /*******************************************************************************
     6   Profil

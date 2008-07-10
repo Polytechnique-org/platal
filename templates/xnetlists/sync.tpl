@@ -24,7 +24,7 @@
 <h1>Non abonnés à la liste {$platal->argv[1]}@{$asso.mail_domain}</h1>
 
 <form action="{$platal->ns}lists/sync/{$platal->argv[1]}" method="post">
-
+  {xsrf_token_field}
   <table cellspacing="2" cellpadding="0" class="tiny">
     <tr>
       <th colspan="2">Membre</th>

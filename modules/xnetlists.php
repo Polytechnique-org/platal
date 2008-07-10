@@ -79,15 +79,19 @@ class XnetListsModule extends ListsModule
         $page->changeTpl('xnetlists/index.tpl');
 
         if (Get::has('del')) {
+            S::assert_xsrf_token();
             $this->client->unsubscribe(Get::v('del'));
             pl_redirect('lists');
         }
         if (Get::has('add')) {
+            S::assert_xsrf_token();
             $this->client->subscribe(Get::v('add'));
             pl_redirect('lists');
         }
 
         if (Post::has('del_alias') && may_update()) {
+            S::assert_xsrf_token();
+
             $alias = Post::v('del_alias');
             // prevent group admin from erasing aliases from other groups
             $alias = substr($alias, 0, strpos($alias, '@')).'@'.$globals->asso('mail_domain');
@@ -125,6 +129,8 @@ class XnetListsModule extends ListsModule
 
         if (!Post::has('submit')) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         if (!Post::has('liste')) {
@@ -189,6 +195,7 @@ class XnetListsModule extends ListsModule
         $page->changeTpl('xnetlists/sync.tpl');
 
         if (Env::has('add')) {
+            S::assert_xsrf_token();
             $this->client->mass_subscribe($liste, array_keys(Env::v('add')));
         }
 
@@ -234,6 +241,8 @@ class XnetListsModule extends ListsModule
         $page->changeTpl('xnetlists/alias-admin.tpl');
 
         if (Env::has('add_member')) {
+            S::assert_xsrf_token();
+
             $add = Env::v('add_member');
             if (strstr($add, '@')) {
                 list($mbox,$dom) = explode('@', strtolower($add));
@@ -269,6 +278,7 @@ class XnetListsModule extends ListsModule
         }
 
         if (Env::has('del_member')) {
+            S::assert_xsrf_token();
             XDB::query(
                     "DELETE FROM  x4dat.virtual_redirect
                            USING  x4dat.virtual_redirect
@@ -308,6 +318,8 @@ class XnetListsModule extends ListsModule
 
         if (!Post::has('submit')) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         if (!Post::has('liste')) {

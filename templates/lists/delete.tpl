@@ -41,6 +41,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 </h1>
 
 <form method='post' action='{$platal->pl_self(1)}'>
+  {xsrf_token_field}
   <table class='tinybicol' cellpadding='2' cellspacing='0'>
     <tr class='impair'>
       <td>

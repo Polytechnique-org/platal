@@ -79,6 +79,17 @@ class MLBanana extends Banana
         $sig  = $nom . ' (' . S::v('promo') . ')';
         Banana::$msgedit_headers['X-Org-Mail'] = S::v('forlife') . '@' . $globals->mail->domain;
 
+        // Tree color
+        $req = XDB::query("SELECT  tree_unread, tree_read
+                             FROM  {$globals->banana->table_prefix}profils
+                            WHERE  uid={?}", S::i('uid'));
+        if (!(list($unread, $read) = $req->fetchOneRow())) {
+            $unread = 'o';
+            $read = 'dg';
+        }
+        Banana::$tree_unread = $unread;
+        Banana::$tree_read = $read;
+
         // Build user profile
         Banana::$profile['headers']['From']         = "$nom <$mail>";
         Banana::$profile['headers']['Organization'] = make_Organization();

@@ -41,14 +41,9 @@
       {if $c.iso3166}
       <img src='images/flags/{$c.iso3166}.gif' alt='{$c.nat}' height='11' title='{$c.nat}' />&nbsp;
       {/if}
-      (X {$c.promo}{if $c.app0text}, {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}{*
-      *}{/if}{if $c.app1text}, {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}{/if})
-      {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
-      {if $smarty.session.auth ge AUTH_COOKIE}
-      {if !$c.dcd && !$c.wasinscrit}
-      <a href="marketing/public/{$c.user_id}" class='popup'>clique ici si tu connais son adresse email !</a>
-      {/if}
-      {/if}
+      X {$c.promo}{if $c.app0text}, {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}{*
+      *}{/if}{if $c.app1text}, {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}{/if}{*
+      *}{if $c.dcd}, décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
     </div>
   </div>
 
@@ -82,44 +77,44 @@
 
     {if hasPerm('admin')}
     <div>
-    {if !$c.wasinscrit && !$c.dcd}
-    <a href="marketing/private/{$c.user_id}">{*
-      *}{icon name=email title="marketter user"}</a>
-    {/if}
-    <a href="admin/user/{if $c.wasinscrit}{$c.forlife}{else}{$c.user_id}{/if}">{*
-    *}{icon name=wrench title="administrer user"}</a>
-    <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
-    *}{icon name=user_gray title="fiche AX"}</a>
+      [{if !$c.wasinscrit && !$c.dcd}
+      <a href="marketing/private/{$c.user_id}">{*
+        *}{icon name=email title="marketter user"}</a>
+      {/if}
+      <a href="admin/user/{if $c.wasinscrit}{$c.forlife}{else}{$c.user_id}{/if}">{*
+      *}{icon name=wrench title="administrer user"}</a>
+      <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
+      *}{icon name=user_gray title="fiche AX"}</a>]
     </div>
     {/if}
   </div>
   {/if}
 
   <div class="long">
-  {if $c.wasinscrit}
+  {if $c.wasinscrit || !$c.dcd}
     {if $c.web || $c.mobile || $c.countrytxt || $c.city || $c.region || $c.entreprise || $c.freetext || (!$c.dcd && !$c.actif )}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
       <tr>
-        <td class="lt">Page web:</td>
+        <td class="lt">Page web&nbsp;:</td>
         <td class="rt"><a href="{$c.web}">{$c.web}</a></td>
       </tr>
       {/if}
       {if $c.countrytxt || $c.city}
       <tr>
-        <td class="lt">Géographie:</td>
+        <td class="lt">Géographie&nbsp;:</td>
         <td class="rt">{$c.city}{if $c.city && $c.countrytxt}, {/if}{$c.countrytxt}</td>
       </tr>
       {/if}
       {if $c.mobile && !$c.dcd}
       <tr>
-        <td class="lt">Mobile:</td>
+        <td class="lt">Mobile&nbsp;:</td>
         <td class="rt">{$c.mobile}</td>
       </tr>
       {/if}
       {if $c.entreprise}
       <tr>
-        <td class="lt">Profession:</td>
+        <td class="lt">Profession&nbsp;:</td>
         <td class="rt">
           {$c.entreprise} {if $c.secteur}({$c.secteur}){/if}
           {if $c.fonction}<br />{$c.fonction}{/if}
@@ -128,17 +123,23 @@
       {/if}
       {if $c.freetext}
       <tr>
-        <td class="lt">Commentaire:</td>
+        <td class="lt">Commentaire&nbsp;:</td>
         <td class="rt">{$c.freetext|nl2br}</td>
       </tr>
       {/if}
-      {if !$c.dcd && !$c.actif && $c.wasinscrit && $smarty.session.auth ge AUTH_COOKIE}
+      {if !$c.dcd && (!$c.actif || !$c.wasinscrit) && $smarty.session.auth ge AUTH_COOKIE}
       <tr>
         <td class="smaller" colspan="2">
-          Ce camarade n'a plus d'adresse de redirection valide.
+          {if !$c.wasinscrit}
+          Ce{if $c.sexe}tte{/if} camarade n'est pas inscrit{if $c.sexe}e{/if}.
+          <a href="marketing/public/{$c.user_id}" class='popup'>Si tu connais son adresse email,
+          <strong>n'hésite pas à nous la transmettre !</a>
+          {elseif !$c.actif}
+          Ce{if $c.sexe}tte{/if} camarade n'a plus d'adresse de redirection valide.
           <a href="marketing/broken/{$c.forlife}">
-            Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>
+            Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>.
           </a>
+          {/if}
         </td>
       </tr>
       {/if}

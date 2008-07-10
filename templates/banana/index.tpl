@@ -38,6 +38,7 @@
 </p>
 
 <form action="banana/profile" method="post">
+  {xsrf_token_field}
   <table class="bicol" cellpadding="3" cellspacing="0" summary="Configuration de Banana">
     <tr>
       <th colspan="2">Profil Banana</th>
@@ -61,6 +62,17 @@
                {if !$disp}checked="checked"{/if} /> Afficher tous les messages <br />
         <input type="radio" name="bananadisplay" value="1"
                {if $disp}checked="checked"{/if} /> Afficher seulement les fils de discussion contenant des messages non lus
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">Aspect de l'arborescence</td>
+      <td>
+        {foreach from=$colors item=color}
+          <label>non-lu <input type="radio" name="unread" value="{$color}" {if $unread eq $color}checked="checked"{/if} /></label>
+          <img src="images/banana/m2{$color}.gif" alt="{$color}" />
+          <label><input type="radio" name="read" value="{$color}" {if $read eq $color}checked="checked"{/if} /> lu</label>
+          <br />
+        {/foreach}
       </td>
     </tr>
     <tr class="pair">
