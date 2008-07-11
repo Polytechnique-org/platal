@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 
-require_once('applis.func.inc.php');
 
 function replace_ifset(&$var,$req) {
     if (Env::has($req)){

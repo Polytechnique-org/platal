@@ -1,15 +1,9 @@
 #!/usr/bin/php5
 <?php
 require_once 'connect.db.inc.php';
-
-//next two are required to include 'profil.func.inc.php'
-require_once 'xorg.inc.php';
-$page = new XorgPage(null);
-
 require_once 'profil.func.inc.php';
 
 $globals->debug = 0; //do not store backtraces
-
 
 // Convert phone prefixes from varchar to int
 $prefixes = XDB::iterRow("SELECT a2, phoneprf FROM geoloc_pays WHERE phoneprf IS NOT NULL");

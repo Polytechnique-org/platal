@@ -2,11 +2,6 @@
 <?php
 
 require('./connect.db.inc.php');
-
-//next two are required to include 'profil.func.inc.php'
-require_once('xorg.inc.php');
-$page = new XorgPage(null);
-
 require_once('profil.func.inc.php');
 
 $globals->debug = 0; //do not store backtraces
