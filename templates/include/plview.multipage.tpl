@@ -23,6 +23,7 @@
 {capture name=pages}
 {if $plview->pages > 1}
 <div class="center pages">
+  {if $show_bounds}[{$first} - {$last}]{/if}
   {if $plview->page neq 1}
   <a href="{$platal->pl_self()}{$plset_search}order={$order}&amp;page=1">{icon name=resultset_first title="Première page"}</a>{*
   *}<a href="{$platal->pl_self()}{$plset_search}order={$order}&amp;page={$plview->page-1}">{icon name=resultset_previous title="Page précédente"}</a>

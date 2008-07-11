@@ -80,7 +80,8 @@ class PlSet
                           $limit";
 //        echo $query;
 //        print_r($this);
-        $it    = XDB::iterator($query);
+        $it    = XDB::query($query);
+        $it    = $it->fetchAllAssoc();
         $count = XDB::query('SELECT FOUND_ROWS()');
         $this->count = intval($count->fetchOneCell());
         return $it;
@@ -255,17 +256,38 @@ abstract class MultipageView implements PlView
 
     public function apply(PlatalPage &$page)
     {
-        $page->assign('order', Env::v('order', $this->defaultkey));
+        $res = $this->set->get($this->fields(),
+                               $this->joins(),
+                               $this->where(),
+                               $this->groupBy(),
+                               $this->order(),
+                               $this->entriesPerPage,
+                               $this->offset);
+        $order       = Env::v('order', $this->defaultkey);
+        $end         = end($res);
+        $show_bounds = 0;
+        if (($order == "name") || ($order == "-name")) {
+            $first       = $res[0]['nom'];
+            $last        = $end['nom'];
+            $show_bounds = 1;
+        } elseif (($order == "promo") || ($order == "-promo")) {
+            $first       = $end['promo'];
+            $last        = $res[0]['promo'];
+            $show_bounds = 1;
+        }
+        if (($show_bounds) && ($order{0} == '-')) {
+            $aux   = $first;
+            $first = $last;
+            $last  = $aux;
+        }
+
+        $page->assign('first', $first);
+        $page->assign('last', $last);
+        $page->assign('show_bounds', $show_bounds);
+        $page->assign('order', $order);
         $page->assign('orders', $this->sortkeys);
         $page->assign_by_ref('plview', $this);
-        $page->assign_by_ref('set',
-                             $this->set->get($this->fields(),
-                                             $this->joins(),
-                                             $this->where(),
-                                             $this->groupBy(),
-                                             $this->order(),
-                                             $this->entriesPerPage,
-                                             $this->offset));
+        $page->assign_by_ref('set', $res);
         $count = $this->set->count();
         $this->pages = intval(ceil($count / $this->entriesPerPage));
         return 'include/plview.multipage.tpl';
