@@ -366,7 +366,7 @@ class ListsModule extends PLModule
         $view = new ArraySet($users);
         $view->addMod('trombi', 'Trombinoscope', true, array('with_promo' => true));
         if (empty($GLOBALS['IS_XNET_SITE'])) {
-            $view->addMod('minifiche', 'Minifiches', false);
+            $view->addMod('minifiche', 'Mini-fiches', false);
         }
         $view->addMod('geoloc', 'Planisphère');
         $view->apply("lists/annu/$liste", $page, $action, $subaction);
