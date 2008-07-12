@@ -26,7 +26,7 @@
 </p>
 {else}
 <table cellpadding="8" cellspacing="2" style="width: 100%">
-  {iterate from=$set item=p}
+  {foreach from=$set item=p}
   {cycle values="1,2,3" assign="loop"}
   {if $loop eq "1"}
   <tr>
@@ -46,7 +46,7 @@
   {if $loop eq "3"}
   </tr>
   {/if}
-  {/iterate}
+  {/foreach}
   {if $loop neq "3"}
   {if $lopp eq "1"}
   <td></td>

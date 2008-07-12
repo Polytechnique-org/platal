@@ -210,6 +210,23 @@ class MinificheView extends MultipageView
                  : "");
     }
 
+    public function bounds()
+    {
+        $order = Env::v('order', $this->defaultkey);
+        $show_bounds = 0;
+        if (($order == "name") || ($order == "-name")) {
+            $this->bound_field = "nom";
+            $show_bounds = 1;
+        } elseif (($order == "promo") || ($order == "-promo")) {
+            $this->bound_field = "promo";
+            $show_bounds = -1;
+        }
+        if ($order{0} == '-') {
+            $show_bounds = -$show_bounds;
+        }
+        return $show_bounds;
+    }
+
     public function templateName()
     {
         return 'include/plview.minifiche.tpl';
@@ -233,6 +250,23 @@ class MentorView extends MultipageView
         return "m.uid, u.prenom, u.nom, u.promo,
                 a.alias AS forlife, m.expertise, mp.pid,
                 ms.secteur, ms.ss_secteur";
+    }
+
+    public function bounds()
+    {
+        $order = Env::v('order', $this->defaultkey);
+        $show_bounds = 0;
+        if (($order == "name") || ($order == "-name")) {
+            $this->bound_field = "nom";
+            $show_bounds = 1;
+        } elseif (($order == "promo") || ($order == "-promo")) {
+            $this->bound_field = "promo";
+            $show_bounds = -1;
+        }
+        if ($order{0} == '-') {
+            $show_bounds = -$show_bounds;
+        }
+        return $show_bounds;
     }
 
     public function templateName()
@@ -263,6 +297,23 @@ class TrombiView extends MultipageView
     public function joins()
     {
         return "INNER JOIN  photo AS p ON (p.uid = u.user_id) ";
+    }
+
+    public function bounds()
+    {
+        $order = Env::v('order', $this->defaultkey);
+        $show_bounds = 0;
+        if (($order == "name") || ($order == "-name")) {
+            $this->bound_field = "nom";
+            $show_bounds = 1;
+        } elseif (($order == "promo") || ($order == "-promo")) {
+            $this->bound_field = "promo";
+            $show_bounds = -1;
+        }
+        if ($order{0} == '-') {
+            $show_bounds = -$show_bounds;
+        }
+        return $show_bounds;
     }
 
     public function templateName()

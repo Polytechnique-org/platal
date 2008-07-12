@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 <div class="contact-list" style="clear: both">
-{iterate from=$set item=p} 
+{foreach from=$set item=p} 
   <div class="contact"> 
     <div class="nom"> 
       {$p.nom} {$p.prenom} 
@@ -45,7 +45,7 @@
      </table> 
     </div> 
   </div> 
-{/iterate}
+{/foreach}
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

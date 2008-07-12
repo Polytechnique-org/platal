@@ -200,6 +200,8 @@ abstract class MultipageView implements PlView
     protected $sortkeys = array();
     protected $defaultkey = null;
 
+    protected $bound_field = null;
+
     public function __construct(PlSet &$set, $data, array $params)
     {
         $this->set   =& $set;
@@ -219,6 +221,11 @@ abstract class MultipageView implements PlView
     }
 
     public function groupBy()
+    {
+        return null;
+    }
+
+    public function bounds()
     {
         return null;
     }
@@ -263,28 +270,22 @@ abstract class MultipageView implements PlView
                                $this->order(),
                                $this->entriesPerPage,
                                $this->offset);
-        $order       = Env::v('order', $this->defaultkey);
+        $show_bounds = $this->bounds();
         $end         = end($res);
-        $show_bounds = 0;
-        if (($order == "name") || ($order == "-name")) {
-            $first       = $res[0]['nom'];
-            $last        = $end['nom'];
-            $show_bounds = 1;
-        } elseif (($order == "promo") || ($order == "-promo")) {
-            $first       = $end['promo'];
-            $last        = $res[0]['promo'];
-            $show_bounds = 1;
-        }
-        if (($show_bounds) && ($order{0} == '-')) {
-            $aux   = $first;
-            $first = $last;
-            $last  = $aux;
+        if ($show_bounds) {
+            if ($show_bounds == 1) {
+                $first = $res[0][$this->bound_field];
+                $last  = $end[$this->bound_field];
+            } elseif ($show_bounds == -1) {
+                $first = $end[$this->bound_field];
+                $last  = $res[0][$this->bound_field];
+            }
+            $page->assign('first', $first);
+            $page->assign('last', $last);
         }
 
-        $page->assign('first', $first);
-        $page->assign('last', $last);
         $page->assign('show_bounds', $show_bounds);
-        $page->assign('order', $order);
+        $page->assign('order', Env::v('order', $this->defaultkey));
         $page->assign('orders', $this->sortkeys);
         $page->assign_by_ref('plview', $this);
         $page->assign_by_ref('set', $res);
