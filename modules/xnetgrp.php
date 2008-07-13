@@ -328,7 +328,7 @@ class XnetGrpModule extends PLModule
             if ($upload) {
                 $upload->rm();
             }
-            $page->kill("Mail envoyé !");
+            $page->kill("Email envoyé !");
             $page->assign('sent', true);
         }
     }
@@ -843,7 +843,7 @@ class XnetGrpModule extends PLModule
                     pl_redirect("member/$email");
                 }
             } else {
-                $page->trigError("« <strong>$email</strong> » n'est pas une adresse mail valide.");
+                $page->trigError("« <strong>$email</strong> » n'est pas une adresse email valide.");
             }
         }
     }

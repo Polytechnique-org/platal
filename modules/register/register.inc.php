@@ -185,7 +185,7 @@ function create_aliases (&$sub)
                 "Bonjour,\n\n".
 
                 "Un homonyme vient de s'inscrire. La politique de Polytechnique.org est de fournir des\n".
-                "adresses mail devinables, nous ne pouvons donc pas conserver ton alias '$mailorg' qui\n".
+                "adresses email devinables, nous ne pouvons donc pas conserver ton alias '$mailorg' qui\n".
                 "correspond maintenant à deux personnes.\n\n".
 
                 "Tu gardes tout de même l'usage de cet alias pour un mois encore à compter de ce jour.\n\n".

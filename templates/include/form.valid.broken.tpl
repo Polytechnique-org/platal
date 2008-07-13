@@ -25,7 +25,7 @@
   <td><a href='admin/user/{$valid->m_forlife}'>{$valid->m_prenom} {$valid->m_nom} ({$valid->m_promo})</a></td>
 </tr>
 <tr class="pair">
-  <td class="titre">Mail proposé</td>
+  <td class="titre">Email proposé</td>
   <td>{$valid->m_email}</td>
 </tr>
 {if $valid->m_comment}

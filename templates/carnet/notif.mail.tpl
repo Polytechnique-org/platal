@@ -45,7 +45,7 @@ Tu trouveras les mêmes informations sur [[https://www.polytechnique.org/carnet/
 --
 L'Équipe de Polytechnique.org
 
-'''''Note:'''''  Tu reçois ce mail car tu as activé la notification automatique par mail des événements que tu surveilles.\\
+'''''Note:'''''  Tu reçois cet email car tu as activé la notification automatique par email des événements que tu surveilles.\\
 Tu peux changer cette option sur la [[https://www.polytechnique.org/carnet/notifs|page de configuration des notifications]].
 
 {/if}

@@ -171,7 +171,7 @@ function get_user_login($data, $get_forlife = false, $callback = '_default_user_
             default:
                 if (S::has_perms()) {
                     $aliases = $res->fetchColumn();
-                    $page->trigError("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
+                    $page->trigError("Il y a $i utilisateurs avec cette adresse email : ".join(', ', $aliases));
                 } else {
                     $res->free();
                 }

@@ -164,14 +164,14 @@ class AXLetterModule extends PLModule
                     global $globals;
                     $mailer = new PlMailer();
                     $mailer->setFrom("support@" . $globals->mail->domain);
-                    $mailer->setSubject("Un nouveau projet de mail de l'AX vient d'être proposé");
-                    $mailer->setTxtBody("Un nouveau mail vient d'être rédigé en prévision d'un envoi prochain. Vous pouvez "
+                    $mailer->setSubject("Un nouveau projet d'email de l'AX vient d'être proposé");
+                    $mailer->setTxtBody("Un nouvel email vient d'être rédigé en prévision d'un envoi prochain. Vous pouvez "
                                       . "le modifier jusqu'à ce qu'il soit verrouillé pour l'envoi\n\n"
-                                      . "Le sujet du mail : $subject\n"
+                                      . "Le sujet de l'email : $subject\n"
                                       . "L'échéance d'envoi est fixée à $echeance.\n"
-                                      . "Le mail pourra néanmoins partir avant cette échéance si un administrateur de "
+                                      . "L'email pourra néanmoins partir avant cette échéance si un administrateur de "
                                       . "Polytechnique.org le valide.\n\n"
-                                      . "Pour modifier, valider ou annuler le mail :\n"
+                                      . "Pour modifier, valider ou annuler l'email :\n"
                                       . "https://www.polytechnique.org/ax/edit\n"
                                       . "-- \n"
                                       . "Association Polytechnique.org\n");

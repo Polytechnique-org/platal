@@ -41,10 +41,10 @@ qui y était abonné.
 
 <p>
 {if $unregistered|@count eq 1}
-L'utilisateur suivant n'est pas inscrit à Polytechnique.org. Tu peux l'y inciter en lui faisant envoyer un mail de marketing. Une fois inscrit à Polytechnique.org, l'inscription à la liste lui sera automatiquement proposée.
+L'utilisateur suivant n'est pas inscrit à Polytechnique.org. Tu peux l'y inciter en lui faisant envoyer un email de marketing. Une fois inscrit à Polytechnique.org, l'inscription à la liste lui sera automatiquement proposée.
 {else}
 Les utilisateurs suivants ne sont pas inscrits à Polytechnique.org. Tu peux les y inciter en leur faisant envoyer des
-mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la liste leur sera automatique proposée.
+emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la liste leur sera automatique proposée.
 {/if}
 <p>
 
@@ -75,8 +75,8 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
         Action*&nbsp;:
         <select name="mk_action[{$login}]" onchange="showEmail(this.value, '{$login}');">
           <option value="none">Aucune</option>
-          <option value="marketu">Envoyer un mail en ton nom</option>
-          <option value="markets">Envoyer un mail au nom de Polytechnique.org</option>
+          <option value="marketu">Envoyer un email en ton nom</option>
+          <option value="markets">Envoyer un email au nom de Polytechnique.org</option>
           <option value="sub">Lui proposer l'inscription</option>
         </select><br />
         <span id="mk_s_mail[{$login}]" style="display: none">
@@ -93,8 +93,8 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
 
 <p class="smaller">
   *La dernière action ajoute simplement la liste de diffusion aux abonnements qui seront proposés au camarade
-  lors de son inscription à Polytechnique.org sans pour autant lui enovyer de mail de marketing. Cette action est
-  automatique si tu choisis l'envoi de mail.
+  lors de son inscription à Polytechnique.org sans pour autant lui envoyer d'email de marketing. Cette action est
+  automatique si tu choisis l'envoi d'email.
 </p>
 
 {/if}
@@ -188,7 +188,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
 </form>
 
 <div class="smaller">
- * Le fichier doit contenir une adresse e-mail par ligne. Les X doivent être identifiés par une adresse
+ * Le fichier doit contenir une adresse email par ligne. Les X doivent être identifiés par une adresse
  @polytechnique.org, @m4x.org ou @melix.net/org.
 </div>
 

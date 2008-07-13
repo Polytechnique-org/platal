@@ -36,8 +36,8 @@ class BrokenReq extends Validate
 
     private $m_reactive = false;
 
-    public $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance).
-    Si le demandeur marque sa propre adresse mail, refuser dans tous les cas.
+    public $rules = "Accepter si l'adresse email parait correcte, et pas absurde (ou si le marketeur est de confiance).
+    Si le demandeur marque sa propre adresse email, refuser dans tous les cas.
     Si l'adresse proposée est surveillée, refuser.
     Si le compte associé est désactivé, étudier le cas en fonction de la raison de la désactivation.";
     // }}}
@@ -79,13 +79,13 @@ class BrokenReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok && !$this->m_reactive) {
-            return "  Un mail de contact vient d'être envoyé"
+            return "  Un email de contact vient d'être envoyé"
                 ." à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour confirmer sa volonté de"
                 ." mettre à jour sa redirection Polytechnique.org !\n\n"
                 ."Merci de ta participation !\n";
         } elseif ($isok) {
             return "  L'adresse de redirection {$this->m_email} de {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) "
-                ."vient d'être réactivée. Un mail lui a été envoyé pour l'en informer.\n\n"
+                ."vient d'être réactivée. Un email lui a été envoyé pour l'en informer.\n\n"
                 ."Merci de ta participation !\n";
         } else {
             return "  Nous n'utiliserons pas cette adresse pour contacter {$this->m_prenom} {$this->m_nom} ({$this->m_promo}).";

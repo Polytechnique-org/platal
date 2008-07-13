@@ -23,9 +23,9 @@
 <h1>Gestion des homonymes</h1>
 
 {if $op eq 'mail'}
-<p class="erreur">mail envoyé à {$forlife}</p>
+<p class="erreur">email envoyé à {$forlife}</p>
 {elseif $op eq 'correct'}
-<p class="erreur">mail envoyé à {$forlife}, alias supprimé</p>
+<p class="erreur">email envoyé à {$forlife}, alias supprimé</p>
 {/if}
 
 {if $op eq 'list' || $op eq 'mail' || $op eq 'correct'}
@@ -61,7 +61,7 @@
       <a href="profile/{$user.forlife}" class='popup2'>fiche</a>
       <a href="admin/user/{$user.forlife}">edit</a>
       {if $user.type eq 'alias'}
-      <a href="admin/homonyms/mail-conf/{$user.user_id}">mailer</a>
+      <a href="admin/homonyms/mail-conf/{$user.user_id}">envoyer un email</a>
       <a href="admin/homonyms/correct-conf/{$user.user_id}">corriger</a>
       {/if}
     </td>
@@ -76,7 +76,7 @@
   {xsrf_token_field}
   <table class="bicol">
     <tr>
-      <th>Envoyer un mail pour prévenir l'utilisateur</th>
+      <th>Envoyer un email pour prévenir l'utilisateur</th>
     </tr>
     <tr>
       <td>
@@ -84,8 +84,8 @@
 {$prenom},
 
 
-Comme nous t'en avons informé par mail il y a quelques temps,
-pour respecter nos engagements en terme d'adresses e-mail devinables,
+Comme nous t'en avons informé par email il y a quelques temps,
+pour respecter nos engagements en terme d'adresses email devinables,
 tu te verras bientôt retirer l'alias {$loginbis}@{#globals.mail.domain#} pour
 ne garder que {$forlife}@{#globals.mail.domain#}.
 
@@ -119,7 +119,7 @@ L'équipe Polytechnique.org
         <textarea cols="80" rows="20" name="mailbody">
 {$prenom},
 
-Comme nous t'en avons informé par mail il y a quelques temps,
+Comme nous t'en avons informé par email il y a quelques temps,
 nous t'avons retiré de façon définitive l'adresse
 {$loginbis}@{#globals.mail.domain#}.
 

@@ -109,7 +109,7 @@
 
     <tr>
       <td class="titre">
-        Adresse mail&nbsp;:
+        Adresse email&nbsp;:
       </td>
       <td>
         <input type="text" size="40" name="mail" value="{$asso.mail}" />

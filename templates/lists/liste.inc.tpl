@@ -57,7 +57,7 @@
   {foreach from=$liste.mails item=m}
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'
         onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'));">
-      {icon name=add title="Valider le mail"}
+      {icon name=add title="Valider l'email"}
     </a>
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mdel=1&amp;token={xsrf_token}'
         onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mdel=1&amp;token={xsrf_token}'));">

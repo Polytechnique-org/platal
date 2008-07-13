@@ -60,7 +60,7 @@
     </td>
   </tr>
   <tr class="impair">
-    <td class="titre">Redirection des mails</td><td>{if $googleapps_storage}activée{else}désactivee{/if}</td>
+    <td class="titre">Redirection des emails</td><td>{if $googleapps_storage}activée{else}désactivee{/if}</td>
   </tr>
 
   <tr class="pair">
@@ -73,7 +73,7 @@
     <td class="titre">Dernière utilisation du webmail</td><td>{$a->r_last_webmail|date_format:"%Y-%m-%d"}</td>
   </tr>
   <tr class="pair">
-    <td class="titre">Utilisation du quota mail</td><td>{$a->r_disk_usage/1024/1024|string_format:"%.2f"}MB</td>
+    <td class="titre">Utilisation du quota d'emails</td><td>{$a->r_disk_usage/1024/1024|string_format:"%.2f"}MB</td>
   </tr>
 </table><br />
 

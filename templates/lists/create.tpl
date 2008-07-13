@@ -133,7 +133,7 @@ liste&nbsp;:
     </tr>
     <tr>
       <td></td>
-      <td class='smaller' colspan='4'>(l'envoi d'un mail à cette liste est-il libre, modéré
+      <td class='smaller' colspan='4'>(l'envoi d'un email à cette liste est-il libre, modéré
       lorsque l'expéditeur n'appartient pas à la liste ou modéré dans tous les cas ?)</td>
     </tr>
     <tr>
@@ -190,7 +190,7 @@ liste&nbsp;:
   <p>
   La liste est habituellement créée dans les jours qui suivent la demande sauf exception. Pour plus
   d'informations écris-nous à l'adresse {mailto address='listes@polytechnique.org'} en mettant dans
-  le sujet de ton mail le nom de la liste souhaité afin de faciliter les échanges de mails
+  le sujet de ton email le nom de la liste souhaité afin de faciliter les échanges d'emails
   ultérieurs éventuels.
   </p>
   <div class='center'>

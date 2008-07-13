@@ -157,7 +157,7 @@ function deadlineChange(box)
     </tr>
     <tr id="new_pay" style="display:none">
       <td colspan="2">
-        Il faut que tu définisses le texte du mail de confirmation de paiement. Pour ceci, tu peux adapter le modèle qui suit&nbsp;:
+        Il faut que tu définisses le texte de l'email de confirmation de paiement. Pour ceci, tu peux adapter le modèle qui suit&nbsp;:
         <ul>
           <li><strong>Remplace les crochets</strong> ([...]) par le texte que tu désires y voir apparaître</li>
           <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt; et &lt;montant&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées</li>

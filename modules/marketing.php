@@ -136,7 +136,7 @@ class MarketingModule extends PLModule
                 $market = new Marketing($uid, Post::v('to'), 'default', null, 'staff');
             }
             $market->send(Post::v('title'), Post::v('message'));
-            $page->trigSuccess("Mail envoyé");
+            $page->trigSuccess("Email envoyé");
         }
 
         if ($action == 'insrel') {

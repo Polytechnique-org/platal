@@ -110,7 +110,7 @@
     </tr>
     <tr class="pair">
       <td colspan="2">
-        <span class="titre">E-mail professionnel&nbsp;:</span>
+        <span class="titre">Email professionnel&nbsp;:</span>
         <input type="text" size="30" maxlength="60" {if $job.email_error}class="error"{/if}
                name="{$jobpref}[email]" value="{$job.email}" />
         <span class="flags">

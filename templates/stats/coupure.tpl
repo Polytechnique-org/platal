@@ -106,7 +106,7 @@
 <h1>Problèmes avec les autres fournisseurs de services</h1>
 
 <p>
-  La liste ci-dessous indique quels sont les fournisseurs de mails vers lesquels nous avons
+  La liste ci-dessous indique quels sont les fournisseurs d'emails vers lesquels nous avons
   actuellement des problèmes de tranmission.
 </p>
 
