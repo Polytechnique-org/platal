@@ -91,8 +91,8 @@ class VCardIterator implements PlIterator
                 $user['forlife'].'@'.$globals->mail->domain2);
 
         $user['virtualalias'] = $res->fetchOneCell();
-        $user['gpxs_vcardjoin'] = join(',', array_map(array('VCard', 'text_encode'), $user['gpxs_name']));
-        $user['binets_vcardjoin'] = join(',', array_map(array('VCard', 'text_encode'), $user['binets']));
+        $user['gpxs_vcardjoin'] = join(', ', array_map(array('VCard', 'text_encode'), $user['gpxs_name']));
+        $user['binets_vcardjoin'] = join(', ', array_map(array('VCard', 'text_encode'), $user['binets']));
         // get photo
         if ($this->photos) {
             $res = XDB::query(

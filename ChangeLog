@@ -9,6 +9,9 @@ New:
         - Add an anti-XSRF framework, and add protection to most pages     -VZA
         - Add a 'disallow all' robots.txt in development working copies.   -VZA
 
+    * Forums:
+        - Can choose the color of the branches                             -FRU
+
 Bug/Wish:
 
     * Admin:
@@ -21,6 +24,7 @@ Bug/Wish:
 
     * Core:
         - Fix email sending, correcting bugs introduced in r1897           -VZA
+        - #832: Always include the url in bug reports                      -ALK
         - #841: Improves contrast of links in legends in skin 'Espace'     -FRU
         - #844: Uses INT in MySQL to store user ids                        -VZA
         - #851: Adds a direct link to GApps for gapps-active users         -VZA

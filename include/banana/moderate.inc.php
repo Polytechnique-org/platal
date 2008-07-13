@@ -59,6 +59,8 @@ class ModerationBanana extends Banana
 
     function __construct(User &$user, $params = null)
     {
+        ini_set('memory_limit', '128M'); 
+
         global $globals;
         ModerationBanana::$client = $params['client'];
         ModerationBanana::$listname = $params['listname'];

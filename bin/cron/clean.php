@@ -30,19 +30,21 @@ function query ($sql) {
 }
 
 // la table des notifs est nettoyée
-$eight_days_ago = date("YmdHis",mktime() - 8*24*60*60);
+$eight_days_ago = date("YmdHis", time() - 8*24*60*60);
 query("DELETE FROM watch_ops WHERE known<$eight_days_ago");
 
 query("DELETE FROM register_pending WHERE TO_DAYS(NOW()) - TO_DAYS(date) >= 365");
-query("delete from register_pending WHERE hash = 'INSCRIT'");
+query("DELETE FROM register_pending WHERE hash = 'INSCRIT'");
 
 // quelques tables sont triées pour que la lecture triée soit plus facile
-query("alter table applis_def order by text");
-query("alter table binets_def order by text");
-query("alter table groupesx_def order by text");
-query("alter table secteur order by text");
-query("alter table sections order by text");
+query("ALTER TABLE applis_def ORDER BY text");
+query("ALTER TABLE binets_def ORDER BY text");
+query("ALTER TABLE groupesx_def ORDER BY text");
+query("ALTER TABLE secteur ORDER BY text");
+query("ALTER TABLE sections ORDER BY text");
 
+// Prunes older autocomplete queries.
+query("DELETE FROM search_autocomplete WHERE generated < DATE_SUB(NOW(), INTERVAL 1 DAY)");
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

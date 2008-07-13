@@ -34,6 +34,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 </h1>
 
 <form method='post' action='{$platal->pl_self(1)}'>
+  {xsrf_token_field}
   <table class='bicol' cellpadding='2' cellspacing='0'>
     <tr><th colspan='2'>Options de la liste {$details.addr}</th></tr>
     <tr class='impair'>
@@ -195,13 +196,14 @@ redirection en mode 'inactif'. le logiciel de mailing list saura se débrouiller
 </p>
 
 <form method='post' action='{$platal->pl_self(1)}'>
+  {xsrf_token_field}
   <table class='tinybicol' cellpadding='2' cellspacing='0'>
     <tr><th>Adresses non modérées</th></tr>
     <tr>
       <td>
         {if $options.accept_these_nonmembers|@count}
         {foreach from=$options.accept_these_nonmembers item=addr}
-        {$addr}<a href='{$platal->pl_self(1)}&amp;atn_del={$addr}'>
+        {$addr}<a href='{$platal->pl_self(1)}&amp;atn_del={$addr}&amp;token={xsrf_token}'>
           {icon name=cross title="retirer de la whitelist"}
         </a><br />
         {/foreach}

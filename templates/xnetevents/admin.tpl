@@ -43,7 +43,8 @@ comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
 
 {if count($moments) > 1}
 <p class="center">
-[<a href="{$platal->ns}events/admin/{$evt.short_name|default:$evt.eid}"{if !$platal->argv[2]}class="erreur"{/if}>tout</a>]
+[<a href="{$platal->ns}events/admin/{$evt.short_name|default:$evt.eid}"{if
+!$platal->argv[2]}class="erreur"{/if}>Vue générale</a>]
 {foreach from=$moments item=m}
 [<a href="{$platal->ns}events/admin/{$evt.short_name|default:$evt.eid}/{$m.item_id}" {if $platal->argv[2] eq $m.item_id}class="erreur"{/if}>{$m.titre}</a>]
 {/foreach}
@@ -238,6 +239,7 @@ Donne ici son mail, ainsi que le nombre de participants.
 </p>
 
 <form action="{$platal->pl_self()}" method="post" id="inscription">
+  {xsrf_token_field}
   <p class="descr">
     <input type="hidden" name="adm" value="nbs" />
 
@@ -271,6 +273,7 @@ Note que tu peux cliquer sur les noms des membres pour remplir automatiquement l
 </p>
 
 <form action="{$platal->pl_self()}" method="post" id="montant">
+  {xsrf_token_field}
   <p class="descr">
   <input type="hidden" name="adm" value="prix" />
   Mail&nbsp;: <input name="mail" size="20" />

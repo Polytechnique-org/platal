@@ -69,6 +69,7 @@
 </p>
 
 <form method="post" action="{$platal->path}">
+  {xsrf_token_field}
   <table class="bicol" summary="Fiche camarade">
     <tr><th colspan="2">Proposition d'adresse pour<br />{$user.nom} {$user.prenom} (X{$user.promo})</th></tr>
     <tr class="pair">

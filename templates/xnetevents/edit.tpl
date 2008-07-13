@@ -64,6 +64,7 @@ function deadlineChange(box)
 {/if}
 
 <form method="post" action="{$platal->ns}events/edit/{$url_ref}">
+  {xsrf_token_field}
   <table class='bicol' cellspacing='0' cellpadding='0'>
     <colgroup>
       <col width='25%' />

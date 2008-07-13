@@ -36,7 +36,7 @@ class XorgSession extends PlSession
             $cookie = $this->tryCookie();
             if ($cookie == 0) {
                 return $this->start(AUTH_COOKIE);
-            } else if ($cookie == 1 || $cooke == -2) {
+            } else if ($cookie == 1 || $cookie == -2) {
                 return false;
             }
         }

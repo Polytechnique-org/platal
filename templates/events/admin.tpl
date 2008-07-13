@@ -66,17 +66,17 @@
     <td class="right">{if !$ev.fvalide}<strong>{/if}{$ev.peremption}{if !$ev.fvalide}</strong>{/if}</td>
     <td class="right" style="width: 42px">
       {if $arch}
-        <a href="admin/events/unarchive/{$ev.id}">{icon name=package_delete title="Désarchiver"}</a><br />
+        <a href="admin/events/unarchive/{$ev.id}?token={xsrf_token}">{icon name=package_delete title="Désarchiver"}</a><br />
       {else}
         {if $ev.fvalide}
-        <a href="admin/events/unvalid/{$ev.id}">{icon name=thumb_down title="Invalider"}</a>
-        <a href="admin/events/archive/{$ev.id}">{icon name=package_add title="Archiver"}</a><br />
+        <a href="admin/events/unvalid/{$ev.id}?token={xsrf_token}">{icon name=thumb_down title="Invalider"}</a>
+        <a href="admin/events/archive/{$ev.id}?token={xsrf_token}">{icon name=package_add title="Archiver"}</a><br />
         {else}
-        <a href="admin/events/valid/{$ev.id}">{icon name=thumb_up title="Valider"}</a><br />
+        <a href="admin/events/valid/{$ev.id}?token={xsrf_token}">{icon name=thumb_up title="Valider"}</a><br />
         {/if}
       {/if}
       <a href="admin/events/edit/{$ev.id}">{icon name=page_edit title="Editer"}</a>
-      <a href="admin/events/delete/{$ev.id}">{icon name=delete title="Supprimer"}</a>
+      <a href="admin/events/delete/{$ev.id}?token={xsrf_token}">{icon name=delete title="Supprimer"}</a>
     </td>
   </tr>
   {if $ev.preview}

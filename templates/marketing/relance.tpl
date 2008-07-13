@@ -28,6 +28,7 @@
 {/foreach}
 
 <form action="marketing/relance" method="post">
+  {xsrf_token_field}
   <table class="bicol" summary="liste des inscriptions non confirmées">
     <tr>
       <th>Date</th>

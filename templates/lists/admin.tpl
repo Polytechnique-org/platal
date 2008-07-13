@@ -60,6 +60,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
 </script>
 
 <form method="post" action='{$smarty.server.REQUEST_URI}'>
+  {xsrf_token_field}
   <table class="bicol">
   {foreach from=$unregistered key=login item=it}
     <tr class="{cycle values="pair,impair"}">
@@ -103,6 +104,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
 </h1>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
+  {xsrf_token_field}
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
     {foreach from=$owners item=xs key=promo}
     <tr>
@@ -140,6 +142,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
 </h1>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}' enctype="multipart/form-data">
+  {xsrf_token_field}
   <table class='bicol' cellpadding='0' cellspacing='0'>
     {foreach from=$members item=xs key=promo}
     <tr>
@@ -155,7 +158,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
         {else}
         {$x.l}
         {/if}
-        <a href='{$platal->pl_self(1)}?del_member={$x.l}'>{icon name=cross title='retirer membre'}</a>
+        <a href='{$platal->pl_self(1)}?del_member={$x.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer membre'}</a>
         <br />
         {/foreach}
       </td>

@@ -46,6 +46,7 @@ Pour les autres besoins de communications (notament pour un grand nombre de pers
 de modération), il est recommandé de créer <a href="{$platal->ns}lists/create">une liste de diffusion</a>.
 </p>
 <form action='{$platal->ns}alias/create' method='post'>
+  {xsrf_token_field}
   <table class='large'>
     <tr>
       <th colspan='2'>Caractéristiques de l'alias</th>

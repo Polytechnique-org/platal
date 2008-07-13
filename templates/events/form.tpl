@@ -74,6 +74,7 @@
 <br />
 
 <form action="{$platal->path}" method="post" enctype="multipart/form-data">
+  {xsrf_token_field}
   <table class="bicol">
     <tr>
       <th colspan="2">Contenu de l'annonce</th>

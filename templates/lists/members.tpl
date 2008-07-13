@@ -58,13 +58,13 @@
       {if $details.sub>1}
       Tu es inscrit sur la liste.<br />
       Te désinscrire&nbsp;:
-      <a href='{$platal->pl_self(1)}?del=1'>{icon name=cross title="me désinscrire"}</a>
+      <a href='{$platal->pl_self(1)}?del=1&amp;token={xsrf_token}'>{icon name=cross title="me désinscrire"}</a>
       {elseif $details.sub eq 1}
       Ta demande d'inscription est en cours de validation.
       {else}
       Tu n'es pas inscrit.<br />
       Demander ton inscription&nbsp;:
-      <a href="{$platal->pl_self(1)}?add=1">{icon name=add title="demander mon inscription"}</a>
+      <a href="{$platal->pl_self(1)}?add=1&amp;token={xsrf_token}">{icon name=add title="demander mon inscription"}</a>
       {/if}
     </td>
   </tr>

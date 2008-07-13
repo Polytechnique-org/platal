@@ -24,6 +24,7 @@
 
 <p class="error">Es-tu sûr de vouloir supprimer l'alias {$smarty.get.del_alias} ?</p>
 <form action='{$platal->ns}lists' method="post">
+  {xsrf_token_field}
   <div class="center">
     <input type='submit' value="Oui, je suis sûr" />
     <input type='hidden' name='del_alias' value="{$smarty.get.del_alias}" />
@@ -79,11 +80,11 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
     <td align='right'>{$l.nbsub}</td>
     <td align='center'>
       {if $l.sub eq 2}
-      <a href="{$platal->ns}lists?del={$l.list}">{icon name=cross title="me désinscrire"}</a>
+      <a href="{$platal->ns}lists?del={$l.list}&amp;token={xsrf_token}">{icon name=cross title="me désinscrire"}</a>
       {elseif $l.sub eq 1}
       {icon name=flag_orange title='inscription en attente de modération'}
       {else}
-      <a href="{$platal->ns}lists?add={$l.list}">{icon name=add title="m'inscrire"}</a>
+      <a href="{$platal->ns}lists?add={$l.list}&amp;token={xsrf_token}">{icon name=add title="m'inscrire"}</a>
       {/if}
     </td>
   </tr>

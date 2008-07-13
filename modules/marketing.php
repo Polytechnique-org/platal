@@ -105,6 +105,7 @@ class MarketingModule extends PLModule
         }
 
         if ($action == 'del') {
+            S::assert_xsrf_token();
             Marketing::clear($uid, $value);
         }
 
@@ -128,6 +129,8 @@ class MarketingModule extends PLModule
         }
 
         if ($action == 'relforce') {
+            S::assert_xsrf_token();
+
             $market = Marketing::get($uid, Post::v('to'));
             if (is_null($market)) {
                 $market = new Marketing($uid, Post::v('to'), 'default', null, 'staff');
@@ -137,6 +140,7 @@ class MarketingModule extends PLModule
         }
 
         if ($action == 'insrel') {
+            S::assert_xsrf_token();
             if (Marketing::relance($uid)) {
                 $page->trigSuccess('relance faite');
             }
@@ -199,6 +203,8 @@ class MarketingModule extends PLModule
             $email = valide_email(Post::v('mail'));
         }
         if (Post::has('valide') && isvalid_email_redirection($email)) {
+            S::assert_xsrf_token();
+
             // security stuff
             check_email($email, "Proposition d'une adresse surveillee pour " . $user->login() . " par " . S::user()->login());
             $res = XDB::query("SELECT  flags
@@ -260,6 +266,7 @@ class MarketingModule extends PLModule
             $page->assign('promo', $promo);
 
             if (Post::has('valide')) {
+                S::assert_xstf_token();
                 $email = trim(Post::v('mail'));
 
                 if (!isvalid_email_redirection($email)) {
