@@ -88,7 +88,7 @@ function visibilityChange(box)
       <td>
         <small>
           La section "contacts" sert à noter les informations telles que les adresses emails de contact, les sites web.
-          Elle n'est accessible qu'aux personnes authentifiées. Si l'annonce est attachée à une événement, un lien vers
+          Elle n'est accessible qu'aux personnes authentifiées. Si l'annonce est attachée à un événement, un lien vers
           la page d'inscription est automatiquement ajouté.
         </small>
       </td>
