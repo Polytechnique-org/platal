@@ -85,7 +85,7 @@ function deadlineChange(box)
     <tr>
       <td class='titre'>
         Nom raccourci&nbsp;:<br />
-        <small>(pour les mailings listes)</small>
+        <small>(pour les listes de diffusion)</small>
       </td>
       <td>
         <input type="text" name="short_name" size="20" maxlength="20"

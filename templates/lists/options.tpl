@@ -192,7 +192,7 @@ Attention, cette liste est à utiliser pour des non-X ou des non-inscrits à la 
 </p>
 <p>
 les X inscrits à la liste doivent ajouter leurs adresses usuelles parmis leurs adresses de
-redirection en mode 'inactif'. le logiciel de mailing list saura se débrouiller tout seul.
+redirection en mode 'inactif'. le logiciel de gestion des listes de diffusion saura se débrouiller tout seul.
 </p>
 
 <form method='post' action='{$platal->pl_self(1)}'>

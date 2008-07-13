@@ -962,7 +962,7 @@ class XnetGrpModule extends PLModule
         if ($this->unsubscribe($user)) {
             $page->trigSuccess('Vous avez été désinscrit du groupe avec succès.');
         } else {
-            $page->trigWarning('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des mailing-lists.');
+            $page->trigWarning('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');
         }
         $page->assign('is_member', is_member(true));
     }

@@ -32,7 +32,7 @@
 {else}
 
 <p>
-N'importe qui peut faire la demande de création d'une mailing-list, il suffit pour cela d'être au
+N'importe qui peut faire la demande de création d'une liste de diffusion, il suffit pour cela d'être au
 moins 4 polytechniciens inscrits sur le site, et de fournir les informations suivantes concernant la
 liste&nbsp;:
 </p>
