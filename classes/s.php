@@ -85,6 +85,23 @@ class S
         return S::v('log');
     }
 
+    /** User object storage and accessor. The user object (an instance of the
+     * local subclass of PlUser) is currently stored as a S class variable, and
+     * not as a session variable, so as to avoid bloating the global on-disk
+     * session.
+     * TODO: When all the codebase will use S::user() as the only source for
+     * user ids, fullname/displayname, and forlife/bestalias, S::$user should
+     * move into the php session (and data it helds should be removed from
+     * the php session). */
+    private static $user = null;
+    public static function &user()
+    {
+        if (self::$user == null) {
+            self::$user = User::getSilentWithValues(S::i('uid'), $_SESSION);
+        }
+        return self::$user;
+    }
+
     public static function has_perms()
     {
         return Platal::session()->checkPerms(PERMS_ADMIN);
