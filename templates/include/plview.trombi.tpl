@@ -31,7 +31,7 @@
   {if $loop eq "1"}
   <tr>
   {/if}
-    <td class="center">
+    <td class="center" style="vertical-align: bottom">
       <a href="{$mainsiteurl}profile/{$p.forlife}" class="popup2">
         <img src="photo/{$p.forlife}" width="110" alt=" [ PHOTO ] " />
       </a>
