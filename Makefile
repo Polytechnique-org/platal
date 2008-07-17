@@ -134,7 +134,7 @@ JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQ
 
 jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js $(JQUERY_PLUGINS_PATHES)
 
-htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-latest.pack.js
+htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-latest.min.js
 htdocs/javascript/jquery.js:
 	@$(download)
 
