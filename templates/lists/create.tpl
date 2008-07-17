@@ -45,18 +45,24 @@ liste&nbsp;:
     </tr>
     <tr>
       <td class='titre'>C'est une liste pour&nbsp;:</td>
-      <td colspan='2'><input type='radio' name='asso' value='binet'
-        {if $smarty.post.asso eq 'binet' && $smarty.post}checked='checked'{/if} />un binet</td>
+      <td colspan='2'><input type='radio' name='asso' value='groupex'
+        {if $smarty.post.asso eq 'groupex' && $smarty.post}checked='checked'{/if} />un groupe X</td>
       <td colspan='2'><input type='radio' name='asso' value=''
         {if !$smarty.post.asso || !$smarty.post}checked='checked'{/if} />une liste de portée générale ou d'amis</td>
     </tr>
+    {if $young_promo}
     <tr>
       <td></td>
-      <td colspan='2'><input type='radio' name='asso' value='groupex'
-        {if $smarty.post.asso eq 'groupex' && $smarty.post}checked='checked'{/if} />un groupe X</td>
+      <td colspan='2'><input type='radio' name='asso' value='binet'
+        {if $smarty.post.asso eq 'binet' && $smarty.post}checked='checked'{/if} />un binet</td>
+      {if $very_young_promo}
       <td colspan='2'><input type='radio' name='asso' value='alias'
         {if $smarty.post.asso eq 'alias' && $smarty.post}checked='checked'{/if} />un alias psc, ...</td>
+      {else}
+      <td colspan='2'></td>
+      {/if}
     </tr>
+    {/if}
     <tr class='promo'>
       <td class='titre'>Promotion&nbsp;:</td>
       <td><input type='text' name='promo' size='4' maxlength='4'

@@ -170,6 +170,19 @@ class ListsModule extends PLModule
 
         $page->changeTpl('lists/create.tpl');
 
+        $user_promo  = S::i('promo');
+        $year        = date('Y');
+        $month       = date('m');
+        $young_promo = $very_young_promo = 0;
+        if ((($year > $user_promo) && ($month > 3)) && ($year < $user_promo + 5)) {
+            $young_promo = 1;
+        }
+        if ((($year > $user_promo) && ($month > 7)) && (($year < $user_promo + 1) && ($month < 8))) {
+            $very_young_promo = 1;
+        }
+        $page->assign('young_promo', $young_promo);
+        $page->assign('very_young_promo', $very_young_promo);
+
         $owners  = preg_split("/[\s]+/", Post::v('owners'), -1, PREG_SPLIT_NO_EMPTY);
         $members = preg_split("/[\s]+/", Post::v('members'), -1, PREG_SPLIT_NO_EMPTY);
 
