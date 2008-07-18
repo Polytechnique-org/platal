@@ -25,34 +25,78 @@
   Aucun des camarades concernés n'a de photographie sur sa fiche
 </p>
 {else}
-<table cellpadding="8" cellspacing="2" style="width: 100%">
-  {foreach from=$set item=p}
-  {cycle values="1,2,3" assign="loop"}
-  {if $loop eq "1"}
+<table cellpadding="0" cellspacing="2" style="width: 100%">
+  {section name=trombi loop=$set start=1}
+  {if $smarty.section.trombi.iteration % 3 == 1}
   <tr>
-  {/if}
-    <td class="center" style="vertical-align: bottom">
-      <a href="{$mainsiteurl}profile/{$p.forlife}" class="popup2">
-        <img src="photo/{$p.forlife}" width="110" alt=" [ PHOTO ] " />
+    <td class="center" style="vertical-align: middle">
+      <a href="{$mainsiteurl}profile/{$set[trombi.index_prev].forlife}" class="popup2">
+        <img src="photo/{$set[trombi.index_prev].forlife}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_with_admin && hasPerm('admin')}
-      <a href="{$mainsiteurl}admin/trombino/{$p.user_id}">{icon name=wrench title="[admin]"}</a>
+      <a href="{$mainsiteurl}admin/trombino/{$set[trombi.index_prev].user_id}">{icon name=wrench title="[admin]"}</a>
       {/if}
-      <br />
-      <a href="{$mainsiteurl}profile/{$p.forlife}" class="popup2">
-        {$p.prenom} {$p.nom}{if $trombi_with_promo} ({$p.promo}){/if}
+    </td>
+    <td class="center" style="vertical-align: middle">
+      <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">
+        <img src="photo/{$set[trombi].forlife}" width="110" alt=" [ PHOTO ] " />
+      </a>
+      {if $trombi_with_admin && hasPerm('admin')}
+      <a href="{$mainsiteurl}admin/trombino/{$set[trombi].user_id}">{icon name=wrench title="[admin]"}</a>
+      {/if}
+    </td>
+    <td class="center" style="vertical-align: middle">
+    {if $set[trombi.index_next]}
+      <a href="{$mainsiteurl}profile/{$set[trombi.index_next].forlife}" class="popup2">
+        <img src="photo/{$set[trombi.index_next].forlife}" width="110" alt=" [ PHOTO ] " />
+      </a>
+      {if $trombi_with_admin && hasPerm('admin')}
+      <a href="{$mainsiteurl}admin/trombino/{$set[trombi.index_next].user_id}">{icon name=wrench title="[admin]"}</a>
+      {/if}
+    {/if}
+    </td>
+  </tr>
+  <tr>
+    <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
+      <a href="{$mainsiteurl}profile/{$set[trombi.index_prev].forlife}" class="popup2">
+        {$set[trombi.index_prev].prenom} {$set[trombi.index_prev].nom}{if $trombi_with_promo} ({$set[trombi.index_prev].promo}){/if}
       </a>
     </td>
-  {if $loop eq "3"}
+    <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
+      <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">
+        {$set[trombi].prenom} {$set[trombi].nom}{if $trombi_with_promo} ({$set[trombi].promo}){/if}
+      </a>
+    </td>
+    <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
+    {if $set[trombi.index_next]}
+      <a href="{$mainsiteurl}profile/{$set[trombi.index_next].forlife}" class="popup2">
+        {$set[trombi.index_next].prenom} {$set[trombi.index_next].nom}{if $trombi_with_promo} ({$set[trombi.index_next].promo}){/if}
+      </a>
+    {/if}
+    </td>
+  </tr>
+  {elseif ($smarty.section.trombi.iteration % 3 == 0) && ($smarty.section.trombi.last)}
+  <tr>
+    <td class="center" style="vertical-align: middle; padding-bottom: 15px">
+      <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">
+        <img src="photo/{$set[trombi].forlife}" width="110" alt=" [ PHOTO ] " />
+      </a>
+      {if $trombi_with_admin && hasPerm('admin')}
+      <a href="{$mainsiteurl}admin/trombino/{$set[trombi].user_id}">{icon name=wrench title="[admin]"}</a>
+      {/if}
+    </td>
+    <td></td><td></td>
+  </tr>
+  <tr style="margin-top: 0; padding-top: 0">
+    <td class="center" style="vertical-align: bottom">
+      <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">
+        {$set[trombi].prenom} {$set[trombi].nom}{if $trombi_with_promo} ({$set[trombi].promo}){/if}
+      </a>
+    </td>
+    <td></td><td></td>
   </tr>
   {/if}
-  {/foreach}
-  {if $loop neq "3"}
-  {if $lopp eq "1"}
-  <td></td>
-  {/if}
-  <td></td></tr>
-  {/if}
+  {/section}
 </table>
 {/if}
 
