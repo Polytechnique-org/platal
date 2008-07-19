@@ -21,51 +21,25 @@
 
 class User extends PlUser
 {
-    // Implementation of properties accessors.
-    public function bestEmail()
-    {
-        if (!isset($this->bestalias)) {
-            global $globals;
-            $res = XDB::query("SELECT  CONCAT(alias, '@{$globals->mail->domain}')
-                                 FROM  aliases
-                                WHERE  FIND_IN_SET('bestalias', flags)
-                                       AND id = {?}", $this->user_id);
-            $this->bestalias = $res->numRows() ? $res->fetchOneCell() : false;
-        }
-        return $this->bestalias;
-    }
-
-    public function forlifeEmail()
-    {
-        if (!isset($this->forlife)) {
-            global $globals;
-            $res = XDB::query("SELECT  CONCAT(alias, '@{$globals->mail->domain}')
-                                 FROM  aliases
-                                WHERE  type = 'a_vie' AND id = {?}", $this->user_id);
-            $this->forlife = $res->numRows() ? $res->fetchOneCell() : false;
-        }
-        return $this->forlife;
-    }
-
-    // Implementation of the login to array(user_id, hruid) function.
+    // Implementation of the login to uid method.
     protected function getLogin($login)
     {
         global $globals;
 
         // If $data is an integer, fetches directly the result.
         if (is_numeric($login)) {
-            $res = XDB::query("SELECT user_id, hruid FROM auth_user_md5 WHERE user_id = {?}", $login);
+            $res = XDB::query("SELECT user_id FROM auth_user_md5 WHERE user_id = {?}", $login);
             if ($res->numRows()) {
-                return $res->fetchOneRow();
+                return $res->fetchOneCell();
             }
 
             throw new UserNotFoundException();
         }
 
         // Checks whether $login is a valid hruid or not.
-        $res = XDB::query("SELECT user_id, hruid FROM auth_user_md5 WHERE hruid = {?}", $login);
+        $res = XDB::query("SELECT user_id FROM auth_user_md5 WHERE hruid = {?}", $login);
         if ($res->numRows()) {
-            return $res->fetchOneRow();
+            return $res->fetchOneCell();
         }
 
         // From now, $login can only by an email alias, or an email redirection.
@@ -78,21 +52,21 @@ class User extends PlUser
         // Checks if $login is a valid alias on the main domains.
         list($mbox, $fqdn) = explode('@', $login);
         if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
-            $res = XDB::query("SELECT  u.user_id, u.hruid
+            $res = XDB::query("SELECT  u.user_id
                                  FROM  auth_user_md5 AS u
                            INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type IN ('alias', 'a_vie'))
                                 WHERE  a.alias = {?}", $mbox);
             if ($res->numRows()) {
-                return $res->fetchOneRow();
+                return $res->fetchOneCell();
             }
 
             if (preg_match('/^(.*)\.([0-9]{4})$/u', $mbox, $matches)) {
-                $res = XDB::query("SELECT  u.user_id, u.hruid
+                $res = XDB::query("SELECT  u.user_id
                                      FROM  auth_user_md5 AS u
                                INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type IN ('alias', 'a_vie'))
                                     WHERE  a.alias = {?} AND u.promo = {?}", $matches[1], $matches[2]);
                 if ($res->numRows() == 1) {
-                    return $res->fetchOneRow();
+                    return $res->fetchOneCell();
                 }
             }
 
@@ -108,12 +82,12 @@ class User extends PlUser
             if ($redir = $res->fetchOneCell()) {
                 // We now have a valid alias, which has to be translated to an hruid.
                 list($alias, $alias_fqdn) = explode('@', $redir);
-                $res = XDB::query("SELECT  u.user_id, u.hruid
+                $res = XDB::query("SELECT  u.user_id
                                      FROM  auth_user_md5 AS u
                                 LEFT JOIN  aliases AS a ON (a.id = u.user_id AND a.type IN ('alias', 'a_vie'))
                                     WHERE  a.alias = {?}", $alias);
                 if ($res->numRows()) {
-                    return $res->fetchOneRow();
+                    return $res->fetchOneCell();
                 }
             }
 
@@ -121,28 +95,88 @@ class User extends PlUser
         }
 
         // Otherwise, we do suppose $login is an email redirection.
-        $res = XDB::query("SELECT  u.user_id, u.hruid
+        $res = XDB::query("SELECT  u.user_id
                              FROM  auth_user_md5 AS u
                         LEFT JOIN  emails AS e ON (e.uid = u.user_id)
                             WHERE  e.email = {?}", $login);
         if ($res->numRows() == 1) {
-            return $res->fetchOneRow();
+            return $res->fetchOneCell();
         }
 
         throw new UserNotFoundException($res->fetchColumn(1));
     }
 
+    // Implementation of the data loader.
+    protected function loadMainFields()
+    {
+        if ($this->hruid != null && $this->forlife != null &&
+            $this->bestalias != null && $this->display_name != null &&
+            $this->full_name != null && $this->promo != NULL) {
+            return;
+        }
+
+        global $globals;
+        $res = XDB::query("SELECT  u.hruid, u.promo,
+                                   CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
+                                   CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
+                                   CONCAT(u.prenom, ' ', u.nom) AS full_name,
+                                   IF(u.prenom != '', u.prenom, u.nom) AS display_name
+                             FROM  auth_user_md5 AS u
+                        LEFT JOIN  aliases AS af ON (af.id = u.user_id AND af.type = 'a_vie')
+                        LEFT JOIN  aliases AS ab ON (ab.id = u.user_id AND FIND_IN_SET('bestalias', ab.flags))
+                            WHERE  u.user_id = {?}", $this->user_id);
+        $this->fillFromArray($res->fetchOneAssoc());
+    }
+
+    // Specialization of the fillFromArray method, to implement hacks to enable
+    // lazy loading of user's main properties from the session.
+    protected function fillFromArray(array $values)
+    {
+        // It might happen that the 'user_id' field is called uid in some places
+        // (eg. in sessions), so we hard link uid to user_id to prevent useless
+        // SQL requests.
+        if (!isset($values['user_id']) && isset($values['uid'])) {
+            $values['user_id'] = $values['uid'];
+        }
+
+        // Also, if display_name and full_name are not known, but the user's
+        // surname and last name are, we can construct the former two.
+        if (isset($values['prenom']) && isset($values['nom'])) {
+            if (!isset($values['display_name'])) {
+                $values['display_name'] = ($values['prenom'] ? $values['prenom'] : $values['nom']);
+            }
+            if (!isset($values['full_name'])) {
+                $values['full_name'] = $values['prenom'] . ' ' . $values['nom'];
+            }
+        }
+
+        parent::fillFromArray($values);
+    }
+
     // Implementation of the default user callback.
     public static function _default_user_callback($login, $results)
     {
-        global $page;
-
         $result_count = count($results);
         if ($result_count == 0 || !S::has_perms()) {
-            $page->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
+            Platal::page()->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
         } else {
-            $page->trigError("Il y a $result_count utilisateurs avec cet identifiant : " . join(', ', $results));
+            Platal::page()->trigError("Il y a $result_count utilisateurs avec cet identifiant : " . join(', ', $results));
         }
+    }
+
+    // Implementation of the static email locality checker.
+    public static function isForeignEmailAddress($email)
+    {
+        global $globals;
+        if (strpos($email, '@') === false) {
+            return false;
+        }
+
+        list($user, $dom) = explode('@', $email);
+        return $dom != $globals->mail->domain &&
+               $dom != $globals->mail->domain2 &&
+               $dom != $globals->mail->alias_dom &&
+               $dom != $globals->mail->alias_dom2;
     }
 }
 

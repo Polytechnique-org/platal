@@ -184,17 +184,20 @@ class XorgSession extends PlSession
             S::set('auth', AUTH_COOKIE);
         }
         unset($_SESSION['log']);
-        $res  = XDB::query('SELECT  u.user_id AS uid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
-                                    matricule, password, FIND_IN_SET(\'femme\', u.flags) AS femme,
-                                    a.alias AS forlife, a2.alias AS bestalias,
+
+        global $globals;
+        $res  = XDB::query("SELECT  u.user_id AS uid, u.hruid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
+                                    matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
+                                    CONCAT(a.alias, '@{$globals->mail->domain}') AS forlife,
+                                    CONCAT(a2.alias, '@{$globals->mail->domain}') AS bestalias,
                                     q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
-                                    FIND_IN_SET(\'watch\', u.flags) AS watch_account, q.last_version, g.g_account_name IS NOT NULL AS googleapps
+                                    FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version, g.g_account_name IS NOT NULL AS googleapps
                               FROM  auth_user_md5   AS u
                         INNER JOIN  auth_user_quick AS q  USING(user_id)
-                        INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type = \'a_vie\')
-                        INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET(\'bestalias\', a2.flags))
-                         LEFT JOIN  gapps_accounts  AS g  ON (u.user_id = g.l_userid AND g.g_status = \'active\')
-                             WHERE  u.user_id = {?} AND u.perms IN(\'admin\', \'user\')', $uid);
+                        INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type = 'a_vie')
+                        INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias', a2.flags))
+                         LEFT JOIN  gapps_accounts  AS g  ON (u.user_id = g.l_userid AND g.g_status = 'active')
+                             WHERE  u.user_id = {?} AND u.perms IN('admin', 'user')", $uid);
         $sess = $res->fetchOneAssoc();
         $perms = $sess['perms'];
         unset($sess['perms']);
