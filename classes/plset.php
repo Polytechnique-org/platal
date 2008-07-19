@@ -154,7 +154,7 @@ class PlSet
         return $view;
     }
 
-    public function apply($baseurl, PlatalPage &$page, $view = null, $data = null)
+    public function apply($baseurl, PlPage &$page, $view = null, $data = null)
     {
         $view =& $this->buildView($view, $data);
         if (is_null($view)) {
@@ -182,7 +182,7 @@ class PlSet
 interface PlView
 {
     public function __construct(PlSet &$set, $data, array $params);
-    public function apply(PlatalPage &$page);
+    public function apply(PlPage &$page);
     public function args();
 }
 
@@ -261,7 +261,7 @@ abstract class MultipageView implements PlView
 
     abstract public function templateName();
 
-    public function apply(PlatalPage &$page)
+    public function apply(PlPage &$page)
     {
         $res = $this->set->get($this->fields(),
                                $this->joins(),
