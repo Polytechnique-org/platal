@@ -49,7 +49,7 @@
 
 {capture name=order}
 {if $plset_count > 1}
-<div>
+<div style="clear: both">
   Trier par&nbsp;:
   {foreach from=$orders key=name item=sort}
   [
@@ -73,7 +73,7 @@
 
 {$smarty.capture.pages|smarty:nodefaults}
 
-<div id="multipage_content" style="padding: 0.5em 0">
+<div id="multipage_content" style="padding: 0.5em 0; clear: both">
   {include file=$plview->templateName()}
 </div>
 
