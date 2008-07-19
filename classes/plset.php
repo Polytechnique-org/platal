@@ -80,7 +80,8 @@ class PlSet
                           $limit";
 //        echo $query;
 //        print_r($this);
-        $it    = XDB::iterator($query);
+        $it    = XDB::query($query);
+        $it    = $it->fetchAllAssoc();
         $count = XDB::query('SELECT FOUND_ROWS()');
         $this->count = intval($count->fetchOneCell());
         return $it;
@@ -153,7 +154,7 @@ class PlSet
         return $view;
     }
 
-    public function apply($baseurl, PlPage &$page, $view = null, $data = null)
+    public function apply($baseurl, PlatalPage &$page, $view = null, $data = null)
     {
         $view =& $this->buildView($view, $data);
         if (is_null($view)) {
@@ -181,7 +182,7 @@ class PlSet
 interface PlView
 {
     public function __construct(PlSet &$set, $data, array $params);
-    public function apply(PlPage &$page);
+    public function apply(PlatalPage &$page);
     public function args();
 }
 
@@ -198,6 +199,8 @@ abstract class MultipageView implements PlView
 
     protected $sortkeys = array();
     protected $defaultkey = null;
+
+    protected $bound_field = null;
 
     public function __construct(PlSet &$set, $data, array $params)
     {
@@ -218,6 +221,11 @@ abstract class MultipageView implements PlView
     }
 
     public function groupBy()
+    {
+        return null;
+    }
+
+    public function bounds()
     {
         return null;
     }
@@ -253,19 +261,34 @@ abstract class MultipageView implements PlView
 
     abstract public function templateName();
 
-    public function apply(PlPage &$page)
+    public function apply(PlatalPage &$page)
     {
+        $res = $this->set->get($this->fields(),
+                               $this->joins(),
+                               $this->where(),
+                               $this->groupBy(),
+                               $this->order(),
+                               $this->entriesPerPage,
+                               $this->offset);
+        $show_bounds = $this->bounds();
+        $end         = end($res);
+        if ($show_bounds) {
+            if ($show_bounds == 1) {
+                $first = $res[0][$this->bound_field];
+                $last  = $end[$this->bound_field];
+            } elseif ($show_bounds == -1) {
+                $first = $end[$this->bound_field];
+                $last  = $res[0][$this->bound_field];
+            }
+            $page->assign('first', $first);
+            $page->assign('last', $last);
+        }
+
+        $page->assign('show_bounds', $show_bounds);
         $page->assign('order', Env::v('order', $this->defaultkey));
         $page->assign('orders', $this->sortkeys);
         $page->assign_by_ref('plview', $this);
-        $page->assign_by_ref('set',
-                             $this->set->get($this->fields(),
-                                             $this->joins(),
-                                             $this->where(),
-                                             $this->groupBy(),
-                                             $this->order(),
-                                             $this->entriesPerPage,
-                                             $this->offset));
+        $page->assign_by_ref('set', $res);
         $count = $this->set->count();
         $this->pages = intval(ceil($count / $this->entriesPerPage));
         return 'include/plview.multipage.tpl';
