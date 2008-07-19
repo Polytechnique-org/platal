@@ -35,8 +35,8 @@ class MarkReq extends Validate
     public $m_type;
     public $m_data;
 
-    public $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance). Si le
-    demandeur marque sa propre adresse mail, refuser dans tous les cas.
+    public $rules = "Accepter si l'adresse email parait correcte, et pas absurde (ou si le marketeur est de confiance). Si le
+    demandeur marque sa propre adresse email, refuser dans tous les cas.
     Ne pas marqueter au nom de Polytechnique.org plus d'une fois par an.
     Sauf abus flagrant, il n'y a pas de raison de refuser des marketing perso répétés.";
     // }}}
@@ -87,12 +87,12 @@ class MarkReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  Un mail de marketing vient d'être envoyé "
+            return "  Un email de marketing vient d'être envoyé "
                 .($this->perso ? 'en ton nom' : 'en notre nom')
                 ." à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour l'encourager à s'inscrire !\n\n"
                 ."Merci de ta participation !\n";
         } else {
-            return "  Nous n'avons pas jugé bon d'envoyer de mail de marketing à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}).";
+            return "  Nous n'avons pas jugé bon d'envoyer d'email de marketing à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}).";
         }
     }
 

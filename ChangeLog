@@ -1,5 +1,5 @@
 ================================================================================
-VERSION 0.9.17                                                        XX XX 2008
+VERSION 0.9.17                                                        19 07 2008
 
 New:
 
@@ -48,6 +48,7 @@ Bug/Wish:
         - Fix display of autocompletion menu (use plugin's latest version) -ALK
         - Clicking on the "..." entry no longer replaces search with "..." -ALK
         - #850: Fix autocompletion bug when changing an advanced search    -ALK
+        - #854: Indicates the bounds of the page's display if possible     -JAC
 
     * Xnet:
         - #821: Fix infinite loop when user can't be authenticated         -FRU

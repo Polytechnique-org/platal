@@ -306,7 +306,7 @@ class EmailModule extends PLModule
             $mime = $upload->contentType();
             if ($mime != 'text/x-mail' && $mime != 'message/rfc822') {
                 $upload->clear();
-                $page->trigError('Le fichier ne contient pas un mail complet');
+                $page->trigError('Le fichier ne contient pas un email complet');
                 return;
             }
             global $globals;
@@ -405,7 +405,7 @@ class EmailModule extends PLModule
                         $mymail->setWikiBody($txt);
                     }
                     if ($mymail->send()) {
-                        $page->trigSuccess("Ton mail a bien été envoyé.");
+                        $page->trigSuccess("Ton email a bien été envoyé.");
                         $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
                         PlUpload::clear(S::v('forlife'), 'emails.send');
                     } else {
@@ -522,9 +522,9 @@ class EmailModule extends PLModule
                 // envoi du mail
                 $message = "Bonjour !
 
-Ce mail a été généré automatiquement par le service de patte cassée de
+Cet email a été généré automatiquement par le service de patte cassée de
 Polytechnique.org car un autre utilisateur, ".S::v('prenom').' '.S::v('nom').",
-nous a signalé qu'en t'envoyant un mail, il avait reçu un message d'erreur
+nous a signalé qu'en t'envoyant un email, il avait reçu un message d'erreur
 indiquant que ton adresse de redirection $email
 ne fonctionnait plus !
 
@@ -545,7 +545,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                 $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
                 $mail->setTxtBody($message);
                 $mail->send();
-                $page->trigSuccess("Mail envoyé !");
+                $page->trigSuccess("Email envoyé !");
             }
         } elseif (Post::has('email')) {
             S::assert_xsrf_token();

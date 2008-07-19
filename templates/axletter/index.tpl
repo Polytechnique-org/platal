@@ -53,7 +53,7 @@ Tu n'es actuellement pas inscrit aux envois exceptionnels de l'AX.
   {if $ax_rights && !$new}
   <tr class="pair">
     <td colspan="2" class="center">
-      <a href="ax/edit">{icon name=page_edit} Proposer un nouveau mail</a>
+      <a href="ax/edit">{icon name=page_edit} Proposer un nouvel email</a>
     </td>
   </tr>
   {elseif $ax_rights && $new}

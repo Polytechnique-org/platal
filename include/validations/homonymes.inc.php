@@ -81,8 +81,8 @@ class HomonymeReq extends Validate
         global $globals;
         return
 "
-Comme nous t'en avons informé par mail il y a quelques temps,
-pour respecter nos engagements en terme d'adresses e-mail devinables,
+Comme nous t'en avons informé par email il y a quelques temps,
+pour respecter nos engagements en terme d'adresses email devinables,
 tu te verras bientôt retirer l'alias ".$this->loginbis."@".$globals->mail->domain." pour
 ne garder que ".$this->forlife."@".$globals->mail->domain.".
 

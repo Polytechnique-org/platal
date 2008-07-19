@@ -25,8 +25,8 @@
 {if $myorange}
 
 <p>
-  Tu recevras un mail dès que les changements demandés auront été effectués. 
-  Encore merci de nous faire confiance pour tes e-mails !
+  Tu recevras un email dès que les changements demandés auront été effectués. 
+  Encore merci de nous faire confiance pour tes emails !
 </p>
 
 {else}

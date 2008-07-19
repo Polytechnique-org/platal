@@ -30,7 +30,7 @@ Merci de nous avoir communiqué cette information !
 Nous avions déjà connaissance de cette adresse, nous espérons donc comme toi que {$prenom} va s'inscrire au plus vite.
 </p>
 <p>
-Si tu le connais personnellement, un petit mail pour lui expliquer les atouts de Polytechnique.org
+Si tu le connais personnellement, un petit email pour lui expliquer les atouts de Polytechnique.org
 peut sans aucun doute l'aider à se décider !
 </p>
 

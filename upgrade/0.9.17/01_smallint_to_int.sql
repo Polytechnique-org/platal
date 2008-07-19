@@ -36,4 +36,4 @@ ALTER TABLE tels               MODIFY COLUMN uid            INT NOT NULL DEFAULT
 ALTER TABLE user_changes       MODIFY COLUMN user_id        INT NOT NULL DEFAULT 0;
 ALTER TABLE watch_profile      MODIFY COLUMN uid            INT NOT NULL;
 
-# vim:set syntax=sql:
+# vim:set syntax=mysql:

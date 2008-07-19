@@ -118,12 +118,12 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 </p>
 <ul>
   <li>
-  Si tu viens de terminer ta pré-inscription, <strong>il est dans le mail</strong> que
+  Si tu viens de terminer ta pré-inscription, <strong>il est dans l'email</strong> que
   nous t'avons envoyé (expéditeur pre-inscription@{#globals.mail.domain#}).
   </li>
   <li>
   Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
-    nous</strong> pour obtenir un accès. {#globals.core.sitename#} c'est l'e-mail des X,
+    nous</strong> pour obtenir un accès. {#globals.core.sitename#} c'est l'email des X,
   l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accès le plus
   rapidement possible. <strong> <a href="register/">Clique ici pour nous demander tes
       paramètres personnels.</a></strong>

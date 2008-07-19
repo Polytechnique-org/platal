@@ -41,7 +41,7 @@
   {/if}
 
   <fieldset>
-    <legend>Sujet du mail&nbsp;: <input type="text" name="subject" value="{$subject}" size="60"/></legend>
+    <legend>Sujet de l'email&nbsp;: <input type="text" name="subject" value="{$subject}" size="60"/></legend>
     <p class="center">
       <a href="wiki_help" class="popup3">
         {icon name=information title="Syntaxe wiki"} Voir les marqueurs de mise en forme autorisés

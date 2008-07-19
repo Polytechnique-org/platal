@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 function smarty_function_test_email($params, &$smarty) {
-    $label = isset($params['title']) ? $params['title'] : 'Envoyer un mail de test';
+    $label = isset($params['title']) ? $params['title'] : 'Envoyer un email de test';
     $token = "'" . S::v('xsrf_token') . (isset($params['forlife']) ? "', " : "'");
     $forlife = isset($params['forlife']) ? "'" . $params['forlife'] . "'" : '';
     return '<div class="center">'

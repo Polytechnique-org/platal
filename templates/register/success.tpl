@@ -143,7 +143,7 @@ il te faudra contacter l'équipe support.
     </dd>
     <dt><input type='checkbox' value='1' checked="checked" name='imap' />imap</dt>
     <dd>
-      d'avoir un accès de secours aux 30 derniers jours de mail reçus sur ton adresse Polytechnique.org.
+      d'avoir un accès de secours aux 30 derniers jours d'emails reçus sur ton adresse Polytechnique.org.
     </dd>
   </dl>
 

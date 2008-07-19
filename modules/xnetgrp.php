@@ -328,7 +328,7 @@ class XnetGrpModule extends PLModule
             if ($upload) {
                 $upload->rm();
             }
-            $page->kill("Mail envoyé !");
+            $page->kill("Email envoyé !");
             $page->assign('sent', true);
         }
     }
@@ -843,7 +843,7 @@ class XnetGrpModule extends PLModule
                     pl_redirect("member/$email");
                 }
             } else {
-                $page->trigError("« <strong>$email</strong> » n'est pas une adresse mail valide.");
+                $page->trigError("« <strong>$email</strong> » n'est pas une adresse email valide.");
             }
         }
     }
@@ -962,7 +962,7 @@ class XnetGrpModule extends PLModule
         if ($this->unsubscribe($user)) {
             $page->trigSuccess('Vous avez été désinscrit du groupe avec succès.');
         } else {
-            $page->trigWarning('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des mailing-lists.');
+            $page->trigWarning('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des listes de diffusion.');
         }
         $page->assign('is_member', is_member(true));
     }

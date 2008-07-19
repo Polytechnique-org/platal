@@ -110,9 +110,9 @@ class ListeReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  La mailing list {$this->liste} que tu avais demandée vient d'être créée.";
+            return "  La liste de diffusion {$this->liste} que tu avais demandée vient d'être créée.";
         } else {
-            return "  La demande que tu avais faite pour la mailing list {$this->liste} a été refusée.";
+            return "  La demande que tu avais faite pour la liste de diffusion {$this->liste} a été refusée.";
         }
     }
 
