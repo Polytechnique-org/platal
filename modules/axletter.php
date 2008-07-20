@@ -275,9 +275,9 @@ class AXLetterModule extends PLModule
             $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
         }
         if (Post::has('send')) {
-            $nl->sendTo(S::v('prenom'), S::v('nom'),
-                        S::v('bestalias'), S::v('femme'),
-                        S::v('mail_fmt') != 'texte');
+            $nl->sendTo(S::user()->login(), S::user()->bestEmail(),
+                        S::v('prenom'), S::v('nom'),
+                        S::v('femme'), S::v('mail_fmt') != 'texte');
         }
     }
 

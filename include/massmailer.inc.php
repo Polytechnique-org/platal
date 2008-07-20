@@ -157,26 +157,25 @@ abstract class MassMailer
         return $hash;
     }
 
-    public function sendTo($prenom, $nom, $login, $sexe, $html, $hash = 0)
+    public function sendTo($hruid, $email, $prenom, $nom, $sexe, $html, $hash = 0)
     {
-        global $globals;
-        $alias = $login;
-        if (strpos($login, '@') === false) {
-            $login = "$login@{$globals->mail->domain}";
+        // If $email is not a real email address, tries to compute it up from
+        // the hruid. Otherwise, we suppose that caller will have used a valid
+        // and canonical email address.
+        if (strpos($email, '@') === false) {
+            if (!($user = User::getSilent($email))) {
+                Platal::page()->trigError("'$email' is neither a valid email address nor a valid login; did not send the email.");
+            }
+            $email = $user->bestEmail();
         }
-        require_once('user.func.inc.php');
-        $forlife = get_user_forlife($login, '_silent_user_callback');
-        if ($forlife) {
-            $alias = $forlife;
-        }
-        if (strpos($alias, '@') === false && (is_null($hash) || $hash == 0)) {
 
-            $hash = $this->createHash(array($prenom, $nom, $login, $sexe, $html, rand(), "X.org rulez"));
+        if ($hruid && (is_null($hash) || $hash == 0)) {
+            $hash = $this->createHash(array($email, $prenom, $nom, $sexe, $html, rand(), "X.org rulez"));
             XDB::query("UPDATE  {$this->_subscriptionTable} as ni
-                    INNER JOIN  aliases AS a ON (ni.user_id = a.id)
+                    INNER JOIN  auth_user_md5 AS u USING (user_id)
                            SET  ni.hash = {?}
-                         WHERE  ni.user_id != 0 AND a.alias = {?}",
-                       $hash, $alias);
+                         WHERE  ni.user_id != 0 AND u.hruid = {?}",
+                       $hash, $hruid);
         }
 
         $mailer = new PlMailer($this->_tpl);
@@ -187,16 +186,16 @@ abstract class MassMailer
         $mailer->assign('sexe',    $sexe);
         $mailer->assign('prefix',  null);
         $mailer->assign('hash',    $hash);
-        $mailer->assign('email',   $login);
-        $mailer->assign('alias',   $alias);
-        $mailer->addTo("\"$prenom $nom\" <$login>");
+        $mailer->assign('email',   $email);
+        $mailer->assign('alias',   $hruid);
+        $mailer->addTo("\"$prenom $nom\" <$email>");
         $mailer->send($html);
     }
 
     protected function getAllRecipients()
     {
         global $globals;
-        return  "SELECT  u.user_id, CONCAT(a.alias, '@{$globals->mail->domain}'),
+        return  "SELECT  u.user_id, u.hruid, CONCAT(a.alias, '@{$globals->mail->domain}'),
                          u.prenom, IF(u.nom_usage='', u.nom, u.nom_usage),
                          FIND_IN_SET('femme', u.flags),
                          q.core_mail_fmt AS pref, ni.hash AS hash
@@ -220,9 +219,9 @@ abstract class MassMailer
                 return;
             }
             $sent = array();
-            while (list($uid, $bestalias, $prenom, $nom, $sexe, $fmt, $hash) = $res->next()) {
-                $sent[] = "(user_id='$uid'" . (!$uid ? " AND email='$bestalias')": ')');
-                $this->sendTo($prenom, $nom, $bestalias, $sexe, $fmt=='html', $hash);
+            while (list($uid, $hruid, $email, $prenom, $nom, $sexe, $fmt, $hash) = $res->next()) {
+                $sent[] = "(user_id='$uid'" . (!$uid ? " AND email='$email')": ')');
+                $this->sendTo($hruid, $email, $prenom, $nom, $sexe, $fmt=='html', $hash);
             }
             XDB::execute("UPDATE  {$this->_subscriptionTable}
                              SET  last = {?}

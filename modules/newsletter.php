@@ -64,9 +64,9 @@ class NewsletterModule extends PLModule
         }
         if (Post::has('send')) {
             $res = XDB::query("SELECT hash FROM newsletter_ins WHERE user_id = {?}", S::i('uid'));
-            $nl->sendTo(S::v('prenom'), S::v('nom'),
-                        S::v('bestalias'), S::v('femme'),
-                        S::v('mail_fmt') != 'texte',
+            $nl->sendTo(S::user()->login(), S::user()->bestEmail(),
+                        S::v('prenom'), S::v('nom'),
+                        S::v('femme'), S::v('mail_fmt') != 'texte',
                         $res->fetchOneCell());
         }
     }

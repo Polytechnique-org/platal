@@ -99,7 +99,9 @@ class AXLetter extends MassMailer
 
     protected function getAllRecipients()
     {
-        return "SELECT  ni.user_id, IF(ni.user_id = 0, ni.email, a.alias) AS alias,
+        global $globals;
+        return "SELECT  ni.user_id, IF(ni.user_id = 0, NULL, u.hruid) AS hruid,
+                        IF(ni.user_id = 0, ni.email, CONCAT(a.alias, '@{$globals->mail->domain}')) AS alias,
                         IF(ni.user_id = 0, ni.prenom, u.prenom) AS prenom,
                         IF(ni.user_id = 0, ni.nom, IF(u.nom_usage='', u.nom, u.nom_usage)) AS nom,
                         FIND_IN_SET('femme', IF(ni.user_id = 0, ni.flag, u.flags)) AS sexe,
