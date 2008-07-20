@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div style="clear: both">
+<div id="pl_set_top" style="clear: both">
 <h1 style="display: block; float: left">
   {$plset_mods[$plset_mod]}
   {if $plset_mods|@count > 1}[
@@ -28,7 +28,7 @@
   {foreach from=$plset_mods key=mod item=desc name=mods}
     {if $mod neq $plset_mod}
     {if $has_prev}| {/if}
-    <a href="{$platal->ns}{$plset_base}/{$mod}{$plset_search}">{$desc}</a>
+    <a href="{$platal->ns}{$plset_base}/{$mod}{$plset_search}#pl_set_top">{$desc}</a>
     {assign var=has_prev value=true}
     {/if}
   {/foreach}

@@ -144,7 +144,7 @@ function sendTestEmail(token, forlife)
 {
     Ajax.update_html(null, 'emails/test' + (forlife == null ? '' : '/' + forlife) + '?token=' + token,
                      function() {
-                        showTempMessage('mail_sent', "Un mail a été envoyé avec succès"
+                        showTempMessage('mail_sent', "Un email a été envoyé avec succès"
                                         + (forlife == null ? " sur ton adresse." : " sur l'adresse de " + forlife),
                                         true); });
     return false;

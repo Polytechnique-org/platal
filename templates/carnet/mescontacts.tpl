@@ -46,8 +46,7 @@
   Ajouter à tes contacts&nbsp;:
 </p>
 <p style="clear: both">
-    Tu peux également ajouter un(e) camarade à tes contacts en cliquant sur l'icône {icon name=add} en
-    face de son nom dans les résultats d'une recherche dans l'annuaire !
+  Sur la page de résultats d'une recherche, tu peux ajouter un contact en cliquant sur {icon name=add}.
 </p>
 
 <p>

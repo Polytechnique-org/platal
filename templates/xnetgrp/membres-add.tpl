@@ -59,13 +59,13 @@ function searchX()
   <ul class='descr'>
     <li>
       Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses
-      adresses mail @polytechnique.org. S'il n'est pas inscrit à Polytechnique.org
+      adresses email @polytechnique.org. S'il n'est pas inscrit à Polytechnique.org
       coche la case qui se trouve sous le formulaire et indique ses noms, prénoms et
       promotions.
     </li>
     <li>
       Pour ajouter un extérieur dans ton groupe, il suffit d'entrer ici son
-      adresse mail, tu seras ensuite redirigé vers une page te permettant
+      adresse email, tu seras ensuite redirigé vers une page te permettant
       d'éditer son profil (nom, prenom, ...)
     </li>
   </ul>

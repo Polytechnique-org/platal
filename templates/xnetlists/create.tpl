@@ -74,7 +74,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement<
     <tr>
       <td style="border: 0; border-right: 1px solid gray">
         diffusion&nbsp;:<br/><span style='font-size: xx-small;'>
-        (l'envoi d'un mail à cette liste est-il modéré&nbsp;?)</span>
+        (l'envoi d'un email à cette liste est-il modéré&nbsp;?)</span>
       </td>
       <td style="border: 0">
         <label><input type='radio' name='modlevel' value='0'

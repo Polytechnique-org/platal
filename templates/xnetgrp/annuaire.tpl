@@ -120,9 +120,9 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
     <td class="right" {if !$m.comm}colspan="2"{/if}>
       {if $m.inscrit}
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="[vcard]"}</a>
-      <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="mail"}</a>
+      <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="email"}</a>
       {else}
-      <a href="mailto:{$m.email}">{icon name=email title="mail"}</a>
+      <a href="mailto:{$m.email}">{icon name=email title="email"}</a>
       {/if}
     </td>
     {if $is_admin}

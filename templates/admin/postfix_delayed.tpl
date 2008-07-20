@@ -20,12 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Mails en attente de décision</h1>
+<h1>Emails en attente de décision</h1>
 
 <table class="bicol" cellpadding='0' cellspacing='0'>
   <tr>
     <th>Checksum</th>
-    <th>Nb mails reçus</th>
+    <th>Nb d'emails reçus</th>
     <th>Dernier reçu</th>
     <th>Premier reçu</th>
     <th>Etat</th>
@@ -43,7 +43,7 @@
         <div>
           <input type="hidden" name="crc" value="{$m.crc}" />
           <input type="submit" name="ok"  value="Laisser passer" />
-          <input type="submit" name="del" value="Effacer les mails" />
+          <input type="submit" name="del" value="Effacer les emails" />
         </div>
       </form>
     </td>

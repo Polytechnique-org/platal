@@ -50,7 +50,7 @@
         {/if}
         {if $address.email}
         <tr>
-          <td><em>E-mail: </em></td>
+          <td><em>Email&nbsp;: </em></td>
           <td><strong>{$address.email}</strong></td>
         </tr>
         {/if}

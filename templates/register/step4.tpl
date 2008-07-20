@@ -37,7 +37,7 @@ est effacée automatiquement de notre base de données et il faut tout recommenc
 </p>
 <p>
 Si tu ne reçois rien, vérifie bien l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
-En particulier, vérifie si l'e-mail n'a pas été rejeté par ton filtre anti-spam. L'adresse
+En particulier, vérifie si l'email n'a pas été rejeté par ton filtre anti-spam. L'adresse
 d'expéditeur est <code>register@polytechnique.org</code>.
 </p>
 

@@ -39,7 +39,7 @@
 <h2>Listes de diffusion du groupe {$asso.nom}&nbsp;:</h2>
 
 <p class="descr">
-Une liste dont <strong>la diffusion</strong> est modérée est une liste dont les mails sont validés
+Une liste dont <strong>la diffusion</strong> est modérée est une liste dont les emails sont validés
 par les administrateurs avant d'être transmis aux membres de la liste.  Une liste dont
 <strong>l'inscription</strong> est modérée est une liste pour laquelle l'abonnement est soumis à
 l'accord préalable des responsables du groupe.
@@ -62,7 +62,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
   {foreach from=$listes item=l}
   <tr>
     <td class='center'>
-      <a href="mailto:{$l.list}@{$asso.mail_domain}">{icon name=email title="mail"}</a>
+      <a href="mailto:{$l.list}@{$asso.mail_domain}">{icon name=email title="email"}</a>
     </td>
     <td>
       {if $l.own}
@@ -116,11 +116,11 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
   {iterate from=$alias item=a}
   <tr>
     {if $may_update}
-    <td class="center"><a href='mailto:{$a.alias}'>{icon name=email title="mail"}</a></td>
+    <td class="center"><a href='mailto:{$a.alias}'>{icon name=email title="email"}</a></td>
     <td><a href="{$platal->ns}alias/admin/{$a.alias}">{$a.alias}</a></td>
     <td class="center"><a href="{$platal->ns}lists?del_alias={$a.alias}">{icon name=delete title='supprimer'}</a></td>
     {else}
-    <td><a href='mailto:{$a.alias}'>{icon name=email title="mail"} {$a.alias}</a></td>
+    <td><a href='mailto:{$a.alias}'>{icon name=email title="email"} {$a.alias}</a></td>
     {/if}
   </tr>
   {/iterate}

@@ -211,7 +211,7 @@ abstract class Validate
             if ($this->commit()) {
                 $this->sendmail(true);
                 $this->clean();
-                $this->trigSuccess('Mail de validation envoyé');
+                $this->trigSuccess('Email de validation envoyé');
                 return true;
             } else {
                 $this->trigError('Erreur lors de la validation');
@@ -223,7 +223,7 @@ abstract class Validate
             if (Env::v('comm')) {
                 $this->sendmail(false);
                 $this->clean();
-                $this->trigSuccess('Mail de refus envoyé');
+                $this->trigSuccess('Email de refus envoyé');
                 return true;
             } else {
                 $this->trigError('pas de motivation pour le refus !!!');

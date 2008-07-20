@@ -270,7 +270,7 @@
   <li>Soit en passant par la <a href="http://google.polytechnique.org/">la page d'accueil Google de Polytechnique.org</a> ;</li>
   <li>Soit en utilisant directement les différents services :
     <ul>
-      <li>Pour tes mails, sur le <a href="http://mail.google.com/a/polytechnique.org/">GMail de Polytechnique.org</a> ;</li>
+      <li>Pour tes emails, sur le <a href="http://mail.google.com/a/polytechnique.org/">GMail de Polytechnique.org</a> ;</li>
       <li>Pour ton calendrier, sur <a href="http://www.google.com/calendar/hosted/polytechnique.org/">Google Calendar</a> ;</li>
       <li>Pour tes documents, sur <a href="http://docs.google.com/a/polytechnique.org/">Google Docs</a>.</li>
     </ul>
@@ -286,13 +286,13 @@
   </tr>
   {if $account->reporting_date and $account->r_disk_usage}
   <tr class="pair">
-    <td>Au {$account->reporting_date|date_format:"%d %B %Y"}, tu avais {$account->r_disk_usage/1024/1024|string_format:"%.1f"} Mo de mails.</td>
+    <td>Au {$account->reporting_date|date_format:"%d %B %Y"}, tu avais {$account->r_disk_usage/1024/1024|string_format:"%.1f"} Mo d'emails.</td>
   </tr>
   {/if}
   <tr class="impair">
     {if $redirect_active and $redirect_unique}
     <td>
-      Ta seule adresse de redirection de tes mails est celle de ton compte Google Apps.<br />
+      Ta seule adresse de redirection de tes emails est celle de ton compte Google Apps.<br />
       Si tu souhaites désactiver celui-ci, tu dois d'abord <a href="emails/redirect">ajouter une nouvelle adresse de redirection</a>.
     </td>
     {else}
@@ -305,7 +305,7 @@
         </form>
       </div>
       <div style="margin-top: 0.5em">
-        {icon name=error} Une fois ton compte désactivé, tu ne pourras plus accéder à tes mails sur Google Apps.<br />
+        {icon name=error} Une fois ton compte désactivé, tu ne pourras plus accéder à tes emails sur Google Apps.<br />
         {icon name=information} La réactivation est possible, mais nécessite d'être validée par un administrateur.
       </div>
     </td>
@@ -418,7 +418,7 @@
     {/if}
   </tr>
   <tr class="pair">
-    <td class="center"><a href="emails/redirect">Changer mes redirections mail</a></td>
+    <td class="center"><a href="emails/redirect">Changer mes redirections email</a></td>
   </tr>
 </table>
 {/if}

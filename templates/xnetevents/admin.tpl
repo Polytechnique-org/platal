@@ -35,9 +35,9 @@ comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
 
 {if $evt.participant_list && $is_admin}
 <p class="center">
-[<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un mail à ceux qui viennent</a>]
+[<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un email à ceux qui viennent</a>]
 -
-[<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un mail aux membres non inscrits</a>]
+[<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un email aux membres non inscrits</a>]
 </p>
 {/if}
 
@@ -96,7 +96,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
     <td>
       <a href="https://www.polytechnique.org/profile/{$m.email}">{icon name=user_suit title="fiche"}</a>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="vcard"}</a>
-      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="mail"}</a>
+      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="email"}</a>
     </td>
     <td>{$m.montant}</td>
   </tr>
@@ -151,9 +151,9 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
       {if $m.x}
       <a href="https://www.polytechnique.org/profile/{$m.email}">{icon name=user_suit title="fiche"}</a>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="vcard"}</a>
-      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="mail"}</a>
+      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="email"}</a>
       {else}
-      <a href="mailto:{$m.email}">{icon name=email title="mail"}</a>
+      <a href="mailto:{$m.email}">{icon name=email title="email"}</a>
       {/if}
     </td>
     {if $tout}
@@ -235,7 +235,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
 
 <p class="descr">
 En tant qu'administrateur, tu peux fixer la venue (accompagnée ou pas) d'un des membres du groupe.
-Donne ici son mail, ainsi que le nombre de participants.
+Donne ici son email, ainsi que le nombre de participants.
 </p>
 
 <form action="{$platal->pl_self()}" method="post" id="inscription">
@@ -243,7 +243,7 @@ Donne ici son mail, ainsi que le nombre de participants.
   <p class="descr">
     <input type="hidden" name="adm" value="nbs" />
 
-    Mail&nbsp;: <input name="mail" size="20" />
+    Email&nbsp;: <input name="mail" size="20" />
 
     {if $platal->argv[2]}
     {$evt.titre}&nbsp;: <input name="nb[{$platal->argv[2]}]" size="1" value="1" />
@@ -276,7 +276,7 @@ Note que tu peux cliquer sur les noms des membres pour remplir automatiquement l
   {xsrf_token_field}
   <p class="descr">
   <input type="hidden" name="adm" value="prix" />
-  Mail&nbsp;: <input name="mail" size="20" />
+  Email&nbsp;: <input name="mail" size="20" />
   montant&nbsp;: <input name="montant" size="3" value="0,00" /> &euro;
   <input type="submit" />
   </p>

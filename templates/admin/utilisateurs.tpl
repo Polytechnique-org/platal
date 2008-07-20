@@ -48,7 +48,7 @@
     {if !$smarty.request.login && !$mr.forlife}
     <tr class="pair">
       <td class="center">
-        Il est possible d'entrer ici n'importe quelle adresse mail&nbsp;: redirection, melix, ou alias.
+        Il est possible d'entrer ici n'importe quelle adresse email&nbsp;: redirection, melix, ou alias.
       </td>
     </tr>
     {/if}
@@ -284,7 +284,7 @@ Pour ceci changer ses permissions en 'disabled'.
   <table class="tinybicol" cellpadding="2" cellspacing="0">
     <tr>
       <th class="alias" colspan="3">
-        Alias e-mail
+        Alias email
       </th>
     </tr>
     {iterate from=$aliases item=a}
@@ -436,7 +436,7 @@ Pour ceci changer ses permissions en 'disabled'.
     {cycle assign=class values="impair,pair"}
     <tr class="{$class}">
       <td class="titre" colspan="2">
-        Ajouter un email
+        Ajouter une adresse
       </td>
       <td>
         <input type="text" name="email" size="29" maxlength="60" value="" />
@@ -453,10 +453,10 @@ Pour ceci changer ses permissions en 'disabled'.
     <tr class="{$class}">
       <td colspan="4" class="center">
         {if $actives}
-        <input type="submit" name="disable_fwd" value="Désactiver la redirection mail" />
+        <input type="submit" name="disable_fwd" value="Désactiver la redirection des emails" />
         {/if}
         {if $disabled}
-        <input type="submit" name="enable_fwd" value="Réactiver la redirection mail" />
+        <input type="submit" name="enable_fwd" value="Réactiver la redirection des emails" />
         {/if}
       </td>
     </tr>

@@ -252,7 +252,7 @@ class CarnetModule extends PLModule
             $base = 'carnet/contacts';
             $view = new UserSet("INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", " c2.uid = $uid ");
         }
-        $view->addMod('minifiche', 'Mini-Fiches', true);
+        $view->addMod('minifiche', 'Mini-fiches', true);
         $view->addMod('trombi', 'Trombinoscope', false, array('with_admin' => false, 'with_promo' => true));
         $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'carnet/contacts/search'));
         $view->apply($base, $page, $action, $subaction);

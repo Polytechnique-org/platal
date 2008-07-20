@@ -37,7 +37,7 @@ Après activation, tes paramètres seront :
 login        : {$lusername}
 mot de passe : {$nveau_pass}
 
-(ceci annule les paramètres envoyés par le mail initial)
+(ceci annule les paramètres envoyés par l'email initial)
 
 Rends-toi sur la page web suivante afin d'achever ton inscription, et de changer ton mot de passe :
 

@@ -32,7 +32,7 @@
 {else}
 
 <p>
-N'importe qui peut faire la demande de création d'une mailing-list, il suffit pour cela d'être au
+N'importe qui peut faire la demande de création d'une liste de diffusion, il suffit pour cela d'être au
 moins 4 polytechniciens inscrits sur le site, et de fournir les informations suivantes concernant la
 liste&nbsp;:
 </p>
@@ -45,18 +45,24 @@ liste&nbsp;:
     </tr>
     <tr>
       <td class='titre'>C'est une liste pour&nbsp;:</td>
-      <td colspan='2'><input type='radio' name='asso' value='binet'
-        {if $smarty.post.asso eq 'binet' && $smarty.post}checked='checked'{/if} />un binet</td>
+      <td colspan='2'><input type='radio' name='asso' value='groupex'
+        {if $smarty.post.asso eq 'groupex' && $smarty.post}checked='checked'{/if} />un groupe X</td>
       <td colspan='2'><input type='radio' name='asso' value=''
         {if !$smarty.post.asso || !$smarty.post}checked='checked'{/if} />une liste de portée générale ou d'amis</td>
     </tr>
+    {if $young_promo}
     <tr>
       <td></td>
-      <td colspan='2'><input type='radio' name='asso' value='groupex'
-        {if $smarty.post.asso eq 'groupex' && $smarty.post}checked='checked'{/if} />un groupe X</td>
+      <td colspan='2'><input type='radio' name='asso' value='binet'
+        {if $smarty.post.asso eq 'binet' && $smarty.post}checked='checked'{/if} />un binet</td>
+      {if $very_young_promo}
       <td colspan='2'><input type='radio' name='asso' value='alias'
         {if $smarty.post.asso eq 'alias' && $smarty.post}checked='checked'{/if} />un alias psc, ...</td>
+      {else}
+      <td colspan='2'></td>
+      {/if}
     </tr>
+    {/if}
     <tr class='promo'>
       <td class='titre'>Promotion&nbsp;:</td>
       <td><input type='text' name='promo' size='4' maxlength='4'
@@ -133,7 +139,7 @@ liste&nbsp;:
     </tr>
     <tr>
       <td></td>
-      <td class='smaller' colspan='4'>(l'envoi d'un mail à cette liste est-il libre, modéré
+      <td class='smaller' colspan='4'>(l'envoi d'un email à cette liste est-il libre, modéré
       lorsque l'expéditeur n'appartient pas à la liste ou modéré dans tous les cas ?)</td>
     </tr>
     <tr>
@@ -190,7 +196,7 @@ liste&nbsp;:
   <p>
   La liste est habituellement créée dans les jours qui suivent la demande sauf exception. Pour plus
   d'informations écris-nous à l'adresse {mailto address='listes@polytechnique.org'} en mettant dans
-  le sujet de ton mail le nom de la liste souhaité afin de faciliter les échanges de mails
+  le sujet de ton email le nom de la liste souhaité afin de faciliter les échanges d'emails
   ultérieurs éventuels.
   </p>
   <div class='center'>

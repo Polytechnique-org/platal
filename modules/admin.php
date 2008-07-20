@@ -70,7 +70,7 @@ class AdminModule extends PLModule
         if (Env::has('del')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'del' WHERE crc = {?}", $crc);
-            $page->trigSuccess($crc." verra tous ses mails supprimés !");
+            $page->trigSuccess($crc." verra tous ses emails supprimés !");
         } elseif (Env::has('ok')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = {?}", $crc);

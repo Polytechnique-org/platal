@@ -31,7 +31,7 @@
 </p>
 <p>
   Pour une sécurité optimale, ton mot de passe circule de manière chiffrée (https) et est
-  stocké chiffrée irréversiblement sur nos serveurs.
+  stocké chiffré irréversiblement sur nos serveurs.
 </p>
 <br />
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass">

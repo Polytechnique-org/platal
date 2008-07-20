@@ -416,7 +416,7 @@ function geoloc_getData_subcities($mapid, $SFields, &$cities, $direct=true)
                           $where . ($direct ? "gcim.infos = 'smallest'" : '1'),
                           'gc.id, gc.alias',
                           'pop DESC');
-    while ($c = $cityres->next()) {
+    foreach($cityres as $c) {
         if ($c['pop'] > 0) {
             $city = $c;
             $city['x'] = geoloc_to_x($c['x'], $c['y']);
@@ -494,8 +494,8 @@ function geoloc_getData_subcountries($mapid, $sin, $minentities)
                             'NULL');
 
     $maxpop = 0;
-    $nbentities = $nbcities + $countryres->total();
-    while ($c = $countryres->next()) {
+    $nbentities = $nbcities + count($countryres);
+    foreach ($countryres as $c) {
         $c['latPop'] /= $c['nbPop'];
         $c['lonPop'] /= $c['nbPop'];
         $c['rad'] = size_of_territory($c['nbPop']);

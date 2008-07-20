@@ -28,8 +28,8 @@
 {elseif $mail_part eq 'wiki'}
 {if $sexe}Chère{else}Cher{/if} {$prenom},
 
-Tu reçois ce mail car tu as demandé la confirmation du bon fonctionnement de ton adresse polytechnicienne {$email}.
-{if count($redirects) gt 1}Si toutes tes redirections fonctionnent correctement tu devrais recevoir une copie de ce mail
+Tu reçois cet email car tu as demandé la confirmation du bon fonctionnement de ton adresse polytechnicienne {$email}.
+{if count($redirects) gt 1}Si toutes tes redirections fonctionnent correctement tu devrais recevoir une copie de cet email
 dans les boîtes suivantes :
 {foreach from=$redirects item=mail}
 * {$mail->display_email}
@@ -39,7 +39,7 @@ dans les boîtes suivantes :
 Tu trouveras sur le site divers outils pour gérer ton adresse email :
 * [[https://www.polytechnique.org/emails/redirect|La gestion de tes redirections]]
 * [[https://www.polytechnique.org/emails/antispam|La gestion de ton antispam]]
-* [[https://www.polytechnique.org/emails/send|Un formulaire pour envoyer des mails d'où que tu sois]]
+* [[https://www.polytechnique.org/emails/send|Un formulaire pour envoyer des emails d'où que tu sois]]
 
 N'hésite pas à venir découvrir ou redécouvrir les services du site grâce au [[https://www.polytechnique.org/review|tour d'horizon]].
 
