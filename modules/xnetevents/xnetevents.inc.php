@@ -216,7 +216,7 @@ function subscribe_lists_event($participate, $uid, $evt)
         $res = XDB::query("SELECT email
                              FROM groupex.membres
                             WHERE uid = {?} AND asso_id = {?}",
-                            S::v('uid'), $globals->asso('id'));
+                          $uid, $globals->asso('id'));
         $email = $res->fetchOneCell();
     }
 
