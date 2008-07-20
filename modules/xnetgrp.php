@@ -790,26 +790,13 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
         }
 
-        if (strpos($email, '@') === false) {
-            $x = true;
-        } else {
-            list(,$fqdn) = explode('@', $email, 2);
-            $fqdn = strtolower($fqdn);
-            $x = ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' ||
-                  $fqdn == 'm4x.org' || $fqdn == 'melix.net');
-        }
-        if ($x) {
-            require_once 'user.func.inc.php';
-            if ($forlife = get_user_forlife($email)) {
-                XDB::execute(
-                    'INSERT INTO  groupex.membres (uid,asso_id,origine)
-                          SELECT  user_id,{?},"X"
-                            FROM  auth_user_md5 AS u
-                      INNER JOIN  aliases       AS a ON (u.user_id = a.id)
-                           WHERE  a.alias={?}', $globals->asso('id'), $forlife);
-                pl_redirect("member/$forlife");
-            } else {
-                $page->trigError($email." n'est pas un alias polytechnique.org valide.");
+        if (!User::isForeignEmailAddress($email)) {
+            $user = User::get($email);
+            if ($user) {
+                XDB::execute("REPLACE INTO  groupex.membres (uid, asso_id, origine)
+                                    VALUES  ({?}, {?}, 'X')",
+                             $user->id(), $globals->asso('id'));
+                pl_redirect("member/" . $user->login());
             }
         } else {
             if (isvalid_email($email)) {
