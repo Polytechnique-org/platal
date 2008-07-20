@@ -77,7 +77,7 @@ class S
         if (!S::has('log')) {
             if (S::has('suid')) {
                 $suid = S::v('suid');
-                S::set('log', new PlLogger(S::v('uid'), $suid['uid']));
+                S::set('log', new PlLogger(S::v('uid', $uid), $suid['uid']));
             } else if (S::has('uid') || $uid) {
                 S::set('log', new PlLogger(S::v('uid', $uid)));
             }
