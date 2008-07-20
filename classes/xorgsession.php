@@ -212,11 +212,11 @@ class XorgSession extends PlSession
         $suid = S::v('suid');
 
         if ($suid) {
-            $logger = S::logger();
+            $logger = S::logger($uid);
             $logger->log("suid_start", S::v('forlife')." by {$suid['uid']}");
             $sess['suid'] = $suid;
         } else {
-            $logger = S::logger();
+            $logger = S::logger($uid);
             //$logger->log("connexion", Env::v('n'));
             setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
             if (Post::v('remember', 'false') == 'true') {
