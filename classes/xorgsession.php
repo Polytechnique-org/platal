@@ -184,6 +184,8 @@ class XorgSession extends PlSession
             S::set('auth', AUTH_COOKIE);
         }
         unset($_SESSION['log']);
+
+        // Retrieves main user properties.
         $res  = XDB::query('SELECT  u.user_id AS uid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
                                     matricule, password, FIND_IN_SET(\'femme\', u.flags) AS femme,
                                     a.alias AS forlife, a2.alias AS bestalias,
@@ -198,6 +200,8 @@ class XorgSession extends PlSession
         $sess = $res->fetchOneAssoc();
         $perms = $sess['perms'];
         unset($sess['perms']);
+
+        // Retrieves account usage information (last login, last host).
         $res = XDB::query('SELECT  UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
                              FROM  logger.sessions AS s
                             WHERE  s.uid = {?} AND s.suid = 0
@@ -206,15 +210,17 @@ class XorgSession extends PlSession
         if ($res->numRows()) {
             $sess = array_merge($sess, $res->fetchOneAssoc());
         }
-        $suid = S::v('suid');
 
-        if ($suid) {
+        // Loads the data into the real session.
+        $_SESSION = array_merge($_SESSION, $sess);
+
+        // Starts the session's logger, and sets up the permanent cookie.
+        if (S::has('suid')) {
+            $suid = S::v('suid');
             $logger = S::logger($uid);
-            $logger->log("suid_start", S::v('forlife')." by {$suid['uid']}");
-            $sess['suid'] = $suid;
+            $logger->log("suid_start", S::v('forlife') . " by " . $suid['uid']);
         } else {
             $logger = S::logger($uid);
-            //$logger->log("connexion", Env::v('n'));
             setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
             if (Post::v('remember', 'false') == 'true') {
                 $cookie = hash_encrypt($sess['password']);
@@ -230,7 +236,7 @@ class XorgSession extends PlSession
             }
         }
 
-        $_SESSION = array_merge($_SESSION, $sess);
+        // Finalizes the session setup.
         $this->makePerms($perms);
         $this->securityChecks();
         $this->setSkin();
