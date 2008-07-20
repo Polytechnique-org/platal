@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 
-function select_nat($valeur,$pad=false) {
+function select_nat($valeur, $pad=false) {
     $sql = "SELECT a2 AS id,IF(nat='',pays,nat) AS text FROM geoloc_pays ORDER BY text";
     $res = XDB::iterRow($sql);
     $sel = ' selected="selected"';
@@ -28,19 +28,22 @@ function select_nat($valeur,$pad=false) {
     // on ajoute une entree vide si $pad est vrai
     $html = "";
     if ($pad) {
-	$html.= '<option value="0"'.($valeur==0?$sel:"")."></option>\n";
+	      $html .= sprintf("<option value=\"\"%s></option>\n", ($valeur ? $sel : ""));
     }
-    while (list($my_id,$my_text) = $res->next()) {
-	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",$my_id,($valeur==$my_id?$sel:""),$my_text);
+    while (list($my_id, $my_text) = $res->next()) {
+        $html .= sprintf("<option value=\"%s\"%s>%s</option>\n", $my_id, ($valeur==$my_id ? $sel : ""), $my_text);
     }
+
     return $html;
 }
 
 function smarty_function_select_nat($params, &$smarty) {
-    if(empty($params['pad']) || !($params['pad']))
-	$pad = false;
-    else
-	$pad = true;
+    if (empty($params['pad']) || !($params['pad'])) {
+	      $pad = false;
+    } else {
+	      $pad = true;
+    }
+
     return select_nat($params['valeur'], $pad);
 }
 

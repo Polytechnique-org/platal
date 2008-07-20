@@ -79,8 +79,27 @@
     </td>
     <td>
       <select name="nationalite">
-        {select_nat valeur=$nationalite}
+        {select_nat valeur=$nationalite pad=1}
       </select>
+      <a href="javascript:addNationality();">{icon name=add title="Ajouter une nationalité"}</a>
+    </td>
+  </tr>
+  <tr id="nationalite2" {if !$nationalite2}style="display: none"{/if}>
+    <td></td>
+    <td>
+      <select name="nationalite2">
+        {select_nat valeur=$nationalite2 pad=1}
+      </select>
+      <a href="javascript:delNationality('2');">{icon name=cross title="Supprimer cette nationalité"}</a>
+    </td>
+  </tr>
+  <tr id="nationalite3" {if !$nationalite3}style="display: none"{/if}>
+    <td></td>
+    <td>
+      <select name="nationalite3">
+        {select_nat valeur=$nationalite3 pad=1}
+      </select>
+      <a href="javascript:delNationality('3');">{icon name=cross title="Supprimer cette nationalité"}</a>
     </td>
   </tr>
   <tr class="pair">
