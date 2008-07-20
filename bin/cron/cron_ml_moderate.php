@@ -77,22 +77,6 @@ while ($sent_mails < $globals->lists->max_mail_per_min
         break;
     }
 
-    if ($client->handle_request($list, $mid, $action, utf8_decode($reason))) {
-        $sent_mails += $count;
-        $texte = "le message suivant :\n\n"
-               . "    Auteur: {$mail['sender']}\n"
-               . "    Sujet : « {$mail['subj']} »\n"
-               . "    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
-               . $append;
-        $mailer = new PlMailer();
-        $mailer->addTo("$list-owner@{$domain}");
-        $mailer->setFrom("$list-bounces@{$domain}");
-        $mailer->addHeader('Reply-To', "$list-owner@{$domain}");
-        $mailer->setSubject($subject);
-        $mailer->setTxtBody($texte);
-        $mailer->send();
-    }
-
     // if the mail was classified as Unsure, feed bogo
     $raw_mail = html_entity_decode($client->get_pending_mail($list, $mid, 1));
     // search for the X-Spam-Flag header
@@ -110,6 +94,23 @@ while ($sent_mails < $globals->lists->max_mail_per_min
         $mailer->setFrom('"' . $prenom . ' ' . $nom . '" <web@' . $globals->mail->domain . '>');
         $mailer->setTxtBody($type . ' soumis par ' . $prenom . ' ' . $nom . ' via la modération de la liste ' . $list . '@' . $domain);
         $mailer->addAttachment($raw_mail, 'message/rfc822', $type . '.mail', false);
+        $mailer->send();
+    }
+
+    // send feedback to the mailing list owners
+    if ($client->handle_request($list, $mid, $action, utf8_decode($reason))) {
+        $sent_mails += $count;
+        $texte = "le message suivant :\n\n"
+               . "    Auteur: {$mail['sender']}\n"
+               . "    Sujet : « {$mail['subj']} »\n"
+               . "    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
+               . $append;
+        $mailer = new PlMailer();
+        $mailer->addTo("$list-owner@{$domain}");
+        $mailer->setFrom("$list-bounces@{$domain}");
+        $mailer->addHeader('Reply-To', "$list-owner@{$domain}");
+        $mailer->setSubject($subject);
+        $mailer->setTxtBody($texte);
         $mailer->send();
     }
 
