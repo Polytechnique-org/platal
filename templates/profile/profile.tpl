@@ -131,8 +131,14 @@ function chgMainWinLoc(strPage)
     </div>
     {/if}
     <div class='formation'>
-      {if $x.iso3166}
-      <img src='images/flags/{$x.iso3166}.gif' alt='{$x.nationalite}' height='11' title='{$x.nationalite}' />&nbsp;
+      {if $x.iso3166_1}
+      <img src='images/flags/{$x.iso3166_1}.gif' alt='{$x.nationalite}' height='11' title='{$x.nationalite}' />&nbsp;
+      {/if}
+      {if $x.iso3166_2}
+      <img src='images/flags/{$x.iso3166_2}.gif' alt='{$x.nationalite2}' height='11' title='{$x.nationalite2}' />&nbsp;
+      {/if}
+      {if $x.iso3166_3}
+      <img src='images/flags/{$x.iso3166_3}.gif' alt='{$x.nationalite3}' height='11' title='{$x.nationalite3}' />&nbsp;
       {/if}
       X {$x.promo}
       {if ($x.promo_sortie-3 > $x.promo)}
