@@ -361,6 +361,9 @@ class ProfileGeneral extends ProfilePage
         if ($this->changed['email_directory']) {
             $new_email = ($this->values['email_directory'] == "new@new.new") ?
                 $this->values['email_directory_new'] : $this->values['email_directory'];
+            if ($new_email == "") {
+                $new_email = NULL;
+            }
             XDB::execute("REPLACE INTO  profile_directory (uid, email_directory)
                                 VALUES  ({?}, {?})",
                          S::v('uid'), $new_email);
