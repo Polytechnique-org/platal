@@ -70,7 +70,9 @@
     </td>
   </tr>
   <tr>
-    <td class="titre">Date de naissance</td>
+    <td>
+      <span class="titre">Date de naissance</span>
+    </td>
     <td><input type="text" {if $errors.naissance}class="error"{/if} name="naissance" value="{$naissance}" /></td>
   </tr>
   <tr>
