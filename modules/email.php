@@ -240,7 +240,7 @@ class EmailModule extends PLModule
             print_r(Env::v('emails_rewrite'));
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
                 $new_email = Env::v('email');
-                if ($new_email == "new@new.new") {
+                if ($new_email == "new@example.org") {
                     $new_email = Env::v('email_new');
                 }
                 $retour = $redirect->add_email($new_email);

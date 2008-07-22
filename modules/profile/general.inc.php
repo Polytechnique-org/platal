@@ -123,7 +123,7 @@ class ProfileEmailDirectory implements ProfileSetting
         $success = true;
         if (!is_null($value)) {
             $email_stripped = strtolower(trim($value));
-            if ((!isvalid_email($email_stripped)) && ($email_stripped) && ($p->values['email_directory'] == "new@new.new")) {
+            if ((!isvalid_email($email_stripped)) && ($email_stripped) && ($p->values['email_directory'] == "new@example.org")) {
                 $page->assign('email_error', '1');
                 $page->assign('email_directory_error', $email_stripped);
                 $page->trigError('Adresse Email invalide');
@@ -359,7 +359,7 @@ class ProfileGeneral extends ProfilePage
                          $this->values['synchro_ax'], S::v('uid'));
         }
         if ($this->changed['email_directory']) {
-            $new_email = ($this->values['email_directory'] == "new@new.new") ?
+            $new_email = ($this->values['email_directory'] == "new@example.org") ?
                 $this->values['email_directory_new'] : $this->values['email_directory'];
             if ($new_email == "") {
                 $new_email = NULL;

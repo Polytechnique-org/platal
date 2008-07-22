@@ -71,7 +71,7 @@
         </optgroup>
       {/if}
       <optgroup label="Autres choix">
-        <option value="new@new.new" {if $error}selected="selected"{/if}>Utiliser une autre adresse email</option>
+        <option value="new@example.org" {if $error}selected="selected"{/if}>Utiliser une autre adresse email</option>
         <option value="" {if (($val eq '') && (!$error))}selected="selected"{/if}>{if
         $name neq "email"}Ne pas mettre d'adresse email{else}&nbsp;{/if}</option>
       </optgroup>
@@ -94,7 +94,7 @@
       $(function() {
         $("select#combobox").change(function() {
           $(".new").hide();
-          if ($("select#combobox").val() == "new@new.new") {
+          if ($("select#combobox").val() == "new@example.org") {
             $(".new").show();
           }
         }).change();
