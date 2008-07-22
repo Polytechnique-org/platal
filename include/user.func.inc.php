@@ -48,7 +48,8 @@ function user_clear_all_subs($user_id, $really_del=true)
         $tables_to_clear['contact'] = array('contacts');
         XDB::execute("UPDATE auth_user_md5
                          SET date_ins = 0, promo_sortie = 0, nom_usage = '',  password = '', perms = 'pending',
-                             nationalite = '', cv = '', section = 0, date = 0, smtppass = '', mail_storage = ''
+                             nationalite = '', nationalite2 = '', nationalite3 = '', cv = '', section = 0,
+                             date = 0, smtppass = '', mail_storage = ''
                        WHERE user_id = {?}", $uid);
         XDB::execute("DELETE virtual.* FROM virtual INNER JOIN virtual_redirect AS r USING(vid) WHERE redirect = {?}",
                      $alias.'@'.$globals->mail->domain);
@@ -403,7 +404,9 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                        q.profile_nick AS nickname, q.profile_from_ax, q.profile_freetext AS freetext,
                        q.profile_freetext_pub AS freetext_pub,
                        q.profile_medals_pub AS medals_pub,
-                       IF(gp.nat='',gp.pays,gp.nat) AS nationalite, gp.a2 AS iso3166,
+                       IF(gp1.nat='',gp1.pays,gp1.nat) AS nationalite, gp1.a2 AS iso3166_1,
+                       IF(gp2.nat='',gp2.pays,gp2.nat) AS nationalite2, gp2.a2 AS iso3166_2,
+                       IF(gp3.nat='',gp3.pays,gp3.nat) AS nationalite3, gp3.a2 AS iso3166_3,
                        a.alias AS forlife, a2.alias AS bestalias,
                        c.uid IS NOT NULL AS is_contact,
                        s.text AS section, p.x, p.y, p.pub AS photo_pub,
@@ -412,15 +415,17 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                        (COUNT(e.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif,
                        nd.display AS name_display, nd.tooltip AS name_tooltip
                  FROM  auth_user_md5   AS u
-           INNER JOIN  auth_user_quick AS q  USING(user_id)
-           INNER JOIN  aliases         AS a  ON (u.user_id=a.id AND a.type='a_vie')
-           INNER JOIN  aliases         AS a2 ON (u.user_id=a2.id AND FIND_IN_SET('bestalias',a2.flags))
-            LEFT JOIN  contacts        AS c  ON (c.uid = {?} and c.contact = u.user_id)
-            LEFT JOIN  geoloc_pays     AS gp ON (gp.a2 = u.nationalite)
-           INNER JOIN  sections        AS s  ON (s.id  = u.section)
-            LEFT JOIN  photo           AS p  ON (p.uid = u.user_id)
-            LEFT JOIN  mentor          AS m  ON (m.uid = u.user_id)
-            LEFT JOIN  emails          AS e  ON (e.uid = u.user_id AND e.flags='active')
+           INNER JOIN  auth_user_quick AS q   USING(user_id)
+           INNER JOIN  aliases         AS a   ON (u.user_id=a.id AND a.type='a_vie')
+           INNER JOIN  aliases         AS a2  ON (u.user_id=a2.id AND FIND_IN_SET('bestalias',a2.flags))
+            LEFT JOIN  contacts        AS c   ON (c.uid = {?} and c.contact = u.user_id)
+            LEFT JOIN  geoloc_pays     AS gp1 ON (gp1.a2 = u.nationalite)
+            LEFT JOIN  geoloc_pays     AS gp2 ON (gp2.a2 = u.nationalite2)
+            LEFT JOIN  geoloc_pays     AS gp3 ON (gp3.a2 = u.nationalite3)
+           INNER JOIN  sections        AS s   ON (s.id  = u.section)
+            LEFT JOIN  photo           AS p   ON (p.uid = u.user_id)
+            LEFT JOIN  mentor          AS m   ON (m.uid = u.user_id)
+            LEFT JOIN  emails          AS e   ON (e.uid = u.user_id AND e.flags='active')
            INNER JOIN  profile_names_display AS nd ON (nd.user_id = u.user_id)
                 WHERE  a.alias = {?}
              GROUP BY  u.user_id";

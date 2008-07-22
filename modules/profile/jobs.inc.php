@@ -49,7 +49,7 @@ class ProfileJob extends ProfileGeoloc
             $chk =& $this->$obj;
             foreach ($fields as $field) {
                 if ($field == "email_new") {
-                    if ($job['email'] == "new@new.new") {
+                    if ($job['email'] == "new@example.org") {
                         $job['email'] = $job[$field];
                     }
                     continue;
@@ -112,7 +112,7 @@ class ProfileJob extends ProfileGeoloc
                      S::i('uid'));
         $i = 0;
         foreach ($value as $jobid=>&$job) {
-            if ($job['email'] == "new@new.new") {
+            if ($job['email'] == "new@example.org") {
                 $job['email'] = $job['email_new'];
             }
             XDB::execute("INSERT INTO  entreprises (uid, entrid, entreprise, secteur, ss_secteur,

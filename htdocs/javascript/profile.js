@@ -110,6 +110,24 @@ function removeSearchName(i)
   }
 }
 
+function delNationality(i)
+{
+    $('#nationalite' + i).hide().find('select').val('');
+}
+
+function addNationality()
+{
+    var i = 0;
+    if ($('#nationalite2').find('select').val() == "") {
+        i = 2;
+    } else if ($('#nationalite3').find('select').val() == "") {
+        i = 3;
+    }
+    if ((i == 2) || (i == 3)) {
+        $('#nationalite' + i).show();
+    }
+}
+
 function addNetworking()
 {
     var i = 0;

@@ -29,8 +29,14 @@
     {if !$c.dcd && $c.inscrit}</a>{/if}
   </div>
   <div class="autre">
-    {if $c.iso3166}
-    <img src='images/flags/{$c.iso3166}.gif' alt='{$c.nat}' height='11' title='{$c.nat}' />&nbsp;
+    {if $c.iso3166_1}
+    <img src='images/flags/{$c.iso3166_1}.gif' alt='{$c.nat1}' height='11' title='{$c.nat1}' />&nbsp;
+    {/if}
+    {if $c.iso3166_2}
+    <img src='images/flags/{$c.iso3166_2}.gif' alt='{$c.nat2}' height='11' title='{$c.nat2}' />&nbsp;
+    {/if}
+    {if $c.iso3166_3}
+    <img src='images/flags/{$c.iso3166_3}.gif' alt='{$c.nat3}' height='11' title='{$c.nat3}' />&nbsp;
     {/if}
     (X {$c.promo})
     {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}

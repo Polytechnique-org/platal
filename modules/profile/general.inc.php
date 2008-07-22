@@ -122,7 +122,7 @@ class ProfileEmailDirectory implements ProfileSetting
         $success = true;
         if (!is_null($value)) {
             $email_stripped = strtolower(trim($value));
-            if ((!isvalid_email($email_stripped)) && ($email_stripped) && ($p->values['email_directory'] == "new@new.new")) {
+            if ((!isvalid_email($email_stripped)) && ($email_stripped) && ($p->values['email_directory'] == "new@example.org")) {
                 $page->assign('email_error', '1');
                 $page->assign('email_directory_error', $email_stripped);
                 $page->trigError('Adresse Email invalide');
@@ -235,6 +235,8 @@ class ProfileGeneral extends ProfilePage
                                   = new ProfilePub();
         $this->settings['freetext']
                                   = $this->settings['nationalite']
+                                  = $this->settings['nationalite2']
+                                  = $this->settings['nationalite3']
                                   = $this->settings['nick']
                                   = $this->settings['yourself']
                                   = $this->settings['display_name']
@@ -254,13 +256,15 @@ class ProfileGeneral extends ProfilePage
                                   = new ProfileAppli();
         $this->watched= array('nom' => true, 'freetext' => true, 'tels' => true,
                               'networking' => true, 'appli1' => true, 'appli2' => true,
-                              'nationalite' => true, 'nick' => true);
+                              'nationalite' => true, 'nationalite2' => true,
+                              'nationalite3' => true, 'nick' => true);
     }
 
     protected function _fetchData()
     {
         // Checkout all data...
-        $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite, u.naissance,
+        $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite,
+                                   u.nationalite2, u.nationalite3, u.naissance,
                                    t.display_tel as mobile, t.pub as mobile_pub,
                                    d.email_directory as email_directory,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
@@ -320,12 +324,26 @@ class ProfileGeneral extends ProfilePage
 
     protected function _saveData()
     {
-        if ($this->changed['nationalite'] || $this->changed['nom'] || $this->changed['prenom']
-            || $this->changed['naissance']) {
+        if ($this->changed['nationalite'] || $this->changed['nationalite2'] || $this->changed['nationalite3']
+            || $this->changed['nom'] || $this->changed['prenom'] || $this->changed['naissance']) {
+            if ($this->values['nationalite3'] == "") {
+                $this->values['nationalite3'] = NULL;
+            }
+            if ($this->values['nationalite2'] == "") {
+                $this->values['nationalite2'] = $this->values['nationalite3'];
+                $this->values['nationalite3'] = NULL;
+            }
+            if ($this->values['nationalite'] == "") {
+                $this->values['nationalite']  = $this->values['nationalite2'];
+                $this->values['nationalite2'] = $this->values['nationalite3'];
+                $this->values['nationalite3'] = NULL;
+            }
+
            XDB::execute("UPDATE  auth_user_md5
-                            SET  nationalite = {?}, nom={?}, prenom={?}, naissance={?}
+                            SET  nationalite = {?}, nationalite2 = {?}, nationalite3 = {?}, nom={?}, prenom={?}, naissance={?}
                           WHERE  user_id = {?}",
-                         $this->values['nationalite'], $this->values['nom'], $this->values['prenom'],
+                         $this->values['nationalite'], $this->values['nationalite2'], $this->values['nationalite3'],
+                         $this->values['nom'], $this->values['prenom'],
                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['naissance']),
                          S::v('uid'));
         }
@@ -340,8 +358,11 @@ class ProfileGeneral extends ProfilePage
                          $this->values['synchro_ax'], S::v('uid'));
         }
         if ($this->changed['email_directory']) {
-            $new_email = ($this->values['email_directory'] == "new@new.new") ?
+            $new_email = ($this->values['email_directory'] == "new@example.org") ?
                 $this->values['email_directory_new'] : $this->values['email_directory'];
+            if ($new_email == "") {
+                $new_email = NULL;
+            }
             XDB::execute("REPLACE INTO  profile_directory (uid, email_directory)
                                 VALUES  ({?}, {?})",
                          S::v('uid'), $new_email);
