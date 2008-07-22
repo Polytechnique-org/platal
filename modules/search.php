@@ -323,7 +323,9 @@ class SearchModule extends PLModule
             break;
           case 'nationaliteTxt':
             $db = '`geoloc_pays` INNER JOIN
-                   `auth_user_md5` ON(`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite`)';
+                   `auth_user_md5` ON (`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite` OR
+                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite2` OR
+                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite3`)';
             $field = 'IF(`geoloc_pays`.`nat`=\'\',
                                        `geoloc_pays`.`pays`,
                                        `geoloc_pays`.`nat`)';
@@ -392,6 +394,7 @@ class SearchModule extends PLModule
                                 LIMIT  11',
                                $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch,
                                $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch);
+
         $nbResults = 0;
         $res = "";
         while ($result = $list->next()) {
@@ -452,7 +455,9 @@ class SearchModule extends PLModule
             break;
           case 'nationalite':
             $db = '`geoloc_pays` INNER JOIN
-                   `auth_user_md5` ON (`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite`)';
+                   `auth_user_md5` ON (`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite` OR
+                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite2` OR
+                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite3`)';
             $field = 'IF(`nat`=\'\', `pays`, `nat`)';
             $id = '`a2`';
             break;

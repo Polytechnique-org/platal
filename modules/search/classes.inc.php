@@ -33,7 +33,9 @@
     ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
     ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
     es.label AS secteur, ef.fonction_fr AS fonction,
-    IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,
+    IF(n1.nat=\'\',n1.pays,n1.nat) AS nat1, n1.a2 AS iso3166_1,
+    IF(n2.nat=\'\',n2.pays,n2.nat) AS nat2, n2.a2 AS iso3166_2,
+    IF(n3.nat=\'\',n3.pays,n3.nat) AS nat3, n3.a2 AS iso3166_3,
     (COUNT(em.email) > 0 OR FIND_IN_SET("googleapps", u.mail_storage) > 0) AS actif,';
 // hide private information if not logged
 if (S::logged())
@@ -60,7 +62,9 @@ else
     LEFT JOIN  entreprises             AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
     LEFT JOIN  emploi_secteur          AS es  ON (e.secteur = es.id)
     LEFT JOIN  fonctions_def           AS ef  ON (e.fonction = ef.id)
-    LEFT JOIN  geoloc_pays             AS n   ON (u.nationalite = n.a2)
+    LEFT JOIN  geoloc_pays             AS n1  ON (u.nationalite = n1.a2)
+    LEFT JOIN  geoloc_pays             AS n2  ON (u.nationalite2 = n2.a2)
+    LEFT JOIN  geoloc_pays             AS n3  ON (u.nationalite3 = n3.a2)
     LEFT JOIN  adresses                AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
     LEFT JOIN  geoloc_pays             AS gp  ON (adr.country = gp.a2)
     LEFT JOIN  geoloc_region           AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
