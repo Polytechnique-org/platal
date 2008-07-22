@@ -37,8 +37,8 @@
   {if $liste.subscriptions|@count}
   <strong>&bull; Demandes d'inscription</strong><br />
   {foreach from=$liste.subscriptions item=s}
-    <a href='{$platal->ns}lists/moderate/{$liste.list}?sadd={$s.id}'
-        onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?sadd={$s.id}'));">
+    <a href='{$platal->ns}lists/moderate/{$liste.list}?sadd={$s.id}&amp;token={xsrf_token}'
+        onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?sadd={$s.id}&amp;token={xsrf_token}'));">
       {icon name=add title="Accepter"}
     </a>
     <a href='{$platal->ns}lists/moderate/{$liste.list}?sid={$s.id}'>
@@ -55,12 +55,12 @@
   <strong>&bull; Demandes de modération</strong><br />
   <span class="smaller">
   {foreach from=$liste.mails item=m}
-    <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mok=1'
-        onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mok=1'));">
-      {icon name=add title="Valider le mail"}
+    <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'
+        onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'));">
+      {icon name=add title="Valider l'email"}
     </a>
-    <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mdel=1'
-        onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mdel=1'));">
+    <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mdel=1&amp;token={xsrf_token}'
+        onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mdel=1&amp;token={xsrf_token}'));">
       {icon name=delete title="Spam"}
     </a>
     De&nbsp;: {$m.sender}<br />
@@ -81,15 +81,15 @@
 <td class='right'>{$liste.nbsub}</td>
 <td class='right'>
   {if $liste.sub eq 2}
-  <a href='{$platal->ns}lists?del={$liste.list}'
-      onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?unsubscribe=1'));">
+  <a href='{$platal->ns}lists?del={$liste.list}&amp;token={xsrf_token}'
+      onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?unsubscribe=1&amp;token={xsrf_token}'));">
     {icon name=cross title="me désinscrire"}
   </a>
   {elseif $liste.sub eq 1}
   {icon name=flag_orange title='inscription en attente de modération'}
   {else}
-  <a href='{$platal->ns}lists?add={$liste.list}'
-      onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?subscribe=1'));">
+  <a href='{$platal->ns}lists?add={$liste.list}&amp;token={xsrf_token}'
+      onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?subscribe=1&amp;token={xsrf_token}'));">
     {icon name=add title="m'inscrire"}
   </a>
   {/if}

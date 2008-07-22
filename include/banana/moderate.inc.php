@@ -59,6 +59,8 @@ class ModerationBanana extends Banana
 
     function __construct($forlife, $params = null)
     {
+        ini_set('memory_limit', '128M'); 
+
         global $globals;
         ModerationBanana::$client = $params['client'];
         ModerationBanana::$listname = $params['listname'];
@@ -89,10 +91,7 @@ class ModerationPage extends BananaPage
 
     public function trig($msg)
     {
-        global $page;
-        if ($page) {
-            $page->trigError($msg);
-        }
+        Platal::page()->trigError($msg);
         return true;
     }
 }

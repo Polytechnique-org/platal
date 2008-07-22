@@ -21,13 +21,13 @@
 {**************************************************************************}
 
 <div class="contact-list" style="clear: both">
-{iterate from=$set item=res}
+{foreach from=$set item=res}
   {if $res.contact}
   {include file="include/minifiche.tpl" c=$res show_action="retirer"}
   {else}
   {include file="include/minifiche.tpl" c=$res show_action="ajouter"}
   {/if}
-{/iterate}
+{/foreach}
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

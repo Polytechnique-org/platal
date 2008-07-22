@@ -19,7 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('xorg.misc.inc.php');
 require_once('user.func.inc.php');
 
 global $globals;
@@ -211,6 +210,23 @@ class MinificheView extends MultipageView
                  : "");
     }
 
+    public function bounds()
+    {
+        $order = Env::v('order', $this->defaultkey);
+        $show_bounds = 0;
+        if (($order == "name") || ($order == "-name")) {
+            $this->bound_field = "nom";
+            $show_bounds = 1;
+        } elseif (($order == "promo") || ($order == "-promo")) {
+            $this->bound_field = "promo";
+            $show_bounds = -1;
+        }
+        if ($order{0} == '-') {
+            $show_bounds = -$show_bounds;
+        }
+        return $show_bounds;
+    }
+
     public function templateName()
     {
         return 'include/plview.minifiche.tpl';
@@ -240,6 +256,23 @@ class MentorView extends MultipageView
     public function joins()
     {
         return "INNER JOIN  profile_names_display AS nd ON (nd.user_id = u.user_id)";
+    }
+
+    public function bounds()
+    {
+        $order = Env::v('order', $this->defaultkey);
+        $show_bounds = 0;
+        if (($order == "name") || ($order == "-name")) {
+            $this->bound_field = "nom";
+            $show_bounds = 1;
+        } elseif (($order == "promo") || ($order == "-promo")) {
+            $this->bound_field = "promo";
+            $show_bounds = -1;
+        }
+        if ($order{0} == '-') {
+            $show_bounds = -$show_bounds;
+        }
+        return $show_bounds;
     }
 
     public function templateName()
@@ -273,12 +306,29 @@ class TrombiView extends MultipageView
                 INNER JOIN  profile_names_display AS nd ON (nd.user_id = u.user_id)";
     }
 
+    public function bounds()
+    {
+        $order = Env::v('order', $this->defaultkey);
+        $show_bounds = 0;
+        if (($order == "name") || ($order == "-name")) {
+            $this->bound_field = "nom";
+            $show_bounds = 1;
+        } elseif (($order == "promo") || ($order == "-promo")) {
+            $this->bound_field = "promo";
+            $show_bounds = -1;
+        }
+        if ($order{0} == '-') {
+            $show_bounds = -$show_bounds;
+        }
+        return $show_bounds;
+    }
+
     public function templateName()
     {
         return 'include/plview.trombi.tpl';
     }
 
-    public function apply(PlatalPage &$page)
+    public function apply(PlPage &$page)
     {
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
             global $globals;
@@ -315,7 +365,7 @@ class GeolocView implements PlView
         return $args;
     }
 
-    public function apply(PlatalPage &$page)
+    public function apply(PlPage &$page)
     {
         require_once 'geoloc.inc.php';
         require_once '../modules/search/search.inc.php';
@@ -412,7 +462,7 @@ class GadgetView implements PlView
                  : "");
     }
 
-    public function apply(PlatalPage &$page)
+    public function apply(PlPage &$page)
     {
         $page->assign_by_ref('set',
           $this->set->get($this->fields(), $this->joins(), null, null, null, 5, 0));

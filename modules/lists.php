@@ -94,18 +94,22 @@ class ListsModule extends PLModule
 
         $page->changeTpl('lists/index.tpl');
         $page->addJsLink('ajax.js');
-        $page->assign('xorg_title','Polytechnique.org - Listes de diffusion');
+        $page->setTitle('Polytechnique.org - Listes de diffusion');
 
 
         if (Get::has('del')) {
+            S::assert_xsrf_token();
             $this->client->unsubscribe(Get::v('del'));
             pl_redirect('lists');
         }
         if (Get::has('add')) {
+            S::assert_xsrf_token();
             $this->client->subscribe(Get::v('add'));
             pl_redirect('lists');
         }
         if (Post::has('promo_add')) {
+            S::assert_xsrf_token();
+
             $promo = Post::i('promo_add');
             if ($promo >= 1900 and $promo < 2100) {
                 $this->client->subscribe("promo$promo");
@@ -113,6 +117,7 @@ class ListsModule extends PLModule
                 $page->trigSuccess("promo incorrecte, il faut une promo sur 4 chiffres.");
             }
         }
+
         $listes = $this->client->get_lists();
         $owner  = array_filter($listes, 'filter_owner');
         $listes = array_diff_key($listes, $owner);
@@ -134,6 +139,8 @@ class ListsModule extends PLModule
         header('Content-Type: text/html; charset="UTF-8"');
         $domain = $this->prepare_client($page);
         $page->changeTpl('lists/liste.inc.tpl', NO_SKIN);
+        S::assert_xsrf_token();
+
         if (Get::has('unsubscribe')) {
             $this->client->unsubscribe($list);
         }
@@ -159,7 +166,22 @@ class ListsModule extends PLModule
 
     function handler_create(&$page)
     {
+        global $globals;
+
         $page->changeTpl('lists/create.tpl');
+
+        $user_promo  = S::i('promo');
+        $year        = date('Y');
+        $month       = date('m');
+        $young_promo = $very_young_promo = 0;
+        if ((($year > $user_promo) && ($month > 3)) && ($year < $user_promo + 5)) {
+            $young_promo = 1;
+        }
+        if ((($year > $user_promo) && ($month > 7)) && (($year < $user_promo + 1) && ($month < 8))) {
+            $very_young_promo = 1;
+        }
+        $page->assign('young_promo', $young_promo);
+        $page->assign('very_young_promo', $very_young_promo);
 
         $owners  = preg_split("/[\s]+/", Post::v('owners'), -1, PREG_SPLIT_NO_EMPTY);
         $members = preg_split("/[\s]+/", Post::v('members'), -1, PREG_SPLIT_NO_EMPTY);
@@ -182,11 +204,22 @@ class ListsModule extends PLModule
         }
 
         // click on validate button 'add_member_sub'
+        require_once('user.func.inc.php');
         if (Post::has('add_member_sub') && Post::has('add_member')) {
-            require_once('user.func.inc.php');
             $forlifes = get_users_forlife_list(Post::v('add_member'), true);
             if (!is_null($forlifes)) {
                 $members = array_merge($members, $forlifes);
+            }
+        }
+        if (Post::has('add_member_sub') && isset($_FILES['add_member_file']) && $_FILES['add_member_file']['tmp_name']) {
+            $upload =& PlUpload::get($_FILES['add_member_file'], S::v('forlife'), 'list.addmember', true);
+            if (!$upload) {
+                $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
+            } else {
+                $forlifes = get_users_forlife_list($upload->getContents(), true);
+                if (!is_null($forlifes)) {
+                    $members = array_merge($members, $forlifes);
+                }
             }
         }
 
@@ -195,45 +228,77 @@ class ListsModule extends PLModule
         ksort($members);
         $members = array_unique($members);
 
-        $page->assign('owners', join(' ', $owners));
-        $page->assign('members', join(' ', $members));
+        $page->assign('owners', join("\n", $owners));
+        $page->assign('members', join("\n", $members));
 
         if (!Post::has('submit')) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
+        $asso = Post::v('asso');
         $liste = Post::v('liste');
 
         if (empty($liste)) {
-            $page->trigError('champs «adresse souhaitée» vide');
+            $page->trigError('Le champ «adresse souhaitée» est vide.');
         }
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
-            $page->trigError('le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets');
+            $page->trigError('Le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets.');
         }
 
-        $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
-        $n   = $res->fetchOneCell();
+        if (($asso == "binet") || ($asso == "alias")) {
+            $promo = Post::i('promo');
+            $domain = $promo . '.' . $globals->mail->domain;
+
+            if (($promo < 1921) || ($promo > date('Y'))) {
+                $page->trigError('La promotion est mal renseignée, elle doit être du type : 2004.');
+            }
+
+            $new = $liste . '@' . $domain;
+            $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+
+        } else {
+            if ($asso == "groupex") {
+                $groupex_name = Post::v('groupex_name');
+
+                $res_groupe = XDB::query('SELECT mail_domain FROM groupex.asso WHERE nom={?}', $groupex_name);
+                $domain = $res_groupe->fetchOneCell();
+
+                if (!$domain) {
+                    $page->trigError('Il n\'y a aucun groupe de ce nom sur Polytechnique.net.');
+                }
+
+                $new = $liste . '@' . $domain;
+                $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+            } else {
+                $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
+                $domain = $globals->mail->domain;
+            }
+        }
+
+        $n = $res->fetchOneCell();
 
         if ($n) {
-            $page->trigError('cet alias est déjà pris');
+            $page->trigError('L\'«adresse souhaitée» est déjà prise.');
         }
 
         if (!Post::v('desc')) {
-            $page->trigError('le sujet est vide');
+            $page->trigError('Le sujet est vide.');
         }
 
         if (!count($owners)) {
-            $page->trigError('pas de gestionnaire');
+            $page->trigError('Il n\'y a pas de gestionnaire.');
         }
 
         if (count($members)<4) {
-            $page->trigError('pas assez de membres');
+            $page->trigError('Il n\'y a pas assez de membres.');
         }
 
         if (!$page->nb_errs()) {
             $page->assign('created', true);
             require_once 'validations.inc.php';
-            $req = new ListeReq(S::v('uid'), $liste,
+            $req = new ListeReq(S::v('uid'), $asso, $liste, $domain,
                                 Post::v('desc'), Post::i('advertise'),
                                 Post::i('modlevel'), Post::i('inslevel'),
                                 $owners, $members);
@@ -252,11 +317,13 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/members.tpl');
 
         if (Get::has('del')) {
+            S::assert_xsrf_token();
             $this->client->unsubscribe($liste);
             pl_redirect('lists/members/'.$liste);
         }
 
         if (Get::has('add')) {
+            S::assert_xsrf_token();
             $this->client->subscribe($liste);
             pl_redirect('lists/members/'.$liste);
         }
@@ -287,10 +354,12 @@ class ListsModule extends PLModule
         $this->prepare_client($page);
 
         if (Get::has('del')) {
+            S::assert_xsrf_token();
             $this->client->unsubscribe($liste);
             pl_redirect('lists/annu/'.$liste);
         }
         if (Get::has('add')) {
+            S::assert_xsrf_token();
             $this->client->subscribe($liste);
             pl_redirect('lists/annu/'.$liste);
         }
@@ -310,7 +379,7 @@ class ListsModule extends PLModule
         $view = new ArraySet($users);
         $view->addMod('trombi', 'Trombinoscope', true, array('with_promo' => true));
         if (empty($GLOBALS['IS_XNET_SITE'])) {
-            $view->addMod('minifiche', 'Minifiches', false);
+            $view->addMod('minifiche', 'Mini-fiches', false);
         }
         $view->addMod('geoloc', 'Planisphère');
         $view->apply("lists/annu/$liste", $page, $action, $subaction);
@@ -411,6 +480,8 @@ class ListsModule extends PLModule
         $page->register_modifier('hdc', 'list_header_decode');
 
         if (Env::has('sadd') || Env::has('sdel')) {
+            S::assert_xsrf_token();
+
             if (Env::has('sadd')) { /* 4 = SUBSCRIBE */
                 $sub = $this->client->get_pending_sub($liste, Env::v('sadd'));
                 $this->client->handle_request($liste,Env::v('sadd'),4,'');
@@ -441,6 +512,8 @@ class ListsModule extends PLModule
         }
 
         if (Post::has('moderate_mails') && Post::has('select_mails')) {
+            S::assert_xsrf_token();
+
             $mails = array_keys(Post::v('select_mails'));
             foreach($mails as $mail) {
                 $this->moderate_mail($domain, $liste, $mail);
@@ -525,6 +598,8 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/admin.tpl');
 
         if (Env::has('send_mark')) {
+            S::assert_xsrf_token();
+
             $actions = Env::v('mk_action');
             $uids    = Env::v('mk_uid');
             $mails   = Env::v('mk_email');
@@ -555,6 +630,8 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('add_member')) {
+            S::assert_xsrf_token();
+
             require_once('user.func.inc.php');
             $members = get_users_forlife_list(Env::v('add_member'),
                                               false,
@@ -567,7 +644,28 @@ class ListsModule extends PLModule
             }
         }
 
+        if (isset($_FILES['add_member_file']) && $_FILES['add_member_file']['tmp_name']) {
+            S::assert_xsrf_token();
+
+            $upload =& PlUpload::get($_FILES['add_member_file'], S::v('forlife'), 'list.addmember', true);
+            if (!$upload) {
+                $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
+            } else {
+                $members = get_users_forlife_list($upload->getContents(),
+                                                  false,
+                                                  array('ListsModule', 'no_login_callback'));
+                $arr = $this->client->mass_subscribe($liste, $members);
+                if (is_array($arr)) {
+                    foreach($arr as $addr) {
+                        $page->trigSuccess("{$addr[0]} inscrit.");
+                    }
+                }
+            }
+        }
+
         if (Env::has('del_member')) {
+            S::assert_xsrf_token();
+
             if (strpos(Env::v('del_member'), '@') === false) {
                 $this->client->mass_unsubscribe(
                     $liste, array(Env::v('del_member').'@'.$globals->mail->domain));
@@ -578,6 +676,8 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('add_owner')) {
+            S::assert_xsrf_token();
+
             require_once('user.func.inc.php');
             $owners = get_users_forlife_list(Env::v('add_owner'), false, array('ListsModule', 'no_login_callback'));
             if ($owners) {
@@ -590,6 +690,8 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('del_owner')) {
+            S::assert_xsrf_token();
+
             if (strpos(Env::v('del_owner'), '@') === false) {
                 $this->client->del_owner($liste, Env::v('del_owner').'@'.$globals->mail->domain);
             } else {
@@ -629,9 +731,20 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/options.tpl');
 
         if (Post::has('submit')) {
+            S::assert_xsrf_token();
+
             $values = $_POST;
             $values = array_map('utf8_decode', $values);
-            $this->client->set_bogo_level($liste, intval($values['bogo_level']));
+            $spamlevel = intval($values['bogo_level']);
+            $unsurelevel = intval($values['unsure_level']);
+            if ($spamlevel == 0) {
+                $unsurelevel = 0;
+            }
+            if ($spamlevel > 3 || $spamlevel < 0 || $unsurelevel < 0 || $unsurelevel > 1) {
+                $page->trigError("Réglage de l'antispam non valide");
+            } else {
+                $this->client->set_bogo_level($liste, ($spamlevel << 1) + $unsurelevel);
+            }
             switch($values['moderate']) {
                 case '0':
                     $values['generic_nonmember_action']  = 0;
@@ -655,8 +768,10 @@ class ListsModule extends PLModule
             }
             $this->client->set_owner_options($liste, $values);
         } elseif (isvalid_email(Post::v('atn_add'))) {
+            S::assert_xsrf_token();
             $this->client->add_to_wl($liste, Post::v('atn_add'));
         } elseif (Get::has('atn_del')) {
+            S::assert_xsrf_token();
             $this->client->del_from_wl($liste, Get::v('atn_del'));
             pl_redirect('lists/options/'.$liste);
         }
@@ -664,7 +779,9 @@ class ListsModule extends PLModule
         if (list($details,$options) = $this->client->get_owner_options($liste)) {
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
-            $page->assign('bogo_level', $this->client->get_bogo_level($liste));
+            $bogo_level = intval($this->client->get_bogo_level($liste));
+            $page->assign('unsure_level', $bogo_level & 1);
+            $page->assign('bogo_level', $bogo_level >> 1);
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
         }
@@ -690,6 +807,8 @@ class ListsModule extends PLModule
 
         $page->changeTpl('lists/delete.tpl');
         if (Post::v('valid') == 'OUI') {
+            S::assert_xsrf_token();
+
             if ($this->client->delete_list($liste, Post::b('del_archive'))) {
                 foreach (array('', '-owner', '-admin', '-bounces', '-unsubscribe') as $app) {
                     XDB::execute("DELETE FROM  $table
@@ -722,6 +841,8 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/soptions.tpl');
 
         if (Post::has('submit')) {
+            S::assert_xsrf_token();
+
             $values = $_POST;
             $values = array_map('utf8_decode', $values);
             unset($values['submit']);
@@ -749,6 +870,7 @@ class ListsModule extends PLModule
         $page->changeTpl('lists/check.tpl');
 
         if (Post::has('correct')) {
+            S::assert_xsrf_token();
             $this->client->check_options($liste, true);
         }
 
@@ -762,7 +884,7 @@ class ListsModule extends PLModule
 
     function handler_admin_all(&$page) {
         $page->changeTpl('lists/admin_all.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Mailing lists');
+        $page->setTitle('Polytechnique.org - Administration - Mailing lists');
 
         $client = new MMList(S::v('uid'), S::v('password'));
         $listes = $client->get_all_lists();

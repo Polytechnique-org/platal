@@ -33,7 +33,7 @@ Photo actuelle de {$forlife}
 <br />
 
 <p>
-<a href="admin/trombino/{$uid}/delete">Supprimer cette photo</a>
+<a href="admin/trombino/{$uid}/delete?token={xsrf_token}">Supprimer cette photo</a>
 </p>
 
 <p>
@@ -41,6 +41,7 @@ Photo actuelle de {$forlife}
 </p>
 
 <form action="admin/trombino/{$uid}/new" method="post" enctype="multipart/form-data">
+  {xsrf_token_field}
   <div>
     <input name="userfile" type="file" size="20" maxlength="150" />
     <input type="submit" value="Envoyer" />

@@ -97,7 +97,7 @@ if ($feed) {
     pl_clear_errors();
     exit;
 } elseif (Env::v('action')) {
-    $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
+    $page->assign('pl_extra_header', substr($wikiAll, 0, $i));
     $wikiAll = substr($wikiAll, $j);
 } else {
     if (!$cache_exists && $wiki_exists) {

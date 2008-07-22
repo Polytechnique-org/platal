@@ -42,7 +42,7 @@
     </td>
     <td>{$s.addr}</td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?sadd={$s.id}'>{icon name=add title="Valider l'inscription"}</a>
+      <a href='{$platal->pl_self(1)}?sadd={$s.id}&amp;token={xsrf_token}'>{icon name=add title="Valider l'inscription"}</a>
       <a href='{$platal->pl_self(1)}?sid={$s.id}'>{icon name=delete title="Refuser l'inscription"}</a>
     </td>
   </tr>
@@ -53,21 +53,21 @@
 {/if}
 
 <h1>
-  Mails en attente de modération
+  Emails en attente de modération
 </h1>
 
 {if $mails|@count}
 <ul>
   <li>
-  <strong>{icon name=add}accepter&nbsp;:</strong> le mail est immédiatement libéré, et envoyé à la
+  <strong>{icon name=add}accepter&nbsp;:</strong> l'email est immédiatement libéré, et envoyé à la
   liste.
   </li>
   <li>
-  <strong>{icon name=magnifier}refuser&nbsp;:</strong> pour refuser un mail, suivre le lien {icon name=magnifier} et
+  <strong>{icon name=magnifier}refuser&nbsp;:</strong> pour refuser un email, suivre le lien {icon name=magnifier} et
   remplir le formulaire en bas de page.
   </li>
   <li>
-  <strong>{icon name=delete}spam&nbsp;:</strong> le mail est effacé sans autre forme de procès.
+  <strong>{icon name=delete}spam&nbsp;:</strong> l'email est effacé sans autre forme de procès.
   N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables. <br/>
   </li>
 </ul>
@@ -93,17 +93,18 @@ function toggleAll() {
 //]]></script>
 
 <form method="post" action="{$platal->pl_self(1)}">
+{xsrf_token_field}
 {if $with_fromx}
 <table class="bicol" style="margin-bottom: 1ex">
   <tr>
     <th colspan="2"></th>
-    <th>Mail</th>
+    <th>Email</th>
     <th>Infos</th>
     <th colspan="2"></th>
   </tr>
   <tr>
     <th class="smaller" colspan="6">
-      Les mails suivants proviennent d'adresses identifiées comme étant celles de camarades.
+      Les emails suivants proviennent d'adresses identifiées comme étant celles de camarades.
     </th>
   </tr>
   {foreach from=$mails item=m name=mail}
@@ -125,11 +126,11 @@ function toggleAll() {
       {$m.size} octets</small>
     </td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>{icon name=add title="Accepter le message"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'>{icon name=add title="Accepter le message"}</a>
     </td>
     <td class='action'>
       <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Spam !"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1&amp;token={xsrf_token}'>{icon name=delete title="Spam !"}</a>
     </td>
   </tr>
   {/if}
@@ -144,7 +145,7 @@ function toggleAll() {
       <a href="javascript:toggleAll()">{icon name="arrow_refresh" title="Tout (dé)cocher"}</a>
     </th>
     <th></th>
-    <th>Mail</th>
+    <th>Email</th>
     <th>Infos</th>
     <th colspan="2"></th>
   </tr>
@@ -167,11 +168,11 @@ function toggleAll() {
       {$m.size} octets</small>
     </td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>{icon name=add title="Accepter le message"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1&amp;token={xsrf_token}'>{icon name=add title="Accepter le message"}</a>
     </td>
     <td class='action'>
       <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Spam !"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1&amp;token={xsrf_token}'>{icon name=delete title="Spam !"}</a>
     </td>
   </tr>
   {/if}
@@ -198,14 +199,14 @@ $('.checkboxToggle').click(function (event)
 //]]></script>
 
 <p class="center desc">
-  Utilise ces boutons pour appliquer une action à tous les mails sélectionnés.<br />
+  Utilise ces boutons pour appliquer une action à tous les emails sélectionnés.<br />
   <input type="hidden" name="moderate_mails" value="1" />
   <input type="submit" name="mok" value="Accepter" />
   <input type="submit" name="mdel" value="Spam !" />
 </p>
 </form>
 {else}
-<p>Il n'y a pas de mails en attente de modération.</p>
+<p>Il n'y a pas d'emails en attente de modération.</p>
 {/if}
 
 

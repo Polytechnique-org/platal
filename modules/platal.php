@@ -122,7 +122,7 @@ class PlatalModule extends PLModule
     function handler_prefs(&$page)
     {
         $page->changeTpl('platal/preferences.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Mes préférences');
+        $page->setTitle('Polytechnique.org - Mes préférences');
 
         if (Post::has('mail_fmt')) {
             $fmt = Post::v('mail_fmt');
@@ -143,7 +143,7 @@ class PlatalModule extends PLModule
     {
         $page->changeTpl('platal/webredirect.tpl');
 
-        $page->assign('xorg_title','Polytechnique.org - Redirection de page WEB');
+        $page->setTitle('Polytechnique.org - Redirection de page WEB');
 
         $log =& S::v('log');
         $url = Env::v('url');
@@ -152,14 +152,14 @@ class PlatalModule extends PLModule
             XDB::execute('UPDATE auth_user_quick
                                        SET redirecturl = {?} WHERE user_id = {?}',
                                    $url, S::v('uid'));
-            $log->log('carva_add', 'http://'.Env::v('url'));
+            S::logger()->log('carva_add', 'http://'.Env::v('url'));
             $page->trigSuccess("Redirection activée vers <a href='http://$url'>$url</a>");
         } elseif (Env::v('submit') == "Supprimer") {
             XDB::execute("UPDATE auth_user_quick
                                        SET redirecturl = ''
                                      WHERE user_id = {?}",
                                    S::v('uid'));
-            $log->log("carva_del", $url);
+            S::logger()->log("carva_del", $url);
             Post::kill('url');
             $page->trigSuccess('Redirection supprimée');
         }
@@ -209,7 +209,7 @@ class PlatalModule extends PLModule
             }
 
             $log =& S::v('log');
-            $log->log('passwd', '');
+            S::logger()->log('passwd', '');
 
             if (Cookie::v('ORGaccess')) {
                 setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
@@ -221,13 +221,13 @@ class PlatalModule extends PLModule
 
         $page->changeTpl('platal/motdepasse.tpl');
         $page->addJsLink('motdepasse.js');
-        $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
+        $page->setTitle('Polytechnique.org - Mon mot de passe');
     }
 
     function handler_smtppass(&$page)
     {
         $page->changeTpl('platal/acces_smtp.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
+        $page->setTitle('Polytechnique.org - Acces SMTP/NNTP');
 
         require_once 'wiki.inc.php';
         wiki_require_page('Xorg.SMTPSécurisé');
@@ -243,12 +243,12 @@ class PlatalModule extends PLModule
             XDB::execute('UPDATE auth_user_md5 SET smtppass = {?}
                                      WHERE user_id = {?}', $pass, $uid);
             $page->trigSuccess('Mot de passe enregistré');
-            $log->log("passwd_ssl");
+            S::logger()->log("passwd_ssl");
         } elseif (Env::v('op') == "Supprimer") {
             XDB::execute('UPDATE auth_user_md5 SET smtppass = ""
                                      WHERE user_id = {?}', $uid);
             $page->trigSuccess('Compte SMTP et NNTP supprimé');
-            $log->log("passwd_del");
+            S::logger()->log("passwd_del");
         }
 
         $res = XDB::query("SELECT IF(smtppass != '', 'actif', '')
@@ -329,13 +329,13 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la
 Polytechnique.org
 \"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"
 
-Mail envoyé à ".Env::v('login') . (Post::has('email') ? "
+Email envoyé à ".Env::v('login') . (Post::has('email') ? "
 Adresse de secours : " . Post::v('email') : ""));
             $mymail->send();
 
             // on cree un objet logger et on log l'evenement
-            $logger = $_SESSION['log'] = new CoreLogger($uid);
-            $logger->log('recovery', $mails);
+            $logger = $_SESSION['log'] = new PlLogger($uid);
+            S::logger()->log('recovery', $mails);
         } else {
             $page->trigError('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
                         'Si tu as un homonyme, utilise prenom.nom.promo comme login');
@@ -373,8 +373,8 @@ Adresse de secours : " . Post::v('email') : ""));
                 }
             }
 
-            $logger = new CoreLogger($uid);
-            $logger->log("passwd","");
+            $logger = new PlLogger($uid);
+            S::logger()->log("passwd","");
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
             $page->changeTpl('platal/motdepasse.tpl');
@@ -387,14 +387,14 @@ Adresse de secours : " . Post::v('email') : ""));
         global $globals;
 
         $page->changeTpl('platal/skins.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Skins');
+        $page->setTitle('Polytechnique.org - Skins');
 
         if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
             XDB::execute('UPDATE auth_user_quick
                              SET skin={?} WHERE user_id={?}',
                          Env::i('newskin'), S::v('uid'));
             S::kill('skin');
-            set_skin();
+            Platal::session()->setSkin();
         }
 
         $res = XDB::query('SELECT id FROM skins WHERE skin_tpl={?}', S::v('skin'));
@@ -414,9 +414,8 @@ Adresse de secours : " . Post::v('email') : ""));
             $a4l  = S::v('forlife');
             $suid = S::v('suid');
             $log  = S::v('log');
-            $log->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
-            $_SESSION = $suid;
-            S::kill('suid');
+            S::logger()->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
+            Platal::session()->stopSUID();
             pl_redirect('admin/user/' . $a4l);
         }
 
@@ -424,7 +423,7 @@ Adresse de secours : " . Post::v('email') : ""));
             setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
             Cookie::kill('ORGaccess');
             if (isset($_SESSION['log']))
-                $_SESSION['log']->log("cookie_off");
+                S::logger()->log("cookie_off");
         }
 
         if ($level == 'forgetuid' || $level == 'forgetall') {
@@ -436,10 +435,9 @@ Adresse de secours : " . Post::v('email') : ""));
 
         if (isset($_SESSION['log'])) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-            $_SESSION['log']->log('deconnexion',$ref);
+            S::logger()->log('deconnexion',$ref);
         }
-
-        XorgSession::destroy();
+        Platal::session()->destroy();
 
         if (Get::has('redirect')) {
             http_redirect(rawurldecode(Get::v('redirect')));

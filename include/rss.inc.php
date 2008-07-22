@@ -30,7 +30,7 @@ function _rss_encode_date($d) {
 
 function init_rss($template, $alias, $hash, $require_uid = true)
 {
-    global $page;
+    $page =& Platal::page();
     $page->changeTpl($template, NO_SKIN);
     $page->register_modifier('rss_date', '_rss_encode_date');
 

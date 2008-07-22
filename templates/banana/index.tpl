@@ -24,7 +24,6 @@
 {$banana|smarty:nodefaults}
 {else}
 
-{if !$smarty.post.action}
 <p class="normal">
   Tu peux régler quelques paramètres qui apparaîtront sur les messages lorsque
   tu posteras sur les forums. Cela ne te permettra pas d'être anonyme, puisque
@@ -39,6 +38,7 @@
 </p>
 
 <form action="banana/profile" method="post">
+  {xsrf_token_field}
   <table class="bicol" cellpadding="3" cellspacing="0" summary="Configuration de Banana">
     <tr>
       <th colspan="2">Profil Banana</th>
@@ -65,6 +65,17 @@
       </td>
     </tr>
     <tr class="pair">
+      <td class="titre">Aspect de l'arborescence</td>
+      <td>
+        {foreach from=$colors item=color}
+          <label>non-lu <input type="radio" name="unread" value="{$color}" {if $unread eq $color}checked="checked"{/if} /></label>
+          <img src="images/banana/m2{$color}.gif" alt="{$color}" />
+          <label><input type="radio" name="read" value="{$color}" {if $read eq $color}checked="checked"{/if} /> lu</label>
+          <br />
+        {/foreach}
+      </td>
+    </tr>
+    <tr class="pair">
       <td class="titre">Mise à jour des messages non lus</td>
       <td>
         <input type="radio" name="bananaupdate" value="1"
@@ -82,11 +93,6 @@
   </table>
   <div class="center"><input type="submit" name="action" value="Enregistrer" /></div>
 </form>
-{else}
-<p class="normal">
-  Ton profil est enregistré !!!
-</p>
-{/if}
 {/if}
 {if !$it_is_xnet}
 <p class="smaller">

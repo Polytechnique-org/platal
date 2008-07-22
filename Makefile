@@ -42,7 +42,7 @@ q:
 ## core
 ##
 
-core: spool/templates_c spool/mails_c include/globals.inc.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp
+core: spool/templates_c spool/mails_c classes/platalglobals.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp
 
 spool/templates_c spool/mails_c spool/uploads spool/conf spool/tmp:
 	mkdir -p $@
@@ -134,7 +134,7 @@ JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQ
 
 jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js $(JQUERY_PLUGINS_PATHES)
 
-htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-latest.pack.js
+htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-latest.min.js
 htdocs/javascript/jquery.js:
 	@$(download)
 

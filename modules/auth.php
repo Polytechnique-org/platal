@@ -153,9 +153,9 @@ class AuthModule extends PLModule
         $uid = S::i('uid');
         if (!isset($_SESSION['suid'])) {
             $logger = (isset($_SESSION['log']) && $_SESSION['log']->uid == $uid)
-                            ? $_SESSION['log'] : new CoreLogger($uid);
+                            ? $_SESSION['log'] : new PlLogger($uid);
             global $platal;
-            $logger->log('connexion_auth_ext', $platal->path);
+            S::logger()->log('connexion_auth_ext', $platal->path);
         }
 
         /* on parcourt les entrees de groupes_auth */
@@ -174,7 +174,7 @@ class AuthModule extends PLModule
 
     function handler_admin_authgroupesx(&$page, $action = 'list', $id = null)
     {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Auth groupes X');
+        $page->setTitle('Polytechnique.org - Administration - Auth groupes X');
         $page->assign('title', 'Gestion de l\'authentification centralisée');
         $table_editor = new PLTableEditor('admin/auth-groupes-x','groupesx_auth','id');
         $table_editor->describe('name','nom',true);

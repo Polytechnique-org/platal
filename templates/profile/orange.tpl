@@ -25,8 +25,8 @@
 {if $myorange}
 
 <p>
-  Tu recevras un mail dès que les changements demandés auront été effectués. 
-  Encore merci de nous faire confiance pour tes e-mails !
+  Tu recevras un email dès que les changements demandés auront été effectués. 
+  Encore merci de nous faire confiance pour tes emails !
 </p>
 
 {else}
@@ -41,6 +41,7 @@
 <br />
 
 <form action="profile/orange" method="post">
+  {xsrf_token_field}
   <table class="bicol" cellpadding="4" summary="Année de sortie">
     <tr>
       <th>Année de sortie</th>

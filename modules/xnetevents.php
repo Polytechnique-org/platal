@@ -58,6 +58,7 @@ class XnetEventsModule extends PLModule
             if (!may_update()) {
                 return PL_FORBIDDEN;
             }
+            S::assert_xsrf_token();
 
             $res = XDB::query("SELECT asso_id, short_name FROM groupex.evenements
                                 WHERE eid = {?} AND asso_id = {?}",
@@ -97,7 +98,7 @@ class XnetEventsModule extends PLModule
             XDB::execute("DELETE FROM requests
                                     WHERE type = 'paiements' AND data LIKE {?}",
                                    PayReq::same_event($eid, $globals->asso('id')));
-            update_NbValid();
+            $globals->updateNbValid();
         }
 
         if ($action == 'archive') {
@@ -202,6 +203,8 @@ class XnetEventsModule extends PLModule
 
         if (!Post::has('submit')) {
             return;
+        } else {
+            S::assert_xsrf_token();
         }
 
         $moments = Post::v('moment',    array());
@@ -361,6 +364,8 @@ class XnetEventsModule extends PLModule
         $page->assign('moments', $moments);
 
         if (Post::v('intitule')) {
+            S::assert_xsrf_token();
+
             require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
             $short_name = event_change_shortname($page, $eid,
                                                  $infos['short_name'],
@@ -525,6 +530,8 @@ class XnetEventsModule extends PLModule
         }
 
         if (may_update() && Post::v('adm')) {
+            S::assert_xsrf_token();
+
             $member = get_infos(Post::v('mail'));
             if (!$member) {
                 $page->trigError("Membre introuvable");

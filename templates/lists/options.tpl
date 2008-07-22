@@ -34,6 +34,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 </h1>
 
 <form method='post' action='{$platal->pl_self(1)}'>
+  {xsrf_token_field}
   <table class='bicol' cellpadding='2' cellspacing='0'>
     <tr><th colspan='2'>Options de la liste {$details.addr}</th></tr>
     <tr class='impair'>
@@ -57,7 +58,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr class='pair'>
       <td>
         <strong>message de bienvenue&nbsp;:</strong><br />
-        <span class='smaller'>un texte de bienvenue incorporé au mail envoyé aux nouveaux
+        <span class='smaller'>un texte de bienvenue incorporé à l'email envoyé aux nouveaux
          abonnés à la liste.</span>
       </td>
       <td>
@@ -67,12 +68,12 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr class='impair'>
       <td>
         <strong>message d'adieu&nbsp;:</strong><br />
-        <span class='smaller'>un texte d'au revoir incorporé au mail de départ envoyé aux
-          utilisateurs qui se désinscrivent. Ce mail peut être désactivé.</span>
+        <span class='smaller'>un texte d'au revoir incorporé à l'email de départ envoyé aux
+          utilisateurs qui se désinscrivent. Cet email peut être désactivé.</span>
       </td>
       <td>
         <input type='checkbox' name='send_goodbye_msg'
-        {if $options.send_goodbye_msg}checked='checked'{/if} /> activer le mail d'adieu.  <br />
+        {if $options.send_goodbye_msg}checked='checked'{/if} /> activer l'email d'adieu.  <br />
         <textarea cols='40' rows='8' name='goodbye_msg'>{$options.goodbye_msg|smarty:nodefaults|utf8_encode}</textarea>
       </td>
     </tr>
@@ -80,7 +81,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr class='impair'>
     <td>
         <strong>ajout dans le sujet&nbsp;:</strong><br />
-        <span class='smaller'>un préfixe (optionnel) ajouté dans le sujet de chaque mail envoyé sur la liste te permet de trier plus facilement ton courrier.</span>
+        <span class='smaller'>un préfixe (optionnel) ajouté dans le sujet de chaque email envoyé sur la liste te permet de trier plus facilement ton courrier.</span>
       </td>
       <td>
         <input type='text' name='subject_prefix' size='40' value="{$options.subject_prefix|smarty:nodefaults|utf8_encode}" />
@@ -99,7 +100,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr class='impair'>
       <td>
         <strong>diffusion&nbsp;:</strong><br />
-        <span class='smaller'>l'envoi d'un mail à cette liste est-il libre, modéré lorsque l'expéditeur n'appartient pas à la liste
+        <span class='smaller'>l'envoi d'un email à cette liste est-il libre, modéré lorsque l'expéditeur n'appartient pas à la liste
         ou modéré dans tous les cas ?</span>
       </td>
       <td>
@@ -130,18 +131,43 @@ Tu n'es pas administrateur de la liste, mais du site.
         <span class='smaller'>détermine la politique de l'antispam sur cette liste.</span>
       </td>
       <td>
-        <em><a name='antispam' id='antispam'></a>que faire des mails marqués « [spam probable] » ?</em><br />
-        <input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer&nbsp;;<br />
-        <input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les envoyer aux modérateurs pour approbation...<br />
-        <input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> ... après suppression des
-        spams les plus probables*&nbsp;;<br />
-        <input type='radio' name='bogo_level' value='3' {if $bogo_level eq 3}checked='checked'{/if} /> tous les supprimer.
+        <div id="spamlevel">
+          <em><a name='antispam' id='antispam'></a>que faire des emails marqués « [spam probable] » ?</em><br />
+          <label><input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer&nbsp;;</label><br />
+          <label><input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les envoyer aux modérateurs pour approbation...</label><br />
+          <label><input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> ... après suppression des
+        spams les plus probables*&nbsp;;</label><br />
+          <label><input type='radio' name='bogo_level' value='3' {if $bogo_level eq 3}checked='checked'{/if} /> tous les supprimer.</label>
+        </div>
+        <div id="unsurelevel">
+          <em>que faire des emails dont le classement est indéterminé** ?</em><br />
+          <label><input type='radio' name='unsure_level' value='0' {if !$unsure_level}checked='checked'{/if} /> les laisser
+          passer&nbsp;;</label><br />
+          <label><input type='radio' name='unsure_level' value='1' {if $unsure_level eq 1}checked='checked'{/if} /> les modérer.</label>
+        </div>
+        <script type="text/javascript">//<![CDATA[
+          {literal}
+          $(function() {
+            $(":radio[@name=bogo_level]").change(function() {
+              if ($(":radio[@name=bogo_level]:checked").val() == 0) {
+                $("#unsurelevel").hide();
+              } else {
+                $("#unsurelevel").show();
+              }
+            }).change();
+          });
+          {/literal}
+        // ]]></script>
       </td>
     </tr>
     <tr>
       <td colspan="2" class="smaller">
         *La troisième option permet de supprimer automatiquement les spams sûrs à plus de 99,9999%, qui sont donc peu susceptibles
-        d'être des faux-positifs.
+        d'être des faux-positifs.<br />
+        **Certains emails ne sont pas classables par l'antispam qui le signale en indiquant que l'email est "Unsure". Ces
+        emails contiennent statistiquement autant de spams que de non-spams, mais ceci peut varier d'une adresse à l'autre.
+        Cette option te permet de choisir si tu préfères que les emails 'Unsures' soient modérés ou envoyés directement
+        à la liste.
       </td>
     </tr>
   </table>
@@ -166,17 +192,18 @@ Attention, cette liste est à utiliser pour des non-X ou des non-inscrits à la 
 </p>
 <p>
 les X inscrits à la liste doivent ajouter leurs adresses usuelles parmis leurs adresses de
-redirection en mode 'inactif'. le logiciel de mailing list saura se débrouiller tout seul.
+redirection en mode 'inactif'. le logiciel de gestion des listes de diffusion saura se débrouiller tout seul.
 </p>
 
 <form method='post' action='{$platal->pl_self(1)}'>
+  {xsrf_token_field}
   <table class='tinybicol' cellpadding='2' cellspacing='0'>
     <tr><th>Adresses non modérées</th></tr>
     <tr>
       <td>
         {if $options.accept_these_nonmembers|@count}
         {foreach from=$options.accept_these_nonmembers item=addr}
-        {$addr}<a href='{$platal->pl_self(1)}&amp;atn_del={$addr}'>
+        {$addr}<a href='{$platal->pl_self(1)}&amp;atn_del={$addr}&amp;token={xsrf_token}'>
           {icon name=cross title="retirer de la whitelist"}
         </a><br />
         {/foreach}

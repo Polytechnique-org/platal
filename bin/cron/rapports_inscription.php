@@ -39,7 +39,7 @@ if ($b = $res->total()) {
 $res = XDB::query('SELECT COUNT(DISTINCT uid), COUNT(*) FROM register_marketing');
 list($a, $b) = $res->fetchOneRow();
 $MESSAGE .= "\n$c INSCRIPTIONS SOLICITÉES :\n";
-$MESSAGE .= "    $a utilisateurs\n    $b adresses mails\n";
+$MESSAGE .= "    $a utilisateurs\n    $b adresses email\n";
 
 // ---------------------------------------
 

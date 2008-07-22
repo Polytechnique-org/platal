@@ -59,7 +59,7 @@ class EventsModule extends PLModule
                          'special'   => true);
         }
 
-        $exclude  = is_null($exclude) ? '' : ' AND id != ' . $exclude . ' ';
+        $exclude  = is_null($exclude) ? '' : ' AND id != ' . intval($exclude) . ' ';
         $priority = rand(0, 510);
         do {
             $priority = (int)($priority/2);
@@ -81,7 +81,7 @@ class EventsModule extends PLModule
         return $res->fetchOneAssoc();
     }
 
-    private function upload_image(PlatalPage &$page, PlUpload &$upload)
+    private function upload_image(PlPage &$page, PlUpload &$upload)
     {
         if (@!$_FILES['image']['tmp_name'] && !Env::v('image_url')) {
             return true;
@@ -137,7 +137,7 @@ class EventsModule extends PLModule
         $page->assign('geoloc_incitation', count($res));
 
         // ajout du lien RSS
-        if (S::has('core_rss_hash')) {
+        if (S::rssActivated()) {
             $page->setRssLink('Polytechnique.org :: News',
                               '/rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
         }
@@ -308,6 +308,8 @@ class EventsModule extends PLModule
         } elseif ($action && (!trim($texte) || !trim($titre))) {
             $page->trigError("L'article doit avoir un titre et un contenu");
         } elseif ($action) {
+            S::assert_xsrf_token();
+
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
                                  $peremption, $valid_mesg, S::v('uid'), $upload);
@@ -327,7 +329,7 @@ class EventsModule extends PLModule
 
     function handler_admin_tips(&$page, $action = 'list', $id = null)
     {
-        $page->assign('xorg_title', 'Polytechnique.org - Administration - Astuces');
+        $page->setTitle('Polytechnique.org - Administration - Astuces');
         $page->assign('title', 'Gestion des Astuces');
         $table_editor = new PLTableEditor('admin/tips', 'tips', 'id');
         $table_editor->describe('peremption', 'date de péremption', true);
@@ -348,7 +350,7 @@ class EventsModule extends PLModule
     {
         $page->changeTpl('events/admin.tpl');
         $page->addJsLink('ajax.js');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Evenements');
+        $page->setTitle('Polytechnique.org - Administration - Evenements');
         $page->register_modifier('hde', 'html_entity_decode');
 
         $arch = $action == 'archives';
@@ -361,13 +363,16 @@ class EventsModule extends PLModule
         }
 
         if (Post::v('action') == 'Pas d\'image' && $eid) {
+            S::assert_xsrf_token();
             $upload->rm();
             XDB::execute("DELETE FROM evenements_photo WHERE eid = {?}", $eid);
             $action = 'edit';
         } elseif (Post::v('action') == 'Supprimer l\'image' && $eid) {
+            S::assert_xsrf_token();
             $upload->rm();
             $action = 'edit';
         } elseif (Post::v('action') == "Proposer" && $eid) {
+            S::assert_xsrf_token();
             $promo_min = Post::i('promo_min');
             $promo_max = Post::i('promo_max');
             if (($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
@@ -377,7 +382,7 @@ class EventsModule extends PLModule
                 $action = 'edit';
             } else {
                 $res = XDB::query('SELECT flags FROM evenements WHERE id = {?}', $eid);
-                $flags = new FlagSet($res->fetchOneCell());
+                $flags = new PlFlagSet($res->fetchOneCell());
                 $flags->addFlag('wiki');
                 if (Post::v('important')) {
                     $flags->addFlag('important');
@@ -392,7 +397,7 @@ class EventsModule extends PLModule
                                WHERE id = {?}',
                               Post::v('titre'), Post::v('texte'), Post::v('peremption'),
                               Post::v('promo_min'), Post::v('promo_max'),
-                              $flags->flags(), $eid);
+                              $flags, $eid);
                 if ($upload->exists() && list($x, $y, $type) = $upload->imageInfo()) {
                     XDB::execute('REPLACE INTO  evenements_photo
                                            SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}',
@@ -434,17 +439,20 @@ class EventsModule extends PLModule
         } else {
             switch ($action) {
                 case 'delete':
+                    S::assert_xsrf_token();
                     XDB::execute('DELETE from evenements
                                    WHERE id = {?}', $eid);
                     break;
 
                 case "archive":
+                    S::assert_xsrf_token();
                     XDB::execute('UPDATE evenements
                                      SET creation_date = creation_date, flags = CONCAT(flags,",archive")
                                    WHERE id = {?}', $eid);
                     break;
 
                 case "unarchive":
+                    S::assert_xsrf_token();
                     XDB::execute('UPDATE evenements
                                      SET creation_date = creation_date, flags = REPLACE(flags,"archive","")
                                    WHERE id = {?}', $eid);
@@ -453,12 +461,14 @@ class EventsModule extends PLModule
                     break;
 
                 case "valid":
+                    S::assert_xsrf_token();
                     XDB::execute('UPDATE evenements
                                      SET creation_date = creation_date, flags = CONCAT(flags,",valide")
                                    WHERE id = {?}', $eid);
                     break;
 
                 case "unvalid":
+                    S::assert_xsrf_token();
                     XDB::execute('UPDATE evenements
                                      SET creation_date = creation_date, flags = REPLACE(flags,"valide", "")
                                    WHERE id = {?}', $eid);

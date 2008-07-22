@@ -29,7 +29,7 @@ $globals->debug = 0; // Do not store backtraces
 XDB::execute('DELETE FROM search_name');
 $res = XDB::iterRow('SELECT  auth_user_md5.user_id, nom, prenom, nom_usage, profile_nick
                        FROM  auth_user_md5
-                  LEFT JOIN auth_user_quick USING(user_id)');
+                  LEFT JOIN  auth_user_quick USING(user_id)');
 $i = 0;
 $muls = array(1, 1, 1, 0.2);
 $pub  = array(true, true, true, false);

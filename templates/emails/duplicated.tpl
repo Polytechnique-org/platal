@@ -76,7 +76,7 @@
     <td><input type="text" name="emailN" /></td>
   {else}
     <td>
-      <a href="mailto:{$doublon.mail}">{icon name=email title="Envoyer un mail"}</a>
+      <a href="mailto:{$doublon.mail}">{icon name=email title="Envoyer un email"}</a>
       &nbsp;{$doublon.mail}
       <input type="hidden" name="emailN" value="{$doublon.mail}" />
     </td>

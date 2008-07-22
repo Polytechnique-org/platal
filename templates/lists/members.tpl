@@ -58,13 +58,13 @@
       {if $details.sub>1}
       Tu es inscrit sur la liste.<br />
       Te désinscrire&nbsp;:
-      <a href='{$platal->pl_self(1)}?del=1'>{icon name=cross title="me désinscrire"}</a>
+      <a href='{$platal->pl_self(1)}?del=1&amp;token={xsrf_token}'>{icon name=cross title="me désinscrire"}</a>
       {elseif $details.sub eq 1}
       Ta demande d'inscription est en cours de validation.
       {else}
       Tu n'es pas inscrit.<br />
       Demander ton inscription&nbsp;:
-      <a href="{$platal->pl_self(1)}?add=1">{icon name=add title="demander mon inscription"}</a>
+      <a href="{$platal->pl_self(1)}?add=1&amp;token={xsrf_token}">{icon name=add title="demander mon inscription"}</a>
       {/if}
     </td>
   </tr>
@@ -140,7 +140,7 @@
       {if $x.b}<a href="https://www.polytechnique.org/marketing/broken/{$x.l}">{icon name=error}</a>{/if}
       <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
       {elseif $x.x}
-      <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
+      <a href="{$platal->ns}member/{$x.x}">{if $x.n|trim}{$x.n}{else}{$x.l}{/if}</a>
       {elseif $x.n}
       {$x.n}
       {else}

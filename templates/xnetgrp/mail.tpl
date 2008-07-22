@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-<h1>{$asso.nom}&nbsp;: Envoyer un mail</h1>
+<h1>{$asso.nom}&nbsp;: Envoyer un email</h1>
 
 <p class="descr">
 Ton message peut être personnalisé&nbsp;: si tu rentres les mots &lt;cher&gt;, &lt;prenom&gt;,
@@ -43,9 +43,10 @@ masculin ou féminin, par son prénom, ou son nom.
 //]]></script>
  
 <form action="{$platal->ns}mail" method="post" enctype="multipart/form-data">
+  {xsrf_token_field}
   <table class='bicol'>
     <tr>
-      <th colspan="2">Écrire un mail&nbsp;:</th>
+      <th colspan="2">Écrire un email&nbsp;:</th>
     </tr>
     <tr>
       <td class="titre">Expéditeur&nbsp;:</td>
@@ -93,7 +94,7 @@ masculin ou féminin, par son prénom, ou son nom.
     {/foreach}
 
     <tr>
-      <th colspan="2">Contenu du mail</th>
+      <th colspan="2">Contenu de l'email</th>
     </tr>
     <tr>
       <td class="titre">

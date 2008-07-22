@@ -47,7 +47,7 @@
 </p>
 
 <h2>
-  Édition du profil de {$user.prenom} {$user.nom}
+  Édition du profil de {if "`$user.prenom` `$user.nom`"|trim}{$user.prenom} {$user.nom}{else}{$user.email}{/if}
   {if $user.origine eq 'X'}
   (X{$user.promo})
   <a href="https://www.polytechnique.org/profile/{$user.alias}">{icon name=user_suit title="fiche"}</a>
@@ -57,10 +57,11 @@
 </h2>
 
 <form method="post" action="{$platal->ns}member/{$platal->argv[1]}">
+  {xsrf_token_field}
   <table cellpadding="0" cellspacing="0" class='tinybicol'>
     <tr class="pair">
       <td class="titre">
-        Permissions:
+        Permissions&nbsp;:
       </td>
       <td>
         <select name="is_admin">
@@ -110,12 +111,23 @@
     </tr>
     <tr class="impair">
       <td class="titre">
-        Email:
+        Email&nbsp;:
       </td>
       <td>
         <input type="text" value="{$user.email}" name="email" size="40" />
       </td>
     </tr>
+    {/if}
+    <tr class="impair">
+      <td class="titre">
+        Commentaire&nbsp;:
+      </td>
+      <td>
+        <input type="text" name="comm" value="{$user.comm}" size="40" maxlength="255" /><br />
+        <small>Poste, origine, ... (accessible à toutes les personnes autorisées à consulter l'annuaire)</small>
+      </td>
+    </tr>
+    {if $user.origine neq X}
     <tr id="make_X" {if $user.origine eq "groupe"}style="display: none"{/if}>
       <td colspan="2">
         <span id="make_X_cb">

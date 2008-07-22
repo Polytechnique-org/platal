@@ -44,7 +44,7 @@
   {/if}
   
   <p>
-  Ces adresses sont des redirections vers une ou plusieurs adresses e-mail de ton choix.
+  Ces adresses sont des redirections vers une ou plusieurs adresses email de ton choix.
   Indiques-en une pour terminer ton inscription. Tu pourras la modifier ou ajouter d'autres
   adresses une fois inscrit.
   </p>
@@ -61,7 +61,7 @@
     </tr>
     <tr>
       <td class="titre">
-        E-mail<br />
+        Email<br />
         <span class="smaller">(adresse de ton choix pour reçevoir tes emails)</span>
       </td>
       <td>

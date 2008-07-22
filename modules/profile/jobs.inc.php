@@ -253,7 +253,7 @@ class ProfileJobs extends ProfilePage
         }
     }
 
-    public function _prepare(PlatalPage &$page, $id)
+    public function _prepare(PlPage &$page, $id)
     {
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page);

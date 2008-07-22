@@ -87,8 +87,7 @@ function user_clear_all_subs($user_id, $really_del=true)
 // Defaut callback to call when a login is not found
 function _default_user_callback($login)
 {
-    global $page;
-    $page->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
+    Platal::page()->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
     return;
 }
 
@@ -99,7 +98,7 @@ function _silent_user_callback($login)
 
 function get_user_login($data, $get_forlife = false, $callback = '_default_user_callback')
 {
-    global $globals, $page;
+    global $globals;
 
     if (is_numeric($data)) {
         $res = XDB::query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $data);
@@ -171,7 +170,7 @@ function get_user_login($data, $get_forlife = false, $callback = '_default_user_
             default:
                 if (S::has_perms()) {
                     $aliases = $res->fetchColumn();
-                    $page->trigError("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
+                    Platal::page()->trigError("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
                 } else {
                     $res->free();
                 }
@@ -198,15 +197,27 @@ function get_users_forlife_list($members, $strict = false, $callback = '_default
         if (strlen(trim($members)) == 0) {
             return null;
         }
-        $members = explode(' ', $members);
+        $members = split("[; ,\r\n\|]+", $members);
     }
     if ($members) {
         $list = array();
         foreach ($members as $i => $alias) {
+            $alias = trim($alias);
+            if (empty($alias)) {
+                continue;
+            }
             if (($login = get_user_forlife($alias, $callback)) !== false) {
                 $list[$i] = $login;
-            } else if(!$strict) {
+            } else if (!$strict) {
                 $list[$i] = $alias;
+            } else {
+                global $globals;
+                if (strpos($alias, '@') !== false) {
+                    list($user, $dom) = explode('@', $alias);
+                    if ($dom != $globals->mail->domain && $dom != $globals->mail->domain2) {
+                        $list[$i] = $alias;
+                    }
+                }
             }
         }
         return $list;
@@ -247,7 +258,7 @@ function get_not_registered_user($login, $iterator = false)
     }
     $sql = "SELECT  user_id, nom, prenom, promo
               FROM  auth_user_md5
-             WHERE  $where
+             WHERE  $where AND perms = 'pending'
           ORDER BY  promo, nom, prenom";
     if ($iterator) {
         return XDB::iterator($sql, $nom, $prenom, $promo);

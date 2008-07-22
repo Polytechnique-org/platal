@@ -175,7 +175,7 @@ class RegisterModule extends PLModule
                         }
                     }
                     if ($sub_state['watch']) {
-                        $alter .= "Inscription d'un utilisateur surveillé - ";
+                        $alert .= "Inscription d'un utilisateur surveillé - ";
                     }
 
                     if (check_ip('unsafe')) {
@@ -214,7 +214,7 @@ class RegisterModule extends PLModule
         }
 
         $_SESSION['sub_state'] = $sub_state;
-        if ($alert) {
+        if (!empty($alert)) {
             send_warning_mail($alert);
         }
         $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
@@ -300,8 +300,8 @@ class RegisterModule extends PLModule
         $redirect->add_email($email);
 
         // on cree un objet logger et on log l'inscription
-        $logger = new CoreLogger($uid);
-        $logger->log('inscription', $email);
+        $logger = new PlLogger($uid);
+        S::logger()->log('inscription', $email);
 
         XDB::execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}', $uid);
 
@@ -317,7 +317,7 @@ class RegisterModule extends PLModule
         user_reindex($uid);
 
         // update number of subscribers (perms has changed)
-        update_NbIns();
+        $globals->updateNbIns();
 
         if (!start_connexion($uid, false)) {
             return PL_FORBIDDEN;
@@ -416,7 +416,7 @@ class RegisterModule extends PLModule
             }
 
             $log = S::v('log');
-            $log->log('passwd', '');
+            S::logger()->log('passwd', '');
 
             if (Cookie::v('ORGaccess')) {
                 require_once('secure_hash.inc.php');

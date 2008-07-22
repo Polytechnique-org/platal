@@ -23,15 +23,15 @@
 
 <h1>Notifications automatiques</h1>
 
-<p>Les mails sont hebdomadaires (pour éviter une trop grosse charge du serveur de mails et de ta boite mail).
-S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
+<p>Les emails sont hebdomadaires (pour éviter une trop grosse charge du serveur d'envoi et de ta boite email).
+S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
 
 <form action="carnet/notifs" method="post">
   {xsrf_token_field}
   <fieldset>
-    <legend>Mail</legend>
+    <legend>Email</legend>
     <input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
-    Recevoir un mail hebdomadaire des événements que je n'ai pas déjà vus sur le site<br />
+    Recevoir un email hebdomadaire des événements que je n'ai pas déjà vus sur le site<br />
     <input type='hidden' name='flags_mail' value='valider' />
   </fieldset>
 </form>

@@ -38,10 +38,10 @@
     <link rel="bookmark" href="http://www.polytechnique.org/"       title="| Polytechnique.org" />
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
-    {foreach from=$xorg_css item=css}
+    {foreach from=$pl_css item=css}
     <link rel="stylesheet" type="text/css" href="css/{$css}" />
     {/foreach}
-    {foreach from=$xorg_inline_css item=css} 
+    {foreach from=$pl_inline_css item=css} 
     <style type="text/css"> 
     {$css|smarty:nodefaults} 
     </style> 
@@ -51,17 +51,17 @@
     if (window.top != window)
       document.write('<link rel="stylesheet" type="text/css" href="css/onlycontent.css" media="all"/>');
     </script>
-    {foreach from=$xorg_js item=js}
+    {foreach from=$pl_js item=js}
     <script type="text/javascript" src="javascript/{$js}"></script>
     {/foreach}
     {javascript name=overlib}
 
-    {if $xorg_rss}
-    <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{$xorg_rss.href}" />
+    {if $pl_rss}
+    <link rel="alternate" type="application/rss+xml" title="{$pl_rss.title}" href="{$pl_rss.href}" />
     {/if}
 
-    {if $xorg_extra_header}
-    {$xorg_extra_header|smarty:nodefaults}
+    {if $pl_extra_header}
+    {$pl_extra_header|smarty:nodefaults}
     {/if}
 
     <title>Les associations polytechniciennes</title>
@@ -224,7 +224,7 @@
           <a href="Xnet/APropos">à propos de ce site</a> -
           <a href="mailto:contact@polytechnique.org">nous contacter</a>
           {if $smarty.session.auth}
-            - <a href="send_bug" class="popup_840x600">signaler un bug</a>
+            - <a href="send_bug/{ $smarty.server.REQUEST_URI }" class="popup_840x600">signaler un bug</a>
           {/if}
           <br />
           Plat/al {#globals.version#} - © Copyright 2000-2008 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>

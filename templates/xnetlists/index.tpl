@@ -24,6 +24,7 @@
 
 <p class="error">Es-tu sûr de vouloir supprimer l'alias {$smarty.get.del_alias} ?</p>
 <form action='{$platal->ns}lists' method="post">
+  {xsrf_token_field}
   <div class="center">
     <input type='submit' value="Oui, je suis sûr" />
     <input type='hidden' name='del_alias' value="{$smarty.get.del_alias}" />
@@ -38,7 +39,7 @@
 <h2>Listes de diffusion du groupe {$asso.nom}&nbsp;:</h2>
 
 <p class="descr">
-Une liste dont <strong>la diffusion</strong> est modérée est une liste dont les mails sont validés
+Une liste dont <strong>la diffusion</strong> est modérée est une liste dont les emails sont validés
 par les administrateurs avant d'être transmis aux membres de la liste.  Une liste dont
 <strong>l'inscription</strong> est modérée est une liste pour laquelle l'abonnement est soumis à
 l'accord préalable des responsables du groupe.
@@ -61,7 +62,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
   {foreach from=$listes item=l}
   <tr>
     <td class='center'>
-      <a href="mailto:{$l.list}@{$asso.mail_domain}">{icon name=email title="mail"}</a>
+      <a href="mailto:{$l.list}@{$asso.mail_domain}">{icon name=email title="email"}</a>
     </td>
     <td>
       {if $l.own}
@@ -79,11 +80,11 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
     <td align='right'>{$l.nbsub}</td>
     <td align='center'>
       {if $l.sub eq 2}
-      <a href="{$platal->ns}lists?del={$l.list}">{icon name=cross title="me désinscrire"}</a>
+      <a href="{$platal->ns}lists?del={$l.list}&amp;token={xsrf_token}">{icon name=cross title="me désinscrire"}</a>
       {elseif $l.sub eq 1}
       {icon name=flag_orange title='inscription en attente de modération'}
       {else}
-      <a href="{$platal->ns}lists?add={$l.list}">{icon name=add title="m'inscrire"}</a>
+      <a href="{$platal->ns}lists?add={$l.list}&amp;token={xsrf_token}">{icon name=add title="m'inscrire"}</a>
       {/if}
     </td>
   </tr>
@@ -115,11 +116,11 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
   {iterate from=$alias item=a}
   <tr>
     {if $may_update}
-    <td class="center"><a href='mailto:{$a.alias}'>{icon name=email title="mail"}</a></td>
+    <td class="center"><a href='mailto:{$a.alias}'>{icon name=email title="email"}</a></td>
     <td><a href="{$platal->ns}alias/admin/{$a.alias}">{$a.alias}</a></td>
     <td class="center"><a href="{$platal->ns}lists?del_alias={$a.alias}">{icon name=delete title='supprimer'}</a></td>
     {else}
-    <td><a href='mailto:{$a.alias}'>{icon name=email title="mail"} {$a.alias}</a></td>
+    <td><a href='mailto:{$a.alias}'>{icon name=email title="email"} {$a.alias}</a></td>
     {/if}
   </tr>
   {/iterate}

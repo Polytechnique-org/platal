@@ -23,7 +23,7 @@
 
 <tr class="pair">
   <td class="titre">Liste&nbsp;:</td>
-  <td>{$valid->liste}@polytechnique.org</td>
+  <td>{$valid->liste}@{$valid->domain}</td>
 </tr>
 <tr class="pair">
   <td class="titre">Desc&nbsp;:</td>
@@ -32,19 +32,25 @@
   </td>
 </tr>
 <tr class="pair">
+  <td class="titre">Type de liste&nbsp;:</td>
+  <td style="border: 1px dotted inherit">
+    {$valid->asso}
+  </td>
+</tr>
+<tr class="pair">
   <td class="titre">Propriétés&nbsp;:</td>
   <td>
     <table cellpadding='2' cellspacing='0'>
       <tr>
-        <td>visibilité:</td>
+        <td>visibilité&nbsp;:</td>
         <td>{if $valid->advertise}publique{else}privée{/if}</td>
       </tr>
       <tr>
-        <td>diffusion:</td>
+        <td>diffusion&nbsp;:</td>
         <td>{if $valid->modlevel eq 2}modérée{elseif $valid->modlevel}restreinte{else}libre{/if}</td>
       </tr>
       <tr>
-        <td>inscription:</td>
+        <td>inscription&nbsp;:</td>
         <td>{if $valid->inslevel}modérée{else}libre{/if}</td>
       </tr>
     </table>

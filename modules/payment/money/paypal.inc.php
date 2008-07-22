@@ -90,7 +90,6 @@ class PayPal
         $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
 
         // on constuit la reference de la transaction
-        require_once 'xorg.misc.inc.php';
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
         $fullref = substr("$prefix-xorg-{$pay->id}",-15);
 

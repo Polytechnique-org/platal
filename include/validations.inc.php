@@ -21,7 +21,8 @@
 
 define('SIZE_MAX', 32768);
 
-require_once dirname(__FILE__) . '/../classes/xdb.php';
+global $globals;
+require_once $globals->spoolroot . '/core/classes/xdb.php';
 
 /**
  * Iterator class, that lists objects through the database
@@ -116,7 +117,7 @@ abstract class Validate
                 $this->uid, $this->type, $this, $this->stamp);
 
         global $globals;
-        update_NbValid();
+        $globals->updateNbValid();
         return true;
     }
 
@@ -146,7 +147,7 @@ abstract class Validate
             $success =  XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
                                       $this->uid, $this->type, $this->stamp);
         }
-        update_NbValid();
+        $globals->updateNbValid();
         return $success;
     }
 
@@ -210,7 +211,7 @@ abstract class Validate
             if ($this->commit()) {
                 $this->sendmail(true);
                 $this->clean();
-                $this->trigSuccess('Mail de validation envoyé');
+                $this->trigSuccess('Email de validation envoyé');
                 return true;
             } else {
                 $this->trigError('Erreur lors de la validation');
@@ -222,7 +223,7 @@ abstract class Validate
             if (Env::v('comm')) {
                 $this->sendmail(false);
                 $this->clean();
-                $this->trigSuccess('Mail de refus envoyé');
+                $this->trigSuccess('Email de refus envoyé');
                 return true;
             } else {
                 $this->trigError('pas de motivation pour le refus !!!');
@@ -258,20 +259,17 @@ abstract class Validate
 
     protected function trigError($msg)
     {
-        global $page;
-        $page->trigError($msg);
+        Platal::page()->trigError($msg);
     }
 
     protected function trigWarning($msg)
     {
-        global $page;
-        $page->trigWarning($msg);
+        Platal::page()->trigWarning($msg);
     }
 
     protected function trigSuccess($msg)
     {
-        global $page;
-        $page->trigSuccess($msg);
+        Platal::page()->trigSuccess($msg);
     }
 
     // }}}

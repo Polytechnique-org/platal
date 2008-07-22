@@ -20,10 +20,8 @@
  ***************************************************************************/
 
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
-global $globals, $platal, $page;
 
 if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
-
     $platal = new Platal('auth', 'carnet', 'email', 'events', 'forums',
                          'geoloc', 'lists', 'marketing', 'payment', 'platal',
                          'profile', 'register', 'search', 'stats', 'admin',
@@ -31,7 +29,6 @@ if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
                          'fusionax',
                          'gadgets', 'googleapps');
     $platal->run();
-
     exit;
 }
 

@@ -40,11 +40,11 @@
 La diffusion a trois niveaux de modération.  La diffusion peut être&nbsp;:
 </p>
 <ul>
-  <li><strong>libre&nbsp;:</strong> tout le monde peut y envoyer des mails, la diffusion y est
+  <li><strong>libre&nbsp;:</strong> tout le monde peut y envoyer des emails, la diffusion y est
   immédiate&nbsp;;</li>
-  <li><strong>restreinte&nbsp;:</strong> les membres de la liste peuvent envoyer librement des mails,
+  <li><strong>restreinte&nbsp;:</strong> les membres de la liste peuvent envoyer librement des emails,
   les extérieurs sont modérés&nbsp;;</li>
-  <li><strong>modérée&nbsp;:</strong> l'envoi d'un mail à la liste est alors filtré par des
+  <li><strong>modérée&nbsp;:</strong> l'envoi d'un email à la liste est alors filtré par des
   modérateurs, eux seuls peuvent accepter un message envoyé à la liste.</li>
 </ul>
 
@@ -93,6 +93,7 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyt
 {/if}
 
 <form method='post' action='lists'>
+  {xsrf_token_field}
   <table class='tinybicol' cellspacing='0' cellpadding='2'>
     <tr>
       <th colspan='2'>Inscription à une liste de diffusion promo</th>

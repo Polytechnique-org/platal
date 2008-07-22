@@ -42,6 +42,7 @@ function visibilityChange(box)
 {/if}
 
 <form method="post" action="{$platal->ns}announce/{if $new}new{else}edit/{$art.id}{/if}" enctype="multipart/form-data">
+{xsrf_token_field}
 <div>
   <table class="bicol">
     <tr>
@@ -56,7 +57,7 @@ function visibilityChange(box)
       <td>
         <small>
           Le contenu est destiné à recevoir la description de ce qui est annoncé.
-          Il faut éviter d'y mettre des adresses mails ou web (surtout si l'annonce est publique),
+          Il faut éviter d'y mettre des adresses emails ou web (surtout si l'annonce est publique),
           qui devront être placées dans la section "contacts".
         </small>
       </td>
@@ -86,8 +87,8 @@ function visibilityChange(box)
       <td class="titre">Contacts&nbsp;:</td>
       <td>
         <small>
-          La section "contacts" sert à noter les informations telles que les adresses mails de contact, les sites web.
-          Elle n'est accessible qu'aux personnes authentifiées. Si l'annonce est attachée à une événement, un lien vers
+          La section "contacts" sert à noter les informations telles que les adresses emails de contact, les sites web.
+          Elle n'est accessible qu'aux personnes authentifiées. Si l'annonce est attachée à un événement, un lien vers
           la page d'inscription est automatiquement ajouté.
         </small>
       </td>

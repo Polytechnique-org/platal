@@ -23,6 +23,7 @@
 <h1>Refuser l'inscription d'un utilisateur</h1>
 
 <form method='post' action='{$platal->pl_self(1)}'>
+  {xsrf_token_field}
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
     <tr>
       <th class='titre'>refuser l'inscription de&nbsp;:</th>

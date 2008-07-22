@@ -19,42 +19,25 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-abstract class PLModule
+class XorgPage extends PlPage
 {
-    abstract function handlers();
-
-    /** Register a hook
-     * @param fun name of the handler (the exact name will be handler_$fun)
-     * @param auth authentification level of needed to run this handler
-     * @param perms permission required to run this handler
-     * @param type additionnal flags
-     *
-     * Perms syntax is the following:
-     * perms = rights(,rights)*
-     * rights = right(:right)*
-     * right is an atomic right permission (like 'admin', 'user', 'groupadmin', 'groupmember'...)
-     *
-     * If type is set to NO_AUTH, the system will return 403 instead of asking auth data
-     * this is useful for Ajax handler
-     * If type is not set to NO_SKIN, the system will consider redirecting the user to https
-     */
-    public function make_hook($fun, $auth, $perms = 'user', $type = DO_AUTH)
+    public function __construct()
     {
-        return array('hook'  => array($this, 'handler_'.$fun),
-                     'auth'  => $auth,
-                     'perms' => $perms,
-                     'type'  => $type);
+        parent::__construct();
+
+        // Set the default page
+        $this->changeTpl('platal/index.tpl');
     }
 
-    /* static functions */
-
-    public static function factory($modname)
+    public function run()
     {
-        $mod_path = dirname(__FILE__) . '/../modules/' . $modname . '.php';
-        $class    = ucfirst($modname) . 'Module';
-
-        require_once $mod_path;
-        return new $class();
+        global $globals, $platal;
+        if (isset($platal) && $platal->path == 'register') {
+            $skin = $globals->register_skin . ".tpl";
+        } else {
+            $skin = S::v('skin', $globals->skin . ".tpl");
+        }
+        $this->_run('skin/' . $skin);
     }
 }
 

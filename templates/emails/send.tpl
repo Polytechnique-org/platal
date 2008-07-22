@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Envoyer un mail</h1>
+<h1>Envoyer un email</h1>
 
 <script type="text/javascript">//<![CDATA[
   {literal}
@@ -36,14 +36,14 @@
   {
     _selectAll('to_contacts');
     _selectAll('cc_contacts');
-    if(form.sujet.value == "" && !confirm("Le sujet du mail est vide, veux-tu continuer ?")) {
+    if(form.sujet.value == "" && !confirm("Le sujet de l'email est vide, veux-tu continuer ?")) {
         form.sujet.focus();
         return false;
     }
     if (form.to.value == "" && form.cc.value == ""
         && document.getElementById('to_contacts').length == 0 && document.getElementById('cc_contacts').length == 0) {
       if (form.bcc.value == "") {
-        alert("Il faut définir au moins un destinataire au mail.");
+        alert("Il faut définir au moins un destinataire.");
         return false;
       }
       if (!confirm("Tous les destinataires sont en copie cachée, veux-tu continuer ?")) {
@@ -154,6 +154,11 @@
 //]]>
 </script>
 
+<p>
+  <small>{icon name=information title="Envoi d'email"} Pour envoyer un email, tu peux soit le faire depuis l'interface
+  ci-dessous, soit utiliser <a href="Xorg/SMTPSecurise">notre serveur d'envoi SMTP<a>.</small>
+</p>
+
 <form action="emails/send" method="post" enctype="multipart/form-data" id="form_mail" onsubmit="return check(this);">
   {xsrf_token_field}
   <table class="bicol" cellpadding="2" cellspacing="0">
@@ -192,7 +197,7 @@
     <tr class="pair">
       <td colspan="2" class="smaller">
         &bull;&nbsp;Les destinataires sont simplement séparés par des virgules.<br />
-        &bull;&nbsp;Pense à te mettre en copie cachée du mail pour en avoir une trace.
+        &bull;&nbsp;Pense à te mettre en copie cachée de l'email pour en avoir une trace.
       </td>
     </tr>
     {if $contacts|@count}
@@ -258,11 +263,11 @@
     <div class="center">
       Tu peux utiliser des <a href="wiki_help" class="popup3">{icon name=information title="Syntaxe wiki"} marqueurs wiki</a> pour formatter ton texte.<br />
       <small><input type="checkbox" name="nowiki" value="1" {if $smarty.request.nowiki}checked="checked"{/if} onchange="updateWikiView(this);" />
-      coche cette case pour envoyer le mail en texte brut, sans formattage</small>
+      coche cette case pour envoyer l'email en texte brut, sans formattage</small>
     </div>
     <div id="preview">
       <div id="preview_pv" style="display: none">
-        <strong>Aperçu du mail&nbsp;:</strong>
+        <strong>Aperçu de l'email&nbsp;:</strong>
         <div id="mail_preview">
         </div>
         <div class="center">

@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{foreach from=$xorg_triggers key=type item=triggers}
+{foreach from=$pl_triggers key=type item=triggers}
 {if $triggers|@count}
 <div class="{$type}">
   <ul>

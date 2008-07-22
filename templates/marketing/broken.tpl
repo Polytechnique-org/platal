@@ -43,14 +43,14 @@
 {if !$user.email}
 <p>
   Avec le temps, toutes les adresses de redirection de notre camarade sont devenues invalides et produisent
-  des erreurs lorsqu'on lui envoie un mail. Nous sommes donc à la recherche d'adresses valides où nous pourrions
+  des erreurs lorsqu'on lui envoie un email. Nous sommes donc à la recherche d'adresses valides où nous pourrions
   contacter ce camarade.
 </p>
 {elseif $user.last}
 <p>
   {$user.prenom} a encore des adresses de redirection actives malgré des pannes détectées sur certaines d'entre elles. Si
   tu es sûr{if $smarty.session.femme}e{/if} que son adresse Polytechnique.org est en panne, tu peux proposer une nouvelle
-  adresse mail à ajouter à ses redirections. Merci d'ajouter un commentaire pour nous indiquer la raison de cette proposition.
+  adresse email à ajouter à ses redirections. Merci d'ajouter un commentaire pour nous indiquer la raison de cette proposition.
 </p>
 {else}
 <p>
@@ -69,6 +69,7 @@
 </p>
 
 <form method="post" action="{$platal->path}">
+  {xsrf_token_field}
   <table class="bicol" summary="Fiche camarade">
     <tr><th colspan="2">Proposition d'adresse pour<br />{$user.nom} {$user.prenom} (X{$user.promo})</th></tr>
     <tr class="pair">

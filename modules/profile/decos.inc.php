@@ -114,7 +114,7 @@ class ProfileDecos extends ProfilePage
         }
     }
 
-    public function _prepare(PlatalPage &$page, $id)
+    public function _prepare(PlPage &$page, $id)
     {
         $res    = XDB::iterator("SELECT  *, FIND_IN_SET('validation', flags) AS validate
                                    FROM  profile_medals

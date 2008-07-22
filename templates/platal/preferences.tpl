@@ -34,7 +34,7 @@
     <td class="half">
       <h3><a href="emails">Mes adresses de redirection</a></h3>
       <div class='explication'>
-        Tu peux configurer tes différentes redirections de mails ici.
+        Tu peux configurer tes différentes redirections d'emails ici.
       </div>
     </td>
     <td class="half">
@@ -63,19 +63,19 @@
     <td class="half">
       {if $smarty.session.mail_fmt eq html}
       <h3>
-        <a href="javascript:dynpostkv('prefs', 'mail_fmt', 'texte')">Recevoir les mails en format texte</a>
+        <a href="javascript:dynpostkv('prefs', 'mail_fmt', 'texte')">Recevoir les emails en format texte</a>
       </h3>
       <div class='explication'>
-        Tu recois tous les mails envoyés par le site
+        Tu recois tous les emails envoyés par le site
         (lettre mensuelle, carnet, ...) de préférence
         <strong>sous forme de html</strong>
       </div>
       {else}
       <h3>
-        <a href="javascript:dynpostkv('prefs', 'mail_fmt', 'html')">Recevoir les mails en HTML</a>
+        <a href="javascript:dynpostkv('prefs', 'mail_fmt', 'html')">Recevoir les emails en HTML</a>
       </h3>
       <div class='explication'>
-        Tu recois tous les mails envoyés par le site
+        Tu recois tous les emails envoyés par le site
         (lettre mensuelle, carnet, ...) de préférence
         <strong>sous forme de texte</strong>
       </div>
@@ -117,7 +117,7 @@
       <div class='explication'>
         Pour activer ton compte sur le serveur SMTP et NNTP de {#globals.core.sitename#},
         ou changer le mot de passe correspondant si tu as déjà activé l'accès.
-        Cela te permet d'envoyer tes mails plus souplement (SMTP), et de consulter
+        Cela te permet d'envoyer tes emails plus souplement (SMTP), et de consulter
         les forums directement depuis ton logiciel habituel de courrier électronique.
       </div>
     </td>

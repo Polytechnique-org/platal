@@ -26,51 +26,42 @@
   Ma liste personnelle de contacts
 </h1>
 
-<div>
-Ajouter la personne suivante à ma liste de contacts&nbsp;:
-<div style="float: right">
-<form id="add_user" action="carnet/contacts" method="post">
-  {xsrf_token_field}
-  <div>
-  <input type="hidden" name="action" value="ajouter" />
-  <input type="text" size="30" name="user" class="quick_search"
-         value="ajouter prenom.nom"
-         onfocus="if (this.value == 'ajouter prenom.nom') this.value=''"
-         onblur="if (this.value == '') this.value='ajouter prenom.nom'"
-         size="20" maxlength="70"/>
-  <a href="" onclick="document.getElementById('add_user').submit(); return false;">
-    {icon name=add title="Ajouter la personne"}
-  </a>
-  </div>
-</p>
-</form>
-</div>
-</div>
-<p style="clear: both">
-  Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire&nbsp;: 
-  il te suffit de cliquer sur l'icône {icon name=add} en face de son nom dans les résultats !
-</p>  
-
-{if $plset_count || $smarty.request.quick}
 <p>
-Pour récupérer ta liste de contacts dans un PDF imprimable&nbsp;:<br />
-(attention, les photos font beaucoup grossir les fichiers !)
+  <div style="float: right">
+  <form id="add_user" action="carnet/contacts" method="post">
+    {xsrf_token_field}
+    <div>
+    <input type="hidden" name="action" value="ajouter" />
+    <input type="text" size="30" name="user" class="quick_search"
+           value="ajouter prenom.nom"
+           onfocus="if (this.value == 'ajouter prenom.nom') this.value=''"
+           onblur="if (this.value == '') this.value='ajouter prenom.nom'"
+           size="20" maxlength="70"/>
+    <a href="" onclick="document.getElementById('add_user').submit(); return false;">
+      {icon name=add title="Ajouter la personne"}
+    </a>
+    </div>
+  </form>
+  </div>
+  Ajouter à tes contacts&nbsp;:
 </p>
-<ul>
-  <li>avec les photos&nbsp;:
-  [<a href="carnet/contacts/pdf/promo/photos/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
-  [<a href="carnet/contacts/pdf/photos/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
-  </li>
-  <li>sans les photos&nbsp;:
-  [<a href="carnet/contacts/pdf/promo/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
-  [<a href="carnet/contacts/pdf/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
-  </li>
-</ul>
+<p style="clear: both">
+  Sur la page de résultats d'une recherche, tu peux ajouter un contact en cliquant sur {icon name=add}.
+</p>
 
 <p>
   Tu peux télécharger des informations sur tes contacts&nbsp;:
 </p>
+{if $plset_count || $smarty.request.quick}
 <ul>
+  <li>Tes contacts en PDF, sans les photos&nbsp;:
+  [<a href="carnet/contacts/pdf/promo/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
+  [<a href="carnet/contacts/pdf/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
+  </li>
+  <li>Avec les photos (attention fichier plus gros)&nbsp;:
+  [<a href="carnet/contacts/pdf/promo/photos/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
+  [<a href="carnet/contacts/pdf/photos/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
+  </li>
   <li>
     {icon name=calendar_view_day title='Anniversaires'} 
     <a href="carnet/contacts/ical/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/anniv-x.ics" title="Anniversaires">
@@ -96,7 +87,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable&nbsp;:<br />
       </div>
     </form>
   </div>
-  Tu peux faire une recherche sur tes contacts&nbsp;:
+  Rechercher dans tes contacts&nbsp;:
 </p>
 
 {include file="core/plset.tpl"}

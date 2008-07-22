@@ -40,7 +40,7 @@
         <li><a href="http://www.polytechnique.net/{$asso.diminutif}/trombi">trombino</a></li>
         <li><a href="http://www.polytechnique.net/{$asso.diminutif}/geoloc">carte</a></li>
         {if $asso.lists}
-            <li><a href="http://www.polytechnique.net/{$asso.diminutif}/lists">listes mails</a></li>
+            <li><a href="http://www.polytechnique.net/{$asso.diminutif}/lists">listes de diffusion</a></li>
         {/if}
         {if $asso.events}
             <li><a href="http://www.polytechnique.net/{$asso.diminutif}/events">{$asso.events} événement{if $asso.events > 1}s{/if}</a></li>

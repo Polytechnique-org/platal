@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/../include/xorg.inc.php';
+require_once 'xorg.inc.php';
 
 preg_match('!^/(moderate|admin|members|archives)/(.*)_([^_]*)(/.*)?$!', $_SERVER['REQUEST_URI'], $matches);
 

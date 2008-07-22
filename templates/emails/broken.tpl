@@ -43,7 +43,7 @@ correspondant si tu veux que nous puissions te répondre.
   </p>
   <p>
     Nous pensons qu'il serait une bonne idée de le prévenir que cette adresse email ne fonctionne plus.
-    Si tu veux que nous lui envoyions un mail automatique de ta part pour le prévenir,
+    Si tu veux que nous lui envoyions un email automatique de ta part pour le prévenir,
     <a href="emails/broken/warn/{$email}?token={xsrf_token}">clique sur ce lien</a>.
   </p>
 {elseif $x}

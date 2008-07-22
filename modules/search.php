@@ -47,9 +47,7 @@ class SearchModule extends PLModule
 
     function form_prepare()
     {
-        global $page;
-
-        $page->assign('formulaire',1);
+        Platal::page()->assign('formulaire',1);
     }
 
     function get_diplomas($school = null)
@@ -72,8 +70,7 @@ class SearchModule extends PLModule
             $types = explode('(',$row[1]);
             $types = str_replace("'","",substr($types[1],0,-1));
         }
-        global $page;
-        $page->assign('choix_diplomas', explode(',',$types));
+        Platal::page()->assign('choix_diplomas', explode(',',$types));
     }
 
     function handler_quick(&$page, $action = null, $subaction = null)
@@ -90,7 +87,7 @@ class SearchModule extends PLModule
         if (Env::has('quick') || $action == 'geoloc') {
             $quick = trim(Env::v('quick'));
             if (S::logged() && !Env::has('page')) {
-                $_SESSION['log']->log('search', 'quick=' . $quick);
+                S::logger()->log('search', 'quick=' . $quick);
             }
             $list = 'profile|prf|fiche|fic|referent|ref|mentor';
             if (S::has_perms()) {
@@ -131,7 +128,7 @@ class SearchModule extends PLModule
 
             require_once 'userset.inc.php';
             $view = new SearchSet(true, $action == 'geoloc' && substr($subaction, -3) == 'swf');
-            $view->addMod('minifiche', 'Minifiches', true, array('with_score' => true));
+            $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true));
             if (S::logged() && !Env::i('nonins')) {
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true, 'with_score' => true));
                 $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
@@ -157,7 +154,7 @@ class SearchModule extends PLModule
 
         require_once dirname(__FILE__) . '/search/search.inc.php';
         $page->changeTpl('search/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Annuaire');
+        $page->setTitle('Polytechnique.org - Annuaire');
     }
 
     function handler_advanced(&$page, $action = null, $subaction = null)
@@ -187,7 +184,7 @@ class SearchModule extends PLModule
                 'city' => array('table' => 'geoloc_city', 'text' => 'name', 'exact' => false)
             );
             if (!Env::has('page')) {
-                $_SESSION['log']->log('search', 'adv=' . var_export($_GET, true));
+                S::logger()->log('search', 'adv=' . var_export($_GET, true));
             }
             foreach ($textFields as $field=>&$query) {
                 if (!Env::v($field) && Env::v($field . 'Txt')) {
@@ -202,7 +199,7 @@ class SearchModule extends PLModule
 
             require_once 'userset.inc.php';
             $view = new SearchSet(false, $action == 'geoloc' && substr($subaction, -3) == 'swf');
-            $view->addMod('minifiche', 'Minifiches', true);
+            $view->addMod('minifiche', 'Mini-fiches', true);
             $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
             //$view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
             $view->apply('search/adv', $page, $action, $subaction);

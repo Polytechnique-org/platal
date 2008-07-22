@@ -107,23 +107,22 @@ class ProfileAddress extends ProfileGeoloc
 
     private function saveAddress($adrid, array &$address)
     {
-        $flags = array();
+        $flags = new PlFlagSet();
         if ($address['secondaire']) {
-            $flags[] = 'res-secondaire';
+            $flags->addFlag('res-secondaire');
         }
         if ($address['mail']) {
-            $flags[] = 'courrier';
+            $flags->addFlag('courrier');
         }
         if ($address['temporary']) {
-            $flags[] = 'temporaire';
+            $flags->addFlag('temporaire');
         }
         if ($address['current']) {
-            $flags[] = 'active';
+            $flags->addFlag('active');
         }
         if ($address['checked']) {
-            $flags[] = 'coord-checked';
+            $flags->addFlag('coord-checked');
         }
-        $flags = implode(',', $flags);
         XDB::execute("INSERT INTO  adresses (adr1, adr2, adr3,
                                               postcode, city, cityid,
                                               country, region, regiontxt,

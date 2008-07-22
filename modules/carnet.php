@@ -56,7 +56,7 @@ class CarnetModule extends PLModule
     function handler_index(&$page)
     {
         $page->changeTpl('carnet/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Mon carnet');
+        $page->setTitle('Polytechnique.org - Mon carnet');
         $this->_add_rss_link($page);
     }
 
@@ -65,8 +65,8 @@ class CarnetModule extends PLModule
         $page->changeTpl('carnet/panel.tpl');
 
         if (Get::has('read')) {
-            $_SESSION['watch_last'] = Get::v('read');
-            update_NbNotifs();
+            S::set('watch_last', Get::v('read'));
+            Platal::session()->updateNbNotifs();
             pl_redirect('carnet/panel');
         }
 
@@ -195,14 +195,14 @@ class CarnetModule extends PLModule
     }
 
     function searchErrorHandler($explain) {
-        global $page;
+        $page =& Platal::page();
         $page->trigError($explain);
         $this->handler_contacts($page);
     }
 
     function handler_contacts(&$page, $action = null, $subaction = null, $ssaction = null)
     {
-        $page->assign('xorg_title','Polytechnique.org - Mes contacts');
+        $page->setTitle('Polytechnique.org - Mes contacts');
         $this->_add_rss_link($page);
 
         $uid  = S::v('uid');
@@ -267,7 +267,7 @@ class CarnetModule extends PLModule
             $base = 'carnet/contacts';
             $view = new UserSet("INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", " c2.uid = $uid ");
         }
-        $view->addMod('minifiche', 'Mini-Fiches', true);
+        $view->addMod('minifiche', 'Mini-fiches', true);
         $view->addMod('trombi', 'Trombinoscope', false, array('with_admin' => false, 'with_promo' => true));
         $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'carnet/contacts/search'));
         $view->apply($base, $page, $action, $subaction);
@@ -281,7 +281,7 @@ class CarnetModule extends PLModule
         require_once dirname(__FILE__).'/carnet/contacts.pdf.inc.php';
         require_once 'user.func.inc.php';
 
-        session_write_close();
+        Platal::session()->close();
 
         $sql = "SELECT  a.alias
                   FROM  aliases       AS a
@@ -329,7 +329,6 @@ class CarnetModule extends PLModule
             if (!$uid) {
                 $uid = S::i('uid');
             } else if ($uid != S::i('uid')) {
-                require_once 'xorg.misc.inc.php';
                 send_warning_email("Récupération d\'un autre utilisateur ($uid)");
             }
         } else if (!$uid) {

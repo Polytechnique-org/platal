@@ -24,6 +24,7 @@
 <h1>Trombinoscope</h1>
 
 <form enctype="multipart/form-data" action="photo/change" method="post">
+  {xsrf_token_field}
   {if ($session.promo ge 1995) || ($session.promo le 2002)}
   <p>
   Si tu n'as pas encore fourni de photo, c'est celle du trombinoscope de l'X qui est
@@ -57,7 +58,7 @@
       <td colspan="2" class="smaller">
         * Les photos sont soumises à une validation manuelle en raison des législations relatives
         aux droits d'auteur et à la protection des mineurs. Il faut donc attendre l'intervention
-        d'un administrateur pour que la photo soit prise en compte. Tu recevras un mail lorsque ta
+        d'un administrateur pour que la photo soit prise en compte. Tu recevras un email lorsque ta
         photo aura été contrôlée.
       </td>
     </tr>

@@ -19,22 +19,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('platal.inc.php');
-require_once('globals.inc.php');
-require_once('xnet/session.inc.php');
-$globals = new PlatalGlobals('XnetSession');
-XnetSession::init();
+define('PL_GLOBALS_CLASS', 'PlatalGlobals');
+define('PL_SESSION_CLASS', 'XnetSession');
+define('PL_PAGE_CLASS', 'XnetPage');
 
-function new_skinned_page($tpl_name)
-{
-    global $page;
-    require_once("xnet/page.inc.php");
-    if (!$page instanceof XnetPage) {
-        $page = new XnetPage($tpl_name);
-    } else {
-        $page->changeTpl($tpl_name);
-    }
-}
+require_once dirname(dirname(__FILE__)) . '/core/include/platal.inc.php';
+require_once 'common.inc.php';
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 $GLOBALS['IS_XNET_SITE'] = true;
-global $platal, $globals, $page;
 
 require_once dirname(__FILE__).'/../include/xnet.inc.php';
 

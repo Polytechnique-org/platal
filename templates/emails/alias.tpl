@@ -25,14 +25,14 @@
   <p>
   La demande de création des alias <strong>{$success}@{#globals.mail.alias_dom#}</strong> et
   <strong>{$success}@{#globals.mail.alias_dom2#}</strong> a bien été enregistrée. Après
-    vérification, tu recevras un mail te signalant l'ouverture de ces adresses.
+    vérification, tu recevras un email te signalant l'ouverture de ces adresses.
   </p>
   <p>
-    Encore merci de nous faire confiance pour tes e-mails !
+    Encore merci de nous faire confiance pour tes emails !
   </p>
 {else}
   <h1>
-    Adresses e-mail personnalisées
+    Adresses email personnalisées
   </h1>
 
 {if $actuel}
@@ -55,8 +55,8 @@
     
 {else}
   <p>
-    Pour plus de <strong>convivialité</strong> dans l'utilisation de tes mails, tu peux choisir une adresse
-    e-mail discrète et personnalisée. Ce nouvel e-mail peut par exemple correspondre à ton surnom.
+    Pour plus de <strong>convivialité</strong> dans l'utilisation de tes emails, tu peux choisir une adresse
+    email discrète et personnalisée. Ce nouvel email peut par exemple correspondre à ton surnom.
   </p>
 {/if}
 

@@ -41,10 +41,10 @@ qui y était abonné.
 
 <p>
 {if $unregistered|@count eq 1}
-L'utilisateur suivant n'est pas inscrit à Polytechnique.org. Tu peux l'y inciter en lui faisant envoyer un mail de marketing. Une fois inscrit à Polytechnique.org, l'inscription à la liste lui sera automatiquement proposée.
+L'utilisateur suivant n'est pas inscrit à Polytechnique.org. Tu peux l'y inciter en lui faisant envoyer un email de marketing. Une fois inscrit à Polytechnique.org, l'inscription à la liste lui sera automatiquement proposée.
 {else}
 Les utilisateurs suivants ne sont pas inscrits à Polytechnique.org. Tu peux les y inciter en leur faisant envoyer des
-mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la liste leur sera automatique proposée.
+emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la liste leur sera automatique proposée.
 {/if}
 <p>
 
@@ -60,6 +60,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
 </script>
 
 <form method="post" action='{$smarty.server.REQUEST_URI}'>
+  {xsrf_token_field}
   <table class="bicol">
   {foreach from=$unregistered key=login item=it}
     <tr class="{cycle values="pair,impair"}">
@@ -74,8 +75,8 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
         Action*&nbsp;:
         <select name="mk_action[{$login}]" onchange="showEmail(this.value, '{$login}');">
           <option value="none">Aucune</option>
-          <option value="marketu">Envoyer un mail en ton nom</option>
-          <option value="markets">Envoyer un mail au nom de Polytechnique.org</option>
+          <option value="marketu">Envoyer un email en ton nom</option>
+          <option value="markets">Envoyer un email au nom de Polytechnique.org</option>
           <option value="sub">Lui proposer l'inscription</option>
         </select><br />
         <span id="mk_s_mail[{$login}]" style="display: none">
@@ -92,8 +93,8 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
 
 <p class="smaller">
   *La dernière action ajoute simplement la liste de diffusion aux abonnements qui seront proposés au camarade
-  lors de son inscription à Polytechnique.org sans pour autant lui enovyer de mail de marketing. Cette action est
-  automatique si tu choisis l'envoi de mail.
+  lors de son inscription à Polytechnique.org sans pour autant lui envoyer d'email de marketing. Cette action est
+  automatique si tu choisis l'envoi d'email.
 </p>
 
 {/if}
@@ -103,6 +104,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
 </h1>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
+  {xsrf_token_field}
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
     {foreach from=$owners item=xs key=promo}
     <tr>
@@ -112,7 +114,7 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
         {if $promo && strpos($x.l, '@') === false}
         <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
         {elseif $x.x}
-        <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
+        <a href="{$platal->ns}member/{$x.x}">{if $x.n|trim}{$x.n}{else}{$x.l}{/if}</a>
         {elseif $x.n}
         {$x.n}
         {else}
@@ -124,11 +126,10 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
       </td>
     </tr>
     {/foreach}
-    <tr>
-      <td class='titre'>Ajouter ... </td>
+    <tr class="pair">
+      <td class='titre'>Ajouter</td>
       <td>
         <input type='text' size='30' name='add_owner' />
-        &nbsp;
         <input type='submit' value='ajouter' />
       </td>
     </tr>
@@ -140,7 +141,8 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
   {$np_m|default:"0"} membre{if $np_m > 1}s{/if} dans la liste
 </h1>
 
-<form method='post' action='{$smarty.server.REQUEST_URI}'>
+<form method='post' action='{$smarty.server.REQUEST_URI}' enctype="multipart/form-data">
+  {xsrf_token_field}
   <table class='bicol' cellpadding='0' cellspacing='0'>
     {foreach from=$members item=xs key=promo}
     <tr>
@@ -150,28 +152,45 @@ mails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la 
         {if $promo && strpos($x.l, '@') === false}
         <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
         {elseif $x.x}
-        <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
+        <a href="{$platal->ns}member/{$x.x}">{if $x.n|trim}{$x.n}{else}{$x.l}{/if}</a>
         {elseif $x.n}
         {$x.n}
         {else}
         {$x.l}
         {/if}
-        <a href='{$platal->pl_self(1)}?del_member={$x.l}'>{icon name=cross title='retirer membre'}</a>
+        <a href='{$platal->pl_self(1)}?del_member={$x.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer membre'}</a>
         <br />
         {/foreach}
       </td>
     </tr>
     {/foreach}
     <tr>
-      <td class='titre'>Ajouter ...</td>
+      <th colspan="2">Ajouter</th>
+    </tr>
+    <tr class="pair">
+      <td class="titre">Liste</td>
       <td>
         <input type='text' size='40' name='add_member' />
-        &nbsp;
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">ou fichier(*)</td>
+      <td>
+        <input type="file" name="add_member_file" />*
+      </td>
+    </tr>
+    <tr class="pair">
+      <td colspan="2" class="center">
         <input type='submit' value='ajouter' />
       </td>
     </tr>
   </table>
 </form>
+
+<div class="smaller">
+ * Le fichier doit contenir une adresse email par ligne. Les X doivent être identifiés par une adresse
+ @polytechnique.org, @m4x.org ou @melix.net/org.
+</div>
 
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

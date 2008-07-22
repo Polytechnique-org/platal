@@ -229,9 +229,9 @@
 {/if}
 {if #globals.mailstorage.imap_active# or hasPerm('admin')}
 <p>
-  Polytechnique.org te propose de conserver les mails que tu reçois, pendant une durée limitée (environ 30 jours).
-  Grâce à ce service, tu disposes d'une sauvegarde de tes mails en secours, au cas où, par exemple, tu effacerais
-  un mail par erreur.<br />
+  Polytechnique.org te propose de conserver les emails que tu reçois, pendant une durée limitée (environ 30 jours).
+  Grâce à ce service, tu disposes d'une sauvegarde de tes emails en secours, au cas où, par exemple, tu effacerais
+  un email par erreur.<br />
   <strong>Attention :</strong> il ne s'agit que d'un service de secours, dont la disponibilité n'est pas garantie.
 </p>
 
@@ -302,7 +302,7 @@
   {$smarty.session.forlife}@{#globals.mail.domain#} (attention, cela demande de la concentration).
 </p>
 <p>
-  Si tu utilises le service POP de poly pour récupérer tes mails dans ton logiciel de courrier,
+  Si tu utilises le service POP de poly pour récupérer tes emails dans ton logiciel de courrier,
   l'équipe de Polytechnique.org te conseille de rediriger&nbsp;:
 </p>
 <ul>

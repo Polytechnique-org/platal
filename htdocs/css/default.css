@@ -290,7 +290,7 @@ div.contact-list div.grayed {
 
 div.contact div.identity {
     float: left;
-    width: 90%;
+    width: 89%;
 }
 
 div.contact div.nom {
@@ -300,6 +300,7 @@ div.contact div.nom {
 div.contact div.bits {
     text-align: right;
     float: right;
+    width: 10%;
 }
 
 div.contact div.long {
@@ -312,8 +313,8 @@ div.contact div.long {
 }
 
 div.long table { width: 100%; }
-div.long td.lt { width: 35%; font-style: italic; }
-div.long td.rt { width: 65%; }
+div.long td.lt { width: 18%; font-style: italic; }
+div.long td.rt { width: 82%; }
 
 /*******************************************************************************
     6   Profil
@@ -333,7 +334,7 @@ div.long td.rt { width: 65%; }
 }
 
 .wizard .wiz_header .wiz_tab {
-    background; url('../images/skins/wiz_normal.png') #aaa top left repeat-x;
+    background: url('../images/skins/wiz_normal.png') #aaa top left repeat-x;
     height: 100%;
     text-align: center;
     font-size: 75%;

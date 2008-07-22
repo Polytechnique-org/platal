@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 <div class="contact-list" style="clear: both">
-{iterate from=$set item=p} 
+{foreach from=$set item=p} 
   <div class="contact"> 
     <div class="nom"> 
       <span {if $p.name_tooltip}class="hinted" title="{$p.name_tooltip}"{/if}>{$p.name_display}</span>
@@ -31,9 +31,9 @@
     </div> 
     <div class="bits" style="width: 40%;"> 
       <span class='smaller'> 
-      <a href="profile/{$p.bestalias}" class="popup2"> 
+      <a href="profile/{$p.forlife}" class="popup2">
         {icon name=user_suit title="Voir sa fiche"}</a> - 
-        <a href="referent/{$p.bestalias}" class="popup2">Voir sa fiche référent</a> 
+        <a href="referent/{$p.forlife}" class="popup2">Voir sa fiche référent</a>
       </span> 
     </div> 
     <div class="long"> 
@@ -45,7 +45,7 @@
      </table> 
     </div> 
   </div> 
-{/iterate}
+{/foreach}
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

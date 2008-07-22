@@ -19,48 +19,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('platal.inc.php');
-require_once('globals.inc.php');
-require_once('xorg/session.inc.php');
-$globals = new PlatalGlobals('XorgSession');
-$globals->bootstrap(array('NbIns'), 'update_NbIns');
-$globals->bootstrap(array('NbValid'), 'update_NbValid');
+define('PL_GLOBALS_CLASS', 'PlatalGlobals');
+define('PL_SESSION_CLASS', 'XorgSession');
+define('PL_PAGE_CLASS', 'XorgPage');
 
-// {{{ class XorgPage
-
-class XorgPage extends PlatalPage
-{
-    public function __construct($tpl, $type = SKINNED)
-    {
-        parent::__construct($tpl, $type);
-    }
-
-    public function run()
-    {
-        global $globals, $platal;
-        $this->assign('globals', $globals);
-        if (isset($platal) && $platal->path == 'register') {
-            $skin = $globals->register_skin . ".tpl";
-        } else {
-            $skin = S::v('skin', $globals->skin . ".tpl");
-        }
-        $this->_run('skin/' . $skin);
-    }
-}
-
-// {{{ function new_skinned_page()
-
-function new_skinned_page($tpl_name)
-{
-    global $page;
-    if (!$page instanceof XorgPage) {
-        $page = new XorgPage($tpl_name);
-    } else {
-        $page->changeTpl($tpl_name);
-    }
-}
-
-XorgSession::init();
+require_once dirname(dirname(__FILE__)) . '/core/include/platal.inc.php';
+require_once 'security.inc.php';
+require_once 'common.inc.php';
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

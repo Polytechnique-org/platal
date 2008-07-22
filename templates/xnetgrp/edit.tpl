@@ -109,7 +109,7 @@
 
     <tr>
       <td class="titre">
-        Adresse mail&nbsp;:
+        Adresse email&nbsp;:
       </td>
       <td>
         <input type="text" size="40" name="mail" value="{$asso.mail}" />
@@ -176,6 +176,12 @@
           <option value="membre" {if $asso.pub eq 'membre'}selected="selected"{/if}>Aux membres du groupe</option>
           <option value="private" {if $asso.pub eq 'private'}selected="selected"{/if}>Aux animateurs du groupe</option>
         </select>
+      </td>
+    </tr>
+    <tr>
+      <td class="titre center" colspan="2">
+        <input type="checkbox" value="1" name="notif_unsub" {if $asso.notif_unsub}checked="checked"{/if} />
+        prévenir les animateurs lors de la désinscription d'un membre
       </td>
     </tr>
   </table>

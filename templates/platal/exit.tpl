@@ -38,7 +38,7 @@ des fonctionnalités de consultation du site.
 Tu peux donc aussi te <a href='exit/forget'>déconnecter complètement</a>.
 </p>
 <p>
-De plus, ton adresse e-mail est toujours en mémoire dans ton navigateur afin de faciliter ta
+De plus, ton adresse email est toujours en mémoire dans ton navigateur afin de faciliter ta
 prochaine connexion. Si tu utilises un ordinateur public ou que tu désires l'effacer, tu peux
 <a href='exit/forgetall'>supprimer cette information et te déconnecter complètement</a>.
 </p>
@@ -46,7 +46,7 @@ prochaine connexion. Si tu utilises un ordinateur public ou que tu désires l'ef
 {elseif $smarty.cookies.ORGuid}
 
 <p>
-Ton adresse e-mail est toujours en mémoire dans ton navigateur afin de faciliter ta prochaine
+Ton adresse email est toujours en mémoire dans ton navigateur afin de faciliter ta prochaine
 connexion. Si tu utilises un ordinateur public ou que tu désires l'effacer, tu peux
 <a href='exit/forgetuid'>supprimer cette information</a>.
 </p>

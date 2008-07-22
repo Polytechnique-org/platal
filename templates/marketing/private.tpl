@@ -45,7 +45,7 @@ sa dernière relance date du {$relance|date_format}
 {/if}
 </p>
 
-<p>[<a href='{$path}/insrel'>le relancer</a>]</p>
+<p>[<a href='{$path}/insrel?token={xsrf_token}'>le relancer</a>]</p>
 
 {/if}
 
@@ -72,14 +72,14 @@ sa dernière relance date du {$relance|date_format}
       <td>{$a.last|date_format|default:'-'}</td>
       <td class='center'>{$a.nb|default:"-"}</td>
       <td class='action'>
-        <a href='{$path}/del/{$a.email}'>del</a><br />
+        <a href='{$path}/del/{$a.email}?token={xsrf_token}'>del</a><br />
         <a href='{$path}/rel/{$a.email}'>relance</a>
       </td>
     </tr>
     {/iterate}
     <tr>
       <td></td>
-      <td colspan='5' class='smaller'>(*): mail perso</td>
+      <td colspan='5' class='smaller'>(*): email perso</td>
     </tr>
     <tr>
       <td>
@@ -100,9 +100,10 @@ sa dernière relance date du {$relance|date_format}
 
 {if $rel_to}
 <form action="{$path}/relforce/{$email}" method="post">
+  {xsrf_token_field}
   <table class="bicol">
     <tr class="pair">
-      <th colspan="2">Edition du mail de relance</th>
+      <th colspan="2">Edition de l'email de relance</th>
     </tr>
     <tr class="pair">
       <td align="right"><strong>From:</strong></td>

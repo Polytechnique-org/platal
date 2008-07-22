@@ -35,15 +35,16 @@ comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
 
 {if $evt.participant_list && $is_admin}
 <p class="center">
-[<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un mail à ceux qui viennent</a>]
+[<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un email à ceux qui viennent</a>]
 -
-[<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un mail aux membres non inscrits</a>]
+[<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un email aux membres non inscrits</a>]
 </p>
 {/if}
 
 {if count($moments) > 1}
 <p class="center">
-[<a href="{$platal->ns}events/admin/{$evt.short_name|default:$evt.eid}"{if !$platal->argv[2]}class="erreur"{/if}>tout</a>]
+[<a href="{$platal->ns}events/admin/{$evt.short_name|default:$evt.eid}"{if
+!$platal->argv[2]}class="erreur"{/if}>Vue générale</a>]
 {foreach from=$moments item=m}
 [<a href="{$platal->ns}events/admin/{$evt.short_name|default:$evt.eid}/{$m.item_id}" {if $platal->argv[2] eq $m.item_id}class="erreur"{/if}>{$m.titre}</a>]
 {/foreach}
@@ -95,7 +96,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
     <td>
       <a href="https://www.polytechnique.org/profile/{$m.email}">{icon name=user_suit title="fiche"}</a>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="vcard"}</a>
-      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="mail"}</a>
+      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="email"}</a>
     </td>
     <td>{$m.montant}</td>
   </tr>
@@ -150,9 +151,9 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
       {if $m.x}
       <a href="https://www.polytechnique.org/profile/{$m.email}">{icon name=user_suit title="fiche"}</a>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="vcard"}</a>
-      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="mail"}</a>
+      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="email"}</a>
       {else}
-      <a href="mailto:{$m.email}">{icon name=email title="mail"}</a>
+      <a href="mailto:{$m.email}">{icon name=email title="email"}</a>
       {/if}
     </td>
     {if $tout}
@@ -178,7 +179,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
     {/if}
   </tr>
   {/foreach}
-  {if $is_admin && $evt.money}
+  {if $is_admin && $evt.money && $tout}
   <tr>
     {assign var=cols value=$moments|@count}
     <td colspan="{$cols+3}" class="right"><strong>Total</strong></td>
@@ -225,21 +226,24 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
 {if $is_admin}
 
 <p class="descr">
-[<a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">Télécharger le fichier Excel</a>]
+  <a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">
+    {icon name=page_excel title="Télécharger au format Excel"} Télécharger le fichier Excel
+  </a>
 </p>
 
 <hr />
 
 <p class="descr">
 En tant qu'administrateur, tu peux fixer la venue (accompagnée ou pas) d'un des membres du groupe.
-Donne ici son mail, ainsi que le nombre de participants.
+Donne ici son email, ainsi que le nombre de participants.
 </p>
 
 <form action="{$platal->pl_self()}" method="post" id="inscription">
+  {xsrf_token_field}
   <p class="descr">
     <input type="hidden" name="adm" value="nbs" />
 
-    Mail&nbsp;: <input name="mail" size="20" />
+    Email&nbsp;: <input name="mail" size="20" />
 
     {if $platal->argv[2]}
     {$evt.titre}&nbsp;: <input name="nb[{$platal->argv[2]}]" size="1" value="1" />
@@ -269,9 +273,10 @@ Note que tu peux cliquer sur les noms des membres pour remplir automatiquement l
 </p>
 
 <form action="{$platal->pl_self()}" method="post" id="montant">
+  {xsrf_token_field}
   <p class="descr">
   <input type="hidden" name="adm" value="prix" />
-  Mail&nbsp;: <input name="mail" size="20" />
+  Email&nbsp;: <input name="mail" size="20" />
   montant&nbsp;: <input name="montant" size="3" value="0,00" /> &euro;
   <input type="submit" />
   </p>

@@ -106,7 +106,7 @@ class ProfileGroups extends ProfilePage
         $this->watched['section'] = $this->watched['binets'] = true;
     }
 
-    public function _prepare(PlatalPage &$page, $id)
+    public function _prepare(PlPage &$page, $id)
     {
         $page->assign('mygroups', XDB::iterator("SELECT  a.nom, a.site, a.diminutif, a.unsub_url, a.pub, m.perms
                                                    FROM  groupex.asso    AS a

@@ -19,7 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('xorg.misc.inc.php');
 require_once('user.func.inc.php');
 
 class VCardIterator implements PlIterator
@@ -37,8 +36,11 @@ class VCardIterator implements PlIterator
 
     public function add_user($user)
     {
-        $this->user_list[] = get_user_forlife($user);
-        $this->count++;
+        $forlife = get_user_forlife($user, '_silent_user_callback');
+        if ($forlife) {
+            $this->user_list[] = get_user_forlife($user);
+            $this->count++;
+        }
     }
 
     public function first()
@@ -84,13 +86,13 @@ class VCardIterator implements PlIterator
              INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
                   WHERE ( redirect={?} OR redirect={?} )
                         AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                S::v('uid'),
+                $user['user_id'],
                 $user['forlife'].'@'.$globals->mail->domain,
                 $user['forlife'].'@'.$globals->mail->domain2);
 
         $user['virtualalias'] = $res->fetchOneCell();
-        $user['gpxs_vcardjoin'] = join(',', array_map(array('VCard', 'text_encode'), $user['gpxs_name']));
-        $user['binets_vcardjoin'] = join(',', array_map(array('VCard', 'text_encode'), $user['binets']));
+        $user['gpxs_vcardjoin'] = join(', ', array_map(array('VCard', 'text_encode'), $user['gpxs_name']));
+        $user['binets_vcardjoin'] = join(', ', array_map(array('VCard', 'text_encode'), $user['binets']));
         // get photo
         if ($this->photos) {
             $res = XDB::query(
@@ -172,7 +174,6 @@ class VCard
         header("Pragma: ");
         header("Cache-Control: ");
         header("Content-type: text/x-vcard; charset=UTF-8");
-        header("Content-Transfer-Encoding: 8bit");
   }
 }
 

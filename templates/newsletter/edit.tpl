@@ -57,7 +57,7 @@
     </tr>
     <tr>
       <td class='titre'>
-        Titre du mail
+        Titre de l'email
       </td>
       <td>
         <input type='text' size='60' name='title_mail' value="{$nl->title(true)}" />

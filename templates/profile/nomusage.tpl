@@ -53,8 +53,8 @@
     {/if}
   
     <p>
-      Tu recevras un mail dès que les changements demandés auront été effectués. 
-      Encore merci de nous faire confiance pour tes e-mails !
+      Tu recevras un email dès que les changements demandés auront été effectués. 
+      Encore merci de nous faire confiance pour tes emails !
     </p>
 
   {else}
@@ -92,6 +92,7 @@ utiliser une adresse personnalisée, il faut se tourner vers
   return false;
 ">
 {/literal}
+    {xsrf_token_field}
     <table class="bicol" cellpadding="4" summary="Nom d'usage">
       <tr>
         <th>Nom d'usage</th>

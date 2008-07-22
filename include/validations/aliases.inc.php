@@ -87,7 +87,7 @@ class AliasReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  L'adresse mail {$this->alias} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance.".(($this->public == 'public')?" A ta demande, cette adresse apparaît maintenant sur ta fiche.":"");
+            return "  L'adresse email {$this->alias} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance.".(($this->public == 'public')?" A ta demande, cette adresse apparaît maintenant sur ta fiche.":"");
         } else {
             return "  La demande que tu avais faite pour l'alias {$this->alias} a été refusée.";
         }

@@ -202,7 +202,8 @@ function get_event_participants(&$evt, $item_id, $tri, $limit = '') {
 function subscribe_lists_event($participate, $uid, $evt)
 {
     require_once('user.func.inc.php');
-    global $globals,$page;
+    global $globals;
+    $page =& Platal::page();
 
     $participant_list = $evt['participant_list'];
     $absent_list      = $evt['absent_list'];
@@ -215,7 +216,7 @@ function subscribe_lists_event($participate, $uid, $evt)
         $res = XDB::query("SELECT email
                              FROM groupex.membres
                             WHERE uid = {?} AND asso_id = {?}",
-                            S::v('uid'), $globals->asso('id'));
+                          $uid, $globals->asso('id'));
         $email = $res->fetchOneCell();
     }
 

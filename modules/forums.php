@@ -59,7 +59,7 @@ class ForumsModule extends PLModule
     function handler_banana(&$page, $group = null, $action = null, $artid = null)
     {
         $page->changeTpl('banana/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Forums & PA');
+        $page->setTitle('Polytechnique.org - Forums & PA');
 
         $get = Array();
         if (Post::has('updateall')) {
@@ -68,56 +68,6 @@ class ForumsModule extends PLModule
         require_once 'banana/forum.inc.php';
         get_banana_params($get, $group, $action, $artid);
         run_banana($page, 'ForumsBanana', $get);
-    }
-
-    function handler_profile(&$page, $action = null)
-    {
-        global $globals;
-
-        $page->changeTpl('banana/profile.tpl');
-
-        if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig')
-        && Post::has('bananadisplay') && Post::has('bananamail')
-        && Post::has('bananaupdate') && Post::v('action')=="Enregistrer" ))
-        {
-            $req = XDB::query("
-                SELECT  nom, mail, sig,
-                        FIND_IN_SET('threads', flags),
-                        FIND_IN_SET('automaj', flags),
-                        FIND_IN_SET('xface', flags)
-                  FROM  forums.profils
-                 WHERE  uid = {?}", S::v('uid'));
-            if (!(list($nom, $mail, $sig, $disp, $maj, $xface) = $req->fetchOneRow())) {
-                $nom   = S::v('prenom').' '.S::v('nom');
-                $mail  = S::v('forlife').'@'.$globals->mail->domain;
-                $sig   = $nom.' ('.S::v('promo').')';
-                $disp  = 0;
-                $maj   = 0;
-                $xface = 0;
-            }
-            $page->assign('nom' ,  $nom);
-            $page->assign('mail',  $mail);
-            $page->assign('sig',   $sig);
-            $page->assign('disp',  $disp);
-            $page->assign('maj',   $maj);
-            $page->assign('xface', $xface);
-        } else {
-            $flags = array();
-            if (Post::b('bananadisplay')) {
-                $flags[] = 'threads';
-            }
-            if (Post::b('bananaupdate')) {
-                $flags[] = 'automaj';
-            }
-            if (Post::b('bananaxface')) {
-                $flags[] = 'xface';
-            }
-            XDB::execute("REPLACE INTO  forums.profils (uid, sig, mail, nom, flags)
-                                VALUES  ({?}, {?}, {?}, {?}, {?})",
-                         S::v('uid'), Post::v('bananasig'),
-                         Post::v('bananamail'), Post::v('banananame'),
-                         implode(',', $flags));
-        }
     }
 
     function handler_rss(&$page, $group, $alias, $hash, $file = null)
@@ -147,7 +97,7 @@ class ForumsModule extends PLModule
 
     function handler_forums_bans(&$page, $action = 'list', $id = null)
     {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Bannissements des forums');
+        $page->setTitle('Polytechnique.org - Administration - Bannissements des forums');
         $page->assign('title', 'Gestion des mises au ban');
         $table_editor = new PLTableEditor('admin/forums','forums.innd','id_innd');
         $table_editor->add_sort_field('priority', true, true);
@@ -163,7 +113,7 @@ class ForumsModule extends PLModule
     static function run_banana(&$page, $params = null)
     {
         $page->changeTpl('banana/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Forums & PA');
+        $page->setTitle('Polytechnique.org - Forums & PA');
 
         require_once 'banana/forum.inc.php';
         run_banana($page, 'ForumsBanana', $params);

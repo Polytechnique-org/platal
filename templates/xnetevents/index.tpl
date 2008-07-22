@@ -73,7 +73,7 @@
         modifier
         {icon name=date_edit title="Édition de l'événement"}</a>]
       &nbsp;
-      [<a href="javascript:dynpostkv('{$platal->pl_self()}', {if !$archive}'archive'{else}'unarchive'{/if}, {$e.eid})">
+      [<a href="javascript:dynpostkv('{$platal->pl_self()}?token={xsrf_token}', {if !$archive}'archive'{else}'unarchive'{/if}, {$e.eid})">
         {if !$archive}
           archiver
           {icon name=package_add title="Archivage"}</a>]
@@ -82,7 +82,7 @@
           {icon name=package_delete title="Désarchivage"}</a>]
         {/if}
       &nbsp;
-      [<a href="javascript:dynpostkv('{$platal->ns}events', 'del', {$e.eid})"
+      [<a href="javascript:dynpostkv('{$platal->ns}events?token={xsrf_token}', 'del', {$e.eid})"
         onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement ?')">
         supprimer
       {icon name=delete title='Suppression'}</a>]

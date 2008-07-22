@@ -68,15 +68,18 @@ class ForumsBanana extends Banana
 
         // Get user profile from SQL
         $req = XDB::query("SELECT  nom, mail, sig,
-                                   FIND_IN_SET('threads',flags), FIND_IN_SET('automaj',flags)
+                                   FIND_IN_SET('threads',flags), FIND_IN_SET('automaj',flags),
+                                   tree_unread, tree_read
                              FROM  {$globals->banana->table_prefix}profils
                             WHERE  uid={?}", S::i('uid'));
-        if (!(list($nom,$mail,$sig,$disp,$maj) = $req->fetchOneRow())) {
+        if (!(list($nom, $mail, $sig, $disp, $maj, $unread, $read) = $req->fetchOneRow())) {
             $nom  = S::v('prenom')." ".S::v('nom');
             $mail = S::v('forlife')."@" . $globals->mail->domain;
             $sig  = $nom." (".S::v('promo').")";
             $disp = 0;
             $maj  = 1;
+            $unread = 'o';
+            $read   = 'dg';
         }
         if ($maj) {
             $time = time();
@@ -95,6 +98,8 @@ class ForumsBanana extends Banana
         Banana::$profile['autoup']                  = $maj;
         Banana::$profile['lastnews']                = S::v('banana_last');
         Banana::$profile['subscribe']               = $req->fetchColumn();
+        Banana::$tree_unread = $unread;
+        Banana::$tree_read = $read;
 
         // Update the "unread limit"
         if (!is_null($time)) {
@@ -174,50 +179,70 @@ class ForumsBanana extends Banana
 
     protected function action_updateProfile()
     {
-        global $page, $globals;
+        global $globals;
+        $page = Platal::page();
 
-        if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig')
-        && Post::has('bananadisplay') && Post::has('bananamail')
-        && Post::has('bananaupdate') && Post::v('action')=="Enregistrer" ))
-        {
-            $req = XDB::query("
-                SELECT  nom, mail, sig,
-                        FIND_IN_SET('threads', flags),
-                        FIND_IN_SET('automaj', flags),
-                        FIND_IN_SET('xface', flags)
-                  FROM  forums.profils
-                 WHERE  uid = {?}", S::v('uid'));
-            if (!(list($nom, $mail, $sig, $disp, $maj, $xface) = $req->fetchOneRow())) {
-                $nom   = S::v('prenom').' '.S::v('nom');
-                $mail  = S::v('forlife').'@'.$globals->mail->domain;
-                $sig   = $nom.' ('.S::v('promo').')';
-                $disp  = 0;
-                $maj   = 0;
-                $xface = 0;
-            }
-            $page->assign('nom' ,  $nom);
-            $page->assign('mail',  $mail);
-            $page->assign('sig',   $sig);
-            $page->assign('disp',  $disp);
-            $page->assign('maj',   $maj);
-            $page->assign('xface', $xface);
-        } else {
-            $flags = array();
+        $colors = glob(dirname(__FILE__) . '/../../htdocs/images/banana/m2*.gif');
+        foreach ($colors as $key=>$path) {
+            $path = basename($path, '.gif');
+            $colors[$key] = substr($path, 2);
+        }
+        $page->assign('colors', $colors);
+
+        if (Post::has('action') && Post::v('action') == 'Enregistrer') {
+            S::assert_xsrf_token();
+            $flags = new FlagSet();
             if (Post::b('bananadisplay')) {
-                $flags[] = 'threads';
+                $flags->addFlag('threads');
             }
             if (Post::b('bananaupdate')) {
-                $flags[] = 'automaj';
+                $flags->addFlag('automaj');
             }
             if (Post::b('bananaxface')) {
-                $flags[] = 'xface';
+                $flags->addFlag('xface');
             }
-            XDB::execute("REPLACE INTO  forums.profils (uid, sig, mail, nom, flags)
-                                VALUES  ({?}, {?}, {?}, {?}, {?})",
-                         S::v('uid'), Post::v('bananasig'),
-                         Post::v('bananamail'), Post::v('banananame'),
-                         implode(',', $flags));
+            $unread = Post::s('unread');
+            $read = Post::s('read');
+            if (!in_array($unread, $colors) || !in_array($read, $colors)) {
+                $page->trigError('Le choix de type pour l\'arborescence est invalide');
+            } elseif (XDB::execute("REPLACE INTO  forums.profils (uid, sig, mail, nom, flags, tree_unread, tree_read)
+                                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
+                                    S::v('uid'), Post::v('bananasig'),
+                                    Post::v('bananamail'), Post::v('banananame'),
+                                    $flags, $unread, $read)) {
+                $page->trigSuccess("Ton profil a été enregistré avec succès.");
+            } else {
+                $page->trigError("Une erreur s'est produite lors de l'enregistrement de ton profil");
+            }
         }
+
+        $req = XDB::query("
+            SELECT  nom, mail, sig,
+                    FIND_IN_SET('threads', flags),
+                    FIND_IN_SET('automaj', flags),
+                    FIND_IN_SET('xface', flags),
+                    tree_unread,
+                    tree_read
+              FROM  forums.profils
+             WHERE  uid = {?}", S::v('uid'));
+        if (!(list($nom, $mail, $sig, $disp, $maj, $xface, $unread, $read) = $req->fetchOneRow())) {
+            $nom   = S::v('prenom').' '.S::v('nom');
+            $mail  = S::v('forlife').'@'.$globals->mail->domain;
+            $sig   = $nom.' ('.S::v('promo').')';
+            $disp  = 0;
+            $maj   = 0;
+            $xface = 0;
+            $unread = 'o';
+            $read  = 'dg';
+        }
+        $page->assign('nom' ,  $nom);
+        $page->assign('mail',  $mail);
+        $page->assign('sig',   $sig);
+        $page->assign('disp',  $disp);
+        $page->assign('maj',   $maj);
+        $page->assign('xface', $xface);
+        $page->assign('unread', $unread);
+        $page->assign('read', $read);
         return null;
     }
 }

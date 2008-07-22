@@ -32,7 +32,7 @@
   <tr class="{if $art.perime}im{/if}pair">
     <td><a href="{$platal->ns}announce/edit/{$art.id}">{$art.titre}</a></td>
     <td>{$art.peremption|date_format}</td>
-    <td class="right"><a href="{$platal->ns}admin/announces?del={$art.id}">
+    <td class="right"><a href="{$platal->ns}admin/announces?del={$art.id}&amp;token={xsrf_token}">
         Supprimer l'annonce {icon name=cross}
       </a>
     </td>

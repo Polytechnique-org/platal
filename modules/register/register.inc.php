@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'xorg.misc.inc.php';
-
 // {{{ function user_cmp
 
 function user_cmp($prenom, $nom, $_prenom, $_nom)
@@ -151,7 +149,6 @@ function create_aliases (&$sub)
     global $globals;
     extract ($sub);
 
-    require_once "xorg.misc.inc.php";
     $mailorg  = make_username($prenom, $nom);
     $mailorg2 = $mailorg.sprintf(".%02u", ($promo%100));
     $forlife  = make_forlife($prenom, $nom, $promo);
@@ -185,7 +182,7 @@ function create_aliases (&$sub)
                 "Bonjour,\n\n".
 
                 "Un homonyme vient de s'inscrire. La politique de Polytechnique.org est de fournir des\n".
-                "adresses mail devinables, nous ne pouvons donc pas conserver ton alias '$mailorg' qui\n".
+                "adresses email devinables, nous ne pouvons donc pas conserver ton alias '$mailorg' qui\n".
                 "correspond maintenant à deux personnes.\n\n".
 
                 "Tu gardes tout de même l'usage de cet alias pour un mois encore à compter de ce jour.\n\n".

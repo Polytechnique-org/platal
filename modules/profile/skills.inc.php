@@ -89,7 +89,7 @@ class ProfileSkills extends ProfilePage
         $this->settings['langues'] = new ProfileSkill('langues', 'lid', 'langue_fr');
     }
 
-    public function _prepare(PlatalPage &$page, $id)
+    public function _prepare(PlPage &$page, $id)
     {
         $page->assign('comp_list', XDB::iterator("SELECT  id, text_fr, FIND_IN_SET('titre',flags) AS title
                                                     FROM  competences_def"));
