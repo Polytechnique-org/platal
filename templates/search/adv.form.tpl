@@ -415,6 +415,12 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
           <label for="order">Mettre les fiches modifiées récemment en premier.</label>
       </td>
     </tr>
+    <tr>
+      <td colspan="2">
+           <input type='checkbox' name='exact' id="exact" {if $smarty.request.exact}checked='checked'{/if} value='1'/>
+           <label for="exact">Faire une recherche exacte.</label>
+      </td>
+    </tr>
         {/if}
     <tr><td colspan="2"></td></tr>
     <tr>
