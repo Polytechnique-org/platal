@@ -288,7 +288,7 @@
       <th colspan="2">Géographie</th>
     </tr>
     <tr>
-      <td>Ville</td>
+      <td>Ville ou code postal</td>
       <td><input type="text" class="autocomplete" name="city" size="32" value="{$smarty.request.city}" /></td>
     </tr>
     <tr>

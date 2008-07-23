@@ -48,9 +48,9 @@ function advancedSearchFromInput()
     }
 
     if (!Env::i('cityid')) {
-        $townField      = new RefSField('city',array('ac.city'),'adresses','ac',getadr_join('ac'),false);
+        $townField  = new RefSField('city',array('ac.city', 'ac.postcode'),'adresses','ac',getadr_join('ac'),false);
     } else {
-        $townField    = new RefSField('cityid',array('av.cityid'),'adresses','av',getadr_join('av'));
+        $townField  = new RefSField('cityid',array('av.cityid', 'av.postcode'),'adresses','av',getadr_join('av'));
     }
     $countryField   = new RefSField('country',array('ap.country'),'adresses','ap',getadr_join('ap'));
     $regionField    = new RefSField('region',array('ar.region'),'adresses','ar',getadr_join('ar'));
