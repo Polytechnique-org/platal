@@ -104,6 +104,13 @@ class PlGlobals
         $this->setLocale();
     }
 
+    /** Initialiase dynamic data in the object.
+     * This is te place to read data from the database if needed.
+     */
+    public function init()
+    {
+    }
+
     private function readIniFile($filename)
     {
         $array = parse_ini_file($filename, true);

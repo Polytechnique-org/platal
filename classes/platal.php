@@ -42,6 +42,7 @@ class Platal
         $platal  =& $this;
         $globalclass = PL_GLOBALS_CLASS;
         $globals = new $globalclass();
+        $globals->init();
         $sessionclass = PL_SESSION_CLASS;
         $session = new $sessionclass();
         if (!$session->startAvailableAuth()) {
