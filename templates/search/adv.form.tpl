@@ -36,7 +36,9 @@
           return '...';
         }
 
-        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1] + ' camarades<\/em>';
+        camarades = (row[1] > 1) ? "camarades" : "camarade";
+
+        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1] + '&nbsp;' + camarades + '<\/em>';
       };
   }
 
