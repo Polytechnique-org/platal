@@ -412,12 +412,11 @@ Adresse de secours : " . Post::v('email') : ""));
     function handler_exit(&$page, $level = null)
     {
         if (S::has('suid')) {
-            $a4l  = S::v('forlife');
             $suid = S::v('suid');
             $log  = S::v('log');
-            S::logger()->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
+            S::logger()->log("suid_stop", S::user()->login() . " by " . $suid['hruid']);
             Platal::session()->stopSUID();
-            pl_redirect('admin/user/' . $a4l);
+            pl_redirect('admin/user/' . S::user()->login());
         }
 
         if ($level == 'forget' || $level == 'forgetall') {

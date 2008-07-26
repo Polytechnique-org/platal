@@ -33,7 +33,7 @@
     <table id="suid" cellpadding="0" cellspacing="0">
       <tr>
         <td>
-          {$smarty.session.suid} ({$smarty.session.forlife})
+          {$smarty.session.suid} ({$smarty.session.hruid})
           [<a href="exit">exit</a>]
         </td>
       </tr>
