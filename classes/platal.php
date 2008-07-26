@@ -250,7 +250,7 @@ class Platal
             return PL_NOT_FOUND;
         }
         global $globals, $session;
-        if ($this->https && !$_SERVER['HTTPS'] && $globals->core->secure_domain) {
+        if ($this->https && !@$_SERVER['HTTPS'] && $globals->core->secure_domain) {
             http_redirect('https://' . $globals->core->secure_domain . $_SERVER['REQUEST_URI']);
         }
 
