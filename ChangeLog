@@ -1,6 +1,11 @@
 ================================================================================
 VERSION 0.9.18                                                        XX XX XXXX
 
+Bug/Wish:
+
+    * Search:
+        - #691: Adds search on postcode and thus on "arrondissements"      -JAC
+        - #791: Adds the possibility to do an exact search                 -JAC
 
 ================================================================================
 VERSION 0.9.17                                                        19 07 2008

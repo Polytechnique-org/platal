@@ -277,6 +277,8 @@ class QuickSearch extends SField
             if (Env::i('with_soundex') && strlen($s) > 1) {
                 $t = soundex_fr($s);
                 $where[] = "sn$i.soundex = '$t'";
+            } elseif (Env::i('exact')) {
+                $where[] = "sn$i.token = '$s'";
             } else {
                 $t = str_replace('*', '%', $s).'%';
                 $t = str_replace('%%', '%', $t);
@@ -443,6 +445,7 @@ class RefSField extends SField
     function compare()
     {
         $val = addslashes($this->value);
+        if (Env::i('exact')) return "='$val'";
         return $this->exact ? "='$val'" : " LIKE '%$val%'";
     }
 
@@ -581,7 +584,9 @@ class StringSField extends SField
      * @param field nom de champ de la bdd concerné par la clause */
     function get_single_where_statement($field)
     {
-        $regexp = strtr(addslashes($this->value), '-*', '_%');
+        $val = addslashes($this->value);
+        if (Env::i('exact')) return "$field = '$val'";
+        $regexp = strtr($val, '-*', '_%');
         return "$field LIKE '$regexp%'";
     }
 
@@ -612,7 +617,9 @@ class NameSField extends StringSField
 
     function get_single_where_statement($field)
     {
-        $regexp = strtr(addslashes($this->value), '-*', '_%');
+        $val = addslashes($this->value);
+        if (Env::i('exact')) return "$field = '$val'";
+        $regexp = strtr($val, '-*', '_%');
         return "$field LIKE '$regexp%' OR $field LIKE '% $regexp%' OR $field LIKE '%-$regexp%'";
     }
 

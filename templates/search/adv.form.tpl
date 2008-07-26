@@ -36,7 +36,9 @@
           return '...';
         }
 
-        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1] + ' camarades<\/em>';
+        camarades = (row[1] > 1) ? "camarades" : "camarade";
+
+        return name + '<em>&nbsp;&nbsp;-&nbsp;&nbsp;' + row[1] + '&nbsp;' + camarades + '<\/em>';
       };
   }
 
@@ -288,7 +290,7 @@
       <th colspan="2">Géographie</th>
     </tr>
     <tr>
-      <td>Ville</td>
+      <td>Ville ou code postal</td>
       <td><input type="text" class="autocomplete" name="city" size="32" value="{$smarty.request.city}" /></td>
     </tr>
     <tr>
@@ -413,6 +415,12 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
       <td colspan="2">
           <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} id="order"/>
           <label for="order">Mettre les fiches modifiées récemment en premier.</label>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+           <input type='checkbox' name='exact' id="exact" {if $smarty.request.exact}checked='checked'{/if} value='1'/>
+           <label for="exact">Faire une recherche exacte.</label>
       </td>
     </tr>
         {/if}
