@@ -1039,10 +1039,8 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_wiki(&$page, $action='list', $wikipage='', $wikipage2='')
+    function handler_wiki(&$page, $action = 'list', $wikipage = null, $wikipage2 = null)
     {
-        require_once 'wiki.inc.php';
-
         if (S::v('core_rss_hash')) {
            $page->setRssLink('Changement Récents',
                              '/Site/AllRecentChanges?action=rss&user=' . S::v('forlife') . '&hash=' . S::v('core_rss_hash'));
@@ -1053,62 +1051,47 @@ class AdminModule extends PLModule
             S::assert_xsrf_token();
 
             $perms_read = Post::v('read');
-            $perms_edot = Post::v('edit');
+            $perms_edit = Post::v('edit');
             if ($perms_read || $perms_edit) {
-                foreach ($_POST as $wiki_page => $val) if ($val == 'on') {
-                    $wiki_page = str_replace('_', '/', $wiki_page);
-                    if (!$perms_read || !$perms_edit)
-                        list($perms0, $perms1) = wiki_get_perms($wiki_page);
-                    if ($perms_read)
-                        $perms0 = $perms_read;
-                    if ($perms_edit)
-                        $perms1 = $perms_edit;
-                    wiki_set_perms($wiki_page, $perms0, $perms1);
-                }
-            }
-        }
-
-        if ($action == 'delete' && $wikipage != '') {
-            S::assert_xsrf_token();
-
-            if (wiki_delete_page($wikipage)) {
-                $page->trigSuccess("La page ".$wikipage." a été supprimée.");
-            } else {
-                $page->trigError("Impossible de supprimer la page ".$wikipage.".");
-            }
-        }
-
-        if ($action == 'rename' && $wikipage != '' && $wikipage2 != '' && $wikipage != $wikipage2) {
-            S::assert_xsrf_token();
-
-            if ($changedLinks = wiki_rename_page($wikipage, $wikipage2)) {
-                $s = 'La page <em>'.$wikipage.'</em> a été déplacée en <em>'.$wikipage2.'</em>.';
-                if (is_numeric($changedLinks)) {
-                    $s .= $changedLinks.' lien'.(($changedLinks>1)?'s ont été modifiés.':' a été modifié.');
-                }
-                $page->trigSuccess($s);
-            } else {
-                $page->trigError("Impossible de déplacer la page ".$wikipage);
-            }
-        }
-
-        $perms = wiki_perms_options();
-
-        // list wiki pages and their perms
-        $wiki_pages = array();
-        $dir = wiki_work_dir();
-        if (is_dir($dir)) {
-            if ($dh = opendir($dir)) {
-                while (($file = readdir($dh)) !== false) if (substr($file,0,1) >= 'A' && substr($file,0,1) <= 'Z') {
-                    list($read,$edit) = wiki_get_perms($file);
-                    $wiki_pages[$file] = array('read' => $perms[$read], 'edit' => $perms[$edit]);
-                    if (is_file($dir . '/cache_' . wiki_filename($file) . '.tpl')) {
-                        $wiki_pages[$file]['cached'] = true;
+                foreach ($_POST as $wiki_page => $val) {
+                    if ($val == 'on') {
+                        $wp = new PlWikiPage(str_replace(array('_', '/'), '.', $wiki_page));
+                        if ($wp->setPerms($perms_read ? $perms_read : $wp->readPerms(),
+                                          $perms_edit ? $perms_edit : $wp->writePerms())) {
+                            $page->trigSuccess("Permission de la page $wiki_page mises à jour");
+                        } else {
+                            $page->trigError("Impossible de mettre les permissions de la page $wiki_page à jour");
+                        }
                     }
                 }
-                closedir($dh);
+            }
+        } else if ($action != 'list' && !empty($wikipage)) {
+            $wp = new PlWikiPage($wikipage);
+            S::assert_xsrf_token();
+
+            if ($action == 'delete') {
+                if ($wp->delete()) {
+                    $page->trigSuccess("La page ".$wikipage." a été supprimée.");
+                } else {
+                    $page->trigError("Impossible de supprimer la page ".$wikipage.".");
+                }
+            } else if ($action == 'rename' && !empty($wikipage2) && $wikipage != $wikipage2) {
+                if ($changedLinks = $wp->rename($wikipage2)) {
+                    $s = 'La page <em>'.$wikipage.'</em> a été déplacée en <em>'.$wikipage2.'</em>.';
+                    if (is_numeric($changedLinks)) {
+                        $s .= $changedLinks.' lien'.(($changedLinks>1)?'s ont été modifiés.':' a été modifié.');
+                    }
+                    $page->trigSuccess($s);
+                } else {
+                    $page->trigError("Impossible de déplacer la page ".$wikipage);
+                }
             }
         }
+
+        $perms = PlWikiPage::permOptions();
+
+        // list wiki pages and their perms
+        $wiki_pages = PlWikiPage::listPages();
         ksort($wiki_pages);
         $wiki_tree = array();
         foreach ($wiki_pages as $file => $desc) {

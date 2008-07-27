@@ -568,8 +568,9 @@ class ProfileModule extends PLModule
 
     function handler_ref_search(&$page, $action = null, $subaction = null)
     {
-        require_once 'wiki.inc.php';
-        wiki_require_page('Docs.Emploi');
+        $wp = new PlWikiPage('Docs.Emploi');
+        $wp->buildCache();
+
         $page->setTitle('Polytechnique.org - Conseil Pro');
 
         //recuperation des noms de secteurs

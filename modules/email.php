@@ -277,8 +277,8 @@ class EmailModule extends PLModule
     function handler_antispam(&$page, $statut_filtre = null)
     {
         require_once 'emails.inc.php';
-        require_once('wiki.inc.php');
-        wiki_require_page('Xorg.Antispam');
+        $wp = new PlWikiPage('Xorg.Antispam');
+        $wp->buildCache();
 
         $page->changeTpl('emails/antispam.tpl');
 
@@ -291,8 +291,8 @@ class EmailModule extends PLModule
 
     function handler_submit(&$page)
     {
-        require_once('wiki.inc.php');
-        wiki_require_page('Xorg.Mails');
+        $wp = new PlWikiPage('Xorg.Mails');
+        $wp->buildCache();
         $page->changeTpl('emails/submit_spam.tpl');
 
         if (Post::has('send_email')) {
@@ -499,8 +499,8 @@ class EmailModule extends PLModule
     function handler_broken(&$page, $warn = null, $email = null)
     {
         require_once 'emails.inc.php';
-        require_once('wiki.inc.php');
-        wiki_require_page('Xorg.PatteCassée');
+        $wp = new PlWikiPage('Xorg.PatteCassée');
+        $wp->buildCache();
 
         global $globals;
 

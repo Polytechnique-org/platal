@@ -272,8 +272,8 @@ class EventsModule extends PLModule
         $page->changeTpl('events/submit.tpl');
         $page->addJsLink('ajax.js');
 
-        require_once('wiki.inc.php');
-        wiki_require_page('Xorg.Annonce');
+        $wp = new PlWikiPage('Xorg.Annonce');
+        $wp->buildCache();
 
         $titre      = Post::v('titre');
         $texte      = Post::v('texte');
