@@ -40,7 +40,7 @@ class MarketingModule extends PLModule
     {
         $page->changeTpl('marketing/index.tpl');
 
-        $page->setTitle('Polytechnique.org - Marketing');
+        $page->setTitle('Marketing');
 
         // Quelques statistiques
 

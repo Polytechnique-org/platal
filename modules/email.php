@@ -47,7 +47,7 @@ class EmailModule extends PLModule
         require_once 'emails.inc.php';
 
         $page->changeTpl('emails/index.tpl');
-        $page->setTitle('Polytechnique.org - Mes emails');
+        $page->setTitle('Mes emails');
 
         $uid = S::v('uid');
 
@@ -98,7 +98,7 @@ class EmailModule extends PLModule
         global $globals;
 
         $page->changeTpl('emails/alias.tpl');
-        $page->setTitle('Polytechnique.org - Alias melix.net');
+        $page->setTitle('Alias melix.net');
 
         $uid     = S::v('uid');
         $forlife = S::v('forlife');
@@ -328,7 +328,7 @@ class EmailModule extends PLModule
         $page->changeTpl('emails/send.tpl');
         $page->addJsLink('ajax.js');
 
-        $page->setTitle('Polytechnique.org - Envoyer un email');
+        $page->setTitle('Envoyer un email');
 
         // action si on recoit un formulaire
         if (Post::has('save')) {

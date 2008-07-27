@@ -337,7 +337,7 @@ class ProfileModule extends PLModule
                       . " la procédure de récupération de mot de passe si un jour tu le perdais");
         }
 
-       $page->setTitle('Polytechnique.org - Mon Profil');
+       $page->setTitle('Mon Profil');
     }
 
     function handler_applis_js(&$page)
@@ -571,7 +571,7 @@ class ProfileModule extends PLModule
         $wp = new PlWikiPage('Docs.Emploi');
         $wp->buildCache();
 
-        $page->setTitle('Polytechnique.org - Conseil Pro');
+        $page->setTitle('Conseil Pro');
 
         //recuperation des noms de secteurs
         $res = XDB::iterRow("SELECT id, label FROM emploi_secteur");
@@ -694,7 +694,7 @@ class ProfileModule extends PLModule
     function handler_xnet(&$page)
     {
         $page->changeTpl('profile/groupesx.tpl');
-        $page->setTitle('Polytechnique.org - Promo, Groupes X, Binets');
+        $page->setTitle('Promo, Groupes X, Binets');
 
         $req = XDB::query('
             SELECT m.asso_id, a.nom, diminutif, a.logo IS NOT NULL AS has_logo,
@@ -724,7 +724,7 @@ class ProfileModule extends PLModule
 
     function handler_admin_trombino(&$page, $uid = null, $action = null) {
         $page->changeTpl('profile/admin_trombino.tpl');
-        $page->setTitle('Polytechnique.org - Administration - Trombino');
+        $page->setTitle('Administration - Trombino');
         $page->assign('uid', $uid);
 
         $q   = XDB::query(
@@ -763,7 +763,7 @@ class ProfileModule extends PLModule
         $page->assign('forlife', $forlife);
     }
     function handler_admin_binets(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Polytechnique.org - Administration - Binets');
+        $page->setTitle('Administration - Binets');
         $page->assign('title', 'Gestion des binets');
         $table_editor = new PLTableEditor('admin/binets', 'binets_def', 'id');
         $table_editor->add_join_table('binets_ins','binet_id',true);
@@ -771,7 +771,7 @@ class ProfileModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_formations(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Polytechnique.org - Administration - Formations');
+        $page->setTitle('Administration - Formations');
         $page->assign('title', 'Gestion des formations');
         $table_editor = new PLTableEditor('admin/formations','applis_def','id');
         $table_editor->add_join_table('applis_ins','aid',true);
@@ -780,21 +780,21 @@ class ProfileModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_sections(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Polytechnique.org - Administration - Sections');
+        $page->setTitle('Administration - Sections');
         $page->assign('title', 'Gestion des sections');
         $table_editor = new PLTableEditor('admin/sections','sections','id');
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_ss_secteurs(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Polytechnique.org - Administration - Sous-secteurs');
+        $page->setTitle('Administration - Sous-secteurs');
         $page->assign('title', 'Gestion des sous-secteurs');
         $table_editor = new PLTableEditor('admin/ss_secteurs', 'emploi_ss_secteur', 'id', true);
         $table_editor->describe('label', 'intitulé', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_fonctions(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Polytechnique.org - Administration - Fonctions');
+        $page->setTitle('Administration - Fonctions');
         $page->assign('title', 'Gestion des fonctions');
         $table_editor = new PLTableEditor('admin/fonctions', 'fonctions_def', 'id', true);
         $table_editor->describe('fonction_fr', 'intitulé', true);
@@ -803,14 +803,14 @@ class ProfileModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_secteurs(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Polytechnique.org - Administration - Secteurs');
+        $page->setTitle('Administration - Secteurs');
         $page->assign('title', 'Gestion des secteurs');
         $table_editor = new PLTableEditor('admin/secteurs', 'emploi_secteur', 'id', true);
         $table_editor->describe('label', 'intitulé', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_medals(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Polytechnique.org - Administration - Distinctions');
+        $page->setTitle('Administration - Distinctions');
         $page->assign('title', 'Gestion des Distinctions');
         $table_editor = new PLTableEditor('admin/medals','profile_medals','id');
         $table_editor->describe('text', 'intitulé',  true);
