@@ -60,6 +60,10 @@ abstract class PlUser
     protected $full_name = null;
     protected $promo = null;
 
+    // Permissions
+    protected $perms = null;
+    protected $perm_flags = null;
+
     // Other properties are listed in this key-value hash map.
     protected $data = array();
 
@@ -105,20 +109,42 @@ abstract class PlUser
      * Accessors to the main properties, ie. those available as top level
      * object variables.
      */
-    public function id() { return $this->user_id; }
-    public function login() { return $this->hruid; }
+    public function id()
+    {
+        return $this->user_id;
+    }
 
-    public function bestEmail() { return $this->bestalias; }
-    public function forlifeEmail() { return $this->forlife; }
+    public function login()
+    {
+        return $this->hruid;
+    }
 
-    public function displayName() { return $this->display_name; }
-    public function fullName() { return $this->full_name; }
+    public function bestEmail()
+    {
+        return $this->bestalias;
+    }
+    public function forlifeEmail()
+    {
+        return $this->forlife;
+    }
+
+    public function displayName()
+    {
+        return $this->display_name;
+    }
+    public function fullName()
+    {
+        return $this->full_name;
+    }
 
     /**
      * Other properties are available directly through the $data array, or as
      * standard object variables, using a getter.
      */
-    public function data() { return $this->data; }
+    public function data()
+    {
+        return $this->data;
+     }
 
     public function __get($name)
     {
@@ -156,6 +182,26 @@ abstract class PlUser
 
         // Merge all value into the $this->data placeholder.
         $this->data = array_merge($this->data, $values);
+    }
+
+
+    /**
+     * Build the permissions flags for the user.
+     */
+    abstract protected function buildPerms();
+
+    /**
+     * Check wether the user got the given permission combination.
+     */
+    public function checkPerms($perms)
+    {
+        if (is_null($this->perm_flags)) {
+            $this->buildPerms();
+        }
+        if (is_null($this->perm_flags)) {
+            return false;
+        }
+        return $this->perm_flags->hasFlagCombination($perms);
     }
 
 
