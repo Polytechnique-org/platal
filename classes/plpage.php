@@ -242,6 +242,10 @@ abstract class PlPage extends Smarty
 
     public function setTitle($title)
     {
+        global $globals;
+        if (isset($globals->core->sitename)) {
+            $title = $globals->core->sitename . ' :: ' . $title;
+        }
         $this->assign('pl_title', $title);
     }
 
