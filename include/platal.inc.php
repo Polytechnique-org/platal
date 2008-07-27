@@ -50,6 +50,11 @@ function pl_autoload($cls, array $pathes = array())
 }
 pl_autoload('Env');
 
+function pl_core_include($file)
+{
+    return dirname(__FILE__) . '/' . $file;
+}
+
 function pl_error_handler($errno, $errstr, $errfile, $errline)
 {
     static $errortype;
