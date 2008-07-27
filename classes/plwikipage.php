@@ -36,6 +36,7 @@ class PlWikiPage
     public $name;
     public $path;
 
+    private $content = null;
     private $perms = null;
 
     /** Build a new page from a PmWiki page name (ie NameSpace.Page).
@@ -63,6 +64,48 @@ class PlWikiPage
         return self::workDir() . '/cache_' . $this->name . '.tpl';
     }
 
+    /** Fetch the content of the wiki page.
+     */
+    private function fetchContent()
+    {
+        if (!is_null($this->content)) {
+            return;
+        }
+        $file = $this->filename();
+        if (!is_file($file)) {
+            return;
+        }
+        $lines = explode("\n", file_get_contents($file));
+        $this->content = array();
+        foreach ($lines as $line) {
+            @list($k, $v) = explode('=', $line, 2);
+            $this->content[$k] = $v;
+        }
+    }
+
+    /** Save the content of the wiki page based on the
+     * fetched content.
+     */
+    private function saveContent()
+    {
+        if (is_null($this->content)) {
+            return false;
+        }
+        $lines = array();
+        foreach ($this->content as $k => $v) {
+            $lines[] = "$k=$v";
+        }
+        return file_put_contents($this->filename(), implode("\n", $lines)) !== false;
+    }
+
+    /** Get a field from the wiki content.
+     */
+    public function getField($name)
+    {
+        $this->fetchContent();
+        return @$this->content[$name];
+    }
+
     /** Fetch the permissions.
      */
     private function fetchPerms()
@@ -70,20 +113,12 @@ class PlWikiPage
         if (!is_null($this->perms)) {
             return;
         }
-        $file = $this->filename();
-        if (!file_exists($file)) {
+        $this->fetchContent();
+        if (isset($this->content['platal_perms'])) {
+            $this->perms = explode(':', $this->content['platal_perms']);
+        } else {
             $this->perms = self::$defaulPerms;
-            return;
         }
-        $lines = explode("\n", file_get_contents($file));
-        foreach ($lines as $line) {
-            @list($k, $v) = explode('=', $line, 2);
-            if ($k == 'platal_perms') {
-                $this->perms = explode(':', $v);
-                return;
-            }
-        }
-        $this->perms = self::$defaulPerms;
     }
 
     /** Return read perms.
@@ -124,24 +159,13 @@ class PlWikiPage
      */
     public function setPerms($read, $write)
     {
-        $file = $this->filename();
-        if (!file_exists($file)) {
+        $this->fetchContent();
+        if (is_null($this->content)) {
             return false;
         }
-
-        $p = $read . ':' . $write;
-        $lines = explode("\n", file_get_contents($file));
-        foreach ($lines as $i => $line) {
-            list($k, $v) = explode('=', $line, 2);
-            if ($k == 'platal_perms') {
-                unset($lines[$i]);
-                break;
-            }
-        }
-        array_splice($lines, 1, 0, array('platal_perms=' . $p));
-        file_put_contents($file, join("\n", $lines));
+        $this->content['platal_perms'] = $read . ':' . $write;
         $this->perms = array($read, $write);
-        return true;
+        return $this->saveContent();
     }
 
 
@@ -254,6 +278,10 @@ class PlWikiPage
     public function rename($newname, $changeLinks = true)
     {
         $newpage = new PlWikiPage(str_replace('/', '.', $newname));
+        $cache = $this->cacheFilename();
+        if (is_file($cache)) {
+            unlink($cache);
+        }
 
         list($groupname, ) = explode('.', $this->name);
         list($newgroupname, ) = explode('.', $newpage->name);
@@ -408,6 +436,28 @@ class PlWikiPage
         $a = array_pop($words);
 
         pl_redirect($a . '/' . $b);
+    }
+
+    /** List wiki pages.
+     */
+    public static function listPages()
+    {
+        $wiki_pages = array();
+        $dir = PlWikiPage::workDir();
+        if (is_dir($dir)) {
+            if ($dh = opendir($dir)) {
+                while (($file = readdir($dh)) !== false) {
+                    if ($file{0} >= 'A' && $file{0} <= 'Z') {
+                        $wp = new PlWikiPage($file);
+                        $wiki_pages[$file] = array('read' => $wp->readPerms(),
+                                                   'edit' => $wp->writePerms(),
+                                                   'cached' => is_file($wp->cacheFilename()));
+                    }
+                }
+                closedir($dh);
+            }
+        }
+        return $wiki_pages;
     }
 }
 

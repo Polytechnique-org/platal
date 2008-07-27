@@ -43,14 +43,14 @@ switch (Env::v('action')) {
 if ($p = Post::v('setrperms')) {
     $wp->applyPerms('admin');
     if ($wp->setPerms($p, $wp->writePerms())) {
-        $page->trigSuccess('Permissions mises à jour');
+        Platal::page()->trigSuccess('Permissions mises à jour');
     }
 }
 
 if ($p = Post::v('setwperms')) {
     $wp->applyPerms('admin');
     if ($wp->setPerms($wp->readPerms(), $p)) {
-        $page->trigSuccess('Permissions mises à jour');
+        Platal::page()->trigSuccess('Permissions mises à jour');
     }
 }
 
