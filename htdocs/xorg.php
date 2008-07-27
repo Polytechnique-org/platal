@@ -34,7 +34,7 @@ if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
 
 /*** WIKI CODE ***/
 
-include dirname(__FILE__) . '/../core/include/wiki.engine.inc.php';
+include pl_core_include('wiki.engine.inc.php');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
