@@ -132,6 +132,32 @@ class XnetSession extends PlSession
         return true;
     }
 
+    public function tokenAuth($login, $token)
+    {
+        // FIXME: we broke the session here because some RSS feeds (mainly wiki feeds) require
+        // a valid nome and checks the permissions. When the PlUser object will be ready, we'll
+        // be able to return a simple 'PlUser' object here without trying to alterate the
+        // session.
+        $res = XDB::query('SELECT  u.user_id AS uid, u.perms, u.nom, u.nom_usage, u.prenom, u.promo, FIND_IN_SET(\'femme\', u.flags) AS sexe
+                             FROM  aliases         AS a
+                       INNER JOIN  auth_user_md5   AS u ON (a.id = u.user_id AND u.perms IN ("admin", "user"))
+                       INNER JOIN  auth_user_quick AS q ON (a.id = q.user_id AND q.core_rss_hash = {?})
+                            WHERE  a.alias = {?} AND a.type != "homonyme"', $token, $login);
+        if ($res->numRows() == 1) {
+            $sess = $res->fetchOneAssoc();
+            if (!S::has('uid')) {
+                $_SESSION = $sess;
+                $this->makePerms($sess['perms']);
+                return S::i('uid');
+            } else if (S::i('uid') == $sess['uid']) {
+                return S::i('uid');
+            } else {
+                Platal::page()->kill('Invalid state. To be fixed when hruid is ready');
+            }
+        }
+        return null;
+    }
+
     public function doSelfSuid()
     {
         if (!$this->startSUID(S::i('uid'))) {

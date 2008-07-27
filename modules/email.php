@@ -47,7 +47,7 @@ class EmailModule extends PLModule
         require_once 'emails.inc.php';
 
         $page->changeTpl('emails/index.tpl');
-        $page->setTitle('Polytechnique.org - Mes emails');
+        $page->setTitle('Mes emails');
 
         $uid = S::v('uid');
 
@@ -98,7 +98,7 @@ class EmailModule extends PLModule
         global $globals;
 
         $page->changeTpl('emails/alias.tpl');
-        $page->setTitle('Polytechnique.org - Alias melix.net');
+        $page->setTitle('Alias melix.net');
 
         $uid     = S::v('uid');
         $forlife = S::v('forlife');
@@ -277,8 +277,8 @@ class EmailModule extends PLModule
     function handler_antispam(&$page, $statut_filtre = null)
     {
         require_once 'emails.inc.php';
-        require_once('wiki.inc.php');
-        wiki_require_page('Xorg.Antispam');
+        $wp = new PlWikiPage('Xorg.Antispam');
+        $wp->buildCache();
 
         $page->changeTpl('emails/antispam.tpl');
 
@@ -291,8 +291,8 @@ class EmailModule extends PLModule
 
     function handler_submit(&$page)
     {
-        require_once('wiki.inc.php');
-        wiki_require_page('Xorg.Mails');
+        $wp = new PlWikiPage('Xorg.Mails');
+        $wp->buildCache();
         $page->changeTpl('emails/submit_spam.tpl');
 
         if (Post::has('send_email')) {
@@ -328,7 +328,7 @@ class EmailModule extends PLModule
         $page->changeTpl('emails/send.tpl');
         $page->addJsLink('ajax.js');
 
-        $page->setTitle('Polytechnique.org - Envoyer un email');
+        $page->setTitle('Envoyer un email');
 
         // action si on recoit un formulaire
         if (Post::has('save')) {
@@ -499,8 +499,8 @@ class EmailModule extends PLModule
     function handler_broken(&$page, $warn = null, $email = null)
     {
         require_once 'emails.inc.php';
-        require_once('wiki.inc.php');
-        wiki_require_page('Xorg.PatteCassée');
+        $wp = new PlWikiPage('Xorg.PatteCassée');
+        $wp->buildCache();
 
         global $globals;
 

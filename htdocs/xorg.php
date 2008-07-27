@@ -21,19 +21,20 @@
 
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
 
+$platal = new Platal('auth', 'carnet', 'email', 'events', 'forums',
+                     'geoloc', 'lists', 'marketing', 'payment', 'platal',
+                     'profile', 'register', 'search', 'stats', 'admin',
+                     'newsletter', 'axletter', 'bandeau', 'survey',
+                     'gadgets', 'googleapps');
+
 if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
-    $platal = new Platal('auth', 'carnet', 'email', 'events', 'forums',
-                         'geoloc', 'lists', 'marketing', 'payment', 'platal',
-                         'profile', 'register', 'search', 'stats', 'admin',
-                         'newsletter', 'axletter', 'bandeau', 'survey',
-                         'gadgets', 'googleapps');
     $platal->run();
     exit;
 }
 
 /*** WIKI CODE ***/
 
-include 'wiki/engine.php';
+include dirname(__FILE__) . '/../core/include/wiki.engine.inc.php';
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

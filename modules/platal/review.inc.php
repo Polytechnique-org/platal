@@ -29,11 +29,10 @@ class ReviewPage implements PlWizardPage
 
     public function prepare(PlPage &$page, $id)
     {
-        require_once 'wiki.inc.php';
-        $dom = (@$GLOBALS['IS_XNET_SITE'] ? 'ReviewXnet' : 'Review') . '.' . ucfirst($id);
-        wiki_require_page($dom);
-        $page->assign('cacheExists', wiki_work_dir() . '/cache_' . $dom . '.tpl');
-        $page->assign('article', $dom);
+        $wp = new PlWikiPage((@$GLOBALS['IS_XNET_SITE'] ? 'ReviewXnet' : 'Review') . '.' . ucfirst($id));
+        $wp->buildCache();
+        $page->assign('cacheExists', $wp->cacheFilename());
+        $page->assign('article', $wp->name);
     }
 }
 

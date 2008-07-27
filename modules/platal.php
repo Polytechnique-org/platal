@@ -122,7 +122,7 @@ class PlatalModule extends PLModule
     function handler_prefs(&$page)
     {
         $page->changeTpl('platal/preferences.tpl');
-        $page->setTitle('Polytechnique.org - Mes préférences');
+        $page->setTitle('Mes préférences');
 
         if (Post::has('mail_fmt')) {
             $fmt = Post::v('mail_fmt');
@@ -143,7 +143,7 @@ class PlatalModule extends PLModule
     {
         $page->changeTpl('platal/webredirect.tpl');
 
-        $page->setTitle('Polytechnique.org - Redirection de page WEB');
+        $page->setTitle('Redirection de page WEB');
 
         $log =& S::v('log');
         $url = Env::v('url');
@@ -221,17 +221,18 @@ class PlatalModule extends PLModule
 
         $page->changeTpl('platal/motdepasse.tpl');
         $page->addJsLink('motdepasse.js');
-        $page->setTitle('Polytechnique.org - Mon mot de passe');
+        $page->setTitle('Mon mot de passe');
     }
 
     function handler_smtppass(&$page)
     {
         $page->changeTpl('platal/acces_smtp.tpl');
-        $page->setTitle('Polytechnique.org - Acces SMTP/NNTP');
+        $page->setTitle('Acces SMTP/NNTP');
 
-        require_once 'wiki.inc.php';
-        wiki_require_page('Xorg.SMTPSécurisé');
-        wiki_require_page('Xorg.NNTPSécurisé');
+        $wp = new PlWikiPage('Xorg.SMTPSécurisé');
+        $wp->buildCache();
+        $wp = new PlWikiPage('Xorg.NNTPSécurisé');
+        $wp->buildCache();
 
         $uid  = S::v('uid');
         $pass = Env::v('smtppass1');
@@ -387,7 +388,7 @@ Adresse de secours : " . Post::v('email') : ""));
         global $globals;
 
         $page->changeTpl('platal/skins.tpl');
-        $page->setTitle('Polytechnique.org - Skins');
+        $page->setTitle('Skins');
 
         if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
             XDB::execute('UPDATE auth_user_quick
@@ -448,21 +449,13 @@ Adresse de secours : " . Post::v('email') : ""));
 
     function handler_review(&$page, $action = null, $mode = null) 
     {
-        require_once 'wiki.inc.php';
         require_once dirname(__FILE__) . '/platal/review.inc.php';
-        $dir = wiki_work_dir();
         $dom = 'Review';
         if (@$GLOBALS['IS_XNET_SITE']) {
             $dom .= 'Xnet';
         }
-        if (!is_dir($dir)) {
-            $page->kill("Impossible de trouver le wiki");
-        }
-        if (!file_exists($dir . '/' . $dom . '.Admin')) {
-            $page->kill("Impossible de trouver la page d'administration");
-        }
-        $conf = preg_grep('/^text=/', explode("\n", file_get_contents($dir . '/' . $dom . '.Admin')));
-        $conf = preg_split('/(text\=|\%0a)/', array_shift($conf), -1, PREG_SPLIT_NO_EMPTY);
+        $wp = new PlWikiPage($dom . '.Admin');
+        $conf = explode('%0a', $wp->getField('text'));
         $wiz = new PlWizard('Tour d\'horizon', 'core/plwizard.tpl', true);
         foreach ($conf as $line) {
             $list = preg_split('/\s*[*|]\s*/', $line, -1, PREG_SPLIT_NO_EMPTY);

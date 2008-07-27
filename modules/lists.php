@@ -94,7 +94,7 @@ class ListsModule extends PLModule
 
         $page->changeTpl('lists/index.tpl');
         $page->addJsLink('ajax.js');
-        $page->setTitle('Polytechnique.org - Listes de diffusion');
+        $page->setTitle('Listes de diffusion');
 
 
         if (Get::has('del')) {
@@ -884,7 +884,7 @@ class ListsModule extends PLModule
 
     function handler_admin_all(&$page) {
         $page->changeTpl('lists/admin_all.tpl');
-        $page->setTitle('Polytechnique.org - Administration - Mailing lists');
+        $page->setTitle('Administration - Mailing lists');
 
         $client = new MMList(S::v('uid'), S::v('password'));
         $listes = $client->get_all_lists();
