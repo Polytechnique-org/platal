@@ -201,17 +201,15 @@ function get_event_participants(&$evt, $item_id, $tri, $limit = '') {
 //  {{{ function subscribe_lists_event()
 function subscribe_lists_event($participate, $uid, $evt)
 {
-    require_once('user.func.inc.php');
     global $globals;
     $page =& Platal::page();
 
     $participant_list = $evt['participant_list'];
     $absent_list      = $evt['absent_list'];
 
-    $email = get_user_forlife($uid, '_silent_user_callback');
-
-    if ($email) {
-        $email .= '@'.$globals->mail->domain;
+    $user = User::getSilent($uid);
+    if ($user) {
+        $email = $user->forlifeEmail();
     } else {
         $res = XDB::query("SELECT email
                              FROM groupex.membres
