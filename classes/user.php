@@ -109,9 +109,9 @@ class User extends PlUser
     // Implementation of the data loader.
     protected function loadMainFields()
     {
-        if ($this->hruid != null && $this->forlife != null &&
-            $this->bestalias != null && $this->display_name != null &&
-            $this->full_name != null && $this->promo != NULL) {
+        if ($this->hruid !== null && $this->forlife !== null &&
+            $this->bestalias !== null && $this->display_name !== null &&
+            $this->full_name !== null && $this->promo !== null && $this->perms !== null) {
             return;
         }
 
@@ -120,7 +120,8 @@ class User extends PlUser
                                    CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
                                    CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
                                    CONCAT(u.prenom, ' ', u.nom) AS full_name,
-                                   IF(u.prenom != '', u.prenom, u.nom) AS display_name
+                                   IF(u.prenom != '', u.prenom, u.nom) AS display_name,
+                                   u.perms
                              FROM  auth_user_md5 AS u
                         LEFT JOIN  aliases AS af ON (af.id = u.user_id AND af.type = 'a_vie')
                         LEFT JOIN  aliases AS ab ON (ab.id = u.user_id AND FIND_IN_SET('bestalias', ab.flags))
@@ -151,6 +152,34 @@ class User extends PlUser
         }
 
         parent::fillFromArray($values);
+    }
+
+    // Specialization of the buildPerms method
+    // This function build 'generic' permissions for the user. It does not take
+    // into account page specific permissions (e.g X.net group permissions)
+    protected function buildPerms()
+    {
+        if (!is_null($this->perm_flags)) {
+            return;
+        }
+        if ($this->perms === null) {
+             $this->loadMainFields();
+        }
+        $this->perm_flags = self::makePerms($this->perms);
+    }
+
+    // Return permission flags for a given permission level.
+    public static function makePerms($perms)
+    {
+        $flags = new PlFlagSet();
+        if (is_null($flags) || $perms == 'disabled' || $perms == 'ext') {
+            return $flags;
+        }
+        $flags->addFlag(PERMS_USER);
+        if ($perms == 'admin') {
+            $flags->addFlag(PERMS_ADMIN);
+        }
+        return $flags;
     }
 
     // Implementation of the default user callback.

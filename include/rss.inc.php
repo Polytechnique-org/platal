@@ -23,12 +23,12 @@ function init_rss($template, $alias, $hash, $require_uid = true)
 {
     $page =& Platal::page();
     $page->changeTpl($template, NO_SKIN);
-    $uid = Platal::session()->tokenAuth($alias, $hash);
-    if (empty($uid)) {
+    $user = Platal::session()->tokenAuth($alias, $hash);
+    if (is_null($user)) {
         if ($require_uid) {
             exit;
         } else {
-            $uid = null;
+            $user = null;
         }
     }
 
@@ -36,7 +36,7 @@ function init_rss($template, $alias, $hash, $require_uid = true)
         $page->assign('rss_hash', $hash);
         header('Content-Type: application/rss+xml; charset=utf8');
     }
-    return $uid;
+    return is_null($user) ? null : $user->id();
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
