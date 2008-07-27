@@ -45,7 +45,7 @@
         Administrer
       </th>
     </tr>
-    {if !$smarty.request.login && !$mr.forlife}
+    {if !$smarty.request.login && !$mr.hruid}
     <tr class="pair">
       <td class="center">
         Il est possible d'entrer ici n'importe quelle adresse email&nbsp;: redirection, melix, ou alias.
@@ -54,7 +54,7 @@
     {/if}
     <tr>
       <td class="center">
-        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login|default:$mr.forlife}" />
+        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login|default:$mr.hruid}" />
       </td>
     </tr>
     <tr>
@@ -257,7 +257,7 @@ function ban_read()
     {else}
     <tr class="center">
       <td>
-        <a href="profile/{$mr.forlife}" class="popup2">[Voir fiche]</a>
+        <a href="profile/{$mr.hruid}" class="popup2">[Voir fiche]</a>
       </td>
       <td>
         <input onclick="doEditUser(); return true;" type="submit" name="u_edit" value="UPDATE" />
@@ -375,7 +375,7 @@ Pour ceci changer ses permissions en 'disabled'.
 </form>
 
 {javascript name="ajax"}
-{test_email forlife=$mr.forlife}
+{test_email forlife=$user->forlifeEmail()}
 
 <form id="fwds" method="post" action="admin/user#fwds">
   {xsrf_token_field}
@@ -409,7 +409,7 @@ Pour ceci changer ses permissions en 'disabled'.
       </td>
       <td>
         {if $mail->broken}<span style="color: #f00">{/if}
-        {if $mail->email == 'googleapps'}<a href="admin/googleapps/user/{$mr.forlife}">{/if}
+        {if $mail->email == 'googleapps'}<a href="admin/googleapps/user/{$mr.hruid}">{/if}
         {$mail->display_email}
         {if $mail->email == 'googleapps'}</a>{/if}
         {if $mail->broken}<em> (en panne)</em></span>{/if}
