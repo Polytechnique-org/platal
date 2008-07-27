@@ -159,6 +159,17 @@ abstract class PlSession
      */
     abstract protected function startSessionAs($user, $level);
 
+    /** Check authentication with the given token.
+     *
+     * Token authentication is a light-weight authentication based on a user-specific token.
+     * This can be used for protocols that requires a 'cookie'-free authentication, such as
+     * RSS, iCal registration...
+     *
+     * This function returns a valid user object if authentication is successful, or null if
+     * token mismatch.
+     */
+    abstract public function tokenAuth($login, $token);
+
 
     /*** SUID management ***/
 
