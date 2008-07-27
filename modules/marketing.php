@@ -267,7 +267,7 @@ class MarketingModule extends PLModule
             $page->assign('promo', $promo);
 
             if (Post::has('valide')) {
-                S::assert_xstf_token();
+                S::assert_xsrf_token();
                 $email = trim(Post::v('mail'));
 
                 if (!isvalid_email_redirection($email)) {
