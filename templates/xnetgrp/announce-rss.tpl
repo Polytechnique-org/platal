@@ -23,7 +23,7 @@
 <?xml version="1.0"?>
 <rss version="2.0">
   <channel>
-    <title>Polytechnique.net :: {$asso.nom} :: News</title>
+    <title>Polytechnique.net :: {$asso.nom|htmlentities} :: News</title>
     <language>fr</language>
     <link>{#globals.baseurl#}/{$asso.diminutif}/</link>
     <description>L'actualite polytechnicienne...</description>
@@ -34,7 +34,7 @@
     </image>
     {iterate item=line from=$rss}
     <item>
-      <title>{$line.titre|strip_tags}</title>
+      <title>{$line.titre|strip_tags|htmlentities}</title>
       <guid isPermaLink="false">{$line.id}</guid>
       <link>{#globals.baseurl#}/{$asso.diminutif}/#art{$line.id}</link>
       <description><![CDATA[
