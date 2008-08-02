@@ -144,7 +144,7 @@ class EventsModule extends PLModule
 
         // cache les evenements lus et raffiche les evenements a relire
         if ($action == 'read' && $eid) {
-            XDB::execute('DELETE evenements_vus.*
+            XDB::execute('DELETE ev.*
                             FROM evenements_vus AS ev
                       INNER JOIN evenements AS e ON e.id = ev.evt_id
                            WHERE peremption < NOW()');
