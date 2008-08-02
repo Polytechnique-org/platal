@@ -220,7 +220,7 @@ class XorgSession extends PlSession
         if (S::has('suid')) {
             $suid = S::v('suid');
             $logger = S::logger($uid);
-            $logger->log("suid_start", S::v('forlife') . " by " . $suid['uid']);
+            $logger->log("suid_start", S::v('hruid') . " by " . $suid['hruid']);
         } else {
             $logger = S::logger($uid);
             setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
