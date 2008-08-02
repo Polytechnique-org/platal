@@ -76,6 +76,7 @@ class XDB
         global $globals;
 
         if (!XDB::$mysqli && !XDB::connect()) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
             Platal::page()->kill('Impossible de se connecter à la base de données.');
             exit;
         }
@@ -103,6 +104,7 @@ class XDB
         }
 
         if ($res === false) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
             if (strpos($query, 'INSERT') === false && strpos($query, 'UPDATE') === false
                 && strpos($query, 'REPLACE') === false && strpos($query, 'DELETE') === false) {
                 Platal::page()->kill('Erreur lors de l\'interrogation de la base de données');
