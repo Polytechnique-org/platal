@@ -79,20 +79,14 @@
       $("[@name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
           if ($("select[@name='diploma']").children("option").size() > 1) {
             $("select[@name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
-
-            $("tr#diploma_ln").show();
           } else {
             $("select[@name='diploma']").attr('value', '');
-
-            $("tr#diploma_ln").hide();
           }
         });
     } else {
       $(".autocomplete[@name='schoolTxt']").removeClass('hidden_valid');
 
       $("select[@name='diploma']").attr('value', '');
-
-      $("tr#diploma_ln").hide();
     }
   }
 
@@ -400,10 +394,10 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
         <a href="school" class="autocompleteToSelect">{icon name="table" title="Toutes les formations"}</a>
       </td>
     </tr>
-    <tr id="diploma_ln">
+    <tr>
       <td>Diplôme</td>
       <td>
-        <input name="diploma" type="hidden" size="32" value="{$smarty.request.diploma}"/>
+        <input name="diploma" size="32" value="{$smarty.request.diploma}"/>
       </td>
     </tr>
     <tr>
