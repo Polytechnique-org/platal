@@ -159,7 +159,7 @@
 {/if}
 
 <table class="bicol"  style="margin-bottom: 1em"
-  summary="Profil: Trombinoscope">
+  summary="Profil&nbsp;: Trombinoscope">
   <tr>
     <th colspan="2">
       <div class="flags" style="float: left">
@@ -199,7 +199,7 @@
 </table>
 
 <table class="bicol" style="margin-bottom: 1em"
-  summary="Profil: Divers">
+  summary="Profil&nbsp;: Divers">
   <tr>
     <th colspan="2">
       Divers

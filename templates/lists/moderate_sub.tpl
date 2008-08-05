@@ -32,7 +32,7 @@
       <td>{$del_user.name}</td>
     </tr>
     <tr>
-      <td>raison:
+      <td>raison&nbsp;:
         <textarea cols='50' rows='10' name='reason'></textarea>
       </td>
     </tr>

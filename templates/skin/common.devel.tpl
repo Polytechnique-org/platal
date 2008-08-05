@@ -26,7 +26,7 @@
 {if $validate}
   <div id="dev">
     @HOOK@
-    Validation:
+    Validation&nbsp;:
     <a href="http://jigsaw.w3.org/css-validator/validator?uri={#globals.baseurl#}/valid.html">CSS</a>
     &nbsp;&nbsp;|&nbsp;&nbsp;
     références&nbsp;:

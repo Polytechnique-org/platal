@@ -44,7 +44,7 @@
   <li>ou bien, plus âgés, qui souhaitent réorienter leur carrière.</li>
 </ul>
 
-<table class="bicol" style="margin-bottom: 1em" summary="Profil: Mentoring">
+<table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Mentoring">
   <tr>
     <th>
       <div class="flags" style="float: left">
@@ -79,7 +79,7 @@
   </tr>
 </table>
 
-<table class="bicol" style="margin-bottom: 1em" summary="Profil: Mentoring">
+<table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Mentoring">
   <tr>
     <th>
       <div class="flags" style="float: left">
@@ -125,7 +125,7 @@
   </tr>
 </table>
 
-<table class="bicol" summary="Profil: Mentoring">
+<table class="bicol" summary="Profil&nbsp;: Mentoring">
   <tr>
     <th>
       <div class="flags" style="float: left">

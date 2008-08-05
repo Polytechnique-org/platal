@@ -80,7 +80,7 @@ function searchX()
     <tr>
       <td colspan="2">
         <input type="checkbox" id="x" name="x" onchange="xStateChange(this);" />
-        <label for="x">Coche cette case si il s'agit d'un X non inscrit à Polytechnique.org.</label>
+        <label for="x">Coche cette case s'il s'agit d'un X non inscrit à Polytechnique.org.</label>
       </td>
     </tr>
     <tr id="xnom" style="display: none">

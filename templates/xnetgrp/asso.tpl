@@ -26,7 +26,7 @@
   {if $asso.site}
   <tr>
     <td class="titre">
-      Site Web:
+      Site Web&nbsp;:
     </td>
     <td><a href="{$asso.site}">{$asso.site}</a></td>
   </tr>
@@ -35,7 +35,7 @@
   {if $asso.resp || $asso.mail}
   <tr>
     <td class="titre">
-      Contact:
+      Contact&nbsp;:
     </td>
     <td>
       {if $asso.mail}
@@ -50,7 +50,7 @@
   {if $asso.forum}
   <tr>
     <td class="titre">
-      Forum:
+      Forum&nbsp;:
     </td>
     <td>
       <a href="{$platal->ns}forum">par le web</a>

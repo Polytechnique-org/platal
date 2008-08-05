@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<table class="bicol" style="margin-bottom: 1em" summary="Profil: Informations Polytechniciennes">
+<table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Informations Polytechniciennes">
   <tr>
     <th colspan="2">
       <div class="flags" style="float: left">

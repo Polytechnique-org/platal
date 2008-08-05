@@ -379,7 +379,7 @@ class RegisterModule extends PLModule
                 $msg .= "Les marketings suivants avaient été effectués :\n"
                      . implode("\n", $market);
             } else {
-                $msg .= "$prenom $nom n'a jamais reçu de mail de marketing.";
+                $msg .= "$prenom $nom n'a jamais reçu d\'email de marketing.";
             }
             $mymail->setTxtBody($msg);
             $mymail->send();

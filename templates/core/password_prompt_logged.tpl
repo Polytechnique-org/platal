@@ -51,7 +51,7 @@
       </td>
       <td>
         <input type="password" name="password" size="10" maxlength="10" />
-        &nbsp;<a href="recovery">Perdu ?</a>
+        &nbsp;<a href="recovery">Perdu&nbsp;?</a>
       </td>
       <td class="right" rowspan="2" style="vertical-align: middle">
         <input  type="submit" name="submitbtn" value="Envoyer" />
