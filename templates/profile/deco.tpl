@@ -29,8 +29,8 @@
   <tr>
     <td>
       <div class="flags">
-        <input type="checkbox" name="medals_pub"{if $medals_pub eq 'public'} checked="checked"{/if} />
-        {icon name="flag_green" title="site public"}
+        <label><input type="checkbox" name="medals_pub"{if $medals_pub eq 'public'} checked="checked"{/if} />
+        {icon name="flag_green" title="site public"}</label>
         <span class="texte">
           bien que publiques (JO, ...), tu peux choisir de ne pas associer ces informations à ta fiche publique
         </span>
