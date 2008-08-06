@@ -310,7 +310,7 @@
       {/if}
       <div id="tels_add" class="center" style="clear: both; padding-top: 4px;">
         <a href="javascript:addTel('tels', 'tels');">
-          {icon name=add title="Ajouter un téléphone"}Ajouter un téléphone
+          {icon name=add title="Ajouter un téléphone"} Ajouter un téléphone
         </a>
       </div>
     </td>

@@ -24,10 +24,10 @@
   <td colspan="2">
     <div style="float: left; width: 200px;">
       <span class="flags">
-        <input type="checkbox"
+        <label><input type="checkbox"
           {if $nw.pub neq 'private'} checked="checked"{/if}
           name="networking[{$i}][pub]"/>
-        {icon name="flag_green" title="site public"}
+        {icon name="flag_green" title="site public"}</label>
       </span>&nbsp;
       <input type="hidden" name="networking[{$i}][type]" value="{$nw.type}"/>
       <input type="hidden" name="networking[{$i}][name]" value="{$nw.name}"/>
