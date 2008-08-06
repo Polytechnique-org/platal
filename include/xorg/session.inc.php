@@ -290,18 +290,17 @@ function start_connexion ($uid, $identified)
             send_warning_mail($mail_subject);
             $_SESSION = array();
             $_SESSION['perms'] = new FlagSet();
-            global $page;
             $newpage = false;
-            if (!$page) {
+            if (!Platal::page()) {
                 require_once 'xorg.inc.php';
                 new_skinned_page('platal/index.tpl');
                 $newpage = true;
             }
-            $page->trigError("Une erreur est survenue lors de la procédure d'authentification. "
+            Platal::page()->trigError("Une erreur est survenue lors de la procédure d'authentification. "
                        ."Merci de contacter au plus vite "
                        ."<a href='mailto:support@polytechnique.org'>support@polytechnique.org</a>");
             if ($newpage) {
-                $page->run();
+                Platal::page()->run();
             }
             return false;
         }

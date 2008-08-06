@@ -116,19 +116,18 @@ class ProfileEmailDirectory implements ProfileSetting
 
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
-        $p = $page;
-        global $page;
+        $p = Platal::page();
 
         $success = true;
         if (!is_null($value)) {
             $email_stripped = strtolower(trim($value));
-            if ((!isvalid_email($email_stripped)) && ($email_stripped) && ($p->values['email_directory'] == "new@example.org")) {
-                $page->assign('email_error', '1');
-                $page->assign('email_directory_error', $email_stripped);
-                $page->trigError('Adresse Email invalide');
+            if ((!isvalid_email($email_stripped)) && ($email_stripped) && ($page->values['email_directory'] == "new@example.org")) {
+                $p->assign('email_error', '1');
+                $p->assign('email_directory_error', $email_stripped);
+                $p->trigError('Adresse Email invalide');
                 $success = false;
             } else {
-                $page->assign('email_error', '0');
+                $p->assign('email_error', '0');
             }
         }
         return $value;

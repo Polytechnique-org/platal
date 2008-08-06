@@ -86,8 +86,7 @@ class ProfileNumber extends ProfileNoSave
         $value = trim($value);
         $success = empty($value) || is_numeric($value);
         if (!$success) {
-            global $page;
-            $page->trigError('Numéro invalide');
+            Platal::page()->trigError('Numéro invalide');
         }
         return $value;
     }
@@ -110,8 +109,7 @@ class ProfileTel extends ProfileNoSave
         $value = format_display_number($value,$error);
         $success = !$error;
         if (!$success) {
-            global $page;
-            $page->trigError('Le préfixe international du numéro de téléphone est inconnu. ');
+            Platal::page()->trigError('Le préfixe international du numéro de téléphone est inconnu. ');
         }
         return $value;
     }
