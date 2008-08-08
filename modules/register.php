@@ -336,7 +336,8 @@ class RegisterModule extends PLModule
              INNER JOIN  aliases            AS sa ON ( sa.id = m.sender
                                                        AND FIND_IN_SET('bestalias', sa.flags) )
                   WHERE  m.uid = {?}
-               GROUP BY  m.sender", $uid);
+               GROUP BY  m.sender
+               ORDER BY  dateDernier DESC", $uid);
         XDB::execute("UPDATE register_mstats SET success=NOW() WHERE uid={?}", $uid);
 
         $market = array();
