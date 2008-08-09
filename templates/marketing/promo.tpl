@@ -26,7 +26,7 @@
     <a href="marketing/promo/{$promo-1}" title="-1"><img src="images/icons/resultset_previous.gif" alt="[&lt;]" /></a>
 
     &nbsp;
-    Promo:<input type="text" name="promo" value="{$promo}" size="4" maxlength="4" /><input type="submit" value="GO" />
+    Promo&nbsp;:<input type="text" name="promo" value="{$promo}" size="4" maxlength="4" /><input type="submit" value="GO" />
     &nbsp;
 
     <a href="marketing/promo/{$promo+1}" title="+1"><img src="images/icons/resultset_next.gif" alt="[&gt;]" /></a>
@@ -58,7 +58,7 @@
       <td>{if $it.last_known_email}{mailto address=$it.last_known_email}{/if}</td>
       <td class="center">
         {if $it.dern_rel && $it.dern_rel != '0000-00-00'}
-        Relance le: {$it.dern_rel}
+        Relance le&nbsp;: {$it.dern_rel}
         {elseif $it.email}
         En cours&nbsp;: {$it.email}
         {else}

@@ -159,12 +159,12 @@
 {/if}
 
 <table class="bicol"  style="margin-bottom: 1em"
-  summary="Profil: Trombinoscope">
+  summary="Profil&nbsp;: Trombinoscope">
   <tr>
     <th colspan="2">
       <div class="flags" style="float: left">
-        <input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/>
-        {icon name="flag_green" title="site public"}
+        <label><input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/>
+        {icon name="flag_green" title="site public"}</label>
       </div>
       Trombinoscope
     </th>
@@ -199,7 +199,7 @@
 </table>
 
 <table class="bicol" style="margin-bottom: 1em"
-  summary="Profil: Divers">
+  summary="Profil&nbsp;: Divers">
   <tr>
     <th colspan="2">
       Divers
@@ -233,8 +233,8 @@
   <tr>
     <td>
       <span class="flags">
-        <input type="checkbox" name="web_pub" {if $web_pub eq 'public'}checked="checked"{/if} />
-        {icon name="flag_green" title="site public"}
+        <label><input type="checkbox" name="web_pub" {if $web_pub eq 'public'}checked="checked"{/if} />
+        {icon name="flag_green" title="site public"}</label>
       </span>&nbsp;
       <span class="titre">Page web Perso</span>
     </td>
@@ -247,8 +247,8 @@
     <td>
       <div>
         <span class="flags">
-          <input type="checkbox" name="freetext_pub" {if $freetext_pub eq 'public'}checked="checked"{/if} />
-          {icon name="flag_green" title="site public"}
+          <label><input type="checkbox" name="freetext_pub" {if $freetext_pub eq 'public'}checked="checked"{/if} />
+          {icon name="flag_green" title="site public"}</label>
         </span>&nbsp;
         <span class="titre">Complément libre</span><br />
         <span class="comm">Commentaire ? ICQ ? etc...</span>

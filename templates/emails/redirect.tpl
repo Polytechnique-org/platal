@@ -28,12 +28,12 @@
 {/if}
 {if $retour == $smarty.const.ERROR_INVALID_EMAIL}
   <p class="erreur">
-  Erreur: l'email n'est pas valide.
+  Erreur&nbsp;: l'email n'est pas valide.
   </p>
 {/if}
 {if $retour == $smarty.const.ERROR_LOOP_EMAIL}
   <p class="erreur">
-  Erreur: {$smarty.session.forlife}@{#globals.mail.domain#} ne doit pas être renvoyé
+  Erreur&nbsp;: {$smarty.session.forlife}@{#globals.mail.domain#} ne doit pas être renvoyé
   vers lui-même, ni vers son équivalent en {#globals.mail.domain2#} ni vers polytechnique.edu.
   </p>
 {/if}

@@ -140,6 +140,8 @@ abstract class Validate
      */
     public function clean()
     {
+        global $globals;
+
         if ($this->unique) {
             $success = XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
                                     $this->uid, $this->type);

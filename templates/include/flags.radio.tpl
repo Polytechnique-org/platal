@@ -22,16 +22,16 @@
 {if $withtext}
 <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ?</a>
 {/if}
-<input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if}
+<label><input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if}
        {if $disabled}disabled="disabled"{/if}/>
 {icon name="flag_green" title="site public"}
-{if $withtext}<span class="texte">site public</span>{/if}
-<input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if}
+{if $withtext}<span class="texte">site public</span>{/if}</label>
+<label><input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if}
        {if $disabled}disabled="disabled"{/if}/>
 {icon name="flag_orange" title="transmis à l'AX"}
-{if $withtext}<span class="texte">transmis à l'AX</span>{/if}
-<input type="radio" name="{$name}" value="private" {if $val eq 'private' || (!$val && !$disabled)}checked="checked"{/if}
+{if $withtext}<span class="texte">transmis à l'AX</span>{/if}</label>
+<label><input type="radio" name="{$name}" value="private" {if $val eq 'private' || (!$val && !$disabled)}checked="checked"{/if}
        {if $disabled}disabled="disabled"{/if}/>
 {icon name="flag_red" title="privé"}
-{if $withtext}<span class="texte">privé</span>{/if}
+{if $withtext}<span class="texte">privé</span>{/if}</label>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

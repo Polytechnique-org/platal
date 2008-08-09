@@ -25,26 +25,26 @@
       	<table>
         {if $address.entreprise || $address.web}
         <tr>
-          <td><em>Ent/Org: </em></td>
+          <td><em>Ent/Org&nbsp;: </em></td>
           <td><strong>{$address.entreprise}{if $address.web} [<a href='{$address.web}'>site</a>]{/if}</strong></td>
         </tr>
         {/if}
         {if $address.secteur}
         <tr>
-          <td><em>Secteur: </em></td>
+          <td><em>Secteur&nbsp;: </em></td>
           <td><strong>{$address.secteur}{if $address.ss_secteur} ({$address.ss_secteur}){/if}</strong></td>
         </tr>
         {/if}
 
         {if $address.fonction}
         <tr>
-          <td><em>Fonction: </em></td>
+          <td><em>Fonction&nbsp;: </em></td>
           <td><strong>{$address.fonction}</strong></td>
         </tr>
         {/if}
         {if $address.poste}
         <tr>
-          <td><em>Poste: </em></td>
+          <td><em>Poste&nbsp;: </em></td>
           <td><strong>{$address.poste}</strong></td>
         </tr>
         {/if}
