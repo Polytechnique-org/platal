@@ -223,10 +223,10 @@ class XorgSession extends PlSession
             $logger = S::logger($uid);
             setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
 
-            if (S::i('auth_by_cookie') == S::i('uid') || Post::v('remember', 'false') == 'true') {
+            if (S::i('auth_by_cookie') == $uid || Post::v('remember', 'false') == 'true') {
                 $cookie = hash_encrypt($sess['password']);
                 setcookie('ORGaccess', $cookie, (time() + 25920000), '/', '', 0);
-                if ($logger) {
+                if ($logger && S::i('auth_by_cookie') != $uid) {
                     $logger->log("cookie_on");
                 }
             } else {
@@ -243,6 +243,9 @@ class XorgSession extends PlSession
         $this->setSkin();
         $this->updateNbNotifs();
         check_redirect();
+
+        // We should not have to use this private data anymore
+        S::kill('auth_by_cookie');
         return true;
     }
 
