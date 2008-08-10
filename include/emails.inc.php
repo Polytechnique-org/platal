@@ -63,6 +63,17 @@ function valide_email($str)
     return $ident . '@' . $dom;
 }
 
+// function isvalid_email_redirection() {{{1
+/** vérifie si une adresse email convient comme adresse de redirection
+ * @param $email l'adresse email a verifier
+ * @return BOOL
+ */
+function isvalid_email_redirection($email)
+{
+    return isvalid_email($email) &&
+        !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
+}
+
 // class Bogo {{{1
 // The Bogo class represents a spam filtering level in plat/al architecture.
 class Bogo

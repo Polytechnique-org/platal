@@ -137,6 +137,7 @@ class RegisterModule extends PLModule
             case 3:
                 if (count($_POST)) {
                     require_once(dirname(__FILE__) . '/register/register.inc.php');
+                    require_once 'emails.inc.php';
                     if (!isvalid_email(Post::v('email'))) {
                         $err[] = "Le champ 'E-mail' n'est pas valide.";
                     } elseif (!isvalid_email_redirection(Post::v('email'))) {
