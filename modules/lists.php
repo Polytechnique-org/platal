@@ -578,7 +578,7 @@ class ListsModule extends PLModule
         } else {
             list($name, $dom) = @explode('@', $login);
             if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
-                _default_user_callback($login);
+                User::_default_user_callback($login);
             }
         }
     }
