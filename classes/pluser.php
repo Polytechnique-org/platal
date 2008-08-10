@@ -239,18 +239,20 @@ abstract class PlUser
     }
 
     /**
-     * Returns forlife emails corresponding to the @p logins. If @p strict mode
-     * is disabled, it also includes login for which no forlife was found (but
-     * still call the callback for them).
+     * Retrieves User objects corresponding to the @p logins, and eventually
+     * extracts and returns the @p property. If @p strict mode is disabled, it
+     * also includes logins for which no forlife was found (but it still calls
+     * the callback for them).
      * In all cases, email addresses which are not from the local domains are
      * kept.
      *
      * @param $logins Array of user logins.
+     * @param $property Property to retrieve from the User objects.
      * @param $strict Should unvalidated logins be returned as-is or discarded ?
      * @param $callback Callback to call when a login is unknown to the system.
      * @return Array of validated user forlife emails.
      */
-    public static function getBulkForlifeEmails($logins, $strict = true, $callback = false)
+    private static function getBulkUserProperties($logins, $property, $strict, $callback)
     {
         if (!is_array($logins)) {
             if (strlen(trim($logins)) == 0) {
@@ -268,7 +270,7 @@ abstract class PlUser
                 }
 
                 if (($user = User::get($login, $callback))) {
-                    $list[$i] = $user->forlifeEmail();
+                    $list[$i] = $user->$property();
                 } else if (!$strict || User::isForeignEmailAddress($login)) {
                     $list[$i] = $login;
                 }
@@ -276,6 +278,24 @@ abstract class PlUser
             return $list;
         }
         return null;
+    }
+
+    /**
+     * Returns hruid corresponding to the @p logins. See getBulkUserProperties()
+     * for details.
+     */
+    public static function getBulkHruid($logins, $callback = false)
+    {
+        return self::getBulkUserProperties($logins, 'login', true, $callback);
+    }
+
+    /**
+     * Returns forlife emails corresponding to the @p logins. See
+     * getBulkUserProperties() for details.
+     */
+    public static function getBulkForlifeEmails($logins, $strict = true, $callback = false)
+    {
+        return self::getBulkUserProperties($logins, 'forlifeEmail', $strict, $callback);
     }
 
     /**
