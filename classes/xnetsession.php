@@ -24,15 +24,10 @@ class XnetSession extends PlSession
     public function __construct()
     {
         parent::__construct();
-        S::bootstrap('perms_backup', new PlFlagSet());
     }
 
     public function startAvailableAuth()
     {
-        if (!(S::v('perms') instanceof PlFlagSet)) {
-            S::set('perms', S::v('perms_backup'));
-        }
-
         if (!S::logged() && Get::has('auth')) {
             if (!$this->start(AUTH_MDP)) {
                 return false;
@@ -74,7 +69,6 @@ class XnetSession extends PlSession
                 $perms->addFlag('groupannu');
             }
             S::set('perms', $perms);
-            S::set('perms_backup', $perms);
         }
         return true;
     }
@@ -175,7 +169,6 @@ class XnetSession extends PlSession
         S::kill('may_update');
         S::kill('is_member');
         S::set('perms', $suid['perms']);
-        S::set('perms_backup', $suid['perms_backup']);
         return true;
     }
 
@@ -184,7 +177,6 @@ class XnetSession extends PlSession
         $flags = new PlFlagSet();
         if ($perm == 'disabled' || $perm == 'ext') {
             S::set('perms', $flags);
-            S::set('perms_backup', $flags);
             return;
         }
         $flags->addFlag(PERMS_USER);
@@ -192,7 +184,6 @@ class XnetSession extends PlSession
             $flags->addFlag(PERMS_ADMIN);
         }
         S::set('perms', $flags);
-        S::set('perms_backup', $flags);
     }
 
     public function sureLevel()

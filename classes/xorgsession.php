@@ -24,14 +24,10 @@ class XorgSession extends PlSession
     public function __construct()
     {
         parent::__construct();
-        S::bootstrap('perms_backup', new PlFlagSet());
     }
 
     public function startAvailableAuth()
     {
-        if (!(S::v('perms') instanceof PlFlagSet)) {
-            S::set('perms', S::v('perms_backup'));
-        }
         if (!S::logged()) {
             $cookie = $this->tryCookie();
             if ($cookie == 0) {
@@ -302,7 +298,6 @@ class XorgSession extends PlSession
         $flags = new PlFlagSet();
         if ($perm == 'disabled' || $perm == 'ext') {
             S::set('perms', $flags);
-            S::set('perms_backup', $flags);
             return;
         }
         $flags->addFlag(PERMS_USER);
@@ -310,7 +305,6 @@ class XorgSession extends PlSession
             $flags->addFlag(PERMS_ADMIN);
         }
         S::set('perms', $flags);
-        S::set('perms_backup', $flags);
     }
 
     public function setSkin()
