@@ -24,14 +24,10 @@ class XorgSession extends PlSession
     public function __construct()
     {
         parent::__construct();
-        S::bootstrap('perms_backup', new PlFlagSet());
     }
 
     public function startAvailableAuth()
     {
-        if (!(S::v('perms') instanceof PlFlagSet)) {
-            S::set('perms', S::v('perms_backup'));
-        }
         if (!S::logged()) {
             $cookie = $this->tryCookie();
             if ($cookie == 0) {
@@ -222,10 +218,11 @@ class XorgSession extends PlSession
         } else {
             $logger = S::logger($uid);
             setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
-            if (Post::v('remember', 'false') == 'true') {
+
+            if (S::i('auth_by_cookie') == $uid || Post::v('remember', 'false') == 'true') {
                 $cookie = hash_encrypt($sess['password']);
                 setcookie('ORGaccess', $cookie, (time() + 25920000), '/', '', 0);
-                if ($logger) {
+                if ($logger && S::i('auth_by_cookie') != $uid) {
                     $logger->log("cookie_on");
                 }
             } else {
@@ -242,6 +239,9 @@ class XorgSession extends PlSession
         $this->setSkin();
         $this->updateNbNotifs();
         check_redirect();
+
+        // We should not have to use this private data anymore
+        S::kill('auth_by_cookie');
         return true;
     }
 
@@ -298,7 +298,6 @@ class XorgSession extends PlSession
         $flags = new PlFlagSet();
         if ($perm == 'disabled' || $perm == 'ext') {
             S::set('perms', $flags);
-            S::set('perms_backup', $flags);
             return;
         }
         $flags->addFlag(PERMS_USER);
@@ -306,7 +305,6 @@ class XorgSession extends PlSession
             $flags->addFlag(PERMS_ADMIN);
         }
         S::set('perms', $flags);
-        S::set('perms_backup', $flags);
     }
 
     public function setSkin()
