@@ -52,16 +52,6 @@ function quoted_printable_encode($input, $line_max = 76)
     return trim($output);
 }
 
-/** vérifie si une adresse email convient comme adresse de redirection
- * @param $email l'adresse email a verifier
- * @return BOOL
- */
-function isvalid_email_redirection($email)
-{
-    return isvalid_email($email) &&
-        !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
-}
-
 /** genere une chaine aleatoire de 22 caracteres ou moins
  * @param $len longueur souhaitée, 22 par défaut
  * @return la chaine aleatoire qui contient les caractères [A-Za-z0-9+/]
