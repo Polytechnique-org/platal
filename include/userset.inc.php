@@ -147,7 +147,7 @@ class ArraySet extends UserSet
 
     private function getUids(array $users)
     {
-        $users = User::getBulkHruid($users, '_silent_user_callback');
+        $users = User::getBulkHruid($users, array('User', '_silent_user_callback'));
         if (is_null($users)) {
             return '';
         }
