@@ -180,7 +180,7 @@ A très bientôt,
 
 -- 
 {$smarty.session.prenom} {$smarty.session.nom}{/if}</textarea><br />
-        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso.site|default:$platal->ns}" /><br />
+        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso.site|default:$globals->baseurl|cat:'/'|cat:$platal->ns}" /><br />
         Le nouveau paiement sera activé automatiquement après validation par le trésorier de Polytechnique.org,
         ce qui sera fait sous peu.
         <script type="text/javascript">//<![CDATA[

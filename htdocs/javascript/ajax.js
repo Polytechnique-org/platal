@@ -76,6 +76,8 @@ function AjaxEngine()
                     }
                 } else if (ajax.xml_client.status == 403) {
                     window.location.reload();
+                } else if (ajax.xml_client.status >= 500) {
+                    alert("Une erreur s'est produite lors du traitement de la requête");
                 }
             }
         };

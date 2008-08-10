@@ -144,7 +144,7 @@ class EventsModule extends PLModule
 
         // cache les evenements lus et raffiche les evenements a relire
         if ($action == 'read' && $eid) {
-            XDB::execute('DELETE evenements_vus.*
+            XDB::execute('DELETE ev.*
                             FROM evenements_vus AS ev
                       INNER JOIN evenements AS e ON e.id = ev.evt_id
                            WHERE peremption < NOW()');
@@ -272,8 +272,8 @@ class EventsModule extends PLModule
         $page->changeTpl('events/submit.tpl');
         $page->addJsLink('ajax.js');
 
-        require_once('wiki.inc.php');
-        wiki_require_page('Xorg.Annonce');
+        $wp = new PlWikiPage('Xorg.Annonce');
+        $wp->buildCache();
 
         $titre      = Post::v('titre');
         $texte      = Post::v('texte');
@@ -329,7 +329,7 @@ class EventsModule extends PLModule
 
     function handler_admin_tips(&$page, $action = 'list', $id = null)
     {
-        $page->setTitle('Polytechnique.org - Administration - Astuces');
+        $page->setTitle('Administration - Astuces');
         $page->assign('title', 'Gestion des Astuces');
         $table_editor = new PLTableEditor('admin/tips', 'tips', 'id');
         $table_editor->describe('peremption', 'date de péremption', true);
@@ -350,7 +350,7 @@ class EventsModule extends PLModule
     {
         $page->changeTpl('events/admin.tpl');
         $page->addJsLink('ajax.js');
-        $page->setTitle('Polytechnique.org - Administration - Evenements');
+        $page->setTitle('Administration - Evenements');
         $page->register_modifier('hde', 'html_entity_decode');
 
         $arch = $action == 'archives';

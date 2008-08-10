@@ -38,6 +38,10 @@ class PlatalGlobals extends PlGlobals
     public function __construct()
     {
         parent::__construct(array('platal.ini', 'platal.conf'));
+    }
+
+    public function init()
+    {
         $this->bootstrap(array('NbIns'), array($this, 'updateNbIns'));
         $this->bootstrap(array('NbValid'), array($this, 'updateNbValid'));
     }

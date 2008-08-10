@@ -132,7 +132,7 @@
       <td colspan="2">
         <span id="make_X_cb">
           <input type="checkbox" name="is_x" id="is_x" onclick="showXInput(this);" onchange="showXInput(this);" />
-          <label for="is_x">coche cette case si il s'agit d'un X</label>
+          <label for="is_x">coche cette case s'il s'agit d'un X</label>
         </span>
         <span id="make_X_login" style="display: none">
           <span class="titre">Identifiant (prenom.nom.promo)&nbsp;:</span>

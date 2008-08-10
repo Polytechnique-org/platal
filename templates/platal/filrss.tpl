@@ -63,7 +63,7 @@ En voici les adresses&nbsp;:
 Tu peux le désactiver en allant dans Préférences et en cliquant sur "désactiver les fils RSS".
 </p>
 <p>
-Attention: désactiver, puis réactiver le fil RSS en change l'adresse.
+Attention&nbsp;: désactiver, puis réactiver le fil RSS en change l'adresse.
 </p>
 <p>[<a href="{$goback}">retour à la page dont tu venais</a>]</p>
 {/if}

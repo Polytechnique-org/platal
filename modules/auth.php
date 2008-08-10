@@ -174,7 +174,7 @@ class AuthModule extends PLModule
 
     function handler_admin_authgroupesx(&$page, $action = 'list', $id = null)
     {
-        $page->setTitle('Polytechnique.org - Administration - Auth groupes X');
+        $page->setTitle('Administration - Auth groupes X');
         $page->assign('title', 'Gestion de l\'authentification centralisée');
         $table_editor = new PLTableEditor('admin/auth-groupes-x','groupesx_auth','id');
         $table_editor->describe('name','nom',true);

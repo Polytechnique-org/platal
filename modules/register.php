@@ -83,8 +83,8 @@ class RegisterModule extends PLModule
 
         switch ($sub_state['step']) {
             case 0:
-                require_once('wiki.inc.php');
-                wiki_require_page('Reference.Charte');
+                $wp = new PlWikiPage('Reference.Charte');
+                $wp->buildCache();
                 if (Post::has('step1')) {
                     $sub_state['step'] = 1;
                     if (isset($sub_state['hash'])) {
@@ -336,7 +336,8 @@ class RegisterModule extends PLModule
              INNER JOIN  aliases            AS sa ON ( sa.id = m.sender
                                                        AND FIND_IN_SET('bestalias', sa.flags) )
                   WHERE  m.uid = {?}
-               GROUP BY  m.sender", $uid);
+               GROUP BY  m.sender
+               ORDER BY  dateDernier DESC", $uid);
         XDB::execute("UPDATE register_mstats SET success=NOW() WHERE uid={?}", $uid);
 
         $market = array();
@@ -379,7 +380,7 @@ class RegisterModule extends PLModule
                 $msg .= "Les marketings suivants avaient été effectués :\n"
                      . implode("\n", $market);
             } else {
-                $msg .= "$prenom $nom n'a jamais reçu de mail de marketing.";
+                $msg .= "$prenom $nom n'a jamais reçu d\'email de marketing.";
             }
             $mymail->setTxtBody($msg);
             $mymail->send();

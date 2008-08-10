@@ -79,7 +79,7 @@ sa dernière relance date du {$relance|date_format}
     {/iterate}
     <tr>
       <td></td>
-      <td colspan='5' class='smaller'>(*): email perso</td>
+      <td colspan='5' class='smaller'>(*)&nbsp;: email perso</td>
     </tr>
     <tr>
       <td>
@@ -106,7 +106,7 @@ sa dernière relance date du {$relance|date_format}
       <th colspan="2">Edition de l'email de relance</th>
     </tr>
     <tr class="pair">
-      <td align="right"><strong>From:</strong></td>
+      <td align="right"><strong>From&nbsp;:</strong></td>
       <td>
         {if $rel_from_staff neq $rel_from_user}
         <select name="from">
@@ -119,18 +119,18 @@ sa dernière relance date du {$relance|date_format}
       </td>
     </tr>
     <tr class="pair">
-      <td align="right"><strong>To:</strong></td>
+      <td align="right"><strong>To&nbsp;:</strong></td>
       <td>
         <input type="text" value="{$rel_to}" name="to" size="40" maxlength="100" />
         <input type="submit" name="valider" value="Envoyer" />
       </td>
     </tr>
     <tr class="pair">
-      <td align="right"><strong>Objet:</strong></td>
+      <td align="right"><strong>Objet&nbsp;:</strong></td>
       <td><input type="text" name="title" value="{$rel_title}" size="50" maxlength="100" /></td>
     </tr>
     <tr class="pair">
-      <td align="right"><strong>Message:</strong></td>
+      <td align="right"><strong>Message&nbsp;:</strong></td>
       <td>
         <textarea name="message" rows="40" cols="60">{$rel_text}</textarea>
       </td>

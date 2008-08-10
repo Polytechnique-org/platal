@@ -172,6 +172,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 <!-- Set up the form with the challenge value and an empty reply value //-->
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
   <div>
+    {xsrf_token_field}
     <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
     <input type="hidden" name="response"  value="" />
     <input type="hidden" name="xorpass"  value="" />

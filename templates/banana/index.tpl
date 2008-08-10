@@ -87,7 +87,7 @@
     <tr class="pair">
       <td class="titre" colspan="2">
         <input type="checkbox" {if $xface}checked="checked"{/if} name="bananaxface" id="xface" />
-        <label for="xface">Afficher mon X-Face plutôt que ma photo si il est disponible</label>
+        <label for="xface">Afficher mon X-Face plutôt que ma photo s'il est disponible</label>
       </td>
     </tr>
   </table>

@@ -238,7 +238,7 @@
   {if $account->g_suspension}
   <tr class="pair">
     <td>
-      Ton compte est actuellement suspendu pour la raison suivante: <em>{$account->g_suspension}</em>.
+      Ton compte est actuellement suspendu pour la raison suivante : <em>{$account->g_suspension}</em>.
     </td>
   </tr>
   {/if}
@@ -367,7 +367,7 @@
           Attention, cette opération changera ton mot de passe Google Apps.
         </li>
         <li>
-          Changer le mot de passe de ton compte Google Apps:<br /><br />
+          Changer le mot de passe de ton compte Google Apps&nbsp;:<br /><br />
           <form action="googleapps/password#password" method="post" id="changepass">
             <table class="tinybicol">
               <tr>

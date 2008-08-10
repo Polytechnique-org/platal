@@ -26,8 +26,8 @@
 </p>
 {else}
 <table cellpadding="0" cellspacing="2" style="width: 100%">
-  {section name=trombi loop=$set start=1}
-  {if $smarty.section.trombi.iteration % 3 == 1}
+  {section name=trombi loop=$set start=0}
+  {if $smarty.section.trombi.index % 3 == 1}
   <tr>
     <td class="center" style="vertical-align: middle">
       <a href="{$mainsiteurl}profile/{$set[trombi.index_prev].forlife}" class="popup2">
@@ -75,7 +75,7 @@
     {/if}
     </td>
   </tr>
-  {elseif ($smarty.section.trombi.iteration % 3 == 0) && ($smarty.section.trombi.last)}
+  {elseif ($smarty.section.trombi.index % 3 == 0) && ($smarty.section.trombi.last)}
   <tr>
     <td class="center" style="vertical-align: middle; padding-bottom: 15px">
       <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">

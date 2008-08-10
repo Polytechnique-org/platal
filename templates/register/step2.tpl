@@ -47,7 +47,7 @@
     <tr class="pair">
       <td></td>
       <td>
-        6 chiffres terminant par le numéro d'entrée (ex: 
+        6 chiffres terminant par le numéro d'entrée (ex : 
         {if $promo < 2000}
         {math equation="promo % 100" promo=$promo}0532)<br />
         {else}
