@@ -271,14 +271,6 @@ function get_users_login_list($members, $strict = false, $get_forlife = false, $
 }
 
 // }}}
-// {{{ function get_users_forlife_list()
-
-function get_users_forlife_list($members, $strict = false, $callback = '_default_user_callback')
-{
-    return get_users_login_list($members, $strict, true, $callback);
-}
-
-// }}}
 // {{{ function get_user_hruid()
 
 function get_user_hruid($data, $callback = '_default_user_callback')

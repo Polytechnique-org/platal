@@ -188,11 +188,10 @@ class ListsModule extends PLModule
 
         // click on validate button 'add_owner_sub' or type <enter>
         if (Post::has('add_owner_sub') && Post::has('add_owner')) {
-            require_once('user.func.inc.php');
             // if we want to add an owner and then type <enter>, then both
             // add_owner_sub and add_owner are filled.
-            $oforlifes = get_users_forlife_list(Post::v('add_owner'), true);
-            $mforlifes = get_users_forlife_list(Post::v('add_member'), true);
+            $oforlifes = User::getBulkForlifeEmails(Post::v('add_owner'), true);
+            $mforlifes = User::getBulkForlifeEmails(Post::v('add_member'), true);
             if (!is_null($oforlifes)) {
                 $owners = array_merge($owners, $oforlifes);
             }
@@ -204,9 +203,8 @@ class ListsModule extends PLModule
         }
 
         // click on validate button 'add_member_sub'
-        require_once('user.func.inc.php');
         if (Post::has('add_member_sub') && Post::has('add_member')) {
-            $forlifes = get_users_forlife_list(Post::v('add_member'), true);
+            $forlifes = User::getBulkForlifeEmails(Post::v('add_member'), true);
             if (!is_null($forlifes)) {
                 $members = array_merge($members, $forlifes);
             }
@@ -216,7 +214,7 @@ class ListsModule extends PLModule
             if (!$upload) {
                 $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
             } else {
-                $forlifes = get_users_forlife_list($upload->getContents(), true);
+                $forlifes = User::getBulkForlifeEmails($upload->getContents(), true);
                 if (!is_null($forlifes)) {
                     $members = array_merge($members, $forlifes);
                 }
@@ -632,10 +630,9 @@ class ListsModule extends PLModule
         if (Env::has('add_member')) {
             S::assert_xsrf_token();
 
-            require_once('user.func.inc.php');
-            $members = get_users_forlife_list(Env::v('add_member'),
-                                              false,
-                                              array('ListsModule', 'no_login_callback'));
+            $members = User::getBulkForlifeEmails(Env::v('add_member'),
+                                                  false,
+                                                  array('ListsModule', 'no_login_callback'));
             $arr = $this->client->mass_subscribe($liste, $members);
             if (is_array($arr)) {
                 foreach($arr as $addr) {
@@ -651,9 +648,9 @@ class ListsModule extends PLModule
             if (!$upload) {
                 $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
             } else {
-                $members = get_users_forlife_list($upload->getContents(),
-                                                  false,
-                                                  array('ListsModule', 'no_login_callback'));
+                $members = User::getBulkForlifeEmails($upload->getContents(),
+                                                      false,
+                                                      array('ListsModule', 'no_login_callback'));
                 $arr = $this->client->mass_subscribe($liste, $members);
                 if (is_array($arr)) {
                     foreach($arr as $addr) {
@@ -678,12 +675,11 @@ class ListsModule extends PLModule
         if (Env::has('add_owner')) {
             S::assert_xsrf_token();
 
-            require_once('user.func.inc.php');
-            $owners = get_users_forlife_list(Env::v('add_owner'), false, array('ListsModule', 'no_login_callback'));
+            $owners = User::getBulkForlifeEmails(Env::v('add_owner'), false, array('ListsModule', 'no_login_callback'));
             if ($owners) {
                 foreach ($owners as $login) {
                     if ($this->client->add_owner($liste, $login)) {
-                        $page->trigSuccess($alias." ajouté aux modérateurs.");
+                        $page->trigSuccess($login ." ajouté aux modérateurs.");
                     }
                 }
             }

@@ -138,7 +138,7 @@ class ArraySet extends UserSet
     {
         $where = $this->getUids($users);
         if ($where) {
-            $where = "a.alias IN ($where)";
+            $where = "u.hruid IN ($where)";
         } else {
             $where = " 0 ";
         }
@@ -147,7 +147,7 @@ class ArraySet extends UserSet
 
     private function getUids(array $users)
     {
-        $users = get_users_forlife_list($users, true, '_silent_user_callback');
+        $users = User::getBulkHruid($users, '_silent_user_callback');
         if (is_null($users)) {
             return '';
         }
