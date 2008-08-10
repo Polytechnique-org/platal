@@ -222,7 +222,8 @@ class XorgSession extends PlSession
         } else {
             $logger = S::logger($uid);
             setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
-            if (Post::v('remember', 'false') == 'true') {
+
+            if (S::i('auth_by_cookie') == S::i('uid') || Post::v('remember', 'false') == 'true') {
                 $cookie = hash_encrypt($sess['password']);
                 setcookie('ORGaccess', $cookie, (time() + 25920000), '/', '', 0);
                 if ($logger) {
