@@ -93,7 +93,7 @@ class ProfileAppli implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $new_value)
     {
-        $index = ($field == 'appli1' ? 0 : 1);
+        $index = ($field == 'edu_0' ? 0 : 1);
         if ($new_value['id'] > 0) {
             XDB::execute("REPLACE INTO  applis_ins
                                    SET  uid = {?}, aid = {?}, type = {?}, ordre = {?}",
@@ -250,11 +250,11 @@ class ProfileGeneral extends ProfilePage
                                   = new ProfileEmailDirectory();
         $this->settings['networking'] = new ProfileNetworking();
         $this->settings['tels'] = new ProfilePhones('user', 0);
-        $this->settings['appli1']
-                                  = $this->settings['appli2']
+        $this->settings['edu_0']
+                                  = $this->settings['edu_1']
                                   = new ProfileAppli();
         $this->watched= array('nom' => true, 'freetext' => true, 'tels' => true,
-                              'networking' => true, 'appli1' => true, 'appli2' => true,
+                              'networking' => true, 'edu_0' => true, 'edu_1' => true,
                               'nationalite' => true, 'nationalite2' => true,
                               'nationalite3' => true, 'nick' => true);
     }
@@ -268,8 +268,8 @@ class ProfileGeneral extends ProfilePage
                                    d.email_directory as email_directory,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
                                    q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.matricule_ax,
-                                   IF(a1.aid IS NULL, -1, a1.aid) as appli_id1, a1.type as appli_type1,
-                                   IF(a2.aid IS NULL, -1, a2.aid) as appli_id2, a2.type as appli_type2,
+                                   IF(a1.aid IS NULL, -1, a1.aid) as edu_id1, a1.type as edu_type1,
+                                   IF(a2.aid IS NULL, -1, a2.aid) as edu_id2, a2.type as edu_type2,
                                    n.yourself, n.display AS display_name, n.sort AS sort_name,
                                    n.tooltip AS tooltip_name
                              FROM  auth_user_md5         AS u
@@ -283,14 +283,14 @@ class ProfileGeneral extends ProfilePage
         $this->values = $res->fetchOneAssoc();
 
         // Reformat formation data
-        $this->values['appli1'] = array('id'    => $this->values['appli_id1'],
-                                        'type'  => $this->values['appli_type1']);
-        unset($this->values['appli_id1']);
-        unset($this->values['appli_type1']);
-        $this->values['appli2'] = array('id'    => $this->values['appli_id2'],
-                                        'type'  => $this->values['appli_type2']);
-        unset($this->values['appli_id2']);
-        unset($this->values['appli_type2']);
+        $this->values['edu_0'] = array('id'    => $this->values['edu_id1'],
+                                       'type'  => $this->values['edu_type1']);
+        unset($this->values['edu_id1']);
+        unset($this->values['edu_type1']);
+        $this->values['edu_1'] = array('id'    => $this->values['edu_id2'],
+                                       'type'  => $this->values['edu_type2']);
+        unset($this->values['edu_id2']);
+        unset($this->values['edu_type2']);
 
         // Retreive photo informations
         $res = XDB::query("SELECT  pub

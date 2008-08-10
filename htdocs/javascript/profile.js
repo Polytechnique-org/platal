@@ -24,10 +24,10 @@ function wizPage_onLoad(id)
 {
     switch (id) {
       case 'general':
-        fillType(document.forms.prof_annu['appli1[type]'], document.forms.prof_annu['appli1[id]'].selectedIndex-1);
-        selectType(document.forms.prof_annu['appli1[type]'], document.forms.prof_annu['appli1_tmp'].value);
-        fillType(document.forms.prof_annu['appli2[type]'], document.forms.prof_annu['appli2[id]'].selectedIndex-1);
-        selectType(document.forms.prof_annu['appli2[type]'], document.forms.prof_annu['appli2_tmp'].value);
+        fillType(document.forms.prof_annu['edu_0[type]'], document.forms.prof_annu['edu_0[id]'].selectedIndex-1);
+        selectType(document.forms.prof_annu['edu_0[type]'], document.forms.prof_annu['edu_0_tmp'].value);
+        fillType(document.forms.prof_annu['edu_1[type]'], document.forms.prof_annu['edu_1[id]'].selectedIndex-1);
+        selectType(document.forms.prof_annu['edu_1[type]'], document.forms.prof_annu['edu_1_tmp'].value);
         break;
       case 'poly':
         updateGroupSubLink(document.forms.prof_annu.groupesx_sub);

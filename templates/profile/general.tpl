@@ -104,35 +104,53 @@
       <a href="javascript:delNationality('3');">{icon name=cross title="Supprimer cette nationalité"}</a>
     </td>
   </tr>
-  <tr class="pair">
-    <td>
-      <span class="titre">Application</span><br />
-      <span class="comm">(4e année de l'X)</span>
+  <tr>
+    <td colspan="2">
+      <span class="titre">Application</span>
     </td>
-    <td>
-      <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">
-        {applis_options selected=$appli1.id}
-      </select>
-      <br />
-      <input type="hidden" name="appli1_tmp" value="{$appli1.type}" />
-      <select name="appli1[type]">
-        <option value=""></option>
-      </select>
-    </td>
+    <td></td>
   </tr>
-  <tr class="pair">
-    <td>
-      <span class="titre">Post-application</span>
-    </td>
-    <td>
-      <select name="appli2[id]" onchange="fillType(this.form['appli2[type]'], this.selectedIndex-1);">
-        {applis_options selected=$appli2.id}
-      </select>
-      <br />
-      <input type="hidden" name="appli2_tmp" value="{$appli2.type}" />
-      <select name="appli2[type]">
-        <option value=""></option>
-      </select>
+  <tr>
+    <!--<td colspan="2">
+      {foreach from=$tels key=telid item=tel}
+        <div id="tels_{$telid}" style="clear: both; padding-top: 4px; padding-bottom: 4px">
+          {include file="profile/phone.tpl" prefname='tels' prefid='tels' telid=$telid tel=$tel}
+        </div>
+      {/foreach}
+      {if $tels|@count eq 0}
+        <div id="tels_0" style="clear: both; padding-top: 4px; padding-bottom: 4px">
+          {include file="profile/phone.tpl" prefname='tels' preid='tels' telid=0 tel=0}
+        </div>
+      {/if}
+      <div id="tels_add" class="center" style="clear: both; padding-top: 4px;">
+        <a href="javascript:addTel('tels', 'tels');">
+          {icon name=add title="Ajouter un téléphone"}Ajouter un téléphone
+        </a>
+      </div>
+    </td>-->
+    <td colspan="2">
+      <!--{foreach from=$edus key=eduid item=edu}
+        <div id="edus_{$eduid}" style="clear: both; padding-top: 4px; padding-bottom: 4px">
+          {include file="profile/phone.tpl" prefname='edus' prefid='edus' eduid=$eduid edu=$edu}
+        </div>
+      {/foreach}
+      {if $edus|@count eq 0}
+        <div id="edus_0" style="clear: both; padding-top: 4px; padding-bottom: 4px">
+          {include file="profile/phone.tpl" prefname='edus' preid='edus' eduid=0 edu=0}
+        </div>
+      {/if}-->
+        <div id="edus_0" style="clear: both; padding-top: 4px; padding-bottom: 4px">
+          {include file="profile/edu.tpl" eduid=0 edus=$edu_0}
+        </div>
+        <div id="edus_1" style="clear: both; padding-top: 4px; padding-bottom: 4px">
+          {include file="profile/edu.tpl" eduid=1 edus=$edu_1}
+        </div>
+
+      <div id="edus_add" class="center" style="clear: both; padding-top: 4px;">
+        <a href="javascript:addEdu('edus', 'edus');">
+          {icon name=add title="Ajouter une formation"}Ajouter une formation
+        </a>
+      </div>
     </td>
   </tr>
   <tr class="pair">
