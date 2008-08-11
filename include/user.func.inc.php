@@ -26,7 +26,7 @@
  */
 function user_clear_all_subs($user_id, $really_del=true)
 {
-    // keep datas in : aliases, adresses, tels, applis_ins, binets_ins, contacts, groupesx_ins, homonymes, identification_ax, photo
+    // keep datas in : aliases, adresses, tels, profile_education, binets_ins, contacts, groupesx_ins, homonymes, identification_ax, photo
     // delete in     : auth_user_md5, auth_user_quick, competences_ins, emails, entreprises, langues_ins, mentor,
     //                 mentor_pays, mentor_secteurs, newsletter_ins, perte_pass, requests, user_changes, virtual_redirect, watch_sub
     // + delete maillists
@@ -492,20 +492,22 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
         $user['gpxs_join'] = join(', ', $user['gpxs']);
     }
 
-    $res = XDB::iterRow("SELECT  applis_def.text, applis_def.url, applis_ins.type
-                           FROM  applis_ins
-                     INNER JOIN  applis_def ON applis_def.id = applis_ins.aid
+    $res = XDB::iterRow("SELECT  en.name AS name, en.url AS url, d.degree AS degree, ed.grad_year AS grad_year, f.field AS field
+                           FROM  profile_education AS ed
+                     INNER JOIN  profile_education_enum        AS en ON (en.id = ed.eduid)
+                     INNER JOIN  profile_education_degree_enum AS d  ON (d.id  = ed.degreeid)
+                     INNER JOIN  profile_education_field_enum  AS f  ON (f.id  = ed.fieldid)
                           WHERE  uid={?}
-                       ORDER BY  ordre", $uid);
+                       ORDER BY  ed.grad_year", $uid);
 
-    $user['applis_fmt'] = Array();
-    $user['formation'] = Array();
-    while (list($txt, $url, $type) = $res->next()) {
-        $user['formation'][] = $txt." ".$type;
-        require_once('applis.func.inc.php');
-        $user['applis_fmt'][] = applis_fmt($type, $txt, $url);
+    $user['education'] = "";
+    require_once('applis.func.inc.php');
+    if (list($name, $url, $degree, $grad_year, $field) = $res->next()) {
+        $user['education'] .= applis_fmt($name, $url, $degree, $grad_year, $field, $user['sexe'], true);
     }
-    $user['applis_join'] = join(', ', $user['applis_fmt']);
+    while (list($name, $url, $degree, $grad_year, $field) = $res->next()) {
+        $user['education'] .= ", " . applis_fmt($name, $url, $degree, $grad_year, $field, $user['sexe'], true);
+    }
 
     if (has_user_right($user['medals_pub'], $view)) {
         $res = XDB::iterator("SELECT  m.id, m.text AS medal, m.type, s.gid, g.text AS grade

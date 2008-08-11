@@ -30,8 +30,10 @@
     u.perms != \'pending\' AS wasinscrit,
     FIND_IN_SET(\'femme\', u.flags) AS sexe,
     a.alias AS forlife,
-    ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
-    ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
+    ede0.name AS eduname0, ede0.url AS eduurl0, edd0.degree AS edudegree0, edu0.grad_year AS edugrad_year0, f0.field AS edufield0,
+    ede1.name AS eduname1, ede1.url AS eduurl1, edd1.degree AS edudegree1, edu1.grad_year AS edugrad_year1, f1.field AS edufield1,
+    ede2.name AS eduname2, ede2.url AS eduurl2, edd2.degree AS edudegree2, edu2.grad_year AS edugrad_year2, f2.field AS edufield2,
+    ede3.name AS eduname3, ede3.url AS eduurl3, edd3.degree AS edudegree3, edu3.grad_year AS edugrad_year3, f3.field AS edufield3,
     es.label AS secteur, ef.fonction_fr AS fonction,
     IF(n1.nat=\'\',n1.pays,n1.nat) AS nat1, n1.a2 AS iso3166_1,
     IF(n2.nat=\'\',n2.pays,n2.nat) AS nat2, n2.a2 AS iso3166_2,
@@ -55,10 +57,22 @@ else
         IF(nw.pub='public', nw.address, '') AS networking_address,
         IF(nw.pub='public', nwe.name, '') AS networking_name,";
 @$globals->search->result_where_statement = '
-    LEFT JOIN  applis_ins              AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
-    LEFT JOIN  applis_def              AS ad0 ON (ad0.id = ai0.aid)
-    LEFT JOIN  applis_ins              AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)
-    LEFT JOIN  applis_def              AS ad1 ON (ad1.id = ai1.aid)
+    LEFT JOIN  profile_education             AS edu0 ON (u.user_id = edu0.uid AND edu0.id = 0)
+    LEFT JOIN  profile_education_enum        AS ede0 ON (ede0.id = edu0.eduid)
+    LEFT JOIN  profile_education_degree_enum AS edd0 ON (edd0.id = edu0.degreeid)
+    LEFT JOIN  profile_education_field_enum  AS f0   ON (f0.id = edu0.fieldid)
+    LEFT JOIN  profile_education             AS edu1 ON (u.user_id = edu1.uid AND edu1.id = 1)
+    LEFT JOIN  profile_education_enum        AS ede1 ON (ede1.id = edu1.eduid)
+    LEFT JOIN  profile_education_degree_enum AS edd1 ON (edd1.id = edu1.degreeid)
+    LEFT JOIN  profile_education_field_enum  AS f1   ON (f1.id = edu1.fieldid)
+    LEFT JOIN  profile_education             AS edu2 ON (u.user_id = edu2.uid AND edu2.id = 2)
+    LEFT JOIN  profile_education_enum        AS ede2 ON (ede2.id = edu2.eduid)
+    LEFT JOIN  profile_education_degree_enum AS edd2 ON (edd2.id = edu2.degreeid)
+    LEFT JOIN  profile_education_field_enum  AS f2   ON (f2.id = edu2.fieldid)
+    LEFT JOIN  profile_education             AS edu3 ON (u.user_id = edu3.uid AND edu3.id = 3)
+    LEFT JOIN  profile_education_enum        AS ede3 ON (ede3.id = edu3.eduid)
+    LEFT JOIN  profile_education_degree_enum AS edd3 ON (edd3.id = edu3.degreeid)
+    LEFT JOIN  profile_education_field_enum  AS f3   ON (f3.id = edu3.fieldid)
     LEFT JOIN  entreprises             AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
     LEFT JOIN  emploi_secteur          AS es  ON (e.secteur = es.id)
     LEFT JOIN  fonctions_def           AS ef  ON (e.fonction = ef.id)

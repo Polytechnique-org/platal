@@ -20,49 +20,27 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<!--
-{assign var=telpref value="`$prefname`[`$telid`]"}
-{assign var=id value="`$prefid`_`$telid`"}
-<div class="titre" style="float: left; width: 2.5em">N°{$telid+1}</div>
-<div style="float: left;">
-  <select name="{$telpref}[type]">
-    <option value="fixed"{if $tel.type eq 'fixed'} selected="selected"{/if}>Fixe</option>
-    <option value="mobile"{if $tel.type eq 'mobile'} selected="selected"{/if}>Mobile</option>
-    <option value="fax"{if $tel.type eq 'fax'} selected="selected"{/if}>Fax</option>
-  </select>
-  <input type="hidden" name="{$telpref}[removed]" value="0"/>
-  <input type="text" size="19" maxlength="28" name="{$telpref}[tel]" {if $tel.error}class="error"{/if} value="{$tel.tel}" />
-  <a href="javascript:removeTel('{$id}')">
-    {icon name=cross title="Supprimer ce numéro de téléphone"}
-  </a>
-  <a id="{$id}_addComment" href="javascript:addPhoneComment('{$id}', '{$telpref}')" {if $tel.comment neq ''}style="display:none" {/if}>
-    {icon name=comments title="Ajouter un commentaire"}
-  </a>
-</div>
-<div style="float: right" class="flags">
-  {include file="include/flags.radio.tpl" name="`$telpref`[pub]" val=$tel.pub}
-</div>
-<div id="{$id}_comment" style="clear: both;{if $tel.comment eq ''} display:none{/if}">
-  Commentaire :
-  <input type="text" size="45" maxlength="80" name="{$telpref}[comment]" {if $tel.error}class="error"{/if} value="{$tel.comment}"/>
-  <a href="javascript:removePhoneComment('{$id}', '{$telpref}')">
-    {icon name=cross title="Supprimer le commentaire"}
-  </a>
-</div>
-{assign var=edu value="edu_`$eduid`"}
--->
-{assign var=edu value="$edus"}
-{assign var=eduname value="edu_`$eduid`"}
-{$edu} {$edu.id} {$edu.type} {$eduname}[id]
-<div>
-  <select name="{$eduname}[id]" onchange="fillType(this.form['{$eduname}[type]'], this.selectedIndex-1);">
-    {applis_options selected=$edu.id}
-  </select>
-  <br />
-  <input type="hidden" name="{$eduname}_tmp" value="{$edu.type}" />
-  <select name="{$eduname}[type]">
-    <option value=""></option>
-  </select>
-</div>
+{assign var=eduname value="edus[`$eduid`]"}
+<select name="{$eduname}[eduid]" onchange="fillType(this.form['{$eduname}[degreeid]'], this.selectedIndex-1);">
+  {applis_options selected=$edu.eduid}
+</select>
+<input type="hidden" name="edu_{$eduid}_tmp" value="{$edu.degreeid}" />
+<select name="{$eduname}[degreeid]">
+  <option value=""></option>
+</select>
+<br />
+Domaine de formation&nbsp;:
+<select name="{$eduname}[fieldid]">
+  {foreach from=$edu_fields item=field}
+  <option value="{$field.id}" {if $field.id eq $edu.fieldid}selected="selected"{/if}>{$field.field}</option>
+  {/foreach}
+</select>
+<a href="javascript:removeEdu('edu_{$eduid}')">
+  {icon name=cross title="Supprimer cette formation"}
+</a>
+<br />
+Année d'obtention du diplôme&nbsp;:
+<input type="text" {if $edu.error}class="error"{/if} name="{$eduname}[grad_year]" value="{$edu.grad_year}" size="4" maxlength="4" />
+<small>(par exemple&nbsp;: 2008)</small>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

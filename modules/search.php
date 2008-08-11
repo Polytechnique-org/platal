@@ -57,9 +57,9 @@ class SearchModule extends PLModule
         }
 
         if (!is_null($school)) {
-            $sql = 'SELECT type FROM applis_def WHERE id=' . $school;
+            $sql = 'SELECT name FROM profile_education_enum WHERE id=' . $school;
         } else {
-            $sql = 'DESCRIBE applis_def type';
+            $sql = 'DESCRIBE profile_education_enum name';
         }
 
         $res = XDB::query($sql);
@@ -180,7 +180,7 @@ class SearchModule extends PLModule
                                    'text' => "(a.cat = 'GroupesX' OR a.cat = 'Institutions') AND pub = 'public' AND nom",
                                    'exact' => false),
                 'section' => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
-                'school' => array('field' => 'id', 'table' => 'applis_def', 'text' => 'text', 'exact' => false),
+                'school' => array('field' => 'id', 'table' => 'profile_education_enum', 'text' => 'name', 'exact' => false),
                 'city' => array('table' => 'geoloc_city', 'text' => 'name', 'exact' => false)
             );
             if (!Env::has('page')) {
@@ -342,11 +342,11 @@ class SearchModule extends PLModule
             $unique='`uid`';
             break;
           case 'schoolTxt':
-            $db = '`applis_def` INNER JOIN
-                   `applis_ins` ON(`applis_def`.`id` = `applis_ins`.`aid`)';
-            $field='`applis_def`.`text`';
-            $unique = '`uid`';
-            $realid = '`applis_def`.`id`';
+            $db = 'profile_education_enum INNER JOIN
+                   profile_education ON (profile_education_enum.id = profile_education.eduid)';
+            $field = 'profile_education_enum.name';
+            $unique = 'uid';
+            $realid = 'profile_education_enum.id';
             if (strlen($q) > 2)
                 $beginwith = false;
             break;
@@ -470,7 +470,7 @@ class SearchModule extends PLModule
             }
             break;
           case 'school':
-            $db = '`applis_def`';
+            $db = 'profile_education_enum';
             $page->assign('onchange', 'changeSchool(this.value)');
             break;
           case 'section':

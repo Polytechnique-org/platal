@@ -34,6 +34,7 @@ class ProfileModule extends PLModule
             'profile/edit'     => $this->make_hook('p_edit',     AUTH_MDP),
             'profile/ajax/address' => $this->make_hook('ajax_address', AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/tel'     => $this->make_hook('ajax_tel',     AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/edu'     => $this->make_hook('ajax_edu',     AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/medal'   => $this->make_hook('ajax_medal',   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/networking'   => $this->make_hook('networking',   AUTH_PUBLIC),
             'profile/ajax/job'     => $this->make_hook('ajax_job',     AUTH_COOKIE, 'user', NO_AUTH),
@@ -57,7 +58,10 @@ class ProfileModule extends PLModule
             'vcard'   => $this->make_hook('vcard',  AUTH_COOKIE, 'user', NO_HTTPS),
             'admin/binets'     => $this->make_hook('admin_binets', AUTH_MDP, 'admin'),
             'admin/medals'     => $this->make_hook('admin_medals', AUTH_MDP, 'admin'),
-            'admin/formations' => $this->make_hook('admin_formations', AUTH_MDP, 'admin'),
+            'admin/education' => $this->make_hook('admin_education', AUTH_MDP, 'admin'),
+            'admin/education_field' => $this->make_hook('admin_education_field', AUTH_MDP, 'admin'),
+            'admin/education_degree' => $this->make_hook('admin_education_degree', AUTH_MDP, 'admin'),
+            'admin/education_degree_set' => $this->make_hook('admin_education_degree_set', AUTH_MDP, 'admin'),
             'admin/sections'  => $this->make_hook('admin_sections', AUTH_MDP, 'admin'),
             'admin/secteurs'  => $this->make_hook('admin_secteurs', AUTH_MDP, 'admin'),
             'admin/networking' => $this->make_hook('admin_networking', AUTH_MDP, 'admin'),
@@ -410,6 +414,18 @@ class ProfileModule extends PLModule
         $page->assign('prefname', $prefname);
         $page->assign('telid', $telid);
         $page->assign('tel', array());
+    }
+
+    function handler_ajax_edu(&$page, $eduid)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $page->changeTpl('profile/edu.tpl', NO_SKIN);
+        $res = XDB::iterator("SELECT  id, field
+                                FROM  profile_education_field_enum
+                            ORDER BY  field");
+        $page->assign('edu_fields', $res->fetchAllAssoc());
+        $page->assign('eduid', $eduid);
+        require_once "applis.func.inc.php";
     }
 
     function handler_ajax_medal(&$page, $id)
@@ -794,13 +810,39 @@ class ProfileModule extends PLModule
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_formations(&$page, $action = 'list', $id = null) {
+    function handler_admin_education(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Formations');
         $page->assign('title', 'Gestion des formations');
-        $table_editor = new PLTableEditor('admin/formations','applis_def','id');
-        $table_editor->add_join_table('applis_ins','aid',true);
-        $table_editor->describe('text','intitulé',true);
-        $table_editor->describe('url','site web',false);
+        $table_editor = new PLTableEditor('admin/education', 'profile_education_enum', 'id');
+        $table_editor->add_join_table('profile_education', 'eduid', true);
+        $table_editor->add_join_table('profile_education_degree', 'eduid', true);
+        $table_editor->describe('name', 'intitulé', true);
+        $table_editor->describe('url', 'site web', false);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_admin_education_field(&$page, $action = 'list', $id = null) {
+        $page->setTitle('Administration - Domaines de formation');
+        $page->assign('title', 'Gestion des domaines de formation');
+        $table_editor = new PLTableEditor('admin/education_field', 'profile_education_field_enum', 'id', true);
+        $table_editor->add_join_table('profile_education', 'fieldid', true);
+        $table_editor->describe('field', 'domaine', true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_admin_education_degree(&$page, $action = 'list', $id = null) {
+        $page->setTitle('Administration - Niveau de formation');
+        $page->assign('title', 'Gestion des niveau de formation');
+        $table_editor = new PLTableEditor('admin/education_degree', 'profile_education_degree_enum', 'id', true);
+        $table_editor->add_join_table('profile_education_degree', 'degreeid', true);
+        $table_editor->add_join_table('profile_education', 'degreeid', true);
+        $table_editor->describe('degree', 'niveau', true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_admin_education_degree_set(&$page, $action = 'list', $id = null) {
+        $page->setTitle('Administration - Correspondances formations - niveau de formation');
+        $page->assign('title', 'Gestion des correspondances formations - niveau de formation');
+        $table_editor = new PLTableEditor('admin/education_degree_set', 'profile_education_degree', 'eduid', true);
+        $table_editor->describe('eduid', 'formation', true);
+        $table_editor->describe('degreeid', 'niveau', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_sections(&$page, $action = 'list', $id = null) {

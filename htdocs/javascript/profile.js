@@ -24,10 +24,14 @@ function wizPage_onLoad(id)
 {
     switch (id) {
       case 'general':
-        fillType(document.forms.prof_annu['edu_0[type]'], document.forms.prof_annu['edu_0[id]'].selectedIndex-1);
-        selectType(document.forms.prof_annu['edu_0[type]'], document.forms.prof_annu['edu_0_tmp'].value);
-        fillType(document.forms.prof_annu['edu_1[type]'], document.forms.prof_annu['edu_1[id]'].selectedIndex-1);
-        selectType(document.forms.prof_annu['edu_1[type]'], document.forms.prof_annu['edu_1_tmp'].value);
+        var i = 0;
+        var prefix  = 'edu_';
+        while (document.getElementById(prefix + i) != null) {
+            i++;
+        }
+        for (var j = 0; j < i; j++) {
+            prepareType(j);
+        }
         break;
       case 'poly':
         updateGroupSubLink(document.forms.prof_annu.groupesx_sub);
@@ -54,6 +58,7 @@ function wizPage_onLoad(id)
 
 var applisType;
 var applisTypeAll;
+var applisTypeName;
 
 // General
 
@@ -62,31 +67,41 @@ var names;
 function fillType(selectCtrl, appli, fill)
 {
     var i;
-    var i0=0;
+    var i0 = 0;
 
-    for (i = selectCtrl.options.length; i >=0; i--) {
+    for (i = selectCtrl.options.length; i >= 0; i--) {
         selectCtrl.options[i] = null;
     }
 
-    if (fill || appli <0) {
+    if (fill || appli < 0) {
         selectCtrl.options[0] = new Option(' ');
-        i0=1;
+        i0 = 1;
     }
-    if (appli>=0)
-        for (i=0; i < applisType[appli].length; i++)
-            selectCtrl.options[i0+i] = new Option(applisType[appli][i]);
-    else if (fill)
-        for (i=0; i < applisTypeAll.length; i++)
-            selectCtrl.options[i0+i] = new Option(applisTypeAll[i]);
+    if (appli >= 0) {
+        for (i = 0; i < applisType[appli].length; i++) {
+            selectCtrl.options[i0 + i] = new Option(applisTypeName[applisType[appli][i] - 1], applisType[appli][i]);
+        }
+    } else if (fill) {
+        for (i = 0; i < applisTypeAll.length; i++) {
+            selectCtrl.options[i0 + i] = new Option(applisTypeName[applisTypeAll[i] - 1], applisTypeAll[i]);
+        }
+    }
 }
 
 
 function selectType(selectCtrl, type)
 {
     for (i = 0; i < selectCtrl.options.length; i++) {
-        if (selectCtrl.options[i].text == type)
-            selectCtrl.selectedIndex=i;
+        if (selectCtrl.options[i].value == type) {
+            selectCtrl.selectedIndex = i;
+        }
     }
+}
+
+function prepareType(i)
+{
+    fillType(document.forms.prof_annu["edus[" + i + "][degreeid]"], document.forms.prof_annu["edus[" + i + "][eduid]"].selectedIndex - 1);
+    selectType(document.forms.prof_annu["edus[" + i + "][degreeid]"], document.forms.prof_annu["edu_" + i + "_tmp"].value);
 }
 
 function addSearchName()
@@ -253,6 +268,26 @@ function addAddress()
     }
     $("#add_adr").before('<div id="addresses_' + i + '_cont"></div>');
     Ajax.update_html('addresses_' + i + '_cont', 'profile/ajax/address/' + i, checkCurrentAddress);
+}
+
+function addEdu()
+{
+    var i = 0;
+    var prefix  = 'edu_';
+    while (document.getElementById(prefix + i) != null) {
+        i++;
+    }
+    $('#edu_add').before('<div id="' + prefix + i + '"></div>');
+    $.get(platal_baseurl + 'profile/ajax/edu/' + i,
+          function(data) {
+              $("#" + prefix + i).html(data);
+              prepareType(i);
+          });
+}
+
+function removeEdu(id)
+{
+    $('#' + id).remove();
 }
 
 function addTel(prefid, prefname)

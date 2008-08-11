@@ -91,7 +91,13 @@
   <tr class="impair">
     <td>
       <strong>Champs profil&nbsp;:</strong>&nbsp;&nbsp;
-      <a href="admin/formations">Formations</a>
+      <a href="admin/education">Formations</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/education_field">Domaines de formation</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/education_degree">Niveau de formation</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/education_degree_set">Niveau par formation</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/binets">Binets</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;

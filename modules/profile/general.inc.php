@@ -80,36 +80,61 @@ class ProfileSearchName implements ProfileSetting
     }
 }
 
-class ProfileAppli implements ProfileSetting
+class ProfileEdu implements ProfileSetting
 {
+    public function __construct()
+    {
+    }
+
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
-        if (is_null($value)) {
-            return $page->values[$field];
+        if (is_null($value) || !is_array($value)) {
+            $value = array();
+            $res = XDB::iterator("SELECT  eduid, degreeid, fieldid, grad_year
+                                    FROM  profile_education
+                                   WHERE  uid = {?}
+                                ORDER BY  id",
+                                 S::v('uid'));
+            while($edu = $res->next()) {
+                $value[] = $edu;
+            }
+        } else {
+            $i = 0;
+            foreach ($value as $key=>&$edu) {
+                if (($edu['grad_year'] < 1921) || ($edu['grad_year'] > (date('Y') + 4))) {
+                    Platal::page()->trigError('L\'année d\'obtention du diplôme est mal renseignée, elle doit être du type : 2004.');
+                    $edu['error'] = true;
+                    $success = false;
+                }
+                if ($key != $i) {
+                    $value[$i] = $edu;
+                    unset($value[$key]);
+                }
+                $i++;
+            }
         }
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $new_value)
+    public function save(ProfilePage &$page, $field, $value)
     {
-        $index = ($field == 'edu_0' ? 0 : 1);
-        if ($new_value['id'] > 0) {
-            XDB::execute("REPLACE INTO  applis_ins
-                                   SET  uid = {?}, aid = {?}, type = {?}, ordre = {?}",
-                         S::i('uid'), $new_value['id'], $new_value['type'], $index);
-        } else {
-            XDB::execute("DELETE FROM  applis_ins
-                                WHERE  uid = {?} AND ordre = {?}",
-                         S::i('uid'), $index);
+        XDB::execute("DELETE FROM  profile_education
+                            WHERE  uid = {?}",
+                     S::i('uid'));
+        foreach ($value as $eduid=>&$edu) {
+            if ($edu['eduid'] != '') {
+                XDB::execute("INSERT INTO  profile_education
+                                      SET  id = {?}, uid = {?}, eduid = {?}, degreeid = {?}, fieldid = {?}, grad_year = {?}",
+                             $eduid, S::i('uid'), $edu['eduid'], $edu['degreeid'], $edu['fieldid'], $edu['grad_year']);
+            }
         }
     }
+
 }
 
 class ProfileEmailDirectory implements ProfileSetting
 {
-    private $email;
-
     public function __construct()
     {
     }
@@ -249,12 +274,10 @@ class ProfileGeneral extends ProfilePage
         $this->settings['email_directory_new']
                                   = new ProfileEmailDirectory();
         $this->settings['networking'] = new ProfileNetworking();
-        $this->settings['tels'] = new ProfilePhones('user', 0);
-        $this->settings['edu_0']
-                                  = $this->settings['edu_1']
-                                  = new ProfileAppli();
+        $this->settings['tels']   = new ProfilePhones('user', 0);
+        $this->settings['edus']   = new ProfileEdu();
         $this->watched= array('nom' => true, 'freetext' => true, 'tels' => true,
-                              'networking' => true, 'edu_0' => true, 'edu_1' => true,
+                              'networking' => true, 'edus' => true,
                               'nationalite' => true, 'nationalite2' => true,
                               'nationalite3' => true, 'nick' => true);
     }
@@ -268,8 +291,6 @@ class ProfileGeneral extends ProfilePage
                                    d.email_directory as email_directory,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
                                    q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.matricule_ax,
-                                   IF(a1.aid IS NULL, -1, a1.aid) as edu_id1, a1.type as edu_type1,
-                                   IF(a2.aid IS NULL, -1, a2.aid) as edu_id2, a2.type as edu_type2,
                                    n.yourself, n.display AS display_name, n.sort AS sort_name,
                                    n.tooltip AS tooltip_name
                              FROM  auth_user_md5         AS u
@@ -277,20 +298,8 @@ class ProfileGeneral extends ProfilePage
                        INNER JOIN  profile_names_display AS n  ON(n.user_id = u.user_id)
                         LEFT JOIN  profile_phones        AS t  ON(u.user_id = t.uid AND link_type = 'user')
                         LEFT JOIN  profile_directory     AS d  ON(d.uid = u.user_id)
-                        LEFT JOIN  applis_ins            AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)
-                        LEFT JOIN  applis_ins            AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
                             WHERE  u.user_id = {?}", S::v('uid', -1));
         $this->values = $res->fetchOneAssoc();
-
-        // Reformat formation data
-        $this->values['edu_0'] = array('id'    => $this->values['edu_id1'],
-                                       'type'  => $this->values['edu_type1']);
-        unset($this->values['edu_id1']);
-        unset($this->values['edu_type1']);
-        $this->values['edu_1'] = array('id'    => $this->values['edu_id2'],
-                                       'type'  => $this->values['edu_type2']);
-        unset($this->values['edu_id2']);
-        unset($this->values['edu_type2']);
 
         // Retreive photo informations
         $res = XDB::query("SELECT  pub
@@ -395,6 +404,11 @@ class ProfileGeneral extends ProfilePage
     public function _prepare(PlPage &$page, $id)
     {
         require_once "applis.func.inc.php";
+
+        $res = XDB::iterator("SELECT  id, field
+                                FROM  profile_education_field_enum
+                            ORDER BY  field");
+        $page->assign('edu_fields', $res->fetchAllAssoc());
 
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page);

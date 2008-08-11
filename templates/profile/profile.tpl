@@ -144,8 +144,8 @@ function chgMainWinLoc(strPage)
       {if ($x.promo_sortie-3 > $x.promo)}
         - X {math equation="a-b" a=$x.promo_sortie b=3}
       {/if}
-      {if $x.applis_join}
-        &nbsp;-&nbsp;Formation&nbsp;: {$x.applis_join|smarty:nodefaults}
+      {if $x.education}
+        &nbsp;-&nbsp;Formation&nbsp;: {$x.education|smarty:nodefaults}
       {/if}
       {if $logged && $x.is_referent}
       [<a href="referent/{$x.forlife}" class='popup2'>Ma fiche référent</a>]

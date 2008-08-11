@@ -37,7 +37,7 @@ query("DELETE FROM register_pending WHERE TO_DAYS(NOW()) - TO_DAYS(date) >= 365"
 query("DELETE FROM register_pending WHERE hash = 'INSCRIT'");
 
 // quelques tables sont triées pour que la lecture triée soit plus facile
-query("ALTER TABLE applis_def ORDER BY text");
+query("ALTER TABLE profile_education_enum ORDER BY name");
 query("ALTER TABLE binets_def ORDER BY text");
 query("ALTER TABLE groupesx_def ORDER BY text");
 query("ALTER TABLE secteur ORDER BY text");

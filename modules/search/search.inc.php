@@ -68,8 +68,8 @@ function advancedSearchFromInput()
                                      array("(g.cat = 'GroupesX' OR g.cat = 'Institutions') AND g.pub = 'public'",
                                            'gm.asso_id = g.id AND u.user_id=gm.uid'));
     $sectionField    = new RefSField('section',array('u.section'),'','','');
-    $schoolField     = new RefSField('school',array('as.aid'),'applis_ins','`as`','u.user_id=as.uid');
-    $diplomaField    = new RefSField('diploma',array('ad.type'),'applis_ins','ad','u.user_id=ad.uid');
+    $schoolField     = new RefSField('school',array('as.eduid'),'profile_education','`as`','u.user_id=as.uid');
+    $diplomaField    = new RefSField('diploma',array('ad.name'),'profile_education','ad','u.user_id=ad.uid');
 
     $freeField       = new RefSField('free',array('q.profile_freetext'),'','','',false);
 

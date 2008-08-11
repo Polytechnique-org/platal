@@ -20,7 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
-applisType = new Array({applis_type});
-applisTypeAll = new Array({applis_type_all});
+applisType     = new Array({applis_type});
+applisTypeAll  = new Array({applis_type_all});
+applisTypeName = new Array({applis_type_name}); 
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

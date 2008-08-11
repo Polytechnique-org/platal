@@ -90,9 +90,9 @@ check("SELECT a.*
         LEFT JOIN auth_user_md5 AS u ON u.user_id=a.id
         WHERE (a.type='alias' OR a.type='a_vie') AND u.prenom is null");
 
-/* validite de applis_ins */
-check("select a.* from applis_ins as a left join auth_user_md5 as u on u.user_id=a.uid where u.prenom is null");
-check("select a.* from applis_ins as a left join applis_def as ad on ad.id=a.aid where ad.text is null");
+/* validite de profile_education */
+check("select a.* from profile_education as a left join auth_user_md5 as u on u.user_id=a.uid where u.prenom is null");
+check("select a.* from profile_education as a left join profile_education_enum as ad on ad.id=a.eduid where ad.name is null");
 
 /* validite de binet_users */
 check("select b.* from binets_ins as b left join auth_user_md5 as u on u.user_id=b.user_id where u.prenom is null");
