@@ -143,6 +143,7 @@ class ProfilePhones implements ProfileSetting
             if (@$phone['removed']) {
                 unset($value[$key]);
             } else {
+                unset($phone['removed']);
                 $phone['pub'] = $this->pub->value($page, 'pub', $phone['pub'], $s);
                 $phone['tel'] = $this->tel->value($page, 'tel', $phone['tel'], $s);
                 if(!isset($phone['type']) || ($phone['type'] != 'fixed' && $phone['type'] != 'mobile' && $phone['type'] != 'fax')) {
