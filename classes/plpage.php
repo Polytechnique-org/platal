@@ -58,7 +58,6 @@ abstract class PlPage extends Smarty
                              . " actuellement désactivée, en particuliers aucune donnée ne sera sauvegardée");
         }
         $this->register_prefilter('at_to_globals');
-        $this->addJsLink('xorg.js');
         $this->addJsLink('jquery.js');
     }
 
