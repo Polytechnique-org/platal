@@ -27,6 +27,7 @@ class XorgPage extends PlPage
 
         // Set the default page
         $this->changeTpl('platal/index.tpl');
+        $this->addJsLink('xorg.js');
     }
 
     public function run()
