@@ -77,7 +77,7 @@ if (Env::v('action') || !$cache_exists) {
 $wiki_exists = file_exists($wp->filename());
 
 $page =& Platal::page();
-$page->changeTpl('core/wiki.tpl');
+$page->coreTpl('wiki.tpl');
 
 if ($feed) {
     $wikiAll = str_replace('dc:contributor', 'author', $wikiAll);
@@ -99,7 +99,7 @@ if ($feed) {
         $wikiAll = "<p>La page de wiki $n n'existe pas. "
                  . "Il te suffit de <a href='" . str_replace('.', '/', $n) . "?action=edit'>l'éditer</a></p>";
     } else {
-        $page->changeTpl('core/404.tpl');
+        $page->coreTpl('404.tpl');
     }
 }
 

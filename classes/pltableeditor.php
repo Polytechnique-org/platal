@@ -190,7 +190,7 @@ class PLTableEditor
     // call when done
     public function apply(PlPage &$page, $action, $id = false)
     {
-        $page->changeTpl('core/table-editor.tpl');
+        $page->coreTpl('table-editor.tpl');
         $list = true;
         if ($action == 'delete') {
             S::assert_xsrf_token();

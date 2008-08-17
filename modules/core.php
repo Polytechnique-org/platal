@@ -51,14 +51,14 @@ class CoreModule extends PLModule
     {
         global $globals;
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        $page->changeTpl('core/403.tpl');
+        $page->coreTpl('403.tpl');
     }
 
     function handler_404(&$page)
     {
         global $globals, $platal;
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-        $page->changeTpl('core/404.tpl');
+        $page->coreTpl('404.tpl');
         $page->assign('near', $platal->near_hook());
     }
 
@@ -134,7 +134,7 @@ class CoreModule extends PLModule
             $location = $_SERVER['HTTP_REFERER'];
         }
 
-        $page->changeTpl('core/bug.tpl', SIMPLE);
+        $page->coreTpl('bug.tpl', SIMPLE);
         $page->assign('location', $location);
         $page->addJsLink('close_on_esc.js');
 
@@ -162,7 +162,7 @@ class CoreModule extends PLModule
 
     function handler_wiki_help(&$page, $action = 'title')
     {
-        $page->changeTpl('core/wiki.help.tpl', SIMPLE);
+        $page->coreTpl('wiki.help.tpl', SIMPLE);
         $page->assign('wiki_help', MiniWiki::help($action == 'title'));
     }
 

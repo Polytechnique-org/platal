@@ -164,7 +164,7 @@ class PlSet
         if (!isset($args['rechercher'])) {
             $args['rechercher'] = 'Chercher';
         }
-        $page->changeTpl('core/plset.tpl');
+        $page->coreTpl('plset.tpl');
         $page->assign('plset_base', $baseurl);
         $page->assign('plset_mods', $this->mods);
         $page->assign('plset_mod', $this->mod);
@@ -291,7 +291,7 @@ abstract class MultipageView implements PlView
         $page->assign_by_ref('set', $res);
         $count = $this->set->count();
         $this->pages = intval(ceil($count / $this->entriesPerPage));
-        return 'include/plview.multipage.tpl';
+        return PlPage::getCoreTpl('plview.multipage.tpl');
     }
 
     public function args()

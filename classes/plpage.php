@@ -72,6 +72,26 @@ abstract class PlPage extends Smarty
     }
 
     // }}}
+    // {{{ function getCoreTpl()
+
+    public static function getCoreTpl($tpl)
+    {
+        global $globals;
+        return $globals->spoolroot . '/core/templates/' . $tpl;
+    }
+
+    // }}}
+    // {{{ function coreTpl()
+
+    /** Use a template from the core.
+     */
+    public function coreTpl($tpl, $type = SKINNED)
+    {
+        global $globals;
+        $this->changeTpl(self::getCoreTpl($tpl), $type);
+    }
+
+    // }}}
     // {{{ function raw()
 
     public function raw()
@@ -93,6 +113,7 @@ abstract class PlPage extends Smarty
         $this->register_prefilter('trimwhitespace');
         $this->register_prefilter('form_force_encodings');
         $this->register_prefilter('wiki_include');
+        $this->register_prefilter('core_include');
         $this->register_prefilter('if_has_perms');
         $this->assign('pl_triggers', $this->_errors);
         $this->assign('pl_errors', $this->nb_errs());
@@ -153,7 +174,9 @@ abstract class PlPage extends Smarty
         if ($globals->debug & DEBUG_BT) {
             PlBacktrace::clean();
             $this->assign_by_ref('backtraces', PlBacktrace::$bt);
-            $result = str_replace('@@BACKTRACE@@', $this->fetch('skin/common.backtrace.tpl'), $result);
+            $result = str_replace('@@BACKTRACE@@',
+                                  $this->fetch(self::getCoreTpl('backtrace.tpl')),
+                                  $result);
         } else {
             $result = str_replace('@@BACKTRACE@@', '', $result);
         }
@@ -312,7 +335,7 @@ abstract class PlPage extends Smarty
 
 function escape_xorgDB(&$item, $key)
 {
-    if (is_a($item, 'XOrgDBIterator')) {
+    if ($item instanceof XOrgDBIterator) {
         $expanded = array();
         while ($a = $item->next()) {
             $expanded[] = $a;
@@ -364,32 +387,41 @@ function _to_globals($s) {
 function at_to_globals($tpl_source, &$smarty)
 {
     return preg_replace('/#globals\.([a-zA-Z0-9_.]+?)#/e', '_to_globals(\'\\1\')', $tpl_source);
-                        }
+}
 
-                        // }}}
-                        // {{{  function trimwhitespace
+// }}}
+// {{{  function trimwhitespace
 
-                        function trimwhitespace($source, &$smarty)
-                        {
-                        $tags = '(script|pre|textarea)';
-                        preg_match_all("!<$tags.*?>.*?</(\\1)>!ius", $source, $tagsmatches);
-                        $source = preg_replace("!<$tags.*?>.*?</(\\1)>!ius", "&&&tags&&&", $source);
+function trimwhitespace($source, &$smarty)
+{
+    $tags = '(script|pre|textarea)';
+    preg_match_all("!<$tags.*?>.*?</(\\1)>!ius", $source, $tagsmatches);
+    $source = preg_replace("!<$tags.*?>.*?</(\\1)>!ius", "&&&tags&&&", $source);
 
-                        // remove all leading spaces, tabs and carriage returns NOT
-                        // preceeded by a php close tag.
-                        $source = preg_replace('/((?<!\?>)\n)[\s]+/m', '\1', $source);
-                        $source = preg_replace("!&&&tags&&&!e",  'array_shift($tagsmatches[0])', $source);
+    // remove all leading spaces, tabs and carriage returns NOT
+    // preceeded by a php close tag.
+    $source = preg_replace('/((?<!\?>)\n)[\s]+/m', '\1', $source);
+    $source = preg_replace("!&&&tags&&&!e",  'array_shift($tagsmatches[0])', $source);
 
-                        return $source;
-                        }
+    return $source;
+}
 
-                        // }}}
-                        // {{{ function wiki_include
+// }}}
+// {{{ function wiki_include
 
 function wiki_include($source, &$smarty)
 {
+    global $globals;
     return preg_replace('/\{include( [^}]*)? wiki=([^} ]+)(.*?)\}/ui',
-                        '{include\1 file="../spool/wiki.d/cache_\2.tpl"\3 included=1}',
+                        '{include\1 file="' . $globals->spoolroot . '/spool/wiki.d/cache_\2.tpl"\3 included=1}',
+                        $source);
+}
+
+function core_include($source, &$smarty)
+{
+    global $globals;
+    return preg_replace('/\{include( [^}]*)? core=([^} ]+)(.*?)\}/ui',
+                        '{include\1 file="' . $globals->spoolroot . '/core/templates/\2"\3}',
                         $source);
 }
 
@@ -399,11 +431,11 @@ function wiki_include($source, &$smarty)
 function if_has_perms($source, &$smarty)
 {
     $source = preg_replace('/\{if([^}]*) (\!?)hasPerms\(([^)]+)\)([^}]*)\}/',
-    '{if\1 \2$smarty.session.perms->hasFlagCombination(\3)\4}',
-    $source);
-return preg_replace('/\{if([^}]*) (\!?)hasPerm\(([^)]+)\)([^}]*)\}/',
-       '{if\1 \2($smarty.session.perms && $smarty.session.perms->hasFlag(\3))\4}',
-       $source);
+                           '{if\1 \2$smarty.session.perms->hasFlagCombination(\3)\4}',
+                           $source);
+    return preg_replace('/\{if([^}]*) (\!?)hasPerm\(([^)]+)\)([^}]*)\}/',
+                        '{if\1 \2($smarty.session.perms && $smarty.session.perms->hasFlag(\3))\4}',
+                        $source);
 }
 
 // }}}
