@@ -320,6 +320,11 @@ class XorgSession extends PlSession
         }
     }
 
+    public function loggedLevel()
+    {
+        return AUTH_COOKIE;
+    }
+
     public function sureLevel()
     {
         return AUTH_MDP;

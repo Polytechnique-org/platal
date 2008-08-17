@@ -186,6 +186,11 @@ class XnetSession extends PlSession
         S::set('perms', $flags);
     }
 
+    public function loggedLevel()
+    {
+        return AUTH_COOKIE;
+    }
+
     public function sureLevel()
     {
         return AUTH_MDP;
