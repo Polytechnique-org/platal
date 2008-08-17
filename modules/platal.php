@@ -456,7 +456,7 @@ Adresse de secours : " . Post::v('email') : ""));
         }
         $wp = new PlWikiPage($dom . '.Admin');
         $conf = explode('%0a', $wp->getField('text'));
-        $wiz = new PlWizard('Tour d\'horizon', 'core/plwizard.tpl', true);
+        $wiz = new PlWizard('Tour d\'horizon', PlPage::getCoreTpl('plwizard.tpl'), true);
         foreach ($conf as $line) {
             $list = preg_split('/\s*[*|]\s*/', $line, -1, PREG_SPLIT_NO_EMPTY);
             $wiz->addPage('ReviewPage', $list[0], $list[1]);
