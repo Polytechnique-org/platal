@@ -24,8 +24,8 @@
  * but can be overwritten by others auth levels definitions.
  */
 define('AUTH_PUBLIC', 0);
-define('AUTH_COOKIE', 1);
-define('AUTH_MDP',    2);
+define('AUTH_COOKIE', 5);
+define('AUTH_MDP',    10);
 
 
 /** The PlSession is a wrapper around the user session management.
@@ -205,6 +205,10 @@ abstract class PlSession
 
 
     /*** Thresholds ***/
+
+    /** Minimum level of authentication that is considered as logged.
+     */
+    abstract public function loggedLevel();
 
     /** Minimum level of authentication that is considered as sure.
      */

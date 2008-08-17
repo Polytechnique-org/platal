@@ -109,12 +109,12 @@ class S
 
     public static function logged()
     {
-        return S::v('auth', AUTH_PUBLIC) > AUTH_PUBLIC;
+        return S::i('auth', AUTH_PUBLIC) >= Platal::session()->loggedLevel();
     }
 
     public static function identified()
     {
-        return S::v('auth', AUTH_PUBLIC) >= Platal::session()->sureLevel();
+        return S::i('auth', AUTH_PUBLIC) >= Platal::session()->sureLevel();
     }
 
     // Anti-XSRF protections.
