@@ -22,7 +22,7 @@
 
 
 {if $plset_count}
-{include file="core/plset.tpl"}
+{include core=plset.tpl}
 {else}
 {include wiki=Docs.Emploi}
 {/if}

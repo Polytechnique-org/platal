@@ -38,7 +38,7 @@ Dans les masques le <strong>*</strong> remplace n'importe quel texte et le <stro
 Les différentes règles sont appliquées par ordre de priorité décroissante.
 </p>
 
-{include file="core/table-editor.tpl"}
+{include core=table-editor.tpl}
 
 {literal}
 <script type="text/javascript">
