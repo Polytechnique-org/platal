@@ -99,7 +99,8 @@ if ($feed) {
         $wikiAll = "<p>La page de wiki $n n'existe pas. "
                  . "Il te suffit de <a href='" . str_replace('.', '/', $n) . "?action=edit'>l'éditer</a></p>";
     } else {
-        $page->coreTpl('404.tpl');
+        global $platal;
+        $platal->error404();
     }
 }
 

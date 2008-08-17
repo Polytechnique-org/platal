@@ -100,7 +100,7 @@ abstract class PlFeed implements PlIterator
         $user = Platal::session()->tokenAuth($login, $token);
         if (empty($user)) {
             if ($require_auth) {
-                $page->kill("Authentication required");
+                return PL_FORBIDDEN;
             } else {
                 $user = null;
             }

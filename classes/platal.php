@@ -308,6 +308,24 @@ abstract class Platal
         $page->run();
     }
 
+    public function error403()
+    {
+        $page =& self::page();
+
+        $this->__mods['core']->handler_403($page);
+        $page->assign('platal', $this);
+        $page->run();
+    }
+
+    public function error404()
+    {
+        $page =& self::page();
+
+        $this->__mods['core']->handler_404($page);
+        $page->assign('platal', $this);
+        $page->run();
+    }
+
     public function on_subscribe($forlife, $uid, $promo, $pass)
     {
         $args = func_get_args();
