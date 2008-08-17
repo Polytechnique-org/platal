@@ -235,7 +235,7 @@ class EventsModule extends PLModule
     {
         require_once dirname(__FILE__) . '/events/feed.inc.php';
         $feed = new EventFeed();
-        $feed->run($page, $user, $hash);
+        return $feed->run($page, $user, $hash);
     }
 
     function handler_preview(&$page)
