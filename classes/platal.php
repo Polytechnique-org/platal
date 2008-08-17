@@ -23,7 +23,7 @@ define('PL_DO_AUTH',   300);
 define('PL_FORBIDDEN', 403);
 define('PL_NOT_FOUND', 404);
 
-class Platal
+abstract class Platal
 {
     private $__mods;
     private $__hooks;
@@ -281,19 +281,9 @@ class Platal
         return $val;
     }
 
-    public function force_login(PlPage &$page)
-    {
-        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        if (S::logged()) {
-            $page->changeTpl('core/password_prompt_logged.tpl');
-            $page->addJsLink('do_challenge_response_logged.js');
-        } else {
-            $page->changeTpl('core/password_prompt.tpl');
-            $page->addJsLink('do_challenge_response.js');
-        }
-        $page->assign('platal', $this);
-        $page->run();
-    }
+    /** Show the authentication form.
+     */
+    abstract public function force_login(PlPage& $page);
 
     public function run()
     {
