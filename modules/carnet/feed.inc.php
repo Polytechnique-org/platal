@@ -54,8 +54,8 @@ class CarnetFeedIterator implements PlIterator
     public function next()
     {
         $this->pos++;
-        $this->first = ($this->count > 0 && $this->pos == 1);
-        $this->last  = ($this->count > 0 && $this->pos == $this->count);
+        $this->start = ($this->count > 0 && $this->pos == 1);
+        $this->stop  = ($this->count > 0 && $this->pos == $this->count);
         if ($this->count == 0) {
             return null;
         }
