@@ -26,7 +26,7 @@ ini_set('include_path', dirname(__FILE__) . '/../core/include:'
                       . '/usr/share/php');
 require_once('xorg.inc.php');
 
-new Platal('core');
+new Xorg('core');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
