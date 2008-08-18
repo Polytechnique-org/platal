@@ -313,12 +313,10 @@ class CarnetModule extends PLModule
 
     function handler_rss(&$page, $user = null, $hash = null)
     {
-        require_once 'rss.inc.php';
-        require_once 'notifs.inc.php';
-
-        $uid    = init_rss('carnet/rss.tpl', $user, $hash);
-        $notifs = new Notifs($uid, false);
-        $page->assign('notifs', $notifs);
+        require_once dirname(__FILE__) . '/carnet/feed.inc.php';
+        $page->assign('rss_hash', $hash);
+        $feed = new CarnetFeed();
+        return $feed->run($page, $user, $hash);
     }
 
     function handler_ical(&$page, $alias = null, $hash = null)
