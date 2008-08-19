@@ -24,65 +24,28 @@ require_once 'notifs.inc.php';
 class CarnetFeedIterator implements PlIterator
 {
     private $notifs;
-
-    private $start;
-    private $stop;
-    private $pos;
-    private $count;
-
-    private $p1;
-    private $p2;
+    private $it;
 
     public function __construct(Notifs& $notifs)
     {
         $this->notifs =& $notifs;
-        foreach ($notifs->_data as $c) {
-            foreach ($c as $promo) {
-                $this->count += count($promo);
-            }
-        }
-        $this->pos = 0;
-        reset($notifs->_data);
-        if ($this->count > 0) {
-            $this->p1 = current($notifs->_data);
-            reset($this->p1);
-            $this->p2 = current($this->p1);
-            reset($this->p2);
-        }
+        $this->it = new PlArrayIterator($notifs->_data, 3);
     }
 
     public function next()
     {
-        $this->pos++;
-        $this->start = ($this->count > 0 && $this->pos == 1);
-        $this->stop  = ($this->count > 0 && $this->pos == $this->count);
-        if ($this->count == 0) {
+        $data = $this->it->next();
+        if (is_null($data)) {
             return null;
         }
-
-        $x = current($this->p2);
-        if ($x === false) {
-            $this->p2 = next($this->p1);
-            if ($this->p2 === false) {
-                $this->p1 = next($this->notifs->_data);
-                if ($this->p1 === false) {
-                    return null;
-                }
-                reset($this->p1);
-                $this->p2 = current($this->p1);
-            }
-            reset($this->p2);
-            $x = current($this->p2);
-        }
-        $cid = key($this->notifs->_data);
-        next($this->p2);
+        $cid  = $data['keys'][0];
+        $x    = $data['value'];
 
         global $globals;
-        $author = $x['prenom'] . ' ' . $x['nom'] . ' (X' . $x['promo'] . ')';
-
         @require_once 'Date.php';
         @$date = new Date($x['date']);
         @$date = $date->format('%e %B %Y');
+        $author = $x['prenom'] . ' ' . $x['nom'] . ' (X' . $x['promo'] . ')';
         return array_merge($x, 
                     array('author' => $author,
                           'publication' => $x['known'],
@@ -95,17 +58,17 @@ class CarnetFeedIterator implements PlIterator
 
     public function total()
     {
-        return $this->count;
+        return $this->it->total();
     }
 
     public function first()
     {
-        return $this->start;
+        return $this->it->first();
     }
 
     public function last()
     {
-        return $this->stop;
+        return $this->it->last();
     }
 }
 
