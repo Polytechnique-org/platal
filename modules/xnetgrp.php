@@ -320,7 +320,7 @@ class XnetGrpModule extends PLModule
             $mls = array_keys(Env::v('ml', array()));
             $mbr = array_keys(Env::v('membres', array()));
 
-            require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
+            $this->load('mail.inc.php');
             set_time_limit(120);
             $tos = get_all_redirects($mbr,  $mls, $mmlist);
             $upload = PlUpload::get($_FILES['uploaded'], S::v('forlife'), 'xnet.emails', true);
@@ -735,7 +735,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
+        $this->load('mail.inc.php');
         $page->changeTpl('xnetgrp/annuaire-admin.tpl');
         $mmlist = new MMList(S::v('uid'), S::v('password'),
                              $globals->asso('mail_domain'));
@@ -1185,7 +1185,7 @@ class XnetGrpModule extends PLModule
         global $globals;
         $page->assign('asso', $globals->asso());
 
-        require_once dirname(__FILE__) . '/xnetgrp/feed.inc.php';
+        $this->load('feed.inc.php');
         $feed = new XnetGrpEventFeed();
         return $feed->run($page, $user, $hash, false);
     }

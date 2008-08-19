@@ -278,7 +278,7 @@ class CarnetModule extends PLModule
 
     function handler_pdf(&$page, $arg0 = null, $arg1 = null)
     {
-        require_once dirname(__FILE__).'/carnet/contacts.pdf.inc.php';
+        $this->load('contacts.pdf.inc.php');
         require_once 'user.func.inc.php';
 
         Platal::session()->close();
@@ -313,7 +313,7 @@ class CarnetModule extends PLModule
 
     function handler_rss(&$page, $user = null, $hash = null)
     {
-        require_once dirname(__FILE__) . '/carnet/feed.inc.php';
+        $this->load('feed.inc.php');
         $feed = new CarnetFeed();
         return $feed->run($page, $user, $hash);
     }

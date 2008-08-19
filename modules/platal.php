@@ -449,7 +449,7 @@ Adresse de secours : " . Post::v('email') : ""));
 
     function handler_review(&$page, $action = null, $mode = null) 
     {
-        require_once dirname(__FILE__) . '/platal/review.inc.php';
+        $this->load('review.inc.php');
         $dom = 'Review';
         if (@$GLOBALS['IS_XNET_SITE']) {
             $dom .= 'Xnet';

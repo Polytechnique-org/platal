@@ -179,7 +179,7 @@ class XnetEventsModule extends PLModule
 
     function handler_sub(&$page, $eid = null)
     {
-        require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
+        $this->load('xnetevents.inc.php');
         $page->changeTpl('xnetevents/subscribe.tpl');
 
         $evt = get_event_detail($eid);
@@ -266,7 +266,7 @@ class XnetEventsModule extends PLModule
 
     function handler_csv(&$page, $eid = null, $item_id = null)
     {
-        require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
+        $this->load('xnetevents.inc.php');
 
         if (!is_numeric($item_id)) {
             $item_id = null;
@@ -301,7 +301,7 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
-        require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
+        $this->load('xnetevents.inc.php');
         $evt = get_event_detail($eid);
         if (!$evt) {
             return PL_FORBIDDEN;
@@ -366,7 +366,7 @@ class XnetEventsModule extends PLModule
         if (Post::v('intitule')) {
             S::assert_xsrf_token();
 
-            require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
+            $this->load('xnetevents.inc.php');
             $short_name = event_change_shortname($page, $eid,
                                                  $infos['short_name'],
                                                  Env::v('short_name', ''));
@@ -517,7 +517,7 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
-        require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
+        $this->load('xnetevents.inc.php');
 
         $evt = get_event_detail($eid, $item_id);
         if (!$evt) {

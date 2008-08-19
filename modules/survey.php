@@ -41,7 +41,7 @@ class SurveyModule extends PLModule
     // {{{ function handler_index() : lists all available surveys
     function handler_index(&$page, $action = null)
     {
-        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $this->load('survey.inc.php');
         $page->changeTpl('survey/index.tpl');
         $page->assign('survey_current', Survey::retrieveList('c'));
         $page->assign('survey_old', Survey::retrieveList('o'));
@@ -59,7 +59,7 @@ class SurveyModule extends PLModule
         if ($id == -1) {
             return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey');
         }
-        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $this->load('survey.inc.php');
         $survey = Survey::retrieveSurvey($id); // retrieves the survey object structure
         if ($survey == null || !$survey->isValid()) {
             return $this->show_error($page, "Sondage ".$id." introuvable.", 'survey');
@@ -98,7 +98,7 @@ class SurveyModule extends PLModule
         if ($id == -1) {
             return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey');
         }
-        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $this->load('survey.inc.php');
         $survey = Survey::retrieveSurvey($id); // retrieves the survey object structure
         if ($survey == null || !$survey->isValid()) {
             return $this->show_error($page, "Sondage ".$id." introuvable.", 'survey');
@@ -122,7 +122,7 @@ class SurveyModule extends PLModule
     // {{{ function handler_admin() : index of admin mode
     function handler_admin(&$page, $id = -1)
     {
-        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $this->load('survey.inc.php');
         $this->clear_session();
         if ($id == -1) {
             $page->changeTpl('survey/admin.tpl');
@@ -148,7 +148,7 @@ class SurveyModule extends PLModule
         if ($id == -1 || ($id == 'req' && $req == -1)) {
             return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey/admin');
         }
-        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $this->load('survey.inc.php');
         $this->clear_session(); // cleans session (in case there would have been a problem before)
         if ($id == 'req') {
             $survey = Survey::retrieveSurveyReq($req);
@@ -180,7 +180,7 @@ class SurveyModule extends PLModule
             return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey/admin');
         }
         $id = intval($id);
-        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $this->load('survey.inc.php');
         $surveyInfo = Survey::retrieveSurveyInfo($id); // retrieves information about the survey (does not retrieve and unserialize the object structure)
         if ($surveyInfo == null) {
             return $this->show_error($page, "Sondage ".$id." introuvable.", 'survey/admin');
@@ -209,7 +209,7 @@ class SurveyModule extends PLModule
             return $this->show_error($page, "Un identifiant de sondage doit être précisé.", 'survey/admin');
         }
         $id = intval($id);
-        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $this->load('survey.inc.php');
         $surveyInfo = Survey::retrieveSurveyInfo($id); // retrieves information about the survey (does not retrieve and unserialize the object structure)
         if ($surveyInfo == null) {
             return $this->show_error($page, "Sondage ".$id." introuvable.", 'survey/admin');
@@ -229,7 +229,7 @@ class SurveyModule extends PLModule
     // {{{ function handler_edit() : edits a survey (in normal mode unless called by handler_adminEdit() )
     function handler_edit(&$page, $action = 'show', $qid = 'root')
     {
-        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $this->load('survey.inc.php');
         $action = Post::v('survey_action', $action);
         $qid    = Post::v('survey_qid', $qid);
         if (Post::has('survey_cancel')) { // after cancelling changes, shows the survey
@@ -363,7 +363,7 @@ class SurveyModule extends PLModule
     // {{{ function handler_ajax() : some ajax in editing a new question (for now, there may be a little more later)
     function handler_ajax(&$page, $type)
     {
-        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $this->load('survey.inc.php');
         header('Content-Type: text/html; charset="UTF-8"');
         if (Survey::isType($type)) { // when type has been chosen, the form is updated to fit exactly the type of question chosen
             $page->changeTpl('survey/edit_new.tpl', NO_SKIN);
@@ -398,7 +398,7 @@ class SurveyModule extends PLModule
     // {{{ function check_surveyPerms() : checks the particular surveys access permissions
     function check_surveyPerms(&$page, $survey)
     {
-        require_once dirname(__FILE__).'/survey/survey.inc.php';
+        $this->load('survey.inc.php');
         if (!$survey->isMode(Survey::MODE_ALL)) { // if the survey is reserved to alumni
             global $globals;
             if (!call_user_func(array($globals->session, 'doAuth'))) { // checks authentification

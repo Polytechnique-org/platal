@@ -318,7 +318,7 @@ class ProfileModule extends PLModule
         $page->addJsLink('profile.js');
         $page->addJsLink('jquery.autocomplete.js');
         $wiz = new PlWizard('Profil', PlPage::getCoreTpl('plwizard.tpl'), true, true);
-        require_once dirname(__FILE__) . '/profile/page.inc.php';
+        $this->load('page.inc.php');
         $wiz->addPage('ProfileGeneral', 'Général', 'general');
         $wiz->addPage('ProfileAddresses', 'Adresses personnelles', 'adresses');
         $wiz->addPage('ProfileGroups', 'Groupes X - Binets', 'poly');

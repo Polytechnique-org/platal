@@ -233,7 +233,7 @@ class EventsModule extends PLModule
 
     function handler_rss(&$page, $user = null, $hash = null)
     {
-        require_once dirname(__FILE__) . '/events/feed.inc.php';
+        $this->load('feed.inc.php');
         $feed = new EventFeed();
         return $feed->run($page, $user, $hash);
     }
