@@ -50,12 +50,12 @@ if (S::logged())
 else
     $globals->search->result_fields .="
         IF(q.profile_freetext_pub='public', q.profile_freetext, '') AS freetext,
-        IF(adr.pub='public', adr.city, '') AS city,
-        IF(adr.pub='public', gp.pays, '') AS countrytxt,
-        IF(adr.pub='public', gr.name, '') AS region,
+        IF(adr.pub='public', adr.city, '')   AS city,
+        IF(adr.pub='public', gp.pays, '')    AS countrytxt,
+        IF(adr.pub='public', gr.name, '')    AS region,
         IF(e.pub='public', e.entreprise, '') AS entreprise,
-        IF(nw.pub='public', nw.address, '') AS networking_address,
-        IF(nw.pub='public', nwe.name, '') AS networking_name,";
+        IF(nw.pub='public', nw.address, '')  AS networking_address,
+        IF(nw.pub='public', nwe.name, '')    AS networking_name,";
 @$globals->search->result_where_statement = '
     LEFT JOIN  profile_education             AS edu0 ON (u.user_id = edu0.uid AND edu0.id = 0)
     LEFT JOIN  profile_education_enum        AS ede0 ON (ede0.id = edu0.eduid)
@@ -73,18 +73,18 @@ else
     LEFT JOIN  profile_education_enum        AS ede3 ON (ede3.id = edu3.eduid)
     LEFT JOIN  profile_education_degree_enum AS edd3 ON (edd3.id = edu3.degreeid)
     LEFT JOIN  profile_education_field_enum  AS f3   ON (f3.id = edu3.fieldid)
-    LEFT JOIN  entreprises             AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
-    LEFT JOIN  emploi_secteur          AS es  ON (e.secteur = es.id)
-    LEFT JOIN  fonctions_def           AS ef  ON (e.fonction = ef.id)
-    LEFT JOIN  geoloc_pays             AS n1  ON (u.nationalite = n1.a2)
-    LEFT JOIN  geoloc_pays             AS n2  ON (u.nationalite2 = n2.a2)
-    LEFT JOIN  geoloc_pays             AS n3  ON (u.nationalite3 = n3.a2)
-    LEFT JOIN  adresses                AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
-    LEFT JOIN  geoloc_pays             AS gp  ON (adr.country = gp.a2)
-    LEFT JOIN  geoloc_region           AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
-    LEFT JOIN  emails                  AS em  ON (em.uid = u.user_id AND em.flags = \'active\')
-    LEFT JOIN  profile_networking      AS nw  ON (nw.uid = u.user_id)
-    LEFT JOIN  profile_networking_enum AS nwe ON (nwe.network_type = nw.network_type)';
+    LEFT JOIN  entreprises                   AS e    ON (e.entrid = 0 AND e.uid = u.user_id)
+    LEFT JOIN  emploi_secteur                AS es   ON (e.secteur = es.id)
+    LEFT JOIN  fonctions_def                 AS ef   ON (e.fonction = ef.id)
+    LEFT JOIN  geoloc_pays                   AS n1   ON (u.nationalite = n1.a2)
+    LEFT JOIN  geoloc_pays                   AS n2   ON (u.nationalite2 = n2.a2)
+    LEFT JOIN  geoloc_pays                   AS n3   ON (u.nationalite3 = n3.a2)
+    LEFT JOIN  adresses                      AS adr  ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
+    LEFT JOIN  geoloc_pays                   AS gp   ON (adr.country = gp.a2)
+    LEFT JOIN  geoloc_region                 AS gr   ON (adr.country = gr.a2 AND adr.region = gr.region)
+    LEFT JOIN  emails                        AS em   ON (em.uid = u.user_id AND em.flags = \'active\')
+    LEFT JOIN  profile_networking            AS nw   ON (nw.uid = u.user_id)
+    LEFT JOIN  profile_networking_enum       AS nwe  ON (nwe.network_type = nw.network_type)';
 
 // }}}
 // {{{ class ThrowError

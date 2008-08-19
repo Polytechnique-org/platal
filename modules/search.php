@@ -172,19 +172,19 @@ class SearchModule extends PLModule
             $this->form_prepare();
         } else {
             $textFields = array(
-                'country' => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'pays', 'exact' => false),
-                'fonction' => array('field' => 'id', 'table' => 'fonctions_def', 'text' => 'fonction_fr', 'exact' => true),
-                'secteur' => array('field' => 'id', 'table' => 'emploi_secteur', 'text' => 'label', 'exact' => false),
-                'nationalite' => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'nat', 'exact' => 'false'),
-                'binet' => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
+                'country'         => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'pays', 'exact' => false),
+                'fonction'        => array('field' => 'id', 'table' => 'fonctions_def', 'text' => 'fonction_fr', 'exact' => true),
+                'secteur'         => array('field' => 'id', 'table' => 'emploi_secteur', 'text' => 'label', 'exact' => false),
+                'nationalite'     => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'nat', 'exact' => 'false'),
+                'binet'           => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
                 'networking_type' => array('field' => 'network_type', 'table' => 'profile_networking_enum',
                                            'text' => 'name', 'exact' => false),
-                'groupex' => array('field' => 'id', 'table' => 'groupex.asso',
-                                   'text' => "(a.cat = 'GroupesX' OR a.cat = 'Institutions') AND pub = 'public' AND nom",
-                                   'exact' => false),
-                'section' => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
-                'school' => array('field' => 'id', 'table' => 'profile_education_enum', 'text' => 'name', 'exact' => false),
-                'city' => array('table' => 'geoloc_city', 'text' => 'name', 'exact' => false)
+                'groupex'         => array('field' => 'id', 'table' => 'groupex.asso',
+                                           'text' => "(a.cat = 'GroupesX' OR a.cat = 'Institutions') AND pub = 'public' AND nom",
+                                           'exact' => false),
+                'section'         => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
+                'school'          => array('field' => 'id', 'table' => 'profile_education_enum', 'text' => 'name', 'exact' => false),
+                'city'            => array('table' => 'geoloc_city', 'text' => 'name', 'exact' => false)
             );
             if (!Env::has('page')) {
                 S::logger()->log('search', 'adv=' . var_export($_GET, true));
@@ -264,7 +264,7 @@ class SearchModule extends PLModule
           case 'binetTxt':
             $db = '`binets_def` INNER JOIN
                    `binets_ins` ON(`binets_def`.`id` = `binets_ins`.`binet_id`)';
-            $field='`binets_def`.`text`';
+            $field = '`binets_def`.`text`';
             if (strlen($q) > 2)
                 $beginwith = false;
             $realid = '`binets_def`.`id`';
@@ -285,15 +285,15 @@ class SearchModule extends PLModule
           case 'countryTxt':
             $db = '`geoloc_pays` INNER JOIN
                    `adresses` ON(`geoloc_pays`.`a2` = `adresses`.`country`)';
-            $unique='`uid`';
+            $unique = '`uid`';
             $field = '`geoloc_pays`.`pays`';
             $field2 = '`geoloc_pays`.`country`';
-            $realid='`geoloc_pays`.`a2`';
+            $realid = '`geoloc_pays`.`a2`';
             break;
           case 'entreprise':
             $db = '`entreprises`';
             $field = '`entreprise`';
-            $unique='`uid`';
+            $unique = '`uid`';
             break;
           case 'firstname':
             $field = '`prenom`';
@@ -342,7 +342,7 @@ class SearchModule extends PLModule
           case 'poste':
             $db = '`entreprises`';
             $field = '`poste`';
-            $unique='`uid`';
+            $unique = '`uid`';
             break;
           case 'schoolTxt':
             $db = 'profile_education_enum INNER JOIN

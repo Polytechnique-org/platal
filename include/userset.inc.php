@@ -26,16 +26,16 @@ global $globals;
 @$globals->search->result_where_statement = '
     LEFT JOIN  profile_education       AS edu ON (u.user_id = edu.uid)
     LEFT JOIN  profile_education_enum  AS ede ON (ede.id = edu.eduid)
-    LEFT JOIN  entreprises    AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
-    LEFT JOIN  emploi_secteur AS es  ON (e.secteur = es.id)
-    LEFT JOIN  fonctions_def  AS ef  ON (e.fonction = ef.id)
-    LEFT JOIN  geoloc_pays    AS n1  ON (u.nationalite = n1.a2)
-    LEFT JOIN  geoloc_pays    AS n2  ON (u.nationalite2 = n2.a2)
-    LEFT JOIN  geoloc_pays    AS n3  ON (u.nationalite2 = n3.a2)
-    LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
-    LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
-    LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
-    LEFT JOIN  emails         AS em  ON (em.uid = u.user_id AND em.flags = \'active\')';
+    LEFT JOIN  entreprises             AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
+    LEFT JOIN  emploi_secteur          AS es  ON (e.secteur = es.id)
+    LEFT JOIN  fonctions_def           AS ef  ON (e.fonction = ef.id)
+    LEFT JOIN  geoloc_pays             AS n1  ON (u.nationalite = n1.a2)
+    LEFT JOIN  geoloc_pays             AS n2  ON (u.nationalite2 = n2.a2)
+    LEFT JOIN  geoloc_pays             AS n3  ON (u.nationalite2 = n3.a2)
+    LEFT JOIN  adresses                AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
+    LEFT JOIN  geoloc_pays             AS gp  ON (adr.country = gp.a2)
+    LEFT JOIN  geoloc_region           AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
+    LEFT JOIN  emails                  AS em  ON (em.uid = u.user_id AND em.flags = \'active\')';
 
 class UserSet extends PlSet
 {
@@ -195,12 +195,12 @@ class MinificheView extends MultipageView
 
     public function joins()
     {
-        return  "LEFT JOIN  entreprises    AS e   ON (e.entrid = 0 AND e.uid = u.user_id".(S::logged() ? "" : " AND e.pub = 'public'").")
-                 LEFT JOIN  emploi_secteur AS es  ON (e.secteur = es.id)
-                 LEFT JOIN  fonctions_def  AS ef  ON (e.fonction = ef.id)
-                 LEFT JOIN  geoloc_pays    AS n1  ON (u.nationalite = n1.a2)
-                 LEFT JOIN  geoloc_pays    AS n2  ON (u.nationalite2 = n2.a2)
-                 LEFT JOIN  geoloc_pays    AS n3  ON (u.nationalite3 = n3.a2)
+        return  "LEFT JOIN  entreprises                   AS e    ON (e.entrid = 0 AND e.uid = u.user_id".(S::logged() ? "" : " AND e.pub = 'public'").")
+                 LEFT JOIN  emploi_secteur                AS es   ON (e.secteur = es.id)
+                 LEFT JOIN  fonctions_def                 AS ef   ON (e.fonction = ef.id)
+                 LEFT JOIN  geoloc_pays                   AS n1   ON (u.nationalite = n1.a2)
+                 LEFT JOIN  geoloc_pays                   AS n2   ON (u.nationalite2 = n2.a2)
+                 LEFT JOIN  geoloc_pays                   AS n3   ON (u.nationalite3 = n3.a2)
                  LEFT JOIN  profile_education             AS edu0 ON (u.user_id = edu0.uid AND edu0.id = 0)
                  LEFT JOIN  profile_education_enum        AS ede0 ON (ede0.id = edu0.eduid)
                  LEFT JOIN  profile_education_degree_enum AS edd0 ON (edd0.id = edu0.degreeid)
@@ -217,14 +217,15 @@ class MinificheView extends MultipageView
                  LEFT JOIN  profile_education_enum        AS ede3 ON (ede3.id = edu3.eduid)
                  LEFT JOIN  profile_education_degree_enum AS edd3 ON (edd3.id = edu3.degreeid)
                  LEFT JOIN  profile_education_field_enum  AS f3   ON (f3.id = edu3.fieldid)
-                 LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid
-                                                      AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : " AND adr.pub = 'public'").")
-                 LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
-                 LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
-                 LEFT JOIN  emails         AS em  ON (em.uid = u.user_id AND em.flags = 'active')
-                INNER JOIN  profile_names_display AS nd  ON (nd.user_id = u.user_id)" .
+                 LEFT JOIN  adresses                      AS adr  ON (u.user_id = adr.uid
+                                                                      AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : "
+                                                                      AND adr.pub = 'public'").")
+                 LEFT JOIN  geoloc_pays                   AS gp   ON (adr.country = gp.a2)
+                 LEFT JOIN  geoloc_region                 AS gr   ON (adr.country = gr.a2 AND adr.region = gr.region)
+                 LEFT JOIN  emails                        AS em   ON (em.uid = u.user_id AND em.flags = 'active')
+                INNER JOIN  profile_names_display         AS nd   ON (nd.user_id = u.user_id)" .
                 (S::logged() ?
-                 "LEFT JOIN  contacts       AS c   On (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
+                "LEFT JOIN  contacts                      AS c   ON (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
                  : "");
     }
 
@@ -472,11 +473,12 @@ class GadgetView implements PlView
 
     public function joins()
     {
-        return  "LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : " AND adr.pub = 'public'").")
-                 LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
-                 LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)" .
+        return  "LEFT JOIN  adresses      AS adr ON (u.user_id = adr.uid AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : "
+                                                                         AND adr.pub = 'public'").")
+                 LEFT JOIN  geoloc_pays   AS gp  ON (adr.country = gp.a2)
+                 LEFT JOIN  geoloc_region AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)" .
                 (S::logged() ?
-                 "LEFT JOIN  contacts       AS c   On (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
+                "LEFT JOIN  contacts      AS c   ON (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
                  : "");
     }
 
