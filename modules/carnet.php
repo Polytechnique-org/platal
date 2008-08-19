@@ -314,7 +314,6 @@ class CarnetModule extends PLModule
     function handler_rss(&$page, $user = null, $hash = null)
     {
         require_once dirname(__FILE__) . '/carnet/feed.inc.php';
-        $page->assign('rss_hash', $hash);
         $feed = new CarnetFeed();
         return $feed->run($page, $user, $hash);
     }
