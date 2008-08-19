@@ -21,7 +21,17 @@
 
 abstract class PLModule
 {
-    abstract function handlers();
+    /** Path of the includes of the module
+     * Internal use only.
+     */
+    private $modIncludePath;
+
+    /** Return an array associating pathes to the corresponding hook.
+     * array( '/my/path' => make_hook(...),
+     *        ...);
+     * @ref make_hook
+     */
+    abstract public function handlers();
 
     /** Register a hook
      * @param fun name of the handler (the exact name will be handler_$fun)
@@ -46,20 +56,30 @@ abstract class PLModule
                      'type'  => $type);
     }
 
+    /** Include a 'module-specific' file.
+     * Module specific includes must be in the in the path modules/{modulename}.
+     */
+    public function load($file)
+    {
+        require_once $this->modIncludePath . $file;
+    }
+
     /* static functions */
 
     public static function factory($modname)
     {
         global $globals;
         if ($modname == 'core') {
-            $mod_path = $globals->spoolroot  . '/core/modules/' . $modname . '.php';
+            $mod_path = $globals->spoolroot  . '/core/modules/' . $modname;
         } else {
-            $mod_path = $globals->spoolroot . '/modules/' . $modname . '.php';
+            $mod_path = $globals->spoolroot . '/modules/' . $modname;
         }
         $class    = ucfirst($modname) . 'Module';
 
-        require_once $mod_path;
-        return new $class();
+        require_once $mod_path . '.php';
+        $module = new $class();
+        $module->modIncludePath = $mod_path . '/';
+        return $module;
     }
 }
 
