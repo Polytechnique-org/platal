@@ -122,7 +122,7 @@ class XnetGrpModule extends PLModule
 
         if (S::logged()) {
             if (Env::has('read')) {
-                XDB::query('DELETE r.*
+                XDB::query('DELETE groupex.r.*
                               FROM groupex.announces_read AS r
                         INNER JOIN groupex.announces AS a ON a.id = r.announce_id
                              WHERE peremption < CURRENT_DATE()');
