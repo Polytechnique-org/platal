@@ -56,21 +56,24 @@ class SearchModule extends PLModule
             $school = Env::i('school');
         }
 
-        if (!is_null($school)) {
-            $sql = 'SELECT name FROM profile_education_enum WHERE id=' . $school;
+        if ((!is_null($school)) && ($school != '')) {
+            $sql = 'SELECT  degreeid
+                      FROM  profile_education_degree
+                     WHERE  eduid=' . $school;
         } else {
-            $sql = 'DESCRIBE profile_education_enum name';
+            $sql = 'SELECT  id
+                      FROM  profile_education_degree_enum
+                  ORDER BY  id';
         }
 
         $res = XDB::query($sql);
-        $row = $res->fetchOneRow();
-        if (!is_null($school)) {
-            $types = $row[0];
-        } else {
-            $types = explode('(',$row[1]);
-            $types = str_replace("'","",substr($types[1],0,-1));
-        }
-        Platal::page()->assign('choix_diplomas', explode(',',$types));
+        Platal::page()->assign('choix_diplomas', $res->fetchColumn());
+
+        $sql = 'SELECT  degree
+                  FROM  profile_education_degree_enum
+              ORDER BY  id';
+        $res = XDB::query($sql);
+        Platal::page()->assign('name_diplomas', $res->fetchColumn());
     }
 
     function handler_quick(&$page, $action = null, $subaction = null)
@@ -471,6 +474,8 @@ class SearchModule extends PLModule
             break;
           case 'school':
             $db = 'profile_education_enum';
+            $field = 'name';
+            $id = 'id';
             $page->assign('onchange', 'changeSchool(this.value)');
             break;
           case 'section':

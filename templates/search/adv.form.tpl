@@ -75,19 +75,13 @@
 
     if (schoolId) {
       $(".autocomplete[@name='schoolTxt']").addClass('hidden_valid');
-
-      $("[@name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
-          if ($("select[@name='diploma']").children("option").size() > 1) {
-            $("select[@name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
-          } else {
-            $("select[@name='diploma']").attr('value', '');
-          }
-        });
     } else {
       $(".autocomplete[@name='schoolTxt']").removeClass('hidden_valid');
-
-      $("select[@name='diploma']").attr('value', '');
     }
+
+    $("[@name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
+        $("select[@name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
+      });
   }
 
   // when choosing autocomplete from list, must validate
