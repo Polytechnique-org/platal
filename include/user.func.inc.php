@@ -492,7 +492,8 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
         $user['gpxs_join'] = join(', ', $user['gpxs']);
     }
 
-    $res = XDB::iterRow("SELECT  en.name AS name, en.url AS url, d.degree AS degree, ed.grad_year AS grad_year, f.field AS field
+    $res = XDB::iterRow("SELECT  en.name AS name, en.url AS url, d.degree AS degree,
+                                 ed.grad_year AS grad_year, f.field AS field, ed.program AS program
                            FROM  profile_education AS ed
                      INNER JOIN  profile_education_enum        AS en ON (en.id = ed.eduid)
                      INNER JOIN  profile_education_degree_enum AS d  ON (d.id  = ed.degreeid)
@@ -502,11 +503,11 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
 
     $user['education'] = "";
     require_once('education.func.inc.php');
-    if (list($name, $url, $degree, $grad_year, $field) = $res->next()) {
-        $user['education'] .= education_fmt($name, $url, $degree, $grad_year, $field, $user['sexe'], true);
+    if (list($name, $url, $degree, $grad_year, $field, $program) = $res->next()) {
+        $user['education'] .= education_fmt($name, $url, $degree, $grad_year, $field, $program, $user['sexe'], true);
     }
-    while (list($name, $url, $degree, $grad_year, $field) = $res->next()) {
-        $user['education'] .= ", " . education_fmt($name, $url, $degree, $grad_year, $field, $user['sexe'], true);
+    while (list($name, $url, $degree, $grad_year, $field, $program) = $res->next()) {
+        $user['education'] .= ", " . education_fmt($name, $url, $degree, $grad_year, $field, $program, $user['sexe'], true);
     }
 
     if (has_user_right($user['medals_pub'], $view)) {

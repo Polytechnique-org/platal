@@ -91,7 +91,7 @@ class ProfileEdu implements ProfileSetting
         $success = true;
         if (is_null($value) || !is_array($value)) {
             $value = array();
-            $res = XDB::iterator("SELECT  eduid, degreeid, fieldid, grad_year
+            $res = XDB::iterator("SELECT  eduid, degreeid, fieldid, grad_year, program
                                     FROM  profile_education
                                    WHERE  uid = {?}
                                 ORDER BY  id",
@@ -125,8 +125,10 @@ class ProfileEdu implements ProfileSetting
         foreach ($value as $eduid=>&$edu) {
             if ($edu['eduid'] != '') {
                 XDB::execute("INSERT INTO  profile_education
-                                      SET  id = {?}, uid = {?}, eduid = {?}, degreeid = {?}, fieldid = {?}, grad_year = {?}",
-                             $eduid, S::i('uid'), $edu['eduid'], $edu['degreeid'], $edu['fieldid'], $edu['grad_year']);
+                                      SET  id = {?}, uid = {?}, eduid = {?}, degreeid = {?},
+                                           fieldid = {?}, grad_year = {?}, program = {?}",
+                             $eduid, S::i('uid'), $edu['eduid'], $edu['degreeid'],
+                             $edu['fieldid'], $edu['grad_year'], $edu['program']);
             }
         }
     }

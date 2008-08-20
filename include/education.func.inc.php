@@ -107,13 +107,19 @@ Platal::page()->register_function('education_degree_name', 'education_degree_nam
 
 /** formatte une formation pour l'affichage
  */
-function education_fmt($name, $url, $degree, $grad_year, $field, $sexe, $long)
+function education_fmt($name, $url, $degree, $grad_year, $field, $program, $sexe, $long)
 {
     $field = strtolower($field);
     $txt = "";
 
-    if ($grad_year || $field) {
+    if ($grad_year || $field || $program) {
         $txt .= "<span  title=\"(";
+        if ($program) {
+            $txt .= $program;
+            if ($grad_year || $field) {
+                $txt .= ", ";
+            }
+        }
         if ($grad_year) {
             if ($sexe) {
                 $txt .= "diplômée en $grad_year";
@@ -152,7 +158,7 @@ function education_fmt($name, $url, $degree, $grad_year, $field, $sexe, $long)
 function _education_fmt($params, &$smarty)
 {
     extract($params);
-    return education_fmt($name, $url, $degree, $grad_year, $field, $sexe, $long);
+    return education_fmt($name, $url, $degree, $grad_year, $field, $program, $sexe, $long);
 }
 Platal::page()->register_function('education_fmt', '_education_fmt');
 

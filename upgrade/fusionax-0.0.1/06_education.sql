@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS profile_education (
   degreeid INT(4) NOT NULL DEFAULT 0,
   fieldid INT(2) NOT NULL DEFAULT 0,
   grad_year INT(4) NOT NULL DEFAULT 0,
+  program VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY(id, uid)
 ) CHARSET=utf8;
 

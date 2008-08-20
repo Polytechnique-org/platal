@@ -42,5 +42,8 @@ Domaine de formation&nbsp;:
 Année d'obtention du diplôme&nbsp;:
 <input type="text" {if $edu.error}class="error"{/if} name="{$eduname}[grad_year]" value="{$edu.grad_year}" size="4" maxlength="4" />
 <small>(par exemple&nbsp;: 2008)</small>
+<br />
+Intitulé de la formation&nbsp;:
+<input type="text" name="{$eduname}[program]" value="{$edu.program}" size="40" maxlength="255" />
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
