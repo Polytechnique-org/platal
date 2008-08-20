@@ -416,7 +416,7 @@ class ProfileModule extends PLModule
         $page->assign('tel', array());
     }
 
-    function handler_ajax_edu(&$page, $eduid)
+    function handler_ajax_edu(&$page, $eduid, $class)
     {
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/edu.tpl', NO_SKIN);
@@ -425,6 +425,7 @@ class ProfileModule extends PLModule
                             ORDER BY  field");
         $page->assign('edu_fields', $res->fetchAllAssoc());
         $page->assign('eduid', $eduid);
+        $page->assign('class', $class);
         require_once "education.func.inc.php";
     }
 

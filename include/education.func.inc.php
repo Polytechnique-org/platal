@@ -19,15 +19,15 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function education_options($current=0)
+function education_options($current = 0)
 {
-    $html = '<option value = "-1"></option>';
+    $html = '<option value="-1"></option>';
     $res  = XDB::iterator("SELECT  *
                              FROM  profile_education_enum
                          ORDER BY  name");
     while ($arr_edu = $res->next()) {
         $html .= '<option value="' . $arr_edu["id"] . '"';
-        if ($arr_edu["id"]==$current) {
+        if ($arr_edu["id"] == $current) {
             $html .= " selected='selected'";
         }
         $html .= '>' . htmlspecialchars($arr_edu["name"]) . "</option>\n";
@@ -113,7 +113,7 @@ function education_fmt($name, $url, $degree, $grad_year, $field, $program, $sexe
     $txt = "";
 
     if ($grad_year || $field || $program) {
-        $txt .= "<span  title=\"(";
+        $txt .= "<span title=\"(";
         if ($program) {
             $txt .= $program;
             if ($grad_year || $field) {

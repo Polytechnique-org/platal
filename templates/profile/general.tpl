@@ -104,40 +104,37 @@
       <a href="javascript:delNationality('3');">{icon name=cross title="Supprimer cette nationalité"}</a>
     </td>
   </tr>
+</table>
+
+<table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Formations">
   <tr>
-    <td>
-      <span class="titre">Formation</span>
-    </td>
-    <td></td>
+    <th colspan="2">
+      <div class="flags" style="float: left">
+        <input type="checkbox" disabled="disabled" checked="checked" />
+        {icon name="flag_green" title="site public"}
+      </div>
+      Formations
+    </th>
   </tr>
   {foreach from=$edus key=eduid item=edu}
-  <tr>
-    <td colspan="2">
-      <div id="edu_{$eduid}">
-        {include file="profile/edu.tpl" eduid="$eduid" edu="$edu" edu_fields=$edu_fields}
-      </div>
-    </td>
-  </tr>
+    {cycle values="impair, pair" assign=class}
+    {include file="profile/edu.tpl" eduid=$eduid edu=$edu edu_fields=$edu_fields class=$class}
   {/foreach}
   {if $edus|@count eq 0}
-  <tr>
-    <td colspan="2">
-      <div id="edu_0">
-        {include file="profile/edu.tpl" eduid=0 edu=0}
-      </div>
-    </td>
-  </tr>
+    {cycle values="impair, pair" assign=class}
+    {include file="profile/edu.tpl" eduid=0 edu=0 class=$class}
   {/if}
-  <tr>
+  {cycle values="impair, pair" assign=class}
+  <tr id="edu_add" class="{$class}">
     <td colspan="2">
-      <div id="edu_add" class="center" style="clear: both; padding-top: 4px;">
+      <div class="center" style="clear: both; padding-top: 4px;">
         <a href="javascript:addEdu();">
           {icon name=add title="Ajouter une formation"} Ajouter une formation
         </a>
       </div>
     </td>
   </tr>
-  <tr class="impair">
+  <tr class="{$class}">
     <td class="center" colspan="2">
       <small>Si ta formation ne figure pas dans la liste,
       <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small>

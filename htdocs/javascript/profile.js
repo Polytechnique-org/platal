@@ -26,7 +26,7 @@ function wizPage_onLoad(id)
       case 'general':
         var i = 0;
         var prefix  = 'edu_';
-        while (document.getElementById(prefix + i) != null) {
+        while ($('.' + prefix + i).length != 0) {
             i++;
         }
         for (var j = 0; j < i; j++) {
@@ -274,20 +274,26 @@ function addEdu()
 {
     var i = 0;
     var prefix  = 'edu_';
-    while (document.getElementById(prefix + i) != null) {
+    var class_parity;
+
+    while ($('.' + prefix + i).length != 0) {
         i++;
     }
-    $('#edu_add').before('<div id="' + prefix + i + '"></div>');
-    $.get(platal_baseurl + 'profile/ajax/edu/' + i,
+    if (i % 2) {
+        class_parity = 'pair';
+    } else {
+        class_parity = 'impair';
+    }
+    $.get(platal_baseurl + 'profile/ajax/edu/' + i + '/' + class_parity,
           function(data) {
-              $("#" + prefix + i).html(data);
+              $('#edu_add').before(data);
               prepareType(i);
           });
 }
 
 function removeEdu(id)
 {
-    $('#' + id).remove();
+    $('.' + id).remove();
 }
 
 function addTel(prefid, prefname)

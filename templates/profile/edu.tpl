@@ -21,29 +21,49 @@
 {**************************************************************************}
 
 {assign var=eduname value="edus[`$eduid`]"}
-<select name="{$eduname}[eduid]" onchange="fillType(this.form['{$eduname}[degreeid]'], this.selectedIndex-1);">
-  {education_options selected=$edu.eduid}
-</select>
-<input type="hidden" name="edu_{$eduid}_tmp" value="{$edu.degreeid}" />
-<select name="{$eduname}[degreeid]">
-  <option value=""></option>
-</select>
-<br />
-Domaine de formation&nbsp;:
-<select name="{$eduname}[fieldid]">
-  {foreach from=$edu_fields item=field}
-  <option value="{$field.id}" {if $field.id eq $edu.fieldid}selected="selected"{/if}>{$field.field}</option>
-  {/foreach}
-</select>
-<a href="javascript:removeEdu('edu_{$eduid}')">
-  {icon name=cross title="Supprimer cette formation"}
-</a>
-<br />
-Année d'obtention du diplôme&nbsp;:
-<input type="text" {if $edu.error}class="error"{/if} name="{$eduname}[grad_year]" value="{$edu.grad_year}" size="4" maxlength="4" />
-<small>(par exemple&nbsp;: 2008)</small>
-<br />
-Intitulé de la formation&nbsp;:
-<input type="text" name="{$eduname}[program]" value="{$edu.program}" size="40" maxlength="255" />
+<tr class="edu_{$eduid} {$class}">
+  <td colspan="2">
+    <a href="javascript:removeEdu('edu_{$eduid}')">
+      {icon name=cross title="Supprimer cette formation"}
+    </a>
+    <select name="{$eduname}[eduid]" onchange="fillType(this.form['{$eduname}[degreeid]'], this.selectedIndex - 1);">
+      {education_options selected=$edu.eduid}
+    </select>
+    <input type="hidden" name="edu_{$eduid}_tmp" value="{$edu.degreeid}" />
+    <select name="{$eduname}[degreeid]">
+      <option value=""></option>
+    </select>
+  </td>
+</tr>
+<tr class="edu_{$eduid} {$class}">
+  <td>
+    <span class="titre">Domaine de formation&nbsp;:</span>
+  </td>
+  <td>
+    <select name="{$eduname}[fieldid]">
+      {foreach from=$edu_fields item=field}
+      <option value="{$field.id}" {if $field.id eq $edu.fieldid}selected="selected"{/if}>{$field.field}</option>
+      {/foreach}
+    </select>
+  </td>
+</tr>
+<tr class="edu_{$eduid} {$class}">
+  <td>
+    <span class="titre">Année d'obtention du diplôme&nbsp;:</span>
+  </td>
+  <td>
+    <input type="text" {if $edu.error}class="error"{/if} name="{$eduname}[grad_year]"
+    value="{$edu.grad_year}" size="4" maxlength="4" />
+    <small>(par exemple&nbsp;: 2008)</small>
+  </td>
+</tr>
+<tr class="edu_{$eduid} {$class}">
+  <td>
+    <span class="titre">Intitulé de la formation&nbsp;:</span>
+  </td>
+  <td>
+    <input type="text" name="{$eduname}[program]" value="{$edu.program}" size="30" maxlength="255" />
+  </td>
+</tr>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
