@@ -501,12 +501,12 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                        ORDER BY  ed.grad_year", $uid);
 
     $user['education'] = "";
-    require_once('applis.func.inc.php');
+    require_once('education.func.inc.php');
     if (list($name, $url, $degree, $grad_year, $field) = $res->next()) {
-        $user['education'] .= applis_fmt($name, $url, $degree, $grad_year, $field, $user['sexe'], true);
+        $user['education'] .= education_fmt($name, $url, $degree, $grad_year, $field, $user['sexe'], true);
     }
     while (list($name, $url, $degree, $grad_year, $field) = $res->next()) {
-        $user['education'] .= ", " . applis_fmt($name, $url, $degree, $grad_year, $field, $user['sexe'], true);
+        $user['education'] .= ", " . education_fmt($name, $url, $degree, $grad_year, $field, $user['sexe'], true);
     }
 
     if (has_user_right($user['medals_pub'], $view)) {
@@ -808,7 +808,7 @@ function set_user_details($uid, $details) {
         }
     }
 
-    // applis
+    // education
     // medals
 }
 // }}}

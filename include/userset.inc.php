@@ -159,7 +159,7 @@ class MinificheView extends MultipageView
 {
     public function __construct(PlSet &$set, $data, array $params)
     {
-        require_once 'applis.func.inc.php';
+        require_once 'education.func.inc.php';
         global $globals;
         $this->entriesPerPage = $globals->search->per_page;
         if (@$params['with_score']) {

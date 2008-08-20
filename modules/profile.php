@@ -41,7 +41,7 @@ class ProfileModule extends PLModule
             'profile/ajax/secteur'       => $this->make_hook('ajax_secteur',               AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
-            'javascript/applis.js'       => $this->make_hook('applis_js',                  AUTH_COOKIE),
+            'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
             'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE),
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
             'profile/orange'             => $this->make_hook('p_orange',                   AUTH_MDP),
@@ -333,7 +333,7 @@ class ProfileModule extends PLModule
 
         // Build the page
         $page->addJsLink('ajax.js');
-        $page->addJsLink('applis.js');
+        $page->addJsLink('education.js');
         $page->addJsLink('grades.js');
         $page->addJsLink('profile.js');
         $page->addJsLink('jquery.autocomplete.js');
@@ -360,15 +360,15 @@ class ProfileModule extends PLModule
        $page->setTitle('Mon Profil');
     }
 
-    function handler_applis_js(&$page)
+    function handler_education_js(&$page)
     {
         header('Content-Type: text/javascript; charset=utf-8');
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
         header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
         header('Cache-Control: no-cache, must-revalidate');
         header('Pragma: no-cache');
-        $page->changeTpl('profile/applis.js.tpl', NO_SKIN);
-        require_once "applis.func.inc.php";
+        $page->changeTpl('profile/education.js.tpl', NO_SKIN);
+        require_once "education.func.inc.php";
     }
 
     function handler_grades_js(&$page)
@@ -425,7 +425,7 @@ class ProfileModule extends PLModule
                             ORDER BY  field");
         $page->assign('edu_fields', $res->fetchAllAssoc());
         $page->assign('eduid', $eduid);
-        require_once "applis.func.inc.php";
+        require_once "education.func.inc.php";
     }
 
     function handler_ajax_medal(&$page, $id)

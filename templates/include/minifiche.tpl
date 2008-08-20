@@ -37,7 +37,7 @@
       {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}</a>{/if}
     </div>
 
-    <div class="appli">
+    <div class="edu">
       {if $c.iso3166_1}
       <img src='images/flags/{$c.iso3166_1}.gif' alt='{$c.nat1}' height='11' title='{$c.nat1}' />&nbsp;
       {/if}
@@ -47,13 +47,13 @@
       {if $c.iso3166_3}
       <img src='images/flags/{$c.iso3166_3}.gif' alt='{$c.nat3}' height='11' title='{$c.nat3}' />&nbsp;
       {/if}
-      X {$c.promo}{if $c.eduname0}, {applis_fmt name=$c.eduname0 url=$c.eduurl0 degree=$c.edudegree0
+      X {$c.promo}{if $c.eduname0}, {education_fmt name=$c.eduname0 url=$c.eduurl0 degree=$c.edudegree0
                                      grad_year=$c.edugrad_year0 field=$c.edufield0 sexe=$c.sexe}{*
-      *}{/if}{if $c.eduname1}, {applis_fmt name=$c.eduname1 url=$c.eduurl1 degree=$c.edudegree1
+      *}{/if}{if $c.eduname1}, {education_fmt name=$c.eduname1 url=$c.eduurl1 degree=$c.edudegree1
                                      grad_year=$c.edugrad_year1 field=$c.edufield1 sexe=$c.sexe}{*
-      *}{/if}{if $c.eduname2}, {applis_fmt name=$c.eduname2 url=$c.eduurl2 degree=$c.edudegree2
+      *}{/if}{if $c.eduname2}, {education_fmt name=$c.eduname2 url=$c.eduurl2 degree=$c.edudegree2
                                      grad_year=$c.edugrad_year2 field=$c.edufield2 sexe=$c.sexe}{*
-      *}{/if}{if $c.eduname3}, {applis_fmt name=$c.eduname3 url=$c.eduurl3 degree=$c.edudegree3
+      *}{/if}{if $c.eduname3}, {education_fmt name=$c.eduname3 url=$c.eduurl3 degree=$c.edudegree3
                                      grad_year=$c.edugrad_year3 field=$c.edufield3 sexe=$c.sexe}{*
       *}{/if}{if $c.dcd}, décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
     </div>

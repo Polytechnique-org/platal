@@ -22,7 +22,7 @@
 
 {assign var=eduname value="edus[`$eduid`]"}
 <select name="{$eduname}[eduid]" onchange="fillType(this.form['{$eduname}[degreeid]'], this.selectedIndex-1);">
-  {applis_options selected=$edu.eduid}
+  {education_options selected=$edu.eduid}
 </select>
 <input type="hidden" name="edu_{$eduid}_tmp" value="{$edu.degreeid}" />
 <select name="{$eduname}[degreeid]">

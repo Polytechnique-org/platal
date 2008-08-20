@@ -403,7 +403,7 @@ class ProfileGeneral extends ProfilePage
 
     public function _prepare(PlPage &$page, $id)
     {
-        require_once "applis.func.inc.php";
+        require_once "education.func.inc.php";
 
         $res = XDB::iterator("SELECT  id, field
                                 FROM  profile_education_field_enum

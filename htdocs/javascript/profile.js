@@ -56,15 +56,15 @@ function wizPage_onLoad(id)
     }
 }
 
-var applisType;
-var applisTypeAll;
-var applisTypeName;
+var educationDegree;
+var educationDegreeAll;
+var educationDegreeName;
 
 // General
 
 var subgrades;
 var names;
-function fillType(selectCtrl, appli, fill)
+function fillType(selectCtrl, edu, fill)
 {
     var i;
     var i0 = 0;
@@ -73,17 +73,17 @@ function fillType(selectCtrl, appli, fill)
         selectCtrl.options[i] = null;
     }
 
-    if (fill || appli < 0) {
+    if (fill || edu < 0) {
         selectCtrl.options[0] = new Option(' ');
         i0 = 1;
     }
-    if (appli >= 0) {
-        for (i = 0; i < applisType[appli].length; i++) {
-            selectCtrl.options[i0 + i] = new Option(applisTypeName[applisType[appli][i] - 1], applisType[appli][i]);
+    if (edu >= 0) {
+        for (i = 0; i < educationDegree[edu].length; i++) {
+            selectCtrl.options[i0 + i] = new Option(educationDegreeName[educationDegree[edu][i] - 1], educationDegree[edu][i]);
         }
     } else if (fill) {
-        for (i = 0; i < applisTypeAll.length; i++) {
-            selectCtrl.options[i0 + i] = new Option(applisTypeName[applisTypeAll[i] - 1], applisTypeAll[i]);
+        for (i = 0; i < educationDegreeAll.length; i++) {
+            selectCtrl.options[i0 + i] = new Option(educationDegreeName[educationDegreeAll[i] - 1], educationDegreeAll[i]);
         }
     }
 }

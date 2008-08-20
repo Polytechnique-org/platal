@@ -19,71 +19,71 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function applis_options($current=0)
+function education_options($current=0)
 {
     $html = '<option value = "-1"></option>';
     $res  = XDB::iterator("SELECT  *
                              FROM  profile_education_enum
                          ORDER BY  name");
-    while ($arr_appli = $res->next()) {
-        $html .= '<option value="' . $arr_appli["id"] . '"';
-        if ($arr_appli["id"]==$current) {
+    while ($arr_edu = $res->next()) {
+        $html .= '<option value="' . $arr_edu["id"] . '"';
+        if ($arr_edu["id"]==$current) {
             $html .= " selected='selected'";
         }
-        $html .= '>' . htmlspecialchars($arr_appli["name"]) . "</option>\n";
+        $html .= '>' . htmlspecialchars($arr_edu["name"]) . "</option>\n";
     }
     return $html;
 }
 
-/** pour appeller applis_options depuis smarty
+/** pour appeller education_options depuis smarty
  */
-function _applis_options_smarty($params)
+function _education_options_smarty($params)
 {
     if(!isset($params['selected'])) {
         $params['selected'] = 0;
     }
-    return applis_options($params['selected']);
+    return education_options($params['selected']);
 }
-Platal::page()->register_function('applis_options', '_applis_options_smarty');
+Platal::page()->register_function('education_options', '_education_options_smarty');
 
-/** affiche un Array javascript contenant les types de chaque appli
+/** affiche un Array javascript contenant les diplômes de chaque formation
  */
-function applis_type()
+function education_degree()
 {
     $html = "";
     $res = XDB::iterRow("SELECT  eduid, degreeid
                            FROM  profile_education_degree AS d
                      INNER JOIN  profile_education_enum   AS e ON (e.id = d.eduid)
                        ORDER BY  e.name");
-    if ($appli_type = $res->next()) {
-        $eduid = $appli_type['0'];
+    if ($edu_degree = $res->next()) {
+        $eduid = $edu_degree['0'];
         $html .= "[";
-        $html .= $appli_type['1'];
-        $appli_type = $res->next();
-        while ($appli_type['0'] == $eduid) {
-            $html .= "," . $appli_type['1'];
-            $appli_type = $res->next();
+        $html .= $edu_degree['1'];
+        $edu_degree = $res->next();
+        while ($edu_degree['0'] == $eduid) {
+            $html .= "," . $edu_degree['1'];
+            $edu_degree = $res->next();
         }
         $html .= "]";
     }
-    while ($appli_type) {
-        $eduid = $appli_type['0'];
+    while ($edu_degree) {
+        $eduid = $edu_degree['0'];
         $html .= ",\n[";
-        $html .= $appli_type['1'];
-        $appli_type = $res->next();
-        while ($appli_type['0'] == $eduid) {
-            $html .= "," . $appli_type['1'];
-            $appli_type = $res->next();
+        $html .= $edu_degree['1'];
+        $edu_degree = $res->next();
+        while ($edu_degree['0'] == $eduid) {
+            $html .= "," . $edu_degree['1'];
+            $edu_degree = $res->next();
         }
         $html .= "]";
     }
     return $html;
 }
-Platal::page()->register_function('applis_type', 'applis_type');
+Platal::page()->register_function('education_degree', 'education_degree');
 
-/** affiche tous les types possibles d'applis
+/** affiche tous les types possibles de diplômes
  */
-function applis_type_all()
+function education_degree_all()
 {
     $html = "";
     $res = XDB::query("SELECT  id
@@ -91,11 +91,11 @@ function applis_type_all()
                      ORDER BY  id");
     return implode(',', $res->fetchColumn());
 }
-Platal::page()->register_function('applis_type_all', 'applis_type_all');
+Platal::page()->register_function('education_degree_all', 'education_degree_all');
 
-/** affiche les noms de tous les types possibles d'applis
+/** affiche les noms de tous les diplômes possibles
  */
-function applis_type_name()
+function education_degree_name()
 {
     $html = "";
     $res = XDB::query("SELECT  degree
@@ -103,11 +103,11 @@ function applis_type_name()
                        ORDER BY  id");
     return '\'' . implode('\',\'', $res->fetchColumn()) . '\'';
 }
-Platal::page()->register_function('applis_type_name', 'applis_type_name');
+Platal::page()->register_function('education_degree_name', 'education_degree_name');
 
-/** formatte une ecole d'appli pour l'affichage
+/** formatte une formation pour l'affichage
  */
-function applis_fmt($name, $url, $degree, $grad_year, $field, $sexe, $long)
+function education_fmt($name, $url, $degree, $grad_year, $field, $sexe, $long)
 {
     $field = strtolower($field);
     $txt = "";
@@ -149,12 +149,12 @@ function applis_fmt($name, $url, $degree, $grad_year, $field, $sexe, $long)
     return $txt;
 }
 
-function _applis_fmt($params, &$smarty)
+function _education_fmt($params, &$smarty)
 {
     extract($params);
-    return applis_fmt($name, $url, $degree, $grad_year, $field, $sexe, $long);
+    return education_fmt($name, $url, $degree, $grad_year, $field, $sexe, $long);
 }
-Platal::page()->register_function('applis_fmt', '_applis_fmt');
+Platal::page()->register_function('education_fmt', '_education_fmt');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
