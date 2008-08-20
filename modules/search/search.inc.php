@@ -52,7 +52,7 @@ function advancedSearchFromInput()
     } else {
         $townField      = new RefSField('cityid', array('av.cityid', 'av.postcode'), 'adresses', 'av', getadr_join('av'));
     }
-    $countryField       = new RefSField('country', array('ap.country'), 'adresses', 'ap',g etadr_join('ap'));
+    $countryField       = new RefSField('country', array('ap.country'), 'adresses', 'ap', getadr_join('ap'));
     $regionField        = new RefSField('region',array('ar.region'), 'adresses', 'ar', getadr_join('ar'));
     $mapField           = new MapSField('mapid',  array('sgcim.map_id'), array('adresses', 'geoloc_city_in_maps'),
                                         array('amp', 'sgcim'), array(getadr_join('amp'), 'amp.cityid = sgcim.city_id'));
