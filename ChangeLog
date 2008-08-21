@@ -1,10 +1,9 @@
 ================================================================================
-VERSION FUSION DES ANNUAIRES                                          XX XX XXXX
+VERSION 0.f.0                                                         XX XX XXXX
 
 New:
-    * Profile:
+    * Core:
         - Centralises email management through an email combobox           -JAC
-        - Adds the directory email                                         -JAC
 
 Bug/Wish:
     * Profile:
