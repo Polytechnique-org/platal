@@ -86,6 +86,13 @@ class ProfileEdu implements ProfileSetting
     {
     }
 
+    static function sortByGradYear($line1, $line2) {
+        if ($line1['grad_year'] == $line2['grad_year']) {
+            return 0;
+        }
+        return ($line1['grad_year'] < $line2['grad_year']) ? -1 : 1;
+    }
+
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
@@ -113,6 +120,7 @@ class ProfileEdu implements ProfileSetting
                 }
                 $i++;
             }
+            usort($value, array("ProfileEdu", "sortByGradYear"));
         }
         return $value;
     }
