@@ -22,10 +22,16 @@
 function education_options($current = 0)
 {
     $html = '<option value="-1"></option>';
-    $res  = XDB::iterator("SELECT  *
-                             FROM  profile_education_enum
-                         ORDER BY  name");
+    $res  = XDB::iterator("SELECT  e.id AS id, e.name AS name, g.pays AS country
+                             FROM  profile_education_enum AS e
+                       INNER JOIN  geoloc_pays            AS g ON (e.country = g.a2)
+                         ORDER BY  g.pays, e.name");
+    $country = "";
     while ($arr_edu = $res->next()) {
+        if ($arr_edu["country"] != $country) {
+            $country = $arr_edu["country"];
+            $html .= "<optgroup label=" . $country . ">";
+        }
         $html .= '<option value="' . $arr_edu["id"] . '"';
         if ($arr_edu["id"] == $current) {
             $html .= " selected='selected'";
@@ -54,7 +60,8 @@ function education_degree()
     $res = XDB::iterRow("SELECT  eduid, degreeid
                            FROM  profile_education_degree AS d
                      INNER JOIN  profile_education_enum   AS e ON (e.id = d.eduid)
-                       ORDER BY  e.name");
+                     INNER JOIN  geoloc_pays              AS g ON (e.country = g.a2)
+                       ORDER BY  g.pays, e.name");
     if ($edu_degree = $res->next()) {
         $eduid = $edu_degree['0'];
         $html .= "[";
