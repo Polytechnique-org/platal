@@ -132,7 +132,7 @@ class AuthModule extends PLModule
 
     function handler_groupex(&$page, $charset = 'utf8')
     {
-        require_once dirname(__FILE__).'/auth/auth.inc.php';
+        $this->load('auth.inc.php');
         $page->assign('referer', true);
 
         $gpex_pass = $_GET["pass"];

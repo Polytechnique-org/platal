@@ -66,7 +66,7 @@
   </tr>
 </table>
 
-{include file="core/plset.tpl"}
+{include core=plset.tpl}
 
 <h1>
   modérateurs de la liste

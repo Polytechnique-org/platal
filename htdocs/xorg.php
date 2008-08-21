@@ -21,12 +21,11 @@
 
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
 
-$platal = new Platal('auth', 'carnet', 'email', 'events', 'forums',
-                     'geoloc', 'lists', 'marketing', 'payment', 'platal',
-                     'profile', 'register', 'search', 'stats', 'admin',
-                     'newsletter', 'axletter', 'bandeau', 'survey',
-                     'fusionax',
-                     'gadgets', 'googleapps');
+$platal = new Xorg('auth', 'carnet', 'email', 'events', 'forums',
+                   'geoloc', 'lists', 'marketing', 'payment', 'platal',
+                   'profile', 'register', 'search', 'stats', 'admin',
+                   'newsletter', 'axletter', 'bandeau', 'survey',
+                   'fusionax', 'gadgets', 'googleapps');
 
 if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
     $platal->run();

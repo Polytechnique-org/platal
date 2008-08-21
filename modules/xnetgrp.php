@@ -122,7 +122,7 @@ class XnetGrpModule extends PLModule
 
         if (S::logged()) {
             if (Env::has('read')) {
-                XDB::query('DELETE r.*
+                XDB::query('DELETE groupex.r.*
                               FROM groupex.announces_read AS r
                         INNER JOIN groupex.announces AS a ON a.id = r.announce_id
                              WHERE peremption < CURRENT_DATE()');
@@ -320,7 +320,7 @@ class XnetGrpModule extends PLModule
             $mls = array_keys(Env::v('ml', array()));
             $mbr = array_keys(Env::v('membres', array()));
 
-            require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
+            $this->load('mail.inc.php');
             set_time_limit(120);
             $tos = get_all_redirects($mbr,  $mls, $mmlist);
             $upload = PlUpload::get($_FILES['uploaded'], S::v('forlife'), 'xnet.emails', true);
@@ -735,7 +735,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
+        $this->load('mail.inc.php');
         $page->changeTpl('xnetgrp/annuaire-admin.tpl');
         $mmlist = new MMList(S::v('uid'), S::v('password'),
                              $globals->asso('mail_domain'));
@@ -1183,29 +1183,11 @@ class XnetGrpModule extends PLModule
     function handler_rss(&$page, $user = null, $hash = null)
     {
         global $globals;
-        require_once('rss.inc.php');
-        $uid = init_rss('xnetgrp/announce-rss.tpl', $user, $hash, false);
-
-        if ($uid) {
-            $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.contacts, a.create_date,
-                                         IF(u2.nom_usage != '', u2.nom_usage, u2.nom) AS nom, u2.prenom, u2.promo,
-                                         FIND_IN_SET('photo', a.flags) AS photo
-                                   FROM auth_user_md5 AS u
-                             INNER JOIN groupex.announces AS a ON ( (a.promo_min = 0 OR a.promo_min <= u.promo)
-                                                                  AND (a.promo_max = 0 OR a.promo_max <= u.promo))
-                             INNER JOIN auth_user_md5 AS u2 ON (u2.user_id = a.user_id)
-                             WHERE u.user_id = {?} AND peremption >= NOW() AND a.asso_id = {?}",
-                                   $uid, $globals->asso('id'));
-        } else {
-            $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.create_date,
-                                         IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom, u.prenom, u.promo
-                                    FROM groupex.announces AS a
-                             INNER JOIN auth_user_md5 AS u USING(user_id)
-                             WHERE FIND_IN_SET('public', a.flags) AND peremption >= NOW() AND a.asso_id = {?}",
-                                  $globals->asso('id'));
-        }
         $page->assign('asso', $globals->asso());
-        $page->assign('rss', $rss);
+
+        $this->load('feed.inc.php');
+        $feed = new XnetGrpEventFeed();
+        return $feed->run($page, $user, $hash, false);
     }
 
     private function upload_image(PlPage &$page, PlUpload &$upload)

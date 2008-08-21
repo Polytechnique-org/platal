@@ -20,46 +20,15 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<?xml version="1.0"?>
-<rss version="2.0">
-  <channel>
-    <title>Polytechnique.org :: Carnet</title>
-    <language>fr</language>
-    <link>{#globals.baseurl#}/carnet/panel</link>
-    <description>Ton carnet polytechnicien...</description>
-    <image>
-      <title>Polytechnique.org</title>
-      <url>{#globals.baseurl#}/images/logo.png</url>
-      <link>{#globals.baseurl#}/</link>
-    </image>
-    {foreach from=$notifs->_data item=c key=cid}
-    {foreach from=$c item=promo}
-    {foreach from=$promo item=x}
-    <item>
-      <title>
-        [{$notifs->_cats[$cid].short}] {$x.prenom} {$x.nom} ({$x.promo}) - le {$x.date|date_format}
-      </title>
-      <link>{#globals.baseurl#}/profile/private/{$x.bestalias}</link>
-      <guid isPermaLink="false">carnet{$x.known}{$cid}{$x.bestalias}</guid>
-      <description><![CDATA[
-        {if $x.data}{$x.prenom} {$x.nom} a mis à jours les données suivantes&nbsp;:<br />{$x.data}<br />{/if}
-        {if !$x.contact and !$x.dcd}
-        <a href="{#globals.baseurl#}/carnet/contacts?action=ajouter&amp;user={$x.bestalias}&amp;token={$rss_hash}">
-          {icon name=add title="Ajouter" full=true} Ajouter &agrave; mes contacts
-        </a><br />
-        {/if}
-        {if !$x.dcd}
-        <a href="{#globals.baseurl#}/vcard/{$x.bestalias}.vcf">
-          {icon name=vcard title="Carte de visite" full=true} T&eacute;l&eacute;charger la carte de visite &eacute;lectronique
-        </a>
-        {/if}
-        ]]></description>
-      <author>{$x.prenom} {$x.nom} (X{$x.promo})</author>
-      <pubDate>{$x.known|rss_date}</pubDate>
-    </item>
-    {/foreach}
-    {/foreach}
-    {/foreach}
-  </channel>
-</rss>
+{if $article->data}{$article->prenom} {$article->nom} a mis à jours les données suivantes&nbsp;:<br />{$article->data}<br />{/if}
+{if !$article->contact and !$article->dcd}
+<a href="{#globals.baseurl#}/carnet/contacts?action=ajouter&amp;user={$article->bestalias}&amp;token={$rss_hash}">
+  {icon name=add title="Ajouter" full=true} Ajouter &agrave; mes contacts
+</a><br />
+{/if}
+{if !$article->dcd}
+<a href="{#globals.baseurl#}/vcard/{$article->bestalias}.vcf">
+  {icon name=vcard title="Carte de visite" full=true} T&eacute;l&eacute;charger la carte de visite &eacute;lectronique
+</a>
+{/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

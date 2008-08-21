@@ -233,22 +233,9 @@ class EventsModule extends PLModule
 
     function handler_rss(&$page, $user = null, $hash = null)
     {
-        require_once 'rss.inc.php';
-
-        $uid = init_rss('events/rss.tpl', $user, $hash);
-
-        $rss = XDB::iterator(
-                'SELECT  e.id, e.titre, e.texte, e.creation_date, e.post_id, p.attachmime IS NOT NULL AS photo,
-                         IF(u2.nom_usage = "", u2.nom, u2.nom_usage) AS nom, u2.prenom, u2.promo,
-                         FIND_IN_SET(\'wiki\', e.flags) AS wiki
-                   FROM  auth_user_md5   AS u
-             INNER JOIN  evenements      AS e ON ( (e.promo_min = 0 || e.promo_min <= u.promo)
-                                                 AND (e.promo_max = 0 || e.promo_max >= u.promo) )
-              LEFT JOIN  evenements_photo AS p ON (p.eid = e.id)
-             INNER JOIN  auth_user_md5   AS u2 ON (u2.user_id = e.user_id)
-                  WHERE  u.user_id = {?} AND FIND_IN_SET("valide", e.flags)
-                                         AND peremption >= NOW()', $uid);
-        $page->assign('rss', $rss);
+        $this->load('feed.inc.php');
+        $feed = new EventFeed();
+        return $feed->run($page, $user, $hash);
     }
 
     function handler_preview(&$page)

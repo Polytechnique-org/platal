@@ -57,7 +57,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
 </ul>
 
 {if $plset_base}
-{include file="core/plset.tpl"}
+{include core=plset.tpl}
 {else}
 
 <p class="center">

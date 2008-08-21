@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file="core/table-editor.tpl"}
+{include core=table-editor.tpl}
 
 <h1>Administration Polytechnique.org</h1>
 

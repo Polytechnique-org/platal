@@ -38,7 +38,7 @@ Nous conseillons très vivement d'utiliser des navigateurs récents, tels
 {/if}
 
 {if !$pl_no_errors || $pl_failure}
-{include file="skin/common.triggers.tpl"}
+{include core=triggers.tpl}
 {/if}
 
 {if !$pl_failure && $pl_tpl}{include file=$pl_tpl}{/if}
