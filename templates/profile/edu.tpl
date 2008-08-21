@@ -23,7 +23,7 @@
 {assign var=eduname value="edus[`$eduid`]"}
 <tr class="edu_{$eduid} {$class}">
   <td colspan="2">
-    <a href="javascript:removeEdu('edu_{$eduid}')">
+    <a href="javascript:removeEdu('{$eduid}')">
       {icon name=cross title="Supprimer cette formation"}
     </a>
     <select name="{$eduname}[eduid]" onchange="fillType(this.form['{$eduname}[degreeid]'], this.selectedIndex - 1);">

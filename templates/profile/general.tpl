@@ -125,7 +125,8 @@
     {include file="profile/edu.tpl" eduid=0 edu=0 class=$class}
   {/if}
   {cycle values="impair, pair" assign=class}
-  <tr id="edu_add" class="{$class}">
+  {assign var=eduaddid value=$edus|@count}
+  <tr id="edu_add" class="edu_{$eduaddid} {$class}">
     <td colspan="2">
       <div class="center" style="clear: both; padding-top: 4px;">
         <a href="javascript:addEdu();">

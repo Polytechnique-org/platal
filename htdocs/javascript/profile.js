@@ -273,17 +273,25 @@ function addAddress()
 function addEdu()
 {
     var i = 0;
+    var j = 0;
     var prefix  = 'edu_';
     var class_parity;
 
-    while ($('.' + prefix + i).length != 0) {
+    while (!$('#edu_add').hasClass(prefix + i)) {
+        if ($('.' + prefix + i).length != 0) {
+            j++;
+        }
         i++;
     }
-    if (i % 2) {
+    if (j % 2) {
         class_parity = 'pair';
     } else {
         class_parity = 'impair';
     }
+    $('#edu_add').removeClass(prefix + i);
+    i++;
+    $('#edu_add').addClass(prefix + i);
+    i--;
     $.get(platal_baseurl + 'profile/ajax/edu/' + i + '/' + class_parity,
           function(data) {
               $('#edu_add').before(data);
@@ -291,9 +299,15 @@ function addEdu()
           });
 }
 
-function removeEdu(id)
+function removeEdu(i)
 {
-    $('.' + id).remove();
+    var prefix  = 'edu_';
+    $('.' + prefix + i).remove();
+    while (!$('#edu_add').hasClass(prefix + i)) {
+        $('.' + prefix + i).toggleClass('pair');
+        $('.' + prefix + i).toggleClass('impair');
+        i++;
+    }
 }
 
 function addTel(prefid, prefname)
