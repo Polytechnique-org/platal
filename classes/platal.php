@@ -336,6 +336,24 @@ abstract class Platal
         }
     }
 
+    public static function load($modname, $include = null)
+    {
+        global $platal;
+        $modname = strtolower($modname);
+        if (isset($platal->__mods[$modname])) {
+            if (is_null($include)) {
+                return;
+            }
+            $platal->__mods[$modname]->load($include);
+        } else {
+            if (is_null($include)) {
+                require_once PLModule::path($modname) . '.php';
+            } else {
+                require_once PLModule::path($modname) . '/' . $include;
+            }
+        }
+    }
+
     static public function &page()
     {
         global $platal;

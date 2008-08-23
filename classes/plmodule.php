@@ -66,7 +66,7 @@ abstract class PLModule
 
     /* static functions */
 
-    public static function factory($modname)
+    public static function path($modname)
     {
         global $globals;
         if ($modname == 'core') {
@@ -74,6 +74,12 @@ abstract class PLModule
         } else {
             $mod_path = $globals->spoolroot . '/modules/' . $modname;
         }
+        return $mod_path;
+    }
+
+    public static function factory($modname)
+    {
+        $mod_path = self::path($modname);
         $class    = ucfirst($modname) . 'Module';
 
         require_once $mod_path . '.php';
