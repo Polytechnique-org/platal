@@ -685,6 +685,15 @@ class AdminModule extends PLModule
         $page->assign('bans', $bans);
     }
 
+    function getHruid($line, $key)
+    {
+        var_dump($line);
+        if (!isset($line['nom']) || !isset($line['prenom']) || !isset($line['promo'])) {
+            return null;
+        }
+        return make_forlife($line['prenom'], $line['nom'], $line['promo']);
+    }
+
     function getMatricule($line, $key)
     {
         $mat = $line['matricule'];
@@ -717,12 +726,13 @@ class AdminModule extends PLModule
         }
 
         $importer = new CSVImporter('auth_user_md5', 'matricule');
-        $importer->registerFunction('matricule', 'matricle Ecole vers X.org', array($this, 'getMatricule'));
+        $importer->registerFunction('matricule', 'matricule Ecole vers X.org', array($this, 'getMatricule'));
         switch ($action) {
           case 'add':
-            $fields = array('nom', 'nom_ini', 'prenom', 'naissance_ini',
+            $fields = array('hruid', 'nom', 'nom_ini', 'prenom', 'naissance_ini',
                             'prenom_ini', 'promo', 'promo_sortie', 'flags',
                             'matricule', 'matricule_ax', 'perms');
+            $importer->forceValue('hruid', array($this, 'getHruid'));
             $importer->forceValue('promo', $promo);
             $importer->forceValue('promo_sortie', $promo + 3);
             break;
@@ -733,7 +743,8 @@ class AdminModule extends PLModule
         $importer->apply($page, "admin/promo/$action/$promo", $fields);
     }
 
-    function handler_homonyms(&$page, $op = 'list', $target = null) {
+    function handler_homonyms(&$page, $op = 'list', $target = null)
+    {
         $page->changeTpl('admin/homonymes.tpl');
         $page->setTitle('Administration - Homonymes');
         require_once("homonymes.inc.php");
