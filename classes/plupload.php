@@ -23,7 +23,7 @@
  */
 class PlUpload
 {
-    private $forlife;
+    private $hruid;
     private $category;
     private $file_id;
 
@@ -37,11 +37,11 @@ class PlUpload
     private $x;
     private $y;
 
-    public function __construct($forlife, $category, $filename = null)
+    public function __construct($hruid, $category, $filename = null)
     {
         $this->file_id  = $filename;
         $this->category = $category;
-        $this->forlife  = $forlife;
+        $this->hruid    = $hruid;
         $this->filename = $this->makeFilename($this->file_id);
         $this->checkContentType();
     }
@@ -55,7 +55,7 @@ class PlUpload
                 trigger_error('can\'t create upload directory: ' . $filename, E_USER_ERROR);
             }
         }
-        $filename .= $this->forlife . '--' . $this->category;
+        $filename .= $this->hruid . '--' . $this->category;
         if ($file_id) {
             $filename .= '--' . $file_id;
         }
@@ -124,9 +124,9 @@ class PlUpload
         return true;
     }
 
-    static public function &get(array &$file, $forlife, $category, $uniq = false)
+    static public function &get(array &$file, $hruid, $category, $uniq = false)
     {
-        $upload = new PlUpload($forlife, $category, $uniq ? null : $file['name']);
+        $upload = new PlUpload($hruid, $category, $uniq ? null : $file['name']);
         if (!$upload->upload($file)) {
             $upload = null;
         }
@@ -159,11 +159,11 @@ class PlUpload
         return file_exists($this->filename);
     }
 
-    static public function listRawFiles($forlife = '*', $category = '*', $uniq = false, $basename = false)
+    static public function listRawFiles($hruid = '*', $category = '*', $uniq = false, $basename = false)
     {
         global $globals;
         $filename = $globals->spoolroot . '/spool/tmp/';
-        $filename .= $forlife . '--' . $category;
+        $filename .= $hruid . '--' . $category;
         if (!$uniq) {
             $filename .= '--*';
         }
@@ -174,23 +174,23 @@ class PlUpload
         return $files;
     }
 
-    static public function listFilenames($forlife = '*', $category = '*')
+    static public function listFilenames($hruid = '*', $category = '*')
     {
-        $files = PlUpload::listRawFiles($forlife, $category, false, true);
+        $files = PlUpload::listRawFiles($hruid, $category, false, true);
         foreach ($files as &$name) {
-            list($forlife, $cat, $fn) = explode('--', $name, 3);
+            list($hruid, $cat, $fn) = explode('--', $name, 3);
             $name = $fn;
         }
         return $files;
     }
 
-    static public function &listFiles($forlife = '*', $category = '*', $uniq = false)
+    static public function &listFiles($hruid = '*', $category = '*', $uniq = false)
     {
         $res   = array();
-        $files = PlUpload::listRawFiles($forlife, $category, $uniq, true);
+        $files = PlUpload::listRawFiles($hruid, $category, $uniq, true);
         foreach ($files as $name) {
-            list($forlife, $cat, $fn) = explode('--', $name, 3);
-            $res[$fn] = new PlUpload($forlife, $cat, $fn);
+            list($hruid, $cat, $fn) = explode('--', $name, 3);
+            $res[$fn] = new PlUpload($hruid, $cat, $fn);
         }
         return $res;
     }
