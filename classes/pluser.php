@@ -42,6 +42,14 @@ class UserNotFoundException extends Exception
 abstract class PlUser
 {
     /**
+     * User data enumerations.
+     */
+    const GENDER_FEMALE = true;
+    const GENDER_MALE = false;
+    const FORMAT_HTML = "html";
+    const FORMAT_TEXT = "text";
+
+    /**
      * User data storage.
      * By convention, null means the information hasn't been fetched yet, and
      * false means the information is not available.
@@ -59,6 +67,10 @@ abstract class PlUser
     protected $display_name = null;
     protected $full_name = null;
     protected $promo = null;
+
+    // Other important parameters used when sending emails.
+    protected $gender = null;  // Acceptable values are GENDER_MALE and GENDER_FEMALE
+    protected $email_format = null;  // Acceptable values are FORMAT_HTML and FORMAT_TEXT
 
     // Permissions
     protected $perms = null;
@@ -135,6 +147,23 @@ abstract class PlUser
     public function fullName()
     {
         return $this->full_name;
+    }
+
+    public function promo()
+    {
+        return $this->promo;
+    }
+
+    // Fallback value is GENDER_MALE.
+    public function isFemale()
+    {
+        return $this->gender == self::GENDER_FEMALE;
+    }
+
+    // Fallback value is FORMAT_TEXT.
+    public function isEmailFormatHtml()
+    {
+        return $this->email_format == self::FORMAT_HTML;
     }
 
     /**
