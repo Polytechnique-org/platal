@@ -438,7 +438,7 @@ class EmailModule extends PLModule
         $page->assign('maxsize', ini_get('upload_max_filesize') . 'o');
     }
 
-    function handler_test(&$page, $forlife = null)
+    function handler_test(&$page, $hruid = null)
     {
         global $globals;
         require_once 'emails.inc.php';
@@ -446,23 +446,26 @@ class EmailModule extends PLModule
         if (!S::has_xsrf_token()) {
             return PL_FORBIDDEN;
         }
-        if (!S::has_perms() || !$forlife) {
-            $forlife = S::v('bestalias');
+
+        // Retrieves the User object for the test email recipient.
+        if (S::has_perms() && $hruid) {
+            $user = User::getSilent($hruid);
+        } else {
+            $user = S::user();
+        }
+        if (!$user) {
+            return PL_NOT_FOUND;
         }
 
-        $res = XDB::query("SELECT  FIND_IN_SET('femme', u.flags), prenom, user_id
-                             FROM  auth_user_md5 AS u
-                       INNER JOIN  aliases AS a ON (a.id = u.user_id)
-                            WHERE  a.alias = {?}", $forlife);
-        list($sexe, $prenom, $uid) = $res->fetchOneRow();
-        $redirect = new Redirect($uid);
+        // Sends the test email.
+        $redirect = new Redirect($user->id());
 
         $mailer = new PlMailer('emails/test.mail.tpl');
-        $mailer->assign('email', $forlife . '@' . $globals->mail->domain);
+        $mailer->assign('email', $user->bestEmail());
         $mailer->assign('redirects', $redirect->active_emails());
-        $mailer->assign('sexe', $sexe);
-        $mailer->assign('prenom', $prenom);
-        $mailer->send();
+        $mailer->assign('display_name', $user->displayName());
+        $mailer->assign('sexe', $user->isFemale());
+        $mailer->send($user->isEmailFormatHtml());
         exit;
     }
 

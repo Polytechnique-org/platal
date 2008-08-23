@@ -26,7 +26,7 @@
 {to addr=$email}
 {subject text="Test de ton adresse `$email`"}
 {elseif $mail_part eq 'wiki'}
-{if $sexe}Chère{else}Cher{/if} {$prenom},
+{if $sexe}Chère{else}Cher{/if} {$display_name},
 
 Tu reçois cet email car tu as demandé la confirmation du bon fonctionnement de ton adresse polytechnicienne {$email}.
 {if count($redirects) gt 1}Si toutes tes redirections fonctionnent correctement tu devrais recevoir une copie de cet email
