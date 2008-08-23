@@ -63,8 +63,7 @@ class SearchSet extends UserSet
 
     public function __construct($quick = false, $no_search = false, $join = '', $where = '')
     {
-        require_once dirname(__FILE__).'/../modules/search/search.inc.php';
-
+        Platal::load('search', 'search.inc.php');
         if ($no_search) {
             return;
         }
@@ -79,7 +78,7 @@ class SearchSet extends UserSet
 
     private function getQuick($join, $where)
     {
-        require_once dirname(__FILE__).'/../modules/search/search.inc.php';
+        Platal::load('search', 'search.inc.php');
         global $globals;
         if (!S::logged()) {
             Env::kill('with_soundex');

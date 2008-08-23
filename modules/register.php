@@ -464,7 +464,7 @@ class RegisterModule extends PLModule
             NewsLetter::subscribe();
         }
         if (Post::v('add_to_ax')) {
-            require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+            Platal::load('axletter', 'axletter.inc.php');
             AXLetter::subscribe();
         }
         if (Post::v('add_to_promo')) {

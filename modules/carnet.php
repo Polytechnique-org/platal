@@ -260,7 +260,7 @@ class CarnetModule extends PLModule
             require_once 'userset.inc.php';
             $base = 'carnet/contacts/search';
 
-            require_once(dirname(__FILE__) . '/search/classes.inc.php');
+            Platal::load('search', 'classes.inc.php');
             ThrowError::$throwHook = array($this, 'searchErrorHandler');
             $view = new SearchSet(true, false, "INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", "c2.uid = $uid");
         } else {
