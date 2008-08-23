@@ -25,14 +25,14 @@
   <div class="identity">
     {if $smarty.session.auth ge AUTH_COOKIE}
     <div class="photo">
-      <img src="photo/{if $c.inscrit}{$c.forlife}{else}{make_forlife nom=$c.nom prenom=$c.prenom promo=$c.promo}{/if}"
+      <img src="photo/{$c.hruid}"
            alt="{$c.prenom} {$c.nom}" />
     </div>
     {/if}
 
     <div class="nom">
       {if $c.sexe}&bull;{/if}
-      {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}<a href="profile/{if $c.inscrit}{$c.forlife}{else}{make_forlife nom=$c.nom prenom=$c.prenom promo=$c.promo}{/if}" class="popup2">{/if}
+      {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}<a href="profile/{$c.hruid}" class="popup2">{/if}
       {if $c.nom_usage}{$c.nom_usage} {$c.prenom}<br />({$c.nom}){else}{$c.nom} {$c.prenom}{/if}
       {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}</a>{/if}
     </div>
@@ -59,16 +59,16 @@
     *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
         {/if}
       {elseif $c.wasinscrit}
-    <a href="profile/{$c.forlife}" class="popup2">{*
+    <a href="profile/{$c.hruid}" class="popup2">{*
     *}{icon name=user_suit title="Afficher la fiche"}</a>
         {if !$c.dcd}
-    <a href="vcard/{$c.forlife}.vcf">{*
+    <a href="vcard/{$c.hruid}.vcf">{*
     *}{icon name=vcard title="Afficher la carte de visite"}</a>
           {if $show_action eq ajouter}
-    <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}&amp;token={xsrf_token}">{*
+    <a href="carnet/contacts?action={$show_action}&amp;user={$c.hruid}&amp;token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à mes contacts"}</a>
           {else}
-    <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}&amp;token={xsrf_token}">{*
+    <a href="carnet/contacts?action={$show_action}&amp;user={$c.hruid}&amp;token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de mes contacts"}</a>
           {/if}
         {/if}
@@ -78,10 +78,10 @@
     {if hasPerm('admin')}
     <div>
       [{if !$c.wasinscrit && !$c.dcd}
-      <a href="marketing/private/{$c.user_id}">{*
+      <a href="marketing/private/{$c.hruid}">{*
         *}{icon name=email title="marketter user"}</a>
       {/if}
-      <a href="admin/user/{if $c.wasinscrit}{$c.forlife}{else}{$c.user_id}{/if}">{*
+      <a href="admin/user/{$c.hruid}">{*
       *}{icon name=wrench title="administrer user"}</a>
       <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
       *}{icon name=user_gray title="fiche AX"}</a>]
@@ -132,11 +132,11 @@
         <td class="smaller" colspan="2">
           {if !$c.wasinscrit}
           Ce{if $c.sexe}tte{/if} camarade n'est pas inscrit{if $c.sexe}e{/if}.
-          <a href="marketing/public/{$c.user_id}" class='popup'>Si tu connais son adresse email,
+          <a href="marketing/public/{$c.hruid}" class='popup'>Si tu connais son adresse email,
           <strong>n'hésite pas à nous la transmettre !</a>
           {elseif !$c.actif}
           Ce{if $c.sexe}tte{/if} camarade n'a plus d'adresse de redirection valide.
-          <a href="marketing/broken/{$c.forlife}">
+          <a href="marketing/broken/{$c.hruid}">
             Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>.
           </a>
           {/if}
