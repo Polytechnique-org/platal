@@ -109,9 +109,10 @@ class User extends PlUser
     // Implementation of the data loader.
     protected function loadMainFields()
     {
-        if ($this->hruid !== null && $this->forlife !== null &&
-            $this->bestalias !== null && $this->display_name !== null &&
-            $this->full_name !== null && $this->promo !== null && $this->perms !== null) {
+        if ($this->hruid !== null && $this->forlife !== null
+            && $this->bestalias !== null && $this->display_name !== null
+            && $this->full_name !== null && $this->promo !== null && $this->perms !== null
+            && $this->gender !== null && $this->email_format !== null) {
             return;
         }
 
@@ -121,8 +122,11 @@ class User extends PlUser
                                    CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
                                    CONCAT(u.prenom, ' ', u.nom) AS full_name,
                                    IF(u.prenom != '', u.prenom, u.nom) AS display_name,
+                                   FIND_IN_SET('femme', u.flags) AS gender,
+                                   q.core_mail_fmt AS email_format,
                                    u.perms
                              FROM  auth_user_md5 AS u
+                        LEFT JOIN  auth_user_quick AS q ON (q.user_id = u.user_id)
                         LEFT JOIN  aliases AS af ON (af.id = u.user_id AND af.type = 'a_vie')
                         LEFT JOIN  aliases AS ab ON (ab.id = u.user_id AND FIND_IN_SET('bestalias', ab.flags))
                             WHERE  u.user_id = {?}", $this->user_id);
@@ -131,6 +135,8 @@ class User extends PlUser
 
     // Specialization of the fillFromArray method, to implement hacks to enable
     // lazy loading of user's main properties from the session.
+    // TODO(vzanotti): remove the conversion hacks once the old codebase will
+    // stop being used actively.
     protected function fillFromArray(array $values)
     {
         // It might happen that the 'user_id' field is called uid in some places
@@ -149,6 +155,18 @@ class User extends PlUser
             if (!isset($values['full_name'])) {
                 $values['full_name'] = $values['prenom'] . ' ' . $values['nom'];
             }
+        }
+
+        // We also need to convert the gender (usually named "femme"), and the
+        // email format parameter (valued "texte" instead of "text").
+        if (isset($values['femme'])) {
+            $values['gender'] = (bool) $values['femme'];
+        }
+        if (isset($values['mail_fmt'])) {
+            $values['email_format'] = $values['mail_fmt'];
+        }
+        if (isset($values['email_format'])) {
+            $values['email_format'] = ($values['email_format'] ? self::FORMAT_HTML : self::FORMAT_TEXT);
         }
 
         parent::fillFromArray($values);
