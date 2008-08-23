@@ -73,34 +73,39 @@ class ProfileModule extends PLModule
 
     function handler_photo(&$page, $x = null, $req = null)
     {
-        if (is_null($x)) {
+        if (!$x || !($user = User::getSilent($x))) {
             return PL_NOT_FOUND;
         }
 
-        $res = XDB::query("SELECT id, pub FROM aliases
-                                  LEFT JOIN photo ON(id = uid)
-                                      WHERE alias = {?}", $x);
-        list($uid, $photo_pub) = $res->fetchOneRow();
+        // Retrieve the photo and its mime type.
+        $photo_data = null;
+        $photo_type = null;
 
         if ($req && S::logged()) {
             include 'validations.inc.php';
-            $myphoto = PhotoReq::get_request($uid);
-            Header('Content-type: image/'.$myphoto->mimetype);
-            echo $myphoto->data;
+            $myphoto = PhotoReq::get_request($user->id());
+            if ($myphoto) {
+                $photo_data = $myphoto->data;
+                $photo_type = $myphoto->mimetype;
+            }
         } else {
             $res = XDB::query(
-                    "SELECT  attachmime, attach
+                    "SELECT  attachmime, attach, pub
                        FROM  photo
-                      WHERE  uid={?}", $uid);
-
-            if ((list($type, $data) = $res->fetchOneRow())
-            &&  ($photo_pub == 'public' || S::logged())) {
-                Header("Content-type: image/$type");
-                echo $data;
-            } else {
-                Header('Content-type: image/png');
-                echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
+                      WHERE  uid = {?}", $user->id());
+            list($photo_type, $photo_data, $photo_pub) = $res->fetchOneRow();
+            if ($photo_pub != 'public' && !S::logged()) {
+                $photo_type = $photo_data = null;
             }
+        }
+
+        // Display the photo, or a default one when not available.
+        if ($photo_type && $photo_data != null) {
+            header('Content-type: image/' . $photo_type);
+            echo $photo_data;
+        } else {
+            header('Content-type: image/png');
+            echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
         }
         exit;
     }
@@ -136,7 +141,7 @@ class ProfileModule extends PLModule
         if (Env::has('upload')) {
             S::assert_xsrf_token();
 
-            $upload = new PlUpload(S::v('forlife'), 'photo');
+            $upload = new PlUpload(S::user()->login(), 'photo');
             if (!$upload->upload($_FILES['userfile']) && !$upload->download(Env::v('photo'))) {
                 $page->trigError('Une erreur est survenue lors du téléchargement du fichier');
             } else {
@@ -148,7 +153,7 @@ class ProfileModule extends PLModule
         } elseif (Env::has('trombi')) {
             S::assert_xsrf_token();
 
-            $upload = new PlUpload(S::v('forlife'), 'photo');
+            $upload = new PlUpload(S::user()->login(), 'photo');
             if ($upload->copyFrom($trombi_x)) {
                 $myphoto = new PhotoReq(S::v('uid'), $upload);
                 if ($myphoto->isValid()) {
