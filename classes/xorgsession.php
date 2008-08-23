@@ -24,14 +24,10 @@ class XorgSession extends PlSession
     public function __construct()
     {
         parent::__construct();
-        S::bootstrap('perms_backup', new PlFlagSet());
     }
 
     public function startAvailableAuth()
     {
-        if (!(S::v('perms') instanceof PlFlagSet)) {
-            S::set('perms', S::v('perms_backup'));
-        }
         if (!S::logged()) {
             $cookie = $this->tryCookie();
             if ($cookie == 0) {
@@ -224,10 +220,11 @@ class XorgSession extends PlSession
         } else {
             $logger = S::logger($uid);
             setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
-            if (Post::v('remember', 'false') == 'true') {
+
+            if (S::i('auth_by_cookie') == $uid || Post::v('remember', 'false') == 'true') {
                 $cookie = hash_encrypt($sess['password']);
                 setcookie('ORGaccess', $cookie, (time() + 25920000), '/', '', 0);
-                if ($logger) {
+                if ($logger && S::i('auth_by_cookie') != $uid) {
                     $logger->log("cookie_on");
                 }
             } else {
@@ -244,6 +241,9 @@ class XorgSession extends PlSession
         $this->setSkin();
         $this->updateNbNotifs();
         check_redirect();
+
+        // We should not have to use this private data anymore
+        S::kill('auth_by_cookie');
         return true;
     }
 
@@ -283,6 +283,20 @@ class XorgSession extends PlSession
         return null;
     }
 
+    public function makePerms($perm)
+    {
+        $flags = new PlFlagSet();
+        if ($perm == 'disabled' || $perm == 'ext') {
+            S::set('perms', $flags);
+            return;
+        }
+        $flags->addFlag(PERMS_USER);
+        if ($perm == 'admin') {
+            $flags->addFlag(PERMS_ADMIN);
+        }
+        S::set('perms', $flags);
+    }
+
     public function setSkin()
     {
         global $globals;
@@ -294,6 +308,11 @@ class XorgSession extends PlSession
                                 WHERE  user_id = {?} AND skin_tpl != ''", $uid);
             S::set('skin', $res->fetchOneCell());
         }
+    }
+
+    public function loggedLevel()
+    {
+        return AUTH_COOKIE;
     }
 
     public function sureLevel()

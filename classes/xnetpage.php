@@ -41,6 +41,7 @@ class XnetPage extends PlPage
             $this->assign('is_admin', may_update());
             $this->assign('is_member', is_member());
         }
+        $this->addJsLink('xorg.js');
     }
 
     // }}}

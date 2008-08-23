@@ -120,7 +120,7 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
         {else}
         {$x.l}
         {/if}
-        <a href='{$platal->pl_self(1)}?del_owner={$x.l}'>{icon name=cross title='retirer modérateur'}</a>
+        <a href='{$platal->pl_self(1)}?del_owner={$x.l}&amp;token={xsrf_token}'>{icon name=cross title='retirer modérateur'}</a>
         <br />
         {/foreach}
       </td>

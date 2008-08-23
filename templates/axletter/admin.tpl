@@ -46,6 +46,6 @@
 
 <h1>Ajout d'utilisateurs</h1>
 
-{include file="include/csv-importer.tpl"}
+{include core=csv-importer.tpl}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

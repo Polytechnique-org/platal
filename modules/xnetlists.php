@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/lists.php';
+Platal::load('lists');
 
 class XnetListsModule extends ListsModule
 {
@@ -56,8 +56,7 @@ class XnetListsModule extends ListsModule
     function prepare_client(&$page)
     {
         global $globals;
-
-        require_once dirname(__FILE__).'/lists/lists.inc.php';
+        Platal::load('lists', 'lists.inc.php');
 
         $this->client = new MMList(S::v('uid'), S::v('password'),
                                    $globals->asso('mail_domain'));

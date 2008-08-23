@@ -56,7 +56,7 @@ class ListsModule extends PLModule
     {
         global $globals;
 
-        require_once dirname(__FILE__).'/lists/lists.inc.php';
+        $this->load('lists.inc.php');
 
         $this->client = new MMList(S::v('uid'), S::v('password'));
         return $globals->mail->domain;

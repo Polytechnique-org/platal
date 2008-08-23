@@ -19,35 +19,10 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-
-<?xml version="1.0"?>
-<rss version="2.0">
-  <channel>
-    <title>Polytechnique.net :: {$asso.nom} :: News</title>
-    <language>fr</language>
-    <link>{#globals.baseurl#}/{$asso.diminutif}/</link>
-    <description>L'actualite polytechnicienne...</description>
-    <image>
-      <title>{#globals.core.sitename#}</title>
-      <url>{#globals.baseurl#}/images/logo.png</url>
-      <link>{#globals.baseurl#}/{$asso.diminutif}/</link>
-    </image>
-    {iterate item=line from=$rss}
-    <item>
-      <title>{$line.titre|strip_tags}</title>
-      <guid isPermaLink="false">{$line.id}</guid>
-      <link>{#globals.baseurl#}/{$asso.diminutif}/#art{$line.id}</link>
-      <description><![CDATA[
-        {if $line.photo}
-        <div style="float: left; padding-right: 0.5em">
-          <img src="{#globals.baseurl#}/{$asso.diminutif}/announce/photo/{$line.id}" alt="{$line.titre|strip_tags}" />
-        </div>
-        {/if}
-        <div>{$line.texte|miniwiki}{if $line.contacts}<br/><br/><strong>Contacts&nbsp;:</strong><br/>{$line.contacts|miniwiki}{/if}</div>]]></description>
-      <author>{$line.prenom} {$line.nom} (X{$line.promo})</author>
-      <pubDate>{$line.create_date|rss_date}</pubDate>
-    </item>
-    {/iterate}
-  </channel>
-</rss>
+{if $article->photo}
+<div style="float: left; padding-right: 0.5em">
+  <img src="{#globals.baseurl#}/{$asso.diminutif}/announce/photo/{$article->id}" alt="{$article->titre|strip_tags}" />
+</div>
+{/if}
+<div>{$article->texte|miniwiki}{if $article->contacts}<br/><br/><strong>Contacts&nbsp;:</strong><br/>{$article->contacts|miniwiki}{/if}</div>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

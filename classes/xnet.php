@@ -74,7 +74,7 @@ class Xnet extends Platal
         return $ans;
     }
 
-    public function force_login(&$page)
+    public function force_login(PlPage &$page)
     {
         http_redirect(S::v('loginX'));
     }

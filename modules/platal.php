@@ -448,14 +448,14 @@ Adresse de secours : " . Post::v('email') : ""));
 
     function handler_review(&$page, $action = null, $mode = null) 
     {
-        require_once dirname(__FILE__) . '/platal/review.inc.php';
+        $this->load('review.inc.php');
         $dom = 'Review';
         if (@$GLOBALS['IS_XNET_SITE']) {
             $dom .= 'Xnet';
         }
         $wp = new PlWikiPage($dom . '.Admin');
         $conf = explode('%0a', $wp->getField('text'));
-        $wiz = new PlWizard('Tour d\'horizon', 'core/plwizard.tpl', true);
+        $wiz = new PlWizard('Tour d\'horizon', PlPage::getCoreTpl('plwizard.tpl'), true);
         foreach ($conf as $line) {
             $list = preg_split('/\s*[*|]\s*/', $line, -1, PREG_SPLIT_NO_EMPTY);
             $wiz->addPage('ReviewPage', $list[0], $list[1]);

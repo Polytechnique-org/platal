@@ -19,44 +19,18 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-
-<?xml version="1.0"?>
-<rss version="2.0">
-  <channel>
-    <title>{#globals.core.sitename#} :: News</title>
-    <language>fr</language>
-    <link>{#globals.baseurl#}/</link>
-    <description>L'actualite polytechnicienne...</description>
-    <image>
-      <title>{#globals.core.sitename#}</title>
-      <url>{#globals.baseurl#}/images/logo.png</url>
-      <link>{#globals.baseurl#}/</link>
-    </image>
-    {iterate item=line from=$rss}
-    <item>
-      <title>{$line.titre|strip_tags}</title>
-      <guid isPermaLink="false">{$line.id}</guid>
-      <link>{#globals.baseurl#}/events#newsid{$line.id}</link>
-      <description><![CDATA[
-        {if $line.photo}
-        <div style="float: left; padding-right: 0.5em">
-          <img src="{#globals.baseurl#}/events/photo/{$line.id}" alt="{$line.title}" />
-        </div>
-        {/if}
-        <div>{if $line.wiki}{$line.texte|miniwiki}{else}{$line.texte}{/if}</div>
-        {if $line.post_id neq -1}
-        <div style="clear: both">
-          <br />
-          <a href="{#globals.baseurl#}/banana/{#globals.banana.event_reply#|default:#globals.banana.event_forum#}/read/{$line.post_id}">
-          {icon name=comments full=true} Suivre la discussion
-          </a>
-        </div>
-        {/if}
-      ]]></description>
-      <author>{$line.prenom} {$line.nom} (X{$line.promo})</author>
-      <pubDate>{$line.creation_date|rss_date}</pubDate>
-    </item>
-    {/iterate}
-  </channel>
-</rss>
+{if $article->photo}
+<div style="float: left; padding-right: 0.5em">
+  <img src="{#globals.baseurl#}/events/photo/{$article->id}" alt="{$article->title|htmlentities}" />
+</div>
+{/if}
+<div>{if $article->wiki}{$article->texte|miniwiki}{else}{$article->texte}{/if}</div>
+{if $article->post_id neq -1}
+<div style="clear: both">
+  <br />
+  <a href="{#globals.baseurl#}/banana/{#globals.banana.event_reply#|default:#globals.banana.event_forum#}/read/{$article->post_id}">
+  {icon name=comments full=true} Suivre la discussion
+  </a>
+</div>
+{/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

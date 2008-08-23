@@ -151,7 +151,7 @@ class SearchModule extends PLModule
             $page->addJsLink('ajax.js');
         }
 
-        require_once dirname(__FILE__) . '/search/search.inc.php';
+        $this->load('search.inc.php');
         $page->changeTpl('search/index.tpl');
         $page->setTitle('Annuaire');
     }
@@ -160,7 +160,7 @@ class SearchModule extends PLModule
     {
         global $globals;
         require_once 'geoloc.inc.php';
-        require_once dirname(__FILE__) . '/search/search.inc.php';
+        $this->load('search.inc.php');
         $page->assign('advanced',1);
         $page->addJsLink('jquery.autocomplete.js');
 

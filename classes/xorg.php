@@ -19,14 +19,22 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-ini_set('include_path', dirname(__FILE__) . '/../core/include:'
-                      . dirname(__FILE__) . '/../include:'
-                      . dirname(__FILE__) . '/../core/classes:'
-                      . dirname(__FILE__) . '/../classes:'
-                      . '/usr/share/php');
-require_once('xorg.inc.php');
-
-new Xorg('core');
+class Xorg extends Platal
+{
+    public function force_login(PlPage &$page)
+    {
+        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+        if (S::logged()) {
+            $page->changeTpl('core/password_prompt_logged.tpl');
+            $page->addJsLink('do_challenge_response_logged.js');
+        } else {
+            $page->changeTpl('core/password_prompt.tpl');
+            $page->addJsLink('do_challenge_response.js');
+        }
+        $page->assign_by_ref('platal', $this);
+        $page->run();
+    }
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

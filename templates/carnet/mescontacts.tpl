@@ -90,7 +90,7 @@
   Rechercher dans tes contacts&nbsp;:
 </p>
 
-{include file="core/plset.tpl"}
+{include core=plset.tpl}
 
 {/if}
 

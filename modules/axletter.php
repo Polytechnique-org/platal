@@ -43,14 +43,14 @@ class AXLetterModule extends PLModule
                 return $this->handler_index($page, 'out');
             }
         }
-        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        $this->load('axletter.inc.php');
         $page->changeTpl('axletter/unsubscribe.tpl');
         $page->assign('success', AXLetter::unsubscribe($hash, true));
     }
 
     function handler_index(&$page, $action = null)
     {
-        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        $this->load('axletter.inc.php');
 
         $page->changeTpl('axletter/index.tpl');
         $page->setTitle('Envois de l\'AX');
@@ -73,7 +73,7 @@ class AXLetterModule extends PLModule
 
     function handler_submit(&$page, $action = null)
     {
-        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        $this->load('axletter.inc.php');
         if (!AXLetter::hasPerms()) {
             return PL_FORBIDDEN;
         }
@@ -149,7 +149,7 @@ class AXLetterModule extends PLModule
 
             switch (@Post::v('valid')) {
               case 'Aperçu':
-                require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+                $this->load('axletter.inc.php');
                 $al = new AXLetter(array($id, $short_name, $subject, $title, $body, $signature,
                                          $promo_min, $promo_max, $echeance, 0, 'new'));
                 $al->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
@@ -225,7 +225,7 @@ class AXLetterModule extends PLModule
 
     function handler_cancel(&$page, $force = null)
     {
-        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        $this->load('axletter.inc.php');
         if (!AXLetter::hasPerms() || !S::has_xsrf_token()) {
             return PL_FORBIDDEN;
         }
@@ -245,7 +245,7 @@ class AXLetterModule extends PLModule
 
     function handler_valid(&$page, $force = null)
     {
-        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        $this->load('axletter.inc.php');
         if (!AXLetter::hasPerms() || !S::has_xsrf_token()) {
             return PL_FORBIDDEN;
         }
@@ -265,7 +265,7 @@ class AXLetterModule extends PLModule
 
     function handler_show(&$page, $nid = 'last')
     {
-        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        $this->load('axletter.inc.php');
         $page->changeTpl('axletter/show.tpl');
 
         $nl  = new AXLetter($nid);
@@ -283,7 +283,7 @@ class AXLetterModule extends PLModule
 
     function handler_admin(&$page, $action = null, $uid = null)
     {
-        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        $this->load('axletter.inc.php');
         if (Post::has('action')) {
             $action = Post::v('action');
             $uid    = Post::v('uid');

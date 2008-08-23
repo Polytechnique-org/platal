@@ -290,7 +290,7 @@ class PlatalBananaPage extends BananaPage
     {
         $tpl = parent::prepare();
         global $wiz;
-        $wiz = new PlWizard('Banana', 'core/plwizard.tpl', true, false);
+        $wiz = new PlWizard('Banana', PlPage::getCoreTpl('plwizard.tpl'), true, false);
         foreach ($this->pages as $name=>&$mpage) {
             $wiz->addPage($this->handler, $mpage['text'], $name);
         }
