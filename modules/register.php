@@ -301,21 +301,42 @@ class RegisterModule extends PLModule
         $redirect->add_email($email);
 
         // on cree un objet logger et on log l'inscription
-        $logger = new PlLogger($uid);
-        S::logger()->log('inscription', $email);
-
+        S::logger($uid)->log('inscription', $email);
         XDB::execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}', $uid);
 
-        global $platal;
-        $platal->on_subscribe($forlife, $uid, $promo, $password);
 
         $mymail = new PlMailer('register/inscription.reussie.tpl');
         $mymail->assign('forlife', $forlife);
         $mymail->assign('prenom', $prenom);
         $mymail->send();
 
+        // Enable search on the user
         require_once('user.func.inc.php');
         user_reindex($uid);
+
+        // Add notification for people looking for this registration
+        require_once 'notifs.inc.php';
+        register_watch_op($uid, WATCH_INSCR);
+        inscription_notifs_base($uid);
+
+        // Default registration on forums
+        $p_for = 'xorg.promo.x' . $promo;
+        $cible = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements', $p_for);
+        foreach ($cible as $val) {
+            XDB::execute("INSERT INTO  forums.abos (fid,uid)
+                               SELECT  fid, {?} FROM forums.list WHERE nom={?}", $uid, $val);
+            if (XDB::affectedRows() == 0 && $val == $p_for) {
+                $res = XDB::query("SELECT  SUM(perms IN ('admin','user') AND deces = 0), COUNT(*)
+                                     FROM  auth_user_md5
+                                    WHERE  promo = {?}", $promo);
+                list($effau, $effid) = $res->fetchOneRow();
+                if (5 * $effau > $effid) { // + 
+                    $mymail = new PlMailer('admin/forums-promo.mail.tpl');
+                    $mymail->assign('promo', $promo);
+                    $mymail->send();
+                }
+            }
+        }
 
         // update number of subscribers (perms has changed)
         $globals->updateNbIns();

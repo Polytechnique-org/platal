@@ -37,13 +37,6 @@ class CarnetModule extends PLModule
         );
     }
 
-    function on_subscribe($forlife, $uid, $promo, $password)
-    {
-        require_once 'notifs.inc.php';
-        register_watch_op($uid, WATCH_INSCR);
-        inscription_notifs_base($uid);
-    }
-
     function _add_rss_link(&$page)
     {
         if (!S::has('core_rss_hash')) {
