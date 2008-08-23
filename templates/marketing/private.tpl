@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Marketing de {$prenom} {$nom}</h1>
+<h1>Marketing de {$full_name}</h1>
 
 <h2>Matricules</h2>
 

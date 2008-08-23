@@ -76,41 +76,43 @@ class MarketingModule extends PLModule
         $page->assign('nbInsMarkOK', $res->fetchOneCell());
     }
 
-    function handler_private(&$page, $uid = null,
+    function handler_private(&$page, $hruid = null,
                              $action = null, $value = null)
     {
         global $globals;
         $page->changeTpl('marketing/private.tpl');
 
-        if (is_null($uid)) {
+        $user = User::getSilent($hruid);
+        if (!$user) {
             return PL_NOT_FOUND;
         }
 
-        $page->assign('path', 'marketing/private/'.$uid);
-
-        $res = XDB::query("SELECT  nom, prenom, promo, matricule
-                             FROM  auth_user_md5
-                            WHERE  user_id={?} AND perms='pending'", $uid);
-
-        if (list($nom, $prenom, $promo, $matricule) = $res->fetchOneRow()) {
-            require_once('user.func.inc.php');
-            $matricule_X = get_X_mat($matricule);
-            $page->assign('nom', $nom);
-            $page->assign('prenom', $prenom);
-            $page->assign('promo', $promo);
-            $page->assign('matricule', $matricule);
-            $page->assign('matricule_X',$matricule_X);
-        } else {
-            $page->kill('uid invalide');
+        // Retrieves marketed user details.
+        $res = XDB::query(
+            "SELECT  matricule
+               FROM  auth_user_md5
+              WHERE  user_id = {?} AND perms = 'pending'", $user->id());
+        if (!($matricule = $res->fetchOneCell())) {
+            $page->kill("Cet utilisateur est déjà inscrit au site.");
         }
 
+        require_once('user.func.inc.php');
+        $matricule = $res->fetchOneCell();
+        $matricule_X = get_X_mat($matricule);
+
+        $page->assign('full_name', $user->fullName());
+        $page->assign('promo', $user->promo());
+        $page->assign('matricule', $matricule);
+        $page->assign('matricule_X',$matricule_X);
+
+        // Applies in-parameter action to the user.
         if ($action == 'del') {
             S::assert_xsrf_token();
-            Marketing::clear($uid, $value);
+            Marketing::clear($user->id(), $value);
         }
 
         if ($action == 'rel') {
-            $market = Marketing::get($uid, $value);
+            $market = Marketing::get($user->id(), $value);
             if ($market == null) {
                 $page->trigWarning("Aucun marketing n'a été effectué vers $value");
             } else {
@@ -131,9 +133,9 @@ class MarketingModule extends PLModule
         if ($action == 'relforce') {
             S::assert_xsrf_token();
 
-            $market = Marketing::get($uid, Post::v('to'));
+            $market = Marketing::get($user->id(), Post::v('to'));
             if (is_null($market)) {
-                $market = new Marketing($uid, Post::v('to'), 'default', null, 'staff');
+                $market = new Marketing($user->id(), Post::v('to'), 'default', null, 'staff');
             }
             $market->send(Post::v('title'), Post::v('message'));
             $page->trigSuccess("Email envoyé");
@@ -141,30 +143,33 @@ class MarketingModule extends PLModule
 
         if ($action == 'insrel') {
             S::assert_xsrf_token();
-            if (Marketing::relance($uid)) {
+            if (Marketing::relance($user->id())) {
                 $page->trigSuccess('relance faite');
             }
         }
 
         if ($action == 'add' && Post::has('email') && Post::has('type')) {
-            $market = new Marketing($uid, Post::v('email'), 'default', null, Post::v('type'), S::v('uid'));
+            $market = new Marketing($user->id(), Post::v('email'), 'default', null, Post::v('type'), S::v('uid'));
             $market->add(false);
         }
 
+        // Retrieves and display the existing marketing attempts.
         $res = XDB::iterator(
                 "SELECT  r.*, a.alias
                    FROM  register_marketing AS r
              INNER JOIN  aliases            AS a ON (r.sender=a.id AND a.type = 'a_vie')
                   WHERE  uid={?}
-               ORDER BY  date", $uid);
+               ORDER BY  date", $user->id());
         $page->assign('addr', $res);
 
         $res = XDB::query("SELECT date, relance FROM register_pending
-                            WHERE uid = {?}", $uid);
+                            WHERE uid = {?}", $user->id());
         if (list($pending, $relance) = $res->fetchOneRow()) {
             $page->assign('pending', $pending);
             $page->assign('relance', $relance);
         }
+
+        $page->assign('path', 'marketing/private/' . $user->login());
     }
 
     function handler_broken(&$page, $uid = null)
@@ -249,41 +254,46 @@ class MarketingModule extends PLModule
         $page->assign('nonins', XDB::iterator($sql, $promo));
     }
 
-    function handler_public(&$page, $uid = null)
+    function handler_public(&$page, $hruid = null)
     {
         $page->changeTpl('marketing/public.tpl');
 
-        if (is_null($uid)) {
+        // Retrieves the user info, and checks the user is not yet registered.
+        $user = User::getSilent($hruid);
+        if (!$user) {
             return PL_NOT_FOUND;
         }
 
-        $res = XDB::query("SELECT nom, prenom, promo FROM auth_user_md5
-                                      WHERE user_id={?} AND perms='pending'", $uid);
+        $res = XDB::query(
+            "SELECT  COUNT(*)
+               FROM  auth_user_md5
+              WHERE  user_id = {?} AND perms = 'pending'", $user->id());
+        if (!$res->fetchOneCell()) {
+            $page->kill("Cet utilisateur est déjà inscrit au site.");
+        }
 
-        if (list($nom, $prenom, $promo) = $res->fetchOneRow()) {
-            $page->assign('prenom', $prenom);
-            $page->assign('nom', $nom);
-            $page->assign('promo', $promo);
+        // Displays the page, and handles the eventual user actions.
+        $page->assign('full_name', $user->fullName());
+        $page->assign('promo', $user->promo());
 
-            if (Post::has('valide')) {
-                S::assert_xsrf_token();
-                $email = trim(Post::v('mail'));
+        if (Post::has('valide')) {
+            S::assert_xsrf_token();
+            $email = trim(Post::v('mail'));
 
-                require_once 'emails.inc.php';
-                if (!isvalid_email_redirection($email)) {
-                    $page->trigError("Email invalide !");
+            require_once 'emails.inc.php';
+            if (!isvalid_email_redirection($email)) {
+                $page->trigError("Email invalide !");
+            } else {
+                // On cherche les marketings précédents sur cette adresse
+                // email, en se restreignant au dernier mois
+
+                if (Marketing::get($user->id(), $email, true)) {
+                    $page->assign('already', true);
                 } else {
-                    // On cherche les marketings précédents sur cette adresse
-                    // email, en se restreignant au dernier mois
-
-                    if (Marketing::get($uid, $email, true)) {
-                        $page->assign('already', true);
-                    } else {
-                        $page->assign('ok', true);
-                        check_email($email, "Une adresse surveillée est proposée au marketing par " . S::v('forlife'));
-                        $market = new Marketing($uid, $email, 'default', null, Post::v('origine'), S::v('uid'));
-                        $market->add();
-                    }
+                    $page->assign('ok', true);
+                    check_email($email, "Une adresse surveillée est proposée au marketing par " . S::user()->login());
+                    $market = new Marketing($user->id(), $email, 'default', null, Post::v('origine'), S::v('uid'));
+                    $market->add();
                 }
             }
         }
