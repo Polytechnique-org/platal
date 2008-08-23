@@ -47,7 +47,7 @@ define('DEBUG_SMARTY', 4);
  */
 class PlGlobals
 {
-    public $coreVersion = '0.9.17';
+    public $coreVersion = PLATAL_CORE_VERSION;
 
     /** Debug level.
      * This is a combination of the DEBUG_ flags. As soon as at least

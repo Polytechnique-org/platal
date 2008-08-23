@@ -21,6 +21,7 @@
 
 $TIME_BEGIN = microtime(true);
 
+require_once dirname(__FILE__) . '/version.inc.php';
 require_once dirname(__FILE__) . '/misc.inc.php';
 
 define('PERMS_EXT',   'ext');
