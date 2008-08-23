@@ -326,16 +326,6 @@ abstract class Platal
         $page->run();
     }
 
-    public function on_subscribe($forlife, $uid, $promo, $pass)
-    {
-        $args = func_get_args();
-        foreach ($this->__mods as $mod) {
-            if (!is_callable($mod, 'on_subscribe'))
-                continue;
-            call_user_func_array(array($mod, 'on_subscribe'), $args);
-        }
-    }
-
     public static function load($modname, $include = null)
     {
         global $platal;
