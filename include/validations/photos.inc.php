@@ -101,7 +101,7 @@ class PhotoReq extends Validate
     protected function handle_editor()
     {
         if (isset($_FILES['userfile'])) {
-            $upload =& PlUpload::get($_FILES['userfile'], S::v('forlife'), 'photo');
+            $upload =& PlUpload::get($_FILES['userfile'], S::user()->login(), 'photo');
             if (!$upload) {
                 $this->trigError('Une erreur est survenue lors du téléchargement du fichier');
                 return false;

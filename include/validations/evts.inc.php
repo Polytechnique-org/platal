@@ -94,7 +94,7 @@ class EvtReq extends Validate
         $this->pmax       = Env::i('promo_max');
         $this->peremption = Env::v('peremption');
         if (@$_FILES['image']['tmp_name']) {
-            $upload = PlUpload::get($_FILES['image'], S::v('forlife'), 'event');
+            $upload = PlUpload::get($_FILES['image'], S::user()->login(), 'event');
             if (!$upload) {
                 $this->trigError("Impossible de télécharger le fichier");
             } elseif (!$upload->isType('image')) {

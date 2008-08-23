@@ -218,7 +218,7 @@ class EventsModule extends PLModule
                 exit;
             }
         } else {
-            $upload = new PlUpload(S::v('forlife'), 'event');
+            $upload = new PlUpload(S::user()->login(), 'event');
             if ($upload->exists() && $upload->isType('image')) {
                 header('Content-Type: ' . $upload->contentType());
                 echo $upload->getContents();
@@ -269,7 +269,7 @@ class EventsModule extends PLModule
         $peremption = Post::i('peremption');
         $valid_mesg = Post::v('valid_mesg');
         $action     = Post::v('action');
-        $upload     = new PlUpload(S::v('forlife'), 'event');
+        $upload     = new PlUpload(S::user()->login(), 'event');
         $this->upload_image($page, $upload);
 
         if (($promo_min > $promo_max && $promo_max != 0)||
@@ -343,7 +343,7 @@ class EventsModule extends PLModule
         $arch = $action == 'archives';
         $page->assign('action', $action);
 
-        $upload = new PlUpload(S::v('forlife'), 'event');
+        $upload = new PlUpload(S::user()->login(), 'event');
         if ((Env::has('preview') || Post::v('action') == "Proposer") && $eid) {
             $action = 'edit';
             $this->upload_image($page, $upload);

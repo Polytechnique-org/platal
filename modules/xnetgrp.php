@@ -323,7 +323,7 @@ class XnetGrpModule extends PLModule
             $this->load('mail.inc.php');
             set_time_limit(120);
             $tos = get_all_redirects($mbr,  $mls, $mmlist);
-            $upload = PlUpload::get($_FILES['uploaded'], S::v('forlife'), 'xnet.emails', true);
+            $upload = PlUpload::get($_FILES['uploaded'], S::user()->login(), 'xnet.emails', true);
             send_xnet_mails($from, $sujet, $body, Env::v('wiki'), $tos, Post::v('replyto'), $upload, @$_FILES['uploaded']['name']);
             if ($upload) {
                 $upload->rm();
@@ -1206,7 +1206,7 @@ class XnetGrpModule extends PLModule
                 exit;
             }
         } else {
-            $upload = new PlUpload(S::v('forlife'), 'xnetannounce');
+            $upload = new PlUpload(S::user()->login(), 'xnetannounce');
             if ($upload->exists() && $upload->isType('image')) {
                 header('Content-Type: ' . $upload->contentType());
                 echo $upload->getContents();
@@ -1247,7 +1247,7 @@ class XnetGrpModule extends PLModule
             $art['xorg']       = Post::has('xorg');
             $art['nl']         = Post::has('nl');
             $art['event']      = Post::v('event');
-            $upload     = new PlUpload(S::v('forlife'), 'xnetannounce');
+            $upload     = new PlUpload(S::user()->login(), 'xnetannounce');
             $this->upload_image($page, $upload);
 
             $art['contact_html'] = $art['contacts'];

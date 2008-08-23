@@ -210,7 +210,7 @@ class ListsModule extends PLModule
             }
         }
         if (Post::has('add_member_sub') && isset($_FILES['add_member_file']) && $_FILES['add_member_file']['tmp_name']) {
-            $upload =& PlUpload::get($_FILES['add_member_file'], S::v('forlife'), 'list.addmember', true);
+            $upload =& PlUpload::get($_FILES['add_member_file'], S::user()->login(), 'list.addmember', true);
             if (!$upload) {
                 $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
             } else {
@@ -644,7 +644,7 @@ class ListsModule extends PLModule
         if (isset($_FILES['add_member_file']) && $_FILES['add_member_file']['tmp_name']) {
             S::assert_xsrf_token();
 
-            $upload =& PlUpload::get($_FILES['add_member_file'], S::v('forlife'), 'list.addmember', true);
+            $upload =& PlUpload::get($_FILES['add_member_file'], S::user()->login(), 'list.addmember', true);
             if (!$upload) {
                 $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
             } else {

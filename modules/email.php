@@ -298,7 +298,7 @@ class EmailModule extends PLModule
         if (Post::has('send_email')) {
             S::assert_xsrf_token();
 
-            $upload = PlUpload::get($_FILES['mail'], S::v('forlife'), 'spam.submit', true);
+            $upload = PlUpload::get($_FILES['mail'], S::user()->login(), 'spam.submit', true);
             if (!$upload) {
                 $page->trigError('Une erreur a été rencontrée lors du transfert du fichier');
                 return;
@@ -363,7 +363,7 @@ class EmailModule extends PLModule
 
             $error = false;
             foreach ($_FILES as &$file) {
-                if ($file['name'] && !PlUpload::get($file, S::v('forlife'), 'emails.send', false)) {
+                if ($file['name'] && !PlUpload::get($file, S::user()->login(), 'emails.send', false)) {
                     $page->trigError(PlUpload::$lastError);
                     $error = true;
                     break;
@@ -385,7 +385,7 @@ class EmailModule extends PLModule
 
                 if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
                     $page->trigError("Indique au moins un destinataire.");
-                    $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
+                    $page->assign('uploaded_f', PlUpload::listFilenames(S::user()->login(), 'emails.send'));
                 } else {
                     $mymail = new PlMailer();
                     $mymail->setFrom($from);
@@ -395,7 +395,7 @@ class EmailModule extends PLModule
                     if (!empty($bcc)) { $mymail->addBcc($bcc); }
                     if (!empty($to2)) { $mymail->addTo($to2); }
                     if (!empty($cc2)) { $mymail->addCc($cc2); }
-                    $files =& PlUpload::listFiles(S::v('forlife'), 'emails.send');
+                    $files =& PlUpload::listFiles(S::user()->login(), 'emails.send');
                     foreach ($files as $name=>&$upload) {
                         $mymail->addUploadAttachment($upload, $name);
                     }
@@ -407,10 +407,10 @@ class EmailModule extends PLModule
                     if ($mymail->send()) {
                         $page->trigSuccess("Ton email a bien été envoyé.");
                         $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
-                        PlUpload::clear(S::v('forlife'), 'emails.send');
+                        PlUpload::clear(S::user()->login(), 'emails.send');
                     } else {
                         $page->trigError("Erreur lors de l'envoi du courriel, réessaye.");
-                        $page->assign('uploaded_f', PlUpload::listFilenames(S::v('forlife'), 'emails.send'));
+                        $page->assign('uploaded_f', PlUpload::listFilenames(S::user()->login(), 'emails.send'));
                     }
                 }
             }
@@ -419,7 +419,7 @@ class EmailModule extends PLModule
                                  FROM  email_send_save
                                 WHERE  uid = {?}", S::i('uid'));
             if ($res->numRows() == 0) {
-                PlUpload::clear(S::v('forlife'), 'emails.send');
+                PlUpload::clear(S::user()->login(), 'emails.send');
                 $_REQUEST['bcc'] = S::v('bestalias').'@'.$globals->mail->domain;
             } else {
                 $data = unserialize($res->fetchOneCell());
