@@ -177,7 +177,7 @@ abstract class PlUser
 
     public function __get($name)
     {
-        if (isset($this->$name)) {
+        if (property_exists($this, $name)) {
             return $this->$name;
         }
 
@@ -190,7 +190,7 @@ abstract class PlUser
 
     public function __isset($name)
     {
-        return isset($this->$name) || isset($this->data[$name]);
+        return property_exists($this, $name) || isset($this->data[$name]);
     }
 
     /**
@@ -211,6 +211,21 @@ abstract class PlUser
 
         // Merge all value into the $this->data placeholder.
         $this->data = array_merge($this->data, $values);
+    }
+
+    /**
+     * Adds properties to the object; this method does not allow the caller to
+     * update core properties (id, ...).
+     *
+     * @param $values An associative array of non-core properties.
+     */
+    public function addProperties(array $values)
+    {
+        foreach ($values as $key => $value) {
+            if (!property_exists($this, $key)) {
+                $this->data[$key] = $value;
+            }
+        }
     }
 
 
