@@ -44,7 +44,7 @@ class UsageReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, $_usage, $_reason)
+    public function __construct(User &$_user, $_usage, $_reason)
     {
         parent::__construct($_user, true, 'usage');
         $this->nom_usage = $_usage;
@@ -61,7 +61,7 @@ class UsageReq extends Validate
                   FROM  auth_user_md5 as u
              LEFT JOIN  aliases       as e ON(e.type='alias' AND FIND_IN_SET('usage',e.flags) AND e.id = u.user_id)
              LEFT JOIN  aliases       as a ON(a.alias = {?} AND a.id != u.user_id)
-                 WHERE  u.user_id = {?}", $this->alias, $this->uid);
+                 WHERE  u.user_id = {?}", $this->alias, $this->user->id());
         list($this->oldalias, $this->oldusage, $this->homonyme) = $res->fetchOneRow();
     }
 

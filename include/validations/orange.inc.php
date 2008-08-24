@@ -36,7 +36,7 @@ class OrangeReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, $_sortie)
+    public function __construct(User &$_user, $_sortie)
     {
         parent::__construct($_user, true, 'orange');
         $this->promo_sortie  = $_sortie;

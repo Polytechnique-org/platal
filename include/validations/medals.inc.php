@@ -31,7 +31,7 @@ class MedalReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, $_idmedal, $_subidmedal, $_stamp=0)
+    public function __construct(User &$_user, $_idmedal, $_subidmedal, $_stamp=0)
     {
         parent::__construct($_user, false, 'medal', $_stamp);
         $this->mid = $_idmedal;

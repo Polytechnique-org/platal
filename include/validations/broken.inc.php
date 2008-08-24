@@ -37,10 +37,10 @@ class BrokenReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User $sender, User $user, $email, $comment = null)
+    public function __construct(User &$sender, User &$user, $email, $comment = null)
     {
         parent::__construct($sender, false, 'broken');
-        $this->m_user      = $user;
+        $this->m_user      = &$user;
         $this->m_comment   = trim($comment);
         $this->m_email     = $email;
     }

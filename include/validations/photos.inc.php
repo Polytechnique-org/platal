@@ -43,7 +43,7 @@ class PhotoReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, PlUpload &$upload, $_stamp=0)
+    public function __construct(User &$_user, PlUpload &$upload, $_stamp=0)
     {
         parent::__construct($_user, true, 'photo', $_stamp);
         $this->read($upload);

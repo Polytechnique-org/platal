@@ -42,7 +42,7 @@ class ListeReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, $_asso, $_liste, $_domain, $_desc, $_advertise,
+    public function __construct(User &$_user, $_asso, $_liste, $_domain, $_desc, $_advertise,
                                 $_modlevel, $_inslevel, $_owners, $_members, $_stamp=0)
     {
         parent::__construct($_user, false, 'liste', $_stamp);

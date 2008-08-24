@@ -39,7 +39,7 @@ class AliasReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, $_alias, $_raison, $_public, $_stamp=0)
+    public function __construct(User &$_user, $_alias, $_raison, $_public, $_stamp=0)
     {
         global $globals;
         parent::__construct($_user, true, 'alias', $_stamp);

@@ -41,7 +41,7 @@ class EvtReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, User $_user, PlUpload &$upload = null)
+    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, User &$_user, PlUpload &$upload = null)
     {
         parent::__construct($_user, false, 'evts');
         $this->titre      = $_titre;

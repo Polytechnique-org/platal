@@ -44,7 +44,7 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
     // }}}
     // {{{ constructor
 
-    public function __construct(User $_user, $_intitule, $_site, $_montant, $_msg,
+    public function __construct(User &$_user, $_intitule, $_site, $_montant, $_msg,
                                 $_montantmin=0, $_montantmax=999, $_asso_id = 0,
                                 $_evt = 0, $_stamp=0)
     {

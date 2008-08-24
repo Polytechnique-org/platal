@@ -79,9 +79,9 @@ abstract class Validate
      * @param       $_unique    requête pouvant être multiple ou non
      * @param       $_type      type de la donnée comme dans le champ type de x4dat.requests
      */
-    public function __construct(User $_user, $_unique, $_type)
+    public function __construct(User &$_user, $_unique, $_type)
     {
-        $this->user   = $_user;
+        $this->user   = &$_user;
         $this->stamp  = date('YmdHis');
         $this->unique = $_unique;
         $this->type   = $_type;

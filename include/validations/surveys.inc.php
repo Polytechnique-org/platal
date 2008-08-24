@@ -33,7 +33,7 @@ class SurveyReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_title, $_description, $_end, $_mode, $_promos, $_questions, User $_user)
+    public function __construct($_title, $_description, $_end, $_mode, $_promos, $_questions, User &$_user)
     {
         parent::__construct($_user, false, 'surveys');
         $this->title       = $_title;

@@ -26,7 +26,7 @@ class GoogleAppsUnsuspendReq extends Validate
                   alors la raison s'affichera (mais seulement 24-48h après la suspension).
                   Si l'utilisateur a désactivé lui-même son compte, la raison sera toujours vierge.";
 
-    public function __construct(User $_user)
+    public function __construct(User &$_user)
     {
         parent::__construct($_user, true, 'gapps-unsuspend');
     }
