@@ -33,10 +33,10 @@ class NLReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($uid, $title, $body, $append)
+    public function __construct(User $_user, $_title, $_body, $_append)
     {
-        parent::__construct($uid, false, 'nl');
-        $this->art = new NLArticle($title, $body, $append);
+        parent::__construct($_user, false, 'nl');
+        $this->art = new NLArticle($_title, $_body, $_append);
     }
 
     // }}}

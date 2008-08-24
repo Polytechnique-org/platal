@@ -17,10 +17,18 @@ EOF;
     exit;
 }
 
+// Retrieves list parameters.
 $promo = intval($opt['p']);
 $owner = $opt['o'];
 
-$req = new ListeReq(0, false, "promo$promo", $globals->mail->domain, "Liste de la promotion $promo",
+$owner_user = User::getSilent($owner);
+if (!$owner_user) {
+    echo "Supplied owner is not valid, aborting.\n";
+    exit 1;
+}
+
+// Creates the list.
+$req = new ListeReq($owner_user, false, "promo$promo", $globals->mail->domain, "Liste de la promotion $promo",
                     1 /*private*/, 2 /*moderate*/, 0 /*free subscription*/,
                     array($owner), array());
 $req->submit();

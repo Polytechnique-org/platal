@@ -41,9 +41,9 @@ class EvtReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, $_uid, PlUpload &$upload = null)
+    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, User $_user, PlUpload &$upload = null)
     {
-        parent::__construct($_uid, false, 'evts');
+        parent::__construct($_user, false, 'evts');
         $this->titre      = $_titre;
         $this->texte      = $_texte;
         $this->pmin       = $_pmin;
@@ -137,7 +137,7 @@ class EvtReq extends Validate
         if (XDB::execute("INSERT INTO  evenements
                          SET  user_id = {?}, creation_date=NOW(), titre={?}, texte={?},
                               peremption={?}, promo_min={?}, promo_max={?}, flags=CONCAT(flags,',valide,wiki')",
-                $this->uid, $this->titre, $this->texte,
+                $this->user->id(), $this->titre, $this->texte,
                 $this->peremption, $this->pmin, $this->pmax)) {
             $eid = XDB::insertId();
             if ($this->img) {
@@ -148,7 +148,7 @@ class EvtReq extends Validate
             global $globals;
             if ($globals->banana->event_forum) {
                 require_once 'banana/forum.inc.php';
-                $banana = new ForumsBanana(User::getSilent($this->uid));
+                $banana = new ForumsBanana($this->user);
                 $post = $banana->post($globals->banana->event_forum,
                                       $globals->banana->event_reply,
                                       $this->titre, MiniWiki::wikiToText($this->texte, false, 0, 80));

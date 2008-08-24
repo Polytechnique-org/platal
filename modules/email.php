@@ -171,7 +171,7 @@ class EmailModule extends PLModule
                 }
 
                 //Insertion de la demande dans la base, écrase les requêtes précédente
-                $myalias = new AliasReq($uid, $alias, $raison, $public);
+                $myalias = new AliasReq(S::user(), $alias, $raison, $public);
                 $myalias->submit();
                 $page->assign('success',$alias);
                 return;

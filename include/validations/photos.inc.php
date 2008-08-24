@@ -43,9 +43,9 @@ class PhotoReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_uid, PlUpload &$upload, $_stamp=0)
+    public function __construct(User $_user, PlUpload &$upload, $_stamp=0)
     {
-        parent::__construct($_uid, true, 'photo', $_stamp);
+        parent::__construct($_user, true, 'photo', $_stamp);
         $this->read($upload);
     }
 
@@ -76,7 +76,7 @@ class PhotoReq extends Validate
 
     static public function get_request($uid)
     {
-        return parent::get_typed_request($uid,'photo');
+        return parent::get_typed_request($uid, 'photo');
     }
 
     // }}}
@@ -140,8 +140,8 @@ class PhotoReq extends Validate
         require_once 'notifs.inc.php';
         XDB::execute('REPLACE INTO  photo (uid, attachmime, attach, x, y)
                             VALUES  ({?},{?},{?},{?},{?})',
-                     $this->uid, $this->mimetype, $this->data, $this->x, $this->y);
-        register_watch_op($this->uid, WATCH_FICHE, 'photo');
+                     $this->user->id(), $this->mimetype, $this->data, $this->x, $this->y);
+        register_watch_op($this->user->id(), WATCH_FICHE, 'photo');
         return true;
     }
 

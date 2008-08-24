@@ -26,11 +26,8 @@ class MarkReq extends Validate
 
     public $perso;
 
-    public $m_id;
+    public $m_user;
     public $m_email;
-    public $m_nom;
-    public $m_prenom;
-    public $m_promo;
     public $m_relance;
     public $m_type;
     public $m_data;
@@ -42,20 +39,14 @@ class MarkReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($sender, $mark_id, $email, $perso, $type, $data)
+    public function __construct(User $sender, User $mark, $email, $perso, $type, $data)
     {
         parent::__construct($sender, false, 'marketing');
-        $this->m_id    = $mark_id;
+        $this->m_user  = $mark;
         $this->m_email = $email;
         $this->perso   = $perso;
         $this->m_type  = $type;
         $this->m_data  = $data;
-
-        $res = XDB::query('SELECT  u.nom, u.prenom, u.promo
-                             FROM  auth_user_md5      AS u
-                            WHERE  user_id = {?}
-                         GROUP BY  u.user_id', $mark_id);
-        list ($this->m_nom, $this->m_prenom, $this->m_promo) = $res->fetchOneRow();
     }
 
     // }}}
@@ -68,7 +59,7 @@ class MarkReq extends Validate
                         LEFT JOIN  register_pending   AS p ON p.uid = u.user_id
                         LEFT JOIN  register_marketing AS m ON m.uid = u.user_id
                             WHERE  user_id = {?}',
-                            $this->m_id);
+                          $this->m_user->id());
         $this->m_relance = $res->fetchOneCell();
         return 'include/form.valid.mark.tpl';
     }
@@ -78,7 +69,7 @@ class MarkReq extends Validate
 
     protected function _mail_subj()
     {
-        return "[Polytechnique.org] Marketing de {$this->m_prenom} {$this->m_nom} ({$this->m_promo})";
+        return "[Polytechnique.org] Marketing de {$this->m_user->fullName()} ({$this->m_user->promo()})";
     }
 
     // }}}
@@ -88,11 +79,13 @@ class MarkReq extends Validate
     {
         if ($isok) {
             return "  Un email de marketing vient d'être envoyé "
-                .($this->perso ? 'en ton nom' : 'en notre nom')
-                ." à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour l'encourager à s'inscrire !\n\n"
-                ."Merci de ta participation !\n";
+                . ($this->perso ? 'en ton nom' : 'en notre nom')
+                . " à {$this->m_user->fullName()} ({$this->m_user->promo()}) "
+                . "pour l'encourager à s'inscrire !\n\n"
+                . "Merci de ta participation !\n";
         } else {
-            return "  Nous n'avons pas jugé bon d'envoyer d'email de marketing à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}).";
+            return "  Nous n'avons pas jugé bon d'envoyer d'email de marketing à "
+                . "{$this->m_user->fullName()} ({$this->m_user->promo()}).";
         }
     }
 
@@ -101,7 +94,7 @@ class MarkReq extends Validate
 
     public function commit()
     {
-        $market = Marketing::get($this->m_id, $this->m_email);
+        $market = Marketing::get($this->m_user->id(), $this->m_email);
         if ($market == null) {
             return false;
         }

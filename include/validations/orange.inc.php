@@ -27,7 +27,6 @@ class OrangeReq extends Validate
 
     public $unique = true;
 
-    public $promo;
     public $promo_sortie;
 
     public $rules = "A priori accepter (la validation sert à repousser les
@@ -37,12 +36,11 @@ class OrangeReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_uid, $_sortie)
+    public function __construct(User $_user, $_sortie)
     {
-        parent::__construct($_uid, true, 'orange');
+        parent::__construct($_user, true, 'orange');
         $this->promo_sortie  = $_sortie;
-        $res = XDB::query("SELECT promo FROM auth_user_md5 WHERE user_id = {?}", $_uid);
-        $this->promo = $res->fetchOneCell();
+        $res = XDB::query("SELECT promo FROM auth_user_md5 WHERE user_id = {?}", $_user->id());
     }
 
     // }}}
@@ -79,7 +77,7 @@ class OrangeReq extends Validate
 
     public function commit()
     {
-        XDB::execute("UPDATE auth_user_md5 set promo_sortie={?} WHERE user_id={?}",$this->promo_sortie ,$this->uid);
+        XDB::execute("UPDATE auth_user_md5 set promo_sortie = {?} WHERE user_id = {?}",$this->promo_sortie, $this->user->id());
         return true;
     }
 

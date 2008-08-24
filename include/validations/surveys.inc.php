@@ -33,9 +33,9 @@ class SurveyReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_title, $_description, $_end, $_mode, $_promos, $_questions, $_uid)
+    public function __construct($_title, $_description, $_end, $_mode, $_promos, $_questions, User $_user)
     {
-        parent::__construct($_uid, false, 'surveys');
+        parent::__construct($_user, false, 'surveys');
         $this->title       = $_title;
         $this->description = $_description;
         $this->end         = $_end;
@@ -99,7 +99,7 @@ class SurveyReq extends Validate
                             end={?},
                             mode={?},
                             promos={?}';
-        return XDB::execute($sql, serialize($this->questions), $this->title, $this->description, $this->uid, $this->end, $this->mode, $this->promos);
+        return XDB::execute($sql, serialize($this->questions), $this->title, $this->description, $this->user->id(), $this->end, $this->mode, $this->promos);
     }
 
     // }}}

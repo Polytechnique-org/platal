@@ -31,10 +31,10 @@ class MedalReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_uid, $_idmedal, $_subidmedal, $_stamp=0)
+    public function __construct(User $_user, $_idmedal, $_subidmedal, $_stamp=0)
     {
-        parent::__construct($_uid, false, 'medal', $_stamp);
-        $this->mid  = $_idmedal;
+        parent::__construct($_user, false, 'medal', $_stamp);
+        $this->mid = $_idmedal;
         $this->gid = $_subidmedal;
     }
 
@@ -101,10 +101,10 @@ class MedalReq extends Validate
     public function commit ()
     {
         require_once 'notifs.inc.php';
-        register_watch_op($this->uid, WATCH_FICHE, 'medals');
+        register_watch_op($this->user->id(), WATCH_FICHE, 'medals');
         return XDB::execute('REPLACE INTO  profile_medals_sub
                                    VALUES  ({?}, {?}, {?})',
-                            $this->uid, $this->mid, $this->gid);
+                            $this->user->id(), $this->mid, $this->gid);
     }
 
     // }}}

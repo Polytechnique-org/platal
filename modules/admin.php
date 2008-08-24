@@ -466,7 +466,7 @@ class AdminModule extends PLModule
 
                     // Eventually adds the alias to the right domain.
                     if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
-                        $req = new AliasReq($user->id(), $alias, 'Admin request', false);
+                        $req = new AliasReq($user, $alias, 'Admin request', false);
                         if ($req->commit()) {
                             $page->trigSuccess("Nouvel alias '$alias@$domain' attribué");
                         } else {

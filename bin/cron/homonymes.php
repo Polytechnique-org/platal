@@ -33,9 +33,11 @@ $resRobot = XDB::iterator("SELECT id, alias, expire FROM aliases WHERE (expire =
 if ($resRobot->total()) {
     require_once('validations/homonymes.inc.php');
     while ($old = $resRobot->next()) {
-    	$res = XDB::query("SELECT alias AS forlife FROM homonymes INNER JOIN aliases ON(user_id = id) WHERE homonyme_id = {?} AND type='a_vie'", $old['id']);
-	$forlifes = $res->fetchColumn();
-	$req = new HomonymeReq($old['id'], $old['alias'], $forlifes, $old['expire'] > date("Y-m-d"));
+        $res = XDB::query("SELECT alias AS forlife FROM homonymes INNER JOIN aliases ON(user_id = id) WHERE homonyme_id = {?} AND type='a_vie'", $old['id']);
+        $forlifes = $res->fetchColumn();
+
+        $user = User::getSilent($old['id']);
+        $req = new HomonymeReq($user, $old['alias'], $forlifes, $old['expire'] > date("Y-m-d"));
 	$req->submit();
     }
 }

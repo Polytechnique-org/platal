@@ -76,7 +76,7 @@ class ProfileDeco implements ProfileSetting
         // Add new ones
         foreach ($value as $id=>&$val) {
             if (!isset($orig[$id]) || $orig[$id]['grade'] != $val['grade']) {
-                $req = new MedalReq(S::i('uid'), $id, $val['grade']);
+                $req = new MedalReq(S::user(), $id, $val['grade']);
                 $req->submit();
             }
         }

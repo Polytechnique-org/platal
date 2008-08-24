@@ -187,20 +187,18 @@ class MarketingModule extends PLModule
             pl_redirect('emails/redirect');
         }
 
-        $res = Xdb::query("SELECT  u.nom, u.prenom, u.promo, FIND_IN_SET('femme', u.flags) AS sexe,
-                                   u.deces = '0000-00-00' AS alive, u.hruid, a.alias AS forlife, b.alias AS bestalias,
-                                   IF(e.email IS NOT NULL, e.email, IF(FIND_IN_SET('googleapps', u.mail_storage), 'googleapps', NULL)) AS email, e.last
-                             FROM  auth_user_md5 AS u
-                       INNER JOIN  aliases       AS a ON (a.id = u.user_id AND a.type = 'a_vie')
-                       INNER JOIN  aliases       AS b ON (b.id = u.user_id AND FIND_IN_SET('bestalias', b.flags))
-                        LEFT JOIN  emails        AS e ON (e.flags = 'active' AND e.uid = u.user_id)
-                            WHERE  u.hruid = {?}
-                         ORDER BY  e.panne_level, e.last", $user->login());
+        $res = XDB::query(
+                "SELECT  u.deces = '0000-00-00' AS alive, e.last,
+                         IF(e.email IS NOT NULL, e.email, IF(FIND_IN_SET('googleapps', u.mail_storage), 'googleapps', NULL)) AS email
+                   FROM  auth_user_md5 AS u
+              LEFT JOIN  emails        AS e ON (e.flags = 'active' AND e.uid = u.user_id)
+                  WHERE  u.user_id = {?}
+               ORDER BY  e.panne_level, e.last", $user->id());
         if (!$res->numRows()) {
             return PL_NOT_FOUND;
         }
-        $user_data = $res->fetchOneAssoc();
-        $page->assign('user', $user_data);
+        $user->addProperties($res->fetchOneAssoc());
+        $page->assign('user', $user);
 
         $email = null;
         require_once 'emails.inc.php';
@@ -217,15 +215,15 @@ class MarketingModule extends PLModule
                                 WHERE  email = {?} AND uid = {?}", $email, $user->id());
             $state = $res->numRows() ? $res->fetchOneCell() : null;
             if ($state == 'panne') {
-                $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user_data['prenom']} et est en panne.");
+                $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user->fullName()} et est en panne.");
             } elseif ($state == 'active') {
-                $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user_data['prenom']}");
-            } elseif ($user_data['email'] && !trim(Post::v('comment'))) {
+                $page->trigWarning("L'adresse que tu as fournie est l'adresse actuelle de {$user->fullName()}");
+            } elseif ($user->email && !trim(Post::v('comment'))) {
                 $page->trigError("Il faut que tu ajoutes un commentaire à ta proposition pour justifier le "
-                               . "besoin de changer la redirection de " . $user_data['prenom']);
+                               . "besoin de changer la redirection de {$user->fullName()}.");
             } else {
                 require_once 'validations.inc.php';
-                $valid = new BrokenReq(S::i('uid'), $user_data, $email, trim(Post::v('comment')));
+                $valid = new BrokenReq(S::user(), $user, $email, trim(Post::v('comment')));
                 $valid->submit();
                 $page->assign('sent', true);
             }

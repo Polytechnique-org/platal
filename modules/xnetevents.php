@@ -443,7 +443,7 @@ class XnetEventsModule extends PLModule
             // request for a new payment
             if (Post::v('paiement_id') == -1 && $money_defaut >= 0) {
                 require_once 'validations.inc.php';
-                $p = new PayReq(S::v('uid'),
+                $p = new PayReq(S::user(),
                                 Post::v('intitule')." - ".$globals->asso('nom'),
                                 Post::v('site'), $money_defaut,
                                 Post::v('confirmation'), 0, 999,

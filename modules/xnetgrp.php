@@ -1320,7 +1320,7 @@ class XnetGrpModule extends PLModule
                 if ($art['xorg']) {
                     require_once('validations.inc.php');
                     $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'], $fulltext,
-                                    $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'),
+                                    $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::user(),
                                     $upload);
                     $article->submit();
                     $page->trigWarning("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation.");
@@ -1329,7 +1329,7 @@ class XnetGrpModule extends PLModule
                 }
                 if ($art['nl']) {
                     require_once('validations.inc.php');
-                    $article = new NLReq(S::v('uid'), $globals->asso('nom') . " : " .$art['titre'],
+                    $article = new NLReq(S::user(), $globals->asso('nom') . " : " .$art['titre'],
                                          $art['texte'], $art['contact_html']);
                     $article->submit();
                     $page->trigWarning("La parution dans la Lettre Mensuelle est en attente de validation.");

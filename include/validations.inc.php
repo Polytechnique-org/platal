@@ -59,13 +59,7 @@ abstract class Validate
 {
     // {{{ properties
 
-    public $uid;
-    public $prenom;
-    public $nom;
-    public $promo;
-    public $sexe;
-    public $bestalias;
-    public $forlife;
+    public $user;
 
     public $stamp;
     public $unique;
@@ -81,23 +75,16 @@ abstract class Validate
     // {{{ constructor
 
     /** constructeur
-     * @param       $_uid       user id
+     * @param       $_user      user object
      * @param       $_unique    requête pouvant être multiple ou non
      * @param       $_type      type de la donnée comme dans le champ type de x4dat.requests
      */
-    public function __construct($_uid, $_unique, $_type)
+    public function __construct(User $_user, $_unique, $_type)
     {
-        $this->uid    = $_uid;
+        $this->user   = $_user;
         $this->stamp  = date('YmdHis');
         $this->unique = $_unique;
         $this->type   = $_type;
-        $res = XDB::query(
-                "SELECT  u.prenom, u.nom, u.promo, FIND_IN_SET('femme', u.flags) AS sexe, a.alias, b.alias
-                   FROM  auth_user_md5 AS u
-             INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
-             INNER JOIN  aliases       AS b ON ( u.user_id=b.id AND b.type!='homonyme' AND FIND_IN_SET('bestalias', b.flags) )
-                  WHERE  u.user_id={?}", $_uid);
-        list($this->prenom, $this->nom, $this->promo, $this->sexe, $this->forlife, $this->bestalias) = $res->fetchOneRow();
     }
 
     // }}}
@@ -109,12 +96,12 @@ abstract class Validate
     public function submit()
     {
         if ($this->unique) {
-            XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
+            XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->user->id(), $this->type);
         }
 
         $this->stamp = date('YmdHis');
         XDB::execute('INSERT INTO requests (user_id, type, data, stamp) VALUES ({?}, {?}, {?}, {?})',
-                $this->uid, $this->type, $this, $this->stamp);
+                $this->user->id(), $this->type, $this, $this->stamp);
 
         global $globals;
         $globals->updateNbValid();
@@ -128,7 +115,7 @@ abstract class Validate
     {
         XDB::execute('UPDATE requests SET data={?}, stamp=stamp
                        WHERE user_id={?} AND type={?} AND stamp={?}',
-                     $this, $this->uid, $this->type, $this->stamp);
+                     $this, $this->user->id(), $this->type, $this->stamp);
         return true;
     }
 
@@ -144,10 +131,10 @@ abstract class Validate
 
         if ($this->unique) {
             $success = XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
-                                    $this->uid, $this->type);
+                                    $this->user->id(), $this->type);
         } else {
             $success =  XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
-                                      $this->uid, $this->type, $this->stamp);
+                                      $this->user->id(), $this->type, $this->stamp);
         }
         $globals->updateNbValid();
         return $success;
@@ -187,7 +174,7 @@ abstract class Validate
             if (!strlen(trim(Env::v('comm')))) {
                 return true;
             }
-            $this->comments[] = Array(S::v('bestalias'), Env::v('comm'), $formid);
+            $this->comments[] = Array(S::user()->login(), Env::v('comm'), $formid);
 
             // envoi d'un mail à hotliners
             global $globals;
@@ -196,10 +183,10 @@ abstract class Validate
             $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
             $mailer->addTo($globals->core->admin_email);
 
-            $body = "Validation {$this->type} pour {$this->prenom} {$this->nom}\n\n"
-              . S::v('bestalias')." a ajouté le commentaire :\n\n"
-              . Env::v('comm')."\n\n"
-              . "cf la discussion sur : ".$globals->baseurl."/admin/validate";
+            $body = "Validation {$this->type} pour {$this->user->id()}\n\n"
+              . S::user()->login() . " a ajouté le commentaire :\n\n"
+              . Env::v('comm') . "\n\n"
+              . "cf la discussion sur : " . $globals->baseurl . "/admin/validate";
 
             $mailer->setTxtBody(wordwrap($body));
             $mailer->send();
@@ -244,10 +231,10 @@ abstract class Validate
         $mailer = new PlMailer();
         $mailer->setSubject($this->_mail_subj());
         $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
-        $mailer->addTo("\"{$this->prenom} {$this->nom}\" <{$this->bestalias}@{$globals->mail->domain}>");
+        $mailer->addTo("\"{$this->user->fullName()}\" <{$this->user->bestEmail()}>");
         $mailer->addCc("validation+{$this->type}@{$globals->mail->domain}");
 
-        $body = ($this->sexe ? "Chère camarade,\n\n" : "Cher camarade,\n\n")
+        $body = ($this->user->isFemale() ? "Chère camarade,\n\n" : "Cher camarade,\n\n")
               . $this->_mail_body($isok)
               . (Env::has('comm') ? "\n\n".Env::v('comm') : '')
               . "\n\nCordialement,\n\n-- \nL'équipe de Polytechnique.org\n";
@@ -386,7 +373,7 @@ abstract class Validate
 
     public function id()
     {
-        return $this->uid . '_' . $this->type . '_' . $this->stamp;
+        return $this->user->id() . '_' . $this->type . '_' . $this->stamp;
     }
 
     // }}}

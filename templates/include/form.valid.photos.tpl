@@ -23,9 +23,9 @@
 <tr class="pair">
   <td class="titre">Photos</td>
   <td>
-    <img src="photo/{$valid->forlife}" style="width:110px;" alt=" [ PHOTO ] " />
+    <img src="photo/{$valid->user->login()}" style="width:110px;" alt=" [ PHOTO ] " />
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="photo/{$valid->forlife}/req" style="width:110px;" alt=" [ PHOTO ] " />
+    <img src="photo/{$valid->user->login()}/req" style="width:110px;" alt=" [ PHOTO ] " />
   </td>
 </tr>
 

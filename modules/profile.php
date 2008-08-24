@@ -145,7 +145,7 @@ class ProfileModule extends PLModule
             if (!$upload->upload($_FILES['userfile']) && !$upload->download(Env::v('photo'))) {
                 $page->trigError('Une erreur est survenue lors du téléchargement du fichier');
             } else {
-                $myphoto = new PhotoReq(S::v('uid'), $upload);
+                $myphoto = new PhotoReq(S::user(), $upload);
                 if ($myphoto->isValid()) {
                     $myphoto->submit();
                 }
@@ -155,7 +155,7 @@ class ProfileModule extends PLModule
 
             $upload = new PlUpload(S::user()->login(), 'photo');
             if ($upload->copyFrom($trombi_x)) {
-                $myphoto = new PhotoReq(S::v('uid'), $upload);
+                $myphoto = new PhotoReq(S::user(), $upload);
                 if ($myphoto->isValid()) {
                     $myphoto->commit();
                     $myphoto->clean();
@@ -494,8 +494,7 @@ class ProfileModule extends PLModule
             $page->assign('promo_sortie', $promo_sortie);
 
             if (Env::has('submit')) {
-                $myorange = new OrangeReq(S::v('uid'),
-                                          $promo_sortie);
+                $myorange = new OrangeReq(S::user(), $promo_sortie);
                 $myorange->submit();
                 $page->assign('myorange', $myorange);
             }
@@ -684,7 +683,7 @@ class ProfileModule extends PLModule
                 if ($reason == 'other') {
                     $reason = Env::v('other_reason');
                 }
-                $myusage = new UsageReq(S::v('uid'), $nom_usage, $reason);
+                $myusage = new UsageReq(S::user(), $nom_usage, $reason);
                 $myusage->submit();
                 $page->assign('myusage', $myusage);
             }

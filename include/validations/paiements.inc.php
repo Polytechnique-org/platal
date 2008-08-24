@@ -44,11 +44,11 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
     // }}}
     // {{{ constructor
 
-    public function __construct($_uid, $_intitule, $_site, $_montant, $_msg,
+    public function __construct(User $_user, $_intitule, $_site, $_montant, $_msg,
                                 $_montantmin=0, $_montantmax=999, $_asso_id = 0,
                                 $_evt = 0, $_stamp=0)
     {
-        parent::__construct($_uid, false, 'paiements', $_stamp);
+        parent::__construct($_user, false, 'paiements', $_stamp);
 
         $this->titre        = $_intitule;
         $this->site         = $_site;
@@ -165,7 +165,6 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
 
     public function commit()
     {
-        global $globals;
         $res = XDB::query("SELECT MAX(id) FROM paiement.paiements");
         $id = $res->fetchOneCell()+1;
         $ret = XDB::execute("INSERT INTO paiement.paiements VALUES
@@ -175,7 +174,7 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
             ",
             $id, $this->titre, $this->site,
             $this->montant, $this->montant_min, $this->montant_max,
-            $this->bestalias."@".$globals->mail->domain, $this->msg_reponse, $this->asso_id);
+            $this->user->bestEmail(), $this->msg_reponse, $this->asso_id);
         if ($this->asso_id && $this->evt) {
             XDB::execute("UPDATE  groupex.evenements
                              SET  paiement_id = {?}

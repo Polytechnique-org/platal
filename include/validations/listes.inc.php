@@ -42,10 +42,10 @@ class ListeReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_uid, $_asso, $_liste, $_domain, $_desc, $_advertise,
+    public function __construct(User $_user, $_asso, $_liste, $_domain, $_desc, $_advertise,
                                 $_modlevel, $_inslevel, $_owners, $_members, $_stamp=0)
     {
-        parent::__construct($_uid, false, 'liste', $_stamp);
+        parent::__construct($_user, false, 'liste', $_stamp);
 
         $this->asso      = $_asso;
         $this->liste     = $_liste;
@@ -143,7 +143,7 @@ class ListeReq extends Validate
             return 1;
         }
 
-        $list = new MMList(S::v('uid'), S::v('password'), $this->domain);
+        $list = new MMList(S::user()->id(), S::v('password'), $this->domain);
         $ret = $list->create_list($this->liste, utf8_decode($this->desc), $this->advertise,
                                   $this->modlevel, $this->inslevel,
                                   $this->owners, $this->members);

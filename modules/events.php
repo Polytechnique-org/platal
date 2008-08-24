@@ -299,7 +299,7 @@ class EventsModule extends PLModule
 
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
-                                 $peremption, $valid_mesg, S::v('uid'), $upload);
+                                 $peremption, $valid_mesg, S::user(), $upload);
             $evtreq->submit();
             $page->assign('ok', true);
         } elseif (!Env::v('preview')) {

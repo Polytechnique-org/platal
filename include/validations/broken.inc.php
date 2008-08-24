@@ -24,15 +24,9 @@ class BrokenReq extends Validate
 {
     // {{{ properties
 
-    public $m_forlife;
-    public $m_bestalias;
-    public $m_prenom;
-    public $m_nom;
-    public $m_promo;
-    public $m_sexe;
-    public $m_email;
-    public $old_email;
+    public $m_user;
     public $m_comment;
+    public $m_email;
 
     private $m_reactive = false;
 
@@ -43,18 +37,12 @@ class BrokenReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($sender, $user, $email, $comment = null)
+    public function __construct(User $sender, User $user, $email, $comment = null)
     {
         parent::__construct($sender, false, 'broken');
-        $this->m_email     = $email;
+        $this->m_user      = $user;
         $this->m_comment   = trim($comment);
-        $this->m_forlife   = $user['forlife'];
-        $this->m_bestalias = $user['bestalias'];
-        $this->m_prenom    = $user['prenom'];
-        $this->m_nom       = $user['nom'];
-        $this->m_promo     = $user['promo'];
-        $this->m_sexe      = $user['sexe'];
-        $this->old_email   = $user['email'];
+        $this->m_email     = $email;
     }
 
     // }}}
@@ -70,7 +58,7 @@ class BrokenReq extends Validate
 
     protected function _mail_subj()
     {
-        return "[Polytechnique.org] Récupération de {$this->m_prenom} {$this->m_nom} ({$this->m_promo})";
+        return "[Polytechnique.org] Récupération de {$this->m_user->fullName()} ({$this->m_user->promo()})";
     }
 
     // }}}
@@ -79,16 +67,16 @@ class BrokenReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok && !$this->m_reactive) {
-            return "  Un email de contact vient d'être envoyé"
-                ." à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour confirmer sa volonté de"
-                ." mettre à jour sa redirection Polytechnique.org !\n\n"
-                ."Merci de ta participation !\n";
+            return "  Un email de contact vient d'être envoyé à {$this->m_user->fullName()}"
+                . " ({$this->m_user->promo()})  pour confirmer sa volonté de"
+                . " mettre à jour sa redirection Polytechnique.org !\n\n"
+                . "Merci de ta participation !\n";
         } elseif ($isok) {
-            return "  L'adresse de redirection {$this->m_email} de {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) "
+            return "  L'adresse de redirection {$this->m_email} de {$this->m_user->fullName()} ({$this->m_user->promo()}) "
                 ."vient d'être réactivée. Un email lui a été envoyé pour l'en informer.\n\n"
                 ."Merci de ta participation !\n";
         } else {
-            return "  Nous n'utiliserons pas cette adresse pour contacter {$this->m_prenom} {$this->m_nom} ({$this->m_promo}).";
+            return "  Nous n'utiliserons pas cette adresse pour contacter {$this->m_user->fullName()} ({$this->m_user->promo()}).";
         }
     }
 
@@ -98,39 +86,34 @@ class BrokenReq extends Validate
     public function commit()
     {
         global $globals;
-        $email =  $this->m_bestalias . '@' . $globals->mail->domain;
+        $email =  $this->m_user->bestEmail();
 
-        XDB::execute("UPDATE  emails AS e
-                  INNER JOIN  aliases AS a ON (a.id = e.uid)
-                         SET  e.flags = 'active', panne_level = 2
-                       WHERE  a.alias = {?} AND e.email = {?}", $this->m_forlife, $this->m_email);
+        XDB::execute("UPDATE  emails
+                         SET  flags = 'active', panne_level = 2
+                       WHERE  uid = {?} AND email = {?}", $this->m_user->id(), $this->m_email);
         if (XDB::affectedRows() > 0) {
             $this->m_reactive = true;
             $mailer = new PlMailer();
             $mailer->setFrom('"Association Polytechnique.org" <register@' . $globals->mail->domain . '>');
             $mailer->addTo($email);
-            $mailer->setSubject("Mise à jour de ton adresse $email");
+            $mailer->setSubject("Mise à jour de ton adresse {$email}");
             $mailer->setTxtBody(wordwrap("Cher Camarade,\n\n"
-                             . "Ton adresse $email étant en panne et ayant été informés que ta redirection {$this->m_email}, jusqu'à présent inactive, "
-                             . "est fonctionnelle, nous venons de réactiver cette adresse.\n\n"
-                             . "N'hésite pas à aller gérer toi-même tes redirections en te rendant à la page :\n"
-                             . "https://www.polytechnique.org/emails/redirect\n"
-                             . "Si tu as perdu ton mot de passe d'accès au site, tu peux également effectuer la procédure de récupération à l'adresse :\n"
-                             . "https://www.polytechnique.org/recovery\n\n"
-                             . "-- \nTrès Cordialement,\nL'Équipe de Polytechnique.org\n"));
+                    . "Ton adresse {$email} étant en panne et ayant été informés que ta redirection {$this->m_email}, jusqu'à présent inactive, "
+                    . "est fonctionnelle, nous venons de réactiver cette adresse.\n\n"
+                    . "N'hésite pas à aller gérer toi-même tes redirections en te rendant à la page :\n"
+                    . "https://www.polytechnique.org/emails/redirect\n"
+                    . "Si tu as perdu ton mot de passe d'accès au site, tu peux également effectuer la procédure de récupération à l'adresse :\n"
+                    . "https://www.polytechnique.org/recovery\n\n"
+                    . "-- \nTrès Cordialement,\nL'Équipe de Polytechnique.org\n"));
             $mailer->send();
             return true;
         }
 
-        $email =  $this->m_bestalias . '@' . $globals->mail->domain;
-        if ($this->old_email) {
+        if ($this->m_user->email) {
             $subject = "Ton adresse $email semble ne plus fonctionner";
             $reason  = "Nous avons été informés que ton adresse $email ne fonctionne plus correctement par un camarade";
         } else {
-            $res = XDB::iterRow("SELECT  email
-                                   FROM  emails AS e
-                             INNER JOIN  aliases AS a ON (a.id = e.uid)
-                                  WHERE  a.alias = {?} AND e.flags = 'panne'", $this->m_forlife);
+            $res = XDB::iterRow("SELECT email FROM emails WHERE uid = {?} AND flags = 'panne'", $this->m_user->id());
             $redirect = array();
             while (list($red) = $res->next()) {
                 list(, $redirect[]) = explode('@', $red);
@@ -146,7 +129,7 @@ class BrokenReq extends Validate
                         . ' sont hors-services depuis plusieurs mois.';
             }
         }
-        $body = ($this->m_sexe ? 'Chère ' : 'Cher ') . $this->m_prenom . ",\n\n"
+        $body = ($this->m_user->isFemale() ? 'Chère ' : 'Cher ') . $this->m_user->displayName() . ",\n\n"
               . $reason . "\n\n"
               . "L'adresse {$this->m_email} nous a été communiquée, veux-tu que cette adresse devienne ta nouvelle "
               . "adresse de redirection ? Si oui, envoie nous des informations qui "

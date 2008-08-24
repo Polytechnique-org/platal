@@ -46,8 +46,8 @@ function toggleField(name, id, obj) {
   <tr>
     <td class="titre" style="width: 20%">Demandeur&nbsp;:</td>
     <td>
-      <a href="profile/{$valid->bestalias}" class="popup2">
-        {$valid->prenom} {$valid->nom} (X{$valid->promo})
+      <a href="profile/{$valid->user->login()}" class="popup2">
+        {$valid->user->fullName()} (X{$valid->user->promo()})
       </a>
     </td>
   </tr>
@@ -75,7 +75,7 @@ function toggleField(name, id, obj) {
         {xsrf_token_field}
         <div>
           {include file=$valid->editor()}
-          <input type="hidden" name="uid"    value="{$valid->uid}" />
+          <input type="hidden" name="uid"    value="{$valid->user->id()}" />
           <input type="hidden" name="type"   value="{$valid->type}" />
           <input type="hidden" name="stamp"  value="{$valid->stamp}" />
           <br />
@@ -108,7 +108,7 @@ function toggleField(name, id, obj) {
       <form action="admin/validate" method="post">
         {xsrf_token_field}
         <div>
-          <input type="hidden" name="uid"    value="{$valid->uid}" />
+          <input type="hidden" name="uid"    value="{$valid->user->id()}" />
           <input type="hidden" name="type"   value="{$valid->type}" />
           <input type="hidden" name="stamp"  value="{$valid->stamp}" />
           <input type="hidden" name="formid" value="{0|rand:65535}" />
@@ -147,7 +147,7 @@ function toggleField(name, id, obj) {
           Ajouté dans l'email&nbsp;:<br />
           <textarea rows="5" cols="50" name="comm"></textarea><br />
 
-          <input type="hidden" name="uid"    value="{$valid->uid}" />
+          <input type="hidden" name="uid"    value="{$valid->user->id()}" />
           <input type="hidden" name="type"   value="{$valid->type}" />
           <input type="hidden" name="stamp"  value="{$valid->stamp}" />
           <input type="submit" name="accept" value="Accepter" />

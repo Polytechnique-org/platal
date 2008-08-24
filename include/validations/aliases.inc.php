@@ -39,10 +39,10 @@ class AliasReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_uid, $_alias, $_raison, $_public, $_stamp=0)
+    public function __construct(User $_user, $_alias, $_raison, $_public, $_stamp=0)
     {
         global $globals;
-        parent::__construct($_uid, true, 'alias', $_stamp);
+        parent::__construct($_user, true, 'alias', $_stamp);
         $this->alias  = $_alias.'@'.$globals->mail->alias_dom;
         $this->raison = $_raison;
         $this->public = $_public;
@@ -51,10 +51,15 @@ class AliasReq extends Validate
                 SELECT  v.alias
                   FROM  virtual_redirect AS vr
             INNER JOIN  virtual          AS v  ON (v.vid=vr.vid AND v.alias LIKE '%@{$globals->mail->alias_dom}')
-                 WHERE  vr.redirect={?} OR vr.redirect={?}",
-                 "{$this->forlife}@{$globals->mail->domain}", "{$this->forlife}@{$globals->mail->domain2}");
+                 WHERE  vr.redirect = {?} OR vr.redirect = {?}",
+                $this->user->forlifeEmail(),
+                // TODO: remove this über-ugly hack. The issue is that you need
+                // to remove all @m4x.org addresses in virtual_redirect first.
+                $this->user->login() . '@' . $globals->mail->domain2);
         $this->old = $res->fetchOneCell();
-        if (empty($this->old)) { unset($this->old); }
+        if (empty($this->old)) {
+            unset($this->old);
+        }
     }
 
     // }}}
@@ -62,7 +67,7 @@ class AliasReq extends Validate
 
     static public function get_request($uid)
     {
-        return parent::get_typed_request($uid,'alias');
+        return parent::get_typed_request($uid, 'alias');
     }
 
     // }}}
@@ -115,17 +120,16 @@ class AliasReq extends Validate
     public function commit ()
     {
         XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = {?} WHERE user_id = {?}",
-                     $this->public, $this->uid);
+                     $this->public, $this->user->id());
 
         if ($this->old) {
-            return XDB::execute('UPDATE virtual SET alias={?} WHERE alias={?}',
+            return XDB::execute("UPDATE virtual SET alias = {?} WHERE alias = {?}",
                                 $this->alias, $this->old);
         } else {
-            XDB::execute('INSERT INTO virtual SET alias={?},type="user"', $this->alias);
+            XDB::execute("INSERT INTO virtual SET alias = {?},type='user'", $this->alias);
             $vid = XDB::insertId();
-            $dom = $this->shorter_domain();
-            return XDB::query('INSERT INTO virtual_redirect (vid,redirect) VALUES ({?}, {?})',
-                              $vid, $this->forlife.'@'.$dom);
+            return XDB::query("INSERT INTO virtual_redirect (vid,redirect) VALUES ({?}, {?})",
+                              $vid, $this->user->forlifeEmail());
         }
     }
 

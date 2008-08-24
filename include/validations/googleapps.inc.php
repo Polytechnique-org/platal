@@ -26,9 +26,9 @@ class GoogleAppsUnsuspendReq extends Validate
                   alors la raison s'affichera (mais seulement 24-48h après la suspension).
                   Si l'utilisateur a désactivé lui-même son compte, la raison sera toujours vierge.";
 
-    public function __construct($_uid)
+    public function __construct(User $_user)
     {
-        parent::__construct($_uid, true, 'gapps-unsuspend');
+        parent::__construct($_user, true, 'gapps-unsuspend');
     }
 
     public function sendmail($isok)
@@ -61,7 +61,7 @@ class GoogleAppsUnsuspendReq extends Validate
     public function commit()
     {
         require_once dirname(__FILE__) . '/../googleapps.inc.php';
-        $account = new GoogleAppsAccount(User::get($this->forlife));
+        $account = new GoogleAppsAccount($this->user);
         return $account->do_unsuspend();
     }
 
@@ -71,7 +71,7 @@ class GoogleAppsUnsuspendReq extends Validate
             "SELECT  g_suspension
                FROM  gapps_accounts
               WHERE  g_account_name = {?}",
-            $this->forlife);
+            $this->user->login());
         return $res->fetchOneCell();
     }
 }

@@ -37,11 +37,11 @@ class HomonymeReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_uid, $_loginbis, $_homonymes_forlife, $warning=true)
+    public function __construct(User $_user, $_loginbis, $_homonymes_forlife, $warning=true)
     {
         $this->warning = $warning;
 
-        parent::__construct($_uid, true, $this->title());
+        parent::__construct($_user, true, $this->title());
 
         $this->refuse = false;
         $this->loginbis = $_loginbis;
@@ -53,7 +53,7 @@ class HomonymeReq extends Validate
 
     private function title()
     {
-        return $this->warning?'alerte alias':'robot répondeur';
+        return ($this->warning ? 'alerte alias' : 'robot répondeur');
     }
 
     // }}}
@@ -70,7 +70,9 @@ class HomonymeReq extends Validate
     protected function _mail_subj()
     {
         global $globals;
-        return "[Polytechnique.org/Support] ".($this->warning?"Dans une semaine : suppression de l'alias":"Mise en place du robot")." $loginbis@" . $globals->mail->domain;
+        return "[Polytechnique.org/Support] "
+            . ($this->warning ? "Dans une semaine : suppression de l'alias " : "Mise en place du robot")
+            . " $loginbis@" . $globals->mail->domain;
     }
 
     // }}}
@@ -84,7 +86,7 @@ class HomonymeReq extends Validate
 Comme nous t'en avons informé par email il y a quelques temps,
 pour respecter nos engagements en terme d'adresses email devinables,
 tu te verras bientôt retirer l'alias ".$this->loginbis."@".$globals->mail->domain." pour
-ne garder que ".$this->forlife."@".$globals->mail->domain.".
+ne garder que " . $this->user->forlifeEmail() . ".
 
 Toute personne qui écrira à ".$this->loginbis."@".$globals->mail->domain." recevra la
 réponse d'un robot qui l'informera que ".$this->loginbis."@".$globals->mail->domain."
@@ -99,14 +101,14 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
         if (!$isok) return false;
         global $globals;
         $mailer = new PlMailer;
-        $cc = "support+homonyme@".$globals->mail->domain;
-        $FROM = "\"Support Polytechnique.org\" <$cc>";
+        $cc = "support+homonyme@" . $globals->mail->domain;
+        $from = "\"Support Polytechnique.org\" <$cc>";
         $mailer->setSubject($this->_mail_subj());
-        $mailer->setFrom($FROM);
-        $mailer->addTo("\"{$this->prenom} {$this->nom}\" <{$this->bestalias}@{$globals->mail->domain}>");
+        $mailer->setFrom($from);
+        $mailer->addTo("\"{$this->user->fullName()}\" <{$this->user->bestEmail()}>");
         $mailer->addCc($cc);
 
-        $body = $this->prenom.",\n\n"
+        $body = $this->user->displayName() . ",\n\n"
               . $this->_mail_body($isok)
               . (Env::has('comm') ? "\n\n".Env::v('comm') : '')
               . "\n\nCordialement,\n\n-- \nL'équipe de Polytechnique.org\n";
@@ -121,10 +123,10 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     {
         require_once('homonymes.inc.php');
 
-        switch_bestalias($this->uid, $this->loginbis);
+        switch_bestalias($this->user->id(), $this->loginbis);
         if (!$this->warning) {
-            XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $this->loginbis);
-            XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $this->uid, $this->uid);
+            XDB::execute("UPDATE aliases SET type = 'homonyme', expire = NOW() WHERE alias = {?}", $this->loginbis);
+            XDB::execute("REPLACE INTO homonymes (homonyme_id, user_id) VALUES({?}, {?})", $this->user->id(), $this->user->id());
         }
 
         return true;

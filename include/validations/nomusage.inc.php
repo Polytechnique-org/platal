@@ -44,13 +44,17 @@ class UsageReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_uid, $_usage, $_reason)
+    public function __construct(User $_user, $_usage, $_reason)
     {
-        parent::__construct($_uid, true, 'usage');
-        $this->nom_usage  = $_usage;
+        parent::__construct($_user, true, 'usage');
+        $this->nom_usage = $_usage;
         $this->reason = $_reason;
-        $this->alias   = make_username($this->prenom, $this->nom_usage);
-        if (!$this->nom_usage) $this->alias = "";
+
+        $res = XDB::query("SELECT prenom FROM auth_user_md5 WHERE user_id = {?}", $this->user->id());
+        $this->alias = make_username($res->fetchOneCell(), $this->nom_usage);
+        if (!$this->nom_usage) {
+            $this->alias = "";
+        }
 
         $res = XDB::query("
                 SELECT  e.alias, u.nom_usage, a.id
@@ -93,7 +97,7 @@ class UsageReq extends Validate
             }
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
-                $account = new GoogleAppsAccount(User::get($this->uid));
+                $account = new GoogleAppsAccount($this->user);
                 if ($account->active()) {
                     $res .= "\n\n  Si tu utilises Google Apps, tu peux changer ton nom d'usage sur https://mail.google.com/a/polytechnique.org/#settings/accounts";
                 }
@@ -110,9 +114,9 @@ class UsageReq extends Validate
     public function commit()
     {
         require_once 'notifs.inc.php';
-        register_watch_op($this->uid, WATCH_FICHE, 'nom');
+        register_watch_op($this->user->id(), WATCH_FICHE, 'nom');
         require_once('user.func.inc.php');
-        $this->bestalias = set_new_usage($this->uid, $this->nom_usage, $this->alias);
+        set_new_usage($this->user->id(), $this->nom_usage, $this->alias);
         return true;
     }
 

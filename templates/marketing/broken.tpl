@@ -20,16 +20,15 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
 {if $sent}
 
 <p>
   Merci de nous avoir communiqué cette information !
 </p>
 
-{elseif $user && !$user.alive}
+{elseif $user && !$user->alive}
 <p class="erreur">
-  {$user.prenom} {$user.nom} (X{$user.promo}) est malheureusement décédé{if $user.sexe}e{/if}.
+  {$user->fullName()} (X{$user->promo()}) est malheureusement décédé{if $user->isFemale()}e{/if}.
   Nous ne réaliserons maintenance sur son adresse Polytechnique.org qu'à la demande explicite
   de sa famille. Pour tout renseignement, merci de <a href="mailto:contact@polytechnique.org">
   contacter le support</a>.
@@ -37,32 +36,32 @@
 
 {elseif $user}
 <h1>
-  Recherche d'adresses pour {$user.nom} {$user.prenom} (X{$user.promo})
+  Recherche d'adresses pour {$user->fullName()} (X{$user->promo()}).
 </h1>
 
-{if !$user.email}
+{if !$user->email}
 <p>
   Avec le temps, toutes les adresses de redirection de notre camarade sont devenues invalides et produisent
   des erreurs lorsqu'on lui envoie un email. Nous sommes donc à la recherche d'adresses valides où nous pourrions
   contacter ce camarade.
 </p>
-{elseif $user.last}
+{elseif $user->last}
 <p>
-  {$user.prenom} a encore des adresses de redirection actives malgré des pannes détectées sur certaines d'entre elles. Si
+  {$user->fullName()} a encore des adresses de redirection actives malgré des pannes détectées sur certaines d'entre elles. Si
   tu es sûr{if $smarty.session.femme}e{/if} que son adresse Polytechnique.org est en panne, tu peux proposer une nouvelle
   adresse email à ajouter à ses redirections. Merci d'ajouter un commentaire pour nous indiquer la raison de cette proposition.
 </p>
 {else}
 <p>
-  Nous n'avons actuellement enregistré aucune panne sur les adresses de redirection de {$user.prenom}. Si tu es 
+  Nous n'avons actuellement enregistré aucune panne sur les adresses de redirection de {$user->fullName()}. Si tu es 
   sûr{if $smarty.session.femme}e{/if} que son adresse de redirection actuelle est en panne, tu peux nous proposer
   une nouvelle adresse, accompagnée d'un commentaire nous expliquant les raisons exactes de cette proposition.
 </p>
 {/if}
 <p>
-  Les adresses email que tu pourras nous donner ne seront pas ajoutées directement aux redirections de {$user.prenom}.
-  Nous allons d'abord prendre contact avec {if $user.sexe}elle{else}lui{/if} pour savoir {if $user.sexe}si elle {else}s'il {/if}
-  accepte la mise à jour de sa redirection.
+  Les adresses email que tu pourras nous donner ne seront pas ajoutées directement aux redirections de {$user->fullName()}.
+  Nous allons d'abord prendre contact avec {if $user->isFemale()}elle{else}lui{/if} pour savoir {if $user->isFemale()}si elle
+  {else}s'il {/if} accepte la mise à jour de sa redirection.
 </p>
 <p>
   Merci de ta participation active à l'amélioration de notre qualité de service.
@@ -71,14 +70,14 @@
 <form method="post" action="{$platal->path}">
   {xsrf_token_field}
   <table class="bicol" summary="Fiche camarade">
-    <tr><th colspan="2">Proposition d'adresse pour<br />{$user.nom} {$user.prenom} (X{$user.promo})</th></tr>
+    <tr><th colspan="2">Proposition d'adresse pour<br />{$user->fullName()} (X{$user->promo()})</th></tr>
     <tr class="pair">
       <td>Adresse email&nbsp;:</td>
       <td>
         <input type="text" name="mail" size="30" maxlength="50" value="{$smarty.post.mail}" />
       </td>
     </tr>
-    {if $user.email}
+    {if $user->email}
     <tr class="impair">
       <td>Explication&nbsp;:</td>
       <td><textarea name="comment" cols="50" rows="4">{$smarty.post.comment}</textarea></td>

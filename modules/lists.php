@@ -296,7 +296,7 @@ class ListsModule extends PLModule
         if (!$page->nb_errs()) {
             $page->assign('created', true);
             require_once 'validations.inc.php';
-            $req = new ListeReq(S::v('uid'), $asso, $liste, $domain,
+            $req = new ListeReq(S::user(), $asso, $liste, $domain,
                                 Post::v('desc'), Post::i('advertise'),
                                 Post::i('modlevel'), Post::i('inslevel'),
                                 $owners, $members);

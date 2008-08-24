@@ -29,7 +29,7 @@
 <tr class="pair">
   <td class="titre">Homonymes&nbsp;:</td>
   <td>
-    {foreach from=$valid->homonymes_forlife item=o}
+    {foreach from=$valid->homonymes_hruid item=o}
     <a href='profile/{$o}' class='popup2'>{$o}</a>
     {/foreach}
   </td>

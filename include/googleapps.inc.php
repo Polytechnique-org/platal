@@ -336,7 +336,7 @@ class GoogleAppsAccount
 
         if (!$this->pending_update_suspension && !$this->pending_validation_unsuspend) {
             require_once('validations.inc.php');
-            $unsuspend = new GoogleAppsUnsuspendReq($this->user->id());
+            $unsuspend = new GoogleAppsUnsuspendReq($this->user);
             $unsuspend->submit();
             $this->pending_validation_unsuspend = true;
         }

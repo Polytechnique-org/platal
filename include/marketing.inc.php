@@ -60,12 +60,13 @@ class Marketing
 
         global $globals;
         return array(
-            'id' => $user->id(),
-            'sexe' => $user->isFemale(),
-            'mail' => $email,
-            'forlife_email' => $user->login() . '@' . $globals->mail->domain,
+            'user'           => $user,
+            'id'             => $user->id(),
+            'sexe'           => $user->isFemale(),
+            'mail'           => $email,
+            'to'             => '"' . $user->fullName() . '" <' . $email . '>',
+            'forlife_email'  => $user->login() . '@' . $globals->mail->domain,
             'forlife_email2' => $user->login() . '@' . $globals->mail->domain2,
-            'to' => '"' . $user->fullName() . '" <' . $email . '>',
         );
     }
 
@@ -76,7 +77,7 @@ class Marketing
         if ($from == 'staff' || !($user = User::getSilent($sender))) {
             return '"L\'équipe de Polytechnique.org" <register@' . $globals->mail->domain . '>';
         }
-        return sprintf('"%s" <%s>', $user->fullName(), $user->bestEmail());
+        return '"' . $user->fullName() . '" <' . $user->bestEmail() . '>';
     }
 
     private function &getEngine($type, $data, $from)
@@ -134,7 +135,7 @@ class Marketing
         $this->engine->process($this->user);
         if ($valid) {
             require_once 'validations.inc.php';
-            $valid = new MarkReq($this->sender, $this->user['id'], $this->user['mail'],
+            $valid = new MarkReq(User::getSilent($this->sender), $this->user['user'], $this->user['mail'],
                                  $this->from == 'user', $this->type, $this->data);
             $valid->submit();
         }
