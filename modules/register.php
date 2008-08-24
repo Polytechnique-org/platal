@@ -297,7 +297,8 @@ class RegisterModule extends PLModule
         }
 
         require_once('emails.inc.php');
-        $redirect = new Redirect($uid);
+        $user = User::getSilent($uid);
+        $redirect = new Redirect($user);
         $redirect->add_email($email);
 
         // on cree un objet logger et on log l'inscription

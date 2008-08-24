@@ -76,7 +76,7 @@ class EmailModule extends PLModule
         $page->assign('homonyme', $homonyme->fetchOneCell());
 
         // Affichage des redirections de l'utilisateur.
-        $redirect = new Redirect($uid);
+        $redirect = new Redirect(S::user());
         $page->assign('mails', $redirect->active_emails());
 
         // on regarde si l'utilisateur a un alias et si oui on l'affiche !
@@ -208,7 +208,7 @@ class EmailModule extends PLModule
 
         $page->assign('eleve', S::i('promo') >= date("Y") - 5);
 
-        $redirect = new Redirect(S::v('uid'));
+        $redirect = new Redirect(S::user());
 
         // FS#703 : $_GET is urldecoded twice, hence
         // + (the data) => %2B (in the url) => + (first decoding) => ' ' (second decoding)
@@ -282,7 +282,7 @@ class EmailModule extends PLModule
 
         $page->changeTpl('emails/antispam.tpl');
 
-        $bogo = new Bogo(S::v('uid'));
+        $bogo = new Bogo(S::user());
         if (isset($statut_filtre)) {
             $bogo->change($statut_filtre + 0);
         }
@@ -458,7 +458,7 @@ class EmailModule extends PLModule
         }
 
         // Sends the test email.
-        $redirect = new Redirect($user->id());
+        $redirect = new Redirect($user);
 
         $mailer = new PlMailer('emails/test.mail.tpl');
         $mailer->assign('email', $user->bestEmail());
@@ -472,30 +472,31 @@ class EmailModule extends PLModule
     function handler_imap_in(&$page, $hash = null, $login = null)
     {
         $page->changeTpl('emails/imap_register.tpl');
-        $id = null;
+        $user = null;
         if (!empty($hash) || !empty($login)) {
-            $req = XDB::query("SELECT  u.prenom, FIND_IN_SET('femme', u.flags) AS sexe, a.id
-                                 FROM  aliases AS a
-                           INNER JOIN  newsletter_ins AS ni ON (a.id = ni.user_id)
-                           INNER JOIN  auth_user_md5 AS u ON (u.user_id = a.id)
-                                WHERE  a.alias = {?} AND ni.hash = {?}", $login, $hash);
-            list($prenom, $sexe, $id) = $req->fetchOneRow();
+            $user = User::getSilent($login);
+            if ($user) {
+                $req = XDB::query("SELECT 1 FROM newsletter_ins WHERE user_id = {?} AND hash = {?}", $user->id(), $hash);
+                if ($req->numRows() == 0) {
+                    $user = null;
+                }
+            }
         }
 
         require_once('emails.inc.php');
         $page->assign('ok', false);
-        if (S::logged() && (is_null($id) || $id == S::i('uid'))) {
-            $storage = new EmailStorage(S::i('uid'), 'imap');
+        if (S::logged() && (is_null($user) || $user->id() == S::i('uid'))) {
+            $storage = new EmailStorage(S::user(), 'imap');
             $storage->activate();
             $page->assign('ok', true);
             $page->assign('prenom', S::v('prenom'));
             $page->assign('sexe', S::v('femme'));
-        } else if (!S::logged() && $id) {
-            $storage = new EmailStorage($id, 'imap');
+        } else if (!S::logged() && $user) {
+            $storage = new EmailStorage($user, 'imap');
             $storage->activate();
             $page->assign('ok', true);
-            $page->assign('prenom', $prenom);
-            $page->assign('sexe', $sexe);
+            $page->assign('prenom', $user->displayName());
+            $page->assign('sexe', $user->isFemale());
         }
     }
 

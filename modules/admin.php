@@ -401,7 +401,7 @@ class AdminModule extends PLModule
                              FROM  auth_user_md5
                             WHERE  user_id = {?}";
         $mr = XDB::query($userinfo_query, $user->id())->fetchOneAssoc();
-        $redirect = ($registered ? new Redirect($user->id()) : null);
+        $redirect = ($registered ? new Redirect($user) : null);
 
         // Processes admin requests, if any.
         foreach($_POST as $key => $val) {
@@ -495,7 +495,7 @@ class AdminModule extends PLModule
                                          SET  rewrite = ''
                                        WHERE  uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
                                      $user->id(), $val);
-                        fix_bestalias($user->id());
+                        fix_bestalias($user);
                         $page->trigSuccess("L'alias '$val' a été supprimé");
                     }
                     break;
@@ -511,7 +511,7 @@ class AdminModule extends PLModule
                     // As having a non-null bestalias value is critical in
                     // plat/al's code, we do an a posteriori check on the
                     // validity of the bestalias.
-                    fix_bestalias($user->id());
+                    fix_bestalias($user);
                     break;
 
                 // Profile edition.

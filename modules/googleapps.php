@@ -51,7 +51,7 @@ class GoogleAppsModule extends PLModule
         $page->assign('redirect_unique', true);
 
         if ($account->active()) {
-            $redirect = new Redirect(S::v('uid'));
+            $redirect = new Redirect(S::user());
             $page->assign('redirect_unique', !$redirect->other_active('googleapps'));
 
             $storage = new EmailStorage(S::v('uid'), 'googleapps');
