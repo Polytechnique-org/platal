@@ -26,21 +26,21 @@
 </h1>
 
 <p>
-Photo actuelle de {$forlife}
+Photo actuelle de {$user->login()}
 </p>
 
-<img src="photo/{$forlife}" alt="[ PHOTO ]" />
+<img src="photo/{$user->login()}" alt="[ PHOTO ]" />
 <br />
 
 <p>
-<a href="admin/trombino/{$uid}/delete?token={xsrf_token}">Supprimer cette photo</a>
+<a href="admin/trombino/{$user->login()}/delete?token={xsrf_token}">Supprimer cette photo</a>
 </p>
 
 <p>
-<a href="admin/trombino/{$uid}/original">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
+<a href="admin/trombino/{$user->login()}/original">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
 </p>
 
-<form action="admin/trombino/{$uid}/new" method="post" enctype="multipart/form-data">
+<form action="admin/trombino/{$user->login()}/new" method="post" enctype="multipart/form-data">
   {xsrf_token_field}
   <div>
     <input name="userfile" type="file" size="20" maxlength="150" />

@@ -41,7 +41,7 @@ function chgMainWinLoc(strPage)
 
 <div id="fiche">
   <div id="photo" class="part">
-    {if $photo_url}<img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}"/>{/if}
+    {if $photo_url}<img alt="Photo de {$user->login()}" src="{$photo_url}" width="{$x.x}"/>{/if}
     {if $logged && ( $x.section|smarty:nodefaults || $x.binets_join|smarty:nodefaults || $x.gpxs_join|smarty:nodefaults)}
       <h2>À l'X...</h2>
       {if $x.section}<div><em class="intitule">Section&nbsp;: </em><span>{$x.section}</span></div>{/if}
@@ -57,27 +57,27 @@ function chgMainWinLoc(strPage)
   </div>
   <div id="fiche_identite" class="part">
     <div class="civilite">
-      {if $x.sexe}&bull;{/if}
-      {$x.prenom} {if $x.nom_usage eq ""}{$x.nom}{else}{$x.nom_usage} ({$x.nom}){/if}
+      {if $user->isFemale()}&bull;{/if}
+      {$user->fullName()}{if $x.nom_usage neq ""} ({$x.nom}){/if}
       {if $logged}
       {if $x.nickname} (alias {$x.nickname}){/if}
       {/if}
       {if $x.web}&nbsp;<a href="{$x.web}">{icon name="world_go" title="Site Web"}</a>{/if}
       {if $logged}
-      &nbsp;{if !$x.dcd}<a href="vcard/{$x.forlife}.vcf">{*
+      &nbsp;{if !$x.dcd}<a href="vcard/{$user->login()}.vcf">{*
         *}{icon name=vcard title="Afficher la carte de visite"}</a>{/if}
       {if !$x.is_contact}
-      <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}&amp;token={xsrf_token}')">
+      <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$user->login()}&amp;token={xsrf_token}')">
         {icon name=add title="Ajouter à mes contacts"}</a>
       {else}
-      <a href="javascript:chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}&amp;token={xsrf_token}')">
+      <a href="javascript:chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$user->login()}&amp;token={xsrf_token}')">
         {icon name=cross title="Retirer de mes contacts"}</a>
       {/if}
       {if hasPerm('admin')}
-      <a href="javascript:chgMainWinLoc('admin/user/{$x.forlife}')">
+      <a href="javascript:chgMainWinLoc('admin/user/{$user->login()}')">
         {icon name=wrench title="administrer user"}</a>
       {/if}
-      {if $x.forlife eq $smarty.session.forlife}
+      {if $user->login() eq $smarty.session.hruid}
       <a href="javascript:chgMainWinLoc('profile/edit')">{icon name="user_edit" title="Modifier ma fiche"}</a>
       {/if}
       {/if}
@@ -93,20 +93,20 @@ function chgMainWinLoc(strPage)
       {if $logged}
       <div class='email'>
         {if $x.dcd}
-        Décédé{if $x.sexe}e{/if} le {$x.deces|date_format}
+        Décédé{if $user->isFemale()}e{/if} le {$x.deces|date_format}
         {elseif !$x.actif}
         Ce{if $c.sexe}tte{/if} camarade n'a plus d'adresse de redirection valide,<br />
-        <a href="marketing/broken/{$x.forlife}" class="popup">clique ici si tu connais son adresse email !</a>
+        <a href="marketing/broken/{$user->login()}" class="popup">clique ici si tu connais son adresse email !</a>
         {elseif !$x.inscrit}
         Cette personne n'est pas inscrite à Polytechnique.org,<br />
-        <a href="marketing/public/{$x.hruid}" class="popup">clique ici si tu connais son adresse email !</a>
+        <a href="marketing/public/{$user->login()}" class="popup">clique ici si tu connais son adresse email !</a>
         {else}
         {if $virtualalias}
         <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />
         {/if}
-        <a href="mailto:{$x.bestalias}@{#globals.mail.domain#}">{$x.bestalias}@{#globals.mail.domain#}</a>
-        {if $x.bestalias neq $x.forlife}<br />
-        <a href="mailto:{$x.forlife}@{#globals.mail.domain#}">{$x.forlife}@{#globals.mail.domain#}</a>
+        <a href="mailto:{$user->bestEmail()}">{$user->bestEmail()}</a>
+        {if $user->bestEmail() neq $user->forlifeEmail()}<br />
+        <a href="mailto:{$user->forlifeEmail()}">{$user->forlifeEmail()}</a>
         {/if}
         {/if}
       </div>
@@ -123,15 +123,15 @@ function chgMainWinLoc(strPage)
       {if $x.iso3166}
       <img src='images/flags/{$x.iso3166}.gif' alt='{$x.nationalite}' height='11' title='{$x.nationalite}' />&nbsp;
       {/if}
-      X {$x.promo}
-      {if ($x.promo_sortie-3 > $x.promo)}
+      X {$user->promo()}
+      {if $x.promo_sortie && ($x.promo_sortie-3 > $x.promo)}
         - X {math equation="a-b" a=$x.promo_sortie b=3}
       {/if}
       {if $x.applis_join}
         &nbsp;-&nbsp;Formation&nbsp;: {$x.applis_join|smarty:nodefaults}
       {/if}
       {if $logged && $x.is_referent}
-      [<a href="referent/{$x.forlife}" class='popup2'>Ma fiche référent</a>]
+      [<a href="referent/{$user->login()}" class='popup2'>Ma fiche référent</a>]
       {/if}
     </div>
   </div>
@@ -193,7 +193,7 @@ function chgMainWinLoc(strPage)
   <div class="part">
     <small>
     Cette fiche est publique et visible par tout internaute,<br />
-    vous pouvez aussi voir <a href="profile/private/{$x.forlife}?display=light">celle&nbsp;réservée&nbsp;aux&nbsp;X</a>.
+    vous pouvez aussi voir <a href="profile/private/{$user->login()}?display=light">celle&nbsp;réservée&nbsp;aux&nbsp;X</a>.
     </small>
   </div>
   {elseif $view eq 'ax'}

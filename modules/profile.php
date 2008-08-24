@@ -135,9 +135,7 @@ class ProfileModule extends PLModule
 
         require_once('validations.inc.php');
 
-        $trombi_x = '/home/web/trombino/photos'.S::v('promo')
-                    .'/'.S::v('forlife').'.jpg';
-
+        $trombi_x = '/home/web/trombino/photos' . S::v('promo') . '/' . S::user()->login() . '.jpg';
         if (Env::has('upload')) {
             S::assert_xsrf_token();
 
@@ -190,52 +188,67 @@ class ProfileModule extends PLModule
 
     function handler_profile(&$page, $x = null)
     {
+        // TODO/note for upcoming developers:
+        // We currently maintain both $user and $login; $user is the old way of
+        // obtaining information, and eventually everything will be loaded
+        // through $login. That is the reason why in the template $user is named
+        // $x, and $login $user (sorry for the confusion).
+
+        // Determines which user to display the profile of, and retrieves basic
+        // information on this user.
         if (is_null($x)) {
             return PL_NOT_FOUND;
         }
-
-        global $globals;
-        require_once 'user.func.inc.php';
-
-        $page->changeTpl('profile/profile.tpl', SIMPLE);
-
-        $view = 'private';
-        if (!S::logged() || Env::v('view') == 'public') $view = 'public';
-        if (S::logged() && Env::v('view') == 'ax')      $view = 'ax';
 
         $login = S::logged() ? User::get($x) : User::getSilent($x);
         if (!$login) {
             return PL_NOT_FOUND;
         }
 
+        // Now that we know this is the profile of an existing user, we can
+        // switch to the appropriate template.
+        $page->changeTpl('profile/profile.tpl', SIMPLE);
+        require_once 'user.func.inc.php';
+
+        // Determines the access level at which the profile will be displayed.
+        if (!S::logged() || Env::v('view') == 'public') {
+            $view = 'public';
+        } else if (S::logged() && Env::v('view') == 'ax') {
+            $view = 'ax';
+        } else {
+            $view = 'private';
+        }
+
+        // Determines is the user is registered, and fetches the user infos in
+        // the appropriate way.
         $res = XDB::query("SELECT  perms IN ('admin','user','disabled')
                              FROM  auth_user_md5
                             WHERE  user_id = {?}", $login->id());
-        if (!$res->fetchOneCell()) {
-            $user = get_not_registered_user($x, true);
-            if ($user->total() != 1) {
-                return PL_NOT_FOUND;
-            }
-            $user = $user->next();
-            if (S::logged()) {
-                pl_redirect('marketing/public/' . $user['user_id']);
-            }
-            $user['forlife'] = $x;
+        if ($res->fetchOneCell()) {
+            $new  = Env::v('modif') == 'new';
+            $user = get_user_details($login->login(), S::v('uid'), $view);
         } else {
-            $new   = Env::v('modif') == 'new';
-            $user  = get_user_details($login->login(), S::v('uid'), $view);
+            $new  = false;
+            $user = array();
+            if (S::logged()) {
+                pl_redirect('marketing/public/' . $login->login());
+            }
         }
 
+        // Profile view are logged.
         if (S::logged()) {
             S::logger()->log('view_profile', $login->login());
         }
 
-        $title = $user['prenom'] . ' ' . ( empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'] );
-        $page->setTitle($title);
+        // Sets the title of the html page.
+        $page->setTitle($login->fullName());
 
-        // photo
-
-        $photo = 'photo/'.$user['forlife'].($new ? '/req' : '');
+        // Prepares the display of the user's mugshot.
+        $photo = 'photo/' . $login->login() . ($new ? '/req' : '');
+        if (!isset($user['photo_pub']) || !has_user_right($user['photo_pub'], $view)) {
+            $photo = "";
+        }
+        $page->assign('photo_url', $photo);
 
         if (!isset($user['y']) and !isset($user['x'])) {
             list($user['x'], $user['y']) = getimagesize("images/none.png");
@@ -255,29 +268,33 @@ class ProfileModule extends PLModule
             $user['x'] = 160;
         }
 
-        $page->assign('logged', has_user_right('private', $view));
-        if (!has_user_right($user['photo_pub'], $view)) {
-            $photo = "";
-        }
-
-        $page->assign_by_ref('x', $user);
-        $page->assign('photo_url', $photo);
-        // alias virtual
+        // Determines and displays the virtual alias.
+        global $globals;
         $res = XDB::query(
-                "SELECT alias
-                   FROM virtual
-             INNER JOIN virtual_redirect USING(vid)
-             INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
-                  WHERE ( redirect={?} OR redirect={?} )
-                        AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                $user['user_id'],
-                $user['forlife'].'@'.$globals->mail->domain,
-                $user['forlife'].'@'.$globals->mail->domain2);
+                "SELECT  alias
+                   FROM  virtual
+             INNER JOIN  virtual_redirect USING (vid)
+             INNER JOIN  auth_user_quick ON (user_id = {?} AND emails_alias_pub = 'public')
+                  WHERE  (redirect={?} OR redirect={?})
+                         AND alias LIKE '%@{$globals->mail->alias_dom}'",
+                $login->id(),
+                $login->forlifeEmail(),
+                // TODO(vzanotti): get ride of all @m4x.org addresses in the
+                // virtual redirect base, and remove this über-ugly hack.
+                $login->login() . '@' . $globals->mail->domain2);
         $page->assign('virtualalias', $res->fetchOneCell());
+
+        // Adds miscellaneous properties to the display.
+        // Adds the global user property array to the display.
+        $page->assign_by_ref('x', $user);
+        $page->assign_by_ref('user', $login);
+        $page->assign('logged', has_user_right('private', $view));
         $page->assign('view', $view);
 
         $page->addJsLink('close_on_esc.js');
-        header('Last-Modified: ' . date('r', strtotime($user['date'])));
+        if (isset($user['date'])) {
+            header('Last-Modified: ' . date('r', strtotime($user['date'])));
+        }
     }
 
     function handler_ax(&$page, $user = null)
@@ -721,22 +738,20 @@ class ProfileModule extends PLModule
         $vcard->do_page($page);
     }
 
-    function handler_admin_trombino(&$page, $uid = null, $action = null) {
+    function handler_admin_trombino(&$page, $login = null, $action = null) {
         $page->changeTpl('profile/admin_trombino.tpl');
         $page->setTitle('Administration - Trombino');
-        $page->assign('uid', $uid);
 
-        $q   = XDB::query(
-                "SELECT  a.alias,promo
-                  FROM  auth_user_md5 AS u
-            INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND type='a_vie' )
-                 WHERE  user_id = {?}", $uid);
-        list($forlife, $promo) = $q->fetchOneRow();
+        if (!$login || !($user = User::get($login))) {
+            return PL_NOT_FOUND;
+        } else {
+            $page->assign_by_ref('user', $user);
+        }
 
         switch ($action) {
             case "original":
                 header("Content-type: image/jpeg");
-        	readfile("/home/web/trombino/photos".$promo."/".$forlife.".jpg");
+        	readfile("/home/web/trombino/photos" . $user->promo() . "/" . $user->login() . ".jpg");
                 exit;
         	break;
 
@@ -749,17 +764,15 @@ class ProfileModule extends PLModule
             	unlink($_FILES['userfile']['tmp_name']);
                 XDB::execute(
                         "REPLACE INTO photo SET uid={?}, attachmime = {?}, attach={?}, x={?}, y={?}",
-                        $uid, $mimetype, $data, $x, $y);
+                        $user->id(), $mimetype, $data, $x, $y);
             	break;
 
             case "delete":
                 S::assert_xsrf_token();
 
-                XDB::execute('DELETE FROM photo WHERE uid = {?}', $uid);
+                XDB::execute('DELETE FROM photo WHERE uid = {?}', $user->id());
                 break;
         }
-
-        $page->assign('forlife', $forlife);
     }
     function handler_admin_binets(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Binets');
