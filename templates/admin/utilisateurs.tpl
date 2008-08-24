@@ -375,7 +375,7 @@ Pour ceci changer ses permissions en 'disabled'.
 </form>
 
 {javascript name="ajax"}
-{test_email forlife=$user->forlifeEmail()}
+{test_email hruid=$user->login()}
 
 <form id="fwds" method="post" action="admin/user#fwds">
   {xsrf_token_field}
