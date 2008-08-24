@@ -38,13 +38,6 @@ class SearchModule extends PLModule
         exit;
     }
 
-    function on_subscribe($forlife, $uid, $promo, $pass)
-    {
-        require_once 'user.func.inc.php';
-        user_reindex($uid);
-    }
-
-
     function form_prepare()
     {
         Platal::page()->assign('formulaire',1);

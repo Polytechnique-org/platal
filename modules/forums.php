@@ -24,36 +24,10 @@ class ForumsModule extends PLModule
     function handlers()
     {
         return array(
-            'banana'              => $this->make_hook('banana', AUTH_COOKIE),
-            'banana/rss'          => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
+            'banana'         => $this->make_hook('banana', AUTH_COOKIE),
+            'banana/rss'     => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
             'admin/forums'   => $this->make_hook('forums_bans', AUTH_MDP, 'admin'),
         );
-    }
-
-    function on_subscribe($forlife, $uid, $promo, $password)
-    {
-        $cible = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements');
-        $p_for = "xorg.promo.x$promo";
-
-        // récupération de l'id du forum promo
-        $res = XDB::query("SELECT fid FROM forums.list WHERE nom={?}", $p_for);
-        if ($res->numRows()) {
-            $cible[] = $p_for;
-        } else { // pas de forum promo, il faut le créer
-            $res = XDB::query("SELECT  SUM(perms IN ('admin','user') AND deces=0),COUNT(*)
-                                 FROM  auth_user_md5 WHERE promo={?}", $promo);
-            list($effau, $effid) = $res->fetchOneRow();
-            if (5*$effau>$effid) { // + de 20% d'inscrits
-                $mymail = new PlMailer('admin/forums-promo.mail.tpl');
-                $mymail->assign('promo', $promo);
-                $mymail->send();
-            }
-        }
-
-        while (list ($key, $val) = each ($cible)) {
-            XDB::execute("INSERT INTO  forums.abos (fid,uid)
-                               SELECT  fid,{?} FROM forums.list WHERE nom={?}", $uid, $val);
-        }
     }
 
     function handler_banana(&$page, $group = null, $action = null, $artid = null)
