@@ -1,6 +1,6 @@
 #!/usr/bin/php5 -q
 <?php
-require('./connect.db.inc.php');
+require('connect.db.inc.php');
 $MESSAGE = '';
 
 // ---------------------------------------
@@ -23,10 +23,11 @@ if ($a = $res->total()) {
 // ---------------------------------------
 
 $res = XDB::iterRow(
-        "SELECT  forlife, email, date
-           FROM  register_pending
-          WHERE  hash != 'INSCRIT'
-       ORDER BY  date");
+        "SELECT  u.hruid, r.email, r.date
+           FROM  register_pending AS r
+      LEFT JOIN  auth_user_md5 AS u ON (u.user_id = r.uid)
+          WHERE  r.hash != 'INSCRIT'
+       ORDER BY  r.date");
 if ($b = $res->total()) {
     $MESSAGE.="\n$b INSCRIPTIONS NON CONFIRMEES:\n";
     while (list($usern, $mail, $quand) = $res->next()) {	
@@ -38,14 +39,13 @@ if ($b = $res->total()) {
 
 $res = XDB::query('SELECT COUNT(DISTINCT uid), COUNT(*) FROM register_marketing');
 list($a, $b) = $res->fetchOneRow();
-$MESSAGE .= "\n$c INSCRIPTIONS SOLICITÉES :\n";
+$MESSAGE .= "\nINSCRIPTIONS SOLICITÉES :\n";
 $MESSAGE .= "    $a utilisateurs\n    $b adresses email\n";
 
 // ---------------------------------------
 
 $MESSAGE .= "\n\n";
 
-require_once('../../classes/plmailer.php');
 $mailer = new PlMailer();
 $mailer->setSubject("$a confirmées, $b en attente et $c sollicitées");
 $mailer->setFrom($globals->register->notif);

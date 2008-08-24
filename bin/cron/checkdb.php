@@ -85,6 +85,10 @@ check("SELECT  u.user_id, nom, prenom, promo,
 check("select uid from adresses where pub != 'private' and pub !='ax' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour une adresse");
 check("select uid from tels where tel_pub != 'private' and tel_pub !='ax' and tel_pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour un numero de telephone");
 
+/* validite des hruid */
+check("SELECT user_id, nom, prenom, promo FROM auth_user_md5 WHERE hruid IS NULL OR hruid = ''",
+      "Utilisateur n'ayant pas de hruid.");
+
 /* validite de aliases */
 check("SELECT a.*
         FROM aliases       AS a
