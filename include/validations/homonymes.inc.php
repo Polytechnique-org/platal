@@ -30,14 +30,14 @@ class HomonymeReq extends Validate
 
     public $warning = true;
 
-    public $homonymes_forlife;
+    public $homonymes_hruid;
 
     public $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traité plus ... manuellement";
 
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, $_loginbis, $_homonymes_forlife, $warning=true)
+    public function __construct(User &$_user, $_loginbis, $_homonymes_hruid, $warning=true)
     {
         $this->warning = $warning;
 
@@ -45,7 +45,7 @@ class HomonymeReq extends Validate
 
         $this->refuse = false;
         $this->loginbis = $_loginbis;
-        $this->homonymes_forlife = $_homonymes_forlife;
+        $this->homonymes_hruid = $_homonymes_hruid;
     }
 
     // }}}
