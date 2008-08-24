@@ -22,10 +22,10 @@
 
 <h1>Demande d'inscription à {$asso.nom}</h1>
 
-{if $u && $is_admin && $show_form}
+{if $user && $is_admin && $show_form}
 
 <h2>
-  Demande de la part de&nbsp;: <a href="profile/{$u}" class="popup2">{$prenom} {$nom} (X{$promo})</a>
+  Demande de la part de&nbsp;: <a href="profile/{$user->login()}" class="popup2">{$user->fullName()} (X{$user->promo()})</a>
 </h2>
 
 {if $reason}
@@ -35,7 +35,7 @@
 </fieldset>
 {/if}
 
-<form action="{$platal->ns}subscribe/{$u}" method="post">
+<form action="{$platal->ns}subscribe/{$user->login()}" method="post">
   {xsrf_token_field}
   <table class="bicol">
     <tr>
@@ -90,7 +90,7 @@ Bien cordialement,
 
 --
 Ma fiche sur Polytechnique.org&nbsp;:
-https://www.polytechnique.org/profile/{$smarty.session.forlife}
+https://www.polytechnique.org/profile/{$smarty.session.hruid}
 </textarea>
   <div class="center">
     <input type="submit" name="inscrire" value="M'inscrire !" />

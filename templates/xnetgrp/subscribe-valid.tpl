@@ -49,10 +49,10 @@
     </tr>
     {iterate from=$valid item=user}
     <tr>
-      <td><input type="checkbox" name="subs[{$user.forlife}]" value="1" class="select_sub" /></td>
-      <td><a href="profile/{$user.forlife}" class="popup2">{$user.prenom} {$user.nom} (X{$user.promo})</a></td>
+      <td><input type="checkbox" name="subs[{$user.hruid}]" value="1" class="select_sub" /></td>
+      <td><a href="profile/{$user.hruid}" class="popup2">{$user.prenom} {$user.nom} (X{$user.promo})</a></td>
       <td>{$user.date|date_format}</td>
-      <td><a href="{$platal->ns}subscribe/{$user.forlife}">{icon name=magnifier title="Détails"}</a></td>
+      <td><a href="{$platal->ns}subscribe/{$user.hruid}">{icon name=magnifier title="Détails"}</a></td>
     </tr>
     {/iterate}
   </table>

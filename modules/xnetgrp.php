@@ -137,11 +137,10 @@ class XnetGrpModule extends PLModule
                             Env::i('unread'), S::i('uid'));
                 pl_redirect("#art" . Env::i('unread'));
             }
-            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife,
+            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, u.hruid,
                                           FIND_IN_SET('photo', a.flags) AS photo
                                      FROM groupex.announces AS a
                                INNER JOIN auth_user_md5 AS u USING(user_id)
-                               INNER JOIN aliases AS l ON (u.user_id = l.id AND l.type = 'a_vie')
                                 LEFT JOIN groupex.announces_read AS r ON (r.user_id = {?} AND r.announce_id = a.id)
                                     WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
                                           AND (promo_min = 0 OR promo_min <= {?})
@@ -179,7 +178,7 @@ class XnetGrpModule extends PLModule
                               $platal->ns . "rss/rss.xml");
         } else {
             $page->setRssLink("Polytechnique.net :: {$globals->asso("nom")} :: News",
-                              $platal->ns . 'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
+                              $platal->ns . 'rss/'.S::v('hruid') .'/'.S::v('core_rss_hash').'/rss.xml');
         }
 
         $page->assign('articles', $arts);
@@ -519,26 +518,25 @@ class XnetGrpModule extends PLModule
                      $globals->asso('id'), $uid);
     }
 
-    private function validSubscription($nom, $prenom, $sexe, $uid, $forlife)
+    private function validSubscription(User &$user)
     {
         global $globals;
-        $this->removeSubscriptionRequest($uid);
+        $this->removeSubscriptionRequest($user->id());
         XDB::execute("INSERT INTO  groupex.membres (asso_id, uid)
                            VALUES  ({?}, {?})",
-                     $globals->asso('id'), $uid);
+                     $globals->asso('id'), $user->id());
         $mailer = new PlMailer();
-        $mailer->addTo("$forlife@polytechnique.org");
-        $mailer->setFrom('"' . S::v('prenom') . ' ' . S::v('nom')
-                         . '" <' . S::v('forlife') . '@polytechnique.org>');
+        $mailer->addTo($user->forlifeEmail());
+        $mailer->setFrom('"' . S::user()->fullName() . '" <' . S::user()->forlifeEmail() . '>');
         $mailer->setSubject('[' . $globals->asso('nom') . '] Demande d\'inscription');
-        $message = ($sexe ? 'Chère' : 'Cher') . " Camarade,\n"
+        $message = ($user->isFemale() ? 'Chère' : 'Cher') . " Camarade,\n"
                  . "\n"
                  . "  Suite à ta demande d'adhésion à " . $globals->asso('nom') . ",\n"
                  . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
                  . "\n"
                  . "Bien cordialement,\n"
                  . "-- \n"
-                 . S::s('prenom') . ' ' . S::s('nom') . '.';
+                 . S::user()->fullName() . '.';
         $mailer->setTxtBody($message);
         $mailer->send();
     }
@@ -554,52 +552,51 @@ class XnetGrpModule extends PLModule
                             ."sur la page de présentation.");
 
         if (!is_null($u) && may_update()) {
-            $page->assign('u', $u);
-            $res = XDB::query("SELECT  u.nom, u.prenom, u.promo, u.user_id, FIND_IN_SET('femme', u.flags), s.reason
-                                 FROM  auth_user_md5 AS u
-                           INNER JOIN  aliases AS al ON (al.id = u.user_id AND al.type != 'liste')
-                            LEFT JOIN  groupex.membres_sub_requests AS s ON (u.user_id = s.uid AND s.asso_id = {?})
-                                WHERE  al.alias = {?}", $globals->asso('id'), $u);
-
-            if (list($nom, $prenom, $promo, $uid, $sexe, $reason) = $res->fetchOneRow()) {
-                $res = XDB::query("SELECT  COUNT(*)
-                                     FROM  groupex.membres AS m
-                               INNER JOIN  aliases  AS a ON (m.uid = a.id AND a.type != 'homonyme')
-                                    WHERE  a.alias = {?} AND m.asso_id = {?}",
-                                  $u, $globals->asso('id'));
-                $n   = $res->fetchOneCell();
-                if ($n) {
-                    $this->removeSubscriptionRequest($uid);
-                    $page->kill("$prenom $nom est déjà membre du groupe !");
-                    return;
-                } elseif (Env::has('accept')) {
-                    S::assert_xsrf_token();
-
-                    $this->validSubscription($nom, $prenom, $sexe, $uid, $u);
-                    pl_redirect("member/$u");
-                } elseif (Env::has('refuse')) {
-                    S::assert_xsrf_token();
-
-                    $this->removeSubscriptionRequest($uid);
-                    $mailer = new PlMailer();
-                    $mailer->addTo("$u@polytechnique.org");
-                    $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
-                                     .'" <'.S::v('forlife').'@polytechnique.org>');
-                    $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
-                    $mailer->setTxtBody(Env::v('motif'));
-                    $mailer->send();
-                    $page->kill("La demande de $prenom $nom a bien été refusée.");
-                } else {
-                    $page->assign('show_form', true);
-                    $page->assign('prenom', $prenom);
-                    $page->assign('nom', $nom);
-                    $page->assign('promo', $promo);
-                    $page->assign('uid', $uid);
-                    $page->assign('reason', $reason);
-                }
-                return;
+            $user = User::get($u);
+            if (!$user) {
+                return PL_NOT_FOUND;
+            } else {
+                $page->assign('user', $user);
             }
-            return PL_NOT_FOUND;
+
+            // Retrieves the subscription status, and the reason.
+            $res = XDB::query("SELECT  reason
+                                 FROM  groupex.membres_sub_requests
+                                WHERE  asso_id = {?} AND uid = {?}",
+                              $globals->asso('id'), $user->id());
+            $reason = ($res->numRows() ? $res->fetchOneCell() : null);
+
+            $res = XDB::query("SELECT  COUNT(*)
+                                 FROM  groupex.membres
+                                WHERE  asso_id = {?} AND uid = {?}",
+                              $globals->asso('id'), $user->id());
+            $already_member = ($res->fetchOneCell() > 0);
+
+            // Handles the membership request.
+            if ($already_member) {
+                $this->removeSubscriptionRequest($user->id());
+                $page->kill($user->fullName() . " est déjà membre du groupe !");
+            } elseif (Env::has('accept')) {
+                S::assert_xsrf_token();
+
+                $this->validSubscription($user);
+                pl_redirect("member/" . $user->login());
+            } elseif (Env::has('refuse')) {
+                S::assert_xsrf_token();
+
+                $this->removeSubscriptionRequest($user->id());
+                $mailer = new PlMailer();
+                $mailer->addTo($user->forlifeEmail());
+                $mailer->setFrom('"' . S::user()->fullName() . '" <' . S::user()->forlifeEmail() . '>');
+                $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
+                $mailer->setTxtBody(Env::v('motif'));
+                $mailer->send();
+                $page->kill("La demande de {$user->fullName()} a bien été refusée.");
+            } else {
+                $page->assign('show_form', true);
+                $page->assign('reason', $reason);
+            }
+            return;
         }
 
         if (is_member()) {
@@ -636,12 +633,10 @@ class XnetGrpModule extends PLModule
             $append = "\n"
                     . "-- \n"
                     . "Ce message a été envoyé suite à la demande d'inscription de\n"
-                    . S::v('prenom').' '.S::v('nom').' (X'.S::v('promo').")\n"
+                    . S::user()->fullName() . ' (X' . S::v('promo') . ")\n"
                     . "Via le site www.polytechnique.net. Tu peux choisir de valider ou\n"
                     . "de refuser sa demande d'inscription depuis la page :\n"
-                    .
-                    "http://www.polytechnique.net/".$globals->asso("diminutif")."/subscribe/"
-                        .S::v('forlife')."\n"
+                    . "http://www.polytechnique.net/" . $globals->asso("diminutif") . "/subscribe/" . S::user()->login() . "\n"
                     . "\n"
                     . "En cas de problème, contacter l'équipe de Polytechnique.org\n"
                     . "à l'adresse : support@polytechnique.org\n";
@@ -656,8 +651,7 @@ class XnetGrpModule extends PLModule
 
             $mailer = new PlMailer();
             $mailer->addTo($to);
-            $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
-                             .'" <'.S::v('forlife').'@polytechnique.org>');
+            $mailer->setFrom('"' . S::user()->fullName() . '" <' . S::user()->forlifeEmail() . '>');
             $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription');
             $mailer->setTxtBody(Post::v('message').$append);
             $mailer->send();
@@ -673,17 +667,11 @@ class XnetGrpModule extends PLModule
             $subs = Post::v('subs');
             if (is_array($subs)) {
                 $users = array();
-                foreach ($subs as $forlife => $val) {
+                foreach ($subs as $hruid => $val) {
                     if ($val == '1') {
-                        $res = XDB::query("SELECT  IF(u.nom_usage != '', u.nom_usage, u.nom) AS u,
-                                                   u.prenom, FIND_IN_SET('femme', u.flags) AS sexe,
-                                                   u.user_id
-                                             FROM  auth_user_md5 AS u
-                                       INNER JOIN  aliases AS a ON (a.id = u.user_id)
-                                            WHERE  a.alias = {?}", $forlife);
-                        if ($res->numRows() == 1) {
-                            list($nom, $prenom, $sexe, $uid) = $res->fetchOneRow();
-                            $this->validSubscription($nom, $prenom, $sexe, $uid, $forlife);
+                        $user = User::get($hruid);
+                        if ($user) {
+                            $this->validSubscription($user);
                         }
                     }
                 }
@@ -691,10 +679,9 @@ class XnetGrpModule extends PLModule
         }
 
         $it = XDB::iterator("SELECT  IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
-                                     u.prenom, u.promo, a.alias AS forlife, s.ts AS date
+                                     u.prenom, u.promo, u.hruid, s.ts AS date
                                FROM  groupex.membres_sub_requests AS s
                          INNER JOIN  auth_user_md5 AS u ON (s.uid = u.user_id)
-                         INNER JOIN  aliases AS a ON (a.id = s.uid AND a.type = 'a_vie')
                               WHERE  asso_id = {?}
                            ORDER BY  nom, prenom",
                            $globals->asso('id'));
@@ -933,7 +920,7 @@ class XnetGrpModule extends PLModule
     function handler_unsubscribe(&$page)
     {
         $page->changeTpl('xnetgrp/membres-del.tpl');
-        $user = get_infos(S::v('forlife'));
+        $user = get_infos(S::user()->id());
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
@@ -1241,7 +1228,7 @@ class XnetGrpModule extends PLModule
             $art['nom']        = S::v('nom');
             $art['prenom']     = S::v('prenom');
             $art['promo']      = S::v('promo');
-            $art['forlife']    = S::v('forlife');
+            $art['hruid']      = S::user()->login();
             $art['peremption'] = Post::v('peremption');
             $art['public']     = Post::has('public');
             $art['xorg']       = Post::has('xorg');
@@ -1356,12 +1343,11 @@ class XnetGrpModule extends PLModule
         }
 
         if (empty($art) && !is_null($aid)) {
-            $res = XDB::query("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife,
+            $res = XDB::query("SELECT a.*, u.nom, u.prenom, u.promo, u.hruid,
                                       FIND_IN_SET('public', a.flags) AS public,
                                       FIND_IN_SET('photo', a.flags) AS photo
                                  FROM groupex.announces AS a
                            INNER JOIN auth_user_md5 AS u USING(user_id)
-                           INNER JOIN aliases AS l ON (l.id = u.user_id AND l.type = 'a_vie')
                                 WHERE asso_id = {?} AND a.id = {?}",
                               $globals->asso('id'), $aid);
             if ($res->numRows()) {
