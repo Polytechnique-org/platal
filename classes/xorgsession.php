@@ -128,7 +128,7 @@ class XorgSession extends PlSession
          */
         if (S::has('suid')) {
             $suid  = S::v('suid');
-            $login = $uname = $suid['forlife'];
+            $login = $uname = $suid['hruid'];
             $redirect = false;
         } else {
             $uname = Env::v('username');
