@@ -159,7 +159,7 @@ class XnetListsModule extends ListsModule
         $ret = $this->client->create_list(
                     $liste, utf8_decode(Post::v('desc')), Post::v('advertise'),
                     Post::v('modlevel'), Post::v('inslevel'),
-                    array(S::v('forlife')), array(S::v('forlife')));
+                    array(S::user()->forlifeEmail()), array(S::user()->forlifeEmail()));
 
         $dom = strtolower($globals->asso("mail_domain"));
         $red = $dom.'_'.$liste;

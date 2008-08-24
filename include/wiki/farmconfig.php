@@ -53,7 +53,7 @@ $GUIButtons['table'] = array(600,
                  '$GUIButtonDirUrlFmt/table.gif"$[Table]"');
 
 // set default author
-$Author = $_SESSION['forlife'].'|'.$_SESSION['prenom'].' '.$_SESSION['nom'];
+$Author = $_SESSION['hruid'].'|'.$_SESSION['prenom'].' '.$_SESSION['nom'];
 
 $InputTags['e_form'] = array(
   ':html' => "<form action='{\$PageUrl}?action=edit' method='post'><div><input
