@@ -120,7 +120,7 @@ class User extends PlUser
         $res = XDB::query("SELECT  u.hruid, u.promo,
                                    CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
                                    CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
-                                   CONCAT(u.prenom, ' ', u.nom) AS full_name,
+                                   CONCAT(u.prenom, ' ', IF(u.nom_usage <> '', u.nom_usage, u.nom)) AS full_name,
                                    IF(u.prenom != '', u.prenom, u.nom) AS display_name,
                                    FIND_IN_SET('femme', u.flags) AS gender,
                                    q.core_mail_fmt AS email_format,
