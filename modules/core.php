@@ -113,7 +113,12 @@ class CoreModule extends PLModule
         }
 
         if (isset($_SESSION['log'])) {
-            S::logger()->log("suid_start", "login by ".S::v('forlife'));
+            if (S::user()) {
+                S::logger()->log("suid_start", "login by " . S::user()->login());
+            } else {
+                // TODO(vzanotti): trash that code when support of forlife will be gone.
+                S::logger()->log("suid_start", "login by ".S::v('forlife'));
+            }
         }
         Platal::session()->startSUID(S::i('uid'));
         Platal::session()->makePerms($level);

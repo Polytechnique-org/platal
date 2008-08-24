@@ -125,7 +125,12 @@ $page->addJsLink('wiki.js');
 if (!Env::v('action')) {
     $url = '/' . str_replace('.', '/', $n) . '?action=rss';
     if (S::logged()) {
-        $url .= '&user=' . S::v('forlife') . '&hash=' . S::v('core_rss_hash');
+        if (S::user()) {
+            $url .= '&user=' . S::user()->login() . '&hash=' . S::v('core_rss_hash');
+        } else {
+            // TODO(vzanotti): trash that code when forlife support will be gone.
+            $url .= '&user=' . S::v('forlife') . '&hash=' . S::v('core_rss_hash');
+        }
     }
     $page->setRssLink($n, $url);
 }
