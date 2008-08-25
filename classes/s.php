@@ -96,7 +96,7 @@ class S
     private static $user = null;
     public static function &user()
     {
-        if (self::$user == null) {
+        if (self::$user == null && class_exists('User')) {
             self::$user = User::getSilentWithValues(S::i('uid'), $_SESSION);
         }
         return self::$user;
