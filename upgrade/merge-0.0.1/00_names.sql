@@ -1,4 +1,4 @@
-CREATE OR REPLACE ALGORITHM=MERGE VIEW fusionax_xorg_anciens AS-
+CREATE OR REPLACE ALGORITHM=MERGE VIEW fusionax_xorg_anciens AS
     SELECT
         u.user_id, u.matricule_ax, u.promo,
         n.display AS display_name, n.sort AS sort_name,
