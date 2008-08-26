@@ -64,6 +64,27 @@ INSERT INTO  profile_education (id, uid, eduid, degreeid)
        FROM  applis_ins AS a
  INNER JOIN  profile_education_degree_enum AS d ON (a.type = d.degree);
 
+     UPDATE  watch_profile AS w1
+ INNER JOIN  watch_profile AS w2 ON (w1.uid = w2.uid AND w1.field = 'appli1' AND w2.field = 'appli2')
+        SET  w1.ts = IF(w1.ts > w2.ts, w1.ts, w2.ts), w2.ts = IF(w1.ts > w2.ts, w1.ts, w2.ts);
+
+INSERT IGNORE INTO  watch_profile (uid, ts, field)
+            SELECT  uid, ts, 'appli1'
+              FROM  watch_profile
+             WHERE  field = 'appli2';
+
+ALTER TABLE watch_profile MODIFY field enum('nom', 'freetext', 'mobile', 'nationalite', 'nationalite2',
+                                            'nationalite3', 'nick', 'web', 'networking', 'appli1', 'appli2',
+                                            'edus', 'addresses', 'section', 'binets', 'medals', 'cv', 'jobs',
+                                            'photo');
+
+UPDATE watch_profile SET field = 'edus' WHERE field = 'appli1';
+
+DELETE FROM watch_profile WHERE field = 'appli2';
+
+ALTER TABLE watch_profile MODIFY field enum('nom', 'freetext', 'mobile', 'nationalite', 'nationalite2',
+                                            'nationalite3', 'nick', 'web', 'networking', 'edus', 'addresses',
+                                            'section', 'binets', 'medals', 'cv', 'jobs', 'photo');
 
 # vim:set syntax=mysql:
 

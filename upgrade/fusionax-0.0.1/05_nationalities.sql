@@ -8,4 +8,8 @@ UPDATE auth_user_md5 SET nationalite=NULL WHERE nationalite="00" OR nationalite=
 
 DELETE FROM geoloc_pays WHERE a2="00";
 
+ALTER TABLE watch_profile MODIFY field enum('nom', 'freetext', 'mobile', 'nationalite', 'nationalite2', 'nationalite3',
+                                            'nick', 'web', 'networking', 'appli1', 'appli2', 'addresses',
+                                            'section', 'binets', 'medals', 'cv', 'jobs', 'photo');
+
 # vim:set syntax=mysql:
