@@ -101,7 +101,7 @@ class ListeReq extends Validate
 
     protected function _mail_subj()
     {
-        return "[Polytechnique.org/LISTES] Demande de la liste {$this->liste}";
+        return "[Polytechnique.org/LISTES] Demande de la liste {$this->liste}@{$this->domain}";
     }
 
     // }}}
@@ -110,9 +110,9 @@ class ListeReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  La liste de diffusion {$this->liste} que tu avais demandée vient d'être créée.";
+            return "  La liste de diffusion {$this->liste}@{$this->domain} que tu avais demandée vient d'être créée.";
         } else {
-            return "  La demande que tu avais faite pour la liste de diffusion {$this->liste} a été refusée.";
+            return "  La demande que tu avais faite pour la liste de diffusion {$this->liste}@{$this->domain} a été refusée.";
         }
     }
 
