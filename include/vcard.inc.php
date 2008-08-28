@@ -21,20 +21,21 @@
 
 require_once('user.func.inc.php');
 
-class VCardIterator implements PlIterator
+class VCard extends PlVCard
 {
     private $user_list = array();
     private $count     = 0;
     private $freetext  = null;
     private $photos    = true;
 
-    public function __construct($photos, $freetext)
+    public function __construct($photos = true, $freetext = null)
     {
+        PlVCard::$folding = false;
         $this->freetext = $freetext;
         $this->photos   = $photos;
     }
 
-    public function add_user($user)
+    public function addUser($user)
     {
         $forlife = get_user_forlife($user, '_silent_user_callback');
         if ($forlife) {
@@ -43,42 +44,94 @@ class VCardIterator implements PlIterator
         }
     }
 
-    public function first()
-    {
-        return count($this->user_list) == $this->count - 1;
-    }
-
-    public function last()
-    {
-        return count($this->user_list) == 0;
-    }
-
-    public function total()
-    {
-        return $this->count;
-    }
-
-    public function next()
-    {
-        if (!$this->user_list) {
-            return null;
+    public function addUsers(array $users) {
+        foreach ($users as $user) {
+            $this->addUser($user);
         }
+    }
+
+    protected function fetch()
+    {
+        return new PlArrayIterator($this->user_list);
+    }
+
+    protected function buildEntry($entry)
+    {
         global $globals;
-        $login = array_shift($this->user_list);
+        $login = $entry['value'];
         $user  = get_user_details($login);
 
-        if (strlen(trim($user['freetext']))) {
-            $user['freetext'] = pl_entity_decode($user['freetext']);
+        if (empty($user['nom_usage'])) {
+            $entry = new PlVCardEntry($user['prenom'], $user['nom'], null, null, @$user['nickname']);
+        } else {
+            $entry = new PlVCardEntry($user['prenom'], array($user['nom'], $user['nom_usage']), null, null, @$user['nickname']);
         }
+
+        // Free text
+        $freetext = '(' . $user['promo'] . ')';
         if ($this->freetext) {
-            if (strlen(trim($user['freetext']))) {
-                $user['freetext'] = $this->freetext . "\n" . $user['freetext'];
-            } else {
-                $user['freetext'] = $this->freetext;
+            $freetext .= "\n" . $this->freetext;
+        }
+        if (strlen(trim($user['freetext']))) {
+            $freetext .= "\n" . MiniWiki::WikiToText($user['freetext']);
+        }
+        $entry->set('NOTE', $freetext);
+
+        // Mobile
+        if (!empty($user['mobile'])) {
+            $entry->addTel(null, $user['mobile'], false, true, true, false, true, true);
+        }
+
+        // Emails
+        $entry->addMail(null, $user['bestalias'] . '@' . $globals->mail->domain, true);
+        $entry->addMail(null, $user['bestalias'] . '@' . $globals->mail->domain2);
+        if ($user['bestalias'] != $user['forlife']) {
+            $entry->addMail(null, $user['forlife'] . '@' . $globals->mail->domain);
+            $entry->addMail(null, $user['forlife'] . '@' . $globals->mail->domain2);
+        }
+
+        // Homes
+        foreach ($user['adr'] as $adr) {
+            $street = array($adr['adr1']);
+            if (!empty($adr['adr2'])) {
+                $street[] = $adr['adr2'];
+            }
+            if (!empty($adr['adr3'])) {
+                $street[] = $adr['adr3'];
+            }
+            $group = $entry->addHome($street, null, null, $adr['postcode'], $adr['city'], $adr['region'], @$adr['country'],
+                                     $adr['active'], $adr['courier'], $adr['courier']);
+            if (!empty($adr['tels'])) {
+                foreach ($adr['tels'] as $tel) {
+                    $fax = $tel['tel_type'] == 'Fax';
+                    $entry->addTel($group, $tel['tel'], $fax, !$fax, !$fax, false, false, !$fax && $adr['active'] && empty($user['mobile']));
+                }
             }
         }
 
-        // alias virtual
+        // Pro
+        foreach ($user['adr_pro'] as $pro) {
+            $street = array($adr['adr1']);
+            if (!empty($pro['adr2'])) {
+                $street[] = $pro['adr2'];
+            }
+            if (!empty($pro['adr3'])) {
+                $street[] = $pro['adr3'];
+            }
+            $group = $entry->addWork($pro['entreprise'], null, $pro['poste'], $pro['fonction'],
+                                     $street, null, null, $pro['postcode'], $pro['city'], $pro['region'], @$pro['country']);
+            if (!empty($pro['tel'])) {
+                $entry->addTel($group, $pro['tel']);
+            }
+            if (!empty($pro['fax'])) {
+                $entry->addTel($group, $pro['fax'], true);
+            }
+            if (!empty($pro['email'])) {
+                $entry->addMail($group, $pro['email']);
+            }
+        }
+
+        // Melix
         $res = XDB::query(
                 "SELECT alias
                    FROM virtual
@@ -89,11 +142,22 @@ class VCardIterator implements PlIterator
                 $user['user_id'],
                 $user['forlife'].'@'.$globals->mail->domain,
                 $user['forlife'].'@'.$globals->mail->domain2);
+        if ($res->numRows()) {
+            $entry->addMail(null, $res->fetchOneCell());
+        }
 
-        $user['virtualalias'] = $res->fetchOneCell();
-        $user['gpxs_vcardjoin'] = join(', ', array_map(array('VCard', 'text_encode'), $user['gpxs_name']));
-        $user['binets_vcardjoin'] = join(', ', array_map(array('VCard', 'text_encode'), $user['binets']));
-        // get photo
+        // Custom fields
+        if (count($user['gpxs_name'])) {
+            $entry->set('X-GROUPS', join(', ', $user['gpxs_name']));
+        }
+        if (count($user['binets'])) {
+            $entry->set('X-BINETS', join(', ', $user['binets']));
+        }
+        if (!empty($user['section'])) {
+            $entry->set('X-SECTION', $user['section']);
+        }
+
+        // Photo
         if ($this->photos) {
             $res = XDB::query(
                     "SELECT attach, attachmime
@@ -101,80 +165,12 @@ class VCardIterator implements PlIterator
                  INNER JOIN aliases AS a ON (a.id = p.uid AND a.type = 'a_vie')
                       WHERE a.alias = {?}", $login);
             if ($res->numRows()) {
-                $user['photo'] = $res->fetchOneAssoc();
+                list($data, $type) = $res->fetchOneRow();
+                $entry->setPhoto($data, strtoupper($type));
             }
         }
-        return $user;
+        return $entry;
     }
-}
-
-class VCard
-{
-    static private $windows = false;
-    private $iterator = null;
-
-    public function __construct($users, $photos = true, $freetext = null)
-    {
-        $this->iterator = new VCardIterator($photos, $freetext);
-        VCard::$windows  = (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false);
-        if (is_array($users)) {
-            foreach ($users as $user) {
-                $this->iterator->add_user($user);
-            }
-        } else {
-            $this->iterator->add_user($users);
-        }
-    }
-
-    public static function escape($text)
-    {
-        if (VCard::$windows) {
-            return str_replace(';', '\\\\;', $text);
-        } else {
-            return str_replace(array(';', ','), array('\\\\;', '\\\\,'), $text);
-        }
-    }
-
-    public static function format_adr($params, &$smarty)
-    {
-        // $adr1, $adr2, $adr3, $postcode, $city, $region, $country
-        extract($params['adr']);
-        $adr = trim($adr1);
-        $adr = trim("$adr\n$adr2");
-        $adr = trim("$adr\n$adr3");
-        return VCard::text_encode(';;'
-                . (VCard::$windows ? VCard::escape($adr) : $adr) . ';'
-                . (VCard::$windows ? VCard::escape($city) : $city) . ';'
-                . (VCard::$windows ? VCard::escape($region) : $region) . ';'
-                . (VCard::$windows ? VCard::escape($postcode) : $postcode) . ';'
-                . (VCard::$windows ? VCard::escape($country) : $country), false);
-    }
-
-    public static function text_encode($text, $escape = true)
-    {
-        if (is_array($text)) {
-            return implode(',', array_map(array('VCard', 'text_encode'), $text));
-        }
-        if ($escape) {
-            $text = VCard::escape($text);
-        }
-        if (VCard::$windows) {
-            $text = utf8_decode($text);
-        }
-        return str_replace(array("\r\n", "\n", "\r"), '\n', $text);
-    }
-
-    public function do_page(&$page)
-    {
-        $page->changeTpl('core/vcard.tpl', NO_SKIN);
-        $page->register_modifier('vcard_enc',  array($this, 'text_encode'));
-        $page->register_function('format_adr', array($this, 'format_adr'));
-        $page->assign_by_ref('users', $this->iterator);
-
-        header("Pragma: ");
-        header("Cache-Control: ");
-        header("Content-type: text/x-vcard; charset=UTF-8");
-  }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

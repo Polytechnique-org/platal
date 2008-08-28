@@ -479,8 +479,9 @@ class XnetGrpModule extends PLModule
         $res = XDB::query('SELECT  uid
                              FROM  groupex.membres
                             WHERE  asso_id = {?}', $globals->asso('id'));
-        $vcard = new VCard($res->fetchColumn(), $photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
-        $vcard->do_page($page);
+        $vcard = new VCard($photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
+        $vcard->addUsers($res->fetchColumn());
+        $vcard->show();
     }
 
     function handler_csv(&$page, $filename = null)

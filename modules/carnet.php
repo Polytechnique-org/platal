@@ -364,8 +364,9 @@ class CarnetModule extends PLModule
         $res = XDB::query('SELECT contact
                              FROM contacts
                             WHERE uid = {?}', S::v('uid'));
-        $vcard = new VCard($res->fetchColumn(), $photos == 'photos');
-        $vcard->do_page(&$page);
+        $vcard = new VCard($photos == 'photos');
+        $vcard->addUsers($res->fetchColumn());
+        $vcard->show();
     }
 }
 
