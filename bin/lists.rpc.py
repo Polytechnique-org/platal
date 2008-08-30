@@ -93,13 +93,17 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     argument a UserDesc taken from the database, containing name, email and perms
     """
 
+    def _get_function(self, method):
+        try:
+            # check to see if a matching function has been registered
+            return self.server.funcs[method]
+        except:
+            raise Exception('method "%s" is not supported' % method)
+
+
     def _dispatch(self, method, params):
-        # TODO: subclass in SimpleXMLRPCDispatcher and not here.
         new_params = list(params)
-        new_params.insert(0, self.data[2])
-        new_params.insert(0, self.data[1])
-        new_params.insert(0, self.data[0])
-        return self.server._dispatch(method, new_params)
+        return list_call_dispatcher(self._get_function(method), self.data[0], self.data[1], self.data[2], *params)
 
     def do_POST(self):
         try:
@@ -202,9 +206,69 @@ def remove_it(listname, filename):
     elif os.path.isdir(filename):
         shutil.rmtree(filename)
 
+##
+# Call dispatcher
+##
+
+def has_annotation(method, name):
+    """ Check if the method contains the given annoation.
+    """
+    return method.__doc__ and method.__doc__.find("@%s" % name) > -1
+
+def list_call_dispatcher(method, userdesc, perms, vhost, *arg):
+    """Dispatch the call to the right handler.
+    This function checks the options of the called method the set the environment of the call.
+    The dispatcher uses method annotation (special tokens in the documentation of the method) to
+    guess the requested environment:
+        @mlist: the handler requires a mlist object instead of the vhost/listname couple
+        @lock:  the handler requires the mlist to be locked (@mlist MUST be specified)
+        @edit:  the handler edit the mlist (@mlist MUST be specified)
+        @admin: the handler requires admin rights on the list (@mlist MUST be specified)
+        @root:  the handler requires site admin rights
+    """
+    try:
+        if has_annotation(method, "root") and perms != "admin":
+            return 0
+        if has_annotation(method, "mlist"):
+            listname = arg[0]
+            arg = arg[1:]
+            mlist = MailList.MailList(vhost + VHOST_SEP + listname.lower(), lock=0)
+            if has_annotation(method, "admin") and not is_admin_on(userdesc, perms, mlist):
+                return 0
+            if has_annotation(method, "edit") or has_annotation(method, "lock"):
+                return list_call_locked(method, userdesc, perms, mlist, has_annotation(method, "edit"), *arg)
+            else:
+                return method(userdesc, perms, mlist, *arg)
+        else:
+            return method(userdesc, perms, vhost, *arg)
+    except Exception, e:
+        raise e
+        return 0
+
+def list_call_locked(method, userdesc, perms, mlist, edit, *arg):
+    """Call the given method after locking the mlist.
+    """
+    try:
+        mlist.Lock()
+        ret = method(userdesc, perms, mlist, *arg)
+        if edit:
+            mlist.Save()
+        mlist.Unlock()
+        return ret
+    except:
+        mlist.Unlock()
+        return 0
+    # TODO: use finally when switching to python 2.5
+
 #-------------------------------------------------------------------------------
 # helpers on lists
 #
+
+def is_subscription_pending(userdesc, perms, mlist, edit):
+    for id in mlist.GetSubscriptionIds():
+        if userdesc.address == mlist.GetRecord(id)[1]:
+            return True
+    return False
 
 def get_list_info(userdesc, perms, mlist, front_page=0):
     members    = mlist.getRegularMemberKeys()
@@ -213,15 +277,8 @@ def get_list_info(userdesc, perms, mlist, front_page=0):
     if mlist.advertised or is_member or is_owner or (not front_page and perms == 'admin'):
         is_pending = False
         if not is_member and (mlist.subscribe_policy > 1):
-            try:
-                mlist.Lock()
-                for id in mlist.GetSubscriptionIds():
-                    if userdesc.address == mlist.GetRecord(id)[1]:
-                        is_pending = 1
-                        break
-                mlist.Unlock()
-            except:
-                mlist.Unlock()
+            is_pending = list_call_locked(userdesc, perms, mlist, is_subscription_pending, False)
+            if is_pending is 0:
                 return 0
 
         host = mlist.internal_name().split(VHOST_SEP)[0].lower()
@@ -241,57 +298,46 @@ def get_list_info(userdesc, perms, mlist, front_page=0):
         return (details, members)
     return 0
 
-def get_options(userdesc, perms, vhost, listname, opts):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        options = { }
-        for (k, v) in mlist.__dict__.iteritems():
-            if k in opts:
-                if type(v) is str:
-                    options[k] = quote(v)
-                else: options[k] = v
-        details = get_list_info(userdesc, perms, mlist)[0]
-        return (details, options)
-    except:
-        return 0
+def get_options(userdesc, perms, mlist, opts):
+    """ Get the options of a list.
+            @mlist
+            @admin
+    """
+    options = { }
+    for (k, v) in mlist.__dict__.iteritems():
+        if k in opts:
+            if type(v) is str:
+                options[k] = quote(v)
+            else: options[k] = v
+    details = get_list_info(userdesc, perms, mlist)[0]
+    return (details, options)
 
-def set_options(userdesc, perms, vhost, listname, opts, vals):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        mlist.Lock()
-        for (k, v) in vals.iteritems():
-            if k not in opts:
-                continue
-            if k == 'default_member_moderation':
-                for member in mlist.getMembers():
-                    mlist.setMemberOption(member, mm_cfg.Moderate, int(v))
-            t = type(mlist.__dict__[k])
-            if   t is bool: mlist.__dict__[k] = bool(v)
-            elif t is int:  mlist.__dict__[k] = int(v)
-            elif t is str:  mlist.__dict__[k] = Utils.uncanonstr(v, 'fr')
-            else:           mlist.__dict__[k] = v
-        mlist.Save()
-        mlist.Unlock()
-        return 1
-    except:
-        mlist.Unlock()
-        return 0
+def set_options(userdesc, perms, mlist, vals):
+    """ Set the options of a list.
+            @mlist
+            @edit
+            @admin
+    """
+    for (k, v) in vals.iteritems():
+        if k not in opts:
+            continue
+        if k == 'default_member_moderation':
+            for member in mlist.getMembers():
+                mlist.setMemberOption(member, mm_cfg.Moderate, int(v))
+        t = type(mlist.__dict__[k])
+        if   t is bool: mlist.__dict__[k] = bool(v)
+        elif t is int:  mlist.__dict__[k] = int(v)
+        elif t is str:  mlist.__dict__[k] = Utils.uncanonstr(v, 'fr')
+        else:           mlist.__dict__[k] = v
+    return 1
 
 #-------------------------------------------------------------------------------
 # users procedures for [ index.php ]
 #
 
 def get_lists(userdesc, perms, vhost, email=None):
+    """ List available lists for the given vhost
+    """
     if email is None:
         udesc = userdesc
     else:
@@ -314,42 +360,29 @@ def get_lists(userdesc, perms, vhost, email=None):
             continue
     return result
 
-def subscribe(userdesc, perms, vhost, listname):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        mlist.Lock()
-        if ( mlist.subscribe_policy in (0, 1) ) or userdesc.address in mlist.owner:
-            mlist.ApprovedAddMember(userdesc)
-            result = 2
-        else:
-            result = 1
-            try:
-                mlist.AddMember(userdesc)
-            except Errors.MMNeedApproval:
-                pass
-        mlist.Save()
-    except:
-        result = 0
-    mlist.Unlock()
+def subscribe(userdesc, perms, mlist):
+    """ Subscribe to a list.
+            @mlist
+            @edit
+    """
+    if ( mlist.subscribe_policy in (0, 1) ) or userdesc.address in mlist.owner:
+        mlist.ApprovedAddMember(userdesc)
+        result = 2
+    else:
+        result = 1
+        try:
+            mlist.AddMember(userdesc)
+        except Errors.MMNeedApproval:
+            pass
     return result
 
-def unsubscribe(userdesc, perms, vhost, listname):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        mlist.Lock()
-        mlist.ApprovedDeleteMember(userdesc.address)
-        mlist.Save()
-        mlist.Unlock()
-        return 1
-    except:
-        mlist.Unlock()
-        return 0
+def unsubscribe(userdesc, perms, mlist):
+    """ Unsubscribe from a list
+            @mlist
+            @edit
+    """
+    mlist.ApprovedDeleteMember(userdesc.address)
+    return 1
 
 #-------------------------------------------------------------------------------
 # users procedures for [ index.php ]
@@ -361,278 +394,208 @@ def get_name(member):
     except:
         return ''
 
-def get_members(userdesc, perms, vhost, listname):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        details, members = get_list_info(userdesc, perms, mlist)
-        members.sort()
-        members = map(lambda member: (get_name(member), member), members)
-        return (details, members, mlist.owner)
-    except:
-        return 0
+def get_members(userdesc, perms, mlist):
+    """ List the members of a list.
+            @mlist
+    """
+    details, members = get_list_info(userdesc, perms, mlist)
+    members.sort()
+    members = map(lambda member: (get_name(member), member), members)
+    return (details, members, mlist.owner)
+
 
 #-------------------------------------------------------------------------------
 # users procedures for [ trombi.php ]
 #
 
-def get_members_limit(userdesc, perms, vhost, listname, page, nb_per_page):
-    try:
-        members = get_members(userdesc, perms, vhost, listname.lower())[1]
-    except:
-        return 0
+def get_members_limit(userdesc, perms, mlist, page, nb_per_page):
+    """ Get a range of members of the list.
+            @mlist
+    """
+    members = get_members(userdesc, perms, mlist)[1]
     i = int(page) * int(nb_per_page)
     return (len(members), members[i:i+int(nb_per_page)])
 
-def get_owners(userdesc, perms, vhost, listname):
-    try:
-        details, members, owners = get_members(userdesc, perms, vhost, listname.lower())
-    except:
-        return 0
+def get_owners(userdesc, perms, mlist):
+    """ Get the owners of the list.
+            @mlist
+    """
+    details, members, owners = get_members(userdesc, perms, mlist)
     return (details, owners)
 
+
 #-------------------------------------------------------------------------------
 # owners procedures [ admin.php ]
 #
 
-def replace_email(userdesc, perms, vhost, listname, from_email, to_email):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
+def replace_email(userdesc, perms, mlist, from_email, to_email):
+    """ Replace the address of a member by another one.
+            @mlist
+            @edit
+            @admin
+    """
+    mlist.ApprovedChangeMemberAddress(from_email.lower(), to_email.lower(), 0)
+    return 1
 
-        mlist.Lock()
-        mlist.ApprovedChangeMemberAddress(from_email.lower(), to_email.lower(), 0)
-        mlist.Save()
-        mlist.Unlock()
-        return 1
-    except:
-        return 0
-
-def mass_subscribe(userdesc, perms, vhost, listname, users):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-
-        members = mlist.getRegularMemberKeys()
-        added = []
-        mlist.Lock()
-        for user in users:
-            email, name = to_forlife(user)
-            if ( email is None ) or ( email in members ):
-                continue
-            userd = UserDesc(email, name, None, 0)
-            mlist.ApprovedAddMember(userd)
-            added.append( (quote(userd.fullname), userd.address) )
-        mlist.Save()
-    except:
-        pass
-    mlist.Unlock()
+def mass_subscribe(userdesc, perms, mlist, users):
+    """ Add a list of users to the list.
+            @mlist
+            @edit
+            @admin
+    """
+    members = mlist.getRegularMemberKeys()
+    added = []
+    mlist.Lock()
+    for user in users:
+        email, name = to_forlife(user)
+        if ( email is None ) or ( email in members ):
+            continue
+        userd = UserDesc(email, name, None, 0)
+        mlist.ApprovedAddMember(userd)
+        added.append( (quote(userd.fullname), userd.address) )
     return added
 
-def mass_unsubscribe(userdesc, perms, vhost, listname, users):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-
-        mlist.Lock()
-        map(lambda user: mlist.ApprovedDeleteMember(user), users)
-        mlist.Save()
-    except:
-        pass
-    mlist.Unlock()
+def mass_unsubscribe(userdesc, perms, mlist, users):
+    """ Remove a list of users from the list.
+            @mlist
+            @edit
+            @admin
+    """
+    map(lambda user: mlist.ApprovedDeleteMember(user), users)
     return users
 
-def add_owner(userdesc, perms, vhost, listname, user):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
+def add_owner(userdesc, perms, mlist, user):
+    """ Add a owner to the list.
+            @mlist
+            @edit
+            @admin
+    """
+    email = to_forlife(user)[0]
+    if email is None:
         return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        email = to_forlife(user)[0]
-        if email is None:
-            return 0
-        if email not in mlist.owner:
-            mlist.Lock()
-            mlist.owner.append(email)
-            mlist.Save()
-    except:
-        pass
-    mlist.Unlock()
+    if email not in mlist.owner:
+        mlist.owner.append(email)
     return True
 
-def del_owner(userdesc, perms, vhost, listname, user):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
+def del_owner(userdesc, perms, mlist, user):
+    """ Remove a owner of the list.
+            @mlist
+            @edit
+            @admin
+    """
+    if len(mlist.owner) < 2:
         return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        if len(mlist.owner) < 2:
-            return 0
-        mlist.Lock()
-        mlist.owner.remove(user)
-        mlist.Save()
-    except:
-        pass
-    mlist.Unlock()
+    mlist.owner.remove(user)
     return True
 
 #-------------------------------------------------------------------------------
 # owners procedures [ admin.php ]
 #
 
-def get_pending_ops(userdesc, perms, vhost, listname):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
+def get_pending_ops(userdesc, perms, mlist):
+    """ Get the list of operation waiting for an action from the owners.
+            @mlist
+            @lock
+            @admin
+    """
+    subs = []
+    seen = []
+    dosave = False
+    for id in mlist.GetSubscriptionIds():
+        time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
+        if addr in seen:
+            mlist.HandleRequest(id, mm_cfg.DISCARD)
+            dosave = True
+            continue
+        seen.append(addr)
+        try:
+            login = re.match("^[^.]*\.[^.]*\.\d\d\d\d$", addr.split('@')[0]).group()
+            subs.append({'id': id, 'name': quote(fullname), 'addr': addr, 'login': login })
+        except:
+            subs.append({'id': id, 'name': quote(fullname), 'addr': addr })
 
-        mlist.Lock()
-
-        subs = []
-        seen = []
-        dosave = False
-        for id in mlist.GetSubscriptionIds():
-            time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
-            if addr in seen:
-                mlist.HandleRequest(id, mm_cfg.DISCARD)
-                dosave = True
-                continue
-            seen.append(addr)
-            try:
-                login = re.match("^[^.]*\.[^.]*\.\d\d\d\d$", addr.split('@')[0]).group()
-                subs.append({'id': id, 'name': quote(fullname), 'addr': addr, 'login': login })
-            except:
-                subs.append({'id': id, 'name': quote(fullname), 'addr': addr })
-
-        helds = []
-        for id in mlist.GetHeldMessageIds():
-            ptime, sender, subject, reason, filename, msgdata = mlist.GetRecord(id)
-            fpath = os.path.join(mm_cfg.DATA_DIR, filename)
-            try:
-                size = os.path.getsize(fpath)
-            except OSError, e:
-                if e.errno <> errno.ENOENT: raise
-                continue
-            try:
-                msg = readMessage(fpath)
-                fromX = msg.has_key("X-Org-Mail")
-            except:
-                pass
-            helds.append({
-                    'id'    : id,
-                    'sender': quote(sender, True),
-                    'size'  : size,
-                    'subj'  : quote(subject, True),
-                    'stamp' : ptime,
-                    'fromx' : fromX
-                    })
-        if dosave: mlist.Save()
-        mlist.Unlock()
-    except:
-        mlist.Unlock()
-        return 0
-    return (subs, helds)
-
-def handle_request(userdesc, perms, vhost, listname, id, value, comment):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        mlist.Lock()
-        mlist.HandleRequest(int(id), int(value), comment)
-        mlist.Save()
-        mlist.Unlock()
-        return 1
-    except:
-        mlist.Unlock()
-        return 0
-
-def get_pending_sub(userdesc, perms, vhost, listname, id):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-
-        mlist.Lock()
-        sub = 0
-        id = int(id)
-        if id in mlist.GetSubscriptionIds():
-            time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
-            try:
-                login = re.match("^[^.]*\.[^.]*\.\d\d\d\d$", addr.split('@')[0]).group()
-                sub = {'id': id, 'name': quote(fullname), 'addr': addr, 'login': login }
-            except:
-                sub = {'id': id, 'name': quote(fullname), 'addr': addr }
-        mlist.Unlock()
-    except:
-        mlist.Unlock()
-        return 0
-    return sub
-
-def get_pending_mail(userdesc, perms, vhost, listname, id, raw=0):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        mlist.Lock()
-        ptime, sender, subject, reason, filename, msgdata = mlist.GetRecord(int(id))
+    helds = []
+    for id in mlist.GetHeldMessageIds():
+        ptime, sender, subject, reason, filename, msgdata = mlist.GetRecord(id)
         fpath = os.path.join(mm_cfg.DATA_DIR, filename)
-        size = os.path.getsize(fpath)
-        msg = readMessage(fpath)
-        mlist.Unlock()
-
-        if raw:
-            return quote(str(msg))
-        results_plain = []
-        results_html  = []
-        for part in typed_subpart_iterator(msg, 'text', 'plain'):
-            c = part.get_payload()
-            if c is not None: results_plain.append (c)
-        results_plain = map(lambda x: quote(x), results_plain)
-        for part in typed_subpart_iterator(msg, 'text', 'html'):
-            c = part.get_payload()
-            if c is not None: results_html.append (c)
-        results_html = map(lambda x: quote(x), results_html)
-        return {'id'    : id,
+        try:
+            size = os.path.getsize(fpath)
+        except OSError, e:
+            if e.errno <> errno.ENOENT: raise
+            continue
+        try:
+            msg = readMessage(fpath)
+            fromX = msg.has_key("X-Org-Mail")
+        except:
+            pass
+        helds.append({
+                'id'    : id,
                 'sender': quote(sender, True),
                 'size'  : size,
                 'subj'  : quote(subject, True),
                 'stamp' : ptime,
-                'parts_plain' : results_plain,
-                'parts_html': results_html }
-    except:
-        mlist.Unlock()
-        return 0
+                'fromx' : fromX
+                })
+    if dosave:
+        mlist.Save()
+    return (subs, helds)
+
+def handle_request(userdesc, perms, mlist, id, value, comment):
+    """ Handle a moderation request.
+            @mlist
+            @edit
+            @admin
+    """
+    mlist.HandleRequest(int(id), int(value), comment)
+    return 1
+
+def get_pending_sub(userdesc, perms, mlist, id):
+    """ Get informations about a given subscription moderation.
+            @mlist
+            @lock
+            @admin
+    """
+    sub = 0
+    id = int(id)
+    if id in mlist.GetSubscriptionIds():
+        time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
+        try:
+            login = re.match("^[^.]*\.[^.]*\.\d\d\d\d$", addr.split('@')[0]).group()
+            sub = {'id': id, 'name': quote(fullname), 'addr': addr, 'login': login }
+        except:
+            sub = {'id': id, 'name': quote(fullname), 'addr': addr }
+    return sub
+
+def get_pending_mail(userdesc, perms, mlist, id, raw=0):
+    """ Get informations about a given mail moderation.
+            @mlist
+            @lock
+            @admin
+    """
+    ptime, sender, subject, reason, filename, msgdata = mlist.GetRecord(int(id))
+    fpath = os.path.join(mm_cfg.DATA_DIR, filename)
+    size = os.path.getsize(fpath)
+    msg = readMessage(fpath)
+
+    if raw:
+        return quote(str(msg))
+    results_plain = []
+    results_html  = []
+    for part in typed_subpart_iterator(msg, 'text', 'plain'):
+        c = part.get_payload()
+        if c is not None: results_plain.append (c)
+    results_plain = map(lambda x: quote(x), results_plain)
+    for part in typed_subpart_iterator(msg, 'text', 'html'):
+        c = part.get_payload()
+        if c is not None: results_html.append (c)
+    results_html = map(lambda x: quote(x), results_html)
+    return {'id'    : id,
+            'sender': quote(sender, True),
+            'size'  : size,
+            'subj'  : quote(subject, True),
+            'stamp' : ptime,
+            'parts_plain' : results_plain,
+            'parts_html': results_html }
 
 #-------------------------------------------------------------------------------
 # owner options [ options.php ]
@@ -643,126 +606,104 @@ owner_opts = ['accept_these_nonmembers', 'admin_notify_mchanges', 'description',
         'subject_prefix', 'goodbye_msg', 'send_goodbye_msg', 'subscribe_policy', \
         'welcome_msg']
 
-def get_owner_options(userdesc, perms, vhost, listname):
-    return get_options(userdesc, perms, vhost, listname.lower(), owner_opts)
+def get_owner_options(userdesc, perms, mlist):
+    """ Get the owner options of a list.
+            @mlist
+            @admin
+    """
+    return get_options(userdesc, perms, mlist, owner_opts)
 
-def set_owner_options(userdesc, perms, vhost, listname, values):
-    return set_options(userdesc, perms, vhost, listname.lower(), owner_opts, values)
+def set_owner_options(userdesc, perms, mlist, values):
+    """ Set the owner options of a list.
+            @mlist
+            @edit
+            @admin
+    """
+    return set_options(userdesc, perms, mlist, owner_opts, values)
 
-def add_to_wl(userdesc, perms, vhost, listname, addr):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
+def add_to_wl(userdesc, perms, mlist, addr):
+    """ Add addr to the whitelist
+            @mlist
+            @edit
+            @admin
+    """
+    mlist.accept_these_nonmembers.append(addr)
+    return 1
+
+def del_from_wl(userdesc, perms, mlist, addr):
+    """ Remove an address from the whitelist
+            @mlist
+            @edit
+            @admin
+    """
+    mlist.accept_these_nonmembers.remove(addr)
+    return 1
+
+def get_bogo_level(userdesc, perms, mlist):
+    """ Compute bogo level from the filtering rules set up on the list.
+            @mlist
+            @admin
+    """
+    if len(mlist.header_filter_rules) == 0:
         return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        mlist.Lock()
-        mlist.accept_these_nonmembers.append(addr)
-        mlist.Save()
-        mlist.Unlock()
-        return 1
-    except:
-        mlist.Unlock()
-        return 0
 
-def del_from_wl(userdesc, perms, vhost, listname, addr):
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        mlist.Lock()
-        mlist.accept_these_nonmembers.remove(addr)
-        mlist.Save()
-        mlist.Unlock()
-        return 1
-    except:
-        mlist.Unlock()
-        return 0
+    unsurelevel = 0
+    filterlevel = 0
+    filterbase = 0
 
-def get_bogo_level(userdesc, perms, vhost, listname):
-    """ Compute bogo level from the filtering rules set up on the list. """
+    # The first rule filters Unsure mails
+    if mlist.header_filter_rules[0][0] == 'X-Spam-Flag: Unsure, tests=bogofilter':
+        unsurelevel = 1
+        filterbase = 1
+
+    # Check the other rules:
+    #  - we have 2 rules: this is level 2 (drop > 0.999999, moderate Yes)
+    #  - we have only one rule with HOLD directive : this is level 1 (moderate spams)
+    #  - we have only one rule with DISCARD directive : this is level 3 (drop spams)
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
+        action = mlist.header_filter_rules[filterbase + 1][1]
+        filterlevel = 2
     except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        if len(mlist.header_filter_rules) == 0:
-            return 0
-
-        unsurelevel = 0
-        filterlevel = 0
-        filterbase = 0
-
-        # The first rule filters Unsure mails
-        if mlist.header_filter_rules[0][0] == 'X-Spam-Flag: Unsure, tests=bogofilter':
-            unsurelevel = 1
-            filterbase = 1
-
-        # Check the other rules:
-        #  - we have 2 rules: this is level 2 (drop > 0.999999, moderate Yes)
-        #  - we have only one rule with HOLD directive : this is level 1 (moderate spams)
-        #  - we have only one rule with DISCARD directive : this is level 3 (drop spams)
-        try:
-            action = mlist.header_filter_rules[filterbase + 1][1]
-            filterlevel = 2
-        except:
-            action = mlist.header_filter_rules[filterbase][1]
-            if action == mm_cfg.HOLD:
-                filterlevel = 1
-            elif action == mm_cfg.DISCARD:
-                filterlevel = 3
-        return (filterlevel << 1) + unsurelevel
-    except:
-        return 0
+        action = mlist.header_filter_rules[filterbase][1]
+        if action == mm_cfg.HOLD:
+            filterlevel = 1
+        elif action == mm_cfg.DISCARD:
+            filterlevel = 3
+    return (filterlevel << 1) + unsurelevel
 
 def set_bogo_level(userdesc, perms, vhost, listname, level):
-    """ set filter to the specified level. """
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        hfr = []
+    """ Set filter to the specified level.
+            @mlist
+            @edit
+            @admin
+    """
+    hfr = []
 
-        # The level is a combination of a spam filtering level and unsure filtering level
-        #   - the unsure filtering level is only 1 bit (1 = HOLD unsures, 0 = Accept unsures)
-        #   - the spam filtering level is a number growing with filtering strength
-        #     (0 = no filtering, 1 = moderate spam, 2 = drop 0.999999 and moderate others, 3 = drop spams)
-        bogolevel = int(level)
-        filterlevel = bogolevel >> 1
-        unsurelevel = bogolevel & 1
+    # The level is a combination of a spam filtering level and unsure filtering level
+    #   - the unsure filtering level is only 1 bit (1 = HOLD unsures, 0 = Accept unsures)
+    #   - the spam filtering level is a number growing with filtering strength
+    #     (0 = no filtering, 1 = moderate spam, 2 = drop 0.999999 and moderate others, 3 = drop spams)
+    bogolevel = int(level)
+    filterlevel = bogolevel >> 1
+    unsurelevel = bogolevel & 1
 
-        # Set up unusre filtering
-        if unsurelevel == 1:
-            hfr.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
+    # Set up unusre filtering
+    if unsurelevel == 1:
+        hfr.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
 
-        # Set up spam filtering
-        if filterlevel is 1:
-            hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
-        elif filterlevel is 2:
-            hfr.append(('X-Spam-Flag: Yes, tests=bogofilter, spamicity=(0\.999999|1\.000000)', mm_cfg.DISCARD, False))
-            hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
-        elif filterlevel is 3:
-            hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.DISCARD, False))
+    # Set up spam filtering
+    if filterlevel is 1:
+        hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
+    elif filterlevel is 2:
+        hfr.append(('X-Spam-Flag: Yes, tests=bogofilter, spamicity=(0\.999999|1\.000000)', mm_cfg.DISCARD, False))
+        hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
+    elif filterlevel is 3:
+        hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.DISCARD, False))
 
-        # save configuration
-        if mlist.header_filter_rules != hfr:
-            mlist.Lock()
-            mlist.header_filter_rules = hfr
-            mlist.Save()
-            mlist.Unlock()
-        return 1
-    except:
-        mlist.Unlock()
-        return 0
+    # save configuration
+    if mlist.header_filter_rules != hfr:
+        mlist.header_filter_rules = hfr
+    return 1
 
 #-------------------------------------------------------------------------------
 # admin procedures [ soptions.php ]
@@ -771,15 +712,20 @@ def set_bogo_level(userdesc, perms, vhost, listname, level):
 admin_opts = [ 'advertised', 'archive', \
         'max_message_size', 'msg_footer', 'msg_header']
 
-def get_admin_options(userdesc, perms, vhost, listname):
-    if perms != 'admin':
-        return 0
-    return get_options(userdesc, perms, vhost, listname.lower(), admin_opts)
+def get_admin_options(userdesc, perms, mlist):
+    """ Get administrator options.
+            @mlist
+            @root
+    """
+    return get_options(userdesc, perms, mlist, admin_opts)
 
-def set_admin_options(userdesc, perms, vhost, listname, values):
-    if perms != 'admin':
-        return 0
-    return set_options(userdesc, perms, vhost, listname.lower(), admin_opts, values)
+def set_admin_options(userdesc, perms, mlist, values):
+    """ Set administrator options.
+            @mlist
+            @edit
+            @root
+    """
+    return set_options(userdesc, perms, mlist, admin_opts, values)
 
 #-------------------------------------------------------------------------------
 # admin procedures [ check.php ]
@@ -826,38 +772,37 @@ check_opts = {
     'unsubscribe_policy'            : 0,
 }
 
+def check_options_runner(userdesc, perms, mlist, listname, correct):
+    options = { }
+    for (k, v) in check_opts.iteritems():
+        if mlist.__dict__[k] != v:
+            options[k] = v, mlist.__dict__[k]
+            if correct: mlist.__dict__[k] = v
+    if mlist.real_name.lower() != listname:
+        options['real_name'] = listname, mlist.real_name
+        if correct: mlist.real_name = listname
+    details = get_list_info(userdesc, perms, mlist)[0]
+    return (details, options)
+
+
 def check_options(userdesc, perms, vhost, listname, correct=False):
+    """ Check the list.
+            @root
+    """
     listname = listname.lower()
-    try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname, lock=0)
-    except:
-        return 0
-    try:
-        if perms != 'admin': return 0
-        if correct:
-            mlist.Lock()
-        options = { }
-        for (k, v) in check_opts.iteritems():
-            if mlist.__dict__[k] != v:
-                options[k] = v, mlist.__dict__[k]
-                if correct: mlist.__dict__[k] = v
-        if mlist.real_name.lower() != listname:
-            options['real_name'] = listname, mlist.real_name
-            if correct: mlist.real_name = listname
-        if correct:
-            mlist.Save()
-            mlist.Unlock()
-        details = get_list_info(userdesc, perms, mlist)[0]
-        return (details, options)
-    except:
-        if correct: mlist.Unlock()
-        return 0
+    mlist = MailList.MailList(vhost + VHOST_SEP + listname, lock=0)
+    if correct:
+        return list_call_locked(check_options_runner, userdesc, perms, mlist, True, listname, True)
+    else:
+        return check_options_runner(userdesc, perms, mlist, listname, False)
 
 #-------------------------------------------------------------------------------
 # super-admin procedures
 #
 
 def get_all_lists(userdesc, perms, vhost):
+    """ Get all the list for the given vhost
+    """
     prefix = vhost.lower()+VHOST_SEP
     names = Utils.list_names()
     names.sort()
@@ -869,9 +814,10 @@ def get_all_lists(userdesc, perms, vhost):
     return result
 
 def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, inslevel, owners, members):
-    if perms != 'admin':
-        return 0
-    name = vhost.lower()+VHOST_SEP+listname.lower();
+    """ Create a new list.
+            @root
+    """
+    name = vhost.lower() + VHOST_SEP + listname.lower();
     if Utils.list_exists(name):
         return 0
 
@@ -916,66 +862,59 @@ def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, ins
         mlist.header_filter_rules = []
         mlist.header_filter_rules.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
         mlist.header_filter_rules.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
-
         mlist.Save()
-
         mlist.Unlock()
 
         if ON_CREATE_CMD != '':
             try:    os.system(ON_CREATE_CMD + ' ' + name)
             except: pass
 
-        check_options(userdesc, perms, vhost, listname.lower(), True)
-        mass_subscribe(userdesc, perms, vhost, listname.lower(), members)
+        check_options(userdesc, perms, mlist, True)
+        mass_subscribe(userdesc, perms, mlist, members)
 
         # avoid the "-1 mail to moderate" bug
         mlist = MailList.MailList(name)
         mlist._UpdateRecords()
         mlist.Save()
+
+        return 1
+    finally:
         mlist.Unlock()
-    except:
-        try:
-            mlist.Unlock()
-        except:
-            pass
-        return 0
+    return 0
+
+def delete_list(userdesc, perms, mlist, del_archives=0):
+    """ Delete the list.
+            @mlist
+            @admin
+    """
+    lname = mlist.internal_name()
+    # remove the list
+    REMOVABLES = [ os.path.join('lists', lname), ]
+    # remove stalled locks
+    for filename in os.listdir(mm_cfg.LOCK_DIR):
+        fn_lname = filename.split('.')[0]
+        if fn_lname == lname:
+            REMOVABLES.append(os.path.join(mm_cfg.LOCK_DIR, filename))
+    # remove archives ?
+    if del_archives:
+        REMOVABLES.extend([
+                os.path.join('archives', 'private', lname),
+                os.path.join('archives', 'private', lname+'.mbox'),
+                os.path.join('archives', 'public',  lname),
+                os.path.join('archives', 'public',  lname+'.mbox')
+            ])
+    map(lambda dir: remove_it(lname, os.path.join(mm_cfg.VAR_PREFIX, dir)), REMOVABLES)
     return 1
 
-def delete_list(userdesc, perms, vhost, listname, del_archives=0):
-    lname = vhost+VHOST_SEP+listname.lower()
-    try:
-        mlist = MailList.MailList(lname, lock=0)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        # remove the list
-        REMOVABLES = [ os.path.join('lists', lname), ]
-        # remove stalled locks
-        for filename in os.listdir(mm_cfg.LOCK_DIR):
-            fn_lname = filename.split('.')[0]
-            if fn_lname == lname:
-                REMOVABLES.append(os.path.join(mm_cfg.LOCK_DIR, filename))
-        # remove archives ?
-        if del_archives:
-            REMOVABLES.extend([
-                    os.path.join('archives', 'private', lname),
-                    os.path.join('archives', 'private', lname+'.mbox'),
-                    os.path.join('archives', 'public',  lname),
-                    os.path.join('archives', 'public',  lname+'.mbox')
-                ])
-        map(lambda dir: remove_it(lname, os.path.join(mm_cfg.VAR_PREFIX, dir)), REMOVABLES)
-        return 1
-    except:
-        return 0
-
 def kill(userdesc, perms, vhost, alias, del_from_promo):
+    """ Remove a user from all the lists.
+    """
     exclude = []
     if not del_from_promo:
-        exclude.append(PLATAL_DOMAIN+VHOST_SEP+'promo'+alias[-4:])
+        exclude.append(PLATAL_DOMAIN + VHOST_SEP + 'promo' + alias[-4:])
     for list in Utils.list_names():
-        if list in exclude: continue
+        if list in exclude:
+            continue
         try:
             mlist = MailList.MailList(list, lock=0)
         except:
