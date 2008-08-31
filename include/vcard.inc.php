@@ -52,7 +52,7 @@ class VCard extends PlVCard
 
     protected function fetch()
     {
-        return new PlArrayIterator($this->user_list);
+        return PlIteratorUtils::fromArray($this->user_list);
     }
 
     protected function buildEntry($entry)
