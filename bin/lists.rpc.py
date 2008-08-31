@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #***************************************************************************
-#*  Copyright (C) 2004 polytechnique.org                                   *
+#*  Copyright (C) 2004-2008 polytechnique.org                              *
 #*  http://opensource.polytechnique.org/                                   *
 #*                                                                         *
 #*  This program is free software; you can redistribute it and/or modify   *
@@ -73,6 +73,9 @@ PLATAL_DOMAIN2 = get_config('Mail', 'domain2', '')
 
 VHOST_SEP      = get_config('Lists', 'vhost_sep', '_')
 ON_CREATE_CMD  = get_config('Lists', 'on_create', '')
+
+SRV_HOST       = get_config('Lists', 'rpchost', 'localhost')
+SRV_PORT       = int(get_config('Lists', 'rpcport', '4949'))
 
 ################################################################################
 #
@@ -968,7 +971,7 @@ lock = Lock()
 #-------------------------------------------------------------------------------
 # server
 #
-server = FastXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
+server = FastXMLRPCServer((SRV_HOST, SRV_PORT), BasicAuthXMLRPCRequestHandler)
 
 # index.php
 server.register_function(get_lists)
