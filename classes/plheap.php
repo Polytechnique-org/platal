@@ -19,26 +19,56 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-/** An iterator.
+/** Implements a heap. The order of the elements is determined by the given
+ * comparator: the smaller element is the head of the heap.
  */
-interface PlIterator
+class PlHeap
 {
-    /** Fetch and return the next element of the iterator.
-     * If no more element is available, return null.
-     */
-    public function next();
+    private $comparator;
+    private $content = array();
 
-    /** Return the number of element of the iterator.
-     */
-    public function total();
+    public function __construct($comparator)
+    {
+        $this->comparator = $comparator;
+    }
 
-    /** True if the current element is the first element.
-     */
-    public function first();
+    public function pop()
+    {
+        if (empty($this->content)) {
+            return null;
+        }
+        return array_shift($this->content);
+    }
 
-    /** True if the current element is the last element.
-     */
-    public function last();
+    public function push($elt)
+    {
+        $start = 0;
+        $end   = count($this->content);
+
+        while ($start < $end) {
+            $middle = floor(($start + $end) / 2);
+            $comp   = call_user_func($this->comparator, $elt, $this->content[$middle]);
+            if ($comp < 0) {
+                $end = $middle;
+            } else if ($comp > 0) {
+                $start = $middle + 1;
+            } else {
+                array_splice($this->content, $middle, 0, array($elt));
+                return;
+            }
+        }
+        array_splice($this->content, $start, 0, array($elt));
+    }
+
+    public function count()
+    {
+        return count($this->content);
+    }
+
+    public function iterator()
+    {
+        return PlIterator::fromArray($this->content);
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

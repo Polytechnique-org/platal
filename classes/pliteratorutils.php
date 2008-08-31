@@ -19,6 +19,51 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+class PlIteratorUtils
+{
+    /** Build an iterator over an array.
+     * @param array The array.
+     * @param depth The depth of iteration.
+     * @return an iterator that return entries in the form
+     *          array(key   => array(0 => key_for_depth0 [, 1 => key_for_depths1, ...]),
+     *                value => the value);
+     */
+    public static function fromArray(array $array, $depth = 1)
+    {
+        return new PlArrayIterator($array, $depth);
+    }
+
+
+    /** Sort an iterator using the given sort callback.
+     * @param iterator The iterator to sort.
+     * @param callback The callback for comparison.
+     * @return a new iterator with the entries sorted.
+     */
+    public static function sort(PlIterator $iterator, $callback)
+    {
+        $heap = new PlHeap($callback);
+        while ($item = $iterator->next()) {
+            $heap->push($item);
+        }
+        return $heap->iterator();
+    }
+
+
+    /** Merge several iterator into a unique one.
+     * @param iterators Array of iterators.
+     * @param callback  The callback for comparison.
+     * @param sorted    Tell wether the iterators are already sorted using the given callback.
+     * @return an iterator.
+     */
+    public static function merge(array $iterators, $callback, $sorted = true)
+    {
+        return new PlMergeIterator($iterators, $callback, $sorted);
+    }
+}
+
+
+/** Iterates over an array.
+ */
 class PlArrayIterator implements PlIterator
 {
     private $array;
@@ -118,6 +163,93 @@ class PlArrayIterator implements PlIterator
     public function last()
     {
         return $this->_last;
+    }
+}
+
+
+/** Iterator that return the result of a merge of several iterators.
+ */
+class PlMergeIterator implements PlIterator
+{
+    /* The heap is field with entries with the form:
+     *  array('it' => id of the iterator this entry come from,
+     *        'value' => value of the entry).
+     */
+    private $heap;
+    private $preComputed = false;
+    private $comparator;
+    private $iterators;
+    private $_total;
+    private $pos;
+
+    public function __construct(array $iterators, $callback, $sorted = true)
+    {
+        $this->heap = new PlHeap(array($this, 'compare'));
+        $this->_total = 0;
+        $this->comparator = $callback;
+        if ($sorted) {
+            $this->iterators = $iterators;
+            foreach ($this->iterators as $key => &$it) {
+                $this->_total += $it->total();
+                $item = $it->next();
+                if (!is_null($item)) {
+                    $this->heap->push(array('it' => $key, 'value' => $item));
+                }
+            }
+        } else {
+            $this->preComputed = true;
+            foreach ($iterators as $key => &$it) {
+                $this->_total += $it->total();
+                while (!is_null($item = $it->next())) {
+                    $this->heap->push(array('it' => $key, 'value' => $item));
+                }
+            }
+        }
+        $this->pos = 0;
+    }
+
+    /** Compare two entries of the heap using the comparator of the user.
+     */
+    public function compare($a, $b)
+    {
+        $cp = call_user_func($this->comparator, $a['value'], $b['value']);
+        if ($cp == 0) {
+            return $a['it'] - $b['it'];
+        }
+        return $cp;
+    }
+
+    public function total()
+    {
+        return $this->_total;
+    }
+
+    public function next()
+    {
+        ++$this->pos;
+        $entry = $this->heap->pop();
+        if (is_null($entry)) {
+           return null;
+        }
+        if ($this->preComputed) {
+            return $entry['value'];
+        }
+        $it = $entry['it'];
+        $item = $this->iterators[$it]->next();
+        if (!is_null($item)) {
+            $this->heap->push(array('it' => $it, 'value' => $item));
+        }
+        return $entry['value'];
+    }
+
+    public function last()
+    {
+        return $this->heap->count() == 0;
+    }
+
+    public function first()
+    {
+        return $this->pos == 1;
     }
 }
 
