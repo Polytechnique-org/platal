@@ -141,7 +141,7 @@ class PhotoReq extends Validate
         XDB::execute('REPLACE INTO  photo (uid, attachmime, attach, x, y)
                             VALUES  ({?},{?},{?},{?},{?})',
                      $this->uid, $this->mimetype, $this->data, $this->x, $this->y);
-        register_watch_op($this->uid, WATCH_FICHE, 'photo');
+        register_watch_op($this->uid, WATCH_FICHE, '', 'photo');
         return true;
     }
 
