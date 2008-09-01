@@ -80,11 +80,11 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
       {$promo[row].prenom} {$promo[row].nom}
       {/if}
     </td>
-    <td style="width:25%" {if $promo[row].data}rowspan="2"{/if}>
+    <td style="width:25%">
       {$promo[row].date|date_format}
     </td>
     {if $promo[row].data}
-    </tr><tr><td>{$promo[row].data|smarty:nodefaults}</td>
+    </tr><tr><td colspan="2">{$promo[row].data|smarty:nodefaults}</td>
     {/if}
   </tr>
   {/section}

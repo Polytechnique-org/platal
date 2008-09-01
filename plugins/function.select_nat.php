@@ -21,7 +21,7 @@
 
 
 function select_nat($valeur, $pad=false) {
-    $sql = "SELECT a2 AS id,IF(nat='',pays,nat) AS text FROM geoloc_pays ORDER BY text";
+    $sql = "SELECT a2 AS id, IF(nat='', pays, nat) AS text FROM geoloc_pays WHERE nat IS NOT NULL ORDER BY text";
     $res = XDB::iterRow($sql);
     $sel = ' selected="selected"';
 

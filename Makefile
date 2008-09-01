@@ -26,7 +26,7 @@ endef
 
 all: build
 
-build: core banana wiki medals jquery
+build: core conf banana wiki medals jquery
 
 q:
 	@echo -e "Code statistics\n"
@@ -42,7 +42,15 @@ q:
 ## core
 ##
 
-core: spool/templates_c spool/mails_c classes/platalglobals.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp
+core:
+	[ -d core ] || ( git submodule init && git submodule update )
+	make -C core all
+
+##
+## conf
+##
+
+conf: spool/templates_c spool/mails_c classes/platalglobals.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp 
 
 spool/templates_c spool/mails_c spool/uploads spool/conf spool/tmp:
 	mkdir -p $@
@@ -148,5 +156,5 @@ $(JQUERY_PLUGINS_PATHES):
 
 ################################################################################
 
-.PHONY: build dist clean wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http*
+.PHONY: build dist clean core wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http*
 

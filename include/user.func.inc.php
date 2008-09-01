@@ -359,6 +359,7 @@ function get_user_details_adr($uid, $view = 'private') {
                      gp.pays AS countrytxt,a.region, a.regiontxt,
                      FIND_IN_SET('active', a.statut) AS active, a.adrid,
                      FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
+                     FIND_IN_SET('courrier', a.statut) AS courier,
                      a.pub, gp.display, a.comment
                FROM  adresses AS a
           LEFT JOIN  geoloc_pays AS gp ON (gp.a2=a.country)

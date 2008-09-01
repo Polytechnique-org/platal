@@ -37,13 +37,6 @@ class CarnetModule extends PLModule
         );
     }
 
-    function on_subscribe($forlife, $uid, $promo, $password)
-    {
-        require_once 'notifs.inc.php';
-        register_watch_op($uid, WATCH_INSCR);
-        inscription_notifs_base($uid);
-    }
-
     function _add_rss_link(&$page)
     {
         if (!S::has('core_rss_hash')) {
@@ -260,7 +253,7 @@ class CarnetModule extends PLModule
             require_once 'userset.inc.php';
             $base = 'carnet/contacts/search';
 
-            require_once(dirname(__FILE__) . '/search/classes.inc.php');
+            Platal::load('search', 'classes.inc.php');
             ThrowError::$throwHook = array($this, 'searchErrorHandler');
             $view = new SearchSet(true, false, "INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", "c2.uid = $uid");
         } else {
@@ -371,8 +364,9 @@ class CarnetModule extends PLModule
         $res = XDB::query('SELECT contact
                              FROM contacts
                             WHERE uid = {?}', S::v('uid'));
-        $vcard = new VCard($res->fetchColumn(), $photos == 'photos');
-        $vcard->do_page(&$page);
+        $vcard = new VCard($photos == 'photos');
+        $vcard->addUsers($res->fetchColumn());
+        $vcard->show();
     }
 }
 

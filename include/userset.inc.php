@@ -63,8 +63,7 @@ class SearchSet extends UserSet
 
     public function __construct($quick = false, $no_search = false, $join = '', $where = '')
     {
-        require_once dirname(__FILE__).'/../modules/search/search.inc.php';
-
+        Platal::load('search', 'search.inc.php');
         if ($no_search) {
             return;
         }
@@ -79,7 +78,7 @@ class SearchSet extends UserSet
 
     private function getQuick($join, $where)
     {
-        require_once dirname(__FILE__).'/../modules/search/search.inc.php';
+        Platal::load('search', 'search.inc.php');
         global $globals;
         if (!S::logged()) {
             Env::kill('with_soundex');
@@ -179,7 +178,7 @@ class MinificheView extends MultipageView
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces, u.matricule_ax,
                 FIND_IN_SET('femme', u.flags) AS sexe,
-                e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
+                e.entreprise, e.web AS job_web, es.label AS secteur, ef.fonction_fr AS fonction,
                 IF(n1.nat='',n1.pays,n1.nat) AS nat1, n1.a2 AS iso3166_1,
                 IF(n2.nat='',n2.pays,n2.nat) AS nat2, n2.a2 AS iso3166_2,
                 IF(n3.nat='',n3.pays,n3.nat) AS nat3, n3.a2 AS iso3166_3,

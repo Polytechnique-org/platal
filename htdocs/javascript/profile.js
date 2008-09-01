@@ -51,7 +51,7 @@ function wizPage_onLoad(id)
             updateJobSecteur(i, 'job_' + i, 'jobs[' + i + ']',
                              document.forms.prof_annu["jobs[" + i + "][ss_secteur]"].value);
         }
-        registerEnterpriseAutocomplete(-1);
+        setTimeout('registerEnterpriseAutocomplete(-1)', 100);
         break;
     }
 }

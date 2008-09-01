@@ -759,8 +759,9 @@ class ProfileModule extends PLModule
             $x = substr($x, 0, strlen($x) - 4);
         }
 
-        $vcard = new VCard($x);
-        $vcard->do_page($page);
+        $vcard = new VCard();
+        $vcard->addUser($x);
+        $vcard->show();
     }
 
     function handler_admin_trombino(&$page, $uid = null, $action = null) {
