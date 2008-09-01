@@ -178,7 +178,7 @@ class MinificheView extends MultipageView
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces, u.matricule_ax,
                 FIND_IN_SET('femme', u.flags) AS sexe,
-                e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
+                e.entreprise, e.web AS job_web, es.label AS secteur, ef.fonction_fr AS fonction,
                 IF(n.nat='',n.pays,n.nat) AS nat, n.a2 AS iso3166,
                 ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                 ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,

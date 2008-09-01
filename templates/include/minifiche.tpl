@@ -64,6 +64,8 @@
         {if !$c.dcd}
     <a href="vcard/{$c.forlife}.vcf">{*
     *}{icon name=vcard title="Afficher la carte de visite"}</a>
+    <a href="mailto:{$c.forlife}@{#globals.mail.domain#}">{*
+    *}{icon name=email title="Envoyer un email"}</a>
           {if $show_action eq ajouter}
     <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}&amp;token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à mes contacts"}</a>
@@ -116,8 +118,8 @@
       <tr>
         <td class="lt">Profession&nbsp;:</td>
         <td class="rt">
-          {$c.entreprise} {if $c.secteur}({$c.secteur}){/if}
-          {if $c.fonction}<br />{$c.fonction}{/if}
+          {if $c.job_web}<a href="{$c.job_web}">{$c.entreprise}</a>{else}{$c.entreprise}{/if}
+          {if $c.secteur}({$c.secteur}){/if} {if $c.fonction}<br />{$c.fonction}{/if}
         </td>
       </tr>
       {/if}
