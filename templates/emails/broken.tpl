@@ -57,7 +57,7 @@ correspondant si tu veux que nous puissions te répondre.
   </p>
   <p>
     Si tu connais une autre adresse email où le contacter, nous pouvons l'inviter à mettre à jour sa redirection
-    Polytechnique.org. Pour ceci il suffit que tu remplisses <a href="marketing/broken/{$x.forlife}">ce formulaire</a>.
+    Polytechnique.org. Pour ceci il suffit que tu remplisses <a href="marketing/broken/{$x.hruid}">ce formulaire</a>.
   </p>
 {elseif $email}
 <p class="erreur">
