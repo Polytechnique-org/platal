@@ -94,7 +94,7 @@
         Site web&nbsp;:
       </td>
       <td>
-        <input type="text" size="40" value="{$asso.site}" name="site" />
+        <input type="text" size="40" value="{$asso.site|default:"http://"}" name="site" />
       </td>
     </tr>
 

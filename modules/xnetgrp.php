@@ -237,6 +237,15 @@ class XnetGrpModule extends PLModule
             if (Post::has('notif_unsub') && Post::i('notif_unsub') == 1) {
                 $flags->addFlag('notif_unsub');
             }
+            $site = trim(Post::v('site'));
+            if ($site && ($site != "http://")) {
+                $scheme = parse_url($site, PHP_URL_SCHEME);
+                if (!$scheme) {
+                    $site = "http://" . $site;
+                }
+            } else {
+                $site = "";
+            }
             if (S::has_perms()) {
                 if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
                     $page->trigError("le domaine doit être un FQDN (aucune modif effectuée) !!!");
@@ -252,7 +261,7 @@ class XnetGrpModule extends PLModule
                       WHERE  id={?}",
                       Post::v('nom'), Post::v('diminutif'),
                       Post::v('cat'), Post::i('dom'),
-                      Post::v('descr'), Post::v('site'),
+                      Post::v('descr'), $site,
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::v('mail_domain'),
                       Post::has('ax'), Post::v('pub'),
@@ -269,7 +278,7 @@ class XnetGrpModule extends PLModule
                              forum={?}, ax={?}, pub= {?}, sub_url={?},
                              unsub_url={?},flags={?}
                       WHERE  id={?}",
-                      Post::v('descr'), Post::v('site'),
+                      Post::v('descr'), $site,
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::has('ax'),
                       Post::v('pub'),
