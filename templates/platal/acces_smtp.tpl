@@ -82,7 +82,7 @@
     </tr>
     <tr>
       <td class="titre">Sécurité</td>
-      <td>{checkpasswd prompt="smtppass1" submit="valid"}</td>
+      <td>{checkpasswd prompt="smtppass1" submit="valid" text="Valider"}</td>
     </tr>
     <tr>
       <td colspan="2" class="center">

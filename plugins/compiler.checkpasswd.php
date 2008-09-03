@@ -32,15 +32,18 @@ function smarty_compiler_checkpasswd($tag_attrs, &$compiler)
     if (!isset($submit)) {
       $submit = "'submitn'";
     }
+    if (!isset($text)) {
+      $text = "'Changer'";
+    }
 
     return '?><script type="text/javascript" src="javascript/jquery.js" ></script>
               <script type="text/javascript" src="javascript/jquery.color.js" ></script>
               <script type="text/javascript">//<![CDATA[
                 var passwordprompt_name = '.  $prompt . ';
                 var passwordprompt_submit = ' . $submit . ';
-                $(":input[@name=' . $prompt . ']").keyup(function(event) { checkPassword(event.target); });
+                $(":input[@name=' . $prompt . ']").keyup(function(event) { checkPassword(event.target, ' . $text . '); });
                 $(document).ready(function() {
-                  checkPassword($(":input[@name=' . $prompt . ']").get(0));
+                  checkPassword($(":input[@name=' . $prompt . ']").get(0), ' . $text . ');
                 });
               //]]></script>
               <div>
