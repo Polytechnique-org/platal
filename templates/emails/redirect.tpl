@@ -122,6 +122,19 @@
         Ajax.update_html(null, 'emails/redirect/' + (checked ? '' : 'in') + 'active/' + email, redirectUpdate);
     }
 
+    function rewriteUpdate(mail, allow, box)
+    {
+        return function() {
+                  if (!allow) {
+                      if (box.value != '') {
+                          alert("Un mail de validation vient d'être envoyer sur " + mail
+                               + ". La réécriture ne sera active que lorsque tu auras cliqué sur le lien indiqué dans ce mail.");
+                      }
+                  }
+                  redirectUpdate();
+              };
+    }
+
     {/literal}
   //]]></script>
   {test_email}
@@ -149,9 +162,9 @@
                  {if $e->active}checked="checked"{/if}
                  {if $smarty.foreach.redirect.total eq 1}disabled="disabled"{/if}
                  onchange="updateRedirect(this.checked, '{$e->email}')" /></td>
-        <td>
+        <td style="text-align: left">
           {if $e->has_rewrite()}
-          <select onchange="Ajax.update_html(null,'emails/redirect/rewrite/{$e->email}/'+this.value, redirectUpdate)">
+          <select onchange="Ajax.update_html(null,'emails/redirect/rewrite/{$e->email}/'+this.value, rewriteUpdate('{$e->email}', {$e->allow_rewrite}, this))">
             <option value=''>--- aucune ---</option>
             {assign var=dom1 value=#globals.mail.domain#}
             {assign var=dom2 value=#globals.mail.domain2#}
@@ -162,6 +175,7 @@
               value='{$a.alias}@{#globals.mail.domain2#}'>{$a.alias}@{#globals.mail.domain2#}</option>
             {/foreach}
           </select>
+          {if $e->rewrite neq '' && !$e->allow_rewrite}{icon name="error" title="en attente de validation"}{/if}
           {else}
           <em>pas de réécriture</em>
           {/if}

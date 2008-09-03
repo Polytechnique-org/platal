@@ -33,6 +33,9 @@ class EmailModule extends PLModule
             'emails/antispam/submit'  => $this->make_hook('submit', AUTH_COOKIE),
             'emails/test'     => $this->make_hook('test', AUTH_COOKIE, 'user', NO_AUTH),
 
+            'emails/rewrite/in' => $this->make_hook('rewrite_in', AUTH_PUBLIC),
+            'emails/rewrite/out' => $this->make_hook('rewrite_out', AUTH_PUBLIC),
+
             'emails/imap/in'  => $this->make_hook('imap_in', AUTH_PUBLIC),
 
             'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
@@ -464,6 +467,75 @@ class EmailModule extends PLModule
         $mailer->assign('prenom', $prenom);
         $mailer->send();
         exit;
+    }
+
+    function handler_rewrite_in(&$page, $mail, $hash)
+    {
+        $page->changeTpl('emails/rewrite.tpl');
+        $page->assign('option', 'in');
+        if (empty($mail) || empty($hash)) {
+            return PL_NOT_FOUND;
+        }
+        $pos = strrpos($mail, '_');
+        if ($pos === false) {
+            return PL_NOT_FOUND;
+        }
+        $mail{$pos} = '@';
+        $res = XDB::query("SELECT  COUNT(*)
+                             FROM  emails
+                            WHERE  email = {?} AND hash = {?}",
+                          $mail, $hash);
+        $count = intval($res->fetchOneCell());
+        if ($count > 0) {
+            XDB::query("UPDATE  emails
+                           SET  allow_rewrite = true, hash = NULL
+                         WHERE  email = {?} AND hash = {?}",
+                         $mail, $hash);
+            $page->trigSuccess("Réécriture activée pour l'adresse " . $mail);
+            return;
+        }
+        return PL_NOT_FOUND;
+    }
+
+    function handler_rewrite_out(&$page, $mail, $hash)
+    {
+        $page->changeTpl('emails/rewrite.tpl');
+        $page->assign('option', 'out');
+        if (empty($mail) || empty($hash)) {
+            return PL_NOT_FOUND;
+        }
+        $pos = strrpos($mail, '_');
+        if ($pos === false) {
+            return PL_NOT_FOUND;
+        }
+        $mail{$pos} = '@';
+        $res = XDB::query("SELECT  COUNT(*)
+                             FROM  emails
+                            WHERE  email = {?} AND hash = {?}",
+                          $mail, $hash);
+        $count = intval($res->fetchOneCell());
+        if ($count > 0) {
+            global $globals;
+            $res = XDB::query("SELECT  e.email, e.rewrite, a.alias
+                                 FROM  emails AS e
+                           INNER JOIN  aliases AS a ON (a.id = e.uid AND a.type = 'a_vie')
+                                WHERE  e.email = {?} AND e.hash = {?}",
+                              $mail, $hash);
+            XDB::query("UPDATE  emails
+                           SET  allow_rewrite = false, hash = NULL
+                         WHERE  email = {?} AND hash = {?}",
+                        $mail, $hash);
+            list($mail, $rewrite, $forlife) = $res->fetchOneRow();
+            $mail = new PlMailer();
+            $mail->setFrom("webmaster@" . $globals->mail->domain);
+            $mail->addTo("support@" .  $globals->mail->domain);
+            $mail->setSubject("Tentative de détournement de correspondance via le rewrite");
+            $mail->setTxtBody("$forlife a tenté un rewrite de $mail vers $rewrite. Cette demande a été rejetée via le web");
+            $mail->send();
+            $page->trigWarning("Un mail d'alerte a été envoyé à l'équipe de " . $globals->core->sitename);
+            return;
+        }
+        return PL_NOT_FOUND;
     }
 
     function handler_imap_in(&$page, $hash = null, $login = null)

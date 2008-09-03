@@ -140,6 +140,8 @@ abstract class Email
     public $broken;
     public $disabled;
     public $rewrite;
+    public $allow_rewrite;
+    public $hash;
 
     // Redirection bounces stats.
     public $panne;
@@ -179,7 +181,7 @@ class EmailRedirection extends Email
         $this->uid = $uid;
         $this->sufficient = true;
 
-        list($this->email, $flags, $this->rewrite, $this->panne, $this->last, $this->panne_level) = $row;
+        list($this->email, $flags, $this->rewrite, $this->allow_rewrite, $this->hash, $this->panne, $this->last, $this->panne_level) = $row;
         $this->display_email = $this->email;
         $this->active   = ($flags == 'active');
         $this->broken   = ($flags == 'panne');
@@ -225,6 +227,32 @@ class EmailRedirection extends Email
         }
         XDB::execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rewrite, $this->uid, $this->email);
         $this->rewrite = $rewrite;
+        if (!$this->allow_rewrite) {
+            global $globals;
+            if (empty($this->hash)) {
+                $this->hash = rand_url_id();
+                XDB::execute("UPDATE emails
+                                 SET hash = {?}
+                               WHERE uid = {?} AND email = {?}", $this->hash, $this->uid, $this->email);
+            }
+            $res = XDB::query("SELECT  IF(u.nom_usage = '', u.nom, u.nom_usage) AS nom, u.prenom, FIND_IN_SET('femme', u.flags) AS sex,
+                                       q.core_mail_fmt, a.alias AS forlife, a2.alias AS bestalias
+                                 FROM  auth_user_md5 AS u
+                           INNER JOIN  auth_user_quick AS q ON (u.user_id = q.user_id)
+                           INNER JOIN  aliases         AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+                           INNER JOIN  aliases         AS a2 ON (a2.id = u.user_id AND FIND_IN_SET('bestalias', a2.flags))
+                                WHERE  u.user_id = {?}", $this->uid);
+            list($nom, $prenom, $sexe, $fmt, $forlife, $bestalias) = $res->fetchOneRow();
+            $mail = new PlMailer('emails/rewrite-in.mail.tpl');
+            $mail->assign('mail', $this);
+            $mail->assign('nom', $nom);
+            $mail->assign('prenom', $prenom);
+            $mail->assign('sexe', $sexe);
+            $mail->assign('forlife', $forlife);
+            $mail->assign('baseurl', $globals->baseurl);
+            $mail->assign('to', $bestalias . '@' . $globals->mail->domain);
+            $mail->send($fmt == 'html');
+        }
         return;
     }
 
@@ -386,7 +414,7 @@ class Redirect
         $this->bogo = new Bogo($_uid);
 
         // Adds third-party email redirections.
-        $res = XDB::iterRow("SELECT  email, flags, rewrite, panne, last, panne_level
+        $res = XDB::iterRow("SELECT  email, flags, rewrite, allow_rewrite, hash, panne, last, panne_level
                                FROM  emails
                               WHERE  uid = {?} AND flags != 'filter'", $_uid);
         $this->emails = Array();
@@ -450,7 +478,7 @@ class Redirect
                 return SUCCESS;
             }
         }
-        $this->emails[] = new EmailRedirection($this->uid, array($email, 'active', '', '0000-00-00', '0000-00-00', 0));
+        $this->emails[] = new EmailRedirection($this->uid, array($email, 'active', '', false, null, '0000-00-00', '0000-00-00', 0));
 
         // security stuff
         check_email($email, "Ajout d'une adresse surveillée aux redirections de " . $this->uid);
