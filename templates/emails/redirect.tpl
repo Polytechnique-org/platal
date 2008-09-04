@@ -164,7 +164,7 @@
                  onchange="updateRedirect(this.checked, '{$e->email}')" /></td>
         <td style="text-align: left">
           {if $e->has_rewrite()}
-          <select onchange="Ajax.update_html(null,'emails/redirect/rewrite/{$e->email}/'+this.value, rewriteUpdate('{$e->email}', {$e->allow_rewrite}, this))">
+          <select onchange="Ajax.update_html(null,'emails/redirect/rewrite/{$e->email}/'+this.value, rewriteUpdate('{$e->email}', {$e->allow_rewrite|default:"0"}, this))">
             <option value=''>--- aucune ---</option>
             {assign var=dom1 value=#globals.mail.domain#}
             {assign var=dom2 value=#globals.mail.domain2#}

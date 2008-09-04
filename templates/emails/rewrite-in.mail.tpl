@@ -28,14 +28,14 @@
 {elseif $mail_part eq 'wiki'}
 {if $sexe}Chère{else}Cher{/if} {$prenom},
 
-Tu reçois cet email car une demande de réécriture vient d'être effectuée sur {#globals.core.sitename#} pour que les mails
+Tu reçois cet email car une demande de réécriture vient d'être effectuée sur {$sitename} pour que les mails
 l'adresse {$mail->email} soit automatiquement réécrite en {$mail->rewrite}.
 
 Si tu es à l'origine de cette demande, clique sur le lien suivant pour activer la réécriture :
 * {$baseurl}/emails/rewrite/in/{$mail->email|replace:'@':'_'}/{$mail->hash}
 
 Si tu n'est pas à l'origine de cette demande, il peut s'agir d'une tentative de détournement de ta correspondance par un
-camarade mal intentionné. Dans ce cas, clique sur le lien suivant pour avertir l'équipe de {#globals.core.sitename#} :
+camarade mal intentionné. Dans ce cas, clique sur le lien suivant pour avertir l'équipe de {$sitename} :
 * {$baseurl}/emails/rewrite/out/{$mail->email|replace:'@':'_'}/{$mail->hash}
 
 Merci encore de la confiance que tu portes à nos services.

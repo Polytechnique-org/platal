@@ -250,7 +250,8 @@ class EmailRedirection extends Email
             $mail->assign('sexe', $sexe);
             $mail->assign('forlife', $forlife);
             $mail->assign('baseurl', $globals->baseurl);
-            $mail->assign('to', $bestalias . '@' . $globals->mail->domain);
+            $mail->assign('sitename', $globals->core->sitename);
+            $mail->assign('to', $this->email);
             $mail->send($fmt == 'html');
         }
         return;
@@ -478,7 +479,7 @@ class Redirect
                 return SUCCESS;
             }
         }
-        $this->emails[] = new EmailRedirection($this->uid, array($email, 'active', '', false, null, '0000-00-00', '0000-00-00', 0));
+        $this->emails[] = new EmailRedirection($this->uid, array($email, 'active', '', 0, null, '0000-00-00', '0000-00-00', 0));
 
         // security stuff
         check_email($email, "Ajout d'une adresse surveillée aux redirections de " . $this->uid);
