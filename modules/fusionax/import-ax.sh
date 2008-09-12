@@ -1,15 +1,16 @@
 #! /bin/bash
 
 # import des données
-scp -i ax_xorg_rsa xorg@polytechniciens.com:/home/axasso/ax-import/export_4D.txt.rar .
-unrar e -inul export_4D.txt.rar
+#scp -i ax_xorg_rsa xorg@polytechniciens.com:/home/axasso/ax-import/export_4D.txt.rar .
+#unrar e -inul export_4D.txt.rar
+cp /home/x2004jacob/export*utf8.TXT .
 
 # séparation en fichiers de tables 
-cat export-total* | grep ^AD > Adresses.txt
-cat export-total* | grep ^AN > Anciens.txt
-cat export-total* | grep ^FO > Formations.txt
-cat export-total* | grep ^AC > Activites.txt
-cat export-total* | grep ^EN > Entreprises.txt
+cat export_total* | grep ^AD > Adresses.txt
+cat export_total* | grep ^AN > Anciens.txt
+cat export_total* | grep ^FO > Formations.txt
+cat export_total* | grep ^AC > Activites.txt
+cat export_total* | grep ^EN > Entreprises.txt
 
 exit 1
 
@@ -23,4 +24,5 @@ $MYSQL x4dat < Entreprises.sql
 
 # nettoyage
 echo nettoyage
-rm Adresses.txt Anciens.txt Formations.txt Activites.txt Entreprises.txt export_4D.txt.rar export-total*
+#rm Adresses.txt Anciens.txt Formations.txt Activites.txt Entreprises.txt export_4D.txt.rar export-total*
+rm Adresses.txt Anciens.txt Formations.txt Activites.txt Entreprises.txt export-total*

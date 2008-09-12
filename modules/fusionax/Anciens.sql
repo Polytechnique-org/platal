@@ -1,34 +1,34 @@
 -- Import complet des anciens
 
-DROP TABLE IF EXISTS `fusionax_anciens`;
+DROP TABLE IF EXISTS fusionax_anciens;
 
-CREATE TABLE IF NOT EXISTS `fusionax_anciens` (
-  `AN` varbinary(2) NOT NULL COMMENT 'Vaut toujours AN pour cette table',
-  `id_ancien` varbinary(8) NOT NULL COMMENT 'Id unique de l''ancien',
-  `Login` varbinary(15) NOT NULL COMMENT 'Login sur le site de l''AX',
-  `Password` int(11) NOT NULL COMMENT 'Mot de passe sur le site AX',
-  `promotion_etude` int(11) NOT NULL COMMENT 'Promotion avec laquelle il/elle a fait ses études',
-  `Groupe_promo` enum('','A','B','C','N','S') character set binary NOT NULL COMMENT 'Groupe de promotion (code compris seulement par AX)',
-  `Nom_patronymique` varchar(50) character set utf8 NOT NULL COMMENT 'Nom patronymique (nom de jeune fille) sans la particule',
-  `partic_patro` varchar(5) character set utf8 NOT NULL COMMENT 'Particule du nom patronymique',
-  `prenom` varchar(30) character set utf8 NOT NULL COMMENT 'Prénom',
-  `Nom_usuel` varchar(50) character set utf8 NOT NULL COMMENT 'Nom usuel (nom marital par exemple) sans la particule',
-  `partic_nom` varchar(5) character set utf8 NOT NULL COMMENT 'Particule du nom usuel',
-  `Nom_complet` varchar(80) character set utf8 NOT NULL COMMENT 'Nom patronymique complet (avec la particule)',
-  `Civilite` enum('','.','M','MME','MLLE') character set utf8 NOT NULL COMMENT 'Civilité',
-  `Code_nationalite` varbinary(2) NOT NULL COMMENT 'Nationalité (code)',
-  `Type_membre` enum('','*','F','FB','P','PB','T','TB','TA') character set binary NOT NULL COMMENT 'Type de membre (code compris seulement par AX)',
-  `corps_sortie` varchar(10) character set utf8 NOT NULL COMMENT 'Corps de sortie (ou D si aucun)',
-  `Date_deces` DATE COMMENT 'Date de décès',
-  `grade` varbinary(20) NOT NULL COMMENT 'Grade actuel dans son corps',
-  `Mel_usage` varbinary(150) NOT NULL COMMENT 'Adresse e-mail d''usage',
-  `Mel_publiable` tinyint(4) NOT NULL COMMENT 'Autorisation d''utiliser le mail',
-  `tel_mobile` varbinary(30) NOT NULL COMMENT 'Numéro de téléphone mobile',
-  `annee_dernCot` int(11) NOT NULL COMMENT 'Année de dernière cotisation AX',
-  `Representant` enum('','K','DE') character set binary NOT NULL COMMENT 'Représentant de promotion',
-  `hash_adr_defaut` binary(5) NOT NULL COMMENT 'Hash de l''adresse par défaut',
-  `Date_maj` DATE NOT NULL,
-  PRIMARY KEY  (`id_ancien`)
+CREATE TABLE IF NOT EXISTS fusionax_anciens (
+  AN CHAR(2) NOT NULL COMMENT 'Vaut toujours AN pour cette table',
+  id_ancien VARCHAR(8) NOT NULL COMMENT 'Id unique de l''ancien',
+  Login VARCHAR(15) NOT NULL COMMENT 'Login sur le site de l''AX',
+  Password INT(11) NOT NULL COMMENT 'Mot de passe sur le site AX',
+  promotion_etude SMALLINT(4) NOT NULL COMMENT 'Promotion avec laquelle il/elle a fait ses études',
+  Groupe_promo ENUM('', 'A', 'B', 'C', 'N', 'S') NOT NULL COMMENT 'Groupe de promotion (code compris seulement par AX)',
+  Nom_patronymique VARCHAR(255) NOT NULL COMMENT 'Nom patronymique (nom de jeune fille) sans la particule',
+  partic_patro VARCHAR(5) NOT NULL COMMENT 'Particule du nom patronymique',
+  prenom VARCHAR(30) NOT NULL COMMENT 'Prénom',
+  Nom_usuel VARCHAR(255) NOT NULL COMMENT 'Nom usuel (nom marital par exemple) sans la particule',
+  partic_nom VARCHAR(5) NOT NULL COMMENT 'Particule du nom usuel',
+  Nom_complet VARCHAR(255) NOT NULL COMMENT 'Nom patronymique complet (avec la particule)',
+  Civilite ENUM('', '.', 'M', 'MME', 'MLLE') NOT NULL COMMENT 'Civilité',
+  Code_nationalite CHAR(3) NOT NULL COMMENT 'Nationalité (code)',
+  Type_membre ENUM('', '*', 'F', 'FB', 'P', 'PB', 'T', 'TB', 'TA') NOT NULL COMMENT 'Type de membre (code compris seulement par AX)',
+  corps_sortie VARCHAR(50) NOT NULL COMMENT 'Corps de sortie (ou D si aucun)',
+  Date_deces DATE COMMENT 'Date de décès',
+  grade VARCHAR(50) NOT NULL COMMENT 'Grade actuel dans son corps',
+  Mel_usage VARCHAR(255) NOT NULL COMMENT 'Adresse e-mail d''usage',
+  Mel_publiable TINYINT(4) NOT NULL COMMENT 'Autorisation d''utiliser le mail',
+  tel_mobile VARCHAR(30) NOT NULL COMMENT 'Numéro de téléphone mobile',
+  annee_dernCot INT(11) NOT NULL COMMENT 'Année de dernière cotisation AX',
+  Representant ENUM('', 'K', 'DE') NOT NULL COMMENT 'Représentant de promotion',
+  hash_adr_defaut BINARY(5) NOT NULL COMMENT 'Hash de l''adresse par défaut',
+  Date_maj DATE NOT NULL,
+  PRIMARY KEY  (id_ancien)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 LOAD DATA LOCAL INFILE 'Anciens.txt' INTO TABLE `fusionax_anciens` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
@@ -43,11 +43,11 @@ SET
 
 -- Correspondances entre fiches X.org et fiches AX
 DROP TABLE IF EXISTS `fusionax_import`;
- 
+
 CREATE TABLE IF NOT EXISTS `fusionax_import` (
-  `id_ancien` binary(8) NOT NULL COMMENT 'identifiant AX de l''ancien',
-  `user_id` int(11) default NULL COMMENT 'identifiant x.org de l''ancien si on l''a trouvé',
-  `date_match_id` timestamp NULL default NULL COMMENT 'date de mise en correspondance des identifiants',
+  `id_ancien` VARCHAR(8) NOT NULL COMMENT 'identifiant AX de l''ancien',
+  `user_id` INT(11) default NULL COMMENT 'identifiant x.org de l''ancien si on l''a trouvé',
+  `date_match_id` TIMESTAMP NULL default NULL COMMENT 'date de mise en correspondance des identifiants',
   PRIMARY KEY  (`id_ancien`),
   KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

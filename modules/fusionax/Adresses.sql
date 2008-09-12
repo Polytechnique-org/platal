@@ -1,24 +1,24 @@
 -- Import complet des adresses
 
-DROP TABLE IF EXISTS `fusionax_adresses`;
+DROP TABLE IF EXISTS fusionax_adresses;
 
-CREATE TABLE IF NOT EXISTS `fusionax_adresses` (
-  `provenance` varbinary(2) NOT NULL COMMENT 'Vaut AC, AD ou AN selon la provenance de l''info',
-  `id_ancien` varbinary(8) NOT NULL COMMENT 'Id unique de l''ancien',
-  `Type_adr` enum('E', 'P') character set binary NOT NULL DEFAULT 'P' COMMENT 'Type d''adresse : E pour Entreprise, P pour Personnelle',
-  `hash_adresse` binary(5) NOT NULL COMMENT 'Hash pour différencier les diverses adresses',
-  `Ligne1` varchar(60) character set utf8 NOT NULL,
-  `Ligne2` varchar(60) character set utf8 NOT NULL,
-  `Ligne3` varchar(60) character set utf8 NOT NULL,
-  `code_postal` varchar(20) character set utf8 NOT NULL,
-  `ville` varchar(40) character set utf8 NOT NULL,
-  `zip_cedex` varchar(20) character set utf8 NOT NULL,
-  `etat_distr` varchar(20) character set utf8 NOT NULL,
-  `pays` varchar(50) character set utf8 NOT NULL,
-  `tel` varbinary(30) NOT NULL,
-  `fax` varbinary(30) NOT NULL,
-  `Date_maj` date NOT NULL,
-  PRIMARY KEY  (`id_ancien`, `hash_adresse`)
+CREATE TABLE IF NOT EXISTS fusionax_adresses (
+  provenance CHAR(2) NOT NULL COMMENT 'Vaut AC, AD ou AN selon la provenance de l''info',
+  id_ancien VARCHAR(8) NOT NULL COMMENT 'Id unique de l''ancien',
+  Type_adr ENUM('E', 'P') character set binary NOT NULL DEFAULT 'P' COMMENT 'Type d''adresse : E pour Entreprise, P pour Personnelle',
+  hash_adresse BINARY(5) NOT NULL COMMENT 'Hash pour différencier les diverses adresses',
+  Ligne1 VARCHAR(90) character set utf8 NOT NULL,
+  Ligne2 VARCHAR(90) character set utf8 NOT NULL,
+  Ligne3 VARCHAR(90) character set utf8 NOT NULL,
+  code_postal VARCHAR(20) character set utf8 NOT NULL,
+  ville VARCHAR(80) character set utf8 NOT NULL,
+  zip_cedex VARCHAR(20) character set utf8 NOT NULL,
+  etat_distr VARCHAR(20) character set utf8 NOT NULL,
+  pays VARCHAR(50) character set utf8 NOT NULL,
+  tel VARCHAR(30) NOT NULL,
+  fax VARCHAR(30) NOT NULL,
+  Date_maj DATE NOT NULL,
+  PRIMARY KEY  (id_ancien, hash_adresse)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 LOAD DATA LOCAL INFILE 'Adresses.txt' INTO TABLE `fusionax_adresses` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'

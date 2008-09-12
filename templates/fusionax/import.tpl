@@ -26,7 +26,7 @@
     $(document).ready(function() {
         $('#fusionax_import input').click(function() {
             $('#fusionax_import input').hide();
-            $('#fusionax_import').append('Import en cours : récupération du fichier depuis le serveur de l\'AX...<br/>');
+            $('#fusionax_import').append('Lancement de l\'import.<br/>');
             $.getScript('fusionax/import/launch');
         });
     });

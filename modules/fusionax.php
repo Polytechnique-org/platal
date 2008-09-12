@@ -36,8 +36,8 @@ class FusionAxModule extends PLModule{
 
     function __construct()
     {
-        $this->ax_xorg_rsa_key =
-            dirname(__FILE__).'/../configs/ax_xorg_rsa.pem';
+        /*$this->ax_xorg_rsa_key =
+            dirname(__FILE__).'/../configs/ax_xorg_rsa.pem';*/
     }
 
     function handlers()
@@ -63,7 +63,7 @@ class FusionAxModule extends PLModule{
                 date("d-m-Y",$globals->fusionax->LastUpdate));
         } 
     }
-    
+
     /** Import de l'annuaire de l'AX depuis l'export situé sur leur serveur */
     function handler_import(&$page, $action = 'index', $fileSQL = '')
     {
@@ -77,20 +77,20 @@ class FusionAxModule extends PLModule{
                     'lastimport',
                     "le ".date("d/m/Y à H:i",$globals->fusionax->LastUpdate));
             }
-            if (!file_exists($this->ax_xorg_rsa_key)) {
+            /*if (!file_exists($this->ax_xorg_rsa_key)) {
                 $page->assign(
                     'keymissing',
                     $this->ax_xorg_rsa_key);
-            }
+            }*/
             return;
         }
-        
+
         // toutes les actions sont faites en ajax en utilisant jquery
         header("Content-type: text/javascript; charset=utf-8");
-        
+
         // log des actions
         $report = array();
-        
+
         // création d'un fichier temporaire si nécessaire
         if (Env::has('tmpdir')) {
             $tmpdir = Env::v('tmpdir');
@@ -101,18 +101,18 @@ class FusionAxModule extends PLModule{
             chmod($tmpdir, 0700);
             // copie la clef d'authentification (paire de clef RSA dont la
             // partie publique est sur polytechniciens.com)
-            if (!copy(
+            /*if (!copy(
                 $this->ax_xorg_rsa_key,
                 $tmpdir.'/ax_xorg_rsa'))
                 $report[] = 'Impossible de copier la clef pour se logger '.
                     'au serveur AX';
-            chmod($tmpdir.'/ax_xorg_rsa', 0600);
+            chmod($tmpdir.'/ax_xorg_rsa', 0600);*/
         }
-        
+
         $modulepath = realpath(dirname(__FILE__).'/fusionax/').'/';
         $olddir = getcwd();
         chdir($tmpdir);
-        
+
         if ($action == 'launch') {
             // lancement : connexion en ssh et récupération du fichier depuis
             // polyechniciens.com, décompression de l'archive et séparation en
@@ -182,12 +182,12 @@ class FusionAxModule extends PLModule{
         // exit pour ne pas afficher la page template par défaut
         exit;
     }
-    
+
     /** Lier les identifiants d'un ancien dans les deux annuaires
      * @param user_id identifiant dans l'annuaire X.org
      * @param matricule_ax identifiant dans l'annuaire de l'AX
      * @return 0 si la liaison a échoué, 1 sinon
-     */          
+     */
     private static function link_by_ids($user_id, $matricule_ax)
     {
         if (!XDB::execute("
@@ -210,13 +210,13 @@ class FusionAxModule extends PLModule{
         }
         return XDB::affectedRows() / 2;  
     }
-    
+
     /** Recherche automatique d'anciens à lier entre les deux annuaires
      * @param limit nombre d'anciens à trouver au max
      * @param sure si true, ne trouve que des anciens qui sont quasi sûrs
      * @return un XOrgDBIterator sur les entrées avec display_name, promo,
      * user_id, id_ancien et display_name_ax
-     */              
+     */
     private static function find_easy_to_link($limit = 10, $sure = false)
     {
         $easy_to_link = XDB::iterator("
@@ -265,7 +265,7 @@ class FusionAxModule extends PLModule{
             nbMatches = 1
         ".($limit?('LIMIT '.$limit):''));
     }
-    
+
     /** Module de mise en correspondance les ids */
     function handler_ids(
         &$page,
@@ -275,7 +275,7 @@ class FusionAxModule extends PLModule{
     {
         global $globals;
         $page->addJsLink('jquery.js');
-        
+
         $page->assign(
             'xorg_title',
             'Polytechnique.org - Fusion - Mise en correspondance simple');
@@ -355,7 +355,7 @@ class FusionAxModule extends PLModule{
             }
         }
     }
-    
+
     function handler_misc(&$page)
     {
         $page->changeTpl('fusionax/misc.tpl');
