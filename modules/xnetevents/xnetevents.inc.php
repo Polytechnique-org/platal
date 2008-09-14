@@ -51,8 +51,11 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 
     $evt = $res->fetchOneAssoc();
 
-    if (!$evt || ($GLOBALS['IS_XNET_SITE'] && $evt['accept_nonmembre'] == 0 && !is_member() && !may_update())) {
+    if (!$evt) {
         return null;
+    }
+    if ($GLOBALS['IS_XNET_SITE'] && $evt['accept_nonmembre'] == 0 && !is_member() && !may_update()) {
+        return false;
     }
 
     // smart calculation of the total number
