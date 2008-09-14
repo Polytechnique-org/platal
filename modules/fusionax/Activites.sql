@@ -7,12 +7,12 @@ CREATE TABLE IF NOT EXISTS `fusionax_activites` (
   `id_ancien` VARCHAR(8) NOT NULL COMMENT 'Id unique de l''ancien',
   `hash_activite` BINARY(5) NOT NULL COMMENT 'Hash de cette ligne pour la lier à l''adresse',
   `Code_etab` INT(10) NOT NULL COMMENT 'Code de l''établissement',
-  `Raison_sociale` VARCHAR(255) collate utf8_unicode_ci NOT NULL COMMENT 'Raison sociale de l''établissement',
-  `Libelle_fonctio` VARCHAR(255) collate utf8_unicode_ci NOT NULL COMMENT 'Libéllé de la fonction',
+  `Raison_sociale` VARCHAR(255) collate utf8_general_ci NOT NULL COMMENT 'Raison sociale de l''établissement',
+  `Libelle_fonctio` VARCHAR(255) collate utf8_general_ci NOT NULL COMMENT 'Libéllé de la fonction',
   `Annuaire` BOOLEAN NOT NULL COMMENT 'publiable dans l''annuaire papier',
   `Date_maj` DATE NOT NULL COMMENT 'Date de mise à jour de ces informations',
   PRIMARY KEY( `id_ancien` , `hash_activite` )
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 LOAD DATA LOCAL INFILE 'Activites.txt' INTO TABLE `fusionax_activites` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
 (AC, id_ancien, Code_etab, Raison_sociale, Libelle_fonctio, Annuaire, 

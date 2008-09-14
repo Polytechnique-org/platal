@@ -19,11 +19,11 @@ CREATE TABLE IF NOT EXISTS fusionax_adresses (
   fax VARCHAR(30) NOT NULL,
   Date_maj DATE NOT NULL,
   PRIMARY KEY  (id_ancien, hash_adresse)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 LOAD DATA LOCAL INFILE 'Adresses.txt' INTO TABLE `fusionax_adresses` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
 (provenance, id_ancien, @Type_adr, Ligne1, Ligne2, Ligne3, code_postal, ville, zip_cedex, etat_distr, pays, tel, fax, @StringDate_maj)
-SET 
+SET
 `Type_adr` = IF(@Type_adr = 'E', 'E', IF(@Type_adr = '', '', 'P')),
 `hash_adresse` = SUBSTRING( MD5( @Type_adr ), 1, 5),
 `Date_maj` = CONCAT(SUBSTRING(@StringDate_maj,7),'-',SUBSTRING(@StringDate_maj,4,2),'-',SUBSTRING(@StringDate_maj,1,2));
@@ -33,7 +33,7 @@ LOAD DATA LOCAL INFILE 'Anciens.txt' INTO TABLE `fusionax_adresses` FIELDS TERMI
     @Nom_complet, @Civilite, @Code_nationalite, @Type_membre, @corps_sortie, @StringDate_deces, @grade, @Mel_usage, @Mel_publiable,
     @tel_mobile, @annee_dernCot, @Representant, @Type_adr, Ligne1, Ligne2, Ligne3, code_postal, ville,
     zip_cedex, etat_distr, pays, tel, fax, @StringDate_maj)
-SET 
+SET
 `Type_adr` = IF(@Type_adr = 'E', 'E', IF(@Type_adr = '', '', 'P')),
 `hash_adresse` = SUBSTRING( MD5( @Type_adr ), 1, 5),
 `Date_maj` = CONCAT(SUBSTRING(@StringDate_maj,7),'-',SUBSTRING(@StringDate_maj,4,2),'-',SUBSTRING(@StringDate_maj,1,2));
@@ -41,7 +41,7 @@ SET
 LOAD DATA LOCAL INFILE 'Activites.txt' INTO TABLE `fusionax_adresses` FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\r\n'
 (provenance, id_ancien, @Code_etab, @Raison_sociale, @Libelle_fonctio, @Annuaire, 
 Ligne1, Ligne2, Ligne3, code_postal, ville, zip_cedex, etat_distr, pays, tel, fax, @StringDate_maj)
-SET 
+SET
 `Type_adr` = 'E',
 `hash_adresse` = SUBSTRING( MD5( CONCAT(@Code_etab, @Libelle_fonctio) ), 1, 5),
 `Date_maj` = CONCAT(SUBSTRING(@StringDate_maj,7),'-',SUBSTRING(@StringDate_maj,4,2),'-',SUBSTRING(@StringDate_maj,1,2));
