@@ -187,9 +187,9 @@ class MinificheView extends MultipageView
                 ede1.name AS eduname1, ede1.url AS eduurl1, edd1.degree AS edudegree1,
                 edu1.grad_year AS edugrad_year1, f1.field AS edufield1, edu1.program AS eduprogram1,
                 ede2.name AS eduname2, ede2.url AS eduurl2, edd2.degree AS edudegree2,
-                edu2.grad_year AS edugrad_year2, f2.field AS edufield2, edu2gram AS eduprogram2,
+                edu2.grad_year AS edugrad_year2, f2.field AS edufield2, edu2.program AS eduprogram2,
                 ede3.name AS eduname3, ede3.url AS eduurl3, edd3.degree AS edudegree3,
-                edu3.grad_year AS edugrad_year3, f3.field AS edufield3, edu3gram AS eduprogram3,
+                edu3.grad_year AS edugrad_year3, f3.field AS edufield3, edu3.program AS eduprogram3,
                 adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region,
                 (COUNT(em.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif,
                 nd.display AS name_display, nd.tooltip AS name_tooltip, nd.sort AS name_sort" .

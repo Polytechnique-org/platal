@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS fusionax_anciens (
   partic_nom VARCHAR(5) character set utf8 NOT NULL COMMENT 'Particule du nom usuel',
   Nom_complet VARCHAR(255) character set utf8 NOT NULL COMMENT 'Nom patronymique complet (avec la particule)',
   Civilite ENUM('', '.', 'M', 'MME', 'MLLE') character set utf8 NOT NULL COMMENT 'Civilité',
-  Code_nationalite CHAR(3) NOT NULL COMMENT 'Nationalité (code)',
+  Code_nationalite CHAR(4) NOT NULL COMMENT 'Nationalité (code)',
   Type_membre ENUM('', '*', 'F', 'FB', 'P', 'PB', 'T', 'TB', 'TA') character set binary NOT NULL COMMENT 'Type de membre (code compris seulement par AX)',
   corps_sortie VARCHAR(50) character set utf8 NOT NULL COMMENT 'Corps de sortie (ou D si aucun)',
   Date_deces DATE COMMENT 'Date de décès',
@@ -40,6 +40,8 @@ SET
     `hash_adr_defaut` = SUBSTRING( MD5( @Type_adr_defaut ), 1, 5),
     `Date_maj` = CONCAT(SUBSTRING(@StringDate_maj,7),'-',SUBSTRING(@StringDate_maj,4,2),'-',SUBSTRING(@StringDate_maj,1,2)),
     `Date_deces` = CONCAT(SUBSTRING(@StringDate_deces,7),'-',SUBSTRING(@StringDate_deces,4,2),'-',SUBSTRING(@StringDate_deces,1,2));
+
+ALTER TABLE fusionax_anciens ADD INDEX (id_ancien);
 
 -- Correspondances entre fiches X.org et fiches AX
 DROP TABLE IF EXISTS `fusionax_import`;
