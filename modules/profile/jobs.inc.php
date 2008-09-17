@@ -151,8 +151,9 @@ class ProfileJobs extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['cv'] = null;
+        $this->settings['corps'] = null;
         $this->settings['jobs'] = new ProfileJob();
-        $this->watched['cv'] = $this->watched['jobs'] = true;
+        $this->watched = array('cv' => true, 'jobs' => true, 'corps' => true);
     }
 
     protected function _fetchData()
@@ -163,6 +164,14 @@ class ProfileJobs extends ProfilePage
                             WHERE  user_id = {?}",
                           S::i('uid'));
         $this->values['cv'] = $res->fetchOneCell();
+
+        // Checkout the corps
+        $res = XDB::query("SELECT  original_corpsid AS original, current_corpsid AS current,
+                                   rankid AS rank, corps_pub AS pub
+                             FROM  profile_corps
+                            WHERE  uid = {?}",
+                          S::i('uid'));
+        $this->values['corps'] = $res->fetchOneAssoc();
 
         // Build the jobs tree
         $res = XDB::iterRow("SELECT  e.entrid, e.entreprise, e.secteur, e.ss_secteur,
@@ -251,6 +260,15 @@ class ProfileJobs extends ProfilePage
                            WHERE  user_id = {?}",
                          $this->values['cv'], S::i('uid'));
         }
+
+        if ($this->changed['corps']) {
+            XDB::execute("UPDATE  profile_corps
+                             SET  original_corpsid = {?}, current_corpsid = {?},
+                                  rankid = {?}, corps_pub = {?}
+                           WHERE  uid = {?}",
+                          $this->values['corps']['original'], $this->values['corps']['current'],
+                          $this->values['corps']['rank'], $this->values['corps']['pub'], S::i('uid'));
+        }
     }
 
     public function _prepare(PlPage &$page, $id)
@@ -263,6 +281,21 @@ class ProfileJobs extends ProfilePage
         $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
                                                     FROM  fonctions_def
                                                 ORDER BY  id"));
+
+        $res = XDB::iterator("SELECT  id, name
+                                FROM  profile_corps_enum
+                            ORDER BY  id = 1 DESC, name");
+        $page->assign('original_corps', $res->fetchAllAssoc());
+
+        $res = XDB::iterator("SELECT  id, name
+                                FROM  profile_corps_enum
+                               WHERE  still_exists = 1
+                            ORDER BY  id = 1 DESC, name");
+        $page->assign('current_corps', $res->fetchAllAssoc());
+
+        $res = XDB::iterator("SELECT  id, name
+                                FROM  profile_corps_rank_enum");
+        $page->assign('corps_rank', $res->fetchAllAssoc());
     }
 }
 

@@ -152,6 +152,7 @@ $prf_desc = array('nom' => 'Son patronyme',
                   'binets' => 'La liste de ses binets',
                   'medals' => 'Ses décorations',
                   'cv' => 'Son Curriculum Vitae',
+                  'corps' => 'Son Corps d\'État',
                   'jobs' => 'Ses informations professionnelles',
                   'photo' => 'Sa photographie');
 
