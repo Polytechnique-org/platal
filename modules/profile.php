@@ -68,6 +68,8 @@ class ProfileModule extends PLModule
             'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_MDP, 'admin'),
             'admin/ss_secteurs'          => $this->make_hook('admin_ss_secteurs',          AUTH_MDP, 'admin'),
             'admin/fonctions'            => $this->make_hook('admin_fonctions',            AUTH_MDP, 'admin'),
+            'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP, 'admin'),
+            'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP, 'admin'),
 
         );
     }
@@ -885,6 +887,23 @@ class ProfileModule extends PLModule
         $table_editor->describe('icon', 'nom de l\'icône', false);
         $table_editor->describe('filter', 'filtre', true);
         $table_editor->describe('link', 'lien web', true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_admin_corps_enum(&$page, $action = 'list', $id = null) {
+        $page->setTitle('Administration - Corps');
+        $page->assign('title', 'Gestion des Corps');
+        $table_editor = new PLTableEditor('admin/corps_enum', 'profile_corps_enum', 'id');
+        $table_editor->describe('name', 'intitulé', true);
+        $table_editor->describe('abbreviation', 'abbréviation', true);
+        $table_editor->describe('still_exists', 'existe encore ?', true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_admin_corps_rank(&$page, $action = 'list', $id = null) {
+        $page->setTitle('Administration - Grade dans les Corps');
+        $page->assign('title', 'Gestion des grade dans les Corps');
+        $table_editor = new PLTableEditor('admin/corps_rank', 'profile_corps_rank_enum', 'id');
+        $table_editor->describe('name', 'intitulé', true);
+        $table_editor->describe('abbreviation', 'abbréviation', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_medals(&$page, $action = 'list', $id = null) {
