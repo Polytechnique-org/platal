@@ -150,6 +150,10 @@ function chgMainWinLoc(strPage)
       {if $logged && $x.is_referent}
       [<a href="referent/{$x.forlife}" class='popup2'>Ma fiche référent</a>]
       {/if}
+      {if $x.corps}
+        <br />
+        {$x.corps|smarty:nodefaults}
+      {/if}
     </div>
   </div>
   {if $x.adr}

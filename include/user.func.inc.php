@@ -404,7 +404,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                        u.perms IN ('admin','user','disabled') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
                        q.profile_nick AS nickname, q.profile_from_ax, q.profile_freetext AS freetext,
                        q.profile_freetext_pub AS freetext_pub,
-                       q.profile_medals_pub AS medals_pub,
+                       q.profile_medals_pub AS medals_pub, co.corps_pub AS corps_pub,
                        IF(gp1.nat='',gp1.pays,gp1.nat) AS nationalite, gp1.a2 AS iso3166_1,
                        IF(gp2.nat='',gp2.pays,gp2.nat) AS nationalite2, gp2.a2 AS iso3166_2,
                        IF(gp3.nat='',gp3.pays,gp3.nat) AS nationalite3, gp3.a2 AS iso3166_3,
@@ -417,9 +417,10 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                        nd.display AS name_display, nd.tooltip AS name_tooltip
                  FROM  auth_user_md5   AS u
            INNER JOIN  auth_user_quick AS q   USING(user_id)
-           INNER JOIN  aliases         AS a   ON (u.user_id=a.id AND a.type='a_vie')
-           INNER JOIN  aliases         AS a2  ON (u.user_id=a2.id AND FIND_IN_SET('bestalias',a2.flags))
+           INNER JOIN  aliases         AS a   ON (u.user_id = a.id AND a.type = 'a_vie')
+           INNER JOIN  aliases         AS a2  ON (u.user_id = a2.id AND FIND_IN_SET('bestalias', a2.flags))
             LEFT JOIN  contacts        AS c   ON (c.uid = {?} and c.contact = u.user_id)
+            LEFT JOIN  profile_corps   AS co  ON (co.uid = u.user_id)
             LEFT JOIN  geoloc_pays     AS gp1 ON (gp1.a2 = u.nationalite)
             LEFT JOIN  geoloc_pays     AS gp2 ON (gp2.a2 = u.nationalite2)
             LEFT JOIN  geoloc_pays     AS gp3 ON (gp3.a2 = u.nationalite3)
@@ -509,6 +510,19 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
     }
     while (list($name, $url, $degree, $grad_year, $field, $program) = $res->next()) {
         $user['education'] .= ", " . education_fmt($name, $url, $degree, $grad_year, $field, $program, $user['sexe'], true);
+    }
+
+    if (has_user_right($user['corps_pub'], $view)) {
+        $res = XDB::query("SELECT  e1.name AS original, e2.name AS current, r.name AS rank
+                             FROM  profile_corps           AS c
+                        LEFT JOIN  profile_corps_enum      AS e1 ON (c.original_corpsid = e1.id)
+                        LEFT JOIN  profile_corps_enum      AS e2 ON (c.current_corpsid = e2.id)
+                        LEFT JOIN  profile_corps_rank_enum AS r  ON (c.rankid = r.id)
+                            WHERE  c.uid = {?} AND c.original_corpsid != 1", $uid);
+        if ($res = $res->fetchOneRow()) {
+            list($original, $current, $rank) = $res;
+            $user['corps'] = "Corps d'origine : " . $original . ", corps actuel : " . $current . ", grade : " . $rank;
+        }
     }
 
     if (has_user_right($user['medals_pub'], $view)) {
