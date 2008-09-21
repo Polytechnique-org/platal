@@ -142,6 +142,8 @@ abstract class Email
     public $broken;
     public $disabled;
     public $rewrite;
+    public $allow_rewrite;
+    public $hash;
 
     // Redirection bounces stats.
     public $panne;
@@ -181,7 +183,7 @@ class EmailRedirection extends Email
         $this->user = &$user;
         $this->sufficient = true;
 
-        list($this->email, $flags, $this->rewrite, $this->panne, $this->last, $this->panne_level) = $row;
+        list($this->email, $flags, $this->rewrite, $this->allow_rewrite, $this->hash, $this->panne, $this->last, $this->panne_level) = $row;
         $this->display_email = $this->email;
         $this->active   = ($flags == 'active');
         $this->broken   = ($flags == 'panne');
@@ -227,6 +229,22 @@ class EmailRedirection extends Email
         }
         XDB::execute('UPDATE emails SET rewrite = {?} WHERE uid = {?} AND email = {?}', $rewrite, $this->user->id(), $this->email);
         $this->rewrite = $rewrite;
+        if (!$this->allow_rewrite) {
+            global $globals;
+            if (empty($this->hash)) {
+                $this->hash = rand_url_id();
+                XDB::execute("UPDATE emails
+                                 SET hash = {?}
+                               WHERE uid = {?} AND email = {?}", $this->hash, $this->user->id(), $this->email);
+            }
+            $mail = new PlMailer('emails/rewrite-in.mail.tpl');
+            $mail->assign('mail', $this);
+            $mail->assign('user', $this->user);
+            $mail->assign('baseurl', $globals->baseurl);
+            $mail->assign('sitename', $globals->core->sitename);
+            $mail->assign('to', $this->email);
+            $mail->send($this->user->isEmailFormatHtml());
+        }
         return;
     }
 
@@ -388,7 +406,7 @@ class Redirect
         $this->bogo = new Bogo($user);
 
         // Adds third-party email redirections.
-        $res = XDB::iterRow("SELECT  email, flags, rewrite, panne, last, panne_level
+        $res = XDB::iterRow("SELECT  email, flags, rewrite, allow_rewrite, hash, panne, last, panne_level
                                FROM  emails
                               WHERE  uid = {?} AND flags != 'filter'", $user->id());
         $this->emails = Array();
@@ -452,7 +470,7 @@ class Redirect
                 return SUCCESS;
             }
         }
-        $this->emails[] = new EmailRedirection($this->user, array($email, 'active', '', '0000-00-00', '0000-00-00', 0));
+        $this->emails[] = new EmailRedirection($this->user, array($email, 'active', '', 0, null, '0000-00-00', '0000-00-00', 0));
 
         // security stuff
         check_email($email, "Ajout d'une adresse surveillée aux redirections de " . $this->user->login());

@@ -183,8 +183,17 @@ class XnetEventsModule extends PLModule
         $page->changeTpl('xnetevents/subscribe.tpl');
 
         $evt = get_event_detail($eid);
-        if (!$evt) {
+        if (is_null($evt)) {
             return PL_NOT_FOUND;
+        }
+        if ($evt === false) {
+            global $globals, $platal;
+            $url = $globals->asso('sub_url');
+            if (empty($url)) {
+                $url = $platal->ns . 'subscribe';
+            }
+            $page->kill('Cet événement est reservé aux membres du groupe ' . $globals->asso('nom') .
+                        '. Pour devenir membre, rends-toi sur la page de <a href="' . $url . '">demande d\'inscripton</a>.');
         }
 
         if (!$evt['inscr_open']) {

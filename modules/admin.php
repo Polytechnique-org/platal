@@ -944,7 +944,11 @@ class AdminModule extends PLModule
             S::assert_xsrf_token();
 
             $req = Validate::get_typed_request(Env::v('uid'), Env::v('type'), Env::v('stamp'));
-            $req->handle_formu();
+            if ($req) {
+                $req->handle_formu();
+            } else {
+                $page->trigWarning('La validation a déjà été effectuée.');
+            }
         }
 
         $r = XDB::iterator('SHOW COLUMNS FROM requests_answers');
