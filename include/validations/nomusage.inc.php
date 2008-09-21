@@ -114,7 +114,7 @@ class UsageReq extends Validate
     public function commit()
     {
         require_once 'notifs.inc.php';
-        register_watch_op($this->user->id(), WATCH_FICHE, 'nom');
+        register_watch_op($this->user->id(), WATCH_FICHE, '', 'nom');
         require_once('user.func.inc.php');
         set_new_usage($this->user->id(), $this->nom_usage, $this->alias);
         return true;

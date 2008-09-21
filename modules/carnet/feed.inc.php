@@ -29,7 +29,7 @@ class CarnetFeedIterator implements PlIterator
     public function __construct(Notifs& $notifs)
     {
         $this->notifs =& $notifs;
-        $this->it = new PlArrayIterator($notifs->_data, 3);
+        $this->it = PlIteratorUtils::fromArray($notifs->_data, 3);
     }
 
     public function next()

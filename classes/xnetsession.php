@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class XnetSession extends PlSession
+class XnetSession extends XorgSession
 {
     public function __construct()
     {
@@ -126,20 +126,6 @@ class XnetSession extends PlSession
         return true;
     }
 
-    public function tokenAuth($login, $token)
-    {
-        $res = XDB::query('SELECT  u.hruid
-                             FROM  aliases         AS a
-                       INNER JOIN  auth_user_md5   AS u ON (a.id = u.user_id AND u.perms IN ("admin", "user"))
-                       INNER JOIN  auth_user_quick AS q ON (a.id = q.user_id AND q.core_rss_hash = {?})
-                            WHERE  a.alias = {?} AND a.type != "homonyme"', $token, $login);
-        if ($res->numRows() == 1) {
-            $data = $res->fetchOneAssoc();
-            return new User($res->fetchOneCell());
-        }
-        return null;
-    }
-
     public function doSelfSuid()
     {
         if (!$this->startSUID(S::i('uid'))) {
@@ -160,30 +146,6 @@ class XnetSession extends PlSession
         S::kill('is_member');
         S::set('perms', $suid['perms']);
         return true;
-    }
-
-    public function makePerms($perm)
-    {
-        $flags = new PlFlagSet();
-        if ($perm == 'disabled' || $perm == 'ext') {
-            S::set('perms', $flags);
-            return;
-        }
-        $flags->addFlag(PERMS_USER);
-        if ($perm == 'admin') {
-            $flags->addFlag(PERMS_ADMIN);
-        }
-        S::set('perms', $flags);
-    }
-
-    public function loggedLevel()
-    {
-        return AUTH_COOKIE;
-    }
-
-    public function sureLevel()
-    {
-        return AUTH_MDP;
     }
 }
 

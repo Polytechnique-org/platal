@@ -23,7 +23,7 @@
 <table id="content" cellpadding="2" cellspacing="0">
   <tr>
     <td style="vertical-align: middle;">
-      <img src="images/parfait.jpg" width="459" height="200" alt="Logo des groupes" />
+      <a href="plan"><img src="images/parfait.jpg" width="459" height="200" alt="Logo des groupes" /></a>
     </td>
 
     <td>

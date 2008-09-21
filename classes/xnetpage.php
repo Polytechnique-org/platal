@@ -73,7 +73,7 @@ class XnetPage extends PlPage
         $menu = array();
 
         $sub = array();
-        $sub['liste des groupes'] = 'plan';
+        $sub['tous les groupes'] = 'plan';
         $sub['documentation']     = 'Xnet';
         $sub['signaler un bug']   = array('href' => 'send_bug/'.$_SERVER['REQUEST_URI'], 'class' => 'popup_840x600');
         $menu["no_title"]   = $sub;
