@@ -50,7 +50,7 @@
         Mot de passe&nbsp;:
       </td>
       <td>
-        <input type="password" name="password" size="10" maxlength="10" />
+        <input type="password" name="password" size="10" maxlength="256" />
         &nbsp;<a href="recovery">Perdu&nbsp;?</a>
       </td>
       <td class="right" rowspan="2" style="vertical-align: middle">

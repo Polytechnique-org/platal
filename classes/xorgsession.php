@@ -87,6 +87,7 @@ class XorgSession extends PlSession
                                        SET  password = {?}
                                      WHERE  user_id = {?}',
                                    $new_password, $uid);
+                      /* TODO: update GApps password here!!! */
                 }
             }
             if ($response != $expected_response) {

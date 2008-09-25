@@ -47,7 +47,7 @@
         Mot de passe&nbsp;:
       </td>
       <td>
-        <input type="password" size="10" maxlength="10" name="nouveau" />
+        <input type="password" size="10" maxlength="256" name="nouveau" />
       </td>
     </tr>
     <tr>
@@ -55,7 +55,7 @@
         Retape-le une fois&nbsp;:
       </td>
       <td>
-        <input type="password" size="10" maxlength="10" name="nouveau2" />
+        <input type="password" size="10" maxlength="256" name="nouveau2" />
       </td>
     </tr>
     <tr>
