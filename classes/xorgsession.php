@@ -79,7 +79,8 @@ class XorgSession extends PlSession
         if (list($uid, $password) = $res->fetchOneRow()) {
             require_once 'secure_hash.inc.php';
             $expected_response = hash_encrypt("$uname:$password:" . S::v('challenge'));
-            if ($response != $expected_response) {
+            if ($response != $expected_response && Env::has('xorpass')
+                && !preg_match('/^0*$/', Env::v('xorpass'))) {
                 $new_password = hash_xor(Env::v('xorpass'), $password);
                 $expected_response = hash_encrypt("$uname:$new_password:" . S::v('challenge'));
                 if ($response == $expected_response) {

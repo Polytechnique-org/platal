@@ -51,7 +51,9 @@ function doChallengeResponse() {
         document.forms.loginsub.challenge.value;
 
     document.forms.loginsub.response.value = hash_encrypt(str);
-    document.forms.loginsub.xorpass.value = hash_xor(new_pass, old_pass);
+    if (new_pass != old_pass) {
+        document.forms.loginsub.xorpass.value = hash_xor(new_pass, old_pass);
+    }
     document.forms.loginsub.username.value = document.forms.login.username.value;
     document.forms.loginsub.remember.value = document.forms.login.remember.checked;
     document.forms.loginsub.domain.value = document.forms.login.domain.value;
