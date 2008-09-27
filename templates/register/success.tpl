@@ -46,7 +46,8 @@ Ton mot de passe a bien été mis à jour !
 
 <p>
   Tu as reçu un mot de passe par défaut, si tu souhaites en changer, tu peux le faire ici&nbsp;:<br />
-  <strong>Remarque&nbsp;:</strong> il doit faire au moins <strong>6 caractères</strong> quelconques et au plus 10 caractères.
+  <strong>Remarque&nbsp;:</strong> il doit faire au moins <strong>6 caractères</strong> et comporter deux types de
+  caractères parmi les suivants : lettres minuscules, lettres majuscules, chiffres, caractères spéciaux.
 </p>
 
 <form action="register/success" method="post" id="changepass">
