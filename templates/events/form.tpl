@@ -179,7 +179,8 @@
         Importance
       </td>
       <td>
-        <input type="checkbox" name="important" {if $important}checked="checked"{/if}/> Marquer cette annonce comme très importante
+        <label><input type="checkbox" name="important" {if $important}checked="checked"{/if}/>
+        Marquer cette annonce comme très importante</label>
       </td>
     </tr>
     {/if}

@@ -58,10 +58,10 @@
     <tr class="pair">
       <td class="titre">Affichage des fils de discussion</td>
       <td>
-        <input type="radio" name="bananadisplay" value="0"
-               {if !$disp}checked="checked"{/if} /> Afficher tous les messages <br />
-        <input type="radio" name="bananadisplay" value="1"
-               {if $disp}checked="checked"{/if} /> Afficher seulement les fils de discussion contenant des messages non lus
+        <label><input type="radio" name="bananadisplay" value="0"
+               {if !$disp}checked="checked"{/if} /> Afficher tous les messages</label><br />
+        <label><input type="radio" name="bananadisplay" value="1" {if $disp}checked="checked"{/if} />
+        Afficher seulement les fils de discussion contenant des messages non lus</label>
       </td>
     </tr>
     <tr class="pair">
@@ -78,10 +78,10 @@
     <tr class="pair">
       <td class="titre">Mise à jour des messages non lus</td>
       <td>
-        <input type="radio" name="bananaupdate" value="1"
-               {if $maj}checked="checked"{/if} /> Automatique<br />
-        <input type="radio" name="bananaupdate" value="0"
-               {if !$maj}checked="checked"{/if} /> Manuelle
+        <label><input type="radio" name="bananaupdate" value="1"
+               {if $maj}checked="checked"{/if} /> Automatique</label><br />
+        <label><input type="radio" name="bananaupdate" value="0"
+               {if !$maj}checked="checked"{/if} /> Manuelle</label>
       </td>
     </tr>
     <tr class="pair">

@@ -52,8 +52,8 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='pair'>
       <td>
-        Si tu veux préserver les archives de la liste, décoche la case ci-contre.
-        <input type="checkbox" checked="checked" name="del_archive" />
+        <label>Si tu veux préserver les archives de la liste, décoche la case ci-contre.
+        <input type="checkbox" checked="checked" name="del_archive" /></label>
       </td>
     </tr>
     <tr class='impair'>

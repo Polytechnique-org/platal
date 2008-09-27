@@ -117,7 +117,7 @@ il te faudra contacter l'équipe support.
       au fur et à mesure que tu les modifies.
       (Les données transmises seront <strong>uniquement</strong> celles que tu as décidé de transmettre).
     </dd>
-    <dt><input type='checkbox' value='1' checked="checked" name='register_from_ax_question' /> depuis l'AX</dt>
+    <dt><label><input type='checkbox' value='1' checked="checked" name='register_from_ax_question' /> depuis l'AX</label></dt>
     <dd>
     nous mettons à jour ta fiche depuis les données de l'annuaire de l'AX si tu le souhaites. <br/>
     (si tu ne le souhaites pas, décoche la case ci-dessus)
@@ -129,20 +129,20 @@ il te faudra contacter l'équipe support.
   </p>
 
   <dl>
-    <dt><input type='checkbox' value='1' checked="checked" name='add_to_nl' /> lettre mensuelle*</dt>
+    <dt><label><input type='checkbox' value='1' checked="checked" name='add_to_nl' /> lettre mensuelle*</label></dt>
     <dd>
       de recevoir chaque mois la lettre mensuelle de Polytechnique.org contenant les activités et nouvelles de la communauté des X.
     </dd>
-    <dt><input type="checkbox" value="1" checked="checked" name="add_to_ax" /> envois de l'AX*</dt>
+    <dt><label><input type="checkbox" value="1" checked="checked" name="add_to_ax" /> envois de l'AX*</label></dt>
     <dd>
       de recevoir les informations importantes de l'AX.
     </dd>
-    <dt><input type='checkbox' value='1' checked="checked" name='add_to_promo' /> ta promo*</dt>
+    <dt><label><input type='checkbox' value='1' checked="checked" name='add_to_promo' /> ta promo*</label></dt>
     <dd>
       de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements
       qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.promo}.
     </dd>
-    <dt><input type='checkbox' value='1' checked="checked" name='imap' />imap</dt>
+    <dt><label><input type='checkbox' value='1' checked="checked" name='imap' />imap</label></dt>
     <dd>
       d'avoir un accès de secours aux 30 derniers jours d'emails reçus sur ton adresse Polytechnique.org.
     </dd>
@@ -155,7 +155,7 @@ il te faudra contacter l'équipe support.
 
   <dl>
     {foreach from=$lists key=list item=details}
-    <dt><input type='checkbox' value='1' checked="checked" name="sub_ml[{$list}]" /> {$list}*&nbsp;: {$details.desc}</dt>
+    <dt><label><input type='checkbox' value='1' checked="checked" name="sub_ml[{$list}]" /> {$list}*&nbsp;: {$details.desc}</label></dt>
     {if $details.info}
     <dd>
       {$details.info|nl2br}

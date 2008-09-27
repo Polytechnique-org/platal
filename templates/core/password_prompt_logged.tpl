@@ -60,7 +60,8 @@
     <tr>
       <td {popup caption='Connexion permanente' width='300' text='Décoche cette case pour que le site oublie ce navigateur.<br />
         Il est conseillé de décocher la case si cette machine n\'est pas <b>strictement</b> personnelle'} colspan="2">
-        <input type="checkbox" name="remember" checked="checked" /> Garder l'accès aux services après déconnexion.
+        <label><input type="checkbox" name="remember" checked="checked" />
+        Garder l'accès aux services après déconnexion.</label>
       </td>
     </tr>
   </table>
