@@ -759,6 +759,7 @@ class AdminModule extends PLModule
                     send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
                     switch_bestalias($target, $loginbis);
                     $op = 'list';
+                    $page->trigSuccess('Email envoyé à ' . $forlife . '.');
                     break;
 
                 case 'correct':
@@ -769,6 +770,7 @@ class AdminModule extends PLModule
                     XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
                     send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
                     $op = 'list';
+                    $page->trigSuccess('Email envoyé à ' . $forlife . ', alias supprimé.');
                     break;
             }
         }
@@ -837,7 +839,6 @@ class AdminModule extends PLModule
         if ($validate) {
             S::assert_xsrf_token();
 
-            $new_deces = array();
             $res = XDB::iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
             while (list($uid,$mat,$nom,$prenom,$deces) = $res->next()) {
                 $val = Env::v($mat);
@@ -846,7 +847,7 @@ class AdminModule extends PLModule
                 }
 
                 XDB::execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
-                $new_deces[] = array('name' => "$prenom $nom", 'date' => "$val");
+                $page->trigSuccess('Ajout du décès de ' . $prenom . " " . $nom . ' le ' . $val . '.');
                 if($deces == '0000-00-00' || empty($deces)) {
                     require_once('notifs.inc.php');
                     register_watch_op($uid, WATCH_DEATH, $val);
@@ -854,7 +855,6 @@ class AdminModule extends PLModule
                     user_clear_all_subs($uid, false);   // by default, dead ppl do not loose their email
                 }
             }
-            $page->assign('new_deces',$new_deces);
         }
 
         $res = XDB::iterator('SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = {?} ORDER BY nom,prenom', $promo);

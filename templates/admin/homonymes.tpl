@@ -22,12 +22,6 @@
 
 <h1>Gestion des homonymes</h1>
 
-{if $op eq 'mail'}
-<p class="erreur">email envoyé à {$forlife}</p>
-{elseif $op eq 'correct'}
-<p class="erreur">email envoyé à {$forlife}, alias supprimé</p>
-{/if}
-
 {if $op eq 'list' || $op eq 'mail' || $op eq 'correct'}
 
 <p>

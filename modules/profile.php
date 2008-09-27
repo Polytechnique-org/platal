@@ -677,6 +677,8 @@ class ProfileModule extends PLModule
 
             // on vient de recevoir une requete, differente de l'ancien nom d'usage
             if ($nom_usage == $nom) {
+                $page->trigWarning('Le nom d\'usage que tu demandes est identique à ton nom à l\'X, '
+                                   . 'aucune modification n\'a donc été effectuée.');
                 $page->assign('same', true);
             } else { // le nom de mariage est distinct du nom à l'X
                 // on calcule l'alias pour l'afficher

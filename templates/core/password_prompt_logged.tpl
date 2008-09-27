@@ -68,9 +68,7 @@
 </form>
 <br />
 {if $smarty.request.response}<!-- failed login code -->
-<div class="erreur">
-  Erreur d'identification. Essaie à nouveau !
-</div>
+{include file="include/triggers.tpl" text="Erreur d'identification. Essaie à nouveau !" type="errors"}
 {/if}
 
 <!-- Set up the form with the challenge value and an empty reply value -->
