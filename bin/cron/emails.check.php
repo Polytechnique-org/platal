@@ -51,9 +51,9 @@ while (list($alias1, $alias2, $mail) = $it->next()) {
 }
 
 if (count($conflits) > 0) {
-    echo "Nouvelles adresses en doublon detectees :\n" . join("\n", $conflits)
-        . "\n\nVous pouvez entrer les informations collectees a ce sujet sur la page :\n"
-        . "http://www.polytechnique.org/admin/emails/duplicated";
+    echo "Nouvelles adresses en doublon détectées :\n" . join("\n", $conflits)
+        . "\n\nVous pouvez entrer les informations collectées à ce sujet sur la page :\n"
+        . "https://www.polytechnique.org/admin/emails/duplicated";
 
     echo "\n\n";
     $sql = "INSERT IGNORE INTO emails_watch (email, state, detection, last)

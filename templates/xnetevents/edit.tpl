@@ -176,7 +176,7 @@ Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et
 
 [COMPLETE EN PRECISANT LA DATE ET LA PERSONNE A CONTACTER]
 
-A très bientôt,
+À très bientôt,
 
 -- 
 {$smarty.session.prenom} {$smarty.session.nom}{/if}</textarea><br />

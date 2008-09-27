@@ -41,7 +41,7 @@
   <td>{$valid->m_email}</td>
 </tr>
 <tr class="pair">
-  <td class="titre">Envoi d'email ...</td>
+  <td class="titre">Envoi d'email</td>
   <td>{if $valid->perso}perso{else}par poly.org{/if}</td>
 </tr>
 
