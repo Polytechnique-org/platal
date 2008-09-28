@@ -178,8 +178,8 @@ function ban_read()
         Sexe
       </td>
       <td>
-        femme <input type="radio" name="sexeN" {if $mr.sexe}checked="checked"{/if} value='1'/>
-        <input type="radio" name="sexeN" {if !$mr.sexe}checked="checked"{/if} value='0'/> homme
+        <label>femme <input type="radio" name="sexeN" {if $mr.sexe}checked="checked"{/if} value='1'/></label>
+        <label><input type="radio" name="sexeN" {if !$mr.sexe}checked="checked"{/if} value='0'/> homme</label>
       </td>
     </tr>
     <tr class="pair">
@@ -233,8 +233,8 @@ function ban_read()
         Surveillance
       </td>
       <td>
-        <input type="checkbox" name="watchN" {if $mr.watch}checked="checked"{/if} />
-        Surveiller l'activité de ce compte<br />
+        <label><input type="checkbox" name="watchN" {if $mr.watch}checked="checked"{/if} />
+        Surveiller l'activité de ce compte</label><br />
         <span class="smaller">Cette option permet d'avoir des logs complets de l'activité
         du compte via le logger, et d'être alerté lors des connexions de l'utilisateur.</span>
       </td>

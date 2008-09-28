@@ -70,12 +70,12 @@ masculin ou féminin, par son prénom, ou son nom.
         <em>annuaire</em>
       </td>
       <td>
-        <input type="checkbox" name="membres[X]" value="1"  {if $smarty.request.membres.X}checked="checked"{/if} />
-        <em>écrire à tous les X de l'annuaire du groupe</em><br />
-        <input type="checkbox" name="membres[ext]" value="1"  {if $smarty.request.membres.ext}checked="checked"{/if} />
-        <em>écrire à tous les extérieurs de l'annuaire du groupe</em><br />
-        <input type="checkbox" name="membres[groupe]" value="1"  {if $smarty.request.membres.groupe}checked="checked"{/if} />
-        <em>écrire à toutes les personnes morales de l'annuaire du groupe</em>
+        <label><input type="checkbox" name="membres[X]" value="1"  {if $smarty.request.membres.X}checked="checked"{/if} />
+        <em>écrire à tous les X de l'annuaire du groupe</em></label><br />
+        <label><input type="checkbox" name="membres[ext]" value="1"  {if $smarty.request.membres.ext}checked="checked"{/if} />
+        <em>écrire à tous les extérieurs de l'annuaire du groupe</em></label><br />
+        <label><input type="checkbox" name="membres[groupe]" value="1"  {if $smarty.request.membres.groupe}checked="checked"{/if} />
+        <em>écrire à toutes les personnes morales de l'annuaire du groupe</label></em>
         <a href="{$platal->ns}annuaire" class='popup'>(voir annuaire)</a><br />
       </td>
     </tr>
@@ -86,8 +86,8 @@ masculin ou féminin, par son prénom, ou son nom.
         {$l.list}
       </td>
       <td>
-        <input type="checkbox" name="ml[{$l.list}]" value="1" {if $smarty.request.ml[$l.list]}checked="checked"{/if} />
-        {$l.addr}
+        <label><input type="checkbox" name="ml[{$l.list}]" value="1" {if $smarty.request.ml[$l.list]}checked="checked"{/if} />
+        {$l.addr}</label>
         <a href="{$platal->ns}lists/admin/{$l.list}" class="popup">(voir composition)</a>
       </td>
     </tr>
@@ -104,8 +104,9 @@ masculin ou féminin, par son prénom, ou son nom.
     </tr>
     <tr>
       <td colspan="2" class="smaller">
-        <input type="checkbox" name="wiki" value="1" checked="1" onchange="updateWikiView(this);" />
-        activer <a href="wiki_help" class="popup3">la syntaxe wiki</a> pour le formattage du message
+        <input type="checkbox" name="wiki" value="1" checked="1" onchange="updateWikiView(this);" id="wiki_syntaxe"/>
+        <label for="wiki_syntaxe">activer </label><a href="wiki_help" class="popup3">la syntaxe wiki</a>
+        <label for="wiki_syntaxe">pour le formattage du message</label>
       </td>
     </tr>
     <tr id="preview" class="pair" style="display: none">

@@ -75,18 +75,18 @@
     <tr>
       <td>
         {if $event.inscr_open}
-          <input type="radio" name="moment[{$m.item_id}]" value="0"
-          {if !$m.nb}checked="checked"{/if}/>non
+          <label><input type="radio" name="moment[{$m.item_id}]" value="0"
+          {if !$m.nb}checked="checked"{/if}/>non</label>
           {if $event.noinvite}
-              <input type="radio" name="moment[{$m.item_id}]" value="1"
-              {if $m.nb eq 1}checked="checked"{/if}/>oui
+              <label><input type="radio" name="moment[{$m.item_id}]" value="1"
+              {if $m.nb eq 1}checked="checked"{/if}/>oui</label>
           {else}
-              <input type="radio" name="moment[{$m.item_id}]" value="1"
-              {if $m.nb eq 1}checked="checked"{/if}/>seul<br />
-              <input type="radio" name="moment[{$m.item_id}]" value="2"
-              {if $m.nb > 1}checked="checked"{/if}/>avec
+              <label><input type="radio" name="moment[{$m.item_id}]" value="1"
+              {if $m.nb eq 1}checked="checked"{/if}/>seul</label><br />
+              <label><input type="radio" name="moment[{$m.item_id}]" value="2" id="avec"
+              {if $m.nb > 1}checked="checked"{/if}/>avec</label>
                 <input size="2" name="personnes[{$m.item_id}]"
-                  value="{if $m.nb > 1}{math equation='x - 1' x=$m.nb}{else}1{/if}"/> personnes
+                  value="{if $m.nb > 1}{math equation='x - 1' x=$m.nb}{else}1{/if}"/><label for="avec"> personnes</label>
           {/if}
         {else}
           {if !$m.nb}

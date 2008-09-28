@@ -163,8 +163,8 @@
 
     <tr>
       <td class="titre center" colspan="2">
-        <input type="checkbox" value="1" name="ax" {if $asso.ax}checked="checked"{/if} />
-        groupe agréé par l'AX
+        <label><input type="checkbox" value="1" name="ax" {if $asso.ax}checked="checked"{/if} />
+        groupe agréé par l'AX</label>
       </td>
     </tr>
 
@@ -180,8 +180,8 @@
     </tr>
     <tr>
       <td class="titre center" colspan="2">
-        <input type="checkbox" value="1" name="notif_unsub" {if $asso.notif_unsub}checked="checked"{/if} />
-        prévenir les animateurs lors de la désinscription d'un membre
+        <label><input type="checkbox" value="1" name="notif_unsub" {if $asso.notif_unsub}checked="checked"{/if} />
+        prévenir les animateurs lors de la désinscription d'un membre</label>
       </td>
     </tr>
   </table>

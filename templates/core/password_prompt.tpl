@@ -78,7 +78,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
         Mot de passe&nbsp;:
       </td>
       <td>
-        <input type="password" name="password" size="10" maxlength="10" />
+        <input type="password" name="password" size="10" maxlength="256" />
       </td>
     </tr>
     <tr>

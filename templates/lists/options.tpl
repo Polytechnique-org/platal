@@ -72,8 +72,8 @@ Tu n'es pas administrateur de la liste, mais du site.
           utilisateurs qui se désinscrivent. Cet email peut être désactivé.</span>
       </td>
       <td>
-        <input type='checkbox' name='send_goodbye_msg'
-        {if $options.send_goodbye_msg}checked='checked'{/if} /> activer l'email d'adieu.  <br />
+        <label><input type='checkbox' name='send_goodbye_msg'
+        {if $options.send_goodbye_msg}checked='checked'{/if} /> activer l'email d'adieu.</label><br />
         <textarea cols='40' rows='8' name='goodbye_msg'>{$options.goodbye_msg|smarty:nodefaults|utf8_encode}</textarea>
       </td>
     </tr>
@@ -93,8 +93,8 @@ Tu n'es pas administrateur de la liste, mais du site.
         <span class='smaller'>notifier les modérateurs des (dés)inscriptions d'utilisateurs sur cette liste.</span>
       </td>
       <td>
-        <input type='checkbox' name='admin_notify_mchanges'
-        {if $options.admin_notify_mchanges}checked='checked'{/if} /> notifier les modérateurs.
+        <label><input type='checkbox' name='admin_notify_mchanges'
+        {if $options.admin_notify_mchanges}checked='checked'{/if} /> notifier les modérateurs.</label>
       </td>
     </tr>
     <tr class='impair'>
@@ -104,15 +104,15 @@ Tu n'es pas administrateur de la liste, mais du site.
         ou modéré dans tous les cas ?</span>
       </td>
       <td>
-        <input type='radio' name='moderate' value='0'
+        <label><input type='radio' name='moderate' value='0'
         {if !$options.generic_nonmember_action && !$options.default_member_moderation}
-        checked='checked'{/if} />libre<br />
-        <input type='radio' name='moderate' value='1'
+        checked='checked'{/if} />libre</label><br />
+        <label><input type='radio' name='moderate' value='1'
         {if $options.generic_nonmember_action && !$options.default_member_moderation}
-        checked='checked'{/if} />modérée pour les extérieurs<br />
-        <input type='radio' name='moderate' value='2'
+        checked='checked'{/if} />modérée pour les extérieurs</label><br />
+        <label><input type='radio' name='moderate' value='2'
         {if $options.generic_nonmember_action && $options.default_member_moderation}
-        checked='checked'{/if} />modérée
+        checked='checked'{/if} />modérée</label>
       </td>
     </tr>
     <tr class='impair'>
@@ -121,8 +121,8 @@ Tu n'es pas administrateur de la liste, mais du site.
         <span class='smaller'>détermine si les inscriptions à la liste sont modérées ou non.</span>
       </td>
       <td>
-        <input type='checkbox' name='subscribe_policy'
-        {if $options.subscribe_policy eq 2}checked='checked'{/if} /> inscription modérée.
+        <label><input type='checkbox' name='subscribe_policy'
+        {if $options.subscribe_policy eq 2}checked='checked'{/if} /> inscription modérée.</label>
       </td>
     </tr>
     <tr class='impair'>

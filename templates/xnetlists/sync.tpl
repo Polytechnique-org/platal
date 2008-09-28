@@ -32,9 +32,9 @@
     </tr>
     {foreach from=$not_in_list item=u}
     <tr>
-      <td>{$u.nom|strtoupper} {$u.prenom}</td>
-      <td>{$u.promo}</td>
-      <td><input type="checkbox" name="add[{$u.email}]" /></td>
+      <td><label for="add{$u.email}">{$u.nom|strtoupper} {$u.prenom}</label></td>
+      <td><label for="add{$u.email}">{$u.promo}</label></td>
+      <td><input type="checkbox" name="add[{$u.email}]" id="add{$u.email}"/></td>
     </tr>
     {/foreach}
     <tr>

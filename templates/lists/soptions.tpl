@@ -57,8 +57,8 @@
           (les listes d'admin doivent être décochées).</span>
       </td>
       <td>
-        <input type='checkbox' name='advertised' {if $options.advertised}checked='checked'{/if} />
-        publique
+        <label><input type='checkbox' name='advertised' {if $options.advertised}checked='checked'{/if} />
+        publique</label>
       </td>
     </tr>
     <tr class='pair'>
@@ -67,8 +67,8 @@
         <span class='smaller'>liste archivée ?</span>
       </td>
       <td>
-        <input type='checkbox' name='archive' {if $options.archive}checked='checked'{/if} />
-        liste archivée
+        <label><input type='checkbox' name='archive' {if $options.archive}checked='checked'{/if} />
+        liste archivée</label>
       </td>
     </tr>
     <tr class='impair'>
