@@ -93,7 +93,8 @@ class XorgSession extends PlSession
                     global $globals;
                     if ($globals->mailstorage->googleapps_domain) {
                         require_once 'googleapps.inc.php';
-                        $account = new GoogleAppsAccount($uid);
+                        $user = User::getSilent($uid);
+                        $account = new GoogleAppsAccount($user);
                         if ($account->active() && $account->sync_password) {
                             $account->set_password($new_password);
                         }
