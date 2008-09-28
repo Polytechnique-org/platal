@@ -51,6 +51,7 @@ class CoreModule extends PLModule
     {
         global $globals;
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+        $page->trigError('Tu n\'as pas les permissions nécessaires pour accéder à cette page.');
         $page->coreTpl('403.tpl');
     }
 
@@ -60,6 +61,7 @@ class CoreModule extends PLModule
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
         $page->coreTpl('404.tpl');
         $page->assign('near', $platal->near_hook());
+        $page->trigError('Cette page n\'existe pas !!!');
     }
 
     function handler_login(&$page)
@@ -152,7 +154,10 @@ class CoreModule extends PLModule
                   . "Utilisateur : " . S::v('forlife') . "\n"
                   . "Navigateur  : " . $_SERVER['HTTP_USER_AGENT'] . "\n"
                   . "Skin        : " . S::v('skin') . "\n";
-            $page->assign('bug_sent',1);
+            $page->assign('bug_sent', 1);
+            $page->trigSuccess('Ton message a bien été envoyé au support de ' . $globals->core->sitename
+                             . ', tu devrais en recevoir une copie d\'ici quelques minutes. Nous allons '
+                             . 'le traiter et y répondre dans les plus brefs délais.');
             $mymail = new PlMailer();
             $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@' . $globals->mail->domain . '>');
             $mymail->addTo('support+platal@' . $globals->mail->domain);
@@ -161,7 +166,7 @@ class CoreModule extends PLModule
             $mymail->setTxtBody($body);
             $mymail->send();
         } elseif (Env::has('send')) {
-            $page->trigError("Merci de remplir une explication du problème rencontré");
+            $page->trigError("Merci de remplir une explication du problème rencontré.");
         }
     }
 

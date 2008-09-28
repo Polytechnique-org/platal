@@ -51,13 +51,7 @@ function fillContent()
 
 <div style="width:800px;height:600px">
 {if $bug_sent}
-<p class="erreur">
-  Ton message a bien été envoyé au support de {#globals.core.sitename#}, tu devrais en
-  recevoir une copie d'ici quelques minutes. Nous allons le traiter et y répondre
-  dans les plus brefs délais.
-</p>
-
-<div class="center"><input type="submit" onclick="window.close()" name="close" value="Fermer" /></div>
+<div><input type="submit" onclick="window.close()" name="close" value="Fermer" /></div>
 {else}
 <form action="send_bug" method="post" onsubmit="cleanContent()">
   {xsrf_token_field}
