@@ -84,11 +84,20 @@ class XorgSession extends PlSession
                 $new_password = hash_xor(Env::v('xorpass'), $password);
                 $expected_response = hash_encrypt("$uname:$new_password:" . S::v('challenge'));
                 if ($response == $expected_response) {
-                      XDB::execute('UPDATE  auth_user_md5
-                                       SET  password = {?}
-                                     WHERE  user_id = {?}',
-                                   $new_password, $uid);
-                      /* TODO: update GApps password here!!! */
+                    XDB::execute('UPDATE  auth_user_md5
+                                     SET  password = {?}
+                                   WHERE  user_id = {?}',
+                                 $new_password, $uid);
+
+                    // Update the GoogleApps password as well, if required.
+                    global $globals;
+                    if ($globals->mailstorage->googleapps_domain) {
+                        require_once 'googleapps.inc.php';
+                        $account = new GoogleAppsAccount($uid);
+                        if ($account->active() && $account->sync_password) {
+                            $account->set_password($new_password);
+                        }
+                    }
                 }
             }
             if ($response != $expected_response) {
