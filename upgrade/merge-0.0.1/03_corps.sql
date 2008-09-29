@@ -551,7 +551,7 @@ INSERT IGNORE INTO  profile_corps_enum (abbreviation, name, still_exists)
                     ("Z", "Ancien élève étranger", 0),
                     ("Aé", "Arm.Aéronautique", 0),
                     ("ABC", "Arme blindée", 0),
-                    ("Arm", "Armement", 1),
+                    ("Arm", "Ingénieurs de l'Armement", 1),
                     ("A", "Artillerie", 0),
                     ("AC", "Artillerie coloniale", 0),
                     ("AM", "Artillerie de Marine", 0),
@@ -562,7 +562,7 @@ INSERT IGNORE INTO  profile_corps_enum (abbreviation, name, still_exists)
                     ("Cha", "Chars de Combat", 0),
                     ("C.A", "Commissaire de l'Air", 0),
                     ("C.M", "Commissariat de la Marine", 0),
-                    ("C.Ap", "Contrôle des Assurances", 0),
+                    ("C.Ap", "Contrôle des Assurances", 1),
                     ("EF.Ma", "E.& F. du Maroc", 0),
                     ("E.F", "Eaux et Forêts", 0),
                     ("EFC", "Eaux et Forêts des Colonies", 0),
@@ -610,7 +610,7 @@ INSERT IGNORE INTO  profile_corps_enum (abbreviation, name, still_exists)
                     ("Bât.", "Service des Bâtiments", 0),
                     ("C.F", "SNCF", 0),
                     ("Sp", "Sports", 0),
-                    ("Téléc", "Télécommunications", 0),
+                    ("Téléc", "Télécommunications", 1),
                     ("Té.A", "Télécommunications d'Armement", 0),
                     ("Tr", "Train", 0),
                     ("Tra", "Transmissions", 0),
@@ -618,7 +618,9 @@ INSERT IGNORE INTO  profile_corps_enum (abbreviation, name, still_exists)
                     ("TPC", "Travaux publics des Colonies", 0),
                     ("TP Ic", "Travaux publics en Indochine", 0),
                     ("TPOM", "Travaux publics Outre-Mer", 0),
-                    ("TdM", "Troupes de Marine", 0);
+                    ("TdM", "Troupes de Marine", 0),
+                    ("INSEE", "Administrateurs de l'INSEE", 1),
+                    ("Off", "Officiers des Armées", 1);
 
 INSERT IGNORE INTO  profile_corps (uid, original_corpsid, current_corpsid, rankid, corps_pub)
             SELECT  u.user_id, c.id, c.id, r.id, 'ax'

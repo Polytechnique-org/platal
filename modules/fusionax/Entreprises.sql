@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS `fusionax_entreprises`;
 
 CREATE TABLE IF NOT EXISTS `fusionax_entreprises` (
   `EN` CHAR(2) NOT NULL COMMENT 'Vaut toujours EN pour cette table',
-  `Code_etab` INT(10) NOT NULL COMMENT 'Code de l''établissement',
+  `Code_etab` BIGINT(10) NOT NULL COMMENT 'Code de l''établissement',
   `Raison_sociale` VARCHAR(255) collate utf8_general_ci NOT NULL COMMENT 'Raison sociale de l''établissement',
   `Sigle` VARCHAR(50) collate utf8_general_ci NOT NULL COMMENT 'Sigle de l''établissement',
   `Date_maj` DATE NOT NULL COMMENT 'Date de mise à jour de ces informations',

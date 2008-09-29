@@ -201,7 +201,7 @@ class FusionAxModule extends PLModule
                                                   AND ax.prenom = xorg.prenom
                                                   AND xorg.promo = ax.promotion_etude)
       GROUP BY  xorg.user_id
-        HAVING  xorg.user_id IS NOT NULL AND nbMatches = 1" . ($limit ? ('LIMIT ' . $limit) : ''));
+        HAVING  xorg.user_id IS NOT NULL AND nbMatches = 1 " . ($limit ? ('LIMIT ' . $limit) : ''));
         if ($easy_to_link->total() > 0 || $sure) {
             return $easy_to_link;
         }
@@ -308,7 +308,7 @@ class FusionAxModule extends PLModule
         $page->assign('deceasedMissingInAX',
                       XDB::iterator('SELECT  d.user_id, d.id_ancien, d.nom, d.prenom, d.promo, d.deces_xorg,
                                              CONCAT(d.prenom, " ", d.nom) AS display_name
-                                       FROM  fusionax_deceased AD d
+                                       FROM  fusionax_deceased AS d
                                       WHERE  d.deces_ax = "0000-00-00"
                                       LIMIT  10'));
         $page->assign('deceasedDifferent',
