@@ -20,17 +20,40 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2>Fusion des annuaires X.org - AX</h2>
-<ul>
-<li>Voir la <a href="Fusion">documentation</a></li>
-<li><a href="fusionax/import">Import de la base AX</a> {if $lastimport} - (dernier import le {$lastimport}){/if}</li> 
-<li>Mise en <a href="fusionax/ids">correspondance simple</a></li>
-<li>Création des <a href="fusionax/view">VIEW annexes nécessaires aux corrélations</a></li>
-<li>Corrélation des <a href="fusionax/names">données d'identification</a></li>
-<li>Corrélation des <a href="fusionax/coords">coordonnées</a></li>
-<li>Corrélation des <a href="fusionax/pros">informations professionnelles</a></li>
-<li>Corrélation des <a href="fusionax/studies">informations de formations</a></li>
-<li>Corrélation des <a href="fusionax/deceased">dates de décès</a></li>
-</ul>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX<a> / Décès</h2>
+
+{if $deceasedErrors}
+<p>Voici les {$deceasedErrors} différences entre les deux annuaires pour les renseignements de
+décès.</p>
+
+{if $nbDeceasedMissingInXorg > 0}
+<p>Anciens déclarés décédés dans l'annuaire AX mais pas sur Xorg</p>
+{include file='fusionax/listFusion.tpl' fusionList=$deceasedMissingInXorg field1='deces_ax' namefield1='Décès AX'}
+
+<a href="fusionax/deceased/updateXorg">Inclure toutes les dates de décès connues par l'AX sur Xorg.</a>
+{/if}
+
+{if $nbDeceasedMissingInAX > 0}
+<p>Anciens déclarés décédés dans l'annuaire Xorg mais pas chez l'AX</p>
+{include file='fusionax/listFusion.tpl' fusionList=$deceasedMissingInAX field1='deces_xorg' namefield1='Décès X.org'}
+
+<a href="fusionax/deceased/updateAX">Considérer ces cas comme traités (il n'y a rien à importer).</a>
+{/if}
+
+{if $nbDeceasedDifferent > 0}
+<p>Anciens déclarés décédés dans les deux annuaires mais pas avec la même date</p>
+{include file='fusionax/listFusion.tpl' fusionList=$deceasedDifferent field1='deces_xorg' field2='deces_ax' namefield1='Décès X.org' namefield2='Décès AX'}
+
+<h3>Mettre en correspondance</h3>
+<form action="fusionax/deceased/update" method="post">
+  User ID X.org : <input type="text" name="user_id" value=""/><br/>
+  Date de décès : <input type="text" name="date" value""/><br/>
+  <input type="submit" value="Mettre à jour"/>
+</form>
+{/if}
+
+{else}
+<p>Aucune différence pour les renseignements de décès entre les deux annuaires.</p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

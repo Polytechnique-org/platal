@@ -20,17 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2>Fusion des annuaires X.org - AX</h2>
-<ul>
-<li>Voir la <a href="Fusion">documentation</a></li>
-<li><a href="fusionax/import">Import de la base AX</a> {if $lastimport} - (dernier import le {$lastimport}){/if}</li> 
-<li>Mise en <a href="fusionax/ids">correspondance simple</a></li>
-<li>Création des <a href="fusionax/view">VIEW annexes nécessaires aux corrélations</a></li>
-<li>Corrélation des <a href="fusionax/names">données d'identification</a></li>
-<li>Corrélation des <a href="fusionax/coords">coordonnées</a></li>
-<li>Corrélation des <a href="fusionax/pros">informations professionnelles</a></li>
-<li>Corrélation des <a href="fusionax/studies">informations de formations</a></li>
-<li>Corrélation des <a href="fusionax/deceased">dates de décès</a></li>
-</ul>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX<a> / Création des VIEW annexes nécessaires aux corrélations </h2>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+<p><a href="fusionax/view/create">Création des VIEW annexes nécessaires aux corrélations</a></p>

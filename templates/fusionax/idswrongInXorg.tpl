@@ -20,29 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h2><a href="fusionax">Fusion des annuaires X.org - AX<a> / Divers</h2>
+<h2><a href="fusionax">Fusion des annuaires X.org - AX<a> / <a href="fusionax/ids">Identifiants<a> /  Présents dans Xorg avec un matricule_ax ne correspondant à rien
+dans la base de l'AX (mises à part les promo 1921 et 1923 qui ne figurent pas dans les données de l'AX)</h2>
 
-<h3>Décès</h3>
+<p></p>
 
-{if $deceasedErrors}
+{if $wrongInXorg}
+{include file='fusionax/listFusion.tpl' fusionList=$wrongInXorg field1='user_id' namefield1='ID X.org'}
 
-<p>Voici les {$deceasedErrors} différences entre les deux annuaires pour les renseignements de
-décès.</p>
-
-<p>Anciens déclarés décédés dans l'annuaire AX mais pas sur Xorg</p>
-
-{include file='fusionax/listFusion.tpl' fusionList=$deceasedMissingInXorg field1='deces_ax' namefield1='Décès AX'}
-
-<p>Anciens déclarés décédés dans l'annuaire Xorg mais pas chez l'AX</p>
-
-{include file='fusionax/listFusion.tpl' fusionList=$deceasedMissingInAX field1='deces_xorg' namefield1='Décès X.org'}
-
-<p>Anciens déclarés décédés dans les deux annuaires mais pas avec la même date</p>
-
-{include file='fusionax/listFusion.tpl' fusionList=$deceasedDifferent field1='deces_xorg' field2='deces_ax' namefield1='Décès X.org' namefield2='Décès AX'}
-
-{else}
-
-<p>Aucune différence pour les renseignements de décès entre les deux annuaires.</p>
-
+<p><a href="fusionax/ids/cleanwronginxorg">Mettre à NULL le matricule_ax de ces camarades pour marquer le fait qu'ils ne figurent pas dans l'annuaire de l'AX</a></p>
 {/if}

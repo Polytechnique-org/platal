@@ -56,11 +56,3 @@ CREATE TABLE IF NOT EXISTS `fusionax_import` (
 
 INSERT INTO `fusionax_import` ( SELECT `id_ancien`, NULL, NULL FROM `fusionax_anciens` );
 REPLACE INTO `fusionax_import` ( SELECT `matricule_ax`, `user_id`, NOW() FROM `auth_user_md5` );
-
-DROP VIEW IF EXISTS `fusionax_deceased`;
-
-CREATE VIEW  fusionax_deceased AS
-     SELECT  u.user_id, a.id_ancien, u.nom, u.prenom, u.promo, u.deces AS deces_xorg, a.Date_deces AS deces_ax
-       FROM  auth_user_md5 AS u
- INNER JOIN  fusionax_anciens AS a ON (a.id_ancien = u.matricule_ax)
-      WHERE  u.deces != a.Date_deces;
