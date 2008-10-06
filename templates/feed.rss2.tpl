@@ -34,7 +34,7 @@
     </image>
     {iterate item=article from=$feed}
     <item>
-      <title>{$article->title|strip_tags|htmlentities}</title>
+      <title><![CDATA[{$article->title|strip_tags}]]></title>
       <guid isPermaLink="false">{$article->id}</guid>
       <link>{$article->link}</link>
       <description><![CDATA[{include file=$article->template article=$article}]]></description>
