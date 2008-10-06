@@ -34,7 +34,7 @@
     </image>
     {iterate item=line from=$rss}
     <item>
-      <title>{$line.titre|strip_tags|htmlentities}</title>
+      <title><![CDATA[{$line.titre|strip_tags}]]></title>
       <guid isPermaLink="false">{$line.id}</guid>
       <link>{#globals.baseurl#}/events#newsid{$line.id}</link>
       <description><![CDATA[
