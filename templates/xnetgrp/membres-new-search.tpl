@@ -33,9 +33,9 @@
     {/iterate}
   </select>
   <span id="marketing" {if $choix->total() != 1}style="display: none"{/if}><br />
-    <input type="checkbox" name="market" checked="checked"
+    <label><input type="checkbox" name="market" checked="checked"
         onchange="document.getElementById('from').style.display = (this.checked ? '' : 'none')"/>
-    Lui envoyer un marketing
+    Lui envoyer un marketing</label>
     <select name="market_from" id="from">
       <option value="user" selected="selected">de ta part.</option>
       <option value="staff">de la part de Polytechnique.org.</option>

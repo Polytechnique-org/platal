@@ -299,7 +299,7 @@ function getType(char) {
     }
 }
 
-function checkPassword(box) {
+function checkPassword(box, okLabel) {
     var prev = 0;
     var prop = 0;
     var pass = box.value;
@@ -349,8 +349,10 @@ function checkPassword(box) {
                     .animate({ backgroundColor: bgcolor }, 750);
     var submitButton = $(":submit[@name='" + passwordprompt_submit + "']");
     if (ok && pass.length >= 6) {
+        submitButton.attr("value", okLabel);
         submitButton.removeAttr("disabled");
     } else {
+        submitButton.attr("value", "Mot de passe trop faible");
         submitButton.attr("disabled", "disabled");
     }
 }

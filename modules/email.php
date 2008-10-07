@@ -220,7 +220,6 @@ class EmailModule extends PLModule
 
         if ($action == 'remove' && $email) {
             $retour = $redirect->delete_email($email);
-            $page->assign('retour', $retour);
         }
 
         if ($action == 'active' && $email) {
@@ -252,11 +251,25 @@ class EmailModule extends PLModule
                 }
                 $page->assign('retour', $retour);
             } elseif (empty($actifs)) {
-                $page->assign('retour', ERROR_INACTIVE_REDIRECTION);
+                $retour = ERROR_INACTIVE_REDIRECTION;
             } elseif (is_array($actifs)) {
-                $page->assign('retour', $redirect->modify_email($actifs,
-                    Env::v('emails_rewrite',Array())));
+                $retour = $redirect->modify_email($actifs, Env::v('emails_rewrite', Array()));
             }
+        }
+
+        switch ($retour) {
+          case ERROR_INACTIVE_REDIRECTION:
+            $page->trigError('Tu ne peux pas avoir aucune adresse de redirection active, sinon ton adresse '
+                             . $forlife . '@' . $globals->mail->domain . ' ne fonctionnerait plus.');
+            break;
+          case ERROR_INVALID_EMAIL:
+            $page->trigError('Erreur: l\'email n\'est pas valide.');
+            break;
+          case ERROR_LOOP_EMAIL:
+            $page->trigError('Erreur : ' . $forlife . '@' . $globals->mail->domain
+                             . ' ne doit pas être renvoyé vers lui-même, ni vers son équivalent en '
+                             . $globals->mail->domain2 . ' ni vers polytechnique.edu.');
+            break;
         }
 
         $res = XDB::query(

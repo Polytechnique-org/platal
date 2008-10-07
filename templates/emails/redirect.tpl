@@ -20,24 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $retour == $smarty.const.ERROR_INACTIVE_REDIRECTION}
-  <p class="erreur">
-  Tu ne peux pas avoir aucune adresse de redirection active, sinon ton adresse
-  {$smarty.session.forlife}@{#globals.mail.domain#} ne fonctionnerait plus.
-  </p>
-{/if}
-{if $retour == $smarty.const.ERROR_INVALID_EMAIL}
-  {assign var='error_email' value='1'}
-  <p class="erreur">
-  Erreur&nbsp;: l'email n'est pas valide.
-  </p>
-{/if}
-{if $retour == $smarty.const.ERROR_LOOP_EMAIL}
-  <p class="erreur">
-  Erreur&nbsp;: {$smarty.session.forlife}@{#globals.mail.domain#} ne doit pas être renvoyé
-  vers lui-même, ni vers son équivalent en {#globals.mail.domain2#} ni vers polytechnique.edu.
-  </p>
-{/if}
   <h1>
     Tes adresses de redirection
   </h1>

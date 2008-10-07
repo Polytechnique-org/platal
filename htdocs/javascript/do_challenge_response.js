@@ -33,7 +33,7 @@ function correctUserName() {
     if (mots[1].toUpperCase() == 'DE') { u.value = mots[0]+"."+mots.join('-').substr(mots[0].length+1); return true; }
     // jean paul dupont -> jean-paul.dupont
     if (mots.length == 3 && mots[0].toUpperCase() == 'JEAN') { u.value = mots[0]+"-"+mots[1]+"."+mots[2]; return true; }
-    
+
     alert('Ton email ne doit pas contenir de blanc.\nLe format standard est\n\nprenom.nom.promotion\n\nSi ton nom ou ton prenom est composé,\nsépare les mots par des -');
 
     return false;
@@ -44,19 +44,20 @@ function doChallengeResponse() {
     if (!correctUserName()) return false;
 
     var new_pass = hash_encrypt(document.forms.login.password.value);
-    var old_pass = MD5(document.forms.login.password.value);
-    
+    var old_pass = hash_encrypt(document.forms.login.password.value.substr(0, 10));
+
     str = document.forms.login.username.value + ":" +
         new_pass + ":" +
         document.forms.loginsub.challenge.value;
 
     document.forms.loginsub.response.value = hash_encrypt(str);
-    document.forms.loginsub.xorpass.value = hash_xor(new_pass, old_pass);
+    if (new_pass != old_pass) {
+        document.forms.loginsub.xorpass.value = hash_xor(new_pass, old_pass);
+    }
     document.forms.loginsub.username.value = document.forms.login.username.value;
     document.forms.loginsub.remember.value = document.forms.login.remember.checked;
     document.forms.loginsub.domain.value = document.forms.login.domain.value;
     document.forms.login.password.value = "";
     document.forms.loginsub.submit();
-
 }
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

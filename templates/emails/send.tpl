@@ -262,8 +262,8 @@
     <legend>Sujet&nbsp;:&nbsp;<input type='text' name='sujet' size='60' value="{$smarty.request.sujet}" /></legend>
     <div class="center">
       Tu peux utiliser des <a href="wiki_help" class="popup3">{icon name=information title="Syntaxe wiki"} marqueurs wiki</a> pour formatter ton texte.<br />
-      <small><input type="checkbox" name="nowiki" value="1" {if $smarty.request.nowiki}checked="checked"{/if} onchange="updateWikiView(this);" />
-      coche cette case pour envoyer l'email en texte brut, sans formattage</small>
+      <small><label><input type="checkbox" name="nowiki" value="1" {if $smarty.request.nowiki}checked="checked"{/if} onchange="updateWikiView(this);" />
+      coche cette case pour envoyer l'email en texte brut, sans formattage</label></small>
     </div>
     <div id="preview">
       <div id="preview_pv" style="display: none">

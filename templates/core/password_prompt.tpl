@@ -44,9 +44,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 {/if}
 
 {if $smarty.request.response}<!-- failed login code //-->
-<div class="erreur">
-  Erreur d'identification. Essaie à nouveau !
-</div>
+{include file="include/triggers.tpl" text="Erreur d'identification. Essaie à nouveau !" type="errors"}
 <br />
 {/if}
 
@@ -78,7 +76,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
         Mot de passe&nbsp;:
       </td>
       <td>
-        <input type="password" name="password" size="10" maxlength="10" />
+        <input type="password" name="password" size="10" maxlength="256" />
       </td>
     </tr>
     <tr>

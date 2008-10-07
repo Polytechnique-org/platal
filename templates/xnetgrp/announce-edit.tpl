@@ -158,8 +158,8 @@ function visibilityChange(box)
     <tr>
       <td class="titre">Visibilité&nbsp;:</td>
       <td>
-        <input type="checkbox" name="public" {if $art.public}checked="checked"{/if} onchange="visibilityChange(this)" />
-        Rendre cette annonce publique.
+        <label><input type="checkbox" name="public" {if $art.public}checked="checked"{/if} onchange="visibilityChange(this)" />
+        Rendre cette annonce publique.</label>
       </td>
     </tr>
     <tr id="promo_titre" {if $art.public}style="display: none"{/if}>
@@ -179,14 +179,14 @@ function visibilityChange(box)
     </tr>
     <tr>
       <td colspan="2">
-        <input type="checkbox" name="xorg" {if $art.xorg}checked="checked"{/if} />
-        sur la page d'accueil de Polytechnique.org
+        <label><input type="checkbox" name="xorg" {if $art.xorg}checked="checked"{/if} />
+        sur la page d'accueil de Polytechnique.org</label>
       </td>
     </tr>
     <tr>
       <td colspan="2">
-        <input type="checkbox" name="nl" {if $art.nl}checked="checked"{/if} />
-        dans la Lettre Mensuelle de Polytechnique.org
+        <label><input type="checkbox" name="nl" {if $art.nl}checked="checked"{/if} />
+        dans la Lettre Mensuelle de Polytechnique.org</label>
       </td>
     </tr>
     <tr class="pair">

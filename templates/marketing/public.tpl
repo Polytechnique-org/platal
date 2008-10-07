@@ -88,8 +88,8 @@ peut sans aucun doute l'aider à se décider !
     <tr class="impair">
       <td>Nous lui écrirons&nbsp;:</td>
       <td>
-        <input type="radio" name="origine" value="user" checked="checked" /> en ton nom<br />
-        <input type="radio" name="origine" value="staff" /> au nom de l'équipe Polytechnique.org
+        <label><input type="radio" name="origine" value="user" checked="checked" /> en ton nom</label><br />
+        <label><input type="radio" name="origine" value="staff" /> au nom de l'équipe Polytechnique.org</label>
       </td>
     </tr>
   </table>

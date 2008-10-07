@@ -45,19 +45,19 @@ liste&nbsp;:
     </tr>
     <tr>
       <td class='titre'>C'est une liste pour&nbsp;:</td>
-      <td colspan='2'><input type='radio' name='asso' value='groupex'
-        {if $smarty.post.asso eq 'groupex' && $smarty.post}checked='checked'{/if} />un groupe X</td>
-      <td colspan='2'><input type='radio' name='asso' value=''
-        {if !$smarty.post.asso || !$smarty.post}checked='checked'{/if} />une liste de portée générale ou d'amis</td>
+      <td colspan='2'><label><input type='radio' name='asso' value='groupex'
+        {if $smarty.post.asso eq 'groupex' && $smarty.post}checked='checked'{/if} />un groupe X</label></td>
+      <td colspan='2'><label><input type='radio' name='asso' value=''
+        {if !$smarty.post.asso || !$smarty.post}checked='checked'{/if} />une liste de portée générale ou d'amis</label></td>
     </tr>
     {if $young_promo}
     <tr>
       <td></td>
-      <td colspan='2'><input type='radio' name='asso' value='binet'
-        {if $smarty.post.asso eq 'binet' && $smarty.post}checked='checked'{/if} />un binet</td>
+      <td colspan='2'><label><input type='radio' name='asso' value='binet'
+        {if $smarty.post.asso eq 'binet' && $smarty.post}checked='checked'{/if} />un binet</label></td>
       {if $very_young_promo}
-      <td colspan='2'><input type='radio' name='asso' value='alias'
-        {if $smarty.post.asso eq 'alias' && $smarty.post}checked='checked'{/if} />un alias psc, ...</td>
+      <td colspan='2'><label><input type='radio' name='asso' value='alias'
+        {if $smarty.post.asso eq 'alias' && $smarty.post}checked='checked'{/if} />un alias psc, ...</label></td>
       {else}
       <td colspan='2'></td>
       {/if}
@@ -117,10 +117,10 @@ liste&nbsp;:
     <tr>
       <td class='titre'>Propriétés&nbsp;:</td>
       <td>visibilité&nbsp;:</td>
-      <td><input type='radio' name='advertise' value='0'
-        {if $smarty.post.advertise eq 0 && $smarty.post}checked='checked'{/if} />publique</td>
-      <td><input type='radio' name='advertise' value='1'
-        {if $smarty.post.advertise neq 0 || !$smarty.post}checked='checked'{/if} />privée</td>
+      <td><label><input type='radio' name='advertise' value='0'
+        {if $smarty.post.advertise eq 0 && $smarty.post}checked='checked'{/if} />publique</label></td>
+      <td><label><input type='radio' name='advertise' value='1'
+        {if $smarty.post.advertise neq 0 || !$smarty.post}checked='checked'{/if} />privée</label></td>
       <td></td>
     </tr>
     <tr>
@@ -130,12 +130,12 @@ liste&nbsp;:
     <tr>
       <td></td>
       <td>diffusion&nbsp;:</td>
-      <td><input type='radio' name='modlevel' value='0'
-        {if !$smarty.post.modlevel}checked='checked'{/if} />libre</td>
-      <td><input type='radio' name='modlevel' value='1'
-        {if $smarty.post.modlevel eq 1}checked='checked'{/if} />restreinte</td>
-      <td><input type='radio' name='modlevel' value='2'
-        {if $smarty.post.modlevel eq 2}checked='checked'{/if} />modérée</td>
+      <td><label><input type='radio' name='modlevel' value='0'
+        {if !$smarty.post.modlevel}checked='checked'{/if} />libre</label></td>
+      <td><label><input type='radio' name='modlevel' value='1'
+        {if $smarty.post.modlevel eq 1}checked='checked'{/if} />restreinte</label></td>
+      <td><label><input type='radio' name='modlevel' value='2'
+        {if $smarty.post.modlevel eq 2}checked='checked'{/if} />modérée</label></td>
     </tr>
     <tr>
       <td></td>
@@ -145,10 +145,10 @@ liste&nbsp;:
     <tr>
       <td></td>
       <td>inscription&nbsp;:</td>
-      <td><input type='radio' name='inslevel' value='0'
-        {if $smarty.post.inslevel eq 0 && $smarty.post}checked='checked'{/if} />libre</td>
-      <td><input type='radio' name='inslevel' value='1'
-        {if $smarty.post.inslevel neq 0 || !$smarty.post}checked='checked'{/if} />modérée</td>
+      <td><label><input type='radio' name='inslevel' value='0'
+        {if $smarty.post.inslevel eq 0 && $smarty.post}checked='checked'{/if} />libre</label></td>
+      <td><label><input type='radio' name='inslevel' value='1'
+        {if $smarty.post.inslevel neq 0 || !$smarty.post}checked='checked'{/if} />modérée</label></td>
       <td></td>
     </tr>
     <tr>

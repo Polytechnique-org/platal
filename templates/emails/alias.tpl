@@ -98,10 +98,10 @@
           <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
             <tr>
               <td class="orange">
-                <input type="checkbox" name="public" {if $mail_public}checked="checked"{/if}/>
+                <input type="checkbox" name="public" {if $mail_public}checked="checked"{/if} id="pub_add"/>
               </td>
               <td class="texte">
-                adresse publique (apparaît sur ta fiche).
+                <label for="pub_add">adresse publique (apparaît sur ta fiche).
               </td>
              </tr>
           </table>

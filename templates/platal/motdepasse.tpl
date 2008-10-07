@@ -26,8 +26,9 @@
 </h1>
 
 <p>
-  Ton mot de passe doit faire au moins <strong>6 caractères</strong> quelconques et au plus 10 caractères. Attention
-  au type de clavier que tu utilises (qwerty?) et aux majuscules/minuscules.
+  Ton mot de passe doit faire au moins <strong>6 caractères</strong> et comporter deux types de
+  caractères parmi les suivants : lettres minuscules, lettres majuscules, chiffres, caractères spéciaux.
+  Attention au type de clavier que tu utilises (qwerty ?) et aux majuscules/minuscules.
 </p>
 <p>
   Pour une sécurité optimale, ton mot de passe circule de manière chiffrée (https) et est
@@ -47,7 +48,7 @@
         Mot de passe&nbsp;:
       </td>
       <td>
-        <input type="password" size="10" maxlength="10" name="nouveau" />
+        <input type="password" size="10" maxlength="256" name="nouveau" />
       </td>
     </tr>
     <tr>
@@ -55,7 +56,7 @@
         Retape-le une fois&nbsp;:
       </td>
       <td>
-        <input type="password" size="10" maxlength="10" name="nouveau2" />
+        <input type="password" size="10" maxlength="256" name="nouveau2" />
       </td>
     </tr>
     <tr>

@@ -22,10 +22,6 @@
 
 
 
-{foreach from=$new_deces item=i}
-<p class="erreur">Ajout du décès de {$i.name} le {$i.date}.</p>
-{/foreach}
-
 <form action="admin/deaths" method="post">
   <table class="tinybicol">
     <tr>

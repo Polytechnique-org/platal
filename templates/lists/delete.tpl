@@ -24,15 +24,8 @@
 {if $deleted}
 
 <p>[<a href='{$platal->ns}lists'>Voir toutes les listes</a>]</p>
-<p class="erreur">La liste a été détruite !</p>
 
 {else}
-
-{if !$details.own}
-<p class='erreur'>
-Tu n'es pas administrateur de la liste, mais du site.
-</p>
-{/if}
 
 {include file="lists/header_listes.tpl" on=delete}
 
@@ -52,8 +45,8 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='pair'>
       <td>
-        Si tu veux préserver les archives de la liste, décoche la case ci-contre.
-        <input type="checkbox" checked="checked" name="del_archive" />
+        <label>Si tu veux préserver les archives de la liste, décoche la case ci-contre.
+        <input type="checkbox" checked="checked" name="del_archive" /></label>
       </td>
     </tr>
     <tr class='impair'>

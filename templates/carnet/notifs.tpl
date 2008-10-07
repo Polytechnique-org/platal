@@ -30,8 +30,8 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
   {xsrf_token_field}
   <fieldset>
     <legend>Email</legend>
-    <input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
-    Recevoir un email hebdomadaire des événements que je n'ai pas déjà vus sur le site.<br />
+    <label><input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
+    Recevoir un email hebdomadaire des événements que je n'ai pas déjà vus sur le site.</label><br />
     <input type='hidden' name='flags_mail' value='valider' />
   </fieldset>
 </form>
@@ -41,8 +41,8 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
   <fieldset>
     <legend>Événements à surveiller</legend>
     {foreach from=$watch->cats() item=s key=i}
-    <input type='checkbox' name='sub[{$i}]' {if $watch->subs($i)}checked="checked"{/if} />
-    {$s.short} {if $s.type eq near}<sup>o</sup>{elseif $s.type eq often}<sup>*</sup>{/if}<br />
+    <label><input type='checkbox' name='sub[{$i}]' {if $watch->subs($i)}checked="checked"{/if} />
+    {$s.short} {if $s.type eq near}<sup>o</sup>{elseif $s.type eq often}<sup>*</sup>{/if}</label><br />
     {/foreach}
     <span class='smaller'><sup>*</sup>: ne concerne pas les promos (événements très fréquents).</span><br />
     <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$smarty.session.promo-1} et {$promo_sortie-2} que tu surveilles.</span>
@@ -60,7 +60,8 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
   {xsrf_token_field}
   <fieldset>
     <legend>Contacts</legend>
-    <input type='checkbox' name='contacts' onclick="this.form.submit();" {if $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts<br />
+    <label><input type='checkbox' name='contacts' onclick="this.form.submit();" {if
+    $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts</label><br />
     <input type='hidden' name='flags_contacts' value='valider' />
   </fieldset>
 </form>

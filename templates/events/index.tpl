@@ -42,47 +42,60 @@ Bienvenue {$smarty.session.yourself_name}{if $birthday}
 {/if}
 
 {if $smarty.session.no_redirect}
-<p class="erreur">
-  Tu n'as plus de redirection valide ce qui rend ton adresse Polytechnique.org
-  inutilisable. Rends-toi au plus vite sur <a href="emails/redirect">la page de 
-  gestion des emails</a> pour corriger ce problème.
-</p>
+<div class="errors">
+  <ul>
+    <li>
+      Tu n'as plus de redirection valide ce qui rend ton adresse Polytechnique.org
+      inutilisable. Rends-toi au plus vite sur <a href="emails/redirect">la page de 
+      gestion des emails</a> pour corriger ce problème.
+    </li>
+  </ul>
+</div>
 {/if}
 
 {if $smarty.session.mx_failures|@count}
-<fieldset>
-  <legend>{icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes</legend>
-  {foreach from=$smarty.session.mx_failures item=mail}
-  <div>
-    <span class="erreur">{$mail.mail}</span>
-    <div class="explication">{$mail.text}</div>
-  </div>
-  {/foreach}
-  <div><a href="emails/redirect">Gérer mes adresses de redirection</a></div>
-</fieldset>
+<div class="warnings">
+  {icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes :
+  <ul>
+    {foreach from=$smarty.session.mx_failures item=mail}
+    <li>
+      <span class="erreur">{$mail.mail}</span> :
+      <span class="explication">{$mail.text}</span>
+    </li>
+    {/foreach}
+  </ul>
+  <div style="text-align: center"><a href="emails/redirect">Gérer mes adresses de redirection</a></div>
+</div>
 {/if}
 
+{if $fiche_incitation || $photo_incitation || ($geoloc_incitation > 0)}
+<div class="warnings">
+  <ul>
 {if $fiche_incitation}
-  <p>La dernière mise à jour de ta
-  <a href="profile/{$smarty.session.forlife}" class="popup2">fiche</a>
-  date du {$fiche_incitation|date_format}.
-  Il est possible qu'elle ne soit pas à jour.
-  Si tu souhaites la modifier, <a href="profile/edit">clique ici !</a>
-  </p>
+  <li>
+    La dernière mise à jour de ta
+    <a href="profile/{$smarty.session.forlife}" class="popup2">fiche</a>
+    date du {$fiche_incitation|date_format}.
+    Il est possible qu'elle ne soit pas à jour.
+    Si tu souhaites la modifier, <a href="profile/edit">clique ici !</a>
+  </li>
 {/if}
 
 {if $photo_incitation}
-  <p>
+  <li>
     Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
     Clique <a href="photo/change">ici</a> si tu souhaites en ajouter une.
-  </p>
+  </li>
 {/if}
 
 {if $geoloc_incitation > 0}
-  <p>
+  <li>
     Parmi tes adresses, il y en a {$geoloc_incitation} que nous n'avons pas pu localiser.
     Clique <a href="profile/edit/adresses">ici</a> pour rectifier.
-  </p>
+  </li>
+{/if}
+  </ul>
+</div>
 {/if}
 
 {include file="include/tips.tpl" full=true}
