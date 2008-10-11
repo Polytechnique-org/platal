@@ -111,7 +111,7 @@
             </tr>
             <tr>
               <td class="titre">Sécurité</td>
-              <td>{checkpasswd prompt="nouveau" submit="create_account"}</td>
+              <td>{checkpasswd prompt="nouveau" submit="create_account" text="Créer mon compte !"}</td>
             </tr>
           </table>
           </form>
@@ -380,7 +380,7 @@
               </tr>
               <tr>
                 <td class="titre">Sécurité</td>
-                <td>{checkpasswd prompt="nouveau" submit="create_account"}</td>
+                <td>{checkpasswd prompt="nouveau" submit="create_account" text="Créer mon compte !"}</td>
               </tr>
               <tr>
                 <td></td>

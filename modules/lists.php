@@ -806,12 +806,16 @@ class ListsModule extends PLModule
                                  $type, $liste.$app.$domain);
                 }
                 $page->assign('deleted', true);
+                $page->trigSuccess('La liste a été détruite !');
             } else {
                 $page->kill('Une erreur est survenue lors de la suppression de la liste.<br />'
                          . 'Contact les administrateurs du site pour régler le problème : '
                          . '<a href="mailto:support@polytechnique.org">support@polytechnique.org</a>');
             }
         } elseif (list($details,$options) = $this->client->get_owner_options($liste)) {
+            if (!$details['own']) {
+                $page->trigWarning('Tu n\'es pas administrateur de la liste, mais du site.');
+            }
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
             $page->assign('bogo_level', $this->client->get_bogo_level($liste));

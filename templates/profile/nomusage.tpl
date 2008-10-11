@@ -23,15 +23,8 @@
 <h1>Nom d'usage</h1>
 
 {if $same}
-  <p class="erreur">
-      Si ton nom d'usage est identique à ton nom à l'X, il n'est pas
-      nécessaire de le saisir ici!
-  </p>
   <p>
-    Pour supprimer ton nom d'usage, fais une demande avec un nom vide et en précisant la raison.
-  </p>
-  <p>
-    [<a href='profile/usage'>Refaire une demande</a>] - [<a href='profile/edit'>Retour au profil</a>]
+    Tu peux soit <a href='profile/usage'>refaire une demande de nom d'usage</a>, soit <a href='profile/edit'>retourner à l'édition de ton profil</a>.
   </p>
 {else}
   {if $myusage}

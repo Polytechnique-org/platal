@@ -237,7 +237,6 @@ class EmailModule extends PLModule
         // Apply email redirection change requests.
         if ($action == 'remove' && $email) {
             $retour = $redirect->delete_email($email);
-            $page->assign('retour', $retour);
         }
 
         if ($action == 'active' && $email) {
@@ -259,13 +258,27 @@ class EmailModule extends PLModule
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
-                $page->assign('retour', $redirect->add_email(Env::v('email')));
+                $retour = $redirect->add_email(Env::v('email'));
             } elseif (empty($actifs)) {
-                $page->assign('retour', ERROR_INACTIVE_REDIRECTION);
+                $retour = ERROR_INACTIVE_REDIRECTION;
             } elseif (is_array($actifs)) {
-                $page->assign('retour', $redirect->modify_email($actifs,
-                    Env::v('emails_rewrite',Array())));
+                $retour = $redirect->modify_email($actifs, Env::v('emails_rewrite', Array()));
             }
+        }
+
+        switch ($retour) {
+          case ERROR_INACTIVE_REDIRECTION:
+            $page->trigError('Tu ne peux pas avoir aucune adresse de redirection active, sinon ton adresse '
+                             . $user->forlifeEmail() . ' ne fonctionnerait plus.');
+            break;
+          case ERROR_INVALID_EMAIL:
+            $page->trigError('Erreur: l\'email n\'est pas valide.');
+            break;
+          case ERROR_LOOP_EMAIL:
+            $page->trigError('Erreur : ' . $user->forlifeEmail()
+                             . ' ne doit pas être renvoyé vers lui-même, ni vers son équivalent en '
+                             . $globals->mail->domain2 . ' ni vers polytechnique.edu.');
+            break;
         }
 
         // Fetch the @alias_dom email alias, if any.

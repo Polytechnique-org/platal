@@ -24,15 +24,8 @@
 {if $deleted}
 
 <p>[<a href='{$platal->ns}lists'>Voir toutes les listes</a>]</p>
-<p class="erreur">La liste a été détruite !</p>
 
 {else}
-
-{if !$details.own}
-<p class='erreur'>
-Tu n'es pas administrateur de la liste, mais du site.
-</p>
-{/if}
 
 {include file="lists/header_listes.tpl" on=delete}
 
