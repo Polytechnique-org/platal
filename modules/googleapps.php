@@ -44,17 +44,18 @@ class GoogleAppsModule extends PLModule
         $page->addJsLink('motdepasse.js');
         $page->setTitle('Compte Google Apps');
 
-        $account = new GoogleAppsAccount(S::user());
+        $user = S::user();
+        $account = new GoogleAppsAccount($user);
 
         // Fills up the 'is Google Apps redirection active' variable.
         $page->assign('redirect_active', false);
         $page->assign('redirect_unique', true);
 
         if ($account->active()) {
-            $redirect = new Redirect(S::user());
+            $redirect = new Redirect($user);
             $page->assign('redirect_unique', !$redirect->other_active('googleapps'));
 
-            $storage = new EmailStorage(S::v('uid'), 'googleapps');
+            $storage = new EmailStorage($user, 'googleapps');
             $page->assign('redirect_active', $storage->active);
         }
 
@@ -193,7 +194,7 @@ class GoogleAppsModule extends PLModule
 
         if ($user) {
             $account = new GoogleAppsAccount($user);
-            $storage = new EmailStorage($user->id(), 'googleapps');
+            $storage = new EmailStorage($user, 'googleapps');
 
             // Force synchronization of plat/al and Google Apps passwords.
             if ($action == 'forcesync' && $account->sync_password) {
