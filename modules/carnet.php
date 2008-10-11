@@ -43,7 +43,7 @@ class CarnetModule extends PLModule
             return;
         }
         $page->setRssLink('Polytechnique.org :: Carnet',
-                          '/carnet/rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
+                          '/carnet/rss/'.S::v('hruid').'/'.S::v('core_rss_hash').'/rss.xml');
     }
 
     function handler_index(&$page)
@@ -156,41 +156,6 @@ class CarnetModule extends PLModule
         }
 
         $page->assign_by_ref('watch', $watch);
-    }
-
-    function _get_list($offset, $limit) {
-        $uid   = S::v('uid');
-        $res   = XDB::query("SELECT COUNT(*) FROM contacts WHERE uid = {?}", $uid);
-        $total = $res->fetchOneCell();
-
-        $order = Get::v('order');
-        $orders = Array(
-            'nom'     => 'nom DESC, u.prenom, u.promo',
-            'promo'   => 'promo DESC, nom, u.prenom',
-            'last'    => 'u.date DESC, nom, u.prenom, promo');
-        if ($order != 'promo' && $order != 'last')
-            $order = 'nom';
-        $order = $orders[$order];
-        if (Get::v('inv') == '')
-            $order = str_replace(" DESC,", ",", $order);
-
-        $res   = XDB::query("
-                SELECT  u.prenom, IF(u.nom_usage='',u.nom,u.nom_usage) AS nom, a.alias AS forlife, u.promo
-                  FROM  contacts       AS c
-            INNER JOIN  auth_user_md5  AS u   ON (u.user_id = c.contact)
-            INNER JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type='a_vie')
-                 WHERE  c.uid = {?}
-              ORDER BY  $order
-                 LIMIT  {?}, {?}", $uid, $offset*$limit, $limit);
-        $list  = $res->fetchAllAssoc();
-
-        return Array($total, $list);
-    }
-
-    function searchErrorHandler($explain) {
-        $page =& Platal::page();
-        $page->trigError($explain);
-        $this->handler_contacts($page);
     }
 
     function handler_contacts(&$page, $action = null, $subaction = null, $ssaction = null)
@@ -309,6 +274,7 @@ class CarnetModule extends PLModule
         } else if (!$uid) {
             exit;
         }
+
         require_once 'ical.inc.php';
         $page->changeTpl('carnet/calendar.tpl', NO_SKIN);
         $page->register_function('display_ical', 'display_ical');
@@ -320,21 +286,21 @@ class CarnetModule extends PLModule
                         u.naissance,
                         DATE_ADD(u.naissance, INTERVAL 1 DAY) AS end,
                         u.date_ins,
-                        a.alias AS forlife
+                        u.hruid
                    FROM contacts      AS c
              INNER JOIN auth_user_md5 AS u ON (u.user_id = c.contact)
              INNER JOIN aliases       AS a ON (u.user_id = a.id AND a.type = \'a_vie\')
                   WHERE c.uid = {?}', $uid);
 
         $annivs = Array();
-        while (list($prenom, $nom, $promo, $naissance, $end, $ts, $forlife) = $res->next()) {
+        while (list($prenom, $nom, $promo, $naissance, $end, $ts, $hruid) = $res->next()) {
             $naissance = str_replace('-', '', $naissance);
             $end       = str_replace('-', '', $end);
             $annivs[] = array(
                 'timestamp' => strtotime($ts),
                 'date'      => $naissance,
                 'tomorrow'  => $end,
-                'forlife'   => $forlife,
+                'hruid'     => $hruid,
                 'summary'   => 'Anniversaire de '.$prenom
                                 .' '.$nom.' - x '.$promo,
             );
