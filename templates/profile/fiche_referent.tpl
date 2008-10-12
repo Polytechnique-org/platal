@@ -25,8 +25,8 @@
 <div id="fiche_referent">
   <div id="fiche_identite">
     <div class="civilite">
-      <strong>{$prenom} {$nom}</strong><br />
-      <span>X{$promo}&nbsp;-&nbsp;</span> <a href="mailto:{$bestalias}@{#globals.mail.domain#}">{$bestalias}@{#globals.mail.domain#}</a>
+      <strong>{$user->fullName()}</strong><br />
+      <span>X{$user->promo()}&nbsp;-&nbsp;</span> <a href="mailto:{$user->bestEmail()}">{$user->bestEmail()}</a>
     </div>
   </div>
   <div class="spacer"></div>

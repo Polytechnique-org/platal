@@ -324,7 +324,7 @@ class ProfileModule extends PLModule
             $page->assign('no_private_key', true);
         }
         if (Env::v('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
-            ax_synchronize(S::v('bestalias'), S::v('uid'));
+            ax_synchronize(S::user()->login(), S::v('uid'));
             $page->trigSuccess('Ton profil a été synchronisé avec celui du site polytechniciens.com');
         }
 
@@ -521,39 +521,24 @@ class ProfileModule extends PLModule
     function handler_referent(&$page, $x = null)
     {
         require_once 'user.func.inc.php';
-
-        if (is_null($x)) {
-            return PL_NOT_FOUND;
-        }
-
         $page->changeTpl('profile/fiche_referent.tpl', SIMPLE);
 
-        $res = XDB::query(
-                "SELECT  prenom, nom, user_id, promo, cv, a.alias AS bestalias
-                  FROM  auth_user_md5 AS u
-            INNER JOIN  aliases       AS a ON (u.user_id=a.id
-                                               AND FIND_IN_SET('bestalias', a.flags))
-            INNER JOIN  aliases       AS a1 ON (u.user_id=a1.id
-                                                AND a1.alias = {?}
-                                                AND a1.type!='homonyme')", $x);
-
-        if ($res->numRows() != 1) {
+        $user = User::get($x);
+        if ($user == null) {
             return PL_NOT_FOUND;
         }
 
-        list($prenom, $nom, $user_id, $promo, $cv, $bestalias) = $res->fetchOneRow();
+        $res = XDB::query("SELECT cv FROM auth_user_md5 WHERE user_id = {?}", $user->id());
+        $cv = $res->fetchOneCell();
 
-        $page->assign('prenom', $prenom);
-        $page->assign('nom',    $nom);
-        $page->assign('promo',  $promo);
-        $page->assign('cv',     MiniWiki::WikiToHTML($cv, true));
-        $page->assign('bestalias', $bestalias);
-        $page->assign('adr_pro', get_user_details_pro($user_id));
+        $page->assign_by_ref('user', $user);
+        $page->assign('cv', MiniWiki::WikiToHTML($cv, true));
+        $page->assign('adr_pro', get_user_details_pro($user->id()));
 
         /////  recuperations infos referent
 
         //expertise
-        $res = XDB::query("SELECT expertise FROM mentor WHERE uid = {?}", $user_id);
+        $res = XDB::query("SELECT expertise FROM mentor WHERE uid = {?}", $user->id());
         $page->assign('expertise', $res->fetchOneCell());
 
         //secteurs
@@ -563,7 +548,7 @@ class ProfileModule extends PLModule
                    FROM  mentor_secteurs AS m
               LEFT JOIN  emploi_secteur AS s ON(m.secteur = s.id)
               LEFT JOIN  emploi_ss_secteur AS ss ON(m.secteur = ss.secteur AND m.ss_secteur = ss.id)
-                  WHERE  uid = {?}", $user_id);
+                  WHERE  uid = {?}", $user->id());
         while (list($sec, $ssec) = $res->next()) {
             $secteurs[]    = $sec;
             $ss_secteurs[] = $ssec;
@@ -576,7 +561,7 @@ class ProfileModule extends PLModule
                 "SELECT  gp.pays
                    FROM  mentor_pays AS m
               LEFT JOIN  geoloc_pays AS gp ON(m.pid = gp.a2)
-                  WHERE  uid = {?}", $user_id);
+                  WHERE  uid = {?}", $user->id());
         $page->assign('pays', $res->fetchColumn());
 
         $page->addJsLink('close_on_esc.js');
