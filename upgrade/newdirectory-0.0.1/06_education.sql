@@ -8,8 +8,11 @@ CREATE TABLE IF NOT EXISTS profile_education_field_enum (
 CREATE TABLE IF NOT EXISTS profile_education_degree_enum (
   id INT(2) NOT NULL AUTO_INCREMENT,
   degree VARCHAR(255) DEFAULT NULL,
+  abbreviation VARCHAR(255) DEFAULT '' NOT NULL,
+  level TINYINT (1) UNSIGNED DEFAULT 0 NOT NULL,
   PRIMARY KEY(id),
-  UNIQUE KEY(degree)
+  UNIQUE KEY(degree),
+  UNIQUE KEY(abbreviation)
 ) CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS profile_education_degree (
@@ -21,10 +24,12 @@ CREATE TABLE IF NOT EXISTS profile_education_degree (
 CREATE TABLE IF NOT EXISTS profile_education_enum (
   id INT(4) NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) DEFAULT NULL,
+  abbreviation VARCHAR(255) DEFAULT '' NOT NULL,
   url VARCHAR(255) DEFAULT NULL,
   country CHAR(2) NOT NULL DEFAULT 'FR',
   PRIMARY KEY(id),
-  UNIQUE KEY(name)
+  UNIQUE KEY(name),
+  UNIQUE KEY(IF(abbreviation = '', name, abbreviation))
 ) CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS profile_education (
@@ -33,8 +38,10 @@ CREATE TABLE IF NOT EXISTS profile_education (
   eduid INT(4) NOT NULL DEFAULT 0,
   degreeid INT(4) NOT NULL DEFAULT 0,
   fieldid INT(2) NOT NULL DEFAULT 0,
+  entry_year INT(4) DEFAULT NULL,
   grad_year INT(4) DEFAULT NULL,
   program VARCHAR(255) DEFAULT NULL,
+  flags SET('primary') DEFAULT '' NOT NULL,
   PRIMARY KEY(id, uid)
 ) CHARSET=utf8;
 

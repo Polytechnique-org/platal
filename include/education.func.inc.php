@@ -24,7 +24,10 @@ function education_options($current = 0)
     $html = '<option value="-1"></option>';
     $res  = XDB::iterator("SELECT  e.id AS id, e.name AS name, g.pays AS country
                              FROM  profile_education_enum AS e
-                       INNER JOIN  geoloc_pays            AS g ON (e.country = g.a2)
+                        LEFT JOIN  geoloc_pays            AS g ON (e.country = g.a2)
+                     WHERE EXISTS  (SELECT  *
+                                      FROM  profile_education_degree AS d
+                                     WHERE  e.id = d.eduid)
                          ORDER BY  g.pays, e.name");
     $country = "";
     while ($arr_edu = $res->next()) {
@@ -57,10 +60,10 @@ Platal::page()->register_function('education_options', '_education_options_smart
 function education_degree()
 {
     $html = "";
-    $res = XDB::iterRow("SELECT  eduid, degreeid
-                           FROM  profile_education_degree AS d
-                     INNER JOIN  profile_education_enum   AS e ON (e.id = d.eduid)
-                     INNER JOIN  geoloc_pays              AS g ON (e.country = g.a2)
+    $res = XDB::iterRow("SELECT  d.eduid, d.degreeid
+                           FROM  profile_education_enum   AS e
+                     INNER JOIN  profile_education_degree AS d ON (e.id = d.eduid)
+                      LEFT JOIN  geoloc_pays              AS g ON (e.country = g.a2)
                        ORDER BY  g.pays, e.name");
     if ($edu_degree = $res->next()) {
         $eduid = $edu_degree['0'];
@@ -92,7 +95,6 @@ Platal::page()->register_function('education_degree', 'education_degree');
  */
 function education_degree_all()
 {
-    $html = "";
     $res = XDB::query("SELECT  id
                          FROM  profile_education_degree_enum
                      ORDER BY  id");
@@ -104,11 +106,10 @@ Platal::page()->register_function('education_degree_all', 'education_degree_all'
  */
 function education_degree_name()
 {
-    $html = "";
     $res = XDB::query("SELECT  degree
-                           FROM  profile_education_degree_enum
-                       ORDER BY  id");
-    return '\'' . implode('\',\'', $res->fetchColumn()) . '\'';
+                         FROM  profile_education_degree_enum
+                     ORDER BY  id");
+    return '"' . implode('","', $res->fetchColumn()) . '"';
 }
 Platal::page()->register_function('education_degree_name', 'education_degree_name');
 
@@ -142,19 +143,17 @@ function education_fmt($name, $url, $degree, $grad_year, $field, $program, $sexe
         }
     }
 
-    if (($degree != "Licence") || ($long)) {
-        if (($degree != "Ingénieur") && ($degree != "Diplôme")) {
+    if (($degree != "Lic.") || ($long)) {
+        if (($degree != "Ing.") && ($degree != "Dipl.")) {
             $txt .= $degree;
         }
-        if ($name != "Université") {
-            if ($name) {
-                $txt .= ' ';
-            }
-            if ($url != ' ') {
-                $txt .= "<a href=\"$url\" onclick=\"return popup(this)\">$name</a>";
-            } else {
-                $txt .= $name;
-            }
+        if ($name) {
+            $txt .= ' ';
+        }
+        if ($url != ' ') {
+            $txt .= "<a href=\"$url\" onclick=\"return popup(this)\">$name</a>";
+        } else {
+            $txt .= $name;
         }
     }
     $txt .= "</span>";

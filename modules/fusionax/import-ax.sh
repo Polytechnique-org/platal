@@ -19,8 +19,12 @@ echo intégration dans notre bdd
 $MYSQL x4dat < Activites.sql
 $MYSQL x4dat < Adresses.sql
 $MYSQL x4dat < Anciens.sql
-$MYSQL x4dat < Formations.sql
 $MYSQL x4dat < Entreprises.sql
+./formation.pl
+cat Formations_out.txt > Formations.txt
+rm -f Formations_out.txt
+$MYSQL x4dat < Formations.sql
+
 
 # nettoyage
 echo nettoyage

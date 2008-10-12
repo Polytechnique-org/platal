@@ -43,6 +43,7 @@ class FusionAxModule extends PLModule
             'fusionax/view'     => $this->make_hook('view',     AUTH_MDP, 'admin'),
             'fusionax/ids'      => $this->make_hook('ids',      AUTH_MDP, 'admin'),
             'fusionax/deceased' => $this->make_hook('deceased', AUTH_MDP, 'admin'),
+            'fusionax/promo'    => $this->make_hook('promo',    AUTH_MDP, 'admin'),
         );
     }
 
@@ -171,12 +172,12 @@ class FusionAxModule extends PLModule
             XDB::execute('DROP VIEW IF EXISTS fusionax_deceased');
             XDB::execute('CREATE VIEW  fusionax_deceased AS
                                SELECT  u.user_id, a.id_ancien, u.nom, u.prenom, u.promo, u.deces AS deces_xorg, a.Date_deces AS deces_ax
-                                 FROM  auth_user_md5 i  AS u
+                                 FROM  auth_user_md5    AS u
                            INNER JOIN  fusionax_anciens AS a ON (a.id_ancien = u.matricule_ax)
                                 WHERE  u.deces != a.Date_deces');
             XDB::execute('DROP VIEW IF EXISTS fusionax_promo');
             XDB::execute('CREATE VIEW  fusionax_promo AS
-                               SELECT  u.user_id, u.matricule_ax, u.nom, u.prenom, u.promo AS promo_etude_xorg,
+                               SELECT  u.user_id, u.matricule_ax, CONCAT(u.nom, " ", u.prenom) AS display_name, u.promo AS promo_etude_xorg,
                                        f.promotion_etude AS promo_etude_ax, u.promo_sortie AS promo_sortie_xorg
                                  FROM  auth_user_md5    AS u
                            INNER JOIN  fusionax_anciens AS f ON (u.matricule_ax = f.id_ancien)
@@ -407,6 +408,24 @@ class FusionAxModule extends PLModule
                                WHERE  d.deces_xorg != "0000-00-00" AND d.deces_ax != "0000-00-00"');
         $page->assign('nbDeceasedDifferent', $res->total());
         $page->assign('deceasedDifferent', $res);
+    }
+
+    function handler_promo(&$page, $action = '')
+    {
+        $page->changeTpl('fusionax/promo.tpl');
+        $res = XDB::iterator('SELECT  user_id, display_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax
+                                FROM  fusionax_promo
+                               WHERE  !(promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg)');
+        $nbMissmatchingPromos = $res->total();
+        $page->assign('nbMissmatchingPromos1', $res->total());
+        $page->assign('missmatchingPromos1', $res);
+        $res = XDB::iterator('SELECT  user_id, display_name, promo_etude_xorg, promo_sortie_xorg, promo_etude_ax
+                                FROM  fusionax_promo
+                               WHERE  promo_etude_ax + 1 = promo_etude_xorg AND promo_etude_xorg + 3 = promo_sortie_xorg');
+        $nbMissmatchingPromos += $res->total();
+        $page->assign('nbMissmatchingPromos2', $res->total());
+        $page->assign('missmatchingPromos2', $res);
+        $page->assign('nbMissmatchingPromos', $nbMissmatchingPromos);
     }
 }
 

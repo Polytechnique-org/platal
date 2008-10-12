@@ -353,19 +353,18 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
     $res = XDB::iterRow("SELECT  en.name AS name, en.url AS url, d.degree AS degree,
                                  ed.grad_year AS grad_year, f.field AS field, ed.program AS program
                            FROM  profile_education AS ed
-                     INNER JOIN  profile_education_enum        AS en ON (en.id = ed.eduid)
-                     INNER JOIN  profile_education_degree_enum AS d  ON (d.id  = ed.degreeid)
-                     INNER JOIN  profile_education_field_enum  AS f  ON (f.id  = ed.fieldid)
+                      LEFT JOIN  profile_education_enum        AS en ON (en.id = ed.eduid)
+                      LEFT JOIN  profile_education_degree_enum AS d  ON (d.id  = ed.degreeid)
+                      LEFT JOIN  profile_education_field_enum  AS f  ON (f.id  = ed.fieldid)
                           WHERE  uid={?}
                        ORDER BY  ed.grad_year", $uid);
 
-    $user['education'] = "";
-    require_once('education.func.inc.php');
     if (list($name, $url, $degree, $grad_year, $field, $program) = $res->next()) {
-        $user['education'] .= education_fmt($name, $url, $degree, $grad_year, $field, $program, $user['sexe'], true);
+        require_once('education.func.inc.php');
+        $user['education'][] = education_fmt($name, $url, $degree, $grad_year, $field, $program, $user['sexe'], true);
     }
     while (list($name, $url, $degree, $grad_year, $field, $program) = $res->next()) {
-        $user['education'] .= ", " . education_fmt($name, $url, $degree, $grad_year, $field, $program, $user['sexe'], true);
+        $user['education'][] = education_fmt($name, $url, $degree, $grad_year, $field, $program, $user['sexe'], true);
     }
 
     if (has_user_right($user['corps_pub'], $view)) {

@@ -20,50 +20,18 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<table class="bicol">
-    <tr>
-        <th>Ancien</th>
-        <th>Fiches</th>
-        {if $field1}
-        <th>{$namefield1}</th>
-        {/if}
-        {if $field2}
-        <th>{$namefield2}</th>
-        {/if}
-        {if $field3}
-        <th>{$namefield3}</th>
-        {/if}
-        {if $field4}
-        <th>{$namefield4}</th>
-        {/if}
-        {if $fusionAction}
-        <th>Action</th>
-        {/if}
-    </tr>
-{if $fusionList}
-{iterate from=$fusionList item=c}
-    <tr class="{cycle values="pair,impair"}">
-        <td>{$c.display_name} (X {$c.promo})</td>
-        <td style="text-align:center">
-            {if $c.user_id}<a href="admin/user/{$c.user_id}" class="popup2">{icon name="user_suit" title="Administrer utilisateur"}</a>{/if}
-            {if $c.id_ancien}<a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.id_ancien}" class="popup2">{icon name="user_gray" title="fiche AX"}</a>{/if}
-        </td>
-        {if $field1}
-        <td>{$c.$field1}</td>
-        {/if}
-        {if $field2}
-        <td>{$c.$field2}</td>
-        {/if}
-        {if $field3}
-        <td>{$c.$field3}</td>
-        {/if}
-        {if $field4}
-        <td>{$c.$field4}</td>
-        {/if}
-        {if $fusionAction}
-        <td><a class="fusion-action" href="{$fusionAction}/{$c.user_id}/{$c.id_ancien}">{$name}</a></td>
-        {/if}
-    </tr>
-{/iterate}
+<h2><a href="fusionax">Fusion des annuaires X.org - AX</a> / Promotions</h2>
+
+<p></p>
+
+{if $nbMissmatchingPromos > 0}
+<p>Il y a {$nbMissmatchingPromos} différences entre les deux bases dans pour les promotions.</p>
+<p>Grosses différences (oranjisation ?) :</p>
+{include file='fusionax/listFusion.tpl' fusionList=$missmatchingPromos1 field1='user_id' namefield1='ID X.org' field3='promo_etude_xorg'
+namefield3='etude_xorg' field4='promo_sortie_xorg' namefield4='sortie_xorg' field2='promo_etude_ax' namefield2='etude_ax'}
+
+<p>Petites différences : promo_etude_xorg == promo_etude_ax + 1 et promo_etude_xorg + 3 == promo_sortie_xorg, a priori ce sont les étrangers que nous avons mal
+inclus</p>
+{include file='fusionax/listFusion.tpl' fusionList=$missmatchingPromos2 field1='user_id' namefield1='ID X.org' field3='promo_etude_xorg'
+namefield3='etude_xorg' field4='promo_sortie_xorg' namefield4='sortie_xorg' field2='promo_etude_ax' namefield2='etude_ax'}
 {/if}
-</table>

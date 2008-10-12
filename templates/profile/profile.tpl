@@ -144,14 +144,18 @@ function chgMainWinLoc(strPage)
       {if $x.promo_sortie && ($x.promo_sortie-3 > $x.promo)}
         - X {math equation="a-b" a=$x.promo_sortie b=3}
       {/if}
+        {if $logged && $x.is_referent}
+        [<a href="referent/{$user->login()}" class='popup2'>Ma fiche référent</a>]
+        {/if}
       {if $x.education}
-        &nbsp;-&nbsp;Formation&nbsp;: {$x.education|smarty:nodefaults}
-      {/if}
-      {if $logged && $x.is_referent}
-      [<a href="referent/{$user->login()}" class='popup2'>Ma fiche référent</a>]
+        &nbsp;-&nbsp;Formation&nbsp;:
+        <ul>
+        {foreach from=$x.education item="edu"}
+          <li>{$edu|smarty:nodefaults}</li>
+        {/foreach}
+        </ul>
       {/if}
       {if $x.corps}
-        <br />
         {$x.corps|smarty:nodefaults}
       {/if}
     </div>
