@@ -142,12 +142,12 @@ function previewWiki(idFrom, idTo, withTitle, idShow)
     }
 }
 
-function sendTestEmail(token, forlife)
+function sendTestEmail(token, hruid)
 {
-    Ajax.update_html(null, 'emails/test' + (forlife == null ? '' : '/' + forlife) + '?token=' + token,
+    Ajax.update_html(null, 'emails/test' + (hruid == null ? '' : '/' + hruid) + '?token=' + token,
                      function() {
                         showTempMessage('mail_sent', "Un email a été envoyé avec succès"
-                                        + (forlife == null ? " sur ton adresse." : " sur l'adresse de " + forlife),
+                                        + (hruid == null ? " sur ton adresse." : " sur l'adresse de " + hruid),
                                         true); });
     return false;
 }

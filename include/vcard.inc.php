@@ -83,6 +83,7 @@ class VCard extends PlVCard
         }
 
         // Emails
+        // TODO: this logic is not hruid-compatible; replace it.
         $entry->addMail(null, $user['bestalias'] . '@' . $globals->mail->domain, true);
         $entry->addMail(null, $user['bestalias'] . '@' . $globals->mail->domain2);
         if ($user['bestalias'] != $user['forlife']) {

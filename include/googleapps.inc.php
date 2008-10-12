@@ -101,7 +101,7 @@ function post_queue_u_update($job) {
 // TODO(vincent.zanotti): add the url of gappsd, when available.
 class GoogleAppsAccount
 {
-    // User identification: user id, and forlife.
+    // User identification: user id, and hruid.
     private $user;
     public $g_account_name;
 

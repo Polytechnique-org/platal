@@ -880,9 +880,8 @@ class AdminModule extends PLModule
         $page->setTitle('Administration - Décédés');
 
         $res = XDB::iterator(
-                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.matricule_ax, a.alias, DATE(MAX(s.start)) AS last
+                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.matricule_ax, u.hruid, DATE(MAX(s.start)) AS last
                    FROM  auth_user_md5 AS u
-              LEFT JOIN  aliases AS a ON (a.id = u.user_id AND a.type = 'a_vie')
               LEFT JOIN  logger.sessions AS s ON (s.uid = u.user_id AND suid = 0)
                   WHERE  perms IN ('admin', 'user') AND deces <> 0
                GROUP BY  u.user_id
@@ -1051,7 +1050,7 @@ class AdminModule extends PLModule
     {
         if (S::v('core_rss_hash')) {
            $page->setRssLink('Changement Récents',
-                             '/Site/AllRecentChanges?action=rss&user=' . S::v('forlife') . '&hash=' . S::v('core_rss_hash'));
+                             '/Site/AllRecentChanges?action=rss&user=' . S::v('hruid') . '&hash=' . S::v('core_rss_hash'));
         }
 
         // update wiki perms
@@ -1160,18 +1159,18 @@ class AdminModule extends PLModule
             $sql = "SELECT  w.ip, IF(s.ip IS NULL,
                                      IF(w.ip = s2.ip, s2.host, s2.forward_host),
                                      IF(w.ip = s.ip, s.host, s.forward_host)),
-                            w.mask, w.detection, w.state, a.alias AS forlife
+                            w.mask, w.detection, w.state, u.hruid
                       FROM  ip_watch        AS w
                  LEFT JOIN  logger.sessions AS s  ON (s.ip = w.ip)
                  LEFT JOIN  logger.sessions AS s2 ON (s2.forward_ip = w.ip)
-                 LEFT JOIN  aliases         AS a  ON (a.id = s.uid AND a.type = 'a_vie')
-                  GROUP BY  w.ip, a.alias
-                  ORDER BY  w.state, w.ip, a.alias";
+                 LEFT JOIN  auth_user_md5   AS u  ON (u.user_id = s.uid)
+                  GROUP BY  w.ip, u.hruid
+                  ORDER BY  w.state, w.ip, u.hruid";
             $it = Xdb::iterRow($sql);
 
             $table = array();
             $props = array();
-            while (list($ip, $host, $mask, $date, $state, $forlife) = $it->next()) {
+            while (list($ip, $host, $mask, $date, $state, $hruid) = $it->next()) {
                 $ip = uint_to_ip($ip);
                 $mask = uint_to_ip($mask);
                 if (count($props) == 0 || $props['ip'] != $ip) {
@@ -1183,9 +1182,9 @@ class AdminModule extends PLModule
                                    'host'      => $host,
                                    'detection' => $date,
                                    'state'     => $state,
-                                   'users'     => array($forlife));
+                                   'users'     => array($hruid));
                 } else {
-                    $props['users'][] = $forlife;
+                    $props['users'][] = $hruid;
                 }
             }
             if (count($props) > 0) {
@@ -1194,18 +1193,18 @@ class AdminModule extends PLModule
             $page->assign('table', $table);
         } elseif ($action == 'edit') {
             $sql = "SELECT  w.detection, w.state, w.last, w.description, w.mask,
-                            a1.alias AS edit, a2.alias AS forlife, s.host
+                            u1.hruid AS edit, u2.hruid AS hruid, s.host
                       FROM  ip_watch        AS w
-                 LEFT JOIN  aliases         AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
+                 LEFT JOIN  auth_user_md5   AS u1 ON (u1.user_id = w.uid)
                  LEFT JOIN  logger.sessions AS s  ON (w.ip = s.ip)
-                 LEFT JOIN  aliases         AS a2 ON (a2.id = s.uid AND a2.type = 'a_vie')
+                 LEFT JOIN  auth_user_md5   AS u2 ON (u2.user_id = s.uid)
                      WHERE  w.ip = {?}
-                  GROUP BY  a2.alias
-                  ORDER BY  a2.alias";
+                  GROUP BY  u2.hruid
+                  ORDER BY  u2.hruid";
             $it = Xdb::iterRow($sql, ip_to_uint($ip));
 
             $props = array();
-            while (list($detection, $state, $last, $description, $mask, $edit, $forlife, $host) = $it->next()) {
+            while (list($detection, $state, $last, $description, $mask, $edit, $hruid, $host) = $it->next()) {
                 if (count($props) == 0) {
                     $props = array('ip'          => $ip,
                                    'mask'        => uint_to_ip($mask),
@@ -1215,9 +1214,9 @@ class AdminModule extends PLModule
                                    'last'        => $last,
                                    'description' => $description,
                                    'edit'        => $edit,
-                                   'users'       => array($forlife));
+                                   'users'       => array($hruid));
                 } else {
-                    $props['users'][] = $forlife;
+                    $props['users'][] = $hruid;
                 }
             }
             $page->assign('ip', $props);

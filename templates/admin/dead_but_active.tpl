@@ -38,10 +38,10 @@
   <tr class="{cycle values="impair,pair"}">
     <td style="text-align: center">{$d.promo}</td>
     <td>
-      <a href="profile/{$d.alias}" class="popup2">{icon name=user_suit title='Afficher la fiche'}</a>
+      <a href="profile/{$d.hruid}" class="popup2">{icon name=user_suit title='Afficher la fiche'}</a>
       <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$d.matricule_ax}">{*
         *}{icon name=user_gray title="fiche AX"}</a>
-      <a href="admin/user/{$d.alias}">{icon name=wrench title='Administrer user'}</a>
+      <a href="admin/user/{$d.hruid}">{icon name=wrench title='Administrer user'}</a>
     </td>
     <td>{$d.prenom} {$d.nom}</td>
     <td style="text-align: center">{$d.deces}</td>

@@ -107,8 +107,8 @@ class SearchModule extends PLModule
                 if ($user) {
                     pl_redirect($base . $user->login());
                 }
-                $_REQUEST['quick'] = $forlife;
-                $_GET['quick'] = $forlife;
+                $_REQUEST['quick'] = $login;
+                $_GET['quick'] = $login;
             } elseif (strpos($quick, 'doc:') === 0) {
                 $url = 'Docs/Recherche?';
                 $url .= 'action=search&q=' . urlencode(substr($quick, 4));
