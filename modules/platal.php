@@ -137,6 +137,14 @@ class PlatalModule extends PLModule
         if (Post::has('rss')) {
             $this->__set_rss_state(Post::b('rss'));
         }
+
+        # FIXME: this code is not multi-domain compatible. We should decide how
+        # carva will extend to users not in the main domain.
+        $res = XDB::query("SELECT  alias
+                             FROM  aliases
+                            WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                          S::user()->id());
+        $page->assign('bestalias', $res->fetchOneCell());
     }
 
     function handler_webredir(&$page)
@@ -169,6 +177,14 @@ class PlatalModule extends PLModule
                                       WHERE user_id = {?}',
                                     S::v('uid'));
         $page->assign('carva', $res->fetchOneCell());
+
+        # FIXME: this code is not multi-domain compatible. We should decide how
+        # carva will extend to users not in the main domain.
+        $res = XDB::query("SELECT  alias
+                             FROM  aliases
+                            WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                          S::user()->id());
+        $page->assign('bestalias', $res->fetchOneCell());
     }
 
     function handler_prefs_rss(&$page)
