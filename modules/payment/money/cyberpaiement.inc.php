@@ -74,7 +74,7 @@ class CyberPayment
             'CHAMP101' => replace_accent(S::v('prenom')),
             'CHAMP102' => '.',
             'CHAMP103' => '.',
-            'CHAMP104' => S::v('bestalias').'@' . $globals->mail->domain,
+            'CHAMP104' => S::user()->bestEmail(),
             'CHAMP106' => '.',
             'CHAMP107' => '.',
             'CHAMP108' => '.',

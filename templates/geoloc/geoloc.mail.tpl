@@ -26,7 +26,7 @@
 {to addr=#to#}
 {subject text="Adresse impossible à geolocaliser"}
 {elseif $mail_part eq 'wiki'}
-Un camarade {$smarty.session.forlife} a forcé l'utilisation de l'adresse entrée
+Un camarade {$smarty.session.hruid} a forcé l'utilisation de l'adresse entrée
 à la main et a refusé la version geolocalisée :
 
 '''Version utilisateur (validée) :'''\\

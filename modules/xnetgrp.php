@@ -317,6 +317,7 @@ class XnetGrpModule extends PLModule
         $mmlist = new MMList(S::v('uid'), S::v('password'),
                            $globals->asso('mail_domain'));
         $page->assign('listes', $mmlist->get_lists());
+        $page->assign('user', S::user());
         $page->addJsLink('ajax.js');
 
         if (Post::has('send')) {

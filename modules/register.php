@@ -419,6 +419,7 @@ class RegisterModule extends PLModule
     {
         global $globals;
         $page->changeTpl('register/success.tpl');
+        $page->assign('user', S::user());
 
         $_SESSION['sub_state'] = array('step' => 5);
         if (Env::has('response2'))  {
