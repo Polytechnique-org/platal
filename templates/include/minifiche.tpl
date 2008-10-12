@@ -64,7 +64,7 @@
         {if !$c.dcd}
     <a href="vcard/{$c.hruid}.vcf">{*
     *}{icon name=vcard title="Afficher la carte de visite"}</a>
-    <a href="mailto:{$c.forlife}@{#globals.mail.domain#}">{*
+    <a href="mailto:{$c.bestemail}">{*
     *}{icon name=email title="Envoyer un email"}</a>
           {if $show_action eq ajouter}
     <a href="carnet/contacts?action={$show_action}&amp;user={$c.hruid}&amp;token={xsrf_token}">{*

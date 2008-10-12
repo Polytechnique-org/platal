@@ -46,9 +46,7 @@ class UserSet extends PlSet
                             (!empty($GLOBALS['IS_XNET_SITE']) ?
                                 'INNER JOIN groupex.membres AS gxm ON (u.user_id = gxm.uid
                                                                        AND gxm.asso_id = ' . $globals->asso('id') . ') ' : '')
-                           . 'LEFT JOIN auth_user_quick AS q USING (user_id)
-                              LEFT JOIN aliases         AS a ON (a.id = u.user_id AND a.type = \'a_vie\')
-                              ' . $joins,
+                           . 'LEFT JOIN auth_user_quick AS q USING (user_id)' . $joins,
                             $where,
                             'u.user_id');
     }
@@ -172,8 +170,9 @@ class MinificheView extends MultipageView
 
     public function fields()
     {
-        return "u.user_id AS id,
-                u.*, a.alias AS forlife,
+        global $globals;
+        return "u.user_id AS id, u.*,
+                CONCAT(a.alias, '@{$globals->mail->domain}') AS bestemail,
                 u.perms != 'pending' AS inscrit,
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces, u.matricule_ax,
@@ -202,6 +201,7 @@ class MinificheView extends MultipageView
                                                       AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : " AND adr.pub = 'public'").")
                  LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
                  LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
+                 LEFT JOIN  aliases        AS a   ON (a.id = u.user_id AND FIND_IN_SET('bestalias', a.flags))
                  LEFT JOIN  emails         AS em  ON (em.uid = u.user_id AND em.flags = 'active')" .
                 (S::logged() ?
                  "LEFT JOIN  contacts       AS c   On (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
@@ -245,9 +245,8 @@ class MentorView extends MultipageView
 
     public function fields()
     {
-        return "m.uid, u.prenom, u.nom, u.promo,
-                a.alias AS forlife, m.expertise, mp.pid,
-                ms.secteur, ms.ss_secteur";
+        return "m.uid, u.prenom, u.nom, u.promo, u.hruid,
+                m.expertise, mp.pid, ms.secteur, ms.ss_secteur";
     }
 
     public function bounds()
@@ -289,7 +288,7 @@ class TrombiView extends MultipageView
 
     public function fields()
     {
-        return "u.user_id, IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom, u.prenom, u.promo, a.alias AS forlife ";
+        return "u.user_id, IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom, u.prenom, u.promo, u.hruid ";
     }
 
     public function joins()
@@ -433,8 +432,7 @@ class GadgetView implements PlView
 
     public function fields()
     {
-        return "u.user_id AS id,
-                u.*, a.alias AS forlife," .
+        return "u.user_id AS id, u.*," .
                 (S::logged() ? "q.profile_mobile AS mobile, " : "IF(q.profile_mobile_pub = 'public', q.profile_mobile, NULL) as mobile, ") .
                "u.perms != 'pending' AS inscrit,
                 u.perms != 'pending' AS wasinscrit,
