@@ -714,7 +714,7 @@ class AdminModule extends PLModule
                 $action = Env::v('valid_promo') == 'Ajouter des membres' ? 'add' : 'ax';
                 pl_redirect('admin/promo/' . $action . '/' . Env::i('promo'));
             } else {
-                $page->trigError('Promo non valide');
+                $page->trigError('Promotion non valide.');
             }
         }
 

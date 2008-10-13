@@ -256,7 +256,7 @@ function get_user_details_adr($uid, $view = 'private') {
 
 function &get_user_details($login, $from_uid = '', $view = 'private')
 {
-    $reqsql = "SELECT  u.user_id, u.promo, u.promo_sortie, u.prenom, u.nom, u.nom_usage, u.date, u.cv,
+    $reqsql = "SELECT  u.user_id, d.promo_display, u.prenom, u.nom, u.nom_usage, u.date, u.cv,
                        u.perms IN ('admin','user','disabled') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
                        q.profile_nick AS nickname, q.profile_from_ax, q.profile_freetext AS freetext,
                        q.profile_freetext_pub AS freetext_pub,
@@ -271,20 +271,21 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                        m.expertise != '' AS is_referent,
                        (COUNT(e.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif,
                        nd.display AS name_display, nd.tooltip AS name_tooltip
-                 FROM  auth_user_md5   AS u
-           INNER JOIN  auth_user_quick AS q   USING(user_id)
-           INNER JOIN  aliases         AS a   ON (u.user_id = a.id AND a.type = 'a_vie')
-           INNER JOIN  aliases         AS a2  ON (u.user_id = a2.id AND FIND_IN_SET('bestalias', a2.flags))
-            LEFT JOIN  contacts        AS c   ON (c.uid = {?} and c.contact = u.user_id)
-            LEFT JOIN  profile_corps   AS co  ON (co.uid = u.user_id)
-            LEFT JOIN  geoloc_pays     AS gp1 ON (gp1.a2 = u.nationalite)
-            LEFT JOIN  geoloc_pays     AS gp2 ON (gp2.a2 = u.nationalite2)
-            LEFT JOIN  geoloc_pays     AS gp3 ON (gp3.a2 = u.nationalite3)
-           INNER JOIN  sections        AS s   ON (s.id  = u.section)
-            LEFT JOIN  photo           AS p   ON (p.uid = u.user_id)
-            LEFT JOIN  mentor          AS m   ON (m.uid = u.user_id)
-            LEFT JOIN  emails          AS e   ON (e.uid = u.user_id AND e.flags='active')
-           INNER JOIN  profile_names_display AS nd ON (nd.user_id = u.user_id)
+                 FROM  auth_user_md5         AS u
+           INNER JOIN  auth_user_quick       AS q   USING(user_id)
+           INNER JOIN  aliases               AS a   ON (u.user_id = a.id AND a.type = 'a_vie')
+           INNER JOIN  aliases               AS a2  ON (u.user_id = a2.id AND FIND_IN_SET('bestalias', a2.flags))
+            LEFT JOIN  contacts              AS c   ON (c.uid = {?} and c.contact = u.user_id)
+            LEFT JOIN  profile_corps         AS co  ON (co.uid = u.user_id)
+            LEFT JOIN  geoloc_pays           AS gp1 ON (gp1.a2 = u.nationalite)
+            LEFT JOIN  geoloc_pays           AS gp2 ON (gp2.a2 = u.nationalite2)
+            LEFT JOIN  geoloc_pays           AS gp3 ON (gp3.a2 = u.nationalite3)
+           INNER JOIN  sections              AS s   ON (s.id  = u.section)
+            LEFT JOIN  photo                 AS p   ON (p.uid = u.user_id)
+            LEFT JOIN  mentor                AS m   ON (m.uid = u.user_id)
+            LEFT JOIN  emails                AS e   ON (e.uid = u.user_id AND e.flags='active')
+           INNER JOIN  profile_names_display AS nd  ON (nd.user_id = u.user_id)
+           INNER JOIN  profile_display       AS d   ON (d.uid = u.user_id)
                 WHERE  a.alias = {?}
              GROUP BY  u.user_id";
     $res  = XDB::query($reqsql, $from_uid, $login);
@@ -292,7 +293,6 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
     $uid  = $user['user_id'];
     // hide orange status, cv, nickname, section
     if (!has_user_right('private', $view)) {
-        $user['promo_sortie'] = $user['promo'] + 3;
         $user['cv'] = '';
         $user['nickname'] = '';
         $user['section'] = '';

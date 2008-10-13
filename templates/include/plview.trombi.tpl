@@ -59,18 +59,19 @@
   <tr>
     <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
       <a href="{$mainsiteurl}profile/{$set[trombi.index_prev].hruid}" class="popup2">
-        <span {if $set[trombi.index_prev].name_tooltip}class="hinted" title="{$set[trombi.index_prev].name_tooltip}"{/if}>{$set[trombi.index_prev].name_display}</span>{if $trombi_with_promo} ({$set[trombi.index_prev].promo}){/if}
+        <span {if $set[trombi.index_prev].name_tooltip}class="hinted"
+        title="{$set[trombi.index_prev].name_tooltip}"{/if}>{$set[trombi.index_prev].name_display}</span>{if $trombi_with_promo} ({$set[trombi.index_prev].promo_display}){/if}
       </a>
     </td>
     <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
       <a href="{$mainsiteurl}profile/{$set[trombi].hruid}" class="popup2">
-        <span {if $set[trombi].name_tooltip}class="hinted" title="{$set[trombi].name_tooltip}"{/if}>{$set[trombi].name_display}</span>{if $trombi_with_promo} ({$set[trombi].promo}){/if}
+        <span {if $set[trombi].name_tooltip}class="hinted" title="{$set[trombi].name_tooltip}"{/if}>{$set[trombi].name_display}</span>{if $trombi_with_promo} ({$set[trombi].promo_display}){/if}
       </a>
     </td>
     <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
     {if $set[trombi.index_next]}
       <a href="{$mainsiteurl}profile/{$set[trombi.index_next].hruid}" class="popup2">
-        <span {if $set[trombi.index_next].name_tooltip}class="hinted" title="{$set[trombi.index_next].name_tooltip}"{/if}>{$set[trombi.index_next].name_display}</span>{if $trombi_with_promo} ({$set[trombi.index_next].promo}){/if}
+        <span {if $set[trombi.index_next].name_tooltip}class="hinted" title="{$set[trombi.index_next].name_tooltip}"{/if}>{$set[trombi.index_next].name_display}</span>{if $trombi_with_promo} ({$set[trombi.index_next].promo_display}){/if}
       </a>
     {/if}
     </td>
@@ -90,7 +91,8 @@
   <tr style="margin-top: 0; padding-top: 0">
     <td class="center" style="vertical-align: bottom">
       <a href="{$mainsiteurl}profile/{$set[trombi].hruid}" class="popup2">
-        <span {if $set[trombi].name_tooltip}class="hinted" title="{$set[trombi].name_tooltip}"{/if}>{$set[trombi].name_display}</span>{if $trombi_with_promo} ({$set[trombi].promo}){/if}
+      <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">
+        <span {if $set[trombi].name_tooltip}class="hinted" title="{$set[trombi].name_tooltip}"{/if}>{$set[trombi].name_display}</span>{if $trombi_with_promo} ({$set[trombi].promo_display}){/if}
       </a>
     </td>
     <td></td><td></td>

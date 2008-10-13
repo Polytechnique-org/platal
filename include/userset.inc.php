@@ -171,8 +171,7 @@ class MinificheView extends MultipageView
     public function fields()
     {
         global $globals;
-        return "u.user_id AS id, u.*,
-                CONCAT(a.alias, '@{$globals->mail->domain}') AS bestemail,
+        return "u.user_id AS id, u.*, d.promo_display,
                 u.perms != 'pending' AS inscrit,
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces, u.matricule_ax,
@@ -229,9 +228,9 @@ class MinificheView extends MultipageView
                  LEFT JOIN  geoloc_pays                   AS gp   ON (adr.country = gp.a2)
                  LEFT JOIN  geoloc_region                 AS gr   ON (adr.country = gr.a2 AND adr.region = gr.region)
                  LEFT JOIN  emails                        AS em   ON (em.uid = u.user_id AND em.flags = 'active')
-                INNER JOIN  profile_names_display         AS nd   ON (nd.user_id = u.user_id)" .
-                (S::logged() ?
-                "LEFT JOIN  contacts                      AS c   ON (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
+                INNER JOIN  profile_names_display         AS nd   ON (nd.user_id = u.user_id)
+                INNER JOIN  profile_display               AS d    ON (d.uid = u.user_id)" . (S::logged() ?
+                "LEFT JOIN  contacts                      AS c    ON (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
                  : "");
     }
 
@@ -272,14 +271,15 @@ class MentorView extends MultipageView
 
     public function fields()
     {
-        return "m.uid, u.promo, u.hruid,
+        return "m.uid, d.promo_display, u.hruid,
                 m.expertise, mp.pid, ms.secteur, ms.ss_secteur,
                 nd.display AS name_display, nd.tooltip AS name_tooltip, nd.sort AS name_sort";
     }
 
     public function joins()
     {
-        return "INNER JOIN  profile_names_display AS nd ON (nd.user_id = u.user_id)";
+        return "INNER JOIN  profile_names_display AS nd ON (nd.user_id = u.user_id)
+                INNER JOIN  profile_display       AS d  ON (d.uid = u.user_id)";
     }
 
     public function bounds()
@@ -321,12 +321,13 @@ class TrombiView extends MultipageView
 
     public function fields()
     {
-        return "u.user_id, nd.display AS name_display, nd.tooltip AS name_tooltip, nd.sort AS name_sort, u.promo, u.hruid ";
+        return "u.user_id, nd.display AS name_display, nd.tooltip AS name_tooltip, nd.sort AS name_sort, u.promo, d.promo_display, u.hruid ";
     }
 
     public function joins()
     {
-        return "INNER JOIN  photo AS p ON (p.uid = u.user_id)
+        return "INNER JOIN  photo                 AS p  ON (p.uid = u.user_id)
+                INNER JOIN  profile_display       AS d  ON (d.uid = u.user_id)
                 INNER JOIN  profile_names_display AS nd ON (nd.user_id = u.user_id)";
     }
 
@@ -421,11 +422,12 @@ class GeolocView implements PlView
             header('Content-Type: text/xml');
             header('Pragma:');
             $only_current = Env::v('only_current', false)? ' AND FIND_IN_SET(\'active\', adrf.statut)' : '';
-            $it =& $this->set->get('u.user_id AS id, u.prenom, u.nom, u.promo, al.alias',
-                                   "INNER JOIN  adresses AS adrf  ON (adrf.uid = u.user_id $only_current)
-                                     LEFT JOIN  aliases  AS al   ON (u.user_id = al.id
-                                                                   AND FIND_IN_SET('bestalias', al.flags))
-                                    INNER JOIN  adresses AS avg ON (" . getadr_join('avg') . ")",
+            $it =& $this->set->get('u.user_id AS id, u.prenom, u.nom, d.promo_display, al.alias',
+                                   "INNER JOIN  adresses        AS adrf ON (adrf.uid = u.user_id $only_current)
+                                    INNER JOIN  profile_display AS d    ON (d.uid = u.user_id)
+                                     LEFT JOIN  aliases         AS al   ON (u.user_id = al.id
+                                                                            AND FIND_IN_SET('bestalias', al.flags))
+                                    INNER JOIN  adresses        AS avg  ON (" . getadr_join('avg') . ")",
                                    'adrf.cityid = ' . Env::i('cityid'), null, null, 11);
             $page->assign('users', $it);
             break;

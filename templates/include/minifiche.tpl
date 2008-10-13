@@ -47,7 +47,7 @@
       {if $c.iso3166_3}
       <img src='images/flags/{$c.iso3166_3}.gif' alt='{$c.nat3}' height='11' title='{$c.nat3}' />&nbsp;
       {/if}
-      X {$c.promo}{if $c.eduname0}, {education_fmt name=$c.eduname0 url=$c.eduurl0 degree=$c.edudegree0
+      {$c.promo_display}{if $c.eduname0}, {education_fmt name=$c.eduname0 url=$c.eduurl0 degree=$c.edudegree0
                                      grad_year=$c.edugrad_year0 field=$c.edufield0 program=$c.eduprogram0 sexe=$c.sexe}{*
       *}{/if}{if $c.eduname1}, {education_fmt name=$c.eduname1 url=$c.eduurl1 degree=$c.edudegree1
                                      grad_year=$c.edugrad_year1 field=$c.edufield1 program=$c.eduprogram1 sexe=$c.sexe}{*

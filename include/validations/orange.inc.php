@@ -29,8 +29,8 @@ class OrangeReq extends Validate
 
     public $promo_sortie;
 
-    public $rules = "A priori accepter (la validation sert à repousser les
-    petits malins). Refuse si tu connais la personne et que tu es sure
+    public $rules = "À priori accepter (la validation sert à repousser les
+    petits malins). Refuse si tu connais la personne et que tu es sûr
     qu'elle n'est pas orange.";
 
     // }}}
@@ -40,7 +40,10 @@ class OrangeReq extends Validate
     {
         parent::__construct($_user, true, 'orange');
         $this->promo_sortie  = $_sortie;
-        $res = XDB::query("SELECT promo FROM auth_user_md5 WHERE user_id = {?}", $_user->id());
+        $res = XDB::query("SELECT  entry_year
+                             FROM  profile_education
+                            WHERE  uid = {?} AND FIND_IN_SET('primary', flags)", $_uid);
+        $this->promo = $res->fetchOneCell();
     }
 
     // }}}
@@ -65,10 +68,11 @@ class OrangeReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            $res = "  La demande de changement de promo de sortie que tu as demandée vient d'être effectuée.";
-            return $res;
+            return "  La demande de changement de promotion de sortie que tu as demandée vient d'être effectuée. "
+                   . "Si tu le souhaites, tu peux maintenant modifier l'affichage de ta promotion sur le site sur la page suivante : "
+                   . "https://www.polytechnique.org/profile/edit";
         } else {
-            return "  La demande de changement de promo de sortie tu avais faite a été refusée.";
+            return "  La demande de changement de promotion de sortie tu avais faite a été refusée.";
         }
     }
 
@@ -77,7 +81,9 @@ class OrangeReq extends Validate
 
     public function commit()
     {
-        XDB::execute("UPDATE auth_user_md5 set promo_sortie = {?} WHERE user_id = {?}",$this->promo_sortie, $this->user->id());
+        XDB::execute("UPDATE  profile_education
+                         SET  grad_year = {?}
+                       WHERE  uid = {?} AND FIND_IN_SET('primary', flags)", $this->promo_sortie, $this->uid);
         return true;
     }
 

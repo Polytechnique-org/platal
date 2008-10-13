@@ -140,13 +140,10 @@ function chgMainWinLoc(strPage)
       {if $x.iso3166_3}
       <img src='images/flags/{$x.iso3166_3}.gif' alt='{$x.nationalite3}' height='11' title='{$x.nationalite3}' />&nbsp;
       {/if}
-      X {$user->promo()}
-      {if $x.promo_sortie && ($x.promo_sortie-3 > $x.promo)}
-        - X {math equation="a-b" a=$x.promo_sortie b=3}
+      {$user->promo()}
+      {if $logged && $x.is_referent}
+      [<a href="referent/{$x.forlife}" class='popup2'>Ma fiche référent</a>]
       {/if}
-        {if $logged && $x.is_referent}
-        [<a href="referent/{$user->login()}" class='popup2'>Ma fiche référent</a>]
-        {/if}
       {if $x.education}
         &nbsp;-&nbsp;Formation&nbsp;:
         <ul>

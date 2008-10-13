@@ -27,7 +27,7 @@
       <span {if $p.name_tooltip}class="hinted" title="{$p.name_tooltip}"{/if}>{$p.name_display}</span>
     </div> 
     <div class="edu"> 
-      X{$p.promo} 
+      {$p.promo_display} 
     </div> 
     <div class="bits" style="width: 40%;"> 
       <span class='smaller'> 

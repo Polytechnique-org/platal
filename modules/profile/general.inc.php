@@ -102,7 +102,7 @@ class ProfileEdu implements ProfileSetting
             $value = array();
             $res = XDB::iterator("SELECT  eduid, degreeid, fieldid, grad_year, program
                                     FROM  profile_education
-                                   WHERE  uid = {?}
+                                   WHERE  uid = {?} AND !FIND_IN_SET('primary', flags)
                                 ORDER BY  id",
                                  S::v('uid'));
             while($edu = $res->next()) {
@@ -130,7 +130,7 @@ class ProfileEdu implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
         XDB::execute("DELETE FROM  profile_education
-                            WHERE  uid = {?}",
+                            WHERE  uid = {?} AND !FIND_IN_SET('primary', flags)",
                      S::i('uid'));
         foreach ($value as $eduid=>&$edu) {
             if ($edu['eduid'] != '') {
@@ -278,6 +278,7 @@ class ProfileGeneral extends ProfilePage
                                   = $this->settings['display_name']
                                   = $this->settings['sort_name']
                                   = $this->settings['tooltip_name']
+                                  = $this->settings['promo_display']
                                   = null;
         $this->settings['synchro_ax']
                                   = new ProfileBool();
@@ -297,8 +298,8 @@ class ProfileGeneral extends ProfilePage
     protected function _fetchData()
     {
         // Checkout all data...
-        $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite,
-                                   u.nationalite2, u.nationalite3, u.naissance,
+        $res = XDB::query("SELECT  p.promo_display, e.entry_year AS entry_year, e.grad_year AS grad_year,
+                                   u.nom_usage, u.nationalite, u.nationalite2, u.nationalite3, u.naissance,
                                    t.display_tel as mobile, t.pub as mobile_pub,
                                    d.email_directory as email_directory,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
@@ -306,10 +307,12 @@ class ProfileGeneral extends ProfilePage
                                    n.yourself, n.display AS display_name, n.sort AS sort_name,
                                    n.tooltip AS tooltip_name
                              FROM  auth_user_md5         AS u
-                       INNER JOIN  auth_user_quick       AS q  ON(u.user_id = q.user_id)
-                       INNER JOIN  profile_names_display AS n  ON(n.user_id = u.user_id)
-                        LEFT JOIN  profile_phones        AS t  ON(u.user_id = t.uid AND link_type = 'user')
-                        LEFT JOIN  profile_directory     AS d  ON(d.uid = u.user_id)
+                       INNER JOIN  auth_user_quick       AS q ON (u.user_id = q.user_id)
+                       INNER JOIN  profile_names_display AS n ON (n.user_id = u.user_id)
+                       INNER JOIN  profile_display       AS p ON (p.uid = u.user_id)
+                       INNER JOIN  profile_education     AS e ON (e.uid = u.user_id AND FIND_IN_SET('primary', e.flags))
+                        LEFT JOIN  profile_phones        AS t ON (u.user_id = t.uid AND link_type = 'user')
+                        LEFT JOIN  profile_directory     AS d ON (d.uid = u.user_id)
                             WHERE  u.user_id = {?}", S::v('uid', -1));
         $this->values = $res->fetchOneAssoc();
 
@@ -340,6 +343,13 @@ class ProfileGeneral extends ProfilePage
                             ORDER BY t.tel_id",
                              S::v('uid'));
         $this->values['tels'] = $res->fetchAllAssoc();
+
+        // Proposes choice for promo_display
+        if ($this->values['entry_year'] != $this->values['grad_year'] - 3) {
+            for ($i = $this->values['entry_year']; $i < $this->values['grad_year'] - 2; $i++) {
+                $this->values['promo_choice'][] = "X" . $i;
+            }
+        }
     }
 
     protected function _saveData()
@@ -359,13 +369,13 @@ class ProfileGeneral extends ProfilePage
                 $this->values['nationalite3'] = NULL;
             }
 
-           XDB::execute("UPDATE  auth_user_md5
-                            SET  nationalite = {?}, nationalite2 = {?}, nationalite3 = {?}, nom={?}, prenom={?}, naissance={?}
-                          WHERE  user_id = {?}",
-                         $this->values['nationalite'], $this->values['nationalite2'], $this->values['nationalite3'],
-                         $this->values['nom'], $this->values['prenom'],
-                         preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['naissance']),
-                         S::v('uid'));
+            XDB::execute("UPDATE  auth_user_md5
+                             SET  nationalite = {?}, nationalite2 = {?}, nationalite3 = {?}, nom={?}, prenom={?}, naissance={?}
+                           WHERE  user_id = {?}",
+                          $this->values['nationalite'], $this->values['nationalite2'], $this->values['nationalite3'],
+                          $this->values['nom'], $this->values['prenom'],
+                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['naissance']),
+                          S::v('uid'));
         }
         if ($this->changed['nick'] || $this->changed['freetext'] || $this->changed['freetext_pub'] || $this->changed['synchro_ax']) {
             XDB::execute("UPDATE  auth_user_quick
@@ -399,17 +409,23 @@ class ProfileGeneral extends ProfilePage
         }
         if ($this->changed['yourself'] || $this->changed['sort_name'] ||
             $this-> changed['display_name'] || $this->changed['tooltip_name']) {
-          XDB::execute("UPDATE  profile_names_display AS n
-                           SET  n.yourself = {?},
-                                n.sort = {?}, ". // SET
-                               "n.display = {?}, ". // SET
-                               "n.tooltip = {?} ". // SET
-                        "WHERE  n.user_id = {?}",
-                       $this->values['yourself'],
-                       $this->values['sort_name'],
-                       $this->values['display_name'],
-                       $this->values['tooltip_name'],
-                        S::v('uid'));
+            XDB::execute("UPDATE  profile_names_display AS n
+                             SET  n.yourself = {?},
+                                  n.sort = {?}, ". // SET
+                                 "n.display = {?}, ". // SET
+                                 "n.tooltip = {?} ". // SET
+                          "WHERE  n.user_id = {?}",
+                         $this->values['yourself'],
+                         $this->values['sort_name'],
+                         $this->values['display_name'],
+                         $this->values['tooltip_name'],
+                         S::v('uid'));
+        }
+        if ($this->changed['promo_display']) {
+            XDB::execute("UPDATE  profile_display
+                             SET  promo_display = {?}
+                           WHERE  uid = {?}",
+                         $this->values['promo_display'], S::v('uid'));
         }
     }
 

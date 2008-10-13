@@ -65,8 +65,16 @@
       <span class="titre">Promotion</span>
     </td>
     <td>
-      <span class="nom">X{$promo}{if ($promo != $promo_sortie - 3)} - X{math equation="a - b" a=$promo_sortie b=3}{/if}</span>
-      <span class="lien"><a href="profile/orange" {if ($promo_sortie -3 == $promo)} {popup text="pour les oranges"}{/if}>{icon name="page_edit" title="modifier"}</a></span>
+      {if !$promo_choice}
+        <span class="nom">{$promo_display}</span>
+      {else}
+        <select name="promo_display">
+        {foreach from=$promo_choice item="promo_to_display"}
+          <option value="{$promo_to_display}" {if $promo_to_display eq $promo_display}selected="selected"{/if}>{$promo_to_display}</option>
+        {/foreach}
+        </select>
+      {/if}
+      <span class="lien"><a href="profile/orange" {if ($grad_year -3 == $entry_year)} {popup text="pour les oranges"}{/if}>{icon name="page_edit" title="modifier"}</a></span>
     </td>
   </tr>
   <tr>

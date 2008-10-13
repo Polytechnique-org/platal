@@ -244,7 +244,7 @@ Bienvenue {$smarty.session.yourself_name}{if $birthday}
         </div>
         Annonce proposée par
         <a href="profile/{$ev.hruid}" class="popup2">
-          {$ev.prenom} {$ev.nom} X{$ev.promo}
+          {$ev.prenom} {$ev.nom} {$ev.promo_display}
         </a>
       </td>
     </tr>

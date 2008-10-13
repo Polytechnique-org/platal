@@ -517,14 +517,17 @@ class ProfileModule extends PLModule
 
         require_once 'validations.inc.php';
 
-        $res = XDB::query(
-                "SELECT  u.promo, u.promo_sortie
-                   FROM  auth_user_md5  AS u
-                  WHERE  user_id={?}", S::v('uid'));
+        $res = XDB::query("SELECT  e.entry_year, e.grad_year, d.promo_display, FIND_IN_SET('femme', u.flags) AS sexe
+                             FROM  auth_user_md5     AS u
+                       INNER JOIN  profile_display   AS d ON (d.uid = u.user_id)
+                       INNER JOIN  profile_education AS e ON (e.uid = u.user_id AND FIND_IN_SET('primary', e.flags))
+                            WHERE  u.user_id = {?}", S::v('uid'));
 
-        list($promo, $promo_sortie_old) = $res->fetchOneRow();
+        list($promo, $promo_sortie_old, $promo_display, $sexe) = $res->fetchOneRow();
         $page->assign('promo_sortie_old', $promo_sortie_old);
-        $page->assign('promo',  $promo);
+        $page->assign('promo', $promo);
+        $page->assign('promo_display', $promo_display);
+        $page->assign('sexe', $sexe);
 
         if (!Env::has('promo_sortie')) {
             return;
@@ -535,18 +538,18 @@ class ProfileModule extends PLModule
         $promo_sortie = Env::i('promo_sortie');
 
         if ($promo_sortie < 1000 || $promo_sortie > 9999) {
-            $page->trigError('L\'année de sortie doit être un nombre de quatre chiffres');
+            $page->trigError('L\'année de sortie doit être un nombre de quatre chiffres.');
         }
         elseif ($promo_sortie < $promo + 3) {
-            $page->trigError('Trop tôt');
+            $page->trigError('Trop tôt !');
         }
         elseif ($promo_sortie == $promo_sortie_old) {
             $page->trigWarning('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
         }
         elseif ($promo_sortie == $promo + 3) {
-            XDB::execute(
-                "UPDATE  auth_user_md5 set promo_sortie={?}
-                  WHERE  user_id={?}", $promo_sortie, S::v('uid'));
+            XDB::execute("UPDATE  profile_education
+                             SET  grad_year = {?}
+                           WHERE  uid = {?} AND FIND_IN_SET('primary', flags)", $promo_sortie, S::v('uid'));
                 $page->trigSuccess('Ton statut "orange" a été supprimé.');
                 $page->assign('promo_sortie_old', $promo_sortie);
         }
