@@ -26,7 +26,7 @@
 {to addr=$to}
 {subject text="Validation de la demande de réécriture pour l'adresse `$mail->email`"}
 {elseif $mail_part eq 'wiki'}
-{if $sexe}Chère{else}Cher{/if} {$prenom},
+{if $user->isFemale()}Chère{else}Cher{/if} {$user->displayName()},
 
 Tu reçois cet email car une demande de réécriture vient d'être effectuée sur {$sitename} pour que les mails
 l'adresse {$mail->email} soit automatiquement réécrite en {$mail->rewrite}.

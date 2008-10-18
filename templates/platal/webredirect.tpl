@@ -27,8 +27,8 @@
 <p>
   Dans la lignée du service de redirection d'emails de <strong>{#globals.core.sitename#}</strong>,
   il est possible de faire pointer
-    les adresses <strong>http://www.carva.org/{$smarty.session.bestalias}</strong>
-  et <strong>http://www.carva.org/{$smarty.session.forlife}</strong>
+    les adresses <strong>http://www.carva.org/{$bestalias}</strong>
+  et <strong>http://www.carva.org/{$smarty.session.hruid}</strong>
     vers la page WEB de ton choix. Pour de plus amples détails, consulte
   <a href="Xorg/MaRedirectionWeb">cette page</a>
 </p>
@@ -47,11 +47,9 @@
 <p>
 {if $carva}
   Actuellement, les adresses
-  <a href="http://www.carva.org/{$smarty.session.bestalias}">
-    http://www.carva.org/{$smarty.session.bestalias}
-  </a> et <a href="http://www.carva.org/{$smarty.session.forlife}">
-    http://www.carva.org/{$smarty.session.forlife}
-  </a> sont redirigées sur <a href="http://{$carva}">http://{$carva}</a>
+  <a href="http://www.carva.org/{$bestalias}">http://www.carva.org/{$bestalias}</a> et
+  <a href="http://www.carva.org/{$smarty.session.hruid}">http://www.carva.org/{$smarty.session.hruid}</a>
+  sont redirigées sur <a href="http://{$carva}">http://{$carva}</a>
 {else}
   La redirection n'est pas utilisée ...
 {/if}

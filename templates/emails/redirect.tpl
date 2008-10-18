@@ -298,15 +298,15 @@
   L'X te fournit aussi une adresse à vie en <strong>«prenom.nom»@polytechnique.edu</strong> qui par défaut est
   une redirection vers «login»@poly.polytechnique.fr. <a href="https://www.mail.polytechnique.edu/">
   Tu peux modifier cette redirection</a> et la faire pointer vers ton adresse
-  {$smarty.session.forlife}@{#globals.mail.domain#} (attention, cela demande de la concentration).
+  {$user->forlifeEmail()} (attention, cela demande de la concentration).
 </p>
 <p>
   Si tu utilises le service POP de poly pour récupérer tes emails dans ton logiciel de courrier,
   l'équipe de Polytechnique.org te conseille de rediriger&nbsp;:
 </p>
 <ul>
-  <li>«prenom.nom»@polytechnique.edu vers {$smarty.session.forlife}@{#globals.mail.domain#}&nbsp;;</li>
-  <li>{$smarty.session.forlife}@{#globals.mail.domain#} vers «login»@poly.polytechnique.fr.</li>
+  <li>«prenom.nom»@polytechnique.edu vers {$user->forlifeEmail()}&nbsp;;</li>
+  <li>{$user->forlifeEmail()} vers «login»@poly.polytechnique.fr.</li>
 </ul>
 <p>
   Attention à ne pas faire une boucle quand tu manipules tes redirections ! Tes emails seraient

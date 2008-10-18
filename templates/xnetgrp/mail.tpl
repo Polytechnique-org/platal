@@ -52,7 +52,7 @@ masculin ou féminin, par son prénom, ou son nom.
       <td class="titre">Expéditeur&nbsp;:</td>
       <td>
         <input type="text" name="from" size="55" maxlength="70"
-          value="{if $smarty.request.from}{$smarty.request.from}{else}&quot;{$smarty.session.prenom} {$smarty.session.nom}&quot; <{$smarty.session.bestalias}@polytechnique.org>{/if}" />
+          value="{if $smarty.request.from}{$smarty.request.from}{else}&quot;{$user->fullName()}&quot; &lt;{$user->bestEmail()}&gt;{/if}" />
       </td>
     </tr>
     <tr>

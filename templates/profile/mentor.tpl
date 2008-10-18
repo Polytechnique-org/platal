@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<p>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$smarty.session.forlife}">fiche référent</a> qui n'est accessible que par les X.
+<p>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$smarty.session.hruid}">fiche référent</a> qui n'est accessible que par les X.
 </p>
 {if (!$expertise)||(!($secteurs|@count))}
   <p>

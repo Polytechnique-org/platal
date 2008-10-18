@@ -49,7 +49,7 @@
       <h3><a href="prefs/webredirect">Ma redirection de page WEB</a></h3>
       <div class='explication'>
         Tu peux configurer tes redirections WEB
-        http://www.carva.org/{$smarty.session.bestalias}.
+        http://www.carva.org/{$bestalias}.
       </div>
     </td>
     <td class="half">

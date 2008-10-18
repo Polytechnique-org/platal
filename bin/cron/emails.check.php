@@ -68,18 +68,18 @@ if (count($conflits) > 0) {
  * Check dead emails
  */
 if ($panne_level > 0) {
-    $sql = "SELECT  e.email, a.alias AS forlife
+    $sql = "SELECT  e.email, u.hruid
               FROM  emails  AS e
-        INNER JOIN  aliases AS a ON a.id = e.uid AND a.type = 'a_vie'
+        INNER JOIN  auth_user_md5 AS u ON u.user_id = e.uid
              WHERE  e.panne_level = $panne_level AND e.flags = 'active'
-          ORDER BY  a.alias";
+          ORDER BY  u.hruid";
     $res = Xdb::query($sql);
 
     if ($res->numRows()) {
         $result = $res->fetchAllAssoc();
         echo "Nouvelles adresses en panne detectees :\n";
         foreach ($result as $assoc) {
-            echo '* ' . $assoc['email'] . ' pour ' . $assoc['forlife'] . "\n";
+            echo '* ' . $assoc['email'] . ' pour ' . $assoc['hruid'] . "\n";
         }
         echo "\n\n";
 

@@ -74,7 +74,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
 {if $fiche_incitation}
   <li>
     La dernière mise à jour de ta
-    <a href="profile/{$smarty.session.forlife}" class="popup2">fiche</a>
+    <a href="profile/{$smarty.session.hruid}" class="popup2">fiche</a>
     date du {$fiche_incitation|date_format}.
     Il est possible qu'elle ne soit pas à jour.
     Si tu souhaites la modifier, <a href="profile/edit">clique ici !</a>
@@ -106,7 +106,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
       <td class="half titre" style="height: 18px; padding-top: 1px; padding-bottom: 1px;">
         {if $smarty.foreach.events.first}
         {if $smarty.session.core_rss_hash}
-        <a href="rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml" style="display:block;float:right" title="Annonces">
+        <a href="rss/{$smarty.session.hruid}/{$smarty.session.core_rss_hash}/rss.xml" style="display:block;float:right" title="Annonces">
           {icon name=feed title='fil rss'}
         </a>
         {else}
@@ -146,7 +146,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
     <tr>
       <td class="half">
         {if $smarty.session.core_rss_hash}
-        <a href="rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml" style="display:block;float:right" title="Annonces">
+        <a href="rss/{$smarty.session.hruid}/{$smarty.session.core_rss_hash}/rss.xml" style="display:block;float:right" title="Annonces">
           {icon name=feed title='fil rss'}
         </a>
         {else}
@@ -243,7 +243,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
           </a>
         </div>
         Annonce proposée par
-        <a href="profile/{$ev.forlife}" class="popup2">
+        <a href="profile/{$ev.hruid}" class="popup2">
           {$ev.prenom} {$ev.nom} X{$ev.promo}
         </a>
       </td>

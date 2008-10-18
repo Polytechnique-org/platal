@@ -37,9 +37,9 @@ class VCard extends PlVCard
 
     public function addUser($user)
     {
-        $forlife = get_user_forlife($user, '_silent_user_callback');
-        if ($forlife) {
-            $this->user_list[] = get_user_forlife($user);
+        $user = User::getSilent($user);
+        if ($user) {
+            $this->user_list[] = $user;
             $this->count++;
         }
     }
@@ -59,7 +59,7 @@ class VCard extends PlVCard
     {
         global $globals;
         $login = $entry['value'];
-        $user  = get_user_details($login);
+        $user  = get_user_details($login->login());
 
         if (empty($user['nom_usage'])) {
             $entry = new PlVCardEntry($user['prenom'], $user['nom'], null, null, @$user['nickname']);
@@ -83,6 +83,7 @@ class VCard extends PlVCard
         }
 
         // Emails
+        // TODO: this logic is not hruid-compatible; replace it.
         $entry->addMail(null, $user['bestalias'] . '@' . $globals->mail->domain, true);
         $entry->addMail(null, $user['bestalias'] . '@' . $globals->mail->domain2);
         if ($user['bestalias'] != $user['forlife']) {
@@ -160,10 +161,9 @@ class VCard extends PlVCard
         // Photo
         if ($this->photos) {
             $res = XDB::query(
-                    "SELECT attach, attachmime
-                       FROM photo   AS p
-                 INNER JOIN aliases AS a ON (a.id = p.uid AND a.type = 'a_vie')
-                      WHERE a.alias = {?}", $login);
+                    "SELECT  attach, attachmime
+                       FROM  photo AS p
+                      WHERE  u.user_id = {?}", $login->id());
             if ($res->numRows()) {
                 list($data, $type) = $res->fetchOneRow();
                 $entry->setPhoto($data, strtoupper($type));

@@ -87,7 +87,7 @@ class SearchModule extends PLModule
                 $list .= '|admin|adm|ax';
             }
             if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.\d{2,4})?)?)$/', replace_accent($quick), $matches)) {
-                $forlife = $matches[2];
+                $login = $matches[2];
                 switch($matches[1]) {
                   case 'admin': case 'adm':
                     $base = 'admin/user/';
@@ -103,13 +103,12 @@ class SearchModule extends PLModule
                     break;
                 }
 
-                require_once 'user.func.inc.php';
-                $login = get_user_forlife($forlife, '_silent_user_callback');
-                if ($login) {
-                    pl_redirect($base . $login);
+                $user = User::getSilent($login);
+                if ($user) {
+                    pl_redirect($base . $user->login());
                 }
-                $_REQUEST['quick'] = $forlife;
-                $_GET['quick'] = $forlife;
+                $_REQUEST['quick'] = $login;
+                $_GET['quick'] = $login;
             } elseif (strpos($quick, 'doc:') === 0) {
                 $url = 'Docs/Recherche?';
                 $url .= 'action=search&q=' . urlencode(substr($quick, 4));

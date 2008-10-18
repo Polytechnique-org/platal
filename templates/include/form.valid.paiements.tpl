@@ -40,7 +40,7 @@
 <tr class="pair">
   <td class="titre">Contact&nbsp;:</td>
   <td>
-    {$valid->bestalias}@polytechnique.org
+    {$valid->user->bestEmail()}
   </td>
 </tr>
 <tr class="pair">

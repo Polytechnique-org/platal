@@ -44,11 +44,11 @@
     </tr>
     <tr>
       <td class="center">
-        <img src="photo/{$smarty.session.forlife}" width="200" alt=" [ PHOTO ] " />
+        <img src="photo/{$smarty.session.hruid}" width="200" alt=" [ PHOTO ] " />
       </td>
       <td class="center half">
         {if $submited}
-        <img src="photo/{$smarty.session.forlife}/req" width="200" alt=" [ PHOTO ] " />
+        <img src="photo/{$smarty.session.hruid}/req" width="200" alt=" [ PHOTO ] " />
         {else}
         Pas d'image soumise
         {/if}

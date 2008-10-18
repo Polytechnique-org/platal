@@ -407,7 +407,7 @@ class Survey
     public function proposeSurvey()
     {
         require_once 'validations.inc.php';
-        $surveyreq = new SurveyReq($this->title, $this->description, $this->end, $this->mode, $this->promos, $this->questions, S::v('uid'));
+        $surveyreq = new SurveyReq($this->title, $this->description, $this->end, $this->mode, $this->promos, $this->questions, S::user());
         return $surveyreq->submit();
     }
     // }}}

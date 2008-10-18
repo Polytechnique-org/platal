@@ -275,9 +275,9 @@ class AXLetterModule extends PLModule
             $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
         }
         if (Post::has('send')) {
-            $nl->sendTo(S::v('prenom'), S::v('nom'),
-                        S::v('bestalias'), S::v('femme'),
-                        S::v('mail_fmt') != 'texte');
+            $nl->sendTo(S::user()->login(), S::user()->bestEmail(),
+                        S::v('prenom'), S::v('nom'),
+                        S::v('femme'), S::v('mail_fmt') != 'texte');
         }
     }
 
@@ -309,10 +309,9 @@ class AXLetterModule extends PLModule
 
         $page->changeTpl('axletter/admin.tpl');
         $res = XDB::iterator("SELECT IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
-                                     u.prenom, u.promo, a.alias AS forlife
+                                     u.prenom, u.promo, u.hruid
                                 FROM axletter_rights AS ar
-                          INNER JOIN auth_user_md5   AS u USING(user_id)
-                          INNER JOIN aliases         AS a ON (u.user_id = a.id AND a.type = 'a_vie')");
+                          INNER JOIN auth_user_md5   AS u USING(user_id)");
         $page->assign('admins', $res);
 
         $importer = new CSVImporter('axletter_ins');

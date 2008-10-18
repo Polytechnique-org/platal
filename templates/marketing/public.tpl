@@ -27,7 +27,7 @@
 Merci de nous avoir communiqué cette information !
 </p>
 <p>
-Nous avions déjà connaissance de cette adresse, nous espérons donc comme toi que {$prenom} va s'inscrire au plus vite.
+Nous avions déjà connaissance de cette adresse, nous espérons donc comme toi que {$full_name} va s'inscrire au plus vite.
 </p>
 <p>
 Si tu le connais personnellement, un petit email pour lui expliquer les atouts de Polytechnique.org
@@ -38,21 +38,21 @@ peut sans aucun doute l'aider à se décider !
 
 <p>
   Merci de nous avoir communiqué cette information !  Un administrateur de Polytechnique.org va
-  envoyer un email de proposition d'inscription à Polytechnique.org à {$prenom} {$nom} dans les
+  envoyer un email de proposition d'inscription à Polytechnique.org à {$full_name} dans les
   toutes prochaines heures (ceci est fait à la main pour vérifier qu'aucun utilisateur malveillant
   ne fasse mauvais usage de cette fonctionnalité...).
 </p>
 <p>
   <strong>Merci de ton aide à la reconnaissance de notre site !</strong> Tu seras informé par email de
-  l'inscription de {$prenom} {$nom} si notre camarade accepte de rejoindre la communauté des X sur
+  l'inscription de {$full_name} si notre camarade accepte de rejoindre la communauté des X sur
   le web !
 </p>
 
 {else}
 
-{if $prenom}
+{if $full_name}
 <h1>
-  Et si nous proposions à {$prenom} {$nom} de s'inscrire à Polytechnique.org ?
+  Et si nous proposions à {$full_name} de s'inscrire à Polytechnique.org ?
 </h1>
 
 <p>
@@ -61,7 +61,7 @@ peut sans aucun doute l'aider à se décider !
   proposition d'inscription.
 </p>
 <p>
-  Si tu es d'accord, merci d'indiquer ci-dessous l'adresse email de {$prenom} {$nom} si tu la
+  Si tu es d'accord, merci d'indiquer ci-dessous l'adresse email de {$full_name} si tu la
   connais.  Nous nous permettons d'attirer ton attention sur le fait que nous avons besoin d'être
   sûrs que cette adresse est bien la sienne, afin que la partie privée du site reste uniquement
   accessible aux seuls polytechniciens. Merci donc de ne nous donner ce renseignement uniquement si
@@ -69,15 +69,14 @@ peut sans aucun doute l'aider à se décider !
 </p>
 <p>
   Nous pouvons au choix lui écrire au nom de l'équipe Polytechnique.org, ou bien, si tu le veux
-  bien, en ton nom. A toi de choisir la solution qui te paraît la plus adaptée !! Une fois {$prenom}
-  {$nom} inscrit, nous t'enverrons un email pour te prévenir que son inscription a réussi.
+  bien, en ton nom. A toi de choisir la solution qui te paraît la plus adaptée !! Une fois
+  {$full_name} inscrit, nous t'enverrons un email pour te prévenir que son inscription a réussi.
 </p>
 
 <form method="post" action="{$platal->path}">
   {xsrf_token_field}
   <table class="bicol" summary="Fiche camarade">
-    <tr class="impair"><td>Nom&nbsp;:</td><td>{$nom}</td></tr>
-    <tr class="pair"><td>Prénom&nbsp;:</td><td>{$prenom}</td></tr>
+    <tr class="impair"><td>Nom&nbsp;:</td><td>{$full_name}</td></tr>
     <tr class="impair"><td>Promo&nbsp;:</td><td>{$promo}</td></tr>
     <tr class="pair">
       <td>Adresse email&nbsp;:</td>

@@ -172,7 +172,7 @@
         <input type='text' name='from' size='60' value='{if $smarty.request.from}
 {$smarty.request.from}
 {else}
-"{$smarty.session.prenom} {$smarty.session.nom_usage|default:$smarty.session.nom}" &lt;{$smarty.session.bestalias}@{#globals.mail.domain#}&gt;
+"{$user->fullName()}" &lt;{$user->bestEmail()}&gt;
 {/if}' />
       </td>
     </tr>

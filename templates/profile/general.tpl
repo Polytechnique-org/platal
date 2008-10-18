@@ -172,17 +172,17 @@
   <tr>
     <td {if !$nouvellephoto}colspan="2"{/if} class="center" style="width: 49%">
       <div class="titre">Ta photo actuelle</div>
-      <img src="photo/{$smarty.session.forlife}" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
+      <img src="photo/{$smarty.session.hruid}" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
     </td>
     {if $nouvellephoto}
     <td class="center" style="width: 49%">
       <div class="titre">Photo en attente de validation</div>
       <div>
-        <a href="profile/{$smarty.session.forlife}?modif=new" class="popup2">
+        <a href="profile/{$smarty.session.hruid}?modif=new" class="popup2">
           Ta fiche avec cette photo
         </a>
       </div>
-      <img src="photo/{$smarty.session.forlife}/req" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
+      <img src="photo/{$smarty.session.hruid}/req" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
     </td>
     {/if}
   </tr>

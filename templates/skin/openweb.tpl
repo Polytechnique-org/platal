@@ -34,7 +34,7 @@
     {if $smarty.session.suid} 
     <div id="suid"> 
       <a href="exit"> 
-        Quitter le SU sur {$smarty.session.forlife} ({$smarty.session.perms->flags()}) 
+        Quitter le SU sur {$smarty.session.hruid} ({$smarty.session.perms->flags()}) 
       </a> 
     </div> 
     {/if} 

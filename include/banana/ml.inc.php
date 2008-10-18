@@ -45,10 +45,13 @@ class MLBanana extends Banana
 {
     static public $listname;
     static public $domain;
+    private $user;
 
-    function __construct($forlife, $params = null)
+    function __construct(User &$user, $params = null)
     {
         global $globals;
+        $this->user = &$user;
+
         Banana::$spool_root = $globals->banana->spool_root;
         Banana::$spool_boxlist = false;
         Banana::$msgedit_canattach = true;
@@ -75,9 +78,9 @@ class MLBanana extends Banana
         global $platal, $globals;
 
         $nom  = S::v('prenom') . ' ' . S::v('nom');
-        $mail = S::v('bestalias') . '@' . $globals->mail->domain;
+        $mail = $this->user->bestEmail();
         $sig  = $nom . ' (' . S::v('promo') . ')';
-        Banana::$msgedit_headers['X-Org-Mail'] = S::v('forlife') . '@' . $globals->mail->domain;
+        Banana::$msgedit_headers['X-Org-Mail'] = $this->user->forlifeEmail();
 
         // Tree color
         $req = XDB::query("SELECT  tree_unread, tree_read

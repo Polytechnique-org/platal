@@ -93,7 +93,8 @@ class XorgSession extends PlSession
                     global $globals;
                     if ($globals->mailstorage->googleapps_domain) {
                         require_once 'googleapps.inc.php';
-                        $account = new GoogleAppsAccount($uid);
+                        $user = User::getSilent($uid);
+                        $account = new GoogleAppsAccount($user);
                         if ($account->active() && $account->sync_password) {
                             $account->set_password($new_password);
                         }
@@ -139,7 +140,7 @@ class XorgSession extends PlSession
          */
         if (S::has('suid')) {
             $suid  = S::v('suid');
-            $login = $uname = $suid['forlife'];
+            $login = $uname = $suid['hruid'];
             $redirect = false;
         } else {
             $uname = Env::v('username');
@@ -193,17 +194,14 @@ class XorgSession extends PlSession
         unset($_SESSION['log']);
 
         // Retrieves main user properties.
-        $res  = XDB::query('SELECT  u.user_id AS uid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
-                                    matricule, password, FIND_IN_SET(\'femme\', u.flags) AS femme,
-                                    a.alias AS forlife, a2.alias AS bestalias,
+        $res  = XDB::query("SELECT  u.user_id AS uid, u.hruid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
+                                    matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
                                     q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
-                                    FIND_IN_SET(\'watch\', u.flags) AS watch_account, q.last_version, g.g_account_name IS NOT NULL AS googleapps
+                                    FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version, g.g_account_name IS NOT NULL AS googleapps
                               FROM  auth_user_md5   AS u
                         INNER JOIN  auth_user_quick AS q  USING(user_id)
-                        INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type = \'a_vie\')
-                        INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET(\'bestalias\', a2.flags))
-                         LEFT JOIN  gapps_accounts  AS g  ON (u.user_id = g.l_userid AND g.g_status = \'active\')
-                             WHERE  u.user_id = {?} AND u.perms IN(\'admin\', \'user\')', $uid);
+                         LEFT JOIN  gapps_accounts  AS g  ON (u.user_id = g.l_userid AND g.g_status = 'active')
+                             WHERE  u.user_id = {?} AND u.perms IN('admin', 'user')", $uid);
         $sess = $res->fetchOneAssoc();
         $perms = $sess['perms'];
         unset($sess['perms']);
@@ -225,7 +223,7 @@ class XorgSession extends PlSession
         if (S::has('suid')) {
             $suid = S::v('suid');
             $logger = S::logger($uid);
-            $logger->log("suid_start", S::v('forlife') . " by " . $suid['uid']);
+            $logger->log("suid_start", S::v('hruid') . " by " . $suid['hruid']);
         } else {
             $logger = S::logger($uid);
             setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
@@ -245,7 +243,7 @@ class XorgSession extends PlSession
         }
 
         // Finalizes the session setup.
-        $this->makePerms($perms);
+        S::set('perms', User::makePerms($perms));
         $this->securityChecks();
         $this->setSkin();
         $this->updateNbNotifs();
@@ -280,26 +278,14 @@ class XorgSession extends PlSession
 
     public function tokenAuth($login, $token)
     {
-        // FIXME: we broke the session here because some RSS feeds (mainly wiki feeds) require
-        // a valid nome and checks the permissions. When the PlUser object will be ready, we'll
-        // be able to return a simple 'PlUser' object here without trying to alterate the
-        // session.
-        $res = XDB::query('SELECT  u.user_id AS uid, u.perms, u.nom, u.nom_usage, u.prenom, u.promo, FIND_IN_SET(\'femme\', u.flags) AS sexe
+        $res = XDB::query('SELECT  u.hruid
                              FROM  aliases         AS a
                        INNER JOIN  auth_user_md5   AS u ON (a.id = u.user_id AND u.perms IN ("admin", "user"))
                        INNER JOIN  auth_user_quick AS q ON (a.id = q.user_id AND q.core_rss_hash = {?})
                             WHERE  a.alias = {?} AND a.type != "homonyme"', $token, $login);
         if ($res->numRows() == 1) {
-            $sess = $res->fetchOneAssoc();
-            if (!S::has('uid')) {
-                $_SESSION = $sess;
-                $this->makePerms($sess['perms']);
-                return S::i('uid');
-            } else if (S::i('uid') == $sess['uid']) {
-                return S::i('uid');
-            } else {
-                Platal::page()->kill('Invalid state. To be fixed when hruid is ready');
-            }
+            $data = $res->fetchOneAssoc();
+            return new User($data['hruid'], $data);
         }
         return null;
     }
@@ -320,7 +306,6 @@ class XorgSession extends PlSession
 
     public function setSkin()
     {
-        global $globals;
         if (S::logged() && (!S::has('skin') || S::has('suid'))) {
             $uid = S::v('uid');
             $res = XDB::query("SELECT  skin_tpl
