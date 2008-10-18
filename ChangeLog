@@ -1,6 +1,10 @@
 ================================================================================
 VERSION 0.9.18                                                        XX XX XXXX
 
+New:
+    * Core:
+        - Introduction of 'hruid' as a replacement for 'forlife'           -VZA
+
 Bug/Wish:
 
     * Search:
