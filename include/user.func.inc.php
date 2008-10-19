@@ -32,9 +32,9 @@ function user_clear_all_subs($user_id, $really_del=true)
     // + delete maillists
 
     global $globals;
-    $uid   = intval($user_id);
-    $res   = XDB::query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $uid);
-    $alias = $res->fetchOneCell();
+    $uid = intval($user_id);
+    $user = User::getSilent($uid);
+    list($alias) = explode('@', $user->forlifeEmail());
 
     $tables_to_clear = array('uid' => array('competences_ins', 'entreprises', 'langues_ins', 'mentor_pays',
                                             'mentor_secteurs', 'mentor', 'perte_pass', 'watch_sub'),
@@ -76,154 +76,10 @@ function user_clear_all_subs($user_id, $really_del=true)
     if ($globals->mailstorage->googleapps_domain) {
         require_once 'googleapps.inc.php';
         if (GoogleAppsAccount::account_status($uid)) {
-            $account = new GoogleAppsAccount($uid, $alias);
+            $account = new GoogleAppsAccount($user);
             $account->suspend();
         }
     }
-}
-
-// }}}
-// {{{ function get_user_login()
-
-// Defaut callback to call when a login is not found
-function _default_user_callback($login)
-{
-    Platal::page()->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
-    return;
-}
-
-function _silent_user_callback($login)
-{
-    return;
-}
-
-function get_user_login($data, $get_forlife = false, $callback = '_default_user_callback')
-{
-    global $globals;
-
-    if (is_numeric($data)) {
-        $res = XDB::query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $data);
-        if ($res->numRows()) {
-            return $res->fetchOneCell();
-        } else {
-            call_user_func($callback, $data);
-            return false;
-        }
-    }
-
-    $data = trim(strtolower($data));
-
-    if (strstr($data, '@')===false) {
-        $data = $data.'@'.$globals->mail->domain;
-    }
-
-    list($mbox, $fqdn) = explode('@', $data);
-    if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
-
-        $res = XDB::query("SELECT  a.alias
-                             FROM  aliases AS a
-                       INNER JOIN  aliases AS b ON (a.id = b.id AND b.type IN ('alias', 'a_vie') AND b.alias={?})
-                            WHERE  a.type = 'a_vie'", $mbox);
-        if ($res->numRows()) {
-            return $get_forlife ? $res->fetchOneCell() : $mbox;
-        }
-
-        if (preg_match('/^(.*)\.([0-9]{4})$/u', $mbox, $matches)) {
-            $res = XDB::query("SELECT  a.alias
-                                 FROM  aliases AS a
-                           INNER JOIN  aliases AS b ON (a.id = b.id AND b.type IN ('alias', 'a_vie') AND b.alias={?})
-                           INNER JOIN  auth_user_md5 AS u ON (a.id = u.user_id AND promo = {?})
-                                WHERE  a.type = 'a_vie'", $matches[1], $matches[2]);
-            if ($res->numRows() == 1) {
-                return $res->fetchOneCell();
-            }
-        }
-        call_user_func($callback, $data);
-        return false;
-
-    } elseif ($fqdn == $globals->mail->alias_dom || $fqdn == $globals->mail->alias_dom2) {
-
-        $res = XDB::query("SELECT  redirect
-                             FROM  virtual_redirect
-                       INNER JOIN  virtual USING(vid)
-                            WHERE  alias={?}", $mbox.'@'.$globals->mail->alias_dom);
-        if ($redir = $res->fetchOneCell()) {
-            list($alias) = explode('@', $redir);
-        } else {
-            call_user_func($callback, $data);
-            $alias = false;
-        }
-        return $alias;
-    } else {
-
-        $res = XDB::query("SELECT  alias
-                                       FROM  aliases AS a
-                                 INNER JOIN  emails  AS e ON e.uid=a.id
-                                      WHERE  e.email={?} AND a.type='a_vie'", $data);
-        switch ($i = $res->numRows()) {
-            case 0:
-                call_user_func($callback, $data);
-                return false;
-
-            case 1:
-                return $res->fetchOneCell();
-
-            default:
-                if (S::has_perms()) {
-                    $aliases = $res->fetchColumn();
-                    Platal::page()->trigError("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
-                } else {
-                    $res->free();
-                }
-        }
-    }
-
-    return false;
-}
-
-// }}}
-// {{{ function get_user_forlife()
-
-function get_user_forlife($data, $callback = '_default_user_callback')
-{
-    return get_user_login($data, true, $callback);
-}
-
-// }}}
-// {{{ function get_users_forlife_list()
-
-function get_users_forlife_list($members, $strict = false, $callback = '_default_user_callback')
-{
-    if (!is_array($members)) {
-        if (strlen(trim($members)) == 0) {
-            return null;
-        }
-        $members = split("[; ,\r\n\|]+", $members);
-    }
-    if ($members) {
-        $list = array();
-        foreach ($members as $i => $alias) {
-            $alias = trim($alias);
-            if (empty($alias)) {
-                continue;
-            }
-            if (($login = get_user_forlife($alias, $callback)) !== false) {
-                $list[$i] = $login;
-            } else if (!$strict) {
-                $list[$i] = $alias;
-            } else {
-                global $globals;
-                if (strpos($alias, '@') !== false) {
-                    list($user, $dom) = explode('@', $alias);
-                    if ($dom != $globals->mail->domain && $dom != $globals->mail->domain2) {
-                        $list[$i] = $alias;
-                    }
-                }
-            }
-        }
-        return $list;
-    }
-    return null;
 }
 
 // }}}

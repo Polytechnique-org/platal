@@ -24,13 +24,13 @@
 <div class="error">{$error}</div>
 {elseif $set}
 <div class="contact-list">
-{iterate from=$set item=res}
+{foreach from=$set item=res}
   {if $res.contact}
   {include file="gadgets/ig-minifiche.tpl" c=$res show_action="retirer"}
   {else}
   {include file="gadgets/ig-minifiche.tpl" c=$res show_action="ajouter"}
   {/if}
-{/iterate}
+{/foreach}
 </div>
 <div class="more">
   <a href="search?quick={$smarty.request.quick}" target="_blank">{$result_count} résultats au total</a> &gt;&gt;&gt;

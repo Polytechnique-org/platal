@@ -41,9 +41,11 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
     $personnal_data = $res->fetchOneAssoc();
 
     foreach ($fieldarr as $val) {
-        /* on verifie qu'on n'a pas demandÃ© une variable inexistante ! */
+        // Determine the requested value, and add it to the answer.
         if ($val == 'perms') {
             $params .= gpex_prepare_param($val, S::has_perms() ? 'admin' : 'user', $tohash, $charset);
+        } else if ($val == 'forlife') {
+            $params .= gpex_prepare_param($val, S::v('hruid'), $tohash, $charset);
         } else if (S::has($val)) {
             $params .= gpex_prepare_param($val, S::v($val), $tohash, $charset);
         } else if (isset($personnal_data[$val])) {

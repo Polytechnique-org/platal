@@ -22,7 +22,7 @@
 
 <tr class="pair">
   <td class="titre">Récupération de</td>
-  <td><a href='admin/user/{$valid->m_forlife}'>{$valid->m_prenom} {$valid->m_nom} ({$valid->m_promo})</a></td>
+  <td><a href='admin/user/{$valid->m_user->login()}'>{$valid->m_user->fullName()} ({$valid->m_user->promo()})</a></td>
 </tr>
 <tr class="pair">
   <td class="titre">Email proposé</td>

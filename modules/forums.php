@@ -64,7 +64,7 @@ class ForumsModule extends PLModule
         $_SESSION = array_merge($row, $_SESSION);
 
         require_once 'banana/forum.inc.php';
-        $banana = new ForumsBanana(S::v('forlife'), array('group' => $group, 'action' => 'rss2'));
+        $banana = new ForumsBanana(S::user(), array('group' => $group, 'action' => 'rss2'));
         $banana->run();
         exit;
     }

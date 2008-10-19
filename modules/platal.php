@@ -137,6 +137,14 @@ class PlatalModule extends PLModule
         if (Post::has('rss')) {
             $this->__set_rss_state(Post::b('rss'));
         }
+
+        # FIXME: this code is not multi-domain compatible. We should decide how
+        # carva will extend to users not in the main domain.
+        $res = XDB::query("SELECT  alias
+                             FROM  aliases
+                            WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                          S::user()->id());
+        $page->assign('bestalias', $res->fetchOneCell());
     }
 
     function handler_webredir(&$page)
@@ -169,6 +177,14 @@ class PlatalModule extends PLModule
                                       WHERE user_id = {?}',
                                     S::v('uid'));
         $page->assign('carva', $res->fetchOneCell());
+
+        # FIXME: this code is not multi-domain compatible. We should decide how
+        # carva will extend to users not in the main domain.
+        $res = XDB::query("SELECT  alias
+                             FROM  aliases
+                            WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                          S::user()->id());
+        $page->assign('bestalias', $res->fetchOneCell());
     }
 
     function handler_prefs_rss(&$page)
@@ -202,7 +218,7 @@ class PlatalModule extends PLModule
             // updates the Google Apps password as well.
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
-                $account = new GoogleAppsAccount(S::v('uid'), S::v('forlife'));
+                $account = new GoogleAppsAccount(S::user());
                 if ($account->active() && $account->sync_password) {
                     $account->set_password($password);
                 }
@@ -368,7 +384,7 @@ Adresse de secours : " . Post::v('email') : ""));
             // updates the Google Apps password as well.
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
-                $account = new GoogleAppsAccount($uid);
+                $account = new GoogleAppsAccount(User::getSilent($uid));
                 if ($account->active() && $account->sync_password) {
                     $account->set_password($password);
                 }
@@ -412,12 +428,11 @@ Adresse de secours : " . Post::v('email') : ""));
     function handler_exit(&$page, $level = null)
     {
         if (S::has('suid')) {
-            $a4l  = S::v('forlife');
             $suid = S::v('suid');
             $log  = S::v('log');
-            S::logger()->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
+            S::logger()->log("suid_stop", S::user()->login() . " by " . $suid['hruid']);
             Platal::session()->stopSUID();
-            pl_redirect('admin/user/' . $a4l);
+            pl_redirect('admin/user/' . S::user()->login());
         }
 
         if ($level == 'forget' || $level == 'forgetall') {

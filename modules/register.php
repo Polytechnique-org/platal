@@ -297,7 +297,8 @@ class RegisterModule extends PLModule
         }
 
         require_once('emails.inc.php');
-        $redirect = new Redirect($uid);
+        $user = User::getSilent($uid);
+        $redirect = new Redirect($user);
         $redirect->add_email($email);
 
         // on cree un objet logger et on log l'inscription
@@ -418,6 +419,7 @@ class RegisterModule extends PLModule
     {
         global $globals;
         $page->changeTpl('register/success.tpl');
+        $page->assign('user', S::user());
 
         $_SESSION['sub_state'] = array('step' => 5);
         if (Env::has('response2'))  {
@@ -428,11 +430,11 @@ class RegisterModule extends PLModule
                                    S::v('uid'));
 
             // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
-            // and if the (stupid) user has decided to user /register/success another time,
+            // and if the (stupid) user has decided to use /register/success another time,
             // updates the Google Apps password as well.
             if ($globals->mailstorage->googleapps_domain) {
                 require_once 'googleapps.inc.php';
-                $account = new GoogleAppsAccount(S::v('uid'), S::v('forlife'));
+                $account = new GoogleAppsAccount(S::user());
                 if ($account->active() && $account->sync_password) {
                     $account->set_password($password);
                 }

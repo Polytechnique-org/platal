@@ -28,7 +28,7 @@
 {/if}
 <tr class="pair">
   <td class="titre">Marketing sur</td>
-  <td><a href='marketing/private/{$valid->m_id}'>{$valid->m_prenom} {$valid->m_nom} ({$valid->m_promo})</a></td>
+  <td><a href='marketing/private/{$valid->m_user->login()}'>{$valid->m_user->fullName()} ({$valid->m_user->promo()})</a></td>
 </tr>
 {if $valid->m_type neq 'default'}
 <tr class="pair">

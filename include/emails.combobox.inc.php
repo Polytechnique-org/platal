@@ -23,14 +23,13 @@ function fill_email_combobox(PlPage& $page)
 {
     global $globals;
 
-    $uid        = S::v('uid');
-    $forlife    = S::v('forlife');
+    $user = S::user();
     $email_type = "directory";
 
     $res = XDB::query(
             "SELECT  email_directory
                FROM  profile_directory
-              WHERE  uid={?}", $uid);
+              WHERE  uid = {?}", $user->id());
     $email_directory = $res->fetchOneCell();
     if ($email_directory) {
         $page->assign('email_directory', $email_directory);
@@ -45,9 +44,12 @@ function fill_email_combobox(PlPage& $page)
             "SELECT  alias
                FROM  virtual
          INNER JOIN  virtual_redirect USING(vid)
-              WHERE  (redirect={?} OR redirect={?})
+              WHERE  (redirect = {?} OR redirect = {?})
                      AND alias LIKE '%@{$globals->mail->alias_dom}'",
-            $forlife . '@' . $globals->mail->domain, $forlife . '@' . $globals->mail->domain2);
+            $user->forlifeEmail(),
+            // TODO: remove this über-ugly hack. The issue is that you need
+            // to remove all @m4x.org addresses in virtual_redirect first.
+            $user->login() . '@' . $globals->mail->domain2);
     $melix = $res->fetchOneCell();
     if ($melix) {
         list($melix) = explode('@', $melix);
@@ -60,7 +62,7 @@ function fill_email_combobox(PlPage& $page)
     $res = XDB::query(
             "SELECT  alias
                FROM  aliases
-              WHERE  id={?} AND (type='a_vie' OR type='alias')", $uid);
+              WHERE  id={?} AND (type='a_vie' OR type='alias')", $user->id());
     $res = $res->fetchAllAssoc();
     $page->assign('list_email_X', $res);
     if (($domain == $globals->mail->domain) || ($domain == $globals->mail->domain2)) {
@@ -72,7 +74,7 @@ function fill_email_combobox(PlPage& $page)
     }
 
     require_once 'emails.inc.php';
-    $redirect = new Redirect($uid);
+    $redirect = new Redirect($user);
     $redir    = array();
     foreach ($redirect->emails as $redirect_it) {
         if ($redirect_it instanceof EmailRedirection) {
@@ -87,7 +89,7 @@ function fill_email_combobox(PlPage& $page)
     $res = XDB::query(
             "SELECT  email
                FROM  entreprises
-              WHERE  uid={?}", $uid);
+              WHERE  uid = {?}", $user->id());
     $res = $res->fetchAllAssoc();
     $pro = array();
     foreach ($res as $res_it) {

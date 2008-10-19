@@ -19,10 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_function_make_forlife($params, &$smarty)
-{
-  return make_forlife($params['prenom'], $params['nom'], $params['promo']);
-}
+ini_set('include_path', dirname(__FILE__).'/../../include:' . dirname(__FILE__).'/../../classes:/usr/share/php');
 
-/* vim: set expandtab enc=utf-8: */
+require_once 'xorg.inc.php';
+require_once 'xdb.php';
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

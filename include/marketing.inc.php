@@ -53,37 +53,31 @@ class Marketing
 
     private function getUser($uid, $email)
     {
-        $res = XDB::query("SELECT  FIND_IN_SET('femme', flags) AS sexe, nom, prenom, promo
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?}", $uid);
-        if ($res->numRows() == 0) {
+        $user = User::getSilent($uid);
+        if (!$user) {
             return null;
         }
-        $user            = $res->fetchOneAssoc();
-        $user['id']      = $uid;
-        $user['forlife'] = make_forlife($user['prenom'], $user['nom'], $user['promo']);
-        $user['mail']    = $email;
-        $user['to']      = '"' . $user['prenom'] . ' ' . $user['nom'] . '" <' . $email . '>';
-        return $user;
+
+        global $globals;
+        return array(
+            'user'           => $user,
+            'id'             => $user->id(),
+            'sexe'           => $user->isFemale(),
+            'mail'           => $email,
+            'to'             => '"' . $user->fullName() . '" <' . $email . '>',
+            'forlife_email'  => $user->login() . '@' . $globals->mail->domain,
+            'forlife_email2' => $user->login() . '@' . $globals->mail->domain2,
+        );
     }
 
     private function getFrom($from, $sender)
     {
         global $globals;
 
-        if ($from == 'staff') {
+        if ($from == 'staff' || !($user = User::getSilent($sender))) {
             return '"L\'équipe de Polytechnique.org" <register@' . $globals->mail->domain . '>';
-        } else {
-            $res = XDB::query("SELECT  u.nom, u.prenom, a.alias
-                                 FROM  auth_user_md5 AS u
-                           INNER JOIN  aliases       AS a ON (a.id = u.user_id AND FIND_IN_SET('bestalias', a.flags))
-                                WHERE  u.user_id = {?}", $sender);
-            if (!$res->numRows()) {
-                return '"L\'équipe de Polytechnique.org" <register@' . $globals->mail->domain . '>';
-            }
-            $sender = $res->fetchOneAssoc();
-            return '"' . $sender['prenom'] . ' ' . $sender['nom'] . '" <' . $sender['alias'] . '@' . $globals->mail->domain . '>';
         }
+        return '"' . $user->fullName() . '" <' . $user->bestEmail() . '>';
     }
 
     private function &getEngine($type, $data, $from)
@@ -141,7 +135,7 @@ class Marketing
         $this->engine->process($this->user);
         if ($valid) {
             require_once 'validations.inc.php';
-            $valid = new MarkReq($this->sender, $this->user['id'], $this->user['mail'],
+            $valid = new MarkReq(User::getSilent($this->sender), $this->user['user'], $this->user['mail'],
                                  $this->from == 'user', $this->type, $this->data);
             $valid->submit();
         }
@@ -304,12 +298,8 @@ class ListMarketing extends AnnuaireMarketing
     public function __construct($data, $from)
     {
         list($this->name, $this->domain) = explode('@', $data);
-        $res = XDB::query("SELECT  prenom, IF (nom_usage != '', nom_usage, nom)
-            FROM  auth_user_md5
-            WHERE  user_id = {?} AND user_id != 0", $from ? $from : 0);
-        if ($res->numRows()) {
-            list($prenom, $nom) = $res->fetchOneRow();
-            $from = "$prenom $nom";
+        if ($from && ($user = User::getSilent($from))) {
+            $from = $user->fullName();
         } else {
             $from = "Je";
         }
@@ -339,12 +329,8 @@ class GroupMarketing extends AnnuaireMarketing
     public function __construct($data, $from)
     {
         $this->group = $data;
-        $res = XDB::query("SELECT  prenom, IF (nom_usage != '', nom_usage, nom)
-            FROM  auth_user_md5
-            WHERE  user_id = {?} AND user_id != 0", $from ? $from : 0);
-        if ($res->numRows()) {
-            list($prenom, $nom) = $res->fetchOneRow();
-            $from = "$prenom $nom vient";
+        if ($from && ($user = User::getSilent($from))) {
+            $from = $user->fullName() . " vient";
         } else {
             $from = "Je viens";
         }

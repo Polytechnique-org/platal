@@ -20,13 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$c.inscrit || $c.dcd}<div class='grayed'>{/if}
+{if (!$c.inscrit && $smarty.session.auth ge AUTH_COOKIE) || $c.dcd}<div class='grayed'>{/if}
 <div class="contact" {if $c.inscrit}{if $smarty.session.auth ge AUTH_COOKIE}title="Fiche mise à jour le {$c.date|date_format}"{/if}{/if}>
   <div class="nom">
     {if $c.sexe}&bull;{/if}
-    {if !$c.dcd && $c.inscrit}<a href="profile/{$c.forlife}" class="popup2">{/if}
+    {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}<a href="profile/{$c.hruid}" class="popup2">{/if}
     {if $c.nom_usage}{$c.nom_usage} {$c.prenom}<br />({$c.nom}){else}{$c.nom} {$c.prenom}{/if}
-    {if !$c.dcd && $c.inscrit}</a>{/if}
+    {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}</a>{/if}
   </div>
   <div class="autre">
     {if $c.iso3166_1}
@@ -50,13 +50,13 @@
         *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
       {/if}
     {elseif $c.wasinscrit && !$c.dcd}
-        <a href="vcard/{$c.forlife}.vcf">{*
+        <a href="vcard/{$c.hruid}.vcf">{*
         *}{icon name=vcard title="Afficher la carte de visite"}</a>
       {if $show_action eq ajouter}
-        <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}&amp;token={xsrf_token}" target="_top">{*
+        <a href="carnet/contacts?action={$show_action}&amp;user={$c.hruid}&amp;token={xsrf_token}" target="_top">{*
         *}{icon name=add title="Ajouter à mes contacts"}</a>
       {else}
-        <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}&amp;token={xsrf_token}" target="_top">{*
+        <a href="carnet/contacts?action={$show_action}&amp;user={$c.hruid}&amp;token={xsrf_token}" target="_top">{*
         *}{icon name=cross title="Retirer de mes contacts"}</a>
       {/if}
     {/if}

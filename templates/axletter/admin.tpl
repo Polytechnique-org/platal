@@ -37,8 +37,8 @@
     </tr>
     {iterate item=a from=$admins}
     <tr class="{cycle values="impair, pair"}">
-      <td><a href="profile/{$a.forlife}" class="popup2">{$a.prenom} {$a.nom} (X{$a.promo}){icon name=user_suit}</a></td>
-      <td class="right"><a href="admin/axletter/del/{$a.forlife}?token={xsrf_token}">{icon name=cross title="Retirer"}</a></td>
+      <td><a href="profile/{$a.hruid}" class="popup2">{$a.prenom} {$a.nom} (X{$a.promo}){icon name=user_suit}</a></td>
+      <td class="right"><a href="admin/axletter/del/{$a.hruid}?token={xsrf_token}">{icon name=cross title="Retirer"}</a></td>
     </tr>
     {/iterate}
   </table>

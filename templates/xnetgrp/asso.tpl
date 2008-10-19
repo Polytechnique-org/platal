@@ -113,7 +113,7 @@
   <tr>
     <th>
       {if $smarty.session.core_rss_hash}
-      <a href='{$platal->ns}rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml' style="display:block;float:right">
+      <a href='{$platal->ns}rss/{$smarty.session.hruid}/{$smarty.session.core_rss_hash}/rss.xml' style="display:block;float:right">
         {icon name=feed title='fil rss'}
       </a>
       {else}

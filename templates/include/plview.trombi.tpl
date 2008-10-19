@@ -30,16 +30,16 @@
   {if $smarty.section.trombi.index % 3 == 1}
   <tr>
     <td class="center" style="vertical-align: middle">
-      <a href="{$mainsiteurl}profile/{$set[trombi.index_prev].forlife}" class="popup2">
-        <img src="photo/{$set[trombi.index_prev].forlife}" width="110" alt=" [ PHOTO ] " />
+      <a href="{$mainsiteurl}profile/{$set[trombi.index_prev].hruid}" class="popup2">
+        <img src="photo/{$set[trombi.index_prev].hruid}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_with_admin && hasPerm('admin')}
       <a href="{$mainsiteurl}admin/trombino/{$set[trombi.index_prev].user_id}">{icon name=wrench title="[admin]"}</a>
       {/if}
     </td>
     <td class="center" style="vertical-align: middle">
-      <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">
-        <img src="photo/{$set[trombi].forlife}" width="110" alt=" [ PHOTO ] " />
+      <a href="{$mainsiteurl}profile/{$set[trombi].hruid}" class="popup2">
+        <img src="photo/{$set[trombi].hruid}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_with_admin && hasPerm('admin')}
       <a href="{$mainsiteurl}admin/trombino/{$set[trombi].user_id}">{icon name=wrench title="[admin]"}</a>
@@ -47,8 +47,8 @@
     </td>
     <td class="center" style="vertical-align: middle">
     {if $set[trombi.index_next]}
-      <a href="{$mainsiteurl}profile/{$set[trombi.index_next].forlife}" class="popup2">
-        <img src="photo/{$set[trombi.index_next].forlife}" width="110" alt=" [ PHOTO ] " />
+      <a href="{$mainsiteurl}profile/{$set[trombi.index_next].hruid}" class="popup2">
+        <img src="photo/{$set[trombi.index_next].hruid}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_with_admin && hasPerm('admin')}
       <a href="{$mainsiteurl}admin/trombino/{$set[trombi.index_next].user_id}">{icon name=wrench title="[admin]"}</a>
@@ -58,18 +58,18 @@
   </tr>
   <tr>
     <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
-      <a href="{$mainsiteurl}profile/{$set[trombi.index_prev].forlife}" class="popup2">
+      <a href="{$mainsiteurl}profile/{$set[trombi.index_prev].hruid}" class="popup2">
         <span {if $set[trombi.index_prev].name_tooltip}class="hinted" title="{$set[trombi.index_prev].name_tooltip}"{/if}>{$set[trombi.index_prev].name_display}</span>{if $trombi_with_promo} ({$set[trombi.index_prev].promo}){/if}
       </a>
     </td>
     <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
-      <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">
+      <a href="{$mainsiteurl}profile/{$set[trombi].hruid}" class="popup2">
         <span {if $set[trombi].name_tooltip}class="hinted" title="{$set[trombi].name_tooltip}"{/if}>{$set[trombi].name_display}</span>{if $trombi_with_promo} ({$set[trombi].promo}){/if}
       </a>
     </td>
     <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
     {if $set[trombi.index_next]}
-      <a href="{$mainsiteurl}profile/{$set[trombi.index_next].forlife}" class="popup2">
+      <a href="{$mainsiteurl}profile/{$set[trombi.index_next].hruid}" class="popup2">
         <span {if $set[trombi.index_next].name_tooltip}class="hinted" title="{$set[trombi.index_next].name_tooltip}"{/if}>{$set[trombi.index_next].name_display}</span>{if $trombi_with_promo} ({$set[trombi.index_next].promo}){/if}
       </a>
     {/if}
@@ -78,8 +78,8 @@
   {elseif ($smarty.section.trombi.index % 3 == 0) && ($smarty.section.trombi.last)}
   <tr>
     <td class="center" style="vertical-align: middle; padding-bottom: 15px">
-      <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">
-        <img src="photo/{$set[trombi].forlife}" width="110" alt=" [ PHOTO ] " />
+      <a href="{$mainsiteurl}profile/{$set[trombi].hruid}" class="popup2">
+        <img src="photo/{$set[trombi].hruid}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_with_admin && hasPerm('admin')}
       <a href="{$mainsiteurl}admin/trombino/{$set[trombi].user_id}">{icon name=wrench title="[admin]"}</a>
@@ -89,7 +89,7 @@
   </tr>
   <tr style="margin-top: 0; padding-top: 0">
     <td class="center" style="vertical-align: bottom">
-      <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">
+      <a href="{$mainsiteurl}profile/{$set[trombi].hruid}" class="popup2">
         <span {if $set[trombi].name_tooltip}class="hinted" title="{$set[trombi].name_tooltip}"{/if}>{$set[trombi].name_display}</span>{if $trombi_with_promo} ({$set[trombi].promo}){/if}
       </a>
     </td>

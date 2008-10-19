@@ -60,7 +60,7 @@
       <a href="admin/events/preview/{$ev.id}#event{$ev.id}">{$ev.titre}</a><br />
       {if !$ev.fvalide}</strong>{/if}
       <small>
-        Proposée par <a href="profile/{$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
+        Proposée par <a href="profile/{$ev.hruid}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
       </small>
     </td>
     <td class="right">{if !$ev.fvalide}<strong>{/if}{$ev.peremption}{if !$ev.fvalide}</strong>{/if}</td>

@@ -29,7 +29,6 @@
     u.perms IN (\'admin\',\'user\', \'disabled\') AS inscrit,
     u.perms != \'pending\' AS wasinscrit,
     FIND_IN_SET(\'femme\', u.flags) AS sexe,
-    a.alias AS forlife,
     ede0.name AS eduname0, ede0.url AS eduurl0, edd0.degree AS edudegree0,
     edu0.grad_year AS edugrad_year0, f0.field AS edufield0, edu0.program AS eduprogram0,
     ede1.name AS eduname1, ede1.url AS eduurl1, edd1.degree AS edudegree1,

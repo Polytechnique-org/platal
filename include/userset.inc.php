@@ -46,9 +46,7 @@ class UserSet extends PlSet
                             (!empty($GLOBALS['IS_XNET_SITE']) ?
                                 'INNER JOIN groupex.membres AS gxm ON (u.user_id = gxm.uid
                                                                        AND gxm.asso_id = ' . $globals->asso('id') . ') ' : '')
-                           . 'LEFT JOIN auth_user_quick AS q USING (user_id)
-                              LEFT JOIN aliases         AS a ON (a.id = u.user_id AND a.type = \'a_vie\')
-                              ' . $joins,
+                           . 'LEFT JOIN auth_user_quick AS q USING (user_id)' . $joins,
                             $where,
                             'u.user_id');
     }
@@ -137,7 +135,7 @@ class ArraySet extends UserSet
     {
         $where = $this->getUids($users);
         if ($where) {
-            $where = "a.alias IN ($where)";
+            $where = "u.hruid IN ($where)";
         } else {
             $where = " 0 ";
         }
@@ -146,7 +144,7 @@ class ArraySet extends UserSet
 
     private function getUids(array $users)
     {
-        $users = get_users_forlife_list($users, true, '_silent_user_callback');
+        $users = User::getBulkHruid($users, array('User', '_silent_user_callback'));
         if (is_null($users)) {
             return '';
         }
@@ -172,8 +170,9 @@ class MinificheView extends MultipageView
 
     public function fields()
     {
-        return "u.user_id AS id,
-                u.*, a.alias AS forlife,
+        global $globals;
+        return "u.user_id AS id, u.*,
+                CONCAT(a.alias, '@{$globals->mail->domain}') AS bestemail,
                 u.perms != 'pending' AS inscrit,
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces, u.matricule_ax,
@@ -269,9 +268,8 @@ class MentorView extends MultipageView
 
     public function fields()
     {
-        return "m.uid, u.promo,
-                a.alias AS bestalias, m.expertise, mp.pid,
-                ms.secteur, ms.ss_secteur,
+        return "m.uid, u.promo, u.hruid,
+                m.expertise, mp.pid, ms.secteur, ms.ss_secteur,
                 nd.display AS name_display, nd.tooltip AS name_tooltip, nd.sort AS name_sort";
     }
 
@@ -319,7 +317,7 @@ class TrombiView extends MultipageView
 
     public function fields()
     {
-        return "u.user_id, nd.display AS name_display, nd.tooltip AS name_tooltip, nd.sort AS name_sort, u.promo, a.alias AS forlife ";
+        return "u.user_id, nd.display AS name_display, nd.tooltip AS name_tooltip, nd.sort AS name_sort, u.promo, u.hruid ";
     }
 
     public function joins()
@@ -464,8 +462,7 @@ class GadgetView implements PlView
 
     public function fields()
     {
-        return "u.user_id AS id,
-                u.*, a.alias AS forlife," .
+        return "u.user_id AS id, u.*," .
                "u.perms != 'pending' AS inscrit,
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces,

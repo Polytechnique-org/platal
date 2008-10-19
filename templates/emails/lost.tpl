@@ -31,7 +31,7 @@
   {iterate from=$lost_emails item="looser"}
     <tr class="{cycle values="pair,impair"}">
       <td>
-        <a href="profile/{$looser.alias}" class="popup2">{$looser.alias}</a>
+        <a href="profile/{$looser.hruid}" class="popup2">{$looser.hruid}</a>
       </td>
   {/iterate}
 </table>

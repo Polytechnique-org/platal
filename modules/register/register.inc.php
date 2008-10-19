@@ -149,24 +149,24 @@ function create_aliases (&$sub)
     global $globals;
     extract ($sub);
 
-    $mailorg  = make_username($prenom, $nom);
+    $mailorg = make_username($prenom, $nom);
     $mailorg2 = $mailorg.sprintf(".%02u", ($promo%100));
-    $forlife  = make_forlife($prenom, $nom, $promo);
 
-    $res      = XDB::query('SELECT COUNT(*) FROM aliases WHERE alias={?}', $forlife);
-    if ($res->fetchOneCell() > 0) {
-        return "Tu as un homonyme dans ta promo, il faut traiter ce cas manuellement.<br />".
-            "envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}</a>\">" .
-            "support@{$globals->mail->domain}</a> en expliquant ta situation.";
+    $res = XDB::query("SELECT hruid FROM auth_user_md5 WHERE user_id = {?}", $uid);
+    if ($res->numRows() == 0) {
+        return "Tu n'as pas d'adresse à vie pré-attribuée.<br />"
+            . "Envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}</a>\">" .
+            . "support@{$globals->mail->domain}</a> en expliquant ta situation.";
+    } else {
+        // TODO: at the moment forlife == hruid, however we'll have to change
+        // that behaviour when masters will be on plat/al.
+        $forlife = $res->fetchOneCell();
     }
 
-    $res      = XDB::query('SELECT id, type, expire FROM aliases WHERE alias={?}', $mailorg);
-
-    if ( $res->numRows() ) {
-
+    $res = XDB::query('SELECT id, type, expire FROM aliases WHERE alias={?}', $mailorg);
+    if ($res->numRows()) {
         list($h_id, $h_type, $expire) = $res->fetchOneRow();
-
-        if ( $h_type != 'homonyme' and empty($expire) ) {
+        if ($h_type != 'homonyme' and empty($expire)) {
             XDB::execute('UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias={?}', $mailorg);
             XDB::execute('REPLACE INTO homonymes (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $h_id);
             XDB::execute('REPLACE INTO homonymes (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $uid);
