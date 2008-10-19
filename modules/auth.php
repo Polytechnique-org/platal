@@ -159,12 +159,14 @@ class AuthModule extends PLModule
         }
 
         /* on parcourt les entrees de groupes_auth */
-        $res = XDB::iterRow('SELECT privkey, name, datafields FROM groupesx_auth');
+        $res = XDB::iterRow('SELECT privkey, name, datafields, returnurls FROM groupesx_auth');
 
-        while (list($privkey,$name,$datafields) = $res->next()) {
+        while (list($privkey,$name,$datafields,$returnurls) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {
-                $returl = $gpex_url . gpex_make_params($gpex_challenge, $privkey, $datafields, $charset);
-                http_redirect($returl);
+                if ($returnurls == "" || @preg_match($returnurls, $gpex_url)) {
+                    $returl = $gpex_url . gpex_make_params($gpex_challenge, $privkey, $datafields, $charset);
+                    http_redirect($returl);
+                }
             }
         }
 
@@ -180,6 +182,7 @@ class AuthModule extends PLModule
         $table_editor->describe('name','nom',true);
         $table_editor->describe('privkey','clé privée',false);
         $table_editor->describe('datafields','champs renvoyés',true);
+        $table_editor->describe('returnurls','urls de retour',true);
         $table_editor->apply($page, $action, $id);
     }
 }
