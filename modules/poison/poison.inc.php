@@ -38,11 +38,6 @@ function get_poison_emails($seed, $count)
     while (!feof($fd) && $i < $count) {
         $line = trim(fgets($fd));
         if (strlen($line) > 0) {
-            if ($seed % 27 > 13) {
-                $line .= '@' . $globals->mail->domain;
-            } else {
-                $line .= '@' . $globals->mail->domain2;
-            }
             $emails[] = $line;
             ++$seed;
         }
@@ -61,7 +56,10 @@ function randomize_poison_file()
     while (!feof($fd)) {
         $line = trim(fgets($fd));
         if (strlen($line) > 0) {
-            $entries[$line] = md5($line);
+            $m1 = $line . '@' . $globals->mail->domain;
+            $entries[$m1] = md5($m1);
+            $m2 = $line . '@' . $globals->mail->domain2;
+            $entries[$m2] = md5($m2);
         }
     }
     fclose($fd);
