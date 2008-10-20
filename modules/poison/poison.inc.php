@@ -1,3 +1,4 @@
+<?php
 /***************************************************************************
  *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -18,53 +19,60 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-.ac_results {
-    background-color: window;
-    border: 1px solid;
-    overflow: hidden;
-    padding: 0px;
+function get_poison_emails($seed, $count)
+{
+    global $globals;
+
+    $fd   = fopen($globals->poison->file, 'r');
+    $size = fstat($fd);
+    $size = $size['size'];
+    $seed = crc32($seed) % $size;
+    if ($seed < 0) {
+        $seed = $size + $seed;
+    }
+
+    fseek($fd, $seed);
+    fgets($fd);
+    $emails = array();
+    $i = 0;
+    while (!feof($fd) && $i < $count) {
+        $line = trim(fgets($fd));
+        if (strlen($line) > 0) {
+            if ($seed % 27 > 13) {
+                $line .= '@' . $globals->mail->domain;
+            } else {
+                $line .= '@' . $globals->mail->domain2;
+            }
+            $emails[] = $line;
+            ++$seed;
+        }
+        ++$i;
+    }
+    fclose($fd);
+    return $emails;
 }
 
-.ac_results ul {
-    padding:0px;
-    margin:0px;
-    width:100%;
+function randomize_poison_file()
+{
+    global $globals;
+
+    $fd = fopen($globals->poison->file, 'r');
+    $entries = array();
+    while (!feof($fd)) {
+        $line = trim(fgets($fd));
+        if (strlen($line) > 0) {
+            $entries[$line] = md5($line);
+        }
+    }
+    fclose($fd);
+
+    asort($entries);
+    $fd = fopen($globals->poison->file . '.rand', 'w');
+    foreach ($entries as $key => $value) {
+        fwrite($fd, "$key\n");
+    }
+    fclose($fd);
 }
 
-.ac_results li {
-    display:block;
-    padding: 2px;
-    cursor:pointer;
-    font-size: 90%;
-}
-
-.ac_results iframe {
-    display:none;/*sorry for IE5*/
-    display/**/:block;/*sorry for IE5*/
-    position:absolute;
-    top:0;
-    left:0;
-    z-index:-1;
-    filter:mask();
-    width:3000px;
-    height:3000px;
-}
-
-.ac_over {
-    background: highlight;
-    color: highlighttext;
-}
-
-.ac_loading {
-    background: window url(../images/wait.gif) no-repeat scroll right center;
-}
-
-.hidden_valid {
-    background-color: #bfb;
-}
-
-.pem {
-    display: none;
-}
-
-/* vim: set et ts=4 sts=4 sw=4: */
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+?>

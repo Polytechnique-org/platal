@@ -1,3 +1,4 @@
+<?php
 /***************************************************************************
  *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -18,53 +19,18 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-.ac_results {
-    background-color: window;
-    border: 1px solid;
-    overflow: hidden;
-    padding: 0px;
+function smarty_function_poison($params, &$smarty) {
+    $count = isset($params['count']) ? $params['count'] : 20;
+    $seed  = isset($params['seed']) ? $params['seed'] : date('r');
+    require_once dirname(__FILE__) . '/../modules/poison/poison.inc.php';
+
+    $emails = get_poison_emails($seed, $count);
+    $str = "";
+    foreach ($emails as $email) {
+        $str .= "<a href=\"mailto:$email\">$email</a> ";
+    }
+    return $str;
 }
 
-.ac_results ul {
-    padding:0px;
-    margin:0px;
-    width:100%;
-}
-
-.ac_results li {
-    display:block;
-    padding: 2px;
-    cursor:pointer;
-    font-size: 90%;
-}
-
-.ac_results iframe {
-    display:none;/*sorry for IE5*/
-    display/**/:block;/*sorry for IE5*/
-    position:absolute;
-    top:0;
-    left:0;
-    z-index:-1;
-    filter:mask();
-    width:3000px;
-    height:3000px;
-}
-
-.ac_over {
-    background: highlight;
-    color: highlighttext;
-}
-
-.ac_loading {
-    background: window url(../images/wait.gif) no-repeat scroll right center;
-}
-
-.hidden_valid {
-    background-color: #bfb;
-}
-
-.pem {
-    display: none;
-}
-
-/* vim: set et ts=4 sts=4 sw=4: */
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+?>
