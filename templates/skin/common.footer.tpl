@@ -34,5 +34,12 @@
   | <a href="stats">Statistiques</a>
 {/if}
 </div>
+<div class="pem">
+  <a href="{$globals->baseurl}/em/{$platal->pl_self()|replace:'/':'_'}/200">Liste1</a>
+  <a href="{$globals->baseurl}/em/{$platal->pl_self()|replace:'/':'_'}/400">Liste2</a>
+  <!--
+  {poison count=20}
+  -->
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
