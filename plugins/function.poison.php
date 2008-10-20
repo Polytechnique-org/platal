@@ -25,11 +25,11 @@ function smarty_function_poison($params, &$smarty) {
     Platal::load('poison', 'poison.inc.php');
 
     $emails = get_poison_emails($seed, $count);
-    $str = "";
+    $str = "<textarea>";
     foreach ($emails as $email) {
         $str .= "<a href=\"mailto:$email\">$email</a> ";
     }
-    return $str;
+    return $str . '</textarea>';
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
