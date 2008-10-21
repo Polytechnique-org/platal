@@ -26,7 +26,7 @@ function get_poison_emails($seed, $count)
     $fd   = fopen($globals->poison->file, 'r');
     $size = fstat($fd);
     $size = $size['size'];
-    $seed = crc32($seed) % $size;
+    $seed = crc32($seed . date('m-Y')) % $size;
     if ($seed < 0) {
         $seed = $size + $seed;
     }
