@@ -67,7 +67,7 @@ class SurveyModule extends PLModule
             return $this->show_error($page, "Le sondage ".$survey->getTitle()." est terminé.", 'survey');
         }
         if (!$this->check_surveyPerms($page, $survey)) {
-            return;
+            return PL_DO_AUTH;
         }
         if (Post::has('survey_submit')) { // checks if the survey has already been filled in
             $uid = 0;
@@ -106,7 +106,7 @@ class SurveyModule extends PLModule
             return $this->show_error($page, "Le sondage ".$survey->getTitle()." n'est pas encore terminé.", 'survey');
         }
         if (!$this->check_surveyPerms($page, $survey)) {
-            return;
+            return PL_DO_AUTH;
         }
         if ($show == 'csv') {
             header('Content-Type: text/csv; charset="UTF-8"');
@@ -400,14 +400,11 @@ class SurveyModule extends PLModule
     {
         $this->load('survey.inc.php');
         if (!$survey->isMode(Survey::MODE_ALL)) { // if the survey is reserved to alumni
-            global $globals;
-            if (!call_user_func(array($globals->session, 'doAuth'))) { // checks authentification
-                global $platal;
-                $platal->force_login($page);
+            if (!S::logged()) {
+                return false;
             }
             if (!$survey->checkPromo(S::v('promo'))) { // checks promotion
-                $this->show_error($page, "Tu n'as pas accès à ce sondage car il est réservé à d'autres promotions.", 'survey');
-                return false;
+                $page->kill("Tu n'as pas accès à ce sondage car il est réservé à d'autres promotions.");
             }
         }
         return true;
@@ -462,6 +459,7 @@ class SurveyModule extends PLModule
         if (!is_null($errArray)) {
             $page->assign('survey_errors', $errArray);
         }
+
     }
     // }}}
 
