@@ -273,7 +273,7 @@ abstract class Platal
         $val = call_user_func_array($hook['hook'], $args);
         if ($val == PL_DO_AUTH) {
             // The handler need a better auth with the current args
-            if (!$session->start($hook['auth'])) {
+            if (!$session->start($session->loggedLevel())) {
                 $this->force_login($page);
             }
             $val = call_user_func_array($hook['hook'], $args);
