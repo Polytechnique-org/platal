@@ -19,22 +19,58 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/../include/xorg.inc.php';
+function get_poison_emails($seed, $count)
+{
+    global $globals;
 
-$platal = new Xorg('auth', 'carnet', 'email', 'events', 'forums',
-                   'geoloc', 'lists', 'marketing', 'payment', 'platal',
-                   'profile', 'register', 'search', 'stats', 'admin',
-                   'newsletter', 'axletter', 'bandeau', 'survey',
-                   'fusionax', 'gadgets', 'googleapps', 'poison');
+    $fd   = fopen($globals->poison->file, 'r');
+    $size = fstat($fd);
+    $size = $size['size'];
+    $seed = crc32($seed . date('m-Y')) % $size;
+    if ($seed < 0) {
+        $seed = $size + $seed;
+    }
 
-if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
-    $platal->run();
-    exit;
+    fseek($fd, $seed);
+    fgets($fd);
+    $emails = array();
+    $i = 0;
+    while (!feof($fd) && $i < $count) {
+        $line = trim(fgets($fd));
+        if (strlen($line) > 0) {
+            $emails[] = $line;
+            ++$seed;
+        }
+        ++$i;
+    }
+    fclose($fd);
+    return $emails;
 }
 
-/*** WIKI CODE ***/
+function randomize_poison_file()
+{
+    global $globals;
 
-include pl_core_include('wiki.engine.inc.php');
+    $fd = fopen($globals->poison->file, 'r');
+    $entries = array();
+    while (!feof($fd)) {
+        $line = trim(fgets($fd));
+        if (strlen($line) > 0) {
+            $m1 = $line . '@' . $globals->mail->domain;
+            $entries[$m1] = md5($m1);
+            $m2 = $line . '@' . $globals->mail->domain2;
+            $entries[$m2] = md5($m2);
+        }
+    }
+    fclose($fd);
+
+    asort($entries);
+    $fd = fopen($globals->poison->file . '.rand', 'w');
+    foreach ($entries as $key => $value) {
+        fwrite($fd, "$key\n");
+    }
+    fclose($fd);
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

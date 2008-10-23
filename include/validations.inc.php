@@ -42,7 +42,7 @@ class ValidateIterator extends XOrgDBIterator
     public function next ()
     {
         if (list($result, $stamp) = parent::next()) {
-            $result = unserialize($result);
+            $result = Validate::unserialize($result);
             $result->stamp = $stamp;
             return($result);
         } else {
@@ -284,7 +284,7 @@ abstract class Validate
             $res = XDB::query('SELECT data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s") FROM requests WHERE user_id={?} AND type={?} and stamp={?}', $uid, $type, $stamp);
         }
         if ($result = $res->fetchOneCell()) {
-            $result = unserialize($result);
+            $result = Validate::unserialize($result);
         } else {
             $result = false;
         }
@@ -310,7 +310,7 @@ abstract class Validate
         $res = XDB::iterRow('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
         $array = array();
         while (list($data) = $res->next()) {
-            $array[] = unserialize($data);
+            $array[] = Validate::unserialize($data);
         }
         return $array;
     }
@@ -389,6 +389,17 @@ abstract class Validate
     }
 
     // }}}
+    // {{{ function unserialize()
+    public static function unserialize($data)
+    {
+        $obj = unserialize($data);
+        /* XXX: Temporary for hruid migration */
+        if (!isset($obj->user) || !is_object($obj)) {
+            $obj->user =& User::get($obj->forlife);
+        }
+        /* XXX: End temporary block */
+        return $obj;
+    }
 }
 
 foreach (glob(dirname(__FILE__).'/validations/*.inc.php') as $file) {

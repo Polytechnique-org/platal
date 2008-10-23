@@ -19,22 +19,18 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/../include/xorg.inc.php';
+function smarty_function_poison($params, &$smarty) {
+    $count = isset($params['count']) ? $params['count'] : 20;
+    $seed  = isset($params['seed']) ? $params['seed'] : date('r');
+    Platal::load('poison', 'poison.inc.php');
 
-$platal = new Xorg('auth', 'carnet', 'email', 'events', 'forums',
-                   'geoloc', 'lists', 'marketing', 'payment', 'platal',
-                   'profile', 'register', 'search', 'stats', 'admin',
-                   'newsletter', 'axletter', 'bandeau', 'survey',
-                   'fusionax', 'gadgets', 'googleapps', 'poison');
-
-if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
-    $platal->run();
-    exit;
+    $emails = get_poison_emails($seed, $count);
+    $str = "<textarea>";
+    foreach ($emails as $email) {
+        $str .= "<a href=\"mailto:$email\">$email</a> ";
+    }
+    return $str . '</textarea>';
 }
-
-/*** WIKI CODE ***/
-
-include pl_core_include('wiki.engine.inc.php');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

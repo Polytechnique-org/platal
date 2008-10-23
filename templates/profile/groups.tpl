@@ -72,7 +72,7 @@
       <p>
         La gestion des annuaires des groupes X est réalisée grâce à
         <a href="http://www.polytechnique.net">Polytechnique.net</a>. Pour faire apparaître un groupe sur ta fiche
-        il faut que soit inscrit dans ce groupe sur l'annuaire sur Polytechnique.net.
+        il faut que tu sois inscrit dans ce groupe sur <a href="http://www.polytechnique.net">Polytechnique.net</a>.
       </p>
     </td>
   </tr>

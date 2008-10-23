@@ -36,8 +36,8 @@ comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
 {if $evt.participant_list && $is_admin}
 <p class="center">
 [<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un email à ceux qui viennent</a>]
--
-[<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un email aux membres non inscrits</a>]
+<br >
+[<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un email aux membres du groupe n'ayant pas répondu</a>]
 </p>
 {/if}
 
