@@ -116,10 +116,10 @@ openid: get-openid
 
 # There is no obvious way to automatically use the latest version
 get-openid:
-	@if ! test -d include/openid; then                                \
+	@if ! test -d include/Auth; then                                  \
 	    wget http://openidenabled.com/files/php-openid/packages/php-openid-2.1.2.tar.bz2; \
 	    tar -xjf php-openid-2.1.2.tar.bz2;                            \
-	    mv php-openid-2.1.2/Auth include/openid;                      \
+	    mv php-openid-2.1.2/Auth include/;                            \
 	    rm php-openid-2.1.2.tar.bz2;                                  \
 	    rm -r php-openid-2.1.2;                                       \
 	fi

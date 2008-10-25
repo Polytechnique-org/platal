@@ -22,7 +22,6 @@
 
 <h1>Page d'identité OpenId de {$user->fullName()}</h1>
 
-
 <p>OpenID est un système d'authentification décentralisé. Cette page permet 
 à des sites web tiers d'identifier {$user->displayName()}, grâce à son compte 
 Polytechnique.org.<p>

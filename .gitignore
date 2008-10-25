@@ -1,4 +1,4 @@
 /wiki
 /spool
-/include/openid
+/include/Auth
 .*.sw?
