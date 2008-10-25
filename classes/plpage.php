@@ -288,6 +288,15 @@ abstract class PlPage extends Smarty
     }
 
     // }}}
+    // {{{ function addLink
+
+    public function addLink($rel, $path)
+    {
+        $this->append('pl_link', array('rel' => $rel, 'href' => $path));
+    }
+
+
+    // }}}
     // {{{ function addCssInline
 
     public function addCssInline($css)
