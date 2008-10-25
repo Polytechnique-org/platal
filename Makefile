@@ -112,7 +112,7 @@ get-wiki:
 ## openid
 ##
 
-openid: get-openid
+openid: get-openid spool/openid/store
 
 # There is no obvious way to automatically use the latest version
 get-openid:
@@ -123,6 +123,11 @@ get-openid:
 	    rm php-openid-2.1.2.tar.bz2;                                  \
 	    rm -r php-openid-2.1.2;                                       \
 	fi
+
+spool/openid/store:
+	mkdir -p $@
+	chmod o+w $@
+
 
 ##
 ## banana
