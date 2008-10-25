@@ -46,6 +46,9 @@
     {$css|smarty:nodefaults} 
     </style> 
     {/foreach} 
+    {foreach from=$pl_link item=link}
+    <link rel="{$link.rel}" href="{$link.href}" />
+    {/foreach}
     <script type="text/javascript">
     var platal_baseurl = "{$globals->baseurl}/"
     if (window.top != window)

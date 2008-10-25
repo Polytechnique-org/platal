@@ -19,22 +19,48 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/../include/xorg.inc.php';
 
-$platal = new Xorg('auth', 'carnet', 'email', 'events', 'forums',
-                   'geoloc', 'lists', 'marketing', 'payment', 'platal',
-                   'profile', 'register', 'search', 'stats', 'admin',
-                   'newsletter', 'axletter', 'bandeau', 'survey',
-                   'gadgets', 'googleapps', 'poison', 'openid');
 
-if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
-    $platal->run();
-    exit;
+class OpenidModule extends PLModule
+{
+    function handlers()
+    {
+        return array(
+            'openid'    => $this->make_hook('openid', AUTH_PUBLIC),
+        );
+    }
+
+    function handler_openid(&$page, $x = null)
+    {
+        // Determines the user whose openid we are going to display
+        if (is_null($x)) {
+            return PL_NOT_FOUND;
+        }
+
+        $login = S::logged() ? User::get($x) : User::getSilent($x);
+        if (!$login) {
+            return PL_NOT_FOUND;
+        }
+
+        // Select template
+        $page->changeTpl('openid/openid.tpl');
+
+        // Sets the title of the html page.
+        $page->setTitle($login->fullName());
+
+        // Sets the <link> tags for HTML-Based Discovery
+        $page->addLink('openid.server openid2.provider',
+                       $globals->baseurl . '/openid');
+        $page->addLink('openid.delegate openid2.local_id',
+                       $login->hruid);
+
+        // Adds the global user property array to the display.
+        $page->assign_by_ref('user', $login);
+
+
+    }
+
 }
-
-/*** WIKI CODE ***/
-
-include pl_core_include('wiki.engine.inc.php');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

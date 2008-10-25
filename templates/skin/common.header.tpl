@@ -50,6 +50,9 @@
     </style>
     {/foreach}
     <link rel="stylesheet" type="text/css" href="css/print.css" media="print"/>
+    {foreach from=$pl_link item=link}
+    <link rel="{$link.rel}" href="{$link.href}" />
+    {/foreach}
     <script type="text/javascript">
       var platal_baseurl = "{$globals->baseurl}/";
     </script>
