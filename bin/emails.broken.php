@@ -24,7 +24,7 @@ ini_set('include_path', '.:../include:/usr/share/php');
 
 require_once('connect.db.inc.php');
 require_once('emails.inc.php');
-require_once('../classes/plmailer.php');
+require_once('plmailer.php');
 
 $opts = getopt('i:o:');
 if (($opts['i'] && $opts['i'] == '-') || empty($opts['i'])) {

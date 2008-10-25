@@ -23,9 +23,9 @@
 // Updates the gapps_accounts table with Plat/al information.
 // Cleans-up the job queue, and execute post-queue hooks.
 
-require_once('../connect.db.inc.php');
-require_once('../../classes/plmailer.php');
-require_once('../../include/googleapps.inc.php');
+require_once('connect.db.inc.php');
+require_once('plmailer.php');
+require_once('googleapps.inc.php');
 if (!$globals->mailstorage->googleapps_domain) {
   exit;
 }
