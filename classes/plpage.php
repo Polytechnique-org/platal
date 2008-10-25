@@ -54,8 +54,8 @@ abstract class PlPage extends Smarty
         $this->_failure   = false;
 
         if ($globals->mode != 'rw') {
-            $this->trigError("En raison d'une maintenance, une partie des fonctionnalités du site sont"
-                             . " actuellement désactivée, en particuliers aucune donnée ne sera sauvegardée");
+            $this->trigError("En raison d'une maintenance, une partie des fonctionnalités du site est"
+                             . " actuellement désactivée, en particulier aucune donnée ne sera sauvegardée");
         }
         $this->register_prefilter('at_to_globals');
         $this->addJsLink('jquery.js');
