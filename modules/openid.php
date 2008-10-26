@@ -134,10 +134,17 @@ class OpenidModule extends PLModule
             return;
         }
 
+        // Prepare Simple Registration response fields
+        require_once 'Auth/OpenID/SReg.php';
+        $sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest($request);
+        $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, get_sreg_data($user));
+
+
         // Ask the user for confirmation
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $page->changeTpl('openid/trust.tpl');
             $page->assign('relying_party', $request->trust_root);
+            $page->assign_by_ref('sreg_data', $sreg_response->data);
             return;
         }
 
@@ -147,24 +154,8 @@ class OpenidModule extends PLModule
             unset($_SESSION['request']);
             $response =& $request->answer(true, null, $request->identity);
 
-            // Answer with some sample Simple Registration data.
-            // TODO USE REAL USER DATA FROM $user
-            $sreg_data = array(
-                               'fullname' => 'Example User',
-                               'nickname' => 'example',
-                               'dob' => '1970-01-01',
-                               'email' => 'invalid@example.com',
-                               'gender' => 'F',
-                               'postcode' => '12345',
-                               'country' => 'ES',
-                               'language' => 'eu',
-                               'timezone' => 'America/New_York');
-
             // Add the simple registration response values to the OpenID
             // response message.
-            require_once 'Auth/OpenID/SReg.php';
-            $sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest($request);
-            $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, $sreg_data);
             $sreg_response->toMessage($response->fields);
 
         } else { // !isset($_POST['trust'])

@@ -66,7 +66,21 @@ function get_user_xrds_url($user)
     return $globals->baseurl . '/openid/user_xrds/' . $user->hruid;
 }
 
-
+function get_sreg_data($user)
+{
+    if (is_null($user)) {
+        return null;
+    }
+    return array('fullname' => $user->fullName(),
+                 'nickname' => $user->displayName(),
+                 'dob' => null,
+                 'email' => $user->bestEmail(),
+                 'gender' => $user->isFemale() ? 'F' : 'M',
+                 'postcode' => null,
+                 'country' => null,
+                 'language' => null,
+                 'timezone' => null);
+}
 
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

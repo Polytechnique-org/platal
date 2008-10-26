@@ -20,14 +20,24 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<h1>Demande d'identification OpenId</h1>
 
 <p>Le site <strong>{$relying_party}</strong> demande à confirmer votre identité.</p>
 
-<p>Souhaitez-vous confirmer votre identité ?</p>
+{if $sreg_data neq null}
+<p>Les informations suivantes lui seront transmises :</p>
+<ul>
+{foreach from=$sreg_data key=field item=value}
+<li><i>{$field}</i> : {$value}</li>
+{/foreach}
+</ul>
+{/if}
+
+<p><strong>Souhaitez-vous confirmer votre identité ?<strong></p>
 
 <div class="form">
   <form method="post" action="openid/trust">
     <input type="submit" name="trust" value="Confirmer" />
-    <input type="submit" value="Ne pas confirmer" />
+    <input type="submit" value="Annuler" />
   </form>
 </div>

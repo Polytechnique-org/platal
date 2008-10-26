@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Erreur lors du traitement de l'identification.</h1>
+<h1>Erreur lors du traitement de l'identification OpenId</h1>
 
 <p>Cette requête n'a pas pu aboutir car elle ne contient pas d'identifiant.</p>
 
