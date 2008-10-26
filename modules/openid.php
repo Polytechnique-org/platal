@@ -92,7 +92,7 @@ class OpenidModule extends PLModule
                 $response =& $request->answer(false);
             } else {
                 // Save request in session and jump to confirmation page
-                S::set('request', serialize($request));
+                S::set('openid_request', serialize($request));
                 pl_redirect('openid/trust');
                 return;
             }
@@ -112,7 +112,7 @@ class OpenidModule extends PLModule
         $this->load('openid.inc.php');
 
         // Recover request in session
-        $request = S::v('request');
+        $request = S::v('openid_request');
         if (is_null($request)) {
             // There is no authentication information, something went wrong
             pl_redirect('/');
@@ -151,7 +151,7 @@ class OpenidModule extends PLModule
         // At this point $_SERVER['REQUEST_METHOD'] == 'POST'
         // Answer to the Relying Party based on the user's choice
         if (isset($_POST['trust'])) {
-            unset($_SESSION['request']);
+            S::kill('openid_request');
             $response =& $request->answer(true, null, $request->identity);
 
             // Add the simple registration response values to the OpenID
@@ -159,7 +159,7 @@ class OpenidModule extends PLModule
             $sreg_response->toMessage($response->fields);
 
         } else { // !isset($_POST['trust'])
-            unset($_SESSION['request']);
+            S::kill('openid_request');
             $response =& $request->answer(false);
         }
 
