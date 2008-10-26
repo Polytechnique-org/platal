@@ -30,6 +30,18 @@
  * OP-Local Identifier:         {$hruid}
  */
 
+/* Testing suite is here:
+ * http://openidenabled.com/resources/openid-test/
+ */
+
+/* **checkid_immediate is not supported (yet)**, which means that we will
+ * always ask for confirmation before redirecting to a third-party.
+ * A sensible way to implement it would be to add a "Always trust this site"
+ * checkbox to the form, and to store trusted websites per user. This still
+ * raises the question of removing websites from that list.
+ * Another possibility is to maintain a global whitelist.
+ */
+
 class OpenidModule extends PLModule
 {
     function handlers()
@@ -47,8 +59,10 @@ class OpenidModule extends PLModule
         $this->load('openid.inc.php');
         $user = get_user($x);
 
-        // Display the discovery page
-        if ($_SERVER['REQUEST_METHOD'] != 'POST' && !array_key_exists('openid_mode', $_GET)) {
+        // Spec §4.1.2: if "openid.mode" is absent, whe SHOULD assume that
+        // the request is not an OpenId message
+        // Thus, we try to render the discovery page
+        if (!array_key_exists('openid_mode', $_REQUEST)) {
             return $this->render_discovery_page($page, $user);
         }
 
@@ -56,6 +70,7 @@ class OpenidModule extends PLModule
         $server = init_openid_server();
         $request = $server->decodeRequest();
 
+        // This request requires user interaction
         if (in_array($request->mode,
                      array('checkid_immediate', 'checkid_setup'))) {
 
@@ -74,7 +89,7 @@ class OpenidModule extends PLModule
             // We always require confirmation before sending information
             // to third-party websites
             if ($request->immediate) {
-                $response =& $request->answer(false, get_openid_url());
+                $response =& $request->answer(false);
             } else {
                 // Save request in session and jump to confirmation page
                 S::set('request', serialize($request));
@@ -82,13 +97,14 @@ class OpenidModule extends PLModule
                 return;
             }
 
-        } else { // Other $request->mode
+        // Other requests can be automatically handled by the server
+        } else {
             $response =& $server->handleRequest($request);
         }
 
         // Render response
         $webresponse =& $server->encodeResponse($response);
-        $this->render_openid_response($webresponse, true);
+        $this->render_openid_response($webresponse);
     }
 
     function handler_trust(&$page, $x = null)
@@ -103,7 +119,7 @@ class OpenidModule extends PLModule
             return;
         } else {
             // Unserialize the request
-            require_once "Auth/OpenID/Server.php";
+            require_once 'Auth/OpenID/Server.php';
             $request = unserialize($request);
         }
 
@@ -118,19 +134,21 @@ class OpenidModule extends PLModule
             return;
         }
 
+        // Ask the user for confirmation
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $page->changeTpl('openid/trust.tpl');
             $page->assign('relying_party', $request->trust_root);
             return;
         }
 
-        if (isset($_POST['trust'])) { // $_SERVER['REQUEST_METHOD'] == 'POST'
+        // At this point $_SERVER['REQUEST_METHOD'] == 'POST'
+        // Answer to the Relying Party based on the user's choice
+        if (isset($_POST['trust'])) {
             unset($_SESSION['request']);
             $response =& $request->answer(true, null, $request->identity);
 
             // Answer with some sample Simple Registration data.
-            // TODO USE REAL USER DATA
-            // $user = S::user();
+            // TODO USE REAL USER DATA FROM $user
             $sreg_data = array(
                                'fullname' => 'Example User',
                                'nickname' => 'example',
@@ -149,13 +167,14 @@ class OpenidModule extends PLModule
             $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, $sreg_data);
             $sreg_response->toMessage($response->fields);
 
-            // Generate a response to send to the user agent.
-            $webresponse =& $server->encodeResponse($response);
-            $this->render_openid_response($webresponse);
-        } else {
-            pl_redirect('');
-            return;
+        } else { // !isset($_POST['trust'])
+            unset($_SESSION['request']);
+            $response =& $request->answer(false);
         }
+
+        // Generate a response to send to the user agent.
+        $webresponse =& $server->encodeResponse($response);
+        $this->render_openid_response($webresponse);
     }
 
     function handler_idp_xrds(&$page)
@@ -193,8 +212,9 @@ class OpenidModule extends PLModule
     function render_discovery_page(&$page, $user)
     {
 
+        // Show the documentation if this is not the OpenId page of an user
         if (is_null($user)) {
-            return PL_NOT_FOUND;
+            pl_redirect('Xorg/OpenId');
         }
 
         // Include X-XRDS-Location response-header for Yadis discovery
@@ -218,25 +238,25 @@ class OpenidModule extends PLModule
 
     function render_no_identifier_page($page, $request)
     {
+        // Select template
         $page->changeTpl('openid/no_identifier.tpl');
     }
 
-    // TODO determine when to close the connection or not
-    // TODO i don't why it was done that way in the example
-    function render_openid_response($webresponse, $close = false)
+    function render_openid_response($webresponse)
     {
+        // Send HTTP response code
         if ($webresponse->code != AUTH_OPENID_HTTP_OK) {
             header(sprintf("HTTP/1.1 %d ", $webresponse->code),
                    true, $webresponse->code);
         }
 
+        // Send headers
         foreach ($webresponse->headers as $k => $v) {
             header("$k: $v");
         }
+        header('Connection: close');
 
-        if ($close) {
-            header('Connection: close');
-        }
+        // Send body
         print $webresponse->body;
         exit;
     }
