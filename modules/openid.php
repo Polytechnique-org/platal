@@ -51,6 +51,7 @@ class OpenidModule extends PLModule
             'openid/trust'      => $this->make_hook('trust', AUTH_COOKIE),
             'openid/idp_xrds'   => $this->make_hook('idp_xrds', AUTH_PUBLIC),
             'openid/user_xrds'  => $this->make_hook('user_xrds', AUTH_PUBLIC),
+//            'openid/melix'      => $this->make_hook('melix', AUTH_PUBLIC),
         );
     }
 
@@ -198,6 +199,16 @@ class OpenidModule extends PLModule
         $page->assign('uri', get_openid_url());
     }
 
+    function handler_melix(&$page, $x = null)
+    {
+        $this->load('openid.inc.php');
+        $user = get_user_by_alias($x);
+
+        // This will redirect to the canonic URL, which was not used
+        // if this hook was triggered
+        return render_discovery_page(&$page, $user);
+    }
+
     //--------------------------------------------------------------------//
 
     function render_discovery_page(&$page, $user)
@@ -206,6 +217,16 @@ class OpenidModule extends PLModule
         // Show the documentation if this is not the OpenId page of an user
         if (is_null($user)) {
             pl_redirect('Xorg/OpenId');
+        }
+
+        // Redirect to the canonic URL if we are using an alias
+        // There might be a risk of redirection loop here
+        // if $_SERVER was not exactly what we expect
+        $current_url = 'http' . (empty($_SERVER['HTTPS']) ? '' : 's') . '://'
+                       . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+        $canonic_url = get_user_openid_url($user);
+        if ($current_url != $canonic_url) {
+            http_redirect($canonic_url);
         }
 
         // Include X-XRDS-Location response-header for Yadis discovery

@@ -48,6 +48,24 @@ function get_user($x) {
 
 }
 
+function get_user_by_alias($x) {
+    if (is_null($x)) {
+        return null;
+    }
+    // TODO such a function should probably be provided in the User class
+    // or at least not here
+    $res = XDB::query('SELECT  u.user_id
+                         FROM  auth_user_md5 AS u
+                   INNER JOIN  aliases       AS a ON (a.id = u.user_id AND type != \'homonyme\')
+                        WHERE  a.alias = {?} AND u.perms IN(\'admin\', \'user\')',
+                               $x);
+    if (list($uid) = $res->fetchOneRow()) {
+        $user = User::getSilent($uid);
+    }
+    return $user ? $user : null;
+
+}
+
 function get_user_openid_url($user)
 {
     if (is_null($user)) {
