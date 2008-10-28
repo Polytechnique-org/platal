@@ -51,7 +51,7 @@ class OpenidModule extends PLModule
             'openid/trust'      => $this->make_hook('trust', AUTH_COOKIE),
             'openid/idp_xrds'   => $this->make_hook('idp_xrds', AUTH_PUBLIC),
             'openid/user_xrds'  => $this->make_hook('user_xrds', AUTH_PUBLIC),
-//            'openid/melix'      => $this->make_hook('melix', AUTH_PUBLIC),
+            'openid/melix'      => $this->make_hook('melix', AUTH_PUBLIC),
         );
     }
 
@@ -206,7 +206,7 @@ class OpenidModule extends PLModule
 
         // This will redirect to the canonic URL, which was not used
         // if this hook was triggered
-        return render_discovery_page(&$page, $user);
+        return $this->render_discovery_page(&$page, $user);
     }
 
     //--------------------------------------------------------------------//

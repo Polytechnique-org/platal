@@ -55,9 +55,12 @@ function get_user_by_alias($x) {
     // TODO such a function should probably be provided in the User class
     // or at least not here
     $res = XDB::query('SELECT  u.user_id
-                         FROM  auth_user_md5 AS u
-                   INNER JOIN  aliases       AS a ON (a.id = u.user_id AND type != \'homonyme\')
-                        WHERE  a.alias = {?} AND u.perms IN(\'admin\', \'user\')',
+                         FROM  auth_user_md5   AS u
+                   INNER JOIN  auth_user_quick AS q USING(user_id)
+                   INNER JOIN  aliases         AS a ON (a.id = u.user_id AND type != \'homonyme\')
+                        WHERE  u.perms IN(\'admin\', \'user\')
+                          AND  q.emails_alias_pub = \'public\'
+                          AND  a.alias = {?}',
                                $x);
     if (list($uid) = $res->fetchOneRow()) {
         $user = User::getSilent($uid);
