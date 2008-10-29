@@ -186,6 +186,7 @@ class OpenidModule extends PLModule
         // Set variables
         $page->assign('type2', Auth_OpenID_TYPE_2_0);
         $page->assign('type1', Auth_OpenID_TYPE_1_1);
+        $page->assign('sreg', Auth_OpenID_SREG_URI);
         $page->assign('provider', get_openid_url());
         $page->assign('local_id', $user->hruid);
     }

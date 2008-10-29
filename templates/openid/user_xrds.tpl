@@ -6,11 +6,13 @@
   <XRD>
     <Service priority="10">
       <Type>{$type2}</Type>
+      <Type>{$sreg}</Type>
       <URI>{$provider}</URI>
       <LocalID>{$local_id}</LocalID>
     </Service>
     <Service priority="20">
       <Type>{$type1}</Type>
+      <Type>{$sreg}</Type>
       <URI>{$provider}</URI>
       <openid:Delegate>{$local_id}</openid:Delegate>
     </Service>
