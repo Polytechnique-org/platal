@@ -34,8 +34,13 @@ function check_ip($level)
             $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
         }
         $ips[] = $_SERVER['REMOTE_ADDR'];
-        foreach ($ips as &$ip) {
-            $ip = '(ip & mask) = (' . ip_to_uint($ip) . '& mask)';
+        foreach ($ips as $key=>$ip) {
+            $v = ip_to_uint($ip);
+            if (is_null($v)) {
+                unset($ips[$key]);
+            } else {
+                $ips[$key] = '(ip & mask) = (' . $v . '& mask)';
+            }
         }
         $res = XDB::query('SELECT  state, description
                              FROM  ip_watch
