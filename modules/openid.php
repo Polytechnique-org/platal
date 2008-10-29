@@ -77,7 +77,7 @@ class OpenidModule extends PLModule
             // Each user has only one identity to choose from
             // So we can make automatically the identity selection
             if ($request->idSelect()) {
-                $request->identity = get_user_openid_url($user);
+                $request->identity = $user->hruid();
             }
 
             // If we still don't have an identifier (used or desired), give up
@@ -127,7 +127,7 @@ class OpenidModule extends PLModule
         $user = S::user();
 
         // Check that the identity matches the user currently logged in
-        if ($request->identity != get_user_openid_url($user)) {
+        if ($request->identity != $user->hruid) {
             $response =& $request->answer(false);
             $webresponse =& $server->encodeResponse($response);
             $this->render_openid_response($webresponse);
@@ -173,14 +173,21 @@ class OpenidModule extends PLModule
         // Load constants
         $this->load('openid.inc.php');
 
+        // Make sure the user exists
+        $user = get_user($x);
+        if (is_null($user)) {
+            return PL_NOT_FOUND;
+        }
+
         // Set XRDS content-type and template
         header('Content-type: application/xrds+xml');
         $page->changeTpl('openid/user_xrds.tpl', NO_SKIN);
 
         // Set variables
-        $page->assign('type1', Auth_OpenID_TYPE_2_0);
-        $page->assign('type2', Auth_OpenID_TYPE_1_1);
-        $page->assign('uri', get_openid_url());
+        $page->assign('type2', Auth_OpenID_TYPE_2_0);
+        $page->assign('type1', Auth_OpenID_TYPE_1_1);
+        $page->assign('provider', get_openid_url());
+        $page->assign('local_id', $user->hruid);
     }
 
     function handler_melix(&$page, $x = null)
