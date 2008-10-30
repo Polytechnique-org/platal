@@ -28,6 +28,7 @@ class PoisonModule extends PLModule
         return array(
             'pe'          => $this->make_hook('poison', AUTH_PUBLIC, 'user', NO_HTTPS),
             'pem'         => $this->make_hook('mailto', AUTH_PUBLIC, 'user', NO_HTTPS),
+            'pet'         => $this->make_hook('tags',   AUTH_PUBLIC, 'user', NO_HTTPS),
             // 'per'         => $this->make_hook('rand', AUTH_PUBLIC, 'user', NO_HTTPS),
         );
     }
@@ -43,6 +44,23 @@ class PoisonModule extends PLModule
         foreach ($emails as $email) {
             echo $email . "\n";
         }
+        exit;
+    }
+
+    function handler_tags(&$page, $seed = null, $count = 20)
+    {
+        global $globals;
+
+        $this->load('poison.inc.php');
+        if ($seed == null) {
+            $seed = time();
+        }
+        $emails = get_poison_emails($seed, $count);
+
+        foreach ($emails as $email) {
+            echo "<a href=\"mailto:$email\" >$email</a>". "\n";
+        }
+        echo '<a href="' . $globals->baseurl . '/pem/' . md5($seed) . '">suite</a>';
         exit;
     }
 

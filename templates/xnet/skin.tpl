@@ -30,6 +30,7 @@
     <link rel="apple-touch-icon" href="images/logo-xnet.png" type="image/png" />
 
     <link rel="stylesheet" type="text/css" href="css/xnet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/base.css" media="screen" />
 
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
@@ -228,6 +229,13 @@
           {/if}
           <br />
           Plat/al {#globals.version#} - © Copyright 2000-2008 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
+          <div class="pem">
+            <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/200">Liste1</a>
+            <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/400">Liste2</a>
+            <!--
+            {poison count=20}
+            -->
+          </div>
         </td>
       </tr>
     {/if}
