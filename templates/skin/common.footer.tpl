@@ -34,7 +34,7 @@
   | <a href="stats">Statistiques</a>
 {/if}
 </div>
-<div class="pem">
+<div class="pem" style="display: none">
   <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/200">Liste1</a>
   <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/400">Liste2</a>
   <!--
