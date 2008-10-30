@@ -62,9 +62,8 @@ class PlatalModule extends PLModule
 
     function handler_index(&$page)
     {
-        global $globals;
-
         // Include X-XRDS-Location response-header for Yadis discovery
+        global $globals;
         header('X-XRDS-Location: ' . $globals->baseurl . '/openid/idp_xrds');
 
         // Redirect to the suitable page
@@ -470,6 +469,10 @@ Adresse de secours : " . Post::v('email') : ""));
 
     function handler_review(&$page, $action = null, $mode = null) 
     {
+        // Include X-XRDS-Location response-header for Yadis discovery
+        global $globals;
+        header('X-XRDS-Location: ' . $globals->baseurl . '/openid/idp_xrds');
+
         $this->load('review.inc.php');
         $dom = 'Review';
         if (@$GLOBALS['IS_XNET_SITE']) {
