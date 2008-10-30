@@ -28,13 +28,15 @@
   <table cellspacing="2" cellpadding="0" class="tiny">
     <tr>
       <th colspan="2">Membre</th>
-      <th></th>
+      <th>
+        <a href="javascript:toggleAll()">{icon name="arrow_refresh" title="Tout (dé)cocher"}</a>
+      </th>
     </tr>
     {foreach from=$not_in_list item=u}
     <tr>
-      <td><label for="add{$u.email}">{$u.nom|strtoupper} {$u.prenom}</label></td>
-      <td><label for="add{$u.email}">{$u.promo}</label></td>
-      <td><input type="checkbox" name="add[{$u.email}]" id="add{$u.email}"/></td>
+      <td class='checkboxToggle'>{$u.nom|strtoupper} {$u.prenom}</td>
+      <td class='checkboxToggle'>{$u.promo}</td>
+      <td class='checkboxToggle'><input type="checkbox" class="moderate_email" name="add[{$u.email}]" id="add{$u.email}"/></td>
     </tr>
     {/foreach}
     <tr>
@@ -43,6 +45,32 @@
       </td>
     </tr>
   </table>
+
+  <script type="text/javascript">//<![CDATA[
+  {literal}
+  var toggleState = false;
+  function toggleAll() {
+    toggleState = !toggleState;
+    var boxes = $(":checkbox.moderate_email");
+    if (toggleState) {
+      boxes.attr("checked", "checked");
+    } else {
+      boxes.removeAttr("checked");
+    }
+  }
+
+  $('.checkboxToggle').click(function (event) {
+    // Don't uncheck the checkbox when clicking it
+    if (event.target.tagName === 'INPUT') {
+      return;
+    }
+
+    var checkbox = $(this).parent().find(':checkbox');
+    checkbox = checkbox.attr('checked', !checkbox.attr('checked'));
+    event.stopPropagation();
+  });
+  {/literal}
+  //]]></script>
 
 </form>
 

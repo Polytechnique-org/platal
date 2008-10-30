@@ -12,6 +12,9 @@ Bug/Wish:
         - #791: Adds the possibility to do an exact search                 -JAC
         - #822: Adds the possibility to search on diplomas                 -JAC
 
+    * XnetList:
+        - #914: Adds a toggle button in the ML/directory sync. page        -JAC
+
 ================================================================================
 VERSION 0.9.17                                                        19 07 2008
 
