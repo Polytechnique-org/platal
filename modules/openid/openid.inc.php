@@ -78,6 +78,12 @@ function get_user_openid_url($user)
     return $globals->baseurl . '/openid/' . $user->hruid;
 }
 
+function get_idp_xrds_url()
+{
+    global $globals;
+    return $globals->baseurl . '/openid/idp_xrds';
+}
+
 function get_user_xrds_url($user)
 {
     if (is_null($user)) {

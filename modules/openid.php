@@ -49,6 +49,7 @@ class OpenidModule extends PLModule
         return array(
             'openid'            => $this->make_hook('openid', AUTH_PUBLIC),
             'openid/trust'      => $this->make_hook('trust', AUTH_COOKIE),
+            'openid/idp_xrds'   => $this->make_hook('idp_xrds', AUTH_PUBLIC),
             'openid/user_xrds'  => $this->make_hook('user_xrds', AUTH_PUBLIC),
             'openid/melix'      => $this->make_hook('melix', AUTH_PUBLIC),
         );
@@ -166,6 +167,21 @@ class OpenidModule extends PLModule
         // Generate a response to send to the user agent.
         $webresponse =& $server->encodeResponse($response);
         $this->render_openid_response($webresponse);
+    }
+
+    function handler_idp_xrds(&$page)
+    {
+        // Load constants
+        $this->load('openid.inc.php');
+
+        // Set XRDS content-type and template
+        header('Content-type: application/xrds+xml');
+        $page->changeTpl('openid/idp_xrds.tpl', NO_SKIN);
+
+        // Set variables
+        $page->assign('type2', Auth_OpenID_TYPE_2_0_IDP);
+        $page->assign('sreg', Auth_OpenID_SREG_URI);
+        $page->assign('provider', get_openid_url());
     }
 
     function handler_user_xrds(&$page, $x = null)

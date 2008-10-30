@@ -62,6 +62,12 @@ class PlatalModule extends PLModule
 
     function handler_index(&$page)
     {
+        global $globals;
+
+        // Include X-XRDS-Location response-header for Yadis discovery
+        header('X-XRDS-Location: ' . $globals->baseurl . '/openid/idp_xrds');
+
+        // Redirect to the suitable page
         if (S::logged()) {
             pl_redirect('events');
         } else if (!@$GLOBALS['IS_XNET_SITE']) {
