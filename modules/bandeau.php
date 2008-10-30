@@ -40,7 +40,8 @@ class BandeauModule extends PLModule
     function handler_html(&$page, $login = '')
     {
         $page->changeTpl('skin/common.bandeau.tpl', NO_SKIN);
-        $page->assign('login', $login);
+        $page->assign('login', $login == 'login');
+        $page->assign('seed', $login);
     }
 
     function handler_css(&$page)
