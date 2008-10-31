@@ -113,7 +113,7 @@ function is_trusted_site($user, $url)
 {
     $res = XDB::query('SELECT  COUNT(*)
                          FROM  openid_trusted
-                        WHERE  user_id = {?}
+                        WHERE  (user_id = {?} OR user_id IS NULL)
                           AND  url = {?}',
                                $user->id(), $url);
     return $res->fetchOneCell() > 0;
