@@ -163,7 +163,7 @@ class OpenidModule extends PLModule
         $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, get_sreg_data($user));
 
         // Check the whitelist
-        $whitelisted = false;//is_trusted_site($user, $request->trust_root);
+        $whitelisted = is_trusted_site($user, $request->trust_root);
 
         // Ask the user for confirmation
         if (!$whitelisted && $_SERVER['REQUEST_METHOD'] != 'POST') {
