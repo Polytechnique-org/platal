@@ -73,15 +73,13 @@ class OpenidModule extends PLModule
     {
         $this->load('openid.inc.php');
 
-        // Spec §4.1.2: if "openid.mode" is absent, whe SHOULD assume that
+        // Spec §4.1.2: if "openid.mode" is absent, we SHOULD assume that
         // the request is not an OpenId message
-        // Thus, we try to render the discovery page
         if (!array_key_exists('openid_mode', $_REQUEST)) {
             return $this->render_discovery_page($page, get_user($x));
         }
 
         // Now, deal with the OpenId message
-        // Create a server and decode the request
         $server = init_openid_server();
         $request = $server->decodeRequest();
 
@@ -95,7 +93,7 @@ class OpenidModule extends PLModule
             //   - the user identifier is known by the RP
             //   - the user is logged in
             //   - the user identifier matches the user logged in
-            //   - the user and has whitelisted the site
+            //   - the user has whitelisted the site
             $answer = !$request->idSelect()
                       && S::logged()
                       && $request->identity == S::user()->login()
@@ -107,7 +105,7 @@ class OpenidModule extends PLModule
 
             // We redirect to a page where the user will authenticate
             // and confirm the use of his/her OpenId
-            // Save request in session before jumping to confirmation page
+            // The request is saved in session before redirecting
             S::set('openid_request', serialize($request));
             pl_redirect('openid/trust');
             return;
@@ -117,7 +115,6 @@ class OpenidModule extends PLModule
             $response =& $server->handleRequest($request);
         }
 
-        // Render response
         $webresponse =& $server->encodeResponse($response);
         $this->render_openid_response($webresponse);
     }
@@ -134,7 +131,6 @@ class OpenidModule extends PLModule
             return;
         }
 
-        // Unserialize the request
         require_once 'Auth/OpenID/Server.php';
         $request = unserialize($request);
 
@@ -162,7 +158,6 @@ class OpenidModule extends PLModule
         $sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest($request);
         $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, get_sreg_data($user));
 
-        // Check the whitelist
         $whitelisted = is_trusted_site($user, $request->trust_root);
 
         // Ask the user for confirmation
@@ -194,7 +189,6 @@ class OpenidModule extends PLModule
             $response =& $request->answer(false);
         }
 
-        // Generate a response to send to the user agent.
         $webresponse =& $server->encodeResponse($response);
         $this->render_openid_response($webresponse);
     }
@@ -202,12 +196,8 @@ class OpenidModule extends PLModule
     function handler_idp_xrds(&$page)
     {
         $this->load('openid.inc.php');
-
-        // Set XRDS content-type and template
         header('Content-type: application/xrds+xml');
         $page->changeTpl('openid/idp_xrds.tpl', NO_SKIN);
-
-        // Set variables
         $page->assign('type2', Auth_OpenID_TYPE_2_0_IDP);
         $page->assign('sreg', Auth_OpenID_SREG_URI);
         $page->assign('provider', get_openid_url());
@@ -217,17 +207,13 @@ class OpenidModule extends PLModule
     {
         $this->load('openid.inc.php');
 
-        // Make sure the user exists
         $user = get_user($x);
         if (is_null($user)) {
             return PL_NOT_FOUND;
         }
 
-        // Set XRDS content-type and template
         header('Content-type: application/xrds+xml');
         $page->changeTpl('openid/user_xrds.tpl', NO_SKIN);
-
-        // Set variables
         $page->assign('type2', Auth_OpenID_TYPE_2_0);
         $page->assign('type1', Auth_OpenID_TYPE_1_1);
         $page->assign('sreg', Auth_OpenID_SREG_URI);
@@ -268,17 +254,11 @@ class OpenidModule extends PLModule
         // Include X-XRDS-Location response-header for Yadis discovery
         header('X-XRDS-Location: ' . get_user_xrds_url($user));
 
-        // Select template
         $page->changeTpl('openid/openid.tpl');
-
-        // Sets the title of the html page.
         $page->setTitle($user->fullName());
-
-        // Sets the <link> tags for HTML-Based Discovery
+        // Set the <link> tags for HTML-Based Discovery
         $page->addLink('openid.server openid2.provider', get_openid_url());
         $page->addLink('openid.delegate openid2.local_id', $user->hruid);
-
-        // Adds the global user property array to the display.
         $page->assign_by_ref('user', $user);
 
         return;
@@ -286,19 +266,14 @@ class OpenidModule extends PLModule
 
     function render_openid_response($webresponse)
     {
-        // Send HTTP response code
         if ($webresponse->code != AUTH_OPENID_HTTP_OK) {
             header(sprintf("HTTP/1.1 %d ", $webresponse->code),
                    true, $webresponse->code);
         }
-
-        // Send headers
         foreach ($webresponse->headers as $k => $v) {
             header("$k: $v");
         }
         header('Connection: close');
-
-        // Send body
         print $webresponse->body;
         exit;
     }
