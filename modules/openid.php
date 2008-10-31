@@ -22,7 +22,7 @@
 
 /* Definitions for the OpenId Specification
  * http://openid.net/specs/openid-authentication-2_0.html
- * 
+ *
  * OP Endpoint URL:             https://www.polytechnique.org/openid
  * OP Identifier:               https://www.polytechnique.org/openid
  * User Identifier:             https://www.polytechnique.org/openid/{hruid}
@@ -34,7 +34,7 @@
  *     - entering the User Identifier, or some URL that resolves there
  * In both cases, Yadis discovery is made possible through the X-XRDS-Location
  * header.
- * 
+ *
  * In the former case, Yadis discovery is performed on /, or where it redirects;
  * see platal.php. It resolves to the XRDS for this OP, and User Identifier
  * selection is performed after forcing the user to log in. This only works for
@@ -87,16 +87,18 @@ class OpenidModule extends PLModule
             return $this->render_discovery_page($page, get_user($x));
         }
 
+        // Now, deal with the OpenId message
         // Create a server and decode the request
         $server = init_openid_server();
         $request = $server->decodeRequest();
 
-        // This request needs some logic and can not be automatically
-        // answered by the server
+        // With these modes, the request needs some logic
+        // and can not be automatically answered by the server
         if (in_array($request->mode,
                      array('checkid_immediate', 'checkid_setup'))) {
 
-            // If the user identifier is not known by the RP yet
+            // User identifier selection
+            // if the user identifier is not known by the RP yet
             if ($request->idSelect()) {
                 if ($request->mode == 'checkid_immediate') {
                     // Deny authentication if we can't interact with the user
@@ -104,26 +106,31 @@ class OpenidModule extends PLModule
                 } else {
                     // Otherwise save request in session and redirect
                     // to a page that requires authentication
+                    // Then the user will be known
                     S::set('openid_request', serialize($request));
                     pl_redirect('openid/trust');
                     return;
                 }
 
-            // If we still don't have an identifier (used or desired), give up
+            // If don't use identifier selection and don't have an identifier,
+            // give up
             } else if (!$request->identity) {
                 $this->render_no_identifier_page($page, $request);
                 return;
 
             // From now on we have an identifier
-            // We always require confirmation before sending information
-            // to third-party websites
-            // So for now we deny immediate requests
-            } else if ($request->immediate) {
-                $response =& $request->answer(false);
 
-            // The user may confirm the use of his OpenId
+            // We deny immediate requests, unless the user is logged in
+            // and has whitelisted the site
+            } else if ($request->immediate) {
+                $answer = S::logged() && is_trusted_site(S::user(),
+                                                         $request->trust_root);
+                $response =& $request->answer($answer);
+
+            // For setup requests, we redirect to a page where the user
+            // will authenticate and confirm the use of his/her OpenId
             } else {
-                // Save request in session and jump to confirmation page
+                // Save request in session before jumping to confirmation page
                 S::set('openid_request', serialize($request));
                 pl_redirect('openid/trust');
                 return;
@@ -179,9 +186,11 @@ class OpenidModule extends PLModule
         $sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest($request);
         $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, get_sreg_data($user));
 
+        // Check the whitelist
+        $whitelisted = is_trusted_site($user, $request->trust_root);
 
         // Ask the user for confirmation
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+        if (!$whitelisted && $_SERVER['REQUEST_METHOD'] != 'POST') {
             $page->changeTpl('openid/trust.tpl');
             $page->assign('relying_party', $request->trust_root);
             $page->assign_by_ref('sreg_data', $sreg_response->data);
@@ -190,7 +199,7 @@ class OpenidModule extends PLModule
 
         // At this point $_SERVER['REQUEST_METHOD'] == 'POST'
         // Answer to the Relying Party
-        if (isset($_POST['trust'])) {
+        if ($whitelisted || isset($_POST['trust'])) {
             S::kill('openid_request');
             $response =& $request->answer(true, null, $identity, $claimed_id);
 
@@ -198,7 +207,7 @@ class OpenidModule extends PLModule
             // response message.
             $sreg_response->toMessage($response->fields);
 
-        } else { // !isset($_POST['trust'])
+        } else { // !$whitelisted && !isset($_POST['trust'])
             S::kill('openid_request');
             $response =& $request->answer(false);
         }

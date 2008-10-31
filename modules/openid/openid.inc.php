@@ -109,6 +109,15 @@ function get_sreg_data($user)
                  'timezone' => null);
 }
 
+function is_trusted_site($user, $url)
+{
+    $res = XDB::query('SELECT  COUNT(*)
+                         FROM  openid_trusted
+                        WHERE  user_id = {?}
+                          AND  url = {?}',
+                               $user->id(), $url);
+    return $res->fetchOneCell() > 0;
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
