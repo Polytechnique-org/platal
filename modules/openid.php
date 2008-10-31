@@ -92,49 +92,32 @@ class OpenidModule extends PLModule
         $server = init_openid_server();
         $request = $server->decodeRequest();
 
-        // With these modes, the request needs some logic
-        // and can not be automatically answered by the server
-        if (in_array($request->mode,
-                     array('checkid_immediate', 'checkid_setup'))) {
+        // In modes 'checkid_immediate' and 'checkid_setup', the request
+        // needs some logic and can not be automatically answered by the server
 
-            // User identifier selection
-            // if the user identifier is not known by the RP yet
-            if ($request->idSelect()) {
-                if ($request->mode == 'checkid_immediate') {
-                    // Deny authentication if we can't interact with the user
-                    $response =& $request->answer(false);
-                } else {
-                    // Otherwise save request in session and redirect
-                    // to a page that requires authentication
-                    // Then the user will be known
-                    S::set('openid_request', serialize($request));
-                    pl_redirect('openid/trust');
-                    return;
-                }
+        // Immediate mode
+        if ($request->mode == 'checkid_immediate') {
 
-            // If don't use identifier selection and don't have an identifier,
-            // give up
-            } else if (!$request->identity) {
-                $this->render_no_identifier_page($page, $request);
-                return;
+            // We deny immediate requests, unless:
+            //   - the user identifier is known by the RP
+            //   - the user is logged in
+            //   - the user identifier matches the user logged in
+            //   - the user and has whitelisted the site
+            $answer = !$request->idSelect()
+                      && S::logged()
+                      && $request->identity == S::user()->login()
+                      && is_trusted_site(S::user(), $request->trust_root);
+            $response =& $request->answer($answer);
 
-            // From now on we have an identifier
+        // Setup mode
+        } else if ($request->mode == 'checkid_setup') {
 
-            // We deny immediate requests, unless the user is logged in
-            // and has whitelisted the site
-            } else if ($request->immediate) {
-                $answer = S::logged() && is_trusted_site(S::user(),
-                                                         $request->trust_root);
-                $response =& $request->answer($answer);
-
-            // For setup requests, we redirect to a page where the user
-            // will authenticate and confirm the use of his/her OpenId
-            } else {
-                // Save request in session before jumping to confirmation page
-                S::set('openid_request', serialize($request));
-                pl_redirect('openid/trust');
-                return;
-            }
+            // We redirect to a page where the user will authenticate
+            // and confirm the use of his/her OpenId
+            // Save request in session before jumping to confirmation page
+            S::set('openid_request', serialize($request));
+            pl_redirect('openid/trust');
+            return;
 
         // Other requests can be automatically handled by the server
         } else {
