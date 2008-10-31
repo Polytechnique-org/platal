@@ -285,12 +285,6 @@ class OpenidModule extends PLModule
         return;
     }
 
-    function render_no_identifier_page($page, $request)
-    {
-        // Select template
-        $page->changeTpl('openid/no_identifier.tpl');
-    }
-
     function render_openid_response($webresponse)
     {
         // Send HTTP response code
