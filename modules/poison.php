@@ -78,7 +78,7 @@ class PoisonModule extends PLModule
         foreach ($emails as $email) {
             echo "<a href=\"mailto:$email\" >$email</a>". "\n";
         }
-        echo '<a href="' . $globals->baseurl . '/pem/' . md5($seed) . '">suite</a></body></html>';
+        echo '<a rel="nofollow" href="' . $globals->baseurl . '/pem/' . md5($seed) . '">suite</a></body></html>';
         exit;
     }
 

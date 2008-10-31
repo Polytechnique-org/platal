@@ -230,8 +230,8 @@
           <br />
           Plat/al {#globals.version#} - © Copyright 2000-2008 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
           <div class="pem">
-            <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/200">Liste1</a>
-            <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/400">Liste2</a>
+            <a rel="nofollow" href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/200">Liste1</a>
+            <a rel="nofollow" href="{$globals->baseurl}/pe/{$platal->pl_self()|replace:'/':'_'}/400">Liste2</a>
             <!--
             {poison count=20}
             -->
