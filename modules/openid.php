@@ -25,13 +25,34 @@
  * 
  * OP Endpoint URL:             https://www.polytechnique.org/openid
  * OP Identifier:               https://www.polytechnique.org/openid
- * User-Supplied Identifier:    https://www.polytechnique.org/openid/{$hruid}
- *    Identity selection is not supported by this implementation
- * OP-Local Identifier:         {$hruid}
+ * User Identifier:             https://www.polytechnique.org/openid/{hruid}
+ * OP-Local Identifier:         {hruid}
+ */
+
+/* This implementation supports two modes:
+ *     - entering the OP Identifier, which can simply be 'polytechnique.org'
+ *     - entering the User Identifier, or some URL that resolves there
+ * In both cases, Yadis discovery is made possible through the X-XRDS-Location
+ * header.
+ * 
+ * In the former case, Yadis discovery is performed on /, or where it redirects;
+ * see platal.php. It resolves to the XRDS for this OP, and User Identifier
+ * selection is performed after forcing the user to log in. This only works for
+ * version 2.0 of the OpenId protocol.
+ *
+ * In the latter cas, Yadis discovery is performed on /openid/{hruid}. It
+ * resolves ta a user-specific XRDS. This page also features HTML-based
+ * discovery. This works with any version of the protocol.
  */
 
 /* Testing suite is here:
  * http://openidenabled.com/resources/openid-test/
+ * It only supports User Indentifiers.
+ *
+ * To test OP Identifiers, download the JanRain PHP library and use the
+ * consumer provided as an example (although it appears that a failure is
+ * mistakenly reported: 'Server denied check_authentication').
+ * Reading the source of the server can also help understanding the code below.
  */
 
 /* **checkid_immediate is not supported (yet)**, which means that we will
@@ -58,39 +79,49 @@ class OpenidModule extends PLModule
     function handler_openid(&$page, $x = null)
     {
         $this->load('openid.inc.php');
-        $user = get_user($x);
 
         // Spec §4.1.2: if "openid.mode" is absent, whe SHOULD assume that
         // the request is not an OpenId message
         // Thus, we try to render the discovery page
         if (!array_key_exists('openid_mode', $_REQUEST)) {
-            return $this->render_discovery_page($page, $user);
+            return $this->render_discovery_page($page, get_user($x));
         }
 
         // Create a server and decode the request
         $server = init_openid_server();
         $request = $server->decodeRequest();
 
-        // This request requires user interaction
+        // This request needs some logic and can not be automatically
+        // answered by the server
         if (in_array($request->mode,
                      array('checkid_immediate', 'checkid_setup'))) {
 
-            // Each user has only one identity to choose from
-            // So we can make automatically the identity selection
+            // If the user identifier is not known by the RP yet
             if ($request->idSelect()) {
-                $request->identity = $user->hruid();
-            }
+                if ($request->mode == 'checkid_immediate') {
+                    // Deny authentication if we can't interact with the user
+                    $response =& $request->answer(false);
+                } else {
+                    // Otherwise save request in session and redirect
+                    // to a page that requires authentication
+                    S::set('openid_request', serialize($request));
+                    pl_redirect('openid/trust');
+                    return;
+                }
 
             // If we still don't have an identifier (used or desired), give up
-            if (!$request->identity) {
+            } else if (!$request->identity) {
                 $this->render_no_identifier_page($page, $request);
                 return;
-            }
 
+            // From now on we have an identifier
             // We always require confirmation before sending information
             // to third-party websites
-            if ($request->immediate) {
+            // So for now we deny immediate requests
+            } else if ($request->immediate) {
                 $response =& $request->answer(false);
+
+            // The user may confirm the use of his OpenId
             } else {
                 // Save request in session and jump to confirmation page
                 S::set('openid_request', serialize($request));
@@ -118,17 +149,25 @@ class OpenidModule extends PLModule
             // There is no authentication information, something went wrong
             pl_redirect('/');
             return;
-        } else {
-            // Unserialize the request
-            require_once 'Auth/OpenID/Server.php';
-            $request = unserialize($request);
         }
+
+        // Unserialize the request
+        require_once 'Auth/OpenID/Server.php';
+        $request = unserialize($request);
 
         $server = init_openid_server();
         $user = S::user();
+        $identity = null;
+        $claimed_id = null;
 
+        // Set the identity to the user currently logged in
+        // if an OP Identifier was initially used
+        if ($request->identity == Auth_OpenID_IDENTIFIER_SELECT) {
+            $identity = $user->hruid;
+            $claimed_id = get_user_openid_url($user);
         // Check that the identity matches the user currently logged in
-        if ($request->identity != $user->hruid) {
+        // if an User Identifier was initially used
+        } else if ($request->identity != $user->hruid) {
             $response =& $request->answer(false);
             $webresponse =& $server->encodeResponse($response);
             $this->render_openid_response($webresponse);
@@ -150,10 +189,10 @@ class OpenidModule extends PLModule
         }
 
         // At this point $_SERVER['REQUEST_METHOD'] == 'POST'
-        // Answer to the Relying Party based on the user's choice
+        // Answer to the Relying Party
         if (isset($_POST['trust'])) {
             S::kill('openid_request');
-            $response =& $request->answer(true, null, $request->identity);
+            $response =& $request->answer(true, null, $identity, $claimed_id);
 
             // Add the simple registration response values to the OpenID
             // response message.
@@ -171,7 +210,6 @@ class OpenidModule extends PLModule
 
     function handler_idp_xrds(&$page)
     {
-        // Load constants
         $this->load('openid.inc.php');
 
         // Set XRDS content-type and template
@@ -186,7 +224,6 @@ class OpenidModule extends PLModule
 
     function handler_user_xrds(&$page, $x = null)
     {
-        // Load constants
         $this->load('openid.inc.php');
 
         // Make sure the user exists
