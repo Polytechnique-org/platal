@@ -119,5 +119,12 @@ function is_trusted_site($user, $url)
     return $res->fetchOneCell() > 0;
 }
 
+function add_trusted_site($user, $url)
+{
+    XDB::execute("INSERT IGNORE INTO openid_trusted
+                      SET user_id={?}, url={?}",
+                  $user->id(), $url);
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

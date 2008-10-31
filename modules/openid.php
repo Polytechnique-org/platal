@@ -55,13 +55,6 @@
  * Reading the source of the server can also help understanding the code below.
  */
 
-/* **checkid_immediate is not supported (yet)**, which means that we will
- * always ask for confirmation before redirecting to a third-party.
- * A sensible way to implement it would be to add a "Always trust this site"
- * checkbox to the form, and to store trusted websites per user. This still
- * raises the question of removing websites from that list.
- * Another possibility is to maintain a global whitelist.
- */
 
 class OpenidModule extends PLModule
 {
@@ -170,7 +163,7 @@ class OpenidModule extends PLModule
         $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, get_sreg_data($user));
 
         // Check the whitelist
-        $whitelisted = is_trusted_site($user, $request->trust_root);
+        $whitelisted = false;//is_trusted_site($user, $request->trust_root);
 
         // Ask the user for confirmation
         if (!$whitelisted && $_SERVER['REQUEST_METHOD'] != 'POST') {
@@ -181,6 +174,12 @@ class OpenidModule extends PLModule
         }
 
         // At this point $_SERVER['REQUEST_METHOD'] == 'POST'
+
+        // Add 'always trusted' sites to whitelist
+        if (isset($_POST['trust']) && @$_POST['always']) {
+            add_trusted_site($user, $request->trust_root);
+        }
+
         // Answer to the Relying Party
         if ($whitelisted || isset($_POST['trust'])) {
             S::kill('openid_request');
