@@ -127,16 +127,18 @@ def findAddressInBounce(bounce):
         print '! Not a valid bounce (expected multipart/report, found %s).' % bounce.get_content_type()
         return None
     # Extract the second component of the multipart/report
-    if len(bounce.get_payload()) < 2:
-        print '! Not a valid bounce (expected at least 2 parts, found %d).' % len(bounce)
+    num_payloads = len(bounce.get_payload())
+    if num_payloads < 2:
+        print '! Not a valid bounce (expected at least 2 parts, found %d).' % num_payloads
         return None
     status = bounce.get_payload(1)
     if status.get_content_type() != 'message/delivery-status':
         print '! Not a valid bounce (expected message/delivery-status, found %s).' % bounce.get_content_type()
         return None
     # The per-message-fields don't matter here, get only the per-recipient-fields
-    if len(status.get_payload()) < 2:
-        print '! Not a valid bounce (expected at least 2 parts, found %d).' % len(status)
+    num_payloads = len(status.get_payload())
+    if num_payloads < 2:
+        print '! Not a valid bounce (expected at least 2 parts, found %d).' % num_payloads
         return None
     content = status.get_payload(1)
     if content.get_content_type() != 'text/plain':
@@ -272,10 +274,14 @@ class OutOfOfficeFilter(MboxFilter):
         self.mbox.clear()
         subject_re = [
             r'^Absen(t|ce)',
-            r'^Out of office',
-            r'est absent',
+            r'(est|is) absent',
+            r'^Out of (the )?office',
             r'is out of (the )?office',
-            u'^Réponse automatique d\'absence du bureau', # unicode!
+            r'I am out of town',
+            r'automatique d\'absence',
+            r'Notification d\'absence'
+            u'Réponse automatique :', #unicode!
+            r'AutoReply',
         ]
         self.subject_regexes = map(re.compile, subject_re, [re.I | re.U] * len(subject_re))
 
@@ -301,21 +307,9 @@ class DeliveryStatusNotificationFilter(MboxFilter):
         self.mbox_file = '%s.dsn' % mbox_file
         self.mbox = mailbox.mbox(self.mbox_file)
         self.mbox.clear()
-        subject_re = [
-            r'^DELIVERY FAILURE: ',
-            r'^Delivery Notification: Delivery has failed$',
-            r'^Delivery Status Notification ?\(Failure\)$',
-            r'^Mail delivery failed',
-            r'^(Mail revenu en erreur / )?Undelivered Mail Returned to Sender$',
-            r'^Returned mail: see transcript for details$',
-            r'^Undeliverable( mail)?:',
-            r'^Undelivered Mail Returned to Sender$',
-        ]
-        self.subject_regexes = map(re.compile, subject_re, [re.I | re.U] * len(subject_re))
 
     def process(self, message):
-        subject = findSubject(message)
-        if subject is not None and any(regex.search(subject) for regex in self.subject_regexes):
+        if message.get_content_type() == 'multipart/report':
             email = findAddressInBounce(message)
             if email is not None:
                 self.emails.append(email)
