@@ -43,7 +43,7 @@
   {if $simple}
 
     <div id="content">
-      {include file="skin/common.content.tpl"}
+      {include core=plpage.content.tpl}
     </div>
 
   {else}
@@ -66,7 +66,7 @@
         {include file=skin/common.menu.tpl}
         </td>
         <td id="content">
-        {include file="skin/common.content.tpl"}
+        {include core=plpage.content.tpl}
         </td>
       </tr>
       <tr>
