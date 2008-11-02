@@ -50,7 +50,7 @@ abstract class Platal
         }
 
         $modules    = func_get_args();
-        if (is_array($modules[0])) {
+        if (isset($modules[0]) && is_array($modules[0])) {
             $modules = $modules[0];
         }
         $this->path = trim(Get::_get('n', null), '/');

@@ -19,7 +19,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'smarty/libs/Smarty.class.php';
+if (!@include_once 'smarty/libs/Smarty.class.php') {
+    require_once 'smarty/Smarty.class.php';
+}
 
 abstract class PlPage extends Smarty
 {
