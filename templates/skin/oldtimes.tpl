@@ -27,7 +27,7 @@
     {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
-    {include file=skin/common.devel.tpl}
+    {include core=plpage.devel.tpl}
 
     {if $smarty.session.suid}
     <table id="suid" cellpadding="0" cellspacing="0">

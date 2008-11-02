@@ -27,7 +27,7 @@
     {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
-    {include file=skin/common.devel.tpl}
+    {include core=plpage.devel.tpl}
     {if !$simple}
       {include file=skin/common.bandeau.tpl}
     {/if}
