@@ -2,8 +2,15 @@
 VERSION 0.9.18                                                        XX XX XXXX
 
 New:
+
     * Core:
         - Introduction of 'hruid' as a replacement for 'forlife'           -VZA
+
+    * Newsletter:
+        - Tool to process bounces                                          -mYk
+
+    * OpenId:
+        - OpenId provider                                                  -mYk
 
 Bug/Wish:
 
