@@ -46,6 +46,20 @@ class Env
         return (string)Env::_get($key, $default);
     }
 
+    public static function t($key, $default = '')
+    {
+        return trim(Env::s($key, $default));
+    }
+
+    public static function blank($key, $strict = false)
+    {
+        if (!Env::has($key)) {
+            return true;
+        }
+        $var = $strict ? Env::s($key) : Env::t($key);
+        return empty($var);
+    }
+
     public static function b($key, $default = false)
     {
         return (bool)Env::_get($key, $default);
@@ -95,6 +109,20 @@ class Post
         return (string)Post::_get($key, $default);
     }
 
+    public static function t($key, $default = '')
+    {
+        return trim(Post::s($key, $default));
+    }
+
+    public static function blank($key, $strict = false)
+    {
+        if (!Post::has($key)) {
+            return true;
+        }
+        $var = $strict ? Post::s($key) : Post::t($key);
+        return empty($var);
+    }
+
     public static function i($key, $default = 0)
     {
         $i = Post::_get($key, $default);
@@ -139,6 +167,20 @@ class Get
         return (string)Get::_get($key, $default);
     }
 
+    public static function t($key, $default = '')
+    {
+        return trim(Get::s($key, $default));
+    }
+
+    public static function blank($key, $strict = false)
+    {
+        if (!Get::has($key)) {
+            return true;
+        }
+        $var = $strict ? Get::s($key) : Get::t($key);
+        return empty($var);
+    }
+
     public static function i($key, $default = 0)
     {
         $i = Get::_get($key, $default);
@@ -176,6 +218,20 @@ class Cookie
     public static function s($key, $default = '')
     {
         return (string)Cookie::_get($key, $default);
+    }
+
+    public static function t($key, $default = '')
+    {
+        return trim(Cookie::s($key, $default));
+    }
+
+    public static function blank($key, $strict = false)
+    {
+        if (!Cookie::has($key)) {
+            return true;
+        }
+        $var = $strict ? Cookie::s($key) : Cookie::t($key);
+        return empty($var);
     }
 
     public static function b($key, $default = false)
