@@ -21,21 +21,10 @@
 {**************************************************************************}
 
 <?xml version="1.0" encoding="utf-8"?>
-<select name="jobs[{$id}][ss_secteur]" onchange="updateJobSousSecteur({$id}, '{$jobid}', '{$jobpref}', ''); return true;">
+<select name="jobs[{$id}][sss_secteur]">
   <option value=""></option>
-  {iterate from=$ssecteurs item=ssecteur}
-  {if $ssecteur.optgroup}
-  {if $gp}
-  </optgroup>
-  {/if}
-  <optgroup label="{$ssecteur.label}">
-  {assign var=1 name=gp}
-  {else}
-  <option value="{$ssecteur.id}" {if $ssecteur.id eq $sel}selected="selected"{/if}>{$ssecteur.label}</option>
-  {/if}
-  {if $gp}
-  </optgroup>
-  {/if}
+  {iterate from=$sssecteurs item=sssecteur}
+  <option value="{$sssecteur.id}" {if $sssecteur.id eq $sel}selected="selected"{/if}>{$sssecteur.label}</option>
   {/iterate}
 </select>
 

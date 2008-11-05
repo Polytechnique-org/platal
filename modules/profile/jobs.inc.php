@@ -30,16 +30,16 @@ class ProfileJob extends ProfileGeoloc
 
     public function __construct()
     {
-        $this->pub  = new ProfilePub();
+        $this->pub    = new ProfilePub();
         $this->mail
-                    = $this->mail_new
-                    = new ProfileEmail();
-        $this->web  = new ProfileWeb();
-        $this->bool = new ProfileBool();
-        $this->checks = array('web' => array('web'),
-                              'mail_new' => array('email_new'),
-                              'mail' => array('email'),
-                              'pub' => array('pub', 'email_pub'));
+                      = $this->mail_new
+                      = new ProfileEmail();
+        $this->web    = new ProfileWeb();
+        $this->bool   = new ProfileBool();
+        $this->checks = array('web'      => array('w_web'),
+                              'mail_new' => array('w_email_new'),
+                              'mail'     => array('w_email'),
+                              'pub'      => array('pub', 'w_email_pub'));
     }
 
     private function cleanJob(ProfilePage &$page,$jobid, array &$job, &$success)
@@ -48,9 +48,9 @@ class ProfileJob extends ProfileGeoloc
         foreach ($this->checks as $obj=>&$fields) {
             $chk =& $this->$obj;
             foreach ($fields as $field) {
-                if ($field == "email_new") {
-                    if ($job['email'] == "new@example.org") {
-                        $job['email'] = $job[$field];
+                if ($field == "w_email_new") {
+                    if ($job['w_email'] == "new@example.org") {
+                        $job['w_email'] = $job[$field];
                     }
                     continue;
                 }
@@ -61,18 +61,48 @@ class ProfileJob extends ProfileGeoloc
                 }
             }
         }
-        $job['adr']['pub'] = $this->pub->value($page, 'adr_pub', @$job['adr']['pub'], $s);
-        $job['adr']['checked'] = $this->bool->value($page, 'adr_checked', @$job['adr']['checked'], $s);
-        if (!isset($job['tel'])) {
-            $job['tel'] = array();
+        if (!isset($job['sss_secteur_name'])) {
+            $res = XDB::query("SELECT  name
+                                 FROM  profile_job_subsubsector_enum
+                                WHERE  id = {?}",
+                              $job['sss_secteur']);
+            $job['sss_secteur_name'] = $res->fetchOneCell();
+        } else {
+            $res = XDB::query("SELECT  sectorid, subsectorid, id
+                                 FROM  profile_job_subsubsector_enum
+                                WHERE  name = {?}",
+                              $job['sss_secteur_name']);
+            if ($res->numRows() != 1) {
+                $success = false;
+                $job['sector_error'] = true;
+            } else {
+                list($job['secteur'], $job['ss_secteur'], $job['sss_secteur']) = $res->fetchOneRow();
+            }
+        }
+        if (!isset($job['jobid'])) {
+            $res = XDB::query("SELECT  id
+                                 FROM  profile_job_enum
+                                WHERE  name = {?}",
+                              $job['name']);
+            if ($res->numRows() != 1) {
+                $success = false;
+                $job['name_error'] = true;
+            } else {
+                $job['jobid'] = $res->fetchOneCell();
+            }
+        }
+        $job['w_adr']['pub'] = $this->pub->value($page, 'adr_pub', @$job['w_adr']['pub'], $s);
+        $job['w_adr']['checked'] = $this->bool->value($page, 'adr_checked', @$job['w_adr']['checked'], $s);
+        if (!isset($job['w_tel'])) {
+            $job['w_tel'] = array();
         }
         $profiletel = new ProfilePhones('pro', $jobid);
-        $job['tel'] = $profiletel->value($page, 'tel', $job['tel'], $s);
+        $job['w_tel'] = $profiletel->value($page, 'tel', $job['w_tel'], $s);
         unset($job['removed']);
         unset($job['new']);
-        unset($job['adr']['changed']);
-        unset($job['adr']['parsevalid']);
-        unset($job['adr']['display']);
+        unset($job['w_adr']['changed']);
+        unset($job['w_adr']['parsevalid']);
+        unset($job['w_adr']['display']);
     }
 
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -90,7 +120,7 @@ class ProfileJob extends ProfileGeoloc
         }
         foreach ($value as $key=>&$job) {
             $ls = true;
-            $this->geolocAddress($job['adr'], $s);
+            $this->geolocAddress($job['w_adr'], $s);
             $ls = ($ls && $s);
             $this->cleanJob($page, $key, $job, $s);
             $ls = ($ls && $s);
@@ -104,7 +134,7 @@ class ProfileJob extends ProfileGeoloc
     public function save(ProfilePage &$page, $field, $value)
     {
         require_once('profil.func.inc.php');
-        XDB::execute("DELETE FROM  entreprises
+        XDB::execute("DELETE FROM  profile_job
                             WHERE  uid = {?}",
                      S::i('uid'));
         XDB::execute("DELETE FROM  profile_phones
@@ -112,32 +142,16 @@ class ProfileJob extends ProfileGeoloc
                      S::i('uid'));
         $i = 0;
         foreach ($value as $jobid=>&$job) {
-            if ($job['email'] == "new@example.org") {
-                $job['email'] = $job['email_new'];
+            if ($job['w_email'] == "new@example.org") {
+                $job['w_email'] = $job['w_email_new'];
             }
-            XDB::execute("INSERT INTO  entreprises (uid, entrid, entreprise, secteur, ss_secteur,
-                                                    fonction, poste, adr1, adr2, adr3, postcode,
-                                                    city, cityid, country, region, regiontxt,
-                                                    email, web,
-                                                    pub, adr_pub, email_pub, flags,
-                                                    glat, glng)
-                               VALUES  ({?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?}, {?}, {?}, {?},
-                                        {?}, {?},
-                                        {?}, {?}, {?}, {?},
-                                        {?}, {?})",
-                         S::i('uid'), $i, $job['name'], $job['secteur'], $job['ss_secteur'],
-                         $job['fonction'], $job['poste'], $job['adr']['adr1'], $job['adr']['adr2'], $job['adr']['adr3'],
-                         $job['adr']['postcode'],
-                         $job['adr']['city'], $job['adr']['cityid'], $job['adr']['country'], $job['adr']['region'], 
-                         $job['adr']['regiontxt'],
-                         $job['email'], $job['web'],
-                         $job['pub'], $job['adr']['pub'], $job['email_pub'],
-                         $job['adr']['checked'] ? 'geoloc' : '', $job['adr']['precise_lat'],
-                         $job['adr']['precise_lon']);
+            XDB::execute("INSERT INTO  profile_job (uid, id, functionid, description, sectorid, subsectorid,
+                                                    subsubsectorid, email, url, pub, email_pub, jobid)
+                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
+                         S::i('uid'), $i, $job['fonction'], $job['description'], $job['secteur'], $job['ss_secteur'],
+                         $job['sss_secteur'], $job['w_email'], $job['w_web'], $job['pub'], $job['w_email_pub'], $job['jobid']);
             $profiletel = new ProfilePhones('pro', $jobid);
-            $profiletel->saveTels('tel', $job['tel']);
+            $profiletel->saveTels('tel', $job['w_tel']);
             $i++;
         }
     }
@@ -174,50 +188,55 @@ class ProfileJobs extends ProfilePage
         $this->values['corps'] = $res->fetchOneAssoc();
 
         // Build the jobs tree
-        $res = XDB::iterRow("SELECT  e.entrid, e.entreprise, e.secteur, e.ss_secteur,
-                                     e.fonction, e.poste, e.adr1, e.adr2, e.adr3,
+        $res = XDB::iterRow("SELECT  j.id, je.name, j.functionid, j.sectorid, j.subsectorid,
+                                     j.subsubsectorid, j.description, e.adr1, e.adr2, e.adr3,
                                      e.postcode, e.city, e.cityid, e.region, e.regiontxt,
                                      e.country, gp.pays, gp.display,
                                      FIND_IN_SET('geoloc', flags),
-                                     e.email, e.web, e.pub,
-                                     e.adr_pub, e.email_pub,
-                                     e.glat AS precise_lat, e.glng AS precise_lon
-                               FROM  entreprises AS e
-                          LEFT JOIN  geoloc_pays AS gp ON(gp.a2 = e.country)
-                              WHERE  e.uid = {?} AND entreprise != ''
+                                     j.email, j.url, j.pub,
+                                     e.adr_pub, j.email_pub,
+                                     e.glat, e.glng, s.name
+                               FROM  profile_job                   AS j
+                          LEFT JOIN  profile_job_enum              AS je ON (j.jobid = je.id)
+                          LEFT JOIN  entreprises                   AS e  ON (j.uid = e.uid AND j.id = e.entrid)
+                          LEFT JOIN  geoloc_pays                   AS gp ON (gp.a2 = e.country)
+                          LEFT JOIN  profile_job_subsubsector_enum AS s  ON (s.id = j.subsubsectorid)
+                              WHERE  j.uid = {?}
                            ORDER BY  entrid", S::i('uid'));
         $this->values['jobs'] = array();
-        while (list($id, $name, $secteur, $ss_secteur, $fonction, $poste,
-                    $adr1, $adr2, $adr3, $postcode, $city, $cityid,
-                    $region, $regiontxt, $country, $countrytxt, $display,
-                    $checked, $email, $web,
-                    $pub, $adr_pub, $email_pub, $glat, $glng
+        while (list($id, $name, $function, $secteur, $ss_secteur, $sss_secteur, $description,
+                    $w_adr1, $w_adr2, $w_adr3, $w_postcode, $w_city, $w_cityid,
+                    $w_region, $w_regiontxt, $w_country, $w_countrytxt, $w_display,
+                    $w_checked, $w_email, $w_web,
+                    $pub, $w_adr_pub, $w_email_pub, $w_glat, $w_glng, $sss_secteur_name
                    ) = $res->next()) {
-            $this->values['jobs'][] = array('id'         => $id,
-                                            'name'       => $name,
-                                            'secteur'    => $secteur,
-                                            'ss_secteur' => $ss_secteur,
-                                            'fonction'   => $fonction,
-                                            'poste'      => $poste,
-                                            'adr'        => array('adr1'       => $adr1,
-                                                                  'adr2'       => $adr2,
-                                                                  'adr3'       => $adr3,
-                                                                  'postcode'   => $postcode,
-                                                                  'city'       => $city,
-                                                                  'cityid'     => $cityid,
-                                                                  'region'     => $region,
-                                                                  'regiontxt'  => $regiontxt,
-                                                                  'country'    => $country,
-                                                                  'countrytxt' => $countrytxt,
-                                                                  'display'    => $display,
-                                                                  'pub'        => $adr_pub,
-                                                                  'checked'    => $checked,
-                                                                  'precise_lat'=> $glat,
-                                                                  'precise_lon'=> $glng),
-                                            'email'      => $email,
-                                            'web'        => $web,
-                                            'pub'        => $pub,
-                                            'email_pub'  => $email_pub);
+            $this->values['jobs'][] = array('id'               => $id,
+                                            'name'             => $name,
+                                            'fonction'         => $function,
+                                            'secteur'          => $secteur,
+                                            'ss_secteur'       => $ss_secteur,
+                                            'sss_secteur'      => $sss_secteur,
+                                            'sss_secteur_name' => $sss_secteur_name,
+                                            'description'      => $description,
+                                            'w_adr'            => array('adr1'        => $w_adr1,
+                                                                        'adr2'        => $w_adr2,
+                                                                        'adr3'        => $w_adr3,
+                                                                        'postcode'    => $w_postcode,
+                                                                        'city'        => $w_city,
+                                                                        'cityid'      => $w_cityid,
+                                                                        'region'      => $w_region,
+                                                                        'regiontxt'   => $w_regiontxt,
+                                                                        'country'     => $w_country,
+                                                                        'countrytxt'  => $w_countrytxt,
+                                                                        'display'     => $w_display,
+                                                                        'pub'         => $w_adr_pub,
+                                                                        'checked'     => $w_checked,
+                                                                        'precise_lat' => $w_glat,
+                                                                        'precise_lon' => $w_glng),
+                                            'w_email'          => $w_email,
+                                            'w_web'            => $w_web,
+                                            'pub'              => $pub,
+                                            'w_email_pub'      => $w_email_pub);
         }
 
         $res = XDB::iterator("SELECT  link_id AS jobid, tel_type AS type, pub, display_tel AS tel, comment
@@ -237,16 +256,16 @@ class ProfileJobs extends ProfilePage
                 break;
             }
             $job =& $this->values['jobs'][$i];
-            if (!isset($job['tel'])) {
-                $job['tel'] = array();
+            if (!isset($job['w_tel'])) {
+                $job['w_tel'] = array();
             }
             if ($job['id'] == $jobid) {
-                $job['tel'][] = $tel;
+                $job['w_tel'][] = $tel;
             }
         }
         foreach ($this->values['jobs'] as $id=>&$job) {
-            if (!isset($job['tel'])) {
-                $job['tel'] = array();
+            if (!isset($job['w_tel'])) {
+                $job['w_tel'] = array();
             }
             unset($job['id']);
         }
@@ -276,8 +295,8 @@ class ProfileJobs extends ProfilePage
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page);
 
-        $page->assign('secteurs', XDB::iterator("SELECT  id, label
-                                                   FROM  emploi_secteur"));
+        $page->assign('secteurs', XDB::iterator("SELECT  id, name AS label
+                                                   FROM  profile_job_sector_enum"));
         $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
                                                     FROM  fonctions_def
                                                 ORDER BY  id"));

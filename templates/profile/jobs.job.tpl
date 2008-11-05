@@ -41,23 +41,36 @@
         <div class="flags" style="float: left; text-align: left">
           {include file="include/flags.radio.tpl" name="`$jobpref`[pub]" val=$job.pub}
         </div>
-        Entreprise n°{$i+1}&nbsp;:
-        <input type="text" class="enterprise_name {if $job.name_error}error{/if}" size="35" maxlength="100"
-               name="{$jobpref}[name]" value="{$job.name}" />
+        Entreprise n°{$i+1}
         <a href="javascript:removeJob('{$jobid}', '{$jobpref}')">
           {icon name=cross title="Supprimer cet emploi"}
         </a>
       </th>
     </tr>
     <tr>
-      <td class="titre">Page Web</td>
-      <td>
-        <input type="text" size="35" maxlength="255" {if $job.web_error}class="error"{/if}
-               name="{$jobpref}[web]" value="{$job.web}" />
-      </td>
+      <td colspan="2" class="center" style="font-style: italic">Ton entreprise</td>
     </tr>
     <tr>
+      <td class="titre">Nom de l'entreprise</td>
+      <td>
+        <input type="text" class="enterprise_name {if $job.name_error}error{/if}" size="35" maxlength="100"
+               name="{$jobpref}[name]" value="{$job.name}" />
+      </td>
+    </tr>
+
+    <tr class="pair">
+      <td colspan="2" class="center" style="font-style: italic">Ta place dans l'entreprise</td>
+    </tr>
+    <tr class="pair sector_text">
       <td class="titre">Secteur d'activité</td>
+      <td>
+        <input type="text" class="sector_name {if $job.sector_error}error{/if}" size="35" maxlength="100"
+               name="{$jobpref}[sss_secteur_name]" value="{$job.sss_secteur_name}" />
+        <a href="javascript:displayAllSector()">{icon name="table" title="Tous les secteurs"}</a>
+      </td>
+    </tr>
+    <tr class="pair sector" style="display: none">
+      <td class="titre" rowspan="3">Secteur d'activité</td>
       <td>
         <select name="{$jobpref}[secteur]" onchange="updateJobSecteur({$i}, '{$jobid}', '{$jobpref}', ''); return true;">
           <option value="">&nbsp;</option>
@@ -69,20 +82,17 @@
         </select>
       </td>
     </tr>
-    <tr>
-      <td class="titre">Sous-secteur d'activité</td>
+    <tr class="pair sector" style="display: none">
       <td id="{$jobid}_ss_secteur">
         <input type="hidden" name="{$jobpref}[ss_secteur]" value="{$job.ss_secteur|default:'-1'}" />
       </td> 
     </tr>
-    <tr>
-      <td class="titre">Poste occupé</td>
-      <td>
-        <input type="text" size="35" maxlength="120" {if $job.poste_error}class="error"{/if}
-               name="{$jobpref}[poste]" value="{$job.poste}" />
-      </td>
+    <tr class="pair sector" style="display: none">
+      <td id="{$jobid}_sss_secteur">
+        <input type="hidden" name="{$jobpref}[sss_secteur]" value="{$job.sss_secteur|default:'-1'}" />
+      </td> 
     </tr>
-    <tr>
+    <tr class="pair">
       <td class="titre">Fonction occupée</td>
       <td>
         <select name="{$jobpref}[fonction]">
@@ -102,40 +112,48 @@
         </select>
       </td>
     </tr>
-    <tr class="titre">
-      <td class="center" colspan="2">
-        <small>Si des informations font défaut dans les listes ci-dessus,
-        <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small>
+    <tr class="pair">
+      <td class="titre">Description</td>
+      <td>
+        <input type="text" size="35" maxlength="120" {if $job.description_error}class="error"{/if}
+               name="{$jobpref}[description]" value="{$job.description}" />
       </td>
     </tr>
-    {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[email]' val=$job.email class="pair" i=$i error=$job.email_error}
+    <tr class="pair">
+      <td class="titre">Page Web</td>
+      <td>
+        <input type="text" size="35" maxlength="255" {if $job.w_web_error}class="error"{/if}
+               name="{$jobpref}[w_web]" value="{$job.w_web}" />
+      </td>
+    </tr>
+    {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[w_email]' val=$job.w_email class="pair" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub}
     <tr class="pair">
       <td colspan="2">
         <div style="float: left">
           <div class="titre">Adresse</div>
           <div class="flags">
-            {include file="include/flags.radio.tpl" name="`$jobpref`[adr][pub]" val=$job.adr.pub}
+            {include file="include/flags.radio.tpl" name="`$jobpref`[w_adr][pub]" val=$job.w_adr.pub}
           </div>
           <div style="margin-top: 20px; clear: both">
-            {include file="geoloc/form.address.tpl" name="`$jobpref`[adr]" id="`$jobid`_adr" adr=$job.adr}
+            {include file="geoloc/form.address.tpl" name="`$jobpref`[w_adr]" id="`$jobid`_adr" adr=$job.w_adr}
           </div>
         </div>
       </td>
     </tr>
     <tr class="pair">
       <td colspan="2">
-        {foreach from=$job.tel key=t item=tel}
-          <div id="{"`$jobid`_tel_`$t`"}" style="clear: both">
-            {include file="profile/phone.tpl" prefname="`$jobpref`[tel]" prefid="`$jobid`_tel" telid=$t tel=$tel}
+        {foreach from=$job.w_tel key=t item=tel}
+          <div id="{"`$jobid`_w_tel_`$t`"}" style="clear: both">
+            {include file="profile/phone.tpl" prefname="`$jobpref`[w_tel]" prefid="`$jobid`_w_tel" telid=$t tel=$tel}
           </div>
         {/foreach}
-        {if $job.tel|@count eq 0}
-          <div id="{"`$jobid`_tel_0"}" style="clear: both">
-            {include file="profile/phone.tpl" prefname="`$jobpref`[tel]" prefid="`$jobid`_tel" telid=0 tel=0}
+        {if $job.w_tel|@count eq 0}
+          <div id="{"`$jobid`_w_tel_0"}" style="clear: both">
+            {include file="profile/phone.tpl" prefname="`$jobpref`[w_tel]" prefid="`$jobid`_w_tel" telid=0 tel=0}
           </div>
         {/if}
-        <div id="{$jobid}_tel_add" class="center" style="clear: both; padding-top: 4px;">
-          <a href="javascript:addTel('{$jobid}_tel', '{$jobpref}[tel]')">
+        <div id="{$jobid}_w_tel_add" class="center" style="clear: both; padding-top: 4px;">
+          <a href="javascript:addTel('{$jobid}_w_tel', '{$jobpref}[w_tel]')">
             {icon name=add title="Ajouter un numéro de téléphone"} Ajouter un numéro de téléphone
           </a>
         </div>

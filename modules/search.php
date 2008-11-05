@@ -166,7 +166,7 @@ class SearchModule extends PLModule
             $textFields = array(
                 'country'         => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'pays', 'exact' => false),
                 'fonction'        => array('field' => 'id', 'table' => 'fonctions_def', 'text' => 'fonction_fr', 'exact' => true),
-                'secteur'         => array('field' => 'id', 'table' => 'emploi_secteur', 'text' => 'label', 'exact' => false),
+                'secteur'         => array('field' => 'id', 'table' => 'profile_job_sector_enum', 'text' => 'name', 'exact' => false),
                 'nationalite'     => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'nat', 'exact' => 'false'),
                 'binet'           => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
                 'networking_type' => array('field' => 'network_type', 'table' => 'profile_networking_enum',
@@ -251,6 +251,7 @@ class SearchModule extends PLModule
         $beginwith = true;
         $field2 = false;
         $qsearch = str_replace(array('%', '_'), '', $q);
+        $distinct = true;
 
         switch ($type) {
           case 'binetTxt':
@@ -283,20 +284,21 @@ class SearchModule extends PLModule
             $realid = '`geoloc_pays`.`a2`';
             break;
           case 'entreprise':
-            $db = '`entreprises`';
-            $field = '`entreprise`';
-            $unique = '`uid`';
+            $db     = 'profile_job_enum INNER JOIN
+                       profile_job ON (profile_job.jobid = profile_job_enum.id)';
+            $field  = 'profile_job_enum.name';
+            $unique = 'profile_job.uid';
             break;
           case 'firstname':
             $field = '`prenom`';
             $beginwith = false;
             break;
           case 'fonctionTxt':
-            $db = '`fonctions_def` INNER JOIN
-                   `entreprises` ON(`entreprises`.`fonction` = `fonctions_def`.`id`)';
-            $field = '`fonction_fr`';
-            $unique = '`uid`';
-            $realid = '`fonctions_def`.`id`';
+            $db        = 'fonctions_def INNER JOIN
+                          profile_job ON (profile_job.fonctionid = fonctions_def.id)';
+            $field     = 'fonction_fr';
+            $unique    = 'uid';
+            $realid    = 'fonctions_def.id';
             $beginwith = false;
             break;
           case 'groupexTxt':
@@ -331,10 +333,10 @@ class SearchModule extends PLModule
             $db = '`auth_user_quick`';
             $beginwith = false;
             break;
-          case 'poste':
-            $db = '`entreprises`';
-            $field = '`poste`';
-            $unique = '`uid`';
+          case 'description':
+            $db     = 'profile_job';
+            $field  = 'description';
+            $unique = 'uid';
             break;
           case 'schoolTxt':
             $db = 'profile_education_enum INNER JOIN
@@ -346,12 +348,19 @@ class SearchModule extends PLModule
                 $beginwith = false;
             break;
           case 'secteurTxt':
-            $db = '`emploi_secteur` INNER JOIN
-                   `entreprises` ON(`entreprises`.`secteur` = `emploi_secteur`.`id`)';
-            $field = '`emploi_secteur`.`label`';
-            $realid = '`emploi_secteur`.`id`';
-            $unique = '`uid`';
+            $db        = 'profile_job_sector_enum INNER JOIN
+                          profile_job ON (profile_job.sectorid = profile_job_sector_enum.id)';
+            $field     = 'profile_job_sector_enum.name';
+            $realid    = 'profile_job_sector_enum.id';
+            $unique    = 'uid';
             $beginwith = false;
+            break;
+          case 'sss_secteur':
+            $db        = 'profile_job_subsubsector_enum';
+            $field     = 'name';
+            $beginwith = false;
+            $unique    = 'name';
+            $distinct  = false;
             break;
           case 'sectionTxt':
             $db = '`sections` INNER JOIN
@@ -378,14 +387,14 @@ class SearchModule extends PLModule
             $field2_t = make_field_test($field2, $beginwith);
             $field_select = 'IF(' . $field_t . ', ' . $field . ', ' . $field2. ')';
         }
-        $list = XDB::iterator('SELECT  ' . $field_select . ' AS field,
-                                       COUNT(DISTINCT ' . $unique . ') AS nb
-                                       ' . ($realid ? (', ' . $realid . ' AS id') : '') . '
+        $list = XDB::iterator('SELECT  ' . $field_select . ' AS field'
+                                       . ($distinct ? (', COUNT(DISTINCT ' . $unique . ') AS nb') : '')
+                                       . ($realid ? (', ' . $realid . ' AS id') : '') . '
                                  FROM  ' . $db . '
                                 WHERE  ' . $field_t .
                                         ($field2 ? (' OR ' . $field2_t) : '') . '
                              GROUP BY  ' . $field_select . '
-                             ORDER BY  nb DESC
+                             ORDER BY  ' . ($distinct ? 'nb DESC' : $field_select) . '
                                 LIMIT  11',
                                $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch,
                                $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch);
@@ -398,7 +407,9 @@ class SearchModule extends PLModule
                 $res .= $q."|-1\n";
             } else {
                 $res .= $result['field'].'|';
-                $res .= $result['nb'];
+                if (isset($result['nb'])) {
+                    $res .= $result['nb'];
+                }
                 if (isset($result['id'])) {
                     $res  .= '|'.$result['id'];
                 }
@@ -474,8 +485,10 @@ class SearchModule extends PLModule
             $db = '`sections`';
             break;
           case 'secteur':
-            $db = '`emploi_secteur`';
-            $field = '`label`';
+            $db    = 'profile_job_sector_enum INNER JOIN
+                      profile_job ON (profile_job.sectorid = profile_job_sector_enum.id)';
+            $field = 'profile_job_sector_enum.name';
+            $id    = 'profile_job_sector_enum.id';
             break;
           default: exit();
         }

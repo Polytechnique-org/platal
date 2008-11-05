@@ -50,6 +50,8 @@ function wizPage_onLoad(id)
         for (var i = 0 ; document.getElementById('job_' + i) != null ; ++i) {
             updateJobSecteur(i, 'job_' + i, 'jobs[' + i + ']',
                              document.forms.prof_annu["jobs[" + i + "][ss_secteur]"].value);
+            updateJobSousSecteur(i, 'job_' + i, 'jobs[' + i + ']',
+                             document.forms.prof_annu["jobs[" + i + "][sss_secteur]"].value);
         }
         setTimeout('registerEnterpriseAutocomplete(-1)', 100);
         break;
@@ -503,7 +505,22 @@ function updateJobSecteur(nb, id, pref, sel)
     if (secteur == '') {
         secteur = '-1';
     }
-    Ajax.update_html(id + '_ss_secteur', 'profile/ajax/secteur/' +nb + '/' + secteur + '/' + sel);
+    Ajax.update_html(id + '_ss_secteur', 'profile/ajax/secteur/' + nb + '/' + id + '/' + pref + '/' + secteur + '/' + sel);
+}
+
+function updateJobSousSecteur(nb, id, pref, sel)
+{
+    var ssecteur = document.forms.prof_annu[pref + '[ss_secteur]'].value;
+    if (ssecteur == '') {
+        ssecteur = '-1';
+    }
+    Ajax.update_html(id + '_sss_secteur', 'profile/ajax/ssecteur/' + nb + '/' + ssecteur + '/' + sel);
+}
+
+function displayAllSector()
+{
+    $('.sector_text').remove();
+    $('.sector').show();
 }
 
 function makeAddJob(id)
@@ -662,6 +679,20 @@ function registerEnterpriseAutocomplete(id)
       function() {
         if (id == -1 || this.name == "jobs[" + id + "][name]") {
             $(this).autocomplete(platal_baseurl + "search/autocomplete/entreprise",
+                                 {
+                                   selectOnly:1,
+                                   field:this.name,
+                                   matchSubset:0,
+                                   width:$(this).width()
+                                 });
+        }
+      }
+    );
+
+    $(".sector_name").each(
+      function() {
+        if (id == -1 || this.name == "jobs[" + id + "][sss_secteur_name]") {
+            $(this).autocomplete(platal_baseurl + "search/autocomplete/sss_secteur",
                                  {
                                    selectOnly:1,
                                    field:this.name,

@@ -37,7 +37,7 @@
     edu2.grad_year AS edugrad_year2, f2.field AS edufield2, edu2.program AS eduprogram2,
     ede3.name AS eduname3, ede3.url AS eduurl3, edd3.degree AS edudegree3,
     edu3.grad_year AS edugrad_year3, f3.field AS edufield3, edu3.program AS eduprogram3,
-    es.label AS secteur, ef.fonction_fr AS fonction,
+    es.name AS secteur, ef.fonction_fr AS fonction,
     IF(n1.nat=\'\',n1.pays,n1.nat) AS nat1, n1.a2 AS iso3166_1,
     IF(n2.nat=\'\',n2.pays,n2.nat) AS nat2, n2.a2 AS iso3166_2,
     IF(n3.nat=\'\',n3.pays,n3.nat) AS nat3, n3.a2 AS iso3166_3,
@@ -47,7 +47,7 @@ if (S::logged())
     $globals->search->result_fields .='
         q.profile_freetext AS freetext,
         adr.city, gp.pays AS countrytxt, gr.name AS region,
-        e.entreprise,
+        ee.name,
         nw.address AS networking_address,
         nwe.name AS networking_name,';
 else
@@ -56,7 +56,7 @@ else
         IF(adr.pub='public', adr.city, '')   AS city,
         IF(adr.pub='public', gp.pays, '')    AS countrytxt,
         IF(adr.pub='public', gr.name, '')    AS region,
-        IF(e.pub='public', e.entreprise, '') AS entreprise,
+        IF(e.pub='public', ee.name, '')      AS entreprise,
         IF(nw.pub='public', nw.address, '')  AS networking_address,
         IF(nw.pub='public', nwe.name, '')    AS networking_name,";
 @$globals->search->result_where_statement = '
@@ -76,8 +76,9 @@ else
     LEFT JOIN  profile_education_enum        AS ede3 ON (ede3.id = edu3.eduid)
     LEFT JOIN  profile_education_degree_enum AS edd3 ON (edd3.id = edu3.degreeid)
     LEFT JOIN  profile_education_field_enum  AS f3   ON (f3.id = edu3.fieldid)
-    LEFT JOIN  entreprises                   AS e    ON (e.entrid = 0 AND e.uid = u.user_id)
-    LEFT JOIN  emploi_secteur                AS es   ON (e.secteur = es.id)
+    LEFT JOIN  profile_job                   AS e    ON (e.uid = u.user_id)
+    LEFT JOIN  profile_job_enum              AS ee   ON (e.jobid = ee.id)
+    LEFT JOIN  profile_job_sector_enum       AS es   ON (es.id = e.sectorid)
     LEFT JOIN  fonctions_def                 AS ef   ON (e.fonction = ef.id)
     LEFT JOIN  geoloc_pays                   AS n1   ON (u.nationalite = n1.a2)
     LEFT JOIN  geoloc_pays                   AS n2   ON (u.nationalite2 = n2.a2)

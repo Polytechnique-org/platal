@@ -81,13 +81,13 @@
       {icon name="flag_orange" title="Visible sur l'annuaire"}
     {elseif $name neq "email"}
       <span class="flags">
-        {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.mail_pub}
+        {include file="include/flags.radio.tpl" name="`$jobpref`[`$prefix`email_pub]" val=$pub}
       </span>
     {/if}
     <br />
     <span class="new" style="display: none">
       <input type="text" maxlength="60" {if $error}class="error" value="{$val}"{/if} name="{if (($name neq "email_directory")
-      && ($name neq "email"))}jobs[{$i}][email_new]{else}{$name}_new{/if}"/>
+      && ($name neq "email"))}jobs[{$i}][{$prefix}email_new]{else}{$name}_new{/if}"/>
     </span>
     <script type="text/javascript">//<![CDATA[
       {literal}

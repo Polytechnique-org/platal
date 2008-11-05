@@ -39,6 +39,7 @@ class ProfileModule extends PLModule
             'profile/networking'         => $this->make_hook('networking',                 AUTH_PUBLIC),
             'profile/ajax/job'           => $this->make_hook('ajax_job',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/secteur'       => $this->make_hook('ajax_secteur',               AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/ssecteur'      => $this->make_hook('ajax_ssecteur',              AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
             'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
@@ -472,16 +473,30 @@ class ProfileModule extends PLModule
         $page->assign('fonctions', $res->fetchAllAssoc());
     }
 
-    function handler_ajax_secteur(&$page, $id, $sect, $ssect = -1)
+    function handler_ajax_secteur(&$page, $id, $jobid, $jobpref, $sect, $ssect = -1)
     {
         header('Content-Type: text/html; charset=utf-8');
-        $res = XDB::iterator("SELECT  id, label
-                                FROM  emploi_ss_secteur
-                               WHERE  secteur = {?}", $sect);
+        $res = XDB::iterator("SELECT  id, name AS label, FIND_IN_SET('optgroup', flags) AS optgroup
+                                FROM  profile_job_subsector_enum
+                               WHERE  sectorid = {?}", $sect);
         $page->changeTpl('profile/jobs.secteur.tpl', NO_SKIN);
         $page->assign('id', $id);
         $page->assign('ssecteurs', $res);
         $page->assign('sel', $ssect);
+        $page->assign('jobid', $jobid);
+        $page->assign('jobpref', $jobpref);
+    }
+
+    function handler_ajax_ssecteur(&$page, $id, $ssect, $sssect = -1)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $res = XDB::iterator("SELECT  id, name AS label
+                                FROM  profile_job_subsubsector_enum
+                               WHERE  subsectorid = {?}", $ssect);
+        $page->changeTpl('profile/jobs.soussecteur.tpl', NO_SKIN);
+        $page->assign('id', $id);
+        $page->assign('sssecteurs', $res);
+        $page->assign('sel', $sssect);
     }
 
     function handler_ajax_skill(&$page, $cat, $id)
