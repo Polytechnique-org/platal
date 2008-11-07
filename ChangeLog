@@ -15,6 +15,9 @@ New:
 
 Bug/Wish:
 
+    * Core:
+        - #918: Use POST for wiki preview                                  -FRU
+
     * Search:
         - #691: Adds search on postcode and thus on "arrondissements"      -JAC
         - #791: Adds the possibility to do an exact search                 -JAC
