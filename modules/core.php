@@ -187,7 +187,7 @@ class CoreModule extends PLModule
     function handler_wiki_preview(&$page, $action = 'title')
     {
         header('Content-Type: text/html; charset=utf-8');
-        $text = Get::v('text');
+        $text = Env::v('text');
         echo MiniWiki::wikiToHtml($text, $action == 'title');
         exit;
     }
