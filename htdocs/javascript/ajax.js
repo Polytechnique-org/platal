@@ -128,7 +128,7 @@ function showTempMessage(id, message, success)
 
 function previewWiki(idFrom, idTo, withTitle, idShow)
 {
-    var text = encodeURIComponent(document.getElementById(idFrom).value);
+    var text = document.getElementById(idFrom).value;
     if (text == "") {
         return false;
     }
@@ -136,7 +136,11 @@ function previewWiki(idFrom, idTo, withTitle, idShow)
     if (!withTitle) {
         url += "/notitle";
     }
-    Ajax.update_html(idTo, url + "?text=" + text);
+    $.post(url, { text: text },
+        function(data) {
+            $("#" + idTo).html(data);
+        },
+        'text');
     if (idShow != null) {
         document.getElementById(idShow).style.display = "";
     }
