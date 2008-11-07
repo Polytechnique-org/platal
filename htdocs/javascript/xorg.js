@@ -18,8 +18,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-var is_netscape = (navigator.appName.substring(0,8) == "Netscape");
-var is_IE       = (navigator.appName.substring(0,9) == "Microsoft");
+var is_IE       = $.browser.msie;
 
 // {{{ function getNow()
 
@@ -46,29 +45,29 @@ function getNow() {
 
 function canAddSearchEngine()
 {
-  if (((typeof window.sidebar == "object") && (typeof window.sidebar.addSearchEngine == "function"))
-      || ((typeof window.sidebar == "object") && (typeof window.sidebar.addSearchEngine == "function"))) {
-      return true;
-  }
-  return false;
+    if (((typeof window.sidebar == "object") && $.isFunction(window.sidebar.addSearchEngine))
+        || ((typeof window.external == "object") && $.isFunction(window.external.AddSearchProvider))) {
+        return true;
+    }
+    return false;
 }
 
 function addSearchEngine()
 {
-  var searchURI = "http://www.polytechnique.org/xorg.opensearch.xml";
-  if ((typeof window.sidebar == "object") && (typeof window.sidebar.addSearchEngine == "function")) {
-    window.sidebar.addSearchEngine(
-      searchURI,
-      "http://www.polytechnique.org/images/xorg.png",
-      "Annuaire Polytechnique.org",
-      "Academic");
-  } else {
-    try {
-        window.external.AddSearchProvider(searchURI);
-    } catch(e) {
-        alert("Impossible d'installer la barre de recherche");
+    var searchURI = "http://www.polytechnique.org/xorg.opensearch.xml";
+    if ((typeof window.sidebar == "object") && $.isFunction(window.sidebar.addSearchEngine)) {
+        window.sidebar.addSearchEngine(
+            searchURI,
+            "http://www.polytechnique.org/images/xorg.png",
+            "Annuaire Polytechnique.org",
+            "Academic");
+    } else {
+        try {
+            window.external.AddSearchProvider(searchURI);
+        } catch(e) {
+            alert("Impossible d'installer la barre de recherche");
+        }
     }
-  }
 }
 
 // }}}
@@ -76,13 +75,11 @@ function addSearchEngine()
 
 function dynpost(action, values)
 {
-    var body = document.getElementsByTagName('body')[0];
-
     var form = document.createElement('form');
     form.action = action;
     form.method = 'post';
 
-    body.appendChild(form);
+    $('body').appendChild(form);
 
     for (var k in values) {
         var input = document.createElement('input');
@@ -137,79 +134,75 @@ function popWin(theNode, w, h) {
 // }}}
 // {{{ function goodiesPopup()
 
-function goodiesPopup(node) {
-    if (node.href.indexOf('ical') > -1) {
-        __goodies_popup(node, __goodies_ical_sites, 'Calendrier iCal');
-    } else if (node.href.indexOf('rss') > -1 && node.href.indexOf('prefs/rss') < 0 &&  (node.href.indexOf('xml') > -1 || node.href.indexOf('hash'))) {
-        __goodies_popup(node, __goodies_rss_sites, 'Fil rss');
-    }
-}
+var __goodies_active = true;
+
+var __goodies_ical = {
+    default_title: 'Calendrier iCal',
+    sites: [
+        {'url_prefix': '',
+         'img': 'images/icons/calendar_view_day.gif',
+         'title': 'Calendrier iCal'},
+        {'url_prefix': 'http://www.google.com/calendar/render?cid=',
+         'img': 'images/goodies/add-google-calendar.gif',
+         'title': 'Ajouter à Google Calendar'},
+        {'url_prefix': 'https://www.google.com/calendar/hosted/polytechnique.org/render?cid=',
+         'img': 'images/goodies/add-google-calendar.gif',
+         'title': 'Ajouter à Google Apps / Calendar'}
+    ]
+};
+
+var __goodies_rss = {
+    default_title: 'Fils RSS',
+    sites: [
+        {'url_prefix': '',
+         'img': 'images/icons/feed.gif',
+         'title': 'Fil rss'},
+        {'url_prefix': 'http://fusion.google.com/add?feedurl=',
+         'img': 'images/goodies/add-google.gif',
+         'alt': 'Add to Google',
+         'title': 'Ajouter à iGoogle/Google Reader'},
+        {'url_prefix': 'http://www.netvibes.com/subscribe.php?url=',
+         'img': 'images/goodies/add-netvibes.gif',
+         'title': 'Ajouter à Netvibes'},
+        {'url_prefix': 'http://add.my.yahoo.com/content?.intl=fr&url=',
+         'img': 'images/goodies/add-yahoo.gif',
+         'alt': 'Add to My Yahoo!',
+         'title': 'Ajouter à My Yahoo!'},
+        {'url_prefix': 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=',
+         'img': 'images/goodies/add-newsgator.gif',
+         'alt': 'Subscribe in NewsGator Online',
+         'title': 'Ajouter à Newsgator'}
+    ]
+};
 
 function disableGoodiesPopups() {
     __goodies_active = false;
 }
 
-var __goodies_active = true;
-var __goodies_ical_sites = [
-    {'url_prefix': '',
-     'img': 'images/icons/calendar_view_day.gif',
-     'title': 'Calendrier iCal'},
-    {'url_prefix': 'http://www.google.com/calendar/render?cid=',
-     'img': 'images/goodies/add-google-calendar.gif',
-     'title': 'Ajouter à Google Calendar'},
-    {'url_prefix': 'https://www.google.com/calendar/hosted/polytechnique.org/render?cid=',
-     'img': 'images/goodies/add-google-calendar.gif',
-     'title': 'Ajouter à Google Apps / Calendar'}
-];
-var __goodies_rss_sites = [
-    {'url_prefix': '',
-     'img': 'images/icons/feed.gif',
-     'title': 'Fil rss'},
-    {'url_prefix': 'http://fusion.google.com/add?feedurl=',
-     'img': 'images/goodies/add-google.gif',
-     'alt': 'Add to Google',
-     'title': 'Ajouter à iGoogle/Google Reader'},
-    {'url_prefix': 'http://www.netvibes.com/subscribe.php?url=',
-     'img': 'images/goodies/add-netvibes.gif',
-     'title': 'Ajouter à Netvibes'},
-    {'url_prefix': 'http://add.my.yahoo.com/content?.intl=fr&url=',
-     'img': 'images/goodies/add-yahoo.gif',
-     'alt': 'Add to My Yahoo!',
-     'title': 'Ajouter à My Yahoo!'},
-    {'url_prefix': 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=',
-     'img': 'images/goodies/add-newsgator.gif',
-     'alt': 'Subscribe in NewsGator Online',
-     'title': 'Ajouter à Newsgator'}
-];
-
-function __goodies_popupText(url, sites) {
+function goodiesPopup(node, goodies) {
     var text = '<div style="text-align: center; line-height: 2.2">';
-    for (var site in sites) {
-        var s_alt = (sites[site]["alt"] ? sites[site]["alt"] : "");
-        var s_img = sites[site]["img"];
-        var s_title = (sites[site]["title"] ? sites[site]["title"] : "");
-        var s_url = (sites[site]["url_prefix"].length > 0 ? sites[site]["url_prefix"] + escape(url) : url);
+    for (var site in goodies.sites) {
+        var entry = goodies.sites[site];
+        var s_alt   = entry["alt"] ? entry["alt"] : "";
+        var s_img   = entry["img"];
+        var s_title = entry["title"] ? entry["title"] : "";
+        var s_url   = entry["url_prefix"].length > 0 ? entry["url_prefix"] + escape(this.href) : this.href;
 
         text += '<a href="' + s_url + '"><img src="' + s_img + '" title="' + s_title + '" alt="' + s_alt + '"></a><br />';
     }
-    text += '<a href="https://www.polytechnique.org/Xorg/Goodies">Plus de bonus</a> ...</div>'
-    return text;
-}
+    text += '<a href="https://www.polytechnique.org/Xorg/Goodies">Plus de bonus</a> ...</div>';
 
-function __goodies_popup(node, sites, default_title) {
-    var mouseover_cb = function() {
-        if (__goodies_active) {
-            var rss_text = __goodies_popupText(node.href, sites);
-            var rss_title = (node.title ? node.title : default_title);
-            return overlib(rss_text, CAPTION, rss_title, CLOSETEXT, 'Fermer', DELAY, 800, STICKY, WIDTH, 150);
-        }
-    }
-    var mouseout_cb = function() {
-        nd();
-    }
+    var title = node.title ? node.title : goodies.default_title;
 
-    node.onmouseover = mouseover_cb;
-    node.onmouseout = mouseout_cb;
+    $(node)
+        .mouseover(
+            function() {
+                if (__goodies_active) {
+                    return overlib(text, CAPTION, title, CLOSETEXT, 'Fermer', DELAY, 800, STICKY, WIDTH, 150);
+                }
+            }
+        )
+        .mouseout(nd);
 }
 
 // }}}
@@ -223,8 +216,7 @@ function auto_links() {
     $("a,link").each(
         function(i) {
             node = $(this);
-            enode = node.get(0);
-            href =  enode.href;
+            href =  this.href;
             if(!href || node.hasClass('xdx')
                || href.indexOf('mailto:') > -1 || href.indexOf('javascript:') > -1) {
                 return;
@@ -234,18 +226,23 @@ function auto_links() {
             }
             if (href.indexOf(fqdn) > -1 && light) {
                 href = href.replace(/([^\#\?]*)\??([^\#]*)(\#.*)?/, "$1?display=light&$2$3");
-                enode.href = href;
+                this.href = href;
             }
-            if (href.indexOf('rss') > -1 || href.indexOf('ical') > -1) {
+            rss  = href.indexOf('rss') > -1;
+            ical = href.indexOf('ical') > -1;
+            if (rss || ical) {
                 if (href.indexOf('http') < 0) {
                     href = 'http://' + fqdn + '/' + href;
                 }
-                enode.href = href;
-                if (enode.nodeName.toLowerCase() == 'a') {
-                    goodiesPopup(enode);
+            }
+            if (this.nodeName.toLowerCase() == 'a') {
+                if (rss && href.indexOf('prefs/rss') < 0 &&  (href.indexOf('xml') > -1 || href.indexOf('hash'))) {
+                    goodiesPopup(this, __goodies_rss);
+                } else if (ical) {
+                    goodiesPopup(this, __goodies_ical);
                 }
             }
-            if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(enode.className)) {
+            if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(this.className)) {
                 var w = matches[1], h = matches[2];
                 node.click(function() { return popWin(this, w, h); });
             }
@@ -342,6 +339,6 @@ function checkPassword(box, okLabel) {
  * The real OnLoad
  */
 
-$(window).load(auto_links);
+$(document).ready(auto_links);
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
