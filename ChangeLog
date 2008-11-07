@@ -15,6 +15,9 @@ New:
 
 Bug/Wish:
 
+    * Admin:
+        - #912: Fix error when validating an 'alread-validated' request    -FRU
+
     * Core:
         - #918: Use POST for wiki preview                                  -FRU
 

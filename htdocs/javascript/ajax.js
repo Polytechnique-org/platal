@@ -20,67 +20,23 @@
 
 function AjaxEngine()
 {
-    this.xml_client = null;
-    this.init = false;
-    this.obj  = null;
-    this.func = null;
-
-    this.prepare_client = function()
-    {
-        if (!this.init) {
-            if (window.XMLHttpRequest) {
-                this.xml_client = new XMLHttpRequest();
-            } else if (window.ActiveXObject) {
-                try {
-                    this.xml_client = new ActiveXObject("Msxml2.XMLHTTP");
-                } catch (e) {
-                    this.xml_client = new ActiveXObject("Microsoft.XMLHTTP");
-                }
-            }
-            if (this.xml_client == null) {
-                alert("Ton client ne supporte pas Ajax, nécessaire pour certaines fonctionalités de cette page");
-            }
-        }
-        this.init = true;
-    }
-
     this.update_html = function(obj, src, func)
     {
-        this.prepare_client();
-        if (this.xml_client == null) {
-            return true;
-        }
-        if (src.match(/^http/i) == null) {
-            src = platal_baseurl + src;
-        }
-        this.obj = obj;
-        this.func = func;
-        this.xml_client.abort();
-        this.xml_client.onreadystatechange = this.apply_update_html(this);
-        this.xml_client.open ('GET', src, true);
-        this.xml_client.send (null);
-        return false;
-    }
-
-    this.apply_update_html = function(ajax)
-    {
-        return function()
-        {
-            if(ajax.xml_client.readyState == 4) {
-                if (ajax.xml_client.status == 200) {
-                    if (ajax.obj != null) {
-                        document.getElementById(ajax.obj).innerHTML = ajax.xml_client.responseText;
+        $.get(src,
+            function(data, textStatus) {
+                if (textStatus == "success") {
+                    if (obj) {
+                        $('#' + obj).html(data);
                     }
-                    if (ajax.func != null) {
-                        ajax.func(ajax.xml_client.responseText);
+                    if (func) {
+                        func(data);
                     }
-                } else if (ajax.xml_client.status == 403) {
-                    window.location.reload();
-                } else if (ajax.xml_client.status >= 500) {
-                    alert("Une erreur s'est produite lors du traitement de la requête");
+                } else if (textStatus == "error") {
+                    alert("Une erreur s'est produite lors du traitement de la requête.\n"
+                         +"Ta session a peut-être expirée.");
                 }
-            }
-        };
+            }, 'text');
+        return false;
     }
 }
 
