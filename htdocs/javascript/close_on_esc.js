@@ -18,13 +18,11 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function closePopup(e) {
-    e = e || window.event;
-    if (e.keyCode == 27) {
-        window.close();
-    }
-}
-
-attachEvent(window, 'keydown', closePopup);
+$(window).keydown(
+    function(e)  {
+        if (e.keyCode == 27) {
+            window.close();
+        }
+    });
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

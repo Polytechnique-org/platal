@@ -72,28 +72,6 @@ function addSearchEngine()
 }
 
 // }}}
-// {{{ Events
-
-function eventClosure(obj, methodName) {
-    return (function(e) {
-            e = e || window.event;
-            return obj[methodName](e);
-        });
-}
-
-function attachEvent(obj, evt, f, useCapture) {
-    if (!useCapture) useCapture = false;
-
-    if (obj.addEventListener) {
-        obj.addEventListener(evt, f, useCapture);
-        return true;
-    } else if (obj.attachEvent) {
-        return obj.attachEvent("on"+evt, f);
-    }
-    return false;
-}
-
-// }}}
 // {{{ dynpost()
 
 function dynpost(action, values)
@@ -116,6 +94,7 @@ function dynpost(action, values)
 
     form.submit();
 }
+
 
 function dynpostkv(action, k, v)
 {
@@ -149,9 +128,10 @@ RegExp.escape = function(text) {
 
 // {{{ function popWin()
 
-function popWin(theNode,w,h) {
+function popWin(theNode, w, h) {
     window.open(theNode.href, '_blank',
-  'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width='+w+',height='+h);
+        'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width='+w+',height='+h);
+    return false;
 }
 
 // }}}
@@ -236,47 +216,45 @@ function __goodies_popup(node, sites, default_title) {
 // {{{ function auto_links()
 
 function auto_links() {
-    auto_links_nodes(document.getElementsByTagName('a'));
-    auto_links_nodes(document.getElementsByTagName('link'));
-}
-
-function auto_links_nodes(nodes) {
     url  = document.URL;
     fqdn = url.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
     light = (url.indexOf('display=light') > url.indexOf('?'));
-    for(var i=0; i < nodes.length; i++) {
-        node = nodes[i];
-        if(!node.href || node.className == 'xdx'
-           || node.href.indexOf('mailto:') > -1 || node.href.indexOf('javascript:') > -1)
-            continue;
-        if (node.href.indexOf(fqdn) < 0 || node.className == 'popup') {
-            node.onclick = function () { window.open(this.href); return false; };
-        }
-        if (node.href.indexOf(fqdn) > -1 && light) {
-            node.href = node.href.replace(/([^\#\?]*)\??([^\#]*)(\#.*)?/,
-                                          "$1?display=light&$2$3");
-        }
-        if (node.href.indexOf('rss') > -1 || node.href.indexOf('ical') > -1) {
-            node.href = node.href.replace(/https/, 'http');
-            if (node.href.indexOf('http') < 0) {
-                node.href = 'http://' + fqdn + '/' + node.href;
+
+    $("a,link").each(
+        function(i) {
+            node = $(this);
+            enode = node.get(0);
+            href =  enode.href;
+            if(!href || node.hasClass('xdx')
+               || href.indexOf('mailto:') > -1 || href.indexOf('javascript:') > -1) {
+                return;
             }
-            if (node.nodeName.toLowerCase() == 'a') {
-                goodiesPopup(node);
+            if (href.indexOf(fqdn) < 0 || node.hasClass('popup')) {
+                node.click(function () { window.open(this.href); return false; });
+            }
+            if (href.indexOf(fqdn) > -1 && light) {
+                href = href.replace(/([^\#\?]*)\??([^\#]*)(\#.*)?/, "$1?display=light&$2$3");
+                enode.href = href;
+            }
+            if (href.indexOf('rss') > -1 || href.indexOf('ical') > -1) {
+                if (href.indexOf('http') < 0) {
+                    href = 'http://' + fqdn + '/' + href;
+                }
+                enode.href = href;
+                if (enode.nodeName.toLowerCase() == 'a') {
+                    goodiesPopup(enode);
+                }
+            }
+            if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(enode.className)) {
+                var w = matches[1], h = matches[2];
+                node.click(function() { return popWin(this, w, h); });
             }
         }
-        if(node.className == 'popup2') {
-            node.onclick = function () { popWin(this,840,600); return false; };
-        }
-        if(node.className == 'popup3') {
-            node.onclick = function () { popWin(this, 640, 800); return false; };
-        }
-        if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(node.className)) {
-            var w = matches[1], h = matches[2];
-            node.onclick = function () { popWin(this,w,h); return false; };
-        }
-    }
+    );
+    $('.popup2').click(function() { return popWin(this, 840, 600); });
+    $('.popup3').click(function() { return popWin(this, 640, 800); });
 }
+
 
 // }}}
 
@@ -364,12 +342,6 @@ function checkPassword(box, okLabel) {
  * The real OnLoad
  */
 
-// {{{ function pa_onload
-
-if (!attachEvent(window, 'load', auto_links)) {
-    window.onload = auto_links;
-}
-
-// }}}
+$(window).load(auto_links);
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
