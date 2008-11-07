@@ -1,9 +1,10 @@
 ================================================================================
-VERSION 0.9.18                                                        XX XX XXXX
+VERSION 0.10.0                                                        XX XX XXXX
 
 New:
 
     * Core:
+        - Move plat/al engine in a separated library                       -FRU
         - Introduction of 'hruid' as a replacement for 'forlife'           -VZA
 
     * Newsletter:
