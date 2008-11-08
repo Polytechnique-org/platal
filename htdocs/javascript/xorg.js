@@ -79,7 +79,7 @@ function dynpost(action, values)
     form.action = action;
     form.method = 'post';
 
-    $('body').appendChild(form);
+    $('body').get(0).appendChild(form);
 
     for (var k in values) {
         var input = document.createElement('input');
