@@ -163,7 +163,7 @@ class VCard extends PlVCard
             $res = XDB::query(
                     "SELECT  attach, attachmime
                        FROM  photo AS p
-                      WHERE  u.user_id = {?}", $login->id());
+                      WHERE  p.uid = {?}", $login->id());
             if ($res->numRows()) {
                 list($data, $type) = $res->fetchOneRow();
                 $entry->setPhoto($data, strtoupper($type));
