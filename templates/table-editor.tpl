@@ -40,7 +40,7 @@
   <th>action</th>
   {/if}
 </tr>
-{if !$readonly}
+{if !$readonly and !$deleteonly}
 <tr class="impair">
   <td colspan="{$t->nbfields}">
     <strong>
@@ -73,8 +73,10 @@
 {/if}{/foreach}
   {if !$hideactions}
   <td class="action">
-    {if !$readonly}
+    {if !$readonly and !$deleteonly}
     <a href="{$t->pl}/edit/{$idval}">{icon name=page_edit title='éditer'}</a>
+    {/if}
+    {if !$readonly}
     <a href="{$t->pl}/delete/{$idval}?token={xsrf_token}">{icon name=delete title='supprimer'}</a>
     {/if}
   </td>
