@@ -63,6 +63,7 @@ class OpenidModule extends PLModule
         return array(
             'openid'            => $this->make_hook('openid', AUTH_PUBLIC),
             'openid/trust'      => $this->make_hook('trust', AUTH_COOKIE),
+            'openid/trusted'    => $this->make_hook('trusted', AUTH_MDP),
             'openid/idp_xrds'   => $this->make_hook('idp_xrds', AUTH_PUBLIC),
             'openid/user_xrds'  => $this->make_hook('user_xrds', AUTH_PUBLIC),
             'openid/melix'      => $this->make_hook('melix', AUTH_PUBLIC),
@@ -191,6 +192,20 @@ class OpenidModule extends PLModule
 
         $webresponse =& $server->encodeResponse($response);
         $this->render_openid_response($webresponse);
+    }
+
+    function handler_trusted(&$page, $action = 'list', $id = null)
+    {
+        $this->load('openid.inc.php');
+        $page->setTitle('Sites tiers de confiance');
+        $page->assign('title', 'Mes sites tiers de confiance pour OpenId');
+        $table_editor = new PLTableEditor('openid/trusted', 'openid_trusted', 'id');
+        $table_editor->set_where_clause('user_id = ' . XDB::escape(S::user()->id()));
+        // Display only URLs
+        $table_editor->vars['user_id']['display'] = false;
+        $table_editor->describe('url', 'site tiers', true);
+        $page->assign('deleteonly', true);
+        $table_editor->apply($page, $action, $id);
     }
 
     function handler_idp_xrds(&$page)
