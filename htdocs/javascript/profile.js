@@ -517,10 +517,10 @@ function updateJobSousSecteur(nb, id, pref, sel)
     Ajax.update_html(id + '_sss_secteur', 'profile/ajax/ssecteur/' + nb + '/' + ssecteur + '/' + sel);
 }
 
-function displayAllSector()
+function displayAllSector(id)
 {
-    $('.sector_text').remove();
-    $('.sector').show();
+    $('.sector_text_' + id).remove();
+    $('.sector_' + id).show();
 }
 
 function makeAddJob(id)
@@ -542,6 +542,10 @@ function addJob()
     $.get(platal_baseurl + 'profile/ajax/job/' + i, makeAddJob(i));
 }
 
+function addEntreprise(id)
+{
+    $('.entreprise_' + id).toggle();
+}
 
 // Skills
 

@@ -84,4 +84,7 @@ ALTER TABLE profile_job_sector_enum DROP COLUMN sect;
 ALTER TABLE profile_job_subsector_enum DROP COLUMN sect;
 ALTER TABLE profile_job_subsector_enum DROP COLUMN subsector;
 
+
+ALTER TABLE profile_phones CHANGE COLUMN link_type link_type ENUM('address','pro','user', 'hq') NOT NULL DEFAULT 'user';
+
 -- vim:set syntax=mysql:

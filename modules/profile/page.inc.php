@@ -119,15 +119,21 @@ class ProfilePhones implements ProfileSetting
 {
     private $tel;
     private $pub;
+    protected $id;
     protected $link_type;
     protected $link_id;
 
-    public function __construct($type, $id)
+    public function __construct($type, $link_id, $id = 0)
     {
+        if ($id != 0) {
+            $this->id = $id;
+        } else {
+            $this->id = S::i('uid');
+        }
         $this->tel = new ProfileTel();
         $this->pub = new ProfilePub();
         $this->link_type = $type;
-        $this->link_id = $id;
+        $this->link_id   = $link_id;
     }
 
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -135,11 +141,11 @@ class ProfilePhones implements ProfileSetting
         $success = true;
         if (is_null($value) || !is_array($value)) {
             $value = array();
-            $res = XDB::iterator("SELECT t.display_tel AS tel, t.tel_type AS type, t.pub, t.comment
-                                    FROM profile_phones AS t
-                                   WHERE t.uid = {?} AND t.link_type = {?}
-                                ORDER BY t.tel_id",
-                                 S::v('uid'), $this->link_type);
+            $res = XDB::iterator("SELECT  t.display_tel AS tel, t.tel_type AS type, t.pub, t.comment
+                                    FROM  profile_phones AS t
+                                   WHERE  t.uid = {?} AND t.link_type = {?}
+                                ORDER BY  t.tel_id",
+                                 $this->id, $this->link_type);
             $value = $res->fetchAllAssoc();
         }
         foreach ($value as $key=>&$phone) {
@@ -172,8 +178,8 @@ class ProfilePhones implements ProfileSetting
                                        search_tel, display_tel, pub, comment)
                                VALUES  ({?}, {?}, {?}, {?}, {?},
                                        {?}, {?}, {?}, {?})",
-                         S::i('uid'), $this->link_type, $this->link_id, $telid, $phone['type'],
-                        format_phone_number($phone['tel']), $phone['tel'], $phone['pub'], $phone['comment']);
+                         $this->id, $this->link_type, $this->link_id, $telid, $phone['type'],
+                         format_phone_number($phone['tel']), $phone['tel'], $phone['pub'], $phone['comment']);
         }
     }
 
@@ -181,7 +187,7 @@ class ProfilePhones implements ProfileSetting
     {
         XDB::execute("DELETE FROM  profile_phones
                             WHERE  uid = {?} AND link_type = {?} AND link_id = {?}",
-                            S::i('uid'), $this->link_type, $this->link_id);
+                            $this->id, $this->link_type, $this->link_id);
         $this->saveTels($field, $value);
     }
 

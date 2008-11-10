@@ -22,6 +22,9 @@
 
 {assign var=jobid value="job_`$i`"}
 {assign var=jobpref value="jobs[`$i`]"}
+{assign var=sector_text value="sector_text_"|cat:$i}
+{assign var=sector value="sector_"|cat:$i}
+{assign var=entreprise value="entreprise_"|cat:$i}
 <div id="{$jobid}">
   <input type="hidden" name="{$jobpref}[removed]" value="0" />
   <input type="hidden" name="{$jobpref}[new]" value="{if $new}1{else}0{/if}" />
@@ -53,23 +56,78 @@
     <tr>
       <td class="titre">Nom de l'entreprise</td>
       <td>
+        {if $job.tmp_name}{$job.tmp_name} <small>(en cours de validation)</small>{else}
         <input type="text" class="enterprise_name {if $job.name_error}error{/if}" size="35" maxlength="100"
                name="{$jobpref}[name]" value="{$job.name}" />
+        {/if}
+      </td>
+    </tr>
+    {if !$job.tmp_name}
+    <tr class="{$entreprise}">
+      <td class="center" colspan="2">
+        <small>Si ton entreprise ne figure pas dans la liste,
+        <a href="javascript:addEntreprise({$i})">clique ici</a> et complète les informations la concernant.</small>
+      </td>
+    </tr>
+    {/if}
+    <tr class="{$entreprise}" style="display: none">
+      <td class="titre">Acronyme</td>
+      <td>
+        <input type="text" size="35" maxlength="255" {if $job.acronym_error}class="error"{/if}
+               name="{$jobpref}[acronym]" value="{$job.acronym}" />
+      </td>
+    </tr>
+    <tr class="{$entreprise}" style="display: none">
+      <td class="titre">Page Web</td>
+      <td>
+        <input type="text" size="35" maxlength="255" {if $job.hq_web_error}class="error"{/if}
+               name="{$jobpref}[hq_web]" value="{$job.hq_web}" />
+      </td>
+    </tr>
+    <tr class="{$entreprise}" style="display: none">
+      <td class="titre">Email de contact</td>
+      <td>
+        <input type="text" maxlength="60" {if $job.hq_email_error}class="error"{/if}
+               name="{$jobpref}[hq_email]" value="{$job.hq_email}" />
+      </td>
+    </tr>
+    <!--<tr class="{$entreprise}" style="display: none">
+      <td colspan="2">
+        <div style="float: left">
+          <div class="titre">Adresse du siège</div>
+          <div style="margin-top: 20px; clear: both">
+            {include file="geoloc/form.address.tpl" name="`$jobpref`[hq_adr]" id="`$jobid`_adr" adr=$job.hq_adr}
+          </div>
+        </div>
+      </td>
+    </tr>-->
+    <tr class="{$entreprise}" style="display: none">
+      <td class="titre">Téléphone</td>
+      <td>
+        <input type="text" maxlength="28" {if $job.hq_tel_error}class="error"{/if}
+               name="{$jobpref}[hq_tel]" value="{$job.hq_tel}" />
+      </td>
+    </tr>
+    <tr class="{$entreprise}" style="display: none">
+      <td class="titre">Fax</td>
+      <td>
+        <input type="text" maxlength="28" {if $job.hq_fax_error}class="error"{/if}
+               name="{$jobpref}[hq_fax]" value="{$job.hq_fax}" />
       </td>
     </tr>
 
     <tr class="pair">
       <td colspan="2" class="center" style="font-style: italic">Ta place dans l'entreprise</td>
     </tr>
-    <tr class="pair sector_text">
+    <tr class="pair {$sector_text}">
       <td class="titre">Secteur d'activité</td>
       <td>
         <input type="text" class="sector_name {if $job.sector_error}error{/if}" size="35" maxlength="100"
                name="{$jobpref}[sss_secteur_name]" value="{$job.sss_secteur_name}" />
-        <a href="javascript:displayAllSector()">{icon name="table" title="Tous les secteurs"}</a>
+        <a href="javascript:displayAllSector({$i})">{icon name="table" title="Tous les secteurs"}</a>
       </td>
     </tr>
-    <tr class="pair sector" style="display: none">
+    <tr class="pair {$sector}" style="display: none">
       <td class="titre" rowspan="3">Secteur d'activité</td>
       <td>
         <select name="{$jobpref}[secteur]" onchange="updateJobSecteur({$i}, '{$jobid}', '{$jobpref}', ''); return true;">
@@ -82,12 +140,12 @@
         </select>
       </td>
     </tr>
-    <tr class="pair sector" style="display: none">
+    <tr class="pair {$sector}" style="display: none">
       <td id="{$jobid}_ss_secteur">
         <input type="hidden" name="{$jobpref}[ss_secteur]" value="{$job.ss_secteur|default:'-1'}" />
       </td>
     </tr>
-    <tr class="pair sector" style="display: none">
+    <tr class="pair {$sector}" style="display: none">
       <td id="{$jobid}_sss_secteur">
         <input type="hidden" name="{$jobpref}[sss_secteur]" value="{$job.sss_secteur|default:'-1'}" />
       </td>

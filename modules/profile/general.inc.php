@@ -82,9 +82,7 @@ class ProfileSearchName implements ProfileSetting
 
 class ProfileEdu implements ProfileSetting
 {
-    public function __construct()
-    {
-    }
+    public function __construct(){}
 
     static function sortByGradYear($line1, $line2) {
         $a = (int) $line1['grad_year'];
@@ -142,14 +140,12 @@ class ProfileEdu implements ProfileSetting
             }
         }
     }
-
 }
 
 class ProfileEmailDirectory implements ProfileSetting
 {
-    public function __construct()
-    {
-    }
+    public function __construct(){}
+    public function save(ProfilePage &$page, $field, $value){}
 
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -168,10 +164,6 @@ class ProfileEmailDirectory implements ProfileSetting
             }
         }
         return $value;
-    }
-
-    public function save(ProfilePage &$page, $field, $value)
-    {
     }
 }
 

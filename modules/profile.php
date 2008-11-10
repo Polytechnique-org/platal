@@ -464,8 +464,8 @@ class ProfileModule extends PLModule
         $page->assign('i', $id);
         $page->assign('job', array());
         $page->assign('new', true);
-        $res = XDB::query("SELECT  id, label
-                             FROM  emploi_secteur");
+        $res = XDB::query("SELECT  id, name AS label
+                             FROM  profile_job_sector_enum");
         $page->assign('secteurs', $res->fetchAllAssoc());
         $res = XDB::query("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
                              FROM  fonctions_def

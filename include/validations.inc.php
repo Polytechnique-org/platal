@@ -87,7 +87,7 @@ abstract class Validate
         $this->type   = $_type;
         $res = XDB::query("SELECT  promo_display AS promo
                              FROM  profile_display
-                            WHERE  uid={?}", $_uid);
+                            WHERE  uid={?}", $this->user->id());
         $this->promo = $res->fetchOneCell();
     }
 

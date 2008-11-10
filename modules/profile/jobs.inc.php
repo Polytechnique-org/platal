@@ -42,7 +42,7 @@ class ProfileJob extends ProfileGeoloc
                               'pub'      => array('pub', 'w_email_pub'));
     }
 
-    private function cleanJob(ProfilePage &$page,$jobid, array &$job, &$success)
+    private function cleanJob(ProfilePage &$page, $jobid, array &$job, &$success)
     {
         $success = true;
         foreach ($this->checks as $obj=>&$fields) {
@@ -61,7 +61,7 @@ class ProfileJob extends ProfileGeoloc
                 }
             }
         }
-        if (!isset($job['sss_secteur_name'])) {
+        if (!$job['sss_secteur_name']) {
             $res = XDB::query("SELECT  name
                                  FROM  profile_job_subsubsector_enum
                                 WHERE  id = {?}",
@@ -79,14 +79,16 @@ class ProfileJob extends ProfileGeoloc
                 list($job['secteur'], $job['ss_secteur'], $job['sss_secteur']) = $res->fetchOneRow();
             }
         }
-        if (!isset($job['jobid'])) {
+        if ($job['name']) {
             $res = XDB::query("SELECT  id
                                  FROM  profile_job_enum
                                 WHERE  name = {?}",
                               $job['name']);
             if ($res->numRows() != 1) {
-                $success = false;
-                $job['name_error'] = true;
+                $user = S::user();
+                $req = new EntrReq($user, $jobid, $job['name'], $job['acronym'], $job['hq_web'], $job['hq_email'], $job['hq_tel'], $job['hq_fax']);
+                $req->submit();
+                $job['jobid'] = null;
             } else {
                 $job['jobid'] = $res->fetchOneCell();
             }
@@ -107,6 +109,10 @@ class ProfileJob extends ProfileGeoloc
 
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
+        require_once('validations.inc.php');
+        $entreprise = Validate::get_typed_requests(S::i('uid'), 'entreprise');
+        $entr_val = 0;
+
         $init = false;
         if (is_null($value)) {
             $value = $page->values['jobs'];
@@ -114,7 +120,12 @@ class ProfileJob extends ProfileGeoloc
         }
         $success = true;
         foreach ($value as $key=>&$job) {
-            if (@$job['removed'] || !trim($job['name'])) {
+            $job['name'] = trim($job['name']);
+            if (!$job['name']) {
+                $job['tmp_name'] = $entreprise[$entr_val]->name;
+                $entr_val ++;
+            }
+            if (@$job['removed']) {
                 unset($value[$key]);
             }
         }
@@ -134,25 +145,33 @@ class ProfileJob extends ProfileGeoloc
     public function save(ProfilePage &$page, $field, $value)
     {
         require_once('profil.func.inc.php');
+        require_once('validations.inc.php');
+
         XDB::execute("DELETE FROM  profile_job
                             WHERE  uid = {?}",
                      S::i('uid'));
         XDB::execute("DELETE FROM  profile_phones
                             WHERE  uid = {?} AND link_type = 'pro'",
                      S::i('uid'));
-        $i = 0;
-        foreach ($value as $jobid=>&$job) {
+        foreach ($value as $id=>&$job) {
             if ($job['w_email'] == "new@example.org") {
                 $job['w_email'] = $job['w_email_new'];
             }
-            XDB::execute("INSERT INTO  profile_job (uid, id, functionid, description, sectorid, subsectorid,
-                                                    subsubsectorid, email, url, pub, email_pub, jobid)
-                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                         S::i('uid'), $i, $job['fonction'], $job['description'], $job['secteur'], $job['ss_secteur'],
-                         $job['sss_secteur'], $job['w_email'], $job['w_web'], $job['pub'], $job['w_email_pub'], $job['jobid']);
-            $profiletel = new ProfilePhones('pro', $jobid);
+            if ($job['jobid']) {
+                XDB::execute("INSERT INTO  profile_job (uid, id, functionid, description, sectorid, subsectorid,
+                                                        subsubsectorid, email, url, pub, email_pub, jobid)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
+                             S::i('uid'), $id, $job['fonction'], $job['description'], $job['secteur'], $job['ss_secteur'],
+                             $job['sss_secteur'], $job['w_email'], $job['w_web'], $job['pub'], $job['w_email_pub'], $job['jobid']);
+            } else {
+                XDB::execute("INSERT INTO  profile_job (uid, id, functionid, description, sectorid, subsectorid,
+                                                        subsubsectorid, email, url, pub, email_pub)
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
+                             S::i('uid'), $id, $job['fonction'], $job['description'], $job['secteur'], $job['ss_secteur'],
+                             $job['sss_secteur'], $job['w_email'], $job['w_web'], $job['pub'], $job['w_email_pub']);
+            }
+            $profiletel = new ProfilePhones('pro', $id);
             $profiletel->saveTels('tel', $job['w_tel']);
-            $i++;
         }
     }
 }
