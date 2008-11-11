@@ -69,7 +69,7 @@
     </td>
     <td>
       <span class="nom">{$nom_usage|default:"Aucun"}</span>
-      <span class="lien"><a href="profile/usage">modifier</a></span>
+      <span class="lien"><a href="profile/usage">{if $nom_usage}modifier{else}Faire une demande{/if}</a></span>
     </td>
   </tr>
   <tr>
