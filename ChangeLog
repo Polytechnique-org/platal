@@ -7,6 +7,9 @@ New:
         - Move plat/al engine in a separated library                       -FRU
         - Introduction of 'hruid' as a replacement for 'forlife'           -VZA
 
+    * Mail:
+        - Validation of the rewrites                                       -FRU
+
     * Newsletter:
         - Tool to process bounces                                          -mYk
 
