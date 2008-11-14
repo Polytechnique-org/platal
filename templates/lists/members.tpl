@@ -125,8 +125,20 @@
   {/if}
 </h1>
 
+
 {if $members|@count}
 <table class='bicol' cellpadding='0' cellspacing='0'>
+  {if $details.own || hasPerms('admin,groupadmin')}
+  <tr><td colspan="3">
+  <a href="{$platal->ns}lists/csv/{$platal->argv[1]}/{$platal->argv[1]}.csv">
+    {icon name="page_excel" title="Télécharger la liste des membres"}
+    Télécharger la liste des membres au format Excel
+  </a>
+  </td></tr>
+  {/if}
+
+  </tr>
+
   {foreach from=$members item=xs key=promo}
   {foreach from=$xs item=x name=all}
   <tr>

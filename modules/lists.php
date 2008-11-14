@@ -31,6 +31,7 @@ class ListsModule extends PLModule
             'lists/create'    => $this->make_hook('create',    AUTH_MDP),
 
             'lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
+            'lists/csv'       => $this->make_hook('csv',       AUTH_COOKIE),
             'lists/annu'      => $this->make_hook('annu',      AUTH_COOKIE),
             'lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
             'lists/archives/rss' => $this->make_hook('rss',    AUTH_PUBLIC, 'user', NO_HTTPS),
@@ -335,6 +336,25 @@ class ListsModule extends PLModule
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
         }
+    }
+
+    function handler_csv(PlPage &$page, $liste = null)
+    {
+        if (is_null($liste)) {
+            return PL_NOT_FOUND;
+        }
+        $this->prepare_client($page);
+        $members = $this->client->get_members($liste);
+        $list = list_fetch_names(list_extract_members($members[1]));
+        header('Content-Type: text/x-csv; charset=utf-8;');
+        header('Pragma: ');
+        header('Cache-Control: ');
+
+        echo "email,nom,prenom,promo\n";
+        foreach ($list as $member) {
+            echo @$member['email'] . ',' . @$member['nom'] . ',' . @$member['prenom'] . ',' . @$member['promo'] . "\n";
+        }
+        exit;
     }
 
     function handler_annu(&$page, $liste = null, $action = null, $subaction = null)
