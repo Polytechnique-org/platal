@@ -26,7 +26,7 @@
     {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
-    {include file=skin/common.devel.tpl}
+    {include core=plpage.devel.tpl}
 
     {if !$simple}
       {include file=skin/common.bandeau.tpl}
@@ -42,7 +42,7 @@
   {if $simple}
 
   <div id="body">
-    {include file="skin/common.content.tpl"}
+    {include core=plpage.content.tpl}
   </div>
 
   {else}
@@ -63,7 +63,7 @@
         </td>
         <td style="vertical-align: top">
           <div id="content">
-          {include file="skin/common.content.tpl"}
+          {include core=plpage.content.tpl}
           </div>
         </td>
       </tr>

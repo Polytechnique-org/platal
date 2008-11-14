@@ -44,7 +44,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 {/if}
 
 {if $smarty.request.response}<!-- failed login code //-->
-{include file="include/triggers.tpl" text="Erreur d'identification. Essaie à nouveau !" type="errors"}
+{include core=triggers.tpl text="Erreur d'identification. Essaie à nouveau !" type="errors"}
 <br />
 {/if}
 

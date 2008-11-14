@@ -20,27 +20,26 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$smarty.server.HTTP_USER_AGENT|regex_replace:"/^Mozilla\/(3|4\.[^0]).*$/":""}
-<h1>ATTENTION !</h1>
+<h1>Demande d'identification OpenId</h1>
 
-<p class="erreur">
-Netscape 4 et certains autres navigateurs très anciens ne sont pas supportés par ce site !!!
-</p>
-<p>
-En effet, ils ne comprenent qu'une trop faible partie des standards du web.
-Il faut donc s'attendre à ce que nombre des fonctionnalités de ce site soient de ce fait indisponnibles.
-</p>
-<p>
-Nous conseillons très vivement d'utiliser des navigateurs récents, tels
-<a href="http://www.mozilla.org/products/firefox/">Firefox</a>
-</p>
-<br />
+<p>Le site <strong>{$relying_party}</strong> demande à confirmer votre identité.</p>
+
+{if $sreg_data neq null}
+<p>Les informations suivantes lui seront transmises :</p>
+<ul>
+{foreach from=$sreg_data key=field item=value}
+<li><i>{$field}</i> : {$value}</li>
+{/foreach}
+</ul>
 {/if}
 
-{if !$pl_no_errors || $pl_failure}
-{include core=triggers.tpl}
-{/if}
 
-{if !$pl_failure && $pl_tpl}{include file=$pl_tpl}{/if}
+<p><strong>Souhaitez-vous confirmer votre identité ?</strong></p>
 
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+<div class="form">
+  <form method="post" action="openid/trust">
+    <input type="checkbox" name="always" /> Toujours faire confiance à ce site<br />
+    <input type="submit" name="trust" value="Confirmer" />
+    <input type="submit" value="Annuler" />
+  </form>
+</div>

@@ -27,7 +27,14 @@
   http://www.polytechnique.org/bandeau.css.
   Pour avoir l'icone, pour des raisons de sécurité il n'y a pas d'accès
   direct, il faut alors rediriger bandeau/icone.png vers celle du site&nbsp;:
-  http://www.polytechnique.org/bandeau/icone.png -->
+  http://www.polytechnique.org/bandeau/icone.png 
+-->
+
+<!-- Don't copy this list of emails!!!
+
+  {poison seed=$login}
+
+  -->
 
 {if !$login && $smarty.session.auth}
   {assign var="login" value="true"}

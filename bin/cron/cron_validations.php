@@ -26,7 +26,7 @@
 $M_PERIOD = "INTERVAL 3 HOUR"; // période d'envoi des mails de 3h
 $R_PERIOD = "INTERVAL 6 HOUR"; // période de réponse moyenne de 6h
 
-require('./connect.db.inc.php');
+require('connect.db.inc.php');
 require('plmailer.php');
 
 $res = XDB::query("SELECT  count(r.stamp), UNIX_TIMESTAMP(MIN(r.stamp)),

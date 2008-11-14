@@ -23,9 +23,9 @@
 // Updates the gapps_accounts table with Plat/al information.
 // Cleans-up the job queue, and execute post-queue hooks.
 
-require_once('../connect.db.inc.php');
-require_once('../../classes/plmailer.php');
-require_once('../../include/googleapps.inc.php');
+require_once('connect.db.inc.php');
+require_once('plmailer.php');
+require_once('googleapps.inc.php');
 if (!$globals->mailstorage->googleapps_domain) {
   exit;
 }
@@ -54,6 +54,72 @@ while ($account = $res->next()) {
     if (!preg_match("/^admin-/", $account['g_account_name'])) {
         printf("Warning: GApps account '%s' has no local user_id.\n", $account['g_account_name']);
     }
+}
+
+/* Updates the l_userid parameter for newer nicknames. */
+$res = XDB::iterator(
+    "SELECT  g.g_account_name, a.id
+       FROM  gapps_nicknames AS g
+  LEFT JOIN  aliases AS a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
+      WHERE  (g.l_userid IS NULL or g.l_userid <= 0) AND a.id IS NOT NULL
+   GROUP BY  g_account_name");
+while ($nickname = $res->next()) {
+    XDB::execute(
+        "UPDATE  gapps_nicknames
+            SET  l_userid = {?}
+          WHERE  g_account_name = {?}",
+        $nickname['id'], $nickname['g_account_name']);
+}
+
+/* Emits a warning for nicknames without local user_id. */
+$res = XDB::iterator(
+    "SELECT  g.g_account_name
+       FROM  gapps_nicknames AS g
+  LEFT JOIN  aliases as a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
+      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.id IS NULL");
+while ($nickname = $res->next()) {
+    if (!preg_match("/^admin-/", $nickname['g_account_name'])) {
+        printf("Warning: Nickname '%s' has no local user_id.\n", $nickname['g_account_name']);
+    }
+}
+
+/* Checks that all nicknames have been synchronized to GoogleApps. Creates the
+   missing ones. */
+$res = XDB::iterator(
+    "SELECT  g.l_userid AS id, f.alias AS username, a.alias AS nickname
+       FROM  gapps_accounts AS g
+ INNER JOIN  aliases AS f ON (f.id = g.l_userid AND f.type = 'a_vie')
+ INNER JOIN  aliases AS a ON (a.id = g.l_userid AND a.type = 'alias')
+  LEFT JOIN  gapps_nicknames AS n ON (n.l_userid = g.l_userid AND n.g_nickname = a.alias)
+      WHERE  n.g_nickname IS NULL AND g.l_userid IS NOT NULL");
+while ($nickname = $res->next()) {
+    // Checks that the requested nickname doesn't look like a regular forlife;
+    // we might run in troubler later if we don't keep the two repos. If we need
+    // to add a forlife-looking nickname at some point, we'll do it manually.
+    if (!preg_match('/^[-a-z]+\.[-a-z]+\.\d{4}$/', $nickname['nickname'])) {
+        XDB::execute(
+            "INSERT  INTO gapps_queue
+                SET  q_recipient_id = {?}, p_entry_date = NOW(), p_notbefore_date = NOW(),
+                     p_priority = 'offline', j_type = 'n_create', j_parameters = {?}",
+            $nickname['id'],
+            json_encode($nickname));
+    }
+}
+
+/* Checks that all nicknames in GoogleApps are also aliases on plat/al side.
+   Deletes the invalid ones. */
+$res = XDB::iterator(
+    "SELECT  g.l_userid AS id, g.g_nickname AS nickname
+       FROM  gapps_nicknames AS g
+  LEFT JOIN  aliases AS a ON (a.id = g.l_userid AND a.type = 'alias' AND a.alias = g.g_nickname)
+      WHERE  g.l_userid IS NOT NULL AND a.alias IS NULL");
+while ($nickname = $res->next()) {
+    XDB::execute(
+        "INSERT  INTO gapps_queue
+            SET  q_recipient_id = {?}, p_entry_date = NOW(), p_notbefore_date = NOW(),
+                 p_priority = 'offline', j_type = 'n_delete', j_parameters = {?}",
+        $nickname['id'],
+        json_encode($nickname));
 }
 
 /* Retrieves successful job queues for post-queue processing. */

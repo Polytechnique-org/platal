@@ -35,8 +35,8 @@
 {/if}
 </div>
 <div class="pem">
-  <a href="{$globals->baseurl}/em/{$platal->pl_self()|replace:'/':'_'}/200">Liste1</a>
-  <a href="{$globals->baseurl}/em/{$platal->pl_self()|replace:'/':'_'}/400">Liste2</a>
+  <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/200">Liste1</a>
+  <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/400">Liste2</a>
   <!--
   {poison count=20}
   -->

@@ -30,6 +30,7 @@
     <link rel="apple-touch-icon" href="images/logo-xnet.png" type="image/png" />
 
     <link rel="stylesheet" type="text/css" href="css/xnet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/base.css" media="screen" />
 
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
@@ -38,37 +39,17 @@
     <link rel="bookmark" href="http://www.polytechnique.org/"       title="| Polytechnique.org" />
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
-    {foreach from=$pl_css item=css}
-    <link rel="stylesheet" type="text/css" href="css/{$css}" />
-    {/foreach}
-    {foreach from=$pl_inline_css item=css} 
-    <style type="text/css"> 
-    {$css|smarty:nodefaults} 
-    </style> 
-    {/foreach} 
+    {include core=plpage.header.tpl}
     <script type="text/javascript">
     var platal_baseurl = "{$globals->baseurl}/"
     if (window.top != window)
       document.write('<link rel="stylesheet" type="text/css" href="css/onlycontent.css" media="all"/>');
     </script>
-    {foreach from=$pl_js item=js}
-    <script type="text/javascript" src="javascript/{$js}"></script>
-    {/foreach}
     {javascript name=overlib}
-
-    {if $pl_rss}
-    <link rel="alternate" type="application/rss+xml" title="{$pl_rss.title}" href="{$pl_rss.href}" />
-    {/if}
-
-    {if $pl_extra_header}
-    {$pl_extra_header|smarty:nodefaults}
-    {/if}
-
-    <title>Les associations polytechniciennes</title>
     {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
-    {include file=skin/common.devel.tpl}
+    {include core=plpage.devel.tpl}
     {if !$simple}
       {include file=skin/common.bandeau.tpl}
     {/if}
@@ -154,13 +135,13 @@
           {/if}
         </td>
         <td id="body">
-          {include file="skin/common.content.tpl"}
+          {include core=plpage.content.tpl}
         </td>
       </tr>
       {else}
       <tr>
         <td colspan="2">
-          {include file="skin/common.content.tpl"}
+          {include core=plpage.content.tpl}
         </td>
       </tr>
       {if !$simple}
@@ -228,6 +209,13 @@
           {/if}
           <br />
           Plat/al {#globals.version#} - © Copyright 2000-2008 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
+          <div class="pem">
+            <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/200">Liste1</a>
+            <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/400">Liste2</a>
+            <!--
+            {poison count=20}
+            -->
+          </div>
         </td>
       </tr>
     {/if}

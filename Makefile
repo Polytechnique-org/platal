@@ -26,7 +26,7 @@ endef
 
 all: build
 
-build: core conf banana wiki medals jquery
+build: core conf banana wiki openid medals jquery
 
 q:
 	@echo -e "Code statistics\n"
@@ -103,10 +103,31 @@ wiki/pub/skins/empty:
 get-wiki:
 	@if ! test -d wiki; then                                          \
 	    wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz;      \
-	    tar -xzvf pmwiki-latest.tgz;				  \
-	    rm pmwiki-latest.tgz;					  \
-	    mv pmwiki-* wiki;						  \
+	    tar -xzvf pmwiki-latest.tgz;                                  \
+	    rm pmwiki-latest.tgz;                                         \
+	    mv pmwiki-* wiki;                                             \
 	fi
+
+##
+## openid
+##
+
+openid: get-openid spool/openid/store
+
+# There is no obvious way to automatically use the latest version
+get-openid:
+	@if ! test -d include/Auth; then                                  \
+	    wget http://openidenabled.com/files/php-openid/packages/php-openid-2.1.2.tar.bz2; \
+	    tar -xjf php-openid-2.1.2.tar.bz2;                            \
+	    mv php-openid-2.1.2/Auth include/;                            \
+	    rm php-openid-2.1.2.tar.bz2;                                  \
+	    rm -r php-openid-2.1.2;                                       \
+	fi
+
+spool/openid/store:
+	mkdir -p $@
+	chmod o+w $@
+
 
 ##
 ## banana

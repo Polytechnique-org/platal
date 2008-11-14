@@ -40,35 +40,15 @@
     <link rel="bookmark" href="http://www.polytechnique.org/"       title="| Polytechnique.org" />
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
+    {include core=plpage.header.tpl}
     <link rel="stylesheet" type="text/css" href="css/base.css" media="all"/>
-    {foreach from=$pl_css item=css}
-    <link rel="stylesheet" type="text/css" href="css/{$css}" media="all"/>
-    {/foreach}
-    {foreach from=$pl_inline_css item=css}
-    <style type="text/css">
-    {$css|smarty:nodefaults}
-    </style>
-    {/foreach}
     <link rel="stylesheet" type="text/css" href="css/print.css" media="print"/>
     <script type="text/javascript">
       var platal_baseurl = "{$globals->baseurl}/";
     </script>
-    {foreach from=$pl_js item=js}
-    <script type="text/javascript" src="javascript/{$js}"></script>
-    {/foreach}
     {javascript name=overlib}
     {javascript name=md5}
     {javascript name=sha1}
     {javascript name=secure_hash}
-
-    {if $pl_rss}
-    <link rel="alternate" type="application/rss+xml" title="{$pl_rss.title}" href="{$pl_rss.href}" />
-    {/if}
-
-    {if $pl_extra_header}
-    {$pl_extra_header|smarty:nodefaults}
-    {/if}
-
-    <title>{$pl_title|default:"Polytechnique.org&nbsp;: le site des élèves et anciens élèves de l'École polytechnique"}</title>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

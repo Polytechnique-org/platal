@@ -13,18 +13,35 @@ Bug/Wish:
         - #891: Improves education display                                 -JAC
 
 ================================================================================
-VERSION 0.9.18                                                        XX XX XXXX
+VERSION 0.10.0                                                        XX XX XXXX
 
 New:
+
     * Core:
+        - Move plat/al engine in a separated library                       -FRU
         - Introduction of 'hruid' as a replacement for 'forlife'           -VZA
 
+    * Newsletter:
+        - Tool to process bounces                                          -mYk
+
+    * OpenId:
+        - OpenId provider                                                  -mYk
+
 Bug/Wish:
+
+    * Admin:
+        - #912: Fix error when validating an 'alread-validated' request    -FRU
+
+    * Core:
+        - #918: Use POST for wiki preview                                  -FRU
 
     * Search:
         - #691: Adds search on postcode and thus on "arrondissements"      -JAC
         - #791: Adds the possibility to do an exact search                 -JAC
         - #822: Adds the possibility to search on diplomas                 -JAC
+
+    * XnetList:
+        - #914: Adds a toggle button in the ML/directory sync. page        -JAC
 
 ================================================================================
 VERSION 0.9.17                                                        19 07 2008
