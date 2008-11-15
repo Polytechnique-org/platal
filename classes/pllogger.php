@@ -88,7 +88,13 @@ class PlLogger
             $this->host = $host;
         }
 
-        return XDB::insertId();
+        $id = XDB::insertId();
+        if ($uid and !$suid) {
+            XDB::execute('REPLACE INTO  logger.last_sessions (uid, id)
+                                VALUES  ({?}, {?})',
+                         $uid, $id);
+        }
+        return $id;
     }
 
 

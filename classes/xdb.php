@@ -107,10 +107,14 @@ class XDB
             header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
             if (strpos($query, 'INSERT') === false && strpos($query, 'UPDATE') === false
                 && strpos($query, 'REPLACE') === false && strpos($query, 'DELETE') === false) {
-                Platal::page()->kill('Erreur lors de l\'interrogation de la base de données');
+                $text = 'Erreur lors de l\'interrogation de la base de données';
             } else {
-                Platal::page()->kill('Erreur lors de l\'écriture dans la base de données');
+                $text = 'Erreur lors de l\'écriture dans la base de données';
             }
+            if ($globals->debug) {
+                $text .= '<pre>' . pl_entities(XDB::_reformatQuery($query)) . '</pre>';
+            }
+            Platal::page()->kill($text);
             exit;
         }
         return $res;
