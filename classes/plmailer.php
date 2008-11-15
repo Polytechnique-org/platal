@@ -283,6 +283,7 @@ class PlMailer extends Mail_Mime {
             if (!($globals->debug & DEBUG_SMARTY)) {
                 $level = error_reporting(0);
             }
+            $this->page->assign_by_ref('globals', $globals);
             $this->page->run('head'); // process page headers
             $this->wiki = trim($this->page->run('wiki')); // get wiki
             if (!$this->wiki) {
