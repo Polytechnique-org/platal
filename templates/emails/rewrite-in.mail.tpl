@@ -37,8 +37,8 @@ faites rien, cette demande sera annulée automatiquement dans les
 heures qui suivent.
 
 Si vous recevez plusieurs messages de ce type en provenance du site
-Gadz.org, vous pouvez nous avertir en nous écrivant à l'adresse
-abuse@polytechnique.org
+{$sitename}, vous pouvez nous avertir en nous écrivant à l'adresse
+abuse@{$globals->mail->domain}.
 
 Si vous êtes membre du site {$sitename} et à l'origine de cette demande,
 vous avez demandé à ce que les courriels émis par l'adresse
@@ -55,7 +55,7 @@ Puis cliquez sur le lien suivant pour valider cette demande :
 
 -- \\
 Très Cordialement,\\
-L'Équipe de Polytechnique.org
+L'Équipe de {$sitename}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
