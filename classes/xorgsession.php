@@ -197,24 +197,17 @@ class XorgSession extends PlSession
         $res  = XDB::query("SELECT  u.user_id AS uid, u.hruid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
                                     matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
                                     q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
-                                    FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version, g.g_account_name IS NOT NULL AS googleapps
+                                    FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version, g.g_account_name IS NOT NULL AS googleapps,
+                                    UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
                               FROM  auth_user_md5   AS u
                         INNER JOIN  auth_user_quick AS q  USING(user_id)
                          LEFT JOIN  gapps_accounts  AS g  ON (u.user_id = g.l_userid AND g.g_status = 'active')
+                         LEFT JOIN  logger.last_sessions AS ls ON (ls.uid = u.user_id)
+                         LEFT JOIN  logger.sessions AS s  ON(s.id = ls.id)
                              WHERE  u.user_id = {?} AND u.perms IN('admin', 'user')", $uid);
         $sess = $res->fetchOneAssoc();
         $perms = $sess['perms'];
         unset($sess['perms']);
-
-        // Retrieves account usage information (last login, last host).
-        $res = XDB::query('SELECT  UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
-                             FROM  logger.sessions AS s
-                            WHERE  s.uid = {?} AND s.suid = 0
-                         ORDER BY  s.start DESC
-                            LIMIT  1', $uid);
-        if ($res->numRows()) {
-            $sess = array_merge($sess, $res->fetchOneAssoc());
-        }
 
         // Loads the data into the real session.
         $_SESSION = array_merge($_SESSION, $sess);
