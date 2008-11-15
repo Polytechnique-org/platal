@@ -26,23 +26,36 @@
 {to addr=$to}
 {subject text="Validation de la demande de réécriture pour l'adresse `$mail->email`"}
 {elseif $mail_part eq 'wiki'}
-{if $user->isFemale()}Chère{else}Cher{/if} {$user->displayName()},
+Bonjour,
 
-Tu reçois cet email car une demande de réécriture vient d'être effectuée sur {$sitename} pour que les mails
-l'adresse {$mail->email} soit automatiquement réécrite en {$mail->rewrite}.
+Un utilisateur du site {$sitename} a indiqué votre adresse de courrier
+électronique {$mail->email} comme lui étant liée.
 
-Si tu es à l'origine de cette demande, clique sur le lien suivant pour activer la réécriture :
-* {$baseurl}/emails/rewrite/in/{$mail->email|replace:'@':'_'}/{$mail->hash}
+Si vous ne connaissez pas le site {$sitename}, si vous ne comprenez pas
+ce courriel, ou si vous n'êtes pas à l'origine de cette demande, ne
+faites rien, cette demande sera annulée automatiquement dans les
+heures qui suivent.
 
-Si tu n'est pas à l'origine de cette demande, il peut s'agir d'une tentative de détournement de ta correspondance par un
-camarade mal intentionné. Dans ce cas, clique sur le lien suivant pour avertir l'équipe de {$sitename} :
-* {$baseurl}/emails/rewrite/out/{$mail->email|replace:'@':'_'}/{$mail->hash}
+Si vous recevez plusieurs messages de ce type en provenance du site
+{$sitename}, vous pouvez nous avertir en nous écrivant à l'adresse
+abuse@{$globals->mail->domain}.
 
-Merci encore de la confiance que tu portes à nos services.
+Si vous êtes membre du site {$sitename} et à l'origine de cette demande,
+vous avez demandé à ce que les courriels émis par l'adresse
+{$mail->email} et passant par les serveurs de {$sitename} soient
+réécrits de façon à sembler provenir de l'adresse
+{$mail->rewrite}
+
+Assurez-vous d'avoir bien lu et bien compris les enjeux de cette
+fonctionnalité complexe tels qu'ils sont décrits sur la page :
+* {$baseurl}/emails/redirect
+
+Puis cliquez sur le lien suivant pour valider cette demande :
+* {$baseurl}/rewrite/in/{$mail->email|replace:'@':'_'}/{$mail->hash}
 
 -- \\
 Très Cordialement,\\
-L'Équipe de Polytechnique.org
+L'Équipe de {$sitename}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

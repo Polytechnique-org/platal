@@ -224,7 +224,7 @@
 <h1>Tes comptes de stockage de courrier</h1>
 {/if}
 {if #globals.mailstorage.imap_active# or hasPerm('admin')}
-<p>
+<p id="imap">
   Polytechnique.org te propose de conserver les emails que tu reçois, pendant une durée limitée (environ 30 jours).
   Grâce à ce service, tu disposes d'une sauvegarde de tes emails en secours, au cas où, par exemple, tu effacerais
   un email par erreur.<br />
@@ -252,7 +252,7 @@
 
 {if #globals.mailstorage.googleapps_active# or hasPerm('admin') or $googleapps}
 <br />
-<p>
+<p id="googleapps">
   Grâce à un partenariat avec Google, Polytechnique.org te propose également un compte
   <b>Google Apps</b>, qui te permet de disposer des services Google (GMail pour
   tes emails, Google Calendar, Google Docs, ...) sur une adresse polytechnique.org.

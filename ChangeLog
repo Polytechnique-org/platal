@@ -21,6 +21,9 @@ New:
         - Move plat/al engine in a separated library                       -FRU
         - Introduction of 'hruid' as a replacement for 'forlife'           -VZA
 
+    * Mail:
+        - Validation of the rewrites                                       -FRU
+
     * Newsletter:
         - Tool to process bounces                                          -mYk
 
@@ -39,6 +42,9 @@ Bug/Wish:
         - #691: Adds search on postcode and thus on "arrondissements"      -JAC
         - #791: Adds the possibility to do an exact search                 -JAC
         - #822: Adds the possibility to search on diplomas                 -JAC
+
+    * Lists:
+        - #927: Can export the list of members as a CSV file               -FRU
 
     * XnetList:
         - #914: Adds a toggle button in the ML/directory sync. page        -JAC
