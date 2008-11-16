@@ -268,6 +268,7 @@ class XnetEventsModule extends PLModule
             $total += $nb;
         }
         if ($updated !== false) {
+            $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
             subscribe_lists_event($total, S::i('uid'), $evt);
         }
         $page->assign('event', get_event_detail($eid));
