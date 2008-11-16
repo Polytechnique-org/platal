@@ -18,85 +18,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
-class PlLogger
+abstract class PlLogger
 {
-    /** user id */
-    public $uid;
-    /** id of the session */
-    private $session;
-    /** list of available actions */
-    private $actions;
-
-    public $ip;
-    public $host;
-    public $proxy_ip;
-    public $proxy_host;
-
     /** The constructor, creates a new entry in the sessions table
      *
      * @param $uid the id of the logged user
      * @param $suid the id of the administrator who has just su'd to the user
      * @return VOID
      */
-    public function __construct($uid, $suid = 0)
-    {
-        // write the session entry
-        $this->uid     = $uid;
-        $this->session = $this->writeSession($uid, $suid);
-
-        // retrieve available actions
-        $res = XDB::iterRow("SELECT id, text FROM logger.actions");
-
-        while (list($action_id, $action_text) = $res->next()) {
-            $this->actions[$action_text] = $action_id;
-        }
-    }
-
-    /** Creates a new session entry in database and return its ID.
-     *
-     * @param $uid the id of the logged user
-     * @param $suid the id of the administrator who has just su'd to the user
-     * @return session the session id
-     */
-    private function writeSession($uid, $suid = 0)
-    {
-        $ip      = $_SERVER['REMOTE_ADDR'];
-        $host    = strtolower(gethostbyaddr($_SERVER['REMOTE_ADDR']));
-        $browser = (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
-
-        @list($forward_ip,) = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        $forward_host = $forward_ip;
-        if ($forward_host) {
-            $forward_host = strtolower(gethostbyaddr($forward_host));
-        }
-        $proxy = '';
-        if ($forward_ip || @$_SERVER['HTTP_VIA']) {
-            $proxy = 'proxy';
-        }
-
-        XDB::execute("INSERT INTO logger.sessions
-                         SET uid={?}, host={?}, ip={?}, forward_ip={?}, forward_host={?}, browser={?}, suid={?}, flags={?}",
-                     $uid, $host, ip_to_uint($ip), ip_to_uint($forward_ip), $forward_host, $browser, $suid, $proxy);
-        if ($forward_ip) {
-            $this->proxy_ip = $ip;
-            $this->proxy_host = $host;
-            $this->ip = $forward_ip;
-            $this->host = $forward_host;
-        } else {
-            $this->ip = $ip;
-            $this->host = $host;
-        }
-
-        $id = XDB::insertId();
-        if ($uid and !$suid) {
-            XDB::execute('REPLACE INTO  logger.last_sessions (uid, id)
-                                VALUES  ({?}, {?})',
-                         $uid, $id);
-        }
-        return $id;
-    }
-
+    abstract public function __construct($uid, $suid = 0);
 
     /** Logs an action and its related data.
      *
@@ -104,15 +34,29 @@ class PlLogger
      * @param $data les données (id de liste, etc.)
      * @return VOID
      */
+    abstract public function log($action, $data = null);
+
+    /** Build a logger.
+     */
+    public static function get($uid, $suid = 0)
+    {
+        if (defined('PL_LOGGER_CLASS')) {
+            $class = PL_LOGGER_CLASS;
+            return new $class($uid, $suid);
+        } else {
+            return new DummyLogger($uid, $suid);
+        }
+    }
+}
+
+class DummyLogger extends PlLogger
+{
+    public function __construct($uid, $suid = 0)
+    {
+    }
+
     public function log($action, $data = null)
     {
-        if (isset($this->actions[$action])) {
-            XDB::execute("INSERT INTO logger.events
-                             SET session={?}, action={?}, data={?}",
-                         $this->session, $this->actions[$action], $data);
-        } else {
-            trigger_error("PlLogger: unknown action, $action", E_USER_WARNING);
-        }
     }
 }
 
