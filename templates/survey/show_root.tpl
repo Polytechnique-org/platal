@@ -37,16 +37,16 @@
         <td class="titre">Type de sondage&nbsp;:</td>
         <td>{$survey_modes[$survey.mode]}</td>
       </tr>
-      {if $survey.mode != Survey::MODE_ALL} 
+      {if $survey.mode != Survey::MODE_ALL}
       <tr>
-        <td class="titre">Promotions&nbsp;:</td> 
+        <td class="titre">Promotions&nbsp;:</td>
         <td>
-          {if $survey.promos eq "#"} 
-          erreur 
-          {elseif $survey.promos eq ""} 
-          aucune restriction 
-          {else} 
-          {$survey.promos} 
+          {if $survey.promos eq "#"}
+          erreur
+          {elseif $survey.promos eq ""}
+          aucune restriction
+          {else}
+          {$survey.promos}
           {/if}
         </td>
       </tr>
@@ -93,7 +93,7 @@
 <p class="center">
   {if $survey_editmode}
   <a href='survey/edit/valid'>
-    {icon name=tick} 
+    {icon name=tick}
     {if $survey_updatemode}Enregistrer les modifications{else}Proposer ce sondage{/if}
   </a> |
   <a href='survey/edit/cancel'>

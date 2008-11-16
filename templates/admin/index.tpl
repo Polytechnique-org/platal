@@ -134,7 +134,7 @@
       <a href="admin/auth-groupes-x">Auth Groupes X</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/lists">Listes</a>
-    </td>  
+    </td>
   </tr>
   <tr class="pair">
     <td>

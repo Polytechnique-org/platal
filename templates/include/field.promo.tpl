@@ -20,67 +20,67 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<script type="text/javascript">//<![CDATA[ 
+<script type="text/javascript">//<![CDATA[
     var prefix = "{$prefix}";
-    {literal} 
-    function updateRange() 
-    { 
-      var range = document.getElementById(prefix + 'promo_range'); 
-      min = document.getElementById(prefix + 'promo_min').value; 
-      max = document.getElementById(prefix + 'promo_max').value; 
-      if (isNaN(min) || (min != 0 && (min < 1900 || min > 2020))) { 
+    {literal}
+    function updateRange()
+    {
+      var range = document.getElementById(prefix + 'promo_range');
+      min = document.getElementById(prefix + 'promo_min').value;
+      max = document.getElementById(prefix + 'promo_max').value;
+      if (isNaN(min) || (min != 0 && (min < 1900 || min > 2020))) {
         range.innerHTML = '<span class="erreur">La promotion minimum n\'est pas valide.</span>';
-        return false; 
-      } else if (isNaN(max) || (max != 0 && (max < 1900  || max > 2020))) { 
+        return false;
+      } else if (isNaN(max) || (max != 0 && (max < 1900  || max > 2020))) {
         range.innerHTML = '<span class="erreur">La promotion maximum n\'est pas valide.</span>';
-        return false; 
-      } else if (max != 0 && min != 0 && max < min) { 
+        return false;
+      } else if (max != 0 && min != 0 && max < min) {
         range.innerHTML = '<span class="erreur">L\'intervalle de promotion est inversé.</span>';
-        return false; 
-      } else if (max == 0 && min == 0) { 
+        return false;
+      } else if (max == 0 && min == 0) {
         range.innerHTML = 'L\'annonce est destinée à toutes les promotions.';
-      } else if (max == 0) { 
+      } else if (max == 0) {
         range.innerHTML = 'L\'annonce est destinée aux promotions plus jeunes que ' + min + ' (incluse).';
-      } else if (min == 0) { 
+      } else if (min == 0) {
         range.innerHTML = "L\'annonce est destinée aux promotions plus anciennes que " + max + ' (incluse).';
       } else if (min == max - 1) {
         range.innerHTML = "L\'annonce est destinée aux promotions " + min + " et " + max + ".";
       } else if (min == max) {
         range.innerHTML = "L\'annonce est destinée à la promotion " + min + ".";
-      } else { 
+      } else {
         range.innerHTML = "L\'annonce est destinée aux promotions de " + min + " à " + max + ' (incluses).';
       } 
-      return true; 
+      return true;
     } 
-    {/literal} 
-//]]></script> 
+    {/literal}
+//]]></script>
 
 {if $full}
 <table class="bicol">
 {/if}
-  <tr id="{$prefix}promo_min_tr" class="impair"> 
-    <td class="titre">Promotion la plus ancienne</td> 
-    <td> 
+  <tr id="{$prefix}promo_min_tr" class="impair">
+    <td class="titre">Promotion la plus ancienne</td>
+    <td>
       <input type="text" name="{$min_field_name|default:"promo_min"}" id="{$prefix}promo_min"
-             size="4" maxlength="4" value="{$promo_min|default:0}" 
-             onkeyup="return updateRange();" onchange="return updateRange();" /> incluse 
-      &nbsp;<span class="smaller">(ex&nbsp;: 1980)</span> 
-    </td> 
-  </tr> 
-  <tr id="{$prefix}promo_max_tr" class="impair"> 
-    <td class="titre">Promotion la plus jeune</td> 
-    <td> 
+             size="4" maxlength="4" value="{$promo_min|default:0}"
+             onkeyup="return updateRange();" onchange="return updateRange();" /> incluse
+      &nbsp;<span class="smaller">(ex&nbsp;: 1980)</span>
+    </td>
+  </tr>
+  <tr id="{$prefix}promo_max_tr" class="impair">
+    <td class="titre">Promotion la plus jeune</td>
+    <td>
       <input type="text" name="{$max_field_name|default:"promo_max"}" id="{$prefix}promo_max"
-             size="4" maxlength="4" value="{$promo_max|default:0}" 
-             onkeyup="return updateRange();" onchange="return updateRange();" /> incluse 
-      &nbsp;<span class="smaller">(ex&nbsp;: 2000)</span> 
-    </td> 
-  </tr> 
-  <tr id="{$prefix}promo_range_tr" class="impair"> 
-    <td colspan="2" id="promo_range" class="smaller"> 
-      <script type="text/javascript">updateRange();</script> 
-    </td> 
-  </tr> 
+             size="4" maxlength="4" value="{$promo_max|default:0}"
+             onkeyup="return updateRange();" onchange="return updateRange();" /> incluse
+      &nbsp;<span class="smaller">(ex&nbsp;: 2000)</span>
+    </td>
+  </tr>
+  <tr id="{$prefix}promo_range_tr" class="impair">
+    <td colspan="2" id="promo_range" class="smaller">
+      <script type="text/javascript">updateRange();</script>
+    </td>
+  </tr>
 {if $full}
 </table>
 {/if}

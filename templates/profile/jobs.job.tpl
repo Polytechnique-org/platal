@@ -85,12 +85,12 @@
     <tr class="pair sector" style="display: none">
       <td id="{$jobid}_ss_secteur">
         <input type="hidden" name="{$jobpref}[ss_secteur]" value="{$job.ss_secteur|default:'-1'}" />
-      </td> 
+      </td>
     </tr>
     <tr class="pair sector" style="display: none">
       <td id="{$jobid}_sss_secteur">
         <input type="hidden" name="{$jobpref}[sss_secteur]" value="{$job.sss_secteur|default:'-1'}" />
-      </td> 
+      </td>
     </tr>
     <tr class="pair">
       <td class="titre">Fonction occupée</td>
