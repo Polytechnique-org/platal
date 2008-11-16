@@ -38,6 +38,9 @@ class PlatalGlobals extends PlGlobals
     public function __construct()
     {
         parent::__construct(array('platal.ini', 'platal.conf'));
+        if (isset($GLOBALS['IS_XNET_SITE'])) {
+            $this->core->sitename = 'Polytechnique.net';
+        }
     }
 
     public function init()
