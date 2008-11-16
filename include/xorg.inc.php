@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 define('PL_GLOBALS_CLASS', 'PlatalGlobals');
+define('PL_LOGGER_CLASS', 'PlatalLogger');
 define('PL_SESSION_CLASS', 'XorgSession');
 define('PL_PAGE_CLASS', 'XorgPage');
 

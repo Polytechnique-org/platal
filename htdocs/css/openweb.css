@@ -276,7 +276,7 @@ div.contact div.photo img {
 
 div.contact div.identity {
     float: left;
-    width: 90%;
+    width: 85%;
 }
 
 div.contact div.nom {
@@ -286,6 +286,7 @@ div.contact div.nom {
 div.contact div.bits {
     text-align: right;
     float: right;
+    width: 14%;
 }
 
 div.contact div.long {

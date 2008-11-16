@@ -32,7 +32,7 @@ Un utilisateur du site {$sitename} a indiqué votre adresse de courrier
 électronique {$mail->email} comme lui étant liée.
 
 Si vous ne connaissez pas le site {$sitename}, si vous ne comprenez pas
-ce courriel, ou si vous n'êtes pas à l'origine de cette demande, ne
+ce email, ou si vous n'êtes pas à l'origine de cette demande, ne
 faites rien, cette demande sera annulée automatiquement dans les
 heures qui suivent.
 
@@ -41,7 +41,7 @@ Si vous recevez plusieurs messages de ce type en provenance du site
 abuse@{$globals->mail->domain}.
 
 Si vous êtes membre du site {$sitename} et à l'origine de cette demande,
-vous avez demandé à ce que les courriels émis par l'adresse
+vous avez demandé à ce que les emails émis par l'adresse
 {$mail->email} et passant par les serveurs de {$sitename} soient
 réécrits de façon à sembler provenir de l'adresse
 {$mail->rewrite}

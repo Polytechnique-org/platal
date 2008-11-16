@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 define('PL_GLOBALS_CLASS', 'PlatalGlobals');
+define('PL_LOGGER_CLASS', 'PlatalLogger');
 define('PL_SESSION_CLASS', 'XnetSession');
 define('PL_PAGE_CLASS', 'XnetPage');
 
