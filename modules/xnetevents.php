@@ -653,19 +653,19 @@ class XnetEventsModule extends PLModule
                                 ORDER BY  nom, prenom, promo", $evt['eid']);
 
         $ofs   = Env::i('offset');
-        $tot   = (Env::v('initiale') ? $tot : $nb_tot) - $absents->total();
-        $nbp   = intval(($tot-1)/NB_PER_PAGE);
-        $links = array();
-        if ($ofs) {
-            $links['précédent'] = $ofs-1;
-        }
-        for ($i = 0; $i <= $nbp; $i++) {
-            $links[(string)($i+1)] = $i;
-        }
-        if ($ofs < $nbp) {
-            $links['suivant'] = $ofs+1;
-        }
-        if (count($links)>1) {
+        $tot   = (Env::v('initiale') ? $tot : $nb_tot);
+        $nbp   = ceil($tot / NB_PER_PAGE);
+        if ($nbp > 1) {
+            $links = array();
+            if ($ofs) {
+                $links['précédent'] = $ofs - 1;
+            }
+            for ($i = 1 ; $i <= $nbp; $i++) {
+                $links[(string)$i] = $i - 1;
+            }
+            if ($ofs < $nbp) {
+                $links['suivant'] = $ofs+1;
+            }
             $page->assign('links', $links);
         }
 

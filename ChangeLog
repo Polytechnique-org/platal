@@ -32,6 +32,9 @@ Bug/Wish:
     * Lists:
         - #927: Can export the list of members as a CSV file               -FRU
 
+    * XnetEvents:
+        - #751: Fix calculation of the number of pages                     -FRU
+
     * XnetList:
         - #914: Adds a toggle button in the ML/directory sync. page        -JAC
 
