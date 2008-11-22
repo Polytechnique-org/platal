@@ -41,10 +41,9 @@ Si vous recevez plusieurs messages de ce type en provenance du site
 abuse@{$globals->mail->domain}.
 
 Si vous êtes membre du site {$sitename} et à l'origine de cette demande,
-vous avez demandé à ce que les emails émis par l'adresse
-{$mail->email} et passant par les serveurs de {$sitename} soient
-réécrits de façon à sembler provenir de l'adresse
-{$mail->rewrite}
+vous avez demandé à ce que, lorsque les serveurs de {$sitename} traitent
+un email émis depuis l'adresse {$mail->email}, ils remplacent cette adresse
+d'expéditeur par {$mail->rewrite}.
 
 Assurez-vous d'avoir bien lu et bien compris les enjeux de cette
 fonctionnalité complexe tels qu'ils sont décrits sur la page :
@@ -54,8 +53,8 @@ Puis cliquez sur le lien suivant pour valider cette demande :
 * {$baseurl}/rewrite/in/{$mail->email|replace:'@':'_'}/{$mail->hash}
 
 -- \\
-Très Cordialement,\\
-L'Équipe de {$sitename}
+Très cordialement,\\
+L'équipe de {$sitename}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
