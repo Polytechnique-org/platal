@@ -39,6 +39,7 @@ CREATE TABLE account_types (
 CREATE TABLE account_profiles (
   uid int(6) not null,
   pid int(6) not null,
+  perms set('owner') not null default '',
 
   primary key id (uid, pid),
   key uid (uid),
