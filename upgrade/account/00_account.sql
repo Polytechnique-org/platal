@@ -1,0 +1,48 @@
+CREATE TABLE accounts (
+  # Account identifier and type
+  uid int(6) not null auto_increment,
+  hruid varchar(255) not NULL,
+
+  # Account type and state
+  type varchar(16) default null,
+  is_admim bool default false,
+  state enum('pending', 'active', 'disabled') not null default 'pending',
+
+  # Access
+  password char(40) default null,
+  registration_date datetime not null,
+
+  # Administrative tools
+  flags set('watch') not null default '',
+  comment varchar(255) default null,
+
+  # User settings
+  name varchar(255) default null,
+  sex enum('female', 'male') not null default 'male',
+  mail_format enum('plain', 'html') not null default 'html',
+  skin varchar(32) default null,
+
+  primary key uid (uid),
+  unique key hruid (hruid),
+  key name (name),
+  key state (state),
+  key type (type)
+);
+
+CREATE TABLE account_types (
+  type varchar(16) not null,
+  perms set('mail', 'groups', 'forums', 'list', 'search', 'portal') default '',
+
+  primary key type (type)
+);
+
+CREATE TABLE account_profiles (
+  uid int(6) not null,
+  pid int(6) not null,
+
+  primary key id (uid, pid),
+  key uid (uid),
+  key pid (pid)
+);
+
+# vim:set syntax=mysql:
