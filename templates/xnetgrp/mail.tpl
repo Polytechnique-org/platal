@@ -31,6 +31,14 @@ masculin ou féminin, par son prénom, ou son nom.
 
 <script type="text/javascript">//<![CDATA[
   {literal}
+  function check(form)
+  {
+    if(form.sujet.value == "" && !confirm("Le sujet de l'email est vide, veux-tu continuer ?")) {
+        form.sujet.focus();
+        return false;
+    }
+  }
+
   function updateWikiView(box) {
     if (!box.checked) {
       document.getElementById("preview_bt").style.display = "none";
@@ -42,7 +50,7 @@ masculin ou féminin, par son prénom, ou son nom.
   {/literal}
 //]]></script>
  
-<form action="{$platal->ns}mail" method="post" enctype="multipart/form-data">
+<form action="{$platal->ns}mail" method="post" enctype="multipart/form-data" onsubmit="return check(this);">
   {xsrf_token_field}
   <table class='bicol'>
     <tr>
@@ -100,7 +108,7 @@ masculin ou féminin, par son prénom, ou son nom.
       <td class="titre">
         Sujet&nbsp;:
       </td>
-      <td><input type="text" name="sujet" value="{$smarty.request.sujet|default:"remplir le sujet ..."}" size=55 maxlength=70></td>
+      <td><input type="text" name="sujet" value="{$smarty.request.sujet}" size=55 maxlength=70></td>
     </tr>
     <tr>
       <td colspan="2" class="smaller">
