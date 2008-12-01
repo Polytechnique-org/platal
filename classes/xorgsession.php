@@ -219,6 +219,7 @@ class XorgSession extends PlSession
             $logger->log("suid_start", S::v('hruid') . " by " . $suid['hruid']);
         } else {
             $logger = S::logger($uid);
+            $logger->saveLastSession();
             setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
 
             if (S::i('auth_by_cookie') == $uid || Post::v('remember', 'false') == 'true') {
