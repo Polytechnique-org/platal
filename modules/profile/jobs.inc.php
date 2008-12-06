@@ -295,11 +295,13 @@ class ProfileJobs extends ProfilePage
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page);
 
-        $page->assign('secteurs', XDB::iterator("SELECT  id, name AS label
-                                                   FROM  profile_job_sector_enum"));
-        $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
-                                                    FROM  fonctions_def
-                                                ORDER BY  id"));
+        $res = XDB::query("SELECT  id, name AS label
+                             FROM  profile_job_sector_enum");
+        $page->assign('secteurs', $res->fetchAllAssoc());
+        $res = XDB::query("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
+                             FROM  fonctions_def
+                         ORDER BY  id");
+        $page->assign('fonctions', $res->fetchAllAssoc());
 
         $res = XDB::iterator("SELECT  id, name
                                 FROM  profile_corps_enum
