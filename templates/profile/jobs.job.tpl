@@ -61,11 +61,11 @@
       <td>
         <select name="{$jobpref}[secteur]" onchange="updateJobSecteur({$i}, '{$jobid}', '{$jobpref}', ''); return true;">
           <option value="">&nbsp;</option>
-          {iterate from=$secteurs item=secteur}
+          {foreach from=$secteurs item=secteur}
           <option value="{$secteur.id}" {if $secteur.id eq $job.secteur}selected="selected"{/if}>
             {$secteur.label}
           </option>
-          {/iterate}
+          {/foreach}
         </select>
       </td>
     </tr>
@@ -88,7 +88,7 @@
         <select name="{$jobpref}[fonction]">
           <option value="">&nbsp;</option>
           {assign var=ingroup value=false}
-          {iterate from=$fonctions item=fonct}
+          {foreach from=$fonctions item=fonct}
           {if $fonct.title}
             {if $ingroup}</optgroup>{/if}
             <optgroup label="{$fonct.fonction_fr}">
@@ -97,7 +97,7 @@
           <option value="{$fonct.id}" {if $fonct.id eq $job.fonction}selected="selected"{/if}>
             {$fonct.fonction_fr}
           </option>
-          {/iterate}
+          {/foreach}
           {if $ingroup}</optgroup>{/if}
         </select>
       </td>

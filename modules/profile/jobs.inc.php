@@ -204,11 +204,13 @@ class ProfileJobs extends ProfilePage
 
     public function _prepare(PlPage &$page, $id)
     {
-        $page->assign('secteurs', XDB::iterator("SELECT  id, label
-                                                   FROM  emploi_secteur"));
-        $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
-                                                    FROM  fonctions_def
-                                                ORDER BY  id"));
+        $res = XDB::query("SELECT  id, label
+                             FROM  emploi_secteur");
+        $page->assign('secteurs', $res->fetchAllAssoc());
+        $res = XDB::query("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
+                             FROM  fonctions_def
+                         ORDER BY  id");
+        $page->assign('fonctions', $res->fetchAllAssoc());
     }
 }
 
