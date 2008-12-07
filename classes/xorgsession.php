@@ -140,11 +140,10 @@ class XorgSession extends PlSession
          */
         if (S::has('suid')) {
             $suid  = S::v('suid');
-            $login = $uname = $suid['hruid'];
+            $login = $uname = $suid['uid'];
             $redirect = false;
         } else {
             $uname = Env::v('username');
-
             if (Env::v('domain') == "alias") {
                 $res = XDB::query('SELECT  redirect
                                      FROM  virtual
@@ -163,17 +162,27 @@ class XorgSession extends PlSession
             }
         }
 
-        $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias');
+        $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && is_numeric($uname)) ? 'id' : 'alias');
+        if (!is_null($uid) && S::has('suid')) {
+            $suid = S::v('suid');
+            if ($suid['uid'] == $uid) {
+                $uid = S::i('uid');
+            } else {
+                $uid = null;
+            }
+        }
         if (!is_null($uid)) {
             S::set('auth', AUTH_MDP);
-            if (Post::has('domain')) {
-                if (($domain = Post::v('domain', 'login')) == 'alias') {
-                    setcookie('ORGdomain', "alias", (time() + 25920000), '/', '', 0);
-                } else {
-                    setcookie('ORGdomain', '', (time() - 3600), '/', '', 0);
+            if (!S::has('suid')) {
+                if (Post::has('domain')) {
+                    if (($domain = Post::v('domain', 'login')) == 'alias') {
+                        setcookie('ORGdomain', "alias", (time() + 25920000), '/', '', 0);
+                    } else {
+                        setcookie('ORGdomain', '', (time() - 3600), '/', '', 0);
+                    }
+                    // pour que la modification soit effective dans le reste de la page
+                    $_COOKIE['ORGdomain'] = $domain;
                 }
-                // pour que la modification soit effective dans le reste de la page
-                $_COOKIE['ORGdomain'] = $domain;
             }
             S::kill('challenge');
             S::logger($uid)->log('auth_ok');
@@ -188,8 +197,8 @@ class XorgSession extends PlSession
         } else if (S::has('uid')) {
             return true;
         }
-        if ($level == -1) {
-            S::set('auth', AUTH_COOKIE);
+        if ($level == AUTH_SUID) {
+            S::set('auth', AUTH_MDP);
         }
         unset($_SESSION['log']);
 
