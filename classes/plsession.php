@@ -23,6 +23,7 @@
  * Only AUTH_PUBLIC is mandatory. The others are defined as useful values,
  * but can be overwritten by others auth levels definitions.
  */
+define('AUTH_SUID',   -1);
 define('AUTH_PUBLIC', 0);
 define('AUTH_COOKIE', 5);
 define('AUTH_MDP',    10);
@@ -184,7 +185,7 @@ abstract class PlSession
         $_SESSION = array();
         $this->fillSession();
         S::set('suid', $backup);
-        if (!$this->startSessionAs($user, -1)) {
+        if (!$this->startSessionAs($user, AUTH_SUID)) {
             $this->stopSUID();
             return false;
         }
