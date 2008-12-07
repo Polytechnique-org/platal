@@ -23,18 +23,15 @@
 <table class="bicol">
   <tr>
     <th>
+      <div class="flags" style="float: left">
+        <label><input type="checkbox" name="medals_pub"{if $medals_pub eq 'public'} checked="checked"{/if} />
+        {icon name="flag_green" title="site public"}</label>
+      </div>
       Médailles, Décorations, Prix, ...
     </th>
   </tr>
   <tr>
     <td>
-      <div class="flags">
-        <label><input type="checkbox" name="medals_pub"{if $medals_pub eq 'public'} checked="checked"{/if} />
-        {icon name="flag_green" title="site public"}</label>
-        <span class="texte">
-          bien que publiques (JO, ...), tu peux choisir de ne pas associer ces informations à ta fiche publique
-        </span>
-      </div>
       <div style="clear: both; margin-top: 0.2em" id="medals">
         <select name="medal_sel" onchange="updateMedal()">
           <option value=''></option>

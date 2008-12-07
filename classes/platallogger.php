@@ -87,13 +87,13 @@ class PlatalLogger extends PlLogger
             $this->host = $host;
         }
 
-        $id = XDB::insertId();
-        if ($uid and !$suid) {
-            XDB::execute('REPLACE INTO  logger.last_sessions (uid, id)
-                                VALUES  ({?}, {?})',
-                         $uid, $id);
-        }
-        return $id;
+        return XDB::insertId();
+    }
+
+    public function saveLastSession() {
+        XDB::execute('REPLACE INTO  logger.last_sessions (uid, id)
+                            VALUES  ({?}, {?})',
+                     $this->uid, $this->session);
     }
 
 
