@@ -180,18 +180,23 @@ class XorgSession extends PlSession
         unset($_SESSION['log']);
 
         // Retrieves main user properties.
-        /** XXX Move needed informations to account tables */
-        $res  = XDB::query("SELECT  u.user_id AS uid, u.hruid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
-                                    matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
-                                    q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
-                                    FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version, g.g_account_name IS NOT NULL AS googleapps,
-                                    UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
-                              FROM  auth_user_md5   AS u
-                        INNER JOIN  auth_user_quick AS q  USING(user_id)
-                         LEFT JOIN  gapps_accounts  AS g  ON (u.user_id = g.l_userid AND g.g_status = 'active')
-                         LEFT JOIN  logger.last_sessions AS ls ON (ls.uid = u.user_id)
+        /** TODO: Move needed informations to account tables */
+        /** TODO: Currently suppressed data are matricule, promo */
+        /** TODO: Data to move are: banana_last, watch_last, last_version */
+        /** TODO: Switch to new permission system */
+        $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name, a.password,
+                                    a.sex = 'female' AS femme, a.mail_format as mail_fmt,
+                                    a.token, FIND_IN_SET('watch', a.flags) AS watch_account,
+                                    UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last,
+                                    q.last_version, g.g_account_name IS NOT NULL AS googleapps,
+                                    UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
+                                    IF(a.is_admin, 'admin', 'user') AS perms
+                              FROM  accounts        AS a
+                        INNER JOIN  auth_user_quick AS q  ON(a.uid = q.user_id)
+                         LEFT JOIN  gapps_accounts  AS g  ON(a.uid = g.l_userid AND g.g_status = 'active')
+                         LEFT JOIN  logger.last_sessions AS ls ON (ls.uid = a.uid)
                          LEFT JOIN  logger.sessions AS s  ON(s.id = ls.id)
-                             WHERE  u.user_id = {?} AND u.perms IN('admin', 'user')", $uid);
+                             WHERE  a.uid = {?} AND a.state = 'active'", $uid);
         $sess = $res->fetchOneAssoc();
         $perms = $sess['perms'];
         unset($sess['perms']);
