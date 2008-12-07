@@ -6,6 +6,7 @@ insert into accounts
             perms = 'admin' AS is_admin,
             IF(perms = 'admin' or perms = 'user', 'active', perms) AS state,
             IF(LENGTH(password) = 40, password, NULL) AS password,
+            IF(LENGTH(q.core_rss_hash) > 0, q.core_rss_hash, NULL) AS token,
             date_ins AS registration_date,
             IF(FIND_IN_SET('watch', flags), 'watch', '') AS flags,
             IF(LENGTH(comment) > 0, comment, NULL) AS comment,

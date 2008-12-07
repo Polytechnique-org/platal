@@ -517,8 +517,7 @@ class AdminModule extends PLModule
                 // Profile edition.
                 case "u_edit":
                     // Loads new values from environment.
-                    require_once('secure_hash.inc.php');
-                    $pass_encrypted = Env::v('newpass_clair') != "********" ? hash_encrypt(Env::v('newpass_clair')) : Env::v('passw');
+                    $pass_encrypted = Env::v('newpass_clair') != "********" ? sha1(Env::v('newpass_clair')) : Env::v('passw');
                     $naiss    = Env::v('naissanceN');
                     $deces    = Env::v('decesN');
                     $perms    = Env::v('permsN');

@@ -202,10 +202,9 @@ class Marketing
             return false;
         }
 
-        require_once('secure_hash.inc.php');
         $hash     = rand_url_id(12);
         $pass     = rand_pass();
-        $pass_encrypted = hash_encrypt($pass);
+        $pass_encrypted = sha1($pass);
         $fdate    = strftime('%d %B %Y', strtotime($date));
 
         $mymail = new PlMailer('marketing/relance.mail.tpl');

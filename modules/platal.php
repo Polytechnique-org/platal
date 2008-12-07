@@ -209,7 +209,6 @@ class PlatalModule extends PLModule
         global $globals;
 
         if (Post::has('response2'))  {
-            require_once 'secure_hash.inc.php';
             S::assert_xsrf_token();
 
             $_SESSION['password'] = $password = Post::v('response2');
@@ -233,7 +232,7 @@ class PlatalModule extends PLModule
             S::logger()->log('passwd', '');
 
             if (Cookie::v('ORGaccess')) {
-                setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
+                setcookie('ORGaccess', sha1($password), (time()+25920000), '/', '' ,0);
             }
 
             $page->changeTpl('platal/motdepasse.success.tpl');

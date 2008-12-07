@@ -10,6 +10,7 @@ CREATE TABLE accounts (
 
   # Access
   password char(40) default null,
+  token varchar(32) default null,
   registration_date datetime not null,
 
   # Administrative tools
@@ -25,7 +26,7 @@ CREATE TABLE accounts (
 
   primary key uid (uid),
   unique key hruid (hruid),
-  key name (name),
+  key full_name (full_name),
   key state (state),
   key type (type)
 );

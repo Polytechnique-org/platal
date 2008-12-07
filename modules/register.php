@@ -444,8 +444,7 @@ class RegisterModule extends PLModule
             S::logger()->log('passwd', '');
 
             if (Cookie::v('ORGaccess')) {
-                require_once('secure_hash.inc.php');
-                setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
+                setcookie('ORGaccess', sha1($password), (time()+25920000), '/', '' ,0);
             }
 
             $page->assign('mdpok', true);

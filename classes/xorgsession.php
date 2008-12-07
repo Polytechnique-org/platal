@@ -51,14 +51,13 @@ class XorgSession extends PlSession
             return -1;
         }
 
-        $res = XDB::query('SELECT  user_id, password
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?} AND perms IN(\'admin\', \'user\')',
+        $res = XDB::query('SELECT  uid, password
+                             FROM  accounts
+                            WHERE  uid = {?} AND state = \'active\'',
                          Cookie::i('ORGuid'));
         if ($res->numRows() != 0) {
             list($uid, $password) = $res->fetchOneRow();
-            require_once 'secure_hash.inc.php';
-            $expected_value = hash_encrypt($password);
+            $expected_value = sha1($password);
             if ($expected_value == Cookie::v('ORGaccess')) {
                 S::set('auth_by_cookie', $uid);
                 return 0;
@@ -71,36 +70,14 @@ class XorgSession extends PlSession
 
     private function checkPassword($uname, $login, $response, $login_type)
     {
-        $res = XDB::query('SELECT  u.user_id, u.password
-                             FROM  auth_user_md5 AS u
-                       INNER JOIN  aliases       AS a ON (a.id = u.user_id AND type != \'homonyme\')
-                             WHERE  a.' . $login_type . ' = {?} AND u.perms IN(\'admin\', \'user\')',
+        $res = XDB::query('SELECT  a.uid, a.password
+                             FROM  accounts AS a
+                       INNER JOIN  aliases  AS l ON (l.id = a.uid AND l.type != \'homonyme\')
+                            WHERE  l.' . $login_type . ' = {?} AND a.state = \'active\'',
                           $login);
         if (list($uid, $password) = $res->fetchOneRow()) {
-            require_once 'secure_hash.inc.php';
-            $expected_response = hash_encrypt("$uname:$password:" . S::v('challenge'));
-            if ($response != $expected_response && Env::has('xorpass')
-                && !preg_match('/^0*$/', Env::v('xorpass'))) {
-                $new_password = hash_xor(Env::v('xorpass'), $password);
-                $expected_response = hash_encrypt("$uname:$new_password:" . S::v('challenge'));
-                if ($response == $expected_response) {
-                    XDB::execute('UPDATE  auth_user_md5
-                                     SET  password = {?}
-                                   WHERE  user_id = {?}',
-                                 $new_password, $uid);
-
-                    // Update the GoogleApps password as well, if required.
-                    global $globals;
-                    if ($globals->mailstorage->googleapps_domain) {
-                        require_once 'googleapps.inc.php';
-                        $user = User::getSilent($uid);
-                        $account = new GoogleAppsAccount($user);
-                        if ($account->active() && $account->sync_password) {
-                            $account->set_password($new_password);
-                        }
-                    }
-                }
-            }
+            $expected_response = sha1("$uname:$password:" . S::v('challenge'));
+            /* XXX: Deprecates len(password) > 10 conversion */
             if ($response != $expected_response) {
                 S::logger($uid)->log('auth_fail', 'bad password');
                 return null;
@@ -203,6 +180,7 @@ class XorgSession extends PlSession
         unset($_SESSION['log']);
 
         // Retrieves main user properties.
+        /** XXX Move needed informations to account tables */
         $res  = XDB::query("SELECT  u.user_id AS uid, u.hruid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
                                     matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
                                     q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
@@ -232,7 +210,7 @@ class XorgSession extends PlSession
             setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
 
             if (S::i('auth_by_cookie') == $uid || Post::v('remember', 'false') == 'true') {
-                $cookie = hash_encrypt($sess['password']);
+                $cookie = sha1($sess['password']);
                 setcookie('ORGaccess', $cookie, (time() + 25920000), '/', '', 0);
                 if ($logger && S::i('auth_by_cookie') != $uid) {
                     $logger->log("cookie_on");
@@ -281,11 +259,11 @@ class XorgSession extends PlSession
 
     public function tokenAuth($login, $token)
     {
-        $res = XDB::query('SELECT  u.hruid
-                             FROM  aliases         AS a
-                       INNER JOIN  auth_user_md5   AS u ON (a.id = u.user_id AND u.perms IN ("admin", "user"))
-                       INNER JOIN  auth_user_quick AS q ON (a.id = q.user_id AND q.core_rss_hash = {?})
-                            WHERE  a.alias = {?} AND a.type != "homonyme"', $token, $login);
+        $res = XDB::query('SELECT  a.hruid
+                             FROM  aliases  AS l
+                       INNER JOIN  accounts AS a ON (l.id = a.uid AND a.state = \'active\')
+                            WHERE  a.token = {?} AND l.alias = {?} AND l.type != \'homonyme\'',
+                           $token, $login);
         if ($res->numRows() == 1) {
             $data = $res->fetchOneAssoc();
             return new User($data['hruid'], $data);
@@ -311,10 +289,10 @@ class XorgSession extends PlSession
     {
         if (S::logged() && (!S::has('skin') || S::has('suid'))) {
             $uid = S::v('uid');
-            $res = XDB::query("SELECT  skin_tpl
-                                 FROM  auth_user_quick AS a
-                           INNER JOIN  skins           AS s ON a.skin = s.id
-                                WHERE  user_id = {?} AND skin_tpl != ''", $uid);
+            $res = XDB::query('SELECT  skin_tpl
+                                 FROM  accounts AS a
+                           INNER JOIN  skins    AS s on (a.skin = s.id)
+                                WHERE  a.uid = {?} AND skin_tpl != \'\'', S::i('uid'));
             S::set('skin', $res->fetchOneCell());
         }
     }
