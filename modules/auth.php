@@ -163,7 +163,8 @@ class AuthModule extends PLModule
 
         while (list($privkey,$name,$datafields,$returnurls) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {
-                if ($returnurls == "" || @preg_match($returnurls, $gpex_url)) {
+                $returnurls = trim($returnurls);
+                if (empty($returnurls) || @preg_match($returnurls, $gpex_url)) {
                     $returl = $gpex_url . gpex_make_params($gpex_challenge, $privkey, $datafields, $charset);
                     http_redirect($returl);
                 }

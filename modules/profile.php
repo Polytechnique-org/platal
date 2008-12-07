@@ -463,11 +463,13 @@ class ProfileModule extends PLModule
         $page->assign('i', $id);
         $page->assign('job', array());
         $page->assign('new', true);
-        $page->assign('secteurs', XDB::iterator("SELECT  id, label
-                                                   FROM  emploi_secteur"));
-        $page->assign('fonctions', XDB::iterator("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
-                                                    FROM  fonctions_def
-                                                ORDER BY  id"));
+        $res = XDB::query("SELECT  id, label
+                             FROM  emploi_secteur");
+        $page->assign('secteurs', $res->fetchAllAssoc());
+        $res = XDB::query("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
+                             FROM  fonctions_def
+                         ORDER BY  id");
+        $page->assign('fonctions', $res->fetchAllAssoc());
     }
 
     function handler_ajax_secteur(&$page, $id, $sect, $ssect = -1)
