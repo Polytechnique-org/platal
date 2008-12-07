@@ -5,7 +5,7 @@ CREATE TABLE accounts (
 
   # Account type and state
   type varchar(16) default null,
-  is_admim bool default false,
+  is_admin bool default false,
   state enum('pending', 'active', 'disabled') not null default 'pending',
 
   # Access
