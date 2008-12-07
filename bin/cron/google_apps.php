@@ -91,7 +91,7 @@ $res = XDB::iterator(
  INNER JOIN  aliases AS f ON (f.id = g.l_userid AND f.type = 'a_vie')
  INNER JOIN  aliases AS a ON (a.id = g.l_userid AND a.type = 'alias')
   LEFT JOIN  gapps_nicknames AS n ON (n.l_userid = g.l_userid AND n.g_nickname = a.alias)
-      WHERE  n.g_nickname IS NULL AND g.l_userid IS NOT NULL");
+      WHERE  g.g_status = 'active' AND n.g_nickname IS NULL AND g.l_userid IS NOT NULL");
 while ($nickname = $res->next()) {
     // Checks that the requested nickname doesn't look like a regular forlife;
     // we might run in troubler later if we don't keep the two repos. If we need
