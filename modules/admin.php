@@ -47,6 +47,7 @@ class AdminModule extends PLModule
             'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
             'admin/ipwatch'                => $this->make_hook('ipwatch', AUTH_MDP, 'admin'),
             'admin/icons'                  => $this->make_hook('icons', AUTH_MDP, 'admin'),
+            'admin/accounts'               => $this->make_hook('accounts', AUTH_MDP, 'admin'),
         );
     }
 
@@ -1238,6 +1239,19 @@ class AdminModule extends PLModule
         }
         sort($icons);
         $page->assign('icons', $icons);
+    }
+
+    function handler_accounts(&$page)
+    {
+        $page->changeTpl('admin/accounts.tpl');
+        $page->assign('disabled', XDB::iterator('SELECT  u.nom, u.prenom, u.promo, u.comment, u.hruid
+                                                   FROM  auth_user_md5 AS u
+                                                  WHERE  perms = \'disabled\'
+                                               ORDER BY  nom, prenom'));
+        $page->assign('admins', XDB::iterator('SELECT  u.nom, u.prenom, u.promo, u.hruid
+                                                 FROM  auth_user_md5 AS u
+                                                WHERE  perms = \'admin\'
+                                             ORDER BY  nom, prenom'));
     }
 }
 
