@@ -133,11 +133,14 @@ class ProfilePhones implements ProfileSetting
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
-        if (is_null($value)) {
-            $value = isset($page->values[$field]) ? $page->values[$field] : array();
-        }
-        if (!is_array($value)) {
+        if (is_null($value) || !is_array($value)) {
             $value = array();
+            $res = XDB::iterator("SELECT t.display_tel AS tel, t.tel_type AS type, t.pub, t.comment
+                                    FROM profile_phones AS t
+                                   WHERE t.uid = {?} AND t.link_type = {?}
+                                ORDER BY t.tel_id",
+                                 S::v('uid'), $this->link_type);
+            $value = $res->fetchAllAssoc();
         }
         foreach ($value as $key=>&$phone) {
             if (@$phone['removed']) {

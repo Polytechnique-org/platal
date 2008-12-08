@@ -336,14 +336,6 @@ class ProfileGeneral extends ProfilePage
                             ORDER BY  sn.name_type, search_score, search_name",
                           S::v('uid'));
 
-        // Retreive phones
-        $res = XDB::iterator("SELECT t.display_tel AS tel, t.tel_type AS type, t.pub, t.comment
-                                FROM profile_phones AS t
-                               WHERE t.uid = {?} AND t.link_type = 'user'
-                            ORDER BY t.tel_id",
-                             S::v('uid'));
-        $this->values['tels'] = $res->fetchAllAssoc();
-
         // Proposes choice for promo_display
         if ($this->values['entry_year'] != $this->values['grad_year'] - 3) {
             for ($i = $this->values['entry_year']; $i < $this->values['grad_year'] - 2; $i++) {
