@@ -471,6 +471,8 @@ class ProfileModule extends PLModule
                              FROM  fonctions_def
                          ORDER BY  id");
         $page->assign('fonctions', $res->fetchAllAssoc());
+        require_once "emails.combobox.inc.php";
+        fill_email_combobox($page);
     }
 
     function handler_ajax_secteur(&$page, $id, $jobid, $jobpref, $sect, $ssect = -1)
