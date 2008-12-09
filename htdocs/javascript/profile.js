@@ -640,13 +640,13 @@ function updateSecteur()
         document.getElementById('ss_secteur_sel').innerHTML = '';
         return;
     }
-    $.get(platal_baseurl + 'profile/ajax/secteur/-1/' + secteur,
+    $.get(platal_baseurl + 'profile/ajax/secteur/-1/0/0/' + secteur,
           function(data) {
-          data = '<a href="javascript:addSecteur()" style="display: none; float: right" id="secteurs_add">'
-          +  '  <img src="images/icons/add.gif" alt="" title="Ajouter ce secteur" />'
-          +  '</a>' + data;
-          document.getElementById('ss_secteur_sel').innerHTML = data;
-          attachEvent(document.forms.prof_annu['jobs[-1][ss_secteur]'], 'change', updateSSecteur);
+              data = '<a href="javascript:addSecteur()" style="display: none; float: right" id="secteurs_add">'
+                     +  '  <img src="images/icons/add.gif" alt="" title="Ajouter ce secteur" />'
+                     +  '</a>' + data;
+              document.getElementById('ss_secteur_sel').innerHTML = data;
+              $(document.forms.prof_annu['jobs[-1][ss_secteur]']).change(updateSSecteur);
           });
 }
 

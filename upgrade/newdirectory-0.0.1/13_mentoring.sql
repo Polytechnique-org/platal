@@ -1,0 +1,33 @@
+DROP TABLE IF EXISTS profile_mentor;
+DROP TABLE IF EXISTS profile_mentor_country;
+DROP TABLE IF EXISTS profile_mentor_sector;
+
+CREATE TABLE IF NOT EXISTS profile_mentor (
+  uid INT(11) NOT NULL DEFAULT 0,
+  expertise TEXT NOT NULL,
+  PRIMARY KEY (uid),
+  FULLTEXT INDEX (expertise)
+) CHARSET=utf8;
+
+INSERT INTO  profile_mentor (uid, expertise)
+     SELECT  uid, expertise
+       FROM  mentor;
+
+CREATE TABLE IF NOT EXISTS profile_mentor_country (
+  uid INT(11) NOT NULL DEFAULT 0,
+  country CHAR(2) NOT NULL DEFAULT "FR",
+  PRIMARY KEY (uid, country)
+) CHARSET=utf8;
+
+INSERT INTO  profile_mentor_country (uid, country)
+     SELECT  uid, pid
+       FROM  mentor_pays;
+
+CREATE TABLE IF NOT EXISTS profile_mentor_sector (
+  uid INT(11) NOT NULL DEFAULT 0,
+  sectorid TINYINT(2) UNSIGNED NOT NULL,
+  subsectorid TINYINT(3) UNSIGNED NOT NULL,
+  PRIMARY KEY (uid, sectorid, subsectorid)
+) CHARSET=utf8;
+
+-- vim:set syntax=mysql:

@@ -36,8 +36,8 @@ function user_clear_all_subs($user_id, $really_del=true)
     $user = User::getSilent($uid);
     list($alias) = explode('@', $user->forlifeEmail());
 
-    $tables_to_clear = array('uid' => array('competences_ins', 'entreprises', 'langues_ins', 'mentor_pays',
-                                            'mentor_secteurs', 'mentor', 'perte_pass', 'watch_sub'),
+    $tables_to_clear = array('uid' => array('competences_ins', 'entreprises', 'langues_ins', 'profile_mentor_country',
+                                            'profile_mentor_sector', 'profile_mentor', 'perte_pass', 'watch_sub'),
                              'user_id' => array('requests', 'user_changes'));
 
     if ($really_del) {
@@ -282,7 +282,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
             LEFT JOIN  geoloc_pays           AS gp3 ON (gp3.a2 = u.nationalite3)
            INNER JOIN  sections              AS s   ON (s.id  = u.section)
             LEFT JOIN  photo                 AS p   ON (p.uid = u.user_id)
-            LEFT JOIN  mentor                AS m   ON (m.uid = u.user_id)
+            LEFT JOIN  profile_mentor        AS m   ON (m.uid = u.user_id)
             LEFT JOIN  emails                AS e   ON (e.uid = u.user_id AND e.flags='active')
            INNER JOIN  profile_names_display AS nd  ON (nd.user_id = u.user_id)
            INNER JOIN  profile_display       AS d   ON (d.uid = u.user_id)
