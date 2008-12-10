@@ -26,9 +26,10 @@ global $globals;
 @$globals->search->result_where_statement = '
     LEFT JOIN  profile_education       AS edu ON (u.user_id = edu.uid)
     LEFT JOIN  profile_education_enum  AS ede ON (ede.id = edu.eduid)
-    LEFT JOIN  entreprises             AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
-    LEFT JOIN  profile_job_sector_enum AS es  ON (e.secteur = es.id)
-    LEFT JOIN  fonctions_def           AS ef  ON (e.fonction = ef.id)
+    LEFT JOIN  profile_job             AS j   ON (j.id = 0 AND j.uid = u.user_id)
+    LEFT JOIN  profile_job_enum        AS je  ON (je.id = j.jobid)
+    LEFT JOIN  profile_job_sector_enum AS es  ON (j.sectorid = es.id)
+    LEFT JOIN  fonctions_def           AS ef  ON (j.functionid = ef.id)
     LEFT JOIN  geoloc_pays             AS n1  ON (u.nationalite = n1.a2)
     LEFT JOIN  geoloc_pays             AS n2  ON (u.nationalite2 = n2.a2)
     LEFT JOIN  geoloc_pays             AS n3  ON (u.nationalite2 = n3.a2)
@@ -176,7 +177,7 @@ class MinificheView extends MultipageView
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces, u.matricule_ax,
                 FIND_IN_SET('femme', u.flags) AS sexe,
-                e.entreprise, e.web AS job_web, es.name AS secteur, ef.fonction_fr AS fonction,
+                je.name AS entreprise, je.url AS job_web, es.name AS secteur, ef.fonction_fr AS fonction,
                 IF(n1.nat = '', n1.pays, n1.nat) AS nat1, n1.a2 AS iso3166_1,
                 IF(n2.nat = '', n2.pays, n2.nat) AS nat2, n2.a2 AS iso3166_2,
                 IF(n3.nat = '', n3.pays, n3.nat) AS nat3, n3.a2 AS iso3166_3,
@@ -200,9 +201,10 @@ class MinificheView extends MultipageView
 
     public function joins()
     {
-        return  "LEFT JOIN  entreprises                   AS e    ON (e.entrid = 0 AND e.uid = u.user_id".(S::logged() ? "" : " AND e.pub = 'public'").")
-                 LEFT JOIN  profile_job_sector_enum       AS es   ON (e.secteur = es.id)
-                 LEFT JOIN  fonctions_def                 AS ef   ON (e.fonction = ef.id)
+        return  "LEFT JOIN  profile_job                   AS j    ON (j.id = 0 AND j.uid = u.user_id".(S::logged() ? "" : " AND j.pub = 'public'").")
+                 LEFT JOIN  profile_job_enum              AS je   ON (je.id = j.jobid)
+                 LEFT JOIN  profile_job_sector_enum       AS es   ON (j.sectorid = es.id)
+                 LEFT JOIN  fonctions_def                 AS ef   ON (j.functionid = ef.id)
                  LEFT JOIN  geoloc_pays                   AS n1   ON (u.nationalite = n1.a2)
                  LEFT JOIN  geoloc_pays                   AS n2   ON (u.nationalite2 = n2.a2)
                  LEFT JOIN  geoloc_pays                   AS n3   ON (u.nationalite3 = n3.a2)

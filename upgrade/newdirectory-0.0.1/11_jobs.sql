@@ -31,12 +31,12 @@ CREATE TABLE IF NOT EXISTS profile_job (
   PRIMARY KEY (uid, id)
 ) CHARSET=utf8;
 
-INSERT INTO  profile_job_enum (name)
-     SELECT  DISTINCT(entreprise)
-       FROM  entreprises;
+INSERT IGNORE INTO  profile_job_enum (name, url)
+            SELECT  entreprise, web
+              FROM  entreprises;
 
-INSERT INTO  profile_job (id, uid, jobid, description, email, pub, email_pub, functionid, url)
-     SELECT  e.entrid, e.uid, j.id, e.poste, e.email, e.pub, e.email_pub, e.fonction, e.web
+INSERT INTO  profile_job (id, uid, jobid, description, email, pub, email_pub, functionid)
+     SELECT  e.entrid, e.uid, j.id, e.poste, e.email, e.pub, e.email_pub, e.fonction
        FROM  entreprises      AS e
  INNER JOIN  profile_job_enum AS j ON (e.entreprise = j.name);
 

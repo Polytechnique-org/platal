@@ -36,7 +36,7 @@ function user_clear_all_subs($user_id, $really_del=true)
     $user = User::getSilent($uid);
     list($alias) = explode('@', $user->forlifeEmail());
 
-    $tables_to_clear = array('uid' => array('competences_ins', 'entreprises', 'langues_ins', 'profile_mentor_country',
+    $tables_to_clear = array('uid' => array('competences_ins', 'profile_job', 'langues_ins', 'profile_mentor_country',
                                             'profile_mentor_sector', 'profile_mentor', 'perte_pass', 'watch_sub'),
                              'user_id' => array('requests', 'user_changes'));
 
@@ -130,18 +130,19 @@ function get_not_registered_user($login, $iterator = false)
 
 function get_user_details_pro($uid, $view = 'private')
 {
-    $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
-                     e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city, e.entrid,
-                     gp.pays AS countrytxt, gr.name AS region, e.entrid,
-                     e.pub, e.adr_pub, e.email, e.email_pub, e.web
-               FROM  entreprises AS e
-          LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
-          LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)
-          LEFT JOIN  fonctions_def AS f ON(e.fonction = f.id)
-          LEFT JOIN  geoloc_pays AS gp ON (gp.a2 = e.country)
-          LEFT JOIN  geoloc_region AS gr ON (gr.a2 = e.country and gr.region = e.region)
-              WHERE  e.uid = {?}
-           ORDER BY  e.entrid";
+    $sql  = "SELECT  en.name AS entreprise, s.name as secteur, f.fonction_fr as fonction,
+                     j.description AS poste, gp.pays AS countrytxt, gr.name AS region,
+                     j.id AS entrid, j.pub, j.email, j.email_pub, j.url AS w_web, en.url AS web,
+                     e.adr1, e.adr2, e.adr3, e.postcode, e.city, e.adr_pub
+               FROM  profile_job                   AS j
+          LEFT JOIN  entreprises                   AS e  ON (e.entrid = j.id AND e.uid = j.uid)
+          LEFT JOIN  profile_job_enum              AS en ON (j.jobid = en.id)
+          LEFT JOIN  profile_job_subsubsector_enum AS s  ON (j.subsubsectorid = s.id)
+          LEFT JOIN  fonctions_def                 AS f  ON (j.functionid = f.id)
+          LEFT JOIN  geoloc_pays                   AS gp ON (gp.a2 = e.country)
+          LEFT JOIN  geoloc_region                 AS gr ON (gr.a2 = e.country AND gr.region = e.region)
+              WHERE  j.uid = {?}
+           ORDER BY  j.id";
     $res  = XDB::query($sql, $uid);
     $all_pro = $res->fetchAllAssoc();
     foreach ($all_pro as $i => $pro) {
