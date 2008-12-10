@@ -44,23 +44,15 @@
         <div class="flags" style="float: left; text-align: left">
           {include file="include/flags.radio.tpl" name="`$jobpref`[pub]" val=$job.pub}
         </div>
-        Entreprise n°{$i+1}
-        <a href="javascript:removeJob('{$jobid}', '{$jobpref}')">
-          {icon name=cross title="Supprimer cet emploi"}
-        </a>
-      </th>
-    </tr>
-    <tr>
-      <td colspan="2" class="center" style="font-style: italic">Ton entreprise</td>
-    </tr>
-    <tr>
-      <td class="titre">Nom de l'entreprise</td>
-      <td>
+        Entreprise n°{$i+1}&nbsp;:
         {if $job.tmp_name}{$job.tmp_name} <small>(en cours de validation)</small>{else}
         <input type="text" class="enterprise_name {if $job.name_error}error{/if}" size="35" maxlength="100"
                name="{$jobpref}[name]" value="{$job.name}" />
         {/if}
-      </td>
+        <a href="javascript:removeJob('{$jobid}', '{$jobpref}')">
+          {icon name=cross title="Supprimer cet emploi"}
+        </a>
+      </th>
     </tr>
     {if !$job.tmp_name}
     <tr class="{$entreprise}">
@@ -78,7 +70,7 @@
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">
-      <td class="titre">Page Web</td>
+      <td class="titre">Page web</td>
       <td>
         <input type="text" size="35" maxlength="255" {if $job.hq_web_error}class="error"{/if}
                name="{$jobpref}[hq_web]" value="{$job.hq_web}" />
@@ -174,17 +166,9 @@
       <td class="titre">Description</td>
       <td>
         <input type="text" size="35" maxlength="120" {if $job.description_error}class="error"{/if}
-               name="{$jobpref}[description]" value="{$job.description}" />
+           name="{$jobpref}[description]" value="{$job.description}" /><br /><br />
       </td>
     </tr>
-    <tr class="pair">
-      <td class="titre">Page Web</td>
-      <td>
-        <input type="text" size="35" maxlength="255" {if $job.w_web_error}class="error"{/if}
-               name="{$jobpref}[w_web]" value="{$job.w_web}" />
-      </td>
-    </tr>
-    {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[w_email]' val=$job.w_email class="pair" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub}
     <tr class="pair">
       <td colspan="2">
         <div style="float: left">
@@ -195,6 +179,13 @@
           <div style="margin-top: 20px; clear: both">
             {include file="geoloc/form.address.tpl" name="`$jobpref`[w_adr]" id="`$jobid`_adr" adr=$job.w_adr}
           </div>
+        </div>
+        <div style="float: right; width: 50%">
+          {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[w_email]' val=$job.w_email
+          class="pair" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub isjob="1" id=$i}
+          <div class="titre">Page perso</div>
+          <input type="text" size="25" maxlength="255" {if $job.w_web_error}class="error"{/if}
+               name="{$jobpref}[w_web]" value="{$job.w_web}" />
         </div>
       </td>
     </tr>

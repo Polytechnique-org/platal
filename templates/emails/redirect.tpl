@@ -179,7 +179,7 @@
       {/foreach}
       <form action="emails/redirect" method="post">
         {cycle values="pair,impair" assign=class_combobox}
-        {include file="include/emails.combobox.tpl" name="email" val=$email class=$class_combobox error=$error_email}
+        {include file="include/emails.combobox.tpl" name="email" val=$email class=$class_combobox error=$error_email i="0"}
         <tr class=$class_combobox><td colspan="4"><div>
           <input type="submit" value="ajouter" name="emailop" />
           {xsrf_token_field}

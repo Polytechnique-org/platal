@@ -324,8 +324,8 @@
     </td>
   </tr>
   {if $email_error}
-    {include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory_error error=$email_error}
-  {else}{include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory error=$email_error}{/if}
+    {include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory_error error=$email_error i="0"}
+  {else}{include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory error=$email_error i="0"}{/if}
   <tr>
     <td colspan="2">
       <span class="titre">Messageries, networking et sites web</span>
