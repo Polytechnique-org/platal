@@ -612,7 +612,7 @@ class ProfileModule extends PLModule
         //secteurs
         $secteurs = $ss_secteurs = Array();
         $res = XDB::iterRow(
-                "SELECT  s.label, ss.label
+                "SELECT  s.name AS label, ss.name AS label
                    FROM  profile_mentor_sector      AS m
               LEFT JOIN  profile_job_sector_enum    AS s  ON(m.sectorid = s.id)
               LEFT JOIN  profile_job_subsector_enum AS ss ON(m.sectorid = ss.sectorid AND m.subsectorid = ss.id)
