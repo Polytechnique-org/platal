@@ -29,6 +29,7 @@ function wizPage_onLoad(id)
         while ($('.' + prefix + i).length != 0) {
             i++;
         }
+        i--;
         for (var j = 0; j < i; j++) {
             prepareType(j);
         }
