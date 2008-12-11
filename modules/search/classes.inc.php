@@ -56,7 +56,7 @@ else
         IF(adr.pub='public', adr.city, '')   AS city,
         IF(adr.pub='public', gp.pays, '')    AS countrytxt,
         IF(adr.pub='public', gr.name, '')    AS region,
-        IF(e.pub='public', ee.name, '')      AS entreprise,
+        IF(e.pub='public', je.name, '')      AS entreprise,
         IF(nw.pub='public', nw.address, '')  AS networking_address,
         IF(nw.pub='public', nwe.name, '')    AS networking_name,";
 @$globals->search->result_where_statement = '

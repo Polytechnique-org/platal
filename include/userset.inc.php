@@ -201,7 +201,7 @@ class MinificheView extends MultipageView
 
     public function joins()
     {
-        return  "LEFT JOIN  profile_job                   AS j    ON (j.id = 0 AND j.uid = u.user_id".(S::logged() ? "" : " AND j.pub = 'public'").")
+        return  "LEFT JOIN  profile_job                   AS j    ON (j.uid = u.user_id".(S::logged() ? "" : " AND j.pub = 'public'").")
                  LEFT JOIN  profile_job_enum              AS je   ON (je.id = j.jobid)
                  LEFT JOIN  profile_job_sector_enum       AS es   ON (j.sectorid = es.id)
                  LEFT JOIN  fonctions_def                 AS ef   ON (j.functionid = ef.id)

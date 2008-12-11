@@ -57,8 +57,7 @@ function advancedSearchFromInput()
     $mapField           = new MapSField('mapid',  array('sgcim.map_id'), array('adresses', 'geoloc_city_in_maps'),
                                         array('amp', 'sgcim'), array(getadr_join('amp'), 'amp.cityid = sgcim.city_id'));
 
-    $entrepriseField    = new RefSField('entreprise', array('ee.name'), 'profile_job_enum', 'ee',
-                                        'u.user_id = profile_job.uid AND profile_job.jobid = profile_job_enum.id', false);
+    $entrepriseField    = new RefSField('entreprise', array('je.name'), '', '','');
     $posteField         = new RefSField('poste', array('ep.description'), 'profile_job', 'ep', 'u.user_id = ep.uid', false);
     $fonctionField      = new RefSField('fonction', array('en.fonction_fr'), 'fonctions_def', 'en',
                                         'u.user_id = profile_job.uid AND fonctions_def.id = profile_job.functionid');
