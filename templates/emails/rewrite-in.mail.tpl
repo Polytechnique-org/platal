@@ -50,7 +50,7 @@ fonctionnalité complexe tels qu'ils sont décrits sur la page :
 * {$baseurl}/emails/redirect
 
 Puis cliquez sur le lien suivant pour valider cette demande :
-* {$baseurl}/rewrite/in/{$mail->email|replace:'@':'_'}/{$mail->hash}
+* {$baseurl}/emails/rewrite/in/{$mail->email|replace:'@':'_'}/{$mail->hash}
 
 -- \\
 Très cordialement,\\
