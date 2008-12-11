@@ -64,6 +64,18 @@ class PlWikiPage
         return self::workDir() . '/cache_' . $this->name . '.tpl';
     }
 
+    /** Remove the cache for the current page.
+     */
+    public function removePageCache()
+    {
+        @unlink($this->cacheFilename());
+        global $globals;
+        $page = glob($globals->spoolroot . '/spool/templates_c/*cache_' . $this->name . '.tpl.php');
+        if (count($page) > 0) {
+            @unlink($page[0]);
+        }
+    }
+
     /** Fetch the content of the wiki page.
      */
     private function fetchContent()
