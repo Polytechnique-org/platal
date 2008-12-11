@@ -59,7 +59,8 @@ $wiki_cache   = $wp->cacheFilename();
 $cache_exists = file_exists($wiki_cache);
 if (Env::v('action') || !$cache_exists) {
     if ($cache_exists && !$feed) {
-        unlink($wiki_cache);
+        $wp->removePageCache();
+        $cache_exists = false;
     }
 
     // we leave pmwiki do whatever it wants and store everything
