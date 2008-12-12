@@ -662,7 +662,11 @@ class AdminModule extends PLModule
                 "SELECT  alias
                    FROM  virtual
              INNER JOIN  virtual_redirect USING (vid)
-                  WHERE  type = 'user' AND redirect LIKE CONCAT({?}, '@%')", $user->id()));
+                  WHERE  type = 'user' AND (redirect = {?} OR redirect = {?})",
+                $user->forlifeEmail(),
+                // TODO: remove this über-ugly hack. The issue is that you need
+                // to remove all @m4x.org addresses in virtual_redirect first.
+                $user->login() . '@' . $globals->mail->domain2));
 
         $page->assign('aliases', XDB::iterator(
                 "SELECT  alias, type='a_vie' AS for_life,FIND_IN_SET('bestalias',flags) AS best,expire
