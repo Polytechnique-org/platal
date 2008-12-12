@@ -19,7 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'xorg.inc.php';
+require_once dirname(__FILE__).'/../include/xorg.inc.php';
+$platal = new Xorg();
 
 preg_match('!^/(moderate|admin|members|archives)/(.*)_([^_]*)(/.*)?$!', $_SERVER['REQUEST_URI'], $matches);
 
@@ -28,7 +29,7 @@ if ($matches) {
     $action = $matches[1];
     $mbox   = $matches[2];
     $fqdn   = strtolower($matches[3]);
-    $sup    = $matches[4];
+    $sup    = @$matches[4];
 
     if ($fqdn == 'polytechnique.org') {
         http_redirect("https://www.polytechnique.org/lists/$action/$mbox$sup");

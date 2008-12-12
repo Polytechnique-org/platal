@@ -21,7 +21,7 @@
 
 require_once 'xorg.inc.php';
 
-new Platal('core');
+new Xorg('core');
 
 global $globals;
 list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
