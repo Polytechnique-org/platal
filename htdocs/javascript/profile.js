@@ -465,7 +465,7 @@ function updateSecteur()
           +  '  <img src="images/icons/add.gif" alt="" title="Ajouter ce secteur" />'
           +  '</a>' + data;
           document.getElementById('ss_secteur_sel').innerHTML = data;
-          attachEvent(document.forms.prof_annu['jobs[-1][ss_secteur]'], 'change', updateSSecteur);
+          $(document.forms.prof_annu['jobs[-1][ss_secteur]']).change(updateSSecteur);
           });
 }
 

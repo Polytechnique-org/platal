@@ -221,7 +221,7 @@ function auto_links() {
                || href.indexOf('mailto:') > -1 || href.indexOf('javascript:') > -1) {
                 return;
             }
-            if (href.indexOf(fqdn) < 0 || node.hasClass('popup')) {
+            if ((href.indexOf(fqdn) < 0 && this.className.indexOf('popup') < 0) || node.hasClass('popup')) {
                 node.click(function () { window.open(this.href); return false; });
             }
             if (href.indexOf(fqdn) > -1 && light) {
@@ -267,7 +267,7 @@ function getType(char) {
         return 1;
     } else if (char >= 'A' && char <= 'Z') {
         return 2;
-    } else if (char >= '0' && char <= '9') {
+    } else if (char >= '0' && char <= '9') {
         return 3;
     } else {
         return 4;
