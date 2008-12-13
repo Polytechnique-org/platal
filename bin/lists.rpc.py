@@ -246,6 +246,7 @@ def list_call_dispatcher(method, userdesc, perms, vhost, *arg):
         else:
             return method(userdesc, perms, vhost, *arg)
     except Exception, e:
+        sys.stderr.write('Exception in dispatcher %s\n' % str(e))
         raise e
         return 0
 
@@ -259,7 +260,8 @@ def list_call_locked(method, userdesc, perms, mlist, edit, *arg):
             mlist.Save()
         mlist.Unlock()
         return ret
-    except:
+    except Exception, e:
+        sys.stderr.write('Exception in locked call %s: %s\n' % (method.__name__, str(e)))
         mlist.Unlock()
         return 0
     # TODO: use finally when switching to python 2.5
@@ -450,7 +452,6 @@ def mass_subscribe(userdesc, perms, mlist, users):
     """
     members = mlist.getRegularMemberKeys()
     added = []
-    mlist.Lock()
     for user in users:
         email, name = to_forlife(user)
         if ( email is None ) or ( email in members ):
