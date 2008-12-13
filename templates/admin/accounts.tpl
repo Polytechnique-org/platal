@@ -20,54 +20,33 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file=skin/common.doctype.tpl}
-    <link rel="stylesheet" type="text/css" href="css/default.css" media="all" />
-    <link rel="stylesheet" type="text/css" href="css/sharky.css" media="all" />
-    {include file=skin/common.header.tpl}
-    {include file=skin/common.bandeau.head.tpl}
-  </head>
-  <body>
-    {include core=plpage.devel.tpl}
-    {if $simple}
-      <div id="content">
-        {include core=plpage.content.tpl}
-      </div>
-    {else}
+<h1>Comptes désactivés</h1>
 
-    {include file=skin/common.bandeau.tpl}
-    {if $smarty.session.suid}
-    <div id="suid">
-      <a href="exit">
-        Quitter le SU sur {$smarty.session.hruid} ({$smarty.session.perms->flags()})
-      </a>
-    </div>
-    {/if}
+<table class="bicol">
+  <tr><th>Nom</th><th>Commentaire</th></tr>
+  {iterate from=$disabled item=user}
+  <tr class="{cycle values="pair,impair"}">
+    <td>
+      <a href="admin/user/{$user.hruid}">{$user.prenom} {$user.nom} ({$user.promo})</a>
+    </td>
+    <td>
+      {$user.comment|default='(none)'}
+    </td>
+  </tr>
+  {/iterate}
+</table>
 
-    <table id="body" cellpadding="0" cellspacing="0">
-      <tr>
-        <td id="body-logo">
-          <a href=""><img src="images/skins/sharky_logo.png" alt="[ LOGO ]" /></a>
-        </td>
-        <td id="body-top">
-          <a href=""><img src="images/skins/sharky_ban.png" alt="[ Polytechnique.org ]" /></a>
-          {include file="skin/common.title.header.tpl"}
-        </td>
-      </tr>
-      <tr>
-        <td id="body-menu">
-        {include file=skin/common.menu.tpl}
-        </td>
-        <td id="content">
-        {include core=plpage.content.tpl}
-        </td>
-      </tr>
-      <tr>
-        <td id="body-bottom" colspan="2">
-          {include file=skin/common.footer.tpl}
-        </td>
-      </tr>
-    </table>
-  {/if}
-  </body>
-</html>
+<h1>Administrateurs du site</h1>
+
+<table class="tinybicol">
+  <tr><th>Utilisateur</th></tr>
+  {iterate from=$admins item=user}
+  <tr class="{cycle values="pair,impair"}">
+    <td>
+      <a href="admin/user/{$user.hruid}">{$user.prenom} {$user.nom} ({$user.promo})</a>
+    </td>
+  </tr>
+  {/iterate}
+</table>
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

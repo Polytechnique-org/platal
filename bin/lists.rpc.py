@@ -60,7 +60,7 @@ def get_config(sec, val, default=None):
         return config.get(sec, val)[1:-1]
     except ConfigParser.NoOptionError, e:
         if default is None:
-            print e
+            sys.stderr.write('%s\n' % str(e))
             sys.exit(1)
         else:
             return default
@@ -70,6 +70,7 @@ MYSQL_PASS     = get_config('Core', 'dbpwd')
 
 PLATAL_DOMAIN  = get_config('Mail', 'domain')
 PLATAL_DOMAIN2 = get_config('Mail', 'domain2', '')
+sys.stderr.write('PLATAL_DOMAIN = %s\n' % PLATAL_DOMAIN )
 
 VHOST_SEP      = get_config('Lists', 'vhost_sep', '_')
 ON_CREATE_CMD  = get_config('Lists', 'on_create', '')
@@ -267,7 +268,7 @@ def list_call_locked(method, userdesc, perms, mlist, edit, *arg):
 # helpers on lists
 #
 
-def is_subscription_pending(userdesc, perms, mlist, edit):
+def is_subscription_pending(userdesc, perms, mlist):
     for id in mlist.GetSubscriptionIds():
         if userdesc.address == mlist.GetRecord(id)[1]:
             return True
@@ -280,7 +281,7 @@ def get_list_info(userdesc, perms, mlist, front_page=0):
     if mlist.advertised or is_member or is_owner or (not front_page and perms == 'admin'):
         is_pending = False
         if not is_member and (mlist.subscribe_policy > 1):
-            is_pending = list_call_locked(userdesc, perms, mlist, is_subscription_pending, False)
+            is_pending = list_call_locked(is_subscription_pending, userdesc, perms, mlist, False)
             if is_pending is 0:
                 return 0
 
@@ -359,7 +360,8 @@ def get_lists(userdesc, perms, vhost, email=None):
         try:
             details = get_list_info(udesc, perms, mlist, (email is None and vhost == PLATAL_DOMAIN))[0]
             result.append(details)
-        except:
+        except Exception, e:
+            sys.stderr.write('Can\'t get list %s: %s\n' % (name, str(e)))
             continue
     return result
 
