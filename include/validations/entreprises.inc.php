@@ -45,7 +45,7 @@ class EntrReq extends Validate
 
     public function __construct(User &$_user, $_id, $_name, $_acronym, $_url, $_email, $_tel, $_fax, $_stamp = 0)
     {
-        parent::__construct($_user, true, 'entreprise', $_stamp);
+        parent::__construct($_user, false, 'entreprise', $_stamp);
         $this->id       = $_id;
         $this->name     = $_name;
         $this->acronym  = $_acronym;
