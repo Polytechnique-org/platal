@@ -88,7 +88,7 @@ function fill_email_combobox(PlPage& $page)
 
     $res = XDB::query(
             "SELECT  email
-               FROM  entreprises
+               FROM  profile_job
               WHERE  uid = {?}", $user->id());
     $res = $res->fetchAllAssoc();
     $pro = array();

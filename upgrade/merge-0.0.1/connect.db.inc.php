@@ -19,43 +19,14 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'xorg.inc.php';
+ini_set('include_path', dirname(__FILE__) . '/../../core/include:'
+                      . dirname(__FILE__) . '/../../include:'
+                      . dirname(__FILE__) . '/../../core/classes:'
+                      . dirname(__FILE__) . '/../../classes:'
+                      . '/usr/share/php');
+require_once('xorg.inc.php');
 
 new Xorg('core');
 
-global $globals;
-list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
-$res = XDB::query(
-        "SELECT  redirecturl
-           FROM  auth_user_quick AS a
-     INNER JOIN  aliases         AS al ON (al.id = a.user_id AND (al.type='a_vie' OR al.type='alias'))
-          WHERE  al.alias = {?}
-       GROUP BY  redirecturl", $username);
-
-if ($url = $res->fetchOneCell()) {
-    $url = preg_replace('@/+$@', '', $url);
-    if ($path) {
-        http_redirect("http://$url/$path");
-    } else {
-        http_redirect("http://$url");
-    }
-}
-
-header("HTTP/1.0 404 Not Found");
-
-?>
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-<html>
-  <head>
-    <title>404 Not Found</title>
-  </head>
-  <body>
-    <h1>Not Found</h1>
-    The requested URL <?php echo $_SERVER['REQUEST_URI'] ?> was not found on this server.<p>
-    <hr>
-    <address>Apache Server at www.carva.org Port 80</address>
-  </body>
-</html>
-<?php
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

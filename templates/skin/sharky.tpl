@@ -28,27 +28,20 @@
   </head>
   <body>
     {include core=plpage.devel.tpl}
-
-    {if $smarty.session.suid}
-    <table id="suid" cellpadding="0" cellspacing="0">
-      <tr>
-        <td>
-          {$smarty.session.suid} ({$smarty.session.hruid})
-          [<a href="exit">exit</a>]
-        </td>
-      </tr>
-    </table>
-    {/if}
-
-  {if $simple}
-
-    <div id="content">
-      {include core=plpage.content.tpl}
-    </div>
-
-  {else}
+    {if $simple}
+      <div id="content">
+        {include core=plpage.content.tpl}
+      </div>
+    {else}
 
     {include file=skin/common.bandeau.tpl}
+    {if $smarty.session.suid}
+    <div id="suid">
+      <a href="exit">
+        Quitter le SU sur {$smarty.session.hruid} ({$smarty.session.perms->flags()})
+      </a>
+    </div>
+    {/if}
 
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>

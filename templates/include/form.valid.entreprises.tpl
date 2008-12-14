@@ -20,61 +20,51 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Sondages</h1>
 
-<table class="bicol">
-  <tr>
-    <th>
-      Sondages en cours
-    </th>
-  </tr>
-  {iterate item=s from=$survey_current}
-  {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
-  <tr class="{cycle name=cs_cycle values="impair,pair"}">
-    <td class="half">
-      &bull;
-      <a href="survey/vote/{$s.id}">
-        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
-      </a>
-    </td>
-  </tr>
-    {assign var="has_cs" value="true"}
-  {/if}
-  {/iterate}
-  <tr class="impair">
-    <td class="half">
-      {if !$has_cs}Aucun sondage en cours{/if}
-      {if $smarty.session.auth}<a style="display: block; float: right;" href="survey/edit/new">{icon name=page_edit} Proposer un sondage</a>{/if}
-    </td>
-  </tr>
-</table>
+<tr class="pair">
+  <td class="titre">Nom&nbsp;:</td>
+  <td>{$valid->name}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Noms similaires existants&nbsp;:</td>
+  <td>{$valid->suggestions}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Acronyme&nbsp;:</td>
+  <td>{$valid->acronym}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Site web&nbsp;:</td>
+  <td>{$valid->url}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Email&nbsp;:</td>
+  <td>{$valid->email}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Holding&nbsp;:</td>
+  <td>{$valid->holdingid}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Code NAF&nbsp;:</td>
+  <td>{$valid->NAF_code}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Code AX&nbsp;:</td>
+  <td>{$valid->AX_code}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Téléphone&nbsp;:</td>
+  <td>{$valid->tel}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Fax&nbsp;:</td>
+  <td>{$valid->fax}</td>
+</tr>
+<tr class="pair">
+  <td colspan="2" class="center">
+    <small>Bien remplir tous les champs, en particulier les <a href="http://societe.com/">codes NAF</a> et AX !</small>
+  </td>
+</tr>
 
-<br />
-
-<table class="bicol">
-  <tr>
-    <th>
-      Anciens sondages
-    </th>
-  </tr>
-  {iterate item=s from=$survey_old}
-    {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
-  <tr class="{cycle name=os_cycle values="impair,pair"}">
-    <td class="half">
-      &bull;
-      <a href="survey/result/{$s.id}">
-        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
-      </a>
-    </td>
-  </tr>
-      {assign var="has_os" value="true"}
-    {/if}
-  {/iterate}
-  {if !$has_os}
-  <tr>
-    <td class="half">Aucun ancien sondage</td>
-  </tr>
-  {/if}
-</table>
-
-{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

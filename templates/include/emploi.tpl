@@ -26,7 +26,8 @@
         {if $address.entreprise || $address.web}
         <tr>
           <td><em>Ent/Org&nbsp;: </em></td>
-          <td><strong>{$address.entreprise}{if $address.web} [<a href='{$address.web}'>site</a>]{/if}</strong></td>
+          <td><strong>{if $address.web}<a href='{$address.web}'>{$address.entreprise}</a>{$address.entreprise}{else}{$address.entreprise}{/if}
+          {if $address.w_web} [<a href='{$address.w_web}'>Page perso</a>]{/if}</strong></td>
         </tr>
         {/if}
         {if $address.secteur}

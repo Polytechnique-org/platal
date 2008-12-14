@@ -39,6 +39,7 @@ class ProfileModule extends PLModule
             'profile/networking'         => $this->make_hook('networking',                 AUTH_PUBLIC),
             'profile/ajax/job'           => $this->make_hook('ajax_job',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/secteur'       => $this->make_hook('ajax_secteur',               AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/ssecteur'      => $this->make_hook('ajax_ssecteur',              AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
             'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
@@ -463,25 +464,44 @@ class ProfileModule extends PLModule
         $page->assign('i', $id);
         $page->assign('job', array());
         $page->assign('new', true);
-        $res = XDB::query("SELECT  id, label
-                             FROM  emploi_secteur");
+        $res = XDB::query("SELECT  id, name AS label
+                             FROM  profile_job_sector_enum");
         $page->assign('secteurs', $res->fetchAllAssoc());
         $res = XDB::query("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
                              FROM  fonctions_def
                          ORDER BY  id");
         $page->assign('fonctions', $res->fetchAllAssoc());
+        require_once "emails.combobox.inc.php";
+        fill_email_combobox($page);
     }
 
-    function handler_ajax_secteur(&$page, $id, $sect, $ssect = -1)
+    function handler_ajax_secteur(&$page, $id, $jobid, $jobpref, $sect, $ssect = -1)
     {
         header('Content-Type: text/html; charset=utf-8');
-        $res = XDB::iterator("SELECT  id, label
-                                FROM  emploi_ss_secteur
-                               WHERE  secteur = {?}", $sect);
+        $res = XDB::iterator("SELECT  id, name AS label, FIND_IN_SET('optgroup', flags) AS optgroup
+                                FROM  profile_job_subsector_enum
+                               WHERE  sectorid = {?}", $sect);
         $page->changeTpl('profile/jobs.secteur.tpl', NO_SKIN);
         $page->assign('id', $id);
         $page->assign('ssecteurs', $res);
         $page->assign('sel', $ssect);
+        if ($id != -1) {
+            $page->assign('change', 1);
+            $page->assign('jobid', $jobid);
+            $page->assign('jobpref', $jobpref);
+        }
+    }
+
+    function handler_ajax_ssecteur(&$page, $id, $ssect, $sssect = -1)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $res = XDB::iterator("SELECT  id, name AS label
+                                FROM  profile_job_subsubsector_enum
+                               WHERE  subsectorid = {?}", $ssect);
+        $page->changeTpl('profile/jobs.soussecteur.tpl', NO_SKIN);
+        $page->assign('id', $id);
+        $page->assign('sssecteurs', $res);
+        $page->assign('sel', $sssect);
     }
 
     function handler_ajax_skill(&$page, $cat, $id)
@@ -586,16 +606,16 @@ class ProfileModule extends PLModule
         /////  recuperations infos referent
 
         //expertise
-        $res = XDB::query("SELECT expertise FROM mentor WHERE uid = {?}", $user->id());
+        $res = XDB::query("SELECT expertise FROM profile_mentor WHERE uid = {?}", $user->id());
         $page->assign('expertise', $res->fetchOneCell());
 
         //secteurs
         $secteurs = $ss_secteurs = Array();
         $res = XDB::iterRow(
-                "SELECT  s.label, ss.label
-                   FROM  mentor_secteurs AS m
-              LEFT JOIN  emploi_secteur AS s ON(m.secteur = s.id)
-              LEFT JOIN  emploi_ss_secteur AS ss ON(m.secteur = ss.secteur AND m.ss_secteur = ss.id)
+                "SELECT  s.name AS label, ss.name AS label
+                   FROM  profile_mentor_sector      AS m
+              LEFT JOIN  profile_job_sector_enum    AS s  ON(m.sectorid = s.id)
+              LEFT JOIN  profile_job_subsector_enum AS ss ON(m.sectorid = ss.sectorid AND m.subsectorid = ss.id)
                   WHERE  uid = {?}", $user->id());
         while (list($sec, $ssec) = $res->next()) {
             $secteurs[]    = $sec;
@@ -607,8 +627,8 @@ class ProfileModule extends PLModule
         //pays
         $res = XDB::query(
                 "SELECT  gp.pays
-                   FROM  mentor_pays AS m
-              LEFT JOIN  geoloc_pays AS gp ON(m.pid = gp.a2)
+                   FROM  profile_mentor_country AS m
+              LEFT JOIN  geoloc_pays            AS gp ON (m.country = gp.a2)
                   WHERE  uid = {?}", $user->id());
         $page->assign('pays', $res->fetchColumn());
 
@@ -623,7 +643,7 @@ class ProfileModule extends PLModule
         $page->setTitle('Conseil Pro');
 
         //recuperation des noms de secteurs
-        $res = XDB::iterRow("SELECT id, label FROM emploi_secteur");
+        $res = XDB::iterRow("SELECT id, name AS label FROM profile_job_sector_enum");
         $secteurs[''] = '';
         while (list($tmp_id, $tmp_label) = $res->next()) {
             $secteurs[$tmp_id] = $tmp_label;
@@ -631,7 +651,7 @@ class ProfileModule extends PLModule
         $page->assign_by_ref('secteurs', $secteurs);
 
         // nb de mentors
-        $res = XDB::query("SELECT count(*) FROM mentor");
+        $res = XDB::query("SELECT count(*) FROM profile_mentor");
         $page->assign('mentors_number', $res->fetchOneCell());
 
         // On vient d'un formulaire
@@ -642,12 +662,12 @@ class ProfileModule extends PLModule
         $expertise_champ = XDB::escape(Env::v('expertise'));
 
         if ($pays_sel != "''") {
-            $where[] = "mp.pid = $pays_sel";
+            $where[] = "mp.country = $pays_sel";
         }
         if ($secteur_sel != "''") {
-            $where[] = "ms.secteur = $secteur_sel";
+            $where[] = "ms.sectorid = $secteur_sel";
             if ($ss_secteur_sel != "''") {
-                $where[] = "ms.ss_secteur = $ss_secteur_sel";
+                $where[] = "ms.subsectorid = $ss_secteur_sel";
             }
         }
         if ($expertise_champ != "''") {
@@ -657,9 +677,9 @@ class ProfileModule extends PLModule
         if ($where) {
             $where = join(' AND ', $where);
 
-            $set = new UserSet("INNER JOIN  mentor          AS m ON (m.uid = u.user_id)
-                                 LEFT JOIN  mentor_pays     AS mp ON (mp.uid = m.uid)
-                                 LEFT JOIN  mentor_secteurs AS ms ON (ms.uid = m.uid)",
+            $set = new UserSet("INNER JOIN  profile_mentor          AS m  ON (m.uid = u.user_id)
+                                 LEFT JOIN  profile_mentor_country  AS mp ON (mp.uid = m.uid)
+                                 LEFT JOIN  profile_mentor_sector   AS ms ON (ms.uid = m.uid)",
                                $where);
             $set->addMod('mentor', 'Référents');
             $set->apply('referent/search', $page, $action, $subaction);
@@ -677,9 +697,9 @@ class ProfileModule extends PLModule
         $page->assign('onchange', 'setSSecteurs()');
         $page->assign('id', 'ssect_field');
         $page->assign('name', 'ss_secteur');
-        $it = XDB::iterator("SELECT  id,label AS field
-                               FROM  emploi_ss_secteur
-                              WHERE  secteur = {?}", $sect);
+        $it = XDB::iterator("SELECT  id, name AS field
+                               FROM  profile_job_subsector_enum
+                              WHERE  sectorid = {?}", $sect);
         $page->assign('list', $it);
     }
 
@@ -688,14 +708,14 @@ class ProfileModule extends PLModule
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', 'pays_sel');
-        $where = ($ssect ? ' AND ms.ss_secteur = {?}' : '');
+        $where = ($ssect ? ' AND ms.subsectorid = {?}' : '');
         $it = XDB::iterator("SELECT  a2 AS id, pays AS field
-                              FROM  geoloc_pays AS g
-                        INNER JOIN  mentor_pays AS mp ON (mp.pid = g.a2)
-                        INNER JOIN  mentor_secteurs AS ms ON (ms.uid = mp.uid)
-                             WHERE  ms.secteur = {?} $where
-                          GROUP BY  a2
-                          ORDER BY  pays", $sect, $ssect);
+                               FROM  geoloc_pays            AS g
+                         INNER JOIN  profile_mentor_country AS mp ON (mp.country = g.a2)
+                         INNER JOIN  profile_mentor_sector  AS ms ON (ms.uid = mp.uid)
+                              WHERE  ms.sectorid = {?} $where
+                           GROUP BY  a2
+                           ORDER BY  pays", $sect, $ssect);
         $page->assign('list', $it);
     }
 

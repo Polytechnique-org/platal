@@ -26,10 +26,10 @@ class ProfileSecteurs implements ProfileSetting
         $success = true;
         if (is_null($value)) {
             $value = array();
-            $res = XDB::iterRow("SELECT  m.secteur, m.ss_secteur, ss.label
-                                   FROM  mentor_secteurs AS m
-                             INNER JOIN  emploi_secteur  AS s ON(m.secteur = s.id)
-                             INNER JOIN  emploi_ss_secteur AS ss ON(s.id = ss.secteur AND m.ss_secteur = ss.id)
+            $res = XDB::iterRow("SELECT  m.sectorid, m.subsectorid, ss.name
+                                   FROM  profile_mentor_sector      AS m
+                             INNER JOIN  profile_job_sector_enum    AS s  ON (m.sectorid = s.id)
+                             INNER JOIN  profile_job_subsector_enum AS ss ON (s.id = ss.sectorid AND m.subsectorid = ss.id)
                                   WHERE  m.uid = {?}",
                                 S::i('uid'));
             while (list($s, $ss, $ssname) = $res->next()) {
@@ -42,7 +42,7 @@ class ProfileSecteurs implements ProfileSetting
         } else if (!is_array($value)) {
             $value = array();
         } else if (count($value) > 10) {
-            Platal::page()->trigError("Le nombre de secteurs d'expertise est limité à 10");
+            Platal::page()->trigError("Le nombre de secteurs d'expertise est limité à 10.");
             $success = false;
         }
         ksort($value);
@@ -55,7 +55,7 @@ class ProfileSecteurs implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
 
-        XDB::execute("DELETE FROM  mentor_secteurs
+        XDB::execute("DELETE FROM  profile_mentor_sector
                             WHERE  uid = {?}",
                      S::i('uid'));
         if (!count($value)) {
@@ -63,7 +63,7 @@ class ProfileSecteurs implements ProfileSetting
         }
         foreach ($value as $id=>&$sect) {
             foreach ($sect as $sid=>&$name) {
-                XDB::execute("INSERT INTO  mentor_secteurs (uid, secteur, ss_secteur)
+                XDB::execute("INSERT INTO  profile_mentor_sector (uid, sectorid, subsectorid)
                                    VALUES  ({?}, {?}, {?})",
                              S::i('uid'), $id, $sid);
             }
@@ -78,9 +78,9 @@ class ProfileCountry implements ProfileSetting
         $success = true;
         if (is_null($value)) {
             $value = array();
-            $res = XDB::iterRow("SELECT  m.pid, p.pays
-                                   FROM  mentor_pays AS m
-                             INNER JOIN  geoloc_pays AS p ON(m.pid = p.a2)
+            $res = XDB::iterRow("SELECT  m.country, p.pays
+                                   FROM  profile_mentor_country AS m
+                             INNER JOIN  geoloc_pays            AS p ON (m.country = p.a2)
                                   WHERE  m.uid = {?}",
                                 S::i('uid'));
             while (list($id, $name) = $res->next()) {
@@ -98,11 +98,11 @@ class ProfileCountry implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute("DELETE FROM  mentor_pays
+        XDB::execute("DELETE FROM  profile_mentor_country
                             WHERE  uid = {?}",
                      S::i('uid'));
         foreach ($value as $id=>&$name) {
-            XDB::execute("INSERT INTO  mentor_pays (uid, pid)
+            XDB::execute("INSERT INTO  profile_mentor_country (uid, country)
                                VALUES  ({?}, {?})",
                          S::i('uid'), $id);
         }
@@ -151,8 +151,8 @@ class ProfileMentor extends ProfilePage
 
     public function _prepare(PlPage &$page, $id)
     {
-        $page->assign('secteurs_sel', XDB::iterator("SELECT  id, label
-                                                       FROM  emploi_secteur"));
+        $page->assign('secteurs_sel', XDB::iterator("SELECT  id, name AS label
+                                                       FROM  profile_job_sector_enum"));
     }
 }
 

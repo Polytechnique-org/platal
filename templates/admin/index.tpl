@@ -22,11 +22,11 @@
 
 <h1>Administration Polytechnique.org</h1>
 
-<table class="bicol" cellpadding="3" summary="Système">
-  <tr><th>Système</th></tr>
+<table class="bicol" cellpadding="3" summary="Services">
+  <tr><th colspan="2">{icon name=wrench} Services</th></tr>
   <tr class="impair">
+    <td class="titre">Postfix</td>
     <td>
-      <strong>Postfix&nbsp;:</strong>&nbsp;&nbsp;
       <a href="admin/postfix/blacklist">Blacklist</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/postfix/whitelist">Whitelist</a>
@@ -37,60 +37,91 @@
     </td>
   </tr>
   <tr class="pair">
+    <td class="titre">Accès au site</td>
     <td>
-      <strong>Sécurité&nbsp;:</strong>&nbsp;&nbsp;
+      <a href="admin/auth-groupes-x">Auth Groupes X</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/logger">Logs des sessions</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/logger/actions">Actions</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/emails/watch">Emails</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/emails/lost">Perdus de vue</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/ipwatch">IPs</a>
+      <a href="admin/ipwatch">IP surveillées</a>
     </td>
   </tr>
-</table>
-
-<br />
-
-<table class="bicol" cellpadding="3" summary="Système">
-  <tr><th>Contenu du site</th></tr>
   <tr class="impair">
+    <td class="titre">Emails</td>
     <td>
-      <strong>Utilisateurs&nbsp;:</strong>&nbsp;&nbsp;
-      <a href="admin/promo">Ajout</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/user">Edit/Su/Logs</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/homonyms">Homonymes</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/ax-xorg">AX/X.org</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;      
-      <a href="admin/deaths">Décès</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/dead-but-active">Décédés actifs</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/synchro_ax">Synchro AX</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/googleapps">Google Apps</a>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td>
-      <strong>Infos dynamiques&nbsp;:</strong>&nbsp;&nbsp;
-      <a href="admin/downtime">Coupures</a>
+      <a href="admin/lists">MLs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/mx/broken">MX défaillants</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/tips">Astuces</a>
+      <a href="admin/emails/lost">Perdus de vue</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/emails/watch">Surveillés</a>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td class="titre">Forums</td>
+    <td>
+      <a href="admin/forums">Gestion des mises au ban</a>
+    </td>
+  </tr>
+  <tr class="impair">
+    <td class="titre">Trésorerie</td>
+    <td>
+      <a href="admin/payments">Paiements</a>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td class="titre">Divers</td>
+    <td>
+      <a href="admin/downtime">Coupures</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/icons">Icônes</a>
     </td>
   </tr>
+
+</table>
+
+<br />
+
+<table class="bicol" cellpadding="3" summary="Utilisateurs">
+  <tr><th colspan="2">{icon name=user_suit} Utilisateurs</th></tr>
   <tr class="impair">
+    <td class="titre">Comptes</td>
     <td>
-      <strong>Champs profil&nbsp;:</strong>&nbsp;&nbsp;
+      <a href="admin/promo">Ajout promotion</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/user">Edition</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/homonyms">Homonymes</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/deaths">Décès</a>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td class="titre">AX</td>
+    <td>
+      <a href="admin/ax-xorg">AX/X.org</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/synchro_ax">Synchro AX</a>
+    </td>
+  </tr>
+  <tr class="impair">
+    <td class="titre">Administration</td>
+    <td>
+      <a href="admin/dead-but-active">Décédés actifs</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/accounts">Administrateurs/Désactivations</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/googleapps">Google Apps</a>
+    </td>
+  </tr>
+
+  <tr><th colspan="2">{icon name=user_gray} Champs</th></tr>
+  <tr class="impair">
+    <td class="titre">Formation</td>
+    <td>
       <a href="admin/education">Formations</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/education_field">Domaines de formation</a>
@@ -98,15 +129,11 @@
       <a href="admin/education_degree">Niveau de formation</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/education_degree_set">Niveau par formation</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/binets">Binets</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/skins">Skins</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/medals">Décorations</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/sections">Sections</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr class="impair">
+    <td class="titre">Emploi</td>
+    <td>
       <a href="admin/secteurs">Secteurs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/ss_secteurs">Sous-secteurs</a>
@@ -121,71 +148,75 @@
     </td>
   </tr>
   <tr class="pair">
+    <td class="titre">Profil</td>
     <td>
-      <strong>Newsletter&nbsp;:</strong>&nbsp;&nbsp;
+      <a href="admin/binets">Binets</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/medals">Décorations</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/sections">Sections</a>
+    </td>
+  </tr>
+  <tr class="impair">
+    <td class="titre">Géoloc</td>
+    <td>
+      <a href="admin/geoloc">Synchro</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/geoloc/dynamap">Dynamap</a>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td class="titre">Compte</td>
+    <td>
+      <a href="admin/skins">Skins</a>
+    </td>
+  </tr>
+</table>
+
+<br />
+
+<table class="bicol" cellpadding="3" summary="Contenu éditorial">
+  <tr><th colspan="2">{icon name=page_edit} Editorial</th></tr>
+  <tr class="impair">
+    <td class="titre">Page d'accueil</td>
+    <td>
+      <a href="admin/tips">Astuces</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/events">Événements</a>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td class="titre">Newletter</td>
+    <td>
       <a href="admin/newsletter">Liste</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/newsletter/categories">Catégories</a>
     </td>
   </tr>
   <tr class="impair">
+    <td class="titre">AX-Letter</td>
     <td>
-      <strong>Administrer&nbsp;:</strong>&nbsp;&nbsp;
-      <a href="admin/auth-groupes-x">Auth Groupes X</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/lists">Listes</a>
-    </td>  
-  </tr>
-  <tr class="pair">
-    <td>
-      <strong>Valider demandes&nbsp;:</strong>&nbsp;&nbsp;
-      <a href="admin/validate">Valider</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/events">Événements</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/validate/answers">Réponses automatiques</a>
-    </td>
-  </tr>
-  <tr class="impair">
-    <td>
-      <strong>Trésorerie&nbsp;:</strong>&nbsp;&nbsp;
-      <a href="admin/payments">Paiements</a>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td>
-      <strong>Géoloc&nbsp;:</strong>&nbsp;&nbsp;
-      <a href="admin/geoloc">Synchro</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/geoloc/dynamap">Dynamap</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/geoloc/country">Pays</a>
-    </td>
-  </tr>
-  <tr class="impair">
-    <td>
-      <strong>Wiki&nbsp;:</strong>&nbsp;&nbsp;
-      <a href="admin/wiki">Pages et permissions</a>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td>
-      <strong>AX-Letter&nbsp;:</strong>&nbsp;&nbsp;
       <a href="ax/edit">Edition</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/axletter">Inscriptions et Permissions</a>
     </td>
   </tr>
-  <tr class="impair">
+  <tr class="pair">
+    <td class="titre">Wiki</td>
     <td>
-      <strong>Sondages&nbsp;:</strong>&nbsp;&nbsp;
+      <a href="admin/wiki">Pages et permissions</a>
+    </td>
+  </tr>
+  <tr class="impair">
+    <td class="titre">Sondages</td>
+    <td>
       <a href="survey/admin">Gestion des sondages</a>
     </td>
   </tr>
   <tr class="pair">
+    <td class="titre">Validations</td>
     <td>
-      <strong>Forums&nbsp;:</strong>&nbsp;&nbsp;
-      <a href="admin/forums">Gestion des mises au ban</a>
+      <a href="admin/validate/answers">Réponses automatiques</a>
     </td>
   </tr>
 </table>

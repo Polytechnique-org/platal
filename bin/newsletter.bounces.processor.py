@@ -178,15 +178,24 @@ class DirectBouncesFilter(MboxFilter):
         if message['X-Spam-Flag'] is None:
             # During finalization, we will verifiy that all messages were processed
             self.seen += 1
-            # Additionnal checks, just to be sure
-            if message['From'] != 'MAILER-DAEMON@polytechnique.org (Mail Delivery System)' \
-            or message['Subject'] != 'Undelivered Mail Returned to Sender':
-                return False
-            email = findAddressInBounce(message)
-            if email is not None:
-                self.emails.append(email)
-                self.mbox.add(message)
+            # Special case: ignore mailman notifications for the mailing-list
+            # on which the NL is forwarded
+            if message['From'] == 'polytechnique.org_newsletter-externes-bounces@listes.polytechnique.org':
+                print '! Dropping a notification from mailman for newsletter-externes@polytechnique.org, this should be OK.'
+                self.seen -= 1
                 return True
+            # Additionnal checks, just to be sure
+            elif message['From'] != 'MAILER-DAEMON@polytechnique.org (Mail Delivery System)' \
+            or message['Subject'] != 'Undelivered Mail Returned to Sender':
+                print '! Not an usual direct bounce (From="%s", Subject="%s").' % (message['From'], message['Subject'])
+            else:
+                email = findAddressInBounce(message)
+                if email is not None:
+                    self.emails.append(email)
+                    self.mbox.add(message)
+                    return True
+                else:
+                    print '! No email found in direct bounce, this is really bad.'
         return False
 
     def finalize(self):
@@ -213,7 +222,8 @@ class SpamFilter(MboxFilter):
         self.mbox.clear()
 
     def process(self, message):
-        if message['X-Spam-Flag'].startswith('Yes, tests=bogofilter'):
+        if message['X-Spam-Flag'] is not None \
+        and message['X-Spam-Flag'].startswith('Yes, tests=bogofilter'):
             self.mbox.add(message)
             return True
         return False
@@ -234,7 +244,8 @@ class UnsureFilter(MboxFilter):
         self.mbox.clear()
 
     def process(self, message):
-        if message['X-Spam-Flag'].startswith('Unsure, tests=bogofilter'):
+        if message['X-Spam-Flag'] is not None \
+        and message['X-Spam-Flag'].startswith('Unsure, tests=bogofilter'):
             self.mbox.add(message)
             return True
         return False
@@ -253,13 +264,14 @@ class CheckNonSpamFilter(MboxFilter):
         self.seen = 0
 
     def process(self, message):
-        if not message['X-Spam-Flag'].startswith('No, tests=bogofilter'):
+        if message['X-Spam-Flag'] is None \
+        or not message['X-Spam-Flag'].startswith('No, tests=bogofilter'):
             self.seen += 1
         return False
 
     def finalize(self):
         if self.seen > 0:
-            print 'Encountered %d messages that were neither spam, nor unsure, nor non-spams.' % self.counter
+            print 'Encountered %d messages that were neither spam, nor unsure, nor non-spams.' % self.seen
             print 'Please investigate.'
         else:
             print 'All messages were either spam, or unsure, or non-spams. Good.'

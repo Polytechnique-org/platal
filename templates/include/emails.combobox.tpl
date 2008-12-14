@@ -20,15 +20,27 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{assign var=new value="new"|cat:$i}
+{assign var=combobox value="combobox"|cat:$i}
+{if !$isjob}
 <tr {if $class}class="{$class}"{/if}>
   <td>
+{/if}
     <span class="titre">{if $name eq "email_directory"}Email annuaire AX
     {elseif $name eq "email"}Ajouter une adresse email{else}
     Email professionnel{/if}</span>
+{if !$isjob}
   </td>
   {if $name eq "email"}<td></td>{/if}
   <td>
-    <select name="{$name}" id="combobox">
+{else}
+  <br />
+  <span class="flags">
+    {include file="include/flags.radio.tpl" name="`$jobpref`[`$prefix`email_pub]" val=$pub}
+  </span>
+  <br />
+{/if}
+    <select name="{$name}" id="{$combobox}">
       {if $email_type eq "directory"}
         <optgroup label="Email annuaire AX">
           <option value="{$email_directory}" {if
@@ -79,41 +91,54 @@
     {if $name eq "email_directory"}
       <input type="checkbox" disabled="disabled" checked="checked"/>
       {icon name="flag_orange" title="Visible sur l'annuaire"}
-    {elseif $name neq "email"}
+    {elseif ($name neq "email") && (!$isjob)}
       <span class="flags">
-        {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.mail_pub}
+        {include file="include/flags.radio.tpl" name="`$jobpref`[`$prefix`email_pub]" val=$pub}
       </span>
     {/if}
     <br />
-    <span class="new" style="display: none">
+    <span class="{$new}" style="display: none">
       <input type="text" maxlength="60" {if $error}class="error" value="{$val}"{/if} name="{if (($name neq "email_directory")
-      && ($name neq "email"))}jobs[{$i}][email_new]{else}{$name}_new{/if}"/>
+      && ($name neq "email"))}jobs[{$i}][{$prefix}email_new]{else}{$name}_new{/if}"/>
     </span>
     <script type="text/javascript">//<![CDATA[
       {literal}
       $(function() {
-        $("select#combobox").change(function() {
-          $(".new").hide();
-          if ($("select#combobox").val() == "new@example.org") {
-            $(".new").show();
+        var i = {/literal}{$i}{literal};
+        $('select#combobox' + i).change(function() {
+          $('.new' + i).hide();
+          if ($('select#combobox' + i).val() == "new@example.org") {
+            $('.new' + i).show();
           }
         }).change();
       });
       {/literal}
     // ]]></script>
+{if !$isjob}
   </td>
   {if $name eq "email"}<td></td>{/if}
 </tr>
+{else}
+<br />
+{/if}
 {if $name neq "email"}
-  <tr {if $class}class="{$class}"{/if} class="new" style="display: none">
+{if !$isjob}
+  <tr {if $class}class="{$class} {$new}"{else}class="{$new}"{/if} style="display: none">
     <td colspan="2">
+{else}
+  <div class="{$new}" style="display: none">
+{/if}
       <p><small><strong><em>Attention :</em></strong> cette adresse email figurera dans
       {if $name eq "email_directory"}l'annuaire papier{else}tes informations professionnelles
       {/if} mais n'est pas ajoutée à la liste de tes redirections. Nous te conseillons fortement de
       <strong><a href="emails/redirect">l'ajouter là</a></strong>, surtout
       si tu n'en as plus de valide.</small></p>
+{if !$isjob}
     </td>
   </tr>
+{else}
+  </div>
+{/if}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

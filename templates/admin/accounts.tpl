@@ -20,61 +20,33 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Sondages</h1>
+<h1>Comptes désactivés</h1>
 
 <table class="bicol">
-  <tr>
-    <th>
-      Sondages en cours
-    </th>
-  </tr>
-  {iterate item=s from=$survey_current}
-  {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
-  <tr class="{cycle name=cs_cycle values="impair,pair"}">
-    <td class="half">
-      &bull;
-      <a href="survey/vote/{$s.id}">
-        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
-      </a>
+  <tr><th>Nom</th><th>Commentaire</th></tr>
+  {iterate from=$disabled item=user}
+  <tr class="{cycle values="pair,impair"}">
+    <td>
+      <a href="admin/user/{$user.hruid}">{$user.prenom} {$user.nom} ({$user.promo})</a>
+    </td>
+    <td>
+      {$user.comment|default='(none)'}
     </td>
   </tr>
-    {assign var="has_cs" value="true"}
-  {/if}
   {/iterate}
-  <tr class="impair">
-    <td class="half">
-      {if !$has_cs}Aucun sondage en cours{/if}
-      {if $smarty.session.auth}<a style="display: block; float: right;" href="survey/edit/new">{icon name=page_edit} Proposer un sondage</a>{/if}
-    </td>
-  </tr>
 </table>
 
-<br />
+<h1>Administrateurs du site</h1>
 
-<table class="bicol">
-  <tr>
-    <th>
-      Anciens sondages
-    </th>
-  </tr>
-  {iterate item=s from=$survey_old}
-    {if $smarty.session.auth || $s.mode == Survey::MODE_ALL}
-  <tr class="{cycle name=os_cycle values="impair,pair"}">
-    <td class="half">
-      &bull;
-      <a href="survey/result/{$s.id}">
-        {$s.title} [{$s.end|date_format:"%x"} - {$survey_modes[$s.mode]}]
-      </a>
+<table class="tinybicol">
+  <tr><th>Utilisateur</th></tr>
+  {iterate from=$admins item=user}
+  <tr class="{cycle values="pair,impair"}">
+    <td>
+      <a href="admin/user/{$user.hruid}">{$user.prenom} {$user.nom} ({$user.promo})</a>
     </td>
   </tr>
-      {assign var="has_os" value="true"}
-    {/if}
   {/iterate}
-  {if !$has_os}
-  <tr>
-    <td class="half">Aucun ancien sondage</td>
-  </tr>
-  {/if}
 </table>
 
-{* vim:set et sw=2 sts=2 ts=8 enc=utf-8: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

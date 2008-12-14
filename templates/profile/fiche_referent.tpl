@@ -26,7 +26,7 @@
   <div id="fiche_identite">
     <div class="civilite">
       <strong>{$user->fullName()}</strong><br />
-      <span>X{$user->promo()}&nbsp;-&nbsp;</span> <a href="mailto:{$user->bestEmail()}">{$user->bestEmail()}</a>
+      <span>{$user->promo()}&nbsp;-&nbsp;</span> <a href="mailto:{$user->bestEmail()}">{$user->bestEmail()}</a>
     </div>
   </div>
   <div class="spacer"></div>

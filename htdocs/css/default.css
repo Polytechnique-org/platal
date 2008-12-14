@@ -228,6 +228,18 @@ td.action {
 }
 td.action a { padding: 0px 2px 0px 2px; }
 
+div.titre {
+    color: #000000;
+    background: inherit;
+    font-weight: bold;
+}
+
+span.titre {
+    color: #000000;
+    background: inherit;
+    font-weight: bold;
+}
+
 /*******************************************************************************
     4   Tableau de choix de skins
         [ Styles pour les tableaux de types de ceux des skins ]

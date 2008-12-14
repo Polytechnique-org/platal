@@ -82,9 +82,7 @@ class ProfileSearchName implements ProfileSetting
 
 class ProfileEdu implements ProfileSetting
 {
-    public function __construct()
-    {
-    }
+    public function __construct(){}
 
     static function sortByGradYear($line1, $line2) {
         $a = (int) $line1['grad_year'];
@@ -142,14 +140,12 @@ class ProfileEdu implements ProfileSetting
             }
         }
     }
-
 }
 
 class ProfileEmailDirectory implements ProfileSetting
 {
-    public function __construct()
-    {
-    }
+    public function __construct(){}
+    public function save(ProfilePage &$page, $field, $value){}
 
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -168,10 +164,6 @@ class ProfileEmailDirectory implements ProfileSetting
             }
         }
         return $value;
-    }
-
-    public function save(ProfilePage &$page, $field, $value)
-    {
     }
 }
 
@@ -335,14 +327,6 @@ class ProfileGeneral extends ProfilePage
                                WHERE  sn.user_id = {?}
                             ORDER BY  sn.name_type, search_score, search_name",
                           S::v('uid'));
-
-        // Retreive phones
-        $res = XDB::iterator("SELECT t.display_tel AS tel, t.tel_type AS type, t.pub, t.comment
-                                FROM profile_phones AS t
-                               WHERE t.uid = {?} AND t.link_type = 'user'
-                            ORDER BY t.tel_id",
-                             S::v('uid'));
-        $this->values['tels'] = $res->fetchAllAssoc();
 
         // Proposes choice for promo_display
         if ($this->values['entry_year'] != $this->values['grad_year'] - 3) {

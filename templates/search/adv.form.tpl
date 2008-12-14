@@ -318,8 +318,8 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
       </td>
     </tr>
     <tr>
-      <td>Poste</td>
-      <td><input type="text" class="autocomplete" name="poste" size="32" value="{$smarty.request.poste}" /></td>
+      <td>Description</td>
+      <td><input type="text" class="autocomplete" name="description" size="32" value="{$smarty.request.description}" /></td>
     </tr>
     <tr>
       <td>Secteur</td>

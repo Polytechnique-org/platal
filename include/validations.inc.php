@@ -87,7 +87,7 @@ abstract class Validate
         $this->type   = $_type;
         $res = XDB::query("SELECT  promo_display AS promo
                              FROM  profile_display
-                            WHERE  uid={?}", $_uid);
+                            WHERE  uid={?}", $this->user->id());
         $this->promo = $res->fetchOneCell();
     }
 
@@ -187,7 +187,7 @@ abstract class Validate
             $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
             $mailer->addTo($globals->core->admin_email);
 
-            $body = "Validation {$this->type} pour {$this->user->id()}\n\n"
+            $body = "Validation {$this->type} pour {$this->user->login()}\n\n"
               . S::user()->login() . " a ajouté le commentaire :\n\n"
               . Env::v('comm') . "\n\n"
               . "cf la discussion sur : " . $globals->baseurl . "/admin/validate";

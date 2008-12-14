@@ -29,6 +29,7 @@ function wizPage_onLoad(id)
         while ($('.' + prefix + i).length != 0) {
             i++;
         }
+        i--;
         for (var j = 0; j < i; j++) {
             prepareType(j);
         }
@@ -50,6 +51,8 @@ function wizPage_onLoad(id)
         for (var i = 0 ; document.getElementById('job_' + i) != null ; ++i) {
             updateJobSecteur(i, 'job_' + i, 'jobs[' + i + ']',
                              document.forms.prof_annu["jobs[" + i + "][ss_secteur]"].value);
+            updateJobSousSecteur(i, 'job_' + i, 'jobs[' + i + ']',
+                             document.forms.prof_annu["jobs[" + i + "][sss_secteur]"].value);
         }
         setTimeout('registerEnterpriseAutocomplete(-1)', 100);
         break;
@@ -503,7 +506,22 @@ function updateJobSecteur(nb, id, pref, sel)
     if (secteur == '') {
         secteur = '-1';
     }
-    Ajax.update_html(id + '_ss_secteur', 'profile/ajax/secteur/' +nb + '/' + secteur + '/' + sel);
+    Ajax.update_html(id + '_ss_secteur', 'profile/ajax/secteur/' + nb + '/' + id + '/' + pref + '/' + secteur + '/' + sel);
+}
+
+function updateJobSousSecteur(nb, id, pref, sel)
+{
+    var ssecteur = document.forms.prof_annu[pref + '[ss_secteur]'].value;
+    if (ssecteur == '') {
+        ssecteur = '-1';
+    }
+    Ajax.update_html(id + '_sss_secteur', 'profile/ajax/ssecteur/' + nb + '/' + ssecteur + '/' + sel);
+}
+
+function displayAllSector(id)
+{
+    $('.sector_text_' + id).remove();
+    $('.sector_' + id).show();
 }
 
 function makeAddJob(id)
@@ -525,6 +543,10 @@ function addJob()
     $.get(platal_baseurl + 'profile/ajax/job/' + i, makeAddJob(i));
 }
 
+function addEntreprise(id)
+{
+    $('.entreprise_' + id).toggle();
+}
 
 // Skills
 
@@ -619,13 +641,13 @@ function updateSecteur()
         document.getElementById('ss_secteur_sel').innerHTML = '';
         return;
     }
-    $.get(platal_baseurl + 'profile/ajax/secteur/-1/' + secteur,
+    $.get(platal_baseurl + 'profile/ajax/secteur/-1/0/0/' + secteur,
           function(data) {
-          data = '<a href="javascript:addSecteur()" style="display: none; float: right" id="secteurs_add">'
-          +  '  <img src="images/icons/add.gif" alt="" title="Ajouter ce secteur" />'
-          +  '</a>' + data;
-          document.getElementById('ss_secteur_sel').innerHTML = data;
-          attachEvent(document.forms.prof_annu['jobs[-1][ss_secteur]'], 'change', updateSSecteur);
+              data = '<a href="javascript:addSecteur()" style="display: none; float: right" id="secteurs_add">'
+                     +  '  <img src="images/icons/add.gif" alt="" title="Ajouter ce secteur" />'
+                     +  '</a>' + data;
+              document.getElementById('ss_secteur_sel').innerHTML = data;
+              $(document.forms.prof_annu['jobs[-1][ss_secteur]']).change(updateSSecteur);
           });
 }
 
@@ -662,6 +684,20 @@ function registerEnterpriseAutocomplete(id)
       function() {
         if (id == -1 || this.name == "jobs[" + id + "][name]") {
             $(this).autocomplete(platal_baseurl + "search/autocomplete/entreprise",
+                                 {
+                                   selectOnly:1,
+                                   field:this.name,
+                                   matchSubset:0,
+                                   width:$(this).width()
+                                 });
+        }
+      }
+    );
+
+    $(".sector_name").each(
+      function() {
+        if (id == -1 || this.name == "jobs[" + id + "][sss_secteur_name]") {
+            $(this).autocomplete(platal_baseurl + "search/autocomplete/sss_secteur",
                                  {
                                    selectOnly:1,
                                    field:this.name,

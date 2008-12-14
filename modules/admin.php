@@ -47,6 +47,7 @@ class AdminModule extends PLModule
             'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
             'admin/ipwatch'                => $this->make_hook('ipwatch', AUTH_MDP, 'admin'),
             'admin/icons'                  => $this->make_hook('icons', AUTH_MDP, 'admin'),
+            'admin/accounts'               => $this->make_hook('accounts', AUTH_MDP, 'admin'),
         );
     }
 
@@ -660,7 +661,11 @@ class AdminModule extends PLModule
                 "SELECT  alias
                    FROM  virtual
              INNER JOIN  virtual_redirect USING (vid)
-                  WHERE  type = 'user' AND redirect LIKE CONCAT({?}, '@%')", $user->id()));
+                  WHERE  type = 'user' AND (redirect = {?} OR redirect = {?})",
+                $user->forlifeEmail(),
+                // TODO: remove this über-ugly hack. The issue is that you need
+                // to remove all @m4x.org addresses in virtual_redirect first.
+                $user->login() . '@' . $globals->mail->domain2));
 
         $page->assign('aliases', XDB::iterator(
                 "SELECT  alias, type='a_vie' AS for_life,FIND_IN_SET('bestalias',flags) AS best,expire
@@ -1237,6 +1242,19 @@ class AdminModule extends PLModule
         }
         sort($icons);
         $page->assign('icons', $icons);
+    }
+
+    function handler_accounts(&$page)
+    {
+        $page->changeTpl('admin/accounts.tpl');
+        $page->assign('disabled', XDB::iterator('SELECT  u.nom, u.prenom, u.promo, u.comment, u.hruid
+                                                   FROM  auth_user_md5 AS u
+                                                  WHERE  perms = \'disabled\'
+                                               ORDER BY  nom, prenom'));
+        $page->assign('admins', XDB::iterator('SELECT  u.nom, u.prenom, u.promo, u.hruid
+                                                 FROM  auth_user_md5 AS u
+                                                WHERE  perms = \'admin\'
+                                             ORDER BY  nom, prenom'));
     }
 }
 
