@@ -54,8 +54,7 @@ class EntrReq extends Validate
         $this->tel      = $_tel;
         $this->fax      = $_fax;
 
-        $separators  = array("&", "(", ")", "-", "_", ",", ";", ".", ":", "/", "\\", "\'", "\"");
-        $replacement = array(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ");
+        $_name       = str_replace(array("&", "(", ")", "-", "_", ",", ";", ".", ":", "/", "\\", "\'", "\""), " ", $_name);
         $name        = explode(" ", $_name);
         $name_array  = array_map("trim", $name);
         $length      = count($name_array);
