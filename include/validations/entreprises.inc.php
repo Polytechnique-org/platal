@@ -54,7 +54,7 @@ class EntrReq extends Validate
         $this->tel      = $_tel;
         $this->fax      = $_fax;
 
-        $_name       = str_replace(array("&", "(", ")", "-", "_", ",", ";", ".", ":", "/", "\\", "\'", "\""), " ", $_name);
+        $_name       = preg_replace('/[^0-9a-z]/i', ' ', strtolower(replace_accent($_name)));
         $name        = explode(" ", $_name);
         $name_array  = array_map("trim", $name);
         $length      = count($name_array);
@@ -73,7 +73,6 @@ class EntrReq extends Validate
                           . $where);
         $this->suggestions = "| ";
         while ($sug = $res->next()) {
-            var_dump($sug);
             $this->suggestions .= $sug['name'] . " | ";
         }
     }
