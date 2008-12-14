@@ -37,6 +37,7 @@ class EntrReq extends Validate
     public $tel;
     public $fax;
 
+    public $suggestions;
     //TODO: addresses
 
     // }}}
@@ -45,13 +46,37 @@ class EntrReq extends Validate
     public function __construct(User &$_user, $_id, $_name, $_acronym, $_url, $_email, $_tel, $_fax, $_stamp = 0)
     {
         parent::__construct($_user, true, 'entreprise', $_stamp);
-        $this->id        = $_id;
-        $this->name      = $_name;
-        $this->acronym   = $_acronym;
-        $this->url       = $_url;
-        $this->email     = $_email;
-        $this->tel       = $_tel;
-        $this->fax       = $_fax;
+        $this->id       = $_id;
+        $this->name     = $_name;
+        $this->acronym  = $_acronym;
+        $this->url      = $_url;
+        $this->email    = $_email;
+        $this->tel      = $_tel;
+        $this->fax      = $_fax;
+
+        $separators  = array("&", "(", ")", "-", "_", ",", ";", ".", ":", "/", "\\", "\'", "\"");
+        $replacement = array(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ");
+        $name        = explode(" ", $_name);
+        $name_array  = array_map("trim", $name);
+        $length      = count($name_array);
+        $where       = "";
+        for ($i = 0; $i < $length; $i++) {
+            if (strlen($name_array[$i]) > 2) {
+                if ($where !== "") {
+                    $where .= " OR ";
+                }
+                $where .= "name LIKE '%" . $name_array[$i] . "%'";
+            }
+        }
+        $res = XDB::iterator("SELECT  name
+                             FROM  profile_job_enum
+                            WHERE  "
+                          . $where);
+        $this->suggestions = "| ";
+        while ($sug = $res->next()) {
+            var_dump($sug);
+            $this->suggestions .= $sug['name'] . " | ";
+        }
     }
 
     // }}}

@@ -26,6 +26,10 @@
   <td>{$valid->name}</td>
 </tr>
 <tr class="pair">
+  <td class="titre">Noms similaires existants&nbsp;:</td>
+  <td>{$valid->suggestions}</td>
+</tr>
+<tr class="pair">
   <td class="titre">Acronyme&nbsp;:</td>
   <td>{$valid->acronym}</td>
 </tr>
