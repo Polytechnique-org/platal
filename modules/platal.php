@@ -356,7 +356,7 @@ Adresse de secours : " . Post::v('email') : ""));
             $mymail->send();
 
             // on cree un objet logger et on log l'evenement
-            $logger = $_SESSION['log'] = new PlLogger($uid);
+            $logger = $_SESSION['log'] = S::logger($uid);
             S::logger()->log('recovery', $mails);
         } else {
             $page->trigError('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
@@ -395,7 +395,7 @@ Adresse de secours : " . Post::v('email') : ""));
                 }
             }
 
-            $logger = new PlLogger($uid);
+            $logger = S::logger($uid);
             S::logger()->log("passwd","");
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
