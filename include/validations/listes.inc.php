@@ -125,20 +125,16 @@ class ListeReq extends Validate
 
         if ($this->asso == "alias") {
             $new = $this->liste . '@' . $this->domain;
-            XDB::query('INSERT INTO x4dat.virtual (alias,type) VALUES({?}, "user")', $new);
+            XDB::query('INSERT INTO x4dat.virtual (alias, type) VALUES({?}, "user")', $new);
             foreach ($this->members as $member) {
-                $res = XDB::query(
-                        "SELECT  a.alias, b.alias
-                           FROM  x4dat.aliases AS a
-                      LEFT JOIN  x4dat.aliases AS b ON (a.id=b.id AND b.type = 'a_vie')
-                          WHERE  a.alias={?} AND a.type!='homonyme'", $member);
-                list($alias, $blias) = $res->fetchOneRow();
-                $alias = empty($blias) ? $alias : $blias;
-                XDB::query(
-                    "INSERT INTO  x4dat.virtual_redirect (vid,redirect)
-                          SELECT  vid, {?}
-                            FROM  x4dat.virtual
-                           WHERE  alias={?}", $alias . "@" . $globals->mail->domain, $new);
+                $user = User::get($member);
+                if ($user != null) {
+                    XDB::query(
+                        "INSERT INTO  x4dat.virtual_redirect (vid, redirect)
+                              SELECT  vid, {?}
+                                FROM  x4dat.virtual
+                               WHERE  alias = {?}", $user->forlifeEmail(), $new);
+                }
             }
             return 1;
         }
@@ -150,7 +146,7 @@ class ListeReq extends Validate
         $liste = strtolower($this->liste);
         if ($ret && !$this->asso) {
             foreach(Array($liste, $liste . "-owner", $liste . "-admin", $liste . "-bounces", $liste . "-unsubscribe") as $l) {
-                XDB::execute("INSERT INTO aliases (alias,type) VALUES({?}, 'liste')", $l);
+                XDB::execute("INSERT INTO aliases (alias, type) VALUES({?}, 'liste')", $l);
             }
         } elseif ($ret) {
             foreach (Array('', 'owner', 'admin', 'bounces', 'unsubscribe') as $app) {
@@ -159,9 +155,9 @@ class ListeReq extends Validate
                     $app  = '-' . $app;
                 }
                 $red = $this->domain . '_' . $liste;
-                XDB::execute('INSERT INTO x4dat.virtual (alias,type)
-                                        VALUES({?},{?})', $liste . $app . '@' . $this->domain, 'list');
-                XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
+                XDB::execute('INSERT INTO x4dat.virtual (alias, type)
+                                        VALUES({?}, {?})', $liste . $app . '@' . $this->domain, 'list');
+                XDB::execute('INSERT INTO x4dat.virtual_redirect (vid, redirect)
                                         VALUES ({?}, {?})', XDB::insertId(),
                                        $red . $mdir . '@listes.polytechnique.org');
                 $list->mass_subscribe($liste, join(' ', $this->members));
