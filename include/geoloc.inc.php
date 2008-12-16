@@ -326,8 +326,10 @@ function fix_cities_not_on_map($limit=false, $cityid=false)
                 $values .= ",($cityid, $map_id, '')";
             }
         }
-        XDB::execute("REPLACE INTO  geoloc_city_in_maps
-                            VALUES  ".substr($values, 1));
+        if (strlen($values) > 1) {
+            XDB::execute("REPLACE INTO  geoloc_city_in_maps
+                                VALUES  ".substr($values, 1));
+        }
     } else {
         return false;
     }

@@ -356,8 +356,7 @@ Adresse de secours : " . Post::v('email') : ""));
             $mymail->send();
 
             // on cree un objet logger et on log l'evenement
-            $logger = $_SESSION['log'] = new PlLogger($uid);
-            S::logger()->log('recovery', $mails);
+            S::logger(uid)->log('recovery', $mails);
         } else {
             $page->trigError('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
                         'Si tu as un homonyme, utilise prenom.nom.promo comme login');
@@ -395,8 +394,7 @@ Adresse de secours : " . Post::v('email') : ""));
                 }
             }
 
-            $logger = new PlLogger($uid);
-            S::logger()->log("passwd","");
+            S::logger($uid)->log("passwd", "");
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
             $page->changeTpl('platal/motdepasse.tpl');
