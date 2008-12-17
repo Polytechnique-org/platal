@@ -37,7 +37,7 @@ class XorgSession extends PlSession
             }
         }
         if ((check_ip('dangerous') && S::has('uid')) || check_account()) {
-            $_SESSION['log']->log("view_page", $_SERVER['REQUEST_URI']);
+            S::logger()->log("view_page", $_SERVER['REQUEST_URI']);
         }
         return true;
     }
@@ -199,8 +199,8 @@ class XorgSession extends PlSession
         }
         if ($level == AUTH_SUID) {
             S::set('auth', AUTH_MDP);
+            unset($_SESSION['log']);
         }
-        unset($_SESSION['log']);
 
         // Retrieves main user properties.
         $res  = XDB::query("SELECT  u.user_id AS uid, u.hruid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
@@ -234,14 +234,12 @@ class XorgSession extends PlSession
             if (S::i('auth_by_cookie') == $uid || Post::v('remember', 'false') == 'true') {
                 $cookie = hash_encrypt($sess['password']);
                 setcookie('ORGaccess', $cookie, (time() + 25920000), '/', '', 0);
-                if ($logger && S::i('auth_by_cookie') != $uid) {
+                if (S::i('auth_by_cookie') != $uid) {
                     $logger->log("cookie_on");
                 }
             } else {
                 setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
-                if ($logger) {
-                    $logger->log("cookie_off");
-                }
+                $logger->log("cookie_off");
             }
         }
 

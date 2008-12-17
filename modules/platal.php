@@ -234,6 +234,7 @@ class PlatalModule extends PLModule
 
             if (Cookie::v('ORGaccess')) {
                 setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
+                S::logger()->log('cookie_on', '');
             }
 
             $page->changeTpl('platal/motdepasse.success.tpl');
@@ -441,8 +442,7 @@ Adresse de secours : " . Post::v('email') : ""));
         if ($level == 'forget' || $level == 'forgetall') {
             setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
             Cookie::kill('ORGaccess');
-            if (isset($_SESSION['log']))
-                S::logger()->log("cookie_off");
+            S::logger()->log("cookie_off");
         }
 
         if ($level == 'forgetuid' || $level == 'forgetall') {
@@ -452,10 +452,8 @@ Adresse de secours : " . Post::v('email') : ""));
             Cookie::kill('ORGdomain');
         }
 
-        if (isset($_SESSION['log'])) {
-            $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-            S::logger()->log('deconnexion',$ref);
-        }
+        $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+        S::logger()->log('deconnexion',$ref);
         Platal::session()->destroy();
 
         if (Get::has('redirect')) {
