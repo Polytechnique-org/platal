@@ -24,7 +24,7 @@ $owner = $opt['o'];
 $owner_user = User::getSilent($owner);
 if (!$owner_user) {
     echo "Supplied owner is not valid, aborting.\n";
-    exit 1;
+    exit(1);
 }
 
 // Creates the list.
