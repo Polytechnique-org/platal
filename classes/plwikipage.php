@@ -421,11 +421,16 @@ class PlWikiPage
           case 'public':
             return;
           case 'logged':
-            Platal::session()->start(AUTH_PUBLIC + 1);
-            return;
+            $ok = Platal::session()->start(AUTH_PUBLIC + 1);
+            break;
           default:
-            Platal::session()->start(Platal::session()->sureLevel());
-            return;
+            $ok = Platal::session()->start(Platal::session()->sureLevel());
+            break;
+        }
+        if (!$ok) {
+            global $platal;
+            $page =& Platal::page();
+            $platal->force_login($page);
         }
     }
 
