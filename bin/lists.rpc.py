@@ -787,8 +787,7 @@ def check_options_runner(userdesc, perms, mlist, listname, correct):
     if mlist.real_name.lower() != listname:
         options['real_name'] = listname, mlist.real_name
         if correct: mlist.real_name = listname
-    details = get_list_info(userdesc, perms, mlist)[0]
-    return (details, options)
+    return 1
 
 
 def check_options(userdesc, perms, vhost, listname, correct=False):
@@ -868,25 +867,22 @@ def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, ins
         mlist.header_filter_rules = []
         mlist.header_filter_rules.append(('X-Spam-Flag: Unsure, tests=bogofilter', mm_cfg.HOLD, False))
         mlist.header_filter_rules.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
-        mlist.Save()
-        mlist.Unlock()
 
         if ON_CREATE_CMD != '':
             try:    os.system(ON_CREATE_CMD + ' ' + name)
             except: pass
 
-        check_options(userdesc, perms, mlist, True)
+        check_options_runner(userdesc, perms, mlist, listname.lower(), True)
         mass_subscribe(userdesc, perms, mlist, members)
-
-        # avoid the "-1 mail to moderate" bug
-        mlist = MailList.MailList(name)
-        mlist._UpdateRecords()
         mlist.Save()
-
-        return 1
     finally:
         mlist.Unlock()
-    return 0
+
+    # avoid the "-1 mail to moderate" bug
+    mlist = MailList.MailList(name)
+    mlist._UpdateRecords()
+    mlist.Save()
+    return 1
 
 def delete_list(userdesc, perms, mlist, del_archives=0):
     """ Delete the list.
