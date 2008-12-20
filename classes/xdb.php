@@ -113,6 +113,11 @@ class XDB
             }
             if ($globals->debug) {
                 $text .= '<pre>' . pl_entities(XDB::_reformatQuery($query)) . '</pre>';
+            } else {
+                $file = fopen($globals->spoolroot . '/spool/tmp/query_errors', 'a');
+                fwrite($file, '<pre>' . pl_entities(XDB::_reformatQuery($query)) . '</pre>'
+                            . '<pre>' . XDB::$mysqli->error . '</pre>' . "\n");
+                fclose($file);
             }
             Platal::page()->kill($text);
             exit;
