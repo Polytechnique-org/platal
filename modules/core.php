@@ -30,6 +30,7 @@ class CoreModule extends PLModule
             'send_bug'    => $this->make_hook('bug', AUTH_COOKIE),
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
             'kill_sessions' => $this->make_hook('kill_sessions', AUTH_COOKIE, 'admin'),
+            'sql_errors'  => $this->make_hook('sqlerror', AUTH_COOKIE, 'admin'),
             'get_rights'  => $this->make_hook('get_rights', AUTH_MDP, 'admin'),
 
             'wiki_help'    => $this->make_hook('wiki_help', AUTH_PUBLIC),
@@ -189,6 +190,21 @@ class CoreModule extends PLModule
         header('Content-Type: text/html; charset=utf-8');
         $text = Env::v('text');
         echo MiniWiki::wikiToHtml($text, $action == 'title');
+        exit;
+    }
+
+    function handler_sqlerror(&$page, $clear = null) {
+        global $globals;
+        $file = @fopen($globals->spoolroot . '/spool/tmp/query_errors', 'r');
+        if ($file !== false) {
+            echo '<html><body>';
+            fpassthru($file);
+            fclose($file);
+            echo '</html></body>';
+        }
+        if ($clear == 'clear') {
+            @unlink($globals->spoolroot . '/spool/tmp/query_errors');
+        }
         exit;
     }
 }
