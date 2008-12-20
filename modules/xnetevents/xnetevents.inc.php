@@ -318,7 +318,7 @@ function event_change_shortname(&$page, $eid, $old, $new)
 
         $lastid = XDB::insertId();
         XDB::execute("INSERT INTO virtual_redirect (
-            SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
+            SELECT {?} AS vid, IF(a.alias IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
                   FROM groupex.membres AS m
              LEFT JOIN groupex.evenements_participants AS ep ON (ep.uid = m.uid AND ep.eid = {?})
              LEFT JOIN auth_user_md5   AS u ON (u.user_id = m.uid)
