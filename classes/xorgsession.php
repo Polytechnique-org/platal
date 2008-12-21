@@ -54,7 +54,7 @@ class XorgSession extends PlSession
         $res = XDB::query('SELECT  uid, password
                              FROM  accounts
                             WHERE  uid = {?} AND state = \'active\'',
-                         Cookie::i('ORGuid'));
+                         Cookie::i('uid'));
         if ($res->numRows() != 0) {
             list($uid, $password) = $res->fetchOneRow();
             $expected_value = sha1($password);
