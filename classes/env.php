@@ -217,11 +217,14 @@ class Cookie
         unset($_COOKIE[$key]);
     }
 
-    public static function set($key, $value, $days) {
+    public static function set($key, $value, $days, $secure = false) {
         global $globals;
         $key = $globals->cookie_ns . $key;
-        setcookie($key, $value, time() + 86400 * $days, $globals->cookie_path);
-        $_COOKIE[$key] = $value;
+        if (!$secure || @$_SERVER['HTTPS']) {
+            setcookie($key, $value, time() + 86400 * $days, $globals->cookie_path, '',
+                      $secure, $secure);
+            $_COOKIE[$key] = $value;
+        }
     }
 
     public static function v($key, $default = null)
