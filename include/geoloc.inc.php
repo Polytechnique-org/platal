@@ -78,10 +78,30 @@ function geoloc_region($country, $current, $avail_only = false)
 function get_address_infos($txt)
 {
     global $globals;
+
     $url = $globals->geoloc->webservice_url."address.php?precise=1&txt=" . urlencode($txt);
-    if (!($f = @fopen($url, 'r'))) return false;
+    if ($globals->debug & DEBUG_BT) {
+        if (!isset(PlBacktrace::$bt['Geoloc'])) {
+            new PlBacktrace('Geoloc');
+        }
+        PlBacktrace::$bt['Geoloc']->start($url);
+    }
+    $f = @fopen($url, 'r');
+    if ($f === false) {
+        if ($globals->debug & DEBUG_BT) {
+            PlBacktrace::$bt['Geoloc']->stop(0, 'Can\'t fetch result');
+        }
+        return false;
+    }
     $keys = explode('|',fgets($f));
     $vals = explode('|',fgets($f));
+    if ($globals->debug & DEBUG_BT) {
+        $data = array();
+        for ($i = 0 ; $i < count($keys) ; ++$i) {
+            $data[] = array($keys[$i], $vals[$i]);
+        }
+        PlBacktrace::$bt['Geoloc']->stop(count($keys), null, $data);
+    }
     $infos = empty_address();
     foreach ($keys as $i=>$key) {
         if($vals[$i]) {
