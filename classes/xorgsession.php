@@ -47,7 +47,7 @@ class XorgSession extends PlSession
     private function tryCookie()
     {
         S::kill('auth_by_cookie');
-        if (Cookie::v('ORGaccess') == '' || !Cookie::has('ORGuid')) {
+        if (Cookie::v('access') == '' || !Cookie::has('uid')) {
             return -1;
         }
 
@@ -58,7 +58,7 @@ class XorgSession extends PlSession
         if ($res->numRows() != 0) {
             list($uid, $password) = $res->fetchOneRow();
             $expected_value = sha1($password);
-            if ($expected_value == Cookie::v('ORGaccess')) {
+            if ($expected_value == Cookie::v('access')) {
                 S::set('auth_by_cookie', $uid);
                 return 0;
             } else {
@@ -153,12 +153,10 @@ class XorgSession extends PlSession
             if (!S::has('suid')) {
                 if (Post::has('domain')) {
                     if (($domain = Post::v('domain', 'login')) == 'alias') {
-                        setcookie('ORGdomain', "alias", (time() + 25920000), '/', '', 0);
+                        Cookie::set('domain', 'alias', 300);
                     } else {
-                        setcookie('ORGdomain', '', (time() - 3600), '/', '', 0);
+                        Cookie::kill('domain');
                     }
-                    // pour que la modification soit effective dans le reste de la page
-                    $_COOKIE['ORGdomain'] = $domain;
                 }
             }
             S::kill('challenge');
@@ -212,16 +210,15 @@ class XorgSession extends PlSession
         } else {
             $logger = S::logger($uid);
             $logger->saveLastSession();
-            setcookie('ORGuid', $uid, (time() + 25920000), '/', '', 0);
+            Cookie::set('uid', $uid, 300);
 
             if (S::i('auth_by_cookie') == $uid || Post::v('remember', 'false') == 'true') {
-                $cookie = sha1($sess['password']);
-                setcookie('ORGaccess', $cookie, (time() + 25920000), '/', '', 0);
+                Cookie::set('access', sha1($sess['password']), 300);
                 if (S::i('auth_by_cookie') != $uid) {
                     $logger->log("cookie_on");
                 }
             } else {
-                setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
+                Cookie::kill('access');
                 $logger->log("cookie_off");
             }
         }

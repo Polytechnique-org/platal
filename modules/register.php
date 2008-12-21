@@ -443,8 +443,8 @@ class RegisterModule extends PLModule
             $log = S::v('log');
             S::logger()->log('passwd', '');
 
-            if (Cookie::v('ORGaccess')) {
-                setcookie('ORGaccess', sha1($password), (time()+25920000), '/', '' ,0);
+            if (Cookie::v('access')) {
+                Cookie::set('access', sha1($password), 300);
                 S::logger()->log('cookie_on', '');
             }
 
