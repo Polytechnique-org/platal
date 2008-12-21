@@ -96,15 +96,13 @@
   </table>
 </form>
 <p>
-  {icon name=error title="Attention"} Nous te déconseillons fortement d'utiliser le même
-  mot de passe que pour la connexion au site. En effet ce mot de passe sert à accéder à des
-  services <em>moins</em> sécurisés qui nécessitent l'enregistrement de celui-ci en clair
-  dans notre base de données.
+  Le mot de passe que tu choisis doit comporter au moins <strong>6 caractères</strong> quelconques.
 </p>
 <p>
-  Ce mot de passe peut être le même que celui d'accès au site. Il doit faire au
-  moins <strong>6 caractères</strong> quelconques. Attention au type de clavier que tu
-  utilises (qwerty?) et aux majuscules/minuscules.
+  {icon name=error title="Attention"} Nous te déconseillons fortement d'utiliser le même
+  mot de passe que pour la connexion au site. En effet, ce mot de passe sert à accéder à des
+  services <em>moins</em> sécurisés, ce qui nécessite son enregistrement en clair dans 
+  notre base de données.
 </p>
 
 {if $smarty.request.doc eq "nntp"}

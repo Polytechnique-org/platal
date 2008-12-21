@@ -20,6 +20,9 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{include file="profile/general.name.tpl display_name=$display_name tooltip_name=$tooltip_name prenom=$prenom
+  nom=$nom sort_name=$sort_name yourself=$yourself search_names=$search_names}
+
 <table class="bicol" style="margin-bottom: 1em"
   summary="Profil&nbsp;: Informations générales">
   <tr>
@@ -30,35 +33,6 @@
       </div>
       Informations générales
     </th>
-  </tr>
-  <tr>
-    <td>
-      <span class="titre">Nom</span><br/>
-    </td>
-    <td>
-      {$nom}
-      <input type='hidden' name='nom' {if $errors.nom}class="error"{/if} value="{$nom}" />
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <span class="titre">Prénom</span><br/>
-    </td>
-    <td>
-      {$prenom}
-      <input type='hidden' name='prenom' {if $errors.prenom}class="error"{/if} value="{$prenom}" />
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <span class="titre">Affichage de ton nom</span>
-    </td>
-    <td>
-      {if $tooltip_name}<span title="{$tooltip_name}" class="hint">{$display_name}</span>{else}{$display_name}{/if}
-      <a href="profile/edit#names_advanced" onclick="$('#names_advanced').show();$(this).hide();document.location = document.location + '#names_advanced';return false">
-        {icon name="page_edit" title="Plus de détail"}
-      </a>
-    </td>
   </tr>
   <tr>
     <td>
@@ -150,74 +124,6 @@
     </td>
   </tr>
  </table>
-
-<table class="bicol" style="margin-bottom: 1em;display:none"
-  summary="Profil : Noms" id="names_advanced">
-  <tr>
-    <th colspan="2">
-      Noms
-    </th>
-  </tr>
-  <tr class="impair">
-    <td>
-      <span class="flags">
-        <input type="checkbox" checked="checked" disabled="disabled" />
-        {icon name="flag_green" title="site public"}
-      </span>&nbsp;
-      <span class="titre">Affichage courant de ton nom</span>
-      <a class="popup3" href="Xorg/Profil#name_displayed">{icon name="information" title="aide"}</a>
-    </td>
-    <td>
-      <input type="text" name="display_name" value="{$display_name}" size="40"/>
-    </td>
-  </tr>
-  <tr class="impair">
-    <td>
-      <span class="titre">explication</span>
-      <a class="popup3" href="Xorg/Profil#name_tooltip">{icon name="information" title="aide"}</a>
-    </td>
-    <td>
-      <input type="text" name="tooltip_name" value="{$tooltip_name}" size="40"/>
-    </td>
-  </tr>
-  <tr class="impair">
-    <td>
-      <span class="titre">ranger ce nom à</span>
-      <a class="popup3" href="Xorg/Profil#name_order">{icon name="information" title="aide"}</a>
-    </td>
-    <td>
-      <input type="text" name="sort_name" value="{$sort_name}" size="40"/>
-    </td>
-  </tr>
-  <tr class="impair">
-    <td>
-      <span class="flags">
-        <input type="checkbox" checked="checked" disabled="disabled" />
-        {icon name="flag_red" title="privé"}
-      </span>&nbsp;
-      <span class="titre">Comment on doit t'appeller</span>
-      <a class="popup3" href="Xorg/Profil#name_yourself">{icon name="information" title="aide"}</a>
-    </td>
-    <td>
-      <input type="text" name="yourself" value="{$yourself}" size="40"/>
-    </td>
-  </tr>
-  <tr class="impair">
-    <td colspan="2">
-      <span class="titre">Recherche</span><span class="smaller">, ta fiche apparaît quand on cherche un de ces noms</span>
-      <a class="popup3" href="Xorg/Profil#name_search">{icon name="information" title="aide"}</a>
-      {iterate from=$search_names item="sn"}
-      <div id="search_name_{$sn.sn_id}" style="padding:2px" class="center">
-        {include file="profile/general.searchname.tpl" i=$sn.sn_id sn=$sn}
-      </div>
-      {/iterate}
-      <div id="add_search_name" class="center" style="clear: both">
-        <a href="javascript:addSearchName()">
-          {icon name=add title="Ajouter un nom de recherche"} Ajouter un nom
-        </a>
-      </div>
-    </td>
-</table>
 
 {if !$no_private_key}
 <table class="bicol"  style="margin-bottom: 1em"

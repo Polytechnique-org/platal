@@ -85,7 +85,8 @@ function check_redirect($red = null)
 {
     require_once 'emails.inc.php';
     if (is_null($red)) {
-        $red = new Redirect(S::user());
+        $user = S::user();
+        $red = new Redirect($user);
     }
     if ($red->get_uid() == S::v('uid')) {
         $_SESSION['no_redirect'] = !$red->other_active('');

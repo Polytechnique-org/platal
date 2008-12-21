@@ -155,7 +155,7 @@ function create_aliases (&$sub)
     $res = XDB::query("SELECT hruid FROM auth_user_md5 WHERE user_id = {?}", $uid);
     if ($res->numRows() == 0) {
         return "Tu n'as pas d'adresse à vie pré-attribuée.<br />"
-            . "Envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}</a>\">" .
+            . "Envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}</a>\">"
             . "support@{$globals->mail->domain}</a> en expliquant ta situation.";
     } else {
         // TODO: at the moment forlife == hruid, however we'll have to change

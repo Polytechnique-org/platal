@@ -445,6 +445,7 @@ class RegisterModule extends PLModule
 
             if (Cookie::v('ORGaccess')) {
                 setcookie('ORGaccess', sha1($password), (time()+25920000), '/', '' ,0);
+                S::logger()->log('cookie_on', '');
             }
 
             $page->assign('mdpok', true);

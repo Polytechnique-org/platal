@@ -233,6 +233,7 @@ class PlatalModule extends PLModule
 
             if (Cookie::v('ORGaccess')) {
                 setcookie('ORGaccess', sha1($password), (time()+25920000), '/', '' ,0);
+                S::logger()->log('cookie_on', '');
             }
 
             $page->changeTpl('platal/motdepasse.success.tpl');
@@ -355,8 +356,7 @@ Adresse de secours : " . Post::v('email') : ""));
             $mymail->send();
 
             // on cree un objet logger et on log l'evenement
-            $logger = $_SESSION['log'] = new PlLogger($uid);
-            S::logger()->log('recovery', $mails);
+            S::logger(uid)->log('recovery', $mails);
         } else {
             $page->trigError('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
                         'Si tu as un homonyme, utilise prenom.nom.promo comme login');
@@ -394,8 +394,7 @@ Adresse de secours : " . Post::v('email') : ""));
                 }
             }
 
-            $logger = new PlLogger($uid);
-            S::logger()->log("passwd","");
+            S::logger($uid)->log("passwd", "");
             $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
             $page->changeTpl('platal/motdepasse.tpl');
@@ -442,8 +441,7 @@ Adresse de secours : " . Post::v('email') : ""));
         if ($level == 'forget' || $level == 'forgetall') {
             setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
             Cookie::kill('ORGaccess');
-            if (isset($_SESSION['log']))
-                S::logger()->log("cookie_off");
+            S::logger()->log("cookie_off");
         }
 
         if ($level == 'forgetuid' || $level == 'forgetall') {
@@ -453,10 +451,8 @@ Adresse de secours : " . Post::v('email') : ""));
             Cookie::kill('ORGdomain');
         }
 
-        if (isset($_SESSION['log'])) {
-            $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-            S::logger()->log('deconnexion',$ref);
-        }
+        $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+        S::logger()->log('deconnexion',$ref);
         Platal::session()->destroy();
 
         if (Get::has('redirect')) {

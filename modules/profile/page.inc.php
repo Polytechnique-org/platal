@@ -361,7 +361,6 @@ abstract class ProfilePage implements PlWizardPage
             register_watch_op(S::i('uid'), WATCH_FICHE);
         }
         global $platal;
-        $log =& $_SESSION['log'];
         S::logger()->log('profil', $platal->pl_self(1));
     }
 

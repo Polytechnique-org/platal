@@ -78,11 +78,31 @@ function geoloc_region($country, $current, $avail_only = false)
 function get_address_infos($txt)
 {
     global $globals;
+
     $url = $globals->geoloc->webservice_url."address.php?precise=1&txt=" . urlencode($txt);
-    if (!($f = @fopen($url, 'r'))) return false;
+    if ($globals->debug & DEBUG_BT) {
+        if (!isset(PlBacktrace::$bt['Geoloc'])) {
+            new PlBacktrace('Geoloc');
+        }
+        PlBacktrace::$bt['Geoloc']->start($url);
+    }
+    $f = @fopen($url, 'r');
+    if ($f === false) {
+        if ($globals->debug & DEBUG_BT) {
+            PlBacktrace::$bt['Geoloc']->stop(0, 'Can\'t fetch result');
+        }
+        return false;
+    }
     $keys = explode('|',fgets($f));
     $vals = explode('|',fgets($f));
-    $infos = array();
+    if ($globals->debug & DEBUG_BT) {
+        $data = array();
+        for ($i = 0 ; $i < count($keys) ; ++$i) {
+            $data[] = array($keys[$i], $vals[$i]);
+        }
+        PlBacktrace::$bt['Geoloc']->stop(count($keys), null, $data);
+    }
+    $infos = empty_address();
     foreach ($keys as $i=>$key) {
         if($vals[$i]) {
             if ($key == 'sql') {
@@ -93,9 +113,24 @@ function get_address_infos($txt)
             }
         }
     }
-    if (isset($infos['sql']) && $infos['sql'])
-       XDB::execute("REPLACE INTO  geoloc_city
-                           VALUES  ".$infos['sql']);
+    if (empty($infos['country'])) {
+        $infos['country'] = '00';
+    }
+    if (isset($infos['sql']) && $infos['sql']) {
+        $sql = explode(', ', trim($infos['sql'], '()'));
+        if (count($sql) == 16) {
+            for ($i = 0 ; $i < 16 ; ++$i) {
+                $sql[$i] = stripslashes(trim($sql[$i], ' \''));
+            }
+            XDB::execute("REPLACE INTO  geoloc_city
+                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?},
+                                         {?}, {?}, {?}, {?}, {?}, {?},
+                                         {?}, {?}, {?}, {?})",
+                         $sql[0], $sql[1], $sql[2], $sql[3], $sql[4], $sql[5],
+                         $sql[6], $sql[7], $sql[8], $sql[9], $sql[10], $sql[11],
+                         $sql[12], $sql[13], $sql[14], $sql[15]);
+        }
+    }
     if (isset($infos['display']) && $infos['display'])
         XDB::execute("UPDATE  geoloc_pays
                          SET  display = {?}
@@ -326,8 +361,10 @@ function fix_cities_not_on_map($limit=false, $cityid=false)
                 $values .= ",($cityid, $map_id, '')";
             }
         }
-        XDB::execute("REPLACE INTO  geoloc_city_in_maps
-                            VALUES  ".substr($values, 1));
+        if (strlen($values) > 1) {
+            XDB::execute("REPLACE INTO  geoloc_city_in_maps
+                                VALUES  ".substr($values, 1));
+        }
     } else {
         return false;
     }
