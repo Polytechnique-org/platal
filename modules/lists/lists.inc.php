@@ -29,7 +29,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
     foreach($members as $mem) {
         list($m, $dom) = explode('@', $mem);
         $info = list_fetch_name($mem);
-        if (is_null($info['uid'])) {
+        if (!isset($info['uid']) || is_null($info['uid'])) {
             $membres[0][] = array('l' => $mem, 'p' => (!$tri_promo ? 'inconnue' : null));
         } else {
             $uid = $info['uid'];
@@ -66,9 +66,10 @@ function list_extract_members($members)
 // }}}
 // {{{ function list_sort_members
 
-function list_sort_members(&$members, $tri_promo = true)
+function list_sort_members($members, $tri_promo = true)
 {
-    return list_sort_owners(list_extract_members($members), $tri_promo);
+    $m = list_extract_members($members);
+    return list_sort_owners($m, $tri_promo);
 }
 
 // }}}
