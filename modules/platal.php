@@ -232,8 +232,8 @@ class PlatalModule extends PLModule
             $log =& S::v('log');
             S::logger()->log('passwd', '');
 
-            if (Cookie::v('ORGaccess')) {
-                setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
+            if (Cookie::v('access')) {
+                Cookie::set('access', sha1($password), 300);
                 S::logger()->log('cookie_on', '');
             }
 
@@ -440,16 +440,13 @@ Adresse de secours : " . Post::v('email') : ""));
         }
 
         if ($level == 'forget' || $level == 'forgetall') {
-            setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
-            Cookie::kill('ORGaccess');
+            Cookie::kill('access');
             S::logger()->log("cookie_off");
         }
 
         if ($level == 'forgetuid' || $level == 'forgetall') {
-            setcookie('ORGuid', '', time() - 3600, '/', '', 0);
-            Cookie::kill('ORGuid');
-            setcookie('ORGdomain', '', time() - 3600, '/', '', 0);
-            Cookie::kill('ORGdomain');
+            Cookie::kill('uid');
+            Cookie::kill('domain');
         }
 
         $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
