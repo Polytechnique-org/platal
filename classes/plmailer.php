@@ -312,10 +312,6 @@ class PlMailer extends Mail_Mime {
         $this->processPage($with_html);
         if (S::user()) {
             $this->addHeader('X-Org-Mail', S::user()->forlifeEmail());
-        } else if (S::v('forlife')) {
-            // TODO(vzanotti): trash this code when hruid will be part of master.
-            global $globals;
-            $this->addHeader('X-Org-Mail', S::v('forlife') . '@' . $globals->mail->domain);
         }
         $addrs = Array();
         foreach(Array('To', 'Cc', 'Bcc') as $hdr) {

@@ -127,12 +127,7 @@ class CoreModule extends PLModule
         }
 
         if (isset($_SESSION['log'])) {
-            if (S::user()) {
-                S::logger()->log("suid_start", "login by " . S::user()->login());
-            } else {
-                // TODO(vzanotti): trash that code when support of forlife will be gone.
-                S::logger()->log("suid_start", "login by ".S::v('forlife'));
-            }
+            S::logger()->log("suid_start", "login by " . S::user()->login());
         }
         Platal::session()->startSUID(S::i('uid'));
         Platal::session()->makePerms($level);
@@ -160,11 +155,10 @@ class CoreModule extends PLModule
         if (Env::has('send') && trim(Env::v('detailed_desc'))) {
             S::assert_xsrf_token();
 
-            // TODO(vzanotti): trash the 'forlife' bit when support of forlife will be gone.
             $body = wordwrap(Env::v('detailed_desc'), 78) . "\n\n"
                   . "----------------------------\n"
                   . "Page        : " . Env::v('page') . "\n\n"
-                  . "Utilisateur : " . (S::user() ? S::user()->login() : S::v('forlife')) . "\n"
+                  . "Utilisateur : " . S::user()->login() . "\n"
                   . "Navigateur  : " . $_SERVER['HTTP_USER_AGENT'] . "\n"
                   . "Skin        : " . S::v('skin') . "\n";
             $page->assign('bug_sent', 1);
@@ -172,14 +166,8 @@ class CoreModule extends PLModule
                              . ', tu devrais en recevoir une copie d\'ici quelques minutes. Nous allons '
                              . 'le traiter et y répondre dans les plus brefs délais.');
             $mymail = new PlMailer();
-            // TODO(vzanotti): trash the 'bestalias' bits when support of bestalias will be gone.
-            if (S::user()) {
-                $mymail->setFrom(sprintf('"%s" <%s>', S::user()->fullName(), S::user()->bestEmail()));
-                $mymail->addCc(sprintf('"%s" <%s>', S::user()->fullName(), S::user()->bestEmail()));
-            } else {
-                $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@' . $globals->mail->domain . '>');
-                $mymail->addCc('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@' . $globals->mail->domain . '>');
-            }
+            $mymail->setFrom(sprintf('"%s" <%s>', S::user()->fullName(), S::user()->bestEmail()));
+            $mymail->addCc(sprintf('"%s" <%s>', S::user()->fullName(), S::user()->bestEmail()));
             $mymail->addTo('support+platal@' . $globals->mail->domain);
             $mymail->setSubject('Plat/al '.Env::v('task_type').' : '.Env::v('item_summary'));
             $mymail->setTxtBody($body);
