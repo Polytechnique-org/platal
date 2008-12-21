@@ -84,14 +84,25 @@ class CoreModule extends PLModule
     function handler_robotstxt(&$page)
     {
         global $globals;
-        if (!$globals->core->restricted_platal) {
-            return PL_NOT_FOUND;
+
+        $disallowed_uris = array();
+        if ($globals->core->restricted_platal) {
+            $disallowed_uris[] = '/';
+        } else if (!empty($globals->core->robotstxt_disallowed_uris)) {
+            $disallowed_uris = preg_split('/[\s,]+/',
+                                          $globals->core->robotstxt_disallowed_uris,
+                                          -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        header('Content-Type: text/plain');
-        echo "User-agent: *\n";
-        echo "Disallow: /\n";
-        exit;
+        if (count($disallowed_uris) > 0) {
+            header('Content-Type: text/plain');
+            echo "User-agent: *\n";
+            foreach ($disallowed_uris as $uri) {
+                echo "Disallow: $uri\n";
+            }
+            exit;
+        }
+        return PL_NOT_FOUND;
     }
 
     function handler_purge_cache(&$page)
