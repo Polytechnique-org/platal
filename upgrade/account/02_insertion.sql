@@ -1,6 +1,8 @@
+# Create a type 'X' with all permissions
 insert into account_types
      values ('x', 'mail,groups,forums,list,search,portal');
 
+# Insert all existing accounts
 insert into accounts
      select u.user_id AS uid, hruid AS hruid, 'x' AS type,
             perms = 'admin' AS is_admin,
@@ -19,6 +21,14 @@ insert into accounts
   left join auth_user_quick as q on (q.user_id = u.user_id)
       where hruid is not null;
 
+# Insert all existing profiles
+insert into profiles
+     select user_id AS pid, hruid AS hrpid, matricule AS xorg_id,
+            matricule_ax AS ax_id, naissance AS birthdate, naissance_ini AS birthdate_ref
+       from auth_user_md5
+      where hruid is not null;
+
+# Add associations account <-> profile
 insert into account_profiles
      select user_id AS uid, user_id AS pid, 'owner' AS perms
        from auth_user_md5
