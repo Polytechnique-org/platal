@@ -82,7 +82,7 @@ function get_address_infos($txt)
     if (!($f = @fopen($url, 'r'))) return false;
     $keys = explode('|',fgets($f));
     $vals = explode('|',fgets($f));
-    $infos = array();
+    $infos = empty_address();
     foreach ($keys as $i=>$key) {
         if($vals[$i]) {
             if ($key == 'sql') {
@@ -92,6 +92,9 @@ function get_address_infos($txt)
                 $infos[$key] = $val;
             }
         }
+    }
+    if (empty($infos['country'])) {
+        $infos['country'] = '00';
     }
     if (isset($infos['sql']) && $infos['sql'])
        XDB::execute("REPLACE INTO  geoloc_city
