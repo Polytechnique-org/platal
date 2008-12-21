@@ -443,9 +443,9 @@ class RegisterModule extends PLModule
             $log = S::v('log');
             S::logger()->log('passwd', '');
 
-            if (Cookie::v('ORGaccess')) {
+            if (Cookie::v('access')) {
                 require_once('secure_hash.inc.php');
-                setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
+                Cookie::set('access', hash_encrypt($password), 300);
                 S::logger()->log('cookie_on', '');
             }
 
