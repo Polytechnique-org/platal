@@ -197,17 +197,31 @@ class Cookie
 {
     public static function _get($key, $default)
     {
+        global $globals;
+        $key = $globals->cookie_ns . $key;
         return isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;
     }
 
     public static function has($key)
     {
+        global $globals;
+        $key = $globals->cookie_ns . $key;
         return isset($_COOKIE[$key]);
     }
 
     public static function kill($key)
     {
+        global $globals;
+        $key = $globals->cookie_ns . $key;
+        setcookie($key, '', time() - 3600, $globals->cookie_path);
         unset($_COOKIE[$key]);
+    }
+
+    public static function set($key, $value, $days) {
+        global $globals;
+        $key = $globals->cookie_ns . $key;
+        setcookie($key, $value, time() + 86400 * $days, $globals->cookie_path);
+        $_COOKIE[$key] = $value;
     }
 
     public static function v($key, $default = null)

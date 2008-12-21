@@ -87,6 +87,11 @@ class PlGlobals
     public $locale;
     public $timezone;
 
+    /** Cookie configuration.
+     */
+    public $cookie_ns = 'ORG';
+    public $cookie_path = '/';
+
     /** You must give a list of file to load.
      * The filenames given are relatives to the config path of your plat/al installation.
      */
