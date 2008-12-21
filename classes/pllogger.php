@@ -36,6 +36,13 @@ abstract class PlLogger
      */
     abstract public function log($action, $data = null);
 
+    /** Check validity of the logger.
+     *
+     * @param $uid the uid of the current session.
+     * @return TRUE if the logger can still be used.
+     */
+    abstract public function isValid($uid);
+
     /** Build a logger.
      */
     public static function get($uid, $suid = 0)
@@ -47,16 +54,30 @@ abstract class PlLogger
             return new DummyLogger($uid, $suid);
         }
     }
+
+    /** Return a dummy logger.
+     */
+    public static function dummy($uid, $suid = 0) {
+        return new DummyLogger($uid, $suid);
+    }
 }
 
 class DummyLogger extends PlLogger
 {
+    private $uid;
+
     public function __construct($uid, $suid = 0)
     {
+        $this->uid = $uid;
     }
 
     public function log($action, $data = null)
     {
+    }
+
+    public function isValid($uid)
+    {
+        return $uid == $this->uid;
     }
 }
 
