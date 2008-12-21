@@ -116,9 +116,21 @@ function get_address_infos($txt)
     if (empty($infos['country'])) {
         $infos['country'] = '00';
     }
-    if (isset($infos['sql']) && $infos['sql'])
-       XDB::execute("REPLACE INTO  geoloc_city
-                           VALUES  ".$infos['sql']);
+    if (isset($infos['sql']) && $infos['sql']) {
+        $sql = explode(', ', trim($infos['sql'], '()'));
+        if (count($sql) == 16) {
+            for ($i = 0 ; $i < 16 ; ++$i) {
+                $sql[$i] = stripslashes(trim($sql[$i], ' \''));
+            }
+            XDB::execute("REPLACE INTO  geoloc_city
+                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?},
+                                         {?}, {?}, {?}, {?}, {?}, {?},
+                                         {?}, {?}, {?}, {?})",
+                         $sql[0], $sql[1], $sql[2], $sql[3], $sql[4], $sql[5],
+                         $sql[6], $sql[7], $sql[8], $sql[9], $sql[10], $sql[11],
+                         $sql[12], $sql[13], $sql[14], $sql[15]);
+        }
+    }
     if (isset($infos['display']) && $infos['display'])
         XDB::execute("UPDATE  geoloc_pays
                          SET  display = {?}
