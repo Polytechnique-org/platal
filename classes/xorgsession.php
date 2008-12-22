@@ -108,7 +108,7 @@ class XorgSession extends PlSession
             if (!S::logged()) {
                 S::set('auth', AUTH_COOKIE);
             }
-            return S::i('auth_by_cookie');
+            return User::getSilentWithValues(null, array('user_id' => S::i('auth_by_cookie')));
         }
 
 
@@ -170,12 +170,6 @@ class XorgSession extends PlSession
 
     protected function startSessionAs($user, $level)
     {
-        if (!($user instanceof User)) {
-            $user = User::getSilent($user);
-            if ($user === false) {
-                return false;
-            }
-        }
         if ((!is_null(S::v('user')) && S::i('user') != $user->id())
             || (S::has('uid') && S::i('uid') != $user->id())) {
             return false;

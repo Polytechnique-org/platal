@@ -25,6 +25,7 @@ class AdminModule extends PLModule
     {
         return array(
             'phpinfo'                      => $this->make_hook('phpinfo', AUTH_MDP, 'admin'),
+            'get_rights'                   => $this->make_hook('get_rights', AUTH_MDP, 'admin'),
             'admin'                        => $this->make_hook('default', AUTH_MDP, 'admin'),
             'admin/ax-xorg'                => $this->make_hook('ax_xorg', AUTH_MDP, 'admin'),
             'admin/dead-but-active'        => $this->make_hook('dead_but_active', AUTH_MDP, 'admin'),
@@ -55,6 +56,17 @@ class AdminModule extends PLModule
     {
         phpinfo();
         exit;
+    }
+
+    function handler_get_rights(&$page, $level)
+    {
+        if (S::suid()) {
+            $page->kill('Déjà en SUID');
+        }
+        $user =& S::user();
+        Platal::session()->startSUID($user, $level);
+
+        pl_redirect('/');
     }
 
     function handler_default(&$page)
@@ -388,7 +400,7 @@ class AdminModule extends PLModule
         }
 
         if(Env::has('suid_button') && $registered) {
-            if (!Platal::session()->startSUID($user->id())) {
+            if (!Platal::session()->startSUID($user)) {
                 $page->trigError('Impossible d\'effectuer un SUID sur ' . $user->id());
             } else {
                 pl_redirect("");

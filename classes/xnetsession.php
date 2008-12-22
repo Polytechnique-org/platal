@@ -122,7 +122,8 @@ class XnetSession extends XorgSession
 
     public function doSelfSuid()
     {
-        if (!$this->startSUID(S::i('uid'))) {
+        $user =& S::user();
+        if (!$this->startSUID($user)) {
             return false;
         }
         S::set('perms', User::makePerms('user'));
