@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2003-2004 Polytechnique.org
+ * Copyright (C) 2003-2008 Polytechnique.org
  * http://opensource.polytechnique.org/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -59,25 +59,6 @@ abstract class PlLogger
      */
     public static function dummy($uid, $suid = 0) {
         return new DummyLogger($uid, $suid);
-    }
-}
-
-class DummyLogger extends PlLogger
-{
-    private $uid;
-
-    public function __construct($uid, $suid = 0)
-    {
-        $this->uid = $uid;
-    }
-
-    public function log($action, $data = null)
-    {
-    }
-
-    public function isValid($uid)
-    {
-        return $uid == $this->uid;
     }
 }
 
