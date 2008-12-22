@@ -122,12 +122,8 @@ class CoreModule extends PLModule
 
     function handler_get_rights(&$page, $level)
     {
-        if (S::has('suid')) {
+        if (S::suid()) {
             $page->kill('Déjà en SUID');
-        }
-
-        if (isset($_SESSION['log'])) {
-            S::logger()->log("suid_start", "login by " . S::user()->login());
         }
         Platal::session()->startSUID(S::i('uid'), $level);
 

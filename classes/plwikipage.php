@@ -404,10 +404,11 @@ class PlWikiPage
           case 'public':
             return true;
           case 'logged':
-          case 'mdp':
             return S::logged();
+          case 'mdp':
+            return S::identified();
           case 'admin':
-            return S::has_perms();
+            return S::admin();
           default:
             return false;
         }

@@ -187,7 +187,7 @@ abstract class PlSession
      */
     public function startSUID($user, $perms = null)
     {
-        if (S::has('suid')) {
+        if (S::suid()) {
             return false;
         }
         $backup   = $_SESSION;
@@ -209,7 +209,7 @@ abstract class PlSession
      */
     public function stopSUID()
     {
-        if (!S::has('suid')) {
+        if (!S::suid()) {
             return false;
         }
         $_SESSION = $_SESSION['suid'];

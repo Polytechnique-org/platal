@@ -96,7 +96,7 @@ if ($feed) {
         file_put_contents($wiki_cache, $wikiAll);
     } elseif ($cache_exists) {
         $wikiAll = file_get_contents($wiki_cache);
-    } elseif (S::has_perms()) {
+    } elseif (S::admin()) {
         $wikiAll = "<p>La page de wiki $n n'existe pas. "
                  . "Il te suffit de <a href='" . str_replace('.', '/', $n) . "?action=edit'>l'éditer</a></p>";
     } else {
@@ -112,7 +112,7 @@ $page->assign('perms', array($wp->readPerms(), $wp->writePerms()));
 $page->assign('perms_opts', PlWikiPage::permOptions());
 
 $page->assign('canedit',    $wp->canWrite());
-$page->assign('has_perms',  S::has_perms());
+$page->assign('has_perms',  S::admin());
 
 $page->assign('wikipage', str_replace('.', '/', $n));
 if (!$feed && $wp->writePerms() == 'admin' && !Env::v('action') && $wiki_exists) {

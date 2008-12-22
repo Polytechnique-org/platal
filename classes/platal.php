@@ -267,7 +267,7 @@ abstract class Platal
             }
         }
         if ($hook['auth'] != AUTH_PUBLIC && !$this->check_perms($hook['perms'])) {
-            if (S::has_perms()) {
+            if (S::admin()) {
                 $page->trigWarning('Tu accèdes à cette page car tu es administrateur du site.');
             } else {
                 return PL_FORBIDDEN;

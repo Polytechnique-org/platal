@@ -60,6 +60,20 @@ class S
         return is_numeric($i) ? intval($i) : $default;
     }
 
+    public static function t($key, $default = '')
+    {
+        return trim(S::s($key, $default));
+    }
+
+    public static function blank($key, $strict = false)
+    {
+        if (!S::has($key)) {
+            return true;
+        }
+        $var = $strict ? S::s($key) : S::t($key);
+        return empty($var);
+    }
+
     public static function l(array $keys)
     {
         return array_map(array('S', 'v'), $keys);
@@ -112,7 +126,8 @@ class S
 
     public static function has_perms()
     {
-        return Platal::session()->checkPerms(PERMS_ADMIN);
+        // XXX: Deprecated, use S::admin() instead
+        return self::admin();
     }
 
     public static function logged()
@@ -123,6 +138,25 @@ class S
     public static function identified()
     {
         return S::i('auth', AUTH_PUBLIC) >= Platal::session()->sureLevel();
+    }
+
+    public static function admin()
+    {
+        return Platal::session()->checkPerms(PERMS_ADMIN);
+    }
+
+    public static function suid($field = null, $default = null)
+    {
+        if (is_null($field)) {
+            return !S::blank('suid');
+        } else {
+            $suid = S::v('suid', array());
+            if (!empty($suid) && isset($suid[$field])) {
+                return $suid[$field];
+            } else {
+                return $default;
+            }
+        }
     }
 
     // Anti-XSRF protections.
@@ -138,8 +172,14 @@ class S
         }
     }
 
+    public static function hasAuthToken()
+    {
+        return !S::blank('token');
+    }
+
     public static function rssActivated()
     {
+        // XXX: Deprecated, to be replaced by S::hasToken()
         return S::has('core_rss_hash') && S::v('core_rss_hash');
     }
 }
