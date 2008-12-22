@@ -425,10 +425,8 @@ Adresse de secours : " . Post::v('email') : ""));
 
     function handler_exit(&$page, $level = null)
     {
-        if (S::has('suid')) {
-            $suid = S::v('suid');
-            $log  = S::v('log');
-            S::logger()->log("suid_stop", S::user()->login() . " by " . $suid['hruid']);
+        if (S::suid()) {
+            S::logger()->log('suid_stop', S::user()->login() . " by " . S::suid('hruid'));
             Platal::session()->stopSUID();
             pl_redirect('admin/user/' . S::user()->login());
         }

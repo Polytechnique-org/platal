@@ -357,7 +357,7 @@ abstract class ProfilePage implements PlWizardPage
         // Update the last modification date
         XDB::execute('REPLACE INTO  user_changes
                                SET  user_id = {?}', S::v('uid'));
-        if (!S::has('suid')) {
+        if (!S::suid()) {
             register_watch_op(S::i('uid'), WATCH_FICHE);
         }
         global $platal;

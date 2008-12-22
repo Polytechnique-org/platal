@@ -131,14 +131,13 @@ class XnetSession extends XorgSession
 
     public function stopSUID()
     {
-        $suid = S::v('suid');
+        $perms = S::suid('perms');
         if (!parent::stopSUID()) {
             return false;
         }
-        S::kill('suid');
         S::kill('may_update');
         S::kill('is_member');
-        S::set('perms', $suid['perms']);
+        S::set('perms', $perms);
         return true;
     }
 }
@@ -162,7 +161,7 @@ function may_update($force = false, $lose = false)
         return false;
     } elseif ($lose) {
         $may_update[$asso_id] = false;
-    } elseif (S::has_perms() || (S::has('suid') && $force)) {
+    } elseif (S::admin() || (S::suid() && $force)) {
         $may_update[$asso_id] = true;
     } elseif (!isset($may_update[$asso_id]) || $force) {
         $res = XDB::query("SELECT  perms
@@ -194,7 +193,7 @@ function is_member($force = false, $lose = false)
         return false;
     } elseif ($lose) {
         $is_member[$asso_id] = false;
-    } elseif (S::has('suid') && $force) {
+    } elseif (S::suid() && $force) {
         $is_member[$asso_id] = true;
     } elseif (!isset($is_member[$asso_id]) || $force) {
         $res = XDB::query("SELECT  COUNT(*)

@@ -703,7 +703,7 @@ class XnetGrpModule extends PLModule
 
     function handler_change_rights(&$page)
     {
-        if (Env::has('right') && (may_update() || S::has('suid'))) {
+        if (Env::has('right') && (may_update() || S::suid())) {
             switch (Env::v('right')) {
               case 'admin':
                 Platal::session()->stopSUID();

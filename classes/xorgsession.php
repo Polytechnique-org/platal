@@ -120,9 +120,8 @@ class XorgSession extends PlSession
 
         /** We come from an authentication form.
          */
-        if (S::has('suid')) {
-            $suid  = S::v('suid');
-            $login = $uname = $suid['uid'];
+        if (S::suid()) {
+            $login = $uname = S::suid('uid');
             $redirect = false;
         } else {
             $uname = Env::v('username');
@@ -145,9 +144,8 @@ class XorgSession extends PlSession
         }
 
         $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && is_numeric($uname)) ? 'id' : 'alias');
-        if (!is_null($uid) && S::has('suid')) {
-            $suid = S::v('suid');
-            if ($suid['uid'] == $uid) {
+        if (!is_null($uid) && S::suid()) {
+            if (S::suid('uid') == $uid) {
                 $uid = S::i('uid');
             } else {
                 $uid = null;
@@ -155,7 +153,7 @@ class XorgSession extends PlSession
         }
         if (!is_null($uid)) {
             S::set('auth', AUTH_MDP);
-            if (!S::has('suid')) {
+            if (!S::suid()) {
                 if (Post::has('domain')) {
                     if (($domain = Post::v('domain', 'login')) == 'alias') {
                         Cookie::set('domain', 'alias', 300);
@@ -172,6 +170,12 @@ class XorgSession extends PlSession
 
     protected function startSessionAs($user, $level)
     {
+        if (!($user instanceof User)) {
+            $user = User::getSilent($user);
+            if ($user === false) {
+                return false;
+            }
+        }
         if ((!is_null(S::v('user')) && S::i('user') != $user->id())
             || (S::has('uid') && S::i('uid') != $user->id())) {
             return false;
@@ -209,9 +213,8 @@ class XorgSession extends PlSession
         $_SESSION = array_merge($_SESSION, $sess);
 
         // Starts the session's logger, and sets up the permanent cookie.
-        if (S::has('suid')) {
-            $suid = S::v('suid');
-            S::logger()->log("suid_start", S::v('hruid') . " by " . $suid['hruid']);
+        if (S::suid()) {
+            S::logger()->log("suid_start", S::v('hruid') . ' by ' . S::suid('hruid'));
         } else {
             S::logger()->saveLastSession();
             Cookie::set('uid', $user->id(), 300);
@@ -278,7 +281,7 @@ class XorgSession extends PlSession
 
     public function setSkin()
     {
-        if (S::logged() && (!S::has('skin') || S::has('suid'))) {
+        if (S::logged() && (!S::has('skin') || S::suid())) {
             $uid = S::v('uid');
             $res = XDB::query('SELECT  skin_tpl
                                  FROM  accounts AS a
@@ -307,7 +310,7 @@ class XorgSession extends PlSession
     }
 
     public function setAccessCookie($replace = false, $log = true) {
-        if (S::has('suid') || ($replace && !Cookie::blank('access'))) {
+        if (S::suid() || ($replace && !Cookie::blank('access'))) {
             return;
         }
         Cookie::set('access', sha1(S::v('password')), 300, true);

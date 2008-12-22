@@ -151,9 +151,9 @@ class AuthModule extends PLModule
 
         // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
         $uid = S::i('uid');
-        if (!isset($_SESSION['suid'])) {
+        if (!S::suid()) {
             global $platal;
-            S::logger(uid)->log('connexion_auth_ext', $platal->path);
+            S::logger($uid)->log('connexion_auth_ext', $platal->path);
         }
 
         /* on parcourt les entrees de groupes_auth */

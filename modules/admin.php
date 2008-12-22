@@ -358,7 +358,7 @@ class AdminModule extends PLModule
         $page->setTitle('Administration - Edit/Su/Log');
         require_once("emails.inc.php");
 
-        if (S::has('suid')) {
+        if (S::suid()) {
             $page->kill("Déjà en SUID !!!");
         }
 
@@ -388,7 +388,6 @@ class AdminModule extends PLModule
         }
 
         if(Env::has('suid_button') && $registered) {
-            S::logger()->log("suid_start", "login on " . $user->login());
             if (!Platal::session()->startSUID($user->id())) {
                 $page->trigError('Impossible d\'effectuer un SUID sur ' . $user->id());
             } else {
