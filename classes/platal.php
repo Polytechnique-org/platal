@@ -62,7 +62,7 @@ abstract class Platal
         foreach ($modules as $module) {
             $module = strtolower($module);
             $this->__mods[$module] = $m = PLModule::factory($module);
-            $this->__hooks += $m->handlers();
+            $this->__hooks = $m->handlers() + $this->__hooks;
         }
 
         if ($globals->mode == '') {
