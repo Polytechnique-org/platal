@@ -102,6 +102,11 @@ class XorgSession extends PlSession
                 }
             }
             if ($response != $expected_response) {
+                if (!S::logged()) {
+                    Platal::page()->trigError('Mot de passe ou nom d\'utilisateur invalide');
+                } else {
+                    Platal::page()->trigError('Mot de passe invalide');
+                }
                 S::logger($uid)->log('auth_fail', 'bad password');
                 return null;
             }
