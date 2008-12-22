@@ -15,7 +15,7 @@ insert into accounts
             CONCAT(prenom, ' ', IF (nom_usage != '' and nom_usage IS NOT NULL, nom_usage, nom)) AS full_name,
             prenom AS display_name,
             IF(FIND_IN_SET('femme', flags), 'female', 'male') AS sex,
-            IF(q.core_mail_fmt = 'html', 'html', 'plain') AS mail_format,
+            IF(q.core_mail_fmt = 'html', 'html', 'text') AS email_format,
             q.skin AS skin
        from auth_user_md5 as u
   left join auth_user_quick as q on (q.user_id = u.user_id)
