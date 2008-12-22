@@ -139,8 +139,11 @@ class User extends PlUser
                                    CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
                                    CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
                                    a.full_name, a.display_name, a.sex = 'female' AS gender,
-                                   a.email_format, a.state AS perms
+                                   a.email_format,
+                                   IF (a.state = 'active', at.perms, '') AS perms,
+                                   a.is_admin
                              FROM  accounts AS a
+                       INNER JOIN  account_types AS at ON (at.type = a.type)
                        INNER JOIN  profile_display AS d ON (d.uid = a.uid)
                         LEFT JOIN  aliases AS af ON (af.id = a.uid AND af.type = 'a_vie')
                         LEFT JOIN  aliases AS ab ON (ab.id = a.uid AND FIND_IN_SET('bestalias', ab.flags))
@@ -195,7 +198,7 @@ class User extends PlUser
         if ($this->perms === null) {
              $this->loadMainFields();
         }
-        $this->perm_flags = self::makePerms($this->perms);
+        $this->perm_flags = self::makePerms($this->perms, $this->is_admin);
     }
 
     /** Return the main profile attached with this account if any.
@@ -206,14 +209,11 @@ class User extends PlUser
     }
 
     // Return permission flags for a given permission level.
-    public static function makePerms($perms)
+    public static function makePerms($perms, $is_admin)
     {
-        $flags = new PlFlagSet();
-        if (is_null($flags) || $perms == 'disabled' || $perms == 'ext') {
-            return $flags;
-        }
+        $flags = new PlFlagSet($perms);
         $flags->addFlag(PERMS_USER);
-        if ($perms == 'admin') {
+        if ($is_admin) {
             $flags->addFlag(PERMS_ADMIN);
         }
         return $flags;

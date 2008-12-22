@@ -192,8 +192,9 @@ class XorgSession extends PlSession
                                     UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last,
                                     q.last_version, g.g_account_name IS NOT NULL AS googleapps,
                                     UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
-                                    IF(a.is_admin, 'admin', 'user') AS perms
+                                    a.is_admin, at.perms
                               FROM  accounts        AS a
+                        INNER JOIN  account_types   AS at ON(a.type = at.type)
                         INNER JOIN  auth_user_quick AS q  ON(a.uid = q.user_id)
                          LEFT JOIN  gapps_accounts  AS g  ON(a.uid = g.l_userid AND g.g_status = 'active')
                          LEFT JOIN  logger.last_sessions AS ls ON (ls.uid = a.uid)
@@ -224,7 +225,7 @@ class XorgSession extends PlSession
         }
 
         // Finalizes the session setup.
-        S::set('perms', User::makePerms($perms));
+        $this->makePerms($perms, S::b('is_admin'));
         $this->securityChecks();
         $this->setSkin();
         $this->updateNbNotifs();
@@ -271,18 +272,9 @@ class XorgSession extends PlSession
         return null;
     }
 
-    public function makePerms($perm)
+    protected function makePerms($perm, $is_admin)
     {
-        $flags = new PlFlagSet();
-        if ($perm == 'disabled' || $perm == 'ext') {
-            S::set('perms', $flags);
-            return;
-        }
-        $flags->addFlag(PERMS_USER);
-        if ($perm == 'admin') {
-            $flags->addFlag(PERMS_ADMIN);
-        }
-        S::set('perms', $flags);
+        S::set('perms', User::makePerms($perm, $is_admin));
     }
 
     public function setSkin()
