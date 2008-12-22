@@ -171,12 +171,21 @@ abstract class PlSession
      */
     abstract public function tokenAuth($login, $token);
 
+    /** Set the permissions to the given flagset.
+     *
+     * This function sets S::set('perms') with a flagset represeting the combination of
+     * $perms and $is_admin.
+     *
+     * $perms is an abstract object representing the permissions.
+     * $is_admin is a boolean, true if the current user has site-administration rights.
+     */
+    abstract protected function makePerms($perms, $is_admin);
 
     /*** SUID management ***/
 
     /** Start a new SUID session.
      */
-    public function startSUID($user)
+    public function startSUID($user, $perms = null)
     {
         if (S::has('suid')) {
             return false;
@@ -190,6 +199,9 @@ abstract class PlSession
             return false;
         }
         S::set('user', $user);
+        if (!is_null($perms)) {
+            $this->makePerms($perms, false);
+        }
         return true;
     }
 

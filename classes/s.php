@@ -49,6 +49,11 @@ class S
         return (string)S::v($key, $default);
     }
 
+    public static function b($key, $default = false)
+    {
+        return (bool)S::v($key, $default);
+    }
+
     public static function i($key, $default = 0)
     {
         $i = S::v($key, $default);

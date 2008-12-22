@@ -129,8 +129,7 @@ class CoreModule extends PLModule
         if (isset($_SESSION['log'])) {
             S::logger()->log("suid_start", "login by " . S::user()->login());
         }
-        Platal::session()->startSUID(S::i('uid'));
-        Platal::session()->makePerms($level);
+        Platal::session()->startSUID(S::i('uid'), $level);
 
         pl_redirect('/');
     }
