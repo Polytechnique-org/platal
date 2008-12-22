@@ -26,9 +26,22 @@ class User extends PlUser
     {
         global $globals;
 
+        if ($login instanceof Profile) {
+            $res = XDB::query('SELECT  ap.uid
+                                 FROM  account_profiles AS ap
+                                WHERE  ap.pid = {?} AND FIND_IN_SET(\'owner\', perms)',
+                              $login->id());
+            if ($res->numRows()) {
+                return $res->fetchOneCell();
+            }
+            throw new UserNotFoundException();
+        }
+
         // If $data is an integer, fetches directly the result.
         if (is_numeric($login)) {
-            $res = XDB::query("SELECT user_id FROM auth_user_md5 WHERE user_id = {?}", $login);
+            $res = XDB::query('SELECT  a.uid
+                                 FROM  accounts AS a
+                                WHERE  a.uid = {?}', $login);
             if ($res->numRows()) {
                 return $res->fetchOneCell();
             }
@@ -37,7 +50,9 @@ class User extends PlUser
         }
 
         // Checks whether $login is a valid hruid or not.
-        $res = XDB::query("SELECT user_id FROM auth_user_md5 WHERE hruid = {?}", $login);
+        $res = XDB::query('SELECT  a.uid
+                             FROM  accounts AS a
+                            WHERE  a.hruid = {?}', $login);
         if ($res->numRows()) {
             return $res->fetchOneCell();
         }
@@ -52,23 +67,24 @@ class User extends PlUser
         // Checks if $login is a valid alias on the main domains.
         list($mbox, $fqdn) = explode('@', $login);
         if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
-            $res = XDB::query("SELECT  u.user_id
-                                 FROM  auth_user_md5 AS u
-                           INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type IN ('alias', 'a_vie'))
-                                WHERE  a.alias = {?}", $mbox);
+            $res = XDB::query('SELECT  a.uid
+                                 FROM  accounts AS a
+                           INNER JOIN  aliases AS al ON (al.id = a.uid AND al.type IN (\'alias\', \'a_vie\'))
+                                WHERE  al.alias = {?}', $mbox);
             if ($res->numRows()) {
                 return $res->fetchOneCell();
             }
 
+            /** TODO: implements this by inspecting the profile.
             if (preg_match('/^(.*)\.([0-9]{4})$/u', $mbox, $matches)) {
-                $res = XDB::query("SELECT  u.user_id
-                                     FROM  auth_user_md5 AS u
-                               INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type IN ('alias', 'a_vie'))
-                                    WHERE  a.alias = {?} AND u.promo = {?}", $matches[1], $matches[2]);
+                $res = XDB::query('SELECT  a.uid
+                                     FROM  accounts AS a
+                               INNER JOIN  aliases AS al ON (al.id = a.uid AND al.type IN ('alias', 'a_vie'))
+                                    WHERE  al.alias = {?} AND a.promo = {?}', $matches[1], $matches[2]);
                 if ($res->numRows() == 1) {
                     return $res->fetchOneCell();
                 }
-            }
+            }*/
 
             throw new UserNotFoundException();
         }
@@ -82,10 +98,10 @@ class User extends PlUser
             if ($redir = $res->fetchOneCell()) {
                 // We now have a valid alias, which has to be translated to an hruid.
                 list($alias, $alias_fqdn) = explode('@', $redir);
-                $res = XDB::query("SELECT  u.user_id
-                                     FROM  auth_user_md5 AS u
-                                LEFT JOIN  aliases AS a ON (a.id = u.user_id AND a.type IN ('alias', 'a_vie'))
-                                    WHERE  a.alias = {?}", $alias);
+                $res = XDB::query("SELECT  a.uid
+                                     FROM  accounts AS a
+                                LEFT JOIN  aliases AS al ON (al.id = a.uid AND al.type IN ('alias', 'a_vie'))
+                                    WHERE  al.alias = {?}", $alias);
                 if ($res->numRows()) {
                     return $res->fetchOneCell();
                 }
@@ -95,9 +111,9 @@ class User extends PlUser
         }
 
         // Otherwise, we do suppose $login is an email redirection.
-        $res = XDB::query("SELECT  u.user_id
-                             FROM  auth_user_md5 AS u
-                        LEFT JOIN  emails AS e ON (e.uid = u.user_id)
+        $res = XDB::query("SELECT  a.uid
+                             FROM  accounts AS a
+                        LEFT JOIN  emails AS e ON (e.uid = a.uid)
                             WHERE  e.email = {?}", $login);
         if ($res->numRows() == 1) {
             return $res->fetchOneCell();
@@ -117,20 +133,18 @@ class User extends PlUser
         }
 
         global $globals;
-        $res = XDB::query("SELECT  u.hruid, d.promo_display AS promo,
+        /** TODO: promo stuff again */
+        /** TODO: fix perms field to fit new perms system */
+        $res = XDB::query("SELECT  a.hruid, d.promo_display AS promo,
                                    CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
                                    CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
-                                   CONCAT(u.prenom, ' ', IF(u.nom_usage <> '', u.nom_usage, u.nom)) AS full_name,
-                                   IF(u.prenom != '', u.prenom, u.nom) AS display_name,
-                                   FIND_IN_SET('femme', u.flags) AS gender,
-                                   q.core_mail_fmt AS email_format,
-                                   u.perms
-                             FROM  auth_user_md5 AS u
-                       INNER JOIN  profile_display AS d ON (d.uid = u.user_id)
-                        LEFT JOIN  auth_user_quick AS q ON (q.user_id = u.user_id)
-                        LEFT JOIN  aliases AS af ON (af.id = u.user_id AND af.type = 'a_vie')
-                        LEFT JOIN  aliases AS ab ON (ab.id = u.user_id AND FIND_IN_SET('bestalias', ab.flags))
-                            WHERE  u.user_id = {?}", $this->user_id);
+                                   a.full_name, a.display_name, a.sex = 'female' AS gender,
+                                   a.email_format, a.state AS perms
+                             FROM  accounts AS a
+                       INNER JOIN  profile_display AS d ON (d.uid = a.uid)
+                        LEFT JOIN  aliases AS af ON (af.id = a.uid AND af.type = 'a_vie')
+                        LEFT JOIN  aliases AS ab ON (ab.id = a.uid AND FIND_IN_SET('bestalias', ab.flags))
+                            WHERE  a.uid = {?}", $this->user_id);
         $this->fillFromArray($res->fetchOneAssoc());
     }
 
@@ -166,9 +180,6 @@ class User extends PlUser
         if (isset($values['mail_fmt'])) {
             $values['email_format'] = $values['mail_fmt'];
         }
-        if (isset($values['email_format'])) {
-            $values['email_format'] = ($values['email_format'] ? self::FORMAT_HTML : self::FORMAT_TEXT);
-        }
 
         parent::fillFromArray($values);
     }
@@ -185,6 +196,13 @@ class User extends PlUser
              $this->loadMainFields();
         }
         $this->perm_flags = self::makePerms($this->perms);
+    }
+
+    /** Return the main profile attached with this account if any.
+     */
+    public function profile()
+    {
+        return Profile::get($this);
     }
 
     // Return permission flags for a given permission level.

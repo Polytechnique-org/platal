@@ -187,7 +187,7 @@ class XorgSession extends PlSession
         /** TODO: Data to move are: banana_last, watch_last, last_version */
         /** TODO: Switch to new permission system */
         $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name, a.password,
-                                    a.sex = 'female' AS femme, a.mail_format as mail_fmt,
+                                    a.sex = 'female' AS femme, a.email_format as mail_fmt,
                                     a.token, FIND_IN_SET('watch', a.flags) AS watch_account,
                                     UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last,
                                     q.last_version, g.g_account_name IS NOT NULL AS googleapps,
