@@ -96,6 +96,9 @@ class PlatalLogger extends PlLogger
                      $this->uid, $this->session);
     }
 
+    public function isValid($uid) {
+        return $uid == $this->uid;
+    }
 
     /** Logs an action and its related data.
      *

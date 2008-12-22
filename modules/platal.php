@@ -229,13 +229,8 @@ class PlatalModule extends PLModule
                 }
             }
 
-            $log =& S::v('log');
-            S::logger()->log('passwd', '');
-
-            if (Cookie::v('access')) {
-                Cookie::set('access', sha1($password), 300);
-                S::logger()->log('cookie_on', '');
-            }
+            S::logger()->log('passwd');
+            Platal::session()->setAccessCookie(true);
 
             $page->changeTpl('platal/motdepasse.success.tpl');
             $page->run();
@@ -440,17 +435,14 @@ Adresse de secours : " . Post::v('email') : ""));
         }
 
         if ($level == 'forget' || $level == 'forgetall') {
-            Cookie::kill('access');
-            S::logger()->log("cookie_off");
+            Platal::session()->killAccessCookie();
         }
 
         if ($level == 'forgetuid' || $level == 'forgetall') {
-            Cookie::kill('uid');
-            Cookie::kill('domain');
+            Platal::session()->killLoginFormCookies();
         }
 
-        $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-        S::logger()->log('deconnexion',$ref);
+        S::logger()->log('deconnexion', @$_SERVER['HTTP_REFERER']);
         Platal::session()->destroy();
 
         if (Get::has('redirect')) {

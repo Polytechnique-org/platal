@@ -102,6 +102,11 @@ class XorgSession extends PlSession
                 }
             }
             if ($response != $expected_response) {
+                if (!S::logged()) {
+                    Platal::page()->trigError('Mot de passe ou nom d\'utilisateur invalide');
+                } else {
+                    Platal::page()->trigError('Mot de passe invalide');
+                }
                 S::logger($uid)->log('auth_fail', 'bad password');
                 return null;
             }
@@ -197,7 +202,6 @@ class XorgSession extends PlSession
         }
         if ($level == AUTH_SUID) {
             S::set('auth', AUTH_MDP);
-            unset($_SESSION['log']);
         }
 
         // Retrieves main user properties.
@@ -230,13 +234,9 @@ class XorgSession extends PlSession
             Cookie::set('uid', $uid, 300);
 
             if (S::i('auth_by_cookie') == $uid || Post::v('remember', 'false') == 'true') {
-                Cookie::set('access', hash_encrypt($sess['password']), 300);
-                if (S::i('auth_by_cookie') != $uid) {
-                    $logger->log("cookie_on");
-                }
+                $this->setAccessCookie(false, S::i('auth_by_cookie') != $uid);
             } else {
-                Cookie::kill('access');
-                $logger->log("cookie_off");
+                $this->killAccessCookie();
             }
         }
 
@@ -330,6 +330,29 @@ class XorgSession extends PlSession
         require_once 'notifs.inc.php';
         $n = select_notifs(false, S::i('uid'), S::v('watch_last'), false);
         S::set('notifs', $n->numRows());
+    }
+
+    public function setAccessCookie($replace = false, $log = true) {
+        if (S::has('suid') || ($replace && !Cookie::blank('access'))) {
+            return;
+        }
+        require_once('secure_hash.inc.php');
+        Cookie::set('access', hash_encrypt(S::v('password')), 300, true);
+        if ($log) {
+            S::logger()->log('cookie_on');
+        }
+    }
+
+    public function killAccessCookie($log = true) {
+        Cookie::kill('access');
+        if ($log) {
+            S::logger()->log('cookie_off');
+        }
+    }
+
+    public function killLoginFormCookies() {
+        Cookie::kill('uid');
+        Cookie::kill('domain');
     }
 }
 

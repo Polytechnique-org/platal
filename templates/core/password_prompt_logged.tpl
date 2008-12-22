@@ -20,26 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<h1>{icon name=error} Page sécurisée</h1>
 
-<div class="center">
-  <table>
-    <tr>
-      <td>
-        {icon name=error}
-      </td>
-      <td>
-        <span class="smaller">
-          <strong>
-            Pour des raisons de <span class="erreur">sécurité</span>, il est obligatoire de taper ton mot de passe, même
-            avec l'accès permanent, pour certaines opérations sensibles.
-          </strong>
-        </span>
-      </td>
-      <td>
-        {icon name=error}
-      </td>
-    </tr>
-  </table>
+<div>
+  La page que tu as demandée est classée comme sensible. Il est nécessaire de taper ton mot de passe
+  pour y accéder, même avec l'accès permanet activé.
 </div>
 <br />
 
@@ -47,14 +32,20 @@
   <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <td class="titre">
+        Nom d'utilisateur&nbsp;:
+      </td>
+      <td>{$smarty.session.hruid}</td>
+      <td class="right" rowspan="3" style="vertical-align: middle">
+        <input  type="submit" name="submitbtn" value="Envoyer" />
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">
         Mot de passe&nbsp;:
       </td>
       <td>
         <input type="password" name="password" size="10" maxlength="256" />
         &nbsp;<a href="recovery">Perdu&nbsp;?</a>
-      </td>
-      <td class="right" rowspan="2" style="vertical-align: middle">
-        <input  type="submit" name="submitbtn" value="Envoyer" />
       </td>
     </tr>
     <tr>
@@ -67,9 +58,6 @@
   </table>
 </form>
 <br />
-{if $smarty.request.response}<!-- failed login code -->
-{include core=triggers.tpl text="Erreur d'identification. Essaie à nouveau !" type="errors"}
-{/if}
 
 <!-- Set up the form with the challenge value and an empty reply value -->
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
