@@ -167,12 +167,13 @@ class XorgSession extends PlSession
             S::kill('challenge');
             S::logger($uid)->log('auth_ok');
         }
-        return $uid;
+        return User::getSilentWithValues(null, array('user_id' => $uid));
     }
 
-    protected function startSessionAs($uid, $level)
+    protected function startSessionAs($user, $level)
     {
-        if ((!is_null(S::v('user')) && S::i('user') != $uid) || (S::has('uid') && S::i('uid') != $uid)) {
+        if ((!is_null(S::v('user')) && S::i('user') != $user->id())
+            || (S::has('uid') && S::i('uid') != $user->id())) {
             return false;
         } else if (S::has('uid')) {
             return true;
@@ -185,7 +186,7 @@ class XorgSession extends PlSession
         /** TODO: Move needed informations to account tables */
         /** TODO: Currently suppressed data are matricule, promo */
         /** TODO: Data to move are: banana_last, watch_last, last_version */
-        /** TODO: Switch to new permission system */
+        /** TODO: Use the User object to fetch all this */
         $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name, a.password,
                                     a.sex = 'female' AS femme, a.email_format as mail_fmt,
                                     a.token, FIND_IN_SET('watch', a.flags) AS watch_account,
@@ -199,7 +200,7 @@ class XorgSession extends PlSession
                          LEFT JOIN  gapps_accounts  AS g  ON(a.uid = g.l_userid AND g.g_status = 'active')
                          LEFT JOIN  logger.last_sessions AS ls ON (ls.uid = a.uid)
                          LEFT JOIN  logger.sessions AS s  ON(s.id = ls.id)
-                             WHERE  a.uid = {?} AND a.state = 'active'", $uid);
+                             WHERE  a.uid = {?} AND a.state = 'active'", $user->id());
         $sess = $res->fetchOneAssoc();
         $perms = $sess['perms'];
         unset($sess['perms']);
@@ -210,15 +211,13 @@ class XorgSession extends PlSession
         // Starts the session's logger, and sets up the permanent cookie.
         if (S::has('suid')) {
             $suid = S::v('suid');
-            $logger = S::logger($uid);
-            $logger->log("suid_start", S::v('hruid') . " by " . $suid['hruid']);
+            S::logger()->log("suid_start", S::v('hruid') . " by " . $suid['hruid']);
         } else {
-            $logger = S::logger($uid);
-            $logger->saveLastSession();
-            Cookie::set('uid', $uid, 300);
+            S::logger()->saveLastSession();
+            Cookie::set('uid', $user->id(), 300);
 
-            if (S::i('auth_by_cookie') == $uid || Post::v('remember', 'false') == 'true') {
-                $this->setAccessCookie(false, S::i('auth_by_cookie') != $uid);
+            if (S::i('auth_by_cookie') == $user->id() || Post::v('remember', 'false') == 'true') {
+                $this->setAccessCookie(false, S::i('auth_by_cookie') != $user->id());
             } else {
                 $this->killAccessCookie();
             }
