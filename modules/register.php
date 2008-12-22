@@ -440,13 +440,8 @@ class RegisterModule extends PLModule
                 }
             }
 
-            $log = S::v('log');
-            S::logger()->log('passwd', '');
-
-            if (Cookie::v('access')) {
-                Cookie::set('access', sha1($password), 300);
-                S::logger()->log('cookie_on', '');
-            }
+            S::logger()->log('passwd');
+            Platal::session()->setAccessCookie(true);
 
             $page->assign('mdpok', true);
         }
