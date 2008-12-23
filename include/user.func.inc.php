@@ -357,7 +357,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                       LEFT JOIN  profile_education_enum        AS en ON (en.id = ed.eduid)
                       LEFT JOIN  profile_education_degree_enum AS d  ON (d.id  = ed.degreeid)
                       LEFT JOIN  profile_education_field_enum  AS f  ON (f.id  = ed.fieldid)
-                          WHERE  uid={?}
+                          WHERE  uid = {?} AND NOT FIND_IN_SET('primary', flags)
                        ORDER BY  ed.grad_year", $uid);
 
     if (list($name, $url, $degree, $grad_year, $field, $program) = $res->next()) {
