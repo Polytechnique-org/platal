@@ -133,9 +133,9 @@ class EventsModule extends PLModule
         $page->assign('geoloc_incitation', count($res));
 
         // Direct link to the RSS feed, when available.
-        if (S::rssActivated()) {
+        if (S::hasAuthToken()) {
             $page->setRssLink('Polytechnique.org :: News',
-                              '/rss/'.S::v('hruid') .'/'.S::v('core_rss_hash').'/rss.xml');
+                              '/rss/'.S::v('hruid') .'/'.S::v('token').'/rss.xml');
         }
 
         // Hide the read event, and reload the page to get to the next event.

@@ -1063,9 +1063,9 @@ class AdminModule extends PLModule
 
     function handler_wiki(&$page, $action = 'list', $wikipage = null, $wikipage2 = null)
     {
-        if (S::v('core_rss_hash')) {
+        if (S::hasAuthToken()) {
            $page->setRssLink('Changement Récents',
-                             '/Site/AllRecentChanges?action=rss&user=' . S::v('hruid') . '&hash=' . S::v('core_rss_hash'));
+                             '/Site/AllRecentChanges?action=rss&user=' . S::v('hruid') . '&hash=' . S::v('token'));
         }
 
         // update wiki perms

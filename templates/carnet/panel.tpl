@@ -38,8 +38,8 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
 </p>
 
 <div class="right">
-{if $smarty.session.core_rss_hash}
-<a href="carnet/rss/{$smarty.session.hruid}/{$smarty.session.core_rss_hash}/rss.xml" title="Notifications">{icon name=feed title='fil rss'}</a>
+{if $smarty.session.token}
+<a href="carnet/rss/{$smarty.session.hruid}/{$smarty.session.token}/rss.xml" title="Notifications">{icon name=feed title='fil rss'}</a>
 {/if}
 </div>
 

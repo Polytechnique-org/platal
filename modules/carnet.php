@@ -39,11 +39,11 @@ class CarnetModule extends PLModule
 
     function _add_rss_link(&$page)
     {
-        if (!S::has('core_rss_hash')) {
+        if (!S::hasAuthToken()) {
             return;
         }
         $page->setRssLink('Polytechnique.org :: Carnet',
-                          '/carnet/rss/'.S::v('hruid').'/'.S::v('core_rss_hash').'/rss.xml');
+                          '/carnet/rss/'.S::v('hruid').'/'.S::v('token').'/rss.xml');
     }
 
     function handler_index(&$page)
@@ -168,7 +168,7 @@ class CarnetModule extends PLModule
 
         // For XSRF protection, checks both the normal xsrf token, and the special RSS token.
         // It allows direct linking to contact adding in the RSS feed.
-        if (Env::v('action') && Env::v('token') !== S::v('core_rss_hash')) {
+        if (Env::v('action') && Env::v('token') !== S::v('token')) {
             S::assert_xsrf_token();
         }
         switch (Env::v('action')) {
