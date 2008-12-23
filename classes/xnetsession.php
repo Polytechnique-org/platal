@@ -76,7 +76,7 @@ class XnetSession extends XorgSession
     protected function doAuth($level)
     {
         if (S::identified()) { // ok, c'est bon, on n'a rien à faire
-            return S::i('uid');
+            return User::getSilentWithValues(null, array('user_id' => S::i('uid')));
         }
         if (!Get::has('auth')) {
             return null;
@@ -87,25 +87,25 @@ class XnetSession extends XorgSession
         }
         Get::kill('auth');
         S::set('auth', AUTH_MDP);
-        return Get::i('uid');
+        return User::getSilentWithValues(null, array('user_id' => Get::i('uid')));
     }
 
     protected function startSessionAs($user, $level)
     {
-        if ($level == -1) {
+        if ($level == AUTH_SUID) {
             S::set('auth', AUTH_MDP);
         }
-        $res  = XDB::query("SELECT  u.user_id AS uid, u.hruid, prenom, nom, perms, promo, password, FIND_IN_SET('femme', u.flags) AS femme,
-                                    q.core_mail_fmt AS mail_fmt, q.core_rss_hash
-                              FROM  auth_user_md5   AS u
-                        INNER JOIN  auth_user_quick AS q  USING(user_id)
-                             WHERE  u.user_id = {?} AND u.perms IN('admin', 'user')
-                             LIMIT  1", $user);
+        $res  = XDB::query("SELECT  a.uid, a.display_name, a.full_name,
+                                    a.sex = 'female' AS femme,
+                                    a.email_format, a.token,
+                                    at.perms, a.is_admin
+                              FROM  accounts AS a
+                        INNER JOIN  account_types AS at ON (at.type = a.type)
+                             WHERE  a.uid = {?} AND a.state = 'active'
+                             LIMIT  1", $user->id());
         $sess = $res->fetchOneAssoc();
-        $perms = $sess['perms'];
-        unset($sess['perms']);
         $_SESSION = array_merge($_SESSION, $sess);
-        S::set('perms', User::makePerms($perms));
+        $this->makePerms(S::s('perms'), S::b('is_admin'));
         S::kill('challenge');
         S::kill('loginX');
         S::kill('may_update');

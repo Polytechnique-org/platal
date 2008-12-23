@@ -86,8 +86,8 @@ class PlatalGlobals extends PlGlobals
     public function updateNbIns()
     {
         $res = XDB::query("SELECT  COUNT(*)
-                             FROM  auth_user_md5
-                            WHERE  perms IN ('admin','user') AND deces=0");
+                             FROM  accounts
+                            WHERE  state = 'active'");
         $cnt = $res->fetchOneCell();
         $this->changeDynamicConfig(array('NbIns' => $cnt));
     }
