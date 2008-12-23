@@ -130,6 +130,11 @@ class XDB
         return new XOrgDBResult(XDB::_prepare(func_get_args()));
     }
 
+    public static function format()
+    {
+        return XDB::_prepare(func_get_args());
+    }
+
     public static function execute()
     {
         global $globals;
