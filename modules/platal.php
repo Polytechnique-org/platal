@@ -120,15 +120,15 @@ class PlatalModule extends PLModule
     function __set_rss_state($state)
     {
         if ($state) {
-            $_SESSION['core_rss_hash'] = rand_url_id(16);
-            XDB::execute('UPDATE  auth_user_quick
-                                   SET  core_rss_hash={?} WHERE user_id={?}',
-                                   S::v('core_rss_hash'), S::v('uid'));
+            S::set('token', rand_url_id(16));
+            XDB::execute('UPDATE  accounts
+                             SET  token = {?}
+                           WHERE  uid = {?}', S::s('token'), S::i('uid'));
         } else {
-            XDB::execute('UPDATE  auth_user_quick
-                                   SET  core_rss_hash="" WHERE user_id={?}',
-                                   S::v('uid'));
-            S::kill('core_rss_hash');
+            S::kill('token');
+            XDB::execute('UPDATE  accounts
+                             SET  token = NULL
+                           WHERE  uid = {?}', S::i('uid'));
         }
     }
 
@@ -137,14 +137,13 @@ class PlatalModule extends PLModule
         $page->changeTpl('platal/preferences.tpl');
         $page->setTitle('Mes préférences');
 
-        if (Post::has('mail_fmt')) {
-            $fmt = Post::v('mail_fmt');
-            if ($fmt != 'texte') $fmt = 'html';
-            XDB::execute("UPDATE auth_user_quick
-                                       SET core_mail_fmt = '$fmt'
-                                     WHERE user_id = {?}",
-                                     S::v('uid'));
-            $_SESSION['mail_fmt'] = $fmt;
+        if (Post::has('email_format')) {
+            $fmt = Post::s('email_format');
+            XDB::execute("UPDATE accounts
+                             SET email_format = {?}
+                           WHERE uid = {?}",
+                         $fmt, S::v('uid'));
+            S::set('email_format', $fmt);
         }
 
         if (Post::has('rss')) {
@@ -170,25 +169,25 @@ class PlatalModule extends PLModule
         $url = Env::v('url');
 
         if (Env::v('submit') == 'Valider' and Env::has('url')) {
-            XDB::execute('UPDATE auth_user_quick
-                                       SET redirecturl = {?} WHERE user_id = {?}',
-                                   $url, S::v('uid'));
+            XDB::execute('UPDATE  auth_user_quick
+                             SET  redirecturl = {?} WHERE user_id = {?}',
+                         $url, S::i('uid'));
             S::logger()->log('carva_add', 'http://'.Env::v('url'));
             $page->trigSuccess("Redirection activée vers <a href='http://$url'>$url</a>");
         } elseif (Env::v('submit') == "Supprimer") {
-            XDB::execute("UPDATE auth_user_quick
-                                       SET redirecturl = ''
-                                     WHERE user_id = {?}",
-                                   S::v('uid'));
+            XDB::execute("UPDATE  auth_user_quick
+                             SET  redirecturl = ''
+                           WHERE  user_id = {?}",
+                         S::i('uid'));
             S::logger()->log("carva_del", $url);
             Post::kill('url');
             $page->trigSuccess('Redirection supprimée');
         }
 
-        $res = XDB::query('SELECT redirecturl
-                                       FROM auth_user_quick
-                                      WHERE user_id = {?}',
-                                    S::v('uid'));
+        $res = XDB::query('SELECT  redirecturl
+                             FROM  auth_user_quick
+                            WHERE  user_id = {?}',
+                          S::i('uid'));
         $page->assign('carva', $res->fetchOneCell());
 
         # FIXME: this code is not multi-domain compatible. We should decide how
@@ -219,12 +218,11 @@ class PlatalModule extends PLModule
         if (Post::has('response2'))  {
             S::assert_xsrf_token();
 
-            $_SESSION['password'] = $password = Post::v('response2');
-
-            XDB::execute('UPDATE  auth_user_md5
-                             SET  password={?}
-                           WHERE  user_id={?}', $password,
-                           S::v('uid'));
+            S::set('password', $password = Post::v('response2'));
+            XDB::execute('UPDATE  accounts
+                             SET  password = {?}
+                           WHERE  uid={?}', $password,
+                         S::i('uid'));
 
             // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
             // updates the Google Apps password as well.
@@ -258,20 +256,22 @@ class PlatalModule extends PLModule
         $wp = new PlWikiPage('Xorg.NNTPSécurisé');
         $wp->buildCache();
 
-        $uid  = S::v('uid');
+        $uid  = S::i('uid');
         $pass = Env::v('smtppass1');
-        $log  = S::v('log');
 
         if (Env::v('op') == "Valider" && strlen($pass) >= 6
-        &&  Env::v('smtppass1') == Env::v('smtppass2'))
-        {
-            XDB::execute('UPDATE auth_user_md5 SET smtppass = {?}
-                                     WHERE user_id = {?}', $pass, $uid);
+            &&  Env::v('smtppass1') == Env::v('smtppass2')) {
+            // FIXME: Put smtppass somewhere
+            XDB::execute('UPDATE  auth_user_md5
+                             SET  smtppass = {?}
+                           WHERE  user_id = {?}', $pass, $uid);
             $page->trigSuccess('Mot de passe enregistré');
             S::logger()->log("passwd_ssl");
         } elseif (Env::v('op') == "Supprimer") {
-            XDB::execute('UPDATE auth_user_md5 SET smtppass = ""
-                                     WHERE user_id = {?}', $uid);
+            // FIXME: Put smtppass somewhere
+            XDB::execute('UPDATE  auth_user_md5
+                             SET  smtppass = ""
+                           WHERE  user_id = {?}', $uid);
             $page->trigSuccess('Compte SMTP et NNTP supprimé');
             S::logger()->log("passwd_del");
         }
@@ -304,9 +304,7 @@ class PlatalModule extends PLModule
 
         $mailorg = strtok(Env::v('login'), '@');
 
-        // paragraphe rajouté : si la date de naissance dans la base n'existe pas, on l'update
-        // avec celle fournie ici en espérant que c'est la bonne
-
+        // XXX: recovery requires usage of profile data.
         $res = XDB::query(
                 "SELECT  user_id, naissance
                    FROM  auth_user_md5 AS u
@@ -369,10 +367,12 @@ Adresse de secours : " . Post::v('email') : ""));
     function handler_tmpPWD(&$page, $certif = null)
     {
         global $globals;
-        XDB::execute('DELETE FROM perte_pass
-                                      WHERE DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
+        // XXX: recovery requires data from the profile
+        XDB::execute('DELETE FROM  perte_pass
+                            WHERE  DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
 
-        $res   = XDB::query('SELECT uid FROM perte_pass WHERE certificat={?}', $certif);
+        $res = XDB::query('SELECT  uid
+                             FROM  perte_pass WHERE certificat={?}', $certif);
         $ligne = $res->fetchOneAssoc();
         if (!$ligne) {
             $page->changeTpl('platal/index.tpl');
@@ -382,10 +382,12 @@ Adresse de secours : " . Post::v('email') : ""));
         $uid = $ligne["uid"];
         if (Post::has('response2')) {
             $password = Post::v('response2');
-            XDB::query('UPDATE  auth_user_md5 SET password={?}
-                                   WHERE  user_id={?} AND perms IN("admin","user")',
-                                 $password, $uid);
-            XDB::query('DELETE FROM perte_pass WHERE certificat={?}', $certif);
+            XDB::query('UPDATE  accounts
+                           SET  password={?}
+                         WHERE  uid = {?} AND state = \'active\'',
+                       $password, $uid);
+            XDB::query('DELETE FROM  perte_pass
+                              WHERE  certificat={?}', $certif);
 
             // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
             // updates the Google Apps password as well.
@@ -413,21 +415,24 @@ Adresse de secours : " . Post::v('email') : ""));
         $page->setTitle('Skins');
 
         if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
-            XDB::execute('UPDATE auth_user_quick
-                             SET skin={?} WHERE user_id={?}',
-                         Env::i('newskin'), S::v('uid'));
+            XDB::execute('UPDATE  accounts
+                             SET  skin = {?}
+                           WHERE  uid = {?}',
+                         Env::i('newskin'), S::i('uid'));
             S::kill('skin');
             Platal::session()->setSkin();
         }
 
-        $res = XDB::query('SELECT id FROM skins WHERE skin_tpl={?}', S::v('skin'));
+        $res = XDB::query('SELECT  id
+                             FROM  skins
+                            WHERE  skin_tpl = {?}', S::v('skin'));
         $page->assign('skin_id', $res->fetchOneCell());
 
-        $sql = "SELECT s.*,auteur,count(*) AS nb
-                  FROM skins AS s
-             LEFT JOIN auth_user_quick AS a ON s.id=a.skin
-                 WHERE skin_tpl != '' AND ext != ''
-              GROUP BY id ORDER BY s.date DESC";
+        $sql = 'SELECT  s.*, auteur, COUNT(*) AS nb
+                  FROM  skins AS s
+             LEFT JOIN  accounts AS a ON (a.skin = s.id)
+                 WHERE  skin_tpl != \'\' AND ext != \'\'
+              GROUP BY  id ORDER BY s.date DESC';
         $page->assign('skins', XDB::iterator($sql));
     }
 
