@@ -170,7 +170,7 @@ class XorgSession extends PlSession
 
     protected function startSessionAs($user, $level)
     {
-        if ((!is_null(S::v('user')) && S::i('user') != $user->id())
+        if ((!is_null(S::v('user')) && S::v('user')->id() != $user->id())
             || (S::has('uid') && S::i('uid') != $user->id())) {
             return false;
         } else if (S::has('uid')) {
@@ -186,7 +186,7 @@ class XorgSession extends PlSession
         /** TODO: Data to move are: banana_last, watch_last, last_version */
         /** TODO: Use the User object to fetch all this */
         $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name, a.password,
-                                    a.sex = 'female' AS femme, a.email_format as mail_fmt,
+                                    a.sex = 'female' AS femme, a.email_format,
                                     a.token, FIND_IN_SET('watch', a.flags) AS watch_account,
                                     UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last,
                                     q.last_version, g.g_account_name IS NOT NULL AS googleapps,
