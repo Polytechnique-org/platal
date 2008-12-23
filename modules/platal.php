@@ -70,7 +70,7 @@ class PlatalModule extends PLModule
         if (S::logged()) {
             pl_redirect('events');
         } else if (!@$GLOBALS['IS_XNET_SITE']) {
-            pl_redirect('review');
+            $this->handler_review($page);
         }
     }
 
@@ -87,26 +87,34 @@ class PlatalModule extends PLModule
         exit;
     }
 
-    function handler_changelog(&$page)
+    function handler_changelog(&$page, $core = null)
     {
         $page->changeTpl('platal/changeLog.tpl');
 
-        $clog = pl_entities(file_get_contents(dirname(__FILE__).'/../ChangeLog'));
-        $clog = preg_replace('/===+\s*/', '</pre><hr /><pre>', $clog);
-        // url catch only (not all wiki syntax)
-        $clog = preg_replace(array(
-            '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/ui',
-            '/(\s|^)www\.((?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/iu',
-            '/(?:mailto:)?([a-z0-9.\-+_]+@([\-.+_]?[a-z0-9])+)/i'),
-          array(
-            '<a href="\\0">\\0</a>',
-            '\\1<a href="http://www.\\2">www.\\2</a>',
-            '<a href="mailto:\\0">\\0</a>'),
-          $clog);
-        $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
-        $clog = preg_replace('!vim:.*$!', '', $clog);
-        $clog = preg_replace("!(<hr />(\\s|\n)*)?<pre>(\s|\n)*</pre>((\\s|\n)*<hr />)?!m", "", "<pre>$clog</pre>");
-        $page->assign('ChangeLog', $clog);
+        function formatChangeLog($file) {
+            $clog = pl_entities(file_get_contents($file));
+            $clog = preg_replace('/===+\s*/', '</pre><hr /><pre>', $clog);
+            // url catch only (not all wiki syntax)
+            $clog = preg_replace(array(
+                '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/ui',
+                '/(\s|^)www\.((?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/iu',
+                '/(?:mailto:)?([a-z0-9.\-+_]+@([\-.+_]?[a-z0-9])+)/i'),
+              array(
+                '<a href="\\0">\\0</a>',
+                '\\1<a href="http://www.\\2">www.\\2</a>',
+                '<a href="mailto:\\0">\\0</a>'),
+              $clog);
+            $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
+            $clog = preg_replace('!vim:.*$!', '', $clog);
+            return preg_replace("!(<hr />(\\s|\n)*)?<pre>(\s|\n)*</pre>((\\s|\n)*<hr />)?!m", "", "<pre>$clog</pre>");
+        }
+        if ($core != 'core') {
+            $page->assign('core', false);
+            $page->assign('ChangeLog', formatChangeLog(dirname(__FILE__).'/../ChangeLog'));
+        } else {
+            $page->assign('core', true);
+            $page->assign('ChangeLog', formatChangeLog(dirname(__FILE__).'/../core/ChangeLog'));
+        }
     }
 
     function __set_rss_state($state)
