@@ -31,7 +31,6 @@ class CoreModule extends PLModule
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
             'kill_sessions' => $this->make_hook('kill_sessions', AUTH_COOKIE, 'admin'),
             'sql_errors'  => $this->make_hook('sqlerror', AUTH_COOKIE, 'admin'),
-            'get_rights'  => $this->make_hook('get_rights', AUTH_MDP, 'admin'),
 
             'wiki_help'    => $this->make_hook('wiki_help', AUTH_PUBLIC),
             'wiki_preview' => $this->make_hook('wiki_preview', AUTH_COOKIE, 'user', NO_AUTH),
@@ -118,16 +117,6 @@ class CoreModule extends PLModule
     function handler_kill_sessions(&$page)
     {
         kill_sessions();
-    }
-
-    function handler_get_rights(&$page, $level)
-    {
-        if (S::suid()) {
-            $page->kill('Déjà en SUID');
-        }
-        Platal::session()->startSUID(S::i('uid'), $level);
-
-        pl_redirect('/');
     }
 
     function handler_bug(&$page)
