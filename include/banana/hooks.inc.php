@@ -76,7 +76,7 @@ function hook_platalRSS($group)
     } else {
         $group = '';
     }
-    return '/rss/' . $group . S::v('hruid') . '/' . S::v('core_rss_hash') . '/rss.xml';
+    return '/rss/' . $group . S::v('hruid') . '/' . S::s('token') . '/rss.xml';
 }
 
 function hook_platalMessageLink($params)

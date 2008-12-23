@@ -36,7 +36,7 @@ function init_rss($template, $alias, $hash, $require_uid = true)
         $page->assign('rss_hash', $hash);
         header('Content-Type: application/rss+xml; charset=utf8');
     }
-    return is_null($user) ? null : $user->id();
+    return $user;
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

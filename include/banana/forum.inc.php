@@ -46,9 +46,8 @@ class ForumsBanana extends Banana
         }
         Banana::$debug_nntp = ($globals->debug & DEBUG_BT);
         Banana::$debug_smarty = ($globals->debug & DEBUG_SMARTY);
-        if (!S::v('core_rss_hash')) {
-            Banana::$feed_active = false;
-        }
+        Banana::$feed_active = S::hasAuthToken();
+
         parent::__construct($params, 'NNTP', 'PlatalBananaPage');
         if (@$params['action'] == 'profile') {
             Banana::$action = 'profile';

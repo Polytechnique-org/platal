@@ -139,7 +139,7 @@ class User extends PlUser
                                    CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
                                    CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
                                    a.full_name, a.display_name, a.sex = 'female' AS gender,
-                                   a.email_format,
+                                   a.email_format, a.password,
                                    IF (a.state = 'active', at.perms, '') AS perms,
                                    a.is_admin
                              FROM  accounts AS a

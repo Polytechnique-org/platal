@@ -47,13 +47,16 @@ class ListsModule extends PLModule
         );
     }
 
-    function prepare_client(&$page)
+    function prepare_client(&$page, $user = null)
     {
         global $globals;
 
         $this->load('lists.inc.php');
+        if (is_null($user)) {
+            $user = S::user();
+        }
 
-        $this->client = new MMList(S::v('uid'), S::v('password'));
+        $this->client = new MMList($user->id(), $user->password);
         return $globals->mail->domain;
     }
 
@@ -436,27 +439,22 @@ class ListsModule extends PLModule
 
     function handler_rss(&$page, $liste = null, $alias = null, $hash = null)
     {
-        require_once('rss.inc.php');
-        $uid = init_rss(null, $alias, $hash);
-        if (!$uid || !$liste) {
-            exit;
+        if (!$liste) {
+            return PL_NOT_FOUND;
+        }
+        $user = Platal::session()->tokenAuth($alias, $hash);
+        if (is_null($user)) {
+            return PL_FORBIDDEN;
         }
 
-        $res = XDB::query("SELECT user_id AS uid, password, alias AS forlife
-                             FROM auth_user_md5 AS u
-                       INNER JOIN aliases       AS a ON (a.id = u.user_id AND a.type = 'a_vie')
-                            WHERE u.user_id = {?}", $uid);
-        $row = $res->fetchOneAssoc();
-        $_SESSION = array_merge($row, $_SESSION);
-
-        $domain = $this->prepare_client($page);
+        $domain = $this->prepare_client($page, $user);
         if (list($det) = $this->client->get_members($liste)) {
             if (substr($liste,0,5) != 'promo' && ($det['ins'] || $det['priv'])
                     && !$det['own'] && ($det['sub'] < 2)) {
                 exit;
             }
             require_once('banana/ml.inc.php');
-            $banana = new MLBanana(S::user(), Array('listname' => $liste, 'domain' => $domain, 'action' => 'rss2'));
+            $banana = new MLBanana($user, Array('listname' => $liste, 'domain' => $domain, 'action' => 'rss2'));
             $banana->run();
         }
         exit;
