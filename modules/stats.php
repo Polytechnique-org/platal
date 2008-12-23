@@ -61,17 +61,17 @@ class StatsModule extends PLModule
 
     function handler_graph_evo(&$page, $jours = 365)
     {
-        define('DUREEJOUR',24*3600);
+        define('DUREEJOUR', 24 * 3600);
 
         //recupere le nombre d'inscriptions par jour sur la plage concernée
-        $res = XDB::iterRow(
-                "SELECT  IF( date_ins>DATE_SUB(NOW(),INTERVAL $jours DAY),
-                             TO_DAYS(date_ins)-TO_DAYS(NOW()),
-                            ".(-($jours+1)).") AS jour,
-                         COUNT(user_id) AS nb
-                   FROM  auth_user_md5
-                  WHERE  perms IN ('admin','user') AND deces = 0
-               GROUP BY  jour");
+        // FIXME: don't count dead peaple
+        $res = XDB::iterRow('SELECT  IF(registration_date > DATE_SUB(NOW(), INTERVAL {?} DAY),
+                                        TO_DAYS(registration_date) - TO_DAYS(NOW()),
+                                        -{?}) AS jour,
+                                     COUNT(uid) AS nb
+                               FROM  accounts
+                              WHERE  state = \'active\'
+                           GROUP BY  jour', (int)$jours, 1 + (int)$jours);
 
         //genere des donnees compatibles avec GNUPLOT
         $inscrits='';
@@ -129,11 +129,13 @@ EOF2;
             $depart = 1930;
 
             //recupere le nombre d'inscriptions par jour sur la plage concernée
-            $res = XDB::iterRow(
-                    "SELECT  promo, SUM(perms IN ('admin', 'user')) / COUNT(*) * 100
-                       FROM  auth_user_md5
-                      WHERE  promo >= $depart AND deces = 0
-                   GROUP BY  promo");
+            // XXX: Manage dead peaple...
+            $res = XDB::iterRow("SELECT  pe.entry_year AS promo, SUM(state = 'active') / COUNT(*) * 100
+                                   FROM  accounts AS a
+                             INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                             INNER JOIN  profile_education AS pe ON (pe.uid = ap.pid AND FIND_IN_SET('primary', pe.flags))
+                                  WHERE  pe.entry_year >= {?}
+                               GROUP BY  promo", $depart);
 
             //genere des donnees compatibles avec GNUPLOT
             $inscrits='';
@@ -175,23 +177,26 @@ EOF2;
         } else {
             //nombre de jours sur le graph
             $jours = 365;
-            define('DUREEJOUR',24*3600);
-            $res = XDB::query(
-                    "SELECT  min(TO_DAYS(date_ins)-TO_DAYS(now()))
-                       FROM  auth_user_md5
-                      WHERE  promo = {?} AND perms IN ('admin', 'user') AND deces = 0",
-                    $promo);
+            define('DUREEJOUR', 24 * 3600);
+
+            // XXX: And promo again \o/
+            $res = XDB::query("SELECT  MIN(TO_DAYS(a.registration_date) - TO_DAYS(NOW()))
+                                 FROM  accounts AS a
+                           INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                           INNER JOIN  profile_education AS pe ON (pe.uid = ap.pid AND FIND_IN_SET('primary', pe.flags))
+                                WHERE  pe.entry_year = {?} AND a.state = 'active'", (int)$promo);
             $jours = -$res->fetchOneCell();
 
             //recupere le nombre d'inscriptions par jour sur la plage concernée
-            $res = XDB::iterRow(
-                    "SELECT  IF( date_ins>DATE_SUB(NOW(),INTERVAL $jours DAY),
-                                 TO_DAYS(date_ins)-TO_DAYS(NOW()),
-                                ".(-($jours+1)).") AS jour,
-                             COUNT(user_id) AS nb
-                       FROM  auth_user_md5
-                      WHERE  promo = {?} AND perms IN ('admin','user') AND deces = 0
-                   GROUP BY  jour", $promo);
+            $res = XDB::iterRow("SELECT  IF(a.registration_date > DATE_SUB(NOW(), INTERVAL {?} DAY),
+                                            TO_DAYS(a.registration_date) - TO_DAYS(NOW()),
+                                            -{?}) AS jour,
+                                         COUNT(a.uid) AS nb
+                                   FROM  accounts AS a
+                             INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                             INNER JOIN  profile_education AS pe ON (pe.uid = ap.pid AND FIND_IN_SET('primary', pe.flags))
+                                  WHERE  pe.entry_year = {?} AND a.state = 'active'
+                               GROUP BY  jour", (int)$jours, 1 + (int)$jours, (int)$promo);
 
             //genere des donnees compatibles avec GNUPLOT
             $inscrits='';
@@ -247,12 +252,13 @@ EOF2;
     {
         $page->changeTpl('stats/nb_by_promo.tpl');
 
-        $res = XDB::iterRow(
-                "SELECT  promo,COUNT(*)
-                   FROM  auth_user_md5
-                  WHERE  promo > 1900 AND perms IN ('admin','user') AND deces = 0
-               GROUP BY  promo
-               ORDER BY  promo");
+        $res = XDB::iterRow('SELECT  pe.entry_year AS promo, COUNT(*)
+                               FROM  accounts AS a
+                         INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                         INNER JOIN  profile_education AS pe ON (pe.uid = ap.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                              WHERE  pe.entry_year >= 1900  AND a.state = \'active\'
+                           GROUP BY  promo
+                           ORDER BY  promo');
         $max=0; $min=3000;
 
         while (list($p,$nb) = $res->next()) {
@@ -307,6 +313,7 @@ EOF2;
             $time = ' AND e.stamp > DATE_SUB(CURDATE(), INTERVAL 1 ' . strtoupper($period) . ')';
             break;
         }
+        // XXX: Need to be port to profile stuff
         $rows = XDB::iterator("SELECT  IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
                                        u.prenom, u.promo, e.data AS forlife, COUNT(*) AS count
                                  FROM  logger.events AS e
