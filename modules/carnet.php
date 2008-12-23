@@ -263,16 +263,13 @@ class CarnetModule extends PLModule
 
     function handler_ical(&$page, $alias = null, $hash = null)
     {
-        require_once 'rss.inc.php';
-        $uid = init_rss(null, $alias, $hash, false);
-        if (S::logged()) {
-            if (!$uid) {
-                $uid = S::i('uid');
-            } else if ($uid != S::i('uid')) {
-                send_warning_email("Récupération d\'un autre utilisateur ($uid)");
+        $user = Platal::session()->tokenAuth($alias, $hash);
+        if (is_null($user)) {
+            if (S::logged()) {
+                $user == S::user();
+            } else {
+                return PL_FORBIDDEN;
             }
-        } else if (!$uid) {
-            exit;
         }
 
         require_once 'ical.inc.php';
@@ -290,7 +287,7 @@ class CarnetModule extends PLModule
                    FROM contacts      AS c
              INNER JOIN auth_user_md5 AS u ON (u.user_id = c.contact)
              INNER JOIN aliases       AS a ON (u.user_id = a.id AND a.type = \'a_vie\')
-                  WHERE c.uid = {?}', $uid);
+                  WHERE c.uid = {?}', $user->id());
 
         $annivs = Array();
         while (list($prenom, $nom, $promo, $naissance, $end, $ts, $hruid) = $res->next()) {

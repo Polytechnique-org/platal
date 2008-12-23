@@ -48,23 +48,17 @@ class ForumsModule extends PLModule
     {
         if (is_null($file)) {
             if (is_null($hash)) {
-                exit;
+                return PL_FORBIDDEN;
             }
             $this->handler_rss($page, null, $group, $alias, $hash);
         }
-        require_once('rss.inc.php');
-        $uid = init_rss(null, $alias, $hash);
-        if (!$uid) {
-            exit;
+        $user = Platal::session()->tokenAuth($alias, $hash);
+        if (is_null($user)) {
+            return PL_FORBIDDEN;
         }
-        $res = XDB::query("SELECT id AS uid, alias AS forlife
-                             FROM aliases
-                            WHERE type = 'a_vie' AND id = {?}", $uid);
-        $row = $res->fetchOneAssoc();
-        $_SESSION = array_merge($row, $_SESSION);
 
         require_once 'banana/forum.inc.php';
-        $banana = new ForumsBanana(S::user(), array('group' => $group, 'action' => 'rss2'));
+        $banana = new ForumsBanana($user, array('group' => $group, 'action' => 'rss2'));
         $banana->run();
         exit;
     }
