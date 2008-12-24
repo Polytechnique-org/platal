@@ -173,6 +173,7 @@ class MinificheView extends MultipageView
     {
         global $globals;
         return "u.user_id AS id, u.*, d.promo_display,
+                CONCAT(a.alias, '@{$globals->mail->domain}') AS bestemail,
                 u.perms != 'pending' AS inscrit,
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces, u.matricule_ax,
@@ -201,7 +202,8 @@ class MinificheView extends MultipageView
 
     public function joins()
     {
-        return  "LEFT JOIN  profile_job                   AS j    ON (j.uid = u.user_id".(S::logged() ? "" : " AND j.pub = 'public'").")
+        return  "LEFT JOIN  aliases                       AS a    ON (u.user_id = a.id AND FIND_IN_SET('bestalias', a.flags))
+                 LEFT JOIN  profile_job                   AS j    ON (j.uid = u.user_id".(S::logged() ? "" : " AND j.pub = 'public'").")
                  LEFT JOIN  profile_job_enum              AS je   ON (je.id = j.jobid)
                  LEFT JOIN  profile_job_sector_enum       AS es   ON (j.sectorid = es.id)
                  LEFT JOIN  fonctions_def                 AS ef   ON (j.functionid = ef.id)
