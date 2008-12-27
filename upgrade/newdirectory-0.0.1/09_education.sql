@@ -522,7 +522,7 @@ INSERT INTO  profile_education_enum (name, url, country, abbreviation)
              ('Cleveland State University', 'http://www.csuohio.edu/', 'US', 'CSU'),
              ('Centre de Perfectionnement aux Affaires du Nord', '', 'FR', 'CPA du Nord'),
              ('Centre de Perfectionnement aux Affaires de Lyon', '', '', 'CPA de Lyon'),
-             ('Amherst College', 'http://www.amherst.edu/', 'US', '')
+             ('Amherst College', 'http://www.amherst.edu/', 'US', ''),
              ('Ottawa University', 'http://www.ottawa.edu/', 'US', 'OU'),
              ('Indiana University', 'http://www.indiana.edu/', 'US', ''),
              ('University of Notre Dame du Lac', 'http://www.nd.edu/', 'US', 'Notre Dame'),

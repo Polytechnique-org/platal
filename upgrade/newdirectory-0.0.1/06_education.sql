@@ -11,8 +11,7 @@ CREATE TABLE IF NOT EXISTS profile_education_degree_enum (
   abbreviation VARCHAR(255) DEFAULT '' NOT NULL,
   level TINYINT (1) UNSIGNED DEFAULT 0 NOT NULL,
   PRIMARY KEY(id),
-  UNIQUE KEY(degree),
-  UNIQUE KEY(abbreviation)
+  UNIQUE KEY(degree)
 ) CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS profile_education_degree (
@@ -28,8 +27,7 @@ CREATE TABLE IF NOT EXISTS profile_education_enum (
   url VARCHAR(255) DEFAULT NULL,
   country CHAR(2) NOT NULL DEFAULT 'FR',
   PRIMARY KEY(id),
-  UNIQUE KEY(name),
-  UNIQUE KEY(IF(abbreviation = '', name, abbreviation))
+  UNIQUE KEY(name)
 ) CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS profile_education (
