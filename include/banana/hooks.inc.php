@@ -327,7 +327,8 @@ class BananaHandler
 
 function run_banana(&$page, $class, array $args)
 {
-    $banana = new $class(S::user(), $args);
+    $user =& S::user();
+    $banana = new $class($user, $args);
     $page->assign('banana', $banana->run());
     $page->addCssInline($banana->css());
     $page->addCssLink('banana.css');

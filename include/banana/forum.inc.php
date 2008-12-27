@@ -54,6 +54,34 @@ class ForumsBanana extends Banana
         }
     }
 
+    private function fetchProfile()
+    {
+        // Get user profile from SQL
+        $req = XDB::query("SELECT  name, mail, sig,
+                                   FIND_IN_SET('threads',flags) AS threads,
+                                   FIND_IN_SET('automaj',flags) AS maj,
+                                   FIND_IN_SET('xface', flags) AS xface,
+                                   tree_unread, tree_read
+                             FROM  forum_profiles
+                            WHERE  uid = {?}", $this->user->id());
+        if ($req->numRows()) {
+            $infos = $req->fetchOneAssoc();
+        } else {
+            $infos = array();
+        }
+        if (empty($infos['name'])) {
+            $infos = array('name' => $this->user->fullName(),
+                           'mail' => $this->user->forlifeEmail(),
+                           'sig'  => $this->user->displayName(),
+                           'threads' => false,
+                           'maj'  => true,
+                           'xface' => false,
+                           'tree_unread' => 'o',
+                           'tree_read' => 'dg' );
+        }
+        return $infos;
+    }
+
     public function run()
     {
         global $platal, $globals;
@@ -65,22 +93,8 @@ class ForumsBanana extends Banana
             S::set('banana_last', $time);
         }
 
-        // Get user profile from SQL
-        $req = XDB::query("SELECT  name, mail, sig,
-                                   FIND_IN_SET('threads',flags), FIND_IN_SET('automaj',flags),
-                                   tree_unread, tree_read
-                             FROM  forum_profiles
-                            WHERE  uid = {?}", $this->user->id());
-        if (!(list($nom, $mail, $sig, $disp, $maj, $unread, $read) = $req->fetchOneRow()) || !$nom) {
-            $nom  = S::v('prenom')." ".S::v('nom');
-            $mail = $this->user->forlifeEmail();
-            $sig  = $nom." (".S::v('promo').")";
-            $disp = 0;
-            $maj  = 1;
-            $unread = 'o';
-            $read   = 'dg';
-        }
-        if ($maj) {
+        $infos = $this->fetchProfile();
+        if ($infos['maj']) {
             $time = time();
         }
 
@@ -89,15 +103,15 @@ class ForumsBanana extends Banana
                              FROM  forum_subs AS fs
                         LEFT JOIN  forums AS f ON (f.fid = fs.fid)
                             WHERE  uid={?}", $this->user->id());
-        Banana::$profile['headers']['From']         = "$nom <$mail>";
+        Banana::$profile['headers']['From']         = $infos['name'] . ' <' . $infos['mail'] . '>';
         Banana::$profile['headers']['Organization'] = make_Organization();
-        Banana::$profile['signature']               = $sig;
-        Banana::$profile['display']                 = $disp;
-        Banana::$profile['autoup']                  = $maj;
+        Banana::$profile['signature']               = $infos['sig'];
+        Banana::$profile['display']                 = $infos['threads'];
+        Banana::$profile['autoup']                  = $infos['maj'];
         Banana::$profile['lastnews']                = S::v('banana_last');
         Banana::$profile['subscribe']               = $req->fetchColumn();
-        Banana::$tree_unread = $unread;
-        Banana::$tree_read = $read;
+        Banana::$tree_unread = $infos['tree_unread'];
+        Banana::$tree_read = $infos['tree_read'];
 
         // Update the "unread limit"
         if (!is_null($time)) {
@@ -224,31 +238,15 @@ class ForumsBanana extends Banana
             }
         }
 
-        $req = XDB::query('SELECT  name, mail, sig,
-                                   FIND_IN_SET(\'threads\', flags),
-                                   FIND_IN_SET(\'automaj\', flags),
-                                   FIND_IN_SET(\'xface\', flags),
-                                   tree_unread, tree_read
-                             FROM  forum_profiles
-                            WHERE  uid = {?}', $this->user->id());
-        if (!((list($nom, $mail, $sig, $disp, $maj, $xface, $unread, $read) = $req->fetchOneRow())) || !$nom) {
-            $nom   = $this->user->fullName();
-            $mail  = $this->user->forlifeEmail();
-            $sig   = $this->user->displayName();
-            $disp  = 0;
-            $maj   = 0;
-            $xface = 0;
-            $unread = 'o';
-            $read  = 'dg';
-        }
-        $page->assign('nom' ,  $nom);
-        $page->assign('mail',  $mail);
-        $page->assign('sig',   $sig);
-        $page->assign('disp',  $disp);
-        $page->assign('maj',   $maj);
-        $page->assign('xface', $xface);
-        $page->assign('unread', $unread);
-        $page->assign('read', $read);
+        $infos = $this->fetchProfile();
+        $page->assign('nom' ,  $infos['name']);
+        $page->assign('mail',  $infos['mail']);
+        $page->assign('sig',   $infos['sig']);
+        $page->assign('disp',  $infos['threads']);
+        $page->assign('maj',   $infos['maj']);
+        $page->assign('xface', $infos['xface']);
+        $page->assign('unread', $infos['tree_unread']);
+        $page->assign('read', $infos['tree_read']);
         return null;
     }
 }
