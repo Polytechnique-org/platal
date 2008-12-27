@@ -277,7 +277,6 @@ class XorgSession extends PlSession
     public function setSkin()
     {
         if (S::logged() && (!S::has('skin') || S::suid())) {
-            $uid = S::v('uid');
             $res = XDB::query('SELECT  skin_tpl
                                  FROM  accounts AS a
                            INNER JOIN  skins    AS s on (a.skin = s.id)
