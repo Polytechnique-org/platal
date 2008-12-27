@@ -112,6 +112,7 @@ class XorgSession extends PlSession
             }
             return $uid;
         }
+        Platal::page()->trigError('Mot de passe ou nom d\'utilisateur invalide');
         return null;
     }
 
@@ -288,7 +289,7 @@ class XorgSession extends PlSession
         return null;
     }
 
-    public function makePerms($perm)
+    protected function makePerms($perm, $is_admin)
     {
         $flags = new PlFlagSet();
         if ($perm == 'disabled' || $perm == 'ext') {
