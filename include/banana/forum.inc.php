@@ -170,13 +170,8 @@ class ForumsBanana extends Banana
             return true;
         }
 
-        $req  = XDB::iterRow('SELECT  fid, name
-                                FROM  forums');
-        $fids = array();
-        while (list($fid, $fnom) = $req->next()) {
-            $fids[$fnom] = $fid;
-        }
-
+        $fids = XDB::fetchAllAssoc('name', 'SELECT  fid, name
+                                              FROM  forums');
         $diff = array_diff($groups, array_keys($fids));
         foreach ($diff as $g) {
             XDB::execute('INSERT INTO  forums (name)
