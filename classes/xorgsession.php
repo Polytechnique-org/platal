@@ -89,6 +89,7 @@ class XorgSession extends PlSession
             }
             return $uid;
         }
+        Platal::page()->trigError('Mot de passe ou nom d\'utilisateur invalide');
         return null;
     }
 
