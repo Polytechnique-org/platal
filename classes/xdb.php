@@ -26,7 +26,7 @@ class XDB
     public static function connect()
     {
         global $globals;
-        XDB::$mysqli = new mysqli($globals->dbhost, $globals->dbuser, $globals->dbpwd, $globals->dbdb);
+        self::$mysqli = new mysqli($globals->dbhost, $globals->dbuser, $globals->dbpwd, $globals->dbdb);
         if ($globals->debug & DEBUG_BT) {
             $bt = new PlBacktrace('MySQL');
             if (mysqli_connect_errno()) {
@@ -34,8 +34,8 @@ class XDB
                 return false;
             }
         }
-        XDB::$mysqli->autocommit(true);
-        XDB::$mysqli->set_charset($globals->dbcharset);
+        self::$mysqli->autocommit(true);
+        self::$mysqli->set_charset($globals->dbcharset);
         return true;
     }
 
@@ -75,7 +75,7 @@ class XDB
     {
         global $globals;
 
-        if (!XDB::$mysqli && !XDB::connect()) {
+        if (!self::$mysqli && !self::connect()) {
             header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
             Platal::page()->kill('Impossible de se connecter à la base de données.');
             exit;
@@ -84,7 +84,7 @@ class XDB
         if ($globals->debug & DEBUG_BT) {
             $explain = array();
             if (strpos($query, 'FOUND_ROWS()') === false) {
-                $res = XDB::$mysqli->query("EXPLAIN $query");
+                $res = self::$mysqli->query("EXPLAIN $query");
                 if ($res) {
                     while ($row = $res->fetch_assoc()) {
                         $explain[] = $row;
@@ -98,8 +98,8 @@ class XDB
         $res = XDB::$mysqli->query($query);
 
         if ($globals->debug & DEBUG_BT) {
-            PlBacktrace::$bt['MySQL']->stop(@$res->num_rows ? $res->num_rows : XDB::$mysqli->affected_rows,
-                                            XDB::$mysqli->error,
+            PlBacktrace::$bt['MySQL']->stop(@$res->num_rows ? $res->num_rows : self::$mysqli->affected_rows,
+                                            self::$mysqli->error,
                                             $explain);
         }
 
@@ -125,14 +125,19 @@ class XDB
         return $res;
     }
 
+    private static function queryv($query)
+    {
+        return new XOrgDBResult(self::_prepare($query));
+    }
+
     public static function query()
     {
-        return new XOrgDBResult(XDB::_prepare(func_get_args()));
+        return self::queryv(func_get_args());
     }
 
     public static function format()
     {
-        return XDB::_prepare(func_get_args());
+        return self::_prepare(func_get_args());
     }
 
     public static function execute()
@@ -142,37 +147,104 @@ class XDB
         if ($globals->mode != 'rw' && !strpos($args[0], 'logger')) {
             return;
         }
-        return XDB::_query(XDB::_prepare($args));
+        return self::_query(XDB::_prepare($args));
     }
 
     public static function iterator()
     {
-        return new XOrgDBIterator(XDB::_prepare(func_get_args()));
+        return new XOrgDBIterator(self::_prepare(func_get_args()));
     }
 
     public static function iterRow()
     {
-        return new XOrgDBIterator(XDB::_prepare(func_get_args()), MYSQL_NUM);
+        return new XOrgDBIterator(self::_prepare(func_get_args()), MYSQL_NUM);
+    }
+
+    private static function findQuery($params, $default = array())
+    {
+        for ($i = 0 ; $i < count($default) ; ++$i) {
+            $is_query = false;
+            foreach (array('insert', 'select', 'replace', 'delete', 'update') as $kwd) {
+                if (stripos($params[0], $kwd) !== false) {
+                    $is_query = true;
+                    break;
+                }
+            }
+            if ($is_query) {
+                break;
+            } else {
+                $default[$i] = array_shift($params);
+            }
+        }
+        return array($default, $params);
+    }
+
+    /** Fetch all rows returned by the given query.
+     * This functions can take 2 optional arguments (cf XOrgDBResult::fetchAllRow()).
+     * Optional arguments are given *before* the query.
+     */
+    public static function fetchAllRow()
+    {
+        list($args, $query) = self::findQuery(func_get_args(), array(false, false));
+        return self::queryv($query)->fetchAllRow($args[0], $args[1]);
+    }
+
+    /** Fetch all rows returned by the given query.
+     * This functions can take 2 optional arguments (cf XOrgDBResult::fetchAllAssoc()).
+     * Optional arguments are given *before* the query.
+     */
+    public static function fetchAllAssoc()
+    {
+        list($args, $query) = self::findQuery(func_get_args(), array(false, false));
+        return self::queryv($query)->fetchAllAssoc($args[0], $args[1]);
+    }
+
+    public static function fetchOneCell()
+    {
+        list($args, $query) = self::findQuery(func_get_args());
+        return self::queryv($query)->fetchOneCell();
+    }
+
+    public static function fetchOneRow()
+    {
+        list($args, $query) = self::findQuery(func_get_args());
+        return self::queryv($query)->fetchOneRow();
+    }
+
+    public static function fetchOneAssoc()
+    {
+        list($args, $query) = self::findQuery(func_get_args());
+        return self::queryv($query)->fetchOneAssoc();
+    }
+
+    /** Fetch a column from the result of the given query.
+     * This functions can take 1 optional arguments (cf XOrgDBResult::fetchColumn()).
+     * Optional arguments are given *before* the query.
+     */
+    public static function fetchColumn()
+    {
+        list($args, $query) = self::findQuery(func_get_args(), array(0));
+        return self::queryv($query)->fetchColumn();
     }
 
     public static function insertId()
     {
-        return XDB::$mysqli->insert_id;
+        return self::$mysqli->insert_id;
     }
 
     public static function errno()
     {
-        return XDB::$mysqli->errno;
+        return self::$mysqli->errno;
     }
 
     public static function error()
     {
-        return XDB::$mysqli->error;
+        return self::$mysqli->error;
     }
 
     public static function affectedRows()
     {
-        return XDB::$mysqli->affected_rows;
+        return self::$mysqli->affected_rows;
     }
 
     public static function escape($var)
@@ -233,26 +305,50 @@ class XOrgDBResult
         return $this->_res ? $this->_res->fetch_assoc() : null;
     }
 
-    public function fetchAllRow()
+    public function fetchAllRow($id = false, $keep_array = false)
     {
         $result = Array();
         if (!$this->_res) {
             return $result;
         }
-        while ($result[] = $this->_res->fetch_row());
-        array_pop($result);
+        while (($data = $this->_res->fetch_row())) {
+            if ($id !== false) {
+                $key = $data[$id];
+                unset($data[$id]);
+                if (!$keep_array && count($data) == 1) {
+                    reset($data);
+                    $result[$key] = current($data);
+                } else {
+                    $result[$key] = $data;
+                }
+            } else {
+                $result[] = $data;
+            }
+        }
         $this->free();
         return $result;
     }
 
-    public function fetchAllAssoc()
+    public function fetchAllAssoc($id = false, $keep_array = false)
     {
         $result = Array();
         if (!$this->_res) {
             return $result;
         }
-        while ($result[] = $this->_res->fetch_assoc());
-        array_pop($result);
+        while (($data = $this->_res->fetch_assoc())) {
+            if ($id !== false) {
+                $key = $data[$id];
+                unset($data[$id]);
+                if (!$keep_array && count($data) == 1) {
+                    reset($data);
+                    $result[$key] = current($data);
+                } else {
+                    $result[$key] = $data;
+                }
+            } else {
+                $result[] = $data;
+            }
+        }
         $this->free();
         return $result;
     }
