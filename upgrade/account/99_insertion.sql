@@ -34,4 +34,15 @@ insert into account_profiles
        from auth_user_md5
       where hruid is not null;
 
+# Update banana last_seen timetamp
+    update  forum_profiles as fp
+inner join  auth_user_quick as q ON (q.user_id = fp.uid)
+       set  fp.uid = fp.uid, fp.tree_unread = fp.tree_unread, fp.tree_read = fp.tree_read,
+            fp.last_seen = q.banana_last;
+
+insert ignore into  forum_profiles (uid, last_seen)
+            select  user_id as uid, banana_last as last_seen
+              from  auth_user_quick
+             where  banana_last >= DATE_SUB(NOW(), INTERVAL 6 MONTH);
+
 # vim:set syntax=mysql:

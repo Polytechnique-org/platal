@@ -1,0 +1,19 @@
+DataBase upgrade:
+-----------------
+
+* Activate forums database drop
+
+
+Configuration changes:
+----------------------
+
+[Banana]
+* table_prefix deprecated
+
+
+Affected services:
+------------------
+
+News:
+* authentication must use account + account_types with weakpass.
+* forums base dropped and moved to forum_ namespace.

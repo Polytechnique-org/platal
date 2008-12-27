@@ -81,9 +81,9 @@ class MLBanana extends Banana
         Banana::$msgedit_headers['X-Org-Mail'] = $this->user->forlifeEmail();
 
         // Tree color
-        $req = XDB::query("SELECT  tree_unread, tree_read
-                             FROM  {$globals->banana->table_prefix}profils
-                            WHERE  uid={?}", S::i('uid'));
+        $req = XDB::query('SELECT  tree_unread, tree_read
+                             FROM  forum_profiles
+                            WHERE  uid= {?}', $this->user->id());
         if (!(list($unread, $read) = $req->fetchOneRow())) {
             $unread = 'o';
             $read = 'dg';

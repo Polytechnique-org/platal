@@ -645,9 +645,9 @@ class AdminModule extends PLModule
 
                 // Forum ban update.
                 case "b_edit":
-                    XDB::execute("DELETE FROM forums.innd WHERE uid = {?}", $user->id());
+                    XDB::execute("DELETE FROM forum_innd WHERE uid = {?}", $user->id());
                     if (Env::v('write_perm') != "" || Env::v('read_perm') != ""  || Env::v('commentaire') != "" ) {
-                        XDB::execute("INSERT INTO  forums.innd
+                        XDB::execute("INSERT INTO  forum_innd
                                               SET  ipmin = '0', ipmax = '4294967295',
                                                    write_perm = {?}, read_perm = {?},
                                                    comment = {?}, priority = '200', uid = {?}",
@@ -694,7 +694,7 @@ class AdminModule extends PLModule
 
         // Displays forum bans.
         $res = XDB::query("SELECT  write_perm, read_perm, comment
-                             FROM  forums.innd
+                             FROM  forum_innd
                             WHERE  uid = {?}", $user->id());
         $bans = $res->fetchOneAssoc();
         $page->assign('bans', $bans);

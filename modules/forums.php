@@ -67,7 +67,7 @@ class ForumsModule extends PLModule
     {
         $page->setTitle('Administration - Bannissements des forums');
         $page->assign('title', 'Gestion des mises au ban');
-        $table_editor = new PLTableEditor('admin/forums','forums.innd','id_innd');
+        $table_editor = new PLTableEditor('admin/forums','forum_innd','id_innd');
         $table_editor->add_sort_field('priority', true, true);
         $table_editor->describe('read_perm','lecture',true);
         $table_editor->describe('write_perm','écriture',true);

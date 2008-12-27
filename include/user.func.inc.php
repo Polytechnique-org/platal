@@ -42,7 +42,7 @@ function user_clear_all_subs($user_id, $really_del=true)
 
     if ($really_del) {
         array_push($tables_to_clear['uid'], 'emails', 'groupex.membres', 'contacts', 'adresses', 'profile_phones',
-                                            'photo', 'perte_pass', 'langues_ins', 'forums.abos', 'forums.profils');
+                                            'photo', 'perte_pass', 'langues_ins', 'forum_subs', 'forum_profiles');
         array_push($tables_to_clear['user_id'], 'newsletter_ins', 'auth_user_quick', 'binets_ins');
         $tables_to_clear['id'] = array('aliases');
         $tables_to_clear['contact'] = array('contacts');

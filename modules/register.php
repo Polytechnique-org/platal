@@ -324,8 +324,10 @@ class RegisterModule extends PLModule
         $p_for = 'xorg.promo.x' . $promo;
         $cible = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements', $p_for);
         foreach ($cible as $val) {
-            XDB::execute("INSERT INTO  forums.abos (fid,uid)
-                               SELECT  fid, {?} FROM forums.list WHERE nom={?}", $uid, $val);
+            XDB::execute('INSERT INTO  forum_subs (fid,uid)
+                               SELECT  fid, {?}
+                                 FROM  forum
+                                WHERE  name = {?}', $uid, $val);
             if (XDB::affectedRows() == 0 && $val == $p_for) {
                 $res = XDB::query("SELECT  SUM(perms IN ('admin','user') AND deces = 0), COUNT(*)
                                      FROM  auth_user_md5

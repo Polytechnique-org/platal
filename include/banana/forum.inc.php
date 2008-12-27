@@ -62,16 +62,16 @@ class ForumsBanana extends Banana
         $time = null;
         if (!is_null($this->params) && isset($this->params['updateall'])) {
             $time = intval($this->params['updateall']);
-            $_SESSION['banana_last']     = $time;
+            S::set('banana_last', $time);
         }
 
         // Get user profile from SQL
-        $req = XDB::query("SELECT  nom, mail, sig,
+        $req = XDB::query("SELECT  name, mail, sig,
                                    FIND_IN_SET('threads',flags), FIND_IN_SET('automaj',flags),
                                    tree_unread, tree_read
-                             FROM  {$globals->banana->table_prefix}profils
-                            WHERE  uid={?}", S::i('uid'));
-        if (!(list($nom, $mail, $sig, $disp, $maj, $unread, $read) = $req->fetchOneRow())) {
+                             FROM  forum_profiles
+                            WHERE  uid = {?}", $this->user->id());
+        if (!(list($nom, $mail, $sig, $disp, $maj, $unread, $read) = $req->fetchOneRow()) || !$nom) {
             $nom  = S::v('prenom')." ".S::v('nom');
             $mail = $this->user->forlifeEmail();
             $sig  = $nom." (".S::v('promo').")";
@@ -85,11 +85,10 @@ class ForumsBanana extends Banana
         }
 
         // Build user profile
-        $req = XDB::query("
-                 SELECT  nom
-                   FROM  {$globals->banana->table_prefix}abos
-              LEFT JOIN  {$globals->banana->table_prefix}list ON list.fid=abos.fid
-                  WHERE  uid={?}", S::i('uid'));
+        $req = XDB::query("SELECT  name
+                             FROM  forum_subs AS fs
+                        LEFT JOIN  forums AS f ON (f.fid = fs.fid)
+                            WHERE  uid={?}", $this->user->id());
         Banana::$profile['headers']['From']         = "$nom <$mail>";
         Banana::$profile['headers']['Organization'] = make_Organization();
         Banana::$profile['signature']               = $sig;
@@ -102,10 +101,15 @@ class ForumsBanana extends Banana
 
         // Update the "unread limit"
         if (!is_null($time)) {
-            XDB::execute("UPDATE  auth_user_quick
-                             SET  banana_last = FROM_UNIXTIME({?})
-                           WHERE  user_id={?}",
-                         $time, S::i('uid'));
+            XDB::execute('UPDATE  forum_profiles
+                             SET  last_seen = FROM_UNIXTIME({?})
+                           WHERE  uid = {?}',
+                         $time, $this->user->id());
+            if (XDB::affectedRows() == 0) {
+                XDB::execute('INSERT INTO  forum_profiles (uid, last_seen)
+                                   VALUES  ({?}, FROM_UNIXTIME({?}))',
+                             $this->user->id(), $time);
+            }
         }
 
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
@@ -135,11 +139,7 @@ class ForumsBanana extends Banana
     public function post($dest, $reply, $subject, $body)
     {
         global $globals;
-        $res = XDB::query('SELECT  nom, prenom, promo
-                             FROM  auth_user_md5 AS u
-                            WHERE  u.user_id = {?}', $this->user->id());
-        list($nom, $prenom, $promo) = $res->fetchOneRow();
-        Banana::$profile['headers']['From']         = "$prenom $nom ($promo) <{$this->user->bestEmail()}>";
+        Banana::$profile['headers']['From']         = $this->user->fullName() .  ' <' . $this->user->bestEmail() . '>';
         Banana::$profile['headers']['Organization'] = make_Organization();
         return parent::post($dest, $reply, $subject, $body);
     }
@@ -147,28 +147,32 @@ class ForumsBanana extends Banana
     protected function action_saveSubs($groups)
     {
         global $globals;
-        $uid = S::v('uid');
+        $uid = $this->user->id();
 
         Banana::$profile['subscribe'] = array();
-        XDB::execute("DELETE FROM {$globals->banana->table_prefix}abos WHERE uid={?}", $uid);
+        XDB::execute('DELETE FROM  forum_subs
+                            WHERE  uid = {?}', $this->user->id());
         if (!count($groups)) {
             return true;
         }
 
-        $req  = XDB::iterRow("SELECT fid,nom FROM {$globals->banana->table_prefix}list");
+        $req  = XDB::iterRow('SELECT  fid, name
+                                FROM  forums');
         $fids = array();
-        while (list($fid,$fnom) = $req->next()) {
+        while (list($fid, $fnom) = $req->next()) {
             $fids[$fnom] = $fid;
         }
 
         $diff = array_diff($groups, array_keys($fids));
         foreach ($diff as $g) {
-            XDB::execute("INSERT INTO {$globals->banana->table_prefix}list (nom) VALUES ({?})", $g);
+            XDB::execute('INSERT INTO  forums (name)
+                               VALUES  ({?})', $g);
             $fids[$g] = XDB::insertId();
         }
 
         foreach ($groups as $g) {
-            XDB::execute("INSERT INTO {$globals->banana->table_prefix}abos (fid,uid) VALUES ({?},{?})",
+            XDB::execute('INSERT INTO  forum_subs (fid, uid)
+                               VALUES  ({?}, {?})',
                          $fids[$g], $uid);
             Banana::$profile['subscribe'][] = $g;
         }
@@ -177,7 +181,7 @@ class ForumsBanana extends Banana
     protected function action_updateProfile()
     {
         global $globals;
-        $page = Platal::page();
+        $page =& Platal::page();
 
         $colors = glob(dirname(__FILE__) . '/../../htdocs/images/banana/m2*.gif');
         foreach ($colors as $key=>$path) {
@@ -188,7 +192,7 @@ class ForumsBanana extends Banana
 
         if (Post::has('action') && Post::v('action') == 'Enregistrer') {
             S::assert_xsrf_token();
-            $flags = new FlagSet();
+            $flags = new PlFlagSet();
             if (Post::b('bananadisplay')) {
                 $flags->addFlag('threads');
             }
@@ -202,30 +206,35 @@ class ForumsBanana extends Banana
             $read = Post::s('read');
             if (!in_array($unread, $colors) || !in_array($read, $colors)) {
                 $page->trigError('Le choix de type pour l\'arborescence est invalide');
-            } elseif (XDB::execute("REPLACE INTO  forums.profils (uid, sig, mail, nom, flags, tree_unread, tree_read)
-                                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                                    S::v('uid'), Post::v('bananasig'),
-                                    Post::v('bananamail'), Post::v('banananame'),
-                                    $flags, $unread, $read)) {
-                $page->trigSuccess("Ton profil a été enregistré avec succès.");
             } else {
-                $page->trigError("Une erreur s'est produite lors de l'enregistrement de ton profil");
+                $last_seen = XDB::query('SELECT  last_seen
+                                           FROM  forum_profiles
+                                          WHERE  uid = {?}', $this->user->id());
+                if ($last_seen->numRows() > 0) {
+                    $last_seen = $last_seen->fetchOneCell();
+                } else {
+                    $last_seen = '0000-00-00';
+                }
+                XDB::execute('REPLACE INTO  forum_profiles (uid, sig, mail, name, flags, tree_unread, tree_read, last_seen)
+                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                             $this->user->id(), Post::v('bananasig'),
+                             Post::v('bananamail'), Post::v('banananame'),
+                             $flags, $unread, $read, $last_seen);
+                $page->trigSuccess('Ton profil a été mis à jour');
             }
         }
 
-        $req = XDB::query("
-            SELECT  nom, mail, sig,
-                    FIND_IN_SET('threads', flags),
-                    FIND_IN_SET('automaj', flags),
-                    FIND_IN_SET('xface', flags),
-                    tree_unread,
-                    tree_read
-              FROM  forums.profils
-             WHERE  uid = {?}", S::v('uid'));
-        if (!(list($nom, $mail, $sig, $disp, $maj, $xface, $unread, $read) = $req->fetchOneRow())) {
-            $nom   = S::v('prenom').' '.S::v('nom');
-            $mail  = S::user()->forlifeEmail();
-            $sig   = $nom.' ('.S::v('promo').')';
+        $req = XDB::query('SELECT  name, mail, sig,
+                                   FIND_IN_SET(\'threads\', flags),
+                                   FIND_IN_SET(\'automaj\', flags),
+                                   FIND_IN_SET(\'xface\', flags),
+                                   tree_unread, tree_read
+                             FROM  forum_profiles
+                            WHERE  uid = {?}', $this->user->id());
+        if (!((list($nom, $mail, $sig, $disp, $maj, $xface, $unread, $read) = $req->fetchOneRow())) || !$nom) {
+            $nom   = $this->user->fullName();
+            $mail  = $this->user->forlifeEmail();
+            $sig   = $this->user->displayName();
             $disp  = 0;
             $maj   = 0;
             $xface = 0;
