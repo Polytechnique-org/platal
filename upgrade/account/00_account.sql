@@ -11,6 +11,7 @@ CREATE TABLE accounts (
   # Access
   password char(40) default null,
   token varchar(32) default null,
+  weak_password varchar(256) default null,
   registration_date datetime not null,
 
   # Administrative tools
@@ -23,6 +24,7 @@ CREATE TABLE accounts (
   sex enum('female', 'male') not null default 'male',
   email_format enum('text', 'html') not null default 'html',
   skin varchar(32) default null,
+  last_version varchar(16) not null,
 
   primary key uid (uid),
   unique key hruid (hruid),

@@ -261,24 +261,22 @@ class PlatalModule extends PLModule
 
         if (Env::v('op') == "Valider" && strlen($pass) >= 6
             &&  Env::v('smtppass1') == Env::v('smtppass2')) {
-            // FIXME: Put smtppass somewhere
-            XDB::execute('UPDATE  auth_user_md5
-                             SET  smtppass = {?}
-                           WHERE  user_id = {?}', $pass, $uid);
+            XDB::execute('UPDATE  accounts
+                             SET  weak_password = {?}
+                           WHERE  uid = {?}', $pass, $uid);
             $page->trigSuccess('Mot de passe enregistré');
             S::logger()->log("passwd_ssl");
         } elseif (Env::v('op') == "Supprimer") {
-            // FIXME: Put smtppass somewhere
-            XDB::execute('UPDATE  auth_user_md5
-                             SET  smtppass = ""
-                           WHERE  user_id = {?}', $uid);
+            XDB::execute('UPDATE  accounts
+                             SET  weak_password = NULL
+                           WHERE  uid = {?}', $uid);
             $page->trigSuccess('Compte SMTP et NNTP supprimé');
             S::logger()->log("passwd_del");
         }
 
-        $res = XDB::query("SELECT IF(smtppass != '', 'actif', '')
-                                       FROM auth_user_md5
-                                      WHERE user_id = {?}", $uid);
+        $res = XDB::query("SELECT  weak_password IS NOT NULL
+                             FROM  accounts
+                            WHERE  uid = {?}", $uid);
         $page->assign('actif', $res->fetchOneCell());
     }
 

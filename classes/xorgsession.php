@@ -184,18 +184,17 @@ class XorgSession extends PlSession
         // Retrieves main user properties.
         /** TODO: Move needed informations to account tables */
         /** TODO: Currently suppressed data are matricule, promo */
-        /** TODO: Data to move are: banana_last, watch_last, last_version */
         /** TODO: Use the User object to fetch all this */
         $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name, a.password,
                                     a.sex = 'female' AS femme, a.email_format,
                                     a.token, FIND_IN_SET('watch', a.flags) AS watch_account,
-                                    UNIX_TIMESTAMP(fp.last_seen) AS banana_last, q.watch_last,
-                                    q.last_version, g.g_account_name IS NOT NULL AS googleapps,
+                                    UNIX_TIMESTAMP(fp.last_seen) AS banana_last, w.last AS watch_last,
+                                    a.last_version, g.g_account_name IS NOT NULL AS googleapps,
                                     UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
                                     a.is_admin, at.perms
                               FROM  accounts        AS a
                         INNER JOIN  account_types   AS at ON(a.type = at.type)
-                        INNER JOIN  auth_user_quick AS q  ON(a.uid = q.user_id)
+                        INNER JOIN  watch           AS w  ON(w.uid = a.uid)
                          LEFT JOIN  forum_profiles  AS fp ON(fp.uid = a.uid)
                          LEFT JOIN  gapps_accounts  AS g  ON(a.uid = g.l_userid AND g.g_status = 'active')
                          LEFT JOIN  logger.last_sessions AS ls ON (ls.uid = a.uid)

@@ -17,3 +17,7 @@ Affected services:
 News:
 * authentication must use account + account_types with weakpass.
 * forums base dropped and moved to forum_ namespace.
+
+
+Email:
+* auth_user_md5.smtppass -> accounts.weak_password. This password is NULL when empty, but a check must be added for empty passwords.

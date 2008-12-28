@@ -9,6 +9,7 @@ insert into accounts
             IF(perms = 'admin' or perms = 'user', 'active', perms) AS state,
             IF(LENGTH(password) = 40, password, NULL) AS password,
             IF(LENGTH(q.core_rss_hash) > 0, q.core_rss_hash, NULL) AS token,
+            IF(LENGTH(smtppass) = 0, NULL, smtppass) AS weak_password,
             date_ins AS registration_date,
             IF(FIND_IN_SET('watch', flags), 'watch', '') AS flags,
             IF(LENGTH(comment) > 0, comment, NULL) AS comment,
@@ -16,10 +17,16 @@ insert into accounts
             prenom AS display_name,
             IF(FIND_IN_SET('femme', flags), 'female', 'male') AS sex,
             IF(q.core_mail_fmt = 'html', 'html', 'text') AS email_format,
-            q.skin AS skin
+            q.skin AS skin,
+            q.last_version AS last_version
        from auth_user_md5 as u
   left join auth_user_quick as q on (q.user_id = u.user_id)
       where hruid is not null;
+
+# Insert carnet-relative data
+insert into watch
+     select user_id as uid, watch_flags as flags, watch_last as last
+       from auth_user_quick;
 
 # Insert all existing profiles
 insert into profiles
