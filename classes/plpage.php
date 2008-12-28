@@ -108,7 +108,7 @@ abstract class PlPage extends Smarty
 
     protected function _run($skin)
     {
-        global $globals, $TIME_BEGIN;
+        global $globals, $platal, $TIME_BEGIN;
 
         Platal::session()->close();
 
@@ -120,6 +120,7 @@ abstract class PlPage extends Smarty
         $this->assign('pl_triggers', $this->_errors);
         $this->assign('pl_errors', $this->nb_errs());
         $this->assign('pl_failure', $this->_failure);
+        $this->assign_by_ref('platal', $platal);
         $this->assign_by_ref('globals', $globals);
 
         if (Env::has('json') && count($this->_jsonVars)) {
@@ -255,7 +256,6 @@ abstract class PlPage extends Smarty
 
         global $platal;
 
-        $this->assign('platal', $platal);
         $this->trigError($msg);
         $this->_failure = true;
         $this->run();
