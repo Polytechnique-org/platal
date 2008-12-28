@@ -40,18 +40,12 @@ function post_queue_u_create($job) {
     }
 
     // Sends the 'account created' email to the user, with basic documentation.
-    $res = XDB::query(
-        "SELECT  FIND_IN_SET('femme', u.flags), prenom
-           FROM  auth_user_md5 AS u
-          WHERE  u.user_id = {?}", $user->id());
-    list($sexe, $prenom) = $res->fetchOneRow();
-
     $mailer = new PlMailer('googleapps/create.mail.tpl');
     $mailer->assign('account', $account);
     $mailer->assign('email', $user->bestEmail());
     $mailer->assign('googleapps_domain', $globals->mailstorage->googleapps_domain);
-    $mailer->assign('prenom', $prenom);
-    $mailer->assign('sexe', $sexe);
+    $mailer->assign('prenom', $user->displayName());
+    $mailer->assign('sexe', $user->isFemale());
     $mailer->send();
 }
 
@@ -79,17 +73,11 @@ function post_queue_u_update($job) {
             }
 
             // Sends an email to the account owner.
-            $res = XDB::query(
-                "SELECT  FIND_IN_SET('femme', u.flags), prenom
-                   FROM  auth_user_md5 AS u
-                  WHERE  u.user_id = {?}", $user->id());
-            list($sexe, $prenom) = $res->fetchOneRow();
-
             $mailer = new PlMailer('googleapps/unsuspend.mail.tpl');
             $mailer->assign('account', $account);
             $mailer->assign('email', $user->bestEmail());
-            $mailer->assign('prenom', $prenom);
-            $mailer->assign('sexe', $sexe);
+            $mailer->assign('prenom', $user->displayName());
+            $mailer->assign('sexe', $user->isFemale());
             $mailer->send();
         }
     }
@@ -353,8 +341,8 @@ class GoogleAppsAccount
             if ($this->sync_password) {
                 $res = XDB::query(
                     "SELECT  password
-                       FROM  auth_user_md5
-                      WHERE  user_id = {?}", $this->user->id());
+                       FROM  accounts
+                      WHERE  uid = {?}", $this->user->id());
                 $password = ($res->numRows() > 0 ? $res->fetchOneCell() : false);
             } else {
                 $password = false;
@@ -379,6 +367,7 @@ class GoogleAppsAccount
 
         if (!$this->pending_create) {
             // Retrieves information on the new account.
+            // TODO: retreive first_name and last_name from the profile.
             $res = XDB::query(
                 "SELECT  nom, nom_usage, prenom
                    FROM  auth_user_md5
