@@ -1,5 +1,5 @@
 create table watch (
-  uid   int(6) not null auto_increment,
+  uid   int(6) not null,
   flags set('contacts', 'mail') not null default 'contacts',
   last  timestamp not null default '0000-00-00',
 

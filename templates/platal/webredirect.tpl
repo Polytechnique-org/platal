@@ -44,19 +44,9 @@
 <h1>
   Mise en place de la redirection
 </h1>
-<p>
-{if $carva}
-  Actuellement, les adresses
-  <a href="http://www.carva.org/{$bestalias}">http://www.carva.org/{$bestalias}</a> et
-  <a href="http://www.carva.org/{$smarty.session.hruid}">http://www.carva.org/{$smarty.session.hruid}</a>
-  sont redirigées sur <a href="http://{$carva}">http://{$carva}</a>
-{else}
-  La redirection n'est pas utilisée ...
-{/if}
-</p>
 
 <p>
-  Pour modifier cette redirection remplis le champ suivant et clique sur <strong>Valider</strong>.
+  Pour modifier ta redirection remplis le champ suivant et clique sur <strong>Valider</strong>.
 {if $carva}
   Si tu veux annuler ta redirection, clique sur <strong>Supprimer</strong>.
 {/if}

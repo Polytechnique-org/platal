@@ -162,33 +162,31 @@ class PlatalModule extends PLModule
     function handler_webredir(&$page)
     {
         $page->changeTpl('platal/webredirect.tpl');
-
         $page->setTitle('Redirection de page WEB');
 
-        $log =& S::v('log');
-        $url = Env::v('url');
-
-        if (Env::v('submit') == 'Valider' and Env::has('url')) {
-            XDB::execute('UPDATE  auth_user_quick
-                             SET  redirecturl = {?} WHERE user_id = {?}',
-                         $url, S::i('uid'));
-            S::logger()->log('carva_add', 'http://'.Env::v('url'));
-            $page->trigSuccess("Redirection activée vers <a href='http://$url'>$url</a>");
-        } elseif (Env::v('submit') == "Supprimer") {
-            XDB::execute("UPDATE  auth_user_quick
-                             SET  redirecturl = ''
-                           WHERE  user_id = {?}",
-                         S::i('uid'));
-            S::logger()->log("carva_del", $url);
+        if (Env::v('submit') == 'Valider' && !Env::blank('url')) {
+            if (Env::blank('url')) {
+                $page->trigError('URL invalide');
+            } else {
+                $url = Env::t('url');
+                XDB::execute('REPLACE INTO  carvas (uid, url)
+                                    VALUES  ({?}, {?})',
+                             S::i('uid'), $url);
+                S::logger()->log('carva_add', 'http://' . $url);
+                $page->trigSuccess("Redirection activée vers <a href='http://$url'>$url</a>");
+            }
+        } elseif (Env::v('submit') == 'Supprimer') {
+            XDB::execute('DELETE FROM carvas
+                                WHERE uid = {?}', S::i('uid'));
             Post::kill('url');
+            S::logger()->log('carva_del');
             $page->trigSuccess('Redirection supprimée');
         }
 
-        $res = XDB::query('SELECT  redirecturl
-                             FROM  auth_user_quick
-                            WHERE  user_id = {?}',
-                          S::i('uid'));
-        $page->assign('carva', $res->fetchOneCell());
+        $url = XDB::fetchOneCell('SELECT  url
+                                    FROM  carvas
+                                   WHERE  uid = {?}', S::i('uid'));
+        $page->assign('carva', $url);
 
         # FIXME: this code is not multi-domain compatible. We should decide how
         # carva will extend to users not in the main domain.

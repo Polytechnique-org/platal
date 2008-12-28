@@ -28,6 +28,12 @@ insert into watch
      select user_id as uid, watch_flags as flags, watch_last as last
        from auth_user_quick;
 
+# Insert carvas
+insert into carvas
+     select user_id, redirecturl
+       from auth_user_quick
+      where LENGTH(redirecturl) > 0;
+
 # Insert all existing profiles
 insert into profiles
      select user_id AS pid, hruid AS hrpid, matricule AS xorg_id,

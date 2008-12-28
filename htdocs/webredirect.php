@@ -21,28 +21,27 @@
 
 require_once 'xorg.inc.php';
 
-new Xorg('core');
+$platal = new Xorg('core');
 
 global $globals;
-list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
-$res = XDB::query(
-        "SELECT  redirecturl
-           FROM  auth_user_quick AS a
-     INNER JOIN  aliases         AS al ON (al.id = a.user_id AND (al.type='a_vie' OR al.type='alias'))
-          WHERE  al.alias = {?}
-       GROUP BY  redirecturl", $username);
+$path = ltrim($platal->pl_self(), '/');
+@list($username, $path) = explode('/', $path, 2);
 
-if ($url = $res->fetchOneCell()) {
-    $url = preg_replace('@/+$@', '', $url);
-    if ($path) {
-        http_redirect("http://$url/$path");
-    } else {
-        http_redirect("http://$url");
+if ($username && !is_null($user = User::getSilent($username))) {
+    $url = XDB::fetchOneCell('SELECT  url
+                                FROM  carvas
+                               WHERE  uid = {?}', $user->id());
+    if ($url) {
+        $url = preg_replace('@/+$@', '', $url);
+        if ($path) {
+            http_redirect("http://$url/$path");
+        } else {
+            http_redirect("http://$url");
+        }
     }
 }
 
-header("HTTP/1.0 404 Not Found");
-
+header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
 ?>
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <html>
