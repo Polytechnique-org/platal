@@ -299,18 +299,18 @@ class EmailStorage extends Email
     // Retrieves the current list of actives storages.
     private function get_storages()
     {
-        $res = XDB::query("SELECT  mail_storage
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?}", $this->user->id());
-        return new PlFlagSet($res->fetchOneCell());
+        return new PlFlagSet(XDB::fetchOneCell('SELECT  storage
+                                                  FROM  email_options
+                                                 WHERE  uid = {?}',
+                                                $this->user->id()));
     }
 
     // Updates the list of active storages.
     private function set_storages($storages)
     {
-        XDB::execute("UPDATE  auth_user_md5
-                         SET  mail_storage = {?}
-                       WHERE  user_id = {?}", $storages, $this->user->id());
+        XDB::execute("UPDATE  email_options
+                         SET  storage = {?}
+                       WHERE  uid = {?}", $storages, $this->user->id());
     }
 
     // Returns the list of allowed storages for the @p user.

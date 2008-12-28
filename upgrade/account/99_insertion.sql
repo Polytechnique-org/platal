@@ -58,4 +58,9 @@ insert ignore into  forum_profiles (uid, last_seen)
               from  auth_user_quick
              where  banana_last >= DATE_SUB(NOW(), INTERVAL 6 MONTH);
 
+# Mail storage has been moved out of account settings
+insert into email_options
+     select user_id as uid, mail_storage as storage
+       from auth_user_md5;
+
 # vim:set syntax=mysql:

@@ -21,3 +21,4 @@ News:
 
 Email:
 * auth_user_md5.smtppass -> accounts.weak_password. This password is NULL when empty, but a check must be added for empty passwords.
+* auth_user_md5.mail_storage -> email_options.storage
