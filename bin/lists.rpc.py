@@ -318,12 +318,7 @@ def get_options(userdesc, perms, mlist, opts):
     details = get_list_info(userdesc, perms, mlist)[0]
     return (details, options)
 
-def set_options(userdesc, perms, mlist, vals):
-    """ Set the options of a list.
-            @mlist
-            @edit
-            @admin
-    """
+def set_options(userdesc, perms, mlist, opts, vals):
     for (k, v) in vals.iteritems():
         if k not in opts:
             continue
@@ -677,7 +672,7 @@ def get_bogo_level(userdesc, perms, mlist):
             filterlevel = 3
     return (filterlevel << 1) + unsurelevel
 
-def set_bogo_level(userdesc, perms, vhost, listname, level):
+def set_bogo_level(userdesc, perms, mlist, level):
     """ Set filter to the specified level.
             @mlist
             @edit
