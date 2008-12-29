@@ -57,17 +57,14 @@ class NewsletterModule extends PLModule
         require_once 'newsletter.inc.php';
 
         $nl  = new NewsLetter($nid);
+        $user =& S::user();
         if (Get::has('text')) {
-            $nl->toText($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+            $nl->toText($page, $user);
         } else {
-            $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+            $nl->toHtml($page, $user);
         }
         if (Post::has('send')) {
-            $res = XDB::query("SELECT hash FROM newsletter_ins WHERE user_id = {?}", S::i('uid'));
-            $nl->sendTo(S::user()->login(), S::user()->bestEmail(),
-                        S::v('prenom'), S::v('nom'),
-                        S::v('femme'), S::v('mail_fmt') != 'texte',
-                        $res->fetchOneCell());
+            $nl->sendTo($user);
         }
     }
 

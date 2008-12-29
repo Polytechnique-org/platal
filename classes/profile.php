@@ -23,30 +23,34 @@ class Profile
 {
     private $pid;
     private $hrpid;
+    private $promo;
 
     private function __construct($login)
     {
         if ($login instanceof PlUser) {
-            $res = XDB::query('SELECT  p.pid, p.hrpid
+            $res = XDB::query('SELECT  p.pid, p.hrpid, pd.promo_display
                                  FROM  account_profiles AS ap
                            INNER JOIN  profiles AS p ON (p.pid = ap.pid)
+                           INNER JOIN  profile_display AS pd ON (pd.uid = p.pid)
                                 WHERE  ap.uid = {?} AND FIND_IN_SET(\'owner\', ap.perms)',
                              $login->id());
         } else if (is_numeric($login)) {
-            $res = XDB::query('SELECT  p.pid, p.hrpid
+            $res = XDB::query('SELECT  p.pid, p.hrpid, pd.promo_display
                                  FROM  profiles AS p
+                           INNER JOIN  profile_display AS pd ON (pd.uid = p.pid)
                                 WHERE  p.pid = {?}',
                               $login);
         } else {
-            $res = XDB::query('SELECT  p.pid, p.hrpid
+            $res = XDB::query('SELECT  p.pid, p.hrpid, pd.promo_display
                                  FROM  profiles AS p
+                           INNER JOIN  profile_display AS pd ON (pd.uid = p.pid)
                                 WHERE  p.hrpid = {?}',
                               $login);
         }
         if ($res->numRows() != 1) {
             throw new UserNotFoundException();
         }
-        list($this->pid, $this->hrpid) = $res->fetchOneRow();
+        list($this->pid, $this->hrpid, $this->promo) = $res->fetchOneRow();
     }
 
     public function id()
@@ -57,6 +61,11 @@ class Profile
     public function hrid()
     {
         return $this->hrpid;
+    }
+
+    public function promo()
+    {
+        return $this->promo;
     }
 
     public function owner()

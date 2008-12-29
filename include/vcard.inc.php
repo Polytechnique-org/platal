@@ -37,7 +37,7 @@ class VCard extends PlVCard
 
     public function addUser($user)
     {
-        $user = User::getSilent($user);
+        $user = Profile::get($user);
         if ($user) {
             $this->user_list[] = $user;
             $this->count++;
@@ -59,7 +59,7 @@ class VCard extends PlVCard
     {
         global $globals;
         $login = $entry['value'];
-        $user  = get_user_details($login->login());
+        $user  = get_user_details($login->hrid());
 
         if (empty($user['nom_usage'])) {
             $entry = new PlVCardEntry($user['prenom'], $user['nom'], null, null, @$user['nickname']);
@@ -135,8 +135,8 @@ class VCard extends PlVCard
         // Melix
         $res = XDB::query(
                 "SELECT alias
-                   FROM virtual
-             INNER JOIN virtual_redirect USING(vid)
+                   FROM virtual AS v
+             INNER JOIN virtual_redirect AS vr ON (v.vid = vr.vid)
              INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
                   WHERE ( redirect={?} OR redirect={?} )
                         AND alias LIKE '%@{$globals->mail->alias_dom}'",

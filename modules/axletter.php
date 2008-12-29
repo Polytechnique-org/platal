@@ -269,15 +269,14 @@ class AXLetterModule extends PLModule
         $page->changeTpl('axletter/show.tpl');
 
         $nl  = new AXLetter($nid);
+        $user =& S::user();
         if (Get::has('text')) {
-            $nl->toText($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+            $nl->toText($page, $user);
         } else {
-            $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+            $nl->toHtml($page, $user);
         }
         if (Post::has('send')) {
-            $nl->sendTo(S::user()->login(), S::user()->bestEmail(),
-                        S::v('prenom'), S::v('nom'),
-                        S::v('femme'), S::v('mail_fmt') != 'texte');
+            $nl->sendTo($user);
         }
     }
 
