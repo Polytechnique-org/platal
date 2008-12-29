@@ -12,6 +12,10 @@ create table profiles (
   birthdate date default null,
   birthdate_ref date default null,
   deathdate date default null,
+  freetext mediumtext default null,
+  freetext_pub enum('private', 'public') not null default 'private',
+  medals_pub enum('private', 'public') not null default 'private',
+  alias_pub enum('private', 'public') not null default 'private',
 
   # Last modification date (for notifications)
   last_change date not null,

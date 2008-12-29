@@ -36,12 +36,17 @@ insert into carvas
 
 # Insert all existing profiles
 insert into profiles
-     select user_id AS pid, hruid AS hrpid, matricule AS xorg_id,
-            matricule_ax AS ax_id, naissance AS birthdate, naissance_ini AS birthdate_ref,
-            IF(deces = 0, NULL, deces) AS deathdate,
-            date AS last_change
-       from auth_user_md5
-      where hruid is not null;
+     select u.user_id AS pid, u.hruid AS hrpid, u.matricule AS xorg_id,
+            u.matricule_ax AS ax_id, u.naissance AS birthdate, u.naissance_ini AS birthdate_ref,
+            IF(u.deces = 0, NULL, u.deces) AS deathdate,
+            u.date AS last_change,
+            IF(LENGTH(q.profile_freetext) > 0, q.profile_freetext, NULL) AS freetext,
+            q.profile_freetext_pub AS freetext_pub,
+            q.profile_medals_pub AS medals_pub,
+            q.emails_alias_pub AS alias_pub
+       from auth_user_md5 AS u
+  left join auth_user_quick AS q ON (u.user_id = q.user_id)
+      where u.hruid is not null;
 
 # Add associations account <-> profile
 insert into account_profiles
