@@ -478,12 +478,12 @@ class EmailModule extends PLModule
         }
 
         $res = XDB::query(
-                "SELECT  u.prenom, u.nom, u.promo, a.alias as forlife
-                   FROM  auth_user_md5 AS u
-             INNER JOIN  contacts      AS c ON (u.user_id = c.contact)
-             INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
+                "SELECT  ac.full_name, a.alias as forlife
+                   FROM  accounts      AS ac
+             INNER JOIN  contacts      AS c ON (ac.uid = c.contact)
+             INNER JOIN  aliases       AS a ON (ac.uid = a.id AND FIND_IN_SET('bestalias', a.flags))
                   WHERE  c.uid = {?}
-                 ORDER BY u.nom, u.prenom", S::v('uid'));
+                 ORDER BY ac.full_name", S::i('uid'));
         $page->assign('contacts', $res->fetchAllAssoc());
         $page->assign('maxsize', ini_get('upload_max_filesize') . 'o');
         $page->assign('user', S::user());

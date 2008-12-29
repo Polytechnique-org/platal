@@ -156,7 +156,7 @@
 
 <p>
   <small>{icon name=information title="Envoi d'email"} Pour envoyer un email, tu peux soit le faire depuis l'interface
-  ci-dessous, soit utiliser <a href="Xorg/SMTPSecurise">notre serveur d'envoi SMTP<a>.</small>
+  ci-dessous, soit utiliser <a href="Xorg/SMTPSecurise">notre serveur d'envoi SMTP</a>.</small>
 </p>
 
 <form action="emails/send" method="post" enctype="multipart/form-data" id="form_mail" onsubmit="return check(this);">
@@ -213,7 +213,7 @@
           {foreach key=key item=contact from=$contacts}
           {if in_array($contact.forlife, $smarty.request.to_contacts)}
           <option value="{$contact.forlife}">
-            {$contact.prenom} {$contact.nom} (X{$contact.promo})
+            {$contact.full_name}
           </option>
           {/if}
           {/foreach}
@@ -222,7 +222,7 @@
           {foreach key=key item=contact from=$contacts}
           {if in_array($contact.forlife, $smarty.request.cc_contacts)}
           <option value="{$contact.forlife}">
-            {$contact.prenom} {$contact.nom} (X{$contact.promo})
+            {$contact.full_name}
           </option>
           {/if}
           {/foreach}
@@ -245,7 +245,7 @@
             {foreach item=contact from=$contacts}
             {if !in_array($contact.forlife, $smarty.request.to_contacts) && !in_array($contact.forlife, $smarty.request.cc_contacts)}
             <option value="{$contact.forlife}">
-              {$contact.prenom} {$contact.nom} (X{$contact.promo})
+              {$contact.full_name}
             </option>
             {/if}
             {/foreach}
