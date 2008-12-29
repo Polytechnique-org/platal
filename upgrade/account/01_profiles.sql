@@ -11,6 +11,7 @@ create table profiles (
   # birthdate and birthdate given by reference directory (library, school...)
   birthdate date default null,
   birthdate_ref date default null,
+  deathdate date default null,
 
   primary key pid (pid),
   unique key hrpid (hrpid),

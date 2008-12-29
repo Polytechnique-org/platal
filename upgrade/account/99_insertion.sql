@@ -37,7 +37,8 @@ insert into carvas
 # Insert all existing profiles
 insert into profiles
      select user_id AS pid, hruid AS hrpid, matricule AS xorg_id,
-            matricule_ax AS ax_id, naissance AS birthdate, naissance_ini AS birthdate_ref
+            matricule_ax AS ax_id, naissance AS birthdate, naissance_ini AS birthdate_ref,
+            IF(deces = 0, NULL, deces) AS deathdate
        from auth_user_md5
       where hruid is not null;
 
