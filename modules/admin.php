@@ -795,8 +795,11 @@ class AdminModule extends PLModule
                     S::assert_xsrf_token();
 
                     switch_bestalias($target, $loginbis);
-                    XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
-                    XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
+                    XDB::execute("UPDATE  aliases
+                                     SET  type = 'homonyme', expire=NOW()
+                                   WHERE  alias = {?}", $loginbis);
+                    XDB::execute("REPLACE INTO  homonymes (homonyme_id,user_id)
+                                        VALUES  ({?},{?})", $target, $target);
                     send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
                     $op = 'list';
                     $page->trigSuccess('Email envoyé à ' . $forlife . ', alias supprimé.');
@@ -806,16 +809,16 @@ class AdminModule extends PLModule
 
         if ($op == 'list') {
             $res = XDB::iterator(
-                    "SELECT  a.alias AS homonyme,s.id AS user_id,s.alias AS forlife,
-                             promo,prenom,nom,
-                             IF(h.homonyme_id=s.id, a.expire, NULL) AS expire,
-                             IF(h.homonyme_id=s.id, a.type, NULL) AS type
+                    "SELECT  a.alias AS homonyme, s.alias AS forlife,
+                             IF(h.homonyme_id = s.id, a.expire, NULL) AS expire,
+                             IF(h.homonyme_id = s.id, a.type, NULL) AS type,
+                             ac.uid AS user_id, ac.display_name AS prenom
                        FROM  aliases       AS a
                   LEFT JOIN  homonymes     AS h ON (h.homonyme_id = a.id)
                  INNER JOIN  aliases       AS s ON (s.id = h.user_id AND s.type='a_vie')
-                 INNER JOIN  auth_user_md5 AS u ON (s.id=u.user_id)
-                      WHERE  a.type='homonyme' OR a.expire!=''
-                   ORDER BY  a.alias,promo");
+                 INNER JOIN  accounts      AS ac ON (ac.uid = a.id)
+                      WHERE  a.type = 'homonyme' OR a.expire != ''
+                   ORDER BY  a.alias, forlife");
             $hnymes = Array();
             while ($tab = $res->next()) {
                 $hnymes[$tab['homonyme']][] = $tab;
@@ -824,13 +827,15 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_ax_xorg(&$page) {
+    function handler_ax_xorg(&$page)
+    {
         $page->changeTpl('admin/ax-xorg.tpl');
         $page->setTitle('Administration - AX/X.org');
 
         // liste des différences
         $res = XDB::query(
-                'SELECT  u.promo,u.nom AS nom,u.prenom AS prenom,ia.nom AS nomax,ia.prenom AS prenomax,u.matricule AS mat,ia.matricule_ax AS matax
+                'SELECT  u.promo,u.nom AS nom, u.prenom AS prenom, ia.nom AS nomax,
+                         ia.prenom AS prenomax, u.matricule AS mat, ia.matricule_ax AS matax
                    FROM  auth_user_md5 AS u
              INNER JOIN  identification_ax AS ia ON u.matricule_ax = ia.matricule_ax
                   WHERE  (SOUNDEX(u.nom) != SOUNDEX(ia.nom) AND SOUNDEX(CONCAT(ia.particule,u.nom)) != SOUNDEX(ia.nom)
@@ -852,7 +857,8 @@ class AdminModule extends PLModule
         $page->assign('plus', $res->fetchAllAssoc());
     }
 
-    function handler_deaths(&$page, $promo = 0, $validate = false) {
+    function handler_deaths(&$page, $promo = 0, $validate = false)
+    {
         $page->changeTpl('admin/deces_promo.tpl');
         $page->setTitle('Administration - Deces');
 
@@ -890,7 +896,8 @@ class AdminModule extends PLModule
         $page->assign('decedes', $res);
     }
 
-    function handler_dead_but_active(&$page) {
+    function handler_dead_but_active(&$page)
+    {
         $page->changeTpl('admin/dead_but_active.tpl');
         $page->setTitle('Administration - Décédés');
 
@@ -904,7 +911,8 @@ class AdminModule extends PLModule
         $page->assign('dead', $res);
     }
 
-    function handler_synchro_ax(&$page, $login = null, $action = null) {
+    function handler_synchro_ax(&$page, $login = null, $action = null)
+    {
         $page->changeTpl('admin/synchro_ax.tpl');
         $page->setTitle('Administration - Synchro AX');
 
@@ -921,7 +929,10 @@ class AdminModule extends PLModule
         } else if (Env::has('user')) {
             $user = User::get(Env::v('user'));
         } else if (Env::has('mat')) {
-            $res = XDB::query("SELECT user_id FROM auth_user_md5 WHERE matricule = {?}", Env::i('mat'));
+            $res = XDB::query("SELECT  user_id
+                                 FROM  auth_user_md5
+                                WHERE  matricule = {?}",
+                              Env::i('mat'));
             $user = User::get($res->fetchOneCell());
         } else {
             return;
@@ -995,7 +1006,8 @@ class AdminModule extends PLModule
         $page->assign('vit', new ValidateIterator());
     }
 
-    function handler_validate_answers(&$page, $action = 'list', $id = null) {
+    function handler_validate_answers(&$page, $action = 'list', $id = null)
+    {
         $page->setTitle('Administration - Réponses automatiques de validation');
         $page->assign('title', 'Gestion des réponses automatiques');
         $table_editor = new PLTableEditor('admin/validate/answers','requests_answers','id');
@@ -1004,7 +1016,9 @@ class AdminModule extends PLModule
         $table_editor->describe('answer','texte',false);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_skins(&$page, $action = 'list', $id = null) {
+
+    function handler_skins(&$page, $action = 'list', $id = null)
+    {
         $page->setTitle('Administration - Skins');
         $page->assign('title', 'Gestion des skins');
         $table_editor = new PLTableEditor('admin/skins','skins','id');
@@ -1017,7 +1031,8 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_postfix_blacklist(&$page, $action = 'list', $id = null) {
+    function handler_postfix_blacklist(&$page, $action = 'list', $id = null)
+    {
         $page->setTitle('Administration - Postfix : Blacklist');
         $page->assign('title', 'Blacklist de postfix');
         $table_editor = new PLTableEditor('admin/postfix/blacklist','postfix_blacklist','email', true);
@@ -1025,14 +1040,18 @@ class AdminModule extends PLModule
         $table_editor->describe('email','email',true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_postfix_whitelist(&$page, $action = 'list', $id = null) {
+
+    function handler_postfix_whitelist(&$page, $action = 'list', $id = null)
+    {
         $page->setTitle('Administration - Postfix : Whitelist');
         $page->assign('title', 'Whitelist de postfix');
         $table_editor = new PLTableEditor('admin/postfix/whitelist','postfix_whitelist','email', true);
         $table_editor->describe('email','email',true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_mx_broken(&$page, $action = 'list', $id = null) {
+
+    function handler_mx_broken(&$page, $action = 'list', $id = null)
+    {
         $page->setTitle('Administration - MX Défaillants');
         $page->assign('title', 'MX Défaillant');
         $table_editor = new PLTableEditor('admin/mx/broken', 'mx_watch', 'host', true);
@@ -1041,7 +1060,9 @@ class AdminModule extends PLModule
         $table_editor->describe('text', 'Description du problème', false);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_logger_actions(&$page, $action = 'list', $id = null) {
+
+    function handler_logger_actions(&$page, $action = 'list', $id = null)
+    {
         $page->setTitle('Administration - Actions');
         $page->assign('title', 'Gestion des actions de logger');
         $table_editor = new PLTableEditor('admin/logger/actions','logger.actions','id');
@@ -1049,6 +1070,7 @@ class AdminModule extends PLModule
         $table_editor->describe('description','description',true);
         $table_editor->apply($page, $action, $id);
     }
+
     function handler_downtime(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Coupures');
         $page->assign('title', 'Gestion des coupures');
@@ -1174,13 +1196,13 @@ class AdminModule extends PLModule
             $sql = "SELECT  w.ip, IF(s.ip IS NULL,
                                      IF(w.ip = s2.ip, s2.host, s2.forward_host),
                                      IF(w.ip = s.ip, s.host, s.forward_host)),
-                            w.mask, w.detection, w.state, u.hruid
+                            w.mask, w.detection, w.state, a.hruid
                       FROM  ip_watch        AS w
                  LEFT JOIN  logger.sessions AS s  ON (s.ip = w.ip)
                  LEFT JOIN  logger.sessions AS s2 ON (s2.forward_ip = w.ip)
-                 LEFT JOIN  auth_user_md5   AS u  ON (u.user_id = s.uid)
-                  GROUP BY  w.ip, u.hruid
-                  ORDER BY  w.state, w.ip, u.hruid";
+                 LEFT JOIN  accounts        AS a  ON (a.uid = s.uid)
+                  GROUP BY  w.ip, a.hruid
+                  ORDER BY  w.state, w.ip, a.hruid";
             $it = Xdb::iterRow($sql);
 
             $table = array();
@@ -1208,14 +1230,14 @@ class AdminModule extends PLModule
             $page->assign('table', $table);
         } elseif ($action == 'edit') {
             $sql = "SELECT  w.detection, w.state, w.last, w.description, w.mask,
-                            u1.hruid AS edit, u2.hruid AS hruid, s.host
+                            a1.hruid AS edit, a2.hruid AS hruid, s.host
                       FROM  ip_watch        AS w
-                 LEFT JOIN  auth_user_md5   AS u1 ON (u1.user_id = w.uid)
+                 LEFT JOIN  accounts        AS a1 ON (a1.uid = w.uid)
                  LEFT JOIN  logger.sessions AS s  ON (w.ip = s.ip)
-                 LEFT JOIN  auth_user_md5   AS u2 ON (u2.user_id = s.uid)
+                 LEFT JOIN  accounts        AS a2 ON (a2.uid = s.uid)
                      WHERE  w.ip = {?}
-                  GROUP BY  u2.hruid
-                  ORDER BY  u2.hruid";
+                  GROUP BY  a2.hruid
+                  ORDER BY  a2.hruid";
             $it = Xdb::iterRow($sql, ip_to_uint($ip));
 
             $props = array();
@@ -1258,14 +1280,15 @@ class AdminModule extends PLModule
     function handler_accounts(&$page)
     {
         $page->changeTpl('admin/accounts.tpl');
-        $page->assign('disabled', XDB::iterator('SELECT  u.nom, u.prenom, u.promo, u.comment, u.hruid
-                                                   FROM  auth_user_md5 AS u
-                                                  WHERE  perms = \'disabled\'
-                                               ORDER BY  nom, prenom'));
-        $page->assign('admins', XDB::iterator('SELECT  u.nom, u.prenom, u.promo, u.hruid
-                                                 FROM  auth_user_md5 AS u
-                                                WHERE  perms = \'admin\'
-                                             ORDER BY  nom, prenom'));
+        $page->assign('disabled', XDB::iterator('SELECT  a.hruid, FIND_IN_SET(\'watch\', a.flags) AS watch,
+                                                         a.state = \'disabled\' AS disabled, a.comment
+                                                   FROM  accounts AS a
+                                                  WHERE  a.state = \'disabled\' OR FIND_IN_SET(\'watch\', a.flags)
+                                               ORDER BY  a.hruid'));
+        $page->assign('admins', XDB::iterator('SELECT  a.hruid
+                                                 FROM  accounts AS a
+                                                WHERE  a.is_admin
+                                             ORDER BY  a.hruid'));
     }
 }
 

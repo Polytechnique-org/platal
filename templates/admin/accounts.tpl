@@ -20,14 +20,20 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Comptes désactivés</h1>
+<h1>{$disabled->total()} Comptes désactivés ou surveillés</h1>
 
 <table class="bicol">
-  <tr><th>Nom</th><th>Commentaire</th></tr>
+  <tr><th>Nom</th><th>Disabled</th><th>Surveillé</th><th>Commentaire</th></tr>
   {iterate from=$disabled item=user}
   <tr class="{cycle values="pair,impair"}">
     <td>
-      <a href="admin/user/{$user.hruid}">{$user.prenom} {$user.nom} ({$user.promo})</a>
+      <a href="admin/user/{$user.hruid}">{$user.hruid}</a>
+    </td>
+    <td>
+      <input type="checkbox" disabled="disabled" {if $user.disabled}checked="checked"{/if} />
+    </td>
+    <td>
+      <input type="checkbox" disabled="disabled" {if $user.watch}checked="checked"{/if} />
     </td>
     <td>
       {$user.comment|default='(none)'}
@@ -36,14 +42,14 @@
   {/iterate}
 </table>
 
-<h1>Administrateurs du site</h1>
+<h1>{$admins->total()} Administrateurs du site</h1>
 
 <table class="tinybicol">
   <tr><th>Utilisateur</th></tr>
   {iterate from=$admins item=user}
   <tr class="{cycle values="pair,impair"}">
     <td>
-      <a href="admin/user/{$user.hruid}">{$user.prenom} {$user.nom} ({$user.promo})</a>
+      <a href="admin/user/{$user.hruid}">{$user.hruid}</a>
     </td>
   </tr>
   {/iterate}
