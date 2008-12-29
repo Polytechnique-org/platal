@@ -78,6 +78,7 @@ class ProfileDeco implements ProfileSetting
             if (!isset($orig[$id]) || $orig[$id]['grade'] != $val['grade']) {
                 $req = new MedalReq(S::user(), $id, $val['grade']);
                 $req->submit();
+                sleep(1);
             }
         }
     }
