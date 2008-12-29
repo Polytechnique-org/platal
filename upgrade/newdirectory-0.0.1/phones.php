@@ -172,7 +172,7 @@ function guess_phone_type($str_type, $phone)
         }
     }
 
-    if ((strpos($str_type, 'mob') !== false) || (strpos($str_type, 'cell') !== false) || (strpos($str_type, 'port') !== false)) || (strpos($str_type, 'ptb') !== false) {
+    if ((strpos($str_type, 'mob') !== false) || (strpos($str_type, 'cell') !== false) || (strpos($str_type, 'port') !== false) || (strpos($str_type, 'ptb') !== false)) {
         if (substr($phone, 3) == '336' || substr($phone, 2) != '33') {
             return 'mobile';      //for France check if number is a mobile one
         } else {
