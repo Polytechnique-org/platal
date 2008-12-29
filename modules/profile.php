@@ -42,6 +42,7 @@ class ProfileModule extends PLModule
             'profile/ajax/ssecteur'      => $this->make_hook('ajax_ssecteur',              AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/buildnames'    => $this->make_hook('ajax_buildnames',            AUTH_COOKIE, 'user', NO_AUTH),
             'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
             'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE),
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
@@ -374,7 +375,7 @@ class ProfileModule extends PLModule
                             WHERE  user_id = {?} AND naissance = '0000-00-00'", S::i('uid'));
         if ($res->numRows()) {
             $page->trigWarning("Ta date de naissance n'est pas renseignée, ce qui t'empêcheras de réaliser"
-                      . " la procédure de récupération de mot de passe si un jour tu le perdais");
+                      . " la procédure de récupération de mot de passe si un jour tu le perdais.");
         }
 
        $page->setTitle('Mon Profil');
@@ -524,15 +525,26 @@ class ProfileModule extends PLModule
         }
     }
 
-    function handler_ajax_searchname(&$page, $snid)
+    function handler_ajax_searchname(&$page, $id)
     {
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/general.searchname.tpl', NO_SKIN);
-        $page->assign('i', $snid);
-        $page->assign('sn', array());
-        $page->assign('newsn', true);
+        $res = XDB::query("SELECT  id, name, FIND_IN_SET('public', flags) AS pub
+                             FROM  profile_name_search_enum
+                            WHERE  NOT FIND_IN_SET('not_displayed', flags)
+                                   AND NOT FIND_IN_SET('always_displayed', flags)");
+        $page->assign('sn_type_list', $res->fetchAllAssoc());
+        $page->assign('i', $id);
     }
-    
+
+    function handler_ajax_buildnames(&$page, $data)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $page->changeTpl('profile/general.buildnames.tpl', NO_SKIN);
+        require_once 'name.func.inc.php';
+        $page->assign('names', build_names_display($data));
+    }
+
     function handler_p_orange(&$page)
     {
         $page->changeTpl('profile/orange.tpl');

@@ -20,8 +20,65 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file="profile/general.name.tpl display_name=$display_name tooltip_name=$tooltip_name prenom=$prenom
-  nom=$nom sort_name=$sort_name yourself=$yourself search_names=$search_names}
+<table class="bicol" style="margin-bottom: 1em" summary="Profil : Noms">
+  <tr>
+    <th colspan="3">Noms</th>
+  </tr>
+  <tr>
+    <td class="titre">
+      {icon name="flag_green" title="site public"}&nbsp;Affichage public
+    </td>
+    <td id="public_name">
+      {$public_name}
+    </td>
+    <td rowspan="2">
+      <a href="javascript:displayNamesAdvanced();">
+        {icon name="page_edit" title="Plus de détail"}
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">
+      {icon name="flag_red" title="site privé"}&nbsp;Affichage privé
+    </td>
+    <td id="private_name">
+      {$private_name}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <span class="titre">Comment t'appeller</span>
+      <span class="smaller">sur le site, dans la lettre mensuelle...</span>
+    </td>
+    <td>
+      <input type="text" name="yourself" value="{$yourself}" size="25"/>
+    </td>
+    <td></td>
+  </tr>
+  <tr class="names_advanced" style="display: none">
+    <td colspan="3">
+      <span class="titre">Gestion de tes noms, prénoms, surnoms...</span>
+      <span class="smaller">Ils déterminent la façon dont ton nom apparaît sur les annuaires
+      en ligne et papier et ta fiche apparaitra quand on cherche un de ces noms. Pour plus
+      d'explications sur l'icône suivante
+      <a href="profile/name_info">{icon name="information" title="Plus d'infos"}</a>.</span><br/>
+      <div class="small center">Si un de tes noms commence par une particule,
+      coche la case en bout de ligne.</div>
+    </td>
+  </tr>
+  {foreach from=$search_names item=sn key=id}
+    {include file="profile/general.searchname.tpl" i=$id sn=$sn class="names_advanced" style="display: none"}
+  {/foreach}
+  <tr class="names_advanced" id="searchname" style="display: none">
+    <td colspan="2">
+      <div id="sn_add" class="center">
+        <a href="javascript:addSearchName();">
+          {icon name=add title="Ajouter un nom"} Ajouter un nom
+        </a>
+      </div>
+    </td>
+  </tr>
+</table>
 
 <table class="bicol" style="margin-bottom: 1em"
   summary="Profil&nbsp;: Informations générales">

@@ -107,25 +107,63 @@ function prepareType(i)
     selectType(document.forms.prof_annu["edus[" + i + "][degreeid]"], document.forms.prof_annu["edu_" + i + "_tmp"].value);
 }
 
+function displayNamesAdvanced()
+{
+    $('.names_advanced').show();
+}
+
 function addSearchName()
 {
-  var i = 0;
-  while (document.getElementById('search_name_' + i) != null) {
-      i++;
-  }
-  $('#add_search_name').before('<div id="search_name_' + i + '" style="padding:2px" class="center"></div>');
-  Ajax.update_html('search_name_' + i, 'profile/ajax/searchname/' + i,function(){
-    $('#search_name_'+i+' input')[1].focus();
-  });
+    var i = 0;
+    while ($('#search_name_' + i).length != 0) {
+        i++;
+    }
+    Ajax.update_html('search_name_' + i, 'profile/ajax/searchname/' + i, function(data){
+        $('#searchname').before(data);
+        changeNameFlag(i);
+    });
 }
 
 function removeSearchName(i)
 {
-  if (document.getElementById('search_name_'+i+'_new') != null) {
-    $('#search_name_'+i).remove();
-  } else {
-    removeObject('search_name_'+i, 'search_name['+i+']');
-  }
+    $('#search_name_' + i).remove();
+    updateNameDisplay();
+}
+
+function changeNameFlag(i)
+{
+    $('#flag_' + i).remove();
+    var typeid = $('#search_name_' + i).find('select').val();
+    var type   = $('#search_name_' + i).find('select :selected').text();
+    if ($('[@name=sn_type_' + typeid + '_' + i + ']').val() > 0) {
+        $('#flag_cb_' + i).after('<span id="flag_' + i + '">&nbsp;' +
+            '<img src="images/icons/flag_green.gif" alt="site public" title="site public" />' +
+            '<input type="hidden" name="search_names[' + i + '][pub]" value="1"/>' +
+            '<input type="hidden" name="search_names[' + i + '][typeid]" value="' + typeid + '"/>' +
+            '<input type="hidden" name="search_names[' + i + '][type]" value="' + type + '"/></span>');
+    } else {
+        $('#flag_cb_' + i).after('<span id="flag_' + i + '">&nbsp;' +
+            '<img src="images/icons/flag_red.gif" alt="site privé" title="site privé" />' +
+            '<input type="hidden" name="search_names[' + i + '][typeid]" value="' + typeid + '"/>' +
+            '<input type="hidden" name="search_names[' + i + '][type]" value="' + type + '"/></span>');
+    }
+}
+
+function updateNameDisplay()
+{
+    var searchnames = '';
+    for (var i = 0; i < 10; i++) {
+        if ($('#search_name_' + i).find(':text').val()) {
+            searchnames += $('#search_name_' + i).find('[name*=typeid]').val() + ';';
+            searchnames += $('#search_name_' + i).find(':checked').length-1 + ';';
+            searchnames += $('#search_name_' + i).find(':text').val() + ';;';
+        }
+    }
+    Ajax.update_html(null, 'profile/ajax/buildnames/' + searchnames, function(data){
+        var name = data.split(';');
+        $('#public_name').html(name[0]);
+        $('#private_name').html(name[0] + name[1]);
+    });
 }
 
 function delNationality(i)
