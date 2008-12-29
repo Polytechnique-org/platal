@@ -45,12 +45,13 @@ class PlFlagSet
 
 
     /** add flag
-     * @param $flag XXX
+     * @param $flag name of the flag
+     * @param $cond if true, add the flag (default is true), else, ignore.
      * @return VOID
      */
-    public function addFlag($flag)
+    public function addFlag($flag, $cond = true)
     {
-        if (empty($flag)) {
+        if (empty($flag) || !$cond) {
             return;
         }
         $this->values[$flag] = true;
