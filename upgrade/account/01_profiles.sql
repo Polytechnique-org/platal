@@ -13,6 +13,9 @@ create table profiles (
   birthdate_ref date default null,
   deathdate date default null,
 
+  # Last modification date (for notifications)
+  last_change date not null,
+
   primary key pid (pid),
   unique key hrpid (hrpid),
   unique key xorg_id (xorg_id),

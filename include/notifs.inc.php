@@ -28,7 +28,9 @@ define('WATCH_BIRTH', 4);
 
 function inscription_notifs_base($uid)
 {
-    XDB::execute('REPLACE INTO  watch_sub (uid,cid) SELECT {?},id FROM watch_cat', $uid);
+    XDB::execute('REPLACE INTO  watch_sub (uid, cid)
+                        SELECT  {?}, id
+                          FROM  watch_cat', $uid);
 }
 
 // }}}
@@ -36,23 +38,29 @@ function inscription_notifs_base($uid)
 
 function register_watch_op($uid, $cid, $date='', $info='')
 {
+    // XXX
+    // TODO: Find out whether uid is a user or a profile!!!
+    // XXX
     if (empty($date)) {
         $date = date('Y-m-d');
-    };
-    XDB::execute('REPLACE INTO  watch_ops (uid,cid,known,date,info)
+    }
+    XDB::execute('REPLACE INTO  watch_ops (uid, cid, known, date, info)
                         VALUES  ({?}, {?}, NOW(), {?}, {?})',
                  $uid, $cid, $date, $info);
     if($cid == WATCH_FICHE) {
         if ($info) {
             register_profile_update($uid, $info);
         }
-        XDB::execute('UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id={?}', $uid);
+        XDB::execute('UPDATE  profiles
+                         SET  last_change = NOW()
+                       WHERE  pid = {?}', $uid);
     } elseif($cid == WATCH_INSCR) {
         XDB::execute('REPLACE INTO  contacts (uid,contact)
-                            SELECT  uid,ni_id
+                            SELECT  uid, ni_id
                               FROM  watch_nonins
-                             WHERE  ni_id={?}', $uid);
-        XDB::execute('DELETE FROM watch_nonins WHERE ni_id={?}', $uid);
+                             WHERE  ni_id = {?}', $uid);
+        XDB::execute('DELETE FROM watch_nonins
+                            WHERE ni_id = {?}', $uid);
     }
     Platal::session()->updateNbNotifs();
 }
@@ -244,7 +252,9 @@ class Notifs
         }
 
         if($up) {
-            XDB::execute('UPDATE auth_user_quick SET watch_last=NOW() WHERE user_id={?}', $uid);
+            XDB::execute('UPDATE  watch
+                             SET  last = NOW()
+                           WHERE  uid = {?}', $uid);
         }
     }
 }
@@ -268,26 +278,24 @@ class Watch
         $this->_promos = new PromoNotifs($uid);
         $this->_nonins = new NoninsNotifs($uid);
         $this->_subs = new WatchSub($uid);
-        $res = XDB::query("SELECT  FIND_IN_SET('contacts',watch_flags),FIND_IN_SET('mail',watch_flags)
-                             FROM  auth_user_quick
-                            WHERE  user_id={?}", $uid);
-        list($this->watch_contacts,$this->watch_mail) = $res->fetchOneRow();
+        $res = XDB::query('SELECT  FIND_IN_SET(\'contacts\', flags),
+                                   FIND_IN_SET(\'mail\', flags)
+                             FROM  watch
+                            WHERE  uid = {?}', $uid);
+        list($this->watch_contacts, $this->watch_mail) = $res->fetchOneRow();
 
-        $res = XDB::iterator("SELECT * FROM watch_cat");
-        while($tmp = $res->next()) {
-            $this->_cats[$tmp['id']] = $tmp;
-        }
+        $this->_cats = XDB::fetchAllAssoc('id', 'SELECT * FROM watch_cat');
     }
 
     public function saveFlags()
     {
-        $flags = "";
-        if ($this->watch_contacts)
-            $flags = "contacts";
-        if ($this->watch_mail)
-            $flags .= ($flags ? ',' : '')."mail";
-        XDB::execute('UPDATE auth_user_quick SET watch_flags={?} WHERE user_id={?}',
-            $flags, $this->_uid);
+        $flags = new PlFlagSet();
+        $flags->addFlag('contacts', $this->watch_contacts);
+        $flags->addFlag('mail',     $this->watch_mail);
+        XDB::execute('UPDATE  watch
+                         SET  flags = {?}
+                       WHERE  uid = {?}',
+                     $flags, $this->_uid);
     }
 
     public function cats()
@@ -449,7 +457,7 @@ class NoninsNotifs
     public function add($p)
     {
         XDB::execute('INSERT INTO  watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
-        $res = XDB::query('SELECT  prenom,IF(nom_usage="",nom,nom_usage) AS nom,promo,user_id
+        $res = XDB::query('SELECT  prenom, IF(nom_usage="",nom,nom_usage) AS nom,promo,user_id
                              FROM  auth_user_md5
                             WHERE  user_id={?}', $p);
         $this->_data["$p"] = $res->fetchOneAssoc();
