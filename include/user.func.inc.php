@@ -528,19 +528,16 @@ function remove_user_pro($uid, $entrid) {
 // }}}
 // {{{ function set_user_details()
 function set_user_details_addresses($uid, $adrs) {
-    $res = XDB::query("SELECT adrid FROM adresses WHERE uid = {?} AND adrid >= 1 ORDER BY adrid", $uid);
-    $adrids = $res->fetchColumn();
+    $req = XDB::query('SELECT MAX(adrid) + 1
+                         FROM adresses
+                        WHERE uid = {?}', $uid);
+    $adrid = $req->fetchOneCell();
+    if (is_null($adrid)) {
+        $adrid = 0;
+    }
     foreach ($adrs as $adr) {
-        if (isset($adr['adrid']) && isset($adr['remove']) && $adr['remove']) {
-            remove_user_address($uid, $adr['adrid']);
-            if (isset($adrids[$adr['adrid']])) unset($adrids[$adr['adrid']]);
-        } else if (isset($adr['adrid'])) {
-            update_user_address($uid, $adr['adrid'], $adr);
-        } else {
-            for ($adrid = 1; isset($adrids[$adrid-1]) && ($adrids[$adrid-1] == $adrid); $adrid++);
-            add_user_address($uid, $adrid, $adr);
-            $adrids[$adrid-1] = $adrid;
-        }
+        add_user_address($uid, $adrid, $adr);
+        ++$adrid;
     }
     require_once 'geoloc.inc.php';
     localize_addresses($uid);
@@ -550,18 +547,16 @@ function set_user_details_addresses($uid, $adrs) {
 
 function set_user_details_pro($uid, $pros)
 {
-    $res = XDB::query("SELECT entrid FROM entreprises WHERE uid = {?} ORDER BY entrid", $uid);
-    $entrids = $res->fetchColumn();
+    $req = XDB::query('SELECT MAX(entrid) + 1
+                         FROM entreprises
+                        WHERE uid = {?}', $uid);
+    $entrid = $req->fetchOneCell();
+    if (is_null($entrid)) {
+        $entrid = 0;
+    }
     foreach ($pros as $pro) {
-        if (isset($pro['entrid']) && isset($pro['remove']) && $pro['remove']) {
-            remove_user_pro($uid, $pro['entrid']);
-            if (isset($entrids[$pro['entrid']])) unset($entrids[$pro['entrid']]);
-        } else if (isset($pro['entrid'])) {
-            update_user_pro($uid, $pro['entrid'], $pro);
-        } else {
-            for ($entrid = 0; isset($entrids[$entrid]) && ($entrids[$entrid] == $entrid); $entrid++);
-            add_user_pro($uid, $entrid, $pro);
-        }
+        add_user_pro($uid, $entrid, $pro);
+        ++$entrid;
     }
 }
 
