@@ -271,6 +271,11 @@ abstract class PlUser
         }
     }
 
+    public static function getWithUID($uid, $callback = false)
+    {
+        return User::getWithValues(null, array('user_id' => $uid), $callback);
+    }
+
     // Same as above, but using the silent callback as default.
     public static function getSilent($login)
     {
@@ -280,6 +285,11 @@ abstract class PlUser
     public static function getSilentWithValues($login, $values)
     {
         return User::getWithValues($login, $values, array('User', '_silent_user_callback'));
+    }
+
+    public static function getSilentWithUID($uid)
+    {
+        return User::getWithValues($uid, array('User', '_silent_user_callback'));
     }
 
     /**
