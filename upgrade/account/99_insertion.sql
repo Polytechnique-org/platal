@@ -39,6 +39,7 @@ insert into profiles
      select u.user_id AS pid, u.hruid AS hrpid, u.matricule AS xorg_id,
             u.matricule_ax AS ax_id, u.naissance AS birthdate, u.naissance_ini AS birthdate_ref,
             IF(u.deces = 0, NULL, u.deces) AS deathdate,
+            IF(FIND_IN_SET('femme', flags), 'female', 'male') AS sex,
             IF(u.section = 0, NULL, u.section) AS section,
             IF(LENGTH(u.cv) > 0, u.cv, NULL) AS cv,
             IF(LENGTH(q.profile_freetext) > 0, q.profile_freetext, NULL) AS freetext,

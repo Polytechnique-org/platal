@@ -23,36 +23,31 @@ class Profile
 {
     private $pid;
     private $hrpid;
-    private $promo;
-
     private $data = array();
 
     private function __construct($login)
     {
         if ($login instanceof PlUser) {
-            $res = XDB::query('SELECT  p.pid, p.hrpid, pd.promo_display
+            $res = XDB::query('SELECT  p.pid, p.hrpid
                                  FROM  account_profiles AS ap
                            INNER JOIN  profiles AS p ON (p.pid = ap.pid)
-                           INNER JOIN  profile_display AS pd ON (pd.uid = p.pid)
                                 WHERE  ap.uid = {?} AND FIND_IN_SET(\'owner\', ap.perms)',
                              $login->id());
         } else if (is_numeric($login)) {
-            $res = XDB::query('SELECT  p.pid, p.hrpid, pd.promo_display
+            $res = XDB::query('SELECT  p.pid, p.hrpid
                                  FROM  profiles AS p
-                           INNER JOIN  profile_display AS pd ON (pd.uid = p.pid)
                                 WHERE  p.pid = {?}',
                               $login);
         } else {
-            $res = XDB::query('SELECT  p.pid, p.hrpid, pd.promo_display
+            $res = XDB::query('SELECT  p.pid, p.hrpid
                                  FROM  profiles AS p
-                           INNER JOIN  profile_display AS pd ON (pd.uid = p.pid)
                                 WHERE  p.hrpid = {?}',
                               $login);
         }
         if ($res->numRows() != 1) {
             throw new UserNotFoundException();
         }
-        list($this->pid, $this->hrpid, $this->promo) = $res->fetchOneRow();
+        list($this->pid, $this->hrpid) = $res->fetchOneRow();
     }
 
     public function id()
@@ -70,6 +65,60 @@ class Profile
         return $this->promo;
     }
 
+    /** Print a name with the given formatting:
+     * %s = • for women
+     * %f = firstname
+     * %l = lastname
+     * %F = fullname
+     * %S = shortname
+     * %p = promo
+     */
+    public function name($format)
+    {
+        return str_replace(array('%s', '%f', '%l', '%F', '%S', '%p'),
+                           array($this->isFemale() ? '•' : '',
+                                 $this->first_name, $this->last_name,
+                                 $this->full_name, $this->short_name,
+                                 $this->promo), $format);
+    }
+
+    public function fullName($with_promo = false)
+    {
+        if ($with_promo) {
+            return $this->full_name . ' (' . $this->promo . ')';
+        }
+        return $this->full_name;
+    }
+
+    public function shortName($with_promo = false)
+    {
+        if ($with_promo) {
+            return $this->short_name . ' (' . $this->promo . ')';
+        }
+        return $this->short_name;
+    }
+
+    public function firstName()
+    {
+        return $this->first_name;
+    }
+
+    public function lastName()
+    {
+        return $this->last_name;
+    }
+
+    public function isFemale()
+    {
+        return $this->sex == PlUser::GENDER_FEMALE;
+    }
+
+    public function data()
+    {
+        $this->first_name;
+        return $this->data;
+    }
+
     public function __get($name)
     {
         if (property_exists($this, $name)) {
@@ -77,9 +126,17 @@ class Profile
         }
 
         if (empty($this->data)) {
-            $this->data = XDB::fetchOneAssoc('SELECT  *
-                                                FROM  profiles
-                                               WHERE  pid = {?}',
+            // XXX: Temporary, use data from auth_user_md5 (waiting for data from newdirectory
+            $this->data = XDB::fetchOneAssoc('SELECT  p.*, u.prenom AS first_name,
+                                                      IF(u.nom_usage != "", u.nom_usage, u.nom) AS last_name,
+                                                      u.promo AS promo,
+                                                      CONCAT(u.prenom, " ", u.nom) AS short_name,
+                                                      IF(u.nom_usage != "",
+                                                         CONCAT(u.nom_usage, " (", u.nom, "),", u.prenom),
+                                                         CONCAT(u.nom, ", ", u.prenom)) AS full_name
+                                                FROM  profiles AS p
+                                          INNER JOIN  auth_user_md5 AS u ON (u.user_id = p.pid)
+                                               WHERE  p.pid = {?}',
                                              $this->id());
         }
         if (isset($this->data[$name])) {

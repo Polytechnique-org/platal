@@ -13,6 +13,7 @@ create table profiles (
   birthdate_ref date default null,
   deathdate date default null,
 
+  sex enum('female', 'male') not null default 'male',
   section tinyint(2) unsigned default null,
   cv text default null,
   freetext mediumtext default null,

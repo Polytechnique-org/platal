@@ -52,39 +52,25 @@ class AuthModule extends PLModule
 
         $cle = $globals->core->econfiance;
 
+        $res = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<membres>\n\n";
+
         if (S::v('chall') && $_GET['PASS'] == md5(S::v('chall').$cle)) {
             $list = new MMList(User::getWithUID(10154), "x-econfiance.polytechnique.org");
             $members = $list->get_members('membres');
             if (is_array($members)) {
                 $membres = Array();
                 foreach($members[1] as $member) {
-                    if (preg_match('/^([^.]*.[^.]*.(\d\d\d\d))@polytechnique.org$/',
-                                   $member[1], $matches))
-                    {
-                        $membres[] = "a.alias='{$matches[1]}'";
+                    $user = User::getSilent($member[1]);
+                    if ($user && $user->hasProfile()) {
+                        $profile = $user->profile();
+                        $res .= "<membre>\n";
+                        $res .= "\t<nom>" . $profile->lastName() . "</nom>\n";
+                        $res .= "\t<prenom>" . $profile->firstName() . "</prenom>\n";
+                        $res .= "\t<email>" . $user->forlifeEmail() . "</email>\n";
+                        $res .= "</membre>\n\n";
                     }
                 }
             }
-
-            $where = join(' OR ',$membres);
-
-            $all = XDB::iterRow(
-                    "SELECT  u.prenom,u.nom,a.alias
-                       FROM  auth_user_md5 AS u
-                 INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND a.type!='homonyme' )
-                      WHERE  $where
-                   ORDER BY  nom");
-
-            $res = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<membres>\n\n";
-
-            while (list ($prenom1,$nom1,$email1) = $all->next()) {
-                    $res .= "<membre>\n";
-                    $res .= "\t<nom>$nom1</nom>\n";
-                    $res .= "\t<prenom>$prenom1</prenom>\n";
-                    $res .= "\t<email>$email1</email>\n";
-                    $res .= "</membre>\n\n";
-            }
-
             $res .= "</membres>\n\n";
 
             header('Content-Type: text/xml; charset="UTF-8"');

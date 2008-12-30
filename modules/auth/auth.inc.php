@@ -32,13 +32,20 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
     $params   = "";
     $fieldarr = explode(',', $datafields);
 
-    $res = XDB::query("SELECT  matricule, matricule_ax, promo,
-                               promo_sortie, flags, deces, nom,
-                               prenom, nationalite, section,
-                               naissance
-                         FROM  auth_user_md5 WHERE user_id = {?}",
-                       S::v('uid'));
-    $personnal_data = $res->fetchOneAssoc();
+    $user =& S::user();
+    if ($user->hasProfile()) {
+        // XXX: Transition table for auth.
+        $personnal_data = $user->profile()->data();
+        $personnal_data['matricule'] = $personnal_data['xorg_id'];
+        $personnal_data['matricule_ax'] = $personnal_data['ax_id'];
+        $personnal_data['promo_sortie'] = $personnal_data['promo'] + 3; // FIXME: Hum, not that good
+        $personnal_data['nationalite'] = $personnal_data['nationality1'];
+        $personnal_data['naissance'] = $personnal_data['birthdate'];
+        $personnal_data['deces'] = $personnal_data['deathdate'];
+        $personnal_data['flags'] = $user->profile()->isFemale() ? 'femme' : '';
+    } else {
+        $personnal_data = array();
+    }
 
     foreach ($fieldarr as $val) {
         // Determine the requested value, and add it to the answer.
@@ -51,9 +58,10 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
         } else if (isset($personnal_data[$val])) {
             $params .= gpex_prepare_param($val, $personnal_data[$val], $tohash, $charset);
         } else if ($val == 'username') {
-            $res = XDB::query("SELECT  alias FROM aliases
+            $res = XDB::query("SELECT  alias
+                                 FROM  aliases
                                 WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
-                              S::v('uid'));
+                              S::i('uid'));
             $min_username = $res->fetchOneCell();
             $params      .= gpex_prepare_param($val, $min_username, $tohash, $charset);
         } else if ($val == 'grpauth') {
@@ -69,6 +77,8 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
                 $perms = S::has_perms() ? 'admin' : 'membre';
             }
             $params .= gpex_prepare_param($val, $perms, $tohash, $charset);
+        } else {
+            $params .= gpex_prepare_param($val, '', $tohash, $charset);
         }
     }
     $tohash .= "1";
