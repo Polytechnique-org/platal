@@ -186,6 +186,14 @@ class User extends PlUser
         $this->perm_flags = self::makePerms($this->perms);
     }
 
+    // Return the password of the user
+    public function password()
+    {
+        return XDB::fetchOneCell('SELECT  u.password
+                                    FROM  auth_user_md5 AS u
+                                   WHERE  u.user_id = {?}', $this->id());
+    }
+
     // Return permission flags for a given permission level.
     public static function makePerms($perms)
     {
