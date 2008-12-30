@@ -49,7 +49,7 @@ correspondant si tu veux que nous puissions te répondre.
 {elseif $x}
 <h2>Patte Cassée</h2>
   <p>
-    Désolé, mais ton correspondant, {$x.prenom} {$x.nom} (X{$x.promo}),
+    Désolé, mais ton correspondant, {$x.user->fullName()},
     n'a actuellement <span class="erreur">aucune adresse email de redirection 
       active autre que celle que tu viens de rentrer.</span>
     Nous t'invitons à prendre contact avec lui autrement que par email,

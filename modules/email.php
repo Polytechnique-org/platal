@@ -621,40 +621,20 @@ class EmailModule extends PLModule
         $page->changeTpl('emails/broken.tpl');
 
         if ($warn == 'warn' && $email) {
-            S::assert_xsrf_token();
+            //S::assert_xsrf_token();
 
             $email = valide_email($email);
             // vérifications d'usage
-            $sel = XDB::query("SELECT uid FROM emails WHERE email = {?}", $email);
-            if (($uid = $sel->fetchOneCell())) {
-                $dest = User::getSilent($uid);
+            $uid = XDB::fetchOneCell("SELECT  uid
+                                        FROM  emails
+                                       WHERE  email = {?}", $email);
+            if ($uid) {
+                $dest = User::getWithUID($uid);
 
-                // envoi du mail
-                $message = "Bonjour !
-
-Cet email a été généré automatiquement par le service de patte cassée de
-Polytechnique.org car un autre utilisateur, " . S::user()->fullName() . ",
-nous a signalé qu'en t'envoyant un email, il avait reçu un message d'erreur
-indiquant que ton adresse de redirection $email
-ne fonctionnait plus !
-
-Nous te suggérons de vérifier cette adresse, et le cas échéant de mettre
-à jour sur le site <{$globals->baseurl}/emails> tes adresses
-de redirection...
-
-Pour plus de renseignements sur le service de patte cassée, n'hésite pas à
-consulter la page <{$globals->baseurl}/emails/broken>.
-
-
-À bientôt sur Polytechnique.org !
-L'équipe d'administration <support@" . $globals->mail->domain . '>';
-
-                $mail = new PlMailer();
-                $mail->setFrom('"Polytechnique.org" <support@' . $globals->mail->domain . '>');
-                $mail->addTo($dest->bestEmail());
-                $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
-                $mail->setTxtBody($message);
-                $mail->send();
+                $mail = new PlMailer('emails/broken-web.mail.tpl');
+                $mail->assign('email', $email);
+                $mail->assign('request', S::user());
+                $mail->sendTo($dest);
                 $page->trigSuccess("Email envoyé !");
             }
         } elseif (Post::has('email')) {
@@ -668,30 +648,27 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                 $page->assign('neuneu', true);
             } else {
                 $page->assign('email',$email);
-                $sel = XDB::query(
-                        "SELECT  e1.uid, e1.panne != 0 AS panne,
-                                 (count(e2.uid) + IF(FIND_IN_SET('googleapps', u.mail_storage), 1, 0)) AS nb_mails,
-                                 u.nom, u.prenom, u.promo, u.hruid
-                           FROM  emails as e1
-                      LEFT JOIN  emails as e2 ON(e1.uid = e2.uid
+                $x = XDB::fetchOneAssoc("SELECT  e1.uid, e1.panne != 0 AS panne,
+                                                 (count(e2.uid) + IF(FIND_IN_SET('googleapps', eo.storage), 1, 0)) AS nb_mails
+                                           FROM  emails as e1
+                                     INNER JOIN  email_options AS eo ON (eo.uid = e1.uid)
+                                      LEFT JOIN  emails as e2 ON(e1.uid = e2.uid
                                                  AND FIND_IN_SET('active', e2.flags)
                                                  AND e1.email != e2.email)
-                     INNER JOIN  auth_user_md5 as u ON(e1.uid = u.user_id)
-                          WHERE  e1.email = {?}
-                       GROUP BY  e1.uid", $email);
-                if ($x = $sel->fetchOneAssoc()) {
+                                          WHERE  e1.email = {?}
+                                       GROUP BY  e1.uid", $email);
+                if ($x) {
                     // on écrit dans la base que l'adresse est cassée
                     if (!$x['panne']) {
-                        XDB::execute("UPDATE emails
-                                         SET panne=NOW(),
-                                             last=NOW(),
-                                             panne_level = 1
-                                       WHERE email = {?}", $email);
+                        XDB::execute("UPDATE  emails
+                                         SET  panne=NOW(), last=NOW(), panne_level = 1
+                                       WHERE  email = {?}", $email);
                     } else {
-                        XDB::execute("UPDATE emails
-                                         SET panne_level = 1
-                                       WHERE email = {?} AND panne_level = 0", $email);
+                        XDB::execute("UPDATE  emails
+                                         SET  panne_level = 1
+                                       WHERE  email = {?} AND panne_level = 0", $email);
                     }
+                    $x['user'] = User::getWithUID($x['uid']);
                     $page->assign_by_ref('x', $x);
                 }
             }
