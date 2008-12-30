@@ -45,11 +45,8 @@ class PlatalLogger extends PlLogger
         $this->session = $this->writeSession($uid, $suid);
 
         // retrieve available actions
-        $res = XDB::iterRow("SELECT id, text FROM logger.actions");
-
-        while (list($action_id, $action_text) = $res->next()) {
-            $this->actions[$action_text] = $action_id;
-        }
+        $this->actions = XDB::fetchAllAssoc('text', 'SELECT  id, text
+                                                       FROM  logger.actions');
     }
 
     /** Creates a new session entry in database and return its ID.
@@ -74,8 +71,8 @@ class PlatalLogger extends PlLogger
             $proxy = 'proxy';
         }
 
-        XDB::execute("INSERT INTO logger.sessions
-                         SET uid={?}, host={?}, ip={?}, forward_ip={?}, forward_host={?}, browser={?}, suid={?}, flags={?}",
+        XDB::execute("INSERT INTO  logger.sessions
+                              SET  uid={?}, host={?}, ip={?}, forward_ip={?}, forward_host={?}, browser={?}, suid={?}, flags={?}",
                      $uid, $host, ip_to_uint($ip), ip_to_uint($forward_ip), $forward_host, $browser, $suid, $proxy);
         if ($forward_ip) {
             $this->proxy_ip = $ip;
@@ -109,8 +106,8 @@ class PlatalLogger extends PlLogger
     public function log($action, $data = null)
     {
         if (isset($this->actions[$action])) {
-            XDB::execute("INSERT INTO logger.events
-                             SET session={?}, action={?}, data={?}",
+            XDB::execute("INSERT INTO  logger.events
+                                  SET  session={?}, action={?}, data={?}",
                          $this->session, $this->actions[$action], $data);
         } else {
             trigger_error("PlLogger: unknown action, $action", E_USER_WARNING);
