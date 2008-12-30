@@ -12,10 +12,17 @@ create table profiles (
   birthdate date default null,
   birthdate_ref date default null,
   deathdate date default null,
+
+  section tinyint(2) unsigned default null,
+  cv text default null,
   freetext mediumtext default null,
   freetext_pub enum('private', 'public') not null default 'private',
   medals_pub enum('private', 'public') not null default 'private',
   alias_pub enum('private', 'public') not null default 'private',
+
+  nationality1 char(2) default null,
+  nationality2 char(2) default null,
+  nationality3 char(2) default null,
 
   # Last modification date (for notifications)
   last_change date not null,
@@ -23,7 +30,10 @@ create table profiles (
   primary key pid (pid),
   unique key hrpid (hrpid),
   unique key xorg_id (xorg_id),
-  key ax_id (ax_id)
+  key ax_id (ax_id),
+  key nationality1 (nationality1),
+  key nationality2 (nationality2),
+  key nationality3 (nationality3)
 );
 
 # vim:set syntax=mysql:

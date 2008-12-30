@@ -39,11 +39,14 @@ insert into profiles
      select u.user_id AS pid, u.hruid AS hrpid, u.matricule AS xorg_id,
             u.matricule_ax AS ax_id, u.naissance AS birthdate, u.naissance_ini AS birthdate_ref,
             IF(u.deces = 0, NULL, u.deces) AS deathdate,
-            u.date AS last_change,
+            IF(u.section = 0, NULL, u.section) AS section,
+            IF(LENGTH(u.cv) > 0, u.cv, NULL) AS cv,
             IF(LENGTH(q.profile_freetext) > 0, q.profile_freetext, NULL) AS freetext,
-            q.profile_freetext_pub AS freetext_pub,
-            q.profile_medals_pub AS medals_pub,
-            q.emails_alias_pub AS alias_pub
+            IF(q.profile_freetext_pub = 'public', 'public', 'private') AS freetext_pub,
+            IF(q.profile_medals_pub = 'public', 'public', 'private') AS medals_pub,
+            IF(q.emails_alias_pub = 'public', 'public', 'private') AS alias_pub,
+            u.nationalite AS nationality1, u.nationalite2 AS nationality2,
+            u.nationalite3 AS nationality3, u.date AS last_change
        from auth_user_md5 AS u
   left join auth_user_quick AS q ON (u.user_id = q.user_id)
       where u.hruid is not null;
