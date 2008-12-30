@@ -25,6 +25,8 @@ class Profile
     private $hrpid;
     private $promo;
 
+    private $data = array();
+
     private function __construct($login)
     {
         if ($login instanceof PlUser) {
@@ -68,6 +70,31 @@ class Profile
         return $this->promo;
     }
 
+    public function __get($name)
+    {
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
+
+        if (empty($this->data)) {
+            $this->data = XDB::fetchOneAssoc('SELECT  *
+                                                FROM  profiles
+                                               WHERE  pid = {?}',
+                                             $this->id());
+        }
+        if (isset($this->data[$name])) {
+            return $this->data[$name];
+        }
+
+        return null;
+    }
+
+    public function __isset($name)
+    {
+        return property_exists($this, $name) || isset($this->data[$name]);
+    }
+
+
     public function owner()
     {
         return User::getSilent($this);
@@ -79,7 +106,7 @@ class Profile
         try {
             return new Profile($login);
         } catch (UserNotFoundException $e) {
-            return false;
+            return null;
         }
     }
 }

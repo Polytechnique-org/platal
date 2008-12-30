@@ -37,6 +37,7 @@
 
 {if $actuel}
   {javascript name=ajax}
+  {if $user->hasProfile()}
   <table class="flags">
     <tr>
       <td class="orange">
@@ -52,7 +53,7 @@
       </td>
     </tr>
   </table>
-    
+  {/if}
 {else}
   <p>
     Pour plus de <strong>convivialité</strong> dans l'utilisation de tes emails, tu peux choisir une adresse
@@ -93,6 +94,7 @@
       <tr>
         <td><input type="text" name="alias" value="{$r_alias}" />@{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#}</td>
       </tr>
+      {if $user->hasProfile()}
       <tr>
         <td>
           <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
@@ -107,6 +109,7 @@
           </table>
         </td>
       </tr>
+      {/if}
       <tr>
         <td>Brève explication&nbsp;:</td>
       </tr>

@@ -21,12 +21,17 @@
 
 class User extends PlUser
 {
+    private $_profile_fetched = false;
+    private $_profile = null;
+
     // Implementation of the login to uid method.
     protected function getLogin($login)
     {
         global $globals;
 
         if ($login instanceof Profile) {
+            $this->_profile = $login;
+            $this->_profile_fetched = true;
             $res = XDB::query('SELECT  ap.uid
                                  FROM  account_profiles AS ap
                                 WHERE  ap.pid = {?} AND FIND_IN_SET(\'owner\', perms)',
@@ -205,7 +210,43 @@ class User extends PlUser
      */
     public function profile()
     {
-        return Profile::get($this);
+        if (!$this->_profile_fetched) {
+            $this->_profile_fetched = true;
+            $this->_profile = Profile::get($this);
+        }
+        return $this->_profile;
+    }
+
+    /** Return true if the user has an associated profile.
+     */
+    public function hasProfile()
+    {
+        return !is_null($this->profile());
+    }
+
+    /** Get the email alias of the user.
+     */
+    public function emailAlias()
+    {
+        global $globals;
+        return  XDB::fetchOneCell("SELECT  v.alias
+                                     FROM  virtual AS v
+                               INNER JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
+                                    WHERE  (vr.redirect = {?} OR vr.redirect = {?})
+                                           AND alias LIKE '%@{$globals->mail->alias_dom}'",
+                          $this->forlifeEmail(), $this->m4xForlifeEmail(), $this->id());
+    }
+
+    /** Get the alternative forlife email
+     * TODO: remove this uber-ugly hack. The issue is that you need to remove
+     * all @m4x.org addresses in virtual_redirect first.
+     * XXX: This is juste to make code more readable, to be remove as soon as possible
+     */
+    public function m4xForlifeEmail()
+    {
+        global $globals;
+        trigger_error('USING M4X FORLIFE', E_USER_NOTICE);
+        return $this->login() . '@' . $globals->mail->domain2;
     }
 
     // Return permission flags for a given permission level.

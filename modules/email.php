@@ -129,25 +129,12 @@ class EmailModule extends PLModule
                        FROM  virtual
                  INNER JOIN  virtual_redirect USING (vid)
                       WHERE  alias = {?} AND (redirect = {?} OR redirect = {?})",
-                    $value, $user->forlifeEmail(),
-                    // TODO: remove this über-ugly hack. The issue is that you need
-                    // to remove all @m4x.org addresses in virtual_redirect first.
-                    $user->login() . '@' . $globals->mail->domain2);
+                    $value, $user->forlifeEmail(), $user->m4xForlifeEmail());
         }
 
         // Fetch existing @alias_dom aliases.
-        $res = XDB::query(
-                "SELECT  alias, emails_alias_pub
-                   FROM  auth_user_quick, virtual
-             INNER JOIN  virtual_redirect USING(vid)
-                  WHERE  (redirect = {?} OR redirect = {?})
-                         AND alias LIKE '%@{$globals->mail->alias_dom}' AND user_id = {?}",
-                $user->forlifeEmail(),
-                // TODO: remove this über-ugly hack. The issue is that you need
-                // to remove all @m4x.org addresses in virtual_redirect first.
-                $user->login() . '@' . $globals->mail->domain2, $user->id());
-        list($alias, $visibility) = $res->fetchOneRow();
-        $page->assign('actuel', $alias);
+        $alias = $user->emailAlias();
+        $visibility = $user->hasProfile() && $user->profile()->alias_pub;
 
         if ($action == 'ask' && Env::has('alias') && Env::has('raison')) {
             S::assert_xsrf_token();
@@ -164,27 +151,31 @@ class EmailModule extends PLModule
             }
 
             //Quelques vérifications sur l'alias (caractères spéciaux)
-            if (!preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $alias)) {
+            if (!preg_match("/^[a-zA-Z0-9\-.]{3,20}$/", $alias)) {
                 $page->trigError("L'adresse demandée n'est pas valide."
                             . " Vérifie qu'elle comporte entre 3 et 20 caractères"
                             . " et qu'elle ne contient que des lettres non accentuées,"
                             . " des chiffres ou les caractères - et .");
                 return;
             } else {
+                $alias_mail = $alias.'@'.$globals->mail->alias_dom;
+
                 //vérifier que l'alias n'est pas déja pris
-                $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}',
-                                            $alias.'@'.$globals->mail->alias_dom);
+                $res = XDB::query('SELECT  COUNT(*)
+                                     FROM  virtual
+                                    WHERE  alias={?}',
+                                  $alias_mail);
                 if ($res->fetchOneCell() > 0) {
-                    $page->trigError("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
-                                Tu ne peux donc pas l'obtenir.");
+                    $page->trigError("L'alias $alias_mail a déja été attribué.
+                                      Tu ne peux donc pas l'obtenir.");
                     return;
                 }
 
                 //vérifier que l'alias n'est pas déja en demande
-                $it = new ValidateIterator ();
+                $it = new ValidateIterator();
                 while($req = $it->next()) {
-                    if ($req->type == "alias" and $req->alias == $alias . '@' . $globals->mail->alias_dom) {
-                        $page->trigError("L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
+                    if ($req->type == 'alias' and $req->alias == $alias_mail) {
+                        $page->trigError("L'alias $alias_mail a déja été demandé.
                                     Tu ne peux donc pas l'obtenir pour l'instant.");
                         return ;
                     }
@@ -201,18 +192,18 @@ class EmailModule extends PLModule
                 return PL_FORBIDDEN;
             }
 
-            if ($value == 'public') {
-                XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = 'public'
-                                         WHERE user_id = {?}", $user->id());
-            } else {
-                XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = 'private'
-                                         WHERE user_id = {?}", $user->id());
+            if ($user->hasProfile()) {
+                XDB::execute("UPDATE  profiles
+                                 SET  alias_pub = {?}
+                               WHERE  pid = {?}", 
+                            $value, $user->profile()->id());
             }
-
-            $visibility = $value;
+            $visibility = ($value == 'public');
         }
 
-        $page->assign('mail_public', ($visibility == 'public'));
+        $page->assign('actuel', $alias);
+        $page->assign('user', $user);
+        $page->assign('mail_public', $visibility);
     }
 
     function handler_redirect(&$page, $action = null, $email = null)
