@@ -307,6 +307,13 @@ class PlMailer extends Mail_Mime {
         }
     }
 
+    public function sendTo(PlUser &$user)
+    {
+        $this->addTo('"' . $user->fullName() . '" <' . $user->bestEmail() . '>');
+        $this->assign_by_ref('user', $user);
+        return $this->send($user->isEmailFormatHtml());
+    }
+
     public function send($with_html = true)
     {
         $this->processPage($with_html);
