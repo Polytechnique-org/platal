@@ -53,13 +53,15 @@ class XnetListsModule extends ListsModule
         );
     }
 
-    function prepare_client(&$page)
+    function prepare_client(&$page, $user = null)
     {
         global $globals;
         Platal::load('lists', 'lists.inc.php');
 
-        $this->client = new MMList(S::v('uid'), S::v('password'),
-                                   $globals->asso('mail_domain'));
+        if (is_null($user)) {
+            $user =& S::user();
+        }
+        $this->client = new MMList($user, $globals->asso('mail_domain'));
 
         $page->assign('asso', $globals->asso());
         $page->setType($globals->asso('cat'));

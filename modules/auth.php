@@ -53,11 +53,7 @@ class AuthModule extends PLModule
         $cle = $globals->core->econfiance;
 
         if (S::v('chall') && $_GET['PASS'] == md5(S::v('chall').$cle)) {
-
-            $res  = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id=10154");
-            $pass = $res->fetchOneCell();
-
-            $list = new MMList(10154, $pass, "x-econfiance.polytechnique.org");
+            $list = new MMList(User::getWithUID(10154), "x-econfiance.polytechnique.org");
             $members = $list->get_members('membres');
             if (is_array($members)) {
                 $membres = Array();

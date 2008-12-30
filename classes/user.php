@@ -144,9 +144,8 @@ class User extends PlUser
                                    CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
                                    CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
                                    a.full_name, a.display_name, a.sex = 'female' AS gender,
-                                   a.email_format, a.password,
-                                   IF (a.state = 'active', at.perms, '') AS perms,
-                                   a.is_admin
+                                   IF(a.state = 'active', at.perms, '') AS perms,
+                                   a.email_format, a.is_admin
                              FROM  accounts AS a
                        INNER JOIN  account_types AS at ON (at.type = a.type)
                        INNER JOIN  profile_display AS d ON (d.uid = a.uid)
@@ -204,6 +203,15 @@ class User extends PlUser
              $this->loadMainFields();
         }
         $this->perm_flags = self::makePerms($this->perms, $this->is_admin);
+    }
+
+    // We do not want to store the password in the object.
+    // So, fetch it 'on demand'
+    public function password()
+    {
+        return XDB::fetchOneCell('SELECT  a.password
+                                    FROM  accounts AS a
+                                   WHERE  a.uid = {?}', $this->id());
     }
 
     /** Return the main profile attached with this account if any.

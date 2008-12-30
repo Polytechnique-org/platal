@@ -56,7 +56,7 @@ class ListsModule extends PLModule
             $user = S::user();
         }
 
-        $this->client = new MMList($user->id(), $user->password);
+        $this->client = new MMList($user);
         return $globals->mail->domain;
     }
 
@@ -894,12 +894,13 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_admin_all(&$page) {
+    function handler_admin_all(&$page)
+    {
         $page->changeTpl('lists/admin_all.tpl');
         $page->setTitle('Administration - Mailing lists');
 
-        $client = new MMList(S::v('uid'), S::v('password'));
-        $listes = $client->get_all_lists();
+        $this->prepare_client($page);
+        $listes = $this->client->get_all_lists();
         $page->assign_by_ref('listes', $listes);
     }
 }
