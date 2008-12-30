@@ -197,7 +197,9 @@ class Marketing
         $res = XDB::query("SELECT  r.date, u.promo, u.nom, u.prenom, r.email, r.bestalias
                              FROM  register_pending AS r
                        INNER JOIN  auth_user_md5    AS u ON u.user_id = r.uid
-                            WHERE  hash!='INSCRIT' AND uid={?} AND TO_DAYS(relance) < TO_DAYS(NOW())", $uid);
+                            WHERE  hash != 'INSCRIT' AND uid = {?} AND
+                                   (TO_DAYS(relance) IS NULL OR TO_DAYS(relance) < TO_DAYS(NOW()))",
+                          $uid);
         if (!list($date, $promo, $nom, $prenom, $email, $alias) = $res->fetchOneRow()) {
             return false;
         }
@@ -219,7 +221,7 @@ class Marketing
         $mymail->send();
         XDB::execute('UPDATE  register_pending
                          SET  hash={?}, password={?}, relance=NOW()
-                       WHERE uid={?}', $hash, $pass_encrypted, $uid);
+                       WHERE  uid={?}', $hash, $pass_encrypted, $uid);
         return "$prenom $nom ($promo)";
     }
 }
