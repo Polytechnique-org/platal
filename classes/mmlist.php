@@ -21,9 +21,16 @@
 
 class MMList extends XmlrpcClient
 {
-    public function __construct($uid, $pass, $fqdn = null)
+    public function __construct($user, $pass = null, $fqdn = null)
     {
         global $globals;
+        if ($user instanceof PlUser) {
+            $fqdn = $pass;
+            $uid  = $user->id();
+            $pass = $user->password();
+        } else {
+            $uid = $user;
+        }
 
         $dom = is_null($fqdn) ? $globals->mail->domain : $fqdn;
         $url = "http://$uid:$pass@{$globals->lists->rpchost}:{$globals->lists->rpcport}/$dom";
