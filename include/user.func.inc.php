@@ -536,8 +536,10 @@ function set_user_details_addresses($uid, $adrs) {
         $adrid = 0;
     }
     foreach ($adrs as $adr) {
-        add_user_address($uid, $adrid, $adr);
-        ++$adrid;
+        if (!@$adr['remove']) {
+            add_user_address($uid, $adrid, $adr);
+            ++$adrid;
+        }
     }
     require_once 'geoloc.inc.php';
     localize_addresses($uid);
@@ -555,8 +557,10 @@ function set_user_details_pro($uid, $pros)
         $entrid = 0;
     }
     foreach ($pros as $pro) {
-        add_user_pro($uid, $entrid, $pro);
-        ++$entrid;
+        if (!@$pro['remove']) {
+            add_user_pro($uid, $entrid, $pro);
+            ++$entrid;
+        }
     }
 }
 
