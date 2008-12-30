@@ -621,7 +621,7 @@ class EmailModule extends PLModule
         $page->changeTpl('emails/broken.tpl');
 
         if ($warn == 'warn' && $email) {
-            //S::assert_xsrf_token();
+            S::assert_xsrf_token();
 
             $email = valide_email($email);
             // vérifications d'usage
@@ -768,17 +768,20 @@ class EmailModule extends PLModule
             $page->assign('doublon', $props);
         }
     }
+
     function handler_lost(&$page, $action = 'list', $email = null)
     {
         $page->changeTpl('emails/lost.tpl');
 
-        $page->assign('lost_emails', XDB::iterator("
-            SELECT  u.user_id, u.hruid
-              FROM  auth_user_md5 AS u
-         LEFT JOIN  emails        AS e ON (u.user_id = e.uid AND FIND_IN_SET('active', e.flags))
-             WHERE  e.uid IS NULL AND FIND_IN_SET('googleapps', u.mail_storage) = 0 AND
-                    u.deces = 0 AND u.perms IN ('user', 'admin', 'disabled')
-          ORDER BY  u.promo DESC, u.nom, u.prenom"));
+        // TODO: Order by promo.
+        $page->assign('lost_emails',
+                      XDB::iterator("SELECT  a.uid, a.hruid
+                                       FROM  accounts AS a
+                                 INNER JOIN  email_options AS eo ON (eo.uid = a.uid)
+                                  LEFT JOIN  emails   AS e ON (a.uid = e.uid AND FIND_IN_SET('active', e.flags))
+                                      WHERE  e.uid IS NULL AND FIND_IN_SET('googleapps', eo.storage) = 0 AND
+                                             a.state = 'active'
+                                   ORDER BY  a.hruid"));
     }
 }
 
