@@ -142,7 +142,7 @@ class EmailModule extends PLModule
             //Si l'utilisateur vient de faire une damande
             $alias  = Env::v('alias');
             $raison = Env::v('raison');
-            $public = (Env::v('public', 'off') == 'on')?"public":"private";
+            $public = (Env::v('public', 'off') == 'on') ? 'public' : 'private';
 
             $page->assign('r_alias', $alias);
             $page->assign('r_raison', $raison);
