@@ -346,7 +346,7 @@ class MarketingModule extends PLModule
             $sent  = Array();
             foreach (array_keys($_POST['relance']) as $uid) {
                 if ($tmp = Marketing::relance($uid, $nbdix)) {
-                    $sent[] = $tmp.' a été relancé';
+                    $sent[] = $tmp . ' a été relancé.';
                 }
             }
             $page->assign('sent', $sent);
