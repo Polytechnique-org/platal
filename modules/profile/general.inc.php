@@ -290,7 +290,7 @@ class ProfileGeneral extends ProfilePage
     protected function _fetchData()
     {
         // Checkout all data...
-        $res = XDB::query("SELECT  p.promo_display, e.entry_year AS entry_year, e.grad_year AS grad_year,
+        $res = XDB::query("SELECT  p.promo AS promo_display, e.entry_year AS entry_year, e.grad_year AS grad_year,
                                    u.nom_usage, u.nationalite, u.nationalite2, u.nationalite3, u.naissance,
                                    t.display_tel as mobile, t.pub as mobile_pub,
                                    d.email_directory as email_directory,
@@ -301,7 +301,7 @@ class ProfileGeneral extends ProfilePage
                              FROM  auth_user_md5         AS u
                        INNER JOIN  auth_user_quick       AS q ON (u.user_id = q.user_id)
                        INNER JOIN  profile_names_display AS n ON (n.user_id = u.user_id)
-                       INNER JOIN  profile_display       AS p ON (p.uid = u.user_id)
+                       INNER JOIN  profile_display       AS p ON (p.pid = u.user_id)
                        INNER JOIN  profile_education     AS e ON (e.uid = u.user_id AND FIND_IN_SET('primary', e.flags))
                         LEFT JOIN  profile_phones        AS t ON (u.user_id = t.uid AND link_type = 'user')
                         LEFT JOIN  profile_directory     AS d ON (d.uid = u.user_id)
@@ -407,8 +407,8 @@ class ProfileGeneral extends ProfilePage
         }
         if ($this->changed['promo_display']) {
             XDB::execute("UPDATE  profile_display
-                             SET  promo_display = {?}
-                           WHERE  uid = {?}",
+                             SET  promo = {?}
+                           WHERE  pid = {?}",
                          $this->values['promo_display'], S::v('uid'));
         }
     }

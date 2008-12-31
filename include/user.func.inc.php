@@ -257,7 +257,7 @@ function get_user_details_adr($uid, $view = 'private') {
 
 function &get_user_details($login, $from_uid = '', $view = 'private')
 {
-    $reqsql = "SELECT  u.user_id, d.promo_display, u.prenom, u.nom, u.nom_usage, u.date, u.cv,
+    $reqsql = "SELECT  u.user_id, d.promo, u.prenom, u.nom, u.nom_usage, u.date, u.cv,
                        u.perms IN ('admin','user','disabled') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
                        q.profile_nick AS nickname, q.profile_from_ax, q.profile_freetext AS freetext,
                        q.profile_freetext_pub AS freetext_pub,
@@ -286,7 +286,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
             LEFT JOIN  profile_mentor        AS m   ON (m.uid = u.user_id)
             LEFT JOIN  emails                AS e   ON (e.uid = u.user_id AND e.flags='active')
            INNER JOIN  profile_names_display AS nd  ON (nd.user_id = u.user_id)
-           INNER JOIN  profile_display       AS d   ON (d.uid = u.user_id)
+           INNER JOIN  profile_display       AS d   ON (d.pid = u.user_id)
                 WHERE  a.alias = {?}
              GROUP BY  u.user_id";
     $res  = XDB::query($reqsql, $from_uid, $login);

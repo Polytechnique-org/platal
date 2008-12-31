@@ -117,7 +117,7 @@ class User extends PlUser
         }
 
         global $globals;
-        $res = XDB::query("SELECT  u.hruid, d.promo_display AS promo,
+        $res = XDB::query("SELECT  u.hruid, d.promo,
                                    CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
                                    CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
                                    CONCAT(u.prenom, ' ', IF(u.nom_usage <> '', u.nom_usage, u.nom)) AS full_name,
@@ -126,7 +126,7 @@ class User extends PlUser
                                    q.core_mail_fmt AS email_format,
                                    u.perms
                              FROM  auth_user_md5 AS u
-                       INNER JOIN  profile_display AS d ON (d.uid = u.user_id)
+                       INNER JOIN  profile_display AS d ON (d.pid = u.user_id)
                         LEFT JOIN  auth_user_quick AS q ON (q.user_id = u.user_id)
                         LEFT JOIN  aliases AS af ON (af.id = u.user_id AND af.type = 'a_vie')
                         LEFT JOIN  aliases AS ab ON (ab.id = u.user_id AND FIND_IN_SET('bestalias', ab.flags))
