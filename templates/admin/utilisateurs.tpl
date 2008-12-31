@@ -106,7 +106,7 @@ function ban_read()
       <td class="titre">Sexe</td>
       <td>
         <label>femme <input type="radio" name="sex" value="female" {if $user->isFemale()}checked="checked"{/if} /></label>
-        <label><input type="radio" name="sexe" value="male" {if !$user->isFemale()}checked="checked"{/if} /> homme</label>
+        <label><input type="radio" name="sex" value="male" {if !$user->isFemale()}checked="checked"{/if} /> homme</label>
       </td>
     </tr>
     <tr class="impair">
@@ -136,7 +136,7 @@ function ban_read()
       <td class="titre">Accès RSS</td>
       <td>
         <label>
-          <input type="checkbox" name="token_access" {if $user->token_access}checked="checked"{/if} />
+          <input type="checkbox" name="token_access" {if $user->token_access}checked="checked"{/if} value="1" />
           activer l'accès
         </label>
       </td>
@@ -182,7 +182,7 @@ function ban_read()
         Surveillance
       </td>
       <td>
-        <label><input type="checkbox" name="watch" {if $user->watch}checked="checked"{/if} />
+        <label><input type="checkbox" name="watch" {if $user->watch}checked="checked"{/if} value="1" />
         Surveiller l'activité de ce compte</label><br />
         <span class="smaller">Cette option permet d'avoir des logs complets de l'activité
         du compte via le logger, et d'être alerté lors des connexions de l'utilisateur.</span>
@@ -202,6 +202,7 @@ function ban_read()
     <input type="submit" name="su_account" value="Prendre l'identité" />
     <input type="submit" name="log_account" value="Consulter les logs" />
   </div>
+</form>
 
 <!--
   <h1>Informations sur la fiche</h1>

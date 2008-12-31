@@ -386,35 +386,86 @@ class AdminModule extends PLModule
 
         if ($user) {
             $login = $user->login();
-            $registered = ($user->forlifeEmail() != null);
+            $registered = $user->state != 'pending';
         } else {
             return;
         }
 
         // Handles specific requests (AX sync, su, ...).
-        if(Env::has('logs_button') && $registered) {
+        if(Env::has('logs_account')) {
             pl_redirect("admin/logger?loguser=$login&year=".date('Y')."&month=".date('m'));
         }
 
-        if (Env::has('ax_button') && $registered) {
-            pl_redirect("admin/synchro_ax/" . $user->login());
-        }
-
-        if(Env::has('suid_button') && $registered) {
+        if(Env::has('su_button') && $registered) {
             if (!Platal::session()->startSUID($user)) {
-                $page->trigError('Impossible d\'effectuer un SUID sur ' . $user->id());
+                $page->trigError('Impossible d\'effectuer un SUID sur ' . $user->login());
             } else {
                 pl_redirect("");
             }
         }
 
         // Fetches user data.
-        $userinfo_query = "SELECT  *, FIND_IN_SET('watch', flags) AS watch, FIND_IN_SET('femme', flags) AS sexe,
-                                   (year(naissance) > promo - 15 or year(naissance) < promo - 25) AS naiss_err
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?}";
-        $mr = XDB::query($userinfo_query, $user->id())->fetchOneAssoc();
         $redirect = ($registered ? new Redirect($user) : null);
+
+        $to_update = array();
+        if (Env::has('disable_weak_access')) {
+            S::assert_xsrf_token();
+            $to_update['weak_password'] = null;
+        } else if (Env::has('update_account')) {
+            S::assert_xsrf_token();
+            if (Env::s('full_name') != $user->fullName()) {
+                $to_update['full_name'] = Env::s('full_name');
+            }
+            if (Env::s('display_name') != $user->displayName()) {
+                $to_update['display_name'] = Env::s('display_name');
+            }
+            if (Env::s('sex') != ($user->isFemale() ? 'female' : 'male')) {
+                $to_update['sex'] = Env::s('sex');
+            }
+            if (!Env::blank('hashpass')) {
+                $to_update['password'] = Env::s('hashpass');
+            }
+            if (!Env::blank('weak_password')) {
+                $to_update['weak_password'] = Env::s('weak_password');
+            }
+            if (Env::i('token_access', 0) != ($user->token_access ? 1 : 0)) {
+                $to_update['token'] = Env::i('token_access') ? rand_url_id(16) : null;
+            }
+            if (Env::i('skin', 0) != $user->skin) {
+                $to_update['skin'] = Env::i('skin', 0);
+                if ($to_update['skin'] == 0) {
+                    $to_update['skin'] = null;
+                }
+            }
+            if (Env::s('state') != $user->state) {
+                $to_update['state'] = Env::s('state');
+            }
+            if (Env::i('is_admin', 0) != ($user->is_admin ? 1 : 0)) {
+                $to_update['is_admin'] = Env::b('is_admin');
+            }
+            if (Env::s('type') != $user->type) {
+                $to_update['type'] = Env::s('type');
+            }
+            if (Env::i('watch', 0) != ($user->watch ? 1 : 0)) {
+                $to_update['flags'] = new PlFlagset();
+                $to_update['flags']->addFlag('watch', Env::i('watch'));
+            }
+            if (Env::t('comment') != $user->comment) {
+                $to_update['comment'] = Env::blank('comment') ? null : Env::t('comment');
+            }
+        }
+        if (!empty($to_update)) {
+            $set = array();
+            foreach ($to_update as $k => $value) {
+                $set[] = XDB::format($k . ' = {?}', $value);
+            }
+            XDB::execute('UPDATE  accounts
+                             SET  ' . implode(', ', $set) . ' 
+                           WHERE  uid = ' . XDB::format('{?}', $user->id()));
+            $page->trigSuccess('Données du compte mise à jour avec succès');
+            $user = User::getWithUID($user->id());
+        }
+
 
         // Processes admin requests, if any.
         foreach($_POST as $key => $val) {
