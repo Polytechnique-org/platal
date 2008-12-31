@@ -132,7 +132,7 @@ class User extends PlUser
     {
         if ($this->hruid !== null && $this->forlife !== null
             && $this->bestalias !== null && $this->display_name !== null
-            && $this->full_name !== null && $this->promo !== null && $this->perms !== null
+            && $this->full_name !== null && $this->perms !== null
             && $this->gender !== null && $this->email_format !== null) {
             return;
         }
@@ -140,15 +140,17 @@ class User extends PlUser
         global $globals;
         /** TODO: promo stuff again */
         /** TODO: fix perms field to fit new perms system */
-        $res = XDB::query("SELECT  a.hruid, d.promo,
+        $res = XDB::query("SELECT  a.hruid, a.registration_date,
                                    CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
                                    CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
                                    a.full_name, a.display_name, a.sex = 'female' AS gender,
                                    IF(a.state = 'active', at.perms, '') AS perms,
-                                   a.email_format, a.is_admin
+                                   a.email_format, a.is_admin, a.state, a.type, a.skin,
+                                   FIND_IN_SET('watch', a.flags) AS watch, a.comment,
+                                   a.weak_password IS NOT NULL AS weak_access,
+                                   a.token IS NOT NULL AS token_access
                              FROM  accounts AS a
                        INNER JOIN  account_types AS at ON (at.type = a.type)
-                       INNER JOIN  profile_display AS d ON (d.pid = a.uid)
                         LEFT JOIN  aliases AS af ON (af.id = a.uid AND af.type = 'a_vie')
                         LEFT JOIN  aliases AS ab ON (ab.id = a.uid AND FIND_IN_SET('bestalias', ab.flags))
                             WHERE  a.uid = {?}", $this->user_id);
@@ -214,6 +216,17 @@ class User extends PlUser
                                    WHERE  a.uid = {?}', $this->id());
     }
 
+    /** Overload PlUser::promo(): there no promo defined for a user in the current
+     * schema. The promo is a field from the profile.
+     */
+    public function promo()
+    {
+        if (!$this->hasProfile()) {
+            return '';
+        }
+        return $this->profile()->promo();
+    }
+
     /** Return the main profile attached with this account if any.
      */
     public function profile()
@@ -237,12 +250,27 @@ class User extends PlUser
     public function emailAlias()
     {
         global $globals;
-        return  XDB::fetchOneCell("SELECT  v.alias
-                                     FROM  virtual AS v
-                               INNER JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
-                                    WHERE  (vr.redirect = {?} OR vr.redirect = {?})
-                                           AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                          $this->forlifeEmail(), $this->m4xForlifeEmail(), $this->id());
+        $data = $this->emailAliases($globals->mail->alias_dom);
+        if (count($data) > 0) {
+            return array_pop($data);
+        }
+        return null;
+    }
+
+    /** Get all the aliases the user belongs to.
+     */
+    public function emailAliases($domain = null)
+    {
+        $where = '';
+        if (!is_null($domain)) {
+            $where = XDB::format(' AND alias LIKE CONCAT("%@", {?})', $domain);
+        }
+        return XDB::fetchColumn('SELECT  v.alias
+                                   FROM  virtual AS v
+                             INNER JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
+                                  WHERE  (vr.redirect = {?} OR vr.redirect = {?})
+                                         ' . $where,
+                               $this->forlifeEmail(), $this->m4xForlifeEmail());
     }
 
     /** Get the alternative forlife email

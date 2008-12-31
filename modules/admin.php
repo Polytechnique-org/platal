@@ -49,6 +49,7 @@ class AdminModule extends PLModule
             'admin/ipwatch'                => $this->make_hook('ipwatch', AUTH_MDP, 'admin'),
             'admin/icons'                  => $this->make_hook('icons', AUTH_MDP, 'admin'),
             'admin/accounts'               => $this->make_hook('accounts', AUTH_MDP, 'admin'),
+            'admin/account/types'          => $this->make_hook('account_types', AUTH_MDP, 'admin'),
         );
     }
 
@@ -668,21 +669,14 @@ class AdminModule extends PLModule
         $page->assign('host', $host);
 
         // Display active aliases.
-        $page->assign('virtuals', XDB::iterator(
-                "SELECT  alias
-                   FROM  virtual
-             INNER JOIN  virtual_redirect USING (vid)
-                  WHERE  type = 'user' AND (redirect = {?} OR redirect = {?})",
-                $user->forlifeEmail(),
-                // TODO: remove this über-ugly hack. The issue is that you need
-                // to remove all @m4x.org addresses in virtual_redirect first.
-                $user->login() . '@' . $globals->mail->domain2));
-
+        $page->assign('virtuals', $user->emailAliases());
         $page->assign('aliases', XDB::iterator(
                 "SELECT  alias, type='a_vie' AS for_life,FIND_IN_SET('bestalias',flags) AS best,expire
                    FROM  aliases
                   WHERE  id = {?} AND type != 'homonyme'
                ORDER BY  type != 'a_vie'", $user->id()));
+        $page->assign('account_types', XDB::iterator('SELECT * FROM account_types ORDER BY type'));
+        $page->assign('skins', XDB::iterator('SELECT id, name FROM skins ORDER BY name'));
 
         // Displays email redirection and the general profile.
         if ($registered && $redirect) {
@@ -1070,7 +1064,8 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_downtime(&$page, $action = 'list', $id = null) {
+    function handler_downtime(&$page, $action = 'list', $id = null)
+    {
         $page->setTitle('Administration - Coupures');
         $page->assign('title', 'Gestion des coupures');
         $table_editor = new PLTableEditor('admin/downtime','coupures','id');
@@ -1079,6 +1074,16 @@ class AdminModule extends PLModule
         $table_editor->describe('resume','résumé',true);
         $table_editor->describe('services','services affectés',true);
         $table_editor->describe('description','description',false);
+        $table_editor->apply($page, $action, $id);
+    }
+
+    function handler_account_types(&$page, $action = 'list', $id = null) 
+    {
+        $page->setTitle('Administration - Types de comptes');
+        $page->assign('title', 'Gestion des types de comptes');
+        $table_editor = new PLTableEditor('admin/account/types', 'account_types', 'type', true);
+        $table_editor->describe('type', 'Catégorie', true);
+        $table_editor->describe('perms', 'Permissions associées', true);
         $table_editor->apply($page, $action, $id);
     }
 

@@ -21,11 +21,6 @@
 {**************************************************************************}
 
 
-<h1>
-  Gestion des utilisateurs
-</h1>
-
-
 {if $smarty.post.u_kill_conf}
 <form method="post" action="admin/user">
   {xsrf_token_field}
@@ -35,46 +30,7 @@
     <input type="submit" name="u_kill" value="continuer" />
   </div>
 </form>
-{else}
-
-<form method="post" action="admin/user">
-  {xsrf_token_field}
-  <table class="tinybicol" cellspacing="0" cellpadding="2">
-    <tr>
-      <th>
-        Administrer
-      </th>
-    </tr>
-    {if !$smarty.request.login && !$mr.hruid}
-    <tr class="pair">
-      <td class="center">
-        Il est possible d'entrer ici n'importe quelle adresse email&nbsp;: redirection, melix, ou alias.
-      </td>
-    </tr>
-    {/if}
-    <tr>
-      <td class="center">
-        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login|default:$mr.hruid}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="center">
-        <input type="hidden" name="hashpass" value="" />
-        <input type="submit" name="select" value=" edit " /> &nbsp;&nbsp;
-        <input type="submit" name="suid_button" value=" su " />  &nbsp;&nbsp;
-        <input type="submit" name="ax_button" value=" AX " /> &nbsp;&nbsp;
-        <input type="submit" name="logs_button" value=" logs " />
-      </td>
-    </tr>
-  </table>
-</form>
-
-{if $mr}
-
-<p class="smaller">
-Dernière connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
-depuis <strong>{$host}</strong>.
-</p>
+{elseif $user}
 
 {literal}
 <script type="text/javascript">
@@ -118,8 +74,137 @@ function ban_read()
 </script>
 {/literal}
 
-<form id="auth" method="post" action="admin/user">
+<form id="auth" method="post" action="admin/user/{$user->login()}">
   {xsrf_token_field}
+  <h1>Informations sur le compte</h1>
+  <p class="smaller">
+    Dernière connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
+    depuis <strong>{$host}</strong>.
+  </p>
+
+  <table class="tinybicol">
+    <tr>
+      <th colspan="2">
+        <div style="float: right; text-align: right">
+          Inscrit le {$user->registration_date|date_format}
+        </div>
+        <div style="float: left; text-align: left">
+          {icon name=user_gray} {$mr.hruid} (uid {$user->id()})
+        </div>
+        <input type="hidden" name="uid" value="{$user->id()}" />
+      </th>
+    </tr>
+    <tr>
+      <td class="titre">Nom complet</td>
+      <td><input type="text" name="full_name" maxlength="255" value="{$user->fullName()}" /></td>
+    </tr>
+    <tr>
+      <td class="titre">Nom affiché</td>
+      <td><input type="text" name="display_name" maxlength="255" value="{$user->displayName()}" /></td>
+    </tr>
+    <tr>
+      <td class="titre">Sexe</td>
+      <td>
+        <label>femme <input type="radio" name="sex" value="female" {if $user->isFemale()}checked="checked"{/if} /></label>
+        <label><input type="radio" name="sexe" value="male" {if !$user->isFemale()}checked="checked"{/if} /> homme</label>
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Mot de passe</td>
+      <td>
+        <div style="float: left">
+          <input type="text" name="newpass_clair" size="10" maxlength="255" value="********" />
+          <input type="hidden" name="hashpass" value="" />
+        </div>
+        <div style="float: left; margin-top: 5px;">
+          {checkpasswd prompt="newpass_clair" submit="dummy_none"}
+        </div>
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Mot de passe SMTP</td>
+      <td>
+        <div style="float: left">
+          <input type="password" name="weak_password" size="10" maxlength="256" value="" />
+          {if $user->weak_access}
+          <input type="submit" name="disable_weak_access" value="Supprimer" />
+          {/if}
+        </div>
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Accès RSS</td>
+      <td>
+        <label>
+          <input type="checkbox" name="token_access" {if $user->token_access}checked="checked"{/if} />
+          activer l'accès
+        </label>
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Skin</td>
+      <td>
+        <select name="skin">
+          <option value="" {if !$user->skin}selected="selected"{/if}>Aucune (défaut du système)</option>
+          {iterate from=$skins item=skin}
+          <option value="{$skin.id}" {if $user->skin eq $skin.id}selected="selected"{/if}>{$skin.name}</option>
+          {/iterate}
+        </select>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">Etat du compte</td>
+      <td>
+        <select name="state">
+          <option value="pending" {if $user->state eq 'pending'}selected="selected"{/if}>pending (Non-inscrit)</option>
+          <option value="active" {if $user->state eq 'active'}selected="selected"{/if}>active (Inscrit, peu se logguer)</option>
+          <option value="disabled" {if $user->state eq 'disabled'}selected="selected"{/if}>disabled (Inscrit, accès interdit)</option>
+        </select><br />
+        <label>
+          <input type="checkbox" name="is_admin" value="1" {if $user->is_admin}checked="checked"{/if} />
+          administrateur du site
+        </label>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">Type de compte</td>
+      <td>
+        <select name="type">
+          {iterate from=$account_types item=type}
+          <option value="{$type.type}" {if $user->type eq $type.type}selected="selected"{/if}>{$type.type} ({$type.perms})</option>
+          {/iterate}
+        </select>
+        <a href="admin/account/types">gérer</a>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
+        Surveillance
+      </td>
+      <td>
+        <label><input type="checkbox" name="watch" {if $user->watch}checked="checked"{/if} />
+        Surveiller l'activité de ce compte</label><br />
+        <span class="smaller">Cette option permet d'avoir des logs complets de l'activité
+        du compte via le logger, et d'être alerté lors des connexions de l'utilisateur.</span>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
+        Commentaire
+      </td>
+      <td>
+        <input type="text" name="comment" size="40" maxlength="64" value="{$user->comment}" />
+      </td>
+    </tr>
+  </table>
+  <div class="center">
+    <input type="submit" name="update_account" value="Mettre à jour" /><br />
+    <input type="submit" name="su_account" value="Prendre l'identité" />
+    <input type="submit" name="log_account" value="Consulter les logs" />
+  </div>
+
+<!--
+  <h1>Informations sur la fiche</h1>
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>
       <th colspan="2">
@@ -133,21 +218,6 @@ function ban_read()
         </div>
         <input type="hidden" name="user_id" value="{$mr.user_id}" />
       </th>
-    </tr>
-    <tr class="pair">
-      <td class="titre">
-        Mot de passe
-      </td>
-      <td>
-        <div style="float: left">
-          <input type="text" name="newpass_clair" size="10" maxlength="10" value="********" />
-          <input type="hidden" name="passw" size="32" maxlength="32" value="{$mr.password}" />
-          <input type="hidden" name="hashpass" value="" />
-        </div>
-        <div style="float: left; margin-top: 5px;">
-          {checkpasswd prompt="newpass_clair" submit="dummy_none"}
-        </div>
-      </td>
     </tr>
     <tr class="pair">
       <td class="titre">
@@ -228,25 +298,6 @@ function ban_read()
         <input type="text" name="promoN" size="4" maxlength="4" value="{$mr.promo}" />
       </td>
     </tr>
-    <tr class="impair">
-      <td class="titre">
-        Surveillance
-      </td>
-      <td>
-        <label><input type="checkbox" name="watchN" {if $mr.watch}checked="checked"{/if} />
-        Surveiller l'activité de ce compte</label><br />
-        <span class="smaller">Cette option permet d'avoir des logs complets de l'activité
-        du compte via le logger, et d'être alerté lors des connexions de l'utilisateur.</span>
-      </td>
-    </tr>
-    <tr class="impair">
-      <td class="titre">
-        Commentaire
-      </td>
-      <td>
-        <input type="text" name="commentN" size="40" maxlength="64" value="{$mr.comment}" />
-      </td>
-    </tr>
     {if $mr.perms eq 'pending'}
     <tr class="center">
       <td colspan="2">
@@ -305,13 +356,13 @@ Pour ceci changer ses permissions en 'disabled'.
       {/if}
     </tr>
     {/iterate}
-    {iterate from=$virtuals item=virtual}
+    {foreach from=$virtuals item=virtual}
     <tr class="{cycle values="impair,pair"}">
       <td></td>
-      <td>{$virtual.alias}</td>
+      <td>{$virtual}</td>
       <td></td>
     </tr>
-    {/iterate}
+    {/foreach}
     <tr class="{cycle values="impair,pair"}">
       <td colspan="2" class="detail">
         <input type="text" name="email" size="29" maxlength="60" value="" />
@@ -324,10 +375,11 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
   </table>
 </form>
+-->
 
 <p><strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong></p>
 
-<form id="bans" method="post" action="admin/user">
+<form id="bans" method="post" action="admin/user/{$user->login()}">
   {xsrf_token_field}
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>
@@ -377,7 +429,7 @@ Pour ceci changer ses permissions en 'disabled'.
 {javascript name="ajax"}
 {test_email hruid=$user->login()}
 
-<form id="fwds" method="post" action="admin/user#fwds">
+<form id="fwds" method="post" action="admin/user/{$user->login()}#fwds">
   {xsrf_token_field}
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr>
@@ -463,7 +515,6 @@ Pour ceci changer ses permissions en 'disabled'.
   </table>
 </form>
 
-{/if}
 {/if}
 {/if}
 
