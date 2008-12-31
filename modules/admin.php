@@ -762,15 +762,14 @@ class AdminModule extends PLModule
     {
         $page->changeTpl('admin/homonymes.tpl');
         $page->setTitle('Administration - Homonymes');
-        require_once("homonymes.inc.php");
+        $this->load("homonyms.inc.php");
 
         if ($target) {
-            if (! list($prenom,$nom,$forlife,$loginbis) = select_if_homonyme($target)) {
-                $target=0;
+            $user = User::getSilent($target);
+            if (!$user || !($loginbis = select_if_homonyme($user))) {
+                $target = 0;
             } else {
-                $page->assign('nom',$nom);
-                $page->assign('prenom',$prenom);
-                $page->assign('forlife',$forlife);
+                $page->assign('user', $user);
                 $page->assign('loginbis',$loginbis);
             }
         }
@@ -785,24 +784,24 @@ class AdminModule extends PLModule
                 case 'mail':
                     S::assert_xsrf_token();
 
-                    send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
-                    switch_bestalias($target, $loginbis);
+                    send_warning_homonyme($user, $loginbis);
+                    switch_bestalias($user, $loginbis);
                     $op = 'list';
-                    $page->trigSuccess('Email envoyé à ' . $forlife . '.');
+                    $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . '.');
                     break;
 
                 case 'correct':
                     S::assert_xsrf_token();
 
-                    switch_bestalias($target, $loginbis);
+                    switch_bestalias($user, $loginbis);
                     XDB::execute("UPDATE  aliases
                                      SET  type = 'homonyme', expire=NOW()
                                    WHERE  alias = {?}", $loginbis);
                     XDB::execute("REPLACE INTO  homonymes (homonyme_id,user_id)
-                                        VALUES  ({?},{?})", $target, $target);
-                    send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
+                                        VALUES  ({?}, {?})", $target, $target);
+                    send_robot_homonyme($user, $loginbis);
                     $op = 'list';
-                    $page->trigSuccess('Email envoyé à ' . $forlife . ', alias supprimé.');
+                    $page->trigSuccess('Email envoyé à ' . $user->forlifeEmail() . ', alias supprimé.');
                     break;
             }
         }
@@ -812,7 +811,7 @@ class AdminModule extends PLModule
                     "SELECT  a.alias AS homonyme, s.alias AS forlife,
                              IF(h.homonyme_id = s.id, a.expire, NULL) AS expire,
                              IF(h.homonyme_id = s.id, a.type, NULL) AS type,
-                             ac.uid AS user_id, ac.display_name AS prenom
+                             ac.uid AS user_id
                        FROM  aliases       AS a
                   LEFT JOIN  homonymes     AS h ON (h.homonyme_id = a.id)
                  INNER JOIN  aliases       AS s ON (s.id = h.user_id AND s.type='a_vie')

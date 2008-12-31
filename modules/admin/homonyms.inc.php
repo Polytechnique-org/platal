@@ -19,53 +19,57 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function select_if_homonyme($uid) {
-    $res = XDB::query("SELECT  prenom,nom,a.alias AS forlife,h.alias AS loginbis
-                                   FROM  auth_user_md5 AS u
-                             INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.type='a_vie')
-                             INNER JOIN  aliases       AS h ON (h.id=u.user_id AND h.expire!='')
-                                  WHERE  user_id = {?}", $uid);
-    return $res->fetchOneRow();
+function select_if_homonyme(PlUser &$user) {
+    return XDB::fetchOneCell("SELECT  a.alias
+                                FROM  aliases AS a
+                               WHERE  a.id = {?} AND a.expire != ''",
+                             $user->id());
 }
 
-function send_warning_homonyme($prenom, $nom, $forlife, $loginbis) {
+function send_warning_homonyme(PlUser &$user, $loginbis) {
     global $globals;
     $cc = "support+homonyme@" . $globals->mail->domain;
     $FROM = "\"Support Polytechnique.org\" <$cc>";
     $mymail = new PlMailer();
     $mymail->setFrom($FROM);
-    $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@" . $globals->mail->domain);
-    $mymail->addTo("$prenom $nom <$forlife@" . $globals->mail->domain . '>');
     $mymail->addCc($cc);
+    $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@" . $globals->mail->domain);
     $mymail->setTxtBody(Env::v('mailbody'));
-    $mymail->send();
+    $mymail->sendTo($user);
 }
 
-function send_robot_homonyme($prenom, $nom, $forlife, $loginbis) {
+function send_robot_homonyme(PlUser &$user, $loginbis) {
     global $globals;
     $cc = "support+homonyme@" . $globals->mail->domain;
     $FROM = "\"Support Polytechnique.org\" <$cc>";
     $mymail = new PlMailer();
     $mymail->setFrom($FROM);
     $mymail->setSubject("Mise en place du robot $loginbis@" . $globals->mail->domain);
-    $mymail->addTo("$prenom $nom <$forlife@" . $globals->mail->domain . '>');
     $mymail->addCc($cc);
     $mymail->setTxtBody(Env::v('mailbody'));
-    $mymail->send();
+    $mymail->sendTo($user);
 }
 
-function switch_bestalias($uid, $loginbis) {
+function switch_bestalias(PlUser &$user, $loginbis) {
     // check if loginbis was the bestalias
-    $res = XDB::query("SELECT alias FROM aliases WHERE id = {?} AND FIND_IN_SET('bestalias', flags)", $uid);
-    $bestalias = $res->fetchOneCell();
-    if ($bestalias && $bestalias != $loginbis) return false;
+    $bestailas = XDB::fetchOneCell("SELECT  alias
+                                      FROM  aliases
+                                     WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                                   $user->id());
+    if ($bestalias && $bestalias != $loginbis) {
+        return false;
+    }
 
     // select the shortest alias still alive
-    $res = XDB::query("SELECT alias FROM aliases WHERE id = {?} AND alias != {?} AND expire IS NULL ORDER BY LENGTH(alias) LIMIT 1", $uid, $loginbis);
-    $newbest = $res->fetchOneCell();
+    $newbest = XDB::fetchOneCell("SELECT  alias
+                                    FROM  aliases
+                                   WHERE  id = {?} AND alias != {?} AND expire IS NULL
+                                ORDER BY  LENGTH(alias)
+                                   LIMIT  1", $user->id(), $loginbis);
     // change the bestalias flag
-    XDB::execute("UPDATE aliases SET flags = (flags & (255 - 1)) | IF(alias = {?}, 1, 0) WHERE id = {?}", $newbest, $uid);
-
+    XDB::execute("UPDATE  aliases
+                     SET  flags = (flags & (255 - 1)) | IF(alias = {?}, 1, 0)
+                   WHERE  id = {?}", $newbest, $user->id());
     return $newbest;
 }
 

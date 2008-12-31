@@ -121,9 +121,8 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
 
     public function commit()
     {
-        require_once('homonymes.inc.php');
-
-        switch_bestalias($this->user->id(), $this->loginbis);
+        Platal::load('admin', 'homonyms.inc.php');
+        switch_bestalias($this->user, $this->loginbis);
         if (!$this->warning) {
             XDB::execute("UPDATE aliases SET type = 'homonyme', expire = NOW() WHERE alias = {?}", $this->loginbis);
             XDB::execute("REPLACE INTO homonymes (homonyme_id, user_id) VALUES({?}, {?})", $this->user->id(), $this->user->id());

@@ -75,13 +75,13 @@
     <tr>
       <td>
         <textarea cols="80" rows="20" name="mailbody">
-{$prenom},
+{$user->displayName()},
 
 
 Comme nous t'en avons informé par email il y a quelques temps,
 pour respecter nos engagements en terme d'adresses email devinables,
 tu te verras bientôt retirer l'alias {$loginbis}@{#globals.mail.domain#} pour
-ne garder que {$forlife}@{#globals.mail.domain#}.
+ne garder que {$user->forlifeEmail()}.
 
 Toute personne qui écrira à {$loginbis}@{#globals.mail.domain#} recevra la
 réponse d'un robot qui l'informera que {$loginbis}@{#globals.mail.domain#}
@@ -111,7 +111,7 @@ L'équipe Polytechnique.org
     <tr>
       <td>
         <textarea cols="80" rows="20" name="mailbody">
-{$prenom},
+{$user->displayName()},
 
 Comme nous t'en avons informé par email il y a quelques temps,
 nous t'avons retiré de façon définitive l'adresse
