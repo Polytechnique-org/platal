@@ -85,9 +85,9 @@ abstract class Validate
         $this->stamp  = date('YmdHis');
         $this->unique = $_unique;
         $this->type   = $_type;
-        $res = XDB::query("SELECT  promo_display AS promo
+        $res = XDB::query("SELECT  promo
                              FROM  profile_display
-                            WHERE  uid={?}", $this->user->id());
+                            WHERE  pid={?}", $this->user->id());
         $this->promo = $res->fetchOneCell();
     }
 

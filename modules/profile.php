@@ -539,9 +539,9 @@ class ProfileModule extends PLModule
 
         require_once 'validations.inc.php';
 
-        $res = XDB::query("SELECT  e.entry_year, e.grad_year, d.promo_display, FIND_IN_SET('femme', u.flags) AS sexe
+        $res = XDB::query("SELECT  e.entry_year, e.grad_year, d.promo, FIND_IN_SET('femme', u.flags) AS sexe
                              FROM  auth_user_md5     AS u
-                       INNER JOIN  profile_display   AS d ON (d.uid = u.user_id)
+                       INNER JOIN  profile_display   AS d ON (d.pid = u.user_id)
                        INNER JOIN  profile_education AS e ON (e.uid = u.user_id AND FIND_IN_SET('primary', e.flags))
                             WHERE  u.user_id = {?}", S::v('uid'));
 

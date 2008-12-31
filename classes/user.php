@@ -140,7 +140,7 @@ class User extends PlUser
         global $globals;
         /** TODO: promo stuff again */
         /** TODO: fix perms field to fit new perms system */
-        $res = XDB::query("SELECT  a.hruid, d.promo_display AS promo,
+        $res = XDB::query("SELECT  a.hruid, d.promo,
                                    CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
                                    CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
                                    a.full_name, a.display_name, a.sex = 'female' AS gender,
@@ -148,7 +148,7 @@ class User extends PlUser
                                    a.email_format, a.is_admin
                              FROM  accounts AS a
                        INNER JOIN  account_types AS at ON (at.type = a.type)
-                       INNER JOIN  profile_display AS d ON (d.uid = a.uid)
+                       INNER JOIN  profile_display AS d ON (d.pid = a.uid)
                         LEFT JOIN  aliases AS af ON (af.id = a.uid AND af.type = 'a_vie')
                         LEFT JOIN  aliases AS ab ON (ab.id = a.uid AND FIND_IN_SET('bestalias', ab.flags))
                             WHERE  a.uid = {?}", $this->user_id);
