@@ -69,7 +69,7 @@ abstract class PlFeed implements PlIterator
 
     /** Fetch the feed for the given user.
      */
-    abstract protected function fetch($user);
+    abstract protected function fetch(PlUser &$user);
 
     public function next()
     {
