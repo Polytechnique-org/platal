@@ -84,9 +84,9 @@ class CarnetFeed extends PlFeed
                             'carnet/rss.tpl');
     }
 
-    protected function fetch($user)
+    protected function fetch(PlUser &$user)
     {
-        return new CarnetFeedIterator(new Notifs($user, false));
+        return new CarnetFeedIterator(new Notifs($user->id(), false));
     }
 }
 
