@@ -31,8 +31,8 @@
   </div>
 </form>
 {elseif $user}
-
 {literal}
+
 <script type="text/javascript">
 //<![CDATA[
 function doEditUser() {
@@ -70,10 +70,23 @@ function ban_read()
     document.forms.bans.read_perm.value = "!xorg.*";
 }
 
+$(document).ready(function() {
+  $('#tabs > ul').tabs();
+  $('.ui-tabs-nav li').width('33%');
+});
+
 // ]]>
 </script>
 {/literal}
 
+<div id="tabs">
+<ul>
+  <li><a href="{$platal->pl_self()}#account"><span >Compte</span></a></li>
+  <li><a href="{$platal->pl_self()}#emails"><span>Emails</span></a></li>
+  <li><a href="{$platal->pl_self()}#forums"><span>Forums</span></a></li>
+</ul>
+
+<div id="account">
 <form id="auth" method="post" action="admin/user/{$user->login()}">
   {xsrf_token_field}
   <h1>Informations sur le compte</h1>
@@ -157,7 +170,7 @@ function ban_read()
       <td>
         <select name="state">
           <option value="pending" {if $user->state eq 'pending'}selected="selected"{/if}>pending (Non-inscrit)</option>
-          <option value="active" {if $user->state eq 'active'}selected="selected"{/if}>active (Inscrit, peu se logguer)</option>
+          <option value="active" {if $user->state eq 'active'}selected="selected"{/if}>active (Inscrit, peut se logguer)</option>
           <option value="disabled" {if $user->state eq 'disabled'}selected="selected"{/if}>disabled (Inscrit, accès interdit)</option>
         </select><br />
         <label>
@@ -203,6 +216,7 @@ function ban_read()
     <input type="submit" name="log_account" value="Consulter les logs" />
   </div>
 </form>
+</div>
 
 <!--
   <h1>Informations sur la fiche</h1>
@@ -331,6 +345,11 @@ function ban_read()
 Ne pas utiliser [Désinscrire] si le but est d'exclure la personne.
 Pour ceci changer ses permissions en 'disabled'.
 </p>
+-->
+
+<div id="emails">
+<h1>Gestion des emails de {$user->login()}</h1>
+
 <form id="alias" method="post" action="admin/user">
   {xsrf_token_field}
   <table class="tinybicol" cellpadding="2" cellspacing="0">
@@ -376,56 +395,8 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
   </table>
 </form>
--->
 
 <p><strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong></p>
-
-<form id="bans" method="post" action="admin/user/{$user->login()}">
-  {xsrf_token_field}
-  <table cellspacing="0" cellpadding="2" class="tinybicol">
-    <tr>
-      <th colspan="4">
-        Permissions sur les forums
-      </th>
-    </tr>
-    <tr class="impair">
-      <td class="titre">
-        Poster
-      </td>
-      <td>
-        <input type="text" name="write_perm" size="32" maxlength="255" value="{$bans.write_perm}" />
-      </td>
-      <td class="action">
-        <a href="javascript:ban_write()">Bannir</a>
-      </td>
-    </tr>
-    <tr class="pair">
-      <td class="titre">
-        Lire
-      </td>
-      <td>
-        <input type="text" name="read_perm" size="32" maxlength="255" value="{$bans.read_perm}" />
-      </td>
-      <td class="action">
-        <a href="javascript:ban_read()">Bannir</a>
-      </td>
-    </tr>
-    <tr class="impair">
-      <td class="titre">
-        Commentaire
-      </td>
-      <td colspan="2">
-        <input type="text" name="comment" size="40" maxlength="255" value="{$bans.comment}" />
-      </td>
-    </tr>
-    <tr class="center">
-      <td colspan="3">
-        <input type="hidden" name="user_id" value="{$mr.user_id}" />
-        <input type="submit" name="b_edit" value="Modifier" />
-      </td>
-    </tr>
-  </table>
-</form>
 
 {javascript name="ajax"}
 {test_email hruid=$user->login()}
@@ -515,6 +486,61 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
   </table>
 </form>
+
+</div>
+
+<div id="forums">
+
+<h1>Gestion de l'accès au forums de {$user->login()}</h1>
+
+<form id="bans" method="post" action="admin/user/{$user->login()}">
+  {xsrf_token_field}
+  <table cellspacing="0" cellpadding="2" class="tinybicol">
+    <tr>
+      <th colspan="4">
+        Permissions sur les forums
+      </th>
+    </tr>
+    <tr class="impair">
+      <td class="titre">
+        Poster
+      </td>
+      <td>
+        <input type="text" name="write_perm" size="32" maxlength="255" value="{$bans.write_perm}" />
+      </td>
+      <td class="action">
+        <a href="javascript:ban_write()">Bannir</a>
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
+        Lire
+      </td>
+      <td>
+        <input type="text" name="read_perm" size="32" maxlength="255" value="{$bans.read_perm}" />
+      </td>
+      <td class="action">
+        <a href="javascript:ban_read()">Bannir</a>
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">
+        Commentaire
+      </td>
+      <td colspan="2">
+        <input type="text" name="comment" size="40" maxlength="255" value="{$bans.comment}" />
+      </td>
+    </tr>
+    <tr class="center">
+      <td colspan="3">
+        <input type="hidden" name="user_id" value="{$mr.user_id}" />
+        <input type="submit" name="b_edit" value="Modifier" />
+      </td>
+    </tr>
+  </table>
+</form>
+</div>
+
 
 {/if}
 {/if}

@@ -164,7 +164,10 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 JQUERY_PLUGINS=color
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
-jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js $(JQUERY_PLUGINS_PATHES)
+JQUERY_UI=core tabs
+JQUERY_UI_PATHES=$(addprefix htdocs/javascript/ui.,$(addsuffix .js,$(JQUERY_UI)))
+
+jquery: htdocs/javascript/jquery.js htdocs/javascript/jquery.autocomplete.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES)
 
 htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-latest.min.js
 htdocs/javascript/jquery.js:
@@ -176,6 +179,10 @@ htdocs/javascript/jquery.autocomplete.js:
 
 $(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F).txt
 $(JQUERY_PLUGINS_PATHES):
+	@$(download)
+
+$(JQUERY_UI_PATHES): DOWNLOAD_SRC = http://ui.jquery.com/latest/ui/$(@F)
+$(JQUERY_UI_PATHES):
 	@$(download)
 
 ################################################################################

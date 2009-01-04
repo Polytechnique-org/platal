@@ -465,6 +465,8 @@ class AdminModule extends PLModule
             $page->trigSuccess('Données du compte mise à jour avec succès');
             $user = User::getWithUID($user->id());
         }
+        $page->addJsLink('ui.core.js');
+        $page->addJsLink('ui.tabs.js');
 
 
         // Processes admin requests, if any.

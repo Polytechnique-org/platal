@@ -360,46 +360,59 @@ div.long td.rt { width: 85%; }
         [ onglets des profils ]
 *******************************************************************************/
 
-.wizard {
+.wizard, .ui-tabs-nav {
+    margin: 0;
+    padding: 0;
     margin-left: -16px;
+    clear: both;
 }
 
-.wizard .wiz_header {
+.wizard .wiz_header, .ui-tabs-nav {
     height: 32px;
     width: 100%;
     background: url('../images/skins/wiz_background.png') top right repeat-x;
     margin-bottom: 1em;
+    text-align: left;
 }
 
-.wizard .wiz_header .wiz_tab {
+.wizard .wiz_header .wiz_tab, .ui-tabs-nav li {
     background: url('../images/skins/wiz_normal.png') #aaa top left repeat-x;
     height: 100%;
     text-align: center;
     font-size: 75%;
     border-right: 1px solid #888;
+    float: left;
+    vertical-align: middle;
 }
 
-.wizard .wiz_header .wiz_tab:hover {
+.ui-tabs-nav li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.wizard .wiz_header .wiz_tab:hover, .ui-tabs-nav li:hover {
     background: url('../images/skins/wiz_hover.png') #777 top left repeat-x;
     color: #fff;
 }
 
-.wizard .wiz_header .active, .wizard .wiz_header .active:hover {
+.wizard .wiz_header .active, .wizard .wiz_header .active:hover, li.ui-tabs-selected {
     background: url('../images/skins/wiz_active.png') #444 top left repeat-x;
     color: #fff;
 }
 
-.wizard .wiz_header a {
+.wizard .wiz_header a, .ui-tabs-nav a {
     color: #000;
     text-decoration: none;
 }
 
-.wizard .wiz_header a.active {
+.wizard .wiz_header a.active, .ui-tabs-selected a {
     color: #fff;
 }
 
-.wizard .wiz_content {
+.wizard .wiz_content, .ui-tabs-panel {
     margin-left: 16px;
+    clear: both;
 }
 
 .flags .texte {
