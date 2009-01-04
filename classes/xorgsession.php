@@ -21,6 +21,11 @@
 
 class XorgSession extends PlSession
 {
+    const INVALID_USER = -2;
+    const NO_COOKIE = -1;
+    const COOKIE_SUCCESS = 0;
+    const INVALID_COOKIE = 1;
+
     public function __construct()
     {
         parent::__construct();
@@ -29,10 +34,15 @@ class XorgSession extends PlSession
     public function startAvailableAuth()
     {
         if (!S::logged()) {
-            $cookie = $this->tryCookie();
-            if ($cookie == 0) {
-                return $this->start(AUTH_COOKIE);
-            } else if ($cookie == 1 || $cookie == -2) {
+            switch ($this->tryCookie()) {
+              case self::COOKIE_SUCCESS:
+                if (!$this->start(AUTH_COOKIE)) {
+                    return false;
+                }
+                break;
+
+              case self::INVALID_USER:
+              case self::INVALID_COOKIE:
                 return false;
             }
         }
@@ -48,7 +58,7 @@ class XorgSession extends PlSession
     {
         S::kill('auth_by_cookie');
         if (Cookie::v('access') == '' || !Cookie::has('uid')) {
-            return -1;
+            return self::NO_COOKIE;
         }
 
         $res = XDB::query('SELECT  uid, password
@@ -57,15 +67,14 @@ class XorgSession extends PlSession
                          Cookie::i('uid'));
         if ($res->numRows() != 0) {
             list($uid, $password) = $res->fetchOneRow();
-            $expected_value = sha1($password);
-            if ($expected_value == Cookie::v('access')) {
+            if (sha1($password) == Cookie::v('access')) {
                 S::set('auth_by_cookie', $uid);
-                return 0;
+                return self::COOKIE_SUCCESS;
             } else {
-                return 1;
+                return self::INVALID_COOKIE;
             }
         }
-        return -2;
+        return self::INVALID_USER;
     }
 
     private function checkPassword($uname, $login, $response, $login_type)
@@ -306,7 +315,7 @@ class XorgSession extends PlSession
         if (S::suid() || ($replace && !Cookie::blank('access'))) {
             return;
         }
-        Cookie::set('access', sha1(S::v('password')), 300, true);
+        Cookie::set('access', sha1(S::user()->password()), 300, true);
         if ($log) {
             S::logger()->log('cookie_on');
         }
