@@ -72,7 +72,8 @@ function ban_read()
 
 $(document).ready(function() {
   $('#tabs > ul').tabs();
-  $('.ui-tabs-nav li').width('33%');
+  $('.ui-tabs-nav li').width('33%')
+    .click(function() { $(this).children('a').click() });
 });
 
 // ]]>
@@ -348,14 +349,14 @@ Pour ceci changer ses permissions en 'disabled'.
 -->
 
 <div id="emails">
-<h1>Gestion des emails de {$user->login()}</h1>
+<h1>Gestion de l'adresse X.org {$user->login()}</h1>
 
 <form id="alias" method="post" action="admin/user">
   {xsrf_token_field}
   <table class="tinybicol" cellpadding="2" cellspacing="0">
     <tr>
       <th class="alias" colspan="3">
-        Alias email
+        Alias email de l'utilisateur
       </th>
     </tr>
     {iterate from=$aliases item=a}
@@ -376,13 +377,6 @@ Pour ceci changer ses permissions en 'disabled'.
       {/if}
     </tr>
     {/iterate}
-    {foreach from=$virtuals item=virtual}
-    <tr class="{cycle values="impair,pair"}">
-      <td></td>
-      <td>{$virtual}</td>
-      <td></td>
-    </tr>
-    {/foreach}
     <tr class="{cycle values="impair,pair"}">
       <td colspan="2" class="detail">
         <input type="text" name="email" size="29" maxlength="60" value="" />
@@ -393,13 +387,15 @@ Pour ceci changer ses permissions en 'disabled'.
         <input type="submit" name="add_alias" value="Ajouter" />
       </td>
     </tr>
+    <tr class="{cycle values="impair,pair"}">
+      <td colspan="3" class="desc">
+        <strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
+      </td>
+    </tr>
   </table>
 </form>
 
-<p><strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong></p>
-
-{javascript name="ajax"}
-{test_email hruid=$user->login()}
+<br />
 
 <form id="fwds" method="post" action="admin/user/{$user->login()}#fwds">
   {xsrf_token_field}
@@ -486,6 +482,20 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
   </table>
 </form>
+
+{javascript name="ajax"}
+{test_email hruid=$user->login()}
+
+<h1>Autres adresses de l'utilisateur</h1>
+
+<table class="tinybicol">
+  <th>Virtual aliases auquel l'utilisateur appartient</th>
+  {foreach from=$virtuals item=virtual}
+  <tr class="{cycle values="impair,pair"}">
+    <td>{$virtual}</td>
+  </tr>
+  {/foreach}
+</table>
 
 </div>
 
