@@ -46,6 +46,11 @@ function del_alias(alias) {
   document.forms.alias.submit();
 }
 
+function del_profile(pid) {
+  document.forms.profiles.del_profile.value = pid;
+  document.forms.profiles.submit();
+}
+
 function del_fwd(fwd) {
   document.forms.fwds.del_fwd.value = fwd;
   document.forms.fwds.submit();
@@ -88,7 +93,7 @@ $(document).ready(function() {
 </ul>
 
 <div id="account">
-<form id="auth" method="post" action="admin/user/{$user->login()}">
+<form id="auth" method="post" action="admin/user/{$user->login()}#account">
   {xsrf_token_field}
   <h1>Informations sur le compte</h1>
   <p class="smaller">
@@ -188,7 +193,7 @@ $(document).ready(function() {
           <option value="{$type.type}" {if $user->type eq $type.type}selected="selected"{/if}>{$type.type} ({$type.perms})</option>
           {/iterate}
         </select>
-        <a href="admin/account/types">gérer</a>
+        <a href="admin/account/types">{icon name=wrench title=Gérer} gérer</a>
       </td>
     </tr>
     <tr class="pair">
@@ -217,6 +222,46 @@ $(document).ready(function() {
     <input type="submit" name="log_account" value="Consulter les logs" />
   </div>
 </form>
+
+<h1>Fiches associées au compte</h1>
+
+<form id="profiles" method="post" action="admin/user/{$user->login()}#account">
+  {xsrf_token_field}
+  <table class="tinybicol">
+    <tr>
+      <th></th>
+      <th>Identifiant de la fiche</th>
+      <th></th>
+    </tr>
+    {iterate from=$profiles item=profile}
+    <tr>
+      <td><input type="radio" name="owner" value="{$profile.pid}" {if $profile.owner}checked="checked"{/if}
+                 onclick="this.form.submit()" /></td>
+      <td>{$profile.hrpid}</td>
+      <td class="right">
+        <a href="profile/edit/{$profile.hrpid}">{icon name=user_edit}</a>
+        <a href="profile/{$profile.hrpid}" class="popup2">{icon name=user_suit}</a>
+        <a href="javascript:del_profile({$profile.pid})">{icon name=cross}</a>
+      </td>
+    </tr>
+    {/iterate}
+    <tr>
+      <td>
+        <input type="radio" name="owner" value="0" onclick="this.form.submit()" />
+      </td>
+      <td>None</td>
+      <td></td>
+    </tr>
+    <tr class="pair">
+      <td colspan="3">
+        <input type="hidden" name="del_profile" value="" />
+        <input type="text" maxlength="64" name="new_profile" />
+        <input type="submit" name="add_profile" value="Ajouter" />
+      </td>
+    </tr>
+  </table>
+</form>
+
 </div>
 
 <!--
@@ -351,7 +396,7 @@ Pour ceci changer ses permissions en 'disabled'.
 <div id="emails">
 <h1>Gestion de l'adresse X.org {$user->login()}</h1>
 
-<form id="alias" method="post" action="admin/user">
+<form id="alias" method="post" action="admin/user/{$user->login()}#emails">
   {xsrf_token_field}
   <table class="tinybicol" cellpadding="2" cellspacing="0">
     <tr>
@@ -372,7 +417,7 @@ Pour ceci changer ses permissions en 'disabled'.
       <td>garanti à vie*</td>
       {else}
       <td class="action">
-        <a href="javascript:del_alias('{$a.alias}')">delete</a>
+        <a href="javascript:del_alias('{$a.alias}')">{icon name=cross}</a>
       </td>
       {/if}
     </tr>
@@ -397,7 +442,7 @@ Pour ceci changer ses permissions en 'disabled'.
 
 <br />
 
-<form id="fwds" method="post" action="admin/user/{$user->login()}#fwds">
+<form id="fwds" method="post" action="admin/user/{$user->login()}#emails">
   {xsrf_token_field}
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr>
@@ -436,7 +481,7 @@ Pour ceci changer ses permissions en 'disabled'.
       </td>
       <td class="action">
         {if $mail->is_removable()}
-        <a href="javascript:del_fwd('{$mail->email}')">delete</a>
+        <a href="javascript:del_fwd('{$mail->email}')">{icon name=cross}</a>
         {/if}
       </td>
     </tr>
@@ -503,7 +548,7 @@ Pour ceci changer ses permissions en 'disabled'.
 
 <h1>Gestion de l'accès au forums de {$user->login()}</h1>
 
-<form id="bans" method="post" action="admin/user/{$user->login()}">
+<form id="bans" method="post" action="admin/user/{$user->login()}#forums">
   {xsrf_token_field}
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>

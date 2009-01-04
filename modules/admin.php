@@ -368,7 +368,7 @@ class AdminModule extends PLModule
     {
         global $globals;
         $page->changeTpl('admin/utilisateurs.tpl');
-        $page->setTitle('Administration - Edit/Su/Log');
+        $page->setTitle('Administration - Compte');
         require_once("emails.inc.php");
 
         if (S::suid()) {
@@ -407,6 +407,7 @@ class AdminModule extends PLModule
         // Fetches user data.
         $redirect = ($registered ? new Redirect($user) : null);
 
+        // Account Form {{{
         $to_update = array();
         if (Env::has('disable_weak_access')) {
             S::assert_xsrf_token();
@@ -465,6 +466,33 @@ class AdminModule extends PLModule
             $page->trigSuccess('Données du compte mise à jour avec succès');
             $user = User::getWithUID($user->id());
         }
+        // }}}
+        // Profile form {{{
+        if (Env::has('add_profile') || Env::has('del_profile') || Env::has('owner')) {
+            S::assert_xsrf_token();
+            if (Env::i('del_profile', 0) != 0) {
+                XDB::execute('DELETE FROM  account_profiles
+                                    WHERE  uid = {?} AND pid = {?}',
+                             $user->id(), Env::i('del_profile'));
+            } else if (!Env::blank('new_profile')) {
+                $profile = Profile::get(Env::t('new_profile'));
+                if (!$profile) {
+                    $page->trigError('Le profil ' . Env::t('new_profile') . ' n\'existe pas');
+                } else {
+                    XDB::execute('INSERT IGNORE INTO  account_profiles (uid, pid)
+                                              VALUES  ({?}, {?})',
+                                 $user->id(), $profile->id());
+                }
+            }
+            XDB::execute('UPDATE  account_profiles
+                             SET  perms = IF(pid = {?}, CONCAT(perms, \',owner\'), REPLACE(perms, \'owner\', \'\'))
+                           WHERE  uid = {?}',
+                         Env::i('owner'), $user->id());
+        }
+
+
+        // }}}
+
         $page->addJsLink('ui.core.js');
         $page->addJsLink('ui.tabs.js');
 
@@ -730,6 +758,10 @@ class AdminModule extends PLModule
                ORDER BY  type != 'a_vie'", $user->id()));
         $page->assign('account_types', XDB::iterator('SELECT * FROM account_types ORDER BY type'));
         $page->assign('skins', XDB::iterator('SELECT id, name FROM skins ORDER BY name'));
+        $page->assign('profiles', XDB::iterator('SELECT  p.pid, p.hrpid, FIND_IN_SET(\'owner\', ap.perms) AS owner
+                                                   FROM  account_profiles AS ap
+                                             INNER JOIN  profiles AS p ON (ap.pid = p.pid)
+                                                  WHERE  ap.uid = {?}', $user->id()));
 
         // Displays email redirection and the general profile.
         if ($registered && $redirect) {
