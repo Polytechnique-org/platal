@@ -172,7 +172,7 @@ class SearchModule extends PLModule
                 'networking_type' => array('field' => 'network_type', 'table' => 'profile_networking_enum',
                                            'text' => 'name', 'exact' => false),
                 'groupex'         => array('field' => 'id', 'table' => 'groupex.asso',
-                                           'text' => "(a.cat = 'GroupesX' OR a.cat = 'Institutions') AND pub = 'public' AND nom",
+                                           'text' => "(cat = 'GroupesX' OR cat = 'Institutions') AND pub = 'public' AND nom",
                                            'exact' => false),
                 'section'         => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
                 'school'          => array('field' => 'id', 'table' => 'profile_education_enum', 'text' => 'name', 'exact' => false),
