@@ -344,10 +344,9 @@ class RegisterModule extends PLModule
         // update number of subscribers (perms has changed)
         $globals->updateNbIns();
 
-        if (!start_connexion($uid, false)) {
+        if (!Platal::session()->startWeakSession($uid)) {
             return PL_FORBIDDEN;
         }
-        $_SESSION['auth'] = AUTH_MDP;
 
         /***********************************************************/
         /************* envoi d'un mail au démarcheur ***************/
@@ -398,8 +397,8 @@ class RegisterModule extends PLModule
                  . " - forlife   : $forlife\n"
                  . " - email     : $email\n"
                  . " - sexe      : $femme\n"
-                 . " - ip        : {$logger->ip} ({$logger->host})\n"
-                 . ($logger->proxy_ip ? " - proxy     : {$logger->proxy_ip} ({$logger->proxy_host})\n" : "")
+                 . " - ip        : " . S::logger()->ip . " (" . S::logger()->host . ")\n"
+                 . (S::logger()->proxy_ip ? " - proxy     : " . S::logger()->proxy_ip . " (" . S::logger()->proxy_host . ")\n" : "")
                  . "\n\n";
             if (count($market) > 0) {
                 $msg .= "Les marketings suivants avaient été effectués :\n"
@@ -511,7 +510,8 @@ class RegisterModule extends PLModule
         }
         if (Post::v('imap')) {
             require_once 'emails.inc.php';
-            $storage = new EmailStorage(S::v('uid'), 'imap');
+            $user = S::user();
+            $storage = new EmailStorage($user, 'imap');
             $storage->activate();
         }
 

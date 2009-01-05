@@ -33,7 +33,7 @@ class XnetGrpEventFeed extends PlFeed
                             'xnetgrp/announce-rss.tpl');
     }
 
-    protected function fetch($user)
+    protected function fetch(PlUser &$user)
     {
         global $globals;
         if (!is_null($user)) {
@@ -47,7 +47,7 @@ class XnetGrpEventFeed extends PlFeed
                                                                   AND (a.promo_max = 0 OR a.promo_max <= u.promo))
                              INNER JOIN auth_user_md5 AS u2 ON (u2.user_id = a.user_id)
                              WHERE u.user_id = {?} AND peremption >= NOW() AND a.asso_id = {?}",
-                                   $this->link, $user, $globals->asso('id'));
+                                   $this->link, $user->id(), $globals->asso('id'));
         } else {
             return  XDB::iterator("SELECT a.id, a.titre AS title, a.texte, a.create_date AS publication,
                                          CONCAT(u.prenom, ' ', IF(u.nom_usage != '', u.nom_usage, u.nom), ' (X',  u.promo, ')') AS author,

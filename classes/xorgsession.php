@@ -242,6 +242,21 @@ class XorgSession extends PlSession
         return true;
     }
 
+    /** Start a session without authentication data for the given user.
+     * This is used to identify the user after his registration, to be
+     * removed after rewriting registration procedure.
+     * XXX: Temporary
+     */
+    public function startWeakSession($user)
+    {
+        if (!$this->startSessionAs($user, AUTH_MDP)) {
+            $this->destroy();
+            return false;
+        }
+        S::set('auth', AUTH_MDP);
+        return true;
+    }
+
     private function securityChecks()
     {
         $mail_subject = array();
