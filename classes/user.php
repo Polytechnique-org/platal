@@ -245,6 +245,18 @@ class User extends PlUser
         return !is_null($this->profile());
     }
 
+    /** Check if the user can edit to given profile.
+     */
+    public function canEdit(Profile $profile)
+    {
+        // XXX: Check permissions (e.g. secretary permission)
+        //      and flags from the profile
+        return XDB::fetchOneCell('SELECT  pid
+                                    FROM  account_profiles
+                                   WHERE  uid = {?} AND pid = {?}',
+                                 $this->id(), $profile->id());
+    }
+
     /** Get the email alias of the user.
      */
     public function emailAlias()

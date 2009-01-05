@@ -331,9 +331,25 @@ class ProfileModule extends PLModule
         http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=$mat");
     }
 
-    function handler_p_edit(&$page, $opened_tab = null, $mode = null)
+    function handler_p_edit(&$page, $user = null, $opened_tab = null, $mode = null)
     {
         global $globals;
+
+        if (is_null($user)) {
+            $user = S::user();
+            if (!$user->hasProfile()) {
+                return PL_NOT_FOUND;
+            } else {
+                pl_redirect('profile/edit/' . $user->profile()->hrid());
+            }
+        } else {
+            $user = Profile::get($user);
+            if (!$user) {
+                return PL_NOT_FOUND;
+            } else if (!S::user()->canEdit($user) && Platal::notAllowed()) {
+                return PL_FORBIDDEN;
+            }
+        }
 
         // AX Synchronization
         require_once 'synchro_ax.inc.php';
@@ -360,7 +376,7 @@ class ProfileModule extends PLModule
         $wiz->addPage('ProfileJobs', 'Informations professionnelles', 'emploi');
         $wiz->addPage('ProfileSkills', 'Compétences diverses', 'skill');
         $wiz->addPage('ProfileMentor', 'Mentoring', 'mentor');
-        $wiz->apply($page, 'profile/edit', $opened_tab, $mode);
+        $wiz->apply($page, 'profile/edit/' . $user->hrid(), $opened_tab, $mode);
 
          // Misc checks
         $res = XDB::query("SELECT  user_id
