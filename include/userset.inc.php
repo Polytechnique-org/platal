@@ -161,11 +161,11 @@ class MinificheView extends MultipageView
         global $globals;
         $this->entriesPerPage = $globals->search->per_page;
         if (@$params['with_score']) {
-            $this->addSortKey('score', array('-score', '-date', '-promo', 'name_sort'), 'pertinence');
+            $this->addSortKey('score', array('-score', '-date', '-d.promo', 'name_sort'), 'pertinence');
         }
         $this->addSortKey('name', array('name_sort'), 'nom');
-        $this->addSortKey('promo', array('-promo', 'name_sort'), 'promotion');
-        $this->addSortKey('date_mod', array('-date', '-promo', 'name_sort'), 'dernière modification');
+        $this->addSortKey('promo', array('-d.promo', 'name_sort'), 'promotion');
+        $this->addSortKey('date_mod', array('-date', '-d.promo', 'name_sort'), 'dernière modification');
         parent::__construct($set, $data, $params);
     }
 

@@ -223,8 +223,11 @@ class ProfileModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $login = S::logged() ? User::get($x) : User::getSilent($x);
+        $login = (!is_numeric($x) || S::has_perms()) ? Profile::get($x) : null;
         if (!$login) {
+            if (S::logged()) {
+                $page->trigError($x . ' inconnu dans l\'annuaire');
+            }
             return PL_NOT_FOUND;
         }
 
@@ -249,25 +252,25 @@ class ProfileModule extends PLModule
                             WHERE  user_id = {?}", $login->id());
         if ($res->fetchOneCell()) {
             $new  = Env::v('modif') == 'new';
-            $user = get_user_details($login->login(), S::v('uid'), $view);
+            $user = get_user_details($login->hrid(), S::v('uid'), $view);
         } else {
             $new  = false;
             $user = array();
             if (S::logged()) {
-                pl_redirect('marketing/public/' . $login->login());
+                pl_redirect('marketing/public/' . $login->hrid());
             }
         }
 
         // Profile view are logged.
         if (S::logged()) {
-            S::logger()->log('view_profile', $login->login());
+            S::logger()->log('view_profile', $login->hrid());
         }
 
         // Sets the title of the html page.
         $page->setTitle($login->fullName());
 
         // Prepares the display of the user's mugshot.
-        $photo = 'photo/' . $login->login() . ($new ? '/req' : '');
+        $photo = 'photo/' . $login->hrid() . ($new ? '/req' : '');
         if (!isset($user['photo_pub']) || !has_user_right($user['photo_pub'], $view)) {
             $photo = "";
         }
@@ -293,24 +296,15 @@ class ProfileModule extends PLModule
 
         // Determines and displays the virtual alias.
         global $globals;
-        $res = XDB::query(
-                "SELECT  alias
-                   FROM  virtual
-             INNER JOIN  virtual_redirect USING (vid)
-             INNER JOIN  auth_user_quick ON (user_id = {?} AND emails_alias_pub = 'public')
-                  WHERE  (redirect={?} OR redirect={?})
-                         AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                $login->id(),
-                $login->forlifeEmail(),
-                // TODO(vzanotti): get ride of all @m4x.org addresses in the
-                // virtual redirect base, and remove this über-ugly hack.
-                $login->login() . '@' . $globals->mail->domain2);
-        $page->assign('virtualalias', $res->fetchOneCell());
+        $owner = $login->owner();
+        if ($owner) {
+            $page->assign('virtualalias', $owner->emailAlias());
+        }
 
         // Adds miscellaneous properties to the display.
         // Adds the global user property array to the display.
         $page->assign_by_ref('x', $user);
-        $page->assign_by_ref('user', $login);
+        $page->assign_by_ref('user', $owner);
         $page->assign('logged', has_user_right('private', $view));
         $page->assign('view', $view);
 

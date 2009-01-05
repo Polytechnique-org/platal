@@ -163,6 +163,12 @@ class Profile
         try {
             return new Profile($login);
         } catch (UserNotFoundException $e) {
+            /* Let say we can identify a profile using the identifiers of its owner.
+             */
+            $user = User::getSilent($login);
+            if ($user && $user->hasProfile()) {
+                return $user->profile();
+            }
             return null;
         }
     }
