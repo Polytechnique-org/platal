@@ -267,9 +267,7 @@ abstract class Platal
             }
         }
         if ($hook['auth'] != AUTH_PUBLIC && !$this->check_perms($hook['perms'])) {
-            if (S::admin()) {
-                $page->trigWarning('Tu accèdes à cette page car tu es administrateur du site.');
-            } else {
+            if (self::notAllowed()) {
                 return PL_FORBIDDEN;
             }
         }
@@ -328,6 +326,16 @@ abstract class Platal
         $this->__mods['core']->handler_404($page);
         $page->assign('platal', $this);
         $page->run();
+    }
+
+    public static function notAllowed()
+    {
+        if (S::admin()) {
+            self::page()->trigWarning('Tu accèdes à cette page car tu es administrateur du site.');
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public static function load($modname, $include = null)
