@@ -622,6 +622,7 @@ class AdminModule extends PLModule
 
                 // User re-registration.
                 case "u_kill":
+                    require_once('user.func.inc.php');
                     user_clear_all_subs($user->id());
                     $globals->updateNbIns();
                     $page->trigSuccess("'" . $user->id() . "' a été désinscrit !");

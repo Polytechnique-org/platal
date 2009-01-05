@@ -167,7 +167,7 @@ class SearchModule extends PLModule
                 'nationalite' => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'nat', 'exact' => 'false'),
                 'binet' => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
                 'groupex' => array('field' => 'id', 'table' => 'groupex.asso',
-                                   'text' => "(a.cat = 'GroupesX' OR a.cat = 'Institutions') AND pub = 'public' AND nom",
+                                   'text' => "(cat = 'GroupesX' OR cat = 'Institutions') AND pub = 'public' AND nom",
                                    'exact' => false),
                 'section' => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
                 'school' => array('field' => 'id', 'table' => 'applis_def', 'text' => 'text', 'exact' => false),
