@@ -67,7 +67,6 @@
   </table>
 </form>
 
-<script type='text/javascript' src='javascript/jquery.js'></script>
 <script type="text/javascript">//<![CDATA[
   {literal}
   $('input.deathDate').change(

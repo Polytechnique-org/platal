@@ -66,7 +66,6 @@ class FusionAxModule extends PLModule
 
         if ($action == 'index') {
             $page->changeTpl('fusionax/import.tpl');
-            $page->addJsLink('jquery.js');
             if (isset($globals->fusionax) && isset($globals->fusionax->LastUpdate)) {
                 $page->assign(
                     'lastimport',
@@ -278,7 +277,6 @@ class FusionAxModule extends PLModule
         $globals = Platal::globals();
         $nbToLink = 100;
 
-        $page->addJsLink('jquery.js');
         $page->assign('xorg_title', 'Polytechnique.org - Fusion - Mise en correspondance simple');
         if ($part == 'missingInAX') {
             // locate all persons from this database that are not in AX's

@@ -369,34 +369,30 @@ class AdminModule extends PLModule
         global $globals;
         $page->changeTpl('admin/utilisateurs.tpl');
         $page->setTitle('Administration - Compte');
-        require_once("emails.inc.php");
 
         if (S::suid()) {
             $page->kill("Déjà en SUID !!!");
         }
 
         // Loads the user identity using the environment.
-        if ($login) {
-            $user = User::get($login);
-        } else if (Env::has('user_id')) {
-            $user = User::get(Env::i('user_id'));
-        } else if (Env::has('login')) {
-            $user = User::get(Env::v('login'));
-        }
+        $user = User::get($login);
+        $login = $user->login();
+        $registered = ($user->state != 'pending');
 
-        if ($user) {
-            $login = $user->login();
-            $registered = $user->state != 'pending';
-        } else {
-            return;
+        // Form processing
+        if (!empty($_POST)) {
+            S::assert_xsrf_token();
+            if (Post::has('uid') && Post::i('uid') != $user->id()) {
+                $page->kill('Une erreur s\'est produite');
+            }
         }
 
         // Handles specific requests (AX sync, su, ...).
-        if(Env::has('logs_account')) {
+        if(Post::has('logs_account')) {
             pl_redirect("admin/logger?loguser=$login&year=".date('Y')."&month=".date('m'));
         }
 
-        if(Env::has('su_button') && $registered) {
+        if(Post::has('su_button') && $registered) {
             if (!Platal::session()->startSUID($user)) {
                 $page->trigError('Impossible d\'effectuer un SUID sur ' . $user->login());
             } else {
@@ -404,55 +400,52 @@ class AdminModule extends PLModule
             }
         }
 
-        // Fetches user data.
-        $redirect = ($registered ? new Redirect($user) : null);
-
         // Account Form {{{
         $to_update = array();
-        if (Env::has('disable_weak_access')) {
-            S::assert_xsrf_token();
+        if (Post::has('disable_weak_access')) {
             $to_update['weak_password'] = null;
-        } else if (Env::has('update_account')) {
-            S::assert_xsrf_token();
-            if (Env::s('full_name') != $user->fullName()) {
-                $to_update['full_name'] = Env::s('full_name');
+        } else if (Post::has('update_account')) {
+            if (Post::s('full_name') != $user->fullName()) {
+                // XXX: Update profile if a profile is associated
+                $to_update['full_name'] = Post::s('full_name');
             }
-            if (Env::s('display_name') != $user->displayName()) {
-                $to_update['display_name'] = Env::s('display_name');
+            if (Post::s('display_name') != $user->displayName()) {
+                // XXX: Update profile if a profile is associated
+                $to_update['display_name'] = Post::s('display_name');
             }
-            if (Env::s('sex') != ($user->isFemale() ? 'female' : 'male')) {
-                $to_update['sex'] = Env::s('sex');
+            if (Post::s('sex') != ($user->isFemale() ? 'female' : 'male')) {
+                $to_update['sex'] = Post::s('sex');
             }
-            if (!Env::blank('hashpass')) {
-                $to_update['password'] = Env::s('hashpass');
+            if (!Post::blank('hashpass')) {
+                $to_update['password'] = Post::s('hashpass');
             }
-            if (!Env::blank('weak_password')) {
-                $to_update['weak_password'] = Env::s('weak_password');
+            if (!Post::blank('weak_password')) {
+                $to_update['weak_password'] = Post::s('weak_password');
             }
-            if (Env::i('token_access', 0) != ($user->token_access ? 1 : 0)) {
-                $to_update['token'] = Env::i('token_access') ? rand_url_id(16) : null;
+            if (Post::i('token_access', 0) != ($user->token_access ? 1 : 0)) {
+                $to_update['token'] = Post::i('token_access') ? rand_url_id(16) : null;
             }
-            if (Env::i('skin', 0) != $user->skin) {
-                $to_update['skin'] = Env::i('skin', 0);
+            if (Post::i('skin', 0) != $user->skin) {
+                $to_update['skin'] = Post::i('skin', 0);
                 if ($to_update['skin'] == 0) {
                     $to_update['skin'] = null;
                 }
             }
-            if (Env::s('state') != $user->state) {
-                $to_update['state'] = Env::s('state');
+            if (Post::s('state') != $user->state) {
+                $to_update['state'] = Post::s('state');
             }
-            if (Env::i('is_admin', 0) != ($user->is_admin ? 1 : 0)) {
-                $to_update['is_admin'] = Env::b('is_admin');
+            if (Post::i('is_admin', 0) != ($user->is_admin ? 1 : 0)) {
+                $to_update['is_admin'] = Post::b('is_admin');
             }
-            if (Env::s('type') != $user->type) {
-                $to_update['type'] = Env::s('type');
+            if (Post::s('type') != $user->type) {
+                $to_update['type'] = Post::s('type');
             }
-            if (Env::i('watch', 0) != ($user->watch ? 1 : 0)) {
+            if (Post::i('watch', 0) != ($user->watch ? 1 : 0)) {
                 $to_update['flags'] = new PlFlagset();
-                $to_update['flags']->addFlag('watch', Env::i('watch'));
+                $to_update['flags']->addFlag('watch', Post::i('watch'));
             }
-            if (Env::t('comment') != $user->comment) {
-                $to_update['comment'] = Env::blank('comment') ? null : Env::t('comment');
+            if (Post::t('comment') != $user->comment) {
+                $to_update['comment'] = Post::blank('comment') ? null : Post::t('comment');
             }
         }
         if (!empty($to_update)) {
@@ -467,17 +460,17 @@ class AdminModule extends PLModule
             $user = User::getWithUID($user->id());
         }
         // }}}
+
         // Profile form {{{
-        if (Env::has('add_profile') || Env::has('del_profile') || Env::has('owner')) {
-            S::assert_xsrf_token();
-            if (Env::i('del_profile', 0) != 0) {
+        if (Post::has('add_profile') || Post::has('del_profile') || Post::has('owner')) {
+            if (Post::i('del_profile', 0) != 0) {
                 XDB::execute('DELETE FROM  account_profiles
                                     WHERE  uid = {?} AND pid = {?}',
-                             $user->id(), Env::i('del_profile'));
-            } else if (!Env::blank('new_profile')) {
-                $profile = Profile::get(Env::t('new_profile'));
+                             $user->id(), Post::i('del_profile'));
+            } else if (!Post::blank('new_profile')) {
+                $profile = Profile::get(Post::t('new_profile'));
                 if (!$profile) {
-                    $page->trigError('Le profil ' . Env::t('new_profile') . ' n\'existe pas');
+                    $page->trigError('Le profil ' . Post::t('new_profile') . ' n\'existe pas');
                 } else {
                     XDB::execute('INSERT IGNORE INTO  account_profiles (uid, pid)
                                               VALUES  ({?}, {?})',
@@ -487,258 +480,110 @@ class AdminModule extends PLModule
             XDB::execute('UPDATE  account_profiles
                              SET  perms = IF(pid = {?}, CONCAT(perms, \',owner\'), REPLACE(perms, \'owner\', \'\'))
                            WHERE  uid = {?}',
-                         Env::i('owner'), $user->id());
+                         Post::i('owner'), $user->id());
         }
-
-
         // }}}
+
+        // Email forwards form {{{
+        require_once("emails.inc.php");
+        $redirect = ($registered ? new Redirect($user) : null);
+        if (Post::has('add_fwd')) {
+            $email = Post::t('email');
+            if (!isvalid_email_redirection($email)) {
+                $page->trigError("Email non valide: $email");
+            } else {
+                $redirect->add_email($email);
+                $page->trigSuccess("Ajout de $email effectué");
+            }
+        } else if (!Post::blank('del_fwd')) {
+            $redirect->delete_email(Post::t('del_fwd'));
+        } else if (!Post::blank('activate_fwd')) {
+            $redirect->modify_one_email(Post::t('activate_fwd', true));
+        } else if (!Post::blank('deactivate_fwd')) {
+            $redirect->modify_one_email(Post::t('deactivate_fwd', false));
+        } else if (Post::has('disable_fwd')) {
+            $redirect->disable();
+        } else if (Post::has('enable_fwd')) {
+            $redirect->enable();
+        } else if (!Post::blank('clean_fwd')) {
+            $redirect->clean_errors(Post::t('clean_fwd'));
+        }
+        // }}}
+
+        // Email alias form {{{
+        if (Post::has('add_alias')) {
+            // Splits new alias in user and fqdn.
+            $alias = Env::t('email');
+            if (strpos($alias, '@') !== false) {
+                list($alias, $domain) = explode('@', $alias);
+            } else {
+                $domain = $globals->mail->domain;
+            }
+
+            // Checks for alias' user validity.
+            if (!preg_match('/[-a-z0-9\.]+/s', $alias)) {
+                $page->trigError("'$alias' n'est pas un alias valide");
+            }
+
+            // Eventually adds the alias to the right domain.
+            if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
+                $req = new AliasReq($user, $alias, 'Admin request', false);
+                if ($req->commit()) {
+                    $page->trigSuccess("Nouvel alias '$alias@$domain' attribué");
+                } else {
+                    $page->trigError("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué");
+                }
+            } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
+                $res = XDB::execute("INSERT INTO  aliases (id, alias, type)
+                                          VALUES  ({?}, {?}, 'alias')",
+                                    $user->id(), $alias);
+                $page->trigSuccess("Nouvel alias '$alias' ajouté");
+            } else {
+                $page->trigError("Le domaine '$domain' n'est pas valide");
+            }
+        } else if (!Post::blank('del_alias')) {
+            XDB::execute("DELETE FROM  aliases
+                                WHERE  id = {?} AND alias = {?} AND
+                                       type NOT IN ('a_vie', 'homonyme')",
+                         $user->id(), $val);
+            XDB::execute("UPDATE  emails
+                             SET  rewrite = ''
+                           WHERE  uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
+                         $user->id(), $val);
+            fix_bestalias($user);
+            $page->trigSuccess("L'alias '$val' a été supprimé");
+        } else if (!Post::blank('best')) {
+            XDB::execute("UPDATE  aliases
+                             SET  flags = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', flags, ','), ',bestalias,', ','))
+                           WHERE  id = {?}", $user->id());
+            XDB::execute("UPDATE  aliases
+                             SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
+                           WHERE  id = {?} AND alias = {?}", $user->id(), $val);
+            // As having a non-null bestalias value is critical in
+            // plat/al's code, we do an a posteriori check on the
+            // validity of the bestalias.
+            fix_bestalias($user);
+        }
+        // }}}
+
+        // Forum form {{{
+        if (Post::has('b_edit')) {
+            XDB::execute("DELETE FROM  forum_innd
+                                WHERE  uid = {?}", $user->id());
+            if (Env::v('write_perm') != "" || Env::v('read_perm') != ""  || Env::v('commentaire') != "" ) {
+                XDB::execute("INSERT INTO  forum_innd
+                                      SET  ipmin = '0', ipmax = '4294967295',
+                                           write_perm = {?}, read_perm = {?},
+                                           comment = {?}, priority = '200', uid = {?}",
+                             Env::v('write_perm'), Env::v('read_perm'), Env::v('comment'), $user->id());
+            }
+        }
+        // }}}
+
 
         $page->addJsLink('ui.core.js');
         $page->addJsLink('ui.tabs.js');
 
-
-        // Processes admin requests, if any.
-        foreach($_POST as $key => $val) {
-            S::assert_xsrf_token();
-
-            switch ($key) {
-                // Email redirection actions.
-                case "add_fwd":
-                    $email = trim(Env::v('email'));
-                    if (!isvalid_email_redirection($email)) {
-                        $page->trigError("Email non valide: $email");
-                    } else {
-                        $redirect->add_email($email);
-                        $page->trigSuccess("Ajout de $email effectué");
-                    }
-                    break;
-
-                case "del_fwd":
-                    if (!empty($val)) {
-                        $redirect->delete_email($val);
-                    }
-                    break;
-
-                case "activate_fwd":
-                    if (!empty($val)) {
-                        $redirect->modify_one_email($val, true);
-                    }
-                    break;
-                case "deactivate_fwd":
-                    if (!empty($val)) {
-                        $redirect->modify_one_email($val, false);
-                    }
-                    break;
-                case "disable_fwd":
-                    $redirect->disable();
-                    break;
-                case "enable_fwd":
-                    $redirect->enable();
-                    break;
-                case "clean_fwd":
-                    if (!empty($val)) {
-                        $redirect->clean_errors($val);
-                    }
-                    break;
-
-                // Alias actions.
-                case "add_alias":
-                    global $globals;
-
-                    // Splits new alias in user and fqdn.
-                    $alias = trim(Env::v('email'));
-                    if (strpos($alias, '@') !== false) {
-                        list($alias, $domain) = explode('@', $alias);
-                    } else {
-                        $domain = $globals->mail->domain;
-                    }
-
-                    // Checks for alias' user validity.
-                    if (!preg_match('/[-a-z0-9\.]+/s', $alias)) {
-                        $page->trigError("'$alias' n'est pas un alias valide");
-                    }
-
-                    // Eventually adds the alias to the right domain.
-                    if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
-                        $req = new AliasReq($user, $alias, 'Admin request', false);
-                        if ($req->commit()) {
-                            $page->trigSuccess("Nouvel alias '$alias@$domain' attribué");
-                        } else {
-                            $page->trigError("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué");
-                        }
-                    } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
-                        $res = XDB::execute("INSERT INTO aliases (id,alias,type) VALUES ({?}, {?}, 'alias')",
-                                            $user->id(), $alias);
-                        if ($res) {
-                            $page->trigSuccess("Nouvel alias '$alias' ajouté");
-                        } else {
-                            $page->trigError("Impossible d'ajouter l'alias '$alias', il est probablement déjà attribué");
-                        }
-                    } else {
-                        $page->trigError("Le domaine '$domain' n'est pas valide");
-                    }
-                    break;
-
-                case "del_alias":
-                    if (!empty($val)) {
-                        XDB::execute("DELETE FROM  aliases
-                                            WHERE  id = {?} AND alias = {?} AND
-                                                   type NOT IN ('a_vie', 'homonyme')",
-                                     $user->id(), $val);
-                        XDB::execute("UPDATE  emails
-                                         SET  rewrite = ''
-                                       WHERE  uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
-                                     $user->id(), $val);
-                        fix_bestalias($user);
-                        $page->trigSuccess("L'alias '$val' a été supprimé");
-                    }
-                    break;
-
-                case "best":
-                    XDB::execute("UPDATE  aliases
-                                     SET  flags = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', flags, ','), ',bestalias,', ','))
-                                   WHERE  id = {?}", $user->id());
-                    XDB::execute("UPDATE  aliases
-                                     SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
-                                   WHERE  id = {?} AND alias = {?}", $user->id(), $val);
-
-                    // As having a non-null bestalias value is critical in
-                    // plat/al's code, we do an a posteriori check on the
-                    // validity of the bestalias.
-                    fix_bestalias($user);
-                    break;
-
-                // Profile edition.
-                case "u_edit":
-                    // Loads new values from environment.
-                    $pass_encrypted = Env::v('newpass_clair') != "********" ? sha1(Env::v('newpass_clair')) : Env::v('passw');
-                    $naiss    = Env::v('naissanceN');
-                    $deces    = Env::v('decesN');
-                    $perms    = Env::v('permsN');
-                    $prenom    = Env::v('prenomN');
-                    $nom      = Env::v('nomN');
-                    $nomusage = Env::v('nomusageN');
-                    $promo    = Env::i('promoN');
-                    $sexe     = Env::v('sexeN');
-                    $comm     = trim(Env::v('commentN'));
-                    $watch    = Env::v('watchN');
-
-                    $flags    = ($sexe ? 'femme' : '');
-                    if ($watch) {
-                        $flags .= ($flags ? ',watch' : 'watch');
-                    }
-                    if ($watch && !$comm) {
-                        $page->trigError("Il est nécessaire de mettre un commentaire pour surveiller un compte");
-                        break;
-                    }
-
-                    // Fetches fields to watch for changes.
-                    $watch_query = "SELECT  naissance, deces, password, perms, nom_usage,
-                                           prenom, nom, flags, promo, comment
-                                      FROM  auth_user_md5
-                                     WHERE user_id = {?}";
-                    $old_fields = XDB::query($watch_query, $user->id())->fetchOneAssoc();
-
-                    // If user was newly banned, we need to ensure her php session
-                    // is killed. This hack is ugly (and largely overkill); it should
-                    // however suits our needs.
-                    if ($perms == 'disabled' && $old_fields['perms'] != 'disabled') {
-                        kill_sessions();
-                    }
-
-                    // Updates the user profile with the new values.
-                    $res = XDB::execute("UPDATE  auth_user_md5
-                                            SET  naissance = {?}, deces = {?}, password = {?},
-                                                 perms = {?}, prenom = {?}, nom = {?}, nom_usage = {?},
-                                                 flags = {?}, promo = {?}, comment = {?}
-                                          WHERE  user_id = {?}",
-                                        $naiss, $deces, $pass_encrypted,
-                                        $perms, $prenom, $nom, $nomusage,
-                                        $flags, $promo, $comm, $user->id());
-                    if ($res) {
-                        require_once("user.func.inc.php");
-                        user_reindex($user->id());
-                        $new_fields = XDB::query($watch_query, $user->id())->fetchOneAssoc();
-
-                        $mailer = new PlMailer("admin/useredit.mail.tpl");
-                        $mailer->assign("admin", S::user()->login());
-                        $mailer->assign("user", $user->login());
-                        $mailer->assign('old', $old_fields);
-                        $mailer->assign('new', $new_fields);
-                        $mailer->send();
-
-                        $globals->updateNbIns();
-                        $page->trigSuccess("Update was successful.");
-                    } else {
-                        $page->trigError("Update failed, please double check your values.");
-                    }
-
-                    // Checks for changes, and updates other tables of plat/al.
-                    if (Env::v('nomusageN') != $mr['nom_usage']) {
-                        set_new_usage($user->id(), Env::v('nomusageN'), make_username(Env::v('prenomN'), Env::v('nomusageN')));
-                    }
-                    if (Env::v('decesN') != $mr['deces']) {
-                        require_once 'notifs.inc.php';
-                        register_watch_op($user->id(), WATCH_DEATH, $mr['deces']);
-                        user_clear_all_subs($user->id(), false);
-                    }
-
-                    // Eventually updates the Google Apps account.
-                    if ($globals->mailstorage->googleapps_domain) {
-                        // If the user did choose to use synchronized passwords,
-                        // and the password was changed, updates the Google Apps
-                        // password as well.
-                        if (Env::v('newpass_clair') != "********") {
-                            require_once 'googleapps.inc.php';
-                            $account = new GoogleAppsAccount($user);
-                            if ($account->active() && $account->sync_password) {
-                                $account->set_password($pass_encrypted);
-                            }
-                        }
-
-                        // If the update did disable the user account, disables
-                        // the Google Apps account as well.
-                        if ($new_fields['perms'] == 'disabled' && $new_fields['perms'] != $old_fields['perms']) {
-                            require_once 'googleapps.inc.php';
-                            $account = new GoogleAppsAccount($user);
-                            $account->suspend();
-                        }
-                    }
-
-
-                    // Reloads the user profile, to ensure the latest version will
-                    // be served to the administrator.
-                    $mr = XDB::query($userinfo_query, $user->id())->fetchOneAssoc();
-
-                    break;
-
-                // User re-registration.
-                case "u_kill":
-                    require_once('user.func.inc.php');
-                    user_clear_all_subs($user->id());
-                    $globals->updateNbIns();
-                    $page->trigSuccess("'" . $user->id() . "' a été désinscrit !");
-
-                    $mailer = new PlMailer("admin/useredit.mail.tpl");
-                    $mailer->assign("admin", S::user()->login());
-                    $mailer->assign("user", $user->login());
-                    $mailer->assign("deletion", true);
-                    $mailer->send();
-                    break;
-
-                // Forum ban update.
-                case "b_edit":
-                    XDB::execute("DELETE FROM forum_innd WHERE uid = {?}", $user->id());
-                    if (Env::v('write_perm') != "" || Env::v('read_perm') != ""  || Env::v('commentaire') != "" ) {
-                        XDB::execute("INSERT INTO  forum_innd
-                                              SET  ipmin = '0', ipmax = '4294967295',
-                                                   write_perm = {?}, read_perm = {?},
-                                                   comment = {?}, priority = '200', uid = {?}",
-                                     Env::v('write_perm'), Env::v('read_perm'), Env::v('comment'), $user->id());
-                    }
-                    break;
-            }
-        }
 
         // Displays last login and last host information.
         $res = XDB::query("SELECT  start, host
@@ -752,11 +597,11 @@ class AdminModule extends PLModule
 
         // Display active aliases.
         $page->assign('virtuals', $user->emailAliases());
-        $page->assign('aliases', XDB::iterator(
-                "SELECT  alias, type='a_vie' AS for_life,FIND_IN_SET('bestalias',flags) AS best,expire
-                   FROM  aliases
-                  WHERE  id = {?} AND type != 'homonyme'
-               ORDER BY  type != 'a_vie'", $user->id()));
+        $page->assign('aliases', XDB::iterator("SELECT  alias, type='a_vie' AS for_life,
+                                                        FIND_IN_SET('bestalias',flags) AS best, expire
+                                                  FROM  aliases
+                                                 WHERE  id = {?} AND type != 'homonyme'
+                                              ORDER BY  type != 'a_vie'", $user->id()));
         $page->assign('account_types', XDB::iterator('SELECT * FROM account_types ORDER BY type'));
         $page->assign('skins', XDB::iterator('SELECT id, name FROM skins ORDER BY name'));
         $page->assign('profiles', XDB::iterator('SELECT  p.pid, p.hrpid, FIND_IN_SET(\'owner\', ap.perms) AS owner
@@ -906,36 +751,6 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_ax_xorg(&$page)
-    {
-        $page->changeTpl('admin/ax-xorg.tpl');
-        $page->setTitle('Administration - AX/X.org');
-
-        // liste des différences
-        $res = XDB::query(
-                'SELECT  u.promo,u.nom AS nom, u.prenom AS prenom, ia.nom AS nomax,
-                         ia.prenom AS prenomax, u.matricule AS mat, ia.matricule_ax AS matax
-                   FROM  auth_user_md5 AS u
-             INNER JOIN  identification_ax AS ia ON u.matricule_ax = ia.matricule_ax
-                  WHERE  (SOUNDEX(u.nom) != SOUNDEX(ia.nom) AND SOUNDEX(CONCAT(ia.particule,u.nom)) != SOUNDEX(ia.nom)
-                         AND SOUNDEX(u.nom) != SOUNDEX(ia.nom_patro) AND SOUNDEX(CONCAT(ia.particule,u.nom)) != SOUNDEX(ia.nom_patro))
-                         OR u.prenom != ia.prenom OR (u.promo != ia.promo AND u.promo != ia.promo+1 AND u.promo != ia.promo-1)
-               ORDER BY  u.promo,u.nom,u.prenom');
-        $page->assign('diffs', $res->fetchAllAssoc());
-
-        // gens à l'ax mais pas chez nous
-        $res = XDB::query(
-                'SELECT  ia.promo,ia.nom,ia.nom_patro,ia.prenom
-                   FROM  identification_ax as ia
-              LEFT JOIN  auth_user_md5 AS u ON u.matricule_ax = ia.matricule_ax
-                  WHERE  u.nom IS NULL');
-        $page->assign('mank', $res->fetchAllAssoc());
-
-        // gens chez nous et pas à l'ax
-        $res = XDB::query('SELECT promo,nom,prenom FROM auth_user_md5 WHERE matricule_ax IS NULL');
-        $page->assign('plus', $res->fetchAllAssoc());
-    }
-
     function handler_deaths(&$page, $promo = 0, $validate = false)
     {
         $page->changeTpl('admin/deces_promo.tpl');
@@ -988,47 +803,6 @@ class AdminModule extends PLModule
                GROUP BY  u.user_id
                ORDER BY  u.promo, u.nom");
         $page->assign('dead', $res);
-    }
-
-    function handler_synchro_ax(&$page, $login = null, $action = null)
-    {
-        $page->changeTpl('admin/synchro_ax.tpl');
-        $page->setTitle('Administration - Synchro AX');
-
-        // Checks for synchronization requirements.
-        require_once('synchro_ax.inc.php');
-        if (is_ax_key_missing()) {
-            $page->assign('no_private_key', true);
-            $page->run();
-        }
-
-        // Determines user identity using environment.
-        if ($login) {
-            $user = User::get($login);
-        } else if (Env::has('user')) {
-            $user = User::get(Env::v('user'));
-        } else if (Env::has('mat')) {
-            $res = XDB::query("SELECT  user_id
-                                 FROM  auth_user_md5
-                                WHERE  matricule = {?}",
-                              Env::i('mat'));
-            $user = User::get($res->fetchOneCell());
-        } else {
-            return;
-        }
-
-        // Finally synchronizes the AX and plat/al information.
-        if ($action == 'import') {
-            ax_synchronize($user->login(), S::v('uid'));
-        }
-
-        require_once 'profil.func.inc.php';
-        $userxorg = get_user_details($user->login(), S::v('uid'), 'ax');
-        $userax = get_user_ax($userxorg['matricule_ax']);
-        $diff = diff_user_details($userax, $userxorg, 'ax');
-
-        $page->assign('x', $userxorg);
-        $page->assign('diff', $diff);
     }
 
     function handler_validate(&$page, $action = 'list', $id = null)
@@ -1237,7 +1011,6 @@ class AdminModule extends PLModule
         }
 
         $page->changeTpl('admin/wiki.tpl');
-        $page->addJsLink('jquery.js');
         $page->assign('wiki_pages', $wiki_tree);
         $page->assign('perms_opts', $perms);
     }
