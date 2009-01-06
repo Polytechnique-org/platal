@@ -20,6 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if !$wiz_run_ajax}
 <script type="text/javascript">//<![CDATA[
   {if ($stateless || $id gt $current) && $wiz_ajax}
   {literal}
@@ -33,7 +34,7 @@
                       document.location = myUrl;
                     },
              success: function(data) {
-                        if (is_IE) {
+                        if ({/literal}{if !$wiz_animated}true || {/if}{literal}is_IE) {
                           $(".wiz_tab").removeClass("active");
                           $("#wiz_tab_" + id).addClass("active");
                           $(".wiz_content").html(data);
@@ -90,8 +91,12 @@
     <div style="clear: both"></div>
   </div>
   <div class="wiz_content" style="clear: both">
+  {/if}
+    <div style="width: 100%; height: 100%; margin: 0; padding: 0">
     {include core=triggers.tpl}
     {include file=$wiz_page}
+    </div>
+  {if !$wiz_run_ajax}
   </div>
 </div>
 
@@ -102,5 +107,5 @@ if (typeof wizPage_onLoad == 'function') {
 }
 {/literal}
 </script>
-
+{/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -70,13 +70,14 @@ class PlWizard
     protected $layout;
     protected $stateless;
     protected $ajax;
+    protected $ajax_animated;
 
     protected $pages;
     protected $titles;
     protected $lookup;
     protected $inv_lookup;
 
-    public function __construct($name, $layout, $stateless = false, $ajax = true)
+    public function __construct($name, $layout, $stateless = false, $ajax = true, $ajax_animated = true)
     {
         $this->name      = 'wiz_' . $name;
         $this->layout    = $layout;
@@ -85,6 +86,7 @@ class PlWizard
         $this->lookup = array();
         $this->titles = array();
         $this->ajax   = $ajax;
+        $this->ajax_animated = $ajax_animated;
         if (!isset($_SESSION[$this->name])) {
             $_SESSION[$this->name] = array();
             $_SESSION[$this->name . '_page']  = null;
@@ -212,7 +214,8 @@ class PlWizard
         }
         if ($mode == 'ajax') {
             header('Content-Type: text/html; charset=utf-8');
-            $smarty->changeTpl($page->template(), NO_SKIN);
+            $smarty->changeTpl($this->layout, NO_SKIN);
+            $smarty->assign('wiz_run_ajax', true);
         } else {
             $smarty->changeTpl($this->layout);
         }
@@ -222,6 +225,7 @@ class PlWizard
         $smarty->assign('stateless', $this->stateless);
         $smarty->assign('wiz_baseurl', $baseurl);
         $smarty->assign('wiz_ajax', $this->ajax);
+        $smarty->assign('wiz_animated', $this->ajax_animated);
         $smarty->assign('tab_width', (int)(99 / count($this->pages)));
         $smarty->assign('wiz_page', $page->template());
         $smarty->assign('pl_no_errors', true);
