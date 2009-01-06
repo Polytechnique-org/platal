@@ -30,7 +30,7 @@ class ProfileDeco implements ProfileSetting
                                    FROM  profile_medals_sub    AS s
                              INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
                                   WHERE  s.uid = {?}",
-                                S::i('uid'));
+                                $page->pid());
             $value = array();
             while (list($id, $grade) = $res->next()) {
                 $value[$id] = array('grade' => $grade,
@@ -63,7 +63,7 @@ class ProfileDeco implements ProfileSetting
                 if ($val['valid']) {
                     XDB::execute("DELETE FROM  profile_medals_sub
                                         WHERE  uid = {?} AND mid = {?}",
-                                 S::i('uid'), $id);
+                                 $page->pid(), $id);
                 } else {
                     $req = MedalReq::get_request(S::i('uid'), $id);
                     if ($req) {
@@ -98,20 +98,20 @@ class ProfileDecos extends ProfilePage
 
     protected function _fetchData()
     {
-        $res = XDB::query("SELECT  profile_medals_pub
-                             FROM  auth_user_quick
-                            WHERE  user_id = {?}",
-                          S::i('uid'));
+        $res = XDB::query("SELECT  medals_pub
+                             FROM  profiles
+                            WHERE  pid = {?}",
+                          $this->pid());
         $this->values['medals_pub'] = $res->fetchOneCell();
     }
 
     protected function _saveData()
     {
         if ($this->changed['medals_pub']) {
-            XDB::execute("UPDATE  auth_user_quick
-                             SET  profile_medals_pub = {?}
-                           WHERE  user_id = {?}",
-                         $this->values['medals_pub'], S::i('uid'));
+            XDB::execute("UPDATE  profiles
+                             SET  medals_pub = {?}
+                           WHERE  pid = {?}",
+                         $this->values['medals_pub'], $this->pid());
         }
     }
 

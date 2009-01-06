@@ -193,9 +193,9 @@ class ProfileJobs extends ProfilePage
     {
         // Checkout the CV
         $res = XDB::query("SELECT  cv
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?}",
-                          S::i('uid'));
+                             FROM  profiles
+                            WHERE  pid = {?}",
+                          $this->pid());
         $this->values['cv'] = $res->fetchOneCell();
 
         // Checkout the corps
@@ -203,7 +203,7 @@ class ProfileJobs extends ProfilePage
                                    rankid AS rank, corps_pub AS pub
                              FROM  profile_corps
                             WHERE  uid = {?}",
-                          S::i('uid'));
+                        $this->pid());
         $this->values['corps'] = $res->fetchOneAssoc();
 
         // Build the jobs tree
@@ -221,7 +221,7 @@ class ProfileJobs extends ProfilePage
                           LEFT JOIN  geoloc_pays                   AS gp ON (gp.a2 = e.country)
                           LEFT JOIN  profile_job_subsubsector_enum AS s  ON (s.id = j.subsubsectorid)
                               WHERE  j.uid = {?}
-                           ORDER BY  entrid", S::i('uid'));
+                           ORDER BY  entrid", $this->pid());
         $this->values['jobs'] = array();
         while (list($id, $name, $function, $secteur, $ss_secteur, $sss_secteur, $description,
                     $w_adr1, $w_adr2, $w_adr3, $w_postcode, $w_city, $w_cityid,
@@ -262,7 +262,7 @@ class ProfileJobs extends ProfilePage
                                 FROM  profile_phones
                                WHERE  uid = {?} AND link_type = 'pro'
                             ORDER BY  link_id",
-                             S::i('uid'));
+                             $this->pid());
         $i = 0;
         $jobNb = count($this->values['jobs']);
         while ($tel = $res->next()) {
@@ -293,10 +293,10 @@ class ProfileJobs extends ProfilePage
     protected function _saveData()
     {
         if ($this->changed['cv']) {
-            XDB::execute("UPDATE  auth_user_md5
+            XDB::execute("UPDATE  profiles
                              SET  cv = {?}
-                           WHERE  user_id = {?}",
-                         $this->values['cv'], S::i('uid'));
+                           WHERE  pid = {?}",
+                         $this->values['cv'], $this->pid());
         }
 
         if ($this->changed['corps']) {
@@ -305,14 +305,14 @@ class ProfileJobs extends ProfilePage
                                   rankid = {?}, corps_pub = {?}
                            WHERE  uid = {?}",
                           $this->values['corps']['original'], $this->values['corps']['current'],
-                          $this->values['corps']['rank'], $this->values['corps']['pub'], S::i('uid'));
+                          $this->values['corps']['rank'], $this->values['corps']['pub'], $this->pid());
         }
     }
 
     public function _prepare(PlPage &$page, $id)
     {
         require_once "emails.combobox.inc.php";
-        fill_email_combobox($page);
+        fill_email_combobox($page, $this->owner, $this->profile);
 
         $res = XDB::query("SELECT  id, name AS label
                              FROM  profile_job_sector_enum");

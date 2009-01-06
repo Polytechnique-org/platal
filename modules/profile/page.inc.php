@@ -119,17 +119,11 @@ class ProfilePhones implements ProfileSetting
 {
     private $tel;
     private $pub;
-    protected $id;
     protected $link_type;
     protected $link_id;
 
-    public function __construct($type, $link_id, $id = 0)
+    public function __construct($type, $link_id)
     {
-        if ($id != 0) {
-            $this->id = $id;
-        } else {
-            $this->id = S::i('uid');
-        }
         $this->tel = new ProfileTel();
         $this->pub = new ProfilePub();
         $this->link_type = $type;
@@ -145,7 +139,7 @@ class ProfilePhones implements ProfileSetting
                                     FROM  profile_phones AS t
                                    WHERE  t.uid = {?} AND t.link_type = {?}
                                 ORDER BY  t.tel_id",
-                                 $this->id, $this->link_type);
+                                 $page->pid(), $this->link_type);
             $value = $res->fetchAllAssoc();
         }
         foreach ($value as $key=>&$phone) {
@@ -171,14 +165,14 @@ class ProfilePhones implements ProfileSetting
         return $value;
     }
 
-    private function saveTel($telid, array &$phone)
+    private function saveTel($pid, $telid, array &$phone)
     {
         if ($phone['tel'] != '') {
             XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
                                        search_tel, display_tel, pub, comment)
                                VALUES  ({?}, {?}, {?}, {?}, {?},
                                        {?}, {?}, {?}, {?})",
-                         $this->id, $this->link_type, $this->link_id, $telid, $phone['type'],
+                         $pid, $this->link_type, $this->link_id, $telid, $phone['type'],
                          format_phone_number($phone['tel']), $phone['tel'], $phone['pub'], $phone['comment']);
         }
     }
@@ -187,15 +181,15 @@ class ProfilePhones implements ProfileSetting
     {
         XDB::execute("DELETE FROM  profile_phones
                             WHERE  uid = {?} AND link_type = {?} AND link_id = {?}",
-                            $this->id, $this->link_type, $this->link_id);
-        $this->saveTels($field, $value);
+                     $page->pid(), $this->link_type, $this->link_id);
+        $this->saveTels($page->pid(), $field, $value);
     }
 
     //Only saves phones without a delete operation
-    public function saveTels($field, $value)
+    public function saveTels($pid, $field, $value)
     {
         foreach ($value as $telid=>&$phone) {
-            $this->saveTel($telid, $phone);
+            $this->saveTel($pid, $telid, $phone);
         }
     }
 }
@@ -307,10 +301,14 @@ abstract class ProfilePage implements PlWizardPage
 
     public $orig     = array();
     public $values   = array();
+    public $profile  = null;
+    public $owner    = null;
 
     public function __construct(PlWizard &$wiz)
     {
         $this->wizard =& $wiz;
+        $this->profile = $this->wizard->getUserData('profile');
+        $this->owner   = $this->wizard->getUserData('owner');
     }
 
     protected function _fetchData()
@@ -349,19 +347,19 @@ abstract class ProfilePage implements PlWizardPage
                 $setting->save($this, $field, $this->values[$field]);
             }
             if ($this->changed[$field] && @$this->watched[$field]) {
-                register_profile_update(S::i('uid'), $field);
+                register_profile_update($profile->id(), $field);
             }
         }
         $this->_saveData();
 
         // Update the last modification date
         XDB::execute('REPLACE INTO  user_changes
-                               SET  user_id = {?}', S::v('uid'));
+                               SET  user_id = {?}', $profile->id());
         if (!S::suid()) {
-            register_watch_op(S::i('uid'), WATCH_FICHE);
+            register_watch_op($profile->id(), WATCH_FICHE);
         }
         global $platal;
-        S::logger()->log('profil', $platal->pl_self(1));
+        S::logger()->log('profil', $platal->pl_self(2));
     }
 
     protected function checkChanges()
@@ -391,6 +389,16 @@ abstract class ProfilePage implements PlWizardPage
         return 'profile/base.tpl';
     }
 
+    public function pid()
+    {
+        return $this->profile->id();
+    }
+
+    public function hrpid()
+    {
+        return $this->profile->hrpid();
+    }
+
     protected function _prepare(PlPage &$page, $id)
     {
     }
@@ -404,6 +412,8 @@ abstract class ProfilePage implements PlWizardPage
             $page->assign($field, $value);
         }
         $this->_prepare($page, $id);
+        $page->assign('profile', $this->profile);
+        $page->assign('owner', $this->owner);
         $page->assign('profile_page', $this->pg_template);
         $page->assign('errors', $this->errors);
     }

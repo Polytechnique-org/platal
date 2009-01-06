@@ -21,7 +21,8 @@
 
 class ProfileNom implements ProfileSetting
 {
-    private function matchWord($old, $new, $newLen) {
+    private function matchWord($old, $new, $newLen)
+    {
         return ($i = strpos($old, $new)) !== false
             && ($i == 0 || $old{$i-1} == ' ')
             && ($i + $newLen == strlen($old) || $old{$i + $newLen} == ' ');
@@ -82,7 +83,8 @@ class ProfileSearchName implements ProfileSetting
 
 class ProfileEdu implements ProfileSetting
 {
-    public function __construct(){}
+    public function __construct() {
+    }
 
     static function sortByGradYear($line1, $line2) {
         $a = (int) $line1['grad_year'];
@@ -102,7 +104,7 @@ class ProfileEdu implements ProfileSetting
                                     FROM  profile_education
                                    WHERE  uid = {?} AND !FIND_IN_SET('primary', flags)
                                 ORDER BY  id",
-                                 S::v('uid'));
+                                 $page->pid());
             while($edu = $res->next()) {
                 $value[] = $edu;
             }
@@ -129,13 +131,13 @@ class ProfileEdu implements ProfileSetting
     {
         XDB::execute("DELETE FROM  profile_education
                             WHERE  uid = {?} AND !FIND_IN_SET('primary', flags)",
-                     S::i('uid'));
+                     $page->pid());
         foreach ($value as $eduid=>&$edu) {
             if ($edu['eduid'] != '') {
                 XDB::execute("INSERT INTO  profile_education
                                       SET  id = {?}, uid = {?}, eduid = {?}, degreeid = {?},
                                            fieldid = {?}, grad_year = {?}, program = {?}",
-                             $eduid, S::i('uid'), $edu['eduid'], $edu['degreeid'],
+                             $eduid, $page->pid(), $edu['eduid'], $edu['degreeid'],
                              $edu['fieldid'], $edu['grad_year'], $edu['program']);
             }
         }
@@ -190,7 +192,7 @@ class ProfileNetworking implements ProfileSetting
                                     FROM  profile_networking AS n
                               INNER JOIN  profile_networking_enum AS m ON (n.network_type = m.network_type)
                                    WHERE  n.uid = {?}",
-                                 S::i('uid'));
+                                 $page->pid());
             while($network = $res->next()) {
                 $value[] = $network;
             }
@@ -235,7 +237,7 @@ class ProfileNetworking implements ProfileSetting
     {
         XDB::execute("DELETE FROM profile_networking
                             WHERE uid = {?}",
-                     S::i('uid'));
+                     $page->pid());
         if (!count($value)) {
             return;
         }
@@ -243,7 +245,7 @@ class ProfileNetworking implements ProfileSetting
         foreach ($value as $id=>$network) {
             XDB::execute("INSERT INTO  profile_networking (uid, nwid, network_type, address, pub)
                                VALUES  ({?}, {?}, {?}, {?}, {?})",
-                         S::i('uid'), $id, $network['type'], $network['address'], $network['pub']);
+                         $page->pid(), $id, $network['type'], $network['address'], $network['pub']);
         }
     }
 }
@@ -257,14 +259,14 @@ class ProfileGeneral extends ProfilePage
         parent::__construct($wiz);
         $this->settings['nom']    = $this->settings['prenom']
                                   = new ProfileNom();
-        $this->settings['naissance'] = new ProfileDate();
+        $this->settings['birthdate'] = new ProfileDate();
         $this->settings['freetext_pub']
                                   = $this->settings['photo_pub']
                                   = new ProfilePub();
         $this->settings['freetext']
-                                  = $this->settings['nationalite']
-                                  = $this->settings['nationalite2']
-                                  = $this->settings['nationalite3']
+                                  = $this->settings['nationality1']
+                                  = $this->settings['nationality2']
+                                  = $this->settings['nationality3']
                                   = $this->settings['nick']
                                   = $this->settings['yourself']
                                   = $this->settings['display_name']
@@ -283,42 +285,44 @@ class ProfileGeneral extends ProfilePage
         $this->settings['edus']   = new ProfileEdu();
         $this->watched= array('nom' => true, 'freetext' => true, 'tels' => true,
                               'networking' => true, 'edus' => true,
-                              'nationalite' => true, 'nationalite2' => true,
-                              'nationalite3' => true, 'nick' => true);
+                              'nationality1' => true, 'nationality2' => true,
+                              'nationality3' => true, 'nick' => true);
     }
 
     protected function _fetchData()
     {
         // Checkout all data...
         $res = XDB::query("SELECT  p.promo AS promo_display, e.entry_year AS entry_year, e.grad_year AS grad_year,
-                                   u.nom_usage, u.nationalite, u.nationalite2, u.nationalite3, u.naissance,
+                                   pr.nationality1, pr.nationality2, pr.nationality3, pr.birthdate,
                                    t.display_tel as mobile, t.pub as mobile_pub,
                                    d.email_directory as email_directory,
-                                   q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
-                                   q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.matricule_ax,
+                                   pr.freetext, pr.freetext_pub as freetext_pub,
                                    n.yourself, n.display AS display_name, n.sort AS sort_name,
                                    n.tooltip AS tooltip_name
-                             FROM  auth_user_md5         AS u
-                       INNER JOIN  auth_user_quick       AS q ON (u.user_id = q.user_id)
-                       INNER JOIN  profile_names_display AS n ON (n.user_id = u.user_id)
-                       INNER JOIN  profile_display       AS p ON (p.pid = u.user_id)
-                       INNER JOIN  profile_education     AS e ON (e.uid = u.user_id AND FIND_IN_SET('primary', e.flags))
-                        LEFT JOIN  profile_phones        AS t ON (u.user_id = t.uid AND link_type = 'user')
-                        LEFT JOIN  profile_directory     AS d ON (d.uid = u.user_id)
-                            WHERE  u.user_id = {?}", S::v('uid', -1));
+                             FROM  profiles              AS pr
+                       INNER JOIN  profile_names_display AS n ON (n.user_id = pr.pid)
+                       INNER JOIN  profile_display       AS p ON (p.pid = pr.pid)
+                       INNER JOIN  profile_education     AS e ON (e.uid = pr.pid AND FIND_IN_SET('primary', e.flags))
+                        LEFT JOIN  profile_phones        AS t ON (t.uid = pr.pid AND link_type = 'user')
+                        LEFT JOIN  profile_directory     AS d ON (d.uid = pr.pid)
+                            WHERE  pr.pid = {?}", $this->pid());
         $this->values = $res->fetchOneAssoc();
 
         // Retreive photo informations
         $res = XDB::query("SELECT  pub
                              FROM  photo
-                            WHERE  uid = {?}", S::v('uid'));
+                            WHERE  uid = {?}", $this->pid());
         $this->values['photo_pub'] = $res->fetchOneCell();
 
-        $res = XDB::query("SELECT  COUNT(*)
-                             FROM  requests
-                            WHERE  type='photo' AND user_id = {?}",
-                          S::v('uid'));
-        $this->values['nouvellephoto'] = $res->fetchOneCell();
+        if ($this->owner) {
+            $res = XDB::query("SELECT  COUNT(*)
+                                 FROM  requests
+                                WHERE  type='photo' AND user_id = {?}",
+                              $this->owner->id());
+            $this->values['nouvellephoto'] = $res->fetchOneCell();
+        } else {
+            $this->values['nouvellephoto'] = 0;
+        }
 
         // Retreive search names info
         $this->values['search_names'] = XDB::iterator("
@@ -326,7 +330,7 @@ class ProfileGeneral extends ProfilePage
                                 FROM  profile_names_search AS sn
                                WHERE  sn.user_id = {?}
                             ORDER BY  sn.name_type, search_score, search_name",
-                          S::v('uid'));
+                          $this->pid());
 
         // Proposes choice for promo_display
         if ($this->values['entry_year'] != $this->values['grad_year'] - 3) {
@@ -338,38 +342,30 @@ class ProfileGeneral extends ProfilePage
 
     protected function _saveData()
     {
-        if ($this->changed['nationalite'] || $this->changed['nationalite2'] || $this->changed['nationalite3']
-            || $this->changed['nom'] || $this->changed['prenom'] || $this->changed['naissance']) {
-            if ($this->values['nationalite3'] == "") {
-                $this->values['nationalite3'] = NULL;
+        if ($this->changed['nationality1'] || $this->changed['nationality2'] || $this->changed['nationality3']
+            || $this->changed['nom'] || $this->changed['prenom'] || $this->changed['naissance']
+            || $this->changed['freetext'] || $this->changed['freetext_pub']) {
+            if ($this->values['nationality3'] == "") {
+                $this->values['nationality3'] = NULL;
             }
-            if ($this->values['nationalite2'] == "") {
-                $this->values['nationalite2'] = $this->values['nationalite3'];
-                $this->values['nationalite3'] = NULL;
+            if ($this->values['nationality2'] == "") {
+                $this->values['nationality2'] = $this->values['nationality3'];
+                $this->values['nationality3'] = NULL;
             }
-            if ($this->values['nationalite'] == "") {
-                $this->values['nationalite']  = $this->values['nationalite2'];
-                $this->values['nationalite2'] = $this->values['nationalite3'];
-                $this->values['nationalite3'] = NULL;
+            if ($this->values['nationality1'] == "") {
+                $this->values['nationality1']  = $this->values['nationality2'];
+                $this->values['nationality2'] = $this->values['nationality3'];
+                $this->values['nationality3'] = NULL;
             }
 
-            XDB::execute("UPDATE  auth_user_md5
-                             SET  nationalite = {?}, nationalite2 = {?}, nationalite3 = {?}, nom={?}, prenom={?}, naissance={?}
+            XDB::execute("UPDATE  profiles
+                             SET  nationality1 = {?}, nationality2 = {?}, nationality3 = {?}, birthdate = {?},
+                                  freetext = {?}, freetext_pub = {?}
                            WHERE  user_id = {?}",
-                          $this->values['nationalite'], $this->values['nationalite2'], $this->values['nationalite3'],
-                          $this->values['nom'], $this->values['prenom'],
-                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['naissance']),
-                          S::v('uid'));
-        }
-        if ($this->changed['nick'] || $this->changed['freetext'] || $this->changed['freetext_pub'] || $this->changed['synchro_ax']) {
-            XDB::execute("UPDATE  auth_user_quick
-                             SET  profile_nick= {?},
-                                  profile_freetext={?},
-                                  profile_freetext_pub={?}, profile_from_ax = {?} 
-                           WHERE  user_id = {?}", 
-                         $this->values['nick'],
-                         $this->values['freetext'], $this->values['freetext_pub'],
-                         $this->values['synchro_ax'], S::v('uid'));
+                          $this->values['nationality1'], $this->values['nationality2'], $this->values['nationality3'],
+                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['birthdate']),
+                          $this->values['freetext'], $this->values['freetext_pub'],
+                          $this->pid());
         }
         if ($this->changed['email_directory']) {
             $new_email = ($this->values['email_directory'] == "new@example.org") ?
@@ -379,7 +375,7 @@ class ProfileGeneral extends ProfilePage
             }
             XDB::execute("REPLACE INTO  profile_directory (uid, email_directory)
                                 VALUES  ({?}, {?})",
-                         S::v('uid'), $new_email);
+                         $this->pid(), $new_email);
         }
         if ($this->changed['nick']) {
             require_once('user.func.inc.php');
@@ -389,7 +385,7 @@ class ProfileGeneral extends ProfilePage
             XDB::execute("UPDATE  photo
                              SET  pub = {?}
                            WHERE  uid = {?}",
-                         $this->values['photo_pub'], S::v('uid'));
+                         $this->values['photo_pub'], $this->pid());
         }
         if ($this->changed['yourself'] || $this->changed['sort_name'] ||
             $this-> changed['display_name'] || $this->changed['tooltip_name']) {
@@ -403,13 +399,13 @@ class ProfileGeneral extends ProfilePage
                          $this->values['sort_name'],
                          $this->values['display_name'],
                          $this->values['tooltip_name'],
-                         S::v('uid'));
+                         $this->pid());
         }
         if ($this->changed['promo_display']) {
             XDB::execute("UPDATE  profile_display
                              SET  promo = {?}
                            WHERE  pid = {?}",
-                         $this->values['promo_display'], S::v('uid'));
+                         $this->values['promo_display'], $this->pid());
         }
     }
 
@@ -423,7 +419,7 @@ class ProfileGeneral extends ProfilePage
         $page->assign('edu_fields', $res->fetchAllAssoc());
 
         require_once "emails.combobox.inc.php";
-        fill_email_combobox($page);
+        fill_email_combobox($page, $this->owner, $this->profile);
 
         $res = XDB::iterator("SELECT  nw.network_type AS type, nw.name
                                 FROM  profile_networking_enum AS nw

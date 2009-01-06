@@ -95,34 +95,14 @@ class ProfileAddress extends ProfileGeoloc
         return $value;
     }
 
-    private function saveTel($adrid, $telid, array &$tel)
-    {
-        XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
-                                              search_tel, display_tel, pub)
-                           VALUES  ({?}, 'address', {?}, {?}, {?},
-                                    {?}, {?}, {?})",
-                    S::i('uid'), $adrid, $telid, $tel['type'],
-                    format_phone_number($tel['tel']), $tel['tel'], $tel['pub']);
-    }
-
-    private function saveAddress($adrid, array &$address)
+    private function saveAddress($pid, $adrid, array &$address)
     {
         $flags = new PlFlagSet();
-        if ($address['secondaire']) {
-            $flags->addFlag('res-secondaire');
-        }
-        if ($address['mail']) {
-            $flags->addFlag('courrier');
-        }
-        if ($address['temporary']) {
-            $flags->addFlag('temporaire');
-        }
-        if ($address['current']) {
-            $flags->addFlag('active');
-        }
-        if ($address['checked']) {
-            $flags->addFlag('coord-checked');
-        }
+        $flags->addFlag('res-secondaire', $address['secondaire']);
+        $flags->addFlag('courrier', $address['mail']);
+        $flags->addFlag('temporaire', $address['temporary']);
+        $flags->addFlag('active', $address['current']);
+        $flags->addFlag('coord-checked', $address['checked']);
         XDB::execute("INSERT INTO  adresses (adr1, adr2, adr3,
                                               postcode, city, cityid,
                                               country, region, regiontxt,
@@ -137,21 +117,21 @@ class ProfileAddress extends ProfileGeoloc
                      $address['postcode'], $address['city'], $address['cityid'],
                      $address['country'], $address['region'], $address['regiontxt'],
                      $address['pub'], $address['datemaj'], $flags,
-                     S::i('uid'), $adrid, $address['precise_lat'], $address['precise_lon'], $address['comment']);
+                     $pid, $adrid, $address['precise_lat'], $address['precise_lon'], $address['comment']);
     }
 
     public function save(ProfilePage &$page, $field, $value)
     {
         XDB::execute("DELETE FROM  adresses
                             WHERE  uid = {?}",
-                     S::i('uid'));
+                     $page->pid());
         XDB::execute("DELETE FROM  profile_phones
                             WHERE  uid = {?} AND link_type = 'address'",
-                     S::i('uid'));
+                     $page->pid());
         foreach ($value as $adrid=>&$address) {
-            $this->saveAddress($adrid, $address);
+            $this->saveAddress($page->pid(), $adrid, $address);
             $profiletel = new ProfilePhones('address', $adrid);
-            $profiletel->saveTels('tel', $address['tel']);
+            $profiletel->saveTels($page->pid(), 'tel', $address['tel']);
         }
     }
 }
@@ -185,7 +165,7 @@ class ProfileAddresses extends ProfilePage
                        INNER JOIN  geoloc_pays AS gp ON(gp.a2 = a.country)
                             WHERE  uid = {?} AND NOT FIND_IN_SET('pro', statut)
                          ORDER BY  adrid",
-                           S::i('uid'));
+                           $this->pid());
         if ($res->numRows() == 0) {
             $this->values['addresses'] = array();
         } else {
@@ -196,7 +176,7 @@ class ProfileAddresses extends ProfilePage
                                 FROM  profile_phones
                                WHERE  uid = {?} AND link_type = 'address'
                             ORDER BY  link_id",
-                             S::i('uid'));
+                             $this->pid());
         $i = 0;
         $adrNb = count($this->values['addresses']);
         while ($tel = $res->next()) {

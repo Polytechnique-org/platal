@@ -40,7 +40,7 @@ class ProfileSkill implements ProfileSetting
                                    FROM  {$this->table}_def AS s
                              INNER JOIN  {$this->table}_ins AS i ON(s.id = i.{$this->skill_field})
                                   WHERE  i.uid = {?}",
-                                S::i('uid'));
+                                $page->pid());
             while (list($sid, $text, $level) = $res->next()) {
                 $value[$sid] = array('text' => $text, 'level' => $level);
             }
@@ -66,14 +66,14 @@ class ProfileSkill implements ProfileSetting
     {
         XDB::execute("DELETE FROM  {$this->table}_ins
                             WHERE  uid = {?}",
-                     S::i('uid'));
+                     $page->pid());
         if (!count($value)) {
             return;
         }
         foreach ($value as $id=>&$skill) {
             XDB::execute("INSERT INTO  {$this->table}_ins (uid, {$this->skill_field}, level)
                                VALUES  ({?}, {?}, {?})",
-                         S::i('uid'), $id, $skill['level']);
+                         $page->pid(), $id, $skill['level']);
         }
     }
 }

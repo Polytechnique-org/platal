@@ -31,7 +31,7 @@ class ProfileSecteurs implements ProfileSetting
                              INNER JOIN  profile_job_sector_enum    AS s  ON (m.sectorid = s.id)
                              INNER JOIN  profile_job_subsector_enum AS ss ON (s.id = ss.sectorid AND m.subsectorid = ss.id)
                                   WHERE  m.uid = {?}",
-                                S::i('uid'));
+                                $page->pid());
             while (list($s, $ss, $ssname) = $res->next()) {
                 if (!isset($value[$s])) {
                     $value[$s] = array($ss => $ssname);
@@ -57,7 +57,7 @@ class ProfileSecteurs implements ProfileSetting
 
         XDB::execute("DELETE FROM  profile_mentor_sector
                             WHERE  uid = {?}",
-                     S::i('uid'));
+                     $page->pid());
         if (!count($value)) {
             return;
         }
@@ -65,7 +65,7 @@ class ProfileSecteurs implements ProfileSetting
             foreach ($sect as $sid=>&$name) {
                 XDB::execute("INSERT INTO  profile_mentor_sector (uid, sectorid, subsectorid)
                                    VALUES  ({?}, {?}, {?})",
-                             S::i('uid'), $id, $sid);
+                             $page->pid(), $id, $sid);
             }
         }
     }
@@ -82,7 +82,7 @@ class ProfileCountry implements ProfileSetting
                                    FROM  profile_mentor_country AS m
                              INNER JOIN  geoloc_pays            AS p ON (m.country = p.a2)
                                   WHERE  m.uid = {?}",
-                                S::i('uid'));
+                                $page->pid());
             while (list($id, $name) = $res->next()) {
                 $value[$id] = $name;
             }
@@ -100,11 +100,11 @@ class ProfileCountry implements ProfileSetting
     {
         XDB::execute("DELETE FROM  profile_mentor_country
                             WHERE  uid = {?}",
-                     S::i('uid'));
+                     $page->pid());
         foreach ($value as $id=>&$name) {
             XDB::execute("INSERT INTO  profile_mentor_country (uid, country)
                                VALUES  ({?}, {?})",
-                         S::i('uid'), $id);
+                         $page->pid(), $id);
         }
     }
 }
@@ -127,7 +127,7 @@ class ProfileMentor extends ProfilePage
         $res = XDB::query("SELECT  expertise
                              FROM  mentor
                             WHERE  uid = {?}",
-                          S::i('uid'));
+                          $this->pid());
         $this->values['expertise'] = $res->fetchOneCell();
     }
 
@@ -138,12 +138,12 @@ class ProfileMentor extends ProfilePage
             if (empty($expertise)) {
                 XDB::execute("DELETE FROM  mentor
                                     WHERE  uid = {?}",
-                             S::i('uid'));
+                             $this->pid());
                 $this->values['expertise'] = null;
             } else {
                 XDB::execute("REPLACE INTO  mentor (uid, expertise)
                                     VALUES  ({?}, {?})",
-                             S::i('uid'), $expertise);
+                             $this->pid(), $expertise);
                 $this->values['expertise'] = $expertise;
             }
         }

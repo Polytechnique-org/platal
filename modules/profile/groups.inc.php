@@ -26,9 +26,9 @@ class ProfileSection implements ProfileSetting
         $success = true;
         if (is_null($value)) {
             $res = XDB::query("SELECT  section
-                                 FROM  auth_user_md5
-                                WHERE  user_id = {?}",
-                              S::i('uid'));
+                                 FROM  profiles
+                                WHERE  pid = {?}",
+                              $page->pid());
             return intval($res->fetchOneCell());
         }
         return intval($value);
@@ -36,10 +36,10 @@ class ProfileSection implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute("UPDATE  auth_user_md5
+        XDB::execute("UPDATE  profiles
                          SET  section = {?}
-                       WHERE  user_id = {?}",
-                     $value, S::i('uid'));
+                       WHERE  pid = {?}",
+                     $value, $page->pid());
     }
 }
 
@@ -64,7 +64,7 @@ class ProfileGroup implements ProfileSetting
                                    FROM  {$this->table}_def AS g
                              INNER JOIN  {$this->table}_ins AS i ON (i.{$this->group_field} = g.id)
                                   WHERE  i.{$this->user_field} = {?}",
-                                S::i('uid'));
+                                $page->pid());
             while (list($gid, $text) = $res->next()) {
                 $value[intval($gid)] = $text;
             }
@@ -81,13 +81,13 @@ class ProfileGroup implements ProfileSetting
     {
         XDB::execute("DELETE FROM  {$this->table}_ins
                             WHERE  {$this->user_field} = {?}",
-                     S::i('uid'));
+                     $page->pid());
         if (!count($value)) {
             return;
         }
         $insert = array();
         foreach ($value as $id=>$text) {
-            $insert[] = '(' . S::i('uid') . ", $id)";
+            $insert[] = XDB::format('({?}, {?})', $page->pid(), $id);
         }
         XDB::execute("INSERT INTO  {$this->table}_ins ({$this->user_field}, {$this->group_field})
                            VALUES  " . implode(',', $insert));
@@ -112,7 +112,7 @@ class ProfileGroups extends ProfilePage
                                                    FROM  groupex.asso    AS a
                                              INNER JOIN  groupex.membres AS m ON (m.asso_id = a.id)
                                                   WHERE  m.uid = {?} AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')",
-                                                  S::i('uid')));
+                                                $this->pid()));
         $page->assign('listgroups', XDB::iterator("SELECT  a.nom, a.diminutif, a.sub_url,
                                                            IF (a.cat = 'Institutions', a.cat, d.nom) AS dom
                                                      FROM  groupex.asso  AS a
@@ -120,6 +120,7 @@ class ProfileGroups extends ProfilePage
                                                     WHERE  a.inscriptible != 0
                                                            AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')
                                                  ORDER BY  a.cat, a.dom, a.nom"));
+        # XXX: FIXME: promo_sortie
         $page->assign('old', (int)date('Y') >= S::i('promo_sortie'));
     }
 }
