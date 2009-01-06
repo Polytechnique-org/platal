@@ -64,6 +64,8 @@ class PlWizard
     const PREVIOUS_PAGE = 'bt_previous';
     const LAST_PAGE     = 'bt_last';
 
+    private $userdata = array();
+
     protected $name;
     protected $layout;
     protected $stateless;
@@ -99,6 +101,16 @@ class PlWizard
         $this->inv_lookup[] = $id;
         $this->pages[]      = $class;
         $this->titles[]     = $title;
+    }
+
+    public function addUserData($name, $value)
+    {
+        $this->userdata[$name] = $value;
+    }
+
+    public function getUserData($name, $default = null)
+    {
+        return $this->userdata[$name];
     }
 
     public function set($varname, $value)
