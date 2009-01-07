@@ -440,7 +440,7 @@ class ProfileModule extends PLModule
     function handler_ajax_edu(&$page, $eduid, $class)
     {
         header('Content-Type: text/html; charset=utf-8');
-        $page->changeTpl('profile/edu.tpl', NO_SKIN);
+        $page->changeTpl('profile/general.edu.tpl', NO_SKIN);
         $res = XDB::iterator("SELECT  id, field
                                 FROM  profile_education_field_enum
                             ORDER BY  field");
