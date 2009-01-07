@@ -812,8 +812,8 @@ class XnetGrpModule extends PLModule
                                 $market->add();
                             }
                         }
-                        XDB::execute('INSERT INTO groupex.membres (uid, asso_id, origine, email)
-                                           VALUES ({?}, {?}, "X", {?})',
+                        XDB::execute('REPLACE INTO  groupex.membres (uid, asso_id, origine, email)
+                                            VALUES  ({?}, {?}, "X", {?})',
                                      $uid, $globals->asso('id'), $email);
                         $this->removeSubscriptionRequest($uid);
                         pl_redirect("member/$email");
@@ -822,9 +822,9 @@ class XnetGrpModule extends PLModule
                 } else {
                     $res = XDB::query('SELECT MAX(uid)+1 FROM groupex.membres');
                     $uid = max(intval($res->fetchOneCell()), 50001);
-                    XDB::execute('INSERT INTO  groupex.membres (uid,asso_id,origine,email)
-                                            VALUES({?},{?},"ext",{?})', $uid,
-                                            $globals->asso('id'), $email);
+                    XDB::execute('REPLACE INTO  groupex.membres (uid, asso_id, origine, email)
+                                        VALUES  ({?}, {?}, "ext", {?})',
+                                 $uid, $globals->asso('id'), $email);
                     pl_redirect("member/$email");
                 }
             } else {
