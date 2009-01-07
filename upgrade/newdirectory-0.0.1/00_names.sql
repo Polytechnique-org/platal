@@ -1,22 +1,25 @@
-ALTER TABLE profile_display ADD COLUMN yourself VARCHAR(255) NOT NULL,
-                            ADD COLUMN public_name VARCHAR(255) NOT NULL,
-                            ADD COLUMN private_name VARCHAR(255) NOT NULL,
-                            ADD COLUMN directory_name VARCHAR(255) NOT NULL,
-                            ADD COLUMN short_name VARCHAR(255) NOT NULL,
-                            ADD COLUMN sort_name VARCHAR(255) NOT NULL,
-                            CHANGE COLUMN uid pid INT(11),
-                            CHANGE COLUMN promo_display promo VARCHAR(255);
+CREATE TABLE  profile_display (
+  pid INT(11) NOT NULL DEFAULT 0,
+  yourself VARCHAR(255) NOT NULL,
+  public_name VARCHAR(255) NOT NULL,
+  private_name VARCHAR(255) NOT NULL,
+  directory_name VARCHAR(255) NOT NULL,
+  short_name VARCHAR(255) NOT NULL,
+  sort_name VARCHAR(255) NOT NULL,
+  promo VARCHAR(255) DEFAULT '' NOT NULL,
+  PRIMARY KEY(uid)
+) CHARSET=utf8;
 
-REPLACE INTO  profile_display (pid, yourself, public_name, private_name, directory_name, short_name, sort_name)
-      SELECT  u.user_id, u.prenom,
-              CONCAT(u.prenom, ' ', IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom)),
-              CONCAT(u.prenom, ' ', IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom),
-                IF(q.profile_nick != '', CONCAT(' (alias ', q.profile_nick, ')'), '')),
-              CONCAT(IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom), ', ', u.prenom),
-              CONCAT(u.prenom, ' ', IF(u.nom_usage != '', u.nom_usage, u.nom)),
-              CONCAT(IF(u.nom_usage != '', u.nom_usage, u.nom), ' ', u.prenom)
-        FROM  auth_user_md5   AS u
-   LEFT JOIN  auth_user_quick AS q ON (u.user_id = q.user_id);
+INSERT INTO  profile_display (pid, yourself, public_name, private_name, directory_name, short_name, sort_name)
+     SELECT  u.user_id, u.prenom,
+             CONCAT(u.prenom, ' ', IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom)),
+             CONCAT(u.prenom, ' ', IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom),
+               IF(q.profile_nick != '', CONCAT(' (alias ', q.profile_nick, ')'), '')),
+             CONCAT(IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom), ', ', u.prenom),
+             CONCAT(u.prenom, ' ', IF(u.nom_usage != '', u.nom_usage, u.nom)),
+             CONCAT(IF(u.nom_usage != '', u.nom_usage, u.nom), ' ', u.prenom)
+       FROM  auth_user_md5   AS u
+  LEFT JOIN  auth_user_quick AS q ON (u.user_id = q.user_id);
 
 
 DROP TABLE IF EXISTS profile_name_search_enum;
