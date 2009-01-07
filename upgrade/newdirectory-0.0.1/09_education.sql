@@ -546,5 +546,18 @@ INSERT INTO  profile_education_enum (name, url, country, abbreviation)
              ('Centre de Formation des Journalistes', 'http://www.cfpj.com/', 'FR', 'CFJ'),
              ('Institut National des Hautes Études de Sécurité', 'http://www.inhes.interieur.gouv.fr/', 'FR', 'INHES');
 
+
+-- Médecine is not a university but an educational field
+REPLACE INTO  profile_education (uid, id, fieldid, eduid, degreeid)
+      SELECT  e.uid, e.id, f.id, 0, d.id
+        FROM  profile_education             AS e
+  INNER JOIN  profile_education_enum        AS l ON (l.id = e.eduid)
+  INNER JOIN  profile_education_degree_enum AS d ON (d.degree = "Doctorat")
+  INNER JOIN  profile_education_field_enum  AS f ON (f.field = "Médecine")
+       WHERE  l.name = "Médecine";
+
+DELETE FROM  profile_education_enum
+      WHERE  name = "Médecine";
+
 # vim:set syntax=mysql:
 
