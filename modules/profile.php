@@ -46,6 +46,7 @@ class ProfileModule extends PLModule
             'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
             'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE),
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
+            'profile/name_info'          => $this->make_hook('name_info',                  AUTH_PUBLIC),
             'profile/orange'             => $this->make_hook('p_orange',                   AUTH_MDP),
             'profile/usage'              => $this->make_hook('p_usage',                    AUTH_MDP),
 
@@ -137,6 +138,19 @@ class ProfileModule extends PLModule
         header("Content-Type: $type");
         echo file_get_contents($img);
         exit;
+    }
+
+    function handler_name_info(&$page)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $page->changeTpl('profile/name_info.tpl', SIMPLE);
+        $res = XDB::iterator("SELECT  name, explanations,
+                                      FIND_IN_SET('public', flags) AS public,
+                                      FIND_IN_SET('has_particle', flags) AS has_particle
+                                FROM  profile_name_search_enum
+                               WHERE  NOT FIND_IN_SET('not_displayed', flags)
+                            ORDER BY  NOT FIND_IN_SET('public', flags)");
+        $page->assign('types', $res);
     }
 
     function handler_networking(&$page, $mid)

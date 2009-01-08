@@ -33,18 +33,21 @@ CREATE TABLE IF NOT EXISTS profile_name_search_enum (
   UNIQUE (name)
 ) CHARSET=utf8;
 
-INSERT INTO  profile_name_search_enum (name, flags)
-     VALUES  ('Nom patronymique', 'has_particle,always_displayed,public'),
-             ('Nom marital', 'has_particle,always_displayed,public'),
-             ('Nom usuel', 'has_particle,always_displayed,public'),
-             ('Prénom', 'always_displayed,public'),
-             ('Pseudonyme (nom de plume)', 'always_displayed,public'),
-             ('Surnom', ''),
-             ('Prénom usuel', 'public'),
-             ('Autre prénom', ''),
-             ('Autre nom', ''),
-             ('Nom initial', 'has_particle,not_displayed,public'),
-             ('Prénom initial', 'has_particle,not_displayed,public');
+INSERT INTO  profile_name_search_enum (name, flags, explanations)
+     VALUES  ('Nom patronymique', 'has_particle,always_displayed,public', 'Le nom de famille avec lequel tu es né'),
+             ('Nom marital', 'has_particle,always_displayed,public',
+              'Ton nom d\'épouse ou d\'époux'),
+             ('Nom usuel', 'has_particle,always_displayed,public',
+              'Le nom de famille que tu utilises usuellement s\'il est différent du nom patronymique, ce peut-être une  version racourcie de celui-ci, ton nom marital, une combianaison de ces deux noms...'),
+             ('Prénom', 'always_displayed,public', 'Ton prénom'),
+             ('Pseudonyme (nom de plume)', 'always_displayed,public',
+              'Pseudonyme pour les artistes, gens de lettres'),
+             ('Surnom', '', 'Surnom à l\'École ou ailleurs'),
+             ('Prénom usuel', 'public', 'Si tu utilises une version raccourcie, francisée... de ton prénom'),
+             ('Autre prénom', '', 'Si tu as d\'autres prénoms et que tu souhaites les faire apparaître'),
+             ('Autre nom', '', 'Si tu as d\'autres noms et que tu souhaites les faire apparaître'),
+             ('Nom initial', 'has_particle,not_displayed,public', ''),
+             ('Prénom initial', 'has_particle,not_displayed,public', '');
 
 
 DROP TABLE IF EXISTS profile_name_search;

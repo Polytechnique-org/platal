@@ -47,7 +47,7 @@
   </tr>
   <tr>
     <td>
-      <span class="titre">Comment t'appeller</span>
+      <span class="titre">Comment t'appeller</span><br />
       <span class="smaller">sur le site, dans la lettre mensuelle...</span>
     </td>
     <td>
@@ -61,7 +61,7 @@
       <span class="smaller">Ils déterminent la façon dont ton nom apparaît sur les annuaires
       en ligne et papier et ta fiche apparaitra quand on cherche un de ces noms. Pour plus
       d'explications sur l'icône suivante
-      <a href="profile/name_info">{icon name="information" title="Plus d'infos"}</a>.</span><br/>
+      <a href="profile/name_info" class="popup3">{icon name="information" title="Plus d'infos"}</a>.</span><br/>
       <div class="small center">Si un de tes noms commence par une particule,
       coche la case en bout de ligne.</div>
     </td>
