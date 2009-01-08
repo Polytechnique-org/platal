@@ -87,7 +87,7 @@
 <div class="menu_item"><a href="http://support.polytechnique.org">Support</a></div>
 
 <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
-  <tr><th>Valid</th></tr>
+  <tr><th>Validations</th></tr>
   <tr class="impair">
     <td>
       <a href="admin/validate">

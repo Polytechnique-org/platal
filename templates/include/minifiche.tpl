@@ -119,7 +119,7 @@
         <td class="lt">Profession&nbsp;:</td>
         <td class="rt">
           {if $c.job_web}<a href="{$c.job_web}">{$c.entreprise}</a>{else}{$c.entreprise}{/if}
-          {if $c.secteur}({$c.secteur}){/if} {if $c.fonction}<br />{$c.fonction}{/if}
+          {if $c.secteur} ({$c.secteur}){/if}{if $c.fonction}<br />{$c.fonction}{/if}
         </td>
       </tr>
       {/if}

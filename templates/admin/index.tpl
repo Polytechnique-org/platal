@@ -170,7 +170,7 @@
     </td>
   </tr>
   <tr class="pair">
-    <td class="titre">Newletter</td>
+    <td class="titre">Newsletter</td>
     <td>
       <a href="admin/newsletter">Liste</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -180,9 +180,9 @@
   <tr class="impair">
     <td class="titre">AX-Letter</td>
     <td>
-      <a href="ax/edit">Edition</a>
+      <a href="ax/edit">Édition</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/axletter">Inscriptions et Permissions</a>
+      <a href="admin/axletter">Inscriptions et permissions</a>
     </td>
   </tr>
   <tr class="pair">
