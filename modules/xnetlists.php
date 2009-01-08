@@ -207,25 +207,15 @@ class XnetListsModule extends ListsModule
         $not_in_group_x = array();
         $not_in_group_ext = array();
 
-        $ann = XDB::iterator(
-                  "SELECT  if (m.origine='X',if (u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
-                           if (m.origine='X',u.prenom,m.prenom) AS prenom,
-                           if (m.origine='X',u.promo,'extérieur') AS promo,
-                           if (m.origine='X',CONCAT(a.alias, '@{$globals->mail->domain}'),m.email) AS email,
-                           if (m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
-                           m.perms='admin' AS admin,
-                           m.origine='X' AS x
-                     FROM  groupex.membres AS m
-                LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
-                LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
-                    WHERE  m.asso_id = {?}
-                 ORDER BY  promo, nom, prenom", $globals->asso('id'));
+        $ann = XDB::iterator('SELECT  uid
+                                FROM  groupex.membres
+                               WHERE  asso_id = {?}', $globals->asso('id'));
 
         $not_in_list = array();
-
         while ($tmp = $ann->next()) {
-            if (!in_array(strtolower($tmp['email']), $subscribers)) {
-                $not_in_list[] = $tmp;
+            $user = User::getWithUID($tmp['uid']);
+            if (!in_array(strtolower($user->forlifeEmail()), $subscribers)) {
+                $not_in_list[] = $user;
             }
         }
 
@@ -289,23 +279,21 @@ class XnetListsModule extends ListsModule
         }
 
         global $globals;
-        $res = XDB::iterator("SELECT  IF(r.login IS NULL, m.nom, IF(u.nom_usage != '', u.nom_usage, u.nom)) AS nom,
-                                      IF(r.login IS NULL, m.prenom, u.prenom) AS prenom,
-                                      IF(r.login IS NULL, 'extérieur', u.promo) AS promo,
-                                      m.perms = 'admin' AS admin, r.redirect, r.login AS alias
-                                FROM  (SELECT  redirect AS redirect,
-                                               IF(SUBSTRING_INDEX(redirect, '@', -1) IN ({?}, {?}),
-                                                  SUBSTRING_INDEX(redirect, '@', 1), NULL) AS login
-                                         FROM  x4dat.virtual_redirect AS vr
-                                   INNER JOIN  x4dat.virtual          AS v  USING(vid)
-                                        WHERE  v.alias = {?}
-                                     ORDER BY  redirect) AS r
-                           LEFT JOIN  aliases AS a ON (r.login IS NOT NULL AND r.login = a.alias)
-                           LEFT JOIN  auth_user_md5 AS u ON (u.user_id = a.id)
-                           LEFT JOIN groupex.membres AS m ON (m.asso_id = {?} AND IF(r.login IS NULL, m.email = r.redirect, m.uid = u.user_id))",
-                $globals->mail->domain, $globals->mail->domain2,
-                $lfull, $globals->asso('id'));
-        $page->assign('mem', $res);
+        $emails = XDB::fetchColumn('SELECT  redirect
+                                      FROM  virtual_redirect AS vr
+                                INNER JOIN  virtual          AS v  USING(vid)
+                                     WHERE  v.alias = {?}
+                                  ORDER BY  redirect', $lfull);
+        $mem = array();
+        foreach ($emails as $email) {
+            $user = User::getSilent($email);
+            if ($user) {
+                $mem[] = array('user' => $user, 'email' => $email);
+            } else {
+                $mem[] = array('email' => $email);
+            }
+        }
+        $page->assign('mem', $mem);
     }
 
     function handler_acreate(&$page)

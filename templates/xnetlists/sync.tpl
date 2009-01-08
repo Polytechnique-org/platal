@@ -34,9 +34,9 @@
     </tr>
     {foreach from=$not_in_list item=u}
     <tr>
-      <td class='checkboxToggle'>{$u.nom|strtoupper} {$u.prenom}</td>
-      <td class='checkboxToggle'>{$u.promo}</td>
-      <td class='checkboxToggle'><input type="checkbox" class="moderate_email" name="add[{$u.email}]" id="add{$u.email}"/></td>
+      <td class='checkboxToggle'>{$u->fullName()}</td>
+      <td class='checkboxToggle'>{$u->promo()}</td>
+      <td class='checkboxToggle'><input type="checkbox" class="moderate_email" name="add[{$u->forlifeEmail()}]" id="add{$u->forlifeEmail()}"/></td>
     </tr>
     {/foreach}
     <tr>

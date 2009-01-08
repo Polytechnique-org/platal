@@ -19,6 +19,7 @@ CREATE TABLE accounts (
   comment varchar(255) default null,
 
   # User settings
+  email varchar(255) default null,
   full_name varchar(255) default null,
   display_name varchar(255) default null,
   sex enum('female', 'male') not null default 'male',

@@ -115,6 +115,14 @@ class User extends PlUser
             throw new UserNotFoundException();
         }
 
+        // Looks for an account with the given email.
+        $res = XDB::query('SELECT  a.uid
+                             FROM  accounts AS a
+                            WHERE  a.email = {?}', $login);
+        if ($res->numRows() == 1) {
+            return $res->fetchOneCell();
+        }
+
         // Otherwise, we do suppose $login is an email redirection.
         $res = XDB::query("SELECT  a.uid
                              FROM  accounts AS a

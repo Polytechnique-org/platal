@@ -1,6 +1,8 @@
 # Create a type 'X' with all permissions
 insert into account_types
-     values ('x', 'mail,groups,forums,list,search,portal');
+     values ('x', 'mail,groups,forums,list,search,portal'),
+            ('xnet', 'groups');
+
 
 # Insert all existing accounts
 insert into accounts
@@ -13,6 +15,7 @@ insert into accounts
             date_ins AS registration_date,
             IF(FIND_IN_SET('watch', flags), 'watch', '') AS flags,
             IF(LENGTH(comment) > 0, comment, NULL) AS comment,
+            NULL as email,
             CONCAT(prenom, ' ', IF (nom_usage != '' and nom_usage IS NOT NULL, nom_usage, nom)) AS full_name,
             prenom AS display_name,
             IF(FIND_IN_SET('femme', flags), 'female', 'male') AS sex,
