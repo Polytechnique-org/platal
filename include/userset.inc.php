@@ -161,11 +161,11 @@ class MinificheView extends MultipageView
         global $globals;
         $this->entriesPerPage = $globals->search->per_page;
         if (@$params['with_score']) {
-            $this->addSortKey('score', array('-score', '-date', '-promo', 'sort_name'), 'pertinence');
+            $this->addSortKey('score', array('-score', '-date', '-d.promo', 'sort_name'), 'pertinence');
         }
         $this->addSortKey('name', array('sort_name'), 'nom');
-        $this->addSortKey('promo', array('-promo', 'sort_name'), 'promotion');
-        $this->addSortKey('date_mod', array('-date', '-promo', 'sort_name'), 'dernière modification');
+        $this->addSortKey('promo', array('-d.promo', 'sort_name'), 'promotion');
+        $this->addSortKey('date_mod', array('-date', '-d.promo', 'sort_name'), 'dernière modification');
         parent::__construct($set, $data, $params);
     }
 
@@ -267,8 +267,8 @@ class MentorView extends MultipageView
         $this->entriesPerPage = 10;
         $this->addSortKey('rand', array('RAND(' . S::i('uid') . ')'), 'aléatoirement');
         $this->addSortKey('name', array('sort_name'), 'nom');
-        $this->addSortKey('promo', array('-promo', 'sort_name'), 'promotion');
-        $this->addSortKey('date_mod', array('-date', '-promo', 'sort_name'), 'dernière modification');
+        $this->addSortKey('promo', array('-d.promo', 'sort_name'), 'promotion');
+        $this->addSortKey('date_mod', array('-date', '-d.promo', 'sort_name'), 'dernière modification');
         parent::__construct($set, $data, $params);
     }
 
@@ -314,10 +314,10 @@ class TrombiView extends MultipageView
         $this->entriesPerPage = 24;
         $this->order = explode(',', Env::v('order', 'sort_name'));
         if (@$params['with_score']) {
-            $this->addSortKey('score', array('-score', '-watch_last', '-promo', 'sort_name'), 'pertinence');
+            $this->addSortKey('score', array('-score', '-watch_last', '-d.promo', 'sort_name'), 'pertinence');
         }
         $this->addSortKey('name', array('sort_name'), 'nom');
-        $this->addSortKey('promo', array('-promo', 'sort_name'), 'promotion');
+        $this->addSortKey('promo', array('-d.promo', 'sort_name'), 'promotion');
         parent::__construct($set, $data, $params);
     }
 
