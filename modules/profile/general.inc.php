@@ -415,13 +415,15 @@ class ProfileGeneral extends ProfilePage
                         $particle   = trim($particle);
                         $name       = trim($name);
                         $sn['name'] = trim($sn['name']);
-                        XDB::execute("INSERT INTO  profile_name_search (particle, name, typeid, pid)
-                                           VALUES  ({?}, {?}, {?}, {?})",
-                                     $particle, $name, $sn['typeid'], S::i('uid'));
-                        if (!isset($search_names[$sn['typeid']])) {
-                            $search_names[$sn['typeid']] = array($sn['name'], $name);
-                        } else {
-                            $search_names[$sn['typeid']] = array_merge($search_names[$sn['typeid']], array($name));
+                        if ($sn['name'] != '') {
+                            XDB::execute("INSERT INTO  profile_name_search (particle, name, typeid, pid)
+                                               VALUES  ({?}, {?}, {?}, {?})",
+                                         $particle, $name, $sn['typeid'], S::i('uid'));
+                            if (!isset($search_names[$sn['typeid']])) {
+                                $search_names[$sn['typeid']] = array($sn['name'], $name);
+                            } else {
+                                $search_names[$sn['typeid']] = array_merge($search_names[$sn['typeid']], array($name));
+                            }
                         }
                     }
                 }

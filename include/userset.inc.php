@@ -161,11 +161,11 @@ class MinificheView extends MultipageView
         global $globals;
         $this->entriesPerPage = $globals->search->per_page;
         if (@$params['with_score']) {
-            $this->addSortKey('score', array('-score', '-date', '-promo', 'name_sort'), 'pertinence');
+            $this->addSortKey('score', array('-score', '-date', '-promo', 'sort_name'), 'pertinence');
         }
-        $this->addSortKey('name', array('name_sort'), 'nom');
-        $this->addSortKey('promo', array('-promo', 'name_sort'), 'promotion');
-        $this->addSortKey('date_mod', array('-date', '-promo', 'name_sort'), 'dernière modification');
+        $this->addSortKey('name', array('sort_name'), 'nom');
+        $this->addSortKey('promo', array('-promo', 'sort_name'), 'promotion');
+        $this->addSortKey('date_mod', array('-date', '-promo', 'sort_name'), 'dernière modification');
         parent::__construct($set, $data, $params);
     }
 
@@ -196,7 +196,7 @@ class MinificheView extends MultipageView
                 edu3.grad_year AS edugrad_year3, f3.field AS edufield3, edu3.program AS eduprogram3,
                 adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region,
                 (COUNT(em.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif,
-                nd.display AS name_display, nd.tooltip AS name_tooltip, nd.sort AS name_sort" .
+                d.directory_name, d.sort_name" .
                 (S::logged() ? ", c.contact AS contact" : '');
     }
 
@@ -232,7 +232,6 @@ class MinificheView extends MultipageView
                  LEFT JOIN  geoloc_pays                   AS gp   ON (adr.country = gp.a2)
                  LEFT JOIN  geoloc_region                 AS gr   ON (adr.country = gr.a2 AND adr.region = gr.region)
                  LEFT JOIN  emails                        AS em   ON (em.uid = u.user_id AND em.flags = 'active')
-                INNER JOIN  profile_names_display         AS nd   ON (nd.user_id = u.user_id)
                 INNER JOIN  profile_display               AS d    ON (d.pid = u.user_id)" . (S::logged() ?
                 "LEFT JOIN  contacts                      AS c    ON (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
                  : "");
@@ -267,9 +266,9 @@ class MentorView extends MultipageView
     {
         $this->entriesPerPage = 10;
         $this->addSortKey('rand', array('RAND(' . S::i('uid') . ')'), 'aléatoirement');
-        $this->addSortKey('name', array('name_sort'), 'nom');
-        $this->addSortKey('promo', array('-promo', 'name_sort'), 'promotion');
-        $this->addSortKey('date_mod', array('-date', '-promo', 'name_sort'), 'dernière modification');
+        $this->addSortKey('name', array('sort_name'), 'nom');
+        $this->addSortKey('promo', array('-promo', 'sort_name'), 'promotion');
+        $this->addSortKey('date_mod', array('-date', '-promo', 'sort_name'), 'dernière modification');
         parent::__construct($set, $data, $params);
     }
 
@@ -277,13 +276,12 @@ class MentorView extends MultipageView
     {
         return "m.uid, d.promo, u.hruid,
                 m.expertise, mp.country, ms.sectorid, ms.subsectorid,
-                nd.display AS name_display, nd.tooltip AS name_tooltip, nd.sort AS name_sort";
+                d.directory_name, d.sort_name";
     }
 
     public function joins()
     {
-        return "INNER JOIN  profile_names_display AS nd ON (nd.user_id = u.user_id)
-                INNER JOIN  profile_display       AS d  ON (d.pid = u.user_id)";
+        return "INNER JOIN  profile_display AS d ON (d.pid = u.user_id)";
     }
 
     public function bounds()
@@ -314,25 +312,24 @@ class TrombiView extends MultipageView
     public function __construct(PlSet &$set, $data, array $params)
     {
         $this->entriesPerPage = 24;
-        $this->order = explode(',', Env::v('order', 'name_sort'));
+        $this->order = explode(',', Env::v('order', 'sort_name'));
         if (@$params['with_score']) {
-            $this->addSortKey('score', array('-score', '-watch_last', '-promo', 'name_sort'), 'pertinence');
+            $this->addSortKey('score', array('-score', '-watch_last', '-promo', 'sort_name'), 'pertinence');
         }
-        $this->addSortKey('name', array('name_sort'), 'nom');
-        $this->addSortKey('promo', array('-promo', 'name_sort'), 'promotion');
+        $this->addSortKey('name', array('sort_name'), 'nom');
+        $this->addSortKey('promo', array('-promo', 'sort_name'), 'promotion');
         parent::__construct($set, $data, $params);
     }
 
     public function fields()
     {
-        return "u.user_id, nd.display AS name_display, nd.tooltip AS name_tooltip, nd.sort AS name_sort, u.promo, d.promo, u.hruid ";
+        return "u.user_id, d.directory_name, d.sort_name, u.promo, d.promo, u.hruid ";
     }
 
     public function joins()
     {
-        return "INNER JOIN  photo                 AS p  ON (p.uid = u.user_id)
-                INNER JOIN  profile_display       AS d  ON (d.pid = u.user_id)
-                INNER JOIN  profile_names_display AS nd ON (nd.user_id = u.user_id)";
+        return "INNER JOIN  photo           AS p  ON (p.uid = u.user_id)
+                INNER JOIN  profile_display AS d  ON (d.pid = u.user_id)";
     }
 
     public function bounds()
