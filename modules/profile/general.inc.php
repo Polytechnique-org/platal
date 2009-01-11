@@ -239,7 +239,8 @@ class ProfileGeneral extends ProfilePage
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['naissance'] = new ProfileDate();
+        $this->settings['naissance'] 
+                                  = new ProfileDate();
         $this->settings['freetext_pub']
                                   = $this->settings['photo_pub']
                                   = new ProfilePub();
@@ -251,8 +252,7 @@ class ProfileGeneral extends ProfilePage
                                   = $this->settings['yourself']
                                   = $this->settings['display_name']
                                   = $this->settings['sort_name']
-                                  = $this->settings['tooltip_name']
-                                  = $this->settings['promo_display']
+                                  = $this->settings['promo']
                                   = $this->settings['search_names']
                                   = null;
         $this->settings['synchro_ax']
@@ -273,7 +273,7 @@ class ProfileGeneral extends ProfilePage
     protected function _fetchData()
     {
         // Checkout all data...
-        $res = XDB::query("SELECT  p.promo AS promo_display, e.entry_year AS entry_year, e.grad_year AS grad_year,
+        $res = XDB::query("SELECT  p.promo, e.entry_year AS entry_year, e.grad_year AS grad_year,
                                    u.nationalite, u.nationalite2, u.nationalite3, u.naissance,
                                    t.display_tel as mobile, t.pub as mobile_pub,
                                    d.email_directory as email_directory,
@@ -337,7 +337,7 @@ class ProfileGeneral extends ProfilePage
             $this->values['search_names'][] = $sn;
         } while ($sn = $sn_all->next());
 
-        // Proposes choice for promo_display
+        // Proposes choice for promotion
         if ($this->values['entry_year'] != $this->values['grad_year'] - 3) {
             for ($i = $this->values['entry_year']; $i < $this->values['grad_year'] - 2; $i++) {
                 $this->values['promo_choice'][] = "X" . $i;
@@ -436,7 +436,8 @@ class ProfileGeneral extends ProfilePage
                 $short_name     = short_name($search_names, $sn_types_public);
                 $sort_name      = short_name($search_names, $sn_types_public);
                 $this->values['public_name']  = build_public_name($search_names, $sn_types_public, $full_name);
-                $this->values['private_name'] = $public_name . build_private_name($search_names, $sn_types_private);
+                $this->values['private_name'] = $this->values['public_name'] .
+                                                build_private_name($search_names, $sn_types_private);
                 XDB::execute("UPDATE  profile_display
                                  SET  yourself = {?}, public_name = {?}, private_name = {?},
                                       directory_name = {?}, short_name = {?}, sort_name = {?}
@@ -455,11 +456,11 @@ class ProfileGeneral extends ProfilePage
                              $this->values['yourself'], S::v('uid'));
             }
         }
-        if ($this->changed['promo_display']) {
+        if ($this->changed['promo']) {
             XDB::execute("UPDATE  profile_display
                              SET  promo = {?}
                            WHERE  pid = {?}",
-                         $this->values['promo_display'], S::v('uid'));
+                         $this->values['promo'], S::v('uid'));
         }
     }
 

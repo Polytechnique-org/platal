@@ -35,7 +35,7 @@
   Afin de pouvoir être considéré{if $sexe}e{/if} à la fois dans ta promotion d'origine et ta
   ou tes promotions d'adoption tu peux entrer ici ton année de sortie de l'école.
   Plus précisément, il s'agit de l'année d'entrée en quatrième année ou année d'application.
-  Pour tes cocons d'origine ({$promo_display}) il s'agit de l'année {math equation="a + b" a=$promo b=3}.
+  Pour tes cocons d'origine ({$promo}) il s'agit de l'année {math equation="a + b" a=$promo b=3}.
 </p>
 
 <br />

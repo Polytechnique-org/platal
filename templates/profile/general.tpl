@@ -97,11 +97,12 @@
     </td>
     <td>
       {if !$promo_choice}
-        <span class="nom">{$promo_display}</span>
+        <span class="nom">{$promo}</span>
+        <input type="hidden" name="promo" value="{$promo}"/>
       {else}
-        <select name="promo_display">
+        <select name="promo">
         {foreach from=$promo_choice item="promo_to_display"}
-          <option value="{$promo_to_display}" {if $promo_to_display eq $promo_display}selected="selected"{/if}>{$promo_to_display}</option>
+          <option value="{$promo_to_display}" {if $promo_to_display eq $promo}selected="selected"{/if}>{$promo_to_display}</option>
         {/foreach}
         </select>
       {/if}
