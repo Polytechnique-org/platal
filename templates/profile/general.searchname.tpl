@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2009 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -20,27 +20,46 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<span class="flags">
-    <input type="checkbox"
-        {if $sn.pub neq 'private'} checked="checked"{/if}
-        {if $sn.pub eq 'always public'} disabled="disabled"{else} name="search_name[{$i}][pub]"{/if}/>
-    {icon name="flag_green" title="site public"}
-</span>&nbsp;
-<input type="text" name="search_name[{$i}][name]" value="{$sn.search_name}" size="30"/>
-<select name="search_name[{$i}][type]">
-  <option value="firstname"{if $sn.name_type eq 'firstname'} selected="selected"{/if}>Prénom</option>
-  <option value="lastname"{if $sn.name_type eq 'lastname'} selected="selected"{/if}>Nom de famille</option>
-  <option value="surname"{if $sn.name_type eq 'surname'} selected="selected"{/if}>Surnom</option>
-</select>
-{if $sn.pub neq 'always public'}
-  <a href="javascript:removeSearchName({$i})">
-    {icon name=cross title="Supprimer ce nom de recherche"}
-  </a>
-  {if $newsn}
-    <span style="display:none" id="search_name_{$i}_new">Nouveau</span>
-  {else}
-    <input type="hidden" name="search_name[{$i}][removed]" value=""/>
-  {/if}
-{else}
-    {icon name="null"}
-{/if}
+<tr id="search_name_{$i}"{if $class} class="{$class}" style="{$style}"{/if}>
+  <td>
+    <input type="hidden" name="search_names[{$i}][always_displayed]" value="{$sn.always_displayed}"/>
+    <input type="hidden" name="search_names[{$i}][has_particle]" value="{$sn.has_particle}"/>
+    <span class="flags">
+      <input id="flag_cb_{$i}" type="checkbox" checked="checked" disabled="disabled"/>
+      <span id="flag_{$i}">{if $sn.pub}{icon name="flag_green" title="site public"}
+      {else}{icon name="flag_red" title="site privé"}{/if}</span>
+    </span>&nbsp;
+    {if $sn_type_list}
+    <select id="search_name_select_{$i}" name="search_names[{$i}][typeid]" onchange="changeNameFlag({$i});updateNameDisplay();">
+        {foreach from=$sn_type_list item=sn_type}
+          <option value="{$sn_type.id}">{$sn_type.name}</option>
+        {/foreach}
+    </select>
+    {foreach from=$sn_type_list item=sn_type}
+    <input type="hidden" name="sn_type_{$sn_type.id}_{$i}" value="{$sn_type.pub}"/>
+    {/foreach}
+    {else}
+    {$sn.type}
+    <input type="hidden" name="search_names[{$i}][pub]" value="{$sn.pub}"/>
+    <input type="hidden" name="search_names[{$i}][type]" value="{$sn.type}"/>
+    <input type="hidden" name="search_names[{$i}][typeid]" value="{$sn.typeid}"/>
+    {/if}
+  </td>
+  <td>
+    <input type="text" name="search_names[{$i}][name]" value="{$sn.name}"
+      {if $sn.has_particle}title="Coche la case en bout de ligne si ton nom commence par une particle."{/if}
+      {if $sn.error} class="error"{/if} size="25" onkeyup="updateNameDisplay();"/>
+  </td>
+  <td>
+    {if $sn.has_particle}<input name="search_names[{$i}][particle]" type="checkbox"
+      title="Coche cette case si ton nom commence par une particle."
+      {if $sn.particle neq ''} checked="checked"{/if} onchange="updateNameDisplay();"/>
+    {else}
+      <input type="hidden"  name="search_names[{$i}][particle]" value=""/>{/if}
+    {if !$sn.always_displayed}<a href="javascript:removeSearchName({$i})">
+      {icon name=cross title="Supprimer ce nom"}
+    </a>{/if}
+  </td>
+</tr>
+
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

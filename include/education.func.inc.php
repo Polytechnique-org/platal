@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2008 Polytechnique.org                              *
+ *  Copyright (C) 2003-2009 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -22,7 +22,8 @@
 function education_options($current = 0)
 {
     $html = '<option value="-1"></option>';
-    $res  = XDB::iterator("SELECT  e.id AS id, e.name AS name, g.pays AS country
+    $res  = XDB::iterator("SELECT  e.id AS id, g.pays AS country,
+                                   IF(CHAR_LENGTH(e.name) > 76, e.abbreviation, e.name) AS name
                              FROM  profile_education_enum AS e
                         LEFT JOIN  geoloc_pays            AS g ON (e.country = g.a2)
                      WHERE EXISTS  (SELECT  *

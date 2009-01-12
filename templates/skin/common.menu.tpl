@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2009 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -87,7 +87,7 @@
 <div class="menu_item"><a href="http://support.polytechnique.org">Support</a></div>
 
 <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
-  <tr><th>Valid</th></tr>
+  <tr><th>Validations</th></tr>
   <tr class="impair">
     <td>
       <a href="admin/validate">

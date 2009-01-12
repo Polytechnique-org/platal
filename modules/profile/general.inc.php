@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2008 Polytechnique.org                              *
+ *  Copyright (C) 2003-2009 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -62,22 +62,6 @@ class ProfileNom implements ProfileSetting
     public function save(ProfilePage &$page, $field, $new_value)
     {
         $_SESSION[$field] = $new_value;
-    }
-}
-
-class ProfileSearchName implements ProfileSetting
-{
-
-    public function __construct()
-    {
-    }
-
-    public function value(ProfilePage &$page, $field, $value, &$success)
-    {
-    }
-
-    public function save(ProfilePage &$page, $field, $new_value)
-    {
     }
 }
 
@@ -257,8 +241,6 @@ class ProfileGeneral extends ProfilePage
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['nom']    = $this->settings['prenom']
-                                  = new ProfileNom();
         $this->settings['birthdate'] = new ProfileDate();
         $this->settings['freetext_pub']
                                   = $this->settings['photo_pub']
@@ -273,6 +255,7 @@ class ProfileGeneral extends ProfilePage
                                   = $this->settings['sort_name']
                                   = $this->settings['tooltip_name']
                                   = $this->settings['promo_display']
+                                  = $this->settings['search_names']
                                   = null;
         $this->settings['synchro_ax']
                                   = new ProfileBool();
@@ -283,7 +266,7 @@ class ProfileGeneral extends ProfilePage
         $this->settings['networking'] = new ProfileNetworking();
         $this->settings['tels']   = new ProfilePhones('user', 0);
         $this->settings['edus']   = new ProfileEdu();
-        $this->watched= array('nom' => true, 'freetext' => true, 'tels' => true,
+        $this->watched= array('freetext' => true, 'tels' => true,
                               'networking' => true, 'edus' => true,
                               'nationality1' => true, 'nationality2' => true,
                               'nationality3' => true, 'nick' => true);
@@ -325,12 +308,40 @@ class ProfileGeneral extends ProfilePage
         }
 
         // Retreive search names info
-        $this->values['search_names'] = XDB::iterator("
-                              SELECT  sn.search_name, sn.name_type, sn.pub, sn.sn_id
-                                FROM  profile_names_search AS sn
-                               WHERE  sn.user_id = {?}
-                            ORDER BY  sn.name_type, search_score, search_name",
-                          $this->pid());
+        $sn_all = XDB::iterator("SELECT  IF(sn.particle = '', sn.name, CONCAT(sn.particle, ' ', sn.name)) AS name,
+                                         sn.particle, sn.typeid, e.name AS type,
+                                         FIND_IN_SET('has_particle', e.flags) AS has_particle,
+                                         FIND_IN_SET('always_displayed', e.flags) AS always_displayed,
+                                         FIND_IN_SET('public', e.flags) AS pub
+                                   FROM  profile_name_search      AS sn
+                             INNER JOIN  profile_name_search_enum AS e  ON (e.id = sn.typeid)
+                                  WHERE  sn.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)
+                               ORDER BY  NOT FIND_IN_SET('always_displayed', e.flags), e.id, sn.name",
+                                $this->pid());
+
+        $sn_types = XDB::iterator("SELECT  id, name, FIND_IN_SET('has_particle', flags) AS has_particle
+                                     FROM  profile_name_search_enum
+                                    WHERE  NOT FIND_IN_SET('not_displayed', flags)
+                                           AND FIND_IN_SET('always_displayed', flags)
+                                 ORDER BY  id");
+
+        $this->values['search_names'] = array();
+        $sn = $sn_all->next();
+        while ($sn_type = $sn_types->next()) {
+            if ($sn_type['id'] == $sn['typeid']) {
+                $this->values['search_names'][] = $sn;
+                $sn = $sn_all->next();
+            } else {
+                $this->values['search_names'][] = array('typeid' => $sn_type['id'],
+                                                        'type'   => $sn_type['name'],
+                                                        'pub'    => 1,
+                                                        'has_particle'     => $sn_type['has_particle'],
+                                                        'always_displayed' => 1);
+            }
+        }
+        do {
+            $this->values['search_names'][] = $sn;
+        } while ($sn = $sn_all->next());
 
         // Proposes choice for promo_display
         if ($this->values['entry_year'] != $this->values['grad_year'] - 3) {
@@ -343,8 +354,7 @@ class ProfileGeneral extends ProfilePage
     protected function _saveData()
     {
         if ($this->changed['nationality1'] || $this->changed['nationality2'] || $this->changed['nationality3']
-            || $this->changed['nom'] || $this->changed['prenom'] || $this->changed['naissance']
-            || $this->changed['freetext'] || $this->changed['freetext_pub']) {
+            || $this->changed['birthdate'] || $this->changed['freetext'] || $this->changed['freetext_pub']) {
             if ($this->values['nationality3'] == "") {
                 $this->values['nationality3'] = NULL;
             }
@@ -377,29 +387,72 @@ class ProfileGeneral extends ProfilePage
                                 VALUES  ({?}, {?})",
                          $this->pid(), $new_email);
         }
-        if ($this->changed['nick']) {
-            require_once('user.func.inc.php');
-            user_reindex(S::v('uid'));
-        }
         if ($this->changed['photo_pub']) {
             XDB::execute("UPDATE  photo
                              SET  pub = {?}
                            WHERE  uid = {?}",
                          $this->values['photo_pub'], $this->pid());
         }
-        if ($this->changed['yourself'] || $this->changed['sort_name'] ||
-            $this-> changed['display_name'] || $this->changed['tooltip_name']) {
-            XDB::execute("UPDATE  profile_names_display AS n
-                             SET  n.yourself = {?},
-                                  n.sort = {?}, ". // SET
-                                 "n.display = {?}, ". // SET
-                                 "n.tooltip = {?} ". // SET
-                          "WHERE  n.user_id = {?}",
-                         $this->values['yourself'],
-                         $this->values['sort_name'],
-                         $this->values['display_name'],
-                         $this->values['tooltip_name'],
-                         $this->pid());
+
+        if ($this->changed['yourself'] || $this->changed['search_names']) {
+            if ($this->changed['search_names']) {
+                XDB::execute("DELETE FROM  s
+                                    USING  profile_name_search      AS s
+                               INNER JOIN  profile_name_search_enum AS e ON (s.typeid = e.id)
+                                    WHERE  s.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)",
+                             $this->pid());
+                $search_names = array();
+                foreach ($this->values['search_names'] as $sn) {
+                    if ($sn['name'] != '') {
+                        if ($sn['particle']) {
+                            list($particle, $name) = explode(' ', $sn['name'], 2);
+                            if (!$name) {
+                                list($particle, $name) = explode('\'', $sn['name'], 2);
+                            }
+                        } else {
+                            $particle = '';
+                            $name     = $sn['name'];
+                        }
+                        $particle   = trim($particle);
+                        $name       = trim($name);
+                        $sn['name'] = trim($sn['name']);
+                        XDB::execute("INSERT INTO  profile_name_search (particle, name, typeid, pid)
+                                           VALUES  ({?}, {?}, {?}, {?})",
+                                     $particle, $name, $sn['typeid'], $this->pid());
+                        if (!isset($search_names[$sn['typeid']])) {
+                            $search_names[$sn['typeid']] = array($sn['name'], $name);
+                        } else {
+                            $search_names[$sn['typeid']] = array_merge($search_names[$sn['typeid']], array($name));
+                        }
+                    }
+                }
+
+                require_once 'name.func.inc.php';
+                $sn_types_public  = build_types('public');
+                $sn_types_private = build_types('private');
+                $full_name      = build_full_name($search_names, $sn_types_public);
+                $directory_name = build_directory_name($search_names, $sn_types_public, $full_name);
+                $short_name     = short_name($search_names, $sn_types_public);
+                $sort_name      = short_name($search_names, $sn_types_public);
+                $this->values['public_name']  = build_public_name($search_names, $sn_types_public, $full_name);
+                $this->values['private_name'] = $public_name . build_private_name($search_names, $sn_types_private);
+                XDB::execute("UPDATE  profile_display
+                                 SET  yourself = {?}, public_name = {?}, private_name = {?},
+                                      directory_name = {?}, short_name = {?}, sort_name = {?}
+                               WHERE  pid = {?}",
+                             $this->values['yourself'], $this->values['public_name'],
+                             $this->values['private_name'], $directory_name, $short_name,
+                             $sort_name, $this->pid());
+                /*if ($this->changed['search_names']) {
+                    require_once('user.func.inc.php');
+                    user_reindex(S::v('uid'));
+                }*/
+            } else {
+                XDB::execute("UPDATE  profile_display
+                                 SET  yourself = {?}
+                               WHERE  pid = {?}",
+                             $this->values['yourself'], $this->pid());
+            }
         }
         if ($this->changed['promo_display']) {
             XDB::execute("UPDATE  profile_display

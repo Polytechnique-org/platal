@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2008 Polytechnique.org                              *
+ *  Copyright (C) 2003-2009 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -42,9 +42,11 @@ class ProfileModule extends PLModule
             'profile/ajax/ssecteur'      => $this->make_hook('ajax_ssecteur',              AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/buildnames'    => $this->make_hook('ajax_buildnames',            AUTH_COOKIE, 'user', NO_AUTH),
             'javascript/education.js'    => $this->make_hook('education_js',               AUTH_COOKIE),
             'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE),
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
+            'profile/name_info'          => $this->make_hook('name_info',                  AUTH_PUBLIC),
             'profile/orange'             => $this->make_hook('p_orange',                   AUTH_MDP),
             'profile/usage'              => $this->make_hook('p_usage',                    AUTH_MDP),
 
@@ -136,6 +138,19 @@ class ProfileModule extends PLModule
         header("Content-Type: $type");
         echo file_get_contents($img);
         exit;
+    }
+
+    function handler_name_info(&$page)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $page->changeTpl('profile/name_info.tpl', SIMPLE);
+        $res = XDB::iterator("SELECT  name, explanations,
+                                      FIND_IN_SET('public', flags) AS public,
+                                      FIND_IN_SET('has_particle', flags) AS has_particle
+                                FROM  profile_name_search_enum
+                               WHERE  NOT FIND_IN_SET('not_displayed', flags)
+                            ORDER BY  NOT FIND_IN_SET('public', flags)");
+        $page->assign('types', $res);
     }
 
     function handler_networking(&$page, $mid)
@@ -386,7 +401,7 @@ class ProfileModule extends PLModule
                             WHERE  user_id = {?} AND naissance = '0000-00-00'", S::i('uid'));
         if ($res->numRows()) {
             $page->trigWarning("Ta date de naissance n'est pas renseignée, ce qui t'empêcheras de réaliser"
-                      . " la procédure de récupération de mot de passe si un jour tu le perdais");
+                      . " la procédure de récupération de mot de passe si un jour tu le perdais.");
         }
 
        $page->setTitle('Mon Profil');
@@ -451,7 +466,7 @@ class ProfileModule extends PLModule
     function handler_ajax_edu(&$page, $eduid, $class)
     {
         header('Content-Type: text/html; charset=utf-8');
-        $page->changeTpl('profile/edu.tpl', NO_SKIN);
+        $page->changeTpl('profile/general.edu.tpl', NO_SKIN);
         $res = XDB::iterator("SELECT  id, field
                                 FROM  profile_education_field_enum
                             ORDER BY  field");
@@ -536,15 +551,26 @@ class ProfileModule extends PLModule
         }
     }
 
-    function handler_ajax_searchname(&$page, $snid)
+    function handler_ajax_searchname(&$page, $id)
     {
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/general.searchname.tpl', NO_SKIN);
-        $page->assign('i', $snid);
-        $page->assign('sn', array());
-        $page->assign('newsn', true);
+        $res = XDB::query("SELECT  id, name, FIND_IN_SET('public', flags) AS pub
+                             FROM  profile_name_search_enum
+                            WHERE  NOT FIND_IN_SET('not_displayed', flags)
+                                   AND NOT FIND_IN_SET('always_displayed', flags)");
+        $page->assign('sn_type_list', $res->fetchAllAssoc());
+        $page->assign('i', $id);
     }
-    
+
+    function handler_ajax_buildnames(&$page, $data)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $page->changeTpl('profile/general.buildnames.tpl', NO_SKIN);
+        require_once 'name.func.inc.php';
+        $page->assign('names', build_names_display($data));
+    }
+
     function handler_p_orange(&$page)
     {
         $page->changeTpl('profile/orange.tpl');
