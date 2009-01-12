@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2008 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2009 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -208,7 +208,7 @@
             - <a href="send_bug/{ $smarty.server.REQUEST_URI }" class="popup_840x600">signaler un bug</a>
           {/if}
           <br />
-          Plat/al {#globals.version#} - © Copyright 2000-2008 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
+          Plat/al {#globals.version#} - © Copyright 2000-2009 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
           <div class="pem">
             <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/200">Liste1</a>
             <a href="{$globals->baseurl}/pem/{$platal->pl_self()|replace:'/':'_'}/400">Liste2</a>
