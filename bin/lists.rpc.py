@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #***************************************************************************
-#*  Copyright (C) 2004-2008 polytechnique.org                              *
+#*  Copyright (C) 2004-2009 polytechnique.org                              *
 #*  http://opensource.polytechnique.org/                                   *
 #*                                                                         *
 #*  This program is free software; you can redistribute it and/or modify   *
