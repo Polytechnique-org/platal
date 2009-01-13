@@ -79,12 +79,13 @@ function build_full_name(&$search_names, &$sn_types)
     }
     if (isset($search_names[$sn_types['Nom marital']])
         || isset($search_names[$sn_types['Pseudonyme (nom de plume)']])) {
+        $name .= " (";
         if (isset($search_names[$sn_types['Nom marital']])) {
             $user = S::user();
             if ($user->isFemale()) {
-                $name .= " (Mme ";
+                $name .= "Mme ";
             } else {
-                $name .= " (M ";
+                $name .= "M ";
             }
             $name .= $search_names[$sn_types['Nom marital']][0];
             if (isset($search_names[$sn_types['Pseudonyme (nom de plume)']])) {

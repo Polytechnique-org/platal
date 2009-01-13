@@ -55,7 +55,7 @@
     </td>
     <td></td>
   </tr>
-  <tr class="names_advanced" style="display: none">
+  <tr class="names_advanced" {if !$errors.search_names}style="display: none"{/if}>
     <td colspan="3">
       <span class="titre">Gestion de tes noms, prénoms, surnoms...</span>
       <span class="smaller">Ils déterminent la façon dont ton nom apparaît sur les annuaires
@@ -67,9 +67,10 @@
     </td>
   </tr>
   {foreach from=$search_names item=sn key=id}
-    {include file="profile/general.searchname.tpl" i=$id sn=$sn class="names_advanced" style="display: none"}
+    {include file="profile/general.searchname.tpl" i=$id sn=$sn
+    class="names_advanced" style="display: none" error_name=$errors.search_names}
   {/foreach}
-  <tr class="names_advanced" id="searchname" style="display: none">
+  <tr class="names_advanced" id="searchname" {if !$errors.search_names}style="display: none"{/if}>
     <td colspan="2">
       <div id="sn_add" class="center">
         <a href="javascript:addSearchName();">
