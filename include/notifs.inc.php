@@ -138,7 +138,7 @@ function select_notifs($mail, $uid=null, $last=null, $iterator=true)
 // {{{
 
 global $prf_desc;
-$prf_desc = array('nom' => 'Son patronyme',
+$prf_desc = array('search_names' => 'L\'un de ses noms',
                   'freetext' => 'Le texte libre',
                   'mobile' => 'Son numéro de téléphone portable',
                   'nationalite' => 'Sa nationalité',

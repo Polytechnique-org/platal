@@ -374,7 +374,7 @@ class ProfileGeneral extends ProfilePage
         $this->watched= array('freetext' => true, 'tels' => true,
                               'networking' => true, 'edus' => true,
                               'nationalite' => true, 'nationalite2' => true,
-                              'nationalite3' => true);
+                              'nationalite3' => true, 'search_names' => true);
     }
 
     protected function _fetchData()
