@@ -32,7 +32,7 @@
       {$public_name}
     </td>
     <td rowspan="2">
-      <a href="javascript:displayNamesAdvanced();">
+      <a href="javascript:toggleNamesAdvanced();">
         {icon name="page_edit" title="Plus de détail"}
       </a>
     </td>
