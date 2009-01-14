@@ -533,23 +533,25 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $this->removeSubscriptionRequest($user->id());
-        XDB::execute("INSERT INTO  groupex.membres (asso_id, uid)
-                           VALUES  ({?}, {?})",
+        XDB::execute("INSERT IGNORE INTO  groupex.membres (asso_id, uid)
+                                  VALUES  ({?}, {?})",
                      $globals->asso('id'), $user->id());
-        $mailer = new PlMailer();
-        $mailer->addTo($user->forlifeEmail());
-        $mailer->setFrom('"' . S::user()->fullName() . '" <' . S::user()->forlifeEmail() . '>');
-        $mailer->setSubject('[' . $globals->asso('nom') . '] Demande d\'inscription');
-        $message = ($user->isFemale() ? 'Chère' : 'Cher') . " Camarade,\n"
-                 . "\n"
-                 . "  Suite à ta demande d'adhésion à " . $globals->asso('nom') . ",\n"
-                 . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
-                 . "\n"
-                 . "Bien cordialement,\n"
-                 . "-- \n"
-                 . S::user()->fullName() . '.';
-        $mailer->setTxtBody($message);
-        $mailer->send();
+        if (XDB::affectedRows() == 1) {
+            $mailer = new PlMailer();
+            $mailer->addTo($user->forlifeEmail());
+            $mailer->setFrom('"' . S::user()->fullName() . '" <' . S::user()->forlifeEmail() . '>');
+            $mailer->setSubject('[' . $globals->asso('nom') . '] Demande d\'inscription');
+            $message = ($user->isFemale() ? 'Chère' : 'Cher') . " Camarade,\n"
+                     . "\n"
+                     . "  Suite à ta demande d'adhésion à " . $globals->asso('nom') . ",\n"
+                     . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
+                     . "\n"
+                     . "Bien cordialement,\n"
+                     . "-- \n"
+                     . S::user()->fullName() . '.';
+            $mailer->setTxtBody($message);
+            $mailer->send();
+        }
     }
 
     function handler_subscribe(&$page, $u = null)
