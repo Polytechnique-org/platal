@@ -48,7 +48,6 @@ class ProfileModule extends PLModule
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
             'profile/name_info'          => $this->make_hook('name_info',                  AUTH_PUBLIC),
             'profile/orange'             => $this->make_hook('p_orange',                   AUTH_MDP),
-            'profile/usage'              => $this->make_hook('p_usage',                    AUTH_MDP),
 
             'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE),
             'emploi'                     => $this->make_hook('ref_search',                 AUTH_COOKIE),
@@ -556,7 +555,7 @@ class ProfileModule extends PLModule
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/general.buildnames.tpl', NO_SKIN);
         require_once 'name.func.inc.php';
-        $page->assign('names', build_names_display($data));
+        $page->assign('names', build_javascript_names($data));
     }
 
     function handler_p_orange(&$page)
@@ -743,49 +742,6 @@ class ProfileModule extends PLModule
                            GROUP BY  a2
                            ORDER BY  pays", $sect, $ssect);
         $page->assign('list', $it);
-    }
-
-    function handler_p_usage(&$page)
-    {
-        $page->changeTpl('profile/nomusage.tpl');
-
-        require_once 'validations.inc.php';
-
-        $res = XDB::query(
-                "SELECT  u.nom, u.nom_usage, u.flags, e.alias
-                   FROM  auth_user_md5  AS u
-              LEFT JOIN  aliases        AS e ON(u.user_id = e.id
-                                                AND FIND_IN_SET('usage', e.flags))
-                  WHERE  user_id={?}", S::v('uid'));
-
-        list($nom, $usage_old, $flags, $alias_old) = $res->fetchOneRow();
-        $flags = new PlFlagSet($flags);
-        $page->assign('usage_old', $usage_old);
-        $page->assign('alias_old',  $alias_old);
-
-        $nom_usage = replace_accent(trim(Env::v('nom_usage')));
-        $nom_usage = strtoupper($nom_usage);
-        $page->assign('usage_req', $nom_usage);
-
-        if (Env::has('submit') && ($nom_usage != $usage_old)) {
-            S::assert_xsrf_token();
-
-            // on vient de recevoir une requete, differente de l'ancien nom d'usage
-            if ($nom_usage == $nom) {
-                $page->trigWarning('Le nom d\'usage que tu demandes est identique à ton nom à l\'X, '
-                                   . 'aucune modification n\'a donc été effectuée.');
-                $page->assign('same', true);
-            } else { // le nom de mariage est distinct du nom à l'X
-                // on calcule l'alias pour l'afficher
-                $reason = Env::v('reason');
-                if ($reason == 'other') {
-                    $reason = Env::v('other_reason');
-                }
-                $myusage = new UsageReq(S::user(), $nom_usage, $reason);
-                $myusage->submit();
-                $page->assign('myusage', $myusage);
-            }
-        }
     }
 
     function handler_xnet(&$page)

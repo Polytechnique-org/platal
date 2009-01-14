@@ -155,7 +155,6 @@ function updateNameDisplay()
     for (var i = 0; i < 10; i++) {
         if ($('#search_name_' + i).find(':text').val()) {
             searchnames += $('#search_name_' + i).find('[name*=typeid]').val() + ';';
-            searchnames += $('#search_name_' + i).find(':checked').length-1 + ';';
             searchnames += $('#search_name_' + i).find(':text').val() + ';;';
         }
     }
