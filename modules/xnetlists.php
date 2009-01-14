@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2009 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -207,13 +207,12 @@ class XnetListsModule extends ListsModule
         $not_in_group_x = array();
         $not_in_group_ext = array();
 
-        $ann = XDB::iterator('SELECT  uid
-                                FROM  groupex.membres
-                               WHERE  asso_id = {?}', $globals->asso('id'));
-
+        $ann = XDB::fetchColumn('SELECT  uid
+                                   FROM  groupex.membres
+                                  WHERE  asso_id = {?}', $globals->asso('id'));
+        $users = User::getBuildUsersWithUIDs($ann, 'promo,full_name');
         $not_in_list = array();
-        while ($tmp = $ann->next()) {
-            $user = User::getWithUID($tmp['uid']);
+        foreach ($users as $user) {
             if (!in_array(strtolower($user->forlifeEmail()), $subscribers)) {
                 $not_in_list[] = $user;
             }

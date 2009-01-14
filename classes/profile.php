@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2009 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -28,26 +28,34 @@ class Profile
     private function __construct($login)
     {
         if ($login instanceof PlUser) {
-            $res = XDB::query('SELECT  p.pid, p.hrpid
-                                 FROM  account_profiles AS ap
-                           INNER JOIN  profiles AS p ON (p.pid = ap.pid)
-                                WHERE  ap.uid = {?} AND FIND_IN_SET(\'owner\', ap.perms)',
-                             $login->id());
+            $from  = 'account_profiles AS ap
+                INNER JOIN profiles AS p ON (p.pid = ap.pid)';
+            $where = XDB::format('ap.uid = {?} AND FIND_IN_SET(\'owner\', ap.perms)', $login->id());
         } else if (is_numeric($login)) {
-            $res = XDB::query('SELECT  p.pid, p.hrpid
-                                 FROM  profiles AS p
-                                WHERE  p.pid = {?}',
-                              $login);
+            $from = 'profiles AS p';
+            $where = XDB::format('p.pid = {?}', $login);
         } else {
-            $res = XDB::query('SELECT  p.pid, p.hrpid
-                                 FROM  profiles AS p
-                                WHERE  p.hrpid = {?}',
-                              $login);
+            $from = 'profiles AS p';
+            $where = XDB::format('p.hrpid = {?}', $login);
         }
+        // XXX: Temporary, use data from auth_user_md5 (waiting for data from newdirectory
+        $res = XDB::query('SELECT  p.*, u.prenom AS first_name,
+                                   IF(u.nom_usage != "", u.nom_usage, u.nom) AS last_name,
+                                   pd.promo AS promo,
+                                   CONCAT(u.prenom, " ", u.nom) AS short_name,
+                                   IF(u.nom_usage != "",
+                                      CONCAT(u.nom_usage, " (", u.nom, "),", u.prenom),
+                                      CONCAT(u.nom, ", ", u.prenom)) AS full_name
+                             FROM  ' . $from . '
+                       INNER JOIN  auth_user_md5 AS u ON (u.user_id = p.pid)
+                       INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
+                            WHERE  ' . $where);
         if ($res->numRows() != 1) {
             throw new UserNotFoundException();
         }
-        list($this->pid, $this->hrpid) = $res->fetchOneRow();
+        $this->data = $res->fetchOneAssoc();
+        $this->pid = $this->data['pid'];
+        $this->hrpid = $this->data['hrpid'];
     }
 
     public function id()
@@ -125,20 +133,6 @@ class Profile
             return $this->$name;
         }
 
-        if (empty($this->data)) {
-            // XXX: Temporary, use data from auth_user_md5 (waiting for data from newdirectory
-            $this->data = XDB::fetchOneAssoc('SELECT  p.*, u.prenom AS first_name,
-                                                      IF(u.nom_usage != "", u.nom_usage, u.nom) AS last_name,
-                                                      u.promo AS promo,
-                                                      CONCAT(u.prenom, " ", u.nom) AS short_name,
-                                                      IF(u.nom_usage != "",
-                                                         CONCAT(u.nom_usage, " (", u.nom, "),", u.prenom),
-                                                         CONCAT(u.nom, ", ", u.prenom)) AS full_name
-                                                FROM  profiles AS p
-                                          INNER JOIN  auth_user_md5 AS u ON (u.user_id = p.pid)
-                                               WHERE  p.pid = {?}',
-                                             $this->id());
-        }
         if (isset($this->data[$name])) {
             return $this->data[$name];
         }

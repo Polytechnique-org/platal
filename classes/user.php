@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2009 Polytechnique.org                              *
+ *  Copyright (C) 2003-2008 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -135,6 +135,73 @@ class User extends PlUser
         throw new UserNotFoundException($res->fetchColumn(1));
     }
 
+    protected static function loadMainFieldsFromUIDs(array $uids, $sorted = null)
+    {
+        foreach ($uids as $key=>$uid) {
+            $uids[$key] = XDB::format('{?}', $uid);
+        }
+        $joins = '';
+        $orderby = '';
+        if (!is_null($sorted)) {
+            $order = array();
+            $with_ap = false;
+            $with_pd = false;
+            foreach (explode(',', $sorted) as $part) {
+                $desc = ($part[0] == '-');
+                if ($desc) {
+                    $part = substr($desc, 1);
+                }
+                switch ($part) {
+                  case 'promo':
+                    $with_pd = true;
+                    $with_ap = true;
+                    $part = 'IF (pd.promo IS NULL, \'ext\', pd.promo)';
+                    break;
+                  case 'full_name':
+                    $part = 'a.full_name';
+                    break;
+                  case 'display_name':
+                    $part = 'a.display_name';
+                    break;
+                  default:
+                    $part = null;
+                }
+                if (!is_null($part)) {
+                    if ($desc) {
+                        $part .= ' DESC';
+                    }
+                    $order[] = $part;
+                }
+            }
+            if (count($order) > 0) {
+                if ($with_ap) {
+                    $joins .= "LEFT JOIN account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))\n";
+                }
+                if ($with_pd) {
+                    $joins .= "LEFT JOIN profile_display AS pd ON (pd.pid = ap.pid)\n";
+                }
+                $orderby = 'ORDER BY ' . implode(', ', $order);
+            }
+        }
+        global $globals;
+        return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date,
+                                      CONCAT(af.alias, \'@' . $globals->mail->domain . '\') AS forlife,
+                                      CONCAT(ab.alias, \'@' . $globals->mail->domain . '\') AS bestalias,
+                                      a.full_name, a.display_name, a.sex = \'female\' AS gender,
+                                      IF(a.state = \'active\', at.perms, \'\') AS perms,
+                                      a.email_format, a.is_admin, a.state, a.type, a.skin,
+                                      FIND_IN_SET(\'watch\', a.flags) AS watch, a.comment,
+                                      a.weak_password IS NOT NULL AS weak_access,
+                                      a.token IS NOT NULL AS token_access
+                                FROM  accounts AS a
+                          INNER JOIN  account_types AS at ON (at.type = a.type)
+                           LEFT JOIN  aliases AS af ON (af.id = a.uid AND af.type = \'a_vie\')
+                           LEFT JOIN  aliases AS ab ON (ab.id = a.uid AND FIND_IN_SET(\'bestalias\', ab.flags))
+                           ' . $joins . '
+                               WHERE  a.uid IN (' . implode(', ', $uids) . ')
+                               ' . $orderby);
+    }
+
     // Implementation of the data loader.
     protected function loadMainFields()
     {
@@ -144,25 +211,7 @@ class User extends PlUser
             && $this->gender !== null && $this->email_format !== null) {
             return;
         }
-
-        global $globals;
-        /** TODO: promo stuff again */
-        /** TODO: fix perms field to fit new perms system */
-        $res = XDB::query("SELECT  a.hruid, a.registration_date,
-                                   CONCAT(af.alias, '@{$globals->mail->domain}') AS forlife,
-                                   CONCAT(ab.alias, '@{$globals->mail->domain}') AS bestalias,
-                                   a.full_name, a.display_name, a.sex = 'female' AS gender,
-                                   IF(a.state = 'active', at.perms, '') AS perms,
-                                   a.email_format, a.is_admin, a.state, a.type, a.skin,
-                                   FIND_IN_SET('watch', a.flags) AS watch, a.comment,
-                                   a.weak_password IS NOT NULL AS weak_access,
-                                   a.token IS NOT NULL AS token_access
-                             FROM  accounts AS a
-                       INNER JOIN  account_types AS at ON (at.type = a.type)
-                        LEFT JOIN  aliases AS af ON (af.id = a.uid AND af.type = 'a_vie')
-                        LEFT JOIN  aliases AS ab ON (ab.id = a.uid AND FIND_IN_SET('bestalias', ab.flags))
-                            WHERE  a.uid = {?}", $this->user_id);
-        $this->fillFromArray($res->fetchOneAssoc());
+        $this->fillFromArray(self::loadMainFieldsFromUIDs(array($this->user_id))->next());
     }
 
     // Specialization of the fillFromArray method, to implement hacks to enable
@@ -340,6 +389,17 @@ class User extends PlUser
                $dom != $globals->mail->domain2 &&
                $dom != $globals->mail->alias_dom &&
                $dom != $globals->mail->alias_dom2;
+    }
+
+    // Fetch a set of users from a list of UIDs
+    public static function getBuildUsersWithUIDs(array $uids, $sortby = null)
+    {
+        $fields = self::loadMainFieldsFromUIDs($uids, $sortby);
+        $users = array();
+        while (($list = $fields->next())) {
+            $users[] = User::getSilentWithValues(null, $list);
+        }
+        return $users;
     }
 }
 
