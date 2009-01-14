@@ -32,7 +32,7 @@
       {$public_name}
     </td>
     <td rowspan="2">
-      <a href="javascript:displayNamesAdvanced();">
+      <a href="javascript:toggleNamesAdvanced();">
         {icon name="page_edit" title="Plus de détail"}
       </a>
     </td>
@@ -55,7 +55,7 @@
     </td>
     <td></td>
   </tr>
-  <tr class="names_advanced" style="display: none">
+  <tr class="names_advanced" {if !$errors.search_names}style="display: none"{/if}>
     <td colspan="3">
       <span class="titre">Gestion de tes noms, prénoms, surnoms...</span>
       <span class="smaller">Ils déterminent la façon dont ton nom apparaît sur les annuaires
@@ -67,9 +67,10 @@
     </td>
   </tr>
   {foreach from=$search_names item=sn key=id}
-    {include file="profile/general.searchname.tpl" i=$id sn=$sn class="names_advanced" style="display: none"}
+    {include file="profile/general.searchname.tpl" i=$id sn=$sn
+    class="names_advanced" style="display: none" error_name=$errors.search_names}
   {/foreach}
-  <tr class="names_advanced" id="searchname" style="display: none">
+  <tr class="names_advanced" id="searchname" {if !$errors.search_names}style="display: none"{/if}>
     <td colspan="2">
       <div id="sn_add" class="center">
         <a href="javascript:addSearchName();">
@@ -97,11 +98,12 @@
     </td>
     <td>
       {if !$promo_choice}
-        <span class="nom">{$promo_display}</span>
+        <span class="nom">{$promo}</span>
+        <input type="hidden" name="promo" value="{$promo}"/>
       {else}
-        <select name="promo_display">
+        <select name="promo">
         {foreach from=$promo_choice item="promo_to_display"}
-          <option value="{$promo_to_display}" {if $promo_to_display eq $promo_display}selected="selected"{/if}>{$promo_to_display}</option>
+          <option value="{$promo_to_display}" {if $promo_to_display eq $promo}selected="selected"{/if}>{$promo_to_display}</option>
         {/foreach}
         </select>
       {/if}

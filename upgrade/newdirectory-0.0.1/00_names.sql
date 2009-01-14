@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS profile_display;
+
 CREATE TABLE  profile_display (
   pid INT(11) NOT NULL DEFAULT 0,
   yourself VARCHAR(255) NOT NULL,
@@ -7,7 +9,7 @@ CREATE TABLE  profile_display (
   short_name VARCHAR(255) NOT NULL,
   sort_name VARCHAR(255) NOT NULL,
   promo VARCHAR(255) DEFAULT '' NOT NULL,
-  PRIMARY KEY(uid)
+  PRIMARY KEY(pid)
 ) CHARSET=utf8;
 
 INSERT INTO  profile_display (pid, yourself, public_name, private_name, directory_name, short_name, sort_name)
@@ -15,7 +17,7 @@ INSERT INTO  profile_display (pid, yourself, public_name, private_name, director
              CONCAT(u.prenom, ' ', IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom)),
              CONCAT(u.prenom, ' ', IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom),
                IF(q.profile_nick != '', CONCAT(' (alias ', q.profile_nick, ')'), '')),
-             CONCAT(IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom), ', ', u.prenom),
+             CONCAT(IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom), ' ', u.prenom),
              CONCAT(u.prenom, ' ', IF(u.nom_usage != '', u.nom_usage, u.nom)),
              CONCAT(IF(u.nom_usage != '', u.nom_usage, u.nom), ' ', u.prenom)
        FROM  auth_user_md5   AS u

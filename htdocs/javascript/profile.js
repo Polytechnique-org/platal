@@ -107,9 +107,9 @@ function prepareType(i)
     selectType(document.forms.prof_annu["edus[" + i + "][degreeid]"], document.forms.prof_annu["edu_" + i + "_tmp"].value);
 }
 
-function displayNamesAdvanced()
+function toggleNamesAdvanced()
 {
-    $('.names_advanced').show();
+    $('.names_advanced').toggle();
 }
 
 function addSearchName()

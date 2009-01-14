@@ -188,25 +188,13 @@ check("SELECT  matricule,nom,prenom,matricule_ax,COUNT(matricule_ax) AS c
         WHERE  matricule_ax != '0'
         GROUP BY  matricule_ax
         having  c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (auth_user_md5) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
-        
-/* each alumni has one and only one display name by default and one and only one name when we talk to him directly */
-check("SELECT u.`user_id`, u.`nom`, u.`prenom`, COUNT(n.`display`) AS c
-        FROM `auth_user_md5` AS u
-        LEFT JOIN `profile_names_display` AS n ON(u.`user_id` = n.`user_id` AND FIND_IN_SET(n.`reason`, 'default'))
-        GROUP BY u.`user_id`
-        HAVING c != 1", "chaque personne doit avoir un et un seul nom par défaut");
-check("SELECT u.`user_id`, u.`nom`, u.`prenom`, COUNT(n.`display`) AS c
-        FROM `auth_user_md5` AS u
-        LEFT JOIN `profile_names_display` AS n ON(u.`user_id` = n.`user_id` AND FIND_IN_SET(n.`reason`, 'yourself'))
-        GROUP BY u.`user_id`
-        HAVING c != 1", "chaque personne doit avoir un et un seul nom quand on lui parle");
 
 /* no alumni is allowed to have empty names */
-check("SELECT u.`user_id`, u.`nom`, u.`prenom`
-        FROM `auth_user_md5` AS u
-        INNER JOIN `profile_names_search` AS n USING(`user_id`)
-        WHERE n.`search_name` = ''", "liste des personnes qui ont un de leur nom de recherche vide");
-        
+check("SELECT  s.uid, d.public_name
+         FROM  profile_name_search AS s
+   INNER JOIN  profile_display     AS d ON (d.pid = s.uid)
+        WHERE  name = ''", "liste des personnes qui ont un de leur nom de recherche vide");
+
 /* verifie qu'il n'y a pas d'utilisateurs ayant un compte Google Apps désactivé et une redirection encore active vers Google Apps */
 check("SELECT  a.alias, g.g_status, u.mail_storage
          FROM  auth_user_md5 AS u

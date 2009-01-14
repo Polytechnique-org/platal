@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<tr id="search_name_{$i}"{if $class} class="{$class}" style="{$style}"{/if}>
+<tr id="search_name_{$i}"{if $class} class="{$class}" {if !$error_name}style="{$style}"{/if}{/if}>
   <td>
     <input type="hidden" name="search_names[{$i}][always_displayed]" value="{$sn.always_displayed}"/>
     <input type="hidden" name="search_names[{$i}][has_particle]" value="{$sn.has_particle}"/>
