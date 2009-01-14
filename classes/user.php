@@ -137,9 +137,10 @@ class User extends PlUser
 
     protected static function loadMainFieldsFromUIDs(array $uids, $sorted = null)
     {
-        $uids = array_map(array('XDB', 'escape'), $uids);
+        global $globals;
         $joins = '';
         $orderby = '';
+        $fields = array();
         if (!is_null($sorted)) {
             $order = array();
             $with_ap = false;
@@ -181,7 +182,14 @@ class User extends PlUser
                 $orderby = 'ORDER BY ' . implode(', ', $order);
             }
         }
-        global $globals;
+        if ($globals->asso('id')) {
+            $joins .= XDB::format("LEFT JOIN groupex.membres AS gpm ON (gpm.uid = a.uid AND gpm.asso_id = {?})\n", $globals->asso('id'));
+            $fields[] = 'gpm.perms AS group_perms';
+        }
+        if (count($fields) > 0) {
+            $fields = ', ' . implode(', ', $fields);
+        }
+        $uids = array_map(array('XDB', 'escape'), $uids);
         return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date,
                                       CONCAT(af.alias, \'@' . $globals->mail->domain . '\') AS forlife,
                                       CONCAT(ab.alias, \'@' . $globals->mail->domain . '\') AS bestalias,
@@ -190,7 +198,7 @@ class User extends PlUser
                                       a.email_format, a.is_admin, a.state, a.type, a.skin,
                                       FIND_IN_SET(\'watch\', a.flags) AS watch, a.comment,
                                       a.weak_password IS NOT NULL AS weak_access,
-                                      a.token IS NOT NULL AS token_access
+                                      a.token IS NOT NULL AS token_access ' . $fields . '
                                 FROM  accounts AS a
                           INNER JOIN  account_types AS at ON (at.type = a.type)
                            LEFT JOIN  aliases AS af ON (af.id = a.uid AND af.type = \'a_vie\')

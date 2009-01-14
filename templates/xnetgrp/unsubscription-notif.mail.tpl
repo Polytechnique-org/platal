@@ -23,14 +23,14 @@
 {config_load file="mails.conf" section="xnet_unsubscription"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{subject text="[`$group`] Désinscription de `$prenom` `$nom`"}
+{subject text="[`$group`] Désinscription de `$prenom->fullName()`"}
 {elseif $mail_part eq 'wiki'}
 Chers animateurs du groupe {$group},
 
 {if $selfdone}
-{$prenom} {$nom} ({$mail}) vient de se désinscrire du groupe.
+{$user->fullName()} ({$user->forlifeEmail()}) vient de se désinscrire du groupe.
 {else}
-{$prenom} {$nom} ({$mail}) vient d'être désinscrit du groupe par {$smarty.session.prenom} {$smarty.session.nom}.
+{$user->fullName()} ({$user->forlifeEmail()}) vient d'être désinscrit du groupe par {$smarty.session.user->fullName()}.
 {/if}
 
 Cordialement,\\

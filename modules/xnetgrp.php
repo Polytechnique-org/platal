@@ -19,54 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function get_infos($email)
-{
-    global $globals;
-    // look for uid instead of email if numeric
-    $field = is_numeric($email) ? 'uid' : 'email';
-
-    if ($field == 'email') {
-        $email = strtolower($email);
-        if (strpos($email, '@') === false) {
-            $email .= '@m4x.org';
-        }
-        list($mbox,$dom) = explode('@', $email);
-    }
-
-    $res = XDB::query(
-            "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine, comm, sexe
-               FROM  groupex.membres
-              WHERE  $field = {?} AND asso_id = {?}", $email, $globals->asso('id'));
-
-    if ($res->numRows()) {
-        $user = $res->fetchOneAssoc();
-        if ($user['origine'] == 'X') {
-            $res = XDB::query("SELECT nom, prenom, promo, FIND_IN_SET('femme', flags) AS sexe
-                                 FROM auth_user_md5
-                                WHERE user_id = {?}", $user['uid']);
-            $user = array_merge($user, $res->fetchOneAssoc());
-        }
-        return $user;
-    } elseif ($dom == 'polytechnique.org' || $dom == 'm4x.org') {
-        $res = XDB::query(
-                "SELECT  user_id AS uid, u.promo,
-                         IF(u.nom_usage<>'', u.nom_usage, u.nom) AS nom,
-                         u.prenom, b.alias,
-                         CONCAT(b.alias, '@m4x.org') AS email,
-                         CONCAT(b.alias, '@polytechnique.org') AS email2,
-                         m.perms = 'admin' AS perms, m.origine, m.comm,
-                         FIND_IN_SET('femme', u.flags) AS sexe
-                   FROM  auth_user_md5   AS u
-             INNER JOIN  aliases         AS a ON ( u.user_id = a.id AND a.type != 'homonyme' )
-             INNER JOIN  aliases         AS b ON ( u.user_id = b.id AND b.type = 'a_vie' )
-              LEFT JOIN  groupex.membres AS m ON ( m.uid = u.user_id AND asso_id={?})
-                  WHERE  a.alias = {?} AND u.user_id < 50000", $globals->asso('id'), $mbox);
-        return $res->fetchOneAssoc();
-    }
-
-    return null;
-}
-
 
 class XnetGrpModule extends PLModule
 {
@@ -867,71 +819,66 @@ class XnetGrpModule extends PLModule
         }
     }
 
-    function unsubscribe(&$user)
+    function unsubscribe(PlUser &$user)
     {
         global $globals;
-        XDB::execute(
-                "DELETE FROM  groupex.membres WHERE uid={?} AND asso_id={?}",
-                $user['uid'], $globals->asso('id'));
+        XDB::execute("DELETE FROM  groupex.membres
+                            WHERE  uid = {?} AND asso_id = {?}",
+                     $user->id(), $globals->asso('id'));
 
         if ($globals->asso('notif_unsub')) {
             $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
-            $res = XDB::iterRow("SELECT  a.alias, u.prenom, IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom
-                                   FROM  groupex.membres AS m
-                             INNER JOIN  aliases AS a ON (m.uid = a.id AND FIND_IN_SET('bestalias', a.flags))
-                             INNER JOIn  auth_user_md5 AS u ON (u.user_id = a.id)
-                                  WHERE  m.asso_id = {?} AND m.perms = 'admin'",
-                                  $globals->asso('id'));
-            while (list($alias, $prenom, $nom) = $res->next()) {
-                $mailer->addTo("\"$prenom $nom\" <$alias@{$globals->mail->domain}>");
+            $uids = XDB::fetchColumn('SELECT  uid
+                                        FROM  groupex.membres
+                                       WHERE  perms = \'admin\' AND asso_id = {?}',
+                                     $globals->asso('id'));
+            $users = User::getBuildUsersWithUIDs($uids);
+            foreach ($users as $user) {
+                $mailer->addTo($user);
             }
             $mailer->assign('group', $globals->asso('nom'));
-            $mailer->assign('prenom', $user['prenom']);
-            $mailer->assign('nom', $user['nom']);
-            $mailer->assign('mail', $user['email2']);
-            $mailer->assign('selfdone', $user['uid'] == S::i('uid'));
+            $mailer->assign('user', $user);
+            $mailer->assign('selfdone', $user->id() == S::i('uid'));
             $mailer->send();
         }
 
-        $user_same_email = get_infos($user['email']);
         $domain = $globals->asso('mail_domain');
-
-        if (!$domain || (!empty($user_same_email) && $user_same_email['uid'] != $user['uid'])) {
+        if (!$domain) {
             return true;
         }
 
-        $mmlist = new MMList(S::v('uid'), S::v('password'), $domain);
-        $listes = $mmlist->get_lists($user['email2']);
+        $mmlist = new MMList($user, $domain);
+        $listes = $mmlist->get_lists($user->forlifeEmail());
 
         $may_update = may_update();
         $warning    = false;
         foreach ($listes as $liste) {
             if ($liste['sub'] == 2) {
                 if ($may_update) {
-                    $mmlist->mass_unsubscribe($liste['list'], Array($user['email2']));
+                    $mmlist->mass_unsubscribe($liste['list'], Array($user->forlifeEmail()));
                 } else {
                     $mmlist->unsubscribe($liste['list']);
                 }
             } elseif ($liste['sub']) {
-                Platal::page()->trigWarning("{$user['prenom']} {$user['nom']} a une"
+                Platal::page()->trigWarning($user->fullName() . " a une"
                                            ." demande d'inscription en cours sur la"
                                            ." liste {$liste['list']}@ !");
                 $warning = true;
             }
         }
 
-        XDB::execute(
-                "DELETE FROM  virtual_redirect
-                       USING  virtual_redirect
-                  INNER JOIN  virtual USING(vid)
-                       WHERE  redirect={?} AND alias LIKE {?}", $user['email'], '%@'.$domain);
+        XDB::execute("DELETE FROM  virtual_redirect
+                            USING  virtual_redirect
+                       INNER JOIN  virtual USING(vid)
+                            WHERE  redirect={?} AND alias LIKE {?}",
+                       $user->forlifeEmail(), '%@'.$domain);
         return !$warning;
     }
 
     function handler_unsubscribe(&$page)
     {
         $page->changeTpl('xnetgrp/membres-del.tpl');
-        $user = get_infos(S::user()->id());
+        $user = S::user()->id();
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
@@ -955,7 +902,7 @@ class XnetGrpModule extends PLModule
     function handler_admin_member_del(&$page, $user = null)
     {
         $page->changeTpl('xnetgrp/membres-del.tpl');
-        $user = get_infos($user);
+        $user = User::getSilent($user);
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
@@ -968,13 +915,13 @@ class XnetGrpModule extends PLModule
         }
 
         if ($this->unsubscribe($user)) {
-            $page->trigSuccess("{$user['prenom']} {$user['nom']} a été désabonné du groupe !");
+            $page->trigSuccess("{$user->fullName()} a été désinscrit du groupe !");
         } else {
-            $page->trigWarning("{$user['prenom']} {$user['nom']} a été désabonné du groupe, mais des erreurs subsistent !");
+            $page->trigWarning("{$user->fullName()} a été désinscrit du groupe, mais des erreurs subsistent !");
         }
     }
 
-    private function changeLogin(PlPage &$page, array &$user, MMList &$mmlist, $login)
+    private function changeLogin(PlPage &$page, PlUser &$user, MMList &$mmlist, $login)
     {
         require_once 'user.func.inc.php';
         // Search the uid of the user...
@@ -1049,20 +996,20 @@ class XnetGrpModule extends PLModule
 
         $page->changeTpl('xnetgrp/membres-edit.tpl');
 
-        $user = get_infos($user);
+        $user = User::getSilent($user);
         if (empty($user)) {
             return PL_NOT_FOUND;
         }
 
-        $mmlist = new MMList(S::v('uid'), S::v('password'),
-                             $globals->asso('mail_domain'));
+        $mmlist = new MMList($user, $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
             S::assert_xsrf_token();
 
             // Convert user status to X
-            if ($user['origine'] == 'ext' && trim(Post::v('login_X'))) {
-                $forlife = $this->changeLogin($page, $user, $mmlist, trim(Post::v('login_X')));
+            if (Post::blank('login_X'))) {
+                // TODO: Rewrite changeLogin!!!
+                $forlife = $this->changeLogin($page, $user, $mmlist, Post::t('login_X'));
                 if ($forlife) {
                     pl_redirect('member/' . $forlife);
                 }

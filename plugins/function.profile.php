@@ -24,23 +24,27 @@ function smarty_function_profile($params, &$smarty)
     $with_promo = isset($params['with_promo']) ? $params['with_promo'] : false;
     $with_sex   = isset($params['with_sex']) ? $params['with_sex'] : true;
     $with_link  = isset($params['with_link']) ? $params['with_link'] : true;
+    $with_groupperms = isset($params['with_groupperms']) ? $params['with_groupperms'] : true;
     $user = $params['user'];
 
     $name = pl_entities($user->fullName());
     if ($with_sex && $user->isFemale()) {
-      $name = '&bull;' . $name;
+        $name = '&bull;' . $name;
     }
     if ($with_promo) {
-      $promo = $user->promo();
-      if ($promo) {
-        $name .= ' (' . pl_entities($promo) . ')';
-      }
+        $promo = $user->promo();
+        if ($promo) {
+            $name .= ' (' . pl_entities($promo) . ')';
+        }
     }
     if ($with_link) {
-      $profile = ($user instanceof Profile) ? $user : $user->profile();
-      if ($profile) {
-        $name = '<a href="profile/' . $profile->hrid() . '" class="popup2">' . $name . '</a>';
-      }
+        $profile = ($user instanceof Profile) ? $user : $user->profile();
+        if ($profile) {
+            $name = '<a href="profile/' . $profile->hrid() . '" class="popup2">' . $name . '</a>';
+        }
+    }
+    if ($with_groupperms && $user instanceof User && $user->group_perms == 'admin') {
+        $name = '<strong>' . $name . '</strong>';
     }
     return $name;
 }
