@@ -233,37 +233,21 @@ class XnetListsModule extends ListsModule
         if (Env::has('add_member')) {
             S::assert_xsrf_token();
 
-            $add = Env::v('add_member');
-            if (strstr($add, '@')) {
-                list($mbox,$dom) = explode('@', strtolower($add));
-            } else {
-                $mbox = $add;
-                $dom = 'm4x.org';
+            $add = Env::t('add_member');
+            $user = User::getSilent($add);
+            if ($user) {
+                $add = $user->forlifeEmail();
+            } else if (!User::isForeignEmailAddress($add)) {
+                $add = null;
             }
-            if ($dom == 'polytechnique.org' || $dom == 'm4x.org') {
-                $res = XDB::query(
-                        "SELECT  a.alias, b.alias
-                           FROM  x4dat.aliases AS a
-                      LEFT JOIN  x4dat.aliases AS b ON (a.id=b.id AND b.type = 'a_vie')
-                          WHERE  a.alias={?} AND a.type!='homonyme'", $mbox);
-                if (list($alias, $blias) = $res->fetchOneRow()) {
-                    $alias = empty($blias) ? $alias : $blias;
-                    XDB::query(
-                        "INSERT INTO  x4dat.virtual_redirect (vid,redirect)
-                              SELECT  vid, {?}
-                                FROM  x4dat.virtual
-                               WHERE  alias={?}", "$alias@m4x.org", $lfull);
-                   $page->trigSuccess("$alias@m4x.org ajouté");
-                } else {
-                    $page->trigError("$mbox@{$globals->mail->domain} n'existe pas.");
-                }
+            if (!empty($add)) {
+                XDB::execute('INSERT INTO  x4dat.virtual_redirect (vid, redirect)
+                                   SELECT  vid, {?},
+                                     FROM  x4dat.virtual
+                                    WHERE  alias = {?}', strtolower($add), $lfull);
+                $page->trigSuccess($add . ' ajouté.');
             } else {
-                XDB::query(
-                        "INSERT INTO  x4dat.virtual_redirect (vid,redirect)
-                              SELECT  vid,{?}
-                                FROM  x4dat.virtual
-                               WHERE  alias={?}", "$mbox@$dom", $lfull);
-                $page->trigSuccess("$mbox@$dom ajouté");
+                $page->trigError($add . ' n\'existe pas.');
             }
         }
 

@@ -137,9 +137,7 @@ class User extends PlUser
 
     protected static function loadMainFieldsFromUIDs(array $uids, $sorted = null)
     {
-        foreach ($uids as $key=>$uid) {
-            $uids[$key] = XDB::format('{?}', $uid);
-        }
+        $uids = array_map(array('XDB', 'escape'), $uids);
         $joins = '';
         $orderby = '';
         if (!is_null($sorted)) {
