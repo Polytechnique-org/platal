@@ -452,8 +452,10 @@ Adresse de secours : " . Post::v('email') : ""));
             Cookie::kill('ORGdomain');
         }
 
-        $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-        S::logger()->log('deconnexion',$ref);
+        if (S::logged()) {
+            $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+            S::logger()->log('deconnexion', $ref);
+        }
         Platal::session()->destroy();
 
         if (Get::has('redirect')) {
