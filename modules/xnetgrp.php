@@ -1007,7 +1007,7 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
 
             // Convert user status to X
-            if (Post::blank('login_X'))) {
+            if (Post::blank('login_X')) {
                 // TODO: Rewrite changeLogin!!!
                 $forlife = $this->changeLogin($page, $user, $mmlist, Post::t('login_X'));
                 if ($forlife) {

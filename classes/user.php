@@ -188,6 +188,8 @@ class User extends PlUser
         }
         if (count($fields) > 0) {
             $fields = ', ' . implode(', ', $fields);
+        } else {
+            $fields = '';
         }
         $uids = array_map(array('XDB', 'escape'), $uids);
         return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date,
