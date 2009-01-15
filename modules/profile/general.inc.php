@@ -70,7 +70,7 @@ class ProfileSearchNames implements ProfileSetting
                                  INNER JOIN  profile_name_search_enum AS e  ON (e.id = sn.typeid)
                                       WHERE  sn.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)
                                    ORDER BY  NOT FIND_IN_SET('always_displayed', e.flags), e.id, sn.name",
-                                    S::v('uid'));
+                                     $page->pid());
 
             $sn_types = XDB::iterator("SELECT  id, name, FIND_IN_SET('has_particle', flags) AS has_particle
                                          FROM  profile_name_search_enum
@@ -83,7 +83,9 @@ class ProfileSearchNames implements ProfileSetting
             while ($sn_type = $sn_types->next()) {
                 if ($sn_type['id'] == $sn['typeid']) {
                     $value[] = $sn;
-                    $sn = $sn_all->next();
+                    if ($sn) {
+                        $sn = $sn_all->next();
+                    }
                 } else {
                     $value[] = array('typeid' => $sn_type['id'],
                                      'type'   => $sn_type['name'],
@@ -92,16 +94,17 @@ class ProfileSearchNames implements ProfileSetting
                                      'always_displayed' => 1);
                 }
             }
-            do {
+            while ($sn) {
                 $value[] = $sn;
-            } while ($sn = $sn_all->next());
+                $sn = $sn_all->next();
+            }
         } else {
             $res = XDB::query("SELECT  s.particle, s.name
                                  FROM  profile_name_search      AS s
                            INNER JOIN  profile_name_search_enum AS e ON (e.id = s.typeid)
                                 WHERE  s.pid = {?} AND e.name LIKE '%initial'
                              ORDER BY  e.name = 'Prénom initial'",
-                             S::i('uid'));
+                             $page->pid());
             $res = $res->fetchAllAssoc();
             $initial = array();
             $initial['Nom patronymique'] = $res[0]['particle'] . $res[0]['name'];
@@ -143,7 +146,7 @@ class ProfileSearchNames implements ProfileSetting
                             USING  profile_name_search      AS s
                        INNER JOIN  profile_name_search_enum AS e ON (s.typeid = e.id)
                             WHERE  s.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)",
-                     S::i('uid'));
+                     $page->pid());
         foreach ($value as $sn) {
             if ($sn['name'] != '') {
                 if ($sn['particle']) {
@@ -160,7 +163,7 @@ class ProfileSearchNames implements ProfileSetting
                 $name = trim($name);
                 XDB::execute("INSERT INTO  profile_name_search (particle, name, typeid, pid)
                                    VALUES  ({?}, {?}, {?}, {?})",
-                             $particle, $name, $sn['typeid'], S::i('uid'));
+                             $particle, $name, $sn['typeid'], $this->pid());
             }
         }
         XDB::execute("UPDATE  profile_display
@@ -168,7 +171,7 @@ class ProfileSearchNames implements ProfileSetting
                               directory_name = {?}, short_name = {?}, sort_name = {?}
                        WHERE  pid = {?}",
                      $this->public_name, $this->private_name, $this->directory_name,
-                     $this->short_name, $this->sort_name, S::v('uid'));
+                     $this->short_name, $this->sort_name, $this->pid());
         /*require_once('user.func.inc.php');
         user_reindex(S::v('uid'));*/
     }
@@ -193,14 +196,11 @@ class ProfileEdu implements ProfileSetting
         $success = true;
         if (is_null($value) || !is_array($value)) {
             $value = array();
-            $res = XDB::iterator("SELECT  eduid, degreeid, fieldid, grad_year, program
-                                    FROM  profile_education
-                                   WHERE  uid = {?} AND !FIND_IN_SET('primary', flags)
-                                ORDER BY  id",
-                                 $page->pid());
-            while($edu = $res->next()) {
-                $value[] = $edu;
-            }
+            $value = XDB::fetchAllAssoc("SELECT  eduid, degreeid, fieldid, grad_year, program
+                                           FROM  profile_education
+                                          WHERE  uid = {?} AND !FIND_IN_SET('primary', flags)
+                                       ORDER BY  id",
+                                        $page->pid());
         } else {
             $i = 0;
             foreach ($value as $key=>&$edu) {
@@ -280,25 +280,17 @@ class ProfileNetworking implements ProfileSetting
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         if (is_null($value)) {
-            $value = array();
-            $res = XDB::iterator("SELECT  n.address, n.network_type AS type, n.pub, m.name
-                                    FROM  profile_networking AS n
-                              INNER JOIN  profile_networking_enum AS m ON (n.network_type = m.network_type)
-                                   WHERE  n.uid = {?}",
-                                 $page->pid());
-            while($network = $res->next()) {
-                $value[] = $network;
-            }
+            $value = XDB::fetchAllAssoc("SELECT  n.address, n.network_type AS type, n.pub, m.name
+                                           FROM  profile_networking AS n
+                                     INNER JOIN  profile_networking_enum AS m ON (n.network_type = m.network_type)
+                                          WHERE  n.uid = {?}",
+                                         $page->pid());
         }
         if (!is_array($value)) {
             $value = array();
         }
-        $res = XDB::iterator("SELECT  filter, network_type AS type
-                                FROM  profile_networking_enum;");
-        $filters = array();
-        while($filter = $res->next()) {
-            $filters[$filter['type']] = $filter['filter'];
-        }
+        $filters = XDB::fetchAllAssoc('type', 'SELECT  filter, network_type AS type
+                                                 FROM  profile_networking_enum;');
         $success = true;
         foreach($value as $i=>&$network) {
             if (!trim($network['address'])) {
@@ -480,23 +472,23 @@ class ProfileGeneral extends ProfilePage
     {
         require_once "education.func.inc.php";
 
-        $res = XDB::iterator("SELECT  id, field
-                                FROM  profile_education_field_enum
-                            ORDER BY  field");
+        $res = XDB::query("SELECT  id, field
+                             FROM  profile_education_field_enum
+                         ORDER BY  field");
         $page->assign('edu_fields', $res->fetchAllAssoc());
 
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page, $this->owner, $this->profile);
 
-        $res = XDB::iterator("SELECT  nw.network_type AS type, nw.name
-                                FROM  profile_networking_enum AS nw
-                            ORDER BY  name");
+        $res = XDB::query("SELECT  nw.network_type AS type, nw.name
+                             FROM  profile_networking_enum AS nw
+                         ORDER BY  name");
         $page->assign('network_list', $res->fetchAllAssoc());
 
         $res = XDB::query("SELECT  public_name, private_name
                              FROM  profile_display
                             WHERE  pid = {?}",
-                             S::v('uid'));
+                          $this->pid());
         $res = $res->fetchOneRow();
         $page->assign('public_name', $res[0]);
         $page->assign('private_name', $res[1]);
