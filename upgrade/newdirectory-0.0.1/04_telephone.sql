@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS `profile_phones` (
     `pub` enum('private', 'ax', 'public') NOT NULL DEFAULT 'private',
     `comment` varchar(80) NOT NULL,
     PRIMARY KEY(`uid`, `link_type`, `link_id`, `tel_id`),
-    INDEX (`search_tel`)
+    INDEX (`search_tel`),
+    INDEX uid (uid)
 );
 
 
@@ -19,3 +20,4 @@ ALTER TABLE `geoloc_pays` ADD COLUMN `tmp_phoneprf` smallint unsigned NULL;
 -- Adds phone format column
 ALTER TABLE `geoloc_pays` ADD COLUMN `phoneformat` varchar(25) NOT NULL AFTER `nat`;
 
+# vim:set syntax=mysql:

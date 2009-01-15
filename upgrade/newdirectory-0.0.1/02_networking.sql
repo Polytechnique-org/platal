@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS `profile_networking` (
     `network_type` tinyint unsigned NOT NULL,
     `address` varchar(255) NOT NULL,
     `pub` enum('private','public') NOT NULL DEFAULT 'private',
-    PRIMARY KEY (`uid`, `nwid`)
+    PRIMARY KEY (`uid`, `nwid`),
+    INDEX uid (uid)
 ) CHARSET=utf8 COMMENT='networking addresses';
 
 -- Insert a first address type for old URLs
@@ -42,3 +43,4 @@ ALTER TABLE `watch_profile`
 ALTER TABLE `auth_user_quick` DROP COLUMN `profile_web`;
 ALTER TABLE `auth_user_quick` DROP COLUMN `profile_web_pub`;
 
+# vim:set syntax=mysql:
