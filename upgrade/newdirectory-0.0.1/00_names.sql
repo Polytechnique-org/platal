@@ -60,7 +60,8 @@ CREATE TABLE IF NOT EXISTS profile_name_search (
   name VARCHAR(255) NOT NULL COMMENT 'name to search for',
   particle VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'particle of the name to search for',
   typeid TINYINT(2) UNSIGNED NOT NULL COMMENT 'type of name',
-  PRIMARY KEY (pid, id)
+  PRIMARY KEY (pid, id),
+  INDEX pid (pid)
 ) CHARSET=utf8 COMMENT = 'Names of alumni (search table)';
 
 INSERT INTO  profile_name_search (pid, name, typeid)
