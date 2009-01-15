@@ -162,9 +162,11 @@ class Profile
         } catch (UserNotFoundException $e) {
             /* Let say we can identify a profile using the identifiers of its owner.
              */
-            $user = User::getSilent($login);
-            if ($user && $user->hasProfile()) {
-                return $user->profile();
+            if (!($login instanceof PlUser)) {
+                $user = User::getSilent($login);
+                if ($user && $user->hasProfile()) {
+                    return $user->profile();
+                }
             }
             return null;
         }

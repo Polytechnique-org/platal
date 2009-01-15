@@ -163,7 +163,7 @@ class ProfileSearchNames implements ProfileSetting
                 $name = trim($name);
                 XDB::execute("INSERT INTO  profile_name_search (particle, name, typeid, pid)
                                    VALUES  ({?}, {?}, {?}, {?})",
-                             $particle, $name, $sn['typeid'], $this->pid());
+                             $particle, $name, $sn['typeid'], $page->pid());
             }
         }
         XDB::execute("UPDATE  profile_display
@@ -171,7 +171,7 @@ class ProfileSearchNames implements ProfileSetting
                               directory_name = {?}, short_name = {?}, sort_name = {?}
                        WHERE  pid = {?}",
                      $this->public_name, $this->private_name, $this->directory_name,
-                     $this->short_name, $this->sort_name, $this->pid());
+                     $this->short_name, $this->sort_name, $page->pid());
         /*require_once('user.func.inc.php');
         user_reindex(S::v('uid'));*/
     }

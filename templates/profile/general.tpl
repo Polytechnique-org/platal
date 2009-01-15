@@ -114,7 +114,7 @@
     <td>
       <span class="titre">Date de naissance</span>
     </td>
-    <td><input type="text" {if $errors.birthdate}class="error"{/if} name="naissance" value="{$birthdate}" /></td>
+    <td><input type="text" {if $errors.birthdate}class="error"{/if} name="birthdate" value="{$birthdate}" /></td>
   </tr>
   <tr>
     <td>

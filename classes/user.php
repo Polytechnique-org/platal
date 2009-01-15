@@ -29,6 +29,10 @@ class User extends PlUser
     {
         global $globals;
 
+        if ($login instanceof User) {
+            $machin->id();
+        }
+
         if ($login instanceof Profile) {
             $this->_profile = $login;
             $this->_profile_fetched = true;
