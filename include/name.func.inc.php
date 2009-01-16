@@ -60,16 +60,16 @@ function build_types($pub = null)
     } else {
         $sql_pub = "";
     }
-    $sql = "SELECT  id, name
+    $sql = "SELECT  id, type, name
               FROM  profile_name_enum
              WHERE  NOT FIND_IN_SET('not_displayed', flags)" . $sql_pub;
     $sn_types = XDB::iterator($sql);
     $types    = array();
     while ($sn_type = $sn_types->next()) {
         if ($pub) {
-            $types[$sn_type['name']] = $sn_type['id'];
+            $types[$sn_type['type']] = $sn_type['id'];
         } else {
-            $types[$sn_type['id']] = $sn_type['name'];
+            $types[$sn_type['id']]   = $sn_type['name'];
         }
     }
     return $types;
@@ -78,29 +78,29 @@ function build_types($pub = null)
 function build_full_name(&$search_names, &$sn_types)
 {
     $name = "";
-    if (isset($search_names[$sn_types['Nom usuel']])) {
-        $name .= $search_names[$sn_types['Nom usuel']]['fullname'] . " ("
-              . $search_names[$sn_types['Nom patronymique']]['fullname'] . ")";
+    if (isset($search_names[$sn_types['lastname_ordinary']])) {
+        $name .= $search_names[$sn_types['lastname_ordinary']]['fullname'] . " ("
+              . $search_names[$sn_types['lastname']]['fullname'] . ")";
     } else {
-        $name .= $search_names[$sn_types['Nom patronymique']]['fullname'];
+        $name .= $search_names[$sn_types['lastname']]['fullname'];
     }
-    if (isset($search_names[$sn_types['Nom marital']])
-        || isset($search_names[$sn_types['Pseudonyme (nom de plume)']])) {
+    if (isset($search_names[$sn_types['lastname_marital']])
+        || isset($search_names[$sn_types['pseudonym']])) {
         $name .= " (";
-        if (isset($search_names[$sn_types['Nom marital']])) {
+        if (isset($search_names[$sn_types['lastname_marital']])) {
             $user = S::user();
             if ($user->isFemale()) {
                 $name .= "Mme ";
             } else {
                 $name .= "M ";
             }
-            $name .= $search_names[$sn_types['Nom marital']]['fullname'];
-            if (isset($search_names[$sn_types['Pseudonyme (nom de plume)']])) {
+            $name .= $search_names[$sn_types['lastname_marital']]['fullname'];
+            if (isset($search_names[$sn_types['pseudonym']])) {
                 $name .= ", ";
             }
         }
-        if (isset($search_names[$sn_types['Pseudonyme (nom de plume)']])) {
-            $name .= $search_names[$sn_types['Pseudonyme (nom de plume)']]['fullname'];
+        if (isset($search_names[$sn_types['pseudonym']])) {
+            $name .= $search_names[$sn_types['pseudonym']]['fullname'];
         }
         $name .= ")";
     }
@@ -109,44 +109,44 @@ function build_full_name(&$search_names, &$sn_types)
 
 function build_public_name(&$search_names, &$sn_types, $full_name)
 {
-    return $search_names[$sn_types['Prénom']]['fullname'] . " " . $full_name;
+    return $search_names[$sn_types['firstname']]['fullname'] . " " . $full_name;
 }
 
 function build_private_name(&$search_names, &$sn_types)
 {
     $name = "";
-    if (isset($search_names[$sn_types['Surnom']])
-        || (isset($search_names[$sn_types['Autre prénom']])
-        || isset($search_names[$sn_types['Autre nom']]))) {
+    if (isset($search_names[$sn_types['nickname']])
+        || (isset($search_names[$sn_types['name_other']])
+        || isset($search_names[$sn_types['name_other']]))) {
         $name .= " (";
-        if (isset($search_names[$sn_types['Surnom']])) {
-            $name .= "alias " . $search_names[$sn_types['Surnom']]['fullname'];
+        if (isset($search_names[$sn_types['nickname']])) {
+            $name .= "alias " . $search_names[$sn_types['nickname']]['fullname'];
             $i = 0;
-            while (isset($search_names[$sn_types['Surnom']][$i])) {
-                $name .= ", " . $search_names[$sn_types['Surnom']][$i];
+            while (isset($search_names[$sn_types['nickname']][$i])) {
+                $name .= ", " . $search_names[$sn_types['nickname']][$i];
                 $i++;
             }
-            if (isset($search_names[$sn_types['Autre prénom']])
-                || isset($search_names[$sn_types['Autre nom']])) {
+            if (isset($search_names[$sn_types['name_other']])
+                || isset($search_names[$sn_types['name_other']])) {
                 $name .= ", ";
             }
         }
-        if (isset($search_names[$sn_types['Autre prénom']])) {
-            $name .= "autres prénoms : " . $search_names[$sn_types['Autre prénom']]['fullname'];
+        if (isset($search_names[$sn_types['firstname_other']])) {
+            $name .= "autres prénoms : " . $search_names[$sn_types['firstname_other']]['fullname'];
             $i = 0;
-            while (isset($search_names[$sn_types['Autre prénom']][$i])) {
-                $name .= ", " . $search_names[$sn_types['Autre prénom']][$i];
+            while (isset($search_names[$sn_types['firstname_other']][$i])) {
+                $name .= ", " . $search_names[$sn_types['firstname_other']][$i];
                 $i++;
             }
-            if (isset($search_names[$sn_types['Autre nom']])) {
+            if (isset($search_names[$sn_types['name_other']])) {
                 $name .= ", ";
             }
         }
-        if (isset($search_names[$sn_types['Autre nom']])) {
-            $name .= "autres noms : " . $search_names[$sn_types['Autre nom']]['fullname'];
+        if (isset($search_names[$sn_types['name_other']])) {
+            $name .= "autres noms : " . $search_names[$sn_types['name_other']]['fullname'];
             $i = 0;
-            while (isset($search_names[$sn_types['Autre nom']][$i])) {
-                $name .= ", " . $search_names[$sn_types['Autre nom']][$i];
+            while (isset($search_names[$sn_types['name_other']][$i])) {
+                $name .= ", " . $search_names[$sn_types['name_other']][$i];
                 $i++;
             }
         }
@@ -157,20 +157,20 @@ function build_private_name(&$search_names, &$sn_types)
 
 function build_directory_name(&$search_names, &$sn_types, $full_name)
 {
-    return $full_name . " " . $search_names[$sn_types['Prénom']]['fullname'];
+    return $full_name . " " . $search_names[$sn_types['firstname']]['fullname'];
 }
 
 function build_short_name(&$search_names, &$sn_types, &$alias = null)
 {
-    if (isset($search_names[$sn_types['Nom usuel']])) {
-        $lastname = $search_names[$sn_types['Nom usuel']]['fullname'];
+    if (isset($search_names[$sn_types['lastname_ordinary']])) {
+        $lastname = $search_names[$sn_types['lastname_ordinary']]['fullname'];
     } else {
-        $lastname = $search_names[$sn_types['Nom patronymique']]['fullname'];
+        $lastname = $search_names[$sn_types['lastname']]['fullname'];
     }
-    if (isset($search_names[$sn_types['Prénom usuel']])) {
-        $firstname = $search_names[$sn_types['Prénom usuel']]['fullname'];
+    if (isset($search_names[$sn_types['firstname_ordinary']])) {
+        $firstname = $search_names[$sn_types['firstname_ordinary']]['fullname'];
     } else {
-        $firstname = $search_names[$sn_types['Prénom']]['fullname'];
+        $firstname = $search_names[$sn_types['firstname']]['fullname'];
     }
     if ($alias) {
         $alias = make_username($firstname, $lastname);
@@ -181,12 +181,12 @@ function build_short_name(&$search_names, &$sn_types, &$alias = null)
 function build_sort_name(&$search_names, &$sn_types)
 {
     $name = "";
-    if (isset($search_names[$sn_types['Nom usuel']])) {
-        $name .= $search_names[$sn_types['Nom usuel']]['name'];
+    if (isset($search_names[$sn_types['lastname_ordinary']])) {
+        $name .= $search_names[$sn_types['lastname_ordinary']]['name'];
     } else {
-        $name .= $search_names[$sn_types['Nom patronymique']]['name'];
+        $name .= $search_names[$sn_types['lastname']]['name'];
     }
-    $name .= " " . $search_names[$sn_types['Prénom']]['fullname'];
+    $name .= " " . $search_names[$sn_types['firstname']]['fullname'];
     return $name;
 }
 
@@ -246,6 +246,13 @@ function set_alias_names(&$sn_new, $sn_old, $update_new = false, $new_alias = nu
                 XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
                                    VALUES  ('', {?}, {?}, {?})",
                              $sn['fullname'], $typeid, S::i('uid'));
+            }
+            $i = 0;
+            while (isset($sn[$i])) {
+                XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
+                                   VALUES  ('', {?}, {?}, {?})",
+                             $sn[$i], $typeid, S::i('uid'));
+                $i++;
             }
         }
     }

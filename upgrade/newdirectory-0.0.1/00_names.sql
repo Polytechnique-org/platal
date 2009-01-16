@@ -30,26 +30,32 @@ CREATE TABLE IF NOT EXISTS profile_name_enum (
   id TINYINT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   explanations VARCHAR(255) NOT NULL,
+  type VARCHAR(255) NOT NULL,
   flags SET('has_particle', 'not_displayed', 'always_displayed', 'public') NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (name)
 ) CHARSET=utf8;
 
-INSERT INTO  profile_name_enum (name, flags, explanations)
-     VALUES  ('Nom patronymique', 'has_particle,always_displayed,public', 'Le nom de famille avec lequel tu es né'),
+INSERT INTO  profile_name_enum (name, flags, explanations, type)
+     VALUES  ('Nom patronymique', 'has_particle,always_displayed,public',
+              'Le nom de famille avec lequel tu es né', 'lastname'),
              ('Nom marital', 'has_particle,always_displayed,public',
-              'Ton nom d\'épouse ou d\'époux'),
+              'Ton nom d\'épouse ou d\'époux', 'lastname_marital'),
              ('Nom usuel', 'has_particle,always_displayed,public',
-              'Le nom de famille que tu utilises usuellement s\'il est différent du nom patronymique, ce peut-être une  version racourcie de celui-ci, ton nom marital, une combianaison de ces deux noms...'),
-             ('Prénom', 'always_displayed,public', 'Ton prénom'),
+              'Le nom de famille que tu utilises usuellement s\'il est différent du nom patronymique, ce peut-être une  version racourcie de celui-ci, ton nom marital, une combinaison de ces deux noms...',
+              'lastname_ordinary'),
+             ('Prénom', 'always_displayed,public', 'Ton prénom', 'firstname'),
              ('Pseudonyme (nom de plume)', 'always_displayed,public',
-              'Pseudonyme pour les artistes, gens de lettres'),
-             ('Surnom', '', 'Surnom à l\'École ou ailleurs'),
-             ('Prénom usuel', 'public', 'Si tu utilises une version raccourcie, francisée... de ton prénom'),
-             ('Autre prénom', '', 'Si tu as d\'autres prénoms et que tu souhaites les faire apparaître'),
-             ('Autre nom', '', 'Si tu as d\'autres noms et que tu souhaites les faire apparaître'),
-             ('Nom initial', 'has_particle,not_displayed,public', ''),
-             ('Prénom initial', 'has_particle,not_displayed,public', '');
+              'Pseudonyme pour les artistes, gens de lettres', 'pseudonym'),
+             ('Surnom', '', 'Surnom à l\'École ou ailleurs', 'nickname'),
+             ('Prénom usuel', 'public', 'Si tu utilises une version raccourcie, francisée... de ton prénom',
+              'firstname_ordinary'),
+             ('Autre prénom', '', 'Si tu as d\'autres prénoms et que tu souhaites les faire apparaître',
+              'firstname_other'),
+             ('Autre nom', '', 'Si tu as d\'autres noms et que tu souhaites les faire apparaître',
+              'name_other'),
+             ('Nom initial', 'has_particle,not_displayed,public', '', 'name_ini'),
+             ('Prénom initial', 'has_particle,not_displayed,public', '', 'firstname_ini');
 
 
 DROP TABLE IF EXISTS profile_name;

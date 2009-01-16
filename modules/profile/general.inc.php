@@ -43,7 +43,7 @@ class ProfileSearchNames implements ProfileSetting
         $new     = $this->prepareField($value);
         $newLen  = strlen($new);
         $success = $this->matchWord($ini, $new, $newLen)
-                   || ($field == 'Nom patronymique' && $new == 'DE ' . $ini);
+                   || ($field == 'lastname' && $new == 'DE ' . $ini);
         if (!$success) {
             $field = strtolower($field);
             Platal::page()->trigError("Le " . $field . " que tu as choisi (" . $value .
@@ -58,7 +58,7 @@ class ProfileSearchNames implements ProfileSetting
         $success_tmp = true;
         if (is_null($value)) {
             $sn_all = XDB::iterator("SELECT  CONCAT(sn.particle, sn.name) AS name,
-                                             sn.particle, sn.typeid, e.name AS type,
+                                             sn.particle, sn.typeid, e.type, e.name AS type_name,
                                              FIND_IN_SET('has_particle', e.flags) AS has_particle,
                                              FIND_IN_SET('always_displayed', e.flags) AS always_displayed,
                                              FIND_IN_SET('public', e.flags) AS pub
@@ -68,7 +68,8 @@ class ProfileSearchNames implements ProfileSetting
                                    ORDER BY  NOT FIND_IN_SET('always_displayed', e.flags), e.id, sn.name",
                                     S::v('uid'));
 
-            $sn_types = XDB::iterator("SELECT  id, name, FIND_IN_SET('has_particle', flags) AS has_particle
+            $sn_types = XDB::iterator("SELECT  id, type, name,
+                                               FIND_IN_SET('has_particle', flags) AS has_particle
                                          FROM  profile_name_enum
                                         WHERE  NOT FIND_IN_SET('not_displayed', flags)
                                                AND FIND_IN_SET('always_displayed', flags)
@@ -81,31 +82,37 @@ class ProfileSearchNames implements ProfileSetting
                     $value[] = $sn;
                     $sn = $sn_all->next();
                 } else {
-                    $value[] = array('typeid' => $sn_type['id'],
-                                     'type'   => $sn_type['name'],
-                                     'pub'    => 1,
+                    $value[] = array('typeid'    => $sn_type['id'],
+                                     'type'      => $sn_type['type'],
+                                     'type_name' => $sn_type['name'],
+                                     'pub'       => 1,
                                      'has_particle'     => $sn_type['has_particle'],
                                      'always_displayed' => 1);
                 }
             }
-            do {
-                $value[] = $sn;
-            } while ($sn = $sn_all->next());
+            if ($sn) {
+                do {
+                    $value[] = $sn;
+                } while ($sn = $sn_all->next());
+            }
         } else {
+            require_once 'name.func.inc.php';
+
             $res = XDB::query("SELECT  s.particle, s.name
                                  FROM  profile_name      AS s
                            INNER JOIN  profile_name_enum AS e ON (e.id = s.typeid)
-                                WHERE  s.pid = {?} AND e.name LIKE '%initial'
-                             ORDER BY  e.name = 'Prénom initial'",
+                                WHERE  s.pid = {?} AND e.type LIKE '%ini'
+                             ORDER BY  e.type = 'firstname_ini'",
                              S::i('uid'));
             $res = $res->fetchAllAssoc();
             $initial = array();
-            $initial['Nom patronymique'] = $res[0]['particle'] . $res[0]['name'];
-            $initial['Prénom'] = $res[1]['name'];
+            $initial['lastname'] = $res[0]['particle'] . $res[0]['name'];
+            $initial['firstname'] = $res[1]['name'];
+            $sn_types = build_types();
             $this->search_names = array();
             foreach ($value as &$sn) {
                 $sn['name'] = trim($sn['name']);
-                if ($sn['type'] == 'Prénom' || $sn['type'] == 'Nom patronymique') {
+                if ($sn['type'] == 'firstname' || $sn['type'] == 'lastname') {
                     $sn['name'] = $this->prepare($page, $sn['type'], $sn['name'],
                                                  $initial[$sn['type']], $success_tmp);
                     $success = $success && $success_tmp;
@@ -135,6 +142,7 @@ class ProfileSearchNames implements ProfileSetting
                         } else {
                             $this->search_names[$sn['typeid']] = array('fullname' => $sn['name']);
                         }
+                        $sn['type_name'] = $sn_types[$sn['typeid']];
                     }
                 }
             }
@@ -144,7 +152,6 @@ class ProfileSearchNames implements ProfileSetting
                               S::v('uid'));
             list($public_name, $private_name) = $res->fetchOneRow();
             if ($success) {
-                require_once 'name.func.inc.php';
                 $sn_types_private       = build_types('private');
                 $this->private_name_end = build_private_name($this->search_names, $sn_types_private);
                 $private_name           = $public_name . $this->private_name_end;

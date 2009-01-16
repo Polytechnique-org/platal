@@ -39,9 +39,10 @@
     <input type="hidden" name="sn_type_{$sn_type.id}_{$i}" value="{$sn_type.pub}"/>
     {/foreach}
     {else}
-    {$sn.type}
+    {$sn.type_name}
     <input type="hidden" name="search_names[{$i}][pub]" value="{$sn.pub}"/>
     <input type="hidden" name="search_names[{$i}][type]" value="{$sn.type}"/>
+    <input type="hidden" name="search_names[{$i}][type_name]" value="{$sn.type_name}"/>
     <input type="hidden" name="search_names[{$i}][typeid]" value="{$sn.typeid}"/>
     {/if}
   </td>
