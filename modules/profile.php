@@ -146,7 +146,7 @@ class ProfileModule extends PLModule
         $res = XDB::iterator("SELECT  name, explanations,
                                       FIND_IN_SET('public', flags) AS public,
                                       FIND_IN_SET('has_particle', flags) AS has_particle
-                                FROM  profile_name_search_enum
+                                FROM  profile_name_enum
                                WHERE  NOT FIND_IN_SET('not_displayed', flags)
                             ORDER BY  NOT FIND_IN_SET('public', flags)");
         $page->assign('types', $res);
@@ -543,7 +543,7 @@ class ProfileModule extends PLModule
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/general.searchname.tpl', NO_SKIN);
         $res = XDB::query("SELECT  id, name, FIND_IN_SET('public', flags) AS pub
-                             FROM  profile_name_search_enum
+                             FROM  profile_name_enum
                             WHERE  NOT FIND_IN_SET('not_displayed', flags)
                                    AND NOT FIND_IN_SET('always_displayed', flags)");
         $page->assign('sn_type_list', $res->fetchAllAssoc());

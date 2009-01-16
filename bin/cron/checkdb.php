@@ -191,8 +191,8 @@ check("SELECT  matricule,nom,prenom,matricule_ax,COUNT(matricule_ax) AS c
 
 /* no alumni is allowed to have empty names */
 check("SELECT  s.uid, d.public_name
-         FROM  profile_name_search AS s
-   INNER JOIN  profile_display     AS d ON (d.pid = s.uid)
+         FROM  profile_name    AS s
+   INNER JOIN  profile_display AS d ON (d.pid = s.uid)
         WHERE  name = ''", "liste des personnes qui ont un de leur nom de recherche vide");
 
 /* verifie qu'il n'y a pas d'utilisateurs ayant un compte Google Apps désactivé et une redirection encore active vers Google Apps */

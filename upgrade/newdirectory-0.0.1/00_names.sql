@@ -24,9 +24,9 @@ INSERT INTO  profile_display (pid, yourself, public_name, private_name, director
   LEFT JOIN  auth_user_quick AS q ON (u.user_id = q.user_id);
 
 
-DROP TABLE IF EXISTS profile_name_search_enum;
+DROP TABLE IF EXISTS profile_name_enum;
 
-CREATE TABLE IF NOT EXISTS profile_name_search_enum (
+CREATE TABLE IF NOT EXISTS profile_name_enum (
   id TINYINT(2) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   explanations VARCHAR(255) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS profile_name_search_enum (
   UNIQUE (name)
 ) CHARSET=utf8;
 
-INSERT INTO  profile_name_search_enum (name, flags, explanations)
+INSERT INTO  profile_name_enum (name, flags, explanations)
      VALUES  ('Nom patronymique', 'has_particle,always_displayed,public', 'Le nom de famille avec lequel tu es né'),
              ('Nom marital', 'has_particle,always_displayed,public',
               'Ton nom d\'épouse ou d\'époux'),
@@ -52,9 +52,9 @@ INSERT INTO  profile_name_search_enum (name, flags, explanations)
              ('Prénom initial', 'has_particle,not_displayed,public', '');
 
 
-DROP TABLE IF EXISTS profile_name_search;
+DROP TABLE IF EXISTS profile_name;
 
-CREATE TABLE IF NOT EXISTS profile_name_search (
+CREATE TABLE IF NOT EXISTS profile_name (
   id TINYINT(2) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id of this name for this user',
   pid INT(11) NOT NULL COMMENT 'id of alumni',
   name VARCHAR(255) NOT NULL COMMENT 'name to search for',
@@ -64,40 +64,40 @@ CREATE TABLE IF NOT EXISTS profile_name_search (
   INDEX pid (pid)
 ) CHARSET=utf8 COMMENT = 'Names of alumni (search table)';
 
-INSERT INTO  profile_name_search (pid, name, typeid)
+INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.nom, e.id
-       FROM  auth_user_md5            AS u
- INNER JOIN  profile_name_search_enum AS e ON (e.name = 'Nom patronymique')
+       FROM  auth_user_md5     AS u
+ INNER JOIN  profile_name_enum AS e ON (e.name = 'Nom patronymique')
       WHERE  nom != '';
 
-INSERT INTO  profile_name_search (pid, name, typeid)
+INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.nom_ini, e.id
-       FROM  auth_user_md5            AS u
- INNER JOIN  profile_name_search_enum AS e ON (e.name = 'Nom initial')
+       FROM  auth_user_md5     AS u
+ INNER JOIN  profile_name_enum AS e ON (e.name = 'Nom initial')
       WHERE  nom_ini != '';
 
-INSERT INTO  profile_name_search (pid, name, typeid)
+INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.prenom, e.id
-       FROM  auth_user_md5            AS u
- INNER JOIN  profile_name_search_enum AS e ON (e.name = 'Prénom')
+       FROM  auth_user_md5     AS u
+ INNER JOIN  profile_name_enum AS e ON (e.name = 'Prénom')
       WHERE  prenom != '';
 
-INSERT INTO  profile_name_search (pid, name, typeid)
+INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.prenom_ini, e.id
-       FROM  auth_user_md5            AS u
- INNER JOIN  profile_name_search_enum AS e ON (e.name = 'Prénom initial')
+       FROM  auth_user_md5     AS u
+ INNER JOIN  profile_name_enum AS e ON (e.name = 'Prénom initial')
       WHERE  prenom_ini != '';
 
-INSERT INTO  profile_name_search (pid, name, typeid)
+INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.nom_usage, e.id
-       FROM  auth_user_md5            AS u
- INNER JOIN  profile_name_search_enum AS e ON (e.name = 'Nom usuel')
+       FROM  auth_user_md5     AS u
+ INNER JOIN  profile_name_enum AS e ON (e.name = 'Nom usuel')
       WHERE  nom_usage != '';
 
-INSERT INTO  profile_name_search (pid, name, typeid)
+INSERT INTO  profile_name (pid, name, typeid)
      SELECT  q.user_id, q.profile_nick, e.id
-       FROM  auth_user_quick          AS q
- INNER JOIN  profile_name_search_enum AS e ON (e.name = 'Surnom')
+       FROM  auth_user_quick   AS q
+ INNER JOIN  profile_name_enum AS e ON (e.name = 'Surnom')
       WHERE  profile_nick != '';
 
 -- vim:set syntax=mysql:

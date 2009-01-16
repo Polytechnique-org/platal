@@ -61,7 +61,7 @@ function build_types($pub = null)
         $sql_pub = "";
     }
     $sql = "SELECT  id, name
-              FROM  profile_name_search_enum
+              FROM  profile_name_enum
              WHERE  NOT FIND_IN_SET('not_displayed', flags)" . $sql_pub;
     $sn_types = XDB::iterator($sql);
     $types    = array();
@@ -205,8 +205,8 @@ function build_sn_pub()
 {
     $res = XDB::iterator("SELECT  CONCAT(sn.particle, sn.name) AS fullname, sn.typeid,
                                   sn.particle, sn.name, sn.id
-                            FROM  profile_name_search      AS sn
-                      INNER JOIN  profile_name_search_enum AS e  ON (e.id = sn.typeid)
+                            FROM  profile_name      AS sn
+                      INNER JOIN  profile_name_enum AS e  ON (e.id = sn.typeid)
                            WHERE  sn.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)
                                   AND FIND_IN_SET('public', e.flags)
                         ORDER BY  NOT FIND_IN_SET('always_displayed', e.flags), e.id, sn.name",
@@ -227,14 +227,14 @@ function set_alias_names(&$sn_new, $sn_old, $update_new = false, $new_alias = nu
     foreach ($sn_new as $typeid => $sn) {
         if (isset($sn['pub'])) {
             if (isset($sn_old[$typeid]) && ($sn_old[$typeid]['fullname'] == $sn['fullname'] && $update_new)) {
-                XDB::execute("UPDATE  profile_name_search
+                XDB::execute("UPDATE  profile_name
                                  SET  particle = {?}, name = {?}, typeid = {?}
                                WHERE  id = {?} AND pid = {?}",
                              $sn['particle'], $sn['name'], $typeid, $sn_old[$typeid]['id'], S::i('uid'));
                 unset($sn_old[$typeid]);
             } elseif ($update_new
                       || (isset($sn_old[$typeid]) && $sn_old[$typeid]['fullname'] == $sn['fullname'])) {
-                XDB::execute("INSERT INTO  profile_name_search (particle, name, typeid, pid)
+                XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
                                    VALUES  ({?}, {?}, {?}, {?})",
                              $sn['particle'], $sn['name'], $typeid, S::i('uid'));
                 unset($sn_old[$typeid]);
@@ -243,7 +243,7 @@ function set_alias_names(&$sn_new, $sn_old, $update_new = false, $new_alias = nu
             }
         } else {
             if ($sn['fullname'] != '') {
-                XDB::execute("INSERT INTO  profile_name_search (particle, name, typeid, pid)
+                XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
                                    VALUES  ('', {?}, {?}, {?})",
                              $sn['fullname'], $typeid, S::i('uid'));
             }
@@ -253,13 +253,13 @@ function set_alias_names(&$sn_new, $sn_old, $update_new = false, $new_alias = nu
         if (!$update_new) {
             $has_new = true;
             foreach ($sn_old as $typeid => $sn) {
-                XDB::execute("INSERT INTO  profile_name_search (particle, name, typeid, pid)
+                XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
                                    VALUES  ({?}, {?}, {?}, {?})",
                              $sn['particle'], $sn['name'], $typeid, S::i('uid'));
             }
         } else {
             foreach ($sn_old as $typeid => $sn) {
-                XDB::execute("DELETE FROM  profile_name_search
+                XDB::execute("DELETE FROM  profile_name
                                     WHERE  pid = {?} AND id = {?}",
                              S::i('uid'), $sn['id']);
             }

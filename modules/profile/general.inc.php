@@ -62,14 +62,14 @@ class ProfileSearchNames implements ProfileSetting
                                              FIND_IN_SET('has_particle', e.flags) AS has_particle,
                                              FIND_IN_SET('always_displayed', e.flags) AS always_displayed,
                                              FIND_IN_SET('public', e.flags) AS pub
-                                       FROM  profile_name_search      AS sn
-                                 INNER JOIN  profile_name_search_enum AS e  ON (e.id = sn.typeid)
+                                       FROM  profile_name      AS sn
+                                 INNER JOIN  profile_name_enum AS e  ON (e.id = sn.typeid)
                                       WHERE  sn.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)
                                    ORDER BY  NOT FIND_IN_SET('always_displayed', e.flags), e.id, sn.name",
                                     S::v('uid'));
 
             $sn_types = XDB::iterator("SELECT  id, name, FIND_IN_SET('has_particle', flags) AS has_particle
-                                         FROM  profile_name_search_enum
+                                         FROM  profile_name_enum
                                         WHERE  NOT FIND_IN_SET('not_displayed', flags)
                                                AND FIND_IN_SET('always_displayed', flags)
                                      ORDER BY  id");
@@ -93,8 +93,8 @@ class ProfileSearchNames implements ProfileSetting
             } while ($sn = $sn_all->next());
         } else {
             $res = XDB::query("SELECT  s.particle, s.name
-                                 FROM  profile_name_search      AS s
-                           INNER JOIN  profile_name_search_enum AS e ON (e.id = s.typeid)
+                                 FROM  profile_name      AS s
+                           INNER JOIN  profile_name_enum AS e ON (e.id = s.typeid)
                                 WHERE  s.pid = {?} AND e.name LIKE '%initial'
                              ORDER BY  e.name = 'Prénom initial'",
                              S::i('uid'));
@@ -160,8 +160,8 @@ class ProfileSearchNames implements ProfileSetting
         require_once 'name.func.inc.php';
         $sn_old = build_sn_pub();
         XDB::execute("DELETE FROM  s
-                            USING  profile_name_search      AS s
-                       INNER JOIN  profile_name_search_enum AS e ON (s.typeid = e.id)
+                            USING  profile_name      AS s
+                       INNER JOIN  profile_name_enum AS e ON (s.typeid = e.id)
                             WHERE  s.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)",
                      S::i('uid'));
         $has_new = set_alias_names($this->search_names, $sn_old);
