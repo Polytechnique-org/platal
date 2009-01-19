@@ -72,6 +72,7 @@ class ProfileModule extends PLModule
             'admin/fonctions'            => $this->make_hook('admin_fonctions',            AUTH_MDP, 'admin'),
             'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP, 'admin'),
             'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP, 'admin'),
+            'admin/names'                => $this->make_hook('admin_names',                AUTH_MDP, 'admin'),
 
         );
     }
@@ -811,6 +812,17 @@ class ProfileModule extends PLModule
                 XDB::execute('DELETE FROM photo WHERE uid = {?}', $user->id());
                 break;
         }
+    }
+    function handler_admin_names(&$page, $action = 'list', $id = null) {
+        $page->setTitle('Administration - Types de noms');
+        $page->assign('title', 'Gestion des types de noms');
+        $table_editor = new PLTableEditor('admin/names', 'profile_name_enum', 'id', true);
+        $table_editor->describe('name', 'Nom', true);
+        $table_editor->describe('explanations', 'Explications', true);
+        $table_editor->describe('type', 'Type', true);
+        $table_editor->describe('flags', 'Flags', true);
+        $table_editor->describe('score', 'Score', true);
+        $table_editor->apply($page, $action, $id);
     }
     function handler_admin_binets(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Binets');
