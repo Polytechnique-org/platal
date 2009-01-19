@@ -26,17 +26,13 @@ require('user.func.inc.php');
 ini_set('memory_limit', "16M");
 $globals->debug = 0; // Do not store backtraces
 
-XDB::execute('DELETE FROM search_name');
-$res = XDB::iterRow('SELECT  auth_user_md5.user_id, nom, prenom, nom_usage, profile_nick
-                       FROM  auth_user_md5
-                  LEFT JOIN  auth_user_quick USING(user_id)');
+$res = XDB::iterRow("SELECT  user_id
+                       FROM  auth_user_md5");
 $i = 0;
-$muls = array(1, 1, 1, 0.2);
-$pub  = array(true, true, true, false);
-while ($tmp = $res->next()) {
-    $uid = array_shift($tmp);
-    _user_reindex($uid, $tmp, $muls, $pub);
-    printf("\r%u / %u",  ++$i, $res->total());
+$n = $res->total();
+while ($uid = $res->next()->fetchOneCell()) {
+    user_reindex($uid);
+    printf("\r%u / %u",  ++$i, $n);
 }
 
 print "done\n";

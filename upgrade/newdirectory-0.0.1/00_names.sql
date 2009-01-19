@@ -32,30 +32,31 @@ CREATE TABLE IF NOT EXISTS profile_name_enum (
   explanations VARCHAR(255) NOT NULL,
   type VARCHAR(255) NOT NULL,
   flags SET('has_particle', 'not_displayed', 'always_displayed', 'public') NOT NULL,
+  score TINYINT(2) UNSIGNED NOT NULL DEFAULT 10,
   PRIMARY KEY (id),
   UNIQUE (name)
 ) CHARSET=utf8;
 
-INSERT INTO  profile_name_enum (name, flags, explanations, type)
+INSERT INTO  profile_name_enum (name, flags, explanations, type, score)
      VALUES  ('Nom patronymique', 'has_particle,always_displayed,public',
-              'Le nom de famille avec lequel tu es né', 'lastname'),
+              'Le nom de famille avec lequel tu es né', 'lastname', 10),
              ('Nom marital', 'has_particle,always_displayed,public',
-              'Ton nom d\'épouse ou d\'époux', 'lastname_marital'),
+              'Ton nom d\'épouse ou d\'époux', 'lastname_marital', 10),
              ('Nom usuel', 'has_particle,always_displayed,public',
               'Le nom de famille que tu utilises usuellement s\'il est différent du nom patronymique, ce peut-être une  version racourcie de celui-ci, ton nom marital, une combinaison de ces deux noms...',
-              'lastname_ordinary'),
-             ('Prénom', 'always_displayed,public', 'Ton prénom', 'firstname'),
+              'lastname_ordinary', 10),
+             ('Prénom', 'always_displayed,public', 'Ton prénom', 'firstname', 10),
              ('Pseudonyme (nom de plume)', 'always_displayed,public',
-              'Pseudonyme pour les artistes, gens de lettres', 'pseudonym'),
-             ('Surnom', '', 'Surnom à l\'École ou ailleurs', 'nickname'),
+              'Pseudonyme pour les artistes, gens de lettres', 'pseudonym', 10),
+             ('Surnom', '', 'Surnom à l\'École ou ailleurs', 'nickname', 2),
              ('Prénom usuel', 'public', 'Si tu utilises une version raccourcie, francisée... de ton prénom',
-              'firstname_ordinary'),
+              'firstname_ordinary', 10),
              ('Autre prénom', '', 'Si tu as d\'autres prénoms et que tu souhaites les faire apparaître',
-              'firstname_other'),
+              'firstname_other', 1),
              ('Autre nom', '', 'Si tu as d\'autres noms et que tu souhaites les faire apparaître',
-              'name_other'),
-             ('Nom initial', 'has_particle,not_displayed,public', '', 'name_ini'),
-             ('Prénom initial', 'has_particle,not_displayed,public', '', 'firstname_ini');
+              'name_other', 1),
+             ('Nom initial', 'has_particle,not_displayed,public', '', 'name_ini', 10),
+             ('Prénom initial', 'has_particle,not_displayed,public', '', 'firstname_ini', 10);
 
 
 DROP TABLE IF EXISTS profile_name;
@@ -106,4 +107,8 @@ INSERT INTO  profile_name (pid, name, typeid)
  INNER JOIN  profile_name_enum AS e ON (e.name = 'Surnom')
       WHERE  profile_nick != '';
 
+DROP TABLE IF EXISTS recherche_soundex;
+
+DELETE FROM  search_autocomplete
+      WHERE  name = 'name' OR name = 'firstname' OR name = 'nickname';
 -- vim:set syntax=mysql:

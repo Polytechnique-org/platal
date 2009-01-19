@@ -28,13 +28,11 @@ function getadr_join($table) {
 function advancedSearchFromInput()
 {
     if ($with_soundex = Env::has('with_soundex')) {
-        $nameField      = new RefWithSoundexSField('name',array('rn.nom1_soundex','rn.nom2_soundex','rn.nom3_soundex'),'recherche_soundex','rn','u.matricule = rn.matricule');
-        $firstnameField = new RefWithSoundexSField('firstname',array('rp.prenom1_soundex','rp.prenom2_soundex'),'recherche_soundex','rp','u.matricule = rp.matricule');
+        $nameField      = new RefWithSoundexSField('name', array('n.soundex'), 'search_name',
+                                                   'n', 'u.user_id = n.uid');
     } else {
-        $nameField      = new NameSField('name', array('u.nom','u.nom_usage'), '');
-        $firstnameField = new StringSField('firstname', array('u.prenom'), '');
+        $nameField      = new NameSField('name', array('n.token'), 'search_name', 'n', 'u.user_id = n.uid');
     }
-    $nicknameField      = new StringSField('nickname', array('q.profile_nick'), '');
 
     $promo1Field        = new PromoSField('promo1', 'egal1', array('u.promo'), '');
     $promo2Field        = new PromoSField('promo2', 'egal2', array('u.promo'), '');
@@ -85,7 +83,7 @@ function advancedSearchFromInput()
     }
     $nwPhoneField       = new PhoneSField('phone_number', array('t.search_tel'), 'profile_phones', 't', 't.uid = u.user_id');
     return array(
-                $nameField, $firstnameField, $nicknameField, $promo1Field,
+                $nameField, $promo1Field,
                 $promo2Field, $womanField, $subscriberField, $aliveField,
                 $townField, $countryField, $regionField, $mapField, $entrepriseField,
                 $posteField, $secteurField, $cvField, $natField, $binetField,

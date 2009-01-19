@@ -684,57 +684,40 @@ function set_user_details($uid, $details) {
 // }}}
 // {{{ function _user_reindex
 
-function _user_reindex($uid, $keys, $muls, $pubs)
+function _user_reindex($uid, $keys)
 {
     foreach ($keys as $i => $key) {
-        if ($key == '') {
+        if ($key['name'] == '') {
             continue;
         }
-        $toks  = preg_split('/[ \'\-]+/', $key);
+        $toks  = preg_split('/[ \'\-]+/', $key['name']);
         $token = "";
         $first = 5;
         while ($toks) {
             $token = strtolower(replace_accent(array_pop($toks) . $token));
-            $score = ($toks ? 0 : 10 + $first) * $muls[$i];
+            $score = ($toks ? 0 : 10 + $first) * ($key['score'] / 10);
             XDB::execute("REPLACE INTO  search_name (token, uid, soundex, score, flags)
                                 VALUES  ({?}, {?}, {?}, {?}, {?})",
-                         $token, $uid, soundex_fr($token), $score, $pubs[$i] ? 'public' : '');
+                         $token, $uid, soundex_fr($token), $score, $key['public']);
             $first = 0;
         }
     }
-    $res = XDB::query("SELECT  nom_ini, nom, nom_usage, prenom_ini, prenom, promo, matricule
-                         FROM  auth_user_md5
-                        WHERE  user_id = {?}", $uid);
-    if (!$res->numRows()) {
-        unset($res);
-        return;
-    }
-    $array = $res->fetchOneRow();
-    $promo = intval(array_pop($array));
-    $mat   = array_shift($array);
-    array_walk($array, 'soundex_fr');
-    XDB::execute("REPLACE INTO  recherche_soundex
-                           SET  matricule = {?}, nom1_soundex = {?}, nom2_soundex= {?}, nom3_soundex = {?},
-                                prenom1_soundex = {?}, prenom2_soundex= {?}, promo = {?}",
-                 $mat, $array[0], $array[1], $array[2], $array[3], $array[4], $promo);
-    unset($res);
-    unset($array);
 }
 
 // }}}
 // {{{ function user_reindex
 
 function user_reindex($uid) {
-    XDB::execute("DELETE FROM search_name WHERE uid={?}", $uid);
-    $res = XDB::query("SELECT prenom, nom, nom_usage, profile_nick FROM auth_user_md5 INNER JOIN auth_user_quick USING(user_id) WHERE auth_user_md5.user_id = {?}", $uid);
-    if ($res->numRows()) {
-      _user_reindex($uid, $res->fetchOneRow(), array(1,1,1,0.2), array(true, true, true, false));
-    } else { // not in auth_user_quick => still "pending"
-      $res = XDB::query("SELECT prenom, nom, nom_usage FROM auth_user_md5 WHERE auth_user_md5.user_id = {?}", $uid);
-      if ($res->numRows()) {
-          _user_reindex($uid, $res->fetchOneRow(), array(1,1,1), array(true, true, true));
-      }
-    }
+    XDB::execute("DELETE FROM  search_name
+                        WHERE  uid = {?}",
+                 $uid);
+    $res = XDB::iterator("SELECT  CONCAT(n.particle, n.name) AS name, e.score,
+                                  FIND_IN_SET('public', e.flags) AS public
+                            FROM  profile_name      AS n
+                      INNER JOIN  profile_name_enum AS e ON (n.typeid = e.id)
+                           WHERE  n.pid = {?}",
+                         $uid);
+    _user_reindex($uid, $res);
 }
 
 // }}}
