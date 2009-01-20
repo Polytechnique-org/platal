@@ -246,7 +246,7 @@ abstract class PlPage extends Smarty
     // }}}
     // {{{ function kill()
 
-    public function kill($msg)
+    public function kill($msg, $type = 'errors')
     {
         // PHP is used on command line... do not run the whole page stuff.
         if (php_sapi_name() == 'cli') {
@@ -256,9 +256,24 @@ abstract class PlPage extends Smarty
 
         global $platal;
 
-        $this->trigError($msg);
+        $this->trig($msg, $type);
         $this->_failure = true;
         $this->run();
+    }
+
+    public function killError($msg)
+    {
+        $this->kill($msg, 'errors');
+    }
+
+    public function killWarning($msg)
+    {
+        $this->kill($msg, 'warnings');
+    }
+
+    public function killSuccess($msg)
+    {
+        $this->kill($msg, 'success');
     }
 
     // }}}
