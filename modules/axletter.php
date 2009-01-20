@@ -240,7 +240,7 @@ class AXLetterModule extends PLModule
             return;
         }
 
-        $page->kill("L'envoi de l'annonce {$al->title()} est annulé");
+        $page->killSuccess("L'envoi de l'annonce {$al->title()} est annulé.");
     }
 
     function handler_valid(&$page, $force = null)
@@ -260,7 +260,7 @@ class AXLetterModule extends PLModule
             return;
         }
 
-        $page->kill("L'envoi de l'annonce aura lieu dans l'heure qui vient.");
+        $page->killSuccess("L'envoi de l'annonce aura lieu dans l'heure qui vient.");
     }
 
     function handler_show(&$page, $nid = 'last')

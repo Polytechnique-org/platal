@@ -337,7 +337,7 @@ class XnetGrpModule extends PLModule
             if ($upload) {
                 $upload->rm();
             }
-            $page->kill("Email envoyé !");
+            $page->killSuccess("Email envoyé !");
             $page->assign('sent', true);
         }
     }
