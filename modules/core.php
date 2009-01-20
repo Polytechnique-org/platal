@@ -176,19 +176,18 @@ class CoreModule extends PLModule
         exit;
     }
 
-    function handler_sqlerror(&$page, $clear = null) {
+    function handler_sqlerror(&$page) {
         global $globals;
+        $page->coreTpl('sql_errors.tpl');
         $file = @fopen($globals->spoolroot . '/spool/tmp/query_errors', 'r');
         if ($file !== false) {
-            echo '<html><body>';
-            fpassthru($file);
+            $page->assign('errors', fpassthru($file));
             fclose($file);
-            echo '</html></body>';
         }
-        if ($clear == 'clear') {
+        if (Post::has('clear')) {
             @unlink($globals->spoolroot . '/spool/tmp/query_errors');
+            $page->trigSuccess("Erreurs MySQL effacées.");
         }
-        exit;
     }
 }
 
