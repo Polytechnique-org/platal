@@ -78,6 +78,8 @@
       <a href="admin/downtime">Coupures</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/icons">Icônes</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="sql_errors">Erreurs MySQL</a>
     </td>
   </tr>
 
