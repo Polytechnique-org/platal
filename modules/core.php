@@ -24,20 +24,20 @@ class CoreModule extends PLModule
     function handlers()
     {
         return array(
-            '403'         => $this->make_hook('403', AUTH_PUBLIC),
-            '404'         => $this->make_hook('404', AUTH_PUBLIC),
-            'login'       => $this->make_hook('login',      AUTH_COOKIE),
-            'send_bug'    => $this->make_hook('bug', AUTH_COOKIE),
-            'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
+            '403'           => $this->make_hook('403',           AUTH_PUBLIC),
+            '404'           => $this->make_hook('404',           AUTH_PUBLIC),
+            'login'         => $this->make_hook('login',         AUTH_COOKIE),
+            'send_bug'      => $this->make_hook('bug',           AUTH_COOKIE),
+            'purge_cache'   => $this->make_hook('purge_cache',   AUTH_COOKIE, 'admin'),
             'kill_sessions' => $this->make_hook('kill_sessions', AUTH_COOKIE, 'admin'),
-            'sql_errors'  => $this->make_hook('sqlerror', AUTH_COOKIE, 'admin'),
+            'sql_errors'    => $this->make_hook('sqlerror',      AUTH_COOKIE, 'admin'),
 
-            'wiki_help'    => $this->make_hook('wiki_help', AUTH_PUBLIC),
-            'wiki_preview' => $this->make_hook('wiki_preview', AUTH_COOKIE, 'user', NO_AUTH),
+            'wiki_help'     => $this->make_hook('wiki_help',     AUTH_PUBLIC),
+            'wiki_preview'  => $this->make_hook('wiki_preview',  AUTH_COOKIE, 'user', NO_AUTH),
 
-            'valid.html'  => $this->make_hook('valid', AUTH_PUBLIC),
-            'favicon.ico' => $this->make_hook('favicon', AUTH_PUBLIC),
-            'robots.txt'  => $this->make_hook('robotstxt', AUTH_PUBLIC, 'user', NO_HTTPS),
+            'valid.html'    => $this->make_hook('valid',         AUTH_PUBLIC),
+            'favicon.ico'   => $this->make_hook('favicon',       AUTH_PUBLIC),
+            'robots.txt'    => $this->make_hook('robotstxt',     AUTH_PUBLIC, 'user', NO_HTTPS),
         );
     }
 
