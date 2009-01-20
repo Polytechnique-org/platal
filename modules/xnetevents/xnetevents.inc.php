@@ -266,6 +266,11 @@ function event_change_shortname(&$page, $eid, $old, $new)
                     et qu'il ne contient que des lettres non accentuées,
                     des chiffres ou les caractères - et .");
         return $old;
+    } elseif ($new && ctype_digit($new)) {
+        $page->trigError("Le raccourci demandé ne peut être accepté car il
+                         ne contient que des chiffres. Rajoute-lui par exemple
+                         une lettre.");
+        return $old;
     }
 
     //vérifier que l'alias n'est pas déja pris
