@@ -13,6 +13,9 @@ From 0.10.0 branch:
     * Profile:
         - Fix malformed query leading to error when adding an address      -FRU
 
+    * XnetGrp:
+        - #861: Fix adding non-registered X with compound name to a group  -JAC
+
 ================================================================================
 VERSION 0.10.0                                                        11 12 2008
 
