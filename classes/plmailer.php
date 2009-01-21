@@ -163,11 +163,19 @@ class PlMailer extends Mail_Mime {
         }
     }
 
+    static private formatUser(PlUser $user)
+    {
+        return '"' . $user->fullName() . '" <' . $user->bestEmail() . '>';
+    }
+
     /**
      * converts all : Foo Bar Baz <quux@foobar.org> into "Foo Bar Baz" <quux@foobar.org> which is RFC compliant
      */
     private function correct_emails($email)
     {
+        if ($email instanceof PlUser) {
+            $email = self::formatUser($email);
+        }
         return preg_replace('!(^|, *)([^<"]+?) *(<[^>]*>)!u', '\1"\2" \3', $email);
     }
 
@@ -309,7 +317,7 @@ class PlMailer extends Mail_Mime {
 
     public function sendTo(PlUser &$user)
     {
-        $this->addTo('"' . $user->fullName() . '" <' . $user->bestEmail() . '>');
+        $this->addTo($user);
         $this->assign_by_ref('user', $user);
         return $this->send($user->isEmailFormatHtml());
     }
