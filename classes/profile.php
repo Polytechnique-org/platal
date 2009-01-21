@@ -39,18 +39,18 @@ class Profile
             $where = XDB::format('p.hrpid = {?}', $login);
         }
         $res = XDB::query('SELECT  p.*, pe.entry_year, pe.grad_year,
-                                   pns_f.name AS firstname, pns_l.name AS lastname, pns_n.name AS nickname,
-                                   IF(pns_uf.name IS NULL, pns_f.name, pns_uf.name) AS firstname_usual,
-                                   IF(pns_ul.name IS NULL, pns_l.name, pns_ul.name) AS lastname_usual,
+                                   pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
+                                   IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_usual,
+                                   IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_usual,
                                    pd.promo AS promo, pd.short_name, pd.directory_name AS full_name
                              FROM  ' . $from . '
                        INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                        INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
-                       INNER JOIN  profile_name AS pns_f ON (pns_f.pid = p.pid AND pns_f.typeid = ' . self::getNameTypeId('Nom patronymique', true) . ')
-                       INNER JOIN  profile_name AS pns_l ON (pns_l.pid = p.pid AND pns_l.typeid = ' . self::getNameTypeId('Prénom', true) . ')
-                        LEFT JOIN  profile_name AS pns_uf ON (pns_uf.pid = p.pid AND pns_uf.typeid = ' . self::getNameTypeId('Prénom usuel', true) . ')
-                        LEFT JOIN  profile_name AS pns_ul ON (pns_ul.pid = p.pid AND pns_ul.typeid = ' . self::getNameTypeId('Nom usuel', true) . ')
-                        LEFT JOIN  profile_name aS pns_n ON (pns_n.pid = p.pid AND pns_n.typeid = ' . self::getNameTypeId('Surnom', true) . ')
+                       INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid AND pn_f.typeid = ' . self::getNameTypeId('lastname', true) . ')
+                       INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid AND pn_l.typeid = ' . self::getNameTypeId('firstname', true) . ')
+                        LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid AND pn_uf.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
+                        LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid AND pn_ul.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
+                        LEFT JOIN  profile_name aS pn_n ON (pn_n.pid = p.pid AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
                             WHERE  ' . $where);
         if ($res->numRows() != 1) {
             __autoload('PlUser');
@@ -176,7 +176,7 @@ class Profile
     public static function getNameTypeId($type, $for_sql = false)
     {
         if (!S::has('name_types')) {
-            $table = XDB::fetchAllAssoc('name', 'SELECT  id, name
+            $table = XDB::fetchAllAssoc('type', 'SELECT  id, type
                                                    FROM  profile_name_enum');
             S::set('name_types', $table);
         } else {
