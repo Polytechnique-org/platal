@@ -56,18 +56,25 @@ class NewsletterModule extends PLModule
 
         require_once 'newsletter.inc.php';
 
-        $nl  = new NewsLetter($nid);
-        if (Get::has('text')) {
-            $nl->toText($page, S::v('prenom'), S::v('nom'), S::v('femme'));
-        } else {
-            $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
-        }
-        if (Post::has('send')) {
-            $res = XDB::query("SELECT hash FROM newsletter_ins WHERE user_id = {?}", S::i('uid'));
-            $nl->sendTo(S::user()->login(), S::user()->bestEmail(),
-                        S::v('prenom'), S::v('nom'),
-                        S::v('femme'), S::v('mail_fmt') != 'texte',
-                        $res->fetchOneCell());
+        try {
+            $nl = new NewsLetter($nid);
+            if (Get::has('text')) {
+                $nl->toText($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+            } else {
+                $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+            }
+            if (Post::has('send')) {
+                $res = XDB::query("SELECT  hash
+                                     FROM  newsletter_ins
+                                    WHERE  user_id = {?}",
+                                  S::i('uid'));
+                $nl->sendTo(S::user()->login(), S::user()->bestEmail(),
+                            S::v('prenom'), S::v('nom'),
+                            S::v('femme'), S::v('mail_fmt') != 'texte',
+                            $res->fetchOneCell());
+            }
+        } catch (MailNotFound $e) {
+            return PL_NOT_FOUND;
         }
     }
 
