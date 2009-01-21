@@ -31,7 +31,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         "SELECT SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*,
                 IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
                    1) AS inscr_open,
-                LEFT(10, e.debut) AS start_day, LEFT(10, e.fin) AS last_day,
+                LEFT(10, e.debut) AS first_day, LEFT(10, e.fin) AS last_day,
                 LEFT(NOW(), 10) AS now,
                 ei.titre,
                 al.vid AS absent_list, pl.vid AS participant_list,
