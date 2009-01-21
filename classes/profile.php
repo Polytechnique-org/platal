@@ -51,7 +51,8 @@ class Profile
                         LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid AND pn_uf.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
                         LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid AND pn_ul.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
                         LEFT JOIN  profile_name aS pn_n ON (pn_n.pid = p.pid AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
-                            WHERE  ' . $where);
+                            WHERE  ' . $where . '
+                         GROUP BY  p.pid');
         if ($res->numRows() != 1) {
             __autoload('PlUser');
             throw new UserNotFoundException();
