@@ -177,23 +177,11 @@
       </th>
     </tr>
     <tr>
-      <td>Nom</td>
+      <td>Nom, prénom, surnom...</td>
       <td>
         <input type="hidden" name="rechercher" value="Chercher"/>
         <input type="submit" style="display:none"/>
-        <input type="text" class="autocomplete" name="name" size="32" value="{$smarty.request.name}" />
-      </td>
-    </tr>
-    <tr>
-      <td>Prénom</td>
-      <td>
-        <input class="autocomplete" type="text" name="firstname" size="32" value="{$smarty.request.firstname}" />
-      </td>
-    </tr>
-    <tr>
-      <td>Surnom</td>
-      <td>
-        <input class="autocomplete" type="text" name="nickname" size="32" value="{$smarty.request.nickname}" />
+        <input type="text" name="name" size="32" value="{$smarty.request.name}" />
       </td>
     </tr>
     <tr>

@@ -203,6 +203,7 @@ class MinificheView extends MultipageView
     public function joins()
     {
         return  "LEFT JOIN  aliases                       AS a    ON (u.user_id = a.id AND FIND_IN_SET('bestalias', a.flags))
+                 LEFT JOIN  search_name                   AS n    ON (u.user_id = n.uid)
                  LEFT JOIN  profile_job                   AS j    ON (j.uid = u.user_id".(S::logged() ? "" : " AND j.pub = 'public'").")
                  LEFT JOIN  profile_job_enum              AS je   ON (je.id = j.jobid)
                  LEFT JOIN  profile_job_sector_enum       AS es   ON (j.sectorid = es.id)

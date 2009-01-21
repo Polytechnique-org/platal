@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS profile_education (
   grad_year INT(4) DEFAULT NULL,
   program VARCHAR(255) DEFAULT NULL,
   flags SET('primary') DEFAULT '' NOT NULL,
-  PRIMARY KEY(id, uid)
+  PRIMARY KEY(id, uid),
+  INDEX uid (uid)
 ) CHARSET=utf8;
 
 INSERT INTO  profile_education_field_enum (field)

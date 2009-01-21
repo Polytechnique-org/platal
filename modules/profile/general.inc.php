@@ -21,11 +21,8 @@
 
 class ProfileSearchNames implements ProfileSetting
 {
-    private $public_name;
-    private $private_name;
-    private $directory_name;
-    private $short_name;
-    private $sort_name;
+    private $private_name_end;
+    private $search_names;
 
     private function matchWord($old, $new, $newLen)
     {
@@ -43,11 +40,11 @@ class ProfileSearchNames implements ProfileSetting
     private function prepare(ProfilePage &$page, $field, $value, $init, &$success)
     {
         $success = true;
-        $ini = $this->prepareField($init);
-        $new = $this->prepareField($value);
+        $ini     = $this->prepareField($init);
+        $new     = $this->prepareField($value);
         $newLen  = strlen($new);
         $success = $this->matchWord($ini, $new, $newLen)
-                   || ($field == 'Nom patronymique' && $new == 'DE ' . $ini);
+                   || ($field == 'lastname' && $new == 'DE ' . $ini);
         if (!$success) {
             $field = strtolower($field);
             Platal::page()->trigError("Le " . $field . " que tu as choisi (" . $value .
@@ -58,22 +55,23 @@ class ProfileSearchNames implements ProfileSetting
 
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
-        $success = true;
+        $success     = true;
         $success_tmp = true;
         if (is_null($value)) {
             $sn_all = XDB::iterator("SELECT  CONCAT(sn.particle, sn.name) AS name,
-                                             sn.particle, sn.typeid, e.name AS type,
+                                             sn.particle, sn.typeid, e.type, e.name AS type_name,
                                              FIND_IN_SET('has_particle', e.flags) AS has_particle,
                                              FIND_IN_SET('always_displayed', e.flags) AS always_displayed,
                                              FIND_IN_SET('public', e.flags) AS pub
-                                       FROM  profile_name_search      AS sn
-                                 INNER JOIN  profile_name_search_enum AS e  ON (e.id = sn.typeid)
+                                       FROM  profile_name      AS sn
+                                 INNER JOIN  profile_name_enum AS e  ON (e.id = sn.typeid)
                                       WHERE  sn.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)
                                    ORDER BY  NOT FIND_IN_SET('always_displayed', e.flags), e.id, sn.name",
                                      $page->pid());
 
-            $sn_types = XDB::iterator("SELECT  id, name, FIND_IN_SET('has_particle', flags) AS has_particle
-                                         FROM  profile_name_search_enum
+            $sn_types = XDB::iterator("SELECT  id, type, name,
+                                               FIND_IN_SET('has_particle', flags) AS has_particle
+                                         FROM  profile_name_enum
                                         WHERE  NOT FIND_IN_SET('not_displayed', flags)
                                                AND FIND_IN_SET('always_displayed', flags)
                                      ORDER BY  id");
@@ -87,93 +85,108 @@ class ProfileSearchNames implements ProfileSetting
                         $sn = $sn_all->next();
                     }
                 } else {
-                    $value[] = array('typeid' => $sn_type['id'],
-                                     'type'   => $sn_type['name'],
-                                     'pub'    => 1,
+                    $value[] = array('typeid'    => $sn_type['id'],
+                                     'type'      => $sn_type['type'],
+                                     'type_name' => $sn_type['name'],
+                                     'pub'       => 1,
                                      'has_particle'     => $sn_type['has_particle'],
                                      'always_displayed' => 1);
                 }
             }
-            while ($sn) {
-                $value[] = $sn;
-                $sn = $sn_all->next();
+            if ($sn) {
+                do {
+                    $value[] = $sn;
+                } while ($sn = $sn_all->next());
             }
         } else {
+            require_once 'name.func.inc.php';
+
             $res = XDB::query("SELECT  s.particle, s.name
-                                 FROM  profile_name_search      AS s
-                           INNER JOIN  profile_name_search_enum AS e ON (e.id = s.typeid)
-                                WHERE  s.pid = {?} AND e.name LIKE '%initial'
-                             ORDER BY  e.name = 'Prénom initial'",
+                                 FROM  profile_name      AS s
+                           INNER JOIN  profile_name_enum AS e ON (e.id = s.typeid)
+                                WHERE  s.pid = {?} AND e.type LIKE '%ini'
+                             ORDER BY  e.type = 'firstname_ini'",
                              $page->pid());
             $res = $res->fetchAllAssoc();
             $initial = array();
-            $initial['Nom patronymique'] = $res[0]['particle'] . $res[0]['name'];
-            $initial['Prénom'] = $res[1]['name'];
-            $search_names = array();
-            foreach ($value as $key => &$sn) {
+            $initial['lastname'] = $res[0]['particle'] . $res[0]['name'];
+            $initial['firstname'] = $res[1]['name'];
+            $sn_types = build_types();
+            $this->search_names = array();
+            foreach ($value as &$sn) {
                 $sn['name'] = trim($sn['name']);
-                if ($sn['type'] == 'Prénom' || $sn['type'] == 'Nom patronymique') {
+                if ($sn['type'] == 'firstname' || $sn['type'] == 'lastname') {
                     $sn['name'] = $this->prepare($page, $sn['type'], $sn['name'],
                                                  $initial[$sn['type']], $success_tmp);
                     $success = $success && $success_tmp;
                 }
-                if ($sn['name'] != '') {
-                    if (!isset($search_names[$sn['typeid']])) {
-                        $search_names[$sn['typeid']] = array($sn['name'], $name);
+                if ($sn['pub']) {
+                    if (isset($sn['particle']) && ($sn['particle'] != '')) {
+                        list($particle, $name) = explode(' ', $sn['name'], 2);
+                        $particle = trim($particle) . ' ';
+                        if (!$name) {
+                            list($particle, $name) = explode('\'', $sn['name'], 2);
+                            $particle = trim($particle);
+                        }
                     } else {
-                        $search_names[$sn['typeid']] = array_merge($search_names[$sn['typeid']], array($name));
+                        $particle = '';
+                        $name     = $sn['name'];
+                    }
+                }
+                if ($sn['name'] != '') {
+                    if ($sn['pub']) {
+                        $this->search_names[$sn['typeid']] = array('fullname' => $sn['name'],
+                                                                   'name'     => $name,
+                                                                   'particle' => $particle,
+                                                                   'pub'      => $sn['pub']);
+                    } else {
+                        if (isset($this->search_names[$sn['typeid']])) {
+                            $this->search_names[$sn['typeid']][] = $sn['name'];
+                        } else {
+                            $this->search_names[$sn['typeid']] = array('fullname' => $sn['name']);
+                        }
+                        $sn['type_name'] = $sn_types[$sn['typeid']];
                     }
                 }
             }
-            require_once 'name.func.inc.php';
-            $sn_types_public  = build_types('public');
-            $sn_types_private = build_types('private');
-            $full_name        = build_full_name($search_names, $sn_types_public);
-            $this->directory_name = build_directory_name($search_names, $sn_types_public, $full_name);
-            $this->short_name     = short_name($search_names, $sn_types_public);
-            $this->sort_name      = short_name($search_names, $sn_types_public);
-            $this->public_name    = build_public_name($search_names, $sn_types_public, $full_name);
-            $this->private_name   = $this->public_name . build_private_name($search_names, $sn_types_private);
-            Platal::page()->assign('public_name', $this->public_name);
-            Platal::page()->assign('private_name', $this->private_name);
+            $res = XDB::query("SELECT  public_name, private_name
+                                 FROM  profile_display
+                                WHERE  pid = {?}",
+                              S::v('uid'));
+            list($public_name, $private_name) = $res->fetchOneRow();
+            if ($success) {
+                $sn_types_private       = build_types('private');
+                $this->private_name_end = build_private_name($this->search_names, $sn_types_private);
+                $private_name           = $public_name . $this->private_name_end;
+            }
+            Platal::page()->assign('public_name', $public_name);
+            Platal::page()->assign('private_name', $private_name);
         }
         return $value;
     }
 
     public function save(ProfilePage &$page, $field, $value)
     {
+        require_once 'name.func.inc.php';
+        $sn_old = build_sn_pub();
         XDB::execute("DELETE FROM  s
-                            USING  profile_name_search      AS s
-                       INNER JOIN  profile_name_search_enum AS e ON (s.typeid = e.id)
+                            USING  profile_name      AS s
+                       INNER JOIN  profile_name_enum AS e ON (s.typeid = e.id)
                             WHERE  s.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)",
                      $page->pid());
-        foreach ($value as $sn) {
-            if ($sn['name'] != '') {
-                if ($sn['particle']) {
-                    list($particle, $name) = explode(' ', $sn['name'], 2);
-                    $particle = trim($particle) . ' ';
-                    if (!$name) {
-                        list($particle, $name) = explode('\'', $sn['name'], 2);
-                        $particle = trim($particle);
-                    }
-                } else {
-                    $particle = '';
-                    $name     = $sn['name'];
-                }
-                $name = trim($name);
-                XDB::execute("INSERT INTO  profile_name_search (particle, name, typeid, pid)
-                                   VALUES  ({?}, {?}, {?}, {?})",
-                             $particle, $name, $sn['typeid'], $page->pid());
-            }
+        $has_new = set_alias_names($this->search_names, $sn_old);
+
+        // Only requires validation if modification in public names
+        if ($has_new) {
+            $new_names = new NamesReq(S::user(), $this->search_names, $this->private_name_end);
+            $new_names->submit();
+            Platal::page()->trigWarning("La demande de modification de tes noms a bien été prises en compte." .
+                                        " Tu recevras un email dès que ces changements auront été effectués.");
+        } else {
+            $display_names = array();
+            build_display_names($display_names, $this->search_names, $this->private_name_end);
+            set_profile_display($display_names);
         }
-        XDB::execute("UPDATE  profile_display
-                         SET  public_name = {?}, private_name = {?},
-                              directory_name = {?}, short_name = {?}, sort_name = {?}
-                       WHERE  pid = {?}",
-                     $this->public_name, $this->private_name, $this->directory_name,
-                     $this->short_name, $this->sort_name, $page->pid());
-        /*require_once('user.func.inc.php');
-        user_reindex(S::v('uid'));*/
     }
 }
 

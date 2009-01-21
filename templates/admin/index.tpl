@@ -155,6 +155,8 @@
       <a href="admin/medals">Décorations</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/sections">Sections</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/names">Noms</a>
     </td>
   </tr>
   <tr class="impair">

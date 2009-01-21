@@ -289,10 +289,6 @@ class SearchModule extends PLModule
             $field  = 'profile_job_enum.name';
             $unique = 'profile_job.uid';
             break;
-          case 'firstname':
-            $field = '`prenom`';
-            $beginwith = false;
-            break;
           case 'fonctionTxt':
             $db        = 'fonctions_def INNER JOIN
                           profile_job ON (profile_job.fonctionid = fonctions_def.id)';
@@ -313,11 +309,6 @@ class SearchModule extends PLModule
             $realid = 'a.id';
             $unique = 'm.uid';
             break;
-          case 'name':
-            $field = '`nom`';
-            $field2 = '`nom_usage`';
-            $beginwith = false;
-            break;
           case 'nationaliteTxt':
             $db = '`geoloc_pays` INNER JOIN
                    `auth_user_md5` ON (`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite` OR
@@ -327,11 +318,6 @@ class SearchModule extends PLModule
                                        `geoloc_pays`.`pays`,
                                        `geoloc_pays`.`nat`)';
             $realid = '`geoloc_pays`.`a2`';
-            break;
-          case 'nickname':
-            $field = '`profile_nick`';
-            $db = '`auth_user_quick`';
-            $beginwith = false;
             break;
           case 'description':
             $db     = 'profile_job';

@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS profile_job (
   email VARCHAR(255) NOT NULL DEFAULT '',
   pub ENUM('private', 'ax', 'public') DEFAULT 'private',
   email_pub ENUM('private', 'ax', 'public') DEFAULT 'private',
-  PRIMARY KEY (uid, id)
+  PRIMARY KEY (uid, id),
+  INDEX uid (uid)
 ) CHARSET=utf8;
 
 INSERT IGNORE INTO  profile_job_enum (name, url)

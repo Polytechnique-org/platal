@@ -48,7 +48,6 @@ class ProfileModule extends PLModule
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
             'profile/name_info'          => $this->make_hook('name_info',                  AUTH_PUBLIC),
             'profile/orange'             => $this->make_hook('p_orange',                   AUTH_MDP),
-            'profile/usage'              => $this->make_hook('p_usage',                    AUTH_MDP),
 
             'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE),
             'emploi'                     => $this->make_hook('ref_search',                 AUTH_COOKIE),
@@ -73,6 +72,7 @@ class ProfileModule extends PLModule
             'admin/fonctions'            => $this->make_hook('admin_fonctions',            AUTH_MDP, 'admin'),
             'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP, 'admin'),
             'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP, 'admin'),
+            'admin/names'                => $this->make_hook('admin_names',                AUTH_MDP, 'admin'),
 
         );
     }
@@ -147,7 +147,7 @@ class ProfileModule extends PLModule
         $res = XDB::iterator("SELECT  name, explanations,
                                       FIND_IN_SET('public', flags) AS public,
                                       FIND_IN_SET('has_particle', flags) AS has_particle
-                                FROM  profile_name_search_enum
+                                FROM  profile_name_enum
                                WHERE  NOT FIND_IN_SET('not_displayed', flags)
                             ORDER BY  NOT FIND_IN_SET('public', flags)");
         $page->assign('types', $res);
@@ -556,7 +556,7 @@ class ProfileModule extends PLModule
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/general.searchname.tpl', NO_SKIN);
         $res = XDB::query("SELECT  id, name, FIND_IN_SET('public', flags) AS pub
-                             FROM  profile_name_search_enum
+                             FROM  profile_name_enum
                             WHERE  NOT FIND_IN_SET('not_displayed', flags)
                                    AND NOT FIND_IN_SET('always_displayed', flags)");
         $page->assign('sn_type_list', $res->fetchAllAssoc());
@@ -568,7 +568,7 @@ class ProfileModule extends PLModule
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/general.buildnames.tpl', NO_SKIN);
         require_once 'name.func.inc.php';
-        $page->assign('names', build_names_display($data));
+        $page->assign('names', build_javascript_names($data));
     }
 
     function handler_p_orange(&$page)
@@ -757,49 +757,6 @@ class ProfileModule extends PLModule
         $page->assign('list', $it);
     }
 
-    function handler_p_usage(&$page)
-    {
-        $page->changeTpl('profile/nomusage.tpl');
-
-        require_once 'validations.inc.php';
-
-        $res = XDB::query(
-                "SELECT  u.nom, u.nom_usage, u.flags, e.alias
-                   FROM  auth_user_md5  AS u
-              LEFT JOIN  aliases        AS e ON(u.user_id = e.id
-                                                AND FIND_IN_SET('usage', e.flags))
-                  WHERE  user_id={?}", S::v('uid'));
-
-        list($nom, $usage_old, $flags, $alias_old) = $res->fetchOneRow();
-        $flags = new PlFlagSet($flags);
-        $page->assign('usage_old', $usage_old);
-        $page->assign('alias_old',  $alias_old);
-
-        $nom_usage = replace_accent(trim(Env::v('nom_usage')));
-        $nom_usage = strtoupper($nom_usage);
-        $page->assign('usage_req', $nom_usage);
-
-        if (Env::has('submit') && ($nom_usage != $usage_old)) {
-            S::assert_xsrf_token();
-
-            // on vient de recevoir une requete, differente de l'ancien nom d'usage
-            if ($nom_usage == $nom) {
-                $page->trigWarning('Le nom d\'usage que tu demandes est identique à ton nom à l\'X, '
-                                   . 'aucune modification n\'a donc été effectuée.');
-                $page->assign('same', true);
-            } else { // le nom de mariage est distinct du nom à l'X
-                // on calcule l'alias pour l'afficher
-                $reason = Env::v('reason');
-                if ($reason == 'other') {
-                    $reason = Env::v('other_reason');
-                }
-                $myusage = new UsageReq(S::user(), $nom_usage, $reason);
-                $myusage->submit();
-                $page->assign('myusage', $myusage);
-            }
-        }
-    }
-
     function handler_xnet(&$page)
     {
         $page->changeTpl('profile/groupesx.tpl');
@@ -867,6 +824,17 @@ class ProfileModule extends PLModule
                 XDB::execute('DELETE FROM photo WHERE uid = {?}', $user->id());
                 break;
         }
+    }
+    function handler_admin_names(&$page, $action = 'list', $id = null) {
+        $page->setTitle('Administration - Types de noms');
+        $page->assign('title', 'Gestion des types de noms');
+        $table_editor = new PLTableEditor('admin/names', 'profile_name_enum', 'id', true);
+        $table_editor->describe('name', 'Nom', true);
+        $table_editor->describe('explanations', 'Explications', true);
+        $table_editor->describe('type', 'Type', true);
+        $table_editor->describe('flags', 'Flags', true);
+        $table_editor->describe('score', 'Score', true);
+        $table_editor->apply($page, $action, $id);
     }
     function handler_admin_binets(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Binets');

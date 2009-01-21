@@ -46,13 +46,14 @@ class Profile
                              FROM  ' . $from . '
                        INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                        INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
-                       INNER JOIN  profile_name_search AS pns_f ON (pns_f.pid = p.pid AND pns_f.typeid = ' . self::getNameTypeId('Nom patronymique', true) . ')
-                       INNER JOIN  profile_name_search AS pns_l ON (pns_l.pid = p.pid AND pns_l.typeid = ' . self::getNameTypeId('Prénom', true) . ')
-                        LEFT JOIN  profile_name_search AS pns_uf ON (pns_uf.pid = p.pid AND pns_uf.typeid = ' . self::getNameTypeId('Prénom usuel', true) . ')
-                        LEFT JOIN  profile_name_search AS pns_ul ON (pns_ul.pid = p.pid AND pns_ul.typeid = ' . self::getNameTypeId('Nom usuel', true) . ')
-                        LEFT JOIN  profile_name_search aS pns_n ON (pns_n.pid = p.pid AND pns_n.typeid = ' . self::getNameTypeId('Surnom', true) . ')
+                       INNER JOIN  profile_name AS pns_f ON (pns_f.pid = p.pid AND pns_f.typeid = ' . self::getNameTypeId('Nom patronymique', true) . ')
+                       INNER JOIN  profile_name AS pns_l ON (pns_l.pid = p.pid AND pns_l.typeid = ' . self::getNameTypeId('Prénom', true) . ')
+                        LEFT JOIN  profile_name AS pns_uf ON (pns_uf.pid = p.pid AND pns_uf.typeid = ' . self::getNameTypeId('Prénom usuel', true) . ')
+                        LEFT JOIN  profile_name AS pns_ul ON (pns_ul.pid = p.pid AND pns_ul.typeid = ' . self::getNameTypeId('Nom usuel', true) . ')
+                        LEFT JOIN  profile_name aS pns_n ON (pns_n.pid = p.pid AND pns_n.typeid = ' . self::getNameTypeId('Surnom', true) . ')
                             WHERE  ' . $where);
         if ($res->numRows() != 1) {
+            __autoload('PlUser');
             throw new UserNotFoundException();
         }
         $this->data = $res->fetchOneAssoc();
@@ -176,7 +177,7 @@ class Profile
     {
         if (!S::has('name_types')) {
             $table = XDB::fetchAllAssoc('name', 'SELECT  id, name
-                                                   FROM  profile_name_search_enum');
+                                                   FROM  profile_name_enum');
             S::set('name_types', $table);
         } else {
             $table = S::v('name_types');
