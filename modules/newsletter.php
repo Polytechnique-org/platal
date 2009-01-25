@@ -56,15 +56,19 @@ class NewsletterModule extends PLModule
 
         require_once 'newsletter.inc.php';
 
-        $nl  = new NewsLetter($nid);
-        $user =& S::user();
-        if (Get::has('text')) {
-            $nl->toText($page, $user);
-        } else {
-            $nl->toHtml($page, $user);
-        }
-        if (Post::has('send')) {
-            $nl->sendTo($user);
+        try {
+            $nl = new NewsLetter($nid);
+            $user =& S::user();
+            if (Get::has('text')) {
+                $nl->toText($page, $user);
+            } else {
+                $nl->toHtml($page, $user);
+            }
+            if (Post::has('send')) {
+                $nl->sendTo($user);
+            }
+        } catch (MailNotFound $e) {
+            return PL_NOT_FOUND;
         }
     }
 

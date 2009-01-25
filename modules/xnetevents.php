@@ -117,7 +117,7 @@ class XnetEventsModule extends PLModule
 
         $page->assign('archive', $archive);
         $evenements = XDB::iterator(
-                "SELECT  e.*, LEFT(10, e.debut) AS debut_day, LEFT(10, e.fin) AS fin_day,
+                "SELECT  e.*, LEFT(10, e.debut) AS first_day, LEFT(10, e.fin) AS last_day,
                          IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
                             1) AS inscr_open, e.deadline_inscription,
                          u.nom, u.prenom, u.promo, a.alias,
@@ -133,6 +133,7 @@ class XnetEventsModule extends PLModule
 
         $evts = array();
         $undisplayed_events = 0;
+        $this->load('xnetevents.inc.php');
 
         while ($e = $evenements->next()) {
             if (!is_member() && !may_update() && !$e['accept_nonmembre']) {
@@ -166,6 +167,8 @@ class XnetEventsModule extends PLModule
                 $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
                 $e['paid'] += trim($p);
             }
+
+            make_event_date($e);
 
             if (Env::has('updated') && $e['eid'] == Env::i('updated')) {
                 $page->assign('updated', $e);

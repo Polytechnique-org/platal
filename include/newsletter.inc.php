@@ -45,6 +45,9 @@ class NewsLetter extends MassMailer
             }
             $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
         }
+        if ($res->numRows() != 1) {
+            throw new MailNotFound();
+        }
         $nl = $res->fetchOneAssoc();
 
         $this->_id        = $nl['id'];

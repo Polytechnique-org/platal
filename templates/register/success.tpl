@@ -142,7 +142,7 @@ il te faudra contacter l'équipe support.
       de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements
       qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.promo}.
     </dd>
-    <dt><label><input type='checkbox' value='1' checked="checked" name='imap' />imap</label></dt>
+    <dt><label><input type='checkbox' value='1' checked="checked" name='imap' /> sauvegarde des emails</label></dt>
     <dd>
       d'avoir un accès de secours aux 30 derniers jours d'emails reçus sur ton adresse Polytechnique.org.
     </dd>

@@ -48,8 +48,7 @@ class AXLetter extends MassMailer
                                     WHERE  id = {?} OR short_name = {?}", $id, $id);
             }
             if (!$res->numRows()) {
-                $this->_id = null;
-                return;
+                throw new MailNotFound();
             }
             $id = $res->fetchOneRow();
         }

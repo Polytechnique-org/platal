@@ -104,8 +104,10 @@ function get_not_registered_user($login, $iterator = false)
         return null;
     }
     @list($prenom, $nom, $promo) = explode('.', $login);
-    $where = 'REPLACE(REPLACE(REPLACE(nom, " ", ""), "-", ""), "\'", "") LIKE CONCAT("%", {?}, "%")
-          AND  REPLACE(REPLACE(REPLACE(prenom, " ", ""), "-", ""), "\'", "") LIKE CONCAT("%", {?}, "%")';
+    $where = 'REPLACE(REPLACE(REPLACE(nom, " ", ""), "-", ""), "\'", "")
+              LIKE CONCAT("%", REPLACE(REPLACE(REPLACE({?}, " ", ""), "-", ""), "\'", ""), "%")
+              AND  REPLACE(REPLACE(REPLACE(prenom, " ", ""), "-", ""), "\'", "")
+              LIKE CONCAT("%", REPLACE(REPLACE(REPLACE({?}, " ", ""), "-", ""), "\'", ""), "%")';
     if ($promo) {
         if (preg_match('/^[0-9]{2}$/', $promo)) {
             $where .= 'AND MOD(promo, 100) = {?}';

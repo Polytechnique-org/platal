@@ -289,7 +289,7 @@ class XnetGrpModule extends PLModule
             if ($upload) {
                 $upload->rm();
             }
-            $page->kill("Email envoyé !");
+            $page->killSuccess("Email envoyé !");
             $page->assign('sent', true);
         }
     }
@@ -485,23 +485,25 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $this->removeSubscriptionRequest($user->id());
-        XDB::execute("INSERT INTO  groupex.membres (asso_id, uid)
-                           VALUES  ({?}, {?})",
+        XDB::execute("INSERT IGNORE INTO  groupex.membres (asso_id, uid)
+                                  VALUES  ({?}, {?})",
                      $globals->asso('id'), $user->id());
-        $mailer = new PlMailer();
-        $mailer->addTo($user->forlifeEmail());
-        $mailer->setFrom('"' . S::user()->fullName() . '" <' . S::user()->forlifeEmail() . '>');
-        $mailer->setSubject('[' . $globals->asso('nom') . '] Demande d\'inscription');
-        $message = ($user->isFemale() ? 'Chère' : 'Cher') . " Camarade,\n"
-                 . "\n"
-                 . "  Suite à ta demande d'adhésion à " . $globals->asso('nom') . ",\n"
-                 . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
-                 . "\n"
-                 . "Bien cordialement,\n"
-                 . "-- \n"
-                 . S::user()->fullName() . '.';
-        $mailer->setTxtBody($message);
-        $mailer->send();
+        if (XDB::affectedRows() == 1) {
+            $mailer = new PlMailer();
+            $mailer->addTo($user->forlifeEmail());
+            $mailer->setFrom('"' . S::user()->fullName() . '" <' . S::user()->forlifeEmail() . '>');
+            $mailer->setSubject('[' . $globals->asso('nom') . '] Demande d\'inscription');
+            $message = ($user->isFemale() ? 'Chère' : 'Cher') . " Camarade,\n"
+                     . "\n"
+                     . "  Suite à ta demande d'adhésion à " . $globals->asso('nom') . ",\n"
+                     . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
+                     . "\n"
+                     . "Bien cordialement,\n"
+                     . "-- \n"
+                     . S::user()->fullName() . '.';
+            $mailer->setTxtBody($message);
+            $mailer->send();
+        }
     }
 
     function handler_subscribe(&$page, $u = null)
@@ -764,8 +766,8 @@ class XnetGrpModule extends PLModule
                                 $market->add();
                             }
                         }
-                        XDB::execute('INSERT INTO groupex.membres (uid, asso_id, origine, email)
-                                           VALUES ({?}, {?}, "X", {?})',
+                        XDB::execute('REPLACE INTO  groupex.membres (uid, asso_id, origine, email)
+                                            VALUES  ({?}, {?}, "X", {?})',
                                      $uid, $globals->asso('id'), $email);
                         $this->removeSubscriptionRequest($uid);
                         pl_redirect("member/$email");
@@ -774,9 +776,9 @@ class XnetGrpModule extends PLModule
                 } else {
                     $res = XDB::query('SELECT MAX(uid)+1 FROM groupex.membres');
                     $uid = max(intval($res->fetchOneCell()), 50001);
-                    XDB::execute('INSERT INTO  groupex.membres (uid,asso_id,origine,email)
-                                            VALUES({?},{?},"ext",{?})', $uid,
-                                            $globals->asso('id'), $email);
+                    XDB::execute('REPLACE INTO  groupex.membres (uid, asso_id, origine, email)
+                                        VALUES  ({?}, {?}, "ext", {?})',
+                                 $uid, $globals->asso('id'), $email);
                     pl_redirect("member/$email");
                 }
             } else {

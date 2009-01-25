@@ -31,7 +31,7 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         "SELECT SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*,
                 IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
                    1) AS inscr_open,
-                LEFT(10, e.debut) AS debut_day, LEFT(10, e.fin) AS fin_day,
+                LEFT(10, e.debut) AS start_day, LEFT(10, e.fin) AS last_day,
                 LEFT(NOW(), 10) AS now,
                 ei.titre,
                 al.vid AS absent_list, pl.vid AS participant_list,
@@ -106,6 +106,8 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         $evt['paid'] += trim($p);
         $evt['telepaid'] += trim($p);
     }
+
+    make_event_date($evt);
 
     return $evt;
 }
@@ -252,6 +254,7 @@ function subscribe_lists_event($participate, $uid, $evt)
 }
 // }}}
 
+//  {{{ function event_change_shortname()
 function event_change_shortname(&$page, $eid, $old, $new)
 {
     global $globals;
@@ -265,6 +268,11 @@ function event_change_shortname(&$page, $eid, $old, $new)
                     Vérifie qu'il comporte entre 3 et 20 caractères
                     et qu'il ne contient que des lettres non accentuées,
                     des chiffres ou les caractères - et .");
+        return $old;
+    } elseif ($new && ctype_digit($new)) {
+        $page->trigError("Le raccourci demandé ne peut être accepté car il
+                         ne contient que des chiffres. Rajoute-lui par exemple
+                         une lettre.");
         return $old;
     }
 
@@ -317,7 +325,7 @@ function event_change_shortname(&$page, $eid, $old, $new)
                 $new.'-absents@'.$globals->xnet->evts_domain);
 
         $lastid = XDB::insertId();
-        XDB::execute("INSERT INTO virtual_redirect (
+        XDB::execute("INSERT IGNORE INTO virtual_redirect (
             SELECT {?} AS vid, IF(a.alias IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
                   FROM groupex.membres AS m
              LEFT JOIN groupex.evenements_participants AS ep ON (ep.uid = m.uid AND ep.eid = {?})
@@ -345,6 +353,32 @@ function event_change_shortname(&$page, $eid, $old, $new)
     // cannot happen
     return $old;
 }
+// }}}
+
+//  {{{ function make_event_date()
+function make_event_date(&$e)
+{
+    $start     = strtotime($e['debut']);
+    $end       = strtotime($e['fin']);
+    $first_day = strtotime($e['first_day']);
+    $last_day  = strtotime($e['last_day']);
+    unset($e['debut'], $e['fin'], $e['first_day'], $e['last_day']);
+
+    $date = "";
+    if ($start && $end != $start) {
+        if ($first_day == $last_day) {
+          $date .= "le " . strftime("%d %B %Y", $start) . " de "
+                . strftime("%H:%M", $start) . " à " . strftime("%H:%M", $end);
+        } else {
+          $date .= "du " . strftime("%d %B %Y à %H:%M", $start)
+                . "\nau " . strftime("%d %B %Y à %H:%M", $end);
+        }
+    } else {
+        $date .= "le " . strftime("%d %B %Y à %H:%M", $start);
+    }
+    $e['date'] = $date;
+}
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

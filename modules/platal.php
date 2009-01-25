@@ -448,8 +448,10 @@ Adresse de secours : " . Post::v('email') : ""));
             Platal::session()->killLoginFormCookies();
         }
 
-        S::logger()->log('deconnexion', @$_SERVER['HTTP_REFERER']);
-        Platal::session()->destroy();
+        if (S::logged()) {
+            S::logger()->log('deconnexion', @$_SERVER['HTTP_REFERER']);
+            Platal::session()->destroy();
+        }
 
         if (Get::has('redirect')) {
             http_redirect(rawurldecode(Get::v('redirect')));

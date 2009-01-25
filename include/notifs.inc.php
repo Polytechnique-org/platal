@@ -456,7 +456,7 @@ class NoninsNotifs
 
     public function add($p)
     {
-        XDB::execute('INSERT INTO  watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
+        XDB::execute('INSERT IGNORE INTO  watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
         $res = XDB::query('SELECT  prenom, IF(nom_usage="",nom,nom_usage) AS nom,promo,user_id
                              FROM  auth_user_md5
                             WHERE  user_id={?}', $p);
