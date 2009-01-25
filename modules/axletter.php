@@ -240,7 +240,7 @@ class AXLetterModule extends PLModule
             return;
         }
 
-        $page->kill("L'envoi de l'annonce {$al->title()} est annulé");
+        $page->killSuccess("L'envoi de l'annonce {$al->title()} est annulé.");
     }
 
     function handler_valid(&$page, $force = null)
@@ -260,7 +260,7 @@ class AXLetterModule extends PLModule
             return;
         }
 
-        $page->kill("L'envoi de l'annonce aura lieu dans l'heure qui vient.");
+        $page->killSuccess("L'envoi de l'annonce aura lieu dans l'heure qui vient.");
     }
 
     function handler_show(&$page, $nid = 'last')
@@ -268,16 +268,20 @@ class AXLetterModule extends PLModule
         $this->load('axletter.inc.php');
         $page->changeTpl('axletter/show.tpl');
 
-        $nl  = new AXLetter($nid);
-        if (Get::has('text')) {
-            $nl->toText($page, S::v('prenom'), S::v('nom'), S::v('femme'));
-        } else {
-            $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
-        }
-        if (Post::has('send')) {
-            $nl->sendTo(S::user()->login(), S::user()->bestEmail(),
-                        S::v('prenom'), S::v('nom'),
-                        S::v('femme'), S::v('mail_fmt') != 'texte');
+        try {
+            $nl = new AXLetter($nid);
+            if (Get::has('text')) {
+                $nl->toText($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+            } else {
+                $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+            }
+            if (Post::has('send')) {
+                $nl->sendTo(S::user()->login(), S::user()->bestEmail(),
+                            S::v('prenom'), S::v('nom'),
+                            S::v('femme'), S::v('mail_fmt') != 'texte');
+            }
+        } catch (MailNotFound $e) {
+            return PL_NOT_FOUND;
         }
     }
 

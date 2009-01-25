@@ -30,7 +30,7 @@
   Cet événement a lieu 
   <strong>
   {if $event.fin and $event.fin neq $event.debut}
-    {if $event.debut_day eq $event.fin_day}
+    {if $event.first_day eq $event.last_day}
       le {$event.debut|date_format:"%d %B %Y"} de {$event.debut|date_format:"%H:%M"} à {$event.fin|date_format:"%H:%M"}
     {else}
       du {$event.debut|date_format:"%d %B %Y à %H:%M"}<br />

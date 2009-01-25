@@ -32,7 +32,7 @@ Ton inscription sur Polytechnique.org est presque terminée !
 
 Après activation, tes paramètres de connexion seront :
 
-login        : {$mailorg}
+identifiant  : {$mailorg}
 mot de passe : {$pass}
 
 Nous te proposerons de remplacer ce mot de passe temporaire par un mot de passe de ton choix.

@@ -23,14 +23,13 @@
 <h1>{$asso.nom}&nbsp;: <a href='{$platal->ns}events'>Événements</a> </h1>
 
 <p>
-L'événement {$evt.intitule}
-{if $evt.titre} - {$evt.titre}
-{/if}
-{if $evt.titre || count($moments) eq 1}
-comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
-{else}
-({$evt.nb} personne{if $evt.nb > 1}s ont réalisé leur{else} a réalisé son{/if} inscription).
-{/if}
+  {if $evt.titre || count($moments) eq 1}
+  {$evt.nb_tot} personne{if $evt.nb_tot > 1}s ont réalisé leur {else} a réalisé son {/if}
+  {else}
+  {$evt.nb} personne{if $evt.nb > 1}s ont réalisé leur{else} a réalisé son {/if}
+  {/if}
+  inscription à l'événement {$evt.intitule} {if $evt.titre}- {$evt.titre} {/if}
+  qui aura lieu {$evt.date}.
 </p>
 
 {if $evt.participant_list && $is_admin}

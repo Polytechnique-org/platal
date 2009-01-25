@@ -92,18 +92,7 @@
 
   <tr>
     <td class="titre">Date&nbsp;:</td>
-    <td>
-      {if $e.fin and $e.fin neq $e.debut}
-        {if $e.debut_day eq $e.fin_day}
-          le {$e.debut|date_format:"%d %B %Y"} de {$e.debut|date_format:"%H:%M"} à {$e.fin|date_format:"%H:%M"}
-        {else}
-          du {$e.debut|date_format:"%d %B %Y à %H:%M"}<br />
-          au {$e.fin|date_format:"%d %B %Y à %H:%M"}
-        {/if}
-      {else}
-        le {$e.debut|date_format:"%d %B %Y à %H:%M"}
-      {/if}
-    </td>
+    <td>{$e.date}</td>
   </tr>
 
   <tr>
