@@ -37,7 +37,7 @@ Nous conseillons très vivement d'utiliser des navigateurs récents, tels
 <br />
 {/if}
 
-{if !$pl_no_errors || $pl_failure}
+{if !t($pl_no_errors) || $pl_failure}
 {include core=triggers.tpl}
 {/if}
 

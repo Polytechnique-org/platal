@@ -28,7 +28,7 @@ function smarty_compiler_javascript($tag_attrs, &$compiler)
     }
     $name = pl_entities(trim($name, '\'"'), ENT_QUOTES);
     $name = "javascript/$name.js";
-    if ($full) {
+    if (isset($full) && $full) {
         global $globals;
         $name = $globals->baseurl . '/' . $name;
     }

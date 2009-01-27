@@ -116,7 +116,7 @@ abstract class PlPage extends Smarty
         $this->register_prefilter('form_force_encodings');
         $this->register_prefilter('wiki_include');
         $this->register_prefilter('core_include');
-        $this->register_prefilter('if_has_perms');
+        $this->register_prefilter('if_rewrites');
         $this->assign('pl_triggers', $this->_errors);
         $this->assign('pl_errors', $this->nb_errs());
         $this->assign('pl_failure', $this->_failure);
@@ -454,13 +454,15 @@ function core_include($source, &$smarty)
 // }}}
 //{{{ function hasPerm
 
-function if_has_perms($source, &$smarty)
+function if_rewrites($source, &$smarty)
 {
-    $source = preg_replace('/\{if([^}]*) (\!?)hasPerms\(([^)]+)\)([^}]*)\}/',
-                           '{if\1 \2$smarty.session.perms->hasFlagCombination(\3)\4}',
-                           $source);
-    return preg_replace('/\{if([^}]*) (\!?)hasPerm\(([^)]+)\)([^}]*)\}/',
-                        '{if\1 \2($smarty.session.perms && $smarty.session.perms->hasFlag(\3))\4}',
+    $perms = 'isset($smarty.session.perms|smarty:nodefaults) && $smarty.session.perms|smarty:nodefaults && $smarty.session.perms';
+    return preg_replace(array('/\{if([^}]*) (\!?)hasPerms\(([^)]+)\)([^}]*)\}/',
+                              '/\{if([^}]*) (\!?)hasPerm\(([^)]+)\)([^}]*)\}/',
+                              '/\{if([^}]*) (\!?)t\(([^)]+)\)([^}]*)\}/'),
+                        array('{if\1 \2(' . $perms . '->hasFlagCombination(\3))\4}',
+                              '{if\1 \2(' . $perms . '->hasFlag(\3))\4}',
+                              '{if\1 \2(isset(\3|smarty:nodefaults) && (\3|smarty:nodefaults))\4}'),
                         $source);
 }
 

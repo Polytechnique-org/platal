@@ -20,27 +20,35 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if t($pl_css)}
 {foreach from=$pl_css item=css}
 <link rel="stylesheet" type="text/css" href="css/{$css}" media="all"/>
 {/foreach}
+{/if}
+{if t($pl_inline_css)}
 {foreach from=$pl_inline_css item=css}
 <style type="text/css">
 {$css|smarty:nodefaults}
 </style>
 {/foreach}
+{/if}
+{if t($pl_link)}
 {foreach from=$pl_link item=link}
 <link rel="{$link.rel}" href="{$link.href}" />
 {/foreach}
+{/if}
 <script type="text/javascript">
   var platal_baseurl = "{$globals->baseurl}/";
 </script>
+{if t($pl_js)}
 {foreach from=$pl_js item=js}
 <script type="text/javascript" src="javascript/{$js}"></script>
 {/foreach}
-{if $pl_rss}
+{/if}
+{if t($pl_rss)}
 <link rel="alternate" type="application/rss+xml" title="{$pl_rss.title}" href="{$pl_rss.href}" />
 {/if}
-{if $pl_extra_header}
+{if t($pl_extra_header)}
 {$pl_extra_header|smarty:nodefaults}
 {/if}
 <title>{$pl_title}</title>
