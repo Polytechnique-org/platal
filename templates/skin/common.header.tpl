@@ -43,9 +43,9 @@
     {include core=plpage.header.tpl}
     <link rel="stylesheet" type="text/css" href="css/base.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="css/print.css" media="print"/>
-    <script type="text/javascript">
+    <script type="text/javascript">//<![CDATA[
       var platal_baseurl = "{$globals->baseurl}/";
-    </script>
+    //]]></script>
     {javascript name=overlib}
     {javascript name=md5}
     {javascript name=sha1}
