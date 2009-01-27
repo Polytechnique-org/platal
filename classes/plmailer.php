@@ -163,7 +163,7 @@ class PlMailer extends Mail_Mime {
         }
     }
 
-    static private formatUser(PlUser $user)
+    static private function formatUser(PlUser $user)
     {
         return '"' . $user->fullName() . '" <' . $user->bestEmail() . '>';
     }
