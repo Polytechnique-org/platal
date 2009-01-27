@@ -89,10 +89,9 @@ class XnetGrpModule extends PLModule
                             Env::i('unread'), S::i('uid'));
                 pl_redirect("#art" . Env::i('unread'));
             }
-            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, u.hruid,
-                                          FIND_IN_SET('photo', a.flags) AS photo
+            // XXX: Fix promo_min; promo_max
+            $arts = XDB::iterator("SELECT a.*, FIND_IN_SET('photo', a.flags) AS photo
                                      FROM groupex.announces AS a
-                               INNER JOIN auth_user_md5 AS u USING(user_id)
                                 LEFT JOIN groupex.announces_read AS r ON (r.user_id = {?} AND r.announce_id = a.id)
                                     WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
                                           AND (promo_min = 0 OR promo_min <= {?})
@@ -110,11 +109,10 @@ class XnetGrpModule extends PLModule
                                    S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
             $page->assign('article_index', $index);
         } else {
-            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, FIND_IN_SET('photo', a.flags) AS photo
+            $arts = XDB::iterator("SELECT a.*, FIND_IN_SET('photo', a.flags) AS photo
                                      FROM groupex.announces AS a
-                               INNER JOIN auth_user_md5 AS u USING(user_id)
                                     WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
-                                          AND FIND_IN_SET('public', u.flags)",
+                                          AND FIND_IN_SET('public', a.flags)",
                                   $globals->asso('id'));
         }
         if (may_update()) {

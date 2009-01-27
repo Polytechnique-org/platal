@@ -21,11 +21,15 @@
 
 function smarty_function_profile($params, &$smarty)
 {
-    $with_promo = isset($params['with_promo']) ? $params['with_promo'] : false;
-    $with_sex   = isset($params['with_sex']) ? $params['with_sex'] : true;
-    $with_link  = isset($params['with_link']) ? $params['with_link'] : true;
-    $with_groupperms = isset($params['with_groupperms']) ? $params['with_groupperms'] : true;
-    $user = $params['user'];
+    $params = new PlDict($params);
+    $with_promo = $params->b('promo', false);
+    $with_sex   = $params->b('sex', true);
+    $with_link  = $params->b('link', true);
+    $with_groupperms = $params->b('groupperms', true);
+    $user = $params->v('user');
+    if (ctype_digit($user)) {
+        $user = User::getWithUID($user);
+    }
 
     $name = pl_entities($user->fullName());
     if ($with_sex && $user->isFemale()) {

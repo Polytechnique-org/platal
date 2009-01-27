@@ -50,12 +50,12 @@
   </head>
   <body>
     {include core=plpage.devel.tpl}
-    {if !$simple}
+    {if !t($simple)}
       {include file=skin/common.bandeau.tpl}
     {/if}
 
     <table id="layout" cellspacing="0" cellpadding="0">
-    {if !$simple}
+    {if !t($simple)}
       <tr>
         <td colspan="2">
         <table cellspacing="0" cellpadding="0" id="top">
@@ -78,7 +78,7 @@
             </td>
             {if $xnet_type}
             <td style="width: 280px">
-              <a href="{if $xnet_type eq plan}plan{else}groups/{$xnet_type}{/if}"><img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" /></a>
+              <a href="{if $xnet_type eq 'plan'}plan{else}groups/{$xnet_type}{/if}"><img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" /></a>
             </td>
             {if $asso}
             <td class="logo">
@@ -103,7 +103,7 @@
       </tr>
     {/if}{* fin simple *}
 
-      {if $menu && !$simple}
+      {if $menu && !t($simple)}
       <tr>
         <td id="menu">
           {foreach from=$menu key=title item=submenu}
@@ -144,7 +144,7 @@
           {include core=plpage.content.tpl}
         </td>
       </tr>
-      {if !$simple}
+      {if !t($simple)}
       <tr class="hideable"><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
       <tr class="hideable">
@@ -162,7 +162,7 @@
       </tr>
       {/if}
       {/if}
-    {if !$simple}
+    {if !t($simple)}
       <tr class="hideable"><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
       <tr class="hideable">

@@ -32,13 +32,16 @@
 
 <!-- Don't copy this list of emails!!!
 
+{if !t($login)}
+  {if t($smarty.session.auth)}
+  {assign var="login" value="true"}
+  {/if}
+{/if}
+
   {poison seed=$login}
 
   -->
 
-{if !$login && $smarty.session.auth}
-  {assign var="login" value="true"}
-{/if}
 
 <div id="bandeau-X">
   <img src="bandeau/icone.png" alt=""/>
@@ -49,9 +52,9 @@
   <a href="http://www.polytechniciens.com/">AX</a>
   &tilde;&tilde;
   <a href="https://www.polytechnique.org">Polytechnique.org</a> &middot;
-  <a href="http://www.polytechnique.net{if $login}/login{/if}">Associations polytechniciennes</a> &middot;
+  <a href="http://www.polytechnique.net{if t($login)}/login{/if}">Associations polytechniciennes</a> &middot;
   <a href="http://www.polytechnique.fr/eleves/">&Eacute;l&egrave;ves</a> &middot;
-  <a href="http://www.manageurs.com/{if $login}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
+  <a href="http://www.manageurs.com/{if t($login)}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf8: *}
