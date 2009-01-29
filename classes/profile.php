@@ -112,12 +112,12 @@ class Profile
 
     public function firstName()
     {
-        return $this->first_name;
+        return $this->firstname;
     }
 
     public function lastName()
     {
-        return $this->last_name;
+        return $this->lastname;
     }
 
     public function isFemale()
