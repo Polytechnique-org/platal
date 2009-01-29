@@ -47,13 +47,8 @@
 </p>
 
 <h2>
-  Édition du profil de {if "`$user.prenom` `$user.nom`"|trim}{$user.prenom} {$user.nom}{else}{$user.email}{/if}
-  {if $user.origine eq 'X'}
-  (X{$user.promo})
-  <a href="https://www.polytechnique.org/profile/{$user.alias}">{icon name=user_suit title="fiche"}</a>
-  {/if}
-  <a href="{$platal->ns}member/del/{$user.email}">{icon name=delete title="Suppression du compte"}</a>
-  <a href="mailto:{$user.email}">{icon name=email title="mail"}</a>
+  Édition du profil de {profile user=$user groupperms=false sex=false promo=true}
+  <a href="mailto:{$user->bestEmail()}">{icon name=email title="mail"}</a>
 </h2>
 
 <form method="post" action="{$platal->ns}member/{$platal->argv[1]}">
@@ -65,29 +60,28 @@
       </td>
       <td>
         <select name="is_admin">
-          <option value="0" {if !$user.perms}selected="selected"{/if}>Membre</option>
-          <option value="1" {if $user.perms}selected="selected"{/if}>Animateur</option>
+          <option value="0" {if $user->group_perms eq 'membre'}</option>}selected="selected"{/if}>Membre</option>
+          <option value="1" {if $user->group_perms eq 'admin'}</option>}selected="selected"{/if}>Animateur</option>
         </select>
       </td>
     </tr>
-    {if $user.origine neq X}
     <tr class="impair">
       <td class="titre">
         Type d'utilisateur&nbsp;:
       </td>
       <td>
         <select name="origine" onchange="showInformations(this); return true">
-          <option value="ext" {if $user.origine eq "ext"}selected="selected"{/if}>Personne physique</option>
-          <option value="groupe" {if $user.origine eq "groupe"}selected="selected"{/if}>Personne morale</option>
+          <option value="ext" {if $user->type neq 'virtual'}selected="selected"{/if}>Personne physique</option>
+          <option value="groupe" {if $user->type eq "virtual"}selected="selected"{/if}>Personne morale</option>
         </select>
       </td>
     </tr>
-    <tr id="prenom" class="impair" {if $user.origine eq "groupe"}style="display: none"{/if}>
+      <tr id="prenom" class="impair" {if $user->type eq "virtual"}style="display: none"{/if}>
       <td class="titre">
         Prénom&nbsp;:
       </td>
       <td>
-        <input type="text" value="{$user.prenom}" name="prenom" size="40" />
+        <input type="text" value="{$user->displayName()}" name="prenom" size="40" />
       </td>
     </tr>
     <tr class="impair">
@@ -95,17 +89,17 @@
         Nom&nbsp;:
       </td>
       <td>
-        <input type="text" value="{$user.nom}" name="nom" size="40" />
+        <input type="text" value="{$user->fullName()}" name="nom" size="40" />
       </td>
     </tr>
-    <tr id="sexe" class="impair" {if $user.origine eq "groupe"}style="display: none"{/if}>
+    <tr id="sexe" class="impair" {if $user->type eq "virtual"}style="display: none"{/if}>
       <td class="titre">
         Sexe&nbsp;:
       </td>
       <td>
         <select name="sexe">
-          <option value="0"{if $user.sexe eq 0} selected="selected"{/if}>Homme</option>
-          <option value="1"{if $user.sexe eq 1} selected="selected"{/if}>Femme</option>
+          <option value="0"{if !$user->isFemale()} selected="selected"{/if}>Homme</option>
+          <option value="1"{if $user->isFemale()} selected="selected"{/if}>Femme</option>
         </select>
       </td>
     </tr>
@@ -114,21 +108,20 @@
         Email&nbsp;:
       </td>
       <td>
-        <input type="text" value="{$user.email}" name="email" size="40" />
+        <input type="text" value="{$user->forlifeEmail()}" name="email" size="40" />
       </td>
     </tr>
-    {/if}
     <tr class="impair">
       <td class="titre">
         Commentaire&nbsp;:
       </td>
       <td>
-        <input type="text" name="comm" value="{$user.comm}" size="40" maxlength="255" /><br />
+        <input type="text" name="comm" value="{$user->group_comm}" size="40" maxlength="255" /><br />
         <small>Poste, origine, ... (accessible à toutes les personnes autorisées à consulter l'annuaire)</small>
       </td>
     </tr>
-    {if $user.origine neq X}
-    <tr id="make_X" {if $user.origine eq "groupe"}style="display: none"{/if}>
+    {if $user->type eq 'ext'}
+    <tr id="make_X">
       <td colspan="2">
         <span id="make_X_cb">
           <input type="checkbox" name="is_x" id="is_x" onclick="showXInput(this);" onchange="showXInput(this);" />
@@ -177,14 +170,14 @@
       <th>Alias</th>
     </tr>
 
-    {foreach from=$alias item=a}
+    {foreach from=$alias key=address item=sub}
     <tr>
       <td align='right'>
-        <input type='hidden' name='ml3[{$a.alias}]' value='{$a.sub}' />
-        <input type='checkbox' name='ml4[{$a.alias}]' {if $a.sub}checked="checked"{/if} />
+        <input type='hidden' name='ml3[{$address}]' value='{$sub}' />
+        <input type='checkbox' name='ml4[{$address}]' {if $sub}checked="checked"{/if} />
       </td>
       <td>
-        <a href='{$platal->ns}alias/admin/{$a.alias}'>{$a.alias}</a>
+        <a href='{$platal->ns}alias/admin/{$address}'>{$address}</a>
       </td>
     </tr>
     {foreachelse}

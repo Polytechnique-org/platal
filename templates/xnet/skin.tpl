@@ -116,7 +116,7 @@
               {/if}
             {/foreach}
           {/foreach}
-          {if $asso && ($is_admin ||
+          {if $asso && ($is_admin || 
                       ($smarty.session.suid && ($smarty.session.suid.perms->hasFlag('admin') ||
                                                 $smarty.session.suid.may_update[$asso.id])))}
           <h1>Voir le site comme...</h1>

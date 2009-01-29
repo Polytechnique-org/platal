@@ -20,11 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 Nom,Prénom,Sexe,Promotion,Email,Commentaire
-{if $ann}
-{iterate from=$ann item=m}
+{if $users|@count}
+{foreach from=$users item=user}
 
-{$m.nom},{$m.prenom},{if $m.sexe}F{else}M{/if},{$m.promo},{$m.email},{$m.comm|replace:',':'\,'}
+{$user->firstName()},{$user->lastName()},{if $user->isFemale()}F{else}M{/if},{$user->promo()},{$user->forlifeEmail()},{$user->group_comm|replace:',':'\,'}
 
-{/iterate}
+{/foreach}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

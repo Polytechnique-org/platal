@@ -108,7 +108,7 @@
 
 <br />
 
-{if $article_index && $article_index->total()}
+{if t($article_index) && $article_index->total()}
 <table class="tinybicol">
   <tr>
     <th>

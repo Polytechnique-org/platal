@@ -32,6 +32,7 @@
 
 <!-- Don't copy this list of emails!!!
 
+{assign var="login" value="false"}
 {if !t($login)}
   {if t($smarty.session.auth)}
   {assign var="login" value="true"}

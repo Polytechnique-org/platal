@@ -189,6 +189,7 @@ class User extends PlUser
         if ($globals->asso('id')) {
             $joins .= XDB::format("LEFT JOIN groupex.membres AS gpm ON (gpm.uid = a.uid AND gpm.asso_id = {?})\n", $globals->asso('id'));
             $fields[] = 'gpm.perms AS group_perms';
+            $fields[] = 'gpm.comm AS group_comm';
         }
         if (count($fields) > 0) {
             $fields = ', ' . implode(', ', $fields);
@@ -296,6 +297,22 @@ class User extends PlUser
         return $this->profile()->promo();
     }
 
+    public function firstName()
+    {
+        if (!$this->hasProfile()) {
+            return $this->displayName();
+        }
+        return $this->profile()->firstName();
+    }
+
+    public function lastName()
+    {
+        if (!$this->hasProfile()) {
+            return '';
+        }
+        return $this->profile()->lastName();
+    }
+
     /** Return the main profile attached with this account if any.
      */
     public function profile()
@@ -340,18 +357,32 @@ class User extends PlUser
 
     /** Get all the aliases the user belongs to.
      */
-    public function emailAliases($domain = null)
+    public function emailAliases($domain = null, $type = 'user',  $sub_state = false)
     {
+        $join = XDB::format('(vr.redirect = {?} OR vr.redirect = {?}) ',
+                             $this->forlifeEmail(), $this->m4xForlifeEmail());
         $where = '';
         if (!is_null($domain)) {
-            $where = XDB::format(' AND alias LIKE CONCAT("%@", {?})', $domain);
+            $where = XDB::format('WHERE v.alias LIKE CONCAT("%@", {?})', $domain);
         }
-        return XDB::fetchColumn('SELECT  v.alias
-                                   FROM  virtual AS v
-                             INNER JOIN  virtual_redirect AS vr ON (v.vid = vr.vid)
-                                  WHERE  (vr.redirect = {?} OR vr.redirect = {?})
-                                         ' . $where,
-                               $this->forlifeEmail(), $this->m4xForlifeEmail());
+        if (!is_null($type)) {
+            if (empty($where)) {
+                $where = XDB::format('WHERE v.type = {?}', $type);
+            } else {
+                $where .= XDB::format(' AND v.type = {?}', $type);
+            }
+        }
+        if ($sub_state) {
+            return XDB::fetchAllAssoc('alias', 'SELECT  v.alias, vr.redirect IS NOT NULL AS sub
+                                                  FROM  virtual AS v
+                                             LEFT JOIN  virtual_redirect AS vr ON (v.vid = vr.vid AND ' . $join . ')
+                                                 ' . $where);
+        } else {
+            return XDB::fetchColumn('SELECT  v.alias
+                                       FROM  virtual AS v
+                                 INNER JOIN  virtual_redirect AS vr ON (v.vid = vr.vid AND ' . $join . ')
+                                     ' . $where);
+        }
     }
 
     /** Get the alternative forlife email

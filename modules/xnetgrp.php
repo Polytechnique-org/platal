@@ -183,10 +183,8 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
 
             $flags = new PlFlagSet('wiki_desc');
-            if (Post::has('notif_unsub') && Post::i('notif_unsub') == 1) {
-                $flags->addFlag('notif_unsub');
-            }
-            $site = trim(Post::v('site'));
+            $flags->addFlag('notif_unsub', Post::i('notif_unsub') == 1);
+            $site = Post::t('site');
             if ($site && ($site != "http://")) {
                 $scheme = parse_url($site, PHP_URL_SCHEME);
                 if (!$scheme) {
@@ -196,7 +194,7 @@ class XnetGrpModule extends PLModule
                 $site = "";
             }
             if (S::has_perms()) {
-                if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
+                if (strstr(Post::v('mail_domain'), '.') === false) {
                     $page->trigError("le domaine doit être un FQDN (aucune modif effectuée) !!!");
                     return;
                 }
@@ -235,13 +233,18 @@ class XnetGrpModule extends PLModule
                       $flags, $globals->asso('id'));
             }
 
+
             if ($_FILES['logo']['name']) {
-                $logo = file_get_contents($_FILES['logo']['tmp_name']);
-                $mime = $_FILES['logo']['type'];
-                XDB::execute('UPDATE groupex.asso
-                                 SET logo={?}, logo_mime={?}
-                               WHERE id={?}', $logo, $mime,
-                             $globals->asso('id'));
+                $upload = PlUpload::get($_FILES['logo'], $globals->asso('id'), 'asso.logo', true);
+                if (!$upload) {
+                    $page->trigError("Impossible de télécharger le logo");
+                } else {
+                    XDB::execute('UPDATE groupex.asso
+                                     SET logo={?}, logo_mime={?}
+                                   WHERE id={?}', $upload->getContents(), $upload->contentType(),
+                                 $globals->asso('id'));
+                    $upload->rm();
+                }
             }
 
             pl_redirect('../'.Post::v('diminutif', $globals->asso('diminutif')).'/edit');
@@ -449,26 +452,16 @@ class XnetGrpModule extends PLModule
         if (is_null($filename)) {
             $filename = $globals->asso('diminutif') . '.csv';
         }
-        $ann = XDB::iterator(
-                  "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
-                           IF(m.origine='X',u.prenom,m.prenom) AS prenom,
-                           IF(m.origine='X', u.promo, IF(m.origine='ext', 'extérieur', 'personne morale')) AS promo,
-                           IF(m.origine='X' AND u.perms != 'pending',CONCAT(a.alias, '@', {?}), m.email) AS email,
-                           IF(m.origine='X',FIND_IN_SET('femme', u.flags), m.sexe) AS femme,
-                           m.comm as comm
-                     FROM  groupex.membres AS m
-                LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
-                LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type = 'a_vie' )
-                    WHERE  m.asso_id = {?}
-                           AND (m.origine != 'X' OR u.perms != 'pending' OR m.email IS NOT NULL)
-                 GROUP BY  m.uid
-                 ORDER BY  nom, prenom",
-                 $globals->mail->domain, $globals->asso('id'));
+        $id = XDB::fetchColumn("SELECT  uid
+                                  FROM  groupex.membres
+                                 WHERE  asso_id = {?}",
+                                $globals->asso('id'));
+        $users = User::getBuildUsersWithUIDs($id, 'full_name');
         header('Content-Type: text/x-csv; charset=utf-8;');
         header('Pragma: ');
         header('Cache-Control: ');
         $page->changeTpl('xnetgrp/annuaire-csv.tpl', NO_SKIN);
-        $page->assign('ann', $ann);
+        $page->assign('users', $users);
     }
 
     private function removeSubscriptionRequest($uid)
@@ -1035,7 +1028,7 @@ class XnetGrpModule extends PLModule
             }
 
             $perms = Post::i('is_admin');
-            $comm  = trim(Post::s('comm'));
+            $comm  = Post::t('comm');
             if ($user['perms'] != $perms || $user['comm'] != $comm) {
                 XDB::query('UPDATE groupex.membres
                                SET perms={?}, comm={?}
@@ -1100,16 +1093,8 @@ class XnetGrpModule extends PLModule
         }
 
         $page->assign('user', $user);
-        $listes = $mmlist->get_lists($user['email2']);
-        $page->assign('listes', $listes);
-
-        $res = XDB::query(
-                'SELECT  alias, redirect IS NOT NULL as sub
-                   FROM  virtual          AS v
-              LEFT JOIN  virtual_redirect AS vr ON(v.vid=vr.vid AND (redirect = {?} OR redirect = {?}))
-                  WHERE  alias LIKE {?} AND type="user"',
-                $user['email'], $user['email2'], '%@'.$globals->asso('mail_domain'));
-        $page->assign('alias', $res->fetchAllAssoc());
+        $page->assign('listes', $mmlist->get_lists($user->forlifeEmail()));
+        $page->assign('alias', $user->emailAliases($globals->asso('mail_domain'), 'user', true));
     }
 
     function handler_rss(&$page, $user = null, $hash = null)
