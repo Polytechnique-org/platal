@@ -111,24 +111,26 @@ class VCard extends PlVCard
         }
 
         // Pro
-        foreach ($user['adr_pro'] as $pro) {
-            $street = array($adr['adr1']);
-            if (!empty($pro['adr2'])) {
-                $street[] = $pro['adr2'];
-            }
-            if (!empty($pro['adr3'])) {
-                $street[] = $pro['adr3'];
-            }
-            $group = $entry->addWork($pro['entreprise'], null, $pro['poste'], $pro['fonction'],
-                                     $street, null, null, $pro['postcode'], $pro['city'], $pro['region'], @$pro['country']);
-            if (!empty($pro['tel'])) {
-                $entry->addTel($group, $pro['tel']);
-            }
-            if (!empty($pro['fax'])) {
-                $entry->addTel($group, $pro['fax'], true);
-            }
-            if (!empty($pro['email'])) {
-                $entry->addMail($group, $pro['email']);
+        if (!empty($user['adr_pro'])) {
+            foreach ($user['adr_pro'] as $pro) {
+                $street = array($adr['adr1']);
+                if (!empty($pro['adr2'])) {
+                    $street[] = $pro['adr2'];
+                }
+                if (!empty($pro['adr3'])) {
+                    $street[] = $pro['adr3'];
+                }
+                $group = $entry->addWork($pro['entreprise'], null, $pro['poste'], $pro['fonction'],
+                                         $street, null, null, $pro['postcode'], $pro['city'], $pro['region'], @$pro['country']);
+                if (!empty($pro['tel'])) {
+                    $entry->addTel($group, $pro['tel']);
+                }
+                if (!empty($pro['fax'])) {
+                    $entry->addTel($group, $pro['fax'], true);
+                }
+                if (!empty($pro['email'])) {
+                    $entry->addMail($group, $pro['email']);
+                }
             }
         }
 
