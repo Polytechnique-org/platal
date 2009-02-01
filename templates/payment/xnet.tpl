@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: Gestion des télépaiements </h1>
+<h1>{$asso->nom}&nbsp;: Gestion des télépaiements </h1>
 
 <p class="descr">
-Voici la liste des paiements en ligne possible pour le groupe {$asso.nom} :
+Voici la liste des paiements en ligne possible pour le groupe {$asso->nom} :
 </p>
 
 {foreach from=$titres item=p}

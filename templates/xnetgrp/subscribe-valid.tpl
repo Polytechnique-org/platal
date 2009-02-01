@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: Validation des inscriptions</h1>
+<h1>{$asso->nom}&nbsp;: Validation des inscriptions</h1>
 
 <script type="text/javascript">//<![CDATA[
 {literal}

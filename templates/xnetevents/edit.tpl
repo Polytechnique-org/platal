@@ -35,7 +35,7 @@ function deadlineChange(box)
 {/literal}
 </script>
 
-<h1>{$asso.nom}&nbsp;: {$evt.intitule|default:"Nouvel événement"}</h1>
+<h1>{$asso->nom}&nbsp;: {$evt.intitule|default:"Nouvel événement"}</h1>
 
 <p class="descr">
   Un événement peut être une réunion, un séminaire, une conférence, un voyage promo,
@@ -184,7 +184,7 @@ Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et
 
 -- 
 {$smarty.session.prenom} {$smarty.session.nom}{/if}</textarea><br />
-        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso.site|default:$globals->baseurl|cat:'/'|cat:$platal->ns}" /><br />
+        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso->site|default:$globals->baseurl|cat:'/'|cat:$platal->ns}" /><br />
         Le nouveau paiement sera activé automatiquement après validation par le trésorier de Polytechnique.org,
         ce qui sera fait sous peu.
         <script type="text/javascript">//<![CDATA[

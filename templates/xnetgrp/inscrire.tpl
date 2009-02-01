@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Demande d'inscription à {$asso.nom}</h1>
+<h1>Demande d'inscription à {$asso->nom}</h1>
 
 {if $user && $is_admin && $show_form}
 
@@ -62,26 +62,26 @@
 <p class="descr">
 <strong>Ta demande d'inscription a bien été envoyée !</strong> Tu seras averti par email de la suite qui lui sera donnée.
 <p>
-<p class="descr">[<a href="{$platal->ns}">Retour à la page d'accueil de {$asso.nom}</a>]</p>
+<p class="descr">[<a href="{$platal->ns}">Retour à la page d'accueil de {$asso->nom}</a>]</p>
 
 {else}
 
 <p class="descr">
-Pour t'inscrire à {$asso.nom}, il te faut en demander l'autorisation aux animateurs du groupe via le
+Pour t'inscrire à {$asso->nom}, il te faut en demander l'autorisation aux animateurs du groupe via le
 formulaire ci-dessous. Vérifie et corrige au besoin les différents champs, puis clique sur
 [&nbsp;M'inscrire&nbsp;!&nbsp;].
 </p>
 <form action="{$platal->ns}subscribe" method="post">
   {xsrf_token_field}
   <p class="descr">
-  <strong>OUI, je souhaite être inscrit au groupe {$asso.nom}.</strong>
+  <strong>OUI, je souhaite être inscrit au groupe {$asso->nom}.</strong>
   </p>
   <p class="descr">
   Indique ci-après <strong>tes motivations</strong> qui seront communiquées aux animateurs du groupe&nbsp;:
   </p> <textarea cols=80 rows=12 name="message">
 Chers Camarades,
 
-Je souhaite m'inscrire à {$asso.nom}.
+Je souhaite m'inscrire à {$asso->nom}.
 
 Merci d'avance d'avoir la gentillesse de valider mon inscription.
 

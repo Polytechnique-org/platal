@@ -328,20 +328,18 @@ class XnetGrpModule extends PLModule
 
         $sort = Env::s('order', 'directory_name');
         $ofs  = Env::i('offset');
+        if ($ofs < 0) {
+            $ofs = 0;
+        }
 
         if (Env::b('admin')) {
-            $uids = XDB::fetchColumn('SELECT  uid
-                                        FROM  groupex.membres
-                                       WHERE  asso_id = {?} AND perms = \'admin\'',
-                                     $globals->asso('id'));
+            $users = $globals->asso()->getAdmins($sort, NB_PER_PAGE, $ofs * NB_PER_PAGE);
+            $count = $globals->asso()->getAdminCount();
         } else {
-            $uids = XDB::fetchColumn('SELECT  uid
-                                        FROM  groupex.membres
-                                       WHERE  asso_id = {?}', $globals->asso('id'));
+            $users = $globals->asso()->getMembers($sort, NB_PER_PAGE, $ofs * NB_PER_PAGE);
+            $count = $globals->asso()->getMemberCount();
         }
-        $users = User::getBuildUsersWithUIDs($uids, $sort,
-                                             NB_PER_PAGE, $ofs * NB_PER_PAGE);
-        $page->assign('pages', (count($uids) + NB_PER_PAGE - 1) / NB_PER_PAGE);
+        $page->assign('pages', ($count + NB_PER_PAGE - 1) / NB_PER_PAGE);
         $page->assign('current', $ofs);
         $page->assign('order', $sort);
         $page->assign('users', $users);
@@ -361,11 +359,8 @@ class XnetGrpModule extends PLModule
     function handler_vcard(&$page, $photos = null)
     {
         global $globals;
-        $res = XDB::query('SELECT  uid
-                             FROM  groupex.membres
-                            WHERE  asso_id = {?}', $globals->asso('id'));
         $vcard = new VCard($photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
-        $vcard->addUsers($res->fetchColumn());
+        $vcard->addUsers($globals->asso()->getMemberUIDs());
         $vcard->show();
     }
 
@@ -375,11 +370,7 @@ class XnetGrpModule extends PLModule
         if (is_null($filename)) {
             $filename = $globals->asso('diminutif') . '.csv';
         }
-        $id = XDB::fetchColumn("SELECT  uid
-                                  FROM  groupex.membres
-                                 WHERE  asso_id = {?}",
-                                $globals->asso('id'));
-        $users = User::getBuildUsersWithUIDs($id, 'full_name');
+        $users = $globals->asso()->getMembers('directory_name');
         header('Content-Type: text/x-csv; charset=utf-8;');
         header('Pragma: ');
         header('Cache-Control: ');
@@ -593,7 +584,6 @@ class XnetGrpModule extends PLModule
                 break;
             }
         }
-//        var_dump($_SESSION);
         http_redirect($_SERVER['HTTP_REFERER']);
     }
 

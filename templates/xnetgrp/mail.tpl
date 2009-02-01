@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-<h1>{$asso.nom}&nbsp;: Envoyer un email</h1>
+<h1>{$asso->nom}&nbsp;: Envoyer un email</h1>
 
 <p class="descr">
 Ton message peut être personnalisé&nbsp;: si tu rentres les mots &lt;cher&gt;, &lt;prenom&gt;,
@@ -131,11 +131,11 @@ masculin ou féminin, par son prénom, ou son nom.
 {else}
 &lt;cher&gt; &lt;prenom&gt;,
 
-Nous avons le plaisir de t'adresser la lettre mensuelle du groupe {$asso.nom}.
+Nous avons le plaisir de t'adresser la lettre mensuelle du groupe {$asso->nom}.
 
 (insérer le texte...)
 
-Le bureau du groupe {$asso.nom}.
+Le bureau du groupe {$asso->nom}.
 {/if}
          </textarea>
       </td>

@@ -40,7 +40,7 @@
 {/literal}
 </script>
 
-<h1>{$asso.nom}&nbsp;: gestion des membres</h1>
+<h1>{$asso->nom}&nbsp;: gestion des membres</h1>
 
 <p>
 [<a href='{$platal->ns}annuaire'>Retour à l'annuaire</a>]

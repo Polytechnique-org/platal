@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: <a href='{$platal->ns}events'>Événements</a> </h1>
+<h1>{$asso->nom}&nbsp;: <a href='{$platal->ns}events'>Événements</a> </h1>
 
 <p>
   {if $evt.titre || count($moments) eq 1}

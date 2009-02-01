@@ -32,7 +32,7 @@
 
 {else}
  
-<h1>{$asso.nom}&nbsp;: gestion des membres</h1>
+<h1>{$asso->nom}&nbsp;: gestion des membres</h1>
 
 <h2>
   Suppression du membre&nbsp;: {$user.prenom} {$user.nom}
@@ -44,7 +44,7 @@
   <div class="center">
     <p class="descr">
     {if $self}
-    Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso.nom} et de toutes
+    Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
     les listes de diffusion associées ?
     {else}
     Êtes-vous sûr de vouloir supprimer {$user.prenom} {$user.nom} du groupe,

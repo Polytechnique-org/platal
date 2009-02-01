@@ -49,7 +49,7 @@ class PlatalGlobals extends PlGlobals
         $this->bootstrap(array('NbValid'), array($this, 'updateNbValid'));
     }
 
-    public function asso($key=null)
+    public function asso($key = null)
     {
         static $aid = null;
 
@@ -59,29 +59,16 @@ class PlatalGlobals extends PlGlobals
                 $gp = substr($gp, 0, $p);
             }
 
-            if ($gp) {
-                $res = XDB::query('SELECT  a.*, d.nom AS domnom,
-                                           FIND_IN_SET(\'wiki_desc\', a.flags) AS wiki_desc,
-                                           FIND_IN_SET(\'notif_unsub\', a.flags) AS notif_unsub
-                                     FROM  groupex.asso AS a
-                                LEFT JOIN  groupex.dom  AS d ON d.id = a.dom
-                                    WHERE  diminutif = {?}', $gp);
-                if (!($aid = $res->fetchOneAssoc())) {
-                    $aid = array();
-                }
-            } else {
-                $aid = array();
-            }
+            $aid = Group::get($gp);
         }
         if (empty($key)) {
             return $aid;
-        } elseif ( isset($aid[$key]) ) {
-            return $aid[$key];
+        } elseif (isset($aid->$key) ) {
+            return $aid->$key;
         } else {
             return null;
         }
     }
-
 
     public function updateNbIns()
     {

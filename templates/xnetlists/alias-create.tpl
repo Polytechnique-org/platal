@@ -54,7 +54,7 @@ de modération), il est recommandé de créer <a href="{$platal->ns}lists/create
     <tr>
       <td><strong>Adresse&nbsp;souhaitée&nbsp;:</strong></td>
       <td>
-        <input type='text' name='liste' value='{$smarty.post.liste}' />@{$asso.mail_domain}
+        <input type='text' name='liste' value='{$smarty.post.liste}' />@{$asso->mail_domain}
       </td>
     </tr>
   </table>

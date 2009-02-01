@@ -52,7 +52,7 @@ function searchX()
 {/literal}
 //]]></script>
 
-<h1>{$asso.nom}&nbsp;: Ajout d'un membre</h1>
+<h1>{$asso->nom}&nbsp;: Ajout d'un membre</h1>
 
 <form method="post" action="{$platal->ns}member/new/">
   {xsrf_token_field}

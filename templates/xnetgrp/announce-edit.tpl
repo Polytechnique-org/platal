@@ -32,7 +32,7 @@ function visibilityChange(box)
 }
 {/literal}
 </script>
-<h1>{$asso.nom}&nbsp;: Édition d'une annonce</h1>
+<h1>{$asso->nom}&nbsp;: Édition d'une annonce</h1>
 
 {if $art.texte}
 <div>

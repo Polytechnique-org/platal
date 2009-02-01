@@ -20,52 +20,52 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: Accueil</h1>
+<h1>{$asso->nom}&nbsp;: Accueil</h1>
 
 <table cellpadding="0" cellspacing="0" class='tiny'>
-  {if $asso.site}
+  {if $asso->site}
   <tr>
     <td class="titre">
       Site Web&nbsp;:
     </td>
-    <td><a href="{$asso.site}">{$asso.site}</a></td>
+    <td><a href="{$asso->site}">{$asso->site}</a></td>
   </tr>
   {/if}
 
-  {if $asso.resp || $asso.mail}
+  {if $asso->resp || $asso->mail}
   <tr>
     <td class="titre">
       Contact&nbsp;:
     </td>
     <td>
-      {if $asso.mail}
-      {mailto address=$asso.mail text=$asso.resp|utf8_decode|default:"par email" encode=javascript}
+      {if $asso->mail}
+      {mailto address=$asso->mail text=$asso->resp|utf8_decode|default:"par email" encode=javascript}
       {else}
-      {$asso.resp}
+      {$asso->resp}
       {/if}
     </td>
   </tr>
   {/if}
 
-  {if $asso.forum}
+  {if $asso->forum}
   <tr>
     <td class="titre">
       Forum&nbsp;:
     </td>
     <td>
       <a href="{$platal->ns}forum">par le web</a>
-      ou <a href="news://ssl.polytechnique.org/{$asso.forum}">par nntp</a>
+      ou <a href="news://ssl.polytechnique.org/{$asso->forum}">par nntp</a>
     </td>
   </tr>
   {/if}
 
-  {if !$is_member && $is_logged && $asso.inscriptible && $xnet_type != 'promotions'}
+  {if !$is_member && $is_logged && $asso->inscriptible && $xnet_type != 'promotions'}
   <tr>
     <td class="titre">
       M'inscrire&nbsp;:
     </td>
     <td>
-      <a href="{if $asso.sub_url}{$asso.sub_url}{else}{$platal->ns}subscribe{/if}">m'inscrire</a>
+      <a href="{if $asso->sub_url}{$asso->sub_url}{else}{$platal->ns}subscribe{/if}">m'inscrire</a>
     </td>
   </tr>
   {elseif $is_member}
@@ -74,12 +74,12 @@
       Me désinscrire&nbsp;:
     </td>
     <td>
-      <a href="{if $asso.unsub_url}{$asso.unsub_url}{else}{$platal->ns}unsubscribe{/if}">me désinscrire</a>
+      <a href="{if $asso->unsub_url}{$asso->unsub_url}{else}{$platal->ns}unsubscribe{/if}">me désinscrire</a>
     </td>
   </tr>
   {/if}
 
-  {if $asso.ax}
+  {if $asso->ax}
   <tr>
     <td class="titre center" colspan="2">
       groupe agréé par l'AX
@@ -99,10 +99,10 @@
 <br />
 
 <div style="text-align: justify">
-  {if $asso.wiki_desc}
-  {$asso.descr|miniwiki:title|smarty:nodefaults}
+  {if $asso->wiki_desc}
+  {$asso->descr|miniwiki:title|smarty:nodefaults}
   {else}
-  {$asso.descr|smarty:nodefaults}
+  {$asso->descr|smarty:nodefaults}
   {/if}
 </div>
 

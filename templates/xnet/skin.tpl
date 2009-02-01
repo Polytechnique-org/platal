@@ -82,8 +82,8 @@
             </td>
             {if $asso}
             <td class="logo">
-              {if $asso.site}
-                <a href="{$asso.site}"><img src='{$platal->ns}logo' alt="LOGO" height="80" /></a>
+              {if $asso->site}
+                <a href="{$asso->site}"><img src='{$platal->ns}logo' alt="LOGO" height="80" /></a>
               {else}
                 <img src='{$platal->ns}logo' alt="LOGO" height="80"/>
               {/if}
@@ -116,9 +116,9 @@
               {/if}
             {/foreach}
           {/foreach}
-          {if $asso && ($is_admin || 
+          {if $asso && $is_admin} {* WARN: this breaks "see the site as"  || 
                       ($smarty.session.suid && ($smarty.session.suid.perms->hasFlag('admin') ||
-                                                $smarty.session.suid.may_update[$asso.id])))}
+                                                $smarty.session.suid.may_update[$asso->id])))} *}
           <h1>Voir le site comme...</h1>
           <form method="post" action="{$platal->ns}change_rights">
             <div>

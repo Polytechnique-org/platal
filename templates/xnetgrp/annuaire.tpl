@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: Annuaire du groupe </h1>
+<h1>{$asso->nom}&nbsp;: Annuaire du groupe </h1>
 
 <p class="descr">
-Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
+Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
 </p>
 
 <ul class="descr">
@@ -42,17 +42,17 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
   </li>
   {/if}
   <li>
-    <a href="{$platal->ns}annuaire/csv/{$asso.diminutif}.csv">
+    <a href="{$platal->ns}annuaire/csv/{$asso->diminutif}.csv">
       {icon name=page_excel title="Fichier Excel"} 
       Obtenir au format Excel
     </a>
   </li>
   <li>
-    <a href="{$platal->ns}annuaire/vcard/photos/{$asso.diminutif}.vcf">
+    <a href="{$platal->ns}annuaire/vcard/photos/{$asso->diminutif}.vcf">
       {icon name=vcard title="Carte de visite"} 
       Ajouter les membres à ton carnet d'adresse
     </a>
-    (<a href="{$platal->ns}annuaire/vcard/{$asso.diminutif}.vcf">sans les photos</a>)
+    (<a href="{$platal->ns}annuaire/vcard/{$asso->diminutif}.vcf">sans les photos</a>)
   </li>
 </ul>
 
@@ -112,9 +112,11 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
     {if $user->group_comm}
     <td>{$user->group_comm}</td>
     {/if}
-    <td class="right" {if !$m->group_comm}colspan="2"{/if}>
-      <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="[vcard]"}</a>
-      <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="email"}</a>
+    <td class="right" {if !$user->group_comm}colspan="2"{/if}>
+      {if $user->hasProfile()}
+      <a href="https://www.polytechnique.org/vcard/{$user->login()}.vcf">{icon name=vcard title="[vcard]"}</a>
+      {/if}
+      <a href="mailto:{$user->bestEmail()}">{icon name=email title="email"}</a>
     </td>
     {if $is_admin}
     <td class="center">
