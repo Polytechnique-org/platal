@@ -61,35 +61,38 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
 {else}
 
 <p class="center">
-[<a href="{$platal->ns}annuaire?order={$smarty.request.order}" {if !$only_admin}class="erreur"{/if}>tous les membres</a>]
-[<a href="{$platal->ns}annuaire?order={$smarty.request.order}&amp;admin=1" {if $only_admin}class="erreur"{/if}>animateurs</a>]<br/>
+[<a href="{$platal->ns}annuaire?order={$order}" {if !$only_admin}class="erreur"{/if}>tous les membres</a>]
+[<a href="{$platal->ns}annuaire?order={$order}&amp;admin=1" {if $only_admin}class="erreur"{/if}>animateurs</a>]<br/>
+{*
+ XXX: This code has been temporary dropped, waiting for a cleaner way to do that stuff
 {foreach from=$alphabet item=c}
 {if $c}
-[<a href="{$platal->ns}annuaire?{$group}={$c}&amp;order={$smarty.request.order}{if $only_admin}&amp;admin=1{/if}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
+[<a href="{$platal->ns}annuaire?order={$order}&amp;admin={$only_admin}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
 {/if}
 {/foreach}
+*}
 </p>
 
 <table summary="membres du groupe" class="bicol">
   <tr>
     <th>
-      <a href="{$platal->ns}annuaire?order=alpha{if $sort neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}{if $only_admin}&amp;admin=1{/if}">
-      {if $sort eq 'alpha'}
+      <a href="{$platal->ns}annuaire?order={if $order eq 'directory_name'}-{/if}directory_name&amp;admin={$only_admin}">
+      {if $order eq 'directory_name'}
         <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
-      {elseif $sort eq 'alpha_inv'}
+      {elseif $order eq '-directory_name'}
         <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
       {/if}
-      Prénom NOM 
+      Prénom NOM
       </a>
     </th>
     <th>
-      <a href="{$platal->ns}annuaire?order=promo{if $sort eq "promo"}_inv{/if}{if $request_group and $group eq 'promo'}&amp;promo={$request_group}{/if}">
-      {if $sort eq 'promo_inv'}
+      <a href="{$platal->ns}annuaire?order={if $order eq 'promo'}-{/if}promo&amp;admin={$only_admin}">
+      {if $order eq '-promo'}
         <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
-      {elseif $sort eq 'promo'}
+      {elseif $order eq 'promo'}
         <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
       {/if}
-        Promo
+      Promo
       </a>
     </th>
     <th colspan="2">Infos</th>
@@ -97,42 +100,30 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
     <th>Actions</th>
     {/if}
   </tr>
-  {iterate from=$ann item=m}
+  {foreach from=$users item=user}
   <tr>
     <td>
-      {if $m.admin}<strong>{/if}
-      {if $m.inscrit}
-      <a href="https://www.polytechnique.org/profile/{$m.email}" class="popup2">
-      {elseif $m.x}
-      <a href="https://www.polytechnique.org/marketing/public/{$m.uid}">
-      {/if}
-      {if $m.femme}&bull;{/if}{if $m.prenom || $m.nom}{$m.prenom} {$m.nom|strtoupper}{else}{$m.email}{/if}
-      {if $m.x}</a>{/if} 
-      {if $m.admin}</strong>{/if}
-      {if $m.inscrit && !$m.actif}
-      <a href="https://www.polytechnique.org/marketing/broken/{$m.email}">{icon name=error title="Recherche d'email"}</a>
-      {assign var=broken value=true}
-      {/if}</td>
-    <td>{if $m.admin}<strong>{/if}{$m.promo}{if $m.admin}</strong>{/if}</td>
-    {if $m.comm}
-    <td>{$m.comm}</td>
+      {profile user=$user promo=false}
+    <td>
+      {if $user->group_perms eq 'admin'}<strong>{/if}
+      {$user->promo()}
+      {if $user->group_perms eq 'admin'}</strong>{/if}
+    </td>
+    {if $user->group_comm}
+    <td>{$user->group_comm}</td>
     {/if}
-    <td class="right" {if !$m.comm}colspan="2"{/if}>
-      {if $m.inscrit}
+    <td class="right" {if !$m->group_comm}colspan="2"{/if}>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="[vcard]"}</a>
       <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="email"}</a>
-      {else}
-      <a href="mailto:{$m.email}">{icon name=email title="email"}</a>
-      {/if}
     </td>
     {if $is_admin}
     <td class="center">
-      <a href="{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=user_edit title="Edition du profil"}</a>
-      <a href="{$platal->ns}member/del/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=delete title="Supprimer de l'annuaire"}</a>
+      <a href="{$platal->ns}member/{$user->login()}">{icon name=user_edit title="Edition du profil"}</a>
+      <a href="{$platal->ns}member/del/{$user->login()}">{icon name=delete title="Supprimer de l'annuaire"}</a>
     </td>
     {/if}
   </tr>
-  {/iterate}
+  {/foreach}
 </table>
 
 <p class="descr" style="text-align: center">

@@ -139,7 +139,7 @@ class User extends PlUser
         throw new UserNotFoundException($res->fetchColumn(1));
     }
 
-    protected static function loadMainFieldsFromUIDs(array $uids, $sorted = null)
+    protected static function loadMainFieldsFromUIDs(array $uids, $sorted = null, $count = null, $offset = null)
     {
         global $globals;
         $joins = '';
@@ -151,8 +151,10 @@ class User extends PlUser
             $with_pd = false;
             foreach (explode(',', $sorted) as $part) {
                 $desc = ($part[0] == '-');
+                echo $part . '=' . $desc;
                 if ($desc) {
-                    $part = substr($desc, 1);
+                    $part = substr($part, 1);
+                    echo $part;
                 }
                 switch ($part) {
                   case 'promo':
@@ -165,6 +167,11 @@ class User extends PlUser
                     break;
                   case 'display_name':
                     $part = 'a.display_name';
+                    break;
+                  case 'directory_name':
+                    $part = 'pd.directory_name';
+                    $with_pd = true;
+                    $with_ap = true;
                     break;
                   default:
                     $part = null;
@@ -196,6 +203,14 @@ class User extends PlUser
         } else {
             $fields = '';
         }
+        $limit = '';
+        if (!is_null($count)) {
+            if (!is_null($offset)) {
+                $limit = ' LIMIT ' . $offset . ', ' . $count;
+            } else {
+                $limit = ' LIMIT ' . $count;
+            }
+        }
         $uids = array_map(array('XDB', 'escape'), $uids);
         return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date,
                                       CONCAT(af.alias, \'@' . $globals->mail->domain . '\') AS forlife,
@@ -212,7 +227,7 @@ class User extends PlUser
                            LEFT JOIN  aliases AS ab ON (ab.id = a.uid AND FIND_IN_SET(\'bestalias\', ab.flags))
                            ' . $joins . '
                                WHERE  a.uid IN (' . implode(', ', $uids) . ')
-                               ' . $orderby);
+                               ' . $orderby . $limit);
     }
 
     // Implementation of the data loader.
@@ -435,9 +450,9 @@ class User extends PlUser
     }
 
     // Fetch a set of users from a list of UIDs
-    public static function getBuildUsersWithUIDs(array $uids, $sortby = null)
+    public static function getBuildUsersWithUIDs(array $uids, $sortby = null, $count = null, $offset = null)
     {
-        $fields = self::loadMainFieldsFromUIDs($uids, $sortby);
+        $fields = self::loadMainFieldsFromUIDs($uids, $sortby, $count, $offset);
         $users = array();
         while (($list = $fields->next())) {
             $users[] = User::getSilentWithValues(null, $list);

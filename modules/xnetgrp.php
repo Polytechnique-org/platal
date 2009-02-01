@@ -326,103 +326,24 @@ class XnetGrpModule extends PLModule
         }
         $page->changeTpl('xnetgrp/annuaire.tpl');
 
-        $sort = Env::v('order');
-        switch (Env::v('order')) {
-            case 'promo'    : $group = 'promo';    $tri = 'promo_o DESC, nom, prenom'; break;
-            case 'promo_inv': $group = 'promo';    $tri = 'promo_o, nom, prenom'; break;
-            case 'alpha_inv': $group = 'initiale'; $tri = 'nom DESC, prenom DESC, promo'; break;
-            default         : $group = 'initiale'; $tri = 'nom, prenom, promo'; $sort = 'alpha';
-        }
-        $page->assign('sort', $sort);
+        $sort = Env::s('order', 'directory_name');
 
-        if ($group == 'initiale') {
-            $res = XDB::iterRow(
-                        'SELECT  UPPER(SUBSTRING(
-                                    IF(m.origine="X", IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom),
-                                     1, 1)) as letter, COUNT(*)
-                           FROM  groupex.membres AS m
-                      LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid)
-                          WHERE  asso_id = {?} and (u.perms != \'pending\' OR m.email IS NOT NULL)
-                       GROUP BY  letter
-                       ORDER BY  letter', $globals->asso('id'));
+        if (Env::b('admin')) {
+            $uids = XDB::fetchColumn('SELECT  uid
+                                        FROM  groupex.membres
+                                       WHERE  asso_id = {?} AND perms = \'admin\'',
+                                     $globals->asso('id'));
         } else {
-            $res = XDB::iterRow(
-                        'SELECT  IF(m.origine="X",u.promo,
-                                    IF(m.origine="ext", "extérieur", "personne morale")) AS promo,
-                                 COUNT(*), IF(m.origine="X",u.promo,"") AS promo_o
-                           FROM  groupex.membres AS m
-                      LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
-                          WHERE  asso_id = {?}
-                       GROUP BY  promo
-                       ORDER BY  promo_o DESC', $globals->asso('id'));
+            $uids = XDB::fetchColumn('SELECT  uid
+                                        FROM  groupex.membres
+                                       WHERE  asso_id = {?}', $globals->asso('id'));
         }
-        $alphabet = array();
-        $nb_tot = 0;
-        while (list($char, $nb) = $res->next()) {
-            $alphabet[] = $char;
-            $nb_tot += $nb;
-            if (Env::has($group) && $char == strtoupper(Env::v($group))) {
-                $tot = $nb;
-            }
-        }
-        $page->assign('group', $group);
-        $page->assign('request_group', Env::v($group));
-        $page->assign('only_admin', Env::has('admin'));
-        $page->assign('alphabet', $alphabet);
-        $page->assign('nb_tot',   $nb_tot);
-
-        $ofs   = Env::i('offset');
-        $tot   = Env::v($group) ? $tot : $nb_tot;
-        $nbp   = intval(($tot-1)/NB_PER_PAGE);
-        $links = array();
-        if ($ofs) {
-            $links['précédent'] = $ofs-1;
-        }
-        for ($i = 0; $i <= $nbp; $i++) {
-            $links[(string)($i+1)] = $i;
-        }
-        if ($ofs < $nbp) {
-            $links['suivant'] = $ofs+1;
-        }
-        if (count($links)>1) {
-            $page->assign('links', $links);
-        }
-
-        $ini = '';
-        if (Env::has('initiale')) {
-            $ini = 'AND IF(m.origine="X",
-                           IF(u.nom_usage<>"", u.nom_usage, u.nom),
-                           m.nom) LIKE "'.addslashes(Env::v('initiale')).'%"';
-        } elseif (Env::has('promo')) {
-            $ini = 'AND IF(m.origine="X", u.promo, IF(m.origine="ext", "extérieur", "personne morale")) = "'
-                 .addslashes(Env::v('promo')).'"';
-        } elseif (Env::has('admin')) {
-            $ini = 'AND m.perms = "admin"';
-        }
-
-        $ann = XDB::iterator(
-                  "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
-                           IF(m.origine='X',u.prenom,m.prenom) AS prenom,
-                           IF(m.origine='X', u.promo, IF(m.origine='ext', 'extérieur', 'personne morale')) AS promo,
-                           IF(m.origine='X',u.promo,'') AS promo_o,
-                           IF(m.origine='X' AND u.perms != 'pending',a.alias,m.email) AS email,
-                           IF(m.origine='X',FIND_IN_SET('femme', u.flags), m.sexe) AS femme,
-                           m.perms='admin' AS admin,
-                           m.origine='X' AS x,
-                           u.perms!='pending' AS inscrit,
-                           m.comm as comm,
-                           m.uid, IF(e.email IS NULL AND FIND_IN_SET('googleapps', u.mail_storage) = 0, NULL, 1) AS actif
-                     FROM  groupex.membres AS m
-                LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
-                LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
-                LEFT JOIN  emails          AS e ON ( e.flags = 'active' AND e.uid = m.uid)
-                    WHERE  m.asso_id = {?} $ini
-                           AND (m.origine != 'X' OR u.perms != 'pending' OR m.email IS NOT NULL)
-                 GROUP BY  m.uid
-                 ORDER BY  $tri
-                    LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
-        $page->assign('ann', $ann);
-        $page->jsonAssign('ann', $ann);
+        $users = User::getBuildUsersWithUIDs($uids, $sort,
+                                             NB_PER_PAGE, $ofs * NB_PER_PAGE);
+        $page->assign('pages', (count($uids) + NB_PER_PAGE - 1) / NB_PER_PAGE);
+        $page->assign('order', $sort);
+        $page->assign('users', $users);
+        $page->assign('only_admin', Env::b('admin'));
     }
 
     function handler_trombi(&$page)
