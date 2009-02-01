@@ -128,9 +128,9 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
   {/foreach}
 </table>
 
-{if $pages ge 1}
+{if $pages gt 1}
 <p class="descr" style="text-align: center">
-{section name="links" loop=$pages min=1}
+{section name="links" loop=$pages}
 {if $smarty.section.links.index eq $current}
 <span class="erreur">{$smarty.section.links.iteration}</span>
 {else}

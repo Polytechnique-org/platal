@@ -138,13 +138,9 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        $res = XDB::query("SELECT logo, logo_mime
-                             FROM groupex.asso WHERE id = {?}",
-                          $globals->asso('id'));
-        list($logo, $logo_mime) = $res->fetchOneRow();
-
+        $logo = $globals->asso('logo');
         if (!empty($logo)) {
-            header("Content-type: $mime");
+            header('Content-type: ' . $globals->asso('logo_mime'));
             header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
             header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
             header('Cache-Control: no-cache, must-revalidate');
@@ -339,7 +335,7 @@ class XnetGrpModule extends PLModule
             $users = $globals->asso()->getMembers($sort, NB_PER_PAGE, $ofs * NB_PER_PAGE);
             $count = $globals->asso()->getMemberCount();
         }
-        $page->assign('pages', ($count + NB_PER_PAGE - 1) / NB_PER_PAGE);
+        $page->assign('pages', floor(($count + NB_PER_PAGE - 1) / NB_PER_PAGE));
         $page->assign('current', $ofs);
         $page->assign('order', $sort);
         $page->assign('users', $users);

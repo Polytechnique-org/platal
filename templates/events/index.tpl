@@ -242,10 +242,7 @@ Bienvenue {$smarty.session.display_name}{if $birthday}
             <img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/>
           </a>
         </div>
-        Annonce proposée par
-        <a href="profile/{$ev.hruid}" class="popup2">
-          {$ev.prenom} {$ev.nom} {$ev.promo_display}
-        </a>
+        Annonce proposée par {profile user=$ev.user_id sex=false promo=true}
       </td>
     </tr>
   </table>
