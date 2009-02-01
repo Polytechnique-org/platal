@@ -51,6 +51,6 @@
 {if t($pl_extra_header)}
 {$pl_extra_header|smarty:nodefaults}
 {/if}
-<title>{$pl_title}</title>
+{if t($pl_title)}<title>{$pl_title}</title>{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
