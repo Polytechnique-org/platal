@@ -24,7 +24,7 @@ function smarty_compiler_icon($tag_attrs, &$compiler)
     extract($compiler->_parse_attrs($tag_attrs));
 
     $alt = 'alt=""';
-    
+
     if (isset($title)) {
         $title = pl_entities(trim($title, '\'"'), ENT_QUOTES);
         $alt = 'alt="'.$title.'"';
@@ -33,7 +33,7 @@ function smarty_compiler_icon($tag_attrs, &$compiler)
 
     $name = pl_entities(trim($name, '\'"'), ENT_QUOTES);
     $name = "images/icons/$name.gif";
-    if ($full) {
+    if (isset($full) && $full) {
         global $globals;
         $name = $globals->baseurl . '/' . $name;
     }
