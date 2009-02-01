@@ -27,7 +27,7 @@
     {if $smarty.session.auth ge AUTH_COOKIE}
     <tr>
       <th colspan="2">
-        Recherche simple <span class="noprint">[<a href="search/adv">&gt;&gt;&gt;&nbsp;Recherche&nbsp;avancée</a>]</span>
+        Recherche simple
       </th>
     </tr>
     <tr>
@@ -36,19 +36,20 @@
       </td>
     </tr>
     <tr class="noprint">
-      <td style="width: 78%">
+      <td style="width: 60%">
         <input type="checkbox" name="with_soundex" id="with_soundex" value="1" {if $smarty.request.with_soundex}checked="checked"{/if} /> <label for="with_soundex">Activer la recherche par proximité sonore.</label>
         <br /><input type='checkbox' name='order' id="order" value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} /> <label for="order">Mettre les fiches modifiées récemment en premier.</label>
         <br /><input type='checkbox' name='nonins' id="nonins" {if $smarty.request.nonins}checked='checked'{/if} value='1' /> <label for="nonins">Chercher uniquement des non inscrits.</label>
       </td>
     {else}
     <tr class="noprint">
-      <td style="width: 78%">
+      <td style="width: 60%">
         <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
       </td>
     {/if}
-      <td class="right" style="vertical-align: middle">
-        <input type="submit" value="Chercher" />
+      <td class="right">
+        [<a href="search/adv">Recherche avancée</a>]
+        <br /><br /><input type="submit" value="Chercher" />
       </td>
     </tr>
   </table>
