@@ -327,6 +327,7 @@ class XnetGrpModule extends PLModule
         $page->changeTpl('xnetgrp/annuaire.tpl');
 
         $sort = Env::s('order', 'directory_name');
+        $ofs  = Env::i('offset');
 
         if (Env::b('admin')) {
             $uids = XDB::fetchColumn('SELECT  uid
@@ -341,6 +342,7 @@ class XnetGrpModule extends PLModule
         $users = User::getBuildUsersWithUIDs($uids, $sort,
                                              NB_PER_PAGE, $ofs * NB_PER_PAGE);
         $page->assign('pages', (count($uids) + NB_PER_PAGE - 1) / NB_PER_PAGE);
+        $page->assign('current', $ofs);
         $page->assign('order', $sort);
         $page->assign('users', $users);
         $page->assign('only_admin', Env::b('admin'));

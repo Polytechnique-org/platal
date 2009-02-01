@@ -151,10 +151,8 @@ class User extends PlUser
             $with_pd = false;
             foreach (explode(',', $sorted) as $part) {
                 $desc = ($part[0] == '-');
-                echo $part . '=' . $desc;
                 if ($desc) {
                     $part = substr($part, 1);
-                    echo $part;
                 }
                 switch ($part) {
                   case 'promo':

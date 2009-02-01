@@ -126,11 +126,23 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
   {/foreach}
 </table>
 
+{if $pages ge 1}
 <p class="descr" style="text-align: center">
-{foreach from=$links item=ofs key=txt}
-<a href="{$platal->ns}annuaire?offset={$ofs}&amp;initiale={$smarty.request.initiale}&amp;order={$sort}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
-{/foreach}
+{section name="links" loop=$pages min=1}
+{if $smarty.section.links.index eq $current}
+<span class="erreur">{$smarty.section.links.iteration}</span>
+{else}
+{if $smarty.section.links.first}
+<a href="{$platal->ns}annuaire?offset={$current-1}&amp;order={$order}&amp;admin={$only_admin}">précédente</a>
+{/if}
+<a href="{$platal->ns}annuaire?offset={$smarty.section.links.index}&amp;order={$order}&amp;admin={$only_admin}">{$smarty.section.links.iteration}</a>
+{if $smarty.section.links.last}
+<a href="{$platal->ns}annuaire?offset={$current+1}&amp;order={$order}&amp;admin={$only_admin}">suivante</a>
+{/if}
+{/if}
+{/section}
 </p>
+{/if}
 
 {if $broken}
 <p class="smaller">
