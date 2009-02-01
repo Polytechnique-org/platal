@@ -49,7 +49,7 @@ abstract class PlPage extends Smarty
                       $globals->spoolroot . '/plugins/');
         $this->config_dir    = $globals->spoolroot . '/configs/';
 
-        $this->compile_check = !empty($globals->debug);
+        $this->compile_check = !empty($globals->debug) || $globals->smarty_autocompile;
 
         $this->_errors    = array('errors' => array());
         $this->_jsonVars  = array();

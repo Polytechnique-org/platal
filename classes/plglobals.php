@@ -64,6 +64,12 @@ class PlGlobals
                                // 'r'  => read/only
                                // ''   => site down
 
+    /** Tell smarty to check the timestamps of the templates to decide
+     * whether recompile the template or not. If this option is false and
+     * debug mode is not activate, templates won't be recompile if they changed.
+     */
+    public $smarty_autocompile = false;
+
     /** BaseURL of the site.
      * This is read from the HTTP headers if available but you MUST give a
      * default value for this field in you configuration file (because, this
