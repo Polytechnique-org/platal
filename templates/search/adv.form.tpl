@@ -173,7 +173,7 @@
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <th colspan="2">
-        Recherche avancée [<a href="search">&lt;&lt;&lt;&nbsp;Recherche simple</a>]
+        Recherche avancée [<a href="search">Revenir à la Recherche simple</a>]
       </th>
     </tr>
     <tr>

@@ -95,16 +95,16 @@ notre base de données.
 <h2>Raccourcis...</h2>
 <p>
   Un certain nombre de raccourcis permettent d'accéder plus rapidement au contenu du site&nbsp;:
-  <ul>
-    <li><code>fiche:prenom.nom.promo</code> ouvre la fiche du camarade indiquée&nbsp;;</li>
-    <li><code>ref:prenom.nom.promo</code> ouvre la fiche référent du camarade indiquée&nbsp;;</li>
-    <li><code>doc:phrase</code> recherche <em>phrase</em> dans la documentation du site&nbsp;;</li>
-    {if hasPerm('admin')}
-    <li><code>admin:prenom.nom.promo</code> ouvre la fiche d'administration du camarade indiquée&nbsp;;</li>
-    <li><code>ax:prenom.nom.promo</code> ouvre la fiche ax du camarade concerné.</li>
-    {/if}
-  </ul>
 </p>
+<ul>
+  <li><code>fiche:prenom.nom.promo</code> ouvre la fiche du camarade indiquée&nbsp;;</li>
+  <li><code>ref:prenom.nom.promo</code> ouvre la fiche référent du camarade indiquée&nbsp;;</li>
+  <li><code>doc:phrase</code> recherche <em>phrase</em> dans la documentation du site&nbsp;;</li>
+  {if hasPerm('admin')}
+  <li><code>admin:prenom.nom.promo</code> ouvre la fiche d'administration du camarade indiquée&nbsp;;</li>
+  <li><code>ax:prenom.nom.promo</code> ouvre la fiche ax du camarade concerné.</li>
+  {/if}
+</ul>
 
 <p>
   Ces raccourcis fonctionnement également depuis le lien de recherche rapide disponible sur toutes les pages
