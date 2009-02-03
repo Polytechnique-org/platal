@@ -21,6 +21,9 @@
 
 interface UserFilterCondition
 {
+    const COND_TRUE  = 'TRUE';
+    const COND_FALSE = 'FALSE';
+
     /** Check that the given user matches the rule.
      */
     public function buildCondition(UserFilter &$uf);
@@ -29,6 +32,13 @@ interface UserFilterCondition
 abstract class UFC_OneChild implements UserFilterCondition
 {
     protected $child;
+
+    public function __construct($child = null)
+    {
+        if (!is_null($child) && ($child instanceof UserFilterCondition)) {
+            $this->setChild($child);
+        }
+    }
 
     public function setChild(UserFilterCondition &$cond)
     {
@@ -40,9 +50,30 @@ abstract class UFC_NChildren implements UserFilterCondition
 {
     protected $children = array();
 
+    public function __construct()
+    {
+        $children = func_get_args();
+        foreach ($children as &$child) {
+            if (!is_null($child) && ($child instanceof UserFilterCondition)) {
+                $this->addChild($child);
+            }
+        }
+    }
+
     public function addChild(UserFilterCondition &$cond)
     {
         $this->children[] =& $cond;
+    }
+
+    protected function catConds(array $cond, $op, $fallback)
+    {
+        if (count($cond) == 0) {
+            return $fallback;
+        } else if (count($cond) == 1) {
+            return $cond[0];
+        } else {
+            return '(' . implode(') ' . $op . ' (', $conds) . ')';
+        }
     }
 }
 
@@ -50,7 +81,7 @@ class UFC_True implements UserFilterCondition
 {
     public function buildCondition(UserFilter &$uf)
     {
-        return 'TRUE';
+        return self::COND_TRUE;
     }
 }
 
@@ -58,7 +89,7 @@ class UFC_False implements UserFilterCondition
 {
     public function buildCondition(UserFilter &$uf)
     {
-        return 'FALSE';
+        return self::COND_FALSE;
     }
 }
 
@@ -66,7 +97,14 @@ class UFC_Not extends UFC_OneChild
 {
     public function buildCondition(UserFilter &$uf)
     {
-        return 'NOT (' . $this->child->buildCondition($uf) . ')';
+        $val = $this->child->buildCondition($uf);
+        if ($val == self::COND_TRUE) {
+            return self::COND_FALSE;
+        } else if ($val == self::COND_FALSE) {
+            return self::COND_TRUE;
+        } else {
+            return 'NOT (' . $val . ')';
+        }
     }
 }
 
@@ -75,13 +113,21 @@ class UFC_And extends UFC_NChildren
     public function buildCondition(UserFilter &$uf)
     {
         if (empty($this->children)) {
-            return 'FALSE';
+            return self::COND_FALSE;
         } else {
+            $true = self::COND_FALSE;
             $conds = array();
             foreach ($this->children as &$child) {
-                $conds[] = $child->buildCondition($uf);
+                $val = $child->buildCondition($uf);
+                if ($val == self::COND_TRUE) {
+                    $true = self::COND_TRUE;
+                } else if ($val == self::COND_FALSE) {
+                    return self::COND_FALSE;
+                } else {
+                    $conds[] = $val;
+                }
             }
-            return '(' . implode (') AND (', $conds) . ')';
+            return $this->catConds($conds, 'AND', $true);
         }
     }
 }
@@ -91,13 +137,21 @@ class UFC_Or extends UFC_NChildren
     public function buildCondition(UserFilter &$uf)
     {
         if (empty($this->children)) {
-            return 'TRUE';
+            return self::COND_TRUE;
         } else {
+            $true = self::COND_TRUE;
             $conds = array();
             foreach ($this->children as &$child) {
-                $conds[] = $child->buildCondition($uf);
+                $val = $child->buildCondition($uf);
+                if ($val == self::COND_TRUE) {
+                    return self::COND_TRUE;
+                } else if ($val == self::COND_FALSE) {
+                    $true = self::COND_FALSE;
+                } else {
+                    $conds[] = $val;
+                }
             }
-            return '(' . implode (') OR (', $conds) . ')';
+            return $this->catConds($conds, 'OR', $true);
         }
     }
 }
@@ -189,6 +243,15 @@ class UserFilter
     private $root;
     private $query = null;
 
+    public function __construct($cond = null)
+    {
+        if (!is_null($cond)) {
+            if ($cond instanceof UserFilterCondition) {
+                $this->setCondition($cond);
+            }
+        }
+    }
+
     private function buildQuery()
     {
         if (is_null($this->query)) {
@@ -261,28 +324,17 @@ class UserFilter
 
     static public function getLegacy($promo_min, $promo_max)
     {
-        $min = null;
         if ($promo_min != 0) {
             $min = new UFC_Promo('>=', self::GRADE_ING, intval($promo_min));
+        } else {
+            $min = new UFC_True();
         }
-        $max = null;
         if ($promo_max != 0) {
             $max = new UFC_Promo('<=', self::GRADE_ING, intval($promo_max));
-        }
-        $uf = new UserFilter();
-        if (is_null($max) && is_null($min)) {
-            $uf->setCondition(new UFC_True());
-        } else if (is_null($max)) {
-            $uf->setCondition($min);
-        } else if (is_null($min)) {
-            $uf->setCondition($max);
         } else {
-            $cond = new UFC_And();
-            $cond->addChild($min);
-            $cond->addChild($max);
-            $uf->setCondition($cond);
+            $max = new UFC_True();
         }
-        return $uf;
+        return new UserFilter(new UFC_And($min, $max));
     }
 
 
