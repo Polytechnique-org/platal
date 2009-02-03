@@ -157,6 +157,15 @@ class EventsModule extends PLModule
             pl_redirect('events#newsid'.$eid);
         }
 
+
+        $uf = new UserFilter(new UFC_And(new UFC_Group('Polytechnique.org'),
+                                         new UFC_Promo('=', UserFilter::GRADE_ING, 2000),
+                                         new UFC_Not(new UFC_Sex(User::GENDER_FEMALE))));
+        $users = $uf->getUsers();
+        foreach ($users as $user) {
+            echo $user->fullName() . '<br />';
+        }
+
         function next_event(PlIterator &$it)
         {
             $user = S::user();

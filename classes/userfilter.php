@@ -72,7 +72,7 @@ abstract class UFC_NChildren implements UserFilterCondition
         } else if (count($cond) == 1) {
             return $cond[0];
         } else {
-            return '(' . implode(') ' . $op . ' (', $conds) . ')';
+            return '(' . implode(') ' . $op . ' (', $cond) . ')';
         }
     }
 }
@@ -238,6 +238,81 @@ class UFC_Name implements UserFilterCondition
     }
 }
 
+class UFC_Dead implements UserFilterCondition
+{
+    private $dead;
+    public function __construct($dead)
+    {
+        $this->dead = $dead;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        if ($this->dead) {
+            return 'p.deathdate IS NOT NULL';
+        } else {
+            return 'p.deathdate IS NULL';
+        }
+    }
+}
+
+class UFC_Registered implements UserFilterCondition
+{
+    private $active;
+    public function __construct($active = false)
+    {
+        $this->only_active = $active;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        if ($this->active) {
+            return 'a.uid IS NOT NULL AND a.state = \'active\'';
+        } else {
+            return 'a.uid IS NOT NULL AND a.state != \'pending\'';
+        }
+    }
+}
+
+class UFC_Sex implements UserFilterCondition
+{
+    private $sex;
+    public function __construct($sex)
+    {
+        $this->sex = $sex;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        if ($this->sex != User::GENDER_MALE && $this->sex != User::GENDER_FEMALE) {
+            return self::COND_FALSE;
+        } else {
+            return XDB::format('p.sex = {?}', $this->sex);
+        }
+    }
+}
+
+class UFC_Group implements UserFilterCondition
+{
+    private $group;
+    private $admin;
+    public function __construct($group, $admin = false)
+    {
+        $this->group = $group;
+        $this->admin = $admin;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addGroupFilter($this->group);
+        $where = 'gpm' . $sub . '.perms IS NOT NULL';
+        if ($this->admin) {
+            $where .= ' AND gpm' . $sub . '.perms = \'admin\'';
+        }
+        return $where;
+    }
+}
+
 class UserFilter
 {
     private $root;
@@ -280,7 +355,7 @@ class UserFilter
             }
             $str .= $table . ' AS ' . $key;
             if (isset($infos[2])) {
-                $str .= ' ON (' . str_replace(array('$ME', '$PID'), array($key, 'p.pid'), $infos[2]) . ')';
+                $str .= ' ON (' . str_replace(array('$ME', '$PID', '$UID'), array($key, 'p.pid', 'a.uid'), $infos[2]) . ')';
             }
             $str .= "\n";
         }
@@ -289,7 +364,7 @@ class UserFilter
 
     private function buildJoins()
     {
-        $joins = $this->educationJoins() + $this->nameJoins();
+        $joins = $this->educationJoins() + $this->nameJoins() + $this->groupJoins();
         return $this->formatJoin($joins);
     }
 
@@ -307,13 +382,34 @@ class UserFilter
      */
     public function filter(array $users)
     {
+        $this->buildQuery();
+        $table = array();
+        $uids  = array();
+        foreach ($users as $user) {
+            $uids[] = $user->id();
+            $table[$user->id()] = $user;
+        }
+        $fetched = XDB::fetchColumn('SELECT  a.uid
+                                    ' . $this->query . ' AND a.uid IN (' . implode(', ', $uids) . ')
+                                   GROUP BY  a.uid');
         $output = array();
-        foreach ($users as &$user) {
-            if ($this->checkUser($user)) {
-                $output[] = $user;
-            }
+        foreach ($fetched as $uid) {
+            $output[] = $table[$uid];
         }
         return $output;
+    }
+
+    public function getUIDs()
+    {
+        $this->buildQuery();
+        return XDB::fetchColumn('SELECT  a.uid
+                                ' . $this->query . '
+                               GROUP BY  a.uid');
+    }
+
+    public function getUsers()
+    {
+        return User::getBuildUsersWithUIDs($this->getUIDs());
     }
 
     public function setCondition(UserFilterCondition &$cond)
@@ -443,6 +539,46 @@ class UserFilter
                 $joins['pe' . $sub] = array('left', 'profile_education', '$ME.uid = $PID');
                 $joins['pee' . $sub] = array('inner', 'profile_education_enum', '$ME.id = pe' . $sub . '.eduid');
                 $joins['pede' . $sub] = array('inner', 'profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid');
+            }
+        }
+        return $joins;
+    }
+
+
+    /** GROUPS
+     */
+    private $gpm = array();
+    private $gpm_o = 0;
+    public function addGroupFilter($group = null)
+    {
+        if (!is_null($group)) {
+            if (ctype_digit($group)) {
+                $index = $sub = $group;
+            } else {
+                $index = $group;
+                $sub   = preg_replace('/[^a-z0-9]/i', '', $group);
+            }
+        } else {
+            $sub = 'group_' . $this->gpm_o++;
+            $index = null;
+        }
+        $sub = '_' . $sub;
+        $this->gpm[$sub] = $index;
+        return $sub;
+    }
+
+    private function groupJoins()
+    {
+        $joins = array();
+        foreach ($this->gpm as $sub => $key) {
+            if (is_null($key)) {
+                $joins['gpa' . $sub] = array('inner', 'groupex.asso');
+                $joins['gpm' . $sub] = array('left', 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
+            } else if (ctype_digit($key)) {
+                $joins['gpm' . $sub] = array('left', 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = ' . $key);
+            } else {
+                $joins['gpa' . $sub] = array('inner', 'groupex.asso', XDB::format('$ME.diminutif = {?}', $key));
+                $joins['gpm' . $sub] = array('left', 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
             }
         }
         return $joins;
