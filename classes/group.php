@@ -25,9 +25,6 @@ class Group
     public $shortname;
     private $data = array();
 
-    private $members = null;
-    private $admins  = null;
-
     private function __construct(array $data)
     {
         foreach ($data as $key=>$value) {
@@ -55,44 +52,23 @@ class Group
         return property_exists($this, $name) || isset($this->data[$name]);
     }
 
-    public function getMemberUIDs()
+    private function getUF($admin = false, $extra_cond = null, $sort = null)
     {
-        if (is_null($this->members)) {
-            $this->members = XDB::fetchColumn('SELECT  uid
-                                                 FROM  groupex.membres
-                                                WHERE  asso_id = {?}', $this->id);
+        $cond = new UFC_Group($this->id, $admin);
+        if (!is_null($extra_cond)) {
+            $cond = new UFC_And($cond, $extra_cond);
         }
-        return $this->members;
+        return new UserFilter($cond, $sort);
     }
 
-    public function getMembers($sortby = null, $count = null, $offset = null)
+    public function getMembers($extra_cond = null, $sort = null)
     {
-        return User::getBuildUsersWithUIDs($this->getMemberUIDs(), $sortby, $count, $offset);
+        return $this->getUF(false, $extra_cond, $sort);
     }
 
-    public function getMemberCount()
+    public function getAdmins($extra_cond = null, $sort = null)
     {
-        return count($this->getMemberUIDs());
-    }
-
-    public function getAdminUIDs()
-    {
-        if (is_null($this->admins)) {
-            $this->admins = XDB::fetchColumn('SELECT  uid
-                                                FROM  groupex.membres
-                                               WHERE  asso_id = {?} AND perms = \'admin\'', $this->id);
-        }
-        return $this->admins;
-    }
-
-    public function getAdmins($sortby = null, $count = null, $offset = null)
-    {
-        return User::getBuildUsersWithUIDs($this->getAdminUIDs(), $sortby, $count, $offset);
-    }
-
-    public function getAdminCount()
-    {
-        return count($this->getAdminUIDs());
+        return $this->getUF(true, $extra_cond, $sort);
     }
 
     static public function get($id)

@@ -139,58 +139,11 @@ class User extends PlUser
         throw new UserNotFoundException($res->fetchColumn(1));
     }
 
-    protected static function loadMainFieldsFromUIDs(array $uids, $sorted = null, $count = null, $offset = null)
+    protected static function loadMainFieldsFromUIDs(array $uids)
     {
         global $globals;
         $joins = '';
-        $orderby = '';
         $fields = array();
-        if (!is_null($sorted)) {
-            $order = array();
-            $with_ap = false;
-            $with_pd = false;
-            foreach (explode(',', $sorted) as $part) {
-                $desc = ($part[0] == '-');
-                if ($desc) {
-                    $part = substr($part, 1);
-                }
-                switch ($part) {
-                  case 'promo':
-                    $with_pd = true;
-                    $with_ap = true;
-                    $part = 'IF (pd.promo IS NULL, \'ext\', pd.promo)';
-                    break;
-                  case 'full_name':
-                    $part = 'a.full_name';
-                    break;
-                  case 'display_name':
-                    $part = 'a.display_name';
-                    break;
-                  case 'directory_name':
-                    $part = 'pd.directory_name';
-                    $with_pd = true;
-                    $with_ap = true;
-                    break;
-                  default:
-                    $part = null;
-                }
-                if (!is_null($part)) {
-                    if ($desc) {
-                        $part .= ' DESC';
-                    }
-                    $order[] = $part;
-                }
-            }
-            if (count($order) > 0) {
-                if ($with_ap) {
-                    $joins .= "LEFT JOIN account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))\n";
-                }
-                if ($with_pd) {
-                    $joins .= "LEFT JOIN profile_display AS pd ON (pd.pid = ap.pid)\n";
-                }
-                $orderby = 'ORDER BY ' . implode(', ', $order);
-            }
-        }
         if ($globals->asso('id')) {
             $joins .= XDB::format("LEFT JOIN groupex.membres AS gpm ON (gpm.uid = a.uid AND gpm.asso_id = {?})\n", $globals->asso('id'));
             $fields[] = 'gpm.perms AS group_perms';
@@ -200,14 +153,6 @@ class User extends PlUser
             $fields = ', ' . implode(', ', $fields);
         } else {
             $fields = '';
-        }
-        $limit = '';
-        if (!is_null($count)) {
-            if (!is_null($offset)) {
-                $limit = ' LIMIT ' . $offset . ', ' . $count;
-            } else {
-                $limit = ' LIMIT ' . $count;
-            }
         }
         $uids = array_map(array('XDB', 'escape'), $uids);
         return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date,
@@ -223,9 +168,9 @@ class User extends PlUser
                           INNER JOIN  account_types AS at ON (at.type = a.type)
                            LEFT JOIN  aliases AS af ON (af.id = a.uid AND af.type = \'a_vie\')
                            LEFT JOIN  aliases AS ab ON (ab.id = a.uid AND FIND_IN_SET(\'bestalias\', ab.flags))
-                           ' . $joins . '
+                                   ' . $joins . '
                                WHERE  a.uid IN (' . implode(', ', $uids) . ')
-                               ' . $orderby . $limit);
+                            GROUP BY  a.uid');
     }
 
     // Implementation of the data loader.
@@ -448,12 +393,16 @@ class User extends PlUser
     }
 
     // Fetch a set of users from a list of UIDs
-    public static function getBuildUsersWithUIDs(array $uids, $sortby = null, $count = null, $offset = null)
+    public static function getBulkUsersWithUIDs(array $uids)
     {
-        $fields = self::loadMainFieldsFromUIDs($uids, $sortby, $count, $offset);
-        $users = array();
+        $fields = self::loadMainFieldsFromUIDs($uids);
+        $table = array();
         while (($list = $fields->next())) {
-            $users[] = User::getSilentWithValues(null, $list);
+            $table[$list['uid']] = User::getSilentWithValues(null, $list);
+        }
+        $users = array();
+        foreach ($uids as $uid) {
+            $users[] = $table[$uid];
         }
         return $users;
     }

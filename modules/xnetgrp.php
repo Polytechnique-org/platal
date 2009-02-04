@@ -328,13 +328,22 @@ class XnetGrpModule extends PLModule
             $ofs = 0;
         }
 
-        if (Env::b('admin')) {
-            $users = $globals->asso()->getAdmins($sort, NB_PER_PAGE, $ofs * NB_PER_PAGE);
-            $count = $globals->asso()->getAdminCount();
+        $sdesc = $sort{0} == '-';
+        $sf    = $sdesc ? substr($sort, 1) : $sort;
+        if ($sf == 'promo') {
+            $se = new UFO_Promo(null, $sdesc);
         } else {
-            $users = $globals->asso()->getMembers($sort, NB_PER_PAGE, $ofs * NB_PER_PAGE);
-            $count = $globals->asso()->getMemberCount();
+            $se = new UFO_Name($sf, null, null, $sdesc);
         }
+
+        if (Env::b('admin')) {
+            $uf = $globals->asso()->getAdmins(null, $se);
+        } else {
+            $uf = $globals->asso()->getMembers(null, $se);
+        }
+        $users = $uf->getUsers(NB_PER_PAGE, $ofs * NB_PER_PAGE);
+        $count = $uf->getTotalCount();
+
         $page->assign('pages', floor(($count + NB_PER_PAGE - 1) / NB_PER_PAGE));
         $page->assign('current', $ofs);
         $page->assign('order', $sort);
@@ -356,7 +365,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $vcard = new VCard($photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
-        $vcard->addUsers($globals->asso()->getMemberUIDs());
+        $vcard->addUsers($globals->asso()->getMembers()->getUIDs());
         $vcard->show();
     }
 
@@ -366,7 +375,7 @@ class XnetGrpModule extends PLModule
         if (is_null($filename)) {
             $filename = $globals->asso('diminutif') . '.csv';
         }
-        $users = $globals->asso()->getMembers('directory_name');
+        $users = $globals->asso()->getMembers(null, new UFO_Name('directory_name'))->getUsers();
         header('Content-Type: text/x-csv; charset=utf-8;');
         header('Pragma: ');
         header('Cache-Control: ');
@@ -730,12 +739,7 @@ class XnetGrpModule extends PLModule
 
         if ($globals->asso('notif_unsub')) {
             $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
-            $uids = XDB::fetchColumn('SELECT  uid
-                                        FROM  groupex.membres
-                                       WHERE  perms = \'admin\' AND asso_id = {?}',
-                                     $globals->asso('id'));
-            $users = User::getBuildUsersWithUIDs($uids);
-            foreach ($users as $user) {
+            foreach ($globals->asso()->getMembers()->getUsers() as $user) {
                 $mailer->addTo($user);
             }
             $mailer->assign('group', $globals->asso('nom'));

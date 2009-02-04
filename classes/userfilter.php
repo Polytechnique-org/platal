@@ -19,6 +19,11 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+
+/******************
+ * CONDITIONS
+ ******************/
+
 interface UserFilterCondition
 {
     const COND_TRUE  = 'TRUE';
@@ -173,14 +178,8 @@ class UFC_Promo implements UserFilterCondition
 
     public function buildCondition(UserFilter &$uf)
     {
-        // XXX: Definition of promotion for phds and masters might change in near future.
-        if ($this->grade == UserFilter::GRADE_ING) {
-            $promo_year = 'entry_year';
-        } else {
-            $promo_year = 'grad_year';
-        }
         $sub = $uf->addEducationFilter(true, $this->grade);
-        $field = 'pe' . $sub . '.' . $promo_year;
+        $field = 'pe' . $sub . '.' . UserFilter::promoYear($this->grade);
         return $field . ' IS NOT NULL AND ' . $field . ' ' . $this->comparison . ' ' . XDB::format('{?}', $this->promo);
     }
 }
@@ -229,7 +228,7 @@ class UFC_Name implements UserFilterCondition
         }
         $cond = $left . $op . $right;
         $conds = array($this->buildNameQuery($this->type, null, $cond, $uf));
-        if (($this->mode & self::VARIANTS) != 0) {
+        if (($this->mode & self::VARIANTS) != 0 && isset(UserFilter::$name_variants[$this->type])) {
             foreach (UserFilter::$name_variants[$this->type] as $var) {
                 $conds[] = $this->buildNameQuery($this->type, $var, $cond, $uf);
             }
@@ -313,15 +312,113 @@ class UFC_Group implements UserFilterCondition
     }
 }
 
+
+
+/******************
+ * ORDERS
+ ******************/
+
+abstract class UserFilterOrder
+{
+    protected $desc = false;
+
+    public function buildSort(UserFilter &$uf)
+    {
+        $sel = $this->getSortTokens($uf);
+        if (!is_array($sel)) {
+            $sel = array($sel);
+        }
+        if ($this->desc) {
+            foreach ($sel as $k=>$s) {
+                $sel[$k] = $s . ' DESC';
+            }
+        }
+        return $sel;
+    }
+
+    abstract protected function getSortTokens(UserFilter &$uf);
+}
+
+class UFO_Promo extends UserFilterOrder
+{
+    private $grade;
+
+    public function __construct($grade = null, $desc = false)
+    {
+        $this->grade = $grade;
+        $this->desc  = $desc;
+    }
+
+    protected function getSortTokens(UserFilter &$uf)
+    {
+        if (UserFilter::isGrade($this->grade)) {
+            $sub = $uf->addEducationFilter($this->grade);
+            return 'pe' . $sub . '.' . UserFilter::promoYear($this->grade);
+        } else {
+            $sub = $uf->addDisplayFilter();
+            return 'pd' . $sub . '.promo';
+        }
+    }
+}
+
+class UFO_Name extends UserFilterOrder
+{
+    private $type;
+    private $variant;
+    private $particle;
+
+    public function __construct($type, $variant = null, $particle = false, $desc = false)
+    {
+        $this->type = $type;
+        $this->variant = $variant;
+        $this->particle = $particle;
+        $this->desc = $desc;
+    }
+
+    protected function getSortTokens(UserFilter &$uf)
+    {
+        if (UserFilter::isDisplayName($this->type)) {
+            $sub = $uf->addDisplayFilter();
+            return 'pd' . $sub . '.' . $this->type;
+        } else {
+            $sub = $uf->addNameFilter($this->type, $this->variant);
+            if ($this->particle) {
+                return 'CONCAT(pn' . $sub . '.particle, \' \', pn' . $sub . '.name)';
+            } else {
+                return 'pn' . $sub . '.name';
+            }
+        }
+    }
+}
+
+/***********************************
+  *********************************
+          USER FILTER CLASS
+  *********************************
+ ***********************************/
+
 class UserFilter
 {
+    static private $joinMethods = array();
+
     private $root;
     private $sort = array();
     private $query = null;
     private $orderby = null;
 
+    private $lastcount = 0;
+
     public function __construct($cond = null, $sort = null)
     {
+        if (empty(self::$joinMethods)) {
+            $class = new ReflectionClass('UserFilter');
+            foreach ($class->getMethods() as $method) {
+                $name = $method->getName();
+                if (substr($name, -5) == 'Joins' && $name != 'buildJoins') {
+                    self::$joinMethods[] = $name;
+                }
+            }
+        }
         if (!is_null($cond)) {
             if ($cond instanceof UserFilterCondition) {
                 $this->setCondition($cond);
@@ -330,12 +427,27 @@ class UserFilter
         if (!is_null($sort)) {
             if ($sort instanceof UserFilterOrder) {
                 $this->addSort($sort);
+            } else if (is_array($sort)) {
+                foreach ($sort as $s) {
+                    $this->addSort($s);
+                }
             }
         }
     }
 
     private function buildQuery()
     {
+        if (is_null($this->orderby)) {
+            $orders = array();
+            foreach ($this->sort as $sort) {
+                $orders = array_merge($orders, $sort->buildSort($this));
+            }
+            if (count($orders) == 0) {
+                $this->orderby = '';
+            } else {
+                $this->orderby = 'ORDER BY  ' . implode(', ', $orders);
+            }
+        }
         if (is_null($this->query)) {
             $where = $this->root->buildCondition($this);
             $joins = $this->buildJoins();
@@ -344,9 +456,6 @@ class UserFilter
                       INNER JOIN  profiles AS p ON (p.pid = ap.pid)
                                ' . $joins . '
                            WHERE  (' . $where . ')';
-        }
-        if (is_null($this->sortby)) {
-            $this->sortby = '';
         }
     }
 
@@ -374,8 +483,35 @@ class UserFilter
 
     private function buildJoins()
     {
-        $joins = $this->educationJoins() + $this->nameJoins() + $this->groupJoins();
+        $joins = array();
+        foreach (self::$joinMethods as $method) {
+            $joins = array_merge($joins, $this->$method());
+        }
         return $this->formatJoin($joins);
+    }
+
+    private function getUIDList($uids = null, $count = null, $offset = null)
+    {
+        $this->buildQuery();
+        $limit = '';
+        if (!is_null($count)) {
+            if (!is_null($offset)) {
+                $limit = XDB::format('LIMIT {?}, {?}', $offset, $count);
+            } else {
+                $limit = XDB::format('LIMIT {?}', $count);
+            }
+        }
+        $cond = '';
+        if (!is_null($uids)) {
+            $cond = ' AND a.uid IN (' . implode(', ', $uids) . ')';
+        }
+        $fetched = XDB::fetchColumn('SELECT SQL_CALC_FOUND_ROWS  a.uid
+                                    ' . $this->query . $cond . '
+                                   GROUP BY  a.uid
+                                    ' . $this->orderby . '
+                                    ' . $limit);
+        $this->lastcount = (int)XDB::fetchOneCell('SELECT FOUND_ROWS()');
+        return $fetched;
     }
 
     /** Check that the user match the given rule.
@@ -390,7 +526,7 @@ class UserFilter
 
     /** Filter a list of user to extract the users matching the rule.
      */
-    public function filter(array $users)
+    public function filter(array $users, $count = null, $offset = null)
     {
         $this->buildQuery();
         $table = array();
@@ -399,9 +535,7 @@ class UserFilter
             $uids[] = $user->id();
             $table[$user->id()] = $user;
         }
-        $fetched = XDB::fetchColumn('SELECT  a.uid
-                                    ' . $this->query . ' AND a.uid IN (' . implode(', ', $uids) . ')
-                                   GROUP BY  a.uid');
+        $fetched = $this->getUIDList($uids, $count, $offset);
         $output = array();
         foreach ($fetched as $uid) {
             $output[] = $table[$uid];
@@ -409,17 +543,19 @@ class UserFilter
         return $output;
     }
 
-    public function getUIDs()
+    public function getUIDs($count = null, $offset = null)
     {
-        $this->buildQuery();
-        return XDB::fetchColumn('SELECT  a.uid
-                                ' . $this->query . '
-                               GROUP BY  a.uid');
+        return $this->getUIDList(null, $count, $offset);
     }
 
-    public function getUsers()
+    public function getUsers($count = null, $offset = null)
     {
-        return User::getBuildUsersWithUIDs($this->getUIDs());
+        return User::getBulkUsersWithUIDs($this->getUIDs($count, $offset));
+    }
+
+    public function getTotalCount()
+    {
+        return $this->lastcount;
     }
 
     public function setCondition(UserFilterCondition &$cond)
@@ -430,8 +566,8 @@ class UserFilter
 
     public function addSort(UserFilterOrder &$sort)
     {
-        $this->sort[] =& $sort;
-        $this->sortby = null;
+        $this->sort[] = $sort;
+        $this->orderby = null;
     }
 
     static public function getLegacy($promo_min, $promo_max)
@@ -450,29 +586,65 @@ class UserFilter
     }
 
 
+    /** DISPLAY
+     */
+    private $pd = false;
+    public function addDisplayFilter()
+    {
+        $this->pd = true;
+        return '';
+    }
+
+    private function displayJoins()
+    {
+        if ($this->pd) {
+            return array('pd' => array('left', 'profile_display', '$ME.pid = $PID'));
+        } else {
+            return array();
+        }
+    }
+
     /** NAMES
      */
+    /* name tokens */
     const LASTNAME  = 'lastname';
     const FIRSTNAME = 'firstname';
     const NICKNAME  = 'nickname';
     const PSEUDONYM = 'pseudonym';
     const NAME      = 'name';
+    /* name variants */
     const VN_MARITAL  = 'marital';
     const VN_ORDINARY = 'ordinary';
     const VN_OTHER    = 'other';
     const VN_INI      = 'ini';
+    /* display names */
+    const DN_FULL      = 'directory_name';
+    const DN_DISPLAY   = 'yourself';
+    const DN_YOURSELF  = 'yourself';
+    const DN_DIRECTORY = 'directory_name';
+    const DN_PRIVATE   = 'private_name';
+    const DN_PUBLIC    = 'public_name';
+    const DN_SHORT     = 'short_name';
+    const DN_SORT      = 'sort_name';
 
     static public $name_variants = array(
         self::LASTNAME => array(self::VN_MARITAL, self::VN_ORDINARY),
-        self::FIRSTNAME => array(self::VN_ORDINARY, self::VN_INI, self::VN_OTHER),
-        self::NICKNAME => array(), self::PSEUDONYM => array(),
-        self::NAME => array());
+        self::FIRSTNAME => array(self::VN_ORDINARY, self::VN_INI, self::VN_OTHER)
+    );
 
     static public function assertName($name)
     {
         if (!Profile::getNameTypeId($name)) {
             Platal::page()->kill('Invalid name type');
         }
+    }
+
+    static public function isDisplayName($name)
+    {
+        return $name == self::DN_FULL || $name == self::DN_DISPLAY
+            || $name == self::DN_YOURSELF || $name == self::DN_DIRECTORY
+            || $name == self::DN_PRIVATE || $name == self::DN_PUBLIC
+            || $name == self::DN_SHORT || $name == self::DN_SORT;
     }
 
     private $pn  = array();
@@ -519,6 +691,12 @@ class UserFilter
         if (!self::isGrade($grade)) {
             Platal::page()->killError("Diplôme non valide");
         }
+    }
+
+    static public function promoYear($grade)
+    {
+        // XXX: Definition of promotion for phds and masters might change in near future.
+        return ($grade == UserFilter::GRADE_ING) ? 'entry_year' : 'grad_year';
     }
 
     private $pepe     = array();
