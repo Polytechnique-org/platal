@@ -287,7 +287,7 @@ class UFC_Sex implements UserFilterCondition
         if ($this->sex != User::GENDER_MALE && $this->sex != User::GENDER_FEMALE) {
             return self::COND_FALSE;
         } else {
-            return XDB::format('p.sex = {?}', $this->sex);
+            return XDB::format('p.sex = {?}', $this->sex == User::GENDER_FEMALE ? 'female' : 'male');
         }
     }
 }
@@ -316,13 +316,20 @@ class UFC_Group implements UserFilterCondition
 class UserFilter
 {
     private $root;
+    private $sort = array();
     private $query = null;
+    private $orderby = null;
 
-    public function __construct($cond = null)
+    public function __construct($cond = null, $sort = null)
     {
         if (!is_null($cond)) {
             if ($cond instanceof UserFilterCondition) {
                 $this->setCondition($cond);
+            }
+        }
+        if (!is_null($sort)) {
+            if ($sort instanceof UserFilterOrder) {
+                $this->addSort($sort);
             }
         }
     }
@@ -337,6 +344,9 @@ class UserFilter
                       INNER JOIN  profiles AS p ON (p.pid = ap.pid)
                                ' . $joins . '
                            WHERE  (' . $where . ')';
+        }
+        if (is_null($this->sortby)) {
+            $this->sortby = '';
         }
     }
 
@@ -416,6 +426,12 @@ class UserFilter
     {
         $this->root =& $cond;
         $this->query = null;
+    }
+
+    public function addSort(UserFilterOrder &$sort)
+    {
+        $this->sort[] =& $sort;
+        $this->sortby = null;
     }
 
     static public function getLegacy($promo_min, $promo_max)
