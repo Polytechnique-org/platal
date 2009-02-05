@@ -369,11 +369,13 @@ class GoogleAppsAccount
         if (!$this->pending_create) {
             // Retrieves information on the new account.
             // TODO: retreive first_name and last_name from the profile.
-            $res = XDB::query(
-                "SELECT  nom, nom_usage, prenom
-                   FROM  auth_user_md5
-                  WHERE  user_id = {?}", $this->user->id());
-            list($nom, $nom_usage, $prenom) = $res->fetchOneRow();
+            if (!$user->hasProfile()) {
+                $prenom = $user->displayName();
+                $nom    = $user->fullName();
+            } else {
+                $prenom = $user->profile()->firstName();
+                $nom    = $user->profile()->lastName();
+            }
 
             // Adds an 'unprovisioned' entry in the gapps_accounts table.
             XDB::execute(
@@ -389,8 +391,7 @@ class GoogleAppsAccount
                 $password_sync,
                 $redirect_mails,
                 $this->g_account_name,
-                $prenom,
-                ($nom_usage ? $nom_usage : $nom));
+                $prenom, $nom);
 
             // Adds the creation job in the GApps queue.
             $this->create_queue_job(
@@ -398,7 +399,7 @@ class GoogleAppsAccount
                 array(
                     'username' => $this->g_account_name,
                     'first_name' => $prenom,
-                    'last_name' => ($nom_usage ? $nom_usage : $nom),
+                    'last_name' => $nom,
                     'password' => $password,
                 ));
 

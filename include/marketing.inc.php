@@ -187,7 +187,8 @@ class Marketing
 
     static public function getAliveUsersCount()
     {
-        return new UserFilter(new UFC_Not(new UFC_Dead()))->getTotalCount();
+        $uf = new UserFilter(new UFC_Not(new UFC_Dead()));
+        return $uf->getTotalCount();
     }
 
     static public function relance(PlUser &$user, $nbx = -1)
@@ -198,9 +199,9 @@ class Marketing
             $nbx = self::getAliveUsersCount();
         }
 
-        $res = XDB:i:fetchOneCell('SELECT  r.date, r.email, r.bestalias
-                                     FROM  register_pending
-                                    WHERE  r.hash = \'INSCRIT\' AND uid = {?}',
+        $res = XDB::fetchOneCell('SELECT  r.date, r.email, r.bestalias
+                                    FROM  register_pending
+                                   WHERE  r.hash = \'INSCRIT\' AND uid = {?}',
                                    $user->id());
         if (!$res) {
             return false;
