@@ -185,23 +185,27 @@ class Marketing
         }
     }
 
-    static public function relance($uid, $nbx = -1)
+    static public function getAliveUsersCount()
+    {
+        return new UserFilter(new UFC_Not(new UFC_Dead()))->getTotalCount();
+    }
+
+    static public function relance(PlUser &$user, $nbx = -1)
     {
         global $globals;
 
         if ($nbx < 0) {
-            $res = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
-            $nbx = $res->fetchOneCell();
+            $nbx = self::getAliveUsersCount();
         }
 
-        $res = XDB::query("SELECT  r.date, u.promo, u.nom, u.prenom, r.email, r.bestalias
-                             FROM  register_pending AS r
-                       INNER JOIN  auth_user_md5    AS u ON u.user_id = r.uid
-                            WHERE  hash != 'INSCRIT' AND uid = {?} AND
-                                   (TO_DAYS(relance) IS NULL OR TO_DAYS(relance) < TO_DAYS(NOW()))",
-                          $uid);
-        if (!list($date, $promo, $nom, $prenom, $email, $alias) = $res->fetchOneRow()) {
+        $res = XDB:i:fetchOneCell('SELECT  r.date, r.email, r.bestalias
+                                     FROM  register_pending
+                                    WHERE  r.hash = \'INSCRIT\' AND uid = {?}',
+                                   $user->id());
+        if (!$res) {
             return false;
+        } else {
+            list($date, $email, $alias) = $res;
         }
 
         $hash     = rand_url_id(12);
@@ -221,8 +225,8 @@ class Marketing
         $mymail->send();
         XDB::execute('UPDATE  register_pending
                          SET  hash={?}, password={?}, relance=NOW()
-                       WHERE  uid={?}', $hash, $pass_encrypted, $uid);
-        return "$prenom $nom ($promo)";
+                       WHERE  uid={?}', $hash, $pass_encrypted, $user->id());
+        return $user->fullName();
     }
 }
 
@@ -275,8 +279,7 @@ class AnnuaireMarketing implements MarketingEngine
         $page->assign('intro', $this->getIntro());
         $page->assign('u', $user);
         $page->assign('sign', $this->getSignature());
-        $res = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE perms IN ('user', 'admin') AND deces = 0");
-        $page->assign('num_users', $res->fetchOneCell());
+        $page->assign('num_users', self::getAliveUsersCount());
     }
 
     public function getText(array $user)

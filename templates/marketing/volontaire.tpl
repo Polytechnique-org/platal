@@ -46,7 +46,7 @@ Choix de la promo&nbsp;:
   </tr>
   {iterate from=$addr item=it}
   <tr class="{cycle values="pair,impair"}">
-    <td><a href="marketing/private/{$it.user_id}">{$it.nom} {$it.prenom}</a></td>
+    <td><a href="marketing/private/{$it.uid}">{profile user=$it.uid link=false promo=true}</a></td>
     <td>{$it.email}</td>
     <td>{$it.forlife}</td>
   </tr>

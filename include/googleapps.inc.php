@@ -360,7 +360,8 @@ class GoogleAppsAccount
     }
 
     // Creates a new Google Apps account with the @p local parameters.
-    public function create($password_sync, $password, $redirect_mails) {
+    public function create($password_sync, $password, $redirect_mails)
+    {
         if ($this->g_status != NULL) {
             return;
         }

@@ -24,7 +24,7 @@
 <h1>Inscrits des 7 derniers jours</h1>
 
 <p>
-{$ins->total()} Polytechniciens se sont inscrits ces 7 derniers jours !
+{$users|@count} Polytechniciens se sont inscrits ces 7 derniers jours !
 </p>
 
 <div class="right">
@@ -38,18 +38,17 @@
     <th>Promo</th>
     <th>Nom</th>
   </tr>
-{iterate item=in from=$ins}
+{foreach item=user from=$users}
   <tr class="{cycle values="impair,pair"}">
-    <td class="center">{$in.date_ins|date_format:"%x %X"}</td>
+    <td class="center">{$user->registration_date|date_format:"%x %X"}</td>
     <td class="center">
-      <a href="marketing/promo/{$in.promo}">{$in.promo}</a>
+      <a href="marketing/promo/{$user->promo()}">{$user->promo()}</a>
     </td>
     <td>
-      <a href="profile/{$in.forlife}" class="popup2">
-        {$in.nom} {$in.prenom}</a>
+      {profile user=$user}
     </td>
   </tr>
-{/iterate}
+{/foreach}
 </table>
 
 <div class="right">

@@ -22,15 +22,7 @@
 
 <form action="marketing/promo/" method="post" onsubmit="this.action += this.promo.value">
   <div class="center">
-    <a href="marketing/promo/{$promo-10}" title="-10"><img src="images/icons/resultset_first.gif" alt="[&lt;&lt;]" /></a>
-    <a href="marketing/promo/{$promo-1}" title="-1"><img src="images/icons/resultset_previous.gif" alt="[&lt;]" /></a>
-
-    &nbsp;
-    Promo&nbsp;:<input type="text" name="promo" value="{$promo}" size="4" maxlength="4" /><input type="submit" value="GO" />
-    &nbsp;
-
-    <a href="marketing/promo/{$promo+1}" title="+1"><img src="images/icons/resultset_next.gif" alt="[&gt;]" /></a>
-    <a href="marketing/promo/{$promo+10}" title="+10"><img src="images/icons/resultset_last.gif" alt="[&gt;&gt;]" /></a>
+    Promo&nbsp;:<input type="text" name="promo" value="{$promo}" size="5" maxlength="5" /><input type="submit" value="GO" />
   </div>
 </form>
 
@@ -52,31 +44,30 @@
       <th>Statut</th>
       <th>&nbsp;</th>
     </tr>
-    {iterate from=$nonins item=it}
+    {foreach from=$nonins item=it}
     <tr class="{cycle values="pair,impair"}">
-      <td>{$it.nom} {$it.prenom}</td>
-      <td>{if $it.last_known_email}{mailto address=$it.last_known_email}{/if}</td>
+      <td>{profile user=$it}</td>
+      <td>{if $it->lastKnownEmail()}{mailto address=$it->lastKnownEmail()}{/if}</td>
       <td class="center">
-        {if $it.dern_rel && $it.dern_rel != '0000-00-00'}
-        Relance le&nbsp;: {$it.dern_rel}
+        {if $it->lastMarketingRelance() && $it->lastMarketingRelance() != '0000-00-00'}
+        Relance le&nbsp;: {$it->lastMarketingRelance()}
         {elseif $it.email}
-        En cours&nbsp;: {$it.email}
+        En cours&nbsp;: {$it->lastKnownEmail()}
         {else}
         -
         {/if}
       </td>
       <td class="center">
-        <a href="marketing/private/{$it.user_id}">{icon name=wrench title="Marketing"}</a>
-        <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$it.matricule_ax}">{*
-          *}{icon name=user_gray title="fiche AX"}</a>
+        <a href="marketing/private/{$it->id()}">{icon name=wrench title="Marketing"}</a>
+        <a href="profile/ax/{$it->login()}">{icon name=user_gray title="fiche AX"}</a>
       </td>
     </tr>
-    {/iterate}
+    {/foreach}
   </table>
 </form>
 
 <p>
-{$nonins->total()} Polytechniciens de la promo {$promo} ne sont pas inscrits !
+{$nonins|@count} Polytechniciens de la promo {$promo} ne sont pas inscrits !
 </p>
 
 

@@ -355,6 +355,38 @@ class User extends PlUser
         return $this->login() . '@' . $globals->mail->domain2;
     }
 
+
+    /** Get marketing informations
+     */
+    private function fetchMarketingData()
+    {
+        if (isset($this->last_known_email)) {
+            return;
+        }
+        $infos = XDB::fetchOneAssoc('SELECT  IF (MAX(m.last) > p.relance, MAX(m.last), p.relance) AS last_relance,
+                                             p.email AS last_known_email
+                                       FROM  register_pending AS p
+                                  LEFT JOIN  register_marketing AS m ON (p.uid = m.uid)
+                                      WHERE  p.uid = {?}
+                                   GROUP BY  p.uid', $this->id());
+        if (!$infos) {
+            $infos = array('last_relance' => null, 'last_known_email' => null);
+        }
+        $this->fillFromArray($infos);
+    }
+
+    public function lastMarketingRelance()
+    {
+        $this->fetchMarketingData();
+        return $this->last_relance;
+    }
+
+    public function lastKnownEmail()
+    {
+        $this->fetchMarketingData();
+        return $this->last_known_email;
+    }
+
     // Return permission flags for a given permission level.
     public static function makePerms($perms, $is_admin)
     {
@@ -395,6 +427,9 @@ class User extends PlUser
     // Fetch a set of users from a list of UIDs
     public static function getBulkUsersWithUIDs(array $uids)
     {
+        if (count($uids) == 0) {
+            return array();
+        }
         $fields = self::loadMainFieldsFromUIDs($uids);
         $table = array();
         while (($list = $fields->next())) {

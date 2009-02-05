@@ -173,14 +173,21 @@ class UFC_Promo implements UserFilterCondition
         $this->grade = $grade;
         $this->comparison = $comparison;
         $this->promo = $promo;
-        UserFilter::assertGrade($this->grade);
+        if ($this->grade != UserFilter::DISPLAY) {
+            UserFilter::assertGrade($this->grade);
+        }
     }
 
     public function buildCondition(UserFilter &$uf)
     {
-        $sub = $uf->addEducationFilter(true, $this->grade);
-        $field = 'pe' . $sub . '.' . UserFilter::promoYear($this->grade);
-        return $field . ' IS NOT NULL AND ' . $field . ' ' . $this->comparison . ' ' . XDB::format('{?}', $this->promo);
+        if ($this->grade == UserFilter::DISPLAY) {
+            $sub = $uf->addDisplayFilter();
+            return XDB::format('pd' . $sub . '.promo = {?}', $this->promo);
+        } else {
+            $sub = $uf->addEducationFilter(true, $this->grade);
+            $field = 'pe' . $sub . '.' . UserFilter::promoYear($this->grade);
+            return $field . ' IS NOT NULL AND ' . $field . ' ' . $this->comparison . ' ' . XDB::format('{?}', $this->promo);
+        }
     }
 }
 
@@ -239,37 +246,49 @@ class UFC_Name implements UserFilterCondition
 
 class UFC_Dead implements UserFilterCondition
 {
-    private $dead;
-    public function __construct($dead)
+    private $comparison;
+    private $date;
+
+    public function __construct($comparison = null, $date = null)
     {
-        $this->dead = $dead;
+        $this->comparison = $comparison;
+        $this->date = $date;
     }
 
     public function buildCondition(UserFilter &$uf)
     {
-        if ($this->dead) {
-            return 'p.deathdate IS NOT NULL';
-        } else {
-            return 'p.deathdate IS NULL';
+        $str = 'p.deathdate IS NOT NULL';
+        if (!is_null($this->comparison)) {
+            $str .= ' AND p.deathdate ' . $this->comparison . ' ' . XDB::format('{?}', date('Y-m-d', $this->date));
         }
+        return $str;
     }
 }
 
 class UFC_Registered implements UserFilterCondition
 {
     private $active;
-    public function __construct($active = false)
+    private $comparison;
+    private $date;
+
+    public function __construct($active = false, $comparison = null, $date = null)
     {
         $this->only_active = $active;
+        $this->comparison = $comparison;
+        $this->date = $date;
     }
 
     public function buildCondition(UserFilter &$uf)
     {
         if ($this->active) {
-            return 'a.uid IS NOT NULL AND a.state = \'active\'';
+            $date = 'a.uid IS NOT NULL AND a.state = \'active\'';
         } else {
-            return 'a.uid IS NOT NULL AND a.state != \'pending\'';
+            $date = 'a.uid IS NOT NULL AND a.state != \'pending\'';
         }
+        if (!is_null($this->comparison)) {
+            $date .= ' AND a.registration_date ' . $this->comparison . ' ' . XDB::format('{?}', date('Y-m-d', $this->date));
+        }
+        return $date;
     }
 }
 
@@ -388,6 +407,19 @@ class UFO_Name extends UserFilterOrder
                 return 'pn' . $sub . '.name';
             }
         }
+    }
+}
+
+class UFO_Registration extends UserFilterOrder
+{
+    public function __construct($desc = false)
+    {
+        $this->desc = $desc;
+    }
+
+    protected function getSortTokens(UserFilter &$uf)
+    {
+        return 'a.registration_date';
     }
 }
 
@@ -555,7 +587,13 @@ class UserFilter
 
     public function getTotalCount()
     {
-        return $this->lastcount;
+        if (is_null($this->lastcount)) {
+            return (int)XDB::fetchOneCell('SELECT  COUNT(*)
+                                          ' . $this->query . '
+                                         GROUP BY  a.uid');
+        } else {
+            return $this->lastcount;
+        }
     }
 
     public function setCondition(UserFilterCondition &$cond)
@@ -588,6 +626,7 @@ class UserFilter
 
     /** DISPLAY
      */
+    const DISPLAY = 'display';
     private $pd = false;
     public function addDisplayFilter()
     {
@@ -683,7 +722,7 @@ class UserFilter
     const GRADE_MST = 'M%';
     static public function isGrade($grade)
     {
-        return $grade == self::GRADE_ING || self::$grade == GRADE_PHD || self::$grade == GRADE_MST;
+        return $grade == self::GRADE_ING || $grade == self::GRADE_PHD || $grade == self::GRADE_MST;
     }
 
     static public function assertGrade($grade)
