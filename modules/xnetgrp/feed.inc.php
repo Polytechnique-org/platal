@@ -67,7 +67,7 @@ class XnetGrpEventFeed extends PlFeed
                             $url,
                             'L\'actualité du groupe ' . $name,
                             $url . '/logo',
-                            'xnetgrp/feed.tpl');
+                            'xnetgrp/announce-rss.tpl');
     }
 
     protected function fetch(PlUser &$user)

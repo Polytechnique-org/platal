@@ -27,44 +27,21 @@ function get_all_redirects($membres, $mls, &$client)
 
     $tos = array();
 
+    // TODO: add more filters to choose users
     if (!empty($membres)) {
-        $membres = array_map(create_function('$str', 'return "\"$str\"";'), $membres);
-        $membres = join(',', $membres);
-        $res = XDB::query(
-                    'SELECT  IF(u.nom <> "", u.nom, m.nom) AS nom,
-                             IF(u.prenom <> "", u.prenom, m.prenom) AS prenom,
-                             IF(m.email <> "", m.email, CONCAT(a.alias, "@polytechnique.org")) as email,
-                             IF(m.sexe IS NULL, FIND_IN_SET("femme", u.flags), m.sexe) AS sexe
-                       FROM  groupex.membres AS m
-                  LEFT JOIN  auth_user_md5   AS u ON (m.uid=u.user_id AND m.uid<50000)
-                  LEFT JOIN  aliases         AS a ON (a.id=u.user_id and a.type="a_vie")
-                      WHERE  asso_id = {?}
-                             AND m.origine IN (' . $membres . ')
-                             AND (m.email <> "" OR u.perms <> "pending")', $globals->asso('id'));
-        $tos = $res->fetchAllAssoc();
+        $uf = new UserFilter(new UFC_Group($globals->asso('id')))
+        $tos = $uf->getUsers();
     }
 
     foreach ($mls as $ml) {
         if (list(,$members) = $client->get_members($ml)) {
             foreach ($members as $mem) {
-                list($m, $dom) = explode('@',$mem[1]);
-                if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
-                    $res = XDB::query('SELECT  prenom, nom, FIND_IN_SET("femme", u.flags) AS sexe
-                                         FROM  auth_user_md5 AS u
-                                   INNER JOIN  aliases       AS a ON u.user_id = a.id
-                                        WHERE  a.alias = {?}', $m);
-                    if ($person = $res->fetchOneAssoc()) {
-                        $person['email'] = $mem[1];
-                        $tos[] = $person;
-                    }
+                $uf = new UserFilter(new UFC_Mail($mem[1]));
+                $user = $uf->getUsers();
+                if ($user) {
+                    $tos[] = $user;
                 } else {
-                    $res = XDB::query('SELECT prenom, nom, sexe FROM groupex.membres WHERE email={?}', $mem[1]);
-                    if ($person = $res->fetchOneAssoc()) {
-                        $person['email'] = $mem[1];
-                        $tos[] = $person;
-                    } else {
-                        $tos[] = array('email' => $mem[1]);
-                    }
+                    $tos[] = $mem[1];
                 }
             }
         }
@@ -78,17 +55,22 @@ function get_all_redirects($membres, $mls, &$client)
 
 function _send_xnet_mail($user, $body, $wiki, $mailer, $replyto = null)
 {
-    $cher = isset($user['sexe']) ? ($user['sexe'] ? 'Chère' : 'Cher') : 'Cher(e)';
-    $nom  = isset($user['nom']) ? $user['nom'] : "";
-    $pnom = isset($user['prenom']) ? $user['prenom'] : preg_replace('!@.*!u', '', $user['email']);
-    $to   = isset($user['prenom']) ? "\"{$user['prenom']} {$user['nom']}\" <{$user['email']}>" : $user['email'];
+    if ($user instanceof PlUser) {
+        $cher = $user->isFemale() ? 'Chère' : 'Cher';
+        $nom  = $user->displayName();
+        $pnom = '';
+    } else {
+        $cher = 'Cher(e)';
+        $nom  = $user;
+        $pnom = '';
+    }
 
     $text = $body;
     $text = preg_replace('!<cher>!i',   $cher, $text);
     $text = preg_replace('!<nom>!i',    $nom,  $text);
     $text = preg_replace('!<prenom>!i', $pnom, $text);
 
-    $mailer->addHeader('To', $to);
+    $mailer->addTo($user);
     if ($replyto) {
         $mailer->addHeader('Reply-To', $replyto);
     }
@@ -116,9 +98,16 @@ function send_xnet_mails($from, $sujet, $body, $wiki, $tos, $replyto = null, $up
     }
 
     foreach ($tos as $user) {
-        if ($sent[$user['email']]) continue;
+        if ($user instanceof $user) {
+            $email = $user->bestEmail();
+        } else {
+            $email = $user;
+        }
+        if ($sent[$email]) {
+            continue;
+        }
         _send_xnet_mail($user, $body, $wiki, $mailer, $replyto);
-        $sent[$user['email']] = true;
+        $sent[$email] = true;
     }
 }
 
