@@ -424,6 +424,18 @@ class User extends PlUser
                $dom != $globals->mail->alias_dom2;
     }
 
+    public static function isVirtualEmailAddress($email)
+    {
+        global $globals;
+        if (strpos($email, '@') === false) {
+            return false;
+        }
+
+        list($user, $dom) = explode('@', $email);
+        return $dom == $globals->mail->alias_dom
+            || $dom == $globals->mail->alias_dom2;
+    }
+
     // Fetch a set of users from a list of UIDs
     public static function getBulkUsersWithUIDs(array $uids)
     {

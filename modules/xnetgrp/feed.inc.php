@@ -19,6 +19,43 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+class UserFilterIterator implements PlIterator
+{
+    private $it;
+    private $user;
+    public function __construct(PlIterator &$it, PlUser &$user)
+    {
+        $this->it =& $it;
+        $this->user =& $user;
+    }
+
+    public function total()
+    {
+        return $this->it->total();
+    }
+
+    public function first()
+    {
+        return $this->it->first();
+    }
+
+    public function last()
+    {
+        return $this->it->last();
+    }
+
+    public function next()
+    {
+        while ($n = $this->it->next()) {
+            $uf = UserFilter::getLegacy($n['promo_min'], $n['promo_max']);
+            if ($uf->checkUser($this->user)) {
+                return $n;
+            }
+        }
+        return null;
+    }
+}
+
 class XnetGrpEventFeed extends PlFeed
 {
     public function __construct()
@@ -30,32 +67,27 @@ class XnetGrpEventFeed extends PlFeed
                             $url,
                             'L\'actualité du groupe ' . $name,
                             $url . '/logo',
-                            'xnetgrp/announce-rss.tpl');
+                            'xnetgrp/feed.tpl');
     }
 
     protected function fetch(PlUser &$user)
     {
         global $globals;
         if (!is_null($user)) {
-            return XDB::iterator("SELECT a.id, a.titre AS title, a.texte, a.contacts,
-                                         a.create_date AS publication,
-                                         CONCAT(u2.prenom, ' ', IF(u2.nom_usage != '', u2.nom_usage, u2.nom), ' (X',  u2.promo, ')') AS author,
-                                         FIND_IN_SET('photo', a.flags) AS photo,
-                                         CONCAT({?}, '/#art', a.id) AS link
-                                   FROM auth_user_md5 AS u
-                             INNER JOIN groupex.announces AS a ON ( (a.promo_min = 0 OR a.promo_min <= u.promo)
-                                                                  AND (a.promo_max = 0 OR a.promo_max <= u.promo))
-                             INNER JOIN auth_user_md5 AS u2 ON (u2.user_id = a.user_id)
-                             WHERE u.user_id = {?} AND peremption >= NOW() AND a.asso_id = {?}",
-                                   $this->link, $user->id(), $globals->asso('id'));
+            return new UserFilterIterator(
+                   XDB::iterator("SELECT  a.id, a.titre AS title, a.texte, a.contacts,
+                                          a.create_date AS publication,
+                                          FIND_IN_SET('photo', a.flags) AS photo,
+                                          CONCAT({?}, '/#art', a.id) AS link
+                                    FROM  groupex.announces AS a
+                                   WHERE  peremption >= NOW() AND a.asso_id = {?}",
+                                   $this->link, $globals->asso('id'), $user));
         } else {
-            return  XDB::iterator("SELECT a.id, a.titre AS title, a.texte, a.create_date AS publication,
-                                         CONCAT(u.prenom, ' ', IF(u.nom_usage != '', u.nom_usage, u.nom), ' (X',  u.promo, ')') AS author,
-                                         CONCAT({?}, '/#art', a.id) AS link,
-                                         NULL AS photo, NULL AS contacts
-                                    FROM groupex.announces AS a
-                              INNER JOIN auth_user_md5 AS u USING(user_id)
-                                   WHERE FIND_IN_SET('public', a.flags) AND peremption >= NOW() AND a.asso_id = {?}",
+            return  XDB::iterator("SELECT  a.id, a.titre AS title, a.texte, a.create_date AS publication,
+                                           CONCAT({?}, '/#art', a.id) AS link,
+                                           NULL AS photo, NULL AS contacts
+                                     FROM  groupex.announces AS a
+                                    WHERE  FIND_IN_SET('public', a.flags) AND peremption >= NOW() AND a.asso_id = {?}",
                                   $this->link, $globals->asso('id'));
         }
     }

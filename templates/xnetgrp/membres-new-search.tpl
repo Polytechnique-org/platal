@@ -20,19 +20,19 @@
 {*                                                                        *}
 {**************************************************************************}
 
-  {if !$choix}
+  {if t($too_many)}
   Les critères de recherche ne sont pas assez précis.
-  {elseif !$choix->total()}
+  {elseif $users|@count eq 0}
   Aucun camarade non-inscrit ne correspond aux informations fournies.
-  {elseif $choix->total()}
+  {else}
   Camarades correspondants&nbsp;:
   <select name="userid" onchange="document.getElementById('marketing').style.display = (this.value == 0 ? 'none' : '')">
     <option value="0"></option>
-    {iterate item=x from=$choix}
-    <option value="{$x.user_id}" {if $choix->total() == 1}selected="selected"{/if}>{$x.prenom} {$x.nom} (X{$x.promo})</option>
-    {/iterate}
+    {foreach item=user from=$users}
+    <option value="{$user->id()}" {if $users|@count == 1}selected="selected"{/if}>{profile user=$user link=false promo=true}</option>
+    {/foreach}
   </select>
-  <span id="marketing" {if $choix->total() != 1}style="display: none"{/if}><br />
+  <span id="marketing" {if $users|@count != 1}style="display: none"{/if}><br />
     <label><input type="checkbox" name="market" checked="checked"
         onchange="document.getElementById('from').style.display = (this.checked ? '' : 'none')"/>
     Lui envoyer un marketing</label>

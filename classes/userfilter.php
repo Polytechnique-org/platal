@@ -331,6 +331,30 @@ class UFC_Group implements UserFilterCondition
     }
 }
 
+class UFC_Email implements UserFilterCondition
+{
+    private $email;
+    public function __construct($email)
+    {
+        $this->email = $email;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        if (User::isForeignEmailAddress($this->email)) {
+            $sub = $uf->addEmailRedirectFilter($this->email);
+            return XDB::format('e' . $sub . '.email IS NOT NULL OR a.email = {?}', $this->email);
+        } else {
+            if (User::isVirtualEmailAddress($this->email)) {
+                $sub = $uf->addVirtualEmailFilter($this->email);
+            } else {
+                list($user, $domain) = explode('@', $this->email);
+                $sub = $uf->addAliasFilter($user);
+            }
+            return 'al' . $sub . '.alias IS NOT NULL';
+        }
+    }
+}
 
 
 /******************
@@ -438,7 +462,7 @@ class UserFilter
     private $query = null;
     private $orderby = null;
 
-    private $lastcount = 0;
+    private $lastcount = null;
 
     public function __construct($cond = null, $sort = null)
     {
@@ -588,6 +612,7 @@ class UserFilter
     public function getTotalCount()
     {
         if (is_null($this->lastcount)) {
+            $this->buildQuery();
             return (int)XDB::fetchOneCell('SELECT  COUNT(*)
                                           ' . $this->query . '
                                          GROUP BY  a.uid');
@@ -623,6 +648,26 @@ class UserFilter
         return new UserFilter(new UFC_And($min, $max));
     }
 
+    static private function getDBSuffix($string)
+    {
+        return preg_replace('/[^a-z0-9]/i', '', $string);
+    }
+
+
+    private $option = 0;
+    private function register_optional(array &$table, $val)
+    {
+        if (is_null($val)) {
+            $sub   = $this->option++;
+            $index = null;
+        } else {
+            $sub   = self::getDBSuffix($val);
+            $index = $val;
+        }
+        $sub = '_' . $sub;
+        $table[$sub] = $index;
+        return $sub;
+    }
 
     /** DISPLAY
      */
@@ -687,7 +732,6 @@ class UserFilter
     }
 
     private $pn  = array();
-    private $pno = 0;
     public function addNameFilter($type, $variant = null)
     {
         if (!is_null($variant)) {
@@ -699,7 +743,7 @@ class UserFilter
         self::assertName($ft);
 
         if (!is_null($variant) && $variant == 'other') {
-            $sub .= $this->pno++;
+            $sub .= $this->option++;
         }
         $this->pn[$sub] = Profile::getNameTypeId($ft);
         return $sub;
@@ -740,12 +784,11 @@ class UserFilter
 
     private $pepe     = array();
     private $with_pee = false;
-    private $pe_g     = 0;
     public function addEducationFilter($x = false, $grade = null)
     {
         if (!$x) {
-            $index = $this->pe_g;
-            $sub   = $this->pe_g++;
+            $index = $this->option;
+            $sub   = $this->option++;
         } else {
             self::assertGrade($grade);
             $index = $grade;
@@ -781,7 +824,6 @@ class UserFilter
     /** GROUPS
      */
     private $gpm = array();
-    private $gpm_o = 0;
     public function addGroupFilter($group = null)
     {
         if (!is_null($group)) {
@@ -789,10 +831,10 @@ class UserFilter
                 $index = $sub = $group;
             } else {
                 $index = $group;
-                $sub   = preg_replace('/[^a-z0-9]/i', '', $group);
+                $sub   = self::getDBSuffix($group);
             }
         } else {
-            $sub = 'group_' . $this->gpm_o++;
+            $sub = 'group_' . $this->option++;
             $index = null;
         }
         $sub = '_' . $sub;
@@ -812,6 +854,58 @@ class UserFilter
             } else {
                 $joins['gpa' . $sub] = array('inner', 'groupex.asso', XDB::format('$ME.diminutif = {?}', $key));
                 $joins['gpm' . $sub] = array('left', 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
+            }
+        }
+        return $joins;
+    }
+
+    /** EMAILS
+     */
+    private $e = array();
+    public function addEmailRedirectFilter($email = null)
+    {
+        return $this->register_optional($this->e, $email);
+    }
+
+    private $ve = array();
+    public function addVirtualEmailFilter($email = null)
+    {
+        return $this->register_optional($this->ve, $email);
+    }
+
+    private $al = array();
+    public function addAliasFilter($alias = null)
+    {
+        return $this->register_optional($this->al, $alias);
+    }
+
+    private function emailJoins()
+    {
+        global $globals;
+        $joins = array();
+        foreach ($this->e as $sub=>$key) {
+            if (is_null($key)) {
+                $joins['e' . $sub] = array('left', 'emails', '$ME.uid = $UID AND $ME.flags != \'filter\'');
+            } else {
+                $joins['e' . $sub] = array('left', 'emails', XDB::format('$ME.uid = $UID AND $ME.flags != \'filter\' AND $ME.email = {?}', $key));
+            }
+        }
+        foreach ($this->ve as $sub=>$key) {
+            if (is_null($key)) {
+                $joins['v' . $sub] = array('left', 'virtual', '$ME.type = \'user\'');
+            } else {
+                $joins['v' . $sub] = array('left', 'virtual', XDB::format('$ME.type = \'user\' AND $ME.alias = {?}', $key));
+            }
+            $joins['vr' . $sub] = array('inner', 'virtual_redirect', '$ME.vid = v' . $sub . '.vid');
+            $joins['al' . $sub] = array('left', 'aliases', XDB::format('$ME.id = $UID AND (CONCAT($ME.alias, \'@\', {?}) = vr'. $sub . '.redirect
+                                                                       OR CONCAT($ME.alias, \'@\', {?}) = vr'. $sub . '.redirect)', 
+                                                                       $globals->mail->domain, $globals->mail->domain2));
+        }
+        foreach ($this->al as $sub=>$key) {
+            if (is_null($key)) {
+                $joins['al' . $sub] = array('left', 'aliases', '$ME.id = $UID');
+            } else {
+                $joins['al' . $sub] = array('left', 'aliases', XDB::format('$ME.id = $UID AND $ME.alias = {?}', $key));
             }
         }
         return $joins;

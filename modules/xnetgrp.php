@@ -553,14 +553,11 @@ class XnetGrpModule extends PLModule
             }
         }
 
-        $it = XDB::iterator("SELECT  IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
-                                     u.prenom, u.promo, u.hruid, s.ts AS date
+        $it = XDB::iterator('SELECT  s.uid, a.hruid, s.ts AS date
                                FROM  groupex.membres_sub_requests AS s
-                         INNER JOIN  auth_user_md5 AS u ON (s.uid = u.user_id)
-                              WHERE  asso_id = {?}
-                           ORDER BY  nom, prenom",
-                           $globals->asso('id'));
-
+                         INNER JOIN  accounts AS a ON(s.uid = a.uid)
+                              WHERE  s.asso_id = {?}
+                           ORDER BY  s.ts',  $globals->asso('id'));
         $page->changeTpl('xnetgrp/subscribe-valid.tpl');
         $page->assign('valid', $it);
     }
@@ -598,8 +595,8 @@ class XnetGrpModule extends PLModule
 
         $this->load('mail.inc.php');
         $page->changeTpl('xnetgrp/annuaire-admin.tpl');
-        $mmlist = new MMList(S::v('uid'), S::v('password'),
-                             $globals->asso('mail_domain'));
+        $user = S::user();
+        $mmlist = new MMList($user, $globals->asso('mail_domain'));
         $lists  = $mmlist->get_lists();
         if (!$lists) $lists = array();
         $listes = array_map(create_function('$arr', 'return $arr["list"];'), $lists);
@@ -616,16 +613,10 @@ class XnetGrpModule extends PLModule
         $not_in_group_ext = array();
 
         foreach ($subscribers as $mail) {
-            $res = XDB::query(
-                       'SELECT  COUNT(*)
-                          FROM  groupex.membres AS m
-                     LEFT JOIN  auth_user_md5   AS u ON (m.uid=u.user_id AND m.uid<50000)
-                     LEFT JOIN  aliases         AS a ON (a.id=u.user_id and a.type="a_vie")
-                         WHERE  asso_id = {?} AND
-                                (m.email = {?} OR CONCAT(a.alias, "@polytechnique.org") = {?})',
-                        $globals->asso('id'), $mail, $mail);
-            if ($res->fetchOneCell() == 0) {
-                if (strstr($mail, '@polytechnique.org') === false) {
+            $uf = new UserFilter(new UFC_And(new UFC_Group($globals->asso('id')),
+                                             new UFC_Email($mail)));
+            if ($uf->getTotalCount() == 0) {
+                if (User::isForeignEmailAddress($mail)) {
                     $not_in_group_ext[] = $mail;
                 } else {
                     $not_in_group_x[] = $mail;
@@ -661,12 +652,10 @@ class XnetGrpModule extends PLModule
             }
         } else {
             if (isvalid_email($email)) {
-                if (Env::v('x') && Env::has('userid') && Env::i('userid')) {
+                if (Env::v('x') && Env::i('userid')) {
                     $uid = Env::i('userid');
-                    $res = XDB::query("SELECT *
-                                         FROM auth_user_md5
-                                        WHERE user_id = {?} AND perms = 'pending'", $uid);
-                    if ($res->numRows() == 1) {
+                    $user = User::getWithUID($uid);
+                    if ($user && $user->state == 'pending') {
                         if (Env::v('market')) {
                             $market = Marketing::get($uid, $email);
                             if (!$market) {
@@ -699,35 +688,34 @@ class XnetGrpModule extends PLModule
     function handler_admin_member_new_ajax(&$page)
     {
         header('Content-Type: text/html; charset="UTF-8"');
-        $page->changeTpl('xnetgrp/membres-new-search.tpl', NO_SKIN);
-        $res = null;
+        $page->changeTpl('xnetgrp/membres-new-search.tpl',  NO_SKIN);
+        $users = array();
         if (Env::has('login')) {
-            require_once 'user.func.inc.php';
-            $res = get_not_registered_user(Env::v('login'), true);
+            $user = User::getSilent(Env::t('login'));
+            if ($user && $user->state != 'pending') {
+                $users = array($user);
+            }
         }
-        if (is_null($res)) {
-            list($nom, $prenom) = str_replace(array('-', ' ', "'"), '%', array(Env::v('nom'), Env::v('prenom')));
-            $where = "perms = 'pending'";
+        if (empty($users)) {
+            list($nom, $prenom) = str_replace(array('-', ' ', "'"), '%', array(Env::t('nom'), Env::t('prenom')));
+            $cond = new UFC_And(new UFC_Not(new UFC_Registered()));
             if (!empty($nom)) {
-                $where .= " AND nom LIKE '%$nom%'";
+                $cond->addChild(new UFC_Name(UserFilter::LASTNAME, $nom, UFC_Name::CONTAINS));
             }
             if (!empty($prenom)) {
-                $where .= " AND prenom LIKE '%$prenom%'";
+                $cond->addChild(new UFC_Name(UserFilter::FIRSTNAME, $prenom, UFC_Name::CONTAINS));
             }
-            if (preg_match('/^[0-9]{4}$/', Env::v('promo'))) {
-                $where .= " AND promo = " . Env::i('promo');
-            } elseif (preg_match('/^[0-9]{2}$/', Env::v('promo'))) {
-                $where .= " AND MOD(promo, 100) = " . Env::i('promo');
-            } elseif (Env::has('promo')) {
-                return;
+            if (Env::i('promo')) {
+                $cond->addChild(new UFC_Promo('=', UserFilter::GRADE_ING, Env::i('promo')));
             }
-            $res = XDB::iterator("SELECT user_id, nom, prenom, promo
-                                    FROM auth_user_md5
-                                   WHERE $where");
+            $uf = new UserFilter($cond);
+            $users = $uf->getUsers(30);
+            if ($uf->getTotalCount() > 30) {
+                $page->assign('too_many', true);
+                $users = array();
+            }
         }
-        if ($res && $res->total() < 30) {
-            $page->assign("choix", $res);
-        }
+        $page->assign('users', $users);
     }
 
     function unsubscribe(PlUser &$user)
@@ -1199,11 +1187,9 @@ class XnetGrpModule extends PLModule
         }
 
         if (empty($art) && !is_null($aid)) {
-            $res = XDB::query("SELECT a.*, u.nom, u.prenom, u.promo, u.hruid,
-                                      FIND_IN_SET('public', a.flags) AS public,
+            $res = XDB::query("SELECT a.*, FIND_IN_SET('public', a.flags) AS public,
                                       FIND_IN_SET('photo', a.flags) AS photo
                                  FROM groupex.announces AS a
-                           INNER JOIN auth_user_md5 AS u USING(user_id)
                                 WHERE asso_id = {?} AND a.id = {?}",
                               $globals->asso('id'), $aid);
             if ($res->numRows()) {
