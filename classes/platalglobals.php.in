@@ -53,7 +53,7 @@ class PlatalGlobals extends PlGlobals
     {
         static $aid = null;
 
-        if (is_null($aid)) {
+        if (isset($GLOBALS['IS_XNET_SITE']) && is_null($aid)) {
             $gp = Get::v('n');
             if ($p = strpos($gp, '/')) {
                 $gp = substr($gp, 0, $p);

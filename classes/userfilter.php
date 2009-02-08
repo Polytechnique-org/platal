@@ -397,6 +397,29 @@ class UFC_EmailList implements UserFilterCondition
     }
 }
 
+class UFC_Contact implements UserFilterCondition
+{
+    private $uid;
+    public function __construct($uid = null)
+    {
+        if (is_null($uid)) {
+            $this->uid = S::i('uid');
+        } else if ($uid instanceof PlUser) {
+            $this->uid = $uid->id();
+        } else if (ctype_digit($uid)) {
+            $this->uid = (int)$uid;
+        } else {
+            Platal::page()->kill("Invalid contact type");
+        }
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addContactFilter($this->uid);
+        return 'c' . $sub . '.contact IS NOT NULL';
+    }
+}
+
 /******************
  * ORDERS
  ******************/
@@ -958,7 +981,30 @@ class UserFilter
         }
         return $joins;
     }
+
+
+    /** CONTACTS
+     */
+    private $cts = array();
+    public function addContactFilter($uid = null)
+    {
+        return $this->register_optional($this->cts, is_null($uid) ? null : 'user_' . $uid);
+    }
+
+    private function contactJoins()
+    {
+        $joins = array();
+        foreach ($this->cts as $sub=>$key) {
+            if (is_null($key)) {
+                $joins['c' . $sub] = array('left', 'contacts', '$ME.contact = $UID');
+            } else {
+                $joins['c' . $sub] = array('left', 'contacts', XDB::format('$ME.uid = {?} AND $ME.contact = $UID', substr($key, 5)));
+            }
+        }
+        return $joins;
+    }
 }
+
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
