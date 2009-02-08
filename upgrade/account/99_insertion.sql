@@ -28,8 +28,17 @@ insert into accounts
 
 # Insert carnet-relative data
 insert into watch
-     select user_id as uid, watch_flags as flags, watch_last as last
-       from auth_user_quick;
+     select q.user_id as uid, q.watch_flags as flags,
+            CONCAT(IF(ws1.cid IS NULL, '', 'profile'), ',',
+                   IF(ws2.cid IS NULL, '', 'registration'), ',',
+                   IF(ws3.cid IS NULL, '', 'death'), ',',
+                   IF(ws4.cid IS NULL, '', 'birthday')) AS actions,
+            q.watch_last as last
+       from auth_user_quick as q
+  left join watch_sub as ws1 on (ws1.uid = q.user_id and ws1.cid = 1)
+  left join watch_sub as ws2 on (ws2.uid = q.user_id and ws2.cid = 2)
+  left join watch_sub as ws3 on (ws3.uid = q.user_id and ws3.cid = 3)
+  left join watch_sub as ws4 on (ws4.uid = q.user_id and ws4.cid = 4);
 
 # Insert carvas
 insert into carvas
@@ -42,6 +51,7 @@ insert into profiles
      select u.user_id AS pid, u.hruid AS hrpid, u.matricule AS xorg_id,
             u.matricule_ax AS ax_id, u.naissance AS birthdate, u.naissance_ini AS birthdate_ref,
             IF(u.deces = 0, NULL, u.deces) AS deathdate,
+            IF(u.deces = 0, NULL, u.deces) AS deathdate_rec,
             IF(FIND_IN_SET('femme', flags), 'female', 'male') AS sex,
             IF(u.section = 0, NULL, u.section) AS section,
             IF(LENGTH(u.cv) > 0, u.cv, NULL) AS cv,

@@ -347,17 +347,15 @@ abstract class ProfilePage implements PlWizardPage
                 $setting->save($this, $field, $this->values[$field]);
             }
             if ($this->changed[$field] && @$this->watched[$field]) {
-                register_profile_update($this->pid(), $field);
+                WatchProfileUpdate::register($this->profile, $field);
             }
         }
         $this->_saveData();
 
         // Update the last modification date
-        XDB::execute('REPLACE INTO  user_changes
-                               SET  user_id = {?}', $this->pid());
-        if (!S::suid()) {
-            register_watch_op($this->pid(), WATCH_FICHE);
-        }
+        XDB::execute('UPDATE  profiles
+                         SET  last_change = NOW()
+                       WHERE  pid = {?}', $this->pid());
         global $platal;
         S::logger()->log('profil', $platal->pl_self(2));
     }

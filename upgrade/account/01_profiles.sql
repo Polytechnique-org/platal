@@ -12,6 +12,7 @@ create table profiles (
   birthdate date default null,
   birthdate_ref date default null,
   deathdate date default null,
+  deathdate_rec date default null,
 
   sex enum('female', 'male') not null default 'male',
   section tinyint(2) unsigned default null,

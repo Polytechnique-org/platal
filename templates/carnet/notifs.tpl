@@ -30,8 +30,10 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
   {xsrf_token_field}
   <fieldset>
     <legend>Email</legend>
-    <label><input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
-    Recevoir un email hebdomadaire des événements que je n'ai pas déjà vus sur le site.</label><br />
+    <label>
+      <input type='checkbox' name='mail' onclick="this.form.submit();" {if $flags->hasFlag('mail')}checked="checked"{/if} />
+      Recevoir un email hebdomadaire des événements que je n'ai pas déjà vus sur le site.
+    </label><br />
     <input type='hidden' name='flags_mail' value='valider' />
   </fieldset>
 </form>
@@ -40,10 +42,22 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
   {xsrf_token_field}
   <fieldset>
     <legend>Événements à surveiller</legend>
-    {foreach from=$watch->cats() item=s key=i}
-    <label><input type='checkbox' name='sub[{$i}]' {if $watch->subs($i)}checked="checked"{/if} />
-    {$s.short} {if $s.type eq near}<sup>o</sup>{elseif $s.type eq often}<sup>*</sup>{/if}</label><br />
-    {/foreach}
+    <label>
+      <input type="checkbox" name='sub[profile]' {if $actions->hasFlag('profile')}checked="checked"{/if} />
+      Mise à jour de fiche<sup>*</sup>
+    </label><br />
+    <label>
+      <input type="checkbox" name='sub[registration]' {if $actions->hasFlag('registration')}checked="checked"{/if} />
+      Nouveaux inscrits
+    </label><br />
+    <label>
+      <input type="checkbox" name='sub[death]' {if $actions->hasFlag('death')}checked="checked"{/if} />
+      Décès
+    </label><br />
+    <label>
+      <input type="checkbox" name='sub[birthday]' {if $actions->hasFlag('birthday')}checked="checked"{/if} />
+      Anniversaires<sup>o</sup>
+    </label><br />
     <span class='smaller'><sup>*</sup>: ne concerne pas les promos (événements très fréquents).</span><br />
     <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$smarty.session.promo-1} et {$promo_sortie-2} que tu surveilles.</span>
   </fieldset>
@@ -60,8 +74,10 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
   {xsrf_token_field}
   <fieldset>
     <legend>Contacts</legend>
-    <label><input type='checkbox' name='contacts' onclick="this.form.submit();" {if
-    $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts</label><br />
+    <label>
+      <input type='checkbox' name='contacts' onclick="this.form.submit();" {if $flags->hasFlag('contacts')}checked="checked"{/if} />
+      Surveiller mes contacts
+    </label><br />
     <input type='hidden' name='flags_contacts' value='valider' />
   </fieldset>
 </form>
@@ -86,14 +102,14 @@ Attention&nbsp;: pour les promos, tu n'es pas notifié des événements trop fr�
     <input type='submit' name='del_promo' value='retirer'
       onclick="this.form.action += 'del_promo/' + this.form.promo.value;" />
     <br />
-    {if $watch->promos()|@count eq 0}
+    {if $promo_count eq 0}
     <p>Tu ne surveilles actuellement aucune promo.</p>
     {else}
-    <p>Tu surveilles les promos suivantes&nbsp;:</p>
+    <p>Tu surveilles {if $promo_count eq 1}la promotion suivante&nbsp;:{else}les promotions suivantes&nbsp;:{/if}</p>
     <ul>
-      {foreach from=$watch->promos() item=p}
-      <li>{if $p.0 eq $p.1}{$p.0}{else}{$p.0} à {$p.1}{/if}</li>
-      {/foreach}
+    {foreach from=$promo_ranges item=promos}
+      <li>{$promos[0]}{if $promos[0] neq $promos[1]} à {$promos[1]}{/if}</li>
+    {/foreach}
     </ul>
     {/if}
   </fieldset>
@@ -112,14 +128,15 @@ et cliquer sur les icones {icon name=add} pour les ajouter à cette liste.
 
 <fieldset>
   <legend>Non-inscrits</legend>
-    {if $watch->nonins()|@count eq 0}
+    {if $nonins|@count eq 0}
     Tu ne surveilles actuellement aucun non-inscrit.
-    {elseif $watch->nonins()|@count}
-    Tu surveilles {if $watch->nonins()|@count eq 1}le non-inscrit{else}les non-inscrits{/if}&nbsp;:
+    {else}
+    Tu surveilles {if $nonins|@count eq 1}le non-inscrit{else}les non-inscrits{/if}&nbsp;:
     <ul>
-    {foreach from=$watch->nonins() item=p}
+    {foreach from=$nonins item=p}
     <li>
-      {$p.prenom} {$p.nom} ({$p.promo}) <a href="carnet/notifs/del_nonins/{$p.user_id}?token={xsrf_token}">{icon name='cross' title='retirer'}</a>
+      {profile user=$p promo=true sex=true}
+      <a href="carnet/notifs/del_nonins/{$p->login()}?token={xsrf_token}">{icon name='cross' title='retirer'}</a>
     </li>
     {/foreach}
   </ul>

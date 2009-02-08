@@ -397,9 +397,9 @@ class UFC_EmailList implements UserFilterCondition
     }
 }
 
-class UFC_Contact implements UserFilterCondition
+abstract class UFC_UserRelated implements UserFilterCondition
 {
-    private $uid;
+    protected $uid;
     public function __construct($uid = null)
     {
         if (is_null($uid)) {
@@ -412,13 +412,53 @@ class UFC_Contact implements UserFilterCondition
             Platal::page()->kill("Invalid contact type");
         }
     }
+}
 
+class UFC_Contact extends UFC_UserRelated
+{
     public function buildCondition(UserFilter &$uf)
     {
         $sub = $uf->addContactFilter($this->uid);
         return 'c' . $sub . '.contact IS NOT NULL';
     }
 }
+
+class UFC_WatchRegistration extends UFC_UserRelated
+{
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addWatchRegistrationFilter($this->uid);
+        return 'wn' . $sub . '.uid IS NOT NULL';
+    }
+}
+
+class UFC_WatchPromo extends UFC_UserRelated
+{
+    private $grade;
+    public function __construct($uid = null, $grade = UserFilter::GRADE_ING)
+    {
+        parent::__construct($uid);
+        $this->grade = $grade;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sube = $uf->addEducationFilter(true, $this->grade);
+        $subw = $uf->addWatchPromoFilter($this->uid);
+        $field = 'pe' . $sube . '.' . UserFilter::promoYear($this->grade);
+        return $field . ' IS NOT NULL AND ' . $field . ' = wp' . $subw . '.promo';
+    }
+}
+
+class UFC_WatchContacts extends UFC_Contact
+{
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addWatchFilter($this->uid);
+        return 'FIND_IN_SET(\'contacts\' w' . $sub . '.flags) AND ' . parent::buildCondition($uf);
+    }
+}
+
 
 /******************
  * ORDERS
@@ -999,6 +1039,61 @@ class UserFilter
                 $joins['c' . $sub] = array('left', 'contacts', '$ME.contact = $UID');
             } else {
                 $joins['c' . $sub] = array('left', 'contacts', XDB::format('$ME.uid = {?} AND $ME.contact = $UID', substr($key, 5)));
+            }
+        }
+        return $joins;
+    }
+
+
+    /** CARNET
+     */
+    private $wn = array();
+    public function addWatchRegistrationFilter($uid = null)
+    {
+        return $this->register_optional($this->wn, is_null($uid) ? null : 'user_' . $uid);
+    }
+
+    private $wp = array();
+    public function addWatchPromoFilter($uid = null)
+    {
+        return $this->register_optional($this->wp, is_null($uid) ? null : 'user_' . $uid);
+    }
+
+    private $w = array();
+    public function addWatchFilter($uid = null)
+    {
+        return $this->register_optional($this->w, is_null($uid) ? null : 'user_' . $uid);
+    }
+
+    private function watchJoins()
+    {
+        $joins = array();
+        foreach ($this->w as $sub=>$key) {
+            if (is_null($key)) {
+                $joins['w' . $sub] = array('left', 'watch');
+            } else {
+                $joins['w' . $sub] = array('left', 'watch', XDB::format('$ME.uid = {?}', substr($key, 5)));
+            }
+        }
+        foreach ($this->wn as $sub=>$key) {
+            if (is_null($key)) {
+                $joins['wn' . $sub] = array('left', 'watch_nonins', '$ME.ni_id = $UID');
+            } else {
+                $joins['wn' . $sub] = array('left', 'watch_nonins', XDB::format('$ME.uid = {?} AND $ME.ni_id = $UID', substr($key, 5)));
+            }
+        }
+        foreach ($this->wn as $sub=>$key) {
+            if (is_null($key)) {
+                $joins['wn' . $sub] = array('left', 'watch_nonins', '$ME.ni_id = $UID');
+            } else {
+                $joins['wn' . $sub] = array('left', 'watch_nonins', XDB::format('$ME.uid = {?} AND $ME.ni_id = $UID', substr($key, 5)));
+            }
+        }
+        foreach ($this->wp as $sub=>$key) {
+            if (is_null($key)) {
+                $joins['wp' . $sub] = array('left', 'watch_promo');
+            } else {
+                $joins['wp' . $sub] = array('left', 'watch_promo', XDB::format('$ME.uid = {?}', substr($key, 5)));
             }
         }
         return $joins;

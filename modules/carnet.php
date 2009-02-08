@@ -73,89 +73,176 @@ class CarnetModule extends PLModule
         $this->_add_rss_link($page);
     }
 
-    function _handler_notifs_promos(&$page, &$watch, $action, $arg)
+    private function getSinglePromotion(PlPage &$page, $promo)
     {
-        if(preg_match('!^ *(\d{4}) *$!', $arg, $matches)) {
-            $p = intval($matches[1]);
-            if($p<1900 || $p>2100) {
-                $page->trigError("la promo entrée est invalide");
-            } else {
-                if ($action == 'add_promo') {
-                    $watch->_promos->add($p);
-                } else {
-                    $watch->_promos->del($p);
-                }
-            }
-        } elseif (preg_match('!^ *(\d{4}) *- *(\d{4}) *$!', $arg, $matches)) {
-            $p1 = intval($matches[1]);
-            $p2 = intval($matches[2]);
-            if($p1<1900 || $p1>2100) {
-                $page->trigError('la première promo de la plage entrée est invalide');
-            } elseif($p2<1900 || $p2>2100) {
-                $page->trigError('la seconde promo de la plage entrée est invalide');
-            } else {
-                if ($action == 'add_promo') {
-                    $watch->_promos->addRange($p1, $p2);
-                } else {
-                    $watch->_promos->delRange($p1, $p2);
-                }
-            }
-        } else {
-            $page->trigError("La promo (ou la plage de promo) entrée est dans un format incorrect.");
+        if (!ctype_digit($promo) || $promo < 1920 || $promo > date('Y')) {
+            $page->trigError('Promotion invalide : ' . $promo);
+            return null;
         }
+        return (int)$promo;
     }
 
-    function handler_notifs(&$page, $action = null, $arg = null)
+    private function getPromo(PlPage &$page, $promo)
+    {
+        if (strpos($promo, '-') === false) {
+            $promo = $this->getSinglePromotion($page, $promo);
+            if (!$promo) {
+                return null;
+            } else {
+                return array($promo);
+            }
+        }
+
+        list($promo1, $promo2) = explode('-', $promo);
+        $promo1 = $this->getSinglePromotion($page, $promo1);
+        if (!$promo1) {
+            return null;
+        }
+        $promo2 = $this->getSinglePromotion($page, $promo2);
+        if (!$promo2) {
+            return null;
+        }
+        if ($promo1 > $promo2) {
+            $page->trigError("Intervale non valide : " . $promo);
+            return null;
+        }
+        $array = array();
+        for ($i = $promo1 ; $i <= $promo2 ; ++$i) {
+            $array[] = $i;
+        }
+        return $array;
+    }
+
+    private function addPromo(PlPage &$page, $promo)
+    {
+        $promos = $this->getPromo($page, $promo);
+        if (!$promos || count($promos) == 0) {
+            return;
+        }
+        $to_add = array();
+        foreach ($promos as $promo) {
+            $to_add[] = XDB::format('({?}, {?})', S::i('uid'), $promo);
+        }
+        XDB::execute('INSERT IGNORE INTO  watch_promo (uid, promo)
+                                  VALUES  ' . implode(', ', $to_add));
+    }
+
+    private function delPromo(PlPage &$page, $promo)
+    {
+        $promos = $this->getPromo($page, $promo);
+        if (!$promos || count($promos) == 0) {
+            return;
+        }
+        $to_delete = array();
+        foreach ($promos as $promo) {
+            $to_delete[] = XDB::format('{?}', $promo);
+        }
+        XDB::execute('DELETE FROM  watch_promo
+                            WHERE  ' . XDB::format('uid = {?}', S::i('uid')) . '
+                                   AND promo IN (' . implode(', ', $to_delete) . ')');
+    }
+
+    public function addNonRegistered(PlPage &$page, PlUser &$user)
+    {
+        XDB::execute('INSERT IGNORE INTO  watch_nonins (uid, ni_id)
+                                  VALUES  ({?}, {?})', S::i('uid'), $user->id());
+    }
+
+    public function delNonRegistered(PlPage &$page, PlUser &$user)
+    {
+        XDB::execute('DELETE FROM  watch_nonins
+                            WHERE  uid = {?} AND ni_id = {?}',
+                    S::i('uid'), $user->id());
+    }
+
+    public function handler_notifs(&$page, $action = null, $arg = null)
     {
         $page->changeTpl('carnet/notifs.tpl');
 
-        require_once 'notifs.inc.php';
-
-        $watch = new Watch(S::v('uid'));
-
-        $res = XDB::query("SELECT promo_sortie
-                                       FROM auth_user_md5
-                                      WHERE user_id = {?}",
-                                    S::v('uid', -1));
-        $promo_sortie = $res->fetchOneCell();
-        $page->assign('promo_sortie', $promo_sortie);
-
         if ($action) {
             S::assert_xsrf_token();
-        }
-        switch ($action) {
-          case 'add_promo':
-          case 'del_promo':
-            $this->_handler_notifs_promos($page, $watch, $action, $arg);
-            break;
+            switch ($action) {
+              case 'add_promo':
+                $this->addPromo($page, $arg);
+                break;
 
-          case 'del_nonins':
-            $watch->_nonins->del($arg);
-            break;
+              case 'del_promo':
+                $this->delPromo($page, $arg);
+                break;
 
-          case 'add_nonins':
-            $watch->_nonins->add($arg);
-            break;
+              case 'del_nonins':
+                $user = User::get($arg);
+                if ($user) {
+                    $this->delNonRegistered($page, $user);
+                }
+                break;
+
+              case 'add_nonins':
+                $user = User::get($arg);
+                if ($user) {
+                    $this->addNonRegistered($page, $user);
+                }
+                break;
+            }
         }
 
         if (Env::has('subs')) {
             S::assert_xsrf_token();
-            $watch->_subs->update('sub');
+            $flags = new PlFlagSet();
+            foreach (Env::v('sub') as $key=>$value) {
+                $flags->addFlag($key, $value);
+            }
+            XDB::execute('UPDATE  watch
+                             SET  actions = {?}
+                           WHERE  uid = {?}', $flags, S::i('uid'));
         }
 
         if (Env::has('flags_contacts')) {
             S::assert_xsrf_token();
-            $watch->watch_contacts = Env::b('contacts');
-            $watch->saveFlags();
+            XDB::execute('UPDATE  watch
+                             SET  ' . XDB::changeFlag('flags', 'contacts', Env::b('contacts')) . '
+                               WHERE  uid = {?}', S::i('uid'));
         }
 
         if (Env::has('flags_mail')) {
             S::assert_xsrf_token();
-            $watch->watch_mail = Env::b('mail');
-            $watch->saveFlags();
+            XDB::execute('UPDATE  watch
+                             SET  ' . XDB::changeFlag('flags', 'mail', Env::b('mail')) . '
+                               WHERE  uid = {?}', S::i('uid'));
         }
 
-        $page->assign_by_ref('watch', $watch);
+        $user = S::user();
+        $nonins = new UserFilter(new UFC_WatchRegistration($user));
+
+        $promo = XDB::fetchColumn('SELECT  promo
+                                     FROM  watch_promo
+                                    WHERE  uid = {?}
+                                 ORDER BY  promo', S::i('uid'));
+        $page->assign('promo_count', count($promo));
+        $ranges = array();
+        $range_start  = null;
+        $range_end    = null;
+        foreach ($promo as $p) {
+            if (is_null($range_start)) {
+                $range_start = $range_end = $p;
+            } else if ($p != $range_end + 1) {
+                $ranges[] = array($range_start, $range_end);
+                $range_start = $range_end = $p;
+            } else {
+                $range_end = $p;
+            }
+        }
+        $ranges[] = array($range_start, $range_end);
+        $page->assign('promo_ranges', $ranges);
+        $page->assign('nonins', $nonins->getUsers());
+
+        list($flags, $actions) = XDB::fetchOneRow('SELECT  flags, actions
+                                                     FROM  watch
+                                                    WHERE  uid = {?}', S::i('uid'));
+        $flags = new PlFlagSet($flags);
+        $actions = new PlFlagSet($actions);
+        $page->assign('flags', $flags);
+        $page->assign('actions', $actions);
     }
 
     function handler_contacts(&$page, $action = null, $subaction = null, $ssaction = null)

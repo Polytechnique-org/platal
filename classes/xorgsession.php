@@ -321,9 +321,6 @@ class XorgSession extends PlSession
 
     public function updateNbNotifs()
     {
-        require_once 'notifs.inc.php';
-        $n = select_notifs(false, S::i('uid'), S::v('watch_last'), false);
-        S::set('notifs', $n->numRows());
     }
 
     public function setAccessCookie($replace = false, $log = true) {
