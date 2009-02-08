@@ -95,7 +95,7 @@ class XnetSession extends XorgSession
         if ($level == AUTH_SUID) {
             S::set('auth', AUTH_MDP);
         }
-        $res  = XDB::query("SELECT  a.uid, a.display_name, a.full_name,
+        $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name,
                                     a.sex = 'female' AS femme,
                                     a.email_format, a.token,
                                     at.perms, a.is_admin

@@ -66,7 +66,6 @@ class XnetGrpModule extends PLModule
     function handler_index(&$page, $arg = null)
     {
         global $globals, $platal;
-
         if (!is_null($arg)) {
             return PL_NOT_FOUND;
         }

@@ -80,9 +80,9 @@
             <td style="width: 280px">
               <a href="{if $xnet_type eq 'plan'}plan{else}groups/{$xnet_type}{/if}"><img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" /></a>
             </td>
-            {if $asso}
+            {if t($asso)}
             <td class="logo">
-              {if $asso->site}
+              {if t($asso->site)}
                 <a href="{$asso->site}"><img src='{$platal->ns}logo' alt="LOGO" height="80" /></a>
               {else}
                 <img src='{$platal->ns}logo' alt="LOGO" height="80"/>
