@@ -344,18 +344,58 @@ class UFC_Email implements UserFilterCondition
         if (User::isForeignEmailAddress($this->email)) {
             $sub = $uf->addEmailRedirectFilter($this->email);
             return XDB::format('e' . $sub . '.email IS NOT NULL OR a.email = {?}', $this->email);
+        } else if (User::isVirtualEmailAddress($this->email)) {
+            $sub = $uf->addVirtualEmailFilter($this->email);
+            return 'vr' . $sub . '.redirect IS NOT NULL';
         } else {
-            if (User::isVirtualEmailAddress($this->email)) {
-                $sub = $uf->addVirtualEmailFilter($this->email);
-            } else {
-                list($user, $domain) = explode('@', $this->email);
-                $sub = $uf->addAliasFilter($user);
-            }
+            @list($user, $domain) = explode('@', $this->email);
+            $sub = $uf->addAliasFilter($user);
             return 'al' . $sub . '.alias IS NOT NULL';
         }
     }
 }
 
+class UFC_EmailList implements UserFilterCondition
+{
+    private $emails;
+    public function __construct($emails)
+    {
+        $this->emails = $emails;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $email   = null;
+        $virtual = null;
+        $alias   = null;
+        $cond = array();
+
+        if (count($this->emails) == 0) {
+            return UserFilterCondition::COND_TRUE;
+        }
+
+        foreach ($this->emails as $entry) {
+            if (User::isForeignEmailAddress($entry)) {
+                if (is_null($email)) {
+                    $email = $uf->addEmailRedirectFilter();
+                }
+                $cond[] = XDB::format('e' . $email . '.email = {?} OR a.email = {?}', $entry, $entry);
+            } else if (User::isVirtualEmailAddress($entry)) {
+                if (is_null($virtual)) {
+                    $virtual = $uf->addVirtualEmailFilter();
+                }
+                $cond[] = XDB::format('vr' . $virtual . '.redirect IS NOT NULL AND v' . $virtual . '.alias = {?}', $entry);
+            } else {
+                if (is_null($alias)) {
+                    $alias = $uf->addAliasFilter();
+                }
+                @list($user, $domain) = explode('@', $entry);
+                $cond[] = XDB::format('al' . $alias . '.alias = {?}', $user);
+            }
+        }
+        return '(' . implode(') OR (', $cond) . ')';
+    }
+}
 
 /******************
  * ORDERS
@@ -870,9 +910,12 @@ class UserFilter
     private $ve = array();
     public function addVirtualEmailFilter($email = null)
     {
+        $this->addAliasFilter(self::ALIAS_FORLIFE);
         return $this->register_optional($this->ve, $email);
     }
 
+    const ALIAS_BEST    = 'bestalias';
+    const ALIAS_FORLIFE = 'forlife';
     private $al = array();
     public function addAliasFilter($alias = null)
     {
@@ -890,23 +933,28 @@ class UserFilter
                 $joins['e' . $sub] = array('left', 'emails', XDB::format('$ME.uid = $UID AND $ME.flags != \'filter\' AND $ME.email = {?}', $key));
             }
         }
+        foreach ($this->al as $sub=>$key) {
+            if (is_null($key)) {
+                $joins['al' . $sub] = array('left', 'aliases', '$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\')');
+            } else if ($key == self::ALIAS_BEST) {
+                $joins['al' . $sub] = array('left', 'aliases', '$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND  FIND_IN_SET(\'bestalias\', $ME.flags)');
+            } else if ($key == self::ALIAS_FORLIFE) {
+                $joins['al' . $sub] = array('left', 'aliases', '$ME.id = $UID AND $ME.type = \'a_vie\'');
+            } else {
+                $joins['al' . $sub] = array('left', 'aliases', XDB::format('$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND $ME.alias = {?}', $key));
+            }
+        }
         foreach ($this->ve as $sub=>$key) {
             if (is_null($key)) {
                 $joins['v' . $sub] = array('left', 'virtual', '$ME.type = \'user\'');
             } else {
                 $joins['v' . $sub] = array('left', 'virtual', XDB::format('$ME.type = \'user\' AND $ME.alias = {?}', $key));
             }
-            $joins['vr' . $sub] = array('inner', 'virtual_redirect', '$ME.vid = v' . $sub . '.vid');
-            $joins['al' . $sub] = array('left', 'aliases', XDB::format('$ME.id = $UID AND (CONCAT($ME.alias, \'@\', {?}) = vr'. $sub . '.redirect
-                                                                       OR CONCAT($ME.alias, \'@\', {?}) = vr'. $sub . '.redirect)', 
-                                                                       $globals->mail->domain, $globals->mail->domain2));
-        }
-        foreach ($this->al as $sub=>$key) {
-            if (is_null($key)) {
-                $joins['al' . $sub] = array('left', 'aliases', '$ME.id = $UID');
-            } else {
-                $joins['al' . $sub] = array('left', 'aliases', XDB::format('$ME.id = $UID AND $ME.alias = {?}', $key));
-            }
+            $joins['vr' . $sub] = array('left', 'virtual_redirect', XDB::format('$ME.vid = v' . $sub . '.vid
+                                                                                 AND ($ME.redirect IN (CONCAT(al_forlife.alias, \'@\', {?}),
+                                                                                                       CONCAT(al_forlife.alias, \'@\', {?}),
+                                                                                                       a.email))',
+                                                                                $globals->mail->domain, $globals->mail->domain2));
         }
         return $joins;
     }
