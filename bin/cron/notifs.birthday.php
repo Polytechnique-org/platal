@@ -22,18 +22,16 @@
 
 require('./connect.db.inc.php');
 
-$date  = date('Y-m-d', time() + 7 * 24*60*60);
-$stamp = date('Ymd000000');
-$like  = date('%-m-d', time() + 7 * 24*60*60);
-
-XDB::execute("DELETE FROM  watch_ops
-                    WHERE  cid = 4 AND date < CURDATE()");
-
-XDB::execute("INSERT INTO  watch_ops (uid, cid, known, date)
-                   SELECT  user_id, 4, $stamp, '$date'
-                     FROM  auth_user_md5
-                    WHERE  naissance LIKE '$like' AND deces=0");
-
+$it = 0;
+do {
+    XDB::execute('UPDATE  profiles
+                     SET  next_birthday = DATE_ADD(next_birthday, INTERVAL 1 YEAR)
+                   WHERE  (next_birthday != 0 AND next_birthday IS NOT NULL AND next_birthday < CURDATE())
+                           AND deathdate IS NULL');
+    ++$it;
+    $affected = XDB::affectedRows();
+    echo "Iteration $it => $affected changes\n";
+} while ($affected > 0);
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

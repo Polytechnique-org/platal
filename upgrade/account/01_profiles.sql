@@ -11,6 +11,7 @@ create table profiles (
   # birthdate and birthdate given by reference directory (library, school...)
   birthdate date default null,
   birthdate_ref date default null,
+  next_birthday date default null,
   deathdate date default null,
   deathdate_rec date default null,
 

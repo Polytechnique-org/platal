@@ -292,6 +292,40 @@ class UFC_Registered implements UserFilterCondition
     }
 }
 
+class UFC_ProfileUpdated implements UserFilterCondition
+{
+    private $comparison;
+    private $date;
+
+    public function __construct($comparison = null, $date = null)
+    {
+        $this->comparison = $comparison;
+        $this->date = $date;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        return 'p.last_change ' . $this->comparison . XDB::format(' {?}', date('Y-m-d H:i:s', $this->date));
+    }
+}
+
+class UFC_Birthday implements UserFilterCondition
+{
+    private $comparison;
+    private $date;
+
+    public function __construct($comparison = null, $date = null)
+    {
+        $this->comparison = $comparison;
+        $this->date = $date;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        return 'p.next_birthday ' . $this->comparison . XDB::format(' {?}', date('Y-m-d', $this->date));
+    }
+}
+
 class UFC_Sex implements UserFilterCondition
 {
     private $sex;
@@ -428,7 +462,8 @@ class UFC_WatchRegistration extends UFC_UserRelated
     public function buildCondition(UserFilter &$uf)
     {
         $sub = $uf->addWatchRegistrationFilter($this->uid);
-        return 'wn' . $sub . '.uid IS NOT NULL';
+        $su  = $uf->addWatchFilter($this->uid);
+        return 'FIND_IN_SET(\'registration\', w' . $su . '.flags) OR wn' . $sub . '.uid IS NOT NULL';
     }
 }
 
@@ -455,9 +490,10 @@ class UFC_WatchContacts extends UFC_Contact
     public function buildCondition(UserFilter &$uf)
     {
         $sub = $uf->addWatchFilter($this->uid);
-        return 'FIND_IN_SET(\'contacts\' w' . $sub . '.flags) AND ' . parent::buildCondition($uf);
+        return 'FIND_IN_SET(\'contacts\', w' . $sub . '.flags) AND ' . parent::buildCondition($uf);
     }
 }
+
 
 
 /******************
@@ -716,9 +752,8 @@ class UserFilter
     {
         if (is_null($this->lastcount)) {
             $this->buildQuery();
-            return (int)XDB::fetchOneCell('SELECT  COUNT(*)
-                                          ' . $this->query . '
-                                         GROUP BY  a.uid');
+            return (int)XDB::fetchOneCell('SELECT  COUNT(DISTINCT a.uid)
+                                          ' . $this->query);
         } else {
             return $this->lastcount;
         }

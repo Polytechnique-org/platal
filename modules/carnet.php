@@ -201,14 +201,14 @@ class CarnetModule extends PLModule
             S::assert_xsrf_token();
             XDB::execute('UPDATE  watch
                              SET  ' . XDB::changeFlag('flags', 'contacts', Env::b('contacts')) . '
-                               WHERE  uid = {?}', S::i('uid'));
+                           WHERE  uid = {?}', S::i('uid'));
         }
 
         if (Env::has('flags_mail')) {
             S::assert_xsrf_token();
             XDB::execute('UPDATE  watch
                              SET  ' . XDB::changeFlag('flags', 'mail', Env::b('mail')) . '
-                               WHERE  uid = {?}', S::i('uid'));
+                           WHERE  uid = {?}', S::i('uid'));
         }
 
         $user = S::user();

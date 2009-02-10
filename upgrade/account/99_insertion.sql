@@ -50,6 +50,7 @@ insert into carvas
 insert into profiles
      select u.user_id AS pid, u.hruid AS hrpid, u.matricule AS xorg_id,
             u.matricule_ax AS ax_id, u.naissance AS birthdate, u.naissance_ini AS birthdate_ref,
+            u.naissance AS next_birthday,
             IF(u.deces = 0, NULL, u.deces) AS deathdate,
             IF(u.deces = 0, NULL, u.deces) AS deathdate_rec,
             IF(FIND_IN_SET('femme', flags), 'female', 'male') AS sex,

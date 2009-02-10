@@ -197,7 +197,7 @@ class XorgSession extends PlSession
         $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name,
                                     a.sex = 'female' AS femme, a.email_format,
                                     a.token, FIND_IN_SET('watch', a.flags) AS watch_account,
-                                    UNIX_TIMESTAMP(fp.last_seen) AS banana_last, w.last AS watch_last,
+                                    UNIX_TIMESTAMP(fp.last_seen) AS banana_last, UNIX_TIMESTAMP(w.last) AS watch_last,
                                     a.last_version, g.g_account_name IS NOT NULL AS googleapps,
                                     UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
                                     a.is_admin, at.perms
