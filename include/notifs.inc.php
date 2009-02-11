@@ -45,8 +45,8 @@ class WatchRegistration
     {
         return new UFC_And(new UFC_Registered(false, '>', $user->watch_last),
                            new UFC_Or(new UFC_WatchContacts($user->id()),
-                                      new UFC_WatchPromo($user->id()),
-                                      new UFC_WatchRegistration($user->id())));
+                                      new UFC_WatchPromo($user->id())),
+                           new UFC_WatchRegistration($user->id()));
     }
 }
 
