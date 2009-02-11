@@ -43,56 +43,28 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
 {/if}
 </div>
 
-{foreach from=$notifs->_data item=c key=cid}
-<h2>{if ($c|@count) > 1}
-{$notifs->_cats[$cid].mail}&nbsp;:
-{else}
-  {foreach from=$c item=promo}
-    {if ($promo|@count) > 1}
-      {$notifs->_cats[$cid].mail}&nbsp;:
-    {else}
-      {if $promo[0].sexe}
-        {$notifs->_cats[$cid].mail_sg_xette}&nbsp;:
-      {else}
-        {$notifs->_cats[$cid].mail_sg}&nbsp;:
-      {/if}
+{foreach from=$notifs item=cat}
+<fieldset style="width: 75%; margin-left: auto; margin-right: auto">
+  <legend>{$cat.title}</legend>
+  {assign var=date value=false}
+    {foreach from=$cat.users item=user}
+    {assign var=userdate value=$cat.operation->getDate($user)}
+    {if !$date || $date ne $userdate}
+    {if $date}
+    </ul>
     {/if}
-  {/foreach}
-{/if}</h2>
-
-<br />
-
-<table class='tinybicol'>
-  {foreach from=$c key=p item=promo}
-  {section name=row loop=$promo}
-  <tr {if ( $promo[row].known > $smarty.session.watch_last ) || ( $promo[row].date eq $today ) }style="font-weight: bold"{/if}>
-    <td class='titre' style="width:15%" {if $promo[row].data}rowspan="2"{/if}>{if $smarty.section.row.first}{$p}{/if}</td>
-    <td>
-      {if $promo[row].inscrit}
-      <a href="profile/{$promo[row].bestalias}" class="popup2">
-        {$promo[row].prenom} {$promo[row].nom}
-      </a>
-      {if !$promo[row].contact}
-      <a href="carnet/contacts?action=ajouter&amp;user={$promo[row].bestalias}&amp;token={xsrf_token}">{*
-        *}{icon name=add title="ajouter à mes contacts"}</a>
-      {/if}
-      {else}
-      {$promo[row].prenom} {$promo[row].nom}
-      {/if}
-    </td>
-    <td style="width:25%">
-      {$promo[row].date|date_format}
-    </td>
-    {if $promo[row].data}
-    </tr><tr><td colspan="2">{$promo[row].data|smarty:nodefaults}</td>
+    {assign var=date value=$userdate}
+    <p>Le {$date|date_format}&nbsp;:</p>
+    <ul>
     {/if}
-  </tr>
-  {/section}
-  {/foreach}
-</table>
-
-<br />
+    <li>
+      {if $cat.operation->seen($user,$smarty.session.watch_last)}<strong>{/if}
+      {profile user=$user promo=true}
+      {if $cat.operation->seen($user,$smarty.session.watch_last)}</strong>{/if}
+    </li>
+    {/foreach}
+  </ul>
+</fieldset>
 {/foreach}
-
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

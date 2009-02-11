@@ -433,18 +433,10 @@ class UFC_EmailList implements UserFilterCondition
 
 abstract class UFC_UserRelated implements UserFilterCondition
 {
-    protected $uid;
-    public function __construct($uid = null)
+    protected $user;
+    public function __construct(PlUser &$user)
     {
-        if (is_null($uid)) {
-            $this->uid = S::i('uid');
-        } else if ($uid instanceof PlUser) {
-            $this->uid = $uid->id();
-        } else if (ctype_digit($uid)) {
-            $this->uid = (int)$uid;
-        } else {
-            Platal::page()->kill("Invalid contact type");
-        }
+        $this->user =& $user;
     }
 }
 
@@ -452,7 +444,7 @@ class UFC_Contact extends UFC_UserRelated
 {
     public function buildCondition(UserFilter &$uf)
     {
-        $sub = $uf->addContactFilter($this->uid);
+        $sub = $uf->addContactFilter($this->user->id());
         return 'c' . $sub . '.contact IS NOT NULL';
     }
 }
@@ -461,39 +453,50 @@ class UFC_WatchRegistration extends UFC_UserRelated
 {
     public function buildCondition(UserFilter &$uf)
     {
-        $sub = $uf->addWatchRegistrationFilter($this->uid);
-        $su  = $uf->addWatchFilter($this->uid);
-        return 'FIND_IN_SET(\'registration\', w' . $su . '.flags) OR wn' . $sub . '.uid IS NOT NULL';
+        if (!$this->user->watch('registration')) {
+            return UserFilterCondition::COND_FALSE;
+        }
+        $uids = $this->user->watchUsers();
+        if (count($uids) == 0) {
+            return UserFilterCondition::COND_FALSE;
+        } else {
+            return '$UID IN (' . implode(', ', $uids) . ')';
+        }
     }
 }
 
 class UFC_WatchPromo extends UFC_UserRelated
 {
     private $grade;
-    public function __construct($uid = null, $grade = UserFilter::GRADE_ING)
+    public function __construct(PlUser &$user, $grade = UserFilter::GRADE_ING)
     {
-        parent::__construct($uid);
+        parent::__construct($user);
         $this->grade = $grade;
     }
 
     public function buildCondition(UserFilter &$uf)
     {
-        $sube = $uf->addEducationFilter(true, $this->grade);
-        $subw = $uf->addWatchPromoFilter($this->uid);
-        $field = 'pe' . $sube . '.' . UserFilter::promoYear($this->grade);
-        return $field . ' IS NOT NULL AND ' . $field . ' = wp' . $subw . '.promo';
+        $promos = $this->user->watchPromos();
+        if (count($promos) == 0) {
+            return UserFilterCondition::COND_FALSE;
+        } else {
+            $sube = $uf->addEducationFilter(true, $this->grade);
+            $field = 'pe' . $sube . '.' . UserFilter::promoYear($this->grade);
+            return $field . ' IN (' . implode(', ', $promos) . ')';
+        }
     }
 }
 
-class UFC_WatchContacts extends UFC_Contact
+class UFC_WatchContact extends UFC_Contact
 {
     public function buildCondition(UserFilter &$uf)
     {
-        $sub = $uf->addWatchFilter($this->uid);
-        return 'FIND_IN_SET(\'contacts\', w' . $sub . '.flags) AND ' . parent::buildCondition($uf);
+        if (!$this->user->watchContacts()) {
+            return UserFilterCondition::COND_FALSE;
+        }
+        return parent::buildCondition($uf);
     }
 }
-
 
 
 /******************
@@ -503,6 +506,10 @@ class UFC_WatchContacts extends UFC_Contact
 abstract class UserFilterOrder
 {
     protected $desc = false;
+    public function __construct($desc = false)
+    {
+        $this->desc = $desc;
+    }
 
     public function buildSort(UserFilter &$uf)
     {
@@ -527,8 +534,8 @@ class UFO_Promo extends UserFilterOrder
 
     public function __construct($grade = null, $desc = false)
     {
+        parent::__construct($desc);
         $this->grade = $grade;
-        $this->desc  = $desc;
     }
 
     protected function getSortTokens(UserFilter &$uf)
@@ -551,10 +558,10 @@ class UFO_Name extends UserFilterOrder
 
     public function __construct($type, $variant = null, $particle = false, $desc = false)
     {
+        parent::__construct($desc);
         $this->type = $type;
         $this->variant = $variant;
         $this->particle = $particle;
-        $this->desc = $desc;
     }
 
     protected function getSortTokens(UserFilter &$uf)
@@ -575,16 +582,36 @@ class UFO_Name extends UserFilterOrder
 
 class UFO_Registration extends UserFilterOrder
 {
-    public function __construct($desc = false)
-    {
-        $this->desc = $desc;
-    }
-
     protected function getSortTokens(UserFilter &$uf)
     {
         return 'a.registration_date';
     }
 }
+
+class UFO_Birthday extends UserFilterOrder
+{
+    protected function getSortTokens(UserFilter &$uf)
+    {
+        return 'p.next_birthday';
+    }
+}
+
+class UFO_ProfileUpdate extends UserFilterOrder
+{
+    protected function getSortTokens(UserFilter &$uf)
+    {
+        return 'p.last_change';
+    }
+}
+
+class UFO_Death extends UserFilterOrder
+{
+    protected function getSortTokens(UserFilter &$uf)
+    {
+        return 'p.deathdate';
+    }
+}
+
 
 /***********************************
   *********************************

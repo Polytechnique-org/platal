@@ -19,9 +19,40 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class WatchProfileUpdate
+abstract class WatchOperation
 {
-    const ID = 1;
+    public function getTitle($count = 0)
+    {
+        if ($count == 1) {
+            return str_replace(array('$x', '$s'), '', $this->title);
+        } else {
+            return str_replace(array('$x', '$s'), array('x', 's'), $this->title);
+        }
+    }
+
+    public function getCondition(PlUser &$user, $date)
+    {
+        if (!$user->watch($this->flag)) {
+            return new UFC_False();
+        } else {
+            return $this->buildCondition($user, $date);
+        }
+    }
+
+    abstract protected function buildCondition(PlUser &$user, $date);
+    abstract public function getOrder();
+    abstract public function getDate(PlUser &$user);
+
+    public function seen(PlUser &$user, $last)
+    {
+        return strtotime($this->getDate($user)) > $last;
+    }
+}
+
+class WatchProfileUpdate extends WatchOperation
+{
+    public $flag  = 'profile';
+    public $title = 'Mise$s à jour de fiche';
 
     public static function register(Profile &$profile, $field)
     {
@@ -30,49 +61,105 @@ class WatchProfileUpdate
                      $profile->id(), $field);
     }
 
-    public function getCondition(PlUser &$user)
+    protected function buildCondition(PlUser &$user, $date)
     {
-        return new UFC_And(new UFC_ProfileUpdated('>', $user->watch_last),
-                           new UFC_WatchContacts($user->id()));
+        return new UFC_And(new UFC_ProfileUpdated('>', $date),
+                           new UFC_WatchContact($user));
+    }
+
+    public function getOrder()
+    {
+        return new UFO_ProfileUpdate();
+    }
+
+    public function getDate(PlUser &$user)
+    {
+        return $user->profile()->last_change;
     }
 }
 
-class WatchRegistration
+class WatchRegistration extends WatchOperation
 {
-    const ID = 2;
+    public $flag  = 'registration';
+    public $title = 'Inscription$s';
 
-    public function getCondition(PlUser &$user)
+    protected function buildCondition(PlUser &$user, $date)
     {
-        return new UFC_And(new UFC_Registered(false, '>', $user->watch_last),
-                           new UFC_Or(new UFC_WatchContacts($user->id()),
-                                      new UFC_WatchPromo($user->id())),
-                           new UFC_WatchRegistration($user->id()));
+        return new UFC_And(new UFC_Registered(false, '>', $date),
+                           new UFC_Or(new UFC_WatchContact($user),
+                                      new UFC_WatchPromo($user)));
+    }
+
+    public function getOrder()
+    {
+        return new UFO_Registration();
+    }
+
+    public function getDate(PlUser &$user)
+    {
+        return $user->registration_date;
     }
 }
 
-class WatchDeath
+class WatchDeath extends WatchOperation
 {
-    const ID = 3;
+    public $flag  = 'death';
+    public $title = 'Décès';
 
-    public function getCondition(PlUser &$user)
+    protected function buildCondition(PlUser &$user, $date)
     {
-        return new UFC_And(new UFC_Dead('>', $user->watch_last, true),
-                           new UFC_Or(new UFC_WatchPromo($user->id()),
-                                      new UFC_WatchContacts($user->id())));
+        return new UFC_And(new UFC_Dead('>', $date, true),
+                           new UFC_Or(new UFC_WatchPromo($user),
+                                      new UFC_WatchContact($user)));
+    }
+
+    public function getOrder()
+    {
+        return new UFO_Death();
+    }
+
+    public function getDate(PlUser &$user)
+    {
+        return $user->profile()->deathdate;
+    }
+
+    public function seen(PlUser &$user, $last)
+    {
+        return strtotime($user->profile()->deathdate_rec) > $last;
     }
 }
 
-class WatchBirthday
+class WatchBirthday extends WatchOperation
 {
-    const ID = 4;
+    const WATCH_LIMIT = 604800; // 1 week
 
-    public function getCondition(PlUser &$user)
+    public $flag  = 'birthday';
+    public $title = 'Anniversaire$s';
+
+    protected function buildCondition(PlUser &$user, $date)
     {
         return new UFC_And(new UFC_OR(new UFC_Birthday('=', time()),
-                                      new UFC_And(new UFC_Birthday('<=', time() + 864000),
-                                                  new UFC_Birthday('>', $user->watch_last + 864000))),
-                           new UFC_Or(new UFC_WatchPromo($user->id()),
-                                      new UFC_WatchContacts($user->id())));
+                                      new UFC_And(new UFC_Birthday('<=', time() + self::WATCH_LIMIT),
+                                                  new UFC_Birthday('>', $date + self::WATCH_LIMIT))),
+                           new UFC_Or(new UFC_WatchPromo($user),
+                                      new UFC_WatchContact($user)));
+    }
+
+    public function getOrder()
+    {
+        return new UFO_Birthday();
+    }
+
+    public function getDate(PlUser &$user)
+    {
+        return $user->profile()->next_birthday;
+    }
+
+    public function seen(PlUser &$user, $last)
+    {
+        $birthday = strtotime($user->profile()->next_birthday);
+        return $birthday >  $last + self::WATCH_LIMIT
+            || date('Ymd', $birthday) == date('Ymd');
     }
 }
 
@@ -83,20 +170,54 @@ class Watch
                                      'WatchDeath',
                                      'WatchBirthday');
 
-    private static function fetchCount(PlUser &$user, $class)
+    private static function fetchCount(PlUser &$user, $date, $class)
     {
         $obj = new $class();
-        $uf = new UserFilter($obj->getCondition($user));
+        $uf = new UserFilter($obj->getCondition($user, $date));
         return $uf->getTotalCount();
     }
 
-    public static function getCount(PlUser &$user)
+    public static function getCount(PlUser &$user, $date = null)
     {
         $count = 0;
+        if (is_null($date)) {
+            $date = $user->watchLast();
+        }
         foreach (self::$classes as $class) {
-            $count += self::fetchCount($user, $class);
+            $count += self::fetchCount($user, $date, $class);
         }
         return $count;
+    }
+
+
+    private static function fetchEvents(PlUser &$user, $date, $class)
+    {
+        $obj = new $class();
+        $uf = new UserFilter($obj->getCondition($user, $date),
+                             array($obj->getOrder(), new UFO_Name(UserFilter::DN_SORT)));
+        $users = $uf->getUsers();
+        if (count($users) == 0) {
+            return null;
+        } else {
+            return array('operation' => $obj,
+                         'title'     => $obj->getTitle(count($users)),
+                         'users'     => $users);
+        }
+    }
+
+    public static function getEvents(PlUser &$user, $date = null)
+    {
+        if (is_null($date)) {
+            $date = $user->watchLast();
+        }
+        $events = array();
+        foreach (self::$classes as $class) {
+            $e = self::fetchEvents($user, $date, $class);
+            if (!is_null($e)) {
+                $events[] = $e;
+            }
+        }
+        return $events;
     }
 }
 

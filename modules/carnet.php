@@ -58,16 +58,20 @@ class CarnetModule extends PLModule
         $page->changeTpl('carnet/panel.tpl');
 
         if (Get::has('read')) {
-            S::set('watch_last', Get::v('read'));
+            XDB::execute('UPDATE  watch
+                             SET  last = FROM_UNIXTIME({?})
+                           WHERE  uid = {?}',
+                         Get::i('read'), S::i('uid'));
+            S::set('watch_last', Get::i('read'));
             Platal::session()->updateNbNotifs();
             pl_redirect('carnet/panel');
         }
 
         require_once 'notifs.inc.php';
+        $page->assign('now', time());
 
-        $page->assign('now',date('YmdHis'));
-        $notifs = new Notifs(S::v('uid'), true);
-
+        $user = S::user();
+        $notifs = Watch::getEvents($user, time() - (7 * 86400));
         $page->assign('notifs', $notifs);
         $page->assign('today', date('Y-m-d'));
         $this->_add_rss_link($page);

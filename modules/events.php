@@ -157,9 +157,6 @@ class EventsModule extends PLModule
             pl_redirect('events#newsid'.$eid);
         }
 
-        require_once 'notifs.inc.php';
-        echo Watch::getCount(S::user());
-
         function next_event(PlIterator &$it)
         {
             $user = S::user();

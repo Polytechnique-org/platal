@@ -387,6 +387,65 @@ class User extends PlUser
         return $this->last_known_email;
     }
 
+
+    /** Get watch informations
+     */
+    private function fetchWatchData()
+    {
+        if (isset($this->watch_actions)) {
+            return;
+        }
+        $watch = XDB::fetchOneAssoc('SELECT  flags AS watch_flags, actions AS watch_actions,
+                                             UNIX_TIMESTAMP(last) AS watch_last
+                                       FROM  watch
+                                      WHERE  uid = {?}', $this->id());
+        $watch['watch_flags'] = new PlFlagSet($watch['watch_flags']);
+        $watch['watch_actions'] = new PlFlagSet($watch['watch_actions']);
+        $watch['watch_promos'] = XDB::fetchColumn('SELECT  promo
+                                                     FROM  watch_promo
+                                                    WHERE  uid = {?}', $this->id());
+        $watch['watch_users'] = XDB::fetchColumn('SELECT  ni_id
+                                                    FROM  watch_nonins
+                                                   WHERE  uid = {?}', $this->id());
+        $this->fillFromArray($watch);
+    }
+
+    public function watch($type)
+    {
+        $this->fetchWatchData();
+        return $this->watch_actions->hasFlag($type);
+    }
+
+    public function watchContacts()
+    {
+        $this->fetchWatchData();
+        return $this->watch_flags->hasFlag('contacts');
+    }
+
+    public function watchEmail()
+    {
+        $this->fetchWatchData();
+        return $this->watch_flags->hasFlag('mail');
+    }
+
+    public function watchPromos()
+    {
+        $this->fetchWatchData();
+        return $this->watch_promos;
+    }
+
+    public function watchUsers()
+    {
+        $this->fetchWatchData();
+        return $this->watch_users;
+    }
+
+    public function watchLast()
+    {
+        $this->fetchWatchData();
+        return $this->watch_last;
+    }
+
     // Return permission flags for a given permission level.
     public static function makePerms($perms, $is_admin)
     {
