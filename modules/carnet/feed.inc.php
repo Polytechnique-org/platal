@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 require_once 'notifs.inc.php';
+@require_once 'Date.php';
 
 class CarnetFeedIterator implements PlIterator
 {
@@ -34,12 +35,14 @@ class CarnetFeedIterator implements PlIterator
             foreach ($n['users'] as $user) {
                 $op   = $n['operation'];
                 $date = $op->getDate($user);
+                @$datetext = new Date($date);
+                @$datetext = $datetext->format('%e %B %Y');
                 $infos[] = array('operation'   => $op,
-                                 'title'       => '[' . $op->getTitle(1) . ']  - ' . $user->fullName(),
+                                 'title'       => '[' . $op->getTitle(1) . ']  - ' . $user->fullName() . ' le ' . $datetext,
                                  'author'      => $user->fullName(),
-                                 'publication' => strtotime($op->publicationDate($user)),
+                                 'publication' => $op->publicationDate($user),
                                  'date'        => strtotime($date),
-                                 'id'          => $op->flag . strtotime($date),
+                                 'id'          => $op->flag . '-' . $user->id() . '-' . strtotime($date),
                                  'data'        => $op->getData($user),
                                  'hruid'       => $user->login(),
                                  'dead'        => $user->deathdate,
