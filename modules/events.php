@@ -41,9 +41,9 @@ class EventsModule extends PLModule
         global $globals;
         // Add a new special tip when changing plat/al version
         if ($globals->version != S::v('last_version') && is_null($exclude)) {
-            XDB::execute('UPDATE auth_user_quick
+            XDB::execute('UPDATE accounts
                              SET last_version = {?}
-                           WHERE user_id = {?}',
+                           WHERE uid = {?}',
                            $globals->version, S::i('uid'));
             return array('id' => 0,
                          'titre' => 'Bienvenue sur la nouvelle version du site !',
@@ -108,23 +108,24 @@ class EventsModule extends PLModule
 
         // Profile update (appears when profile is > 400d old), and birthday
         // oneboxes.
-        $res = XDB::query(
-            "SELECT  date < DATE_SUB(NOW(), INTERVAL 400 DAY) AS is_profile_old,
-                     MONTH(naissance) = MONTH(NOW()) AND DAYOFMONTH(naissance) = DAYOFMONTH(NOW()) AS is_birthday,
-                     date AS profile_date, YEAR(NOW()) - YEAR(naissance) AS age
-               FROM  auth_user_md5
-              WHERE  user_id = {?}", S::user()->id());
-        list($is_profile_old, $is_birthday, $profile_date, $age) = $res->fetchOneRow();
-
-        if ($is_profile_old) {
-            $page->assign('fiche_incitation', $profile_date);
-        }
-        if ($is_birthday) {
-            $page->assign('birthday', $age);
+        $user = S::user();
+        $profile = $user->profile();
+        if (!is_null($profile)) {
+            if (strtotime($profile->last_change) < time() - (400 * 86400)) {
+                $page->assign('fiche_incitation', $profile->last_change);
+            }
+            if ($profile->next_birthday == date('Y-m-d')) {
+                $birthyear = (int)date('Y', strtotime($profile->birthdate));
+                $curyear   = (int)date('Y');
+                $page->assign('birthday', $curyear - $birthyear);
+            }
         }
 
         // No-photo onebox.
-        $res = XDB::query("SELECT COUNT(*) FROM photo WHERE uid = {?}", S::user()->id());
+        $res = XDB::query("SELECT  COUNT(*)
+                             FROM  photo
+                            WHERE  uid = {?}",
+                          S::user()->id());
         $page->assign('photo_incitation', $res->fetchOneCell() == 0);
 
         // Geo-location onebox.
@@ -470,16 +471,14 @@ class EventsModule extends PLModule
             }
 
             $pid = ($eid && $action == 'preview') ? $eid : -1;
-            $sql = "SELECT  e.id, e.titre, e.texte,e.id = $pid AS preview,
+            $sql = "SELECT  e.id, e.titre, e.texte,e.id = $pid AS preview, e.user_id,
                             DATE_FORMAT(e.creation_date,'%d/%m/%Y %T') AS creation_date,
                             DATE_FORMAT(e.peremption,'%d/%m/%Y') AS peremption,
                             e.promo_min, e.promo_max,
                             FIND_IN_SET('valide', e.flags) AS fvalide,
                             FIND_IN_SET('archive', e.flags) AS farch,
-                            u.promo, u.nom, u.prenom, u.hruid,
                             FIND_IN_SET('wiki', e.flags) AS wiki
                       FROM  evenements    AS e
-                INNER JOIN  auth_user_md5 AS u ON(e.user_id = u.user_id)
                      WHERE  ".($arch ? "" : "!")."FIND_IN_SET('archive',e.flags)
                   ORDER BY  FIND_IN_SET('valide',e.flags), e.peremption DESC";
             $page->assign('evs', XDB::iterator($sql));
