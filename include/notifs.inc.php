@@ -43,9 +43,19 @@ abstract class WatchOperation
     abstract public function getOrder();
     abstract public function getDate(PlUser &$user);
 
+    public function publicationDate(PlUser &$user)
+    {
+        return $this->getDate($user);
+    }
+
     public function seen(PlUser &$user, $last)
     {
         return strtotime($this->getDate($user)) > $last;
+    }
+
+    public function getData(PlUser &$user)
+    {
+        return null;
     }
 }
 
@@ -123,6 +133,11 @@ class WatchDeath extends WatchOperation
         return $user->profile()->deathdate;
     }
 
+    public function publicationDate(PlUser &$user)
+    {
+        return $user->profile()->deathdate_rec;
+    }
+
     public function seen(PlUser &$user, $last)
     {
         return strtotime($user->profile()->deathdate_rec) > $last;
@@ -153,6 +168,11 @@ class WatchBirthday extends WatchOperation
     public function getDate(PlUser &$user)
     {
         return $user->profile()->next_birthday;
+    }
+
+    public function publicationDate(PlUser &$user)
+    {
+        return date('Y-m-d', strtotime($user->profile()->next_birthday) - self::WATCH_LIMIT);
     }
 
     public function seen(PlUser &$user, $last)

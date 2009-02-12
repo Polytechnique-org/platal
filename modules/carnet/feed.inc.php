@@ -26,34 +26,35 @@ class CarnetFeedIterator implements PlIterator
     private $notifs;
     private $it;
 
-    public function __construct(Notifs& $notifs)
+    public function __construct(PlUser &$owner)
     {
-        $this->notifs =& $notifs;
-        $this->it = PlIteratorUtils::fromArray($notifs->_data, 3);
+        $notifs = Watch::getEvents($owner);
+        $infos  = array();
+        foreach ($notifs as $n) {
+            foreach ($n['users'] as $user) {
+                $op   = $n['operation'];
+                $date = $op->getDate($user);
+                $infos[] = array('operation'   => $op,
+                                 'title'       => '[' . $op->getTitle(1) . ']  - ' . $user->fullName(),
+                                 'author'      => $user->fullName(),
+                                 'publication' => strtotime($op->publicationDate($user)),
+                                 'date'        => strtotime($date),
+                                 'id'          => $op->flag . strtotime($date),
+                                 'data'        => $op->getData($user),
+                                 'hruid'       => $user->login(),
+                                 'dead'        => $user->deathdate,
+                                 'profile'     => $user->profile()->hrid(),
+                                 'user'        => $user,
+                                 'contact'     => $owner->isContact($user));
+            }
+        }
+        $this->it = PlIteratorUtils::fromArray($infos);
     }
 
     public function next()
     {
         $data = $this->it->next();
-        if (is_null($data)) {
-            return null;
-        }
-        $cid  = $data['keys'][0];
-        $x    = $data['value'];
-
-        global $globals;
-        @require_once 'Date.php';
-        @$date = new Date($x['date']);
-        @$date = $date->format('%e %B %Y');
-        $author = $x['prenom'] . ' ' . $x['nom'] . ' (X' . $x['promo'] . ')';
-        return array_merge($x, 
-                    array('author' => $author,
-                          'publication' => $x['known'],
-                          'id' => 'carnet' . $x['known'] . $cid . $x['bestalias'],
-                          'link' => $globals->baseurl . '/profile/private/'
-                                    . $x['bestalias'],
-                          'title' => '[' . $this->notifs->_cats[$cid]['short'] . '] '
-                                     . $author . ' - le ' . $date));
+        return $data['value'];
     }
 
     public function total()
@@ -86,7 +87,7 @@ class CarnetFeed extends PlFeed
 
     protected function fetch(PlUser &$user)
     {
-        return new CarnetFeedIterator(new Notifs($user->id(), false));
+        return new CarnetFeedIterator($user);
     }
 }
 

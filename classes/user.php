@@ -446,6 +446,20 @@ class User extends PlUser
         return $this->watch_last;
     }
 
+
+    // Contacts
+    private $contacts = null;
+    public function isContact(PlUser &$user)
+    {
+        if ($this->contacts) {
+            $this->contacts = XDB::fetchAllAssoc('contact', 'SELECT  *
+                                                               FROM  contacts
+                                                              WHERE  uid = {?}',
+                                                 $this->id());
+        }
+        return isset($this->contacts[$user->id()]);
+    }
+
     // Return permission flags for a given permission level.
     public static function makePerms($perms, $is_admin)
     {
