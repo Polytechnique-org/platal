@@ -300,46 +300,50 @@ class PlatalModule extends PLModule
 
         $mailorg = strtok(Env::v('login'), '@');
 
-        // XXX: recovery requires usage of profile data.
-        $res = XDB::query(
-                "SELECT  user_id, naissance
-                   FROM  auth_user_md5 AS u
-             INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type != 'homonyme')
-                  WHERE  a.alias={?} AND u.perms IN ('admin','user') AND u.deces=0", $mailorg);
-        list($uid, $naissance) = $res->fetchOneRow();
+        $profile = Profile::get(Env::t('login'));
+        if (is_null($profile) || $profile->birthdate != $birth) {
+            $page->trigError('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
+                        'Si tu as un homonyme, utilise prenom.nom.promo comme login');
+            return;
+        }
 
-        if ($naissance == $birth) {
-            $res = XDB::query("SELECT  COUNT(*)
-                                 FROM  emails
-                                WHERE  uid = {?} AND flags != 'panne' AND flags != 'filter'", $uid);
-            $count = intval($res->fetchOneCell());
-            if ($count == 0) {
-                $page->assign('no_addr', true);
-                return;
-            }
+        $user = $profile->owner();
+        if ($user->state != 'active') {
+            $page->trigError('Ton compte n\'est pas activé.');
+            return;
+        }
 
-            $page->assign('ok', true);
+        $res = XDB::query("SELECT  COUNT(*)
+                             FROM  emails
+                            WHERE  uid = {?} AND flags != 'panne' AND flags != 'filter'", $user->id());
+        $count = intval($res->fetchOneCell());
+        if ($count == 0) {
+            $page->assign('no_addr', true);
+            return;
+        }
 
-            $url   = rand_url_id();
-            XDB::execute('INSERT INTO  perte_pass (certificat,uid,created)
-                               VALUES  ({?},{?},NOW())', $url, $uid);
+        $page->assign('ok', true);
+
+        $url   = rand_url_id();
+        XDB::execute('INSERT INTO  perte_pass (certificat,uid,created)
+                           VALUES  ({?},{?},NOW())', $url, $user->id());
+        $res   = XDB::query('SELECT  email
+                               FROM  emails
+                              WHERE  uid = {?} AND email = {?}',
+                            $user->id(), Post::v('email'));
+        if ($res->numRows()) {
+            $mails = $res->fetchOneCell();
+        } else {
             $res   = XDB::query('SELECT  email
                                    FROM  emails
-                                  WHERE  uid = {?} AND email = {?}',
-                                $uid, Post::v('email'));
-            if ($res->numRows()) {
-                $mails = $res->fetchOneCell();
-            } else {
-                $res   = XDB::query('SELECT  email
-                                       FROM  emails
-                                      WHERE  uid = {?} AND NOT FIND_IN_SET("filter", flags)', $uid);
-                $mails = implode(', ', $res->fetchColumn());
-            }
-            $mymail = new PlMailer();
-            $mymail->setFrom('"Gestion des mots de passe" <support+password@' . $globals->mail->domain . '>');
-            $mymail->addTo($mails);
-            $mymail->setSubject('Ton certificat d\'authentification');
-            $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
+                                  WHERE  uid = {?} AND NOT FIND_IN_SET("filter", flags)', $user->id());
+            $mails = implode(', ', $res->fetchColumn());
+        }
+        $mymail = new PlMailer();
+        $mymail->setFrom('"Gestion des mots de passe" <support+password@' . $globals->mail->domain . '>');
+        $mymail->addTo($mails);
+        $mymail->setSubject('Ton certificat d\'authentification');
+        $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
 {$globals->baseurl}/tmpPWD/$url
 
 Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur. Si tu n'as pas utilisé ce lien dans six heures, tu peux tout simplement recommencer cette procédure.
@@ -350,14 +354,10 @@ Polytechnique.org
 
 Email envoyé à ".Env::v('login') . (Post::has('email') ? "
 Adresse de secours : " . Post::v('email') : ""));
-            $mymail->send();
+        $mymail->send();
 
-            // on cree un objet logger et on log l'evenement
-            S::logger(uid)->log('recovery', $mails);
-        } else {
-            $page->trigError('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
-                        'Si tu as un homonyme, utilise prenom.nom.promo comme login');
-        }
+        // on cree un objet logger et on log l'evenement
+        S::logger($user->id())->log('recovery', $mails);
     }
 
     function handler_tmpPWD(&$page, $certif = null)
