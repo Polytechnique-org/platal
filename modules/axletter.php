@@ -175,14 +175,10 @@ class AXLetterModule extends PLModule
                                       . "https://www.polytechnique.org/ax/edit\n"
                                       . "-- \n"
                                       . "Association Polytechnique.org\n");
-                    $res = XDB::iterRow("SELECT IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
-                                                u.prenom, a.alias AS bestalias
-                                           FROM axletter_rights AS ar
-                                     INNER JOIN auth_user_md5   AS u USING(user_id)
-                                     INNER JOIN aliases         AS a ON (u.user_id = a.id
-                                     AND FIND_IN_SET('bestalias', a.flags))");
-                    while (list($nom, $prenom, $alias) = $res->next()) {
-                        $mailer->addTo("$nom $prenom <$alias@{$globals->mail->domain}>");
+                    $users = User::getBulkUsersWithUIDs(XDB::fetchColumn('SELECT  user_id
+                                                                            FROM  axletter_rights'));
+                    foreach ($users as $user) {
+                        $mailer->addTo($user);
                     }
                     $mailer->send();
                 }
@@ -311,11 +307,8 @@ class AXLetterModule extends PLModule
         }
 
         $page->changeTpl('axletter/admin.tpl');
-        $res = XDB::iterator("SELECT IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
-                                     u.prenom, u.promo, u.hruid
-                                FROM axletter_rights AS ar
-                          INNER JOIN auth_user_md5   AS u USING(user_id)");
-        $page->assign('admins', $res);
+        $page->assign('admins', User::getBulkUsersWithUIDs(XDB::fetchColumn('SELECT  user_id
+                                                                               FROM  axletter_rights')));
 
         $importer = new CSVImporter('axletter_ins');
         $importer->registerFunction('user_id', 'email vers Id X.org', array($this, 'idFromMail'));
@@ -336,36 +329,9 @@ class AXLetterModule extends PLModule
                 }
             }
         }
-        $email = $line[$field];
-        if (strpos($email, '@') === false) {
-            $user  = $email;
-            $domain = $globals->mail->domain2;
-        } else {
-            list($user, $domain) = explode('@', $email);
-        }
-        if ($domain != $globals->mail->domain && $domain != $globals->mail->domain2
-                && $domain != $globals->mail->alias_dom && $domain != $globals->mail->alias_dom2) {
-            $res = XDB::query("SELECT uid FROM emails WHERE email = {?}", $email);
-            if ($res->numRows() == 1) {
-                return $res->fetchOneCell();
-            }
-            return '0';
-        }
-        list($user) = explode('+', $user);
-        list($user) = explode('_', $user);
-        if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
-            $res = XDB::query("SELECT a.id
-                                 FROM virtual          AS v
-                           INNER JOIN virtual_redirect AS r USING(vid)
-                           INNER JOIN aliases          AS a ON (a.type = 'a_vie'
-                                                            AND r.redirect = CONCAT(a.alias, '@{$globals->mail->domain2}'))
-                                WHERE v.alias = CONCAT({?}, '@{$globals->mail->alias_dom}')", $user);
-            $id = $res->fetchOneCell();
-            return $id ? $id : '0';
-        }
-        $res = XDB::query("SELECT id FROM aliases WHERE alias = {?}", $user);
-        $id = $res->fetchOneCell();
-        return $id ? $id : '0';
+        $uf = new UserFilter(new UFC_Email($line[$field]));
+        $id = $uf->getUIDs();
+        return count($id) == 1 ? $id[0] : 0;
     }
 
     function createHash($line, $key)
