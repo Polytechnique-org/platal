@@ -190,8 +190,7 @@ abstract class MassMailer
     protected function getAllRecipients()
     {
         global $globals;
-        return  "SELECT  a.uid, a.hruid, a.display_name, a.full_name, a.email_format,
-                         ni.hash AS hash
+        return  "SELECT  a.uid
                    FROM  {$this->_subscriptionTable}  AS ni
              INNER JOIN  accounts AS a ON (ni.user_id = a.uid)
               LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
@@ -206,12 +205,11 @@ abstract class MassMailer
         $this->setSent();
         $query = XDB::format($this->getAllRecipients(), $this->id()) . ' LIMIT 60';
         while (true) {
-            $res = XDB::iterRow($query);
-            if (!$res->total()) {
+            $users = User::getBulkUsersWithUIDs(XDB::fetchColumn($query));
+            if (count($users) == 0) {
                 return;
             }
-            while ($infos = $res->next()) {
-                $user = User::getSilentWithValues(null, $infos);
+            foreach ($users as $user) {
                 $sent[] = XDB::format('user_id = {?}', $user->id());
                 $this->sendTo($user, $hash);
             }

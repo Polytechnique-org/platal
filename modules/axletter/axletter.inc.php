@@ -96,26 +96,6 @@ class AXLetter extends MassMailer
                        WHERE  id={?}", $this->_id);
     }
 
-    protected function getAllRecipients()
-    {
-        global $globals;
-        return "SELECT  ni.user_id, IF(ni.user_id = 0, NULL, u.hruid) AS hruid,
-                        IF(ni.user_id = 0, ni.email, CONCAT(a.alias, '@{$globals->mail->domain}')) AS alias,
-                        IF(ni.user_id = 0, ni.prenom, u.prenom) AS prenom,
-                        IF(ni.user_id = 0, ni.nom, IF(u.nom_usage='', u.nom, u.nom_usage)) AS nom,
-                        FIND_IN_SET('femme', IF(ni.user_id = 0, ni.flag, u.flags)) AS sexe,
-                        IF(ni.user_id = 0, 'html', q.core_mail_fmt) AS pref,
-                        IF(ni.user_id = 0, ni.hash, 0) AS hash
-                  FROM  axletter_ins  AS ni
-             LEFT JOIN  auth_user_md5   AS u  USING(user_id)
-             LEFT JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
-             LEFT JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
-             LEFT JOIN  emails          AS e  ON(e.uid=u.user_id AND e.flags='active')
-                 WHERE  ni.last < {?} AND {$this->subscriptionWhere()}
-                        AND (e.email IS NOT NULL OR FIND_IN_SET('googleapps', u.mail_storage) OR ni.user_id = 0)
-              GROUP BY  u.user_id";
-    }
-
     static public function subscriptionState($uid = null)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
