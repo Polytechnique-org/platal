@@ -18,7 +18,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// Page initialization
+// Page initialization {{{1
 
 function wizPage_onLoad(id)
 {
@@ -62,11 +62,11 @@ function wizPage_onLoad(id)
 var educationDegree;
 var educationDegreeAll;
 var educationDegreeName;
-
-// General
-
 var subgrades;
 var names;
+
+// Education {{{1
+
 function fillType(selectCtrl, edu, fill)
 {
     var i;
@@ -106,6 +106,48 @@ function prepareType(i)
     fillType(document.forms.prof_annu["edus[" + i + "][degreeid]"], document.forms.prof_annu["edus[" + i + "][eduid]"].selectedIndex - 1);
     selectType(document.forms.prof_annu["edus[" + i + "][degreeid]"], document.forms.prof_annu["edu_" + i + "_tmp"].value);
 }
+
+function addEdu()
+{
+    var i = 0;
+    var j = 0;
+    var prefix  = 'edu_';
+    var class_parity;
+
+    while (!$('#edu_add').hasClass(prefix + i)) {
+        if ($('.' + prefix + i).length != 0) {
+            j++;
+        }
+        i++;
+    }
+    if (j % 2) {
+        class_parity = 'pair';
+    } else {
+        class_parity = 'impair';
+    }
+    $('#edu_add').removeClass(prefix + i);
+    i++;
+    $('#edu_add').addClass(prefix + i);
+    i--;
+    $.get(platal_baseurl + 'profile/ajax/edu/' + i + '/' + class_parity,
+          function(data) {
+              $('#edu_add').before(data);
+              prepareType(i);
+          });
+}
+
+function removeEdu(i)
+{
+    var prefix  = 'edu_';
+    $('.' + prefix + i).remove();
+    while (!$('#edu_add').hasClass(prefix + i)) {
+        $('.' + prefix + i).toggleClass('pair');
+        $('.' + prefix + i).toggleClass('impair');
+        i++;
+    }
+}
+
+// Names {{{1
 
 function toggleNamesAdvanced()
 {
@@ -165,6 +207,8 @@ function updateNameDisplay()
     });
 }
 
+// Nationalities {{{1
+
 function delNationality(i)
 {
     $('#nationalite' + i).hide().find('select').val('');
@@ -182,6 +226,8 @@ function addNationality()
         $('#nationalite' + i).show();
     }
 }
+
+// Networking {{{1
 
 function addNetworking()
 {
@@ -235,7 +281,7 @@ function updateNetworking(i)
 
 }
 
-// Addresses
+// Addresses {{{1
 
 function removeObject(id, pref)
 {
@@ -310,45 +356,30 @@ function addAddress()
     Ajax.update_html('addresses_' + i + '_cont', 'profile/ajax/address/' + i, checkCurrentAddress);
 }
 
-function addEdu()
+function validGeoloc(id, pref)
 {
-    var i = 0;
-    var j = 0;
-    var prefix  = 'edu_';
-    var class_parity;
-
-    while (!$('#edu_add').hasClass(prefix + i)) {
-        if ($('.' + prefix + i).length != 0) {
-            j++;
-        }
-        i++;
-    }
-    if (j % 2) {
-        class_parity = 'pair';
-    } else {
-        class_parity = 'impair';
-    }
-    $('#edu_add').removeClass(prefix + i);
-    i++;
-    $('#edu_add').addClass(prefix + i);
-    i--;
-    $.get(platal_baseurl + 'profile/ajax/edu/' + i + '/' + class_parity,
-          function(data) {
-              $('#edu_add').before(data);
-              prepareType(i);
-          });
+    document.getElementById(id + '_geoloc').style.display = 'none';
+    document.getElementById(id + '_geoloc_error').style.display = 'none';
+    document.getElementById(id + '_geoloc_valid').style.display = 'none';
+    document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
+    document.forms.prof_annu[pref + "[text]"].value = document.forms.prof_annu[pref + "[geoloc]"].value;
+    document.forms.prof_annu[pref + "[cityid]"].value = document.forms.prof_annu[pref + "[geoloc_cityid]"].value;
+    $(document.forms.prof_annu[pref + "[text]"]).click(function() { document.forms.prof_annu[pref + "[text]"].blur(); });
+    document.forms.prof_annu[pref + "[text]"].className = '';
 }
 
-function removeEdu(i)
+function validAddress(id, pref)
 {
-    var prefix  = 'edu_';
-    $('.' + prefix + i).remove();
-    while (!$('#edu_add').hasClass(prefix + i)) {
-        $('.' + prefix + i).toggleClass('pair');
-        $('.' + prefix + i).toggleClass('impair');
-        i++;
-    }
+    document.getElementById(id + '_geoloc').style.display = 'none';
+    document.getElementById(id + '_geoloc_error').style.display = 'none';
+    document.getElementById(id + '_geoloc_valid').style.display = 'none';
+    document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
+    $(document.forms.prof_annu[pref + "[text]"]).click(function() { document.forms.prof_annu[pref + "[text]"].blur(); });
+    document.forms.prof_annu[pref + "[text]"].className = '';
 }
+
+// }}}
+// {{{1 Phones
 
 function addTel(prefid, prefname)
 {
@@ -379,32 +410,7 @@ function removePhoneComment(id, pref)
     document.getElementById(id+'_addComment').style.display = '';
 }
 
-// Geoloc
-
-function validGeoloc(id, pref)
-{
-    document.getElementById(id + '_geoloc').style.display = 'none';
-    document.getElementById(id + '_geoloc_error').style.display = 'none';
-    document.getElementById(id + '_geoloc_valid').style.display = 'none';
-    document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
-    document.forms.prof_annu[pref + "[text]"].value = document.forms.prof_annu[pref + "[geoloc]"].value;
-    document.forms.prof_annu[pref + "[cityid]"].value = document.forms.prof_annu[pref + "[geoloc_cityid]"].value;
-    $(document.forms.prof_annu[pref + "[text]"]).click(function() { document.forms.prof_annu[pref + "[text]"].blur(); });
-    document.forms.prof_annu[pref + "[text]"].className = '';
-}
-
-function validAddress(id, pref)
-{
-    document.getElementById(id + '_geoloc').style.display = 'none';
-    document.getElementById(id + '_geoloc_error').style.display = 'none';
-    document.getElementById(id + '_geoloc_valid').style.display = 'none';
-    document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
-    $(document.forms.prof_annu[pref + "[text]"]).click(function() { document.forms.prof_annu[pref + "[text]"].blur(); });
-    document.forms.prof_annu[pref + "[text]"].className = '';
-}
-
-
-// Groups
+// Groups {{{1
 
 function updateGroup(type)
 {
@@ -450,8 +456,7 @@ function updateGroupSubLink(cb)
     document.getElementById("groupesx_sub").href = href;
 }
 
-
-// Medals
+// Medals {{{1
 
 function updateMedal()
 {
@@ -514,8 +519,7 @@ function removeMedal(id)
     updateMedal();
 }
 
-
-// Jobs
+// Jobs {{{1
 
 function removeJob(id, pref)
 {
@@ -583,7 +587,8 @@ function addEntreprise(id)
     $('.entreprise_' + id).toggle();
 }
 
-// Skills
+// }}}
+// {{{1 Skills
 
 function updateSkill(cat)
 {
@@ -617,8 +622,7 @@ function removeSkill(cat, id)
     updateSkill(cat);
 }
 
-
-// Mentor
+// Mentor {{{1
 
 function updateCountry()
 {
