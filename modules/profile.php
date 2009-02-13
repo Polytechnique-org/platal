@@ -366,16 +366,6 @@ class ProfileModule extends PLModule
             }
         }
 
-        // AX Synchronization
-        require_once 'synchro_ax.inc.php';
-        if (is_ax_key_missing()) {
-            $page->assign('no_private_key', true);
-        }
-        if (Env::v('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
-            ax_synchronize(S::user()->login(), S::v('uid'));
-            $page->trigSuccess('Ton profil a été synchronisé avec celui du site polytechniciens.com');
-        }
-
         // Build the page
         $page->addJsLink('ajax.js');
         $page->addJsLink('education.js');

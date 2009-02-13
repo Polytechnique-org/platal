@@ -521,8 +521,8 @@ class User extends PlUser
             $table[$list['uid']] = User::getSilentWithValues(null, $list);
         }
         $users = array();
-        foreach ($uids as $uid) {
-            $users[] = $table[$uid];
+        foreach ($uids as $key=>$uid) {
+            $users[$key] = $table[$uid];
         }
         return $users;
     }

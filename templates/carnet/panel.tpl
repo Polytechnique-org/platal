@@ -61,6 +61,14 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
       {if $cat.operation->seen($user,$smarty.session.watch_last)}<strong>{/if}
       {profile user=$user promo=true}
       {if $cat.operation->seen($user,$smarty.session.watch_last)}</strong>{/if}
+      {assign var=data value=$cat.operation->getData($user)}
+      {if $data}
+      <ul>
+        {foreach from=$data item=a}
+        <li>{$a}</li>
+        {/foreach}
+      </ul>
+      {/if}
     </li>
     {/foreach}
   </ul>

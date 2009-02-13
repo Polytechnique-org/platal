@@ -21,6 +21,8 @@
 
 abstract class WatchOperation
 {
+    protected $date;
+
     public function getTitle($count = 0)
     {
         if ($count == 1) {
@@ -32,14 +34,15 @@ abstract class WatchOperation
 
     public function getCondition(PlUser &$user, $date)
     {
+        $this->date = $date;
         if (!$user->watch($this->flag)) {
             return new UFC_False();
         } else {
-            return $this->buildCondition($user, $date);
+            return $this->buildCondition($user);
         }
     }
 
-    abstract protected function buildCondition(PlUser &$user, $date);
+    abstract protected function buildCondition(PlUser &$user);
     abstract public function getOrder();
     abstract public function getDate(PlUser &$user);
 
@@ -71,9 +74,9 @@ class WatchProfileUpdate extends WatchOperation
                      $profile->id(), $field);
     }
 
-    protected function buildCondition(PlUser &$user, $date)
+    protected function buildCondition(PlUser &$user)
     {
-        return new UFC_And(new UFC_ProfileUpdated('>', $date),
+        return new UFC_And(new UFC_ProfileUpdated('>', $this->date),
                            new UFC_WatchContact($user));
     }
 
@@ -86,6 +89,41 @@ class WatchProfileUpdate extends WatchOperation
     {
         return $user->profile()->last_change;
     }
+
+    static private $descriptions = array('search_names' => 'L\'un de ses noms',
+                                         'freetext'     => 'Le texte libre',
+                                         'mobile'       => 'Son numéro de téléphone portable',
+                                         'nationalite'  => 'Sa nationalité',
+                                         'nationalite2' => 'Sa seconde nationalité',
+                                         'nationalite3' => 'Sa troisième nationalité',
+                                         'nick'         => 'Son surnom',
+                                         'networking'   => 'La liste de ses adresses de networking',
+                                         'edus'         => 'Ses formations',
+                                         'addresses'    => 'Ses adresses',
+                                         'section'      => 'Sa section sportive',
+                                         'binets'       => 'La liste de ses binets',
+                                         'medals'       => 'Ses décorations',
+                                         'cv'           => 'Son Curriculum Vitae',
+                                         'corps'        => 'Son Corps d\'État',
+                                         'jobs'         => 'Ses informations professionnelles',
+                                         'photo'        => 'Sa photographie');
+    public function getData(PlUser &$user)
+    {
+        $data = XDB::fetchColumn('SELECT  field
+                                    FROM  watch_profile
+                                   WHERE  uid = {?} AND ts > FROM_UNIXTIME({?}) AND field != \'\'
+                                ORDER BY  ts',
+                                 $user->id(), $this->date);
+        if (count($data) == 0) {
+            return null;
+        } else {
+            $text = array();
+            foreach ($data as $f) {
+                $text[] = self::$descriptions[$f];
+            }
+            return $text;
+        }
+    }
 }
 
 class WatchRegistration extends WatchOperation
@@ -93,9 +131,9 @@ class WatchRegistration extends WatchOperation
     public $flag  = 'registration';
     public $title = 'Inscription$s';
 
-    protected function buildCondition(PlUser &$user, $date)
+    protected function buildCondition(PlUser &$user)
     {
-        return new UFC_And(new UFC_Registered(false, '>', $date),
+        return new UFC_And(new UFC_Registered(false, '>', $this->date),
                            new UFC_Or(new UFC_WatchContact($user),
                                       new UFC_WatchPromo($user)));
     }
@@ -116,9 +154,9 @@ class WatchDeath extends WatchOperation
     public $flag  = 'death';
     public $title = 'Décès';
 
-    protected function buildCondition(PlUser &$user, $date)
+    protected function buildCondition(PlUser &$user)
     {
-        return new UFC_And(new UFC_Dead('>', $date, true),
+        return new UFC_And(new UFC_Dead('>', $this->date, true),
                            new UFC_Or(new UFC_WatchPromo($user),
                                       new UFC_WatchContact($user)));
     }
@@ -151,11 +189,11 @@ class WatchBirthday extends WatchOperation
     public $flag  = 'birthday';
     public $title = 'Anniversaire$s';
 
-    protected function buildCondition(PlUser &$user, $date)
+    protected function buildCondition(PlUser &$user)
     {
         return new UFC_And(new UFC_OR(new UFC_Birthday('=', time()),
                                       new UFC_And(new UFC_Birthday('<=', time() + self::WATCH_LIMIT),
-                                                  new UFC_Birthday('>', $date + self::WATCH_LIMIT))),
+                                                  new UFC_Birthday('>', $this->date + self::WATCH_LIMIT))),
                            new UFC_Or(new UFC_WatchPromo($user),
                                       new UFC_WatchContact($user)));
     }

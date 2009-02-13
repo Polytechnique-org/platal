@@ -20,7 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $article->data}{profile user=$article->user promo=false link=false} a mis à jours les données suivantes&nbsp;:<br />{$article->data}<br />{/if}
+{if $article->data}
+<p>{profile user=$article->user promo=false link=false} a mis à jours les données suivantes&nbsp;:</p>
+<ul>
+{foreach from=$article->data item=f}
+  <li>{$f}</li>
+{/foreach}
+</ul>
+{/if}
 {if !$article->contact and !$article->dead}
 <a href="{#globals.baseurl#}/carnet/contacts?action=ajouter&amp;user={$article->hruid}&amp;token={$rss_hash}">
   {icon name=add title="Ajouter" full=true} Ajouter &agrave; mes contacts
