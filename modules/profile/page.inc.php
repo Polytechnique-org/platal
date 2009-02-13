@@ -208,9 +208,9 @@ class ProfilePub extends ProfileNoSave
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
         }
-        if (is_null($value) || !$value) {
+        if (!$value) {
             $value = 'private';
-        } else if ($value == 'on') { // Checkbox
+        } elseif ($value == 'on') { // Checkbox
             $value = 'public';
         }
         return $value;
@@ -223,7 +223,7 @@ class ProfileBool extends ProfileNoSave
     {
         $success = true;
         if (is_null($value)) {
-            $value = @$page->values[$field];
+            $value = isset($page->values[$field]) ? $page->values[$field] : null;
         }
         return $value ? "1" : "";
     }
@@ -260,38 +260,22 @@ abstract class ProfileGeoloc implements ProfileSetting
     {
         require_once 'geoloc.inc.php';
         $success = true;
-        unset($address['geoloc']);
-        unset($address['geoloc_cityid']);
-        if (@$address['parsevalid']
-            || (@$address['text'] && @$address['changed'])
-            || (@$address['text'] && !@$address['cityid'])) {
-            $address = array_merge($address, empty_address());
-            $new = get_address_infos(@$address['text']);
-            if (compare_addresses_text(@$address['text'], $geotxt = get_address_text($new))
-                || (@$address['parsevalid'] && @$address['cityid'])) {
-                $address = array_merge($address, $new);
-                $address['checked'] = true;
-            } else if (@$address['parsevalid']) {
-                $address = array_merge($address, cut_address(@$address['text']));
-                $address['checked'] = true;
-                $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
-                $mailer->assign('text', get_address_text($address));
-                $mailer->assign('geoloc', $geotxt);
-                $mailer->send();
-            } else if (@$address['changed'] || !@$address['checked']) {
+        if ($address['changed'] == 1) {
+            cleanText($address['text']);
+            geolocGoogle($address);
+            $address['updateTime'] = time();
+            // postalAddress
+            if (isset($address['geoloc'])) {
                 $success = false;
-                $address = array_merge($address, cut_address(@$address['text']));
-                $address['checked'] = false;
-                $address['geoloc'] = $geotxt;
-                $address['geoloc_cityid'] = $new['cityid'];
-            } else {
-                $address = array_merge($address, cut_address(@$address['text']));
-                $address['checked'] = true;
             }
+            unset($address['changed']);
         }
-        $address['precise_lat'] = rtrim($address['precise_lat'], '.0');
-        $address['precise_lon'] = rtrim($address['precise_lon'], '.0'); 
-        $address['text'] = get_address_text($address);
+        if (isset($address['geoloc_choice']) && $address['geoloc_choice'] == 0) {
+            $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
+            $mailer->assign('text', $address['text']);
+            $mailer->assign('geoloc', $address['geoloc']);
+            $mailer->send();
+        }
     }
 }
 

@@ -433,12 +433,12 @@ class ProfileModule extends PLModule
         $page->assign('medal_list', $mlist);
     }
 
-    function handler_ajax_address(&$page, $adid)
+    function handler_ajax_address(&$page, $id)
     {
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
-        $page->assign('i', $adid);
-        $page->assign('adr', array());
+        $page->assign('i', $id);
+        $page->assign('address', array());
     }
 
     function handler_ajax_tel(&$page, $prefid, $prefname, $telid)
