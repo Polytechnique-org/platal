@@ -64,13 +64,14 @@ class StatsModule extends PLModule
         define('DUREEJOUR', 24 * 3600);
 
         //recupere le nombre d'inscriptions par jour sur la plage concernée
-        // FIXME: don't count dead peaple
         $res = XDB::iterRow('SELECT  IF(registration_date > DATE_SUB(NOW(), INTERVAL {?} DAY),
                                         TO_DAYS(registration_date) - TO_DAYS(NOW()),
                                         -{?}) AS jour,
                                      COUNT(uid) AS nb
-                               FROM  accounts
-                              WHERE  state = \'active\'
+                               FROM  accounts AS a
+                          LEFT JOIN  account_profiles AS ap ON(ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.flags))
+                          LEFT JOIN  profiles AS p ON (ap.pid = p.pid)
+                              WHERE  state = \'active\' AND p.deathdate IS NULL
                            GROUP BY  jour', (int)$jours, 1 + (int)$jours);
 
         //genere des donnees compatibles avec GNUPLOT
@@ -129,12 +130,12 @@ EOF2;
             $depart = 1930;
 
             //recupere le nombre d'inscriptions par jour sur la plage concernée
-            // XXX: Manage dead peaple...
             $res = XDB::iterRow("SELECT  pe.entry_year AS promo, SUM(state = 'active') / COUNT(*) * 100
                                    FROM  accounts AS a
                              INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                             INNER JOIN  profiles AS p ON (p.pid = ap.pid)
                              INNER JOIN  profile_education AS pe ON (pe.uid = ap.pid AND FIND_IN_SET('primary', pe.flags))
-                                  WHERE  pe.entry_year >= {?}
+                                  WHERE  pe.entry_year >= {?} AND p.deathdate IS NULL
                                GROUP BY  promo", $depart);
 
             //genere des donnees compatibles avec GNUPLOT
@@ -179,7 +180,6 @@ EOF2;
             $jours = 365;
             define('DUREEJOUR', 24 * 3600);
 
-            // XXX: And promo again \o/
             $res = XDB::query("SELECT  MIN(TO_DAYS(a.registration_date) - TO_DAYS(NOW()))
                                  FROM  accounts AS a
                            INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
@@ -313,17 +313,17 @@ EOF2;
             $time = ' AND e.stamp > DATE_SUB(CURDATE(), INTERVAL 1 ' . strtoupper($period) . ')';
             break;
         }
-        // XXX: Need to be port to profile stuff
-        $rows = XDB::iterator("SELECT  IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
-                                       u.prenom, u.promo, e.data AS forlife, COUNT(*) AS count
-                                 FROM  logger.events AS e
-                           INNER JOIN  logger.actions AS act ON (e.action = act.id)
-                           INNER JOIN  aliases AS a ON (a.alias = e.data)
-                           INNER JOIN  auth_user_md5 AS u ON (u.user_id = a.id)
-                                WHERE  act.text = 'view_profile' $time
-                             GROUP BY  e.data
-                             ORDER BY  count DESC
-                                LIMIT  10");
+        $rows = XDB::fetchAllAssoc("SELECT  p.pid AS profile, COUNT(*) AS count
+                                      FROM  logger.events AS e
+                                INNER JOIN  logger.actions AS act ON (e.action = act.id)
+                                INNER JOIN  profiles AS p ON (p.hrpid = e.data)
+                                     WHERE  act.text = 'view_profile' $time
+                                  GROUP BY  e.data
+                                  ORDER BY  count DESC
+                                     LIMIT  10");
+        foreach ($rows as $key=>$row) {
+            $rows[$key]['profile'] = Profile::get($rows[$key]['profile']);
+        }
         $page->assign('profiles', $rows);
         $page->assign('period', $period);
     }

@@ -54,12 +54,12 @@
     <th>Nom</th>
     {if hasPerms('admin')}<th>Consultations</th>{/if}
   </tr>
-  {iterate from=$profiles item=profile}
+  {foreach from=$profiles item=profile}
   <tr class="{cycle values="pair,impair"}">
-    <td><a href="profile/{$profile.forlife}" class="popup">{$profile.prenom} {$profile.nom} (X{$profile.promo})</a></td>
+    <td>{profile user=$profile.profile promo=true}</td>
     {if hasPerms('admin')}<td class="right">{$profile.count}</td>{/if}
   </tr>
-  {/iterate}
+  {/foreach}
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
