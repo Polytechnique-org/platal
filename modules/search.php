@@ -73,9 +73,9 @@ class SearchModule extends PLModule
     {
         global $globals;
 
-        $res = XDB::query("SELECT  MIN(`diminutif`), MAX(`diminutif`)
-                             FROM  `groupex`.`asso`
-                            WHERE  `cat` = 'Promotions'");
+        $res = XDB::query("SELECT  MIN(diminutif), MAX(diminutif)
+                             FROM  groupex.asso
+                            WHERE  cat = 'Promotions'");
         list($min, $max) = $res->fetchOneRow();
         $page->assign('promo_min', $min);
         $page->assign('promo_max', $max);
@@ -229,15 +229,15 @@ class SearchModule extends PLModule
                            array('',
                                  '\\\\\1',
                                  '.*'),
-                           $_REQUEST['q']);
+                           Env::s('q'));
         if (!$q) exit();
 
         // try to look in cached results
-        $cache = XDB::query('SELECT  `result`
-                               FROM  `search_autocomplete`
-                              WHERE  `name` = {?} AND
-                                     `query` = {?} AND
-                                     `generated` > NOW() - INTERVAL 1 DAY',
+        $cache = XDB::query('SELECT  result
+                               FROM  search_autocomplete
+                              WHERE  name = {?} AND
+                                     query = {?} AND
+                                     generated > NOW() - INTERVAL 1 DAY',
                              $type, $q);
         if ($res = $cache->fetchOneCell()) {
             echo $res;
@@ -245,8 +245,8 @@ class SearchModule extends PLModule
         }
 
         // default search
-        $unique = '`user_id`';
-        $db = '`auth_user_md5`';
+        $unique = 'pid';
+        $db = 'profiles';
         $realid = false;
         $beginwith = true;
         $field2 = false;
@@ -255,33 +255,33 @@ class SearchModule extends PLModule
 
         switch ($type) {
           case 'binetTxt':
-            $db = '`binets_def` INNER JOIN
-                   `binets_ins` ON(`binets_def`.`id` = `binets_ins`.`binet_id`)';
-            $field = '`binets_def`.`text`';
+            $db = 'binets_def INNER JOIN
+                   binets_ins ON(binets_def.id = binets_ins.binet_id)';
+            $field = 'binets_def.text';
             if (strlen($q) > 2)
                 $beginwith = false;
-            $realid = '`binets_def`.`id`';
+            $realid = 'binets_def.id';
             break;
           case 'networking_typeTxt':
-            $db = '`profile_networking_enum` INNER JOIN
-                   `profile_networking` ON(`profile_networking`.`network_type` = `profile_networking_enum`.`network_type`)';
-            $field = '`profile_networking_enum`.`name`';
+            $db = 'profile_networking_enum INNER JOIN
+                   profile_networking ON(profile_networking.network_type = profile_networking_enum.network_type)';
+            $field = 'profile_networking_enum.name';
             $unique = 'uid';
-            $realid = '`profile_networking_enum`.`network_type`';
+            $realid = 'profile_networking_enum.network_type';
             break;
           case 'city':
-            $db = '`geoloc_city` INNER JOIN
-                   `adresses` ON(`geoloc_city`.`id` = `adresses`.`cityid`)';
-            $unique='`uid`';
-            $field='`geoloc_city`.`name`';
+            $db = 'geoloc_city INNER JOIN
+                   adresses ON(geoloc_city.id = adresses.cityid)';
+            $unique='uid';
+            $field='geoloc_city.name';
             break;
           case 'countryTxt':
-            $db = '`geoloc_pays` INNER JOIN
-                   `adresses` ON(`geoloc_pays`.`a2` = `adresses`.`country`)';
-            $unique = '`uid`';
-            $field = '`geoloc_pays`.`pays`';
-            $field2 = '`geoloc_pays`.`country`';
-            $realid = '`geoloc_pays`.`a2`';
+            $db = 'geoloc_pays INNER JOIN
+                   adresses ON(geoloc_pays.a2 = adresses.country)';
+            $unique = 'uid';
+            $field = 'geoloc_pays.pays';
+            $field2 = 'geoloc_pays.country';
+            $realid = 'geoloc_pays.a2';
             break;
           case 'entreprise':
             $db     = 'profile_job_enum INNER JOIN
@@ -310,14 +310,10 @@ class SearchModule extends PLModule
             $unique = 'm.uid';
             break;
           case 'nationaliteTxt':
-            $db = '`geoloc_pays` INNER JOIN
-                   `auth_user_md5` ON (`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite` OR
-                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite2` OR
-                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite3`)';
-            $field = 'IF(`geoloc_pays`.`nat`=\'\',
-                                       `geoloc_pays`.`pays`,
-                                       `geoloc_pays`.`nat`)';
-            $realid = '`geoloc_pays`.`a2`';
+            $db = 'geoloc_pays AS acgp
+                  INNER JOIN profiles AS acp ON (acgp.a2 IN (acp.nationality1, acp.nationality2, acp.nationality3))';
+            $field = 'IF(acgp.nat = \'\', acgp.pays, acgp.nat)';
+            $realid = 'acgp.a2';
             break;
           case 'description':
             $db     = 'profile_job';
@@ -349,10 +345,10 @@ class SearchModule extends PLModule
             $distinct  = false;
             break;
           case 'sectionTxt':
-            $db = '`sections` INNER JOIN
-                   `auth_user_md5` ON(`auth_user_md5`.`section` = `sections`.`id`)';
-            $field = '`sections`.`text`';
-            $realid = '`sections`.`id`';
+            $db = 'sections AS acs
+                   INNER JOIN profiles AS acp ON (acp.section = acs.id)';
+            $field = 'acs.text';
+            $realid = 'acs.id';
             $beginwith = false;
             break;
           default: exit();
@@ -402,7 +398,7 @@ class SearchModule extends PLModule
                 $res .= "\n";
             }
         }
-        XDB::query('REPLACE INTO  `search_autocomplete`
+        XDB::query('REPLACE INTO  search_autocomplete
                           VALUES  ({?}, {?}, {?}, NOW())',
                     $type, $q, $res);
         echo $res;
@@ -412,28 +408,28 @@ class SearchModule extends PLModule
     function handler_list(&$page, $type = null, $idVal = null)
     {
         // Give the list of all values possible of type and builds a select input for it
-        $field = '`text`';
-        $id = '`id`';
+        $field = 'text';
+        $id = 'id';
         $where = '';
 
         switch ($type) {
           case 'binet':
-            $db = '`binets_def`';
+            $db = 'binets_def';
             break;
           case 'networking_type':
-            $db = '`profile_networking_enum`';
-            $field = '`name`';
-            $id = '`network_type`';
+            $db = 'profile_networking_enum';
+            $field = 'name';
+            $id = 'network_type';
             break;
           case 'country':
-            $db = '`geoloc_pays`';
-            $field = '`pays`';
-            $id = '`a2`';
+            $db = 'geoloc_pays';
+            $field = 'pays';
+            $id = 'a2';
             $page->assign('onchange', 'changeCountry(this.value)');
             break;
           case 'fonction':
-            $db = '`fonctions_def`';
-            $field = '`fonction_fr`';
+            $db = 'fonctions_def';
+            $field = 'fonction_fr';
             break;
           case 'diploma':
             header('Content-Type: text/xml; charset="UTF-8"');
@@ -446,19 +442,17 @@ class SearchModule extends PLModule
             $field = 'nom';
             break;
           case 'nationalite':
-            $db = '`geoloc_pays` INNER JOIN
-                   `auth_user_md5` ON (`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite` OR
-                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite2` OR
-                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite3`)';
-            $field = 'IF(`nat`=\'\', `pays`, `nat`)';
-            $id = '`a2`';
+            $db = 'geoloc_pays AS acgp INNER JOIN
+                   profiles AS acp ON (acgp.a2 IN (acp.nationality1, acp.nationality2, acp.nationality3))';
+            $field = 'IF(acgp.nat=\'\', acgp.pays, acgp.nat)';
+            $id = 'acgp.a2';
             break;
           case 'region':
-            $db = '`geoloc_region`';
-            $field = '`name`';
-            $id = '`region`';
+            $db = 'geoloc_region';
+            $field = 'name';
+            $id = 'region';
             if (isset($_REQUEST['country'])) {
-                $where .= ' WHERE `a2` = "'.$_REQUEST['country'].'"';
+                $where .= ' WHERE a2 = "'.$_REQUEST['country'].'"';
             }
             break;
           case 'school':
@@ -468,7 +462,7 @@ class SearchModule extends PLModule
             $page->assign('onchange', 'changeSchool(this.value)');
             break;
           case 'section':
-            $db = '`sections`';
+            $db = 'sections';
             break;
           case 'secteur':
             $db    = 'profile_job_sector_enum INNER JOIN
