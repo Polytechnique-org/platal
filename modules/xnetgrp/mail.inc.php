@@ -29,7 +29,7 @@ function get_all_redirects($membres, $mls, &$client)
 
     // TODO: add more filters to choose users
     if (!empty($membres)) {
-        $uf = new UserFilter(new UFC_Group($globals->asso('id')))
+        $uf = new UserFilter(new UFC_Group($globals->asso('id')));
         $tos = $uf->getUsers();
     }
 

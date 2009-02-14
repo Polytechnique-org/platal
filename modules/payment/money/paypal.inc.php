@@ -52,10 +52,8 @@ class PayPal
         global $globals, $platal;
 
         $this->urlform = 'https://'.$globals->money->paypal_site.'/cgi-bin/webscr';
-        $req = XDB::query("SELECT  IF(nom_usage!='', nom_usage, nom) AS nom
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?}",S::v('uid'));
-        $name = $req->fetchOneCell();
+        $user = S::user();
+        $name = $user->lastName();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
             . '/' . $platal->ns . "payment/paypal_return/".S::v('uid')."?comment=".urlencode(Env::v('comment'));
@@ -77,6 +75,7 @@ class PayPal
             'last_name'  => $name,
             'email'      => S::user()->bestEmail());
 
+        // XXX: waiting for port of adresses.
         $res = XDB::query(
             "SELECT a.adr1 AS address1, a.adr2 AS address2,
                     a.city, a.postcode AS zip, a.country,

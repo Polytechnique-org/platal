@@ -29,7 +29,7 @@ all: build
 build: core conf banana wiki openid medals jquery
 
 check:
-	@find . -name '*.php' -exec php -l {} ";" | grep -v 'No syntax errors detected'
+	@!(find . -name '*.php' -exec php -l {} ";" | grep -v 'No syntax errors detected')
 
 q:
 	@echo -e "Code statistics\n"
