@@ -154,13 +154,15 @@ class MarketingModule extends PLModule
             pl_redirect('emails/redirect');
         }
 
-        $res = XDB::query(
-                "SELECT  u.deces = '0000-00-00' AS alive, e.last,
-                         IF(e.email IS NOT NULL, e.email, IF(FIND_IN_SET('googleapps', u.mail_storage), 'googleapps', NULL)) AS email
-                   FROM  auth_user_md5 AS u
-              LEFT JOIN  emails        AS e ON (e.flags = 'active' AND e.uid = u.user_id)
-                  WHERE  u.user_id = {?}
-               ORDER BY  e.panne_level, e.last", $user->id());
+        $res = XDB::query('SELECT  p.deathdate IS NULL AS alive, e.last,
+                                   IF(e.email IS NOT NULL, e.email,
+                                         IF(FIND_IN_SET(\'googleapps\', eo.storage), \'googleapps\', NULL)) AS email
+                             FROM  email_options AS eo
+                        LEFT JOIN  account_profiles AS ap ON (ap.uid = eo.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                        LEFT JOIN  profiles AS p ON (p.pid = ap.pid)
+                        LEFT JOIN  emails        AS e ON (e.flags = \'active\' AND e.uid = eo.uid)
+                            WHERE  eo.uid = {?}
+                         ORDER BY  e.panne_level, e.last', $user->id());
         if (!$res->numRows()) {
             return PL_NOT_FOUND;
         }

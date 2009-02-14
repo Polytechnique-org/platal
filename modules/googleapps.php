@@ -198,8 +198,7 @@ class GoogleAppsModule extends PLModule
 
             // Force synchronization of plat/al and Google Apps passwords.
             if ($action == 'forcesync' && $account->sync_password) {
-                $res = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id = {?}", $user->id());
-                $account->set_password($res->fetchOneCell());
+                $account->set_password($user->password());
                 $page->trigSuccess('Le mot de passe a été synchronisé.');
             }
 
