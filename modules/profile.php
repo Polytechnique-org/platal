@@ -262,17 +262,16 @@ class ProfileModule extends PLModule
 
         // Determines is the user is registered, and fetches the user infos in
         // the appropriate way.
-        $res = XDB::query("SELECT  perms IN ('admin','user','disabled')
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?}", $login->id());
-        if ($res->fetchOneCell()) {
+        $owner = $login->owner();
+        if (!$owner || $owner->state != 'pending') {
             $new  = Env::v('modif') == 'new';
-            $user = get_user_details($login->hrid(), S::v('uid'), $view);
+            // XXX: Deprecated...
+            $user = get_user_details($login->hrid(), S::i('uid'), $view);
         } else {
             $new  = false;
             $user = array();
             if (S::logged()) {
-                pl_redirect('marketing/public/' . $login->hrid());
+                pl_redirect('marketing/public/' . $owner->login());
             }
         }
 
@@ -331,19 +330,14 @@ class ProfileModule extends PLModule
 
     function handler_ax(&$page, $user = null)
     {
-        $user = User::get($user);
+        $user = Profile::get($user);
         if (!$user) {
             return PL_NOT_FOUND;
         }
-
-        $res = XDB::query("SELECT  matricule_ax
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?}", $user->id());
-        $mat = $res->fetchOneCell();
-        if (!intval($mat)) {
-            $page->kill("Le matricule AX de {$user->login()} est inconnu");
+        if (!$user->ax_id) {
+            $page->kill("Le matricule AX de {$user->hrid()} est inconnu");
         }
-        http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=$mat");
+        http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=" . $user->ax_id);
     }
 
     function handler_p_edit(&$page, $user = null, $opened_tab = null, $mode = null)
@@ -385,11 +379,7 @@ class ProfileModule extends PLModule
         $wiz->addPage('ProfileMentor', 'Mentoring', 'mentor');
         $wiz->apply($page, 'profile/edit/' . $user->hrid(), $opened_tab, $mode);
 
-         // Misc checks
-        $res = XDB::query("SELECT  user_id
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?} AND naissance = '0000-00-00'", S::i('uid'));
-        if ($res->numRows()) {
+        if (!$user->birthdate) {
             $page->trigWarning("Ta date de naissance n'est pas renseignée, ce qui t'empêcheras de réaliser"
                       . " la procédure de récupération de mot de passe si un jour tu le perdais.");
         }
@@ -561,23 +551,19 @@ class ProfileModule extends PLModule
         $page->assign('names', build_javascript_names($data));
     }
 
-    function handler_p_orange(&$page)
+    function handler_p_orange(&$page, $pid = null)
     {
         $page->changeTpl('profile/orange.tpl');
 
         require_once 'validations.inc.php';
-
-        $res = XDB::query("SELECT  e.entry_year, e.grad_year, d.promo, FIND_IN_SET('femme', u.flags) AS sexe
-                             FROM  auth_user_md5     AS u
-                       INNER JOIN  profile_display   AS d ON (d.pid = u.user_id)
-                       INNER JOIN  profile_education AS e ON (e.uid = u.user_id AND FIND_IN_SET('primary', e.flags))
-                            WHERE  u.user_id = {?}", S::v('uid'));
-
-        list($promo, $promo_sortie_old, $promo_display, $sexe) = $res->fetchOneRow();
-        $page->assign('promo_sortie_old', $promo_sortie_old);
-        $page->assign('promo', $promo);
-        $page->assign('promo_display', $promo_display);
-        $page->assign('sexe', $sexe);
+        $profile = Profile::get($pid);
+        if (is_null($profile)) {
+            return PL_NOT_FOUND;
+        }
+        $page->assign('promo_sortie_old', $profile->grad_year);
+        $page->assign('promo', $profile->entry_year);
+        $page->assign('promo_display', $profile->promo());
+        $page->assign('sexe', $profile->isFemale());
 
         if (!Env::has('promo_sortie')) {
             return;
@@ -586,24 +572,21 @@ class ProfileModule extends PLModule
         }
 
         $promo_sortie = Env::i('promo_sortie');
-
+        $promo = $profile->entry_year;
         if ($promo_sortie < 1000 || $promo_sortie > 9999) {
             $page->trigError('L\'année de sortie doit être un nombre de quatre chiffres.');
-        }
-        elseif ($promo_sortie < $promo + 3) {
+        } elseif ($promo_sortie < $promo + 3) {
             $page->trigError('Trop tôt !');
-        }
-        elseif ($promo_sortie == $promo_sortie_old) {
+        } elseif ($promo_sortie == $promo_sortie_old) {
             $page->trigWarning('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
-        }
-        elseif ($promo_sortie == $promo + 3) {
-            XDB::execute("UPDATE  profile_education
+        } elseif ($promo_sortie == $promo + 3) {
+            XDB::execute('UPDATE  profile_education
                              SET  grad_year = {?}
-                           WHERE  uid = {?} AND FIND_IN_SET('primary', flags)", $promo_sortie, S::v('uid'));
-                $page->trigSuccess('Ton statut "orange" a été supprimé.');
-                $page->assign('promo_sortie_old', $promo_sortie);
-        }
-        else {
+                           WHERE  uid = {?} AND FIND_IN_SET(\'primary\', flags)',
+                         $promo_sortie, $profile->id());
+            $page->trigSuccess('Ton statut "orange" a été supprimé.');
+            $page->assign('promo_sortie_old', $promo_sortie);
+        } else {
             $page->assign('promo_sortie', $promo_sortie);
 
             if (Env::has('submit')) {
@@ -614,37 +597,36 @@ class ProfileModule extends PLModule
         }
     }
 
-    function handler_referent(&$page, $x = null)
+    function handler_referent(&$page, $user)
     {
         require_once 'user.func.inc.php';
         $page->changeTpl('profile/fiche_referent.tpl', SIMPLE);
 
-        $user = User::get($x);
-        if ($user == null) {
+        $user = Profile::get($user);
+        if (!$user) {
             return PL_NOT_FOUND;
         }
 
-        $res = XDB::query("SELECT cv FROM auth_user_md5 WHERE user_id = {?}", $user->id());
-        $cv = $res->fetchOneCell();
-
         $page->assign_by_ref('user', $user);
-        $page->assign('cv', MiniWiki::WikiToHTML($cv, true));
-        $page->assign('adr_pro', get_user_details_pro($user->id()));
+        $page->assign('cv', MiniWiki::WikiToHTML($user->cv, true));
+        //TODO: waiting for job refactoring to be done
+        //$page->assign('adr_pro', get_user_details_pro($user->id()));
 
         /////  recuperations infos referent
 
         //expertise
-        $res = XDB::query("SELECT expertise FROM profile_mentor WHERE uid = {?}", $user->id());
+        $res = XDB::query('SELECT  expertise
+                             FROM  profile_mentor
+                            WHERE  uid = {?}', $user->id());
         $page->assign('expertise', $res->fetchOneCell());
 
         //secteurs
         $secteurs = $ss_secteurs = Array();
-        $res = XDB::iterRow(
-                "SELECT  s.name AS label, ss.name AS label
-                   FROM  profile_mentor_sector      AS m
-              LEFT JOIN  profile_job_sector_enum    AS s  ON(m.sectorid = s.id)
-              LEFT JOIN  profile_job_subsector_enum AS ss ON(m.sectorid = ss.sectorid AND m.subsectorid = ss.id)
-                  WHERE  uid = {?}", $user->id());
+        $res = XDB::iterRow('SELECT  s.name AS label, ss.name AS label
+                               FROM  profile_mentor_sector      AS m
+                          LEFT JOIN  profile_job_sector_enum    AS s  ON(m.sectorid = s.id)
+                          LEFT JOIN  profile_job_subsector_enum AS ss ON(m.sectorid = ss.sectorid AND m.subsectorid = ss.id)
+                              WHERE  uid = {?}', $user->id());
         while (list($sec, $ssec) = $res->next()) {
             $secteurs[]    = $sec;
             $ss_secteurs[] = $ssec;
@@ -653,11 +635,10 @@ class ProfileModule extends PLModule
         $page->assign_by_ref('ss_secteurs', $ss_secteurs);
 
         //pays
-        $res = XDB::query(
-                "SELECT  gp.pays
-                   FROM  profile_mentor_country AS m
-              LEFT JOIN  geoloc_pays            AS gp ON (m.country = gp.a2)
-                  WHERE  uid = {?}", $user->id());
+        $res = XDB::query('SELECT  gp.pays
+                             FROM  profile_mentor_country AS m
+                        LEFT JOIN  geoloc_pays            AS gp ON (m.country = gp.a2)
+                            WHERE  uid = {?}', $user->id());
         $page->assign('pays', $res->fetchColumn());
 
         $page->addJsLink('close_on_esc.js');

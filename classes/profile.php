@@ -38,7 +38,7 @@ class Profile
             $from = 'profiles AS p';
             $where = XDB::format('p.hrpid = {?}', $login);
         }
-        $res = XDB::query('SELECT  p.*, pe.entry_year, pe.grad_year,
+        $res = XDB::query('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
                                    pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
                                    IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_usual,
                                    IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_usual,
