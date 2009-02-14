@@ -140,6 +140,22 @@ class XDB
         return self::_prepare(func_get_args());
     }
 
+    // Produce the SQL statement for setting/unsetting a flag
+    public static function changeFlag($fieldname, $flagname, $state)
+    {
+        if ($state) {
+            return XDB::format($fieldname . ' = CONCAT({?}, \',\', ' . $fieldname . ')', $flagname);
+        } else {
+            return XDB::format($fieldname . ' = REPLACE(' . $fieldname . ', {?}, \'\')', $flagname);
+        }
+    }
+
+    // Produce the SQL statement representing an array
+    public static function formatArray(array $array)
+    {
+        return '(' . implode(', ', array_map(array('XDB', 'escape'), $array)) . ')';
+    }
+
     public static function execute()
     {
         global $globals;
