@@ -31,7 +31,7 @@ class EventFeed extends PlFeed
                             'events/rss.tpl');
     }
 
-    private static function nextEvent(PlIterator &$it, PlUser &$user)
+    public static function nextEvent(PlIterator &$it, PlUser &$user)
     {
         while ($body = $it->next()) {
             $uf = UserFilter::getLegacy($body['promo_min'], $body['promo_max']);

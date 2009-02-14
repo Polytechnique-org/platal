@@ -22,7 +22,7 @@
 
 <div class="events">
   <ul>
-  {iterate from=$events item=ev}
+  {foreach from=$events item=ev}
     <li class="{if $ev.nonlu}unread{else}read{/if}" id="evt-{$ev.id}">
       {if $ev.nonlu}
       <div  id="mark-read-{$ev.id}" style="float: right">
@@ -31,14 +31,14 @@
       </div>
       {/if}
       <a href="events{if !$ev.nonlu}/unread/{$ev.id}{else}#newsid{$ev.id}{/if}" target="_blank" id="link-{$ev.id}"
-         title="Ajouté le {$ev.creation_date|date_format} par {$ev.prenom} {$ev.nom} (X{$ev.promo})">
+         title="Ajouté le {$ev.creation_date|date_format} par {profile user=$ev.user_id link=false sex=false promo=true}">
         {tidy}
           {$ev.titre|nl2br}
         {/tidy}
       </a>
     </li>
   {assign var="has_evts" value=true}
-  {/iterate}
+  {/foreach}
   {if !$has_evts}
     <li><em>Aucun article actuellement.</em></li>
   {/if}

@@ -31,31 +31,37 @@ class GadgetsModule extends PLModule
         );
     }
 
-    function handler_ig_events_xml(&$page) {
+    function handler_ig_events_xml(&$page)
+    {
         require_once 'gadgets/gadgets.inc.php';
         init_igoogle_xml('gadgets/ig-events.xml.tpl');
     }
 
-    function handler_ig_events(&$page) {
+    function handler_ig_events(&$page)
+    {
         require_once 'gadgets/gadgets.inc.php';
         init_igoogle_html('gadgets/ig-events.tpl', AUTH_COOKIE);
 
-        $events = XDB::iterator(
-            'SELECT  SQL_CALC_FOUND_ROWS
-                     e.id, e.titre, UNIX_TIMESTAMP(e.creation_date) AS creation_date,
-                     IF(u.nom_usage = "", u.nom, u.nom_usage) AS nom, u.prenom, u.promo,
-                     ev.user_id IS NULL AS nonlu
-               FROM  evenements AS e
-         INNER JOIN  auth_user_md5 AS u ON e.user_id = u.user_id
-          LEFT JOIN  evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
-              WHERE  FIND_IN_SET("valide", e.flags) AND peremption >= NOW()
-                     AND (e.promo_min = 0 || e.promo_min <= {?})
-                     AND (e.promo_max = 0 || e.promo_max >= {?})
-           ORDER BY  e.creation_date DESC
-              LIMIT  {?}',
-            S::i('uid'), S::i('promo'), S::i('promo'), 5);
-        $page->assign('events', $events);
+        $events = XDB::iterator('SELECT  SQL_CALC_FOUND_ROWS
+                                         e.id, e.titre, UNIX_TIMESTAMP(e.creation_date) AS creation_date,
+                                         IF(u.nom_usage = "", u.nom, u.nom_usage) AS nom, u.prenom, u.promo,
+                                         ev.user_id IS NULL AS nonlu, e.user_id
+                                   FROM  evenements AS e
+                              LEFT JOIN  evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
+                                  WHERE  FIND_IN_SET("valide", e.flags) AND peremption >= NOW()
+                               ORDER BY  e.creation_date DESC', S::i('uid'));
         $page->assign('event_count', XDB::query("SELECT FOUND_ROWS()")->fetchOneCell());
+
+        Platal::load('events', 'feed.inc.php');
+        $user = S::user();
+        $data = array();
+        while ($e = PlFeed::nextEvent($events, $user)) {
+            $data[] = $e;
+            if (count($data) == 5) {
+                break;
+            }
+        }
+        $page->assign('events', $data);
     }
 
     function handler_ig_search_xml(&$page) {

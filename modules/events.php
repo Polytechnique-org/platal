@@ -158,18 +158,6 @@ class EventsModule extends PLModule
             pl_redirect('events#newsid'.$eid);
         }
 
-        function next_event(PlIterator &$it)
-        {
-            $user = S::user();
-            while ($body = $it->next()) {
-                $uf = UserFilter::getLegacy($body['promo_min'], $body['promo_max']);
-                if ($uf->checkUser($user)) {
-                    return $body;
-                }
-            }
-            return null;
-        }
-
         // Fetch the events to display, along with their metadata.
         $array = array();
         $it = XDB::iterator("SELECT  e.id, e.titre, e.texte, e.post_id, e.user_id,
@@ -185,7 +173,10 @@ class EventsModule extends PLModule
                            ORDER BY  important DESC, news DESC, end DESC, e.peremption, e.creation_date DESC",
                             S::i('uid'));
         $cats = array('important', 'news', 'end', 'body');
-        $body  = next_event($it);
+
+        $this->load('feed.inc.php');
+        $user = S::user();
+        $body  = EventFeed::nextEvent($it, $user);
         foreach ($cats as $cat) {
             $data = array();
             if (!$body) {
@@ -197,7 +188,7 @@ class EventsModule extends PLModule
                 } else {
                     break;
                 }
-                $body = next_event($it);
+                $body = EventFeed::nextEvent($it);
             } while ($body);
             if (!empty($data)) {
                 $array[$cat] = $data;
