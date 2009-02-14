@@ -26,7 +26,7 @@ $telepayment}Télépaiement;Liquide/Chèque;{/if}Payé{/if}{else};Nombre{/if}
 {foreach from=$participants item=m}
 
 ;
-{$m.nom};{$m.prenom};{$m.promo}{if $tout}{foreach from=$moments item=i};{$m[$i.item_id]}{/foreach}{if $admin &&
+{$m.user->lastName()};{$m.user->firstName()};{$m.user->promo()}{if $tout}{foreach from=$moments item=i};{$m[$i.item_id]}{/foreach}{if $admin &&
 $money};{$m.montant};{if $telepayment}{$m.telepayment};{$m.adminpaid};{/if}{$m.paid}{/if}{else};{$m.nb}{/if}
 
 {/foreach}

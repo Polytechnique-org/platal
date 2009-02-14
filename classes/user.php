@@ -510,21 +510,56 @@ class User extends PlUser
     }
 
     // Fetch a set of users from a list of UIDs
-    public static function getBulkUsersWithUIDs(array $uids)
+    public static function getBulkUsersWithUIDs(array $data, $orig = null, $dest = null)
     {
+        // Fetch the list of uids
+        if (is_null($orig)) {
+            $uids = $data;
+        } else {
+            if (is_null($dest)) {
+                $dest = $orig;
+            }
+            $uids = array();
+            foreach ($data as $key=>$entry) {
+                if (isset($entry[$orig])) {
+                    $uids[] = $entry[$orig];
+                }
+            }
+        }
+
+        // Fetch users
         if (count($uids) == 0) {
-            return array();
+            return $data;
         }
         $fields = self::loadMainFieldsFromUIDs($uids);
         $table = array();
         while (($list = $fields->next())) {
             $table[$list['uid']] = User::getSilentWithValues(null, $list);
         }
-        $users = array();
-        foreach ($uids as $key=>$uid) {
-            $users[$key] = $table[$uid];
+
+        // Build the result with respect to input order.
+        if (is_null($orig)) {
+            $users = array();
+            foreach ($uids as $key=>$uid) {
+                $users[$key] = $table[$uid];
+            }
+            return $users;
+        } else {
+            foreach ($data as $key=>$entry) {
+                if (isset($entry[$orig])) {
+                    $entry[$dest] = $table[$entry[$orig]];
+                    $data[$key] = $entry;
+                }
+            }
+            return $data;
         }
-        return $users;
+    }
+
+    public static function getBulkUsersFromDB()
+    {
+        $args = func_get_args();
+        $uids = call_user_func_array(array('XDB', 'fetchColumn'), $args);
+        return self::getBulkUsersWithUIDs($uids);
     }
 }
 

@@ -116,20 +116,18 @@ class XnetEventsModule extends PLModule
         }
 
         $page->assign('archive', $archive);
-        $evenements = XDB::iterator(
-                "SELECT  e.*, LEFT(10, e.debut) AS first_day, LEFT(10, e.fin) AS last_day,
-                         IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
-                            1) AS inscr_open, e.deadline_inscription,
-                         u.nom, u.prenom, u.promo, a.alias,
-                         MAX(ep.nb) IS NOT NULL AS inscrit, MAX(ep.paid) AS paid
-                  FROM  groupex.evenements  AS e
-            INNER JOIN  x4dat.auth_user_md5 AS u ON u.user_id = e.organisateur_uid
-            INNER JOIN  x4dat.aliases       AS a ON (a.type = 'a_vie' AND a.id = u.user_id)
-             LEFT JOIN  groupex.evenements_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
-                 WHERE  asso_id = {?}
-                   AND  archive = " . ($archive ? "1 " : "0 ")
-              . "GROUP BY  e.eid
-                 ORDER BY  inscr_open DESC, debut DESC", S::v('uid'), $globals->asso('id'));
+        $evenements = XDB::iterator('SELECT  e.*, LEFT(10, e.debut) AS first_day, LEFT(10, e.fin) AS last_day,
+                                             IF(e.deadline_inscription,
+                                                     e.deadline_inscription >= LEFT(NOW(), 10),
+                                                     1) AS inscr_open,
+                                             e.deadline_inscription,
+                                             MAX(ep.nb) IS NOT NULL AS inscrit, MAX(ep.paid) AS paid
+                                       FROM  groupex.evenements              AS e
+                                  LEFT JOIN  groupex.evenements_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
+                                      WHERE  asso_id = {?} AND  archive = {?}
+                                   GROUP BY  e.eid
+                                   ORDER BY  inscr_open DESC, debut DESC',
+                                     S::i('uid'), $globals->asso('id'), $archive ? 1 : 0);
 
         $evts = array();
         $undisplayed_events = 0;
@@ -142,14 +140,12 @@ class XnetEventsModule extends PLModule
             }
 
             $e['show_participants'] = ($e['show_participants'] && (is_member() || may_update()));
-            $res = XDB::query(
-                "SELECT titre, details, montant, ei.item_id, nb, ep.paid
-                   FROM groupex.evenements_items AS ei
-              LEFT JOIN groupex.evenements_participants AS ep
-                        ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND uid = {?})
-                  WHERE ei.eid = {?}",
-                    S::v('uid'), $e['eid']);
-            $e['moments'] = $res->fetchAllAssoc();
+            $e['moments'] = XDB::fetchAllAssoc('SELECT  titre, details, montant, ei.item_id, nb, ep.paid
+                                                  FROM  groupex.evenements_items AS ei
+                                             LEFT JOIN  groupex.evenements_participants AS ep
+                                                           ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND ep.uid = {?})
+                                                 WHERE ei.eid = {?}',
+                                                S::i('uid'), $e['eid']);
 
             $e['topay'] = 0;
             $e['paid']  = $e['moments'][0]['paid'];
@@ -298,7 +294,7 @@ class XnetEventsModule extends PLModule
 
         $admin = may_update();
 
-        $tri = (Env::v('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
+        $tri = (Env::v('order') == 'alpha' ? UserFilter::sortByPromo() : UserFilter::sortByName());
 
         $page->assign('participants',
                       get_event_participants($evt, $item_id, $tri));
@@ -334,7 +330,7 @@ class XnetEventsModule extends PLModule
         $page->assign('admin', may_update());
 
         if (may_update()) {
-            $page->assign('participants', get_event_participants($evt, null, 'promo, nom, prenom'));
+            $page->assign('participants', get_event_participants($evt, null, UserFilter::sortByPromo()));
         }
         $page->register_function('display_ical', 'display_ical');
         $page->assign_by_ref('e', $evt);
@@ -597,63 +593,26 @@ class XnetEventsModule extends PLModule
             $page->assign('moments', $evt['moments']);
         }
 
-        $tri = (Env::v('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
-        $whereitemid = is_null($item_id) ? '' : "AND ep.item_id = $item_id";
-        $res = XDB::iterRow(
-                    'SELECT  UPPER(SUBSTRING(IF(u.nom IS NULL, m.nom,
-                                                IF(u.nom_usage<>"", u.nom_usage, u.nom)), 1, 1)),
-                             COUNT(DISTINCT ep.uid)
-                       FROM  groupex.evenements_participants AS ep
-                 INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
-                  LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
-                  LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
-                      WHERE  ep.eid = {?} '.$whereitemid . '
-                   GROUP BY  UPPER(SUBSTRING(IF(u.nom IS NULL,m.nom,u.nom), 1, 1))', $evt['eid']);
-
-        $alphabet = array();
-        $nb_tot = 0;
-        while (list($char, $nb) = $res->next()) {
-            $alphabet[ord($char)] = $char;
-            $nb_tot += $nb;
-            if (Env::has('initiale') && $char == strtoupper(Env::v('initiale'))) {
-                $tot = $nb;
-            }
-        }
-        ksort($alphabet);
-        $page->assign('alphabet', $alphabet);
-
+        $page->assign('alphabet', array());
         if ($evt['paiement_id']) {
-            $res = XDB::iterator(
-                "SELECT IF(u.nom_usage<>'', u.nom_usage, u.nom) AS nom, u.prenom,
-                        u.promo, a.alias AS email, t.montant
-                   FROM {$globals->money->mpay_tprefix}transactions AS t
-             INNER JOIN auth_user_md5 AS u ON(t.uid = u.user_id)
-             INNER JOIN aliases AS a ON (a.id = t.uid AND a.type='a_vie' )
-              LEFT JOIN groupex.evenements_participants AS ep ON(ep.uid = t.uid AND ep.eid = {?})
-                  WHERE t.ref = {?} AND ep.uid IS NULL",
-                  $evt['eid'], $evt['paiement_id']);
-            $page->assign('oublis', $res->total());
-            $page->assign('oubliinscription', $res);
+            $infos = User::getBulkUsersWithUIDs(
+                            XDB::fetchAllAssoc('SELECT  t.uid, t.montant
+                                                  FROM  ' . $globals->money->mpay_tprefix . 'transactions AS t
+                                             LEFT JOIN  groupex.evenements_participants AS ep ON(ep.uid = t.uid AND ep.eid = {?})
+                                                 WHERE  t.ref = {?} AND ep.uid IS NULL',
+                                               $evt['eid'], $evt['paiement_id']),
+                            'uid', 'user');
+            $page->assign('oublis', count($infos));
+            $page->assign('oubliinscription', $infos);
         }
 
-        $absents = XDB::iterator("SELECT  p.uid,
-                                          IF(m.origine = 'X', IF(u.nom_usage != '', u.nom_usage, u.nom), m.nom) AS nom,
-                                          IF(m.origine = 'X', u.prenom, u.prenom) AS prenom,
-                                          IF(m.origine = 'X', u.promo, m.origine) AS promo,
-                                          IF(m.origine = 'X', FIND_IN_SET('femme', u.flags), m.sexe) AS sexe,
-                                          IF(m.origine = 'X', a.alias, m.email) AS email
-                                    FROM  groupex.evenements_participants AS p
-                              INNER JOIN  groupex.membres                 AS m USING(uid)
-                               LEFT JOIN  groupex.evenements_participants AS p2 ON (p2.uid = m.uid AND p2.eid = p.eid
-                                                                                    AND p2.nb != 0)
-                               LEFT JOIN  auth_user_md5                   AS u ON (u.user_id = m.uid)
-                               LEFT JOIN  aliases                         AS a ON (a.id = u.user_id AND a.type = 'a_vie')
-                                   WHERE  p.eid = {?} AND p2.eid IS NULL
-                                       " . (Env::v('initiale') ? " AND IF(u.nom IS NULL, m.nom,
-                                          IF(u.nom_usage<>'', u.nom_usage, u.nom)) LIKE '" . Env::v('initiale') . "%'"
-                                         : "") . "
-                                GROUP BY  m.uid
-                                ORDER BY  nom, prenom, promo", $evt['eid']);
+        $absents = User::getBulkUsersFromDB('SELECT  p.uid
+                                               FROM  groupex.evenements_participants AS p
+                                          LEFT JOIN  groupex.evenements_participants AS p2 ON (p2.uid = p.uid
+                                                                                               AND p2.eid = p.eid
+                                                                                               AND p2.nb != 0)
+                                              WHERE  p.eid = {?} AND p2.eid IS NULL
+                                           GROUP BY  p.uid', $evt['eid']);
 
         $ofs   = Env::i('offset');
         $tot   = (Env::v('initiale') ? $tot : $nb_tot);
@@ -672,11 +631,10 @@ class XnetEventsModule extends PLModule
             $page->assign('links', $links);
         }
 
-
         $page->assign('absents', $absents);
         $page->assign('participants',
-                      get_event_participants($evt, $item_id, $tri,
-                                             "LIMIT ".($ofs*NB_PER_PAGE).", ".NB_PER_PAGE));
+                      get_event_participants($evt, $item_id, UserFilter::sortByName(),
+                                             NB_PER_PAGE, $ofs * NB_PER_PAGE));
     }
 }
 

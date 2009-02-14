@@ -27,28 +27,23 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
     if (is_null($asso_id)) {
         $asso_id = $globals->asso('id');
     }
-    $res = XDB::query(
-        "SELECT SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*,
-                IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
-                   1) AS inscr_open,
-                LEFT(10, e.debut) AS start_day, LEFT(10, e.fin) AS last_day,
-                LEFT(NOW(), 10) AS now,
-                ei.titre,
-                al.vid AS absent_list, pl.vid AS participant_list,
-                a.nom, a.prenom, a.promo, aa.alias
-           FROM groupex.evenements              AS e
-     INNER JOIN x4dat.auth_user_md5             AS a  ON a.user_id = e.organisateur_uid
-     INNER JOIN x4dat.aliases                   AS aa ON (aa.type = 'a_vie' AND aa.id = a.user_id)
-     INNER JOIN groupex.evenements_items        AS ei ON (e.eid = ei.eid)
-      LEFT JOIN groupex.evenements_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
-      LEFT JOIN virtual AS al ON(al.type = 'evt' AND al.alias = CONCAT(short_name, {?}))
-      LEFT JOIN virtual AS pl ON(pl.type = 'evt' AND pl.alias = CONCAT(short_name, {?}))
-          WHERE (e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?}
-       GROUP BY ei.item_id",
-       '-absents@'.$globals->xnet->evts_domain,
-       '-participants@'.$globals->xnet->evts_domain,
-       $eid, $eid, $item_id ? $item_id : 1, $asso_id);
-
+    $res = XDB::query('SELECT  SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*,
+                               IF(e.deadline_inscription,
+                                     e.deadline_inscription >= LEFT(NOW(), 10),
+                                     1) AS inscr_open,
+                               LEFT(10, e.debut) AS start_day, LEFT(10, e.fin) AS last_day,
+                               LEFT(NOW(), 10) AS now,
+                               ei.titre, al.vid AS absent_list, pl.vid AS participant_list
+                         FROM  groupex.evenements              AS e
+                   INNER JOIN  groupex.evenements_items        AS ei ON (e.eid = ei.eid)
+                    LEFT JOIN  groupex.evenements_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
+                    LEFT JOIN  virtual AS al ON(al.type = \'evt\' AND al.alias = CONCAT(short_name, {?}))
+                    LEFT JOIN  virtual AS pl ON(pl.type = \'evt\' AND pl.alias = CONCAT(short_name, {?}))
+                        WHERE  (e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?}
+                     GROUP BY  ei.item_id',
+                   '-absents@'.$globals->xnet->evts_domain,
+                   '-participants@'.$globals->xnet->evts_domain,
+                   $eid, $eid, $item_id ? $item_id : 1, $asso_id);
     $evt = $res->fetchOneAssoc();
 
     if (!$evt) {
@@ -60,28 +55,24 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 
     // smart calculation of the total number
     if (!$item_id) {
-        $res = XDB::query(
-               "SELECT MAX(nb)
-                  FROM groupex.evenements              AS e
-            INNER JOIN groupex.evenements_items        AS ei ON (e.eid = ei.eid)
-             LEFT JOIN groupex.evenements_participants AS ep
-                       ON (e.eid = ep.eid AND ei.item_id = ep.item_id)
-                 WHERE e.eid = {?}
-              GROUP BY ep.uid", $evt['eid']);
+        $res = XDB::query('SELECT  MAX(nb)
+                             FROM  groupex.evenements              AS e
+                       INNER JOIN  groupex.evenements_items        AS ei ON (e.eid = ei.eid)
+                        LEFT JOIN  groupex.evenements_participants AS ep ON (e.eid = ep.eid AND ei.item_id = ep.item_id)
+                            WHERE  e.eid = {?}
+                         GROUP BY  ep.uid', $evt['eid']);
         $evt['nb_tot'] = array_sum($res->fetchColumn());
         $evt['titre'] = '';
         $evt['item_id'] = 0;
     }
 
-    $res = XDB::query(
-        "SELECT titre, details, montant, ei.item_id, nb, ep.paid, FIND_IN_SET('notify_payment', ep.flags) AS notify_payment
-           FROM groupex.evenements_items        AS ei
-      LEFT JOIN groupex.evenements_participants AS ep
-                ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND uid = {?})
-          WHERE ei.eid = {?}",
-            S::v('uid'), $evt['eid']);
-    $evt['moments'] = $res->fetchAllAssoc();
-
+    $evt['moments'] = XDB::fetchAllAssoc('SELECT  titre, details, montant, ei.item_id, nb,
+                                                  ep.paid, FIND_IN_SET(\'notify_payment\', ep.flags) AS notify_payment
+                                            FROM  groupex.evenements_items        AS ei
+                                       LEFT JOIN  groupex.evenements_participants AS ep ON (ep.eid = ei.eid AND ep.item_id = ei.item_id
+                                                                                                             AND uid = {?})
+                                           WHERE  ei.eid = {?}',
+                                           S::i('uid'), $evt['eid']);
     $evt['topay'] = 0;
     $evt['paid'] = 0;
     $evt['notify_payment'] = false;
@@ -94,12 +85,10 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         $evt['notify_payment'] = $evt['notify_payment'] || $m['notify_payment'];
     }
 
-    $req = XDB::query(
-        "SELECT montant
-           FROM {$globals->money->mpay_tprefix}transactions AS t
-         WHERE ref = {?} AND uid = {?}", $evt['paiement_id'], S::v('uid'));
-    $montants = $req->fetchColumn();
-
+    $montants = XDB::fetchColumn('SELECT  montant
+                                    FROM  ' . $globals->money->mpay_tprefix . 'transactions AS t
+                                   WHERE  ref = {?} AND uid = {?}',
+                                   $evt['paiement_id'], S::v('uid'));
     $evt['telepaid'] = 0;
     foreach ($montants as $m) {
         $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
@@ -115,85 +104,60 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
 // }}}
 
 // {{{ function get_event_participants()
-function get_event_participants(&$evt, $item_id, $tri, $limit = '') {
+function get_event_participants(&$evt, $item_id, array $tri = array(), $count = null, $offset = null)
+{
     global $globals;
-
-    if (Env::has('initiale')) {
-        $where = 'AND IF(u.nom IS NULL, m.nom,
-                         IF(u.nom_usage<>"", u.nom_usage, u.nom))
-                  LIKE "'.addslashes(Env::v('initiale')).'%"';
-    } else {
-        $where = '';
-    }
 
     $eid    = $evt['eid'];
     $money  = $evt['money'] && (function_exists('may_update')) && may_update();
     $pay_id = $evt['paiement_id'];
 
-    $query =
-          "SELECT  IF(m.origine != 'X',m.nom,IF(u.nom_usage<>'', u.nom_usage, u.nom)) AS nom,
-                   IF(m.origine != 'X',m.prenom,u.prenom) AS prenom,
-                   IF(m.origine != 'X','extérieur',u.promo) AS promo,
-                   IF(m.origine != 'X' OR u.perms = 'pending',m.email,a.alias) AS email,
-                   IF(m.origine != 'X',m.sexe,FIND_IN_SET('femme', u.flags)) AS femme,
-                   m.perms='admin' AS admin,
-                   (m.origine = 'X' OR m.origine IS NULL) AS x,
-                   ep.uid, SUM(ep.paid) AS paid, SUM(ep.nb) AS nb,
-                   FIND_IN_SET('notify_payment', ep.flags) AS notify_payment
-             FROM  groupex.evenements_participants AS ep
-       INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
-        LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
-        LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
-        LEFT JOIN  aliases         AS a ON ( a.id = ep.uid AND a.type='a_vie' )
-            WHERE  ep.eid = {?}
-                    ".(($item_id)?" AND item_id = $item_id":"")."
-                    $where
-         GROUP BY  ep.uid
-         ORDER BY  $tri $limit";
-
-    if ($item_id) {
-        $res = XDB::query($query, $eid);
-        return $res->fetchAllAssoc();
+    $append = $item_id ? XDB::foramt(' AND ep.item_id = {?}', $item_id) : '';
+    $query = XDB::fetchAllAssoc('uid', 'SELECT  ep.uid, SUM(ep.paid) AS paid, SUM(ep.nb) AS nb,
+                                                FIND_IN_SET(\'notify_payment\', ep.flags) AS notify_payment
+                                          FROM  groupex.evenements_participants AS ep
+                                         WHERE  ep.eid = {?} AND nb > 0 ' . $append . '
+                                      GROUP BY  ep.uid', $eid);
+    $uf = new UserFilter(new UFC_True(), $tri);
+    $users = User::getBulkUsersWithUIDs($uf->filter(array_keys($query), $count, $offset));
+    $tab = array();
+    foreach ($users as $user) {
+        $uid = $user->id();
+        $tab[$uid] = $query[$uid];
+        $tab[$uid]['user'] = $user;
     }
 
-    $res = XDB::iterator($query, $eid);
-    $tab = array();
-    $user = 0;
+    if ($item_id) {
+        return $tab;
+    }
 
     $evt['adminpaid'] = 0;
     $evt['telepaid']  = 0;
     $evt['topay']     = 0;
     $evt['paid']      = 0;
-    while ($u = $res->next()) {
-        if ($u['nb'] == 0) {
-            continue;
-        }
+    foreach ($tab as $uid=>&$u) {
         $u['adminpaid'] = $u['paid'];
         $u['montant'] = 0;
         if ($money && $pay_id) {
-            $res_ = XDB::query(
-                "SELECT montant
-                   FROM {$globals->money->mpay_tprefix}transactions AS t
-                  WHERE ref = {?} AND uid = {?}",
-                $pay_id, $u['uid']);
-            $montants = $res_->fetchColumn();
+            $montants = XDB::fetchColumn('SELECT  montant
+                                            FROM  ' . $globals->money->mpay_tprefix . 'transactions AS t
+                                           WHERE  ref = {?} AND uid = {?}',
+                                         $pay_id, $uid);
             foreach ($montants as $m) {
                 $p = strtr(substr($m, 0, strpos($m, "EUR")), ",", ".");
                 $u['paid'] += trim($p);
             }
         }
         $u['telepayment'] = $u['paid'] - $u['adminpaid'];
-        $res_ = XDB::iterator(
-                "SELECT  ep.nb, ep.item_id, ei.montant
-                   FROM  groupex.evenements_participants AS ep
-             INNER JOIN  groupex.evenements_items AS ei ON (ei.eid = ep.eid AND ei.item_id = ep.item_id)
-                  WHERE  ep.eid = {?} AND ep.uid = {?}",
-            $eid, $u['uid']);
+        $res_ = XDB::iterator('SELECT  ep.nb, ep.item_id, ei.montant
+                                 FROM  groupex.evenements_participants AS ep
+                           INNER JOIN  groupex.evenements_items AS ei ON (ei.eid = ep.eid AND ei.item_id = ep.item_id)
+                                WHERE  ep.eid = {?} AND ep.uid = {?}',
+                            $eid, $uid);
         while ($i = $res_->next()) {
             $u[$i['item_id']] = $i['nb'];
             $u['montant'] += $i['montant']*$i['nb'];
         }
-        $tab[] = $u;
         $evt['telepaid']  += $u['telepayment'];
         $evt['adminpaid'] += $u['adminpaid'];
         $evt['paid']      += $u['paid'];
@@ -310,29 +274,27 @@ function event_change_shortname(&$page, $eid, $old, $new)
                 $new.'-participants@'.$globals->xnet->evts_domain);
 
         $lastid = XDB::insertId();
-        XDB::execute(
-          "INSERT IGNORE INTO virtual_redirect (
-                SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
-                  FROM groupex.evenements_participants AS ep
-             LEFT JOIN groupex.membres AS m ON (ep.uid = m.uid)
-             LEFT JOIN auth_user_md5   AS u ON (u.user_id = ep.uid)
-             LEFT JOIN aliases         AS a ON (a.id = ep.uid AND a.type = 'a_vie')
-                 WHERE ep.eid = {?} AND ep.nb > 0
-              GROUP BY ep.uid)",
+        XDB::execute('INSERT IGNORE INTO  virtual_redirect (
+                                  SELECT  {?} AS vid, IF(al.alias IS NULL, a.email, CONCAT(al.alias, {?})) AS redirect
+                                    FROM  groupex.evenements_participants AS ep
+                               LEFT JOIN  accounts        AS a ON (ep.uid = a.uid)
+                               LEFT JOIN  aliases         AS al ON (al.id = a.uid AND al.type = \'a_vie\')
+                                   WHERE  ep.eid = {?} AND ep.nb > 0
+                                GROUP BY  ep.uid)',
               $lastid, '@'.$globals->mail->domain, $eid);
 
         XDB::execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
                 $new.'-absents@'.$globals->xnet->evts_domain);
 
         $lastid = XDB::insertId();
-        XDB::execute("INSERT IGNORE INTO virtual_redirect (
-            SELECT {?} AS vid, IF(a.alias IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
-                  FROM groupex.membres AS m
-             LEFT JOIN groupex.evenements_participants AS ep ON (ep.uid = m.uid AND ep.eid = {?})
-             LEFT JOIN auth_user_md5   AS u ON (u.user_id = m.uid)
-             LEFT JOIN aliases         AS a ON (a.id = m.uid AND a.type = 'a_vie')
-                 WHERE m.asso_id = {?} AND ep.uid IS NULL
-              GROUP BY m.uid)",
+        XDB::execute("INSERT IGNORE INTO  virtual_redirect (
+                                  SELECT  {?} AS vid, IF(al.alias IS NULL, a.email, CONCAT(al.alias, {?})) AS redirect
+                                    FROM  groupex.membres AS m
+                               LEFT JOIN  groupex.evenements_participants AS ep ON (ep.uid = m.uid AND ep.eid = {?})
+                               LEFT JOIN  accounts        AS a ON (a.uid = m.uid)
+                               LEFT JOIN  aliases         AS al ON (al.id = a.uid AND al.type = 'a_vie')
+                                   WHERE  m.asso_id = {?} AND ep.uid IS NULL
+                                GROUP BY  m.uid)",
              $lastid, "@".$globals->mail->domain, $eid, $globals->asso('id'));
 
         return $new;
@@ -360,7 +322,7 @@ function make_event_date(&$e)
 {
     $start     = strtotime($e['debut']);
     $end       = strtotime($e['fin']);
-    $first_day = strtotime($e['first_day']);
+    $first_day = @strtotime($e['first_day']);
     $last_day  = strtotime($e['last_day']);
     unset($e['debut'], $e['fin'], $e['first_day'], $e['last_day']);
 

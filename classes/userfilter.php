@@ -460,7 +460,7 @@ class UFC_WatchRegistration extends UFC_UserRelated
         if (count($uids) == 0) {
             return UserFilterCondition::COND_FALSE;
         } else {
-            return '$UID IN (' . implode(', ', $uids) . ')';
+            return '$UID IN ' . XDB::formatArray($uids);
         }
     }
 }
@@ -482,7 +482,7 @@ class UFC_WatchPromo extends UFC_UserRelated
         } else {
             $sube = $uf->addEducationFilter(true, $this->grade);
             $field = 'pe' . $sube . '.' . UserFilter::promoYear($this->grade);
-            return $field . ' IN (' . implode(', ', $promos) . ')';
+            return $field . ' IN ' . XDB::formatArray($promos);
         }
     }
 }
@@ -725,7 +725,7 @@ class UserFilter
         }
         $cond = '';
         if (!is_null($uids)) {
-            $cond = ' AND a.uid IN (' . implode(', ', $uids) . ')';
+            $cond = ' AND a.uid IN ' . XDB::formatArray($uids);
         }
         $fetched = XDB::fetchColumn('SELECT SQL_CALC_FOUND_ROWS  a.uid
                                     ' . $this->query . $cond . '
@@ -754,8 +754,13 @@ class UserFilter
         $table = array();
         $uids  = array();
         foreach ($users as $user) {
-            $uids[] = $user->id();
-            $table[$user->id()] = $user;
+            if ($user instanceof PlUser) {
+                $uid = $user->id();
+            } else {
+                $uid = $user;
+            }
+            $uids[] = $uid;
+            $table[$uid] = $user;
         }
         $fetched = $this->getUIDList($uids, $count, $offset);
         $output = array();
@@ -811,6 +816,16 @@ class UserFilter
             $max = new UFC_True();
         }
         return new UserFilter(new UFC_And($min, $max));
+    }
+
+    static public function sortByName()
+    {
+        return array(new UFO_Name(self::LASTNAME), new UFO_Name(self::FIRSTNAME));
+    }
+
+    static public function sortByPromo()
+    {
+        return array(new UFO_Promo(), new UFO_Name(self::LASTNAME), new UFO_Name(self::FIRSTNAME));
     }
 
     static private function getDBSuffix($string)

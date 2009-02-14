@@ -97,9 +97,7 @@
 
   <tr>
     <td class="titre">Annonceur&nbsp;:</td>
-    <td>
-      <a href='https://www.polytechnique.org/profile/{$e.alias}' class='popup2'>{$e.prenom} {$e.nom} ({$e.promo})</a>
-    </td>
+    <td>{profile user=$e.organisateur_uid promo=true groupperms=false}</td>
   </tr>
 
   {if $is_admin || $e.show_participants || ($e.deadline_inscription && $e.inscr_open)}
