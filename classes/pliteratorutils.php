@@ -28,9 +28,9 @@ class PlIteratorUtils
      *          array(key   => array(0 => key_for_depth0 [, 1 => key_for_depths1, ...]),
      *                value => the value);
      */
-    public static function fromArray(array $array, $depth = 1)
+    public static function fromArray(array $array, $depth = 1, $flat = false)
     {
-        return new PlArrayIterator($array, $depth);
+        return new PlArrayIterator($array, $depth, $flat);
     }
 
 
@@ -75,8 +75,9 @@ class PlArrayIterator implements PlIterator
     private $_first;
     private $_last;
     private $_pos;
+    private $_flat;
 
-    public function __construct(array &$array, $depth = 1)
+    public function __construct(array &$array, $depth = 1, $flat = false)
     {
         $this->array  =& $array;
         $this->depth  = $depth;
@@ -84,6 +85,7 @@ class PlArrayIterator implements PlIterator
         $this->_pos   = 0;
         $this->_first = false;
         $this->_last  = false;
+        $this->_flat  = $flat;
 
         for ($i = 0 ; $i < $depth ; ++$i) {
             if ($i == 0) {
@@ -146,8 +148,12 @@ class PlArrayIterator implements PlIterator
             $keys[] = key($this->_its[$i]);
         }
         next($this->_its[$this->depth - 1]);
-        return array('keys'  => $keys,
-                     'value' => $val);
+        if ($this->_flat) {
+            return $val;
+        } else {
+            return array('keys'  => $keys,
+                         'value' => $val);
+        }
     }
 
     public function total()
