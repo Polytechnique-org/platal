@@ -756,37 +756,44 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/deces_promo.tpl');
         $page->setTitle('Administration - Deces');
 
-        if (!$promo)
-            $promo = Env::i('promo');
-        if (Env::has('sub10')) $promo -= 10;
-        if (Env::has('sub01')) $promo -=  1;
-        if (Env::has('add01')) $promo +=  1;
-        if (Env::has('add10')) $promo += 10;
-
-        $page->assign('promo',$promo);
+        if (!$promo) {
+            $promo = Env::t('promo', 'X1923');
+        }
+        $page->assign('promo', $promo);
+        if (!$promo) {
+            return;
+        }
 
         if ($validate) {
             S::assert_xsrf_token();
 
-            $res = XDB::iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
-            while (list($uid,$mat,$nom,$prenom,$deces) = $res->next()) {
-                $val = Env::v($mat);
+            $res = XDB::iterRow('SELECT  p.hrpid, pd.directory_name, p.deathdate
+                                   FROM  profiles AS p
+                             INNER JOIN  profile_display AS pd ON (p.pid = pd.pid)
+                                  WHERE  pd.promo = {?}', $promo);
+            while (list($pid, $name, $death) = $res->next()) {
+                $val = Env::v($pid);
                 if($val == $deces || empty($val)) {
                     continue;
                 }
 
-                XDB::execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
-                $page->trigSuccess('Ajout du décès de ' . $prenom . " " . $nom . ' le ' . $val . '.');
-                if($deces == '0000-00-00' || empty($deces)) {
-                    require_once('notifs.inc.php');
-                    register_watch_op($uid, WATCH_DEATH, $val);
+                XDB::execute('UPDATE  profiles
+                                 SET  deathdate = {?}, deathdate_rec = NOW()
+                               WHERE  hrpid = {?}', $val, $pid);
+                $page->trigSuccess('Ajout du décès de ' . $name . ' le ' . $val . '.');
+                if($death == '0000-00-00' || empty($death)) {
+                    // TODO: FIX THIS DEPRECATED CALL
                     require_once('user.func.inc.php');
                     user_clear_all_subs($uid, false);   // by default, dead ppl do not loose their email
                 }
             }
         }
 
-        $res = XDB::iterator('SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = {?} ORDER BY nom,prenom', $promo);
+        $res = XDB::iterator('SELECT  p.hrpid, pd.directory_name, p.deathdate
+                                FROM  profiles AS p
+                          INNER JOIN  profile_display AS pd ON (p.pid = pd.pid)
+                               WHERE  pd.promo = {?}
+                            ORDER BY  pd.sort_name', $promo);
         $page->assign('decedes', $res);
     }
 
@@ -796,12 +803,15 @@ class AdminModule extends PLModule
         $page->setTitle('Administration - Décédés');
 
         $res = XDB::iterator(
-                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.matricule_ax, u.hruid, DATE(MAX(s.start)) AS last
-                   FROM  auth_user_md5 AS u
-              LEFT JOIN  logger.sessions AS s ON (s.uid = u.user_id AND suid = 0)
-                  WHERE  perms IN ('admin', 'user') AND deces <> 0
-               GROUP BY  u.user_id
-               ORDER BY  u.promo, u.nom");
+                'SELECT  a.hruid, pd.promo, p.ax_id, pd.directory_name, p.deathdate, DATE(MAX(s.start)) AS last
+                   FROM  accounts AS a
+             INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
+             INNER JOIN  profiles AS p ON (p.pid = ap.pid)
+             INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
+              LEFT JOIN  logger.sessions AS s ON (s.uid = a.uid AND suid = 0)
+                  WHERE  a.state = \'active\' AND p.deathdate IS NOT NULL
+               GROUP BY  a.uid
+               ORDER BY  pd.promo, pd.sort_name');
         $page->assign('dead', $res);
     }
 
