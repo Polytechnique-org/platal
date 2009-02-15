@@ -208,7 +208,7 @@ class PaymentModule extends PLModule
             $res = XDB::query("SELECT  rcb.text,c.id,c.text
                                  FROM  paiement.codeRCB AS rcb
                             LEFT JOIN  paiement.codeC   AS c ON rcb.codeC=c.id
-                                WHERE  rcb.id='$champ906'");
+                                WHERE  rcb.id={?}", $champ906);
             if (list($rcb_text, $c_id, $c_text) = $res->fetchOneRow()) {
                 cb_erreur("erreur lors du paiement : $c_text ($c_id)");
             } else{
