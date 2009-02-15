@@ -254,7 +254,7 @@ class CarnetModule extends PLModule
         $page->setTitle('Mes contacts');
         $this->_add_rss_link($page);
 
-        $uid  = S::v('uid');
+        $uid  = S::i('uid');
         $user = Env::v('user');
 
         // For XSRF protection, checks both the normal xsrf token, and the special RSS token.
@@ -284,14 +284,13 @@ class CarnetModule extends PLModule
                 break;
         }
 
-        $search = false;
+/*        $search = false;
         if ($action == 'search') {
             $action = $subaction;
             $subaction = $ssaction;
             $search = true;
         }
         if ($search && trim(Env::v('quick'))) {
-            require_once 'userset.inc.php';
             $base = 'carnet/contacts/search';
 
             Platal::load('search', 'classes.inc.php');
@@ -300,14 +299,18 @@ class CarnetModule extends PLModule
         } else {
             $base = 'carnet/contacts';
             $view = new UserSet("INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", " c2.uid = $uid ");
-        }
+        }*/
+
+        require_once 'userset.inc.php';
+        $user = S::user();
+        $view = new UserSet(new UFC_Contact($user));
         $view->addMod('minifiche', 'Mini-fiches', true);
         $view->addMod('trombi', 'Trombinoscope', false, array('with_admin' => false, 'with_promo' => true));
         $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'carnet/contacts/search'));
-        $view->apply($base, $page, $action, $subaction);
-        if ($action != 'geoloc' || ($search && !$ssaction) || (!$search && !$subaction)) {
-            $page->changeTpl('carnet/mescontacts.tpl');
-        }
+        $view->apply('carnet/contacts', $page, $action, $subaction);
+        //if ($action != 'geoloc' || ($search && !$ssaction) || (!$search && !$subaction)) {
+        $page->changeTpl('carnet/mescontacts.tpl');
+        //}
     }
 
     function handler_pdf(&$page, $arg0 = null, $arg1 = null)

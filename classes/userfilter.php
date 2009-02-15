@@ -726,9 +726,9 @@ class UserFilter
         $limit = '';
         if (!is_null($count)) {
             if (!is_null($offset)) {
-                $limit = XDB::format('LIMIT {?}, {?}', $offset, $count);
+                $limit = XDB::format('LIMIT {?}, {?}', (int)$offset, (int)$count);
             } else {
-                $limit = XDB::format('LIMIT {?}', $count);
+                $limit = XDB::format('LIMIT {?}', (int)$count);
             }
         }
         $cond = '';

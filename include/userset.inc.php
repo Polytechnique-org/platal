@@ -19,37 +19,24 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('user.func.inc.php');
-
-global $globals;
-
-@$globals->search->result_where_statement = '
-    LEFT JOIN  profile_education       AS edu ON (u.user_id = edu.uid)
-    LEFT JOIN  profile_education_enum  AS ede ON (ede.id = edu.eduid)
-    LEFT JOIN  profile_job             AS j   ON (j.id = 0 AND j.uid = u.user_id)
-    LEFT JOIN  profile_job_enum        AS je  ON (je.id = j.jobid)
-    LEFT JOIN  profile_job_sector_enum AS es  ON (j.sectorid = es.id)
-    LEFT JOIN  fonctions_def           AS ef  ON (j.functionid = ef.id)
-    LEFT JOIN  geoloc_pays             AS n1  ON (u.nationalite = n1.a2)
-    LEFT JOIN  geoloc_pays             AS n2  ON (u.nationalite2 = n2.a2)
-    LEFT JOIN  geoloc_pays             AS n3  ON (u.nationalite2 = n3.a2)
-    LEFT JOIN  adresses                AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
-    LEFT JOIN  geoloc_pays             AS gp  ON (adr.country = gp.a2)
-    LEFT JOIN  geoloc_region           AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
-    LEFT JOIN  emails                  AS em  ON (em.uid = u.user_id AND em.flags = \'active\')';
-
 class UserSet extends PlSet
 {
-    public function __construct($joins = '', $where = '')
+    private $cond;
+
+    public function __construct($cond = null)
     {
-        global $globals;
-        parent::__construct('auth_user_md5 AS u',
-                            (!empty($GLOBALS['IS_XNET_SITE']) ?
-                                'INNER JOIN groupex.membres AS gxm ON (u.user_id = gxm.uid
-                                                                       AND gxm.asso_id = ' . $globals->asso('id') . ') ' : '')
-                           . 'LEFT JOIN auth_user_quick AS q USING (user_id)' . $joins,
-                            $where,
-                            'u.user_id');
+        $this->cond = new UFC_And();
+        if (!is_null($cond)) {
+            $this->cond->addChild($cond);
+        }
+    }
+
+    public function &get($fields, $joins, $where, $groupby, $order, $limitcount = null, $limitfrom = null)
+    {
+        $uf = new UserFilter($this->cond);
+        $users = $uf->getUsers($limitcount, $limitfrom);
+        $this->count = $uf->getTotalCount();
+        return $users;
     }
 }
 
@@ -169,90 +156,14 @@ class MinificheView extends MultipageView
         parent::__construct($set, $data, $params);
     }
 
-    public function fields()
-    {
-        global $globals;
-        return "u.user_id AS id, u.*, d.promo,
-                CONCAT(a.alias, '@{$globals->mail->domain}') AS bestemail,
-                u.perms != 'pending' AS inscrit,
-                u.perms != 'pending' AS wasinscrit,
-                u.deces != 0 AS dcd, u.deces, u.matricule_ax,
-                FIND_IN_SET('femme', u.flags) AS sexe,
-                je.name AS entreprise, je.url AS job_web, es.name AS secteur, ef.fonction_fr AS fonction,
-                IF(n1.nat = '', n1.pays, n1.nat) AS nat1, n1.a2 AS iso3166_1,
-                IF(n2.nat = '', n2.pays, n2.nat) AS nat2, n2.a2 AS iso3166_2,
-                IF(n3.nat = '', n3.pays, n3.nat) AS nat3, n3.a2 AS iso3166_3,
-                IF(ede0.abbreviation = '', ede0.name, ede0.abbreviation) AS eduname0, ede0.url AS eduurl0,
-                IF(edd0.abbreviation = '', edd0.degree, edd0.abbreviation) AS edudegree0,
-                edu0.grad_year AS edugrad_year0, f0.field AS edufield0, edu0.program AS eduprogram0,
-                IF(ede1.abbreviation = '', ede1.name, ede1.abbreviation) AS eduname1, ede1.url AS eduurl1,
-                IF(edd1.abbreviation = '', edd1.degree, edd1.abbreviation) AS edudegree1,
-                edu1.grad_year AS edugrad_year1, f1.field AS edufield1, edu1.program AS eduprogram1,
-                IF(ede2.abbreviation = '', ede2.name, ede2.abbreviation) AS eduname2, ede2.url AS eduurl2,
-                IF(edd2.abbreviation = '', edd2.degree, edd2.abbreviation) AS edudegree2,
-                edu2.grad_year AS edugrad_year2, f2.field AS edufield2, edu2.program AS eduprogram2,
-                IF(ede3.abbreviation = '', ede3.name, ede3.abbreviation) AS eduname3, ede3.url AS eduurl3,
-                IF(edd3.abbreviation = '', edd3.degree, edd3.abbreviation) AS edudegree3,
-                edu3.grad_year AS edugrad_year3, f3.field AS edufield3, edu3.program AS eduprogram3,
-                adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region,
-                (COUNT(em.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif,
-                d.directory_name, d.sort_name" .
-                (S::logged() ? ", c.contact AS contact" : '');
-    }
-
-    public function joins()
-    {
-        return  "LEFT JOIN  aliases                       AS a    ON (u.user_id = a.id AND FIND_IN_SET('bestalias', a.flags))
-                 LEFT JOIN  search_name                   AS n    ON (u.user_id = n.uid)
-                 LEFT JOIN  profile_job                   AS j    ON (j.uid = u.user_id".(S::logged() ? "" : " AND j.pub = 'public'").")
-                 LEFT JOIN  profile_job_enum              AS je   ON (je.id = j.jobid)
-                 LEFT JOIN  profile_job_sector_enum       AS es   ON (j.sectorid = es.id)
-                 LEFT JOIN  fonctions_def                 AS ef   ON (j.functionid = ef.id)
-                 LEFT JOIN  geoloc_pays                   AS n1   ON (u.nationalite = n1.a2)
-                 LEFT JOIN  geoloc_pays                   AS n2   ON (u.nationalite2 = n2.a2)
-                 LEFT JOIN  geoloc_pays                   AS n3   ON (u.nationalite3 = n3.a2)
-                 LEFT JOIN  profile_education             AS edu0 ON (u.user_id = edu0.uid AND edu0.id = 0)
-                 LEFT JOIN  profile_education_enum        AS ede0 ON (ede0.id = edu0.eduid)
-                 LEFT JOIN  profile_education_degree_enum AS edd0 ON (edd0.id = edu0.degreeid)
-                 LEFT JOIN  profile_education_field_enum  AS f0   ON (f0.id = edu0.fieldid)
-                 LEFT JOIN  profile_education             AS edu1 ON (u.user_id = edu1.uid AND edu1.id = 1)
-                 LEFT JOIN  profile_education_enum        AS ede1 ON (ede1.id = edu1.eduid)
-                 LEFT JOIN  profile_education_degree_enum AS edd1 ON (edd1.id = edu1.degreeid)
-                 LEFT JOIN  profile_education_field_enum  AS f1   ON (f1.id = edu1.fieldid)
-                 LEFT JOIN  profile_education             AS edu2 ON (u.user_id = edu2.uid AND edu2.id = 2)
-                 LEFT JOIN  profile_education_enum        AS ede2 ON (ede2.id = edu2.eduid)
-                 LEFT JOIN  profile_education_degree_enum AS edd2 ON (edd2.id = edu2.degreeid)
-                 LEFT JOIN  profile_education_field_enum  AS f2   ON (f2.id = edu2.fieldid)
-                 LEFT JOIN  profile_education             AS edu3 ON (u.user_id = edu3.uid AND edu3.id = 3)
-                 LEFT JOIN  profile_education_enum        AS ede3 ON (ede3.id = edu3.eduid)
-                 LEFT JOIN  profile_education_degree_enum AS edd3 ON (edd3.id = edu3.degreeid)
-                 LEFT JOIN  profile_education_field_enum  AS f3   ON (f3.id = edu3.fieldid)
-                 LEFT JOIN  adresses                      AS adr  ON (u.user_id = adr.uid
-                                                                      AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : "
-                                                                      AND adr.pub = 'public'").")
-                 LEFT JOIN  geoloc_pays                   AS gp   ON (adr.country = gp.a2)
-                 LEFT JOIN  geoloc_region                 AS gr   ON (adr.country = gr.a2 AND adr.region = gr.region)
-                 LEFT JOIN  emails                        AS em   ON (em.uid = u.user_id AND em.flags = 'active')
-                INNER JOIN  profile_display               AS d    ON (d.pid = u.user_id)" . (S::logged() ?
-                "LEFT JOIN  contacts                      AS c    ON (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
-                 : "");
-    }
-
     public function bounds()
     {
-        $order = Env::v('order', $this->defaultkey);
-        $show_bounds = 0;
-        if (($order == "name") || ($order == "-name")) {
-            $this->bound_field = "nom";
-            $show_bounds = 1;
-        } elseif (($order == "promo") || ($order == "-promo")) {
-            $this->bound_field = "promo";
-            $show_bounds = -1;
-        }
-        if ($order{0} == '-') {
-            $show_bounds = -$show_bounds;
-        }
-        return $show_bounds;
+        return null;
+    }
+
+    public function fields()
+    {
+        return null;
     }
 
     public function templateName()

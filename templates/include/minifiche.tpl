@@ -20,34 +20,37 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div class="contact {if (!$c.inscrit && $smarty.session.auth ge AUTH_COOKIE) || $c.dcd}grayed{/if}"
-     {if $c.inscrit}{if $smarty.session.auth ge AUTH_COOKIE}title="fiche mise à jour le {$c.date|date_format}"{/if}{/if}>
+{assign var=profile value=$user->profile()}
+<div class="contact {if ($user->state eq 'pending' && $smarty.session.auth ge AUTH_COOKIE) || $profile->deathdate}grayed{/if}"
+     {if $user->state neq 'pending'}{if $smarty.session.auth ge AUTH_COOKIE}title="fiche mise à jour le {$profile->last_change|date_format}"{/if}{/if}>
   <div class="identity">
     {if $smarty.session.auth ge AUTH_COOKIE}
     <div class="photo">
-      <img src="photo/{$c.hruid}"
-           alt="{$c.name_display}" />
+      <img src="photo/{$profile->hrid()}"
+           alt="{$profile->directory_name}" />
     </div>
     {/if}
 
     <div class="nom">
-      {if $c.sexe}&bull;{/if}
-      {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}<a href="profile/{$c.hruid}" class="popup2">{/if}
-      <span {if $c.name_tooltip}class="hinted" title="{$c.name_tooltip}"{/if}>{$c.name_display}</span>
-      {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}</a>{/if}
+      {if $profile->isFemale()}&bull;{/if}
+      {if !$profile->deathdate && ($user->state neq 'pending' || $smarty.session.auth eq AUTH_PUBLIC)}<a href="profile/{$profile->hrid}" class="popup2">{/if}
+      {$profile->full_name}
+      {if !$profile->deathdate && ($user->state neq 'pending' || $smarty.session.auth eq AUTH_PUBLIC)}</a>{/if}
     </div>
 
     <div class="edu">
-      {if $c.iso3166_1}
-      <img src='images/flags/{$c.iso3166_1}.gif' alt='{$c.nat1}' height='11' title='{$c.nat1}' />&nbsp;
+      {if $profile->nationality1}
+      <img src='images/flags/{$profile->nationality1}.gif' alt='{$profile->nationality1}' height='11' title='{$profile->nationality1}' />&nbsp;
       {/if}
-      {if $c.iso3166_2}
-      <img src='images/flags/{$c.iso3166_2}.gif' alt='{$c.nat2}' height='11' title='{$c.nat2}' />&nbsp;
+      {if $profile->nationality2}
+      <img src='images/flags/{$profile->nationality2}.gif' alt='{$profile->nationality2}' height='11' title='{$profile->nationality2}' />&nbsp;
       {/if}
-      {if $c.iso3166_3}
-      <img src='images/flags/{$c.iso3166_3}.gif' alt='{$c.nat3}' height='11' title='{$c.nat3}' />&nbsp;
+      {if $profile->nationality3}
+      <img src='images/flags/{$profile->nationality3}.gif' alt='{$profile->nationality3}' height='11' title='{$profile->nationality3}' />&nbsp;
       {/if}
-      {$c.promo_display}{if $c.eduname0}, {education_fmt name=$c.eduname0 url=$c.eduurl0 degree=$c.edudegree0
+      {$profile->promo()}
+      
+      {if $c.eduname0}, {education_fmt name=$c.eduname0 url=$c.eduurl0 degree=$c.edudegree0
                                      grad_year=$c.edugrad_year0 field=$c.edufield0 program=$c.eduprogram0 sexe=$c.sexe}{*
       *}{/if}{if $c.eduname1}, {education_fmt name=$c.eduname1 url=$c.eduurl1 degree=$c.edudegree1
                                      grad_year=$c.edugrad_year1 field=$c.edufield1 program=$c.eduprogram1 sexe=$c.sexe}{*
@@ -62,27 +65,27 @@
   {if $smarty.session.auth ge AUTH_COOKIE}
   <div class="noprint bits">
     <div>
-      {if !$c.wasinscrit && !$c.dcd}
+      {if $user->state eq 'pending' && !$profile->deathdate}
         {if $show_action eq ajouter}
-    <a href="carnet/notifs/add_nonins/{$c.user_id}?token={xsrf_token}">{*
+    <a href="carnet/notifs/add_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
         {else}
-    <a href="carnet/notifs/del_nonins/{$c.user_id}?token={xsrf_token}">{*
+    <a href="carnet/notifs/del_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
         {/if}
-      {elseif $c.wasinscrit}
-    <a href="profile/{$c.hruid}" class="popup2">{*
+      {elseif $user->state neq 'pending'}
+    <a href="profile/{$profile->hrid()}" class="popup2">{*
     *}{icon name=user_suit title="Afficher la fiche"}</a>
-        {if !$c.dcd}
-    <a href="vcard/{$c.hruid}.vcf">{*
+        {if !$profile->deathdate}
+    <a href="vcard/{$profile->hrid()}.vcf">{*
     *}{icon name=vcard title="Afficher la carte de visite"}</a>
-    <a href="mailto:{$c.bestemail}">{*
+    <a href="mailto:{$user->bestEmail()}">{*
     *}{icon name=email title="Envoyer un email"}</a>
-          {if $show_action eq ajouter}
-    <a href="carnet/contacts?action={$show_action}&amp;user={$c.hruid}&amp;token={xsrf_token}">{*
+          {if !$smarty.session.user->isContact($user)}
+    <a href="carnet/contacts?action=ajouter&amp;user={$user->login()}&amp;token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à mes contacts"}</a>
           {else}
-    <a href="carnet/contacts?action={$show_action}&amp;user={$c.hruid}&amp;token={xsrf_token}">{*
+    <a href="carnet/contacts?action=retirer&amp;user={$user->login()}&amp;token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de mes contacts"}</a>
           {/if}
         {/if}
@@ -91,13 +94,13 @@
 
     {if hasPerm('admin')}
     <div>
-      [{if !$c.wasinscrit && !$c.dcd}
-      <a href="marketing/private/{$c.hruid}">{*
+      [{if $user->state eq 'pending' && !$profile->deathdeate}
+      <a href="marketing/private/{$user->login()}">{*
         *}{icon name=email title="marketter user"}</a>
       {/if}
-      <a href="admin/user/{$c.hruid}">{*
+      <a href="admin/user/{$user->login()}">{*
       *}{icon name=wrench title="administrer user"}</a>
-      <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
+      <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$profile->ax_id}">{*
       *}{icon name=user_gray title="fiche AX"}</a>]
     </div>
     {/if}

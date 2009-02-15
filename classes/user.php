@@ -451,7 +451,7 @@ class User extends PlUser
     private $contacts = null;
     public function isContact(PlUser &$user)
     {
-        if ($this->contacts) {
+        if (is_null($this->contacts)) {
             $this->contacts = XDB::fetchAllAssoc('contact', 'SELECT  *
                                                                FROM  contacts
                                                               WHERE  uid = {?}',
