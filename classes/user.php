@@ -510,7 +510,7 @@ class User extends PlUser
     }
 
     // Fetch a set of users from a list of UIDs
-    public static function getBulkUsersWithUIDs(array $data, $orig = null, $dest = null)
+    public static function getBulkUsersWithUIDs(array $data, $orig = null, $dest = null, $fetchProfile = true)
     {
         // Fetch the list of uids
         if (is_null($orig)) {
@@ -533,8 +533,19 @@ class User extends PlUser
         }
         $fields = self::loadMainFieldsFromUIDs($uids);
         $table = array();
+        if ($fetchProfile) {
+            $profiles = Profile::getBulkProfilesWithUIDS($uids);
+        }
         while (($list = $fields->next())) {
-            $table[$list['uid']] = User::getSilentWithValues(null, $list);
+            $uid  = $list['uid'];
+            $user = User::getSilentWithValues(null, $list);
+            if ($fetchProfile) {
+                if (isset($profiles[$uid])) {
+                    $user->_profile = $profiles[$uid];
+                }
+                $user->_profile_fetched = true;
+            }
+            $table[$list['uid']] = $user;
         }
 
         // Build the result with respect to input order.
@@ -555,11 +566,11 @@ class User extends PlUser
         }
     }
 
-    public static function getBulkUsersFromDB()
+    public static function getBulkUsersFromDB($fetchProfile = true)
     {
         $args = func_get_args();
         $uids = call_user_func_array(array('XDB', 'fetchColumn'), $args);
-        return self::getBulkUsersWithUIDs($uids);
+        return self::getBulkUsersWithUIDs($uids, null, null, $fetchProfile);
     }
 }
 

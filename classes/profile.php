@@ -25,39 +25,9 @@ class Profile
     private $hrpid;
     private $data = array();
 
-    private function __construct($login)
+    private function __construct(array $data)
     {
-        if ($login instanceof PlUser) {
-            $from  = 'account_profiles AS ap
-                INNER JOIN profiles AS p ON (p.pid = ap.pid)';
-            $where = XDB::format('ap.uid = {?} AND FIND_IN_SET(\'owner\', ap.perms)', $login->id());
-        } else if (is_numeric($login)) {
-            $from = 'profiles AS p';
-            $where = XDB::format('p.pid = {?}', $login);
-        } else {
-            $from = 'profiles AS p';
-            $where = XDB::format('p.hrpid = {?}', $login);
-        }
-        $res = XDB::query('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
-                                   pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
-                                   IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_usual,
-                                   IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_usual,
-                                   pd.promo AS promo, pd.short_name, pd.directory_name AS full_name
-                             FROM  ' . $from . '
-                       INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
-                       INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
-                       INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid AND pn_f.typeid = ' . self::getNameTypeId('lastname', true) . ')
-                       INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid AND pn_l.typeid = ' . self::getNameTypeId('firstname', true) . ')
-                        LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid AND pn_uf.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
-                        LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid AND pn_ul.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
-                        LEFT JOIN  profile_name aS pn_n ON (pn_n.pid = p.pid AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
-                            WHERE  ' . $where . '
-                         GROUP BY  p.pid');
-        if ($res->numRows() != 1) {
-            __autoload('PlUser');
-            throw new UserNotFoundException();
-        }
-        $this->data = $res->fetchOneAssoc();
+        $this->data = $data;
         $this->pid = $this->data['pid'];
         $this->hrpid = $this->data['hrpid'];
     }
@@ -155,13 +125,61 @@ class Profile
         return User::getSilent($this);
     }
 
+    private static function fetchProfileData(array $pids)
+    {
+        if (count($pids) == 0) {
+            return array();
+        }
+        return XDB::fetchAllAssoc('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
+                                           pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
+                                           IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_usual,
+                                           IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_usual,
+                                           pd.promo AS promo, pd.short_name, pd.directory_name AS full_name
+                                     FROM  profiles AS p
+                               INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
+                               INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                               INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid
+                                                                    AND pn_f.typeid = ' . self::getNameTypeId('lastname', true) . ')
+                               INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid
+                                                                    AND pn_l.typeid = ' . self::getNameTypeId('firstname', true) . ')
+                                LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid
+                                                                     AND pn_uf.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
+                                LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid
+                                                                     AND pn_ul.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
+                                LEFT JOIN  profile_name aS pn_n ON (pn_n.pid = p.pid 
+                                                                    AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
+                                    WHERE  p.pid IN ' . XDB::formatArray($pids) . '
+                                 GROUP BY  p.pid');
+    }
+
+    public static function getPID($login)
+    {
+        if ($login instanceof PlUser) {
+            return XDB::fetchOneCell('SELECT  pid
+                                        FROM  account_profiles
+                                       WHERE  uid = {?} AND FIND_IN_SET(\'owner\', perms)',
+                                     $login->id());
+        } else if (ctype_digit($login)) {
+            return XDB::fetchOneCell('SELECT  pid
+                                        FROM  profiles
+                                       WHERE  pid = {?}', $login);
+        } else {
+            return XDB::fetchOneCell('SELECT  pid
+                                        FROM  profiles
+                                       WHERE  hrpid = {?}', $login);
+        }
+    }
+
+
     /** Return the profile associated with the given login.
      */
     public static function get($login)
     {
-        try {
-            return new Profile($login);
-        } catch (UserNotFoundException $e) {
+        $pid = self::getPID($login);
+        if (!is_null($pid)) {
+            $data = self::fetchProfileData(array($pid));
+            return new Profile(array_pop($data));
+        } else {
             /* Let say we can identify a profile using the identifiers of its owner.
              */
             if (!($login instanceof PlUser)) {
@@ -172,6 +190,38 @@ class Profile
             }
             return null;
         }
+    }
+
+    /** Return profiles for the list of pids.
+     */
+    public static function getBulkProfilesWithPIDs(array $pids)
+    {
+        if (count($pids) == 0) {
+            return array();
+        }
+        $data = self::fetchProfileData($pids);
+        $inv = array_flip($pids);
+        $profiles = array();
+        foreach ($data AS $p) {
+            $p = new Profile($p);
+            $key = $inv[$p->id()];
+            $profiles[$key] = $p;
+        }
+        return $profiles;
+    }
+
+    /** Return profiles for uids.
+     */
+    public static function getBulkProfilesWithUIDS(array $uids)
+    {
+        if (count($uids) == 0) {
+            return array();
+        }
+        $table = XDB::fetchAllAssoc('uid', 'SELECT  ap.uid, ap.pid
+                                              FROM  account_profiles AS ap
+                                             WHERE  FIND_IN_SET(\'owner\', ap.perms)
+                                                    AND ap.uid IN ' . XDB::formatArray($uids));
+        return self::getBulkProfilesWithPIDs($table);
     }
 
     public static function getNameTypeId($type, $for_sql = false)

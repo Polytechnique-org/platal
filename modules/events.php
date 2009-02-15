@@ -188,7 +188,7 @@ class EventsModule extends PLModule
                 } else {
                     break;
                 }
-                $body = EventFeed::nextEvent($it);
+                $body = EventFeed::nextEvent($it, $user);
             } while ($body);
             if (!empty($data)) {
                 $array[$cat] = $data;
