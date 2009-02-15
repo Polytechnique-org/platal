@@ -57,7 +57,7 @@ INSERT INTO  geoloc_countries (iso_3166_1, iso_3166_2, iso_3166_3, worldRegion,
      SELECT  a2, a3, n3, worldrgn, pays, country, capital, nat, phoneprf, phoneformat, license_plate
        FROM  geoloc_pays;
 
-CREATE TABLE IF NOT EXISTS geoloc_administrativeArea (
+CREATE TABLE IF NOT EXISTS geoloc_administrativeareas (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   country CHAR(2) NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS geoloc_administrativeArea (
   INDEX(country)
 ) CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS geoloc_subAdministrativeArea (
+CREATE TABLE IF NOT EXISTS geoloc_subadministrativeareas (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   country CHAR(2) NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS geoloc_subAdministrativeArea (
   INDEX(country)
 ) CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS geoloc_locality (
+CREATE TABLE IF NOT EXISTS geoloc_localities (
   id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   country CHAR(2) NOT NULL,

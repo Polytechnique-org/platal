@@ -95,7 +95,7 @@ class ProfileAddress extends ProfileGeoloc
 
     private function saveAddress($addrid, array &$address)
     {
-        require_once "geoloc.inc.php";
+        require_once "geocoding.inc.php";
 
         $flags = new PlFlagSet();
         if ($address['current']) {
@@ -115,9 +115,9 @@ class ProfileAddress extends ProfileGeoloc
                                             array("", "\n"), $address['text'])), 'CEDEX')) !== false) {
             $flags->addFlag('cedex');
         }
-        getAreaId($address, "administrativeArea");
-        getAreaId($address, "subAdministrativeArea");
-        getAreaId($address, "locality");
+        Geocoder::getAreaId($address, "administrativeArea");
+        Geocoder::getAreaId($address, "subAdministrativeArea");
+        Geocoder::getAreaId($address, "locality");
         XDB::execute("INSERT INTO  profile_addresses (pid, type, id, flags, accuracy,
                                                       text, postalText, postalCode, localityId,
                                                       subAdministrativeAreaId, administrativeAreaId,

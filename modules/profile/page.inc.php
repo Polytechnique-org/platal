@@ -258,17 +258,14 @@ abstract class ProfileGeoloc implements ProfileSetting
 {
     protected function geolocAddress(array &$address, &$success)
     {
-        require_once 'geoloc.inc.php';
+        require_once 'geocoding.inc.php';
         $success = true;
         if ($address['changed'] == 1) {
-            cleanText($address['text']);
-            geolocGoogle($address);
-            $address['updateTime'] = time();
-            // postalAddress
+            $gmapsGeocoder = new GMapsGeocoder();
+            $address = $gmapsGeocoder->getGeocodedAddress($address);
             if (isset($address['geoloc'])) {
                 $success = false;
             }
-            unset($address['changed']);
         }
         if (isset($address['geoloc_choice']) && $address['geoloc_choice'] == 0) {
             $mailer = new PlMailer('geoloc/geoloc.mail.tpl');

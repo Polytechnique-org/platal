@@ -19,388 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ geoloc_country($current, $avail_only = false)
-/** donne la liste déroulante des pays
- * @param $current pays actuellement selectionné
- */
-function geoloc_country($current, $avail_only = false)
-{
-    if ($avail_only) {
-        $res = XDB::iterRow('SELECT  g.a2, g.pays
-                               FROM  geoloc_pays AS g
-                         INNER JOIN  adresses    AS a ON(a.country = g.a2)
-                           GROUP BY  g.a2
-                           ORDER BY  g.pays');
-    } else {
-        $res = XDB::iterRow('SELECT a2,pays FROM geoloc_pays ORDER BY pays');
-    }
-    $html = "";
-    while (list($my_id, $my_pays) = $res->next()) {
-        $html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
-                         $my_id, ($current==$my_id?"selected='selected'":""), $my_pays);
-    }
-    return $html;
-}
-
-// }}}
-// {{{ geoloc_region($country, $current, $avail_only = false)
-/** donne la liste deroulante des regions pour un pays
- * @param $pays le pays dont on veut afficher les regions
- * @param $current la region actuellement selectionnee
- */
-function geoloc_region($country, $current, $avail_only = false)
-{
-    if ($avail_only) {
-        $res = XDB::iterRow('SELECT  r.region, r.name
-                               FROM  geoloc_region AS r
-                         INNER JOIN  adresses      AS a ON (a.country = r.a2 AND a.region = r.region)
-                              WHERE  r.a2 = {?}
-                           GROUP BY  r.region
-                           ORDER BY  r.name', $country);
-    } else {
-        $res = XDB::iterRow('SELECT  region,name
-                               FROM  geoloc_region
-                              WHERE  a2 = {?}
-                           ORDER BY  name', $country);
-    }
-    $html = "<option value=\"\"></option>";
-    while (list($regid, $regname) = $res->next()) {
-        $html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
-                 $regid, ($current==$regid?"selected='selected'":""), $regname);
-    }
-    return $html;
-}
-// }}}
-// {{{ get_cities_maps($array)
-/* get all the maps id of the cities contained in an array */
-function get_cities_maps($array)
-{
-    global $globals;
-    implode("\n",$array);
-    $url = $globals->geoloc->webservice_url."findMaps.php?datatext=".urlencode(implode("\n", $array));
-    if (!($f = @fopen($url, 'r'))) return false;
-    $maps = array();
-    while (!feof($f))
-    {
-        $l = trim(fgets($f));
-        $tab = explode(';', $l);
-        $i = $tab[0];
-        unset($tab[0]);
-        $maps[$i] = $tab;
-    }
-    return $maps;
-}
-// }}}
-// {{{ get_new_maps($url)
-/** set new maps from url **/
-function get_new_maps($url)
-{
-    if (!($f = @fopen($url, 'r'))) {
-        return false;
-    }
-    XDB::query('TRUNCATE TABLE geoloc_maps');
-    $s = '';
-    while (!feof($f)) {
-        $l = fgetcsv($f, 1024, ';', '"');
-        foreach ($l as $i => $val) {
-            if ($val != 'NULL') {
-                $l[$i] = '\''.addslashes($val).'\'';
-            }
-        }
-        $s .= ',('.implode(',',$l).')';
-    }
-    XDB::execute('INSERT INTO geoloc_maps VALUES '.substr($s, 1));
-    return true;
-}
-// }}}
-// {{{ geolocGoogle (array $address)
-// retrieve the infos on a text address
-
-function geolocGoogle (array &$address)
-{
-    /* keys
-     * www.polytechnique.org:
-     * ABQIAAAAIlFNe1A494mwR9Zf4R3t0xRsw9kzQBeaENRP66lRw7Ru3uVJcRR73lY1tmAdYGqw-pyHTdynmicz0w
-     * www.polytechnique.net and dev.polytechnique.net:
-     * ABQIAAAAIlFNe1A494mwR9Zf4R3t0xT8SmDPc83znji5QwIVTgAvxgX5zRRMagHx_rmGeQF5SnCzmyqiSeSAxA
-     * dev.m4x.org:
-     * ABQIAAAAIlFNe1A494mwR9Zf4R3t0xQ31muaRX97DHXrOFfMwMMCxEnhaxQIPDe9Ct3D6ZvWuGiWllkGAP3IqA
-     *
-     * Documentation:
-     * http://code.google.com/intl/fr/apis/maps/documentation/geocoding/
-     * http://code.google.com/apis/maps/documentation/reference.html#GGeoAddressAccuracy */
-
-    $success    = true;
-    $key        = 'ABQIAAAAIlFNe1A494mwR9Zf4R3t0xQ31muaRX97DHXrOFfMwMMCxEnhaxQIPDe9Ct3D6ZvWuGiWllkGAP3IqA';
-    $webservice = "http://maps.google.com/maps/geo?";
-    $baseurl    = $webservice . "&key=$key" . "&sensor=false&output=json&oe=utf8&gl=fr&hl=fr&q=";
-
-    $url = $baseurl . urlencode($address['text']);
-    if (!geolocalizeAddress($url, $gAddress)) {
-        $addressLines = explode("\n", $address['text']);
-        $nbLines      = count($addressLines);
-        $currentState = array();
-        $success      = false;
-        for ($i = 1; !$success && ($i < $nbLines); $i++) {
-            for ($j = 0; $j < $i; $j++) {
-                $currentState[$j] = 0;
-            }
-            while($j < $nbLines) {
-                $currentState[$j] = 1;
-                $j++;
-            }
-            do {
-                $partialAddress = "";
-                for ($j = 0; $j < $nbLines; $j++) {
-                    if ($currentState[$j] == 1) {
-                        $partialAddress .= $addressLines[$j] . " ";
-                    }
-                }
-                $url     = $baseurl . urlencode(trim($partialAddress));
-                $success = geolocalizeAddress($url, $gAddress);
-            } while (!$success && nextCurrentState($currentState, $nbLines));
-        }
-        if ($success) {
-            $extras = "";
-            for ($i = 0; $i < $nbLines; $i++) {
-                if ($currentState[$i] == 0) {
-                    $extras .= $addressLines[$i] . ", ";
-                }
-            }
-            trim($extras, ", ");
-            $address['extras'] = $extras;
-        }
-    }
-    if ($success) {
-        fillAddress($address, $gAddress);
-        formatAddress($address);
-    }
-    return $success;
-}
-
-// }}}
-// {{{ nextCurrentState(&$currentState, $nbLines)
-
-function nextCurrentState(&$currentState, $nbLines)
-{
-    $lastOne = 0;
-    $nbZeros = 2;
-    for ($i = 0; $i < $nbLines; $i++) {
-        if ($currentState[$i] == 1) {
-            $lastOne = $i;
-            $nbZeros = 2;
-        } else {
-            $nbZeros++;
-        }
-    }
-    if ($lastOne == 0) {
-        return false;
-    } elseif ($currentState[$lastOne - 1] == 0) {
-        $currentState[$lastOne - 1] = 1;
-        $currentState[$lastOne]     = 0;
-        return true;
-    } else {
-        $lastZero = -1;
-        for ($j = 0; $j < $lastOne; $j++) {
-            if ($currentState[$j] == 0) {
-                $lastZero = $j;
-            }
-        }
-        if ($lastZero == -1) {
-            return false;
-        } else {
-            $currentState[$lastZero] = 1;
-            for ($k = $lastZero + 1; $k < $lastZero + $nbZeros; $k++) {
-                $currentState[$k] = 0;
-            }
-            for ($k = $lastZero + $nbZeros; $k < $nbLines; $k++) {
-                $currentState[$k] = 1;
-            }
-            return true;
-        }
-    }
-}
-
-// }}}
-// {{{ geolocalizeAddress ($url, &$result)
-
-function geolocalizeAddress ($url, &$result = array())
-{
-    global $globals;
-
-    if ($globals->debug & DEBUG_BT) {
-        if (!isset(PlBacktrace::$bt['Geoloc'])) {
-            new PlBacktrace('Geoloc');
-        }
-        PlBacktrace::$bt['Geoloc']->start($url);
-    }
-
-    if ($f = file_get_contents($url, 'r')) {
-        $data = json_decode($f, true);
-        if ($globals->debug & DEBUG_BT) {
-            PlBacktrace::$bt['Geoloc']->stop(count($data), null, $data);
-        }
-        if ($data['Status']['code'] != 200) {
-            return false;
-        }
-        $nbResults = count($data['Placemark']);
-        $idAccuracy   = 0;
-        if ($nbResults > 1) {
-            $bestAccuracy = $data['Placemark'][0]['AddressDetails']['Accuracy'];
-            for ($i = 1; $i < $nbResults; $i++) {
-                if ($data['Placemark'][$i]['AddressDetails']['Accuracy'] > $bestAccuracy) {
-                    unset($data['Placemark'][$idAccuracy]);
-                    $bestAccuracy = $data['Placemark'][$i]['AddressDetails']['Accuracy'];
-                    $idAccuracy   = $i;
-                } else {
-                    unset($data['Placemark'][$i]);
-                }
-            }
-        }
-        $result = $data['Placemark'][$idAccuracy];
-        return true;
-    }
-    if ($globals->debug & DEBUG_BT) {
-        PlBacktrace::$bt['Geoloc']->stop(0, "Can't fetch result.");
-    }
-    return false;
-}
-
-// }}}
-// {{{ fillAddress(array &$address, $gAddress)
-
-function fillAddress(array &$address, array $gAddress)
-{
-    // An address is Country -> AdministrativeArea -> SubAdministrativeArea -> Locality -> Thoroughfare
-    // with all the shortcuts possible
-
-    // postalText
-    $address['geoloc'] = str_replace(", ", "\n", $gAddress['address']);
-    if (isset($gAddress['AddressDetails']['Accuracy'])) {
-        $address['accuracy'] = $gAddress['AddressDetails']['Accuracy'];
-    }
-    $currentPosition = $gAddress['AddressDetails'];
-    if (isset($currentPosition['Country'])) {
-        $currentPosition      = $currentPosition['Country'];
-        $address['countryId'] = $currentPosition['CountryNameCode'];
-        $address['country']   = $currentPosition['CountryName'];
-    }
-    if (isset($currentPosition['AdministrativeArea'])) {
-        $currentPosition                   = $currentPosition['AdministrativeArea'];
-        $address['administrativeAreaName'] = $currentPosition['AdministrativeAreaName'];
-    }
-    if (isset($currentPosition['SubAdministrativeArea'])) {
-        $currentPosition                      = $currentPosition['SubAdministrativeArea'];
-        $address['subAdministrativeAreaName'] = $currentPosition['SubAdministrativeAreaName'];
-    }
-    if (isset($currentPosition['Locality'])) {
-        $currentPosition          = $currentPosition['Locality'];
-        $address['localityName']  = $currentPosition['LocalityName'];
-    }
-    if (isset($currentPosition['Thoroughfare'])) {
-        $address['thoroughfareName'] = $currentPosition['Thoroughfare']['ThoroughfareName'];
-    }
-    if (isset($currentPosition['PostalCode'])) {
-        $address['postalCode'] = $currentPosition['PostalCode']['PostalCodeNumber'];
-    }
-
-    // Coordinates
-    if (isset($gAddress['Point']['coordinates'][0])) {
-        $address['latitude'] = $gAddress['Point']['coordinates'][0];
-    }
-    if (isset($gAddress['Point']['coordinates'][1])) {
-        $address['longitude'] = $gAddress['Point']['coordinates'][1];
-    }
-    if (isset($gAddress['ExtendedData']['LatLonBox']['north'])) {
-        $address['north'] = $gAddress['ExtendedData']['LatLonBox']['north'];
-    }
-    if (isset($gAddress['ExtendedData']['LatLonBox']['south'])) {
-        $address['south'] = $gAddress['ExtendedData']['LatLonBox']['south'];
-    }
-    if (isset($gAddress['ExtendedData']['LatLonBox']['east'])) {
-        $address['east'] = $gAddress['ExtendedData']['LatLonBox']['east'];
-    }
-    if (isset($gAddress['ExtendedData']['LatLonBox']['west'])) {
-        $address['west'] = $gAddress['ExtendedData']['LatLonBox']['west'];
-    }
-}
-
-// }}}
-// {{{ formatAddress(array &$address)
-
-function formatAddress(array &$address)
-{
-    $same = true;
-    $text   = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
-                                      array("", "\n"), $address['text']));
-    $geoloc = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
-                                      array("", "\n"), $address['geoloc']));
-    if (isset($address['extras']) && $address['extras']) {
-        $address['geoloc'] = $address['extras'] . "\n" . $address['geoloc'];
-        $extras = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
-                                          array("", "\n"), $address['extras']));
-        $geoloc = $extras . $geoloc;
-        unset($address['extras']);
-    }
-
-    $arrayText   = explode("\n", $text);
-    $arrayGeoloc = explode("\n", $geoloc);
-    $nbText   = count($arrayText);
-    $nbGeoloc = count($arrayGeoloc);
-
-    if ((($nbText > $nbGeoloc) || ($nbText < $nbGeoloc - 1))
-        || (($nbText == $nbGeoloc - 1) && ($arrayText[$nbText - 1] == strtoupper($address['country'])))) {
-        $same = false;
-    } else {
-        foreach ($arrayText as $i => $lignText) {
-            if (levenshtein($lignText, trim($arrayGeoloc[$i])) > 3) {
-                $same = false;
-            }
-        }
-    }
-    if ($same) {
-        $address['text'] = $address['geoloc'];
-        unset($address['geoloc']);
-    }
-}
-
-// }}}
-// {{{ cleanText(&$text)
-
-function cleanText(&$text)
-{
-    $lines = explode("\n", $text);
-    $n =  count($lines);
-    $text = "";
-    for ($i = 0; $i < $n; $i++) {
-        if (trim($lines[$i])) {
-            $text .= trim($lines[$i]) . "\n";
-        }
-    }
-    $text = trim($text);
-}
-
-// }}}
-// {{{ getAreaId(array &$address, $area)
-
-function getAreaId(array &$address, $area)
-{
-    if (isset($address[$area . 'Name'])) {
-        $res = XDB::query("SELECT  id
-                             FROM  geoloc_" . $area . "
-                            WHERE  name = {?}",
-                          $address[$area . 'Name']);
-        if ($res->numRows() == 0) {
-            $address[$area . 'Id'] = XDB::execute("INSERT INTO  geoloc_" . $area . " (name, country)
-                                                        VALUES  ({?}, {?})",
-                                                  $address[$area . 'Name'], $address['countryId']);
-        } else {
-            $address[$area . 'Id'] = $res->fetchOneCell();
-        }
-    }
-}
-
-// }}}
 // {{{ get_address_text($adr)
 /** make the text of an address that can be read by a mailman
  * @param $adr an array with all the usual fields
@@ -463,28 +81,6 @@ function compare_addresses_text($a, $b)
         }
     }
     return true;
-}
-
-// }}}
-// {{{ fixNumber($oldtext, &$new)
-
-function fixNumber($oldtext, &$new)
-{
-    $ThoroughfareName = $new['AddressDetails']['Country']['AdministrativeArea']['SubAdministrativeArea']['Locality']['Thoroughfare']['ThoroughfareName'];
-    $ThoroughfareName = trim(strtoupper(preg_replace(array("/[,\"'#~:;_\-]/", "/\r\n/"),
-                                                     array("", "\n"), $ThoroughfareName)));
-    $oldarray = explode("\n", trim(strtoupper(preg_replace(array("/[,\"'#~:;_\-]/", "/\r\n/"),
-                                                           array("", "\n"), $oldtext))));
-    $mindist = strlen($ThoroughfareName);
-    $minpos  = 0;
-    foreach ($oldarray as $i => $oldline) {
-        if (($l = levenshtein(trim($oldline), $ThoroughfareName)) < $mindist) {
-            $mindist = $l;
-            $minpos  = $i;
-        }
-    }
-    $nb = explode(" ", $oldarray[$minpos]);
-    $new['text'] = $nb[0] . " " . $new['text'];
 }
 
 // }}}
@@ -665,6 +261,100 @@ function set_smallest_levels()
                          SET  gcim.infos = IF(LENGTH(gm.path) = {?}, 'smallest', '')
                        WHERE  gcim.city_id = {?}", $length, $id);
     }
+    return true;
+}
+// }}}
+// {{{ geoloc_country($current, $avail_only = false)
+/** donne la liste déroulante des pays
+ * @param $current pays actuellement selectionné
+ */
+function geoloc_country($current, $avail_only = false)
+{
+    if ($avail_only) {
+        $res = XDB::iterRow('SELECT  g.a2, g.pays
+                               FROM  geoloc_pays AS g
+                         INNER JOIN  adresses    AS a ON(a.country = g.a2)
+                           GROUP BY  g.a2
+                           ORDER BY  g.pays');
+    } else {
+        $res = XDB::iterRow('SELECT a2,pays FROM geoloc_pays ORDER BY pays');
+    }
+    $html = "";
+    while (list($my_id, $my_pays) = $res->next()) {
+        $html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
+                         $my_id, ($current==$my_id?"selected='selected'":""), $my_pays);
+    }
+    return $html;
+}
+
+// }}}
+// {{{ geoloc_region($country, $current, $avail_only = false)
+/** donne la liste deroulante des regions pour un pays
+ * @param $pays le pays dont on veut afficher les regions
+ * @param $current la region actuellement selectionnee
+ */
+function geoloc_region($country, $current, $avail_only = false)
+{
+    if ($avail_only) {
+        $res = XDB::iterRow('SELECT  r.region, r.name
+                               FROM  geoloc_region AS r
+                         INNER JOIN  adresses      AS a ON (a.country = r.a2 AND a.region = r.region)
+                              WHERE  r.a2 = {?}
+                           GROUP BY  r.region
+                           ORDER BY  r.name', $country);
+    } else {
+        $res = XDB::iterRow('SELECT  region,name
+                               FROM  geoloc_region
+                              WHERE  a2 = {?}
+                           ORDER BY  name', $country);
+    }
+    $html = "<option value=\"\"></option>";
+    while (list($regid, $regname) = $res->next()) {
+        $html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
+                 $regid, ($current==$regid?"selected='selected'":""), $regname);
+    }
+    return $html;
+}
+// }}}
+// {{{ get_cities_maps($array)
+/* get all the maps id of the cities contained in an array */
+function get_cities_maps($array)
+{
+    global $globals;
+    implode("\n",$array);
+    $url = $globals->geoloc->webservice_url."findMaps.php?datatext=".urlencode(implode("\n", $array));
+    if (!($f = @fopen($url, 'r'))) return false;
+    $maps = array();
+    while (!feof($f))
+    {
+        $l = trim(fgets($f));
+        $tab = explode(';', $l);
+        $i = $tab[0];
+        unset($tab[0]);
+        $maps[$i] = $tab;
+    }
+    return $maps;
+}
+// }}}
+// {{{ get_new_maps($url)
+/** set new maps from url **/
+function get_new_maps($url)
+{
+    if (!($f = @fopen($url, 'r'))) {
+        return false;
+    }
+    XDB::query('TRUNCATE TABLE geoloc_maps');
+    $s = '';
+    while (!feof($f)) {
+        $l = fgetcsv($f, 1024, ';', '"');
+        foreach ($l as $i => $val) {
+            if ($val != 'NULL') {
+                $l[$i] = '\''.addslashes($val).'\'';
+            }
+        }
+        $s .= ',('.implode(',',$l).')';
+    }
+    XDB::execute('INSERT INTO geoloc_maps VALUES '.substr($s, 1));
     return true;
 }
 // }}}
