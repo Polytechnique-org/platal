@@ -161,6 +161,14 @@ class UFC_Or extends UFC_NChildren
     }
 }
 
+class UFC_Profile implements UserFilterCondition
+{
+    public function buildCondition(UserFilter &$uf)
+    {
+        return '$PID IS NOT NULL';
+    }
+}
+
 class UFC_Promo implements UserFilterCondition
 {
 
@@ -674,8 +682,8 @@ class UserFilter
             $where = $this->root->buildCondition($this);
             $joins = $this->buildJoins();
             $this->query = 'FROM  accounts AS a
-                      INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
-                      INNER JOIN  profiles AS p ON (p.pid = ap.pid)
+                       LEFT JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                       LEFT JOIN  profiles AS p ON (p.pid = ap.pid)
                                ' . $joins . '
                            WHERE  (' . $where . ')';
         }
