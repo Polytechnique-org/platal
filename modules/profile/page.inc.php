@@ -275,6 +275,8 @@ abstract class ProfileGeoloc implements ProfileSetting
             $mailer->assign('text', $address['text']);
             $mailer->assign('geoloc', $address['geoloc']);
             $mailer->send();
+        } elseif (isset($address['geoloc_choice'])) {
+            unset($address['geoloc'], $address['geoloc_choice']);
         }
     }
 }

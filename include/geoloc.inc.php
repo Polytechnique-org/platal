@@ -335,7 +335,8 @@ function formatAddress(array &$address)
                                       array("", "\n"), $address['text']));
     $geoloc = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
                                       array("", "\n"), $address['geoloc']));
-    if (isset($address['extras'])) {
+    if (isset($address['extras']) && $address['extras']) {
+        $address['geoloc'] = $address['extras'] . "\n" . $address['geoloc'];
         $extras = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
                                           array("", "\n"), $address['extras']));
         $geoloc = $extras . $geoloc;
