@@ -33,9 +33,9 @@ CREATE TABLE IF NOT EXISTS profile_addresses (
 ) CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS geoloc_countries (
-  iso_3166_1 CHAR(2) NOT NULL,
-  iso_3166_2 CHAR(3) NOT NULL,
-  iso_3166_3 SMALLINT(3) UNSIGNED NOT NULL,
+  iso_3166_1_a2 CHAR(2) NOT NULL,
+  iso_3166_1_a3 CHAR(3) NOT NULL,
+  iso_3166_1_num SMALLINT(3) UNSIGNED NOT NULL,
   worldRegion CHAR(2) DEFAULT NULL,
   countryFR VARCHAR(255) NOT NULL,
   country VARCHAR(255) NOT NULL,
@@ -46,12 +46,22 @@ CREATE TABLE IF NOT EXISTS geoloc_countries (
   phoneFormat VARCHAR(255) NOT NULL,
   licensePlate CHAR(4) DEFAULT NULL,
   belongsTo CHAR(2) DEFAULT NULL,
-  PRIMARY KEY(iso_3166_1),
-  INDEX(iso_3166_1),
+  PRIMARY KEY(iso_3166_1_a2),
+  UNIQUE KEY(iso_3166_1_a3),
+  UNIQUE KEY(iso_3166_1_num),
+  INDEX(iso_3166_1_a2),
   INDEX(phonePrefix)
 ) CHARSET=utf8;
 
-INSERT INTO  geoloc_countries (iso_3166_1, iso_3166_2, iso_3166_3, worldRegion,
+UPDATE  geoloc_pays
+   SET  n3 = 450
+ WHERE  a2 = "MG";
+
+UPDATE  geoloc_pays
+   SET  n3 = 807
+ WHERE  a2 = "MK";
+
+INSERT INTO  geoloc_countries (iso_3166_1_a2, iso_3166_1_a3, iso_3166_1_num, worldRegion,
                                countryFR, country, capital, nationalityFR,
                                phonePrefix, phoneFormat, licensePlate)
      SELECT  a2, a3, n3, worldrgn, pays, country, capital, nat, phoneprf, phoneformat, license_plate
