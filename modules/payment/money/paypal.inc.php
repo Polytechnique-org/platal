@@ -21,8 +21,6 @@
 
 class PayPal
 {
-    // {{{ properties
-
     var $val_number;
     var $urlform;
     var $nomsite = "PayPal";
@@ -30,79 +28,81 @@ class PayPal
 
     var $infos;
 
-    // }}}
-    // {{{ constructor
-
     function PayPal($val)
     {
         $this->val_number = $val;
     }
 
-    // }}}
-    // {{{ function form()
-
     function prepareform(&$pay)
     {
-        // toute la doc sur :
-        // https://www.paypal.com/fr_FR/pdf/integration_guide.pdf
-        // attention : le renvoi automatique ne fonctionne que si
-        // on oblige les gens à créer un compte paypal
-        // nous ne l'utilisons pas ; il faut donc que l'utilisateur
-        // revienne sur le site
+        // Documentation:
+        // https://www.paypal.com/developer
+        // Warning: the automatic return only works if we force the
+        // users to create a paypal account. We do not use it; thus
+        // the user must come back on the site.
         global $globals, $platal;
 
-        $this->urlform = 'https://'.$globals->money->paypal_site.'/cgi-bin/webscr';
+        $this->urlform = 'https://' . $globals->money->paypal_site . '/cgi-bin/webscr';
         $req = XDB::query("SELECT  IF(nom_usage!='', nom_usage, nom) AS nom
                              FROM  auth_user_md5
-                            WHERE  user_id = {?}",S::v('uid'));
+                            WHERE  user_id = {?}", S::v('uid'));
         $name = $req->fetchOneCell();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
-            . '/' . $platal->ns . "payment/paypal_return/".S::v('uid')."?comment=".urlencode(Env::v('comment'));
+                  . '/' . $platal->ns . "payment/paypal_return/" . S::v('uid')
+                  . "?comment=" . urlencode(Env::v('comment'));
 
-        $this->infos = Array();
+        $this->infos = array();
 
-        $this->infos['commercant'] = Array(
+        $this->infos['commercant'] = array(
             'business'    => $globals->money->paypal_compte,
-            'rm'        => 2,
+            'rm'          => 2,
             'return'      => $roboturl,
-            'cn'        => 'Commentaires',
+            'cn'          => 'Commentaires',
             'no_shipping' => 1,
             'cbt'         => empty($GLOBALS['IS_XNET_SITE']) ?
-            'Revenir sur polytechnique.org' :
-            'Revenir sur polytechnique.net');
+            'Revenir sur polytechnique.org.' :
+            'Revenir sur polytechnique.net.'
+        );
 
-        $info_client = Array(
+        $info_client = array(
             'first_name' => S::v('prenom'),
             'last_name'  => $name,
-            'email'      => S::user()->bestEmail());
+            'email'      => S::user()->bestEmail()
+        );
 
         $res = XDB::query(
-            "SELECT a.adr1 AS address1, a.adr2 AS address2,
-                    a.city, a.postcode AS zip, a.country,
-                    IF(t1.display_tel != '', t1.display_tel, t2.display_tel) AS night_phone_b
-               FROM auth_user_quick AS q
-          LEFT JOIN adresses  AS a ON (q.user_id = a.uid AND FIND_IN_SET('active', a.statut))
-          LEFT JOIN profile_phones AS t1 ON (t1.uid = a.uid AND t1.link_type = 'address' AND t1.link_id = a.adrid)
-          LEFT JOIN profile_phones AS t2 ON (t2.uid = a.uid AND t2.link_type = 'user' AND t2.link_id = 0)
-              WHERE q.user_id = {?}
-              LIMIT 1", S::v('uid'));
+                "SELECT  a.text, l.name AS city, a.postalCode AS zip, a.countryiId AS country,
+                         IF(t1.display_tel != '', t1.display_tel, t2.display_tel) AS night_phone_b
+                   FROM  auth_user_quick   AS q
+              LEFT JOIN  profile_addresses AS a  ON (q.user_id = a.pid AND FIND_IN_SET('current', a.flags))
+              LEFT JOIN  profile_phones    AS t1 ON (t1.uid = a.uid AND t1.link_type = 'address'
+                                                     AND t1.link_id = a.adrid)
+              LEFT JOIN  profile_phones    AS t2 ON (t2.uid = a.uid AND t2.link_type = 'user'
+                                                     AND t2.link_id = 0)
+              LEFT JOIN  geoloc_localities AS l  ON (l.id = a.localityId)
+                  WHERE  q.user_id = {?}
+                  LIMIT  1",
+                S::v('uid'));
         $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
+        list($this->infos['client']['address1'], $this->infos['client']['address2']) =
+            explode("\n", Geocoder::getFirstLines($this->infos['client']['text'],
+                                                  $this->infos['client']['zip'], 2));
+        unset($this->infos['client']['text']);
 
-        // on constuit la reference de la transaction
-        $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
-        $fullref = substr("$prefix-xorg-{$pay->id}",-15);
+        // We build the transaction's reference
+        $prefix = ($pay->flags->hasflag('unique')) ? str_pad("", 15, "0") : rand_url_id();
+        $fullref = substr("$prefix-xorg-{$pay->id}", -15);
 
-        $this->infos['commande'] = Array(
-            'item_name' => replace_accent($pay->text),
-            'amount'  => $this->val_number,
+        $this->infos['commande'] = array(
+            'item_name'     => replace_accent($pay->text),
+            'amount'        => $this->val_number,
             'currency_code' => 'EUR',
-            'custom'  => $fullref);
+            'custom'        => $fullref
+        );
 
-        $this->infos['divers'] = Array('cmd' => '_xclick');
+        $this->infos['divers'] = array('cmd' => '_xclick');
     }
-
-    // }}}
 }
 
 $api = 'PayPal';

@@ -52,6 +52,19 @@ abstract class Geocoder {
             }
         }
     }
+
+    // Returns the part of the text preceeding the line with the postal code
+    // and the city name, within the limit of $limit number of lines.
+    static public function getFirstLines($text, $postalCode, $limit)
+    {
+        $textArray  = explode("\n", $text);
+        for ($i = 0; $i < count($textArray); ++$i) {
+            if ($i > $limit || strpos($textLine, $postalCode) !== false) {
+                $limit = $i; break;
+            }
+        }
+        return implode("\n", array_slice($textArray, 0, $limit));
+    }
 }
 
 // Implementation of a Geocoder using the Google Maps API. Please refer to
