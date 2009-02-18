@@ -33,10 +33,10 @@ global $globals;
     LEFT JOIN  geoloc_pays             AS n1  ON (u.nationalite = n1.a2)
     LEFT JOIN  geoloc_pays             AS n2  ON (u.nationalite2 = n2.a2)
     LEFT JOIN  geoloc_pays             AS n3  ON (u.nationalite2 = n3.a2)
-    LEFT JOIN  adresses                AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
-    LEFT JOIN  geoloc_pays             AS gp  ON (adr.country = gp.a2)
-    LEFT JOIN  geoloc_region           AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
-    LEFT JOIN  emails                  AS em  ON (em.uid = u.user_id AND em.flags = \'active\')';
+    LEFT JOIN  profile_addresses       AS adr ON (u.user_id = adr.pid AND FIND_IN_SET(\'current\', adr.flags))
+    LEFT JOIN  geoloc_countries        AS gc  ON (adr.countryId = gc.iso_3166_1_a2)
+    '//LEFT JOIN  geoloc_region           AS gr  ON (adr.countryId = gr.a2 AND adr.region = gr.region)
+  . 'LEFT JOIN  emails                  AS em  ON (em.uid = u.user_id AND em.flags = \'active\')';
 
 class UserSet extends PlSet
 {
@@ -194,7 +194,8 @@ class MinificheView extends MultipageView
                 IF(ede3.abbreviation = '', ede3.name, ede3.abbreviation) AS eduname3, ede3.url AS eduurl3,
                 IF(edd3.abbreviation = '', edd3.degree, edd3.abbreviation) AS edudegree3,
                 edu3.grad_year AS edugrad_year3, f3.field AS edufield3, edu3.program AS eduprogram3,
-                adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region,
+                "// adr.localityId, gr.name AS region
+              . "gc.iso_3166_1_a2, gc.countryFR AS countrytxt
                 (COUNT(em.email) > 0 OR FIND_IN_SET('googleapps', u.mail_storage) > 0) AS actif,
                 d.directory_name, d.sort_name" .
                 (S::logged() ? ", c.contact AS contact" : '');
@@ -227,12 +228,13 @@ class MinificheView extends MultipageView
                  LEFT JOIN  profile_education_enum        AS ede3 ON (ede3.id = edu3.eduid)
                  LEFT JOIN  profile_education_degree_enum AS edd3 ON (edd3.id = edu3.degreeid)
                  LEFT JOIN  profile_education_field_enum  AS f3   ON (f3.id = edu3.fieldid)
-                 LEFT JOIN  adresses                      AS adr  ON (u.user_id = adr.uid
-                                                                      AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : "
-                                                                      AND adr.pub = 'public'").")
-                 LEFT JOIN  geoloc_pays                   AS gp   ON (adr.country = gp.a2)
-                 LEFT JOIN  geoloc_region                 AS gr   ON (adr.country = gr.a2 AND adr.region = gr.region)
-                 LEFT JOIN  emails                        AS em   ON (em.uid = u.user_id AND em.flags = 'active')
+                 LEFT JOIN  profile_addresses             AS adr  ON (u.user_id = adr.pid
+                                                                      AND FIND_IN_SET('current', adr.flags)"
+                                                                      . (S::logged() ? "" :
+                                                                         "AND adr.pub = 'public'") . ")
+                 LEFT JOIN  geoloc_countries              AS gc   ON (adr.countryId = gc.iso_3166_a2)
+                 " // LEFT JOIN  geoloc_region                 AS gr   ON (adr.country = gr.a2 AND adr.region = gr.region)
+              . "LEFT JOIN  emails                        AS em   ON (em.uid = u.user_id AND em.flags = 'active')
                 INNER JOIN  profile_display               AS d    ON (d.pid = u.user_id)" . (S::logged() ?
                 "LEFT JOIN  contacts                      AS c    ON (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
                  : "");
@@ -423,14 +425,14 @@ class GeolocView implements PlView
             $page->changeTpl('geoloc/city.tpl', NO_SKIN);
             header('Content-Type: text/xml');
             header('Pragma:');
-            $only_current = Env::v('only_current', false)? ' AND FIND_IN_SET(\'active\', adrf.statut)' : '';
+            $only_current = Env::v('only_current', false)? ' AND FIND_IN_SET(\'current\', adrf.flags)' : '';
             $it =& $this->set->get('u.user_id AS id, u.prenom, u.nom, d.promo, al.alias',
-                                   "INNER JOIN  adresses        AS adrf ON (adrf.uid = u.user_id $only_current)
-                                    INNER JOIN  profile_display AS d    ON (d.pid = u.user_id)
-                                     LEFT JOIN  aliases         AS al   ON (u.user_id = al.id
+                                   "INNER JOIN  profile-addresses AS adrf ON (adrf.pid = u.user_id $only_current)
+                                    INNER JOIN  profile_display   AS d    ON (d.pid = u.user_id)
+                                     LEFT JOIN  aliases           AS al   ON (u.user_id = al.id
                                                                             AND FIND_IN_SET('bestalias', al.flags))
-                                    INNER JOIN  adresses        AS avg  ON (" . getadr_join('avg') . ")",
-                                   'adrf.cityid = ' . Env::i('cityid'), null, null, 11);
+                                    INNER JOIN  profile_addresses AS avg  ON (" . getadr_join('avg') . ")",
+                                   'adrf.localityId = ' . Env::i('cityid'), null, null, 11);
             $page->assign('users', $it);
             break;
 
@@ -475,18 +477,20 @@ class GadgetView implements PlView
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces,
                 FIND_IN_SET('femme', u.flags) AS sexe,
-                adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region" .
+                " // adr.city, gr.name AS region
+              . "gc.iso_3166_1_a2, gc.countryFR AS countrytxt" .
                 (S::logged() ? ", c.contact AS contact" : '');
     }
 
     public function joins()
     {
-        return  "LEFT JOIN  adresses      AS adr ON (u.user_id = adr.uid AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : "
-                                                                         AND adr.pub = 'public'").")
-                 LEFT JOIN  geoloc_pays   AS gp  ON (adr.country = gp.a2)
-                 LEFT JOIN  geoloc_region AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)" .
-                (S::logged() ?
-                "LEFT JOIN  contacts      AS c   ON (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
+        return  "LEFT JOIN  profile_addresses AS adr ON (u.user_id = adr.pid AND
+                                                         FIND_IN_SET('current', adr.flags)"
+                                                         . (S::logged() ? "" : "AND adr.pub = 'public'") . ")
+                 LEFT JOIN  geoloc_countries     AS gc  ON (adr.countryId = gc.iso_3166_1_a2)"
+                 // LEFT JOIN  geoloc_region     AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
+                 . (S::logged() ?
+                "LEFT JOIN  contacts          AS c   ON (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
                  : "");
     }
 
