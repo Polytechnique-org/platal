@@ -162,14 +162,6 @@
     </td>
   </tr>
   <tr class="impair">
-    <td class="titre">Géoloc</td>
-    <td>
-      <a href="admin/geoloc">Synchro</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/geoloc/dynamap">Dynamap</a>
-    </td>
-  </tr>
-  <tr class="pair">
     <td class="titre">Compte</td>
     <td>
       <a href="admin/skins">Skins</a>

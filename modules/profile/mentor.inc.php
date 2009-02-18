@@ -153,6 +153,10 @@ class ProfileMentor extends ProfilePage
     {
         $page->assign('secteurs_sel', XDB::iterator("SELECT  id, name AS label
                                                        FROM  profile_job_sector_enum"));
+
+        $page->assign('countryList', XDB::iterator("SELECT  iso_3166_1_a2, countryFR
+                                                      FROM  geoloc_countries
+                                                  ORDER BY  countryFR"));
     }
 }
 

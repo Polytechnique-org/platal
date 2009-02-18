@@ -87,7 +87,6 @@ class XnetPage extends PlPage
             if ($perms->hasFlag('groupannu')) {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
                 $sub['trombinoscope'] = "$dim/trombi";
-                $sub['planisphère'] = "$dim/geoloc";
             }
             if ($perms->hasFlag('groupmember')) {
                 if ($globals->asso('forum')) {

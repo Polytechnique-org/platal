@@ -68,6 +68,16 @@ abstract class Geocoder {
         }
         return implode("\n", array_slice($textArray, 0, $limit));
     }
+
+    // Returns the number of non geocoded addresses for a user.
+    static public function countNonGeocoded($pid)
+    {
+        $res = XDB::query("SELECT  COUNT(*)
+                             FROM  profile_addresses
+                            WHERE  pid = {?} AND FIND_IN_SET('home', type) AND accuracy = 0",
+                          $pid);
+        return $res->fetchOneCell();
+    }
 }
 
 // Implementation of a Geocoder using the Google Maps API. Please refer to

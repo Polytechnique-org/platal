@@ -128,9 +128,8 @@ class EventsModule extends PLModule
         $page->assign('photo_incitation', $res->fetchOneCell() == 0);
 
         // Geo-location onebox.
-        require_once 'geoloc.inc.php';
-        $res = localize_addresses(S::user()->id());
-        $page->assign('geoloc_incitation', count($res));
+        require_once "geocoding.inc.php";
+        $page->assign('geoloc_incitation', Geocoder::countNonGeocoded(S::user()->id()));
 
         // Direct link to the RSS feed, when available.
         if (S::rssActivated()) {
