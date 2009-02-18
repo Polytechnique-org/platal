@@ -26,7 +26,7 @@
 
 <ul>
   {foreach from=$not_in_group_x item=n}
-  <li>{$n} [<a href='{$platal->ns}member/new/{$n}' class='popup'>l'inscrire</a>]</li>
+  <li>{$n} [<a href='{$platal->ns}member/new/{$n}?token={xsrf_token}' class='popup'>l'inscrire</a>]</li>
   {foreachelse}
   <li><em>tous les polytechniciens présents sur les listes sont inscrits à l'annuaire du groupe.</em></li>
   {/foreach}
@@ -35,7 +35,7 @@
 <h2>Non polytechniciens</h2>
 <ul>
   {foreach from=$not_in_group_ext item=n}
-  <li>{$n} [<a href='{$platal->ns}member/new/{$n}' class='popup'>l'inscrire</a>]</li>
+  <li>{$n} [<a href='{$platal->ns}member/new/{$n}?token={xsrf_token}' class='popup'>l'inscrire</a>]</li>
   {foreachelse}
   <li><em>tous les non-polytechniciens présents sur les listes sont inscrits à l'annuaire du groupe.</em></li>
   {/foreach}
