@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileAddress extends ProfileGeoloc
+class ProfileAddress extends ProfileGeocoding
 {
     private $bool;
     private $pub;
@@ -75,7 +75,7 @@ class ProfileAddress extends ProfileGeoloc
             if (!trim($address['text'])) {
                 unset($value[$key]);
             } elseif (!$init) {
-                $this->geolocAddress($address, $s);
+                $this->geocodeAddress($address, $s);
                 $success = $success && $s;
             }
             $this->cleanAddress($page, $key, $address);

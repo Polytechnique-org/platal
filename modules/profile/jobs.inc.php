@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileJob extends ProfileGeoloc
+class ProfileJob extends ProfileGeocoding
 {
     private $pub;
     private $mail_new;
@@ -131,7 +131,7 @@ class ProfileJob extends ProfileGeoloc
         }
         foreach ($value as $key=>&$job) {
             $ls = true;
-            $this->geolocAddress($job['w_adr'], $s);
+            $this->geocodeAddress($job['w_adr'], $s);
             $ls = ($ls && $s);
             $this->cleanJob($page, $key, $job, $s);
             $ls = ($ls && $s);

@@ -27,6 +27,9 @@ abstract class Geocoder {
     // Unknown key-value pairs available in the input map are retained as-is.
     abstract public function getGeocodedAddress(array $address);
 
+    // Cleans the address from its geocoded data
+    abstract public function stripGeocodingFromAddress(array $address);
+
     // Updates geoloc_administrativeareas, geoloc_subadministrativeareas and
     // geoloc_localities databases with new geocoded data and returns the
     // corresponding id.
@@ -107,6 +110,15 @@ class GMapsGeocoder extends Geocoder {
         return $address;
     }
 
+    public function stripGeocodingFromAddress(array $address) {
+        unset($address['geoloc'], $address['geoloc_choice'], $address['countryId'],
+              $address['country'], $address['administrativeAreaName'],
+              $address['subAdministrativeAreaName'], $address['localityName'],
+              $address['thoroughfareName'], $address['postalCode']);
+        $address['accuracy'] = 0;
+        return $address;
+    }
+ 
     // Updates the address with the geocoded information from Google Maps. Also
     // cleans up the final informations.
     private function getUpdatedAddress(array $address, array $geocodedData, $extraLines) {

@@ -254,9 +254,9 @@ class ProfileDate extends ProfileNoSave
     }
 }
 
-abstract class ProfileGeoloc implements ProfileSetting
+abstract class ProfileGeocoding implements ProfileSetting
 {
-    protected function geolocAddress(array &$address, &$success)
+    protected function geocodeAddress(array &$address, &$success)
     {
         require_once 'geocoding.inc.php';
         $success = true;
@@ -267,13 +267,15 @@ abstract class ProfileGeoloc implements ProfileSetting
                 $success = false;
             }
         }
-        if (isset($address['geoloc_choice']) && $address['geoloc_choice'] == 0) {
-            $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
-            $mailer->assign('text', $address['text']);
-            $mailer->assign('geoloc', $address['geoloc']);
-            $mailer->send();
-        } elseif (isset($address['geoloc_choice'])) {
-            unset($address['geoloc'], $address['geoloc_choice']);
+        if (isset($address['geoloc_choice'])) {
+            if ($address['geoloc_choice'] == 0) {
+                $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
+                $mailer->assign('text', $address['text']);
+                $mailer->assign('geoloc', $address['geoloc']);
+                $mailer->send();
+            }
+            $gmapsGeocoder = new GMapsGeocoder();
+            $address = $gmapsGeocoder->stripGeocodingFromAddress($address);
         }
     }
 }
