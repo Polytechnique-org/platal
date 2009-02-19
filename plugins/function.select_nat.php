@@ -21,8 +21,10 @@
 
 
 function select_nat($valeur, $pad=false) {
-    $sql = "SELECT a2 AS id, IF(nat='', pays, nat) AS text FROM geoloc_pays WHERE nat IS NOT NULL ORDER BY text";
-    $res = XDB::iterRow($sql);
+    $res = XDB::iterRow("SELECT  iso_3166_1_a2 AS id, nationalityFR AS text
+                           FROM  geoloc_countries
+                          WHERE  nationalityFR IS NOT NULL
+                       ORDER BY  nationalityFR");
     $sel = ' selected="selected"';
 
     // on ajoute une entree vide si $pad est vrai

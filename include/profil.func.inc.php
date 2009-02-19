@@ -314,9 +314,9 @@ function format_display_number($tel, &$error, $format = array('format'=>'','phon
     $ret = '';
     $tel_length = strlen($tel);
     if((!isset($format['phoneprf'])) || ($format['phoneprf'] == '')) {
-        $res = XDB::query("SELECT phoneprf, phoneformat AS format
-                             FROM geoloc_pays
-                            WHERE phoneprf = {?} OR phoneprf = {?} OR phoneprf = {?}
+        $res = XDB::query("SELECT phonePrefix AS phoneprf, phoneFormat AS format
+                             FROM geoloc_countries
+                            WHERE phonePrefix = {?} OR phonePrefix = {?} OR phonePrefix = {?}
                             LIMIT 1",
                           substr($tel, 0, 1), substr($tel, 0, 2), substr($tel, 0, 3));
         if ($res->numRows() == 0) {

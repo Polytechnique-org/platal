@@ -164,10 +164,12 @@ class SearchModule extends PLModule
             $this->form_prepare();
         } else {
             $textFields = array(
-                'country'         => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'pays', 'exact' => false),
+                'country'         => array('field' => 'iso_3166_1_a2', 'table' => 'geoloc_countries', 'text' => 'countryFR',
+                                           'exact' => false),
                 'fonction'        => array('field' => 'id', 'table' => 'fonctions_def', 'text' => 'fonction_fr', 'exact' => true),
                 'secteur'         => array('field' => 'id', 'table' => 'profile_job_sector_enum', 'text' => 'name', 'exact' => false),
-                'nationalite'     => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'nat', 'exact' => 'false'),
+                'nationalite'     => array('field' => 'iso_3166_1_a2', 'table' => 'geoloc_countries', 
+                                           'text' => 'nationalityFR', 'exact' => 'false'),
                 'binet'           => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
                 'networking_type' => array('field' => 'network_type', 'table' => 'profile_networking_enum',
                                            'text' => 'name', 'exact' => false),
@@ -176,7 +178,7 @@ class SearchModule extends PLModule
                                            'exact' => false),
                 'section'         => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
                 'school'          => array('field' => 'id', 'table' => 'profile_education_enum', 'text' => 'name', 'exact' => false),
-                'city'            => array('table' => 'geoloc_city', 'text' => 'name', 'exact' => false)
+                'city'            => array('table' => 'geoloc_localities', 'text' => 'name', 'exact' => false)
             );
             if (!Env::has('page')) {
                 S::logger()->log('search', 'adv=' . var_export($_GET, true));
@@ -270,18 +272,17 @@ class SearchModule extends PLModule
             $realid = '`profile_networking_enum`.`network_type`';
             break;
           case 'city':
-            $db = '`geoloc_city` INNER JOIN
-                   `adresses` ON(`geoloc_city`.`id` = `adresses`.`cityid`)';
-            $unique='`uid`';
-            $field='`geoloc_city`.`name`';
+            $db     = 'geoloc_localities INNER JOIN
+                       profile_addresses ON (geoloc_localities.id = profile_addresses.localityId)';
+            $unique = 'uid';
+            $field  ='geoloc_localities.name';
             break;
           case 'countryTxt':
-            $db = '`geoloc_pays` INNER JOIN
-                   `adresses` ON(`geoloc_pays`.`a2` = `adresses`.`country`)';
-            $unique = '`uid`';
-            $field = '`geoloc_pays`.`pays`';
-            $field2 = '`geoloc_pays`.`country`';
-            $realid = '`geoloc_pays`.`a2`';
+            $db     = 'geoloc_countries INNER JOIN
+                       profile_addresses ON (geoloc_countries.iso_3166_1_a2 = profile_addresses.countryId)';
+            $unique = 'pid';
+            $field  = 'geoloc_countries.countryFR';
+            $realid = 'geoloc_countries.iso_3166_1_a2';
             break;
           case 'entreprise':
             $db     = 'profile_job_enum INNER JOIN
@@ -310,14 +311,12 @@ class SearchModule extends PLModule
             $unique = 'm.uid';
             break;
           case 'nationaliteTxt':
-            $db = '`geoloc_pays` INNER JOIN
-                   `auth_user_md5` ON (`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite` OR
-                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite2` OR
-                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite3`)';
-            $field = 'IF(`geoloc_pays`.`nat`=\'\',
-                                       `geoloc_pays`.`pays`,
-                                       `geoloc_pays`.`nat`)';
-            $realid = '`geoloc_pays`.`a2`';
+            $db     = 'geoloc_countries INNER JOIN
+                       auth_user_md5 ON (geoloc_countries.a2 = auth_user_md5.nationalite
+                                         OR geoloc_countries.a2 = auth_user_md5.nationalite2
+                                         OR geoloc_countries.a2 = auth_user_md5.nationalite3)';
+            $field  = 'geoloc_countries.nationalityFR';
+            $realid = 'geoloc_countries.iso_3166_1_a2';
             break;
           case 'description':
             $db     = 'profile_job';
@@ -426,9 +425,9 @@ class SearchModule extends PLModule
             $id = '`network_type`';
             break;
           case 'country':
-            $db = '`geoloc_pays`';
-            $field = '`pays`';
-            $id = '`a2`';
+            $db    = 'geoloc_countries';
+            $field = 'countryFR';
+            $id    = 'iso_3166_1_a2';
             $page->assign('onchange', 'changeCountry(this.value)');
             break;
           case 'fonction':
@@ -446,19 +445,19 @@ class SearchModule extends PLModule
             $field = 'nom';
             break;
           case 'nationalite':
-            $db = '`geoloc_pays` INNER JOIN
-                   `auth_user_md5` ON (`geoloc_pays`.`a2` = `auth_user_md5`.`nationalite` OR
-                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite2` OR
-                                       `geoloc_pays`.`a2` = `auth_user_md5`.`nationalite3`)';
-            $field = 'IF(`nat`=\'\', `pays`, `nat`)';
-            $id = '`a2`';
+            $db    = 'geoloc_countries INNER JOIN
+                      auth_user_md5 ON (geoloc_countries.iso_3166_1_a2 = auth_user_md5.nationalite
+                                        OR geoloc_countries.iso_3166_1_a2 = auth_user_md5.nationalite2
+                                        OR geoloc_countries.iso_3166_1_a2 = auth_user_md5.nationalite3)';
+            $field = 'nationalityFR';
+            $id    = 'iso_3166_1_a2';
             break;
           case 'region':
-            $db = '`geoloc_region`';
-            $field = '`name`';
-            $id = '`region`';
+            $db    = 'geoloc_administrativeareas';
+            $field = 'name';
+            $id    = 'id';
             if (isset($_REQUEST['country'])) {
-                $where .= ' WHERE `a2` = "'.$_REQUEST['country'].'"';
+                $where .= ' WHERE country = "' . $_REQUEST['country'] . '"';
             }
             break;
           case 'school':

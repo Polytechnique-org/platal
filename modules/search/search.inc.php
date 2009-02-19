@@ -22,7 +22,7 @@
 require_once dirname(__FILE__).'/classes.inc.php';
 
 // {{{ function advancedSearchFromInput
-function getadr_join($table) {
+function getAddressJoin($table) {
     return 'u.user_id = ' . $table . '.pid' . (Env::v('only_current', false) ? ' AND FIND_IN_SET(\'current\', ' . $table . '.flags)' : '');
 }
 function advancedSearchFromInput()
@@ -45,15 +45,10 @@ function advancedSearchFromInput()
         $referentField  = null;
     }
 
-    if (!Env::i('cityid')) {
-        $townField      = new RefSField('city', array('ac.city', 'ac.postcode'), 'adresses', 'ac', getadr_join('ac'), false);
-    } else {
-        $townField      = new RefSField('cityid', array('av.cityid', 'av.postcode'), 'adresses', 'av', getadr_join('av'));
-    }
-    $countryField       = new RefSField('country', array('ap.country'), 'adresses', 'ap', getadr_join('ap'));
-    $regionField        = new RefSField('region',array('ar.region'), 'adresses', 'ar', getadr_join('ar'));
-    $mapField           = new MapSField('mapid',  array('sgcim.map_id'), array('adresses', 'geoloc_city_in_maps'),
-                                        array('amp', 'sgcim'), array(getadr_join('amp'), 'amp.cityid = sgcim.city_id'));
+    $townField          = new RefSField('city', array('av.localityId', 'av.postalCode'), 'profile_addresses',
+                                        'av', getAddressJoin('av'));
+    $countryField       = new RefSField('country', array('ap.countryId'), 'profile_addresses', 'ap', getAddressJoin('ap'));
+    $regionField        = new RefSField('region',array('ar.administrativeAreaId'), 'profile_addresses', 'ar', getAddressJoin('ar'));
 
     $entrepriseField    = new RefSField('entreprise', array('je.name'), '', '','');
     $posteField         = new RefSField('poste', array('ep.description'), 'profile_job', 'ep', 'u.user_id = ep.uid', false);
@@ -85,7 +80,7 @@ function advancedSearchFromInput()
     return array(
                 $nameField, $promo1Field,
                 $promo2Field, $womanField, $subscriberField, $aliveField,
-                $townField, $countryField, $regionField, $mapField, $entrepriseField,
+                $townField, $countryField, $regionField, $entrepriseField,
                 $posteField, $secteurField, $cvField, $natField, $binetField,
                 $groupexField, $sectionField, $schoolField, $diplomaField,
                 $freeField, $fonctionField, $nwAddressField, $nwTypeField,

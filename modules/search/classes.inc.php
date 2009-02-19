@@ -59,7 +59,7 @@ else
         IF(e.pub='public', je.name, '')      AS entreprise,
         IF(nw.pub='public', nw.address, '')  AS networking_address,
         IF(nw.pub='public', nwe.name, '')    AS networking_name,";
-@$globals->search->result_where_statement = '
+@$globals->search->result_where_statement = "
     LEFT JOIN  profile_education             AS edu0 ON (u.user_id = edu0.uid AND edu0.id = 0)
     LEFT JOIN  profile_education_enum        AS ede0 ON (ede0.id = edu0.eduid)
     LEFT JOIN  profile_education_degree_enum AS edd0 ON (edd0.id = edu0.degreeid)
@@ -80,15 +80,17 @@ else
     LEFT JOIN  profile_job_enum              AS ee   ON (e.jobid = ee.id)
     LEFT JOIN  profile_job_sector_enum       AS es   ON (es.id = e.sectorid)
     LEFT JOIN  fonctions_def                 AS ef   ON (e.fonction = ef.id)
-    LEFT JOIN  geoloc_pays                   AS n1   ON (u.nationalite = n1.a2)
-    LEFT JOIN  geoloc_pays                   AS n2   ON (u.nationalite2 = n2.a2)
-    LEFT JOIN  geoloc_pays                   AS n3   ON (u.nationalite3 = n3.a2)
-    LEFT JOIN  adresses                      AS adr  ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
-    LEFT JOIN  geoloc_pays                   AS gp   ON (adr.country = gp.a2)
-    LEFT JOIN  geoloc_region                 AS gr   ON (adr.country = gr.a2 AND adr.region = gr.region)
-    LEFT JOIN  emails                        AS em   ON (em.uid = u.user_id AND em.flags = \'active\')
+    LEFT JOIN  geoloc_countries              AS n1   ON (u.nationalite = n1.iso_3166_1_a2)
+    LEFT JOIN  geoloc_countries              AS n2   ON (u.nationalite2 = n2.iso_3166_1_a2)
+    LEFT JOIN  geoloc_countries              AS n3   ON (u.nationalite3 = n3.iso_3166_1_a2)
+    LEFT JOIN  profile_addresses             AS adr  ON (u.user_id = adr.pid
+                                                         AND FIND_IN_SET('current', adr.flags))
+    LEFT JOIN  geoloc_countries              AS gp   ON (adr.countryId = gp.iso_3166_1_a2)
+    LEFT JOIN  geoloc_administrativeareas    AS gr   ON (adr.countryId = gr.country
+                                                         AND adr.administrativeAreaId = gr.id)
+    LEFT JOIN  emails                        AS em   ON (em.uid = u.user_id AND em.flags = 'active')
     LEFT JOIN  profile_networking            AS nw   ON (nw.uid = u.user_id)
-    LEFT JOIN  profile_networking_enum       AS nwe  ON (nwe.network_type = nw.network_type)';
+    LEFT JOIN  profile_networking_enum       AS nwe  ON (nwe.network_type = nw.network_type)";
 
 // }}}
 // {{{ class ThrowError

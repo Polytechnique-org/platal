@@ -210,22 +210,21 @@ class ProfileJobs extends ProfilePage
         $res = XDB::iterRow("SELECT  j.id, je.name, j.functionid, j.sectorid, j.subsectorid,
                                      j.subsubsectorid, j.description, e.adr1, e.adr2, e.adr3,
                                      e.postcode, e.city, e.cityid, e.region, e.regiontxt,
-                                     e.country, gp.pays, gp.display,
-                                     FIND_IN_SET('geoloc', flags),
+                                     e.country, gc.countryFR, pa.accuracy,
                                      j.email, j.url, j.pub,
                                      e.adr_pub, j.email_pub,
                                      e.glat, e.glng, s.name
                                FROM  profile_job                   AS j
                           LEFT JOIN  profile_job_enum              AS je ON (j.jobid = je.id)
                           LEFT JOIN  entreprises                   AS e  ON (j.uid = e.uid AND j.id = e.entrid)
-                          LEFT JOIN  geoloc_pays                   AS gp ON (gp.a2 = e.country)
+                          LEFT JOIN  geoloc_countries              AS gc ON (gc.iso_3166_1_a2 = e.country)
                           LEFT JOIN  profile_job_subsubsector_enum AS s  ON (s.id = j.subsubsectorid)
                               WHERE  j.uid = {?}
                            ORDER BY  entrid", S::i('uid'));
         $this->values['jobs'] = array();
         while (list($id, $name, $function, $secteur, $ss_secteur, $sss_secteur, $description,
                     $w_adr1, $w_adr2, $w_adr3, $w_postcode, $w_city, $w_cityid,
-                    $w_region, $w_regiontxt, $w_country, $w_countrytxt, $w_display,
+                    $w_region, $w_regiontxt, $w_country, $w_countrytxt,
                     $w_checked, $w_email, $w_web,
                     $pub, $w_adr_pub, $w_email_pub, $w_glat, $w_glng, $sss_secteur_name
                    ) = $res->next()) {
@@ -247,9 +246,8 @@ class ProfileJobs extends ProfilePage
                                                                         'regiontxt'   => $w_regiontxt,
                                                                         'country'     => $w_country,
                                                                         'countrytxt'  => $w_countrytxt,
-                                                                        'display'     => $w_display,
                                                                         'pub'         => $w_adr_pub,
-                                                                        'checked'     => $w_checked,
+                                                                        'checked'     => (($w_checked == 0)? true : false),
                                                                         'precise_lat' => $w_glat,
                                                                         'precise_lon' => $w_glng),
                                             'w_email'          => $w_email,

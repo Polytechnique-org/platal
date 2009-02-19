@@ -78,9 +78,9 @@ class ProfileCountry implements ProfileSetting
         $success = true;
         if (is_null($value)) {
             $value = array();
-            $res = XDB::iterRow("SELECT  m.country, p.pays
+            $res = XDB::iterRow("SELECT  m.country, gc.countryFR
                                    FROM  profile_mentor_country AS m
-                             INNER JOIN  geoloc_pays            AS p ON (m.country = p.a2)
+                             INNER JOIN  geoloc_countries       AS gc ON (m.country = gc.iso_3166_1_a2)
                                   WHERE  m.uid = {?}",
                                 S::i('uid'));
             while (list($id, $name) = $res->next()) {
