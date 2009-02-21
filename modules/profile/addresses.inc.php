@@ -126,7 +126,7 @@ class ProfileAddress extends ProfileGeocoding
                            VALUES  ({?}, 'home', {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
                                     {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?}, {?}, {?})",
                      S::i('uid'), $addrid, $flags, $address['accuracy'],
-                     $address['text'], 'postalText'/*$address['postalText']*/, $address['postalCode'], $address['localityId'],
+                     $address['text'], $address['postalText'], $address['postalCode'], $address['localityId'],
                      $address['subAdministrativeAreaId'], $address['administrativeAreaId'],
                      $address['countryId'], $address['latitude'], $address['longitude'],
                      $address['updateTime'], $address['pub'], $address['comment'],

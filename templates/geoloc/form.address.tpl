@@ -43,6 +43,7 @@
 {if $address.geoloc}
 <input type="hidden" name="{$prefname}[geoloc_choice]" value="1" />
 <input type="hidden" name="{$prefname}[geoloc]" value="{$address.geoloc}" />
+<input type="hidden" name="{$prefname}[geocodedPostalText]" value="{$address.geocodedPostalText}" />
 <input type="hidden" name="{$prefname}[updateTime]" value="{$address.updateTime}" />
 {/if}
 <input type="hidden" name="{$prefname}[type]" value="{$address.type}" />

@@ -121,8 +121,8 @@ class GMapsGeocoder extends Geocoder {
     }
 
     public function stripGeocodingFromAddress(array $address) {
-        unset($address['geoloc'], $address['geoloc_choice'], $address['countryId'],
-              $address['country'], $address['administrativeAreaName'],
+        unset($address['geoloc'], $address['geoloc_choice'], $address['geocodedPostalText'],
+              $address['countryId'], $address['country'], $address['administrativeAreaName'],
               $address['subAdministrativeAreaName'], $address['localityName'],
               $address['thoroughfareName'], $address['postalCode']);
         $address['accuracy'] = 0;
@@ -163,7 +163,7 @@ class GMapsGeocoder extends Geocoder {
     // Prepares address to be geocoded
     private function prepareAddress($address) {
         $address['text'] = preg_replace('/\s*\n\s*/m', "\n", trim($address['text']));
-        // TODO: $address['postalAddress'] = getPostalAddress($address['text']);
+        $address['postalText'] = $this->getPostalAddress($address['text']);
         $address['updateTime'] = time();
         unset($address['changed']);
         return $address;
@@ -316,6 +316,7 @@ class GMapsGeocoder extends Geocoder {
         if ($extraLines) {
             $address['geoloc'] = $extraLines . "\n" . $address['geoloc'];
         }
+        $address['geocodedPostalText'] = $this->getPostalAddress($address['geoloc']);
         $geoloc = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
                                           array("", "\n"), $address['geoloc']));
         $text   = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
@@ -338,10 +339,55 @@ class GMapsGeocoder extends Geocoder {
         }
         if ($same) {
             $address['text'] = $address['geoloc'];
-            unset($address['geoloc']);
+            $address['postalText'] = $address['geocodedPostalText'];
+            unset($address['geoloc'], $address['geocodedPostalText']);
         }
     }
  
+    // Returns the address formated for postal use.
+    // The main rules are (cf AFNOR XPZ 10-011):
+    // -everything in upper case;
+    // -if there are more then than 38 characters in a lign, split it;
+    // -if there are more then than 32 characters in the description of the "street", use abbreviations.
+    private function getPostalAddress($text) {
+         static $abbreviations = array(
+             "IMPASSE"   => "IMP",
+             "RUE"       => "R",
+             "AVENUE"    => "AV",
+             "BOULEVARD" => "BVD",
+             "ROUTE"     => "R",
+             "STREET"    => "ST",
+             "ROAD"      => "RD",
+             );
+
+        $text = strtoupper($text);
+        $arrayText = explode("\n", $text);
+        $postalText = "";
+
+        foreach ($arrayText as $i => $lign) {
+            $postalText .= (($i == 0) ? "" : "\n");
+            if (($length = strlen($lign)) > 32) {
+                $words = explode(" ", $lign);
+                $count = 0;
+                foreach ($words as $word) {
+                    if (isset($abbreviations[$word])) {
+                        $word = $abbreviations[$word];
+                    }
+                    if ($count + ($wordLength = strlen($word)) <= 38) {
+                        $postalText .= (($count == 0) ? "" : " ") . $word;
+                        $count += (($count == 0) ? 0 : 1) + $wordLength;
+                    } else {
+                        $postalText .= "\n" . $word;
+                        $count = strlen($word);
+                    }
+                }
+            } else {
+                $postalText .= $lign;
+            }
+        }
+        return $postalText;
+    }
+
     // Search for the lign from the given address that is the closest to the geocoded thoroughfareName
     // and replaces the corresponding lign in the geocoded text by it.
     static protected function fixStreetNumber(&$address)
