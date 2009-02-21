@@ -36,6 +36,9 @@ class MedalReq extends Validate
         parent::__construct($_user, false, 'medal', $_stamp);
         $this->mid = $_idmedal;
         $this->gid = $_subidmedal;
+        if (is_null($this->gid)) {
+            $this->gid = 0;
+        }
     }
 
     // }}}
@@ -104,7 +107,8 @@ class MedalReq extends Validate
         register_watch_op($this->user->id(), WATCH_FICHE, '', 'medals');
         return XDB::execute('REPLACE INTO  profile_medals_sub
                                    VALUES  ({?}, {?}, {?})',
-                            $this->user->id(), $this->mid, $this->gid);
+                            $this->user->id(), $this->mid,
+                            is_null($this->gid) ? 0 : $this->gid);
     }
 
     // }}}
