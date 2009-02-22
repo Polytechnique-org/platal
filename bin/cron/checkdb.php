@@ -80,7 +80,10 @@ check("SELECT  u.user_id, nom, prenom, promo,
            OR  (profile_freetext_pub != 'private' AND profile_freetext_pub != 'public')
            OR  (profile_medals_pub != 'private' AND profile_medals_pub != 'public')",
     "Utilisateur n'ayant pas de flag de publicite pour leurs donnees de profil");
-check("select uid from adresses where pub != 'private' and pub !='ax' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour une adresse");
+check("SELECT  pid
+         FROM  profile_addresses
+        WHERE  pub != 'private' AND pub !='ax' AND pub != 'public'",
+      "Utiliseur n'ayant pas de flag de publicité pour une adresse.");
 check("select uid from profile_phones where pub != 'private' and pub != 'ax' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour un numero de téléphone");
 check("select uid from profile_networking where pub != 'private' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicité pour une adresse de networking");
 
@@ -123,19 +126,23 @@ check("select g.* from groupesx_ins as g left join groupesx_def as gd on g.gid=g
 check("select p.* from photo as p left join auth_user_md5 as u on u.user_id=p.uid where u.prenom is null");
 
 /* validite des formats téléphoniques */
-check("SELECT DISTINCT g.phoneprf from geoloc_pays AS g
-          WHERE EXISTS (SELECT h.phoneprf
-                          FROM geoloc_pays AS h
-                         WHERE h.phoneprf = g.phoneprf AND h.phoneformat != (SELECT i.phoneformat
-                                                                               FROM geoloc_pays AS i
-                                                                              WHERE i.phoneprf = g.phoneprf
-                                                                              LIMIT 1))",
+check("SELECT DISTINCT  g.phonePrefix
+                  FROM  geoloc_countries AS g
+          WHERE EXISTS  (SELECT  h.phonePrefix
+                           FROM  geoloc_countries AS h
+                          WHERE  h.phonePrefix = g.phonePrefix
+                                 AND h.phoneFormat != (SELECT  i.phoneFormat
+                                                         FROM  geoloc_countries AS i
+                                                        WHERE  i.phonePrefix = g.phonePrefix
+                                                        LIMIT  1))",
       "Préfixes téléphoniques qui ont des formats de numéros de téléphones différents selon les pays");
 
-/* validite des champ pays et region */
-check("SELECT a.uid, a.country FROM adresses AS a LEFT JOIN geoloc_pays AS gp ON a.country = gp.a2 WHERE gp.pays IS NULL","donne la liste des pays dans les profils qui n'ont pas d'entree correspondante dans geoloc_pays");
-/* les régions ne sont valides que dans les adresses pros */
-//check("SELECT e.uid, e.country, e.region FROM entreprises AS e LEFT JOIN geoloc_region AS gr ON (e.country = gr.a2 AND e.region = gr.region) WHERE e.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils pros qui n'ont pas d'entree correspondante dans geoloc_region");
+/* validite des champ pays */
+check("SELECT  a.pid, a.countryId
+         FROM  profile_addresses AS a
+    LEFT JOIN  geoloc_countries  AS gc ON (a.countryId = gc.iso_3166_1_a2)
+        WHERE  gc.countryFR IS NULL OR gc.countryFR = ''",
+      "donne la liste des pays dans les profils qui n'ont pas d'entree correspondante dans geoloc_countries");
 
 /* donne la liste des emails douteux que les administrateurs n'ont pas encore traité */
 check("SELECT  a1.alias, a2.alias, e1.email, e2.flags

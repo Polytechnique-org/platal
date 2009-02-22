@@ -19,11 +19,14 @@ function do_update_by_block($values)
       ON DUPLICATE KEY UPDATE  display_tel = VALUES(display_tel)");
 }
 
-$res = XDB::query("SELECT DISTINCT g.phoneprf FROM geoloc_pays AS g WHERE g.phoneprf IS NOT NULL");
+$res = XDB::query("SELECT DISTINCT  phonePrefix
+                              FROM  geoloc_countries
+                             WHERE  phonePrefix IS NOT NULL");
 $prefixes = $res->fetchColumn();
 foreach ($prefixes as $i => $prefix) {
-    $res = XDB::query("SELECT g.phoneformat FROM geoloc_pays AS g
-                        WHERE g.phoneprf = {?} AND g.phoneformat != '' LIMIT 1",
+    $res = XDB::query("SELECT  phoneFormat
+                         FROM  geoloc_countries
+                        WHERE  phonePrefix = {?} AND phoneFormat != '' LIMIT 1",
                       $prefix);
     if ($res->numRows() > 0) {
         $format = $res->fetchOneCell();

@@ -20,30 +20,32 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{assign var=adpref value="addresses[$i]"}
-{assign var=adid value="addresses_$i"}
-<input type="hidden" name="{$adpref}[removed]" value="0"/>
-<input type="hidden" name="{$adpref}[datemaj]" value="{$adr.datemaj}"/>
-<table class="bicol" style="display: none; margin-bottom: 1em" id="{$adid}_grayed">
+{assign var=prefname value="addresses[$i]"}
+{assign var=prefid value="addresses_$i"}
+<table class="bicol" style="display: none; margin-bottom: 1em" id="{$prefid}_grayed">
   <tr>
     <th class="grayed">
       <div style="float: right">
-        <a href="javascript:restoreAddress('{$adid}', '{$adpref}')">{icon name=arrow_refresh title="Restaurer l'adresse"}</a>
+        <a href="javascript:toggleAddress('{$i}', 0)">{icon name=arrow_refresh title="Restaurer l'adresse"}</a>
       </div>
       Restaurer l'adresse n°{$i+1}
     </th>
   </tr>
 </table>
-<table class="bicol" style="margin-bottom: 1em" id="{$adid}">
+<table class="bicol" style="margin-bottom: 1em" id="{$prefid}">
   <tr>
     <th>
       <div style="float: left">
-        <input name="{$adpref}[current]" type="radio" value="1" {if $adr.current}checked="checked"{/if}
-               id="{$adid}_current" onchange="checkCurrentAddress(this); return true" />
-        <label for="{$adid}_current" class="smaller" style="font-weight: normal">actuelle</label>
+        <label>
+          <input name="{$prefname}[current]" type="radio" {if $address.current}checked="checked"{/if}
+                      onchange="checkCurrentAddress({$i})" />
+          <span class="smaller" style="font-weight: normal">actuelle</span>
+        </label>
       </div>
       <div style="float: right">
-        <a href="javascript:removeAddress('{$adid}', '{$adpref}')">{icon name=cross title="Supprimer l'adresse"}</a>
+        <a href="javascript:toggleAddress('{$i}', 1)">
+          {icon name=cross title="Supprimer l'adresse"}
+        </a>
       </div>
       Adresse n°{$i+1}
     </th>
@@ -51,49 +53,68 @@
   <tr>
     <td>
       <div style="margin-bottom: 0.2em" class="flags">
-        {include file="include/flags.radio.tpl" name="`$adpref`[pub]" val=$adr.pub}
+        {include file="include/flags.radio.tpl" name="`$prefname`[pub]" val=$address.pub}
       </div>
       <div style="clear: both"></div>
-      <div style="float: left">{include file="geoloc/form.address.tpl" name=$adpref id=$adid adr=$adr}</div>
+      <div style="float: left">
+      {include file="geoloc/form.address.tpl" prefname=$prefname prefid=$prefid address=$address id=$i}
+      </div>
       <div style="float: left">
         <div>
-          <input type="radio" name="{$adpref}[temporary]" id="{$adid}_temp_0" value="0"
-                 {if !$adr.temporary}checked="checked"{/if} /><label for="{$adid}_temp_0">permanente</label>
-          <input type="radio" name="{$adpref}[temporary]" id="{$adid}_temp_1" value="1"
-                 {if $adr.temporary}checked="checked"{/if} /><label for="{$adid}_temp_1">temporaire</label>
+          <label>
+            <input type="radio" name="{$prefname}[temporary]" value="0"
+                   {if !$address.temporary}checked="checked"{/if} />
+            permanente
+          </label>
+          <label>
+            <input type="radio" name="{$prefname}[temporary]" value="1"
+                   {if $address.temporary}checked="checked"{/if} />
+            temporaire
+          </label>
         </div>
         <div>
-          <input type="radio" name="{$adpref}[secondaire]" id="{$adid}_sec_0" value="0"
-                 {if !$adr.secondaire}checked="checked"{/if} /><label for="{$adid}_sec_0">ma résidence principale</label>
-          <input type="radio" name="{$adpref}[secondaire]" id="{$adid}_sec_1" value="1"
-                 {if $adr.secondaire}checked="checked"{/if} /><label for="{$adid}_sec_1">une résidence secondaire</label>
+          <label>
+            <input type="radio" name="{$prefname}[secondary]" value="0"
+                   {if !$address.secondary}checked="checked"{/if} />
+            ma résidence principale
+          </label>
+          <label>
+            <input type="radio" name="{$prefname}[secondary]" value="1"
+                   {if $address.secondary}checked="checked"{/if} />
+            une résidence secondaire
+          </label>
         </div>
         <div>
-          <input type="checkbox" name="{$adpref}[mail]" id="{$adid}_mail"
-                 {if $adr.mail}checked="checked"{/if} />
-          <label for="{$adid}_mail">on peut m'y envoyer du courrier par la poste</label>
+          <label>
+            <input type="checkbox" name="{$prefname}[mail]" {if $address.mail}checked="checked"{/if} />
+            on peut m'y envoyer du courrier par la poste
+          </label>
         </div>
         <div>
-          <label for="{$adpref}[comment]">Commentaire : </label>
-          <input type="text" size="35" maxlength="100" name="{$adpref}[comment]" id="{$adpref}_comment" value="{$adr.comment}" />
+          <label>
+            Commentaire&nbsp;:
+            <input type="text" size="35" maxlength="100"
+                   name="{$prefname}[comment]" value="{$address.comment}" />
+          </label>
         </div>
       </div>
     </td>
   </tr>
   <tr class="pair">
     <td>
-      {foreach from=$adr.tel key=t item=tel}
-        <div id="{"`$adid`_tel_`$t`"}" style="clear: both">
-          {include file="profile/phone.tpl" prefname="`$adpref`[tel]" prefid="`$adid`_tel" telid=$t tel=$tel}
+      {foreach from=$address.tel key=t item=tel}
+        <div id="{"`$prefid`_tel_`$t`"}" style="clear: both">
+          {include file="profile/phone.tpl" prefname="`$prefname`[tel]"
+                   prefid="`$prefid`_tel" telid=$t tel=$tel}
         </div>
       {/foreach}
-      {if $adr.tel|@count eq 0}
-        <div id="{"`$adid`_tel_0"}" style="clear: both">
-          {include file="profile/phone.tpl" prefname="`$adpref`[tel]" prefid="`$adid`_tel" telid=0 tel=0}
+      {if $address.tel|@count eq 0}
+        <div id="{"`$prefid`_tel_0"}" style="clear: both">
+          {include file="profile/phone.tpl" prefname="`$prefname`[tel]" prefid="`$prefid`_tel" telid=0 tel=0}
         </div>
       {/if}
-      <div id="{$adid}_tel_add" class="center" style="clear: both; padding-top: 4px">
-        <a href="javascript:addTel('{$adid}_tel', '{$adpref}[tel]')">
+      <div id="{$prefid}_tel_add" class="center" style="clear: both; padding-top: 4px">
+        <a href="javascript:addTel('{$prefid}_tel', '{$prefname}[tel]')">
           {icon name=add title="Ajouter un numéro de téléphone"} Ajouter un numéro de téléphone
         </a>
       </div>

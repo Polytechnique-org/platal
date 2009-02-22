@@ -61,7 +61,10 @@
         <a href="javascript:addCountry()">{icon name=add title="Ajouter ce pays"}</a>
       </div>
       <select name="countries_sel" onchange="updateCountry()">
-        {geoloc_country country='00'}
+        <option value=""></option>
+        {iterate from=$countryList item=country}
+        <option value="{$country.iso_3166_1_a2}">{$country.countryFR}</option>
+        {/iterate}
       </select>
     </td>
   </tr>

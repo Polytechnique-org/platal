@@ -276,102 +276,6 @@ class TrombiView extends MultipageView
     }
 }
 
-class GeolocView implements PlView
-{
-    private $set;
-    private $type;
-    private $params;
-
-    public function __construct(PlSet &$set, $data, array $params)
-    {
-        $this->params = $params;
-        $this->set   =& $set;
-        $this->type   = $data;
-    }
-
-    private function use_map()
-    {
-        return is_file(dirname(__FILE__) . '/../modules/geoloc/dynamap.swf') &&
-               is_file(dirname(__FILE__) . '/../modules/geoloc/icon.swf');
-    }
-
-    public function args()
-    {
-        $args = $this->set->args();
-        unset($args['initfile']);
-        unset($args['mapid']);
-        return $args;
-    }
-
-    public function apply(PlPage &$page)
-    {
-        require_once 'geoloc.inc.php';
-        require_once '../modules/search/search.inc.php';
-
-        switch ($this->type) {
-          case 'icon.swf':
-            header("Content-type: application/x-shockwave-flash");
-            header("Pragma:");
-            readfile(dirname(__FILE__).'/../modules/geoloc/icon.swf');
-            exit;
-
-          case 'dynamap.swf':
-            header("Content-type: application/x-shockwave-flash");
-            header("Pragma:");
-            readfile(dirname(__FILE__).'/../modules/geoloc/dynamap.swf');
-            exit;
-
-          case 'init':
-            $page->changeTpl('geoloc/init.tpl', NO_SKIN);
-            header('Content-Type: text/xml');
-            header('Pragma:');
-            if (!empty($GLOBALS['IS_XNET_SITE'])) {
-                $page->assign('background', 0xF2E9D0);
-            }
-            break;
-
-          case 'city':
-            $page->changeTpl('geoloc/city.tpl', NO_SKIN);
-            header('Content-Type: text/xml');
-            header('Pragma:');
-            $only_current = Env::v('only_current', false)? ' AND FIND_IN_SET(\'active\', adrf.statut)' : '';
-            $it =& $this->set->get('u.user_id AS id, u.prenom, u.nom, d.promo, al.alias',
-                                   "INNER JOIN  adresses        AS adrf ON (adrf.uid = u.user_id $only_current)
-                                    INNER JOIN  profile_display AS d    ON (d.pid = u.user_id)
-                                     LEFT JOIN  aliases         AS al   ON (u.user_id = al.id
-                                                                            AND FIND_IN_SET('bestalias', al.flags))
-                                    INNER JOIN  adresses        AS avg  ON (" . getadr_join('avg') . ")",
-                                   'adrf.cityid = ' . Env::i('cityid'), null, null, 11);
-            $page->assign('users', $it);
-            break;
-
-          case 'country':
-            if (Env::has('debug')) {
-                $page->changeTpl('geoloc/country.tpl', SIMPLE);
-            } else {
-                $page->changeTpl('geoloc/country.tpl', NO_SKIN);
-                header('Content-Type: text/xml');
-                header('Pragma:');
-            }
-            $mapid = Env::has('mapid') ? Env::i('mapid', -2) : false;
-            list($countries, $cities) = geoloc_getData_subcountries($mapid, $this->set, 10);
-            $page->assign('countries', $countries);
-            $page->assign('cities', $cities);
-            break;
-
-          default:
-            global $globals;
-            if (!$this->use_map()) {
-                $page->assign('request_geodesix', true);
-            }
-            $page->assign('annu', @$this->params['with_annu']);
-            $page->assign('protocole', @$_SERVER['HTTPS'] ? 'https' : 'http');
-            $this->set->get('u.user_id', null, "u.perms != 'pending' AND u.deces = 0", "u.user_id", null);
-            return 'include/plview.geoloc.tpl';
-        }
-    }
-}
-
 class GadgetView implements PlView
 {
     public function __construct(PlSet &$set, $data, array $params)
@@ -386,19 +290,22 @@ class GadgetView implements PlView
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces,
                 FIND_IN_SET('femme', u.flags) AS sexe,
-                adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region" .
+                " // adr.city, gr.name AS region
+              . "gc.iso_3166_1_a2, gc.countryFR AS countrytxt" .
                 (S::logged() ? ", c.contact AS contact" : '');
     }
 
     public function joins()
     {
-        return  "LEFT JOIN  adresses      AS adr ON (u.user_id = adr.uid AND FIND_IN_SET('active', adr.statut)".(S::logged() ? "" : "
-                                                                         AND adr.pub = 'public'").")
-                 LEFT JOIN  geoloc_pays   AS gp  ON (adr.country = gp.a2)
-                 LEFT JOIN  geoloc_region AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)" .
-                (S::logged() ?
-                "LEFT JOIN  contacts      AS c   ON (c.contact = u.user_id AND c.uid = " . S::v('uid') . ")"
-                 : "");
+        return "LEFT JOIN  profile_addresses          AS adr ON (u.user_id = adr.pid AND
+                                                                 FIND_IN_SET('current', adr.flags)"
+                                                                . (S::logged() ? "" : "AND adr.pub = 'public'") . ")
+                LEFT JOIN  geoloc_countries           AS gc  ON (adr.countryId = gc.iso_3166_1_a2)
+                LEFT JOIN  geoloc_administrativeareas AS gr  ON (adr.countryId = gr.country
+                                                                 AND adr.administrativeAreaId = gr.id)
+               " . (S::logged() ?
+               "LEFT JOIN  contacts                   AS c   ON (c.contact = u.user_id
+                                                                 AND c.uid = " . S::v('uid') . ")" : "");
     }
 
     public function apply(PlPage &$page)

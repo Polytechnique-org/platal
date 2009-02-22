@@ -38,7 +38,6 @@
     <ul style="padding-top:0px;padding-bottom:0px">
         <li><a href="http://www.polytechnique.net/{$asso->diminutif}/annuaire">annuaire</a></li>
         <li><a href="http://www.polytechnique.net/{$asso->diminutif}/trombi">trombino</a></li>
-        <li><a href="http://www.polytechnique.net/{$asso->diminutif}/geoloc">carte</a></li>
         {if $asso->lists}
             <li><a href="http://www.polytechnique.net/{$asso->diminutif}/lists">listes de diffusion</a></li>
         {/if}

@@ -22,7 +22,7 @@
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
 
 $platal = new Xorg('auth', 'carnet', 'email', 'events', 'forums',
-                   'geoloc', 'lists', 'marketing', 'payment', 'platal',
+                   'lists', 'marketing', 'payment', 'platal',
                    'profile', 'register', 'search', 'stats', 'admin',
                    'newsletter', 'axletter', 'bandeau', 'survey',
                    'fusionax', 'gadgets', 'googleapps', 'poison', 'openid');

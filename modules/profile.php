@@ -425,12 +425,12 @@ class ProfileModule extends PLModule
         $page->assign('medal_list', $mlist);
     }
 
-    function handler_ajax_address(&$page, $adid)
+    function handler_ajax_address(&$page, $id)
     {
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
-        $page->assign('i', $adid);
-        $page->assign('adr', array());
+        $page->assign('i', $id);
+        $page->assign('address', array());
     }
 
     function handler_ajax_tel(&$page, $prefid, $prefname, $telid)
@@ -634,11 +634,12 @@ class ProfileModule extends PLModule
         $page->assign_by_ref('secteurs', $secteurs);
         $page->assign_by_ref('ss_secteurs', $ss_secteurs);
 
-        //pays
-        $res = XDB::query('SELECT  gp.pays
-                             FROM  profile_mentor_country AS m
-                        LEFT JOIN  geoloc_pays            AS gp ON (m.country = gp.a2)
-                            WHERE  uid = {?}', $user->id());
+        // Countries.
+        $res = XDB::query(
+                "SELECT  gc.countryFR
+                   FROM  profile_mentor_country AS m
+              LEFT JOIN  geoloc_countries       AS gc ON (m.country = gc.iso_3166_1_a2)
+                  WHERE  uid = {?}", $user->id());
         $page->assign('pays', $res->fetchColumn());
 
         $page->addJsLink('close_on_esc.js');
@@ -718,13 +719,13 @@ class ProfileModule extends PLModule
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', 'pays_sel');
         $where = ($ssect ? ' AND ms.subsectorid = {?}' : '');
-        $it = XDB::iterator("SELECT  a2 AS id, pays AS field
-                               FROM  geoloc_pays            AS g
-                         INNER JOIN  profile_mentor_country AS mp ON (mp.country = g.a2)
+        $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.countryFR AS field
+                               FROM  geoloc_countries       AS gc
+                         INNER JOIN  profile_mentor_country AS mp ON (mp.country = gc.iso_3166_1_a2)
                          INNER JOIN  profile_mentor_sector  AS ms ON (ms.uid = mp.uid)
-                              WHERE  ms.sectorid = {?} $where
-                           GROUP BY  a2
-                           ORDER BY  pays", $sect, $ssect);
+                              WHERE  ms.sectorid = {?} " . $where . "
+                           GROUP BY  iso_3166_1_a2
+                           ORDER BY  countryFR", $sect, $ssect);
         $page->assign('list', $it);
     }
 

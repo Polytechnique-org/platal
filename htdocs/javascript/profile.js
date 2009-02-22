@@ -18,7 +18,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// Page initialization
+// Page initialization {{{1
 
 function wizPage_onLoad(id)
 {
@@ -33,6 +33,9 @@ function wizPage_onLoad(id)
         for (var j = 0; j < i; j++) {
             prepareType(j);
         }
+        break;
+      case 'adresses':
+        checkCurrentAddress();
         break;
       case 'poly':
         updateGroupSubLink(document.forms.prof_annu.groupesx_sub);
@@ -62,11 +65,11 @@ function wizPage_onLoad(id)
 var educationDegree;
 var educationDegreeAll;
 var educationDegreeName;
-
-// General
-
 var subgrades;
 var names;
+
+// Education {{{1
+
 function fillType(selectCtrl, edu, fill)
 {
     var i;
@@ -106,6 +109,48 @@ function prepareType(i)
     fillType(document.forms.prof_annu["edus[" + i + "][degreeid]"], document.forms.prof_annu["edus[" + i + "][eduid]"].selectedIndex - 1);
     selectType(document.forms.prof_annu["edus[" + i + "][degreeid]"], document.forms.prof_annu["edu_" + i + "_tmp"].value);
 }
+
+function addEdu()
+{
+    var i = 0;
+    var j = 0;
+    var prefix  = 'edu_';
+    var class_parity;
+
+    while (!$('#edu_add').hasClass(prefix + i)) {
+        if ($('.' + prefix + i).length != 0) {
+            j++;
+        }
+        i++;
+    }
+    if (j % 2) {
+        class_parity = 'pair';
+    } else {
+        class_parity = 'impair';
+    }
+    $('#edu_add').removeClass(prefix + i);
+    i++;
+    $('#edu_add').addClass(prefix + i);
+    i--;
+    $.get(platal_baseurl + 'profile/ajax/edu/' + i + '/' + class_parity,
+          function(data) {
+              $('#edu_add').before(data);
+              prepareType(i);
+          });
+}
+
+function removeEdu(i)
+{
+    var prefix  = 'edu_';
+    $('.' + prefix + i).remove();
+    while (!$('#edu_add').hasClass(prefix + i)) {
+        $('.' + prefix + i).toggleClass('pair');
+        $('.' + prefix + i).toggleClass('impair');
+        i++;
+    }
+}
+
+// Names {{{1
 
 function toggleNamesAdvanced()
 {
@@ -165,6 +210,8 @@ function updateNameDisplay()
     });
 }
 
+// Nationalities {{{1
+
 function delNationality(i)
 {
     $('#nationalite' + i).hide().find('select').val('');
@@ -182,6 +229,8 @@ function addNationality()
         $('#nationalite' + i).show();
     }
 }
+
+// Networking {{{1
 
 function addNetworking()
 {
@@ -235,120 +284,73 @@ function updateNetworking(i)
 
 }
 
-// Addresses
+// Addresses {{{1
 
-function removeObject(id, pref)
+function toggleAddress(id, val)
 {
-    document.getElementById(id).style.display = "none";
-    document.forms.prof_annu[pref + "[removed]"].value = "1";
+    $('#addresses_' + id + '_grayed').toggle();
+    $('#addresses_' + id).toggle();
+    $('#addresses_' + id + '_cont').find('[name*=removed]').val(val);
+    checkCurrentAddress();
 }
 
-function restoreObject(id, pref)
+function checkCurrentAddress(id)
 {
-    document.getElementById(id).style.display = '';
-    document.forms.prof_annu[pref + "[removed]"].value = "0";
-}
-
-function getAddressElement(adrid, adelement)
-{
-    return document.forms.prof_annu["addresses[" + adrid + "][" + adelement + "]"];
-}
-
-function checkCurrentAddress(newCurrent)
-{
-    var hasCurrent = false;
+    var hasCurrentAddress = id ? true : false;
     var i = 0;
-    while (getAddressElement(i, 'pub') != null) {
-        var radio = getAddressElement(i, 'current');
-        var removed = getAddressElement(i, 'removed');
-        if (removed.value == "1" && radio.checked) {
-            radio.checked = false;
-        } else if (radio.checked && radio != newCurrent) {
-            radio.checked = false;
-        } else if (radio.checked) {
-            hasCurrent = true;
+    while ($('#addresses_' + i + '_cont').length != 0) {
+        if ($('#addresses_' + i + '_cont').find('[name*=removed]').val() == 1) {
+            $('#addresses_' + i + '_cont').find('[name*=current]').attr('checked', false);
+        }
+        if (!hasCurrentAddress && $('#addresses_' + i + '_cont').find('[name*=current]:checked').length != 0) {
+            hasCurrentAddress = true;
+        } else {
+            $('#addresses_' + i + '_cont').find('[name*=current]').attr('checked', false);
         }
         i++;
     }
-    if (!hasCurrent) {
+    if (!hasCurrentAddress) {
         i = 0;
-        while (getAddressElement(i, 'pub') != null) {
-            var radio = getAddressElement(i, 'current');
-            var removed = getAddressElement(i, 'removed');
-            if (removed.value != "1") {
-                radio.checked= true;
-                return;
-            }
-            i++;
+        while ($('#addresses_' + i + '_cont').length != 0) {
+               if ($('#addresses_' + i + '_cont').find('[name*=removed]').val() == 0) {
+                   $('#addresses_' + i + '_cont').find('[name*=current]').attr('checked', 'checked');
+                   break;
+               }
+               i++;
         }
     }
-}
-
-function removeAddress(id, pref)
-{
-    removeObject(id, pref);
-    checkCurrentAddress(null);
-    if (document.forms.prof_annu[pref + '[datemaj]'].value != '') {
-        document.getElementById(id + '_grayed').style.display = '';
+    if (id) {
+        $('#addresses_' + id + '_cont').find('[name*=current]').attr('checked', 'checked');
     }
-}
-
-function restoreAddress(id, pref)
-{
-    document.getElementById(id +  '_grayed').style.display = 'none';
-    checkCurrentAddress(null);
-    restoreObject(id, pref);
 }
 
 function addAddress()
 {
     var i = 0;
-    while (getAddressElement(i, 'pub') != null) {
+    while ($('#addresses_' + i + '_cont').length != 0) {
         i++;
     }
-    $("#add_adr").before('<div id="addresses_' + i + '_cont"></div>');
-    Ajax.update_html('addresses_' + i + '_cont', 'profile/ajax/address/' + i, checkCurrentAddress);
+    $('#add_address').before('<div id="addresses_' + i + '_cont"></div>');
+    Ajax.update_html('addresses_' + i + '_cont', 'profile/ajax/address/' + i, checkCurrentAddress());
 }
 
-function addEdu()
+function addressChanged(id)
 {
-    var i = 0;
-    var j = 0;
-    var prefix  = 'edu_';
-    var class_parity;
-
-    while (!$('#edu_add').hasClass(prefix + i)) {
-        if ($('.' + prefix + i).length != 0) {
-            j++;
-        }
-        i++;
-    }
-    if (j % 2) {
-        class_parity = 'pair';
-    } else {
-        class_parity = 'impair';
-    }
-    $('#edu_add').removeClass(prefix + i);
-    i++;
-    $('#edu_add').addClass(prefix + i);
-    i--;
-    $.get(platal_baseurl + 'profile/ajax/edu/' + i + '/' + class_parity,
-          function(data) {
-              $('#edu_add').before(data);
-              prepareType(i);
-          });
+    $('#addresses_' + id + '_cont').find('[name*=changed]').val("1");
 }
 
-function removeEdu(i)
+function validGeoloc(id, geoloc)
 {
-    var prefix  = 'edu_';
-    $('.' + prefix + i).remove();
-    while (!$('#edu_add').hasClass(prefix + i)) {
-        $('.' + prefix + i).toggleClass('pair');
-        $('.' + prefix + i).toggleClass('impair');
-        i++;
+    if (geoloc == 1) {
+        $('#addresses_' + id + '_cont').find('[name*=text]').val($('#addresses_' + id + '_cont').find('[name*=geoloc]').val());
+        $('#addresses_' + id + '_cont').find('[name*=postalText]').val($('#addresses_' + id + '_cont').find('[name*=geocodedPostalText]').val());
     }
+    $('#addresses_' + id + '_cont').find('[name*=text]').removeClass('error');
+    $('#addresses_' + id + '_cont').find('[name*=geoloc_choice]').val(geoloc);
+    $('.addresses_' + id + '_geoloc').remove();
 }
+
+// {{{1 Phones
 
 function addTel(prefid, prefname)
 {
@@ -379,32 +381,7 @@ function removePhoneComment(id, pref)
     document.getElementById(id+'_addComment').style.display = '';
 }
 
-// Geoloc
-
-function validGeoloc(id, pref)
-{
-    document.getElementById(id + '_geoloc').style.display = 'none';
-    document.getElementById(id + '_geoloc_error').style.display = 'none';
-    document.getElementById(id + '_geoloc_valid').style.display = 'none';
-    document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
-    document.forms.prof_annu[pref + "[text]"].value = document.forms.prof_annu[pref + "[geoloc]"].value;
-    document.forms.prof_annu[pref + "[cityid]"].value = document.forms.prof_annu[pref + "[geoloc_cityid]"].value;
-    $(document.forms.prof_annu[pref + "[text]"]).click(function() { document.forms.prof_annu[pref + "[text]"].blur(); });
-    document.forms.prof_annu[pref + "[text]"].className = '';
-}
-
-function validAddress(id, pref)
-{
-    document.getElementById(id + '_geoloc').style.display = 'none';
-    document.getElementById(id + '_geoloc_error').style.display = 'none';
-    document.getElementById(id + '_geoloc_valid').style.display = 'none';
-    document.forms.prof_annu[pref + "[parsevalid]"].value = "1";
-    $(document.forms.prof_annu[pref + "[text]"]).click(function() { document.forms.prof_annu[pref + "[text]"].blur(); });
-    document.forms.prof_annu[pref + "[text]"].className = '';
-}
-
-
-// Groups
+// Groups {{{1
 
 function updateGroup(type)
 {
@@ -450,8 +427,7 @@ function updateGroupSubLink(cb)
     document.getElementById("groupesx_sub").href = href;
 }
 
-
-// Medals
+// Medals {{{1
 
 function updateMedal()
 {
@@ -514,8 +490,7 @@ function removeMedal(id)
     updateMedal();
 }
 
-
-// Jobs
+// Jobs {{{1
 
 function removeJob(id, pref)
 {
@@ -583,7 +558,7 @@ function addEntreprise(id)
     $('.entreprise_' + id).toggle();
 }
 
-// Skills
+// {{{1 Skills
 
 function updateSkill(cat)
 {
@@ -617,8 +592,7 @@ function removeSkill(cat, id)
     updateSkill(cat);
 }
 
-
-// Mentor
+// Mentor {{{1
 
 function updateCountry()
 {
