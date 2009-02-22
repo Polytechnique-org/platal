@@ -68,7 +68,6 @@
 {/if}
 {/capture}
 
-
 {$smarty.capture.order|smarty:nodefaults}
 
 {$smarty.capture.pages|smarty:nodefaults}

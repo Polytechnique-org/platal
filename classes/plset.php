@@ -28,7 +28,7 @@ class PlSet
     private $joins   = null;
     private $where   = null;
 
-    private $count   = null;
+    protected $count   = null;
 
     private $mods      = array();
     private $modParams = array();

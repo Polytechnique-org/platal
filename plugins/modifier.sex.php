@@ -23,6 +23,8 @@ function smarty_modifier_sex($male, $female, $sex = null)
 {
     if (is_null($sex)) {
         $sex = S::user()->isFemale();
+    } else if ($sex instanceof PlUser || $sex instanceof Profile) {
+        $sex = $sex->isFemale();
     }
     return $sex ? $female : $male;
 }
