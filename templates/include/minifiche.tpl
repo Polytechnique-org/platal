@@ -108,8 +108,8 @@
   {/if}
 
   <div class="long">
-  {if $c.wasinscrit || !$c.dcd}
-    {if $c.web || $c.mobile || $c.countrytxt || $c.city || $c.region || $c.entreprise || $c.freetext || (!$c.dcd && !$c.actif )}
+  {if !$profile->deathdeate}
+    {if $c.web || $c.mobile || $c.countrytxt || $c.city || $c.region || $c.entreprise || (!$c.dcd && !$c.actif )}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
       <tr>
@@ -138,27 +138,25 @@
         </td>
       </tr>
       {/if}
-      {if $c.freetext}
-      <tr>
-        <td class="lt">Commentaire&nbsp;:</td>
-        <td class="rt">{$c.freetext|nl2br}</td>
-      </tr>
-      {/if}
-      {if !$c.dcd && (!$c.actif || !$c.wasinscrit) && $smarty.session.auth ge AUTH_COOKIE}
+      {if $smarty.session.auth ge AUTH_COOKIE}
+      {if $user->state eq 'pending'}
       <tr>
         <td class="smaller" colspan="2">
-          {if !$c.wasinscrit}
-          Ce{if $c.sexe}tte{/if} camarade n'est pas inscrit{if $c.sexe}e{/if}.
-          <a href="marketing/public/{$c.hruid}" class='popup'>Si tu connais son adresse email,
+          {"Ce"|sex:"Cette":$user} camarade n'est pas {inscrit|sex:"inscrite":$user}.
+          <a href="marketing/public/{$user->login()}" class='popup'>Si tu connais son adresse email,
           <strong>n'hésite pas à nous la transmettre !</a>
-          {elseif !$c.actif}
-          Ce{if $c.sexe}tte{/if} camarade n'a plus d'adresse de redirection valide.
-          <a href="marketing/broken/{$c.hruid}">
-            Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>.
-          </a>
-          {/if}
         </td>
       </tr>
+      {elseif $user->state neq 'disabled' && $user->lost}
+      <tr>
+        <td class="smaller" colspan="2">
+          {"Ce"|sex:"Cette":$user} camarade n'a plus d'adresse de redirection valide.
+          <a href="marketing/broken/{$user->login()}">
+            Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>.
+          </a>
+        </td>
+      </tr>
+      {/if}
       {/if}
     </table>
     {/if}

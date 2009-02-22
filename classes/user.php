@@ -163,11 +163,15 @@ class User extends PlUser
                                       a.email_format, a.is_admin, a.state, a.type, a.skin,
                                       FIND_IN_SET(\'watch\', a.flags) AS watch, a.comment,
                                       a.weak_password IS NOT NULL AS weak_access,
-                                      a.token IS NOT NULL AS token_access ' . $fields . '
+                                      a.token IS NOT NULL AS token_access,
+                                      (e.email IS NULL AND NOT FIND_IN_SET(\'googleapps\', eo.storage)) AND a.state != \'pending\' AS lost
+                                      ' . $fields . '
                                 FROM  accounts AS a
                           INNER JOIN  account_types AS at ON (at.type = a.type)
                            LEFT JOIN  aliases AS af ON (af.id = a.uid AND af.type = \'a_vie\')
                            LEFT JOIN  aliases AS ab ON (ab.id = a.uid AND FIND_IN_SET(\'bestalias\', ab.flags))
+                           LEFT JOIN  emails AS e ON (e.uid = a.uid AND e.flags = \'active\')
+                           LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
                                    ' . $joins . '
                                WHERE  a.uid IN (' . implode(', ', $uids) . ')
                             GROUP BY  a.uid');
