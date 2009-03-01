@@ -210,7 +210,7 @@ class ProfileJobs extends ProfilePage
         $res = XDB::iterRow("SELECT  j.id, je.name, j.functionid, j.sectorid, j.subsectorid,
                                      j.subsubsectorid, j.description, e.adr1, e.adr2, e.adr3,
                                      e.postcode, e.city, e.cityid, e.region, e.regiontxt,
-                                     e.country, gc.countryFR, pa.accuracy,
+                                     e.country, gc.countryFR,
                                      j.email, j.url, j.pub,
                                      e.adr_pub, j.email_pub,
                                      e.glat, e.glng, s.name
@@ -225,7 +225,7 @@ class ProfileJobs extends ProfilePage
         while (list($id, $name, $function, $secteur, $ss_secteur, $sss_secteur, $description,
                     $w_adr1, $w_adr2, $w_adr3, $w_postcode, $w_city, $w_cityid,
                     $w_region, $w_regiontxt, $w_country, $w_countrytxt,
-                    $w_checked, $w_email, $w_web,
+                    $w_email, $w_web,
                     $pub, $w_adr_pub, $w_email_pub, $w_glat, $w_glng, $sss_secteur_name
                    ) = $res->next()) {
             $this->values['jobs'][] = array('id'               => $id,
