@@ -21,8 +21,7 @@
 {**************************************************************************}
 
 <?xml version="1.0" encoding="utf-8"?>
-<select name="jobs[{$id}][ss_secteur]"
- {if ($change)}onchange="updateJobSousSecteur({$id}, '{$jobid}', '{$jobpref}', ''); return true;"{/if}>
+<select name="jobs[{$id}][ss_secteur]" {if ($change)}onchange="updateJobSubSector({$id}, '')"{/if}>
   <option value=""></option>
   {iterate from=$ssecteurs item=ssecteur}
   {if $ssecteur.optgroup}

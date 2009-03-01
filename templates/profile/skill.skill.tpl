@@ -23,14 +23,14 @@
 <div id="{$cat}_{$id}" style="clear: both; margin-top: 0.5em">
   <div style="float: left; width: 50%" class="titre" id="{$cat}_{$id}_title">
     {$skill.text}
-    <input type="hidden" name="{"`$cat`[`$id`][text]"}" value="{$skill.text}" />
   </div>
+  <input type="hidden" name="{"`$cat`[`$id`][text]"}" value="{$skill.text}" />
   <select name="{"`$cat`[`$id`][level]"}">
     {foreach from=$levels item=level key=lid}
     <option value="{$lid}" {if $skill.level eq $lid}selected="selected"{/if}>{$level}</option>
     {/foreach}
   </select>
-  <a href="javascript:removeSkill('{$cat}', '{$id}')">{icon name=cross title="Supprimer"}</a>
+  <a href="javascript:removeElement('{$cat}', '{$id}')">{icon name=cross title="Supprimer"}</a>
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

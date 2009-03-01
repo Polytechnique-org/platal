@@ -26,7 +26,7 @@
     <a href="javascript:removeEdu('{$eduid}')">
       {icon name=cross title="Supprimer cette formation"}
     </a>
-    <select name="{$eduname}[eduid]" onchange="fillType(this.form['{$eduname}[degreeid]'], this.selectedIndex - 1);">
+    <select name="{$eduname}[eduid]" onchange="prepareType('{$eduid}')">
       {education_options selected=$edu.eduid}
     </select>
   </td>

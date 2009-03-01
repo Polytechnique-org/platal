@@ -34,7 +34,7 @@
   <a href="javascript:removeTel('{$id}')">
     {icon name=cross title="Supprimer ce numéro de téléphone"}
   </a>
-  <a id="{$id}_addComment" href="javascript:addPhoneComment('{$id}', '{$telpref}')" {if $tel.comment neq ''}style="display:none" {/if}>
+  <a id="{$id}_addComment" href="javascript:addPhoneComment('{$id}')" {if $tel.comment neq ''}style="display:none" {/if}>
     {icon name=comments title="Ajouter un commentaire"}
   </a>
 </div>

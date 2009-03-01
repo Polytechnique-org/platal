@@ -122,7 +122,7 @@
     <tr class="pair {$sector}" style="display: none">
       <td class="titre" rowspan="3">Secteur d'activité</td>
       <td>
-        <select name="{$jobpref}[secteur]" onchange="updateJobSecteur({$i}, '{$jobid}', '{$jobpref}', ''); return true;">
+        <select name="{$jobpref}[secteur]" onchange="updateJobSector({$i}, '')">
           <option value="">&nbsp;</option>
           {foreach from=$secteurs item=secteur}
           <option value="{$secteur.id}" {if $secteur.id eq $job.secteur}selected="selected"{/if}>

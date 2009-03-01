@@ -44,7 +44,7 @@
   <li>ou bien, plus âgés, qui souhaitent réorienter leur carrière.</li>
 </ul>
 
-<table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Mentoring">
+<table class="bicol" id="countries_table" style="margin-bottom: 1em" summary="Profil&nbsp;: Mentoring">
   <tr>
     <th>
       <div class="flags" style="float: left">
@@ -60,7 +60,7 @@
       <div id="countries_add" style="display: none; float: right">
         <a href="javascript:addCountry()">{icon name=add title="Ajouter ce pays"}</a>
       </div>
-      <select name="countries_sel" onchange="updateCountry()">
+      <select name="countries_sel" onchange="updateElement('countries')">
         <option value=""></option>
         {iterate from=$countryList item=country}
         <option value="{$country.iso_3166_1_a2}">{$country.countryFR}</option>
@@ -73,7 +73,7 @@
       {foreach from=$countries item=country key=i}
       <div id="countries_{$i}" style="clear: both; margin-bottom: 0.7em">
         <a style="display: block; float: right"
-           href="javascript:removeCountry('{$i}')">{icon name=cross title="Supprimer ce pays"}</a>
+           href="javascript:removeElement('countries', '{$i}')">{icon name=cross title="Supprimer ce pays"}</a>
         <div class="titre">{$country}</div>
         <input type="hidden" name="countries[{$i}]" value="{$country}" />
       </div>
@@ -95,7 +95,7 @@
   <tr>
     <td id="secteur_sel">
       <div style="float: left; width: 30%" class="titre">Secteur</div>
-      <select name="secteur_sel" onchange="updateSecteur()">
+      <select name="secteur_sel" onchange="updateSector()">
         <option value="">&nbsp;</option>
         {iterate from=$secteurs_sel item=secteur}
         <option value="{$secteur.id}">{$secteur.label}</option>
@@ -115,7 +115,7 @@
       {foreach from=$secteurs item=secteur key=s}
       {foreach from=$secteur item=ss_sect key=ss}
       <div id="secteurs_{$s}_{$ss}" style="clear: both; margin-top: 0.5em" class="titre">
-        <a href="javascript:removeSecteur('{$s}', '{$ss}')" style="display: block; float: right">
+        <a href="javascript:removeSector('{$s}', '{$ss}')" style="display: block; float: right">
           {icon name=cross title="Supprimer ce secteur"}
         </a>
         <input type="hidden" name="secteurs[{$s}][{$ss}]" value="{$ss_sect}" />
