@@ -100,7 +100,7 @@
 <table class="bicol" cellpadding="3" cellspacing="0">
   <tr>
     <td>
-      Créer un nouvel article ...
+      Créer un nouvel article...
     </td>
     <td style='vertical-align:middle; border-left: 1px gray solid' class="center">
       <a href="admin/newsletter/edit/{$nl->_id}/new#edit">{icon name=add title="créer"}</a>
@@ -134,7 +134,6 @@
 [<a href="admin/newsletter/edit/{$nl->_id}">retour</a>]
 </p>
 
-{if !$art->check()}<p class='erreur'>article trop long !</p>{/if}
 <table class='bicol'>
   <tr><th>Version texte</th></tr>
   <tr id='text'>

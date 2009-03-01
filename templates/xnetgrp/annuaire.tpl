@@ -127,7 +127,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
     </td>
     {if $is_admin}
     <td class="center">
-      <a href="{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=user_edit title="Edition du profil"}</a>
+      <a href="{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=user_edit title="Édition du profil"}</a>
       <a href="{$platal->ns}member/del/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=delete title="Supprimer de l'annuaire"}</a>
     </td>
     {/if}
