@@ -21,9 +21,34 @@
 
 class Profile
 {
+    static private $v_values = array('public'  => array('public'),
+                                     'ax'      => array('ax', 'public'),
+                                     'private' => array('private', 'ax', 'public'));
+    const VISIBILITY_PUBLIC  = 'public';
+    const VISIBILITY_AX      = 'ax';
+    const VISIBILITY_PRIVATE = 'private';
+
+    const ADDRESS_MAIN       = 0x000001;
+    const ADDRESS_PERSO      = 0x000002;
+    const ADDRESS_PRO        = 0x000004;
+    const ADDRESS_ALL        = 0x000006;
+    const ADDRESS_POSTAL     = 0x000008;
+
+    const EDUCATION_MAIN     = 0x000010;
+    const EDUCATION_ALL      = 0x000020;
+    const EDUCATION_FINISHED = 0x000040;
+    const EDUCATION_CURRENT  = 0x000080;
+
+    const JOBS_MAIN          = 0x000100;
+    const JOBS_ALL           = 0x000200;
+    const JOBS_FINISHED      = 0x000400;
+    const JOBS_CURRENT       = 0x000800;
+
     private $pid;
     private $hrpid;
     private $data = array();
+
+    private $visibility = null;
 
     private function __construct(array $data)
     {
@@ -119,6 +144,62 @@ class Profile
         return property_exists($this, $name) || isset($this->data[$name]);
     }
 
+    public function setVisibilityLevel($visibility)
+    {
+        if ($visibility != self::VISIBILITY_PRIVATE 
+         && $visibility != self::VISIBILITY_AX 
+         && $visibility != self::VISIBILITY_PUBLIC) {
+            Platal::page()->kill("Visibility invalide: " . $visibility);
+        }
+        $this->visibility = self::$v_values[$visibility];
+    }
+
+    public function getAddresses($flags)
+    {
+        $where = XDB::format('pa.pid = {?}', $this->id());
+        if ($flags & self::ADDRESS_MAIN) {
+            $where .= ' AND FIND_IN_SET(\'current\', pa.flags)';
+        }
+        if ($flags & self::ADDRESS_POSTAL) {
+            $where .= ' AND FIND_IN_SET(\'mail\', pa.flags)';
+        }
+        if ($this->visibility) {
+            $where .= ' AND pa.pub IN ' . XDB::formatArray($this->visibility);
+        }
+        $type = array();
+        if ($flags & self::ADDRESS_PRO) {
+            $type[] = 'job';
+        }
+        if ($flags & self::ADDRESS_PERSO) {
+            $type[] = 'home';
+        }
+        if (count($type) > 0) {
+            $where .= ' AND pa.type IN ' . XDB::formatArray($type);
+        }
+        return XDB::iterator('SELECT  pa.text, pa.postalCode, pa.type, pa.latitude, pa.longitude,
+                                      gl.name AS locality, gas.name AS subAdministrativeArea,
+                                      ga.name AS administrativeArea, gc.countryFR AS country,
+                                      FIND_IN_SET(\'current\', pa.flags) AS current,
+                                      FIND_IN_SET(\'temporary\', pa.flags) AS temporary,
+                                      FIND_IN_SET(\'secondary\', pa.flags) AS secondary,
+                                      FIND_IN_SET(\'mail\', pa.flags) AS mail, pa.type
+                                FROM  profile_addresses AS pa
+                           LEFT JOIN  geoloc_localities AS gl ON (gl.id = pa.localityId)
+                           LEFT JOIN  geoloc_administrativeareas AS ga ON (ga.id = pa.administrativeAreaId)
+                           LEFT JOIN  geoloc_administrativeareas AS gas ON (gas.id = pa.subAdministrativeAreaId)
+                           LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
+                               WHERE  ' . $where);
+    }
+
+    public function getMainAddress()
+    {
+        $it = $this->getAddresses(self::ADDRESS_PERSO | self::ADDRESS_MAIN);
+        if ($it->total() == 0) {
+            return null;
+        } else {
+            return $it->next();
+        }
+    }
 
     public function owner()
     {

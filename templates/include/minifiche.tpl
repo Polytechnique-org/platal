@@ -121,7 +121,8 @@
 
   <div class="long">
   {if !$dead}
-    {if $c.web || $c.mobile || $c.countrytxt || $c.city || $c.region || $c.entreprise || (!$c.dcd && !$c.actif )}
+    {assign var=address value=$profile->getMainAddress()}
+    {if $c.web || $c.mobile || $address.country || $c.entreprise || (!$c.dcd && !$c.actif )}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
       <tr>
@@ -129,10 +130,10 @@
         <td class="rt"><a href="{$c.web}">{$c.web}</a></td>
       </tr>
       {/if}
-      {if $c.countrytxt || $c.city}
+      {if $address.country}
       <tr>
         <td class="lt">Géographie&nbsp;:</td>
-        <td class="rt">{$c.city}{if $c.city && $c.countrytxt}, {/if}{$c.countrytxt}</td>
+        <td class="rt">{if $address.locality}{$address.locality}, {/if}{$address.country}</td>
       </tr>
       {/if}
       {if $c.mobile && !$dead}
