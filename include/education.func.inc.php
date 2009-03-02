@@ -64,7 +64,7 @@ function education_degree()
     $res = XDB::iterRow("SELECT  d.eduid, d.degreeid
                            FROM  profile_education_enum   AS e
                      INNER JOIN  profile_education_degree AS d  ON (e.id = d.eduid)
-                      LEFT JOIN  geoloc_countries         AS gc ON (e.country = gc.a2)
+                     INNER JOIN  geoloc_countries         AS gc ON (e.country = gc.iso_3166_1_a2)
                        ORDER BY  gc.countryFR, e.name");
     if ($edu_degree = $res->next()) {
         $eduid = $edu_degree['0'];
