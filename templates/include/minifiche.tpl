@@ -21,21 +21,33 @@
 {**************************************************************************}
 
 {assign var=profile value=$user->profile()}
-<div class="contact {if ($user->state eq 'pending' && $smarty.session.auth ge AUTH_COOKIE) || $profile->deathdate}grayed{/if}"
-     {if $user->state neq 'pending'}{if $smarty.session.auth ge AUTH_COOKIE}title="fiche mise à jour le {$profile->last_change|date_format}"{/if}{/if}>
+{assign var=dead    value=$profile->deathdate}
+{if $user->state neq 'pending'}
+{assign var=registered value=true}
+{else}
+{assign var=registered value=false}
+{/if}
+{if $smarty.session.auth ge AUTH_COOKIE}
+{assign var=withAuth value=true}
+{else}
+{assign var=withAuth value=false}
+{/if}
+
+
+<div class="contact {if (!$registered && $withAuth) || $dead }grayed{/if}"
+     {if $registered && $withAuth}title="fiche mise à jour le {$profile->last_change|date_format}"{/if}>
   <div class="identity">
-    {if $smarty.session.auth ge AUTH_COOKIE}
+    {if $withAuth}
     <div class="photo">
-      <img src="photo/{$profile->hrid()}"
-           alt="{$profile->directory_name}" />
+      <img src="photo/{$profile->hrid()}" alt="{$profile->directory_name}" />
     </div>
     {/if}
 
     <div class="nom">
       {if $profile->isFemale()}&bull;{/if}
-      {if !$profile->deathdate && ($user->state neq 'pending' || $smarty.session.auth eq AUTH_PUBLIC)}<a href="profile/{$profile->hrid}" class="popup2">{/if}
+      {if !$dead && (!$registered || $withAuth)}<a href="profile/{$profile->hrid}" class="popup2">{/if}
       {$profile->full_name}
-      {if !$profile->deathdate && ($user->state neq 'pending' || $smarty.session.auth eq AUTH_PUBLIC)}</a>{/if}
+      {if !$dead && (!$registered || $withAuth)}</a>{/if}
     </div>
 
     <div class="edu">
@@ -49,7 +61,7 @@
       <img src='images/flags/{$profile->nationality3}.gif' alt='{$profile->nationality3}' height='11' title='{$profile->nationality3}' />&nbsp;
       {/if}
       {$profile->promo()}
-      
+
       {if $c.eduname0}, {education_fmt name=$c.eduname0 url=$c.eduurl0 degree=$c.edudegree0
                                      grad_year=$c.edugrad_year0 field=$c.edufield0 program=$c.eduprogram0 sexe=$c.sexe}{*
       *}{/if}{if $c.eduname1}, {education_fmt name=$c.eduname1 url=$c.eduurl1 degree=$c.edudegree1
@@ -62,10 +74,10 @@
     </div>
   </div>
 
-  {if $smarty.session.auth ge AUTH_COOKIE}
+  {if $withAuth}
   <div class="noprint bits">
     <div>
-      {if $user->state eq 'pending' && !$profile->deathdate}
+      {if $registered && !$dead}
         {if $show_action eq ajouter}
     <a href="carnet/notifs/add_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
@@ -76,7 +88,7 @@
       {elseif $user->state neq 'pending'}
     <a href="profile/{$profile->hrid()}" class="popup2">{*
     *}{icon name=user_suit title="Afficher la fiche"}</a>
-        {if !$profile->deathdate}
+        {if !$dead}
     <a href="vcard/{$profile->hrid()}.vcf">{*
     *}{icon name=vcard title="Afficher la carte de visite"}</a>
     <a href="mailto:{$user->bestEmail()}">{*
@@ -94,7 +106,7 @@
 
     {if hasPerm('admin')}
     <div>
-      [{if $user->state eq 'pending' && !$profile->deathdeate}
+      [{if $registered && !$dead}
       <a href="marketing/private/{$user->login()}">{*
         *}{icon name=email title="marketter user"}</a>
       {/if}
@@ -108,7 +120,7 @@
   {/if}
 
   <div class="long">
-  {if !$profile->deathdeate}
+  {if !$dead}
     {if $c.web || $c.mobile || $c.countrytxt || $c.city || $c.region || $c.entreprise || (!$c.dcd && !$c.actif )}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
@@ -123,7 +135,7 @@
         <td class="rt">{$c.city}{if $c.city && $c.countrytxt}, {/if}{$c.countrytxt}</td>
       </tr>
       {/if}
-      {if $c.mobile && !$c.dcd}
+      {if $c.mobile && !$dead}
       <tr>
         <td class="lt">Mobile&nbsp;:</td>
         <td class="rt">{$c.mobile}</td>
@@ -138,11 +150,11 @@
         </td>
       </tr>
       {/if}
-      {if $smarty.session.auth ge AUTH_COOKIE}
-      {if $user->state eq 'pending'}
+      {if $withAuth}
+      {if !$registered}
       <tr>
         <td class="smaller" colspan="2">
-          {"Ce"|sex:"Cette":$user} camarade n'est pas {inscrit|sex:"inscrite":$user}.
+          {"Ce"|sex:"Cette":$user} camarade n'est pas {"inscrit"|sex:"inscrite":$user}.
           <a href="marketing/public/{$user->login()}" class='popup'>Si tu connais son adresse email,
           <strong>n'hésite pas à nous la transmettre !</a>
         </td>
