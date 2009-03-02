@@ -103,7 +103,7 @@ sa dernière relance date du {$relance|date_format}
   {xsrf_token_field}
   <table class="bicol">
     <tr class="pair">
-      <th colspan="2">Edition de l'email de relance</th>
+      <th colspan="2">Édition de l'email de relance</th>
     </tr>
     <tr class="pair">
       <td align="right"><strong>From&nbsp;:</strong></td>

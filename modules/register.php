@@ -354,7 +354,7 @@ class RegisterModule extends PLModule
         $res = XDB::iterRow(
                 "SELECT  sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom,
                          s.prenom, FIND_IN_SET('femme', s.flags) AS femme,
-                         GROUP_CONCAT(m.email) AS mails, MAX(m.last) AS dateDernier
+                         GROUP_CONCAT(m.email SEPARATOR ', ') AS mails, MAX(m.last) AS dateDernier
                    FROM  register_marketing AS m
              INNER JOIN  auth_user_md5      AS s  ON ( m.sender = s.user_id )
              INNER JOIN  aliases            AS sa ON ( sa.id = m.sender

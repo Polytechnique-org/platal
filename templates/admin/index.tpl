@@ -94,7 +94,7 @@
     <td>
       <a href="admin/promo">Ajout promotion</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/user">Edition</a>
+      <a href="admin/user">Édition</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/homonyms">Homonymes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;

@@ -112,8 +112,8 @@ class NewsletterModule extends PLModule
     function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {
         $page->changeTpl('newsletter/edit.tpl');
         $page->addCssLink('nl.css');
-        $page->setTitle('Administration - Newsletter : Edition');
-        require_once("newsletter.inc.php");
+        $page->setTitle('Administration - Newsletter : Édition');
+        require_once 'newsletter.inc.php';
 
         $nl  = new NewsLetter($nid);
 
@@ -145,11 +145,14 @@ class NewsletterModule extends PLModule
 
         if($action == 'edit' && $aid != 'update') {
             $eaid = $aid;
-            if(Post::has('title')) {
+            if (Post::has('title')) {
                 $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
-                        $eaid, Post::v('cid'), Post::v('pos'));
+                                      $eaid, Post::v('cid'), Post::v('pos'));
             } else {
-        	   $art = ($eaid == 'new') ? new NLArticle() : $nl->getArt($eaid);
+                $art = ($eaid == 'new') ? new NLArticle() : $nl->getArt($eaid);
+            }
+            if ($art && !$art->check()) {
+                $page->trigError("Cet article est trop long.");
             }
             $page->assign('art', $art);
         }

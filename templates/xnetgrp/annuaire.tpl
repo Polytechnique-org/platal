@@ -120,7 +120,7 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
     </td>
     {if $is_admin}
     <td class="center">
-      <a href="{$platal->ns}member/{$user->login()}">{icon name=user_edit title="Edition du profil"}</a>
+      <a href="{$platal->ns}member/{$user->login()}">{icon name=user_edit title="Édition du profil"}</a>
       <a href="{$platal->ns}member/del/{$user->login()}">{icon name=delete title="Supprimer de l'annuaire"}</a>
     </td>
     {/if}
