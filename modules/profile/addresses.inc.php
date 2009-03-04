@@ -83,7 +83,7 @@ class ProfileAddress extends ProfileGeocoding
         return $value;
     }
 
-    private function saveAddress($pid, $adrid, array &$address)
+    private function saveAddress($pid, $addrid, array &$address)
     {
         require_once "geocoding.inc.php";
 
@@ -169,9 +169,9 @@ class ProfileAddresses extends ProfilePage
         $i = 0;
         $adrNb = count($this->values['addresses']);
         while ($tel = $res->next()) {
-            $adrid = $tel['addrid'];
+            $addrid = $tel['addrid'];
             unset($tel['addrid']);
-            while ($i < $adrNb && $this->values['addresses'][$i]['id'] < $adrid) {
+            while ($i < $adrNb && $this->values['addresses'][$i]['id'] < $addrid) {
                 $i++;
             }
             if ($i >= $adrNb) {
@@ -181,7 +181,7 @@ class ProfileAddresses extends ProfilePage
             if (!isset($address['tel'])) {
                 $address['tel'] = array();
             }
-            if ($address['id'] == $adrid) {
+            if ($address['id'] == $addrid) {
                 $address['tel'][] = $tel;
             }
         }
