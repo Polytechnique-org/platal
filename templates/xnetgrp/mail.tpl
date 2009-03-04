@@ -136,8 +136,7 @@ Nous avons le plaisir de t'adresser la lettre mensuelle du groupe {$asso.nom}.
 (insérer le texte...)
 
 Le bureau du groupe {$asso.nom}.
-{/if}
-         </textarea>
+{/if}</textarea>
       </td>
     </tr>
     <tr>
