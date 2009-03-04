@@ -23,7 +23,7 @@ $GLOBALS['IS_XNET_SITE'] = true;
 
 require_once dirname(__FILE__).'/../include/xnet.inc.php';
 
-$platal = new Xnet('xnet', 'xnetgrp', 'xnetlists', 'xnetevents', 'geoloc', 'payment', 'bandeau');
+$platal = new Xnet('xnet', 'xnetgrp', 'xnetlists', 'xnetevents', 'payment', 'bandeau');
 if (!($path = Env::v('n')) || substr($path, 0, 4) != 'Xnet') {
     $platal->run();
     exit;
