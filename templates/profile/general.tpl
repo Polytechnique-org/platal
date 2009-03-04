@@ -281,20 +281,6 @@
       </div>
     </td>
   </tr>
-<!--  <tr id="networking">
-    <td colspan="2">
-      <div style="float: left; width: 200px;">
-        <span class="titre" style="margin-left:1em;">Type à ajouter</span>
-      </div>
-      <div style="float: left;">
-        <div id="nw_type_ac" style="background-color: white; border: solid 1px black; position: absolute; width: 208px; display: none">TEST</div>
-        <input type="text" size="30" id="nw_type" name="nw_type" onkeyup="updateNetworking()">
-        <span id="nw_add" style="display: none">
-          <a href="javascript:addNetworking();">{icon name=add title="Ajouter cette adresse"}</a>
-        </span>
-      </div>
-    </td>
-  </tr>-->
   <tr class="pair">
     <td>
       <div>

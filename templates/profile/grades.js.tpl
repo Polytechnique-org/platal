@@ -23,15 +23,15 @@
 subgrades = new Array();
 names     = new Array();
 {foreach from=$medal_list key=type item=list}
-{foreach from=$list item=m}
-names[{$m.id}] = "{$m.text}";
-{if $grades[$m.id]|@count}
-names[{$m.id}] = "{$m.text}";
-subgrades[{$m.id}] = new Array({$grades[$m.id]|@count});
-{foreach from=$grades[$m.id] item=g}
-subgrades[{$m.id}][{$g.gid-1}] = [{$g.gid},"{$g.text}"];
-{/foreach}
-{/if}{/foreach}
+  {foreach from=$list item=m}
+    names[{$m.id}] = "{$m.text}";
+    {if $grades[$m.id]|@count}
+      subgrades[{$m.id}] = new Array({$grades[$m.id]|@count});
+      {foreach from=$grades[$m.id] item=g}
+        subgrades[{$m.id}][{$g.gid-1}] = [{$g.gid},"{$g.text}"];
+      {/foreach}
+    {/if}
+  {/foreach}
 {/foreach}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

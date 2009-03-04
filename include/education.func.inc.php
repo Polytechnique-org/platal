@@ -60,33 +60,25 @@ Platal::page()->register_function('education_options', '_education_options_smart
  */
 function education_degree()
 {
-    $html = "";
-    $res = XDB::iterRow("SELECT  d.eduid, d.degreeid
-                           FROM  profile_education_enum   AS e
-                     INNER JOIN  profile_education_degree AS d  ON (e.id = d.eduid)
-                      LEFT JOIN  geoloc_countries         AS gc ON (e.country = gc.a2)
-                       ORDER BY  gc.countryFR, e.name");
-    if ($edu_degree = $res->next()) {
-        $eduid = $edu_degree['0'];
-        $html .= "[";
-        $html .= $edu_degree['1'];
-        $edu_degree = $res->next();
-        while ($edu_degree['0'] == $eduid) {
-            $html .= "," . $edu_degree['1'];
+    $html  = '';
+    $res = XDB::iterRow("SELECT  eduid, degreeid
+                           FROM  profile_education_degree
+                       ORDER BY  eduid");
+    $edu_degree = $res->next();
+    for ($eduid = 1; $edu_degree; ++$eduid) {
+        $html .= '[';
+        if ($edu_degree['0'] == $eduid) {
+            $html .= $edu_degree['1'];
             $edu_degree = $res->next();
+            while ($edu_degree['0'] == $eduid) {
+                $html .= ',' . $edu_degree['1'];
+                $edu_degree = $res->next();
+            }
         }
-        $html .= "]";
-    }
-    while ($edu_degree) {
-        $eduid = $edu_degree['0'];
-        $html .= ",\n[";
-        $html .= $edu_degree['1'];
-        $edu_degree = $res->next();
-        while ($edu_degree['0'] == $eduid) {
-            $html .= "," . $edu_degree['1'];
-            $edu_degree = $res->next();
+        $html .= ']';
+        if ($edu_degree) {
+            $html .= ",\n";
         }
-        $html .= "]";
     }
     return $html;
 }
