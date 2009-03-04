@@ -69,15 +69,15 @@
   {if $withAuth}
   <div class="noprint bits">
     <div>
-      {if $registered && !$dead}
-        {if $show_action eq ajouter}
+      {if !$registered && !$dead}
+        {if $show_action eq 'ajouter'}
     <a href="carnet/notifs/add_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
         {else}
     <a href="carnet/notifs/del_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
         {/if}
-      {elseif $user->state neq 'pending'}
+      {elseif $registered}
     <a href="profile/{$profile->hrid()}" class="popup2">{*
     *}{icon name=user_suit title="Afficher la fiche"}</a>
         {if !$dead}
