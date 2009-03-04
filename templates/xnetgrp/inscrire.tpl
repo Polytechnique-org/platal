@@ -60,7 +60,7 @@
 {elseif $smarty.post.inscrire}
 
 <p class="descr">
-<strong>Ta demande d'inscription a bien été envoyée !</strong> Tu seras averti par email de la suite qui lui sera donnée.
+<strong>Ta demande d'inscription a bien été envoyée !</strong> Tu seras averti{if $user->isFemale()}e{/if} par email de la suite qui lui sera donnée.
 <p>
 <p class="descr">[<a href="{$platal->ns}">Retour à la page d'accueil de {$asso.nom}</a>]</p>
 

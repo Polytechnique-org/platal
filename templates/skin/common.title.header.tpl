@@ -32,11 +32,11 @@
                 {$globals->core->NbIns|number_format} polytechniciens sur le web
                 <form action="search" method="get">
                     <div>
-                        <input type="text" size="30" name="quick" id="quick" class="quick_search"
+                        <input type="text" size="20" name="quick" id="quick" class="quick_search"
                                value="{$smarty.request.quick|default:"Recherche dans l'annuaire"}"
                                onfocus="if (this.value === 'Recherche dans l\'annuaire') this.value=''"
                                onblur="if (this.value === '') this.value='{$smarty.request.quick|default:"Recherche dans l'annuaire"|escape:javascript}'"/>
-                        <button type="submit" onclick="if ($('#quick').val() === 'Recherche dans l\'annuaire') $('#quick').val('')">Rechercher</button>
+                        <button type="submit" onclick="if ($('#quick').val() === 'Recherche dans l\'annuaire') $('#quick').val('')">OK</button>
                     </div>
                 </form>
                 {if $smarty.session.auth gt AUTH_PUBLIC && $smarty.session.notifs}
