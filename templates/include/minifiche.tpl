@@ -60,17 +60,9 @@
       {if $profile->nationality3}
       <img src='images/flags/{$profile->nationality3}.gif' alt='{$profile->nationality3}' height='11' title='{$profile->nationality3}' />&nbsp;
       {/if}
-      {$profile->promo()}
-
-      {if $c.eduname0}, {education_fmt name=$c.eduname0 url=$c.eduurl0 degree=$c.edudegree0
-                                     grad_year=$c.edugrad_year0 field=$c.edufield0 program=$c.eduprogram0 sexe=$c.sexe}{*
-      *}{/if}{if $c.eduname1}, {education_fmt name=$c.eduname1 url=$c.eduurl1 degree=$c.edudegree1
-                                     grad_year=$c.edugrad_year1 field=$c.edufield1 program=$c.eduprogram1 sexe=$c.sexe}{*
-      *}{/if}{if $c.eduname2}, {education_fmt name=$c.eduname2 url=$c.eduurl2 degree=$c.edudegree2
-                                     grad_year=$c.edugrad_year2 field=$c.edufield2 program=$c.eduprogram2 sexe=$c.sexe}{*
-      *}{/if}{if $c.eduname3}, {education_fmt name=$c.eduname3 url=$c.eduurl3 degree=$c.edudegree3
-                                     grad_year=$c.edugrad_year3 field=$c.edufield3 program=$c.eduprogram3 sexe=$c.sexe}{*
-      *}{/if}{if $c.dcd}, décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
+      {$profile->promo()}{*
+      *}{iterate from=$profile->getExtraEducations(4) item=edu}, {education_fmt edu=$edu profile=$profile}{/iterate}{*
+      *}{if $dead}, {"décédé"|sex:"décédée":$user} le {$orfile->deathdate|date_format}{/if}
     </div>
   </div>
 
@@ -122,7 +114,7 @@
   <div class="long">
   {if !$dead}
     {assign var=address value=$profile->getMainAddress()}
-    {if $c.web || $c.mobile || $address.country || $c.entreprise || (!$c.dcd && !$c.actif )}
+    {if $c.web || $c.mobile || $address.country || $c.entreprise || (!$dead && !$registered)}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
       <tr>

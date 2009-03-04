@@ -164,8 +164,16 @@ function education_fmt($name, $url, $degree, $grad_year, $field, $program, $sexe
 
 function _education_fmt($params, &$smarty)
 {
-    extract($params);
-    return education_fmt($name, $url, $degree, $grad_year, $field, $program, $sexe, $long);
+    $params  = new PlDict($params);
+    $edu     = $params->v('edu');
+    if (!$params->has('sex')) {
+        $profile = $params->v('profile');
+        $sex = $profile->isFemale();
+    } else {
+        $sex = $params->b('sex');
+    }
+    return education_fmt($edu['school_short'], $edu['school_url'], $edu['degree_short'], $edu['grad_year'],
+                         $edu['field'], $edu['program'], $sex, $params->b('long'));
 }
 Platal::page()->register_function('education_fmt', '_education_fmt');
 
