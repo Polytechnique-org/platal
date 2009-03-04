@@ -21,9 +21,17 @@
 {**************************************************************************}
 
 {if $address.geoloc}
-<div class="erreur {$prefid}_geoloc">
-  La geolocalisation n'a pas donné un résultat certain, valide la nouvelle adresse
-  ou modifie l'ancienne pour que ton adresse puisse être prise en compte.
+<div class="erreur center {$prefid}_geoloc">
+  Le géocodage n'a pas donné un résultat certain&nbsp;! Tu as le choix entre&nbsp;:
+</div>
+<div class="{$prefid}_geoloc">
+  <ul>
+    <li><a href="javascript:validGeoloc('{$id}', 0)" style="color: red">ton adresse (à gauche)</a>&nbsp;;</li>
+    <li><a href="javascript:validGeoloc('{$id}', 1)" style="color: green">notre suggestion (à droite)</a>&nbsp;;</li>
+    <li><a href="javascript:validGeoloc('{$id}', 2)"
+           title="Garder le texte de l'adresse que tu as renseignée tout en utilisant les informations trouvées par le géocodage pour te localiser sur le planisphère et dans lors d'une recherche dans l'annuaire.">
+      le texte de ton adresse localisé à l'endroit que nous te suggérons</a>.</li>
+  </ul>
 </div>
 {/if}
 
@@ -33,11 +41,6 @@
 {if $address.geoloc}
   <textarea cols="30" rows="4" class="valid {$prefid}_geoloc"
             name="{$prefname}[geoloc]">{$address.geoloc}</textarea>
-</div>
-<div class="center {$prefid}_geoloc">
-  <a href="javascript:validGeoloc('{$id}', 0)">Valider ta version</a>
-  &bull;
-  <a href="javascript:validGeoloc('{$id}', 1)">Valider la version géolocalisée</a>
 {/if}
 </div>
 {if $address.geoloc}
