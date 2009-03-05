@@ -153,6 +153,9 @@ class Profile
             Platal::page()->kill("Visibility invalide: " . $visibility);
         }
         $this->visibility = self::$v_values[$visibility];
+        if ($this->mobile && !in_array($this->modbile_pub, $this->visibility)) {
+            unset($this->data['mobile']);
+        }
     }
 
 
@@ -258,7 +261,8 @@ class Profile
                                            pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
                                            IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_usual,
                                            IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_usual,
-                                           pd.promo AS promo, pd.short_name, pd.directory_name AS full_name
+                                           pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
+                                           pp.display_tel AS mobile, pp.pub AS mobile_pub
                                      FROM  profiles AS p
                                INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                                INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
@@ -270,8 +274,9 @@ class Profile
                                                                      AND pn_uf.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
                                 LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid
                                                                      AND pn_ul.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
-                                LEFT JOIN  profile_name aS pn_n ON (pn_n.pid = p.pid 
+                                LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid 
                                                                     AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
+                                LEFT JOIN  profile_phones AS pp ON (pp.uid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
                                     WHERE  p.pid IN ' . XDB::formatArray($pids) . '
                                  GROUP BY  p.pid');
     }

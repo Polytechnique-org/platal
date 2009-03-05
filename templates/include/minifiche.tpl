@@ -114,7 +114,7 @@
   <div class="long">
   {if !$dead}
     {assign var=address value=$profile->getMainAddress()}
-    {if $c.web || $c.mobile || $address.country || $c.entreprise || (!$dead && !$registered)}
+    {if $c.web || $profile->mobile || $address.country || $c.entreprise || (!$dead && !$registered)}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
       <tr>
@@ -128,10 +128,10 @@
         <td class="rt">{if $address.locality}{$address.locality}, {/if}{$address.country}</td>
       </tr>
       {/if}
-      {if $c.mobile && !$dead}
+      {if $profile->mobile && !$dead}
       <tr>
         <td class="lt">Mobile&nbsp;:</td>
-        <td class="rt">{$c.mobile}</td>
+        <td class="rt">{$profile->mobile}</td>
       </tr>
       {/if}
       {if $c.entreprise}
