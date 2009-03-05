@@ -306,6 +306,9 @@ function validGeoloc(id, geoloc)
         $('#addresses_' + id + '_cont').find('[name*=text]').val($('#addresses_' + id + '_cont').find('[name*=geoloc]').val());
         $('#addresses_' + id + '_cont').find('[name*=postalText]').val($('#addresses_' + id + '_cont').find('[name*=geocodedPostalText]').val());
     }
+    if (geoloc > 0) {
+        $('#addresses_' + id + '_cont').find("[name='addresses[" + id + "][geoloc]']").remove();
+    }
     $('#addresses_' + id + '_cont').find('[name*=text]').removeClass('error');
     $('#addresses_' + id + '_cont').find('[name*=geoloc_choice]').val(geoloc);
     $('.addresses_' + id + '_geoloc').remove();
