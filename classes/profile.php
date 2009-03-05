@@ -45,6 +45,11 @@ class Profile
     const JOBS_FINISHED      = 0x004000;
     const JOBS_CURRENT       = 0x008000;
 
+    const NETWORKING_ALL     = 0x000000;
+    const NETWORKING_WEB     = 0x010000;
+    const NETWORKING_IM      = 0x020000;
+    const NETWORKING_SOCIAL  = 0x040000;
+
     private $pid;
     private $hrpid;
     private $data = array();
@@ -244,6 +249,40 @@ class Profile
     public function getExtraEducations($limit = null)
     {
         return $this->getEducations(self::EDUCATION_EXTRA, $limit);
+    }
+
+
+    /** Networking
+     */
+
+    public function getNetworking($flags, $limit = null)
+    {
+        $where = XDB::format('pn.uid = {?}', $this->id());
+        if ($flags & self::NETWORKING_WEB) {
+            $where .= ' AND pn.network_type = 0'; // XXX hardcoded reference to web site index
+        }
+        if ($this->visibility) {
+            $where .= ' AND pn.pub IN ' . XDB::formatArray($this->visibility);
+        }
+        $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
+        return XDB::iterator('SELECT  pne.name, pne.icon,
+                                      IF (LENGTH(pne.link) > 0, REPLACE(pne.link, \'%s\', pn.address),
+                                                                pn.address) AS address
+                                FROM  profile_networking AS pn
+                          INNER JOIN  profile_networking_enum AS pne ON (pn.network_type = pne.network_type)
+                               WHERE  ' . $where . '
+                            ORDER BY  pn.network_type, pn.nwid
+                                      ' . $limit);
+    }
+
+    public function getWebSite()
+    {
+        $site = $this->getNetworking(self::NETWORKING_WEB, 1);
+        if ($site->total() != 1) {
+            return null;
+        }
+        $site = $site->next();
+        return $site['address'];
     }
 
 

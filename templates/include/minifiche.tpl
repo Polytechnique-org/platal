@@ -114,12 +114,13 @@
   <div class="long">
   {if !$dead}
     {assign var=address value=$profile->getMainAddress()}
-    {if $c.web || $profile->mobile || $address.country || $c.entreprise || (!$dead && !$registered)}
+    {assign var=web     value=$profile->getWebSite()}
+    {if $web || $profile->mobile || $address.country || $c.entreprise || (!$dead && !$registered)}
     <table cellspacing="0" cellpadding="0">
-      {if $c.web}
+      {if $web}
       <tr>
         <td class="lt">Page web&nbsp;:</td>
-        <td class="rt"><a href="{$c.web}">{$c.web}</a></td>
+        <td class="rt"><a href="{$web}">{$web}</a></td>
       </tr>
       {/if}
       {if $address.country}
