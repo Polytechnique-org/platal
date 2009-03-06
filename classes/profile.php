@@ -286,6 +286,44 @@ class Profile
     }
 
 
+    /** Jobs
+     */
+
+    public function getJobs($flags, $limit = null)
+    {
+        $where = XDB::format('pj.uid = {?}', $this->id());
+        $cond  = 'TRUE';
+        if ($this->visibility) {
+            $where .= ' AND pj.pub IN ' . XDB::formatArray($this->visibility);
+            $cond  =  'pj.email_pub IN ' . XDB::formatArray($this->visibility);
+        }
+        $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
+        return XDB::iterator('SELECT  pje.name, pje.acronym, pje.url, pje.email, pje.NAF_code,
+                                      pj.description, pj.url AS user_site,
+                                      IF (' . $cond . ', pj.email, NULL) AS user_email,
+                                      pjfe.name AS function, pjse.name AS sector,
+                                      pjsse.name AS subsector, pjssse.name AS subsubsector
+                                FROM  profile_job AS pj
+                          INNER JOIN  profile_job_enum AS pje ON (pje.id = pj.jobid)
+                           LEFT JOIN  profile_job_function_enum AS pjfe ON (pjfe.id = pj.functionid)
+                           LEFT JOIN  profile_job_sector_enum AS pjse ON (pjse.id = pj.sectorid)
+                           LEFT JOIN  profile_job_subsector_enum AS pjsse ON (pjsse.id = pj.subsectorid)
+                           LEFT JOIN  profile_job_subsubsector_enum AS pjssse ON (pjssse.id = pj.subsubsectorid)
+                               WHERE  ' . $where . '
+                            ORDER BY  pj.id
+                                      ' . $limit);
+    }
+
+    public function getMailJob()
+    {
+        $job = $this->getJobs(self::JOBS_MAIN, 1);
+        if ($job->total() != 1) {
+            return null;
+        }
+        return $job->next();
+    }
+
+
     public function owner()
     {
         return User::getSilent($this);

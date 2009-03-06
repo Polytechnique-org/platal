@@ -115,7 +115,8 @@
   {if !$dead}
     {assign var=address value=$profile->getMainAddress()}
     {assign var=web     value=$profile->getWebSite()}
-    {if $web || $profile->mobile || $address.country || $c.entreprise || (!$dead && !$registered)}
+    {assign var=job     value=$profile->getMailJob()}
+    {if $web || $profile->mobile || $address.country || $job || (!$dead && !$registered)}
     <table cellspacing="0" cellpadding="0">
       {if $web}
       <tr>
@@ -135,12 +136,12 @@
         <td class="rt">{$profile->mobile}</td>
       </tr>
       {/if}
-      {if $c.entreprise}
+      {if $job}
       <tr>
         <td class="lt">Profession&nbsp;:</td>
         <td class="rt">
-          {if $c.job_web}<a href="{$c.job_web}">{$c.entreprise}</a>{else}{$c.entreprise}{/if}
-          {if $c.secteur} ({$c.secteur}){/if}{if $c.fonction}<br />{$c.fonction}{/if}
+          {if $job.url|default:$job.user_site}<a href="{$job.url|default:$job.user_site}">{$job.name}</a>{else}{$job.name}{/if}
+          {if $job.subsubsector}&nbsp;({$job.subsubsector}){/if}{if $job.description}<br />{$job.description}{/if}
         </td>
       </tr>
       {/if}
