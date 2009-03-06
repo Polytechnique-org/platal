@@ -261,13 +261,11 @@ abstract class ProfileGeocoding implements ProfileSetting
                 $success = false;
             }
         }
-        if (isset($address['geoloc_choice'])) {
-            if ($address['geoloc_choice'] == 0) {
-                $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
-                $mailer->assign('text', $address['text']);
-                $mailer->assign('geoloc', $address['geoloc']);
-                $mailer->send();
-            }
+        if (isset($address['geoloc_choice']) && ($address['geoloc_choice'] == 0)) {
+            $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
+            $mailer->assign('text', $address['text']);
+            $mailer->assign('geoloc', $address['geoloc']);
+            $mailer->send();
             $gmapsGeocoder = new GMapsGeocoder();
             $address = $gmapsGeocoder->stripGeocodingFromAddress($address);
         }

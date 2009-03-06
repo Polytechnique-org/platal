@@ -95,7 +95,7 @@ class GMapsGeocoder extends Geocoder {
 
     public function getGeocodedAddress(array $address) {
         $address = $this->prepareAddress($address);
-        $textAddress = $address['text'];
+        $textAddress = $this->getTextToGeocode($address);
 
         // Try to geocode the full address.
         if (($geocodedData = $this->getPlacemarkForAddress($textAddress))) {
@@ -128,7 +128,7 @@ class GMapsGeocoder extends Geocoder {
         $address['accuracy'] = 0;
         return $address;
     }
- 
+
     // Updates the address with the geocoded information from Google Maps. Also
     // cleans up the final informations.
     private function getUpdatedAddress(array $address, array $geocodedData, $extraLines) {
@@ -142,10 +142,6 @@ class GMapsGeocoder extends Geocoder {
 
         // We can now format the address.
         $this->formatAddress($address, $extraLines);
-
-        // Some entities in ISO 3166 are not countries, thus they have to be replaced
-        // by the country they belong to.
-        // TODO: fixCountry($address);
 
         return $address;
     }
@@ -386,6 +382,36 @@ class GMapsGeocoder extends Geocoder {
             }
         }
         return $postalText;
+    }
+
+    // Trims the name of the real country if it contains an ISO 3166-1 non-country
+    // item. For that purpose, we compare the last but one line of the address with
+    // all non-country items of ISO 3166-1.
+    private function getTextToGeocode($address)
+    {
+        $res = XDB::iterator('SELECT  country, countryFR
+                                FROM  geoloc_countries
+                               WHERE  belongsTo IS NOT NULL');
+        $countries = array();
+        foreach ($res as $item) {
+            $countries[] = $item[0];
+            $countries[] = $item[1];
+        }
+        $textLines  = explode("\n", $address['text']);
+        $countLines = count($textLines);
+        $needle     = strtoupper(trim($textLines[$countLines - 2]));
+        $isPseudoCountry = false;
+        foreach ($countries as $country) {
+            if (strtoupper($country) == $needle) {
+                $isPseudoCountry = true;
+                break;
+            }
+        }
+
+        if ($isPseudoCountry) {
+            return $address['text'];
+        }
+        return implode("\n", array_slice($textLines, 0, -1));
     }
 
     // Search for the lign from the given address that is the closest to the geocoded thoroughfareName
