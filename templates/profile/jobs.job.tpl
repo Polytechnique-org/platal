@@ -83,7 +83,7 @@
                name="{$jobpref}[hq_email]" value="{$job.hq_email}" />
       </td>
     </tr>
-    <!--<tr class="{$entreprise}" style="display: none">
+    <tr class="{$entreprise}" style="display: none">
       <td colspan="2">
         <div style="float: left">
           <div class="titre">Adresse du siège</div>
@@ -92,7 +92,7 @@
           </div>
         </div>
       </td>
-    </tr>-->
+    </tr>
     <tr class="{$entreprise}" style="display: none">
       <td class="titre">Téléphone</td>
       <td>
@@ -120,7 +120,7 @@
       </td>
     </tr>
     <tr class="pair {$sector}" style="display: none">
-      <td class="titre" rowspan="3">Secteur d'activité</td>
+      <td class="titre" rowspan="3">Secteur&nbsp;d'activité</td>
       <td>
         <select name="{$jobpref}[secteur]" onchange="updateJobSector({$i}, '')">
           <option value="">&nbsp;</option>
@@ -143,7 +143,7 @@
       </td>
     </tr>
     <tr class="pair">
-      <td class="titre">Fonction occupée</td>
+      <td class="titre">Fonction&nbsp;occupée</td>
       <td>
         <select name="{$jobpref}[fonction]">
           <option value="">&nbsp;</option>
@@ -170,6 +170,13 @@
       </td>
     </tr>
     <tr class="pair">
+      <td class="titre">Page&nbsp;perso</td>
+      <td>
+          <input type="text" size="35" maxlength="255" {if $job.w_web_error}class="error"{/if}
+                 name="{$jobpref}[w_web]" value="{$job.w_web}" />
+      </td>
+    </tr>
+    <tr class="pair">
       <td colspan="2">
         <div style="float: left">
           <div class="titre">Adresse</div>
@@ -177,18 +184,13 @@
             {include file="include/flags.radio.tpl" name="`$jobpref`[w_adr][pub]" val=$job.w_adr.pub}
           </div>
           <div style="margin-top: 20px; clear: both">
-            {include file="geoloc/form.address.tpl" name="`$jobpref`[w_adr]" id="`$jobid`_adr" adr=$job.w_adr}
+            {include file="geoloc/form.address.tpl" name="`$jobpref`[hq_adr]" id="`$jobid`_adr" adr=$job.hq_adr}
           </div>
-        </div>
-        <div style="float: right; width: 50%">
-          {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[w_email]' val=$job.w_email
-          class="pair" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub isjob="1" id=$i}
-          <div class="titre">Page perso</div>
-          <input type="text" size="25" maxlength="255" {if $job.w_web_error}class="error"{/if}
-               name="{$jobpref}[w_web]" value="{$job.w_web}" />
         </div>
       </td>
     </tr>
+    {include file="include/emails.combobox.tpl" name=$jobpref|cat:'[w_email]' val=$job.w_email
+             class="pair" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub id=$i}
     <tr class="pair">
       <td colspan="2">
         {foreach from=$job.w_tel key=t item=tel}
