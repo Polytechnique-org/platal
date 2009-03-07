@@ -41,5 +41,13 @@ INSERT INTO  profile_job (id, uid, jobid, description, email, pub, email_pub, fu
        FROM  entreprises      AS e
  INNER JOIN  profile_job_enum AS j ON (e.entreprise = j.name);
 
+DROP TABLE IF EXISTS profile_job_function_enum;
+
+CREATE TABLE IF NOT EXISTS profile_job_function_enum (
+  id SMALLINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  UNIQUE KEY (name)
+) CHARSET=utf8;
 
 -- vim:set syntax=mysql:
