@@ -340,7 +340,7 @@ class SearchModule extends PLModule
             $unique    = 'uid';
             $beginwith = false;
             break;
-          case 'sss_secteur':
+          case 'subSubSector':
             $db        = 'profile_job_subsubsector_enum';
             $field     = 'name';
             $beginwith = false;
