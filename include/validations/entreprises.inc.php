@@ -36,14 +36,14 @@ class EntrReq extends Validate
 
     public $tel;
     public $fax;
+    public $address;
 
     public $suggestions;
-    //TODO: addresses
 
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, $_id, $_name, $_acronym, $_url, $_email, $_tel, $_fax, $_stamp = 0)
+    public function __construct(User &$_user, $_id, $_name, $_acronym, $_url, $_email, $_tel, $_fax, $_address, $_stamp = 0)
     {
         parent::__construct($_user, false, 'entreprise', $_stamp);
         $this->id       = $_id;
@@ -53,6 +53,7 @@ class EntrReq extends Validate
         $this->email    = $_email;
         $this->tel      = $_tel;
         $this->fax      = $_fax;
+        $this->address  = $_address;
 
         $_name       = preg_replace('/[^0-9a-z]/i', ' ', strtolower(replace_accent($_name)));
         $name        = explode(" ", $_name);
@@ -151,7 +152,8 @@ class EntrReq extends Validate
                             WHERE  name = {?}',
                           $this->name);
         if ($res->numRows() != 1) {
-            require_once("profil.func.inc.php");
+            require_once 'profil.func.inc.php';
+            require_once 'geocoding.inc.php';
 
             XDB::execute('INSERT INTO  profile_job_enum (name, acronym, url, email, holdingid, NAF_code, AX_code)
                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
@@ -159,13 +161,26 @@ class EntrReq extends Validate
                          $this->holdingid, $this->NAF_code, $this->AX_code);
             $jobid = XDB::insertId();
             $display_tel = format_display_number($this->tel, $error_tel);
-            $display_fax =format_display_number($this->fax, $error_fax);
+            $display_fax = format_display_number($this->fax, $error_fax);
             XDB::execute('INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
                                        search_tel, display_tel, pub)
                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}),
                                        ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                          $jobid, 'hq', $this->id, 0, 'fixed', format_phone_number($this->tel), $display_tel, 'public', 
                          $jobid, 'hq', $this->id, 1, 'fax', format_phone_number($this->fax), $display_fax, 'public');
+            XDB::execute("INSERT INTO  profile_addresses (jobid, type, id, accuracy,
+                                                          text, postalText, postalCode, localityId,
+                                                          subAdministrativeAreaId, administrativeAreaId,
+                                                          countryId, latitude, longitude, updateTime,
+                                                          north, south, east, west)
+                               VALUES  ({?}, 'hq', 0, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
+                                        {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?})",
+                         $jobid, $this->address['accuracy'], $this->address['text'], $this->address['postalText'],
+                         $this->address['postalCode'], $this->address['localityId'],
+                         $this->address['subAdministrativeAreaId'], $this->address['administrativeAreaId'],
+                         $this->address['countryId'], $this->address['latitude'], $this->address['longitude'],
+                         $this->address['updateTime'], $this->address['north'], $this->address['south'],
+                         $this->address['east'], $this->address['west']);
         } else {
             $jobid = $res->fetchOneCell();
             $success = true;

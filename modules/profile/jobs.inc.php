@@ -22,38 +22,35 @@
 class ProfileJob extends ProfileGeocoding
 {
     private $pub;
-    private $mail_new;
-    private $mail;
-    private $web;
+    private $email_new;
+    private $email;
+    private $url;
     private $bool;
     private $checks;
 
     public function __construct()
     {
         $this->pub    = new ProfilePub();
-        $this->mail
-                      = $this->mail_new
+        $this->email
+                      = $this->email_new
                       = new ProfileEmail();
-        $this->web    = new ProfileWeb();
+        $this->url    = new ProfileWeb();
         $this->bool   = new ProfileBool();
-        $this->checks = array('web'      => array('w_web'),
-                              'mail_new' => array('w_email_new'),
-                              'mail'     => array('w_email'),
-                              'pub'      => array('pub', 'w_email_pub'));
+        $this->checks = array('url'      => array('w_url'),
+                              'email'    => array('w_email'),
+                              'pub'      => array('pub', 'w_email_pub'),
+                             );
     }
 
     private function cleanJob(ProfilePage &$page, $jobid, array &$job, &$success)
     {
         $success = true;
+        if ($job['w_email'] == "new@example.org") {
+            $job['w_email'] = $job['w_email_new'];
+        }
         foreach ($this->checks as $obj=>&$fields) {
             $chk =& $this->$obj;
             foreach ($fields as $field) {
-                if ($field == "w_email_new") {
-                    if ($job['w_email'] == "new@example.org") {
-                        $job['w_email'] = $job[$field];
-                    }
-                    continue;
-                }
                 $job[$field] = $chk->value($page, $field, $job[$field], $s);
                 if (!$s) {
                     $success = false;
@@ -61,22 +58,22 @@ class ProfileJob extends ProfileGeocoding
                 }
             }
         }
-        if (!$job['sss_secteur_name']) {
+        if (!$job['subSubSectorName']) {
             $res = XDB::query("SELECT  name
                                  FROM  profile_job_subsubsector_enum
                                 WHERE  id = {?}",
-                              $job['sss_secteur']);
-            $job['sss_secteur_name'] = $res->fetchOneCell();
+                              $job['subSubSector']);
+            $job['subSubSectorName'] = $res->fetchOneCell();
         } else {
             $res = XDB::query("SELECT  sectorid, subsectorid, id
                                  FROM  profile_job_subsubsector_enum
                                 WHERE  name = {?}",
-                              $job['sss_secteur_name']);
+                              $job['subSubSectorName']);
             if ($res->numRows() != 1) {
                 $success = false;
                 $job['sector_error'] = true;
             } else {
-                list($job['secteur'], $job['ss_secteur'], $job['sss_secteur']) = $res->fetchOneRow();
+                list($job['sector'], $job['subSector'], $job['subSubSector']) = $res->fetchOneRow();
             }
         }
         if ($job['name']) {
@@ -86,25 +83,27 @@ class ProfileJob extends ProfileGeocoding
                               $job['name']);
             if ($res->numRows() != 1) {
                 $user = S::user();
-                $req = new EntrReq($user, $jobid, $job['name'], $job['acronym'], $job['hq_web'], $job['hq_email'], $job['hq_tel'], $job['hq_fax']);
+                $this->geocodeAddress($job['hq_address'], $s);
+                if (!$s) {
+                    $gmapsGeocoder = new GMapsGeocoder();
+                    $job['hq_address'] = $gmapsGeocoder->stripGeocodingFromAddress($job['hq_address']);
+                }
+                $req = new EntrReq($user, $jobid, $job['name'], $job['hq_acronym'], $job['hq_url'],
+                                   $job['hq_email'], $job['hq_fixed'], $job['hq_fax'], $job['hq_address']);
                 $req->submit();
                 $job['jobid'] = null;
             } else {
                 $job['jobid'] = $res->fetchOneCell();
             }
         }
-        $job['w_adr']['pub'] = $this->pub->value($page, 'adr_pub', @$job['w_adr']['pub'], $s);
-        $job['w_adr']['checked'] = $this->bool->value($page, 'adr_checked', @$job['w_adr']['checked'], $s);
-        if (!isset($job['w_tel'])) {
-            $job['w_tel'] = array();
+        $job['w_address']['pub'] = $this->pub->value($page, 'address_pub', $job['w_address']['pub'], $s);
+        if (!isset($job['w_phone'])) {
+            $job['w_phone'] = array();
         }
         $profiletel = new ProfilePhones('pro', $jobid);
-        $job['w_tel'] = $profiletel->value($page, 'tel', $job['w_tel'], $s);
+        $job['w_phone'] = $profiletel->value($page, 'tel', $job['w_phone'], $s);
         unset($job['removed']);
         unset($job['new']);
-        unset($job['w_adr']['changed']);
-        unset($job['w_adr']['parsevalid']);
-        unset($job['w_adr']['display']);
     }
 
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -125,13 +124,13 @@ class ProfileJob extends ProfileGeocoding
                 $job['tmp_name'] = $entreprise[$entr_val]->name;
                 $entr_val ++;
             }
-            if (@$job['removed']) {
+            if (isset($job['removed']) && $job['removed']) {
                 unset($value[$key]);
             }
         }
         foreach ($value as $key=>&$job) {
             $ls = true;
-            $this->geocodeAddress($job['w_adr'], $s);
+            $this->geocodeAddress($job['w_address'], $s);
             $ls = ($ls && $s);
             $this->cleanJob($page, $key, $job, $s);
             $ls = ($ls && $s);
@@ -150,28 +149,30 @@ class ProfileJob extends ProfileGeocoding
         XDB::execute("DELETE FROM  profile_job
                             WHERE  uid = {?}",
                      S::i('uid'));
+        XDB::execute("DELETE FROM  profile_addresses
+                            WHERE  pid = {?} AND type = 'job'",
+                     S::i('uid'));
         XDB::execute("DELETE FROM  profile_phones
                             WHERE  uid = {?} AND link_type = 'pro'",
                      S::i('uid'));
         foreach ($value as $id=>&$job) {
-            if ($job['w_email'] == "new@example.org") {
-                $job['w_email'] = $job['w_email_new'];
-            }
             if ($job['jobid']) {
                 XDB::execute("INSERT INTO  profile_job (uid, id, functionid, description, sectorid, subsectorid,
                                                         subsubsectorid, email, url, pub, email_pub, jobid)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                             S::i('uid'), $id, $job['fonction'], $job['description'], $job['secteur'], $job['ss_secteur'],
-                             $job['sss_secteur'], $job['w_email'], $job['w_web'], $job['pub'], $job['w_email_pub'], $job['jobid']);
+                             S::i('uid'), $id, $job['fonction'], $job['description'], $job['sector'], $job['subSector'],
+                             $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub'], $job['jobid']);
             } else {
                 XDB::execute("INSERT INTO  profile_job (uid, id, functionid, description, sectorid, subsectorid,
                                                         subsubsectorid, email, url, pub, email_pub)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                             S::i('uid'), $id, $job['fonction'], $job['description'], $job['secteur'], $job['ss_secteur'],
-                             $job['sss_secteur'], $job['w_email'], $job['w_web'], $job['pub'], $job['w_email_pub']);
+                             S::i('uid'), $id, $job['fonction'], $job['description'], $job['sector'], $job['subSector'],
+                             $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub']);
             }
+            $address = new ProfileAddress();
+            $address->saveAddress($id, $job['w_address'], 'job');
             $profiletel = new ProfilePhones('pro', $id);
-            $profiletel->saveTels('tel', $job['w_tel']);
+            $profiletel->saveTels('tel', $job['w_phone']);
         }
     }
 }
@@ -207,53 +208,90 @@ class ProfileJobs extends ProfilePage
         $this->values['corps'] = $res->fetchOneAssoc();
 
         // Build the jobs tree
-        $res = XDB::iterRow("SELECT  j.id, je.name, j.functionid, j.sectorid, j.subsectorid,
-                                     j.subsubsectorid, j.description, e.adr1, e.adr2, e.adr3,
-                                     e.postcode, e.city, e.cityid, e.region, e.regiontxt,
-                                     e.country, gc.countryFR,
-                                     j.email, j.url, j.pub,
-                                     e.adr_pub, j.email_pub,
-                                     e.glat, e.glng, s.name
+        $res = XDB::iterRow("SELECT  j.id, j.jobid, je.name, j.functionid, j.sectorid, j.subsectorid, j.subsubsectorid,
+                                     s.name, j.description, j.email, j.email_pub, j.url, j.pub,
+                                     je.acronym, je.url, je.email,
+                                     aw.accuracy, aw.text, aw.postalText, aw.postalCode, aw.localityId,
+                                     aw.subAdministrativeAreaId, aw.administrativeAreaId, aw.countryId,
+                                     aw.latitude, aw.longitude, aw.pub, aw.updateTime,
+                                     aw.north, aw.south, aw.east, aw.west,
+                                     ah.accuracy, ah.text, ah.postalText, ah.postalCode, ah.localityId,
+                                     ah.subAdministrativeAreaId, ah.administrativeAreaId, ah.countryId,
+                                     ah.latitude, ah.longitude, ah.pub, ah.updateTime,
+                                     ah.north, ah.south, ah.east, ah.west
                                FROM  profile_job                   AS j
                           LEFT JOIN  profile_job_enum              AS je ON (j.jobid = je.id)
-                          LEFT JOIN  entreprises                   AS e  ON (j.uid = e.uid AND j.id = e.entrid)
-                          LEFT JOIN  geoloc_countries              AS gc ON (gc.iso_3166_1_a2 = e.country)
                           LEFT JOIN  profile_job_subsubsector_enum AS s  ON (s.id = j.subsubsectorid)
+                          LEFT JOIN  profile_addresses             AS aw ON (aw.pid = j.uid AND aw.type = 'job'
+                                                                             AND aw.id = j.id)
+                          LEFT JOIN  profile_addresses             AS ah ON (ah.jobid = j.jobid AND ah.type = 'hq')
                               WHERE  j.uid = {?}
-                           ORDER BY  entrid", $this->pid());
+                           ORDER BY  j.id",
+                            $this->pid());
         $this->values['jobs'] = array();
-        while (list($id, $name, $function, $secteur, $ss_secteur, $sss_secteur, $description,
-                    $w_adr1, $w_adr2, $w_adr3, $w_postcode, $w_city, $w_cityid,
-                    $w_region, $w_regiontxt, $w_country, $w_countrytxt,
-                    $w_email, $w_web,
-                    $pub, $w_adr_pub, $w_email_pub, $w_glat, $w_glng, $sss_secteur_name
+        while (list($id, $jobid, $name, $function, $sector, $subSector, $subSubSector,
+                    $subSubSectorName, $description, $w_email, $w_emailPub, $w_url, $pub,
+                    $hq_acronym, $hq_url, $hq_email,
+                    $w_accuracy, $w_text, $w_postalText, $w_postalCode, $w_localityId,
+                    $w_subAdministrativeAreaId, $w_administrativeAreaId, $w_countryId,
+                    $w_latitude, $w_longitude, $w_pub, $w_updateTime,
+                    $w_north, $w_south, $w_east, $w_west,
+                    $hq_accuracy, $hq_text, $hq_postalText, $hq_postalCode, $hq_localityId,
+                    $hq_subAdministrativeAreaId, $hq_administrativeAreaId, $hq_countryId,
+                    $hq_latitude, $hq_longitude, $hq_pub, $hq_updateTime,
+                    $hq_north, $hq_south, $hq_east, $hq_west,
                    ) = $res->next()) {
             $this->values['jobs'][] = array('id'               => $id,
+                                            'jobid'            => $jobid,
                                             'name'             => $name,
-                                            'fonction'         => $function,
-                                            'secteur'          => $secteur,
-                                            'ss_secteur'       => $ss_secteur,
-                                            'sss_secteur'      => $sss_secteur,
-                                            'sss_secteur_name' => $sss_secteur_name,
+                                            'function'         => $function,
+                                            'sector'           => $sector,
+                                            'subSector'        => $subSector,
+                                            'subSubSector'     => $subSubSector,
+                                            'subSubSectorName' => $subSubSectorName,
                                             'description'      => $description,
-                                            'w_adr'            => array('adr1'        => $w_adr1,
-                                                                        'adr2'        => $w_adr2,
-                                                                        'adr3'        => $w_adr3,
-                                                                        'postcode'    => $w_postcode,
-                                                                        'city'        => $w_city,
-                                                                        'cityid'      => $w_cityid,
-                                                                        'region'      => $w_region,
-                                                                        'regiontxt'   => $w_regiontxt,
-                                                                        'country'     => $w_country,
-                                                                        'countrytxt'  => $w_countrytxt,
-                                                                        'pub'         => $w_adr_pub,
-                                                                        'checked'     => (($w_checked == 0)? true : false),
-                                                                        'precise_lat' => $w_glat,
-                                                                        'precise_lon' => $w_glng),
-                                            'w_email'          => $w_email,
-                                            'w_web'            => $w_web,
                                             'pub'              => $pub,
-                                            'w_email_pub'      => $w_email_pub);
+                                            'w_email'          => $w_email,
+                                            'w_email_pub'      => $w_email_pub,
+                                            'w_url'            => $w_url,
+                                            'hq_acronym'       => $hq_acronym,
+                                            'hq_url'           => $hq_url,
+                                            'hq_email'         => $hq_email,
+                                            'w_address'        => array('accuracy'                => $w_accuracy,
+                                                                        'text'                    => $w_text,
+                                                                        'postalText'              => $w_postalText,
+                                                                        'postalCode'              => $w_postalCode,
+                                                                        'localityId'              => $w_localityId,
+                                                                        'subAdministrativeAreaId' => $w_subAdministrativeAreaId,
+                                                                        'administrativeAreaId'    => $w_administrativeAreaId,
+                                                                        'countryId'               => $w_countryId,
+                                                                        'latitude'                => $w_latitude,
+                                                                        'longitude'               => $w_longitude,
+                                                                        'pub'                     => $w_pub,
+                                                                        'updateTime'              => $w_update,
+                                                                        'north'                   => $w_north,
+                                                                        'south'                   => $w_south,
+                                                                        'east'                    => $w_east,
+                                                                        'west'                    => $w_west,
+                                                                       ),
+                                            'hq_address'       => array('accuracy'                => $hq_accuracy,
+                                                                        'text'                    => $hq_text,
+                                                                        'postalText'              => $hq_postalText,
+                                                                        'postalCode'              => $hq_postalCode,
+                                                                        'localityId'              => $hq_localityId,
+                                                                        'subAdministrativeAreaId' => $hq_subAdministrativeAreaId,
+                                                                        'administrativeAreaId'    => $hq_administrativeAreaId,
+                                                                        'countryId'               => $hq_countryId,
+                                                                        'latitude'                => $hq_latitude,
+                                                                        'longitude'               => $hq_longitude,
+                                                                        'pub'                     => $hq_pub,
+                                                                        'updateTime'              => $hq_update,
+                                                                        'north'                   => $hq_north,
+                                                                        'south'                   => $hq_south,
+                                                                        'east'                    => $hq_east,
+                                                                        'west'                    => $hq_west,
+                                                                       ),
+                                           );
         }
 
         $res = XDB::iterator("SELECT  link_id AS jobid, tel_type AS type, pub, display_tel AS tel, comment
@@ -263,9 +301,8 @@ class ProfileJobs extends ProfilePage
                              $this->pid());
         $i = 0;
         $jobNb = count($this->values['jobs']);
-        while ($tel = $res->next()) {
-            $jobid = $tel['jobid'];
-            unset($tel['jobid']);
+        while ($phone = $res->next()) {
+            $jobid = $phone['jobid'];
             while ($i < $jobNb && $this->values['jobs'][$i]['id'] < $jobid) {
                 $i++;
             }
@@ -273,18 +310,17 @@ class ProfileJobs extends ProfilePage
                 break;
             }
             $job =& $this->values['jobs'][$i];
-            if (!isset($job['w_tel'])) {
-                $job['w_tel'] = array();
+            if (!isset($job['w_phone'])) {
+                $job['w_phone'] = array();
             }
             if ($job['id'] == $jobid) {
-                $job['w_tel'][] = $tel;
+                $job['w_phone'][] = $phone;
             }
         }
-        foreach ($this->values['jobs'] as $id=>&$job) {
-            if (!isset($job['w_tel'])) {
-                $job['w_tel'] = array();
+        foreach ($this->values['jobs'] as $id => &$job) {
+            if (!isset($job['w_phone'])) {
+                $job['w_phone'] = array();
             }
-            unset($job['id']);
         }
     }
 
@@ -314,11 +350,11 @@ class ProfileJobs extends ProfilePage
 
         $res = XDB::query("SELECT  id, name AS label
                              FROM  profile_job_sector_enum");
-        $page->assign('secteurs', $res->fetchAllAssoc());
+        $page->assign('sectors', $res->fetchAllAssoc());
         $res = XDB::query("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
                              FROM  fonctions_def
                          ORDER BY  id");
-        $page->assign('fonctions', $res->fetchAllAssoc());
+        $page->assign('functions', $res->fetchAllAssoc());
 
         $res = XDB::iterator("SELECT  id, name
                                 FROM  profile_corps_enum

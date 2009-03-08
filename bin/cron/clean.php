@@ -40,7 +40,9 @@ query("DELETE FROM register_pending WHERE hash = 'INSCRIT'");
 query("ALTER TABLE profile_education_enum ORDER BY name");
 query("ALTER TABLE binets_def ORDER BY text");
 query("ALTER TABLE groupesx_def ORDER BY text");
-query("ALTER TABLE secteur ORDER BY text");
+query("ALTER TABLE profile_job_sector_enum ORDER BY name");
+query("ALTER TABLE profile_job_subsector_enum ORDER BY name");
+query("ALTER TABLE profile_job_subsubsector_enum ORDER BY name");
 query("ALTER TABLE sections ORDER BY text");
 
 // Prunes older autocomplete queries.

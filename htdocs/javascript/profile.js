@@ -46,8 +46,8 @@ function wizPage_onLoad(id)
         break;
       case 'emploi':
         for (var i = 0 ; $('#job_' + i).length != 0; ++i) {
-            updateJobSector(i, $('#job_' + i).find("[name*='[ss_secteur]']").val());
-            updateJobSubSector(i, $('#job_' + i).find("[name*='[sss_secteur]']").val());
+            updateJobSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSector]']").val());
+            updateJobSubSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSubsector]']").val());
         }
         break;
     }
@@ -295,23 +295,23 @@ function addAddress()
     Ajax.update_html('addresses_' + i + '_cont', 'profile/ajax/address/' + i, checkCurrentAddress());
 }
 
-function addressChanged(id)
+function addressChanged(prefid)
 {
-    $('#addresses_' + id + '_cont').find('[name*=changed]').val("1");
+    $('#' + prefid + '_cont').find('[name*=changed]').val("1");
 }
 
-function validGeoloc(id, geoloc)
+function validGeoloc(prefid, id, geoloc)
 {
     if (geoloc == 1) {
-        $('#addresses_' + id + '_cont').find('[name*=text]').val($('#addresses_' + id + '_cont').find('[name*=geoloc]').val());
-        $('#addresses_' + id + '_cont').find('[name*=postalText]').val($('#addresses_' + id + '_cont').find('[name*=geocodedPostalText]').val());
+        $('#' + prefid + '_cont').find('[name*=text]').val($('#' + prefid + '_cont').find('[name*=geoloc]').val());
+        $('#' + prefid + '_cont').find('[name*=postalText]').val($('#' + prefid + '_cont').find('[name*=geocodedPostalText]').val());
     }
     if (geoloc > 0) {
-        $('#addresses_' + id + '_cont').find("[name='addresses[" + id + "][geoloc]']").remove();
+        $('#' + prefid + '_cont').find("[name*='[geoloc]']").remove();
     }
-    $('#addresses_' + id + '_cont').find('[name*=text]').removeClass('error');
-    $('#addresses_' + id + '_cont').find('[name*=geoloc_choice]').val(geoloc);
-    $('.addresses_' + id + '_geoloc').remove();
+    $('#' + prefid + '_cont').find('[name*=text]').removeClass('error');
+    $('#' + prefid + '_cont').find('[name*=geoloc_choice]').val(geoloc);
+    $('.' + prefid + '_geoloc').remove();
 }
 
 // {{{1 Phones
@@ -442,36 +442,36 @@ function removeMedal(id)
 function removeJob(id, pref)
 {
     $('#' + id + '_cont').hide();
-    if ($('#' + id).find("[name='" + id + "[new]']").val() == '0') {
+    if ($('#' + id).find("[name='" + pref + "[new]']").val() == '0') {
         $('#' + id + '_grayed').show();
-        $('#' + id + '_grayed_name').html($('#' + id).find("[name='" + id + "[name]']").val());
+        $('#' + id + '_grayed_name').html($('#' + id).find("[name='" + pref + "[name]']").val());
     }
-    $('#' + id).find("[name='" + id + "[removed]']").val('1');
+    $('#' + id).find("[name='" + pref + "[removed]']").val('1');
 }
 
 function restoreJob(id, pref)
 {
     $('#' + id + '_cont').show();
     $('#' + id + '_grayed').hide();
-    $('#' + id).find("[name='" + id + "[removed]']").val('0');
+    $('#' + id).find("[name='" + pref + "[removed]']").val('0');
 }
 
 function updateJobSector(id, sel)
 {
-    var sector = $('#job_' + id).find("[name*='[secteur]']").val();
+    var sector = $('#job_' + id).find("[name='jobs[" + id + "][sector]']").val();
     if (sector == '') {
         sector = '-1';
     }
-    Ajax.update_html('job_' + id + '_ss_secteur', 'profile/ajax/secteur/' + id + '/job_' + id + '/jobs[' + id + ']/' + sector + '/' + sel);
+    Ajax.update_html('job_' + id + '_subSector', 'profile/ajax/sector/' + id + '/job_' + id + '/jobs[' + id + ']/' + sector + '/' + sel);
 }
 
 function updateJobSubSector(id, sel)
 {
-    var subSector = $('#job_' + id).find("[name*='[ss_secteur]']").val();
+    var subSector = $('#job_' + id).find("[name='jobs[" + id + "][subSector]']").val();
     if (subSector == '') {
         subSector = '-1';
     }
-    Ajax.update_html('job_' + id + '_sss_secteur', 'profile/ajax/ssecteur/' + id + '/' + subSector + '/' + sel);
+    Ajax.update_html('job_' + id + '_subSubSector', 'profile/ajax/sub_sector/' + id + '/' + subSector + '/' + sel);
 }
 
 function displayAllSector(id)
@@ -537,53 +537,53 @@ function addCountry()
 
 function updateSubSector()
 {
-    var s  = $('#secteur_sel').find('[name=secteur_sel]').val();
-    var ss = $('#ss_secteur_sel').find("[name='jobs[-1][ss_secteur]']").val();
-    if ((s == '' || ss == '') || $('#secteurs_' + s + '_' + ss).length != 0) {
-        $('#secteurs_add').hide();
+    var s  = $('#sectorSelection').find('[name=sectorSelection]').val();
+    var ss = $('#selectedSubSector').find("[name='jobs[-1][subSector]']").val();
+    if ((s == '' || ss == '') || $('#sectors_' + s + '_' + ss).length != 0) {
+        $('#addSector').hide();
     } else {
-        $('#secteurs_add').show();
+        $('#addSector').show();
     }
 }
 
 function removeSector(s, ss)
 {
-    $('#secteurs_' + s + '_' + ss).remove();
+    $('#sectors_' + s + '_' + ss).remove();
     updateSubSector();
 }
 
 function updateSector()
 {
-    var secteur = $('#secteur_sel').find('[name=secteur_sel]').val();
-    if (secteur == '') {
-        secteur = '-1';
-        $('#ss_secteur_sel').html('');
+    var sector = $('#sectorSelection').find('[name=sectorSelection]').val();
+    if (sector == '') {
+        sector = '-1';
+        $('#selectedSubSector').html('');
         return;
     }
-    $.get(platal_baseurl + 'profile/ajax/secteur/-1/0/0/' + secteur,
+    $.get(platal_baseurl + 'profile/ajax/sector/-1/0/0/' + sector,
           function(data) {
-              data = '<a href="javascript:addSector()" style="display: none; float: right" id="secteurs_add">'
+              data = '<a href="javascript:addSector()" style="display: none; float: right" id="addSector">'
                    + '  <img src="images/icons/add.gif" alt="" title="Ajouter ce secteur" />'
                    + '</a>' + data;
-              $('#ss_secteur_sel').html(data);
-              $('#ss_secteur_sel').find("[name='jobs[-1][ss_secteur]']").change(updateSubSector);
+              $('#selectedSubSector').html(data);
+              $('#selectedSubSector').find("[name='jobs[-1][subSector]']").change(updateSubSector);
           });
 }
 
 function addSector()
 {
-    var s   = $('#secteur_sel').find('[name=secteur_sel]').val();
-    var ss  = $('#ss_secteur_sel').find("[name='jobs[-1][ss_secteur]']").val();
-    var sst = $('#ss_secteur_sel').find("[name='jobs[-1][ss_secteur]'] :selected").text();
+    var s   = $('#sectorSelection').find('[name=sectorSelection]').val();
+    var ss  = $('#selectedSubSector').find("[name='jobs[-1][subSector]']").val();
+    var sst = $('#selectedSubSector').find("[name='jobs[-1][subSector]'] :selected").text();
 
-    var html = '<div id="secteurs_' + s + '_' + ss + '" style="clear: both; margin-top: 0.5em" class="titre">'
+    var html = '<div id="sectors_' + s + '_' + ss + '" style="clear: both; margin-top: 0.5em" class="titre">'
              + '  <a href="javascript:removeSector(\'' + s + '\', \'' + ss + '\')" style="display: block; float: right">'
              + '    <img src="images/icons/cross.gif" alt="" title="Supprimer ce secteur" />'
              + '  </a>'
-             + '  <input type="hidden" name="secteurs[' + s + '][' + ss + ']" value="' + sst + '" />'
+             + '  <input type="hidden" name="sectors[' + s + '][' + ss + ']" value="' + sst + '" />'
              + '  ' + sst
              + '</div>';
-    $('#secteurs').append(html);
+    $('#sectors').append(html);
     updateSubSector();
 }
 
@@ -604,8 +604,8 @@ function registerEnterpriseAutocomplete(id)
 
     $(".sector_name").each(
       function() {
-        if (id == -1 || this.name == "jobs[" + id + "][sss_secteur_name]") {
-            $(this).autocomplete(platal_baseurl + "search/autocomplete/sss_secteur",
+        if (id == -1 || this.name == "jobs[" + id + "][subSubSector]") {
+            $(this).autocomplete(platal_baseurl + "search/autocomplete/subSubSector",
                                  {
                                      selectOnly:1,
                                      field:this.name,

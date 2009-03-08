@@ -136,10 +136,6 @@
   <tr class="impair">
     <td class="titre">Emploi</td>
     <td>
-      <a href="admin/secteurs">Secteurs</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/ss_secteurs">Sous-secteurs</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/fonctions">Fonctions</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/networking">Networking</a>

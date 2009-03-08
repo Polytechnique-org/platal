@@ -83,7 +83,7 @@ class ProfileAddress extends ProfileGeocoding
         return $value;
     }
 
-    private function saveAddress($pid, $addrid, array &$address)
+    private function saveAddress($pid, $addrid, array &$address, $type)
     {
         require_once "geocoding.inc.php";
 
@@ -103,9 +103,9 @@ class ProfileAddress extends ProfileGeocoding
                                                       subAdministrativeAreaId, administrativeAreaId,
                                                       countryId, latitude, longitude, updateTime, pub, comment,
                                                       north, south, east, west)
-                           VALUES  ({?}, 'home', {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
+                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
                                     {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?}, {?}, {?})",
-                     $pid, $addrid, $flags, $address['accuracy'],
+                     $pid, $type, $addrid, $flags, $address['accuracy'],
                      $address['text'], $address['postalText'], $address['postalCode'], $address['localityId'],
                      $address['subAdministrativeAreaId'], $address['administrativeAreaId'],
                      $address['countryId'], $address['latitude'], $address['longitude'],
@@ -122,7 +122,7 @@ class ProfileAddress extends ProfileGeocoding
                             WHERE  uid = {?} AND link_type = 'address'",
                      $page->pid());
         foreach ($value as $addrid => &$address) {
-            $this->saveAddress($page->pid(), $addrid, $address);
+            $this->saveAddress($page->pid(), $addrid, $address, 'home');
             $profiletel = new ProfilePhones('address', $addrid);
             $profiletel->saveTels($page->pid(), 'tel', $address['tel']);
         }
@@ -142,7 +142,7 @@ class ProfileAddresses extends ProfilePage
 
     protected function _fetchData()
     {
-        $res = XDB::query("SELECT  type, id, accuracy, text, postalText,
+        $res = XDB::query("SELECT  id, accuracy, text, postalText,
                                    postalCode, localityId, subAdministrativeAreaId, administrativeAreaId,
                                    countryId, latitude, longitude, pub, comment, updateTime,
                                    north, south, east, west,

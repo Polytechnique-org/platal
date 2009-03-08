@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileSecteurs implements ProfileSetting
+class ProfileSectors implements ProfileSetting
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -118,7 +118,7 @@ class ProfileMentor extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['expertise'] = null;
-        $this->settings['secteurs'] = new ProfileSecteurs();
+        $this->settings['sectors'] = new ProfileSectors();
         $this->settings['countries'] = new ProfileCountry();
     }
 
@@ -151,8 +151,8 @@ class ProfileMentor extends ProfilePage
 
     public function _prepare(PlPage &$page, $id)
     {
-        $page->assign('secteurs_sel', XDB::iterator("SELECT  id, name AS label
-                                                       FROM  profile_job_sector_enum"));
+        $page->assign('sectors', XDB::iterator("SELECT  id, name
+                                                  FROM  profile_job_sector_enum"));
 
         $page->assign('countryList', XDB::iterator("SELECT  iso_3166_1_a2, countryFR
                                                       FROM  geoloc_countries
