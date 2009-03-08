@@ -61,6 +61,9 @@ class Profile
         $this->data = $data;
         $this->pid = $this->data['pid'];
         $this->hrpid = $this->data['hrpid'];
+        if (!S::logged()) {
+            $this->setVisibilityLevel(self::VISIBILITY_PUBLIC);
+        }
     }
 
     public function id()
