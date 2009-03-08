@@ -442,18 +442,18 @@ function removeMedal(id)
 function removeJob(id, pref)
 {
     $('#' + id + '_cont').hide();
-    if ($('#' + id).find("[name='" + id + "[new]']").val() == '0') {
+    if ($('#' + id).find("[name='" + pref + "[new]']").val() == '0') {
         $('#' + id + '_grayed').show();
-        $('#' + id + '_grayed_name').html($('#' + id).find("[name='" + id + "[name]']").val());
+        $('#' + id + '_grayed_name').html($('#' + id).find("[name='" + pref + "[name]']").val());
     }
-    $('#' + id).find("[name='" + id + "[removed]']").val('1');
+    $('#' + id).find("[name='" + pref + "[removed]']").val('1');
 }
 
 function restoreJob(id, pref)
 {
     $('#' + id + '_cont').show();
     $('#' + id + '_grayed').hide();
-    $('#' + id).find("[name='" + id + "[removed]']").val('0');
+    $('#' + id).find("[name='" + pref + "[removed]']").val('0');
 }
 
 function updateJobSector(id, sel)
