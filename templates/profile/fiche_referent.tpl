@@ -31,7 +31,7 @@
   </div>
   <div class="spacer"></div>
 
-  {if $expertise != '' || $secteurs|count || $pays|count }
+  {if $expertise != '' || $sectors|count || $pays|count }
   <div id="part">
     <h2>Informations de référent&nbsp;:</h2>
     {if $expertise}
@@ -40,12 +40,12 @@
       <span>{$expertise|nl2br}</span>
     </div>
     {/if}
-    {if $secteurs|count}
+    {if $sectors|count}
     <div class="rubrique_referent">
       <em>Secteurs&nbsp;:</em><br />
       <ul>
-        {foreach from=$secteurs item="secteur" key="i"}
-        <li>{$secteur}{if $ss_secteurs.$i != ''} ({$ss_secteurs.$i}){/if}</li>
+        {foreach from=$sectors item="sector" key="i"}
+        <li>{$sector}{if $subSector.$i != ''} ({$subSector.$i}){/if}</li>
         {/foreach}
       </ul>
     </div>

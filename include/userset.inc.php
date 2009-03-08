@@ -180,7 +180,7 @@ class MinificheView extends MultipageView
                 u.perms != 'pending' AS wasinscrit,
                 u.deces != 0 AS dcd, u.deces, u.matricule_ax,
                 FIND_IN_SET('femme', u.flags) AS sexe,
-                je.name AS entreprise, je.url AS job_web, es.name AS secteur, ef.fonction_fr AS fonction,
+                je.name AS entreprise, je.url AS job_web, es.name AS sector, ef.fonction_fr AS fonction,
                 IF(n1.nat = '', n1.countryFR, n1.nat) AS nat1, n1.iso_3166_1_a2 AS iso3166_1,
                 IF(n2.nat = '', n2.countryFR, n2.nat) AS nat2, n2.iso_3166_1_a2 AS iso3166_2,
                 IF(n3.nat = '', n3.countryFR, n3.nat) AS nat3, n3.iso_3166_1_a2 AS iso3166_3,

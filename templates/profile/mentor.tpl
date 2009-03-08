@@ -22,7 +22,7 @@
 
 <p>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$smarty.session.hruid}">fiche référent</a> qui n'est accessible que par les X.
 </p>
-{if (!$expertise)||(!($secteurs|@count))}
+{if (!$expertise)||(!($sectors|@count))}
   <p>
     <strong>Attention : pour figurer dans la base de données des mentors, il faut remplir la
     dernière case en bas de cette page et avoir au moins un secteur d'activité de prédilection.</strong><br />
@@ -93,12 +93,12 @@
     </th>
   </tr>
   <tr>
-    <td id="secteur_sel">
+    <td id="sectorSelection">
       <div style="float: left; width: 30%" class="titre">Secteur</div>
-      <select name="secteur_sel" onchange="updateSector()">
+      <select name="sectorSelection" onchange="updateSector()">
         <option value="">&nbsp;</option>
-        {iterate from=$secteurs_sel item=secteur}
-        <option value="{$secteur.id}">{$secteur.label}</option>
+        {iterate from=$sectors item=sector}
+        <option value="{$sector.id}">{$sector.name}</option>
         {/iterate}
       </select>
     </td>
@@ -106,20 +106,20 @@
   <tr>
     <td>
       <div style="float: left; width: 30%" class="titre">Sous-secteur</div>
-      <span id="ss_secteur_sel"></span>
+      <span id="subSectorSelection"></span>
     </td>
   </tr>
   <tr class="pair">
-    <td id="secteurs">
-      {if $secteurs|@count}
-      {foreach from=$secteurs item=secteur key=s}
-      {foreach from=$secteur item=ss_sect key=ss}
-      <div id="secteurs_{$s}_{$ss}" style="clear: both; margin-top: 0.5em" class="titre">
+    <td id="sectors">
+      {if $sectors|@count}
+      {foreach from=$sectors item=sector key=s}
+      {foreach from=$sector item=subSector key=ss}
+      <div id="sectors_{$s}_{$ss}" style="clear: both; margin-top: 0.5em" class="titre">
         <a href="javascript:removeSector('{$s}', '{$ss}')" style="display: block; float: right">
           {icon name=cross title="Supprimer ce secteur"}
         </a>
-        <input type="hidden" name="secteurs[{$s}][{$ss}]" value="{$ss_sect}" />
-        {$ss_sect}
+        <input type="hidden" name="sectors[{$s}][{$ss}]" value="{$subSector}" />
+        {$subSector}
       </div>
       {/foreach}
       {/foreach}

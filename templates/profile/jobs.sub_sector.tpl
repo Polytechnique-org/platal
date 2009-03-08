@@ -21,10 +21,10 @@
 {**************************************************************************}
 
 <?xml version="1.0" encoding="utf-8"?>
-<select name="jobs[{$id}][sss_secteur]">
+<select name="jobs[{$id}][subSubSector]">
   <option value=""></option>
-  {iterate from=$sssecteurs item=sssecteur}
-  <option value="{$sssecteur.id}" {if $sssecteur.id eq $sel}selected="selected"{/if}>{$sssecteur.label}</option>
+  {iterate from=$subSubSectors item=subSubSector}
+  <option value="{$subSubSector.id}" {if $subSubSector.id eq $sel}selected="selected"{/if}>{$subSubSector.name}</option>
   {/iterate}
 </select>
 

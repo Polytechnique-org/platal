@@ -40,22 +40,22 @@ var baseurl = platal_baseurl + "referent/";
 {literal}
 var Ajax2 = new AjaxEngine();
 
-function setSecteur(secteur)
+function setSector(sector)
 {
-    if (secteur == '') {
+    if (sector == '') {
         document.getElementById('scat').style.display = 'none';
         document.getElementById('country').style.display = 'none';
         document.getElementById('keywords').style.display = 'none';
     } else {
-        Ajax.update_html('ssect_chg', baseurl + 'ssect/' + secteur);
-        Ajax2.update_html('country_chg', baseurl + 'country/' + secteur);
+        Ajax.update_html('ssect_chg', baseurl + 'ssect/' + sector);
+        Ajax2.update_html('country_chg', baseurl + 'country/' + sector);
         document.getElementById('scat').style.display = ''; 
         document.getElementById('country').style.display = ''; 
         document.getElementById('keywords').style.display = ''; 
     }
 }
 
-function setSSecteurs()
+function setSubSectors()
 {
     var sect  = document.getElementById('sect_field').value;
     var ssect = document.getElementById('ssect_field').value;
@@ -72,8 +72,8 @@ function setSSecteurs()
         Secteur de compétence <br /> du référent
       </td>
       <td>
-        <select name="secteur" id="sect_field" onchange="setSecteur(this.value)">
-          {html_options options=$secteurs selected=$secteur_sel}
+        <select name="sector" id="sect_field" onchange="setSector(this.value)">
+          {html_options options=$sectors selected=$sectorSelection}
         </select>
       </td>
     </tr>

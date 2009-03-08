@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-{if $address.entreprise || $address.secteur || $address.fonction ||
+{if $address.entreprise || $address.sector || $address.fonction ||
   $address.poste || $address.fonction || $address.email || $address.web}
       <div class="adresse" style="float: left">
       	<table>
@@ -30,10 +30,10 @@
           {if $address.w_web} [<a href='{$address.w_web}'>Page perso</a>]{/if}</strong></td>
         </tr>
         {/if}
-        {if $address.secteur}
+        {if $address.sector}
         <tr>
           <td><em>Secteur&nbsp;: </em></td>
-          <td><strong>{$address.secteur}{if $address.ss_secteur} ({$address.ss_secteur}){/if}</strong></td>
+          <td><strong>{$address.sector}{if $address.subSector} ({$address.subSector}){/if}</strong></td>
         </tr>
         {/if}
 

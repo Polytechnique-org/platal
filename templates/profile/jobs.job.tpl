@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{assign var=jobid value="job_`$i`"}
+{assign var=jobid value="job_"|cat:$i}
 {assign var=jobpref value="jobs[`$i`]"}
 {assign var=sector_text value="sector_text_"|cat:$i}
 {assign var=sector value="sector_"|cat:$i}
@@ -66,14 +66,14 @@
       <td class="titre">Acronyme</td>
       <td>
         <input type="text" size="35" maxlength="255" {if $job.acronym_error}class="error"{/if}
-               name="{$jobpref}[acronym]" value="{$job.acronym}" />
+               name="{$jobpref}[hq_acronym]" value="{$job.hq_acronym}" />
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">
       <td class="titre">Page web</td>
       <td>
-        <input type="text" size="35" maxlength="255" {if $job.hq_web_error}class="error"{/if}
-               name="{$jobpref}[hq_web]" value="{$job.hq_web}" />
+        <input type="text" size="35" maxlength="255" {if $job.hq_url}class="error"{/if}
+               name="{$jobpref}[hq_url]" value="{$job.hq_url}" />
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">
@@ -88,7 +88,8 @@
         <div style="float: left">
           <div class="titre">Adresse du siège</div>
           <div style="margin-top: 20px; clear: both">
-            {include file="geoloc/form.address.tpl" name="`$jobpref`[hq_adr]" id="`$jobid`_adr" adr=$job.hq_adr}
+            {include file="geoloc/form.address.tpl" prefname="`$jobpref`[hq_address]"
+                     prefid="`$jobid`_address" address=$job.hq_address}
           </div>
         </div>
       </td>
@@ -97,7 +98,7 @@
       <td class="titre">Téléphone</td>
       <td>
         <input type="text" maxlength="28" {if $job.hq_tel_error}class="error"{/if}
-               name="{$jobpref}[hq_tel]" value="{$job.hq_tel}" />
+               name="{$jobpref}[hq_phone]" value="{$job.hq_phone}" />
       </td>
     </tr>
     <tr class="{$entreprise}" style="display: none">
@@ -115,31 +116,31 @@
       <td class="titre">Secteur d'activité</td>
       <td>
         <input type="text" class="sector_name {if $job.sector_error}error{/if}" size="35" maxlength="100"
-               name="{$jobpref}[sss_secteur_name]" value="{$job.sss_secteur_name}" />
+               name="{$jobpref}[subSubSectorName]" value="{$job.subSubSectorName}" />
         <a href="javascript:displayAllSector({$i})">{icon name="table" title="Tous les secteurs"}</a>
       </td>
     </tr>
     <tr class="pair {$sector}" style="display: none">
       <td class="titre" rowspan="3">Secteur&nbsp;d'activité</td>
       <td>
-        <select name="{$jobpref}[secteur]" onchange="updateJobSector({$i}, '')">
+        <select name="{$jobpref}[sector]" onchange="updateJobSector({$i}, '')">
           <option value="">&nbsp;</option>
-          {foreach from=$secteurs item=secteur}
-          <option value="{$secteur.id}" {if $secteur.id eq $job.secteur}selected="selected"{/if}>
-            {$secteur.label}
+          {foreach from=$sectors item=item}
+          <option value="{$item.id}" {if $item.id eq $job.sector}selected="selected"{/if}>
+            {$item.label}
           </option>
           {/foreach}
         </select>
       </td>
     </tr>
     <tr class="pair {$sector}" style="display: none">
-      <td id="{$jobid}_ss_secteur">
-        <input type="hidden" name="{$jobpref}[ss_secteur]" value="{$job.ss_secteur|default:'-1'}" />
+      <td id="{$jobid}_subSector">
+        <input type="hidden" name="{$jobpref}[subSector]" value="{$job.subSector|default:'-1'}" />
       </td>
     </tr>
     <tr class="pair {$sector}" style="display: none">
-      <td id="{$jobid}_sss_secteur">
-        <input type="hidden" name="{$jobpref}[sss_secteur]" value="{$job.sss_secteur|default:'-1'}" />
+      <td id="{$jobid}_subSubSector">
+        <input type="hidden" name="{$jobpref}[subSubSector]" value="{$job.subSubSector|default:'-1'}" />
       </td>
     </tr>
     <tr class="pair">
@@ -166,14 +167,14 @@
       <td class="titre">Description</td>
       <td>
         <input type="text" size="35" maxlength="120" {if $job.description_error}class="error"{/if}
-           name="{$jobpref}[description]" value="{$job.description}" /><br /><br />
+           name="{$jobpref}[description]" value="{$job.description}" />
       </td>
     </tr>
     <tr class="pair">
       <td class="titre">Page&nbsp;perso</td>
       <td>
-          <input type="text" size="35" maxlength="255" {if $job.w_web_error}class="error"{/if}
-                 name="{$jobpref}[w_web]" value="{$job.w_web}" />
+          <input type="text" size="35" maxlength="255" {if $job.w_rul}class="error"{/if}
+                 name="{$jobpref}[w_url]" value="{$job.w_url}" />
       </td>
     </tr>
     <tr class="pair">
@@ -181,10 +182,11 @@
         <div style="float: left">
           <div class="titre">Adresse</div>
           <div class="flags">
-            {include file="include/flags.radio.tpl" name="`$jobpref`[w_adr][pub]" val=$job.w_adr.pub}
+            {include file="include/flags.radio.tpl" name="`$jobpref`[w_address][pub]" val=$job.w_address.pub}
           </div>
           <div style="margin-top: 20px; clear: both">
-            {include file="geoloc/form.address.tpl" name="`$jobpref`[hq_adr]" id="`$jobid`_adr" adr=$job.hq_adr}
+            {include file="geoloc/form.address.tpl" prefname="`$jobpref`[w_address]"
+                     prefid=$jobid address=$job.w_address}
           </div>
         </div>
       </td>
@@ -193,18 +195,18 @@
              class="pair" i=$i error=$job.w_email_error prefix="w_" pub=$job.w_email_pub id=$i}
     <tr class="pair">
       <td colspan="2">
-        {foreach from=$job.w_tel key=t item=tel}
-          <div id="{"`$jobid`_w_tel_`$t`"}" style="clear: both">
-            {include file="profile/phone.tpl" prefname="`$jobpref`[w_tel]" prefid="`$jobid`_w_tel" telid=$t tel=$tel}
+        {foreach from=$job.w_phone key=t item=phone}
+          <div id="{"`$jobid`_w_phone_`$t`"}" style="clear: both">
+            {include file="profile/phone.tpl" prefname="`$jobpref`[w_phone]" prefid="`$jobid`_w_phone" telid=$t tel=$phone}
           </div>
         {/foreach}
-        {if $job.w_tel|@count eq 0}
-          <div id="{"`$jobid`_w_tel_0"}" style="clear: both">
-            {include file="profile/phone.tpl" prefname="`$jobpref`[w_tel]" prefid="`$jobid`_w_tel" telid=0 tel=0}
+        {if $job.w_phone|@count eq 0}
+          <div id="{"`$jobid`_w_phone_0"}" style="clear: both">
+            {include file="profile/phone.tpl" prefname="`$jobpref`[w_phone]" prefid="`$jobid`_w_phone" telid=0 tel=0}
           </div>
         {/if}
-        <div id="{$jobid}_w_tel_add" class="center" style="clear: both; padding-top: 4px;">
-          <a href="javascript:addTel('{$jobid}_w_tel', '{$jobpref}[w_tel]')">
+        <div id="{$jobid}_w_phone_add" class="center" style="clear: both; padding-top: 4px;">
+          <a href="javascript:addTel('{$jobid}_w_phone', '{$jobpref}[w_phone]')">
             {icon name=add title="Ajouter un numéro de téléphone"} Ajouter un numéro de téléphone
           </a>
         </div>
