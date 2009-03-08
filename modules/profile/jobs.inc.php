@@ -83,7 +83,13 @@ class ProfileJob extends ProfileGeocoding
                               $job['name']);
             if ($res->numRows() != 1) {
                 $user = S::user();
-                $req = new EntrReq($user, $jobid, $job['name'], $job['hq_²acronym'], $job['hq_url'], $job['hq_email'], $job['hq_fixed'], $job['hq_fax']);
+                $this->geocodeAddress($job['hq_address'], $s);
+                if (!$s) {
+                    $gmapsGeocoder = new GMapsGeocoder();
+                    $job['hq_address'] = $gmapsGeocoder->stripGeocodingFromAddress($job['hq_address']);
+                }
+                $req = new EntrReq($user, $jobid, $job['name'], $job['hq_acronym'], $job['hq_url'],
+                                   $job['hq_email'], $job['hq_fixed'], $job['hq_fax'], $job['hq_address']);
                 $req->submit();
                 $job['jobid'] = null;
             } else {
@@ -216,7 +222,8 @@ class ProfileJobs extends ProfilePage
                                FROM  profile_job                   AS j
                           LEFT JOIN  profile_job_enum              AS je ON (j.jobid = je.id)
                           LEFT JOIN  profile_job_subsubsector_enum AS s  ON (s.id = j.subsubsectorid)
-                          LEFT JOIN  profile_addresses             AS aw ON (aw.pid = j.uid AND aw.type = 'job')
+                          LEFT JOIN  profile_addresses             AS aw ON (aw.pid = j.uid AND aw.type = 'job'
+                                                                             AND aw.id = j.id)
                           LEFT JOIN  profile_addresses             AS ah ON (ah.jobid = j.jobid AND ah.type = 'hq')
                               WHERE  j.uid = {?}
                            ORDER BY  j.id",
