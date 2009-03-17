@@ -28,4 +28,17 @@ CREATE TABLE IF NOT EXISTS profile_corps_rank_enum (
   UNIQUE KEY(abbreviation)
 ) CHARSET=utf8;
 
+    UPDATE  profile_corps      AS c
+INNER JOIN  profile_corps_enum AS e ON (c.original_corpsid = e.id)
+ LEFT JOIN  profile_corps_enum AS a ON (a.name = "Aucun (anc. démissionnaire)")
+       SET  c.original_corpsid = a.id
+     WHERE  e.name = "Ancien élève étranger";
+
+UPDATE  profile_corps_enum
+   SET  name = "Aucun"
+ WHERE  name = "Aucun (anc. démissionnaire)";
+
+DELETE FROM  profile_corps_enum
+      WHERE  name = "Ancien élève étranger";
+
 --  vim:set syntax=mysql:

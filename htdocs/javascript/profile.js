@@ -589,7 +589,7 @@ function addSector()
 
 function registerEnterpriseAutocomplete(id)
 {
-    $(".enterprise_name").each(
+    $(".enterpriseName").each(
       function() {
         if (id == -1 || this.name == "jobs[" + id + "][name]") {
             $(this).autocomplete(platal_baseurl + "search/autocomplete/entreprise",
@@ -602,9 +602,9 @@ function registerEnterpriseAutocomplete(id)
         }
       });
 
-    $(".sector_name").each(
+    $(".sectorName").each(
       function() {
-        if (id == -1 || this.name == "jobs[" + id + "][subSubSector]") {
+        if (id == -1 || this.name == "jobs[" + id + "][subSubSectorName]") {
             $(this).autocomplete(platal_baseurl + "search/autocomplete/subSubSector",
                                  {
                                      selectOnly:1,

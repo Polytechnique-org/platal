@@ -46,7 +46,7 @@
         </div>
         Entreprise n°{$i+1}&nbsp;:
         {if $job.tmp_name}{$job.tmp_name} <small>(en cours de validation)</small>{else}
-        <input type="text" class="enterprise_name {if $job.name_error}error{/if}" size="35" maxlength="100"
+        <input type="text" class="enterpriseName {if $job.name_error}error{/if}" size="35" maxlength="100"
                name="{$jobpref}[name]" value="{$job.name}" />
         {/if}
         <a href="javascript:removeJob('{$jobid}', '{$jobpref}')">
@@ -115,7 +115,7 @@
     <tr class="pair {$sector_text}">
       <td class="titre">Secteur d'activité</td>
       <td>
-        <input type="text" class="sector_name {if $job.sector_error}error{/if}" size="35" maxlength="100"
+        <input type="text" class="sectorName {if $job.sector_error}error{/if}" size="35" maxlength="100"
                name="{$jobpref}[subSubSectorName]" value="{$job.subSubSectorName}" />
         <a href="javascript:displayAllSector({$i})">{icon name="table" title="Tous les secteurs"}</a>
       </td>
