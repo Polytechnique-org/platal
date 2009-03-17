@@ -461,6 +461,16 @@ UPDATE profile_education_enum
 SET abbreviation = 'NTNU', name = 'Norwegian University of Science and Technology', country = 'NO', url = 'http://www.ntnu.no/'
 WHERE name = 'Univ Trondheim';
 
+UPDATE profile_education_enum
+SET abbreviation = '', country = 'GB'
+WHERE name = 'University of Surrey';
+UPDATE profile_education_enum
+SET abbreviation = 'OIV', country = 'FR'
+WHERE name = 'Organisme International de la Vigne et du Vin';
+UPDATE profile_education_enum
+SET abbreviation = 'NSU', name = 'Novosibirsk State University', url = 'http://www.nsu.ru/', country = 'RU'
+WHERE name = 'Université de Novossibirsk (Новосибирский Государственный Университет)';
+
 -- Cleans duplicated entries
 UPDATE profile_education SET eduid = 0 WHERE eduid = 70;
 DELETE FROM profile_education_enum WHERE id = 70;
@@ -544,7 +554,8 @@ INSERT INTO  profile_education_enum (name, url, country, abbreviation)
              ('Centre Européen d\'Éducation Permanente', 'http://www.cedep.fr/', 'FR', 'CEDEP'),
              ('Collège Interarmées de Défense', 'http://www.college.interarmees.defense.gouv.fr/', 'FR', ''),
              ('Centre de Formation des Journalistes', 'http://www.cfpj.com/', 'FR', 'CFJ'),
-             ('Institut National des Hautes Études de Sécurité', 'http://www.inhes.interieur.gouv.fr/', 'FR', 'INHES');
+             ('Institut National des Hautes Études de Sécurité', 'http://www.inhes.interieur.gouv.fr/', 'FR', 'INHES'),
+             ('Université d\'Orléans', 'http://www.univ-orleans.fr/', 'FR', '');
 
 
 -- Médecine is not a university but an educational field
