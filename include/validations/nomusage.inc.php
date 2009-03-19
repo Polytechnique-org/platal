@@ -117,6 +117,10 @@ class UsageReq extends Validate
         register_watch_op($this->user->id(), WATCH_FICHE, '', 'nom');
         require_once('user.func.inc.php');
         set_new_usage($this->user->id(), $this->nom_usage, $this->alias);
+
+        // Update the local User object, to pick up the new bestalias.
+        $this->user = User::getSilent($this->user->id());
+
         return true;
     }
 
