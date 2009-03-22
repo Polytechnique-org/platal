@@ -94,8 +94,6 @@ https://www.polytechnique.org/profile/{$smarty.session.hruid}
 </textarea>
   <div class="center">
     <input type="submit" name="inscrire" value="M'inscrire !" />
-    &nbsp;
-    <input type="reset" value="Annuler" />
   </div>
 </form>
 
