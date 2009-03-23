@@ -24,12 +24,12 @@
 
 <div>
   La page que tu as demandée est classée comme sensible. Il est nécessaire de taper ton mot de passe
-  pour y accéder, même avec l'accès permanet activé.
+  pour y accéder, même avec l'accès permanent activé.
 </div>
 <br />
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
-  <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
+  <table class="bicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <td class="titre">
         Nom d'utilisateur&nbsp;:
