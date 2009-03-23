@@ -552,6 +552,10 @@ class AdminModule extends PLModule
                     // however suits our needs.
                     if ($perms == 'disabled' && $old_fields['perms'] != 'disabled') {
                         kill_sessions();
+
+                        // Also serve a reminder to the admin: disabling an account
+                        // does not deactivate email forwarding.
+                        $page->trigWarning("N'oubliez pas, le cas échéant, de désactiver les redirections et le compte GoogleApps de l'utilisateur.");
                     }
 
                     // Updates the user profile with the new values.
@@ -602,14 +606,6 @@ class AdminModule extends PLModule
                             if ($account->active() && $account->sync_password) {
                                 $account->set_password($pass_encrypted);
                             }
-                        }
-
-                        // If the update did disable the user account, disables
-                        // the Google Apps account as well.
-                        if ($new_fields['perms'] == 'disabled' && $new_fields['perms'] != $old_fields['perms']) {
-                            require_once 'googleapps.inc.php';
-                            $account = new GoogleAppsAccount($user);
-                            $account->suspend();
                         }
                     }
 
