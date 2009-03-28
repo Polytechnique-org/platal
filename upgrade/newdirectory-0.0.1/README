@@ -1,1 +1,4 @@
 Il faudra déplacer le yourself qui est mis dans profile_display dans le script 00_names.sql vers l'account.
+
+Le 12_secteurs.sql est à faire avant le alternate_subsubsectors.php et pour que ce dernier fonctionne, il faut que le fichier
+arbo-UTF8.xml soit dans le même dossier.
