@@ -48,6 +48,7 @@ function wizPage_onLoad(id)
         for (var i = 0 ; $('#job_' + i).length != 0; ++i) {
             updateJobSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSector]']").val());
             updateJobSubSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSubSector]']").val());
+            updateJobAlternates(i);
         }
         break;
     }
@@ -472,6 +473,14 @@ function updateJobSubSector(id, sel)
         subSector = '-1';
     }
     Ajax.update_html('job_' + id + '_subSubSector', 'profile/ajax/sub_sector/' + id + '/' + subSector + '/' + sel);
+}
+
+function updateJobAlternates(id)
+{
+    var subSubSector = $('#job_' + id).find("[name='jobs[" + id + "][subSubSector]']").val();
+    if (subSubSector != '') {
+        Ajax.update_html('job_' + id + '_alternates', 'profile/ajax/alternates/' + id + '/' + subSubSector);
+    }
 }
 
 function displayAllSector(id)

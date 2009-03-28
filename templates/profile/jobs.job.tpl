@@ -121,7 +121,7 @@
       </td>
     </tr>
     <tr class="pair {$sector}" style="display: none">
-      <td class="titre" rowspan="3">Secteur&nbsp;d'activité</td>
+      <td class="titre" rowspan="4">Secteur&nbsp;d'activité</td>
       <td>
         <select name="{$jobpref}[sector]" onchange="updateJobSector({$i}, '')">
           <option value="">&nbsp;</option>
@@ -141,6 +141,10 @@
     <tr class="pair {$sector}" style="display: none">
       <td id="{$jobid}_subSubSector">
         <input type="hidden" name="{$jobpref}[subSubSector]" value="{$job.subSubSector|default:'-1'}" />
+      </td>
+    </tr>
+    <tr class="pair {$sector}" style="display: none">
+      <td id="{$jobid}_alternates">
       </td>
     </tr>
     <tr class="pair">

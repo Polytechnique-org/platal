@@ -40,6 +40,7 @@ class ProfileModule extends PLModule
             'profile/ajax/job'           => $this->make_hook('ajax_job',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/sector'        => $this->make_hook('ajax_sector',                AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/sub_sector'    => $this->make_hook('ajax_sub_sector',            AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/alternates'    => $this->make_hook('ajax_alternates',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/buildnames'    => $this->make_hook('ajax_buildnames',            AUTH_COOKIE, 'user', NO_AUTH),
@@ -515,6 +516,23 @@ class ProfileModule extends PLModule
         $page->assign('id', $id);
         $page->assign('subSubSectors', $res);
         $page->assign('sel', $sssect);
+    }
+
+    function handler_ajax_alternates(&$page, $id, $sssect)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $res = XDB::iterator('SELECT  name
+                                FROM  profile_job_alternates
+                               WHERE  subsubsectorid = {?}
+                            ORDER BY  id',
+                             $sssect);
+        $page->changeTpl('profile/jobs.alternates.tpl', NO_SKIN);
+        $alternate  = $res->next();
+        $alternates = $alternate['name'];
+        while ($alternate  = $res->next()) {
+            $alternates .= ', ' . $alternate['name'];
+        }
+        $page->assign('alternates', $alternates);
     }
 
     function handler_ajax_skill(&$page, $cat, $id)
