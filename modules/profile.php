@@ -68,7 +68,7 @@ class ProfileModule extends PLModule
             'admin/sections'             => $this->make_hook('admin_sections',             AUTH_MDP, 'admin'),
             'admin/networking'           => $this->make_hook('admin_networking',           AUTH_MDP, 'admin'),
             'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_MDP, 'admin'),
-            'admin/fonctions'            => $this->make_hook('admin_fonctions',            AUTH_MDP, 'admin'),
+            'admin/sectors'              => $this->make_hook('admin_sectors',              AUTH_MDP, 'admin'),
             'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP, 'admin'),
             'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP, 'admin'),
             'admin/names'                => $this->make_hook('admin_names',                AUTH_MDP, 'admin'),
@@ -891,13 +891,14 @@ class ProfileModule extends PLModule
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_fonctions(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Administration - Fonctions');
-        $page->assign('title', 'Gestion des fonctions');
-        $table_editor = new PLTableEditor('admin/fonctions', 'fonctions_def', 'id', true);
-        $table_editor->describe('fonction_fr', 'intitulé', true);
-        $table_editor->describe('fonction_en', 'intitulé (ang)', true);
-        $table_editor->describe('flags', 'titre', true);
+    function handler_admin_sectors(&$page, $action = 'list', $id = null) {
+        $page->setTitle('Administration - Secteurs');
+        $page->assign('title', 'Gestion des secteurs');
+        $table_editor = new PLTableEditor('admin/sectors', 'profile_job_subsubsector_enum', 'id', true);
+        $table_editor->describe('sectorid', 'id du secteur', false);
+        $table_editor->describe('subsectorid', 'id du sous-secteur', false);
+        $table_editor->describe('name', 'nom', true);
+        $table_editor->describe('flags', 'affichage', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_networking(&$page, $action = 'list', $id = null) {

@@ -136,7 +136,7 @@
   <tr class="impair">
     <td class="titre">Emploi</td>
     <td>
-      <a href="admin/fonctions">Fonctions</a>
+      <a href="admin/sectors">Secteurs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/networking">Networking</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
