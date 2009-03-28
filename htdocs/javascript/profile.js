@@ -47,7 +47,7 @@ function wizPage_onLoad(id)
       case 'emploi':
         for (var i = 0 ; $('#job_' + i).length != 0; ++i) {
             updateJobSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSector]']").val());
-            updateJobSubSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSubsector]']").val());
+            updateJobSubSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSubSector]']").val());
         }
         break;
     }
@@ -486,7 +486,6 @@ function makeAddJob(id)
     {
         $('#add_job').before(data);
         registerEnterpriseAutocomplete(id);
-        updateSector('job_' + id, 'jobs[' + id + ']', '');
     };
 }
 
