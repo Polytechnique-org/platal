@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS profile_job_subsubsector_enum (
   sectorid TINYINT(2) UNSIGNED NOT NULL,
   subsectorid TINYINT(3) UNSIGNED NOT NULL,
   name VARCHAR(256) NOT NULL DEFAULT '',
-  flags ENUM('display') NOT NULL DEFAULT 'display',
+  flags SET('display') NOT NULL DEFAULT 'display',
   PRIMARY KEY(id)
 ) CHARSET=utf8;
 

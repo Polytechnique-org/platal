@@ -16,7 +16,7 @@ foreach ($values as $val) {
     if ($val['tag'] == 'grand-domaine' && $val['type'] == 'open') {
         $res = XDB::execute('INSERT INTO  profile_job_sector_enum (name)
                                   VALUES  ({?})',
-                            ucfirst(strtolower($val['attributes']['intitule'])));
+                            ucfirst(mb_strtolower($val['attributes']['intitule'])));
         $sectorid = XDB::insertId();
     }
     if ($val['tag'] == 'domaine' && $val['type'] == 'open') {
