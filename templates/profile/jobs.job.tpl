@@ -148,26 +148,6 @@
       </td>
     </tr>
     <tr class="pair">
-      <td class="titre">Fonction&nbsp;occupée</td>
-      <td>
-        <select name="{$jobpref}[fonction]">
-          <option value="">&nbsp;</option>
-          {assign var=ingroup value=false}
-          {foreach from=$fonctions item=fonct}
-          {if $fonct.title}
-            {if $ingroup}</optgroup>{/if}
-            <optgroup label="{$fonct.fonction_fr}">
-            {assign var=ingroup value=true}
-          {/if}
-          <option value="{$fonct.id}" {if $fonct.id eq $job.fonction}selected="selected"{/if}>
-            {$fonct.fonction_fr}
-          </option>
-          {/foreach}
-          {if $ingroup}</optgroup>{/if}
-        </select>
-      </td>
-    </tr>
-    <tr class="pair">
       <td class="titre">Description</td>
       <td>
         <input type="text" size="35" maxlength="120" {if $job.description_error}class="error"{/if}

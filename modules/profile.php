@@ -481,10 +481,6 @@ class ProfileModule extends PLModule
         $res = XDB::query("SELECT  id, name AS label
                              FROM  profile_job_sector_enum");
         $page->assign('sectors', $res->fetchAllAssoc());
-        $res = XDB::query("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
-                             FROM  fonctions_def
-                         ORDER BY  id");
-        $page->assign('fonctions', $res->fetchAllAssoc());
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page);
     }
