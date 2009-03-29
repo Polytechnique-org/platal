@@ -546,7 +546,7 @@ function addCountry()
 function updateSubSector()
 {
     var s  = $('#sectorSelection').find('[name=sectorSelection]').val();
-    var ss = $('#selectedSubSector').find("[name='jobs[-1][subSector]']").val();
+    var ss = $('#subSectorSelection').find("[name='jobs[-1][subSector]']").val();
     if ((s == '' || ss == '') || $('#sectors_' + s + '_' + ss).length != 0) {
         $('#addSector').hide();
     } else {
@@ -565,24 +565,24 @@ function updateSector()
     var sector = $('#sectorSelection').find('[name=sectorSelection]').val();
     if (sector == '') {
         sector = '-1';
-        $('#selectedSubSector').html('');
+        $('#subSectorSelection').html('');
         return;
     }
     $.get(platal_baseurl + 'profile/ajax/sector/-1/0/0/' + sector,
           function(data) {
               data = '<a href="javascript:addSector()" style="display: none; float: right" id="addSector">'
-                   + '  <img src="images/icons/add.gif" alt="" title="Ajouter ce secteur" />'
+                   + '  <img src="images/icons/add.gif" alt="Ajouter ce secteur" title="Ajouter ce secteur" />'
                    + '</a>' + data;
-              $('#selectedSubSector').html(data);
-              $('#selectedSubSector').find("[name='jobs[-1][subSector]']").change(updateSubSector);
+              $('#subSectorSelection').html(data);
+              $('#subSectorSelection').find("[name='jobs[-1][subSector]']").change(updateSubSector);
           });
 }
 
 function addSector()
 {
     var s   = $('#sectorSelection').find('[name=sectorSelection]').val();
-    var ss  = $('#selectedSubSector').find("[name='jobs[-1][subSector]']").val();
-    var sst = $('#selectedSubSector').find("[name='jobs[-1][subSector]'] :selected").text();
+    var ss  = $('#subSectorSelection').find("[name='jobs[-1][subSector]']").val();
+    var sst = $('#subSectorSelection').find("[name='jobs[-1][subSector]'] :selected").text();
 
     var html = '<div id="sectors_' + s + '_' + ss + '" style="clear: both; margin-top: 0.5em" class="titre">'
              + '  <a href="javascript:removeSector(\'' + s + '\', \'' + ss + '\')" style="display: block; float: right">'
