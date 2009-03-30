@@ -48,6 +48,7 @@ class AdminModule extends PLModule
             'admin/ipwatch'                => $this->make_hook('ipwatch', AUTH_MDP, 'admin'),
             'admin/icons'                  => $this->make_hook('icons', AUTH_MDP, 'admin'),
             'admin/accounts'               => $this->make_hook('accounts', AUTH_MDP, 'admin'),
+            'admin/jobs'                   => $this->make_hook('jobs', AUTH_MDP, 'admin'),
         );
     }
 
@@ -1253,6 +1254,68 @@ class AdminModule extends PLModule
                                                  FROM  auth_user_md5 AS u
                                                 WHERE  perms = \'admin\'
                                              ORDER BY  nom, prenom'));
+    }
+
+    function handler_jobs(&$page, $id = -1)
+    {
+        $page->changeTpl('admin/jobs.tpl');
+
+        if (Env::has('search')) {
+            $res = XDB::query("SELECT  e.id, e.name, e.acronym
+                                 FROM  profile_job_enum AS e
+                                WHERE  e.name LIKE CONCAT('% ', {?}, '%') OR e.acronym LIKE CONCAT('% ', {?}, '%')",
+                              Env::t('job'), Env::t('job'));
+
+            if ($res->numRows() <= 20) {
+                $page->assign('jobs', $res->fetchAllAssoc());
+            } else {
+                $page->trigError("Il y a trop d'entreprises correspondant à ton choix. Affine-le !");
+            }
+
+            $page->assign('askedJob', Env::v('job'));
+            return;
+        }
+
+        if (Env::has('edit')) {
+            S::assert_xsrf_token();
+            $selectedJob = Env::has('selectedJob');
+
+            if (Env::has('change')) {
+                XDB::execute('UPDATE  profile_job
+                                 SET  jobid = {?}
+                               WHERE  jobid = {?}',
+                             Env::i('newJobId'), $id);
+                XDB::execute('DELETE FROM  profile_job_enum
+                                    WHERE  id = {?}',
+                             $id);
+
+                $page->trigSuccess("L'entreprise a bien été remplacée.");
+            } else {
+                XDB::execute('UPDATE  profile_job_enum
+                                 SET  name = {?}, acronym = {?}, url = {?}, email = {?},
+                                      NAF_code = {?}, AX_code = {?}, holdingid = {?}
+                               WHERE  id = {?}',
+                             Env::t('name'), Env::t('acronym'), Env::t('url'), Env::t('email'),
+                             Env::t('NAF_code'), Env::i('AX_code'), Env::i('holdingId'), $id);
+
+                $page->trigSuccess("L'entreprise a bien été mise à jour.");
+            }
+        }
+
+        if (!Env::has('change') && $id != -1) {
+            $res = XDB::query('SELECT  e.id, e.name, e.acronym, e.url, e.email, e.NAF_code, e.AX_code,
+                                       h.id AS holdingId, h.name AS holdingName, h.acronym AS holdingAcronym
+                                 FROM  profile_job_enum AS e
+                            LEFT JOIN  profile_job_enum AS h ON (e.holdingid = h.id)
+                                WHERE  e.id = {?}',
+                              $id);
+
+            if ($res->numRows() == 0) {
+                $page->trigError('Auncune entreprise ne correspond à cet identifiant.');
+            } else {
+                $page->assign('selectedJob', $res->fetchOneAssoc());
+            }
+        }
     }
 }
 
