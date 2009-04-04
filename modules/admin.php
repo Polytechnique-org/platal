@@ -572,6 +572,12 @@ class AdminModule extends PLModule
                         user_reindex($user->id());
                         $new_fields = XDB::query($watch_query, $user->id())->fetchOneAssoc();
 
+                        // Redacts the password in the notification, to avoiding transmitting
+                        // sensitive information by email.
+                        $new_fields['password'] = ($old_fields['password'] != $new_fields['password'] ? 'new' : 'old');
+                        $old_fields['password'] = 'old';
+
+                        // Emails the admins to notify the profile update.
                         $mailer = new PlMailer("admin/useredit.mail.tpl");
                         $mailer->assign("admin", S::user()->login());
                         $mailer->assign("user", $user->login());
