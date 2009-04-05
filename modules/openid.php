@@ -107,9 +107,8 @@ class OpenidModule extends PLModule
 
             // We redirect to a page where the user will authenticate
             // and confirm the use of his/her OpenId
-            // The request is saved in session before redirecting
-            S::set('openid_request', serialize($request));
-            pl_redirect('openid/trust');
+            $query = 'openid_request=' . urlencode(serialize($request));
+            pl_redirect('openid/trust', $query);
             return;
 
         // Other requests can be automatically handled by the server
@@ -126,15 +125,15 @@ class OpenidModule extends PLModule
         $this->load('openid.inc.php');
 
         // Recover request in session
-        $request = S::v('openid_request');
-        if (is_null($request)) {
+        $srequest = $_GET['openid_request'];
+        if (is_null($srequest)) {
             // There is no authentication information, something went wrong
             pl_redirect('/');
             return;
         }
 
         require_once 'Auth/OpenID/Server.php';
-        $request = unserialize($request);
+        $request = unserialize($srequest);
 
         $server = init_openid_server();
         $user = S::user();
@@ -163,31 +162,33 @@ class OpenidModule extends PLModule
         $whitelisted = is_trusted_site($user, $request->trust_root);
 
         // Ask the user for confirmation
-        if (!$whitelisted && $_SERVER['REQUEST_METHOD'] != 'POST') {
+        $from_trust_page = $_SERVER['REQUEST_METHOD'] == 'POST'
+                           && (isset($_POST['openid_trust']) || isset($_POST['openid_cancel']));
+        if (!$whitelisted && !$from_trust_page) {
             $page->changeTpl('openid/trust.tpl');
             $page->assign('relying_party', $request->trust_root);
             $page->assign_by_ref('sreg_data', $sreg_response->data);
+            $query = 'openid_request=' . urlencode($srequest);
+            $page->assign('query', $query);
             return;
         }
 
-        // At this point $_SERVER['REQUEST_METHOD'] == 'POST'
+        // If this point is reached, the user has just validated the form on the 'trust' page
 
         // Add 'always trusted' sites to whitelist
-        if (isset($_POST['trust']) && @$_POST['always']) {
+        if (isset($_POST['openid_trust']) && @$_POST['openid_always']) {
             add_trusted_site($user, $request->trust_root);
         }
 
         // Answer to the Relying Party
-        if ($whitelisted || isset($_POST['trust'])) {
-            S::kill('openid_request');
+        if ($whitelisted || isset($_POST['openid_trust'])) {
             $response =& $request->answer(true, null, $identity, $claimed_id);
 
             // Add the simple registration response values to the OpenID
             // response message.
             $sreg_response->toMessage($response->fields);
 
-        } else { // !$whitelisted && !isset($_POST['trust'])
-            S::kill('openid_request');
+        } else { // !$whitelisted && isset($_POST['openid_cancel'])
             $response =& $request->answer(false);
         }
 
