@@ -107,7 +107,9 @@ class OpenidModule extends PLModule
 
             // We redirect to a page where the user will authenticate
             // and confirm the use of his/her OpenId
-            $query = 'openid_request=' . urlencode(serialize($request));
+            $request_id = uniqid('openid-');
+            S::set($request_id, serialize($request));
+            $query = 'request_id=' . urlencode($request_id);
             pl_redirect('openid/trust', $query);
             return;
 
@@ -125,15 +127,15 @@ class OpenidModule extends PLModule
         $this->load('openid.inc.php');
 
         // Recover request in session
-        $srequest = $_GET['openid_request'];
-        if (is_null($srequest)) {
+        $request_id = $_GET['request_id'];
+        if (is_null($request_id) || !isset($_SESSION[$request_id])) {
             // There is no authentication information, something went wrong
             pl_redirect('/');
             return;
         }
 
         require_once 'Auth/OpenID/Server.php';
-        $request = unserialize($srequest);
+        $request = unserialize($_SESSION[$request_id]);
 
         $server = init_openid_server();
         $user = S::user();
@@ -168,12 +170,15 @@ class OpenidModule extends PLModule
             $page->changeTpl('openid/trust.tpl');
             $page->assign('relying_party', $request->trust_root);
             $page->assign_by_ref('sreg_data', $sreg_response->data);
-            $query = 'openid_request=' . urlencode($srequest);
+            $query = 'request_id=' . urlencode($request_id);
             $page->assign('query', $query);
             return;
         }
 
         // If this point is reached, the user has just validated the form on the 'trust' page
+
+        // Remove the request from session since an answer will be sent
+        S::kill($request_id);
 
         // Add 'always trusted' sites to whitelist
         if (isset($_POST['openid_trust']) && @$_POST['openid_always']) {
