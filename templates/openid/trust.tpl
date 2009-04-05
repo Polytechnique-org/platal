@@ -38,7 +38,7 @@
 
 <div class="form">
   <form method="post" action="openid/trust?{$query}">
-    <input type="checkbox" name="always" /> Toujours faire confiance à ce site<br />
+    <input type="checkbox" name="openid_always" /> Toujours faire confiance à ce site<br />
     <input type="submit" name="openid_trust" value="Confirmer" />
     <input type="submit" name="openid_cancel" value="Annuler" />
   </form>
