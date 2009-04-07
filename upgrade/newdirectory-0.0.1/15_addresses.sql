@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS profile_addresses;
+
 CREATE TABLE IF NOT EXISTS profile_addresses (
   pid INT(11) DEFAULT NULL,
   jobid INT(6) UNSIGNED DEFAULT NULL,
@@ -31,6 +33,16 @@ CREATE TABLE IF NOT EXISTS profile_addresses (
   INDEX subAdministrativeAreaId (subAdministrativeAreaId),
   INDEX countryId (countryId)
 ) CHARSET=utf8;
+
+INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, latitude, longitude, countryId,
+                                type, flags)
+     SELECT  uid, adrid, postcode, datemaj, pub, comment, glat, glng, country,
+             IF(FIND_IN_SET('pro', 'statut'), 'job', 'home'),
+             CONCAT(IF(FIND_IN_SET('res-secondaire', 'statut'), 'secondary,', ''),
+                    IF(FIND_IN_SET('courrier', 'statut'), 'mail,', ''),
+                    IF(FIND_IN_SET('active', 'statut'), 'current,', ''),
+                    IF(FIND_IN_SET('temporaire', 'statut'), 'temporary', ''))
+       FROM  adresses;
 
 CREATE TABLE IF NOT EXISTS geoloc_countries (
   iso_3166_1_a2 CHAR(2) NOT NULL,
