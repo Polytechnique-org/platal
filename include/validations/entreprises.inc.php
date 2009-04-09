@@ -68,10 +68,9 @@ class EntrReq extends Validate
                 $where .= "name LIKE '%" . $name_array[$i] . "%'";
             }
         }
-        $res = XDB::iterator("SELECT  name
-                             FROM  profile_job_enum
-                            WHERE  "
-                          . $where);
+        $res = XDB::iterator('SELECT  name
+                                FROM  profile_job_enum
+                               WHERE  ' . $where);
         $this->suggestions = "| ";
         while ($sug = $res->next()) {
             $this->suggestions .= $sug['name'] . " | ";
@@ -159,15 +158,22 @@ class EntrReq extends Validate
                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
                          $this->name, $this->acronym, $this->url, $this->email,
                          $this->holdingid, $this->NAF_code, $this->AX_code);
+
             $jobid = XDB::insertId();
             $display_tel = format_display_number($this->tel, $error_tel);
             $display_fax = format_display_number($this->fax, $error_fax);
-            XDB::execute('INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
+            XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
                                        search_tel, display_tel, pub)
-                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}),
-                                       ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                         $jobid, 'hq', $this->id, 0, 'fixed', format_phone_number($this->tel), $display_tel, 'public', 
-                         $jobid, 'hq', $this->id, 1, 'fax', format_phone_number($this->fax), $display_fax, 'public');
+                               VALUES  ({?}, 'hq', 0, 0, 'fixed', {?}, {?}, 'public'),
+                                       ({?}, 'hq', 0, 1, 'fax', {?}, {?}, 'public')",
+                         $jobid, format_phone_number($this->tel), $display_tel,
+                         $jobid, format_phone_number($this->fax), $display_fax);
+
+            $gmapsGeocoder = new GMapsGeocoder();
+            $address = $gmapsGeocoder->getGeocodedAddress($this->address);
+            Geocoder::getAreaId($address, 'administrativeArea');
+            Geocoder::getAreaId($address, 'subAdministrativeArea');
+            Geocoder::getAreaId($address, 'locality');
             XDB::execute("INSERT INTO  profile_addresses (jobid, type, id, accuracy,
                                                           text, postalText, postalCode, localityId,
                                                           subAdministrativeAreaId, administrativeAreaId,

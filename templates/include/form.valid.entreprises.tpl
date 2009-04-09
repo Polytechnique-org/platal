@@ -54,6 +54,10 @@
   <td>{$valid->AX_code}</td>
 </tr>
 <tr class="pair">
+  <td class="titre">Adresse&nbsp;:</td>
+  <td>{$valid->address}</td>
+</tr>
+<tr class="pair">
   <td class="titre">Téléphone&nbsp;:</td>
   <td>{$valid->tel}</td>
 </tr>
