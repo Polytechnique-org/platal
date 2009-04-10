@@ -1289,17 +1289,36 @@ class AdminModule extends PLModule
             S::assert_xsrf_token();
             $selectedJob = Env::has('selectedJob');
 
+            XDB::execute("DELETE FROM  profile_phones
+                                WHERE  uid = {?} AND link_type = 'hq'",
+                         $id);
+            XDB::execute("DELETE FROM  profile_addresses
+                                WHERE  jobid = {?} AND type = 'hq'",
+                         $id);
+            XDB::execute('DELETE FROM  profile_job_enum
+                                WHERE  id = {?}',
+                         $id);
+
             if (Env::has('change')) {
                 XDB::execute('UPDATE  profile_job
                                  SET  jobid = {?}
                                WHERE  jobid = {?}',
                              Env::i('newJobId'), $id);
-                XDB::execute('DELETE FROM  profile_job_enum
-                                    WHERE  id = {?}',
-                             $id);
 
                 $page->trigSuccess("L'entreprise a bien été remplacée.");
             } else {
+                require_once 'profil.func.inc.php';
+                require_once 'geocoding.inc.php';
+
+                $display_tel = format_display_number(Env::v('tel'), $error_tel);
+                $display_fax = format_display_number(Env::v('fax'), $error_fax);
+                $gmapsGeocoder = new GMapsGeocoder();
+                $address = array('text' => Env::t('address'));
+                $address = $gmapsGeocoder->getGeocodedAddress($address);
+                Geocoder::getAreaId($address, 'administrativeArea');
+                Geocoder::getAreaId($address, 'subAdministrativeArea');
+                Geocoder::getAreaId($address, 'locality');
+
                 XDB::execute('UPDATE  profile_job_enum
                                  SET  name = {?}, acronym = {?}, url = {?}, email = {?},
                                       NAF_code = {?}, AX_code = {?}, holdingid = {?}
@@ -1307,16 +1326,41 @@ class AdminModule extends PLModule
                              Env::t('name'), Env::t('acronym'), Env::t('url'), Env::t('email'),
                              Env::t('NAF_code'), Env::i('AX_code'), Env::i('holdingId'), $id);
 
+                XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
+                                           search_tel, display_tel, pub)
+                                   VALUES  ({?}, 'hq', 0, 0, 'fixed', {?}, {?}, 'public'),
+                                           ({?}, 'hq', 0, 1, 'fax', {?}, {?}, 'public')",
+                             $id, format_phone_number(Env::v('tel')), $display_tel,
+                             $id, format_phone_number(Env::v('fax')), $display_fax);
+
+                XDB::execute("INSERT INTO  profile_addresses (jobid, type, id, accuracy,
+                                                              text, postalText, postalCode, localityId,
+                                                              subAdministrativeAreaId, administrativeAreaId,
+                                                              countryId, latitude, longitude, updateTime,
+                                                              north, south, east, west)
+                                   VALUES  ({?}, 'hq', 0, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
+                                            {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?})",
+                             $id, $address['accuracy'], $address['text'], $address['postalText'],
+                             $address['postalCode'], $address['localityId'],
+                             $address['subAdministrativeAreaId'], $address['administrativeAreaId'],
+                             $address['countryId'], $address['latitude'], $address['longitude'],
+                             $address['updateTime'], $address['north'], $address['south'],
+                             $address['east'], $address['west']);
+
                 $page->trigSuccess("L'entreprise a bien été mise à jour.");
             }
         }
 
         if (!Env::has('change') && $id != -1) {
-            $res = XDB::query('SELECT  e.id, e.name, e.acronym, e.url, e.email, e.NAF_code, e.AX_code,
-                                       h.id AS holdingId, h.name AS holdingName, h.acronym AS holdingAcronym
-                                 FROM  profile_job_enum AS e
-                            LEFT JOIN  profile_job_enum AS h ON (e.holdingid = h.id)
-                                WHERE  e.id = {?}',
+            $res = XDB::query("SELECT  e.id, e.name, e.acronym, e.url, e.email, e.NAF_code, e.AX_code,
+                                       h.id AS holdingId, h.name AS holdingName, h.acronym AS holdingAcronym,
+                                       t.display_tel AS tel, f.display_tel AS fax, a.text AS address
+                                 FROM  profile_job_enum  AS e
+                            LEFT JOIN  profile_job_enum  AS h ON (e.holdingid = h.id)
+                            LEFT JOIN  profile_phones    AS t ON (t.uid = e.id AND link_type = 'hq' AND tel_id = 0)
+                            LEFT JOIN  profile_phones    AS f ON (f.uid = e.id AND link_type = 'hq' AND tel_id = 1)
+                            LEFT JOIN  profile_addresses AS a ON (a.jobid = e.id AND a.type = 'hq')
+                                WHERE  e.id = {?}",
                               $id);
 
             if ($res->numRows() == 0) {
