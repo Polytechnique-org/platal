@@ -342,7 +342,14 @@ class QuickSearch extends SField
         }
         if (!empty($this->ip)) {
             $ip = ip_to_uint($this->ip);
-            $where[] = "( ls.ip = $ip OR ls.forward_ip = $ip ) AND ls.suid = 0";
+
+            // If the IP address requested for the search cannot be translated,
+            // the predicate should always be valued to false.
+            if ($ip != null) {
+                $where[] = "( ls.ip = $ip OR ls.forward_ip = $ip ) AND ls.suid = 0";
+            } else {
+                $where[] = "false";
+            }
         }
         if (!empty($this->phone)){
             require_once("profil.func.inc.php");

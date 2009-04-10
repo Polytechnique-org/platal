@@ -36,7 +36,7 @@ class GoogleAppsModule extends PLModule
         );
     }
 
-    function handler_index(&$page, $action = null, $subaction = null)
+    function handler_index(&$page, $action = null)
     {
         require_once("emails.inc.php");
         require_once("googleapps.inc.php");
@@ -61,17 +61,17 @@ class GoogleAppsModule extends PLModule
 
         // Updates the Google Apps account as required.
         if ($action) {
-            if ($action == 'password') {
-                if ($subaction == 'sync') {
+            if ($action == 'password' && Post::has('pwsync')) {
+                S::assert_xsrf_token();
+                if (Post::v('pwsync') == 'sync') {
                     $account->set_password_sync(true);
                     $account->set_password(S::v('password'));
-                    pl_redirect('googleapps#password');
-                } else if ($subaction == 'nosync') {
+                } else {
                     $account->set_password_sync(false);
-                } else if (Post::has('response2') && !$account->sync_password) {
-                    S::assert_xsrf_token();
-                    $account->set_password(Post::v('response2'));
                 }
+            } elseif ($action == 'password' && Post::has('response2') && !$account->sync_password) {
+                S::assert_xsrf_token();
+                $account->set_password(Post::v('response2'));
             }
 
             if ($action == 'suspend' && Post::has('suspend') && $account->active()) {
@@ -180,7 +180,7 @@ class GoogleAppsModule extends PLModule
         }
     }
 
-    function handler_admin_user(&$page, $user = null, $action = null) {
+    function handler_admin_user(&$page, $user = null) {
         require_once("emails.inc.php");
         require_once("googleapps.inc.php");
         $page->changeTpl('googleapps/admin.user.tpl');
@@ -196,10 +196,23 @@ class GoogleAppsModule extends PLModule
             $account = new GoogleAppsAccount($user);
             $storage = new EmailStorage($user, 'googleapps');
 
-            // Force synchronization of plat/al and Google Apps passwords.
-            if ($action == 'forcesync' && $account->sync_password) {
+            // Apply requested actions.
+            if (Post::has('suspend') && $account->active() && !$account->pending_update_suspension) {
+                S::assert_xsrf_token();
+                $account->suspend();
+                $page->trigSuccess('Le compte est en cours de suspension.');
+            } else if (Post::has('unsuspend') && $account->suspended() && !$account->pending_update_suspension) {
+                S::assert_xsrf_token();
+                $account->do_unsuspend();
+                $page->trigSuccess('Le compte est en cours de réactivation.');
+            } else if (Post::has('forcesync') && $account->active() && $account->sync_password) {
                 $account->set_password($user->password());
-                $page->trigSuccess('Le mot de passe a été synchronisé.');
+                $page->trigSuccess('Le mot de passe est en cours de synchronisation.');
+            } else if (Post::has('sync') && $account->active()) {
+                $account->set_password($user->password());
+                $account->set_password_sync(true);
+            } else if (Post::has('nosync') && $account->active()) {
+                $account->set_password_sync(false);
             }
 
             // Displays basic account information.

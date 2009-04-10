@@ -334,7 +334,7 @@ class AXLetterModule extends PLModule
         return count($id) == 1 ? $id[0] : 0;
     }
 
-    function createHash($line, $key)
+    function createHash($line, $partial_result, $key)
     {
         $hash = implode(time(), $line) . rand();
         $hash = md5($hash);
