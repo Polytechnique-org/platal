@@ -64,12 +64,12 @@ class CSVImporter
         return true;
     }
 
-    private function getValue($line, $key, $action)
+    private function getValue($line, $partial_ops, $key, $action)
     {
         if (@array_key_exists($action, $line)) {
             $value = $line[$action];
         } elseif (is_callable($action, false)) {
-            $value = call_user_func($action, $line, $key);
+            $value = call_user_func($action, $line, $partial_ops, $key);
         } else {
             $value = $action;
         }
@@ -83,7 +83,7 @@ class CSVImporter
     {
         $ops = array();
         foreach ($relation as $key=>$ref) {
-            $ops[$key] = $this->getValue($line, $key, $ref);
+            $ops[$key] = $this->getValue($line, $ops, $key, $ref);
         }
         return $ops;
     }
@@ -92,7 +92,7 @@ class CSVImporter
     {
         $ops = array();
         foreach ($relation as $key=>$ref) {
-            $value = $this->getValue($line, $key, $ref);
+            $value = $this->getValue($line, $ops, $key, $ref);
             if (!is_null($value) && $value != 'NULL') {
                 $value = "'" . addslashes($value) . "'";
             }
