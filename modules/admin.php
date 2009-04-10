@@ -691,13 +691,14 @@ class AdminModule extends PLModule
         $page->assign('bans', $bans);
     }
 
-    function getHruid($line, $key)
+    function getHruid($line, $partial_result, $key)
     {
-        var_dump($line);
-        if (!isset($line['nom']) || !isset($line['prenom']) || !isset($line['promo'])) {
+        if (!isset($partial_result['nom']) ||
+            !isset($partial_result['prenom']) ||
+            !isset($partial_result['promo'])) {
             return null;
         }
-        return make_forlife($line['prenom'], $line['nom'], $line['promo']);
+        return make_forlife($partial_result['prenom'], $partial_result['nom'], $partial_result['promo']);
     }
 
     function getMatricule($line, $key)
@@ -738,9 +739,11 @@ class AdminModule extends PLModule
             $fields = array('hruid', 'nom', 'nom_ini', 'prenom', 'naissance_ini',
                             'prenom_ini', 'promo', 'promo_sortie', 'flags',
                             'matricule', 'matricule_ax', 'perms');
-            $importer->forceValue('hruid', array($this, 'getHruid'));
             $importer->forceValue('promo', $promo);
             $importer->forceValue('promo_sortie', $promo + 3);
+            // The hruid generation callback is set last, so that it is called once 'promo'
+            // has already been computed for that line.
+            $importer->forceValue('hruid', array($this, 'getHruid'));
             break;
           case 'ax':
             $fields = array('matricule', 'matricule_ax');
