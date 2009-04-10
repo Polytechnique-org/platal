@@ -46,7 +46,7 @@ q:
 ##
 
 core:
-	[ -d core ] || ( git submodule init && git submodule update )
+	[ -d core/.git ] || ( git submodule init && git submodule update )
 	make -C core all
 
 ##

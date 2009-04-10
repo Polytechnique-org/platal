@@ -39,9 +39,9 @@ class ProfileSectors implements ProfileSetting
                     $value[$s][$ss] = $ssname;
                 }
             }
-        } else if (!is_array($value)) {
+        } elseif (!is_array($value)) {
             $value = array();
-        } else if (count($value) > 10) {
+        } elseif (count($value) > 10) {
             Platal::page()->trigError("Le nombre de secteurs d'expertise est limité à 10.");
             $success = false;
         }
@@ -61,8 +61,8 @@ class ProfileSectors implements ProfileSetting
         if (!count($value)) {
             return;
         }
-        foreach ($value as $id=>&$sect) {
-            foreach ($sect as $sid=>&$name) {
+        foreach ($value as $id => $sect) {
+            foreach ($sect as $sid => $name) {
                 XDB::execute("INSERT INTO  profile_mentor_sector (uid, sectorid, subsectorid)
                                    VALUES  ({?}, {?}, {?})",
                              $page->pid(), $id, $sid);
@@ -125,7 +125,7 @@ class ProfileMentor extends ProfilePage
     protected function _fetchData()
     {
         $res = XDB::query("SELECT  expertise
-                             FROM  mentor
+                             FROM  profile_mentor
                             WHERE  uid = {?}",
                           $this->pid());
         $this->values['expertise'] = $res->fetchOneCell();
@@ -136,12 +136,12 @@ class ProfileMentor extends ProfilePage
         if ($this->changed['expertise']) {
             $expertise = trim($this->values['expertise']);
             if (empty($expertise)) {
-                XDB::execute("DELETE FROM  mentor
+                XDB::execute("DELETE FROM  profile_mentor
                                     WHERE  uid = {?}",
                              $this->pid());
                 $this->values['expertise'] = null;
             } else {
-                XDB::execute("REPLACE INTO  mentor (uid, expertise)
+                XDB::execute("REPLACE INTO  profile_mentor (uid, expertise)
                                     VALUES  ({?}, {?})",
                              $this->pid(), $expertise);
                 $this->values['expertise'] = $expertise;
@@ -151,8 +151,8 @@ class ProfileMentor extends ProfilePage
 
     public function _prepare(PlPage &$page, $id)
     {
-        $page->assign('sectors', XDB::iterator("SELECT  id, name
-                                                  FROM  profile_job_sector_enum"));
+        $page->assign('sectorList', XDB::iterator('SELECT  id, name
+                                                     FROM  profile_job_sector_enum'));
 
         $page->assign('countryList', XDB::iterator("SELECT  iso_3166_1_a2, countryFR
                                                       FROM  geoloc_countries

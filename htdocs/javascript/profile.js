@@ -47,7 +47,8 @@ function wizPage_onLoad(id)
       case 'emploi':
         for (var i = 0 ; $('#job_' + i).length != 0; ++i) {
             updateJobSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSector]']").val());
-            updateJobSubSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSubsector]']").val());
+            updateJobSubSector(i, $('#job_' + i).find("[name='jobs[" + i + "][subSubSector]']").val());
+            updateJobAlternates(i);
         }
         break;
     }
@@ -474,6 +475,14 @@ function updateJobSubSector(id, sel)
     Ajax.update_html('job_' + id + '_subSubSector', 'profile/ajax/sub_sector/' + id + '/' + subSector + '/' + sel);
 }
 
+function updateJobAlternates(id)
+{
+    var subSubSector = $('#job_' + id).find("[name='jobs[" + id + "][subSubSector]']").val();
+    if (subSubSector != '') {
+        Ajax.update_html('job_' + id + '_alternates', 'profile/ajax/alternates/' + id + '/' + subSubSector);
+    }
+}
+
 function displayAllSector(id)
 {
     $('.sector_text_' + id).remove();
@@ -486,7 +495,6 @@ function makeAddJob(id)
     {
         $('#add_job').before(data);
         registerEnterpriseAutocomplete(id);
-        updateSector('job_' + id, 'jobs[' + id + ']', '');
     };
 }
 
@@ -538,7 +546,7 @@ function addCountry()
 function updateSubSector()
 {
     var s  = $('#sectorSelection').find('[name=sectorSelection]').val();
-    var ss = $('#selectedSubSector').find("[name='jobs[-1][subSector]']").val();
+    var ss = $('#subSectorSelection').find("[name='jobs[-1][subSector]']").val();
     if ((s == '' || ss == '') || $('#sectors_' + s + '_' + ss).length != 0) {
         $('#addSector').hide();
     } else {
@@ -557,24 +565,24 @@ function updateSector()
     var sector = $('#sectorSelection').find('[name=sectorSelection]').val();
     if (sector == '') {
         sector = '-1';
-        $('#selectedSubSector').html('');
+        $('#subSectorSelection').html('');
         return;
     }
     $.get(platal_baseurl + 'profile/ajax/sector/-1/0/0/' + sector,
           function(data) {
               data = '<a href="javascript:addSector()" style="display: none; float: right" id="addSector">'
-                   + '  <img src="images/icons/add.gif" alt="" title="Ajouter ce secteur" />'
+                   + '  <img src="images/icons/add.gif" alt="Ajouter ce secteur" title="Ajouter ce secteur" />'
                    + '</a>' + data;
-              $('#selectedSubSector').html(data);
-              $('#selectedSubSector').find("[name='jobs[-1][subSector]']").change(updateSubSector);
+              $('#subSectorSelection').html(data);
+              $('#subSectorSelection').find("[name='jobs[-1][subSector]']").change(updateSubSector);
           });
 }
 
 function addSector()
 {
     var s   = $('#sectorSelection').find('[name=sectorSelection]').val();
-    var ss  = $('#selectedSubSector').find("[name='jobs[-1][subSector]']").val();
-    var sst = $('#selectedSubSector').find("[name='jobs[-1][subSector]'] :selected").text();
+    var ss  = $('#subSectorSelection').find("[name='jobs[-1][subSector]']").val();
+    var sst = $('#subSectorSelection').find("[name='jobs[-1][subSector]'] :selected").text();
 
     var html = '<div id="sectors_' + s + '_' + ss + '" style="clear: both; margin-top: 0.5em" class="titre">'
              + '  <a href="javascript:removeSector(\'' + s + '\', \'' + ss + '\')" style="display: block; float: right">'

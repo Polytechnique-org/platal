@@ -121,7 +121,7 @@
       </td>
     </tr>
     <tr class="pair {$sector}" style="display: none">
-      <td class="titre" rowspan="3">Secteur&nbsp;d'activité</td>
+      <td class="titre" rowspan="4">Secteur&nbsp;d'activité</td>
       <td>
         <select name="{$jobpref}[sector]" onchange="updateJobSector({$i}, '')">
           <option value="">&nbsp;</option>
@@ -143,24 +143,8 @@
         <input type="hidden" name="{$jobpref}[subSubSector]" value="{$job.subSubSector|default:'-1'}" />
       </td>
     </tr>
-    <tr class="pair">
-      <td class="titre">Fonction&nbsp;occupée</td>
-      <td>
-        <select name="{$jobpref}[fonction]">
-          <option value="">&nbsp;</option>
-          {assign var=ingroup value=false}
-          {foreach from=$fonctions item=fonct}
-          {if $fonct.title}
-            {if $ingroup}</optgroup>{/if}
-            <optgroup label="{$fonct.fonction_fr}">
-            {assign var=ingroup value=true}
-          {/if}
-          <option value="{$fonct.id}" {if $fonct.id eq $job.fonction}selected="selected"{/if}>
-            {$fonct.fonction_fr}
-          </option>
-          {/foreach}
-          {if $ingroup}</optgroup>{/if}
-        </select>
+    <tr class="pair {$sector}" style="display: none">
+      <td id="{$jobid}_alternates">
       </td>
     </tr>
     <tr class="pair">

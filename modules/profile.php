@@ -40,6 +40,7 @@ class ProfileModule extends PLModule
             'profile/ajax/job'           => $this->make_hook('ajax_job',                   AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/sector'        => $this->make_hook('ajax_sector',                AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/sub_sector'    => $this->make_hook('ajax_sub_sector',            AUTH_COOKIE, 'user', NO_AUTH),
+            'profile/ajax/alternates'    => $this->make_hook('ajax_alternates',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/skill'         => $this->make_hook('ajax_skill',                 AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/searchname'    => $this->make_hook('ajax_searchname',            AUTH_COOKIE, 'user', NO_AUTH),
             'profile/ajax/buildnames'    => $this->make_hook('ajax_buildnames',            AUTH_COOKIE, 'user', NO_AUTH),
@@ -67,7 +68,7 @@ class ProfileModule extends PLModule
             'admin/sections'             => $this->make_hook('admin_sections',             AUTH_MDP, 'admin'),
             'admin/networking'           => $this->make_hook('admin_networking',           AUTH_MDP, 'admin'),
             'admin/trombino'             => $this->make_hook('admin_trombino',             AUTH_MDP, 'admin'),
-            'admin/fonctions'            => $this->make_hook('admin_fonctions',            AUTH_MDP, 'admin'),
+            'admin/sectors'              => $this->make_hook('admin_sectors',              AUTH_MDP, 'admin'),
             'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP, 'admin'),
             'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP, 'admin'),
             'admin/names'                => $this->make_hook('admin_names',                AUTH_MDP, 'admin'),
@@ -469,13 +470,9 @@ class ProfileModule extends PLModule
         $page->assign('i', $id);
         $page->assign('job', array());
         $page->assign('new', true);
-        $res = XDB::query("SELECT  id, name
+        $res = XDB::query("SELECT  id, name AS label
                              FROM  profile_job_sector_enum");
         $page->assign('sectors', $res->fetchAllAssoc());
-        $res = XDB::query("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
-                             FROM  fonctions_def
-                         ORDER BY  id");
-        $page->assign('fonctions', $res->fetchAllAssoc());
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page);
     }
@@ -507,6 +504,23 @@ class ProfileModule extends PLModule
         $page->assign('id', $id);
         $page->assign('subSubSectors', $res);
         $page->assign('sel', $sssect);
+    }
+
+    function handler_ajax_alternates(&$page, $id, $sssect)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $res = XDB::iterator('SELECT  name
+                                FROM  profile_job_alternates
+                               WHERE  subsubsectorid = {?}
+                            ORDER BY  id',
+                             $sssect);
+        $page->changeTpl('profile/jobs.alternates.tpl', NO_SKIN);
+        $alternate  = $res->next();
+        $alternates = $alternate['name'];
+        while ($alternate  = $res->next()) {
+            $alternates .= ', ' . $alternate['name'];
+        }
+        $page->assign('alternates', $alternates);
     }
 
     function handler_ajax_skill(&$page, $cat, $id)
@@ -858,13 +872,14 @@ class ProfileModule extends PLModule
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_admin_fonctions(&$page, $action = 'list', $id = null) {
-        $page->setTitle('Administration - Fonctions');
-        $page->assign('title', 'Gestion des fonctions');
-        $table_editor = new PLTableEditor('admin/fonctions', 'fonctions_def', 'id', true);
-        $table_editor->describe('fonction_fr', 'intitulé', true);
-        $table_editor->describe('fonction_en', 'intitulé (ang)', true);
-        $table_editor->describe('flags', 'titre', true);
+    function handler_admin_sectors(&$page, $action = 'list', $id = null) {
+        $page->setTitle('Administration - Secteurs');
+        $page->assign('title', 'Gestion des secteurs');
+        $table_editor = new PLTableEditor('admin/sectors', 'profile_job_subsubsector_enum', 'id', true);
+        $table_editor->describe('sectorid', 'id du secteur', false);
+        $table_editor->describe('subsectorid', 'id du sous-secteur', false);
+        $table_editor->describe('name', 'nom', true);
+        $table_editor->describe('flags', 'affichage', true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_networking(&$page, $action = 'list', $id = null) {

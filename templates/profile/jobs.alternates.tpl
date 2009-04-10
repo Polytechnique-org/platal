@@ -21,11 +21,6 @@
 {**************************************************************************}
 
 <?xml version="1.0" encoding="utf-8"?>
-<select name="jobs[{$id}][subSubSector]" onchange="updateJobAlternates({$id})">
-  <option value=""></option>
-  {iterate from=$subSubSectors item=subSubSector}
-  <option value="{$subSubSector.id}" {if $subSubSector.id eq $sel}selected="selected"{/if}>{$subSubSector.name}</option>
-  {/iterate}
-</select>
+<small>({$alternates})</small>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

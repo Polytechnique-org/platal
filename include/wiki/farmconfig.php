@@ -6,6 +6,7 @@ $EnableUpload     = 1;
 $UploadMaxSize    = 500000;
 $LinkWikiWords    = 0;   # disable WikiWord links
 $EnableIMSCaching = 1;   # allow browser caching
+$EnablePageListProtect = 0; # We use our own permission system.
 
 $ScriptUrl        = '.';          #\
 $UploadUrlFmt     = './uploads';  # } works thanks to the <base /> in skin

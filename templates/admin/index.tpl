@@ -136,9 +136,9 @@
   <tr class="impair">
     <td class="titre">Emploi</td>
     <td>
-      <a href="admin/fonctions">Fonctions</a>
+      <a href="admin/sectors">Secteurs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/networking">Networking</a>
+      <a href="admin/jobs">Entreprises</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/corps_enum">Corps</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -155,6 +155,8 @@
       <a href="admin/sections">Sections</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/names">Noms</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/networking">Networking</a>
     </td>
   </tr>
   <tr class="impair">

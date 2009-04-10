@@ -97,7 +97,7 @@
       <div style="float: left; width: 30%" class="titre">Secteur</div>
       <select name="sectorSelection" onchange="updateSector()">
         <option value="">&nbsp;</option>
-        {iterate from=$sectors item=sector}
+        {iterate from=$sectorList item=sector}
         <option value="{$sector.id}">{$sector.name}</option>
         {/iterate}
       </select>

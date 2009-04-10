@@ -157,16 +157,16 @@ class ProfileJob extends ProfileGeocoding
                      S::i('uid'));
         foreach ($value as $id=>&$job) {
             if ($job['jobid']) {
-                XDB::execute("INSERT INTO  profile_job (uid, id, functionid, description, sectorid, subsectorid,
+                XDB::execute("INSERT INTO  profile_job (uid, id, description, sectorid, subsectorid,
                                                         subsubsectorid, email, url, pub, email_pub, jobid)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                             S::i('uid'), $id, $job['fonction'], $job['description'], $job['sector'], $job['subSector'],
+                             S::i('uid'), $id, $job['description'], $job['sector'], $job['subSector'],
                              $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub'], $job['jobid']);
             } else {
-                XDB::execute("INSERT INTO  profile_job (uid, id, functionid, description, sectorid, subsectorid,
+                XDB::execute("INSERT INTO  profile_job (uid, id, description, sectorid, subsectorid,
                                                         subsubsectorid, email, url, pub, email_pub)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                             S::i('uid'), $id, $job['fonction'], $job['description'], $job['sector'], $job['subSector'],
+                             S::i('uid'), $id, $job['description'], $job['sector'], $job['subSector'],
                              $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub']);
             }
             $address = new ProfileAddress();
@@ -208,7 +208,7 @@ class ProfileJobs extends ProfilePage
         $this->values['corps'] = $res->fetchOneAssoc();
 
         // Build the jobs tree
-        $res = XDB::iterRow("SELECT  j.id, j.jobid, je.name, j.functionid, j.sectorid, j.subsectorid, j.subsubsectorid,
+        $res = XDB::iterRow("SELECT  j.id, j.jobid, je.name, j.sectorid, j.subsectorid, j.subsubsectorid,
                                      s.name, j.description, j.email, j.email_pub, j.url, j.pub,
                                      je.acronym, je.url, je.email,
                                      aw.accuracy, aw.text, aw.postalText, aw.postalCode, aw.localityId,
@@ -229,7 +229,7 @@ class ProfileJobs extends ProfilePage
                            ORDER BY  j.id",
                             $this->pid());
         $this->values['jobs'] = array();
-        while (list($id, $jobid, $name, $function, $sector, $subSector, $subSubSector,
+        while (list($id, $jobid, $name, $sector, $subSector, $subSubSector,
                     $subSubSectorName, $description, $w_email, $w_emailPub, $w_url, $pub,
                     $hq_acronym, $hq_url, $hq_email,
                     $w_accuracy, $w_text, $w_postalText, $w_postalCode, $w_localityId,
@@ -244,7 +244,6 @@ class ProfileJobs extends ProfilePage
             $this->values['jobs'][] = array('id'               => $id,
                                             'jobid'            => $jobid,
                                             'name'             => $name,
-                                            'function'         => $function,
                                             'sector'           => $sector,
                                             'subSector'        => $subSector,
                                             'subSubSector'     => $subSubSector,
@@ -351,10 +350,6 @@ class ProfileJobs extends ProfilePage
         $res = XDB::query("SELECT  id, name AS label
                              FROM  profile_job_sector_enum");
         $page->assign('sectors', $res->fetchAllAssoc());
-        $res = XDB::query("SELECT  id, fonction_fr, FIND_IN_SET('titre', flags) AS title
-                             FROM  fonctions_def
-                         ORDER BY  id");
-        $page->assign('functions', $res->fetchAllAssoc());
 
         $res = XDB::iterator("SELECT  id, name
                                 FROM  profile_corps_enum
