@@ -37,9 +37,9 @@
 <p><strong>Souhaitez-vous confirmer votre identité ?</strong></p>
 
 <div class="form">
-  <form method="post" action="openid/trust">
-    <input type="checkbox" name="always" /> Toujours faire confiance à ce site<br />
-    <input type="submit" name="trust" value="Confirmer" />
-    <input type="submit" value="Annuler" />
+  <form method="post" action="openid/trust?{$query}">
+    <input type="checkbox" name="openid_always" /> Toujours faire confiance à ce site<br />
+    <input type="submit" name="openid_trust" value="Confirmer" />
+    <input type="submit" name="openid_cancel" value="Annuler" />
   </form>
 </div>
