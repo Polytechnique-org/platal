@@ -235,8 +235,9 @@ class EmailModule extends PLModule
         $email = str_replace(' ', '+', $email);
 
         // Apply email redirection change requests.
+        $result = SUCCESS;
         if ($action == 'remove' && $email) {
-            $retour = $redirect->delete_email($email);
+            $result = $redirect->delete_email($email);
         }
 
         if ($action == 'active' && $email) {
@@ -258,15 +259,15 @@ class EmailModule extends PLModule
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
-                $retour = $redirect->add_email(Env::v('email'));
+                $result = $redirect->add_email(Env::v('email'));
             } elseif (empty($actifs)) {
-                $retour = ERROR_INACTIVE_REDIRECTION;
+                $result = ERROR_INACTIVE_REDIRECTION;
             } elseif (is_array($actifs)) {
-                $retour = $redirect->modify_email($actifs, Env::v('emails_rewrite', Array()));
+                $result = $redirect->modify_email($actifs, Env::v('emails_rewrite', Array()));
             }
         }
 
-        switch ($retour) {
+        switch ($result) {
           case ERROR_INACTIVE_REDIRECTION:
             $page->trigError('Tu ne peux pas avoir aucune adresse de redirection active, sinon ton adresse '
                              . $user->forlifeEmail() . ' ne fonctionnerait plus.');
