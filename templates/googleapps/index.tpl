@@ -279,24 +279,27 @@
 
 <table class="bicol" id="status">
   <tr>
-    <th>État de ton compte</th>
+    <th colspan="2">État de ton compte</th>
   </tr>
   <tr class="impair">
-    <td>Ton compte <b>{$account->g_account_name}</b> existe{if $account->r_creation} depuis le {$account->r_creation|date_format:"%d/%m/%Y"}{/if}.</td>
+    <td colspan="2">Ton compte <b>{$account->g_account_name}</b> existe{if $account->r_creation} depuis le {$account->r_creation|date_format:"%d/%m/%Y"}{/if}.</td>
   </tr>
   {if $account->reporting_date and $account->r_disk_usage}
   <tr class="pair">
-    <td>Au {$account->reporting_date|date_format:"%d %B %Y"}, tu avais {$account->r_disk_usage/1024/1024|string_format:"%.1f"} Mo d'emails.</td>
+    <td colspan="2">Au {$account->reporting_date|date_format:"%d %B %Y"}, tu avais {$account->r_disk_usage/1024/1024|string_format:"%.1f"} Mo d'emails.</td>
   </tr>
   {/if}
+  {if $redirect_active and $redirect_unique}
   <tr class="impair">
-    {if $redirect_active and $redirect_unique}
-    <td>
+    <td class="middle">{icon name=error}</td>
+    <td class="smaller">
       Ta seule adresse de redirection de tes emails est celle de ton compte Google Apps.<br />
       Si tu souhaites désactiver celui-ci, tu dois d'abord <a href="emails/redirect">ajouter une nouvelle adresse de redirection</a>.
     </td>
-    {else}
-    <td>
+  </tr>
+  {else}
+  <tr class="impair">
+    <td colspan="2">
       Si tu ne souhaites plus utiliser ton compte, tu peux le désactiver :<br /><br />
       <div class="center">
         <form action="googleapps/suspend" method="post">
@@ -304,100 +307,86 @@
           <input type="submit" name="suspend" value="Désactiver mon compte Google Apps" />
         </form>
       </div>
-      <div style="margin-top: 0.5em">
-        {icon name=error} Une fois ton compte désactivé, tu ne pourras plus accéder à tes emails sur Google Apps.<br />
-        {icon name=information} La réactivation est possible, mais nécessite d'être validée par un administrateur.
-      </div>
     </td>
-    {/if}
   </tr>
+  <tr class="impair">
+    <td class="middle">{icon name=error}</td>
+    <td class="smaller">
+      Une fois ton compte désactivé, tu ne pourras plus accéder à tes emails sur Google Apps.
+      La réactivation est possible, mais nécessite d'être validée par un administrateur.
+    </td>
+  </tr>
+  {/if}
 </table>
 <br />
 
 <table class="bicol" id="password">
   <tr>
-    <th>Ton mot de passe Google Apps</th>
+    <th colspan="2">Ton mot de passe Google Apps</th>
   </tr>
+
+  {if $account->pending_update_password}
+  <tr class="pair">
+    <td class="middle">{icon name=error}</td>
+    <td><div class="erreur smaller">
+      Ton mot de passe est en cours de changement.<br />
+      Tu pourras à nouveau le modifier d'ici quelques secondes.
+    </div></td>
+  </tr>
+
+  {else}
+  <tr class="pair">
+    <td></td><td>
+      <form action="googleapps/password" method="post">
+        {xsrf_token_field}
+        <label>
+          <input type="radio" name="pwsync" value="sync" onchange="this.form.submit();"
+              {if $account->sync_password}checked="checked" {/if}/>
+          Utiliser le même mot de passe pour Polytechnique.org et Google Apps.</label><br />
+        <label>
+          <input type="radio" name="pwsync" value="nosync" onchange="this.form.submit();"
+              {if !$account->sync_password}checked="checked" {/if}/>
+          Utiliser deux mots de passes différents pour Polytechnique.org et Google Apps.</label><br />
+      </form>
+    </td>
+  </tr>
+
   {if $account->sync_password}
-  <tr class="impair">
-    <td>
-      Le mot de passe de ton compte Google Apps est actuellement celui que tu utilises pour
-      Polytechnique.org. Tu peux :
-    </td>
-  </tr>
+  <tr class="impair"><td colspan="2">
+    Tes mots de passes Polytechnique.org et Google Apps sont identiques et synchronisés.
+    <div class="center"><a href="password">Changer ce mot de passe commun</a></div>
+  </td></tr>
 
-  {if $account->pending_update_password}
-  <tr class="pair">
-    <td><div class="erreur">
-      Ton mot de passe est en cours de changement.<br />
-      Tu pourras à nouveau le modifier d'ici quelques secondes.
-    </div></td>
-  </tr>
   {else}
-  <tr class="impair">
-    <td>
-      <ul style="margin-top: 0">
-        <li><a href="password">Changer ce mot de passe commun</a></li>
-        <li><a href="googleapps/password/nosync#password">Ne plus répercuter les changements de mot de passe vers Google Apps</a></li>
-      </ul>
-    </td>
-  </tr>
-  {/if}
-  {else}
-  <tr class="impair">
-    <td>
-      Tu as actuellement deux mots de passes indépendants (pour ton compte Polytechnique.org et pour ton compte Google Apps).
-      Tu peux :
-    </td>
-  </tr>
-
-  {if $account->pending_update_password}
-  <tr class="pair">
-    <td><div class="erreur">
-      Ton mot de passe est en cours de changement.<br />
-      Tu pourras à nouveau le modifier d'ici quelques secondes.
-    </div></td>
-  </tr>
-  {else}
-  <tr class="impair">
-    <td>
-      <ul style="margin-top: 0">
-        <li style="margin-bottom: 1em">
-          <a href="googleapps/password/sync">Choisir d'utiliser le même mot de passe pour les deux comptes.</a><br />
-          Attention, cette opération changera ton mot de passe Google Apps.
-        </li>
-        <li>
-          Changer le mot de passe de ton compte Google Apps&nbsp;:<br /><br />
-          <form action="googleapps/password#password" method="post" id="changepass">
-            <table class="tinybicol">
-              <tr>
-                <td class="titre">Nouveau mot de passe</td>
-                <td><input type="password" name="nouveau" /></td>
-              </tr>
-              <tr>
-                <td class="titre">Vérification</td>
-                <td><input type="password" name="nouveau2" /></td>
-              </tr>
-              <tr>
-                <td class="titre">Sécurité</td>
-                <td>{checkpasswd prompt="nouveau" submit="create_account" text="Changer mon mot de passe"}</td>
-              </tr>
-              <tr>
-                <td></td>
-                <td><input type="submit" name="create_account" value="Changer" onclick="EnCryptedResponse(); return false;" /></td>
-              </tr>
-            </table>
-          </form>
-          <form action="googleapps/password#password" method="post" id="changepass2">
-            {xsrf_token_field}
-            <input type="hidden" name="response2"  value="" />
-          </form><br />
-          Pour une sécurité optimale, ton mot de passe circule de manière sécurisée (https).
-          Il est chiffré irréversiblement sur nos serveurs, ainsi que sur ceux de Google.
-        </li>
-      </ul>
-    </td>
-  </tr>
+  <tr class="impair"><td colspan="2">
+    Changer le mot de passe de ton compte Google Apps&nbsp;:<br /><br />
+    <form action="googleapps/password" method="post" id="changepass">
+      <table class="bicol">
+        <tr>
+          <td class="titre">Nouveau mot de passe</td>
+          <td><input type="password" name="nouveau" /></td>
+        </tr>
+        <tr>
+          <td class="titre">Vérification</td>
+          <td><input type="password" name="nouveau2" /></td>
+        </tr>
+        <tr>
+          <td class="titre">Sécurité</td>
+          <td>{checkpasswd prompt="nouveau" submit="create_account" text="Changer mon mot de passe"}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><input type="submit" name="create_account" value="Changer" onclick="EnCryptedResponse(); return false;" /></td>
+        </tr>
+      </table>
+    </form>
+    <form action="googleapps/password" method="post" id="changepass2">
+      {xsrf_token_field}
+      <input type="hidden" name="response2"  value="" />
+    </form><br />
+    Pour une sécurité optimale, ton mot de passe circule de manière sécurisée (https).
+    Il est chiffré irréversiblement sur nos serveurs, ainsi que sur ceux de Google.
+  </td></tr>
   {/if}
   {/if}
 </table>

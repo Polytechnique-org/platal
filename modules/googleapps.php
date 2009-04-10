@@ -36,7 +36,7 @@ class GoogleAppsModule extends PLModule
         );
     }
 
-    function handler_index(&$page, $action = null, $subaction = null)
+    function handler_index(&$page, $action = null)
     {
         require_once("emails.inc.php");
         require_once("googleapps.inc.php");
@@ -61,17 +61,17 @@ class GoogleAppsModule extends PLModule
 
         // Updates the Google Apps account as required.
         if ($action) {
-            if ($action == 'password') {
-                if ($subaction == 'sync') {
+            if ($action == 'password' && Post::has('pwsync')) {
+                S::assert_xsrf_token();
+                if (Post::v('pwsync') == 'sync') {
                     $account->set_password_sync(true);
                     $account->set_password(S::v('password'));
-                    pl_redirect('googleapps#password');
-                } else if ($subaction == 'nosync') {
+                } else {
                     $account->set_password_sync(false);
-                } else if (Post::has('response2') && !$account->sync_password) {
-                    S::assert_xsrf_token();
-                    $account->set_password(Post::v('response2'));
                 }
+            } elseif ($action == 'password' && Post::has('response2') && !$account->sync_password) {
+                S::assert_xsrf_token();
+                $account->set_password(Post::v('response2'));
             }
 
             if ($action == 'suspend' && Post::has('suspend') && $account->active()) {
