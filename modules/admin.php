@@ -1286,6 +1286,8 @@ class AdminModule extends PLModule
         }
 
         if (Env::has('edit')) {
+            // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
+
             S::assert_xsrf_token();
             $selectedJob = Env::has('selectedJob');
 

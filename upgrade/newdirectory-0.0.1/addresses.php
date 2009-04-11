@@ -58,6 +58,8 @@ for ($pid = $minPid; $pid < $maxPid + 1; ++$pid) {
         $address = $gmapsGeocoder->getGeocodedAddress($address);
 
         if (!isset($address['geoloc'])) {
+            // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
+
             XDB::execute('DELETE FROM  profile_addresses
                                 WHERE  pid = {?} AND id = {?} AND type = {?}',
                          $address['pid'], $address['id'], $address['type']);

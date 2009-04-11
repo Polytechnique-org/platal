@@ -146,6 +146,8 @@ class EntrReq extends Validate
 
     public function commit()
     {
+        // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
+
         $res = XDB::query('SELECT  id
                              FROM  profile_job_enum
                             WHERE  name = {?}',

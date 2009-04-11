@@ -143,6 +143,8 @@ class ProfileJob extends ProfileGeocoding
 
     public function save(ProfilePage &$page, $field, $value)
     {
+        // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
+
         require_once('profil.func.inc.php');
         require_once('validations.inc.php');
 
