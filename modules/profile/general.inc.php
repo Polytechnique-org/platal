@@ -376,8 +376,6 @@ class ProfileGeneral extends ProfilePage
                                   = $this->settings['yourself']
                                   = $this->settings['promo']
                                   = null;
-        $this->settings['synchro_ax']
-                                  = new ProfileBool();
         $this->settings['email_directory']
                                   = new ProfileEmail();
         $this->settings['email_directory_new']
@@ -399,7 +397,7 @@ class ProfileGeneral extends ProfilePage
                                    t.display_tel as mobile, t.pub as mobile_pub,
                                    d.email_directory as email_directory,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
-                                   q.profile_from_ax as synchro_ax, u.matricule_ax, p.yourself
+                                   u.matricule_ax, p.yourself
                              FROM  auth_user_md5         AS u
                        INNER JOIN  auth_user_quick       AS q ON (u.user_id = q.user_id)
                        INNER JOIN  profile_display       AS p ON (p.pid = u.user_id)
@@ -453,12 +451,11 @@ class ProfileGeneral extends ProfilePage
                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['naissance']),
                          S::v('uid'));
         }
-        if ($this->changed['freetext'] || $this->changed['freetext_pub'] || $this->changed['synchro_ax']) {
+        if ($this->changed['freetext'] || $this->changed['freetext_pub']) {
             XDB::execute("UPDATE  auth_user_quick
-                             SET  profile_freetext={?}, profile_freetext_pub={?}, profile_from_ax = {?}
+                             SET  profile_freetext={?}, profile_freetext_pub={?}
                            WHERE  user_id = {?}",
-                         $this->values['freetext'], $this->values['freetext_pub'],
-                         $this->values['synchro_ax'], S::v('uid'));
+                         $this->values['freetext'], $this->values['freetext_pub'], S::v('uid'));
         }
         if ($this->changed['email_directory']) {
             $new_email = ($this->values['email_directory'] == "new@example.org") ?
