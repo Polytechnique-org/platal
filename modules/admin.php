@@ -419,6 +419,11 @@ class AdminModule extends PLModule
             }
             if (!Post::blank('hashpass')) {
                 $to_update['password'] = Post::s('hashpass');
+                // TODO: Propagate the password update to GoogleApps, when required. Eg:
+                // $account = new GoogleAppsAccount($user);
+                // if ($account->active() && $account->sync_password) {
+                //     $account->set_password($pass_encrypted);
+                // }
             }
             if (!Post::blank('weak_password')) {
                 $to_update['weak_password'] = Post::s('weak_password');
@@ -450,6 +455,8 @@ class AdminModule extends PLModule
             }
         }
         if (!empty($to_update)) {
+            // TODO: fetch the initial values of the fields, and eventually send
+            // a summary of the changes to an admin.
             $set = array();
             foreach ($to_update as $k => $value) {
                 $set[] = XDB::format($k . ' = {?}', $value);
@@ -615,7 +622,6 @@ class AdminModule extends PLModule
             $page->assign('emails', $redirect->emails);
         }
 
-        $page->assign('mr', $mr);
         $page->assign('user', $user);
 
         // Displays forum bans.

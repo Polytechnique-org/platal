@@ -86,11 +86,13 @@ $(document).ready(function() {
 {/literal}
 
 <div id="tabs">
-<ul>
-  <li><a href="{$platal->pl_self()}#account"><span >Compte</span></a></li>
-  <li><a href="{$platal->pl_self()}#emails"><span>Emails</span></a></li>
-  <li><a href="{$platal->pl_self()}#forums"><span>Forums</span></a></li>
-</ul>
+  Compte de {$user->login()}.
+  <ul style="margin-top: 0">
+    <li><a href="{$platal->pl_self()}#account"><span >Compte</span></a></li>
+    <li><a href="{$platal->pl_self()}#emails"><span>Emails</span></a></li>
+    <li><a href="{$platal->pl_self()}#forums"><span>Forums</span></a></li>
+  </ul>
+</div>
 
 <div id="account">
 <form id="auth" method="post" action="admin/user/{$user->login()}#account">
@@ -101,7 +103,7 @@ $(document).ready(function() {
     depuis <strong>{$host}</strong>.
   </p>
 
-  <table class="tinybicol">
+  <table class="bicol">
     <tr>
       <th colspan="2">
         <div style="float: right; text-align: right">
@@ -215,19 +217,22 @@ $(document).ready(function() {
         <input type="text" name="comment" size="40" maxlength="64" value="{$user->comment}" />
       </td>
     </tr>
+    <tr class="impair">
+      <td colspan="2" class="center">
+        {* TODO: on 'update_account', update the hashpass field before sending the form. *}
+        <input type="submit" name="update_account" value="Mettre à jour" />
+        <input type="submit" name="su_account" value="Prendre l'identité" />
+        <input type="submit" name="log_account" value="Consulter les logs" />
+      </td>
+    </tr>
   </table>
-  <div class="center">
-    <input type="submit" name="update_account" value="Mettre à jour" /><br />
-    <input type="submit" name="su_account" value="Prendre l'identité" />
-    <input type="submit" name="log_account" value="Consulter les logs" />
-  </div>
 </form>
 
 <h1>Fiches associées au compte</h1>
 
 <form id="profiles" method="post" action="admin/user/{$user->login()}#account">
   {xsrf_token_field}
-  <table class="tinybicol">
+  <table class="bicol">
     <tr>
       <th></th>
       <th>Identifiant de la fiche</th>
@@ -394,11 +399,11 @@ Pour ceci changer ses permissions en 'disabled'.
 -->
 
 <div id="emails">
-<h1>Gestion de l'adresse X.org {$user->login()}</h1>
+<h1>Gestion de l'adresse X.org</h1>
 
 <form id="alias" method="post" action="admin/user/{$user->login()}#emails">
   {xsrf_token_field}
-  <table class="tinybicol" cellpadding="2" cellspacing="0">
+  <table class="bicol" cellpadding="2" cellspacing="0">
     <tr>
       <th class="alias" colspan="3">
         Alias email de l'utilisateur
@@ -474,7 +479,7 @@ Pour ceci changer ses permissions en 'disabled'.
       </td>
       <td>
         {if $mail->broken}<span style="color: #f00">{/if}
-        {if $mail->email == 'googleapps'}<a href="admin/googleapps/user/{$mr.hruid}">{/if}
+        {if $mail->email == 'googleapps'}<a href="admin/googleapps/user/{$user->login()}">{/if}
         {$mail->display_email}
         {if $mail->email == 'googleapps'}</a>{/if}
         {if $mail->broken}<em> (en panne)</em></span>{/if}
@@ -533,7 +538,7 @@ Pour ceci changer ses permissions en 'disabled'.
 
 <h1>Autres adresses de l'utilisateur</h1>
 
-<table class="tinybicol">
+<table class="bicol">
   <th>Virtual aliases auquel l'utilisateur appartient</th>
   {foreach from=$virtuals item=virtual}
   <tr class="{cycle values="impair,pair"}">
@@ -546,11 +551,11 @@ Pour ceci changer ses permissions en 'disabled'.
 
 <div id="forums">
 
-<h1>Gestion de l'accès au forums de {$user->login()}</h1>
+<h1>Gestion de l'accès au forums</h1>
 
 <form id="bans" method="post" action="admin/user/{$user->login()}#forums">
   {xsrf_token_field}
-  <table cellspacing="0" cellpadding="2" class="tinybicol">
+  <table class="bicol">
     <tr>
       <th colspan="4">
         Permissions sur les forums

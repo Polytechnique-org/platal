@@ -339,17 +339,7 @@ class GoogleAppsAccount
 
         if (!$this->pending_update_suspension) {
             if ($this->sync_password) {
-                $res = XDB::query(
-                    "SELECT  password
-                       FROM  accounts
-                      WHERE  uid = {?}", $this->user->id());
-                $password = ($res->numRows() > 0 ? $res->fetchOneCell() : false);
-            } else {
-                $password = false;
-            }
-
-            if ($password) {
-                $this->create_queue_job('u_update', array('suspended' => false, 'password' => $password));
+                $this->create_queue_job('u_update', array('suspended' => false, 'password' => $this->user->password()));
             } else {
                 $this->create_queue_job('u_update', array('suspended' => false));
             }
