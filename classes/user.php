@@ -29,6 +29,10 @@ class User extends PlUser
     {
         global $globals;
 
+        if (!$login) {
+            throw new UserNotFoundException();
+        }
+
         if ($login instanceof User) {
             $machin->id();
         }
