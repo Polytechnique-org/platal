@@ -26,6 +26,10 @@ class User extends PlUser
     {
         global $globals;
 
+        if (!$login) {
+            throw new UserNotFoundException();
+        }
+
         // If $data is an integer, fetches directly the result.
         if (is_numeric($login)) {
             $res = XDB::query("SELECT user_id FROM auth_user_md5 WHERE user_id = {?}", $login);
