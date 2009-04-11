@@ -177,7 +177,7 @@ class ProfileSearchNames implements ProfileSetting
         if ($has_new) {
             $new_names = new NamesReq(S::user(), $this->search_names, $this->private_name_end);
             $new_names->submit();
-            Platal::page()->trigWarning("La demande de modification de tes noms a bien été prises en compte." .
+            Platal::page()->trigWarning("La demande de modification de tes noms a bien été prise en compte." .
                                         " Tu recevras un email dès que ces changements auront été effectués.");
         } else {
             $display_names = array();
