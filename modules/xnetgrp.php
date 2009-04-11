@@ -604,7 +604,7 @@ class XnetGrpModule extends PLModule
                 $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
                 $mailer->setTxtBody(Env::v('motif'));
                 $mailer->send();
-                $page->kill("La demande de {$user->fullName()} a bien été refusée.");
+                $page->killSuccess("La demande de {$user->fullName()} a bien été refusée.");
             } else {
                 $page->assign('show_form', true);
                 $page->assign('reason', $reason);

@@ -37,17 +37,17 @@ list($nb, $age, $nbold, $nbveryold) = $res->fetchOneRow();
 $age = (time() - intval($age)) / 86400;
 $head = "";
 if ($age > 15) {
-    $head = "[autodestruction du serveur] ";
+    $head = "[Autodestruction du serveur] ";
 } elseif ($age > 7) {
-    $head = "[armageddon imminent] ";
+    $head = "[Armageddon imminent] ";
 } elseif ($age > 5) {
-    $head = "[guerre nucléaire] ";
+    $head = "[Guerre nucléaire] ";
 } elseif ($age > 3) {
     $head = "[ET Téléphone maison] ";
 } elseif ($age > 1) {
-    $head = "[réveil !] ";
+    $head = "[Réveil !] ";
 } elseif (!empty($nbveryold)) {
-    $head = "[urgent] ";
+    $head = "[Urgent] ";
 }
 
 
@@ -60,10 +60,10 @@ $plural = $nb == 1 ? "" : "s";
 $mymail = new PlMailer();
 $mymail->setFrom('validation@' . $globals->mail->domain);
 $mymail->addTo("validation@" . $globals->mail->domain);
-$mymail->setSubject($head . "il y a $nb validation$plural non effectuée$plural");
+$mymail->setSubject($head . "Il y a $nb validation$plural non effectuée$plural");
 
 $message =
-	"il y a $nb validation$plural à effectuer \n"
+	"Il y a $nb validation$plural à effectuer\n"
 	.(empty($nbold)?"":"dont $nbold depuis le dernier mail !!!\n")
 	.(empty($nbveryold)?"":"et dont *$nbveryold* ".($nbveryold == 1 ? "est" : "sont")." en retard de plus de 6h !!!")
 	."\n"
@@ -74,7 +74,7 @@ $res = XDB::iterRow("SELECT  type, count(*)
                    GROUP BY  type
                    ORDER BY  type");
 while (list($type, $nb) = $res->next()) {
-    $message .= "- $type: $nb\n";
+    $message .= "- $type : $nb\n";
 }
 
 $message = wordwrap($message,78);
