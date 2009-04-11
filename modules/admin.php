@@ -377,6 +377,10 @@ class AdminModule extends PLModule
 
         // Loads the user identity using the environment.
         $user = User::get($login);
+        if (!$user) {
+            return;
+        }
+
         $login = $user->login();
         $registered = ($user->state != 'pending');
 
