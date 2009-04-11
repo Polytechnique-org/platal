@@ -335,15 +335,15 @@ function removeTel(id)
 
 function addPhoneComment(id)
 {
-    $(id + '_comment').show();
-    $(id + '_addComment').hide();
+    $('#' + id + '_comment').show();
+    $('#' + id + '_addComment').hide();
 }
 
 function removePhoneComment(id, pref)
 {
-    $(id + '_comment').hide();
-    $(id + '_comment').find("[name='" + pref + "[comment]']").val('');
-    $(id + '_addComment').show();
+    $('#' + id + '_comment').hide();
+    $('#' + id + '_comment').find("[name='" + pref + "[comment]']").val('');
+    $('#' + id + '_addComment').show();
 }
 
 // {{{1 Groups

@@ -139,7 +139,7 @@ class ProfilePhones implements ProfileSetting
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
-        if (is_null($value) || !is_array($value)) {
+        if (is_null($value)) {
             $value = array();
             $res = XDB::iterator("SELECT  t.display_tel AS tel, t.tel_type AS type, t.pub, t.comment
                                     FROM  profile_phones AS t
