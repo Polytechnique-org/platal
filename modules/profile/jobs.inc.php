@@ -120,7 +120,7 @@ class ProfileJob extends ProfileGeocoding
         $success = true;
         foreach ($value as $key=>&$job) {
             $job['name'] = trim($job['name']);
-            if (!$job['name']) {
+            if (!$job['name'] && $entreprise) {
                 $job['tmp_name'] = $entreprise[$entr_val]->name;
                 $entr_val ++;
             }
@@ -158,7 +158,7 @@ class ProfileJob extends ProfileGeocoding
                             WHERE  uid = {?} AND link_type = 'pro'",
                      S::i('uid'));
         foreach ($value as $id=>&$job) {
-            if ($job['jobid']) {
+            if (isset($job['jobid']) && $job['jobid']) {
                 XDB::execute("INSERT INTO  profile_job (uid, id, description, sectorid, subsectorid,
                                                         subsubsectorid, email, url, pub, email_pub, jobid)
                                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
@@ -167,7 +167,7 @@ class ProfileJob extends ProfileGeocoding
             } else {
                 XDB::execute("INSERT INTO  profile_job (uid, id, description, sectorid, subsectorid,
                                                         subsubsectorid, email, url, pub, email_pub)
-                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
+                                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
                              S::i('uid'), $id, $job['description'], $job['sector'], $job['subSector'],
                              $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub']);
             }
