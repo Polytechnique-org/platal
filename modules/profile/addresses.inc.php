@@ -207,9 +207,18 @@ class ProfileAddresses extends ProfilePage
         }
         foreach ($this->values['addresses'] as $id => &$address) {
             if (!isset($address['tel'])) {
-                $address['tel'] = array();
+                $address['tel'] = array(
+                                 0 => array(
+                                     'type'    => 'fixed',
+                                     'tel'     => '',
+                                     'pub'     => 'private',
+                                     'comment' => '',
+                                     )
+                                 );
             }
             unset($address['id']);
+            $address['changed'] = 0;
+            $address['removed'] = 0;
         }
     }
 }

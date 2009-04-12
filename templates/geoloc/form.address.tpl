@@ -49,19 +49,11 @@
 <input type="hidden" name="{$prefname}[geocodedPostalText]" value="{$address.geocodedPostalText}" />
 <input type="hidden" name="{$prefname}[updateTime]" value="{$address.updateTime}" />
 {/if}
-<input type="hidden" name="{$prefname}[type]" value="{$address.type}" />
 <input type="hidden" name="{$prefname}[accuracy]" value="{$address.accuracy}" />
-<input type="hidden" name="{$prefname}[postalAddress]" value="{$address.postalAddress}" />
 <input type="hidden" name="{$prefname}[postalText]" value="{$address.postalText}" />
-<input type="hidden" name="{$prefname}[line1]" value="{$address.line1}" />
-<input type="hidden" name="{$prefname}[line2]" value="{$address.line2}" />
-<input type="hidden" name="{$prefname}[line3]" value="{$address.line3}" />
 <input type="hidden" name="{$prefname}[postalCode]" value="{$address.postalCode}" />
 <input type="hidden" name="{$prefname}[administrativeAreaId]" value="{$address.administrativeAreaId}" />
 <input type="hidden" name="{$prefname}[subAdministrativeAreaId]" value="{$address.subAdministrativeAreaId}" />
-<input type="hidden" name="{$prefname}[locality]" value="{$address.locality}" />
-<input type="hidden" name="{$prefname}[administrativeArea]" value="{$address.administrativeArea}" />
-<input type="hidden" name="{$prefname}[subAdministrativeArea]" value="{$address.subAdministrativeArea}" />
 <input type="hidden" name="{$prefname}[localityId]" value="{$address.localityId}" />
 <input type="hidden" name="{$prefname}[countryId]" value="{$address.countryId}" />
 <input type="hidden" name="{$prefname}[latitude]" value="{$address.latitude}" />
