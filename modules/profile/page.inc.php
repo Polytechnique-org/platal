@@ -146,10 +146,21 @@ class ProfilePhones implements ProfileSetting
                                    WHERE  t.uid = {?} AND t.link_type = {?}
                                 ORDER BY  t.tel_id",
                                  $this->id, $this->link_type);
-            $value = $res->fetchAllAssoc();
+            if ($res->numRows() > 0) {
+                $value = $res->fetchAllAssoc();
+            } else {
+                $value = array(
+                        0 => array(
+                            'type'    => 'fixed',
+                            'tel'     => '',
+                            'pub'     => 'private',
+                            'comment' => '',
+                            )
+                        );
+            }
         }
         foreach ($value as $key=>&$phone) {
-            if (@$phone['removed']) {
+            if (isset($phone['removed']) && $phone['removed']) {
                 unset($value[$key]);
             } else {
                 unset($phone['removed']);
