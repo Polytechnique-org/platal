@@ -120,6 +120,15 @@ function updateNameDisplay()
     });
 }
 
+function toggleParticle(id)
+{
+    if ($('#search_name_' + id).find("[name*='[particle]']").val() == '') {
+        $('#search_name_' + id).find("[name*='[particle]']").val(1);
+    } else {
+        $('#search_name_' + id).find("[name*='[particle]']").val('');
+    }
+}
+
 // Nationalities {{{1
 
 function delNationality(i)

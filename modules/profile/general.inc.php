@@ -56,6 +56,7 @@ class ProfileSearchNames implements ProfileSetting
     {
         $success     = true;
         $success_tmp = true;
+
         if (is_null($value)) {
             $sn_all = XDB::iterator("SELECT  CONCAT(sn.particle, sn.name) AS name,
                                              sn.particle, sn.typeid, e.type, e.name AS type_name,
@@ -82,12 +83,14 @@ class ProfileSearchNames implements ProfileSetting
                     $value[] = $sn;
                     $sn = $sn_all->next();
                 } else {
-                    $value[] = array('typeid'    => $sn_type['id'],
-                                     'type'      => $sn_type['type'],
-                                     'type_name' => $sn_type['name'],
-                                     'pub'       => 1,
+                    $value[] = array('name'             => '',
+                                     'particle'         => '',
+                                     'typeid'           => $sn_type['id'],
+                                     'type'             => $sn_type['type'],
+                                     'type_name'        => $sn_type['name'],
                                      'has_particle'     => $sn_type['has_particle'],
-                                     'always_displayed' => 1);
+                                     'always_displayed' => 1,
+                                     'pub'              => 1);
                 }
             }
             if ($sn) {
@@ -159,6 +162,7 @@ class ProfileSearchNames implements ProfileSetting
             Platal::page()->assign('public_name', $public_name);
             Platal::page()->assign('private_name', $private_name);
         }
+
         return $value;
     }
 

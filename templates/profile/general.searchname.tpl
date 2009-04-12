@@ -52,11 +52,10 @@
       {if $sn.error} class="error"{/if} size="25" onkeyup="updateNameDisplay();"/>
   </td>
   <td>
-    {if $sn.has_particle}<input name="search_names[{$i}][particle]" type="checkbox"
-      title="Coche cette case si ton nom commence par une particle."
-      {if $sn.particle neq ''} checked="checked"{/if} onchange="updateNameDisplay();"/>
-    {else}
-      <input type="hidden"  name="search_names[{$i}][particle]" value=""/>{/if}
+    {if $sn.has_particle}<input type="checkbox"{if $sn.particle neq ''} checked="checked"{/if}
+      title="Coche cette case si ton nom commence par une particle." onchange="toggleParticle({$i});"/>
+    {/if}
+    <input type="hidden"  name="search_names[{$i}][particle]" value="{$sn.particle}"/>
     {if !$sn.always_displayed}<a href="javascript:removeSearchName({$i})">
       {icon name=cross title="Supprimer ce nom"}
     </a>{/if}
