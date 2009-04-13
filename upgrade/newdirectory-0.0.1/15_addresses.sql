@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS profile_addresses (
   south FLOAT(10,7) DEFAULT NULL,
   east FLOAT(10,7) DEFAULT NULL,
   west FLOAT(10,7) DEFAULT NULL,
-  updateTime DATE NOT NULL DEFAULT 0,
+  updateTime DATETIME NOT NULL DEFAULT 0,
   pub ENUM('public','ax','private') NOT NULL DEFAULT 'private',
   comment VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY(pid, jobid, type, id),

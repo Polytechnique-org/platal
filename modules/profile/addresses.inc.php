@@ -164,7 +164,7 @@ class ProfileAddresses extends ProfilePage
     {
         $res = XDB::query("SELECT  id, accuracy, text, postalText,
                                    postalCode, localityId, subAdministrativeAreaId, administrativeAreaId,
-                                   countryId, latitude, longitude, pub, comment, updateTime,
+                                   countryId, latitude, longitude, pub, comment, UNIX_TIMESTAMP(updateTime) AS updateTime,
                                    north, south, east, west,
                                    FIND_IN_SET('current', flags) AS current,
                                    FIND_IN_SET('temporary', flags) AS temporary,
