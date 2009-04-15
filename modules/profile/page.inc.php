@@ -271,7 +271,7 @@ abstract class ProfileGeocoding implements ProfileSetting
     {
         require_once 'geocoding.inc.php';
         $success = true;
-        if ($address['changed'] == 1) {
+        if (isset($address['changed']) && $address['changed'] == 1) {
             $gmapsGeocoder = new GMapsGeocoder();
             $address = $gmapsGeocoder->getGeocodedAddress($address);
             if (isset($address['geoloc'])) {

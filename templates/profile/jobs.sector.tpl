@@ -22,7 +22,7 @@
 
 <?xml version="1.0" encoding="utf-8"?>
 <select name="jobs[{$id}][subSector]" {if ($change)}onchange="updateJobSubSector({$id}, '')"{/if}>
-  <option value=""></option>
+  <option value="0"></option>
   {iterate from=$subSectors item=subSector}
   {if $subSector.optgroup}
   {if $gp}
