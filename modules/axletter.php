@@ -320,7 +320,7 @@ class AXLetterModule extends PLModule
         $importer->apply($page, "admin/axletter", array('user_id', 'email', 'prenom', 'nom', 'promo', 'flag', 'hash'));
     }
 
-    function idFromMail($line, $key)
+    function idFromMail($line, $key, $relation = null)
     {
         static $field;
         global $globals;
@@ -365,7 +365,7 @@ class AXLetterModule extends PLModule
         return $id ? $id : '0';
     }
 
-    function createHash($line, $key)
+    function createHash($line, $key, $relation)
     {
         $hash = implode(time(), $line) . rand();
         $hash = md5($hash);

@@ -363,6 +363,7 @@ class AdminModule extends PLModule
         }
 
         // Loads the user identity using the environment.
+        $user = null;
         if ($login) {
             $user = User::get($login);
         } else if (Env::has('user_id')) {
@@ -691,16 +692,19 @@ class AdminModule extends PLModule
         $page->assign('bans', $bans);
     }
 
-    function getHruid($line, $key)
+    function getHruid($line, $key, $relation)
     {
-        var_dump($line);
-        if (!isset($line['nom']) || !isset($line['prenom']) || !isset($line['promo'])) {
-            return null;
+        $prenom = CSVImporter::getValue($line, 'prenom', $relation['prenom']);
+        $nom = CSVImporter::getValue($line, 'nom', $relation['nom']);
+        $promo = CSVImporter::getValue($line, 'promo', $relation['promo']);
+
+        if ($prenom != 'NULL' && $nom != 'NULL' && $promo != 'NULL') {
+            return make_forlife($prenom, $nom, $promo);
         }
-        return make_forlife($line['prenom'], $line['nom'], $line['promo']);
+        return null;
     }
 
-    function getMatricule($line, $key)
+    function getMatricule($line, $key, $relation)
     {
         $mat = $line['matricule'];
         $year = intval(substr($mat, 0, 3));
