@@ -546,6 +546,21 @@ class ListsModule extends PLModule
                 $msg = str_replace("%(listname)s",  $liste, $msg);
                 $page->assign('msg', $msg);
                 return;
+            } elseif (Get::has('mid') && Env::has('mok')) {
+                $page->changeTpl('lists/moderate_mail.tpl');
+                require_once('banana/moderate.inc.php');
+                $params = array('listname' => $liste, 'domain' => $domain,
+                                'artid' => Get::i('mid'), 'part' => Get::v('part'), 'action' => Get::v('action'));
+                $params['client'] = $this->client;
+                run_banana($page, 'ModerationBanana', $params);
+
+                $msg = file_get_contents('/etc/mailman/fr/accept.txt');
+                $msg = str_replace("%(adminaddr)s", "$liste-owner@{$domain}", $msg);
+                $msg = str_replace("%(request)s",   "<< SUJET DU MAIL >>",    $msg);
+                $msg = str_replace("%(reason)s",    "<< TON EXPLICATION >>",  $msg);
+                $msg = str_replace("%(listname)s",  $liste, $msg);
+                $page->assign('msg', $msg);
+                return;
             }
 
             $mail = $this->moderate_mail($domain, $liste, Env::i('mid'));
