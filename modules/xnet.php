@@ -24,15 +24,15 @@ class XnetModule extends PLModule
     function handlers()
     {
         return array(
-            'index'     => $this->make_hook('index',     AUTH_PUBLIC),
-            'exit'      => $this->make_hook('exit',      AUTH_PUBLIC),
+            'index'       => $this->make_hook('index',     AUTH_PUBLIC),
+            'exit'        => $this->make_hook('exit',      AUTH_PUBLIC),
 
-            'admin'     => $this->make_hook('admin',     AUTH_MDP, 'admin'),
-            'groups'    => $this->make_hook('groups',    AUTH_PUBLIC),
-            'groupes.php' => $this->make_hook('groups2', AUTH_PUBLIC),
-            'plan'      => $this->make_hook('plan',      AUTH_PUBLIC),
-            'photo'     => $this->make_hook('photo',     AUTH_MDP),
-            'autologin' => $this->make_hook('autologin', AUTH_MDP),
+            'admin'       => $this->make_hook('admin',     AUTH_MDP, 'admin'),
+            'groups'      => $this->make_hook('groups',    AUTH_PUBLIC),
+            'groupes.php' => $this->make_hook('groups2',   AUTH_PUBLIC),
+            'plan'        => $this->make_hook('plan',      AUTH_PUBLIC),
+            'photo'       => $this->make_hook('photo',     AUTH_MDP),
+            'autologin'   => $this->make_hook('autologin', AUTH_MDP),
         );
     }
 
