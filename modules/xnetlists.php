@@ -104,7 +104,7 @@ class XnetListsModule extends ListsModule
         }
 
         $listes = $this->client->get_lists();
-        $page->assign('listes',$listes);
+        $page->assign('listes', $listes);
 
         $alias  = XDB::iterator(
                 'SELECT  alias,type
@@ -115,6 +115,13 @@ class XnetListsModule extends ListsModule
         $page->assign('alias', $alias);
 
         $page->assign('may_update', may_update());
+
+        if (count($listes) > 0 && !$globals->asso('has_ml')) {
+            XDB::execute("UPDATE  groupex.asso
+                             SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
+                           WHERE  id = {?}",
+                         $globals->asso('id'));
+        }
     }
 
     function handler_create(&$page)
@@ -181,6 +188,12 @@ class XnetListsModule extends ListsModule
                                     VALUES ({?}, {?})', XDB::insertId(),
                                    $red . $mdir . '@listes.polytechnique.org');
         }
+
+        XDB::execute("UPDATE  groupex.asso
+                         SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
+                       WHERE  id = {?}",
+                     $globals->asso('id'));
+
         pl_redirect('lists/admin/'.$liste);
     }
 
