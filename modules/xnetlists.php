@@ -28,29 +28,29 @@ class XnetListsModule extends ListsModule
     function handlers()
     {
         return array(
-            '%grp/lists'           => $this->make_hook('lists',     AUTH_MDP, 'groupmember'),
-            '%grp/lists/create'    => $this->make_hook('create',    AUTH_MDP, 'groupmember'),
+            '%grp/lists'              => $this->make_hook('lists',    AUTH_MDP, 'groupmember'),
+            '%grp/lists/create'       => $this->make_hook('create',   AUTH_MDP, 'groupmember'),
 
-            '%grp/lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
-            '%grp/lists/csv'       => $this->make_hook('csv',       AUTH_COOKIE),
-            '%grp/lists/annu'      => $this->make_hook('annu',      AUTH_COOKIE),
-            '%grp/lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
-            '%grp/lists/archives/rss' => $this->make_hook('rss',    AUTH_PUBLIC),
+            '%grp/lists/members'      => $this->make_hook('members',  AUTH_COOKIE),
+            '%grp/lists/csv'          => $this->make_hook('csv',      AUTH_COOKIE),
+            '%grp/lists/annu'         => $this->make_hook('annu',     AUTH_COOKIE),
+            '%grp/lists/archives'     => $this->make_hook('archives', AUTH_COOKIE),
+            '%grp/lists/archives/rss' => $this->make_hook('rss',      AUTH_PUBLIC),
 
-            '%grp/lists/moderate'  => $this->make_hook('moderate',  AUTH_MDP),
-            '%grp/lists/admin'     => $this->make_hook('admin',     AUTH_MDP),
-            '%grp/lists/options'   => $this->make_hook('options',   AUTH_MDP),
-            '%grp/lists/delete'    => $this->make_hook('delete',    AUTH_MDP),
+            '%grp/lists/moderate'     => $this->make_hook('moderate', AUTH_MDP),
+            '%grp/lists/admin'        => $this->make_hook('admin',    AUTH_MDP),
+            '%grp/lists/options'      => $this->make_hook('options',  AUTH_MDP),
+            '%grp/lists/delete'       => $this->make_hook('delete',   AUTH_MDP),
 
-            '%grp/lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP),
-            '%grp/lists/check'     => $this->make_hook('check',     AUTH_MDP),
-            '%grp/lists/sync'      => $this->make_hook('sync',      AUTH_MDP),
+            '%grp/lists/soptions'     => $this->make_hook('soptions', AUTH_MDP),
+            '%grp/lists/check'        => $this->make_hook('check',    AUTH_MDP),
+            '%grp/lists/sync'         => $this->make_hook('sync',     AUTH_MDP),
 
-            '%grp/alias/admin'     => $this->make_hook('aadmin',    AUTH_MDP, 'groupadmin'),
-            '%grp/alias/create'    => $this->make_hook('acreate',   AUTH_MDP, 'groupadmin'),
+            '%grp/alias/admin'        => $this->make_hook('aadmin',   AUTH_MDP, 'groupadmin'),
+            '%grp/alias/create'       => $this->make_hook('acreate',  AUTH_MDP, 'groupadmin'),
 
             /* hack: lists uses that */
-            'profile' => $this->make_hook('profile', AUTH_PUBLIC),
+            'profile'                 => $this->make_hook('profile',  AUTH_PUBLIC),
         );
     }
 
@@ -104,7 +104,7 @@ class XnetListsModule extends ListsModule
         }
 
         $listes = $this->client->get_lists();
-        $page->assign('listes',$listes);
+        $page->assign('listes', $listes);
 
         $alias  = XDB::iterator(
                 'SELECT  alias,type
@@ -115,6 +115,13 @@ class XnetListsModule extends ListsModule
         $page->assign('alias', $alias);
 
         $page->assign('may_update', may_update());
+
+        if (count($listes) > 0 && !$globals->asso('has_ml')) {
+            XDB::execute("UPDATE  groupex.asso
+                             SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
+                           WHERE  id = {?}",
+                         $globals->asso('id'));
+        }
     }
 
     function handler_create(&$page)
@@ -181,6 +188,12 @@ class XnetListsModule extends ListsModule
                                     VALUES ({?}, {?})', XDB::insertId(),
                                    $red . $mdir . '@listes.polytechnique.org');
         }
+
+        XDB::execute("UPDATE  groupex.asso
+                         SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
+                       WHERE  id = {?}",
+                     $globals->asso('id'));
+
         pl_redirect('lists/admin/'.$liste);
     }
 

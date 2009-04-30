@@ -49,7 +49,7 @@
 <h2>
   Édition du profil de {if "`$user.prenom` `$user.nom`"|trim}{$user.prenom} {$user.nom}{else}{$user.email}{/if}
   {if $user.origine eq 'X'}
-  (X{$user.promo})
+  &nbsp;(X{$user.promo})
   <a href="https://www.polytechnique.org/profile/{$user.alias}">{icon name=user_suit title="fiche"}</a>
   {/if}
   <a href="{$platal->ns}member/del/{$user.email}">{icon name=delete title="Suppression du compte"}</a>

@@ -100,7 +100,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     // send feedback to the mailing list owners
     if ($client->handle_request($list, $mid, $action, utf8_decode($reason))) {
         $sent_mails += $count;
-        $texte = "le message suivant :\n\n"
+        $texte = "Le message suivant :\n\n"
                . "    Auteur: {$mail['sender']}\n"
                . "    Sujet : « {$mail['subj']} »\n"
                . "    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"

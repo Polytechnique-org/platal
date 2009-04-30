@@ -55,7 +55,7 @@ Bienvenue {$smarty.session.yourself_name}{if $birthday}
 
 {if $smarty.session.mx_failures|@count}
 <div class="warnings">
-  {icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes :
+  {icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes&nbsp;:
   <ul>
     {foreach from=$smarty.session.mx_failures item=mail}
     <li>
