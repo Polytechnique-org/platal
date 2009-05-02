@@ -19,22 +19,38 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/../include/xorg.inc.php';
+class ReminderModule extends PLModule
+{
+    function handlers()
+    {
+        return array(
+            'ajax/reminder' => $this->make_hook('reminder', AUTH_COOKIE),
+        );
+    }
 
-$platal = new Xorg('auth', 'carnet', 'email', 'events', 'forums',
-                   'geoloc', 'lists', 'marketing', 'payment', 'platal',
-                   'profile', 'register', 'search', 'stats', 'admin',
-                   'newsletter', 'axletter', 'bandeau', 'survey',
-                   'gadgets', 'googleapps', 'poison', 'openid', 'reminder');
+    function handler_reminder(&$page, $reminder_name = null, $action = null)
+    {
+        require_once 'reminder.inc.php';
+        $user = S::user();
 
-if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
-    $platal->run();
-    exit;
+        // If no reminder name was passed, or if we don't know that reminder name,
+        // just drop the request.
+        if (!$reminder_name ||
+            !($reminder = Reminder::GetByName($user, $reminder_name))) {
+            return PL_NOT_FOUND;
+        }
+
+        // Otherwise, the request is dispatched, and a new reminder, if any, is
+        // displayed.
+        $reminder->HandleAction($action);
+
+        if ($new_reminder = Reminder::GetCandidateReminder($user)) {
+            $new_reminder->Display($page);
+        } else {
+            exit;
+        }
+    }
 }
-
-/*** WIKI CODE ***/
-
-include pl_core_include('wiki.engine.inc.php');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

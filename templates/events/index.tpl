@@ -41,6 +41,10 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
 </div>
 {/if}
 
+{if $reminder}
+{$reminder|smarty:nodefaults}
+{/if}
+
 {if $smarty.session.no_redirect}
 <div class="errors">
   <ul>
