@@ -19,5 +19,29 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+class ReminderEmailWarning extends Reminder
+{
+    public function HandleAction($action)
+    {
+        if ($action == 'dismiss') {
+            $this->UpdateOnDismiss();
+        }
+    }
+
+    protected function GetDisplayText() {}
+
+    public function Display(&$page)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $page->changeTpl('reminder/email_warning.tpl', NO_SKIN);
+        $page->assign('baseurl', $this->GetBaseUrl());
+    }
+
+    public static function IsCandidate(User &$user)
+    {
+        return count(S::v('mx_failures', array())) > 0;
+    }
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

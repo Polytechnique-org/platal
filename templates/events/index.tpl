@@ -57,21 +57,6 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
 </div>
 {/if}
 
-{if $smarty.session.mx_failures|@count}
-<div class="warnings">
-  {icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes&nbsp;:
-  <ul>
-    {foreach from=$smarty.session.mx_failures item=mail}
-    <li>
-      <span class="erreur">{$mail.mail}</span> :
-      <span class="explication">{$mail.text}</span>
-    </li>
-    {/foreach}
-  </ul>
-  <div style="text-align: center"><a href="emails/redirect">Gérer mes adresses de redirection</a></div>
-</div>
-{/if}
-
 {if $fiche_incitation || $photo_incitation || ($geoloc_incitation > 0)}
 <div class="warnings">
   <ul>
