@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS reminder_type (
 
 INSERT INTO  reminder_type (name, weight, remind_delay_yes, remind_delay_no, remind_delay_dismiss)
      VALUES  ('email_warning', 100, 0, 0,   7),
+             ('no_redirection', 100, 0, 0,  1),
              ('profile_update', 90, 0, 0,   2),
              ('nl',             80, 0, 365, 7),
              ('promotion_ml',   70, 0, 365, 7),

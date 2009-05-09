@@ -45,18 +45,6 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
 {$reminder|smarty:nodefaults}
 {/if}
 
-{if $smarty.session.no_redirect}
-<div class="errors">
-  <ul>
-    <li>
-      Tu n'as plus de redirection valide ce qui rend ton adresse Polytechnique.org
-      inutilisable. Rends-toi au plus vite sur <a href="emails/redirect">la page de 
-      gestion des emails</a> pour corriger ce problème.
-    </li>
-  </ul>
-</div>
-{/if}
-
 {if $fiche_incitation || $photo_incitation || ($geoloc_incitation > 0)}
 <div class="warnings">
   <ul>
@@ -88,7 +76,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
 {/if}
 
 {include file="include/tips.tpl" full=true}
-  
+
   <table class="tinybicol" id="menu-evts">
     {foreach from=$events name=events key=category item=evenement}
     <tr class="pair" style="height: 18px">
@@ -166,7 +154,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
   -->
   {/literal}
   </script>
- 
+
   {foreach from=$events key=category item=evenement}
   {foreach item=ev from=$evenement}
   {if $ev.nonlu}
