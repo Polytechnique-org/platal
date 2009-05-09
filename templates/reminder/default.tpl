@@ -20,6 +20,18 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div class="warnings reminder">{icon name=error}&nbsp;{$text}</div>
+<div class="warnings reminder">
+  <div style="float: right">
+    <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/dismiss')">
+      {icon name=cross title="Cacher cet avertissement."}
+    </a>
+  </div>
+  {$text}<br />
+  <div class="center">
+    [<a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/yes')">{icon name=add} M'inscrire</a>]
+    -
+    [<a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/no')">{icon name=delete} Ne pas m'inscrire</a>]
+  </div>
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
