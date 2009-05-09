@@ -135,23 +135,24 @@ abstract class Reminder
         $res = XDB::query('SELECT  rt.*, r.status, r.remind_last
                              FROM  reminder_type AS rt
                         LEFT JOIN  reminder      AS r ON (rt.type_id = r.type_id AND r.uid = {?})
-                            WHERE  r.uid IS NULL OR r.remind_next < NOW()
-                         ORDER BY  RAND()',
+                            WHERE  r.uid IS NULL OR r.remind_next < NOW()',
                           $user->id());
-
         $candidates  = $res->fetchAllAssoc();
-        $priority    = rand(1, 100);
-        while (count($candidates) > 0 && $priority > 0) {
+
+        $weight_map = create_function('$a', 'return $a["weight"];');
+        while (count($candidates) > 0) {
+            $position = rand(1, array_sum(array_map($weight_map, $candidates)));
             foreach ($candidates as $key => $candidate) {
-                if ($candidate['weight'] > $priority) {
+                $position -= $candidate['weight'];
+                if ($position <= 0) {
                     $class = self::GetClassName($candidate['name']);
                     if ($class && call_user_func(array($class, 'IsCandidate'), $user)) {
+                        print $class;
                         return new $class($user, $candidate);
                     }
                     unset($candidates[$key]);
                 }
             }
-            $priority = (int) ($priority / 2);
         }
 
         return null;
@@ -181,7 +182,7 @@ abstract class Reminder
     // the class.
     private static function GetClassName($name)
     {
-        @require_once "reminder/$name.inc.php";
+        @include_once "reminder/$name.inc.php";
         $class = 'Reminder' . str_replace(' ', '', ucwords(str_replace('_', ' ', $name)));
         return (class_exists($class) ? $class : null);
     }
