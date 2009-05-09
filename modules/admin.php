@@ -363,6 +363,7 @@ class AdminModule extends PLModule
         }
 
         // Loads the user identity using the environment.
+        $user = null;
         if ($login) {
             $user = User::get($login);
         } else if (Env::has('user_id')) {
