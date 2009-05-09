@@ -45,36 +45,6 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
 {$reminder|smarty:nodefaults}
 {/if}
 
-{if $fiche_incitation || $photo_incitation || ($geoloc_incitation > 0)}
-<div class="warnings">
-  <ul>
-{if $fiche_incitation}
-  <li>
-    La dernière mise à jour de ta
-    <a href="profile/{$smarty.session.hruid}" class="popup2">fiche</a>
-    date du {$fiche_incitation|date_format}.
-    Il est possible qu'elle ne soit pas à jour.
-    Si tu souhaites la modifier, <a href="profile/edit">clique ici !</a>
-  </li>
-{/if}
-
-{if $photo_incitation}
-  <li>
-    Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
-    Clique <a href="photo/change">ici</a> si tu souhaites en ajouter une.
-  </li>
-{/if}
-
-{if $geoloc_incitation > 0}
-  <li>
-    Parmi tes adresses, il y en a {$geoloc_incitation} que nous n'avons pas pu localiser.
-    Clique <a href="profile/edit/adresses">ici</a> pour rectifier.
-  </li>
-{/if}
-  </ul>
-</div>
-{/if}
-
 {include file="include/tips.tpl" full=true}
 
   <table class="tinybicol" id="menu-evts">

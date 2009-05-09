@@ -112,31 +112,14 @@ class EventsModule extends PLModule
             $page->assign('reminder', $new_reminder->GetDisplayAsString());
         }
 
-        // Profile update (appears when profile is > 400d old), and birthday
-        // oneboxes.
+        // Wishes "Happy birthday" when required
         $res = XDB::query(
-            "SELECT  date < DATE_SUB(NOW(), INTERVAL 400 DAY) AS is_profile_old,
-                     MONTH(naissance) = MONTH(NOW()) AND DAYOFMONTH(naissance) = DAYOFMONTH(NOW()) AS is_birthday,
-                     date AS profile_date, YEAR(NOW()) - YEAR(naissance) AS age
+            'SELECT  MONTH(naissance) = MONTH(NOW())
+                     AND DAYOFMONTH(naissance) = DAYOFMONTH(NOW()) AS is_birthday
                FROM  auth_user_md5
-              WHERE  user_id = {?}", S::user()->id());
-        list($is_profile_old, $is_birthday, $profile_date, $age) = $res->fetchOneRow();
-
-        if ($is_profile_old) {
-            $page->assign('fiche_incitation', $profile_date);
-        }
-        if ($is_birthday) {
-            $page->assign('birthday', $age);
-        }
-
-        // No-photo onebox.
-        $res = XDB::query("SELECT COUNT(*) FROM photo WHERE uid = {?}", S::user()->id());
-        $page->assign('photo_incitation', $res->fetchOneCell() == 0);
-
-        // Geo-location onebox.
-        require_once 'geoloc.inc.php';
-        $res = localize_addresses(S::user()->id());
-        $page->assign('geoloc_incitation', count($res));
+              WHERE  user_id = {?}',
+            $user->id());
+        $page->assign('birthday', $res->fetchOneCell());
 
         // Direct link to the RSS feed, when available.
         if (S::rssActivated()) {
