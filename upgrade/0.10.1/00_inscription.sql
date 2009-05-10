@@ -18,6 +18,7 @@ INSERT INTO  reminder_type (name, weight, remind_delay_yes, remind_delay_no, rem
              ('nl',             80, 0, 365, 7),
              ('promotion_ml',   70, 0, 365, 7),
              ('email_backup',   60, 0, 365, 7),
+             ('gapps',          50, 0, 365, 7),
              ('ax_letter',      50, 0, 365, 14);
 
 DROP TABLE IF EXISTS reminder;
