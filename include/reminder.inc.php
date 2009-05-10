@@ -147,7 +147,6 @@ abstract class Reminder
                 if ($position <= 0) {
                     $class = self::GetClassName($candidate['name']);
                     if ($class && call_user_func(array($class, 'IsCandidate'), $user)) {
-                        print $class;
                         return new $class($user, $candidate);
                     }
                     unset($candidates[$key]);
