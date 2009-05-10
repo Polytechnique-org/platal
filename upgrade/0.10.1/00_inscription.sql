@@ -17,6 +17,7 @@ INSERT INTO  reminder_type (name, weight, remind_delay_yes, remind_delay_no, rem
              ('profile_update', 90, 0, 0,   2),
              ('nl',             80, 0, 365, 7),
              ('promotion_ml',   70, 0, 365, 7),
+             ('email_backup',   60, 0, 365, 7),
              ('ax_letter',      50, 0, 365, 14);
 
 DROP TABLE IF EXISTS reminder;
