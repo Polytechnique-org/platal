@@ -201,7 +201,12 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
                     $mailer->assign('payment', $id);
                     $mailer->assign('prenom', $u['prenom']);
                     $mailer->assign('topay', $topay);
-                    $mailer->assign('to', $u['email']);
+
+                    if (strpos($u['email'], '@') === false) {
+                        $mailer->assign('to', $u['email'] . '@' . $globals->mail->domain);
+                    } else {
+                        $mailer->assign('to', $u['email']);
+                    }
                     $mailer->send();
                 }
             }
