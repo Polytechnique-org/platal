@@ -694,17 +694,19 @@ class AdminModule extends PLModule
         $page->assign('bans', $bans);
     }
 
-    function getHruid($line, $partial_result, $key)
+    function getHruid($line, $key, $relation)
     {
-        if (!isset($partial_result['nom']) ||
-            !isset($partial_result['prenom']) ||
-            !isset($partial_result['promo'])) {
-            return null;
+        $prenom = CSVImporter::getValue($line, 'prenom', $relation['prenom']);
+        $nom = CSVImporter::getValue($line, 'nom', $relation['nom']);
+        $promo = CSVImporter::getValue($line, 'promo', $relation['promo']);
+
+        if ($prenom != 'NULL' && $nom != 'NULL' && $promo != 'NULL') {
+            return make_forlife($prenom, $nom, $promo);
         }
-        return make_forlife($partial_result['prenom'], $partial_result['nom'], $partial_result['promo']);
+        return null;
     }
 
-    function getMatricule($line, $key)
+    function getMatricule($line, $key, $relation)
     {
         $mat = $line['matricule'];
         $year = intval(substr($mat, 0, 3));
@@ -742,11 +744,9 @@ class AdminModule extends PLModule
             $fields = array('hruid', 'nom', 'nom_ini', 'prenom', 'naissance_ini',
                             'prenom_ini', 'promo', 'promo_sortie', 'flags',
                             'matricule', 'matricule_ax', 'perms');
+            $importer->forceValue('hruid', array($this, 'getHruid'));
             $importer->forceValue('promo', $promo);
             $importer->forceValue('promo_sortie', $promo + 3);
-            // The hruid generation callback is set last, so that it is called once 'promo'
-            // has already been computed for that line.
-            $importer->forceValue('hruid', array($this, 'getHruid'));
             break;
           case 'ax':
             $fields = array('matricule', 'matricule_ax');
