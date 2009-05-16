@@ -553,7 +553,7 @@ class Redirect
     {
         XDB::execute("UPDATE  emails
                          SET  flags = 'disable'
-                       WHERE  flags = 'active' AND uid = {?}", $this->user->id);
+                       WHERE  flags = 'active' AND uid = {?}", $this->user->id());
         foreach ($this->emails as &$mail) {
             if ($mail->active && $mail->has_disable()) {
                 $mail->disabled = true;
@@ -569,7 +569,7 @@ class Redirect
     {
         XDB::execute("UPDATE  emails
                          SET  flags = 'active'
-                       WHERE  flags = 'disable' AND uid = {?}", $this->user->id);
+                       WHERE  flags = 'disable' AND uid = {?}", $this->user->id());
         foreach ($this->emails as &$mail) {
             if ($mail->disabled) {
                 $mail->active   = true;
