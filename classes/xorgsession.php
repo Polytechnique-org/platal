@@ -214,6 +214,10 @@ class XorgSession extends PlSession
                          LEFT JOIN  logger.last_sessions AS ls ON (ls.uid = u.user_id)
                          LEFT JOIN  logger.sessions AS s  ON(s.id = ls.id)
                              WHERE  u.user_id = {?} AND u.perms IN('admin', 'user')", $uid);
+        if ($res->numRows() != 1) {
+            return false;
+        }
+
         $sess = $res->fetchOneAssoc();
         $perms = $sess['perms'];
         unset($sess['perms']);
