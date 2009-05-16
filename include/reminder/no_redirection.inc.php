@@ -37,7 +37,7 @@ class ReminderNoRedirection extends Reminder
         $page->assign('baseurl', $this->GetBaseUrl());
     }
 
-    public static function IsCandidate(User &$user)
+    public static function IsCandidate(User &$user, $candidate)
     {
         return S::v('no_redirect');
     }

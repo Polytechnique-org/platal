@@ -37,7 +37,7 @@ class ReminderEmailWarning extends Reminder
         $page->assign('baseurl', $this->GetBaseUrl());
     }
 
-    public static function IsCandidate(User &$user)
+    public static function IsCandidate(User &$user, $candidate)
     {
         return count(S::v('mx_failures', array())) > 0;
     }

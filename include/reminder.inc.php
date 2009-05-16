@@ -69,27 +69,30 @@ abstract class Reminder
     // Updates (or creates) the reminder line for the pair (|user|, |reminder_id|)
     // using the |status| as status, and the |next_ask| as the delay between now
     // and the next ask (if any).
-    private function UpdateStatus($status, $next_ask)
+    private static function UpdateStatus($user_id, $type_id, $status, $next_ask)
     {
         XDB::execute('REPLACE INTO  reminder
                                SET  uid = {?}, type_id = {?}, status = {?},
                                     remind_last = NOW(), remind_next = FROM_UNIXTIME({?})',
-                     $this->user->id(), $this->type_id, $status,
+                     $user_id, $type_id, $status,
                      ($next_ask > 0 ? time() + $next_ask * 24 * 60 * 60 : null));
     }
 
     // Updates the status of the reminder for the current user.
     protected function UpdateOnYes()
     {
-        $this->UpdateStatus('yes', $this->remind_delay_yes);
+        $this->UpdateStatus($this->user->id(), $this->type_id,
+                            'yes', $this->remind_delay_yes);
     }
     protected function UpdateOnNo()
     {
-        $this->UpdateStatus('no', $this->remind_delay_no);
+        $this->UpdateStatus($this->user->id(), $this->type_id,
+                            'no', $this->remind_delay_no);
     }
     protected function UpdateOnDismiss()
     {
-        $this->UpdateStatus('dismiss', $this->remind_delay_dismiss);
+        $this->UpdateStatus($this->user->id(), $this->type_id,
+                            'dismiss', $this->remind_delay_dismiss);
     }
 
     // Display and http handling helpers --------------------------------------
@@ -127,6 +130,17 @@ abstract class Reminder
         return 'ajax/reminder/' . $this->name;
     }
 
+    // Static status update methods -------------------------------------------
+
+    // Marks the candidate reminder as having been accepted for user |user_id|.
+    // It is intended to be used when a reminder box has been bypassed, and when
+    // it should behave as if the user had clicked on 'yes'.
+    protected static function MarkCandidateAsAccepted($user_id, $candidate)
+    {
+        Reminder::UpdateStatus($user_id, $candidate['type_id'],
+                               'yes', $candidate['remind_delay_yes']);
+    }
+
     // Static factories -------------------------------------------------------
 
     // Returns a chosen class using the user data from |user|, and from the database.
@@ -146,7 +160,7 @@ abstract class Reminder
                 $position -= $candidate['weight'];
                 if ($position <= 0) {
                     $class = self::GetClassName($candidate['name']);
-                    if ($class && call_user_func(array($class, 'IsCandidate'), $user)) {
+                    if ($class && call_user_func(array($class, 'IsCandidate'), $user, $candidate)) {
                         return new $class($user, $candidate);
                     }
                     unset($candidates[$key]);
