@@ -119,6 +119,9 @@ class GoogleAppsAccount
     public $r_last_webmail;
     public $reporting_date;
 
+    // Nicknames (aliases) registered for that user, lazily loaded.
+    public $nicknames;
+
     // Pending requests in the gappsd job queue (cf. top note).
     public $pending_create;
     public $pending_delete;
@@ -270,6 +273,21 @@ class GoogleAppsAccount
     public function suspended()
     {
         return $this->g_status == 'disabled';
+    }
+
+    // Loads and returns the list of nicknames for the user.
+    public function nicknames()
+    {
+        if ($this->nicknames == null) {
+            $res = XDB::query(
+                "SELECT  g_nickname
+                   FROM  gapps_nicknames
+                  WHERE  g_account_name = {?}
+               ORDER BY  g_nickname",
+                $this->g_account_name);
+            $this->nicknames = $res->fetchColumn();
+        }
+        return $this->nicknames;
     }
 
 

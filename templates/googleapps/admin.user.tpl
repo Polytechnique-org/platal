@@ -71,6 +71,11 @@
   <tr class="pair">
     <td class="titre">Utilisation du quota d'emails</td><td>{$a->r_disk_usage/1024/1024|string_format:"%.2f"}MB</td>
   </tr>
+
+  <tr class="impair">
+    <td class="titre">Alias email du compte</td>
+    <td>{$a->g_account_name}{foreach from=$a->nicknames() item=nickname}<br />{$nickname}{/foreach}</td>
+  </tr>
 </table><br />
 
 <form action="admin/googleapps/user/{$a->g_account_name}" method="post">
