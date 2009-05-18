@@ -74,7 +74,7 @@
 
   <tr class="impair">
     <td class="titre">Alias email du compte</td>
-    <td>{$a->g_account_name}{foreach from=$a->nicknames() item=nickname}<br />{$nickname}{/foreach}</td>
+    <td>{foreach from=$a->nicknames() item=nickname}{$nickname}<br />{/foreach}{$a->g_account_name}</td>
   </tr>
 </table><br />
 
