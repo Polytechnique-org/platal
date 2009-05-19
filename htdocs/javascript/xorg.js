@@ -212,6 +212,7 @@ function auto_links() {
     url  = document.URL;
     fqdn = url.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
     light = (url.indexOf('display=light') > url.indexOf('?'));
+    resource_page = (url.indexOf('rss') > -1 || url.indexOf('ical') > -1);
 
     $("a,link").each(
         function(i) {
@@ -235,7 +236,7 @@ function auto_links() {
                     href = 'http://' + fqdn + '/' + href;
                 }
             }
-            if (this.nodeName.toLowerCase() == 'a') {
+            if (this.nodeName.toLowerCase() == 'a' && !resource_page) {
                 if (rss && href.indexOf('prefs/rss') < 0 &&  (href.indexOf('xml') > -1 || href.indexOf('hash'))) {
                     goodiesPopup(this, __goodies_rss);
                 } else if (ical) {
