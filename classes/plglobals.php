@@ -64,12 +64,13 @@ class PlGlobals
                                // 'r'  => read/only
                                // ''   => site down
 
-    /** Catch-all mode for mails
-     * If set to 1, all emails are sent to admin_email (defined in [Core])
-     * instead of their actual destination (but apparent from and to aren't
-     * modified)
+    /** Catch-all mode for emails.
+     * If set to a valid email address, all emails from plat/al are sent to
+     * that email address, instead of their normal destination (From:, To:,
+     * and CC: headers are not actually modified).
+     * Note: only valid if restricted_platal is set to true.
      */
-    public $catchmail = false;
+    public $email_catchall = false;
 
     /** Tell smarty to check the timestamps of the templates to decide
      * whether recompile the template or not. If this option is false and

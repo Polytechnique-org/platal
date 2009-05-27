@@ -329,8 +329,8 @@ class PlMailer extends Mail_Mime {
             $this->addHeader('X-Org-Mail', S::user()->forlifeEmail());
         }
         $addrs = Array();
-        foreach(Array('To', 'Cc', 'Bcc') as $hdr) {
-            if(isset($this->_headers[$hdr])) {
+        foreach (Array('To', 'Cc', 'Bcc') as $hdr) {
+            if (isset($this->_headers[$hdr])) {
                 require_once 'Mail/RFC822.php';
                 $parsed = @Mail_RFC822::parseAddressList($this->_headers[$hdr]);
                 if (is_array($parsed)) {
@@ -338,24 +338,23 @@ class PlMailer extends Mail_Mime {
                 }
             }
         }
-        if(empty($addrs)) {
+        if (empty($addrs)) {
             return false;
         }
 
         $dests = Array();
-        foreach($addrs as $a) {
+        foreach ($addrs as $a) {
             $dests[] = "{$a->mailbox}@{$a->host}";
         }
 
-        // Support for "catch-all" mail address : all emails are sent to
-        // admin_email instead of actual recipients
+        // Support for a "catch-all" email address, to be used by developers.
+        // This mode can only be activated when the working copy is in restricted
+        // mode, to ensure that production plat/al copies are never affected.
         global $globals;
-        if($globals->catchmail) {
+        if ($globals->email_catchall && $globals->core->restricted_platal) {
             require_once 'Mail/RFC822.php';
-            if(@Mail_RFC822::isValidInetAddress($globals->admin_email)){
-                $dests = array($globals->admin_email);
-            }else if(@Mail_RFC822::isValidInetAddress($globals->core->admin_email)){
-                $dests = array($globals->core->admin_email);
+            if (@Mail_RFC822::isValidInetAddress($globals->email_catchall)) {
+                $dests = array($globals->email_catchall);
             }
         }
 
