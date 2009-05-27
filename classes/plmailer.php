@@ -347,6 +347,18 @@ class PlMailer extends Mail_Mime {
             $dests[] = "{$a->mailbox}@{$a->host}";
         }
 
+        // Support for "catch-all" mail address : all emails are sent to
+        // admin_email instead of actual recipients
+        global $globals;
+        if($globals->catchmail) {
+            require_once 'Mail/RFC822.php';
+            if(@Mail_RFC822::isValidInetAddress($globals->admin_email)){
+                $dests = array($globals->admin_email);
+            }else if(@Mail_RFC822::isValidInetAddress($globals->core->admin_email)){
+                $dests = array($globals->core->admin_email);
+            }
+        }
+
         // very important to do it in THIS order very precisely.
         $body = $this->get(array('text_charset' => $this->charset,
                                  'text_encoding' => '8bit',

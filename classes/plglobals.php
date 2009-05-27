@@ -64,6 +64,13 @@ class PlGlobals
                                // 'r'  => read/only
                                // ''   => site down
 
+    /** Catch-all mode for mails
+     * If set to 1, all emails are sent to admin_email (defined in [Core])
+     * instead of their actual destination (but apparent from and to aren't
+     * modified)
+     */
+    public $catchmail = false;
+
     /** Tell smarty to check the timestamps of the templates to decide
      * whether recompile the template or not. If this option is false and
      * debug mode is not activate, templates won't be recompile if they changed.
