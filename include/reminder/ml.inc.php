@@ -85,7 +85,7 @@ class ReminderMl extends Reminder
         $page->assign_by_ref('lists', $lists);
     }
 
-    public static function IsCandidate(User &$user)
+    public static function IsCandidate(User &$user, $candidate)
     {
         $res = XDB::execute("SELECT  COUNT(*) AS lists
                                FROM  register_subs

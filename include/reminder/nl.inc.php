@@ -45,7 +45,7 @@ class ReminderNl extends Reminder
             communauté des X.";
     }
 
-    public static function IsCandidate(User &$user)
+    public static function IsCandidate(User &$user, $candidate)
     {
         require_once 'newsletter.inc.php';
         return !(Newsletter::subscriptionState());

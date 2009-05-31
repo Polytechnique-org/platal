@@ -44,7 +44,7 @@ class ReminderAxLetter extends Reminder
             informations importantes de l'AX.";
     }
 
-    public static function IsCandidate(User &$user)
+    public static function IsCandidate(User &$user, $candidate)
     {
         Platal::load('axletter', 'axletter.inc.php');
         return !(AXLetter::subscriptionState());

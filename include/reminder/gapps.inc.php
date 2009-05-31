@@ -47,7 +47,7 @@ class ReminderGapps extends Reminder
             habituelle (en savoir plus).";
     }
 
-    public static function IsCandidate(User &$user)
+    public static function IsCandidate(User &$user, $candidate)
     {
         require_once 'googleapps.inc.php';
         return GoogleAppsAccount::account_status($user->id());

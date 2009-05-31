@@ -58,7 +58,7 @@ class ReminderPromotionMl extends Reminder
             S::user()->promo() . '.';
     }
 
-    public static function IsCandidate(User &$user)
+    public static function IsCandidate(User &$user, $candidate)
     {
         // We only test if the user is in her promotion group for it is too
         // expensive to check if she is in the corresponding ML as well.

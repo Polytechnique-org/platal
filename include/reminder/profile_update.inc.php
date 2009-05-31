@@ -76,7 +76,7 @@ class ReminderProfileUpdate extends Reminder
                       (count($res) > 0 ? 1 : 0));
     }
 
-    public static function IsCandidate(User &$user)
+    public static function IsCandidate(User &$user, $candidate)
     {
         $res = XDB::query('SELECT  date < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_profile_old,
                                    p.attach AS photo

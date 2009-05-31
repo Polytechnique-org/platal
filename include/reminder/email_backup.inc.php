@@ -48,7 +48,7 @@ class ReminderEmailBackup extends Reminder
             sur ton adresse Polytechnique.org.";
     }
 
-    public static function IsCandidate(User &$user)
+    public static function IsCandidate(User &$user, $candidate)
     {
         require_once 'emails.inc.php';
         $storage = new EmailStorage($user, 'imap');
