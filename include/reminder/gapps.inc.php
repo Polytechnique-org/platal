@@ -50,7 +50,11 @@ class ReminderGapps extends Reminder
     public static function IsCandidate(User &$user, $candidate)
     {
         require_once 'googleapps.inc.php';
-        return GoogleAppsAccount::account_status($user->id());
+        $isSubscribed = GoogleAppsAccount::account_status($user->id());
+        if ($isSubscribed) {
+            Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
+        }
+        return !$isSubscribed;
     }
 }
 

@@ -47,7 +47,11 @@ class ReminderAxLetter extends Reminder
     public static function IsCandidate(User &$user, $candidate)
     {
         Platal::load('axletter', 'axletter.inc.php');
-        return !(AXLetter::subscriptionState());
+        $isSubscribed = AXLetter::subscriptionState();
+        if ($isSubscribed) {
+            Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
+        }
+        return !$isSubscribed;
     }
 }
 

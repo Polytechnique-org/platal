@@ -92,7 +92,11 @@ class ReminderMl extends Reminder
                               WHERE  uid = {?} AND type = 'list'",
                             $user->id());
 
-        return $res->fetchOneCell();
+        $mlCount = $res->fetchOneCell();
+        if (!$mlCount) {
+            Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
+        }
+        return ($mlCount > 0);
     }
 }
 

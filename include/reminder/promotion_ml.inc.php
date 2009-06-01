@@ -69,7 +69,11 @@ class ReminderPromotionMl extends Reminder
                                                              WHERE  diminutif = {?})',
                           $user->id(), S::v('promo'));
 
-        return ($res->fetchOneCell() > 0);
+        $mlCount = $res->fetchOneCell();
+        if ($mlCount) {
+            Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
+        }
+        return ($mlCount > 0);
     }
 }
 

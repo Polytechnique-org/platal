@@ -51,8 +51,11 @@ class ReminderEmailBackup extends Reminder
     public static function IsCandidate(User &$user, $candidate)
     {
         require_once 'emails.inc.php';
-        $storage = new EmailStorage($user, 'imap');
-        return $storage->active;
+        $storage  = new EmailStorage($user, 'imap');
+        if ($storage->active) {
+            Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
+        }
+        return !$storage->active;
     }
 }
 

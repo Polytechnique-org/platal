@@ -48,7 +48,11 @@ class ReminderNl extends Reminder
     public static function IsCandidate(User &$user, $candidate)
     {
         require_once 'newsletter.inc.php';
-        return !(Newsletter::subscriptionState());
+        $isSubscribed = Newsletter::subscriptionState();
+        if ($isSubscribed) {
+            Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
+        }
+        return !$isSubscribed;
     }
 }
 
