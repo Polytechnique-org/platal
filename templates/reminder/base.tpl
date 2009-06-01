@@ -20,18 +20,22 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div class="warnings reminder">
-  <div style="float: right">
+<fieldset id="reminder" class="warnings">
+  <legend>{icon name=information} Information : Titre !
     <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/dismiss')">
-      {icon name=cross title="Cacher cet avertissement."}
+      {icon name=cross title="Cacher cette information."}
+    </a>
+  </legend>
+
+  {$text}
+  <div class="center">
+    <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/yes'); return false" style="text-decoration: none">
+      {icon name=add} M'inscrire
+    </a> - 
+    <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/no'); return false" style="text-decoration: none">
+      {icon name=delete} Ne pas m'inscrire
     </a>
   </div>
-  {$text}<br />
-  <div class="center">
-    [<a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/yes')">{icon name=add} M'inscrire</a>]
-    -
-    [<a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/no')">{icon name=delete} Ne pas m'inscrire</a>]
-  </div>
-</div>
+</fieldset>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
