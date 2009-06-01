@@ -351,7 +351,7 @@ class ProfileModule extends PLModule
                             WHERE  user_id = {?} AND naissance = '0000-00-00'", S::i('uid'));
         if ($res->numRows()) {
             $page->trigWarning("Ta date de naissance n'est pas renseignée, ce qui t'empêcheras de réaliser"
-                      . " la procédure de récupération de mot de passe si un jour tu le perdais");
+                      . " la procédure de récupération de mot de passe si un jour tu le perdais.");
         }
 
        $page->setTitle('Mon Profil');
