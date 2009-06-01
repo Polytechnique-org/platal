@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS reminder (
   type_id INT NOT NULL,
   status ENUM('yes', 'no', 'dismissed') NOT NULL,
   remind_last TIMESTAMP NOT NULL,
-  remind_next TIMESTAMP NOT NULL,
+  remind_next TIMESTAMP NULL,
   PRIMARY KEY(uid, type_id)
 ) CHARSET=utf8;
 
