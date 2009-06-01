@@ -20,35 +20,34 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div class="warnings reminder">
-  <span style="float: right">
-    <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/dismiss')">
-      {icon name=cross title="Cacher cet avertissement."}
+<form action="{$reminder->baseurl()}/suscribe" method="post">
+  {xsrf_token_field}
+  Des camarades souhaitent que tu t'inscrives aux listes suivantes&nbsp;:
+  <dl>
+    {foreach from=$lists key=list item=details}
+    <dt>
+      <label>
+        <input type='checkbox' value='1' checked="checked" name="sub_ml[{$list}]" />
+        {$list}*&nbsp;: {$details.desc}
+      </label>
+    </dt>
+    {if $details.info}
+    <dd>
+      {$details.info|nl2br}
+    </dd>
+    {/if}
+    {/foreach}
+  </dl>
+
+  <div class="center">
+    <input type="submit" value="M'inscrire aux listes" /> -
+    <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/no'); return false" style="text-decoration: none">
+      {icon name=delete} Ne pas m'inscrire
+    </a> -
+    <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
+      {icon name=cross} Décider plus tard
     </a>
-  </span>
-  <form action="{$baseurl}/suscribe" method="post">
-    {xsrf_token_field}
-    Des camarades souhaitent que tu t'inscrives aux listes suivantes&nbsp;:
-    <dl>
-      {foreach from=$lists key=list item=details}
-      <dt>
-        <label>
-          <input type='checkbox' value='1' checked="checked" name="sub_ml[{$list}]" />
-          {$list}*&nbsp;: {$details.desc}
-        </label>
-      </dt>
-      {if $details.info}
-      <dd>
-        {$details.info|nl2br}
-      </dd>
-      {/if}
-      {/foreach}
-    </dl>
-    <input type="submit" value="M'inscrire aux listes choisies." />
-  </form>
-  [<a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/no')">
-    {icon name=delete} Ne pas m'inscrire à ces listes de diffusion.
-  </a>]
-</div>
+  </div>
+</form>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

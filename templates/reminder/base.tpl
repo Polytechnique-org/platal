@@ -20,22 +20,32 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<fieldset id="reminder" class="warnings">
-  <legend>{icon name=information} Information : Titre !
-    <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/dismiss')">
-      {icon name=cross title="Cacher cette information."}
-    </a>
-  </legend>
+<div id="reminder">
+  <fieldset class="warnings">
+    <legend>
+      {if $reminder->warning()}{icon name=error}{else}{icon name=information}{/if}
+      &nbsp;{$reminder->title()}
+    </legend>
 
-  {$text}
-  <div class="center">
-    <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/yes'); return false" style="text-decoration: none">
-      {icon name=add} M'inscrire
-    </a> - 
-    <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/no'); return false" style="text-decoration: none">
-      {icon name=delete} Ne pas m'inscrire
-    </a>
-  </div>
-</fieldset>
+    {if $reminder->template()}
+      {include file=$reminder->template()}
+    {else}
+      <div style="margin-bottom: 0.5em">
+        {$reminder->text()}
+      </div>
+      <div class="center">
+        <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/yes'); return false" style="text-decoration: none">
+          {icon name=add} M'inscrire
+        </a> -
+        <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/no'); return false" style="text-decoration: none">
+          {icon name=delete} Ne pas m'inscrire
+        </a> -
+        <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
+          {icon name=cross} Décider plus tard
+        </a>
+      </div>
+    {/if}
+  </fieldset>
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

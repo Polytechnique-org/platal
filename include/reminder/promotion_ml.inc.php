@@ -49,13 +49,17 @@ class ReminderPromotionMl extends Reminder
         }
     }
 
-    protected function GetDisplayText()
+    public function text()
     {
         return "La liste de diffusion de ta promotion permet de recevoir les
             informations plus spécifiques de ta promotion pour pouvoir
             participer plus facilement aux événements qu'elle organise. Tu
             seras aussi inscrit dans le groupe de la promotion " .
-            S::user()->promo() . '.';
+            $this->user->promo() . '.';
+    }
+    public function title()
+    {
+        return "Inscription à la liste de diffusion de ta promotion";
     }
 
     public static function IsCandidate(User &$user, $candidate)
@@ -73,7 +77,7 @@ class ReminderPromotionMl extends Reminder
         if ($mlCount) {
             Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
         }
-        return ($mlCount > 0);
+        return ($mlCount == 0);
     }
 }
 

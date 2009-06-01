@@ -20,15 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div class="warnings reminder">
-  <span style="float: right">
-    <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/dismiss')">
-      {icon name=cross title="Cacher cet avertissement."}
-    </a>
-  </span>
-  {icon name=error} Tu n'as plus de redirection valide ce qui rend ton adresse Polytechnique.org
-  inutilisable. Rends-toi au plus vite sur <a href="emails/redirect">la page de
-  gestion des emails</a> pour corriger ce problème.
-</div>
+Tu n'as plus de redirection valide ce qui rend ton adresse Polytechnique.org
+inutilisable. Rends-toi au plus vite sur <a href="emails/redirect">la page de
+gestion des emails</a> pour corriger ce problème.
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

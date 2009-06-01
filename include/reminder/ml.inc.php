@@ -59,13 +59,9 @@ class ReminderMl extends Reminder
         }
     }
 
-    protected function GetDisplayText() {}
-
-    public function Display(&$page)
+    public function Prepare(&$page)
     {
-        header('Content-Type: text/html; charset=utf-8');
-        $page->changeTpl('reminder/ml.tpl', NO_SKIN);
-        $page->assign('baseurl', $this->GetBaseUrl());
+        parent::Prepare($page);
 
         $res = XDB::iterRow("SELECT  sub, domain
                                FROM  register_subs
@@ -85,12 +81,21 @@ class ReminderMl extends Reminder
         $page->assign_by_ref('lists', $lists);
     }
 
+    public function template()
+    {
+        return 'reminder/ml.tpl';
+    }
+    public function title()
+    {
+        return "Inscription aux listes de diffusion";
+    }
+
     public static function IsCandidate(User &$user, $candidate)
     {
-        $res = XDB::execute("SELECT  COUNT(*) AS lists
-                               FROM  register_subs
-                              WHERE  uid = {?} AND type = 'list'",
-                            $user->id());
+        $res = XDB::query("SELECT  COUNT(*) AS lists
+                             FROM  register_subs
+                            WHERE  uid = {?} AND type = 'list'",
+                          $user->id());
 
         $mlCount = $res->fetchOneCell();
         if (!$mlCount) {

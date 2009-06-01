@@ -42,10 +42,10 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
 {/if}
 
 {if $reminder}
-{$reminder|smarty:nodefaults}
-{/if}
-
+{include file="reminder/base.tpl"}
+{else}
 {include file="include/tips.tpl" full=true}
+{/if}
 
   <table class="tinybicol" id="menu-evts">
     {foreach from=$events name=events key=category item=evenement}

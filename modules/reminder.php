@@ -44,8 +44,8 @@ class ReminderModule extends PLModule
         // displayed.
         $reminder->HandleAction($action);
 
-        if ($new_reminder = Reminder::GetCandidateReminder($user)) {
-            $new_reminder->Display($page);
+        if (($new_reminder = Reminder::GetCandidateReminder($user))) {
+            $new_reminder->DisplayStandalone($page);
         } else {
             exit;
         }

@@ -45,35 +45,43 @@ class ReminderProfileUpdate extends Reminder
         }
     }
 
-    protected function GetDisplayText() {}
-
-    public function Display(&$page)
+    public function Prepare(&$page)
     {
-        header('Content-Type: text/html; charset=utf-8');
-        $page->changeTpl('reminder/profile_update.tpl', NO_SKIN);
-        $page->assign('baseurl', $this->GetBaseUrl());
-        $user = S::user();
+        parent::Prepare($page);
 
         $res = XDB::query('SELECT  date < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_profile_old,
-                                   date AS profile_date, p.attach AS photo
+                                   date AS profile_date, LENGTH(p.attach) > 0 AS photo
                              FROM  auth_user_md5 AS u
                         LEFT JOIN  photo         AS p ON (u.user_id = p.uid)
                             WHERE  user_id = {?}',
-                          $user->id());
+                          $this->user->id());
         list($is_profile_old, $profile_date, $has_photo) = $res->fetchOneRow();
 
-        $profile_date = $is_profile_old ? $profile_date : null;
-        $page->assign('profile_update', $profile_date);
-        $page->assign('needs_photo', $has_photo);
+        $page->assign('profile_incitation', $is_profile_old);
+        $page->assign('profile_last_update', $profile_date);
+        $page->assign('photo_incitation', $has_photo);
 
         require_once 'geoloc.inc.php';
-        $res = localize_addresses($user->id());
+        $res = localize_addresses($this->user->id());
         $page->assign('geocoding_incitation', count($res));
 
         $page->assign('incitations_count',
                       ($is_profile_old ? 1 : 0) +
-                      ($has_photo ? 1 : 0) +
+                      ($has_photo ? 0 : 1) +
                       (count($res) > 0 ? 1 : 0));
+    }
+
+    public function template()
+    {
+        return 'reminder/profile_update.tpl';
+    }
+    public function title()
+    {
+        return "Mise à jour de ton profil";
+    }
+    public function warning()
+    {
+        return true;
     }
 
     public static function IsCandidate(User &$user, $candidate)

@@ -106,10 +106,11 @@ class EventsModule extends PLModule
         $page->addJsLink('ajax.js');
         $page->assign('tips', $this->get_tips());
 
-        require_once 'reminder.inc.php';
+        // Adds a reminder onebox to the page.
         $user = S::user();
-        if (($new_reminder = Reminder::GetCandidateReminder($user))) {
-            $page->assign('reminder', $new_reminder->GetDisplayAsString());
+        require_once 'reminder.inc.php';
+        if (($reminder = Reminder::GetCandidateReminder($user))) {
+            $reminder->Prepare($page);
         }
 
         // Wishes "Happy birthday" when required

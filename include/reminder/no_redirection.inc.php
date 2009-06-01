@@ -28,13 +28,17 @@ class ReminderNoRedirection extends Reminder
         }
     }
 
-    protected function GetDisplayText() {}
-
-    public function Display(&$page)
+    public function template()
     {
-        header('Content-Type: text/html; charset=utf-8');
-        $page->changeTpl('reminder/no_redirection.tpl', NO_SKIN);
-        $page->assign('baseurl', $this->GetBaseUrl());
+        return 'reminder/no_redirection.tpl';
+    }
+    public function title()
+    {
+        return "Problème avec ta redirection d'emails";
+    }
+    public function warning()
+    {
+        return true;
     }
 
     public static function IsCandidate(User &$user, $candidate)

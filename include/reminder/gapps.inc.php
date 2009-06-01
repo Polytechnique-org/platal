@@ -39,12 +39,16 @@ class ReminderGapps extends Reminder
         }
     }
 
-    protected function GetDisplayText()
+    public function text()
     {
         return "Polytechnique.org te fournit un compte Google Apps qui te permet
             de disposer des applications web de Google (GMail, Google Calendar,
             Google Docs, et bien d'autres) sur ton adresse Polytechnique.org
             habituelle (en savoir plus).";
+    }
+    public function title()
+    {
+        return "Création d'un compte Google Apps";
     }
 
     public static function IsCandidate(User &$user, $candidate)

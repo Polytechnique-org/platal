@@ -20,22 +20,15 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div class="warnings reminder">
-  <span style="float: right">
-    <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/dismiss')">
-      {icon name=cross title="Cacher cet avertissement."}
-    </a>
-  </span>
-  {icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes&nbsp;:
-  <ul>
-    {foreach from=$smarty.session.mx_failures item=mail}
-    <li>
-      <span class="erreur">{$mail.mail}</span> :
-      <span class="explication">{$mail.text}</span>
-    </li>
-    {/foreach}
-  </ul>
-  <div style="text-align: center"><a href="emails/redirect">Gérer mes adresses de redirection</a></div>
-</div>
+Des problèmes sont actuellement recontrés sur tes redirections suivantes&nbsp;:
+<ul>
+  {foreach from=$smarty.session.mx_failures item=mail}
+  <li>
+    <span class="erreur">{$mail.mail}</span> :
+    <span class="explication">{$mail.text}</span>
+  </li>
+  {/foreach}
+</ul>
+<div style="text-align: center"><a href="emails/redirect">Gérer mes adresses de redirection</a></div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

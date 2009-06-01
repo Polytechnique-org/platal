@@ -25,8 +25,7 @@ class ReminderEmailBackup extends Reminder
     {
         if ($action == 'yes') {
             require_once 'emails.inc.php';
-            $user = S::user();
-            $storage = new EmailStorage($user, 'imap');
+            $storage = new EmailStorage($this->user, 'imap');
             $storage->activate();
 
             $this->UpdateOnYes();
@@ -41,11 +40,15 @@ class ReminderEmailBackup extends Reminder
         }
     }
 
-    protected function GetDisplayText()
+    public function text()
     {
         return "Tu peux bénéficier d'une sauvegarde des emails. Cela permet
             d'avoir un accès de secours aux 30 derniers jours d'emails reçus
             sur ton adresse Polytechnique.org.";
+    }
+    public function title()
+    {
+        return 'Sauvegarde de tes emails';
     }
 
     public static function IsCandidate(User &$user, $candidate)

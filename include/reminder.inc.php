@@ -101,31 +101,37 @@ abstract class Reminder
     // method below).
     abstract public function HandleAction($action);
 
-    // Returns the content of the onebox reminder. Default implementation displays
-    // a text and three links (yes, no, dismiss); it uses the text from method
-    // GetDisplayText.
-    public function Display(&$page)
+    // Displays the reminder as a standalone html snippet. It should be used
+    // when the reminder is the only output of a page.
+    public function DisplayStandalone(&$page)
     {
         header('Content-Type: text/html; charset=utf-8');
-        $page->changeTpl('reminder/default.tpl', NO_SKIN);
-        $page->assign('text', $this->GetDisplayText());
-        $page->assign('baseurl', $this->GetBaseUrl());
+        $page->changeTpl('reminder/base.tpl', NO_SKIN);
+        $this->Prepare($page);
     }
 
-    // Helper for returning the content as a string, instead of using the existing
-    // globale XorgPage instance.
-    public function GetDisplayAsString()
+    // Prepares the display by assigning template variables.
+    public function Prepare(&$page)
     {
-        $page = new XorgPage();
-        $this->Display($page);
-        return $page->raw();
+        $page->assign_by_ref('reminder', $this);
     }
 
-    // Returns the text to display in the onebox.
-    abstract protected function GetDisplayText();
+    // Returns the name of the inner template, or null if a simple text obtained
+    // from GetText should be printed.
+    public function template() { return null; }
+
+    // Returns the text to display in the onebox, or null if a
+    public function text() { return ''; }
+
+    // Returns the title of the onebox.
+    public function title() { return ''; }
+
+    // Should return true if this onebox needs to be considered as a warning and
+    // not just as a subscription offer.
+    public function warning() { return false; }
 
     // Returns the base url for the reminder module.
-    protected function GetBaseUrl()
+    public function baseurl()
     {
         return 'ajax/reminder/' . $this->name;
     }
@@ -195,7 +201,7 @@ abstract class Reminder
     // the class.
     private static function GetClassName($name)
     {
-        @include_once "reminder/$name.inc.php";
+        include_once "reminder/$name.inc.php";
         $class = 'Reminder' . str_replace(' ', '', ucwords(str_replace('_', ' ', $name)));
         return (class_exists($class) ? $class : null);
     }

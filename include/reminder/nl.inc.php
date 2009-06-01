@@ -38,11 +38,15 @@ class ReminderNl extends Reminder
         }
     }
 
-    protected function GetDisplayText()
+    public function text()
     {
         return "La lettre mensuelle de Polytechnique.org te permet de recevoir
             chaque mois des informations sur les activités et nouvelles de la
             communauté des X.";
+    }
+    public function title()
+    {
+        return "Inscription à la lettre mensuelle";
     }
 
     public static function IsCandidate(User &$user, $candidate)

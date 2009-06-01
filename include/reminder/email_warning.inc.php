@@ -28,13 +28,17 @@ class ReminderEmailWarning extends Reminder
         }
     }
 
-    protected function GetDisplayText() {}
-
-    public function Display(&$page)
+    public function template()
     {
-        header('Content-Type: text/html; charset=utf-8');
-        $page->changeTpl('reminder/email_warning.tpl', NO_SKIN);
-        $page->assign('baseurl', $this->GetBaseUrl());
+        return 'reminder/email_warning.tpl';
+    }
+    public function title()
+    {
+        return "Problème avec ta redirections d'emails";
+    }
+    public function warning()
+    {
+        return true;
     }
 
     public static function IsCandidate(User &$user, $candidate)

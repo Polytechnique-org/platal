@@ -38,10 +38,14 @@ class ReminderAxLetter extends Reminder
         }
     }
 
-    protected function GetDisplayText()
+    public function text()
     {
         return "La lettre de l'AX te permet de recevoir régulièrement les
             informations importantes de l'AX.";
+    }
+    public function title()
+    {
+        return "Inscription à la lettre de l'AX";
     }
 
     public static function IsCandidate(User &$user, $candidate)

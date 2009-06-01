@@ -20,49 +20,26 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<div class="warnings reminder">
-  <span style="float: right">
-    <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/dismiss')">
-      {icon name=cross title="Cacher cet avertissement."}
-    </a>
-  </span>
-  <ul>
-  {if $profile_date}
-    <li>
-      La dernière mise à jour de ta <a href="profile/{$smarty.session.hruid}" class="popup2">fiche</a>
-      date du {$fiche_incitation|date_format}. Il est possible qu'elle ne soit pas à jour.
-      Si tu souhaites la modifier,
-      {if $incitations_count > 1}
-      <a href="profile/edit">
-      {else}
-      <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/profile')">
-      {/if}
-      clique ici !</a>
-    </li>
-  {/if}
-  {if $photo_incitation}
-    <li>
-      Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage. Clique
-      {if $incitations_count > 1}
-      <a href="photo/change">
-      {else}
-      <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/photo')">
-      {/if}
-      ici</a> si tu souhaites en ajouter une.
-    </li>
-  {/if}
-  {if $geoloc_incitation > 0}
-    <li>
-      Parmi tes adresses, il y en a {$geoloc_incitation} que nous n'avons pas pu localiser. Clique
-      {if $incitations_count > 1}
-      <a href="profile/edit/adresses">
-      {else}
-      <a href="" onclick="Ajax.update_html('reminder', '{$baseurl}/geoloc')">
-      {/if}
-      ici</a> pour rectifier.
-    </li>
-  {/if}
-  </ul>
+{if $profile_incitation}
+  La dernière mise à jour de ta <a href="profile/{$smarty.session.hruid}" class="popup2">fiche</a>
+  date du {$profile_last_update|date_format}. Il est possible qu'elle ne soit pas à jour.
+  Si tu souhaites la modifier,
+  <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/profile'); return false" style="text-decoration: none">
+  clique ici !</a>
+{elseif $photo_incitation}
+  Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage. Clique
+  <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/photo'); return false" style="text-decoration: none">
+  ici</a> si tu souhaites en ajouter une.
+{elseif $geocoding_incitation > 0}
+  Parmi tes adresses, il y en a {$geocoding_incitation} que nous n'avons pas pu localiser. Clique
+  <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/geoloc'); return false" style="text-decoration: none">
+  ici</a> pour rectifier.
+{/if}
+
+<div class="right">
+  <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
+    {icon name=cross} Mettre à jour plus tard
+  </a>
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
