@@ -24,15 +24,15 @@ class EventsModule extends PLModule
     function handlers()
     {
         return array(
-            'events'         => $this->make_hook('ev',        AUTH_COOKIE),
-            'rss'            => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
-            'events/preview' => $this->make_hook('preview', AUTH_PUBLIC, 'user', NO_AUTH),
-            'events/photo'   => $this->make_hook('photo', AUTH_PUBLIC),
-            'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
-            'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
+            'events'         => $this->make_hook('ev',           AUTH_COOKIE),
+            'rss'            => $this->make_hook('rss',          AUTH_PUBLIC, 'user', NO_HTTPS),
+            'events/preview' => $this->make_hook('preview',      AUTH_PUBLIC, 'user', NO_AUTH),
+            'events/photo'   => $this->make_hook('photo',        AUTH_PUBLIC),
+            'events/submit'  => $this->make_hook('ev_submit',    AUTH_MDP),
+            'admin/events'   => $this->make_hook('admin_events', AUTH_MDP,    'admin'),
 
-            'ajax/tips'      => $this->make_hook('tips',      AUTH_COOKIE, 'user', NO_AUTH),
-            'admin/tips'     => $this->make_hook('admin_tips', AUTH_MDP, 'admin'),
+            'ajax/tips'      => $this->make_hook('tips',         AUTH_COOKIE, 'user', NO_AUTH),
+            'admin/tips'     => $this->make_hook('admin_tips',   AUTH_MDP,    'admin'),
         );
     }
 

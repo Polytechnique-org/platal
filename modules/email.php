@@ -24,23 +24,23 @@ class EmailModule extends PLModule
     function handlers()
     {
         return array(
-            'emails' => $this->make_hook('emails', AUTH_COOKIE),
-            'emails/alias'    => $this->make_hook('alias', AUTH_MDP),
-            'emails/antispam' => $this->make_hook('antispam', AUTH_MDP),
-            'emails/broken'   => $this->make_hook('broken', AUTH_COOKIE),
-            'emails/redirect' => $this->make_hook('redirect', AUTH_MDP),
-            'emails/send'     => $this->make_hook('send', AUTH_MDP),
-            'emails/antispam/submit'  => $this->make_hook('submit', AUTH_COOKIE),
-            'emails/test'     => $this->make_hook('test', AUTH_COOKIE, 'user', NO_AUTH),
+            'emails'                  => $this->make_hook('emails',      AUTH_COOKIE),
+            'emails/alias'            => $this->make_hook('alias',       AUTH_MDP),
+            'emails/antispam'         => $this->make_hook('antispam',    AUTH_MDP),
+            'emails/broken'           => $this->make_hook('broken',      AUTH_COOKIE),
+            'emails/redirect'         => $this->make_hook('redirect',    AUTH_MDP),
+            'emails/send'             => $this->make_hook('send',        AUTH_MDP),
+            'emails/antispam/submit'  => $this->make_hook('submit',      AUTH_COOKIE),
+            'emails/test'             => $this->make_hook('test',        AUTH_COOKIE, 'user', NO_AUTH),
 
-            'emails/rewrite/in' => $this->make_hook('rewrite_in', AUTH_PUBLIC),
-            'emails/rewrite/out' => $this->make_hook('rewrite_out', AUTH_PUBLIC),
+            'emails/rewrite/in'       => $this->make_hook('rewrite_in',  AUTH_PUBLIC),
+            'emails/rewrite/out'      => $this->make_hook('rewrite_out', AUTH_PUBLIC),
 
-            'emails/imap/in'  => $this->make_hook('imap_in', AUTH_PUBLIC),
+            'emails/imap/in'          => $this->make_hook('imap_in',     AUTH_PUBLIC),
 
-            'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
-            'admin/emails/watch'      => $this->make_hook('duplicated', AUTH_MDP, 'admin'),
-            'admin/emails/lost'       => $this->make_hook('lost', AUTH_MDP, 'admin'),
+            'admin/emails/duplicated' => $this->make_hook('duplicated',  AUTH_MDP,    'admin'),
+            'admin/emails/watch'      => $this->make_hook('duplicated',  AUTH_MDP,    'admin'),
+            'admin/emails/lost'       => $this->make_hook('lost',        AUTH_MDP,    'admin'),
         );
     }
 

@@ -24,8 +24,8 @@ class GeolocModule extends PLModule
     function handlers()
     {
         return array(
-            'geoloc'             => $this->make_hook('default', AUTH_COOKIE),
-            'admin/geoloc'           => $this->make_hook('admin', AUTH_MDP, 'admin'),
+            'geoloc'                 => $this->make_hook('default',       AUTH_COOKIE),
+            'admin/geoloc'           => $this->make_hook('admin',         AUTH_MDP, 'admin'),
             'admin/geoloc/dynamap'   => $this->make_hook('admin_dynamap', AUTH_MDP, 'admin'),
         );
     }

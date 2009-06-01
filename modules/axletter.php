@@ -24,13 +24,13 @@ class AXLetterModule extends PLModule
     function handlers()
     {
         return array(
-            'ax'             => $this->make_hook('index',        AUTH_COOKIE),
+            'ax'             => $this->make_hook('index',  AUTH_COOKIE),
             'ax/out'         => $this->make_hook('out',    AUTH_PUBLIC),
             'ax/show'        => $this->make_hook('show',   AUTH_COOKIE),
             'ax/edit'        => $this->make_hook('submit', AUTH_MDP),
             'ax/edit/cancel' => $this->make_hook('cancel', AUTH_MDP),
             'ax/edit/valid'  => $this->make_hook('valid',  AUTH_MDP),
-            'admin/axletter' => $this->make_hook('admin', AUTH_MDP, 'admin'),
+            'admin/axletter' => $this->make_hook('admin',  AUTH_MDP, 'admin'),
         );
     }
 

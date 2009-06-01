@@ -88,14 +88,14 @@ class PaymentModule extends PLModule
     function handlers()
     {
         return array(
-            'payment'               => $this->make_hook('payment', AUTH_MDP),
-            'payment/cyber_return'  => $this->make_hook('cyber_return',  AUTH_PUBLIC, 'user', NO_HTTPS),
-            'payment/paypal_return' => $this->make_hook('paypal_return',  AUTH_PUBLIC, 'user', NO_HTTPS),
-            '%grp/paiement'              => $this->make_hook('xnet_payment', AUTH_MDP),
-            '%grp/payment'               => $this->make_hook('xnet_payment', AUTH_MDP),
-            '%grp/payment/cyber_return'  => $this->make_hook('cyber_return', AUTH_PUBLIC, 'user', NO_HTTPS),
+            'payment'                    => $this->make_hook('payment',       AUTH_MDP),
+            'payment/cyber_return'       => $this->make_hook('cyber_return',  AUTH_PUBLIC, 'user', NO_HTTPS),
+            'payment/paypal_return'      => $this->make_hook('paypal_return', AUTH_PUBLIC, 'user', NO_HTTPS),
+            '%grp/paiement'              => $this->make_hook('xnet_payment',  AUTH_MDP),
+            '%grp/payment'               => $this->make_hook('xnet_payment',  AUTH_MDP),
+            '%grp/payment/cyber_return'  => $this->make_hook('cyber_return',  AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/paypal_return' => $this->make_hook('paypal_return', AUTH_PUBLIC, 'user', NO_HTTPS),
-            'admin/payments'        => $this->make_hook('admin', AUTH_MDP, 'admin'),
+            'admin/payments'             => $this->make_hook('admin',         AUTH_MDP,    'admin'),
 
         );
     }

@@ -29,9 +29,9 @@ class GoogleAppsModule extends PLModule
         }
 
         return array(
-            'googleapps'            => $this->make_hook('index', AUTH_MDP),
-            'admin/googleapps'      => $this->make_hook('admin', AUTH_MDP. 'admin'),
-            'admin/googleapps/job'  => $this->make_hook('admin_job', AUTH_MDP, 'admin'),
+            'googleapps'            => $this->make_hook('index',      AUTH_MDP),
+            'admin/googleapps'      => $this->make_hook('admin',      AUTH_MDP, 'admin'),
+            'admin/googleapps/job'  => $this->make_hook('admin_job',  AUTH_MDP, 'admin'),
             'admin/googleapps/user' => $this->make_hook('admin_user', AUTH_MDP, 'admin'),
         );
     }

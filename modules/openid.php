@@ -61,13 +61,13 @@ class OpenidModule extends PLModule
     function handlers()
     {
         return array(
-            'openid'            => $this->make_hook('openid', AUTH_PUBLIC),
-            'openid/trust'      => $this->make_hook('trust', AUTH_COOKIE),
-            'openid/trusted'    => $this->make_hook('trusted', AUTH_MDP),
+            'openid'                => $this->make_hook('openid',        AUTH_PUBLIC),
+            'openid/trust'          => $this->make_hook('trust',         AUTH_COOKIE),
+            'openid/trusted'        => $this->make_hook('trusted',       AUTH_MDP),
             'admin/openid/trusted'  => $this->make_hook('admin_trusted', AUTH_MDP),
-            'openid/idp_xrds'   => $this->make_hook('idp_xrds', AUTH_PUBLIC),
-            'openid/user_xrds'  => $this->make_hook('user_xrds', AUTH_PUBLIC),
-            'openid/melix'      => $this->make_hook('melix', AUTH_PUBLIC),
+            'openid/idp_xrds'       => $this->make_hook('idp_xrds',      AUTH_PUBLIC),
+            'openid/user_xrds'      => $this->make_hook('user_xrds',     AUTH_PUBLIC),
+            'openid/melix'          => $this->make_hook('melix',         AUTH_PUBLIC),
         );
     }
 

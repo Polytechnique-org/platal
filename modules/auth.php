@@ -24,18 +24,15 @@ class AuthModule extends PLModule
     function handlers()
     {
         return array(
-            'groupex/donne-chall.php'
-                                => $this->make_hook('chall',      AUTH_PUBLIC),
-            'groupex/export-econfiance.php'
-                                => $this->make_hook('econf',      AUTH_PUBLIC, 'user', NO_HTTPS),
+            'groupex/donne-chall.php'       => $this->make_hook('chall',              AUTH_PUBLIC),
+            'groupex/export-econfiance.php' => $this->make_hook('econf',              AUTH_PUBLIC, 'user', NO_HTTPS),
 
-            'webservices/manageurs.php'
-                                => $this->make_hook('manageurs',  AUTH_PUBLIC, 'user', NO_HTTPS),
+            'webservices/manageurs.php'     => $this->make_hook('manageurs',          AUTH_PUBLIC, 'user', NO_HTTPS),
 
-            'auth-redirect.php' => $this->make_hook('redirect',   AUTH_COOKIE),
-            'auth-groupex.php'  => $this->make_hook('groupex_old',    AUTH_COOKIE),
-            'auth-groupex'      => $this->make_hook('groupex',    AUTH_COOKIE),
-            'admin/auth-groupes-x'         => $this->make_hook('admin_authgroupesx', AUTH_MDP, 'admin'),
+            'auth-redirect.php'             => $this->make_hook('redirect',           AUTH_COOKIE),
+            'auth-groupex.php'              => $this->make_hook('groupex_old',        AUTH_COOKIE),
+            'auth-groupex'                  => $this->make_hook('groupex',            AUTH_COOKIE),
+            'admin/auth-groupes-x'          => $this->make_hook('admin_authgroupesx', AUTH_MDP,    'admin'),
         );
     }
 
