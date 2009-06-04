@@ -22,8 +22,10 @@
 
 <h1>Page d'identité OpenId de {$user->fullName()}</h1>
 
-<p>OpenID est un système d'authentification décentralisé. Cette page permet 
-à des sites web tiers d'identifier {$user->displayName()}, grâce à son compte 
+<p>OpenID est un système d'authentification décentralisé. Cette page permet
+à des sites web tiers d'identifier {$user->displayName()}, grâce à son compte
 Polytechnique.org.<p>
 
 <p><a href="Xorg/OpenId">En savoir plus sur OpenId</a></p>
+
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

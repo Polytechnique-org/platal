@@ -63,7 +63,7 @@ class PlatalModule extends PLModule
     {
         // Include X-XRDS-Location response-header for Yadis discovery
         global $globals;
-        header('X-XRDS-Location: ' . $globals->baseurl . '/openid/idp_xrds');
+        header('X-XRDS-Location: ' . $globals->baseurl . '/openid/xrds');
 
         // Redirect to the suitable page
         if (S::logged()) {
@@ -457,7 +457,7 @@ Adresse de secours : " . Post::v('email') : ""));
     {
         // Include X-XRDS-Location response-header for Yadis discovery
         global $globals;
-        header('X-XRDS-Location: ' . $globals->baseurl . '/openid/idp_xrds');
+        header('X-XRDS-Location: ' . $globals->baseurl . '/openid/xrds');
 
         $this->load('review.inc.php');
         $dom = 'Review';
