@@ -23,6 +23,10 @@
 applied. It uses the local SECURITY file to determine the list of mandatory
 patches.
 
+Important notice: do not execute this script directly from an automatic checkout
+of plat/al. It would be extremely unwise to execute it with root privileges from
+a place where everybody can change it !
+
 Usage (-w updates the local .htaccess to disable guilty working copies):
   check_security_fixes.py [-w] -b REFERENCE_PLATAL PLATAL_TO_CHECK ...
 """
@@ -133,6 +137,19 @@ class WorkingCopy(object):
         print "Disabling working copy in %s." % self.checkout_path
         self.Write403Htaccess(self.GetErrorMessage(missing_fixes))
 
+def SelfCheckIsLatestVersion(base_path):
+  """Checks that this script is the latest available by comparing itself to
+  the reference script in |base_path|. It is important to do that check as
+  most deployment will want to execute this script with root privileges,
+  which implies that this script is deployed in a safe directory, and not
+  just executed from an automatically updated checkout of plat/al (how
+  unsafe would that be ...)."""
+
+  base_script = os.path.join(base_path, 'bin/check_security_fixes.py')
+  local_script = os.path.abspath(sys.argv[0])
+
+  if os.system('diff -q %s %s' % (base_script, local_script)) != 0:
+    sys.stderr.write('Please upgrade this script to the latest version.\n')
 
 def main():
   parser = optparse.OptionParser()
@@ -149,9 +166,12 @@ def main():
     print "The base plat/al (%s) is too old to be used." % options.base_path
     sys.exit(1)
 
+  SelfCheckIsLatestVersion(options.base_path)
   for platal in args:
     wc = WorkingCopy(options.base_path, platal)
     wc.CheckAndDisableWorkingCopy(options.write_htaccess)
 
 if __name__ == '__main__':
   main()
+
+# vim:set et sw=2 sts=2 sws=2 enc=utf-8:
