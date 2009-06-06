@@ -200,7 +200,8 @@ class OpenId
     {
         if ($response) {
             $web_response = $this->server->encodeResponse($response);
-            header(sprintf('HTTP/1.1 %d', $web_response->code), true, $web_response->code);
+            header(sprintf('%s %d', $_SERVER['SERVER_PROTOCOL'], $web_response->code),
+                   true, $web_response->code);
 
             foreach ($web_response->headers as $key => $value) {
                 header(sprintf('%s: %s', $key, $value));

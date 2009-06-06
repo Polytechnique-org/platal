@@ -118,7 +118,7 @@ class OpenidModule extends PLModule
                 $openid_args = $server->GetQueryStringForRequest();
                 if (S::logged()) {
                     pl_redirect('openid/trust', $openid_args);
-                } else if (count($_POST)) {
+                } else if (Post::has('openid_mode')) {
                     pl_redirect('openid', $openid_args);
                 } else {
                     return PL_DO_AUTH;
