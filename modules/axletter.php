@@ -90,6 +90,8 @@ class AXLetterModule extends PLModule
         $signature  = trim(Post::v('signature'));
         $promo_min  = Post::i('promo_min');
         $promo_max  = Post::i('promo_max');
+        $subset     = Post::b('subset_to');
+        $subset_to  = preg_split("/ *[ ,;\:\n\r]+ */", Post::v('subset_to'));
         $echeance   = Post::has('echeance_date') ?
               preg_replace('/^(\d\d\d\d)(\d\d)(\d\d)$/', '\1-\2-\3', Post::v('echeance_date')) . ' ' . Post::v('echeance_time')
             : Post::v('echeance');
@@ -100,6 +102,10 @@ class AXLetterModule extends PLModule
             $res = XDB::query("SELECT * FROM axletter WHERE FIND_IN_SET('new', bits)");
             if ($res->numRows()) {
                 extract($res->fetchOneAssoc(), EXTR_OVERWRITE);
+                if ($subset) {
+                    $res = XDB::query('SELECT email FROM axletter_subset WHERE letter_id = {?}', $id);
+                    $subset_to = $res->fetchColumn();
+                }
                 $saved = true;
             } else  {
                 XDB::execute("INSERT INTO axletter SET id = NULL");
@@ -129,6 +135,10 @@ class AXLetterModule extends PLModule
                 $page->trigError("L'intervalle de promotions n'est pas valide");
                 Post::kill('valid');
             }
+            if ($subset && !count($subset_to)) {
+                $page->trigError("La liste d'adresses mails sélectionnée est vide");
+                Post::kill('valid');
+            }
             if (empty($short_name)) {
                 $page->trigError("L'annonce doit avoir un nom raccourci pour simplifier la navigation dans les archives");
                 Post::kill('valid');
@@ -151,15 +161,25 @@ class AXLetterModule extends PLModule
               case 'Aperçu':
                 $this->load('axletter.inc.php');
                 $al = new AXLetter(array($id, $short_name, $subject, $title, $body, $signature,
-                                         $promo_min, $promo_max, $echeance, 0, 'new'));
+                                         $promo_min, $promo_max, $subset, $echeance, 0, 'new'));
                 $al->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
                 break;
 
               case 'Confirmer':
                 XDB::execute("REPLACE INTO  axletter
                                        SET  id = {?}, short_name = {?}, subject = {?}, title = {?}, body = {?},
-                                            signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}",
-                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance);
+                                            signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}, subset = {?}",
+                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance, $subset);
+                if ($subset) {
+                    XDB::execute('DELETE FROM axletter_subset WHERE letter_id = {?}', $id);
+                    foreach ($subset_to as $email) {
+                //        $email = trim($email);
+                        $uid = $this->idFromMail(array('email' => $email));
+                        if ($uid) {
+                            XDB::execute('INSERT INTO axletter_subset SET letter_id = {?}, user_id = {?}, email = {?}', $id, $uid, $email);
+                        }
+                    }
+                }
                 if (!$saved) {
                     global $globals;
                     $mailer = new PlMailer();
@@ -201,6 +221,8 @@ class AXLetterModule extends PLModule
         $page->assign('signature', $signature);
         $page->assign('promo_min', $promo_min);
         $page->assign('promo_max', $promo_max);
+        $page->assign('subset_to', implode("\n", $subset_to));
+        $page->assign('subset', $subset);
         $page->assign('echeance', $echeance);
         $page->assign('echeance_date', $echeance_date);
         $page->assign('echeance_time', $echeance_time);

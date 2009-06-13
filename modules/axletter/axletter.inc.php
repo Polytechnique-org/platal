@@ -27,6 +27,7 @@ class AXLetter extends MassMailer
     public $_signature;
     public $_promo_min;
     public $_promo_max;
+    public $_subset;
     public $_echeance;
     public $_date;
     public $_bits;
@@ -54,7 +55,7 @@ class AXLetter extends MassMailer
         }
         list($this->_id, $this->_shortname, $this->_title_mail, $this->_title,
              $this->_body, $this->_signature, $this->_promo_min, $this->_promo_max,
-             $this->_echeance, $this->_date, $this->_bits) = $id;
+             $this->_subset, $this->_echeance, $this->_date, $this->_bits) = $id;
         if ($this->_date == '0000-00-00') {
             $this->_date = 0;
         }
@@ -107,6 +108,7 @@ class AXLetter extends MassMailer
                         IF(ni.user_id = 0, 'html', q.core_mail_fmt) AS pref,
                         IF(ni.user_id = 0, ni.hash, 0) AS hash
                   FROM  axletter_ins  AS ni
+             {$this->subsetJoin()}
              LEFT JOIN  auth_user_md5   AS u  USING(user_id)
              LEFT JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
              LEFT JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
@@ -183,6 +185,14 @@ class AXLetter extends MassMailer
             return false;
         }
         return XDB::execute("DELETE FROM axletter_rights WHERE user_id = {?}", $uid);
+    }
+
+    protected function subsetJoin()
+    {
+        if ($this->_subset) {
+            return "INNER JOIN axletter_subset AS c ON (c.letter_id = {$this->_id} AND ni.user_id = c.user_id)";
+        }
+        // TODO : force use of the adresses given by AX, not "canonical" ones
     }
 
     protected function subscriptionWhere()
