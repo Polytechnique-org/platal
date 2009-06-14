@@ -52,7 +52,7 @@ class ProfileModule extends PLModule
 
             'groupes-x'            => $this->make_hook('xnet',              AUTH_COOKIE),
 
-            'vcard'                => $this->make_hook('vcard',             AUTH_COOKIE, 'user', NO_HTTPS),
+            'vcard'                => $this->make_hook('vcard',             AUTH_COOKIE),
             'admin/binets'         => $this->make_hook('admin_binets',      AUTH_MDP,    'admin'),
             'admin/medals'         => $this->make_hook('admin_medals',      AUTH_MDP,    'admin'),
             'admin/formations'     => $this->make_hook('admin_formations',  AUTH_MDP,    'admin'),
