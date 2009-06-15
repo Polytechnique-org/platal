@@ -36,7 +36,7 @@ function doChallengeResponse() {
     var new_pass = hash_encrypt(document.forms.login.password.value);
     var old_pass = MD5(document.forms.login.password.value);
     
-    str = readCookie('ORGuid') + ":" +
+    str = document.forms.loginsub.username.value + ":" +
         hash_encrypt(document.forms.login.password.value) + ":" +
         document.forms.loginsub.challenge.value;
 
