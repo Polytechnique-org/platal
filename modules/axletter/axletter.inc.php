@@ -155,10 +155,10 @@ class AXLetter extends MassMailer
         if (S::has_perms()) {
             return true;
         }
-        $res = XDB::query("SELECT  1
+        $res = XDB::query("SELECT  COUNT(*)
                              FROM  axletter_rights
                             WHERE  user_id = {?}", S::i('uid'));
-        return $res->fetchOneCell();
+        return ($res->fetchOneCell() > 0);
     }
 
     static public function grantPerms($uid)
