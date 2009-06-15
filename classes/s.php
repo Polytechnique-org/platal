@@ -124,12 +124,6 @@ class S
         return self::$user;
     }
 
-    public static function has_perms()
-    {
-        // XXX: Deprecated, use S::admin() instead
-        return self::admin();
-    }
-
     public static function logged()
     {
         return S::i('auth', AUTH_PUBLIC) >= Platal::session()->loggedLevel();
