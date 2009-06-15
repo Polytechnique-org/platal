@@ -80,11 +80,11 @@ class AdminModule extends PLModule
 
         $sql = XDB::iterator(
                 "SELECT  crc, nb, update_time, create_time,
-                         FIND_IN_SET('del', release) AS del,
-                         FIND_IN_SET('ok', release) AS ok
-                   FROM  postfix_mailseen
+                         FIND_IN_SET('del', p.release) AS del,
+                         FIND_IN_SET('ok', p.release) AS ok
+                   FROM  postfix_mailseen AS p
                   WHERE  nb >= 30
-               ORDER BY  release != ''");
+               ORDER BY  p.release != ''");
 
         $page->assign_by_ref('mails', $sql);
     }
