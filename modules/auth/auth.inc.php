@@ -43,7 +43,7 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
     foreach ($fieldarr as $val) {
         // Determine the requested value, and add it to the answer.
         if ($val == 'perms') {
-            $params .= gpex_prepare_param($val, S::has_perms() ? 'admin' : 'user', $tohash, $charset);
+            $params .= gpex_prepare_param($val, S::admin() ? 'admin' : 'user', $tohash, $charset);
         } else if ($val == 'forlife') {
             $params .= gpex_prepare_param($val, S::v('hruid'), $tohash, $charset);
         } else if (S::has($val)) {
@@ -66,7 +66,7 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
                 $perms = $res->fetchOneCell();
             } else {
                 // if no group asked, return main rights
-                $perms = S::has_perms() ? 'admin' : 'membre';
+                $perms = S::admin() ? 'admin' : 'membre';
             }
             $params .= gpex_prepare_param($val, $perms, $tohash, $charset);
         }

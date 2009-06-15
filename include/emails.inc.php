@@ -252,7 +252,7 @@ class EmailRedirection extends Email
 
     public function clean_errors()
     {
-        if (!S::has_perms()) {
+        if (!S::admin()) {
             return false;
         }
         $this->panne       = 0;
@@ -328,7 +328,7 @@ class EmailStorage extends Email
 
         // IMAP storage is always visible to administrators, and is allowed for
         // everyone when the service is marked as 'active'.
-        if ($globals->mailstorage->imap_active || S::has_perms()) {
+        if ($globals->mailstorage->imap_active || S::admin()) {
             $storages[] = 'imap';
         }
 

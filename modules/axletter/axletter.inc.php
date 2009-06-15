@@ -152,7 +152,7 @@ class AXLetter extends MassMailer
 
     static public function hasPerms()
     {
-        if (S::has_perms()) {
+        if (S::admin()) {
             return true;
         }
         $res = XDB::query("SELECT  COUNT(*)

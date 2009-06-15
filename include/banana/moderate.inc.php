@@ -25,7 +25,7 @@ require_once 'banana/hooks.inc.php';
 
 function hook_checkcancel($_headers)
 {
-    return ($_headers['x-org-id'] == S::v('hruid') or S::has_perms());
+    return ($_headers['x-org-id'] == S::v('hruid') or S::admin());
 }
 
 function hook_makeLink($params)

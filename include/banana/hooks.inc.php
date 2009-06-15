@@ -209,7 +209,7 @@ function make_Organization()
     global $globals;
     $perms = S::v('perms');
     $group = $globals->asso('nom');
-    if (S::has_perms()) {
+    if (S::admin()) {
         return "Administrateur de Polytechnique.org";
     } else if ($group && $perms->hasFlag('groupadmin')) {
         return "Animateur de $group";

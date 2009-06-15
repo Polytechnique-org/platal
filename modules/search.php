@@ -83,7 +83,7 @@ class SearchModule extends PLModule
                 S::logger()->log('search', 'quick=' . $quick);
             }
             $list = 'profile|prf|fiche|fic|referent|ref|mentor';
-            if (S::has_perms()) {
+            if (S::admin()) {
                 $list .= '|admin|adm|ax';
             }
             if (preg_match('/^(' . $list . '):([-a-z]+(\.[-a-z]+(\.\d{2,4})?)?)$/', replace_accent($quick), $matches)) {

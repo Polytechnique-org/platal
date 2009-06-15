@@ -488,7 +488,7 @@ class EmailModule extends PLModule
         }
 
         // Retrieves the User object for the test email recipient.
-        if (S::has_perms() && $hruid) {
+        if (S::admin() && $hruid) {
             $user = User::getSilent($hruid);
         } else {
             $user = S::user();

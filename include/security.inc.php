@@ -108,7 +108,7 @@ function send_warning_mail($title)
 
 function kill_sessions()
 {
-    assert(S::has_perms());
+    assert(S::admin());
     shell_exec('sudo -u root ' . dirname(dirname(__FILE__)) . '/bin/kill_sessions.sh');
 }
 

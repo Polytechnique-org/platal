@@ -206,7 +206,7 @@ class AXLetterModule extends PLModule
         $page->assign('echeance_time', $echeance_time);
         $page->assign('saved', $saved);
         $page->assign('new', $new);
-        $page->assign('is_xorg', S::has_perms());
+        $page->assign('is_xorg', S::admin());
 
         if (!$saved) {
             $select = '';

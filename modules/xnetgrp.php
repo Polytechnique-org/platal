@@ -238,7 +238,7 @@ class XnetGrpModule extends PLModule
             } else {
                 $site = "";
             }
-            if (S::has_perms()) {
+            if (S::admin()) {
                 if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
                     $page->trigError("le domaine doit être un FQDN (aucune modif effectuée) !!!");
                     return;
@@ -290,7 +290,7 @@ class XnetGrpModule extends PLModule
             pl_redirect('../'.Post::v('diminutif', $globals->asso('diminutif')).'/edit');
         }
 
-        if (S::has_perms()) {
+        if (S::admin()) {
             $dom = XDB::iterator('SELECT * FROM groupex.dom ORDER BY nom');
             $page->assign('dom', $dom);
             $page->assign('super', true);
