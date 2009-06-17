@@ -74,7 +74,8 @@ class CoreModule extends PLModule
 
     function handler_favicon(&$page)
     {
-        $data = file_get_contents(dirname(__FILE__).'/../htdocs/images/favicon.ico');
+        global $globals;
+        $data = file_get_contents($globals->spoolroot . '/htdocs/images/favicon.ico');
         header('Content-Type: image/x-icon');
         echo $data;
         exit;
