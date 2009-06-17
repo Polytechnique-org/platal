@@ -103,7 +103,6 @@ abstract class PlSession
      */
     public function start($level)
     {
-        $backup = S::i($level);
         if ($this->checkAuth($level)) {
             return true;
         }
