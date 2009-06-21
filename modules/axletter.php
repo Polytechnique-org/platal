@@ -90,8 +90,8 @@ class AXLetterModule extends PLModule
         $signature  = trim(Post::v('signature'));
         $promo_min  = Post::i('promo_min');
         $promo_max  = Post::i('promo_max');
-        $subset     = Post::b('subset_to');
-        $subset_to  = preg_split("/ *[ ,;\:\n\r]+ */", Post::v('subset_to'));
+        $subset_to  = preg_split("/[ ,;\:\n\r]+/", Post::v('subset_to'), -1, PREG_SPLIT_NO_EMPTY);
+        $subset     = ( count($subset_to) > 0);
         $echeance   = Post::has('echeance_date') ?
               preg_replace('/^(\d\d\d\d)(\d\d)(\d\d)$/', '\1-\2-\3', Post::v('echeance_date')) . ' ' . Post::v('echeance_time')
             : Post::v('echeance');
@@ -103,7 +103,7 @@ class AXLetterModule extends PLModule
             if ($res->numRows()) {
                 extract($res->fetchOneAssoc(), EXTR_OVERWRITE);
                 if ($subset) {
-                    $res = XDB::query('SELECT email FROM axletter_subset WHERE letter_id = {?}', $id);
+                    $res = XDB::query('SELECT email FROM axletter_subsets WHERE letter_id = {?}', $id);
                     $subset_to = $res->fetchColumn();
                 }
                 $saved = true;
@@ -133,10 +133,6 @@ class AXLetterModule extends PLModule
                 ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020)))
             {
                 $page->trigError("L'intervalle de promotions n'est pas valide");
-                Post::kill('valid');
-            }
-            if ($subset && !count($subset_to)) {
-                $page->trigError("La liste d'adresses mails sélectionnée est vide");
                 Post::kill('valid');
             }
             if (empty($short_name)) {
@@ -171,12 +167,14 @@ class AXLetterModule extends PLModule
                                             signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}, subset = {?}",
                              $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance, $subset);
                 if ($subset) {
-                    XDB::execute('DELETE FROM axletter_subset WHERE letter_id = {?}', $id);
+                    XDB::execute('DELETE FROM   axletter_subsets
+                                        WHERE   letter_id = {?}', $id);
                     foreach ($subset_to as $email) {
-                //        $email = trim($email);
                         $uid = $this->idFromMail(array('email' => $email));
                         if ($uid) {
-                            XDB::execute('INSERT INTO axletter_subset SET letter_id = {?}, user_id = {?}, email = {?}', $id, $uid, $email);
+                            XDB::execute('INSERT    INTO axletter_subsets
+                                             SET    letter_id = {?}, user_id = {?}, email = {?}',
+                                $id, $uid, $email);
                         }
                     }
                 }

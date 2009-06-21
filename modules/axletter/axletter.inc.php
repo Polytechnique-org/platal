@@ -190,8 +190,9 @@ class AXLetter extends MassMailer
     protected function subsetJoin()
     {
         if ($this->_subset) {
-            return "INNER JOIN axletter_subset AS c ON (c.letter_id = {$this->_id} AND ni.user_id = c.user_id)";
+            return "INNER JOIN axletter_subsets AS c ON (c.letter_id = ".XDB::escape($this->_id)." AND ni.user_id = c.uid)";
         }
+        return '';
         // TODO : force use of the adresses given by AX, not "canonical" ones
     }
 
