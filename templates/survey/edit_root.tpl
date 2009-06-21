@@ -29,6 +29,14 @@
       <td><textarea name="survey_question[description]" rows="5" cols="60">{$survey_current.description}</textarea></td>
     </tr>
     <tr>
+      <td></td>
+      <td class="smaller">
+        <a href="wiki_help/notitle" class="popup3">
+          {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le commentaire du sondage
+        </a>
+      </td>
+    </tr>
+    <tr>
       <td class="titre">Date de fin</td>
       <td>
         {valid_date name="survey_question[end]" value=$survey_current.end to=90}
