@@ -60,6 +60,7 @@
           {/foreach}
         </select>
       </td>
+    </tr>
     <tr id="ln_promo">
       <td class="titre">Promotions</td>
       <td><input type="text" name="survey_question[promos]" size="50" maxlength="200" value="{$survey_current.promos}"/></td>
