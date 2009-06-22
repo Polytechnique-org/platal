@@ -189,14 +189,6 @@ class AXLetter extends MassMailer
         return XDB::execute("DELETE FROM axletter_rights WHERE user_id = {?}", $uid);
     }
 
-    protected function subsetJoin()
-    {
-        if ($this->_subset) {
-            return "INNER JOIN axletter_subsets AS c ON (c.letter_id = ".XDB::escape($this->_id)." AND ni.user_id = c.uid)";
-        }
-        return '';
-    }
-
     protected function subscriptionWhere()
     {
         if (!$this->_promo_min && !$this->_promo_max && !$this->_subset) {
