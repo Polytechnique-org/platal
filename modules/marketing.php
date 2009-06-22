@@ -42,38 +42,55 @@ class MarketingModule extends PLModule
 
         $page->setTitle('Marketing');
 
-        // Quelques statistiques
-
-        $res   = XDB::query(
-                  "SELECT COUNT(*) AS vivants,
-                          COUNT(NULLIF(perms='admin' OR perms='user', 0)) AS inscrits,
-                          100*COUNT(NULLIF(perms='admin' OR perms='user', 0))/COUNT(*) AS ins_rate,
-                          COUNT(NULLIF(promo >= 1972, 0)) AS vivants72,
-                          COUNT(NULLIF(promo >= 1972 AND (perms='admin' OR perms='user'), 0)) AS inscrits72,
-                          100 * COUNT(NULLIF(promo >= 1972 AND (perms='admin' OR perms='user'), 0)) /
-                              COUNT(NULLIF(promo >= 1972, 0)) AS ins72_rate,
-                          COUNT(NULLIF(FIND_IN_SET('femme', flags), 0)) AS vivantes,
-                          COUNT(NULLIF(FIND_IN_SET('femme', flags) AND (perms='admin' OR perms='user'), 0)) AS inscrites,
-                          100 * COUNT(NULLIF(FIND_IN_SET('femme', flags) AND (perms='admin' OR perms='user'), 0)) /
-                              COUNT(NULLIF(FIND_IN_SET('femme', flags), 0)) AS inse_rate
-                     FROM auth_user_md5
-                    WHERE deces = 0");
+        // Some statistics
+        $res = XDB::query(
+                "SELECT  COUNT(*) AS vivants,
+                         COUNT(NULLIF(perms='admin' OR perms='user', 0)) AS inscrits,
+                         100*COUNT(NULLIF(perms='admin' OR perms='user', 0))/COUNT(*) AS ins_rate,
+                         COUNT(NULLIF(promo >= 1972, 0)) AS vivants72,
+                         COUNT(NULLIF(promo >= 1972 AND (perms='admin' OR perms='user'), 0)) AS inscrits72,
+                         100 * COUNT(NULLIF(promo >= 1972 AND (perms='admin' OR perms='user'), 0)) /
+                             COUNT(NULLIF(promo >= 1972, 0)) AS ins72_rate,
+                         COUNT(NULLIF(FIND_IN_SET('femme', flags), 0)) AS vivantes,
+                         COUNT(NULLIF(FIND_IN_SET('femme', flags) AND (perms='admin' OR perms='user'), 0)) AS inscrites,
+                         100 * COUNT(NULLIF(FIND_IN_SET('femme', flags) AND (perms='admin' OR perms='user'), 0)) /
+                             COUNT(NULLIF(FIND_IN_SET('femme', flags), 0)) AS inse_rate
+                   FROM  auth_user_md5
+                  WHERE  deces = 0");
         $stats = $res->fetchOneAssoc();
         $page->assign('stats', $stats);
 
-        $res   = XDB::query("SELECT count(*) FROM auth_user_md5 WHERE date_ins > ".
-                                      date('Ymd000000', strtotime('1 week ago')));
+        $res = XDB::query('SELECT  COUNT(*)
+                             FROM  auth_user_md5
+                            WHERE  date_ins > ' . date('Ymd000000', strtotime('1 week ago')));
         $page->assign('nbInsSem', $res->fetchOneCell());
 
-        $res = XDB::query("SELECT count(*) FROM register_pending WHERE hash != 'INSCRIT'");
+        $res = XDB::query("SELECT  COUNT(*)
+                             FROM  register_pending
+                            WHERE  hash != 'INSCRIT'");
         $page->assign('nbInsEnCours', $res->fetchOneCell());
 
-        $res = XDB::query("SELECT count(*) FROM register_marketing");
-        $page->assign('nbInsMarket', $res->fetchOneCell());
+        $res = XDB::query('SELECT  COUNT(*) AS count
+                             FROM  register_marketing
+                         GROUP BY  sender = 0');
+        $nbInsMarketNo = $res->fetchAllAssoc();
+        $res = XDB::query('SELECT  COUNT(*)
+                             FROM  register_marketing
+                            WHERE  TO_DAYS(NOW()) - TO_DAYS(last) <= 7');
+        $page->assign('nbInsMarketNoPerso', $nbInsMarketNo[0]['count']);
+        $page->assign('nbInsMarketNoXorg', $nbInsMarketNo[1]['count']);
+        $page->assign('nbInsMarketNoWeek', $res->fetchOneCell());
 
-        $res = XDB::query("SELECT count(*) FROM register_mstats
-                                      WHERE TO_DAYS(NOW()) - TO_DAYS(success) <= 7");
-        $page->assign('nbInsMarkOK', $res->fetchOneCell());
+        $res = XDB::query('SELECT  COUNT(*) AS count
+                             FROM  register_mstats
+                         GROUP BY  sender = 0');
+        $nbInsMarketOk = $res->fetchAllAssoc();
+        $res = XDB::query('SELECT  COUNT(*)
+                             FROM  register_mstats
+                            WHERE  TO_DAYS(NOW()) - TO_DAYS(success) <= 7');
+        $page->assign('nbInsMarketOkPerso', $nbInsMarketOk[0]['count']);
+        $page->assign('nbInsMarketOkXorg', $nbInsMarketOk[1]['count']);
+        $page->assign('nbInsMarketOkWeek', $res->fetchOneCell());
     }
 
     function handler_private(&$page, $hruid = null,
