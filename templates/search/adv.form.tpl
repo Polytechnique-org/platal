@@ -175,11 +175,12 @@
     });
 -->
 {/literal}</script>
+<p class="center">[<a href="search">Revenir à la recherche simple</a>]</p>
 <form id="recherche" action="search/adv" method="get">
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <th colspan="2">
-        Recherche avancée [<a href="search">Revenir à la Recherche simple</a>]
+        Recherche avancée
       </th>
     </tr>
     <tr>
