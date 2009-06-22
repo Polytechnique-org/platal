@@ -28,6 +28,7 @@ class AXLetter extends MassMailer
     public $_promo_min;
     public $_promo_max;
     public $_subset;
+    public $_subset_to;
     public $_echeance;
     public $_date;
     public $_bits;
@@ -55,10 +56,12 @@ class AXLetter extends MassMailer
         }
         list($this->_id, $this->_shortname, $this->_title_mail, $this->_title,
              $this->_body, $this->_signature, $this->_promo_min, $this->_promo_max,
-             $this->_subset, $this->_echeance, $this->_date, $this->_bits) = $id;
+             $this->_subset_to, $this->_echeance, $this->_date, $this->_bits) = $id;
         if ($this->_date == '0000-00-00') {
             $this->_date = 0;
         }
+        $this->_subset_to = preg_split("/\n/", $this->_subset_to);
+        $this->_subset = (count($this->_subset_to) > 0);
     }
 
     protected function assignData(&$smarty)
@@ -108,7 +111,6 @@ class AXLetter extends MassMailer
                         IF(ni.user_id = 0, 'html', q.core_mail_fmt) AS pref,
                         IF(ni.user_id = 0, ni.hash, 0) AS hash
                   FROM  axletter_ins  AS ni
-             {$this->subsetJoin()}
              LEFT JOIN  auth_user_md5   AS u  USING(user_id)
              LEFT JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
              LEFT JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
@@ -193,12 +195,11 @@ class AXLetter extends MassMailer
             return "INNER JOIN axletter_subsets AS c ON (c.letter_id = ".XDB::escape($this->_id)." AND ni.user_id = c.uid)";
         }
         return '';
-        // TODO : force use of the adresses given by AX, not "canonical" ones
     }
 
     protected function subscriptionWhere()
     {
-        if (!$this->_promo_min && !$this->_promo_max) {
+        if (!$this->_promo_min && !$this->_promo_max && !$this->_subset) {
             return '1';
         }
         $where = array();
@@ -207,6 +208,15 @@ class AXLetter extends MassMailer
         }
         if ($this->_promo_max) {
             $where[] = "((ni.user_id = 0 AND ni.promo <= {$this->_promo_max}) OR (ni.user_id != 0 AND u.promo <= {$this->_promo_max}))";
+        }
+        if ($this->_subset) {
+            require_once("emails.inc.php");
+            print_r($this->_subset_to);
+            $ids = idsFromMails($this->_subset_to);
+            print_r($ids);
+            $ids_list = implode(',', $ids);
+            $where[] = "ni.user_id IN ($ids_list)";
+            // TODO : force use of the adresses given by AX, not "canonical" ones ?
         }
         return implode(' AND ', $where);
     }

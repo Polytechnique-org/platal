@@ -102,10 +102,8 @@ class AXLetterModule extends PLModule
             $res = XDB::query("SELECT * FROM axletter WHERE FIND_IN_SET('new', bits)");
             if ($res->numRows()) {
                 extract($res->fetchOneAssoc(), EXTR_OVERWRITE);
-                if ($subset) {
-                    $res = XDB::query('SELECT email FROM axletter_subsets WHERE letter_id = {?}', $id);
-                    $subset_to = $res->fetchColumn();
-                }
+                $subset_to = preg_split("/\n/", $subset);
+                $subset = (count($subset_to > 0));
                 $saved = true;
             } else  {
                 XDB::execute("INSERT INTO axletter SET id = NULL");
@@ -165,19 +163,7 @@ class AXLetterModule extends PLModule
                 XDB::execute("REPLACE INTO  axletter
                                        SET  id = {?}, short_name = {?}, subject = {?}, title = {?}, body = {?},
                                             signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}, subset = {?}",
-                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance, $subset);
-                if ($subset) {
-                    XDB::execute('DELETE FROM   axletter_subsets
-                                        WHERE   letter_id = {?}', $id);
-                    foreach ($subset_to as $email) {
-                        $uid = $this->idFromMail(array('email' => $email));
-                        if ($uid) {
-                            XDB::execute('INSERT    INTO axletter_subsets
-                                             SET    letter_id = {?}, user_id = {?}, email = {?}',
-                                $id, $uid, $email);
-                        }
-                    }
-                }
+                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance, $subset ? implode("\n", $subset_to): null);
                 if (!$saved) {
                     global $globals;
                     $mailer = new PlMailer();

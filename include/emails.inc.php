@@ -74,6 +74,92 @@ function isvalid_email_redirection($email)
         !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
 }
 
+// function idsFromMails() {{{1
+/** Converts an array of emails to an array of email => uid
+ * @param $emails : array of emails
+ * @return array of ($email => $uid)
+ */
+function idsFromMails($emails)
+{
+    global $globals;
+    $domain_mails = array();
+    $alias_mails  = array();
+    $other_mails  = array();
+    /* Find type of email address */
+    foreach ($emails as $email) {
+        if (strpos($email, '@') === false) {
+            $user = $email;
+            $domain = $globals->mail->domain2;
+        } else {
+            list($user, $domain) = explode('@', $email);
+        }
+        if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
+            list($user) = explode('+', $user);
+            list($user) = explode('_', $user);
+            $alias_mails[$user] = $email;
+        } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
+            list($user) = explode('+', $user);
+            list($user) = explode('_', $user);
+            $domain_mails[$user] = $email;
+        } else {
+            $other_mails[] = $email;
+        }
+    }
+    $uids = array();
+    /* domain users */
+    if (count($domain_mails)) {
+        $domain_users = array();
+        foreach (array_keys($domain_mails) as $user) {
+            $domain_users[] = XDB::escape($user);
+        }
+        $list = implode(',', $domain_users);
+        $res = XDB::query("SELECT   alias, id
+            FROM   aliases
+            WHERE   alias IN ($list)");
+        foreach ($res->fetchAllRow() as $row) {
+            list ($alias, $id) = $row;
+            $uids[$domain_mails[$alias]] = $id;
+        }
+    }
+
+    /* Alias users */
+    if (count($alias_mails)) {
+        $alias_users = array();
+        foreach (array_keys($alias_mails) as $user) {
+            $alias_users[] = XDB::escape($user."@".$globals->mail->alias_dom);
+        }
+        $list = implode(',', $alias_users);
+        $res = XDB::query("SELECT   v.alias, a.id
+            FROM   virtual             AS v
+            INNER JOIN   virtual_redirect    AS r USING(vid)
+            INNER JOIN   aliases             AS a ON (a.type = 'a_vie'
+            AND r.redirect = CONCAT(a.alias, '@{$globals->mail->domain2}'))
+            WHERE   v.alias IN ($list)");
+        foreach ($res->fetchAllRow() as $row) {
+            list ($alias, $id) = $row;
+            $uids[$alias_mails[$alias]] = $id;
+        }
+    }
+
+    /* Other mails */
+    if (count($other_mails)) {
+        $other_users = array();
+        foreach (array_keys($other_mails) as $user) {
+            $other_users[] = XDB::escape($user);
+        }
+        $list = implode(',', $other_users);
+        $res = XDB::query("SELECT   email, uid
+            FROM   emails
+            WHERE   email IN ($list)");
+        foreach ($res->fetchAllRow() as $row) {
+            list ($email, $uid) = $row;
+            $uids[$other_mails[$email]] = $uid;
+        }
+    }
+
+    return $uids;
+}
+
 // class Bogo {{{1
 // The Bogo class represents a spam filtering level in plat/al architecture.
 class Bogo
