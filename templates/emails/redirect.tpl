@@ -191,6 +191,10 @@
     </table>
     <script type="text/javascript">showRemove(); activeEnable();</script>
   </div>
+<p class="smaller center">
+  Légende&nbsp;: {icon name=cross title="Supprimer"} Supprimer la redirection
+  - {icon name=information title="Plus d'informations"} Plus d'informations
+</p>
 {if $panne}
 <p class="smaller">
   <strong>
