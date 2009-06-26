@@ -110,7 +110,7 @@
         return function() {
                   if (!allow) {
                       if (box.value != '') {
-                          alert("Un mail de validation vient d'être envoyer sur " + mail
+                          alert("Un mail de validation vient d'être envoyé sur " + mail
                                + ". La réécriture ne sera active que lorsque tu auras cliqué sur le lien indiqué dans ce mail.");
                       }
                   }
