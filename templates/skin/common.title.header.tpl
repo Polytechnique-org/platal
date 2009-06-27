@@ -36,8 +36,8 @@
                                value="{$smarty.request.quick|default:"Recherche dans l'annuaire"}"
                                onfocus="if (this.value === 'Recherche dans l\'annuaire') this.value='';
                                         $('#quick_button').show()"
-                               onblur="if (this.value === '') this.value='{$smarty.request.quick|default:"Recherche dans l'annuaire"|escape:javascript}'
-                                       $('#quick_button').hide()"/>
+                               onblur="if (this.value === '') this.value='{$smarty.request.quick|default:"Recherche dans l'annuaire"|escape:javascript}'"
+                               />
                         <button id="quick_button" type="submit" style="display: none"
                                 onclick="if ($('#quick').val() === 'Recherche dans l\'annuaire') $('#quick').val('')">
                           OK
