@@ -60,7 +60,7 @@ class AXLetter extends MassMailer
         if ($this->_date == '0000-00-00') {
             $this->_date = 0;
         }
-        $this->_subset_to = preg_split("/\n/", $this->_subset_to);
+        $this->_subset_to = explode("\n", $this->_subset_to);
         $this->_subset = (count($this->_subset_to) > 0);
     }
 
@@ -203,12 +203,9 @@ class AXLetter extends MassMailer
         }
         if ($this->_subset) {
             require_once("emails.inc.php");
-            print_r($this->_subset_to);
-            $ids = idsFromMails($this->_subset_to);
-            print_r($ids);
+            $ids = ids_from_mails($this->_subset_to);
             $ids_list = implode(',', $ids);
             $where[] = "ni.user_id IN ($ids_list)";
-            // TODO : force use of the adresses given by AX, not "canonical" ones ?
         }
         return implode(' AND ', $where);
     }

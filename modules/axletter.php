@@ -91,7 +91,7 @@ class AXLetterModule extends PLModule
         $promo_min  = Post::i('promo_min');
         $promo_max  = Post::i('promo_max');
         $subset_to  = preg_split("/[ ,;\:\n\r]+/", Post::v('subset_to'), -1, PREG_SPLIT_NO_EMPTY);
-        $subset     = ( count($subset_to) > 0);
+        $subset     = (count($subset_to) > 0);
         $echeance   = Post::has('echeance_date') ?
               preg_replace('/^(\d\d\d\d)(\d\d)(\d\d)$/', '\1-\2-\3', Post::v('echeance_date')) . ' ' . Post::v('echeance_time')
             : Post::v('echeance');
@@ -102,8 +102,8 @@ class AXLetterModule extends PLModule
             $res = XDB::query("SELECT * FROM axletter WHERE FIND_IN_SET('new', bits)");
             if ($res->numRows()) {
                 extract($res->fetchOneAssoc(), EXTR_OVERWRITE);
-                $subset_to = preg_split("/\n/", $subset);
-                $subset = (count($subset_to > 0));
+                $subset_to = explode("\n", $subset);
+                $subset = (count($subset_to) > 0);
                 $saved = true;
             } else  {
                 XDB::execute("INSERT INTO axletter SET id = NULL");

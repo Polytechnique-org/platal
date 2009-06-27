@@ -74,18 +74,18 @@ function isvalid_email_redirection($email)
         !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
 }
 
-// function idsFromMails() {{{1
-/** Converts an array of emails to an array of email => uid
- * @param $emails : array of emails
- * @return array of ($email => $uid)
- */
-function idsFromMails($emails)
+// function ids_from_mails() {{{1
+// Converts an array of emails to an array of email => uid
+function ids_from_mails(array $emails)
 {
     global $globals;
     $domain_mails = array();
     $alias_mails  = array();
     $other_mails  = array();
-    /* Find type of email address */
+
+    // Determine the type of the email adresses. It can eiher be a domain
+    // email (@polytechnique.org), an alias email (@melix.net) or any other
+    // email (potentially used as a redirection by one user)
     foreach ($emails as $email) {
         if (strpos($email, '@') === false) {
             $user = $email;
@@ -106,23 +106,22 @@ function idsFromMails($emails)
         }
     }
     $uids = array();
-    /* domain users */
+
+    // Look up user ids for addresses in domain
     if (count($domain_mails)) {
         $domain_users = array();
-        foreach (array_keys($domain_mails) as $user) {
-            $domain_users[] = XDB::escape($user);
-        }
+        $domain_users = array_map('XDB::escape', array_keys($domain_mails));
         $list = implode(',', $domain_users);
         $res = XDB::query("SELECT   alias, id
-            FROM   aliases
-            WHERE   alias IN ($list)");
+                             FROM   aliases
+                            WHERE   alias IN ($list)");
         foreach ($res->fetchAllRow() as $row) {
             list ($alias, $id) = $row;
             $uids[$domain_mails[$alias]] = $id;
         }
     }
 
-    /* Alias users */
+    // Look up user ids for addresses in our alias domain
     if (count($alias_mails)) {
         $alias_users = array();
         foreach (array_keys($alias_mails) as $user) {
@@ -130,27 +129,25 @@ function idsFromMails($emails)
         }
         $list = implode(',', $alias_users);
         $res = XDB::query("SELECT   v.alias, a.id
-            FROM   virtual             AS v
-            INNER JOIN   virtual_redirect    AS r USING(vid)
-            INNER JOIN   aliases             AS a ON (a.type = 'a_vie'
-            AND r.redirect = CONCAT(a.alias, '@{$globals->mail->domain2}'))
-            WHERE   v.alias IN ($list)");
+                             FROM   virtual             AS v
+                       INNER JOIN   virtual_redirect    AS r USING(vid)
+                       INNER JOIN   aliases             AS a ON (a.type = 'a_vie'
+                                    AND r.redirect = CONCAT(a.alias, '@{$globals->mail->domain2}'))
+                            WHERE   v.alias IN ($list)");
         foreach ($res->fetchAllRow() as $row) {
             list ($alias, $id) = $row;
             $uids[$alias_mails[$alias]] = $id;
         }
     }
 
-    /* Other mails */
+    // Look up user ids for other addresses in the email redirection list
     if (count($other_mails)) {
         $other_users = array();
-        foreach (array_keys($other_mails) as $user) {
-            $other_users[] = XDB::escape($user);
-        }
+        $other_users = array_map('XDB::escape', $other_mails);
         $list = implode(',', $other_users);
         $res = XDB::query("SELECT   email, uid
-            FROM   emails
-            WHERE   email IN ($list)");
+                             FROM   emails
+                            WHERE   email IN ($list)");
         foreach ($res->fetchAllRow() as $row) {
             list ($email, $uid) = $row;
             $uids[$other_mails[$email]] = $uid;
