@@ -314,7 +314,7 @@ class ProfileModule extends PLModule
         http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=$mat");
     }
 
-    function handler_p_edit(&$page, $opened_tab = null, $mode = null)
+    function handler_p_edit(&$page, $opened_tab = null, $mode = null, $success = null)
     {
         global $globals;
 
@@ -355,6 +355,9 @@ class ProfileModule extends PLModule
         }
 
        $page->setTitle('Mon Profil');
+       if (isset($success) && $success) {
+           $page->trigSuccess('Ton profil a bien été mis à jour.');
+       }
     }
 
     function handler_applis_js(&$page)

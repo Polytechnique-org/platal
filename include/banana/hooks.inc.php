@@ -314,7 +314,9 @@ class BananaHandler
     {
     }
 
-    public function process()
+    public function success() { }
+
+    public function process(&$success)
     {
         return PlWizard::CURRENT_PAGE;
     }

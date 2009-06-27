@@ -300,7 +300,7 @@ abstract class ProfilePage implements PlWizardPage
         $page->assign('errors', $this->errors);
     }
 
-    public function process()
+    public function process(&$global_success)
     {
         $global_success = true;
         $this->fetchData();
@@ -323,8 +323,13 @@ abstract class ProfilePage implements PlWizardPage
             return Post::has('next_page') ? PlWizard::NEXT_PAGE : PlWizard::CURRENT_PAGE;
         }
         Platal::page()->trigError("Certains champs n'ont pas pu être validés, merci de corriger les informations "
-                                . "de ton profil et de revalider ta demande");
+                                . "de ton profil et de revalider ta demande.");
         return PlWizard::CURRENT_PAGE;
+    }
+
+    public function success()
+    {
+        return 'Ton profil a bien été mis à jour.';
     }
 }
 

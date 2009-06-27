@@ -25,7 +25,8 @@ class ReviewPage implements PlWizardPage
 {
     public function __construct(PlWizard &$wiz) { }
     public function template() { return 'platal/review.tpl'; }
-    public function process() { }
+    public function process(&$success) { }
+    public function success() { }
 
     public function prepare(PlPage &$page, $id)
     {
