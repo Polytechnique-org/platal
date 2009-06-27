@@ -45,7 +45,11 @@ interface PlWizardPage
      * id (PlWizard::FIRST_PAGE, PlWizard::NEXT_PAGE, PlWizard::CURRENT_PAGE
      *  PlWizard::PREVIOUS_PAGE, PlWizard::LAST_PAGE).
      */
-    public function process();
+    public function process(&$success);
+
+    /** Displays the success message.
+     */
+    public function success();
 }
 
 /** A PlWizard is a set of pages through which the user can navigate,
@@ -169,7 +173,8 @@ class PlWizard
 
             $page = $this->getPage(Post::i('valid_page'));
             $curpage = Post::i('valid_page');
-            $next = $page->process();
+            $success = false;
+            $next = $page->process(&$success);
             $last = $curpage;
             switch ($next) {
               case PlWizard::FIRST_PAGE:
@@ -208,7 +213,11 @@ class PlWizard
         // Prepare the page
         $_SESSION[$this->name . '_page'] = $curpage;
         if ($curpage != $oldpage) {
-            pl_redirect($baseurl . '/' . $this->inv_lookup[$curpage]);
+            if (isset($success) && $success) {
+                pl_redirect($baseurl . '/' . $this->inv_lookup[$curpage] . '/null/' . $success);
+            } else {
+                pl_redirect($baseurl . '/' . $this->inv_lookup[$curpage]);
+            }
         } else if (!isset($page)) {
             $page = $this->getPage($curpage);
         }
@@ -230,6 +239,9 @@ class PlWizard
         $smarty->assign('wiz_page', $page->template());
         $smarty->assign('pl_no_errors', true);
         $page->prepare($smarty, isset($this->inv_lookup[$curpage]) ? $this->inv_lookup[$curpage] : $curpage);
+        if (isset($success) && $success) {
+            $smarty->trigSuccess($page->success());
+        }
     }
 }
 
