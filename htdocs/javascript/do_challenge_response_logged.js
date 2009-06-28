@@ -18,32 +18,17 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function readCookie(name)
-{
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++)
-    {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-    }
-    return null;
-}
-
-
 function doChallengeResponse() {
     var new_pass = hash_encrypt(document.forms.login.password.value);
-    var old_pass = MD5(document.forms.login.password.value);
     
     str = document.forms.loginsub.username.value + ":" +
         hash_encrypt(document.forms.login.password.value) + ":" +
         document.forms.loginsub.challenge.value;
 
     document.forms.loginsub.response.value = hash_encrypt(str);
-    document.forms.loginsub.xorpass.value = hash_xor(new_pass, old_pass);
     document.forms.loginsub.remember.value = document.forms.login.remember.checked;
     document.forms.login.password.value = "";
     document.forms.loginsub.submit();
 }
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

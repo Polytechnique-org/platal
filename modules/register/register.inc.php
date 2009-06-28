@@ -231,21 +231,19 @@ function finish_ins($sub_state)
     extract($sub_state);
     require_once('secure_hash.inc.php');
 
-    $pass     = rand_pass();
-    $pass_encrypted = hash_encrypt($pass);
-    $hash     = rand_url_id(12);
-
-    XDB::execute('UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule = {?}', $email, $mat);
-
+    $hash = rand_url_id(12);
+    XDB::execute(
+            "UPDATE  auth_user_md5
+                SET  last_known_email = {?}
+              WHERE  matricule = {?}", $email, $mat);
     XDB::execute(
             "REPLACE INTO  register_pending (uid, forlife, bestalias, mailorg2, password, email, date, relance, naissance, hash)
                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?})",
-            $uid, $forlife, $bestalias, $mailorg2, $pass_encrypted, $email, $naissance, $hash);
+            $uid, $forlife, $bestalias, $mailorg2, $password, $email, $naissance, $hash);
 
     $mymail = new PlMailer('register/inscrire.mail.tpl');
     $mymail->assign('mailorg', $bestalias);
     $mymail->assign('lemail',  $email);
-    $mymail->assign('pass',    $pass);
     $mymail->assign('baseurl', $globals->baseurl);
     $mymail->assign('hash',    $hash);
     $mymail->assign('subj',    $bestalias."@" . $globals->mail->domain);
