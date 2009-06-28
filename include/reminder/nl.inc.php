@@ -25,7 +25,7 @@ class ReminderNl extends Reminder
     {
         if ($action == 'yes') {
             require_once 'newsletter.inc.php';
-            Newsletter::subscribe();
+            NewsLetter::subscribe();
             $this->UpdateOnYes();
         }
 
@@ -52,7 +52,7 @@ class ReminderNl extends Reminder
     public static function IsCandidate(User &$user, $candidate)
     {
         require_once 'newsletter.inc.php';
-        $isSubscribed = Newsletter::subscriptionState();
+        $isSubscribed = NewsLetter::subscriptionState();
         if ($isSubscribed) {
             Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
         }

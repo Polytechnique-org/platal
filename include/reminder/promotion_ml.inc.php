@@ -26,8 +26,8 @@ class ReminderPromotionMl extends Reminder
         switch ($action) {
           case 'yes':
             $res = XDB::query('SELECT  id
-                               FROM  groupex.asso
-                              WHERE  diminutif = {?}',
+                                 FROM  groupex.asso
+                                WHERE  diminutif = {?}',
                             S::v('promo'));
             $asso_id = $res->fetchOneCell();
             XDB::execute('REPLACE INTO  groupex.membres (uid, asso_id)
