@@ -180,10 +180,9 @@ class CoreModule extends PLModule
     function handler_sqlerror(&$page) {
         global $globals;
         $page->coreTpl('sql_errors.tpl');
-        $file = @fopen($globals->spoolroot . '/spool/tmp/query_errors', 'r');
+        $file = file_get_contents($globals->spoolroot . '/spool/tmp/query_errors');
         if ($file !== false) {
-            $page->assign('errors', fpassthru($file));
-            fclose($file);
+            $page->assign('errors', utf8_encode($file));
         }
         if (Post::has('clear')) {
             @unlink($globals->spoolroot . '/spool/tmp/query_errors');

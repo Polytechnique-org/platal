@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Erreurs MySQL</h2>
+<h1>Erreurs MySQL</h1>
 <p>
   {if $errors}
-    {$errors}
+    {$errors|smarty:nodefaults}
   {else}
     Il n'y pas d'erreurs actuellement recencées.
   {/if}
