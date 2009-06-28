@@ -587,9 +587,9 @@ class AdminModule extends PLModule
                         $mailer->send();
 
                         $globals->updateNbIns();
-                        $page->trigSuccess("Update was successful.");
+                        $page->trigSuccess("La mise à jour a été faite avec succès.");
                     } else {
-                        $page->trigError("Update failed, please double check your values.");
+                        $page->trigError("La mise à jour a échoué. S'il te plaît, vérifie les valeurs.");
                     }
 
                     // Checks for changes, and updates other tables of plat/al.
