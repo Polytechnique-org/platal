@@ -1,6 +1,30 @@
 ================================================================================
 VERSION 0.10.1                                                        XX XX XXXX
 
+New:
+
+    * Events:
+        - Reminders                                                    -JAC/VZA
+
+Bug/Wish:
+
+    * Admin:
+        - #965: Prevents password hashes from being broadcasted by email   -VZA
+
+    * Core:
+        - #680: Retrieve dead redirections thanks to inactive redirections -JAC
+
+    * Mail:
+        - #963: Fixes notification email on removal of "nom d'usage"       -VZA
+        - #972: Adds a legend on the email redirection page                -JAC
+
+    * Profile:
+        - #958: Fix the address in the professionnal vcard                 -JAC
+        - #970: Shows a confirmation message when the profile is modified  -JAC
+
+    * Marketing:
+        - #671: Displays more statistics about marketings                  -JAC
+
 From 0.10.0 branch:
 
     * Auth:
