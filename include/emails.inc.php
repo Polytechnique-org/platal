@@ -109,8 +109,7 @@ function ids_from_mails(array $emails)
 
     // Look up user ids for addresses in domain
     if (count($domain_mails)) {
-        $domain_users = array();
-        $domain_users = array_map('XDB::escape', array_keys($domain_mails));
+        $domain_users = array_map(array('XDB', 'escape'), array_keys($domain_mails));
         $list = implode(',', $domain_users);
         $res = XDB::query("SELECT   alias, id
                              FROM   aliases
@@ -142,8 +141,7 @@ function ids_from_mails(array $emails)
 
     // Look up user ids for other addresses in the email redirection list
     if (count($other_mails)) {
-        $other_users = array();
-        $other_users = array_map('XDB::escape', $other_mails);
+        $other_users = array_map(array('XDB', 'escape'), $other_mails);
         $list = implode(',', $other_users);
         $res = XDB::query("SELECT   email, uid
                              FROM   emails

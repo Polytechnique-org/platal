@@ -205,7 +205,12 @@ class AXLetter extends MassMailer
             require_once("emails.inc.php");
             $ids = ids_from_mails($this->_subset_to);
             $ids_list = implode(',', $ids);
-            $where[] = "ni.user_id IN ($ids_list)";
+            if(count($ids_list) > 0) {
+                $where[] = "ni.user_id IN ($ids_list)";
+            } else {
+                // No valid email
+                $where[] = "0";
+            }
         }
         return implode(' AND ', $where);
     }
