@@ -54,6 +54,9 @@ abstract class PlUser
      * By convention, null means the information hasn't been fetched yet, and
      * false means the information is not available.
      */
+
+    // user_id is internal user ID (potentially numeric), whereas hruid is a
+    // "human readable" unique ID
     protected $user_id = null;
     protected $hruid = null;
 
@@ -66,7 +69,6 @@ abstract class PlUser
     // <display name> !"), while full name is the official full name.
     protected $display_name = null;
     protected $full_name = null;
-    protected $promo = null;
 
     // Other important parameters used when sending emails.
     protected $gender = null;  // Acceptable values are GENDER_MALE and GENDER_FEMALE
