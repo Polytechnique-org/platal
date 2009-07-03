@@ -267,13 +267,12 @@ class XnetGrpModule extends PLModule
                 XDB::execute(
                     "UPDATE  groupex.asso
                         SET  descr={?}, site={?}, mail={?}, resp={?},
-                             forum={?}, ax={?}, pub= {?}, sub_url={?},
+                             forum={?}, pub= {?}, sub_url={?},
                              unsub_url={?},flags={?}
                       WHERE  id={?}",
                       Post::v('descr'), $site,
                       Post::v('mail'), Post::v('resp'),
-                      Post::v('forum'), Post::has('ax'),
-                      Post::v('pub'),
+                      Post::v('forum'), Post::v('pub'),
                       Post::v('sub_url'), Post::v('unsub_url'),
                       $flags, $globals->asso('id'));
             }

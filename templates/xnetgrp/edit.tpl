@@ -76,9 +76,16 @@
         </select>
       </td>
     </tr>
+    <tr>
+      <td class="titre center" colspan="2">
+        <label><input type="checkbox" value="1" name="ax" {if $asso.ax}checked="checked"{/if} />
+        groupe agréé par l'AX</label>
+      </td>
+    </tr>
   </table>
   <p></p>
   {/if}
+
   <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>
       <td class="titre">
@@ -158,13 +165,6 @@
       </td>
       <td>
         <input type="text" size="40" name="unsub_url" value="{$asso.unsub_url}" />
-      </td>
-    </tr>
-
-    <tr>
-      <td class="titre center" colspan="2">
-        <label><input type="checkbox" value="1" name="ax" {if $asso.ax}checked="checked"{/if} />
-        groupe agréé par l'AX</label>
       </td>
     </tr>
 
