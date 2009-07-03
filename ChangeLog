@@ -15,6 +15,7 @@ Bug/Wish:
         - #680: Retrieve dead redirections thanks to inactive redirections -JAC
 
     * Mail:
+        - Notifies the sender when a moderated message to a ML is accepted -JAC
         - #963: Fixes notification email on removal of "nom d'usage"       -VZA
         - #972: Adds a legend on the email redirection page                -JAC
 
@@ -24,6 +25,9 @@ Bug/Wish:
 
     * Marketing:
         - #671: Displays more statistics about marketings                  -JAC
+
+    * XnetGrp:
+        - #973: Only site administrators can allow AX aggregation          -JAC
 
 From 0.10.0 branch:
 
