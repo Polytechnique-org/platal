@@ -102,7 +102,7 @@
         <td class="rt"><a href="{$c.web}">{$c.web}</a></td>
       </tr>
       {/if}
-      {if $c.countrytxt || $c.city}
+      {if ($c.countrytxt || $c.city) && !$c.dcd}
       <tr>
         <td class="lt">Géographie&nbsp;:</td>
         <td class="rt">{$c.city}{if $c.city && $c.countrytxt}, {/if}{$c.countrytxt}</td>

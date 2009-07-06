@@ -20,6 +20,7 @@ Bug/Wish:
         - #972: Adds a legend on the email redirection page                -JAC
 
     * Profile:
+        - #951: The address of a dead person is her last address           -JAC
         - #958: Fix the address in the professionnal vcard                 -JAC
         - #970: Shows a confirmation message when the profile is modified  -JAC
 
