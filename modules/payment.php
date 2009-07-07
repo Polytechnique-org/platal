@@ -226,6 +226,7 @@ class PaymentModule extends PLModule
         $conf_text = str_replace("<nom>",$nom,$conf_text);
         $conf_text = str_replace("<promo>",$promo,$conf_text);
         $conf_text = str_replace("<montant>",$montant,$conf_text);
+        $conf_text = str_replace("<comment>", Env::v('comment'), $conf_text);
         $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
         $conf_text = str_replace("<cher>",$femme ? "Chère" : "Cher",$conf_text);
 
