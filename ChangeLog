@@ -11,6 +11,9 @@ Bug/Wish:
     * Admin:
         - #965: Prevents password hashes from being broadcasted by email   -VZA
 
+    * AXLetter:
+        - Enables axletter mailings to a subset of subscribers             -XEL
+
     * Core:
         - #680: Retrieve dead redirections thanks to inactive redirections -JAC
 
