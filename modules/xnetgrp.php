@@ -653,7 +653,8 @@ class XnetGrpModule extends PLModule
                     . "à l'adresse : support@polytechnique.org\n";
 
             if (!$to) {
-                $to = $globals->asso("mail").", support@polytechnique.org";
+                $to = ($globals->asso('mail') != '') ? $globals->asso('mail') . ', ' : '';
+                $to .= 'support@polytechnique.org';
                 $append = "\n-- \nLe groupe ".$globals->asso("nom")
                         ." n'a pas d'administrateur, l'équipe de"
                         ." Polytechnique.org a été prévenue et va rapidement"
