@@ -33,6 +33,9 @@ Bug/Wish:
     * Marketing:
         - #671: Displays more statistics about marketings                  -JAC
 
+    * Survey:
+        - #794: Adds wiki syntax to surveys                                -PIK
+
     * XnetGrp:
         - #973: Only site administrators can allow AX aggregation          -JAC
 
