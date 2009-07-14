@@ -21,34 +21,11 @@
 {**************************************************************************}
 
 <div id="reminder">
-  {if $previous_reminder}
-    {include file="reminder/notification.tpl" previous_reminder=$previous_reminder}
-  {/if}
-
-  <fieldset class="warnings">
+  <fieldset class="success">
     <legend>
-      {if $reminder->warning()}{icon name=error}{else}{icon name=information}{/if}
-      &nbsp;{$reminder->title()}
+      {icon name=information}&nbsp;{$previous_reminder}
     </legend>
-
-    {if $reminder->template()}
-      {include file=$reminder->template()}
-    {else}
-      <div style="margin-bottom: 0.5em">
-        {$reminder->text()}
-      </div>
-      <div class="center">
-        <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/yes'); return false" style="text-decoration: none">
-          {icon name=add} M'inscrire
-        </a> -
-        <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/no'); return false" style="text-decoration: none">
-          {icon name=delete} Ne pas m'inscrire
-        </a> -
-        <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
-          {icon name=cross} Décider plus tard
-        </a>
-      </div>
-    {/if}
+    Ta demande a bien été prise en compte.
   </fieldset>
 </div>
 

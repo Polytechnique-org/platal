@@ -101,13 +101,25 @@ abstract class Reminder
     // method below).
     abstract public function HandleAction($action);
 
+    // Displays a reduced version of the reminder and notifies that the action
+    // has been taken into account.
+    public function NotifiesAction(&$page)
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $page->changeTpl('reminder/notification.tpl', NO_SKIN);
+        $page->assign('previous_reminder', $this->title());
+    }
+
     // Displays the reminder as a standalone html snippet. It should be used
     // when the reminder is the only output of a page.
-    public function DisplayStandalone(&$page)
+    public function DisplayStandalone(&$page, $previous_reminder = null)
     {
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('reminder/base.tpl', NO_SKIN);
         $this->Prepare($page);
+        if ($previous_reminder) {
+            $page->assign('previous_reminder', $previous_reminder);
+        }
     }
 
     // Prepares the display by assigning template variables.
