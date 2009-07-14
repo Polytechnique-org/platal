@@ -148,6 +148,9 @@ abstract class Reminder
         return 'ajax/reminder/' . $this->name;
     }
 
+    // Returns the url for the information page.
+    public function info() { return ''; }
+
     // Static status update methods -------------------------------------------
 
     // Marks the candidate reminder as having been accepted for user |user_id|.

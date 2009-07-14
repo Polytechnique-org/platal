@@ -47,6 +47,10 @@ class ReminderAxLetter extends Reminder
     {
         return "Inscription à la lettre de l'AX";
     }
+    public function info()
+    {
+        return 'Xorg/MailsAX';
+    }
 
     public static function IsCandidate(User &$user, $candidate)
     {

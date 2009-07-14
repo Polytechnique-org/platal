@@ -47,6 +47,9 @@
         <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
           {icon name=cross} Décider plus tard
         </a>
+        {if $reminder->info()}
+          - <a class="popup2" href="{$reminder->info()}">{icon name=information} En savoir plus</a>
+        {/if}
       </div>
     {/if}
   </fieldset>

@@ -40,6 +40,10 @@ class ReminderNoRedirection extends Reminder
     {
         return true;
     }
+    public function info()
+    {
+        return 'Xorg/MesAdressesDeRedirection';
+    }
 
     public static function IsCandidate(User &$user, $candidate)
     {

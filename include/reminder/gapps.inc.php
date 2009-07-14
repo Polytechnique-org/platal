@@ -50,6 +50,10 @@ class ReminderGapps extends Reminder
     {
         return "Création d'un compte Google Apps";
     }
+    public function info()
+    {
+        return 'Xorg/GoogleApps';
+    }
 
     public static function IsCandidate(User &$user, $candidate)
     {

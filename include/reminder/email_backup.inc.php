@@ -50,6 +50,10 @@ class ReminderEmailBackup extends Reminder
     {
         return 'Sauvegarde de tes emails';
     }
+    public function info()
+    {
+        return 'Xorg/IMAP';
+    }
 
     public static function IsCandidate(User &$user, $candidate)
     {
