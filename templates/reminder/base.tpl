@@ -48,7 +48,7 @@
           {icon name=cross} Décider plus tard
         </a>
         {if $reminder->info()}
-          - <a class="popup2" href="{$reminder->info()}">{icon name=information} En savoir plus</a>
+          - <a class="popup2" style="text-decoration: none" href="{$reminder->info()}">{icon name=information} En savoir plus</a>
         {/if}
       </div>
     {/if}
