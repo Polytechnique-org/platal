@@ -628,7 +628,7 @@ class AdminModule extends PLModule
                     require_once('user.func.inc.php');
                     user_clear_all_subs($user->id());
                     $globals->updateNbIns();
-                    $page->trigSuccess("'" . $user->login() . "' a été désinscrit !");
+                    $page->trigSuccess($user->login() . ' a été désinscrit !');
 
                     $mailer = new PlMailer("admin/useredit.mail.tpl");
                     $mailer->assign("admin", S::user()->login());
