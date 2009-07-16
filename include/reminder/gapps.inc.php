@@ -25,7 +25,7 @@ class ReminderGapps extends Reminder
     {
         switch ($action) {
           case 'yes':
-            $this->UpdateOnYes();
+            $this->UpdateOnDismiss();
             pl_redirect('googleapps');
             break;
 
@@ -39,12 +39,9 @@ class ReminderGapps extends Reminder
         }
     }
 
-    public function text()
+    public function template()
     {
-        return "Polytechnique.org te fournit un compte Google Apps qui te permet
-            de disposer des applications web de Google (GMail, Google Calendar,
-            Google Docs, et bien d'autres) sur ton adresse Polytechnique.org
-            habituelle (en savoir plus).";
+        return 'reminder/gapps.tpl';
     }
     public function title()
     {
@@ -59,6 +56,9 @@ class ReminderGapps extends Reminder
     {
         require_once 'googleapps.inc.php';
         $isSubscribed = GoogleAppsAccount::account_status($user->id());
+        if ($isSubscribed == 'disabled') {
+            $isSubscribed = false;
+        }
         if ($isSubscribed) {
             Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
         }
