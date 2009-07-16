@@ -46,7 +46,7 @@ abstract class Platal
         $sessionclass = PL_SESSION_CLASS;
         $session = new $sessionclass();
         if (!$session->startAvailableAuth()) {
-            Platal::page()->trigError('Données d\'authentification invalide.');
+            Platal::page()->trigError("Données d'authentification invalides.");
         }
 
         $modules    = func_get_args();
