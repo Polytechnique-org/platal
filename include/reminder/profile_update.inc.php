@@ -50,7 +50,7 @@ class ReminderProfileUpdate extends Reminder
         parent::Prepare($page);
 
         $res = XDB::query('SELECT  date < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_profile_old,
-                                   date AS profile_date, LENGTH(p.attach) > 0 AS photo
+                                   date AS profile_date, LENGTH(p.attach) > 0 AS has_photo
                              FROM  auth_user_md5 AS u
                         LEFT JOIN  photo         AS p ON (u.user_id = p.uid)
                             WHERE  user_id = {?}',
@@ -59,16 +59,11 @@ class ReminderProfileUpdate extends Reminder
 
         $page->assign('profile_incitation', $is_profile_old);
         $page->assign('profile_last_update', $profile_date);
-        $page->assign('photo_incitation', $has_photo);
+        $page->assign('photo_incitation', !$has_photo);
 
         require_once 'geoloc.inc.php';
         $res = localize_addresses($this->user->id());
         $page->assign('geocoding_incitation', count($res));
-
-        $page->assign('incitations_count',
-                      ($is_profile_old ? 1 : 0) +
-                      ($has_photo ? 0 : 1) +
-                      (count($res) > 0 ? 1 : 0));
     }
 
     public function template()

@@ -24,16 +24,16 @@
   La dernière mise à jour de ta <a href="profile/{$smarty.session.hruid}" class="popup2">fiche</a>
   date du {$profile_last_update|date_format}. Il est possible qu'elle ne soit pas à jour.
   Si tu souhaites la modifier,
-  <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/profile'); return false" style="text-decoration: none">
+  <a href="{$reminder->baseurl()}/profile" style="text-decoration: none">
   clique ici !</a>
 {elseif $photo_incitation}
-  Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage. Clique
-  <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/photo'); return false" style="text-decoration: none">
-  ici</a> si tu souhaites en ajouter une.
+  Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
+  <a href="{$reminder->baseurl()}/photo" style="text-decoration: none">
+  Clique ici</a> si tu souhaites en ajouter une.
 {elseif $geocoding_incitation > 0}
-  Parmi tes adresses, il y en a {$geocoding_incitation} que nous n'avons pas pu localiser. Clique
-  <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/geoloc'); return false" style="text-decoration: none">
-  ici</a> pour rectifier.
+  Parmi tes adresses, il y en a {$geocoding_incitation} que nous n'avons pas pu localiser.
+  <a href="{$reminder->baseurl()}/geoloc" style="text-decoration: none">
+  Clique ici</a> pour rectifier.
 {/if}
 
 <div class="right">
