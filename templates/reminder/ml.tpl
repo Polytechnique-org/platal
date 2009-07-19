@@ -28,7 +28,7 @@
     <dt>
       <label>
         <input type='checkbox' value='1' checked="checked" name="sub_ml[{$list}]" />
-        {$list}*&nbsp;: {$details.desc}
+        {$list}&nbsp;: {$details.desc}
       </label>
     </dt>
     {if $details.info}
