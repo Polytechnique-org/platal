@@ -36,11 +36,10 @@ class ReminderMl extends Reminder
                                 S::i('uid'));
             while (list($sub, $domain) = $res->next()) {
                 if (array_shift($subs) == "$sub@$domain") {
-                    list($sub, $domain) = explode('@', $list);
                     if ($domain != $current_domain) {
                         $current_domain = $domain;
-                        $client = new MMList(S::v('uid'), S::v('password'), $domain);
                     }
+                    $client = new MMList(S::v('uid'), S::v('password'), $domain);
                     $client->subscribe($sub);
                 }
             }
