@@ -54,7 +54,7 @@
         {math equation="(promo % 100) + 100" promo=$promo}532)<br />
         {/if}
         Voir sur le GU ou un bulletin de solde pour trouver cette information<br /><br />
-        Pour les élèves étrangers voie 2, il est du type&nbsp;:
+        Pour les élèves étrangers voie 2, il peut être aussi du type&nbsp;:
         {if $promo < 1999}
         {math equation="(promo + 1) % 100" promo=$promo}0XXX
         {else}

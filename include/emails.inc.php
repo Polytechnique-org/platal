@@ -74,6 +74,87 @@ function isvalid_email_redirection($email)
         !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
 }
 
+// function ids_from_mails() {{{1
+// Converts an array of emails to an array of email => uid
+function ids_from_mails(array $emails)
+{
+    global $globals;
+    $domain_mails = array();
+    $alias_mails  = array();
+    $other_mails  = array();
+
+    // Determine the type of the email adresses. It can eiher be a domain
+    // email (@polytechnique.org), an alias email (@melix.net) or any other
+    // email (potentially used as a redirection by one user)
+    foreach ($emails as $email) {
+        if (strpos($email, '@') === false) {
+            $user = $email;
+            $domain = $globals->mail->domain2;
+        } else {
+            list($user, $domain) = explode('@', $email);
+        }
+        if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
+            list($user) = explode('+', $user);
+            list($user) = explode('_', $user);
+            $alias_mails[$user] = $email;
+        } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
+            list($user) = explode('+', $user);
+            list($user) = explode('_', $user);
+            $domain_mails[$user] = $email;
+        } else {
+            $other_mails[] = $email;
+        }
+    }
+    $uids = array();
+
+    // Look up user ids for addresses in domain
+    if (count($domain_mails)) {
+        $domain_users = array_map(array('XDB', 'escape'), array_keys($domain_mails));
+        $list = implode(',', $domain_users);
+        $res = XDB::query("SELECT   alias, id
+                             FROM   aliases
+                            WHERE   alias IN ($list)");
+        foreach ($res->fetchAllRow() as $row) {
+            list ($alias, $id) = $row;
+            $uids[$domain_mails[$alias]] = $id;
+        }
+    }
+
+    // Look up user ids for addresses in our alias domain
+    if (count($alias_mails)) {
+        $alias_users = array();
+        foreach (array_keys($alias_mails) as $user) {
+            $alias_users[] = XDB::escape($user."@".$globals->mail->alias_dom);
+        }
+        $list = implode(',', $alias_users);
+        $res = XDB::query("SELECT   v.alias, a.id
+                             FROM   virtual             AS v
+                       INNER JOIN   virtual_redirect    AS r USING(vid)
+                       INNER JOIN   aliases             AS a ON (a.type = 'a_vie'
+                                    AND r.redirect = CONCAT(a.alias, '@{$globals->mail->domain2}'))
+                            WHERE   v.alias IN ($list)");
+        foreach ($res->fetchAllRow() as $row) {
+            list ($alias, $id) = $row;
+            $uids[$alias_mails[$alias]] = $id;
+        }
+    }
+
+    // Look up user ids for other addresses in the email redirection list
+    if (count($other_mails)) {
+        $other_users = array_map(array('XDB', 'escape'), $other_mails);
+        $list = implode(',', $other_users);
+        $res = XDB::query("SELECT   email, uid
+                             FROM   emails
+                            WHERE   email IN ($list)");
+        foreach ($res->fetchAllRow() as $row) {
+            list ($email, $uid) = $row;
+            $uids[$other_mails[$email]] = $uid;
+        }
+    }
+
+    return $uids;
+}
+
 // class Bogo {{{1
 // The Bogo class represents a spam filtering level in plat/al architecture.
 class Bogo
@@ -252,7 +333,7 @@ class EmailRedirection extends Email
 
     public function clean_errors()
     {
-        if (!S::has_perms()) {
+        if (!S::admin()) {
             return false;
         }
         $this->panne       = 0;
@@ -328,7 +409,7 @@ class EmailStorage extends Email
 
         // IMAP storage is always visible to administrators, and is allowed for
         // everyone when the service is marked as 'active'.
-        if ($globals->mailstorage->imap_active || S::has_perms()) {
+        if ($globals->mailstorage->imap_active || S::admin()) {
             $storages[] = 'imap';
         }
 
@@ -553,7 +634,7 @@ class Redirect
     {
         XDB::execute("UPDATE  emails
                          SET  flags = 'disable'
-                       WHERE  flags = 'active' AND uid = {?}", $this->user->id);
+                       WHERE  flags = 'active' AND uid = {?}", $this->user->id());
         foreach ($this->emails as &$mail) {
             if ($mail->active && $mail->has_disable()) {
                 $mail->disabled = true;
@@ -569,7 +650,7 @@ class Redirect
     {
         XDB::execute("UPDATE  emails
                          SET  flags = 'active'
-                       WHERE  flags = 'disable' AND uid = {?}", $this->user->id);
+                       WHERE  flags = 'disable' AND uid = {?}", $this->user->id());
         foreach ($this->emails as &$mail) {
             if ($mail->disabled) {
                 $mail->active   = true;

@@ -41,65 +41,12 @@ Bienvenue {$smarty.session.yourself_name}{if $birthday}
 </div>
 {/if}
 
-{if $smarty.session.no_redirect}
-<div class="errors">
-  <ul>
-    <li>
-      Tu n'as plus de redirection valide ce qui rend ton adresse Polytechnique.org
-      inutilisable. Rends-toi au plus vite sur <a href="emails/redirect">la page de 
-      gestion des emails</a> pour corriger ce problème.
-    </li>
-  </ul>
-</div>
-{/if}
-
-{if $smarty.session.mx_failures|@count}
-<div class="warnings">
-  {icon name=error} Des problèmes sont actuellement recontrés sur tes redirections suivantes&nbsp;:
-  <ul>
-    {foreach from=$smarty.session.mx_failures item=mail}
-    <li>
-      <span class="erreur">{$mail.mail}</span> :
-      <span class="explication">{$mail.text}</span>
-    </li>
-    {/foreach}
-  </ul>
-  <div style="text-align: center"><a href="emails/redirect">Gérer mes adresses de redirection</a></div>
-</div>
-{/if}
-
-{if $fiche_incitation || $photo_incitation || ($geoloc_incitation > 0)}
-<div class="warnings">
-  <ul>
-{if $fiche_incitation}
-  <li>
-    La dernière mise à jour de ta
-    <a href="profile/{$smarty.session.hruid}" class="popup2">fiche</a>
-    date du {$fiche_incitation|date_format}.
-    Il est possible qu'elle ne soit pas à jour.
-    Si tu souhaites la modifier, <a href="profile/edit">clique ici !</a>
-  </li>
-{/if}
-
-{if $photo_incitation}
-  <li>
-    Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
-    Clique <a href="photo/change">ici</a> si tu souhaites en ajouter une.
-  </li>
-{/if}
-
-{if $geoloc_incitation > 0}
-  <li>
-    Parmi tes adresses, il y en a {$geoloc_incitation} que nous n'avons pas pu localiser.
-    Clique <a href="profile/edit/adresses">ici</a> pour rectifier.
-  </li>
-{/if}
-  </ul>
-</div>
-{/if}
-
+{if $reminder}
+{include file="reminder/base.tpl"}
+{else}
 {include file="include/tips.tpl" full=true}
-  
+{/if}
+
   <table class="tinybicol" id="menu-evts">
     {foreach from=$events name=events key=category item=evenement}
     <tr class="pair" style="height: 18px">
@@ -177,7 +124,7 @@ Bienvenue {$smarty.session.yourself_name}{if $birthday}
   -->
   {/literal}
   </script>
- 
+
   {foreach from=$events key=category item=evenement}
   {foreach item=ev from=$evenement}
   {if $ev.nonlu}

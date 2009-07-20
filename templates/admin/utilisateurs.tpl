@@ -31,7 +31,7 @@
   {xsrf_token_field}
   <div class="center">
     <input type="hidden" name="user_id" value="{$smarty.request.user_id}" />
-    Confirmer la suppression de {$smarty.request.user_id}&nbsp;&nbsp;
+    Confirmer la suppression de l'utilisateur {$smarty.request.user_id} ({$mr.prenom} {$mr.nom} - X{$mr.promo})&nbsp;&nbsp;
     <input type="submit" name="u_kill" value="continuer" />
   </div>
 </form>

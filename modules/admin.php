@@ -24,31 +24,31 @@ class AdminModule extends PLModule
     function handlers()
     {
         return array(
-            'phpinfo'                      => $this->make_hook('phpinfo', AUTH_MDP, 'admin'),
-            'admin'                        => $this->make_hook('default', AUTH_MDP, 'admin'),
-            'admin/ax-xorg'                => $this->make_hook('ax_xorg', AUTH_MDP, 'admin'),
-            'admin/dead-but-active'        => $this->make_hook('dead_but_active', AUTH_MDP, 'admin'),
-            'admin/deaths'                 => $this->make_hook('deaths', AUTH_MDP, 'admin'),
-            'admin/downtime'               => $this->make_hook('downtime', AUTH_MDP, 'admin'),
-            'admin/homonyms'               => $this->make_hook('homonyms', AUTH_MDP, 'admin'),
-            'admin/logger'                 => $this->make_hook('logger', AUTH_MDP, 'admin'),
-            'admin/logger/actions'         => $this->make_hook('logger_actions', AUTH_MDP, 'admin'),
-            'admin/postfix/blacklist'      => $this->make_hook('postfix_blacklist', AUTH_MDP, 'admin'),
-            'admin/postfix/delayed'        => $this->make_hook('postfix_delayed', AUTH_MDP, 'admin'),
+            'phpinfo'                      => $this->make_hook('phpinfo',                AUTH_MDP, 'admin'),
+            'admin'                        => $this->make_hook('default',                AUTH_MDP, 'admin'),
+            'admin/ax-xorg'                => $this->make_hook('ax_xorg',                AUTH_MDP, 'admin'),
+            'admin/dead-but-active'        => $this->make_hook('dead_but_active',        AUTH_MDP, 'admin'),
+            'admin/deaths'                 => $this->make_hook('deaths',                 AUTH_MDP, 'admin'),
+            'admin/downtime'               => $this->make_hook('downtime',               AUTH_MDP, 'admin'),
+            'admin/homonyms'               => $this->make_hook('homonyms',               AUTH_MDP, 'admin'),
+            'admin/logger'                 => $this->make_hook('logger',                 AUTH_MDP, 'admin'),
+            'admin/logger/actions'         => $this->make_hook('logger_actions',         AUTH_MDP, 'admin'),
+            'admin/postfix/blacklist'      => $this->make_hook('postfix_blacklist',      AUTH_MDP, 'admin'),
+            'admin/postfix/delayed'        => $this->make_hook('postfix_delayed',        AUTH_MDP, 'admin'),
             'admin/postfix/regexp_bounces' => $this->make_hook('postfix_regexpsbounces', AUTH_MDP, 'admin'),
-            'admin/postfix/whitelist'      => $this->make_hook('postfix_whitelist', AUTH_MDP, 'admin'),
-            'admin/mx/broken'              => $this->make_hook('mx_broken', AUTH_MDP, 'admin'),
-            'admin/skins'                  => $this->make_hook('skins', AUTH_MDP, 'admin'),
-            'admin/synchro_ax'             => $this->make_hook('synchro_ax', AUTH_MDP, 'admin'),
-            'admin/user'                   => $this->make_hook('user', AUTH_MDP, 'admin'),
-            'admin/promo'                  => $this->make_hook('promo', AUTH_MDP, 'admin'),
-            'admin/validate'               => $this->make_hook('validate', AUTH_MDP, 'admin'),
-            'admin/validate/answers'       => $this->make_hook('validate_answers', AUTH_MDP, 'admin'),
-            'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
-            'admin/ipwatch'                => $this->make_hook('ipwatch', AUTH_MDP, 'admin'),
-            'admin/icons'                  => $this->make_hook('icons', AUTH_MDP, 'admin'),
-            'admin/accounts'               => $this->make_hook('accounts', AUTH_MDP, 'admin'),
-            'admin/jobs'                   => $this->make_hook('jobs', AUTH_MDP, 'admin'),
+            'admin/postfix/whitelist'      => $this->make_hook('postfix_whitelist',      AUTH_MDP, 'admin'),
+            'admin/mx/broken'              => $this->make_hook('mx_broken',              AUTH_MDP, 'admin'),
+            'admin/skins'                  => $this->make_hook('skins',                  AUTH_MDP, 'admin'),
+            'admin/synchro_ax'             => $this->make_hook('synchro_ax',             AUTH_MDP, 'admin'),
+            'admin/user'                   => $this->make_hook('user',                   AUTH_MDP, 'admin'),
+            'admin/promo'                  => $this->make_hook('promo',                  AUTH_MDP, 'admin'),
+            'admin/validate'               => $this->make_hook('validate',               AUTH_MDP, 'admin'),
+            'admin/validate/answers'       => $this->make_hook('validate_answers',       AUTH_MDP, 'admin'),
+            'admin/wiki'                   => $this->make_hook('wiki',                   AUTH_MDP, 'admin'),
+            'admin/ipwatch'                => $this->make_hook('ipwatch',                AUTH_MDP, 'admin'),
+            'admin/icons'                  => $this->make_hook('icons',                  AUTH_MDP, 'admin'),
+            'admin/accounts'               => $this->make_hook('accounts',               AUTH_MDP, 'admin'),
+            'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin'),
         );
     }
 
@@ -81,11 +81,11 @@ class AdminModule extends PLModule
 
         $sql = XDB::iterator(
                 "SELECT  crc, nb, update_time, create_time,
-                         FIND_IN_SET('del', release) AS del,
-                         FIND_IN_SET('ok', release) AS ok
-                   FROM  postfix_mailseen
+                         FIND_IN_SET('del', p.release) AS del,
+                         FIND_IN_SET('ok', p.release) AS ok
+                   FROM  postfix_mailseen AS p
                   WHERE  nb >= 30
-               ORDER BY  release != ''");
+               ORDER BY  p.release != ''");
 
         $page->assign_by_ref('mails', $sql);
     }
@@ -364,6 +364,7 @@ class AdminModule extends PLModule
         }
 
         // Loads the user identity using the environment.
+        $user = null;
         if ($login) {
             $user = User::get($login);
         } else if (Env::has('user_id')) {
@@ -587,9 +588,9 @@ class AdminModule extends PLModule
                         $mailer->send();
 
                         $globals->updateNbIns();
-                        $page->trigSuccess("Update was successful.");
+                        $page->trigSuccess("La mise à jour a été faite avec succès.");
                     } else {
-                        $page->trigError("Update failed, please double check your values.");
+                        $page->trigError("La mise à jour a échoué. S'il te plaît, vérifie les valeurs.");
                     }
 
                     // Checks for changes, and updates other tables of plat/al.
@@ -628,7 +629,7 @@ class AdminModule extends PLModule
                     require_once('user.func.inc.php');
                     user_clear_all_subs($user->id());
                     $globals->updateNbIns();
-                    $page->trigSuccess("'" . $user->id() . "' a été désinscrit !");
+                    $page->trigSuccess($user->login() . ' a été désinscrit !');
 
                     $mailer = new PlMailer("admin/useredit.mail.tpl");
                     $mailer->assign("admin", S::user()->login());
@@ -694,17 +695,19 @@ class AdminModule extends PLModule
         $page->assign('bans', $bans);
     }
 
-    function getHruid($line, $partial_result, $key)
+    function getHruid($line, $key, $relation)
     {
-        if (!isset($partial_result['nom']) ||
-            !isset($partial_result['prenom']) ||
-            !isset($partial_result['promo'])) {
-            return null;
+        $prenom = CSVImporter::getValue($line, 'prenom', $relation['prenom']);
+        $nom = CSVImporter::getValue($line, 'nom', $relation['nom']);
+        $promo = CSVImporter::getValue($line, 'promo', $relation['promo']);
+
+        if ($prenom != 'NULL' && $nom != 'NULL' && $promo != 'NULL') {
+            return make_forlife($prenom, $nom, $promo);
         }
-        return make_forlife($partial_result['prenom'], $partial_result['nom'], $partial_result['promo']);
+        return null;
     }
 
-    function getMatricule($line, $key)
+    function getMatricule($line, $key, $relation)
     {
         $mat = $line['matricule'];
         $year = intval(substr($mat, 0, 3));
@@ -742,11 +745,9 @@ class AdminModule extends PLModule
             $fields = array('hruid', 'nom', 'nom_ini', 'prenom', 'naissance_ini',
                             'prenom_ini', 'promo', 'promo_sortie', 'flags',
                             'matricule', 'matricule_ax', 'perms');
+            $importer->forceValue('hruid', array($this, 'getHruid'));
             $importer->forceValue('promo', $promo);
             $importer->forceValue('promo_sortie', $promo + 3);
-            // The hruid generation callback is set last, so that it is called once 'promo'
-            // has already been computed for that line.
-            $importer->forceValue('hruid', array($this, 'getHruid'));
             break;
           case 'ax':
             $fields = array('matricule', 'matricule_ax');

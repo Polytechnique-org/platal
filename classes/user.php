@@ -21,6 +21,9 @@
 
 class User extends PlUser
 {
+    // Additional fields (non core)
+    protected $promo = null;
+
     // Implementation of the login to uid method.
     protected function getLogin($login)
     {
@@ -217,7 +220,7 @@ class User extends PlUser
     public static function _default_user_callback($login, $results)
     {
         $result_count = count($results);
-        if ($result_count == 0 || !S::has_perms()) {
+        if ($result_count == 0 || !S::admin()) {
             Platal::page()->trigError("Il n'y a pas d'utilisateur avec l'identifiant : $login");
         } else {
             Platal::page()->trigError("Il y a $result_count utilisateurs avec cet identifiant : " . join(', ', $results));

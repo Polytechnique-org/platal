@@ -24,18 +24,15 @@ class AuthModule extends PLModule
     function handlers()
     {
         return array(
-            'groupex/donne-chall.php'
-                                => $this->make_hook('chall',      AUTH_PUBLIC),
-            'groupex/export-econfiance.php'
-                                => $this->make_hook('econf',      AUTH_PUBLIC, 'user', NO_HTTPS),
+            'groupex/donne-chall.php'       => $this->make_hook('chall',              AUTH_PUBLIC),
+            'groupex/export-econfiance.php' => $this->make_hook('econf',              AUTH_PUBLIC, 'user', NO_HTTPS),
 
-            'webservices/manageurs.php'
-                                => $this->make_hook('manageurs',  AUTH_PUBLIC, 'user', NO_HTTPS),
+            'webservices/manageurs.php'     => $this->make_hook('manageurs',          AUTH_PUBLIC, 'user', NO_HTTPS),
 
-            'auth-redirect.php' => $this->make_hook('redirect',   AUTH_COOKIE),
-            'auth-groupex.php'  => $this->make_hook('groupex_old',    AUTH_COOKIE),
-            'auth-groupex'      => $this->make_hook('groupex',    AUTH_COOKIE),
-            'admin/auth-groupes-x'         => $this->make_hook('admin_authgroupesx', AUTH_MDP, 'admin'),
+            'auth-redirect.php'             => $this->make_hook('redirect',           AUTH_COOKIE),
+            'auth-groupex.php'              => $this->make_hook('groupex_old',        AUTH_COOKIE),
+            'auth-groupex'                  => $this->make_hook('groupex',            AUTH_COOKIE),
+            'admin/auth-groupes-x'          => $this->make_hook('admin_authgroupesx', AUTH_MDP,    'admin'),
         );
     }
 
@@ -143,34 +140,39 @@ class AuthModule extends PLModule
             $gpex_url .= "&PHPSESSID=" . $_GET["session"];
         }
 
-        /* a-t-on besoin d'ajouter le http:// ? */
+        // Normalize the return URL.
         if (!preg_match("/^(http|https):\/\/.*/",$gpex_url)) {
             $gpex_url = "http://$gpex_url";
         }
         $gpex_challenge = $_GET["challenge"];
 
-        // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
+        // Update the last login information (unless the user is in SUID).
         $uid = S::i('uid');
         if (!isset($_SESSION['suid'])) {
             global $platal;
-            S::logger(uid)->log('connexion_auth_ext', $platal->path);
+            S::logger($uid)->log('connexion_auth_ext', $platal->path);
         }
 
-        /* on parcourt les entrees de groupes_auth */
+        // Iterate over the auth token to find which one did sign the request.
         $res = XDB::iterRow('SELECT privkey, name, datafields, returnurls FROM groupesx_auth');
-
         while (list($privkey,$name,$datafields,$returnurls) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {
                 $returnurls = trim($returnurls);
+                // We check that the return url matches a per-key regexp to prevent
+                // replay attacks (more exactly to force replay attacks to redirect
+                // the user to the real GroupeX website, which defeats the attack).
                 if (empty($returnurls) || @preg_match($returnurls, $gpex_url)) {
                     $returl = $gpex_url . gpex_make_params($gpex_challenge, $privkey, $datafields, $charset);
                     http_redirect($returl);
+                } else if (S::admin()) {
+                    $page->kill("La requête d'authentification a échouée (url de retour invalide).");
                 }
             }
         }
 
-        /* si on n'a pas trouvé, on renvoit sur x.org */
-        http_redirect('https://www.polytechnique.org/');
+        // Otherwise (if no valid request was found, or if the return URL is not
+        // acceptable), the user is redirected back to our homepage.
+        pl_redirect('/');
     }
 
     function handler_admin_authgroupesx(&$page, $action = 'list', $id = null)

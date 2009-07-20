@@ -162,7 +162,7 @@ function may_update($force = false, $lose = false)
         return false;
     } elseif ($lose) {
         $may_update[$asso_id] = false;
-    } elseif (S::has_perms() || (S::has('suid') && $force)) {
+    } elseif (S::admin() || (S::has('suid') && $force)) {
         $may_update[$asso_id] = true;
     } elseif (!isset($may_update[$asso_id]) || $force) {
         $res = XDB::query("SELECT  perms

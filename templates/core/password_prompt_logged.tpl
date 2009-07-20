@@ -64,8 +64,7 @@
   <div>
     {xsrf_token_field}
     <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
-    <input type="hidden" name="username"  value="{$smarty.cookies.ORGuid}" />
-    <input type="hidden" name="xorpass"  value="" />
+    <input type="hidden" name="username"  value="{$smarty.session.uid}" />
     <input type="hidden" name="remember"  value="" />
     <input type="hidden" name="response"  value="" />
   </div>

@@ -39,4 +39,11 @@ function EnCryptedResponse() {
     document.forms.changepass2.submit();
     return true;
 }
+
+function EncryptedResponseInNestedForm() {
+    $('[name=nouveau]').val($('[name=password]').val());
+    $('[name=nouveau2]').val($('[name=password2]').val());
+    EnCryptedResponse();
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

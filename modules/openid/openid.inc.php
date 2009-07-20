@@ -19,111 +19,232 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once "Auth/OpenID/Discover.php";
+require_once 'Auth/OpenID/Discover.php';
 
-function init_openid_server()
+// An helper class for using plat/al as an OpenId Identity Provider.
+class OpenId
 {
-    // Initialize a filesystem-based store
-    $store_location = dirname(__FILE__) . '/../../spool/openid/store';
-    require_once "Auth/OpenID/FileStore.php";
-    $store = new Auth_OpenID_FileStore($store_location);
+    private $base_url;        // Base url for all OpenId operations.
+    private $spool_store;     // Location of the spool storage for OpenID.
 
-    // Create an OpenId server
-    require_once 'Auth/OpenID/Server.php';
-    return new Auth_OpenID_Server($store, get_openid_url());
-}
+    private $server = null;   // Auth::OpenId::Server object.
+    private $request = null;  // Request extracted by the Server object.
 
-function get_openid_url()
-{
-    global $globals;
-    return $globals->baseurl . '/openid';
-}
+    public function __construct()
+    {
+        global $globals;
 
-function get_user($x) {
-    if (is_null($x)) {
-        return null;
+        $this->base_url = $globals->baseurl . '/openid';
+        $this->spool_store = $globals->spoolroot . '/spool/openid/store';
     }
-    $user = User::getSilent($x);
-    return $user ? $user : null;
 
-}
+    // Initializes an OpenId Server object; it will use a defined spool-based
+    // directory to store OpenID secrets. Returns true on success.
+    public function Initialize()
+    {
+        require_once 'Auth/OpenID/FileStore.php';
+        require_once 'Auth/OpenID/Server.php';
 
-function get_user_by_alias($x) {
-    if (is_null($x)) {
-        return null;
+        $store = new Auth_OpenID_FileStore($this->spool_store);
+        $this->server = new Auth_OpenID_Server($store, $this->base_url);
+        $this->request = $this->server->decodeRequest();
+
+        return !is_a($this->request, 'Auth_OpenID_ServerError');
     }
-    // TODO such a function should probably be provided in the User class
-    // or at least not here
-    $res = XDB::query('SELECT  u.user_id
-                         FROM  auth_user_md5   AS u
-                   INNER JOIN  auth_user_quick AS q USING(user_id)
-                   INNER JOIN  aliases         AS a ON (a.id = u.user_id AND type != \'homonyme\')
-                        WHERE  u.perms IN(\'admin\', \'user\')
-                          AND  q.emails_alias_pub = \'public\'
-                          AND  a.alias = {?}',
-                               $x);
-    if (list($uid) = $res->fetchOneRow()) {
-        $user = User::getSilent($uid);
+
+    // Authorization logic helpers ---------------------------------------------
+
+    // Returns true iff the current request is a valid openid request.
+    public function IsOpenIdRequest()
+    {
+        return Env::has('openid_mode');
     }
-    return $user ? $user : null;
 
-}
-
-function get_user_openid_url($user)
-{
-    if (is_null($user)) {
-        return null;
+    // Returns true iff the request needs to be handled directly by the calling
+    // code (ie. the current user needs to be authorized).
+    public function IsAuthorizationRequest()
+    {
+        return $this->request->mode == 'checkid_immediate' ||
+               $this->request->mode == 'checkid_setup';
     }
-    global $globals;
-    return $globals->baseurl . '/openid/' . $user->hruid;
-}
 
-function get_idp_xrds_url()
-{
-    global $globals;
-    return $globals->baseurl . '/openid/idp_xrds';
-}
-
-function get_user_xrds_url($user)
-{
-    if (is_null($user)) {
-        return null;
+    // Returns true iff the request requires an immediate answer (no user
+    // interaction is allowed).
+    public function IsImmediateRequest()
+    {
+        return $this->request->mode == 'checkid_immediate';
     }
-    global $globals;
-    return $globals->baseurl . '/openid/user_xrds/' . $user->hruid;
-}
 
-function get_sreg_data($user)
-{
-    if (is_null($user)) {
-        return null;
+    // Returns true iff the logged-in user is authorized for the current request.
+    // It checks that the user is logged in, and has the authorization to use
+    // that identity.
+    public function IsUserAuthorized(User $user)
+    {
+        return $user && ($user->login() == $this->request->identity ||
+            $this->request->idSelect());
     }
-    return array('fullname' => $user->fullName(),
-                 'nickname' => $user->displayName(),
-                 'dob' => null,
-                 'email' => $user->bestEmail(),
-                 'gender' => $user->isFemale() ? 'F' : 'M',
-                 'postcode' => null,
-                 'country' => null,
-                 'language' => null,
-                 'timezone' => null);
-}
 
-function is_trusted_site($user, $url)
-{
-    $res = XDB::query('SELECT  COUNT(*)
-                         FROM  openid_trusted
-                        WHERE  (user_id = {?} OR user_id IS NULL)
-                          AND  url = {?}',
-                               $user->id(), $url);
-    return $res->fetchOneCell() > 0;
-}
+    // SimpleRegistration helpers ----------------------------------------------
 
-function add_trusted_site($user, $url)
-{
-    XDB::execute("INSERT IGNORE INTO openid_trusted
-                      SET user_id={?}, url={?}",
-                  $user->id(), $url);
+    // Determines which SREG data are requested by the endpoint, and returns them.
+    public function GetSRegDataForRequest(User &$user)
+    {
+        require_once 'Auth/OpenID/SReg.php';
+
+        // Other common SReg fields we could fill are:
+        //   dob, country, language, timezone.
+        $sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest($this->request);
+        return Auth_OpenID_SRegResponse::extractResponse($sreg_request, array(
+            'fullname' => $user->fullName(),
+            'nickname' => $user->displayName(),
+            'email'    => $user->bestEmail(),
+            'gender'   => $user->isFemale() ? 'F' : 'M',
+        ));
+    }
+
+    // Handling and answering helpers ------------------------------------------
+
+    // Answers the current request, and renders the response. Appends the |sreg|
+    // data when not null.
+    public function AnswerRequest($is_authorized, $user = null, $sreg_data = null)
+    {
+        // Creates the response.
+        if ($is_authorized && $this->request->idSelect() && $user) {
+            $response = $this->request->answer(
+                $is_authorized, null, $user->login(), $this->GetUserUrl($user));
+        } else {
+            $response = $this->request->answer($is_authorized);
+        }
+
+        // Clobbers response, and get it back to the Relaying Party.
+        if ($sreg_data) {
+            $sreg_data->toMessage($response->fields);
+        }
+        $this->RenderResponse($response);
+    }
+
+    // Automatically handles the request without any user interaction.
+    public function HandleRequest()
+    {
+        $response = $this->server->handleRequest($this->request);
+        $this->RenderResponse($response);
+    }
+
+    // Trust management helpers ------------------------------------------------
+
+    // Returns true iff the current endpoint is currently trusted by |user|.
+    public function IsEndpointTrusted(User $user)
+    {
+        $res = XDB::query(
+            "SELECT  COUNT(*)
+               FROM  openid_trusted
+              WHERE  (user_id = {?} OR user_id IS NULL) AND url = {?}",
+            $user->id(), $this->request->trust_root);
+        return ($res->fetchOneCell() > 0);
+    }
+
+    // Updates the trust level for the given endpoint, based on the value pf
+    // |trusted| and |permanent_trust| (the latter is ignored when the former
+    // value is false). Returns true iff the current endpoint is trusted.
+    public function UpdateEndpointTrust(User &$user, $trusted, $permanent_trust) {
+        $initial_trust = $this->IsEndpointTrusted($user);
+        if (!$initial_trust && $trusted && $permanent_trust) {
+            XDB::execute(
+                "INSERT IGNORE INTO  openid_trusted
+                                SET  user_id = {?}, url = {?}",
+                $user->id(), $this->request->trust_root);
+        }
+
+        return ($initial_trust || $trusted);
+    }
+
+    // Page renderers ----------------------------------------------------------
+
+    // Renders the OpenId discovery page for |user|.
+    public function RenderDiscoveryPage(&$page, User &$user)
+    {
+        $page->changeTpl('openid/openid.tpl');
+        $page->setTitle($user->fullName());
+        $page->addLink('openid.server openid2.provider', $this->base_url);
+        $page->addLink('openid.delegate openid2.local_id', $user->login());
+        $page->assign_by_ref('user', $user);
+
+        // Include the X-XRDS-Location header for Yadis discovery.
+        header('X-XRDS-Location: ' . $this->GetUserXrdsUrl($user));
+    }
+
+    // Renders the main XRDS page.
+    public function RenderMainXrdsPage(&$page)
+    {
+        header('Content-type: application/xrds+xml');
+        $page->changeTpl('openid/idp_xrds.tpl', NO_SKIN);
+        $page->assign('type2', Auth_OpenID_TYPE_2_0_IDP);
+        $page->assign('sreg', Auth_OpenID_SREG_URI);
+        $page->assign('provider', $this->base_url);
+    }
+
+    // Renders the XRDS page of |user|.
+    public function RenderUserXrdsPage(&$page, User &$user)
+    {
+        header('Content-type: application/xrds+xml');
+        $page->changeTpl('openid/user_xrds.tpl', NO_SKIN);
+        $page->assign('type2', Auth_OpenID_TYPE_2_0);
+        $page->assign('type1', Auth_OpenID_TYPE_1_1);
+        $page->assign('sreg', Auth_OpenID_SREG_URI);
+        $page->assign('provider', $this->base_url);
+        $page->assign('local_id', $user->login());
+    }
+
+    // Renders the OpenId response for the HTTP client.
+    public function RenderResponse($response)
+    {
+        if ($response) {
+            $web_response = $this->server->encodeResponse($response);
+            header(sprintf('%s %d', $_SERVER['SERVER_PROTOCOL'], $web_response->code),
+                   true, $web_response->code);
+
+            foreach ($web_response->headers as $key => $value) {
+                header(sprintf('%s: %s', $key, $value));
+            }
+
+            header('Connection: close');
+            print $web_response->body;
+        }
+        exit;
+    }
+
+    // URL providers -----------------------------------------------------------
+
+    // Returns the OpenId identity URL of the requested user.
+    private function GetUserUrl(User &$user)
+    {
+        return $this->base_url . '/' . $user->login();
+    }
+
+    // Returns the private XRDS page of a user.
+    private function GetUserXrdsUrl(User &$user)
+    {
+        return $this->base_url . '/xrds/' . $user->login();
+    }
+
+    // Returns the endpoint in the current request.
+    public function GetEndpoint()
+    {
+        return $this->request->trust_root;
+    }
+
+    // Extracts the OpenId arguments available in the current request, and
+    // builds a query string with them.
+    public function GetQueryStringForRequest()
+    {
+        foreach (Auth_OpenID::getQuery() as $key => $value) {
+            if (strpos($key, 'openid.') === 0) {
+                $args[$key] = $value;
+            }
+        }
+
+        return http_build_query($args);
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

@@ -27,7 +27,7 @@
     <td>
     <table class="bicol">
       <tr class="pair">
-        <td colspan="2">{$survey.description}</td>
+        <td colspan="2">{$survey.description|miniwiki|smarty:nodefaults}</td>
       </tr>
       <tr>
         <td class="titre">Fin du sondage&nbsp;:</td>

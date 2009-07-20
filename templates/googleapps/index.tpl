@@ -161,11 +161,11 @@
     </tr>
 
     <tr class="impair">
-      <td colspan="2"><b>Création du compte :</b></td>
+      <td colspan="2"><b>Création du compte&nbsp;:</b></td>
     </tr>
     <tr class="impair">
       <td></td>
-      <td>La mise en place du compte Google Apps prends quelques minutes. Tu recevras un email explicatif dès l'opération terminée.</td>
+      <td>La mise en place du compte Google Apps prend quelques minutes. Tu recevras un email explicatif dès l'opération terminée.</td>
     </tr>
     <tr class="impair">
       <td colspan="2" style="text-align:center">

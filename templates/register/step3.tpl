@@ -26,14 +26,14 @@
 
 <h1>Formulaire de pré-inscription</h1>
 
-<form action="register" method="post">
+<form action="register" method="post" id="changepass2">
   {if $smarty.session.sub_state.mailorg2}
   <p>
   Tu n'as pour le moment aucun homonyme dans notre base de données. Nous allons
   donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong>,
   en plus de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@{#globals.mail.domain#}</strong>.
   Note que tu pourrais perdre l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong> 
-  si un homonyme s'inscrivait &mdash; cela reste assez rare.
+  si un homonyme s'inscrivait, même si cela reste assez rare.
   </p>
   {else}
   <p>
@@ -53,6 +53,12 @@
   t'envoyer tes informations de connexion.
   </p>
 
+  <p>Nous te demandons également un <strong>mot de passe</strong>, qui te permettra de te reconnecter au site ultérieurement.
+  Pour une sécurité optimale, ton mot de passe ne circulera jamais en clair, et sera stocké sous une forme chiffrée
+  irréversiblement sur nos serveurs.
+  </p>
+
+
   <table class="bicol">
     <tr>
       <th colspan="2">
@@ -68,7 +74,7 @@
         <input type="text" size="35" maxlength="50" name="email" value="{$smarty.post.email}" />
       </td>
     </tr>
-    <tr>
+    <tr class="pair">
       <td class="titre">
         Date de naissance<br />
         <span class="smaller">jour/mois/année</span>
@@ -78,14 +84,31 @@
         (demandée si tu perds ton mot de passe)
       </td>
     </tr>
+    <tr class="impair">
+      <td class="titre">
+        Mot de passe<br />
+        <span class="smaller">au moins 6 caractères</span>
+      </td>
+      <td>
+        <input type="hidden" name="response2" />
+        <input type="password" size="10" maxlength="256" name="password" /><br/>
+        <input type="password" size="10" maxlength="256" name="password2" /> (retape ton mot de passe)<br />
+        {checkpasswd prompt="password" text="Terminer la pré-inscription"}
+      </td>
+    </tr>
     <tr>
       <td colspan="2" class="center">
-        <input type="submit" value="Terminer la pré-inscription" />
+        <input type="submit" name="submitn" value="Continuer" onclick="EncryptedResponseInNestedForm(); return false;" />
       </td>
     </tr>
   </table>
 </form>
-
+<form action="register" id="changepass">
+  <div>
+    <input type="hidden" name="nouveau" />
+    <input type="hidden" name="nouveau2" />
+  </div>
+</form>
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

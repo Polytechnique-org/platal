@@ -24,18 +24,19 @@ function smarty_function_display_phones($param, &$smarty)
     $txthtml = "";
     if (count($param['tels'])) {
         foreach ($param['tels'] as $tel) {
+            $tel_type = ($param['dcd'] ? 'Dernier ' : '');
             switch ($tel['tel_type']) {
-            case 'fixed':
-                $tel_type = 'Tél';
+              case 'fixed':
+                $tel_type .= 'Tél';
                 break;
-            case 'fax':
-                $tel_type = 'Fax';
+              case 'fax':
+                $tel_type .= 'Fax';
                 break;
-            case 'mobile':
-                $tel_type = 'Mob';
+              case 'mobile':
+                $tel_type .= 'Mob';
                 break;
-            default:
-                $tel_type = $tel['tel_type'];
+              default:
+                $tel_type .= $tel['tel_type'];
             }
             $txthtml .= "<div>\n<em>" . $tel_type . "&nbsp;: </em>\n<strong>" . $tel['tel'] . "</strong>\n";
             $comment = "";

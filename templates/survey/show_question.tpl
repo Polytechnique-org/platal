@@ -22,7 +22,7 @@
 
   <h2>{$squestion.question}</h2>
 {if $squestion.comment != ''}
-  {$squestion.comment}<br/>
+  {$squestion.comment|miniwiki|smarty:nodefaults}<br/>
 {/if}
 {assign var='squestion_type' value=$squestion.type}
 {include file="survey/show_$squestion_type.tpl"}

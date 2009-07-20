@@ -60,9 +60,43 @@ Soit un pourcentage d'inscrites de&nbsp;: {$stats.inse_rate} % <br />
 
 <p>
 Nombre d'<a href="marketing/this_week">inscrits ces 7 derniers jours</a>&nbsp;: {$nbInsSem}<br />
-Nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non terminée)&nbsp;: {$nbInsEnCours} <br />
-Nombre d'envois marketing effectués n'ayant pas abouti&nbsp;: {$nbInsMarket}<br />
-Nombre d'envois marketing ayant abouti cette semaine&nbsp;: {$nbInsMarkOK}
+Nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non terminée)&nbsp;: {$nbInsEnCours}
 </p>
+
+<table class="bicol">
+  <tr>
+    <th colspan="4">Marketings</th>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td class="titre">Abouti</td>
+    <td class="titre">Non abouti</td>
+    <td class="titre">Total</td>
+  </tr>
+  <tr>
+    <td>Personnel</td>
+    <td>{$nbInsMarketOkPerso}</td>
+    <td>{$nbInsMarketNoPerso}</td>
+    <td>{$nbInsMarketOkPerso+$nbInsMarketNoPerso}</td>
+  </tr>
+  <tr>
+    <td>Par Polytechnique.org</td>
+    <td>{$nbInsMarketOkXorg}</td>
+    <td>{$nbInsMarketNoXorg}</td>
+    <td>{$nbInsMarketOkXorg+$nbInsMarketNoXorg}</td>
+  </tr>
+  <tr>
+    <td>Cette semaine</td>
+    <td>{$nbInsMarketOkWeek}</td>
+    <td>{$nbInsMarketNoWeek}</td>
+    <td>{$nbInsMarketOkWeek+$nbInsMarketNoWeek}</td>
+  </tr>
+  <tr>
+    <td class="titre">Total</td>
+    <td>{$nbInsMarketOkPerso+$nbInsMarketOkXorg}</td>
+    <td>{$nbInsMarketNoPerso+$nbInsMarketNoXorg}</td>
+    <td>{$nbInsMarketOkPerso+$nbInsMarketOkXorg+$nbInsMarketNoPerso+$nbInsMarketNoXorg}</td>
+  </tr>
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

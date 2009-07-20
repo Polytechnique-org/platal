@@ -43,7 +43,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom} :
     Tu es inscrit à cet événements.
       {if $ev.topay > $ev.paid}
       <a href="{$platal->ns}payment/{$p.id}?montant={math equation="a-b" a=$ev.topay b=$ev.paid}">
-        Tu dois encore payer {math equation="a-b" a=$ev.topay b=$ev.paid}&euro;
+        Tu dois encore payer {math equation="a-b" a=$ev.topay b=$ev.paid}&euro;.
       </a>
       {elseif $ev.topay eq $ev.paid}
       Tu as déjà réglé l'intégralité de ton inscription ({$ev.topay}&euro;).
