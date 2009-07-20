@@ -51,8 +51,8 @@ class ReminderProfileUpdate extends Reminder
 
         $res = XDB::query('SELECT  date < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_profile_old,
                                    date AS profile_date, LENGTH(p.attach) > 0 AS has_photo
-                             FROM  auth_user_md5 AS u
-                        LEFT JOIN  photo         AS p ON (u.user_id = p.uid)
+                             FROM  auth_user_md5     AS u
+                        LEFT JOIN  photo             AS p ON (u.user_id = p.uid)
                             WHERE  user_id = {?}',
                           $this->user->id());
         list($is_profile_old, $profile_date, $has_photo) = $res->fetchOneRow();
@@ -61,9 +61,11 @@ class ReminderProfileUpdate extends Reminder
         $page->assign('profile_last_update', $profile_date);
         $page->assign('photo_incitation', !$has_photo);
 
-        require_once 'geoloc.inc.php';
-        $res = localize_addresses($this->user->id());
-        $page->assign('geocoding_incitation', count($res));
+        $res = XDB::query('SELECT  COUNT(*)
+                             FROM  profile_addresses
+                            WHERE  pid = {?} AND accuracy = 0'
+                          $this->user->id());
+        $page->assign('geocoding_incitation', $res->fetchOneCell());
     }
 
     public function template()
@@ -88,10 +90,13 @@ class ReminderProfileUpdate extends Reminder
                             WHERE  user_id = {?}',
                           $user->id());
         list($is_profile_old, $has_photo) = $res->fetchOneRow();
-        require_once 'geoloc.inc.php';
-        $res = localize_addresses($user->id());
 
-        return (count($res) || !$has_photo || $is_profile_old);
+        $res = XDB::query('SELECT  COUNT(*)
+                             FROM  profile_addresses
+                            WHERE  pid = {?} AND accuracy = 0'
+                          $this->user->id());
+
+        return ($res->fetchOneCell() || !$has_photo || $is_profile_old);
     }
 }
 
