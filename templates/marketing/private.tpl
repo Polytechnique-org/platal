@@ -39,13 +39,13 @@ Cet utilisateur a une inscription en cours depuis le {$pending|date_format}.
 </p>
 <p>
 {if $relance eq '0000-00-00'}
-il n'a jamais été relancé.
+Il n'a jamais été relancé.
 {else}
-sa dernière relance date du {$relance|date_format}
+Sa dernière relance date du {$relance|date_format}.
 {/if}
 </p>
 
-<p>[<a href='{$path}/insrel?token={xsrf_token}'>le relancer</a>]</p>
+<p>[<a href='{$path}/insrel?token={xsrf_token}'>Le relancer</a>]</p>
 
 {/if}
 

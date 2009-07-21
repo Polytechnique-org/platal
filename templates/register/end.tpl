@@ -22,14 +22,44 @@
 
 {include file="register/breadcrumb.tpl"}
 
-<h1>:'(</h1>
+<h1>Confirmation de ton inscription</h1>
 
-<p class="erreur">
-Une erreur est survenue lors de ton inscription...
-</p>
-<p>
-Contacte nous au plus vite, en nous indiquant ce nombre&nbsp;: {$uid} à l'adresse 
-<a href="mailto:support@{#globals.mail.domain#}">support@{#globals.mail.domain#}</a>
-</p>
+<p>Merci {$prenom} d'avoir choisi de t'inscrire. Pour finaliser ton inscription,
+il te suffit de taper ton mot de passe ci-dessous. Tu pourras ensuite librement
+accéder au site, et à notre annuaire en ligne !</p>
+
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
+  <table class="bicol">
+    <tr>
+      <td class="titre">Nom d'utilisateur&nbsp;:</td>
+      <td>{$forlife}</td>
+    </tr>
+    <tr>
+      <td class="titre">Mot de passe&nbsp;:</td>
+      <td><input type="password" name="password" size="10" maxlength="256" /></td>
+    </tr>
+    <tr>
+      <td {popup caption='Connexion permanente' width='300' text='Décoche cette case pour que le site oublie ce navigateur.<br />
+        Il est conseillé de décocher la case si cette machine n\'est pas <b>strictement</b> personnelle'} colspan="2">
+        <label><input type="checkbox" name="remember" checked="checked" />
+          Garder l'accès aux services après déconnexion.
+        </label>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><input  type="submit" name="submitbtn" value="Envoyer" /></td>
+    </tr>
+  </table>
+</form>
+
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
+  <div>
+    <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
+    <input type="hidden" name="username" value="{$forlife}" />
+    <input type="hidden" name="remember" value="" />
+    <input type="hidden" name="response" value="" />
+  </div>
+</form>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

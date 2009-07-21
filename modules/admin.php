@@ -24,33 +24,33 @@ class AdminModule extends PLModule
     function handlers()
     {
         return array(
-            'phpinfo'                      => $this->make_hook('phpinfo', AUTH_MDP, 'admin'),
-            'get_rights'                   => $this->make_hook('get_rights', AUTH_MDP, 'admin'),
-            'admin'                        => $this->make_hook('default', AUTH_MDP, 'admin'),
-            'admin/ax-xorg'                => $this->make_hook('ax_xorg', AUTH_MDP, 'admin'),
-            'admin/dead-but-active'        => $this->make_hook('dead_but_active', AUTH_MDP, 'admin'),
-            'admin/deaths'                 => $this->make_hook('deaths', AUTH_MDP, 'admin'),
-            'admin/downtime'               => $this->make_hook('downtime', AUTH_MDP, 'admin'),
-            'admin/homonyms'               => $this->make_hook('homonyms', AUTH_MDP, 'admin'),
-            'admin/logger'                 => $this->make_hook('logger', AUTH_MDP, 'admin'),
-            'admin/logger/actions'         => $this->make_hook('logger_actions', AUTH_MDP, 'admin'),
-            'admin/postfix/blacklist'      => $this->make_hook('postfix_blacklist', AUTH_MDP, 'admin'),
-            'admin/postfix/delayed'        => $this->make_hook('postfix_delayed', AUTH_MDP, 'admin'),
+            'phpinfo'                      => $this->make_hook('phpinfo',                AUTH_MDP, 'admin'),
+            'get_rights'                   => $this->make_hook('get_rights',             AUTH_MDP, 'admin'),
+            'admin'                        => $this->make_hook('default',                AUTH_MDP, 'admin'),
+            'admin/ax-xorg'                => $this->make_hook('ax_xorg',                AUTH_MDP, 'admin'),
+            'admin/dead-but-active'        => $this->make_hook('dead_but_active',        AUTH_MDP, 'admin'),
+            'admin/deaths'                 => $this->make_hook('deaths',                 AUTH_MDP, 'admin'),
+            'admin/downtime'               => $this->make_hook('downtime',               AUTH_MDP, 'admin'),
+            'admin/homonyms'               => $this->make_hook('homonyms',               AUTH_MDP, 'admin'),
+            'admin/logger'                 => $this->make_hook('logger',                 AUTH_MDP, 'admin'),
+            'admin/logger/actions'         => $this->make_hook('logger_actions',         AUTH_MDP, 'admin'),
+            'admin/postfix/blacklist'      => $this->make_hook('postfix_blacklist',      AUTH_MDP, 'admin'),
+            'admin/postfix/delayed'        => $this->make_hook('postfix_delayed',        AUTH_MDP, 'admin'),
             'admin/postfix/regexp_bounces' => $this->make_hook('postfix_regexpsbounces', AUTH_MDP, 'admin'),
-            'admin/postfix/whitelist'      => $this->make_hook('postfix_whitelist', AUTH_MDP, 'admin'),
-            'admin/mx/broken'              => $this->make_hook('mx_broken', AUTH_MDP, 'admin'),
-            'admin/skins'                  => $this->make_hook('skins', AUTH_MDP, 'admin'),
-            'admin/synchro_ax'             => $this->make_hook('synchro_ax', AUTH_MDP, 'admin'),
-            'admin/user'                   => $this->make_hook('user', AUTH_MDP, 'admin'),
-            'admin/promo'                  => $this->make_hook('promo', AUTH_MDP, 'admin'),
-            'admin/validate'               => $this->make_hook('validate', AUTH_MDP, 'admin'),
-            'admin/validate/answers'       => $this->make_hook('validate_answers', AUTH_MDP, 'admin'),
-            'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
-            'admin/ipwatch'                => $this->make_hook('ipwatch', AUTH_MDP, 'admin'),
-            'admin/icons'                  => $this->make_hook('icons', AUTH_MDP, 'admin'),
-            'admin/accounts'               => $this->make_hook('accounts', AUTH_MDP, 'admin'),
-            'admin/account/types'          => $this->make_hook('account_types', AUTH_MDP, 'admin'),
-            'admin/jobs'                   => $this->make_hook('jobs', AUTH_MDP, 'admin'),
+            'admin/postfix/whitelist'      => $this->make_hook('postfix_whitelist',      AUTH_MDP, 'admin'),
+            'admin/mx/broken'              => $this->make_hook('mx_broken',              AUTH_MDP, 'admin'),
+            'admin/skins'                  => $this->make_hook('skins',                  AUTH_MDP, 'admin'),
+            'admin/synchro_ax'             => $this->make_hook('synchro_ax',             AUTH_MDP, 'admin'),
+            'admin/user'                   => $this->make_hook('user',                   AUTH_MDP, 'admin'),
+            'admin/promo'                  => $this->make_hook('promo',                  AUTH_MDP, 'admin'),
+            'admin/validate'               => $this->make_hook('validate',               AUTH_MDP, 'admin'),
+            'admin/validate/answers'       => $this->make_hook('validate_answers',       AUTH_MDP, 'admin'),
+            'admin/wiki'                   => $this->make_hook('wiki',                   AUTH_MDP, 'admin'),
+            'admin/ipwatch'                => $this->make_hook('ipwatch',                AUTH_MDP, 'admin'),
+            'admin/icons'                  => $this->make_hook('icons',                  AUTH_MDP, 'admin'),
+            'admin/accounts'               => $this->make_hook('accounts',               AUTH_MDP, 'admin'),
+            'admin/account/types'          => $this->make_hook('account_types',          AUTH_MDP, 'admin'),
+            'admin/jobs'                   => $this->make_hook('jobs',                   AUTH_MDP, 'admin'),
         );
     }
 
@@ -94,11 +94,11 @@ class AdminModule extends PLModule
 
         $sql = XDB::iterator(
                 "SELECT  crc, nb, update_time, create_time,
-                         FIND_IN_SET('del', release) AS del,
-                         FIND_IN_SET('ok', release) AS ok
-                   FROM  postfix_mailseen
+                         FIND_IN_SET('del', p.release) AS del,
+                         FIND_IN_SET('ok', p.release) AS ok
+                   FROM  postfix_mailseen AS p
                   WHERE  nb >= 30
-               ORDER BY  release != ''");
+               ORDER BY  p.release != ''");
 
         $page->assign_by_ref('mails', $sql);
     }
@@ -636,17 +636,19 @@ class AdminModule extends PLModule
         $page->assign('bans', $bans);
     }
 
-    function getHruid($line, $partial_result, $key)
+    function getHruid($line, $key, $relation)
     {
-        if (!isset($partial_result['nom']) ||
-            !isset($partial_result['prenom']) ||
-            !isset($partial_result['promo'])) {
-            return null;
+        $prenom = CSVImporter::getValue($line, 'prenom', $relation['prenom']);
+        $nom = CSVImporter::getValue($line, 'nom', $relation['nom']);
+        $promo = CSVImporter::getValue($line, 'promo', $relation['promo']);
+
+        if ($prenom != 'NULL' && $nom != 'NULL' && $promo != 'NULL') {
+            return make_forlife($prenom, $nom, $promo);
         }
-        return make_forlife($partial_result['prenom'], $partial_result['nom'], $partial_result['promo']);
+        return null;
     }
 
-    function getMatricule($line, $key)
+    function getMatricule($line, $key, $relation)
     {
         $mat = $line['matricule'];
         $year = intval(substr($mat, 0, 3));
@@ -684,11 +686,9 @@ class AdminModule extends PLModule
             $fields = array('hruid', 'nom', 'nom_ini', 'prenom', 'naissance_ini',
                             'prenom_ini', 'promo', 'promo_sortie', 'flags',
                             'matricule', 'matricule_ax', 'perms');
+            $importer->forceValue('hruid', array($this, 'getHruid'));
             $importer->forceValue('promo', $promo);
             $importer->forceValue('promo_sortie', $promo + 3);
-            // The hruid generation callback is set last, so that it is called once 'promo'
-            // has already been computed for that line.
-            $importer->forceValue('hruid', array($this, 'getHruid'));
             break;
           case 'ax':
             $fields = array('matricule', 'matricule_ax');
@@ -1199,20 +1199,41 @@ class AdminModule extends PLModule
         }
 
         if (Env::has('edit')) {
+            // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
+
             S::assert_xsrf_token();
             $selectedJob = Env::has('selectedJob');
+
+            XDB::execute("DELETE FROM  profile_phones
+                                WHERE  uid = {?} AND link_type = 'hq'",
+                         $id);
+            XDB::execute("DELETE FROM  profile_addresses
+                                WHERE  jobid = {?} AND type = 'hq'",
+                         $id);
+            XDB::execute('DELETE FROM  profile_job_enum
+                                WHERE  id = {?}',
+                         $id);
 
             if (Env::has('change')) {
                 XDB::execute('UPDATE  profile_job
                                  SET  jobid = {?}
                                WHERE  jobid = {?}',
                              Env::i('newJobId'), $id);
-                XDB::execute('DELETE FROM  profile_job_enum
-                                    WHERE  id = {?}',
-                             $id);
 
                 $page->trigSuccess("L'entreprise a bien été remplacée.");
             } else {
+                require_once 'profil.func.inc.php';
+                require_once 'geocoding.inc.php';
+
+                $display_tel = format_display_number(Env::v('tel'), $error_tel);
+                $display_fax = format_display_number(Env::v('fax'), $error_fax);
+                $gmapsGeocoder = new GMapsGeocoder();
+                $address = array('text' => Env::t('address'));
+                $address = $gmapsGeocoder->getGeocodedAddress($address);
+                Geocoder::getAreaId($address, 'administrativeArea');
+                Geocoder::getAreaId($address, 'subAdministrativeArea');
+                Geocoder::getAreaId($address, 'locality');
+
                 XDB::execute('UPDATE  profile_job_enum
                                  SET  name = {?}, acronym = {?}, url = {?}, email = {?},
                                       NAF_code = {?}, AX_code = {?}, holdingid = {?}
@@ -1220,16 +1241,41 @@ class AdminModule extends PLModule
                              Env::t('name'), Env::t('acronym'), Env::t('url'), Env::t('email'),
                              Env::t('NAF_code'), Env::i('AX_code'), Env::i('holdingId'), $id);
 
+                XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
+                                           search_tel, display_tel, pub)
+                                   VALUES  ({?}, 'hq', 0, 0, 'fixed', {?}, {?}, 'public'),
+                                           ({?}, 'hq', 0, 1, 'fax', {?}, {?}, 'public')",
+                             $id, format_phone_number(Env::v('tel')), $display_tel,
+                             $id, format_phone_number(Env::v('fax')), $display_fax);
+
+                XDB::execute("INSERT INTO  profile_addresses (jobid, type, id, accuracy,
+                                                              text, postalText, postalCode, localityId,
+                                                              subAdministrativeAreaId, administrativeAreaId,
+                                                              countryId, latitude, longitude, updateTime,
+                                                              north, south, east, west)
+                                   VALUES  ({?}, 'hq', 0, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
+                                            {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?})",
+                             $id, $address['accuracy'], $address['text'], $address['postalText'],
+                             $address['postalCode'], $address['localityId'],
+                             $address['subAdministrativeAreaId'], $address['administrativeAreaId'],
+                             $address['countryId'], $address['latitude'], $address['longitude'],
+                             $address['updateTime'], $address['north'], $address['south'],
+                             $address['east'], $address['west']);
+
                 $page->trigSuccess("L'entreprise a bien été mise à jour.");
             }
         }
 
         if (!Env::has('change') && $id != -1) {
-            $res = XDB::query('SELECT  e.id, e.name, e.acronym, e.url, e.email, e.NAF_code, e.AX_code,
-                                       h.id AS holdingId, h.name AS holdingName, h.acronym AS holdingAcronym
-                                 FROM  profile_job_enum AS e
-                            LEFT JOIN  profile_job_enum AS h ON (e.holdingid = h.id)
-                                WHERE  e.id = {?}',
+            $res = XDB::query("SELECT  e.id, e.name, e.acronym, e.url, e.email, e.NAF_code, e.AX_code,
+                                       h.id AS holdingId, h.name AS holdingName, h.acronym AS holdingAcronym,
+                                       t.display_tel AS tel, f.display_tel AS fax, a.text AS address
+                                 FROM  profile_job_enum  AS e
+                            LEFT JOIN  profile_job_enum  AS h ON (e.holdingid = h.id)
+                            LEFT JOIN  profile_phones    AS t ON (t.uid = e.id AND link_type = 'hq' AND tel_id = 0)
+                            LEFT JOIN  profile_phones    AS f ON (f.uid = e.id AND link_type = 'hq' AND tel_id = 1)
+                            LEFT JOIN  profile_addresses AS a ON (a.jobid = e.id AND a.type = 'hq')
+                                WHERE  e.id = {?}",
                               $id);
 
             if ($res->numRows() == 0) {

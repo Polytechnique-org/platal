@@ -35,7 +35,7 @@ En effet, il faut nous donner l'adresse qui se cache derrière l'adresse polytec
 correspondant si tu veux que nous puissions te répondre.
 </p>
 {elseif $x && $x.nb_mails}
-<h2>Patte Cassée</h2>
+<h2>Patte cassée</h2>
   <p>
     Ton correspondant a à l'heure actuelle <span class="erreur">{$x.nb_mails} adresse(s) email(s) de redirection active(s)
     en dehors de celle que tu nous as communiquée</span>. Cela ne veut pas forcément dire qu'il les avait
@@ -47,7 +47,7 @@ correspondant si tu veux que nous puissions te répondre.
     <a href="emails/broken/warn/{$email}?token={xsrf_token}">clique sur ce lien</a>.
   </p>
 {elseif $x}
-<h2>Patte Cassée</h2>
+<h2>Patte cassée</h2>
   <p>
     Désolé, mais ton correspondant, {$x.user->fullName()},
     n'a actuellement <span class="erreur">aucune adresse email de redirection 

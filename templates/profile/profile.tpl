@@ -125,7 +125,7 @@ function chgMainWinLoc(strPage)
       </div>
       {/if}
       {if $x.tels}
-        {display_phones tels=$x.tels}
+        {display_phones tels=$x.tels dcd=$x.dcd}
       {/if}
       <div class='spacer'></div>
     </div>
@@ -160,6 +160,11 @@ function chgMainWinLoc(strPage)
   {if $x.adr}
   <div class="part">
     <h2>Contact&nbsp;: </h2>
+    {if $x.dcd}
+      {assign var=address_name value="Dernière adresse"}
+    {else}
+      {assign var=address_name value="Adresse"}
+    {/if}
     {foreach from=$x.adr item="address" name=adresses}
       {if $smarty.foreach.adresses.iteration is even}
         {assign var=pos value="right"}
@@ -167,13 +172,13 @@ function chgMainWinLoc(strPage)
         {assign var=pos value="left"}
       {/if}
       {if $address.active}
-      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Mon adresse actuelle&nbsp;:"
+      {include file="geoloc/address.tpl" address=$address titre_div=true titre=$address_name|@cat:" actuelle&nbsp;:"
                for="`$x.prenom` `$x.nom`" pos=$pos}
       {elseif $address.secondaire}
-      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse secondaire&nbsp;:"
+      {include file="geoloc/address.tpl" address=$address titre_div=true titre=$address_name|@cat:" secondaire&nbsp;:"
                for="`$x.prenom` `$x.nom`" pos=$pos}
       {else}
-      {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse principale&nbsp;:"
+      {include file="geoloc/address.tpl" address=$address titre_div=true titre=$address_name|@cat:" principale&nbsp;:"
                for="`$x.prenom` `$x.nom`" pos=$pos}
       {/if}
       {if $smarty.foreach.adresses.iteration is even}<div class="spacer"></div>{/if}

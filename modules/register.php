@@ -26,9 +26,6 @@ class RegisterModule extends PLModule
         return array(
             'register'         => $this->make_hook('register', AUTH_PUBLIC),
             'register/end'     => $this->make_hook('end',      AUTH_PUBLIC),
-            'register/end.php' => $this->make_hook('end_old',  AUTH_PUBLIC),
-            'register/success' => $this->make_hook('success',  AUTH_MDP),
-            'register/save'    => $this->make_hook('save',     AUTH_MDP),
         );
     }
 
@@ -48,13 +45,8 @@ class RegisterModule extends PLModule
             unset($state['backs']);
             $sub_state['backs'][] = $state;
             if (count($sub_state['backs']) == 3) {
-                $alert .= "Tentative d'inscription tres hesitante - ";
+                $alert .= "Tentative d'inscription très hésitante - ";
             }
-        }
-
-        // Compatibility with old sources, keep it atm
-        if (!$hash && Env::has('hash')) {
-            $hash = Env::v('hash');
         }
 
         if ($hash) {
@@ -104,7 +96,7 @@ class RegisterModule extends PLModule
                                                AND promo = {?}",
                                       $promo);
                     if (!$res->fetchOneCell()) {
-                        $err = "La promotion saisie est incorrecte ou tous les camardes de cette promo sont inscrits !";
+                        $err = "La promotion saisie est incorrecte ou tous les camarades de cette promotion sont inscrits !";
                     } else {
                         $sub_state['step']  = 2;
                         $sub_state['promo'] = $promo;
@@ -137,13 +129,17 @@ class RegisterModule extends PLModule
             case 3:
                 if (count($_POST)) {
                     $this->load('register.inc.php');
+
+                    // Validate the email address format and domain.
                     require_once 'emails.inc.php';
                     if (!isvalid_email(Post::v('email'))) {
-                        $err[] = "Le champ 'E-mail' n'est pas valide.";
+                        $err[] = "Le champ 'Email' n'est pas valide.";
                     } elseif (!isvalid_email_redirection(Post::v('email'))) {
                         $err[] = $sub_state['forlife']." doit renvoyer vers un email existant ".
                             "valide, en particulier, il ne peut pas être renvoyé vers lui-même.";
                     }
+
+                    // Validate the birthday format and range.
                     $birth = trim(Env::v('naissance'));
                     if (!preg_match('@^[0-3]?\d/[01]?\d/(19|20)?\d{2}$@', $birth)) {
                         $err[] = "La 'Date de naissance' n'est pas correcte.";
@@ -156,12 +152,17 @@ class RegisterModule extends PLModule
                         $promo = (int)$sub_state['promo'];
                         if ($year > $promo - 15 || $year < $promo - 30) {
                             $err[] = "La 'Date de naissance' n'est pas correcte.";
-                            $alert = "Date de naissance incorrecte a l'inscription - ";
+                            $alert = "Date de naissance incorrecte à l'inscription - ";
                             $sub_state['wrong_naissance'] = $birth;
                         }
                     }
 
-                    // Check if the given email is known as dangerous
+                    // Validate the password.
+                    if (!Post::v('response2', false)) {
+                        $err[] = "Le mot de passe n'est pas valide.";
+                    }
+
+                    // Check if the given email is known as dangerous.
                     $res = XDB::query("SELECT  w.state, w.description
                                          FROM  emails_watch AS w
                                         WHERE  w.email = {?} AND w.state != 'safe'",
@@ -169,7 +170,7 @@ class RegisterModule extends PLModule
                     $email_banned = false;
                     if ($res->numRows()) {
                         list($state, $description) = $res->fetchOneRow();
-                        $alert .= "Email surveille propose a l'inscription - ";
+                        $alert .= "Email surveillé proposé à l'inscription - ";
                         $sub_state['email_desc'] = $description;
                         if ($state == 'dangerous') {
                             $email_banned = true;
@@ -179,7 +180,7 @@ class RegisterModule extends PLModule
                         $alert .= "Inscription d'un utilisateur surveillé - ";
                     }
 
-                    if (check_ip('unsafe')) {
+                    if (($ip_banned = check_ip('unsafe'))) {
                         unset($err);
                     }
 
@@ -188,14 +189,19 @@ class RegisterModule extends PLModule
                     } else {
                         $sub_state['naissance'] = sprintf("%04d-%02d-%02d",
                                                           intval($birth[2]), intval($birth[1]), intval($birth[0]));
+                        $sub_state['email']     = Post::v('email');
+                        $sub_state['password']  = Post::v('response2');
+
+                        // Update the current alert if the birthdate is incorrect,
+                        // or if the IP address of the user has been banned.
                         if ($sub_state['naissance_ini'] != '0000-00-00' && $sub_state['naissance'] != $sub_state['naissance_ini']) {
                             $alert .= "Date de naissance incorrecte à l'inscription - ";
                         }
-                        $sub_state['email']     = Post::v('email');
-                        $ip_banned = check_ip('unsafe');
                         if ($ip_banned) {
-                            $alert .= "Tentative d'inscription depuis une IP surveillee";
+                            $alert .= "Tentative d'inscription depuis une IP surveillée";
                         }
+
+                        // Prevent banned user from actually registering; save the current state for others.
                         if ($email_banned || $ip_banned) {
                             global $globals;
                             $err = "Une erreur s'est produite lors de l'inscription."
@@ -218,34 +224,32 @@ class RegisterModule extends PLModule
         if (!empty($alert)) {
             send_warning_mail($alert);
         }
+
         $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
+        $page->addJsLink('motdepasse.js');
         if (isset($err)) {
             $page->trigError($err);
         }
     }
 
-    function handler_end_old(&$page)
-    {
-        return $this->handler_end($page, Env::v('hash'));
-    }
-
     function handler_end(&$page, $hash = null)
     {
         global $globals;
-
-
-        $page->changeTpl('register/end.tpl');
         $_SESSION['sub_state'] = array('step' => 5);
 
+        // Reject registration requests from unsafe IP addresses (and remove the
+        // registration information from the database, to prevent IP changes).
         if (check_ip('unsafe')) {
             send_warning_mail('Une IP surveillée a tenté de finaliser son inscription');
-            XDB::execute('DELETE FROM  register_pending
-                                WHERE  hash = {?} AND hash != \'INSCRIT\'', $hash);
+            XDB::execute("DELETE FROM  register_pending
+                                WHERE  hash = {?} AND hash != 'INSCRIT'", $hash);
             return PL_FORBIDDEN;
         }
 
         require_once('user.func.inc.php');
 
+        // Retrieve the pre-registration information using the url-provided
+        // authentication token.
         if ($hash) {
             $res = XDB::query(
                     "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2,
@@ -253,19 +257,16 @@ class RegisterModule extends PLModule
                              u.promo, FIND_IN_SET('femme', u.flags), u.naissance_ini
                        FROM  register_pending AS r
                  INNER JOIN  auth_user_md5    AS u ON r.uid = u.user_id
-                      WHERE  hash={?} AND hash!='INSCRIT'", $hash);
+                      WHERE  hash = {?} AND hash != 'INSCRIT'", $hash);
         }
-
-        if (!$hash || !list($uid, $forlife, $bestalias, $mailorg2, $password, $email,
-                            $naissance, $nom, $prenom, $promo, $femme, $naiss_ini) = $res->fetchOneRow())
-        {
+        if (!$hash || $res->numRows() == 0) {
             $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
-                         <p>Causes probables :</p>
+                         <p>Causes probables&nbsp;:</p>
                          <ol>
                            <li>Vérifie que tu visites l'adresse du dernier
-                               e-mail reçu s'il y en a eu plusieurs.</li>
+                               email reçu s'il y en a eu plusieurs.</li>
                            <li>Tu as peut-être mal copié l'adresse reçue par
-                               mail, vérifie-la à la main.</li>
+                               email, vérifie-la à la main.</li>
                            <li>Tu as peut-être attendu trop longtemps pour
                                confirmer.  Les pré-inscriptions sont annulées
                                tous les 30 jours.</li>
@@ -273,67 +274,91 @@ class RegisterModule extends PLModule
                         </ol>");
         }
 
+        list($uid, $forlife, $bestalias, $mailorg2, $password, $email,
+             $naissance, $nom, $prenom, $promo, $femme, $naiss_ini) = $res->fetchOneRow();
 
+        // Prepare the template for display.
+        $page->changeTpl('register/end.tpl');
+        $page->addJsLink('do_challenge_response_logged.js');
+        $page->assign('forlife', $forlife);
+        $page->assign('prenom', $prenom);
+        $page->assign('femme', $femme);
 
-        /***********************************************************/
-        /****************** REALLY CREATE ACCOUNT ******************/
-        /***********************************************************/
-
-        XDB::execute('UPDATE  auth_user_md5
-                                   SET  password={?}, perms="user",
-                                        date=NOW(), naissance={?}, date_ins = NOW()
-                                 WHERE  user_id={?}', $password, $naissance, $uid);
-        XDB::execute('REPLACE INTO auth_user_quick (user_id) VALUES ({?})', $uid);
-        XDB::execute('INSERT INTO aliases (id,alias,type)
-                                     VALUES ({?}, {?}, "a_vie")', $uid,
-                                     $forlife);
-        XDB::execute('INSERT INTO aliases (id,alias,type,flags)
-                                     VALUES ({?}, {?}, "alias", "bestalias")',
-                                     $uid, $bestalias);
-        if ($mailorg2) {
-            XDB::execute('INSERT INTO aliases (id,alias,type)
-                                         VALUES ({?}, {?}, "alias")', $uid,
-                                         $mailorg2);
+        // Check if the user did enter a valid password; if not (or if none is found),
+        // get her an information page.
+        if (Env::has('response')) {
+            require_once 'secure_hash.inc.php';
+            $expected_response = hash_encrypt("$forlife:$password:" . S::v('challenge'));
+            if (Env::v('response') != $expected_response) {
+                $page->trigError("Mot de passe invalide.");
+                S::logger($uid)->log('auth_fail', 'bad password (register/end)');
+                return;
+            }
+        } else {
+            return;
         }
 
+        //
+        // Create the user account.
+        //
+        XDB::execute("UPDATE  auth_user_md5
+                         SET  password = {?}, perms = 'user',
+                              date = NOW(), naissance = {?}, date_ins = NOW()
+                       WHERE  user_id = {?}", $password, $naissance, $uid);
+        XDB::execute("REPLACE INTO auth_user_quick (user_id) VALUES ({?})", $uid);
+        XDB::execute("INSERT INTO  aliases (id, alias, type)
+                           VALUES  ({?}, {?}, 'a_vie')", $uid, $forlife);
+        XDB::execute("INSERT INTO  aliases (id, alias, type, flags)
+                           VALUES  ({?}, {?}, 'alias', 'bestalias')", $uid, $bestalias);
+        if ($mailorg2) {
+            XDB::execute("INSERT INTO  aliases (id, alias, type)
+                               VALUES  ({?}, {?}, 'alias')", $uid, $mailorg2);
+        }
+
+        // Add the registration email address as first and only redirection.
         require_once('emails.inc.php');
         $user = User::getSilent($uid);
         $redirect = new Redirect($user);
         $redirect->add_email($email);
 
-        // on cree un objet logger et on log l'inscription
+        // Log the registration in the user session.
         S::logger($uid)->log('inscription', $email);
-        XDB::execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}', $uid);
+        XDB::execute("UPDATE  register_pending
+                         SET  hash = 'INSCRIT'
+                       WHERE  uid = {?}", $uid);
 
-
+        // Congratulate our newly registered user by email.
         $mymail = new PlMailer('register/inscription.reussie.tpl');
         $mymail->assign('forlife', $forlife);
         $mymail->assign('prenom', $prenom);
         $mymail->send();
 
-        // Enable search on the user
+        // Index the user, to allow her to appear in searches.
         require_once('user.func.inc.php');
         user_reindex($uid);
 
-        // Add notification for people looking for this registration
+        // Notify other users which were watching for her arrival.
         require_once 'notifs.inc.php';
         register_watch_op($uid, WATCH_INSCR);
         inscription_notifs_base($uid);
 
-        // Default registration on forums
-        $p_for = 'xorg.promo.x' . $promo;
-        $cible = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements', $p_for);
-        foreach ($cible as $val) {
-            XDB::execute('INSERT INTO  forum_subs (fid,uid)
+        // Forcibly register the new user on default forums.
+        $promo_forum = 'xorg.promo.x' . $promo;
+        $registered_forums = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements', $promo_forum);
+        foreach ($registered_forums as $forum) {
+            XDB::execute("INSERT INTO  forums.abos (fid,uid)
                                SELECT  fid, {?}
-                                 FROM  forum
-                                WHERE  name = {?}', $uid, $val);
-            if (XDB::affectedRows() == 0 && $val == $p_for) {
+                                 FROM  forums.list
+                                WHERE  nom = {?}",
+                                $uid, $val);
+
+            // Notify the newsgroup admin of the promotion forum needs be created.
+            if (XDB::affectedRows() == 0 && $forum == $promo_forum) {
                 $res = XDB::query("SELECT  SUM(perms IN ('admin','user') AND deces = 0), COUNT(*)
                                      FROM  auth_user_md5
                                     WHERE  promo = {?}", $promo);
-                list($effau, $effid) = $res->fetchOneRow();
-                if (5 * $effau > $effid) { // + 
+                list($promo_registered_count, $promo_count) = $res->fetchOneRow();
+                if ($promo_registered_count > 0.2 * $promo_count) {
                     $mymail = new PlMailer('admin/forums-promo.mail.tpl');
                     $mymail->assign('promo', $promo);
                     $mymail->send();
@@ -341,28 +366,32 @@ class RegisterModule extends PLModule
             }
         }
 
-        // update number of subscribers (perms has changed)
+        // Update the global registration count stats.
         $globals->updateNbIns();
 
-        if (!Platal::session()->startWeakSession($uid)) {
-            return PL_FORBIDDEN;
-        }
+        // Try to start a session (so the user don't have to log in); we will use
+        // the password available in Post:: to authenticate the user.
+        Platal::session()->start(AUTH_MDP);
 
-        /***********************************************************/
-        /************* envoi d'un mail au démarcheur ***************/
-        /***********************************************************/
+        //
+        // Update collateral data sources, and inform watchers by email.
+        //
+
+        // Email the referrer(s) of this new user.
         $res = XDB::iterRow(
                 "SELECT  sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom,
                          s.prenom, FIND_IN_SET('femme', s.flags) AS femme,
                          GROUP_CONCAT(m.email SEPARATOR ', ') AS mails, MAX(m.last) AS dateDernier
                    FROM  register_marketing AS m
-             INNER JOIN  auth_user_md5      AS s  ON ( m.sender = s.user_id )
-             INNER JOIN  aliases            AS sa ON ( sa.id = m.sender
-                                                       AND FIND_IN_SET('bestalias', sa.flags) )
+             INNER JOIN  auth_user_md5      AS s  ON (m.sender = s.user_id)
+             INNER JOIN  aliases            AS sa ON (sa.id = m.sender
+                                                      AND FIND_IN_SET('bestalias', sa.flags))
                   WHERE  m.uid = {?}
                GROUP BY  m.sender
                ORDER BY  dateDernier DESC", $uid);
-        XDB::execute("UPDATE register_mstats SET success=NOW() WHERE uid={?}", $uid);
+        XDB::execute("UPDATE  register_mstats
+                         SET  success = NOW()
+                       WHERE  uid = {?}", $uid);
 
         $market = array();
         while (list($salias, $snom, $sprenom, $sfemme, $mails, $dateDernier) = $res->next()) {
@@ -377,12 +406,13 @@ class RegisterModule extends PLModule
                  . "vient à l'instant de terminer son inscription.\n\n"
                  . "Merci de ta participation active à la reconnaissance de ce site !!!\n\n"
                  . "Bien cordialement,\n"
+                 . "-- \n"
                  . "L'équipe Polytechnique.org";
             $mymail->setTxtBody(wordwrap($msg, 72));
             $mymail->send();
         }
 
-        /**** send a mail to X.org administrators ****/
+        // Email the plat/al administrators about the registration.
         if ($globals->register->notif) {
             $mymail = new PlMailer();
             $mymail->setSubject("Inscription de $prenom $nom (X$promo)");
@@ -410,110 +440,8 @@ class RegisterModule extends PLModule
             $mymail->send();
         }
 
+        // Remove old pending marketing requests for the new user.
         Marketing::clear($uid);
-
-        pl_redirect('register/success');
-        $page->assign('uid', $uid);
-    }
-
-    function handler_success(&$page)
-    {
-        global $globals;
-        $page->changeTpl('register/success.tpl');
-        $page->assign('user', S::user());
-
-        $_SESSION['sub_state'] = array('step' => 5);
-        if (Env::has('response2'))  {
-            $_SESSION['password'] = $password = Post::v('response2');
-
-            XDB::execute('UPDATE auth_user_md5 SET password={?}
-                                     WHERE user_id={?}', $password,
-                                   S::v('uid'));
-
-            // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
-            // and if the (stupid) user has decided to use /register/success another time,
-            // updates the Google Apps password as well.
-            if ($globals->mailstorage->googleapps_domain) {
-                require_once 'googleapps.inc.php';
-                $account = new GoogleAppsAccount(S::user());
-                if ($account->active() && $account->sync_password) {
-                    $account->set_password($password);
-                }
-            }
-
-            S::logger()->log('passwd');
-            Platal::session()->setAccessCookie(true);
-
-            $page->assign('mdpok', true);
-        }
-
-        $res = XDB::iterRow("SELECT  sub, domain
-                               FROM  register_subs
-                              WHERE  uid = {?} AND type = 'list'
-                           ORDER BY  domain",
-                            S::i('uid'));
-        $current_domain = null;
-        $lists = array();
-        while (list($sub, $domain) = $res->next()) {
-            if ($current_domain != $domain) {
-                $current_domain = $domain;
-                $client = new MMList(S::v('uid'), S::v('password'), $domain);
-            }
-            list($details, ) = $client->get_members($sub);
-            $lists["$sub@$domain"] = $details;
-        }
-        $page->assign_by_ref('lists', $lists);
-
-        $page->addJsLink('motdepasse.js');
-    }
-
-    function handler_save(&$page)
-    {
-        global $globals;
-
-        // Finish registration procedure
-        if (Post::v('register_from_ax_question')) {
-            XDB::execute('UPDATE auth_user_quick
-                                     SET profile_from_ax = 1
-                                   WHERE user_id = {?}',
-                                 S::v('uid'));
-        }
-        if (Post::v('add_to_nl')) {
-            require_once 'newsletter.inc.php';
-            NewsLetter::subscribe();
-        }
-        if (Post::v('add_to_ax')) {
-            Platal::load('axletter', 'axletter.inc.php');
-            AXLetter::subscribe();
-        }
-        if (Post::v('add_to_promo')) {
-            $r = XDB::query('SELECT id FROM groupex.asso WHERE diminutif = {?}',
-                S::v('promo'));
-            $asso_id = $r->fetchOneCell();
-            XDB::execute('REPLACE INTO groupex.membres (uid,asso_id)
-                                     VALUES ({?}, {?})',
-                                 S::v('uid'), $asso_id);
-            $mmlist = new MMList(S::v('uid'), S::v('password'));
-            $mmlist->subscribe("promo".S::v('promo'));
-        }
-        if (Post::v('sub_ml')) {
-            $subs = array_keys(Post::v('sub_ml'));
-            $current_domain = null;
-            foreach ($subs as $list) {
-                list($sub, $domain) = explode('@', $list);
-                if ($domain != $current_domain) {
-                    $current_domain = $domain;
-                    $client = new MMList(S::v('uid'), S::v('password'), $domain);
-                }
-                $client->subscribe($sub);
-            }
-        }
-        if (Post::v('imap')) {
-            require_once 'emails.inc.php';
-            $user = S::user();
-            $storage = new EmailStorage($user, 'imap');
-            $storage->activate();
-        }
 
         pl_redirect('profile/edit');
     }

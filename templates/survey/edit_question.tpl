@@ -28,6 +28,14 @@
       <td class="titre">Commentaire</td>
       <td><textarea name="survey_question[comment]" rows="5" cols="60">{$survey_current.comment}</textarea></td>
     </tr>
+    <tr>
+      <td></td>
+      <td class="smaller">
+        <a href="wiki_help/notitle" class="popup3">
+          {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour le commentaire d'une question
+        </a>
+      </td>
+    </tr>
     <script type="text/javascript">//<![CDATA[ 
       var id = new Array();
       id['choices'] = {$survey_current.choices|@count};

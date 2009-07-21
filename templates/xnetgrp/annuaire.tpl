@@ -34,12 +34,14 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
       Ajouter un membre
     </a>
   </li>
+  {if $asso.has_ml}
   <li>
     <a href="{$platal->ns}admin/annuaire">
       {icon name=wand title="Synchroniser"} 
       Synchroniser annuaire et listes de diffusion
     </a>
   </li>
+  {/if}
   {/if}
   <li>
     <a href="{$platal->ns}annuaire/csv/{$asso->diminutif}.csv">

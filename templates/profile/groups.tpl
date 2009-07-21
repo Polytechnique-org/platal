@@ -148,9 +148,9 @@
     <td colspan="2" class="smaller">
       <div class="titre">Signification des symboles&nbsp;:</div>
       {if $grp_public}{icon name=error} L'annuaire du groupe est à visibilité restreinte et ce groupe n'apparaîtra pas sur ta
-      fiche{/if}
+      fiche.{/if}
       {if $grp_public && $grp_admin}<br />{/if}
-      {if $grp_admin}{icon name=wrench} Tu es administrateur du groupe{/if}
+      {if $grp_admin}{icon name=wrench} Tu es administrateur du groupe.{/if}
     </td>
   </tr>
   {/if}

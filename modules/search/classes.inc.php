@@ -267,9 +267,9 @@ class QuickSearch extends SField
         $s = replace_accent(trim($this->value));
         $r = $s = str_replace('*','%',$s);
 
-        if (S::has_perms() && strpos($s, '@') !== false) {
+        if (S::admin() && strpos($s, '@') !== false) {
             $this->email = $s;
-        } else if (S::has_perms() && preg_match('/[0-9]+\.([0-9]+|%)\.([0-9]+|%)\.([0-9]+|%)/', $s)) {
+        } else if (S::admin() && preg_match('/[0-9]+\.([0-9]+|%)\.([0-9]+|%)\.([0-9]+|%)/', $s)) {
             $this->ip = $s;
         }
         if ($this->email || $this->ip) {

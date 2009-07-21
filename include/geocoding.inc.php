@@ -337,7 +337,12 @@ class GMapsGeocoder extends Geocoder {
             $address['text'] = $address['geoloc'];
             $address['postalText'] = $address['geocodedPostalText'];
             unset($address['geoloc'], $address['geocodedPostalText']);
+        } else {
+            $address['geoloc'] = str_replace("\n", "\r\n", $address['geoloc']);
+            $address['geocodedPostalText'] = str_replace("\n", "\r\n", $address['geocodedPostalText']);
         }
+        $address['text'] = str_replace("\n", "\r\n", $address['text']);
+        $address['postalText'] = str_replace("\n", "\r\n", $address['postalText']);
     }
  
     // Returns the address formated for postal use.

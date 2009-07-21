@@ -124,7 +124,7 @@
         <td class="rt"><a href="{$web}">{$web}</a></td>
       </tr>
       {/if}
-      {if $address.country}
+      {if $address.country && !$c.dcd}
       <tr>
         <td class="lt">Géographie&nbsp;:</td>
         <td class="rt">{if $address.locality}{$address.locality}, {/if}{$address.country}</td>

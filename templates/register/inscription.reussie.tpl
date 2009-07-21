@@ -29,9 +29,6 @@
 
 {$prenom}, félicitations pour ton inscription !
 
-N'oublie pas de changer ton mot de passe sur le site. C'est très important
-si tu veux garder accès au site et ton email en fonction.
-
 Tu as maintenant accès à l'annuaire en ligne, aux services de listes de
 diffusion, aux infos promo, etc. N'oublie pas de mettre ta fiche-annuaire
 à jour.

@@ -36,26 +36,29 @@
       </td>
     </tr>
     <tr class="noprint">
-      <td style="width: 60%">
+      <td style="width: 70%">
         <input type="checkbox" name="with_soundex" id="with_soundex" value="1" {if $smarty.request.with_soundex}checked="checked"{/if} /> <label for="with_soundex">Activer la recherche par proximité sonore.</label>
         <br /><input type='checkbox' name='order' id="order" value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} /> <label for="order">Mettre les fiches modifiées récemment en premier.</label>
         <br /><input type='checkbox' name='nonins' id="nonins" {if $smarty.request.nonins}checked='checked'{/if} value='1' /> <label for="nonins">Chercher uniquement des non inscrits.</label>
+      </td>
+      <td class="right">
+        <br /><input type="submit" value="Chercher" />
       </td>
     {else}
     <tr class="noprint">
       <td style="width: 60%">
         <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
       </td>
-    {/if}
       <td class="right">
-        [<a href="search/adv">Recherche avancée</a>]
-        <br /><br /><input type="submit" value="Chercher" />
+        <input type="submit" value="Chercher" />
       </td>
+    {/if}
     </tr>
   </table>
 </form>
-
-<br />
+{if $smarty.session.auth ge AUTH_COOKIE}
+<p class="center">[<a href="search/adv">Effectuer une recherche avancée</a>]</p>
+{/if}
 
 {if $show_js}
 {literal}

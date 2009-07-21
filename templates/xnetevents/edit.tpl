@@ -163,9 +163,9 @@ function deadlineChange(box)
       <td colspan="2">
         Il faut que tu définisses le texte de l'email de confirmation de paiement. Pour ceci, tu peux adapter le modèle qui suit&nbsp;:
         <ul>
-          <li><strong>Remplace les crochets</strong> ([...]) par le texte que tu désires y voir apparaître</li>
-          <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt; et &lt;montant&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées</li>
-          <li><a href="wiki_help" class="popup3">{icon name=information} tu peux utiliser une syntaxe wiki pour formatter ton texte</a></li>
+          <li><strong>Remplace les crochets</strong> ([...]) par le texte que tu désires y voir apparaître.</li>
+          <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt;, &lt;montant&gt; et &lt;comment&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées.</li>
+          <li><a href="wiki_help" class="popup3">{icon name=information} Tu peux utiliser une syntaxe wiki pour formatter ton texte.</a></li>
         </ul>
         {javascript name=ajax}
         <div id="pay_preview" style="display: none">
@@ -176,7 +176,9 @@ function deadlineChange(box)
         </div>
         <textarea name="confirmation" id="payment_text" rows="12" cols="65">{if $paiement_message}{$paiement_message}{else}&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
 
-Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien été reçu.
+Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien
+été reçu avec le commentaire suivant&nbsp;:
+&lt;comment&gt;
 
 [COMPLETE EN PRECISANT LA DATE ET LA PERSONNE A CONTACTER]
 
@@ -184,7 +186,8 @@ Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et
 
 -- 
 {$smarty.session.prenom} {$smarty.session.nom}{/if}</textarea><br />
-        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso->site|default:$globals->baseurl|cat:'/'|cat:$platal->ns}" /><br />
+        {assign var='asso_url' value=$globals->baseurl|cat:'/'|cat:$platal->ns}
+        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso.site|default:$asso_url}" /><br />
         Le nouveau paiement sera activé automatiquement après validation par le trésorier de Polytechnique.org,
         ce qui sera fait sous peu.
         <script type="text/javascript">//<![CDATA[

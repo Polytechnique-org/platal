@@ -28,8 +28,8 @@
 La pré-inscription que tu viens de soumettre a été enregistrée.
 </p>
 <p>
-Les instructions te permettant de valider ton inscription et ton mot de passe pour
-accéder au site viennent de t'être envoyés à l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
+Les instructions te permettant de valider ton inscription viennent de t'être envoyés
+à l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
 </p>
 <p>
 Tu n'as que quelques jours pour suivre ces instructions. Ensuite, la pré-inscription

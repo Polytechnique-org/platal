@@ -24,7 +24,7 @@ require_once 'banana/hooks.inc.php';
 
 function hook_checkcancel($_headers)
 {
-    return ($_headers['x-org-id'] == S::v('hruid') or S::has_perms());
+    return ($_headers['x-org-id'] == S::v('hruid') or S::admin());
 }
 
 class ForumsBanana extends Banana
@@ -41,7 +41,7 @@ class ForumsBanana extends Banana
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
         Banana::$nntp_host = 'news://web_' . $user->login()
                            . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
-        if (S::has_perms()) {
+        if (S::admin()) {
             Banana::$msgshow_mimeparts[] = 'source';
         }
         Banana::$debug_nntp = ($globals->debug & DEBUG_BT);

@@ -1,0 +1,16 @@
+# List of security fixes that have been committed to the "master" branch.
+# This list is used to programmatically determine if a checkout of plat/al has
+# known vulnerabilities (which is useful for automatically disabling an unused
+# and unsafe checkout).
+#
+# In order to guarantee that only patched checkouts do have an updated SECURITY
+# file, updates of this file should be done within the same sommit that actually
+# fixes the security issue. Since the commit id is not known yet, it can be
+# replaced by '00000000', and updated later.
+#
+# Format: <date> <commit id> <commit description>
+# The commit id should refer to the id in the "master" branch, if the initial
+# commit in a version branch had another name.
+
+2009-10-19 e10bc2ef Prevents auth-groupex from leaking data to third-party attackers.
+2008-12-21 a25cdc91 Fixes a SQL injection in geoloc.inc.php.

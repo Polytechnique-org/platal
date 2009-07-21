@@ -133,17 +133,28 @@ class ProfilePhones implements ProfileSetting
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
-        if (is_null($value) || !is_array($value)) {
+        if (is_null($value)) {
             $value = array();
             $res = XDB::iterator("SELECT  t.display_tel AS tel, t.tel_type AS type, t.pub, t.comment
                                     FROM  profile_phones AS t
                                    WHERE  t.uid = {?} AND t.link_type = {?}
                                 ORDER BY  t.tel_id",
-                                 $page->pid(), $this->link_type);
-            $value = $res->fetchAllAssoc();
+                                 $this->id, $this->link_type);
+            if ($res->numRows() > 0) {
+                $value = $res->fetchAllAssoc();
+            } else {
+                $value = array(
+                        0 => array(
+                            'type'    => 'fixed',
+                            'tel'     => '',
+                            'pub'     => 'private',
+                            'comment' => '',
+                            )
+                        );
+            }
         }
         foreach ($value as $key=>&$phone) {
-            if (@$phone['removed']) {
+            if (isset($phone['removed']) && $phone['removed']) {
                 unset($value[$key]);
             } else {
                 unset($phone['removed']);
@@ -254,7 +265,7 @@ abstract class ProfileGeocoding implements ProfileSetting
     {
         require_once 'geocoding.inc.php';
         $success = true;
-        if ($address['changed'] == 1) {
+        if (isset($address['changed']) && $address['changed'] == 1) {
             $gmapsGeocoder = new GMapsGeocoder();
             $address = $gmapsGeocoder->getGeocodedAddress($address);
             if (isset($address['geoloc'])) {
@@ -399,7 +410,7 @@ abstract class ProfilePage implements PlWizardPage
         $page->assign('errors', $this->errors);
     }
 
-    public function process()
+    public function process(&$global_success)
     {
         $global_success = true;
         $this->fetchData();
@@ -422,8 +433,13 @@ abstract class ProfilePage implements PlWizardPage
             return Post::has('next_page') ? PlWizard::NEXT_PAGE : PlWizard::CURRENT_PAGE;
         }
         Platal::page()->trigError("Certains champs n'ont pas pu être validés, merci de corriger les informations "
-                                . "de ton profil et de revalider ta demande");
+                                . "de ton profil et de revalider ta demande.");
         return PlWizard::CURRENT_PAGE;
+    }
+
+    public function success()
+    {
+        return 'Ton profil a bien été mis à jour.';
     }
 }
 

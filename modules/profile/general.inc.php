@@ -57,6 +57,7 @@ class ProfileSearchNames implements ProfileSetting
     {
         $success     = true;
         $success_tmp = true;
+
         if (is_null($value)) {
             $sn_all = XDB::iterator("SELECT  CONCAT(sn.particle, sn.name) AS name,
                                              sn.particle, sn.typeid, e.type, e.name AS type_name,
@@ -85,12 +86,14 @@ class ProfileSearchNames implements ProfileSetting
                         $sn = $sn_all->next();
                     }
                 } else {
-                    $value[] = array('typeid'    => $sn_type['id'],
-                                     'type'      => $sn_type['type'],
-                                     'type_name' => $sn_type['name'],
-                                     'pub'       => 1,
+                    $value[] = array('name'             => '',
+                                     'particle'         => '',
+                                     'typeid'           => $sn_type['id'],
+                                     'type'             => $sn_type['type'],
+                                     'type_name'        => $sn_type['name'],
                                      'has_particle'     => $sn_type['has_particle'],
-                                     'always_displayed' => 1);
+                                     'always_displayed' => 1,
+                                     'pub'              => 1);
                 }
             }
             if ($sn) {
@@ -162,6 +165,7 @@ class ProfileSearchNames implements ProfileSetting
             Platal::page()->assign('public_name', $public_name);
             Platal::page()->assign('private_name', $private_name);
         }
+
         return $value;
     }
 
@@ -180,7 +184,7 @@ class ProfileSearchNames implements ProfileSetting
         if ($has_new) {
             $new_names = new NamesReq(S::user(), $this->search_names, $this->private_name_end);
             $new_names->submit();
-            Platal::page()->trigWarning("La demande de modification de tes noms a bien été prises en compte." .
+            Platal::page()->trigWarning("La demande de modification de tes noms a bien été prise en compte." .
                                         " Tu recevras un email dès que ces changements auront été effectués.");
         } else {
             $display_names = array();
@@ -368,8 +372,6 @@ class ProfileGeneral extends ProfilePage
                                   = $this->settings['yourself']
                                   = $this->settings['promo']
                                   = null;
-        $this->settings['synchro_ax']
-                                  = new ProfileBool();
         $this->settings['email_directory']
                                   = new ProfileEmail();
         $this->settings['email_directory_new']
@@ -390,7 +392,7 @@ class ProfileGeneral extends ProfilePage
                                    pr.nationality1, pr.nationality2, pr.nationality3, pr.birthdate,
                                    t.display_tel as mobile, t.pub as mobile_pub,
                                    d.email_directory as email_directory,
-                                   pr.freetext, pr.freetext_pub as freetext_pub
+                                   pr.freetext, pr.freetext_pub, pr.ax_id AS matricule_ax, p.yourself
                              FROM  profiles              AS pr
                        INNER JOIN  profile_display       AS p ON (p.pid = pr.pid)
                        INNER JOIN  profile_education     AS e ON (e.uid = pr.pid AND FIND_IN_SET('primary', e.flags))
@@ -446,11 +448,10 @@ class ProfileGeneral extends ProfilePage
             XDB::execute("UPDATE  profiles
                              SET  nationality1 = {?}, nationality2 = {?}, nationality3 = {?}, birthdate = {?},
                                   freetext = {?}, freetext_pub = {?}
-                           WHERE  user_id = {?}",
+                           WHERE  pid = {?}",
                           $this->values['nationality1'], $this->values['nationality2'], $this->values['nationality3'],
                           preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['birthdate']),
-                          $this->values['freetext'], $this->values['freetext_pub'],
-                          $this->pid());
+                          $this->values['freetext'], $this->values['freetext_pub'], $this->pid());
         }
         if ($this->changed['email_directory']) {
             $new_email = ($this->values['email_directory'] == "new@example.org") ?

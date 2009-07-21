@@ -22,24 +22,50 @@
 
 <h1>Demande d'identification OpenId</h1>
 
-<p>Le site <strong>{$relying_party}</strong> demande à confirmer votre identité.</p>
+<p>Un site tiers demande à confirmer ton identité OpenId.
+  {if $sreg_data}
+    De plus, il a demandé à recevoir un certain nombre d'informations
+    te concernant.
+  {/if}
+  Merci de nous indiquer ton choix.
+</p><br />
 
-{if $sreg_data neq null}
-<p>Les informations suivantes lui seront transmises :</p>
-<ul>
-{foreach from=$sreg_data key=field item=value}
-<li><i>{$field}</i> : {$value}</li>
-{/foreach}
-</ul>
-{/if}
+<form method="POST" action="openid/trust?{$openid_query}">
+  {xsrf_token_field}
+  <table class="bicol">
+    <tr><th colspan="2">Souhaitez-vous confirmer votre identité ?</th></tr>
 
+    <tr class="impair">
+      <td>Adresse du site&nbsp;:</td>
+      <td><strong>{$relying_party}</strong></td>
+    </tr>
+    {if $sreg_data}
+    <tr class="impair">
+      <td>Informations demandées&nbsp;:</td>
+      <td><ul style="margin-top: 0">
+        {foreach from=$sreg_data key=field item=value}
+        <li><strong>{$field}</strong> ({$value})</li>
+        {/foreach}
+      </ul></td>
+    </tr>
+    {/if}
 
-<p><strong>Souhaitez-vous confirmer votre identité ?</strong></p>
+    <tr class="pair">
+      <td></td>
+      <td>
+        <label><input type="checkbox" name="trust_always" />
+          Toujours faire confiance à ce site.</label><br />
+        {if $sreg_data}
+        <label><input type="checkbox" checked="checked" name="trust_sreg" />
+          Envoyer les données ci-dessus au site.</label><br />
+        {/if}
+      </td>
+    </tr>
+    <tr class="impair center"><td colspan="2">
+      <input type="submit" name="trust_accept" value="Confirmer" />
+      <input type="submit" name="trust_cancel" value="Annuler" />
+    </td></tr>
+  </table>
+</form>
 
-<div class="form">
-  <form method="post" action="openid/trust?{$query}">
-    <input type="checkbox" name="openid_always" /> Toujours faire confiance à ce site<br />
-    <input type="submit" name="openid_trust" value="Confirmer" />
-    <input type="submit" name="openid_cancel" value="Annuler" />
-  </form>
-</div>
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

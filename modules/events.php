@@ -24,15 +24,15 @@ class EventsModule extends PLModule
     function handlers()
     {
         return array(
-            'events'         => $this->make_hook('ev',        AUTH_COOKIE),
-            'rss'            => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
-            'events/preview' => $this->make_hook('preview', AUTH_PUBLIC, 'user', NO_AUTH),
-            'events/photo'   => $this->make_hook('photo', AUTH_PUBLIC),
-            'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
-            'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
+            'events'         => $this->make_hook('ev',           AUTH_COOKIE),
+            'rss'            => $this->make_hook('rss',          AUTH_PUBLIC, 'user', NO_HTTPS),
+            'events/preview' => $this->make_hook('preview',      AUTH_PUBLIC, 'user', NO_AUTH),
+            'events/photo'   => $this->make_hook('photo',        AUTH_PUBLIC),
+            'events/submit'  => $this->make_hook('ev_submit',    AUTH_MDP),
+            'admin/events'   => $this->make_hook('admin_events', AUTH_MDP,    'admin'),
 
-            'ajax/tips'      => $this->make_hook('tips',      AUTH_COOKIE, 'user', NO_AUTH),
-            'admin/tips'     => $this->make_hook('admin_tips', AUTH_MDP, 'admin'),
+            'ajax/tips'      => $this->make_hook('tips',         AUTH_COOKIE, 'user', NO_AUTH),
+            'admin/tips'     => $this->make_hook('admin_tips',   AUTH_MDP,    'admin'),
         );
     }
 
@@ -106,31 +106,22 @@ class EventsModule extends PLModule
         $page->addJsLink('ajax.js');
         $page->assign('tips', $this->get_tips());
 
-        // Profile update (appears when profile is > 400d old), and birthday
-        // oneboxes.
+        // Adds a reminder onebox to the page.
         $user = S::user();
+        require_once 'reminder.inc.php';
+        if (($reminder = Reminder::GetCandidateReminder($user))) {
+            $reminder->Prepare($page);
+        }
+
+        // Wishes "Happy birthday" when required
         $profile = $user->profile();
         if (!is_null($profile)) {
-            if (strtotime($profile->last_change) < time() - (400 * 86400)) {
-                $page->assign('fiche_incitation', $profile->last_change);
-            }
             if ($profile->next_birthday == date('Y-m-d')) {
                 $birthyear = (int)date('Y', strtotime($profile->birthdate));
                 $curyear   = (int)date('Y');
                 $page->assign('birthday', $curyear - $birthyear);
             }
         }
-
-        // No-photo onebox.
-        $res = XDB::query("SELECT  COUNT(*)
-                             FROM  photo
-                            WHERE  uid = {?}",
-                          S::user()->id());
-        $page->assign('photo_incitation', $res->fetchOneCell() == 0);
-
-        // Geo-location onebox.
-        require_once "geocoding.inc.php";
-        $page->assign('geoloc_incitation', Geocoder::countNonGeocoded(S::user()->id()));
 
         // Direct link to the RSS feed, when available.
         if (S::hasAuthToken()) {

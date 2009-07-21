@@ -24,15 +24,15 @@ class XnetModule extends PLModule
     function handlers()
     {
         return array(
-            'index'     => $this->make_hook('index',     AUTH_PUBLIC),
-            'exit'      => $this->make_hook('exit',      AUTH_PUBLIC),
+            'index'       => $this->make_hook('index',     AUTH_PUBLIC),
+            'exit'        => $this->make_hook('exit',      AUTH_PUBLIC),
 
-            'admin'     => $this->make_hook('admin',     AUTH_MDP, 'admin'),
-            'groups'    => $this->make_hook('groups',    AUTH_PUBLIC),
-            'groupes.php' => $this->make_hook('groups2', AUTH_PUBLIC),
-            'plan'      => $this->make_hook('plan',      AUTH_PUBLIC),
-            'photo'     => $this->make_hook('photo',     AUTH_MDP),
-            'autologin' => $this->make_hook('autologin', AUTH_MDP),
+            'admin'       => $this->make_hook('admin',     AUTH_MDP, 'admin'),
+            'groups'      => $this->make_hook('groups',    AUTH_PUBLIC),
+            'groupes.php' => $this->make_hook('groups2',   AUTH_PUBLIC),
+            'plan'        => $this->make_hook('plan',      AUTH_PUBLIC),
+            'photo'       => $this->make_hook('photo',     AUTH_MDP),
+            'autologin'   => $this->make_hook('autologin', AUTH_MDP),
         );
     }
 
@@ -114,12 +114,24 @@ class XnetModule extends PLModule
         if (Post::has('diminutif')) {
             S::assert_xsrf_token();
 
-            XDB::query('INSERT INTO groupex.asso (id,diminutif)
-                                 VALUES(NULL,{?})', Post::v('diminutif'));
-            pl_redirect('../'.Post::v('diminutif').'/edit');
+            $res = XDB::query('SELECT  COUNT(*)
+                                 FROM  groupex.asso
+                                WHERE  diminutif = {?}',
+                              Post::v('diminutif'));
+
+            if ($res->fetchOneCell() == 0) {
+                XDB::execute('INSERT INTO  groupex.asso (id, diminutif)
+                                   VALUES  (NULL, {?})',
+                             Post::v('diminutif'));
+                pl_redirect('../' . Post::v('diminutif') . '/edit');
+            } else {
+                $page->trigError('Le diminutif demandé est déjà pris.');
+            }
         }
 
-        $res = XDB::query('SELECT nom,diminutif FROM groupex.asso ORDER by NOM');
+        $res = XDB::query('SELECT  nom, diminutif
+                             FROM  groupex.asso
+                         ORDER BY  nom');
         $page->assign('assos', $res->fetchAllAssoc());
     }
 

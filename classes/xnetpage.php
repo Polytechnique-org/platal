@@ -113,12 +113,12 @@ class XnetPage extends PlPage
                 $sub['créer une liste']     = "$dim/lists/create";
                 $sub['créer un alias']      = "$dim/alias/create";
             }
-            if (S::has_perms()) {
+            if (S::admin()) {
                 $sub['gérer les groupes'] = array('href' => 'admin', 'style' => 'color: gray;');
                 $sub['clear cache'] = array('href' => 'purge_cache?token=' . S::v('xsrf_token'), 'style' => 'color: gray;');
             }
             $menu['Administrer'] = $sub;
-        } elseif (S::has_perms()) {
+        } elseif (S::admin()) {
             $sub = array();
             $sub['gérer les groupes'] = 'admin';
             $sub['clear cache'] = 'purge_cache?token=' . S::v('xsrf_token');

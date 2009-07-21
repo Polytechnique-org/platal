@@ -27,6 +27,8 @@ class AXLetter extends MassMailer
     public $_signature;
     public $_promo_min;
     public $_promo_max;
+    public $_subset;
+    public $_subset_to;
     public $_echeance;
     public $_date;
     public $_bits;
@@ -54,10 +56,12 @@ class AXLetter extends MassMailer
         }
         list($this->_id, $this->_shortname, $this->_title_mail, $this->_title,
              $this->_body, $this->_signature, $this->_promo_min, $this->_promo_max,
-             $this->_echeance, $this->_date, $this->_bits) = $id;
+             $this->_subset_to, $this->_echeance, $this->_date, $this->_bits) = $id;
         if ($this->_date == '0000-00-00') {
             $this->_date = 0;
         }
+        $this->_subset_to = explode("\n", $this->_subset_to);
+        $this->_subset = (count($this->_subset_to) > 0);
     }
 
     protected function assignData(&$smarty)
@@ -132,13 +136,13 @@ class AXLetter extends MassMailer
 
     static public function hasPerms()
     {
-        if (S::has_perms()) {
+        if (S::admin()) {
             return true;
         }
-        $res = XDB::query("SELECT  1
+        $res = XDB::query("SELECT  COUNT(*)
                              FROM  axletter_rights
                             WHERE  user_id = {?}", S::i('uid'));
-        return $res->fetchOneCell();
+        return ($res->fetchOneCell() > 0);
     }
 
     static public function grantPerms($uid)
@@ -167,7 +171,7 @@ class AXLetter extends MassMailer
 
     protected function subscriptionWhere()
     {
-        if (!$this->_promo_min && !$this->_promo_max) {
+        if (!$this->_promo_min && !$this->_promo_max && !$this->_subset) {
             return '1';
         }
         $where = array();
@@ -176,6 +180,17 @@ class AXLetter extends MassMailer
         }
         if ($this->_promo_max) {
             $where[] = "((ni.user_id = 0 AND ni.promo <= {$this->_promo_max}) OR (ni.user_id != 0 AND u.promo <= {$this->_promo_max}))";
+        }
+        if ($this->_subset) {
+            require_once("emails.inc.php");
+            $ids = ids_from_mails($this->_subset_to);
+            $ids_list = implode(',', $ids);
+            if(count($ids_list) > 0) {
+                $where[] = "ni.user_id IN ($ids_list)";
+            } else {
+                // No valid email
+                $where[] = "0";
+            }
         }
         return implode(' AND ', $where);
     }

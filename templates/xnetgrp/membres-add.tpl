@@ -103,4 +103,10 @@ function searchX()
   </table>
 </form>
 
+{literal}
+<script type="text/javascript">
+  $("#email").focus();
+</script>
+{/literal}
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

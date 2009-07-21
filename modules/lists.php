@@ -27,7 +27,7 @@ class ListsModule extends PLModule
     {
         return array(
             'lists'           => $this->make_hook('lists',     AUTH_MDP),
-            'lists/ajax'      => $this->make_hook('ajax',      AUTH_MDP, 'user', NO_AUTH),
+            'lists/ajax'      => $this->make_hook('ajax',      AUTH_MDP,    'user', NO_AUTH),
             'lists/create'    => $this->make_hook('create',    AUTH_MDP),
 
             'lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
@@ -43,7 +43,7 @@ class ListsModule extends PLModule
 
             'lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP),
             'lists/check'     => $this->make_hook('check',     AUTH_MDP),
-            'admin/lists'     => $this->make_hook('admin_all', AUTH_MDP, 'admin'),
+            'admin/lists'     => $this->make_hook('admin_all', AUTH_MDP,    'admin'),
         );
     }
 
@@ -538,6 +538,21 @@ class ListsModule extends PLModule
                 run_banana($page, 'ModerationBanana', $params);
 
                 $msg = file_get_contents('/etc/mailman/fr/refuse.txt');
+                $msg = str_replace("%(adminaddr)s", "$liste-owner@{$domain}", $msg);
+                $msg = str_replace("%(request)s",   "<< SUJET DU MAIL >>",    $msg);
+                $msg = str_replace("%(reason)s",    "<< TON EXPLICATION >>",  $msg);
+                $msg = str_replace("%(listname)s",  $liste, $msg);
+                $page->assign('msg', $msg);
+                return;
+            } elseif (Get::has('mid') && Env::has('mok')) {
+                $page->changeTpl('lists/moderate_mail.tpl');
+                require_once('banana/moderate.inc.php');
+                $params = array('listname' => $liste, 'domain' => $domain,
+                                'artid' => Get::i('mid'), 'part' => Get::v('part'), 'action' => Get::v('action'));
+                $params['client'] = $this->client;
+                run_banana($page, 'ModerationBanana', $params);
+
+                $msg = file_get_contents('/etc/mailman/fr/accept.txt');
                 $msg = str_replace("%(adminaddr)s", "$liste-owner@{$domain}", $msg);
                 $msg = str_replace("%(request)s",   "<< SUJET DU MAIL >>",    $msg);
                 $msg = str_replace("%(reason)s",    "<< TON EXPLICATION >>",  $msg);

@@ -19,7 +19,13 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-<h1>Sondage&nbsp;: {if $survey_type == 'root'}nouveau sondage{else}nouvelle question{/if}</h1>
+<h1>Sondage&nbsp;:
+  {if $survey_type == 'newsurvey'} créer un nouveau sondage
+  {elseif $survey_type == 'new'} ajouter une question
+  {elseif $survey_type == 'root'} modifier la description
+  {else} modifier une question
+  {/if}
+</h1>
 
 <form action="{$survey_formaction}" method="post">
   <input type="hidden" name="survey_action" value="{$survey_action}"/>

@@ -28,6 +28,8 @@
 <div id="{$jobid}">
   <input type="hidden" name="{$jobpref}[removed]" value="0" />
   <input type="hidden" name="{$jobpref}[new]" value="{if $new}1{else}0{/if}" />
+  <input type="hidden" name="{$jobpref}[id]" value="{$i}" />
+  <input type="hidden" name="{$jobpref}[jobid]" value="{$job.jobid}" />
   <table id="{$jobid}_grayed" class="bicol" style="display: none; margin-bottom: 1em">
     <tr>
       <th class="grayed">
@@ -38,6 +40,7 @@
       </th>
     </tr>
   </table>
+
   <table id="{$jobid}_cont" class="bicol" summary="Entreprise n°{$i+1}" style="margin-bottom: 1em">
     <tr>
       <th colspan="2" style="text-align: right">
@@ -54,7 +57,7 @@
         </a>
       </th>
     </tr>
-    {if !$job.tmp_name}
+    {if !$job.tmp_name && !$job.name}
     <tr class="{$entreprise}">
       <td class="center" colspan="2">
         <small>Si ton entreprise ne figure pas dans la liste,
@@ -124,7 +127,7 @@
       <td class="titre" rowspan="4">Secteur&nbsp;d'activité</td>
       <td>
         <select name="{$jobpref}[sector]" onchange="updateJobSector({$i}, '')">
-          <option value="">&nbsp;</option>
+          <option value="0">&nbsp;</option>
           {foreach from=$sectors item=item}
           <option value="{$item.id}" {if $item.id eq $job.sector}selected="selected"{/if}>
             {$item.label}
@@ -135,12 +138,12 @@
     </tr>
     <tr class="pair {$sector}" style="display: none">
       <td id="{$jobid}_subSector">
-        <input type="hidden" name="{$jobpref}[subSector]" value="{$job.subSector|default:'-1'}" />
+        <input type="hidden" name="{$jobpref}[subSector]" value="{$job.subSector|default:0}" />
       </td>
     </tr>
     <tr class="pair {$sector}" style="display: none">
       <td id="{$jobid}_subSubSector">
-        <input type="hidden" name="{$jobpref}[subSubSector]" value="{$job.subSubSector|default:'-1'}" />
+        <input type="hidden" name="{$jobpref}[subSubSector]" value="{$job.subSubSector|default:0}" />
       </td>
     </tr>
     <tr class="pair {$sector}" style="display: none">

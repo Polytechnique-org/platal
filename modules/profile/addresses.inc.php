@@ -144,7 +144,7 @@ class ProfileAddresses extends ProfilePage
     {
         $res = XDB::query("SELECT  id, accuracy, text, postalText,
                                    postalCode, localityId, subAdministrativeAreaId, administrativeAreaId,
-                                   countryId, latitude, longitude, pub, comment, updateTime,
+                                   countryId, latitude, longitude, pub, comment, UNIX_TIMESTAMP(updateTime) AS updateTime,
                                    north, south, east, west,
                                    FIND_IN_SET('current', flags) AS current,
                                    FIND_IN_SET('temporary', flags) AS temporary,
@@ -187,9 +187,18 @@ class ProfileAddresses extends ProfilePage
         }
         foreach ($this->values['addresses'] as $id => &$address) {
             if (!isset($address['tel'])) {
-                $address['tel'] = array();
+                $address['tel'] = array(
+                                 0 => array(
+                                     'type'    => 'fixed',
+                                     'tel'     => '',
+                                     'pub'     => 'private',
+                                     'comment' => '',
+                                     )
+                                 );
             }
             unset($address['id']);
+            $address['changed'] = 0;
+            $address['removed'] = 0;
         }
     }
 }

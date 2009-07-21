@@ -59,7 +59,7 @@ class MLBanana extends Banana
         Banana::$debug_smarty = ($globals->debug & DEBUG_SMARTY);
         Banana::$mbox_helper = $globals->banana->mbox_helper;
         Banana::$feed_updateOnDemand = true;
-        if (S::has_perms()) {
+        if (S::admin()) {
             Banana::$msgshow_mimeparts[] = 'source';
         }
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');

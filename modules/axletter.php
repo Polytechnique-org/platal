@@ -24,13 +24,13 @@ class AXLetterModule extends PLModule
     function handlers()
     {
         return array(
-            'ax'             => $this->make_hook('index',        AUTH_COOKIE),
+            'ax'             => $this->make_hook('index',  AUTH_COOKIE),
             'ax/out'         => $this->make_hook('out',    AUTH_PUBLIC),
             'ax/show'        => $this->make_hook('show',   AUTH_COOKIE),
             'ax/edit'        => $this->make_hook('submit', AUTH_MDP),
             'ax/edit/cancel' => $this->make_hook('cancel', AUTH_MDP),
             'ax/edit/valid'  => $this->make_hook('valid',  AUTH_MDP),
-            'admin/axletter' => $this->make_hook('admin', AUTH_MDP, 'admin'),
+            'admin/axletter' => $this->make_hook('admin',  AUTH_MDP, 'admin'),
         );
     }
 
@@ -90,6 +90,8 @@ class AXLetterModule extends PLModule
         $signature  = trim(Post::v('signature'));
         $promo_min  = Post::i('promo_min');
         $promo_max  = Post::i('promo_max');
+        $subset_to  = preg_split("/[ ,;\:\n\r]+/", Post::v('subset_to'), -1, PREG_SPLIT_NO_EMPTY);
+        $subset     = (count($subset_to) > 0);
         $echeance   = Post::has('echeance_date') ?
               preg_replace('/^(\d\d\d\d)(\d\d)(\d\d)$/', '\1-\2-\3', Post::v('echeance_date')) . ' ' . Post::v('echeance_time')
             : Post::v('echeance');
@@ -100,6 +102,8 @@ class AXLetterModule extends PLModule
             $res = XDB::query("SELECT * FROM axletter WHERE FIND_IN_SET('new', bits)");
             if ($res->numRows()) {
                 extract($res->fetchOneAssoc(), EXTR_OVERWRITE);
+                $subset_to = explode("\n", $subset);
+                $subset = (count($subset_to) > 0);
                 $saved = true;
             } else  {
                 XDB::execute("INSERT INTO axletter SET id = NULL");
@@ -151,15 +155,15 @@ class AXLetterModule extends PLModule
               case 'Aperçu':
                 $this->load('axletter.inc.php');
                 $al = new AXLetter(array($id, $short_name, $subject, $title, $body, $signature,
-                                         $promo_min, $promo_max, $echeance, 0, 'new'));
+                                         $promo_min, $promo_max, $subset, $echeance, 0, 'new'));
                 $al->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
                 break;
 
               case 'Confirmer':
                 XDB::execute("REPLACE INTO  axletter
                                        SET  id = {?}, short_name = {?}, subject = {?}, title = {?}, body = {?},
-                                            signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}",
-                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance);
+                                            signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}, subset = {?}",
+                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance, $subset ? implode("\n", $subset_to): null);
                 if (!$saved) {
                     global $globals;
                     $mailer = new PlMailer();
@@ -197,12 +201,14 @@ class AXLetterModule extends PLModule
         $page->assign('signature', $signature);
         $page->assign('promo_min', $promo_min);
         $page->assign('promo_max', $promo_max);
+        $page->assign('subset_to', implode("\n", $subset_to));
+        $page->assign('subset', $subset);
         $page->assign('echeance', $echeance);
         $page->assign('echeance_date', $echeance_date);
         $page->assign('echeance_time', $echeance_time);
         $page->assign('saved', $saved);
         $page->assign('new', $new);
-        $page->assign('is_xorg', S::has_perms());
+        $page->assign('is_xorg', S::admin());
 
         if (!$saved) {
             $select = '';
@@ -316,7 +322,7 @@ class AXLetterModule extends PLModule
         $importer->apply($page, "admin/axletter", array('user_id', 'email', 'prenom', 'nom', 'promo', 'flag', 'hash'));
     }
 
-    function idFromMail($line, $key)
+    function idFromMail($line, $key, $relation = null)
     {
         static $field;
         global $globals;
@@ -334,7 +340,7 @@ class AXLetterModule extends PLModule
         return count($id) == 1 ? $id[0] : 0;
     }
 
-    function createHash($line, $partial_result, $key)
+    function createHash($line, $key, $relation)
     {
         $hash = implode(time(), $line) . rand();
         $hash = md5($hash);

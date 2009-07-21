@@ -113,7 +113,7 @@ class VCard extends PlVCard
         // Pro
         if (!empty($user['adr_pro'])) {
             foreach ($user['adr_pro'] as $pro) {
-                $street = array($adr['adr1']);
+                $street = array($pro['adr1']);
                 if (!empty($pro['adr2'])) {
                     $street[] = $pro['adr2'];
                 }

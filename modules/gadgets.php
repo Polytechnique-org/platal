@@ -25,9 +25,9 @@ class GadgetsModule extends PLModule
     {
         return array(
             'gadgets/ig-events.xml' => $this->make_hook('ig_events_xml', AUTH_PUBLIC, 'user', NO_HTTPS),
-            'gadgets/ig-events'     => $this->make_hook('ig_events', AUTH_PUBLIC),
+            'gadgets/ig-events'     => $this->make_hook('ig_events',     AUTH_PUBLIC),
             'gadgets/ig-search.xml' => $this->make_hook('ig_search_xml', AUTH_PUBLIC, 'user', NO_HTTPS),
-            'gadgets/ig-search'     => $this->make_hook('ig_search', AUTH_PUBLIC),
+            'gadgets/ig-search'     => $this->make_hook('ig_search',     AUTH_PUBLIC),
         );
     }
 

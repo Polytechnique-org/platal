@@ -118,19 +118,19 @@ get-wiki:
 openid: get-openid spool/openid/store
 
 # There is no obvious way to automatically use the latest version
+OPENID_VERSION = 2.1.3
 get-openid:
 	@if ! test -d include/Auth; then                                  \
-	    wget http://openidenabled.com/files/php-openid/packages/php-openid-2.1.2.tar.bz2; \
-	    tar -xjf php-openid-2.1.2.tar.bz2;                            \
-	    mv php-openid-2.1.2/Auth include/;                            \
-	    rm php-openid-2.1.2.tar.bz2;                                  \
-	    rm -r php-openid-2.1.2;                                       \
+	    wget http://openidenabled.com/files/php-openid/packages/php-openid-$(OPENID_VERSION).tar.bz2; \
+	    tar -xjf php-openid-$(OPENID_VERSION).tar.bz2;                \
+	    mv php-openid-$(OPENID_VERSION)/Auth include/;                \
+	    rm php-openid-$(OPENID_VERSION).tar.bz2;                      \
+	    rm -r php-openid-$(OPENID_VERSION);                           \
 	fi
 
 spool/openid/store:
 	mkdir -p $@
 	chmod o+w $@
-
 
 ##
 ## banana

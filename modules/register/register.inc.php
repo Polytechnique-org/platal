@@ -44,7 +44,7 @@ function user_cmp($prenom, $nom, $_prenom, $_nom)
 // }}}
 // {{{ function check_mat
 
-function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid, &$watch, &$naiss)
+function check_mat($promo, $mat, &$nom, &$prenom, &$ourmat, &$ourid, &$watch, &$naiss)
 {
     if (!preg_match('/^[0-9][0-9][0-9][0-9][0-9][0-9]$/', $mat)) {
         return "Le matricule doit comporter 6 chiffres.";
@@ -71,6 +71,8 @@ function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid, &$watch, &$na
         return "erreur dans l'identification.  Réessaie, il y a une erreur quelque part !";
     }
 
+    $nom = $_nom;
+    $prenom = $_prenom;
     $ourid = $uid;
     return true;
 }
@@ -78,7 +80,7 @@ function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid, &$watch, &$na
 // }}}
 // {{{ function check_old_mat
 
-function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid, &$watch, &$naiss)
+function check_old_mat($promo, $mat, &$nom, &$prenom, &$ourmat, &$ourid, &$watch, &$naiss)
 {
     $res = XDB::iterRow(
             'SELECT  user_id, nom, prenom, matricule, FIND_IN_SET(\'watch\', flags), naissance_ini
@@ -86,6 +88,8 @@ function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid, &$watch, 
               WHERE  promo={?} AND deces=0 AND perms="pending"', $promo);
     while (list($_uid, $_nom, $_prenom, $_mat, $watch, $naiss) = $res->next()) {
         if (user_cmp($prenom, $nom, $_prenom, $_nom)) {
+            $nom = $_nom;
+            $prenom = $_prenom;
             $ourid  = $_uid;
             $ourmat = $_mat;
             return true;
@@ -152,7 +156,7 @@ function create_aliases (&$sub)
     $mailorg = make_username($prenom, $nom);
     $mailorg2 = $mailorg.sprintf(".%02u", ($promo%100));
 
-    $res = XDB::query("SELECT hruid FROM auth_user_md5 WHERE user_id = {?}", $uid);
+    $res = XDB::query("SELECT hruid FROM auth_user_md5 WHERE user_id = {?} AND hruid != ''", $uid);
     if ($res->numRows() == 0) {
         return "Tu n'as pas d'adresse à vie pré-attribuée.<br />"
             . "Envoie un mail à <a href=\"mailto:support@{$globals->mail->domain}</a>\">"
@@ -226,21 +230,19 @@ function finish_ins($sub_state)
     global $globals;
     extract($sub_state);
 
-    $pass     = rand_pass();
-    $pass_encrypted = sha1($pass);
-    $hash     = rand_url_id(12);
-
-    XDB::execute('UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule = {?}', $email, $mat);
-
+    $hash = rand_url_id(12);
+    XDB::execute(
+            "UPDATE  auth_user_md5
+                SET  last_known_email = {?}
+              WHERE  matricule = {?}", $email, $mat);
     XDB::execute(
             "REPLACE INTO  register_pending (uid, forlife, bestalias, mailorg2, password, email, date, relance, naissance, hash)
                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?})",
-            $uid, $forlife, $bestalias, $mailorg2, $pass_encrypted, $email, $naissance, $hash);
+            $uid, $forlife, $bestalias, $mailorg2, $password, $email, $naissance, $hash);
 
     $mymail = new PlMailer('register/inscrire.mail.tpl');
     $mymail->assign('mailorg', $bestalias);
     $mymail->assign('lemail',  $email);
-    $mymail->assign('pass',    $pass);
     $mymail->assign('baseurl', $globals->baseurl);
     $mymail->assign('hash',    $hash);
     $mymail->assign('subj',    $bestalias."@" . $globals->mail->domain);

@@ -110,7 +110,7 @@
         return function() {
                   if (!allow) {
                       if (box.value != '') {
-                          alert("Un mail de validation vient d'être envoyer sur " + mail
+                          alert("Un mail de validation vient d'être envoyé sur " + mail
                                + ". La réécriture ne sera active que lorsque tu auras cliqué sur le lien indiqué dans ce mail.");
                       }
                   }
@@ -188,6 +188,10 @@
     </table>
     <script type="text/javascript">showRemove(); activeEnable();</script>
   </div>
+<p class="smaller center">
+  Légende&nbsp;: {icon name=cross title="Supprimer"} Supprimer la redirection
+  - {icon name=information title="Plus d'informations"} Plus d'informations
+</p>
 {if $panne}
 <p class="smaller">
   <strong>

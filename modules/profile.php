@@ -72,7 +72,6 @@ class ProfileModule extends PLModule
             'admin/corps_enum'           => $this->make_hook('admin_corps_enum',           AUTH_MDP, 'admin'),
             'admin/corps_rank'           => $this->make_hook('admin_corps_rank',           AUTH_MDP, 'admin'),
             'admin/names'                => $this->make_hook('admin_names',                AUTH_MDP, 'admin'),
-
         );
     }
 
@@ -339,7 +338,7 @@ class ProfileModule extends PLModule
         http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=" . $user->ax_id);
     }
 
-    function handler_p_edit(&$page, $user = null, $opened_tab = null, $mode = null)
+    function handler_p_edit(&$page, $user = null, $opened_tab = null, $mode = null, $success = null)
     {
         global $globals;
 
@@ -384,6 +383,9 @@ class ProfileModule extends PLModule
         }
 
        $page->setTitle('Mon Profil');
+       if (isset($success) && $success) {
+           $page->trigSuccess('Ton profil a bien été mis à jour.');
+       }
     }
 
     function handler_education_js(&$page)

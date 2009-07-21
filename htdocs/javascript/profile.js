@@ -120,6 +120,15 @@ function updateNameDisplay()
     });
 }
 
+function toggleParticle(id)
+{
+    if ($('#search_name_' + id).find("[name*='[particle]']").val() == '') {
+        $('#search_name_' + id).find("[name*='[particle]']").val(1);
+    } else {
+        $('#search_name_' + id).find("[name*='[particle]']").val('');
+    }
+}
+
 // Nationalities {{{1
 
 function delNationality(i)
@@ -335,15 +344,15 @@ function removeTel(id)
 
 function addPhoneComment(id)
 {
-    $(id + '_comment').show();
-    $(id + '_addComment').hide();
+    $('#' + id + '_comment').show();
+    $('#' + id + '_addComment').hide();
 }
 
 function removePhoneComment(id, pref)
 {
-    $(id + '_comment').hide();
-    $(id + '_comment').find("[name='" + pref + "[comment]']").val('');
-    $(id + '_addComment').show();
+    $('#' + id + '_comment').hide();
+    $('#' + id + '_comment').find("[name='" + pref + "[comment]']").val('');
+    $('#' + id + '_addComment').show();
 }
 
 // {{{1 Groups

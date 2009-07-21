@@ -33,9 +33,7 @@ Ton inscription sur Polytechnique.org est presque terminée !
 Après activation, tes paramètres de connexion seront :
 
 identifiant  : {$mailorg}
-mot de passe : {$pass}
-
-Nous te proposerons de remplacer ce mot de passe temporaire par un mot de passe de ton choix.
+mot de passe : celui que tu as choisi
 
 Rends-toi maintenant sur la page web suivante afin d'activer ta pré-inscription :
 
@@ -46,6 +44,7 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement ce lien dans la b
 Nous espérons que tu profiteras pleinement des services en ligne de Polytechnique.org ; s'ils te convainquent, n'oublie pas d'en parler aux camarades autour de toi !
 
 Bien cordialement,
+-- 
 L'équipe de Polytechnique.org,
 Le portail des élèves et anciens élèves de l'École polytechnique
 {/if}

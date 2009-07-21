@@ -76,6 +76,18 @@
       <td>{$selectedJob.holdingAcronym}</td>
     </tr>
     <tr>
+      <td>Adresse</td>
+      <td<textarea cols="30" rows="4" name="address">{$selectedJob.address}</textarea></td>
+    </tr>
+    <tr>
+      <td>Téléphone</td>
+      <td><input type="text" name="tel" value="{$selectedJob.tel}" /></td>
+    </tr>
+    <tr>
+      <td>Fax</td>
+      <td><input type="text" name="fax" value="{$selectedJob.fax}" /></td>
+    </tr>
+    <tr>
       <td>Remplacer par l'entreprise n°</td>
       <td><input type="text" name="newJobId" /></td>
     </tr>

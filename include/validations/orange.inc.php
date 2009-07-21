@@ -27,7 +27,9 @@ class OrangeReq extends Validate
 
     public $unique = true;
 
-    public $promo_sortie;
+    public $oldGradYear;
+    public $newGradYear;
+    public $entryYear;
 
     public $rules = "À priori accepter (la validation sert à repousser les
     petits malins). Refuse si tu connais la personne et que tu es sûr
@@ -36,14 +38,15 @@ class OrangeReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, $_sortie)
+    public function __construct(User &$_user, $_newGradYear)
     {
         parent::__construct($_user, true, 'orange');
-        $this->promo_sortie  = $_sortie;
+        $this->newGradYear  = $_newGradYear;
         $res = XDB::query("SELECT  entry_year
                              FROM  profile_education
-                            WHERE  uid = {?} AND FIND_IN_SET('primary', flags)", $_uid);
-        $this->promo = $res->fetchOneCell();
+                            WHERE  uid = {?} AND FIND_IN_SET('primary', flags)", $this->user->id());
+        $this->entryYear   = $res->fetchOneCell();
+        $this->oldGradYear = $this->entryYear + 3;
     }
 
     // }}}
@@ -83,7 +86,7 @@ class OrangeReq extends Validate
     {
         XDB::execute("UPDATE  profile_education
                          SET  grad_year = {?}
-                       WHERE  uid = {?} AND FIND_IN_SET('primary', flags)", $this->promo_sortie, $this->uid);
+                       WHERE  uid = {?} AND FIND_IN_SET('primary', flags)", $this->newGradYear, $this->user->id());
         return true;
     }
 

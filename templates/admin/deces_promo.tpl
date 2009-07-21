@@ -23,7 +23,7 @@
 
 
 <form action="admin/deaths" method="post">
-  <table class="tinybicol">
+  <table class="bicol">
     <tr>
       <td>
         Promotion&nbsp;:

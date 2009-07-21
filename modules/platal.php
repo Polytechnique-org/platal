@@ -38,25 +38,24 @@ class PlatalModule extends PLModule
     function handlers()
     {
         return array(
-            'index'       => $this->make_hook('index',     AUTH_PUBLIC),
-            'cacert.pem'  => $this->make_hook('cacert',    AUTH_PUBLIC),
-            'changelog'   => $this->make_hook('changelog', AUTH_PUBLIC),
+            'index'             => $this->make_hook('index',     AUTH_PUBLIC),
+            'cacert.pem'        => $this->make_hook('cacert',    AUTH_PUBLIC),
+            'changelog'         => $this->make_hook('changelog', AUTH_PUBLIC),
 
             // Preferences thingies
-            'prefs'       => $this->make_hook('prefs',     AUTH_COOKIE),
-            'prefs/rss'   => $this->make_hook('prefs_rss', AUTH_COOKIE),
-            'prefs/webredirect'
-                          => $this->make_hook('webredir',  AUTH_MDP),
-            'prefs/skin'  => $this->make_hook('skin',      AUTH_COOKIE),
+            'prefs'             => $this->make_hook('prefs',     AUTH_COOKIE),
+            'prefs/rss'         => $this->make_hook('prefs_rss', AUTH_COOKIE),
+            'prefs/webredirect' => $this->make_hook('webredir',  AUTH_MDP),
+            'prefs/skin'        => $this->make_hook('skin',      AUTH_COOKIE),
 
             // password related thingies
-            'password'      => $this->make_hook('password',  AUTH_MDP),
-            'tmpPWD'        => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
-            'password/smtp' => $this->make_hook('smtppass',  AUTH_MDP),
-            'recovery'      => $this->make_hook('recovery',  AUTH_PUBLIC),
-            'exit'          => $this->make_hook('exit', AUTH_PUBLIC),
-            'review'        => $this->make_hook('review', AUTH_PUBLIC),
-            'deconnexion.php' => $this->make_hook('exit', AUTH_PUBLIC),
+            'password'          => $this->make_hook('password',  AUTH_MDP),
+            'tmpPWD'            => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
+            'password/smtp'     => $this->make_hook('smtppass',  AUTH_MDP),
+            'recovery'          => $this->make_hook('recovery',  AUTH_PUBLIC),
+            'exit'              => $this->make_hook('exit',      AUTH_PUBLIC),
+            'review'            => $this->make_hook('review',    AUTH_PUBLIC),
+            'deconnexion.php'   => $this->make_hook('exit',      AUTH_PUBLIC),
         );
     }
 
@@ -64,7 +63,7 @@ class PlatalModule extends PLModule
     {
         // Include X-XRDS-Location response-header for Yadis discovery
         global $globals;
-        header('X-XRDS-Location: ' . $globals->baseurl . '/openid/idp_xrds');
+        header('X-XRDS-Location: ' . $globals->baseurl . '/openid/xrds');
 
         // Redirect to the suitable page
         if (S::logged()) {
@@ -464,7 +463,7 @@ Adresse de secours : " . Post::v('email') : ""));
     {
         // Include X-XRDS-Location response-header for Yadis discovery
         global $globals;
-        header('X-XRDS-Location: ' . $globals->baseurl . '/openid/idp_xrds');
+        header('X-XRDS-Location: ' . $globals->baseurl . '/openid/xrds');
 
         $this->load('review.inc.php');
         $dom = 'Review';

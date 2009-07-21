@@ -61,144 +61,147 @@ class OpenidModule extends PLModule
     function handlers()
     {
         return array(
-            'openid'            => $this->make_hook('openid', AUTH_PUBLIC),
-            'openid/trust'      => $this->make_hook('trust', AUTH_COOKIE),
-            'openid/trusted'    => $this->make_hook('trusted', AUTH_MDP),
-            'admin/openid/trusted'  => $this->make_hook('admin_trusted', AUTH_MDP),
-            'openid/idp_xrds'   => $this->make_hook('idp_xrds', AUTH_PUBLIC),
-            'openid/user_xrds'  => $this->make_hook('user_xrds', AUTH_PUBLIC),
-            'openid/melix'      => $this->make_hook('melix', AUTH_PUBLIC),
+            'openid'                => $this->make_hook('openid', AUTH_PUBLIC),
+            'openid/melix'          => $this->make_hook('melix', AUTH_PUBLIC),
+            'openid/xrds'           => $this->make_hook('xrds', AUTH_PUBLIC),
+            'openid/trust'          => $this->make_hook('trust', AUTH_MDP),
+            'openid/trusted'        => $this->make_hook('trusted', AUTH_MDP),
+            'admin/openid/trusted'  => $this->make_hook('admin_trusted', AUTH_MDP, 'admin'),
         );
     }
 
-    function handler_openid(&$page, $x = null)
+    function handler_openid(&$page, $login = null)
     {
         $this->load('openid.inc.php');
+        $requested_user = User::getSilent($login);
+        $server = new OpenId();
 
         // Spec §4.1.2: if "openid.mode" is absent, we SHOULD assume that
-        // the request is not an OpenId message
-        if (!array_key_exists('openid_mode', $_REQUEST)) {
-            return $this->render_discovery_page($page, get_user($x));
+        // the request is not an OpenId message.
+        if (!$server->IsOpenIdRequest()) {
+            if ($requested_user) {
+                $server->RenderDiscoveryPage($page, $requested_user);
+                return;
+            } else {
+                pl_redirect('Xorg/OpenId');
+            }
+            exit;
         }
 
-        // Now, deal with the OpenId message
-        $server = init_openid_server();
-        $request = $server->decodeRequest();
+        // Initializes the OpenId environment from the request.
+        $server->Initialize();
 
-        // In modes 'checkid_immediate' and 'checkid_setup', the request
-        // needs some logic and can not be automatically answered by the server
+        // In modes 'checkid_immediate' and 'checkid_setup', we need to check
+        // by ourselves that we want to allow the user to be authenticated.
+        // Otherwise it can simply be forwarded to the Server object.
+        if ($server->IsAuthorizationRequest()) {
+            $authorized = S::logged() &&
+                $server->IsUserAuthorized(S::user()) &&
+                $server->IsEndpointTrusted(S::user());
 
-        // Immediate mode
-        if ($request->mode == 'checkid_immediate') {
-
-            // We deny immediate requests, unless:
-            //   - the user identifier is known by the RP
-            //   - the user is logged in
-            //   - the user identifier matches the user logged in
-            //   - the user has whitelisted the site
-            $answer = !$request->idSelect()
-                      && S::logged()
-                      && $request->identity == S::user()->login()
-                      && is_trusted_site(S::user(), $request->trust_root);
-            $response =& $request->answer($answer);
-
-        // Setup mode
-        } else if ($request->mode == 'checkid_setup') {
-
-            // We redirect to a page where the user will authenticate
-            // and confirm the use of his/her OpenId
-            $request_id = uniqid('openid-');
-            S::set($request_id, serialize($request));
-            $query = 'request_id=' . urlencode($request_id);
-            pl_redirect('openid/trust', $query);
-            return;
-
-        // Other requests can be automatically handled by the server
+            if ($authorized) {
+                // TODO(vzanotti): SReg requests are currently not honored if
+                // the website is already trusted. We may want to redirect SReg
+                // requests to /openid/trust, to allow the user to choose.
+                $server->AnswerRequest(true);
+            } else if ($server->IsImmediateRequest()) {
+                $server->AnswerRequest(false);
+            } else {
+                // The user is currently not authorized to get her authorization
+                // request approved. Two possibilities:
+                //  * the endpoint is not yet trusted => redirect to openid/trust
+                //  * the user is not logged in => log in the user.
+                //
+                // The second case requires a special handling when the request
+                // was POSTed, as our current log in mechanism does not preserve
+                // POST arguments.
+                $openid_args = $server->GetQueryStringForRequest();
+                if (S::logged()) {
+                    pl_redirect('openid/trust', $openid_args);
+                } else if (Post::has('openid_mode')) {
+                    pl_redirect('openid', $openid_args);
+                } else {
+                    return PL_DO_AUTH;
+                }
+            }
         } else {
-            $response =& $server->handleRequest($request);
+            $server->HandleRequest();
         }
 
-        $webresponse =& $server->encodeResponse($response);
-        $this->render_openid_response($webresponse);
+        // All requests should have been answered at this point. The best here
+        // is to get the user back to a safe page.
+        pl_redirect('');
     }
 
-    function handler_trust(&$page, $x = null)
+    function handler_melix(&$page, $login = null)
     {
         $this->load('openid.inc.php');
 
-        // Recover request in session
-        $request_id = $_GET['request_id'];
-        if (is_null($request_id) || !isset($_SESSION[$request_id])) {
-            // There is no authentication information, something went wrong
-            pl_redirect('/');
-            return;
+        global $globals;
+        $melix = ($login ? $login . '@' . $globals->mail->alias_dom : null);
+
+        if ($melix && ($requested_user = User::getSilent($melix))) {
+            $server = new OpenId();
+            $server->RenderDiscoveryPage($page, $requested_user);
+        } else {
+            pl_redirect('Xorg/OpenId');
         }
+    }
 
-        require_once 'Auth/OpenID/Server.php';
-        $request = unserialize($_SESSION[$request_id]);
+    function handler_xrds(&$page, $login = null)
+    {
+        $this->load('openid.inc.php');
+        $requested_user = User::getSilent($login);
+        $server = new OpenId();
 
-        $server = init_openid_server();
+        if (!$login) {
+            $server->RenderMainXrdsPage($page);
+        } else if ($requested_user) {
+            $server->RenderUserXrdsPage($page, $requested_user);
+        } else {
+            return PL_NOT_FOUND;
+        }
+    }
+
+    function handler_trust(&$page)
+    {
+        $this->load('openid.inc.php');
+        $server = new OpenId();
         $user = S::user();
-        $identity = null;
-        $claimed_id = null;
 
-        // Set the identity to the user currently logged in
-        // if an OP Identifier was initially used
-        if ($request->identity == Auth_OpenID_IDENTIFIER_SELECT) {
-            $identity = $user->hruid;
-            $claimed_id = get_user_openid_url($user);
-        // Check that the identity matches the user currently logged in
-        // if an User Identifier was initially used
-        } else if ($request->identity != $user->hruid) {
-            $response =& $request->answer(false);
-            $webresponse =& $server->encodeResponse($response);
-            $this->render_openid_response($webresponse);
-            return;
+        // Initializes the OpenId environment from the request.
+        if (!$server->Initialize() || !$server->IsAuthorizationRequest()) {
+            $page->kill("Ta requête OpenID a échoué, merci de réessayer.");
         }
 
-        // Prepare Simple Registration response fields
-        require_once 'Auth/OpenID/SReg.php';
-        $sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest($request);
-        $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, get_sreg_data($user));
+        // Prepares the SREG data, if any is required.
+        $sreg_response = $server->GetSRegDataForRequest($user);
 
-        $whitelisted = is_trusted_site($user, $request->trust_root);
-
-        // Ask the user for confirmation
-        $from_trust_page = $_SERVER['REQUEST_METHOD'] == 'POST'
-                           && (isset($_POST['openid_trust']) || isset($_POST['openid_cancel']));
-        if (!$whitelisted && !$from_trust_page) {
+        // Asks the user about her trust level of the current request, if not
+        // done yet.
+        if (!Post::has('trust_accept') && !Post::has('trust_cancel')) {
             $page->changeTpl('openid/trust.tpl');
-            $page->assign('relying_party', $request->trust_root);
-            $page->assign_by_ref('sreg_data', $sreg_response->data);
-            $query = 'request_id=' . urlencode($request_id);
-            $page->assign('query', $query);
+            $page->assign('openid_query', $server->GetQueryStringForRequest());
+            $page->assign('relying_party', $server->GetEndpoint());
+            $page->assign('sreg_data', $sreg_response->contents());
+
             return;
         }
 
-        // If this point is reached, the user has just validated the form on the 'trust' page
+        // Interprets the form results, and updates the user whitelist.
+        S::assert_xsrf_token();
+        $trusted = $server->UpdateEndpointTrust(
+            $user,
+            Post::b('trust_accept') && !Post::b('trust_cancel'),
+            Post::b('trust_always'));
 
-        // Remove the request from session since an answer will be sent
-        S::kill($request_id);
-
-        // Add 'always trusted' sites to whitelist
-        if (isset($_POST['openid_trust']) && @$_POST['openid_always']) {
-            add_trusted_site($user, $request->trust_root);
+        // Finally answers the request.
+        if ($server->IsUserAuthorized($user) && $trusted) {
+            $server->AnswerRequest(
+                true, $user, Post::b('trust_sreg') ? $sreg_response : null);
+        } else {
+            $server->AnswerRequest(false);
         }
-
-        // Answer to the Relying Party
-        if ($whitelisted || isset($_POST['openid_trust'])) {
-            $response =& $request->answer(true, null, $identity, $claimed_id);
-
-            // Add the simple registration response values to the OpenID
-            // response message.
-            $sreg_response->toMessage($response->fields);
-
-        } else { // !$whitelisted && isset($_POST['openid_cancel'])
-            $response =& $request->answer(false);
-        }
-
-        $webresponse =& $server->encodeResponse($response);
-        $this->render_openid_response($webresponse);
     }
 
     function handler_trusted(&$page, $action = 'list', $id = null)
@@ -223,91 +226,6 @@ class OpenidModule extends PLModule
         $table_editor->describe('url', 'site tiers', true);
         $page->assign('readonly', true);
         $table_editor->apply($page, $action, $id);
-    }
-
-    function handler_idp_xrds(&$page)
-    {
-        $this->load('openid.inc.php');
-        header('Content-type: application/xrds+xml');
-        $page->changeTpl('openid/idp_xrds.tpl', NO_SKIN);
-        $page->assign('type2', Auth_OpenID_TYPE_2_0_IDP);
-        $page->assign('sreg', Auth_OpenID_SREG_URI);
-        $page->assign('provider', get_openid_url());
-    }
-
-    function handler_user_xrds(&$page, $x = null)
-    {
-        $this->load('openid.inc.php');
-
-        $user = get_user($x);
-        if (is_null($user)) {
-            return PL_NOT_FOUND;
-        }
-
-        header('Content-type: application/xrds+xml');
-        $page->changeTpl('openid/user_xrds.tpl', NO_SKIN);
-        $page->assign('type2', Auth_OpenID_TYPE_2_0);
-        $page->assign('type1', Auth_OpenID_TYPE_1_1);
-        $page->assign('sreg', Auth_OpenID_SREG_URI);
-        $page->assign('provider', get_openid_url());
-        $page->assign('local_id', $user->hruid);
-    }
-
-    function handler_melix(&$page, $x = null)
-    {
-        $this->load('openid.inc.php');
-        $user = get_user_by_alias($x);
-
-        // This will redirect to the canonic URL, which was not used
-        // if this hook was triggered
-        return $this->render_discovery_page(&$page, $user);
-    }
-
-    //--------------------------------------------------------------------//
-
-    function render_discovery_page(&$page, $user)
-    {
-
-        // Show the documentation if this is not the OpenId page of an user
-        if (is_null($user)) {
-            pl_redirect('Xorg/OpenId');
-        }
-
-        // Redirect to the canonic URL if we are using an alias
-        // There might be a risk of redirection loop here
-        // if $_SERVER was not exactly what we expect
-        $current_url = 'http' . (empty($_SERVER['HTTPS']) ? '' : 's') . '://'
-                       . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-        $canonic_url = get_user_openid_url($user);
-        if ($current_url != $canonic_url) {
-            http_redirect($canonic_url);
-        }
-
-        // Include X-XRDS-Location response-header for Yadis discovery
-        header('X-XRDS-Location: ' . get_user_xrds_url($user));
-
-        $page->changeTpl('openid/openid.tpl');
-        $page->setTitle($user->fullName());
-        // Set the <link> tags for HTML-Based Discovery
-        $page->addLink('openid.server openid2.provider', get_openid_url());
-        $page->addLink('openid.delegate openid2.local_id', $user->hruid);
-        $page->assign_by_ref('user', $user);
-
-        return;
-    }
-
-    function render_openid_response($webresponse)
-    {
-        if ($webresponse->code != AUTH_OPENID_HTTP_OK) {
-            header(sprintf("HTTP/1.1 %d ", $webresponse->code),
-                   true, $webresponse->code);
-        }
-        foreach ($webresponse->headers as $k => $v) {
-            header("$k: $v");
-        }
-        header('Connection: close');
-        print $webresponse->body;
-        exit;
     }
 }
 

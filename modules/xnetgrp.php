@@ -25,41 +25,34 @@ class XnetGrpModule extends PLModule
     function handlers()
     {
         return array(
-            '%grp'                => $this->make_hook('index',     AUTH_PUBLIC),
-            '%grp/asso.php'       => $this->make_hook('index',     AUTH_PUBLIC),
-            '%grp/logo'           => $this->make_hook('logo',      AUTH_PUBLIC),
-            '%grp/site'           => $this->make_hook('site',      AUTH_PUBLIC),
-            '%grp/edit'           => $this->make_hook('edit',      AUTH_MDP, 'groupadmin'),
-            '%grp/mail'           => $this->make_hook('mail',      AUTH_MDP, 'groupadmin'),
-            '%grp/forum'          => $this->make_hook('forum',     AUTH_MDP, 'groupmember'),
-            '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP, 'groupannu'),
-            '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP, 'groupmember:groupannu'),
-            '%grp/annuaire/csv'   => $this->make_hook('csv',       AUTH_MDP, 'groupmember:groupannu'),
-            '%grp/trombi'         => $this->make_hook('trombi',    AUTH_MDP, 'groupannu'),
-            '%grp/geoloc'         => $this->make_hook('geoloc',    AUTH_MDP, 'groupannu'),
-            '%grp/subscribe'      => $this->make_hook('subscribe', AUTH_MDP),
-            '%grp/subscribe/valid' => $this->make_hook('subscribe_valid', AUTH_MDP, 'groupadmin'),
-            '%grp/unsubscribe'    => $this->make_hook('unsubscribe', AUTH_MDP, 'groupmember'),
+            '%grp'                 => $this->make_hook('index',                 AUTH_PUBLIC),
+            '%grp/asso.php'        => $this->make_hook('index',                 AUTH_PUBLIC),
+            '%grp/logo'            => $this->make_hook('logo',                  AUTH_PUBLIC),
+            '%grp/site'            => $this->make_hook('site',                  AUTH_PUBLIC),
+            '%grp/edit'            => $this->make_hook('edit',                  AUTH_MDP,    'groupadmin'),
+            '%grp/mail'            => $this->make_hook('mail',                  AUTH_MDP,    'groupadmin'),
+            '%grp/forum'           => $this->make_hook('forum',                 AUTH_MDP,    'groupmember'),
+            '%grp/annuaire'        => $this->make_hook('annuaire',              AUTH_MDP,    'groupannu'),
+            '%grp/annuaire/vcard'  => $this->make_hook('vcard',                 AUTH_MDP,    'groupmember:groupannu'),
+            '%grp/annuaire/csv'    => $this->make_hook('csv',                   AUTH_MDP,    'groupmember:groupannu'),
+            '%grp/trombi'          => $this->make_hook('trombi',                AUTH_MDP,    'groupannu'),
+            '%grp/geoloc'          => $this->make_hook('geoloc',                AUTH_MDP,    'groupannu'),
+            '%grp/subscribe'       => $this->make_hook('subscribe',             AUTH_MDP),
+            '%grp/subscribe/valid' => $this->make_hook('subscribe_valid',       AUTH_MDP,    'groupadmin'),
+            '%grp/unsubscribe'     => $this->make_hook('unsubscribe',           AUTH_MDP,    'groupmember'),
 
-            '%grp/change_rights'  => $this->make_hook('change_rights', AUTH_MDP),
+            '%grp/change_rights'   => $this->make_hook('change_rights',         AUTH_MDP),
+            '%grp/admin/annuaire'  => $this->make_hook('admin_annuaire',        AUTH_MDP,    'groupadmin'),
+            '%grp/member'          => $this->make_hook('admin_member',          AUTH_MDP,    'groupadmin'),
+            '%grp/member/new'      => $this->make_hook('admin_member_new',      AUTH_MDP,    'groupadmin'),
+            '%grp/member/new/ajax' => $this->make_hook('admin_member_new_ajax', AUTH_MDP,    'user', NO_AUTH),
+            '%grp/member/del'      => $this->make_hook('admin_member_del',      AUTH_MDP,    'groupadmin'),
 
-            '%grp/admin/annuaire'
-                 => $this->make_hook('admin_annuaire', AUTH_MDP, 'groupadmin'),
-
-            '%grp/member'
-                 => $this->make_hook('admin_member', AUTH_MDP, 'groupadmin'),
-            '%grp/member/new'
-                 => $this->make_hook('admin_member_new', AUTH_MDP, 'groupadmin'),
-            '%grp/member/new/ajax'
-                 => $this->make_hook('admin_member_new_ajax', AUTH_MDP, 'user', NO_AUTH),
-            '%grp/member/del'
-                 => $this->make_hook('admin_member_del', AUTH_MDP, 'groupadmin'),
-
-            '%grp/rss'             => $this->make_hook('rss', AUTH_PUBLIC, 'user', NO_HTTPS),
-            '%grp/announce/new'    => $this->make_hook('edit_announce', AUTH_MDP,  'groupadmin'),
-            '%grp/announce/edit'   => $this->make_hook('edit_announce', AUTH_MDP,  'groupadmin'),
-            '%grp/announce/photo'  => $this->make_hook('photo_announce', AUTH_PUBLIC),
-            '%grp/admin/announces' => $this->make_hook('admin_announce', AUTH_MDP, 'groupadmin'),
+            '%grp/rss'             => $this->make_hook('rss',                   AUTH_PUBLIC, 'user', NO_HTTPS),
+            '%grp/announce/new'    => $this->make_hook('edit_announce',         AUTH_MDP,    'groupadmin'),
+            '%grp/announce/edit'   => $this->make_hook('edit_announce',         AUTH_MDP,    'groupadmin'),
+            '%grp/announce/photo'  => $this->make_hook('photo_announce',        AUTH_PUBLIC),
+            '%grp/admin/announces' => $this->make_hook('admin_announce',        AUTH_MDP,    'groupadmin'),
         );
     }
 
@@ -189,8 +182,8 @@ class XnetGrpModule extends PLModule
                 $site = "";
             }
             if (S::has_perms()) {
-                if (strstr(Post::v('mail_domain'), '.') === false) {
-                    $page->trigError("le domaine doit être un FQDN (aucune modif effectuée) !!!");
+                if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
+                    $page->trigError("Le domaine doit être un FQDN (aucune modification effectuée) !!!");
                     return;
                 }
                 XDB::execute(
@@ -217,13 +210,12 @@ class XnetGrpModule extends PLModule
                 XDB::execute(
                     "UPDATE  groupex.asso
                         SET  descr={?}, site={?}, mail={?}, resp={?},
-                             forum={?}, ax={?}, pub= {?}, sub_url={?},
+                             forum={?}, pub= {?}, sub_url={?},
                              unsub_url={?},flags={?}
                       WHERE  id={?}",
                       Post::v('descr'), $site,
                       Post::v('mail'), Post::v('resp'),
-                      Post::v('forum'), Post::has('ax'),
-                      Post::v('pub'),
+                      Post::v('forum'), Post::v('pub'),
                       Post::v('sub_url'), Post::v('unsub_url'),
                       $flags, $globals->asso('id'));
             }
@@ -245,7 +237,7 @@ class XnetGrpModule extends PLModule
             pl_redirect('../'.Post::v('diminutif', $globals->asso('diminutif')).'/edit');
         }
 
-        if (S::has_perms()) {
+        if (S::admin()) {
             $dom = XDB::iterator('SELECT * FROM groupex.dom ORDER BY nom');
             $page->assign('dom', $dom);
             $page->assign('super', true);
@@ -280,7 +272,13 @@ class XnetGrpModule extends PLModule
             $this->load('mail.inc.php');
             set_time_limit(120);
             $tos = get_all_redirects($mbr,  $mls, $mmlist);
+
             $upload = PlUpload::get($_FILES['uploaded'], S::user()->login(), 'xnet.emails', true);
+            if (!$upload && @$_FILES['uploaded']['name'] && PlUpload::$lastError != null) {
+                $page->trigError(PlUpload::$lastError);
+                return;
+            }
+
             send_xnet_mails($from, $sujet, $body, Env::v('wiki'), $tos, Post::v('replyto'), $upload, @$_FILES['uploaded']['name']);
             if ($upload) {
                 $upload->rm();
@@ -465,7 +463,7 @@ class XnetGrpModule extends PLModule
                 $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
                 $mailer->setTxtBody(Env::v('motif'));
                 $mailer->send();
-                $page->kill("La demande de {$user->fullName()} a bien été refusée.");
+                $page->killSuccess("La demande de {$user->fullName()} a bien été refusée.");
             } else {
                 $page->assign('show_form', true);
                 $page->assign('reason', $reason);
@@ -516,7 +514,8 @@ class XnetGrpModule extends PLModule
                     . "à l'adresse : support@polytechnique.org\n";
 
             if (!$to) {
-                $to = $globals->asso("mail").", support@polytechnique.org";
+                $to = ($globals->asso('mail') != '') ? $globals->asso('mail') . ', ' : '';
+                $to .= 'support@polytechnique.org';
                 $append = "\n-- \nLe groupe ".$globals->asso("nom")
                         ." n'a pas d'administrateur, l'équipe de"
                         ." Polytechnique.org a été prévenue et va rapidement"
