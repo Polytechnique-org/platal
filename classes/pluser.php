@@ -288,7 +288,7 @@ abstract class PlUser
 
     public static function getSilentWithUID($uid)
     {
-        return User::getWithValues($uid, array('User', '_silent_user_callback'));
+        return User::getWithValues(null, array('user_id' => $uid), array('User', '_silent_user_callback'));
     }
 
     /**
