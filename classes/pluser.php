@@ -151,11 +151,6 @@ abstract class PlUser
         return $this->full_name;
     }
 
-    public function promo()
-    {
-        return $this->promo;
-    }
-
     abstract public function password();
 
     // Fallback value is GENDER_MALE.
