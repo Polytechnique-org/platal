@@ -180,8 +180,7 @@ class XorgSession extends PlSession
 
     protected function startSessionAs($user, $level)
     {
-        $session_user = S::v('user');
-        if ((!is_null($session_user) && $session_user->id() != $user->id())
+        if ((!is_null(S::user()) && S::user()->id() != $user->id())
             || (S::has('uid') && S::i('uid') != $user->id())) {
             return false;
         } else if (S::has('uid')) {
