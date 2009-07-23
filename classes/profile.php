@@ -304,11 +304,10 @@ class Profile
         return XDB::iterator('SELECT  pje.name, pje.acronym, pje.url, pje.email, pje.NAF_code,
                                       pj.description, pj.url AS user_site,
                                       IF (' . $cond . ', pj.email, NULL) AS user_email,
-                                      pjfe.name AS function, pjse.name AS sector,
-                                      pjsse.name AS subsector, pjssse.name AS subsubsector
+                                      pjse.name AS sector, pjsse.name AS subsector,
+                                      pjssse.name AS subsubsector
                                 FROM  profile_job AS pj
                           INNER JOIN  profile_job_enum AS pje ON (pje.id = pj.jobid)
-                           LEFT JOIN  profile_job_function_enum AS pjfe ON (pjfe.id = pj.functionid)
                            LEFT JOIN  profile_job_sector_enum AS pjse ON (pjse.id = pj.sectorid)
                            LEFT JOIN  profile_job_subsector_enum AS pjsse ON (pjsse.id = pj.subsectorid)
                            LEFT JOIN  profile_job_subsubsector_enum AS pjssse ON (pjssse.id = pj.subsubsectorid)

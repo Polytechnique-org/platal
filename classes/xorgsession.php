@@ -180,7 +180,8 @@ class XorgSession extends PlSession
 
     protected function startSessionAs($user, $level)
     {
-        if ((!is_null(S::v('user')) && S::v('user')->id() != $user->id())
+        $session_user = S::v('user');
+        if ((!is_null($session_user) && $session_user->id() != $user->id())
             || (S::has('uid') && S::i('uid') != $user->id())) {
             return false;
         } else if (S::has('uid')) {
@@ -208,7 +209,7 @@ class XorgSession extends PlSession
                          LEFT JOIN  gapps_accounts  AS g  ON(a.uid = g.l_userid AND g.g_status = 'active')
                          LEFT JOIN  logger.last_sessions AS ls ON (ls.uid = a.uid)
                          LEFT JOIN  logger.sessions AS s  ON(s.id = ls.id)
-                             WHERE  a.uid = {?} AND u.perms IN('admin', 'user')", $user->id());
+                             WHERE  a.uid = {?} AND a.state = 'active'", $user->id());
         if ($res->numRows() != 1) {
             return false;
         }

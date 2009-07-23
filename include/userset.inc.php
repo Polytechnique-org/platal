@@ -26,7 +26,7 @@ class UserSet extends PlSet
     public function __construct($cond = null)
     {
         $this->cond = new UFC_And();
-        if (!is_null($cond)) {
+        if (!is_null($cond) && ($cond instanceof UserFilterCondition)) {
             $this->cond->addChild($cond);
         }
     }

@@ -692,7 +692,7 @@ class ProfileModule extends PLModule
         }
         if ($sectorSelection != "''") {
             $where[] = "ms.sectorid = " . $sectorSelection;
-            if ($selectedSubSector != "''") {
+            if ($subSectorSelection != "''") {
                 $where[] = "ms.subsectorid = " . $subSectorSelection;
             }
         }
