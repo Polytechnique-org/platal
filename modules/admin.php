@@ -368,7 +368,7 @@ class AdminModule extends PLModule
     function handler_user(&$page, $login = false)
     {
         global $globals;
-        $page->changeTpl('admin/utilisateurs.tpl');
+        $page->changeTpl('admin/user.tpl');
         $page->setTitle('Administration - Compte');
 
         if (S::suid()) {
