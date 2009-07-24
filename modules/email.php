@@ -323,7 +323,8 @@ class EmailModule extends PLModule
 
         $page->changeTpl('emails/antispam.tpl');
 
-        $bogo = new Bogo(S::user());
+        $user = S::user();
+        $bogo = new Bogo($user);
         if (isset($statut_filtre)) {
             $bogo->change($statut_filtre + 0);
         }
