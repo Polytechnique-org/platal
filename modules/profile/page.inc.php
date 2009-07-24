@@ -135,11 +135,11 @@ class ProfilePhones implements ProfileSetting
         $success = true;
         if (is_null($value)) {
             $value = array();
-            $res = XDB::iterator("SELECT  t.display_tel AS tel, t.tel_type AS type, t.pub, t.comment
-                                    FROM  profile_phones AS t
-                                   WHERE  t.uid = {?} AND t.link_type = {?}
-                                ORDER BY  t.tel_id",
-                                 $this->id, $this->link_type);
+            $res = XDB::iterator('SELECT  display_tel AS tel, tel_type AS type, pub, comment
+                                    FROM  profile_phones
+                                   WHERE  uid = {?} AND link_type = {?}
+                                ORDER BY  tel_id',
+                                 $page->pid(), $this->link_type);
             if ($res->numRows() > 0) {
                 $value = $res->fetchAllAssoc();
             } else {
