@@ -155,7 +155,7 @@ class SearchModule extends PLModule
     function handler_advanced(&$page, $action = null, $subaction = null)
     {
         global $globals;
-        require_once 'geoloc.inc.php';
+        require_once 'geocoding.inc.php';
         $this->load('search.inc.php');
         $page->assign('advanced',1);
         $page->addJsLink('jquery.autocomplete.js');

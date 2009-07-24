@@ -38,7 +38,7 @@ function display_address_isIdentity($idt, $value, $test_reverse = true)
 
 function smarty_function_display_address($param, &$smarty)
 {
-    require_once('geoloc.inc.php');
+    require_once('geocoding.inc.php');
     $txtad = $param['adr']['text'];
     if (!$txtad && !$param['adr']['tels'] && !count($param['adr']['tels'])) {
         return "";
