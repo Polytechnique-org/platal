@@ -34,10 +34,10 @@
     <input type="hidden" name="action" value="ajouter" />
     <input type="text" size="30" name="user" class="quick_search"
            value="ajouter prenom.nom"
-           onfocus="if (this.value == 'ajouter prenom.nom') this.value=''"
+           onfocus="if (this.value == 'ajouter prenom.nom') this.value=''; $('#add_button').show()"
            onblur="if (this.value == '') this.value='ajouter prenom.nom'"
            size="20" maxlength="70"/>
-    <a href="" onclick="document.getElementById('add_user').submit(); return false;">
+    <a id="add_button" href="" style="display: none" onclick="document.getElementById('add_user').submit(); return false;">
       {icon name=add title="Ajouter la personne"}
     </a>
     </div>
