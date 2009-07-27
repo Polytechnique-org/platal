@@ -16,6 +16,7 @@ Bug/Wish:
 
     * Core:
         - #680: Retrieve dead redirections thanks to inactive redirections -JAC
+        - #862: Remodels the registration process                          -VZA
 
     * Mail:
         - Notifies the sender when a moderated message to a ML is accepted -JAC
