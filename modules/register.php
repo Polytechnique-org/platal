@@ -157,6 +157,15 @@ class RegisterModule extends PLModule
                         }
                     }
 
+                    // Register the optional services requested by the user.
+                    $services = array();
+                    foreach (array('ax_letter', 'imap', 'ml_promo', 'nl') as $service) {
+                        if (Post::b($service)) {
+                            $services[] = $service;
+                        }
+                    }
+                    $sub_state['services'] = $services;
+
                     // Validate the password.
                     if (!Post::v('response2', false)) {
                         $err[] = "Le mot de passe n'est pas valide.";
@@ -253,7 +262,7 @@ class RegisterModule extends PLModule
         if ($hash) {
             $res = XDB::query(
                     "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2,
-                             r.password, r.email, r.naissance, u.nom, u.prenom,
+                             r.password, r.email, r.services, r.naissance, u.nom, u.prenom,
                              u.promo, FIND_IN_SET('femme', u.flags), u.naissance_ini
                        FROM  register_pending AS r
                  INNER JOIN  auth_user_md5    AS u ON r.uid = u.user_id
@@ -274,7 +283,7 @@ class RegisterModule extends PLModule
                         </ol>");
         }
 
-        list($uid, $forlife, $bestalias, $mailorg2, $password, $email,
+        list($uid, $forlife, $bestalias, $mailorg2, $password, $email, $services,
              $naissance, $nom, $prenom, $promo, $femme, $naiss_ini) = $res->fetchOneRow();
 
         // Prepare the template for display.
@@ -320,6 +329,41 @@ class RegisterModule extends PLModule
         $user = User::getSilent($uid);
         $redirect = new Redirect($user);
         $redirect->add_email($email);
+
+        // Try to start a session (so the user don't have to log in); we will use
+        // the password available in Post:: to authenticate the user.
+        Platal::session()->start(AUTH_MDP);
+
+        // Subscribe the user to the services she did request at registration time.
+        foreach (explode(',', $services) as $service) {
+            switch ($service) {
+                case 'ax_letter':
+                    Platal::load('axletter', 'axletter.inc.php');
+                    AXLetter::subscribe();
+                    break;
+                case 'imap':
+                    require_once 'emails.inc.php';
+                    $user = S::user();
+                    $storage = new EmailStorage($user, 'imap');
+                    $storage->activate();
+                    break;
+                case 'ml_promo':
+                    $r = XDB::query('SELECT id FROM groupex.asso WHERE diminutif = {?}', S::user()->promo());
+                    if ($r->numRows()) {
+                        $asso_id = $r->fetchOneCell();
+                        XDB::execute('REPLACE INTO  groupex.membres (uid, asso_id)
+                                            VALUES  ({?}, {?})',
+                                     S::user()->id(), $asso_id);
+                        $mmlist = new MMList(S::user()->id(), S::v('password'));
+                        $mmlist->subscribe("promo" . S::v('promo'));
+                    }
+                    break;
+                case 'nl':
+                    require_once 'newsletter.inc.php';
+                    NewsLetter::subscribe();
+                    break;
+            }
+        }
 
         // Log the registration in the user session.
         S::logger($uid)->log('inscription', $email);
@@ -368,10 +412,6 @@ class RegisterModule extends PLModule
 
         // Update the global registration count stats.
         $globals->updateNbIns();
-
-        // Try to start a session (so the user don't have to log in); we will use
-        // the password available in Post:: to authenticate the user.
-        Platal::session()->start(AUTH_MDP);
 
         //
         // Update collateral data sources, and inform watchers by email.
