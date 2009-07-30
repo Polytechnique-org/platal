@@ -39,9 +39,9 @@ function smarty_compiler_checkpasswd($tag_attrs, &$compiler)
               <script type="text/javascript">//<![CDATA[
                 var passwordprompt_name = '.  $prompt . ';
                 var passwordprompt_submit = ' . $submit . ';
-                $(":input[@name=' . $prompt . ']").keyup(function(event) { checkPassword(event.target, ' . $text . '); });
+                $(":input[name=' . $prompt . ']").keyup(function(event) { checkPassword(event.target, ' . $text . '); });
                 $(document).ready(function() {
-                  checkPassword($(":input[@name=' . $prompt . ']").get(0), ' . $text . ');
+                  checkPassword($(":input[name=' . $prompt . ']").get(0), ' . $text . ');
                 });
               //]]></script>
               <div>
