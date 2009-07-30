@@ -203,8 +203,10 @@ class OpenId
             header(sprintf('%s %d', $_SERVER['SERVER_PROTOCOL'], $web_response->code),
                    true, $web_response->code);
 
-            foreach ($web_response->headers as $key => $value) {
-                header(sprintf('%s: %s', $key, $value));
+            if (count($web_response->headers) > 0) {
+                foreach ($web_response->headers as $key => $value) {
+                    header(sprintf('%s: %s', $key, $value));
+                }
             }
 
             header('Connection: close');
