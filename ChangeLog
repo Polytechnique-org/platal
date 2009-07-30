@@ -17,7 +17,12 @@ Bug/Wish:
         - #891: Improves education display                                 -JAC
 
 ================================================================================
-VERSION 0.10.1                                                        XX XX XXXX
+VERSION 0.10.2                                                        XX XX XXXX
+
+New:
+
+================================================================================
+VERSION 0.10.1                                                        30 07 2009
 
 New:
 
@@ -34,6 +39,7 @@ Bug/Wish:
 
     * Core:
         - #680: Retrieve dead redirections thanks to inactive redirections -JAC
+        - #862: Remodels the registration process                          -VZA
 
     * Mail:
         - Notifies the sender when a moderated message to a ML is accepted -JAC
