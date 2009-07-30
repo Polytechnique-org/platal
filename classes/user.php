@@ -27,6 +27,11 @@ class User extends PlUser
     // Additional fields (non core)
     protected $promo = null;
 
+    public function promo()
+    {
+        return $this->promo;
+    }
+
     // Implementation of the login to uid method.
     protected function getLogin($login)
     {

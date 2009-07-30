@@ -305,6 +305,9 @@ WHERE name = 'Univ Carnegie Mellon';
 UPDATE profile_education_enum
 SET abbreviation = 'Carolina', name = 'University of North Carolina at Chapel Hill', country = 'US'
 WHERE name = 'Univ of North Carolina at Chapel Hill';
+UPDATE profile_education_enum
+SET abbreviation = 'UM', country = 'US'
+WHERE name = 'University of Miami';
 
 UPDATE profile_education_enum
 SET abbreviation = 'TU Berlin', name = 'Technische Universität Berlin', country = 'DE'

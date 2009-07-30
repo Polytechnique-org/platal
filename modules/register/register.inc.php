@@ -236,9 +236,9 @@ function finish_ins($sub_state)
                 SET  last_known_email = {?}
               WHERE  matricule = {?}", $email, $mat);
     XDB::execute(
-            "REPLACE INTO  register_pending (uid, forlife, bestalias, mailorg2, password, email, date, relance, naissance, hash)
-                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?})",
-            $uid, $forlife, $bestalias, $mailorg2, $password, $email, $naissance, $hash);
+            "REPLACE INTO  register_pending (uid, forlife, bestalias, mailorg2, password, email, date, relance, naissance, hash, services)
+                   VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?}, {?})",
+            $uid, $forlife, $bestalias, $mailorg2, $password, $email, $naissance, $hash, implode(',', $services));
 
     $mymail = new PlMailer('register/inscrire.mail.tpl');
     $mymail->assign('mailorg', $bestalias);

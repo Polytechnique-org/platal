@@ -96,8 +96,42 @@
         {checkpasswd prompt="password" text="Terminer la pré-inscription"}
       </td>
     </tr>
+  </table>
+  <table class="bicol">
     <tr>
-      <td colspan="2" class="center">
+      <th>Services supplémentaires</th>
+    </tr>
+    <tr class="impair">
+      <td>Pour profiter pleinement de ta nouvelle inscription, nous te proposons&nbsp;:</td>
+    </tr>
+    <tr class="pair">
+      <td>
+        <dl>
+          <dt><label><input type="checkbox" checked="checked" name="nl" /> lettre mensuelle</label></dt>
+          <dd>
+            de recevoir chaque mois la lettre mensuelle de Polytechnique.org contenant les activités et nouvelles de la communauté des X.
+          </dd>
+          <dt><label><input type="checkbox" checked="checked" name="ax_letter" /> envois de l'AX</label></dt>
+          <dd>
+            de recevoir les informations importantes de l'AX.
+          </dd>
+          <dt><label><input type="checkbox" checked="checked" name="ml_promo" /> ta promotion</label></dt>
+          <dd>
+            de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements
+            qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.sub_state.promo}.
+          </dd>
+          <dt><label><input type="checkbox" checked="checked" name="imap" />sauvegardes d'emails</label></dt>
+          <dd>
+            d'avoir un accès de secours aux 30 derniers jours d'emails reçus sur ton adresse Polytechnique.org.
+          </dd>
+        </dl>
+      </td>
+    </tr>
+    <tr class="impair">
+      <td>Valider mon inscription&nbsp;:</td>
+    </tr>
+    <tr class="impair">
+      <td class="center">
         <input type="submit" name="submitn" value="Continuer" onclick="EncryptedResponseInNestedForm(); return false;" />
       </td>
     </tr>

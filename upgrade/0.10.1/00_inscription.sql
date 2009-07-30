@@ -33,4 +33,6 @@ CREATE TABLE IF NOT EXISTS reminder (
   PRIMARY KEY(uid, type_id)
 ) CHARSET=utf8;
 
+ALTER TABLE register_pending ADD services SET('ax_letter', 'imap', 'ml_promo', 'nl') NOT NULL DEFAULT '' AFTER hash;
+
 -- vim:set syntax=mysql:
