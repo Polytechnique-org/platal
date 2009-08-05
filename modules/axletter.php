@@ -102,7 +102,7 @@ class AXLetterModule extends PLModule
             $res = XDB::query("SELECT * FROM axletter WHERE FIND_IN_SET('new', bits)");
             if ($res->numRows()) {
                 extract($res->fetchOneAssoc(), EXTR_OVERWRITE);
-                $subset_to = explode("\n", $subset);
+                $subset_to = ($subset ? explode("\n", $subset) : null);
                 $subset = (count($subset_to) > 0);
                 $saved = true;
             } else  {
@@ -163,7 +163,7 @@ class AXLetterModule extends PLModule
                 XDB::execute("REPLACE INTO  axletter
                                        SET  id = {?}, short_name = {?}, subject = {?}, title = {?}, body = {?},
                                             signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}, subset = {?}",
-                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance, $subset ? implode("\n", $subset_to): null);
+                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance, $subset ? implode("\n", $subset_to) : null);
                 if (!$saved) {
                     global $globals;
                     $mailer = new PlMailer();
