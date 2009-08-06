@@ -106,10 +106,11 @@ class OpenId
 
     // Answers the current request, and renders the response. Appends the |sreg|
     // data when not null.
-    public function AnswerRequest($is_authorized, $user = null, $sreg_data = null)
+    public function AnswerRequest($is_authorized, $sreg_data = null)
     {
         // Creates the response.
-        if ($is_authorized && $this->request->idSelect() && $user) {
+        if ($is_authorized && $this->request->idSelect()) {
+            $user = S::user();
             $response = $this->request->answer(
                 $is_authorized, null, $user->login(), $this->GetUserUrl($user));
         } else {
@@ -203,12 +204,16 @@ class OpenId
             header(sprintf('%s %d', $_SERVER['SERVER_PROTOCOL'], $web_response->code),
                    true, $web_response->code);
 
-            foreach ($web_response->headers as $key => $value) {
-                header(sprintf('%s: %s', $key, $value));
-            }
+            if (is_a($response, 'Auth_OpenID_ServerError')) {
+                print "Erreur lors de l'authentification OpenId: " . $response->toString();
+            } else {
+                foreach ($web_response->headers as $key => $value) {
+                    header(sprintf('%s: %s', $key, $value));
+                }
 
-            header('Connection: close');
-            print $web_response->body;
+                header('Connection: close');
+                print $web_response->body;
+            }
         }
         exit;
     }

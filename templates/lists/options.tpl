@@ -148,8 +148,8 @@ Tu n'es pas administrateur de la liste, mais du site.
         <script type="text/javascript">//<![CDATA[
           {literal}
           $(function() {
-            $(":radio[@name=bogo_level]").change(function() {
-              if ($(":radio[@name=bogo_level]:checked").val() == 0) {
+            $(":radio[name=bogo_level]").change(function() {
+              if ($(":radio[name=bogo_level]:checked").val() == 0) {
                 $("#unsurelevel").hide();
               } else {
                 $("#unsurelevel").show();

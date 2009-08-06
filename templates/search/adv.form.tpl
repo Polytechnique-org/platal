@@ -44,26 +44,26 @@
 
   // when changing country, open up region choice
   function changeCountry(a2) {
-    $(".autocompleteTarget[@name='country']").attr('value',a2);
+    $(".autocompleteTarget[name='country']").attr('value',a2);
 
     if (a2) {
-      $(".autocomplete[@name='countryTxt']").addClass('hidden_valid');
+      $(".autocomplete[name='countryTxt']").addClass('hidden_valid');
 
-      $("[@name='region']").parent().load(baseurl + 'list/region/', { country:a2 }, function() {
-          if ($("select[@name='region']").children("option").size() > 1) {
-            $("select[@name='region']").attr('value', '{/literal}{$smarty.request.region}{literal}');
+      $("[name='region']").parent().load(baseurl + 'list/region/', { country:a2 }, function() {
+          if ($("select[name='region']").children("option").size() > 1) {
+            $("select[name='region']").attr('value', '{/literal}{$smarty.request.region}{literal}');
 
             $("tr#region_ln").show();
           } else {
-            $("select[@name='region']").attr('value', '');
+            $("select[name='region']").attr('value', '');
 
             $("tr#region_ln").hide();
           }
         });
     } else {
-      $(".autocomplete[@name='countryTxt']").removeClass('hidden_valid');
+      $(".autocomplete[name='countryTxt']").removeClass('hidden_valid');
 
-      $("select[@name='region']").attr('value', '');
+      $("select[name='region']").attr('value', '');
 
       $("tr#region_ln").hide();
     }
@@ -71,16 +71,16 @@
 
   // when changing school, open diploma choice
   function changeSchool(schoolId) {
-    $(".autocompleteTarget[@name='school']").attr('value',schoolId);
+    $(".autocompleteTarget[name='school']").attr('value',schoolId);
 
     if (schoolId) {
-      $(".autocomplete[@name='schoolTxt']").addClass('hidden_valid');
+      $(".autocomplete[name='schoolTxt']").addClass('hidden_valid');
     } else {
-      $(".autocomplete[@name='schoolTxt']").removeClass('hidden_valid');
+      $(".autocomplete[name='schoolTxt']").removeClass('hidden_valid');
     }
 
-    $("[@name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
-        $("select[@name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
+    $("[name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
+        $("select[name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
       });
   }
 
@@ -107,9 +107,9 @@
       return function(i) {
         nameRealField = this.field.replace(/Txt$/, '');
 
-        $(".autocompleteTarget[@name='"+nameRealField+"']").attr('value',i.extra[1]);
+        $(".autocompleteTarget[name='"+nameRealField+"']").attr('value',i.extra[1]);
 
-        $(".autocomplete[@name='"+this.field+"']").addClass('hidden_valid');
+        $(".autocomplete[name='"+this.field+"']").addClass('hidden_valid');
       }
     }
 
@@ -138,11 +138,11 @@
 
       $(".autocomplete").change(function() { $(this).removeClass('hidden_valid'); });
 
-      $(".autocomplete[@name='countryTxt']").change(function() { changeCountry(''); });
+      $(".autocomplete[name='countryTxt']").change(function() { changeCountry(''); });
 
       changeCountry({/literal}'{$smarty.request.country}'{literal});
 
-      $(".autocomplete[@name='schoolTxt']").change(function() { changeSchool(''); });
+      $(".autocomplete[name='schoolTxt']").change(function() { changeSchool(''); });
 
       changeSchool({/literal}'{$smarty.request.school}'{literal});
 
@@ -150,13 +150,13 @@
           var fieldName = $(this).attr('href');
 
           $(this).attr('href', baseurl + 'list/'+fieldName).click(function() {
-              var oldval = $("input.autocompleteTarget[@name='"+fieldName+"']")[0].value;
+              var oldval = $("input.autocompleteTarget[name='"+fieldName+"']")[0].value;
 
-              $(".autocompleteTarget[@name='"+fieldName+"']").parent().load(baseurl + 'list/'+fieldName,{},
+              $(".autocompleteTarget[name='"+fieldName+"']").parent().load(baseurl + 'list/'+fieldName,{},
                 function(selectBox) {
-                  $(".autocompleteTarget[@name='"+fieldName+"']").remove();
-                  $(".autocomplete[@name='"+fieldName+"Txt']").remove();
-                  $("select[@name='"+fieldName+"']").attr('value', oldval);
+                  $(".autocompleteTarget[name='"+fieldName+"']").remove();
+                  $(".autocomplete[name='"+fieldName+"Txt']").remove();
+                  $("select[name='"+fieldName+"']").attr('value', oldval);
                 });
 
               return false;

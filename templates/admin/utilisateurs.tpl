@@ -140,7 +140,7 @@ function ban_read()
       </td>
       <td>
         <div style="float: left">
-          <input type="text" name="newpass_clair" size="10" maxlength="10" value="********" />
+          <input type="text" name="newpass_clair" size="10" maxlength="256" value="********" />
           <input type="hidden" name="passw" size="32" maxlength="32" value="{$mr.password}" />
           <input type="hidden" name="hashpass" value="" />
         </div>

@@ -129,7 +129,8 @@ if ($opt_verbose) {
         foreach ($result as $user) {
             echo '* ' . $user['email'] . ' pour ' . $user['hruid'] . "\n";
         }
-        echo "\n";
+    }
+    echo "\n";
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

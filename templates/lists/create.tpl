@@ -86,8 +86,8 @@ liste&nbsp;:
     <script type="text/javascript">//<![CDATA[
       {literal}
       $(function() {
-        $(":radio[@name=asso]").change(function() {
-          var asso = $(":radio[@name=asso]:checked").val();
+        $(":radio[name=asso]").change(function() {
+          var asso = $(":radio[name=asso]:checked").val();
           if ((asso == "binet") || (asso == "alias")) {
             $(".groupex").hide();
             $(".promo").show();
@@ -101,8 +101,8 @@ liste&nbsp;:
         }).change();
       });
       $(function() {
-        $(":text[@name=promo]").change(function () {
-          var str = $(":text[@name=promo]").val();
+        $(":text[name=promo]").change(function () {
+          var str = $(":text[name=promo]").val();
           $("span#promotion").text(str);
         }).change();
       });
