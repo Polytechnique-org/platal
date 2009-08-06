@@ -134,7 +134,7 @@ $(document).ready(function() {
       <td class="titre">Mot de passe</td>
       <td>
         <div style="float: left">
-          <input type="text" name="newpass_clair" size="10" maxlength="255" value="********" />
+          <input type="text" name="newpass_clair" size="10" maxlength="256" value="********" />
           <input type="hidden" name="hashpass" value="" />
         </div>
         <div style="float: left; margin-top: 5px;">

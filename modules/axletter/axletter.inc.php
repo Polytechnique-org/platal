@@ -60,7 +60,7 @@ class AXLetter extends MassMailer
         if ($this->_date == '0000-00-00') {
             $this->_date = 0;
         }
-        $this->_subset_to = explode("\n", $this->_subset_to);
+        $this->_subset_to = ($this->_subset_to ? explode("\n", $this->_subset_to) : null);
         $this->_subset = (count($this->_subset_to) > 0);
     }
 
@@ -185,7 +185,7 @@ class AXLetter extends MassMailer
             require_once("emails.inc.php");
             $ids = ids_from_mails($this->_subset_to);
             $ids_list = implode(',', $ids);
-            if(count($ids_list) > 0) {
+            if(count($ids) > 0) {
                 $where[] = "ni.user_id IN ($ids_list)";
             } else {
                 // No valid email

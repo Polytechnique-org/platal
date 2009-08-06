@@ -54,7 +54,7 @@
             $("#ln_promo_exp").show();
           } 
         }
-        $("[@name='survey_question[mode]']").change(function() { hidePromo(this.value); });
+        $("[name='survey_question[mode]']").change(function() { hidePromo(this.value); });
         hidePromo({/literal}"{$survey_current.mode}"{literal});
       });
       {/literal}
