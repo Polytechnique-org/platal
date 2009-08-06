@@ -197,8 +197,7 @@ class OpenidModule extends PLModule
 
         // Finally answers the request.
         if ($server->IsUserAuthorized($user) && $trusted) {
-            $server->AnswerRequest(
-                true, $user, Post::b('trust_sreg') ? $sreg_response : null);
+            $server->AnswerRequest(true, Post::b('trust_sreg') ? $sreg_response : null);
         } else {
             $server->AnswerRequest(false);
         }

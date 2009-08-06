@@ -464,6 +464,7 @@ class AdminModule extends PLModule
                     // Checks for alias' user validity.
                     if (!preg_match('/[-a-z0-9\.]+/s', $alias)) {
                         $page->trigError("'$alias' n'est pas un alias valide");
+                        break;
                     }
 
                     // Eventually adds the alias to the right domain.

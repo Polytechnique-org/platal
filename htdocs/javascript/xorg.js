@@ -319,7 +319,7 @@ function checkPassword(box, okLabel) {
                     }, 750)
            .parent().stop()
                     .animate({ backgroundColor: bgcolor }, 750);
-    var submitButton = $(":submit[@name='" + passwordprompt_submit + "']");
+    var submitButton = $(":submit[name='" + passwordprompt_submit + "']");
     if (ok && pass.length >= 6) {
         submitButton.attr("value", okLabel);
         submitButton.removeAttr("disabled");
