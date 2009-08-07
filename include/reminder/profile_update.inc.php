@@ -63,7 +63,7 @@ class ReminderProfileUpdate extends Reminder
 
         $res = XDB::query('SELECT  COUNT(*)
                              FROM  profile_addresses
-                            WHERE  pid = {?} AND accuracy = 0'
+                            WHERE  pid = {?} AND accuracy = 0',
                           $this->user->id());
         $page->assign('geocoding_incitation', $res->fetchOneCell());
     }
@@ -93,8 +93,8 @@ class ReminderProfileUpdate extends Reminder
 
         $res = XDB::query('SELECT  COUNT(*)
                              FROM  profile_addresses
-                            WHERE  pid = {?} AND accuracy = 0'
-                          $this->user->id());
+                            WHERE  pid = {?} AND accuracy = 0',
+                          $user->id());
 
         return ($res->fetchOneCell() || !$has_photo || $is_profile_old);
     }
