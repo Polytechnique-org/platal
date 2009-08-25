@@ -272,20 +272,20 @@ class XnetListsModule extends ListsModule
                 if (list($alias, $blias) = $res->fetchOneRow()) {
                     $alias = empty($blias) ? $alias : $blias;
                     XDB::query(
-                        "INSERT INTO  x4dat.virtual_redirect (vid,redirect)
-                              SELECT  vid, {?}
-                                FROM  x4dat.virtual
-                               WHERE  alias={?}", "$alias@m4x.org", $lfull);
+                        "INSERT IGNORE INTO  x4dat.virtual_redirect (vid,redirect)
+                                     SELECT  vid, {?}
+                                       FROM  x4dat.virtual
+                                      WHERE  alias={?}", "$alias@m4x.org", $lfull);
                    $page->trigSuccess("$alias@m4x.org ajouté");
                 } else {
                     $page->trigError("$mbox@{$globals->mail->domain} n'existe pas.");
                 }
             } else {
                 XDB::query(
-                        "INSERT INTO  x4dat.virtual_redirect (vid,redirect)
-                              SELECT  vid,{?}
-                                FROM  x4dat.virtual
-                               WHERE  alias={?}", "$mbox@$dom", $lfull);
+                        "INSERT IGNORE INTO  x4dat.virtual_redirect (vid,redirect)
+                                     SELECT  vid,{?}
+                                       FROM  x4dat.virtual
+                                      WHERE  alias={?}", "$mbox@$dom", $lfull);
                 $page->trigSuccess("$mbox@$dom ajouté");
             }
         }

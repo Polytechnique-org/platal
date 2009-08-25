@@ -428,9 +428,11 @@ function remove_user_address($uid, $adrid) {
 // }}}
 // {{{ function add_user_tel()
 function add_user_tel($uid, $adrid, $telid, $tel) {
-    XDB::execute(
-        "INSERT INTO tels SET uid = {?}, adrid = {?}, telid = {?}, tel = {?}, tel_type = {?}, tel_pub = {?}",
-        $uid, $adrid, $telid, $tel['tel'], $tel['tel_type'], $tel['tel_pub']);
+    $tel['tel_type'] = ($tel['tel_type'] ? $tel['tel_type'] : '');
+    XDB::execute('INSERT INTO  tels
+                          SET  uid = {?}, adrid = {?}, telid = {?}, tel = {?},
+                               tel_type = {?}, tel_pub = {?}',
+                 $uid, $adrid, $telid, $tel['tel'], $tel['tel_type'], $tel['tel_pub']);
 }
 // }}}
 // {{{ function update_user_tel()

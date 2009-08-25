@@ -180,6 +180,9 @@ abstract class ProfileGeoloc implements ProfileSetting
                 $address = array_merge($address, cut_address(@$address['text']));
                 $address['checked'] = true;
             }
+        } elseif (@$address['changed'] && !@$address['text']) {
+            $address = empty_address();
+            $address['pub'] = 'private';
         }
         $address['precise_lat'] = rtrim($address['precise_lat'], '.0');
         $address['precise_lon'] = rtrim($address['precise_lon'], '.0'); 
