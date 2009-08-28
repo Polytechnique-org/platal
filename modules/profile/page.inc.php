@@ -277,6 +277,9 @@ abstract class ProfileGeocoding implements ProfileSetting
             if (isset($address['geoloc'])) {
                 $success = false;
             }
+        } elseif (@$address['changed'] && !@$address['text']) {
+            $address = empty_address();
+            $address['pub'] = 'private';
         }
         if (isset($address['geoloc_choice']) && ($address['geoloc_choice'] == 0)) {
             $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
