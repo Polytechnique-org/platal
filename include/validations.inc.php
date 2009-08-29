@@ -363,7 +363,7 @@ abstract class Validate
         static $answers_table;
         if (!isset($answers_table[$this->type])) {
             $r = XDB::query("SELECT id, title, answer FROM requests_answers WHERE category = {?}", $this->type);
-            $answers_table[$this->type] = $r->fetchAllAssoc($r);
+            $answers_table[$this->type] = $r->fetchAllAssoc();
         }
         return $answers_table[$this->type];
     }
