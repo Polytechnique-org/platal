@@ -474,6 +474,10 @@ UPDATE profile_education_enum
 SET abbreviation = 'NSU', name = 'Novosibirsk State University', url = 'http://www.nsu.ru/', country = 'RU'
 WHERE name = 'Université de Novossibirsk (Новосибирский Государственный Университет)';
 
+UPDATE profile_education_enum
+SET abbreviation = 'IITs', country = 'IN'
+WHERE name = 'Indian Institutes of Technology';
+
 -- Cleans duplicated entries
 UPDATE profile_education SET eduid = 0 WHERE eduid = 70;
 DELETE FROM profile_education_enum WHERE id = 70;
