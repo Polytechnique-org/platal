@@ -169,7 +169,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
           <td>{$m.telepayment|default:0}&euro;</td>
           <td>{$m.adminpaid|default:0}&euro;</td>
         {/if}
-        <td {if $m.montant < $m.paid}class="erreur"{/if}>{$m.paid}&euro;</td>
+        <td{if $m.montant < $m.paid} style="color: maroon"{/if}>{$m.paid}&euro;</td>
       {/if}
     {else}
     <td>
