@@ -103,7 +103,7 @@ while (<FILE>)
   s/CESDR\t//;
   s/CFAF\t//;
   s/CHEA\t//;
-  s/CHEAR\t//;
+  s/CHEAR\t/CHEAr/;
   s/CHEE&DD Session 9\t//;
   s/CESB\t//;
   s/CESSID\t//;

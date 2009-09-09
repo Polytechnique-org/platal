@@ -478,6 +478,16 @@ UPDATE profile_education_enum
 SET abbreviation = 'IITs', country = 'IN'
 WHERE name = 'Indian Institutes of Technology';
 
+UPDATE profile_education_enum
+SET name = 'Institut des Hautes Études de Défense Nationale', country = 'FR', url ='http://www.ihedn.fr/',
+abbreviation = 'IHEDN'
+WHERE name = 'IHEDN';
+
+UPDATE profile_education_enum
+SET name = "Centre des Hautes Études de l'Armement", country = 'FR', url ='http://www.chear.defense.gouv.fr/',
+WHERE name = 'CHEAr'
+WHERE name = 'CHEAr';
+
 -- Cleans duplicated entries
 UPDATE profile_education SET eduid = 0 WHERE eduid = 70;
 DELETE FROM profile_education_enum WHERE id = 70;
@@ -490,7 +500,6 @@ DELETE FROM profile_education_degree WHERE eduid = 106;
 -- Adds new universities needed for the AX directory
 INSERT INTO  profile_education_enum (name, url, country, abbreviation)
      VALUES  ('Institut Supérieur de l\'Aéronautique et de l\'Espace', 'http://www.isae.fr/', 'FR', 'ISAE'),
-             ('Institut des Hautes Études de Défense Nationale', 'http://www.ihedn.fr/', 'FR', 'IHEDN'),
              ('École du Personnel Navigant d\'Essais et de Réception',
               'http://www.defense.gouv.fr/dga/archives/l_epner_ecole_du_personnel_navigant_d_essais_et_de_reception', 'FR', 'EPNER'),
              ('Agrocampus Ouest', 'http://www.agrocampus-ouest.fr/', 'FR', 'ENSAR'),
