@@ -468,6 +468,10 @@ UPDATE profile_education_enum
 SET abbreviation = '', country = 'GB'
 WHERE name = 'University of Surrey';
 UPDATE profile_education_enum
+SET abbreviation = '', country = 'GB'
+WHERE name = 'Heriot-Watt University';
+
+UPDATE profile_education_enum
 SET abbreviation = 'OIV', country = 'FR'
 WHERE name = 'Organisme International de la Vigne et du Vin';
 UPDATE profile_education_enum
