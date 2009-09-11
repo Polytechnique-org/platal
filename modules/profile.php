@@ -311,7 +311,7 @@ class ProfileModule extends PLModule
         if (!intval($mat)) {
             $page->kill("Le matricule AX de {$user->login()} est inconnu");
         }
-        http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=$mat");
+        http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&ancc_id=$mat");
     }
 
     function handler_p_edit(&$page, $opened_tab = null, $mode = null, $success = null)

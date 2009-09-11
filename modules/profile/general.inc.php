@@ -127,7 +127,7 @@ class ProfileGeneral extends ProfilePage
                                    q.profile_mobile as mobile, q.profile_mobile_pub as mobile_pub,
                                    q.profile_web as web, q.profile_web_pub as web_pub,
                                    q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
-                                   q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.matricule_ax,
+                                   q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.hruid,
                                    IF(a1.aid IS NULL, -1, a1.aid) as appli_id1, a1.type as appli_type1,
                                    IF(a2.aid IS NULL, -1, a2.aid) as appli_id2, a2.type as appli_type2
                              FROM  auth_user_md5   AS u

@@ -258,7 +258,7 @@ class MarketingModule extends PLModule
         }
         $page->assign('promo', $promo);
 
-        $sql = "SELECT  u.user_id, u.nom, u.prenom, u.last_known_email, u.matricule_ax,
+        $sql = "SELECT  u.user_id, u.hruid, u.nom, u.prenom, u.last_known_email,
                         IF(MAX(m.last) > p.relance, MAX(m.last), p.relance) AS dern_rel, p.email
                   FROM  auth_user_md5      AS u
              LEFT JOIN  register_pending   AS p ON p.uid = u.user_id
