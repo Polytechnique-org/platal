@@ -27,20 +27,7 @@
 </p>
 
 <p class='descr'>
-  Cet événement a lieu 
-  <strong>
-  {if $event.fin and $event.fin neq $event.debut}
-    {if $event.first_day eq $event.last_day}
-      le {$event.debut|date_format:"%d %B %Y"} de {$event.debut|date_format:"%H:%M"} à {$event.fin|date_format:"%H:%M"}
-    {else}
-      du {$event.debut|date_format:"%d %B %Y à %H:%M"}<br />
-      au {$event.fin|date_format:"%d %B %Y à %H:%M"}
-    {/if}
-  {else}
-    le {$event.debut|date_format:"%d %B %Y à %H:%M"}
-  {/if}
-  </strong>
-  et a été proposé par
+  Cet événement a lieu <strong>{$event.date}</strong> et a été proposé par
   <a href='https://www.polytechnique.org/profile/{$event.alias}' class='popup2'>
     {$event.prenom} {$event.nom} ({$event.promo}).
   </a>
