@@ -145,10 +145,10 @@
   <tr>
     <td>
       <p>
-        Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met à jour l'annuaire papier à partir des informations que tu lui fournis. Tu peux choisir ici d'envoyer directement les données de ta fiche Polytechnique.org vers ta <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a>.
+        Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met à jour l'annuaire papier à partir des informations que tu lui fournis. Tu peux choisir ici d'envoyer directement les données de ta fiche Polytechnique.org vers ta <a href="profile/ax/{$hruid}">fiche AX</a>.
       </p>
       <p>
-        L'opération de synchronisation prend en compte toutes les informations que tu as marquées comme transmises à l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations sur ta <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a> selon ce qui s'y trouve déjà.
+        L'opération de synchronisation prend en compte toutes les informations que tu as marquées comme transmises à l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations sur ta <a href="profile/ax/{$hruid}">fiche AX</a> selon ce qui s'y trouve déjà.
       </p>
       <p class="center">
         <a href="profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>

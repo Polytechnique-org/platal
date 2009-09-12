@@ -893,7 +893,7 @@ class AdminModule extends PLModule
         $page->setTitle('Administration - Décédés');
 
         $res = XDB::iterator(
-                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.matricule_ax, u.hruid, DATE(MAX(s.start)) AS last
+                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.hruid, DATE(MAX(s.start)) AS last
                    FROM  auth_user_md5 AS u
               LEFT JOIN  logger.sessions AS s ON (s.uid = u.user_id AND suid = 0)
                   WHERE  perms IN ('admin', 'user') AND deces <> 0

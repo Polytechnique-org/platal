@@ -85,7 +85,7 @@
       {/if}
       <a href="admin/user/{$c.hruid}">{*
       *}{icon name=wrench title="administrer user"}</a>
-      <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
+      <a href="profile/ax/{$c.hruid}">{*
       *}{icon name=user_gray title="fiche AX"}</a>]
     </div>
     {/if}
