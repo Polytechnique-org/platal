@@ -3,6 +3,11 @@ VERSION 0.10.2                                                        XX XX XXXX
 
 New:
 
+Bug/Wish:
+
+    * XnetEvents:
+        - #979: Fixes javascript for people who paid but did not book      -JAC
+
 From 0.10.1 branch:
 
     * Profile:
