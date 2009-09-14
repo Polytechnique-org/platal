@@ -324,7 +324,7 @@ abstract class PlUser
 
                 if (($user = User::get($login, $callback))) {
                     $list[$i] = $user->$property();
-                } else if (!$strict || User::isForeignEmailAddress($login)) {
+                } else if (!$strict || (User::isForeignEmailAddress($login) && isvalid_email($login))) {
                     $list[$i] = $login;
                 }
             }
