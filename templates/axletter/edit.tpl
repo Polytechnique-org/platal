@@ -66,8 +66,15 @@
     {include file="include/field.promo.tpl" prefix=""}
     <tr>
       <td class="titre">Envoyer à une liste d'adresses</td>
-      <td><textarea name="subset_to" rows="7" cols="78">{$subset_to}</textarea><br />
+      <td>
+      <textarea name="subset_to" rows="7" cols="78">{$subset_to}</textarea><br />
       <span class="smaller">Indiquez une liste d'adresses emails : la lettre sera envoyée uniquement aux personnes des promotions sélectionnées, dont l'adresse figure dans la liste, et qui souhaitent recevoir les emails de l'AX.</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">Sélection inversée</td>
+      <td>
+      <input type="checkbox" name="subset_rm" {if $subset_rm}checked{/if} /><span class="smaller">En cochant cette case, la liste sera envoyée à tous les inscrits de l'intervalle de promotions sélectionné, sauf ceux indiqués dans la liste ci-dessus.</span>
       </td>
     </tr>
     {if !$saved}
