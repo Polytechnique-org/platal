@@ -5,6 +5,9 @@ New:
 
 Bug/Wish:
 
+    * AXLetter:
+        - #980: Adds option to invert a subset definition                  -XEL
+
     * XnetEvents:
         - #979: Fixes javascript for people who paid but did not book      -JAC
 
