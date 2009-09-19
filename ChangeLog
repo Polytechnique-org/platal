@@ -8,6 +8,9 @@ Bug/Wish:
     * AXLetter:
         - #980: Adds option to invert a subset definition                  -XEL
 
+    * Lists:
+        - #978: An email address has to be valid to be added to a ML       -JAC
+
     * XnetEvents:
         - #979: Fixes javascript for people who paid but did not book      -JAC
 
