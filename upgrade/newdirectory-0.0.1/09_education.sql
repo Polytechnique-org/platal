@@ -422,6 +422,9 @@ WHERE name = 'Univ Moscow (Bauman)';
 UPDATE profile_education_enum
 SET abbreviation = 'Technion', name = 'Israel Institute of Technology', country = 'IL'
 WHERE name = 'Univ Technion';
+UPDATE profile_education_enum
+SET abbreviation = '', name = 'Weizmann Institute of Science', country = 'IL'
+WHERE name = 'Institut Weizmann';
 
 UPDATE profile_education_enum
 SET abbreviation = 'Oxford', name = 'University of Oxford', country = 'GB'
@@ -470,6 +473,9 @@ WHERE name = 'University of Surrey';
 UPDATE profile_education_enum
 SET abbreviation = '', country = 'GB'
 WHERE name = 'Heriot-Watt University';
+UPDATE profile_education_enum
+SET abbreviation = 'UCL', country = 'GB'
+WHERE name = 'University College London';
 
 UPDATE profile_education_enum
 SET abbreviation = 'OIV', country = 'FR'
@@ -527,7 +533,6 @@ INSERT INTO  profile_education_enum (name, url, country, abbreviation)
              ('University of Kentucky', 'http://www.uky.edu/', 'US', 'UK'),
              ('Marine Corps University', 'http://www.mcu.usmc.mil/', 'US', 'MCU'),
              ('Chartered Institute of Management Accountants', 'http://www.cimaglobal.com/', 'GB', 'CIMA'),
-             ('University College London', 'http://www.ucl.ac.uk/', 'GB', 'UCL'),
              ('Chartered Financial Analyst Institute', 'http://www.cfainstitute.org/', 'US', 'CFA Institute'),
              ('Naval Postgraduate School', 'http://www.nps.edu/', 'US', 'NPS'),
              ('Royal College of Art', 'http://www.rca.ac.uk/', 'GB', 'RCA'),
