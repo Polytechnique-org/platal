@@ -25,7 +25,7 @@
   {if $errors}
     {$errors|smarty:nodefaults}
   {else}
-    Il n'y pas d'erreurs actuellement recensées.
+    Il n'y a pas d'erreurs actuellement recensées.
   {/if}
 </p>
 <form action="sql_errors" method="post">
