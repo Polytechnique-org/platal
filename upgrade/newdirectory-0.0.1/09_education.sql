@@ -308,6 +308,9 @@ WHERE name = 'Univ of North Carolina at Chapel Hill';
 UPDATE profile_education_enum
 SET abbreviation = 'UM', country = 'US'
 WHERE name = 'University of Miami';
+UPDATE profile_education_enum
+SET country = 'US'
+WHERE name = 'Purdue University';
 
 UPDATE profile_education_enum
 SET abbreviation = 'TU Berlin', name = 'Technische Universität Berlin', country = 'DE'
@@ -538,7 +541,6 @@ INSERT INTO  profile_education_enum (name, url, country, abbreviation)
              ('Royal College of Art', 'http://www.rca.ac.uk/', 'GB', 'RCA'),
              ('Uniwersytet Gdański', 'http://www.univ.gda.pl/', 'PL', ''),
              ('College of Europe', 'http://www.coleurope.eu/', '', ''),
-             ('Purdue University', 'http://www.purdue.edu/', 'US', ''),
              ('Queen\'s University', 'http://www.queensu.ca/', 'CA', 'Queen\'s'),
              ('Université de Bretagne Occidentale', 'http://www.univ-brest.fr/', 'FR', 'UBO'),
              ('University of California, Davis', 'http://www.ucdavis.edu/', 'US', 'UC Davis'),
