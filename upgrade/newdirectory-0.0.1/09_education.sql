@@ -312,6 +312,11 @@ UPDATE profile_education_enum
 SET country = 'US'
 WHERE name = 'Purdue University';
 
+
+UPDATE profile_education_enum
+SET country = 'HK', abbreviation = 'CityU'
+WHERE name = 'City University of Hong Kong';
+
 UPDATE profile_education_enum
 SET abbreviation = 'TU Berlin', name = 'Technische Universität Berlin', country = 'DE'
 WHERE name = 'Univ TU Berlin';
