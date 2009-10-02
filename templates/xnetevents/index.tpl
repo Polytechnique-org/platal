@@ -166,7 +166,7 @@
     <td colspan='2' class='center'>
       <strong>
       <a href='{$platal->ns}events/sub/{$e.short_name|default:$e.eid}'>
-        gérer mon inscription
+        Gérer mon inscription et voir les détails de l'événement.
       </a>
       </strong>
     </td>
