@@ -26,6 +26,9 @@ INSERT INTO  profile_education_degree_enum (abbreviation, degree, level)
 
 -- Updates universities
 UPDATE profile_education_enum
+SET abbreviation = 'Université Claude Bernard', name = 'Université Claude Bernard (Lyon I)'
+WHERE name = 'Université Claude Bernard';
+UPDATE profile_education_enum
 SET abbreviation = 'Télécom', name = 'Télécom ParisTech', url = 'http://www.telecom-paristech.fr/'
 WHERE name = 'Télécom';
 UPDATE profile_education_enum
@@ -560,7 +563,6 @@ INSERT INTO  profile_education_enum (name, url, country, abbreviation)
              ('Urbana University', 'http://www.urbana.edu/', 'US', ''),
              ('Université de Technologie de Compiègne', 'http://www.utc.fr/', 'FR', 'UTC'),
              ('Virginia Polytechnic Institute and State University', 'http://www.vt.edu/', 'US', 'Virginia Tech'),
-             ('Université Claude Bernard (Lyon I)', 'http://www.univ-lyon1.fr/', 'FR', 'Université Claude Bernard'),
              ('Cleveland State University', 'http://www.csuohio.edu/', 'US', 'CSU'),
              ('Centre de Perfectionnement aux Affaires du Nord', '', 'FR', 'CPA du Nord'),
              ('Centre de Perfectionnement aux Affaires de Lyon', '', '', 'CPA de Lyon'),
