@@ -314,6 +314,9 @@ WHERE name = 'University of Miami';
 UPDATE profile_education_enum
 SET country = 'US'
 WHERE name = 'Purdue University';
+SET abbreviation = 'CFA Institute', name = 'Chartered Financial Analyst Institute', country = 'US'
+WHERE name = 'CFA Institute';
+UPDATE profile_education_enum
 
 
 UPDATE profile_education_enum
@@ -544,7 +547,6 @@ INSERT INTO  profile_education_enum (name, url, country, abbreviation)
              ('University of Kentucky', 'http://www.uky.edu/', 'US', 'UK'),
              ('Marine Corps University', 'http://www.mcu.usmc.mil/', 'US', 'MCU'),
              ('Chartered Institute of Management Accountants', 'http://www.cimaglobal.com/', 'GB', 'CIMA'),
-             ('Chartered Financial Analyst Institute', 'http://www.cfainstitute.org/', 'US', 'CFA Institute'),
              ('Naval Postgraduate School', 'http://www.nps.edu/', 'US', 'NPS'),
              ('Royal College of Art', 'http://www.rca.ac.uk/', 'GB', 'RCA'),
              ('Uniwersytet Gdański', 'http://www.univ.gda.pl/', 'PL', ''),
