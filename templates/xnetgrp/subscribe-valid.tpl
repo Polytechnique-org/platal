@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: Validation des inscriptions</h1>
+<h1>{$asso.nom}&nbsp;: validation des inscriptions</h1>
 
 <script type="text/javascript">//<![CDATA[
 {literal}
@@ -34,16 +34,16 @@
     } else {
       boxes.removeAttr("checked");
     }
-    return true;
   }
 {/literal}
 //]]></script>
 
+{if $valid->total() > 0}
 <form action="{$platal->ns}subscribe/valid" method="post">
   <table class="tinybicol">
     <tr>
       <th><a href="javascript:toggleSelection()">{icon name="arrow_refresh" title="Inverser la sélection"}</a></th> 
-      <th>Prénom Nom</th>
+      <th>Prénom Nom (Promotion)</th>
       <th>Date de demande</th>
       <th></th>
     </tr>
@@ -67,4 +67,10 @@
     Pour refuser une demande, tu dois aller consulter les détails et remplir la raison du refus.
   </div>
 </form>
+{else}
+<p>
+  Il n'y a pas d'inscription à valider.
+</p>
+{/if}
+
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
