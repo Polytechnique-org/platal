@@ -314,9 +314,9 @@ WHERE name = 'University of Miami';
 UPDATE profile_education_enum
 SET country = 'US'
 WHERE name = 'Purdue University';
+UPDATE profile_education_enum
 SET abbreviation = 'CFA Institute', name = 'Chartered Financial Analyst Institute', country = 'US'
 WHERE name = 'CFA Institute';
-UPDATE profile_education_enum
 
 
 UPDATE profile_education_enum
