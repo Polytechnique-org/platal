@@ -571,7 +571,7 @@ class StringSField extends SField
      * imposées par l'utilisateur) */
     function length()
     {
-        $cleaned = replace_accent(strtolower($this->value));
+        $cleaned = strtolower(replace_accent($this->value));
         $length  = strlen(ereg_replace('[a-z0-9]', '', $cleaned));
         return strlen($this->value) - $length;
     }

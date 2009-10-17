@@ -675,8 +675,7 @@ class ProfileModule extends PLModule
         $page->assign('usage_old', $usage_old);
         $page->assign('alias_old',  $alias_old);
 
-        $nom_usage = replace_accent(trim(Env::v('nom_usage')));
-        $nom_usage = strtoupper($nom_usage);
+        $nom_usage = mb_strtoupper(trim(Env::v('nom_usage')));
         $page->assign('usage_req', $nom_usage);
 
         if (Env::has('submit') && ($nom_usage != $usage_old)) {

@@ -108,7 +108,7 @@ Le groupe {$asso.nom} compte {$nb_tot} membres&nbsp;:
       {elseif $m.x}
       <a href="https://www.polytechnique.org/marketing/public/{$m.uid}">
       {/if}
-      {if $m.femme}&bull;{/if}{if $m.prenom || $m.nom}{$m.prenom} {$m.nom|strtoupper}{else}{$m.email}{/if}
+      {if $m.femme}&bull;{/if}{if $m.prenom || $m.nom}{$m.prenom} {$m.nom|mb_strtoupper}{else}{$m.email}{/if}
       {if $m.x}</a>{/if} 
       {if $m.admin}</strong>{/if}
       {if $m.inscrit && !$m.actif}

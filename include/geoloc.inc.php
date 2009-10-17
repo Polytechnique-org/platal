@@ -226,7 +226,7 @@ function get_address_text($adr)
         if (isset($adr['city']) && $adr['city']) $l .= $adr['city'];
     }
     if ($l) $t .= "\n".trim($l);
-    if ($adr['country'] != '00' && (!$adr['countrytxt'] || $adr['countrytxt'] == strtoupper($adr['countrytxt']))) {
+    if ($adr['country'] != '00' && (!$adr['countrytxt'] || $adr['countrytxt'] == mb_strtoupper($adr['countrytxt']))) {
         $res = XDB::query("SELECT pays FROM geoloc_pays WHERE a2 = {?}", $adr['country']);
         $adr['countrytxt'] = $res->fetchOneCell();
     }
@@ -244,8 +244,8 @@ function get_address_text($adr)
  */
 function compare_addresses_text($a, $b)
 {
-    $ta = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"), array("", "\n"), $a));
-    $tb = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"), array("", "\n"), $b));
+    $ta = mb_strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"), array("", "\n"), $a));
+    $tb = mb_strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"), array("", "\n"), $b));
 
     $la = explode("\n", $ta);
     $lb = explode("\n", $tb);

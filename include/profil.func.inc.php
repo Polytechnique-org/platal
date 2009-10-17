@@ -108,7 +108,7 @@ function same_field(&$a, &$b) {
             if (!isset($b[$val]) || !same_field($avar, $b[$val])) return false;
         return true;
     } elseif (is_string($a))
-        return (strtoupper($a) == strtoupper($b));
+        return (mb_strtoupper($a) == mb_strtoupper($b));
 }
 function diff_user_tel(&$a, &$b) {
     $c = $a;

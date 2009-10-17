@@ -406,7 +406,7 @@ class XnetGrpModule extends PLModule
         while (list($char, $nb) = $res->next()) {
             $alphabet[] = $char;
             $nb_tot += $nb;
-            if (Env::has($group) && $char == strtoupper(Env::v($group))) {
+            if (Env::has($group) && $char == mb_strtoupper(Env::v($group))) {
                 $tot = $nb;
             }
         }

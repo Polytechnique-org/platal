@@ -615,7 +615,7 @@ class XnetEventsModule extends PLModule
         while (list($char, $nb) = $res->next()) {
             $alphabet[ord($char)] = $char;
             $nb_tot += $nb;
-            if (Env::has('initiale') && $char == strtoupper(Env::v('initiale'))) {
+            if (Env::has('initiale') && $char == mb_strtoupper(Env::v('initiale'))) {
                 $tot = $nb;
             }
         }

@@ -29,7 +29,7 @@ class ProfileNom implements ProfileSetting
 
     private function prepareField($value)
     {
-        $value = strtoupper(replace_accent($value));
+        $value = mb_strtoupper($value);
         return preg_replace('/[^A-Z]/', ' ', $value);
     }
 

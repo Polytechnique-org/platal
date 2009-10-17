@@ -37,7 +37,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
             $prenom = $info['prenom'];
             $promo = $info['promo'];
             $broken = $info['lost'];
-            $key = $tri_promo ? ($promo != 'non-X' ? $promo : 0) : strtoupper(@$nom{0});
+            $key = $tri_promo ? ($promo != 'non-X' ? $promo : 0) : mb_strtoupper(@$nom{0});
             if ($tri_promo) {
                 $promo = null;
             }
