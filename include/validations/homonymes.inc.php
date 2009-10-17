@@ -32,7 +32,7 @@ class HomonymeReq extends Validate
 
     public $homonymes_hruid;
 
-    public $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traité plus ... manuellement";
+    public $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traité plus &hellip; manuellement.";
 
     // }}}
     // {{{ constructor

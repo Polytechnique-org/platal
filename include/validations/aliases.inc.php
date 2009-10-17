@@ -32,9 +32,9 @@ class AliasReq extends Validate
     public $old='';
     public $public='private';
 
-    public $rules = "Interdire ce qui peut nous servir (virus@, postmaster@, ...),
+    public $rules = "Interdire ce qui peut nous servir (virus@, postmaster@&hellip;),
                   les alias vulgaires, et les prenom.nom (sauf si c'est pour l'utilisateur prenom.nom).
-                  Pas de contrainte pour les tirets ou les points, en revanche le souligné (_) est interdit";
+                  Pas de contrainte pour les tirets ou les points, en revanche le souligné (_) est interdit.";
 
     // }}}
     // {{{ constructor

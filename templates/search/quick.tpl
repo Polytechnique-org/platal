@@ -60,10 +60,10 @@
 
 <h1>Comment faire une recherche ?</h1>
 
-<h2>Nom, Prénom, Promotion...</h2>
+<h2>Nom, Prénom, Promotion&hellip;<h2>
 
 <p>
-La ligne de recherche ci-dessus accepte non seulement des mélanges de <strong>noms</strong> et de <strong>prénoms</strong>...
+La ligne de recherche ci-dessus accepte non seulement des mélanges de <strong>noms</strong> et de <strong>prénoms</strong>&hellip;
 mais elle accepte de plus la syntaxe suivante pour les <strong>promotions</strong>&nbsp;:
 </p>
 <ul>
@@ -77,9 +77,9 @@ Ainsi, rechercher tous les "Dupont" sur les promotions 1980 à 1990 et sur la pr
 <code>Dupont 1980-1990 2000</code>
 </p>
 
-<h2>Astuce pour les noms...</h2>
+<h2>Astuce pour les noms&hellip;</h2>
 <p>
-Parfois on ne sait plus si le nom qu'on recherche s'écrit « Lenormand », « Le Normand » ou « Le-Normand »...
+Parfois on ne sait plus si le nom qu'on recherche s'écrit « Lenormand », « Le Normand » ou « Le-Normand »&hellip;
 </p>
 <p>
 Pour éviter ce genre d'écueils, il suffit de chercher&nbsp;: <code>Le Normand</code><br />
@@ -92,7 +92,7 @@ notre base de données.
 </p>
 
 {if hasPerm('user')}
-<h2>Raccourcis...</h2>
+<h2>Raccourcis&hellip;</h2>
 <p>
   Un certain nombre de raccourcis permettent d'accéder plus rapidement au contenu du site&nbsp;:
 </p>

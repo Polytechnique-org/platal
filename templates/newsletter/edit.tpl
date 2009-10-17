@@ -100,7 +100,7 @@
 <table class="bicol" cellpadding="3" cellspacing="0">
   <tr>
     <td>
-      Créer un nouvel article ...
+      Créer un nouvel article&hellip;
     </td>
     <td style='vertical-align:middle; border-left: 1px gray solid' class="center">
       <a href="admin/newsletter/edit/{$nl->_id}/new#edit">{icon name=add title="créer"}</a>
@@ -189,7 +189,7 @@
       </td>
     </tr>
     <tr class="impair">
-      <td class='titre'>Ajouts (emails, contacts, tarifs, site web, ...)</td>
+      <td class='titre'>Ajouts (emails, contacts, tarifs, site web&hellip;)</td>
       <td>
         <textarea cols="68" rows="6" name='append'>{$art->append()}</textarea>
       </td>

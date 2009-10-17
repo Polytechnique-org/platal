@@ -48,7 +48,7 @@
         </div>
       <div id="bestalias-msg" style="position:absolute;"></div>
       <br />
-      L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche, etc...).
+      L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche&hellip;).
       Coche une autre case pour en changer !
     </td>
   </tr>

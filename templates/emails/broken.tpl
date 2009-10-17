@@ -53,7 +53,7 @@ correspondant si tu veux que nous puissions te répondre.
     n'a actuellement <span class="erreur">aucune adresse email de redirection 
       active autre que celle que tu viens de rentrer.</span>
     Nous t'invitons à prendre contact avec lui autrement que par email,
-    l'idéal étant de l'informer si possible que sa patte Polytechnique.org est cassée...!
+    l'idéal étant de l'informer si possible que sa patte Polytechnique.org est cassée !
   </p>
   <p>
     Si tu connais une autre adresse email où le contacter, nous pouvons l'inviter à mettre à jour sa redirection
@@ -62,7 +62,7 @@ correspondant si tu veux que nous puissions te répondre.
 {elseif $email}
 <p class="erreur">
   Désolé mais plus personne n'utilise l'adresse {$email} comme adresse de redirection.
-  Nous ne pouvons donc malheureusement te fournir aucune information...
+  Nous ne pouvons donc malheureusement te fournir aucune information&hellip;
 </p>
 {/if}
 <br />

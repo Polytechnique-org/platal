@@ -40,7 +40,7 @@ peut sans aucun doute l'aider à se décider !
   Merci de nous avoir communiqué cette information !  Un administrateur de Polytechnique.org va
   envoyer un email de proposition d'inscription à Polytechnique.org à {$full_name} dans les
   toutes prochaines heures (ceci est fait à la main pour vérifier qu'aucun utilisateur malveillant
-  ne fasse mauvais usage de cette fonctionnalité...).
+  ne fasse mauvais usage de cette fonctionnalité&hellip;).
 </p>
 <p>
   <strong>Merci de ton aide à la reconnaissance de notre site !</strong> Tu seras informé par email de
@@ -56,7 +56,7 @@ peut sans aucun doute l'aider à se décider !
 </h1>
 
 <p>
-  En effet notre camarade n'a pour l'instant pas encore rejoint la communauté des X sur le web...
+  En effet notre camarade n'a pour l'instant pas encore rejoint la communauté des X sur le web&hellip;
   C'est dommage, et en nous indiquant son adresse email, tu nous permettrais de lui envoyer une
   proposition d'inscription.
 </p>

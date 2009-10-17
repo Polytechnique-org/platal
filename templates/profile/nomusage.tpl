@@ -55,7 +55,7 @@
 <p>
 Le nom d'usage est un patronyme qui doit être <strong>reconnu par la
   loi</strong> (nom du conjoint, d'un de ses parents, ou bien plus
-exceptionnellement sur changement de l'état civil, ...).
+exceptionnellement sur changement de l'état civil&hellip;).
 </p>
 
 <p>

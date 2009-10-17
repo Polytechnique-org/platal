@@ -1,7 +1,7 @@
 En tant qu'animateur de la liste de diffusion, votre
 autorisation est requise pour une demande d'abonnement :
 
-    Pour:       %(username)s
+    Pour :       %(username)s
 
 Quand vous le pourrez, consultez la page web :
 

@@ -334,7 +334,7 @@ class ListsModule extends PLModule
             $page->assign_by_ref('owners',  $moderos);
             $page->assign('nb_m',  count($mem));
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails.");
         }
     }
 
@@ -378,7 +378,7 @@ class ListsModule extends PLModule
 
         $owners = $this->client->get_owners($liste);
         if (!is_array($owners)) {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails.");
         }
 
         global $platal;
@@ -589,7 +589,7 @@ class ListsModule extends PLModule
             $page->assign_by_ref('subs', $subs);
             $page->assign_by_ref('mails', $mails);
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit de la modérer");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit de la modérer.");
         }
     }
 
@@ -740,8 +740,8 @@ class ListsModule extends PLModule
 
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer.<br />"
-                       ." Si tu penses qu'il s'agit d'une erreur, "
-                       ."<a href='mailto:support@polytechnique.org'>contact le support</a>");
+                      . " Si tu penses qu'il s'agit d'une erreur, "
+                      . "<a href='mailto:support@polytechnique.org'>contact le support</a>.");
         }
     }
 
@@ -845,7 +845,7 @@ class ListsModule extends PLModule
             } else {
                 $page->kill('Une erreur est survenue lors de la suppression de la liste.<br />'
                          . 'Contact les administrateurs du site pour régler le problème : '
-                         . '<a href="mailto:support@polytechnique.org">support@polytechnique.org</a>');
+                         . '<a href="mailto:support@polytechnique.org">support@polytechnique.org</a>.');
             }
         } elseif (list($details,$options) = $this->client->get_owner_options($liste)) {
             if (!$details['own']) {
@@ -855,7 +855,7 @@ class ListsModule extends PLModule
             $page->assign_by_ref('options', $options);
             $page->assign('bogo_level', $this->client->get_bogo_level($liste));
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer.");
         }
     }
 
@@ -884,7 +884,7 @@ class ListsModule extends PLModule
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
         } else {
-            $page->kill("La liste n'existe pas");
+            $page->kill("La liste n'existe pas.");
         }
     }
 
@@ -907,7 +907,7 @@ class ListsModule extends PLModule
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
         } else {
-            $page->kill("La liste n'existe pas");
+            $page->kill("La liste n'existe pas.");
         }
     }
 

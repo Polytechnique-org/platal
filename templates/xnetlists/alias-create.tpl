@@ -27,11 +27,11 @@ Les alias sont conçus pour répondre aux problèmes suivants&nbsp;:
 <ul class='descr'>
   <li>
   redirections pour les postes des gens au sein du groupe&nbsp;: par exemple il est pratique d'avoir un alias
-  president@... ou bien tresorier@... qui pointent tout le temps vers la bonne personne du groupe.
-  Une sorte d'adresse de «redirection à vie» ;
+  president@&hellip; ou bien tresorier@&hellip; qui pointent tout le temps vers la bonne personne du groupe.
+  Une sorte d'adresse de « redirection à vie » ;
   </li>
   <li>
-  listes de diffusions pour de petits nombres de personnes (bureau@ ...) ;
+  listes de diffusions pour de petits nombres de personnes (bureau@&hellip;) ;
   </li>
   <li>
   listes à vie courte (liste créée pour l'organisation d'un évenement ponctuel par exemple) ;

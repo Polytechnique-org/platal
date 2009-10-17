@@ -51,7 +51,7 @@
   <a href="http://www.carva.org/{$smarty.session.hruid}">http://www.carva.org/{$smarty.session.hruid}</a>
   sont redirigées sur <a href="http://{$carva}">http://{$carva}</a>
 {else}
-  La redirection n'est pas utilisée ...
+  La redirection n'est pas utilisée&hellip;
 {/if}
 </p>
 

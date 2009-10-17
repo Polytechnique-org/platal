@@ -24,7 +24,7 @@
 
 <p>
   Liste des polytechniciens décédés, mais dont le compte est encore actif
-  (veufs/veuves, ...).
+  (veufs/veuves&hellip;).
 </p>
 
 <table class="bicol">

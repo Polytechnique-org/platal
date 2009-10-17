@@ -124,7 +124,7 @@
       </td>
       <td>
         <input type="text" name="comm" value="{$user.comm}" size="40" maxlength="255" /><br />
-        <small>Poste, origine, ... (accessible à toutes les personnes autorisées à consulter l'annuaire)</small>
+        <small>Poste, origine&hellip; (accessible à toutes les personnes autorisées à consulter l'annuaire)</small>
       </td>
     </tr>
     {if $user.origine neq X}

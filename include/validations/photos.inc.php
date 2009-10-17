@@ -34,7 +34,7 @@ class PhotoReq extends Validate
     public $valid  = false;
 
     public $rules = "Refuser les photos copyrightées, de mineurs, ou ayant
-        un caractère pornographique, violent, etc... Si une photo est mal
+        un caractère pornographique, violent&hellip; Si une photo est mal
         cadrée (20% de photo et 80% de blanc par exemple), si c'est un
         camarade antique, on lui arrange sinon on lui
         refuse en lui expliquant gentiment le problème. Idem si les dimensions de

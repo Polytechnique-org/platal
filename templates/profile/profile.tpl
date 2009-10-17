@@ -43,7 +43,7 @@ function chgMainWinLoc(strPage)
   <div id="photo" class="part">
     {if $photo_url}<img alt="Photo de {$user->login()}" src="{$photo_url}" width="{$x.x}"/>{/if}
     {if $logged && ( $x.section|smarty:nodefaults || $x.binets_join|smarty:nodefaults || $x.gpxs_join|smarty:nodefaults)}
-      <h2>À l'X...</h2>
+      <h2>À l'X&hellip;</h2>
       {if $x.section}<div><em class="intitule">Section&nbsp;: </em><span>{$x.section}</span></div>{/if}
       {if $x.binets_join}<div><em class="intitule">Binet{if count($x.binets) > 1}s{/if}&nbsp;: </em>
       <span>{$x.binets_join}</span></div>{/if}

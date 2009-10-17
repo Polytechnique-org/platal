@@ -69,7 +69,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
         {elseif $category eq 'end'}
           {icon name=clock} Dernières minutes&nbsp;:
         {else}
-          {icon name=magnifier} Mais encore...
+          {icon name=magnifier} Mais encore&hellip;
         {/if}
       </td>
     </tr>

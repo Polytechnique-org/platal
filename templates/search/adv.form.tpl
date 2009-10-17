@@ -33,7 +33,7 @@
         name = row[0].replace(regexp, '<strong>$1<\/strong>');
 
         if (row[1] === "-1") {
-          return '...';
+          return '&hellip;';
         }
 
         camarades = (row[1] > 1) ? "camarades" : "camarade";

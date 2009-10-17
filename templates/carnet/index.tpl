@@ -42,7 +42,7 @@
         <a href="carnet/contacts/trombi">Le trombi de tes contacts</a>
       </h3>
       <div class="explication">
-        La même chose que la page de tes contacts... <strong>en images !</strong>
+        La même chose que la page de tes contacts&hellip; <strong>en images !</strong>
       </div>
     </td>
   </tr>
@@ -79,7 +79,7 @@
         <a href="carnet/notifs">Configurer tes notifications</a>
       </h3>
       <div class="explication">
-        Être notifié des inscriptions, décès, changement de fiche, ...
+        Être notifié des inscriptions, décès, changement de fiche&hellip;
       </div>
     </td>
   </tr>

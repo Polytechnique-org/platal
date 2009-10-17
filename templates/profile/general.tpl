@@ -251,7 +251,7 @@
           {icon name="flag_green" title="site public"}</label>
         </span>&nbsp;
         <span class="titre">Complément libre</span><br />
-        <span class="comm">Commentaire ? ICQ ? etc...</span>
+        <span class="comm">Commentaire, ICQ&hellip; ?</span>
       </div>
       <div class="smaller" style="margin-top: 30px">
         <a href="wiki_help/notitle" class="popup3">

@@ -108,7 +108,7 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant d
       </td>
     </tr>
     <tr class="impair">
-      <td class='titre'>Ajouts (emails, contacts, tarifs, site web, ...)</td>
+      <td class='titre'>Ajouts (emails, contacts, tarifs, site web&hellip;)</td>
       <td>
         <textarea cols="68" rows="3" name='append'>{if $art}{$art->append()}{/if}</textarea>
       </td>

@@ -134,8 +134,8 @@ Tu n'es pas administrateur de la liste, mais du site.
         <div id="spamlevel">
           <em><a name='antispam' id='antispam'></a>que faire des emails marqués « [spam probable] » ?</em><br />
           <label><input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer&nbsp;;</label><br />
-          <label><input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les envoyer aux modérateurs pour approbation...</label><br />
-          <label><input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> ... après suppression des
+          <label><input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les envoyer aux modérateurs pour approbation&hellip;</label><br />
+          <label><input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> &hellip;après suppression des
         spams les plus probables*&nbsp;;</label><br />
           <label><input type='radio' name='bogo_level' value='3' {if $bogo_level eq 3}checked='checked'{/if} /> tous les supprimer.</label>
         </div>

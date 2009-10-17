@@ -38,8 +38,8 @@ function deadlineChange(box)
 <h1>{$asso.nom}&nbsp;: {$evt.intitule|default:"Nouvel événement"}</h1>
 
 <p class="descr">
-  Un événement peut être une réunion, un séminaire, une conférence, un voyage promo,
-  etc... Pour en organiser un et bénéficier des outils de suivi d'inscription et de
+  Un événement peut être une réunion, un séminaire, une conférence, un voyage promo&hellip;
+  Pour en organiser un et bénéficier des outils de suivi d'inscription et de
   paiement offerts, il te faut remplir les quelques champs du formulaire ci-dessous.
 </p>
 <p class="descr">
@@ -47,7 +47,7 @@ function deadlineChange(box)
   distincts. Par exemple, dans le cas d'une réunion suivie d'un dîner, il peut être
   utile de comptabiliser les présents à la réunion d'une part et de compter ceux
   qui s'inscrivent au repas d'autre part (en général certains participants à la réunion
-  ne restent pas pour le dîner...), de sorte que tu sauras combien de chaises prévoir
+  ne restent pas pour le dîner&hellip;), de sorte que tu sauras combien de chaises prévoir
   pour le premier "moment" (la réunion) et pour combien de personnes réserver le
   restaurant.
 </p>
@@ -113,7 +113,7 @@ function deadlineChange(box)
       <td>
         <select name="deadline" onchange='deadlineChange(this)'>
           <option value='0' {if !$evt.deadline_inscription}selected='selected'{/if}>Jamais</option>
-          <option value='1' {if $evt.deadline_inscription}selected='selected'{/if}>Le...</option>
+          <option value='1' {if $evt.deadline_inscription}selected='selected'{/if}>Le&hellip;</option>
         </select>
         <span  id='do_deadline' {if !$evt.deadline_inscription}style='display: none'{/if}>
           {html_select_date prefix='inscr_' end_year='+5' day_value_format='%02d'
@@ -163,7 +163,7 @@ function deadlineChange(box)
       <td colspan="2">
         Il faut que tu définisses le texte de l'email de confirmation de paiement. Pour ceci, tu peux adapter le modèle qui suit&nbsp;:
         <ul>
-          <li><strong>Remplace les crochets</strong> ([...]) par le texte que tu désires y voir apparaître.</li>
+          <li><strong>Remplace les crochets</strong> ([&hellip;]) par le texte que tu désires y voir apparaître.</li>
           <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt;, &lt;montant&gt; et &lt;comment&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées.</li>
           <li><a href="wiki_help" class="popup3">{icon name=information} Tu peux utiliser une syntaxe wiki pour formatter ton texte.</a></li>
         </ul>

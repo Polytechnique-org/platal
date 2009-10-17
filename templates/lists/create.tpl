@@ -57,7 +57,7 @@ liste&nbsp;:
         {if $smarty.post.asso eq 'binet' && $smarty.post}checked='checked'{/if} />un binet</label></td>
       {if $very_young_promo}
       <td colspan='2'><label><input type='radio' name='asso' value='alias'
-        {if $smarty.post.asso eq 'alias' && $smarty.post}checked='checked'{/if} />un alias psc, ...</label></td>
+        {if $smarty.post.asso eq 'alias' && $smarty.post}checked='checked'{/if} />un alias psc&hellip;</label></td>
       {else}
       <td colspan='2'></td>
       {/if}

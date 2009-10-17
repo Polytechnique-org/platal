@@ -379,7 +379,7 @@ class AdminModule extends PLModule
             return;
         }
 
-        // Handles specific requests (AX sync, su, ...).
+        // Handles specific requests (AX sync, su...).
         if(Env::has('logs_button') && $registered) {
             pl_redirect("admin/logger?loguser=$login&year=".date('Y')."&month=".date('m'));
         }

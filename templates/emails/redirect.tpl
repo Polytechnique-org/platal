@@ -262,7 +262,7 @@
 <p id="googleapps">
   Grâce à un partenariat avec Google, Polytechnique.org te propose également un compte
   <b>Google Apps</b>, qui te permet de disposer des services Google (GMail pour
-  tes emails, Google Calendar, Google Docs, ...) sur une adresse polytechnique.org.
+  tes emails, Google Calendar, Google Docs&hellip;) sur une adresse polytechnique.org.
 </p>
 
 <table class="bicol" summary="Compte de stockage" id="googleapps">
