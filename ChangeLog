@@ -2,6 +2,10 @@
 VERSION 0.10.2                                                        XX XX XXXX
 
 New:
+
+    * Admin:
+        - Now processes broken addresses through the web site.             -JAC
+
     * Core:
         - Prunes old sessions/events logs after 12 months                  -VZA
 
@@ -9,6 +13,9 @@ Bug/Wish:
 
     * AXLetter:
         - #980: Adds option to invert a subset definition                  -XEL
+
+    * Core:
+        - #984: Properly upper/lowercases accented letters when necessary  -JAC
 
     * Lists:
         - #978: An email address has to be valid to be added to a ML       -JAC
