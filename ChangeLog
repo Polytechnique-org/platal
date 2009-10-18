@@ -2,6 +2,8 @@
 VERSION 0.10.2                                                        XX XX XXXX
 
 New:
+    * Core:
+        - Prunes old sessions/events logs after 12 months                  -VZA
 
 Bug/Wish:
 
