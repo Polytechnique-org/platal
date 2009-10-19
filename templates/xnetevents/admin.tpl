@@ -34,9 +34,13 @@
 
 {if $evt.participant_list && $is_admin}
 <p class="center">
-[<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un email à ceux qui viennent</a>]
-<br >
-[<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un email aux membres du groupe n'ayant pas répondu</a>]
+  [<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un email à ceux qui viennent</a>]
+  <br />
+  [<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un email aux membres du groupe n'ayant pas répondu</a>]
+  <br />
+  [<a href="mailto:?bcc={$evt.short_name}-paye@{#globals.xnet.evts_domain#}">envoyer un email aux personnes ayant payé</a>]
+  <br />
+  [<a href="mailto:?bcc={$evt.short_name}-participants-non-paye@{#globals.xnet.evts_domain#}">envoyer un email aux inscrits n'ayant pas encore payé</a>]
 </p>
 {/if}
 
