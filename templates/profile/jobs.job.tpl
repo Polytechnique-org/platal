@@ -114,7 +114,7 @@
         <input type="text" size="30" maxlength="60" {if $job.email_error}class="error"{/if}
                name="{$jobpref}[email]" value="{$job.email}" />
         <span class="flags">
-          {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.mail_pub}
+          {include file="include/flags.radio.tpl" name="`$jobpref`[email_pub]" val=$job.email_pub}
         </span>
       </td>
     </tr>
