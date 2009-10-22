@@ -118,10 +118,16 @@
     <td>
       <pre>{$art->toText('%hash%','%login%')}</pre>
     </td>
-    <td style='vertical-align:middle; border-left: 1px gray solid'>
-      <small><strong>Pos: {$art->_pos}</strong></small><br />
-      <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/edit#edit">{icon name="page_edit" title="Editer"}</a>
-      <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/delete">{icon name="delete" title="Supprimer"}</a>
+    <td style="vertical-align: middle; border-left: 1px gray solid; text-align: center">
+      <small><strong>Pos:&nbsp;{$art->_pos}</strong></small><br />
+      <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/edit#edit">
+        {icon name="page_edit" title="Editer"}
+      </a>
+      <br /><br /><br />
+      <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/delete"
+         onclick="return confirm('Es-tu sûr de vouloir supprimer cet article ?')">
+        {icon name="delete" title="Supprimer"}
+      </a>
     </td>
   </tr>
   {/foreach}
