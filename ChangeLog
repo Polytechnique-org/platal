@@ -14,6 +14,9 @@ Bug/Wish:
     * AXLetter:
         - #980: Adds option to invert a subset definition                  -XEL
 
+    * Carnet:
+        - #975: Cleans up watch_nonins when someone dies                   -JAC
+
     * Core:
         - #984: Properly upper/lowercases accented letters when necessary  -JAC
 
