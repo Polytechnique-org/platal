@@ -917,7 +917,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                 header('Cache-Control: no-cache');
 
                 $csv = fopen('php://output', 'w');
-                fputcsv($csv, array('nom', 'prenom', 'alias', 'bounce', 'nbmails'), ';');
+                fputcsv($csv, array('nom', 'prenom', 'alias', 'bounce', 'nbmails', 'url'), ';');
                 foreach ($broken_user_list as $alias => $mails) {
                     $sel = Xdb::query(
                         "SELECT  u.user_id, count(e.email) AS nb_mails, u.nom, u.prenom, u.promo
@@ -930,7 +930,8 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
 
                     if ($x = $sel->fetchOneAssoc()) {
                         fputcsv($csv, array($x['nom'], $x['prenom'], $x['promo'], $alias,
-                                            join(',', $mails), $x['nb_mails']), ';');
+                                            join(',', $mails), $x['nb_mails']),
+                                            'https://www.polytechnique.org/marketing/broken/' . $alias, ';');
                     }
                 }
                 fclose($csv);
