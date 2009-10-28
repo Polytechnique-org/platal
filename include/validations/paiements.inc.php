@@ -38,7 +38,7 @@ class PayReq extends Validate
     public $evt;
     public $evt_intitule;
 
-    public $rules = "Vérifier que les balises &lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt; et &lt;montant&gt; n'ont pas été modifiées.
+    public $rules = "Vérifier que les balises &lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt;,  &lt;montant&gt; et &lt;comment&gt; n'ont pas été modifiées.
 Vérifier que le demandeur n'a pas laissé les crochets [].
 Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, laisser la validation à un trésorier";
     // }}}
