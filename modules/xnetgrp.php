@@ -225,7 +225,7 @@ class XnetGrpModule extends PLModule
         if (Post::has('submit')) {
             S::assert_xsrf_token();
 
-            $flags = new PlFlagSet('wiki_desc');
+            $flags = new PlFlagSet();
             if (Post::has('notif_unsub') && Post::i('notif_unsub') == 1) {
                 $flags->addFlag('notif_unsub');
             }
@@ -293,11 +293,6 @@ class XnetGrpModule extends PLModule
             $dom = XDB::iterator('SELECT * FROM groupex.dom ORDER BY nom');
             $page->assign('dom', $dom);
             $page->assign('super', true);
-        }
-        if (!$globals->asso('wiki_desc') && $globals->asso('descr')) {
-            $page->trigWarning("Attention, le format de la description a changé et utilise désormais la syntaxe wiki "
-                      . "intégrée au site. Il te faudra probablement adapter le formatage du texte actuel pour "
-                      . "qu'il s'affiche correctement avec cette nouvelle syntaxe.");
         }
     }
 

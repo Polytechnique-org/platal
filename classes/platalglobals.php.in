@@ -61,7 +61,6 @@ class PlatalGlobals extends PlGlobals
 
             if ($gp) {
                 $res = XDB::query("SELECT  a.*, d.nom AS domnom,
-                                           FIND_IN_SET('wiki_desc', a.flags) AS wiki_desc,
                                            FIND_IN_SET('notif_unsub', a.flags) AS notif_unsub,
                                            FIND_IN_SET('has_ml', a.flags) AS has_ml
                                      FROM  groupex.asso AS a
