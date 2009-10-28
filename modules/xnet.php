@@ -111,7 +111,7 @@ class XnetModule extends PLModule
             }
         }
 
-        if (Post::has('diminutif')) {
+        if (Post::has('diminutif') && Post::v('diminutif') != "") {
             S::assert_xsrf_token();
 
             $res = XDB::query('SELECT  COUNT(*)
