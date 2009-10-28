@@ -339,7 +339,7 @@ class RegisterModule extends PLModule
             switch ($service) {
                 case 'ax_letter':
                     Platal::load('axletter', 'axletter.inc.php');
-                    AXLetter::subscribe();
+                    AXLetter::subscribe(S::user()->id());
                     break;
                 case 'imap':
                     require_once 'emails.inc.php';
