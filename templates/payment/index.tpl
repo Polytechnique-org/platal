@@ -114,7 +114,8 @@ function payment_submit(form)
         <strong>{$pay->text}</strong><input type="hidden" name="ref" value="{$pay->id}" />
         {else}
         <select name="ref" onchange="payment_submit(this.form)">
-          {select_db_table table="`$prefix`paiements" valeur=$pay->id where="WHERE FIND_IN_SET('old',t.flags)=0"
+          {select_db_table table="`$prefix`paiements" valeur=$pay->id
+                           where="WHERE FIND_IN_SET(\'old\',t.flags)=0"
                            join="LEFT JOIN groupex.asso AS g ON (t.asso_id = g.id)" group="g.nom"}
         </select>
         {/if}
