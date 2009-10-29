@@ -22,9 +22,7 @@
 
 {include file="lists/header_listes.tpl"}
 
-<h1>
-  Contenu de l'email en attente
-</h1>
+<strong>Contenu de l'email en attente</strong>
 
 {$banana|smarty:nodefaults}
 

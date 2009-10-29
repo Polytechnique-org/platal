@@ -23,6 +23,9 @@ Bug/Wish:
     * Lists:
         - #978: An email address has to be valid to be added to a ML       -JAC
 
+    * Mail:
+        - #988: Gets rid of <h1> tags in the mails we send                 -JAC
+
     * Newsletter:
         - #986: Improves the nl edition page                               -JAC
 
