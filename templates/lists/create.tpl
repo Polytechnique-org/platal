@@ -161,7 +161,7 @@ liste&nbsp;:
       <td class='titre'>Gestionnaires&nbsp;:</td>
       <td colspan='4'>
         <input type='hidden' name='owners' value='{$owners}' />
-        {$owners|nl2br|default:"<span class='erreur'>pas de gestionnaires</span>"}
+        {$owners|nl2br|default:'<span class="erreur">pas de gestionnaires</span>'}
         <br />
         <input type='text' name='add_owner' />
         <input type='submit' name='add_owner_sub' value='Ajouter' />
@@ -171,7 +171,7 @@ liste&nbsp;:
       <td class='titre'>Membres&nbsp;:</td>
       <td colspan='4'>
         <input type='hidden' name='members' value='{$members}' />
-        {$members|nl2br|default:"<span class='erreur'>pas de membres</span>"}
+        {$members|nl2br|default:'<span class="erreur">pas de membres</span>'}
         <br />
         <input type='text' name='add_member' /><br />
         <input type="file" name="add_member_file" /><br />
