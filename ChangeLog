@@ -39,10 +39,11 @@ Bug/Wish:
 From 0.10.1 branch:
 
     * Core:
-        - Fixes the use of Smarty's "default" modifier.                    -VZA
+        - Fixes the use of Smarty's "default" modifier                     -VZA
 
     * Profile:
         - #977: Professional addresses can now be deleted                  -JAC
+        - Removes stats about profiles view: it was far too costly         -JAC
 
 ================================================================================
 VERSION 0.10.1                                                        30 07 2009
