@@ -92,14 +92,13 @@ class NLReq extends Validate
     protected function _mail_ps($isok)
     {
         if ($isok) {
-            return null;
-        } else {
-            return "\nPS : pour rappel, en voici le contenu :\n"
-                . "--------------------------------------------------------------------------------\n*"
-                . $this->art->title()
-                . "\n--------------------------------------------------------------------------------\n"
-                . $this->art->body() . "\n\n" . $this->art->append() . "\n";
+            return '';
         }
+        return "\nPS : pour rappel, en voici le contenu :"
+            . "\n--------------------------------------------------------------------------\n"
+            . $this->art->title()
+            . "\n--------------------------------------------------------------------------\n"
+            . $this->art->body() . "\n\n" . $this->art->append() . "\n";
     }
 
     // }}}

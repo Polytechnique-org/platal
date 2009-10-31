@@ -237,10 +237,8 @@ abstract class Validate
         $body = ($this->user->isFemale() ? "Chère camarade,\n\n" : "Cher camarade,\n\n")
               . $this->_mail_body($isok)
               . (Env::has('comm') ? "\n\n" . Env::v('comm') : '')
-              . "\n\nCordialement,\n-- \nL'équipe de Polytechnique.org\n";
-        if (!is_null($this->_mail_ps($isok))) {
-            $body .= $this->_mail_ps($isok);
-        }
+              . "\n\nCordialement,\n-- \nL'équipe de Polytechnique.org\n"
+              . $this->_mail_ps($isok);
 
         $mailer->setTxtBody(wordwrap($body));
         $mailer->send();
@@ -340,7 +338,7 @@ abstract class Validate
 
     protected function _mail_ps($isok)
     {
-        return null;
+        return '';
     }
 
     // }}}
