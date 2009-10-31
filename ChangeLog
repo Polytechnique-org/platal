@@ -28,6 +28,7 @@ Bug/Wish:
 
     * Newsletter:
         - #986: Improves the nl edition page                               -JAC
+        - #991: Adds the text of the article in the mail when refused      -JAC
 
     * Profile:
         - #983: Fixes issue with the professional email publicity          -JAC
