@@ -49,13 +49,13 @@ Soit un pourcentage d'inscrits de&nbsp;: {$stats.ins_rate} %<br />
 Parmi ceux-ci&nbsp;:<br />
 Nombre d'X vivants depuis 1972 d'après notre base de données&nbsp;: {$stats.vivants72}<br />
 Nombre d'X vivants depuis 1972 inscrits à Polytechnique.org&nbsp;: {$stats.inscrits72}<br />
-Soit un pourcentage d'inscrits de&nbsp;: {$stats.ins72_rate} % <br />
+Soit un pourcentage d'inscrits de&nbsp;: {$stats.ins72_rate} %<br />
 </p>
 
 <p>
 Nombre de Polytechniciennes vivantes&nbsp;: {$stats.vivantes}<br />
-Nombre de Polytechniciennes vivantes et inscrites&nbsp;: {$stats.inscrites} <br />
-Soit un pourcentage d'inscrites de&nbsp;: {$stats.inse_rate} % <br />
+Nombre de Polytechniciennes vivantes et inscrites&nbsp;: {$stats.inscrites}<br />
+Soit un pourcentage d'inscrites de&nbsp;: {$stats.inse_rate} %<br />
 </p>
 
 <p>
