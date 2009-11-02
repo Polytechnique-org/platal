@@ -69,7 +69,7 @@ peut sans aucun doute l'aider à se décider !
 </p>
 <p>
   Nous pouvons au choix lui écrire au nom de l'équipe Polytechnique.org, ou bien, si tu le veux
-  bien, en ton nom. A toi de choisir la solution qui te paraît la plus adaptée !! Une fois
+  bien, en ton nom. À toi de choisir la solution qui te paraît la plus adaptée. Une fois
   {$full_name} inscrit, nous t'enverrons un email pour te prévenir que son inscription a réussi.
 </p>
 

@@ -33,7 +33,7 @@
 
 <p>
   Afin de pouvoir être considéré(e) à la fois dans ta promotion d'origine et ta
-  ou tes promotions d'adoption tu peux entrer ici ton année de sortie de l'école.
+  ou tes promotions d'adoption tu peux entrer ici ton année de sortie de l'École.
   Plus précisément, il s'agit de l'année d'entrée en quatrième année ou année d'application.
   Pour tes cocons d'origine (X{$promo}) il s'agit de l'année {math equation="a + b" a=$promo b=3}.
 </p>

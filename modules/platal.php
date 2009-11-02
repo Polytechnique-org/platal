@@ -344,7 +344,7 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la
 
 --
 Polytechnique.org
-\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"
+\"Le portail des élèves & anciens élèves de l'École polytechnique\"
 
 Email envoyé à ".Env::v('login') . (Post::has('email') ? "
 Adresse de secours : " . Post::v('email') : ""));

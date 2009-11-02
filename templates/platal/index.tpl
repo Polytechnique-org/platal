@@ -42,7 +42,7 @@
   <li class="spaced">
     you can <strong><a href="http://www.manageurs.com/?langue=en">access
         Manageurs.com</a></strong> to get in touch with alumni and students of
-    Ecole Polytechnique, submit job offers, use the directory and browse the
+    École polytechnique, submit job offers, use the directory and browse the
     resume database.
   </li>
 </ul>

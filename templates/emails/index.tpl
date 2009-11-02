@@ -147,7 +147,7 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
       Pour <strong>demander à la place un autre alias @{#globals.mail.alias_dom#}</strong>,
       <a href="emails/alias">il te suffit de te rendre ici</a>.
       {else}
-      A l'heure actuelle <strong>tu n'as pas activé d'adresse @{#globals.mail.alias_dom#}</strong>.
+      À l'heure actuelle <strong>tu n'as pas activé d'adresse @{#globals.mail.alias_dom#}</strong>.
       Si tu souhaites le faire, <a href="emails/alias">il te suffit de venir ici</a>.
       {/if}
     </td>
