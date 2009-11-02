@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Gestion de mes courriers électroniques</h1>
+<h1>Gestion de mes emails</h1>
 
 {javascript name=ajax}
 {literal}
@@ -82,17 +82,17 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
 
 <table class="bicol">
   <tr>
-    <th>Où est-ce que je reçois le courrier qui m'y est adressé ?</th>
+    <th>Où est-ce que je reçois les emails qui m'y sont adressés&nbsp;?</th>
   </tr>
   <tr class="impair">
     <td>
       {if count($mails) eq 0}
       <p class="erreur">
-        Tu n'as actuellement aucune adressse de redirection. Tout courrier électronique qui t'es adresses
-        ci-dessus génère une erreur. Modifie au plus vite ta liste de redirection.<br/>
+        Tu n'as actuellement aucune adresse de redirection. Tout email qui t'est envoyé sur tes
+        adresses polytechniciennes génère une erreur. Modifie au plus vite ta liste de redirection.<br/>
       </p>
       {else}
-      Actuellement, tout courrier électronique qui t'y est adressé, est envoyé
+      Actuellement, tout email qui t'y est adressé, est envoyé
       {if count($mails) eq 1} à l'adresse{else} aux adresses{/if}&nbsp;:
       <ul>
         {foreach from=$mails item=m}
@@ -101,7 +101,7 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
       </ul>
       {/if}
       {test_email}
-      Si tu souhaites <strong>modifier ce reroutage de ton courrier,</strong>
+      Si tu souhaites <strong>modifier ce reroutage de tes emails,</strong>
       <a href="emails/redirect">il te suffit de te rendre ici&nbsp;!</a>
     </td>
   </tr>
@@ -115,9 +115,9 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
   </tr>
   <tr class="impair">
     <td class="half">
-      Tous les courriers qui te sont envoyés sur tes adresses polytechniciennes sont
+      Tous les emails qui te sont envoyés sur tes adresses polytechniciennes sont
       <strong>filtrés par un logiciel antivirus</strong> très performant. Il te protège de ces
-      vers très gênants, qui se propagent souvent par le courrier électronique.
+      vers très gênants, qui se propagent souvent par email.
     </td>
     <td class="half">
       De même, un <strong>service antispam évolué</strong> est en place. Tu peux lui demander
@@ -143,7 +143,7 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pre
   <tr class="impair">
     <td>
       {if $melix}
-      Tu disposes à l'heure actuelle de l'alias <strong>{$melix}</strong>
+      Tu disposes à l'heure actuelle de l'alias <strong>{$melix}</strong>.
       Pour <strong>demander à la place un autre alias @{#globals.mail.alias_dom#}</strong>,
       <a href="emails/alias">il te suffit de te rendre ici</a>.
       {else}

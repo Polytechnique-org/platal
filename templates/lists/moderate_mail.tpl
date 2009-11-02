@@ -55,7 +55,7 @@
     <li>« Refuser » rejette l'email avec un message à son auteur (celui que tu tapes dans le cadre).</li>
     <li>
     « Spam » détruit l'email sans autre forme de procès, à utiliser <strong>UNIQUEMENT</strong>
-    pour les virus et les courriers indésirables.
+    pour les virus et les emails indésirables.
     </li>
   </ul>
 </form>

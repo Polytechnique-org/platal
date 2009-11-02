@@ -81,7 +81,10 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr class='impair'>
     <td>
         <strong>ajout dans le sujet&nbsp;:</strong><br />
-        <span class='smaller'>un préfixe (optionnel) ajouté dans le sujet de chaque email envoyé sur la liste te permet de trier plus facilement ton courrier.</span>
+        <span class='smaller'>
+          un préfixe (optionnel) ajouté dans le sujet de chaque email envoyé
+          sur la liste te permet de trier tes emails plus facilement.
+        </span>
       </td>
       <td>
         <input type='text' name='subject_prefix' size='40' value="{$options.subject_prefix|smarty:nodefaults|utf8_encode}" />
