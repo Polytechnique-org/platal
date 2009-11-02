@@ -73,8 +73,8 @@ Tu as un homonyme X donc tu ne peux pas profiter de l'alias {$homonyme}@{#global
 d'envoyer un email à cette adresse par mégarde il recevra une réponse d'un robot lui expliquant l'ambiguité et lui
 proposant les adresses des différents homonymes.
 {else}
-Si tu venais à avoir un homonyme X, l'alias prenom.nom@{#globals.mail.domain#} sera désactivé. Si bien que
-ton homonyme et toi-même ne disposeraient plus que des adresses de la forme prenom.nom.promo@{#globals.mail.domain#}.
+Si tu venais à avoir un homonyme X, l'alias «prenom.nom»@{#globals.mail.domain#} sera désactivé. Si bien que
+ton homonyme et toi-même ne disposeraient plus que des adresses de la forme «prenom.nom.promo»@{#globals.mail.domain#}.
 {/if}
 </p>
 
