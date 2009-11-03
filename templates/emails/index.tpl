@@ -49,7 +49,7 @@
       <div id="bestalias-msg" style="position:absolute;"></div>
       <br />
       L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche&hellip;).
-      Coche une autre case pour en changer !
+      Coche une autre case pour en changer&nbsp;!
     </td>
   </tr>
   <tr class="pair">
@@ -122,7 +122,7 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme «p
     <td class="half">
       De même, un <strong>service antispam évolué</strong> est en place. Tu peux lui demander
       de te débarrasser des spams que tu reçois. Pour en savoir plus, et l'activer,
-      <a href="emails/antispam">c'est très simple, suis ce lien</a> !
+      <a href="emails/antispam">c'est très simple, suis ce lien</a>&nbsp;!
       <br />
     </td>
   </tr>
@@ -132,7 +132,7 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme «p
 
 <table class="bicol">
   <tr>
-    <th>Un alias sympathique&nbsp;: {#globals.mail.alias_dom#} !</th>
+    <th>Un alias sympathique&nbsp;: {#globals.mail.alias_dom#}&nbsp;!</th>
   </tr>
   <tr class="impair">
     <td>

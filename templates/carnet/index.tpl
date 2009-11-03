@@ -42,7 +42,7 @@
         <a href="carnet/contacts/trombi">Le trombi de tes contacts</a>
       </h3>
       <div class="explication">
-        La même chose que la page de tes contacts&hellip; <strong>en images !</strong>
+        La même chose que la page de tes contacts&hellip; <strong>en images&nbsp;!</strong>
       </div>
     </td>
   </tr>

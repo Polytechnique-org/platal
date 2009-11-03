@@ -22,7 +22,7 @@
 
 <h1>Ton compte Google Apps pour Polytechnique.org</h1>
 
-<p>Polytechnique.org te fournit un compte <b>Google Apps</b> qui te permet de disposer
+<p>Polytechnique.org te fournit un compte <strong>Google Apps</strong> qui te permet de disposer
   des applications web de Google (<a href="http://mail.google.com/a/polytechnique.org/">GMail</a>,
   <a href="http://www.google.com/calendar/hosted/polytechnique.org/">Google Calendar</a>,
   <a href="http://docs.google.com/a/polytechnique.org/">Google Docs</a>, et bien d'autres)
@@ -31,12 +31,12 @@
 
 {if !$account->g_status}
 {if !$has_password_sync}
-<p>Tu peux créer ce compte indépendant <i>Google Apps pour Polytechnique.org</i> en utilisant le
+<p>Tu peux créer ce compte indépendant <em>Google Apps pour Polytechnique.org</em> en utilisant le
   formulaire ci-dessous.
 </p>
-<p><b>Attention :</b> ce compte Google Apps est hébergé par <b>Google</b>, et non
+<p><strong>Attention&nbsp;:</strong> ce compte Google Apps est hébergé par <em>Google</em>, et non
   par Polytechnique.org. Nous te déconseillons d'y conserver des informations
-  confidentielles ou sensibles !<br />&nbsp;
+  confidentielles ou sensibles&nbsp;!<br />&nbsp;
 </p>
 {/if}
 
@@ -50,7 +50,7 @@
   {if !$has_password_sync}
     <form action="googleapps/create" method="get">
     <tr class="impair">
-      <td colspan="2"><b>Mot de passe du compte :</b></td>
+      <td colspan="2"><strong>Mot de passe du compte&nbsp;:</strong></td>
     </tr>
     <tr class="impair">
       <td style="text-align: center">
@@ -82,7 +82,7 @@
     </form>
   {else}
     <tr class="impair">
-      <td colspan="2"><b>Mot de passe du compte :</b></td>
+      <td colspan="2"><strong>Mot de passe du compte&nbsp;:</strong></td>
     </tr>
     {if $password_sync}
       <tr class="impair">
@@ -95,7 +95,7 @@
     {else}
       <tr class="impair">
         <td></td>
-        <td>Tu as choisi d'avoir un nouveau mot de passe pour ton compte Google Apps :</td>
+        <td>Tu as choisi d'avoir un nouveau mot de passe pour ton compte Google Apps&nbsp;:</td>
       </tr>
       <tr class="impair">
         <td colspan="2">
@@ -128,7 +128,7 @@
     <form action="googleapps/create" method="post" id="changepass2">
     {xsrf_token_field}
     <tr class="pair">
-      <td colspan="2"><b>Redirection des emails :</b></td>
+      <td colspan="2"><strong>Redirection des emails&nbsp;:</strong></td>
     </tr>
     <tr class="pair">
       <td style="text-align: center">
@@ -138,7 +138,7 @@
         <label for="redirection_true">Ajouter une redirection de mes emails vers mon compte Google Apps.</label><br />
         <span style="font-size: smaller;">
           Tes <em>Polytechnique.org</em> seront redirigés vers ton nouveau webmail, en plus de tes redirections actuelles.<br /><br />
-          <strong>Attention : ton compte Google Apps est hébergé par <em>Google</em>.</strong><br />
+          <strong>Attention&nbsp;: ton compte Google Apps est hébergé par <em>Google</em>.</strong><br />
           Si tu utilises tes adresses <em>Polytechnique.org</em> pour des communications confidentielles ou dans un cadre professionnel,
           nous te déconseillons donc de rediriger tes emails vers Google Apps.
         </span>
@@ -238,7 +238,7 @@
   {if $account->g_suspension}
   <tr class="pair">
     <td>
-      Ton compte est actuellement suspendu pour la raison suivante : <em>{$account->g_suspension}</em>.
+      Ton compte est actuellement suspendu pour la raison suivante&nbsp;: <em>{$account->g_suspension}</em>.
     </td>
   </tr>
   {/if}
@@ -265,13 +265,13 @@
 </table>
 
 {else}
-<p>Tu peux utiliser ces services :</p>
+<p>Tu peux utiliser ces services&nbsp;:</p>
 <ul>
-  <li>Soit en passant par la <a href="http://google.polytechnique.org/">la page d'accueil Google de Polytechnique.org</a> ;</li>
-  <li>Soit en utilisant directement les différents services :
+  <li>Soit en passant par la <a href="http://google.polytechnique.org/">la page d'accueil Google de Polytechnique.org</a>&nbsp;;</li>
+  <li>Soit en utilisant directement les différents services&nbsp;:
     <ul>
-      <li>Pour tes emails, sur le <a href="http://mail.google.com/a/polytechnique.org/">GMail de Polytechnique.org</a> ;</li>
-      <li>Pour ton calendrier, sur <a href="http://www.google.com/calendar/hosted/polytechnique.org/">Google Calendar</a> ;</li>
+      <li>Pour tes emails, sur le <a href="http://mail.google.com/a/polytechnique.org/">GMail de Polytechnique.org</a>&nbsp;;</li>
+      <li>Pour ton calendrier, sur <a href="http://www.google.com/calendar/hosted/polytechnique.org/">Google Calendar</a>&nbsp;;</li>
       <li>Pour tes documents, sur <a href="http://docs.google.com/a/polytechnique.org/">Google Docs</a>.</li>
     </ul>
   </li>
@@ -300,7 +300,7 @@
   {else}
   <tr class="impair">
     <td colspan="2">
-      Si tu ne souhaites plus utiliser ton compte, tu peux le désactiver :<br /><br />
+      Si tu ne souhaites plus utiliser ton compte, tu peux le désactiver&nbsp;:<br /><br />
       <div class="center">
         <form action="googleapps/suspend" method="post">
           {xsrf_token_field}

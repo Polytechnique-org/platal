@@ -51,7 +51,7 @@
 </div>
 {else}
 <div style="text-align:center;margin:5px;background:red">
-<strong>ATTENTION !  Cet utilisateur n'a pas accepté la synchronisation</strong>
+<strong>ATTENTION&nbsp;!  Cet utilisateur n'a pas accepté la synchronisation</strong>
 </div>
 {/if}
 <div>Les fiches de cet utilisateur&nbsp;:

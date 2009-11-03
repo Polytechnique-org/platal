@@ -297,7 +297,7 @@ class MarketingModule extends PLModule
 
             require_once 'emails.inc.php';
             if (!isvalid_email_redirection($email)) {
-                $page->trigError("Email invalide !");
+                $page->trigError('Email invalide&nbsp;!');
             } else {
                 // On cherche les marketings précédents sur cette adresse
                 // email, en se restreignant au dernier mois

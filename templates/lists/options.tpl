@@ -104,7 +104,7 @@ Tu n'es pas administrateur de la liste, mais du site.
       <td>
         <strong>diffusion&nbsp;:</strong><br />
         <span class='smaller'>l'envoi d'un email à cette liste est-il libre, modéré lorsque l'expéditeur n'appartient pas à la liste
-        ou modéré dans tous les cas ?</span>
+        ou modéré dans tous les cas&nbsp;?</span>
       </td>
       <td>
         <label><input type='radio' name='moderate' value='0'
@@ -135,7 +135,7 @@ Tu n'es pas administrateur de la liste, mais du site.
       </td>
       <td>
         <div id="spamlevel">
-          <em><a name='antispam' id='antispam'></a>que faire des emails marqués « [spam probable] » ?</em><br />
+          <em><a name='antispam' id='antispam'></a>que faire des emails marqués «&nbsp;[spam probable]&nbsp;»&nbsp;?</em><br />
           <label><input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer&nbsp;;</label><br />
           <label><input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les envoyer aux modérateurs pour approbation&hellip;</label><br />
           <label><input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> &hellip;après suppression des
@@ -143,7 +143,7 @@ Tu n'es pas administrateur de la liste, mais du site.
           <label><input type='radio' name='bogo_level' value='3' {if $bogo_level eq 3}checked='checked'{/if} /> tous les supprimer.</label>
         </div>
         <div id="unsurelevel">
-          <em>que faire des emails dont le classement est indéterminé** ?</em><br />
+          <em>que faire des emails dont le classement est indéterminé**&nbsp;?</em><br />
           <label><input type='radio' name='unsure_level' value='0' {if !$unsure_level}checked='checked'{/if} /> les laisser
           passer&nbsp;;</label><br />
           <label><input type='radio' name='unsure_level' value='1' {if $unsure_level eq 1}checked='checked'{/if} /> les modérer.</label>

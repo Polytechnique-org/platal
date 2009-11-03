@@ -30,7 +30,7 @@
 {include file="lists/header_listes.tpl" on=delete}
 
 <h1>
-  Détruire la liste {$details.addr} ?
+  Détruire la liste {$details.addr}&nbsp;?
 </h1>
 
 <form method='post' action='{$platal->pl_self(1)}'>
@@ -39,7 +39,7 @@
     <tr class='impair'>
       <td>
         Veux tu réellement détruire la liste {$details.addr}&nbsp;?<br />
-        Pour valider ton choix, écris en majuscules (sans espace) « OUI »&nbsp;:
+        Pour valider ton choix, écris en majuscules (sans espace) «&nbsp;OUI&nbsp;»&nbsp;:
         <input type='text' size='3' maxlength='3' name="valid" />
       </td>
     </tr>

@@ -234,7 +234,7 @@ class ListsModule extends PLModule
         $liste = Post::v('liste');
 
         if (empty($liste)) {
-            $page->trigError('Le champ «adresse souhaitée» est vide.');
+            $page->trigError('Le champ «&nbsp;adresse souhaitée&nbsp;» est vide.');
         }
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
             $page->trigError('Le nom de la liste ne doit contenir que des lettres non accentuées, chiffres et tirets.');
@@ -245,7 +245,7 @@ class ListsModule extends PLModule
             $domain = $promo . '.' . $globals->mail->domain;
 
             if (($promo < 1921) || ($promo > date('Y'))) {
-                $page->trigError('La promotion est mal renseignée, elle doit être du type : 2004.');
+                $page->trigError('La promotion est mal renseignée, elle doit être du type&nbsp;: 2004.');
             }
 
             $new = $liste . '@' . $domain;
@@ -273,7 +273,7 @@ class ListsModule extends PLModule
         $n = $res->fetchOneCell();
 
         if ($n) {
-            $page->trigError('L\'«adresse souhaitée» est déjà prise.');
+            $page->trigError("L'«&nbsp;adresse souhaitée&nbsp;» est déjà prise.");
         }
 
         if (!Post::v('desc')) {
@@ -841,7 +841,7 @@ class ListsModule extends PLModule
                                  $type, $liste.$app.$domain);
                 }
                 $page->assign('deleted', true);
-                $page->trigSuccess('La liste a été détruite !');
+                $page->trigSuccess('La liste a été détruite&nbsp;!');
             } else {
                 $page->kill('Une erreur est survenue lors de la suppression de la liste.<br />'
                          . 'Contact les administrateurs du site pour régler le problème : '

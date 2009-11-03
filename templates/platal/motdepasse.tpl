@@ -27,8 +27,8 @@
 
 <p>
   Ton mot de passe doit faire au moins <strong>6 caractères</strong> et comporter deux types de
-  caractères parmi les suivants : lettres minuscules, lettres majuscules, chiffres, caractères spéciaux.
-  Attention au type de clavier que tu utilises (qwerty ?) et aux majuscules/minuscules.
+  caractères parmi les suivants&nbsp;: lettres minuscules, lettres majuscules, chiffres, caractères spéciaux.
+  Attention au type de clavier que tu utilises (qwerty&nbsp;?) et aux majuscules/minuscules.
 </p>
 <p>
   Pour une sécurité optimale, ton mot de passe circule de manière chiffrée (https) et est
@@ -82,7 +82,7 @@
 </form>
 
 <p>
-  Note bien qu'il s'agit là du mot de passe te permettant de t'authentifier sur le site {#globals.core.sitename#} ;
+  Note bien qu'il s'agit là du mot de passe te permettant de t'authentifier sur le site {#globals.core.sitename#}&nbsp;;
   le mot de passe te permettant d'utiliser le serveur <a href="./Xorg/SMTPSécurisé">SMTP</a> et <a href="Xorg/NNTPSécurisé">NNTP</a>
   de {#globals.core.sitename#} (si tu as <a href="./password/smtp">activé l'accès SMTP et NNTP</a>)
   est indépendant de celui-ci et tu peux le modifier <a href="./password/smtp">ici</a>.

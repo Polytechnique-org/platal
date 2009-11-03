@@ -655,7 +655,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                 $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
                 $mail->setTxtBody($message);
                 $mail->send();
-                $page->trigSuccess("Email envoyé !");
+                $page->trigSuccess('Email envoyé&nbsp;!');
             }
         } elseif (Post::has('email')) {
             S::assert_xsrf_token();

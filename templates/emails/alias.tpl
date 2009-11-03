@@ -28,7 +28,7 @@
     vérification, tu recevras un email te signalant l'ouverture de ces adresses.
   </p>
   <p>
-    Encore merci de nous faire confiance pour tes emails !
+    Encore merci de nous faire confiance pour tes emails&nbsp;!
   </p>
 {else}
   <h1>
@@ -120,7 +120,7 @@
   </form>
   {if $actuel}
   <form action="emails/alias/delete/{$actuel}" method="post"
-      onsubmit="return confirm('Es-tu sûr de vouloir supprimer {$actuel} ?')">
+      onsubmit="return confirm('Es-tu sûr de vouloir supprimer {$actuel}&nbsp;?')">
     {xsrf_token_field}
     <table class="bicol" cellpadding="4" summary="Suppression d'alias">
       <tr>

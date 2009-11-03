@@ -96,10 +96,10 @@ function chgMainWinLoc(strPage)
         Décédé{if $user->isFemale()}e{/if} le {$x.deces|date_format}
         {elseif !$x.actif}
         Ce{if $c.sexe}tte{/if} camarade n'a plus d'adresse de redirection valide,<br />
-        <a href="marketing/broken/{$user->login()}" class="popup">clique ici si tu connais son adresse email !</a>
+        <a href="marketing/broken/{$user->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
         {elseif !$x.inscrit}
         Cette personne n'est pas inscrite à Polytechnique.org,<br />
-        <a href="marketing/public/{$user->login()}" class="popup">clique ici si tu connais son adresse email !</a>
+        <a href="marketing/public/{$user->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
         {else}
         {if $virtualalias}
         <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />

@@ -24,35 +24,35 @@
 {if $already}
 
 <p>
-Merci de nous avoir communiqué cette information !
+Merci de nous avoir communiqué cette information&nbsp;!
 </p>
 <p>
 Nous avions déjà connaissance de cette adresse, nous espérons donc comme toi que {$full_name} va s'inscrire au plus vite.
 </p>
 <p>
 Si tu le connais personnellement, un petit email pour lui expliquer les atouts de Polytechnique.org
-peut sans aucun doute l'aider à se décider !
+peut sans aucun doute l'aider à se décider&nbsp;!
 </p>
 
 {elseif $ok}
 
 <p>
-  Merci de nous avoir communiqué cette information !  Un administrateur de Polytechnique.org va
+  Merci de nous avoir communiqué cette information&nbsp;!  Un administrateur de Polytechnique.org va
   envoyer un email de proposition d'inscription à Polytechnique.org à {$full_name} dans les
   toutes prochaines heures (ceci est fait à la main pour vérifier qu'aucun utilisateur malveillant
   ne fasse mauvais usage de cette fonctionnalité&hellip;).
 </p>
 <p>
-  <strong>Merci de ton aide à la reconnaissance de notre site !</strong> Tu seras informé par email de
+  <strong>Merci de ton aide à la reconnaissance de notre site&nbsp;!</strong> Tu seras informé par email de
   l'inscription de {$full_name} si notre camarade accepte de rejoindre la communauté des X sur
-  le web !
+  le web&nbsp;!
 </p>
 
 {else}
 
 {if $full_name}
 <h1>
-  Et si nous proposions à {$full_name} de s'inscrire à Polytechnique.org ?
+  Et si nous proposions à {$full_name} de s'inscrire à Polytechnique.org&nbsp;?
 </h1>
 
 <p>
@@ -65,7 +65,7 @@ peut sans aucun doute l'aider à se décider !
   connais.  Nous nous permettons d'attirer ton attention sur le fait que nous avons besoin d'être
   sûrs que cette adresse est bien la sienne, afin que la partie privée du site reste uniquement
   accessible aux seuls polytechniciens. Merci donc de ne nous donner ce renseignement uniquement si
-  tu es certain de sa véracité !
+  tu es certain de sa véracité&nbsp;!
 </p>
 <p>
   Nous pouvons au choix lui écrire au nom de l'équipe Polytechnique.org, ou bien, si tu le veux

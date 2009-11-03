@@ -325,7 +325,7 @@ Pour ceci changer ses permissions en 'disabled'.
   </table>
 </form>
 
-<p><strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong></p>
+<p><strong>* à ne modifier qu'avec l'accord express de l'utilisateur.</strong></p>
 
 <form id="bans" method="post" action="admin/user">
   {xsrf_token_field}

@@ -60,7 +60,7 @@ Si tu n'accèdes pas à cet email dans les 6 heures, sollicite un nouveau certif
   Après avoir complété les informations suivantes, tu recevras à ton adresse {#globals.core.sitename#} un
   email te permettant de choisir un nouveau mot de passe. Si tu désires que cet email soit
   envoyé vers une de tes redirections en particulier, tu peux renseigner l'adresse de cette redirection dans
-  le champ facultatif (cette adresse doit être une de tes redirections actuelles !).
+  le champ facultatif (cette adresse doit être une de tes redirections actuelles&nbsp;!).
   </p>
   <p>
   Si tu ne reçois pas cet email, n'hésite pas à contacter

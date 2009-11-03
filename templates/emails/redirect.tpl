@@ -79,7 +79,7 @@
 
     function removeRedirect(link, email)
     {
-        if (confirm("Supprimer l'adresse " + email + " ?")) {
+        if (confirm("Supprimer l'adresse " + email + "&nbsp;?")) {
           $.get(link.href, {},function() {
             $('tr[@id=line_' + email.replace('@', '_at_') + ']').remove();
             showRemove();
@@ -235,7 +235,7 @@
   Polytechnique.org te propose de conserver les emails que tu reçois, pendant une durée limitée (environ 30 jours).
   Grâce à ce service, tu disposes d'une sauvegarde de tes emails en secours, au cas où, par exemple, tu effacerais
   un email par erreur.<br />
-  <strong>Attention :</strong> il ne s'agit que d'un service de secours, dont la disponibilité n'est pas garantie.
+  <strong>Attention&nbsp;:</strong> il ne s'agit que d'un service de secours, dont la disponibilité n'est pas garantie.
 </p>
 
 <table class="bicol" summary="Compte de stockage">
@@ -313,7 +313,7 @@
   <li>{$user->forlifeEmail()} vers «login»@poly.polytechnique.fr.</li>
 </ul>
 <p>
-  Attention à ne pas faire une boucle quand tu manipules tes redirections ! Tes emails seraient
+  Attention à ne pas faire une boucle quand tu manipules tes redirections&nbsp;! Tes emails seraient
   alors perdus, jusqu'à ce que tu règles le problème.
 </p>
 {/if}

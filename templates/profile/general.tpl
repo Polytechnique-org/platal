@@ -151,7 +151,7 @@
         L'opération de synchronisation prend en compte toutes les informations que tu as marquées comme transmises à l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations sur ta <a href="profile/ax/{$hruid}">fiche AX</a> selon ce qui s'y trouve déjà.
       </p>
       <p class="center">
-        <a href="profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>
+        <a href="profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation&nbsp;?')"><input type="button" value="Synchroniser"/></a>
       </p>
     </td>
   </tr>
@@ -251,7 +251,7 @@
           {icon name="flag_green" title="site public"}</label>
         </span>&nbsp;
         <span class="titre">Complément libre</span><br />
-        <span class="comm">Commentaire, ICQ&hellip; ?</span>
+        <span class="comm">Commentaire, ICQ&hellip;&nbsp;?</span>
       </div>
       <div class="smaller" style="margin-top: 30px">
         <a href="wiki_help/notitle" class="popup3">

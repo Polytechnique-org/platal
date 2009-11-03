@@ -91,7 +91,7 @@
       </h3>
       <div class='explication'>
         Ceci te permet d'utiliser les fils rss du site.
-        Attention, désactiver puis réactiver les fils en change les URL !
+        Attention, désactiver puis réactiver les fils en change les URL&nbsp;!
       </div>
     </td>
   </tr>

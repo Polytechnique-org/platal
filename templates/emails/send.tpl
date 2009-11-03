@@ -36,7 +36,7 @@
   {
     _selectAll('to_contacts');
     _selectAll('cc_contacts');
-    if(form.sujet.value == "" && !confirm("Le sujet de l'email est vide, veux-tu continuer ?")) {
+    if(form.sujet.value == "" && !confirm("Le sujet de l'email est vide, veux-tu continuer&nbsp;?")) {
         form.sujet.focus();
         return false;
     }
@@ -46,7 +46,7 @@
         alert("Il faut définir au moins un destinataire.");
         return false;
       }
-      if (!confirm("Tous les destinataires sont en copie cachée, veux-tu continuer ?")) {
+      if (!confirm("Tous les destinataires sont en copie cachée, veux-tu continuer&nbsp;?")) {
         form.to.focus();
         return false;
       }

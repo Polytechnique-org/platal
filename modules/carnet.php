@@ -78,7 +78,7 @@ class CarnetModule extends PLModule
         if(preg_match('!^ *(\d{4}) *$!', $arg, $matches)) {
             $p = intval($matches[1]);
             if($p<1900 || $p>2100) {
-                $page->trigError("la promo entrée est invalide");
+                $page->trigError('La promo entrée est invalide.');
             } else {
                 if ($action == 'add_promo') {
                     $watch->_promos->add($p);
@@ -90,9 +90,9 @@ class CarnetModule extends PLModule
             $p1 = intval($matches[1]);
             $p2 = intval($matches[2]);
             if($p1<1900 || $p1>2100) {
-                $page->trigError('la première promo de la plage entrée est invalide');
+                $page->trigError('La première promo de la plage entrée est invalide.');
             } elseif($p2<1900 || $p2>2100) {
-                $page->trigError('la seconde promo de la plage entrée est invalide');
+                $page->trigError('La seconde promo de la plage entrée est invalide.');
             } else {
                 if ($action == 'add_promo') {
                     $watch->_promos->addRange($p1, $p2);
@@ -176,7 +176,7 @@ class CarnetModule extends PLModule
                 if (($user = User::get(Env::v('user')))) {
                     if (XDB::execute("DELETE FROM  contacts
                                             WHERE  uid = {?} AND contact = {?}", $uid, $user->id())) {
-                        $page->trigSuccess("Contact retiré !");
+                        $page->trigSuccess("Contact retiré&nbsp;!");
                     }
                 }
                 break;
@@ -185,9 +185,9 @@ class CarnetModule extends PLModule
                 if (($user = User::get(Env::v('user')))) {
                     if (XDB::execute("REPLACE INTO  contacts (uid, contact)
                                             VALUES  ({?}, {?})", $uid, $user->id())) {
-                        $page->trigSuccess('Contact ajouté !');
+                        $page->trigSuccess('Contact ajouté&nbsp;!');
                     } else {
-                        $page->trigWarning('Contact déjà dans la liste !');
+                        $page->trigWarning('Contact déjà dans la liste&nbsp;!');
                     }
                 }
                 break;

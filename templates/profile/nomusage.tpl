@@ -47,7 +47,7 @@
   
     <p>
       Tu recevras un email dès que les changements demandés auront été effectués. 
-      Encore merci de nous faire confiance pour tes emails !
+      Encore merci de nous faire confiance pour tes emails&nbsp;!
     </p>
 
   {else}

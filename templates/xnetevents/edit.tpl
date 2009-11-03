@@ -57,7 +57,7 @@ function deadlineChange(box)
 
 {if $evt.eid}
 <p class='erreur'>
-  <strong>Attention :</strong> si tu souhaites modifier la structure d'un événement alors
+  <strong>Attention&nbsp;:</strong> si tu souhaites modifier la structure d'un événement alors
   que des personnes y sont déjà inscrites, contacte préalablement
   <a href='mailto:contact@polytechnique.org'>l'équipe de Polytechnique.org</a>.
 </p>

@@ -75,7 +75,7 @@
 </form>
 
 <p>
-{$nonins->total()} Polytechniciens de la promo {$promo} ne sont pas inscrits !
+{$nonins->total()} Polytechniciens de la promo {$promo} ne sont pas inscrits&nbsp;!
 </p>
 
 

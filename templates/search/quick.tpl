@@ -58,7 +58,7 @@
 
 {/if}
 
-<h1>Comment faire une recherche ?</h1>
+<h1>Comment faire une recherche&nbsp;?</h1>
 
 <h2>Nom, Prénom, Promotion&hellip;<h2>
 
@@ -79,7 +79,7 @@ Ainsi, rechercher tous les "Dupont" sur les promotions 1980 à 1990 et sur la pr
 
 <h2>Astuce pour les noms&hellip;</h2>
 <p>
-Parfois on ne sait plus si le nom qu'on recherche s'écrit « Lenormand », « Le Normand » ou « Le-Normand »&hellip;
+Parfois on ne sait plus si le nom qu'on recherche s'écrit «&nbsp;Lenormand&nbsp;», «&nbsp;Le Normand&nbsp;» ou «&nbsp;Le-Normand&nbsp;»&hellip;
 </p>
 <p>
 Pour éviter ce genre d'écueils, il suffit de chercher&nbsp;: <code>Le Normand</code><br />

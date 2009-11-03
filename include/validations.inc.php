@@ -215,7 +215,7 @@ abstract class Validate
                 $this->trigSuccess('Email de refus envoyé');
                 return true;
             } else {
-                $this->trigError('pas de motivation pour le refus !!!');
+                $this->trigError('Pas de motivation pour le refus&nbsp;!!!');
             }
         }
 

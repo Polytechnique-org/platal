@@ -27,7 +27,7 @@
 
 {if $created}
 
-<p class='erreur'>Demande de création envoyée !</p>
+<p class='erreur'>Demande de création envoyée&nbsp;!</p>
 
 {else}
 
@@ -67,13 +67,13 @@ liste&nbsp;:
       <td class='titre'>Promotion&nbsp;:</td>
       <td><input type='text' name='promo' size='4' maxlength='4'
         {if $smarty.post.promo}value='{$smarty.post.promo}'{else}value='{$smarty.session.promo}'{/if} />
-      <td class='smaller' colspan='3'>Par exemple : 2004</td>
+      <td class='smaller' colspan='3'>Par exemple&nbsp;: 2004</td>
     </tr>
     <tr class='groupex'>
       <td class='titre'>Nom du groupe X&nbsp;:</td>
       <td colspan='4'>
         <input type='text' name='groupex_name' value='{$smarty.post.groupex_name}' /><br />
-        <span class='smaller'><strong>Attention :</strong> le nom du groupe doit être écrit comme sur <a
+        <span class='smaller'><strong>Attention&nbsp;:</strong> le nom du groupe doit être écrit comme sur <a
         href="http://www.polytechnique.net">Polytechnique.net</a>.</span>
       </td>
     </tr>
@@ -125,7 +125,7 @@ liste&nbsp;:
     </tr>
     <tr>
       <td></td>
-      <td class='smaller' colspan='4'>(est-ce que les non membres peuvent voir l'existence de cette liste ?)</td>
+      <td class='smaller' colspan='4'>(est-ce que les non membres peuvent voir l'existence de cette liste&nbsp;?)</td>
     </tr>
     <tr>
       <td></td>
@@ -140,7 +140,7 @@ liste&nbsp;:
     <tr>
       <td></td>
       <td class='smaller' colspan='4'>(l'envoi d'un email à cette liste est-il libre, modéré
-      lorsque l'expéditeur n'appartient pas à la liste ou modéré dans tous les cas ?)</td>
+      lorsque l'expéditeur n'appartient pas à la liste ou modéré dans tous les cas&nbsp;?)</td>
     </tr>
     <tr>
       <td></td>

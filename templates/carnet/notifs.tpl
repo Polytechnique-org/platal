@@ -52,7 +52,7 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
   </div>
 </form>
 
-<h1 id='middle'>Qui/Que surveiller ?</h1>
+<h1 id='middle'>Qui/Que surveiller&nbsp;?</h1>
 
 <h2>Surveiller ses contacts</h2>
 

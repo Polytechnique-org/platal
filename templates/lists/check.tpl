@@ -26,7 +26,7 @@
 {if $options|@count}
 <table class='bicol' cellpadding='2' cellspacing='0'>
   <tr><th colspan='3'>Options incorrectes pour {$details.addr}</th></tr>
-  <tr><th>champs</th><th>devrait être :</th><th>est&hellip;</th></tr>
+  <tr><th>champs</th><th>devrait être&nbsp;:</th><th>est&hellip;</th></tr>
   {foreach from=$options key=k item=o}
   <tr>
     <td class='titre'>{$k}</td>
@@ -43,7 +43,7 @@
   </div>
 </form>
 {else}
-<p>Liste correcte !</p>
+<p>Liste correcte&nbsp;!</p>
 {/if}
 
 

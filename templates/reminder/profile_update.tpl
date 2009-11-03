@@ -25,7 +25,7 @@
   date du {$profile_last_update|date_format}. Il est possible qu'elle ne soit pas à jour.
   Si tu souhaites la modifier,
   <a href="{$reminder->baseurl()}/profile" style="text-decoration: none">
-  clique ici !</a>
+  clique ici&nbsp;!</a>
 {elseif $photo_incitation}
   Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
   <a href="{$reminder->baseurl()}/photo" style="text-decoration: none">

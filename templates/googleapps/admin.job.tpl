@@ -44,7 +44,7 @@
     <td class="titre">Priorité</td><td><code>{$job.p_priority}</code></td>
   </tr>
   <tr class="pair">
-    <td class="titre">Requête administrateur ?</td><td>{if $job.p_admin_request}oui{else}non{/if}</td>
+    <td class="titre">Requête administrateur&nbsp;?</td><td>{if $job.p_admin_request}oui{else}non{/if}</td>
   </tr>
 
   <tr class="impair">

@@ -125,7 +125,7 @@
       </a>
       <br /><br /><br />
       <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/delete"
-         onclick="return confirm('Es-tu sûr de vouloir supprimer cet article ?')">
+         onclick="return confirm('Es-tu sûr de vouloir supprimer cet article&nbsp;?')">
         {icon name="delete" title="Supprimer"}
       </a>
     </td>

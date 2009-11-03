@@ -231,7 +231,7 @@ class XnetEventsModule extends PLModule
                 if (!isset($pers[$j]) || !is_numeric($pers[$j])
                 ||  $pers[$j] < 0)
                 {
-                    $page->trigError('Tu dois choisir un nombre d\'invités correct !');
+                    $page->trigError("Tu dois choisir un nombre d'invités correct&nbsp;!");
                     return;
                 }
                 $subs[$j] = 1 + $pers[$j];

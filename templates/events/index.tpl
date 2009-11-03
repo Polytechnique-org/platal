@@ -28,7 +28,7 @@
 
 <h1 id='pagetop'>
 Bienvenue {$smarty.session.prenom}{if $birthday}
-  &nbsp;et joyeux anniversaire de la part de toute l'équipe !
+  &nbsp;et joyeux anniversaire de la part de toute l'équipe&nbsp;!
 {else},
 {/if}
 </h1>

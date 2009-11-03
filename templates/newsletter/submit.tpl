@@ -30,7 +30,7 @@ Ton article a bien été pris en compte.
 
 <p>
 Nous te recontacterons éventuellement (certainement vers la fin du mois) si nous avons des
-renseignements à te demander à son sujet !
+renseignements à te demander à son sujet&nbsp;!
 </p>
 
 {else}
@@ -40,7 +40,7 @@ renseignements à te demander à son sujet !
 
 {if !$art->check()}
 <p class='erreur'>
-L'article que tu as proposé est trop long !<br />
+L'article que tu as proposé est trop long&nbsp;!<br />
 Il te faut te limiter à 8 lignes de 68 caractères.
 </p>
 {/if}
