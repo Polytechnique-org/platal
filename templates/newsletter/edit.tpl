@@ -134,6 +134,35 @@
   {/foreach}
 </table>
 
+<br />
+
+<form action="admin/newsletter/edit/{$nl->id(true)}/blacklist_check" method="post">
+  <table class="bicol" cellpadding="3" cellspacing="0">
+    <tr>
+      <th colspan="2">
+        Vérifier les url et adresses emails sur Spamhaus
+      </th>
+    </tr>
+    {if $ips_to_check|@count > 0}
+    {foreach from=$ips_to_check item=ip_list key=title}
+    {foreach from=$ip_list item=domain key=ip}
+    <tr>
+      <td>{$title}</td>
+      <td><a href="{#globals.mail.blacklist_check_url#}{$ip}">{$domain}</a></td>
+    </tr>
+    {assign var=title value=''}
+    {/foreach}
+    {/foreach}
+    {else}
+    <tr class="center">
+      <td colspan="2">
+        <input type="submit" value="Vérifier" />
+      </td>
+    </tr>
+    {/if}
+  </table>
+</form>
+
 {else}
 
 <p>
