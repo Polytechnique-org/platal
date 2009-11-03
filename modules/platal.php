@@ -328,10 +328,16 @@ class PlatalModule extends PLModule
             if ($res->numRows()) {
                 $mails = $res->fetchOneCell();
             } else {
-                $res   = XDB::query('SELECT  email
+                $user  = User::getSilent($uid);
+                $mails = $user->bestEmail();
+                $res   = XDB::query("SELECT  email
                                        FROM  emails
-                                      WHERE  uid = {?} AND NOT FIND_IN_SET("filter", flags)', $uid);
-                $mails = implode(', ', $res->fetchColumn());
+                                      WHERE  uid = {?} AND NOT FIND_IN_SET('filter', flags)
+                                             AND NOT FIND_IN_SET('active', flags)",
+                                    $uid);
+                if ($res->numRows() > 0) {
+                    $mails .= ', ' . implode(', ', $res->fetchColumn());
+                }
             }
             $mymail = new PlMailer();
             $mymail->setFrom('"Gestion des mots de passe" <support+password@' . $globals->mail->domain . '>');
