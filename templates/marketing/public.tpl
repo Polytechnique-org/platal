@@ -87,15 +87,35 @@ peut sans aucun doute l'aider à se décider&nbsp;!
     <tr class="impair">
       <td>Nous lui écrirons&nbsp;:</td>
       <td>
-        <label><input type="radio" name="origine" value="user" checked="checked" /> en ton nom</label><br />
-        <label><input type="radio" name="origine" value="staff" /> au nom de l'équipe Polytechnique.org</label>
+        <label>
+          <input type="radio" name="origine" value="user" checked="checked"
+                 onclick="$('#sender').html('{$perso_signature}');" />
+          en ton nom
+        </label><br />
+        <label>
+          <input type="radio" name="origine" value="staff"
+                 onclick='$("#sender").html("{$xorg_signature}");' />
+          au nom de l'équipe Polytechnique.org
+        </label>
       </td>
     </tr>
   </table>
-  <div>
+  <div class="center">
     <br />
     <input type="submit" name="valide" value="Valider" />
+    <br />
+    <br />
   </div>
+  <table class="bicol" summary="Texte de l'email">
+    <tr>
+      <th colspan="2">Texte de l'email</th>
+    </tr>
+    <tr>
+      <td colspan="2">
+        {$text|smarty:nodefaults}
+      </td>
+    </tr>
+  </table>
 </form>
 {/if}
 

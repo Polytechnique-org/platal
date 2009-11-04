@@ -311,6 +311,23 @@ class MarketingModule extends PLModule
                     $market->add();
                 }
             }
+        } else {
+            global $globals;
+            require_once 'marketing.inc.php';
+
+            $sender = User::getSilent(S::v('uid'));
+            $market = new AnnuaireMarketing(null, null);
+            $text = $market->getText(array(
+                'sexe'           => $user->isFemale(),
+                'forlife_email'  => $user->login() . '@' . $globals->mail->domain,
+                'forlife_email2' => $user->login() . '@' . $globals->mail->domain2
+            ));
+            $perso_signature = '"' . $sender->fullName() . '" <' . $sender->bestEmail() . '>';
+            $text = preg_replace("{-- (.|\n)*}",
+                                "-- \n<span id=\"sender\">" . $perso_signature . '</span>', $text);
+            $page->assign('text', nl2br($text));
+            $page->assign('xorg_signature', str_replace("\n", '<br />', $market->getSignature()));
+            $page->assign('perso_signature', $perso_signature);
         }
     }
 
