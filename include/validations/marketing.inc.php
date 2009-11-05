@@ -31,6 +31,7 @@ class MarkReq extends Validate
     public $m_relance;
     public $m_type;
     public $m_data;
+    public $m_personal_notes;
 
     public $rules = "Accepter si l'adresse email parait correcte, et pas absurde (ou si le marketeur est de confiance). Si le
     demandeur marque sa propre adresse email, refuser dans tous les cas.
@@ -39,7 +40,7 @@ class MarkReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$sender, User &$mark, $email, $perso, $type, $data)
+    public function __construct(User &$sender, User &$mark, $email, $perso, $type, $data, $personal_notes)
     {
         parent::__construct($sender, false, 'marketing');
         $this->m_user  = &$mark;
@@ -47,6 +48,7 @@ class MarkReq extends Validate
         $this->perso   = $perso;
         $this->m_type  = $type;
         $this->m_data  = $data;
+        $this->m_personal_notes = $personal_notes;
     }
 
     // }}}

@@ -26,6 +26,9 @@ Bug/Wish:
     * Mail:
         - #988: Gets rid of <h1> tags in the mails we send                 -JAC
 
+    * Marketing:
+        - #946: Displays marketing email and allows the sender to edit it  -JAC
+
     * Newsletter:
         - #986: Improves the nl edition page                               -JAC
         - #991: Adds the text of the article in the mail when refused      -JAC

@@ -34,11 +34,10 @@ Pas de nouvelle boîte aux lettres à relever, il suffit de la rediriger vers to
 De plus, le site web offre des services d'annuaire avec recherche multi-critères, de forums, de listes de diffusion. Ce portail est géré par une vingtaine de jeunes camarades, avec le soutien et les conseils de nombreux X de toutes promotions, incluant notamment des camarades de la Kès et de l'AX. Les serveurs sont hébergés au sein même de l'École polytechnique, sur une connexion rapide, et les services évoluent en fonction des besoins exprimés par la communauté sur Internet.
 
 N'hésite pas à parler de Polytechnique.org à nos camarades pas encore inscrits et à nous écrire pour nous proposer toute amélioration ou suggestion.
-
+{$personal_notes}
 À bientôt sur Polytechnique.org <https://www.polytechnique.org>,
 
 Bien cordialement,
-
 -- 
 {$sign}
 

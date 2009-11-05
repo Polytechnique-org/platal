@@ -89,15 +89,23 @@ peut sans aucun doute l'aider à se décider&nbsp;!
       <td>
         <label>
           <input type="radio" name="origine" value="user" checked="checked"
-                 onclick="$('#sender').html('{$perso_signature}');" />
+                 onclick="$('#sender').html('{$perso_signature}'); $('#tr_perso').show();
+                          $('#personal_notes_display').show();" />
           en ton nom
         </label><br />
         <label>
           <input type="radio" name="origine" value="staff"
-                 onclick='$("#sender").html("{$xorg_signature}");' />
+                 onclick='$("#sender").html("{$xorg_signature}"); $("#tr_perso").hide();
+                          $("#personal_notes_display").hide();' />
           au nom de l'équipe Polytechnique.org
         </label>
       </td>
+    </tr>
+    <tr class="pair" id="tr_perso">
+      <td>Texte à ajouter à l'email&nbsp;:</td>
+      <td><textarea cols="60" rows="5" name="personal_notes" id="textarea_perso"
+                    onkeyup="$('#personal_notes_display').html('<br />' + $('#textarea_perso').val().replace(/\n/g,
+                    '<br />') + '<br />');"></textarea>
     </tr>
   </table>
   <div class="center">
