@@ -553,9 +553,8 @@ class XnetEventsModule extends PLModule
             // change the price paid by a participant
             if (Env::v('adm') == 'prix' && $member) {
                 XDB::execute("UPDATE groupex.evenements_participants
-                                 SET paid = IF(paid + {?} > 0, paid + {?}, 0)
+                                 SET paid = paid + {?}
                                WHERE uid = {?} AND eid = {?} AND item_id = 1",
-                        strtr(Env::v('montant'), ',', '.'),
                         strtr(Env::v('montant'), ',', '.'),
                         $member['uid'], $evt['eid']);
             }
