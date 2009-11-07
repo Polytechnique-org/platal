@@ -23,7 +23,7 @@
 
 <h1>Redirection de page WEB</h1>
 
-<h2>Pourquoi une redirection de page WEB ?</h2>
+<h2>Pourquoi une redirection de page WEB&nbsp;?</h2>
 <p>
   Dans la lignée du service de redirection d'emails de <strong>{#globals.core.sitename#}</strong>,
   il est possible de faire pointer
@@ -51,7 +51,7 @@
   <a href="http://www.carva.org/{$smarty.session.hruid}">http://www.carva.org/{$smarty.session.hruid}</a>
   sont redirigées sur <a href="http://{$carva}">http://{$carva}</a>
 {else}
-  La redirection n'est pas utilisée ...
+  La redirection n'est pas utilisée&hellip;
 {/if}
 </p>
 

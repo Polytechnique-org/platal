@@ -22,9 +22,7 @@
 
 {include file="lists/header_listes.tpl"}
 
-<h1>
-  Contenu de l'email en attente
-</h1>
+<strong>Contenu de l'email en attente</strong>
 
 {$banana|smarty:nodefaults}
 
@@ -45,11 +43,11 @@
       <td class='center'>
         <input type='hidden' name='mid' value='{$smarty.get.mid}' />
         <input type='submit' name='mok' value='Accepter !'
-          onclick="return confirm('Es-tu sûr de vouloir Envoyer cet email sur la liste ?')"/>&nbsp;
+          onclick="return confirm('Es-tu sûr de vouloir Envoyer cet email sur la liste&nbsp;?')"/>&nbsp;
         <input type='submit' name='mno' value='Refuser !' 
-          onclick="return confirm('Es-tu sûr de vouloir Refuser cet email ?')"/>&nbsp;
+          onclick="return confirm('Es-tu sûr de vouloir Refuser cet email&nbsp;?')"/>&nbsp;
         <input type='submit' name='mdel' value='Spam !' style='color:red;'
-          onclick="return confirm('Es-tu sûr de vouloir Détruire cet email ?')"/>
+          onclick="return confirm('Es-tu sûr de vouloir Détruire cet email&nbsp;?')"/>
       </td>
     </tr>
   </table>
@@ -57,7 +55,7 @@
     <li>« Refuser » rejette l'email avec un message à son auteur (celui que tu tapes dans le cadre).</li>
     <li>
     « Spam » détruit l'email sans autre forme de procès, à utiliser <strong>UNIQUEMENT</strong>
-    pour les virus et les courriers indésirables.
+    pour les virus et les emails indésirables.
     </li>
   </ul>
 </form>

@@ -34,25 +34,33 @@ function inscription_notifs_base($uid)
 // }}}
 // {{{ function register_watch_op
 
-function register_watch_op($uid, $cid, $date='', $info='')
+function register_watch_op($uid, $cid, $date = '', $info = '')
 {
     if (empty($date)) {
         $date = date('Y-m-d');
-    };
-    XDB::execute('REPLACE INTO  watch_ops (uid,cid,known,date,info)
+    }
+    XDB::execute('REPLACE INTO  watch_ops (uid, cid, known, date, info)
                         VALUES  ({?}, {?}, NOW(), {?}, {?})',
                  $uid, $cid, $date, $info);
-    if($cid == WATCH_FICHE) {
+    if ($cid == WATCH_FICHE) {
         if ($info) {
             register_profile_update($uid, $info);
         }
-        XDB::execute('UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id={?}', $uid);
-    } elseif($cid == WATCH_INSCR) {
-        XDB::execute('REPLACE INTO  contacts (uid,contact)
-                            SELECT  uid,ni_id
+        XDB::execute('UPDATE  auth_user_md5
+                         SET  DATE = NOW()
+                       WHERE  user_id = {?}', $uid);
+    } elseif ($cid == WATCH_INSCR) {
+        XDB::execute('REPLACE INTO  contacts (uid, contact)
+                            SELECT  uid, ni_id
                               FROM  watch_nonins
-                             WHERE  ni_id={?}', $uid);
-        XDB::execute('DELETE FROM watch_nonins WHERE ni_id={?}', $uid);
+                             WHERE  ni_id = {?}', $uid);
+        XDB::execute('DELETE FROM  watch_nonins
+                            WHERE  ni_id = {?}', $uid);
+    } elseif ($cid == WATCH_DEATH) {
+        // We delete nonins watches both for the dead (if non registered), and
+        // for people watched by the dead.
+        XDB::execute('DELETE FROM  watch_nonins
+                            WHERE  ni_id = {?} OR uid = {?}', $uid);
     }
     Platal::session()->updateNbNotifs();
 }

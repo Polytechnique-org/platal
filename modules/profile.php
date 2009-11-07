@@ -57,6 +57,7 @@ class ProfileModule extends PLModule
             'referent/country'           => $this->make_hook('ref_country',                AUTH_COOKIE, 'user', NO_AUTH),
 
             'groupes-x'                  => $this->make_hook('xnet',                       AUTH_COOKIE),
+            'groupes-x/logo'             => $this->make_hook('xnetlogo',                   AUTH_PUBLIC),
 
             'vcard'                      => $this->make_hook('vcard',                      AUTH_COOKIE, 'user', NO_HTTPS),
             'admin/binets'               => $this->make_hook('admin_binets',               AUTH_MDP, 'admin'),
@@ -347,7 +348,7 @@ class ProfileModule extends PLModule
         if (!intval($mat)) {
             $page->kill("Le matricule AX de {$user->login()} est inconnu");
         }
-        http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&anc_id=$mat");
+        http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&ancc_id=$mat");
     }
 
     function handler_p_edit(&$page, $opened_tab = null, $mode = null, $success = null)
@@ -773,6 +774,28 @@ class ProfileModule extends PLModule
          LEFT JOIN groupex.evenements AS e ON(e.asso_id = m.asso_id AND e.archive = 0)
              WHERE uid = {?} GROUP BY m.asso_id ORDER BY a.nom', S::i('uid'));
         $page->assign('assos', $req->fetchAllAssoc());
+    }
+
+    function handler_xnetlogo(&$page, $id)
+    {
+        if (is_null($id)) {
+            return PL_NOT_FOUND;
+        }
+
+        $res = XDB::query('SELECT  logo, logo_mime
+                             FROM  groupex.asso
+                            WHERE  id = {?}', $id);
+        list($logo, $logo_mime) = $res->fetchOneRow();
+
+        if (!empty($logo)) {
+            header("Content-type: $mime");
+            echo $logo;
+        } else {
+            header('Content-type: image/jpeg');
+            readfile(dirname(__FILE__) . '/../htdocs/images/dflt_carre.jpg');
+        }
+
+        exit;
     }
 
     function handler_vcard(&$page, $x = null)

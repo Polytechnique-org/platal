@@ -100,7 +100,7 @@
 <table class="bicol" cellpadding="3" cellspacing="0">
   <tr>
     <td>
-      Créer un nouvel article...
+      Créer un nouvel article&hellip;
     </td>
     <td style='vertical-align:middle; border-left: 1px gray solid' class="center">
       <a href="admin/newsletter/edit/{$nl->_id}/new#edit">{icon name=add title="créer"}</a>
@@ -118,15 +118,50 @@
     <td>
       <pre>{$art->toText('%hash%','%login%')}</pre>
     </td>
-    <td style='vertical-align:middle; border-left: 1px gray solid'>
-      <small><strong>Pos: {$art->_pos}</strong></small><br />
-      <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/edit#edit">{icon name="page_edit" title="Editer"}</a>
-      <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/delete">{icon name="delete" title="Supprimer"}</a>
+    <td style="vertical-align: middle; border-left: 1px gray solid; text-align: center">
+      <small><strong>Pos:&nbsp;{$art->_pos}</strong></small><br />
+      <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/edit#edit">
+        {icon name="page_edit" title="Editer"}
+      </a>
+      <br /><br /><br />
+      <a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/delete"
+         onclick="return confirm('Es-tu sûr de vouloir supprimer cet article&nbsp;?')">
+        {icon name="delete" title="Supprimer"}
+      </a>
     </td>
   </tr>
   {/foreach}
   {/foreach}
 </table>
+
+<br />
+
+<form action="admin/newsletter/edit/{$nl->id(true)}/blacklist_check" method="post">
+  <table class="bicol" cellpadding="3" cellspacing="0">
+    <tr>
+      <th colspan="2">
+        Vérifier les url et adresses emails sur Spamhaus
+      </th>
+    </tr>
+    {if $ips_to_check|@count > 0}
+    {foreach from=$ips_to_check item=ip_list key=title}
+    {foreach from=$ip_list item=domain key=ip}
+    <tr>
+      <td>{$title}</td>
+      <td><a href="{#globals.mail.blacklist_check_url#}{$ip}">{$domain}</a></td>
+    </tr>
+    {assign var=title value=''}
+    {/foreach}
+    {/foreach}
+    {else}
+    <tr class="center">
+      <td colspan="2">
+        <input type="submit" value="Vérifier" />
+      </td>
+    </tr>
+    {/if}
+  </table>
+</form>
 
 {else}
 
@@ -188,7 +223,7 @@
       </td>
     </tr>
     <tr class="impair">
-      <td class='titre'>Ajouts (emails, contacts, tarifs, site web, ...)</td>
+      <td class='titre'>Ajouts (emails, contacts, tarifs, site web&hellip;)</td>
       <td>
         <textarea cols="68" rows="6" name='append'>{$art->append()}</textarea>
       </td>

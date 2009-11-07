@@ -59,6 +59,20 @@ div.nl div.title {
     background-position : 0.5ex 0ex;
 }
 
+div.nl div.title a {
+    color : #fff;
+    background-color : transparent;
+    text-decoration : none;
+    background-image: none;
+}
+
+div.nl div.title a:hover {
+    color : #fff;
+    background-color : transparent;
+    text-decoration : none;
+    background-image: none;
+}
+
 div.nl div.intro {
     margin : 4ex 3ex;
 }

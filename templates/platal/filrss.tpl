@@ -32,10 +32,10 @@
     Tu peux le faire tout de suite en cliquant sur Activer ci-dessous.
   </li>
   <li>
-    Qu'est-ce qu'un <a href="Xorg/RSS">fil RSS</a> ?
+    Qu'est-ce qu'un <a href="Xorg/RSS">fil RSS</a>&nbsp;?
   </li>
   <li>
-    Comment configurer un <a href="Xorg/RSS">agregateur RSS</a> ?
+    Comment configurer un <a href="Xorg/RSS">agregateur RSS</a>&nbsp;?
   </li>
 </ul>
 
@@ -60,7 +60,7 @@ En voici les adresses&nbsp;:
   </li>
 </ul>
 <p>
-Tu peux le désactiver en allant dans Préférences et en cliquant sur "désactiver les fils RSS".
+Tu peux le désactiver en allant dans Préférences et en cliquant sur «&nbsp;désactiver les fils RSS&nbsp;».
 </p>
 <p>
 Attention&nbsp;: désactiver, puis réactiver le fil RSS en change l'adresse.

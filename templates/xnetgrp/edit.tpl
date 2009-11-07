@@ -197,8 +197,7 @@
     <a href="wiki_help" class="popup3">
       {icon name=information title="Syntaxe wiki"} Voir la syntaxe wiki autorisée pour la description.
     </a>
-    <textarea name="descr" cols="70" rows="15" id="descr"
-              {if !$asso.wiki_desc && $asso.descr}class="error"{/if}>{$asso.descr}</textarea>
+    <textarea name="descr" cols="70" rows="15" id="descr">{$asso.descr}</textarea>
     <input type="submit" name="preview" value="Aperçu de la description"
            onclick="previewWiki('descr', 'preview_descr', true, 'preview_descr'); return false;" /><br />
     <input type="submit" name="submit" value="Enregistrer" />

@@ -73,31 +73,31 @@ class XnetEventsModule extends PLModule
         if ($action == 'del') {
             // deletes the event mailing aliases
             if ($tmp[1]) {
-                XDB::execute(
-                    "DELETE FROM virtual WHERE type = 'evt' AND alias LIKE {?}",
-                    $tmp[1].'-absents@%');
-                XDB::execute(
-                    "DELETE FROM virtual WHERE type = 'evt' AND alias LIKE {?}",
-                    $tmp[1].'-participants@%');
+                foreach (array('-absents@', '-participants@', '-paye@', '-participants-non-paye@') as $v) {
+                    XDB::execute("DELETE FROM  virtual
+                                        WHERE  type = 'evt' AND alias LIKE {?}",
+                                 $tmp[1] . $v . '%');
+                }
             }
 
             // deletes the event items
-            XDB::execute("DELETE FROM groupex.evenements_items WHERE eid = {?}", $eid);
+            XDB::execute('DELETE FROM  groupex.evenements_items
+                                WHERE  eid = {?}', $eid);
 
             // deletes the event participants
-            XDB::execute("DELETE FROM groupex.evenements_participants
-                                    WHERE eid = {?}", $eid);
+            XDB::execute('DELETE FROM  groupex.evenements_participants
+                                WHERE  eid = {?}', $eid);
 
             // deletes the event
-            XDB::execute("DELETE FROM groupex.evenements
-                                    WHERE eid = {?} AND asso_id = {?}",
-                                   $eid, $globals->asso('id'));
+            XDB::execute('DELETE FROM  groupex.evenements
+                                WHERE  eid = {?} AND asso_id = {?}',
+                         $eid, $globals->asso('id'));
 
             // delete the requests for payments
             require_once 'validations.inc.php';
-            XDB::execute("DELETE FROM requests
-                                    WHERE type = 'paiements' AND data LIKE {?}",
-                                   PayReq::same_event($eid, $globals->asso('id')));
+            XDB::execute("DELETE FROM  requests
+                                WHERE  type = 'paiements' AND data LIKE {?}",
+                         PayReq::same_event($eid, $globals->asso('id')));
             $globals->updateNbValid();
         }
 
@@ -231,7 +231,7 @@ class XnetEventsModule extends PLModule
                 if (!isset($pers[$j]) || !is_numeric($pers[$j])
                 ||  $pers[$j] < 0)
                 {
-                    $page->trigError('Tu dois choisir un nombre d\'invités correct !');
+                    $page->trigError("Tu dois choisir un nombre d'invités correct&nbsp;!");
                     return;
                 }
                 $subs[$j] = 1 + $pers[$j];
@@ -240,11 +240,11 @@ class XnetEventsModule extends PLModule
 
         // impossible to unsubscribe if you already paid sthing
         if (!array_sum($subs) && $evt['paid'] != 0) {
-            $page->trigError("Impossible de te désinscrire complètement ".
-                            "parce que tu as fait un paiement par ".
-                            "chèque ou par liquide. Contacte un ".
-                            "administrateur du groupe si tu es sûr de ".
-                            "ne pas venir");
+            $page->trigError("Impossible de te désinscrire complètement " .
+                            "parce que tu as fait un paiement par " .
+                            "chèque ou par liquide. Contacte un " .
+                            "administrateur du groupe si tu es sûr de " .
+                            "ne pas venir.");
             return;
         }
 
@@ -272,7 +272,7 @@ class XnetEventsModule extends PLModule
         }
         if ($updated !== false) {
             $page->trigSuccess('Ton inscription à l\'événement a été mise à jour avec succès.');
-            subscribe_lists_event($total, S::i('uid'), $evt);
+            subscribe_lists_event($total, S::i('uid'), $evt, $paid);
         }
         $page->assign('event', get_event_detail($eid));
     }
@@ -553,9 +553,8 @@ class XnetEventsModule extends PLModule
             // change the price paid by a participant
             if (Env::v('adm') == 'prix' && $member) {
                 XDB::execute("UPDATE groupex.evenements_participants
-                                 SET paid = IF(paid + {?} > 0, paid + {?}, 0)
+                                 SET paid = paid + {?}
                                WHERE uid = {?} AND eid = {?} AND item_id = 1",
-                        strtr(Env::v('montant'), ',', '.'),
                         strtr(Env::v('montant'), ',', '.'),
                         $member['uid'], $evt['eid']);
             }
@@ -584,7 +583,7 @@ class XnetEventsModule extends PLModule
                                             $member['uid'], $evt['eid']);
                 $u = $res->fetchOneAssoc();
                 $u = $u['cnt'] ? $u['nb'] : null;
-                subscribe_lists_event($u, $member['uid'], $evt);
+                subscribe_lists_event($u, $member['uid'], $evt, $paid);
             }
 
             $evt = get_event_detail($eid, $item_id);
@@ -615,7 +614,7 @@ class XnetEventsModule extends PLModule
         while (list($char, $nb) = $res->next()) {
             $alphabet[ord($char)] = $char;
             $nb_tot += $nb;
-            if (Env::has('initiale') && $char == strtoupper(Env::v('initiale'))) {
+            if (Env::has('initiale') && $char == mb_strtoupper(Env::v('initiale'))) {
                 $tot = $nb;
             }
         }

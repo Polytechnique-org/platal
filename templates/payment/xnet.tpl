@@ -23,7 +23,7 @@
 <h1>{$asso.nom}&nbsp;: Gestion des télépaiements </h1>
 
 <p class="descr">
-Voici la liste des paiements en ligne possible pour le groupe {$asso.nom} :
+Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}&nbsp;:
 </p>
 
 {foreach from=$titres item=p}
@@ -115,7 +115,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom} :
     <td class="center">{$p.date|date_format:"%d/%m/%y"}</td>
     <td>
       <a href="https://www.polytechnique.org/profile/{$p.alias}" class="popup2">
-        {$p.nom|strtoupper} {$p.prenom}
+        {$p.nom|mb_strtoupper} {$p.prenom}
        </a>
     </td>
     <td>
@@ -143,7 +143,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom} :
 {foreachelse}
 
 <p class="descr">
-<em>Pas de télépaiement en cours ...</em>
+<em>Pas de télépaiement en cours&hellip;</em>
 </p>
 
 {/foreach}

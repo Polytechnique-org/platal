@@ -34,9 +34,13 @@
 
 {if $evt.participant_list && $is_admin}
 <p class="center">
-[<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un email à ceux qui viennent</a>]
-<br >
-[<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un email aux membres du groupe n'ayant pas répondu</a>]
+  [<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un email à ceux qui viennent</a>]
+  <br />
+  [<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un email aux membres du groupe n'ayant pas répondu</a>]
+  <br />
+  [<a href="mailto:?bcc={$evt.short_name}-paye@{#globals.xnet.evts_domain#}">envoyer un email aux personnes ayant payé</a>]
+  <br />
+  [<a href="mailto:?bcc={$evt.short_name}-participants-non-paye@{#globals.xnet.evts_domain#}">envoyer un email aux inscrits n'ayant pas encore payé</a>]
 </p>
 {/if}
 
@@ -83,13 +87,9 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
   {iterate from=$oubliinscription item=m}
   <tr class="pair">
     <td>
-      <a href="" {if $is_admin}onclick="return remplitAuto('{$m.email}')"{/if}>
-        {if !$m.prenom && !$m.nom}
-        {$m.email}
-        {else}
-        {$m.prenom} {$m.nom}
-        {/if}
-      </a>
+      {if $is_admin}<a href="javascript:remplitAuto('{$m.email}')">{/if}
+        {if $m.femme}&bull;{/if}{if !$m.prenom && !$m.nom}{$m.email}{else}{$m.prenom} {$m.nom}{/if}
+      {if $is_admin}</a>{/if}
     </td>
     <td>{$m.promo}</td>
     <td>
@@ -169,7 +169,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
           <td>{$m.telepayment|default:0}&euro;</td>
           <td>{$m.adminpaid|default:0}&euro;</td>
         {/if}
-        <td {if $m.montant < $m.paid}class="erreur"{/if}>{$m.paid}&euro;</td>
+        <td{if $m.montant < $m.paid} style="color: maroon"{/if}>{$m.paid}&euro;</td>
       {/if}
     {else}
     <td>

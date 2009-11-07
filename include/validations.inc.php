@@ -219,7 +219,7 @@ abstract class Validate
                 $this->trigSuccess('Email de refus envoyé');
                 return true;
             } else {
-                $this->trigError('pas de motivation pour le refus !!!');
+                $this->trigError('Pas de motivation pour le refus&nbsp;!!!');
             }
         }
 
@@ -240,8 +240,9 @@ abstract class Validate
 
         $body = ($this->user->isFemale() ? "Chère camarade,\n\n" : "Cher camarade,\n\n")
               . $this->_mail_body($isok)
-              . (Env::has('comm') ? "\n\n".Env::v('comm') : '')
-              . "\n\nCordialement,\n\n-- \nL'équipe de Polytechnique.org\n";
+              . (Env::has('comm') ? "\n\n" . Env::v('comm') : '')
+              . "\n\nCordialement,\n-- \nL'équipe de Polytechnique.org\n"
+              . $this->_mail_ps($isok);
 
         $mailer->setTxtBody(wordwrap($body));
         $mailer->send();
@@ -337,6 +338,14 @@ abstract class Validate
     abstract protected function _mail_subj();
 
     // }}}
+    // {{{ function _mail_ps
+
+    protected function _mail_ps($isok)
+    {
+        return '';
+    }
+
+    // }}}
     // {{{ function commit()
 
     /** fonction à utiliser pour insérer les données dans x4dat
@@ -367,7 +376,7 @@ abstract class Validate
         static $answers_table;
         if (!isset($answers_table[$this->type])) {
             $r = XDB::query("SELECT id, title, answer FROM requests_answers WHERE category = {?}", $this->type);
-            $answers_table[$this->type] = $r->fetchAllAssoc($r);
+            $answers_table[$this->type] = $r->fetchAllAssoc();
         }
         return $answers_table[$this->type];
     }

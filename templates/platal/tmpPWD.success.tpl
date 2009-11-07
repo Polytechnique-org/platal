@@ -27,8 +27,8 @@
 </p>
 <p>
   Cette procédure n'est pas sécurisée. Ton mot de passe est certes crypté, mais le
-  certificat envoyé par mail permet à toute personne pouvant lire ton mail (qui n'est
+  certificat envoyé par mail permet à toute personne pouvant lire ton email (qui n'est
   pas crypté), de changer ton mot de passe. C'est pourquoi, dans ton intérêt, il est
-  préférable que tu ne perdes pas ton mot de passe !!!
+  préférable que tu ne perdes pas ton mot de passe&nbsp;!!!
 </p>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

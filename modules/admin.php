@@ -72,11 +72,11 @@ class AdminModule extends PLModule
         if (Env::has('del')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'del' WHERE crc = {?}", $crc);
-            $page->trigSuccess($crc." verra tous ses emails supprimés !");
+            $page->trigSuccess($crc . " verra tous ses emails supprimés&nbsp;!");
         } elseif (Env::has('ok')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = {?}", $crc);
-            $page->trigSuccess($crc." a le droit de passer !");
+            $page->trigSuccess($crc . " a le droit de passer&nbsp;!");
         }
 
         $sql = XDB::iterator(
@@ -360,7 +360,7 @@ class AdminModule extends PLModule
         require_once("emails.inc.php");
 
         if (S::has('suid')) {
-            $page->kill("Déjà en SUID !!!");
+            $page->kill("Déjà en SUID&nbsp;!!!");
         }
 
         // Loads the user identity using the environment.
@@ -380,7 +380,7 @@ class AdminModule extends PLModule
             return;
         }
 
-        // Handles specific requests (AX sync, su, ...).
+        // Handles specific requests (AX sync, su...).
         if(Env::has('logs_button') && $registered) {
             pl_redirect("admin/logger?loguser=$login&year=".date('Y')."&month=".date('m'));
         }
@@ -630,7 +630,7 @@ class AdminModule extends PLModule
                     require_once('user.func.inc.php');
                     user_clear_all_subs($user->id());
                     $globals->updateNbIns();
-                    $page->trigSuccess($user->login() . ' a été désinscrit !');
+                    $page->trigSuccess($user->login() . ' a été désinscrit&nbsp;!');
 
                     $mailer = new PlMailer("admin/useredit.mail.tpl");
                     $mailer->assign("admin", S::user()->login());
@@ -894,7 +894,7 @@ class AdminModule extends PLModule
         $page->setTitle('Administration - Décédés');
 
         $res = XDB::iterator(
-                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.matricule_ax, u.hruid, DATE(MAX(s.start)) AS last
+                "SELECT  u.promo, u.nom, u.prenom, u.deces, u.hruid, DATE(MAX(s.start)) AS last
                    FROM  auth_user_md5 AS u
               LEFT JOIN  logger.sessions AS s ON (s.uid = u.user_id AND suid = 0)
                   WHERE  perms IN ('admin', 'user') AND deces <> 0

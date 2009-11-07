@@ -22,7 +22,7 @@
 
 
 <tr class="pair">
-  <td class="titre">Motif de la suspension :</td>
+  <td class="titre">Motif de la suspension&nbsp;:</td>
   <td>{$valid->suspension_reason()|default:"-none-"|nl2br}</td>
 </tr>
 

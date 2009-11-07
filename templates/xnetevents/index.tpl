@@ -31,7 +31,7 @@
 
 {if $updated}
 <p class='error'>
-  La modification de l'inscription a été prise en compte !
+  La modification de l'inscription a été prise en compte&nbsp;!
   {if $updated.topay > $updated.paid}
     <br/>N'oublie pas de payer {math equation="a-b" a=$updated.topay b=$updated.paid}&nbsp;&euro;
     {if $updated.paid > 0}
@@ -83,7 +83,7 @@
         {/if}
       &nbsp;
       [<a href="javascript:dynpostkv('{$platal->ns}events?token={xsrf_token}', 'del', {$e.eid})"
-        onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement ?')">
+        onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement&nbsp;?')">
         supprimer
       {icon name=delete title='Suppression'}</a>]
       {/if}
@@ -166,7 +166,7 @@
     <td colspan='2' class='center'>
       <strong>
       <a href='{$platal->ns}events/sub/{$e.short_name|default:$e.eid}'>
-        gérer mon inscription
+        Gérer mon inscription et voir les détails de l'événement.
       </a>
       </strong>
     </td>

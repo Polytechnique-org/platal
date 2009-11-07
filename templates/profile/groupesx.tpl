@@ -32,7 +32,7 @@
     <legend style="padding:4px"><strong><a href="http://www.polytechnique.net/login/{$asso.diminutif}">{$asso.nom}</a></strong></legend>
     {if $asso.has_logo}
     <a href="http://www.polytechnique.net/login/{$asso.diminutif}" style="width: 30%; display: block; float: right; ">
-      <img alt="[ LOGO ]" src="http://www.polytechnique.net/{$asso.diminutif}/logo" style="width: 100%" />
+      <img alt="[ LOGO ]" src="{$globals->baseurl}/groupes-x/logo/{$asso.asso_id}" style="width: 100%" />
     </a>
     {/if}
     <ul style="padding-top:0px;padding-bottom:0px">

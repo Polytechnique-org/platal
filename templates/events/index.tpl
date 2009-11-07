@@ -28,7 +28,7 @@
 
 <h1 id='pagetop'>
 Bienvenue {$smarty.session.yourself_name}{if $birthday}
-  &nbsp;et joyeux anniversaire de la part de toute l'équipe !
+  &nbsp;et joyeux anniversaire de la part de toute l'équipe&nbsp;!
 {else},
 {/if}
 </h1>
@@ -69,7 +69,7 @@ Bienvenue {$smarty.session.yourself_name}{if $birthday}
         {elseif $category eq 'end'}
           {icon name=clock} Dernières minutes&nbsp;:
         {else}
-          {icon name=magnifier} Mais encore...
+          {icon name=magnifier} Mais encore&hellip;
         {/if}
       </td>
     </tr>

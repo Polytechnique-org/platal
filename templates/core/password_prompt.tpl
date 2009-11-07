@@ -93,7 +93,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
       <td colspan="2">
       <table width="100%"><tr>
       <td>
-        <a href="recovery">Mot de passe perdu ?</a>
+        <a href="recovery">Mot de passe perdu&nbsp;?</a>
       </td>
       <td class="right">
         <input type="submit" name="submitbtn" value="Me connecter" />
@@ -106,7 +106,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 
 {if !$smarty.session.auth}
 <p>
-<strong>Tu ne connais pas ton mot de passe ?</strong>
+<strong>Tu ne connais pas ton mot de passe&nbsp;?</strong>
 </p>
   Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
     nous</strong> pour obtenir un accès. {#globals.core.sitename#} c'est l'email des X,
@@ -126,7 +126,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 </div>
 
 <p>
-  <strong>Problème de connexion ?</strong> <a href="Xorg/FAQ?display=light#connect" class="popup2">La réponse est là.</a>
+  <strong>Problème de connexion&nbsp;?</strong> <a href="Xorg/FAQ?display=light#connect" class="popup2">La réponse est là.</a>
 </p>
 
 <script type="text/javascript">
@@ -159,7 +159,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     {xsrf_token_field}
     <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
     <input type="hidden" name="response"  value="" />
-    <input type="hidden" name="xorpass"  value="" />
+    <input type="hidden" name="xorpass"   value="" />
     <input type="hidden" name="username"  value="" />
     <input type="hidden" name="remember"  value="" />
     <input type="hidden" name="domain"    value="" />

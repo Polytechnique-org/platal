@@ -33,10 +33,10 @@
                 <form action="search" method="get">
                     <div>
                         <input type="text" size="20" name="quick" id="quick" class="quick_search"
-                               value="{$smarty.request.quick|default:"Recherche dans l'annuaire"}"
+                               value="{$smarty.request.quick|default:'Recherche dans l\'annuaire'}"
                                onfocus="if (this.value === 'Recherche dans l\'annuaire') this.value='';
                                         $('#quick_button').show()"
-                               onblur="if (this.value === '') this.value='{$smarty.request.quick|default:"Recherche dans l'annuaire"|escape:javascript}'"
+                               onblur="if (this.value === '') this.value='{$smarty.request.quick|default:'Recherche dans l\'annuaire'|escape:javascript}'"
                                />
                         <button id="quick_button" type="submit" style="display: none"
                                 onclick="if ($('#quick').val() === 'Recherche dans l\'annuaire') $('#quick').val('')">

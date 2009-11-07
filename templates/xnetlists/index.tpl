@@ -22,7 +22,7 @@
 
 {if $smarty.get.del_alias}
 
-<p class="error">Es-tu sûr de vouloir supprimer l'alias {$smarty.get.del_alias} ?</p>
+<p class="error">Es-tu sûr de vouloir supprimer l'alias {$smarty.get.del_alias}&nbsp;?</p>
 <form action='{$platal->ns}lists' method="post">
   {xsrf_token_field}
   <div class="center">

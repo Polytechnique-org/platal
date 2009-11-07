@@ -28,11 +28,11 @@
 {elseif $mail_part eq 'wiki'}
 Bonjour,
 
-Un utilisateur du site {$sitename} a indiqué votre adresse de courrier
-électronique {$mail->email} comme lui étant liée.
+Un utilisateur du site {$sitename} a indiqué votre adresse email
+{$mail->email} comme lui étant liée.
 
 Si vous ne connaissez pas le site {$sitename}, si vous ne comprenez pas
-ce email, ou si vous n'êtes pas à l'origine de cette demande, ne
+cet email, ou si vous n'êtes pas à l'origine de cette demande, ne
 faites rien, cette demande sera annulée automatiquement dans les
 heures qui suivent.
 

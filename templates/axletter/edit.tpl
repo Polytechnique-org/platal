@@ -66,8 +66,15 @@
     {include file="include/field.promo.tpl" prefix=""}
     <tr>
       <td class="titre">Envoyer à une liste d'adresses</td>
-      <td><textarea name="subset_to" rows="7" cols="78">{$subset_to}</textarea><br />
-      <span class="smaller">Indiquez une liste d'adresses emails : la lettre sera envoyée uniquement aux personnes des promotions sélectionnées, dont l'adresse figure dans la liste, et qui souhaitent recevoir les emails de l'AX.</span>
+      <td>
+      <textarea name="subset_to" rows="7" cols="78">{$subset_to}</textarea><br />
+      <span class="smaller">Indiquez une liste d'adresses emails&nbsp;: la lettre sera envoyée uniquement aux personnes des promotions sélectionnées, dont l'adresse figure dans la liste, et qui souhaitent recevoir les emails de l'AX.</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">Sélection inversée</td>
+      <td>
+      <input type="checkbox" name="subset_rm" {if $subset_rm}checked{/if} /><span class="smaller">En cochant cette case, la liste sera envoyée à tous les inscrits de l'intervalle de promotions sélectionné, sauf ceux indiqués dans la liste ci-dessus.</span>
       </td>
     </tr>
     {if !$saved}
@@ -83,10 +90,10 @@
       <td colspan="2" class="center">
         Envoi au plus tard le {$echeance|date_format:"%x vers %Hh"}<br />
         {if $is_xorg}
-        [<a href="ax/edit/valid?token={xsrf_token}" onclick="return confirm('Es-tu sûr de vouloir valider l\'envoi de ce message ?');">{*
+        [<a href="ax/edit/valid?token={xsrf_token}" onclick="return confirm('Es-tu sûr de vouloir valider l\'envoi de ce message&nbsp;?');">{*
           *}{icon name=thumb_up} Valider l'envoi</a>]
         {else}
-        [<a href="ax/edit/cancel?token={xsrf_token}" onclick="return confirm('Es-tu sûr de vouloir annuler l\'envoi de ce message ?');">{*
+        [<a href="ax/edit/cancel?token={xsrf_token}" onclick="return confirm('Es-tu sûr de vouloir annuler l\'envoi de ce message&nbsp;?');">{*
           *}{icon name=thumb_down} Annuler l'envoi</a>]
         {/if}
       </td>

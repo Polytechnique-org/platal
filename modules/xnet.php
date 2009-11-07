@@ -111,7 +111,7 @@ class XnetModule extends PLModule
             }
         }
 
-        if (Post::has('diminutif')) {
+        if (Post::has('diminutif') && Post::v('diminutif') != "") {
             S::assert_xsrf_token();
 
             $res = XDB::query('SELECT  COUNT(*)
@@ -187,7 +187,7 @@ class XnetModule extends PLModule
             $this->handler_index(&$page);
         }
 
-        $cat = strtolower($cat);
+        $cat = mb_strtolower($cat);
 
         $page->changeTpl('xnet/groupes.tpl');
         $page->assign('cat', $cat);

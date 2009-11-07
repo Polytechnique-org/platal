@@ -23,7 +23,7 @@
 {if $sent}
 
 <p>
-  Merci de nous avoir communiqué cette information !
+  Merci de nous avoir communiqué cette information&nbsp;!
 </p>
 
 {elseif $user && !$user->alive}

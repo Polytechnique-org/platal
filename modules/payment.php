@@ -221,6 +221,16 @@ class PaymentModule extends PLModule
                            VALUES  ({?},{?},{?},{?},{?},{?},{?})",
                      $champ901, $uid, $ref, $champ200, $montant, $champ905,Env::v('comment'));
 
+        // We check if it is an Xnet payment and then update the related ML.
+        $res = XDB::query('SELECT  eid
+                             FROM  groupex.evenements
+                            WHERE  paiement_id = {?}', $ref);
+        if ($eid = $res->fetchOneCell()) {
+            $this->load('xnetevents.inc.php');
+            $evt = get_event_detail($eid);
+            subscribe_lists_event(0, $uid, $evt, $montant, true);
+        }
+
         /* on genere le mail de confirmation */
         $conf_text = str_replace("<prenom>",$prenom,$conf_text);
         $conf_text = str_replace("<nom>",$nom,$conf_text);
@@ -311,6 +321,16 @@ class PaymentModule extends PLModule
         XDB::execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle,comment)
                            VALUES  ({?},{?},{?},{?},{?},{?},{?})",
                     $no_transaction, $uid, $ref, $fullref, $montant, $clef, Env::v('comment'));
+
+        // We check if it is an Xnet payment and then update the related ML.
+        $res = XDB::query('SELECT  eid
+                             FROM  groupex.evenements
+                            WHERE  paiement_id = {?}', $ref);
+        if ($eid = $res->fetchOneCell()) {
+            $this->load('xnetevents.inc.php');
+            $evt = get_event_detail($eid);
+            subscribe_lists_event(0, $uid, $evt, $montant, true);
+        }
 
         /* on genere le mail de confirmation */
         $conf_text = str_replace("<prenom>",$prenom,$conf_text);

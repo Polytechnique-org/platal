@@ -69,7 +69,7 @@ function setSubSectors()
   <table cellpadding="0" cellspacing="0" summary="Formulaire de recherche de referents" class="bicol">
     <tr class="impair">
       <td class="titre">
-        Secteur de compétence <br /> du référent
+        Secteur de compétence<br />du référent
       </td>
       <td>
         <select name="sector" id="sect_field" onchange="setSector(this.value)">

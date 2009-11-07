@@ -29,6 +29,7 @@ class AXLetter extends MassMailer
     public $_promo_max;
     public $_subset;
     public $_subset_to;
+    public $_subset_rm;
     public $_echeance;
     public $_date;
     public $_bits;
@@ -56,7 +57,7 @@ class AXLetter extends MassMailer
         }
         list($this->_id, $this->_shortname, $this->_title_mail, $this->_title,
              $this->_body, $this->_signature, $this->_promo_min, $this->_promo_max,
-             $this->_subset_to, $this->_echeance, $this->_date, $this->_bits) = $id;
+             $this->_subset_to, $this->_subset_rm, $this->_echeance, $this->_date, $this->_bits) = $id;
         if ($this->_date == '0000-00-00') {
             $this->_date = 0;
         }
@@ -206,7 +207,11 @@ class AXLetter extends MassMailer
             $ids = ids_from_mails($this->_subset_to);
             $ids_list = implode(',', $ids);
             if(count($ids) > 0) {
-                $where[] = "ni.user_id IN ($ids_list)";
+                if ($this->_subset_rm) {
+                    $where[] = "ni.user_id NOT IN ($ids_list)";
+                } else {
+                    $where[] = "ni.user_id IN ($ids_list)";
+                }
             } else {
                 // No valid email
                 $where[] = "0";

@@ -41,6 +41,7 @@ class EmailModule extends PLModule
             'admin/emails/duplicated' => $this->make_hook('duplicated',  AUTH_MDP,    'admin'),
             'admin/emails/watch'      => $this->make_hook('duplicated',  AUTH_MDP,    'admin'),
             'admin/emails/lost'       => $this->make_hook('lost',        AUTH_MDP,    'admin'),
+            'admin/emails/broken'     => $this->make_hook('broken_addr', AUTH_MDP,    'admin'),
         );
     }
 
@@ -665,7 +666,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                 $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
                 $mail->setTxtBody($message);
                 $mail->send();
-                $page->trigSuccess("Email envoyé !");
+                $page->trigSuccess('Email envoyé&nbsp;!');
             }
         } elseif (Post::has('email')) {
             S::assert_xsrf_token();
@@ -801,6 +802,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
             $page->assign('doublon', $props);
         }
     }
+
     function handler_lost(&$page, $action = 'list', $email = null)
     {
         $page->changeTpl('emails/lost.tpl');
@@ -812,6 +814,141 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
              WHERE  e.uid IS NULL AND FIND_IN_SET('googleapps', u.mail_storage) = 0 AND
                     u.deces = 0 AND u.perms IN ('user', 'admin', 'disabled')
           ORDER BY  u.promo DESC, u.nom, u.prenom"));
+    }
+
+    function handler_broken_addr(&$page)
+    {
+        require_once 'emails.inc.php';
+        $page->changeTpl('emails/broken_addr.tpl');
+
+        if (Env::has('sort_broken')) {
+            S::assert_xsrf_token();
+
+            $list = trim(Env::v('list'));
+            if ($list == '') {
+                $page->trigError('La liste est vide.');
+            } else {
+                $valid_emails = array();
+                $invalid_emails = array();
+                $broken_list = explode("\n", $list);
+                sort($broken_list);
+                foreach ($broken_list as $orig_email) {
+                    $email = valide_email(trim($orig_email));
+                    if (empty($email) || $email == '@') {
+                        $invalid_emails[] = "$orig_email: invalid email";
+                    } else {
+                        $res = XDB::query('SELECT  COUNT(*)
+                                             FROM  emails
+                                            WHERE  email = {?}', $email);
+                        if ($res->fetchOneCell() > 0) {
+                            $valid_emails[] = $email;
+                        } else {
+                            $invalid_emails[] = "$orig_email: no such redirection";
+                        }
+                    }
+                }
+
+                $page->assign('valid_emails', $valid_emails);
+                $page->assign('invalid_emails', $invalid_emails);
+            }
+        }
+
+        if (Env::has('process_broken')) {
+            S::assert_xsrf_token();
+
+            $list = trim(Env::v('list'));
+            if ($list == '') {
+                $page->trigError('La liste est vide.');
+            } else {
+                global $platal;
+
+                $broken_user_list = array();
+                $broken_list = explode("\n", $list);
+                sort($broken_list);
+                foreach ($broken_list as $orig_email) {
+                    $email = valide_email(trim($orig_email));
+                    if (empty($email) || $email == '@') {
+                        continue;
+                    }
+
+                    $sel = XDB::query(
+                        "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails,
+                                 u.nom, u.prenom, u.promo, a.alias
+                           FROM  emails        AS e1
+                      LEFT JOIN  emails        AS e2 ON (e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags)
+                                                         AND e1.email != e2.email)
+                     INNER JOIN  auth_user_md5 AS u  ON (e1.uid = u.user_id)
+                     INNER JOIN  aliases       AS a  ON (u.user_id = a.id AND FIND_IN_SET('bestalias', a.flags))
+                          WHERE  e1.email = {?}
+                       GROUP BY  e1.uid", $email);
+
+                    if ($x = $sel->fetchOneAssoc()) {
+                        if (!$x['panne']) {
+                            XDB::execute('UPDATE  emails
+                                             SET  panne=NOW(), last=NOW(), panne_level = 1
+                                           WHERE  email = {?}',
+                                          $email);
+                        } else {
+                            XDB::execute('UPDATE  emails
+                                             SET  last = CURDATE(), panne_level = panne_level + 1
+                                           WHERE  email = {?}
+                                                  AND DATE_ADD(last, INTERVAL 14 DAY) < CURDATE()',
+                                         $email);
+                        }
+
+                        if (!empty($x['nb_mails'])) {
+                            $mail = new PlMailer('emails/broken.mail.tpl');
+                            $mail->addTo("\"{$x['prenom']} {$x['nom']}\" <{$x['alias']}@"
+                                         . $globals->mail->domain . '>');
+                            $mail->assign('x', $x);
+                            $mail->assign('email', $email);
+                            $mail->send();
+                        }
+
+                        if (!isset($broken_user_list[$x['alias']])) {
+                            $broken_user_list[$x['alias']] = array($email);
+                        } else {
+                            $broken_user_list[$x['alias']][] = $email;
+                        }
+                    }
+                }
+
+                XDB::execute("UPDATE  emails
+                                 SET  panne_level = panne_level - 1
+                               WHERE  flags = 'active' AND panne_level > 1
+                                      AND DATE_ADD(last, INTERVAL 1 MONTH) < CURDATE()");
+                XDB::execute("UPDATE  emails
+                                 SET  panne_level = 0
+                               WHERE  flags = 'active' AND panne_level = 1
+                                      AND DATE_ADD(last, INTERVAL 1 YEAR) < CURDATE()");
+
+                // Output the list of users with recently broken addresses,
+                // along with the count of valid redirections.
+                header('Content-Type: text/x-csv; charset=utf-8;');
+                header('Cache-Control: no-cache');
+
+                $csv = fopen('php://output', 'w');
+                fputcsv($csv, array('nom', 'prenom', 'alias', 'bounce', 'nbmails', 'url'), ';');
+                foreach ($broken_user_list as $alias => $mails) {
+                    $sel = Xdb::query(
+                        "SELECT  u.user_id, count(e.email) AS nb_mails, u.nom, u.prenom, u.promo
+                           FROM  aliases       AS a
+                     INNER JOIN  auth_user_md5 AS u ON a.id = u.user_id
+                      LEFT JOIN  emails        AS e ON (e.uid = u.user_id
+                                                        AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
+                          WHERE  a.alias = {?}
+                       GROUP BY  u.user_id", $alias);
+
+                    if ($x = $sel->fetchOneAssoc()) {
+                        fputcsv($csv, array($x['nom'], $x['prenom'], $x['promo'], $alias,
+                                            join(',', $mails), $x['nb_mails']),
+                                            'https://www.polytechnique.org/marketing/broken/' . $alias, ';');
+                    }
+                }
+                fclose($csv);
+                exit;
+            }
+        }
     }
 }
 

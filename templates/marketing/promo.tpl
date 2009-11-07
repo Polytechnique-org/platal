@@ -67,8 +67,7 @@
       </td>
       <td class="center">
         <a href="marketing/private/{$it.user_id}">{icon name=wrench title="Marketing"}</a>
-        <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$it.matricule_ax}">{*
-          *}{icon name=user_gray title="fiche AX"}</a>
+        <a href="profile/ax/{$it.hruid}">{icon name=user_gray title="fiche AX"}</a>
       </td>
     </tr>
     {/iterate}
@@ -76,7 +75,7 @@
 </form>
 
 <p>
-{$nonins->total()} Polytechniciens de la promo {$promo} ne sont pas inscrits !
+{$nonins->total()} Polytechniciens de la promo {$promo} ne sont pas inscrits&nbsp;!
 </p>
 
 

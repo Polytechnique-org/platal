@@ -69,7 +69,7 @@
     </tr>
     <tr>
       <td {if !$submited}colspan="2"{/if} class="center">
-        Si tu ne souhaites plus montrer cette photo tu peux aussi l'effacer en la remplaçant par&nbsp;: <br />
+        Si tu ne souhaites plus montrer cette photo tu peux aussi l'effacer en la remplaçant par&nbsp;:<br />
         {if $has_trombi_x}
         <input type="submit" value="Trombino de l'X" name="trombi" /><br />
         {/if}
@@ -77,7 +77,7 @@
       </td>
       {if $submited}
       <td class="center">
-        Tu peux annuler ta soumission et garder ta photo actuelle&nbsp;: <br />
+        Tu peux annuler ta soumission et garder ta photo actuelle&nbsp;:<br />
         <input type="submit" value="Annuler ta soumission" name="cancel" />
       </td>
       {/if}

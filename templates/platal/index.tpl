@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Bienvenue sur le portail des élèves et anciens élèves de l'X !</h1>
+<h1>Bienvenue sur le portail des élèves et anciens élèves de l'X&nbsp;!</h1>
 
 <p>
   {#globals.core.sitename#} est le site qui connecte la communauté des
@@ -42,7 +42,7 @@
   <li class="spaced">
     you can <strong><a href="http://www.manageurs.com/?langue=en">access
         Manageurs.com</a></strong> to get in touch with alumni and students of
-    Ecole Polytechnique, submit job offers, use the directory and browse the
+    École polytechnique, submit job offers, use the directory and browse the
     resume database.
   </li>
 </ul>
@@ -55,14 +55,14 @@
   </li>
   <li class="spaced">
     ou <strong><a href="events">vous connecter</a></strong> si vous êtes
-    inscrit !
+    inscrit&nbsp;!
   </li>
 </ul>
 
 <p>
   Vous pouvez <strong><a href="Xorg/PourquoiMInscrire">consulter la
       liste de ce que vous apporte {#globals.core.sitename#}</a></strong> si vous
-  hésitez à vous inscrire !
+  hésitez à vous inscrire&nbsp;!
 </p>
 
 <br />
@@ -84,7 +84,7 @@
 </ul>
 
 <p>
-  <strong>Bonne visite !</strong>
+  <strong>Bonne visite&nbsp;!</strong>
   <br /><cite>L'équipe {#globals.core.sitename#}</cite>
 </p>
 

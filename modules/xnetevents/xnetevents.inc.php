@@ -28,26 +28,29 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         $asso_id = $globals->asso('id');
     }
     $res = XDB::query(
-        "SELECT SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*,
-                IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
-                   1) AS inscr_open,
-                LEFT(10, e.debut) AS first_day, LEFT(10, e.fin) AS last_day,
-                LEFT(NOW(), 10) AS now,
-                ei.titre,
-                al.vid AS absent_list, pl.vid AS participant_list,
-                a.nom, a.prenom, a.promo, aa.alias
-           FROM groupex.evenements              AS e
-     INNER JOIN x4dat.auth_user_md5             AS a  ON a.user_id = e.organisateur_uid
-     INNER JOIN x4dat.aliases                   AS aa ON (aa.type = 'a_vie' AND aa.id = a.user_id)
-     INNER JOIN groupex.evenements_items        AS ei ON (e.eid = ei.eid)
-      LEFT JOIN groupex.evenements_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
-      LEFT JOIN virtual AS al ON(al.type = 'evt' AND al.alias = CONCAT(short_name, {?}))
-      LEFT JOIN virtual AS pl ON(pl.type = 'evt' AND pl.alias = CONCAT(short_name, {?}))
-          WHERE (e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?}
-       GROUP BY ei.item_id",
-       '-absents@'.$globals->xnet->evts_domain,
-       '-participants@'.$globals->xnet->evts_domain,
-       $eid, $eid, $item_id ? $item_id : 1, $asso_id);
+        "SELECT  SUM(nb) AS nb_tot, COUNT(DISTINCT ep.uid) AS nb, e.*,
+                 IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10), 1) AS inscr_open,
+                 LEFT(10, e.debut) AS first_day, LEFT(10, e.fin) AS last_day,
+                 LEFT(NOW(), 10) AS now, ei.titre,
+                 al.vid AS absent_list, pl.vid AS participant_list,
+                 bl.vid AS payed_list, ul.vid AS booked_unpayed_list,
+                 a.nom, a.prenom, a.promo, aa.alias
+           FROM  groupex.evenements              AS e
+     INNER JOIN  x4dat.auth_user_md5             AS a  ON a.user_id = e.organisateur_uid
+     INNER JOIN  x4dat.aliases                   AS aa ON (aa.type = 'a_vie' AND aa.id = a.user_id)
+     INNER JOIN  groupex.evenements_items        AS ei ON (e.eid = ei.eid)
+      LEFT JOIN  groupex.evenements_participants AS ep ON (e.eid = ep.eid AND ei.item_id = ep.item_id)
+      LEFT JOIN  virtual AS al ON (al.type = 'evt' AND al.alias = CONCAT(short_name, {?}))
+      LEFT JOIN  virtual AS pl ON (pl.type = 'evt' AND pl.alias = CONCAT(short_name, {?}))
+      LEFT JOIN  virtual AS bl ON (bl.type = 'evt' AND bl.alias = CONCAT(short_name, {?}))
+      LEFT JOIN  virtual AS ul ON (ul.type = 'evt' AND ul.alias = CONCAT(short_name, {?}))
+          WHERE  (e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?}
+       GROUP BY  ei.item_id",
+        '-absents@' . $globals->xnet->evts_domain,
+        '-participants@' . $globals->xnet->evts_domain,
+        '-paye@' . $globals->xnet->evts_domain,
+        '-participants-non-paye@' . $globals->xnet->evts_domain,
+        $eid, $eid, $item_id ? $item_id : 1, $asso_id);
 
     $evt = $res->fetchOneAssoc();
 
@@ -204,21 +207,23 @@ function get_event_participants(&$evt, $item_id, $tri, $limit = '') {
 // }}}
 
 //  {{{ function subscribe_lists_event()
-function subscribe_lists_event($participate, $uid, $evt)
+function subscribe_lists_event($participate, $uid, $evt, $paid, $payment = null)
 {
     global $globals;
     $page =& Platal::page();
 
-    $participant_list = $evt['participant_list'];
-    $absent_list      = $evt['absent_list'];
+    $participant_list  = $evt['participant_list'];
+    $absent_list       = $evt['absent_list'];
+    $unpayed_list      = $evt['booked_unpayed_list'];
+    $payed_list        = $evt['payed_list'];
 
     $user = User::getSilent($uid);
     if ($user) {
         $email = $user->forlifeEmail();
     } else {
-        $res = XDB::query("SELECT email
-                             FROM groupex.membres
-                            WHERE uid = {?} AND asso_id = {?}",
+        $res = XDB::query("SELECT  email
+                             FROM  groupex.membres
+                            WHERE  uid = {?} AND asso_id = {?}",
                           $uid, $globals->asso('id'));
         $email = $res->fetchOneCell();
     }
@@ -226,8 +231,8 @@ function subscribe_lists_event($participate, $uid, $evt)
     function subscribe($list, $email)
     {
         if ($list && $email) {
-            XDB::execute("REPLACE INTO virtual_redirect
-                                VALUES ({?},{?})",
+            XDB::execute("REPLACE INTO  virtual_redirect
+                                VALUES  ({?},{?})",
                          $list, $email);
         }
     }
@@ -235,21 +240,30 @@ function subscribe_lists_event($participate, $uid, $evt)
     function unsubscribe($list, $email)
     {
         if ($list && $email) {
-            XDB::execute("DELETE FROM virtual_redirect
-                                WHERE vid = {?} AND redirect = {?}",
+            XDB::execute("DELETE FROM  virtual_redirect
+                                WHERE  vid = {?} AND redirect = {?}",
                          $list, $email);
         }
     }
 
-    if (is_null($participate)) {
-        unsubscribe($participant_list, $email);
-        subscribe($absent_list, $email);
-    } elseif ($participate) {
-        subscribe($participant_list, $email);
-        unsubscribe($absent_list, $email);
+    if (is_null($payment)) {
+        if (is_null($participate)) {
+            unsubscribe($participant_list, $email);
+            subscribe($absent_list, $email);
+        } elseif ($participate) {
+            subscribe($participant_list, $email);
+            unsubscribe($absent_list, $email);
+        } else {
+            unsubscribe($participant_list, $email);
+            unsubscribe($absent_list, $email);
+        }
+    }
+    if ($paid > 0) {
+        unsubscribe($unpayed_list, $email);
+        subscribe($payed_list, $email);
     } else {
-        unsubscribe($participant_list, $email);
-        unsubscribe($absent_list, $email);
+        unsubscribe($payed_list, $email);
+        subscribe($unpayed_list, $email);
     }
 }
 // }}}
@@ -294,58 +308,66 @@ function event_change_shortname(&$page, $eid, $old, $new)
 
     if ($old && $new) {
         // if had a previous shortname change the old lists
-        foreach (array('-absents@', '-participants@') as $v) {
+        foreach (array('-absents@', '-participants@', '-paye@', '-participants-non-paye@') as $v) {
             $v .= $globals->xnet->evts_domain;
-            XDB::execute("UPDATE virtual SET alias = {?}
-                           WHERE type = 'evt' AND alias = {?}",
-                         $new.$v, $old.$v);
+            XDB::execute("UPDATE  virtual
+                             SET  alias = {?}
+                           WHERE  type = 'evt' AND alias = {?}",
+                         $new . $v, $old . $v);
         }
         return $new;
     }
 
     if (!$old && $new) {
         // if we have a first new short_name create the lists
+        $lastid = array();
+        $where = array(
+            '-participants@'          => 'ep.nb > 0',
+            '-paye@'                  => 'ep.paid > 0',
+            '-participants-non-paye@' => 'ep.nb > 0 AND ep.paid = 0'
+        );
 
-        XDB::execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
-                $new.'-participants@'.$globals->xnet->evts_domain);
+        foreach (array('-absents@', '-participants@', '-paye@', '-participants-non-paye@') as $v) {
+            XDB::execute("INSERT INTO  virtual
+                                  SET  type = 'evt', alias = {?}",
+                         $new . $v . $globals->xnet->evts_domain);
 
-        $lastid = XDB::insertId();
-        XDB::execute(
-          "INSERT IGNORE INTO virtual_redirect (
-                SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
-                  FROM groupex.evenements_participants AS ep
-             LEFT JOIN groupex.membres AS m ON (ep.uid = m.uid)
-             LEFT JOIN auth_user_md5   AS u ON (u.user_id = ep.uid)
-             LEFT JOIN aliases         AS a ON (a.id = ep.uid AND a.type = 'a_vie')
-                 WHERE ep.eid = {?} AND ep.nb > 0
-              GROUP BY ep.uid)",
-              $lastid, '@'.$globals->mail->domain, $eid);
+            $lastid[$v] = XDB::insertId();
+        }
 
-        XDB::execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
-                $new.'-absents@'.$globals->xnet->evts_domain);
-
-        $lastid = XDB::insertId();
+        foreach (array('-participants@', '-paye@', '-participants-non-paye@') as $v) {
+            XDB::execute("INSERT IGNORE INTO virtual_redirect (
+                SELECT  {?} AS vid, IF(a.alias IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
+                  FROM  groupex.evenements_participants AS ep
+             LEFT JOIN  groupex.membres AS m ON (ep.uid = m.uid)
+             LEFT JOIN  auth_user_md5   AS u ON (u.user_id = ep.uid)
+             LEFT JOIN  aliases         AS a ON (a.id = ep.uid AND a.type = 'a_vie')
+                 WHERE  ep.eid = {?} AND " . $where[$v] . "
+              GROUP BY  ep.uid)",
+                $lastid[$v], '@' . $globals->mail->domain, $eid);
+        }
         XDB::execute("INSERT IGNORE INTO virtual_redirect (
-            SELECT {?} AS vid, IF(a.alias IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
-                  FROM groupex.membres AS m
-             LEFT JOIN groupex.evenements_participants AS ep ON (ep.uid = m.uid AND ep.eid = {?})
-             LEFT JOIN auth_user_md5   AS u ON (u.user_id = m.uid)
-             LEFT JOIN aliases         AS a ON (a.id = m.uid AND a.type = 'a_vie')
-                 WHERE m.asso_id = {?} AND ep.uid IS NULL
-              GROUP BY m.uid)",
-             $lastid, "@".$globals->mail->domain, $eid, $globals->asso('id'));
+            SELECT  {?} AS vid, IF(a.alias IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
+              FROM  groupex.membres AS m
+         LEFT JOIN  groupex.evenements_participants AS ep ON (ep.uid = m.uid AND ep.eid = {?})
+         LEFT JOIN  auth_user_md5   AS u ON (u.user_id = m.uid)
+         LEFT JOIN  aliases         AS a ON (a.id = m.uid AND a.type = 'a_vie ')
+             WHERE  m.asso_id = {?} AND ep.uid IS NULL
+          GROUP BY  m.uid)",
+            $lastid['-absents@'], '@' . $globals->mail->domain, $eid, $globals->asso('id'));
 
         return $new;
     }
 
     if ($old && !$new) {
         // if we delete the old short name, delete the lists
-        foreach (array('-absents@', '-participants@') as $v) {
+        foreach (array('-absents@', '-participants@', '-paye@', '-participants-non-paye@') as $v) {
             $v .= $globals->xnet->evts_domain;
-            XDB::execute("DELETE virtual, virtual_redirect FROM virtual
-                                 LEFT JOIN virtual_redirect USING(vid)
-                                     WHERE virtual.alias = {?}",
-                                   $infos['short_name'].$v);
+            XDB::execute("DELETE  virtual, virtual_redirect
+                            FROM  virtual
+                       LEFT JOIN  virtual_redirect USING(vid)
+                           WHERE  virtual.alias = {?}",
+                         $infos['short_name'] . $v);
         }
         return $new;
     }

@@ -48,7 +48,7 @@
       <td><input type="text" name="banananame" value="{$nom}" /></td>
     </tr>
     <tr>
-      <td class="titre">Adresse électronique</td>
+      <td class="titre">Adresse email</td>
       <td><input type="text" name="bananamail" value="{$mail}" /></td>
     </tr>
     <tr>

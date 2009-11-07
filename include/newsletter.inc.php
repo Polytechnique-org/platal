@@ -26,8 +26,8 @@ require_once("massmailer.inc.php");
 class NewsLetter extends MassMailer
 {
     public $_date;
-    public $_cats = Array();
-    public $_arts = Array();
+    public $_cats = array();
+    public $_arts = array();
 
     function __construct($id = null)
     {
@@ -50,12 +50,12 @@ class NewsLetter extends MassMailer
         }
         $nl = $res->fetchOneAssoc();
 
-        $this->_id        = $nl['id'];
-        $this->_shortname = $nl['short_name'];
-        $this->_date      = $nl['date'];
-        $this->_title     = $nl['titre'];
+        $this->_id         = $nl['id'];
+        $this->_shortname  = $nl['short_name'];
+        $this->_date       = $nl['date'];
+        $this->_title      = $nl['titre'];
         $this->_title_mail = $nl['titre_mail'];
-        $this->_head      = $nl['head'];
+        $this->_head       = $nl['head'];
 
         $res = XDB::iterRow("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
         while (list($cid, $title) = $res->next()) {
@@ -92,19 +92,21 @@ class NewsLetter extends MassMailer
 
     public function saveArticle(&$a)
     {
-        if ($a->_aid>=0) {
-            XDB::execute('REPLACE INTO  newsletter_art (id,aid,cid,pos,title,body,append)
-                                VALUES  ({?},{?},{?},{?},{?},{?},{?})',
+        if ($a->_aid >= 0) {
+            XDB::execute('REPLACE INTO  newsletter_art (id, aid, cid, pos, title, body, append)
+                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
                           $this->_id, $a->_aid, $a->_cid, $a->_pos,
                           $a->_title, $a->_body, $a->_append);
-                          $this->_arts['a'.$a->_aid] = $a;
+                          $this->_arts['a' . $a->_aid] = $a;
         } else {
             XDB::execute('INSERT INTO  newsletter_art
-                               SELECT  {?},MAX(aid)+1,{?},'.($a->_pos ? intval($a->_pos) : 'MAX(pos)+1').',{?},{?},{?}
+                               SELECT  {?}, MAX(aid)+1, {?}, '
+                                       . ($a->_pos ? intval($a->_pos) : 'MAX(pos)+1')
+                                       . ', {?}, {?}, {?}
                                  FROM  newsletter_art AS a
-                                WHERE  a.id={?}',
+                                WHERE  a.id = {?}',
                          $this->_id, $a->_cid, $a->_title, $a->_body, $a->_append, $this->_id);
-                         $this->_arts['a'.$a->_aid] = $a;
+                         $this->_arts['a' . $a->_aid] = $a;
         }
     }
 
@@ -278,6 +280,61 @@ class NLArticle
             }
         }
         return $c<9;
+    }
+
+    // }}}
+    // {{{ function parseUrlsFromArticle()
+
+    private function parseUrlsFromArticle()
+    {
+        $email_regex = '([a-z0-9.\-+_\$]+@([\-.+_]?[a-z0-9])+)';
+        $url_regex = '((https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+)';
+        $regex = '{' . $email_regex . '|' . $url_regex . '}i';
+
+        $matches = array();
+        $body_matches = array();
+        if (preg_match_all($regex, $this->body(), $body_matches)) {
+            $matches = array_merge($matches, $body_matches[0]);
+        }
+
+        $append_matches = array();
+        if (preg_match_all($regex, $this->append(), $append_matches)) {
+            $matches = array_merge($matches, $append_matches[0]);
+        }
+
+        return $matches;
+    }
+
+    // }}}
+    // {{{ function getLinkIps()
+
+    public function getLinkIps(&$gethostbyname_count)
+    {
+        $matches = $this->parseUrlsFromArticle();
+        $article_ips = array();
+
+        if (!empty($matches)) {
+            global $globals;
+
+            foreach ($matches as $match) {
+                $host = parse_url($match, PHP_URL_HOST);
+                if ($host == '') {
+                    list(, $host) = explode('@', $match);
+                }
+
+                if ($gethostbyname_count < $globals->mail->blacklist_host_resolution_limit) {
+                   break;
+                }
+
+                if ($host != $globals->mail->alias_dom && $host != $globals->mail->alias_dom2
+                    && $host != $globals->mail->domain && $host != $globals->mail->domain2) {
+                    $article_ips = array_merge($article_ips, array(gethostbyname($host) => $host));
+                    ++$gethostbyname_count;
+                }
+            }
+        }
+
+        return $article_ips;
     }
 
     // }}}

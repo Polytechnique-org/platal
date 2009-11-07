@@ -32,12 +32,12 @@
     pw1 = document.forms.smtppass_form.smtppass1.value;
     pw2 = document.forms.smtppass_form.smtppass2.value;
     if (pw1 != pw2) {
-      alert ("\nErreur&nbsp;: les deux champs ne sont pas identiques !");
+      alert ("\nErreur&nbsp;: les deux champs ne sont pas identiques&nbsp;!");
       exit;
       return false;
     }
     if (pw1.length < 6) {
-      alert ("\nErreur&nbsp;: le nouveau mot de passe doit faire au moins 6 caractères !");
+      alert ("\nErreur&nbsp;: le nouveau mot de passe doit faire au moins 6 caractères&nbsp;!");
       exit;
       return false;
     }

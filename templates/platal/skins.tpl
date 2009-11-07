@@ -23,9 +23,9 @@
 <h1>Skins {#globals.core.sitename#}</h1>
 
 <p>
-Tu n'aimes pas les couleurs ou l'apparence de {#globals.core.sitename#} ? Normal, les goûts et les
+Tu n'aimes pas les couleurs ou l'apparence de {#globals.core.sitename#}&nbsp;? Normal, les goûts et les
 couleurs, ça ne se discute pas. Certains préfèrent une page sérieuse, d'autres plus
-fantaisiste. A toi de voir&nbsp;:)
+fantaisiste. À toi de voir&nbsp;!
 </p>
 <p>
 Pour toute information complémentaire, n'hésite pas à écrire à

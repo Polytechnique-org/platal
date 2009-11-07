@@ -33,7 +33,7 @@
         name = row[0].replace(regexp, '<strong>$1<\/strong>');
 
         if (row[1] === "-1") {
-          return '...';
+          return '&hellip;';
         }
 
         camarades = (row[1] > 1) ? "camarades" : "camarade";
@@ -433,7 +433,7 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
   </table>
 </form>
 <p>
-  <small><strong>N.B. :</strong> le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.</small>
+  <small><strong>N.B.&nbsp;:</strong> le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.</small>
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -66,7 +66,7 @@ function searchX()
     <li>
       Pour ajouter un extérieur dans ton groupe, il suffit d'entrer ici son
       adresse email, tu seras ensuite redirigé vers une page te permettant
-      d'éditer son profil (nom, prenom, ...)
+      d'éditer son profil (nom, prenom&hellip;).
     </li>
   </ul>
   <table class="tinybicol">

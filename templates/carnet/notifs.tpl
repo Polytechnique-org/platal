@@ -52,7 +52,7 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
   </div>
 </form>
 
-<h1 id='middle'>Qui/Que surveiller ?</h1>
+<h1 id='middle'>Qui/Que surveiller&nbsp;?</h1>
 
 <h2>Surveiller ses contacts</h2>
 
@@ -79,7 +79,7 @@ Attention&nbsp;: pour les promos, tu n'es pas notifié des événements trop fr�
   <fieldset>
     <legend>Ajouter une promo</legend>
     Tu peux surveiller des promos (mettre la promo sur 4 chiffres),
-    ou des plages de promos (par ex. 1990-1992)&nbsp;: <br />
+    ou des plages de promos (par ex. 1990-1992)&nbsp;:<br />
     <input type='text' name='promo' />
     <input type='submit' name='add_promo' value='ajouter'
       onclick="this.form.action += 'add_promo/' + this.form.promo.value;" />

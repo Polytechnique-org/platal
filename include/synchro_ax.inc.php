@@ -35,8 +35,8 @@ function get_user_ax($matricule_ax, $raw=false)
     $userax = Array();
     $userax['matricule_ax'] = $matricule_ax;
 
-    $userax['nom'] = strtoupper($ancien->Nom_patr());
-    $userax['nom_usage'] = strtoupper($ancien->Nom_usuel());
+    $userax['nom'] = mb_strtoupper($ancien->Nom_patr());
+    $userax['nom_usage'] = mb_strtoupper($ancien->Nom_usuel());
     if ($userax['nom_usage'] == $userax['nom']) $userax['nom_usage'] = '';
     $userax['prenom'] = $ancien->Prenom();
     $userax['sexe'] = ($ancien->Civilite() != 'M')?1:0;
@@ -65,7 +65,7 @@ function get_user_ax($matricule_ax, $raw=false)
         $jobax['postcode']   = $ancien->Adresse_act_code_pst($i);
         $jobax['city'] = $ancien->Adresse_act_ville($i);
         $jobax['region'] = $ancien->Adresse_act_etat_region($i);
-        $jobax['countrytxt'] = ucwords(strtolower($ancien->Adresse_act_pays($i)));
+        $jobax['countrytxt'] = ucwords(mb_strtolower($ancien->Adresse_act_pays($i)));
         $jobax['tel']  = $ancien->Adresse_act_tel($i);
         $jobax['fax']  = $ancien->Adresse_act_fax($i);
         $jobax['mobile'] = $ancien->Adresse_act_mobile($i);
@@ -85,7 +85,7 @@ function get_user_ax($matricule_ax, $raw=false)
         $adrax['postcode'] = $ancien->Code_pst($i);
         $adrax['city'] = $ancien->Ville($i);
         $adrax['region'] = $ancien->Etat_region($i);
-        $adrax['countrytxt'] = ucwords(strtolower($ancien->Pays($i)));
+        $adrax['countrytxt'] = ucwords(mb_strtolower($ancien->Pays($i)));
         $adrax['pub'] = 'ax';
         if ($ancien->Tel($i) || $ancien->Fax($i)) {
             $adrax['tels'] = array();

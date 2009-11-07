@@ -58,6 +58,8 @@
       <a href="admin/emails/lost">Perdus de vue</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/emails/watch">Surveillés</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/emails/broken">Pattes cassées</a>
     </td>
   </tr>
   <tr class="pair">

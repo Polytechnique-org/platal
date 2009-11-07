@@ -632,7 +632,7 @@ function set_user_details_pro($uid, $pros)
 // {{{ function set_user_details()
 function set_user_details($uid, $details) {
     if (isset($details['nom_usage'])) {
-        XDB::execute("UPDATE auth_user_md5 SET nom_usage = {?} WHERE user_id = {?}", strtoupper($details['nom_usage']), $uid);
+        XDB::execute("UPDATE auth_user_md5 SET nom_usage = {?} WHERE user_id = {?}", mb_strtoupper($details['nom_usage']), $uid);
     }
     if (isset($details['nationalite'])) {
         XDB::execute(

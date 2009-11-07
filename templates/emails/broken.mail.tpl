@@ -32,12 +32,12 @@ de Polytechnique.org à ton adresse polytechnicienne :
 
     {$x.alias}@{$globals->mail->domain},
 
-l'adresse {$email}, sur laquelle tu rediriges ton courrier, ne fonctionnait pas.
+l'adresse {$email}, sur laquelle tu rediriges tes emails, ne fonctionnait pas.
 
   Estimant que cette information serait susceptible de t'intéresser, nous
 avons préféré t'en informer. Il n'est pas impossible qu'il ne s'agisse que
 d'une panne temporaire. Si tu souhaites changer la liste des adresses sur
-lesquelles tu reçois le courrier qui t'es envoyé à ton adresse
+lesquelles tu reçois les emails qui te sont envoyés à ton adresse
 polytechnicienne, il te suffit de te rendre sur la page :
 
     https://www.polytechnique.org/emails/redirect
@@ -45,7 +45,7 @@ polytechnicienne, il te suffit de te rendre sur la page :
 
 À bientôt sur Polytechnique.org !
 L'équipe d'administration <support@{#globals.mail.domain#}>
-  
+
 ---------------------------------------------------------------------------
 
   PS : si jamais tu ne disposes plus du mot de passe te permettant

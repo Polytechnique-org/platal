@@ -43,7 +43,7 @@ function chgMainWinLoc(strPage)
   <div id="photo" class="part">
     {if $photo_url}<img alt="Photo de {$user->login()}" src="{$photo_url}" width="{$x.x}"/>{/if}
     {if $logged && ( $x.section|smarty:nodefaults || $x.binets_join|smarty:nodefaults || $x.gpxs_join|smarty:nodefaults)}
-      <h2>À l'X...</h2>
+      <h2>À l'X&hellip;</h2>
       {if $x.section}<div><em class="intitule">Section&nbsp;: </em><span>{$x.section}</span></div>{/if}
       {if $x.binets_join}<div><em class="intitule">Binet{if count($x.binets) > 1}s{/if}&nbsp;: </em>
       <span>{$x.binets_join}</span></div>{/if}
@@ -109,10 +109,10 @@ function chgMainWinLoc(strPage)
         Décédé{if $user->isFemale()}e{/if} le {$x.deces|date_format}
         {elseif !$x.actif}
         Ce{if $c.sexe}tte{/if} camarade n'a plus d'adresse de redirection valide,<br />
-        <a href="marketing/broken/{$user->login()}" class="popup">clique ici si tu connais son adresse email !</a>
+        <a href="marketing/broken/{$user->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
         {elseif !$x.inscrit}
         Cette personne n'est pas inscrite à Polytechnique.org,<br />
-        <a href="marketing/public/{$user->login()}" class="popup">clique ici si tu connais son adresse email !</a>
+        <a href="marketing/public/{$user->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
         {else}
         {if $virtualalias}
         <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />
