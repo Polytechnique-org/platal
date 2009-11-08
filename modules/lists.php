@@ -660,7 +660,7 @@ class ListsModule extends PLModule
             S::assert_xsrf_token();
 
             $members = User::getBulkForlifeEmails(Env::v('add_member'),
-                                                  false,
+                                                  true,
                                                   array('ListsModule', 'no_login_callback'));
             $arr = $this->client->mass_subscribe($liste, $members);
             if (is_array($arr)) {
@@ -678,7 +678,7 @@ class ListsModule extends PLModule
                 $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
             } else {
                 $members = User::getBulkForlifeEmails($upload->getContents(),
-                                                      false,
+                                                      true,
                                                       array('ListsModule', 'no_login_callback'));
                 $arr = $this->client->mass_subscribe($liste, $members);
                 if (is_array($arr)) {
