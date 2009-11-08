@@ -177,7 +177,7 @@ class OpenId
     // Renders the main XRDS page.
     public function RenderMainXrdsPage(&$page)
     {
-        header('Content-type: application/xrds+xml');
+        pl_content_headers("application/xrds+xml");
         $page->changeTpl('openid/idp_xrds.tpl', NO_SKIN);
         $page->assign('type2', Auth_OpenID_TYPE_2_0_IDP);
         $page->assign('sreg', Auth_OpenID_SREG_URI);
@@ -187,7 +187,7 @@ class OpenId
     // Renders the XRDS page of |user|.
     public function RenderUserXrdsPage(&$page, User &$user)
     {
-        header('Content-type: application/xrds+xml');
+        pl_content_headers("application/xrds+xml");
         $page->changeTpl('openid/user_xrds.tpl', NO_SKIN);
         $page->assign('type2', Auth_OpenID_TYPE_2_0);
         $page->assign('type1', Auth_OpenID_TYPE_1_1);

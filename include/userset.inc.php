@@ -362,21 +362,18 @@ class GeolocView implements PlView
 
         switch ($this->type) {
           case 'icon.swf':
-            header("Content-type: application/x-shockwave-flash");
-            header("Pragma:");
+            pl_cached_content_headers("application/x-shockwave-flash");
             readfile(dirname(__FILE__).'/../modules/geoloc/icon.swf');
             exit;
 
           case 'dynamap.swf':
-            header("Content-type: application/x-shockwave-flash");
-            header("Pragma:");
+            pl_cached_content_headers("application/x-shockwave-flash");
             readfile(dirname(__FILE__).'/../modules/geoloc/dynamap.swf');
             exit;
 
           case 'init':
             $page->changeTpl('geoloc/init.tpl', NO_SKIN);
-            header('Content-Type: text/xml');
-            header('Pragma:');
+            pl_cached_content_headers("text/xml", "utf-8");
             if (!empty($GLOBALS['IS_XNET_SITE'])) {
                 $page->assign('background', 0xF2E9D0);
             }
@@ -384,8 +381,7 @@ class GeolocView implements PlView
 
           case 'city':
             $page->changeTpl('geoloc/city.tpl', NO_SKIN);
-            header('Content-Type: text/xml');
-            header('Pragma:');
+            pl_cached_content_headers("text/xml", "utf-8");
             $only_current = Env::v('only_current', false)? ' AND FIND_IN_SET(\'active\', adrf.statut)' : '';
             $it =& $this->set->get('u.user_id AS id, u.prenom, u.nom, u.promo, al.alias',
                                    "INNER JOIN  adresses AS adrf  ON (adrf.uid = u.user_id $only_current)
@@ -401,8 +397,7 @@ class GeolocView implements PlView
                 $page->changeTpl('geoloc/country.tpl', SIMPLE);
             } else {
                 $page->changeTpl('geoloc/country.tpl', NO_SKIN);
-                header('Content-Type: text/xml');
-                header('Pragma:');
+                pl_cached_content_headers("text/xml", "utf-8");
             }
             $mapid = Env::has('mapid') ? Env::i('mapid', -2) : false;
             list($countries, $cities) = geoloc_getData_subcountries($mapid, $this->set, 10);

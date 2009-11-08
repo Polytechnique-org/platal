@@ -186,22 +186,12 @@ class XnetGrpModule extends PLModule
                           $globals->asso('id'));
         list($logo, $logo_mime) = $res->fetchOneRow();
 
+        pl_cached_dynamic_content_headers(empty($logo) ? "image/jpeg" : $logo_mime);
         if (!empty($logo)) {
-            header("Content-type: $mime");
-            header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-            header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
-            header('Cache-Control: no-cache, must-revalidate');
-            header('Pragma: no-cache');
             echo $logo;
         } else {
-            header('Content-type: image/jpeg');
-            header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-            header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
-            header('Cache-Control: no-cache, must-revalidate');
-            header('Pragma: no-cache');
-            readfile(dirname(__FILE__).'/../htdocs/images/dflt_carre.jpg');
+            readfile(dirname(__FILE__) . '/../htdocs/images/dflt_carre.jpg');
         }
-
         exit;
     }
 
@@ -507,9 +497,7 @@ class XnetGrpModule extends PLModule
                  GROUP BY  m.uid
                  ORDER BY  nom, prenom",
                  $globals->mail->domain, $globals->asso('id'));
-        header('Content-Type: text/x-csv; charset=utf-8;');
-        header('Pragma: ');
-        header('Cache-Control: ');
+        pl_content_headers("text/x-csv");
         $page->changeTpl('xnetgrp/annuaire-csv.tpl', NO_SKIN);
         $page->assign('ann', $ann);
     }
@@ -831,7 +819,7 @@ class XnetGrpModule extends PLModule
 
     function handler_admin_member_new_ajax(&$page)
     {
-        header('Content-Type: text/html; charset="UTF-8"');
+        pl_content_headers("text/html");
         $page->changeTpl('xnetgrp/membres-new-search.tpl', NO_SKIN);
         $res = null;
         if (Env::has('login')) {
@@ -1195,20 +1183,20 @@ class XnetGrpModule extends PLModule
             $res = XDB::query("SELECT * FROM groupex.announces_photo WHERE eid = {?}", $eid);
             if ($res->numRows()) {
                 $photo = $res->fetchOneAssoc();
-                header('Content-Type: image/' . $photo['attachmime']);
+                pl_cached_dynamic_content_headers("image/" . $photo['attachmime']);
                 echo $photo['attach'];
                 exit;
             }
         } else {
             $upload = new PlUpload(S::user()->login(), 'xnetannounce');
             if ($upload->exists() && $upload->isType('image')) {
-                header('Content-Type: ' . $upload->contentType());
+                pl_cached_dynamic_content_headers($upload->contentType());
                 echo $upload->getContents();
                 exit;
             }
         }
         global $globals;
-        header('Content-Type: image/png');
+        pl_cached_dynamic_content_headers("image/png");
         echo file_get_contents($globals->spoolroot . '/htdocs/images/logo.png');
         exit;
     }

@@ -913,8 +913,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
 
                 // Output the list of users with recently broken addresses,
                 // along with the count of valid redirections.
-                header('Content-Type: text/x-csv; charset=utf-8;');
-                header('Cache-Control: no-cache');
+                pl_content_headers("text/x-csv");
 
                 $csv = fopen('php://output', 'w');
                 fputcsv($csv, array('nom', 'prenom', 'promo', 'alias', 'bounce', 'nbmails', 'url'), ';');

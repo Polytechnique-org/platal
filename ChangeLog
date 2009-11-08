@@ -8,6 +8,7 @@ New:
 
     * Core:
         - Prunes old sessions/events logs after 12 months                  -VZA
+        - Adds proper content caching for static and semi-static content   -VZA
 
 Bug/Wish:
 

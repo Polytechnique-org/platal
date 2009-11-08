@@ -109,7 +109,7 @@ class SurveyModule extends PLModule
             return PL_DO_AUTH;
         }
         if ($show == 'csv') {
-            header('Content-Type: text/csv; charset="UTF-8"');
+            pl_content_headers("text/csv");
             echo $survey->toCSV();
             exit;
         } else {
@@ -364,7 +364,7 @@ class SurveyModule extends PLModule
     function handler_ajax(&$page, $type)
     {
         $this->load('survey.inc.php');
-        header('Content-Type: text/html; charset="UTF-8"');
+        pl_content_headers("text/html");
         if (Survey::isType($type)) { // when type has been chosen, the form is updated to fit exactly the type of question chosen
             $page->changeTpl('survey/edit_new.tpl', NO_SKIN);
             $page->assign('survey_types', Survey::getTypes());

@@ -290,10 +290,7 @@ class XnetEventsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        header('Content-type: text/x-csv; encoding=UTF-8');
-        header('Pragma: ');
-        header('Cache-Control: ');
-
+        pl_content_headers("text/x-csv");
         $page->changeTpl('xnetevents/csv.tpl', NO_SKIN);
 
         $admin = may_update();
@@ -339,7 +336,7 @@ class XnetEventsModule extends PLModule
         $page->register_function('display_ical', 'display_ical');
         $page->assign_by_ref('e', $evt);
 
-        header('Content-Type: text/calendar; charset=utf-8');
+        pl_content_headers("text/calendar");
     }
 
     function handler_edit(&$page, $eid = null)

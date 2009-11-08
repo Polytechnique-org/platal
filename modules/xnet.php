@@ -48,10 +48,10 @@ class XnetModule extends PLModule
                             WHERE alias = {?}", $x);
 
         if ((list($type, $data) = $res->fetchOneRow())) {
-            Header("Content-type: image/$type");
+            pl_cached_dynamic_content_headers("image/$type");
             echo $data;
         } else {
-            Header('Content-type: image/png');
+            pl_cached_dynamic_content_headers("image/png");
             echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
         }
         exit;
@@ -219,7 +219,7 @@ class XnetModule extends PLModule
         $allkeys = func_get_args();
         unset($allkeys[0]);
         $url = join('/',$allkeys);
-        header("Content-type: text/javascript; charset=utf-8");
+        pl_content_headers("text/javascript");
         echo '$.ajax({ url: "'.$url.'?forceXml=1", dataType: "xml", success: function(xml) { $("body",xml).insertBefore("body"); $("body:eq(1)").remove(); }});';
         exit;
     }

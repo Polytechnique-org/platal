@@ -217,7 +217,7 @@ class SearchModule extends PLModule
         //   result1|nb1
         //   result2|nb2
         //   ...
-        header('Content-Type: text/plain; charset="UTF-8"');
+        pl_content_headers("text/plain");
         $q = preg_replace(array('/\*+$/', // always look for $q*
                                 '/([\^\$\[\]])/', // escape special regexp char
                                 '/\*/'), // replace joker by regexp joker
@@ -419,7 +419,7 @@ class SearchModule extends PLModule
             $field = '`fonction_fr`';
             break;
           case 'diploma':
-            header('Content-Type: text/xml; charset="UTF-8"');
+            pl_content_headers("text/xml");
             $this->get_diplomas();
             $page->changeTpl('search/adv.grade.form.tpl', NO_SKIN);
             return;
@@ -456,12 +456,12 @@ class SearchModule extends PLModule
           default: exit();
         }
         if (isset($idVal)) {
-            header('Content-Type: text/plain; charset="UTF-8"');
+            pl_content_headers("text/plain");
             $result = XDB::query('SELECT '.$field.' AS field FROM '.$db.' WHERE '.$id.' = {?} LIMIT 1',$idVal);
             echo $result->fetchOneCell();
             exit();
         }
-        header('Content-Type: text/xml; charset="UTF-8"');
+        pl_content_headers("text/xml");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', $type);
         $page->assign('list', XDB::iterator('SELECT  '.$field.' AS field,

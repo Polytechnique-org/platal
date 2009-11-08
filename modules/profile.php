@@ -102,10 +102,10 @@ class ProfileModule extends PLModule
 
         // Display the photo, or a default one when not available.
         if ($photo_type && $photo_data != null) {
-            header('Content-type: image/' . $photo_type);
+            pl_cached_dynamic_content_headers("image/$photo_type");
             echo $photo_data;
         } else {
-            header('Content-type: image/png');
+            pl_cached_dynamic_content_headers("image/png");
             echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
         }
         exit;
@@ -123,8 +123,7 @@ class ProfileModule extends PLModule
         $img  = $thumb ?
             dirname(__FILE__).'/../htdocs/images/medals/thumb/' . $res->fetchOneCell() :
             dirname(__FILE__).'/../htdocs/images/medals/' . $res->fetchOneCell();
-        $type = mime_content_type($img);
-        header("Content-Type: $type");
+        pl_cached_content_headers(mime_content_type($img));
         echo file_get_contents($img);
         exit;
     }
@@ -363,22 +362,14 @@ class ProfileModule extends PLModule
 
     function handler_applis_js(&$page)
     {
-        header('Content-Type: text/javascript; charset=utf-8');
-        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-        header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
-        header('Cache-Control: no-cache, must-revalidate');
-        header('Pragma: no-cache');
+        pl_cached_content_headers("text/javascript", "utf-8");
         $page->changeTpl('profile/applis.js.tpl', NO_SKIN);
         require_once "applis.func.inc.php";
     }
 
     function handler_grades_js(&$page)
     {
-        header('Content-Type: text/javascript; charset=utf-8');
-        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-        header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
-        header('Cache-Control: no-cache, must-revalidate');
-        header('Pragma: no-cache');
+        pl_cached_content_headers("text/javascript", "utf-8");
         $page->changeTpl('profile/grades.js.tpl', NO_SKIN);
         $res    = XDB::iterator("SELECT  *
                                    FROM  profile_medals_grades
@@ -401,7 +392,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_address(&$page, $adid)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('profile/adresses.address.tpl', NO_SKIN);
         $page->assign('i', $adid);
         $page->assign('adr', array());
@@ -409,7 +400,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_tel(&$page, $adid, $telid)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('profile/adresses.tel.tpl', NO_SKIN);
         $page->assign('i', $adid);
         $page->assign('adid', "addresses_$adid");
@@ -420,7 +411,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_medal(&$page, $id)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('profile/deco.medal.tpl', NO_SKIN);
         $page->assign('id', $id);
         $page->assign('medal', array('valid' => 0, 'grade' => 0));
@@ -428,7 +419,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_job(&$page, $id)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('profile/jobs.job.tpl', NO_SKIN);
         $page->assign('i', $id);
         $page->assign('job', array());
@@ -444,7 +435,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_secteur(&$page, $id, $sect, $ssect = -1)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $res = XDB::iterator("SELECT  id, label
                                 FROM  emploi_ss_secteur
                                WHERE  secteur = {?}", $sect);
@@ -456,7 +447,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_skill(&$page, $cat, $id)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('profile/skill.skill.tpl', NO_SKIN);
         $page->assign('cat', $cat);
         $page->assign('id', $id);
@@ -630,7 +621,7 @@ class ProfileModule extends PLModule
 
     function handler_ref_sect(&$page, $sect)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('onchange', 'setSSecteurs()');
         $page->assign('id', 'ssect_field');
@@ -643,7 +634,7 @@ class ProfileModule extends PLModule
 
     function handler_ref_country(&$page, $sect, $ssect = '')
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', 'pays_sel');
         $where = ($ssect ? ' AND ms.ss_secteur = {?}' : '');
@@ -726,10 +717,10 @@ class ProfileModule extends PLModule
         list($logo, $logo_mime) = $res->fetchOneRow();
 
         if (!empty($logo)) {
-            header("Content-type: $mime");
+            pl_cached_dynamic_content_headers($logo_mime);
             echo $logo;
         } else {
-            header('Content-type: image/jpeg');
+            pl_cached_dynamic_content_headers("image/jpeg");
             readfile(dirname(__FILE__) . '/../htdocs/images/dflt_carre.jpg');
         }
 
@@ -765,10 +756,9 @@ class ProfileModule extends PLModule
 
         switch ($action) {
             case "original":
-                header("Content-type: image/jpeg");
+                pl_cached_content_headers("image/jpeg");
         	readfile("/home/web/trombino/photos" . $user->promo() . "/" . $user->login() . ".jpg");
                 exit;
-        	break;
 
             case "new":
                 S::assert_xsrf_token();

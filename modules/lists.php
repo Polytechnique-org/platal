@@ -131,7 +131,7 @@ class ListsModule extends PLModule
 
     function handler_ajax(&$page, $list = null)
     {
-        header('Content-Type: text/html; charset="UTF-8"');
+        pl_content_headers("text/html");
         $domain = $this->prepare_client($page);
         $page->changeTpl('lists/liste.inc.tpl', NO_SKIN);
         S::assert_xsrf_token();
@@ -346,9 +346,7 @@ class ListsModule extends PLModule
         $this->prepare_client($page);
         $members = $this->client->get_members($liste);
         $list = list_fetch_names(list_extract_members($members[1]));
-        header('Content-Type: text/x-csv; charset=utf-8;');
-        header('Pragma: ');
-        header('Cache-Control: ');
+        pl_content_headers("text/x-csv");
 
         echo "email,nom,prenom,promo\n";
         foreach ($list as $member) {
