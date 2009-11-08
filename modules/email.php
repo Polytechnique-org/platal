@@ -824,8 +824,8 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                 foreach ($broken_list as $orig_email) {
                     $email = valide_email(trim($orig_email));
                     if (empty($email) || $email == '@') {
-                        $invalid_emails[] = "$orig_email: invalid email";
-                    } else {
+                        $invalid_emails[] = trim($orig_email) . ': invalid email';
+                    } elseif (!in_array($email, $valid_emails)) {
                         $res = XDB::query('SELECT  COUNT(*)
                                              FROM  emails
                                             WHERE  email = {?}', $email);
@@ -917,7 +917,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                 header('Cache-Control: no-cache');
 
                 $csv = fopen('php://output', 'w');
-                fputcsv($csv, array('nom', 'prenom', 'alias', 'bounce', 'nbmails', 'url'), ';');
+                fputcsv($csv, array('nom', 'prenom', 'promo', 'alias', 'bounce', 'nbmails', 'url'), ';');
                 foreach ($broken_user_list as $alias => $mails) {
                     $sel = Xdb::query(
                         "SELECT  u.user_id, count(e.email) AS nb_mails, u.nom, u.prenom, u.promo
@@ -930,8 +930,8 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
 
                     if ($x = $sel->fetchOneAssoc()) {
                         fputcsv($csv, array($x['nom'], $x['prenom'], $x['promo'], $alias,
-                                            join(',', $mails), $x['nb_mails']),
-                                            'https://www.polytechnique.org/marketing/broken/' . $alias, ';');
+                                            join(',', $mails), $x['nb_mails'],
+                                            'https://www.polytechnique.org/marketing/broken/' . $alias), ';');
                     }
                 }
                 fclose($csv);

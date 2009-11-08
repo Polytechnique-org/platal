@@ -24,9 +24,11 @@
 
 <form method="post" action="{$platal->ns}admin/emails/broken" enctype="multipart/form-data">
   {xsrf_token_field}
-  <textarea name="list" cols="60" rows="30">{if $valid_emails || $invalid_emails}{foreach from=$valid_emails item=email}{$email}{/foreach}
+  <textarea name="list" cols="60" rows="30">{if $valid_emails || $invalid_emails}{foreach from=$valid_emails item=email}{$email}
+{/foreach}
 
-{foreach from=$invalid_emails item=email}{$email}{/foreach}{/if}</textarea><br />
+{foreach from=$invalid_emails item=email}{$email}
+{/foreach}{/if}</textarea><br />
   <input type="submit" name="sort_broken"
          value="Trie et supprime les doublons de la liste d'adresses" /><br />
   <input type="submit" name="process_broken"
