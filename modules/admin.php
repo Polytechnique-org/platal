@@ -1123,7 +1123,6 @@ class AdminModule extends PLModule
         }
 
         $page->changeTpl('admin/wiki.tpl');
-        $page->addJsLink('jquery.js');
         $page->assign('wiki_pages', $wiki_tree);
         $page->assign('perms_opts', $perms);
     }

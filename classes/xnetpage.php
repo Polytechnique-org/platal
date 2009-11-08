@@ -41,6 +41,9 @@ class XnetPage extends PlPage
             $this->assign('is_admin', may_update());
             $this->assign('is_member', is_member());
         }
+        $this->addJsLink('jquery.js');
+        $this->addJsLink('overlib.js');
+        $this->addJsLink('wiki.js');
         $this->addJsLink('xorg.js');
         $this->setTitle('Les associations polytechniciennes');
     }

@@ -20,8 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-
 <form action="admin/deaths" method="post">
   <table class="bicol">
     <tr>
@@ -67,21 +65,16 @@
   </table>
 </form>
 
-<script type='text/javascript' src='javascript/jquery.js'></script>
 <script type="text/javascript">//<![CDATA[
   {literal}
-  $('input.deathDate').change(
-    function ()
-    {
-      $(this).addClass('sendDate');
-    });
+  $('input.deathDate').change(function () {
+    $(this).addClass('sendDate');
+  });
   
-  $('#deathDateList').submit(
-    function ()
-    {
-      // Avoid sending useless data to the webserver
-      $('input.deathDate').not('.sendDate').attr('disabled', true);
-    });
+  $('#deathDateList').submit(function () {
+    // Avoid sending useless data to the webserver
+    $('input.deathDate').not('.sendDate').attr('disabled', true);
+  });
   {/literal}
 //]]></script>
 

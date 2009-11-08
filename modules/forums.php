@@ -81,7 +81,6 @@ class ForumsModule extends PLModule
         $table_editor->describe('comment','commentaire',true);
         $table_editor->apply($page, $action, $id);
         $page->changeTpl('forums/admin.tpl');
-        $page->addJsLink('jquery.js');
     }
 
     static function run_banana(&$page, $params = null)
