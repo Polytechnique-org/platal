@@ -75,9 +75,8 @@ class CoreModule extends PLModule
     function handler_favicon(&$page)
     {
         global $globals;
-        $data = file_get_contents($globals->spoolroot . '/htdocs/images/favicon.ico');
-        header('Content-Type: image/x-icon');
-        echo $data;
+        pl_cached_content_headers("image/x-icon");
+        readfile($globals->spoolroot . '/htdocs/images/favicon.ico');
         exit;
     }
 
@@ -95,7 +94,7 @@ class CoreModule extends PLModule
         }
 
         if (count($disallowed_uris) > 0) {
-            header('Content-Type: text/plain');
+            pl_cached_content_headers("text/plain");
             echo "User-agent: *\n";
             foreach ($disallowed_uris as $uri) {
                 echo "Disallow: $uri\n";
@@ -171,7 +170,7 @@ class CoreModule extends PLModule
     /// Shared handler for wiki syntax result preview
     function handler_wiki_preview(&$page, $action = 'title')
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $text = Env::v('text');
         echo MiniWiki::wikiToHtml($text, $action == 'title');
         exit;

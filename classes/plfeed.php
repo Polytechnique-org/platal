@@ -107,7 +107,7 @@ abstract class PlFeed implements PlIterator
         }
 
         $page->assign('rss_hash', $token);
-        header('Content-Type: application/rss+xml; charset=utf8');
+        pl_content_headers("application/rss+xml");
         $this->iterator = $this->fetch($user);
         $page->coreTpl('feed.' . $type . '.tpl', NO_SKIN);
         $page->assign_by_ref('feed', $this);

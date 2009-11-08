@@ -156,7 +156,7 @@ abstract class PlPage extends Smarty
         $this->addJsLink('wiki.js');
         header("Accept-Charset: utf-8");
         if (Env::v('forceXml')) {
-            header("Content-Type: text/xml; charset=utf-8");
+            pl_content_headers("text/xml");
         }
 
         if (!$globals->debug) {
@@ -335,7 +335,7 @@ abstract class PlPage extends Smarty
     // {{{ function jsonDisplay
     protected function jsonDisplay()
     {
-        header("Content-type: text/javascript; charset=utf-8");
+        pl_content_headers("text/javascript");
         array_walk_recursive($this->_jsonVars, "escape_xorgDB");
         $jsonbegin = Env::v('jsonBegin');
         $jsonend = Env::v('jsonEnd');

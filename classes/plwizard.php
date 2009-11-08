@@ -222,7 +222,7 @@ class PlWizard
             $page = $this->getPage($curpage);
         }
         if ($mode == 'ajax') {
-            header('Content-Type: text/html; charset=utf-8');
+            pl_content_headers("text/html");
             $smarty->changeTpl($this->layout, NO_SKIN);
             $smarty->assign('wiz_run_ajax', true);
         } else {

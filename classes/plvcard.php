@@ -829,14 +829,11 @@ abstract class PlVCard
      */
     public function show()
     {
-        header("Pragma: ");
-        header("Cache-Control: ");
-
         /* XXX: RFC2425 defines the mime content-type text/directory.
          * VCard inherits this type as a profile type. Maybe test/x-vcard
          * could be better. To be checked.
          */
-        header("Content-type: text/directory; profile=vCard; charset=" . self::$charset);
+        pl_cached_dynamic_content_headers("text/directory; profile=vCard", "utf-8");
 
         $it = $this->fetch();
         while ($item = $it->next()) {
