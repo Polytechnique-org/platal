@@ -2,6 +2,7 @@
 VERSION 1.0.2                                                         XX XX XXXX
 
 New:
+    * Adds proper content caching for static and semi-static content        -VZA
 
 ================================================================================
 VERSION 1.0.1                                                         30 07 2009
