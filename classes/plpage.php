@@ -60,7 +60,6 @@ abstract class PlPage extends Smarty
                              . " actuellement désactivée, en particulier aucune donnée ne sera sauvegardée");
         }
         $this->register_prefilter('at_to_globals');
-        $this->addJsLink('jquery.js');
     }
 
     // }}}
@@ -153,7 +152,6 @@ abstract class PlPage extends Smarty
         if (S::i('auth') <= AUTH_PUBLIC) {
             $this->register_outputfilter('hide_emails');
         }
-        $this->addJsLink('wiki.js');
         header("Accept-Charset: utf-8");
         if (Env::v('forceXml')) {
             pl_content_headers("text/xml");
@@ -291,9 +289,9 @@ abstract class PlPage extends Smarty
     // }}}
     // {{{ function addJsLink
 
-    public function addJsLink($path)
+    public function addJsLink($filename)
     {
-        $this->append('pl_js', $path);
+        $this->append('pl_js', pl_static_content_path("javascript/", $filename));
     }
 
     // }}}

@@ -22,20 +22,14 @@
 function smarty_compiler_javascript($tag_attrs, &$compiler)
 {
     extract($compiler->_parse_attrs($tag_attrs));
-
     if (!isset($name)) {
         return null;
     }
-    $name = pl_entities(trim($name, '\'"'), ENT_QUOTES);
-    $name = "javascript/$name.js";
-    if (isset($full) && $full) {
-        global $globals;
-        $name = $globals->baseurl . '/' . $name;
-    }
 
-    return "?><script type='text/javascript' src='$name'></script><?php";
+    $name = pl_entities(trim($name, '\'"'), ENT_QUOTES);
+    $name = pl_static_content_path("javascript/", "$name.js");
+    return '?><script type="text/javascript" src="' . $name . "\"></script>\n<?php";
 }
 
-/* vim: set expandtab enc=utf-8: */
-
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

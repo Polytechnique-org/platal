@@ -35,7 +35,7 @@ function smarty_compiler_checkpasswd($tag_attrs, &$compiler)
       $text = "'Changer'";
     }
 
-    return '?><script type="text/javascript" src="javascript/jquery.color.js" ></script>
+    return '?><script type="text/javascript" src="' . pl_static_content_path("javascript/", "jquery.color.js") . '" ></script>
               <script type="text/javascript">//<![CDATA[
                 var passwordprompt_name = '.  $prompt . ';
                 var passwordprompt_submit = ' . $submit . ';

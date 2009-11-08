@@ -177,6 +177,21 @@ function pl_entity_decode($text, $mode = ENT_COMPAT)
 }
 
 /**
+ * Returns the path of a static content, including, when appropriate, the
+ * version number. This is used to avoid cross-version cache issues, by ensuiring
+ * that all static resources are served on a unique path.
+ */
+function pl_static_content_path($path, $filename)
+{
+    global $globals;
+    if (isset($globals) && isset($globals->version)) {
+        return $path . $globals->version . '/' . $filename;
+    } else {
+        return $path . $filename;
+    }
+}
+
+/**
  * Adds content type headers; by default the encoding used is utf-8.
  */
 function pl_content_headers($content_type, $encoding = 'utf-8')
@@ -200,6 +215,7 @@ function pl_cached_content_headers($content_type, $encoding = null, $cache_durat
 
     header("Cache-Control: max-age=$cache_duration");
     header("Expires: " . gmdate('D, d M Y H:i:s', time() + $cache_duration) . " GMT");
+    header("Pragma: ");
     pl_content_headers($content_type, $encoding);
 }
 

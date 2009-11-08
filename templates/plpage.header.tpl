@@ -42,7 +42,7 @@
 </script>
 {if t($pl_js)}
 {foreach from=$pl_js item=js}
-<script type="text/javascript" src="javascript/{$js}"></script>
+<script type="text/javascript" src="{$js}"></script>
 {/foreach}
 {/if}
 {if t($pl_rss)}
@@ -51,6 +51,8 @@
 {if t($pl_extra_header)}
 {$pl_extra_header|smarty:nodefaults}
 {/if}
-{if t($pl_title)}<title>{$pl_title}</title>{/if}
+{if t($pl_title)}
+<title>{$pl_title}</title>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
