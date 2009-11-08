@@ -351,7 +351,7 @@ function event_change_shortname(&$page, $eid, $old, $new)
               FROM  groupex.membres AS m
          LEFT JOIN  groupex.evenements_participants AS ep ON (ep.uid = m.uid AND ep.eid = {?})
          LEFT JOIN  auth_user_md5   AS u ON (u.user_id = m.uid)
-         LEFT JOIN  aliases         AS a ON (a.id = m.uid AND a.type = 'a_vie ')
+         LEFT JOIN  aliases         AS a ON (a.id = m.uid AND a.type = 'a_vie')
              WHERE  m.asso_id = {?} AND ep.uid IS NULL
           GROUP BY  m.uid)",
             $lastid['-absents@'], '@' . $globals->mail->domain, $eid, $globals->asso('id'));
