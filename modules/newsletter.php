@@ -161,12 +161,13 @@ class NewsletterModule extends PLModule
         }
 
         if ($aid == 'blacklist_check') {
+            global $globals;
             $ips_to_check = array();
-            $gethostbyname_count = 0;
+            $blacklist_host_resolution_count = 0;
 
             foreach ($nl->_arts as $key => $articles) {
                 foreach ($articles as $article) {
-                    $article_ips = $article->getLinkIps($gethostbyname_count);
+                    $article_ips = $article->getLinkIps($blacklist_host_resolution_count);
                     if (!empty($article_ips)) {
                         $ips_to_check[$article->title()] = $article_ips;
                     }
@@ -174,8 +175,8 @@ class NewsletterModule extends PLModule
             }
 
             $page->assign('ips_to_check', $ips_to_check);
-            if ($gethostbyname_count >= $globals->mail->blacklist_host_resolution_limit) {
-                $page-trigError("Toutes les url et adresses emails de la lettre"
+            if ($blacklist_host_resolution_count >= $globals->mail->blacklist_host_resolution_limit) {
+                $page->trigError("Toutes les url et adresses emails de la lettre"
                                 . " n'ont pas été prises en compte car la"
                                 . " limite du nombre de résolutions DNS"
                                 . " autorisée a été atteinte.");
