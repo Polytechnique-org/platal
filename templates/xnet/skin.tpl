@@ -120,7 +120,7 @@
           {if $asso && $is_admin ||
                       ($smarty.session.suid && ($smarty.session.suid.perms->hasFlag('admin') ||
                                                 $smarty.session.suid.may_update[$asso_id]))}
-          <h1>Voir le site comme...</h1>
+          <h1>Voir le site comme&hellip;</h1>
           <form method="post" action="{$platal->ns}change_rights">
             <div>
               <select name="right" onchange="this.form.submit()" style="margin: 0; padding: 0">

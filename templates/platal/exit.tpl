@@ -25,7 +25,7 @@
   Déconnexion {if $smarty.cookies.ORGaccess}partielle {/if}effectuée
 </h1>
 <p>
-<strong>Merci et à bientôt !</strong>
+<strong>Merci et à bientôt&nbsp;!</strong>
 </p>
 
 {if $smarty.cookies.ORGaccess}

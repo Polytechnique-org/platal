@@ -23,7 +23,7 @@
 
 <h1>Redirection de page WEB</h1>
 
-<h2>Pourquoi une redirection de page WEB ?</h2>
+<h2>Pourquoi une redirection de page WEB&nbsp;?</h2>
 <p>
   Dans la lignée du service de redirection d'emails de <strong>{#globals.core.sitename#}</strong>,
   il est possible de faire pointer
@@ -44,6 +44,15 @@
 <h1>
   Mise en place de la redirection
 </h1>
+<p>
+{if $carva}
+  Actuellement, les adresses
+  <a href="http://www.carva.org/{$bestalias}">http://www.carva.org/{$bestalias}</a> et
+  <a href="http://www.carva.org/{$smarty.session.hruid}">http://www.carva.org/{$smarty.session.hruid}</a>
+  sont redirigées sur <a href="http://{$carva}">http://{$carva}</a>
+{else}
+  La redirection n'est pas utilisée&hellip;
+{/if}
 
 <p>
   Pour modifier ta redirection remplis le champ suivant et clique sur <strong>Valider</strong>.

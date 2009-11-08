@@ -23,7 +23,7 @@
 <h1>{$asso->nom}&nbsp;: Gestion des télépaiements </h1>
 
 <p class="descr">
-Voici la liste des paiements en ligne possible pour le groupe {$asso->nom} :
+Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;:
 </p>
 
 {foreach from=$titres item=p}
@@ -141,7 +141,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom} :
 {foreachelse}
 
 <p class="descr">
-<em>Pas de télépaiement en cours ...</em>
+<em>Pas de télépaiement en cours&hellip;</em>
 </p>
 
 {/foreach}

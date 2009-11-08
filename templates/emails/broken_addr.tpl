@@ -20,46 +20,17 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<h1>Pattes cassées</h1>
 
-<h1>
-  Fiches les plus consultées
-</h1>
+<form method="post" action="{$platal->ns}admin/emails/broken" enctype="multipart/form-data">
+  {xsrf_token_field}
+  <textarea name="list" cols="60" rows="30">{if $valid_emails || $invalid_emails}{foreach from=$valid_emails item=email}{$email}{/foreach}
 
-<ul>
-  <li>
-    {if $period neq 'overall'}<a href="stats/profile/overall">{/if}
-    Classement de tous les temps
-    {if $period neq 'overall'}</a>{/if}
-  </li>
-  <li>
-    {if $period neq 'year'}<a href="stats/profile/year">{/if}
-    Classement sur l'année écoulée
-    {if $period neq 'year'}</a>{/if}
- </li>
- <li>
-    {if $period neq 'month'}<a href="stats/profile/month">{/if}
-    Classement sur le mois écoulé
-    {if $period neq 'month'}</a>{/if}
- </li>
- <li>
-    {if $period neq 'week'}<a href="stats/profile/week">{/if}
-    Classement sur la semaine écoulée
-    {if $period neq 'week'}</a>{/if}
- </li>
-
-</ul>
-
-<table class="tinybicol">
-  <tr>
-    <th>Nom</th>
-    {if hasPerms('admin')}<th>Consultations</th>{/if}
-  </tr>
-  {foreach from=$profiles item=profile}
-  <tr class="{cycle values="pair,impair"}">
-    <td>{profile user=$profile.profile promo=true}</td>
-    {if hasPerms('admin')}<td class="right">{$profile.count}</td>{/if}
-  </tr>
-  {/foreach}
-</table>
+{foreach from=$invalid_emails item=email}{$email}{/foreach}{/if}</textarea><br />
+  <input type="submit" name="sort_broken"
+         value="Trie et supprime les doublons de la liste d'adresses" /><br />
+  <input type="submit" name="process_broken"
+         value="Traite les adresses en panne et met à jour la BDD" />
+</form>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

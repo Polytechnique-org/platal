@@ -22,7 +22,7 @@
 
 Le tableau suivant permet de gérer la mise au ban (le bannissement) de certains utilisateurs aux forums.
 
-Chaque ligne permet de gérer les accès limités à :
+Chaque ligne permet de gérer les accès limités à&nbsp;:
 <ul>
 <li>une plage d'adresses IP donnée (entre ipmin et ipmax),</li>
 <li>à tout le monde (uid=0) ou seulement à un utilisateur donné,</li>
@@ -31,7 +31,7 @@ Chaque ligne permet de gérer les accès limités à :
 </ul>
 
 <p>
-Dans les masques le <strong>*</strong> remplace n'importe quel texte et le <strong>!</strong> bloque l'accès au lieu de l'autoriser. Par exemple : <code>xorg.*,!xorg.prive.*</code> autorise tous les forums xorg sauf ceux qui s'appellent xorg.prive.qqchose.
+Dans les masques le <strong>*</strong> remplace n'importe quel texte et le <strong>!</strong> bloque l'accès au lieu de l'autoriser. Par exemple&nbsp;: <code>xorg.*,!xorg.prive.*</code> autorise tous les forums xorg sauf ceux qui s'appellent xorg.prive.qqchose.
 </p>
 
 <p>

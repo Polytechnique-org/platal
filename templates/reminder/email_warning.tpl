@@ -24,7 +24,7 @@ Des problèmes sont actuellement recontrés sur tes redirections suivantes&nbsp;
 <ul>
   {foreach from=$smarty.session.mx_failures item=mail}
   <li>
-    <span class="erreur">{$mail.mail}</span> :
+    <span class="erreur">{$mail.mail}</span>&nbsp;:
     <span class="explication">{$mail.text}</span>
   </li>
   {/foreach}

@@ -64,7 +64,7 @@
     <tr class='pair'>
       <td>
         <strong>archive&nbsp;:</strong><br />
-        <span class='smaller'>liste archivée ?</span>
+        <span class='smaller'>liste archivée&nbsp;?</span>
       </td>
       <td>
         <label><input type='checkbox' name='archive' {if $options.archive}checked='checked'{/if} />

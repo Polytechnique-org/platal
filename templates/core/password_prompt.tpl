@@ -86,7 +86,7 @@
       <td colspan="2">
       <table width="100%"><tr>
       <td>
-        <a href="recovery">Mot de passe perdu ?</a>
+        <a href="recovery">Mot de passe perdu&nbsp;?</a>
       </td>
       <td class="right">
         <input type="submit" name="submitbtn" value="Me connecter" />
@@ -99,21 +99,13 @@
 
 {if !$smarty.session.auth}
 <p>
-<strong>Tu ne connais pas ton mot de passe ?</strong>
+<strong>Tu ne connais pas ton mot de passe&nbsp;?</strong>
 </p>
-<ul>
-  <li>
-  Si tu viens de terminer ta pré-inscription, <strong>il est dans l'email</strong> que
-  nous t'avons envoyé (expéditeur pre-inscription@{#globals.mail.domain#}).
-  </li>
-  <li>
   Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
     nous</strong> pour obtenir un accès. {#globals.core.sitename#} c'est l'email des X,
   l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accès le plus
   rapidement possible. <strong> <a href="register/">Clique ici pour nous demander tes
       paramètres personnels.</a></strong>
-  </li>
-</ul>
 {/if}
 
 <div id="nologin" style="background: #fcc; color: red">
@@ -126,8 +118,8 @@
   </div>
 </div>
 
-<p>     
-  <strong>Problème de connexion ?</strong> <a href="Xorg/FAQ?display=light#connect" class="popup2">La réponse est là.</a>
+<p>
+  <strong>Problème de connexion&nbsp;?</strong> <a href="Xorg/FAQ?display=light#connect" class="popup2">La réponse est là.</a>
 </p>
 
 <script type="text/javascript">
@@ -160,7 +152,7 @@
     {xsrf_token_field}
     <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
     <input type="hidden" name="response"  value="" />
-    <input type="hidden" name="xorpass"  value="" />
+    <input type="hidden" name="xorpass"   value="" />
     <input type="hidden" name="username"  value="" />
     <input type="hidden" name="remember"  value="" />
     <input type="hidden" name="domain"    value="" />

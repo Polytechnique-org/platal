@@ -114,7 +114,7 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
     {if $user->group_comm}
     <td>{$user->group_comm}</td>
     {/if}
-    <td class="right" {if !$user->group_comm}colspan="2"{/if}>
+    <td class="right"{if !$user->group_comm} colspan="2"{/if}>
       {if $user->hasProfile()}
       <a href="https://www.polytechnique.org/vcard/{$user->login()}.vcf">{icon name=vcard title="[vcard]"}</a>
       {/if}

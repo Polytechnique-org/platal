@@ -183,7 +183,7 @@ class XnetGrpModule extends PLModule
             }
             if (S::has_perms()) {
                 if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
-                    $page->trigError("Le domaine doit être un FQDN (aucune modification effectuée) !!!");
+                    $page->trigError('Le domaine doit être un FQDN (aucune modification effectuée)&nbsp;!!!');
                     return;
                 }
                 XDB::execute(
@@ -242,11 +242,6 @@ class XnetGrpModule extends PLModule
             $page->assign('dom', $dom);
             $page->assign('super', true);
         }
-        if (!$globals->asso('wiki_desc') && $globals->asso('descr')) {
-            $page->trigWarning("Attention, le format de la description a changé et utilise désormais la syntaxe wiki "
-                      . "intégrée au site. Il te faudra probablement adapter le formatage du texte actuel pour "
-                      . "qu'il s'affiche correctement avec cette nouvelle syntaxe.");
-        }
     }
 
     function handler_mail(&$page)
@@ -283,7 +278,7 @@ class XnetGrpModule extends PLModule
             if ($upload) {
                 $upload->rm();
             }
-            $page->killSuccess("Email envoyé !");
+            $page->killSuccess("Email envoyé&nbsp;!");
             $page->assign('sent', true);
         }
     }
@@ -447,7 +442,7 @@ class XnetGrpModule extends PLModule
             // Handles the membership request.
             if ($already_member) {
                 $this->removeSubscriptionRequest($user->id());
-                $page->kill($user->fullName() . " est déjà membre du groupe !");
+                $page->kill($user->fullName() . ' est déjà membre du groupe&nbsp;!');
             } elseif (Env::has('accept')) {
                 S::assert_xsrf_token();
 
@@ -472,7 +467,7 @@ class XnetGrpModule extends PLModule
         }
 
         if (is_member()) {
-            $page->kill("Tu es déjà membre !");
+            $page->kill("Tu es déjà membre&nbsp;!");
             return;
         }
 
@@ -678,7 +673,7 @@ class XnetGrpModule extends PLModule
                     pl_redirect("member/$email");
                 }
             } else {
-                $page->trigError("« <strong>$email</strong> » n'est pas une adresse email valide.");
+                $page->trigError("«&nbsp;<strong>$email</strong>&nbsp;» n'est pas une adresse email valide.");
             }
         }
     }
@@ -807,9 +802,9 @@ class XnetGrpModule extends PLModule
         }
 
         if ($this->unsubscribe($user)) {
-            $page->trigSuccess("{$user->fullName()} a été désinscrit du groupe !");
+            $page->trigSuccess("{$user->fullName()} a été désinscrit du groupe&nbsp;!");
         } else {
-            $page->trigWarning("{$user->fullName()} a été désinscrit du groupe, mais des erreurs subsistent !");
+            $page->trigWarning("{$user->fullName()} a été désinscrit du groupe, mais des erreurs subsistent&nbsp;!");
         }
     }
 
@@ -935,7 +930,7 @@ class XnetGrpModule extends PLModule
                             $perms ? 'admin' : 'membre', $comm,
                             $user['uid'], $globals->asso('id'));
                 if ($perms != $user['perms']) {
-                    $page->trigSuccess('Permissions modifiées !');
+                    $page->trigSuccess('Permissions modifiées&nbsp;!');
                 }
                 if ($comm != $user['comm']) {
                     $page->trigSuccess('Commentaire mis à jour.');

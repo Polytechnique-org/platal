@@ -33,7 +33,7 @@
 <form method="POST" action="openid/trust?{$openid_query}">
   {xsrf_token_field}
   <table class="bicol">
-    <tr><th colspan="2">Souhaitez-vous confirmer votre identité ?</th></tr>
+    <tr><th colspan="2">Souhaitez-vous confirmer votre identité&nbsp;?</th></tr>
 
     <tr class="impair">
       <td>Adresse du site&nbsp;:</td>

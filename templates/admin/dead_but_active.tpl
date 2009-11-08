@@ -24,7 +24,7 @@
 
 <p>
   Liste des polytechniciens décédés, mais dont le compte est encore actif
-  (veufs/veuves, ...).
+  (veufs/veuves&hellip;).
 </p>
 
 <table class="bicol">
@@ -39,8 +39,7 @@
     <td style="text-align: center">{$d.promo}</td>
     <td>
       <a href="profile/{$d.hruid}" class="popup2">{icon name=user_suit title='Afficher la fiche'}</a>
-      <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$d.ax_id}">{*
-        *}{icon name=user_gray title="fiche AX"}</a>
+      <a href="profile/ax/{$d.hruid}">{icon name=user_gray title="fiche AX"}</a>
       <a href="admin/user/{$d.hruid}">{icon name=wrench title='Administrer user'}</a>
     </td>
     <td>{$d.directory_name}</td>

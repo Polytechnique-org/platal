@@ -24,7 +24,7 @@
     Tes adresses de redirection
   </h1>
   <p>
-  Tu configures ici les adresses emails vers lesquelles tes adresses (listées ci-dessous) sont dirigées&nbsp;:
+  Tu configures ici les adresses emails vers lesquelles tes adresses (listées ci-dessous) sont redirigées&nbsp;:
   </p>
   <ul>
     {if $melix}
@@ -49,11 +49,11 @@
   </p>
   <p>
     Enfin, la <strong>réécriture</strong> consiste à substituer à ton adresse email habituelle
-    (adresse gmail, orange, free, ou autre) ton adresse {#globals.mail.domain#} ou
-    {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsque le courrier
+    (adresse gmail, orange, free&hellip;) ton adresse {#globals.mail.domain#} ou
+    {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsqu'un email
     passe par nos serveurs. Ceci arrive lorsque tu écris à un camarade sur son adresse {#globals.mail.domain#} ou
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
-    <a href="Xorg/SMTPSecurise">service d'envoi de courrier SMTP sécurisé</a>.
+    <a href="Xorg/SMTPSecurise">service d'envoi d'email SMTP sécurisé</a>.
   </p>
 
   {javascript name=ajax}
@@ -79,7 +79,7 @@
 
     function removeRedirect(link, email)
     {
-        if (confirm("Supprimer l'adresse " + email + " ?")) {
+        if (confirm("Supprimer l'adresse " + email + "&nbsp;?")) {
           $.get(link.href, {},function() {
             $('tr[@id=line_' + email.replace('@', '_at_') + ']').remove();
             showRemove();
@@ -225,14 +225,14 @@
 {/if}
 
 {if #globals.mailstorage.googleapps_active# or #globals.mailstorage.imap_active# or hasPerm('admin') or $googleapps}
-<h1>Tes comptes de stockage de courrier</h1>
+<h1>Tes comptes de stockage d'emails</h1>
 {/if}
 {if #globals.mailstorage.imap_active# or hasPerm('admin')}
 <p id="imap">
   Polytechnique.org te propose de conserver les emails que tu reçois, pendant une durée limitée (environ 30 jours).
   Grâce à ce service, tu disposes d'une sauvegarde de tes emails en secours, au cas où, par exemple, tu effacerais
   un email par erreur.<br />
-  <strong>Attention :</strong> il ne s'agit que d'un service de secours, dont la disponibilité n'est pas garantie.
+  <strong>Attention&nbsp;:</strong> il ne s'agit que d'un service de secours, dont la disponibilité n'est pas garantie.
 </p>
 
 <table class="bicol" summary="Compte de stockage">
@@ -259,7 +259,7 @@
 <p id="googleapps">
   Grâce à un partenariat avec Google, Polytechnique.org te propose également un compte
   <b>Google Apps</b>, qui te permet de disposer des services Google (GMail pour
-  tes emails, Google Calendar, Google Docs, ...) sur une adresse polytechnique.org.
+  tes emails, Google Calendar, Google Docs&hellip;) sur une adresse polytechnique.org.
 </p>
 
 <table class="bicol" summary="Compte de stockage" id="googleapps">
@@ -294,7 +294,7 @@
 {/if}
 
 {if $eleve}
-<h1>Pour les Élèves (non encore diplômés)</h1>
+<h1>Pour les élèves (non encore diplômés)</h1>
 <p>
   L'X te fournit aussi une adresse à vie en <strong>«prenom.nom»@polytechnique.edu</strong> qui par défaut est
   une redirection vers «login»@poly.polytechnique.fr. <a href="https://www.mail.polytechnique.edu/">
@@ -310,7 +310,7 @@
   <li>{$user->forlifeEmail()} vers «login»@poly.polytechnique.fr.</li>
 </ul>
 <p>
-  Attention à ne pas faire une boucle quand tu manipules tes redirections ! Tes emails seraient
+  Attention à ne pas faire une boucle quand tu manipules tes redirections&nbsp;! Tes emails seraient
   alors perdus, jusqu'à ce que tu règles le problème.
 </p>
 {/if}

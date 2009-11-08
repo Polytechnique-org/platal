@@ -115,7 +115,7 @@ class NewsletterModule extends PLModule
         $page->setTitle('Administration - Newsletter : Édition');
         require_once 'newsletter.inc.php';
 
-        $nl  = new NewsLetter($nid);
+        $nl = new NewsLetter($nid);
 
         if($action == 'delete') {
             $nl->delArticle($aid);
@@ -123,27 +123,27 @@ class NewsletterModule extends PLModule
         }
 
         if($aid == 'update') {
-            $nl->_title     = Post::v('title');
-            $nl->_title_mail= Post::v('title_mail');
-            $nl->_date      = Post::v('date');
-            $nl->_head      = Post::v('head');
-            $nl->_shortname = strlen(Post::v('shortname')) ? Post::v('shortname') : null;
+            $nl->_title      = Post::v('title');
+            $nl->_title_mail = Post::v('title_mail');
+            $nl->_date       = Post::v('date');
+            $nl->_head       = Post::v('head');
+            $nl->_shortname  = strlen(Post::v('shortname')) ? Post::v('shortname') : null;
             if (preg_match('/^[-a-z0-9]*$/i', $nl->_shortname) && !is_numeric($nl->_shortname)) {
                 $nl->save();
             } else {
-                $page->trigError('Le nom de la NL n\'est pas valide');
+                $page->trigError("Le nom de la NL n'est pas valide.");
                 pl_redirect('admin/newsletter/edit/' . $nl->_id);
             }
         }
 
         if(Post::v('save')) {
             $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
-                    $aid, Post::v('cid'), Post::v('pos'));
+                                  $aid, Post::v('cid'), Post::v('pos'));
             $nl->saveArticle($art);
             pl_redirect("admin/newsletter/edit/$nid");
         }
 
-        if($action == 'edit' && $aid != 'update') {
+        if ($action == 'edit' && $aid != 'update') {
             $eaid = $aid;
             if (Post::has('title')) {
                 $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
@@ -157,7 +157,29 @@ class NewsletterModule extends PLModule
             $page->assign('art', $art);
         }
 
-        $page->assign_by_ref('nl',$nl);
+        if ($aid == 'blacklist_check') {
+            $ips_to_check = array();
+            $gethostbyname_count = 0;
+
+            foreach ($nl->_arts as $key => $articles) {
+                foreach ($articles as $article) {
+                    $article_ips = $article->getLinkIps($gethostbyname_count);
+                    if (!empty($article_ips)) {
+                        $ips_to_check[$article->title()] = $article_ips;
+                    }
+                }
+            }
+
+            $page->assign('ips_to_check', $ips_to_check);
+            if ($gethostbyname_count >= $globals->mail->blacklist_host_resolution_limit) {
+                $page-trigError("Toutes les url et adresses emails de la lettre"
+                                . " n'ont pas été prises en compte car la"
+                                . " limite du nombre de résolutions DNS"
+                                . " autorisée a été atteinte.");
+            }
+        }
+
+        $page->assign_by_ref('nl', $nl);
     }
 
     function handler_admin_nl_cat(&$page, $action = 'list', $id = null) {

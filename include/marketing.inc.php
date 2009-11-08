@@ -36,19 +36,21 @@ class Marketing
     private $data;
     private $from;
     private $sender;
+    private $personal_notes;
 
     private $hash = '';
 
-    public function __construct($uid, $email, $type, $data, $from, $sender = null)
+    public function __construct($uid, $email, $type, $data, $from, $sender = null, $personal_notes = null)
     {
         $this->user         = $this->getUser($uid, $email);
         $this->sender_mail  = $this->getFrom($from, $sender);
-        $this->engine      =& $this->getEngine($type, $data, $from == 'user' ? $sender : null);
+        $this->engine      =& $this->getEngine($type, $data, $from == 'user' ? $sender : null, $personal_notes);
 
         $this->type   = $type;
         $this->data   = $data;
         $this->from   = $from;
         $this->sender = $sender;
+        $this->personal_notes = $personal_notes;
     }
 
     private function getUser($uid, $email)
@@ -80,13 +82,13 @@ class Marketing
         return '"' . $user->fullName() . '" <' . $user->bestEmail() . '>';
     }
 
-    private function &getEngine($type, $data, $from)
+    private function &getEngine($type, $data, $from, $personal_notes)
     {
         $class = $type . 'Marketing';
         if (!class_exists($class, false)) {
             $class= 'DefaultMarketing';
         }
-        $engine = new $class($data, $from);
+        $engine = new $class($data, $from, $personal_notes);
         if (!$engine instanceof MarketingEngine) {
             $engine = null;
         }
@@ -113,9 +115,8 @@ class Marketing
             $text = $this->engine->getText($this->user);
         }
         $sender = substr($this->sender_mail, 1, strpos($this->sender_mail, '"', 2)-1);
-        $text = str_replace(array("%%hash%%", "%%sender%%"),
-            array($this->hash, $this->sender_mail),
-            $text);
+        $text = str_replace(array('%%hash%%', '%%sender%%', '%%personal_notes%%'),
+                            array($this->hash, $this->sender_mail, ''), $text);
         $mailer = new PlMailer();
         $mailer->setFrom($this->sender_mail);
         $mailer->addTo($this->user['mail']);
@@ -128,15 +129,15 @@ class Marketing
     public function add($valid = true)
     {
         XDB::execute('INSERT IGNORE INTO  register_marketing
-                                          (uid, sender, email, date, last, nb, type, hash, message, message_data)
-                                  VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, {?}, {?}, {?})',
+                                          (uid, sender, email, date, last, nb, type, hash, message, message_data, personal_notes)
+                                  VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, {?}, {?}, {?}, {?})',
                     $this->user['id'], $this->sender, $this->user['mail'], $this->from, $this->hash,
-                    $this->type, $this->data);
+                    $this->type, $this->data, $this->personal_notes);
         $this->engine->process($this->user);
         if ($valid) {
             require_once 'validations.inc.php';
             $valid = new MarkReq(User::getSilent($this->sender), $this->user['user'], $this->user['mail'],
-                                 $this->from == 'user', $this->type, $this->data);
+                                 $this->from == 'user', $this->type, $this->data, $this->personal_notes);
             $valid->submit();
         }
         return true;
@@ -163,7 +164,7 @@ class Marketing
 
     static public function get($uid, $email, $recentOnly = false)
     {
-        $res = XDB::query("SELECT  uid, email, message, message_data, type, sender
+        $res = XDB::query("SELECT  uid, email, message, message_data, type, sender, personal_notes
                              FROM  register_marketing
                             WHERE  uid = {?}
                               AND  email = {?}".(
@@ -172,8 +173,8 @@ class Marketing
         if ($res->numRows() == 0) {
             return null;
         }
-        list ($uid, $email, $type, $data, $from, $sender) = $res->fetchOneRow();
-        return new Marketing($uid, $email, $type, $data, $from, $sender);
+        list ($uid, $email, $type, $data, $from, $senderi, $personal_notes) = $res->fetchOneRow();
+        return new Marketing($uid, $email, $type, $data, $from, $sender, $personal_notes);
     }
 
     static public function clear($uid, $email = null)
@@ -233,20 +234,20 @@ class Marketing
 
 interface MarketingEngine
 {
-    public function __construct($data, $from);
+    public function __construct($data, $from, $personal_notes = null);
     public function getTitle();
     public function getText(array $user);
     public function process(array $user);
 }
 
-//
 class AnnuaireMarketing implements MarketingEngine
 {
     protected $titre;
     protected $intro;
     protected $signature;
+    protected $personal_notes;
 
-    public function __construct($data, $from)
+    public function __construct($data, $from, $personal_notes = null)
     {
         $this->titre = "Rejoins la communauté polytechnicienne sur Internet";
         $this->intro = "   Tu n'as pas de fiche dans l'annuaire des polytechniciens sur Internet. "
@@ -257,6 +258,11 @@ class AnnuaireMarketing implements MarketingEngine
                              . "Le portail des élèves & anciens élèves de l'École polytechnique";
         } else {
             $this->signature = "%%sender%%";
+        }
+        if (is_null($personal_notes) || $personal_notes == '') {
+            $this->personal_notes = '%%personal_notes%%';
+        } else {
+            $this->personal_notes = "\n" . $personal_notes . "\n";
         }
     }
 
@@ -275,12 +281,18 @@ class AnnuaireMarketing implements MarketingEngine
         return $this->signature;
     }
 
+    public function getPersonalNotes()
+    {
+        return $this->personal_notes;
+    }
+
     protected function prepareText(PlPage &$page, array $user)
     {
         $page->assign('intro', $this->getIntro());
         $page->assign('u', $user);
         $page->assign('sign', $this->getSignature());
         $page->assign('num_users', self::getAliveUsersCount());
+        $page->assign('personal_notes', $this->getPersonalNotes());
     }
 
     public function getText(array $user)
@@ -300,7 +312,7 @@ class ListMarketing extends AnnuaireMarketing
 {
     private $name;
     private $domain;
-    public function __construct($data, $from)
+    public function __construct($data, $from, $personal_notes = null)
     {
         list($this->name, $this->domain) = explode('@', $data);
         if ($from && ($user = User::getSilent($from))) {
@@ -331,7 +343,7 @@ class ListMarketing extends AnnuaireMarketing
 class GroupMarketing extends AnnuaireMarketing
 {
     private $group;
-    public function __construct($data, $from)
+    public function __construct($data, $from, $personal_notes = null)
     {
         $this->group = $data;
         if ($from && ($user = User::getSilent($from))) {

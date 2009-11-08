@@ -68,7 +68,7 @@
   </li>
   <li>
   <strong>{icon name=delete}spam&nbsp;:</strong> l'email est effacé sans autre forme de procès.
-  N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables. <br/>
+  N'utiliser <strong>QUE</strong> pour les virus et les emails indésirables.<br/>
   </li>
 </ul>
 <p>

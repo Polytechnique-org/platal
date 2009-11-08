@@ -24,7 +24,7 @@
 </p>
 {if (!$expertise)||(!($sectors|@count))}
   <p>
-    <strong>Attention : pour figurer dans la base de données des mentors, il faut remplir la
+    <strong>Attention&nbsp;: pour figurer dans la base de données des mentors, il faut remplir la
     dernière case en bas de cette page et avoir au moins un secteur d'activité de prédilection.</strong><br />
   </p>
 {/if}

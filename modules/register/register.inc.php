@@ -23,12 +23,12 @@
 
 function user_cmp($prenom, $nom, $_prenom, $_nom)
 {
-    $_nom    = strtoupper(replace_accent($_nom));
-    $_prenom = strtoupper(replace_accent($_prenom));
-    $nom     = strtoupper(replace_accent($nom));
-    $prenom  = strtoupper(replace_accent($prenom));
+    $_nom    = mb_strtoupper($_nom);
+    $_prenom = mb_strtoupper($_prenom);
+    $nom     = mb_strtoupper($nom);
+    $prenom  = mb_strtoupper($prenom);
 
-    $is_ok   = strtoupper($_prenom) == strtoupper($prenom);
+    $is_ok   = mb_strtoupper($_prenom) == mb_strtoupper($prenom);
 
     $tokens  = preg_split("/[ \-']/", $nom, -1, PREG_SPLIT_NO_EMPTY);
     $maxlen  = 0;
@@ -126,7 +126,7 @@ function check_new_user(&$sub)
     $nom     = preg_replace("/[ \t]+/", ' ', trim($nom));
     $nom     = preg_replace("/--+/", '-', $nom);
     $nom     = preg_replace("/''+/", '\'', $nom);
-    $nom     = strtoupper(replace_accent($nom));
+    $nom     = mb_strtoupper($nom);
 
     if ($promo >= 1996) {
         $res = check_mat($promo, $mat, $nom, $prenom, $ourmat, $ourid, $watch, $naiss);

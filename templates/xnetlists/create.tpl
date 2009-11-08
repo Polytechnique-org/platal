@@ -24,7 +24,7 @@
 
 <p class="descr">
 <strong>Note&nbsp;:</strong> les listes de diffusion sont un outil particulièrement adapté pour des
-échanges entre 6 personnes ou plus (newsletter, débat interne au groupe ...). En revanche, elles
+échanges entre 6 personnes ou plus (newsletter, débat interne au groupe&hellip;). En revanche, elles
 s'avèrent peu praticables pour des discussions plus restreintes.  Il est alors préférable
 d'utiliser <a href="{$platal->ns}alias/create">un alias</a>, à la gestion beaucoup plus souple.
 </p>

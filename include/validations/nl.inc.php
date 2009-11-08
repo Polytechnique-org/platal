@@ -80,10 +80,25 @@ class NLReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return '  L\'article que tu avais proposé ('.$this->art->title().') vient d\'être validé.';
+            return "  L'article que tu avais proposé (" . $this->art->title() . ") vient d'être validé.";
         } else {
-            return '  L\'article que tu avais proposé ('.$this->art->title().') a été refusé.';
+            return "  L'article que tu avais proposé a été refusé.";
         }
+    }
+
+    // }}}
+    // {{{ function _mail_ps
+
+    protected function _mail_ps($isok)
+    {
+        if ($isok) {
+            return '';
+        }
+        return "\nPS : pour rappel, en voici le contenu :"
+            . "\n--------------------------------------------------------------------------\n"
+            . $this->art->title()
+            . "\n--------------------------------------------------------------------------\n"
+            . $this->art->body() . "\n\n" . $this->art->append() . "\n";
     }
 
     // }}}

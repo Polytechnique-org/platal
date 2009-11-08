@@ -117,7 +117,7 @@
       </td>
       <td>
         <input type="text" name="comm" value="{$user->group_comm}" size="40" maxlength="255" /><br />
-        <small>Poste, origine, ... (accessible à toutes les personnes autorisées à consulter l'annuaire)</small>
+        <small>Poste, origine&hellip; (accessible à toutes les personnes autorisées à consulter l'annuaire)</small>
       </td>
     </tr>
     {if $user->type eq 'ext'}

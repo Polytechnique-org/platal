@@ -133,7 +133,7 @@ masculin ou féminin, par son prénom, ou son nom.
 
 Nous avons le plaisir de t'adresser la lettre mensuelle du groupe {$asso->nom}.
 
-(insérer le texte...)
+(insérer le texte&hellip;)
 
 Le bureau du groupe {$asso->nom}.
 {/if}</textarea>

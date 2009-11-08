@@ -37,7 +37,7 @@ Photo actuelle de {$user->login()}
 </p>
 
 <p>
-<a href="admin/trombino/{$user->login()}/original">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
+<a href="admin/trombino/{$user->login()}/original">Voir sa photo de trombi récupérée à l'École (si disponible)</a>
 </p>
 
 <form action="admin/trombino/{$user->login()}/new" method="post" enctype="multipart/form-data">

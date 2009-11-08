@@ -104,7 +104,7 @@
       {/if}
       <a href="admin/user/{$user->login()}">{*
       *}{icon name=wrench title="administrer user"}</a>
-      <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$profile->ax_id}">{*
+      <a href="profile/ax/{$user->login()}">{*
       *}{icon name=user_gray title="fiche AX"}</a>]
     </div>
     {/if}

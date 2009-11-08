@@ -67,7 +67,7 @@
 </form>
 
 <p>
-{$nonins|@count} Polytechniciens de la promo {$promo} ne sont pas inscrits !
+{$nonins|@count} Polytechniciens de la promo {$promo} ne sont pas inscrits&nbsp;!
 </p>
 
 

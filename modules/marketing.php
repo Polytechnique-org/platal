@@ -241,7 +241,7 @@ class MarketingModule extends PLModule
 
             require_once 'emails.inc.php';
             if (!isvalid_email_redirection($email)) {
-                $page->trigError("Email invalide !");
+                $page->trigError('Email invalide&nbsp;!');
             } else {
                 // On cherche les marketings précédents sur cette adresse
                 // email, en se restreignant au dernier mois
@@ -251,10 +251,30 @@ class MarketingModule extends PLModule
                 } else {
                     $page->assign('ok', true);
                     check_email($email, "Une adresse surveillée est proposée au marketing par " . S::user()->login());
-                    $market = new Marketing($user->id(), $email, 'default', null, Post::v('origine'), S::v('uid'));
+                    $market = new Marketing($user->id(), $email, 'default', null, Post::v('origine'), S::v('uid'),
+                                            Post::v('origine') == 'user' ? Post::v('personal_notes') : null);
                     $market->add();
                 }
             }
+        } else {
+            global $globals;
+            require_once 'marketing.inc.php';
+
+            $sender = User::getSilent(S::v('uid'));
+            $market = new AnnuaireMarketing(null, true);
+            $text = $market->getText(array(
+                'sexe'           => $user->isFemale(),
+                'forlife_email'  => $user->login() . '@' . $globals->mail->domain,
+                'forlife_email2' => $user->login() . '@' . $globals->mail->domain2
+            ));
+            $text = str_replace('%%hash%%', '', $text);
+            $text = str_replace('%%personal_notes%%', '<em id="personal_notes_display"></em>', $text);
+            $text = str_replace('%%sender%%',
+                                "<span id=\"sender\">" . $sender->fullName() . '</span>', $text);
+            $page->assign('text', nl2br($text));
+            // TODO (JAC): define a unique Xorg signature for all the emails we send.
+            $page->assign('xorg_signature', "L'équipe de Polytechnique.org,<br />Le portail des élèves & anciens élèves de l'École polytechnique");
+            $page->assign('perso_signature', $sender->fullName());
         }
     }
 

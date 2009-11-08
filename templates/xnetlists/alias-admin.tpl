@@ -54,7 +54,7 @@
   {else}
   <tr>
     <td colspan="3">
-      <em>aucun membres ...</em>
+      <em>aucun membre&hellip;<em>
     </td>
   </tr>
   {/if}

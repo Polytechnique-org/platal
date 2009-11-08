@@ -80,7 +80,7 @@ class CarnetModule extends PLModule
     private function getSinglePromotion(PlPage &$page, $promo)
     {
         if (!ctype_digit($promo) || $promo < 1920 || $promo > date('Y')) {
-            $page->trigError('Promotion invalide : ' . $promo);
+            $page->trigError('Promotion invalide&nbsp;: ' . $promo . '.');
             return null;
         }
         return (int)$promo;
@@ -107,7 +107,7 @@ class CarnetModule extends PLModule
             return null;
         }
         if ($promo1 > $promo2) {
-            $page->trigError("Intervale non valide : " . $promo);
+            $page->trigError('Intervalle non valide :&nbsp;' . $promo . '.');
             return null;
         }
         $array = array();
@@ -267,7 +267,7 @@ class CarnetModule extends PLModule
                 if (($user = User::get(Env::v('user')))) {
                     if (XDB::execute("DELETE FROM  contacts
                                             WHERE  uid = {?} AND contact = {?}", $uid, $user->id())) {
-                        $page->trigSuccess("Contact retiré !");
+                        $page->trigSuccess("Contact retiré&nbsp;!");
                     }
                 }
                 break;
@@ -276,9 +276,9 @@ class CarnetModule extends PLModule
                 if (($user = User::get(Env::v('user')))) {
                     if (XDB::execute("REPLACE INTO  contacts (uid, contact)
                                             VALUES  ({?}, {?})", $uid, $user->id())) {
-                        $page->trigSuccess('Contact ajouté !');
+                        $page->trigSuccess('Contact ajouté&nbsp;!');
                     } else {
-                        $page->trigWarning('Contact déjà dans la liste !');
+                        $page->trigWarning('Contact déjà dans la liste&nbsp;!');
                     }
                 }
                 break;

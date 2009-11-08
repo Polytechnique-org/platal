@@ -21,6 +21,54 @@ VERSION 0.10.2                                                        XX XX XXXX
 
 New:
 
+    * Admin:
+        - Now processes broken addresses through the web site.             -JAC
+
+    * Core:
+        - Prunes old sessions/events logs after 12 months                  -VZA
+
+Bug/Wish:
+
+    * AXLetter:
+        - #980: Adds option to invert a subset definition                  -XEL
+
+    * Carnet:
+        - #975: Cleans up watch_nonins when someone dies                   -JAC
+
+    * Core:
+        - #984: Properly upper/lowercases accented letters when necessary  -JAC
+
+    * Lists:
+        - #978: An email address has to be valid to be added to a ML       -JAC
+
+    * Mail:
+        - #988: Gets rid of <h1> tags in the mails we send                 -JAC
+
+    * Marketing:
+        - #946: Displays marketing email and allows the sender to edit it  -JAC
+
+    * Newsletter:
+        - #986: Improves the nl edition page                               -JAC
+        - #991: Adds the text of the article in the mail when refused      -JAC
+        - #992: Simplifies blacklist verification                          -JAC
+
+    * Profile:
+        - #983: Fixes issue with the professional email publicity          -JAC
+
+    * XnetEvents:
+        - #919: Allows negative amounts in the column "Autre"              -JAC
+        - #979: Fixes javascript for people who paid but did not book      -JAC
+        - #985: Adds payment related email lists for events                -JAC
+
+From 0.10.1 branch:
+
+    * Core:
+        - Fixes the use of Smarty's "default" modifier                     -VZA
+
+    * Profile:
+        - #977: Professional addresses can now be deleted                  -JAC
+        - Removes stats about profiles view: it was far too costly         -JAC
+
 ================================================================================
 VERSION 0.10.1                                                        30 07 2009
 

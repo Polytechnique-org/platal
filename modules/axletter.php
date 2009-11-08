@@ -92,6 +92,7 @@ class AXLetterModule extends PLModule
         $promo_max  = Post::i('promo_max');
         $subset_to  = preg_split("/[ ,;\:\n\r]+/", Post::v('subset_to'), -1, PREG_SPLIT_NO_EMPTY);
         $subset     = (count($subset_to) > 0);
+        $subset_rm  = Post::b('subset_rm');
         $echeance   = Post::has('echeance_date') ?
               preg_replace('/^(\d\d\d\d)(\d\d)(\d\d)$/', '\1-\2-\3', Post::v('echeance_date')) . ' ' . Post::v('echeance_time')
             : Post::v('echeance');
@@ -155,15 +156,15 @@ class AXLetterModule extends PLModule
               case 'Aperçu':
                 $this->load('axletter.inc.php');
                 $al = new AXLetter(array($id, $short_name, $subject, $title, $body, $signature,
-                                         $promo_min, $promo_max, $subset, $echeance, 0, 'new'));
+                                         $promo_min, $promo_max, $subset, $subset_rm, $echeance, 0, 'new'));
                 $al->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
                 break;
 
               case 'Confirmer':
                 XDB::execute("REPLACE INTO  axletter
                                        SET  id = {?}, short_name = {?}, subject = {?}, title = {?}, body = {?},
-                                            signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}, subset = {?}",
-                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance, $subset ? implode("\n", $subset_to) : null);
+                                            signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}, subset = {?}, subset_rm = {?}",
+                             $id, $short_name, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance, $subset ? implode("\n", $subset_to) : null, $subset_rm);
                 if (!$saved) {
                     global $globals;
                     $mailer = new PlMailer();
@@ -203,6 +204,7 @@ class AXLetterModule extends PLModule
         $page->assign('promo_max', $promo_max);
         $page->assign('subset_to', implode("\n", $subset_to));
         $page->assign('subset', $subset);
+        $page->assign('subset_rm', $subset_rm);
         $page->assign('echeance', $echeance);
         $page->assign('echeance_date', $echeance_date);
         $page->assign('echeance_time', $echeance_time);

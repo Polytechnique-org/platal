@@ -333,15 +333,15 @@ class PlatalModule extends PLModule
         if ($res->numRows()) {
             $mails = $res->fetchOneCell();
         } else {
-            $res   = XDB::query('SELECT  email
+            $res   = XDB::query("SELECT  email
                                    FROM  emails
-                                  WHERE  uid = {?} AND NOT FIND_IN_SET("filter", flags)', $user->id());
+                                  WHERE  uid = {?} AND NOT FIND_IN_SET('filter', flags)", $user->id());
             $mails = implode(', ', $res->fetchColumn());
         }
         $mymail = new PlMailer();
         $mymail->setFrom('"Gestion des mots de passe" <support+password@' . $globals->mail->domain . '>');
         $mymail->addTo($mails);
-        $mymail->setSubject('Ton certificat d\'authentification');
+        $mymail->setSubject("Ton certificat d'authentification");
         $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
 {$globals->baseurl}/tmpPWD/$url
 
@@ -349,7 +349,7 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la
 
 --
 Polytechnique.org
-\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"
+\"Le portail des élèves & anciens élèves de l'École polytechnique\"
 
 Email envoyé à ".Env::v('login') . (Post::has('email') ? "
 Adresse de secours : " . Post::v('email') : ""));

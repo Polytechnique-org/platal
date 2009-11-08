@@ -27,7 +27,7 @@
         <label><input type="checkbox" name="medals_pub"{if $medals_pub eq 'public'} checked="checked"{/if} />
         {icon name="flag_green" title="site public"}</label>
       </div>
-      Médailles, Décorations, Prix, ...
+      Médailles, Décorations, Prix&hellip;
     </th>
   </tr>
   <tr>
@@ -36,7 +36,7 @@
         <select name="medal_sel" onchange="updateMedal()">
           <option value=''></option>
           {foreach from=$medal_list key=type item=list}
-          <optgroup label="{$trad[$type]}...">
+          <optgroup label="{$trad[$type]}&hellip;">
             {foreach from=$list item=m}
             <option value="{$m.id}">{$m.text}</option>
             {/foreach}

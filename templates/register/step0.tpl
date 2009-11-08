@@ -29,7 +29,7 @@ L'enregistrement se déroule <strong>en deux étapes</strong>&nbsp;:
 </p>
 <ul>
   <li>
-  tu te pré-inscris, ce qui te prendra moins de 5 minutes ;
+  tu te pré-inscris, ce qui te prendra moins de 5 minutes&nbsp;;
   </li>
   <li>
   nous t'envoyons immédiatement un email qui te permettra

@@ -51,13 +51,13 @@
 </div>
 {else}
 <div style="text-align:center;margin:5px;background:red">
-<strong>ATTENTION !  Cet utilisateur n'a pas accepté la synchronisation</strong>
+<strong>ATTENTION&nbsp;!  Cet utilisateur n'a pas accepté la synchronisation</strong>
 </div>
 {/if}
 <div>Les fiches de cet utilisateur&nbsp;:
 <ul>
 <li><a href='profile/{$x.user_id}' class='popup2'>polytechnique.org</a></li>
-<li><a href='http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$x.matricule_ax}'>polytechniciens.com</a></li>
+<li><a href='profile/ax/{$x.user_id}'>polytechniciens.com</a></li>
 </ul>
 </div>
 {if $diff}

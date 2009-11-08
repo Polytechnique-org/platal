@@ -67,7 +67,7 @@
       </h3>
       <div class='explication'>
         Tu recois tous les emails envoyés par le site
-        (lettre mensuelle, carnet, ...) de préférence
+        (lettre mensuelle, carnet&hellip;) de préférence
         <strong>sous forme de html</strong>
       </div>
       {else}
@@ -76,7 +76,7 @@
       </h3>
       <div class='explication'>
         Tu recois tous les emails envoyés par le site
-        (lettre mensuelle, carnet, ...) de préférence
+        (lettre mensuelle, carnet&hellip;) de préférence
         <strong>sous forme de texte</strong>
       </div>
       {/if}
@@ -91,7 +91,7 @@
       </h3>
       <div class='explication'>
         Ceci te permet d'utiliser les fils rss du site.
-        Attention, désactiver puis réactiver les fils en change les URL !
+        Attention, désactiver puis réactiver les fils en change les URL&nbsp;!
       </div>
     </td>
   </tr>

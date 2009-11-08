@@ -38,7 +38,7 @@ class ListeReq extends Validate
     public $members;
 
     public $rules = "Refuser les listes de binets si elles ne sont pas datées (oui : apv2002@, non : apv@).
-        Refuser également des listes qui pourraient nous servir (admin, postmaster,...)";
+        Refuser également des listes qui pourraient nous servir (admin, postmaster&hellip;)";
     // }}}
     // {{{ constructor
 

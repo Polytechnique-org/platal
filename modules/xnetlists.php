@@ -102,7 +102,7 @@ class XnetListsModule extends ListsModule
                            USING  x4dat.virtual AS v
                        LEFT JOIN  x4dat.virtual_redirect AS r USING(vid)
                            WHERE  v.alias={?}', $alias);
-            $page->trigSuccess(Post::v('del_alias')." supprimé !");
+            $page->trigSuccess(Post::v('del_alias')." supprimé&nbsp;!");
         }
 
         $listes = $this->client->get_lists();
@@ -143,7 +143,7 @@ class XnetListsModule extends ListsModule
         }
 
         if (!Post::has('liste')) {
-            $page->trigError('champs «adresse souhaitée» vide');
+            $page->trigError('Le champs «&nbsp;adresse souhaitée&nbsp;» est vide.');
             return;
         }
 
@@ -261,7 +261,7 @@ class XnetListsModule extends ListsModule
                                     WHERE  alias = {?}', strtolower($add), $lfull);
                 $page->trigSuccess($add . ' ajouté.');
             } else {
-                $page->trigError($add . ' n\'existe pas.');
+                $page->trigError($add . " n'existe pas.");
             }
         }
 
@@ -309,7 +309,7 @@ class XnetListsModule extends ListsModule
         }
 
         if (!Post::has('liste')) {
-            $page->trigError('champs «adresse souhaitée» vide');
+            $page->trigError('Le champs «&nbsp;adresse souhaitée&nbsp;» est vide.');
             return;
         }
         $liste = Post::v('liste');

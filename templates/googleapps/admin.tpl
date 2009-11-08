@@ -62,7 +62,7 @@
 </table>
 
 <p>
-  Requêtes ayant échoué récemment (plus d'information dans la <a href="Equipe/Infra-GoogleApps">documentation</a>) :
+  Requêtes ayant échoué récemment (plus d'information dans la <a href="Equipe/Infra-GoogleApps">documentation</a>)&nbsp;:
 </p>
 <table class="bicol" style="text-align: center">
   <tr>

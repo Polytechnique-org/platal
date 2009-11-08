@@ -85,11 +85,11 @@ class AdminModule extends PLModule
         if (Env::has('del')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'del' WHERE crc = {?}", $crc);
-            $page->trigSuccess($crc." verra tous ses emails supprimés !");
+            $page->trigSuccess($crc . " verra tous ses emails supprimés&nbsp;!");
         } elseif (Env::has('ok')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = {?}", $crc);
-            $page->trigSuccess($crc." a le droit de passer !");
+            $page->trigSuccess($crc . " a le droit de passer&nbsp;!");
         }
 
         $sql = XDB::iterator(
@@ -372,7 +372,7 @@ class AdminModule extends PLModule
         $page->setTitle('Administration - Compte');
 
         if (S::suid()) {
-            $page->kill("Déjà en SUID !!!");
+            $page->kill("Déjà en SUID&nbsp;!!!");
         }
 
         // Loads the user identity using the environment.
@@ -817,15 +817,15 @@ class AdminModule extends PLModule
         $page->setTitle('Administration - Décédés');
 
         $res = XDB::iterator(
-                'SELECT  a.hruid, pd.promo, p.ax_id, pd.directory_name, p.deathdate, DATE(MAX(s.start)) AS last
+                "SELECT  a.hruid, pd.promo, p.ax_id, pd.directory_name, p.deathdate, DATE(MAX(s.start)) AS last
                    FROM  accounts AS a
-             INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
+             INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
              INNER JOIN  profiles AS p ON (p.pid = ap.pid)
              INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
               LEFT JOIN  logger.sessions AS s ON (s.uid = a.uid AND suid = 0)
-                  WHERE  a.state = \'active\' AND p.deathdate IS NOT NULL
+                  WHERE  a.state = 'active' AND p.deathdate IS NOT NULL
                GROUP BY  a.uid
-               ORDER BY  pd.promo, pd.sort_name');
+               ORDER BY  pd.promo, pd.sort_name");
         $page->assign('dead', $res);
     }
 

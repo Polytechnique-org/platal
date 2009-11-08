@@ -24,7 +24,7 @@
 <h1>Inscrits des 7 derniers jours</h1>
 
 <p>
-{$users|@count} Polytechniciens se sont inscrits ces 7 derniers jours !
+{$users|@count} Polytechniciens se sont inscrits ces 7 derniers jours&nbsp;!
 </p>
 
 <div class="right">

@@ -54,7 +54,7 @@ cliquant <a href= "http://www.polytechnique.fr/eleves/binets.php">ici</a>.
 
 <p class="descr">
 De nombreux organismes officiels sont liés à l'École polytechnique&nbsp;: le collège de l'École
-polytechnique, l'amicale des anciens élèves, le site des X sur le web Polytechnique.org, etc...
+polytechnique, l'amicale des anciens élèves, le site des X sur le web Polytechnique.org&hellip;
 Cette liste n'est pas exhaustive. Vous pouvez découvrir chacun de ces organismes en cliquant sur les
 liens correspondants&nbsp;:
 </p>
@@ -64,7 +64,7 @@ liens correspondants&nbsp;:
 <p class="descr">
 Quelques promotions de polytechniciens ont mis au point leur propre site web, qui permet aux élèves
 de ces promotions d'organiser des repas promos, de faire partager des souvenirs photographiques, de
-se retrouver sur internet... En voici des exemples&nbsp;:
+se retrouver sur internet&hellip; En voici des exemples&nbsp;:
 </p>
 
 {/if}
