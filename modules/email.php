@@ -913,6 +913,7 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
 
                 // Output the list of users with recently broken addresses,
                 // along with the count of valid redirections.
+                require_once 'include/notifs.inc.php';
                 pl_content_headers("text/x-csv");
 
                 $csv = fopen('php://output', 'w');
@@ -928,6 +929,9 @@ L'équipe d'administration <support@" . $globals->mail->domain . '>';
                        GROUP BY  u.user_id", $alias);
 
                     if ($x = $sel->fetchOneAssoc()) {
+                        if ($x['nb_mails'] == 0) {
+                            register_profile_update($x['user_id'], 'broken');
+                        }
                         fputcsv($csv, array($x['nom'], $x['prenom'], $x['promo'], $alias,
                                             join(',', $mails), $x['nb_mails'],
                                             'https://www.polytechnique.org/marketing/broken/' . $alias), ';');

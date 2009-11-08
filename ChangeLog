@@ -17,6 +17,7 @@ Bug/Wish:
 
     * Carnet:
         - #975: Cleans up watch_nonins when someone dies                   -JAC
+        - #1000: Notifies her contacts when a user has no redirection left -JAC
 
     * Core:
         - #984: Properly upper/lowercases accented letters when necessary  -JAC

@@ -146,21 +146,22 @@ function select_notifs($mail, $uid=null, $last=null, $iterator=true)
 // {{{
 
 global $prf_desc;
-$prf_desc = array('nom' => 'Son patronyme',
-                  'freetext' => 'Le texte libre',
-                  'mobile' => 'Son numéro de téléphone portable',
+$prf_desc = array('nom'         => 'Son patronyme',
+                  'freetext'    => 'Le texte libre',
+                  'mobile'      => 'Son numéro de téléphone portable',
                   'nationalite' => 'Sa nationalité',
-                  'nick' => 'Son surnom',
-                  'web' => 'L\'adresse de son site web',
-                  'appli1' => 'Son école d\'application',
-                  'appli2' => 'Son école de post-application',
-                  'addresses' => 'Ses adresses',
-                  'section' => 'Sa section sportive',
-                  'binets' => 'La liste de ses binets',
-                  'medals' => 'Ses décorations',
-                  'cv' => 'Son Curriculum Vitae',
-                  'jobs' => 'Ses informations professionnelles',
-                  'photo' => 'Sa photographie');
+                  'nick'        => 'Son surnom',
+                  'web'         => "L'adresse de son site web",
+                  'appli1'      => "Son école d'application",
+                  'appli2'      => 'Son école de post-application',
+                  'addresses'   => 'Ses adresses',
+                  'section'     => 'Sa section sportive',
+                  'binets'      => 'La liste de ses binets',
+                  'medals'      => 'Ses décorations',
+                  'cv'          => 'Son curriculum vitae',
+                  'jobs'        => 'Ses informations professionnelles',
+                  'photo'       => 'Sa photographie',
+                  'broken'      => "Il n'a plus d'adresse de redirection valide");
 
 function get_profile_change_details($event, $limit) {
     global $prf_desc;
