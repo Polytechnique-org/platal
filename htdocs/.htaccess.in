@@ -2,7 +2,16 @@ RewriteEngine on
 
 RewriteBase @REWRITE_BASE@
 
-# Rewrite URLs of the form 'index.php?q=x':
+# Rewrites URLs of the form 'index.php?q=x'.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ ?n=$1 [L,QSA]
+
+# Caches the immutable resources for seven days. Generated files (images and JS
+# served by PHP) are not affected.
+ExpiresActive On
+ExpiresByType application/x-javascript "access plus 7 days"
+ExpiresByType image/gif "access plus 7 days"
+ExpiresByType image/jpeg "access plus 7 days"
+ExpiresByType image/png "access plus 7 days"
+ExpiresByType text/css "access plus 7 days"
