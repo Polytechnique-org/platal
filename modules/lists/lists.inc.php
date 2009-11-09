@@ -94,9 +94,9 @@ function list_fetch_name($member)
                                   IF(m2.origine="X", u.nom, m1.nom) AS nom,
                                   IF(m2.origine="X", u.promo, "non-X") AS promo,
                                   0 AS lost
-                             FROM groupex.membres AS m1
-                        LEFT JOIN groupex.membres AS m2 ON(m1.email=m2.email AND m2.asso_id={?})
-                        LEFT JOIN auth_user_md5   AS u  ON(m2.origine = "X" AND m2.uid = u.user_id)
+                             FROM #groupex#.membres     AS m1
+                        LEFT JOIN #groupex#.membres     AS m2 ON(m1.email=m2.email AND m2.asso_id={?})
+                        LEFT JOIN #x4dat#.auth_user_md5 AS u  ON(m2.origine = "X" AND m2.uid = u.user_id)
                             WHERE m1.email={?}', $globals->asso('id'), $member);
     }
     if ($res->numRows() == 0) {

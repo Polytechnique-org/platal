@@ -203,7 +203,7 @@ class ForumsBanana extends Banana
             $read = Post::s('read');
             if (!in_array($unread, $colors) || !in_array($read, $colors)) {
                 $page->trigError('Le choix de type pour l\'arborescence est invalide');
-            } elseif (XDB::execute("REPLACE INTO  forums.profils (uid, sig, mail, nom, flags, tree_unread, tree_read)
+            } elseif (XDB::execute("REPLACE INTO  #forums#.profils (uid, sig, mail, nom, flags, tree_unread, tree_read)
                                            VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
                                     S::v('uid'), Post::v('bananasig'),
                                     Post::v('bananamail'), Post::v('banananame'),
@@ -221,7 +221,7 @@ class ForumsBanana extends Banana
                     FIND_IN_SET('xface', flags),
                     tree_unread,
                     tree_read
-              FROM  forums.profils
+              FROM  #forums#.profils
              WHERE  uid = {?}", S::v('uid'));
         if (!(list($nom, $mail, $sig, $disp, $maj, $xface, $unread, $read) = $req->fetchOneRow())) {
             $nom   = S::v('prenom').' '.S::v('nom');

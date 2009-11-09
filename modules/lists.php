@@ -249,13 +249,13 @@ class ListsModule extends PLModule
             }
 
             $new = $liste . '@' . $domain;
-            $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+            $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}', $new);
 
         } else {
             if ($asso == "groupex") {
                 $groupex_name = Post::v('groupex_name');
 
-                $res_groupe = XDB::query('SELECT mail_domain FROM groupex.asso WHERE nom={?}', $groupex_name);
+                $res_groupe = XDB::query('SELECT mail_domain FROM #groupex#.asso WHERE nom={?}', $groupex_name);
                 $domain = $res_groupe->fetchOneCell();
 
                 if (!$domain) {
@@ -263,7 +263,7 @@ class ListsModule extends PLModule
                 }
 
                 $new = $liste . '@' . $domain;
-                $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+                $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}', $new);
             } else {
                 $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
                 $domain = $globals->mail->domain;

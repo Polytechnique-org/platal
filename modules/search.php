@@ -70,9 +70,9 @@ class SearchModule extends PLModule
     {
         global $globals;
 
-        $res = XDB::query("SELECT  MIN(`diminutif`), MAX(`diminutif`)
-                             FROM  `groupex`.`asso`
-                            WHERE  `cat` = 'Promotions'");
+        $res = XDB::query("SELECT  MIN(diminutif), MAX(diminutif)
+                             FROM  #groupex#.asso
+                            WHERE  cat = 'Promotions'");
         list($min, $max) = $res->fetchOneRow();
         $page->assign('promo_min', $min);
         $page->assign('promo_max', $max);
@@ -166,7 +166,7 @@ class SearchModule extends PLModule
                 'secteur' => array('field' => 'id', 'table' => 'emploi_secteur', 'text' => 'label', 'exact' => false),
                 'nationalite' => array('field' => 'a2', 'table' => 'geoloc_pays', 'text' => 'nat', 'exact' => 'false'),
                 'binet' => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
-                'groupex' => array('field' => 'id', 'table' => 'groupex.asso',
+                'groupex' => array('field' => 'id', 'table' => '#groupex#.asso',
                                    'text' => "(cat = 'GroupesX' OR cat = 'Institutions') AND pub = 'public' AND nom",
                                    'exact' => false),
                 'section' => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
@@ -288,8 +288,8 @@ class SearchModule extends PLModule
             $beginwith = false;
             break;
           case 'groupexTxt':
-            $db = "groupex.asso AS a INNER JOIN
-                   groupex.membres AS m ON(a.id = m.asso_id
+            $db = "#groupex#.asso AS a INNER JOIN
+                   #groupex#.membres AS m ON(a.id = m.asso_id
                                            AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')
                                            AND a.pub = 'public')";
             $field='a.nom';
@@ -424,7 +424,7 @@ class SearchModule extends PLModule
             $page->changeTpl('search/adv.grade.form.tpl', NO_SKIN);
             return;
           case 'groupex':
-            $db = 'groupex.asso';
+            $db = '#groupex#.asso';
             $where = " WHERE (cat = 'GroupesX' OR cat = 'Institutions') AND pub = 'public'";
             $field = 'nom';
             break;

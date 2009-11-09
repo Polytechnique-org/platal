@@ -44,7 +44,7 @@ class UserSet extends PlSet
         global $globals;
         parent::__construct('auth_user_md5 AS u',
                             (!empty($GLOBALS['IS_XNET_SITE']) ?
-                                'INNER JOIN groupex.membres AS gxm ON (u.user_id = gxm.uid
+                                'INNER JOIN #groupex#.membres AS gxm ON (u.user_id = gxm.uid
                                                                        AND gxm.asso_id = ' . $globals->asso('id') . ') ' : '')
                            . 'LEFT JOIN auth_user_quick AS q USING (user_id)' . $joins,
                             $where,

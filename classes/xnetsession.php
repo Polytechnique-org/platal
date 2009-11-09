@@ -166,7 +166,7 @@ function may_update($force = false, $lose = false)
         $may_update[$asso_id] = true;
     } elseif (!isset($may_update[$asso_id]) || $force) {
         $res = XDB::query("SELECT  perms
-                             FROM  groupex.membres
+                             FROM  #groupex#.membres
                             WHERE  uid={?} AND asso_id={?}",
                           S::v('uid'), $asso_id);
         $may_update[$asso_id] = ($res->fetchOneCell() == 'admin');
@@ -198,7 +198,7 @@ function is_member($force = false, $lose = false)
         $is_member[$asso_id] = true;
     } elseif (!isset($is_member[$asso_id]) || $force) {
         $res = XDB::query("SELECT  COUNT(*)
-                             FROM  groupex.membres
+                             FROM  #groupex#.membres
                             WHERE  uid={?} AND asso_id={?}",
                 S::v('uid'), $asso_id);
         $is_member[$asso_id] = ($res->fetchOneCell() == 1);

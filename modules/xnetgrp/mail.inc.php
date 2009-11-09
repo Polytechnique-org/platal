@@ -35,9 +35,9 @@ function get_all_redirects($membres, $mls, &$client)
                              IF(u.prenom <> "", u.prenom, m.prenom) AS prenom,
                              IF(m.email <> "", m.email, CONCAT(a.alias, "@polytechnique.org")) as email,
                              IF(m.sexe IS NULL, FIND_IN_SET("femme", u.flags), m.sexe) AS sexe
-                       FROM  groupex.membres AS m
-                  LEFT JOIN  auth_user_md5   AS u ON (m.uid=u.user_id AND m.uid<50000)
-                  LEFT JOIN  aliases         AS a ON (a.id=u.user_id and a.type="a_vie")
+                       FROM  #groupex#.membres     AS m
+                  LEFT JOIN  #x4dat#.auth_user_md5 AS u ON (m.uid=u.user_id AND m.uid<50000)
+                  LEFT JOIN  #x4dat#.aliases       AS a ON (a.id=u.user_id and a.type="a_vie")
                       WHERE  asso_id = {?}
                              AND m.origine IN (' . $membres . ')
                              AND (m.email <> "" OR u.perms <> "pending")', $globals->asso('id'));
@@ -58,7 +58,7 @@ function get_all_redirects($membres, $mls, &$client)
                         $tos[] = $person;
                     }
                 } else {
-                    $res = XDB::query('SELECT prenom, nom, sexe FROM groupex.membres WHERE email={?}', $mem[1]);
+                    $res = XDB::query('SELECT prenom, nom, sexe FROM #groupex#.membres WHERE email={?}', $mem[1]);
                     if ($person = $res->fetchOneAssoc()) {
                         $person['email'] = $mem[1];
                         $tos[] = $person;

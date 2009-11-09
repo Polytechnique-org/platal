@@ -214,8 +214,8 @@ class XorgSession extends PlSession
                               FROM  auth_user_md5   AS u
                         INNER JOIN  auth_user_quick AS q  USING(user_id)
                          LEFT JOIN  gapps_accounts  AS g  ON (u.user_id = g.l_userid AND g.g_status = 'active')
-                         LEFT JOIN  logger.last_sessions AS ls ON (ls.uid = u.user_id)
-                         LEFT JOIN  logger.sessions AS s  ON(s.id = ls.id)
+                         LEFT JOIN  #logger#.last_sessions AS ls ON (ls.uid = u.user_id)
+                         LEFT JOIN  #logger#.sessions AS s  ON(s.id = ls.id)
                              WHERE  u.user_id = {?} AND u.perms IN('admin', 'user')", $uid);
         if ($res->numRows() != 1) {
             return false;

@@ -698,9 +698,9 @@ class ProfileModule extends PLModule
         $req = XDB::query('
             SELECT m.asso_id, a.nom, diminutif, a.logo IS NOT NULL AS has_logo,
                    COUNT(e.eid) AS events, mail_domain AS lists
-              FROM groupex.membres AS m
-        INNER JOIN groupex.asso AS a ON(m.asso_id = a.id)
-         LEFT JOIN groupex.evenements AS e ON(e.asso_id = m.asso_id AND e.archive = 0)
+              FROM #groupex#.membres AS m
+        INNER JOIN #groupex#.asso AS a ON(m.asso_id = a.id)
+         LEFT JOIN #groupex#.evenements AS e ON(e.asso_id = m.asso_id AND e.archive = 0)
              WHERE uid = {?} GROUP BY m.asso_id ORDER BY a.nom', S::i('uid'));
         $page->assign('assos', $req->fetchAllAssoc());
     }
@@ -712,7 +712,7 @@ class ProfileModule extends PLModule
         }
 
         $res = XDB::query('SELECT  logo, logo_mime
-                             FROM  groupex.asso
+                             FROM  #groupex#.asso
                             WHERE  id = {?}', $id);
         list($logo, $logo_mime) = $res->fetchOneRow();
 
