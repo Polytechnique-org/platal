@@ -10,6 +10,11 @@ if [ "$UID" != 0 ]; then
     exit 1
 fi
 
+if [[ -n "${DBPREFIX}" ]]; then
+    echo "Using non-default database ${DBPREFIX}x4dat."
+fi
+declare -r DATABASE="${DBPREFIX}x4dat"
+
 function mailman_stop() {
     echo -n "stops mailman"
     /etc/init.d/mailman stop &>/dev/null
@@ -28,4 +33,3 @@ function mailman_start() {
     /etc/init.d/mailman start &>/dev/null
     echo .
 }
-
