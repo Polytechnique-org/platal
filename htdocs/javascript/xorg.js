@@ -259,12 +259,12 @@ function auto_links() {
 
 // {{{ function checkPassword
 
-function getType(char) {
-    if (char >= 'a' && char <= 'z') {
+function getType(c) {
+    if (c >= 'a' && c <= 'z') {
         return 1;
-    } else if (char >= 'A' && char <= 'Z') {
+    } else if (c >= 'A' && c <= 'Z') {
         return 2;
-    } else if (char >= '0' && char <= '9') {
+    } else if (c >= '0' && c <= '9') {
         return 3;
     } else {
         return 4;
