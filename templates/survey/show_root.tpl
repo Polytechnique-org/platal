@@ -42,7 +42,7 @@
         <td class="titre">Promotions&nbsp;:</td> 
         <td>
           {if $survey.promos eq "#"} 
-          erreur 
+          <span class="erreur">erreur</span>
           {elseif $survey.promos eq ""} 
           aucune restriction 
           {else} 
@@ -67,7 +67,7 @@
       {assign var="survey_editallmode" value=true}
     {/if}
     {if $survey_editmode}
-    <td class="smaller" style="width: 30%">
+    <td style="width: 30%">
       <a href='survey/edit/question/root'>{icon name=page_edit} Modifier la description</a>
       {if $survey_editallmode}<br /><a href='survey/edit/add/0'>{icon name=add} Ajouter une question au d&#233;but</a>{/if}
     </td>

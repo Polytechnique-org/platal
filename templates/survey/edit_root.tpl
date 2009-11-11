@@ -77,7 +77,8 @@
       <td></td>
       <td class="smaller">
         Exemple&nbsp;: 1954,1986-1989,-1942,2000-&nbsp;&nbsp;&nbsp;restreindra le sondage &#224; toutes les promotions suivantes&nbsp;:<br/>
-        1954, 1986 &#224; 1989, toutes jusqu'à 1942 et toutes à partir 2000 (les bornes sont syst&#233;matiquement incluses)
+        1954, 1986 &#224; 1989, toutes jusqu'à 1942 et toutes à partir 2000 (les bornes sont syst&#233;matiquement incluses).<br />
+        Pour sélectionner toutes les promotions, laisser le vide.
       </td>
     </tr>
 
