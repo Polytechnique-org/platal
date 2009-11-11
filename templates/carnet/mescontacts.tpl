@@ -49,10 +49,10 @@
   Sur la page de résultats d'une recherche, tu peux ajouter un contact en cliquant sur {icon name=add}.
 </p>
 
+{if $plset_count || $smarty.request.quick}
 <p>
   Tu peux télécharger des informations sur tes contacts&nbsp;:
 </p>
-{if $plset_count || $smarty.request.quick}
 <ul>
   <li>Tes contacts en PDF, sans les photos&nbsp;:
   [<a href="carnet/contacts/pdf/promo/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
