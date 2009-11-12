@@ -58,8 +58,8 @@
       {/if}
     </table>
     {if $survey_resultmode}
-    <p class="smaller">{$survey.votes} personnes ont r&#233;pondu &#224; ce sondage.<br />
-      R&#233;cup&#233;rer <a href="survey/result/{$survey.id}/csv">l'ensemble des r&#233;sultats</a> au format csv
+    <p class="smaller">{$survey.votes} personnes ont répondu à ce sondage.<br />
+      Récupérer <a href="survey/result/{$survey.id}/csv">l'ensemble des résultats</a> au format csv
     </p>
     {/if}
     </td>
@@ -69,7 +69,7 @@
     {if $survey_editmode}
     <td style="width: 30%">
       <a href='survey/edit/question/root'>{icon name=page_edit} Modifier la description</a>
-      {if $survey_editallmode}<br /><a href='survey/edit/add/0'>{icon name=add} Ajouter une question au d&#233;but</a>{/if}
+      {if $survey_editallmode}<br /><a href='survey/edit/add/0'>{icon name=add} Ajouter une question au début</a>{/if}
     </td>
     {/if}
   </tr>
@@ -83,7 +83,7 @@
     <td class="smaller" style="width: 30%; vertical-align: middle">
       <a href='survey/edit/question/{$squestion.id}'>{icon name=page_edit} Modifier cette question</a><br />
       <a href='survey/edit/del/{$squestion.id}'>{icon name=delete} Supprimer cette question</a><br />
-      <a href='survey/edit/add/{$squestion.id+1}'>{icon name=add} Ajouter une question apr&#232;s</a>
+      <a href='survey/edit/add/{$squestion.id+1}'>{icon name=add} Ajouter une question après</a>
     </td>
     {/if}
   </tr>
@@ -98,7 +98,7 @@
   </a> |
   <a href='survey/edit/cancel'>
     {icon name=cross} Annuler
-    {if $survey_updatemode}les modifications{else}totalement la cr&#233;ation de ce sondage{/if}
+    {if $survey_updatemode}les modifications{else}totalement la création de ce sondage{/if}
   </a>
   {elseif $survey_adminmode}
   {if !$survey.valid}<a href="survey/admin/valid/{$survey.id}">Valider ce sondage</a> | {/if}

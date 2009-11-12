@@ -22,8 +22,8 @@
 
     <tr>
       <td colspan='2'>
-        Remplissez ici une description g&#233;n&#233;rale du sondage, puis cliquer sur "Continuer"
-        pour passer &#224; l'&#233;dition des questions.
+        Remplissez ici une description générale du sondage, puis cliquer sur "Continuer"
+        pour passer à l'édition des questions.
       </td>
     </tr>
 {include file='survey/edit_root.tpl'}
