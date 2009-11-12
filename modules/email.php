@@ -418,11 +418,11 @@ class EmailModule extends PLModule
                 $to2  = getEmails(Env::v('to_contacts'));
                 $cc2  = getEmails(Env::v('cc_contacts'));
                 $txt  = str_replace('^M', '', Env::v('contenu'));
-                $to   = Env::v('to');
-                $subj = Env::v('sujet');
-                $from = Env::v('from');
-                $cc   = trim(Env::v('cc'));
-                $bcc  = trim(Env::v('bcc'));
+                $to   = str_replace(';', ',', Env::t('to'));
+                $subj = Env::t('sujet');
+                $from = Env::t('from');
+                $cc   = str_replace(';', ',', Env::t('cc'));
+                $bcc  = str_replace(';', ',', Env::t('bcc'));
 
                 if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
                     $page->trigError("Indique au moins un destinataire.");
