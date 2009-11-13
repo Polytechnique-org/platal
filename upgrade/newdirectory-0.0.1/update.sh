@@ -6,12 +6,11 @@ mailman_stop
 mailman_templates
 mailman_start
 
-
 ###########################################################
 for sql in *.sql
 do
     echo -n $sql
-    $MYSQL x4dat < $sql &>/dev/null || echo -n " ERROR"
+    (sed -e "s/#\([0-9a-z]*\)#/${DBPREFIX}\1/g" < $sql | $MYSQL $DATABASE &>/dev/null) || echo -n " ERROR"
     echo .
 done
 
@@ -33,6 +32,3 @@ cat
 pushd ../../bin
 ./search.rebuild_db.php
 popd
-
-###########################################################
-

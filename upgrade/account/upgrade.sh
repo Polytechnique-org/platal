@@ -1,7 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
-echo "Upgrading database"
-mysql x4dat < *.sql
+. ../inc/pervasive.sh
 
-echo "Updating birthday date"
-php birthday.php
+###########################################################
+for sql in *.sql
+do
+    echo -n $sql
+    (sed -e "s/#\([0-9a-z]*\)#/${DBPREFIX}\1/g" < $sql | $MYSQL $DATABASE &>/dev/null) || echo -n " ERROR"
+    echo .
+done
+
+###########################################################
+echo "Updating birthday dates"
+
+./birthday.php

@@ -11,27 +11,27 @@
 
 ## Dev version of previous line
 # (non destructive)
-CREATE TABLE  x4dat.forums
-        LIKE  forums.list;
-INSERT INTO  x4dat.forums
+CREATE TABLE  #x4dat#.forums
+        LIKE  #forums#.list;
+INSERT INTO  #x4dat#.forums
      SELECT  *
-       FROM  forums.list;
+       FROM  #forums#.list;
 
-CREATE TABLE  x4dat.forum_subs
-        LIKE  forums.abos;
-INSERT INTO  x4dat.forum_subs
+CREATE TABLE  #x4dat#.forum_subs
+        LIKE  #forums#.abos;
+INSERT INTO  #x4dat#.forum_subs
      SELECT  *
-       FROM  forums.abos;
+       FROM  #forums#.abos;
 
-CREATE TABLE  x4dat.forum_innd
-        LIKE  forums.innd;
-INSERT INTO  x4dat.forum_innd
+CREATE TABLE  #x4dat#.forum_innd
+        LIKE  #forums#.innd;
+INSERT INTO  #x4dat#.forum_innd
      SELECT  *
-       FROM  forums.innd;
+       FROM  #forums#.innd;
 
-CREATE TABLE  x4dat.forum_profiles
-        LIKE  forums.profils;
-INSERT INTO  x4dat.forum_profiles
+CREATE TABLE  #x4dat#.forum_profiles
+        LIKE  forums#.profils;
+INSERT INTO  #x4dat#.forum_profiles
      SELECT  *
        FROM  forums.profils;
 

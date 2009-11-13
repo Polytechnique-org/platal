@@ -46,7 +46,7 @@ class PlatalLogger extends PlLogger
 
         // retrieve available actions
         $this->actions = XDB::fetchAllAssoc('text', 'SELECT  id, text
-                                                       FROM  logger.actions');
+                                                       FROM  #logger#.actions');
     }
 
     /** Creates a new session entry in database and return its ID.
