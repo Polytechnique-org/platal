@@ -424,8 +424,20 @@ class EmailModule extends PLModule
                 $cc   = str_replace(';', ',', Env::t('cc'));
                 $bcc  = str_replace(';', ',', Env::t('bcc'));
 
+                $email_regex = '/^[a-z0-9.\-+_\$]+@([\-.+_]?[a-z0-9])+$/i';
+                foreach (explode(',', $to . ',' . $cc . ',' . $bcc) as $email) {
+                    $email = trim($email);
+                    if ($email != '' && !preg_match($email_regex, $email)) {
+                        $page->trigError("L'adresse email " . $email  . ' est erronée.');
+                        $error = true;
+                    }
+                }
                 if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
                     $page->trigError("Indique au moins un destinataire.");
+                    $error = true;
+                }
+
+                if ($error) {
                     $page->assign('uploaded_f', PlUpload::listFilenames(S::user()->login(), 'emails.send'));
                 } else {
                     $mymail = new PlMailer();
