@@ -10,6 +10,6 @@ mailman_start
 for sql in *.sql
 do
     echo -n $sql
-    $MYSQL $DATABASE < $sql &>/dev/null || echo -n " ERROR"
+    (sed -e "s/#\([0-9a-z]*\)#/${DBPREFIX}\1/g" < $sql | $MYSQL $DATABASE &>/dev/null) || echo -n " ERROR"
     echo .
 done
