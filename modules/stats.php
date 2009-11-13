@@ -91,7 +91,7 @@ class StatsModule extends PLModule
         }
 
         //Genere le graphique à la volée avec GNUPLOT
-        header( "Content-type: image/png");
+        pl_cached_dynamic_content_headers("image/png");
 
         $delt = ($total - $init_nb)/10;
         $delt = $delt ? $delt : 5;
@@ -236,7 +236,7 @@ EOF
 EOF2;
         }
 
-        header('Content-type: image/png');
+        pl_cached_dynamic_content_headers("image/png");
         passthru($gnuplot);
         exit;
     }

@@ -307,7 +307,7 @@ class CarnetModule extends PLModule
         }
         $page->assign('events', $annivs);
 
-        header('Content-Type: text/calendar; charset=utf-8');
+        pl_content_headers("text/calendar");
     }
 
     function handler_vcard(&$page, $photos = null)

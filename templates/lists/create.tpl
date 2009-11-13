@@ -25,11 +25,7 @@
   Création d'une liste de diffusion
 </h1>
 
-{if $created}
-
-<p class='erreur'>Demande de création envoyée&nbsp;!</p>
-
-{else}
+{if !$created}
 
 <p>
 N'importe qui peut faire la demande de création d'une liste de diffusion, il suffit pour cela d'être au

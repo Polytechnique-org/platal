@@ -97,8 +97,8 @@ class XnetListsModule extends ListsModule
             $alias = substr($alias, 0, strpos($alias, '@')).'@'.$globals->asso('mail_domain');
             XDB::query(
                     'DELETE FROM  r, v
-                           USING  x4dat.virtual AS v
-                       LEFT JOIN  x4dat.virtual_redirect AS r USING(vid)
+                           USING  virtual AS v
+                       LEFT JOIN  virtual_redirect AS r USING(vid)
                            WHERE  v.alias={?}', $alias);
             $page->trigSuccess(Post::v('del_alias')." supprimé&nbsp;!");
         }
@@ -108,7 +108,7 @@ class XnetListsModule extends ListsModule
 
         $alias  = XDB::iterator(
                 'SELECT  alias,type
-                   FROM  x4dat.virtual
+                   FROM  virtual
                   WHERE  alias
                    LIKE  {?} AND type="user"
                ORDER BY  alias', '%@'.$globals->asso('mail_domain'));
@@ -117,7 +117,7 @@ class XnetListsModule extends ListsModule
         $page->assign('may_update', may_update());
 
         if (count($listes) > 0 && !$globals->asso('has_ml')) {
-            XDB::execute("UPDATE  groupex.asso
+            XDB::execute("UPDATE  #groupex#.asso
                              SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
                            WHERE  id = {?}",
                          $globals->asso('id'));
@@ -153,7 +153,7 @@ class XnetListsModule extends ListsModule
         }
 
         $new = $liste.'@'.$globals->asso('mail_domain');
-        $res = XDB::query('SELECT alias FROM x4dat.virtual WHERE alias={?}', $new);
+        $res = XDB::query('SELECT alias FROM virtual WHERE alias={?}', $new);
 
         if ($res->numRows()) {
             $page->trigError('cet alias est déjà pris');
@@ -182,14 +182,14 @@ class XnetListsModule extends ListsModule
             if (!empty($app)) {
                 $app  = '-' . $app;
             }
-            XDB::execute('INSERT INTO x4dat.virtual (alias,type)
+            XDB::execute('INSERT INTO virtual (alias,type)
                                     VALUES({?},{?})', $liste. $app . '@'.$dom, 'list');
-            XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
+            XDB::execute('INSERT INTO virtual_redirect (vid,redirect)
                                     VALUES ({?}, {?})', XDB::insertId(),
                                    $red . $mdir . '@listes.polytechnique.org');
         }
 
-        XDB::execute("UPDATE  groupex.asso
+        XDB::execute("UPDATE  #groupex#.asso
                          SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
                        WHERE  id = {?}",
                      $globals->asso('id'));
@@ -227,9 +227,9 @@ class XnetListsModule extends ListsModule
                            if (m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
                            m.perms='admin' AS admin,
                            m.origine='X' AS x
-                     FROM  groupex.membres AS m
-                LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
-                LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
+                     FROM  #groupex#.membres     AS m
+                LEFT JOIN  #x4dat#.auth_user_md5 AS u ON ( u.user_id = m.uid )
+                LEFT JOIN  #x4dat#.aliases       AS a ON ( a.id = m.uid AND a.type='a_vie' )
                     WHERE  m.asso_id = {?}
                  ORDER BY  promo, nom, prenom", $globals->asso('id'));
 
@@ -266,15 +266,15 @@ class XnetListsModule extends ListsModule
             if ($dom == 'polytechnique.org' || $dom == 'm4x.org') {
                 $res = XDB::query(
                         "SELECT  a.alias, b.alias
-                           FROM  x4dat.aliases AS a
-                      LEFT JOIN  x4dat.aliases AS b ON (a.id=b.id AND b.type = 'a_vie')
+                           FROM  aliases AS a
+                      LEFT JOIN  aliases AS b ON (a.id=b.id AND b.type = 'a_vie')
                           WHERE  a.alias={?} AND a.type!='homonyme'", $mbox);
                 if (list($alias, $blias) = $res->fetchOneRow()) {
                     $alias = empty($blias) ? $alias : $blias;
                     XDB::query(
-                        "INSERT IGNORE INTO  x4dat.virtual_redirect (vid,redirect)
+                        "INSERT IGNORE INTO  virtual_redirect (vid,redirect)
                                      SELECT  vid, {?}
-                                       FROM  x4dat.virtual
+                                       FROM  virtual
                                       WHERE  alias={?}", "$alias@m4x.org", $lfull);
                    $page->trigSuccess("$alias@m4x.org ajouté");
                 } else {
@@ -282,9 +282,9 @@ class XnetListsModule extends ListsModule
                 }
             } else {
                 XDB::query(
-                        "INSERT IGNORE INTO  x4dat.virtual_redirect (vid,redirect)
+                        "INSERT IGNORE INTO  virtual_redirect (vid,redirect)
                                      SELECT  vid,{?}
-                                       FROM  x4dat.virtual
+                                       FROM  virtual
                                       WHERE  alias={?}", "$mbox@$dom", $lfull);
                 $page->trigSuccess("$mbox@$dom ajouté");
             }
@@ -293,9 +293,9 @@ class XnetListsModule extends ListsModule
         if (Env::has('del_member')) {
             S::assert_xsrf_token();
             XDB::query(
-                    "DELETE FROM  x4dat.virtual_redirect
-                           USING  x4dat.virtual_redirect
-                      INNER JOIN  x4dat.virtual USING(vid)
+                    "DELETE FROM  virtual_redirect
+                           USING  virtual_redirect
+                      INNER JOIN  virtual USING(vid)
                            WHERE  redirect={?} AND alias={?}", Env::v('del_member'), $lfull);
             pl_redirect('alias/admin/'.$lfull);
         }
@@ -308,13 +308,13 @@ class XnetListsModule extends ListsModule
                                 FROM  (SELECT  redirect AS redirect,
                                                IF(SUBSTRING_INDEX(redirect, '@', -1) IN ({?}, {?}),
                                                   SUBSTRING_INDEX(redirect, '@', 1), NULL) AS login
-                                         FROM  x4dat.virtual_redirect AS vr
-                                   INNER JOIN  x4dat.virtual          AS v  USING(vid)
+                                         FROM  #x4dat#.virtual_redirect AS vr
+                                   INNER JOIN  #x4dat#.virtual          AS v  USING(vid)
                                         WHERE  v.alias = {?}
-                                     ORDER BY  redirect) AS r
-                           LEFT JOIN  aliases AS a ON (r.login IS NOT NULL AND r.login = a.alias)
-                           LEFT JOIN  auth_user_md5 AS u ON (u.user_id = a.id)
-                           LEFT JOIN groupex.membres AS m ON (m.asso_id = {?} AND IF(r.login IS NULL, m.email = r.redirect, m.uid = u.user_id))",
+                                     ORDER BY  redirect)    AS r
+                           LEFT JOIN  #x4dat#.aliases       AS a ON (r.login IS NOT NULL AND r.login = a.alias)
+                           LEFT JOIN  #x4dat#.auth_user_md5 AS u ON (u.user_id = a.id)
+                           LEFT JOIN  #groupex#.membres     AS m ON (m.asso_id = {?} AND IF(r.login IS NULL, m.email = r.redirect, m.uid = u.user_id))",
                 $globals->mail->domain, $globals->mail->domain2,
                 $lfull, $globals->asso('id'));
         $page->assign('mem', $res);
@@ -347,14 +347,14 @@ class XnetListsModule extends ListsModule
         }
 
         $new = $liste.'@'.$globals->asso('mail_domain');
-        $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+        $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias = {?}', $new);
         $n   = $res->fetchOneCell();
         if ($n) {
             $page->trigError('cet alias est déjà pris');
             return;
         }
 
-        XDB::query('INSERT INTO x4dat.virtual (alias,type) VALUES({?}, "user")', $new);
+        XDB::query('INSERT INTO virtual (alias,type) VALUES({?}, "user")', $new);
 
         pl_redirect("alias/admin/$new");
     }

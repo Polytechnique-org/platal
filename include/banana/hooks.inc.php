@@ -186,8 +186,8 @@ function hook_getXFace($headers)
     }
     if (isset($headers['x-face'])) {
         $res = XDB::query("SELECT  p.uid
-                             FROM  forums.profils AS p
-                       INNER JOIN  aliases AS a ON (p.uid = a.id)
+                             FROM  #forums#.profils AS p
+                       INNER JOIN  #x4dat#.aliases  AS a ON (p.uid = a.id)
                             WHERE  FIND_IN_SET('xface', p.flags) AND a.alias = {?}",
                           $login);
         if ($res->numRows()) {

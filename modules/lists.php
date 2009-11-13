@@ -131,7 +131,7 @@ class ListsModule extends PLModule
 
     function handler_ajax(&$page, $list = null)
     {
-        header('Content-Type: text/html; charset="UTF-8"');
+        pl_content_headers("text/html");
         $domain = $this->prepare_client($page);
         $page->changeTpl('lists/liste.inc.tpl', NO_SKIN);
         S::assert_xsrf_token();
@@ -249,13 +249,13 @@ class ListsModule extends PLModule
             }
 
             $new = $liste . '@' . $domain;
-            $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+            $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}', $new);
 
         } else {
             if ($asso == "groupex") {
                 $groupex_name = Post::v('groupex_name');
 
-                $res_groupe = XDB::query('SELECT mail_domain FROM groupex.asso WHERE nom={?}', $groupex_name);
+                $res_groupe = XDB::query('SELECT mail_domain FROM #groupex#.asso WHERE nom={?}', $groupex_name);
                 $domain = $res_groupe->fetchOneCell();
 
                 if (!$domain) {
@@ -263,7 +263,7 @@ class ListsModule extends PLModule
                 }
 
                 $new = $liste . '@' . $domain;
-                $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+                $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}', $new);
             } else {
                 $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
                 $domain = $globals->mail->domain;
@@ -289,6 +289,7 @@ class ListsModule extends PLModule
         }
 
         if (!$page->nb_errs()) {
+            $page->trigSuccess('Demande de création envoyée&nbsp;!');
             $page->assign('created', true);
             require_once 'validations.inc.php';
             $req = new ListeReq(S::user(), $asso, $liste, $domain,
@@ -346,9 +347,7 @@ class ListsModule extends PLModule
         $this->prepare_client($page);
         $members = $this->client->get_members($liste);
         $list = list_fetch_names(list_extract_members($members[1]));
-        header('Content-Type: text/x-csv; charset=utf-8;');
-        header('Pragma: ');
-        header('Cache-Control: ');
+        pl_content_headers("text/x-csv");
 
         echo "email,nom,prenom,promo\n";
         foreach ($list as $member) {
@@ -660,7 +659,7 @@ class ListsModule extends PLModule
             S::assert_xsrf_token();
 
             $members = User::getBulkForlifeEmails(Env::v('add_member'),
-                                                  false,
+                                                  true,
                                                   array('ListsModule', 'no_login_callback'));
             $arr = $this->client->mass_subscribe($liste, $members);
             if (is_array($arr)) {
@@ -678,7 +677,7 @@ class ListsModule extends PLModule
                 $page->trigError('Une erreur s\'est produite lors du téléchargement du fichier');
             } else {
                 $members = User::getBulkForlifeEmails($upload->getContents(),
-                                                      false,
+                                                      true,
                                                       array('ListsModule', 'no_login_callback'));
                 $arr = $this->client->mass_subscribe($liste, $members);
                 if (is_array($arr)) {

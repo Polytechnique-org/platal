@@ -113,10 +113,10 @@ check("select c.* from contacts as c left join auth_user_md5 as u on u.user_id=c
 check("select e.* from emails as e left join auth_user_md5 as u on u.user_id=e.uid where e.uid and u.prenom is null");
 
 /* validite de forums */
-check("select f.* from forums.abos as f left join auth_user_md5 as u on u.user_id=f.uid where u.prenom is null");
-check("select f.* from forums.abos as f left join forums.list as fd on fd.fid=f.fid where fd.nom is null");
-check("select f.* from forums.respofaqs as f left join forums.list as fd on fd.fid=f.fid where fd.nom is null");
-check("select f.* from forums.respofaqs as f left join auth_user_md5 as u on u.user_id=f.uid where u.prenom is null");
+check("select f.* from #forums#.abos as f left join #x4dat#.auth_user_md5 as u on u.user_id=f.uid where u.prenom is null");
+check("select f.* from #forums#.abos as f left join #forums#.list as fd on fd.fid=f.fid where fd.nom is null");
+check("select f.* from #forums#.respofaqs as f left join #forums#.list as fd on fd.fid=f.fid where fd.nom is null");
+check("select f.* from #forums#.respofaqs as f left join #x4dat#.auth_user_md5 as u on u.user_id=f.uid where u.prenom is null");
 
 /* validite de groupesx_ins */
 check("select g.* from groupesx_ins as g left join auth_user_md5 as u on u.user_id=g.guid where u.prenom is null");

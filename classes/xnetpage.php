@@ -41,6 +41,9 @@ class XnetPage extends PlPage
             $this->assign('is_admin', may_update());
             $this->assign('is_member', is_member());
         }
+        $this->addJsLink('jquery.js');
+        $this->addJsLink('overlib.js');
+        $this->addJsLink('wiki.js');
         $this->addJsLink('xorg.js');
         $this->setTitle('Les associations polytechniciennes');
     }
@@ -140,8 +143,8 @@ function list_all_my_groups($params)
     }
     $res = XDB::iterRow(
             "SELECT  a.nom, a.diminutif
-               FROM  groupex.asso    AS a
-         INNER JOIN  groupex.membres AS m ON m.asso_id = a.id
+               FROM  #groupex#.asso    AS a
+         INNER JOIN  #groupex#.membres AS m ON m.asso_id = a.id
               WHERE  m.uid={?}", S::v('uid'));
     $links = '<a href="exit">déconnexion</a>';
     $html = '<div>Mes groupes (' . $links . ') :</div>';

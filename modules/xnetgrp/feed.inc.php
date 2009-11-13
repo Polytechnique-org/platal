@@ -42,10 +42,10 @@ class XnetGrpEventFeed extends PlFeed
                                          CONCAT(u2.prenom, ' ', IF(u2.nom_usage != '', u2.nom_usage, u2.nom), ' (X',  u2.promo, ')') AS author,
                                          FIND_IN_SET('photo', a.flags) AS photo,
                                          CONCAT({?}, '/#art', a.id) AS link
-                                   FROM auth_user_md5 AS u
-                             INNER JOIN groupex.announces AS a ON ( (a.promo_min = 0 OR a.promo_min <= u.promo)
-                                                                  AND (a.promo_max = 0 OR a.promo_max <= u.promo))
-                             INNER JOIN auth_user_md5 AS u2 ON (u2.user_id = a.user_id)
+                                   FROM #x4dat#.auth_user_md5 AS u
+                             INNER JOIN #groupex#.announces   AS a ON ((a.promo_min = 0 OR a.promo_min <= u.promo)
+                                                                       AND (a.promo_max = 0 OR a.promo_max <= u.promo))
+                             INNER JOIN #x4dat#.auth_user_md5 AS u2 ON (u2.user_id = a.user_id)
                              WHERE u.user_id = {?} AND peremption >= NOW() AND a.asso_id = {?}",
                                    $this->link, $user->id(), $globals->asso('id'));
         } else {
@@ -53,8 +53,8 @@ class XnetGrpEventFeed extends PlFeed
                                          CONCAT(u.prenom, ' ', IF(u.nom_usage != '', u.nom_usage, u.nom), ' (X',  u.promo, ')') AS author,
                                          CONCAT({?}, '/#art', a.id) AS link,
                                          NULL AS photo, NULL AS contacts
-                                    FROM groupex.announces AS a
-                              INNER JOIN auth_user_md5 AS u USING(user_id)
+                                    FROM #groupex#.announces   AS a
+                              INNER JOIN #x4dat#.auth_user_md5 AS u USING(user_id)
                                    WHERE FIND_IN_SET('public', a.flags) AND peremption >= NOW() AND a.asso_id = {?}",
                                   $this->link, $globals->asso('id'));
         }

@@ -26,11 +26,11 @@ class ReminderPromotionMl extends Reminder
         switch ($action) {
           case 'yes':
             $res = XDB::query('SELECT  id
-                                 FROM  groupex.asso
+                                 FROM  #groupex#.asso
                                 WHERE  diminutif = {?}',
                             S::v('promo'));
             $asso_id = $res->fetchOneCell();
-            XDB::execute('REPLACE INTO  groupex.membres (uid, asso_id)
+            XDB::execute('REPLACE INTO  #groupex#.membres (uid, asso_id)
                                 VALUES  ({?}, {?})',
                          S::v('uid'), $asso_id);
             $mmlist = new MMList(S::v('uid'), S::v('password'));
@@ -67,9 +67,9 @@ class ReminderPromotionMl extends Reminder
         // We only test if the user is in her promotion group for it is too
         // expensive to check if she is in the corresponding ML as well.
         $res = XDB::query('SELECT  COUNT(*)
-                             FROM  groupex.membres
+                             FROM  #groupex#.membres
                             WHERE  uid = {?} AND asso_id = (SELECT  id
-                                                              FROM  groupex.asso
+                                                              FROM  #groupex#.asso
                                                              WHERE  diminutif = {?})',
                           $user->id(), S::v('promo'));
 

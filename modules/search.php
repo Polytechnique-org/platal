@@ -73,9 +73,9 @@ class SearchModule extends PLModule
     {
         global $globals;
 
-        $res = XDB::query("SELECT  MIN(`diminutif`), MAX(`diminutif`)
-                             FROM  `groupex`.`asso`
-                            WHERE  `cat` = 'Promotions'");
+        $res = XDB::query("SELECT  MIN(diminutif), MAX(diminutif)
+                             FROM  #groupex#.asso
+                            WHERE  cat = 'Promotions'");
         list($min, $max) = $res->fetchOneRow();
         $page->assign('promo_min', $min);
         $page->assign('promo_max', $max);
@@ -173,7 +173,7 @@ class SearchModule extends PLModule
                 'binet'           => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
                 'networking_type' => array('field' => 'network_type', 'table' => 'profile_networking_enum',
                                            'text' => 'name', 'exact' => false),
-                'groupex'         => array('field' => 'id', 'table' => 'groupex.asso',
+                'groupex'         => array('field' => 'id', 'table' => '#groupex#.asso',
                                            'text' => "(cat = 'GroupesX' OR cat = 'Institutions') AND pub = 'public' AND nom",
                                            'exact' => false),
                 'section'         => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
@@ -224,7 +224,7 @@ class SearchModule extends PLModule
         //   result1|nb1
         //   result2|nb2
         //   ...
-        header('Content-Type: text/plain; charset="UTF-8"');
+        pl_content_headers("text/plain");
         $q = preg_replace(array('/\*+$/', // always look for $q*
                                 '/([\^\$\[\]])/', // escape special regexp char
                                 '/\*/'), // replace joker by regexp joker
@@ -299,8 +299,8 @@ class SearchModule extends PLModule
             $beginwith = false;
             break;
           case 'groupexTxt':
-            $db = "groupex.asso AS a INNER JOIN
-                   groupex.membres AS m ON(a.id = m.asso_id
+            $db = "#groupex#.asso AS a INNER JOIN
+                   #groupex#.membres AS m ON(a.id = m.asso_id
                                            AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')
                                            AND a.pub = 'public')";
             $field='a.nom';
@@ -435,12 +435,12 @@ class SearchModule extends PLModule
             $field = '`fonction_fr`';
             break;
           case 'diploma':
-            header('Content-Type: text/xml; charset="UTF-8"');
+            pl_content_headers("text/xml");
             $this->get_diplomas();
             $page->changeTpl('search/adv.grade.form.tpl', NO_SKIN);
             return;
           case 'groupex':
-            $db = 'groupex.asso';
+            $db = '#groupex#.asso';
             $where = " WHERE (cat = 'GroupesX' OR cat = 'Institutions') AND pub = 'public'";
             $field = 'nom';
             break;
@@ -478,12 +478,12 @@ class SearchModule extends PLModule
           default: exit();
         }
         if (isset($idVal)) {
-            header('Content-Type: text/plain; charset="UTF-8"');
+            pl_content_headers("text/plain");
             $result = XDB::query('SELECT '.$field.' AS field FROM '.$db.' WHERE '.$id.' = {?} LIMIT 1',$idVal);
             echo $result->fetchOneCell();
             exit();
         }
-        header('Content-Type: text/xml; charset="UTF-8"');
+        pl_content_headers("text/xml");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', $type);
         $page->assign('list', XDB::iterator('SELECT  '.$field.' AS field,

@@ -60,11 +60,11 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
         $this->montant_max  = $_montantmax;
 
         if ($_asso_id) {
-            $res = XDB::query("SELECT nom FROM groupex.asso WHERE id = {?}", $_asso_id);
+            $res = XDB::query("SELECT nom FROM #groupex#.asso WHERE id = {?}", $_asso_id);
             $this->asso = $res->fetchOneCell();
         }
         if ($_asso_id && $_evt) {
-            $res = XDB::query("SELECT intitule FROM groupex.evenements WHERE asso_id = {?} AND eid = {?}", $_asso_id, $_evt);
+            $res = XDB::query("SELECT intitule FROM #groupex#.evenements WHERE asso_id = {?} AND eid = {?}", $_asso_id, $_evt);
             $this->evt_intitule = $res->fetchOneCell();
         }
     }
@@ -165,9 +165,9 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
 
     public function commit()
     {
-        $res = XDB::query("SELECT MAX(id) FROM paiement.paiements");
+        $res = XDB::query("SELECT MAX(id) FROM #paiement#.paiements");
         $id = $res->fetchOneCell()+1;
-        $ret = XDB::execute("INSERT INTO paiement.paiements VALUES
+        $ret = XDB::execute("INSERT INTO #paiement#.paiements VALUES
             ( {?}, {?}, {?}, '',
             {?}, {?}, {?},
             {?}, {?}, {?} )
@@ -176,13 +176,13 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
             $this->montant, $this->montant_min, $this->montant_max,
             $this->user->bestEmail(), $this->msg_reponse, $this->asso_id);
         if ($this->asso_id && $this->evt) {
-            XDB::execute("UPDATE  groupex.evenements
+            XDB::execute("UPDATE  #groupex#.evenements
                              SET  paiement_id = {?}
                            WHERE  asso_id = {?} AND eid = {?}",
                          $id, $this->asso_id, $this->evt);
             $res = XDB::query("SELECT  a.nom, a.diminutif, e.intitule
-                                 FROM  groupex.asso AS a
-                           INNER JOIN  groupex.evenements AS e ON (a.id = e.asso_id)
+                                 FROM  #groupex#.asso AS a
+                           INNER JOIN  #groupex#.evenements AS e ON (a.id = e.asso_id)
                                 WHERE  e.eid = {?}",
                               $this->evt);
             list($nom, $diminutif, $evt) = $res->fetchOneRow();

@@ -147,22 +147,23 @@ function select_notifs($mail, $uid=null, $last=null, $iterator=true)
 
 global $prf_desc;
 $prf_desc = array('search_names' => 'L\'un de ses noms',
-                  'freetext' => 'Le texte libre',
-                  'mobile' => 'Son numéro de téléphone portable',
-                  'nationalite' => 'Sa nationalité',
+                  'freetext'     => 'Le texte libre',
+                  'mobile'       => 'Son numéro de téléphone portable',
+                  'nationalite'  => 'Sa nationalité',
                   'nationalite2' => 'Sa seconde nationalité',
                   'nationalite3' => 'Sa troisième nationalité',
-                  'nick' => 'Son surnom',
-                  'networking' => 'La liste de ses adresses de networking',
-                  'edus' => 'Ses formations',
-                  'addresses' => 'Ses adresses',
-                  'section' => 'Sa section sportive',
-                  'binets' => 'La liste de ses binets',
-                  'medals' => 'Ses décorations',
-                  'cv' => 'Son Curriculum Vitae',
-                  'corps' => 'Son Corps d\'État',
-                  'jobs' => 'Ses informations professionnelles',
-                  'photo' => 'Sa photographie');
+                  'nick'         => 'Son surnom',
+                  'networking'   => 'La liste de ses adresses de networking',
+                  'edus'         => 'Ses formations',
+                  'addresses'    => 'Ses adresses',
+                  'section'      => 'Sa section sportive',
+                  'binets'       => 'La liste de ses binets',
+                  'medals'       => 'Ses décorations',
+                  'cv'           => 'Son Curriculum Vitae',
+                  'corps'        => 'Son Corps d\'État',
+                  'jobs'         => 'Ses informations professionnelles',
+                  'photo'        => 'Sa photographie',
+                  'broken'      => "Il n'a plus d'adresse de redirection valide");
 
 function get_profile_change_details($event, $limit) {
     global $prf_desc;

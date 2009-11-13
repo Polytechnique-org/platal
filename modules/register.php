@@ -348,10 +348,10 @@ class RegisterModule extends PLModule
                     $storage->activate();
                     break;
                 case 'ml_promo':
-                    $r = XDB::query('SELECT id FROM groupex.asso WHERE diminutif = {?}', S::user()->promo());
+                    $r = XDB::query('SELECT id FROM #groupex#.asso WHERE diminutif = {?}', S::user()->promo());
                     if ($r->numRows()) {
                         $asso_id = $r->fetchOneCell();
-                        XDB::execute('REPLACE INTO  groupex.membres (uid, asso_id)
+                        XDB::execute('REPLACE INTO  #groupex#.membres (uid, asso_id)
                                             VALUES  ({?}, {?})',
                                      S::user()->id(), $asso_id);
                         $mmlist = new MMList(S::user()->id(), S::v('password'));
@@ -390,9 +390,9 @@ class RegisterModule extends PLModule
         $promo_forum = 'xorg.promo.x' . $promo;
         $registered_forums = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements', $promo_forum);
         foreach ($registered_forums as $forum) {
-            XDB::execute("INSERT INTO  forums.abos (fid,uid)
+            XDB::execute("INSERT INTO  #forums#.abos (fid,uid)
                                SELECT  fid, {?}
-                                 FROM   forums.list
+                                 FROM  #forums#.list
                                 WHERE  nom = {?}",
                                 $uid, $val);
 

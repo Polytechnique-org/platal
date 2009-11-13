@@ -35,7 +35,7 @@ if ($matches) {
         http_redirect("https://www.polytechnique.org/lists/$action/$mbox$sup");
     }
 
-    $res = XDB::query("select diminutif from groupex.asso where mail_domain = {?}", $fqdn);
+    $res = XDB::query("SELECT diminutif FROM #groupex#.asso WHERE mail_domain = {?}", $fqdn);
     if ($gpx = $res->fetchOneCell()) {
         http_redirect("http://www.polytechnique.net/$gpx/lists/$action/$mbox$sup");
     }

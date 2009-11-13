@@ -75,14 +75,8 @@ class PlatalModule extends PLModule
 
     function handler_cacert(&$page)
     {
-        $data = file_get_contents("/etc/ssl/xorgCA/cacert.pem","r");
-        header("Pragma:");
-        header("Set-Cookie:");
-        header("Cache-Control:");
-        header("Expires:");
-        header("Content-Type: application/x-x509-ca-cert");
-        header("Content-Length: ".strlen($data));
-        echo $data;
+        pl_cached_content_headers("application/x-x509-ca-cert");
+        readfile("/etc/ssl/xorgCA/cacert.pem");
         exit;
     }
 

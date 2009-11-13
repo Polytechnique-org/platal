@@ -31,7 +31,7 @@ require('plmailer.php');
 
 $res = XDB::query("SELECT  count(r.stamp), UNIX_TIMESTAMP(MIN(r.stamp)),
                            sum(r.stamp < NOW() - $M_PERIOD), sum(r.stamp < NOW() - $R_PERIOD)
-                     FROM  x4dat.requests AS r");
+                     FROM  requests AS r");
 list($nb, $age, $nbold, $nbveryold) = $res->fetchOneRow();
 
 $age = (time() - intval($age)) / 86400;
@@ -70,7 +70,7 @@ $message =
 	."https://www.polytechnique.org/admin/validate\n\n"
         ."Par catégorie :\n";
 $res = XDB::iterRow("SELECT  type, count(*)
-                       FROM  x4dat.requests
+                       FROM  requests
                    GROUP BY  type
                    ORDER BY  type");
 while (list($type, $nb) = $res->next()) {

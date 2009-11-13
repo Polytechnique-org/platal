@@ -308,7 +308,7 @@ class NLArticle
     // }}}
     // {{{ function getLinkIps()
 
-    public function getLinkIps(&$gethostbyname_count)
+    public function getLinkIps(&$blacklist_host_resolution_count)
     {
         $matches = $this->parseUrlsFromArticle();
         $article_ips = array();
@@ -322,14 +322,13 @@ class NLArticle
                     list(, $host) = explode('@', $match);
                 }
 
-                if ($gethostbyname_count < $globals->mail->blacklist_host_resolution_limit) {
+                if ($blacklist_host_resolution_count >= $globals->mail->blacklist_host_resolution_limit) {
                    break;
                 }
 
-                if ($host != $globals->mail->alias_dom && $host != $globals->mail->alias_dom2
-                    && $host != $globals->mail->domain && $host != $globals->mail->domain2) {
+                if (!preg_match('/^(' . str_replace(' ', '|', $globals->mail->domain_whitelist) . ')$/i', $host)) {
                     $article_ips = array_merge($article_ips, array(gethostbyname($host) => $host));
-                    ++$gethostbyname_count;
+                    ++$blacklist_host_resolution_count;
                 }
             }
         }
