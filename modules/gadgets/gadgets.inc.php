@@ -23,8 +23,7 @@
 function init_igoogle_xml($template)
 {
     Platal::page()->changeTpl($template, NO_SKIN);
-
-    header('Content-Type: application/xml; charset=utf-8');
+    pl_cached_content_headers("application/xml", "utf-8");
 }
 
 function init_igoogle_html($template, $auth = AUTH_PUBLIC)

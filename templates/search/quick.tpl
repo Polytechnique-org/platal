@@ -60,7 +60,7 @@
 
 <h1>Comment faire une recherche&nbsp;?</h1>
 
-<h2>Nom, Prénom, Promotion&hellip;<h2>
+<h2>Nom, Prénom, Promotion&hellip;</h2>
 
 <p>
 La ligne de recherche ci-dessus accepte non seulement des mélanges de <strong>noms</strong> et de <strong>prénoms</strong>&hellip;

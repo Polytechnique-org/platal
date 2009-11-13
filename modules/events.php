@@ -194,7 +194,7 @@ class EventsModule extends PLModule
             $res = XDB::query("SELECT * FROM evenements_photo WHERE eid = {?}", $eid);
             if ($res->numRows()) {
                 $photo = $res->fetchOneAssoc();
-                header('Content-Type: image/' . $photo['attachmime']);
+                pl_cached_dynamic_content_headers("image/" . $photo['attachmime']);
                 echo $photo['attach'];
                 exit;
             }
@@ -202,20 +202,20 @@ class EventsModule extends PLModule
             require_once 'validations.inc.php';
             $valid = Validate::get_request_by_id($valid);
             if ($valid && $valid->img) {
-                header('Content-Type: image/' . $valid->imgtype);
+                pl_cached_dynamic_content_headers("image/" . $valid->imgtype);
                 echo $valid->img;
                 exit;
             }
         } else {
             $upload = new PlUpload(S::user()->login(), 'event');
             if ($upload->exists() && $upload->isType('image')) {
-                header('Content-Type: ' . $upload->contentType());
+                pl_cached_dynamic_content_headers($upload->contentType());
                 echo $upload->getContents();
                 exit;
             }
         }
         global $globals;
-        header('Content-Type: image/png');
+        pl_cached_dynamic_content_headers("image/png");
         echo file_get_contents($globals->spoolroot . '/htdocs/images/logo.png');
         exit;
     }
@@ -240,7 +240,7 @@ class EventsModule extends PLModule
         }
         $page->assign('texte', $texte);
         $page->assign('titre', $titre);
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
     }
 
     function handler_ev_submit(&$page)
@@ -298,7 +298,7 @@ class EventsModule extends PLModule
 
     function handler_tips(&$page, $tips = null)
     {
-        header('Content-Type: text/html; charset="UTF-8"');
+        pl_content_headers("text/html");
         $page->changeTpl('include/tips.tpl', NO_SKIN);
         $page->assign('tips', $this->get_tips($tips));
     }

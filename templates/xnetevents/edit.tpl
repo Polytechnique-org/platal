@@ -244,7 +244,7 @@ Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée 
     </tr>
     <tr>
       <td class="titre">Tarif&nbsp;:<br /><small>(par participant)</small></td>
-      <td><input type="text" name="montant{$i}" value="{if $moment.montant}{$moment.montant|replace:".":","}{else}0,00{/if}" size="7" maxlength="7" /> &#8364; <small>(0 si gratuit)</small></td>
+      <td><input type="text" name="montant{$i}" value="{if $moment.montant}{$moment.montant|replace:".":","}{else}0,00{/if}" size="7" maxlength="7" /> € <small>(0 si gratuit)</small></td>
     </tr>
   {/foreach}
   </table>

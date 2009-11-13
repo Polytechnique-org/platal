@@ -206,8 +206,8 @@ class XorgSession extends PlSession
                         INNER JOIN  watch           AS w  ON(w.uid = a.uid)
                          LEFT JOIN  forum_profiles  AS fp ON(fp.uid = a.uid)
                          LEFT JOIN  gapps_accounts  AS g  ON(a.uid = g.l_userid AND g.g_status = 'active')
-                         LEFT JOIN  logger.last_sessions AS ls ON (ls.uid = a.uid)
-                         LEFT JOIN  logger.sessions AS s  ON(s.id = ls.id)
+                         LEFT JOIN  #logger#.last_sessions AS ls ON (ls.uid = a.uid)
+                         LEFT JOIN  #logger#.sessions AS s  ON(s.id = ls.id)
                              WHERE  a.uid = {?} AND a.state = 'active'", $user->id());
         if ($res->numRows() != 1) {
             return false;

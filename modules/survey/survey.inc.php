@@ -83,6 +83,7 @@ class Survey
         if ($this->mode == self::MODE_ALL) {
             $args['promos'] = '';
         }
+        $args['promos'] = str_replace(' ', '', $args['promos']);
         $this->promos  = ($args['promos'] == '' || preg_match('#^(\d{4}-?|(\d{4})?-\d{4})(,(\d{4}-?|(\d{4})?-\d{4}))*$#', $args['promos']))? $args['promos'] : '#';
     }
     // }}}

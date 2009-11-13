@@ -32,13 +32,14 @@ class BandeauModule extends PLModule
 
     function handler_icone(&$page)
     {
-        header("Content-Type: image/png");
+        pl_cached_content_headers("image/png");
         readfile('../htdocs/images/x.png');
         exit();
     }
 
     function handler_html(&$page, $login = '')
     {
+        pl_cached_content_headers("text/html");
         $page->changeTpl('skin/common.bandeau.tpl', NO_SKIN);
         $page->assign('login', $login == 'login');
         $page->assign('seed', $login);
@@ -46,7 +47,7 @@ class BandeauModule extends PLModule
 
     function handler_css(&$page)
     {
-        header("Content-Type: text/css");
+        pl_cached_content_headers("text/css");
         readfile('../htdocs/css/bandeau.css');
         exit();
     }

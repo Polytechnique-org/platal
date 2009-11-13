@@ -379,7 +379,7 @@ class QuickSearch extends SField
             $join .= "LEFT JOIN emails AS ems ON (ems.uid = u.user_id)";
         }
         if (!empty($this->ip)) {
-            $join .= "INNER JOIN logger.sessions AS ls ON (ls.uid = u.user_id)\n";
+            $join .= "INNER JOIN #logger#.sessions AS ls ON (ls.uid = u.user_id)\n";
         }
         if (!empty($this->phone)) {
             if (!S::logged()) {

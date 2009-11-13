@@ -112,7 +112,7 @@ class PaymentModule extends PLModule
                 return PL_NOT_FOUND;
             }
             $res = XDB::query("SELECT asso_id
-                                 FROM paiement.paiements
+                                 FROM #paiement#.paiements
                                 WHERE asso_id = {?} AND id = {?}",
                               $globals->asso('id'), $ref);
             if (!$res->numRows()) {
@@ -142,7 +142,7 @@ class PaymentModule extends PLModule
             $pay->prepareform($pay);
         } else {
             $res = XDB::iterator("SELECT  timestamp, montant
-                                    FROM  paiement.transactions
+                                    FROM  #paiement#.transactions
                                    WHERE  uid = {?} AND ref = {?}
                                 ORDER BY  timestamp DESC",
                                  S::v('uid', -1), $ref);
@@ -193,7 +193,7 @@ class PaymentModule extends PLModule
 
         echo ($ref = $matches[1]);
         $res = XDB::query("SELECT  mail, text, confirmation
-                             FROM  paiement.paiements
+                             FROM  #paiement#.paiements
                             WHERE  id={?}", $ref);
         if (!list($conf_mail, $conf_title, $conf_text) = $res->fetchOneRow()) {
             cb_erreur("référence de commande inconnue");
@@ -202,8 +202,8 @@ class PaymentModule extends PLModule
         /* on extrait le code de retour */
         if ($champ906 != "0000") {
             $res = XDB::query('SELECT  rcb.text, c.id, c.text
-                                 FROM  paiement.codeRCB AS rcb
-                            LEFT JOIN  paiement.codeC   AS c ON (rcb.codeC = c.id)
+                                 FROM  #paiement#.codeRCB AS rcb
+                            LEFT JOIN  #paiement#.codeC   AS c ON (rcb.codeC = c.id)
                                 WHERE  rcb.id = {?}', $champ906);
             if (list($rcb_text, $c_id, $c_text) = $res->fetchOneRow()) {
                 cb_erreur("erreur lors du paiement : $c_text ($c_id)");
@@ -213,13 +213,13 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute("INSERT INTO  paiement.transactions (id, uid, ref, fullref, montant, cle, comment)
+        XDB::execute("INSERT INTO  #paiement#.transactions (id, uid, ref, fullref, montant, cle, comment)
                            VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
                      $champ901, $user->id(), $ref, $champ200, $montant, $champ905, Env::v('comment'));
 
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid
-                             FROM  groupex.evenements
+                             FROM  #groupex#.evenements
                             WHERE  paiement_id = {?}', $ref);
         if ($eid = $res->fetchOneCell()) {
             $this->load('xnetevents.inc.php');
@@ -300,20 +300,20 @@ class PaymentModule extends PLModule
 
         $ref = $matches[1];
         $res = XDB::query("SELECT  mail, text, confirmation
-                             FROM  paiement.paiements
+                             FROM  #paiement#.paiements
                             WHERE  id = {?}", $ref);
         if (!list($conf_mail,$conf_title,$conf_text) = $res->fetchOneRow()) {
             paypal_erreur("référence de commande inconnue");
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute("INSERT INTO  paiement.transactions (id, uid, ref, fullref, montant, cle, comment)
+        XDB::execute("INSERT INTO  #paiement#.transactions (id, uid, ref, fullref, montant, cle, comment)
                            VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
                     $no_transaction, $user->id(), $ref, $fullref, $montant, $clef, Env::v('comment'));
 
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid
-                             FROM  groupex.evenements
+                             FROM  #groupex#.evenements
                             WHERE  paiement_id = {?}', $ref);
         if ($eid = $res->fetchOneCell()) {
             $this->load('xnetevents.inc.php');
@@ -364,8 +364,8 @@ class PaymentModule extends PLModule
                 return PL_FORBIDDEN;
             }
             $res = XDB::query("SELECT  1
-                                 FROM  groupex.evenements AS e
-                           INNER JOIN  groupex.evenements_participants AS ep ON (ep.eid = e.eid AND uid = {?})
+                                 FROM  #groupex#.evenements AS e
+                           INNER JOIN  #groupex#.evenements_participants AS ep ON (ep.eid = e.eid AND uid = {?})
                                 WHERE  e.paiement_id = {?} AND e.asso_id = {?}",
                               S::i('uid'), $pid, $globals->asso('id'));
             if ($res->numRows() == 0) {
@@ -406,9 +406,9 @@ class PaymentModule extends PLModule
                                        'montant' => strtr($sum, '.', ',').' €');
             }
             $res = XDB::iterRow("SELECT e.eid, e.short_name, e.intitule, ep.nb, ei.montant, ep.paid
-                                   FROM groupex.evenements AS e
-                              LEFT JOIN groupex.evenements_participants AS ep ON (ep.eid = e.eid AND uid = {?})
-                             INNER JOIN groupex.evenements_items AS ei ON (ep.eid = ei.eid AND ep.item_id = ei.item_id)
+                                   FROM #groupex#.evenements AS e
+                              LEFT JOIN #groupex#.evenements_participants AS ep ON (ep.eid = e.eid AND uid = {?})
+                             INNER JOIN #groupex#.evenements_items AS ei ON (ep.eid = ei.eid AND ep.item_id = ei.item_id)
                                   WHERE e.paiement_id = {?}",
                                  S::v('uid'), $pid);
             $event[$pid] = array();
@@ -442,11 +442,11 @@ class PaymentModule extends PLModule
     function handler_admin(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Paiements');
         $page->assign('title', 'Gestion des télépaiements');
-        $table_editor = new PLTableEditor('admin/payments','paiement.paiements','id');
-        $table_editor->add_join_table('paiement.transactions','ref',true);
+        $table_editor = new PLTableEditor('admin/payments','#paiement#.paiements','id');
+        $table_editor->add_join_table('#paiement#.transactions','ref',true);
         $table_editor->add_sort_field('flags');
         $table_editor->add_sort_field('id', true, true);
-        $table_editor->on_delete("UPDATE paiement.paiements SET flags = 'old' WHERE id = {?}", "Le paiement a été archivé");
+        $table_editor->on_delete("UPDATE #paiement#.paiements SET flags = 'old' WHERE id = {?}", "Le paiement a été archivé");
         $table_editor->describe('text','intitulé',true);
         $table_editor->describe('url','site web',false);
         $table_editor->describe('montant_def','montant par défaut',false);

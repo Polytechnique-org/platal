@@ -125,14 +125,14 @@ class ListeReq extends Validate
 
         if ($this->asso == "alias") {
             $new = $this->liste . '@' . $this->domain;
-            XDB::query('INSERT INTO x4dat.virtual (alias, type) VALUES({?}, "user")', $new);
+            XDB::query('INSERT INTO virtual (alias, type) VALUES({?}, "user")', $new);
             foreach ($this->members as $member) {
                 $user = User::get($member);
                 if ($user != null) {
                     XDB::query(
-                        "INSERT INTO  x4dat.virtual_redirect (vid, redirect)
+                        "INSERT INTO  virtual_redirect (vid, redirect)
                               SELECT  vid, {?}
-                                FROM  x4dat.virtual
+                                FROM  virtual
                                WHERE  alias = {?}", $user->forlifeEmail(), $new);
                 }
             }
@@ -155,9 +155,9 @@ class ListeReq extends Validate
                     $app  = '-' . $app;
                 }
                 $red = $this->domain . '_' . $liste;
-                XDB::execute('INSERT INTO x4dat.virtual (alias, type)
+                XDB::execute('INSERT INTO virtual (alias, type)
                                         VALUES({?}, {?})', $liste . $app . '@' . $this->domain, 'list');
-                XDB::execute('INSERT INTO x4dat.virtual_redirect (vid, redirect)
+                XDB::execute('INSERT INTO virtual_redirect (vid, redirect)
                                         VALUES ({?}, {?})', XDB::insertId(),
                                        $red . $mdir . '@listes.polytechnique.org');
                 $list->mass_subscribe($liste, join(' ', $this->members));

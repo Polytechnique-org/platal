@@ -35,7 +35,7 @@
   </table>
   <div class="center">
     <input type="submit" name="survey_submit" value="{if $survey_type == 'newsurvey'}Continuer{else}Valider{/if}"/>
-    <input type="reset" name="survey_reset" value="R&#233;initialiser"/>
+    <input type="reset" name="survey_reset" value="Réinitialiser"/>
     <input type="submit" name="survey_cancel" value="Annuler"/>
   </div>
 </form>

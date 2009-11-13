@@ -26,6 +26,7 @@ class PlatalGlobals extends PlGlobals
 
     /** db params */
     public $dbdb               = 'x4dat';
+    public $dbprefix           = '';
     public $dbhost             = 'localhost';
     public $dbuser             = 'x4dat';
     public $dbpwd              = 'x4dat';

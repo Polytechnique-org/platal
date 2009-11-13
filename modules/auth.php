@@ -70,7 +70,7 @@ class AuthModule extends PLModule
             }
             $res .= "</membres>\n\n";
 
-            header('Content-Type: text/xml; charset="UTF-8"');
+            pl_content_headers("text/xml");
             echo $res;
         }
         exit;
@@ -91,7 +91,7 @@ class AuthModule extends PLModule
 
             $request  = @$GLOBALS['HTTP_RAW_POST_DATA'];
             $response = xmlrpc_server_call_method($server, $request, null);
-            header('Content-Type: text/xml');
+            pl_content_headers("text/xml");
             print $response;
             xmlrpc_server_destroy($server);
         }

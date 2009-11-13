@@ -421,14 +421,26 @@ class EmailModule extends PLModule
                 $to2  = getEmails(Env::v('to_contacts'));
                 $cc2  = getEmails(Env::v('cc_contacts'));
                 $txt  = str_replace('^M', '', Env::v('contenu'));
-                $to   = Env::v('to');
-                $subj = Env::v('sujet');
-                $from = Env::v('from');
-                $cc   = trim(Env::v('cc'));
-                $bcc  = trim(Env::v('bcc'));
+                $to   = str_replace(';', ',', Env::t('to'));
+                $subj = Env::t('sujet');
+                $from = Env::t('from');
+                $cc   = str_replace(';', ',', Env::t('cc'));
+                $bcc  = str_replace(';', ',', Env::t('bcc'));
 
+                $email_regex = '/^[a-z0-9.\-+_\$]+@([\-.+_]?[a-z0-9])+$/i';
+                foreach (explode(',', $to . ',' . $cc . ',' . $bcc) as $email) {
+                    $email = trim($email);
+                    if ($email != '' && !preg_match($email_regex, $email)) {
+                        $page->trigError("L'adresse email " . $email  . ' est erronée.');
+                        $error = true;
+                    }
+                }
                 if (empty($to) && empty($cc) && empty($to2) && empty($bcc) && empty($cc2)) {
                     $page->trigError("Indique au moins un destinataire.");
+                    $error = true;
+                }
+
+                if ($error) {
                     $page->assign('uploaded_f', PlUpload::listFilenames(S::user()->login(), 'emails.send'));
                 } else {
                     $mymail = new PlMailer();
@@ -806,8 +818,8 @@ class EmailModule extends PLModule
                 foreach ($broken_list as $orig_email) {
                     $email = valide_email(trim($orig_email));
                     if (empty($email) || $email == '@') {
-                        $invalid_emails[] = "$orig_email: invalid email";
-                    } else {
+                        $invalid_emails[] = trim($orig_email) . ': invalid email';
+                    } elseif (!in_array($email, $valid_emails)) {
                         $res = XDB::query('SELECT  COUNT(*)
                                              FROM  emails
                                             WHERE  email = {?}', $email);
@@ -895,11 +907,11 @@ class EmailModule extends PLModule
 
                 // Output the list of users with recently broken addresses,
                 // along with the count of valid redirections.
-                header('Content-Type: text/x-csv; charset=utf-8;');
-                header('Cache-Control: no-cache');
+                require_once 'include/notifs.inc.php';
+                pl_content_headers("text/x-csv");
 
                 $csv = fopen('php://output', 'w');
-                fputcsv($csv, array('nom', 'prenom', 'alias', 'bounce', 'nbmails', 'url'), ';');
+                fputcsv($csv, array('nom', 'prenom', 'promo', 'alias', 'bounce', 'nbmails', 'url'), ';');
                 foreach ($broken_user_list as $alias => $mails) {
                     $sel = Xdb::query(
                         "SELECT  u.user_id, count(e.email) AS nb_mails, u.nom, u.prenom, u.promo
@@ -911,9 +923,12 @@ class EmailModule extends PLModule
                        GROUP BY  u.user_id", $alias);
 
                     if ($x = $sel->fetchOneAssoc()) {
+                        if ($x['nb_mails'] == 0) {
+                            register_profile_update($x['user_id'], 'broken');
+                        }
                         fputcsv($csv, array($x['nom'], $x['prenom'], $x['promo'], $alias,
-                                            join(',', $mails), $x['nb_mails']),
-                                            'https://www.polytechnique.org/marketing/broken/' . $alias, ';');
+                                            join(',', $mails), $x['nb_mails'],
+                                            'https://www.polytechnique.org/marketing/broken/' . $alias), ';');
                     }
                 }
                 fclose($csv);

@@ -23,9 +23,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="description" content="Le Portail des Polytechniciens" />
     <meta name="keywords" content="Ecole polytechnique, anciens eleves, portail, alumni, AX, X, routage, reroutage, e-mail, email, mail" />
+
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="icon" href="/images/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="images/logo.png" type="image/png" />
+
+    <link rel="stylesheet" type="text/css" href="css/base.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="css/print.css" media="print"/>
+
     <link rel="index"  href="" />
     <link rel="author" href="changelog" />
     <link rel="search" href="search" />
@@ -41,14 +46,5 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     {include core=plpage.header.tpl}
-    <link rel="stylesheet" type="text/css" href="css/base.css" media="all"/>
-    <link rel="stylesheet" type="text/css" href="css/print.css" media="print"/>
-    <script type="text/javascript">//<![CDATA[
-      var platal_baseurl = "{$globals->baseurl}/";
-    //]]></script>
-    {javascript name=overlib}
-    {javascript name=md5}
-    {javascript name=sha1}
-    {javascript name=secure_hash}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

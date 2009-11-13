@@ -26,7 +26,7 @@ endef
 
 all: build
 
-build: core conf banana wiki openid medals jquery
+build: core conf static banana wiki openid medals jquery
 
 check:
 	@!(find . -name '*.php' -exec php -l {} ";" | grep -v 'No syntax errors detected')
@@ -63,6 +63,14 @@ htdocs/.htaccess: htdocs/.htaccess.in Makefile
 	@REWRITE_BASE="/~$$(id -un)"; \
 	test "$$REWRITE_BASE" = "/~web" && REWRITE_BASE="/"; \
 	sed -e "s,@REWRITE_BASE@,$$REWRITE_BASE,g" $< > $@
+
+##
+## static content
+##
+static: htdocs/javascript@VERSION
+
+%@VERSION: % Makefile ChangeLog
+	cd $< && rm -f $(VERSION) && ln -sf . $(VERSION)
 
 ##
 ## wiki

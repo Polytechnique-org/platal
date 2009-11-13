@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 {if $survey_resultmode}
-  Quelques r&#233;ponses donn&#233;es par les personnes sond&#233;es&nbsp;:
+  Quelques réponses données par les personnes sondées&nbsp;:
   <ul>
   {foreach item=sresult from=$squestion.result}
     <li>{$sresult.answer}</li>

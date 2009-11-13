@@ -190,9 +190,9 @@ function hook_getXFace($headers)
     }
     if (isset($headers['x-face'])) {
         $user = User::getSilent($login);
-        $res = XDB::query('SELECT  pf.uid
+        $res = XDB::query("SELECT  pf.uid
                              FROM  forum_profiles AS pf
-                            WHERE  pf.uid = {?} AND FIND_IN_SET(\'xface\', pf.flags)',
+                            WHERE  pf.uid = {?} AND FIND_IN_SET('xface', pf.flags)",
                           $user->id());
         if ($res->numRows()) {
             // User wants his xface to be showed, fallback to default handler

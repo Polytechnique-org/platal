@@ -234,14 +234,14 @@ class ForumsBanana extends Banana
         }
 
         $infos = $this->fetchProfile();
-        $page->assign('nom' ,  $infos['name']);
-        $page->assign('mail',  $infos['mail']);
-        $page->assign('sig',   $infos['sig']);
-        $page->assign('disp',  $infos['threads']);
-        $page->assign('maj',   $infos['maj']);
-        $page->assign('xface', $infos['xface']);
+        $page->assign('nom' ,   $infos['name']);
+        $page->assign('mail',   $infos['mail']);
+        $page->assign('sig',    $infos['sig']);
+        $page->assign('disp',   $infos['threads']);
+        $page->assign('maj',    $infos['maj']);
+        $page->assign('xface',  $infos['xface']);
         $page->assign('unread', $infos['tree_unread']);
-        $page->assign('read', $infos['tree_read']);
+        $page->assign('read',   $infos['tree_read']);
         return null;
     }
 }
