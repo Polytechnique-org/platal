@@ -208,6 +208,10 @@ WHERE name = 'INSA Rouen';
 UPDATE profile_education_enum
 SET abbreviation = 'IAE de Paris', name = 'Institut d\'Administration des Entreprises de Paris', url = 'http://iae.univ-paris1.fr/'
 WHERE name = 'Institut d\'Administration des Entreprises';
+SET abbreviation = 'CNSMDP', name = 'Conservatoire National Supérieur de Musique et de Danse de Paris'
+WHERE name = 'Conservatoire national supérieur de musique et de danse de Paris';
+SET name = 'École Normale de Musique de Paris'
+WHERE name = 'École normale de musique de Paris';
 
 UPDATE profile_education_enum
 SET abbreviation = 'Berkeley', name = 'University of California, Berkeley', country = 'US'
