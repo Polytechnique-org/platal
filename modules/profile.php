@@ -330,8 +330,8 @@ class ProfileModule extends PLModule
 
         // Build the page
         $page->addJsLink('ajax.js');
-        $page->addJsLink('applis.js');
-        $page->addJsLink('grades.js');
+        $page->addJsLink('applis.js', false /* dynamic content */);
+        $page->addJsLink('grades.js', false /* dynamic content */);
         $page->addJsLink('profile.js');
         $page->addJsLink('jquery.autocomplete.js');
         $wiz = new PlWizard('Profil', PlPage::getCoreTpl('plwizard.tpl'), true, true);
