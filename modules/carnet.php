@@ -306,7 +306,8 @@ class CarnetModule extends PLModule
         $view = new UserSet(new UFC_Contact($user));
         $view->addMod('minifiche', 'Mini-fiches', true);
         $view->addMod('trombi', 'Trombinoscope', false, array('with_admin' => false, 'with_promo' => true));
-        $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'carnet/contacts/search'));
+        // TODO: Reactivate when the new map is completed.
+        // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'carnet/contacts/search'));
         $view->apply('carnet/contacts', $page, $action, $subaction);
         //if ($action != 'geoloc' || ($search && !$ssaction) || (!$search && !$subaction)) {
         $page->changeTpl('carnet/mescontacts.tpl');

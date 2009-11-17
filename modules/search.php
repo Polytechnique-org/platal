@@ -126,7 +126,8 @@ class SearchModule extends PLModule
             $view->addMod('minifiche', 'Mini-fiches', true, array('with_score' => true));
             if (S::logged() && !Env::i('nonins')) {
                 $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true, 'with_score' => true));
-                $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+                // TODO: Reactivate when the new map is completed.
+                // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
             }
             $view->apply('search', $page, $action, $subaction);
 
@@ -198,7 +199,8 @@ class SearchModule extends PLModule
             $view = new SearchSet(false, $action == 'geoloc' && substr($subaction, -3) == 'swf');
             $view->addMod('minifiche', 'Mini-fiches', true);
             $view->addMod('trombi', 'Trombinoscope', false, array('with_promo' => true));
-            //$view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
+            // TODO: Reactivate when the new map is completed.
+            // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'search/adv'));
             $view->apply('search/adv', $page, $action, $subaction);
 
             if ($subaction) {

@@ -296,7 +296,8 @@ class XnetGrpModule extends PLModule
         } else if ($action == 'geoloc' || $action == 'trombi') {
             $view = new UserSet();
             $view->addMod('trombi', 'Trombinoscope');
-            $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'annuaire/search'));
+            // TODO: Reactivate when the new map is completed.
+            // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'annuaire/search'));
             $view->apply('annuaire', $page, $action, $subaction);
             if ($action == 'geoloc' && $subaction) {
                 return;
