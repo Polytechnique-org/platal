@@ -41,13 +41,13 @@ class NewsletterModule extends PLModule
         $page->setTitle('Lettres mensuelles');
 
         switch ($action) {
-          case 'out': Newsletter::unsubscribe(); break;
-          case 'in':  Newsletter::subscribe(); break;
+          case 'out': NewsLetter::unsubscribe(); break;
+          case 'in':  NewsLetter::subscribe(); break;
           default: ;
         }
 
-        $page->assign('nls', Newsletter::subscriptionState());
-        $page->assign('nl_list', Newsletter::listSent());
+        $page->assign('nls', NewsLetter::subscriptionState());
+        $page->assign('nl_list', NewsLetter::listSent());
     }
 
     function handler_nl_show(&$page, $nid = 'last')
@@ -108,11 +108,11 @@ class NewsletterModule extends PLModule
         require_once("newsletter.inc.php");
 
         if($new) {
-            Newsletter::create();
+            NewsLetter::create();
             pl_redirect("admin/newsletter");
         }
 
-        $page->assign('nl_list', Newsletter::listAll());
+        $page->assign('nl_list', NewsLetter::listAll());
     }
 
     function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {

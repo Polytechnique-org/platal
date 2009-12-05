@@ -106,7 +106,7 @@ class NLReq extends Validate
 
     public function commit()
     {
-        $nl  = new Newsletter();
+        $nl  = new NewsLetter();
         $nl->saveArticle($this->art);
         return true;
     }

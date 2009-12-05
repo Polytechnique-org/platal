@@ -41,7 +41,7 @@ class NewsLetter extends MassMailer
         } else {
             $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
             if (!$res->numRows()) {
-                Newsletter::create();
+                NewsLetter::create();
             }
             $res = XDB::query("SELECT * FROM newsletter WHERE bits='new' ORDER BY id DESC LIMIT 1");
         }
