@@ -214,6 +214,12 @@ SET name = 'École Normale de Musique de Paris'
 WHERE name = 'École normale de musique de Paris';
 
 UPDATE profile_education_enum
+SET abbreviation = 'NDU', country = 'US'
+WHERE name = 'National Defense University';
+UPDATE profile_education_enum
+SET abbreviation = 'Brown', country = 'US'
+WHERE name = 'Brown University';
+UPDATE profile_education_enum
 SET abbreviation = 'Berkeley', name = 'University of California, Berkeley', country = 'US'
 WHERE name = 'Univ Berkeley';
 UPDATE profile_education_enum
