@@ -226,7 +226,7 @@ class PaymentModule extends PLModule
                              FROM  #groupex#.evenements
                             WHERE  paiement_id = {?}', $ref);
         if ($eid = $res->fetchOneCell()) {
-            $this->load('xnetevents.inc.php');
+            require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid);
             subscribe_lists_event(0, $uid, $evt, $montant, true);
         }
@@ -327,7 +327,7 @@ class PaymentModule extends PLModule
                              FROM  #groupex#.evenements
                             WHERE  paiement_id = {?}', $ref);
         if ($eid = $res->fetchOneCell()) {
-            $this->load('xnetevents.inc.php');
+            require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid);
             subscribe_lists_event(0, $uid, $evt, $montant, true);
         }
