@@ -23,7 +23,7 @@ Nom,Prénom,Sexe,Promotion,Email,Commentaire
 {if $ann}
 {iterate from=$ann item=m}
 
-{$m.nom},{$m.prenom},{if $m.sexe}F{else}M{/if},{$m.promo},{$m.email},{$m.comm|replace:',':'\,'}
+{$m.nom},{$m.prenom},{if $m.femme}F{else}M{/if},{$m.promo},{$m.email},{$m.comm|replace:',':'\,'}
 
 {/iterate}
 {/if}
