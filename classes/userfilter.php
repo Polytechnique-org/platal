@@ -481,6 +481,48 @@ class UFC_EmailList implements UserFilterCondition
     }
 }
 
+/** Filters users based on their address
+ * @param $field Field of the address used for filtering (city, street, ...)
+ * @param $text Text for filter
+ * @param $mode Mode for search (PREFIX, SUFFIX, ...)
+ */
+class UFC_Address implements UserFilterCondition
+{
+    const PREFIX    = 1;
+    const SUFFIX    = 2;
+    const CONTAINS  = 3;
+
+    private $field;
+    private $text;
+    private $mode;
+
+    public function __construct($field, $text, $mode)
+    {
+        $this->field = $field;
+        $this->text  = $text;
+        $this->mode  = $mode;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $left = 'pa.' . $field;
+        $op   = ' LIKE ';
+        if (($this->mode & self::CONTAINS) == 0) {
+            $right = XDB::format('{?}', $this->text);
+            $op = ' = ';
+        } else if (($this->mode & self::CONTAINS) == self::PREFIX) {
+            $right = XDB::format('CONCAT({?}, \'%\')', $this->text);
+        } else if (($this->mode & self::CONTAINS) == self::SUFFIX) {
+            $right = XDB::format('CONCAT(\'%\', {?})', $this->text);
+        } else {
+            $right = XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->text);
+        }
+        $cond = $left . $op . $right;
+        $uf->addAddressFilter();
+        return $cond;
+    }
+}
+
 /** Filters users based on a relation toward on user
  * @param $user User to which searched users are related
  */
@@ -1176,6 +1218,24 @@ class UserFilter
                                                                                                        CONCAT(al_forlife.alias, \'@\', {?}),
                                                                                                        a.email))',
                                                                                 $globals->mail->domain, $globals->mail->domain2));
+        }
+        return $joins;
+    }
+
+
+    /** ADDRESSES
+     */
+    private $pa = false;
+    public function addAddressFilter()
+    {
+        $this->pa = true;
+    }
+
+    private function addressJoins()
+    {
+        $joins = array();
+        if ($this->pa) {
+            $joins['pa'] = array('left', 'profile_address', '$ME.PID = $PID');
         }
         return $joins;
     }
