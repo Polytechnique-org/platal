@@ -161,6 +161,8 @@ class UFC_Or extends UFC_NChildren
     }
 }
 
+/** Filters users who have a profile
+ */
 class UFC_Profile implements UserFilterCondition
 {
     public function buildCondition(UserFilter &$uf)
@@ -169,6 +171,11 @@ class UFC_Profile implements UserFilterCondition
     }
 }
 
+/** Filters users based on promo
+ * @param $comparison Comparison operator (>, =, ...)
+ * @param $grade Formation on which to restrict, UserFilter::DISPLAY for "any formation"
+ * @param $promo Promo on which the filter is based
+ */
 class UFC_Promo implements UserFilterCondition
 {
 
@@ -199,6 +206,11 @@ class UFC_Promo implements UserFilterCondition
     }
 }
 
+/** Filters users based on name
+ * @param $type Type of name field on which filtering is done (firstname, lastname, ...)
+ * @param $text Text on which to filter
+ * @param $mode flag indicating search type (prefix, suffix, with particule, ...)
+ */
 class UFC_Name implements UserFilterCondition
 {
     const PREFIX   = 1;
@@ -252,6 +264,10 @@ class UFC_Name implements UserFilterCondition
     }
 }
 
+/** Filters users based on death date
+ * @param $comparison Comparison operator
+ * @param $date Date to which death date should be compared
+ */
 class UFC_Dead implements UserFilterCondition
 {
     private $comparison;
@@ -273,6 +289,11 @@ class UFC_Dead implements UserFilterCondition
     }
 }
 
+/** Filters users based on registration state
+ * @param $active Whether we want to use only "active" users (i.e with a valid redirection)
+ * @param $comparison Comparison operator
+ * @param $date Date to which users registration date should be compared
+ */
 class UFC_Registered implements UserFilterCondition
 {
     private $active;
@@ -300,6 +321,10 @@ class UFC_Registered implements UserFilterCondition
     }
 }
 
+/** Filters users based on profile update date
+ * @param $comparison Comparison operator
+ * @param $date Date to which profile update date must be compared
+ */
 class UFC_ProfileUpdated implements UserFilterCondition
 {
     private $comparison;
@@ -317,6 +342,10 @@ class UFC_ProfileUpdated implements UserFilterCondition
     }
 }
 
+/** Filters users based on next birthday date
+ * @param $comparison Comparison operator
+ * @param $date Date to which users next birthday date should be compared
+ */
 class UFC_Birthday implements UserFilterCondition
 {
     private $comparison;
@@ -334,6 +363,9 @@ class UFC_Birthday implements UserFilterCondition
     }
 }
 
+/** Filters users based on sex
+ * @parm $sex One of User::GENDER_MALE or User::GENDER_FEMALE, for selecting users
+ */
 class UFC_Sex implements UserFilterCondition
 {
     private $sex;
@@ -352,6 +384,10 @@ class UFC_Sex implements UserFilterCondition
     }
 }
 
+/** Filters users based on group membership
+ * @param $group Group whose member we are selecting
+ * @param $admin Whether to restrict selection to admins of that group
+ */
 class UFC_Group implements UserFilterCondition
 {
     private $group;
@@ -373,6 +409,9 @@ class UFC_Group implements UserFilterCondition
     }
 }
 
+/** Filters users based on email address
+ * @param $email Email whose owner we are looking for
+ */
 class UFC_Email implements UserFilterCondition
 {
     private $email;
@@ -397,6 +436,9 @@ class UFC_Email implements UserFilterCondition
     }
 }
 
+/** Filters users base on an email list
+ * @param $emails List of emails whose owner must be selected
+ */
 class UFC_EmailList implements UserFilterCondition
 {
     private $emails;
@@ -439,6 +481,9 @@ class UFC_EmailList implements UserFilterCondition
     }
 }
 
+/** Filters users based on a relation toward on user
+ * @param $user User to which searched users are related
+ */
 abstract class UFC_UserRelated implements UserFilterCondition
 {
     protected $user;
@@ -448,6 +493,8 @@ abstract class UFC_UserRelated implements UserFilterCondition
     }
 }
 
+/** Filters users who belongs to selected user's contacts
+ */
 class UFC_Contact extends UFC_UserRelated
 {
     public function buildCondition(UserFilter &$uf)
@@ -457,6 +504,8 @@ class UFC_Contact extends UFC_UserRelated
     }
 }
 
+/** Filters users being watched by selected user
+ */
 class UFC_WatchRegistration extends UFC_UserRelated
 {
     public function buildCondition(UserFilter &$uf)
@@ -473,6 +522,10 @@ class UFC_WatchRegistration extends UFC_UserRelated
     }
 }
 
+/** Filters users belonging to a promo watched by selected user
+ * @param $user Selected user (the one watching promo)
+ * @param $grade Formation the user is watching
+ */
 class UFC_WatchPromo extends UFC_UserRelated
 {
     private $grade;
@@ -495,6 +548,8 @@ class UFC_WatchPromo extends UFC_UserRelated
     }
 }
 
+/** Filters users watched by selected user
+ */
 class UFC_WatchContact extends UFC_Contact
 {
     public function buildCondition(UserFilter &$uf)
@@ -536,6 +591,10 @@ abstract class UserFilterOrder
     abstract protected function getSortTokens(UserFilter &$uf);
 }
 
+/** Orders users by promo
+ * @param $grade Formation whose promo users should be sorted by (restricts results to users of that formation)
+ * @param $desc Whether sort is descending
+ */
 class UFO_Promo extends UserFilterOrder
 {
     private $grade;
@@ -558,6 +617,12 @@ class UFO_Promo extends UserFilterOrder
     }
 }
 
+/** Sorts users by name
+ * @param $type Type of name on which to sort (firstname, ...)
+ * @param $variant Variant of that name to user (marital, ordinary, ...)
+ * @param $particle Set to true if particles should be included in the sorting order
+ * @param $desc If sort order should be descending
+ */
 class UFO_Name extends UserFilterOrder
 {
     private $type;
@@ -588,6 +653,8 @@ class UFO_Name extends UserFilterOrder
     }
 }
 
+/** Sorts users based on registration date
+ */
 class UFO_Registration extends UserFilterOrder
 {
     protected function getSortTokens(UserFilter &$uf)
@@ -596,6 +663,8 @@ class UFO_Registration extends UserFilterOrder
     }
 }
 
+/** Sorts users based on next birthday date
+ */
 class UFO_Birthday extends UserFilterOrder
 {
     protected function getSortTokens(UserFilter &$uf)
@@ -604,6 +673,8 @@ class UFO_Birthday extends UserFilterOrder
     }
 }
 
+/** Sorts users based on last profile update
+ */
 class UFO_ProfileUpdate extends UserFilterOrder
 {
     protected function getSortTokens(UserFilter &$uf)
@@ -612,6 +683,8 @@ class UFO_ProfileUpdate extends UserFilterOrder
     }
 }
 
+/** Sorts users based on death date
+ */
 class UFO_Death extends UserFilterOrder
 {
     protected function getSortTokens(UserFilter &$uf)
