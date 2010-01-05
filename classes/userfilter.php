@@ -523,6 +523,59 @@ class UFC_Address implements UserFilterCondition
     }
 }
 
+/** Filters users based on the corps they belong to
+ * @param $corps Corps we are looking for (abbreviation)
+ * @param $type Whether we search for original or current corps
+ */
+class UFC_Corps implements UserFilterCondition
+{
+    const CURRENT=1;
+    const ORIGIN=2;
+
+    private $corps;
+    private $type;
+
+    public function __construct($corps, $type = self::CURRENT)
+    {
+        $this->corps = $corps;
+        $this->type  = $type;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        /** Tables shortcuts :
+         * pc for profile corps,
+         * pceo for profile_corps_enum - orginal
+         * pcec for profile_corps_enum - current
+         */
+        $sub = $uf->addCorpsFilter($this->type);
+        $cond = $sub . '.abbreviation = ' . $corps;
+        return $cond;
+    }
+}
+
+/** Filters users based on their rank in the corps
+ * @param $rank Rank we are looking for (abbreviation)
+ */
+class UFC_Corps_Rank implements UserFilterCondition
+{
+    private $rank;
+    public function __construct($rank)
+    {
+        $this->rank = $rank;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        /** Tables shortcuts :
+         * pcr for profile_corps_rank
+         */
+        $sub = $uf->addCorpsRankFilter();
+        $cond = $sub . '.abbreviation = ' . $rank;
+        return $cond;
+    }
+}
+
 /** Filters users based on a relation toward on user
  * @param $user User to which searched users are related
  */
@@ -1240,6 +1293,46 @@ class UserFilter
         return $joins;
     }
 
+
+    /** CORPS
+     */
+
+    private $pc = false;
+    private $pce = array();
+    private $pcr = false;
+    public function addCorpsFilter($type)
+    {
+        $this->pc = true;
+        if ($type == UFC_Corps::CURRENT) {
+            $pce['pcec'] = 'current_corpsid';
+            return 'pcec';
+        } else if ($type == UFC_Corps::ORIGIN) {
+            $pce['pceo'] = 'original_corpsid';
+            return 'pceo';
+        }
+    }
+
+    public function addCorpsRankFilter()
+    {
+        $this->pc = true;
+        $this->pcr = true;
+        return 'pcr';
+    }
+
+    private function corpsJoins()
+    {
+        $joins = array();
+        if ($this->pc) {
+            $joins['pc'] = array('left', 'profile_corps', '$ME.uid = $UID');
+        }
+        if ($this->pcr) {
+            $joins['pcr'] = array('left', 'profile_corps_rank_enum', '$ME.id = pc.rankid');
+        }
+        foreach($this->pce as $sub => $field) {
+            $joins[$sub] = array('left', 'profile_corps_enum', '$ME.id = pc.' . $field);
+        }
+        return $joins;
+    }
 
     /** CONTACTS
      */
