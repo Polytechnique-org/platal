@@ -135,7 +135,7 @@
           {if !$c.wasinscrit}
           Ce{if $c.sexe}tte{/if} camarade n'est pas inscrit{if $c.sexe}e{/if}.
           <a href="marketing/public/{$c.hruid}" class='popup'>Si tu connais son adresse email,
-          <strong>n'hésite pas à nous la transmettre !</a>
+          <strong>n'hésite pas à nous la transmettre !</strong></a>
           {elseif !$c.actif}
           Ce{if $c.sexe}tte{/if} camarade n'a plus d'adresse de redirection valide.
           <a href="marketing/broken/{$c.hruid}">

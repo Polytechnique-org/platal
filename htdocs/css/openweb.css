@@ -402,8 +402,7 @@ div#body {
 
 #fiche #photo {
     float: right;
-    padding-left: 0;
-    padding; 0;
+    padding: 0;
     margin: 0;
     clear: right;
     width: 30%;
@@ -472,7 +471,7 @@ div.adresse div.titre { color: purple; }
 }
 
 #fiche .medal_frame img {
-    float: left:
+    float: left;
     padding: 0ex 1ex;
 }
 
