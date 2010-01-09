@@ -64,7 +64,7 @@
     </tr>
     <tr>
       <th colspan="2">
-        Actions immédiates
+        Action non modérée
       </th>
     </tr>
     <tr>
@@ -96,7 +96,7 @@
         </p>
         <p>
         Si elle est sur Internet, choisis la seconde solution et nos robots iront la télécharger
-        directement où il faut&nbsp;:-)
+        directement où il faut.
         </p>
       </td>
     </tr>

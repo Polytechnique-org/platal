@@ -169,6 +169,7 @@ class ProfileModule extends PLModule
                                 WHERE  user_id = {?} AND type="photo"',
                          S::v('uid'));
             $globals->updateNbValid();
+            $page->trigSuccess("Ta photo a bien été supprimée. Elle ne sera plus visible sur le site dans au plus une heure.");
         } elseif (Env::v('cancel')) {
             S::assert_xsrf_token();
 
