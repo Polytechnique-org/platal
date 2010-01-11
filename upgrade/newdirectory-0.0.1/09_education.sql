@@ -265,6 +265,9 @@ UPDATE profile_education_enum
 SET abbreviation = 'The Wharton School', name = 'The Wharton School of the University of Pennsylvania', country = 'US', url = 'http://www.wharton.upenn.edu/'
 WHERE name = 'Univ Wharton';
 UPDATE profile_education_enum
+SET country = 'US'
+WHERE name = 'University of Pennsylvania';
+UPDATE profile_education_enum
 SET abbreviation = 'Columbia University', name = 'Columbia University in the City of New York', country = 'US'
 WHERE name = 'Univ Columbia';
 UPDATE profile_education_enum
@@ -567,7 +570,6 @@ INSERT INTO  profile_education_enum (name, url, country, abbreviation)
              ('Universität Stuttgarti', 'http://www.uni-stuttgart.de/', 'DE', ''),
              ('Universitatea Politehnica din Bucureşti', 'http://www.pub.ro/', 'RO', 'Politehnica din Bucureşti'),
              ('University of Birmingham', 'http://www.bham.ac.uk/', 'GB', ''),
-             ('University of Pennsylvania', 'http://www.upenn.edu/', 'US', ''),
              ('University of Rome', '', 'IT', ''),
              ('University of Sheffield', 'http://www.shef.ac.uk/', 'GB', ''),
              ('University of Utah', 'http://www.utah.edu/', 'US', ''),
