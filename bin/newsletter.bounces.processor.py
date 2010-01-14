@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 #***************************************************************************
-#*  Copyright (C) 2004-2009 Polytechnique.org                              *
+#*  Copyright (C) 2003-2010 Polytechnique.org                              *
 #*  http://opensource.polytechnique.org/                                   *
 #*                                                                         *
 #*  This program is free software; you can redistribute it and/or modify   *
@@ -19,8 +19,6 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-
-# Copyright (c) 2008 Aymeric Augustin
 
 """
 Process as automatically as possible bounces from the newsletter
