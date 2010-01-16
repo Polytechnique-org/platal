@@ -24,6 +24,7 @@
  * CONDITIONS
  ******************/
 
+// {{{ interface UserFilterCondition
 interface UserFilterCondition
 {
     const COND_TRUE  = 'TRUE';
@@ -33,7 +34,9 @@ interface UserFilterCondition
      */
     public function buildCondition(UserFilter &$uf);
 }
+// }}}
 
+// {{{ class UFC_OneChild
 abstract class UFC_OneChild implements UserFilterCondition
 {
     protected $child;
@@ -50,7 +53,9 @@ abstract class UFC_OneChild implements UserFilterCondition
         $this->child =& $cond;
     }
 }
+// }}}
 
+// {{{ class UFC_NChildren
 abstract class UFC_NChildren implements UserFilterCondition
 {
     protected $children = array();
@@ -81,7 +86,9 @@ abstract class UFC_NChildren implements UserFilterCondition
         }
     }
 }
+// }}}
 
+// {{{ class UFC_True
 class UFC_True implements UserFilterCondition
 {
     public function buildCondition(UserFilter &$uf)
@@ -89,7 +96,9 @@ class UFC_True implements UserFilterCondition
         return self::COND_TRUE;
     }
 }
+// }}}
 
+// {{{ class UFC_False
 class UFC_False implements UserFilterCondition
 {
     public function buildCondition(UserFilter &$uf)
@@ -97,7 +106,9 @@ class UFC_False implements UserFilterCondition
         return self::COND_FALSE;
     }
 }
+// }}}
 
+// {{{ class UFC_Not
 class UFC_Not extends UFC_OneChild
 {
     public function buildCondition(UserFilter &$uf)
@@ -112,7 +123,9 @@ class UFC_Not extends UFC_OneChild
         }
     }
 }
+// }}}
 
+// {{{ class UFC_And
 class UFC_And extends UFC_NChildren
 {
     public function buildCondition(UserFilter &$uf)
@@ -136,7 +149,9 @@ class UFC_And extends UFC_NChildren
         }
     }
 }
+// }}}
 
+// {{{ class UFC_Or
 class UFC_Or extends UFC_NChildren
 {
     public function buildCondition(UserFilter &$uf)
@@ -160,7 +175,9 @@ class UFC_Or extends UFC_NChildren
         }
     }
 }
+// }}}
 
+// {{{ class UFC_Profile
 /** Filters users who have a profile
  */
 class UFC_Profile implements UserFilterCondition
@@ -170,7 +187,9 @@ class UFC_Profile implements UserFilterCondition
         return '$PID IS NOT NULL';
     }
 }
+// }}}
 
+// {{{ class UFC_Promo
 /** Filters users based on promo
  * @param $comparison Comparison operator (>, =, ...)
  * @param $grade Formation on which to restrict, UserFilter::DISPLAY for "any formation"
@@ -205,7 +224,9 @@ class UFC_Promo implements UserFilterCondition
         }
     }
 }
+// }}}
 
+// {{{ class UFC_Name
 /** Filters users based on name
  * @param $type Type of name field on which filtering is done (firstname, lastname, ...)
  * @param $text Text on which to filter
@@ -263,7 +284,9 @@ class UFC_Name implements UserFilterCondition
         return implode(' OR ', $conds);
     }
 }
+// }}}
 
+// {{{ class UFC_Dead
 /** Filters users based on death date
  * @param $comparison Comparison operator
  * @param $date Date to which death date should be compared
@@ -288,7 +311,9 @@ class UFC_Dead implements UserFilterCondition
         return $str;
     }
 }
+// }}}
 
+// {{{ class UFC_Registered
 /** Filters users based on registration state
  * @param $active Whether we want to use only "active" users (i.e with a valid redirection)
  * @param $comparison Comparison operator
@@ -320,7 +345,9 @@ class UFC_Registered implements UserFilterCondition
         return $date;
     }
 }
+// }}}
 
+// {{{ class UFC_ProfileUpdated
 /** Filters users based on profile update date
  * @param $comparison Comparison operator
  * @param $date Date to which profile update date must be compared
@@ -341,7 +368,9 @@ class UFC_ProfileUpdated implements UserFilterCondition
         return 'p.last_change ' . $this->comparison . XDB::format(' {?}', date('Y-m-d H:i:s', $this->date));
     }
 }
+// }}}
 
+// {{{ class UFC_Birthday
 /** Filters users based on next birthday date
  * @param $comparison Comparison operator
  * @param $date Date to which users next birthday date should be compared
@@ -362,7 +391,9 @@ class UFC_Birthday implements UserFilterCondition
         return 'p.next_birthday ' . $this->comparison . XDB::format(' {?}', date('Y-m-d', $this->date));
     }
 }
+// }}}
 
+// {{{ class UFC_Sex
 /** Filters users based on sex
  * @parm $sex One of User::GENDER_MALE or User::GENDER_FEMALE, for selecting users
  */
@@ -383,7 +414,9 @@ class UFC_Sex implements UserFilterCondition
         }
     }
 }
+// }}}
 
+// {{{ class UFC_Group
 /** Filters users based on group membership
  * @param $group Group whose member we are selecting
  * @param $admin Whether to restrict selection to admins of that group
@@ -408,7 +441,9 @@ class UFC_Group implements UserFilterCondition
         return $where;
     }
 }
+// }}}
 
+// {{{ class UFC_Email
 /** Filters users based on email address
  * @param $email Email whose owner we are looking for
  */
@@ -435,7 +470,9 @@ class UFC_Email implements UserFilterCondition
         }
     }
 }
+// }}}
 
+// {{{ class UFC_EmailList
 /** Filters users base on an email list
  * @param $emails List of emails whose owner must be selected
  */
@@ -480,7 +517,9 @@ class UFC_EmailList implements UserFilterCondition
         return '(' . implode(') OR (', $cond) . ')';
     }
 }
+// }}}
 
+// {{{ class UFC_Address
 /** Filters users based on their address
  * @param $field Field of the address used for filtering (city, street, ...)
  * @param $text Text for filter
@@ -522,7 +561,9 @@ class UFC_Address implements UserFilterCondition
         return $cond;
     }
 }
+// }}}
 
+// {{{ class UFC_Corps
 /** Filters users based on the corps they belong to
  * @param $corps Corps we are looking for (abbreviation)
  * @param $type Whether we search for original or current corps
@@ -553,7 +594,9 @@ class UFC_Corps implements UserFilterCondition
         return $cond;
     }
 }
+// }}}
 
+// {{{ class UFC_Corps_Rank
 /** Filters users based on their rank in the corps
  * @param $rank Rank we are looking for (abbreviation)
  */
@@ -575,7 +618,9 @@ class UFC_Corps_Rank implements UserFilterCondition
         return $cond;
     }
 }
+// }}}
 
+// {{{ class UFC_UserRelated
 /** Filters users based on a relation toward on user
  * @param $user User to which searched users are related
  */
@@ -587,7 +632,9 @@ abstract class UFC_UserRelated implements UserFilterCondition
         $this->user =& $user;
     }
 }
+// }}}
 
+// {{{ class UFC_Contact
 /** Filters users who belongs to selected user's contacts
  */
 class UFC_Contact extends UFC_UserRelated
@@ -598,7 +645,9 @@ class UFC_Contact extends UFC_UserRelated
         return 'c' . $sub . '.contact IS NOT NULL';
     }
 }
+// }}}
 
+// {{{ class UFC_WatchRegistration
 /** Filters users being watched by selected user
  */
 class UFC_WatchRegistration extends UFC_UserRelated
@@ -616,7 +665,9 @@ class UFC_WatchRegistration extends UFC_UserRelated
         }
     }
 }
+// }}}
 
+// {{{ class UFC_WatchPromo
 /** Filters users belonging to a promo watched by selected user
  * @param $user Selected user (the one watching promo)
  * @param $grade Formation the user is watching
@@ -642,7 +693,9 @@ class UFC_WatchPromo extends UFC_UserRelated
         }
     }
 }
+// }}}
 
+// {{{ class UFC_WatchContact
 /** Filters users watched by selected user
  */
 class UFC_WatchContact extends UFC_Contact
@@ -655,12 +708,14 @@ class UFC_WatchContact extends UFC_Contact
         return parent::buildCondition($uf);
     }
 }
+// }}}
 
 
 /******************
  * ORDERS
  ******************/
 
+// {{{ class UserFilterOrder
 abstract class UserFilterOrder
 {
     protected $desc = false;
@@ -685,7 +740,9 @@ abstract class UserFilterOrder
 
     abstract protected function getSortTokens(UserFilter &$uf);
 }
+// }}}
 
+// {{{ class UFO_Promo
 /** Orders users by promo
  * @param $grade Formation whose promo users should be sorted by (restricts results to users of that formation)
  * @param $desc Whether sort is descending
@@ -711,7 +768,9 @@ class UFO_Promo extends UserFilterOrder
         }
     }
 }
+// }}}
 
+// {{{ class UFO_Name
 /** Sorts users by name
  * @param $type Type of name on which to sort (firstname, ...)
  * @param $variant Variant of that name to user (marital, ordinary, ...)
@@ -747,7 +806,9 @@ class UFO_Name extends UserFilterOrder
         }
     }
 }
+// }}}
 
+// {{{ class UFO_Registration
 /** Sorts users based on registration date
  */
 class UFO_Registration extends UserFilterOrder
@@ -757,7 +818,9 @@ class UFO_Registration extends UserFilterOrder
         return 'a.registration_date';
     }
 }
+// }}}
 
+// {{{ class UFO_Birthday
 /** Sorts users based on next birthday date
  */
 class UFO_Birthday extends UserFilterOrder
@@ -767,7 +830,9 @@ class UFO_Birthday extends UserFilterOrder
         return 'p.next_birthday';
     }
 }
+// }}}
 
+// {{{ class UFO_ProfileUpdate
 /** Sorts users based on last profile update
  */
 class UFO_ProfileUpdate extends UserFilterOrder
@@ -777,7 +842,9 @@ class UFO_ProfileUpdate extends UserFilterOrder
         return 'p.last_change';
     }
 }
+// }}}
 
+// {{{ class UFO_Death
 /** Sorts users based on death date
  */
 class UFO_Death extends UserFilterOrder
@@ -787,6 +854,7 @@ class UFO_Death extends UserFilterOrder
         return 'p.deathdate';
     }
 }
+// }}}
 
 
 /***********************************
@@ -795,6 +863,7 @@ class UFO_Death extends UserFilterOrder
   *********************************
  ***********************************/
 
+// {{{ class UserFilter
 class UserFilter
 {
     static private $joinMethods = array();
@@ -1410,7 +1479,7 @@ class UserFilter
         return $joins;
     }
 }
-
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
