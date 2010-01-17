@@ -190,10 +190,10 @@ class UFC_Profile implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Promo
-/** Filters users based on promo
+/** Filters users based on promotion
  * @param $comparison Comparison operator (>, =, ...)
  * @param $grade Formation on which to restrict, UserFilter::DISPLAY for "any formation"
- * @param $promo Promo on which the filter is based
+ * @param $promo Promotion on which the filter is based
  */
 class UFC_Promo implements UserFilterCondition
 {
@@ -228,9 +228,9 @@ class UFC_Promo implements UserFilterCondition
 
 // {{{ class UFC_Name
 /** Filters users based on name
- * @param $type Type of name field on which filtering is done (firstname, lastname, ...)
+ * @param $type Type of name field on which filtering is done (firstname, lastname...)
  * @param $text Text on which to filter
- * @param $mode flag indicating search type (prefix, suffix, with particule, ...)
+ * @param $mode Flag indicating search type (prefix, suffix, with particule...)
  */
 class UFC_Name implements UserFilterCondition
 {
@@ -418,24 +418,24 @@ class UFC_Sex implements UserFilterCondition
 
 // {{{ class UFC_Group
 /** Filters users based on group membership
- * @param $group Group whose member we are selecting
- * @param $admin Whether to restrict selection to admins of that group
+ * @param $group Group whose members we are selecting
+ * @param $anim Whether to restrict selection to animators of that group
  */
 class UFC_Group implements UserFilterCondition
 {
     private $group;
-    private $admin;
-    public function __construct($group, $admin = false)
+    private $anim;
+    public function __construct($group, $anim = false)
     {
         $this->group = $group;
-        $this->admin = $admin;
+        $this->anim = $anim;
     }
 
     public function buildCondition(UserFilter &$uf)
     {
         $sub = $uf->addGroupFilter($this->group);
         $where = 'gpm' . $sub . '.perms IS NOT NULL';
-        if ($this->admin) {
+        if ($this->anim) {
             $where .= ' AND gpm' . $sub . '.perms = \'admin\'';
         }
         return $where;
@@ -473,7 +473,7 @@ class UFC_Email implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_EmailList
-/** Filters users base on an email list
+/** Filters users based on an email list
  * @param $emails List of emails whose owner must be selected
  */
 class UFC_EmailList implements UserFilterCondition
@@ -570,8 +570,8 @@ class UFC_Address implements UserFilterCondition
  */
 class UFC_Corps implements UserFilterCondition
 {
-    const CURRENT=1;
-    const ORIGIN=2;
+    const CURRENT   = 1;
+    const ORIGIN    = 2;
 
     private $corps;
     private $type;
@@ -584,8 +584,8 @@ class UFC_Corps implements UserFilterCondition
 
     public function buildCondition(UserFilter &$uf)
     {
-        /** Tables shortcuts :
-         * pc for profile corps,
+        /** Tables shortcuts:
+         * pc for profile_corps,
          * pceo for profile_corps_enum - orginal
          * pcec for profile_corps_enum - current
          */
@@ -610,7 +610,7 @@ class UFC_Corps_Rank implements UserFilterCondition
 
     public function buildCondition(UserFilter &$uf)
     {
-        /** Tables shortcuts :
+        /** Tables shortcuts:
          * pcr for profile_corps_rank
          */
         $sub = $uf->addCorpsRankFilter();
@@ -644,7 +644,7 @@ class UFC_Job_Company extends UserFilterCondition
     private function assertType($type)
     {
         if ($type != self::JOBID && $type != self::JOBNAME && $type != self::JOBACRONYM) {
-            Platal::page()->killError("Type de recherche non valide");
+            Platal::page()->killError("Type de recherche non valide.");
         }
     }
 
@@ -923,7 +923,7 @@ class UFC_Mentor_Sectorization extends UserFilterCondition
 // }}}
 
 // {{{ class UFC_UserRelated
-/** Filters users based on a relation toward on user
+/** Filters users based on a relation toward a user
  * @param $user User to which searched users are related
  */
 abstract class UFC_UserRelated implements UserFilterCondition
@@ -937,7 +937,7 @@ abstract class UFC_UserRelated implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Contact
-/** Filters users who belongs to selected user's contacts
+/** Filters users who belong to selected user's contacts
  */
 class UFC_Contact extends UFC_UserRelated
 {
@@ -1045,8 +1045,8 @@ abstract class UserFilterOrder
 // }}}
 
 // {{{ class UFO_Promo
-/** Orders users by promo
- * @param $grade Formation whose promo users should be sorted by (restricts results to users of that formation)
+/** Orders users by promotion
+ * @param $grade Formation whose promotion users should be sorted by (restricts results to users of that formation)
  * @param $desc Whether sort is descending
  */
 class UFO_Promo extends UserFilterOrder
@@ -1074,8 +1074,8 @@ class UFO_Promo extends UserFilterOrder
 
 // {{{ class UFO_Name
 /** Sorts users by name
- * @param $type Type of name on which to sort (firstname, ...)
- * @param $variant Variant of that name to user (marital, ordinary, ...)
+ * @param $type Type of name on which to sort (firstname...)
+ * @param $variant Variant of that name to use (marital, ordinary...)
  * @param $particle Set to true if particles should be included in the sorting order
  * @param $desc If sort order should be descending
  */
@@ -1659,7 +1659,7 @@ class UserFilter
     {
         $joins = array();
         if ($this->pa) {
-            $joins['pa'] = array('left', 'profile_address', '$ME.PID = $PID');
+            $joins['pa'] = array('left', 'profile_address', '$ME.pid = $PID');
         }
         return $joins;
     }
@@ -1863,7 +1863,7 @@ class UserFilter
             $pms['pms'] =  'profile_mentor_sector';
             return 'pms';
         default:
-            return;
+            Platal::page()->killError("Undefined mentor filter.");
         }
     }
 
