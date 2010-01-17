@@ -822,6 +822,35 @@ class UFC_Phone extends UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Medal
+/** Filters users based on their medals
+ * @param $medal ID of the medal
+ * @param $grade Grade of the medal (null for 'any')
+ */
+class UFC_Medal extends UserFilterCondition
+{
+    private $medal;
+    private $grade;
+
+    public function __construct($medal, $grade = null)
+    {
+        $this->medal = $medal;
+        $this->grade = $grade;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $conds = array();
+        $sub = $uf->addMedalFilter();
+        $conds[] = $sub . '.mid = ' . XDB::format('{?}', $this->medal);
+        if ($this->grade != null) {
+            $conds[] = $sub . '.gid = ' . XDB::format('{?}', $this->grade);
+        }
+        return implode(' AND ', $conds);
+    }
+}
+// }}}
+
 // {{{ class UFC_UserRelated
 /** Filters users based on a relation toward on user
  * @param $user User to which searched users are related
@@ -1719,6 +1748,25 @@ class UserFilter
         $joins = array();
         if ($this->with_phone) {
             $joins['ptel'] = array('left', 'profile_phone', '$ME.uid = $UID');
+        }
+        return $joins;
+    }
+
+    /** MEDALS
+     */
+
+    private $with_medals = false;
+    public function addMedalFilter()
+    {
+        $this->with_medals = true;
+        return 'pmed';
+    }
+
+    private function medalJoins()
+    {
+        $joins = array();
+        if ($this->with_medals) {
+            $joins['pmed'] = array('left', 'profile_medals_sub', '$ME.uid = $UID');
         }
         return $joins;
     }
