@@ -776,6 +776,52 @@ class UFC_Networking extends UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Phone
+/** Filters users based on their phone number
+ * @param $num_type Type of number (pro/user/home)
+ * @param $phone_type Type of phone (fixed/mobile/fax)
+ * @param $number Phone number
+ */
+class UFC_Phone extends UserFilterCondition
+{
+    const NUM_PRO   = 'pro';
+    const NUM_USER  = 'user';
+    const NUM_HOME  = 'address';
+    const NUM_ANY   = 'any';
+
+    const PHONE_FIXED   = 'fixed';
+    const PHONE_MOBILE  = 'mobile';
+    const PHONE_FAX     = 'fax';
+    const PHONE_ANY     = 'any';
+
+    private $num_type;
+    private $phone_type;
+    private $number;
+
+    public function __construct($number, $num_type = self::NUM_ANY, $phone_type = self::PHONE_ANY)
+    {
+        require_once('profil.inc.php');
+        $this->number = $number;
+        $this->num_type = $num_type;
+        $this->phone_type = format_phone_number($phone_type);
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addPhoneFilter();
+        $conds = array();
+        $conds[] = $sub . '.search_tel = ' . XDB::format('{?}', $this->number);
+        if ($this->num_type != self::NUM_ANY) {
+            $conds[] = $sub . '.link_type = ' . XDB::format('{?}', $this->num_type);
+        }
+        if ($this->phone_type != self::PHONE_ANY) {
+            $conds[] = $sub . '.tel_type = ' . XDB::format('{?}', $this->phone_type);
+        }
+        return implode(' AND ', $conds);
+    }
+}
+// }}}
+
 // {{{ class UFC_UserRelated
 /** Filters users based on a relation toward on user
  * @param $user User to which searched users are related
@@ -1653,6 +1699,26 @@ class UserFilter
         $joins = array();
         if ($this->with_pnw) {
             $joins['pnw'] = array('left', 'profile_networking', '$ME.uid = $UID');
+        }
+        return $joins;
+    }
+
+    /** PHONE
+     */
+
+    private $with_phone = false;
+
+    public function addPhoneFilter()
+    {
+        $this->with_phone = true;
+        return 'ptel';
+    }
+
+    private function phoneJoins()
+    {
+        $joins = array();
+        if ($this->with_phone) {
+            $joins['ptel'] = array('left', 'profile_phone', '$ME.uid = $UID');
         }
         return $joins;
     }
