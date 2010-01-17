@@ -747,6 +747,35 @@ class UFC_Job_Description extends UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Networking
+/** Filters users based on network identity (IRC, ...)
+ * @param $type Type of network (-1 for any)
+ * @param $value Value to search
+ */
+class UFC_Networking extends UserFilterCondition
+{
+    private $type;
+    private $value;
+
+    public function __construct($type, $value)
+    {
+        $this->type = $type;
+        $this->value = $value;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addNetworkingFilter();
+        $conds = array();
+        $conds[] = $sub . '.address = ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->value);
+        if ($this->type != -1) {
+            $conds[] = $sub . '.network_type = ' . XDB::format('{?}', $this->type);
+        }
+        return implode(' AND ', $conds);
+    }
+}
+// }}}
+
 // {{{ class UFC_UserRelated
 /** Filters users based on a relation toward on user
  * @param $user User to which searched users are related
@@ -1605,6 +1634,25 @@ class UserFilter
         }
         if ($this->with_pja) {
             $joins['pja'] = array('left', 'profile_job_alternates', '$ME.subsubsectorid = pj.subsubsectorid');
+        }
+        return $joins;
+    }
+
+    /** NETWORKING
+     */
+
+    private $with_pnw = false;
+    public function addNetworkingFilter()
+    {
+        $this->with_pnw = true;
+        return 'pnw';
+    }
+
+    private function networkingJoins()
+    {
+        $joins = array();
+        if ($this->with_pnw) {
+            $joins['pnw'] = array('left', 'profile_networking', '$ME.uid = $UID');
         }
         return $joins;
     }
