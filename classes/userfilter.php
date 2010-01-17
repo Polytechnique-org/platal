@@ -851,6 +851,77 @@ class UFC_Medal extends UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Mentor_Expertise
+/** Filters users by mentoring expertise
+ * @param $expertise Domain of expertise
+ */
+class UFC_Mentor_Expertise extends UserFilterCondition
+{
+    private $expertise;
+
+    public function __construct($expertise)
+    {
+        $this->expertise = $expertise;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addMentorFilter(UserFilter::MENTOR_EXPERTISE);
+        return $sub . '.expertise LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\'', $this->expertise);
+    }
+}
+// }}}
+
+// {{{ class UFC_Mentor_Country
+/** Filters users by mentoring country
+ * @param $country Two-letters code of country being searched
+ */
+class UFC_Mentor_Country extends UserFilterCondition
+{
+    private $country;
+
+    public function __construct($country)
+    {
+        $this->country = $country;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addMentorFilter(UserFilter::MENTOR_COUNTRY);
+        return $sub . '.country = ' . XDB::format('{?}', $this->country);
+    }
+}
+// }}}
+
+// {{{ class UFC_Mentor_Sectorization
+/** Filters users based on mentoring (sub|)sector
+ * @param $sector ID of sector
+ * @param $subsector Subsector (null for any)
+ */
+class UFC_Mentor_Sectorization extends UserFilterCondition
+{
+    private $sector;
+    private $subsector;
+
+    public function __construct($sector, $subsector = null)
+    {
+        $this->sector = $sector;
+        $this->subsubsector = $subsector;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addMentorFilter(UserFilter::MENTOR_SECTOR);
+        $conds = array();
+        $conds[] = $sub . '.sectorid = ' . XDB::format('{?}', $this->sector);
+        if ($this->subsector != null) {
+            $conds[] = $sub . '.subsectorid = ' . XDB::format('{?}', $this->subsector);
+        }
+        return implode(' AND ', $conds);
+    }
+}
+// }}}
+
 // {{{ class UFC_UserRelated
 /** Filters users based on a relation toward on user
  * @param $user User to which searched users are related
@@ -1767,6 +1838,40 @@ class UserFilter
         $joins = array();
         if ($this->with_medals) {
             $joins['pmed'] = array('left', 'profile_medals_sub', '$ME.uid = $UID');
+        }
+        return $joins;
+    }
+
+    /** MENTORING
+     */
+
+    private $pms = array();
+    const MENTOR_EXPERTISE  = 1;
+    const MENTOR_COUNTRY    = 2;
+    const MENTOR_SECTOR     = 3;
+
+    public function addMentorFilter($type)
+    {
+        switch($type) {
+        case MENTOR_EXPERTISE:
+            $pms['pme'] = 'profile_mentor';
+            return 'pme';
+        case MENTOR_COUNTRY:
+            $pms['pmc'] = 'profile_mentor_country';
+            return 'pmc';
+        case MENTOR_SECTOR:
+            $pms['pms'] =  'profile_mentor_sector';
+            return 'pms';
+        default:
+            return;
+        }
+    }
+
+    private function mentorJoins()
+    {
+        $joins = array();
+        foreach ($this->pms as $sub => $tab) {
+            $joins[$sub] = array('left', $tab, '$ME.uid = $UID');
         }
         return $joins;
     }
