@@ -620,6 +620,133 @@ class UFC_Corps_Rank implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Job_Company
+/** Filters users based on the company they belong to
+ * @param $type The field being searched (self::JOBID, self::JOBNAME or self::JOBACRONYM)
+ * @param $value The searched value
+ */
+class UFC_Job_Company extends UserFilterCondition
+{
+    const JOBID = 'id';
+    const JOBNAME = 'name';
+    const JOBACRONYM = 'acronym';
+
+    private $type;
+    private $value;
+
+    public function __construct($type, $value)
+    {
+        $this->assertType($type);
+        $this->type = $type;
+        $this->value = $value;
+    }
+
+    private function assertType($type)
+    {
+        if ($type != self::JOBID && $type != self::JOBNAME && $type != self::JOBACRONYM) {
+            Platal::page()->killError("Type de recherche non valide");
+        }
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addJobCompanyFilter();
+        $cond  = $sub . '.' . $this->type . ' = ' . XDB::format('{?}', $this->value);
+        return $cond;
+    }
+}
+// }}}
+
+// {{{ class UFC_Job_Sectorization
+/** Filters users based on the ((sub)sub)sector they work in
+ * @param $sector The sector searched
+ * @param $subsector The subsector
+ * @param $subsubsector The subsubsector
+ */
+class UFC_Job_Sectorization extends UserFilterCondition
+{
+
+    private $sector;
+    private $subsector;
+    private $subsubsector;
+
+    public function __construct($sector = null, $subsector = null, $subsubsector = null)
+    {
+        $this->sector = $sector;
+        $this->subsector = $subsector;
+        $this->subsubsector = $subsubsector;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        // No need to add the JobFilter, it will be done by addJobSectorizationFilter
+        $conds = array();
+        if ($this->sector !== null) {
+            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SECTOR);
+            $conds[] = $sub . '.id = ' . XDB::format('{?}', $this->sector);
+        }
+        if ($this->subsector !== null) {
+            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SUBSECTOR);
+            $conds[] = $sub . '.id = ' . XDB::format('{?}', $this->subsector);
+        }
+        if ($this->subsubsector !== null) {
+            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SUBSUBSECTOR);
+            $conds[] = $sub . '.id = ' . XDB::format('{?}', $this->subsubsector);
+        }
+        return implode(' AND ', $conds);
+    }
+}
+// }}}
+
+// {{{ class UFC_Job_Description
+/** Filters users based on their job description
+ * @param $description The text being searched for
+ * @param $fields The fields to search for (user-defined, ((sub|)sub|)sector)
+ */
+class UFC_Job_Description extends UserFilterCondition
+{
+
+    /** Meta-filters
+     * Built with binary OR on UserFilter::JOB_*
+     */
+    const ANY = 31;
+    const SECTORIZATION = 15;
+
+    private $description;
+    private $fields;
+
+    public function __construct($description)
+    {
+        $this->fields = $fields;
+        $this->description = $description;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $conds = array();
+        if ($this->fields & UserFilter::JOB_USERDEFINED) {
+            $sub = $uf->addJobFilter();
+            $conds[] = $sub . '.description LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+        }
+        if ($this->fields & UserFilter::JOB_SECTOR) {
+            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SECTOR);
+            $conds[] = $sub . '.name LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+        }
+        if ($this->fields & UserFilter::JOB_SUBSECTOR) {
+            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SUBSECTOR);
+            $conds[] = $sub . '.name LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+        }
+        if ($this->fields & UserFilter::JOB_SUBSUBSECTOR) {
+            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SUBSUBSECTOR);
+            $conds[] = $sub . '.name LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_ALTERNATES);
+            $conds[] = $sub . '.name LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+        }
+        return implode(' OR ', $conds);
+    }
+}
+// }}}
+
 // {{{ class UFC_UserRelated
 /** Filters users based on a relation toward on user
  * @param $user User to which searched users are related
@@ -1399,6 +1526,85 @@ class UserFilter
         }
         foreach($this->pce as $sub => $field) {
             $joins[$sub] = array('left', 'profile_corps_enum', '$ME.id = pc.' . $field);
+        }
+        return $joins;
+    }
+
+    /** JOBS
+     */
+
+    const JOB_SECTOR = 1;
+    const JOB_SUBSECTOR = 2;
+    const JOB_SUBSUBSECTOR = 4;
+    const JOB_ALTERNATES = 8;
+    const JOB_USERDEFINED = 16;
+
+    /** Joins :
+     * pj => profile_job
+     * pje => profile_job_enum
+     * pjse => profile_job_sector_enum
+     * pjsse => profile_job_subsector_enum
+     * pjssse => profile_job_subsubsector_enum
+     * pja => profile_job_alternates
+     */
+    private $with_pj = false;
+    private $with_pje = false;
+    private $with_pjse = false;
+    private $with_pjsse = false;
+    private $with_pjssse = false;
+    private $with_pja = false;
+
+    public function addJobFilter()
+    {
+        $this->with_pj = true;
+        return 'pj';
+    }
+
+    public function addJobCompanyFilter()
+    {
+        $this->addJobFilter();
+        $this->with_pje = true;
+        return 'pje';
+    }
+
+    public function addJobSectorizationFilter($type)
+    {
+        $this->addJobFilter();
+        if ($type == self::JOB_SECTOR) {
+            $this->with_pjse = true;
+            return 'pjse';
+        } else if ($type == self::JOB_SUBSECTOR) {
+            $this->with_pjsse = true;
+            return 'pjsse';
+        } else if ($type == self::JOB_SUBSUBSECTOR) {
+            $this->with_pjssse = true;
+            return 'pjssse';
+        } else if ($type == self::JOB_ALTERNATES) {
+            $this->with_pja = true;
+            return 'pja';
+        }
+    }
+
+    private function jobJoins()
+    {
+        $joins = array();
+        if ($this->with_pj) {
+            $joins['pj'] = array('left', 'profile_job', '$ME.uid = $UID');
+        }
+        if ($this->with_pje) {
+            $joins['pje'] = array('left', 'profile_job_enum', '$ME.id = pj.jobid');
+        }
+        if ($this->with_pjse) {
+            $joins['pjse'] = array('left', 'profile_job_sector_enum', '$ME.id = pj.sectorid');
+        }
+        if ($this->with_pjsse) {
+            $joins['pjsse'] = array('left', 'profile_job_subsector_enum', '$ME.id = pj.subsectorid');
+        }
+        if ($this->with_pjssse) {
+            $joins['pjssse'] = array('left', 'profile_job_subsubsector_enum', '$ME.id = pj.subsubsectorid');
+        }
+        if ($this->with_pja) {
+            $joins['pja'] = array('left', 'profile_job_alternates', '$ME.subsubsectorid = pj.subsubsectorid');
         }
         return $joins;
     }
