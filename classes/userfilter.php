@@ -25,6 +25,15 @@
  ******************/
 
 // {{{ interface UserFilterCondition
+/** This interface describe objects which filter users based
+ *      on various parameters.
+ * The parameters of the filter must be given to the constructor.
+ * The buildCondition function is called by UserFilter when
+ *     actually building the query. That function must call
+ *     $uf->addWheteverFilter so that the UserFilter makes
+ *     adequate joins. It must return the 'WHERE' condition to use
+ *     with the filter.
+ */
 interface UserFilterCondition
 {
     const COND_TRUE  = 'TRUE';
@@ -1018,6 +1027,11 @@ class UFC_WatchContact extends UFC_Contact
  ******************/
 
 // {{{ class UserFilterOrder
+/** Base class for ordering results of a query.
+ * Parameters for the ordering must be given to the constructor ($desc for a
+ *     descending order).
+ * The getSortTokens function is used to get actual ordering part of the query.
+ */
 abstract class UserFilterOrder
 {
     protected $desc = false;
@@ -1040,6 +1054,10 @@ abstract class UserFilterOrder
         return $sel;
     }
 
+    /** This function must return the tokens to use for ordering
+     * @param &$uf The UserFilter whose results must be ordered
+     * @return The name of the field to use for ordering results
+     */
     abstract protected function getSortTokens(UserFilter &$uf);
 }
 // }}}
@@ -1166,6 +1184,46 @@ class UFO_Death extends UserFilterOrder
  ***********************************/
 
 // {{{ class UserFilter
+/** This class provides a convenient and centralized way of filtering users.
+ *
+ * Usage:
+ * $uf = new UserFilter(new UFC_Blah($x, $y), new UFO_Coin($z, $t));
+ *
+ * Resulting UserFilter can be used to:
+ * - get a list of User objects matching the filter
+ * - get a list of UIDs matching the filter
+ * - get the number of users matching the filter
+ * - check whether a given User matches the filter
+ * - filter a list of User objects depending on whether they match the filter
+ *
+ * Usage for UFC and UFO objects:
+ * A UserFilter will call all private functions named XXXJoins.
+ * These functions must return an array containing the list of join
+ * required by the various UFC and UFO associated to the UserFilter.
+ * Entries in those returned array are of the following form:
+ *   'join_tablealias' => array('join_type', 'joined_table', 'join_criter')
+ * which will be translated into :
+ *   join_type JOIN joined_table AS join_tablealias ON (join_criter)
+ * in the final query.
+ *
+ * In the join_criter text, $ME is replaced with 'join_tablealias', $PID with
+ * profile.pid, and $UID with auth_user_md5.user_id.
+ *
+ * For each kind of "JOIN" needed, a function named addXXXFilter() should be defined;
+ * its parameter will be used to set various private vars of the UserFilter describing
+ * the required joins ; such a function shall return the "join_tablealias" to use
+ * when referring to the joined table.
+ *
+ * For example, if data from profile_job must be available to filter results,
+ * the UFC object will call $uf-addJobFilter(), which will set the 'with_pj' var and 
+ * return 'pj', the short name to use when referring to profile_job; when building
+ * the query, calling the jobJoins function will return an array containing a single
+ * row:
+ *   'pj' => array('left', 'profile_job', '$ME.pid = $UID');
+ *
+ * The 'register_optional' function can be used to generate unique table aliases when
+ * the same table has to be joined several times with different aliases.
+ */
 class UserFilter
 {
     static private $joinMethods = array();
@@ -1381,6 +1439,11 @@ class UserFilter
     }
 
 
+    /** Stores a new (and unique) table alias in the &$table table
+     * @param   &$table Array in which the table alias must be stored
+     * @param   $val    Value which will then be used to build the join
+     * @return          Name of the newly created alias
+     */
     private $option = 0;
     private function register_optional(array &$table, $val)
     {
@@ -1806,18 +1869,18 @@ class UserFilter
     /** PHONE
      */
 
-    private $with_phone = false;
+    private $with_ptel = false;
 
     public function addPhoneFilter()
     {
-        $this->with_phone = true;
+        $this->with_ptel = true;
         return 'ptel';
     }
 
     private function phoneJoins()
     {
         $joins = array();
-        if ($this->with_phone) {
+        if ($this->with_ptel) {
             $joins['ptel'] = array('left', 'profile_phone', '$ME.uid = $UID');
         }
         return $joins;
@@ -1826,17 +1889,17 @@ class UserFilter
     /** MEDALS
      */
 
-    private $with_medals = false;
+    private $with_pmed = false;
     public function addMedalFilter()
     {
-        $this->with_medals = true;
+        $this->with_pmed = true;
         return 'pmed';
     }
 
     private function medalJoins()
     {
         $joins = array();
-        if ($this->with_medals) {
+        if ($this->with_pmed) {
             $joins['pmed'] = array('left', 'profile_medals_sub', '$ME.uid = $UID');
         }
         return $joins;
