@@ -530,44 +530,127 @@ class UFC_EmailList implements UserFilterCondition
 
 // {{{ class UFC_Address
 /** Filters users based on their address
- * @param $field Field of the address used for filtering (city, street, ...)
- * @param $text Text for filter
- * @param $mode Mode for search (PREFIX, SUFFIX, ...)
+ * @param $text Text for filter in fulltext search
+ * @param $textSearchMode Mode for search (PREFIX, SUFFIX, ...)
+ * @param $type Filter on address type
+ * @param $flags Filter on address flags
+ * @param $countryId Filter on address countryId
+ * @param $administrativeAreaId Filter on address administrativeAreaId
+ * @param $subAdministrativeAreaId Filter on address subAdministrativeAreaId
+ * @param $localityId Filter on address localityId
+ * @param $postalCode Filter on address postalCode
  */
 class UFC_Address implements UserFilterCondition
 {
-    const PREFIX    = 1;
-    const SUFFIX    = 2;
-    const CONTAINS  = 3;
+    /** Flags for text search
+     */
+    const PREFIX    = 0x0001;
+    const SUFFIX    = 0x0002;
+    const CONTAINS  = 0x0003;
 
-    private $field;
+    /** Valid address type ('hq' is reserved for company addresses)
+     */
+    const TYPE_HOME = 'home';
+    const TYPE_PRO  = 'job';
+
+    /** Flags for addresses
+     */
+    const FLAG_CURRENT = 0x0001;
+    const FLAG_TEMP    = 0x0002;
+    const FLAG_SECOND  = 0x0004;
+    const FLAG_MAIL    = 0x0008;
+    const FLAG_CEDEX   = 0x0010;
+
+    // Binary OR of those flags
+    const FLAG_ANY     = 0x001F;
+
+    /** Text of these flags
+     */
+    private static $flagtexts = array(
+        self::FLAG_CURRENT => 'current',
+        self::FLAG_TEMP    => 'temporary',
+        self::FLAG_SECOND  => 'secondary',
+        self::FLAG_MAIL    => 'mail',
+        self::FLAG_CEDEX   => 'cedex',
+    );
+
+    /** Data of the filter
+     */
     private $text;
-    private $mode;
+    private $type;
+    private $flags;
+    private $countryId;
+    private $administrativeAreaId;
+    private $subAdministrativeAreaId;
+    private $localityId;
+    private $postalCode;
 
-    public function __construct($field, $text, $mode)
+    private $textSearchMode;
+
+    public function __construct($text = null, $textSearchMode = self::CONTAINS,
+        $type = null, $flags = self::FLAG_ANY, $countryId = null, $administrativeAreaId = null,
+        $subAdministrativeAreaId = null, $localityId = null, $postalCode = null)
     {
-        $this->field = $field;
-        $this->text  = $text;
-        $this->mode  = $mode;
+        $this->text                      = $text;
+        $this->textSearchMode            = $textSearchMode;
+        $this->type                      = $type;
+        $this->flags                     = $flags;
+        $this->countryId                 = $countryId;
+        $this->administrativeAreaId      = $administrativeAreaId;
+        $this->subAdministrativeAreaId   = $subAdministrativeAreaId;
+        $this->localityId                = $localityId;
+        $this->postalCode                = $postalCode;
     }
 
     public function buildCondition(UserFilter &$uf)
     {
-        $left = 'pa.' . $field;
-        $op   = ' LIKE ';
-        if (($this->mode & self::CONTAINS) == 0) {
-            $right = XDB::format('{?}', $this->text);
-            $op = ' = ';
-        } else if (($this->mode & self::CONTAINS) == self::PREFIX) {
-            $right = XDB::format('CONCAT({?}, \'%\')', $this->text);
-        } else if (($this->mode & self::CONTAINS) == self::SUFFIX) {
-            $right = XDB::format('CONCAT(\'%\', {?})', $this->text);
-        } else {
-            $right = XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->text);
+        $sub = $uf->addAddressFilter();
+        $conds = array();
+        if ($this->text != null) {
+            $left = $sub . '.text ';
+            $op = ' LIKE ';
+            if (($this->textSearchMode & self::CONTAINS) == 0) {
+                $right = XDB::format('{?}', $this->text);
+                $op = ' = ';
+            } else if (($this->mode & self::CONTAINS) == self::PREFIX) {
+                $right = XDB::format('CONCAT({?}, \'%\')', $this->text);
+            } else if (($this->mode & self::CONTAINS) == self::SUFFIX) {
+                $right = XDB::format('CONCAT(\'%\', {?})', $this->text);
+            } else {
+                $right = XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->text);
+            }
+            $conds[] = $left . $op . $right;
         }
-        $cond = $left . $op . $right;
-        $uf->addAddressFilter();
-        return $cond;
+
+        if ($this->type != null) {
+            $conds[] = $sub . '.type = ' . XDB::format('{?}', $this->type);
+        }
+
+        if ($this->flags != self::FLAG_ANY) {
+            foreach(self::$flagtexts as $flag => $text) {
+                if ($flag & $this->flags) {
+                    $conds[] = 'FIND_IN_SET(' . XDB::format('{?}', $text) . ', ' . $sub . '.flags)';
+                }
+            }
+        }
+
+        if ($this->countryId != null) {
+            $conds[] = $sub . '.countryId = ' . XDB::format('{?}', $this->countryId);
+        }
+        if ($this->administrativeAreaId != null) {
+            $conds[] = $sub . '.administrativeAreaId = ' . XDB::format('{?}', $this->administrativeAreaId);
+        }
+        if ($this->subAdministrativeAreaId != null) {
+            $conds[] = $sub . '.subAdministrativeAreaId = ' . XDB::format('{?}', $this->subAdministrativeAreaId);
+        }
+        if ($this->localityId != null) {
+            $conds[] = $sub . '.localityId = ' . XDB::format('{?}', $this->localityId);
+        }
+        if ($this->postalCode != null) {
+            $conds[] = $sub . '.postalCode = ' . XDB::format('{?}', $this->postalCode);
+        }
+
+        return implode(' AND ', $conds);
     }
 }
 // }}}
@@ -1712,16 +1795,17 @@ class UserFilter
 
     /** ADDRESSES
      */
-    private $pa = false;
+    private $with_pa = false;
     public function addAddressFilter()
     {
-        $this->pa = true;
+        $this->with_pa = true;
+        return 'pa';
     }
 
     private function addressJoins()
     {
         $joins = array();
-        if ($this->pa) {
+        if ($this->with_pa) {
             $joins['pa'] = array('left', 'profile_address', '$ME.pid = $PID');
         }
         return $joins;
