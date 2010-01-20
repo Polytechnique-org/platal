@@ -1160,17 +1160,17 @@ class UserFilter
 
     public function __construct($cond = null, $sort = null)
     {
-        if (empty(self::$joinMethods)) {
+        if (empty($this->joinMethods)) {
             $class = new ReflectionClass('UserFilter');
             foreach ($class->getMethods() as $method) {
                 $name = $method->getName();
                 if (substr($name, -5) == 'Joins' && $name != 'buildJoins') {
-                    self::$joinMethods[] = $name;
+                    $this->joinMethods[] = $name;
                 }
             }
         }
         if (!is_null($cond)) {
-            if ($cond instanceof UserFilterCondition) {
+            if ($cond instanceof PlFilterCondition) {
                 $this->setCondition($cond);
             }
         }

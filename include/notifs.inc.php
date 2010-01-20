@@ -36,7 +36,7 @@ abstract class WatchOperation
     {
         $this->date = $date;
         if (!$user->watch($this->flag)) {
-            return new UFC_False();
+            return new PFC_False();
         } else {
             return $this->buildCondition($user);
         }
@@ -133,8 +133,8 @@ class WatchRegistration extends WatchOperation
 
     protected function buildCondition(PlUser &$user)
     {
-        return new UFC_And(new UFC_Registered(false, '>', $this->date),
-                           new UFC_Or(new UFC_WatchContact($user),
+        return new PFC_And(new UFC_Registered(false, '>', $this->date),
+                           new PFC_Or(new UFC_WatchContact($user),
                                       new UFC_WatchPromo($user)));
     }
 
@@ -156,8 +156,8 @@ class WatchDeath extends WatchOperation
 
     protected function buildCondition(PlUser &$user)
     {
-        return new UFC_And(new UFC_Dead('>', $this->date, true),
-                           new UFC_Or(new UFC_WatchPromo($user),
+        return new PFC_And(new UFC_Dead('>', $this->date, true),
+                           new PFC_Or(new UFC_WatchPromo($user),
                                       new UFC_WatchContact($user)));
     }
 
@@ -191,10 +191,10 @@ class WatchBirthday extends WatchOperation
 
     protected function buildCondition(PlUser &$user)
     {
-        return new UFC_And(new UFC_OR(new UFC_Birthday('=', time()),
-                                      new UFC_And(new UFC_Birthday('<=', time() + self::WATCH_LIMIT),
+        return new PFC_And(new PFC_OR(new UFC_Birthday('=', time()),
+                                      new PFC_And(new UFC_Birthday('<=', time() + self::WATCH_LIMIT),
                                                   new UFC_Birthday('>', $this->date + self::WATCH_LIMIT))),
-                           new UFC_Or(new UFC_WatchPromo($user),
+                           new PFC_Or(new UFC_WatchPromo($user),
                                       new UFC_WatchContact($user)));
     }
 
