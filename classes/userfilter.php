@@ -36,153 +36,9 @@
  */
 interface UserFilterCondition
 {
-    const COND_TRUE  = 'TRUE';
-    const COND_FALSE = 'FALSE';
-
     /** Check that the given user matches the rule.
      */
     public function buildCondition(UserFilter &$uf);
-}
-// }}}
-
-// {{{ class UFC_OneChild
-abstract class UFC_OneChild implements UserFilterCondition
-{
-    protected $child;
-
-    public function __construct($child = null)
-    {
-        if (!is_null($child) && ($child instanceof UserFilterCondition)) {
-            $this->setChild($child);
-        }
-    }
-
-    public function setChild(UserFilterCondition &$cond)
-    {
-        $this->child =& $cond;
-    }
-}
-// }}}
-
-// {{{ class UFC_NChildren
-abstract class UFC_NChildren implements UserFilterCondition
-{
-    protected $children = array();
-
-    public function __construct()
-    {
-        $children = func_get_args();
-        foreach ($children as &$child) {
-            if (!is_null($child) && ($child instanceof UserFilterCondition)) {
-                $this->addChild($child);
-            }
-        }
-    }
-
-    public function addChild(UserFilterCondition &$cond)
-    {
-        $this->children[] =& $cond;
-    }
-
-    protected function catConds(array $cond, $op, $fallback)
-    {
-        if (count($cond) == 0) {
-            return $fallback;
-        } else if (count($cond) == 1) {
-            return $cond[0];
-        } else {
-            return '(' . implode(') ' . $op . ' (', $cond) . ')';
-        }
-    }
-}
-// }}}
-
-// {{{ class UFC_True
-class UFC_True implements UserFilterCondition
-{
-    public function buildCondition(UserFilter &$uf)
-    {
-        return self::COND_TRUE;
-    }
-}
-// }}}
-
-// {{{ class UFC_False
-class UFC_False implements UserFilterCondition
-{
-    public function buildCondition(UserFilter &$uf)
-    {
-        return self::COND_FALSE;
-    }
-}
-// }}}
-
-// {{{ class UFC_Not
-class UFC_Not extends UFC_OneChild
-{
-    public function buildCondition(UserFilter &$uf)
-    {
-        $val = $this->child->buildCondition($uf);
-        if ($val == self::COND_TRUE) {
-            return self::COND_FALSE;
-        } else if ($val == self::COND_FALSE) {
-            return self::COND_TRUE;
-        } else {
-            return 'NOT (' . $val . ')';
-        }
-    }
-}
-// }}}
-
-// {{{ class UFC_And
-class UFC_And extends UFC_NChildren
-{
-    public function buildCondition(UserFilter &$uf)
-    {
-        if (empty($this->children)) {
-            return self::COND_FALSE;
-        } else {
-            $true = self::COND_FALSE;
-            $conds = array();
-            foreach ($this->children as &$child) {
-                $val = $child->buildCondition($uf);
-                if ($val == self::COND_TRUE) {
-                    $true = self::COND_TRUE;
-                } else if ($val == self::COND_FALSE) {
-                    return self::COND_FALSE;
-                } else {
-                    $conds[] = $val;
-                }
-            }
-            return $this->catConds($conds, 'AND', $true);
-        }
-    }
-}
-// }}}
-
-// {{{ class UFC_Or
-class UFC_Or extends UFC_NChildren
-{
-    public function buildCondition(UserFilter &$uf)
-    {
-        if (empty($this->children)) {
-            return self::COND_TRUE;
-        } else {
-            $true = self::COND_TRUE;
-            $conds = array();
-            foreach ($this->children as &$child) {
-                $val = $child->buildCondition($uf);
-                if ($val == self::COND_TRUE) {
-                    return self::COND_TRUE;
-                } else if ($val == self::COND_FALSE) {
-                    $true = self::COND_FALSE;
-                } else {
-                    $conds[] = $val;
-                }
-            }
-            return $this->catConds($conds, 'OR', $true);
-        }
-    }
 }
 // }}}
 
@@ -1115,28 +971,8 @@ class UFC_WatchContact extends UFC_Contact
  *     descending order).
  * The getSortTokens function is used to get actual ordering part of the query.
  */
-abstract class UserFilterOrder
+abstract class UserFilterOrder extends PlFilterOrder
 {
-    protected $desc = false;
-    public function __construct($desc = false)
-    {
-        $this->desc = $desc;
-    }
-
-    public function buildSort(UserFilter &$uf)
-    {
-        $sel = $this->getSortTokens($uf);
-        if (!is_array($sel)) {
-            $sel = array($sel);
-        }
-        if ($this->desc) {
-            foreach ($sel as $k=>$s) {
-                $sel[$k] = $s . ' DESC';
-            }
-        }
-        return $sel;
-    }
-
     /** This function must return the tokens to use for ordering
      * @param &$uf The UserFilter whose results must be ordered
      * @return The name of the field to use for ordering results
@@ -1309,7 +1145,11 @@ class UFO_Death extends UserFilterOrder
  */
 class UserFilter
 {
-    static private $joinMethods = array();
+    private $joinMethods = array();
+
+    private $joinMetas = array('$PID' => 'p.pid',
+                               '$UID' => 'a.uid',
+                              );
 
     private $root;
     private $sort = array();
@@ -1369,48 +1209,10 @@ class UserFilter
         }
     }
 
-    private function formatJoin(array $joins)
-    {
-        $str = '';
-        foreach ($joins as $key => $infos) {
-            $mode  = $infos[0];
-            $table = $infos[1];
-            if ($mode == 'inner') {
-                $str .= 'INNER JOIN ';
-            } else if ($mode == 'left') {
-                $str .= 'LEFT JOIN ';
-            } else {
-                Platal::page()->kill("Join mode error");
-            }
-            $str .= $table . ' AS ' . $key;
-            if (isset($infos[2])) {
-                $str .= ' ON (' . str_replace(array('$ME', '$PID', '$UID'), array($key, 'p.pid', 'a.uid'), $infos[2]) . ')';
-            }
-            $str .= "\n";
-        }
-        return $str;
-    }
-
-    private function buildJoins()
-    {
-        $joins = array();
-        foreach (self::$joinMethods as $method) {
-            $joins = array_merge($joins, $this->$method());
-        }
-        return $this->formatJoin($joins);
-    }
-
-    private function getUIDList($uids = null, $count = null, $offset = null)
+    private function getUIDList($uids = null, PlLimit &$limit)
     {
         $this->buildQuery();
-        $limit = '';
-        if (!is_null($count)) {
-            if (!is_null($offset)) {
-                $limit = XDB::format('LIMIT {?}, {?}', (int)$offset, (int)$count);
-            } else {
-                $limit = XDB::format('LIMIT {?}', (int)$count);
-            }
-        }
+        $lim = $limit->getSql();
         $cond = '';
         if (!is_null($uids)) {
             $cond = ' AND a.uid IN ' . XDB::formatArray($uids);
@@ -1419,7 +1221,7 @@ class UserFilter
                                     ' . $this->query . $cond . '
                                    GROUP BY  a.uid
                                     ' . $this->orderby . '
-                                    ' . $limit);
+                                    ' . $lim);
         $this->lastcount = (int)XDB::fetchOneCell('SELECT FOUND_ROWS()');
         return $fetched;
     }
@@ -1436,7 +1238,7 @@ class UserFilter
 
     /** Filter a list of user to extract the users matching the rule.
      */
-    public function filter(array $users, $count = null, $offset = null)
+    public function filter(array $users, PlLimit &$limit)
     {
         $this->buildQuery();
         $table = array();
@@ -1450,7 +1252,7 @@ class UserFilter
             $uids[] = $uid;
             $table[$uid] = $user;
         }
-        $fetched = $this->getUIDList($uids, $count, $offset);
+        $fetched = $this->getUIDList($uids, $limit);
         $output = array();
         foreach ($fetched as $uid) {
             $output[] = $table[$uid];
@@ -1458,14 +1260,19 @@ class UserFilter
         return $output;
     }
 
-    public function getUIDs($count = null, $offset = null)
+    public function getUIDs(PlLimit &$limit)
     {
-        return $this->getUIDList(null, $count, $offset);
+        return $this->getUIDList(null, $limit);
     }
 
-    public function getUsers($count = null, $offset = null)
+    public function getUsers(PlLimit &$limit)
     {
-        return User::getBulkUsersWithUIDs($this->getUIDs($count, $offset));
+        return User::getBulkUsersWithUIDs($this->getUIDs($limit));
+    }
+
+    public function get(PlLimit &$limit)
+    {
+        return $this->getUsers($limit);
     }
 
     public function getTotalCount()
@@ -1555,7 +1362,7 @@ class UserFilter
     private function displayJoins()
     {
         if ($this->pd) {
-            return array('pd' => array('left', 'profile_display', '$ME.pid = $PID'));
+            return array('pd' => new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_display', '$ME.pid = $PID'));
         } else {
             return array();
         }
@@ -1626,7 +1433,7 @@ class UserFilter
     {
         $joins = array();
         foreach ($this->pn as $sub => $type) {
-            $joins['pn' . $sub] = array('left', 'profile_name', '$ME.pid = $PID AND $ME.typeid = ' . $type);
+            $joins['pn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_name', '$ME.pid = $PID AND $ME.typeid = ' . $type);
         }
         return $joins;
     }
@@ -1677,17 +1484,17 @@ class UserFilter
     {
         $joins = array();
         if ($this->with_pee) {
-            $joins['pee'] = array('inner', 'profile_education_enum', 'pee.abbreviation = \'X\'');
+            $joins['pee'] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'profile_education_enum', 'pee.abbreviation = \'X\'');
         }
         foreach ($this->pepe as $grade => $sub) {
             if ($this->isGrade($grade)) {
-                $joins['pe' . $sub] = array('left', 'profile_education', '$ME.eduid = pee.id AND $ME.uid = $PID');
-                $joins['pede' . $sub] = array('inner', 'profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid AND $ME.abbreviation LIKE ' .
+                $joins['pe' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_education', '$ME.eduid = pee.id AND $ME.uid = $PID');
+                $joins['pede' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid AND $ME.abbreviation LIKE ' .
                                                   XDB::format('{?}', $grade));
             } else {
-                $joins['pe' . $sub] = array('left', 'profile_education', '$ME.uid = $PID');
-                $joins['pee' . $sub] = array('inner', 'profile_education_enum', '$ME.id = pe' . $sub . '.eduid');
-                $joins['pede' . $sub] = array('inner', 'profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid');
+                $joins['pe' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_education', '$ME.uid = $PID');
+                $joins['pee' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'profile_education_enum', '$ME.id = pe' . $sub . '.eduid');
+                $joins['pede' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid');
             }
         }
         return $joins;
@@ -1720,13 +1527,13 @@ class UserFilter
         $joins = array();
         foreach ($this->gpm as $sub => $key) {
             if (is_null($key)) {
-                $joins['gpa' . $sub] = array('inner', 'groupex.asso');
-                $joins['gpm' . $sub] = array('left', 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
+                $joins['gpa' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'groupex.asso');
+                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
             } else if (ctype_digit($key)) {
-                $joins['gpm' . $sub] = array('left', 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = ' . $key);
+                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = ' . $key);
             } else {
-                $joins['gpa' . $sub] = array('inner', 'groupex.asso', XDB::format('$ME.diminutif = {?}', $key));
-                $joins['gpm' . $sub] = array('left', 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
+                $joins['gpa' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'groupex.asso', XDB::format('$ME.diminutif = {?}', $key));
+                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
             }
         }
         return $joins;
@@ -1761,29 +1568,29 @@ class UserFilter
         $joins = array();
         foreach ($this->e as $sub=>$key) {
             if (is_null($key)) {
-                $joins['e' . $sub] = array('left', 'emails', '$ME.uid = $UID AND $ME.flags != \'filter\'');
+                $joins['e' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'emails', '$ME.uid = $UID AND $ME.flags != \'filter\'');
             } else {
-                $joins['e' . $sub] = array('left', 'emails', XDB::format('$ME.uid = $UID AND $ME.flags != \'filter\' AND $ME.email = {?}', $key));
+                $joins['e' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'emails', XDB::format('$ME.uid = $UID AND $ME.flags != \'filter\' AND $ME.email = {?}', $key));
             }
         }
         foreach ($this->al as $sub=>$key) {
             if (is_null($key)) {
-                $joins['al' . $sub] = array('left', 'aliases', '$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\')');
+                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\')');
             } else if ($key == self::ALIAS_BEST) {
-                $joins['al' . $sub] = array('left', 'aliases', '$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND  FIND_IN_SET(\'bestalias\', $ME.flags)');
+                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND  FIND_IN_SET(\'bestalias\', $ME.flags)');
             } else if ($key == self::ALIAS_FORLIFE) {
-                $joins['al' . $sub] = array('left', 'aliases', '$ME.id = $UID AND $ME.type = \'a_vie\'');
+                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.id = $UID AND $ME.type = \'a_vie\'');
             } else {
-                $joins['al' . $sub] = array('left', 'aliases', XDB::format('$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND $ME.alias = {?}', $key));
+                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', XDB::format('$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND $ME.alias = {?}', $key));
             }
         }
         foreach ($this->ve as $sub=>$key) {
             if (is_null($key)) {
-                $joins['v' . $sub] = array('left', 'virtual', '$ME.type = \'user\'');
+                $joins['v' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'virtual', '$ME.type = \'user\'');
             } else {
-                $joins['v' . $sub] = array('left', 'virtual', XDB::format('$ME.type = \'user\' AND $ME.alias = {?}', $key));
+                $joins['v' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'virtual', XDB::format('$ME.type = \'user\' AND $ME.alias = {?}', $key));
             }
-            $joins['vr' . $sub] = array('left', 'virtual_redirect', XDB::format('$ME.vid = v' . $sub . '.vid
+            $joins['vr' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'virtual_redirect', XDB::format('$ME.vid = v' . $sub . '.vid
                                                                                  AND ($ME.redirect IN (CONCAT(al_forlife.alias, \'@\', {?}),
                                                                                                        CONCAT(al_forlife.alias, \'@\', {?}),
                                                                                                        a.email))',
@@ -1806,7 +1613,7 @@ class UserFilter
     {
         $joins = array();
         if ($this->with_pa) {
-            $joins['pa'] = array('left', 'profile_address', '$ME.pid = $PID');
+            $joins['pa'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_address', '$ME.pid = $PID');
         }
         return $joins;
     }
@@ -1841,13 +1648,13 @@ class UserFilter
     {
         $joins = array();
         if ($this->pc) {
-            $joins['pc'] = array('left', 'profile_corps', '$ME.uid = $UID');
+            $joins['pc'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_corps', '$ME.uid = $UID');
         }
         if ($this->pcr) {
-            $joins['pcr'] = array('left', 'profile_corps_rank_enum', '$ME.id = pc.rankid');
+            $joins['pcr'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_corps_rank_enum', '$ME.id = pc.rankid');
         }
         foreach($this->pce as $sub => $field) {
-            $joins[$sub] = array('left', 'profile_corps_enum', '$ME.id = pc.' . $field);
+            $joins[$sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_corps_enum', '$ME.id = pc.' . $field);
         }
         return $joins;
     }
@@ -1911,22 +1718,22 @@ class UserFilter
     {
         $joins = array();
         if ($this->with_pj) {
-            $joins['pj'] = array('left', 'profile_job', '$ME.uid = $UID');
+            $joins['pj'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job', '$ME.uid = $UID');
         }
         if ($this->with_pje) {
-            $joins['pje'] = array('left', 'profile_job_enum', '$ME.id = pj.jobid');
+            $joins['pje'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job_enum', '$ME.id = pj.jobid');
         }
         if ($this->with_pjse) {
-            $joins['pjse'] = array('left', 'profile_job_sector_enum', '$ME.id = pj.sectorid');
+            $joins['pjse'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job_sector_enum', '$ME.id = pj.sectorid');
         }
         if ($this->with_pjsse) {
-            $joins['pjsse'] = array('left', 'profile_job_subsector_enum', '$ME.id = pj.subsectorid');
+            $joins['pjsse'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job_subsector_enum', '$ME.id = pj.subsectorid');
         }
         if ($this->with_pjssse) {
-            $joins['pjssse'] = array('left', 'profile_job_subsubsector_enum', '$ME.id = pj.subsubsectorid');
+            $joins['pjssse'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job_subsubsector_enum', '$ME.id = pj.subsubsectorid');
         }
         if ($this->with_pja) {
-            $joins['pja'] = array('left', 'profile_job_alternates', '$ME.subsubsectorid = pj.subsubsectorid');
+            $joins['pja'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job_alternates', '$ME.subsubsectorid = pj.subsubsectorid');
         }
         return $joins;
     }
@@ -1945,7 +1752,7 @@ class UserFilter
     {
         $joins = array();
         if ($this->with_pnw) {
-            $joins['pnw'] = array('left', 'profile_networking', '$ME.uid = $UID');
+            $joins['pnw'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_networking', '$ME.uid = $UID');
         }
         return $joins;
     }
@@ -1965,7 +1772,7 @@ class UserFilter
     {
         $joins = array();
         if ($this->with_ptel) {
-            $joins['ptel'] = array('left', 'profile_phone', '$ME.uid = $UID');
+            $joins['ptel'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_phone', '$ME.uid = $UID');
         }
         return $joins;
     }
@@ -1984,7 +1791,7 @@ class UserFilter
     {
         $joins = array();
         if ($this->with_pmed) {
-            $joins['pmed'] = array('left', 'profile_medals_sub', '$ME.uid = $UID');
+            $joins['pmed'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_medals_sub', '$ME.uid = $UID');
         }
         return $joins;
     }
@@ -2018,7 +1825,7 @@ class UserFilter
     {
         $joins = array();
         foreach ($this->pms as $sub => $tab) {
-            $joins[$sub] = array('left', $tab, '$ME.uid = $UID');
+            $joins[$sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, $tab, '$ME.uid = $UID');
         }
         return $joins;
     }
@@ -2036,9 +1843,9 @@ class UserFilter
         $joins = array();
         foreach ($this->cts as $sub=>$key) {
             if (is_null($key)) {
-                $joins['c' . $sub] = array('left', 'contacts', '$ME.contact = $UID');
+                $joins['c' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'contacts', '$ME.contact = $UID');
             } else {
-                $joins['c' . $sub] = array('left', 'contacts', XDB::format('$ME.uid = {?} AND $ME.contact = $UID', substr($key, 5)));
+                $joins['c' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'contacts', XDB::format('$ME.uid = {?} AND $ME.contact = $UID', substr($key, 5)));
             }
         }
         return $joins;
@@ -2070,30 +1877,30 @@ class UserFilter
         $joins = array();
         foreach ($this->w as $sub=>$key) {
             if (is_null($key)) {
-                $joins['w' . $sub] = array('left', 'watch');
+                $joins['w' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch');
             } else {
-                $joins['w' . $sub] = array('left', 'watch', XDB::format('$ME.uid = {?}', substr($key, 5)));
+                $joins['w' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch', XDB::format('$ME.uid = {?}', substr($key, 5)));
             }
         }
         foreach ($this->wn as $sub=>$key) {
             if (is_null($key)) {
-                $joins['wn' . $sub] = array('left', 'watch_nonins', '$ME.ni_id = $UID');
+                $joins['wn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_nonins', '$ME.ni_id = $UID');
             } else {
-                $joins['wn' . $sub] = array('left', 'watch_nonins', XDB::format('$ME.uid = {?} AND $ME.ni_id = $UID', substr($key, 5)));
+                $joins['wn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_nonins', XDB::format('$ME.uid = {?} AND $ME.ni_id = $UID', substr($key, 5)));
             }
         }
         foreach ($this->wn as $sub=>$key) {
             if (is_null($key)) {
-                $joins['wn' . $sub] = array('left', 'watch_nonins', '$ME.ni_id = $UID');
+                $joins['wn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_nonins', '$ME.ni_id = $UID');
             } else {
-                $joins['wn' . $sub] = array('left', 'watch_nonins', XDB::format('$ME.uid = {?} AND $ME.ni_id = $UID', substr($key, 5)));
+                $joins['wn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_nonins', XDB::format('$ME.uid = {?} AND $ME.ni_id = $UID', substr($key, 5)));
             }
         }
         foreach ($this->wp as $sub=>$key) {
             if (is_null($key)) {
-                $joins['wp' . $sub] = array('left', 'watch_promo');
+                $joins['wp' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_promo');
             } else {
-                $joins['wp' . $sub] = array('left', 'watch_promo', XDB::format('$ME.uid = {?}', substr($key, 5)));
+                $joins['wp' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_promo', XDB::format('$ME.uid = {?}', substr($key, 5)));
             }
         }
         return $joins;
