@@ -23,10 +23,9 @@
  */
 class PlSet
 {
-    private $from    = null;
-    private $groupby = null;
-    private $joins   = null;
-    private $where   = null;
+    private $conds   = null;
+    private $orders  = null;
+    private $limit   = null;
 
     protected $count   = null;
 
@@ -35,12 +34,21 @@ class PlSet
     private $mod       = null;
     private $default   = null;
 
-    public function __construct($from, $joins = '', $where = '', $groupby = '')
+    public function __construct(PlFilterCondition $cond, $orders)
     {
-        $this->from    = $from;
-        $this->joins   = $joins;
-        $this->where   = $where;
-        $this->groupby = $groupby;
+        if ($cond instanceof PFC_And) {
+            $this->conds = $cond;
+        } else {
+            $this->conds = new PFC_And($cond);
+        }
+
+        if ($orders instanceof PlFilterOrder) {
+            $this->orders = array($order);
+        } else {
+            foreach ($orders as $order) {
+                $this->orders[] = $order;
+            }
+        }
     }
 
     public function addMod($name, $description, $default = false, array $params = array())
@@ -59,31 +67,23 @@ class PlSet
         unset($this->mods[$name]);
     }
 
-    private function &query($fields, $from, $joins, $where, $groupby, $order, $limit)
+    public function addSort(PlFilterOrder &$order)
     {
-        if (trim($order)) {
-            $order = "ORDER BY $order";
-        }
-        if (trim($where)) {
-            $where = "WHERE $where";
-        }
-        if (trim($groupby)) {
-            $groupby = "GROUP BY $groupby";
-        }
-        $query = "SELECT  SQL_CALC_FOUND_ROWS
-                          $fields
-                    FROM  $from
-                          $joins
-                          $where
-                          $groupby
-                          $order
-                          $limit";
-//        echo $query;
-//        print_r($this);
-        $it    = XDB::query($query);
-        $it    = $it->fetchAllAssoc();
-        $count = XDB::query('SELECT FOUND_ROWS()');
-        $this->count = intval($count->fetchOneCell());
+        $this->orders[] = $order;
+    }
+
+    /** This function builds the right kind of PlFilter from given data
+     * @param $cond The PlFilterCondition for the filter
+     * @param $orders An array of PlFilterOrder for the filter
+     */
+    abstract private static function buildFilter(PlFilterCondition $cond, $orders);
+
+    public function &get(PlFilterLimit $limit = null)
+    {
+        $pf = self::buildFilter($this->conds, $this->orders);
+
+        $it          = $pf->get($limit);
+        $this->count = $pf->getTotalCount();
         return $it;
     }
 
@@ -106,27 +106,6 @@ class PlSet
             $qs .= "$k=$v$sep";
         }
         return $encode ? urlencode($qs) : $qs;
-    }
-
-    public function &get($fields, $joins, $where, $groupby, $order, $limitcount = null, $limitfrom = null)
-    {
-        if (!is_null($limitcount)) {
-            if (!is_null($limitfrom)) {
-                $limitcount = "$limitfrom,$limitcount";
-            }
-            $limitcount = "LIMIT $limitcount";
-        }
-        $joins  = $this->joins . ' ' . $joins;
-        if (trim($this->where)) {
-            if (trim($where)) {
-                $where .= ' AND ';
-            }
-            $where .= $this->where;
-        }
-        if (!$groupby) {
-            $groupby = $this->groupby;
-        }
-        return $this->query($fields, $this->from, $joins, $where, $groupby, $order, $limitcount);
     }
 
     public function count()
@@ -186,6 +165,34 @@ interface PlView
     public function args();
 }
 
+/** This class describes an Order as used in a PlView :
+ * - It is based on a PlFilterOrder
+ * - It has a short identifier
+ * - It has a full name, to display on the page
+ */
+class PlViewOrder
+{
+    public $pfo         = null;
+    public $name        = null;
+    public $displaytext = null;
+
+    /** Build a PlViewOrder
+     * @param $name Name of the order (key)
+     * @param $displaytext Text to display
+     * @param $pfo PlFilterOrder for the order
+     */
+    public function __construct($name, PlFilterOrder &$pfo, $displaytext = null)
+    {
+        $this->name         = $name;
+        if (is_null($displaytext)) {
+            $this->displaytext = ucfirst($name);
+        } else {
+            $this->displaytext  = $displaytext;
+        }
+        $this->pfo        = $pfo;
+    }
+}
+
 abstract class MultipageView implements PlView
 {
     protected $set;
@@ -202,6 +209,11 @@ abstract class MultipageView implements PlView
 
     protected $bound_field = null;
 
+    /** Builds a MultipageView
+     * @param $set The associated PlSet
+     * @param $data Data for the PlSet
+     * @param $params Parameters of the view
+     */
     public function __construct(PlSet &$set, $data, array $params)
     {
         $this->set   =& $set;
@@ -210,34 +222,18 @@ abstract class MultipageView implements PlView
         $this->params = $params;
     }
 
-    public function joins()
+    /** Add an order to the view
+     */
+    protected function addSort(PlViewOrder &$pvo, $default = false)
     {
-        return null;
-    }
-
-    public function where()
-    {
-        return null;
-    }
-
-    public function groupBy()
-    {
-        return null;
-    }
-
-    public function bounds()
-    {
-        return null;
-    }
-
-    protected function addSortKey($name, array $keys, $desc, $default = false)
-    {
-        $this->sortkeys[$name] = array('keys' => $keys, 'desc' => $desc);
+        $this->sortkeys[$pvo->name] = $pvo;
         if (!$this->defaultkey || $default) {
-            $this->defaultkey = $name;
+            $this->defaultkey = $pvo->name;
         }
     }
 
+    /** Returns a list of PFO objects, the "default" one first
+     */
     public function order()
     {
         $order = Env::v('order', $this->defaultkey);
@@ -245,40 +241,60 @@ abstract class MultipageView implements PlView
         if ($invert) {
             $order = substr($order, 1);
         }
-        $list = array();
-        foreach ($this->sortkeys[$order]['keys'] as $item) {
-            $desc = ($item{0} == '-');
-            if ($desc) {
-                $item = substr($item, 1);
+        $list = array(0 => null);
+        foreach ($this->sortkeys as $name => $sort) {
+            $desc = $sort->pfo->isDescending();;
+            if ($invert) {
+                $sort->pfo->toggleDesc();
             }
-            if ($desc xor $invert) {
-                $item .= ' DESC';
+            if ($name == $order) {
+                $list[0] = $sort->pfo;
+            } else {
+                $list[] = $sort->pfo;
             }
-            $list[] = $item;
         }
-        return implode(', ', $list);
+        return $list;
     }
 
+    /** Returns information on the order of bounds
+     * @return * 1  if normal bounds
+     *         * -1 if inversed bounds
+     *         * 0  if bounds shouldn't be displayed
+     */
+    public function bounds()
+    {
+        return null;
+    }
+
+    /** Name of the template to use for displaying items of the view
+     */
     abstract public function templateName();
 
+    /** Returns the value of a boundary of the current view (in order
+     * to show "from C to F")
+     * @param $obj The boundary result whose value must be shown to the user
+     */
+    abstract private function getBoundValue($obj);
+
+    /** Applies the view to a page
+     * @param $page Page to which the view will be applied
+     */
     public function apply(PlPage &$page)
     {
-        $res = $this->set->get($this->fields(),
-                               $this->joins(),
-                               $this->where(),
-                               $this->groupBy(),
-                               $this->order(),
-                               $this->entriesPerPage,
-                               $this->offset);
+        foreach ($this->order() as $order) {
+            $this->set->addSort($order->pfo);
+        }
+        $res = $this->set->get($this->limit());
+
         $show_bounds = $this->bounds();
         $end         = end($res);
         if ($show_bounds) {
             if ($show_bounds == 1) {
-                $first = $res[0][$this->bound_field];
-                $last  = $end[$this->bound_field];
+                $first = $this->getBoundValue($res[0]);
+                $last  = $this->getBoundValue($end);
             } elseif ($show_bounds == -1) {
-                $first = $end[$this->bound_field];
-                $last  = $res[0][$this->bound_field];
+                $first = $this->getBoundValue($end);
+                $last  = $this->getBoundValue($res[0]);
             }
             $page->assign('first', $first);
             $page->assign('last', $last);

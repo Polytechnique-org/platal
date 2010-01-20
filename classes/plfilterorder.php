@@ -27,6 +27,16 @@ abstract class PlFilterOrder
         $this->desc = $desc;
     }
 
+    public function toggleDesc()
+    {
+        $this->desc = !$desc;
+    }
+
+    public function setDescending($desc = true)
+    {
+        $this->desc = $desc;
+    }
+
     public function buildSort(PlFilter &$pf)
     {
         $sel = $this->getSortTokens($pf);

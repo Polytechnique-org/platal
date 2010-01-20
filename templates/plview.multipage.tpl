@@ -55,12 +55,12 @@
   [
   {if $name eq $order}
   <img src='images/dn.png' alt='tri ascendant' />
-  <a href="{$platal->pl_self()}{$plset_search}order=-{$name}#pl_set_top">{$sort.desc}</a>
+  <a href="{$platal->pl_self()}{$plset_search}order=-{$name}#pl_set_top">{$sort->displaytext}</a>
   {elseif $order eq "-$name"}
   <img src='images/up.png' alt='tri ascendant' />
-  <a href="{$platal->pl_self()}{$plset_search}order={$name}#pl_set_top">{$sort.desc}</a>
+  <a href="{$platal->pl_self()}{$plset_search}order={$name}#pl_set_top">{$sort->displaytext}</a>
   {else}
-  <a href="{$platal->pl_self()}{$plset_search}order={$name}#pl_set_top">{$sort.desc}</a>
+  <a href="{$platal->pl_self()}{$plset_search}order={$name}#pl_set_top">{$sort->displaytext}</a>
   {/if}
   ]&nbsp;
   {/foreach}

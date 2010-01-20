@@ -34,7 +34,7 @@ abstract class PFC_OneChild implements PlFilterCondition
 {
     protected $child;
 
-    public function __construct($child = null)
+    public function __construct(&$child = null)
     {
         if (!is_null($child) && ($child instanceof PlFilterCondition)) {
             $this->setChild($child);

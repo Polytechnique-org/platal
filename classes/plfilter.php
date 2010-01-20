@@ -19,6 +19,30 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+class PlLimit
+{
+    private $count = null;
+    private $from  = null;
+
+    public function __construct($count = null, $from = null)
+    {
+        $this->count = $count;
+        $this->from  = $from;
+    }
+
+    public function getSql()
+    {
+        if (!is_null($this->count)) {
+            if (!is_null($this->from) && $this->from != 0) {
+                return XDB::format('LIMIT {?}, {?}', (int)$this->from, (int)$this->count);
+            } else {
+                return XDB::format('LIMIT {?}', (int)$this->count);
+            }
+        }
+        return '';
+    }
+}
+
 class PlSqlJoin
 {
     private $mode;
@@ -50,50 +74,85 @@ class PlSqlJoin
         return $this->table;
     }
 
-    public function condiftion()
+    public function condition()
     {
         return $this->condition;
     }
-}
 
-abstract class PlFilter
-{
-    public abstract function filter(array $objects, $count = null, $offset = null);
-
-    public abstract function setCondition(PlFilterCondition &$cond);
-
-    public abstract function addSort(PlFilterOrder &$sort);
-
-    private function replaceJoinMetas($cond, $key)
+    /** Replace all "metas" in the condition with their translation.
+     * $ME always becomes the alias of the table
+     * @param $key The name the joined table will have in the final query
+     * @param $joinMetas An array of meta => conversion to apply to the condition
+     */
+    public function replaceJoinMetas($key, $joinMetas = array())
     {
-        return str_replace(array('$ME'), array($key), $cond);
+        $joinMetas['$ME'] = $key;
+        return str_replace(array_keys($joinMetas), $joinMetas, $this->condition);
     }
 
-    private function formatJoin(array $joins)
+    /** Create a join command from an array of PlSqlJoin
+     * @param $joins The list of 'join' to convert into an SQL query
+     * @param $joinMetas An array of ('$META' => 'conversion') to apply to the joins.
+     */
+    public static function formatJoins(array $joins, array $joinMetas)
     {
         $str = '';
         foreach ($joins as $key => $join) {
-            if (! $join instanceof PlSqlJoin) {
-                Platal::page()->kill("Error : not a join : $join");
+            if (! ($join instanceof PlSqlJoin)) {
+                Platal::page()->kill("Error: not a join: $join");
             }
             $mode  = $join->mode();
             $table = $join->table();
             $str .= ' ' . $mode . ' JOIN ' . $table . ' AS ' . $key;
             if ($join->condition() != null) {
-                $str .= ' ON (' . $this->replaceJoinMetas($join->condition(), $key) . ')';
+                $str .= ' ON (' . $join->replaceJoinMetas($key, $joinMetas) . ')';
             }
             $str .= "\n";
         }
         return $str;
     }
+}
 
+abstract class PlFilter
+{
+    /** Filters objects matching the PlFilter
+     * @param $objects The objects to filter
+     * @param $limit The portion of the matching objects to show
+     */
+    public abstract function filter(array $objects, PlLimit &$limit);
+
+    public abstract function setCondition(PlFilterCondition &$cond);
+
+    public abstract function addSort(PlFilterOrder &$sort);
+
+    public abstract function getTotalCount();
+
+    /** Get objects, selecting only those within a limit
+     * @param $limit The portion of the matching objects to select
+     */
+    public abstract function get(PlLimit &$limit);
+
+    /** PRIVATE FUNCTIONS
+     */
+
+    /** List of metas to replace in joins:
+     * '$COIN' => 'pan.x' means 'replace $COIN with pan.x in the condition of the joins'
+     *
+     * "$ME" => "joined table alias" is always added to these.
+     */
+    private $joinMetas = array();
+
+    /** Build the 'join' part of the query
+     * This function will call all methods declared in self::$joinMethods
+     * to get an array of PlSqlJoin objects to merge
+     */
     private function buildJoins()
     {
         $joins = array();
-        foreach (self::$joinMethods as $method) {
+        foreach ($this->$joinMethods as $method) {
             $joins = array_merge($joins, $this->$method());
         }
-        return $this->formatJoin($joins);
+        return PlSqlJoin::formatJoins($joins, $this->$joinMetas);
     }
 
 }
