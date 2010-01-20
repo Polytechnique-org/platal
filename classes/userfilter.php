@@ -81,7 +81,7 @@ class UFC_Promo implements UserFilterCondition
     {
         if ($this->grade == UserFilter::DISPLAY) {
             $sub = $uf->addDisplayFilter();
-            return XDB::format('pd' . $sub . '.promo = {?}', $this->promo);
+            return XDB::format('pd' . $sub . '.promo ' . $this->comparison . ' {?}', $this->promo);
         } else {
             $sub = $uf->addEducationFilter(true, $this->grade);
             $field = 'pe' . $sub . '.' . UserFilter::promoYear($this->grade);
