@@ -21,7 +21,7 @@
 
 /** UserSet is a light-weight Model/View tool for displaying a set of items
  */
-class PlSet
+abstract class PlSet
 {
     private $conds   = null;
     private $orders  = null;
@@ -34,7 +34,7 @@ class PlSet
     private $mod       = null;
     private $default   = null;
 
-    public function __construct(PlFilterCondition $cond, $orders)
+    public function __construct(PlFilterCondition &$cond, $orders)
     {
         if ($cond instanceof PFC_And) {
             $this->conds = $cond;
@@ -72,15 +72,20 @@ class PlSet
         $this->orders[] = $order;
     }
 
+    public function addCond(PlFilterCondition &$cond)
+    {
+        $this->conds->addChild($cond);
+    }
+
     /** This function builds the right kind of PlFilter from given data
      * @param $cond The PlFilterCondition for the filter
      * @param $orders An array of PlFilterOrder for the filter
      */
-    abstract private static function buildFilter(PlFilterCondition $cond, $orders);
+    abstract protected function buildFilter(PlFilterCondition &$cond, $orders);
 
     public function &get(PlFilterLimit $limit = null)
     {
-        $pf = self::buildFilter($this->conds, $this->orders);
+        $pf = $this->buildFilter($this->conds, $this->orders);
 
         $it          = $pf->get($limit);
         $this->count = $pf->getTotalCount();
@@ -241,7 +246,10 @@ abstract class MultipageView implements PlView
         if ($invert) {
             $order = substr($order, 1);
         }
-        $list = array(0 => null);
+        $list = array();
+        if (count($this->sortkeys)) {
+            $list[0] = null;
+        }
         foreach ($this->sortkeys as $name => $sort) {
             $desc = $sort->pfo->isDescending();;
             if ($invert) {
@@ -266,6 +274,11 @@ abstract class MultipageView implements PlView
         return null;
     }
 
+    public function limit()
+    {
+        return null;
+    }
+
     /** Name of the template to use for displaying items of the view
      */
     abstract public function templateName();
@@ -274,7 +287,7 @@ abstract class MultipageView implements PlView
      * to show "from C to F")
      * @param $obj The boundary result whose value must be shown to the user
      */
-    abstract private function getBoundValue($obj);
+    abstract protected function getBoundValue($obj);
 
     /** Applies the view to a page
      * @param $page Page to which the view will be applied
