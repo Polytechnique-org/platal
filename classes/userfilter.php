@@ -192,7 +192,7 @@ class UFC_Registered implements UserFilterCondition
 
     public function __construct($active = false, $comparison = null, $date = null)
     {
-        $this->only_active = $active;
+        $this->active = $active;
         $this->comparison = $comparison;
         $this->date = $date;
     }
