@@ -26,6 +26,9 @@ function __autoload($cls)
         if (substr($cls, 0, 4) == 'ufc_' || substr($cls, 0, 4) == 'ufo_') {
             __autoload('userfilter');
             return;
+        } else if (substr($cls, 0, 4) == 'pfc_' || substr($cls, 0, 4) == 'pfo_' || substr($cls, 0, 8) == 'plfilter') {
+            __autoload('plfilter');
+            return;
         } else if (substr($cls, -3, 3) == 'req') {
             @include 'validations.inc.php';
             return;
