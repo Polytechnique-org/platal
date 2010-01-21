@@ -327,19 +327,21 @@ abstract class PlFilter
      *
      * "$ME" => "joined table alias" is always added to these.
      */
-    private $joinMetas = array();
+    protected $joinMetas = array();
+
+    protected $joinMethods = array();
 
     /** Build the 'join' part of the query
      * This function will call all methods declared in self::$joinMethods
      * to get an array of PlSqlJoin objects to merge
      */
-    private function buildJoins()
+    protected function buildJoins()
     {
         $joins = array();
-        foreach ($this->$joinMethods as $method) {
+        foreach ($this->joinMethods as $method) {
             $joins = array_merge($joins, $this->$method());
         }
-        return PlSqlJoin::formatJoins($joins, $this->$joinMetas);
+        return PlSqlJoin::formatJoins($joins, $this->joinMetas);
     }
 
 }

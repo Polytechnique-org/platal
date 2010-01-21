@@ -19,6 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+
 /** UserSet is a light-weight Model/View tool for displaying a set of items
  */
 abstract class PlSet
@@ -83,10 +84,13 @@ abstract class PlSet
      */
     abstract protected function buildFilter(PlFilterCondition &$cond, $orders);
 
-    public function &get(PlFilterLimit $limit = null)
+    public function &get(PlLimit $limit = null)
     {
         $pf = $this->buildFilter($this->conds, $this->orders);
 
+        if (is_null($limit)) {
+            $limit = new PlLimit(20, 0);
+        }
         $it          = $pf->get($limit);
         $this->count = $pf->getTotalCount();
         return $it;
