@@ -76,7 +76,7 @@ class WatchProfileUpdate extends WatchOperation
 
     protected function buildCondition(PlUser &$user)
     {
-        return new UFC_And(new UFC_ProfileUpdated('>', $this->date),
+        return new PFC_And(new UFC_ProfileUpdated('>', $this->date),
                            new UFC_WatchContact($user));
     }
 
