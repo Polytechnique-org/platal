@@ -748,7 +748,7 @@ class UFC_Phone implements UserFilterCondition
 
     public function __construct($number, $num_type = self::NUM_ANY, $phone_type = self::PHONE_ANY)
     {
-        require_once('profil.inc.php');
+        require_once('profil.func.inc.php');
         $this->number = $number;
         $this->num_type = $num_type;
         $this->phone_type = format_phone_number($phone_type);
@@ -1143,13 +1143,13 @@ class UFO_Death extends UserFilterOrder
  * The 'register_optional' function can be used to generate unique table aliases when
  * the same table has to be joined several times with different aliases.
  */
-class UserFilter
+class UserFilter extends PlFilter
 {
-    private $joinMethods = array();
+    protected $joinMethods = array();
 
-    private $joinMetas = array('$PID' => 'p.pid',
-                               '$UID' => 'a.uid',
-                              );
+    protected $joinMetas = array('$PID' => 'p.pid',
+                                 '$UID' => 'a.uid',
+                                );
 
     private $root;
     private $sort = array();
@@ -1286,13 +1286,13 @@ class UserFilter
         }
     }
 
-    public function setCondition(UserFilterCondition &$cond)
+    public function setCondition(PlFilterCondition &$cond)
     {
         $this->root =& $cond;
         $this->query = null;
     }
 
-    public function addSort(UserFilterOrder &$sort)
+    public function addSort(PlFilterOrder &$sort)
     {
         $this->sort[] = $sort;
         $this->orderby = null;
@@ -1310,7 +1310,7 @@ class UserFilter
         } else {
             $max = new UFC_True();
         }
-        return new UserFilter(new UFC_And($min, $max));
+        return new UserFilter(new PFC_And($min, $max));
     }
 
     static public function sortByName()
@@ -1359,7 +1359,7 @@ class UserFilter
         return '';
     }
 
-    private function displayJoins()
+    protected function displayJoins()
     {
         if ($this->pd) {
             return array('pd' => new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_display', '$ME.pid = $PID'));
@@ -1399,7 +1399,7 @@ class UserFilter
     static public function assertName($name)
     {
         if (!Profile::getNameTypeId($name)) {
-            Platal::page()->kill('Invalid name type');
+            Platal::page()->kill('Invalid name type: ' . $name);
         }
     }
 
@@ -1429,7 +1429,7 @@ class UserFilter
         return $sub;
     }
 
-    private function nameJoins()
+    protected function nameJoins()
     {
         $joins = array();
         foreach ($this->pn as $sub => $type) {
@@ -1480,7 +1480,7 @@ class UserFilter
         return $sub;
     }
 
-    private function educationJoins()
+    protected function educationJoins()
     {
         $joins = array();
         if ($this->with_pee) {
@@ -1522,7 +1522,7 @@ class UserFilter
         return $sub;
     }
 
-    private function groupJoins()
+    protected function groupJoins()
     {
         $joins = array();
         foreach ($this->gpm as $sub => $key) {
@@ -1562,7 +1562,7 @@ class UserFilter
         return $this->register_optional($this->al, $alias);
     }
 
-    private function emailJoins()
+    protected function emailJoins()
     {
         global $globals;
         $joins = array();
@@ -1609,7 +1609,7 @@ class UserFilter
         return 'pa';
     }
 
-    private function addressJoins()
+    protected function addressJoins()
     {
         $joins = array();
         if ($this->with_pa) {
@@ -1644,7 +1644,7 @@ class UserFilter
         return 'pcr';
     }
 
-    private function corpsJoins()
+    protected function corpsJoins()
     {
         $joins = array();
         if ($this->pc) {
@@ -1714,7 +1714,7 @@ class UserFilter
         }
     }
 
-    private function jobJoins()
+    protected function jobJoins()
     {
         $joins = array();
         if ($this->with_pj) {
@@ -1748,7 +1748,7 @@ class UserFilter
         return 'pnw';
     }
 
-    private function networkingJoins()
+    protected function networkingJoins()
     {
         $joins = array();
         if ($this->with_pnw) {
@@ -1768,11 +1768,11 @@ class UserFilter
         return 'ptel';
     }
 
-    private function phoneJoins()
+    protected function phoneJoins()
     {
         $joins = array();
         if ($this->with_ptel) {
-            $joins['ptel'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_phone', '$ME.uid = $UID');
+            $joins['ptel'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_phones', '$ME.uid = $UID');
         }
         return $joins;
     }
@@ -1787,7 +1787,7 @@ class UserFilter
         return 'pmed';
     }
 
-    private function medalJoins()
+    protected function medalJoins()
     {
         $joins = array();
         if ($this->with_pmed) {
@@ -1821,7 +1821,7 @@ class UserFilter
         }
     }
 
-    private function mentorJoins()
+    protected function mentorJoins()
     {
         $joins = array();
         foreach ($this->pms as $sub => $tab) {
@@ -1838,7 +1838,7 @@ class UserFilter
         return $this->register_optional($this->cts, is_null($uid) ? null : 'user_' . $uid);
     }
 
-    private function contactJoins()
+    protected function contactJoins()
     {
         $joins = array();
         foreach ($this->cts as $sub=>$key) {
@@ -1872,7 +1872,7 @@ class UserFilter
         return $this->register_optional($this->w, is_null($uid) ? null : 'user_' . $uid);
     }
 
-    private function watchJoins()
+    protected function watchJoins()
     {
         $joins = array();
         foreach ($this->w as $sub=>$key) {
