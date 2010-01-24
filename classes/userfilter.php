@@ -34,11 +34,8 @@
  *     adequate joins. It must return the 'WHERE' condition to use
  *     with the filter.
  */
-interface UserFilterCondition
+interface UserFilterCondition extends PlFilterCondition
 {
-    /** Check that the given user matches the rule.
-     */
-    public function buildCondition(UserFilter &$uf);
 }
 // }}}
 
@@ -47,7 +44,7 @@ interface UserFilterCondition
  */
 class UFC_Profile implements UserFilterCondition
 {
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         return '$PID IS NOT NULL';
     }
@@ -77,7 +74,7 @@ class UFC_Promo implements UserFilterCondition
         }
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         if ($this->grade == UserFilter::DISPLAY) {
             $sub = $uf->addDisplayFilter();
@@ -122,7 +119,7 @@ class UFC_Name implements UserFilterCondition
         return str_replace('$ME', 'pn' . $sub, $where);
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $left = '$ME.name';
         $op   = ' LIKE ';
@@ -179,7 +176,7 @@ class UFC_NameTokens implements UserFilterCondition
         $this->exact = $exact;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addNameTokensFilter(!($this->exact || $this->soundex));
         $conds = array();
@@ -220,7 +217,7 @@ class UFC_Dead implements UserFilterCondition
         $this->date = $date;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $str = 'p.deathdate IS NOT NULL';
         if (!is_null($this->comparison)) {
@@ -250,7 +247,7 @@ class UFC_Registered implements UserFilterCondition
         $this->date = $date;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         if ($this->active) {
             $date = 'a.uid IS NOT NULL AND a.state = \'active\'';
@@ -281,7 +278,7 @@ class UFC_ProfileUpdated implements UserFilterCondition
         $this->date = $date;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         return 'p.last_change ' . $this->comparison . XDB::format(' {?}', date('Y-m-d H:i:s', $this->date));
     }
@@ -304,7 +301,7 @@ class UFC_Birthday implements UserFilterCondition
         $this->date = $date;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         return 'p.next_birthday ' . $this->comparison . XDB::format(' {?}', date('Y-m-d', $this->date));
     }
@@ -323,7 +320,7 @@ class UFC_Sex implements UserFilterCondition
         $this->sex = $sex;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         if ($this->sex != User::GENDER_MALE && $this->sex != User::GENDER_FEMALE) {
             return self::COND_FALSE;
@@ -349,7 +346,7 @@ class UFC_Group implements UserFilterCondition
         $this->anim = $anim;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addGroupFilter($this->group);
         $where = 'gpm' . $sub . '.perms IS NOT NULL';
@@ -373,7 +370,7 @@ class UFC_Email implements UserFilterCondition
         $this->email = $email;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         if (User::isForeignEmailAddress($this->email)) {
             $sub = $uf->addEmailRedirectFilter($this->email);
@@ -402,7 +399,7 @@ class UFC_EmailList implements UserFilterCondition
         $this->emails = $emails;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $email   = null;
         $virtual = null;
@@ -410,7 +407,7 @@ class UFC_EmailList implements UserFilterCondition
         $cond = array();
 
         if (count($this->emails) == 0) {
-            return UserFilterCondition::COND_TRUE;
+            return PlFilterCondition::COND_TRUE;
         }
 
         foreach ($this->emails as $entry) {
@@ -511,7 +508,7 @@ class UFC_Address implements UserFilterCondition
         $this->postalCode                = $postalCode;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addAddressFilter();
         $conds = array();
@@ -583,7 +580,7 @@ class UFC_Corps implements UserFilterCondition
         $this->type  = $type;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         /** Tables shortcuts:
          * pc for profile_corps,
@@ -609,7 +606,7 @@ class UFC_Corps_Rank implements UserFilterCondition
         $this->rank = $rank;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         /** Tables shortcuts:
          * pcr for profile_corps_rank
@@ -649,7 +646,7 @@ class UFC_Job_Company implements UserFilterCondition
         }
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addJobCompanyFilter();
         $cond  = $sub . '.' . $this->type . ' = ' . XDB::format('{?}', $this->value);
@@ -678,7 +675,7 @@ class UFC_Job_Sectorization implements UserFilterCondition
         $this->subsubsector = $subsubsector;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         // No need to add the JobFilter, it will be done by addJobSectorizationFilter
         $conds = array();
@@ -722,7 +719,7 @@ class UFC_Job_Description implements UserFilterCondition
         $this->description = $description;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $conds = array();
         if ($this->fields & UserFilter::JOB_USERDEFINED) {
@@ -764,7 +761,7 @@ class UFC_Networking implements UserFilterCondition
         $this->value = $value;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addNetworkingFilter();
         $conds = array();
@@ -807,7 +804,7 @@ class UFC_Phone implements UserFilterCondition
         $this->phone_type = format_phone_number($phone_type);
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addPhoneFilter();
         $conds = array();
@@ -839,7 +836,7 @@ class UFC_Medal implements UserFilterCondition
         $this->grade = $grade;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $conds = array();
         $sub = $uf->addMedalFilter();
@@ -865,7 +862,7 @@ class UFC_Mentor_Expertise implements UserFilterCondition
         $this->expertise = $expertise;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR_EXPERTISE);
         return $sub . '.expertise LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\'', $this->expertise);
@@ -886,7 +883,7 @@ class UFC_Mentor_Country implements UserFilterCondition
         $this->country = $country;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR_COUNTRY);
         return $sub . '.country = ' . XDB::format('{?}', $this->country);
@@ -910,7 +907,7 @@ class UFC_Mentor_Sectorization implements UserFilterCondition
         $this->subsubsector = $subsector;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR_SECTOR);
         $conds = array();
@@ -942,7 +939,7 @@ abstract class UFC_UserRelated implements UserFilterCondition
  */
 class UFC_Contact extends UFC_UserRelated
 {
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addContactFilter($this->user->id());
         return 'c' . $sub . '.contact IS NOT NULL';
@@ -955,14 +952,14 @@ class UFC_Contact extends UFC_UserRelated
  */
 class UFC_WatchRegistration extends UFC_UserRelated
 {
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         if (!$this->user->watch('registration')) {
-            return UserFilterCondition::COND_FALSE;
+            return PlFilterCondition::COND_FALSE;
         }
         $uids = $this->user->watchUsers();
         if (count($uids) == 0) {
-            return UserFilterCondition::COND_FALSE;
+            return PlFilterCondition::COND_FALSE;
         } else {
             return '$UID IN ' . XDB::formatArray($uids);
         }
@@ -984,11 +981,11 @@ class UFC_WatchPromo extends UFC_UserRelated
         $this->grade = $grade;
     }
 
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         $promos = $this->user->watchPromos();
         if (count($promos) == 0) {
-            return UserFilterCondition::COND_FALSE;
+            return PlFilterCondition::COND_FALSE;
         } else {
             $sube = $uf->addEducationFilter(true, $this->grade);
             $field = 'pe' . $sube . '.' . UserFilter::promoYear($this->grade);
@@ -1003,10 +1000,10 @@ class UFC_WatchPromo extends UFC_UserRelated
  */
 class UFC_WatchContact extends UFC_Contact
 {
-    public function buildCondition(UserFilter &$uf)
+    public function buildCondition(PlFilter &$uf)
     {
         if (!$this->user->watchContacts()) {
-            return UserFilterCondition::COND_FALSE;
+            return PlFilterCondition::COND_FALSE;
         }
         return parent::buildCondition($uf);
     }
