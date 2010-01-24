@@ -20,22 +20,29 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{assign var=profile value=$user->profile()}
 {assign var=dead    value=$profile->deathdate}
-{if $user->state neq 'pending'}
-{assign var=registered value=true}
-{else}
-{assign var=registered value=false}
-{/if}
 {if $smarty.session.auth ge AUTH_COOKIE}
-{assign var=withAuth value=true}
+  {assign var=withAuth value=true}
+  {assign var=user value=$profile->owner()}
+  {if $user == null}
+    {assign var=hasowner value=false}
+    {assign var=registered value=false}
+  {else}
+    {if $user->state neq 'pending'}
+      {assign var=registered value=true}
+    {else}
+      {assign var=registered value=false}
+    {/if}
+  {/if}
 {else}
-{assign var=withAuth value=false}
+  {* Without auth, all profiles appear as registered *}
+  {assign var=registered value=true}
+  {assign var=withAuth value=false}
 {/if}
 
 
-<div class="contact {if (!$registered && $withAuth) || $dead }grayed{/if}"
-     {if $registered && $withAuth}title="fiche mise à jour le {$profile->last_change|date_format}"{/if}>
+<div class="contact {if !$registered || $dead }grayed{/if}"
+     {if $registered}title="fiche mise à jour le {$profile->last_change|date_format}"{/if}>
   <div class="identity">
     {if $withAuth}
     <div class="photo">
@@ -45,9 +52,9 @@
 
     <div class="nom">
       {if $profile->isFemale()}&bull;{/if}
-      {if !$dead && (!$registered || $withAuth)}<a href="profile/{$profile->hrid()}" class="popup2">{/if}
+      {if !$dead && $registered}<a href="profile/{$profile->hrid()}" class="popup2">{/if}
       {$profile->full_name}
-      {if !$dead && (!$registered || $withAuth)}</a>{/if}
+      {if !$dead && $registered}</a>{/if}
     </div>
 
     <div class="edu">
@@ -62,7 +69,7 @@
       {/if}
       {$profile->promo()}{*
       *}{iterate from=$profile->getExtraEducations(4) item=edu}, {education_fmt edu=$edu profile=$profile}{/iterate}{*
-      *}{if $dead}, {"décédé"|sex:"décédée":$user} le {$orfile->deathdate|date_format}{/if}
+      *}{if $dead}, {"décédé"|sex:"décédée":$profile} le {$profile->deathdate|date_format}{/if}
     </div>
   </div>
 
@@ -149,7 +156,7 @@
       {if !$registered}
       <tr>
         <td class="smaller" colspan="2">
-          {"Ce"|sex:"Cette":$user} camarade n'est pas {"inscrit"|sex:"inscrite":$user}.
+          {"Ce"|sex:"Cette":$profile} camarade n'est pas {"inscrit"|sex:"inscrite":$profile}.
           <a href="marketing/public/{$user->login()}" class='popup'>Si tu connais son adresse email,
           <strong>n'hésite pas à nous la transmettre !</a>
         </td>
@@ -157,7 +164,7 @@
       {elseif $user->state neq 'disabled' && $user->lost}
       <tr>
         <td class="smaller" colspan="2">
-          {"Ce"|sex:"Cette":$user} camarade n'a plus d'adresse de redirection valide.
+          {"Ce"|sex:"Cette":$profile} camarade n'a plus d'adresse de redirection valide.
           <a href="marketing/broken/{$user->login()}">
             Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>.
           </a>
