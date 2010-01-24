@@ -151,6 +151,55 @@ class UFC_Name implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_NameTokens
+/** Selects users based on tokens in their name (for quicksearch)
+ * @param $tokens An array of tokens to search
+ * @param $flags Flags the tokens must have (e.g 'public' for public search)
+ * @param $soundex (bool) Whether those tokens are fulltext or soundex
+ */
+class UFC_NameTokens implements UserFilterCondition
+{
+    /* Flags */
+    const FLAG_PUBLIC = 'public';
+
+    private $tokens;
+    private $flags;
+    private $soundex;
+
+    public function __construct($tokens, $flags = array(), $soundex = false)
+    {
+        $this->tokens = $tokens;
+        if (is_array($flags)) {
+            $this->flags = $flags;
+        } else {
+            $this->flags = array($flags);
+        }
+        $this->soundex = $soundex;
+    }
+
+    public function buildCondition(UserFilter &$uf)
+    {
+        $sub = $uf->addNameTokensFilter();
+        $conds = array();
+        if ($this->soundex) {
+            $conds[] = $sub . '.soundex IN ' . XDB::formatArray($this->tokens);
+        } else {
+            $tokconds = array();
+            foreach ($this->tokens as $token) {
+                $tokconds[] = $sub . '.token LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $token);
+            }
+            $conds[] = implode(' OR ', $tokconds);
+        }
+
+        if ($this->flags != null) {
+            $conds[] = $sub . '.flags IN ' . XDB::formatArray($this->flags);
+        }
+
+        return implode(' AND ', $conds);
+    }
+}
+// }}}
+
 // {{{ class UFC_Dead
 /** Filters users based on death date
  * @param $comparison Comparison operator
@@ -1047,6 +1096,17 @@ class UFO_Name extends UserFilterOrder
 }
 // }}}
 
+// {{{ class UFO_Score
+class UFO_Score extends UserFilterOrder
+{
+    protected function getSortTokens(UserFilter &$uf)
+    {
+        $sub = $uf->addNameTokensFilter();
+        return 'SUM(' . $sub . '.score)';
+    }
+}
+// }}}
+
 // {{{ class UFO_Registration
 /** Sorts users based on registration date
  */
@@ -1472,6 +1532,25 @@ class UserFilter extends PlFilter
         $joins = array();
         foreach ($this->pn as $sub => $type) {
             $joins['pn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_name', '$ME.pid = $PID AND $ME.typeid = ' . $type);
+        }
+        return $joins;
+    }
+
+    /** NAMETOKENS
+     */
+    private $with_sn = false;
+    public function addNameTokensFilter()
+    {
+        $this->requireProfiles();
+        $this->with_sn = true;
+        return 'sn';
+    }
+
+    protected function nameTokensJoins()
+    {
+        $joins = array();
+        if ($this->with_sn) {
+            $joins['sn'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'search_name', '$ME.uid = $PID');
         }
         return $joins;
     }
