@@ -1201,9 +1201,13 @@ class UserFilter extends PlFilter
         if (is_null($this->query)) {
             $where = $this->root->buildCondition($this);
             $joins = $this->buildJoins();
-            $this->query = 'FROM  accounts AS a
-                       LEFT JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
-                       LEFT JOIN  profiles AS p ON (p.pid = ap.pid)
+            if ($this->with_accounts) {
+                $from = 'accounts AS a';
+            } else {
+                $this->requireProfiles();
+                $from = 'profiles AS p';
+            }
+            $this->query = 'FROM  ' . $from . '
                                ' . $joins . '
                            WHERE  (' . $where . ')';
         }
@@ -1211,6 +1215,7 @@ class UserFilter extends PlFilter
 
     private function getUIDList($uids = null, PlLimit &$limit)
     {
+        $this->requireAccounts();
         $this->buildQuery();
         $lim = $limit->getSql();
         $cond = '';
@@ -1230,6 +1235,7 @@ class UserFilter extends PlFilter
      */
     public function checkUser(PlUser &$user)
     {
+        $this->requireAccounts();
         $this->buildQuery();
         $count = (int)XDB::fetchOneCell('SELECT  COUNT(*)
                                         ' . $this->query . XDB::format(' AND a.uid = {?}', $user->id()));
@@ -1240,6 +1246,7 @@ class UserFilter extends PlFilter
      */
     public function filter(array $users, PlLimit &$limit)
     {
+        $this->requireAccounts();
         $this->buildQuery();
         $table = array();
         $uids  = array();
@@ -1279,7 +1286,12 @@ class UserFilter extends PlFilter
     {
         if (is_null($this->lastcount)) {
             $this->buildQuery();
-            return (int)XDB::fetchOneCell('SELECT  COUNT(DISTINCT a.uid)
+            if ($this->requireAccounts()) {
+                $field = 'a.uid';
+            } else {
+                $field = 'p.pid';
+            }
+            return (int)XDB::fetchOneCell('SELECT  COUNT(DISTINCT ' . $field . ')
                                           ' . $this->query);
         } else {
             return $this->lastcount;
@@ -1349,12 +1361,37 @@ class UserFilter extends PlFilter
         return $sub;
     }
 
+    /** PROFILE VS ACCOUNT
+     */
+    private $with_profiles = false;
+    private $with_accounts = false;
+    public function requireAccounts()
+    {
+        $this->with_accounts = true;
+    }
+
+    public function requireProfiles()
+    {
+        $this->with_profiles = true;
+    }
+
+    protected function accountJoins()
+    {
+        $joins = array();
+        if ($this->with_profiles && $this->with_accounts) {
+            $joins['ap'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'account_profiles', '$ME.uid = $UID AND FIND_IN_SET(\'owner\', ap.perms)');
+            $joins['p'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profiles', '$PID = ap.pid');
+        }
+        return $joins;
+    }
+
     /** DISPLAY
      */
     const DISPLAY = 'display';
     private $pd = false;
     public function addDisplayFilter()
     {
+        $this->requireProfiles();
         $this->pd = true;
         return '';
     }
@@ -1414,6 +1451,7 @@ class UserFilter extends PlFilter
     private $pn  = array();
     public function addNameFilter($type, $variant = null)
     {
+        $this->requireProfiles();
         if (!is_null($variant)) {
             $ft  = $type . '_' . $variant;
         } else {
@@ -1437,7 +1475,6 @@ class UserFilter extends PlFilter
         }
         return $joins;
     }
-
 
     /** EDUCATION
      */
@@ -1466,6 +1503,7 @@ class UserFilter extends PlFilter
     private $with_pee = false;
     public function addEducationFilter($x = false, $grade = null)
     {
+        $this->requireProfiles();
         if (!$x) {
             $index = $this->option;
             $sub   = $this->option++;
@@ -1506,6 +1544,7 @@ class UserFilter extends PlFilter
     private $gpm = array();
     public function addGroupFilter($group = null)
     {
+        $this->requireAccounts();
         if (!is_null($group)) {
             if (ctype_digit($group)) {
                 $index = $sub = $group;
@@ -1544,6 +1583,7 @@ class UserFilter extends PlFilter
     private $e = array();
     public function addEmailRedirectFilter($email = null)
     {
+        $this->requireAccounts();
         return $this->register_optional($this->e, $email);
     }
 
@@ -1559,6 +1599,7 @@ class UserFilter extends PlFilter
     private $al = array();
     public function addAliasFilter($alias = null)
     {
+        $this->requireAccounts();
         return $this->register_optional($this->al, $alias);
     }
 
@@ -1605,6 +1646,7 @@ class UserFilter extends PlFilter
     private $with_pa = false;
     public function addAddressFilter()
     {
+        $this->requireProfiles();
         $this->with_pa = true;
         return 'pa';
     }
@@ -1627,6 +1669,7 @@ class UserFilter extends PlFilter
     private $pcr = false;
     public function addCorpsFilter($type)
     {
+        $this->requireProfiles();
         $this->pc = true;
         if ($type == UFC_Corps::CURRENT) {
             $pce['pcec'] = 'current_corpsid';
@@ -1639,6 +1682,7 @@ class UserFilter extends PlFilter
 
     public function addCorpsRankFilter()
     {
+        $this->requireProfiles();
         $this->pc = true;
         $this->pcr = true;
         return 'pcr';
@@ -1685,6 +1729,7 @@ class UserFilter extends PlFilter
 
     public function addJobFilter()
     {
+        $this->requireProfiles();
         $this->with_pj = true;
         return 'pj';
     }
@@ -1744,6 +1789,7 @@ class UserFilter extends PlFilter
     private $with_pnw = false;
     public function addNetworkingFilter()
     {
+        $this->requireAccounts();
         $this->with_pnw = true;
         return 'pnw';
     }
@@ -1764,6 +1810,7 @@ class UserFilter extends PlFilter
 
     public function addPhoneFilter()
     {
+        $this->requireAccounts();
         $this->with_ptel = true;
         return 'ptel';
     }
@@ -1783,6 +1830,7 @@ class UserFilter extends PlFilter
     private $with_pmed = false;
     public function addMedalFilter()
     {
+        $this->requireProfiles();
         $this->with_pmed = true;
         return 'pmed';
     }
@@ -1806,6 +1854,7 @@ class UserFilter extends PlFilter
 
     public function addMentorFilter($type)
     {
+        $this->requireAccounts();
         switch($type) {
         case MENTOR_EXPERTISE:
             $pms['pme'] = 'profile_mentor';
@@ -1835,6 +1884,7 @@ class UserFilter extends PlFilter
     private $cts = array();
     public function addContactFilter($uid = null)
     {
+        $this->requireAccounts();
         return $this->register_optional($this->cts, is_null($uid) ? null : 'user_' . $uid);
     }
 
@@ -1857,18 +1907,21 @@ class UserFilter extends PlFilter
     private $wn = array();
     public function addWatchRegistrationFilter($uid = null)
     {
+        $this->requireAccounts();
         return $this->register_optional($this->wn, is_null($uid) ? null : 'user_' . $uid);
     }
 
     private $wp = array();
     public function addWatchPromoFilter($uid = null)
     {
+        $this->requireAccounts();
         return $this->register_optional($this->wp, is_null($uid) ? null : 'user_' . $uid);
     }
 
     private $w = array();
     public function addWatchFilter($uid = null)
     {
+        $this->requireAccounts();
         return $this->register_optional($this->w, is_null($uid) ? null : 'user_' . $uid);
     }
 
