@@ -1298,6 +1298,24 @@ class UserFilter extends PlFilter
         return $fetched;
     }
 
+    private function getPIDList($pids = null, PlLimit &$limit)
+    {
+        $this->requireProfiles();
+        $this->buildQuery();
+        $lim = $limit->getSql();
+        $cond = '';
+        if (!is_null($pids)) {
+            $cond = ' AND p.pid IN ' . XDB::formatArray($pids);
+        }
+        $fetched = XDB::fetchColumn('SELECT  SQL_CALC_FOUND_ROWS  p.pid
+                                    ' . $this->query . $cond . '
+                                   GROUP BY  p.pid
+                                    ' . $this->orderby . '
+                                    ' . $lim);
+        $this->lastcount = (int)XDB::fetchOneCell('SELECT FOUND_ROWS()');
+        return $fetched;
+    }
+
     /** Check that the user match the given rule.
      */
     public function checkUser(PlUser &$user)
@@ -1309,9 +1327,27 @@ class UserFilter extends PlFilter
         return $count == 1;
     }
 
-    /** Filter a list of user to extract the users matching the rule.
+    /** Check that the profile match the given rule.
+     */
+    public function checkProfile(Profile &$profile)
+    {
+        $this->requireProfiles();
+        $this->buildQuery();
+        $count = (int)XDB::fetchOneCell('SELECT  COUNT(*)
+                                        ' . $this->query . XDB::format(' AND p.pid = {?}', $profile->id()));
+        return $count == 1;
+    }
+
+    /** Default filter is on users
      */
     public function filter(array $users, PlLimit &$limit)
+    {
+        return $this->filterUsers($users, $limit);
+    }
+
+    /** Filter a list of users to extract the users matching the rule.
+     */
+    public function filterUsers(array $users, PlLimit &$limit)
     {
         $this->requireAccounts();
         $this->buildQuery();
@@ -1334,14 +1370,49 @@ class UserFilter extends PlFilter
         return $output;
     }
 
+    /** Filter a list of profiles to extract the users matching the rule.
+     */
+    public function filterProfiles(array $profiles, PlLimit &$limit)
+    {
+        $this->requireProfiles();
+        $this->buildQuery();
+        $table = array();
+        $pids  = array();
+        foreach ($profiles as $profile) {
+            if ($profile instanceof Profile) {
+                $pid = $profile->id();
+            } else {
+                $pid = $profile;
+            }
+            $pids[] = $pid;
+            $table[$pid] = $profile;
+        }
+        $fetched = $this->getPIDList($pids, $limit);
+        $output = array();
+        foreach ($fetched as $pid) {
+            $output[] = $table[$pid];
+        }
+        return $output;
+    }
+
     public function getUIDs(PlLimit &$limit)
     {
         return $this->getUIDList(null, $limit);
     }
 
+    public function getPIDs(PlLimit &$limit)
+    {
+        return $this->getPIDList(null, $limit);
+    }
+
     public function getUsers(PlLimit &$limit)
     {
         return User::getBulkUsersWithUIDs($this->getUIDs($limit));
+    }
+
+    public function getProfiles(PlLimit &$limit)
+    {
+        return Profile::getBulkProfilesWithPIDs($this->getPIDs($limit));
     }
 
     public function get(PlLimit &$limit)
