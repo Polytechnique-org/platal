@@ -165,8 +165,9 @@ class UFC_NameTokens implements UserFilterCondition
     private $tokens;
     private $flags;
     private $soundex;
+    private $exact;
 
-    public function __construct($tokens, $flags = array(), $soundex = false)
+    public function __construct($tokens, $flags = array(), $soundex = false, $exact = false)
     {
         $this->tokens = $tokens;
         if (is_array($flags)) {
@@ -175,14 +176,17 @@ class UFC_NameTokens implements UserFilterCondition
             $this->flags = array($flags);
         }
         $this->soundex = $soundex;
+        $this->exact = $exact;
     }
 
     public function buildCondition(UserFilter &$uf)
     {
-        $sub = $uf->addNameTokensFilter(true);
+        $sub = $uf->addNameTokensFilter(!($this->exact || $this->soundex));
         $conds = array();
         if ($this->soundex) {
             $conds[] = $sub . '.soundex IN ' . XDB::formatArray($this->tokens);
+        } else if ($this->exact) {
+            $conds[] = $sub . '.token IN ' . XDB::formatArray($this->tokens);
         } else {
             $tokconds = array();
             foreach ($this->tokens as $token) {
