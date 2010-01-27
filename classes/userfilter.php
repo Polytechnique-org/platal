@@ -435,29 +435,22 @@ class UFC_EmailList implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Address
-/** Filters users based on their address
- * @param $text Text for filter in fulltext search
- * @param $textSearchMode Mode for search (PREFIX, SUFFIX, ...)
- * @param $type Filter on address type
- * @param $flags Filter on address flags
- * @param $countryId Filter on address countryId
- * @param $administrativeAreaId Filter on address administrativeAreaId
- * @param $subAdministrativeAreaId Filter on address subAdministrativeAreaId
- * @param $localityId Filter on address localityId
- * @param $postalCode Filter on address postalCode
- */
-class UFC_Address implements UserFilterCondition
+abstract class UFC_Address implements UserFilterCondition
 {
-    /** Flags for text search
-     */
-    const PREFIX    = 0x0001;
-    const SUFFIX    = 0x0002;
-    const CONTAINS  = 0x0003;
-
     /** Valid address type ('hq' is reserved for company addresses)
      */
-    const TYPE_HOME = 'home';
-    const TYPE_PRO  = 'job';
+    const TYPE_HOME = 1;
+    const TYPE_PRO  = 2;
+    const TYPE_ANY  = 3;
+
+    /** Text for these types
+     */
+    protected static $typetexts = array(
+        self::TYPE_HOME => 'home',
+        self::TYPE_PRO  => 'pro',
+    );
+
+    protected $type;
 
     /** Flags for addresses
      */
@@ -472,7 +465,7 @@ class UFC_Address implements UserFilterCondition
 
     /** Text of these flags
      */
-    private static $flagtexts = array(
+    protected static $flagtexts = array(
         self::FLAG_CURRENT => 'current',
         self::FLAG_TEMP    => 'temporary',
         self::FLAG_SECOND  => 'secondary',
@@ -480,27 +473,136 @@ class UFC_Address implements UserFilterCondition
         self::FLAG_CEDEX   => 'cedex',
     );
 
+    protected $flags;
+
+    public function __construct($type = null, $flags = null)
+    {
+        $this->type  = $type;
+        $this->flags = $flags;
+    }
+
+    protected function initConds($sub)
+    {
+        $conds = array();
+        $types = array();
+        foreach (self::$typetexts as $flag => $type) {
+            if ($flag & $this->type) {
+                $types[] = $type;
+            }
+        }
+        if (count($types)) {
+            $conds[] = $sub . '.type IN ' . XDB::formatArray($types);
+        }
+
+        if ($this->flags != self::FLAG_ANY) {
+            foreach(self::$flagtexts as $flag => $text) {
+                if ($flag & $this->flags) {
+                    $conds[] = 'FIND_IN_SET(' . XDB::format('{?}', $text) . ', ' . $sub . '.flags)';
+                }
+            }
+        }
+        return $conds;
+    }
+
+}
+// }}}
+
+// {{{ class UFC_AddressText
+/** Select users based on their address, using full text search
+ * @param $text Text for filter in fulltext search
+ * @param $textSearchMode Mode for search (PREFIX, SUFFIX, ...)
+ * @param $type Filter on address type
+ * @param $flags Filter on address flags
+ * @param $country Filter on address country
+ * @param $locality Filter on address locality
+ */
+class UFC_AddressText extends UFC_Address
+{
+    /** Flags for text search
+     */
+    const PREFIX    = 0x0001;
+    const SUFFIX    = 0x0002;
+    const CONTAINS  = 0x0003;
+
+    private $text;
+    private $textSearchMode;
+
+    public function __construct($text = null, $textSearchMode = self::CONTAINS,
+        $type = null, $flags = self::FLAG_ANY, $country = null, $locality = null)
+    {
+        parent::__construct($type, $flags);
+        $this->text           = $text;
+        $this->textSearchMode = $textSearchMode;
+        $this->country        = $country;
+        $this->locality       = $locality;
+    }
+
+    private function mkMatch($txt)
+    {
+        $op = ' LIKE ';
+        if (($this->textSearchMode & self::CONTAINS) == 0) {
+            $right = XDB::format('{?}', $this->text);
+            $op = ' = ';
+        } else if (($this->mode & self::CONTAINS) == self::PREFIX) {
+            $right = XDB::format('CONCAT({?}, \'%\')', $this->text);
+        } else if (($this->mode & self::CONTAINS) == self::SUFFIX) {
+            $right = XDB::format('CONCAT(\'%\', {?})', $this->text);
+        } else {
+            $right = XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->text);
+        }
+        return $op . $right;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $sub = $uf->addAddressFilter();
+        $conds = $this->initConds($sub);
+        if ($this->text != null) {
+            $conds[] = $sub . '.text' . $this->mkMatch($this->text);
+        }
+
+        if ($this->country != null) {
+            $subc = $uf->addAddressCountryFilter();
+            $subconds = array();
+            $subconds[] = $subc . '.country' . $this->mkMatch($this->country);
+            $subconds[] = $subc . '.countryFR' . $this->mkMatch($this->country);
+            $conds[] = implode(' OR ', $subconds);
+        }
+
+        if ($this->locality != null) {
+            $subl = $uf->addAddressLocalityFilter();
+            $conds[] = $subl . '.name' . $this->mkMatch($this->locality);
+        }
+
+        return implode(' AND ', $conds);
+    }
+}
+// }}}
+
+// {{{ class UFC_AddressFields
+/** Filters users based on their address,
+ * @param $type Filter on address type
+ * @param $flags Filter on address flags
+ * @param $countryId Filter on address countryId
+ * @param $administrativeAreaId Filter on address administrativeAreaId
+ * @param $subAdministrativeAreaId Filter on address subAdministrativeAreaId
+ * @param $localityId Filter on address localityId
+ * @param $postalCode Filter on address postalCode
+ */
+class UFC_AddressFields extends UFC_Address
+{
     /** Data of the filter
      */
-    private $text;
-    private $type;
-    private $flags;
     private $countryId;
     private $administrativeAreaId;
     private $subAdministrativeAreaId;
     private $localityId;
     private $postalCode;
 
-    private $textSearchMode;
-
-    public function __construct($text = null, $textSearchMode = self::CONTAINS,
-        $type = null, $flags = self::FLAG_ANY, $countryId = null, $administrativeAreaId = null,
+    public function __construct($type = null, $flags = self::FLAG_ANY, $countryId = null, $administrativeAreaId = null,
         $subAdministrativeAreaId = null, $localityId = null, $postalCode = null)
     {
-        $this->text                      = $text;
-        $this->textSearchMode            = $textSearchMode;
-        $this->type                      = $type;
-        $this->flags                     = $flags;
+        parent::__construct($type, $flags);
         $this->countryId                 = $countryId;
         $this->administrativeAreaId      = $administrativeAreaId;
         $this->subAdministrativeAreaId   = $subAdministrativeAreaId;
@@ -511,34 +613,7 @@ class UFC_Address implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addAddressFilter();
-        $conds = array();
-        if ($this->text != null) {
-            $left = $sub . '.text ';
-            $op = ' LIKE ';
-            if (($this->textSearchMode & self::CONTAINS) == 0) {
-                $right = XDB::format('{?}', $this->text);
-                $op = ' = ';
-            } else if (($this->mode & self::CONTAINS) == self::PREFIX) {
-                $right = XDB::format('CONCAT({?}, \'%\')', $this->text);
-            } else if (($this->mode & self::CONTAINS) == self::SUFFIX) {
-                $right = XDB::format('CONCAT(\'%\', {?})', $this->text);
-            } else {
-                $right = XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->text);
-            }
-            $conds[] = $left . $op . $right;
-        }
-
-        if ($this->type != null) {
-            $conds[] = $sub . '.type = ' . XDB::format('{?}', $this->type);
-        }
-
-        if ($this->flags != self::FLAG_ANY) {
-            foreach(self::$flagtexts as $flag => $text) {
-                if ($flag & $this->flags) {
-                    $conds[] = 'FIND_IN_SET(' . XDB::format('{?}', $text) . ', ' . $sub . '.flags)';
-                }
-            }
-        }
+        $conds = $this->initConds();
 
         if ($this->countryId != null) {
             $conds[] = $sub . '.countryId = ' . XDB::format('{?}', $this->countryId);
@@ -1421,7 +1496,7 @@ class UserFilter extends PlFilter
     {
         if (is_null($this->lastcount)) {
             $this->buildQuery();
-            if ($this->requireAccounts()) {
+            if ($this->with_accounts) {
                 $field = 'a.uid';
             } else {
                 $field = 'p.pid';
@@ -1824,11 +1899,35 @@ class UserFilter extends PlFilter
         return 'pa';
     }
 
+    private $with_pac = false;
+    public function addAddressCountryFilter()
+    {
+        $this->requireProfiles();
+        $this->addAddressFilter();
+        $this->with_pac = true;
+        return 'gc';
+    }
+
+    private $with_pal = true;
+    public function addAddressLocalityFilter()
+    {
+        $this->requireProfiles();
+        $this->addAddressFilter();
+        $this->with_pal = true;
+        return 'gl';
+    }
+
     protected function addressJoins()
     {
         $joins = array();
         if ($this->with_pa) {
             $joins['pa'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_address', '$ME.pid = $PID');
+        }
+        if ($this->with_pac) {
+            $joins['gc'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'geoloc_countries', '$ME.iso_3166_1_a2 = pa.countryID');
+        }
+        if ($this->with_pal) {
+            $joins['gl'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'geoloc_localities', '$ME.id = pa.localityID');
         }
         return $joins;
     }
