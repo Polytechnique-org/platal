@@ -782,13 +782,13 @@ class UFC_Job_Description implements UserFilterCondition
     /** Meta-filters
      * Built with binary OR on UserFilter::JOB_*
      */
-    const ANY = 31;
+    const ANY = 63;
     const SECTORIZATION = 15;
 
     private $description;
     private $fields;
 
-    public function __construct($description)
+    public function __construct($description, $fields)
     {
         $this->fields = $fields;
         $this->description = $description;
@@ -800,6 +800,10 @@ class UFC_Job_Description implements UserFilterCondition
         if ($this->fields & UserFilter::JOB_USERDEFINED) {
             $sub = $uf->addJobFilter();
             $conds[] = $sub . '.description LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+        }
+        if ($this->fields & UserFilter::JOB_CV) {
+            $uf->requireProfiles();
+            $conds[] = 'p.cv LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
         }
         if ($this->fields & UserFilter::JOB_SECTOR) {
             $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SECTOR);
@@ -1983,6 +1987,7 @@ class UserFilter extends PlFilter
     const JOB_SUBSUBSECTOR = 4;
     const JOB_ALTERNATES = 8;
     const JOB_USERDEFINED = 16;
+    const JOB_CV = 32;
 
     /** Joins :
      * pj => profile_job
