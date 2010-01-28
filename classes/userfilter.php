@@ -88,6 +88,30 @@ class UFC_Promo implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Formation
+class UFC_Formation implements UserFilterCondition
+{
+    private $eduid;
+    private $edutext;
+
+    public function __construct($eduid = null, $edutext = null)
+    {
+        $this->eduid = $eduid;
+        $this->edutext = $edutext;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $sub = $uf->addEducationFilter();
+        if ($this->eduid != null) {
+            return 'pe' . $sub . '.eduid = ' . XDB::format('{?}', $this->eduid);
+        } else {
+            return 'pee' . $sub . '.name LIKE ' . XDB::format('CONCAT( \'%\', {?}, \'%\')', $this->edutext);
+        }
+    }
+}
+// }}}
+
 // {{{ class UFC_Name
 /** Filters users based on name
  * @param $type Type of name field on which filtering is done (firstname, lastname...)
@@ -204,23 +228,33 @@ class UFC_NameTokens implements UserFilterCondition
 // {{{ class UFC_Nationality
 class UFC_Nationality implements UserFilterCondition
 {
-    private $nationality;
+    private $nid;
+    private $ntext;
 
-    public function __construct($nationality)
+    public function __construct($nid = null, $ntext = null)
     {
-        $this->nationality = $nationality;
+        $this->nid = $nid;
+        $this->ntext = $ntext;
     }
 
     public function buildCondition(PlFilter &$uf)
     {
-        $uf->requireProfiles();
-        $nat = XDB::format('{?}', $this->nationality);
-        $conds = array(
-            'p.nationality1 = ' . $nat,
-            'p.nationality2 = ' . $nat,
-            'p.nationality3 = ' . $nat,
-        );
-        return implode(' OR ', $conds);
+        if ($this->nid != null) {
+            $uf->requireProfiles();
+            $nat = XDB::format('{?}', $this->nid);
+            $conds = array(
+                'p.nationality1 = ' . $nat,
+                'p.nationality2 = ' . $nat,
+                'p.nationality3 = ' . $nat,
+            );
+            return implode(' OR ', $conds);
+        } else {
+            $sub = $uf->addNationalityJoins();
+            $nat = XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->ntext);
+            $cond = $sub . '.nationality LIKE ' . $nat . ' OR ' .
+                    $sub . '.nationalityFR LIKE ' . $nat;
+            return $cond;
+        }
     }
 }
 // }}}
@@ -385,17 +419,42 @@ class UFC_Group implements UserFilterCondition
 // {{{ class UFC_Binet
 class UFC_Binet implements UserFilterCondition
 {
-    private $binet;
+    private $binetid;
+    private $binetname;
 
-    public function __construct($binet)
+    public function __construct($binetid = null, $binetname = null)
     {
-        $this->binet = $binet;
+        $this->binetid = $binetid;
+        $this->binetname = $binetname;
     }
 
     public function buildCondition(PlFilter &$uf)
     {
-        $sub = $uf->addBinetsFilter();
-        return $sub . 'binet_id = ' . XDB::format('{?}', $this->binet);
+        if ($this->binetid != null) {
+            $sub = $uf->addBinetsFilter();
+            return $sub . 'binet_id = ' . XDB::format('{?}', $this->binetid);
+        } else {
+            $sub = $uf->addBinetsFilter(true);
+            return $sub . 'test LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->binetname);
+        }
+    }
+}
+// }}}
+
+// {{{ class UFC_Section
+class UFC_Section implements UserFilterCondition
+{
+    private $section;
+
+    public function __construct($section)
+    {
+        $this->section = $section;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $uf->requireProfiles();
+        return 'p.section = ' . XDB::format('{?}', $this->section);
     }
 }
 // }}}
@@ -1770,6 +1829,25 @@ class UserFilter extends PlFilter
         }
     }
 
+    /** NATIONALITY
+     */
+
+    private $with_nat = false;
+    public function addNationalityFilter()
+    {
+        $this->with_nat = true;
+        return 'ngc';
+    }
+
+    protected function nationalityJoins()
+    {
+        $joins = array();
+        if ($this->with_nat) {
+            $joins['ngc'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'geoloc_countries', '$ME.iso_3166_1_a2 = p.nationality1 OR $ME.iso_3166_1_a2 = p.nationality2 OR $ME.iso_3166_1_a2 = p.nationality3');
+        }
+        return $joins;
+    }
+
     /** EDUCATION
      */
     const GRADE_ING = 'Ing.';
@@ -1875,19 +1953,28 @@ class UserFilter extends PlFilter
     /** BINETS
      */
 
-    private $with_binets = false;
-    public function addBinetsFilter()
+    private $with_bi = false;
+    private $with_bd = false;
+    public function addBinetsFilter($with_enum = false;)
     {
         $this->requireProfiles();
-        $this->with_binets = true;
-        return 'bi';
+        $this->with_bi = true;
+        if ($with_enum) {
+            $this->with_bd = true;
+            return 'bd';
+        } else {
+            return 'bi';
+        }
     }
 
     protected function binetsJoins()
     {
         $joins = array();
-        if ($this->with_binets) {
+        if ($this->with_bi) {
             $joins['bi'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'binets_ins', '$ME.uid = $PID');
+        }
+        if ($this->with_bd) {
+            $joins['bd'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'binets_def', '$ME.id = bi.binet_id');
         }
         return $joins;
     }
