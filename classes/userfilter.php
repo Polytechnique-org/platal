@@ -201,6 +201,30 @@ class UFC_NameTokens implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Nationality
+class UFC_Nationality implements UserFilterCondition
+{
+    private $nationality;
+
+    public function __construct($nationality)
+    {
+        $this->nationality = $nationality;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $uf->requireProfiles();
+        $nat = XDB::format('{?}', $this->nationality);
+        $conds = array(
+            'p.nationality1 = ' . $nat,
+            'p.nationality2 = ' . $nat,
+            'p.nationality3 = ' . $nat,
+        );
+        return implode(' OR ', $conds);
+    }
+}
+// }}}
+
 // {{{ class UFC_Dead
 /** Filters users based on death date
  * @param $comparison Comparison operator
@@ -354,6 +378,24 @@ class UFC_Group implements UserFilterCondition
             $where .= ' AND gpm' . $sub . '.perms = \'admin\'';
         }
         return $where;
+    }
+}
+// }}}
+
+// {{{ class UFC_Binet
+class UFC_Binet implements UserFilterCondition
+{
+    private $binet;
+
+    public function __construct($binet)
+    {
+        $this->binet = $binet;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $sub = $uf->addBinetsFilter();
+        return $sub . 'binet_id = ' . XDB::format('{?}', $this->binet);
     }
 }
 // }}}
@@ -1826,6 +1868,26 @@ class UserFilter extends PlFilter
                 $joins['gpa' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'groupex.asso', XDB::format('$ME.diminutif = {?}', $key));
                 $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
             }
+        }
+        return $joins;
+    }
+
+    /** BINETS
+     */
+
+    private $with_binets = false;
+    public function addBinetsFilter()
+    {
+        $this->requireProfiles();
+        $this->with_binets = true;
+        return 'bi';
+    }
+
+    protected function binetsJoins()
+    {
+        $joins = array();
+        if ($this->with_binets) {
+            $joins['bi'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'binets_ins', '$ME.uid = $PID');
         }
         return $joins;
     }
