@@ -51,6 +51,24 @@ class UFC_Profile implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Comment
+class UFC_Comment implements UserFilterCondition
+{
+    private $text;
+
+    public function __construct($text)
+    {
+        $this->text = $text;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $uf->requireProfiles();
+        return 'p.freetext LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->text);
+    }
+}
+// }}}
+
 // {{{ class UFC_Promo
 /** Filters users based on promotion
  * @param $comparison Comparison operator (>, =, ...)
@@ -89,25 +107,65 @@ class UFC_Promo implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Formation
+/** Filters users by formation
+ * @param $val The formation to search (either ID or array of IDs)
+ */
 class UFC_Formation implements UserFilterCondition
 {
-    private $eduid;
-    private $edutext;
+    private $val;
 
-    public function __construct($eduid = null, $edutext = null)
+    public function __construct($val)
     {
-        $this->eduid = $eduid;
-        $this->edutext = $edutext;
+        if (!is_array($val)) {
+            $val = array($val);
+        }
+        $this->val = $val;
     }
 
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addEducationFilter();
-        if ($this->eduid != null) {
-            return 'pe' . $sub . '.eduid = ' . XDB::format('{?}', $this->eduid);
-        } else {
-            return 'pee' . $sub . '.name LIKE ' . XDB::format('CONCAT( \'%\', {?}, \'%\')', $this->edutext);
+        return 'pe' . $sub . '.eduid IN ' . XDB::formatArray($this->val);
         }
+    }
+}
+// }}}
+
+// {{{ class UFC_Diploma
+class UFC_Diploma implements UserFilterCondition
+{
+    private $diploma;
+
+    public function __construct($diploma)
+    {
+        if (! is_array($diploma)) {
+            $diploma = array($diploma);
+        }
+        $this->diploma = $diploma;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $sub = $uf->addEducationFilter();
+        return 'pee' . $sub . '.degreeid IN ' . XDB::formatArray($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFC_StudyField
+class UFC_StudyField implements UserFilterCondition
+{
+    private $val;
+
+    public function __construct($val)
+    {
+        $this->val = $val;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $sub = $uf->addEducationFilter();
+        return 'pee' . $sub . '.fieldid IN ' . XDB::formatArray($this->val);
     }
 }
 // }}}
@@ -228,33 +286,26 @@ class UFC_NameTokens implements UserFilterCondition
 // {{{ class UFC_Nationality
 class UFC_Nationality implements UserFilterCondition
 {
-    private $nid;
-    private $ntext;
+    private $val;
 
-    public function __construct($nid = null, $ntext = null)
+    public function __construct($val)
     {
-        $this->nid = $nid;
-        $this->ntext = $ntext;
+        if (!is_array($val)) {
+            $val = array($val);
+        }
+        $this->val = $val;
     }
 
     public function buildCondition(PlFilter &$uf)
     {
-        if ($this->nid != null) {
-            $uf->requireProfiles();
-            $nat = XDB::format('{?}', $this->nid);
-            $conds = array(
-                'p.nationality1 = ' . $nat,
-                'p.nationality2 = ' . $nat,
-                'p.nationality3 = ' . $nat,
-            );
-            return implode(' OR ', $conds);
-        } else {
-            $sub = $uf->addNationalityJoins();
-            $nat = XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->ntext);
-            $cond = $sub . '.nationality LIKE ' . $nat . ' OR ' .
-                    $sub . '.nationalityFR LIKE ' . $nat;
-            return $cond;
-        }
+        $uf->requireProfiles();
+        $nat = XDB::formatArray($this->val);
+        $conds = array(
+            'p.nationality1 IN ' . $nat,
+            'p.nationality2 IN ' . $nat,
+            'p.nationality3 IN ' . $nat,
+        );
+        return implode(' OR ', $conds);
     }
 }
 // }}}
@@ -277,6 +328,7 @@ class UFC_Dead implements UserFilterCondition
 
     public function buildCondition(PlFilter &$uf)
     {
+        $uf->requireProfiles();
         $str = 'p.deathdate IS NOT NULL';
         if (!is_null($this->comparison)) {
             $str .= ' AND p.deathdate ' . $this->comparison . ' ' . XDB::format('{?}', date('Y-m-d', $this->date));
@@ -307,6 +359,7 @@ class UFC_Registered implements UserFilterCondition
 
     public function buildCondition(PlFilter &$uf)
     {
+        $uf->requireAccounts();
         if ($this->active) {
             $date = 'a.uid IS NOT NULL AND a.state = \'active\'';
         } else {
@@ -338,6 +391,7 @@ class UFC_ProfileUpdated implements UserFilterCondition
 
     public function buildCondition(PlFilter &$uf)
     {
+        $uf->requireProfiles();
         return 'p.last_change ' . $this->comparison . XDB::format(' {?}', date('Y-m-d H:i:s', $this->date));
     }
 }
@@ -361,6 +415,7 @@ class UFC_Birthday implements UserFilterCondition
 
     public function buildCondition(PlFilter &$uf)
     {
+        $uf->requireProfiles();
         return 'p.next_birthday ' . $this->comparison . XDB::format(' {?}', date('Y-m-d', $this->date));
     }
 }
@@ -383,6 +438,7 @@ class UFC_Sex implements UserFilterCondition
         if ($this->sex != User::GENDER_MALE && $this->sex != User::GENDER_FEMALE) {
             return self::COND_FALSE;
         } else {
+            $uf->requireProfiles();
             return XDB::format('p.sex = {?}', $this->sex == User::GENDER_FEMALE ? 'female' : 'male');
         }
     }
@@ -417,26 +473,25 @@ class UFC_Group implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Binet
+/** Selects users based on their belonging to a given (list of) binet
+ * @param $binet either a binet_id or an array of binet_ids
+ */
 class UFC_Binet implements UserFilterCondition
 {
-    private $binetid;
-    private $binetname;
+    private $val;
 
-    public function __construct($binetid = null, $binetname = null)
+    public function __construct($val)
     {
-        $this->binetid = $binetid;
-        $this->binetname = $binetname;
+        if (!is_array($val)) {
+            $val = array($val);
+        }
+        $this->val = $val;
     }
 
     public function buildCondition(PlFilter &$uf)
     {
-        if ($this->binetid != null) {
-            $sub = $uf->addBinetsFilter();
-            return $sub . 'binet_id = ' . XDB::format('{?}', $this->binetid);
-        } else {
-            $sub = $uf->addBinetsFilter(true);
-            return $sub . 'test LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->binetname);
-        }
+        $sub = $uf->addBinetsFilter();
+        return $sub . '.binet_id IN ' . XDB::formatArray($this->val);
     }
 }
 // }}}
@@ -714,7 +769,7 @@ class UFC_AddressFields extends UFC_Address
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addAddressFilter();
-        $conds = $this->initConds();
+        $conds = $this->initConds($sub);
 
         if ($this->countryId != null) {
             $conds[] = $sub . '.countryId = ' . XDB::format('{?}', $this->countryId);
@@ -833,41 +888,32 @@ class UFC_Job_Company implements UserFilterCondition
 
 // {{{ class UFC_Job_Sectorization
 /** Filters users based on the ((sub)sub)sector they work in
- * @param $sector The sector searched
- * @param $subsector The subsector
- * @param $subsubsector The subsubsector
+ * @param $val The ID of the sector
+ * @param $type The kind of search (subsubsector/subsector/sector)
  */
 class UFC_Job_Sectorization implements UserFilterCondition
 {
+    private $val;
+    private $type;
 
-    private $sector;
-    private $subsector;
-    private $subsubsector;
-
-    public function __construct($sector = null, $subsector = null, $subsubsector = null)
+    public function __construct($val, $type = UserFilter::JOB_SECTOR)
     {
-        $this->sector = $sector;
-        $this->subsector = $subsector;
-        $this->subsubsector = $subsubsector;
+        self::assertType($type);
+        $this->val = $val;
+        $this->type = $type;
+    }
+
+    private static function assertType($type)
+    {
+        if ($type != UserFilter::JOB_SECTOR && $type != UserFilter::JOB_SUBSECTOR && $type != UserFilter::JOB_SUBSUBSECTOR) {
+            Platal::page()->killError("Type de secteur non valide.");
+        }
     }
 
     public function buildCondition(PlFilter &$uf)
     {
-        // No need to add the JobFilter, it will be done by addJobSectorizationFilter
-        $conds = array();
-        if ($this->sector !== null) {
-            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SECTOR);
-            $conds[] = $sub . '.id = ' . XDB::format('{?}', $this->sector);
-        }
-        if ($this->subsector !== null) {
-            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SUBSECTOR);
-            $conds[] = $sub . '.id = ' . XDB::format('{?}', $this->subsector);
-        }
-        if ($this->subsubsector !== null) {
-            $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SUBSUBSECTOR);
-            $conds[] = $sub . '.id = ' . XDB::format('{?}', $this->subsubsector);
-        }
-        return implode(' AND ', $conds);
+        $sub = $uf->addJobSectorizationFilter($this->type);
+        return $sub . '.id = ' . XDB::format('{?}', $this->val);
     }
 }
 // }}}
@@ -1955,7 +2001,7 @@ class UserFilter extends PlFilter
 
     private $with_bi = false;
     private $with_bd = false;
-    public function addBinetsFilter($with_enum = false;)
+    public function addBinetsFilter($with_enum = false)
     {
         $this->requireProfiles();
         $this->with_bi = true;
@@ -1971,7 +2017,7 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_bi) {
-            $joins['bi'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'binets_ins', '$ME.uid = $PID');
+            $joins['bi'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'binets_ins', '$ME.user_id = $PID');
         }
         if ($this->with_bd) {
             $joins['bd'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'binets_def', '$ME.id = bi.binet_id');
@@ -2061,7 +2107,7 @@ class UserFilter extends PlFilter
         return 'gc';
     }
 
-    private $with_pal = true;
+    private $with_pal = false;
     public function addAddressLocalityFilter()
     {
         $this->requireProfiles();
@@ -2074,7 +2120,7 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_pa) {
-            $joins['pa'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_address', '$ME.pid = $PID');
+            $joins['pa'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_addresses', '$ME.pid = $PID');
         }
         if ($this->with_pac) {
             $joins['gc'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'geoloc_countries', '$ME.iso_3166_1_a2 = pa.countryID');
