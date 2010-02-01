@@ -126,7 +126,6 @@ class UFC_Formation implements UserFilterCondition
     {
         $sub = $uf->addEducationFilter();
         return 'pe' . $sub . '.eduid IN ' . XDB::formatArray($this->val);
-        }
     }
 }
 // }}}
@@ -159,6 +158,9 @@ class UFC_StudyField implements UserFilterCondition
 
     public function __construct($val)
     {
+        if (!is_array($val)) {
+            $val = array($val);
+        }
         $this->val = $val;
     }
 
@@ -497,6 +499,9 @@ class UFC_Binet implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Section
+/** Selects users based on section
+ * @param $section ID of the section
+ */
 class UFC_Section implements UserFilterCondition
 {
     private $section;
@@ -735,35 +740,35 @@ class UFC_AddressText extends UFC_Address
 }
 // }}}
 
-// {{{ class UFC_AddressFields
+// {{{ class UFC_AddressField
 /** Filters users based on their address,
+ * @param $val Either a code for one of the fields, or an array of such codes
+ * @param $fieldtype The type of field to look for
  * @param $type Filter on address type
  * @param $flags Filter on address flags
- * @param $countryId Filter on address countryId
- * @param $administrativeAreaId Filter on address administrativeAreaId
- * @param $subAdministrativeAreaId Filter on address subAdministrativeAreaId
- * @param $localityId Filter on address localityId
- * @param $postalCode Filter on address postalCode
  */
-class UFC_AddressFields extends UFC_Address
+class UFC_AddressField extends UFC_Address
 {
+    const FIELD_COUNTRY    = 1;
+    const FIELD_ADMAREA    = 2;
+    const FIELD_SUBADMAREA = 3;
+    const FIELD_LOCALITY   = 4;
+    const FIELD_ZIPCODE    = 5;
+
     /** Data of the filter
      */
-    private $countryId;
-    private $administrativeAreaId;
-    private $subAdministrativeAreaId;
-    private $localityId;
-    private $postalCode;
+    private $val;
+    private $fieldtype;
 
-    public function __construct($type = null, $flags = self::FLAG_ANY, $countryId = null, $administrativeAreaId = null,
-        $subAdministrativeAreaId = null, $localityId = null, $postalCode = null)
+    public function __construct($val, $fieldtype, $type = null, $flags = self::FLAG_ANY)
     {
         parent::__construct($type, $flags);
-        $this->countryId                 = $countryId;
-        $this->administrativeAreaId      = $administrativeAreaId;
-        $this->subAdministrativeAreaId   = $subAdministrativeAreaId;
-        $this->localityId                = $localityId;
-        $this->postalCode                = $postalCode;
+
+        if (!is_array($val)) {
+            $val = array($val);
+        }
+        $this->val       = $val;
+        $this->fieldtype = $fieldtype;
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -771,21 +776,26 @@ class UFC_AddressFields extends UFC_Address
         $sub = $uf->addAddressFilter();
         $conds = $this->initConds($sub);
 
-        if ($this->countryId != null) {
-            $conds[] = $sub . '.countryId = ' . XDB::format('{?}', $this->countryId);
+        switch ($this->fieldtype) {
+        case self::FIELD_COUNTRY:
+            $field = 'countryId';
+            break;
+        case self::FIELD_ADMAREA:
+            $field = 'administrativeAreaId';
+            break;
+        case self::FIELD_SUBADMAREA:
+            $field = 'subAdministrativeAreaId';
+            break;
+        case self::FIELD_LOCALITY:
+            $field = 'localityId';
+            break;
+        case self::FIELD_ZIPCODE:
+            $field = 'postalCode';
+            break;
+        default:
+            Platal::page()->killError('Invalid address field type : ' . $this->fieldtype);
         }
-        if ($this->administrativeAreaId != null) {
-            $conds[] = $sub . '.administrativeAreaId = ' . XDB::format('{?}', $this->administrativeAreaId);
-        }
-        if ($this->subAdministrativeAreaId != null) {
-            $conds[] = $sub . '.subAdministrativeAreaId = ' . XDB::format('{?}', $this->subAdministrativeAreaId);
-        }
-        if ($this->localityId != null) {
-            $conds[] = $sub . '.localityId = ' . XDB::format('{?}', $this->localityId);
-        }
-        if ($this->postalCode != null) {
-            $conds[] = $sub . '.postalCode = ' . XDB::format('{?}', $this->postalCode);
-        }
+        $conds[] = $sub . '.' . $field . ' IN ' . XDB::formatArray($this->val);
 
         return implode(' AND ', $conds);
     }
@@ -888,7 +898,7 @@ class UFC_Job_Company implements UserFilterCondition
 
 // {{{ class UFC_Job_Sectorization
 /** Filters users based on the ((sub)sub)sector they work in
- * @param $val The ID of the sector
+ * @param $val The ID of the sector, or an array of such IDs
  * @param $type The kind of search (subsubsector/subsector/sector)
  */
 class UFC_Job_Sectorization implements UserFilterCondition
@@ -899,6 +909,9 @@ class UFC_Job_Sectorization implements UserFilterCondition
     public function __construct($val, $type = UserFilter::JOB_SECTOR)
     {
         self::assertType($type);
+        if (!is_array($val)) {
+            $val = array($val);
+        }
         $this->val = $val;
         $this->type = $type;
     }
