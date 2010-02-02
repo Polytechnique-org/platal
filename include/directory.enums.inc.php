@@ -19,6 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// {{{ class DirEnum
 /** This class stores all data for the different kinds of fields.
  * It is only a dispatcher for the various DirEnum_XXX classes.
  */
@@ -51,7 +52,6 @@ class DirEnum
     /** Retrieves all options for a given type
      * @param $type Type of enum for which options are requested
      * @return XorgDbIterator over the results
-     * TODO : add support for optional parameters transmitted to enumerations
      * TODO : Find a way to get either an array, or the adequate PlIterator
      */
     static public function getOptions()
@@ -65,6 +65,11 @@ class DirEnum
         return call_user_func_array(array($obj, 'getOptions'), $args);
     }
 
+    /** Retrieves a list of IDs for a given type
+     * @param $type Type of enum for which IDs are requested
+     * @param $text Text to search in enum valuees
+     * @param $mode Mode of search for those IDs (prefix/suffix/infix)
+     */
     static public function getIDs()
     {
         $args = func_get_args();
@@ -76,7 +81,9 @@ class DirEnum
         return call_user_func_array(array($obj, 'getIDs'), $args);
     }
 }
+// }}}
 
+// {{{ class DirEnumeration
 abstract class DirEnumeration
 {
     /** Modes for LIKE searches
@@ -159,20 +166,31 @@ abstract class DirEnumeration
                                       ORDER BY ' . $this->valfield);
     }
 }
+// }}}
 
+// {{{ class DE_Binets
 class DE_Binets extends DirEnumeration
 {
     protected $from = 'binets_def';
 }
+// }}}
+
+// {{{ class DE_Sections
 class DE_Sections extends DirEnumeration
 {
     protected $from = 'sections';
 }
+// }}}
+
+// {{{ class DE_Schools
 class DE_Schools extends DirEnumeration
 {
     protected $valfield = 'name';
     protected $from = 'profile_education_enum';
 }
+// }}}
+
+// {{{ class DE_Degrees
 class DE_Degrees extends DirEnumeration
 {
     protected $suboptions = array();
@@ -220,11 +238,17 @@ class DE_Degrees extends DirEnumeration
         }
     }
 }
+// }}}
+
+// {{{ class DE_StudiesSector
 class DE_StudiesSector extends DirEnumeration
 {
     protected $valfield = 'field';
     protected $from = 'profile_education_field_enum';
 }
+// }}}
+
+// {{{ class DE_Nationalities
 class DE_Nationalities extends DirEnumeration
 {
     protected $idfield  = 'iso_3166_1_a2';
@@ -232,12 +256,18 @@ class DE_Nationalities extends DirEnumeration
     protected $from     = 'geoloc_countries AS gc';
     protected $join     = 'INNER JOIN profiles AS p ON (gc.iso_3166_1_a2 IN (p.nationality1, p.nationality2, p.nationality3))';
 }
+// }}}
+
+// {{{ class DE_Countries
 class DE_Countries extends DirEnumeration
 {
     protected $idfield  = 'iso_3166_1_a2';
     protected $valfield = 'countryFR';
     protected $from     = 'geoloc_countries';
 }
+// }}}
+
+// {{{ class DE_AdminAreas
 class DE_AdminAreas extends DirEnumeration
 {
     protected $suboptions = array();
@@ -283,21 +313,31 @@ class DE_AdminAreas extends DirEnumeration
         }
     }
 }
+// }}}
+
+// {{{ class DE_GroupesX
 class DE_GroupesX extends DirEnumeration
 {
     protected $valfield = 'nom';
     protected $from     = '#groupex#.asso';
     protected $where    = 'WHERE (cat = \'GroupesX\' OR cat = \'Institutions\') AND pub = \'public\'';
 }
+// }}}
+
+// {{{ class DE_Sectors
 class DE_Sectors extends DirEnumeration
 {
     protected $valfield = 'name';
     protected $from     = 'profile_job_sector_enum';
 }
+// }}}
+
+// {{{ class DE_Networking
 class DE_Networking extends DirEnumeration
 {
     protected $idfield  = 'network_type';
     protected $valfield = 'name';
     protected $from     = 'profile_networking_enum';
 }
+// }}}
 ?>
