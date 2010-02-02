@@ -28,16 +28,17 @@ class DirEnum
      * Each of these consts contains the basename of the class (its full name
      * being DE_$basename).
      */
-    const BINETS        = 'binets';
-    const SECTIONS      = 'sections';
-    const SCHOOLS       = 'schools';
-    const DEGREES       = 'degrees';
-    const NATIONALITIES = 'nationalities';
-    const COUNTRIES     = 'countries';
-    const GROUPESX      = 'groupesx';
-    const SECTORS       = 'sectors';
-    const NETWORKS      = 'networking';
-    const ADMINAREAS    = 'adminareas';
+    const BINETS         = 'binets';
+    const SECTIONS       = 'sections';
+    const SCHOOLS        = 'schools';
+    const DEGREES        = 'degrees';
+    const STUDIESDOMAINS = 'studiesdomains';
+    const NATIONALITIES  = 'nationalities';
+    const COUNTRIES      = 'countries';
+    const GROUPESX       = 'groupesx';
+    const SECTORS        = 'sectors';
+    const NETWORKS       = 'networking';
+    const ADMINAREAS     = 'adminareas';
 
     static private $enumerations = array();
 
@@ -63,17 +64,38 @@ class DirEnum
         $obj = self::$enumerations[$type];
         return call_user_func_array(array($obj, 'getOptions'), $args);
     }
+
+    static public function getIDs()
+    {
+        $args = func_get_args();
+        $type = array_shift($args);
+        if (!array_key_exists($type, self::$enumerations)) {
+            self::init($type);
+        }
+        $obj = self::$enumerations[$type];
+        return call_user_func_array(array($obj, 'getIDs'), $args);
+    }
 }
 
 abstract class DirEnumeration
 {
+    /** Modes for LIKE searches
+     */
+    const MODE_EXACT    = 0x000;
+    const MODE_PREFIX   = 0x001;
+    const MODE_SUFFIX   = 0x002;
+    const MODE_CONTAINS = 0x003;
+
     /** An internal array of ID => optionTxt
      */
     protected $options;
 
+    /** Description of the MySQL storage of the fields
+     */
     protected $idfield  = 'id';
     protected $valfield = 'text';
     protected $from;
+    protected $join = '';
     protected $where = '';
 
     public function __construct() {
@@ -85,6 +107,45 @@ abstract class DirEnumeration
         return $this->options;
     }
 
+    /** Retrieves possible IDs for given text
+     * @param $text Text to search for IDs
+     * @param $mode Mode of search (PREFIX, SUFFIX, CONTAINS)
+     * @return An array of matching IDs ; if empty, input should be considered invalid
+     */
+    public function getIDs($text, $mode)
+    {
+        if ($mode == self::MODE_EXACT) {
+            $options = $this->getOptions();
+            return array_keys($options, $text);
+        } else {
+            if ($this->where == null) {
+                $where = 'WHERE ';
+            } else {
+                $where = $this->where . ' AND ';
+            }
+            return XDB::fetchColumn('SELECT ' . $this->idfield . '
+                                       FROM ' . $this->from . '
+                                            ' . $this->join . '
+                                            ' . $where . $this->valfield . self::makeSqlConcat($text, $mode) . '
+                                   GROUP BY ' . $this->idfield);
+        }
+    }
+
+    static protected function makeSqlConcat($text, $mode)
+    {
+        if ($mode == self::MODE_EXACT) {
+            return ' = ' . XDB::format('{?}', $text);
+        }
+        if (($mode & self::MODE_CONTAINS) == self::MODE_PREFIX) {
+            $right = XDB::format('CONCAT({?}, \'%\')', $text);
+        } else if (($mode & self::MODE_CONTAINS) == self::MODE_SUFFIX) {
+            $right = XDB::format('CONCAT(\'%\', {?})', $text);
+        } else {
+            $right = XDB::format('CONCAT(\'%\', {?}, \'%\')', $text);
+        }
+        return ' LIKE ' . $right;
+    }
+
     /** The function used to load options
      */
     protected function loadOptions()
@@ -92,6 +153,7 @@ abstract class DirEnumeration
         $this->options = XDB::iterator('SELECT ' . $this->valfield . ' AS field,
                                                ' . $this->idfield . ' AS id
                                           FROM ' . $this->from . '
+                                               ' . $this->join . '
                                                ' . $this->where . '
                                       GROUP BY ' . $this->valfield . '
                                       ORDER BY ' . $this->valfield);
@@ -143,13 +205,32 @@ class DE_Degrees extends DirEnumeration
             return array();
         }
     }
+
+    public function getIDs($text, $mode, $eduid = null)
+    {
+        if ($eduid == null) {
+            return XDB::fetchColumn('SELECT id
+                                       FROM profile_education_degree_enum
+                                       WHERE degree ' . self::makeSqlConcat($text, $mode));
+        } else {
+            return XDB::fetchColumn('SELECT pede.id
+                                       FROM profile_education_degree AS ped
+                                  LEFT JOIN profile_education_degree_enum AS pede ON (ped.degreeid = pede.id)
+                                      WHERE ped.eduid = {?} AND pede.degree ' . self::makeSqlConcat($text, $mode), $eduid);
+        }
+    }
+}
+class DE_StudiesSector extends DirEnumeration
+{
+    protected $valfield = 'field';
+    protected $from = 'profile_education_field_enum';
 }
 class DE_Nationalities extends DirEnumeration
 {
     protected $idfield  = 'iso_3166_1_a2';
     protected $valfield = 'nationalityFR';
     protected $from     = 'geoloc_countries AS gc';
-    protected $where    = 'INNER JOIN profiles AS p ON (gc.iso_3166_1_a2 IN (p.nationality1, p.nationality2, p.nationality3))';
+    protected $join     = 'INNER JOIN profiles AS p ON (gc.iso_3166_1_a2 IN (p.nationality1, p.nationality2, p.nationality3))';
 }
 class DE_Countries extends DirEnumeration
 {
@@ -186,6 +267,19 @@ class DE_AdminAreas extends DirEnumeration
             return PlIteratorUtils::fromArray($this->suboptions[$country], 1, true);
         } else {
             return array();
+        }
+    }
+
+    public function getIDs($text, $mode, $country = null)
+    {
+        if ($country == null) {
+            return XDB::fetchColumn('SELECT id
+                                       FROM geoloc_administrativeareas
+                                       WHERE name ' . self::makeSqlConcat($text, $mode));
+        } else {
+            return XDB::fetchColumn('SELECT id
+                                       FROM geoloc_administrativeareas
+                                      WHERE country = {?} AND name' . self::makeSqlConcat($text, $mode), $country);
         }
     }
 }

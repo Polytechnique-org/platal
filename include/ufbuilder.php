@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2009 Polytechnique.org                              *
+ *  Copyright (C) 2003-2010 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -19,6 +19,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once 'directory.enums.inc.php';
+
+// {{{ class UserFilterBuilder
 class UserFilterBuilder
 {
     private $envprefix;
@@ -79,23 +82,63 @@ class UserFilterBuilder
 
     /** Wrappers around Env::i/s/..., to add envprefix
      */
-    public function s($key, $def) {
+    public function s($key, $def = '') {
         return trim(Env::s($this->envprefix . $key, $def));
     }
 
-    public function i($key, $def) {
+    public function i($key, $def = 0) {
         return intval(trim(Env::i($this->envprefix . $key, $def)));
     }
 
-    public function v($key, $def) {
+    public function v($key, $def = null) {
         return Env::v($this->envprefix . $key, $def);
     }
 
     public function has($key) {
-        return Env::has($this->envprefix . $key);
+        return (Env::has($this->envprefix . $key) && strlen($this->s($key, '')) > 0);
     }
 }
+// }}}
 
+// {{{ class UFB_AdvancedSearch
+class UFB_AdvancedSearch extends UserFilterBuilder
+{
+    public function __construct($envprefix = '')
+    {
+        $fields = array(
+            new UFBF_Name('name', 'Nom'),
+            new UFBF_Promo('promo1', 'Promotion', 'egal1'),
+            new UFBF_Promo('promo2', 'Promotion', 'egal2'),
+            new UFBF_Sex('woman', 'Sexe'),
+            new UFBF_Registered('subscriber', 'Inscrit'),
+            new UFBF_Dead('alive', 'En vie'),
+
+            new UFBF_Town('city', 'Ville / Code Postal'),
+            new UFBF_Country('countryTxt', 'country', 'Pays'),
+            new UFBF_AdminArea('region', 'Région'),
+
+            new UFBF_JobCompany('entreprise', 'Entreprise'),
+            new UFBF_JobSector('sector', 'Poste'),
+            new UFBF_JobDescription('jobdescription', 'Fonction'),
+            new UFBF_JobCv('cv', 'CV'),
+
+            new UFBF_Nationality('nationaliteTxt', 'nationalite', 'Nationalité'),
+            new UFBF_Binet('binetTxt', 'binet', 'Binet'),
+            new UFBF_Group('groupexTxt', 'groupex', 'Groupe X'),
+            new UFBF_Section('sectionTxt', 'section', 'Section'),
+
+            new UFBF_Formation('schoolTxt', 'school', "École d'application"),
+            new UFBF_Diploma('diplomaTxt', 'diploma', 'Diplôme'),
+            new UFBF_StudiesDomain('fieldTxt', 'field', "Domaine d'études"),
+
+            new UFBF_Comment('free', 'Commentaire'),
+        );
+        parent::__construct($fields, $envprefix);
+    }
+}
+// }}}
+
+// {{{ class UFB_Field
 abstract class UFB_Field
 {
     protected $envfield;
@@ -155,7 +198,9 @@ abstract class UFB_Field
      */
     abstract protected function check(UserFilterBuilder &$ufb);
 }
+// }}}
 
+// {{{ class UFBF_Text
 abstract class UFBF_Text extends UFB_Field
 {
     private $forbiddenchars;
@@ -186,7 +231,9 @@ abstract class UFBF_Text extends UFB_Field
         return true;
     }
 }
+// }}}
 
+// {{{ class UFBF_Range
 /** Subclass to use for fields which only allow integers within a range
  */
 abstract class UFBF_Range extends UFB_Field
@@ -218,7 +265,9 @@ abstract class UFBF_Range extends UFB_Field
         return true;
     }
 }
+// }}}
 
+// {{{ class UFBF_Index
 /** Subclass to use for indexed fields
  */
 abstract class UFBF_Index extends UFB_Field
@@ -231,15 +280,20 @@ abstract class UFBF_Index extends UFB_Field
         return true;
     }
 }
+// }}}
 
+// {{{ class UFBF_Enum
 /** Subclass to use for fields whose value must belong to a specific set of values
  */
 abstract class UFBF_Enum extends UFB_Field
 {
-    public function __construct($envfield, $formtext = '', $allowedvalues = array())
+    protected $allowedvalues;
+
+    public function __construct($envfield, $formtext = '', $allowedvalues = array(), $strict = false)
     {
         parent::__construct($envfield, $formtext);
         $this->allowedvalues = $allowedvalues;
+        $this->strict = $strict;
     }
 
     protected function check(UserFilterBuilder &$ufb)
@@ -251,32 +305,102 @@ abstract class UFBF_Enum extends UFB_Field
 
         $this->val = $ufb->v($this->envfield);
         if (! in_array($this->val, $this->allowedvalues)) {
-            return $this->raise("La valeur {$this->val} n'est pas valide pour le champ %s.");
+            if ($this->strict) {
+                return $this->raise("La valeur {$this->val} n'est pas valide pour le champ %s.");
+            } else {
+                $this->empty = true;
+            }
         }
         return true;
     }
 }
+// }}}
 
+// {{{ class UFBF_Bool
+abstract class UFBF_Bool extends UFB_Field
+{
+    protected function check(UserFilterBuilder &$ufb)
+    {
+        if (!$ufb->has($this->envfield)) {
+            $this->empty = true;
+            return true;
+        }
+
+        $this->val = ($ufb->i($this->envfield) != 0);
+        return true;
+    }
+}
+// }}}
+
+// {{{ class UFBF_Mixed
+/** A class for building UFBFs when the user can input either a text or an ID
+ */
+abstract class UFBF_Mixed extends UFB_Field
+{
+    /** Name of the DirEnum on which class is based
+     */
+    protected $direnum;
+
+    protected $envfieldindex;
+
+    public function __construct($envfieldtext, $envfieldindex, $formtext = '')
+    {
+        parent::__construct($envfieldtext, $formtext);
+        $this->envfieldindex = $envfieldindex;
+    }
+
+    protected function check(UserFilterBuilder &$ufb)
+    {
+        if (!$ufb->has($this->envfieldindex) && !$ufb->has($this->envfield)) {
+            $this->empty = true;
+            return true;
+        }
+
+        if ($ufb->has($this->envfieldindex)) {
+            $index = $ufb->v($this->envfieldindex);
+            if (is_int($index)) {
+                $index = intval($index);
+            } else {
+                $index = strtoupper($index);
+            }
+            $this->val = array($index);
+        } else {
+            $indexes = DirEnum::getIDs($this->direnum, $ufb->s($this->envfield), 
+                $ufb->i('exact') ? DirEnumeration::MODE_EXACT : DirEnumeration::MODE_CONTAINS);
+            if (count($indexes) == 0) {
+                return false;
+            }
+            $this->val = $indexes;
+        }
+        return true;
+    }
+}
+// }}}
+
+// {{{ class UFBF_Name
 class UFBF_Name extends UFBF_Text
 {
-    private $type;
-
-    public function __construct($envfield, $type, $formtext = '', $forbiddenchars = '', $minlength = 2, $maxlength = 255)
+    protected function check(UserFilterBuilder &$ufb)
     {
-        parent::__construct($envfield, $formtext, $forbiddenchars, $minlength, $maxlength);
-        $this->type = $type;
+        if (!parent::check($ufb)) {
+            return false;
+        }
+
+        $this->val = preg_split('/[[:space:]]/', $this->val);
+        if (count($this->val) == 0) {
+            $this->empty = true;
+        }
+        return true;
     }
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        if ($ufb->i('exact')) {
-            return new UFC_Name($this->type, $this->val, UFC_Name::VARIANTS);
-        } else {
-            return new UFC_Name($this->type, $this->val, UFC_Name::VARIANTS | UFC_Name::CONTAINS);
-        }
+        return new UFC_NameTokens($this->val, array(), $ufb->i('with_soundex'), $ufb->i('exact'));
     }
 }
+// }}}
 
+// {{{ class UFBF_Promo
 class UFBF_Promo extends UFB_Field
 {
     private static $validcomps = array('<', '<=', '=', '>=', '>');
@@ -316,5 +440,277 @@ class UFBF_Promo extends UFB_Field
         return new UFC_Promo($this->comp, UserFilter::DISPLAY, 'X' . $this->val);
     }
 }
+// }}}
 
+// {{{ class UFBF_Sex
+class UFBF_Sex extends UFBF_Enum
+{
+    public function __construct($envfield, $formtext = '')
+    {
+        parent::__construct($envfield, $formtext, array(1, 2));
+    }
+
+    private static function getVal($id)
+    {
+        switch($id) {
+        case 1:
+            return User::GENDER_MALE;
+            break;
+        case 2:
+            return User::GENDER_FEMALE;
+            break;
+        }
+    }
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Sex(self::getVal($this->val));
+    }
+}
+// }}}
+
+// {{{ class UFBF_Registered
+class UFBF_Registered extends UFBF_Enum
+{
+    public function __construct($envfield, $formtext = '')
+    {
+        parent::__construct($envfield, $formtext, array(1, 2));
+    }
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        if ($this->val == 1) {
+            return new UFC_Registered();
+        } else if ($this->val == 2) {
+            return new PFC_Not(UFC_Registered());
+        }
+    }
+}
+// }}}
+
+// {{{ class UFBF_Dead
+class UFBF_Dead extends UFBF_Enum
+{
+    public function __construct($envfield, $formtext = '')
+    {
+        parent::__construct($envfield, $formtext, array(1, 2));
+    }
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        if ($this->val == 1) {
+            return new PFC_Not(UFC_Dead());
+        } else if ($this->val == 2) {
+            return new UFC_Dead();
+        }
+    }
+}
+// }}}
+
+// {{{ class UFBF_Town
+/** Retrieves a town, either from a postal code or a town name
+ */
+class UFBF_Town extends UFBF_Text
+{
+    const TYPE_TEXT = 1;
+    const TYPE_ZIP  = 2;
+    const TYPE_ANY  = 3;
+
+    private $type;
+    public function __construct($envfield, $formtext = '', $type = self::TYPE_ANY)
+    {
+        $this->type = $type;
+        parent::__construct($envfield, $formtext, '', 2, 30);
+    }
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        if (preg_match('/[0-9]/', $this->val)) {
+            if ($this->type & self::TYPE_ZIP) {
+                return new UFC_AddressField(UFC_Address::TYPE_ANY, UFC_Address::FLAG_ANY, null, null, null, null, $this->val);
+            } else {
+                return new PFC_False();
+            }
+        } else {
+            $byname = new UFC_AddressText(null, UFC_Address::CONTAINS, UFC_Address::TYPE_ANY, UFC_Address::FLAG_ANY, null, $this->val);
+            $byzip  = new UFC_AddressField(UFC_Address::TYPE_ANY, UFC_Address::FLAG_ANY, null, null, null, null, $this->val);
+            if ($this->type & self::TYPE_ANY) {
+                return new PFC_Or($byname, $byzip);
+            } else if ($this->type & self::TYPE_TEXT) {
+                return $byname;
+            } else {
+                return $byzip;
+            }
+        }
+    }
+}
+// }}}
+
+// {{{ class UFBF_Country
+class UFBF_Country extends UFBF_Mixed
+{
+    protected $direnum = DirEnum::COUNTRIES;
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_COUNTRY, UFC_Address::TYPE_ANY, UFC_Address::FLAG_ANY);
+    }
+}
+// }}}
+
+// {{{ class UFBF_AdminArea
+class UFBF_AdminArea extends UFBF_Mixed
+{
+    protected $direnum = DirEnum::ADMINAREAS;
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_ADMAREA, UFC_Address::TYPE_ANY, UFC_Address::FLAG_ANY);
+    }
+}
+// }}}
+
+// {{{ class UFBF_JobCompany
+class UFBF_JobCompany extends UFBF_Text
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Job_Company(UFC_Job_Company::JOBNAME, $this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_JobSector
+class UFBF_JobSector extends UFBF_Mixed
+{
+    protected $direnum = DirEnum::SECTORS;
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Job_Sectorization($this->val, UserFilter::JOB_SUBSUBSECTOR);
+    }
+}
+// }}}
+
+// {{{ class UFBF_JobDescription
+class UFBF_JobDescription extends UFBF_Text
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Job_Description($this->val, UserFilter::JOB_USERDEFINED);
+    }
+}
+// }}}
+
+// {{{ class UFBF_JobCv
+class UFBF_JobCv extends UFBF_Text
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Job_Description($this->val, UserFilter::JOB_CV);
+    }
+}
+// }}}
+
+// {{{ class UFBF_Nationality
+class UFBF_Nationality extends UFBF_Mixed
+{
+    protected $direnum = DirEnum::NATIONALITIES;
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Nationality($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_Binet
+class UFBF_Binet extends UFBF_Mixed
+{
+    protected $direnum = DirEnum::BINETS;
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Binet($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_Group
+class UFBF_Group extends UFBF_Mixed
+{
+    protected $direnum = DirEnum::GROUPESX;
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        if (count($this->val) == 1) {
+            return new UFC_Group($this->val[0]);
+        }
+
+        $or = new PFC_Or();
+        foreach ($this->val as $grp) {
+            $or->addChild(new UFC_Group($grp));
+        }
+        return $or;
+    }
+}
+// }}}
+
+// {{{ class UFBF_Section
+class UFBF_Section extends UFBF_Index
+{
+    protected $direnum = DirEnum::SECTIONS;
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Section($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_Formation
+class UFBF_Formation extends UFBF_Mixed
+{
+    protected $direnum = DirEnum::SCHOOLS;
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Formation($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_Diploma
+class UFBF_Diploma extends UFBF_Mixed
+{
+    protected $direnum = DirEnum::DEGREES;
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Diploma($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_StudiesDomain
+class UFBF_StudiesDomain extends UFBF_Mixed
+{
+    protected $direnum = DirEnum::STUDIESDOMAINS;
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_StudyField($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_Comment
+class UFBF_Comment extends UFBF_Text
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Comment($this->val);
+    }
+}
+// }}}
 ?>
