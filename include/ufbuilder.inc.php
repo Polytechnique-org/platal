@@ -97,6 +97,10 @@ class UserFilterBuilder
     public function has($key) {
         return (Env::has($this->envprefix . $key) && strlen($this->s($key, '')) > 0);
     }
+
+    public function isOn($key) {
+        return (Env::has($this->envprefix . $key) && $this->s($key) == 'on');
+    }
 }
 // }}}
 
@@ -517,23 +521,32 @@ class UFBF_Town extends UFBF_Text
     const TYPE_ANY  = 3;
 
     private $type;
-    public function __construct($envfield, $formtext = '', $type = self::TYPE_ANY)
+    private $onlycurrentfield;
+
+    public function __construct($envfield, $formtext = '', $type = self::TYPE_ANY, $onlycurrentfield = 'only_current')
     {
         $this->type = $type;
+        $this->onlycurrentfield = $onlycurrentfield;
         parent::__construct($envfield, $formtext, '', 2, 30);
     }
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
+        if ($ufb->isOn($this->onlycurrentfield)) {
+            $flags = UFC_Address::FLAG_CURRENT;
+        } else {
+            $flags = UFC_Address::FLAG_ANY;
+        }
+
         if (preg_match('/[0-9]/', $this->val)) {
             if ($this->type & self::TYPE_ZIP) {
-                return new UFC_AddressField(UFC_Address::TYPE_ANY, UFC_Address::FLAG_ANY, null, null, null, null, $this->val);
+                return new UFC_AddressField($this->val, UFC_AddressField::FIELD_ZIPCODE, UFC_Address::TYPE_ANY, $flags);
             } else {
                 return new PFC_False();
             }
         } else {
-            $byname = new UFC_AddressText(null, UFC_Address::CONTAINS, UFC_Address::TYPE_ANY, UFC_Address::FLAG_ANY, null, $this->val);
-            $byzip  = new UFC_AddressField(UFC_Address::TYPE_ANY, UFC_Address::FLAG_ANY, null, null, null, null, $this->val);
+            $byname = new UFC_AddressText(null, UFC_Address::CONTAINS, UFC_Address::TYPE_ANY, $flags, null, $this->val);
+            $byzip  = new UFC_AddressField($this->val, UFC_AddressField::FIELD_ZIPCODE, UFC_Address::TYPE_ANY, $flags);
             if ($this->type & self::TYPE_ANY) {
                 return new PFC_Or($byname, $byzip);
             } else if ($this->type & self::TYPE_TEXT) {
@@ -550,10 +563,23 @@ class UFBF_Town extends UFBF_Text
 class UFBF_Country extends UFBF_Mixed
 {
     protected $direnum = DirEnum::COUNTRIES;
+    protected $onlycurrentfield;
+
+    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $onlycurrentfield = 'only_current')
+    {
+        parent::__construct($envfieldtext, $envfieldindex, $formtext);
+        $this->onlycurrentfield = $onlycurrentfield;
+    }
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_COUNTRY, UFC_Address::TYPE_ANY, UFC_Address::FLAG_ANY);
+        if ($ufb->isOn($this->onlycurrentfield)) {
+            $flags = UFC_Address::FLAG_CURRENT;
+        } else {
+            $flags = UFC_Address::FLAG_ANY;
+        }
+
+        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_COUNTRY, UFC_Address::TYPE_ANY, $flags);
     }
 }
 // }}}
@@ -562,10 +588,24 @@ class UFBF_Country extends UFBF_Mixed
 class UFBF_AdminArea extends UFBF_Mixed
 {
     protected $direnum = DirEnum::ADMINAREAS;
+    protected $onlycurrentfield;
+
+    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $onlycurrentfield = 'only_current')
+    {
+        parent::__construct($envfieldtext, $envfieldindex, $formtext);
+        $this->onlycurrentfield = $onlycurrentfield;
+    }
+
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_ADMAREA, UFC_Address::TYPE_ANY, UFC_Address::FLAG_ANY);
+        if ($ufb->isOn($this->onlycurrentfield)) {
+            $flags = UFC_Address::FLAG_CURRENT;
+        } else {
+            $flags = UFC_Address::FLAG_ANY;
+        }
+
+        return new UFC_AddressField($this->val, UFC_AddressField::FIELD_ADMAREA, UFC_Address::TYPE_ANY, $flags);
     }
 }
 // }}}
@@ -573,6 +613,26 @@ class UFBF_AdminArea extends UFBF_Mixed
 // {{{ class UFBF_JobCompany
 class UFBF_JobCompany extends UFBF_Text
 {
+    private $onlymentorfield;
+
+    public function __construct($envfield, $formtext = '', $onlymentorfield = 'only_referent')
+    {
+        parent::__construct($envfield, $formtext);
+        $this->onlymentorfield = $onlymentorfield;
+    }
+
+    public function check(UserFilterBuilder &$ufb) {
+        if (parent::check($ufb)) {
+            # No company check for mentors
+           if ($ufb->isOn($this->onlymentorfield)) {
+                $this->empty = true;
+           }
+           return true;
+        } else {
+            return false;
+        }
+    }
+
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
         return new UFC_Job_Company(UFC_Job_Company::JOBNAME, $this->val);
@@ -584,10 +644,21 @@ class UFBF_JobCompany extends UFBF_Text
 class UFBF_JobSector extends UFBF_Mixed
 {
     protected $direnum = DirEnum::SECTORS;
+    private $onlymentorfield;
+
+    public function __construct($envfieldtext, $envfieldindex, $formtext = '', $onlymentorfield = 'only_referent')
+    {
+        parent::__construct($envfieldtext, $envfieldindex, $formtext);
+        $this->onlymentorfield = $onlymentorfield;
+    }
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        return new UFC_Job_Sectorization($this->val, UserFilter::JOB_SUBSUBSECTOR);
+        if ($ufb->isOn($this->onlymentorfield)) {
+            return new UFC_Mentor_Sectorization($this->val, UserFilter::JOB_SUBSECTOR);
+        } else {
+            return new UFC_Job_Sectorization($this->val, UserFilter::JOB_SUBSUBSECTOR);
+        }
     }
 }
 // }}}
@@ -595,9 +666,21 @@ class UFBF_JobSector extends UFBF_Mixed
 // {{{ class UFBF_JobDescription
 class UFBF_JobDescription extends UFBF_Text
 {
+    private $onlymentorfield;
+
+    public function __construct($envfield, $formtext = '', $onlymentorfield = 'only_referent')
+    {
+        parent::__construct($envfield, $formtext);
+        $this->onlymentorfield = $onlymentorfield;
+    }
+
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        return new UFC_Job_Description($this->val, UserFilter::JOB_USERDEFINED);
+        if ($ufb->isOn($this->onlymentorfield)) {
+            return new UFC_Mentor_Expertise($this->val);
+        } else {
+            return new UFC_Job_Description($this->val, UserFilter::JOB_USERDEFINED);
+        }
     }
 }
 // }}}
@@ -605,9 +688,21 @@ class UFBF_JobDescription extends UFBF_Text
 // {{{ class UFBF_JobCv
 class UFBF_JobCv extends UFBF_Text
 {
+    private $onlymentorfield;
+
+    public function __construct($envfield, $formtext = '', $onlymentorfield = 'only_referent')
+    {
+        parent::__construct($envfield, $formtext);
+        $this->onlymentorfield = $onlymentorfield;
+    }
+
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        return new UFC_Job_Description($this->val, UserFilter::JOB_CV);
+        if ($ufb->isOn($this->onlymentorfield)) {
+            return new UFC_Mentor_Expertise($this->val);
+        } else {
+            return new UFC_Job_Description($this->val, UserFilter::JOB_CV);
+        }
     }
 }
 // }}}
