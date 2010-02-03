@@ -136,6 +136,8 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_StudiesDomain('fieldTxt', 'field', "Domaine d'études"),
 
             new UFBF_Comment('free', 'Commentaire'),
+            new UFBF_Phone('phone_number', 'Téléphone'),
+            new UFBF_Networking('networking_address', 'networking_type', 'Networking et sites webs'),
         );
         parent::__construct($fields, $envprefix);
     }
@@ -805,6 +807,45 @@ class UFBF_Comment extends UFBF_Text
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
         return new UFC_Comment($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_Phone
+class UFBF_Phone extends UFBF_Text
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Phone($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_Networking
+class UFBF_Networking extends UFBF_Text
+{
+    private $networktypefield;
+    private $nwtype;
+
+    public function __construct($envfield, $networktypefield, $formtext = '')
+    {
+        parent::__construct($envfield, $formtext);
+        $this->networktypefield  = $networktypefield;
+    }
+
+    public function check(UserFilterBuilder &$ufb)
+    {
+        if (parent::check($ufb)) {
+            $this->nwtype = $ufb->i($this->networktypefield);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Networking($this->nwtype, $this->val);
     }
 }
 // }}}
