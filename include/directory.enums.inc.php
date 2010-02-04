@@ -30,19 +30,23 @@ class DirEnum
      * being DE_$basename).
      */
     const BINETS         = 'binets';
+    const GROUPESX       = 'groupesx';
     const SECTIONS       = 'sections';
+
     const SCHOOLS        = 'schools';
     const DEGREES        = 'degrees';
     const STUDIESDOMAINS = 'studiesdomains';
+
     const NATIONALITIES  = 'nationalities';
     const COUNTRIES      = 'countries';
-    const GROUPESX       = 'groupesx';
-    const SECTORS        = 'sectors';
-    const NETWORKS       = 'networking';
     const ADMINAREAS     = 'adminareas';
-    const LOCALITIES     = 'localities'; // TODO
-    const COMPANIES      = 'companies'; // TODO
-    const JOBDESCRIPTION = 'jobdescription'; // TODO
+    const LOCALITIES     = 'localities';
+
+    const COMPANIES      = 'companies';
+    const SECTORS        = 'sectors';
+    const JOBDESCRIPTION = 'jobdescription';
+
+    const NETWORKS       = 'networking';
 
     static private $enumerations = array();
 
@@ -255,6 +259,8 @@ abstract class DirEnumeration
 }
 // }}}
 
+/** GROUPS
+ */
 // {{{ class DE_Binets
 class DE_Binets extends DirEnumeration
 {
@@ -275,6 +281,24 @@ class DE_Sections extends DirEnumeration
 }
 // }}}
 
+// {{{ class DE_GroupesX
+class DE_GroupesX extends DirEnumeration
+{
+    protected $idfield   = 'asso.id';
+    protected $valfield  = 'asso.nom';
+    protected $valfield2 = 'asso.diminutif';
+    protected $from      = '#groupex#.asso AS asso';
+    protected $where     = 'WHERE (cat = \'GroupesX\' OR cat = \'Institutions\') AND pub = \'public\'';
+
+    protected $ac_join   = "INNER JOIN #groupex#.membres AS memb ON (asso.id = memb.asso_id
+                                    AND (asso.cat = 'GroupesX' OR asso.cat = 'Institutions')
+                                    AND asso.pub = 'public')";
+    protected $ac_unique = 'memb.uid';
+}
+// }}}
+
+/** EDUCATION
+ */
 // {{{ class DE_Schools
 class DE_Schools extends DirEnumeration
 {
@@ -352,6 +376,8 @@ class DE_StudiesSector extends DirEnumeration
 }
 // }}}
 
+/** GEOLOC
+ */
 // {{{ class DE_Nationalities
 class DE_Nationalities extends DirEnumeration
 {
@@ -429,19 +455,28 @@ class DE_AdminAreas extends DirEnumeration
 }
 // }}}
 
-// {{{ class DE_GroupesX
-class DE_GroupesX extends DirEnumeration
+// {{{ class DE_Localities
+class DE_Localities extends DirEnumeration
 {
-    protected $idfield   = 'asso.id';
-    protected $valfield  = 'asso.nom';
-    protected $valfield2 = 'asso.diminutif';
-    protected $from      = '#groupex#.asso AS asso';
-    protected $where     = 'WHERE (cat = \'GroupesX\' OR cat = \'Institutions\') AND pub = \'public\'';
+    protected $valfield  = 'gl.name';
+    protected $from      = 'geoloc_localities AS gl';
 
-    protected $ac_join   = "INNER JOIN #groupex#.membres AS memb ON (asso.id = memb.asso_id
-                                    AND (asso.cat = 'GroupesX' OR asso.cat = 'Institutions')
-                                    AND asso.pub = 'public')";
-    protected $ac_unique = 'memb.uid';
+    protected $ac_join   = 'profile_addresses AS pa ON (pa.localityID = gl.id)';
+    protected $ac_unique = 'pa.pid';
+}
+// }}}
+
+/** JOBS
+ */
+// {{{ class DE_Companies
+class DE_Companies extends DirEnumeration
+{
+    protected $valfield  = 'pje.name';
+    protected $valfield2 = 'pje.acronym';
+    protected $from      = 'profile_job_enum AS pje';
+
+    protected $ac_join   = 'INNER JOIN profile_job AS pj ON (pj.jobid = pje.id)';
+    protected $ac_unique = 'pj.uid';
 }
 // }}}
 
@@ -456,6 +491,19 @@ class DE_Sectors extends DirEnumeration
 }
 // }}}
 
+// {{{ class DE_JobDescription
+class DE_JobDescription
+{
+    protected $valfield = 'pj.description';
+    protected $from     = 'profile_job AS pj';
+    protected $idfield  = 'pj.pid';
+
+    protected $ac_unique = 'pj.pid';
+}
+// }}}
+
+/** NETWORKING
+ */
 // {{{ class DE_Networking
 class DE_Networking extends DirEnumeration
 {
