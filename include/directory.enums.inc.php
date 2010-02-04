@@ -114,7 +114,7 @@ abstract class DirEnumeration
 
     /** An internal array of ID => optionTxt
      */
-    protected $options;
+    protected $options = null;
 
     /** Description of the MySQL storage of the fields
      */
@@ -134,12 +134,16 @@ abstract class DirEnumeration
     protected $ac_distinct = true; // Whether we want to keep only distinct valfield value
     protected $ac_withid = true; // Do we want to fetch id too ?
 
-    public function __construct() {
-        $this->loadOptions();
+    protected function _fetchOptions()
+    {
+        if (is_null($this->options)) {
+            $this->loadOptions();
+        }
     }
 
     public function getOptions()
     {
+        $this->_fetchOptions();
         return $this->options;
     }
 
@@ -310,6 +314,7 @@ class DE_Degrees extends DirEnumeration
 
     public function getOptions($eduid = null)
     {
+        $this->_fetchOptions();
         if ($eduid == null) {
             return PlIteratorUtils::fromArray($this->options, 1, true);
         }
@@ -397,6 +402,8 @@ class DE_AdminAreas extends DirEnumeration
 
     public function getOptions($country = null)
     {
+        $this->_fetchOptions();
+
         if ($country == null) {
             return PlIteratorUtils::fromArray($this->options, 1, true);
         }
