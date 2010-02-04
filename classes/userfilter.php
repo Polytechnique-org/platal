@@ -51,6 +51,31 @@ class UFC_Profile implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Hruid
+/** Filters users based on their hruid
+ * @param $val Either an hruid, or a list of those
+ */
+class UFC_Hruid implements UserFilterCondition
+{
+    private $hruids;
+
+    public function __construct($val)
+    {
+        if (!is_array($val)) {
+            $val = array($val);
+        }
+        $this->hruids = $val;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $ufc->requireAccounts();
+
+        return 'a.hruid IN ' . XDB::formatArray($this->hruids);
+    }
+}
+// }}}
+
 // {{{ class UFC_Comment
 class UFC_Comment implements UserFilterCondition
 {
