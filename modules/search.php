@@ -43,32 +43,6 @@ class SearchModule extends PLModule
         Platal::page()->assign('formulaire',1);
     }
 
-    function get_diplomas($school = null)
-    {
-        if (is_null($school) && Env::has('school')) {
-            $school = Env::i('school');
-        }
-
-        if ((!is_null($school)) && ($school != '')) {
-            $sql = 'SELECT  degreeid
-                      FROM  profile_education_degree
-                     WHERE  eduid=' . $school;
-        } else {
-            $sql = 'SELECT  id
-                      FROM  profile_education_degree_enum
-                  ORDER BY  id';
-        }
-
-        $res = XDB::query($sql);
-        Platal::page()->assign('choix_diplomas', $res->fetchColumn());
-
-        $sql = 'SELECT  degree
-                  FROM  profile_education_degree_enum
-              ORDER BY  id';
-        $res = XDB::query($sql);
-        Platal::page()->assign('name_diplomas', $res->fetchColumn());
-    }
-
     function handler_quick(&$page, $action = null, $subaction = null)
     {
         global $globals;
@@ -164,35 +138,8 @@ class SearchModule extends PLModule
         if (!Env::has('rechercher') && $action != 'geoloc') {
             $this->form_prepare();
         } else {
-            $textFields = array(
-                'country'         => array('field' => 'iso_3166_1_a2', 'table' => 'geoloc_countries', 'text' => 'countryFR',
-                                           'exact' => false),
-                'fonction'        => array('field' => 'id', 'table' => 'fonctions_def', 'text' => 'fonction_fr', 'exact' => true),
-                'secteur'         => array('field' => 'id', 'table' => 'profile_job_sector_enum', 'text' => 'name', 'exact' => false),
-                'nationalite'     => array('field' => 'iso_3166_1_a2', 'table' => 'geoloc_countries', 
-                                           'text' => 'nationalityFR', 'exact' => 'false'),
-                'binet'           => array('field' => 'id', 'table' => 'binets_def', 'text' => 'text', 'exact' => false),
-                'networking_type' => array('field' => 'network_type', 'table' => 'profile_networking_enum',
-                                           'text' => 'name', 'exact' => false),
-                'groupex'         => array('field' => 'id', 'table' => '#groupex#.asso',
-                                           'text' => "(cat = 'GroupesX' OR cat = 'Institutions') AND pub = 'public' AND nom",
-                                           'exact' => false),
-                'section'         => array('field' => 'id', 'table' => 'sections', 'text' => 'text', 'exact' => false),
-                'school'          => array('field' => 'id', 'table' => 'profile_education_enum', 'text' => 'name', 'exact' => false),
-                'city'            => array('table' => 'geoloc_localities', 'text' => 'name', 'exact' => false)
-            );
             if (!Env::has('page')) {
                 S::logger()->log('search', 'adv=' . var_export($_GET, true));
-            }
-            foreach ($textFields as $field=>&$query) {
-                if (!Env::v($field) && Env::v($field . 'Txt')) {
-                    $res = XDB::query("SELECT  {$query['field']}
-                                         FROM  {$query['table']}
-                                        WHERE  {$query['text']} " . ($query['exact'] ? " = {?}" :
-                                                                    " LIKE CONCAT('%', {?}, '%')"),
-                                      Env::v($field . 'Txt'));
-                    $_REQUEST[$field] = $res->fetchOneCell();
-                }
             }
 
             require_once 'userset.inc.php';
@@ -248,142 +195,27 @@ class SearchModule extends PLModule
             die();
         }
 
-        // default search
-        $unique = 'pid';
-        $db = 'profiles';
-        $realid = false;
-        $beginwith = true;
-        $field2 = false;
-        $qsearch = str_replace(array('%', '_'), '', $q);
-        $distinct = true;
-
-        switch ($type) {
-          case 'binetTxt':
-            $db = 'binets_def INNER JOIN
-                   binets_ins ON(binets_def.id = binets_ins.binet_id)';
-            $field = 'binets_def.text';
-            if (strlen($q) > 2)
-                $beginwith = false;
-            $realid = 'binets_def.id';
-            break;
-          case 'networking_typeTxt':
-            $db = 'profile_networking_enum INNER JOIN
-                   profile_networking ON(profile_networking.network_type = profile_networking_enum.network_type)';
-            $field = 'profile_networking_enum.name';
-            $unique = 'uid';
-            $realid = 'profile_networking_enum.network_type';
-            break;
-          case 'city':
-            $db     = 'geoloc_localities INNER JOIN
-                       profile_addresses ON (geoloc_localities.id = profile_addresses.localityId)';
-            $unique = 'uid';
-            $field  ='geoloc_localities.name';
-            break;
-          case 'countryTxt':
-            $db     = 'geoloc_countries INNER JOIN
-                       profile_addresses ON (geoloc_countries.iso_3166_1_a2 = profile_addresses.countryId)';
-            $unique = 'pid';
-            $field  = 'geoloc_countries.countryFR';
-            $realid = 'geoloc_countries.iso_3166_1_a2';
-            break;
-          case 'entreprise':
-            $db     = 'profile_job_enum INNER JOIN
-                       profile_job ON (profile_job.jobid = profile_job_enum.id)';
-            $field  = 'profile_job_enum.name';
-            $unique = 'profile_job.uid';
-            break;
-          case 'fonctionTxt':
-            $db        = 'fonctions_def INNER JOIN
-                          profile_job ON (profile_job.fonctionid = fonctions_def.id)';
-            $field     = 'fonction_fr';
-            $unique    = 'uid';
-            $realid    = 'fonctions_def.id';
-            $beginwith = false;
-            break;
-          case 'groupexTxt':
-            $db = "#groupex#.asso AS a INNER JOIN
-                   #groupex#.membres AS m ON(a.id = m.asso_id
-                                           AND (a.cat = 'GroupesX' OR a.cat = 'Institutions')
-                                           AND a.pub = 'public')";
-            $field='a.nom';
-            $field2 = 'a.diminutif';
-            if (strlen($q) > 2)
-                $beginwith = false;
-            $realid = 'a.id';
-            $unique = 'm.uid';
-            break;
-          case 'nationaliteTxt':
-            $db     = 'geoloc_countries INNER JOIN
-                       profile ON (geoloc_countries.a2 IN (profile.nationality1, profile.nationality2, profile.nationality3))';
-            $field  = 'geoloc_countries.nationalityFR';
-            $realid = 'geoloc_countries.iso_3166_1_a2';
-            break;
-          case 'description':
-            $db     = 'profile_job';
-            $field  = 'description';
-            $unique = 'uid';
-            break;
-          case 'schoolTxt':
-            $db = 'profile_education_enum INNER JOIN
-                   profile_education ON (profile_education_enum.id = profile_education.eduid)';
-            $field = 'profile_education_enum.name';
-            $unique = 'uid';
-            $realid = 'profile_education_enum.id';
-            if (strlen($q) > 2)
-                $beginwith = false;
-            break;
-          case 'secteurTxt':
-            $db        = 'profile_job_sector_enum INNER JOIN
-                          profile_job ON (profile_job.sectorid = profile_job_sector_enum.id)';
-            $field     = 'profile_job_sector_enum.name';
-            $realid    = 'profile_job_sector_enum.id';
-            $unique    = 'uid';
-            $beginwith = false;
-            break;
-          case 'subSubSector':
-            $db        = 'profile_job_subsubsector_enum';
-            $field     = 'name';
-            $beginwith = false;
-            $unique    = 'name';
-            $distinct  = false;
-            break;
-          case 'sectionTxt':
-            $db = 'sections AS acs
-                   INNER JOIN profiles AS acp ON (acp.section = acs.id)';
-            $field = 'acs.text';
-            $realid = 'acs.id';
-            $beginwith = false;
-            break;
-          default: exit();
+        require_once 'directory.enums.inc.php';
+        $enums = array(
+            'binetTxt'           => DirEnum::BINETS,
+            'groupexTxt'         => DirEnum::GROUPESX,
+            'sectionTxt'         => DirEnum::SECTIONS,
+            'networking_typeTxt' => DirEnum::NETWORKS,
+            'city'               => DirEnum::LOCALITIES,
+            'countryTxt'         => DirEnum::COUNTRIES,
+            'entreprise'         => DirEnum::COMPANIES,
+            'secteurTxt'         => DirEnum::SECTORS,
+            'description'        => DirEnum::JOBDESCRIPTION,
+            'nationaliteTxt'     => DirEnum::NATIONALITIES,
+            'schoolTxt'          => DirEnum::SCHOOLS,
+        );
+        if (!array_key_exists($enums, $type)) {
+            exit();
         }
 
-        function make_field_test($fields, $beginwith) {
-            $tests = array();
-            $tests[] = $fields . ' LIKE CONCAT({?}, \'%\')';
-            if (!$beginwith) {
-                $tests[] = $fields . ' LIKE CONCAT(\'% \', {?}, \'%\')';
-                $tests[] = $fields . ' LIKE CONCAT(\'%-\', {?}, \'%\')';
-            }
-            return '(' . implode(' OR ', $tests) . ')';
-        }
-        $field_select = $field;
-        $field_t = make_field_test($field, $beginwith);
-        if ($field2) {
-            $field2_t = make_field_test($field2, $beginwith);
-            $field_select = 'IF(' . $field_t . ', ' . $field . ', ' . $field2. ')';
-        }
-        $list = XDB::iterator('SELECT  ' . $field_select . ' AS field'
-                                       . ($distinct ? (', COUNT(DISTINCT ' . $unique . ') AS nb') : '')
-                                       . ($realid ? (', ' . $realid . ' AS id') : '') . '
-                                 FROM  ' . $db . '
-                                WHERE  ' . $field_t .
-                                        ($field2 ? (' OR ' . $field2_t) : '') . '
-                             GROUP BY  ' . $field_select . '
-                             ORDER BY  ' . ($distinct ? 'nb DESC' : $field_select) . '
-                                LIMIT  11',
-                               $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch,
-                               $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch, $qsearch);
+        $enum = $enums[$type];
 
+        $list = DirEnum::getAutoComplete($enum, $q);
         $nbResults = 0;
         $res = "";
         while ($result = $list->next()) {
@@ -411,84 +243,61 @@ class SearchModule extends PLModule
     function handler_list(&$page, $type = null, $idVal = null)
     {
         // Give the list of all values possible of type and builds a select input for it
-        $field = 'text';
-        $id = 'id';
-        $where = '';
+        $ids = null;
+        require_once 'directory.enums.inc.php';
 
         switch ($type) {
-          case 'binet':
-            $db = 'binets_def';
+        case 'binet':
+            $ids = DirEnum::getOptions(DirEnum::BINETS);
             break;
           case 'networking_type':
-            $db = 'profile_networking_enum';
-            $field = 'name';
-            $id = 'network_type';
+            $ids = DirEnum::getOptions(DirEnum::NETWORKS);
             break;
           case 'country':
-            $db    = 'geoloc_countries';
-            $field = 'countryFR';
-            $id    = 'iso_3166_1_a2';
+            $ids = DirEnum::getOptions(DirEnum::COUNTRIES);
             $page->assign('onchange', 'changeCountry(this.value)');
             break;
-          case 'fonction':
-            $db = 'fonctions_def';
-            $field = 'fonction_fr';
-            break;
           case 'diploma':
-            pl_content_headers("text/xml");
-            $this->get_diplomas();
-            $page->changeTpl('search/adv.grade.form.tpl', NO_SKIN);
-            return;
+            if (Env::has('school') && Env::i('school') != 0) {
+              $ids = DirEnum::getOptions(DirEnum::DEGREES, Env::i('school'));
+            } else {
+              $ids = DirEnum::getOptions(DirEnum::DEGREES);
+            }
+            break;
           case 'groupex':
-            $db = '#groupex#.asso';
-            $where = " WHERE (cat = 'GroupesX' OR cat = 'Institutions') AND pub = 'public'";
-            $field = 'nom';
+            $ids = DirEnum::getOptions(DirEnum::GROUPESX);
             break;
           case 'nationalite':
-            $db    = 'geoloc_countries INNER JOIN
-                   profiles AS acp ON (acgp.a2 IN (acp.nationality1, acp.nationality2, acp.nationality3))';
-            $field = 'nationalityFR';
-            $id    = 'iso_3166_1_a2';
+            $ids = DirEnum::getOptions(DirEnum::NATIONALITIES);
             break;
-          case 'region':
-            $db    = 'geoloc_administrativeareas';
-            $field = 'name';
-            $id    = 'id';
-            if (isset($_REQUEST['country'])) {
-                $where .= ' WHERE country = "' . $_REQUEST['country'] . '"';
+        case 'region':
+            if ($isset($_REQUEST['country'])) {
+                $ids = DirEnum::getOptions(DirEnum::ADMINAREAS, $_REQUEST['country']);
+            } else {
+                $ids = DirEnum::getOptions(DirEnum::ADMINAREAS);
             }
             break;
           case 'school':
-            $db = 'profile_education_enum';
-            $field = 'name';
-            $id = 'id';
+            $ids = DirEnum::getOptions(DirEnum::SCHOOLS);
             $page->assign('onchange', 'changeSchool(this.value)');
             break;
           case 'section':
-            $db = 'sections';
+            $ids = DirEnum::getOptions(DirEnum::SECTIONS);
             break;
           case 'secteur':
-            $db    = 'profile_job_sector_enum INNER JOIN
-                      profile_job ON (profile_job.sectorid = profile_job_sector_enum.id)';
-            $field = 'profile_job_sector_enum.name';
-            $id    = 'profile_job_sector_enum.id';
+            $ids = DirEnum::getOptions(DirEnum::SECTORS);
             break;
           default: exit();
         }
         if (isset($idVal)) {
             pl_content_headers("text/plain");
-            $result = XDB::query('SELECT '.$field.' AS field FROM '.$db.' WHERE '.$id.' = {?} LIMIT 1',$idVal);
-            echo $result->fetchOneCell();
+            echo $ids[$idVal];
             exit();
         }
         pl_content_headers("text/xml");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
         $page->assign('name', $type);
-        $page->assign('list', XDB::iterator('SELECT  '.$field.' AS field,
-                                                     '.$id.' AS id
-                                               FROM  '.$db.$where.'
-                                           GROUP BY  '.$field.'
-                                           ORDER BY  '.$field));
+        $page->assign('list', $ids);
         $page->assign('with_text_value', true);
         $page->assign('onchange', "document.forms.recherche.{$type}Txt.value = this.options[this.selectedIndex].text");
     }
