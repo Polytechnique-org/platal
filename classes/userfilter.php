@@ -818,7 +818,7 @@ class UFC_AddressField extends UFC_Address
             $field = 'postalCode';
             break;
         default:
-            Platal::page()->killError('Invalid address field type : ' . $this->fieldtype);
+            Platal::page()->killError('Invalid address field type: ' . $this->fieldtype);
         }
         $conds[] = $sub . '.' . $field . ' IN ' . XDB::formatArray($this->val);
 
@@ -963,12 +963,6 @@ class UFC_Job_Sectorization implements UserFilterCondition
  */
 class UFC_Job_Description implements UserFilterCondition
 {
-
-    /** Meta-filters
-     * Built with binary OR on UserFilter::JOB_*
-     */
-    const ANY = 63;
-    const SECTORIZATION = 15;
 
     private $description;
     private $fields;
@@ -1291,7 +1285,7 @@ abstract class UserFilterOrder extends PlFilterOrder
      * @param &$uf The UserFilter whose results must be ordered
      * @return The name of the field to use for ordering results
      */
-    abstract protected function getSortTokens(UserFilter &$uf);
+//    abstract protected function getSortTokens(UserFilter &$uf);
 }
 // }}}
 
@@ -1310,7 +1304,7 @@ class UFO_Promo extends UserFilterOrder
         $this->grade = $grade;
     }
 
-    protected function getSortTokens(UserFilter &$uf)
+    protected function getSortTokens(PlFilter &$uf)
     {
         if (UserFilter::isGrade($this->grade)) {
             $sub = $uf->addEducationFilter($this->grade);
@@ -1344,7 +1338,7 @@ class UFO_Name extends UserFilterOrder
         $this->particle = $particle;
     }
 
-    protected function getSortTokens(UserFilter &$uf)
+    protected function getSortTokens(PlFilter &$uf)
     {
         if (UserFilter::isDisplayName($this->type)) {
             $sub = $uf->addDisplayFilter();
@@ -1364,7 +1358,7 @@ class UFO_Name extends UserFilterOrder
 // {{{ class UFO_Score
 class UFO_Score extends UserFilterOrder
 {
-    protected function getSortTokens(UserFilter &$uf)
+    protected function getSortTokens(PlFilter &$uf)
     {
         $sub = $uf->addNameTokensFilter();
         return 'SUM(' . $sub . '.score)';
@@ -1377,7 +1371,7 @@ class UFO_Score extends UserFilterOrder
  */
 class UFO_Registration extends UserFilterOrder
 {
-    protected function getSortTokens(UserFilter &$uf)
+    protected function getSortTokens(PlFilter &$uf)
     {
         return 'a.registration_date';
     }
@@ -1389,7 +1383,7 @@ class UFO_Registration extends UserFilterOrder
  */
 class UFO_Birthday extends UserFilterOrder
 {
-    protected function getSortTokens(UserFilter &$uf)
+    protected function getSortTokens(PlFilter &$uf)
     {
         return 'p.next_birthday';
     }
@@ -1401,7 +1395,7 @@ class UFO_Birthday extends UserFilterOrder
  */
 class UFO_ProfileUpdate extends UserFilterOrder
 {
-    protected function getSortTokens(UserFilter &$uf)
+    protected function getSortTokens(PlFilter &$uf)
     {
         return 'p.last_change';
     }
@@ -1413,7 +1407,7 @@ class UFO_ProfileUpdate extends UserFilterOrder
  */
 class UFO_Death extends UserFilterOrder
 {
-    protected function getSortTokens(UserFilter &$uf)
+    protected function getSortTokens(PlFilter &$uf)
     {
         return 'p.deathdate';
     }
@@ -1472,8 +1466,9 @@ class UserFilter extends PlFilter
 {
     protected $joinMethods = array();
 
-    protected $joinMetas = array('$PID' => 'p.pid',
-                                 '$UID' => 'a.uid',
+    protected $joinMetas = array(
+                                '$PID' => 'p.pid',
+                                '$UID' => 'a.uid',
                                 );
 
     private $root;
@@ -2215,12 +2210,15 @@ class UserFilter extends PlFilter
     /** JOBS
      */
 
-    const JOB_SECTOR = 1;
-    const JOB_SUBSECTOR = 2;
-    const JOB_SUBSUBSECTOR = 4;
-    const JOB_ALTERNATES = 8;
-    const JOB_USERDEFINED = 16;
-    const JOB_CV = 32;
+    const JOB_SECTOR        = 0x0001;
+    const JOB_SUBSECTOR     = 0x0002;
+    const JOB_SUBSUBSECTOR  = 0x0004;
+    const JOB_ALTERNATES    = 0x0008;
+    const JOB_USERDEFINED   = 0x0010;
+    const JOB_CV            = 0x0020;
+
+    const JOB_SECTORIZATION = 0x000F;
+    const JOB_ANY           = 0x003F;
 
     /** Joins :
      * pj => profile_job
