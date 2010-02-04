@@ -19,6 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// {{{ class PlLimit
 class PlLimit
 {
     private $count = null;
@@ -42,7 +43,9 @@ class PlLimit
         return '';
     }
 }
+// }}}
 
+// {{{ class PlSqlJoin
 class PlSqlJoin
 {
     private $mode;
@@ -112,7 +115,9 @@ class PlSqlJoin
         return $str;
     }
 }
+// }}}
 
+// {{{ class PlFilterOrder
 abstract class PlFilterOrder
 {
     protected $desc = false;
@@ -145,8 +150,31 @@ abstract class PlFilterOrder
         return $sel;
     }
 
-    abstract protected function getSortTokens(&$pf);
+    abstract protected function getSortTokens(PlFilter &$pf);
 }
+// }}}
+
+// {{{ class PFO_Random
+class PFO_Random extends PlFilterOrder
+{
+    private $seed = null;
+
+    public function __construct($seed = null, $desc = false)
+    {
+        parent::__construct($desc);
+        $this->seed = $seed;
+    }
+
+    protected function getSortTokens(PlFilter &$pf)
+    {
+        if ($this->seed == null) {
+            return 'RAND()';
+        } else {
+            return XDB::format('RAND({?})', $this->seed);
+        }
+    }
+}
+// }}}
 
 // {{{ interface PlFilterCondition
 interface PlFilterCondition
@@ -299,7 +327,7 @@ class PFC_Or extends PFC_NChildren
 }
 // }}}
 
-
+// {{{ class PlFilter
 abstract class PlFilter
 {
     /** Filters objects matching the PlFilter
@@ -345,5 +373,6 @@ abstract class PlFilter
     }
 
 }
+// }}}
 
 ?>
