@@ -40,6 +40,9 @@ class DirEnum
     const SECTORS        = 'sectors';
     const NETWORKS       = 'networking';
     const ADMINAREAS     = 'adminareas';
+    const LOCALITIES     = 'localities'; // TODO
+    const COMPANIES      = 'companies'; // TODO
+    const JOBDESCRIPTION = 'jobdescription'; // TODO
 
     static private $enumerations = array();
 
@@ -63,6 +66,22 @@ class DirEnum
         }
         $obj = self::$enumerations[$type];
         return call_user_func_array(array($obj, 'getOptions'), $args);
+    }
+
+    /** Retrieves all options with number of profiles for autocompletion
+     * @param $type Type of enum for which options are requested
+     * @param $text Text to autocomplete
+     * @return XorgDbIterator over the results
+     */
+    static public function getAutoComplete()
+    {
+        $args = func_get_args();
+        $type = array_shift($args);
+        if (!array_key_exists($type, self::$enumerations)) {
+            self::init($type);
+        }
+        $obj = self::$enumerations[$type];
+        return call_user_func_array(array($obj, 'getAutoComplete'), $args);
     }
 
     /** Retrieves a list of IDs for a given type
@@ -101,9 +120,19 @@ abstract class DirEnumeration
      */
     protected $idfield  = 'id';
     protected $valfield = 'text';
+    protected $valfield2 = null;
     protected $from;
     protected $join = '';
     protected $where = '';
+
+    /** Fields for autocompletion
+     */
+    protected $ac_join = ''; // Additional joins
+    protected $ac_where = null; // Additional where
+    protected $ac_beginwith = true; // Whether to search for 'x%' or for '%x%'
+    protected $ac_unique; // Which field is to be taken as unique
+    protected $ac_distinct = true; // Whether we want to keep only distinct valfield value
+    protected $ac_withid = true; // Do we want to fetch id too ?
 
     public function __construct() {
         $this->loadOptions();
@@ -114,6 +143,7 @@ abstract class DirEnumeration
         return $this->options;
     }
 
+    // {{{ function getIDs
     /** Retrieves possible IDs for given text
      * @param $text Text to search for IDs
      * @param $mode Mode of search (PREFIX, SUFFIX, CONTAINS)
@@ -130,29 +160,81 @@ abstract class DirEnumeration
             } else {
                 $where = $this->where . ' AND ';
             }
+            $conds = array();
+            $conds[] = $this->valfield . self::makeSqlConcat($text, $mode);
+            if ($this->valfield2 != null) {
+                $conds[] = $this->valfield2 . self::makeSqlConcat($text, $mode);
+            }
+            $where .= '(' . implode(' OR ', $conds) . ')';
+
             return XDB::fetchColumn('SELECT ' . $this->idfield . '
                                        FROM ' . $this->from . '
                                             ' . $this->join . '
-                                            ' . $where . $this->valfield . self::makeSqlConcat($text, $mode) . '
+                                            ' . $where . '
                                    GROUP BY ' . $this->idfield);
         }
     }
+    // }}}
 
+    private function mkTests($field, $text)
+    {
+        $tests = array();
+        $tests[] = $field . self::makeSqlConcat($text, self::MODE_PREFIX);
+        if (!$this->ac_beginwith) {
+            $tests[] = $field . self::makeSqlConcat(' ' . $text, self::MODE_CONTAINS);
+            $tests[] = $field . self::makeSqlConcat('-' . $text, self::MODE_CONTAINS);
+        }
+        return $tests;
+    }
+
+    // {{{ function getAutoComplete
+    public function getAutoComplete($text)
+    {
+        $text = str_replace(array('%', '_'), '', $text);
+
+        if (is_null($this->ac_where) || $this->ac_where == '') {
+            $where = '';
+        } else {
+            $where = $this->ac_where . ' AND ';
+        }
+
+        $tests = $this->mkTests($this->valfield, $text);
+        if (!is_null($this->valfield2)) {
+            $tests = array_merge($tests, $this->mkTests($this->valfield2, $text));
+        }
+
+        $where .= '(' . implode(' OR ', $tests) . ')';
+
+        return XDB::iterator('SELECT ' . $this->valfield . ' AS field'
+                                       . ($this->ac_distinct ? (', COUNT(DISTINCT ' . $this->ac_unique . ') AS nb') : '')
+                                       . ($this->ac_withid ? (', ' . $this->idfield . ' AS id') : '') . '
+                                FROM ' . $this->from . '
+                                     ' . $this->ac_join . '
+                               WHERE ' . $where . '
+                            GROUP BY ' . $this->valfield . '
+                            ORDER BY ' . ($this->ac_distinct ? 'nb DESC' : $this->valfield) . '
+                               LIMIT 11');
+    }
+    // }}}
+
+    // {{{ function makeSqlConcat
     static protected function makeSqlConcat($text, $mode)
     {
         if ($mode == self::MODE_EXACT) {
             return ' = ' . XDB::format('{?}', $text);
         }
-        if (($mode & self::MODE_CONTAINS) == self::MODE_PREFIX) {
+        if ($mode == self::MODE_PREFIX) {
             $right = XDB::format('CONCAT({?}, \'%\')', $text);
-        } else if (($mode & self::MODE_CONTAINS) == self::MODE_SUFFIX) {
+        } else if ($mode == self::MODE_SUFFIX) {
             $right = XDB::format('CONCAT(\'%\', {?})', $text);
         } else {
             $right = XDB::format('CONCAT(\'%\', {?}, \'%\')', $text);
         }
         return ' LIKE ' . $right;
     }
+    // }}}
 
+    // {{{ function loadOptions
     /** The function used to load options
      */
     protected function loadOptions()
@@ -165,6 +247,7 @@ abstract class DirEnumeration
                                       GROUP BY ' . $this->valfield . '
                                       ORDER BY ' . $this->valfield);
     }
+    // }}}
 }
 // }}}
 
@@ -172,6 +255,9 @@ abstract class DirEnumeration
 class DE_Binets extends DirEnumeration
 {
     protected $from = 'binets_def';
+
+    protected $ac_join = 'INNER JOIN binets_ins ON (binets_def.id = binets_ins.binet_id)';
+    protected $ac_unique = 'binets_ins.user_id';
 }
 // }}}
 
@@ -179,20 +265,30 @@ class DE_Binets extends DirEnumeration
 class DE_Sections extends DirEnumeration
 {
     protected $from = 'sections';
+
+    protected $ac_join = 'INNER JOIN profiles ON (profiles.section = sections.id)';
+    protected $ac_unique = 'profiles.pid';
 }
 // }}}
 
 // {{{ class DE_Schools
 class DE_Schools extends DirEnumeration
 {
-    protected $valfield = 'name';
-    protected $from = 'profile_education_enum';
+    protected $valfield  = 'name';
+    protected $valfield2 = 'abbreviation';
+    protected $from      = 'profile_education_enum';
+
+    protected $ac_join   = 'INNER JOIN profile_education ON (profile_education.eduid = profile_education_enum.id)';
+    protected $ac_unique = 'profile_education.uid';
 }
 // }}}
 
 // {{{ class DE_Degrees
 class DE_Degrees extends DirEnumeration
 {
+    protected $from = 'profile_education_degree_enum';
+    protected $valfield = 'degree';
+
     protected $suboptions = array();
 
     protected function loadOptions()
@@ -244,26 +340,37 @@ class DE_Degrees extends DirEnumeration
 class DE_StudiesSector extends DirEnumeration
 {
     protected $valfield = 'field';
-    protected $from = 'profile_education_field_enum';
+    protected $from     = 'profile_education_field_enum';
+
+    protected $ac_join   = 'INNER JOIN profile_education ON (profile_education.fieldid = profile_education_field_enum.id)';
+    protected $ac_unique = 'profile_education.uid';
 }
 // }}}
 
 // {{{ class DE_Nationalities
 class DE_Nationalities extends DirEnumeration
 {
-    protected $idfield  = 'iso_3166_1_a2';
-    protected $valfield = 'nationalityFR';
-    protected $from     = 'geoloc_countries AS gc';
-    protected $join     = 'INNER JOIN profiles AS p ON (gc.iso_3166_1_a2 IN (p.nationality1, p.nationality2, p.nationality3))';
+    protected $idfield   = 'iso_3166_1_a2';
+    protected $valfield  = 'nationalityFR';
+    protected $valfield2 = 'nationality';
+    protected $from      = 'geoloc_countries AS gc';
+    protected $join      = 'INNER JOIN profiles AS p ON (gc.iso_3166_1_a2 IN (p.nationality1, p.nationality2, p.nationality3))';
+
+    protected $ac_join   = 'INNER JOIN profiles AS p ON (gc.iso_3166_1_a2 IN (p.nationality1, p.nationality2, p.nationality3))';
+    protected $ac_unique = 'profiles.pid';
 }
 // }}}
 
 // {{{ class DE_Countries
 class DE_Countries extends DirEnumeration
 {
-    protected $idfield  = 'iso_3166_1_a2';
-    protected $valfield = 'countryFR';
-    protected $from     = 'geoloc_countries';
+    protected $idfield   = 'iso_3166_1_a2';
+    protected $valfield  = 'countryFR';
+    protected $valfield2 = 'country';
+    protected $from      = 'geoloc_countries';
+
+    protected $ac_join   = 'INNER JOIN profile_addresses ON (geoloc_countries.iso_3166_1_a2 = profile_addresses.countryFR';
+    protected $ac_unique = 'profile_addresses.pid';
 }
 // }}}
 
@@ -318,26 +425,40 @@ class DE_AdminAreas extends DirEnumeration
 // {{{ class DE_GroupesX
 class DE_GroupesX extends DirEnumeration
 {
-    protected $valfield = 'nom';
-    protected $from     = '#groupex#.asso';
-    protected $where    = 'WHERE (cat = \'GroupesX\' OR cat = \'Institutions\') AND pub = \'public\'';
+    protected $idfield   = 'asso.id';
+    protected $valfield  = 'asso.nom';
+    protected $valfield2 = 'asso.diminutif';
+    protected $from      = '#groupex#.asso AS asso';
+    protected $where     = 'WHERE (cat = \'GroupesX\' OR cat = \'Institutions\') AND pub = \'public\'';
+
+    protected $ac_join   = "INNER JOIN #groupex#.membres AS memb ON (asso.id = memb.asso_id
+                                    AND (asso.cat = 'GroupesX' OR asso.cat = 'Institutions')
+                                    AND asso.pub = 'public')";
+    protected $ac_unique = 'memb.uid';
 }
 // }}}
 
 // {{{ class DE_Sectors
 class DE_Sectors extends DirEnumeration
 {
-    protected $valfield = 'name';
-    protected $from     = 'profile_job_sector_enum';
+    protected $valfield  = 'name';
+    protected $from      = 'profile_job_sector_enum';
+
+    protected $ac_join   = 'INNER JOIN profile_job ON (profile_job_sector_enum.id = profile_job.sectorid)';
+    protected $ac_unique = 'profile_job.uid';
 }
 // }}}
 
 // {{{ class DE_Networking
 class DE_Networking extends DirEnumeration
 {
-    protected $idfield  = 'network_type';
-    protected $valfield = 'name';
+    protected $idfield  = 'profile_networking_enum.network_type';
+    protected $valfield = 'profile_networking_enum.name';
     protected $from     = 'profile_networking_enum';
+
+
+    protected $ac_join   = 'INNER JOIN profile_networking ON (profile_networking.network_type = profile_networking_enum.network_type';
+    protected $ac_unique = 'profile_networking.uid';
 }
 // }}}
 ?>
