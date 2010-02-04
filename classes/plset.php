@@ -24,6 +24,8 @@
  */
 abstract class PlSet
 {
+    const DEFAULT_MAX_RES = 20;
+
     private $conds   = null;
     private $orders  = null;
     private $limit   = null;
@@ -44,7 +46,7 @@ abstract class PlSet
         }
 
         if ($orders instanceof PlFilterOrder) {
-            $this->orders = array($order);
+            $this->orders[] = $order;
         } else {
             foreach ($orders as $order) {
                 $this->orders[] = $order;
@@ -89,7 +91,7 @@ abstract class PlSet
         $pf = $this->buildFilter($this->conds, $this->orders);
 
         if (is_null($limit)) {
-            $limit = new PlLimit(20, 0);
+            $limit = new PlLimit(self::DEFAULT_MAX_RES, 0);
         }
         $it          = $pf->get($limit);
         $this->count = $pf->getTotalCount();
@@ -192,13 +194,13 @@ class PlViewOrder
      */
     public function __construct($name, PlFilterOrder &$pfo, $displaytext = null)
     {
-        $this->name         = $name;
+        $this->name = $name;
         if (is_null($displaytext)) {
             $this->displaytext = ucfirst($name);
         } else {
-            $this->displaytext  = $displaytext;
+            $this->displaytext = $displaytext;
         }
-        $this->pfo        = $pfo;
+        $this->pfo = $pfo;
     }
 }
 

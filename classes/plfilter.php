@@ -32,7 +32,7 @@ class PlLimit
 
     public function getSql()
     {
-        if (!is_null($this->count)) {
+        if (!is_null($this->count) && $this->count != 0) {
             if (!is_null($this->from) && $this->from != 0) {
                 return XDB::format('LIMIT {?}, {?}', (int)$this->from, (int)$this->count);
             } else {
@@ -56,7 +56,7 @@ class PlSqlJoin
     public function __construct($mode, $table, $condition)
     {
         if ($mode != self::MODE_LEFT && $mode != self::MODE_RIGHT && $mode != self::MODE_INNER) {
-            Platal::page()->kill("Join mode error : unknown mode $mode");
+            Platal::page()->kill("Join mode error: unknown mode $mode");
             return;
         }
         $this->mode = $mode;
@@ -98,7 +98,7 @@ class PlSqlJoin
     {
         $str = '';
         foreach ($joins as $key => $join) {
-            if (! ($join instanceof PlSqlJoin)) {
+            if (!($join instanceof PlSqlJoin)) {
                 Platal::page()->kill("Error: not a join: $join");
             }
             $mode  = $join->mode();
@@ -145,7 +145,7 @@ abstract class PlFilterOrder
         return $sel;
     }
 
-//    abstract protected function getSortTokens(&$pf);
+    abstract protected function getSortTokens(&$pf);
 }
 
 // {{{ interface PlFilterCondition
