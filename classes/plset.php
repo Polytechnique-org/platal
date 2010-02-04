@@ -183,16 +183,16 @@ interface PlView
  */
 class PlViewOrder
 {
-    public $pfo         = null;
+    public $pfos        = null;
     public $name        = null;
     public $displaytext = null;
 
     /** Build a PlViewOrder
      * @param $name Name of the order (key)
      * @param $displaytext Text to display
-     * @param $pfo PlFilterOrder for the order
+     * @param $pfos Array of PlFilterOrder for the order
      */
-    public function __construct($name, PlFilterOrder &$pfo, $displaytext = null)
+    public function __construct($name, $pfos, $displaytext = null)
     {
         $this->name = $name;
         if (is_null($displaytext)) {
@@ -200,7 +200,7 @@ class PlViewOrder
         } else {
             $this->displaytext = $displaytext;
         }
-        $this->pfo = $pfo;
+        $this->pfos = $pfos;
     }
 }
 
@@ -243,7 +243,7 @@ abstract class MultipageView implements PlView
         }
     }
 
-    /** Returns a list of PFO objects, the "default" one first
+    /** Returns a list of PFO objects in accordance with the user's choice
      */
     public function order()
     {
@@ -252,22 +252,14 @@ abstract class MultipageView implements PlView
         if ($invert) {
             $order = substr($order, 1);
         }
-        $list = array();
-        if (count($this->sortkeys)) {
-            $list[0] = null;
-        }
-        foreach ($this->sortkeys as $name => $sort) {
-            $desc = $sort->pfo->isDescending();;
-            if ($invert) {
-                $sort->pfo->toggleDesc();
-            }
-            if ($name == $order) {
-                $list[0] = $sort->pfo;
-            } else {
-                $list[] = $sort->pfo;
+
+        $ordering = $this->sortkeys[$order];
+        if ($invert) {
+            foreach ($ordering->pfos as $pfo) {
+                $pfo->toggleDesc();
             }
         }
-        return $list;
+        return $ordering->pfos;
     }
 
     /** Returns information on the order of bounds
@@ -292,6 +284,7 @@ abstract class MultipageView implements PlView
     /** Returns the value of a boundary of the current view (in order
      * to show "from C to F")
      * @param $obj The boundary result whose value must be shown to the user
+     * @return The bound
      */
     abstract protected function getBoundValue($obj);
 
@@ -301,7 +294,9 @@ abstract class MultipageView implements PlView
     public function apply(PlPage &$page)
     {
         foreach ($this->order() as $order) {
-            $this->set->addSort($order->pfo);
+            if (!is_null($order)) {
+                $this->set->addSort($order->pfo);
+            }
         }
         $res = $this->set->get($this->limit());
 
