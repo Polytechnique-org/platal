@@ -236,14 +236,12 @@ abstract class UFB_Field
 // {{{ class UFBF_Text
 abstract class UFBF_Text extends UFB_Field
 {
-    private $forbiddenchars;
     private $minlength;
     private $maxlength;
 
-    public function __construct($envfield, $formtext = '', $forbiddenchars = '', $minlength = 2, $maxlength = 255)
+    public function __construct($envfield, $formtext = '', $minlength = 2, $maxlength = 255)
     {
         parent::__construct($envfield, $formtext);
-        $this->forbiddenchars = $forbiddenchars;
         $this->minlength      = $minlength;
         $this->maxlength      = $maxlength;
     }
@@ -260,7 +258,10 @@ abstract class UFBF_Text extends UFB_Field
             return $this->raise("Le champ %s est trop court (minimum {$this->minlength}).");
         } else if (strlen($this->val) > $this->maxlength) {
             return $this->raise("Le champ %s est trop long (maximum {$this->maxlength}).");
+        } else if (preg_match(":[\]\[<>{}~/§_`|%$^=+]|\*\*:u", $this->val)) {
+            return $this->raise('Le champ %s contient un caractère interdit rendant la recherche impossible.');
         }
+
         return true;
     }
 }
@@ -410,7 +411,7 @@ abstract class UFBF_Mixed extends UFB_Field
 }
 // }}}
 
-// {{{ UFBF_Quick
+// {{{ class UFBF_Quick
 class UFBF_Quick extends UFB_Field
 {
     protected function check(UserFilterBuilder &$ufb)
@@ -658,7 +659,7 @@ class UFBF_Town extends UFBF_Text
     {
         $this->type = $type;
         $this->onlycurrentfield = $onlycurrentfield;
-        parent::__construct($envfield, $formtext, '', 2, 30);
+        parent::__construct($envfield, $formtext, 2, 30);
     }
 
     protected function buildUFC(UserFilterBuilder &$ufb)
