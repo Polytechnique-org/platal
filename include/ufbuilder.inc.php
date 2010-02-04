@@ -28,6 +28,7 @@ class UserFilterBuilder
     private $fields;
     private $valid = true;
     private $ufc = null;
+    private $orders = array();
 
     /** Constructor
      * @param $fields An array of UFB_Field objects
@@ -61,6 +62,11 @@ class UserFilterBuilder
         $this->ufc->addChild($cond);
     }
 
+    public function addOrder(PlFilterOrder &$order)
+    {
+        $this->order[] = $order;
+    }
+
     public function isValid()
     {
         $this->buildUFC();
@@ -78,6 +84,14 @@ class UserFilterBuilder
         } else {
             return new PFC_False();
         }
+    }
+
+    /** Returns adequate orders
+     */
+    public function getOrders()
+    {
+        $this->buildUFC();
+        return $this->orders;
     }
 
     /** Wrappers around Env::i/s/..., to add envprefix
@@ -100,6 +114,19 @@ class UserFilterBuilder
 
     public function isOn($key) {
         return (Env::has($this->envprefix . $key) && $this->s($key) == 'on');
+    }
+}
+// }}}
+
+// {{{ class UFB_QuickSearch
+class UFB_QuickSearch extends UserFilterBuilder
+{
+    public function __construct($envprefix = '')
+    {
+        $fields = array(
+            new UFBF_Quick('quick', 'Recherche rapide'),
+        );
+        parent::__construct($fields, $envprefix);
     }
 }
 // }}}
@@ -379,6 +406,108 @@ abstract class UFBF_Mixed extends UFB_Field
             $this->val = $indexes;
         }
         return true;
+    }
+}
+// }}}
+
+// {{{ UFBF_Quick
+class UFBF_Quick extends UFB_Field
+{
+    protected function check(UserFilterBuilder &$ufb)
+    {
+        if (!$ufb->has($this->envfield)) {
+            $this->empty = true;
+            return true;
+        }
+
+        $this->val = str_replace('*', '%', replace_accent($ufb->s($this->envfield)));
+    }
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        $conds = new PFC_And();
+
+        $s = $this->val;
+
+        /** Admin: Email, IP
+         */
+        if (S::admin() && strpos($s, '@') !== false) {
+            $conds->addChild(new UFC_Email($s));
+            return $conds;
+        } else if (S::admin() && preg_match('/[0-9]+\.([0-9]+|%)\.([0-9]+|%)\.([0-9]+|%)/', $s)) {
+            // TODO: create UFC_Ip
+//            $this->conds->addChild(new UFC_Ip($s));
+            return $conds;
+        }
+
+        /** Name
+         */
+        $s = preg_replace('!\d+!', ' ', $s);
+        $strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
+        if (count($strings) > 5) {
+            Platal::page()->trigWarning("Tu as indiqué trop d'éléments dans ta recherche, seuls les 5 premiers seront pris en compte");
+            $strings = array_slice($strings, 0, 5);
+        }
+
+        if (count($strings)) {
+            if (S::logged()) {
+                $flags = array();
+            } else {
+                $flags = array('public');
+            }
+            if ($ufb->i('soundex')) {
+                $soundex = true;
+                $st = array();
+                foreach ($strings as $string) {
+                    $st[] = soundex_fr($string);
+                }
+            } else {
+                $soundex = false;
+                $st = $strings;
+            }
+            if ($ufb->i('exact')) {
+                $exact = true;
+            } else {
+                $exact = false;
+            }
+            $conds->addChild(new UFC_NameTokens($st, $flags, $soundex, $exact));
+
+            $ufb->addSort(new UFO_Score());
+        }
+
+        /** Promo ranges
+         */
+        $s = preg_replace('! *- *!', '-', $r);
+        $s = preg_replace('!([<>]) *!', ' \1', $s);
+        $s = preg_replace('![^0-9\-><]!', ' ', $s);
+        $s = preg_replace('![<>\-] !', '', $s);
+        $ranges = preg_split('! +!', $s, -1, PREG_SPLIT_NO_EMPTY);
+        foreach ($ranges as $r) {
+            if (preg_match('!^\d{4}$!', $r)) {
+                $conds->addChild(new UFC_Promo('=', UserFilter::DISPLAY, 'X' . $r));
+            } elseif (preg_match('!^(\d{4})-(\d{4})$!', $r, $matches)) {
+                $p1=min(intval($matches[1]), intval($matches[2]));
+                $p2=max(intval($matches[1]), intval($matches[2]));
+                $conds->addChild(new PFC_And(
+                    new UFC_Promo('>=', UserFilter::DISPLAY, 'X' . $p1),
+                    new UFC_Promo('<=', UserFilter::DISPLAY, 'X' . $p2)
+                ));
+            } elseif (preg_match('!^<(\d{4})!', $r, $matches)) {
+                $conds->addChild(new UFC_Promo('<=', UserFilter::DISPLAY, 'X' . $matches[1]));
+            } elseif (preg_match('!^>(\d{4})!', $r, $matches)) {
+                $this->conds->addChild(new UFC_Promo('>=', UserFilter::DISPLAY, 'X' . $matches[1]));
+            }
+        }
+
+        /** Phone number
+         */
+        $t = preg_replace('!(\d{4}-\d{4}|>\d{4}|<\d{4})!', '', $s);
+        $t = preg_replace('![<>\- ]!', '', $t);
+        if (strlen($t) > 4) {
+            $conds->addChild(new UFC_Phone($t));
+        }
+
+        return $conds;
     }
 }
 // }}}
