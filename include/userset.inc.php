@@ -21,7 +21,7 @@
 
 class UserSet extends PlSet
 {
-    public function __construct(PlFilterCondition &$cond, $orders)
+    public function __construct(PlFilterCondition &$cond, $orders = null)
     {
         parent::__construct($cond, $orders);
     }
@@ -32,12 +32,24 @@ class UserSet extends PlSet
     }
 }
 
-class SearchSet extends UserSet
+class ProfileSet extends PlSet
+{
+    public function __construct(PlFilterCondition &$cond, $orders = null)
+    {
+        parent::__construct($cond, $orders);
+    }
+
+    protected function buildFilter(PlFilterCondition &$cond, $orders)
+    {
+        return new ProfileFilter($cond, $orders);
+    }
+}
+
+class SearchSet extends ProfileSet
 {
     public  $advanced = false;
     private $score    = null;
     private $conds    = null;
-    private $orders   = null;
     private $quick    = false;
 
     public function __construct($quick = false, $no_search = false, PlFilterCondition $cond = null)
@@ -107,9 +119,11 @@ class SearchSet extends UserSet
         $this->conds->addChild($ufb->getUFC());
     }
 
-    public function &get(PlLimit $limit = null)
+    public function &get(PlLimit $limit = null, $orders = array())
     {
-        $uf = $this->buildFilter($this->conds, $this->orders);
+        $orders = array_merge($orders, $this->orders);
+
+        $uf = $this->buildFilter($this->conds, $orders);
         if (is_null($limit)) {
             $limit = new PlLimit(20, 0);
         }

@@ -2469,5 +2469,15 @@ class UserFilter extends PlFilter
 }
 // }}}
 
+// {{{ class ProfileFilter
+class ProfileFilter extends UserFilter
+{
+    public function get(PlLimit &$limit)
+    {
+        return $this->getProfiles($limit);
+    }
+}
+// }}}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
