@@ -422,24 +422,26 @@ class UFBF_Quick extends UFB_Field
         }
 
         $this->val = str_replace('*', '%', replace_accent($ufb->s($this->envfield)));
+
+        return true;
     }
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        $conds = new PFC_And();
 
-        $s = $this->val;
+        $r = $s = $this->val;
 
         /** Admin: Email, IP
          */
         if (S::admin() && strpos($s, '@') !== false) {
-            $conds->addChild(new UFC_Email($s));
-            return $conds;
+            return new UFC_Email($s);
         } else if (S::admin() && preg_match('/[0-9]+\.([0-9]+|%)\.([0-9]+|%)\.([0-9]+|%)/', $s)) {
             // TODO: create UFC_Ip
 //            $this->conds->addChild(new UFC_Ip($s));
-            return $conds;
+            return;
         }
+
+        $conds = new PFC_And();
 
         /** Name
          */
@@ -473,7 +475,7 @@ class UFBF_Quick extends UFB_Field
             }
             $conds->addChild(new UFC_NameTokens($st, $flags, $soundex, $exact));
 
-            $ufb->addSort(new UFO_Score());
+            $ufb->addOrder(new UFO_Score());
         }
 
         /** Promo ranges
@@ -496,7 +498,7 @@ class UFBF_Quick extends UFB_Field
             } elseif (preg_match('!^<(\d{4})!', $r, $matches)) {
                 $conds->addChild(new UFC_Promo('<=', UserFilter::DISPLAY, 'X' . $matches[1]));
             } elseif (preg_match('!^>(\d{4})!', $r, $matches)) {
-                $this->conds->addChild(new UFC_Promo('>=', UserFilter::DISPLAY, 'X' . $matches[1]));
+                $conds->addChild(new UFC_Promo('>=', UserFilter::DISPLAY, 'X' . $matches[1]));
             }
         }
 
