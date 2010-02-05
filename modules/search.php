@@ -111,11 +111,11 @@ class SearchModule extends PLModule
                 return;
             }
             if (!S::logged() && $nb_tot > $globals->search->public_max) {
-                new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
+                $page->trigError('Votre recherche a généré trop de résultats pour un affichage public.');
             } elseif ($nb_tot > $globals->search->private_max) {
-                new ThrowError('Recherche trop générale. Une <a href="search/adv">recherche avancée</a> permet de préciser la recherche.');
+                $page->trigError('Recherche trop générale. Une <a href="search/adv">recherche avancée</a> permet de préciser la recherche.');
             } elseif (empty($nb_tot)) {
-                new ThrowError('Il n\'existe personne correspondant à ces critères dans la base !');
+                $page->trigError('Il n\'existe personne correspondant à ces critères dans la base !');
             }
         } else {
             $page->assign('formulaire',1);
@@ -156,7 +156,7 @@ class SearchModule extends PLModule
             $nb_tot = $view->count();
             if ($nb_tot > $globals->search->private_max) {
                 $this->form_prepare();
-                new ThrowError('Recherche trop générale.');
+                $page->trigError('Recherche trop générale.');
             }
         }
 
