@@ -284,7 +284,11 @@ class CarnetModule extends PLModule
                 break;
         }
 
-/*        $search = false;
+        $search = false;
+        $user = S::user();
+
+        require_once 'userset.inc.php';
+
         if ($action == 'search') {
             $action = $subaction;
             $subaction = $ssaction;
@@ -294,16 +298,12 @@ class CarnetModule extends PLModule
             $base = 'carnet/contacts/search';
 
             Platal::load('search', 'classes.inc.php');
-            ThrowError::$throwHook = array($this, 'searchErrorHandler');
-            $view = new SearchSet(true, false, "INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", "c2.uid = $uid");
+            $view = new SearchSet(true, false, new UFC_Contact($user));
         } else {
             $base = 'carnet/contacts';
-            $view = new UserSet("INNER JOIN contacts AS c2 ON (u.user_id = c2.contact)", " c2.uid = $uid ");
-        }*/
+            $view = new ProfileSet(new UFC_Contact($user));
+        }
 
-        require_once 'userset.inc.php';
-        $user = S::user();
-        $view = new UserSet(new UFC_Contact($user));
         $view->addMod('minifiche', 'Mini-fiches', true);
         $view->addMod('trombi', 'Trombinoscope', false, array('with_admin' => false, 'with_promo' => true));
         // TODO: Reactivate when the new map is completed.
