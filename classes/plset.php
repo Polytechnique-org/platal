@@ -27,7 +27,7 @@ abstract class PlSet
     const DEFAULT_MAX_RES = 20;
 
     private $conds   = null;
-    private $orders  = null;
+    private $orders  = array();
     private $limit   = null;
 
     protected $count   = null;
@@ -37,7 +37,7 @@ abstract class PlSet
     private $mod       = null;
     private $default   = null;
 
-    public function __construct(PlFilterCondition &$cond, $orders)
+    public function __construct(PlFilterCondition &$cond, $orders = null)
     {
         if ($cond instanceof PFC_And) {
             $this->conds = $cond;
@@ -45,11 +45,11 @@ abstract class PlSet
             $this->conds = new PFC_And($cond);
         }
 
-        if ($orders instanceof PlFilterOrder) {
-            $this->orders[] = $order;
-        } else {
+        if (!is_null($orders) && $orders instanceof PlFilterOrder) {
+            $this->addSort($orders);
+        } else if (is_array($orders)){
             foreach ($orders as $order) {
-                $this->orders[] = $order;
+                $this->addSort($order);
             }
         }
     }
@@ -86,9 +86,20 @@ abstract class PlSet
      */
     abstract protected function buildFilter(PlFilterCondition &$cond, $orders);
 
-    public function &get(PlLimit $limit = null)
+    /** This function returns the values of the set
+     * @param $limit A PlLimit for selecting users
+     * @param $orders An optional array of PFO to use before the "default" ones
+     * @return The result of $pf->get();
+     */
+    public function &get(PlLimit $limit = null, $orders = array())
     {
-        $pf = $this->buildFilter($this->conds, $this->orders);
+        if (!is_array($orders)) {
+            $orders = array($orders);
+        }
+
+        $orders = array_merge($orders, $this->orders);
+
+        $pf = $this->buildFilter($this->conds, $orders);
 
         if (is_null($limit)) {
             $limit = new PlLimit(self::DEFAULT_MAX_RES, 0);
@@ -295,7 +306,7 @@ abstract class MultipageView implements PlView
     {
         foreach ($this->order() as $order) {
             if (!is_null($order)) {
-                $this->set->addSort($order->pfo);
+                $this->set->addSort($order);
             }
         }
         $res = $this->set->get($this->limit());
