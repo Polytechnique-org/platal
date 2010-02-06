@@ -659,13 +659,11 @@ class ProfileModule extends PLModule
 
         $page->setTitle('Conseil Pro');
 
+        require_once "directory.enums.inc.php";
+
         // Retrieval of sector names
-        $res = XDB::iterRow("SELECT  id, name AS label
-                               FROM  profile_job_sector_enum");
+        $sectors = DirEnum::getOptionsArray(DirEnum::SECTORS);
         $sectors[''] = '';
-        while (list($tmp_id, $tmp_label) = $res->next()) {
-            $sectors[$tmp_id] = $tmp_label;
-        }
         $page->assign_by_ref('sectors', $sectors);
 
         // nb de mentors
@@ -673,38 +671,19 @@ class ProfileModule extends PLModule
         $page->assign('mentors_number', $res->fetchOneCell());
 
         // On vient d'un formulaire
-        $where              = array();
-        $pays_sel           = XDB::escape(Env::v('pays_sel'));
-        $sectorSelection    = XDB::escape(Env::v('sector'));
-        $subSectorSelection = XDB::escape(Env::v('subSector'));
-        $expertise_champ    = XDB::escape(Env::v('expertise'));
-
-        if ($pays_sel != "''") {
-            $where[] = "mp.country = $pays_sel";
-        }
-        if ($sectorSelection != "''") {
-            $where[] = "ms.sectorid = " . $sectorSelection;
-            if ($subSectorSelection != "''") {
-                $where[] = "ms.subsectorid = " . $subSectorSelection;
-            }
-        }
-        if ($expertise_champ != "''") {
-            $where[] = "MATCH(m.expertise) AGAINST($expertise_champ)";
-        }
-
-        if ($where) {
-            $where = join(' AND ', $where);
-
-            $set = new UserSet("INNER JOIN  profile_mentor          AS m  ON (m.uid = u.user_id)
-                                 LEFT JOIN  profile_mentor_country  AS mp ON (mp.uid = m.uid)
-                                 LEFT JOIN  profile_mentor_sector   AS ms ON (ms.uid = m.uid)",
-                               $where);
-            $set->addMod('mentor', 'Référents');
+        require_once 'ufbuilder.inc.php';
+        $ufb = new UFB_MentorSearch();
+        if (!$ufb->isEmpty()) {
+            require_once 'userset.inc.php';
+            $ufc = $ufb->getUFC();
+            $set = new ProfileSet($ufc);
+            $set->addMod('referent', 'Référents');
             $set->apply('referent/search', $page, $action, $subaction);
             if ($set->count() > 100) {
                 $page->assign('recherche_trop_large', true);
             }
         }
+
         $page->changeTpl('profile/referent.tpl');
     }
 
