@@ -1151,29 +1151,31 @@ class UFC_Mentor_Country implements UserFilterCondition
 
 // {{{ class UFC_Mentor_Sectorization
 /** Filters users based on mentoring (sub|)sector
- * @param $sector ID of sector
- * @param $subsector Subsector (null for any)
+ * @param $sector ID of (sub)sector
+ * @param $type Whether we are looking for a sector or a subsector
  */
 class UFC_Mentor_Sectorization implements UserFilterCondition
 {
+    const SECTOR    = 1;
+    const SUBSECTOR = 2;
     private $sector;
-    private $subsector;
+    private $type;
 
-    public function __construct($sector, $subsector = null)
+    public function __construct($sector, $type = self::SECTOR)
     {
         $this->sector = $sector;
-        $this->subsubsector = $subsector;
+        $this->type = $type;
     }
 
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR_SECTOR);
-        $conds = array();
-        $conds[] = $sub . '.sectorid = ' . XDB::format('{?}', $this->sector);
-        if ($this->subsector != null) {
-            $conds[] = $sub . '.subsectorid = ' . XDB::format('{?}', $this->subsector);
+        if ($this->type == self::SECTOR) {
+            $field = 'sectorid';
+        } else {
+            $field = 'subsectorid';
         }
-        return implode(' AND ', $conds);
+        return $sub . '.' . $field . ' = ' . XDB::format('{?}', $this->sector);
     }
 }
 // }}}
