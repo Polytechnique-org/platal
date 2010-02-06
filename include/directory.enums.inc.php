@@ -59,7 +59,6 @@ class DirEnum
     /** Retrieves all options for a given type
      * @param $type Type of enum for which options are requested
      * @return XorgDbIterator over the results
-     * TODO : Find a way to get either an array, or the adequate PlIterator
      */
     static public function getOptions()
     {
@@ -70,6 +69,21 @@ class DirEnum
         }
         $obj = self::$enumerations[$type];
         return call_user_func_array(array($obj, 'getOptions'), $args);
+    }
+
+    /** Retrieves all options for a given type
+     * @param $type Type of enum for which options are requested
+     * @return Array of the results the results
+     */
+    static public function getOptionsArray()
+    {
+        $args = func_get_args();
+        $type = array_shift($args);
+        if (!array_key_exists($type, self::$enumerations)) {
+            self::init($type);
+        }
+        $obj = self::$enumerations[$type];
+        return call_user_func_array(array($obj, 'getOptionsArray'), $args);
     }
 
     /** Retrieves all options with number of profiles for autocompletion
@@ -149,6 +163,16 @@ abstract class DirEnumeration
     {
         $this->_fetchOptions();
         return $this->options;
+    }
+
+    public function getOptionsArray()
+    {
+        $this->_fetchOptions();
+        $options = array();
+        while ($row = $this->options->next()) {
+            $options[$row['id']] = $row['field'];
+        }
+        return $options;
     }
 
     // {{{ function getIDs
