@@ -73,6 +73,17 @@ class UserFilterBuilder
         return $this->valid;
     }
 
+    public function isEmpty()
+    {
+        $this->buildUFC();
+        foreach ($this->fields as $field) {
+            if (! $field->isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /** Returns the built UFC
      * @return The UFC, or PFC_False() if an error happened
      */
@@ -171,6 +182,22 @@ class UFB_AdvancedSearch extends UserFilterBuilder
 }
 // }}}
 
+// {{{ class UFB_MentorSearch
+class UFB_MentorSearch extends UserFilterBuilder
+{
+    public function __construct($envprefix = '')
+    {
+        $fields = array(
+            new UFBF_MentorCountry('pays_sel'),
+            new UFBF_MentorSectorization('sector', '', UFC_Mentor_Sectorization::SECTOR),
+            new UFBF_MentorSectorization('subSector', '', UFC_Mentor_Sectorization::SUBSECTOR),
+            new UFBF_MentorExpertise('expertise'),
+        );
+        parent::__construct($fields, $envprefix);
+    }
+}
+// }}}
+
 // {{{ class UFB_Field
 abstract class UFB_Field
 {
@@ -217,6 +244,11 @@ abstract class UFB_Field
             }
         }
         return true;
+    }
+
+    public function isEmpty()
+    {
+        return $this->empty;
     }
 
     /** Create the UFC associated to the field; won't be called
@@ -311,6 +343,7 @@ abstract class UFBF_Index extends UFB_Field
         if (!$ufb->has($this->envfield)) {
             $this->empty = true;
         }
+        $this->val = $ufb->i($this->envfield);
         return true;
     }
 }
@@ -978,6 +1011,44 @@ class UFBF_Networking extends UFBF_Text
     public function buildUFC(UserFilterBuilder &$ufb)
     {
         return new UFC_Networking($this->nwtype, $this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_MentorCountry
+class UFBF_MentorCountry extends UFBF_Index
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Mentor_Country($this->val);
+    }
+}
+// }}}
+
+// {{{ class UFBF_MentorSectorization
+class UFBF_MentorSectorization extends UFBF_Index
+{
+    protected $type;
+
+    public function __construct($envfield, $formtext = '', $type = UFC_Mentor_Sectorization::SECTOR)
+    {
+        parent::__construct($envfield, $formtext);
+        $this->type = $type;
+    }
+
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Mentor_Sectorization($this->val, $this->type);
+    }
+}
+// }}}
+
+// {{{ class UFBF_MentorExpertise
+class UFBF_MentorExpertise extends UFBF_Text
+{
+    protected function buildUFC(UserFilterBuilder &$ufb)
+    {
+        return new UFC_Mentor_Expertise($this->val);
     }
 }
 // }}}
