@@ -677,7 +677,7 @@ class ProfileModule extends PLModule
             require_once 'userset.inc.php';
             $ufc = $ufb->getUFC();
             $set = new ProfileSet($ufc);
-            $set->addMod('referent', 'Référents');
+            $set->addMod('mentor', 'Référents');
             $set->apply('referent/search', $page, $action, $subaction);
             if ($set->count() > 100) {
                 $page->assign('recherche_trop_large', true);
