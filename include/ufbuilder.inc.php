@@ -169,9 +169,9 @@ class UFB_AdvancedSearch extends UserFilterBuilder
             new UFBF_Group('groupexTxt', 'groupex', 'Groupe X'),
             new UFBF_Section('sectionTxt', 'section', 'Section'),
 
-            new UFBF_Formation('schoolTxt', 'school', "École d'application"),
-            new UFBF_Diploma('diplomaTxt', 'diploma', 'Diplôme'),
-            new UFBF_StudiesDomain('fieldTxt', 'field', "Domaine d'études"),
+            new UFBF_EducationSchool('schoolTxt', 'school', "École d'application"),
+            new UFBF_EducationDegree('diplomaTxt', 'diploma', 'Diplôme'),
+            new UFBF_EducationField('fieldTxt', 'field', "Domaine d'études"),
 
             new UFBF_Comment('free', 'Commentaire'),
             new UFBF_Phone('phone_number', 'Téléphone'),
@@ -930,38 +930,38 @@ class UFBF_Section extends UFBF_Index
 }
 // }}}
 
-// {{{ class UFBF_Formation
-class UFBF_Formation extends UFBF_Mixed
+// {{{ class UFBF_EducationSchool
+class UFBF_EducationSchool extends UFBF_Mixed
 {
-    protected $direnum = DirEnum::SCHOOLS;
+    protected $direnum = DirEnum::EDUSCHOOLS;
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        return new UFC_Formation($this->val);
+        return new UFC_EducationSchool($this->val);
     }
 }
 // }}}
 
-// {{{ class UFBF_Diploma
-class UFBF_Diploma extends UFBF_Mixed
+// {{{ class UFBF_EducationDegree
+class UFBF_EducationDegree extends UFBF_Mixed
 {
-    protected $direnum = DirEnum::DEGREES;
+    protected $direnum = DirEnum::EDUDEGREES;
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        return new UFC_Diploma($this->val);
+        return new UFC_EducationDegree($this->val);
     }
 }
 // }}}
 
-// {{{ class UFBF_StudiesDomain
-class UFBF_StudiesDomain extends UFBF_Mixed
+// {{{ class UFBF_EducationField
+class UFBF_EducationField extends UFBF_Mixed
 {
-    protected $direnum = DirEnum::STUDIESDOMAINS;
+    protected $direnum = DirEnum::EDUFIELDS;
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        return new UFC_StudyField($this->val);
+        return new UFC_EducationField($this->val);
     }
 }
 // }}}

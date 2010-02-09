@@ -33,9 +33,9 @@ class DirEnum
     const GROUPESX       = 'groupesx';
     const SECTIONS       = 'sections';
 
-    const SCHOOLS        = 'schools';
-    const DEGREES        = 'degrees';
-    const STUDIESDOMAINS = 'studiesdomains';
+    const EDUSCHOOLS     = 'educationschools';
+    const EDUDEGREES     = 'educationdegrees';
+    const EDUFIELDS      = 'educationfields';
 
     const NATIONALITIES  = 'nationalities';
     const COUNTRIES      = 'countries';
@@ -323,8 +323,8 @@ class DE_GroupesX extends DirEnumeration
 
 /** EDUCATION
  */
-// {{{ class DE_Schools
-class DE_Schools extends DirEnumeration
+// {{{ class DE_EducationSchools
+class DE_EducationSchools extends DirEnumeration
 {
     protected $valfield  = 'name';
     protected $valfield2 = 'abbreviation';
@@ -335,8 +335,8 @@ class DE_Schools extends DirEnumeration
 }
 // }}}
 
-// {{{ class DE_Degrees
-class DE_Degrees extends DirEnumeration
+// {{{ class DE_EducationDegrees
+class DE_EducationDegrees extends DirEnumeration
 {
     protected $from = 'profile_education_degree_enum';
     protected $valfield = 'degree';
@@ -389,8 +389,8 @@ class DE_Degrees extends DirEnumeration
 }
 // }}}
 
-// {{{ class DE_StudiesSector
-class DE_StudiesSector extends DirEnumeration
+// {{{ class DE_EducationFields
+class DE_EducationFields extends DirEnumeration
 {
     protected $valfield = 'field';
     protected $from     = 'profile_education_field_enum';

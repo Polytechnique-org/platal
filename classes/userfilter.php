@@ -131,11 +131,11 @@ class UFC_Promo implements UserFilterCondition
 }
 // }}}
 
-// {{{ class UFC_Formation
+// {{{ class UFC_EducationSchool
 /** Filters users by formation
  * @param $val The formation to search (either ID or array of IDs)
  */
-class UFC_Formation implements UserFilterCondition
+class UFC_EducationSchool implements UserFilterCondition
 {
     private $val;
 
@@ -155,8 +155,8 @@ class UFC_Formation implements UserFilterCondition
 }
 // }}}
 
-// {{{ class UFC_Diploma
-class UFC_Diploma implements UserFilterCondition
+// {{{ class UFC_EducationDegree
+class UFC_EducationDegree implements UserFilterCondition
 {
     private $diploma;
 
@@ -176,8 +176,8 @@ class UFC_Diploma implements UserFilterCondition
 }
 // }}}
 
-// {{{ class UFC_StudyField
-class UFC_StudyField implements UserFilterCondition
+// {{{ class UFC_EducationField
+class UFC_EducationField implements UserFilterCondition
 {
     private $val;
 

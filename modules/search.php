@@ -207,7 +207,7 @@ class SearchModule extends PLModule
             'secteurTxt'         => DirEnum::SECTORS,
             'description'        => DirEnum::JOBDESCRIPTION,
             'nationaliteTxt'     => DirEnum::NATIONALITIES,
-            'schoolTxt'          => DirEnum::SCHOOLS,
+            'schoolTxt'          => DirEnum::EDUSCHOOLS,
         );
         if (!array_key_exists($enums, $type)) {
             exit();
@@ -259,9 +259,9 @@ class SearchModule extends PLModule
             break;
           case 'diploma':
             if (Env::has('school') && Env::i('school') != 0) {
-              $ids = DirEnum::getOptions(DirEnum::DEGREES, Env::i('school'));
+              $ids = DirEnum::getOptions(DirEnum::EDUDEGREES, Env::i('school'));
             } else {
-              $ids = DirEnum::getOptions(DirEnum::DEGREES);
+              $ids = DirEnum::getOptions(DirEnum::EDUDEGREES);
             }
             break;
           case 'groupex':
@@ -278,7 +278,7 @@ class SearchModule extends PLModule
             }
             break;
           case 'school':
-            $ids = DirEnum::getOptions(DirEnum::SCHOOLS);
+            $ids = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
             $page->assign('onchange', 'changeSchool(this.value)');
             break;
           case 'section':
