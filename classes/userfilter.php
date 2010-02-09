@@ -2366,14 +2366,14 @@ class UserFilter extends PlFilter
     {
         $this->requireAccounts();
         switch($type) {
-        case MENTOR_EXPERTISE:
-            $pms['pme'] = 'profile_mentor';
+        case self::MENTOR_EXPERTISE:
+            $this->pms['pme'] = 'profile_mentor';
             return 'pme';
-        case MENTOR_COUNTRY:
-            $pms['pmc'] = 'profile_mentor_country';
+        case self::MENTOR_COUNTRY:
+            $this->pms['pmc'] = 'profile_mentor_country';
             return 'pmc';
-        case MENTOR_SECTOR:
-            $pms['pms'] =  'profile_mentor_sector';
+        case self::MENTOR_SECTOR:
+            $this->pms['pms'] =  'profile_mentor_sector';
             return 'pms';
         default:
             Platal::page()->killError("Undefined mentor filter.");
