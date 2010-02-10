@@ -159,6 +159,28 @@ class XDB
         return '(' . implode(', ', array_map(array('XDB', 'escape'), $array)) . ')';
     }
 
+    const WILDCARD_EXACT    = 0x00;
+    const WILDCARD_PREFIX   = 0x01;
+    const WILDCARD_SUFFIX   = 0x02;
+    const WILDCARD_CONTAINS = 0x03; // WILDCARD_PREFIX | WILDCARD_SUFFIX
+
+    // Returns the SQL statement for a wildcard search.
+    public static function formatWildcards($mode, $text)
+    {
+        if ($mode == self::WILDCARD_EXACT) {
+            return XDB::format(' = {?}', $text);
+        } else {
+            $text = str_replace(array('%', '_'), array('\%', '\_'), $text);
+            if ($mode & self::WILDCARD_PREFIX) {
+                $text = $text . '%';
+            }
+            if ($mode & self::WILDCARD_SUFFIX) {
+                $text = '%' . $text;
+            }
+            return XDB::format(" LIKE {?}", $text);
+        }
+    }
+
     public static function execute()
     {
         global $globals;
