@@ -80,7 +80,7 @@ class WorkingCopy(object):
     ref_file = os.path.join(self.reference_path, security_file)
     wc_file = os.path.join(self.checkout_path, security_file)
 
-    diff = os.popen('diff -NBwu0 %s %s' % (ref_file, wc_file))
+    diff = os.popen('diff -NBw -U 0 %s %s' % (ref_file, wc_file))
     for line in diff.readlines():
       if self.SECURITY_FIX_RE.match(line):
         yield line[1:-1]
