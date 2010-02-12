@@ -28,6 +28,7 @@
     {assign var=hasowner value=false}
     {assign var=registered value=false}
   {else}
+    {assign var=hasowner value=true}
     {if $user->state neq 'pending'}
       {assign var=registered value=true}
     {else}
@@ -35,7 +36,8 @@
     {/if}
   {/if}
 {else}
-  {* Without auth, all profiles appear as registered *}
+  {* Without auth, all profiles appear as registered and with owner *}
+  {assign var=hasowner value=true}
   {assign var=registered value=true}
   {assign var=withAuth value=false}
 {/if}
@@ -76,7 +78,7 @@
   {if $withAuth}
   <div class="noprint bits">
     <div>
-      {if !$registered && !$dead}
+      {if !$registered && !$dead && $hasowner}
         {if $show_action eq 'ajouter'}
     <a href="carnet/notifs/add_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
@@ -103,7 +105,7 @@
       {/if}
     </div>
 
-    {if hasPerm('admin')}
+    {if hasPerm('admin') && $hasowner}
     <div>
       [{if $registered && !$dead}
       <a href="marketing/private/{$user->login()}">{*
@@ -153,7 +155,7 @@
       </tr>
       {/if}
       {if $withAuth}
-      {if !$registered}
+      {if !$registered && $hasowner}
       <tr>
         <td class="smaller" colspan="2">
           {"Ce"|sex:"Cette":$profile} camarade n'est pas {"inscrit"|sex:"inscrite":$profile}.
