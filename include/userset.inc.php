@@ -49,7 +49,6 @@ class SearchSet extends ProfileSet
 {
     public  $advanced = false;
     private $score    = null;
-    private $conds    = null;
     private $quick    = false;
 
     public function __construct($quick = false, $no_search = false, PlFilterCondition $cond = null)
@@ -90,7 +89,8 @@ class SearchSet extends ProfileSet
             return;
         }
 
-        $this->conds->addChild($ufb->getUFC());
+        $ufc = $ufb->getUFC();
+        $this->conds->addChild($ufc);
 
         $orders = $ufb->getOrders();
         $orders[] = new UFO_Promo(UserFilter::DISPLAY, true);

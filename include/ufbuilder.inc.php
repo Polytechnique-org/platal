@@ -87,7 +87,7 @@ class UserFilterBuilder
     /** Returns the built UFC
      * @return The UFC, or PFC_False() if an error happened
      */
-    public function &getUFC()
+    public function getUFC()
     {
         $this->buildUFC();
         if ($this->valid) {
