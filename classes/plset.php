@@ -26,9 +26,9 @@ abstract class PlSet
 {
     const DEFAULT_MAX_RES = 20;
 
-    private $conds   = null;
-    private $orders  = array();
-    private $limit   = null;
+    protected $conds   = null;
+    protected $orders  = array();
+    protected $limit   = null;
 
     protected $count   = null;
 
