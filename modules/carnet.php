@@ -371,30 +371,18 @@ class CarnetModule extends PLModule
         $page->changeTpl('carnet/calendar.tpl', NO_SKIN);
         $page->register_function('display_ical', 'display_ical');
 
-        $res = XDB::iterRow(
-                'SELECT u.prenom,
-                        IF(u.nom_usage = \'\',u.nom,u.nom_usage) AS nom,
-                        u.promo,
-                        u.naissance,
-                        DATE_ADD(u.naissance, INTERVAL 1 DAY) AS end,
-                        u.date_ins,
-                        u.hruid
-                   FROM contacts      AS c
-             INNER JOIN auth_user_md5 AS u ON (u.user_id = c.contact)
-             INNER JOIN aliases       AS a ON (u.user_id = a.id AND a.type = \'a_vie\')
-                  WHERE c.uid = {?}', $user->id());
-
+        $filter = new UserFilter(new UFC_Contact($user));
         $annivs = Array();
-        while (list($prenom, $nom, $promo, $naissance, $end, $ts, $hruid) = $res->next()) {
-            $naissance = str_replace('-', '', $naissance);
-            $end       = str_replace('-', '', $end);
+        foreach ($filter->getUsers() as $u) {
+            $profile = $u->profile();
+            $date = strtotime($profile->birthdate);
+            $tomorrow = $date + 86400;
             $annivs[] = array(
-                'timestamp' => strtotime($ts),
-                'date'      => $naissance,
-                'tomorrow'  => $end,
-                'hruid'     => $hruid,
-                'summary'   => 'Anniversaire de '.$prenom
-                                .' '.$nom.' - x '.$promo,
+                'timestamp' => strtotime($user->registration_date),
+                'date' => date('Ymd', $date),
+                'tomorrow' => date('Ymd', $tomorrow),
+                'hruid' => $profile->hrid(),
+                'summary' => 'Anniversaire de ' . $profile->fullName(true)
             );
         }
         $page->assign('events', $annivs);
