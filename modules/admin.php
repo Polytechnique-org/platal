@@ -578,6 +578,13 @@ class AdminModule extends PLModule
         }
         // }}}
 
+        // OpenId form {{{
+        if (Post::has('del_openid')) {
+            XDB::execute('DELETE FROM  openid_trusted
+                                WHERE  id = {?}', Post::i('del_openid'));
+        }
+        // }}}
+
         // Forum form {{{
         if (Post::has('b_edit')) {
             XDB::execute("DELETE FROM  forum_innd
@@ -619,6 +626,9 @@ class AdminModule extends PLModule
                                                    FROM  account_profiles AS ap
                                              INNER JOIN  profiles AS p ON (ap.pid = p.pid)
                                                   WHERE  ap.uid = {?}', $user->id()));
+        $page->assign('openid', XDB::iterator('SELECT  id, url
+                                                 FROM  openid_trusted
+                                                WHERE  user_id = {?}', $user->id()));
 
         // Displays email redirection and the general profile.
         if ($registered && $redirect) {

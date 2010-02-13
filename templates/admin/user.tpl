@@ -55,6 +55,12 @@ function del_fwd(fwd) {
   document.forms.fwds.del_fwd.value = fwd;
   document.forms.fwds.submit();
 }
+
+function del_openid(id) {
+  document.forms.openid.del_openid.value = id;
+  document.forms.openid.submit();
+}
+
 function act_fwd(fwd, activate) {
   if (activate)
     document.forms.fwds.activate_fwd.value = fwd;
@@ -77,7 +83,7 @@ function ban_read()
 
 $(document).ready(function() {
   $('#tabs > ul').tabs();
-  $('.ui-tabs-nav li').width('33%')
+  $('.ui-tabs-nav li').width('24%')
     .click(function() { $(this).children('a').click() });
 });
 
@@ -86,10 +92,10 @@ $(document).ready(function() {
 {/literal}
 
 <div id="tabs">
-  Compte de {$user->login()}.
   <ul style="margin-top: 0">
-    <li><a href="{$platal->pl_self()}#account"><span >Compte</span></a></li>
+    <li><a href="{$platal->pl_self()}#account"><span >Compte de {$user->login()}</span></a></li>
     <li><a href="{$platal->pl_self()}#emails"><span>Emails</span></a></li>
+    <li><a href="{$platal->pl_self()}#authext"><span>OpenID</span></a></li>
     <li><a href="{$platal->pl_self()}#forums"><span>Forums</span></a></li>
   </ul>
 </div>
@@ -546,11 +552,29 @@ Pour ceci changer ses permissions en 'disabled'.
   </tr>
   {/foreach}
 </table>
+</div>
 
+<div id="authext">
+<h1>Gestion des autorisations d'authentification externe</h1>
+
+<form id="openid" method="post" action="admin/user/{$user->login()}#authext">
+  {xsrf_token_field}
+  <table class="bicol">
+    <tr>
+      <th colspan="2">Sites de confiance</th>
+    </tr>
+    {iterate from=$openid item=site}
+    <tr class="{cycle values="pair,impair"}">
+      <td><a href="{$site.url}">{$site.url}</a></td>
+      <td><a href="javascript:del_openid({$site.id})">{icon name=cross}</a></td>
+    </tr>
+    {/iterate}
+  </table>
+  <div><input type="hidden" name="del_openid"/></div>
+</form>
 </div>
 
 <div id="forums">
-
 <h1>Gestion de l'accès au forums</h1>
 
 <form id="bans" method="post" action="admin/user/{$user->login()}#forums">
