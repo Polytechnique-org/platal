@@ -39,8 +39,7 @@ class ForumsBanana extends Banana
         Banana::$msgedit_canattach = false;
         Banana::$spool_root = $globals->banana->spool_root;
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
-        Banana::$nntp_host = 'news://web_' . $user->login()
-                           . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
+        Banana::$nntp_host = self::buildURL($user->login());
         if (S::admin()) {
             Banana::$msgshow_mimeparts[] = 'source';
         }
@@ -52,6 +51,19 @@ class ForumsBanana extends Banana
         if (@$params['action'] == 'profile') {
             Banana::$action = 'profile';
         }
+    }
+
+    public static function buildURL($login = null)
+    {
+        global $globals;
+        $scheme = ($globals->banana->port == 563) ? "nntps" : "news";
+        $user = $globals->banana->web_user;
+        if ($login != null) {
+            $user .= '_' . $login;
+        }
+        return $scheme . '://' . $user
+                       . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
+
     }
 
     private function fetchProfile()
