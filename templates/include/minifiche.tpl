@@ -45,7 +45,7 @@
 
     <div class="nom">
       {if $profile->isFemale()}&bull;{/if}
-      {if !$dead && (!$registered || $withAuth)}<a href="profile/{$profile->hrid}" class="popup2">{/if}
+      {if !$dead && (!$registered || $withAuth)}<a href="profile/{$profile->hrid()}" class="popup2">{/if}
       {$profile->full_name}
       {if !$dead && (!$registered || $withAuth)}</a>{/if}
     </div>
