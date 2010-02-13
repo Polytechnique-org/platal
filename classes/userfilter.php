@@ -634,7 +634,7 @@ class UFC_Corps_Rank implements UserFilterCondition
  * @param $type The field being searched (self::JOBID, self::JOBNAME or self::JOBACRONYM)
  * @param $value The searched value
  */
-class UFC_Job_Company extends UserFilterCondition
+class UFC_Job_Company implements UserFilterCondition
 {
     const JOBID = 'id';
     const JOBNAME = 'name';
@@ -672,7 +672,7 @@ class UFC_Job_Company extends UserFilterCondition
  * @param $subsector The subsector
  * @param $subsubsector The subsubsector
  */
-class UFC_Job_Sectorization extends UserFilterCondition
+class UFC_Job_Sectorization implements UserFilterCondition
 {
 
     private $sector;
@@ -712,7 +712,7 @@ class UFC_Job_Sectorization extends UserFilterCondition
  * @param $description The text being searched for
  * @param $fields The fields to search for (user-defined, ((sub|)sub|)sector)
  */
-class UFC_Job_Description extends UserFilterCondition
+class UFC_Job_Description implements UserFilterCondition
 {
 
     /** Meta-filters
@@ -761,7 +761,7 @@ class UFC_Job_Description extends UserFilterCondition
  * @param $type Type of network (-1 for any)
  * @param $value Value to search
  */
-class UFC_Networking extends UserFilterCondition
+class UFC_Networking implements UserFilterCondition
 {
     private $type;
     private $value;
@@ -791,7 +791,7 @@ class UFC_Networking extends UserFilterCondition
  * @param $phone_type Type of phone (fixed/mobile/fax)
  * @param $number Phone number
  */
-class UFC_Phone extends UserFilterCondition
+class UFC_Phone implements UserFilterCondition
 {
     const NUM_PRO   = 'pro';
     const NUM_USER  = 'user';
@@ -836,7 +836,7 @@ class UFC_Phone extends UserFilterCondition
  * @param $medal ID of the medal
  * @param $grade Grade of the medal (null for 'any')
  */
-class UFC_Medal extends UserFilterCondition
+class UFC_Medal implements UserFilterCondition
 {
     private $medal;
     private $grade;
@@ -864,7 +864,7 @@ class UFC_Medal extends UserFilterCondition
 /** Filters users by mentoring expertise
  * @param $expertise Domain of expertise
  */
-class UFC_Mentor_Expertise extends UserFilterCondition
+class UFC_Mentor_Expertise implements UserFilterCondition
 {
     private $expertise;
 
@@ -885,7 +885,7 @@ class UFC_Mentor_Expertise extends UserFilterCondition
 /** Filters users by mentoring country
  * @param $country Two-letters code of country being searched
  */
-class UFC_Mentor_Country extends UserFilterCondition
+class UFC_Mentor_Country implements UserFilterCondition
 {
     private $country;
 
@@ -907,7 +907,7 @@ class UFC_Mentor_Country extends UserFilterCondition
  * @param $sector ID of sector
  * @param $subsector Subsector (null for any)
  */
-class UFC_Mentor_Sectorization extends UserFilterCondition
+class UFC_Mentor_Sectorization implements UserFilterCondition
 {
     private $sector;
     private $subsector;

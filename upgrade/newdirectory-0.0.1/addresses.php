@@ -13,7 +13,7 @@ $pids = $res->fetchOneRow();
 $minPid = $pids[0];
 $maxPid = $pids[1];
 
-echo "This will take a few minutes.\n".
+echo "This will take a few minutes.\n";
 
 // Fills the 'text' field in profile_addresses.
 for ($pid = $minPid; $pid < $maxPid + 1; ++$pid) {
