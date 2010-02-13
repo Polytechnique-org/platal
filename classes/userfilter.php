@@ -247,8 +247,8 @@ class UFC_Name implements UserFilterCondition
         }
         $cond = $left . $op . $right;
         $conds = array($this->buildNameQuery($this->type, null, $cond, $uf));
-        if (($this->mode & self::VARIANTS) != 0 && isset(UserFilter::$name_variants[$this->type])) {
-            foreach (UserFilter::$name_variants[$this->type] as $var) {
+        if (($this->mode & self::VARIANTS) != 0 && isset(Profile::$name_variants[$this->type])) {
+            foreach (Profile::$name_variants[$this->type] as $var) {
                 $conds[] = $this->buildNameQuery($this->type, $var, $cond, $uf);
             }
         }
@@ -1342,7 +1342,7 @@ class UFO_Name extends UserFilterOrder
 
     protected function getSortTokens(PlFilter &$uf)
     {
-        if (UserFilter::isDisplayName($this->type)) {
+        if (Profile::isDisplayName($this->type)) {
             $sub = $uf->addDisplayFilter();
             return 'pd' . $sub . '.' . $this->type;
         } else {
@@ -1447,7 +1447,7 @@ class UFO_Death extends UserFilterOrder
  * in the final query.
  *
  * In the join_criter text, $ME is replaced with 'join_tablealias', $PID with
- * profile.pid, and $UID with auth_user_md5.user_id.
+ * profile.pid, and $UID with accounts.uid.
  *
  * For each kind of "JOIN" needed, a function named addXXXFilter() should be defined;
  * its parameter will be used to set various private vars of the UserFilter describing
@@ -1735,12 +1735,12 @@ class UserFilter extends PlFilter
 
     static public function sortByName()
     {
-        return array(new UFO_Name(self::LASTNAME), new UFO_Name(self::FIRSTNAME));
+        return array(new UFO_Name(Profile::LASTNAME), new UFO_Name(Profile::FIRSTNAME));
     }
 
     static public function sortByPromo()
     {
-        return array(new UFO_Promo(), new UFO_Name(self::LASTNAME), new UFO_Name(self::FIRSTNAME));
+        return array(new UFO_Promo(), new UFO_Name(Profile::LASTNAME), new UFO_Name(Profile::FIRSTNAME));
     }
 
     static private function getDBSuffix($string)
@@ -1829,45 +1829,12 @@ class UserFilter extends PlFilter
 
     /** NAMES
      */
-    /* name tokens */
-    const LASTNAME  = 'lastname';
-    const FIRSTNAME = 'firstname';
-    const NICKNAME  = 'nickname';
-    const PSEUDONYM = 'pseudonym';
-    const NAME      = 'name';
-    /* name variants */
-    const VN_MARITAL  = 'marital';
-    const VN_ORDINARY = 'ordinary';
-    const VN_OTHER    = 'other';
-    const VN_INI      = 'ini';
-    /* display names */
-    const DN_FULL      = 'directory_name';
-    const DN_DISPLAY   = 'yourself';
-    const DN_YOURSELF  = 'yourself';
-    const DN_DIRECTORY = 'directory_name';
-    const DN_PRIVATE   = 'private_name';
-    const DN_PUBLIC    = 'public_name';
-    const DN_SHORT     = 'short_name';
-    const DN_SORT      = 'sort_name';
-
-    static public $name_variants = array(
-        self::LASTNAME => array(self::VN_MARITAL, self::VN_ORDINARY),
-        self::FIRSTNAME => array(self::VN_ORDINARY, self::VN_INI, self::VN_OTHER)
-    );
 
     static public function assertName($name)
     {
         if (!Profile::getNameTypeId($name)) {
             Platal::page()->kill('Invalid name type: ' . $name);
         }
-    }
-
-    static public function isDisplayName($name)
-    {
-        return $name == self::DN_FULL || $name == self::DN_DISPLAY
-            || $name == self::DN_YOURSELF || $name == self::DN_DIRECTORY
-            || $name == self::DN_PRIVATE || $name == self::DN_PUBLIC
-            || $name == self::DN_SHORT || $name == self::DN_SORT;
     }
 
     private $pn  = array();

@@ -94,7 +94,7 @@ class SearchSet extends ProfileSet
 
         $orders = $ufb->getOrders();
         $orders[] = new UFO_Promo(UserFilter::DISPLAY, true);
-        $orders[] = new UFO_Promo(UserFilter::DN_SORT);
+        $orders[] = new UFO_Name(Profile::DN_SORT);
 
         if (S::logged() && Env::has('nonins')) {
             $this->conds = new PFC_And($this->conds,
@@ -159,21 +159,21 @@ class MinificheView extends MultipageView
                     new UFO_Score(true),
                     new UFO_ProfileUpdate(true),
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(UserFilter::DN_SORT),
+                    new UFO_Name(Profile::DN_SORT),
                 ), 'pertinence'));
         }
         $this->addSort(new PlViewOrder(
                             'name',
-                            array(new UFO_Name(UserFilter::DN_SORT)),
+                            array(new UFO_Name(Profile::DN_SORT)),
                             'nom'));
         $this->addSort(new PlViewOrder('promo', array(
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(UserFilter::DN_SORT),
+                    new UFO_Name(Profile::DN_SORT),
                 ), 'promotion'));
         $this->addSort(new PlViewOrder('date_mod', array(
                     new UFO_ProfileUpdate(true),
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(UserFilter::DN_SORT),
+                    new UFO_Name(Profile::DN_SORT),
                 ), 'dernière modification'));
         parent::__construct($set, $data, $params);
     }
@@ -223,15 +223,15 @@ class MentorView extends MultipageView
     {
         $this->entriesPerPage = 10;
         $this->addSort(new PlViewOrder('rand', array(new PFO_Random(S::i('uid'))), 'aléatoirement'));
-        $this->addSort(new PlViewOrder('name', array(new UFO_Name(UserFilter::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
         $this->addSort(new PlViewOrder('promo', array(
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(UserFilter::DN_SORT),
+                    new UFO_Name(Profile::DN_SORT),
                 ), 'promotion'));
         $this->addSort(new PlViewOrder('date_mod', array(
                     new UFO_ProfileUpdate(true),
                     new UFO_Promo(UserFilter::DISPLAY, true),
-                    new UFO_Name(UserFilter::DN_SORT),
+                    new UFO_Name(Profile::DN_SORT),
                 ), 'dernière modification'));
         parent::__construct($set, $data, $params);
     }
@@ -285,13 +285,13 @@ class TrombiView extends MultipageView
                             new UFO_Score(true),
                             new UFO_ProfileUpdate(true),
                             new UFO_Promo(UserFilter::DISPLAY, true),
-                            new UFO_Name(UserFilter::DN_SORT),
+                            new UFO_Name(Profile::DN_SORT),
             ), 'pertinence'));
         }
-        $this->addSort(new PlViewOrder('name', array(new UFO_Name(UserFilter::DN_SORT)), 'nom'));
+        $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
         $this->addSort(new PlViewOrder('promo', array(
                         new UFO_Promo(UserFilter::DISPLAY, true),
-                        new UFO_Name(UserFilter::DN_SORT),
+                        new UFO_Name(Profile::DN_SORT),
                     ), 'promotion'));
         parent::__construct($set, $data, $params);
     }

@@ -677,10 +677,10 @@ class XnetGrpModule extends PLModule
             list($nom, $prenom) = str_replace(array('-', ' ', "'"), '%', array(Env::t('nom'), Env::t('prenom')));
             $cond = new UFC_And(new UFC_Not(new UFC_Registered()));
             if (!empty($nom)) {
-                $cond->addChild(new UFC_Name(UserFilter::LASTNAME, $nom, UFC_Name::CONTAINS));
+                $cond->addChild(new UFC_Name(Profile::LASTNAME, $nom, UFC_Name::CONTAINS));
             }
             if (!empty($prenom)) {
-                $cond->addChild(new UFC_Name(UserFilter::FIRSTNAME, $prenom, UFC_Name::CONTAINS));
+                $cond->addChild(new UFC_Name(Profile::FIRSTNAME, $prenom, UFC_Name::CONTAINS));
             }
             if (Env::i('promo')) {
                 $cond->addChild(new UFC_Promo('=', UserFilter::GRADE_ING, Env::i('promo')));

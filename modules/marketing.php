@@ -212,7 +212,7 @@ class MarketingModule extends PLModule
 
         $uf = new UserFilter(new UFC_And(new UFC_Promo('=', UserFilter::DISPLAY, $promo),
                                             new UFC_Not(new UFC_Registered())),
-                                array(new UFO_Name(UserFilter::LASTNAME), new UFO_Name(UserFilter::FIRSTNAME)));
+                                array(new UFO_Name(Profile::LASTNAME), new UFO_Name(Profile::FIRSTNAME)));
         $users = $uf->getUsers();
         $page->assign('nonins', $users);
     }

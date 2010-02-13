@@ -24,9 +24,36 @@ class Profile
     static private $v_values = array('public'  => array('public'),
                                      'ax'      => array('ax', 'public'),
                                      'private' => array('private', 'ax', 'public'));
+
     const VISIBILITY_PUBLIC  = 'public';
     const VISIBILITY_AX      = 'ax';
     const VISIBILITY_PRIVATE = 'private';
+
+    /* name tokens */
+    const LASTNAME  = 'lastname';
+    const FIRSTNAME = 'firstname';
+    const NICKNAME  = 'nickname';
+    const PSEUDONYM = 'pseudonym';
+    const NAME      = 'name';
+    /* name variants */
+    const VN_MARITAL  = 'marital';
+    const VN_ORDINARY = 'ordinary';
+    const VN_OTHER    = 'other';
+    const VN_INI      = 'ini';
+    /* display names */
+    const DN_FULL      = 'directory_name';
+    const DN_DISPLAY   = 'yourself';
+    const DN_YOURSELF  = 'yourself';
+    const DN_DIRECTORY = 'directory_name';
+    const DN_PRIVATE   = 'private_name';
+    const DN_PUBLIC    = 'public_name';
+    const DN_SHORT     = 'short_name';
+    const DN_SORT      = 'sort_name';
+
+    static public $name_variants = array(
+            self::LASTNAME => array(self::VN_MARITAL, self::VN_ORDINARY),
+            self::FIRSTNAME => array(self::VN_ORDINARY, self::VN_INI, self::VN_OTHER)
+        );
 
     const ADDRESS_MAIN       = 0x000001;
     const ADDRESS_PERSO      = 0x000002;
@@ -457,6 +484,14 @@ class Profile
                                              WHERE  FIND_IN_SET(\'owner\', ap.perms)
                                                     AND ap.uid IN ' . XDB::formatArray($uids));
         return self::getBulkProfilesWithPIDs($table);
+    }
+
+    public static function isDisplayName($name)
+    {
+        return $name == self::DN_FULL || $name == self::DN_DISPLAY
+            || $name == self::DN_YOURSELF || $name == self::DN_DIRECTORY
+            || $name == self::DN_PRIVATE || $name == self::DN_PUBLIC
+            || $name == self::DN_SHORT || $name == self::DN_SORT;
     }
 
     public static function getNameTypeId($type, $for_sql = false)
