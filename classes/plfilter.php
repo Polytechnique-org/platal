@@ -334,7 +334,7 @@ abstract class PlFilter
      * @param $objects The objects to filter
      * @param $limit The portion of the matching objects to show
      */
-    public abstract function filter(array $objects, PlLimit &$limit);
+    public abstract function filter(array $objects, $limit = null);
 
     public abstract function setCondition(PlFilterCondition &$cond);
 
@@ -345,7 +345,7 @@ abstract class PlFilter
     /** Get objects, selecting only those within a limit
      * @param $limit The portion of the matching objects to select
      */
-    public abstract function get(PlLimit &$limit);
+    public abstract function get($limit = null);
 
     /** PRIVATE FUNCTIONS
      */
