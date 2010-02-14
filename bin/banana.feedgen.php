@@ -14,7 +14,7 @@ ini_set('memory_limit', '128M');
 
 Banana::$mbox_helper = $globals->banana->mbox_helper;
 Banana::$spool_root = $globals->banana->spool_root;
-Banana::$nntp_host =  ForumsBanana::buildURL()
+Banana::$nntp_host =  ForumsBanana::buildURL();
 Banana::refreshAllFeeds(array('NNTP', 'MLArchive'));
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
