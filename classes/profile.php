@@ -146,9 +146,19 @@ class Profile
         return $this->firstname;
     }
 
+    public function firstNames()
+    {
+        return $this->nameVariants(self::FIRSTNAME);
+    }
+
     public function lastName()
     {
         return $this->lastname;
+    }
+
+    public function lastNames()
+    {
+        return $this->nameVariants(self::LASTNAME);
     }
 
     public function isFemale()
@@ -160,6 +170,19 @@ class Profile
     {
         $this->first_name;
         return $this->data;
+    }
+
+    private function nameVariants($type)
+    {
+        $vals = array($this->$type);
+        foreach (self::$name_variants[$type] as $var) {
+            $vartype = $type . '_' . $var;
+            $varname = $this->$vartype;
+            if ($varname != null && $varname != "") {
+                $vals[] = $varname;
+            }
+        }
+        return array_unique($vals);
     }
 
     public function __get($name)
@@ -188,7 +211,7 @@ class Profile
             Platal::page()->kill("Visibility invalide: " . $visibility);
         }
         $this->visibility = self::$v_values[$visibility];
-        if ($this->mobile && !in_array($this->modbile_pub, $this->visibility)) {
+        if ($this->mobile && !in_array($this->mobile_pub, $this->visibility)) {
             unset($this->data['mobile']);
         }
     }
@@ -378,6 +401,15 @@ class Profile
         return $job->next();
     }
 
+    /* Binets
+     */
+    public function getBinets()
+    {
+        return XDB::fetchColumn('SELECT  binet_id
+                                   FROM  binets_ins
+                                  WHERE  user_id = {?}', $this->id());
+    }
+
 
     public function owner()
     {
@@ -391,10 +423,11 @@ class Profile
         }
         return XDB::fetchAllAssoc('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
                                            pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
-                                           IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_usual,
-                                           IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_usual,
+                                           IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
+                                           IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
                                            pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
-                                           pp.display_tel AS mobile, pp.pub AS mobile_pub, ph.pub AS photo_pub
+                                           pd.directory_name, pp.display_tel AS mobile, pp.pub AS mobile_pub,
+                                           ph.pub AS photo_pub
                                      FROM  profiles AS p
                                INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                                INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
