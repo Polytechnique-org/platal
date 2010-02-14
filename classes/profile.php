@@ -346,13 +346,13 @@ class Profile
                                INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                                INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
                                INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid
-                                                                    AND pn_f.typeid = ' . self::getNameTypeId('lastname', true) . ')
+                                                                    AND pn_f.typeid = ' . self::getNameTypeId('firstname', true) . ')
                                INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid
-                                                                    AND pn_l.typeid = ' . self::getNameTypeId('firstname', true) . ')
+                                                                    AND pn_l.typeid = ' . self::getNameTypeId('lastname', true) . ')
                                 LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid
-                                                                     AND pn_uf.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
+                                                                     AND pn_uf.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
                                 LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid
-                                                                     AND pn_ul.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
+                                                                     AND pn_ul.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
                                 LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid 
                                                                     AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
                                 LEFT JOIN  profile_phones AS pp ON (pp.uid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
