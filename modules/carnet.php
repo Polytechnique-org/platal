@@ -317,32 +317,23 @@ class CarnetModule extends PLModule
     function handler_pdf(&$page, $arg0 = null, $arg1 = null)
     {
         $this->load('contacts.pdf.inc.php');
-        require_once 'user.func.inc.php';
+        $user = S::user();
 
         Platal::session()->close();
 
-        $sql = "SELECT  a.alias
-                  FROM  aliases       AS a
-            INNER JOIN  auth_user_md5 AS u ON ( a.id = u.user_id )
-            INNER JOIN  contacts      AS c ON ( a.id = c.contact )
-                 WHERE  c.uid = {?} AND a.type='a_vie'";
+        $order = array(new UFO_Name(UserFilter::LASTNAME), new UFO_Name(UserFilter::FIRSTNAME));
         if ($arg0 == 'promo') {
-            $sql .= ' ORDER BY  u.promo, u.nom, u.prenom';
+            $order = array_unshift($order, new UFO_Promo());
         } else {
-            $sql .= ' ORDER BY  u.nom, u.prenom, u.promo';
+            $order[] = new UFO_Promo();
         }
+        $filter = new UserFilter(new UFC_Contact($user), $order);
 
-        $citer = XDB::iterRow($sql, S::v('uid'));
         $pdf   = new ContactsPDF();
 
-        while (list($alias) = $citer->next()) {
-            $user = get_user_details($alias);
-            foreach ($user as &$value) {
-                if (is_utf8($value)) {
-                    $value = utf8_decode($value);
-                }
-            }
-            $pdf = ContactsPDF::addContact($pdf, $user, $arg0 == 'photos' || $arg1 == 'photos');
+        $profiles = $filter->getProfiles(new PlLimit());
+        foreach ($profiles as $p) {
+            $pdf = ContactsPDF::addContact($pdf, $p, $arg0 == 'photos' || $arg1 == 'photos');
         }
         $pdf->Output();
 
