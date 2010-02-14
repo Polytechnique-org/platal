@@ -471,6 +471,19 @@ class User extends PlUser
         return isset($this->contacts[$user->id()]);
     }
 
+    // Groupes X
+    private $groups = null;
+    public function groups()
+    {
+        if (is_null($this->groups)) {
+            $this->groups = XDB::fetchAllAssoc('asso_id', 'SELECT  asso_id, perms, comm
+                                                             FROM  #groupex#.membres
+                                                            WHERE  uid = {?}',
+                                                $this->id());
+        }
+        return $this->groups;
+    }
+
     // Return permission flags for a given permission level.
     public static function makePerms($perms, $is_admin)
     {
