@@ -331,7 +331,7 @@ class CarnetModule extends PLModule
 
         $pdf   = new ContactsPDF();
 
-        $profiles = $filter->getProfiles(new PlLimit());
+        $profiles = $filter->getProfiles();
         foreach ($profiles as $p) {
             $pdf = ContactsPDF::addContact($pdf, $p, $arg0 == 'photos' || $arg1 == 'photos');
         }
