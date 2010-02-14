@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2009 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2010 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -121,14 +121,14 @@
         {if $eid && $img}
         <div style="float: left; text-align: center">
           <em>Image actuelle</em><br />
-          <img src="events/photo/{$eid}" alt="Image actuelle" /><br />
+          <img src="events/photo/{$eid}?{$smarty.now}" alt="Image actuelle" /><br />
           <input type="submit" name="action" value="Pas d'image" />
         </div>
         {/if}
         {if $upload && $upload->exists()}
         <div style="float: right; text-align: center">
           <em>Nouvelle image</em><br />
-          <img src="events/photo" alt="Nouvelle Image" /><br />
+          <img src="events/photo?{$smarty.now}" alt="Nouvelle Image" /><br />
           <input type="submit" name="action" value="Supprimer l'image" />
         </div>
         {/if}

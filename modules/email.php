@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2009 Polytechnique.org                              *
+ *  Copyright (C) 2003-2010 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -816,17 +816,20 @@ class EmailModule extends PLModule
                 $broken_list = explode("\n", $list);
                 sort($broken_list);
                 foreach ($broken_list as $orig_email) {
-                    $email = valide_email(trim($orig_email));
-                    if (empty($email) || $email == '@') {
-                        $invalid_emails[] = trim($orig_email) . ': invalid email';
-                    } elseif (!in_array($email, $valid_emails)) {
-                        $res = XDB::query('SELECT  COUNT(*)
-                                             FROM  emails
-                                            WHERE  email = {?}', $email);
-                        if ($res->fetchOneCell() > 0) {
-                            $valid_emails[] = $email;
-                        } else {
-                            $invalid_emails[] = "$orig_email: no such redirection";
+                    $orig_email = trim($orig_email);
+                    if ($orig_email != '') {
+                        $email = valide_email($orig_email);
+                        if (empty($email) || $email == '@') {
+                            $invalid_emails[] = trim($orig_email) . ': invalid email';
+                        } elseif (!in_array($email, $valid_emails)) {
+                            $res = XDB::query('SELECT  COUNT(*)
+                                                 FROM  emails
+                                                WHERE  email = {?}', $email);
+                            if ($res->fetchOneCell() > 0) {
+                                $valid_emails[] = $email;
+                            } else {
+                                $invalid_emails[] = "$orig_email: no such redirection";
+                            }
                         }
                     }
                 }
@@ -907,7 +910,7 @@ class EmailModule extends PLModule
 
                 // Output the list of users with recently broken addresses,
                 // along with the count of valid redirections.
-                require_once 'include/notifs.inc.php';
+                require_once 'notifs.inc.php';
                 pl_content_headers("text/x-csv");
 
                 $csv = fopen('php://output', 'w');

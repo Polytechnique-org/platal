@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #***************************************************************************
-#*  Copyright (C) 2003-2009 Polytechnique.org                              *
+#*  Copyright (C) 2003-2010 Polytechnique.org                              *
 #*  http://opensource.polytechnique.org/                                   *
 #*                                                                         *
 #*  This program is free software; you can redistribute it and/or modify   *
@@ -80,7 +80,7 @@ class WorkingCopy(object):
     ref_file = os.path.join(self.reference_path, security_file)
     wc_file = os.path.join(self.checkout_path, security_file)
 
-    diff = os.popen('diff -NBwu0 %s %s' % (ref_file, wc_file))
+    diff = os.popen('diff -NBw -U 0 %s %s' % (ref_file, wc_file))
     for line in diff.readlines():
       if self.SECURITY_FIX_RE.match(line):
         yield line[1:-1]

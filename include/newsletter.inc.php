@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2009 Polytechnique.org                              *
+ *  Copyright (C) 2003-2010 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -41,9 +41,9 @@ class NewsLetter extends MassMailer
         } else {
             $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
             if (!$res->numRows()) {
-                Newsletter::create();
+                NewsLetter::create();
             }
-            $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
+            $res = XDB::query("SELECT * FROM newsletter WHERE bits='new' ORDER BY id DESC LIMIT 1");
         }
         if ($res->numRows() != 1) {
             throw new MailNotFound();

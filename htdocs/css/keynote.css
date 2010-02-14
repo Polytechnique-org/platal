@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2003-2009 Polytechnique.org                              *
+ *  Copyright (C) 2003-2010 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -292,7 +292,7 @@ span.titre {
 
 div.contact-list {
     width: 98%;
-    margin-left: 1%;
+    margin-left: 5px;
 }
 div.contact-list div.contact {
     border-top: 1px solid #fff;

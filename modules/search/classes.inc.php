@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2009 Polytechnique.org                              *
+ *  Copyright (C) 2003-2010 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -489,7 +489,7 @@ class RefSField extends SField
 
     function too_large()
     {
-        return ($this->value=='');
+        return ($this->value == '');
     }
 
     // }}}
@@ -660,7 +660,7 @@ class StringSField extends SField
 
     function too_large()
     {
-        return ($this->length()<2);
+        return ($this->length() < 2);
     }
 
     // }}}
@@ -846,11 +846,14 @@ class SFieldGroup
     {
         $this->fields = $_fields;
         $this->and    = $_and;
-        foreach ($this->fields as $key=>&$field) {
-            if (is_null($field)) {
-                unset($this->fields[$key]);
+
+        $cleanFields = array();
+        foreach ($this->fields as $field) {
+            if (!is_null($field)) {
+                $cleanFields[] = $field;
             }
         }
+        $this->fields = $cleanFields;
     }
 
     // }}}
@@ -859,7 +862,7 @@ class SFieldGroup
     function too_large()
     {
         $b = true;
-        for ($i=0 ; $b && $i<count($this->fields) ; $i++) {
+        for ($i = 0; $b && $i < count($this->fields); ++$i) {
             if (!is_null($this->fields[$i])) {
                 $b = $b && $this->fields[$i]->too_large();
             }

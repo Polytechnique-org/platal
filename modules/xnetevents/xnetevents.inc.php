@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2009 Polytechnique.org                              *
+ *  Copyright (C) 2003-2010 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -226,7 +226,9 @@ function subscribe_lists_event($participate, $uid, $evt, $paid, $payment = null)
         subscribe($payed_list, $email);
     } else {
         unsubscribe($payed_list, $email);
-        subscribe($unpayed_list, $email);
+        if (!is_null($participate)) {
+            subscribe($unpayed_list, $email);
+        }
     }
 }
 // }}}

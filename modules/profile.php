@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2009 Polytechnique.org                              *
+ *  Copyright (C) 2003-2010 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -185,6 +185,7 @@ class ProfileModule extends PLModule
                                 WHERE  user_id = {?} AND type="photo"',
                          S::v('uid'));
             $globals->updateNbValid();
+            $page->trigSuccess("Ta photo a bien été supprimée. Elle ne sera plus visible sur le site dans au plus une heure.");
         } elseif (Env::v('cancel')) {
             S::assert_xsrf_token();
 
@@ -340,8 +341,8 @@ class ProfileModule extends PLModule
 
         // Build the page
         $page->addJsLink('ajax.js');
-        $page->addJsLink('education.js');
-        $page->addJsLink('grades.js');
+        $page->addJsLink('education.js'); /* dynamic content */
+        $page->addJsLink('grades.js');    /* dynamic content */
         $page->addJsLink('profile.js');
         $page->addJsLink('jquery.autocomplete.js');
         $wiz = new PlWizard('Profil', PlPage::getCoreTpl('plwizard.tpl'), true, true, false);
