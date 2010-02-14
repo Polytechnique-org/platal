@@ -46,7 +46,7 @@ class PlatalLogger extends PlLogger
 
         // retrieve available actions
         $this->actions = XDB::fetchAllAssoc('text', 'SELECT  id, text
-                                                       FROM  #logger#.actions');
+                                                       FROM  log_actions');
     }
 
     /** Creates a new session entry in database and return its ID.
@@ -71,7 +71,7 @@ class PlatalLogger extends PlLogger
             $proxy = 'proxy';
         }
 
-        XDB::execute("INSERT INTO  #logger#.sessions
+        XDB::execute("INSERT INTO  log_sessions
                               SET  uid={?}, host={?}, ip={?}, forward_ip={?}, forward_host={?}, browser={?}, suid={?}, flags={?}",
                      $uid, $host, ip_to_uint($ip), ip_to_uint($forward_ip), $forward_host, $browser, $suid, $proxy);
         if ($forward_ip) {
@@ -88,7 +88,7 @@ class PlatalLogger extends PlLogger
     }
 
     public function saveLastSession() {
-        XDB::execute('REPLACE INTO  #logger#.last_sessions (uid, id)
+        XDB::execute('REPLACE INTO  log_last_sessions (uid, id)
                             VALUES  ({?}, {?})',
                      $this->uid, $this->session);
     }
@@ -106,7 +106,7 @@ class PlatalLogger extends PlLogger
     public function log($action, $data = null)
     {
         if (isset($this->actions[$action])) {
-            XDB::execute("INSERT INTO  #logger#.events
+            XDB::execute("INSERT INTO  log_events
                                   SET  session={?}, action={?}, data={?}",
                          $this->session, $this->actions[$action], $data);
         } else {

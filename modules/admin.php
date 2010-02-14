@@ -143,7 +143,7 @@ class AdminModule extends PLModule
                                       MONTH(MAX(start)), MONTH(MIN(start)),
                                       DAYOFMONTH(MAX(start)),
                                       DAYOFMONTH(MIN(start))
-                                 FROM #logger#.sessions");
+                                 FROM log_sessions");
             list($ymax, $ymin, $mmax, $mmin, $dmax, $dmin) = $res->fetchOneRow();
 
             if (($year < $ymin) || ($year == $ymin && $month < $mmin)) {
@@ -181,7 +181,7 @@ class AdminModule extends PLModule
         if ($year) {
             $res = XDB::query("SELECT YEAR (MAX(start)), YEAR (MIN(start)),
                                       MONTH(MAX(start)), MONTH(MIN(start))
-                                 FROM #logger#.sessions");
+                                 FROM log_sessions");
             list($ymax, $ymin, $mmax, $mmin) = $res->fetchOneRow();
 
             if (($year < $ymin) || ($year > $ymax)) {
@@ -211,7 +211,7 @@ class AdminModule extends PLModule
         $years[0] = "----";
 
         // retrieve available years
-        $res = XDB::query("select YEAR(MAX(start)), YEAR(MIN(start)) FROM #logger#.sessions");
+        $res = XDB::query("select YEAR(MAX(start)), YEAR(MIN(start)) FROM log_sessions");
         list($max, $min) = $res->fetchOneRow();
 
         for($i = intval($min); $i<=$max; $i++) {
@@ -271,7 +271,7 @@ class AdminModule extends PLModule
 
             // we are viewing a session
             $res = XDB::query("SELECT  ls.*, a.alias AS username, sa.alias AS suer
-                                 FROM  #logger#.sessions AS ls
+                                 FROM  log_sessions AS ls
                             LEFT JOIN  #x4dat#.aliases   AS a  ON (a.id = ls.uid AND a.type='a_vie')
                             LEFT JOIN  #x4dat#.aliases   AS sa ON (sa.id = ls.suid AND sa.type='a_vie')
                                 WHERE  ls.id = {?}", $arg);
@@ -279,8 +279,8 @@ class AdminModule extends PLModule
             $page->assign('session', $a = $res->fetchOneAssoc());
 
             $res = XDB::iterator('SELECT  a.text, e.data, e.stamp
-                                    FROM  #logger#.events  AS e
-                               LEFT JOIN  #logger#.actions AS a ON e.action=a.id
+                                    FROM  log_events  AS e
+                               LEFT JOIN  log_actions AS a ON e.action=a.id
                                    WHERE  e.session={?}', $arg);
             while ($myarr = $res->next()) {
                $page->append('events', $myarr);
@@ -330,7 +330,7 @@ class AdminModule extends PLModule
                 $where  = $this->_makeWhere($year, $month, $day, $loguid);
                 $select = "SELECT  s.id, s.start, s.uid,
                                    a.alias as username
-                             FROM  #logger#.sessions AS s
+                             FROM  log_sessions AS s
                         LEFT JOIN  #x4dat#.aliases   AS a  ON (a.id = s.uid AND a.type='a_vie')
                     $where
                     ORDER BY start DESC";
@@ -345,9 +345,9 @@ class AdminModule extends PLModule
 
                 // attach events
                 $sql = "SELECT  s.id, a.text
-                          FROM  #logger#.sessions AS s
-                    LEFT  JOIN  #logger#.events   AS e ON(e.session=s.id)
-                    INNER JOIN  #logger#.actions  AS a ON(a.id=e.action)
+                          FROM  log_sessions AS s
+                    LEFT  JOIN  log_events   AS e ON(e.session=s.id)
+                    INNER JOIN  log_actions  AS a ON(a.id=e.action)
                         $where";
 
                 $res = XDB::iterator($sql);
@@ -605,7 +605,7 @@ class AdminModule extends PLModule
 
         // Displays last login and last host information.
         $res = XDB::query("SELECT  start, host
-                             FROM  #logger#.sessions
+                             FROM  log_sessions
                             WHERE  uid = {?} AND suid = 0
                          ORDER BY  start DESC
                             LIMIT  1", $user->id());
@@ -831,7 +831,7 @@ class AdminModule extends PLModule
              INNER JOIN  #x4dat#.account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
              INNER JOIN  #x4dat#.profiles         AS p ON (p.pid = ap.pid)
              INNER JOIN  #x4dat#.profile_display  AS pd ON (pd.pid = p.pid)
-              LEFT JOIN  #logger#.sessions        AS s ON (s.uid = a.uid AND suid = 0)
+              LEFT JOIN  log_sessions        AS s ON (s.uid = a.uid AND suid = 0)
                   WHERE  a.state = 'active' AND p.deathdate IS NOT NULL
                GROUP BY  a.uid
                ORDER BY  pd.promo, pd.sort_name");
@@ -951,7 +951,7 @@ class AdminModule extends PLModule
     {
         $page->setTitle('Administration - Actions');
         $page->assign('title', 'Gestion des actions de logger');
-        $table_editor = new PLTableEditor('admin/logger/actions','#logger#.actions','id');
+        $table_editor = new PLTableEditor('admin/logger/actions','log_actions','id');
         $table_editor->describe('text','intitulé',true);
         $table_editor->describe('description','description',true);
         $table_editor->apply($page, $action, $id);
@@ -1094,8 +1094,8 @@ class AdminModule extends PLModule
                                      IF(w.ip = s.ip, s.host, s.forward_host)),
                             w.mask, w.detection, w.state, a.hruid
                       FROM  #x4dat#.ip_watch  AS w
-                 LEFT JOIN  #logger#.sessions AS s  ON (s.ip = w.ip)
-                 LEFT JOIN  #logger#.sessions AS s2 ON (s2.forward_ip = w.ip)
+                 LEFT JOIN  log_sessions AS s  ON (s.ip = w.ip)
+                 LEFT JOIN  log_sessions AS s2 ON (s2.forward_ip = w.ip)
                  LEFT JOIN  #x4dat#.accounts  AS a  ON (a.uid = s.uid)
                   GROUP BY  w.ip, a.hruid
                   ORDER BY  w.state, w.ip, a.hruid";
@@ -1129,7 +1129,7 @@ class AdminModule extends PLModule
                             a1.hruid AS edit, a2.hruid AS hruid, s.host
                       FROM  #x4dat#.ip_watch  AS w
                  LEFT JOIN  #x4dat#.accounts  AS a1 ON (a1.uid = w.uid)
-                 LEFT JOIN  #logger#.sessions AS s  ON (w.ip = s.ip)
+                 LEFT JOIN  log_sessions AS s  ON (w.ip = s.ip)
                  LEFT JOIN  #x4dat#.accounts  AS a2 ON (a2.uid = s.uid)
                      WHERE  w.ip = {?}
                   GROUP BY  a2.hruid
