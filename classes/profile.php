@@ -167,6 +167,32 @@ class Profile
     }
 
 
+    /* Photo
+     */
+    public function getPhoto($fallback = true)
+    {
+        /* TODO: migrate photo table to profile_photo, change uid to pid
+         */
+        $cond = '';
+        if ($this->visibility) {
+            $cond = ' AND pub IN ' . XDB::formatArray($this->visibility);
+        }
+        $res = XDB::query('SELECT  *
+                             FROM  photo
+                            WHERE  attachmime IN (\'jpeg\', \'png\')
+                                   ' . $cond . ' AND  uid = {?}',
+                          $this->id());
+        if ($res->numRows() > 0) {
+            $photo = $res->fetchOneAssoc();
+            return PlImage::fromData($photo['attach'], 'image/' . $photo['attachmime'],
+                                     $photo['x'], $photo['y']);
+        } else if ($fallback) {
+            return PlImage::fromFile(dirname(__FILE__).'/../htdocs/images/none.png',
+                                     'image/png');
+        }
+        return null;
+    }
+
     /* Addresses
      */
     public function getAddresses($flags, $limit = null)
@@ -341,7 +367,7 @@ class Profile
                                            IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_usual,
                                            IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_usual,
                                            pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
-                                           pp.display_tel AS mobile, pp.pub AS mobile_pub
+                                           pp.display_tel AS mobile, pp.pub AS mobile_pub, ph.pub AS photo_pub
                                      FROM  profiles AS p
                                INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                                INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
@@ -356,6 +382,7 @@ class Profile
                                 LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid 
                                                                     AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
                                 LEFT JOIN  profile_phones AS pp ON (pp.uid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
+                                LEFT JOIN  photo AS ph ON (ph.uid = p.pid)
                                     WHERE  p.pid IN ' . XDB::formatArray($pids) . '
                                  GROUP BY  p.pid');
     }

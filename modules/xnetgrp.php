@@ -129,15 +129,7 @@ class XnetGrpModule extends PLModule
     function handler_logo(&$page)
     {
         global $globals;
-
-        $res = XDB::query("SELECT  logo, logo_mime
-                             FROM  groups
-                            WHERE  id = {?}",
-                          $globals->asso('id'));
-        list($logo, $logo_mime) = $res->fetchOneRow();
-
-        pl_cached_dynamic_content_headers(empty($logo) ? "image/jpeg" : $logo_mime);
-        exit;
+        $globals->asso()->getLogo()->send();
     }
 
     function handler_site(&$page)

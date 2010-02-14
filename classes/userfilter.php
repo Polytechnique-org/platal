@@ -1665,12 +1665,14 @@ class UserFilter extends PlFilter
 
     public function getUIDs($limit = null)
     {
-        return $this->getUIDList(null, self::defaultLimit($limit));
+        $limit = self::defaultLimit($limit);
+        return $this->getUIDList(null, $limit);
     }
 
     public function getPIDs($limit = null)
     {
-        return $this->getPIDList(null, self::defaultLimit($limit));
+        $limit = self::defaultLimit($limit);
+        return $this->getPIDList(null, $limit);
     }
 
     public function getUsers($limit = null)

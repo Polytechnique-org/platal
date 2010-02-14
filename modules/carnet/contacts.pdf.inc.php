@@ -283,19 +283,16 @@ class ContactsPDF extends FPDF
         $ok  = false;
 
         if ($wp) {
-            $res = XDB::query("SELECT * FROM photo WHERE attachmime IN ('jpeg', 'png') AND uid={?}",
-                              $profile->pid);
-            if ($i = $res->numRows()) {
+            $photo = $profile->getPhoto(false);
+            if ($photo) {
                 $old2  = clone $self;
-                $photo = $res->fetchOneAssoc();
-                $width = $photo['x'] * 20/$photo['y'];
-                $GLOBALS['p' . $profile->pid] = $photo['attach'];
-
+                $width = $photo->width() * 20 / $photo->height();
                 $_x = $self->getX();
                 $_y = $self->getY();
                 $self->Cell(0, 20, '', '', 0, '', 1);
                 error_reporting(0);
-                $self->Image("var://p" . $profile->pid, $_x, $_y, $width, 20, $photo['attachmime']);
+                $mime = explode('/', $photo->mimeType());
+                $self->Image($photo->path(), $_x, $_y, $width, 20, $mime[1]);
                 error_reporting($self->report);
 
                 if ($self->error) {
@@ -303,7 +300,7 @@ class ContactsPDF extends FPDF
                 } else {
                     $self->setX($_x);
                     $self->Cell($width, 20, '', "T");
-                    $h = 20 / $self->wordwrap($nom, 90-$width);
+                    $h = 20 / $self->wordwrap($nom, 90 - $width);
                     $self->MultiCell(0, $h, $nom, 'T', 'C');
                     $ok = true;
                 }

@@ -89,36 +89,16 @@ class ProfileModule extends PLModule
         }
 
         // Retrieve the photo and its mime type.
-        $photo_data = null;
-        $photo_type = null;
-
         if ($req && S::logged()) {
             include 'validations.inc.php';
             $myphoto = PhotoReq::get_request($user->id());
-            if ($myphoto) {
-                $photo_data = $myphoto->data;
-                $photo_type = $myphoto->mimetype;
-            }
+            $photo = PlImage::fromData($myphoto->data, $myphoto->mimetype);
         } else {
-            $res = XDB::query(
-                    "SELECT  attachmime, attach, pub
-                       FROM  photo
-                      WHERE  uid = {?}", $user->id());
-            list($photo_type, $photo_data, $photo_pub) = $res->fetchOneRow();
-            if ($photo_pub != 'public' && !S::logged()) {
-                $photo_type = $photo_data = null;
-            }
+            $photo = $user->profile()->getPhoto(true);
         }
 
         // Display the photo, or a default one when not available.
-        if ($photo_type && $photo_data != null) {
-            pl_cached_dynamic_content_headers("image/$photo_type");
-            echo $photo_data;
-        } else {
-            pl_cached_dynamic_content_headers("image/png");
-            echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
-        }
-        exit;
+        $photo->send();
     }
 
     function handler_medal(&$page, $mid)

@@ -71,6 +71,16 @@ class Group
         return $this->getUF(true, $extra_cond, $sort);
     }
 
+    public function getLogo($fallback = true)
+    {
+        if (!empty($this->logo)) {
+            return PlImage::fromData($this->logo, $this->logo_mime);
+        } else if ($fallback) {
+            return PlImage::fromFile(dirname(__FILE__).'/../htdocs/images/dflt_carre.jpg', 'image/jpeg');
+        }
+        return null;
+    }
+
     static public function get($id)
     {
         if (!$id) {
