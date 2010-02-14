@@ -271,7 +271,7 @@ class Profile
         return XDB::iterator('SELECT  pa.text, pa.postalCode, pa.type, pa.latitude, pa.longitude,
                                       gl.name AS locality, gas.name AS subAdministrativeArea,
                                       ga.name AS administrativeArea, gc.countryFR AS country,
-                                      pp.tel_type, pp.display_tel,
+                                      ppfix.display_tel AS fixed_tel, ppfax.display_tel AS fax_tel,
                                       FIND_IN_SET(\'current\', pa.flags) AS current,
                                       FIND_IN_SET(\'temporary\', pa.flags) AS temporary,
                                       FIND_IN_SET(\'secondary\', pa.flags) AS secondary,
@@ -281,7 +281,8 @@ class Profile
                            LEFT JOIN  geoloc_administrativeareas AS ga ON (ga.id = pa.administrativeAreaId)
                            LEFT JOIN  geoloc_administrativeareas AS gas ON (gas.id = pa.subAdministrativeAreaId)
                            LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
-                           LEFT JOIN  profile_phones AS pp ON (pp.link_type = \'address\' AND pp.uid = pa.pid AND pp.link_id = pa.id)
+                           LEFT JOIN  profile_phones AS ppfix ON (ppfix.link_type = \'address\' AND ppfix.uid = pa.pid AND ppfix.link_id = pa.id AND ppfix.tel_type = \'fixed\')
+                           LEFT JOIN  profile_phones AS ppfax ON (ppfax.link_type = \'address\' AND ppfax.uid = pa.pid AND ppfax.link_id = pa.id AND ppfax.tel_type = \'fax\')
                                WHERE  ' . $where . '
                             ORDER BY  pa.id
                                       ' . $limit);
