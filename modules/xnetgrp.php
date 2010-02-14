@@ -324,7 +324,7 @@ class XnetGrpModule extends PLModule
         } else {
             $uf = $globals->asso()->getMembers(null, $se);
         }
-        $users = $uf->getUsers(NB_PER_PAGE, $ofs * NB_PER_PAGE);
+        $users = $uf->getUsers(new PlLimit(NB_PER_PAGE, $ofs * NB_PER_PAGE));
         $count = $uf->getTotalCount();
 
         $page->assign('pages', floor(($count + NB_PER_PAGE - 1) / NB_PER_PAGE));
@@ -694,7 +694,7 @@ class XnetGrpModule extends PLModule
                 $cond->addChild(new UFC_Promo('=', UserFilter::GRADE_ING, Env::i('promo')));
             }
             $uf = new UserFilter($cond);
-            $users = $uf->getUsers(30);
+            $users = $uf->getUsers(new PlLimit(30));
             if ($uf->getTotalCount() > 30) {
                 $page->assign('too_many', true);
                 $users = array();

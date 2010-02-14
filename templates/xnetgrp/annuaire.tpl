@@ -34,7 +34,7 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
       Ajouter un membre
     </a>
   </li>
-  {if $asso.has_ml}
+  {if $asso->has_ml}
   <li>
     <a href="{$platal->ns}admin/annuaire">
       {icon name=wand title="Synchroniser"} 

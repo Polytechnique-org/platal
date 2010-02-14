@@ -78,7 +78,7 @@
     </tr>
     <tr>
       <td class="titre center" colspan="2">
-        <label><input type="checkbox" value="1" name="ax" {if $asso.ax}checked="checked"{/if} />
+        <label><input type="checkbox" value="1" name="ax" {if $asso->ax}checked="checked"{/if} />
         groupe agréé par l'AX</label>
       </td>
     </tr>
