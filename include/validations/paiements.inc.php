@@ -165,9 +165,9 @@ Si le télépaiement n'est pas lié à un groupe ou supérieur à 51 euros, lais
 
     public function commit()
     {
-        $res = XDB::query("SELECT MAX(id) FROM #paiement#.paiements");
+        $res = XDB::query("SELECT MAX(id) FROM payments");
         $id = $res->fetchOneCell()+1;
-        $ret = XDB::execute("INSERT INTO #paiement#.paiements VALUES
+        $ret = XDB::execute("INSERT INTO payments VALUES
             ( {?}, {?}, {?}, '',
             {?}, {?}, {?},
             {?}, {?}, {?} )

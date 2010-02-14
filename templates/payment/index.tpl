@@ -129,7 +129,7 @@ function payment_submit(form)
       <td>Méthode</td>
       <td>
         <select name="methode">
-          {select_db_table table="#paiement#.methodes" valeur=$smarty.request.methode}
+          {select_db_table table="payment_methods" valeur=$smarty.request.methode}
         </select>
       </td>
     </tr>
@@ -158,7 +158,7 @@ function payment_submit(form)
 {iterate from=$transactions item=t}
   <tr class="{cycle values="pair,impair"}">
     <td>{$t.timestamp|date_format}</td>
-    <td>{$t.montant|replace:'EUR':'&euro;'}</td>
+    <td>{$t.amount|replace:'EUR':'&euro;'}</td>
   </tr>
 {/iterate}
 </table>
