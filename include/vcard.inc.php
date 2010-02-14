@@ -23,7 +23,7 @@ require_once('user.func.inc.php');
 
 class VCard extends PlVCard
 {
-    private $user_list = array();
+    private $profile_list = array();
     private $count     = 0;
     private $freetext  = null;
     private $photos    = true;
@@ -35,129 +35,127 @@ class VCard extends PlVCard
         $this->photos   = $photos;
     }
 
-    public function addUser($user)
+    public function addProfile($profile)
     {
-        $user = Profile::get($user);
-        if ($user) {
-            $this->user_list[] = $user;
+        $profile = Profile::get($profile);
+        if ($profile) {
+            $this->profile_list[] = $profile;
             $this->count++;
         }
     }
 
-    public function addUsers(array $users) {
-        foreach ($users as $user) {
-            $this->addUser($user);
+    public function addProfiles(array $profiles) {
+        foreach ($profiles as $profile) {
+            $this->addProfile($profile);
         }
     }
 
     protected function fetch()
     {
-        return PlIteratorUtils::fromArray($this->user_list);
+        return PlIteratorUtils::fromArray($this->profile_list);
     }
 
-    protected function buildEntry($entry)
+    protected function buildEntry($pf)
     {
         global $globals;
-        $login = $entry['value'];
-        $user  = get_user_details($login->hrid());
 
-        if (empty($user['nom_usage'])) {
-            $entry = new PlVCardEntry($user['prenom'], $user['nom'], null, null, @$user['nickname']);
-        } else {
-            $entry = new PlVCardEntry($user['prenom'], array($user['nom'], $user['nom_usage']), null, null, @$user['nickname']);
-        }
+        $entry = new PlVCardEntry($pf->firstNames(), $pf->lastNames, null, null, $pf->nickname);
+
+        $user = $pf->owner();
 
         // Free text
-        $freetext = '(' . $user['promo'] . ')';
+        $freetext = '(' . $pf->promo . ')';
         if ($this->freetext) {
             $freetext .= "\n" . $this->freetext;
         }
-        if (strlen(trim($user['freetext']))) {
-            $freetext .= "\n" . MiniWiki::WikiToText($user['freetext']);
-        }
         $entry->set('NOTE', $freetext);
-
         // Mobile
-        if (!empty($user['mobile'])) {
-            $entry->addTel(null, $user['mobile'], false, true, true, false, true, true);
+        if (!empty($pf->mobile)) {
+            $entry->addTel(null, $pf->mobile, false, true, true, false, true, true);
         }
 
         // Emails
-        // TODO: this logic is not hruid-compatible; replace it.
-        $entry->addMail(null, $user['bestalias'] . '@' . $globals->mail->domain, true);
-        $entry->addMail(null, $user['bestalias'] . '@' . $globals->mail->domain2);
-        if ($user['bestalias'] != $user['forlife']) {
-            $entry->addMail(null, $user['forlife'] . '@' . $globals->mail->domain);
-            $entry->addMail(null, $user['forlife'] . '@' . $globals->mail->domain2);
+        if (!is_null($user)) {
+            $entry->addMail(null, $user->bestalias, true);
+            $entry->addMail(null, $user->bestalias_alternate);
+            if ($user->forlife != $user->bestalias) {
+                $entry->addMail(null, $user->forlife);
+                $entry->addMail(null, $user->forlife_alternate);
+            }
         }
 
         // Homes
-        foreach ($user['adr'] as $adr) {
-            $street = array($adr['adr1']);
-            if (!empty($adr['adr2'])) {
-                $street[] = $adr['adr2'];
+        $adrs = $pf->getAddresses(Profile::ADDRESS_PERSO);
+        while ($adr = $adrs->next()) {
+            // TODO : find a way to fetch only the "street" part of the address
+            $group = $entry->addHome($adr['text'], null, null, $adr['postalCode'],
+                            $adr['locality'], $adr['administrativeArea'], $adr['country'],
+                            $adr['current'], $adr['mail'], $adr['mail']);
+            if (!empty($adr['fixed_tel'])) {
+                $entry->addTel($group, $adr['fixed_tel'], false, true, true, false, false, $adr['current'] && empty($pf->mobile));
             }
-            if (!empty($adr['adr3'])) {
-                $street[] = $adr['adr3'];
-            }
-            $group = $entry->addHome($street, null, null, $adr['postcode'], $adr['city'], $adr['region'], @$adr['country'],
-                                     $adr['active'], $adr['courier'], $adr['courier']);
-            if (!empty($adr['tels'])) {
-                foreach ($adr['tels'] as $tel) {
-                    $fax = $tel['tel_type'] == 'Fax';
-                    $entry->addTel($group, $tel['tel'], $fax, !$fax, !$fax, false, false, !$fax && $adr['active'] && empty($user['mobile']));
-                }
+            if (!empty($adr['fax_tel'])) {
+                $entry->addTel($group, $adr['fax_tel'], true, false, false, false, false, false);
             }
         }
 
         // Pro
-        if (!empty($user['adr_pro'])) {
-            foreach ($user['adr_pro'] as $pro) {
-                $street = array($pro['adr1']);
-                if (!empty($pro['adr2'])) {
-                    $street[] = $pro['adr2'];
-                }
-                if (!empty($pro['adr3'])) {
-                    $street[] = $pro['adr3'];
-                }
-                $group = $entry->addWork($pro['entreprise'], null, $pro['poste'], $pro['fonction'],
-                                         $street, null, null, $pro['postcode'], $pro['city'], $pro['region'], @$pro['country']);
-                if (!empty($pro['tel'])) {
-                    $entry->addTel($group, $pro['tel']);
-                }
-                if (!empty($pro['fax'])) {
-                    $entry->addTel($group, $pro['fax'], true);
-                }
+        $adrs = $pf->getAddresses(Profile::ADDRESS_PRO);
+        while ($adr = $adrs->next()) {
+            // TODO : link address to company
+            $group = $entry->addWork(null, null, null, null,
+                            $adr['text'], null, null, $adr['postalCode'],
+                            $adr['locality'], $adr['administrativeArea'], $adr['country']);
+            if (!empty($adr['fixed_tel'])) {
+                $entry->addTel($group, $adr['fixed_tel']);
+            }
+            if (!empty($adr['fax_tel'])) {
+                $entry->addTel($group, $adr['display_tel'], true);
+            }
+            /* TODO : fetch email for jobs, too
                 if (!empty($pro['email'])) {
                     $entry->addMail($group, $pro['email']);
                 }
-            }
+             */
         }
 
         // Melix
-        $res = XDB::query(
-                "SELECT alias
-                   FROM virtual AS v
-             INNER JOIN virtual_redirect AS vr ON (v.vid = vr.vid)
-             INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
-                  WHERE ( redirect={?} OR redirect={?} )
-                        AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                $user['user_id'],
-                $user['forlife'].'@'.$globals->mail->domain,
-                $user['forlife'].'@'.$globals->mail->domain2);
-        if ($res->numRows()) {
-            $entry->addMail(null, $res->fetchOneCell());
+        if (!is_null($user)) {
+            $alias = $user->emailAlias();
+            if (!is_null($alias)) {
+                $entry->addMail(null, $alias);
+            }
         }
 
         // Custom fields
-        if (count($user['gpxs_name'])) {
-            $entry->set('X-GROUPS', join(', ', $user['gpxs_name']));
+        if (!is_null($user)) {
+            $groups = $user->groups();
+            if (count($groups)) {
+                require_once "directory.enums.inc.php";
+                $gn = DirEnum::getOptionsArray(DirEnum::GROUPESX);
+                $gns = array();
+                foreach (array_keys($groups) as $gid) {
+                    $gns[$gid] = $gn[$gid];
+                }
+                $entry->set('X-GROUPS', join(', ', $gns));
+            }
         }
-        if (count($user['binets'])) {
-            $entry->set('X-BINETS', join(', ', $user['binets']));
+
+        $binets = $pf->getBinets();
+
+        if (count($binets)) {
+            require_once "directory.enums.inc.php";
+            $bn = DirEnum::getOptionsArray(DirEnum::BINETS);
+            $bns = array();
+            foreach ($binets as $bid) {
+                $bns[$bid] = $bn[$bid];
+            }
+            $entry->set('X-BINETS', join(', ', $bid));
         }
-        if (!empty($user['section'])) {
-            $entry->set('X-SECTION', $user['section']);
+        if (!empty($pf->section)) {
+            require_once "directory.enums.inc.php";
+            $sections = DirEnum::getOptionsArray(DirEnum::SECTIONS);
+            $entry->set('X-SECTION', $sections[$pf->section]);
         }
 
         // Photo
@@ -165,7 +163,7 @@ class VCard extends PlVCard
             $res = XDB::query(
                     "SELECT  attach, attachmime
                        FROM  photo AS p
-                      WHERE  p.uid = {?}", $login->id());
+                      WHERE  p.uid = {?}", $pf->id());
             if ($res->numRows()) {
                 list($data, $type) = $res->fetchOneRow();
                 $entry->setPhoto($data, strtoupper($type));
