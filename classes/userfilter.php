@@ -1574,6 +1574,14 @@ class UserFilter extends PlFilter
         return $fetched;
     }
 
+    private static function defaultLimit($limit) {
+        if ($limit == null) {
+            return new PlLimit();
+        } else {
+            return $limit;
+        }
+    }
+
     /** Check that the user match the given rule.
      */
     public function checkUser(PlUser &$user)
@@ -1598,15 +1606,16 @@ class UserFilter extends PlFilter
 
     /** Default filter is on users
      */
-    public function filter(array $users, PlLimit &$limit)
+    public function filter(array $users, $limit = null)
     {
-        return $this->filterUsers($users, $limit);
+        return $this->filterUsers($users, self::defaultLimit($limit));
     }
 
     /** Filter a list of users to extract the users matching the rule.
      */
-    public function filterUsers(array $users, PlLimit &$limit)
+    public function filterUsers(array $users, $limit = null)
     {
+        $limit = self::defaultLimit($limit);
         $this->requireAccounts();
         $this->buildQuery();
         $table = array();
@@ -1630,8 +1639,9 @@ class UserFilter extends PlFilter
 
     /** Filter a list of profiles to extract the users matching the rule.
      */
-    public function filterProfiles(array $profiles, PlLimit &$limit)
+    public function filterProfiles(array $profiles, $limit = null)
     {
+        $limit = self::defaultLimit($limit);
         $this->requireProfiles();
         $this->buildQuery();
         $table = array();
@@ -1653,27 +1663,27 @@ class UserFilter extends PlFilter
         return $output;
     }
 
-    public function getUIDs(PlLimit &$limit)
+    public function getUIDs($limit = null)
     {
-        return $this->getUIDList(null, $limit);
+        return $this->getUIDList(null, self::defaultLimit($limit));
     }
 
-    public function getPIDs(PlLimit &$limit)
+    public function getPIDs($limit = null)
     {
-        return $this->getPIDList(null, $limit);
+        return $this->getPIDList(null, self::defaultLimit($limit));
     }
 
-    public function getUsers(PlLimit &$limit)
+    public function getUsers($limit = null)
     {
         return User::getBulkUsersWithUIDs($this->getUIDs($limit));
     }
 
-    public function getProfiles(PlLimit &$limit)
+    public function getProfiles($limit = null)
     {
         return Profile::getBulkProfilesWithPIDs($this->getPIDs($limit));
     }
 
-    public function get(PlLimit &$limit)
+    public function get($limit = null)
     {
         return $this->getUsers($limit);
     }
@@ -2474,7 +2484,7 @@ class UserFilter extends PlFilter
 // {{{ class ProfileFilter
 class ProfileFilter extends UserFilter
 {
-    public function get(PlLimit &$limit)
+    public function get($limit = null)
     {
         return $this->getProfiles($limit);
     }
