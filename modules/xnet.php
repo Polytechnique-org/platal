@@ -76,14 +76,14 @@ class XnetModule extends PLModule
 
         if (Get::has('del')) {
             $res = XDB::query('SELECT id, nom, mail_domain
-                                           FROM #groupex#.asso WHERE diminutif={?}',
+                                           FROM groups WHERE diminutif={?}',
                                         Get::v('del'));
             list($id, $nom, $domain) = $res->fetchOneRow();
             $page->assign('nom', $nom);
             if ($id && Post::has('del')) {
                 S::assert_xsrf_token();
 
-                XDB::query('DELETE FROM #groupex#.membres WHERE asso_id={?}', $id);
+                XDB::query('DELETE FROM group_members WHERE asso_id={?}', $id);
                 $page->trigSuccess('membres supprimés');
 
                 if ($domain) {
@@ -102,7 +102,7 @@ class XnetModule extends PLModule
                     }
                 }
 
-                XDB::query('DELETE FROM #groupex#.asso WHERE id={?}', $id);
+                XDB::query('DELETE FROM groups WHERE id={?}', $id);
                 $page->trigSuccess("Groupe $nom supprimé");
                 Get::kill('del');
             }
@@ -115,12 +115,12 @@ class XnetModule extends PLModule
             S::assert_xsrf_token();
 
             $res = XDB::query('SELECT  COUNT(*)
-                                 FROM  #groupex#.asso
+                                 FROM  groups
                                 WHERE  diminutif = {?}',
                               Post::v('diminutif'));
 
             if ($res->fetchOneCell() == 0) {
-                XDB::execute('INSERT INTO  #groupex#.asso (id, diminutif)
+                XDB::execute('INSERT INTO  groups (id, diminutif)
                                    VALUES  (NULL, {?})',
                              Post::v('diminutif'));
                 pl_redirect('../' . Post::v('diminutif') . '/edit');
@@ -130,7 +130,7 @@ class XnetModule extends PLModule
         }
 
         $res = XDB::query('SELECT  nom, diminutif
-                             FROM  #groupex#.asso
+                             FROM  groups
                          ORDER BY  nom');
         $page->assign('assos', $res->fetchAllAssoc());
     }
@@ -143,8 +143,8 @@ class XnetModule extends PLModule
 
         $res = XDB::iterator(
                 'SELECT  dom.id, dom.nom as domnom, asso.diminutif, asso.nom
-                   FROM  #groupex#.dom
-             INNER JOIN  #groupex#.asso ON dom.id = asso.dom
+                   FROM  group_dom
+             INNER JOIN  groups ON dom.id = asso.dom
                   WHERE  FIND_IN_SET("GroupesX", dom.cat) AND FIND_IN_SET("GroupesX", asso.cat)
                ORDER BY  dom.nom, asso.nom');
         $groupesx = array();
@@ -153,8 +153,8 @@ class XnetModule extends PLModule
 
         $res = XDB::iterator(
                 'SELECT  dom.id, dom.nom as domnom, asso.diminutif, asso.nom
-                   FROM  #groupex#.dom
-             INNER JOIN  #groupex#.asso ON dom.id = asso.dom
+                   FROM  group_dom
+             INNER JOIN  groups ON dom.id = asso.dom
                   WHERE  FIND_IN_SET("Binets", dom.cat) AND FIND_IN_SET("Binets", asso.cat)
                ORDER BY  dom.nom, asso.nom');
         $binets = array();
@@ -163,14 +163,14 @@ class XnetModule extends PLModule
 
         $res = XDB::iterator(
                 'SELECT  asso.diminutif, asso.nom
-                   FROM  #groupex#.asso
+                   FROM  groups
                   WHERE  cat LIKE "%Promotions%"
                ORDER BY  diminutif');
         $page->assign('promos', $res);
 
         $res = XDB::iterator(
                 'SELECT  asso.diminutif, asso.nom
-                   FROM  #groupex#.asso
+                   FROM  groups
                   WHERE  FIND_IN_SET("Institutions", cat)
                ORDER BY  diminutif');
         $page->assign('inst', $res);
@@ -194,7 +194,7 @@ class XnetModule extends PLModule
         $page->assign('dom', $dom);
 
         $res  = XDB::query("SELECT  id,nom 
-                              FROM  #groupex#.dom
+                              FROM  group_dom
                              WHERE  FIND_IN_SET({?}, cat)
                           ORDER BY  nom", $cat);
         $doms = $res->fetchAllAssoc();
@@ -202,13 +202,13 @@ class XnetModule extends PLModule
 
         if (empty($doms)) {
             $res = XDB::query("SELECT  diminutif, nom, site
-                                 FROM  #groupex#.asso
+                                 FROM  groups
                                 WHERE  FIND_IN_SET({?}, cat)
                                 ORDER  BY nom", $cat);
             $page->assign('gps', $res->fetchAllAssoc());
         } elseif (!is_null($dom)) {
             $res = XDB::query("SELECT  diminutif, nom, site
-                                 FROM  #groupex#.asso
+                                 FROM  groups
                                 WHERE  FIND_IN_SET({?}, cat) AND dom={?}
                              ORDER BY  nom", $cat, $dom);
             $page->assign('gps', $res->fetchAllAssoc());

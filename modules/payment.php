@@ -219,7 +219,7 @@ class PaymentModule extends PLModule
 
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid
-                             FROM  #groupex#.evenements
+                             FROM  group_events
                             WHERE  paiement_id = {?}', $ref);
         if ($eid = $res->fetchOneCell()) {
             $this->load('xnetevents.inc.php');
@@ -313,7 +313,7 @@ class PaymentModule extends PLModule
 
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid
-                             FROM  #groupex#.evenements
+                             FROM  group_events
                             WHERE  paiement_id = {?}', $ref);
         if ($eid = $res->fetchOneCell()) {
             $this->load('xnetevents.inc.php');
@@ -364,8 +364,8 @@ class PaymentModule extends PLModule
                 return PL_FORBIDDEN;
             }
             $res = XDB::query("SELECT  1
-                                 FROM  #groupex#.evenements AS e
-                           INNER JOIN  #groupex#.evenements_participants AS ep ON (ep.eid = e.eid AND uid = {?})
+                                 FROM  group_events AS e
+                           INNER JOIN  group_event_participants AS ep ON (ep.eid = e.eid AND uid = {?})
                                 WHERE  e.paiement_id = {?} AND e.asso_id = {?}",
                               S::i('uid'), $pid, $globals->asso('id'));
             if ($res->numRows() == 0) {
@@ -406,9 +406,9 @@ class PaymentModule extends PLModule
                                        'montant' => strtr($sum, '.', ',').' €');
             }
             $res = XDB::iterRow("SELECT e.eid, e.short_name, e.intitule, ep.nb, ei.montant, ep.paid
-                                   FROM #groupex#.evenements AS e
-                              LEFT JOIN #groupex#.evenements_participants AS ep ON (ep.eid = e.eid AND uid = {?})
-                             INNER JOIN #groupex#.evenements_items AS ei ON (ep.eid = ei.eid AND ep.item_id = ei.item_id)
+                                   FROM group_events AS e
+                              LEFT JOIN group_event_participants AS ep ON (ep.eid = e.eid AND uid = {?})
+                             INNER JOIN group_event_items AS ei ON (ep.eid = ei.eid AND ep.item_id = ei.item_id)
                                   WHERE e.paiement_id = {?}",
                                  S::v('uid'), $pid);
             $event[$pid] = array();

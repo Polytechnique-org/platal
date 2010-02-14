@@ -348,10 +348,10 @@ class RegisterModule extends PLModule
                     $storage->activate();
                     break;
                 case 'ml_promo':
-                    $r = XDB::query('SELECT id FROM #groupex#.asso WHERE diminutif = {?}', S::user()->promo());
+                    $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', S::user()->promo());
                     if ($r->numRows()) {
                         $asso_id = $r->fetchOneCell();
-                        XDB::execute('REPLACE INTO  #groupex#.membres (uid, asso_id)
+                        XDB::execute('REPLACE INTO  group_members (uid, asso_id)
                                             VALUES  ({?}, {?})',
                                      S::user()->id(), $asso_id);
                         $mmlist = new MMList(S::user()->id(), S::v('password'));

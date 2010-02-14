@@ -119,7 +119,7 @@ class XnetListsModule extends ListsModule
         $page->assign('may_update', may_update());
 
         if (count($listes) > 0 && !$globals->asso('has_ml')) {
-            XDB::execute("UPDATE  #groupex#.asso
+            XDB::execute("UPDATE  groups
                              SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
                            WHERE  id = {?}",
                          $globals->asso('id'));
@@ -191,7 +191,7 @@ class XnetListsModule extends ListsModule
                                    $red . $mdir . '@listes.polytechnique.org');
         }
 
-        XDB::execute("UPDATE  #groupex#.asso
+        XDB::execute("UPDATE  groups
                          SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'has_ml')
                        WHERE  id = {?}",
                      $globals->asso('id'));
@@ -222,7 +222,7 @@ class XnetListsModule extends ListsModule
         $not_in_group_ext = array();
 
         $ann = XDB::fetchColumn('SELECT  uid
-                                   FROM  #groupex#.membres
+                                   FROM  group_members
                                   WHERE  asso_id = {?}', $globals->asso('id'));
         $users = User::getBuildUsersWithUIDs($ann, 'promo,full_name');
 

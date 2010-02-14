@@ -311,10 +311,10 @@ class DE_GroupesX extends DirEnumeration
     protected $idfield   = 'asso.id';
     protected $valfield  = 'asso.nom';
     protected $valfield2 = 'asso.diminutif';
-    protected $from      = '#groupex#.asso AS asso';
+    protected $from      = 'groups AS asso';
     protected $where     = 'WHERE (cat = \'GroupesX\' OR cat = \'Institutions\') AND pub = \'public\'';
 
-    protected $ac_join   = "INNER JOIN #groupex#.membres AS memb ON (asso.id = memb.asso_id
+    protected $ac_join   = "INNER JOIN group_members AS memb ON (asso.id = memb.asso_id
                                     AND (asso.cat = 'GroupesX' OR asso.cat = 'Institutions')
                                     AND asso.pub = 'public')";
     protected $ac_unique = 'memb.uid';

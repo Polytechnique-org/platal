@@ -152,7 +152,7 @@ class User extends PlUser
         $joins = '';
         $fields = array();
         if ($globals->asso('id')) {
-            $joins .= XDB::format("LEFT JOIN groupex.membres AS gpm ON (gpm.uid = a.uid AND gpm.asso_id = {?})\n", $globals->asso('id'));
+            $joins .= XDB::format("LEFT JOIN group_members AS gpm ON (gpm.uid = a.uid AND gpm.asso_id = {?})\n", $globals->asso('id'));
             $fields[] = 'gpm.perms AS group_perms';
             $fields[] = 'gpm.comm AS group_comm';
         }

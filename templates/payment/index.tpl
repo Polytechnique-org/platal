@@ -116,7 +116,7 @@ function payment_submit(form)
         <select name="ref" onchange="payment_submit(this.form)">
           {select_db_table table="`$prefix`paiements" valeur=$pay->id
                            where="WHERE FIND_IN_SET(\'old\',t.flags)=0"
-                           join="LEFT JOIN #groupex#.asso AS g ON (t.asso_id = g.id)" group="g.nom"}
+                           join="LEFT JOIN groups AS g ON (t.asso_id = g.id)" group="g.nom"}
         </select>
         {/if}
         {if $pay->url}

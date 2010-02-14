@@ -66,25 +66,25 @@ class XnetGrpModule extends PLModule
 
         if (S::logged()) {
             if (Env::has('read')) {
-                XDB::query('DELETE #groupex#.r.*
-                              FROM #groupex#.announces_read AS r
-                        INNER JOIN #groupex#.announces AS a ON a.id = r.announce_id
+                XDB::query('DELETE group_r.*
+                              FROM group_announces_read AS r
+                        INNER JOIN group_announces AS a ON a.id = r.announce_id
                              WHERE peremption < CURRENT_DATE()');
-                XDB::query('INSERT INTO #groupex#.announces_read
+                XDB::query('INSERT INTO group_announces_read
                                  VALUES ({?}, {?})',
                             Env::i('read'), S::i('uid'));
                 pl_redirect("");
             }
             if (Env::has('unread')) {
-                XDB::query('DELETE FROM #groupex#.announces_read
+                XDB::query('DELETE FROM group_announces_read
                                   WHERE announce_id={?} AND user_id={?}',
                             Env::i('unread'), S::i('uid'));
                 pl_redirect("#art" . Env::i('unread'));
             }
             // XXX: Fix promo_min; promo_max
             $arts = XDB::iterator("SELECT  a.*, FIND_IN_SET('photo', a.flags) AS photo
-                                     FROM  #groupex#.announces AS a
-                                LEFT JOIN  #groupex#.announces_read AS r ON (r.user_id = {?} AND r.announce_id = a.id)
+                                     FROM  group_announces AS a
+                                LEFT JOIN  group_announces_read AS r ON (r.user_id = {?} AND r.announce_id = a.id)
                                     WHERE  asso_id = {?} AND peremption >= CURRENT_DATE()
                                            AND (promo_min = 0 OR promo_min <= {?})
                                            AND (promo_max = 0 OR promo_max >= {?})
@@ -92,8 +92,8 @@ class XnetGrpModule extends PLModule
                                  ORDER BY  a.peremption",
                                    S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
             $index = XDB::iterator("SELECT  a.id, a.titre, r.user_id IS NULL AS nonlu
-                                      FROM  #groupex#.announces AS a
-                                 LEFT JOIN  #groupex#.announces_read AS r ON (a.id = r.announce_id AND r.user_id = {?})
+                                      FROM  group_announces AS a
+                                 LEFT JOIN  group_announces_read AS r ON (a.id = r.announce_id AND r.user_id = {?})
                                      WHERE  asso_id = {?} AND peremption >= CURRENT_DATE()
                                             AND (promo_min = 0 OR promo_min <= {?})
                                             AND (promo_max = 0 OR promo_max >= {?})
@@ -102,14 +102,14 @@ class XnetGrpModule extends PLModule
             $page->assign('article_index', $index);
         } else {
             $arts = XDB::iterator("SELECT  a.*, FIND_IN_SET('photo', a.flags) AS photo
-                                     FROM  #groupex#.announces AS a
+                                     FROM  group_announces AS a
                                     WHERE  asso_id = {?} AND peremption >= CURRENT_DATE()
                                            AND FIND_IN_SET('public', a.flags)",
                                   $globals->asso('id'));
         }
         if (may_update()) {
             $subs_valid = XDB::query("SELECT  uid
-                                        FROM  #groupex#.membres_sub_requests
+                                        FROM  group_member_sub_requests
                                        WHERE  asso_id = {?}",
                                      $globals->asso('id'));
             $page->assign('requests', $subs_valid->numRows());
@@ -131,7 +131,7 @@ class XnetGrpModule extends PLModule
         global $globals;
 
         $res = XDB::query("SELECT  logo, logo_mime
-                             FROM  #groupex#.asso
+                             FROM  groups
                             WHERE  id = {?}",
                           $globals->asso('id'));
         list($logo, $logo_mime) = $res->fetchOneRow();
@@ -177,7 +177,7 @@ class XnetGrpModule extends PLModule
                     return;
                 }
                 XDB::execute(
-                    "UPDATE  #groupex#.asso
+                    "UPDATE  groups
                         SET  nom={?}, diminutif={?}, cat={?}, dom={?},
                              descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, mail_domain={?}, ax={?}, pub={?},
@@ -198,7 +198,7 @@ class XnetGrpModule extends PLModule
                 }
             } else {
                 XDB::execute(
-                    "UPDATE  #groupex#.asso
+                    "UPDATE  groups
                         SET  descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, pub= {?}, sub_url={?},
                              unsub_url={?},flags={?}
@@ -216,7 +216,7 @@ class XnetGrpModule extends PLModule
                 if (!$upload) {
                     $page->trigError("Impossible de télécharger le logo.");
                 } else {
-                    XDB::execute('UPDATE  #groupex#.asso
+                    XDB::execute('UPDATE  groups
                                      SET  logo = {?}, logo_mime = {?}
                                    WHERE  id = {?}', $upload->getContents(), $upload->contentType(),
                                  $globals->asso('id'));
@@ -228,7 +228,7 @@ class XnetGrpModule extends PLModule
         }
 
         if (S::admin()) {
-            $dom = XDB::iterator('SELECT * FROM #groupex#.dom ORDER BY nom');
+            $dom = XDB::iterator('SELECT * FROM group_dom ORDER BY nom');
             $page->assign('dom', $dom);
             $page->assign('super', true);
         }
@@ -370,7 +370,7 @@ class XnetGrpModule extends PLModule
     private function removeSubscriptionRequest($uid)
     {
         global $globals;
-        XDB::execute("DELETE FROM #groupex#.membres_sub_requests
+        XDB::execute("DELETE FROM group_member_sub_requests
                             WHERE asso_id = {?} AND uid = {?}",
                      $globals->asso('id'), $uid);
     }
@@ -379,7 +379,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $this->removeSubscriptionRequest($user->id());
-        XDB::execute("INSERT IGNORE INTO  #groupex#.membres (asso_id, uid)
+        XDB::execute("INSERT IGNORE INTO  group_members (asso_id, uid)
                                   VALUES  ({?}, {?})",
                      $globals->asso('id'), $user->id());
         if (XDB::affectedRows() == 1) {
@@ -420,13 +420,13 @@ class XnetGrpModule extends PLModule
 
             // Retrieves the subscription status, and the reason.
             $res = XDB::query("SELECT  reason
-                                 FROM  #groupex#.membres_sub_requests
+                                 FROM  group_member_sub_requests
                                 WHERE  asso_id = {?} AND uid = {?}",
                               $globals->asso('id'), $user->id());
             $reason = ($res->numRows() ? $res->fetchOneCell() : null);
 
             $res = XDB::query("SELECT  COUNT(*)
-                                 FROM  #groupex#.membres
+                                 FROM  group_members
                                 WHERE  asso_id = {?} AND uid = {?}",
                               $globals->asso('id'), $user->id());
             $already_member = ($res->fetchOneCell() > 0);
@@ -464,7 +464,7 @@ class XnetGrpModule extends PLModule
         }
 
         $res = XDB::query("SELECT  uid
-                             FROM  #groupex#.membres_sub_requests
+                             FROM  group_member_sub_requests
                             WHERE  uid = {?} AND asso_id = {?}",
                          S::i('uid'), $globals->asso('id'));
         if ($res->numRows() != 0) {
@@ -475,13 +475,13 @@ class XnetGrpModule extends PLModule
         if (Post::has('inscrire')) {
             S::assert_xsrf_token();
 
-            XDB::execute("INSERT INTO  #groupex#.membres_sub_requests (asso_id, uid, ts, reason)
+            XDB::execute("INSERT INTO  group_member_sub_requests (asso_id, uid, ts, reason)
                                VALUES  ({?}, {?}, NOW(), {?})",
                          $globals->asso('id'), S::i('uid'), Post::v('message'));
             $res = XDB::query('SELECT  IF(m.email IS NULL,
                                           CONCAT(al.alias,"@polytechnique.org"),
                                            m.email)
-                                 FROM  #groupex#.membres AS m
+                                 FROM  group_members AS m
                            INNER JOIN  #x4dat#.aliases   AS al ON (al.type = "a_vie"
                                                                  AND al.id = m.uid)
                                 WHERE  perms="admin" AND m.asso_id = {?}',
@@ -539,7 +539,7 @@ class XnetGrpModule extends PLModule
         }
 
         $it = XDB::iterator('SELECT  s.uid, a.hruid, s.ts AS date
-                               FROM  #groupex#.membres_sub_requests AS s
+                               FROM  group_member_sub_requests AS s
                          INNER JOIN  #x4dat#.accounts AS a ON(s.uid = a.uid)
                               WHERE  s.asso_id = {?}
                            ORDER BY  s.ts',  $globals->asso('id'));
@@ -630,7 +630,7 @@ class XnetGrpModule extends PLModule
         if (!User::isForeignEmailAddress($email)) {
             $user = User::get($email);
             if ($user) {
-                XDB::execute("REPLACE INTO  #groupex#.membres (uid, asso_id, origine)
+                XDB::execute("REPLACE INTO  group_members (uid, asso_id, origine)
                                     VALUES  ({?}, {?}, 'X')",
                              $user->id(), $globals->asso('id'));
                 pl_redirect("member/" . $user->login());
@@ -649,7 +649,7 @@ class XnetGrpModule extends PLModule
                                 $market->add();
                             }
                         }
-                        XDB::execute('REPLACE INTO  #groupex#.membres (uid, asso_id, origine, email)
+                        XDB::execute('REPLACE INTO  group_members (uid, asso_id, origine, email)
                                             VALUES  ({?}, {?}, "X", {?})',
                                      $uid, $globals->asso('id'), $email);
                         $this->removeSubscriptionRequest($uid);
@@ -657,9 +657,9 @@ class XnetGrpModule extends PLModule
                     }
                     $page->trigError("Utilisateur invalide");
                 } else {
-                    $res = XDB::query('SELECT MAX(uid) + 1 FROM #groupex#.membres');
+                    $res = XDB::query('SELECT MAX(uid) + 1 FROM group_members');
                     $uid = max(intval($res->fetchOneCell()), 50001);
-                    XDB::execute('REPLACE INTO  #groupex#.membres (uid, asso_id, origine, email)
+                    XDB::execute('REPLACE INTO  group_members (uid, asso_id, origine, email)
                                         VALUES  ({?}, {?}, "ext", {?})',
                                  $uid, $globals->asso('id'), $email);
                     pl_redirect("member/$email");
@@ -706,7 +706,7 @@ class XnetGrpModule extends PLModule
     function unsubscribe(PlUser &$user)
     {
         global $globals;
-        XDB::execute("DELETE FROM  #groupex#.membres
+        XDB::execute("DELETE FROM  group_members
                             WHERE  uid = {?} AND asso_id = {?}",
                      $user->id(), $globals->asso('id'));
 
@@ -828,17 +828,17 @@ class XnetGrpModule extends PLModule
         // Check if the user is already in the group
         global $globals;
         $res = XDB::query("SELECT  uid, email
-                             FROM  #groupex#.membres
+                             FROM  group_members
                             WHERE  uid = {?} AND asso_id = {?}",
                           $uid, $globals->asso('id'));
         if ($res->numRows()) {
             list($uid, $email) = $res->fetchOneRow();
-            XDB::execute("DELETE FROM #groupex#.membres
+            XDB::execute("DELETE FROM group_members
                                 WHERE uid = {?}",
                          $user['uid']);
         } else {
             $email = $user['email'];
-            XDB::execute("UPDATE  #groupex#.membres
+            XDB::execute("UPDATE  group_members
                              SET  uid = {?}, origine = 'X'
                            WHERE  uid = {?} AND asso_id = {?}",
                          $uid, $user['uid'], $globals->asso('id'));
@@ -902,7 +902,7 @@ class XnetGrpModule extends PLModule
                 $user['prenom']  = (Post::v('origine') == 'ext') ? Post::v('prenom') : '';
                 $user['sexe']    = (Post::v('origine') == 'ext') ? Post::v('sexe') : 0;
                 $user['origine'] = Post::v('origine');
-                XDB::query('UPDATE  #groupex#.membres
+                XDB::query('UPDATE  group_members
                                SET  prenom = {?}, nom = {?}, email = {?}, sexe = {?}, origine = {?}
                              WHERE  uid = {?} AND asso_id = {?}',
                            $user['prenom'], $user['nom'], Post::v('email'),
@@ -916,7 +916,7 @@ class XnetGrpModule extends PLModule
             $perms = Post::i('is_admin');
             $comm  = Post::t('comm');
             if ($user['perms'] != $perms || $user['comm'] != $comm) {
-                XDB::query('UPDATE  #groupex#.membres
+                XDB::query('UPDATE  group_members
                                SET  perms = {?}, comm = {?}
                              WHERE  uid = {?} AND asso_id = {?}',
                             $perms ? 'admin' : 'membre', $comm,
@@ -1014,7 +1014,7 @@ class XnetGrpModule extends PLModule
 
     function handler_photo_announce(&$page, $eid = null) {
         if ($eid) {
-            $res = XDB::query("SELECT * FROM #groupex#.announces_photo WHERE eid = {?}", $eid);
+            $res = XDB::query("SELECT * FROM group_announces_photo WHERE eid = {?}", $eid);
             if ($res->numRows()) {
                 $photo = $res->fetchOneAssoc();
                 pl_cached_dynamic_content_headers("image/" . $photo['attachmime']);
@@ -1091,7 +1091,7 @@ class XnetGrpModule extends PLModule
             }
             $art['photo'] = $upload->exists() || Post::i('photo');
             if (Post::v('valid') == 'Pas d\'image' && !is_null($aid)) {
-                XDB::query("DELETE FROM #groupex#.announces_photo WHERE eid = {?}", $aid);
+                XDB::query("DELETE FROM group_announces_photo WHERE eid = {?}", $aid);
                 $upload->rm();
                 Post::kill('valid');
                 $art['photo'] = false;
@@ -1120,7 +1120,7 @@ class XnetGrpModule extends PLModule
                     $post = $banana->post($globals->asso('forum'), null,
                                           $art['titre'], MiniWiki::wikiToText($fulltext, false, 0, 80));
                 }*/
-                XDB::query("INSERT INTO #groupex#.announces
+                XDB::query("INSERT INTO group_announces
                                  (user_id, asso_id, create_date, titre, texte, contacts,
                                    peremption, promo_min, promo_max, flags, post_id)
                             VALUES ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
@@ -1129,7 +1129,7 @@ class XnetGrpModule extends PLModule
                 $aid = XDB::insertId();
                 if ($art['photo']) {
                     list($imgx, $imgy, $imgtype) = $upload->imageInfo();
-                    XDB::execute("INSERT INTO #groupex#.announces_photo
+                    XDB::execute("INSERT INTO group_announces_photo
                                           SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
                                  $aid, $imgtype, $imgx, $imgy, $upload->getContents());
                 }
@@ -1151,7 +1151,7 @@ class XnetGrpModule extends PLModule
                     $page->trigWarning("La parution dans la Lettre Mensuelle est en attente de validation.");
                 }
             } else {
-                XDB::query("UPDATE #groupex#.announces
+                XDB::query("UPDATE group_announces
                                SET titre={?}, texte={?}, contacts={?}, peremption={?},
                                    promo_min={?}, promo_max={?}, flags={?}
                              WHERE id={?} AND asso_id={?}",
@@ -1160,7 +1160,7 @@ class XnetGrpModule extends PLModule
                            $art['id'], $globals->asso('id'));
                 if ($art['photo'] && $upload->exists()) {
                     list($imgx, $imgy, $imgtype) = $upload->imageInfo();
-                    XDB::execute("REPLACE INTO  #groupex#.announces_photo
+                    XDB::execute("REPLACE INTO  group_announces_photo
                                            SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
                                  $aid, $imgtype, $imgx, $imgy, $upload->getContents());
                     $upload->rm();
@@ -1174,7 +1174,7 @@ class XnetGrpModule extends PLModule
         if (empty($art) && !is_null($aid)) {
             $res = XDB::query("SELECT  a.*, FIND_IN_SET('public', a.flags) AS public,
                                        FIND_IN_SET('photo', a.flags) AS photo
-                                 FROM  #groupex#.announces AS a
+                                 FROM  group_announces AS a
                                 WHERE  asso_id = {?} AND a.id = {?}",
                               $globals->asso('id'), $aid);
             if ($res->numRows()) {
@@ -1187,7 +1187,7 @@ class XnetGrpModule extends PLModule
 
         if (is_null($aid)) {
             $events = XDB::iterator("SELECT *
-                                      FROM #groupex#.evenements
+                                      FROM group_events
                                      WHERE asso_id = {?} AND archive = 0",
                                    $globals->asso('id'));
             if ($events->total()) {
@@ -1207,12 +1207,12 @@ class XnetGrpModule extends PLModule
 
         if (Env::has('del')) {
             S::assert_xsrf_token();
-            XDB::execute("DELETE  FROM #groupex#.announces
+            XDB::execute("DELETE  FROM group_announces
                            WHERE  id = {?} AND asso_id = {?}",
                          Env::i('del'), $globals->asso('id'));
         }
         $res = XDB::iterator("SELECT  a.id, a.titre, a.peremption, a.peremption < CURRENT_DATE() AS perime
-                                FROM  #groupex#.announces AS a
+                                FROM  group_announces AS a
                                WHERE  a.asso_id = {?}
                             ORDER BY  a.peremption DESC",
                              $globals->asso('id'));

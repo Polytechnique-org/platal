@@ -258,7 +258,7 @@ class ListsModule extends PLModule
             if ($asso == "groupex") {
                 $groupex_name = Post::v('groupex_name');
 
-                $res_groupe = XDB::query('SELECT mail_domain FROM #groupex#.asso WHERE nom={?}', $groupex_name);
+                $res_groupe = XDB::query('SELECT mail_domain FROM groups WHERE nom={?}', $groupex_name);
                 $domain = $res_groupe->fetchOneCell();
 
                 if (!$domain) {

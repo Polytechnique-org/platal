@@ -84,8 +84,8 @@ class Group
         $res = XDB::query('SELECT  a.*, d.nom AS domnom,
                                    FIND_IN_SET(\'wiki_desc\', a.flags) AS wiki_desc,
                                    FIND_IN_SET(\'notif_unsub\', a.flags) AS notif_unsub
-                             FROM  #groupex#.asso AS a
-                        LEFT JOIN  #groupex#.dom  AS d ON d.id = a.dom
+                             FROM  groups AS a
+                        LEFT JOIN  group_dom  AS d ON d.id = a.dom
                             WHERE  ' . $where);
         if ($res->numRows() != 1) {
             return null;

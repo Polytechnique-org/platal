@@ -142,8 +142,8 @@ function list_all_my_groups($params)
         return;
     }
     $res = XDB::iterRow('SELECT  a.nom, a.diminutif
-                           FROM  #groupex#.asso    AS a
-                     INNER JOIN  #groupex#.membres AS m ON m.asso_id = a.id
+                           FROM  groups    AS a
+                     INNER JOIN  group_members AS m ON m.asso_id = a.id
                           WHERE  m.uid = {?}', S::i('uid'));
     $links = '<a href="exit">déconnexion</a>';
     $html = '<div>Mes groupes (' . $links . ') :</div>';

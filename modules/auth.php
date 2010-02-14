@@ -136,7 +136,7 @@ class AuthModule extends PLModule
         }
 
         // Iterate over the auth token to find which one did sign the request.
-        $res = XDB::iterRow('SELECT privkey, name, datafields, returnurls FROM groupesx_auth');
+        $res = XDB::iterRow('SELECT privkey, name, datafields, returnurls FROM group_auth');
         while (list($privkey,$name,$datafields,$returnurls) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {
                 $returnurls = trim($returnurls);
@@ -161,7 +161,7 @@ class AuthModule extends PLModule
     {
         $page->setTitle('Administration - Auth groupes X');
         $page->assign('title', 'Gestion de l\'authentification centralisée');
-        $table_editor = new PLTableEditor('admin/auth-groupes-x','groupesx_auth','id');
+        $table_editor = new PLTableEditor('admin/auth-groupes-x','group_auth','id');
         $table_editor->describe('name','nom',true);
         $table_editor->describe('privkey','clé privée',false);
         $table_editor->describe('datafields','champs renvoyés',true);

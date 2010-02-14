@@ -2029,13 +2029,13 @@ class UserFilter extends PlFilter
         $joins = array();
         foreach ($this->gpm as $sub => $key) {
             if (is_null($key)) {
-                $joins['gpa' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'groupex.asso');
-                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
+                $joins['gpa' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'groups');
+                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'group_members', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
             } else if (ctype_digit($key)) {
-                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = ' . $key);
+                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'group_members', '$ME.uid = $UID AND $ME.asso_id = ' . $key);
             } else {
-                $joins['gpa' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'groupex.asso', XDB::format('$ME.diminutif = {?}', $key));
-                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'groupex.membres', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
+                $joins['gpa' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'groups', XDB::format('$ME.diminutif = {?}', $key));
+                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'group_members', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
             }
         }
         return $joins;

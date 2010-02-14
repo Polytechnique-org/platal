@@ -79,14 +79,14 @@ class XnetGrpEventFeed extends PlFeed
                                           a.create_date AS publication,
                                           FIND_IN_SET('photo', a.flags) AS photo,
                                           CONCAT({?}, '/#art', a.id) AS link
-                                    FROM  #groupex#.announces AS a
+                                    FROM  group_announces AS a
                                    WHERE  peremption >= NOW() AND a.asso_id = {?}",
                                    $this->link, $globals->asso('id'), $user));
         } else {
             return  XDB::iterator("SELECT  a.id, a.titre AS title, a.texte, a.create_date AS publication,
                                            CONCAT({?}, '/#art', a.id) AS link,
                                            NULL AS photo, NULL AS contacts
-                                     FROM  #groupex#.announces AS a
+                                     FROM  group_announces AS a
                                     WHERE  FIND_IN_SET('public', a.flags) AND peremption >= NOW() AND a.asso_id = {?}",
                                   $this->link, $globals->asso('id'));
         }

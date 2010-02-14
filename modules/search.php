@@ -48,7 +48,7 @@ class SearchModule extends PLModule
         global $globals;
 
         $res = XDB::query("SELECT  MIN(diminutif), MAX(diminutif)
-                             FROM  #groupex#.asso
+                             FROM  groups
                             WHERE  cat = 'Promotions'");
         list($min, $max) = $res->fetchOneRow();
         $page->assign('promo_min', $min);
