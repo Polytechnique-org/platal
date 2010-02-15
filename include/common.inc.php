@@ -23,7 +23,7 @@ function __autoload($cls)
 {
     if (!pl_autoload($cls)) {
         $cls = strtolower($cls);
-        if (substr($cls, 0, 4) == 'ufc_' || substr($cls, 0, 4) == 'ufo_') {
+        if (substr($cls, 0, 4) == 'ufc_' || substr($cls, 0, 4) == 'ufo_' || $cls == 'profilefilter') {
             __autoload('userfilter');
             return;
         } else if (substr($cls, 0, 4) == 'pfc_'
