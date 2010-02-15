@@ -747,7 +747,7 @@ class ProfileModule extends PLModule
         }
 
         $vcard = new VCard();
-        $vcard->addUser($x);
+        $vcard->addProfile(Profile::get($x));
         $vcard->show();
     }
 

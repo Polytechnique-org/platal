@@ -340,7 +340,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $vcard = new VCard($photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
-        $vcard->addUsers($globals->asso()->getMembers()->getUIDs());
+        $vcard->addProfiles($globals->asso()->getMembers()->getProfiles());
         $vcard->show();
     }
 
