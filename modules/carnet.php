@@ -383,11 +383,9 @@ class CarnetModule extends PLModule
 
     function handler_vcard(&$page, $photos = null)
     {
-        $res = XDB::query('SELECT contact
-                             FROM contacts
-                            WHERE uid = {?}', S::v('uid'));
+        $pf = new ProfileFilter(new UFC_Contact(S::user()));
         $vcard = new VCard($photos == 'photos');
-        $vcard->addUsers($res->fetchColumn());
+        $vcard->addProfiles($pf->getProfiles());
         $vcard->show();
     }
 }
