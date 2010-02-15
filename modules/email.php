@@ -859,12 +859,12 @@ class EmailModule extends PLModule
 
                     $sel = XDB::query(
                         "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails,
-                                 u.nom, u.prenom, u.promo, a.alias
+                                 acc.full_name, a.alias
                            FROM  emails        AS e1
                       LEFT JOIN  emails        AS e2 ON (e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags)
                                                          AND e1.email != e2.email)
-                     INNER JOIN  auth_user_md5 AS u  ON (e1.uid = u.user_id)
-                     INNER JOIN  aliases       AS a  ON (u.user_id = a.id AND FIND_IN_SET('bestalias', a.flags))
+                     INNER JOIN  accounts      AS acc  ON (e1.uid = acc.uid)
+                     INNER JOIN  aliases       AS a  ON (acc.uid = a.id AND FIND_IN_SET('bestalias', a.flags))
                           WHERE  e1.email = {?}
                        GROUP BY  e1.uid", $email);
 
@@ -884,7 +884,7 @@ class EmailModule extends PLModule
 
                         if (!empty($x['nb_mails'])) {
                             $mail = new PlMailer('emails/broken.mail.tpl');
-                            $mail->addTo("\"{$x['prenom']} {$x['nom']}\" <{$x['alias']}@"
+                            $mail->addTo("\"{$x['full_name']}\" <{$x['alias']}@"
                                          . $globals->mail->domain . '>');
                             $mail->assign('x', $x);
                             $mail->assign('email', $email);
@@ -914,22 +914,26 @@ class EmailModule extends PLModule
                 pl_content_headers("text/x-csv");
 
                 $csv = fopen('php://output', 'w');
-                fputcsv($csv, array('nom', 'prenom', 'promo', 'alias', 'bounce', 'nbmails', 'url'), ';');
+                fputcsv($csv, array('nom', 'promo', 'alias', 'bounce', 'nbmails', 'url'), ';');
                 foreach ($broken_user_list as $alias => $mails) {
                     $sel = Xdb::query(
-                        "SELECT  u.user_id, count(e.email) AS nb_mails, u.nom, u.prenom, u.promo
-                           FROM  aliases       AS a
-                     INNER JOIN  auth_user_md5 AS u ON a.id = u.user_id
-                      LEFT JOIN  emails        AS e ON (e.uid = u.user_id
+                        "SELECT  acc.uid, count(e.email) AS nb_mails,
+                                 IFNULL(pd.public_name, acc.full_name) AS fullname,
+                                 IFNULL(pd.promo, 0) AS promo,
+                           FROM  aliases    AS a
+                     INNER JOIN  accounts   AS acc ON a.id = acc.uid
+                      LEFT JOIN  emails     AS e ON (e.uid = acc.uid
                                                         AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
+                      LEFT JOIN  account_profiles AS ap ON (acc.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+                      LEFT JOIN  profile_display AS pd ON (pd.pid = ap.pid)
                           WHERE  a.alias = {?}
-                       GROUP BY  u.user_id", $alias);
+                       GROUP BY  acc.uid", $alias);
 
                     if ($x = $sel->fetchOneAssoc()) {
                         if ($x['nb_mails'] == 0) {
                             register_profile_update($x['user_id'], 'broken');
                         }
-                        fputcsv($csv, array($x['nom'], $x['prenom'], $x['promo'], $alias,
+                        fputcsv($csv, array($x['fullname'], $x['promo'], $alias,
                                             join(',', $mails), $x['nb_mails'],
                                             'https://www.polytechnique.org/marketing/broken/' . $alias), ';');
                     }
