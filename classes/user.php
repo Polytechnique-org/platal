@@ -479,7 +479,7 @@ class User extends PlUser
     {
         if (is_null($this->groups)) {
             $this->groups = XDB::fetchAllAssoc('asso_id', 'SELECT  asso_id, perms, comm
-                                                             FROM  #groupex#.membres
+                                                             FROM  group_members
                                                             WHERE  uid = {?}',
                                                 $this->id());
         }
