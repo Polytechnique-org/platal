@@ -76,6 +76,28 @@ class UFC_Hruid implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Ip
+/** Filters users based on one of their last IPs
+ * @param $ip IP from which connection are checked
+ */
+class UFC_Ip implements UserFilterCondition
+{
+    private $ip;
+
+    public function __construct($ip)
+    {
+        $this->ip = $ip;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $sub = $uf->addLoggerFilter();
+        $ip = ip_to_uint($this->ip);
+        return XDB::format($sub . '.ip = {?} OR ' . $sub . '.forward_ip = {?}', $ip, $ip);
+    }
+}
+// }}}
+
 // {{{ class UFC_Comment
 class UFC_Comment implements UserFilterCondition
 {
@@ -1825,6 +1847,25 @@ class UserFilter extends PlFilter
         } else {
             return array();
         }
+    }
+
+    /** LOGGER
+     */
+
+    private $with_logger = false;
+    public function addLoggerFilter()
+    {
+        $this->with_logger = true;
+        $this->requireAccounts();
+        return 'ls';
+    }
+    protected function loggerJoins()
+    {
+        $joins = array();
+        if ($this->with_logger) {
+            $joins['ls'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'log_sessions', '$ME.uid = $UID');
+        }
+        return $joins;
     }
 
     /** NAMES

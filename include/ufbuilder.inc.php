@@ -469,8 +469,7 @@ class UFBF_Quick extends UFB_Field
         if (S::admin() && strpos($s, '@') !== false) {
             return new UFC_Email($s);
         } else if (S::admin() && preg_match('/[0-9]+\.([0-9]+|%)\.([0-9]+|%)\.([0-9]+|%)/', $s)) {
-            // TODO: create UFC_Ip
-//            $this->conds->addChild(new UFC_Ip($s));
+            $this->conds->addChild(new UFC_Ip($s));
             return;
         }
 
