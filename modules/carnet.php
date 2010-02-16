@@ -347,6 +347,20 @@ class CarnetModule extends PLModule
         return $feed->run($page, $user, $hash);
     }
 
+    function buildBirthRef(Profile $profile)
+    {
+        $date = strtotime($profile->birthdate);
+        $tomorrow = $date + 86400;
+        return array(
+            'timestamp' => $date,
+            'date' => date('Ymd', $date),
+            'tomorrow' => date('Ymd', $tomorrow),
+            'hruid' => $profile->hrid(),
+            'summary' => 'Anniversaire de ' . $profile->fullName(true)
+        );
+    }
+
+
     function handler_ical(&$page, $alias = null, $hash = null)
     {
         $user = Platal::session()->tokenAuth($alias, $hash);
@@ -364,19 +378,7 @@ class CarnetModule extends PLModule
 
         $filter = new UserFilter(new UFC_Contact($user));
         $profiles = $filter->iterProfiles();
-        $annivs = Array();
-        while ($profile = $profiles->next()) {
-            $date = strtotime($profile->birthdate);
-            $tomorrow = $date + 86400;
-            $annivs[] = array(
-                'timestamp' => $date,
-                'date' => date('Ymd', $date),
-                'tomorrow' => date('Ymd', $tomorrow),
-                'hruid' => $profile->hrid(),
-                'summary' => 'Anniversaire de ' . $profile->fullName(true)
-            );
-        }
-        $page->assign('events', $annivs);
+        $page->assign('events', PlIteratorUtils::map($profiles, array($this, 'buildBirthRef')));
 
         pl_content_headers("text/calendar");
     }

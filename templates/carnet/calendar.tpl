@@ -26,7 +26,7 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 {display_ical name="x-wr-calname" value="Anniversaires des X"}
 X-WR-TIMEZONE:Europe/Paris
-{foreach from=$events item=e}
+{iterate from=$events item=e}
 BEGIN:VEVENT
 DTSTAMP:{$e.timestamp|date_format:"%Y%m%dT%H%M%SZ"}
 DTSTART;VALUE=DATE:{$e.date}
@@ -36,5 +36,5 @@ RRULE:FREQ=YEARLY;INTERVAL=1
 CLASS:PUBLIC
 {display_ical name="summary" value=$e.summary}
 END:VEVENT
-{/foreach}
+{/iterate}
 END:VCALENDAR{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
