@@ -228,9 +228,9 @@ class Profile
             $cond = ' AND pub IN ' . XDB::formatArray($this->visibility);
         }
         $res = XDB::query('SELECT  *
-                             FROM  photo
+                             FROM  profile_photos
                             WHERE  attachmime IN (\'jpeg\', \'png\')
-                                   ' . $cond . ' AND  uid = {?}',
+                                   ' . $cond . ' AND  pid = {?}',
                           $this->id());
         if ($res->numRows() > 0) {
             $photo = $res->fetchOneAssoc();
@@ -452,7 +452,7 @@ class Profile
                            LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid
                                                                AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
                            LEFT JOIN  profile_phones AS pp ON (pp.uid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
-                           LEFT JOIN  photo AS ph ON (ph.uid = p.pid)
+                           LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
                            LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
                                WHERE  p.pid IN ' . XDB::formatArray($pids) . '
                             GROUP BY  p.pid

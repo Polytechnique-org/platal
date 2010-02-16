@@ -178,9 +178,9 @@ class ProfileModule extends PLModule
         } elseif (Env::v('suppr')) {
             S::assert_xsrf_token();
 
-            XDB::execute('DELETE FROM  photo
-                                WHERE  uid = {?}',
-                         S::v('uid'));
+            XDB::execute('DELETE FROM  profile_photos
+                                WHERE  pid = {?}',
+                         S::user()->profile()->id());
             XDB::execute('DELETE FROM  requests
                                 WHERE  user_id = {?} AND type="photo"',
                          S::v('uid'));
@@ -763,8 +763,7 @@ class ProfileModule extends PLModule
 
         switch ($action) {
             case "original":
-                pl_cached_content_headers("image/jpeg");
-        	readfile("/home/web/trombino/photos" . $user->promo() . "/" . $user->login() . ".jpg");
+                PlImage::fromFile("/home/web/trombino/photos" . $user->promo() . "/" . $user->login() . ".jpg", "image/jpeg")->send();
                 exit;
 
             case "new":
@@ -775,14 +774,14 @@ class ProfileModule extends PLModule
             	$mimetype = substr($_FILES['userfile']['type'], 6);
             	unlink($_FILES['userfile']['tmp_name']);
                 XDB::execute(
-                        "REPLACE INTO photo SET uid={?}, attachmime = {?}, attach={?}, x={?}, y={?}",
-                        $user->id(), $mimetype, $data, $x, $y);
+                        "REPLACE INTO profile_photos SET pid={?}, attachmime = {?}, attach={?}, x={?}, y={?}",
+                        $user->profile()->id(), $mimetype, $data, $x, $y);
             	break;
 
             case "delete":
                 S::assert_xsrf_token();
 
-                XDB::execute('DELETE FROM photo WHERE uid = {?}', $user->id());
+                XDB::execute('DELETE FROM profile_photos WHERE pid = {?}', $user->profile()->id());
                 break;
         }
     }

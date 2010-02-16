@@ -406,8 +406,8 @@ class ProfileGeneral extends ProfilePage
 
         // Retreive photo informations
         $res = XDB::query("SELECT  pub
-                             FROM  photo
-                            WHERE  uid = {?}", $this->pid());
+                             FROM  profile_photos
+                            WHERE  pid = {?}", $this->pid());
         $this->values['photo_pub'] = $res->fetchOneCell();
 
         if ($this->owner) {
@@ -464,9 +464,9 @@ class ProfileGeneral extends ProfilePage
                          $this->pid(), $new_email);
         }
         if ($this->changed['photo_pub']) {
-            XDB::execute("UPDATE  photo
+            XDB::execute("UPDATE  profile_photos
                              SET  pub = {?}
-                           WHERE  uid = {?}",
+                           WHERE  pid = {?}",
                          $this->values['photo_pub'], $this->pid());
         }
         if ($this->changed['yourself']) {
