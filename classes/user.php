@@ -146,7 +146,7 @@ class User extends PlUser
         throw new UserNotFoundException($res->fetchColumn(1));
     }
 
-    protected static function loadMainFieldsFromUIDs(array $uids)
+    protected static function loadMainFieldsFromUIDs(array $uids, $respect_order = true)
     {
         global $globals;
         $joins = '';
@@ -161,7 +161,15 @@ class User extends PlUser
         } else {
             $fields = '';
         }
+
+        if ($respect_order) {
+            $order = 'ORDER BY ' . XDB::formatCustomOrder('a.uid', $uids);
+        } else {
+            $order = '';
+        }
+
         $uids = array_map(array('XDB', 'escape'), $uids);
+
         return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date,
                                       CONCAT(af.alias, \'@' . $globals->mail->domain . '\') AS forlife,
                                       CONCAT(af.alias, \'@' . $globals->mail->domain2 . '\') AS forlife_alternate,
@@ -183,7 +191,8 @@ class User extends PlUser
                            LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
                                    ' . $joins . '
                                WHERE  a.uid IN (' . implode(', ', $uids) . ')
-                            GROUP BY  a.uid');
+                            GROUP BY  a.uid
+                                   ' . $order);
     }
 
     // Implementation of the data loader.
@@ -535,7 +544,18 @@ class User extends PlUser
             || $dom == $globals->mail->alias_dom2;
     }
 
-    // Fetch a set of users from a list of UIDs
+    public static function iterOverUIDs($uids, $respect_order = true)
+    {
+        return new UserIterator(self::loadMainFieldsFromUIDs($uids, $respect_order));
+    }
+
+    /** Fetch a set of users from a list of UIDs
+     * @param $data The list of uids to fetch, or an array of arrays
+     * @param $orig If $data is an array of arrays, the subfield where uids are stored
+     * @param $dest If $data is an array of arrays, the subfield to fill with Users
+     * @param $fetchProfile Whether to fetch Profiles as well
+     * @return either an array of $uid => User, or $data with $data[$i][$dest] = User
+     */
     public static function getBulkUsersWithUIDs(array $data, $orig = null, $dest = null, $fetchProfile = true)
     {
         // Fetch the list of uids
@@ -557,30 +577,33 @@ class User extends PlUser
         if (count($uids) == 0) {
             return $data;
         }
-        $fields = self::loadMainFieldsFromUIDs($uids);
+        $users = self::iterOverUIDs($uids, true);
+
         $table = array();
         if ($fetchProfile) {
-            $profiles = Profile::getBulkProfilesWithUIDS($uids);
+            $profiles = Profile::iterOverUIDS($uids, true);
+            $profile = $profiles->next();
         }
-        while (($list = $fields->next())) {
-            $uid  = $list['uid'];
-            $user = User::getSilentWithValues(null, $list);
+
+        /** We iterate through the users, moving in
+         * profiles when they match the user ID :
+         * there can be users without a profile, but not
+         * the other way around.
+         */
+        while (($user = $users->next())) {
             if ($fetchProfile) {
-                if (isset($profiles[$uid])) {
-                    $user->_profile = $profiles[$uid];
+                if ($profile->owner_id == $user->id()) {
+                    $user->_profile = $profile;
+                    $profile = $profiles->next();
                 }
                 $user->_profile_fetched = true;
             }
-            $table[$list['uid']] = $user;
+            $table[$user->id()] = $user;
         }
 
         // Build the result with respect to input order.
         if (is_null($orig)) {
-            $users = array();
-            foreach ($uids as $key=>$uid) {
-                $users[$key] = $table[$uid];
-            }
-            return $users;
+            return $table;
         } else {
             foreach ($data as $key=>$entry) {
                 if (isset($entry[$orig])) {
@@ -597,6 +620,44 @@ class User extends PlUser
         $args = func_get_args();
         $uids = call_user_func_array(array('XDB', 'fetchColumn'), $args);
         return self::getBulkUsersWithUIDs($uids, null, null, $fetchProfile);
+    }
+}
+
+/** Iterator over a set of Users
+ * @param an XDB::Iterator obtained from a User::loadMainFieldsFromUIDs
+ */
+class UserIterator implements PlIterator
+{
+    private $dbiter;
+
+    public function __construct($dbiter)
+    {
+        $this->dbiter = $dbiter;
+    }
+
+    public function next()
+    {
+        $data = $this->dbiter->next();
+        if ($data == null) {
+            return null;
+        } else {
+            return User::getSilentWithValues(null, $data);
+        }
+    }
+
+    public function total()
+    {
+        return $this->dbiter->total();
+    }
+
+    public function first()
+    {
+        return $this->dbiter->first();
+    }
+
+    public function last()
+    {
+        return $this->dbiter->last();
     }
 }
 

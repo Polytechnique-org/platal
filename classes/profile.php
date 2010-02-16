@@ -205,8 +205,8 @@ class Profile
 
     public function setVisibilityLevel($visibility)
     {
-        if ($visibility != self::VISIBILITY_PRIVATE 
-         && $visibility != self::VISIBILITY_AX 
+        if ($visibility != self::VISIBILITY_PRIVATE
+         && $visibility != self::VISIBILITY_AX
          && $visibility != self::VISIBILITY_PUBLIC) {
             Platal::page()->kill("Visibility invalide: " . $visibility);
         }
@@ -419,35 +419,44 @@ class Profile
         return User::getSilent($this);
     }
 
-    private static function fetchProfileData(array $pids)
+    private static function fetchProfileData(array $pids, $respect_order = true)
     {
         if (count($pids) == 0) {
             return array();
         }
-        return XDB::fetchAllAssoc('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
-                                           pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
-                                           IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
-                                           IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
-                                           pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
-                                           pd.directory_name, pp.display_tel AS mobile, pp.pub AS mobile_pub,
-                                           ph.pub AS photo_pub
-                                     FROM  profiles AS p
-                               INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
-                               INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
-                               INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid
-                                                                    AND pn_f.typeid = ' . self::getNameTypeId('firstname', true) . ')
-                               INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid
-                                                                    AND pn_l.typeid = ' . self::getNameTypeId('lastname', true) . ')
-                                LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid
-                                                                     AND pn_uf.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
-                                LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid
-                                                                     AND pn_ul.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
-                                LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid 
-                                                                    AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
-                                LEFT JOIN  profile_phones AS pp ON (pp.uid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
-                                LEFT JOIN  photo AS ph ON (ph.uid = p.pid)
-                                    WHERE  p.pid IN ' . XDB::formatArray($pids) . '
-                                 GROUP BY  p.pid');
+
+        if ($respect_order) {
+            $order = 'ORDER BY  ' . XDB::formatCustomOrder('p.pid', $pids);
+        } else {
+            $order = '';
+        }
+
+        return XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
+                                      pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
+                                      IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
+                                      IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
+                                      pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
+                                      pd.directory_name, pp.display_tel AS mobile, pp.pub AS mobile_pub,
+                                      ph.pub AS photo_pub, ap.uid AS owner_id
+                                FROM  profiles AS p
+                          INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
+                          INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                          INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid
+                                                               AND pn_f.typeid = ' . self::getNameTypeId('firstname', true) . ')
+                          INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid
+                                                               AND pn_l.typeid = ' . self::getNameTypeId('lastname', true) . ')
+                           LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid
+                                                                AND pn_uf.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
+                           LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid
+                                                                AND pn_ul.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
+                           LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid
+                                                               AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
+                           LEFT JOIN  profile_phones AS pp ON (pp.uid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
+                           LEFT JOIN  photo AS ph ON (ph.uid = p.pid)
+                           LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                               WHERE  p.pid IN ' . XDB::formatArray($pids) . '
+                            GROUP BY  p.pid
+                                   ' . $order);
     }
 
     public static function getPID($login)
@@ -468,6 +477,19 @@ class Profile
         }
     }
 
+    public static function getPIDsFromUIDs($uids, $respect_order = true)
+    {
+        if ($respect_order) {
+            $order = 'ORDER BY ' . XDB::formatCustomOrder('uid', $uids);
+        } else {
+            $order = '';
+        }
+        return XDB::fetchAllAssoc('uid', 'SELECT  ap.uid, ap.pid
+                                            FROM  account_profiles AS ap
+                                           WHERE  FIND_IN_SET(\'owner\', ap.perms)
+                                                  AND ap.uid IN ' . XDB::formatArray($uids) .'
+                                               ' . $order);
+    }
 
     /** Return the profile associated with the given login.
      */
@@ -475,8 +497,8 @@ class Profile
     {
         $pid = self::getPID($login);
         if (!is_null($pid)) {
-            $data = self::fetchProfileData(array($pid));
-            return new Profile(array_pop($data));
+            $it = self::iterOverPIDs(array($pid), false);
+            return $it->next();
         } else {
             /* Let say we can identify a profile using the identifiers of its owner.
              */
@@ -490,6 +512,16 @@ class Profile
         }
     }
 
+    public static function iterOverUIDs($uids, $respect_order = true)
+    {
+        return self::iterOverPIDs(self::getPIDsFromUIDs($uids), $respect_order);
+    }
+
+    public static function iterOverPIDs($pids, $respect_order = true)
+    {
+        return new ProfileIterator(self::fetchProfileData($pids, $respect_order));
+    }
+
     /** Return profiles for the list of pids.
      */
     public static function getBulkProfilesWithPIDs(array $pids)
@@ -497,13 +529,10 @@ class Profile
         if (count($pids) == 0) {
             return array();
         }
-        $data = self::fetchProfileData($pids);
-        $inv = array_flip($pids);
+        $it = self::iterOverPIDs($pids);
         $profiles = array();
-        foreach ($data AS $p) {
-            $p = new Profile($p);
-            $key = $inv[$p->id()];
-            $profiles[$key] = $p;
+        while ($p = $it->next()) {
+            $profiles[$p->id()] = $p;
         }
         return $profiles;
     }
@@ -515,11 +544,7 @@ class Profile
         if (count($uids) == 0) {
             return array();
         }
-        $table = XDB::fetchAllAssoc('uid', 'SELECT  ap.uid, ap.pid
-                                              FROM  account_profiles AS ap
-                                             WHERE  FIND_IN_SET(\'owner\', ap.perms)
-                                                    AND ap.uid IN ' . XDB::formatArray($uids));
-        return self::getBulkProfilesWithPIDs($table);
+        return self::getBulkProfilesWithPIDs(self::getPIDsFromUIDs($uids));
     }
 
     public static function isDisplayName($name)
@@ -544,6 +569,44 @@ class Profile
         } else {
             return $table[$type];
         }
+    }
+}
+
+/** Iterator over a set of Profiles
+ * @param an XDB::Iterator obtained from a Profile::fetchProfileData
+ */
+class ProfileIterator implements PlIterator
+{
+    private $dbiter;
+
+    public function __construct($dbiter)
+    {
+        $this->dbiter = $dbiter;
+    }
+
+    public function next()
+    {
+        $data = $this->dbiter->next();
+        if ($data == null) {
+            return null;
+        } else {
+            return new Profile($data);
+        }
+    }
+
+    public function total()
+    {
+        return $this->dbiter->total();
+    }
+
+    public function first()
+    {
+        return $this->dbiter->first();
+    }
+
+    public function last()
+    {
+        return $this->dbiter->last();
     }
 }
 

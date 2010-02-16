@@ -1702,9 +1702,19 @@ class UserFilter extends PlFilter
         return User::getBulkUsersWithUIDs($this->getUIDs($limit));
     }
 
+    public function iterUsers($limit = null)
+    {
+        return User::iterOverUIDs($this->getUIDs($limit));
+    }
+
     public function getProfiles($limit = null)
     {
         return Profile::getBulkProfilesWithPIDs($this->getPIDs($limit));
+    }
+
+    public function iterProfiles($limit = null)
+    {
+        return Profile::iterOverPIDs($this->getPIDs($limit));
     }
 
     public function get($limit = null)
