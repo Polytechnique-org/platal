@@ -184,7 +184,7 @@ class XDB
     // Returns a FIELD(blah, 3, 1, 2) for use in an order with custom orders
     public static function formatCustomOrder($field, $values)
     {
-        return 'FIELD( ' . $field . ', ' . XDB::formatArray($values) . ')';
+        return 'FIELD( ' . $field . ', ' . implode(', ', array_map(array('XDB', 'escape'), $values)) . ')';
     }
 
     public static function execute()
