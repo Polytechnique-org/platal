@@ -59,6 +59,31 @@ class PlIteratorUtils
     {
         return new PlMergeIterator($iterators, $callback, $sorted);
     }
+
+
+    /** Build an iterator that contains only the elements of the given iterator that
+     * match the given condition. The condition should be a callback that takes an element
+     * and returns a boolean.
+     * @param iterator The source iterator
+     * @param callback The condition
+     * @return an iterator
+     */
+    public static function filter(PlIterator $iterator, $callback)
+    {
+        return new PlFilterIterator($iterator, $callback);
+    }
+
+
+    /** Build an iterator that transforms the element of another iterator. The callback
+     * takes an element and transform it into another one. Be careful: if the result
+     * of the callback is null, the iteration ends.
+     * @param iterator The source iterator
+     * @param callback The transformer.
+     */
+    public static function map(PlIterator $iterator, $callback)
+    {
+        return new PlMapIterator($iterator, $callback);
+    }
 }
 
 
@@ -258,6 +283,108 @@ class PlMergeIterator implements PlIterator
         return $this->pos == 1;
     }
 }
+
+
+class PlFilterIterator implements PlIterator {
+    private $source;
+    private $callback;
+    private $element;
+    private $start;
+
+    public function __construct(PlIterator $source, $callback)
+    {
+        $this->source = $source;
+        $this->callback = $callback;
+        $this->start = true;
+        $this->element = null;
+    }
+
+    private function fetchNext()
+    {
+        do {
+            $current = $this->source->next();
+            if (!$current) {
+                $this->element = null;
+                $this->start   = false;
+                return;
+            }
+            $res = call_user_func($this->callback, $current);
+            if ($res) {
+                $this->element = $current;
+                return;
+            }
+        } while (true);
+    }
+
+    public function next()
+    {
+        if ($this->element && $this->start) {
+            $this->start = false;
+        }
+        $elt = $this->element;
+        if ($elt) {
+            $this->fetchNext();
+        }
+        return $elt;
+    }
+
+    public function total()
+    {
+        /* This is an approximation since the correct total
+         * cannot be computed without fetching all the elements
+         */
+        return $this->source->total();
+    }
+
+    public function first()
+    {
+        return $this->start;
+    }
+
+    public function last()
+    {
+        return !$this->start && !$this->element;
+    }
+}
+
+
+class PlMapIterator implements PlIterator
+{
+    private $source;
+    private $callback;
+
+    public function __construct(PlIterator $source, $callback)
+    {
+        $this->source = $source;
+        $this->callback = $callback;
+    }
+
+    public function next()
+    {
+        $elt = $this->source->next();
+        if ($elt) {
+            return call_user_func($this->callback, $elt);
+        } else {
+            return null;
+        }
+    }
+
+    public function total()
+    {
+        return $this->source->total();
+    }
+
+    public function first()
+    {
+        return $this->source->first();
+    }
+
+    public function last()
+    {
+        return $this->source->last();
+    }
+}
+
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
