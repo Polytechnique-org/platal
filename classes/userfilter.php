@@ -111,7 +111,7 @@ class UFC_Comment implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $uf->requireProfiles();
-        return 'p.freetext LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->text);
+        return 'p.freetext ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->text);
     }
 }
 // }}}
@@ -227,11 +227,11 @@ class UFC_EducationField implements UserFilterCondition
  */
 class UFC_Name implements UserFilterCondition
 {
-    const PREFIX   = 1;
-    const SUFFIX   = 2;
-    const PARTICLE = 7;
-    const VARIANTS = 8;
-    const CONTAINS = 3;
+    const PREFIX   = XDB::WILDCARD_PREFIX; // 0x001
+    const SUFFIX   = XDB::WILDCARD_SUFFIX; // 0x002
+    const CONTAINS = XDB::WILDCARD_CONTAINS; // 0x003
+    const PARTICLE = 0x007; // self::CONTAINS | 0x004
+    const VARIANTS = 0x008;
 
     private $type;
     private $text;
@@ -253,21 +253,12 @@ class UFC_Name implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $left = '$ME.name';
-        $op   = ' LIKE ';
         if (($this->mode & self::PARTICLE) == self::PARTICLE) {
             $left = 'CONCAT($ME.particle, \' \', $ME.name)';
         }
-        if (($this->mode & self::CONTAINS) == 0) {
-            $right = XDB::format('{?}', $this->text);
-            $op    = ' = ';
-        } else if (($this->mode & self::CONTAINS) == self::PREFIX) {
-            $right = XDB::format('CONCAT({?}, \'%\')', $this->text);
-        } else if (($this->mode & self::CONTAINS) == self::SUFFIX) {
-            $right = XDB::format('CONCAT(\'%\', {?})', $this->text);
-        } else {
-            $right = XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->text);
-        }
-        $cond = $left . $op . $right;
+        $right = XDB::formatWildcards($this->mode & self::CONTAINS, $this->text);
+
+        $cond = $left . $right;
         $conds = array($this->buildNameQuery($this->type, null, $cond, $uf));
         if (($this->mode & self::VARIANTS) != 0 && isset(Profile::$name_variants[$this->type])) {
             foreach (Profile::$name_variants[$this->type] as $var) {
@@ -318,7 +309,7 @@ class UFC_NameTokens implements UserFilterCondition
         } else {
             $tokconds = array();
             foreach ($this->tokens as $token) {
-                $tokconds[] = $sub . '.token LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $token);
+                $tokconds[] = $sub . '.token ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $token);
             }
             $conds[] = implode(' OR ', $tokconds);
         }
@@ -718,7 +709,7 @@ abstract class UFC_Address implements UserFilterCondition
 // {{{ class UFC_AddressText
 /** Select users based on their address, using full text search
  * @param $text Text for filter in fulltext search
- * @param $textSearchMode Mode for search (PREFIX, SUFFIX, ...)
+ * @param $textSearchMode Mode for search (one of XDB::WILDCARD_*)
  * @param $type Filter on address type
  * @param $flags Filter on address flags
  * @param $country Filter on address country
@@ -726,16 +717,11 @@ abstract class UFC_Address implements UserFilterCondition
  */
 class UFC_AddressText extends UFC_Address
 {
-    /** Flags for text search
-     */
-    const PREFIX    = 0x0001;
-    const SUFFIX    = 0x0002;
-    const CONTAINS  = 0x0003;
 
     private $text;
     private $textSearchMode;
 
-    public function __construct($text = null, $textSearchMode = self::CONTAINS,
+    public function __construct($text = null, $textSearchMode = XDB::WILDCARD_CONTAINS,
         $type = null, $flags = self::FLAG_ANY, $country = null, $locality = null)
     {
         parent::__construct($type, $flags);
@@ -747,18 +733,7 @@ class UFC_AddressText extends UFC_Address
 
     private function mkMatch($txt)
     {
-        $op = ' LIKE ';
-        if (($this->textSearchMode & self::CONTAINS) == 0) {
-            $right = XDB::format('{?}', $this->text);
-            $op = ' = ';
-        } else if (($this->mode & self::CONTAINS) == self::PREFIX) {
-            $right = XDB::format('CONCAT({?}, \'%\')', $this->text);
-        } else if (($this->mode & self::CONTAINS) == self::SUFFIX) {
-            $right = XDB::format('CONCAT(\'%\', {?})', $this->text);
-        } else {
-            $right = XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->text);
-        }
-        return $op . $right;
+        return XDB::formatWildcards($this->textSearchMode, $txt);
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -1000,25 +975,25 @@ class UFC_Job_Description implements UserFilterCondition
         $conds = array();
         if ($this->fields & UserFilter::JOB_USERDEFINED) {
             $sub = $uf->addJobFilter();
-            $conds[] = $sub . '.description LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+            $conds[] = $sub . '.description ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
         if ($this->fields & UserFilter::JOB_CV) {
             $uf->requireProfiles();
-            $conds[] = 'p.cv LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+            $conds[] = 'p.cv ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
         if ($this->fields & UserFilter::JOB_SECTOR) {
             $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SECTOR);
-            $conds[] = $sub . '.name LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+            $conds[] = $sub . '.name ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
         if ($this->fields & UserFilter::JOB_SUBSECTOR) {
             $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SUBSECTOR);
-            $conds[] = $sub . '.name LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+            $conds[] = $sub . '.name ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
         if ($this->fields & UserFilter::JOB_SUBSUBSECTOR) {
             $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_SUBSUBSECTOR);
-            $conds[] = $sub . '.name LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+            $conds[] = $sub . '.name ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
             $sub = $uf->addJobSectorizationFilter(UserFilter::JOB_ALTERNATES);
-            $conds[] = $sub . '.name LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->description);
+            $conds[] = $sub . '.name ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->description);
         }
         return implode(' OR ', $conds);
     }
@@ -1045,7 +1020,7 @@ class UFC_Networking implements UserFilterCondition
     {
         $sub = $uf->addNetworkingFilter();
         $conds = array();
-        $conds[] = $sub . '.address = ' . XDB::format('CONCAT(\'%\', {?}, \'%\')', $this->value);
+        $conds[] = $sub . '.address ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->value);
         if ($this->type != -1) {
             $conds[] = $sub . '.network_type = ' . XDB::format('{?}', $this->type);
         }
@@ -1145,7 +1120,7 @@ class UFC_Mentor_Expertise implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR_EXPERTISE);
-        return $sub . '.expertise LIKE ' . XDB::format('CONCAT(\'%\', {?}, \'%\'', $this->expertise);
+        return $sub . '.expertise ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->expertise);
     }
 }
 // }}}

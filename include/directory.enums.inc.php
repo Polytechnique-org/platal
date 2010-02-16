@@ -123,13 +123,6 @@ class DirEnum
 // {{{ class DirEnumeration
 abstract class DirEnumeration
 {
-    /** Modes for LIKE searches
-     */
-    const MODE_EXACT    = 0x000;
-    const MODE_PREFIX   = 0x001;
-    const MODE_SUFFIX   = 0x002;
-    const MODE_CONTAINS = 0x003;
-
     /** An internal array of ID => optionTxt
      */
     protected $options = null;
@@ -183,7 +176,7 @@ abstract class DirEnumeration
      */
     public function getIDs($text, $mode)
     {
-        if ($mode == self::MODE_EXACT) {
+        if ($mode == XDB::WILDCARD_EXACT) {
             $options = $this->getOptions();
             return array_keys($options, $text);
         } else {
@@ -193,9 +186,9 @@ abstract class DirEnumeration
                 $where = $this->where . ' AND ';
             }
             $conds = array();
-            $conds[] = $this->valfield . self::makeSqlConcat($text, $mode);
+            $conds[] = $this->valfield . XDB::formatWildcards($mode, $text);
             if ($this->valfield2 != null) {
-                $conds[] = $this->valfield2 . self::makeSqlConcat($text, $mode);
+                $conds[] = $this->valfield2 . XDB::formatWildcards($mode, $text);
             }
             $where .= '(' . implode(' OR ', $conds) . ')';
 
@@ -211,10 +204,10 @@ abstract class DirEnumeration
     private function mkTests($field, $text)
     {
         $tests = array();
-        $tests[] = $field . self::makeSqlConcat($text, self::MODE_PREFIX);
+        $tests[] = $field . XDB::formatWildcards(XDB::WILDCARD_PREFIX, $text);
         if (!$this->ac_beginwith) {
-            $tests[] = $field . self::makeSqlConcat(' ' . $text, self::MODE_CONTAINS);
-            $tests[] = $field . self::makeSqlConcat('-' . $text, self::MODE_CONTAINS);
+            $tests[] = $field . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, ' ' . $text);
+            $tests[] = $field . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, '-' . $text);
         }
         return $tests;
     }
@@ -246,23 +239,6 @@ abstract class DirEnumeration
                             GROUP BY ' . $this->valfield . '
                             ORDER BY ' . ($this->ac_distinct ? 'nb DESC' : $this->valfield) . '
                                LIMIT 11');
-    }
-    // }}}
-
-    // {{{ function makeSqlConcat
-    static protected function makeSqlConcat($text, $mode)
-    {
-        if ($mode == self::MODE_EXACT) {
-            return ' = ' . XDB::format('{?}', $text);
-        }
-        if ($mode == self::MODE_PREFIX) {
-            $right = XDB::format('CONCAT({?}, \'%\')', $text);
-        } else if ($mode == self::MODE_SUFFIX) {
-            $right = XDB::format('CONCAT(\'%\', {?})', $text);
-        } else {
-            $right = XDB::format('CONCAT(\'%\', {?}, \'%\')', $text);
-        }
-        return ' LIKE ' . $right;
     }
     // }}}
 
@@ -378,12 +354,12 @@ class DE_EducationDegrees extends DirEnumeration
         if ($eduid == null) {
             return XDB::fetchColumn('SELECT id
                                        FROM profile_education_degree_enum
-                                       WHERE degree ' . self::makeSqlConcat($text, $mode));
+                                       WHERE degree ' . XDB::formatWildcards($mode, $text));
         } else {
             return XDB::fetchColumn('SELECT pede.id
                                        FROM profile_education_degree AS ped
                                   LEFT JOIN profile_education_degree_enum AS pede ON (ped.degreeid = pede.id)
-                                      WHERE ped.eduid = {?} AND pede.degree ' . self::makeSqlConcat($text, $mode), $eduid);
+                                      WHERE ped.eduid = {?} AND pede.degree ' . XDB::formatWildcards($mode, $text), $eduid);
         }
     }
 }
@@ -469,11 +445,11 @@ class DE_AdminAreas extends DirEnumeration
         if ($country == null) {
             return XDB::fetchColumn('SELECT id
                                        FROM geoloc_administrativeareas
-                                       WHERE name ' . self::makeSqlConcat($text, $mode));
+                                       WHERE name ' . XDB::formatWildcards($mode, $text));
         } else {
             return XDB::fetchColumn('SELECT id
                                        FROM geoloc_administrativeareas
-                                      WHERE country = {?} AND name' . self::makeSqlConcat($text, $mode), $country);
+                                      WHERE country = {?} AND name' . XDB::formatWildcards($mode, $text), $country);
         }
     }
 }
