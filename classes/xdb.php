@@ -181,6 +181,12 @@ class XDB
         }
     }
 
+    // Returns a FIELD(blah, 3, 1, 2) for use in an order with custom orders
+    public static function formatCustomOrder($field, $values)
+    {
+        return 'FIELD( ' . $field . ', ' . XDB::formatArray($values) . ')';
+    }
+
     public static function execute()
     {
         global $globals;
