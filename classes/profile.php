@@ -495,6 +495,9 @@ class Profile
      */
     public static function get($login)
     {
+        if (is_array($login)) {
+            return new Profile($login);
+        }
         $pid = self::getPID($login);
         if (!is_null($pid)) {
             $it = self::iterOverPIDs(array($pid), false);
@@ -590,7 +593,7 @@ class ProfileIterator implements PlIterator
         if ($data == null) {
             return null;
         } else {
-            return new Profile($data);
+            return Profile::get($data);
         }
     }
 

@@ -321,7 +321,7 @@ class CarnetModule extends PLModule
 
         Platal::session()->close();
 
-        $order = array(new UFO_Name(UserFilter::LASTNAME), new UFO_Name(UserFilter::FIRSTNAME));
+        $order = array(new UFO_Name(Profile::LASTNAME), new UFO_Name(Profile::FIRSTNAME));
         if ($arg0 == 'promo') {
             $order = array_unshift($order, new UFO_Promo());
         } else {
@@ -331,8 +331,8 @@ class CarnetModule extends PLModule
 
         $pdf   = new ContactsPDF();
 
-        $profiles = $filter->getProfiles();
-        foreach ($profiles as $p) {
+        $it = $filter->iterProfiles();
+        while ($p = $it->next()) {
             $pdf = ContactsPDF::addContact($pdf, $p, $arg0 == 'photos' || $arg1 == 'photos');
         }
         $pdf->Output();
@@ -363,13 +363,13 @@ class CarnetModule extends PLModule
         $page->register_function('display_ical', 'display_ical');
 
         $filter = new UserFilter(new UFC_Contact($user));
+        $profiles = $filter->iterProfiles();
         $annivs = Array();
-        foreach ($filter->getUsers() as $u) {
-            $profile = $u->profile();
+        while ($profile = $profiles->next()) {
             $date = strtotime($profile->birthdate);
             $tomorrow = $date + 86400;
             $annivs[] = array(
-                'timestamp' => strtotime($user->registration_date),
+                'timestamp' => $date,
                 'date' => date('Ymd', $date),
                 'tomorrow' => date('Ymd', $tomorrow),
                 'hruid' => $profile->hrid(),
