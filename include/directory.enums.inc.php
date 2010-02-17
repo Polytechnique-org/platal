@@ -337,27 +337,39 @@ class DE_EducationDegrees extends DirEnumeration
                         LEFT JOIN profile_education_degree AS ped ON (pee.id = ped.eduid)
                         LEFT JOIN profile_education_degree_enum AS pede ON (ped.degreeid = pede.id)
                          ORDER BY pede.degree');
+        $options = array();
         foreach($res->fetchAllRow() as $row) {
             list($eduid, $degreeid, $name) = $row;
-            $this->options[$degreeid] = array('id' => $degreeid, 'field' => $name);
+            $options[$degreeid] = array('id' => $degreeid, 'field' => $name);
             if (!array_key_exists($eduid, $this->suboptions)) {
                 $this->suboptions[$eduid] = array();
             }
             $this->suboptions[$eduid][] = array('id' => $degreeid, 'field' => $name);
         }
+        $this->options = PlIteratorUtils::fromArray($options, 1, true);
     }
 
     public function getOptions($eduid = null)
     {
         $this->_fetchOptions();
         if ($eduid == null) {
-            return PlIteratorUtils::fromArray($this->options, 1, true);
+            return $this->options;
         }
         if (array_key_exists($eduid, $this->suboptions)) {
             return PlIteratorUtils::fromArray($this->suboptions[$eduid], 1, true);
         } else {
             return array();
         }
+    }
+
+    public function getOptionsArray($eduid = null)
+    {
+        $it = $this->getOptions($eduid);
+        $options = array();
+        while ($row = $it->next()) {
+            $options[$row['id']] = $row['field'];
+        }
+        return $options;
     }
 
     public function getIDs($text, $mode, $eduid = null)
@@ -427,14 +439,16 @@ class DE_AdminAreas extends DirEnumeration
                              FROM geoloc_administrativeareas
                          GROUP BY name
                          ORDER BY name');
+        $options = array();
         foreach($res->fetchAllRow() as $row) {
             list($id, $field, $country) = $row;
-            $this->options[] = array('id' => $id, 'field' => $field);
+            $options[$id] = array('id' => $id, 'field' => $field);
             if (!array_key_exists($country, $this->suboptions)) {
                 $this->suboptions[$country] = array();
             }
             $this->suboptions[$country][] = array('id' => $id, 'field' => $field);
         }
+        $this->options = PlIteratorUtils::fromArray($options, 1, true);
     }
 
     public function getOptions($country = null)
@@ -442,13 +456,23 @@ class DE_AdminAreas extends DirEnumeration
         $this->_fetchOptions();
 
         if ($country == null) {
-            return PlIteratorUtils::fromArray($this->options, 1, true);
+            return $this->options;
         }
         if (array_key_exists($country, $this->suboptions)) {
             return PlIteratorUtils::fromArray($this->suboptions[$country], 1, true);
         } else {
             return array();
         }
+    }
+
+    public function getOptionsArray($country = null)
+    {
+        $it = $this->getOptions($eduid);
+        $options = array();
+        while ($row = $it->next()) {
+            $options[$row['id']] = $row['field'];
+        }
+        return $options;
     }
 
     public function getIDs($text, $mode, $country = null)
