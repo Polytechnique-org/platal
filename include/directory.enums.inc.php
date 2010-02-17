@@ -29,6 +29,8 @@ class DirEnum
      * Each of these consts contains the basename of the class (its full name
      * being DE_$basename).
      */
+    const NAMETYPES      = 'nametypes';
+
     const BINETS         = 'binets';
     const GROUPESX       = 'groupesx';
     const SECTIONS       = 'sections';
@@ -256,6 +258,15 @@ abstract class DirEnumeration
                                       ORDER BY ' . $this->valfield);
     }
     // }}}
+}
+// }}}
+
+// {{{ class DE_NameTypes
+// returns 'system' names ('lastname', 'lastname_marital', ...)
+class DE_NameTypes extends DirEnumeration
+{
+    protected $from     = 'profile_name_enum';
+    protected $valfield = 'type';
 }
 // }}}
 
