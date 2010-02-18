@@ -252,7 +252,7 @@ class Watch
     {
         $obj = new $class();
         $uf = new UserFilter($obj->getCondition($user, $date),
-                             array($obj->getOrder(), new UFO_Name(UserFilter::DN_SORT)));
+                             array($obj->getOrder(), new UFO_Name(Profile::DN_SORT)));
         $users = $uf->getUsers();
         if (count($users) == 0) {
             return null;
