@@ -60,7 +60,7 @@ class DirEnum
 
     /** Retrieves all options for a given type
      * @param $type Type of enum for which options are requested
-     * @return XorgDbIterator over the results
+     * @return Array of the results
      */
     static public function getOptions()
     {
@@ -70,14 +70,18 @@ class DirEnum
             self::init($type);
         }
         $obj = self::$enumerations[$type];
-        return call_user_func_array(array($obj, 'getOptions'), $args);
+        if ($obj->capabilities & DirEnumeration::HAS_OPTIONS) {
+            return call_user_func_array(array($obj, 'getOptions'), $args);
+        } else {
+            return array();
+        }
     }
 
     /** Retrieves all options for a given type
      * @param $type Type of enum for which options are requested
-     * @return Array of the results the results
+     * @return PlIterator over the results
      */
-    static public function getOptionsArray()
+    static public function getOptionsIter()
     {
         $args = func_get_args();
         $type = array_shift($args);
@@ -85,13 +89,17 @@ class DirEnum
             self::init($type);
         }
         $obj = self::$enumerations[$type];
-        return call_user_func_array(array($obj, 'getOptionsArray'), $args);
+        if ($obj->capabilities & DirEnumeration::HAS_OPTIONS) {
+            return call_user_func_array(array($obj, 'getOptionsIter'), $args);
+        } else {
+            return PlIteratorUtils::fromArray(array());
+        }
     }
 
     /** Retrieves all options with number of profiles for autocompletion
      * @param $type Type of enum for which options are requested
      * @param $text Text to autocomplete
-     * @return XorgDbIterator over the results
+     * @return PlIterator over the results
      */
     static public function getAutoComplete()
     {
@@ -101,7 +109,11 @@ class DirEnum
             self::init($type);
         }
         $obj = self::$enumerations[$type];
-        return call_user_func_array(array($obj, 'getAutoComplete'), $args);
+        if ($obj->capabilities & DirEnumeration::HAS_AUTOCOMP) {
+            return call_user_func_array(array($obj, 'getAutoComplete'), $args);
+        } else {
+            return PlIteratorUtils::fromArray(array());
+        }
     }
 
     /** Retrieves a list of IDs for a given type
@@ -117,7 +129,11 @@ class DirEnum
             self::init($type);
         }
         $obj = self::$enumerations[$type];
-        return call_user_func_array(array($obj, 'getIDs'), $args);
+        if ($obj->capabilities & DirEnumeration::HAS_OPTIONS) {
+            return call_user_func_array(array($obj, 'getIDs'), $args);
+        } else {
+            return array();
+        }
     }
 }
 // }}}
@@ -125,6 +141,13 @@ class DirEnum
 // {{{ class DirEnumeration
 abstract class DirEnumeration
 {
+    const AUTOCOMPLETE_LIMIT = 11;
+
+    const HAS_OPTIONS  = 0x001;
+    const HAS_AUTOCOMP = 0x002;
+
+    public $capabilities = 0x003; // self::HAS_OPTIONS | self::HAS_AUTOCOMP;
+
     /** An internal array of ID => optionTxt
      */
     protected $options = null;
@@ -160,14 +183,9 @@ abstract class DirEnumeration
         return $this->options;
     }
 
-    public function getOptionsArray()
+    public function getOptionsIter()
     {
-        $this->_fetchOptions();
-        $options = array();
-        while ($row = $this->options->next()) {
-            $options[$row['id']] = $row['field'];
-        }
-        return $options;
+        return PlIteratorUtils::fromArray(self::expandArray($this->getOptions()), 1, true);
     }
 
     // {{{ function getIDs
@@ -214,6 +232,18 @@ abstract class DirEnumeration
         return $tests;
     }
 
+    static protected function expandArray(array $tab, $keyname = 'id', $valname = 'field')
+    {
+        $res = array();
+        foreach ($tab as $key => $val) {
+            $res[$key] = array(
+                            $keyname => $key,
+                            $valname => $val,
+                        );
+        }
+        return $res;
+    }
+
     // {{{ function getAutoComplete
     public function getAutoComplete($text)
     {
@@ -240,7 +270,7 @@ abstract class DirEnumeration
                                WHERE ' . $where . '
                             GROUP BY ' . $this->valfield . '
                             ORDER BY ' . ($this->ac_distinct ? 'nb DESC' : $this->valfield) . '
-                               LIMIT 11');
+                               LIMIT ' . self::AUTOCOMPLETE_LIMIT);
     }
     // }}}
 
@@ -249,15 +279,126 @@ abstract class DirEnumeration
      */
     protected function loadOptions()
     {
-        $this->options = XDB::iterator('SELECT ' . $this->valfield . ' AS field,
-                                               ' . $this->idfield . ' AS id
-                                          FROM ' . $this->from . '
-                                               ' . $this->join . '
-                                               ' . $this->where . '
-                                      GROUP BY ' . $this->valfield . '
-                                      ORDER BY ' . $this->valfield);
+        $this->options = XDB::fetchAllAssoc('id', 'SELECT ' . $this->valfield . ' AS field,
+                                                          ' . $this->idfield . ' AS id
+                                                     FROM ' . $this->from . '
+                                                          ' . $this->join . '
+                                                          ' . $this->where . '
+                                                 GROUP BY ' . $this->valfield . '
+                                                 ORDER BY ' . $this->valfield);
     }
     // }}}
+}
+// }}}
+
+// {{{ class DE_WithSuboption
+/** A class for DirEnum with possibility to select only suboptions for a given parameter (country, school, ...)
+ */
+abstract class DE_WithSuboption extends DirEnumeration
+{
+    protected $optfield;
+
+    protected $suboptions = null;
+
+    protected function loadOptions()
+    {
+        $opts = XDB::fetchAllAssoc('id', 'SELECT ' . $this->valfield . ' AS field,
+                                                 ' . $this->optfield . ' AS subid,
+                                                 ' . $this->idfield . ' AS id
+                                            FROM ' . $this->from . '
+                                                 ' . $this->join . '
+                                                 ' . $this->where . '
+                                        GROUP BY ' . $this->valfield . '
+                                        ORDER BY ' . $this->valfield);
+        $this->options = array();
+        $this->suboptions = array();
+        foreach ($opts as $id => $opt) {
+            $this->options[$id] = $opt['field'];
+            if (!array_key_exists($opt['subid'], $this->suboptions)) {
+                $this->suboptions[$opt['subid']] = array();
+            }
+            $this->suboptions[$opt['subid']][$id] = $opt['field'];
+        }
+    }
+
+    public function getOptions($subid = null)
+    {
+        $this->_fetchOptions();
+        if ($subid == null) {
+            return $this->options;
+        } else if (array_key_exists($subid, $this->suboptions)) {
+            return $this->suboptions[$subid];
+        } else {
+            return false;
+        }
+    }
+
+    public function getOptionsIter($subid = null)
+    {
+        return PlIteratorUtils::fromArray(self::expandArray($this->getOptions($subid)), 1, true);
+    }
+
+    public function getIDs($text, $mode, $subid = null)
+    {
+        if ($mode == XDB::WILDCARD_EXACT) {
+            $options = $this->getOptions($subid);
+            return array_keys($options, $text);
+        } else {
+            if ($this->where == null) {
+                $where = 'WHERE ';
+            } else {
+                $where = $this->where . ' AND ';
+            }
+            if ($subid != null && array_key_exists($subid, $this->suboptions)) {
+                $where .= XDB::format($this->optfield . ' = {?} AND ', $subid);
+            }
+
+            $conds = array();
+            $conds[] = $this->valfield . XDB::formatWildcards($mode, $text);
+            if ($this->valfield2 != null) {
+                $conds[] = $this->valfield2 . XDB::formatWildcards($mode, $text);
+            }
+            $where .= '(' . implode(' OR ', $conds) . ')';
+
+            return XDB::fetchColumn('SELECT ' . $this->idfield . '
+                                       FROM ' . $this->from . '
+                                            ' . $this->join . '
+                                            ' . $where . '
+                                   GROUP BY ' . $this->idfield);
+        }
+    }
+
+    public function getAutoComplete($text, $subid = null)
+    {
+        $text = str_replace(array('%', '_'), '', $text);
+
+        if (is_null($this->ac_where) || $this->ac_where == '') {
+            $where = '';
+        } else {
+            $where = $this->ac_where . ' AND ';
+        }
+
+        if ($subid != null && array_key_exists($subid, $this->suboptions)) {
+            $where .= XDB::format($this->optfield . ' = {?} AND ', $subid);
+        }
+
+        $tests = $this->mkTests($this->valfield, $text);
+        if (!is_null($this->valfield2)) {
+            $tests = array_merge($tests, $this->mkTests($this->valfield2, $text));
+        }
+
+        $where .= '(' . implode(' OR ', $tests) . ')';
+
+        return XDB::iterator('SELECT ' . $this->valfield . ' AS field'
+                                       . ($this->ac_distinct ? (', COUNT(DISTINCT ' . $this->ac_unique . ') AS nb') : '')
+                                       . ($this->ac_withid ? (', ' . $this->idfield . ' AS id') : '') . '
+                                FROM ' . $this->from . '
+                                     ' . $this->ac_join . '
+                               WHERE ' . $where . '
+                            GROUP BY ' . $this->valfield . '
+                            ORDER BY ' . ($this->ac_distinct ? 'nb DESC' : $this->valfield) . '
+                               LIMIT ' . self::AUTOCOMPLETE_LIMIT);
+    }
 }
 // }}}
 
@@ -265,6 +406,8 @@ abstract class DirEnumeration
 // returns 'system' names ('lastname', 'lastname_marital', ...)
 class DE_NameTypes extends DirEnumeration
 {
+    public $capabilities = self::HAS_OPTIONS;
+
     protected $from     = 'profile_name_enum';
     protected $valfield = 'type';
 }
@@ -295,16 +438,16 @@ class DE_Sections extends DirEnumeration
 // {{{ class DE_GroupesX
 class DE_GroupesX extends DirEnumeration
 {
-    protected $idfield   = 'asso.id';
-    protected $valfield  = 'asso.nom';
-    protected $valfield2 = 'asso.diminutif';
-    protected $from      = 'groups AS asso';
+    protected $idfield   = 'groups.id';
+    protected $valfield  = 'groups.nom';
+    protected $valfield2 = 'groups.diminutif';
+    protected $from      = 'groups';
     protected $where     = 'WHERE (cat = \'GroupesX\' OR cat = \'Institutions\') AND pub = \'public\'';
 
-    protected $ac_join   = "INNER JOIN group_members AS memb ON (asso.id = memb.asso_id
-                                    AND (asso.cat = 'GroupesX' OR asso.cat = 'Institutions')
-                                    AND asso.pub = 'public')";
-    protected $ac_unique = 'memb.uid';
+    protected $ac_join   = "INNER JOIN group_members ON (groups.id = memb.asso_id
+                                    AND (groups.cat = 'GroupesX' OR groups.cat = 'Institutions')
+                                    AND groups.pub = 'public')";
+    protected $ac_unique = 'group_members.uid';
 }
 // }}}
 
@@ -313,8 +456,8 @@ class DE_GroupesX extends DirEnumeration
 // {{{ class DE_EducationSchools
 class DE_EducationSchools extends DirEnumeration
 {
-    protected $valfield  = 'name';
-    protected $valfield2 = 'abbreviation';
+    protected $valfield  = 'profile_education_enum.name';
+    protected $valfield2 = 'profile_education_enum.abbreviation';
     protected $from      = 'profile_education_enum';
 
     protected $ac_join   = 'INNER JOIN profile_education ON (profile_education.eduid = profile_education_enum.id)';
@@ -325,73 +468,21 @@ class DE_EducationSchools extends DirEnumeration
 // {{{ class DE_EducationDegrees
 class DE_EducationDegrees extends DirEnumeration
 {
+    public $capabilities = self::HAS_OPTIONS;
+
+    protected $idfield  = 'profile_education_degree.degreeid';
+    protected $optfield = 'profile_education_degree.eduid';
+    protected $valfield = 'profile_education_degree_enum.degree';
     protected $from = 'profile_education_degree_enum';
-    protected $valfield = 'degree';
+    protected $join = 'INNER JOIN profile_education_degree ON (profile_education_degree.degreeid = profile_education_degree_enum.id)';
 
-    protected $suboptions = array();
-
-    protected function loadOptions()
-    {
-        $res = XDB::query('SELECT ped.eduid, ped.degreeid, pede.degree
-                             FROM profile_education_enum AS pee
-                        LEFT JOIN profile_education_degree AS ped ON (pee.id = ped.eduid)
-                        LEFT JOIN profile_education_degree_enum AS pede ON (ped.degreeid = pede.id)
-                         ORDER BY pede.degree');
-        $options = array();
-        foreach($res->fetchAllRow() as $row) {
-            list($eduid, $degreeid, $name) = $row;
-            $options[$degreeid] = array('id' => $degreeid, 'field' => $name);
-            if (!array_key_exists($eduid, $this->suboptions)) {
-                $this->suboptions[$eduid] = array();
-            }
-            $this->suboptions[$eduid][] = array('id' => $degreeid, 'field' => $name);
-        }
-        $this->options = PlIteratorUtils::fromArray($options, 1, true);
-    }
-
-    public function getOptions($eduid = null)
-    {
-        $this->_fetchOptions();
-        if ($eduid == null) {
-            return $this->options;
-        }
-        if (array_key_exists($eduid, $this->suboptions)) {
-            return PlIteratorUtils::fromArray($this->suboptions[$eduid], 1, true);
-        } else {
-            return array();
-        }
-    }
-
-    public function getOptionsArray($eduid = null)
-    {
-        $it = $this->getOptions($eduid);
-        $options = array();
-        while ($row = $it->next()) {
-            $options[$row['id']] = $row['field'];
-        }
-        return $options;
-    }
-
-    public function getIDs($text, $mode, $eduid = null)
-    {
-        if ($eduid == null) {
-            return XDB::fetchColumn('SELECT id
-                                       FROM profile_education_degree_enum
-                                       WHERE degree ' . XDB::formatWildcards($mode, $text));
-        } else {
-            return XDB::fetchColumn('SELECT pede.id
-                                       FROM profile_education_degree AS ped
-                                  LEFT JOIN profile_education_degree_enum AS pede ON (ped.degreeid = pede.id)
-                                      WHERE ped.eduid = {?} AND pede.degree ' . XDB::formatWildcards($mode, $text), $eduid);
-        }
-    }
 }
 // }}}
 
 // {{{ class DE_EducationFields
 class DE_EducationFields extends DirEnumeration
 {
-    protected $valfield = 'field';
+    protected $valfield = 'profile_education_field_enum.field';
     protected $from     = 'profile_education_field_enum';
 
     protected $ac_join   = 'INNER JOIN profile_education ON (profile_education.fieldid = profile_education_field_enum.id)';
@@ -404,13 +495,13 @@ class DE_EducationFields extends DirEnumeration
 // {{{ class DE_Nationalities
 class DE_Nationalities extends DirEnumeration
 {
-    protected $idfield   = 'iso_3166_1_a2';
-    protected $valfield  = 'nationalityFR';
-    protected $valfield2 = 'nationality';
-    protected $from      = 'geoloc_countries AS gc';
-    protected $join      = 'INNER JOIN profiles AS p ON (gc.iso_3166_1_a2 IN (p.nationality1, p.nationality2, p.nationality3))';
+    protected $idfield   = 'geoloc_countries.iso_3166_1_a2';
+    protected $valfield  = 'geoloc_countries.nationalityFR';
+    protected $valfield2 = 'geoloc_countries.nationality';
+    protected $from      = 'geoloc_countries';
+    protected $join      = 'INNER JOIN profiles ON (geoloc_countries.iso_3166_1_a2 IN (profiles.nationality1, profiles.nationality2, profiles.nationality3))';
 
-    protected $ac_join   = 'INNER JOIN profiles AS p ON (gc.iso_3166_1_a2 IN (p.nationality1, p.nationality2, p.nationality3))';
+    protected $ac_join   = 'INNER JOIN profiles ON (geoloc_countries.iso_3166_1_a2 IN (profiles.nationality1, profiles.nationality2, profiles.nationality3))';
     protected $ac_unique = 'profiles.pid';
 }
 // }}}
@@ -418,9 +509,9 @@ class DE_Nationalities extends DirEnumeration
 // {{{ class DE_Countries
 class DE_Countries extends DirEnumeration
 {
-    protected $idfield   = 'iso_3166_1_a2';
-    protected $valfield  = 'countryFR';
-    protected $valfield2 = 'country';
+    protected $idfield   = 'geoloc_countries.iso_3166_1_a2';
+    protected $valfield  = 'geoloc_countries.countryFR';
+    protected $valfield2 = 'geoloc_countries.country';
     protected $from      = 'geoloc_countries';
 
     protected $ac_join   = 'INNER JOIN profile_addresses ON (geoloc_countries.iso_3166_1_a2 = profile_addresses.countryFR';
@@ -429,75 +520,26 @@ class DE_Countries extends DirEnumeration
 // }}}
 
 // {{{ class DE_AdminAreas
-class DE_AdminAreas extends DirEnumeration
+class DE_AdminAreas extends DE_WithSuboption
 {
-    protected $suboptions = array();
+    protected $idfield   = 'geoloc_administrativeareas.id';
+    protected $optfield  = 'geoloc_administrativeareas.country';
+    protected $valfield  = 'geoloc_administrativeareas.name';
+    protected $from      = 'geoloc_administrativeareas';
 
-    protected function loadOptions()
-    {
-        $res = XDB::query('SELECT id, name AS field, country
-                             FROM geoloc_administrativeareas
-                         GROUP BY name
-                         ORDER BY name');
-        $options = array();
-        foreach($res->fetchAllRow() as $row) {
-            list($id, $field, $country) = $row;
-            $options[$id] = array('id' => $id, 'field' => $field);
-            if (!array_key_exists($country, $this->suboptions)) {
-                $this->suboptions[$country] = array();
-            }
-            $this->suboptions[$country][] = array('id' => $id, 'field' => $field);
-        }
-        $this->options = PlIteratorUtils::fromArray($options, 1, true);
-    }
-
-    public function getOptions($country = null)
-    {
-        $this->_fetchOptions();
-
-        if ($country == null) {
-            return $this->options;
-        }
-        if (array_key_exists($country, $this->suboptions)) {
-            return PlIteratorUtils::fromArray($this->suboptions[$country], 1, true);
-        } else {
-            return array();
-        }
-    }
-
-    public function getOptionsArray($country = null)
-    {
-        $it = $this->getOptions($eduid);
-        $options = array();
-        while ($row = $it->next()) {
-            $options[$row['id']] = $row['field'];
-        }
-        return $options;
-    }
-
-    public function getIDs($text, $mode, $country = null)
-    {
-        if ($country == null) {
-            return XDB::fetchColumn('SELECT id
-                                       FROM geoloc_administrativeareas
-                                       WHERE name ' . XDB::formatWildcards($mode, $text));
-        } else {
-            return XDB::fetchColumn('SELECT id
-                                       FROM geoloc_administrativeareas
-                                      WHERE country = {?} AND name' . XDB::formatWildcards($mode, $text), $country);
-        }
-    }
+    protected $ac_join   = 'INNER JOIN profile_addresses ON (profile_addresses.administrativeAreaId = geoloc_administrativeareas.id)';
+    protected $ac_unique = 'profile_addresses.pid';
 }
 // }}}
 
 // {{{ class DE_Localities
 class DE_Localities extends DirEnumeration
 {
-    protected $valfield  = 'gl.name';
-    protected $from      = 'geoloc_localities AS gl';
+    protected $valfield  = 'geoloc_localities.name';
+    protected $from      = 'geoloc_localities';
 
-    protected $ac_join   = 'profile_addresses AS pa ON (pa.localityID = gl.id)';
-    protected $ac_unique = 'pa.pid';
+    protected $ac_join   = 'profile_addresses ON (profile_addresses.localityID = geoloc_localities.id)';
+    protected $ac_unique = 'profile_addresses.pid';
 }
 // }}}
 
@@ -506,19 +548,19 @@ class DE_Localities extends DirEnumeration
 // {{{ class DE_Companies
 class DE_Companies extends DirEnumeration
 {
-    protected $valfield  = 'pje.name';
-    protected $valfield2 = 'pje.acronym';
-    protected $from      = 'profile_job_enum AS pje';
+    protected $valfield  = 'profile_job_enum.name';
+    protected $valfield2 = 'profile_job_enum.acronym';
+    protected $from      = 'profile_job_enum';
 
-    protected $ac_join   = 'INNER JOIN profile_job AS pj ON (pj.jobid = pje.id)';
-    protected $ac_unique = 'pj.uid';
+    protected $ac_join   = 'INNER JOIN profile_job ON (profile_job.jobid = profile_job_enum.id)';
+    protected $ac_unique = 'profile_job.uid';
 }
 // }}}
 
 // {{{ class DE_Sectors
 class DE_Sectors extends DirEnumeration
 {
-    protected $valfield  = 'name';
+    protected $valfield  = 'profile_job_sector_enum.name';
     protected $from      = 'profile_job_sector_enum';
 
     protected $ac_join   = 'INNER JOIN profile_job ON (profile_job_sector_enum.id = profile_job.sectorid)';
@@ -529,11 +571,11 @@ class DE_Sectors extends DirEnumeration
 // {{{ class DE_JobDescription
 class DE_JobDescription
 {
-    protected $valfield = 'pj.description';
-    protected $from     = 'profile_job AS pj';
-    protected $idfield  = 'pj.pid';
+    protected $valfield = 'profile_job.description';
+    protected $from     = 'profile_job';
+    protected $idfield  = 'profile_job.pid';
 
-    protected $ac_unique = 'pj.pid';
+    protected $ac_unique = 'profile_job.pid';
 }
 // }}}
 

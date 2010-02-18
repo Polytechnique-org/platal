@@ -248,44 +248,44 @@ class SearchModule extends PLModule
 
         switch ($type) {
         case 'binet':
-            $ids = DirEnum::getOptions(DirEnum::BINETS);
+            $ids = DirEnum::getOptionsIter(DirEnum::BINETS);
             break;
           case 'networking_type':
-            $ids = DirEnum::getOptions(DirEnum::NETWORKS);
+            $ids = DirEnum::getOptionsIter(DirEnum::NETWORKS);
             break;
           case 'country':
-            $ids = DirEnum::getOptions(DirEnum::COUNTRIES);
+            $ids = DirEnum::getOptionsIter(DirEnum::COUNTRIES);
             $page->assign('onchange', 'changeCountry(this.value)');
             break;
           case 'diploma':
             if (Env::has('school') && Env::i('school') != 0) {
-              $ids = DirEnum::getOptions(DirEnum::EDUDEGREES, Env::i('school'));
+              $ids = DirEnum::getOptionsIter(DirEnum::EDUDEGREES, Env::i('school'));
             } else {
-              $ids = DirEnum::getOptions(DirEnum::EDUDEGREES);
+              $ids = DirEnum::getOptionsIter(DirEnum::EDUDEGREES);
             }
             break;
           case 'groupex':
-            $ids = DirEnum::getOptions(DirEnum::GROUPESX);
+            $ids = DirEnum::getOptionsIter(DirEnum::GROUPESX);
             break;
           case 'nationalite':
-            $ids = DirEnum::getOptions(DirEnum::NATIONALITIES);
+            $ids = DirEnum::getOptionsIter(DirEnum::NATIONALITIES);
             break;
         case 'region':
             if ($isset($_REQUEST['country'])) {
-                $ids = DirEnum::getOptions(DirEnum::ADMINAREAS, $_REQUEST['country']);
+                $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS, $_REQUEST['country']);
             } else {
-                $ids = DirEnum::getOptions(DirEnum::ADMINAREAS);
+                $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS);
             }
             break;
           case 'school':
-            $ids = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
+            $ids = DirEnum::getOptionsIter(DirEnum::EDUSCHOOLS);
             $page->assign('onchange', 'changeSchool(this.value)');
             break;
           case 'section':
-            $ids = DirEnum::getOptions(DirEnum::SECTIONS);
+            $ids = DirEnum::getOptionsIter(DirEnum::SECTIONS);
             break;
           case 'secteur':
-            $ids = DirEnum::getOptions(DirEnum::SECTORS);
+            $ids = DirEnum::getOptionsIter(DirEnum::SECTORS);
             break;
           default: exit();
         }

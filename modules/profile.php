@@ -643,7 +643,7 @@ class ProfileModule extends PLModule
         require_once "directory.enums.inc.php";
 
         // Retrieval of sector names
-        $sectors = DirEnum::getOptionsArray(DirEnum::SECTORS);
+        $sectors = DirEnum::getOptions(DirEnum::SECTORS);
         $sectors[''] = '';
         $page->assign_by_ref('sectors', $sectors);
 
