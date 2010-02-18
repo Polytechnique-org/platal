@@ -369,6 +369,26 @@ abstract class PlUser
      * served locally by plat/al.
      */
     abstract public static function isForeignEmailAddress($email);
+
+    /**
+     * Creates a user forlive identifier from:
+     * @param $firstname User's firstname
+     * @param $lasttname User's lastname
+     * @param $category  User's promotion or type of account
+     */
+    public static function makeHrid($firstname, $lastname, $category)
+    {
+        assert(trim($category));
+        $plainFirstname = replace_accent(trim($firstname));
+        $plainLastname  = replace_accent(trim($lastname));
+
+        $hrid = strtolower($plainFirstname . '.' . $plainLastname . '.' . trim($category));
+        $hrid = str_replace(' ', '-', $hrid);
+        $hrid = str_replace("'", '', $hrid);
+        return $hrid;
+    }
+
+
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

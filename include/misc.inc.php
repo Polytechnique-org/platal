@@ -208,18 +208,6 @@ function make_firstname_case($prenom)
     return implode('-',$upieces);
 }
 
-
-function make_forlife($prenom, $nom, $promo)
-{
-    $prenomUS = replace_accent(trim($prenom));
-    $nomUS    = replace_accent(trim($nom));
-
-    $forlife = strtolower($prenomUS.".".$nomUS.".".$promo);
-    $forlife = str_replace(" ","-",$forlife);
-    $forlife = str_replace("'","",$forlife);
-    return $forlife;
-}
-
 /** Convert ip to uint (to store it in a database)
  */
 function ip_to_uint($ip)
