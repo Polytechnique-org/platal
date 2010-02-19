@@ -84,8 +84,28 @@ class PlIteratorUtils
     {
         return new PlMapIterator($iterator, $callback);
     }
-}
 
+    /** Build an iterator whose values are iterators too; such a 'subIterator' will end
+     * when the value of $callback changes
+     * @param iterator The source iterator
+     * @param callback The callback for detecting changes.
+     * @return an iterator
+     */
+    public static function subIterator(PlIterator $iterator, $callback)
+    {
+        return new SubIterator($iterator, $callback);
+    }
+
+    /** Returns the callback for '$x -> $x[$key]';
+     * @param $key the index to retrieve in arrays
+     * @return a callback
+     */
+    public static function arrayValueCallback($key)
+    {
+        $callback = new _GetArrayValueCallback($key);
+        return array($callback, 'get');
+    }
+}
 
 /** Iterates over an array.
  */
@@ -385,6 +405,140 @@ class PlMapIterator implements PlIterator
     }
 }
 
+class PlSubIterator implements PlIterator
+{
+    private $source;
+    private $callback;
+    private $next = null; // The next item, if it has been fetched too early by a subiterator
+
+    public function __construct(PlIterator $source, $callback)
+    {
+        $this->source = $source;
+        $this->callback = $callback;
+    }
+
+    public function next()
+    {
+        if ($this->last()) {
+            return null;
+        } else {
+            return new PlInnerSubIterator($this->source, $this->callback, $this, $this->next);
+        }
+    }
+
+    /** This will always be a too big number, but the actual result can't be easily computed
+     */
+    public function total()
+    {
+        return $this->source->total();
+    }
+
+    public function last()
+    {
+        return ($this->source->last() && $this->next == null);
+    }
+
+    // Called by a subiterator to "rewind" the core iterator
+    public function setNext($item)
+    {
+        $this->next = $item;
+    }
+}
+
+class PlInnerSubIterator implements PlIterator
+{
+    private $source;
+    private $callback;
+    private $parent;
+
+    private $next; // Not null if the source has to be "rewinded"
+
+    private $curval = null;
+    private $curelt = null;
+    private $stepped = false;
+    private $over = false;
+
+    public function __construct(PlIterator $source, $callback, PlSubIterator $parent, $next = null)
+    {
+        $this->source = $source;
+        $this->callback = $callback;
+        $this->parent = $parent;
+        $this->next = $next;
+    }
+
+    public function value()
+    {
+        $this->_step();
+        return $this->curval;
+    }
+
+    // Move one step, if the current element has been used
+    private function _step()
+    {
+        if ($this->stepped) {
+            return;
+        }
+
+        if ($this->next != null) {
+            $this->curelt = $this->next;
+            $this->next = null;
+        } else {
+            $elt = $this->source->next();
+        }
+        $this->stepped = true;
+    }
+
+    public function next()
+    {
+        $this->_step();
+        $this->stepped = false;
+
+        if ($this->elt) {
+            $val = call_user_func($this->callback, $this->elt);
+            if ($val == $this->curval) {
+                $this->curval = $val;
+                return $this->elt;
+            } else {
+                $this->parent->setNext($this->elt);
+            }
+        }
+        $this->over = true;
+        return null;
+    }
+
+    /** This will always be a too big number, but the actual result can't be easily computed
+     */
+    public function total()
+    {
+        return $this->source->total();
+    }
+
+    public function last()
+    {
+        return $this->over;
+    }
+
+}
+
+// Wrapper class for 'arrayValueCallback' (get field $key of the given array)
+class _GetArrayValueCallback
+{
+    private $key;
+
+    public function __construct($key)
+    {
+        $this->key = $key;
+    }
+
+    public function get(array $arr)
+    {
+        if (array_key_exists($key, $arr)) {
+            return $arr[$key];
+        } else {
+            return null;
+        }
+    }
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
