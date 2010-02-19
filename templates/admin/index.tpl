@@ -94,7 +94,7 @@
   <tr class="impair">
     <td class="titre">Comptes</td>
     <td>
-      <a href="admin/promo">Ajout promotion</a>
+      <a href="admin/add_accounts">Ajout de comptes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/user">Édition</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;

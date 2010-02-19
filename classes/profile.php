@@ -49,6 +49,11 @@ class Profile
     const DN_PUBLIC    = 'public_name';
     const DN_SHORT     = 'short_name';
     const DN_SORT      = 'sort_name';
+    /* education related names */
+    const EDU_X    = 'École polytechnique';
+    const DEGREE_X = 'Ingénieur';
+    const DEGREE_M = 'Master';
+    const DEGREE_D = 'Doctorat';
 
     static public $name_variants = array(
             self::LASTNAME => array(self::VN_MARITAL, self::VN_ORDINARY),

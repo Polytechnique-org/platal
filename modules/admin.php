@@ -42,7 +42,7 @@ class AdminModule extends PLModule
             'admin/skins'                  => $this->make_hook('skins',                  AUTH_MDP, 'admin'),
             'admin/synchro_ax'             => $this->make_hook('synchro_ax',             AUTH_MDP, 'admin'),
             'admin/user'                   => $this->make_hook('user',                   AUTH_MDP, 'admin'),
-            'admin/promo'                  => $this->make_hook('promo',                  AUTH_MDP, 'admin'),
+            'admin/add_accounts'           => $this->make_hook('add_accounts',           AUTH_MDP, 'admin'),
             'admin/validate'               => $this->make_hook('validate',               AUTH_MDP, 'admin'),
             'admin/validate/answers'       => $this->make_hook('validate_answers',       AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki',                   AUTH_MDP, 'admin'),
@@ -645,21 +645,16 @@ class AdminModule extends PLModule
         $page->assign('bans', $bans);
     }
 
-    function getHruid($line, $key, $relation)
+    private static function getHrid($firstname, $lastname, $promo)
     {
-        $prenom = CSVImporter::getValue($line, 'prenom', $relation['prenom']);
-        $nom = CSVImporter::getValue($line, 'nom', $relation['nom']);
-        $promo = CSVImporter::getValue($line, 'promo', $relation['promo']);
-
-        if ($prenom != 'NULL' && $nom != 'NULL' && $promo != 'NULL') {
-            return make_forlife($prenom, $nom, $promo);
+        if ($firstname != null && $lastname != null && $promo != null) {
+            return User::makeForlife($firstname, $lastname, $promo);
         }
         return null;
     }
 
-    function getMatricule($line, $key, $relation)
+    private static function getMatricule($mat)
     {
-        $mat = $line['matricule'];
         $year = intval(substr($mat, 0, 3));
         $rang = intval(substr($mat, 3, 3));
         if ($year > 200) { $year /= 10; };
@@ -670,40 +665,156 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_promo(&$page, $action = null, $promo = null)
+    private static function formatNewUser($infosLine, $separator, $promo, $size)
     {
-        if (Env::has('promo')) {
-            if(Env::i('promo') > 1900 && Env::i('promo') < 2050) {
-                $action = Env::v('valid_promo') == 'Ajouter des membres' ? 'add' : 'ax';
-                pl_redirect('admin/promo/' . $action . '/' . Env::i('promo'));
-            } else {
-                $page->trigError('Promotion non valide.');
+        $infos = explode($separator, $infosLine);
+        if (sizeof($infos) != $size) {
+            return false;
+        }
+
+        array_map('trim', $infos);
+        $hrid = self::getHrid($infos[1], $infos[0], $promo);
+        $res1 = XDB::query('SELECT  COUNT(*)
+                              FROM  accounts
+                             WHERE  hruid = {?}', $hrid);
+        $res2 = XDB::query('SELECT  COUNT(*)
+                              FROM  profiles
+                             WHERE  hrpid = {?}', $hrid);
+        if (is_null($hrid) || $res1->fetchOneCell() > 0 || $res2->fetchOneCell() > 0) {
+            $page->trigError("La ligne $line n'a pas été ajoutée.");
+            return false;
+        }
+        $infos['hrid'] = $hrid;
+        return $infos;
+    }
+
+    private static function formatSex(&$page, $sex, $line)
+    {
+        switch ($sex) {
+          case 'F':
+            return PlUser::GENDER_FEMALE;
+          case 'M':
+            return PlUser::GENDER_MALE;
+          default:
+            $page->trigError("La ligne $line n'a pas été ajoutée car le sexe $sex n'est pas pris en compte.");
+            return null;
+        }
+    }
+
+    private static function formatBirthDate($birthDate)
+    {
+        return date("Y-m-d", strtotime($birthDate));
+    }
+
+    function handler_add_accounts(&$page, $action = null, $promo = null)
+    {
+        $page->changeTpl('admin/add_accounts.tpl');
+
+        if (Env::has('add_type') && Env::has('people')) {
+            require_once 'directory.enums.inc.php';
+            $lines = explode("\n", Env::t('people'));
+            $separator = Env::t('separator');
+            $promotion = Env::i('promotion');
+            $nameTypes = DirEnum::getOptionsArray(DirEnum::NAMETYPES);
+            $nameTypes = array_flip($nameTypes);
+
+            if (Env::t('add_type') == 'promo') {
+                $type = 'x';
+                $eduSchools = DirEnum::getOptionsArray(DirEnum::EDUSCHOOLS);
+                $eduSchools = array_flip($eduSchools);
+                $eduDegrees = DirEnum::getOptionsArray(DirEnum::EDUDEGREES);
+                $eduDegrees = array_flip($eduDegrees);
+                var_dump($eduDegrees);
+                switch (Env::t('edu_type')) {
+                  case 'X':
+                    $degreeid = $eduDegrees[Profile::DEGREE_X];
+                    $entry_year = $promotion;
+                    $grad_year = $promotion + 3;
+                    $promo = 'X' . $promotion;
+                    break;
+                  case 'M':
+                    $degreeid = $eduDegrees[Profile::DEGREE_M];
+                    $grad_year = $promotion;
+                    $entry_year = $promotion - 2;
+                    $promo = 'M' . $promotion;
+                    break;
+                  case 'D':
+                    $degreeid = $eduDegrees[Profile::DEGREE_D];
+                    $grad_year = $promotion;
+                    $entry_year = $promotion - 3;
+                    $promo = 'D' . $promotion;
+                    break;
+                  default:
+                    $page->killError("La formation n'est pas reconnue:" . Env::t('edu_type') . '.');
+                }
+
+                foreach ($lines as $line) {
+                    if (($infos = self::formatNewUser($line, $separator, $promotion, 6))
+                        && ($sex = self::formatSex($page, $infos[3], $line))) {
+                        $name = $infos[1] . ' ' . $infos[0];
+                        $birthDate = self::formatBirthDate($infos[2]);
+                        $xorgId = self::getMatricule($infos[4]);
+
+                        XDB::execute('INSERT INTO  profiles (hrpid, xorg_id, ax_id, birthdate_ref, sex)
+                                           VALUES  ({?}, {?}, {?}, {?})',
+                                     $infos['hrid'], $xorgId, $infos[5], $birthDate, $sex);
+                        $pid = XDB::insertId();
+                        XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
+                                           VALUES  ({?}, {?}, {?})',
+                                     $pid, $infos[0], $nameTypes['name_ini']);
+                        XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
+                                           VALUES  ({?}, {?}, {?})',
+                                     $pid, $infos[1], $nameTypes['firstname_ini']);
+                        XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
+                                                                    directory_name, short_name, sort_name, promo)
+                                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                     $pid, $infos[1], $name, $name, $name, $name, $infos[0] . ' ' . $infos[1], $promo);
+                        XDB::execute('INSERT INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
+                                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
+                                     $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
+                        XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, display_name, sex)
+                                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                     $infos['hrid'], $type, 0, 'active', $name, $infos[1], $sex);
+                        $uid = XDB::insertId();
+                        XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
+                                           VALUES  ({?}, {?}, {?})',
+                                     $uid, $pid, 'owner');
+                    }
+                }
+            } else if (Env::t('add_type') == 'account') {
+                $type = Env::t('type');
+                foreach ($lines as $line) {
+                    if (($infos = self::formatNewUser($line, $separator, $type, 4))
+                        && ($sex = self::formatSex(&$page, $infos[3], $line))) {
+                        XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, display_name, sex)
+                                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                     $infos['hrid'], $type, 0, 'active', $infos[2], $infos[1] . ' ' . $infos[0], $infos[1], $sex);
+                    }
+                }
+            } else if (Env::t('add_type') == 'ax_id') {
+                $type = 'x';
+                foreach ($lines as $line) {
+                    if ($infos = self::formatNewUser($line, $separator, $promotion, 3)) {
+                        XDB::execute('UPDATE  profiles
+                                         SET  ax_id = {?}
+                                       WHERE  hrpid = {?}',
+                                     $infos[2], $infos['hrid']);
+                    }
+                }
             }
-        }
 
-        $page->changeTpl('admin/promo.tpl');
-        if ($promo > 1900 && $promo < 2050 && ($action == 'add' || $action == 'ax')) {
-            $page->assign('promo', $promo);
-        } else {
-            return;
+            if ($page->nb_errs == 0) {
+                $page->trigSuccess("L'opération a été effectuée avec succès.");
+            } else {
+                $page->trigSuccess("L'opération a été effectuée avec succès, sauf pour les "
+                                   . $page->nb_errs . 'erreurs signalées ci-dessus.');
+            }
+        } else if (Env::has('add_type')) {
+            $res = XDB::query('SELECT  type
+                                 FROM  account_types');
+            $page->assign('account_types', $res->fetchColumn());
+            $page->assign('add_type', Env::s('add_type'));
         }
-
-        $importer = new CSVImporter('auth_user_md5', 'matricule');
-        $importer->registerFunction('matricule', 'matricule Ecole vers X.org', array($this, 'getMatricule'));
-        switch ($action) {
-          case 'add':
-            $fields = array('hruid', 'nom', 'nom_ini', 'prenom', 'naissance_ini',
-                            'prenom_ini', 'promo', 'promo_sortie', 'flags',
-                            'matricule', 'matricule_ax', 'perms');
-            $importer->forceValue('hruid', array($this, 'getHruid'));
-            $importer->forceValue('promo', $promo);
-            $importer->forceValue('promo_sortie', $promo + 3);
-            break;
-          case 'ax':
-            $fields = array('matricule', 'matricule_ax');
-            break;
-        }
-        $importer->apply($page, "admin/promo/$action/$promo", $fields);
     }
 
     function handler_homonyms(&$page, $op = 'list', $target = null)
