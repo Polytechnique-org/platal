@@ -282,8 +282,7 @@ function set_alias_names(&$sn_new, $sn_old, $update_new = false, $new_alias = nu
                            VALUES  ({?}, 'alias', 'usage', {?})",
                      $new_alias, S::i('uid'));
     }
-    require_once('user.func.inc.php');
-    user_reindex(S::i('uid'));
+    Profile::rebuildSearchTokens(S::i('uid'));
     return $has_new;
 }
 

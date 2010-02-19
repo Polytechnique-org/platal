@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 require('./connect.db.inc.php');
-require('user.func.inc.php');
 
 ini_set('memory_limit', "16M");
 $globals->debug = 0; // Do not store backtraces
@@ -31,7 +30,7 @@ $res = XDB::iterRow("SELECT  user_id
 $i = 0;
 $n = $res->total();
 while ($uid = $res->next()->fetchOneCell()) {
-    user_reindex($uid);
+    Profile::rebuildSearchTokens($uid);
     printf("\r%u / %u",  ++$i, $n);
 }
 

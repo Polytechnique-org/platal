@@ -255,8 +255,6 @@ class RegisterModule extends PLModule
             return PL_FORBIDDEN;
         }
 
-        require_once('user.func.inc.php');
-
         // Retrieve the pre-registration information using the url-provided
         // authentication token.
         if ($hash) {
@@ -325,7 +323,7 @@ class RegisterModule extends PLModule
         }
 
         // Add the registration email address as first and only redirection.
-        require_once('emails.inc.php');
+        require_once 'emails.inc.php';
         $user = User::getSilent($uid);
         $redirect = new Redirect($user);
         $redirect->add_email($email);
@@ -342,7 +340,6 @@ class RegisterModule extends PLModule
                     AXLetter::subscribe(S::user()->id());
                     break;
                 case 'imap':
-                    require_once 'emails.inc.php';
                     $user = S::user();
                     $storage = new EmailStorage($user, 'imap');
                     $storage->activate();
@@ -378,8 +375,7 @@ class RegisterModule extends PLModule
         $mymail->send();
 
         // Index the user, to allow her to appear in searches.
-        require_once('user.func.inc.php');
-        user_reindex($uid);
+        Profile::rebuildSearchTokens($uid);
 
         // Notify other users which were watching for her arrival.
         require_once 'notifs.inc.php';
