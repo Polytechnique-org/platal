@@ -32,7 +32,7 @@ class RegisterModule extends PLModule
     function handler_register(&$page, $hash = null)
     {
         $alert     = null;
-        $sub_state = S::v('sub_state', Array());
+        $sub_state = S::v('sub_state', array());
         if (!isset($sub_state['step'])) {
             $sub_state['step'] = 0;
         }
@@ -40,7 +40,7 @@ class RegisterModule extends PLModule
             $sub_state['backs'] = array();
         }
         if (Get::has('back') && Get::i('back') < $sub_state['step']) {
-            $sub_state['step'] = max(0,Get::i('back'));
+            $sub_state['step'] = max(0, Get::i('back'));
             $state = $sub_state;
             unset($state['backs']);
             $sub_state['backs'][] = $state;
@@ -50,26 +50,38 @@ class RegisterModule extends PLModule
         }
 
         if ($hash) {
-            $res = XDB::query(
-                    "SELECT  m.uid, u.promo, u.nom, u.prenom, u.matricule, u.naissance_ini, FIND_IN_SET('watch', u.flags)
-                       FROM  register_marketing AS m
-                 INNER JOIN  auth_user_md5      AS u ON u.user_id = m.uid
-                      WHERE  m.hash={?}", $hash);
-            if (list($uid, $promo, $nom, $prenom, $ourmat, $naiss, $watch) = $res->fetchOneRow()) {
-                $sub_state['uid']    = $uid;
-                $sub_state['hash']   = $hash;
-                $sub_state['promo']  = $promo;
-                $sub_state['nom']    = $nom;
-                $sub_state['prenom'] = $prenom;
-                $sub_state['ourmat'] = $ourmat;
-                $sub_state['watch']  = $watch;
-                $sub_state['naissance_ini'] = $naiss;
+            require_once 'directory.enums.inc.php';
 
-                XDB::execute(
-                        "REPLACE INTO  register_mstats (uid,sender,success)
-                               SELECT  m.uid, m.sender, 0
+            $nameTypes = DirEnum::getOptionsArray(DirEnum::NAMETYPES);
+            $nameTypes = array_flip($nameTypes);
+            $res = XDB::query("SELECT  a.uid, pd.promo, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id,
+                                       p.birthdate_ref, FIND_IN_SET('watch', a.flags)
                                  FROM  register_marketing AS m
-                                WHERE  m.hash", $sub_state['hash']);
+                           INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
+                           INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.id AND FIND_IN_SET('owner', ap.perms))
+                           INNER JOIN  profiles           AS p   ON (p.pid = ap.id)
+                           INNER JOIN  profile_display    AS pd  ON (p.pid = pd.pid)
+                           INNER JOIN  profile_name       AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
+                           INNER JOIN  profile_name       AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
+                                WHERE  m.hash = {?}",
+                              $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
+
+            if (list($uid, $promo, $lastname, $firstname, $xorgid, $birthdate, $watch) = $res->fetchOneRow()) {
+                $sub_state['uid']           = $uid;
+                $sub_state['hash']          = $hash;
+                $sub_state['yearpromo']     = substr($promo, 1, 4);
+                $sub_state['promo']         = $promo;
+                $sub_state['lastname']      = $lastname;
+                $sub_state['firstname']     = $firstname;
+                $sub_state['xorgid']        = $xorgid;
+                $sub_state['birthdate_ref'] = $birthdate;
+                $sub_state['watch']         = $watch;
+
+                XDB::execute('REPLACE INTO  register_mstats (uid,sender,success)
+                                    SELECT  m.uid, m.sender, 0
+                                      FROM  register_marketing AS m
+                                     WHERE  m.hash',
+                             $sub_state['hash']);
             }
         }
 
@@ -89,21 +101,26 @@ class RegisterModule extends PLModule
 
             case 1:
                 if (Post::has('promo')) {
-                    $promo = Post::i('promo');
-                    $res = XDB::query("SELECT COUNT(*)
-                                         FROM auth_user_md5
-                                        WHERE  perms='pending' AND deces = '0000-00-00'
-                                               AND promo = {?}",
+                    $promo = Post::t('edu_type') . Post::t('promo');
+                    $yearpromo = Post::i('promo');
+                    $res = XDB::query("SELECT  COUNT(*)
+                                         FROM  accounts        AS a
+                                   INNER JOIN  account_profile AS pa ON (a.uid = pa.uid AND FIND_IN_SET('owner', ap.perms))
+                                   INNER JOIN  profile         AS p  ON (p.pid = pa.pid)
+                                   INNER JOIN  profile_display AS pd  ON (p.pid = pd.pid)
+                                        WHERE  a.state = 'pending' AND p.deathdate IS NULL AND pd.promo = {?}",
                                       $promo);
+
                     if (!$res->fetchOneCell()) {
-                        $err = "La promotion saisie est incorrecte ou tous les camarades de cette promotion sont inscrits !";
+                        $error = 'La promotion saisie est incorrecte ou tous les camarades de cette promotion sont inscrits !';
                     } else {
                         $sub_state['step']  = 2;
                         $sub_state['promo'] = $promo;
-                        if ($promo >= 1996 && $promo<2000) {
-                            $sub_state['mat'] = ($promo % 100)*10 . '???';
-                        } elseif($promo >= 2000) {
-                            $sub_state['mat'] = 100 + ($promo % 100) . '???';
+                        $sub_state['yearpromo'] = $yearpromo;
+                        if ($yearpromo >= 1996 && $yearpromo < 2000) {
+                            $sub_state['schoolid'] = ($yearpromo % 100) * 10 . '???';
+                        } elseif($yearpromo >= 2000) {
+                            $sub_state['schoolid'] = 100 + ($yearpromo % 100) . '???';
                         }
                     }
                 }
@@ -112,15 +129,17 @@ class RegisterModule extends PLModule
             case 2:
                 if (count($_POST)) {
                     $this->load('register.inc.php');
-                    $sub_state['prenom'] = Post::v('prenom');
-                    $sub_state['nom']    = Post::v('nom');
-                    $sub_state['mat']    = Post::v('mat');
-                    $err = check_new_user($sub_state);
+                    $sub_state['firstname'] = Post::v('firstname');
+                    $sub_state['lastname']  = Post::v('lastname');
+                    $sub_state['schoolid']  = Post::v('schoolid');
+                    $error = check_new_user($sub_state);
 
-                    if ($err !== true) { break; }
-                    $err = create_aliases($sub_state);
-                    if ($err === true) {
-                        unset($err);
+                    if ($error !== true) {
+                        break;
+                    }
+                    $error = create_aliases($sub_state);
+                    if ($error === true) {
+                        unset($error);
                         $sub_state['step'] = 3;
                     }
                 }
@@ -132,26 +151,29 @@ class RegisterModule extends PLModule
 
                     // Validate the email address format and domain.
                     require_once 'emails.inc.php';
+
                     if (!isvalid_email(Post::v('email'))) {
-                        $err[] = "Le champ 'Email' n'est pas valide.";
+                        $error[] = "Le champ 'Email' n'est pas valide.";
                     } elseif (!isvalid_email_redirection(Post::v('email'))) {
-                        $err[] = $sub_state['forlife']." doit renvoyer vers un email existant ".
-                            "valide, en particulier, il ne peut pas être renvoyé vers lui-même.";
+                        $error[] = $sub_state['forlife'] . ' doit renvoyer vers un email existant '
+                                 . 'valide, en particulier, il ne peut pas être renvoyé vers lui-même.';
                     }
 
                     // Validate the birthday format and range.
-                    $birth = trim(Env::v('naissance'));
+                    $birth = trim(Env::v('birthdate'));
                     if (!preg_match('@^[0-3]?\d/[01]?\d/(19|20)?\d{2}$@', $birth)) {
-                        $err[] = "La 'Date de naissance' n'est pas correcte.";
+                        $error[] = "La 'Date de naissance' n'est pas correcte.";
                     } else {
                         $birth = explode('/', $birth, 3);
-                        for ($i = 0; $i < 3; $i++)
+                        for ($i = 0; $i < 3; ++$i)
                             $birth[$i] = intval($birth[$i]);
-                        if ($birth[2] < 100) $birth[2] += 1900;
+                        if ($birth[2] < 100) {
+                            $birth[2] += 1900;
+                        }
                         $year  = $birth[2];
-                        $promo = (int)$sub_state['promo'];
+                        $promo = (int) $sub_state['promo'];
                         if ($year > $promo - 15 || $year < $promo - 30) {
-                            $err[] = "La 'Date de naissance' n'est pas correcte.";
+                            $error[] = "La 'Date de naissance' n'est pas correcte.";
                             $alert = "Date de naissance incorrecte à l'inscription - ";
                             $sub_state['wrong_naissance'] = $birth;
                         }
@@ -168,14 +190,14 @@ class RegisterModule extends PLModule
 
                     // Validate the password.
                     if (!Post::v('response2', false)) {
-                        $err[] = "Le mot de passe n'est pas valide.";
+                        $error[] = "Le mot de passe n'est pas valide.";
                     }
 
                     // Check if the given email is known as dangerous.
                     $res = XDB::query("SELECT  w.state, w.description
                                          FROM  email_watch AS w
                                         WHERE  w.email = {?} AND w.state != 'safe'",
-                                        Post::v('email'));
+                                      Post::v('email'));
                     $email_banned = false;
                     if ($res->numRows()) {
                         list($state, $description) = $res->fetchOneRow();
@@ -190,20 +212,21 @@ class RegisterModule extends PLModule
                     }
 
                     if (($ip_banned = check_ip('unsafe'))) {
-                        unset($err);
+                        unset($error);
                     }
 
-                    if (isset($err)) {
-                        $err = join('<br />', $err);
+                    if (isset($error)) {
+                        $error = join('<br />', $error);
                     } else {
-                        $sub_state['naissance'] = sprintf("%04d-%02d-%02d",
+                        $sub_state['birthdate'] = sprintf("%04d-%02d-%02d",
                                                           intval($birth[2]), intval($birth[1]), intval($birth[0]));
                         $sub_state['email']     = Post::v('email');
                         $sub_state['password']  = Post::v('response2');
 
                         // Update the current alert if the birthdate is incorrect,
                         // or if the IP address of the user has been banned.
-                        if ($sub_state['naissance_ini'] != '0000-00-00' && $sub_state['naissance'] != $sub_state['naissance_ini']) {
+                        if ($sub_state['birthdate_ref'] != '0000-00-00'
+                            && $sub_state['birthdate_ref'] != $sub_state['birthdate']) {
                             $alert .= "Date de naissance incorrecte à l'inscription - ";
                         }
                         if ($ip_banned) {
@@ -213,14 +236,14 @@ class RegisterModule extends PLModule
                         // Prevent banned user from actually registering; save the current state for others.
                         if ($email_banned || $ip_banned) {
                             global $globals;
-                            $err = "Une erreur s'est produite lors de l'inscription."
+                            $error = "Une erreur s'est produite lors de l'inscription."
                                  . " Merci de contacter <a href='mailto:register@{$globals->mail->domain}>"
                                  . " register@{$globals->mail->domain}</a>"
-                                 . " pour nous faire part de cette erreur";
+                                 . " pour nous faire part de cette erreur.";
                         } else {
                             $sub_state['step'] = 4;
                             if (count($sub_state['backs']) >= 3) {
-                                $alert .= "Fin d'une inscription hésitante";
+                                $alert .= "Fin d'une inscription hésitante.";
                             }
                             finish_ins($sub_state);
                         }
@@ -236,8 +259,8 @@ class RegisterModule extends PLModule
 
         $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
         $page->addJsLink('motdepasse.js');
-        if (isset($err)) {
-            $page->trigError($err);
+        if (isset($error)) {
+            $page->trigError($error);
         }
     }
 
@@ -249,12 +272,13 @@ class RegisterModule extends PLModule
         // Reject registration requests from unsafe IP addresses (and remove the
         // registration information from the database, to prevent IP changes).
         if (check_ip('unsafe')) {
-            send_warning_mail('Une IP surveillée a tenté de finaliser son inscription');
+            send_warning_mail('Une IP surveillée a tenté de finaliser son inscription.');
             XDB::execute("DELETE FROM  register_pending
                                 WHERE  hash = {?} AND hash != 'INSCRIT'", $hash);
             return PL_FORBIDDEN;
         }
 
+        // /* TODO */
         // Retrieve the pre-registration information using the url-provided
         // authentication token.
         if ($hash) {
