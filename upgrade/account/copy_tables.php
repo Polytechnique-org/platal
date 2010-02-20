@@ -57,7 +57,7 @@ copyTable('#groupex#.evenements_items', 'group_event_items');
 copyTable('#groupex#.evenements_participants', 'group_event_participants');
 copyTable('#groupex#.membres', 'group_members');
 copyTable('#groupex#.membres_sub_requests', 'group_member_sub_requests');
-copyTable('#x4dat#.groupesx_auth'), 'group_auth');
+copyTable('#x4dat#.groupesx_auth', 'group_auth');
 
 copyTable('#x4dat#.axletter', 'axletter');
 copyTable('#x4dat#.axletter_ins', 'axletter_ins');

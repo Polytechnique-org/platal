@@ -13,7 +13,9 @@ fi
 if [[ -n "${DBPREFIX}" ]]; then
     echo "Using non-default database ${DBPREFIX}x4dat."
 fi
-declare -r DATABASE="${DBPREFIX}x4dat"
+if [[ -n "${DATABASE}" ]]; then
+  declare -r DATABASE="${DBPREFIX}x4dat"
+fi
 
 function die() {
     echo $1
