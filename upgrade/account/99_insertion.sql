@@ -22,8 +22,8 @@ insert into accounts
             IF(q.core_mail_fmt = 'html', 'html', 'text') AS email_format,
             q.skin AS skin,
             q.last_version AS last_version
-       from auth_user_md5 as u
-  left join auth_user_quick as q on (q.user_id = u.user_id)
+       from #x4dat#.auth_user_md5 as u
+  left join #x4dat#.auth_user_quick as q on (q.user_id = u.user_id)
       where hruid is not null;
 
 # Insert carnet-relative data
@@ -34,16 +34,16 @@ insert into watch
                    IF(ws3.cid IS NULL, '', 'death'), ',',
                    IF(ws4.cid IS NULL, '', 'birthday')) AS actions,
             q.watch_last as last
-       from auth_user_quick as q
-  left join watch_sub as ws1 on (ws1.uid = q.user_id and ws1.cid = 1)
-  left join watch_sub as ws2 on (ws2.uid = q.user_id and ws2.cid = 2)
-  left join watch_sub as ws3 on (ws3.uid = q.user_id and ws3.cid = 3)
-  left join watch_sub as ws4 on (ws4.uid = q.user_id and ws4.cid = 4);
+       from #x4dat#.auth_user_quick as q
+  left join #x4dat#.watch_sub as ws1 on (ws1.uid = q.user_id and ws1.cid = 1)
+  left join #x4dat#.watch_sub as ws2 on (ws2.uid = q.user_id and ws2.cid = 2)
+  left join #x4dat#.watch_sub as ws3 on (ws3.uid = q.user_id and ws3.cid = 3)
+  left join #x4dat#.watch_sub as ws4 on (ws4.uid = q.user_id and ws4.cid = 4);
 
 # Insert carvas
 insert into carvas
      select user_id, redirecturl
-       from auth_user_quick
+       from #x4dat#.auth_user_quick
       where LENGTH(redirecturl) > 0;
 
 # Insert all existing profiles
@@ -62,30 +62,30 @@ insert into profiles
             IF(q.emails_alias_pub = 'public', 'public', 'private') AS alias_pub,
             u.nationalite AS nationality1, u.nationalite2 AS nationality2,
             u.nationalite3 AS nationality3, u.date AS last_change
-       from auth_user_md5 AS u
-  left join auth_user_quick AS q ON (u.user_id = q.user_id)
+       from #x4dat#.auth_user_md5 AS u
+  left join #x4dat#.auth_user_quick AS q ON (u.user_id = q.user_id)
       where u.hruid is not null;
 
 # Add associations account <-> profile
 insert into account_profiles
      select user_id AS uid, user_id AS pid, 'owner' AS perms
-       from auth_user_md5
+       from #x4dat#.auth_user_md5
       where hruid is not null;
 
 # Update banana last_seen timetamp
     update  forum_profiles as fp
-inner join  auth_user_quick as q ON (q.user_id = fp.uid)
+inner join  #x4dat#.auth_user_quick as q ON (q.user_id = fp.uid)
        set  fp.uid = fp.uid, fp.tree_unread = fp.tree_unread, fp.tree_read = fp.tree_read,
             fp.last_seen = q.banana_last;
 
 insert ignore into  forum_profiles (uid, last_seen)
             select  user_id as uid, banana_last as last_seen
-              from  auth_user_quick
+              from  #x4dat#.auth_user_quick
              where  banana_last >= DATE_SUB(NOW(), INTERVAL 6 MONTH);
 
 # Mail storage has been moved out of account settings
 insert into email_options
      select user_id as uid, mail_storage as storage
-       from auth_user_md5;
+       from #x4dat#.auth_user_md5;
 
 # vim:set syntax=mysql:

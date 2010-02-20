@@ -23,7 +23,7 @@ INSERT INTO `profile_networking_enum` (`network_type`, `name`, `icon`, `filter`)
 
 INSERT INTO `profile_networking` (`uid`, `nwid`, `network_type`, `address`, `pub`)
      SELECT `user_id`, 0, 0, `profile_web`, `profile_web_pub`
-       FROM `auth_user_quick`
+       FROM #x4dat#.`auth_user_quick`
       WHERE `profile_web` <> "";
 
 -- Modify watch_profile to update 'field' from web to networking
@@ -38,9 +38,5 @@ ALTER TABLE `watch_profile`
      MODIFY `field` enum('nom', 'freetext', 'mobile', 'nationalite', 'nick',
                          'networking', 'appli1', 'appli2', 'addresses',
                          'section', 'binets', 'medals', 'cv', 'jobs', 'photo');
-
--- Drop old web URL columns
-ALTER TABLE `auth_user_quick` DROP COLUMN `profile_web`;
-ALTER TABLE `auth_user_quick` DROP COLUMN `profile_web_pub`;
 
 # vim:set syntax=mysql:

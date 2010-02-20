@@ -58,16 +58,16 @@ INSERT INTO  profile_education_degree_enum (degree)
 
 INSERT INTO  profile_education_degree (eduid, degreeid)
      SELECT  a.id, d.id
-       FROM  applis_def AS a
+       FROM  #x4dat#.applis_def AS a
  INNER JOIN  profile_education_degree_enum AS d ON (FIND_IN_SET(d.degree, a.type));
 
 INSERT INTO  profile_education_enum (id, name, url)
      SELECT  id, text, url
-       FROM  applis_def;
+       FROM  #x4dat#.applis_def;
 
 INSERT INTO  profile_education (id, uid, eduid, degreeid)
      SELECT  a.ordre, a.uid, a.aid, d.id
-       FROM  applis_ins AS a
+       FROM  #x4dat#.applis_ins AS a
  INNER JOIN  profile_education_degree_enum AS d ON (a.type = d.degree);
 
      UPDATE  watch_profile AS w1
@@ -85,6 +85,7 @@ ALTER TABLE watch_profile MODIFY field enum('nom', 'freetext', 'mobile', 'nation
                                             'photo');
 
 UPDATE watch_profile SET field = 'edus' WHERE field = 'appli1';
+
 
 DELETE FROM watch_profile WHERE field = 'appli2';
 

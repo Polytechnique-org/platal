@@ -33,16 +33,16 @@ CREATE TABLE IF NOT EXISTS profile_job (
 
 INSERT IGNORE INTO  profile_job_enum (name, url)
             SELECT  entreprise, web
-              FROM  entreprises;
+              FROM  #x4dat#.entreprises;
 
 INSERT INTO  profile_job (id, uid, jobid, email, pub, email_pub, description)
      SELECT  e.entrid, e.uid, j.id, e.email, e.pub, e.email_pub,
              CONCAT_WS(', ', IF(e.poste = '', NULL, e.poste), IF(e.fonction = 0, NULL, f.fonction_fr),
                        IF(e.ss_secteur IS NULL , IF(e.secteur IS NULL, NULL, s.label), ss.label))
-       FROM  entreprises       AS e
+       FROM  #x4dat#.entreprises       AS e
  INNER JOIN  profile_job_enum  AS j  ON (e.entreprise = j.name)
-  LEFT JOIN  fonctions_def     AS f  ON (f.id = e.fonction)
-  LEFT JOIN  emploi_ss_secteur AS ss ON (ss.id = e.ss_secteur)
-  LEFT JOIN  emploi_secteur    AS s  ON (s.id = e.secteur);
+  LEFT JOIN  #x4dat#.fonctions_def     AS f  ON (f.id = e.fonction)
+  LEFT JOIN  #x4dat#.emploi_ss_secteur AS ss ON (ss.id = e.ss_secteur)
+  LEFT JOIN  #x4dat#.emploi_secteur    AS s  ON (s.id = e.secteur);
 
 -- vim:set syntax=mysql:

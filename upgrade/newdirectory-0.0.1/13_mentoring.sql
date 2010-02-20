@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS profile_mentor (
 
 INSERT INTO  profile_mentor (uid, expertise)
      SELECT  uid, expertise
-       FROM  mentor;
+       FROM  #x4dat#.mentor;
 
 CREATE TABLE IF NOT EXISTS profile_mentor_country (
   uid INT(11) NOT NULL DEFAULT 0,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS profile_mentor_country (
 
 INSERT INTO  profile_mentor_country (uid, country)
      SELECT  uid, pid
-       FROM  mentor_pays;
+       FROM  #x4dat#.mentor_pays;
 
 CREATE TABLE IF NOT EXISTS profile_mentor_sector (
   uid INT(11) NOT NULL DEFAULT 0,

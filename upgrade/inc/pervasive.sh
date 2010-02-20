@@ -15,6 +15,11 @@ if [[ -n "${DBPREFIX}" ]]; then
 fi
 declare -r DATABASE="${DBPREFIX}x4dat"
 
+function die() {
+    echo $1
+    exit 1
+}
+
 function mailman_stop() {
     echo -n "stops mailman"
     /etc/init.d/mailman stop &>/dev/null

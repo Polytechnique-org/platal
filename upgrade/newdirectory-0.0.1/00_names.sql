@@ -20,8 +20,8 @@ INSERT INTO  profile_display (pid, yourself, public_name, private_name, director
              CONCAT(IF(u.nom_usage != '', CONCAT(u.nom_usage, ' (', u.nom, ')') , u.nom), ' ', u.prenom),
              CONCAT(u.prenom, ' ', IF(u.nom_usage != '', u.nom_usage, u.nom)),
              CONCAT(IF(u.nom_usage != '', u.nom_usage, u.nom), ' ', u.prenom)
-       FROM  auth_user_md5   AS u
-  LEFT JOIN  auth_user_quick AS q ON (u.user_id = q.user_id);
+       FROM  #x4dat#.auth_user_md5   AS u
+  LEFT JOIN  #x4dat#.auth_user_quick AS q ON (u.user_id = q.user_id);
 
 
 DROP TABLE IF EXISTS profile_name_enum;
@@ -73,37 +73,37 @@ CREATE TABLE IF NOT EXISTS profile_name (
 
 INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.nom, e.id
-       FROM  auth_user_md5     AS u
+       FROM  #x4dat#.auth_user_md5     AS u
  INNER JOIN  profile_name_enum AS e ON (e.name = 'Nom patronymique')
       WHERE  nom != '';
 
 INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.nom_ini, e.id
-       FROM  auth_user_md5     AS u
+       FROM  #x4dat#.auth_user_md5     AS u
  INNER JOIN  profile_name_enum AS e ON (e.name = 'Nom initial')
       WHERE  nom_ini != '';
 
 INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.prenom, e.id
-       FROM  auth_user_md5     AS u
+       FROM  #x4dat#.auth_user_md5     AS u
  INNER JOIN  profile_name_enum AS e ON (e.name = 'Prénom')
       WHERE  prenom != '';
 
 INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.prenom_ini, e.id
-       FROM  auth_user_md5     AS u
+       FROM  #x4dat#.auth_user_md5     AS u
  INNER JOIN  profile_name_enum AS e ON (e.name = 'Prénom initial')
       WHERE  prenom_ini != '';
 
 INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.nom_usage, e.id
-       FROM  auth_user_md5     AS u
+       FROM  #x4dat#.auth_user_md5     AS u
  INNER JOIN  profile_name_enum AS e ON (e.name = 'Nom usuel')
       WHERE  nom_usage != '';
 
 INSERT INTO  profile_name (pid, name, typeid)
      SELECT  q.user_id, q.profile_nick, e.id
-       FROM  auth_user_quick   AS q
+       FROM  #x4dat#.auth_user_quick   AS q
  INNER JOIN  profile_name_enum AS e ON (e.name = 'Surnom')
       WHERE  profile_nick != '';
 

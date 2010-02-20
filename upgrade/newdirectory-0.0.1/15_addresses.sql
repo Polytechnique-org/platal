@@ -42,7 +42,7 @@ INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, l
                     IF(FIND_IN_SET('courrier', 'statut'), 'mail,', ''),
                     IF(FIND_IN_SET('active', 'statut'), 'current,', ''),
                     IF(FIND_IN_SET('temporaire', 'statut'), 'temporary', ''))
-       FROM  adresses;
+       FROM  #x4dat#.adresses;
 
 CREATE TABLE IF NOT EXISTS geoloc_countries (
   iso_3166_1_a2 CHAR(2) NOT NULL,
@@ -78,6 +78,7 @@ INSERT INTO  geoloc_countries (iso_3166_1_a2, iso_3166_1_a3, iso_3166_1_num, wor
                                phonePrefix, phoneFormat, licensePlate)
      SELECT  a2, a3, n3, worldrgn, pays, country, capital, nat, phoneprf, phoneformat, license_plate
        FROM  geoloc_pays;
+DROP TABLE geoloc_pays;
 
 CREATE TABLE IF NOT EXISTS geoloc_administrativeareas (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
