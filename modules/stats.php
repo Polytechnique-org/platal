@@ -281,7 +281,7 @@ EOF2;
             $res = XDB::query("SELECT  debut,
                                        TIME_FORMAT(duree,'%kh%i') AS duree,
                                        resume, description, services
-                                 FROM  coupures
+                                 FROM  downtimes
                                 WHERE  id = {?}", $cp_id);
             $cp  = $res->fetchOneAssoc();
         }
@@ -292,7 +292,7 @@ EOF2;
         } else {
             $beginning_date = date("Ymd", time() - 3600*24*21) . "000000";
             $sql = "SELECT  id, debut, resume, services
-                      FROM  coupures where debut > '$beginning_date' order by debut desc";
+                      FROM  downtimes where debut > '$beginning_date' order by debut desc";
             $page->assign('coupures', XDB::iterator($sql));
             $res = XDB::iterator("SELECT  host, text
                                     FROM  mx_watch

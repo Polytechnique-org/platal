@@ -132,17 +132,17 @@ class EventsModule extends PLModule
         // Hide the read event, and reload the page to get to the next event.
         if ($action == 'read' && $eid) {
             XDB::execute('DELETE ev.*
-                            FROM evenements_vus AS ev
-                      INNER JOIN evenements AS e ON e.id = ev.evt_id
+                            FROM announce_read AS ev
+                      INNER JOIN announces AS e ON e.id = ev.evt_id
                            WHERE peremption < NOW()');
-            XDB::execute('REPLACE INTO evenements_vus VALUES({?},{?})',
+            XDB::execute('REPLACE INTO announce_read VALUES({?},{?})',
                 $eid, S::v('uid'));
             pl_redirect('events#'.$pound);
         }
 
         // Unhide the requested event, and reload the page to display it.
         if ($action == 'unread' && $eid) {
-            XDB::execute('DELETE FROM evenements_vus
+            XDB::execute('DELETE FROM announce_read
                            WHERE evt_id = {?} AND user_id = {?}',
                                    $eid, S::v('uid'));
             pl_redirect('events#newsid'.$eid);
@@ -156,9 +156,9 @@ class EventsModule extends PLModule
                                      e.creation_date > DATE_SUB(CURDATE(), INTERVAL 2 DAY) AS news,
                                      e.peremption < DATE_ADD(CURDATE(), INTERVAL 2 DAY) AS end,
                                      ev.user_id IS NULL AS nonlu, e.promo_min, e.promo_max
-                               FROM  evenements       AS e
-                          LEFT JOIN  evenements_photo AS p  ON (e.id = p.eid)
-                          LEFT JOIN  evenements_vus   AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
+                               FROM  announces       AS e
+                          LEFT JOIN  announce_photos AS p  ON (e.id = p.eid)
+                          LEFT JOIN  announce_read   AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
                               WHERE  FIND_IN_SET('valide', e.flags) AND peremption >= NOW()
                            ORDER BY  important DESC, news DESC, end DESC, e.peremption, e.creation_date DESC",
                             S::i('uid'));
@@ -191,7 +191,7 @@ class EventsModule extends PLModule
     function handler_photo(&$page, $eid = null, $valid = null)
     {
         if ($eid && $eid != 'valid') {
-            $res = XDB::query("SELECT * FROM evenements_photo WHERE eid = {?}", $eid);
+            $res = XDB::query("SELECT * FROM announce_photos WHERE eid = {?}", $eid);
             if ($res->numRows()) {
                 $photo = $res->fetchOneAssoc();
                 pl_cached_dynamic_content_headers("image/" . $photo['attachmime']);
@@ -341,7 +341,7 @@ class EventsModule extends PLModule
         if (Post::v('action') == 'Pas d\'image' && $eid) {
             S::assert_xsrf_token();
             $upload->rm();
-            XDB::execute("DELETE FROM evenements_photo WHERE eid = {?}", $eid);
+            XDB::execute("DELETE FROM announce_photos WHERE eid = {?}", $eid);
             $action = 'edit';
         } elseif (Post::v('action') == 'Supprimer l\'image' && $eid) {
             S::assert_xsrf_token();
@@ -357,7 +357,7 @@ class EventsModule extends PLModule
                 $page->trigError("L'intervalle de promotions $promo_min -> $promo_max n'est pas valide");
                 $action = 'edit';
             } else {
-                $res = XDB::query('SELECT flags FROM evenements WHERE id = {?}', $eid);
+                $res = XDB::query('SELECT flags FROM announces WHERE id = {?}', $eid);
                 $flags = new PlFlagSet($res->fetchOneCell());
                 $flags->addFlag('wiki');
                 if (Post::v('important')) {
@@ -366,7 +366,7 @@ class EventsModule extends PLModule
                     $flags->rmFlag('important');
                 }
 
-                XDB::execute('UPDATE evenements
+                XDB::execute('UPDATE announces
                                  SET creation_date = creation_date,
                                      titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?},
                                      flags = {?}
@@ -375,7 +375,7 @@ class EventsModule extends PLModule
                               Post::v('promo_min'), Post::v('promo_max'),
                               $flags, $eid);
                 if ($upload->exists() && list($x, $y, $type) = $upload->imageInfo()) {
-                    XDB::execute('REPLACE INTO  evenements_photo
+                    XDB::execute('REPLACE INTO  announce_photos
                                            SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}',
                                  $eid, $type, $x, $y, $upload->getContents());
                     $upload->rm();
@@ -386,8 +386,8 @@ class EventsModule extends PLModule
         if ($action == 'edit') {
             $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max, FIND_IN_SET(\'important\', flags),
                                       attach IS NOT NULL
-                                 FROM evenements       AS e
-                            LEFT JOIN evenements_photo AS p ON(e.id = p.eid)
+                                 FROM announces       AS e
+                            LEFT JOIN announce_photos AS p ON(e.id = p.eid)
                                 WHERE id={?}', $eid);
             list($titre, $texte, $peremption, $promo_min, $promo_max, $important, $img) = $res->fetchOneRow();
             $page->assign('titre',$titre);
@@ -416,20 +416,20 @@ class EventsModule extends PLModule
             switch ($action) {
                 case 'delete':
                     S::assert_xsrf_token();
-                    XDB::execute('DELETE from evenements
+                    XDB::execute('DELETE from announces
                                    WHERE id = {?}', $eid);
                     break;
 
                 case "archive":
                     S::assert_xsrf_token();
-                    XDB::execute('UPDATE evenements
+                    XDB::execute('UPDATE announces
                                      SET creation_date = creation_date, flags = CONCAT(flags,",archive")
                                    WHERE id = {?}', $eid);
                     break;
 
                 case "unarchive":
                     S::assert_xsrf_token();
-                    XDB::execute('UPDATE evenements
+                    XDB::execute('UPDATE announces
                                      SET creation_date = creation_date, flags = REPLACE(flags,"archive","")
                                    WHERE id = {?}', $eid);
                     $action = 'archives';
@@ -438,14 +438,14 @@ class EventsModule extends PLModule
 
                 case "valid":
                     S::assert_xsrf_token();
-                    XDB::execute('UPDATE evenements
+                    XDB::execute('UPDATE announces
                                      SET creation_date = creation_date, flags = CONCAT(flags,",valide")
                                    WHERE id = {?}', $eid);
                     break;
 
                 case "unvalid":
                     S::assert_xsrf_token();
-                    XDB::execute('UPDATE evenements
+                    XDB::execute('UPDATE announces
                                      SET creation_date = creation_date, flags = REPLACE(flags,"valide", "")
                                    WHERE id = {?}', $eid);
                     break;
@@ -459,7 +459,7 @@ class EventsModule extends PLModule
                             FIND_IN_SET('valide', e.flags) AS fvalide,
                             FIND_IN_SET('archive', e.flags) AS farch,
                             FIND_IN_SET('wiki', e.flags) AS wiki
-                      FROM  evenements    AS e
+                      FROM  announces    AS e
                      WHERE  ".($arch ? "" : "!")."FIND_IN_SET('archive',e.flags)
                   ORDER BY  FIND_IN_SET('valide',e.flags), e.peremption DESC";
             $page->assign('evs', XDB::iterator($sql));

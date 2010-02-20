@@ -51,7 +51,7 @@ $sql = "SELECT  a1.alias, a2.alias, e1.email
           FROM  emails        AS e1
     INNER JOIN  emails        AS e2 ON (e1.email = e2.email AND e1.uid != e2.uid
                                        AND (e1.uid < e2.uid OR NOT FIND_IN_SET('active', e2.flags)))
-     LEFT JOIN  emails_watch  AS w  ON (e1.email = w.email)
+     LEFT JOIN  email_watch  AS w  ON (e1.email = w.email)
     INNER JOIN  aliases       AS a1 ON (a1.id = e1.uid AND a1.type = 'a_vie')
     INNER JOIN  aliases       AS a2 ON (a2.id = e2.uid AND a2.type = 'a_vie')
     INNER JOIN  auth_user_md5 AS u1 ON (a1.id = u1.user_id)
@@ -74,7 +74,7 @@ if (count($conflits) > 0) {
         . "https://www.polytechnique.org/admin/emails/duplicated";
 
     echo "\n\n";
-    $sql = "INSERT IGNORE INTO  emails_watch (email, state, detection, last)
+    $sql = "INSERT IGNORE INTO  email_watch (email, state, detection, last)
                         VALUES  " . join(", ", $insert);
     XDB::execute($sql);
     if (XDB::errno() != 0) {

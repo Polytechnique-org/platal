@@ -134,14 +134,14 @@ class EvtReq extends Validate
 
     public function commit()
     {
-        if (XDB::execute("INSERT INTO  evenements
+        if (XDB::execute("INSERT INTO  announces
                          SET  user_id = {?}, creation_date=NOW(), titre={?}, texte={?},
                               peremption={?}, promo_min={?}, promo_max={?}, flags=CONCAT(flags,',valide,wiki')",
                 $this->user->id(), $this->titre, $this->texte,
                 $this->peremption, $this->pmin, $this->pmax)) {
             $eid = XDB::insertId();
             if ($this->img) {
-                XDB::execute("INSERT INTO evenements_photo
+                XDB::execute("INSERT INTO announce_photos
                                       SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
                              XDB::insertId(), $this->imgtype, $this->imgx, $this->imgy, $this->img);
             }
@@ -153,7 +153,7 @@ class EvtReq extends Validate
                                       $globals->banana->event_reply,
                                       $this->titre, MiniWiki::wikiToText($this->texte, false, 0, 80));
                 if ($post != -1) {
-                    XDB::execute("UPDATE  evenements
+                    XDB::execute("UPDATE  announces
                                      SET  creation_date = creation_date, post_id = {?}
                                    WHERE  id = {?}", $post, $eid);
                 }

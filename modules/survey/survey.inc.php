@@ -341,7 +341,7 @@ class Survey
             return null;
         }
         $sql = 'SELECT id, title, end, mode
-                  FROM survey_surveys
+                  FROM surveys
                  WHERE '.$where.'
               ORDER BY end DESC;';
         if ($tpl) {
@@ -356,7 +356,7 @@ class Survey
     public static function retrieveSurvey($sid)
     {
         $sql = 'SELECT questions, title, description, end, mode, promos
-                  FROM survey_surveys
+                  FROM surveys
                  WHERE id={?}';
         $res = XDB::query($sql, $sid);
         $data = $res->fetchOneAssoc();
@@ -372,7 +372,7 @@ class Survey
     public static function retrieveSurveyInfo($sid)
     {
         $sql = 'SELECT title, description, end, mode, promos
-                  FROM survey_surveys
+                  FROM surveys
                  WHERE id={?}';
         $res = XDB::query($sql, $sid);
         return $res->fetchOneAssoc();
@@ -410,7 +410,7 @@ class Survey
     public function updateSurvey()
     {
         if ($this->valid) {
-            $sql = 'UPDATE survey_surveys
+            $sql = 'UPDATE surveys
                        SET questions={?},
                            title={?},
                            description={?},
@@ -462,7 +462,7 @@ class Survey
     public static function deleteSurvey($sid)
     {
         $sql = 'DELETE s.*, v.*, a.*
-                  FROM survey_surveys AS s
+                  FROM surveys AS s
              LEFT JOIN survey_votes AS v
                     ON v.survey_id=s.id
              LEFT JOIN survey_answers AS a

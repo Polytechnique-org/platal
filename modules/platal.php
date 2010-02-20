@@ -318,7 +318,7 @@ class PlatalModule extends PLModule
         $page->assign('ok', true);
 
         $url   = rand_url_id();
-        XDB::execute('INSERT INTO  perte_pass (certificat,uid,created)
+        XDB::execute('INSERT INTO  account_lost_passwords (certificat,uid,created)
                            VALUES  ({?},{?},NOW())', $url, $user->id());
         $res   = XDB::query('SELECT  email
                                FROM  emails
@@ -357,11 +357,11 @@ Adresse de secours : " . Post::v('email') : ""));
     {
         global $globals;
         // XXX: recovery requires data from the profile
-        XDB::execute('DELETE FROM  perte_pass
+        XDB::execute('DELETE FROM  account_lost_passwords
                             WHERE  DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
 
         $res = XDB::query('SELECT  uid
-                             FROM  perte_pass WHERE certificat={?}', $certif);
+                             FROM  account_lost_passwords WHERE certificat={?}', $certif);
         $ligne = $res->fetchOneAssoc();
         if (!$ligne) {
             $page->changeTpl('platal/index.tpl');
@@ -375,7 +375,7 @@ Adresse de secours : " . Post::v('email') : ""));
                            SET  password={?}
                          WHERE  uid = {?} AND state = \'active\'',
                        $password, $uid);
-            XDB::query('DELETE FROM  perte_pass
+            XDB::query('DELETE FROM  account_lost_passwords
                               WHERE  certificat={?}', $certif);
 
             // If GoogleApps is enabled, and the user did choose to use synchronized passwords,

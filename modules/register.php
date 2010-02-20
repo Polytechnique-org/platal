@@ -173,7 +173,7 @@ class RegisterModule extends PLModule
 
                     // Check if the given email is known as dangerous.
                     $res = XDB::query("SELECT  w.state, w.description
-                                         FROM  emails_watch AS w
+                                         FROM  email_watch AS w
                                         WHERE  w.email = {?} AND w.state != 'safe'",
                                         Post::v('email'));
                     $email_banned = false;

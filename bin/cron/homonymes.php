@@ -35,7 +35,7 @@ $resRobot = XDB::iterator(
 while ($old = $resRobot->next()) {
     $res = XDB::query(
             "SELECT  u.hruid
-               FROM  homonymes AS h
+               FROM  homonyms AS h
          INNER JOIN  auth_user_md5 AS u USING (user_id)
               WHERE  homonyme_id = {?}",
             $old['id']);

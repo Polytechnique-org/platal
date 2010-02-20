@@ -843,7 +843,7 @@ class AdminModule extends PLModule
                     XDB::execute("UPDATE  aliases
                                      SET  type = 'homonyme', expire=NOW()
                                    WHERE  alias = {?}", $loginbis);
-                    XDB::execute("REPLACE INTO  homonymes (homonyme_id,user_id)
+                    XDB::execute("REPLACE INTO  homonyms (homonyme_id,user_id)
                                         VALUES  ({?}, {?})", $target, $target);
                     send_robot_homonyme($user, $loginbis);
                     $op = 'list';
@@ -859,7 +859,7 @@ class AdminModule extends PLModule
                              IF(h.homonyme_id = s.id, a.type, NULL) AS type,
                              ac.uid AS user_id
                        FROM  aliases       AS a
-                  LEFT JOIN  homonymes     AS h ON (h.homonyme_id = a.id)
+                  LEFT JOIN  homonyms      AS h ON (h.homonyme_id = a.id)
                  INNER JOIN  aliases       AS s ON (s.id = h.user_id AND s.type='a_vie')
                  INNER JOIN  accounts      AS ac ON (ac.uid = a.id)
                       WHERE  a.type = 'homonyme' OR a.expire != ''
@@ -1059,7 +1059,7 @@ class AdminModule extends PLModule
     {
         $page->setTitle('Administration - Coupures');
         $page->assign('title', 'Gestion des coupures');
-        $table_editor = new PLTableEditor('admin/downtime','coupures','id');
+        $table_editor = new PLTableEditor('admin/downtime','downtimes','id');
         $table_editor->describe('debut','date',true);
         $table_editor->describe('duree','durée',false);
         $table_editor->describe('resume','résumé',true);

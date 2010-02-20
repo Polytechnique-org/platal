@@ -87,7 +87,7 @@ class EmailModule extends PLModule
         $homonyme = XDB::query(
                 "SELECT  alias
                    FROM  aliases
-             INNER JOIN  homonymes ON (id = homonyme_id)
+             INNER JOIN  homonyms ON (id = homonyme_id)
                   WHERE  user_id = {?} AND type = 'homonyme'", $user->id());
         $page->assign('homonyme', $homonyme->fetchOneCell());
 
@@ -706,21 +706,21 @@ class EmailModule extends PLModule
         switch (Post::v('action')) {
           case 'create':
             if (trim(Post::v('emailN')) != '') {
-                Xdb::execute('INSERT IGNORE INTO emails_watch (email, state, detection, last, uid, description)
+                Xdb::execute('INSERT IGNORE INTO email_watch (email, state, detection, last, uid, description)
                                           VALUES ({?}, {?}, CURDATE(), NOW(), {?}, {?})',
                              trim(Post::v('emailN')), Post::v('stateN'), S::i('uid'), Post::v('descriptionN'));
             };
             break;
 
           case 'edit':
-            Xdb::execute('UPDATE emails_watch
+            Xdb::execute('UPDATE email_watch
                              SET state = {?}, last = NOW(), uid = {?}, description = {?}
                            WHERE email = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'), Post::v('emailN'));
             break;
 
           default:
             if ($action == 'delete' && !is_null($email)) {
-                Xdb::execute('DELETE FROM emails_watch WHERE email = {?}', $email);
+                Xdb::execute('DELETE FROM email_watch WHERE email = {?}', $email);
             }
         }
         if ($action != 'create' && $action != 'edit') {
@@ -730,7 +730,7 @@ class EmailModule extends PLModule
 
         if ($action == 'list') {
             $sql = "SELECT  w.email, w.detection, w.state, a.alias AS forlife
-                      FROM  emails_watch  AS w
+                      FROM  email_watch  AS w
                  LEFT JOIN  emails        AS e USING(email)
                  LEFT JOIN  aliases       AS a ON (a.id = e.uid AND a.type = 'a_vie')
                   ORDER BY  w.state, w.email, a.alias";
@@ -758,7 +758,7 @@ class EmailModule extends PLModule
         } elseif ($action == 'edit') {
             $sql = "SELECT  w.detection, w.state, w.last, w.description,
                             a1.alias AS edit, a2.alias AS forlife
-                      FROM  emails_watch AS w
+                      FROM  email_watch AS w
                  LEFT JOIN  aliases      AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
                  LEFT JOIN  emails       AS e  ON (w.email = e.email)
                  LEFT JOIN  aliases      AS a2 ON (a2.id = e.uid AND a2.type = 'a_vie')

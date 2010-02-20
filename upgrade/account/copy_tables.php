@@ -59,14 +59,75 @@ copyTable('#groupex#.membres', 'group_members');
 copyTable('#groupex#.membres_sub_requests', 'group_member_sub_requests');
 copyTable('#x4dat#.groupesx_auth'), 'group_auth');
 
+copyTable('#x4dat#.axletter', 'axletter');
+copyTable('#x4dat#.axletter_ins', 'axletter_ins');
+copyTable('#x4dat#.axletter_rights', 'axletter_rights');
+
+copyTable('#x4dat#.newsletter', 'newsletter');
+copyTable('#x4dat#.newsletter_art', 'newsletter_art');
+copyTable('#x4dat#.newsletter_cat', 'newsletter_cat');
+copyTable('#x4dat#.newsletter_ins', 'newsletter_ins');
+
+copyTable('#x4dat#.openid_trusted', 'openid_trusted');
+
+copyTable('#x4dat#.evenements', 'announces');
+copyTable('#x4dat#.evenements_photo', 'announce_photos');
+copyTable('#x4dat#.evenements_vus', 'announce_read');
+
+copyTable('#x4dat#.gapps_accounts', 'gapps_accounts');
+copyTable('#x4dat#.gapps_nicknames', 'gapps_nicknames');
+copyTable('#x4dat#.gapps_queue', 'gapps_queue');
+copyTable('#x4dat#.gapps_reporting', 'gapps_reporting');
+
+copyTable('#x4dat#.contacts', 'contacts');
+copyTable('#x4dat#.coupures', 'downtimes');
+copyTable('#x4dat#.emails_watch', 'email_watch');
+copyTable('#x4dat#.homonymes', 'homonyms');
+copyTable('#x4dat#.ip_watch', 'ip_watch');
+copyTable('#x4dat#.mx_watch', 'mx_watch');
+copyTable('#x4dat#.ml_moderate', 'ml_moderate');
+
+copyTable('#x4dat#.postfix_blacklist', 'postfix_blacklist');
+copyTable('#x4dat#.postfix_mailseen', 'postfix_mailseen');
+copyTable('#x4dat#.postfix_whitelist', 'postfix_whitelist');
+
 copyTable('#x4dat#.photo', 'profile_photos');
 
-copyTable('#x4dat#.search_autocomplete', 'search_autocomplete');
 copyTable('#x4dat#.register_marketing', 'register_marketing');
-copyTable('#x4dat#.watch_profile', 'watch_profile');
+copyTable('#x4dat#.register_pending', 'register_pending');
+copyTable('#x4dat#.register_subs', 'register_subs');
+copyTable('#x4dat#.register_mstats', 'register_mstats');
 
-// Should be renamed to geoloc_country
+copyTable('#x4dat#.reminder', 'reminder');
+copyTable('#x4dat#.reminder_type', 'reminder_type');
+
+copyTable('#x4dat#.requests', 'requests');
+copyTable('#x4dat#.requests_answers', 'requests_answers');
+copyTable('#x4dat#.requests_hidden', 'requests_hidden');
+
+copyTable('#x4dat#.search_autocomplete', 'search_autocomplete');
+copyTable('#x4dat#.search_name', 'search_name');
+
+copyTable('#x4dat#.skins', 'skins');
+copyTable('#x4dat#.tips', 'tips');
+
+copyTable('#x4dat#.survey_surveys', 'surveys');
+copyTable('#x4dat#.survey_anwsers', 'survey_anwsers');
+copyTable('#x4dat#.survey_votes', 'survey_votes');
+
+copyTable('#x4dat#.watch_profile', 'watch_profile');
+copyTable('#x4dat#.perte_pass', 'account_lost_passwords');
+
 copyTable('#x4dat#.geoloc_pays', 'geoloc_pays');
+
+copyTable('#x4dat#.aliases', 'aliases');
+copyTable('#x4dat#.virtual', 'virtual');
+copyTable('#x4dat#.virtual_domains', 'virtual_domains');
+copyTable('#x4dat#.virtual_redirect', 'virtual_redirect');
+
+copyTable('#x4dat#.watch_nonins', 'watch_nonins');
+copyTable('#x4dat#.watch_promo', 'watch_promo');
+copyTable('#x4dat#.watch_profile', 'watch_profile');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

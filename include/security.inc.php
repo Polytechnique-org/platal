@@ -67,7 +67,7 @@ function check_ip($level)
 function check_email($email, $message)
 {
     $res = XDB::query("SELECT state, description
-        FROM emails_watch
+        FROM email_watch
         WHERE state != 'safe' AND email = {?}", $email);
     if ($res->numRows()) {
         send_warning_mail($message);

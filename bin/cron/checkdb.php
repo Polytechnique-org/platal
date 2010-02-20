@@ -150,7 +150,7 @@ check("SELECT  a1.alias, a2.alias, e1.email, e2.flags
         INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND
             (e1.uid<e2.uid  OR  NOT FIND_IN_SET('active', e2.flags))
             )
-        INNER JOIN  emails_watch  AS w  ON(w.email = e1.email AND w.state = 'pending')
+        INNER JOIN  email_watch  AS w  ON(w.email = e1.email AND w.state = 'pending')
         INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
         INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
         INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
@@ -165,7 +165,7 @@ info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state
         INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND
             (e1.uid<e2.uid  OR  NOT FIND_IN_SET('active', e2.flags))
             )
-        INNER JOIN  emails_watch  AS w  ON(w.email = e1.email AND w.state != 'safe')
+        INNER JOIN  email_watch  AS w  ON(w.email = e1.email AND w.state != 'safe')
         INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
         INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
         INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)

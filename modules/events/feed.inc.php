@@ -48,8 +48,8 @@ class EventFeed extends PlFeed
         $events = XDB::iterator('SELECT  e.id, e.titre AS title, e.texte, e.creation_date AS publication, e.post_id,
                                          p.attachmime IS NOT NULL AS photo, FIND_IN_SET(\'wiki\', e.flags) AS wiki,
                                          e.user_id, e.promo_min, e.promo_max
-                                   FROM  evenements       AS e
-                              LEFT JOIN  evenements_photo AS p ON (p.eid = e.id)
+                                   FROM  announces       AS e
+                              LEFT JOIN  announce_photos AS p ON (p.eid = e.id)
                                   WHERE  FIND_IN_SET("valide", e.flags) AND peremption >= NOW()');
         $data = array();
         while ($e = self::nextEvent($events, $user)) {
