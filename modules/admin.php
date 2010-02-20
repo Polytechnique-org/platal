@@ -40,7 +40,6 @@ class AdminModule extends PLModule
             'admin/postfix/whitelist'      => $this->make_hook('postfix_whitelist',      AUTH_MDP, 'admin'),
             'admin/mx/broken'              => $this->make_hook('mx_broken',              AUTH_MDP, 'admin'),
             'admin/skins'                  => $this->make_hook('skins',                  AUTH_MDP, 'admin'),
-            'admin/synchro_ax'             => $this->make_hook('synchro_ax',             AUTH_MDP, 'admin'),
             'admin/user'                   => $this->make_hook('user',                   AUTH_MDP, 'admin'),
             'admin/add_accounts'           => $this->make_hook('add_accounts',           AUTH_MDP, 'admin'),
             'admin/validate'               => $this->make_hook('validate',               AUTH_MDP, 'admin'),
