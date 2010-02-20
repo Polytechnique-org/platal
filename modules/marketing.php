@@ -64,8 +64,7 @@ class MarketingModule extends PLModule
         }
         $matricule = $user->profile()->xorg_id;
 
-        require_once('user.func.inc.php');
-        $matricule_X = get_X_mat($matricule);
+        $matricule_X = Profile::getSchoolId($matricule);
 
         $page->assign('full_name', $user->fullName());
         $page->assign('promo', $user->promo());

@@ -228,7 +228,6 @@ class ProfileModule extends PLModule
         // Now that we know this is the profile of an existing user, we can
         // switch to the appropriate template.
         $page->changeTpl('profile/profile.tpl', SIMPLE);
-        require_once 'user.func.inc.php';
 
         // Determines the access level at which the profile will be displayed.
         if (!S::logged() || Env::v('view') == 'public') {
@@ -586,7 +585,6 @@ class ProfileModule extends PLModule
 
     function handler_referent(&$page, $user)
     {
-        require_once 'user.func.inc.php';
         $page->changeTpl('profile/fiche_referent.tpl', SIMPLE);
 
         $user = Profile::get($user);

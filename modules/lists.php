@@ -579,9 +579,9 @@ class ListsModule extends PLModule
 
     static public function no_login_callback($login)
     {
-        require_once 'user.func.inc.php';
         global $list_unregistered, $globals;
 
+        /* TODO: fixes this call to a removed function. */
         $users = get_not_registered_user($login, true);
         if ($users && $users->total()) {
             if (!isset($list_unregistered)) {

@@ -607,8 +607,50 @@ class Profile
                 $first = 0;
             }
         }
+    }
 
+    /** The school identifier consists of 6 digits. The first 3 represent the
+     * promotion entry year. The last 3 indicate the student's rank.
+     * 
+     * Our identifier consists of 8 digits and both half have the same role.
+     * This enables us to deal with bigger promotions and with a wider range
+     * of promotions.
+     *
+     * getSchoolId returns a school identifier given one of ours.
+     * getXorgId returns a X.org identifier given a school identifier.
+     */
+    public static function getSchoolId($xorgId)
+    {
+        if (!preg_match('/^[0-9]{8}$/', $xorgId)) {
+            return null;
+        }
 
+        $year = intval(substr($xorgId, 0, 4));
+        $rank = intval(substr($xorgId, 5, 3));
+        if ($year < 1996) {
+            return null;
+        } elseif ($year < 2000) {
+            $year = intval(substr(1900 - $year, 1, 3));
+            return sprintf('%02u0%03u', $year, $rank);
+        } else {
+            $year = intval(substr(1900 - $year, 1, 3));
+            return sprintf('%03u%03u', $year, $rank);
+        }
+    }
+
+    public static function getXorgId($schoolId)
+    {
+        $year = intval(substr($schoolId, 0, 3));
+        $rank = intval(substr($schoolId, 3, 3));
+
+        if ($year > 200) {
+            $year /= 10;
+        }
+        if ($year < 96) {
+            return null;
+        } else {
+            return sprintf('%04u%04u', 1900 + $year, $rank);
+        }
     }
 }
 

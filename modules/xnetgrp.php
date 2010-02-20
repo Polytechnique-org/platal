@@ -794,7 +794,6 @@ class XnetGrpModule extends PLModule
 
     private function changeLogin(PlPage &$page, PlUser &$user, MMList &$mmlist, $login)
     {
-        require_once 'user.func.inc.php';
         // Search the uid of the user...
         $res = XDB::query("SELECT  f.id, f.alias
                              FROM  aliases AS a
@@ -802,6 +801,7 @@ class XnetGrpModule extends PLModule
                             WHERE  a.alias = {?}",
                           $login);
         if ($res->numRows() == 0) {
+            // TODO: replace this call to a removed function.
             $x = get_not_registered_user($login);
             if (!$x) {
                 $page->trigError("Le login $login ne correspond à aucun X.");

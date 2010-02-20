@@ -653,18 +653,6 @@ class AdminModule extends PLModule
         return null;
     }
 
-    private static function getMatricule($mat)
-    {
-        $year = intval(substr($mat, 0, 3));
-        $rang = intval(substr($mat, 3, 3));
-        if ($year > 200) { $year /= 10; };
-        if ($year < 96) {
-            return null;
-        } else {
-            return sprintf('%04u%04u', 1900+$year, $rang);
-        }
-    }
-
     private static function formatNewUser($infosLine, $separator, $promo, $size)
     {
         $infos = explode($separator, $infosLine);
@@ -753,7 +741,7 @@ class AdminModule extends PLModule
                         && ($sex = self::formatSex($page, $infos[3], $line))) {
                         $name = $infos[1] . ' ' . $infos[0];
                         $birthDate = self::formatBirthDate($infos[2]);
-                        $xorgId = self::getMatricule($infos[4]);
+                        $xorgId = Profile::getXorgId($infos[4]);
 
                         XDB::execute('INSERT INTO  profiles (hrpid, xorg_id, ax_id, birthdate_ref, sex)
                                            VALUES  ({?}, {?}, {?}, {?})',
