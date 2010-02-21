@@ -5,7 +5,7 @@ CREATE TEMPORARY TABLE IF NOT EXISTS tmp_update_geoloc_pays (
   code CHAR(4) DEFAULT NULL,
   PRIMARY KEY(a2),
   UNIQUE KEY(code)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT IGNORE INTO  tmp_update_geoloc_pays (a2, code)
             VALUES  ('AF', 'AFG'),

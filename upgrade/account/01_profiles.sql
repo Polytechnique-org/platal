@@ -37,6 +37,6 @@ create table profiles (
   key nationality1 (nationality1),
   key nationality2 (nationality2),
   key nationality3 (nationality3)
-);
+) ENGINE=InnoDB, CHARSET=utf8;
 
 # vim:set syntax=mysql:

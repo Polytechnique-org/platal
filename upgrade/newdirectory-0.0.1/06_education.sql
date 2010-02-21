@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS profile_education_field_enum (
   field VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY(id),
   UNIQUE KEY(field)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS profile_education_degree_enum (
   id INT(2) NOT NULL AUTO_INCREMENT,
@@ -12,13 +12,13 @@ CREATE TABLE IF NOT EXISTS profile_education_degree_enum (
   level TINYINT (1) UNSIGNED DEFAULT 0 NOT NULL,
   PRIMARY KEY(id),
   UNIQUE KEY(degree)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS profile_education_degree (
   eduid INT(4) NOT NULL DEFAULT 0,
   degreeid INT(2) NOT NULL DEFAULT 0,
   PRIMARY KEY(eduid, degreeid)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS profile_education_enum (
   id INT(4) NOT NULL AUTO_INCREMENT,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS profile_education_enum (
   country CHAR(2) NOT NULL DEFAULT 'FR',
   PRIMARY KEY(id),
   UNIQUE KEY(name)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS profile_education (
   id TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS profile_education (
   flags SET('primary') DEFAULT '' NOT NULL,
   PRIMARY KEY(id, uid),
   INDEX uid (uid)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT INTO  profile_education_field_enum (field)
      VALUES  ('Aéronautique'), ('Agronomie'), ('Assurance'), ('Biologie'),

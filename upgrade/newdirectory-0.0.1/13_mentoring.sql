@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS profile_mentor (
   expertise TEXT NOT NULL,
   PRIMARY KEY (uid),
   FULLTEXT INDEX (expertise)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT INTO  profile_mentor (uid, expertise)
      SELECT  uid, expertise
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS profile_mentor_country (
   country CHAR(2) NOT NULL DEFAULT "FR",
   PRIMARY KEY (uid, country),
   INDEX uid (uid)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT INTO  profile_mentor_country (uid, country)
      SELECT  uid, pid
@@ -30,6 +30,6 @@ CREATE TABLE IF NOT EXISTS profile_mentor_sector (
   subsectorid TINYINT(3) UNSIGNED NOT NULL,
   PRIMARY KEY (uid, sectorid, subsectorid),
   INDEX uid (uid)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 -- vim:set syntax=mysql:

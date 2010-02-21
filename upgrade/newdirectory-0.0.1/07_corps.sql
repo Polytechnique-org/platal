@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS profile_corps (
   rankid INT(4) UNSIGNED NOT NULL DEFAULT 0,
   corps_pub ENUM('private', 'ax', 'public') NOT NULL DEFAULT 'private',
   PRIMARY KEY(uid)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 
 CREATE TABLE IF NOT EXISTS profile_corps_enum (
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS profile_corps_enum (
   PRIMARY KEY(id),
   UNIQUE KEY(name),
   UNIQUE KEY(abbreviation)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 
 CREATE TABLE IF NOT EXISTS profile_corps_rank_enum (
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS profile_corps_rank_enum (
   PRIMARY KEY(id),
   UNIQUE KEY(name),
   UNIQUE KEY(abbreviation)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
     UPDATE  profile_corps      AS c
 INNER JOIN  profile_corps_enum AS e ON (c.original_corpsid = e.id)

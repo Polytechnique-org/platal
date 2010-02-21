@@ -6,6 +6,6 @@ create table watch (
 
   primary key uid (uid),
   key flags (flags)
-);
+) ENGINE=InnoDB, CHARSET=utf8;
 
 # vim:set syntax=mysql:

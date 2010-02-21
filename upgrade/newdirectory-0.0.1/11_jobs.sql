@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS profile_job_enum (
   AX_code BIGINT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY (name)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 DROP TABLE IF EXISTS profile_job;
 
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS profile_job (
   email_pub ENUM('private', 'ax', 'public') DEFAULT 'private',
   PRIMARY KEY (uid, id),
   INDEX uid (uid)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT IGNORE INTO  profile_job_enum (name, url)
             SELECT  entreprise, web

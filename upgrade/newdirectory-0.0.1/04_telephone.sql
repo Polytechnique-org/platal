@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `profile_phones` (
     PRIMARY KEY(`uid`, `link_type`, `link_id`, `tel_id`),
     INDEX (`search_tel`),
     INDEX uid (uid)
-);
+) ENGINE=InnoDB, CHARSET=utf8;
 
 
 -- Adds a temporary column to convert phone prefixes from varchar to int

@@ -25,7 +25,8 @@ require('./connect.db.inc.php');
 function copyTable($source, $target)
 {
     XDB::execute('CREATE TABLE  ' . $target . '
-                          LIKE  ' . $source);
+                          LIKE  ' . $source . '
+                        ENGINE = InnoDB');
     XDB::execute('INSERT INTO  ' . $target . '
                        SELECT  *
                          FROM  ' . $source);

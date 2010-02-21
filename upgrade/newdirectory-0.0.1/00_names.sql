@@ -10,7 +10,7 @@ CREATE TABLE  profile_display (
   sort_name VARCHAR(255) NOT NULL,
   promo VARCHAR(255) DEFAULT '' NOT NULL,
   PRIMARY KEY(pid)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT INTO  profile_display (pid, yourself, public_name, private_name, directory_name, short_name, sort_name)
      SELECT  u.user_id, u.prenom,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS profile_name_enum (
   score TINYINT(2) UNSIGNED NOT NULL DEFAULT 10,
   PRIMARY KEY (id),
   UNIQUE (name)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT INTO  profile_name_enum (name, flags, explanations, type, score)
      VALUES  ('Nom patronymique', 'has_particle,always_displayed,public',
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS profile_name (
   typeid TINYINT(2) UNSIGNED NOT NULL COMMENT 'type of name',
   PRIMARY KEY (pid, id),
   INDEX pid (pid)
-) CHARSET=utf8 COMMENT = 'Names of alumni (search table)';
+) ENGINE=InnoDB, CHARSET=utf8, COMMENT = 'Names of alumni (search table)';
 
 INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.nom, e.id
@@ -106,8 +106,6 @@ INSERT INTO  profile_name (pid, name, typeid)
        FROM  #x4dat#.auth_user_quick   AS q
  INNER JOIN  profile_name_enum AS e ON (e.name = 'Surnom')
       WHERE  profile_nick != '';
-
-DROP TABLE IF EXISTS recherche_soundex;
 
 DELETE FROM  search_autocomplete
       WHERE  name = 'name' OR name = 'firstname' OR name = 'nickname';

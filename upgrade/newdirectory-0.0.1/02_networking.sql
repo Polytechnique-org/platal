@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `profile_networking_enum` (
     `filter` enum('email','web','number','none') NOT NULL DEFAULT 'none' COMMENT 'filter type for addresses',
     `link` varchar(255) NOT NULL COMMENT 'string used to forge an URL linking to the the profile page',
     PRIMARY KEY (`network_type`)
-) CHARSET=utf8 COMMENT='types of networking addresses';
+) ENGINE=InnoDB, CHARSET=utf8, COMMENT='types of networking addresses';
 
 CREATE TABLE IF NOT EXISTS `profile_networking` (
     `uid` int NOT NULL COMMENT 'user id',
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `profile_networking` (
     `pub` enum('private','public') NOT NULL DEFAULT 'private',
     PRIMARY KEY (`uid`, `nwid`),
     INDEX uid (uid)
-) CHARSET=utf8 COMMENT='networking addresses';
+) ENGINE=InnoDB, CHARSET=utf8, COMMENT='networking addresses';
 
 -- Insert a first address type for old URLs
 INSERT INTO `profile_networking_enum` (`network_type`, `name`, `icon`, `filter`)

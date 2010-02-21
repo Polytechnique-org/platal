@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS profile_addresses (
   INDEX administrativeAreaId (administrativeAreaId),
   INDEX subAdministrativeAreaId (subAdministrativeAreaId),
   INDEX countryId (countryId)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, latitude, longitude, countryId,
                                 type, flags)
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS geoloc_countries (
   UNIQUE KEY(iso_3166_1_num),
   INDEX(iso_3166_1_a2),
   INDEX(phonePrefix)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 UPDATE  geoloc_pays
    SET  n3 = 450
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS geoloc_administrativeareas (
   INDEX(id),
   INDEX(name),
   INDEX(country)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS geoloc_subadministrativeareas (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS geoloc_subadministrativeareas (
   INDEX(id),
   INDEX(name),
   INDEX(country)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS geoloc_localities (
   id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -111,6 +111,6 @@ CREATE TABLE IF NOT EXISTS geoloc_localities (
   INDEX(id),
   INDEX(name),
   INDEX(country)
-) CHARSET=utf8;
+) ENGINE=InnoDB, CHARSET=utf8;
 
 -- vim:set syntax=mysql:

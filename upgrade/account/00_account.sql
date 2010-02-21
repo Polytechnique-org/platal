@@ -32,14 +32,14 @@ CREATE TABLE accounts (
   key full_name (full_name),
   key state (state),
   key type (type)
-);
+) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE account_types (
   type varchar(16) not null,
   perms set('mail', 'groups', 'forums', 'list', 'search', 'portal') default '',
 
   primary key type (type)
-);
+) ENGINE=InnoDB, CHARSET=utf8;
 
 CREATE TABLE account_profiles (
   uid int(6) not null,
@@ -49,6 +49,6 @@ CREATE TABLE account_profiles (
   primary key id (uid, pid),
   key uid (uid),
   key pid (pid)
-);
+) ENGINE=InnoDB, CHARSET=utf8;
 
 # vim:set syntax=mysql:
