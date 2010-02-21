@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS profile_job;
 
 CREATE TABLE profile_job (
   id TINYINT(1) UNSIGNED NOT NULL,
-  uid INT(11) NOT NULL DEFAULT 0,
+  pid INT(11) NOT NULL DEFAULT 0,
   jobid INT(6) UNSIGNED NOT NULL DEFAULT 0,
   sectorid TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   subsectorid TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
@@ -35,7 +35,7 @@ INSERT IGNORE INTO  profile_job_enum (name, url)
             SELECT  entreprise, web
               FROM  #x4dat#.entreprises;
 
-INSERT INTO  profile_job (id, uid, jobid, email, pub, email_pub, description)
+INSERT INTO  profile_job (id, pid, jobid, email, pub, email_pub, description)
      SELECT  e.entrid, e.uid, j.id, e.email, e.pub, e.email_pub,
              CONCAT_WS(', ', IF(e.poste = '', NULL, e.poste), IF(e.fonction = 0, NULL, f.fonction_fr),
                        IF(e.ss_secteur IS NULL , IF(e.secteur IS NULL, NULL, s.label), ss.label))

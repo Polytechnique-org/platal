@@ -11,21 +11,21 @@ CREATE TABLE `profile_networking_enum` (
 ) ENGINE=InnoDB, CHARSET=utf8, COMMENT='types of networking addresses';
 
 
-CREATE TABLE IF NOT EXISTS `profile_networking` (
-    `uid` int NOT NULL COMMENT 'user id',
+CREATE TABLE `profile_networking` (
+    `pid` int NOT NULL COMMENT 'profile id',
     `nwid` tinyint unsigned NOT NULL COMMENT 'number of the address for the user',
     `network_type` tinyint unsigned NOT NULL,
     `address` varchar(255) NOT NULL,
     `pub` enum('private','public') NOT NULL DEFAULT 'private',
-    PRIMARY KEY (`uid`, `nwid`),
-    INDEX uid (uid)
+    PRIMARY KEY (`pid`, `nwid`),
+    INDEX uid (pid)
 ) ENGINE=InnoDB, CHARSET=utf8, COMMENT='networking addresses';
 
 -- Insert a first address type for old URLs
 INSERT INTO `profile_networking_enum` (`network_type`, `name`, `icon`, `filter`)
      VALUES (0, 'Page web', 'web.gif', 'web');
 
-INSERT INTO `profile_networking` (`uid`, `nwid`, `network_type`, `address`, `pub`)
+INSERT INTO `profile_networking` (`pid`, `nwid`, `network_type`, `address`, `pub`)
      SELECT `user_id`, 0, 0, `profile_web`, `profile_web_pub`
        FROM #x4dat#.`auth_user_quick`
       WHERE `profile_web` <> "";

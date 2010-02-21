@@ -30,11 +30,7 @@ function fill_email_combobox(PlPage& $page, $user = null, $profile = null)
     $email_type = "directory";
 
     if ($profile) {
-        $res = XDB::query(
-                "SELECT  email_directory
-                   FROM  profile_directory
-                  WHERE  uid = {?}", $profile->id());
-        $email_directory = $res->fetchOneCell();
+        $email_directory = $profile->email_directory;
         if ($email_directory) {
             $page->assign('email_directory', $email_directory);
             list($alias, $domain) = explode('@', $email_directory);
@@ -43,6 +39,22 @@ function fill_email_combobox(PlPage& $page, $user = null, $profile = null)
             $email_type = NULL;
             $alias = $domain = '';
         }
+
+        $res = XDB::query(
+                "SELECT  email
+                   FROM  profile_job
+                  WHERE  pid = {?}", $profile->id());
+        $res = $res->fetchAllAssoc();
+        $pro = array();
+        foreach ($res as $res_it) {
+            if ($res_it['email'] != '') {
+                $pro[] = $res_it['email'];
+                if ($email_directory == $res_it['email']) {
+                    $email_type = "pro";
+                }
+            }
+        }
+        $page->assign('list_email_pro', $pro);
     }
 
     if ($user) {
@@ -81,24 +93,7 @@ function fill_email_combobox(PlPage& $page, $user = null, $profile = null)
             }
         }
         $page->assign('list_email_redir', $redir);
-
-        $res = XDB::query(
-                "SELECT  email
-                   FROM  profile_job
-                  WHERE  uid = {?}", $user->id());
-        $res = $res->fetchAllAssoc();
-        $pro = array();
-        foreach ($res as $res_it) {
-            if ($res_it['email'] != '') {
-                $pro[] = $res_it['email'];
-                if ($email_directory == $res_it['email']) {
-                    $email_type = "pro";
-                }
-            }
-        }
-        $page->assign('list_email_pro', $pro);
         $page->assign('email_type', $email_type);
-
     } else {
         $page->assign('list_email_X', array());
         $page->assign('list_email_redir', array());

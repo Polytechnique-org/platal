@@ -75,9 +75,9 @@ class PayPal
                          IF(t1.display_tel != '', t1.display_tel, t2.display_tel) AS night_phone_b
                    FROM  auth_user_quick   AS q
               LEFT JOIN  profile_addresses AS a  ON (q.user_id = a.pid AND FIND_IN_SET('current', a.flags))
-              LEFT JOIN  profile_phones    AS t1 ON (t1.uid = a.uid AND t1.link_type = 'address'
+              LEFT JOIN  profile_phones    AS t1 ON (t1.pid = a.pid AND t1.link_type = 'address'
                                                      AND t1.link_id = a.adrid)
-              LEFT JOIN  profile_phones    AS t2 ON (t2.uid = a.uid AND t2.link_type = 'user'
+              LEFT JOIN  profile_phones    AS t2 ON (t2.pid = a.pid AND t2.link_type = 'user'
                                                      AND t2.link_id = 0)
               LEFT JOIN  geoloc_localities AS l  ON (l.id = a.localityId)
                   WHERE  q.user_id = {?}

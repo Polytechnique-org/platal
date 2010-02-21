@@ -286,8 +286,8 @@ class Profile
                            LEFT JOIN  geoloc_administrativeareas AS ga ON (ga.id = pa.administrativeAreaId)
                            LEFT JOIN  geoloc_administrativeareas AS gas ON (gas.id = pa.subAdministrativeAreaId)
                            LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
-                           LEFT JOIN  profile_phones AS ppfix ON (ppfix.link_type = \'address\' AND ppfix.uid = pa.pid AND ppfix.link_id = pa.id AND ppfix.tel_type = \'fixed\')
-                           LEFT JOIN  profile_phones AS ppfax ON (ppfax.link_type = \'address\' AND ppfax.uid = pa.pid AND ppfax.link_id = pa.id AND ppfax.tel_type = \'fax\')
+                           LEFT JOIN  profile_phones AS ppfix ON (ppfix.link_type = \'address\' AND ppfix.pid = pa.pid AND ppfix.link_id = pa.id AND ppfix.tel_type = \'fixed\')
+                           LEFT JOIN  profile_phones AS ppfax ON (ppfax.link_type = \'address\' AND ppfax.pid = pa.pid AND ppfax.link_id = pa.id AND ppfax.tel_type = \'fax\')
                                WHERE  ' . $where . '
                             ORDER BY  pa.id
                                       ' . $limit);
@@ -308,7 +308,7 @@ class Profile
      */
     public function getEducations($flags, $limit = null)
     {
-        $where = XDB::format('pe.uid = {?}', $this->id());
+        $where = XDB::format('pe.pid = {?}', $this->id());
         if ($flags & self::EDUCATION_MAIN) {
             $where .= ' AND FIND_IN_SET(\'primary\', pe.flags)';
         } else if ($flags & self::EDUCATION_EXTRA) {
@@ -344,7 +344,7 @@ class Profile
 
     public function getNetworking($flags, $limit = null)
     {
-        $where = XDB::format('pn.uid = {?}', $this->id());
+        $where = XDB::format('pn.pid = {?}', $this->id());
         if ($flags & self::NETWORKING_WEB) {
             $where .= ' AND pn.network_type = 0'; // XXX hardcoded reference to web site index
         }
@@ -378,7 +378,7 @@ class Profile
 
     public function getJobs($flags, $limit = null)
     {
-        $where = XDB::format('pj.uid = {?}', $this->id());
+        $where = XDB::format('pj.pid = {?}', $this->id());
         $cond  = 'TRUE';
         if ($this->visibility) {
             $where .= ' AND pj.pub IN ' . XDB::formatArray($this->visibility);
@@ -447,7 +447,7 @@ class Profile
                                       ap.uid AS owner_id
                                 FROM  profiles AS p
                           INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
-                          INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                          INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
                           INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid
                                                                AND pn_f.typeid = ' . self::getNameTypeId('firstname', true) . ')
                           INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid
@@ -458,7 +458,7 @@ class Profile
                                                                 AND pn_ul.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
                            LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid
                                                                AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
-                           LEFT JOIN  profile_phones AS pp ON (pp.uid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
+                           LEFT JOIN  profile_phones AS pp ON (pp.pid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
                            LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
                            LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
                                WHERE  p.pid IN ' . XDB::formatArray($pids) . '

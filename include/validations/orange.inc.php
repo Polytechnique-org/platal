@@ -44,7 +44,7 @@ class OrangeReq extends Validate
         $this->newGradYear  = $_newGradYear;
         $res = XDB::query("SELECT  entry_year
                              FROM  profile_education
-                            WHERE  uid = {?} AND FIND_IN_SET('primary', flags)", $this->user->id());
+                            WHERE  pid = {?} AND FIND_IN_SET('primary', flags)", $this->user->profile()->id());
         $this->entryYear   = $res->fetchOneCell();
         $this->oldGradYear = $this->entryYear + 3;
     }
@@ -86,7 +86,7 @@ class OrangeReq extends Validate
     {
         XDB::execute("UPDATE  profile_education
                          SET  grad_year = {?}
-                       WHERE  uid = {?} AND FIND_IN_SET('primary', flags)", $this->newGradYear, $this->user->id());
+                       WHERE  pid = {?} AND FIND_IN_SET('primary', flags)", $this->newGradYear, $this->user->profile()->id());
         return true;
     }
 

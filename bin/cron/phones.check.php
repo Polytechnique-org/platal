@@ -13,7 +13,7 @@ function do_update_by_block($values)
     // Because there is no mysql update syntax for multiple updates in one query
     // we use a multiple insert syntax which will fail because the key already exist
     // and then update the display_tel
-    XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id ,tel_type,
+    XDB::execute("INSERT INTO  profile_phones (pid, link_type, link_id, tel_id ,tel_type,
                                           search_tel, display_tel, pub, comment)
                        VALUES  " . $values . "
       ON DUPLICATE KEY UPDATE  display_tel = VALUES(display_tel)");
@@ -65,7 +65,7 @@ foreach ($prefixes as $i => $prefix) {
             $regexp .= ')?';
         }
         $regexp .= '$';
-        $res = XDB::iterator("SELECT uid, link_type, link_id, tel_id, tel_type, search_tel,
+        $res = XDB::iterator("SELECT pid, link_type, link_id, tel_id, tel_type, search_tel,
                                      display_tel, pub, comment
                                 FROM profile_phones
                                WHERE search_tel LIKE {?} AND display_tel NOT REGEXP {?}",
@@ -80,7 +80,7 @@ foreach ($prefixes as $i => $prefix) {
                 if ($values != '') {
                     $values .= ",\n";
                 }
-                $values .= "('"   . addslashes($phone['uid']) . "', '" . addslashes($phone['link_type'])
+                $values .= "('"   . addslashes($phone['pid']) . "', '" . addslashes($phone['link_type'])
                     . "', '" . addslashes($phone['link_id'])
                     . "', '" . addslashes($phone['tel_id']) . "', '" . addslashes($phone['tel_type'])
                     . "', '" . addslashes($phone['search_tel']) . "', '" . addslashes($disp)

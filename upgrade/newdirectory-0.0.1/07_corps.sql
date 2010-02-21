@@ -2,17 +2,17 @@ DROP TABLE IF EXISTS profile_corps;
 DROP TABLE IF EXISTS profile_corps_enum;
 DROP TABLE IF EXISTS profile_corps_rank_enum;
 
-CREATE TABLE IF NOT EXISTS profile_corps (
-  uid INT(11) NOT NULL,
+CREATE TABLE profile_corps (
+  pid INT(11) NOT NULL,
   original_corpsid INT(4) UNSIGNED NOT NULL DEFAULT 0,
   current_corpsid INT(4) UNSIGNED NOT NULL DEFAULT 0,
   rankid INT(4) UNSIGNED NOT NULL DEFAULT 0,
   corps_pub ENUM('private', 'ax', 'public') NOT NULL DEFAULT 'private',
-  PRIMARY KEY(uid)
+  PRIMARY KEY(pid)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 
-CREATE TABLE IF NOT EXISTS profile_corps_enum (
+CREATE TABLE profile_corps_enum (
   id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL DEFAULT '',
   abbreviation CHAR(5) NOT NULL DEFAULT '',
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS profile_corps_enum (
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 
-CREATE TABLE IF NOT EXISTS profile_corps_rank_enum (
+CREATE TABLE profile_corps_rank_enum (
   id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL DEFAULT '',
   abbreviation CHAR(5) NOT NULL DEFAULT '',

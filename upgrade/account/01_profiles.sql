@@ -28,6 +28,9 @@ create table profiles (
   nationality2 char(2) default null,
   nationality3 char(2) default null,
 
+  # Directory informations
+  email_directory varchar(255) default null,
+
   # Last modification date (for notifications)
   last_change date not null,
 

@@ -1312,7 +1312,7 @@ class AdminModule extends PLModule
             $selectedJob = Env::has('selectedJob');
 
             XDB::execute("DELETE FROM  profile_phones
-                                WHERE  uid = {?} AND link_type = 'hq'",
+                                WHERE  pid = {?} AND link_type = 'hq'",
                          $id);
             XDB::execute("DELETE FROM  profile_addresses
                                 WHERE  jobid = {?} AND type = 'hq'",
@@ -1348,7 +1348,7 @@ class AdminModule extends PLModule
                              Env::t('name'), Env::t('acronym'), Env::t('url'), Env::t('email'),
                              Env::t('NAF_code'), Env::i('AX_code'), Env::i('holdingId'), $id);
 
-                XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
+                XDB::execute("INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
                                            search_tel, display_tel, pub)
                                    VALUES  ({?}, 'hq', 0, 0, 'fixed', {?}, {?}, 'public'),
                                            ({?}, 'hq', 0, 1, 'fax', {?}, {?}, 'public')",
@@ -1379,8 +1379,8 @@ class AdminModule extends PLModule
                                        t.display_tel AS tel, f.display_tel AS fax, a.text AS address
                                  FROM  profile_job_enum  AS e
                             LEFT JOIN  profile_job_enum  AS h ON (e.holdingid = h.id)
-                            LEFT JOIN  profile_phones    AS t ON (t.uid = e.id AND link_type = 'hq' AND tel_id = 0)
-                            LEFT JOIN  profile_phones    AS f ON (f.uid = e.id AND link_type = 'hq' AND tel_id = 1)
+                            LEFT JOIN  profile_phones    AS t ON (t.pid = e.id AND link_type = 'hq' AND tel_id = 0)
+                            LEFT JOIN  profile_phones    AS f ON (f.pid = e.id AND link_type = 'hq' AND tel_id = 1)
                             LEFT JOIN  profile_addresses AS a ON (a.jobid = e.id AND a.type = 'hq')
                                 WHERE  e.id = {?}",
                               $id);

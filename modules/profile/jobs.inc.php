@@ -221,27 +221,27 @@ class ProfileJob extends ProfileGeocoding
         require_once('validations.inc.php');
 
         XDB::execute("DELETE FROM  profile_job
-                            WHERE  uid = {?}",
-                     S::i('uid'));
+                            WHERE  pid = {?}",
+                     $this->pid());
         XDB::execute("DELETE FROM  profile_addresses
                             WHERE  pid = {?} AND type = 'job'",
-                     S::i('uid'));
+                     $this->pid());
         XDB::execute("DELETE FROM  profile_phones
-                            WHERE  uid = {?} AND link_type = 'pro'",
-                     S::i('uid'));
+                            WHERE  pid = {?} AND link_type = 'pro'",
+                     $this->pid());
         foreach ($value as $id=>&$job) {
             if (isset($job['name']) && $job['name']) {
                 if (isset($job['jobid']) && $job['jobid']) {
-                    XDB::execute("INSERT INTO  profile_job (uid, id, description, sectorid, subsectorid,
+                    XDB::execute("INSERT INTO  profile_job (pid, id, description, sectorid, subsectorid,
                                                             subsubsectorid, email, url, pub, email_pub, jobid)
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                                 S::i('uid'), $id, $job['description'], $job['sector'], $job['subSector'],
+                                 $this->pid(), $id, $job['description'], $job['sector'], $job['subSector'],
                                  $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub'], $job['jobid']);
                 } else {
-                    XDB::execute("INSERT INTO  profile_job (uid, id, description, sectorid, subsectorid,
+                    XDB::execute("INSERT INTO  profile_job (pid, id, description, sectorid, subsectorid,
                                                             subsubsectorid, email, url, pub, email_pub)
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                                 S::i('uid'), $id, $job['description'], $job['sector'], $job['subSector'],
+                                 $this->pid(), $id, $job['description'], $job['sector'], $job['subSector'],
                                  $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub']);
                 }
                 $address = new ProfileAddress();
@@ -279,7 +279,7 @@ class ProfileJobs extends ProfilePage
         $res = XDB::query("SELECT  original_corpsid AS original, current_corpsid AS current,
                                    rankid AS rank, corps_pub AS pub
                              FROM  profile_corps
-                            WHERE  uid = {?}",
+                            WHERE  pid = {?}",
                         $this->pid());
         $this->values['corps'] = $res->fetchOneAssoc();
 
@@ -298,10 +298,10 @@ class ProfileJobs extends ProfilePage
                                FROM  profile_job                   AS j
                           LEFT JOIN  profile_job_enum              AS je ON (j.jobid = je.id)
                           LEFT JOIN  profile_job_subsubsector_enum AS s  ON (s.id = j.subsubsectorid)
-                          LEFT JOIN  profile_addresses             AS aw ON (aw.pid = j.uid AND aw.type = 'job'
+                          LEFT JOIN  profile_addresses             AS aw ON (aw.pid = j.pid AND aw.type = 'job'
                                                                              AND aw.id = j.id)
                           LEFT JOIN  profile_addresses             AS ah ON (ah.jobid = j.jobid AND ah.type = 'hq')
-                              WHERE  j.uid = {?}
+                              WHERE  j.pid = {?}
                            ORDER BY  j.id",
                             $this->pid());
         $this->values['jobs'] = array();
@@ -376,7 +376,7 @@ class ProfileJobs extends ProfilePage
 
             $res = XDB::iterator("SELECT  link_id AS jobid, tel_type AS type, pub, display_tel AS tel, comment
                                     FROM  profile_phones
-                                   WHERE  uid = {?} AND link_type = 'pro'
+                                   WHERE  pid = {?} AND link_type = 'pro'
                                 ORDER BY  link_id",
                                  S::i('uid'));
             $i = 0;
@@ -463,7 +463,7 @@ class ProfileJobs extends ProfilePage
             XDB::execute("UPDATE  profile_corps
                              SET  original_corpsid = {?}, current_corpsid = {?},
                                   rankid = {?}, corps_pub = {?}
-                           WHERE  uid = {?}",
+                           WHERE  pid = {?}",
                           $this->values['corps']['original'], $this->values['corps']['current'],
                           $this->values['corps']['rank'], $this->values['corps']['pub'], $this->pid());
         }

@@ -164,7 +164,7 @@ class EntrReq extends Validate
             $jobid = XDB::insertId();
             $display_tel = format_display_number($this->tel, $error_tel);
             $display_fax = format_display_number($this->fax, $error_fax);
-            XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
+            XDB::execute("INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
                                        search_tel, display_tel, pub)
                                VALUES  ({?}, 'hq', 0, 0, 'fixed', {?}, {?}, 'public'),
                                        ({?}, 'hq', 0, 1, 'fax', {?}, {?}, 'public')",
@@ -195,8 +195,8 @@ class EntrReq extends Validate
         }
         return XDB::execute('UPDATE  profile_job
                                 SET  jobid = {?}
-                              WHERE  uid = {?} AND id = {?}',
-                            $jobid, $this->user->id(), $this->id);
+                              WHERE  pid = {?} AND id = {?}',
+                            $jobid, $this->user->profile()->id(), $this->id);
     }
 
     // }}}

@@ -132,7 +132,7 @@ EOF2;
                                    FROM  accounts AS a
                              INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
                              INNER JOIN  profiles AS p ON (p.pid = ap.pid)
-                             INNER JOIN  profile_education AS pe ON (pe.uid = ap.pid AND FIND_IN_SET('primary', pe.flags))
+                             INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET('primary', pe.flags))
                                   WHERE  pe.entry_year >= {?} AND p.deathdate IS NULL
                                GROUP BY  promo", $depart);
 
@@ -181,7 +181,7 @@ EOF2;
             $res = XDB::query("SELECT  MIN(TO_DAYS(a.registration_date) - TO_DAYS(NOW()))
                                  FROM  accounts AS a
                            INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
-                           INNER JOIN  profile_education AS pe ON (pe.uid = ap.pid AND FIND_IN_SET('primary', pe.flags))
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET('primary', pe.flags))
                                 WHERE  pe.entry_year = {?} AND a.state = 'active'", (int)$promo);
             $jours = -$res->fetchOneCell();
 
@@ -192,7 +192,7 @@ EOF2;
                                          COUNT(a.uid) AS nb
                                    FROM  accounts AS a
                              INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
-                             INNER JOIN  profile_education AS pe ON (pe.uid = ap.pid AND FIND_IN_SET('primary', pe.flags))
+                             INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET('primary', pe.flags))
                                   WHERE  pe.entry_year = {?} AND a.state = 'active'
                                GROUP BY  jour", (int)$jours, 1 + (int)$jours, (int)$promo);
 
@@ -253,7 +253,7 @@ EOF2;
         $res = XDB::iterRow('SELECT  pe.entry_year AS promo, COUNT(*)
                                FROM  accounts AS a
                          INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
-                         INNER JOIN  profile_education AS pe ON (pe.uid = ap.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                         INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'primary\', pe.flags))
                               WHERE  pe.entry_year >= 1900  AND a.state = \'active\'
                            GROUP BY  promo
                            ORDER BY  promo');

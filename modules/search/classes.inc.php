@@ -60,23 +60,23 @@ else
         IF(nw.pub='public', nw.address, '')  AS networking_address,
         IF(nw.pub='public', nwe.name, '')    AS networking_name,";
 @$globals->search->result_where_statement = "
-    LEFT JOIN  profile_education             AS edu0 ON (u.user_id = edu0.uid AND edu0.id = 0)
+    LEFT JOIN  profile_education             AS edu0 ON (u.user_id = edu0.pid AND edu0.id = 0)
     LEFT JOIN  profile_education_enum        AS ede0 ON (ede0.id = edu0.eduid)
     LEFT JOIN  profile_education_degree_enum AS edd0 ON (edd0.id = edu0.degreeid)
     LEFT JOIN  profile_education_field_enum  AS f0   ON (f0.id = edu0.fieldid)
-    LEFT JOIN  profile_education             AS edu1 ON (u.user_id = edu1.uid AND edu1.id = 1)
+    LEFT JOIN  profile_education             AS edu1 ON (u.user_id = edu1.pid AND edu1.id = 1)
     LEFT JOIN  profile_education_enum        AS ede1 ON (ede1.id = edu1.eduid)
     LEFT JOIN  profile_education_degree_enum AS edd1 ON (edd1.id = edu1.degreeid)
     LEFT JOIN  profile_education_field_enum  AS f1   ON (f1.id = edu1.fieldid)
-    LEFT JOIN  profile_education             AS edu2 ON (u.user_id = edu2.uid AND edu2.id = 2)
+    LEFT JOIN  profile_education             AS edu2 ON (u.user_id = edu2.pid AND edu2.id = 2)
     LEFT JOIN  profile_education_enum        AS ede2 ON (ede2.id = edu2.eduid)
     LEFT JOIN  profile_education_degree_enum AS edd2 ON (edd2.id = edu2.degreeid)
     LEFT JOIN  profile_education_field_enum  AS f2   ON (f2.id = edu2.fieldid)
-    LEFT JOIN  profile_education             AS edu3 ON (u.user_id = edu3.uid AND edu3.id = 3)
+    LEFT JOIN  profile_education             AS edu3 ON (u.user_id = edu3.pid AND edu3.id = 3)
     LEFT JOIN  profile_education_enum        AS ede3 ON (ede3.id = edu3.eduid)
     LEFT JOIN  profile_education_degree_enum AS edd3 ON (edd3.id = edu3.degreeid)
     LEFT JOIN  profile_education_field_enum  AS f3   ON (f3.id = edu3.fieldid)
-    LEFT JOIN  profile_job                   AS e    ON (e.uid = u.user_id)
+    LEFT JOIN  profile_job                   AS e    ON (e.pid = u.user_id)
     LEFT JOIN  profile_job_enum              AS ee   ON (e.jobid = ee.id)
     LEFT JOIN  profile_job_sector_enum       AS es   ON (es.id = e.sectorid)
     LEFT JOIN  fonctions_def                 AS ef   ON (e.fonction = ef.id)
@@ -89,7 +89,7 @@ else
     LEFT JOIN  geoloc_administrativeareas    AS gr   ON (adr.countryId = gr.country
                                                          AND adr.administrativeAreaId = gr.id)
     LEFT JOIN  emails                        AS em   ON (em.uid = u.user_id AND em.flags = 'active')
-    LEFT JOIN  profile_networking            AS nw   ON (nw.uid = u.user_id)
+    LEFT JOIN  profile_networking            AS nw   ON (nw.pid = u.user_id)
     LEFT JOIN  profile_networking_enum       AS nwe  ON (nwe.network_type = nw.network_type)";
 
 // }}}
@@ -383,9 +383,9 @@ class QuickSearch extends SField
         }
         if (!empty($this->phone)) {
             if (!S::logged()) {
-                $join .= "INNER JOIN profile_phones AS t ON (t.uid = u.user_id AND t.pub = 'public')";
+                $join .= "INNER JOIN profile_phones AS t ON (t.pid = u.user_id AND t.pub = 'public')";
             } else {
-                $join .= "INNER JOIN profile_phones AS t ON (t.uid = u.user_id)";
+                $join .= "INNER JOIN profile_phones AS t ON (t.pid = u.user_id)";
             }
         }
         return $join;

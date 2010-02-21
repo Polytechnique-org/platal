@@ -461,7 +461,7 @@ class DE_EducationSchools extends DirEnumeration
     protected $from      = 'profile_education_enum';
 
     protected $ac_join   = 'INNER JOIN profile_education ON (profile_education.eduid = profile_education_enum.id)';
-    protected $ac_unique = 'profile_education.uid';
+    protected $ac_unique = 'profile_education.pid';
 }
 // }}}
 
@@ -486,7 +486,7 @@ class DE_EducationFields extends DirEnumeration
     protected $from     = 'profile_education_field_enum';
 
     protected $ac_join   = 'INNER JOIN profile_education ON (profile_education.fieldid = profile_education_field_enum.id)';
-    protected $ac_unique = 'profile_education.uid';
+    protected $ac_unique = 'profile_education.pid';
 }
 // }}}
 
@@ -553,7 +553,7 @@ class DE_Companies extends DirEnumeration
     protected $from      = 'profile_job_enum';
 
     protected $ac_join   = 'INNER JOIN profile_job ON (profile_job.jobid = profile_job_enum.id)';
-    protected $ac_unique = 'profile_job.uid';
+    protected $ac_unique = 'profile_job.pid';
 }
 // }}}
 
@@ -564,7 +564,7 @@ class DE_Sectors extends DirEnumeration
     protected $from      = 'profile_job_sector_enum';
 
     protected $ac_join   = 'INNER JOIN profile_job ON (profile_job_sector_enum.id = profile_job.sectorid)';
-    protected $ac_unique = 'profile_job.uid';
+    protected $ac_unique = 'profile_job.pid';
 }
 // }}}
 
@@ -590,7 +590,7 @@ class DE_Networking extends DirEnumeration
 
 
     protected $ac_join   = 'INNER JOIN profile_networking ON (profile_networking.network_type = profile_networking_enum.network_type';
-    protected $ac_unique = 'profile_networking.uid';
+    protected $ac_unique = 'profile_networking.pid';
 }
 // }}}
 ?>

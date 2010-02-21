@@ -38,7 +38,7 @@ CREATE TABLE profile_education_enum (
 
 CREATE TABLE profile_education (
   id TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  uid INT(11) NOT NULL DEFAULT 0,
+  pid INT(11) NOT NULL DEFAULT 0,
   eduid INT(4) NOT NULL DEFAULT 0,
   degreeid INT(4) NOT NULL DEFAULT 0,
   fieldid INT(2) NOT NULL DEFAULT 0,
@@ -46,8 +46,8 @@ CREATE TABLE profile_education (
   grad_year INT(4) DEFAULT NULL,
   program VARCHAR(255) DEFAULT NULL,
   flags SET('primary') DEFAULT '' NOT NULL,
-  PRIMARY KEY(id, uid),
-  INDEX uid (uid)
+  PRIMARY KEY(id, pid),
+  INDEX pid (pid)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT INTO  profile_education_field_enum (field)
@@ -71,7 +71,7 @@ INSERT INTO  profile_education_enum (id, name, url)
      SELECT  id, text, url
        FROM  #x4dat#.applis_def;
 
-INSERT INTO  profile_education (id, uid, eduid, degreeid)
+INSERT INTO  profile_education (id, pid, eduid, degreeid)
      SELECT  a.ordre, a.uid, a.aid, d.id
        FROM  #x4dat#.applis_ins AS a
  INNER JOIN  profile_education_degree_enum AS d ON (a.type = d.degree);

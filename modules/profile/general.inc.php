@@ -215,7 +215,7 @@ class ProfileEdu implements ProfileSetting
             $value = array();
             $value = XDB::fetchAllAssoc("SELECT  eduid, degreeid, fieldid, grad_year, program
                                            FROM  profile_education
-                                          WHERE  uid = {?} AND !FIND_IN_SET('primary', flags)
+                                          WHERE  pid = {?} AND !FIND_IN_SET('primary', flags)
                                        ORDER BY  id",
                                         $page->pid());
         } else {
@@ -240,12 +240,12 @@ class ProfileEdu implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
         XDB::execute("DELETE FROM  profile_education
-                            WHERE  uid = {?} AND !FIND_IN_SET('primary', flags)",
+                            WHERE  pid = {?} AND !FIND_IN_SET('primary', flags)",
                      $page->pid());
         foreach ($value as $eduid=>&$edu) {
             if ($edu['eduid'] != '') {
                 XDB::execute("INSERT INTO  profile_education
-                                      SET  id = {?}, uid = {?}, eduid = {?}, degreeid = {?},
+                                      SET  id = {?}, pid = {?}, eduid = {?}, degreeid = {?},
                                            fieldid = {?}, grad_year = {?}, program = {?}",
                              $eduid, $page->pid(), $edu['eduid'], $edu['degreeid'],
                              $edu['fieldid'], $edu['grad_year'], $edu['program']);
@@ -300,7 +300,7 @@ class ProfileNetworking implements ProfileSetting
             $value = XDB::fetchAllAssoc("SELECT  n.address, n.network_type AS type, n.pub, m.name
                                            FROM  profile_networking AS n
                                      INNER JOIN  profile_networking_enum AS m ON (n.network_type = m.network_type)
-                                          WHERE  n.uid = {?}",
+                                          WHERE  n.pid = {?}",
                                          $page->pid());
         }
         if (!is_array($value)) {
@@ -338,14 +338,14 @@ class ProfileNetworking implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
         XDB::execute("DELETE FROM profile_networking
-                            WHERE uid = {?}",
+                            WHERE pid = {?}",
                      $page->pid());
         if (!count($value)) {
             return;
         }
         $insert = array();
         foreach ($value as $id=>$network) {
-            XDB::execute("INSERT INTO  profile_networking (uid, nwid, network_type, address, pub)
+            XDB::execute("INSERT INTO  profile_networking (pid, nwid, network_type, address, pub)
                                VALUES  ({?}, {?}, {?}, {?}, {?})",
                          $page->pid(), $id, $network['type'], $network['address'], $network['pub']);
         }
@@ -391,13 +391,12 @@ class ProfileGeneral extends ProfilePage
         $res = XDB::query("SELECT  p.promo, e.entry_year AS entry_year, e.grad_year AS grad_year,
                                    pr.nationality1, pr.nationality2, pr.nationality3, pr.birthdate,
                                    t.display_tel as mobile, t.pub as mobile_pub,
-                                   d.email_directory as email_directory,
+                                   pr.email_directory as email_directory,
                                    pr.freetext, pr.freetext_pub, pr.ax_id AS matricule_ax, p.yourself
                              FROM  profiles              AS pr
                        INNER JOIN  profile_display       AS p ON (p.pid = pr.pid)
-                       INNER JOIN  profile_education     AS e ON (e.uid = pr.pid AND FIND_IN_SET('primary', e.flags))
-                        LEFT JOIN  profile_phones        AS t ON (t.uid = pr.pid AND link_type = 'user')
-                        LEFT JOIN  profile_directory     AS d ON (d.uid = pr.pid)
+                       INNER JOIN  profile_education     AS e ON (e.pid = pr.pid AND FIND_IN_SET('primary', e.flags))
+                        LEFT JOIN  profile_phones        AS t ON (t.pid = pr.pid AND link_type = 'user')
                             WHERE  pr.pid = {?}", $this->pid());
         $this->values = $res->fetchOneAssoc();
         if ($this->owner) {
@@ -431,7 +430,8 @@ class ProfileGeneral extends ProfilePage
     protected function _saveData()
     {
         if ($this->changed['nationality1'] || $this->changed['nationality2'] || $this->changed['nationality3']
-            || $this->changed['birthdate'] || $this->changed['freetext'] || $this->changed['freetext_pub']) {
+            || $this->changed['birthdate'] || $this->changed['freetext'] || $this->changed['freetext_pub']
+            || $this->changed['email_directory']) {
             if ($this->values['nationality3'] == "") {
                 $this->values['nationality3'] = NULL;
             }
@@ -444,24 +444,19 @@ class ProfileGeneral extends ProfilePage
                 $this->values['nationality2'] = $this->values['nationality3'];
                 $this->values['nationality3'] = NULL;
             }
-
-            XDB::execute("UPDATE  profiles
-                             SET  nationality1 = {?}, nationality2 = {?}, nationality3 = {?}, birthdate = {?},
-                                  freetext = {?}, freetext_pub = {?}
-                           WHERE  pid = {?}",
-                          $this->values['nationality1'], $this->values['nationality2'], $this->values['nationality3'],
-                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['birthdate']),
-                          $this->values['freetext'], $this->values['freetext_pub'], $this->pid());
-        }
-        if ($this->changed['email_directory']) {
             $new_email = ($this->values['email_directory'] == "new@example.org") ?
                 $this->values['email_directory_new'] : $this->values['email_directory'];
             if ($new_email == "") {
                 $new_email = NULL;
             }
-            XDB::execute("REPLACE INTO  profile_directory (uid, email_directory)
-                                VALUES  ({?}, {?})",
-                         $this->pid(), $new_email);
+
+            XDB::execute("UPDATE  profiles
+                             SET  nationality1 = {?}, nationality2 = {?}, nationality3 = {?}, birthdate = {?},
+                                  freetext = {?}, freetext_pub = {?}, email_directory = {?}
+                           WHERE  pid = {?}",
+                          $this->values['nationality1'], $this->values['nationality2'], $this->values['nationality3'],
+                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['birthdate']),
+                          $this->values['freetext'], $this->values['freetext_pub'], $new_email, $this->pid());
         }
         if ($this->changed['photo_pub']) {
             XDB::execute("UPDATE  profile_photos

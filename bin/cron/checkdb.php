@@ -84,8 +84,8 @@ check("SELECT  pid
          FROM  profile_addresses
         WHERE  pub != 'private' AND pub !='ax' AND pub != 'public'",
       "Utiliseur n'ayant pas de flag de publicité pour une adresse.");
-check("select uid from profile_phones where pub != 'private' and pub != 'ax' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour un numero de téléphone");
-check("select uid from profile_networking where pub != 'private' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicité pour une adresse de networking");
+check("select pid from profile_phones where pub != 'private' and pub != 'ax' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour un numero de téléphone");
+check("select pid from profile_networking where pub != 'private' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicité pour une adresse de networking");
 
 /* validite des hruid */
 check("SELECT user_id, nom, prenom, promo FROM auth_user_md5 WHERE hruid IS NULL OR hruid = ''",
@@ -98,7 +98,7 @@ check("SELECT a.*
         WHERE (a.type='alias' OR a.type='a_vie') AND u.prenom is null");
 
 /* validite de profile_education */
-check("select a.* from profile_education as a left join auth_user_md5 as u on u.user_id=a.uid where u.prenom is null");
+check("select a.* from profile_education as a left join auth_user_md5 as u on u.user_id=a.pid where u.prenom is null");
 check("select a.* from profile_education as a left join profile_education_enum as ad on ad.id=a.eduid where ad.name is null");
 
 /* validite de binet_users */

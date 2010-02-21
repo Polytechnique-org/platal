@@ -51,10 +51,10 @@ function advancedSearchFromInput()
     $regionField        = new RefSField('region',array('ar.administrativeAreaId'), 'profile_addresses', 'ar', getAddressJoin('ar'));
 
     $entrepriseField    = new RefSField('entreprise', array('je.name'), '', '','');
-    $posteField         = new RefSField('poste', array('ep.description'), 'profile_job', 'ep', 'u.user_id = ep.uid', false);
+    $posteField         = new RefSField('poste', array('ep.description'), 'profile_job', 'ep', 'u.user_id = ep.pid', false);
     $fonctionField      = new RefSField('fonction', array('en.fonction_fr'), 'fonctions_def', 'en',
-                                        'u.user_id = profile_job.uid AND fonctions_def.id = profile_job.functionid');
-    $secteurField       = new RefSField('secteur', array('fm.sectorid'), 'profile_job', 'fm', 'u.user_id = fm.uid');
+                                        'u.user_id = profile_job.pid AND fonctions_def.id = profile_job.functionid');
+    $secteurField       = new RefSField('secteur', array('fm.sectorid'), 'profile_job', 'fm', 'u.user_id = fm.pid');
     $cvField            = new RefSField('cv', array('u.cv'), '', '', '', false);
 
     $natField           = new RefSField('nationalite', array('u.nationalite', 'u.nationalite2', 'u.nationalite3'), '', '', '');
@@ -68,7 +68,7 @@ function advancedSearchFromInput()
 
     $freeField          = new RefSField('free', array('q.profile_freetext'), '', '', '', false);
 
-    $nwAddressField     = new RefSField('networking_address', array('nw.address'), 'profile_networking', 'nw', 'nw.uid=u.user_id', false);
+    $nwAddressField     = new RefSField('networking_address', array('nw.address'), 'profile_networking', 'nw', 'nw.pid=u.user_id', false);
     if (Env::v('networking_address') == '') {
         $nwTypeField    = new IndexSField('networking_type', array('nwe.network_type'), array('profile_networking', 'profile_networking_enum'),
                                           array('nw', 'nwe'), array('nw.uid = u.user_id', 'nwe.network_type = nw.network_type'));
@@ -76,7 +76,7 @@ function advancedSearchFromInput()
         $nwTypeField    = new IndexSField('networking_type',
                                           array('nwe.network_type'), 'profile_networking_enum', 'nwe', 'nwe.network_type = nw.network_type');
     }
-    $nwPhoneField       = new PhoneSField('phone_number', array('t.search_tel'), 'profile_phones', 't', 't.uid = u.user_id');
+    $nwPhoneField       = new PhoneSField('phone_number', array('t.search_tel'), 'profile_phones', 't', 't.pid = u.user_id');
     return array(
                 $nameField, $promo1Field,
                 $promo2Field, $womanField, $subscriberField, $aliveField,

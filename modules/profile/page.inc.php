@@ -137,7 +137,7 @@ class ProfilePhones implements ProfileSetting
             $value = array();
             $res = XDB::iterator('SELECT  display_tel AS tel, tel_type AS type, pub, comment
                                     FROM  profile_phones
-                                   WHERE  uid = {?} AND link_type = {?}
+                                   WHERE  pid = {?} AND link_type = {?}
                                 ORDER BY  tel_id',
                                  $page->pid(), $this->link_type);
             if ($res->numRows() > 0) {
@@ -179,7 +179,7 @@ class ProfilePhones implements ProfileSetting
     private function saveTel($pid, $telid, array &$phone)
     {
         if ($phone['tel'] != '') {
-            XDB::execute("INSERT INTO  profile_phones (uid, link_type, link_id, tel_id, tel_type,
+            XDB::execute("INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
                                        search_tel, display_tel, pub, comment)
                                VALUES  ({?}, {?}, {?}, {?}, {?},
                                        {?}, {?}, {?}, {?})",
@@ -191,7 +191,7 @@ class ProfilePhones implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
         XDB::execute("DELETE FROM  profile_phones
-                            WHERE  uid = {?} AND link_type = {?} AND link_id = {?}",
+                            WHERE  pid = {?} AND link_type = {?} AND link_id = {?}",
                      $page->pid(), $this->link_type, $this->link_id);
         $this->saveTels($page->pid(), $field, $value);
     }

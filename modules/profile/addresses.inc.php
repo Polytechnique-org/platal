@@ -119,7 +119,7 @@ class ProfileAddress extends ProfileGeocoding
                             WHERE  pid = {?} AND type = 'home'",
                      $page->pid());
         XDB::execute("DELETE FROM  profile_phones
-                            WHERE  uid = {?} AND link_type = 'address'",
+                            WHERE  pid = {?} AND link_type = 'address'",
                      $page->pid());
         foreach ($value as $addrid => &$address) {
             $this->saveAddress($page->pid(), $addrid, $address, 'home');
@@ -163,7 +163,7 @@ class ProfileAddresses extends ProfilePage
 
         $res = XDB::iterator("SELECT  link_id AS addrid, tel_type AS type, pub, display_tel AS tel, comment
                                 FROM  profile_phones
-                               WHERE  uid = {?} AND link_type = 'address'
+                               WHERE  pid = {?} AND link_type = 'address'
                             ORDER BY  link_id",
                              $this->pid());
         $i = 0;

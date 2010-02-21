@@ -35,7 +35,7 @@ function get_annuaire_infos($method, $params) {
                     "SELECT  ph.display_tel  AS cell, a.naissance AS age
                        FROM  auth_user_md5   AS a
                  INNER JOIN  auth_user_quick AS q USING (user_id)
-                  LEFT JOIN  profile_phones  AS ph ON (ph.uid = a.user_id AND link_type='user' AND tel_type = 'mobile')
+                  LEFT JOIN  profile_phones  AS ph ON (ph.pid = a.user_id AND link_type='user' AND tel_type = 'mobile')
                       WHERE  a.matricule = {?} LIMIT 1", $params[1]);
             $array = $res->next();
         } else {
@@ -58,7 +58,7 @@ function get_annuaire_infos($method, $params) {
                     explode("\n", Geocoder::getFirstLines($text, $adr['cp'], 3));
                 $sql = XDB::query("SELECT  display_tel
                                      FROM  profile_phones
-                                    WHERE  uid = {?} AND link_type = 'user' AND tel_type = 'mobile'
+                                    WHERE  pid = {?} AND link_type = 'user' AND tel_type = 'mobile'
                                     LIMIT  1", $uid);
                 if ($sql->numRows() > 0) {
                     $array['cell'] = $sql->fetchOneCell();
@@ -100,7 +100,23 @@ function get_annuaire_infos($method, $params) {
                            "SELECT  t.display_tel AS tel, t.tel_type, t.link_id as adrid
                               FROM  profile_phones    AS t
                         INNER JOIN  profile_addresses AS a ON (t.link_id = a.id AND t.uid = a.pid)
-                             WHERE  t.uid = {?} AND t.link_type = 'address'
+                             WHERE  t.u
+        $res = XDB::query(
+                "SELECT  email
+                   FROM  profile_job
+                  WHERE  pid = {?}", $user->id());
+        $res = $res->fetchAllAssoc();
+        $pro = array();
+        foreach ($res as $res_it) {
+            if ($res_it['email'] != '') {
+                $pro[] = $res_it['email'];
+                if ($email_directory == $res_it['email']) {
+                    $email_type = "pro";
+                }
+            }
+        }
+        $page->assign('list_email_pro', $pro);
+id = {?} AND t.link_type = 'address'
                                     AND NOT FIND_IN_SET('pro', a.statut)", $uid);
                 while ($tel = $restel->next()) {
                     $array['adresse'][$adrid_index[$tel['adrid']]]['tels'][] = $tel;

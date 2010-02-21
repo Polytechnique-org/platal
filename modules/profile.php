@@ -568,7 +568,7 @@ class ProfileModule extends PLModule
         } elseif ($promo_sortie == $promo + 3) {
             XDB::execute('UPDATE  profile_education
                              SET  grad_year = {?}
-                           WHERE  uid = {?} AND FIND_IN_SET(\'primary\', flags)',
+                           WHERE  pid = {?} AND FIND_IN_SET(\'primary\', flags)',
                          $promo_sortie, $profile->id());
             $page->trigSuccess('Ton statut "orange" a été supprimé.');
             $page->assign('promo_sortie_old', $promo_sortie);
@@ -602,7 +602,7 @@ class ProfileModule extends PLModule
         //expertise
         $res = XDB::query('SELECT  expertise
                              FROM  profile_mentor
-                            WHERE  uid = {?}', $user->id());
+                            WHERE  pid = {?}', $user->id());
         $page->assign('expertise', $res->fetchOneCell());
 
         // Sectors
@@ -612,7 +612,7 @@ class ProfileModule extends PLModule
                    FROM  profile_mentor_sector      AS m
               LEFT JOIN  profile_job_sector_enum    AS s  ON(m.sectorid = s.id)
               LEFT JOIN  profile_job_subsector_enum AS ss ON(m.sectorid = ss.sectorid AND m.subsectorid = ss.id)
-                  WHERE  uid = {?}", $user->id());
+                  WHERE  pid = {?}", $user->id());
         while (list($sector, $subSector) = $res->next()) {
             $sectors[]    = $sector;
             $subSectors[] = $subSector;
@@ -625,7 +625,7 @@ class ProfileModule extends PLModule
                 "SELECT  gc.countryFR
                    FROM  profile_mentor_country AS m
               LEFT JOIN  geoloc_countries       AS gc ON (m.country = gc.iso_3166_1_a2)
-                  WHERE  uid = {?}", $user->id());
+                  WHERE  pid = {?}", $user->id());
         $page->assign('pays', $res->fetchColumn());
 
         $page->addJsLink('close_on_esc.js');
@@ -688,7 +688,7 @@ class ProfileModule extends PLModule
         $it = XDB::iterator("SELECT  gc.iso_3166_1_a2 AS id, gc.countryFR AS field
                                FROM  geoloc_countries       AS gc
                          INNER JOIN  profile_mentor_country AS mp ON (mp.country = gc.iso_3166_1_a2)
-                         INNER JOIN  profile_mentor_sector  AS ms ON (ms.uid = mp.uid)
+                         INNER JOIN  profile_mentor_sector  AS ms ON (ms.pid = mp.pid)
                               WHERE  ms.sectorid = {?} " . $where . "
                            GROUP BY  iso_3166_1_a2
                            ORDER BY  countryFR", $sect, $ssect);
