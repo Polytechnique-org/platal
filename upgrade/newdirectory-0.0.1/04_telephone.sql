@@ -16,10 +16,4 @@ CREATE TABLE `profile_phones` (
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 
--- Adds a temporary column to convert phone prefixes from varchar to int
-ALTER TABLE `geoloc_pays` ADD COLUMN `tmp_phoneprf` smallint unsigned NULL;
-
--- Adds phone format column
-ALTER TABLE `geoloc_pays` ADD COLUMN `phoneformat` varchar(25) NOT NULL AFTER `nat`;
-
 # vim:set syntax=mysql:

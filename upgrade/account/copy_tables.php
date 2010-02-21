@@ -22,10 +22,6 @@
 
 require('./connect.db.inc.php');
 
-$globals->dbuser = 'admin';
-$globals->dbpwd  = 'lknjiuhb';
-$globals->debug  = 1;
-
 function copyTable($source, $target, $convertToInnoDB = true)
 {
     XDB::execute('CREATE TABLE  ' . $target . '
@@ -75,7 +71,6 @@ copyTable('#x4dat#.newsletter', 'newsletter');
 copyTable('#x4dat#.newsletter_art', 'newsletter_art');
 copyTable('#x4dat#.newsletter_cat', 'newsletter_cat');
 copyTable('#x4dat#.newsletter_ins', 'newsletter_ins');
-
 
 copyTable('#x4dat#.evenements', 'announces');
 copyTable('#x4dat#.evenements_photo', 'announce_photos');
@@ -133,8 +128,6 @@ copyTable('#x4dat#.survey_votes', 'survey_votes');
 
 copyTable('#x4dat#.watch_profile', 'watch_profile');
 copyTable('#x4dat#.perte_pass', 'account_lost_passwords');
-
-copyTable('#x4dat#.geoloc_pays', 'geoloc_pays');
 
 copyTable('#x4dat#.emails', 'emails');
 copyTable('#x4dat#.aliases', 'aliases');
