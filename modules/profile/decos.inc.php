@@ -27,8 +27,8 @@ class ProfileDeco implements ProfileSetting
         if (is_null($value)) {
             // Fetch already attributed medals
             $res = XDB::iterRow("SELECT  m.id AS id, s.gid AS grade
-                                   FROM  profile_medals_sub    AS s
-                             INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
+                                   FROM  profile_medals    AS s
+                             INNER JOIN  profile_medal_enum        AS m ON ( s.mid = m.id )
                                   WHERE  s.uid = {?}",
                                 $page->pid());
             $value = array();
@@ -61,7 +61,7 @@ class ProfileDeco implements ProfileSetting
         foreach ($orig as $id=>&$val) {
             if (!isset($value[$id]) || $val['grade'] != $value[$id]['grade']) {
                 if ($val['valid']) {
-                    XDB::execute("DELETE FROM  profile_medals_sub
+                    XDB::execute("DELETE FROM  profile_medals
                                         WHERE  uid = {?} AND mid = {?}",
                                  $page->pid(), $id);
                 } else {
@@ -118,7 +118,7 @@ class ProfileDecos extends ProfilePage
     public function _prepare(PlPage &$page, $id)
     {
         $res    = XDB::iterator("SELECT  *, FIND_IN_SET('validation', flags) AS validate
-                                   FROM  profile_medals
+                                   FROM  profile_medal_enum
                                ORDER BY  type, text");
         $mlist  = array();
         while ($tmp = $res->next()) {

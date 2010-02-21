@@ -99,6 +99,15 @@ copyTable('#x4dat#.postfix_mailseen', 'postfix_mailseen');
 copyTable('#x4dat#.postfix_whitelist', 'postfix_whitelist');
 
 copyTable('#x4dat#.photo', 'profile_photos');
+copyTable('#x4dat#.binets_def', 'profile_binet_enum');
+copyTable('#x4dat#.binets_ins', 'profile_binets');
+copyTable('#x4dat#.sections', 'profile_section_enum');
+copyTable('#x4dat#.profile_medals', 'profile_medal_enum');
+copyTable('#x4dat#.profile_medals_sub', 'profile_medals');
+copyTable('#x4dat#.competences_def', 'profile_skill_enum');
+copyTable('#x4dat#.competences_ins', 'profile_skills');
+copyTable('#x4dat#.langues_def', 'profile_langskill_enum');
+copyTable('#x4dat#.langues_ins', 'profile_langskills');
 
 copyTable('#x4dat#.register_marketing', 'register_marketing');
 copyTable('#x4dat#.register_pending', 'register_pending');

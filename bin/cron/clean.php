@@ -38,12 +38,12 @@ query("DELETE FROM register_pending WHERE hash = 'INSCRIT'");
 
 // quelques tables sont triées pour que la lecture triée soit plus facile
 query("ALTER TABLE profile_education_enum ORDER BY name");
-query("ALTER TABLE binets_def ORDER BY text");
+query("ALTER TABLE profile_binet_enum ORDER BY text");
 query("ALTER TABLE groupesx_def ORDER BY text");
 query("ALTER TABLE profile_job_sector_enum ORDER BY name");
 query("ALTER TABLE profile_job_subsector_enum ORDER BY name");
 query("ALTER TABLE profile_job_subsubsector_enum ORDER BY name");
-query("ALTER TABLE sections ORDER BY text");
+query("ALTER TABLE profile_section_enum ORDER BY text");
 
 // Prunes older autocomplete queries.
 query("DELETE FROM search_autocomplete WHERE generated < DATE_SUB(NOW(), INTERVAL 1 DAY)");

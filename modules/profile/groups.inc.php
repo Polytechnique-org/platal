@@ -61,8 +61,8 @@ class ProfileGroup implements ProfileSetting
         if (is_null($value)) {
             $value = array();
             $res = XDB::iterRow("SELECT  g.id, g.text
-                                   FROM  {$this->table}_def AS g
-                             INNER JOIN  {$this->table}_ins AS i ON (i.{$this->group_field} = g.id)
+                                   FROM  profile_{$this->table}_enum AS g
+                             INNER JOIN  profile_{$this->table}s AS i ON (i.{$this->group_field} = g.id)
                                   WHERE  i.{$this->user_field} = {?}",
                                 $page->pid());
             while (list($gid, $text) = $res->next()) {
@@ -102,7 +102,7 @@ class ProfileGroups extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['section']  = new ProfileSection();
-        $this->settings['binets']   = new ProfileGroup('binets', 'user_id', 'binet_id');
+        $this->settings['binets']   = new ProfileGroup('binet', 'user_id', 'binet_id');
         $this->watched['section'] = $this->watched['binets'] = true;
     }
 

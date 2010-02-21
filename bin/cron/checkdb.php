@@ -73,12 +73,12 @@ if ( PEAR::isError($opts) ) {
 
 /* Validite des flags de transmission */
 check("SELECT  u.user_id, nom, prenom, promo,
-               emails_alias_pub, profile_freetext_pub, profile_medals_pub
+               emails_alias_pub, profile_freetext_pub, profile_medal_enum_pub
          FROM  auth_user_md5 AS u
    INNER JOIN  auth_user_quick AS q USING(user_id)
         WHERE  (emails_alias_pub != 'private' AND emails_alias_pub != 'public')
            OR  (profile_freetext_pub != 'private' AND profile_freetext_pub != 'public')
-           OR  (profile_medals_pub != 'private' AND profile_medals_pub != 'public')",
+           OR  (profile_medal_enum_pub != 'private' AND profile_medal_enum_pub != 'public')",
     "Utilisateur n'ayant pas de flag de publicite pour leurs donnees de profil");
 check("SELECT  pid
          FROM  profile_addresses
@@ -102,8 +102,8 @@ check("select a.* from profile_education as a left join auth_user_md5 as u on u.
 check("select a.* from profile_education as a left join profile_education_enum as ad on ad.id=a.eduid where ad.name is null");
 
 /* validite de binet_users */
-check("select b.* from binets_ins as b left join auth_user_md5 as u on u.user_id=b.user_id where u.prenom is null");
-check("select b.* from binets_ins as b left join binets_def as bd on bd.id=b.binet_id where bd.text is null");
+check("select b.* from profile_binets as b left join auth_user_md5 as u on u.user_id=b.user_id where u.prenom is null");
+check("select b.* from profile_binets as b left join profile_binet_enum as bd on bd.id=b.binet_id where bd.text is null");
 
 /* validite de contacts */
 check("select c.* from contacts as c left join auth_user_md5 as u on u.user_id=c.uid where u.prenom is null");

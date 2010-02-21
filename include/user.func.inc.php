@@ -26,8 +26,8 @@
  */
 function user_clear_all_subs($user_id, $really_del=true)
 {
-    // keep datas in : aliases, adresses, tels, profile_education, binets_ins, contacts, groupesx_ins, homonymes, identification_ax, photo
-    // delete in     : competences_ins, emails, entreprises, langues_ins, mentor,
+    // keep datas in : aliases, adresses, tels, profile_education, profile_binets, contacts, groupesx_ins, homonymes, identification_ax, photo
+    // delete in     : profile_skills, emails, entreprises, profile_langskills, mentor,
     //                 mentor_pays, mentor_secteurs, newsletter_ins, perte_pass, requests, user_changes, virtual_redirect, watch_sub
     // + delete maillists
 
@@ -37,14 +37,14 @@ function user_clear_all_subs($user_id, $really_del=true)
     list($alias) = explode('@', $user->forlifeEmail());
 
     // TODO: clear profile.
-    $tables_to_clear = array('uid' => array('competences_ins', 'profile_job', 'langues_ins', 'profile_mentor_country',
+    $tables_to_clear = array('uid' => array('profile_skills', 'profile_job', 'profile_langskills', 'profile_mentor_country',
                                             'profile_mentor_sector', 'profile_mentor', 'perte_pass', 'watch_sub'),
                              'user_id' => array('requests', 'user_changes'));
 
     if ($really_del) {
         array_push($tables_to_clear['uid'], 'emails', 'group_members', 'contacts', 'adresses', 'profile_phones',
-                                            'photo', 'perte_pass', 'langues_ins', 'forum_subs', 'forum_profiles');
-        array_push($tables_to_clear['user_id'], 'newsletter_ins', 'binets_ins');
+                                            'photo', 'perte_pass', 'profile_langskills', 'forum_subs', 'forum_profiles');
+        array_push($tables_to_clear['user_id'], 'newsletter_ins', 'profile_binets');
         $tables_to_clear['id'] = array('aliases');
         $tables_to_clear['contact'] = array('contacts');
         XDB::execute("UPDATE accounts

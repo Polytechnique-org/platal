@@ -418,19 +418,19 @@ class DE_NameTypes extends DirEnumeration
 // {{{ class DE_Binets
 class DE_Binets extends DirEnumeration
 {
-    protected $from = 'binets_def';
+    protected $from = 'profile_binet_enum';
 
-    protected $ac_join = 'INNER JOIN binets_ins ON (binets_def.id = binets_ins.binet_id)';
-    protected $ac_unique = 'binets_ins.user_id';
+    protected $ac_join = 'INNER JOIN profile_binets ON (profile_binet_enum.id = profile_binets.binet_id)';
+    protected $ac_unique = 'profile_binets.user_id';
 }
 // }}}
 
 // {{{ class DE_Sections
 class DE_Sections extends DirEnumeration
 {
-    protected $from = 'sections';
+    protected $from = 'profile_section_enum';
 
-    protected $ac_join = 'INNER JOIN profiles ON (profiles.section = sections.id)';
+    protected $ac_join = 'INNER JOIN profiles ON (profiles.section = profile_section_enum.id)';
     protected $ac_unique = 'profiles.pid';
 }
 // }}}

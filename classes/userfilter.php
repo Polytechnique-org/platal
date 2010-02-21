@@ -2057,10 +2057,10 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_bi) {
-            $joins['bi'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'binets_ins', '$ME.user_id = $PID');
+            $joins['bi'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_binets', '$ME.user_id = $PID');
         }
         if ($this->with_bd) {
-            $joins['bd'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'binets_def', '$ME.id = bi.binet_id');
+            $joins['bd'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_binet_enum', '$ME.id = bi.binet_id');
         }
         return $joins;
     }
@@ -2354,7 +2354,7 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_pmed) {
-            $joins['pmed'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_medals_sub', '$ME.uid = $UID');
+            $joins['pmed'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_medals', '$ME.uid = $UID');
         }
         return $joins;
     }

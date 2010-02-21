@@ -414,7 +414,7 @@ class Profile
     public function getBinets()
     {
         return XDB::fetchColumn('SELECT  binet_id
-                                   FROM  binets_ins
+                                   FROM  profile_binets
                                   WHERE  user_id = {?}', $this->id());
     }
 

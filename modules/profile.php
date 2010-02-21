@@ -107,7 +107,7 @@ class ProfileModule extends PLModule
         $mid = $thumb ? @func_get_arg(2) : $mid;
 
         $res = XDB::query("SELECT  img
-                             FROM  profile_medals
+                             FROM  profile_medal_enum
                             WHERE  id = {?}",
                           $mid);
         $img  = $thumb ?
@@ -380,7 +380,7 @@ class ProfileModule extends PLModule
         pl_cached_content_headers("text/javascript", "utf-8");
         $page->changeTpl('profile/grades.js.tpl', NO_SKIN);
         $res    = XDB::iterator("SELECT  *
-                                   FROM  profile_medals_grades
+                                   FROM  profile_medal_enum_grades
                                ORDER BY  mid, pos");
         $grades = array();
         while ($tmp = $res->next()) {
@@ -389,7 +389,7 @@ class ProfileModule extends PLModule
         $page->assign('grades', $grades);
 
         $res    = XDB::iterator("SELECT  *, FIND_IN_SET('validation', flags) AS validate
-                                   FROM  profile_medals
+                                   FROM  profile_medal_enum
                                ORDER BY  type, text");
         $mlist  = array();
         while ($tmp = $res->next()) {
@@ -797,8 +797,8 @@ class ProfileModule extends PLModule
     function handler_admin_binets(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Binets');
         $page->assign('title', 'Gestion des binets');
-        $table_editor = new PLTableEditor('admin/binets', 'binets_def', 'id');
-        $table_editor->add_join_table('binets_ins','binet_id',true);
+        $table_editor = new PLTableEditor('admin/binets', 'profile_binet_enum', 'id');
+        $table_editor->add_join_table('profile_binets','binet_id',true);
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }
@@ -840,7 +840,7 @@ class ProfileModule extends PLModule
     function handler_admin_sections(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Sections');
         $page->assign('title', 'Gestion des sections');
-        $table_editor = new PLTableEditor('admin/sections','sections','id');
+        $table_editor = new PLTableEditor('admin/sections','profile_section_enum','id');
         $table_editor->describe('text','intitulé',true);
         $table_editor->apply($page, $action, $id);
     }
@@ -884,7 +884,7 @@ class ProfileModule extends PLModule
     function handler_admin_medals(&$page, $action = 'list', $id = null) {
         $page->setTitle('Administration - Distinctions');
         $page->assign('title', 'Gestion des Distinctions');
-        $table_editor = new PLTableEditor('admin/medals','profile_medals','id');
+        $table_editor = new PLTableEditor('admin/medals','profile_medal_enum','id');
         $table_editor->describe('text', 'intitulé',  true);
         $table_editor->describe('img',  'nom de l\'image', false);
         $table_editor->describe('flags', 'valider', true);
@@ -895,29 +895,29 @@ class ProfileModule extends PLModule
             $mid = $id;
 
             if (Post::v('act') == 'del') {
-                XDB::execute('DELETE FROM  profile_medals_grades
+                XDB::execute('DELETE FROM  profile_medal_enum_grades
                                     WHERE  mid={?} AND gid={?}', $mid, Post::i('gid'));
             } else {
                 foreach (Post::v('grades', array()) as $gid=>$text) {
                     if ($gid === 0) {
                         if (!empty($text)) {
                             $res = XDB::query('SELECT  MAX(gid)
-                                                 FROM  profile_medals_grades
+                                                 FROM  profile_medal_enum_grades
                                                 WHERE  mid = {?}', $mid);
                             $gid = $res->fetchOneCell() + 1;
 
-                            XDB::execute('INSERT INTO  profile_medals_grades (mid, gid, text, pos)
+                            XDB::execute('INSERT INTO  profile_medal_enum_grades (mid, gid, text, pos)
                                                VALUES  ({?}, {?}, {?}, {?})',
                                 $mid, $gid, $text, $_POST['pos']['0']);
                         }
                     } else {
-                        XDB::execute('UPDATE  profile_medals_grades
+                        XDB::execute('UPDATE  profile_medal_enum_grades
                                          SET  pos={?}, text={?}
                                        WHERE  gid={?} AND mid={?}', $_POST['pos'][$gid], $text, $gid, $mid);
                     }
                 }
             }
-            $res = XDB::iterator('SELECT gid, text, pos FROM profile_medals_grades WHERE mid={?} ORDER BY pos', $mid);
+            $res = XDB::iterator('SELECT gid, text, pos FROM profile_medal_enum_grades WHERE mid={?} ORDER BY pos', $mid);
             $page->assign('grades', $res);
         }
     }

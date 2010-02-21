@@ -58,7 +58,7 @@ function advancedSearchFromInput()
     $cvField            = new RefSField('cv', array('u.cv'), '', '', '', false);
 
     $natField           = new RefSField('nationalite', array('u.nationalite', 'u.nationalite2', 'u.nationalite3'), '', '', '');
-    $binetField         = new RefSField('binet', array('b.binet_id'), 'binets_ins', 'b', 'u.user_id=b.user_id');
+    $binetField         = new RefSField('binet', array('b.binet_id'), 'profile_binets', 'b', 'u.user_id=b.user_id');
     $groupexField       = new RefSField('groupex', array('g.id'), array('groups', 'group_members'), array('g', 'gm'),
                                         array("(g.cat = 'GroupesX' OR g.cat = 'Institutions') AND g.pub = 'public'",
                                               'gm.asso_id = g.id AND u.user_id = gm.uid'));
