@@ -442,7 +442,9 @@ class Profile
                                       IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
                                       pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
                                       pd.directory_name, pp.display_tel AS mobile, pp.pub AS mobile_pub,
-                                      ph.pub AS photo_pub, ap.uid AS owner_id
+                                      ph.attach IS NOT NULL AS has_photo, ph.pub AS photo_pub,
+                                      p.last_change < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_old,
+                                      ap.uid AS owner_id
                                 FROM  profiles AS p
                           INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                           INNER JOIN  profile_education AS pe ON (pe.uid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))

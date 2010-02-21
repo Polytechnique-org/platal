@@ -48,23 +48,16 @@ class ReminderProfileUpdate extends Reminder
     public function Prepare(&$page)
     {
         parent::Prepare($page);
+        $profile = $this->user->profile();
 
-        $res = XDB::query('SELECT  date < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_profile_old,
-                                   date AS profile_date, LENGTH(p.attach) > 0 AS has_photo
-                             FROM  auth_user_md5     AS u
-                        LEFT JOIN  photo             AS p ON (u.user_id = p.uid)
-                            WHERE  user_id = {?}',
-                          $this->user->id());
-        list($is_profile_old, $profile_date, $has_photo) = $res->fetchOneRow();
-
-        $page->assign('profile_incitation', $is_profile_old);
-        $page->assign('profile_last_update', $profile_date);
-        $page->assign('photo_incitation', !$has_photo);
+        $page->assign('profile_incitation', $profile->is_old);
+        $page->assign('profile_last_update', $profile->last_change);
+        $page->assign('photo_incitation', !$profile->has_photo);
 
         $res = XDB::query('SELECT  COUNT(*)
                              FROM  profile_addresses
                             WHERE  pid = {?} AND accuracy = 0',
-                          $this->user->id());
+                          $profile->id());
         $page->assign('geocoding_incitation', $res->fetchOneCell());
     }
 
@@ -83,20 +76,11 @@ class ReminderProfileUpdate extends Reminder
 
     public static function IsCandidate(User &$user, $candidate)
     {
-        $res = XDB::query('SELECT  date < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_profile_old,
-                                   p.attach AS photo
-                             FROM  auth_user_md5 AS u
-                        LEFT JOIN  photo         AS p ON (u.user_id = p.uid)
-                            WHERE  user_id = {?}',
-                          $user->id());
-        list($is_profile_old, $has_photo) = $res->fetchOneRow();
-
-        $res = XDB::query('SELECT  COUNT(*)
-                             FROM  profile_addresses
-                            WHERE  pid = {?} AND accuracy = 0',
-                          $user->id());
-
-        return ($res->fetchOneCell() || !$has_photo || $is_profile_old);
+        $profile = $user->profile();
+        if (!$profile) {
+            return false;
+        }
+        return !$profile->has_photo || $profile->is_old;
     }
 }
 

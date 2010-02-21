@@ -1730,12 +1730,12 @@ class UserFilter extends PlFilter
         if ($promo_min != 0) {
             $min = new UFC_Promo('>=', self::GRADE_ING, intval($promo_min));
         } else {
-            $min = new UFC_True();
+            $min = new PFC_True();
         }
         if ($promo_max != 0) {
             $max = new UFC_Promo('<=', self::GRADE_ING, intval($promo_max));
         } else {
-            $max = new UFC_True();
+            $max = new PFC_True();
         }
         return new UserFilter(new PFC_And($min, $max));
     }
