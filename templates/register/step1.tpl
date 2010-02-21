@@ -30,18 +30,32 @@
   </p>
   <table class="tinybicol">
     <tr>
-      <th>
+      <th colspan="2">
         Promotion
       </th>
     </tr>
     <tr>
       <td>
-        Donne ta promotion sur 4 chiffres&nbsp;: 
+        Donne ta promotion sur 4 chiffres&nbsp;:
+      </td>
+      <td>
         <input type="text" size="4" maxlength="4" name="promo" value="{$smarty.post.promo}" />
       </td>
     </tr>
     <tr>
-      <td class="center">
+      <td>
+        Formation suivie&nbsp;:
+      </td>
+      <td>
+        <select name="edu_type">
+          <option value="X" selected="selected">polytechnicienne</option>
+          <option value="M">master</option>
+          <option value="D">doctorat</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td class="center" colspan="2">
         <input type="submit" value="Valider" />
       </td>
     </tr>
