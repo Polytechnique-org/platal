@@ -114,7 +114,10 @@ class XDB
             } else {
                 $text = 'Erreur lors de l\'écriture dans la base de données';
             }
-            if ($globals->debug) {
+            if (php_sapi_name() == 'cli') {
+                $text .= "\n" . XDB::_reformatQuery($query)
+                       . "\n" . XDB::$mysqli->error;
+            } else if ($globals->debug) {
                 $text .= '<pre>' . pl_entities(XDB::_reformatQuery($query)) . '</pre>';
             } else {
                 $file = fopen($globals->spoolroot . '/spool/tmp/query_errors', 'a');
