@@ -5,10 +5,10 @@ MYSQL='mysql -u admin '
 
 set -e
 
-#if [ "$UID" != 0 ]; then
-#    echo "has to be run as root"
-#    exit 1
-#fi
+if [ "$UID" != 0 ]; then
+    echo "has to be run as root"
+    exit 1
+fi
 
 if [[ -n "${DBPREFIX}" ]]; then
     echo "Using non-default database ${DBPREFIX}x4dat."

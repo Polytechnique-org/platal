@@ -22,6 +22,10 @@
 
 require('./connect.db.inc.php');
 
+$globals->dbuser = 'admin';
+$globals->dbpwd  = 'lknjiuhb';
+$globals->debug  = 1;
+
 function copyTable($source, $target, $convertToInnoDB = true)
 {
     XDB::execute('CREATE TABLE  ' . $target . '
