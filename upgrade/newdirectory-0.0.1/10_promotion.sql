@@ -1,6 +1,6 @@
 INSERT INTO  profile_education (id, uid, grad_year, entry_year, eduid, degreeid, flags)
      SELECT  100, u.user_id, u.promo_sortie, u.promo, e.id, d.id, 'primary'
-       FROM  auth_user_md5                 AS u
+       FROM  #x4dat#.auth_user_md5                 AS u
   LEFT JOIN  profile_education_enum        AS e ON (e.abbreviation = "X")
   LEFT JOIN  profile_education_degree_enum AS d ON (d.degree = "Ingénieur");
 

@@ -62,12 +62,13 @@ INSERT INTO  profile_name_enum (name, flags, explanations, type, score)
 DROP TABLE IF EXISTS profile_name;
 
 CREATE TABLE IF NOT EXISTS profile_name (
-  id TINYINT(2) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id of this name for this user',
+  id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id of this name for this user',
   pid INT(11) NOT NULL COMMENT 'id of alumni',
   name VARCHAR(255) NOT NULL COMMENT 'name to search for',
   particle VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'particle of the name to search for',
   typeid TINYINT(2) UNSIGNED NOT NULL COMMENT 'type of name',
   PRIMARY KEY (pid, id),
+  KEY (id),
   INDEX pid (pid)
 ) ENGINE=InnoDB, CHARSET=utf8, COMMENT = 'Names of alumni (search table)';
 

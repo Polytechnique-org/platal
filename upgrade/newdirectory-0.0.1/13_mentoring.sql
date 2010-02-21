@@ -2,18 +2,17 @@ DROP TABLE IF EXISTS profile_mentor;
 DROP TABLE IF EXISTS profile_mentor_country;
 DROP TABLE IF EXISTS profile_mentor_sector;
 
-CREATE TABLE IF NOT EXISTS profile_mentor (
+CREATE TABLE profile_mentor (
   uid INT(11) NOT NULL DEFAULT 0,
   expertise TEXT NOT NULL,
-  PRIMARY KEY (uid),
-  FULLTEXT INDEX (expertise)
+  PRIMARY KEY (uid)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT INTO  profile_mentor (uid, expertise)
      SELECT  uid, expertise
        FROM  #x4dat#.mentor;
 
-CREATE TABLE IF NOT EXISTS profile_mentor_country (
+CREATE TABLE profile_mentor_country (
   uid INT(11) NOT NULL DEFAULT 0,
   country CHAR(2) NOT NULL DEFAULT "FR",
   PRIMARY KEY (uid, country),
@@ -24,7 +23,7 @@ INSERT INTO  profile_mentor_country (uid, country)
      SELECT  uid, pid
        FROM  #x4dat#.mentor_pays;
 
-CREATE TABLE IF NOT EXISTS profile_mentor_sector (
+CREATE TABLE profile_mentor_sector (
   uid INT(11) NOT NULL DEFAULT 0,
   sectorid TINYINT(2) UNSIGNED NOT NULL,
   subsectorid TINYINT(3) UNSIGNED NOT NULL,

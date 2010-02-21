@@ -208,8 +208,10 @@ WHERE name = 'INSA Rouen';
 UPDATE profile_education_enum
 SET abbreviation = 'IAE de Paris', name = 'Institut d\'Administration des Entreprises de Paris', url = 'http://iae.univ-paris1.fr/'
 WHERE name = 'Institut d\'Administration des Entreprises';
+UPDATE profile_education_enum
 SET abbreviation = 'CNSMDP', name = 'Conservatoire National Supérieur de Musique et de Danse de Paris'
 WHERE name = 'Conservatoire national supérieur de musique et de danse de Paris';
+UPDATE profile_education_enum
 SET name = 'École Normale de Musique de Paris'
 WHERE name = 'École normale de musique de Paris';
 
@@ -522,7 +524,7 @@ WHERE name = 'IHEDN';
 
 UPDATE profile_education_enum
 SET name = "Centre des Hautes Études de l'Armement", country = 'FR', url ='http://www.chear.defense.gouv.fr/',
-WHERE name = 'CHEAr'
+abbreviation = 'CHEAr'
 WHERE name = 'CHEAr';
 
 -- Cleans duplicated entries

@@ -1,4 +1,6 @@
-CREATE TABLE IF NOT EXISTS `profile_phones` (
+DROP TABLE IF EXISTS profile_phones;
+
+CREATE TABLE `profile_phones` (
     `uid` smallint unsigned NOT NULL,
     `link_type` enum('address', 'pro', 'user') NOT NULL DEFAULT 'user' COMMENT 'type of parent element',
     `link_id` tinyint unsigned NOT NULL COMMENT 'id of his parent element',

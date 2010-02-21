@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS accounts;
 CREATE TABLE accounts (
   # Account identifier and type
   uid int(6) not null auto_increment,
@@ -34,6 +35,7 @@ CREATE TABLE accounts (
   key type (type)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
+DROP TABLE IF EXISTS account_types;
 CREATE TABLE account_types (
   type varchar(16) not null,
   perms set('mail', 'groups', 'forums', 'list', 'search', 'portal') default '',
@@ -41,6 +43,7 @@ CREATE TABLE account_types (
   primary key type (type)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
+DROP TABLE IF EXISTS account_profiles;
 CREATE TABLE account_profiles (
   uid int(6) not null,
   pid int(6) not null,

@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS profile_addresses;
 
-CREATE TABLE IF NOT EXISTS profile_addresses (
+CREATE TABLE profile_addresses (
   pid INT(11) DEFAULT NULL,
   jobid INT(6) UNSIGNED DEFAULT NULL,
   type ENUM('home','job','hq') NOT NULL DEFAULT 'home',
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS profile_addresses (
 
 INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, latitude, longitude, countryId,
                                 type, flags)
-     SELECT  uid, adrid, postcode, datemaj, pub, comment, glat, glng, country,
+     SELECT  uid, adrid, postcode, datemaj, pub, NULL, glat, glng, country,
              IF(FIND_IN_SET('pro', 'statut'), 'job', 'home'),
              CONCAT(IF(FIND_IN_SET('res-secondaire', 'statut'), 'secondary,', ''),
                     IF(FIND_IN_SET('courrier', 'statut'), 'mail,', ''),
@@ -44,7 +44,8 @@ INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, l
                     IF(FIND_IN_SET('temporaire', 'statut'), 'temporary', ''))
        FROM  #x4dat#.adresses;
 
-CREATE TABLE IF NOT EXISTS geoloc_countries (
+DROP TABLE IF EXISTS geoloc_countries;
+CREATE TABLE geoloc_countries (
   iso_3166_1_a2 CHAR(2) NOT NULL,
   iso_3166_1_a3 CHAR(3) NOT NULL,
   iso_3166_1_num SMALLINT(3) UNSIGNED NOT NULL,
@@ -73,14 +74,18 @@ UPDATE  geoloc_pays
    SET  n3 = 807
  WHERE  a2 = "MK";
 
+UPDATE  geoloc_pays
+  SET   n3 = 232
+ WHERE  a2 = "ER";
+
 INSERT INTO  geoloc_countries (iso_3166_1_a2, iso_3166_1_a3, iso_3166_1_num, worldRegion,
                                countryFR, country, capital, nationalityFR,
                                phonePrefix, phoneFormat, licensePlate)
      SELECT  a2, a3, n3, worldrgn, pays, country, capital, nat, phoneprf, phoneformat, license_plate
        FROM  geoloc_pays;
-DROP TABLE geoloc_pays;
 
-CREATE TABLE IF NOT EXISTS geoloc_administrativeareas (
+DROP TABLE IF EXISTS geoloc_administrativeareas;
+CREATE TABLE geoloc_administrativeareas (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   country CHAR(2) NOT NULL,
@@ -91,6 +96,7 @@ CREATE TABLE IF NOT EXISTS geoloc_administrativeareas (
   INDEX(country)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
+DROP TABLE IF EXISTS geoloc_subadministrativeareas;
 CREATE TABLE IF NOT EXISTS geoloc_subadministrativeareas (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
@@ -102,6 +108,7 @@ CREATE TABLE IF NOT EXISTS geoloc_subadministrativeareas (
   INDEX(country)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
+DROP TABLE IF EXISTS geoloc_localities;
 CREATE TABLE IF NOT EXISTS geoloc_localities (
   id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
@@ -113,4 +120,5 @@ CREATE TABLE IF NOT EXISTS geoloc_localities (
   INDEX(country)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
+DROP TABLE geoloc_pays;
 -- vim:set syntax=mysql:

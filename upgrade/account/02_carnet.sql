@@ -1,3 +1,4 @@
+drop table if exists watch;
 create table watch (
   uid   int(6) not null,
   flags set('contacts', 'mail') not null default 'contacts',

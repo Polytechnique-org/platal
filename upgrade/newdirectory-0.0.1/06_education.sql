@@ -1,11 +1,17 @@
-CREATE TABLE IF NOT EXISTS profile_education_field_enum (
+DROP TABLE IF EXISTS profile_education_field_enum;
+DROP TABLE IF EXISTS profile_education_degree_enum;
+DROP TABLE IF EXISTS profile_education_degree;
+DROP TABLE IF EXISTS profile_education_enum;
+DROP TABLE IF EXISTS profile_education;
+
+CREATE TABLE profile_education_field_enum (
   id INT(2) NOT NULL AUTO_INCREMENT,
   field VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY(id),
   UNIQUE KEY(field)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS profile_education_degree_enum (
+CREATE TABLE profile_education_degree_enum (
   id INT(2) NOT NULL AUTO_INCREMENT,
   degree VARCHAR(255) DEFAULT NULL,
   abbreviation VARCHAR(255) DEFAULT '' NOT NULL,
@@ -14,13 +20,13 @@ CREATE TABLE IF NOT EXISTS profile_education_degree_enum (
   UNIQUE KEY(degree)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS profile_education_degree (
+CREATE TABLE profile_education_degree (
   eduid INT(4) NOT NULL DEFAULT 0,
   degreeid INT(2) NOT NULL DEFAULT 0,
   PRIMARY KEY(eduid, degreeid)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS profile_education_enum (
+CREATE TABLE profile_education_enum (
   id INT(4) NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) DEFAULT NULL,
   abbreviation VARCHAR(255) DEFAULT '' NOT NULL,
@@ -30,7 +36,7 @@ CREATE TABLE IF NOT EXISTS profile_education_enum (
   UNIQUE KEY(name)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS profile_education (
+CREATE TABLE profile_education (
   id TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   uid INT(11) NOT NULL DEFAULT 0,
   eduid INT(4) NOT NULL DEFAULT 0,

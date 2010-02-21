@@ -1,3 +1,4 @@
+drop table if exists profiles;
 create table profiles (
   # Profile identifiers
   pid int(6) not null auto_increment,

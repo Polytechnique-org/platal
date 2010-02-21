@@ -1,4 +1,5 @@
 ALTER TABLE geoloc_pays ADD COLUMN license_plate CHAR(4) DEFAULT NULL;
+DROP TABLE IF EXISTS tmp_update_geoloc_pays;
 
 CREATE TEMPORARY TABLE IF NOT EXISTS tmp_update_geoloc_pays (
   a2 CHAR(2) DEFAULT NULL,

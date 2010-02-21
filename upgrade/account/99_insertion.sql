@@ -60,8 +60,8 @@ insert into profiles
             IF(q.profile_freetext_pub = 'public', 'public', 'private') AS freetext_pub,
             IF(q.profile_medals_pub = 'public', 'public', 'private') AS medals_pub,
             IF(q.emails_alias_pub = 'public', 'public', 'private') AS alias_pub,
-            u.nationalite AS nationality1, u.nationalite2 AS nationality2,
-            u.nationalite3 AS nationality3, u.date AS last_change
+            IF(u.nationalite = '' OR u.nationalite IS NULL, NULL, u.nationalite) AS nationality1,
+            NULL AS nationality2, NULL AS nationality3, u.date AS last_change
        from #x4dat#.auth_user_md5 AS u
   left join #x4dat#.auth_user_quick AS q ON (u.user_id = q.user_id)
       where u.hruid is not null;

@@ -1,4 +1,7 @@
-CREATE TABLE IF NOT EXISTS `profile_networking_enum` (
+DROP TABLE IF EXISTS profile_networking_enum;
+DROP TABLE IF EXISTS profile_networking;
+
+CREATE TABLE `profile_networking_enum` (
     `network_type` tinyint unsigned NOT NULL,
     `name` varchar(30) NOT NULL,
     `icon` varchar(50) NOT NULL COMMENT 'icon filename',
@@ -6,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `profile_networking_enum` (
     `link` varchar(255) NOT NULL COMMENT 'string used to forge an URL linking to the the profile page',
     PRIMARY KEY (`network_type`)
 ) ENGINE=InnoDB, CHARSET=utf8, COMMENT='types of networking addresses';
+
 
 CREATE TABLE IF NOT EXISTS `profile_networking` (
     `uid` int NOT NULL COMMENT 'user id',

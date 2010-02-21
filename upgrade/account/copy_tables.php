@@ -22,11 +22,18 @@
 
 require('./connect.db.inc.php');
 
-function copyTable($source, $target)
+$globals->dbuser = 'admin';
+$globals->dbpwd  = 'lknjiuhb';
+$globals->debug  = 1;
+
+function copyTable($source, $target, $convertToInnoDB = true)
 {
     XDB::execute('CREATE TABLE  ' . $target . '
-                          LIKE  ' . $source . '
-                        ENGINE = InnoDB');
+                          LIKE  ' . $source);
+    if ($convertToInnoDB) {
+        XDB::execute('ALTER TABLE  ' . $target . '
+                           ENGINE = InnoDB');
+    }
     XDB::execute('INSERT INTO  ' . $target . '
                        SELECT  *
                          FROM  ' . $source);
@@ -69,14 +76,13 @@ copyTable('#x4dat#.newsletter_art', 'newsletter_art');
 copyTable('#x4dat#.newsletter_cat', 'newsletter_cat');
 copyTable('#x4dat#.newsletter_ins', 'newsletter_ins');
 
-copyTable('#x4dat#.openid_trusted', 'openid_trusted');
 
 copyTable('#x4dat#.evenements', 'announces');
 copyTable('#x4dat#.evenements_photo', 'announce_photos');
 copyTable('#x4dat#.evenements_vus', 'announce_read');
 
-copyTable('#x4dat#.gapps_accounts', 'gapps_accounts');
-copyTable('#x4dat#.gapps_nicknames', 'gapps_nicknames');
+copyTable('#x4dat#.gapps_accounts', 'gapps_accounts', false);
+copyTable('#x4dat#.gapps_nicknames', 'gapps_nicknames', false);
 copyTable('#x4dat#.gapps_queue', 'gapps_queue');
 copyTable('#x4dat#.gapps_reporting', 'gapps_reporting');
 
@@ -113,7 +119,7 @@ copyTable('#x4dat#.skins', 'skins');
 copyTable('#x4dat#.tips', 'tips');
 
 copyTable('#x4dat#.survey_surveys', 'surveys');
-copyTable('#x4dat#.survey_anwsers', 'survey_anwsers');
+copyTable('#x4dat#.survey_answers', 'survey_answers');
 copyTable('#x4dat#.survey_votes', 'survey_votes');
 
 copyTable('#x4dat#.watch_profile', 'watch_profile');
@@ -121,6 +127,7 @@ copyTable('#x4dat#.perte_pass', 'account_lost_passwords');
 
 copyTable('#x4dat#.geoloc_pays', 'geoloc_pays');
 
+copyTable('#x4dat#.emails', 'emails');
 copyTable('#x4dat#.aliases', 'aliases');
 copyTable('#x4dat#.virtual', 'virtual');
 copyTable('#x4dat#.virtual_domains', 'virtual_domains');
@@ -128,7 +135,8 @@ copyTable('#x4dat#.virtual_redirect', 'virtual_redirect');
 
 copyTable('#x4dat#.watch_nonins', 'watch_nonins');
 copyTable('#x4dat#.watch_promo', 'watch_promo');
-copyTable('#x4dat#.watch_profile', 'watch_profile');
+
+copyTable('#x4dat#.openid_trusted', 'openid_trusted', false);
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

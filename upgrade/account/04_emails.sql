@@ -1,3 +1,4 @@
+drop table if exists email_options;
 create table email_options (
   uid int(6) not null,
   storage set('imap', 'googleapps') not null default '',

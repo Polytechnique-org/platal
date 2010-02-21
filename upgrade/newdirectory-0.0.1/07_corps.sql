@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS profile_corps;
+DROP TABLE IF EXISTS profile_corps_enum;
+DROP TABLE IF EXISTS profile_corps_rank_enum;
+
 CREATE TABLE IF NOT EXISTS profile_corps (
   uid INT(11) NOT NULL,
   original_corpsid INT(4) UNSIGNED NOT NULL DEFAULT 0,

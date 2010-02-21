@@ -5,16 +5,16 @@ MYSQL='mysql -u admin '
 
 set -e
 
-if [ "$UID" != 0 ]; then
-    echo "has to be run as root"
-    exit 1
-fi
+#if [ "$UID" != 0 ]; then
+#    echo "has to be run as root"
+#    exit 1
+#fi
 
 if [[ -n "${DBPREFIX}" ]]; then
     echo "Using non-default database ${DBPREFIX}x4dat."
 fi
-if [[ -n "${DATABASE}" ]]; then
-  declare -r DATABASE="${DBPREFIX}x4dat"
+if [[ -z "${DATABASE}" ]]; then
+  DATABASE="${DBPREFIX}x4dat"
 fi
 
 function die() {
