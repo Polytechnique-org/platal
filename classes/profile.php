@@ -213,6 +213,10 @@ class Profile
         return property_exists($this, $name) || isset($this->data[$name]);
     }
 
+    /** Sets the level of visibility of the profile
+     * Sets $this->visibility to a list of valid visibilities.
+     * @param one of the self::VISIBILITY_* values
+     */
     public function setVisibilityLevel($visibility)
     {
         if ($visibility != self::VISIBILITY_PRIVATE
@@ -226,6 +230,14 @@ class Profile
         }
     }
 
+    /** Determine whether an item with visibility $visibility can be displayed
+     * with the current level of visibility of the profile
+     * @param $visibility The level of visibility to be checked
+     */
+    public function isVisible($visibility)
+    {
+        return in_array($visibility, $this->visibility);
+    }
 
     /* Photo
      */
