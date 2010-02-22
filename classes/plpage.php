@@ -249,7 +249,7 @@ abstract class PlPage extends Smarty
         // PHP is used on command line... do not run the whole page stuff.
         if (php_sapi_name() == 'cli') {
             echo $msg . "\n";
-            exit;
+            exit(-1);
         }
 
         global $platal;
