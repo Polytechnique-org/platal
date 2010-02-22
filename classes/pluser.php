@@ -370,6 +370,22 @@ abstract class PlUser
      */
     abstract public static function isForeignEmailAddress($email);
 
+    private static function stripBadChars($text)
+    {
+        return str_replace(array(' ', "'"), array('-', ''),
+                           strtolower(stripslashed(replace_accent(trim($text)))));
+    }
+
+    /** Creates a username from a first and last name
+     * @param $firstname User's firstname
+     * @param $lasttname User's lastname
+     * return STRING the corresponding username
+     */
+    public static function makeUsername($firstname, $lastname)
+    {
+        return self::stripBadChars($firstname) . '.' . self::stripBadChars($lastname);
+    }
+
     /**
      * Creates a user forlive identifier from:
      * @param $firstname User's firstname
@@ -378,14 +394,12 @@ abstract class PlUser
      */
     public static function makeHrid($firstname, $lastname, $category)
     {
-        assert(trim($category));
-        $plainFirstname = replace_accent(trim($firstname));
-        $plainLastname  = replace_accent(trim($lastname));
+        $cat = self::stripBadChars($category);
+        if (!cat) {
+            Platal::page()->kill("$category is not a suitable category.");
+        }
 
-        $hrid = strtolower($plainFirstname . '.' . $plainLastname . '.' . trim($category));
-        $hrid = str_replace(' ', '-', $hrid);
-        $hrid = str_replace("'", '', $hrid);
-        return $hrid;
+        return self::makeUserName($firstname, $lastname) . '.' . $cat;
     }
 
 
