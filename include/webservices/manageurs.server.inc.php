@@ -100,23 +100,7 @@ function get_annuaire_infos($method, $params) {
                            "SELECT  t.display_tel AS tel, t.tel_type, t.link_id as adrid
                               FROM  profile_phones    AS t
                         INNER JOIN  profile_addresses AS a ON (t.link_id = a.id AND t.uid = a.pid)
-                             WHERE  t.u
-        $res = XDB::query(
-                "SELECT  email
-                   FROM  profile_job
-                  WHERE  pid = {?}", $user->id());
-        $res = $res->fetchAllAssoc();
-        $pro = array();
-        foreach ($res as $res_it) {
-            if ($res_it['email'] != '') {
-                $pro[] = $res_it['email'];
-                if ($email_directory == $res_it['email']) {
-                    $email_type = "pro";
-                }
-            }
-        }
-        $page->assign('list_email_pro', $pro);
-id = {?} AND t.link_type = 'address'
+                             WHERE  t.pid = {?} AND t.link_type = 'address'
                                     AND NOT FIND_IN_SET('pro', a.statut)", $uid);
                 while ($tel = $restel->next()) {
                     $array['adresse'][$adrid_index[$tel['adrid']]]['tels'][] = $tel;
