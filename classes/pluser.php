@@ -381,7 +381,7 @@ abstract class PlUser
      * @param $lasttname User's lastname
      * return STRING the corresponding username
      */
-    public static function makeUsername($firstname, $lastname)
+    public static function makeUserName($firstname, $lastname)
     {
         return self::stripBadChars($firstname) . '.' . self::stripBadChars($lastname);
     }
