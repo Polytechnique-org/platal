@@ -30,8 +30,8 @@
 
 <form action="register" method="post">
   <table class="bicol" summary="Identification" cellpadding="3">
-    {if $smarty.session.sub_state.promo >= 1996}
-    {assign var="promo" value=$smarty.session.sub_state.promo}
+    {if $smarty.session.subState.yearpromo >= 1996}
+    {assign var="promo" value=$smarty.session.subState.yearpromo}
     <tr>
       <th colspan="2">matricule</th>
     </tr>
@@ -40,8 +40,8 @@
         Matricule X&nbsp;:
       </td>
       <td>
-        <input type="text" size="6" maxlength="6" name="mat" 
-          value="{$smarty.request.matricule|default:$smarty.session.sub_state.mat}" />
+        <input type="text" size="6" maxlength="6" name="schoolid"
+          value="{$smarty.request.schoolid|default:$smarty.session.subState.schoolid}" />
       </td>
     </tr>
     <tr class="pair">
@@ -73,7 +73,7 @@
         Nom <span class="smaller">(à l'X)</span>
       </td>
       <td>
-        <input type="text" size="20" maxlength="30" name="nom" value="{$smarty.request.nom}" />
+        <input type="text" size="20" maxlength="30" name="lastname" value="{$smarty.request.lastname}" />
       </td>
     </tr>
     <tr>
@@ -81,7 +81,7 @@
         Prénom
       </td>
       <td>
-        <input type="text" size="15" maxlength="20" name="prenom" value="{$smarty.request.prenom}" />
+        <input type="text" size="15" maxlength="20" name="firstname" value="{$smarty.request.firstname}" />
       </td>
     </tr>
     <tr>
@@ -89,7 +89,7 @@
         Promotion
       </td>
       <td>
-        <input type="text" size="4" readonly="readonly" value="{$smarty.session.sub_state.promo}" />
+        <input type="text" size="4" readonly="readonly" value="{$smarty.session.subState.promo}" />
       </td>
     </tr>
     <tr>

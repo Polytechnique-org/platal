@@ -27,7 +27,7 @@
 {subject text="Bienvenue parmi les X sur le web !"}
 {elseif $mail_part eq 'text'}
 
-{$prenom}, félicitations pour ton inscription !
+{$firstname}, félicitations pour ton inscription !
 
 Tu as maintenant accès à l'annuaire en ligne, aux services de listes de
 diffusion, aux infos promo, etc. N'oublie pas de mettre ta fiche-annuaire

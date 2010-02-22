@@ -39,7 +39,7 @@
         Donne ta promotion sur 4 chiffres&nbsp;:
       </td>
       <td>
-        <input type="text" size="4" maxlength="4" name="promo" value="{$smarty.post.promo}" />
+        <input type="text" size="4" maxlength="4" name="yearpromo" value="{$smarty.post.yearpromo}" />
       </td>
     </tr>
     <tr>

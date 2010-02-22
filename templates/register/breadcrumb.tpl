@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{assign var="step" value=$smarty.session.sub_state.step}
+{assign var="step" value=$smarty.session.subState.step}
 <div class="descr center">
   <strong>Procédure d'inscription&nbsp;:</strong>
   {if !$step}<span class="erreur">{/if}Charte{if !$step}</span>{/if}&nbsp;»

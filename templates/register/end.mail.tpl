@@ -20,46 +20,32 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file="register/breadcrumb.tpl"}
+{config_load file="mails.conf" section="inscrire"}
+{if $mail_part eq 'head'}
+{subject text="$subj"}
+{from full=#from#}
+{to addr="$lemail"}
+{elseif $mail_part eq 'text'}
+Bonjour,
 
-<h1>Confirmation de ton inscription</h1>
+Ton inscription sur Polytechnique.org est presque terminée !
 
-<p>Merci {$firstname} d'avoir choisi de t'inscrire. Pour finaliser ton inscription,
-il te suffit de taper ton mot de passe ci-dessous. Tu pourras ensuite librement
-accéder au site, et à notre annuaire en ligne&nbsp;!</p>
+Après activation, tes paramètres de connexion seront :
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
-  <table class="bicol">
-    <tr>
-      <td class="titre">Nom d'utilisateur&nbsp;:</td>
-      <td>{$forlife}</td>
-    </tr>
-    <tr>
-      <td class="titre">Mot de passe&nbsp;:</td>
-      <td><input type="password" name="password" size="10" maxlength="256" /></td>
-    </tr>
-    <tr>
-      <td {popup caption='Connexion permanente' width='300' text='Décoche cette case pour que le site oublie ce navigateur.<br />
-        Il est conseillé de décocher la case si cette machine n\'est pas <b>strictement</b> personnelle'} colspan="2">
-        <label><input type="checkbox" name="remember" checked="checked" />
-          Garder l'accès aux services après déconnexion.
-        </label>
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td><input  type="submit" name="submitbtn" value="Envoyer" /></td>
-    </tr>
-  </table>
-</form>
+identifiant  : {$emailXorg}
+mot de passe : celui que tu as choisi
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
-  <div>
-    <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
-    <input type="hidden" name="username" value="{$forlife}" />
-    <input type="hidden" name="remember" value="" />
-    <input type="hidden" name="response" value="" />
-  </div>
-</form>
+Rends-toi maintenant sur la page web suivante afin d'activer ta pré-inscription :
 
+{$baseurl}/register/end/{$hash}
+
+Si en cliquant dessus tu n'y arrives pas, copie intégralement ce lien dans la barre d'adresse de ton navigateur.
+
+Nous espérons que tu profiteras pleinement des services en ligne de Polytechnique.org ; s'ils te convainquent, n'oublie pas d'en parler aux camarades autour de toi !
+
+Bien cordialement,
+-- 
+L'équipe de Polytechnique.org,
+Le portail des élèves et anciens élèves de l'École polytechnique
+{/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -429,6 +429,25 @@ class Profile
         return User::getSilent($this);
     }
 
+    public function compareNames($firstname, $lastname)
+    {
+        $_lastname  = mb_strtoupper($this->lastName());
+        $_firstname = mb_strtoupper($this->firstName());
+        $lastname   = mb_strtoupper($lastname);
+        $firstname  = mb_strtoupper($firstname);
+
+        $isOk  = (mb_strtoupper($_firstname) == mb_strtoupper($firstname));
+        $tokens = preg_split("/[ \-']/", $lastname, -1, PREG_SPLIT_NO_EMPTY);
+        $maxlen = 0;
+
+        foreach ($tokens as $str) {
+            $isOk &= (strpos($_lastname, $str) !== false);
+            $maxlen = max($maxlen, strlen($str));
+        }
+
+        return ($isOk && ($maxlen > 2 || $maxlen == strlen($_lastname)));
+    }
+
     private static function fetchProfileData(array $pids, $respect_order = true)
     {
         if (count($pids) == 0) {
@@ -647,7 +666,7 @@ class Profile
 
     public static function getXorgId($schoolId)
     {
-        if (!preg_match('/^[0-9]{6}$/', $xorgId)) {
+        if (!preg_match('/^[0-9]{6}$/', $schoolId)) {
             return null;
         }
 

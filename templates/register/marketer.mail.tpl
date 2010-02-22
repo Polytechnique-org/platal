@@ -20,32 +20,20 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="inscrire"}
+{config_load file="mails.conf" section="marketing"}
 {if $mail_part eq 'head'}
 {subject text="$subj"}
 {from full=#from#}
 {to addr="$lemail"}
 {elseif $mail_part eq 'text'}
-Bonjour,
+{if $sender->isFemale()}Chère{else}Cher{/if} {$sender->firstName()},
 
-Ton inscription sur Polytechnique.org est presque terminée !
+Nous t'écrivons pour t'informer que {$firstname} {$lastname} ({$promo}), que tu avais incité{if $sex eq PlUser::GENDER_FEMALE}e{/if} à s'inscrire à Polytechnique.org, vient à l'instant de terminer son inscription.
 
-Après activation, tes paramètres de connexion seront :
-
-identifiant  : {$mailorg}
-mot de passe : celui que tu as choisi
-
-Rends-toi maintenant sur la page web suivante afin d'activer ta pré-inscription :
-
-{$baseurl}/register/end/{$hash}
-
-Si en cliquant dessus tu n'y arrives pas, copie intégralement ce lien dans la barre d'adresse de ton navigateur.
-
-Nous espérons que tu profiteras pleinement des services en ligne de Polytechnique.org ; s'ils te convainquent, n'oublie pas d'en parler aux camarades autour de toi !
+Merci de ta participation active à la reconnaissance de ce site !!!
 
 Bien cordialement,
 -- 
-L'équipe de Polytechnique.org,
-Le portail des élèves et anciens élèves de l'École polytechnique
+L'équipe Polytechnique.org
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

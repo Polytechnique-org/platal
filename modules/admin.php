@@ -702,14 +702,14 @@ class AdminModule extends PLModule
             $lines = explode("\n", Env::t('people'));
             $separator = Env::t('separator');
             $promotion = Env::i('promotion');
-            $nameTypes = DirEnum::getOptionsArray(DirEnum::NAMETYPES);
+            $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
             $nameTypes = array_flip($nameTypes);
 
             if (Env::t('add_type') == 'promo') {
                 $type = 'x';
-                $eduSchools = DirEnum::getOptionsArray(DirEnum::EDUSCHOOLS);
+                $eduSchools = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
                 $eduSchools = array_flip($eduSchools);
-                $eduDegrees = DirEnum::getOptionsArray(DirEnum::EDUDEGREES);
+                $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
                 $eduDegrees = array_flip($eduDegrees);
                 var_dump($eduDegrees);
                 switch (Env::t('edu_type')) {

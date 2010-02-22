@@ -629,25 +629,6 @@ class User extends PlUser
         $uids = call_user_func_array(array('XDB', 'fetchColumn'), $args);
         return self::getBulkUsersWithUIDs($uids, null, null, $fetchProfile);
     }
-
-    public static function compareNames($firstname, $lastname, $_firstname, $_lastname)
-    {
-        $_lastname  = mb_strtoupper($_lastname);
-        $_firstname = mb_strtoupper($_firstname);
-        $lastname   = mb_strtoupper($lastname);
-        $firstname  = mb_strtoupper($firstname);
-
-        $isOk  = (mb_strtoupper($_firstname) == mb_strtoupper($firstname));
-        $tokens = preg_split("/[ \-']/", $lastname, -1, PREG_SPLIT_NO_EMPTY);
-        $maxlen = 0;
-
-        foreach ($tokens as $str) {
-            $isOk &= (strpos($_lastname, $str) !== false);
-            $maxlen = max($maxlen, strlen($str));
-        }
-
-        return ($isOk && ($maxlen > 2 || $maxlen == strlen($_lastname)));
-    }
 }
 
 /** Iterator over a set of Users

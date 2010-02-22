@@ -22,24 +22,24 @@
 
 {include file="register/breadcrumb.tpl"}
 
-{if $smarty.session.sub_state.forlife}
+{if $smarty.session.subState.forlife}
 
 <h1>Formulaire de pré-inscription</h1>
 
 <form action="register" method="post" id="changepass2">
-  {if $smarty.session.sub_state.mailorg2}
+  {if $smarty.session.subState.emailXorg2}
   <p>
   Tu n'as pour le moment aucun homonyme dans notre base de données. Nous allons
-  donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong>,
-  en plus de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@{#globals.mail.domain#}</strong>.
-  Note que tu pourrais perdre l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong> 
+  donc te donner l'adresse <strong>{$smarty.session.subState.bestalias}@{#globals.mail.domain#}</strong>,
+  en plus de ton adresse à vie <strong>{$smarty.session.subState.forlife}@{#globals.mail.domain#}</strong>.
+  Note que tu pourrais perdre l'adresse <strong>{$smarty.session.subState.bestalias}@{#globals.mail.domain#}</strong> 
   si un homonyme s'inscrivait, même si cela reste assez rare.
   </p>
   {else}
   <p>
   Tu as déjà un homonyme inscrit dans notre base de données, dans une autre promotion. Nous allons
-  donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@{#globals.mail.domain#}</strong>, en plus
-  de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@{#globals.mail.domain#}</strong>.
+  donc te donner l'adresse <strong>{$smarty.session.subState.bestalias}@{#globals.mail.domain#}</strong>, en plus
+  de ton adresse à vie <strong>{$smarty.session.subState.forlife}@{#globals.mail.domain#}</strong>.
   </p>
   {/if}
   
@@ -80,7 +80,7 @@
         <span class="smaller">jour/mois/année</span>
       </td>
       <td>
-        <input type="text" size="10" maxlength="10" name="naissance"  value="{$smarty.post.naissance}" />
+        <input type="text" size="10" maxlength="10" name="birthdate"  value="{$smarty.post.birthdate}" />
         (demandée si tu perds ton mot de passe)
       </td>
     </tr>
@@ -118,7 +118,7 @@
           <dt><label><input type="checkbox" checked="checked" name="ml_promo" /> ta promotion</label></dt>
           <dd>
             de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements
-            qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.sub_state.promo}.
+            qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.subState.promo}.
           </dd>
           <dt><label><input type="checkbox" checked="checked" name="imap" />sauvegardes d'emails</label></dt>
           <dd>

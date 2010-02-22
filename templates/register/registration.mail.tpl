@@ -20,46 +20,28 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file="register/breadcrumb.tpl"}
+{config_load file="mails.conf" section="registration"}
+{if $mail_part eq 'head'}
+{subject text="$subj"}
+{from full=#from#}
+{to addr=#to#}
+{if isset(#replyto#)}{add_header name='Reply-To' value=#replyto#}{/if}
+{elseif $mail_part eq 'text'}
+{$firstname} {$lastname} ({$promo}) a terminé son inscription avec les données suivantes :
+ - nom       : {$lastname}
+ - prenom    : {$firstname}
+ - promo     : {$promo}
+ - naissance : {$birthdate} (date connue : {$birthdate_ref})
+ - forlife   : {$forlife}
+ - email     : {$email}
+ - sexe      : {$sex}
+ - ip        : {S::logger()->ip} ({S::logger()->host})
+{if S::logger()->proxy_ip} - proxy     : {S::logger()->proxy_ip} ({S::logger()->proxy_host}){/if}
 
-<h1>Confirmation de ton inscription</h1>
 
-<p>Merci {$firstname} d'avoir choisi de t'inscrire. Pour finaliser ton inscription,
-il te suffit de taper ton mot de passe ci-dessous. Tu pourras ensuite librement
-accéder au site, et à notre annuaire en ligne&nbsp;!</p>
-
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
-  <table class="bicol">
-    <tr>
-      <td class="titre">Nom d'utilisateur&nbsp;:</td>
-      <td>{$forlife}</td>
-    </tr>
-    <tr>
-      <td class="titre">Mot de passe&nbsp;:</td>
-      <td><input type="password" name="password" size="10" maxlength="256" /></td>
-    </tr>
-    <tr>
-      <td {popup caption='Connexion permanente' width='300' text='Décoche cette case pour que le site oublie ce navigateur.<br />
-        Il est conseillé de décocher la case si cette machine n\'est pas <b>strictement</b> personnelle'} colspan="2">
-        <label><input type="checkbox" name="remember" checked="checked" />
-          Garder l'accès aux services après déconnexion.
-        </label>
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td><input  type="submit" name="submitbtn" value="Envoyer" /></td>
-    </tr>
-  </table>
-</form>
-
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
-  <div>
-    <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
-    <input type="hidden" name="username" value="{$forlife}" />
-    <input type="hidden" name="remember" value="" />
-    <input type="hidden" name="response" value="" />
-  </div>
-</form>
-
+{if $market}Les marketings suivants avaient été effectués :
+{$market}
+{else}{$firstname} {$lastname} n'a jamais reçu d'email de marketing.
+{/if}
+{/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
