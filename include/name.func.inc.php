@@ -173,7 +173,7 @@ function build_short_name(&$search_names, &$sn_types, &$alias = null)
         $firstname = $search_names[$sn_types['firstname']]['fullname'];
     }
     if ($alias) {
-        $alias = make_username($firstname, $lastname);
+        $alias = PlUser::makeUserName($firstname, $lastname);
     }
     return $firstname . " " . $lastname;
 }

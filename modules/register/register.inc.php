@@ -153,7 +153,7 @@ function create_aliases (&$sub)
     global $globals;
     extract ($sub);
 
-    $mailorg = make_username($prenom, $nom);
+    $mailorg = makeUsername($prenom, $nom);
     $mailorg2 = $mailorg.sprintf(".%02u", ($promo%100));
 
     $res = XDB::query("SELECT hruid FROM auth_user_md5 WHERE user_id = {?} AND hruid != ''", $uid);
