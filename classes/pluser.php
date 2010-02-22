@@ -373,7 +373,7 @@ abstract class PlUser
     private static function stripBadChars($text)
     {
         return str_replace(array(' ', "'"), array('-', ''),
-                           strtolower(stripslashed(replace_accent(trim($text)))));
+                           strtolower(stripslashes(replace_accent(trim($text)))));
     }
 
     /** Creates a username from a first and last name
@@ -402,7 +402,25 @@ abstract class PlUser
         return self::makeUserName($firstname, $lastname) . '.' . $cat;
     }
 
+    /** Reformats the firstname so that all letters are in lower case,
+     * except the first letter of each part of the name.
+     */
+    public static function fixFirstnameCase($firstname)
+    {
+        $firstname = strtolower($firstname);
+        $pieces = explode('-', $firstname);
 
+        foreach ($pieces as $piece) {
+            $subpieces = explode("'", $piece);
+            $usubpieces = '';
+
+            foreach ($subpieces as $subpiece) {
+                $usubpieces[] = ucwords($subpiece);
+            }
+            $upieces[] = implode("'", $usubpieces);
+        }
+        return implode('-', $upieces);
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
