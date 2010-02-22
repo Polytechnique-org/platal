@@ -356,6 +356,20 @@ abstract class Platal
         }
     }
 
+	public static function assert($cond, $error, $userfriendly)
+	{
+		global $globals;
+		if ($cond === false) {
+			header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
+			$file = fopen($globals->spoolroot . '/spool/tmp/assert_erros', 'a');
+			fwrite($file, '<pre>' . pl_entities($error) . '</pre>\n');
+			fclose($file);
+
+			Platal::page()->kill($userfriendly);
+		}
+	}
+
+
     static public function &page()
     {
         global $platal;
