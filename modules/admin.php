@@ -647,7 +647,7 @@ class AdminModule extends PLModule
     private static function getHrid($firstname, $lastname, $promo)
     {
         if ($firstname != null && $lastname != null && $promo != null) {
-            return User::makeForlife($firstname, $lastname, $promo);
+            return User::makeHrid($firstname, $lastname, $promo);
         }
         return null;
     }
