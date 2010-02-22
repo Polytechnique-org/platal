@@ -642,6 +642,10 @@ class Profile
 
     public static function getXorgId($schoolId)
     {
+        if (!preg_match('/^[0-9]{6}$/', $xorgId)) {
+            return null;
+        }
+
         $year = intval(substr($schoolId, 0, 3));
         $rank = intval(substr($schoolId, 3, 3));
 
