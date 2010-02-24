@@ -39,24 +39,24 @@ CREATE TABLE IF NOT EXISTS profile_name_enum (
 
 INSERT INTO  profile_name_enum (name, flags, explanations, type, score)
      VALUES  ('Nom patronymique', 'has_particle,always_displayed,public',
-              'Le nom de famille avec lequel tu es né', 'lastname', 10),
+              'Le nom de famille avec lequel tu es nÃ©', 'lastname', 10),
              ('Nom marital', 'has_particle,always_displayed,public',
-              'Ton nom d\'épouse ou d\'époux', 'lastname_marital', 10),
+              'Ton nom d\'Ã©pouse ou d\'Ã©poux', 'lastname_marital', 10),
              ('Nom usuel', 'has_particle,always_displayed,public',
-              'Le nom de famille que tu utilises usuellement s\'il est différent du nom patronymique, ce peut-être une  version racourcie de celui-ci, ton nom marital, une combinaison de ces deux noms...',
+              'Le nom de famille que tu utilises usuellement s\'il est diffÃ©rent du nom patronymique, ce peut-Ãªtre une  version racourcie de celui-ci, ton nom marital, une combinaison de ces deux noms...',
               'lastname_ordinary', 10),
-             ('Prénom', 'always_displayed,public', 'Ton prénom', 'firstname', 10),
+             ('PrÃ©nom', 'always_displayed,public', 'Ton prÃ©nom', 'firstname', 10),
              ('Pseudonyme (nom de plume)', 'always_displayed,public',
               'Pseudonyme pour les artistes, gens de lettres', 'pseudonym', 10),
-             ('Surnom', '', 'Surnom à l\'École ou ailleurs', 'nickname', 2),
-             ('Prénom usuel', 'public', 'Si tu utilises une version raccourcie, francisée... de ton prénom',
+             ('Surnom', '', 'Surnom Ã  l\'Ã‰cole ou ailleurs', 'nickname', 2),
+             ('PrÃ©nom usuel', 'public', 'Si tu utilises une version raccourcie, francisÃ©e... de ton prÃ©nom',
               'firstname_ordinary', 10),
-             ('Autre prénom', '', 'Si tu as d\'autres prénoms et que tu souhaites les faire apparaître',
+             ('Autre prÃ©nom', '', 'Si tu as d\'autres prÃ©noms et que tu souhaites les faire apparaÃ®tre',
               'firstname_other', 1),
-             ('Autre nom', '', 'Si tu as d\'autres noms et que tu souhaites les faire apparaître',
+             ('Autre nom', '', 'Si tu as d\'autres noms et que tu souhaites les faire apparaÃ®tre',
               'name_other', 1),
              ('Nom initial', 'has_particle,not_displayed,public', '', 'name_ini', 10),
-             ('Prénom initial', 'has_particle,not_displayed,public', '', 'firstname_ini', 10);
+             ('PrÃ©nom initial', 'has_particle,not_displayed,public', '', 'firstname_ini', 10);
 
 
 DROP TABLE IF EXISTS profile_name;
@@ -87,13 +87,13 @@ INSERT INTO  profile_name (pid, name, typeid)
 INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.prenom, e.id
        FROM  #x4dat#.auth_user_md5     AS u
- INNER JOIN  profile_name_enum AS e ON (e.name = 'Prénom')
+ INNER JOIN  profile_name_enum AS e ON (e.name = 'PrÃ©nom')
       WHERE  prenom != '';
 
 INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.prenom_ini, e.id
        FROM  #x4dat#.auth_user_md5     AS u
- INNER JOIN  profile_name_enum AS e ON (e.name = 'Prénom initial')
+ INNER JOIN  profile_name_enum AS e ON (e.name = 'PrÃ©nom initial')
       WHERE  prenom_ini != '';
 
 INSERT INTO  profile_name (pid, name, typeid)
