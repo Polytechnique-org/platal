@@ -610,7 +610,7 @@ INSERT INTO  profile_education_enum (name, url, country, abbreviation)
 
 -- Médecine is not a university but an educational field
 REPLACE INTO  profile_education (pid, id, fieldid, eduid, degreeid)
-      SELECT  e.uid, e.id, f.id, 0, d.id
+      SELECT  e.pid, e.id, f.id, 0, d.id
         FROM  profile_education             AS e
   INNER JOIN  profile_education_enum        AS l ON (l.id = e.eduid)
   INNER JOIN  profile_education_degree_enum AS d ON (d.degree = "Doctorat")
