@@ -65,7 +65,7 @@ class ProfileSkill implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
         XDB::execute("DELETE FROM  profile_{$this->table}s
-                            WHERE  uid = {?}",
+                            WHERE  pid = {?}",
                      $page->pid());
         if (!count($value)) {
             return;

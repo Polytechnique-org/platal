@@ -29,7 +29,7 @@ class ProfileDeco implements ProfileSetting
             $res = XDB::iterRow("SELECT  m.id AS id, s.gid AS grade
                                    FROM  profile_medals    AS s
                              INNER JOIN  profile_medal_enum        AS m ON ( s.mid = m.id )
-                                  WHERE  s.uid = {?}",
+                                  WHERE  s.pid = {?}",
                                 $page->pid());
             $value = array();
             while (list($id, $grade) = $res->next()) {
@@ -62,7 +62,7 @@ class ProfileDeco implements ProfileSetting
             if (!isset($value[$id]) || $val['grade'] != $value[$id]['grade']) {
                 if ($val['valid']) {
                     XDB::execute("DELETE FROM  profile_medals
-                                        WHERE  uid = {?} AND mid = {?}",
+                                        WHERE  pid = {?} AND mid = {?}",
                                  $page->pid(), $id);
                 } else {
                     $req = MedalReq::get_request(S::i('uid'), $id);

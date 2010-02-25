@@ -421,7 +421,7 @@ class DE_Binets extends DirEnumeration
     protected $from = 'profile_binet_enum';
 
     protected $ac_join = 'INNER JOIN profile_binets ON (profile_binet_enum.id = profile_binets.binet_id)';
-    protected $ac_unique = 'profile_binets.user_id';
+    protected $ac_unique = 'profile_binets.pid';
 }
 // }}}
 

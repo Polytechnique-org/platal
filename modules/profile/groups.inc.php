@@ -43,17 +43,10 @@ class ProfileSection implements ProfileSetting
     }
 }
 
-class ProfileGroup implements ProfileSetting
+class ProfileBinets implements ProfileSetting
 {
-    private $table;
-    private $user_field;
-    private $group_field;
-
-    public function __construct($table, $user, $group)
+    public function __construct()
     {
-        $this->table       = $table;
-        $this->user_field  = $user;
-        $this->group_field = $group;
     }
 
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -61,9 +54,9 @@ class ProfileGroup implements ProfileSetting
         if (is_null($value)) {
             $value = array();
             $res = XDB::iterRow("SELECT  g.id, g.text
-                                   FROM  profile_{$this->table}_enum AS g
-                             INNER JOIN  profile_{$this->table}s AS i ON (i.{$this->group_field} = g.id)
-                                  WHERE  i.{$this->user_field} = {?}",
+                                   FROM  profile_binet_enum AS g
+                             INNER JOIN  profile_binets AS i ON (i.binet_id = g.id)
+                                  WHERE  i.pid = {?}",
                                 $page->pid());
             while (list($gid, $text) = $res->next()) {
                 $value[intval($gid)] = $text;
@@ -79,8 +72,8 @@ class ProfileGroup implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute("DELETE FROM  {$this->table}_ins
-                            WHERE  {$this->user_field} = {?}",
+        XDB::execute("DELETE FROM  profile_binets
+                            WHERE  pid = {?}",
                      $page->pid());
         if (!count($value)) {
             return;
@@ -89,7 +82,7 @@ class ProfileGroup implements ProfileSetting
         foreach ($value as $id=>$text) {
             $insert[] = XDB::format('({?}, {?})', $page->pid(), $id);
         }
-        XDB::execute("INSERT INTO  {$this->table}_ins ({$this->user_field}, {$this->group_field})
+        XDB::execute("INSERT INTO  profile_binets (pid, binet_id)
                            VALUES  " . implode(',', $insert));
     }
 }
@@ -102,7 +95,7 @@ class ProfileGroups extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['section']  = new ProfileSection();
-        $this->settings['binets']   = new ProfileGroup('binet', 'user_id', 'binet_id');
+        $this->settings['binets']   = new ProfileBinets();
         $this->watched['section'] = $this->watched['binets'] = true;
     }
 

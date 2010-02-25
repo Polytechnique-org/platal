@@ -415,7 +415,7 @@ class Profile
     {
         return XDB::fetchColumn('SELECT  binet_id
                                    FROM  profile_binets
-                                  WHERE  user_id = {?}', $this->id());
+                                  WHERE  pid = {?}', $this->id());
     }
 
 

@@ -107,7 +107,7 @@ class MedalReq extends Validate
         register_watch_op($this->user->id(), WATCH_FICHE, '', 'medals');
         return XDB::execute('REPLACE INTO  profile_medals
                                    VALUES  ({?}, {?}, {?})',
-                            $this->user->id(), $this->mid,
+                            $this->user->profile()->id(), $this->mid,
                             is_null($this->gid) ? 0 : $this->gid);
     }
 
