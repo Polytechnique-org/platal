@@ -201,13 +201,13 @@ class XorgSession extends PlSession
                                     a.last_version, g.g_account_name IS NOT NULL AS googleapps,
                                     UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
                                     a.is_admin, at.perms
-                              FROM  accounts        AS a
-                        INNER JOIN  account_types   AS at ON(a.type = at.type)
-                        INNER JOIN  watch           AS w  ON(w.uid = a.uid)
-                         LEFT JOIN  forum_profiles  AS fp ON(fp.uid = a.uid)
-                         LEFT JOIN  gapps_accounts  AS g  ON(a.uid = g.l_userid AND g.g_status = 'active')
+                              FROM  accounts          AS a
+                        INNER JOIN  account_types     AS at ON (a.type = at.type)
+                         LEFT JOIN  watch             AS w  ON (w.uid = a.uid)
+                         LEFT JOIN  forum_profiles    AS fp ON (fp.uid = a.uid)
+                         LEFT JOIN  gapps_accounts    AS g  ON (a.uid = g.l_userid AND g.g_status = 'active')
                          LEFT JOIN  log_last_sessions AS ls ON (ls.uid = a.uid)
-                         LEFT JOIN  log_sessions AS s  ON(s.id = ls.id)
+                         LEFT JOIN  log_sessions      AS s  ON(s.id = ls.id)
                              WHERE  a.uid = {?} AND a.state = 'active'", $user->id());
         if ($res->numRows() != 1) {
             return false;
