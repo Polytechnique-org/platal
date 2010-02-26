@@ -19,6 +19,12 @@ CHANGE COLUMN  cle pkey VARCHAR(5) NOT NULL;
 # emails
   ALTER TABLE  aliases
 CHANGE COLUMN  id uid INT(11) not null;
+  ALTER TABLE  newsletter_ins
+CHANGE COLUMN  user_id uid INT(11) not null;
+  ALTER TABLE  axletter_ins
+CHANGE COLUMN  user_id uid INT(11) not null;
+  ALTER TABLE  axletter_rights
+CHANGE COLUMN  user_id uid INT(11) not null;
 
 # announces
   ALTER TABLE  announces
