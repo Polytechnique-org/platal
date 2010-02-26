@@ -532,7 +532,7 @@ class XnetGrpModule extends PLModule
 
         $it = XDB::iterator('SELECT  s.uid, a.hruid, s.ts AS date
                                FROM  group_member_sub_requests AS s
-                         INNER JOIN  #x4dat#.accounts AS a ON(s.uid = a.uid)
+                         INNER JOIN  accounts AS a ON(s.uid = a.uid)
                               WHERE  s.asso_id = {?}
                            ORDER BY  s.ts',  $globals->asso('id'));
         $page->changeTpl('xnetgrp/subscribe-valid.tpl');

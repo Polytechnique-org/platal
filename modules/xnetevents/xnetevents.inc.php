@@ -37,8 +37,8 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
                          FROM  group_events              AS e
                    INNER JOIN  group_event_items        AS ei ON (e.eid = ei.eid)
                     LEFT JOIN  group_event_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
-                    LEFT JOIN  #x4dat#.virtual AS al ON(al.type = \'evt\' AND al.alias = CONCAT(short_name, {?}))
-                    LEFT JOIN  #x4dat#.virtual AS pl ON(pl.type = \'evt\' AND pl.alias = CONCAT(short_name, {?}))
+                    LEFT JOIN  virtual AS al ON(al.type = \'evt\' AND al.alias = CONCAT(short_name, {?}))
+                    LEFT JOIN  virtual AS pl ON(pl.type = \'evt\' AND pl.alias = CONCAT(short_name, {?}))
                         WHERE  (e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?}
                      GROUP BY  ei.item_id',
                    '-absents@'.$globals->xnet->evts_domain,
