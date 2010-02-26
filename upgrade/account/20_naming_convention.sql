@@ -20,6 +20,12 @@ CHANGE COLUMN  cle pkey VARCHAR(5) NOT NULL;
   ALTER TABLE  aliases
 CHANGE COLUMN  id uid INT(11) not null;
 
+# announces
+  ALTER TABLE  announces
+CHANGE COLUMN  user_id uid INT(11) not null;
+  ALTER TABLE  announce_read
+CHANGE COLUMN  user_id uid INT(11) not null;
+
 # profile
   ALTER TABLE  profile_photos
 CHANGE COLUMN  uid pid INT(11) not null;

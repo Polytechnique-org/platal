@@ -47,7 +47,7 @@ class EventFeed extends PlFeed
         global $globals;
         $events = XDB::iterator('SELECT  e.id, e.titre AS title, e.texte, e.creation_date AS publication, e.post_id,
                                          p.attachmime IS NOT NULL AS photo, FIND_IN_SET(\'wiki\', e.flags) AS wiki,
-                                         e.user_id, e.promo_min, e.promo_max
+                                         e.uid, e.promo_min, e.promo_max
                                    FROM  announces       AS e
                               LEFT JOIN  announce_photos AS p ON (p.eid = e.id)
                                   WHERE  FIND_IN_SET("valide", e.flags) AND peremption >= NOW()');

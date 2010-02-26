@@ -143,22 +143,22 @@ class EventsModule extends PLModule
         // Unhide the requested event, and reload the page to display it.
         if ($action == 'unread' && $eid) {
             XDB::execute('DELETE FROM announce_read
-                           WHERE evt_id = {?} AND user_id = {?}',
+                           WHERE evt_id = {?} AND uid = {?}',
                                    $eid, S::v('uid'));
             pl_redirect('events#newsid'.$eid);
         }
 
         // Fetch the events to display, along with their metadata.
         $array = array();
-        $it = XDB::iterator("SELECT  e.id, e.titre, e.texte, e.post_id, e.user_id,
+        $it = XDB::iterator("SELECT  e.id, e.titre, e.texte, e.post_id, e.uid,
                                      p.x, p.y, p.attach IS NOT NULL AS img, FIND_IN_SET('wiki', e.flags) AS wiki,
                                      FIND_IN_SET('important', e.flags) AS important,
                                      e.creation_date > DATE_SUB(CURDATE(), INTERVAL 2 DAY) AS news,
                                      e.peremption < DATE_ADD(CURDATE(), INTERVAL 2 DAY) AS end,
-                                     ev.user_id IS NULL AS nonlu, e.promo_min, e.promo_max
+                                     ev.uid IS NULL AS nonlu, e.promo_min, e.promo_max
                                FROM  announces       AS e
                           LEFT JOIN  announce_photos AS p  ON (e.id = p.eid)
-                          LEFT JOIN  announce_read   AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
+                          LEFT JOIN  announce_read   AS ev ON (e.id = ev.evt_id AND ev.uid = {?})
                               WHERE  FIND_IN_SET('valide', e.flags) AND peremption >= NOW()
                            ORDER BY  important DESC, news DESC, end DESC, e.peremption, e.creation_date DESC",
                             S::i('uid'));
@@ -452,7 +452,7 @@ class EventsModule extends PLModule
             }
 
             $pid = ($eid && $action == 'preview') ? $eid : -1;
-            $sql = "SELECT  e.id, e.titre, e.texte,e.id = $pid AS preview, e.user_id,
+            $sql = "SELECT  e.id, e.titre, e.texte,e.id = $pid AS preview, e.uid,
                             DATE_FORMAT(e.creation_date,'%d/%m/%Y %T') AS creation_date,
                             DATE_FORMAT(e.peremption,'%d/%m/%Y') AS peremption,
                             e.promo_min, e.promo_max,

@@ -60,7 +60,7 @@
       <a href="admin/events/preview/{$ev.id}#event{$ev.id}">{$ev.titre}</a><br />
       {if !$ev.fvalide}</strong>{/if}
       <small>
-        Proposée par {profile user=$ev.user_id promo=true sex=false}
+        Proposée par {profile user=$ev.uid promo=true sex=false}
       </small>
     </td>
     <td class="right">{if !$ev.fvalide}<strong>{/if}{$ev.peremption}{if !$ev.fvalide}</strong>{/if}</td>

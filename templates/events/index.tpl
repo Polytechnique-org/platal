@@ -189,7 +189,7 @@ Bienvenue {$smarty.session.display_name}{if $birthday}
             <img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/>
           </a>
         </div>
-        Annonce proposée par {profile user=$ev.user_id sex=false promo=true}
+        Annonce proposée par {profile user=$ev.uid sex=false promo=true}
       </td>
     </tr>
   </table>

@@ -135,7 +135,7 @@ class EvtReq extends Validate
     public function commit()
     {
         if (XDB::execute("INSERT INTO  announces
-                         SET  user_id = {?}, creation_date=NOW(), titre={?}, texte={?},
+                         SET  uid = {?}, creation_date=NOW(), titre={?}, texte={?},
                               peremption={?}, promo_min={?}, promo_max={?}, flags=CONCAT(flags,',valide,wiki')",
                 $this->user->id(), $this->titre, $this->texte,
                 $this->peremption, $this->pmin, $this->pmax)) {
