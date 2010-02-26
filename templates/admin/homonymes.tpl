@@ -55,8 +55,8 @@
       <a href="profile/{$user.forlife}" class='popup2'>fiche</a>
       <a href="admin/user/{$user.forlife}">edit</a>
       {if $user.type eq 'alias'}
-      <a href="admin/homonyms/mail-conf/{$user.user_id}">envoyer un email</a>
-      <a href="admin/homonyms/correct-conf/{$user.user_id}">corriger</a>
+      <a href="admin/homonyms/mail-conf/{$user.uid}">envoyer un email</a>
+      <a href="admin/homonyms/correct-conf/{$user.uid}">corriger</a>
       {/if}
     </td>
   </tr>

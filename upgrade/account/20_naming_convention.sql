@@ -25,6 +25,8 @@ CHANGE COLUMN  user_id uid INT(11) not null;
 CHANGE COLUMN  user_id uid INT(11) not null;
   ALTER TABLE  axletter_rights
 CHANGE COLUMN  user_id uid INT(11) not null;
+  ALTER TABLE  homonyms
+CHANGE COLUMN  user_id uid INT(11) not null;
 
 # announces
   ALTER TABLE  announces

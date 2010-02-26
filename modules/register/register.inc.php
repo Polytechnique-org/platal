@@ -172,8 +172,8 @@ function create_aliases (&$sub)
         list($h_id, $h_type, $expire) = $res->fetchOneRow();
         if ($h_type != 'homonyme' and empty($expire)) {
             XDB::execute('UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias={?}', $mailorg);
-            XDB::execute('REPLACE INTO homonyms (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $h_id);
-            XDB::execute('REPLACE INTO homonyms (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $uid);
+            XDB::execute('REPLACE INTO homonyms (homonyme_id, uid) VALUES ({?},{?})', $h_id, $h_id);
+            XDB::execute('REPLACE INTO homonyms (homonyme_id, uid) VALUES ({?},{?})', $h_id, $uid);
             $res = XDB::query("SELECT alias FROM aliases WHERE uid={?} AND expire IS NULL", $h_id);
             $als = $res->fetchColumn();
 

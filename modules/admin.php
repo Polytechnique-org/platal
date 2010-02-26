@@ -843,7 +843,7 @@ class AdminModule extends PLModule
                     XDB::execute("UPDATE  aliases
                                      SET  type = 'homonyme', expire=NOW()
                                    WHERE  alias = {?}", $loginbis);
-                    XDB::execute("REPLACE INTO  homonyms (homonyme_id,user_id)
+                    XDB::execute("REPLACE INTO  homonyms (homonyme_id, uid)
                                         VALUES  ({?}, {?})", $target, $target);
                     send_robot_homonyme($user, $loginbis);
                     $op = 'list';
@@ -860,7 +860,7 @@ class AdminModule extends PLModule
                              ac.uid AS user_id
                        FROM  aliases       AS a
                   LEFT JOIN  homonyms      AS h ON (h.homonyme_id = a.uid)
-                 INNER JOIN  aliases       AS s ON (s.uid = h.user_id AND s.type='a_vie')
+                 INNER JOIN  aliases       AS s ON (s.uid = h.uid AND s.type='a_vie')
                  INNER JOIN  accounts      AS ac ON (ac.uid = a.uid)
                       WHERE  a.type = 'homonyme' OR a.expire != ''
                    ORDER BY  a.alias, forlife");
