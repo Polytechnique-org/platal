@@ -304,8 +304,8 @@ function event_change_shortname(&$page, $eid, $old, $new)
             XDB::execute("INSERT IGNORE INTO  virtual_redirect (
                                       SELECT  {?} AS vid, IF(al.alias IS NULL, a.email, CONCAT(al.alias, {?})) AS redirect
                                         FROM  group_event_participants AS ep
-                                   LEFT JOIN  #x4dat#.accounts AS a  ON (ep.uid = a.uid)
-                                   LEFT JOIN  #x4dat#.aliases  AS al ON (al.id = a.uid AND al.type = 'a_vie')
+                                   LEFT JOIN  accounts AS a  ON (ep.uid = a.uid)
+                                   LEFT JOIN  aliases  AS al ON (al.uid = a.uid AND al.type = 'a_vie')
                                        WHERE  ep.eid = {?} AND " . $where[$v] . "
                                     GROUP BY  ep.uid)",
                          $lastid[$v], '@' . $globals->mail->domain, $eid);
@@ -313,8 +313,8 @@ function event_change_shortname(&$page, $eid, $old, $new)
         XDB::execute("INSERT IGNORE INTO  virtual_redirect (
                                   SELECT  {?} AS vid, IF(al.alias IS NULL, a.email, CONCAT(al.alias, {?})) AS redirect
                                     FROM  group_members AS m
-                               LEFT JOIN  #x4dat#.accounts  AS a  ON (a.uid = m.uid)
-                               LEFT JOIN  #x4dat#.aliases   AS al ON (al.id = a.uid AND al.type = 'a_vie')
+                               LEFT JOIN  accounts  AS a  ON (a.uid = m.uid)
+                               LEFT JOIN  aliases   AS al ON (al.uid = a.uid AND al.type = 'a_vie')
                                LEFT JOIN  group_event_participants AS ep ON (ep.uid = m.uid AND ep.eid = {?})
                                    WHERE  m.asso_id = {?} AND ep.uid IS NULL
                                 GROUP BY  m.uid)",

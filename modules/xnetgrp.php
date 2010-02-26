@@ -474,8 +474,8 @@ class XnetGrpModule extends PLModule
                                           CONCAT(al.alias,"@polytechnique.org"),
                                            m.email)
                                  FROM  group_members AS m
-                           INNER JOIN  #x4dat#.aliases   AS al ON (al.type = "a_vie"
-                                                                 AND al.id = m.uid)
+                           INNER JOIN  aliases   AS al ON (al.type = "a_vie"
+                                                                 AND al.uid = m.uid)
                                 WHERE  perms="admin" AND m.asso_id = {?}',
                              $globals->asso('id'));
             $emails = $res->fetchColumn();
@@ -795,9 +795,9 @@ class XnetGrpModule extends PLModule
     private function changeLogin(PlPage &$page, PlUser &$user, MMList &$mmlist, $login)
     {
         // Search the uid of the user...
-        $res = XDB::query("SELECT  f.id, f.alias
+        $res = XDB::query("SELECT  f.uid, f.alias
                              FROM  aliases AS a
-                       INNER JOIN  aliases AS f ON (f.id = a.id AND f.type = 'a_vie')
+                       INNER JOIN  aliases AS f ON (f.uid = a.uid AND f.type = 'a_vie')
                             WHERE  a.alias = {?}",
                           $login);
         if ($res->numRows() == 0) {

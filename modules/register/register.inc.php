@@ -99,7 +99,7 @@ function check_old_mat($promo, $mat, &$nom, &$prenom, &$ourmat, &$ourid, &$watch
     $res = XDB::iterRow(
             'SELECT  user_id, nom, prenom, matricule, alias, FIND_IN_SET(\'watch\', u.flags), naissance_ini
                FROM  auth_user_md5 AS u
-         INNER JOIN  aliases       AS a ON (u.user_id = a.id and FIND_IN_SET("bestalias", a.flags))
+         INNER JOIN  aliases       AS a ON (u.user_id = a.uid and FIND_IN_SET("bestalias", a.flags))
               WHERE  promo={?} AND deces=0 AND perms IN ("user","admin")', $promo);
     while (list($_uid, $_nom, $_prenom, $_mat, $alias, $watch, $naiss) = $res->next()) {
         if (user_cmp($prenom, $nom, $_prenom, $_nom)) {
@@ -167,14 +167,14 @@ function create_aliases (&$sub)
         $forlife = $res->fetchOneCell();
     }
 
-    $res = XDB::query('SELECT id, type, expire FROM aliases WHERE alias={?}', $mailorg);
+    $res = XDB::query('SELECT uid, type, expire FROM aliases WHERE alias={?}', $mailorg);
     if ($res->numRows()) {
         list($h_id, $h_type, $expire) = $res->fetchOneRow();
         if ($h_type != 'homonyme' and empty($expire)) {
             XDB::execute('UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias={?}', $mailorg);
             XDB::execute('REPLACE INTO homonyms (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $h_id);
             XDB::execute('REPLACE INTO homonyms (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $uid);
-            $res = XDB::query("SELECT alias FROM aliases WHERE id={?} AND expire IS NULL", $h_id);
+            $res = XDB::query("SELECT alias FROM aliases WHERE uid={?} AND expire IS NULL", $h_id);
             $als = $res->fetchColumn();
 
             $mailer = new PlMailer();

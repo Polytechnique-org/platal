@@ -28,7 +28,7 @@ require('connect.db.inc.php');
 require_once('validations/homonymes.inc.php');
 
 $resRobot = XDB::iterator(
-        "SELECT  id, alias, expire
+        "SELECT  uid, alias, expire
            FROM  aliases
           WHERE  (expire = NOW() + INTERVAL 7 DAY OR expire <= NOW())
                  AND type = 'alias'");

@@ -337,12 +337,12 @@ class RegisterModule extends PLModule
                               date = NOW(), naissance = {?}, date_ins = NOW()
                        WHERE  user_id = {?}", $password, $naissance, $uid);
         XDB::execute("REPLACE INTO auth_user_quick (user_id) VALUES ({?})", $uid);
-        XDB::execute("INSERT INTO  aliases (id, alias, type)
+        XDB::execute("INSERT INTO  aliases (uid, alias, type)
                            VALUES  ({?}, {?}, 'a_vie')", $uid, $forlife);
-        XDB::execute("INSERT INTO  aliases (id, alias, type, flags)
+        XDB::execute("INSERT INTO  aliases (uid, alias, type, flags)
                            VALUES  ({?}, {?}, 'alias', 'bestalias')", $uid, $bestalias);
         if ($mailorg2) {
-            XDB::execute("INSERT INTO  aliases (id, alias, type)
+            XDB::execute("INSERT INTO  aliases (uid, alias, type)
                                VALUES  ({?}, {?}, 'alias')", $uid, $mailorg2);
         }
 
@@ -444,7 +444,7 @@ class RegisterModule extends PLModule
                          GROUP_CONCAT(m.email SEPARATOR ', ') AS mails, MAX(m.last) AS dateDernier
                    FROM  register_marketing AS m
              INNER JOIN  auth_user_md5      AS s  ON (m.sender = s.user_id)
-             INNER JOIN  aliases            AS sa ON (sa.id = m.sender
+             INNER JOIN  aliases            AS sa ON (sa.uid = m.sender
                                                       AND FIND_IN_SET('bestalias', sa.flags))
                   WHERE  m.uid = {?}
                GROUP BY  m.sender

@@ -43,8 +43,8 @@ class XnetModule extends PLModule
         }
 
         $res = XDB::query("SELECT attachmime, attach
-                             FROM aliases
-                       INNER JOIN photo ON(id = uid)
+                             FROM aliases AS a
+                       INNER JOIN photo AS p ON(a.uid = p.uid)
                             WHERE alias = {?}", $x);
 
         if ((list($type, $data) = $res->fetchOneRow())) {

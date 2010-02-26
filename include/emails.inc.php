@@ -31,7 +31,7 @@ function fix_bestalias(User &$user)
 {
     $res = XDB::query("SELECT  COUNT(*)
                          FROM  aliases
-                        WHERE  id = {?} AND FIND_IN_SET('bestalias', flags) AND type != 'homonyme'",
+                        WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags) AND type != 'homonyme'",
                       $user->id());
     if ($res->fetchOneCell()) {
         return;
@@ -39,7 +39,7 @@ function fix_bestalias(User &$user)
 
     XDB::execute("UPDATE  aliases
                      SET  flags=CONCAT(flags,',','bestalias')
-                   WHERE  id={?} AND type!='homonyme'
+                   WHERE  uid={?} AND type!='homonyme'
                 ORDER BY  !FIND_IN_SET('usage',flags),alias LIKE '%.%', LENGTH(alias)
                    LIMIT  1", $user->id());
 }
@@ -114,7 +114,7 @@ function ids_from_mails(array $emails)
     if (count($domain_mails)) {
         $domain_users = array_map(array('XDB', 'escape'), array_keys($domain_mails));
         $list = implode(',', $domain_users);
-        $res = XDB::query("SELECT   alias, id
+        $res = XDB::query("SELECT   alias, uid
                              FROM   aliases
                             WHERE   alias IN ($list)");
         foreach ($res->fetchAllRow() as $row) {
@@ -130,7 +130,7 @@ function ids_from_mails(array $emails)
             $alias_users[] = XDB::escape($user."@".$globals->mail->alias_dom);
         }
         $list = implode(',', $alias_users);
-        $res = XDB::query("SELECT   v.alias, a.id
+        $res = XDB::query("SELECT   v.alias, a.uid
                              FROM   virtual             AS v
                        INNER JOIN   virtual_redirect    AS r USING(vid)
                        INNER JOIN   aliases             AS a ON (a.type = 'a_vie'

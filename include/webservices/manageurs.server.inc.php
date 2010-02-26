@@ -181,7 +181,7 @@ function get_nouveau_infos($method, $params) {
                 "SELECT  a.nom, a.nom_usage,a.prenom, FIND_IN_SET('femme', a.flags) as femme,
                          a.deces!= 0 as decede, a.naissance, a.promo, concat(al.alias, '@m4x.org') as mail
                    FROM  auth_user_md5 AS a
-             INNER JOIN  aliases       AS al ON (a.user_id = al.id)
+             INNER JOIN  aliases       AS al ON (a.user_id = al.uid)
                   WHERE  al.flags = 'bestalias' AND a.matricule = {?}",$params[1]);
         $data=$res->fetchOneAssoc();
         //$data['mail'].='@polytechnique.org';

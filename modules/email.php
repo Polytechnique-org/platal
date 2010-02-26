@@ -63,10 +63,10 @@ class EmailModule extends PLModule
 
             XDB::execute("UPDATE  aliases
                              SET  flags = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', flags, ','), ',bestalias,', ','))
-                           WHERE  id = {?}", $user->id());
+                           WHERE  uid = {?}", $user->id());
             XDB::execute("UPDATE  aliases
                              SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
-                           WHERE  id = {?} AND alias = {?}", $user->id(), $email);
+                           WHERE  uid = {?} AND alias = {?}", $user->id(), $email);
 
             // As having a non-null bestalias value is critical in
             // plat/al's code, we do an a posteriori check on the
@@ -79,7 +79,7 @@ class EmailModule extends PLModule
                         (alias REGEXP '\\\\.[0-9]{2}$') AS cent_ans,
                         FIND_IN_SET('bestalias',flags) AS best, expire
                   FROM  aliases
-                 WHERE  id = {?} AND type!='homonyme'
+                 WHERE  uid = {?} AND type!='homonyme'
               ORDER BY  LENGTH(alias)";
         $page->assign('aliases', XDB::iterator($sql, $user->id()));
 
@@ -87,7 +87,7 @@ class EmailModule extends PLModule
         $homonyme = XDB::query(
                 "SELECT  alias
                    FROM  aliases
-             INNER JOIN  homonyms ON (id = homonyme_id)
+             INNER JOIN  homonyms ON (uid = homonyme_id)
                   WHERE  user_id = {?} AND type = 'homonyme'", $user->id());
         $page->assign('homonyme', $homonyme->fetchOneCell());
 
@@ -303,7 +303,7 @@ class EmailModule extends PLModule
         $res = XDB::query(
                 "SELECT  alias,expire
                    FROM  aliases
-                  WHERE  id={?} AND (type='a_vie' OR type='alias')
+                  WHERE  uid={?} AND (type='a_vie' OR type='alias')
                ORDER BY  !FIND_IN_SET('usage',flags), LENGTH(alias)", $user->id());
         $page->assign('alias', $res->fetchAllAssoc());
         $page->assign('emails', $redirect->emails);
@@ -487,7 +487,7 @@ class EmailModule extends PLModule
                 "SELECT  ac.full_name, a.alias as forlife
                    FROM  accounts      AS ac
              INNER JOIN  contacts      AS c ON (ac.uid = c.contact)
-             INNER JOIN  aliases       AS a ON (ac.uid = a.id AND FIND_IN_SET('bestalias', a.flags))
+             INNER JOIN  aliases       AS a ON (ac.uid = a.uid AND FIND_IN_SET('bestalias', a.flags))
                   WHERE  c.uid = {?}
                  ORDER BY ac.full_name", S::i('uid'));
         $page->assign('contacts', $res->fetchAllAssoc());
@@ -574,7 +574,7 @@ class EmailModule extends PLModule
             global $globals;
             $res = XDB::query("SELECT  e.email, e.rewrite, a.alias
                                  FROM  emails AS e
-                           INNER JOIN  aliases AS a ON (a.id = e.uid AND a.type = 'a_vie')
+                           INNER JOIN  aliases AS a ON (a.uid = e.uid AND a.type = 'a_vie')
                                 WHERE  e.email = {?} AND e.hash = {?}",
                               $mail, $hash);
             XDB::query("UPDATE  emails
@@ -732,7 +732,7 @@ class EmailModule extends PLModule
             $sql = "SELECT  w.email, w.detection, w.state, a.alias AS forlife
                       FROM  email_watch  AS w
                  LEFT JOIN  emails        AS e USING(email)
-                 LEFT JOIN  aliases       AS a ON (a.id = e.uid AND a.type = 'a_vie')
+                 LEFT JOIN  aliases       AS a ON (a.uid = e.uid AND a.type = 'a_vie')
                   ORDER BY  w.state, w.email, a.alias";
             $it = Xdb::iterRow($sql);
 
@@ -759,9 +759,9 @@ class EmailModule extends PLModule
             $sql = "SELECT  w.detection, w.state, w.last, w.description,
                             a1.alias AS edit, a2.alias AS forlife
                       FROM  email_watch AS w
-                 LEFT JOIN  aliases      AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
+                 LEFT JOIN  aliases      AS a1 ON (a1.uid = w.uid AND a1.type = 'a_vie')
                  LEFT JOIN  emails       AS e  ON (w.email = e.email)
-                 LEFT JOIN  aliases      AS a2 ON (a2.id = e.uid AND a2.type = 'a_vie')
+                 LEFT JOIN  aliases      AS a2 ON (a2.uid = e.uid AND a2.type = 'a_vie')
                      WHERE  w.email = {?}
                   ORDER BY  a2.alias";
             $it = Xdb::iterRow($sql, $email);
@@ -864,7 +864,7 @@ class EmailModule extends PLModule
                       LEFT JOIN  emails        AS e2 ON (e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags)
                                                          AND e1.email != e2.email)
                      INNER JOIN  accounts      AS acc  ON (e1.uid = acc.uid)
-                     INNER JOIN  aliases       AS a  ON (acc.uid = a.id AND FIND_IN_SET('bestalias', a.flags))
+                     INNER JOIN  aliases       AS a  ON (acc.uid = a.uid AND FIND_IN_SET('bestalias', a.flags))
                           WHERE  e1.email = {?}
                        GROUP BY  e1.uid", $email);
 

@@ -274,11 +274,11 @@ function set_alias_names(&$sn_new, $sn_old, $update_new = false, $new_alias = nu
     }
     if ($update_new) {
         XDB::execute("DELETE FROM  aliases
-                            WHERE  FIND_IN_SET('usage', flags) AND id = {?}",
+                            WHERE  FIND_IN_SET('usage', flags) AND uid = {?}",
                      S::i('uid'));
     }
     if ($new_alias) {
-        XDB::execute("INSERT INTO  aliases (alias, type, flags, id)
+        XDB::execute("INSERT INTO  aliases (alias, type, flags, uid)
                            VALUES  ({?}, 'alias', 'usage', {?})",
                      $new_alias, S::i('uid'));
     }

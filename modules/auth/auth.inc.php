@@ -60,7 +60,7 @@ function gpex_make($chlg, $privkey, $datafields, $charset)
         } else if ($val == 'username') {
             $res = XDB::query("SELECT  alias
                                  FROM  aliases
-                                WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                                WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
                               S::i('uid'));
             $min_username = $res->fetchOneCell();
             $params      .= gpex_prepare_param($val, $min_username, $tohash, $charset);

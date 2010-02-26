@@ -126,7 +126,7 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     def getUser(self, uid, md5, vhost):
         res = mysql_fetchone ("""SELECT  CONCAT(u.prenom, ' ', u.nom), a.alias, u.perms
                                    FROM  auth_user_md5 AS u
-                             INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.type='a_vie' )
+                             INNER JOIN  aliases       AS a ON ( a.uid=u.user_id AND a.type='a_vie' )
                                   WHERE  u.user_id = '%s' AND u.password = '%s' AND u.perms IN ('admin', 'user')
                                   LIMIT  1""" %( uid, md5 ) )
         if res:
@@ -191,8 +191,8 @@ def to_forlife(email):
     if ( fqdn == PLATAL_DOMAIN ) or ( fqdn == PLATAL_DOMAIN2 ):
         res = mysql_fetchone("""SELECT  CONCAT(f.alias, '@%s'), CONCAT(u.prenom, ' ', u.nom)
                                   FROM  auth_user_md5 AS u
-                            INNER JOIN  aliases       AS f ON (f.id=u.user_id AND f.type='a_vie')
-                            INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s' AND a.type!='homonyme')
+                            INNER JOIN  aliases       AS f ON (f.uid=u.user_id AND f.type='a_vie')
+                            INNER JOIN  aliases       AS a ON (a.uid=u.user_id AND a.alias='%s' AND a.type!='homonyme')
                                  WHERE  u.perms IN ('admin', 'user')
                                  LIMIT  1""" %( PLATAL_DOMAIN, mbox ) )
         if res:

@@ -8,7 +8,7 @@ $MESSAGE = '';
 $res = XDB::iterRow(
         "SELECT  a.alias, u.promo, email
            FROM  auth_user_md5  AS u
-      LEFT JOIN  aliases        AS a ON( u.user_id=a.id AND a.type='a_vie' )
+      LEFT JOIN  aliases        AS a ON( u.user_id=a.uid AND a.type='a_vie' )
       LEFT JOIN  emails         AS e ON( e.uid = u.user_id AND NOT FIND_IN_SET('filter',e.flags) )
           WHERE  u.date_ins > {?}
        GROUP BY  alias

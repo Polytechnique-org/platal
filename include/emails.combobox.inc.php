@@ -70,7 +70,7 @@ function fill_email_combobox(PlPage& $page, $user = null, $profile = null)
         $res = XDB::query(
                 "SELECT  alias
                    FROM  aliases
-                  WHERE  id={?} AND (type='a_vie' OR type='alias')", $user->id());
+                  WHERE  uid={?} AND (type='a_vie' OR type='alias')", $user->id());
         $res = $res->fetchAllAssoc();
         $page->assign('list_email_X', $res);
         if (($domain == $globals->mail->domain) || ($domain == $globals->mail->domain2)) {

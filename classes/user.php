@@ -85,7 +85,7 @@ class User extends PlUser
         if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
             $res = XDB::query('SELECT  a.uid
                                  FROM  accounts AS a
-                           INNER JOIN  aliases AS al ON (al.id = a.uid AND al.type IN (\'alias\', \'a_vie\'))
+                           INNER JOIN  aliases AS al ON (al.uid = a.uid AND al.type IN (\'alias\', \'a_vie\'))
                                 WHERE  al.alias = {?}', $mbox);
             if ($res->numRows()) {
                 return $res->fetchOneCell();
@@ -116,7 +116,7 @@ class User extends PlUser
                 list($alias, $alias_fqdn) = explode('@', $redir);
                 $res = XDB::query("SELECT  a.uid
                                      FROM  accounts AS a
-                                LEFT JOIN  aliases AS al ON (al.id = a.uid AND al.type IN ('alias', 'a_vie'))
+                                LEFT JOIN  aliases AS al ON (al.uid = a.uid AND al.type IN ('alias', 'a_vie'))
                                     WHERE  al.alias = {?}", $alias);
                 if ($res->numRows()) {
                     return $res->fetchOneCell();
@@ -185,8 +185,8 @@ class User extends PlUser
                                       ' . $fields . '
                                 FROM  accounts AS a
                           INNER JOIN  account_types AS at ON (at.type = a.type)
-                           LEFT JOIN  aliases AS af ON (af.id = a.uid AND af.type = \'a_vie\')
-                           LEFT JOIN  aliases AS ab ON (ab.id = a.uid AND FIND_IN_SET(\'bestalias\', ab.flags))
+                           LEFT JOIN  aliases AS af ON (af.uid = a.uid AND af.type = \'a_vie\')
+                           LEFT JOIN  aliases AS ab ON (ab.uid = a.uid AND FIND_IN_SET(\'bestalias\', ab.flags))
                            LEFT JOIN  emails AS e ON (e.uid = a.uid AND e.flags = \'active\')
                            LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
                                    ' . $joins . '

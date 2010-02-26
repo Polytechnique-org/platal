@@ -58,11 +58,11 @@ class NamesReq extends Validate
         }
         $res = XDB::query("SELECT  alias
                              FROM  aliases
-                            WHERE  id = {?} AND type = 'alias' AND FIND_IN_SET('usage', flags)",
+                            WHERE  uid = {?} AND type = 'alias' AND FIND_IN_SET('usage', flags)",
                           $this->user->id());
         $this->old_alias  = $res->fetchOneCell();
         if ($this->old_alias != $this->new_alias) {
-            $res = XDB::query("SELECT  id
+            $res = XDB::query("SELECT  uid
                                  FROM  aliases
                                 WHERE  alias = {?}",
                               $this->new_alias);

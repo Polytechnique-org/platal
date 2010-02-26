@@ -271,8 +271,8 @@ class AdminModule extends PLModule
             // we are viewing a session
             $res = XDB::query("SELECT  ls.*, a.alias AS username, sa.alias AS suer
                                  FROM  log_sessions AS ls
-                            LEFT JOIN  #x4dat#.aliases   AS a  ON (a.id = ls.uid AND a.type='a_vie')
-                            LEFT JOIN  #x4dat#.aliases   AS sa ON (sa.id = ls.suid AND sa.type='a_vie')
+                            LEFT JOIN  aliases   AS a  ON (a.uid = ls.uid AND a.type='a_vie')
+                            LEFT JOIN  aliases   AS sa ON (sa.uid = ls.suid AND sa.type='a_vie')
                                 WHERE  ls.id = {?}", $arg);
 
             $page->assign('session', $a = $res->fetchOneAssoc());
@@ -288,7 +288,7 @@ class AdminModule extends PLModule
         } else {
             $loguser = $action == 'user' ? $arg : Env::v('loguser');
 
-            $res = XDB::query('SELECT id FROM aliases WHERE alias={?}',
+            $res = XDB::query('SELECT uid FROM aliases WHERE alias={?}',
                               $loguser);
             $loguid  = $res->fetchOneCell();
 
@@ -330,7 +330,7 @@ class AdminModule extends PLModule
                 $select = "SELECT  s.id, s.start, s.uid,
                                    a.alias as username
                              FROM  log_sessions AS s
-                        LEFT JOIN  #x4dat#.aliases   AS a  ON (a.id = s.uid AND a.type='a_vie')
+                        LEFT JOIN  aliases   AS a  ON (a.uid = s.uid AND a.type='a_vie')
                     $where
                     ORDER BY start DESC";
                 $res = XDB::iterator($select);
@@ -545,7 +545,7 @@ class AdminModule extends PLModule
                     $page->trigError("Impossible d'ajouter l'alias '$alias@$domain', il est probablement déjà attribué");
                 }
             } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
-                $res = XDB::execute("INSERT INTO  aliases (id, alias, type)
+                $res = XDB::execute("INSERT INTO  aliases (uid, alias, type)
                                           VALUES  ({?}, {?}, 'alias')",
                                     $user->id(), $alias);
                 $page->trigSuccess("Nouvel alias '$alias' ajouté");
@@ -554,7 +554,7 @@ class AdminModule extends PLModule
             }
         } else if (!Post::blank('del_alias')) {
             XDB::execute("DELETE FROM  aliases
-                                WHERE  id = {?} AND alias = {?} AND
+                                WHERE  uid = {?} AND alias = {?} AND
                                        type NOT IN ('a_vie', 'homonyme')",
                          $user->id(), $val);
             XDB::execute("UPDATE  emails
@@ -566,10 +566,10 @@ class AdminModule extends PLModule
         } else if (!Post::blank('best')) {
             XDB::execute("UPDATE  aliases
                              SET  flags = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', flags, ','), ',bestalias,', ','))
-                           WHERE  id = {?}", $user->id());
+                           WHERE  uid = {?}", $user->id());
             XDB::execute("UPDATE  aliases
                              SET  flags = CONCAT_WS(',', IF(flags = '', NULL, flags), 'bestalias')
-                           WHERE  id = {?} AND alias = {?}", $user->id(), $val);
+                           WHERE  uid = {?} AND alias = {?}", $user->id(), $val);
             // As having a non-null bestalias value is critical in
             // plat/al's code, we do an a posteriori check on the
             // validity of the bestalias.
@@ -617,7 +617,7 @@ class AdminModule extends PLModule
         $page->assign('aliases', XDB::iterator("SELECT  alias, type='a_vie' AS for_life,
                                                         FIND_IN_SET('bestalias',flags) AS best, expire
                                                   FROM  aliases
-                                                 WHERE  id = {?} AND type != 'homonyme'
+                                                 WHERE  uid = {?} AND type != 'homonyme'
                                               ORDER BY  type != 'a_vie'", $user->id()));
         $page->assign('account_types', XDB::iterator('SELECT * FROM account_types ORDER BY type'));
         $page->assign('skins', XDB::iterator('SELECT id, name FROM skins ORDER BY name'));
@@ -859,9 +859,9 @@ class AdminModule extends PLModule
                              IF(h.homonyme_id = s.id, a.type, NULL) AS type,
                              ac.uid AS user_id
                        FROM  aliases       AS a
-                  LEFT JOIN  homonyms      AS h ON (h.homonyme_id = a.id)
-                 INNER JOIN  aliases       AS s ON (s.id = h.user_id AND s.type='a_vie')
-                 INNER JOIN  accounts      AS ac ON (ac.uid = a.id)
+                  LEFT JOIN  homonyms      AS h ON (h.homonyme_id = a.uid)
+                 INNER JOIN  aliases       AS s ON (s.uid = h.user_id AND s.type='a_vie')
+                 INNER JOIN  accounts      AS ac ON (ac.uid = a.uid)
                       WHERE  a.type = 'homonyme' OR a.expire != ''
                    ORDER BY  a.alias, forlife");
             $hnymes = Array();
@@ -925,10 +925,10 @@ class AdminModule extends PLModule
 
         $res = XDB::iterator(
                 "SELECT  a.hruid, pd.promo, p.ax_id, pd.directory_name, p.deathdate, DATE(MAX(s.start)) AS last
-                   FROM  #x4dat#.accounts         AS a
-             INNER JOIN  #x4dat#.account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
-             INNER JOIN  #x4dat#.profiles         AS p ON (p.pid = ap.pid)
-             INNER JOIN  #x4dat#.profile_display  AS pd ON (pd.pid = p.pid)
+                   FROM  accounts         AS a
+             INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+             INNER JOIN  profiles         AS p ON (p.pid = ap.pid)
+             INNER JOIN  profile_display  AS pd ON (pd.pid = p.pid)
               LEFT JOIN  log_sessions        AS s ON (s.uid = a.uid AND suid = 0)
                   WHERE  a.state = 'active' AND p.deathdate IS NOT NULL
                GROUP BY  a.uid
@@ -1191,10 +1191,10 @@ class AdminModule extends PLModule
                                      IF(w.ip = s2.ip, s2.host, s2.forward_host),
                                      IF(w.ip = s.ip, s.host, s.forward_host)),
                             w.mask, w.detection, w.state, a.hruid
-                      FROM  #x4dat#.ip_watch  AS w
+                      FROM  ip_watch  AS w
                  LEFT JOIN  log_sessions AS s  ON (s.ip = w.ip)
                  LEFT JOIN  log_sessions AS s2 ON (s2.forward_ip = w.ip)
-                 LEFT JOIN  #x4dat#.accounts  AS a  ON (a.uid = s.uid)
+                 LEFT JOIN  accounts  AS a  ON (a.uid = s.uid)
                   GROUP BY  w.ip, a.hruid
                   ORDER BY  w.state, w.ip, a.hruid";
             $it = Xdb::iterRow($sql);
@@ -1225,10 +1225,10 @@ class AdminModule extends PLModule
         } elseif ($action == 'edit') {
             $sql = "SELECT  w.detection, w.state, w.last, w.description, w.mask,
                             a1.hruid AS edit, a2.hruid AS hruid, s.host
-                      FROM  #x4dat#.ip_watch  AS w
-                 LEFT JOIN  #x4dat#.accounts  AS a1 ON (a1.uid = w.uid)
+                      FROM  ip_watch  AS w
+                 LEFT JOIN  accounts  AS a1 ON (a1.uid = w.uid)
                  LEFT JOIN  log_sessions AS s  ON (w.ip = s.ip)
-                 LEFT JOIN  #x4dat#.accounts  AS a2 ON (a2.uid = s.uid)
+                 LEFT JOIN  accounts  AS a2 ON (a2.uid = s.uid)
                      WHERE  w.ip = {?}
                   GROUP BY  a2.hruid
                   ORDER BY  a2.hruid";

@@ -81,7 +81,7 @@ class XorgSession extends PlSession
     {
         $res = XDB::query('SELECT  a.uid, a.password
                              FROM  accounts AS a
-                       INNER JOIN  aliases  AS l ON (l.id = a.uid AND l.type != \'homonyme\')
+                       INNER JOIN  aliases  AS l ON (l.uid = a.uid AND l.type != \'homonyme\')
                             WHERE  l.' . $login_type . ' = {?} AND a.state = \'active\'',
                           $login);
         if (list($uid, $password) = $res->fetchOneRow()) {
@@ -272,7 +272,7 @@ class XorgSession extends PlSession
     {
         $res = XDB::query('SELECT  a.uid AS user_id, a.hruid
                              FROM  aliases  AS l
-                       INNER JOIN  accounts AS a ON (l.id = a.uid AND a.state = \'active\')
+                       INNER JOIN  accounts AS a ON (l.uid = a.uid AND a.state = \'active\')
                             WHERE  a.token = {?} AND l.alias = {?} AND l.type != \'homonyme\'',
                            $token, $login);
         if ($res->numRows() == 1) {

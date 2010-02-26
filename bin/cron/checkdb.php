@@ -94,7 +94,7 @@ check("SELECT user_id, nom, prenom, promo FROM auth_user_md5 WHERE hruid IS NULL
 /* validite de aliases */
 check("SELECT a.*
         FROM aliases       AS a
-        LEFT JOIN auth_user_md5 AS u ON u.user_id=a.id
+        LEFT JOIN auth_user_md5 AS u ON u.user_id=a.uid
         WHERE (a.type='alias' OR a.type='a_vie') AND u.prenom is null");
 
 /* validite de profile_education */
@@ -151,10 +151,10 @@ check("SELECT  a1.alias, a2.alias, e1.email, e2.flags
             (e1.uid<e2.uid  OR  NOT FIND_IN_SET('active', e2.flags))
             )
         INNER JOIN  email_watch  AS w  ON(w.email = e1.email AND w.state = 'pending')
-        INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
-        INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
-        INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
-        INNER JOIN  auth_user_md5 AS u2 ON(a2.id=u2.user_id)
+        INNER JOIN  aliases       AS a1 ON(a1.uid=e1.uid AND a1.type='a_vie')
+        INNER JOIN  aliases       AS a2 ON(a2.uid=e2.uid AND a2.type='a_vie')
+        INNER JOIN  auth_user_md5 AS u1 ON(a1.uid=u1.user_id)
+        INNER JOIN  auth_user_md5 AS u2 ON(a2.uid=u2.user_id)
         WHERE  FIND_IN_SET('active', e1.flags) AND u1.nom!=u2.nom_usage AND u2.nom!=u1.nom_usage
         ORDER BY  a1.alias",
         "donne la liste des emails douteux actuellement non traites par les administrateurs");
@@ -166,10 +166,10 @@ info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state
             (e1.uid<e2.uid  OR  NOT FIND_IN_SET('active', e2.flags))
             )
         INNER JOIN  email_watch  AS w  ON(w.email = e1.email AND w.state != 'safe')
-        INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
-        INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
-        INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
-        INNER JOIN  auth_user_md5 AS u2 ON(a2.id=u2.user_id)
+        INNER JOIN  aliases       AS a1 ON(a1.uid=e1.uid AND a1.type='a_vie')
+        INNER JOIN  aliases       AS a2 ON(a2.uid=e2.uid AND a2.type='a_vie')
+        INNER JOIN  auth_user_md5 AS u1 ON(a1.uid=u1.user_id)
+        INNER JOIN  auth_user_md5 AS u2 ON(a2.uid=u2.user_id)
         WHERE  FIND_IN_SET('active', e1.flags) AND u1.nom!=u2.nom_usage AND u2.nom!=u1.nom_usage
         ORDER BY  a1.alias",
         "donne la liste des emails dangereux ou douteux");
@@ -177,7 +177,7 @@ info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state
 /* donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois */
 check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
         FROM  aliases AS a
-        INNER JOIN  aliases AS b ON ( a.id=b.id AND b.type != 'homonyme' and b.expire < NOW() )
+        INNER JOIN  aliases AS b ON ( a.uid=b.uid AND b.type != 'homonyme' and b.expire < NOW() )
         WHERE  a.type = 'a_vie'",
         "donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias");
 
@@ -185,8 +185,8 @@ check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
 
 check("SELECT  a.alias AS a_un_pb, email, rewrite AS broken
         FROM  aliases AS a
-        INNER JOIN  emails  AS e ON (a.id=e.uid AND rewrite!='')
-        LEFT  JOIN  aliases AS b ON (b.id=a.id AND rewrite LIKE CONCAT(b.alias,'@%') AND b.type!='homonyme')
+        INNER JOIN  emails  AS e ON (a.uid=e.uid AND rewrite!='')
+        LEFT  JOIN  aliases AS b ON (b.uid=a.uid AND rewrite LIKE CONCAT(b.alias,'@%') AND b.type!='homonyme')
         WHERE  a.type='a_vie' AND b.type IS NULL","gens qui ont des rewrite sur un alias perdu");
 
 /* validite du champ matricule_ax de la table auth_user_md5 */
@@ -205,7 +205,7 @@ check("SELECT  s.uid, d.public_name
 /* verifie qu'il n'y a pas d'utilisateurs ayant un compte Google Apps désactivé et une redirection encore active vers Google Apps */
 check("SELECT  a.alias, g.g_status, u.mail_storage
          FROM  auth_user_md5 AS u
-   INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+   INNER JOIN  aliases AS a ON (a.uid = u.user_id AND a.type = 'a_vie')
    INNER JOIN  gapps_accounts AS g ON (g.l_userid = u.user_id)
         WHERE  FIND_IN_SET('googleapps', u.mail_storage) > 0 AND g.g_status != 'active'",
       "utilisateurs ayant une redirection vers Google Apps alors que leur compte GApps n'est pas actif");

@@ -32,14 +32,14 @@ function smarty_insert_getUsername()
 
     if (Cookie::v('domain', 'login') != 'alias') {
         $res = XDB::query("SELECT  alias FROM aliases
-                            WHERE  id={?} AND (type IN ('a_vie','alias') AND FIND_IN_SET('bestalias', flags))", $id);
+                            WHERE  uid={?} AND (type IN ('a_vie','alias') AND FIND_IN_SET('bestalias', flags))", $id);
         return $res->fetchOneCell();
     } else {
         $res = XDB::query("
             SELECT  v.alias
               FROM  virtual AS v
         INNER JOIN  virtual_redirect USING(vid)
-        INNER JOIN  aliases AS a ON(id={?} AND a.type='a_vie')
+        INNER JOIN  aliases AS a ON(uid={?} AND a.type='a_vie')
              WHERE  redirect = CONCAT(a.alias, {?})
                     OR redirect = CONCAT(a.alias, {?})",
             $id, "@".$globals->mail->domain, "@".$globals->mail->domain2);

@@ -22,7 +22,7 @@
 function select_if_homonyme(PlUser &$user) {
     return XDB::fetchOneCell("SELECT  a.alias
                                 FROM  aliases AS a
-                               WHERE  a.id = {?} AND a.expire != ''",
+                               WHERE  a.uid = {?} AND a.expire != ''",
                              $user->id());
 }
 
@@ -54,7 +54,7 @@ function switch_bestalias(PlUser &$user, $loginbis) {
     // check if loginbis was the bestalias
     $bestailas = XDB::fetchOneCell("SELECT  alias
                                       FROM  aliases
-                                     WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                                     WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
                                    $user->id());
     if ($bestalias && $bestalias != $loginbis) {
         return false;
@@ -63,13 +63,13 @@ function switch_bestalias(PlUser &$user, $loginbis) {
     // select the shortest alias still alive
     $newbest = XDB::fetchOneCell("SELECT  alias
                                     FROM  aliases
-                                   WHERE  id = {?} AND alias != {?} AND expire IS NULL
+                                   WHERE  uid = {?} AND alias != {?} AND expire IS NULL
                                 ORDER BY  LENGTH(alias)
                                    LIMIT  1", $user->id(), $loginbis);
     // change the bestalias flag
     XDB::execute("UPDATE  aliases
                      SET  flags = (flags & (255 - 1)) | IF(alias = {?}, 1, 0)
-                   WHERE  id = {?}", $newbest, $user->id());
+                   WHERE  uid = {?}", $newbest, $user->id());
     return $newbest;
 }
 

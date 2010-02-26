@@ -16,9 +16,13 @@ CHANGE COLUMN  montant_max amount_max DECIMAL(10,2) NOT NULL DEFAULT 0.00;
 CHANGE COLUMN  montant amount VARCHAR(15) NOT NULL DEFAULT '0.00',
 CHANGE COLUMN  cle pkey VARCHAR(5) NOT NULL;
 
+# emails
+  ALTER TABLE  aliases
+CHANGE COLUMN  id uid INT(11) not null;
+
 # profile
   ALTER TABLE  profile_photos
-CHANGE COLUMN  uid pid INT(6) not null;
+CHANGE COLUMN  uid pid INT(11) not null;
   ALTER TABLE  profile_skills
 CHANGE COLUMN  uid pid INT(11) not null;
   ALTER TABLE  profile_langskills

@@ -147,7 +147,7 @@ class PlatalModule extends PLModule
         # carva will extend to users not in the main domain.
         $res = XDB::query("SELECT  alias
                              FROM  aliases
-                            WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                            WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
                           S::user()->id());
         $page->assign('bestalias', $res->fetchOneCell());
     }
@@ -185,7 +185,7 @@ class PlatalModule extends PLModule
         # carva will extend to users not in the main domain.
         $res = XDB::query("SELECT  alias
                              FROM  aliases
-                            WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                            WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
                           S::user()->id());
         $page->assign('bestalias', $res->fetchOneCell());
     }

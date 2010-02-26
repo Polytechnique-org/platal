@@ -2103,13 +2103,13 @@ class UserFilter extends PlFilter
         }
         foreach ($this->al as $sub=>$key) {
             if (is_null($key)) {
-                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\')');
+                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\')');
             } else if ($key == self::ALIAS_BEST) {
-                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND  FIND_IN_SET(\'bestalias\', $ME.flags)');
+                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND  FIND_IN_SET(\'bestalias\', $ME.flags)');
             } else if ($key == self::ALIAS_FORLIFE) {
-                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.id = $UID AND $ME.type = \'a_vie\'');
+                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.uid = $UID AND $ME.type = \'a_vie\'');
             } else {
-                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', XDB::format('$ME.id = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND $ME.alias = {?}', $key));
+                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', XDB::format('$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND $ME.alias = {?}', $key));
             }
         }
         foreach ($this->ve as $sub=>$key) {

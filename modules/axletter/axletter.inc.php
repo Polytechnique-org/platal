@@ -149,7 +149,7 @@ class AXLetter extends MassMailer
     static public function grantPerms($uid)
     {
         if (!is_numeric($uid)) {
-            $res = XDB::query("SELECT id FROM aliases WHERE alias = {?}", $uid);
+            $res = XDB::query("SELECT uid FROM aliases WHERE alias = {?}", $uid);
             $uid = $res->fetchOneCell();
         }
         if (!$uid) {
@@ -161,7 +161,7 @@ class AXLetter extends MassMailer
     static public function revokePerms($uid)
     {
         if (!is_numeric($uid)) {
-            $res = XDB::query("SELECT id FROM aliases WHERE alias = {?}", $uid);
+            $res = XDB::query("SELECT uid FROM aliases WHERE alias = {?}", $uid);
             $uid = $res->fetchOneCell();
         }
         if (!$uid) {
