@@ -15,7 +15,7 @@ $error_key = "You didn't provide me with a valid cipher key...";
 // IF YOU HAVE TO MAKE SOME MODIFICATION, FIRST CONTACT:
 // admin@manageurs.com
 function get_annuaire_infos($method, $params) {
-    require "geocoding.inc.php";
+    require 'geocoding.inc.php';
     global $error_mat, $error_key, $globals;
 
     // Password verification.
@@ -31,35 +31,33 @@ function get_annuaire_infos($method, $params) {
     if(!empty($params[1])) {
         // We only retrieve addresses when required.
         if(!isset($params[2])) {
-            $res = XDB::iterRow(
-                    "SELECT  ph.display_tel  AS cell, a.naissance AS age
-                       FROM  auth_user_md5   AS a
-                 INNER JOIN  auth_user_quick AS q USING (user_id)
-                  LEFT JOIN  profile_phones  AS ph ON (ph.pid = a.user_id AND link_type='user' AND tel_type = 'mobile')
-                      WHERE  a.matricule = {?} LIMIT 1", $params[1]);
+            $res = XDB::iterRow("SELECT  pp.display_tel AS cell, p.birthdate AS age
+                                   FROM  profiles       AS p
+                              LEFT JOIN  profile_phones AS pp ON (pp.pid = p.pid AND pp.link_type = 'user'
+                                                                  AND pp.tel_type = 'mobile')
+                                  WHERE  p.xorg_id = {?} LIMIT 1",
+                                $params[1]);
             $array = $res->next();
         } else {
-            $res = XDB::iterRow(
-                    "SELECT  a.naissance, addr.text, addr.postalCode,
-                             l.name, addr.countryId, addr.pid, addr.id
-                       FROM  auth_user_md5     AS a
-                 INNER JOIN  auth_user_quick   AS q    USING (user_id)
-                  LEFT JOIN  profile_addresses AS addr ON(adr.pid = a.user_id)
-                  LEFT JOIN  geoloc_localities AS l    ON (l.id = addr.localityId)
-                      WHERE  a.matricule = {?} AND
-                             NOT FIND_IN_SET('pro', adr.statut)
-                   ORDER BY  NOT FIND_IN_SET('active', adr.statut),
-                             FIND_IN_SET('res-secondaire', adr.statut),
-                             NOT FIND_IN_SET('courrier', adr.statut)", $params[1]);
+            $res = XDB::iterRow("SELECT  p.birthdate, pa.text, pa.postalCode
+                                         gl.name, pa.countryId, p.pid, pa.id
+                                   FROM  profiles          AS p
+                              LEFT JOIN  profile_addresses AS pa ON (pa.pid = p.pid)
+                              LEFT JOIN  geoloc_localities AS gl ON (pl.id = pa.localityId)
+                                  WHERE  p.xorg_id = {?} AND NOT FIND_IN_SET('job', pa.flags)
+                               ORDER BY  NOT FIND_IN_SET('current', pa.flags),
+                                         FIND_IN_SET('secondary', pa.flags),
+                                         NOT FIND_IN_SET('mail', pa.flags)",
+                                $params[1]);
             // Process the addresses we got.
             if(list($age, $text, $adr['cp'], $adr['ville'],
-                    $adr['pays'], $uid, $adr['adrid']) = $res->next()) {
+                    $adr['pays'], $pid, $adr['adrid']) = $res->next()) {
                 list($adr['adr1'], $adr['adr2'], $adr['adr3']) =
                     explode("\n", Geocoder::getFirstLines($text, $adr['cp'], 3));
                 $sql = XDB::query("SELECT  display_tel
                                      FROM  profile_phones
                                     WHERE  pid = {?} AND link_type = 'user' AND tel_type = 'mobile'
-                                    LIMIT  1", $uid);
+                                    LIMIT  1", $pid);
                 if ($sql->numRows() > 0) {
                     $array['cell'] = $sql->fetchOneCell();
                 } else {
@@ -96,12 +94,12 @@ function get_annuaire_infos($method, $params) {
                 foreach ($array['adresse'] as $i => $a) {
                     $adrid_index[$a['adrid']] = $i;
                 }
-                $restel = XDB::iterator(
-                           "SELECT  t.display_tel AS tel, t.tel_type, t.link_id as adrid
-                              FROM  profile_phones    AS t
-                        INNER JOIN  profile_addresses AS a ON (t.link_id = a.id AND t.uid = a.pid)
-                             WHERE  t.pid = {?} AND t.link_type = 'address'
-                                    AND NOT FIND_IN_SET('pro', a.statut)", $uid);
+                $restel = XDB::iterator("SELECT  pp.display_tel AS tel, pp..tel_type, pp.link_id as adrid
+                                           FROM  profile_phones    AS pp
+                                     INNER JOIN  profile_addresses AS pa ON (pp.link_id = pa.id AND pp.pid = pa.pid)
+                                          WHERE  pp.pid = {?} AND pp.link_type = 'address'
+                                                 AND NOT FIND_IN_SET('pro', pa.statut)",
+                                        $pid);
                 while ($tel = $restel->next()) {
                     $array['adresse'][$adrid_index[$tel['adrid']]]['tels'][] = $tel;
                 }
@@ -177,14 +175,24 @@ function get_nouveau_infos($method, $params) {
     }
     // We check we actually have an identification number.
     if(!empty($params[1])) {
-        $res = XDB::query(
-                "SELECT  a.nom, a.nom_usage,a.prenom, FIND_IN_SET('femme', a.flags) as femme,
-                         a.deces!= 0 as decede, a.naissance, a.promo, concat(al.alias, '@m4x.org') as mail
-                   FROM  auth_user_md5 AS a
-             INNER JOIN  aliases       AS al ON (a.user_id = al.uid)
-                  WHERE  al.flags = 'bestalias' AND a.matricule = {?}",$params[1]);
-        $data=$res->fetchOneAssoc();
-        //$data['mail'].='@polytechnique.org';
+        require_once 'directory.enums.inc.php';
+        $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
+        $nameTypes = array_flip($nameTypes);
+
+        $res = XDB::query("SELECT  pnl.name AS nom, pnu.name AS nom_usage, pnf.name AS prenom,
+                                   p.sex = 'female' AS femme, p.deathdate IS NOT NULL AS decede,
+                                   p.birthdate, pd.promo, CONCAT(a.alias, '@m4x.org') AS mail
+                             FROM  profiles         AS p
+                       INNER JOIN  account_profiles AS ap ON (p.pid = ap.pid AND FIND_IN_SET('owner', perms)
+                       INNER JOIN  aliases          AS a  ON (a.uid = ap.uid)
+                       INNER JOIN  profile_display  AS pd PN (p.pid = pd.pid)
+                       INNER JOIN  profile_name AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
+                       INNER JOIN  profile_name AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
+                       INNER JOIN  profile_name AS pnu ON (p.pid = pnu.pid AND pnu.typeid = {?})
+                            WHERE  a.flags = 'bestalias' AND p.xorg_id = {?}",
+                          $nameTypes['name_ini'], $nameTypes['lastname_ordinary'],
+                          $nameTypes['firstname_ini'], $params[1]);
+        // $data['mail'] .= '@polytechnique.org';
 
 
         // We start the encryption of the data.
