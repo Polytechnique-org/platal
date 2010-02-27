@@ -277,6 +277,14 @@ class User extends PlUser
         return $this->profile()->promo();
     }
 
+    public function yearpromo()
+    {
+        if (!$this->hasProfile()) {
+            return 0;
+        }
+        return $this->profile()->yearpromo();
+    }
+
     public function firstName()
     {
         if (!$this->hasProfile()) {

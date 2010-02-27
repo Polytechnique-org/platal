@@ -113,6 +113,11 @@ class Profile
         return $this->promo;
     }
 
+    public function yearpromo()
+    {
+        return intval(substr($this->promo, 1, 4));
+    }
+
     /** Print a name with the given formatting:
      * %s = • for women
      * %f = firstname
