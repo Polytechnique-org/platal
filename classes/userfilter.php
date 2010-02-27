@@ -153,6 +153,48 @@ class UFC_Promo implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_SchoolId
+/** Filters users based on their shoold identifier
+ * @param type Parameter type (Xorg, AX, School)
+ * @param value School id value
+ */
+class UFC_SchooldId implements UserFilterCondition
+{
+    const AX     = 'ax';
+    const Xorg   = 'xorg';
+    const School = 'school';
+
+    private $type;
+    private $id;
+
+    static public function assertType($type)
+    {
+        if ($type != self::AX && $type != self::Xorg && $type != self::School) {
+            Platal::page()->killError("Type de matricule invalide: $type");
+        }
+    }
+
+    public function __construct($type, $id)
+    {
+        $this->type = $type;
+        $this->id   = $id;
+        self::assertType($type);
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $uf->requireProfiles();
+        $id = $this->id;
+        $type = $this->type;
+        if ($type == self::School) {
+            $type = self::Xorg;
+            $id   = Profile::getXorgId($id);
+        }
+        return XDB::format('p.' . $type . '_id = {?}', $id);
+    }
+}
+// }}}
+
 // {{{ class UFC_EducationSchool
 /** Filters users by formation
  * @param $val The formation to search (either ID or array of IDs)
