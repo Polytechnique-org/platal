@@ -69,20 +69,17 @@ class PayPal
             'email'      => S::user()->bestEmail()
         );
 
-        // XXX: waiting for port of adresses.
-        $res = XDB::query(
-                "SELECT  a.text, l.name AS city, a.postalCode AS zip, a.countryiId AS country,
-                         IF(t1.display_tel != '', t1.display_tel, t2.display_tel) AS night_phone_b
-                   FROM  auth_user_quick   AS q
-              LEFT JOIN  profile_addresses AS a  ON (q.user_id = a.pid AND FIND_IN_SET('current', a.flags))
-              LEFT JOIN  profile_phones    AS t1 ON (t1.pid = a.pid AND t1.link_type = 'address'
-                                                     AND t1.link_id = a.adrid)
-              LEFT JOIN  profile_phones    AS t2 ON (t2.pid = a.pid AND t2.link_type = 'user'
-                                                     AND t2.link_id = 0)
-              LEFT JOIN  geoloc_localities AS l  ON (l.id = a.localityId)
-                  WHERE  q.user_id = {?}
-                  LIMIT  1",
-                S::v('uid'));
+        $res = XDB::query("SELECT  pa.text, gl.name AS city, pa.postalCode AS zip, pa.countryiId AS country,
+                                   IF(pp1.display_tel != '', pp1.display_tel, pp2.display_tel) AS night_phone_b
+                             FROM  profile_addresses AS pa
+                        LEFT JOIN  profile_phones    AS pp1 ON (pp1.pid = pa.pid AND pp1.link_type = 'address'
+                                                                AND pp1.link_id = pa.adrid)
+                        LEFT JOIN  profile_phones    AS pp2 ON (pp2.pid = pa.pid AND pp2.link_type = 'user'
+                                                                AND pp2.link_id = 0)
+                        LEFT JOIN  geoloc_localities AS gl  ON (gl.id = pa.localityId)
+                            WHERE  pa.pid = {?} AND FIND_IN_SET('current', pa.flags)
+                            LIMIT  1",
+                          S::i('pid'));
         $this->infos['client'] = array_map('replace_accent', array_merge($info_client, $res->fetchOneAssoc()));
         list($this->infos['client']['address1'], $this->infos['client']['address2']) =
             explode("\n", Geocoder::getFirstLines($this->infos['client']['text'],
