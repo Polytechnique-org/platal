@@ -38,10 +38,7 @@ Nous te suggérons de vérifier cette adresse, et le cas échéant de mettre
 
 Pour plus de renseignements sur le service de patte cassée, n'hésite pas à
 consulter [[{$globals->baseurl}/emails/broken|la documentation sur le site]].
-
-
-À bientôt sur Polytechnique.org !\\
-[[support@{$globals->mail->domain}|L'équipe d'administration]]
+{include file="signature.mail.tpl"}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

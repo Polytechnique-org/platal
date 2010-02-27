@@ -40,9 +40,6 @@ Pour te connecter au site, tu pourras utiliser comme identifiant n'importe leque
 Commence dès aujourd'hui à communiquer à tes correspondants la nouvelle adresse que tu comptes utiliser !
 
 En nous excusant pour le désagrément occasionné,
-Cordialement,
--- 
-L'équipe de Polytechnique.org
-Le portail des élèves & anciens élèves de l'X
+{include file="signature.mail.tpl"}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

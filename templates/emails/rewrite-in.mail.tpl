@@ -51,10 +51,7 @@ fonctionnalité complexe tels qu'ils sont décrits sur la page :
 
 Puis cliquez sur le lien suivant pour valider cette demande :
 * {$baseurl}/emails/rewrite/in/{$mail->email|replace:'@':'_'}/{$mail->hash}
-
--- \\
-Très cordialement,\\
-L'équipe de {$sitename}
+{include file="signature.mail.tpl"}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

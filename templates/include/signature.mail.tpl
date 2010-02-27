@@ -20,17 +20,21 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{config_load file="mails.conf" section="payment_ready"}
-{if $mail_part eq 'head'}
-{from full=#from#}
-{to addr=$to}
-{subject text="[`$asso`] Paiement activé"}
-{elseif $mail_part eq 'wiki'}
-Cher {$prenom},
-
-Nous t'écrivons pour t'informer que le télépaiement associé à l'événement '''{$evt}''' du groupe {$asso} vient d'être activé. Tu peux donc finaliser ton inscription.
-
-Pour ceci, va simplement sur [[http://www.polytechnique.net/{$diminutif}/payment/{$payment}?montant={$topay}|cette page]].
-{include file="signature.mail.tpl"}
+{if mail_part eq "wiki"}
+Cordialement,\\
+-- \\
+l'équipe de Polytechnique.org\\
+Le portail des élèves & anciens élèves de l'École polytechnique
+{elseif mail_part eq "text"}
+Cordialement,
+-- 
+l'équipe de Polytechnique.org
+Le portail des élèves & anciens élèves de l'École polytechnique
+{elseif mail_part eq "html"}
+Cordialement,<br />
+-- <br />
+l'équipe de Polytechnique.org<br />
+Le portail des élèves & anciens élèves de l'École polytechnique
 {/if}
-{* vim:set et sw=2 sts=2 sws=2: *}
+
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
