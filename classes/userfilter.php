@@ -1666,15 +1666,45 @@ class UserFilter extends PlFilter
         return $this->getUIDList(null, $limit);
     }
 
+    public function getUID($pos = 0)
+    {
+        $uids =$this->getUIDList(null, new PlFilter(1, $pos));
+        if (count($uids) == 0) {
+            return null;
+        } else {
+            return $uids[0];
+        }
+    }
+
     public function getPIDs($limit = null)
     {
         $limit = self::defaultLimit($limit);
         return $this->getPIDList(null, $limit);
     }
 
+    public function getPID($pos = 0)
+    {
+        $pids =$this->getPIDList(null, new PlFilter(1, $pos));
+        if (count($pids) == 0) {
+            return null;
+        } else {
+            return $pids[0];
+        }
+    }
+
     public function getUsers($limit = null)
     {
         return User::getBulkUsersWithUIDs($this->getUIDs($limit));
+    }
+
+    public function getUser($pos = 0)
+    {
+        $uid = $this->getUID($pos);
+        if ($uid == null) {
+            return null;
+        } else {
+            return User::getWithUID($uid);
+        }
     }
 
     public function iterUsers($limit = null)
@@ -1685,6 +1715,16 @@ class UserFilter extends PlFilter
     public function getProfiles($limit = null)
     {
         return Profile::getBulkProfilesWithPIDs($this->getPIDs($limit));
+    }
+
+    public function getProfile($pos = 0)
+    {
+        $pid = $this->getPID($pos);
+        if ($pid == null) {
+            return null;
+        } else {
+            return Profile::get($pid);
+        }
     }
 
     public function iterProfiles($limit = null)
@@ -1947,7 +1987,7 @@ class UserFilter extends PlFilter
     static public function assertGrade($grade)
     {
         if (!self::isGrade($grade)) {
-            Platal::page()->killError("Diplôme non valide");
+            Platal::page()->killError("Diplôme non valide: $grade");
         }
     }
 
