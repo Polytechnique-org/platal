@@ -98,7 +98,7 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant d
     <tr class="impair">
         <td class='titre'>Sujet</td>
       <td>
-        <input size='60' type='text' value='{$smarty.request.title}' name='title' />
+        <input size='60' maxlength='60' type='text' value='{$smarty.request.title}' name='title' />
       </td>
     </tr>
     <tr class="pair">
