@@ -19,29 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ function user_cmp
-
-function user_cmp($prenom, $nom, $_prenom, $_nom)
-{
-    $_nom    = mb_strtoupper($_nom);
-    $_prenom = mb_strtoupper($_prenom);
-    $nom     = mb_strtoupper($nom);
-    $prenom  = mb_strtoupper($prenom);
-
-    $is_ok   = mb_strtoupper($_prenom) == mb_strtoupper($prenom);
-
-    $tokens  = preg_split("/[ \-']/", $nom, -1, PREG_SPLIT_NO_EMPTY);
-    $maxlen  = 0;
-
-    foreach ($tokens as $str) {
-        $is_ok &= strpos($_nom, $str)!==false;
-        $maxlen = max($maxlen, strlen($str));
-    }
-
-    return $is_ok && ($maxlen > 2 || $maxlen == strlen($_nom));
-}
-
-// }}}
 // {{{ function check_mat
 
 function check_mat($promo, $mat, &$nom, &$prenom, &$ourmat, &$ourid, &$watch, &$naiss)
