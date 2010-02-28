@@ -87,7 +87,7 @@ copyTable('#x4dat#.emails_watch', 'email_watch');
 copyTable('#x4dat#.homonymes', 'homonyms');
 copyTable('#x4dat#.ip_watch', 'ip_watch');
 copyTable('#x4dat#.mx_watch', 'mx_watch');
-copyTable('#x4dat#.ml_moderate', 'ml_moderate');
+copyTable('#x4dat#.ml_moderate', 'email_list_moderate');
 
 copyTable('#x4dat#.postfix_blacklist', 'postfix_blacklist');
 copyTable('#x4dat#.postfix_mailseen', 'postfix_mailseen');

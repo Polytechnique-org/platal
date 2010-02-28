@@ -64,7 +64,7 @@ class ListsModule extends PLModule
     {
         list($subs,$mails) = $this->client->get_pending_ops($list);
         $res = XDB::query("SELECT  mid
-                             FROM  ml_moderate
+                             FROM  email_list_moderate
                             WHERE  ml = {?} AND domain = {?}",
                           $list, $domain);
         $mids = $res->fetchColumn();
@@ -472,7 +472,7 @@ class ListsModule extends PLModule
             return false;
         }
         Get::kill('mid');
-        return XDB::execute("INSERT IGNORE INTO  ml_moderate
+        return XDB::execute("INSERT IGNORE INTO  email_list_moderate
                                          VALUES  ({?}, {?}, {?}, {?}, {?}, NOW(), {?}, NULL)",
                             $liste, $domain, $mid, S::i('uid'), $action, Post::v('reason'));
     }

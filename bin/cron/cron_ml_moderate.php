@@ -29,7 +29,7 @@ $handler    = time();
 while ($sent_mails < $globals->lists->max_mail_per_min
        && time() - $handler < 60) {
     // take a lock on a mail
-    XDB::execute("UPDATE  ml_moderate
+    XDB::execute("UPDATE  email_list_moderate
                      SET  handler = {?}
                    WHERE  handler IS NULL
                 ORDER BY  ts
@@ -40,7 +40,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     $query = XDB::query("SELECT  nom, prenom, user_id, password,
                                  ml, domain, mid, action, message
                            FROM  auth_user_md5 AS u
-                     INNER JOIN  ml_moderate AS ml ON (u.user_id = ml.uid)
+                     INNER JOIN  email_list_moderate AS ml ON (u.user_id = ml.uid)
                           WHERE  ml.handler = {?}", $handler);
     list($nom, $prenom, $uid, $password, $list, $domain, $mid, $action, $reason) = $query->fetchOneRow();
 
@@ -115,7 +115,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     }
 
     // release the lock
-    XDB::execute("DELETE FROM ml_moderate WHERE handler = {?}",
+    XDB::execute("DELETE FROM email_list_moderate WHERE handler = {?}",
                  $handler);
     sleep(60 * $count / $globals->lists->max_mail_per_min);
 }
