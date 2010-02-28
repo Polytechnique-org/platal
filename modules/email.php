@@ -381,7 +381,8 @@ class EmailModule extends PLModule
                 $_POST['cc_contacts'] = explode(';', @$_POST['cc_contacts']);
                 $data = serialize($_POST);
                 XDB::execute("REPLACE INTO  email_send_save
-                                    VALUES  ({?}, {?})", S::i('uid'), $data);
+                                    VALUES  ({?}, {?})",
+                             S::user()->id('uid'), $data);
             }
             exit;
         } else if (Env::v('submit') == 'Envoyer') {
@@ -411,7 +412,8 @@ class EmailModule extends PLModule
 
             if (!$error) {
                 XDB::execute("DELETE FROM  email_send_save
-                                    WHERE  uid = {?}", S::i('uid'));
+                                    WHERE  uid = {?}",
+                             S::user()->id());
 
                 $to2  = getEmails(Env::v('to_contacts'));
                 $cc2  = getEmails(Env::v('cc_contacts'));
@@ -478,14 +480,8 @@ class EmailModule extends PLModule
             }
         }
 
-        $res = XDB::query(
-                "SELECT  ac.full_name, a.alias as forlife
-                   FROM  accounts      AS ac
-             INNER JOIN  contacts      AS c ON (ac.uid = c.contact)
-             INNER JOIN  aliases       AS a ON (ac.uid = a.uid AND FIND_IN_SET('bestalias', a.flags))
-                  WHERE  c.uid = {?}
-                 ORDER BY ac.full_name", S::i('uid'));
-        $page->assign('contacts', $res->fetchAllAssoc());
+        $contacts = S::user()->getContacts();
+        $page->assign('contacts', $contacts);
         $page->assign('maxsize', ini_get('upload_max_filesize') . 'o');
         $page->assign('user', S::user());
     }

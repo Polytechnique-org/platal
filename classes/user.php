@@ -278,14 +278,6 @@ class User extends PlUser
         return $this->profile()->promo();
     }
 
-    public function yearpromo()
-    {
-        if (!$this->hasProfile()) {
-            return 0;
-        }
-        return $this->profile()->yearpromo();
-    }
-
     public function firstName()
     {
         if (!$this->hasProfile()) {
@@ -480,7 +472,7 @@ class User extends PlUser
 
     // Contacts
     private $contacts = null;
-    public function isContact(PlUser &$user)
+    private function fetchContacts()
     {
         if (is_null($this->contacts)) {
             $this->contacts = XDB::fetchAllAssoc('contact', 'SELECT  *
@@ -488,6 +480,23 @@ class User extends PlUser
                                                               WHERE  uid = {?}',
                                                  $this->id());
         }
+    }
+
+    public function iterContacts()
+    {
+        $this->fetchContacts();
+        return self::iterOverUIDs(array_keys($this->contacts));
+    }
+
+    public function getContacts()
+    {
+        $this->fetchContacts();
+        return self::getBulkUsersWithUIDs(array_keys($this->contacts));
+    }
+
+    public function isContact(PlUser &$user)
+    {
+        $this->fetchContacts();
         return isset($this->contacts[$user->id()]);
     }
 

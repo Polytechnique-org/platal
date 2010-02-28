@@ -84,6 +84,7 @@ copyTable('#x4dat#.gapps_reporting', 'gapps_reporting');
 copyTable('#x4dat#.contacts', 'contacts');
 copyTable('#x4dat#.coupures', 'downtimes');
 copyTable('#x4dat#.emails_watch', 'email_watch');
+copyTable('#x4dat#.emails_send_save', 'email_send_save');
 copyTable('#x4dat#.homonymes', 'homonyms');
 copyTable('#x4dat#.ip_watch', 'ip_watch');
 copyTable('#x4dat#.mx_watch', 'mx_watch');
