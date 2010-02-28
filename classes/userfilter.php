@@ -1253,7 +1253,7 @@ class UFC_WatchRegistration extends UFC_UserRelated
 {
     public function buildCondition(PlFilter &$uf)
     {
-        if (!$this->user->watch('registration')) {
+        if (!$this->user->watchType('registration')) {
             return PlFilterCondition::COND_FALSE;
         }
         $uids = $this->user->watchUsers();

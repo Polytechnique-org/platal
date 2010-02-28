@@ -432,7 +432,7 @@ class User extends PlUser
         $this->fillFromArray($watch);
     }
 
-    public function watch($type)
+    public function watchType($type)
     {
         $this->fetchWatchData();
         return $this->watch_actions->hasFlag($type);

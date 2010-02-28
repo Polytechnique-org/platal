@@ -35,7 +35,7 @@ abstract class WatchOperation
     public function getCondition(PlUser &$user, $date)
     {
         $this->date = $date;
-        if (!$user->watch($this->flag)) {
+        if (!$user->watchType($this->flag)) {
             return new PFC_False();
         } else {
             return $this->buildCondition($user);
