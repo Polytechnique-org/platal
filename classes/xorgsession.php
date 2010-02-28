@@ -153,7 +153,7 @@ class XorgSession extends PlSession
             }
         }
 
-        $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && is_numeric($uname)) ? 'id' : 'alias');
+        $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && is_numeric($uname)) ? 'uid' : 'alias');
         if (!is_null($uid) && S::suid()) {
             if (S::suid('uid') == $uid) {
                 $uid = S::i('uid');
