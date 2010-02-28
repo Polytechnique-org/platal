@@ -1309,6 +1309,25 @@ class UFC_WatchContact extends UFC_Contact
 }
 // }}}
 
+// {{{ class UFC_MarketingHash
+/** Filters users using the hash generated
+ * to send marketing emails to him.
+ */
+class UFC_MarketingHash implements UserFilterCondition
+{
+    private $hash;
+
+    public function __construct($hash)
+    {
+        $this->hash = $hash;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $table = $uf->addMarketingHash();
+        return XDB::format('rm.hash = {?}', $this->hash);
+    }
+}
 
 /******************
  * ORDERS
@@ -2554,6 +2573,25 @@ class UserFilter extends PlFilter
             }
         }
         return $joins;
+    }
+
+
+    /** MARKETING
+     */
+    private $with_rm;
+    public function addMarketingHash()
+    {
+        $this->requireAccounts();
+        $this->with_rm = true;
+    }
+
+    protected function marketingJoins()
+    {
+        if ($this->with_rm) {
+            return array('rm' => new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'register_marketing', '$ME.uid = $UID'));
+        } else {
+            return array();
+        }
     }
 }
 // }}}
