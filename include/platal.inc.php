@@ -90,7 +90,7 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
     $type = isset($errortype[$errno]) ? $errortype[$errno] : $errno;
     $errstr = utf8_encode(htmlentities($errstr));
     if (php_sapi_name() == 'cli') {
-        $GLOBALS['pl_errors'] = "$type: $errstr\n  $errfile:$errfile\n";
+        $GLOBALS['pl_errors'] = "$type: $errstr\n  $errfile:$errline\n";
     } else {
         $GLOBALS['pl_errors'][] =
             "<div class='phperror'>".
