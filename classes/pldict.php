@@ -80,7 +80,7 @@ class PlDict
     public function i($key, $default = 0)
     {
         $i = $this->_get($key, $default);
-        return ctype_digit($i) ? intval($i) : $default;
+        return (is_int($i) || ctype_digit($i)) ? intval($i) : $default;
     }
 
     public function l(array $keys)
@@ -91,6 +91,16 @@ class PlDict
     public function dict()
     {
         return $this->array;
+    }
+
+    public function count()
+    {
+        return count($this->array);
+    }
+
+    public function merge(array $array)
+    {
+        $this->array = array_merge($this->array, $array);
     }
 }
 
