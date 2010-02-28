@@ -25,12 +25,12 @@ require('./connect.db.inc.php');
 ini_set('memory_limit', "16M");
 $globals->debug = 0; // Do not store backtraces
 
-$res = XDB::iterRow("SELECT  user_id
-                       FROM  auth_user_md5");
+$res = XDB::iterRow('SELECT  pid
+                       FROM  profiles');
 $i = 0;
 $n = $res->total();
-while ($uid = $res->next()->fetchOneCell()) {
-    Profile::rebuildSearchTokens($uid);
+while ($pid = $res->next()->fetchOneCell()) {
+    Profile::rebuildSearchTokens($pid);
     printf("\r%u / %u",  ++$i, $n);
 }
 
