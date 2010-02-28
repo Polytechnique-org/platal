@@ -20,7 +20,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require('./connect.db.inc.php');
+require './connect.db.inc.php';
 ini_set('max_execution_time', '75');
 ini_set('memory_limit', '128M');
 $sent_mails = 0;
@@ -37,12 +37,12 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     if (XDB::affectedRows() == 0) {
         break;
     }
-    $query = XDB::query("SELECT  nom, prenom, user_id, password,
-                                 ml, domain, mid, action, message
-                           FROM  auth_user_md5 AS u
-                     INNER JOIN  email_list_moderate AS ml ON (u.user_id = ml.uid)
-                          WHERE  ml.handler = {?}", $handler);
-    list($nom, $prenom, $uid, $password, $list, $domain, $mid, $action, $reason) = $query->fetchOneRow();
+    $query = XDB::query('SELECT  a.fullname, a.uid, a.password,
+                                 ml.ml, ml.domain, ml.mid, ml.action, ml.message
+                           FROM  accounts    AS a
+                     INNER JOIN  email_list_moderate AS ml ON (a.uid = ml.uid)
+                          WHERE  ml.handler = {?}', $handler);
+    list($fullname, $uid, $password, $list, $domain, $mid, $action, $reason) = $query->fetchOneRow();
 
     // build the client
     $client = new MMList($uid, $password, $domain);
@@ -55,21 +55,21 @@ while ($sent_mails < $globals->lists->max_mail_per_min
       case 'accept':
         $action = 1;    /** 1 = ACCEPT **/
         $subject = "Message accepté";
-        $append  = "a été accepté par $prenom $nom.\n";
+        $append  = "a été accepté par $fullname.\n";
         $type = 'nonspam';
         $count += count($mem) + count($own);
         break;
       case 'refuse':
         $action = 2;    /** 2 = REJECT **/
         $subject = "Message refusé";
-        $append  = "a été refusé par $prenom $nom avec la raison :\n\n" . $reason;
+        $append  = "a été refusé par $fullname avec la raison :\n\n" . $reason;
         $type = 'nonspam';
         $count += count($own) + 1;
         break;
       case 'delete':
         $action = 3;    /** 3 = DISCARD **/
         $subject = "Message supprimé";
-        $append  = "a été supprimé par $prenom $nom.\n\n"
+        $append  = "a été supprimé par $fullname.\n\n"
                  . "Rappel: il ne faut utiliser cette opération "
                  . "que dans le cas de spams ou de virus !\n";
         $type = 'spam';
@@ -91,8 +91,8 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     if ($x_spam_flag == 'Unsure') {
         $mailer = new PlMailer();
         $mailer->addTo($type . '@' . $globals->mail->domain);
-        $mailer->setFrom('"' . $prenom . ' ' . $nom . '" <web@' . $globals->mail->domain . '>');
-        $mailer->setTxtBody($type . ' soumis par ' . $prenom . ' ' . $nom . ' via la modération de la liste ' . $list . '@' . $domain);
+        $mailer->setFrom('"' . $fullname . '" <web@' . $globals->mail->domain . '>');
+        $mailer->setTxtBody($type . ' soumis par ' . $fullname . ' via la modération de la liste ' . $list . '@' . $domain);
         $mailer->addAttachment($raw_mail, 'message/rfc822', $type . '.mail', false);
         $mailer->send();
     }
