@@ -84,12 +84,7 @@ class EmailModule extends PLModule
         $page->assign('aliases', XDB::iterator($sql, $user->id()));
 
         // Check for homonyms.
-        $homonyme = XDB::query(
-                "SELECT  alias
-                   FROM  aliases
-             INNER JOIN  homonyms ON (uid = homonyme_id)
-                  WHERE  user_id = {?} AND type = 'homonyme'", $user->id());
-        $page->assign('homonyme', $homonyme->fetchOneCell());
+        $page->assign('homonyme', $user->homonyme);
 
         // Display active redirections.
         $redirect = new Redirect($user);

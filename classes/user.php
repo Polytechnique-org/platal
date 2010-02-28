@@ -170,7 +170,7 @@ class User extends PlUser
 
         $uids = array_map(array('XDB', 'escape'), $uids);
 
-        return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date,
+        return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date, ah.alias AS homonym,
                                       CONCAT(af.alias, \'@' . $globals->mail->domain . '\') AS forlife,
                                       CONCAT(af.alias, \'@' . $globals->mail->domain2 . '\') AS forlife_alternate,
                                       CONCAT(ab.alias, \'@' . $globals->mail->domain . '\') AS bestalias,
@@ -187,6 +187,7 @@ class User extends PlUser
                           INNER JOIN  account_types AS at ON (at.type = a.type)
                            LEFT JOIN  aliases AS af ON (af.uid = a.uid AND af.type = \'a_vie\')
                            LEFT JOIN  aliases AS ab ON (ab.uid = a.uid AND FIND_IN_SET(\'bestalias\', ab.flags))
+                           LEFT JOIN  aliases AS ah ON (ah.uid = a.uid AND ah.type = \'homonyme\')
                            LEFT JOIN  emails AS e ON (e.uid = a.uid AND e.flags = \'active\')
                            LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
                                    ' . $joins . '
