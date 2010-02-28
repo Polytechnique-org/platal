@@ -22,9 +22,7 @@
 
 {config_load file="mails.conf" section="marketing"}
 {if $mail_part eq 'head'}
-{subject text="$subj"}
 {from full=#from#}
-{to addr="$lemail"}
 {elseif $mail_part eq 'text'}
 {if $sender->isFemale()}Chère{else}Cher{/if} {$sender->firstName()},
 

@@ -22,7 +22,6 @@
 
 {config_load file="mails.conf" section="registration"}
 {if $mail_part eq 'head'}
-{subject text="$subj"}
 {from full=#from#}
 {to addr=#to#}
 {if isset(#replyto#)}{add_header name='Reply-To' value=#replyto#}{/if}
@@ -35,8 +34,8 @@
  - forlife   : {$forlife}
  - email     : {$email}
  - sexe      : {$sex}
- - ip        : {S::logger()->ip} ({S::logger()->host})
-{if S::logger()->proxy_ip} - proxy     : {S::logger()->proxy_ip} ({S::logger()->proxy_host}){/if}
+ - ip        : {$logger->ip} ({$logger->host})
+{if $logger->proxy_ip} - proxy     : {$logger->proxy_ip} ({$logger->proxy_host}){/if}
 
 
 {if $market}Les marketings suivants avaient été effectués :

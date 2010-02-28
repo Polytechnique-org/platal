@@ -32,24 +32,24 @@ function checkId(&$subState)
             new UFC_UID($subState->i('xorg_id')),
             new PFC_Not(new UFC_Dead())
     ));
-    $user = $uf->getProfiles();
+    $profile = $uf->getProfile();
 
-    if ($user->__get('state') == 'active') {
+    if ($profile->__get('state') == 'active') {
         return "Tu es déjà inscrit ou ton matricule est incorrect !";
     }
-    if ($user->promo() != $subState->s('promo')) {
+    if ($profile->promo() != $subState->s('promo')) {
         return 'Le matricule est incorrect.';
     }
 
-    if (!$user->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
+    if (!$profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
         return "Erreur dans l'identification. Réessaie, il y a une erreur quelque part !";
     }
 
-    $subState->set('lastname', $user->lastName());
-    $subState->set('firstname', $user->firstName());
-    $subState->set('uid', $user->id());
-    $subState->set('watch', $user->watch());
-    $subState->set('birthdateRef', $user->profile->__get('birthdate_ref'));
+    $subState->set('lastname', $profile->lastName());
+    $subState->set('firstname', $profile->firstName());
+    $subState->set('uid', $profile->owner()->id());
+    $subState->set('watch', $profile->owner()->watch);
+    $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
     return true;
 }
 
@@ -69,7 +69,7 @@ function checkOldId(&$subState)
             $subState->set('lastname', $profile->lastName());
             $subState->set('firstname', $profile->firstName());
             $subState->set('uid', $profile->owner()->id());
-            $subState->set('watch', $profile->owner()->watch());
+            $subState->set('watch', $profile->owner()->watch);
             $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
             $subState->set('xorgid', $profile->__get('xorg_id'));
             return true;
@@ -85,7 +85,7 @@ function checkOldId(&$subState)
     while ($profile = $it->next()) {
         if ($profile->compareNames($subState->s('firstname'), $subState->s('lastname'))) {
             $subState->set('uid', $profile->owner()->id());
-            $subState->set('watch', $profile->owner()->watch());
+            $subState->set('watch', $profile->owner()->watch);
             $subState->set('birthdateRef', $profile->__get('birthdate_ref'));
             $subState->set('xorgid', $profile->__get('xorg_id'));
             return 'Tu es vraisemblablement déjà inscrit !';
@@ -198,10 +198,10 @@ function finishRegistration($subState)
 
     $mymail = new PlMailer('register/end.mail.tpl');
     $mymail->assign('emailXorg', $subState->s('bestalias'));
-    $mymail->assign('lemail', $subState->s('email'));
+    $mymail->assign('to', $subState->s('email'));
     $mymail->assign('baseurl', $globals->baseurl);
     $mymail->assign('hash', $hash);
-    $mymail->assign('subj', $subState->s('bestalias') . '@' . $globals->mail->domain);
+    $mymail->assign('subject', $subState->s('bestalias') . '@' . $globals->mail->domain);
     $mymail->send();
 }
 

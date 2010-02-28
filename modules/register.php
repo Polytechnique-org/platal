@@ -57,8 +57,8 @@ class RegisterModule extends PLModule
                                        p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash
                                  FROM  register_marketing AS m
                            INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
-                           INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.id AND FIND_IN_SET('owner', ap.perms))
-                           INNER JOIN  profiles           AS p   ON (p.pid = ap.id)
+                           INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+                           INNER JOIN  profiles           AS p   ON (p.pid = ap.uid)
                            INNER JOIN  profile_display    AS pd  ON (p.pid = pd.pid)
                            INNER JOIN  profile_name       AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
                            INNER JOIN  profile_name       AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
@@ -199,7 +199,7 @@ class RegisterModule extends PLModule
                             $bannedEmail = true;
                         }
                     }
-                    if ($subState->has('watch')) {
+                    if ($subState->i('watch') != 0) {
                         $alert .= "Inscription d'un utilisateur surveillé - ";
                     }
 
@@ -234,7 +234,7 @@ class RegisterModule extends PLModule
                                  . " pour nous faire part de cette erreur.";
                         } else {
                             $subState->set('step', 4);
-                            if ($subState->count('backs') >= 3) {
+                            if ($subState->v('backs')->count() >= 3) {
                                 $alert .= "Fin d'une inscription hésitante.";
                             }
                             finishRegistration($subState);
@@ -479,6 +479,7 @@ class RegisterModule extends PLModule
             $mymail->assign('birthdate_ref', $birthdate_ref);
             $mymail->assign('forlife', $forlife);
             $mymail->assign('email', $email);
+            $mymail->assign('logger', S::logger());
             if (count($market) > 0) {
                 $mymail->assign('market', implode("\n", $market));
             }

@@ -22,9 +22,9 @@
 
 {config_load file="mails.conf" section="inscrire"}
 {if $mail_part eq 'head'}
-{subject text="$subj"}
+{subject text="$subject"}
 {from full=#from#}
-{to addr="$lemail"}
+{to addr="$to"}
 {elseif $mail_part eq 'text'}
 Bonjour,
 
