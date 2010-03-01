@@ -473,6 +473,33 @@ class Profile
         return ($isOk && ($maxlen > 2 || $maxlen == strlen($_lastname)));
     }
 
+    /**
+     * Clears a profile.
+     *  *always deletes in: profile_addresses, profile_binets, profile_job,
+     *      profile_langskills, profile_mentor, profile_networking,
+     *      profile_phones, profile_skills, watch_profile
+     *  *always keeps in: profile_corps, profile_display, profile_education,
+     *      profile_medals, profile_name, profile_photos, search_name
+     *  *modifies: profiles
+     */
+    public function clear()
+    {
+        XDB::execute('DELETE FROM  profile_job, profile_langskills, profile_mentor,
+                                   profile_networking, profile_skills, watch_profile
+                            WHERE  pid = {?}',
+                     $this->id());
+        XDB::execute('DELETE FROM  profile_addresses, profile_binets,
+                                   profile_phones
+                            WHERE  pid = {?}',
+                     $this->id());
+        XDB::execute("UPDATE  profiles
+                         SET  cv = NULL, freetext = NULL, freetext_pub = 'private',
+                              medals_pub = 'private', alias_pub = 'private',
+                              email_directory = NULL
+                       WHERE  pid = {?}",
+                     $this->id());
+    }
+
     private static function fetchProfileData(array $pids, $respect_order = true)
     {
         if (count($pids) == 0) {

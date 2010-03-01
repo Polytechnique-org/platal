@@ -506,6 +506,71 @@ class User extends PlUser
         return $this->groups;
     }
 
+    /**
+     * Clears a user.
+     *  *always deletes in: account_lost_passwords, register_marketing,
+     *      register_pending, register_subs, watch_nonins, watch, watch_promo
+     *  *always keeps in: account_types, accounts, aliases, axletter_ins, carvas,
+     *      group_members, homonyms, newsletter_ins, register_mstats,
+     *  *deletes if $clearAll: account_auth_openid, announce_read, contacts,
+     *      email_options, email_send_save, emails, forum_innd, forum_profiles,
+     *      forum_subs, gapps_accounts, gapps_nicknames, group_announces_read,
+     *      group_member_sub_requests, reminder, requests, requests_hidden,
+     *      virtual, virtual_redirect, ML
+     *  *modifies if $clearAll: accounts
+     *
+     * Use cases:
+     *  *$clearAll == false: when a user dies, her family still needs to keep in
+     *      touch with the community.
+     *  *$clearAll == true: in every other case we want the account to be fully
+     *      deleted so that it can not be used anymore.
+     */
+    public function clear($clearAll = true)
+    {
+        XDB::execute('DELETE FROM  account_lost_passwords, register_marketing,
+                                   register_pending, register_subs, watch_nonins,
+                                   watch, watch_promo
+                            WHERE  uid = {?}',
+                     $this->id());
+
+        if ($clearAll) {
+            XDB::execute('DELETE FROM  account_auth_openid, announce_read, contacts,
+                                       email_options, email_send_save, emails,
+                                       forum_innd, forum_profiles, forum_subs,
+                                       gapps_accounts, gapps_nicknames, group_announces_read,
+                                       group_member_sub_requests, reminder, requests,
+                                       requests_hidden
+                                WHERE  uid = {?}',
+                         $this->id());
+            XDB::execute("UPDATE  accounts
+                             SET  registration_date = 0, state = 'pending', password = NULL,
+                                  weak_password = NULL, token = NULL, is_admin = 0
+                           WHERE  uid = {?}",
+                         $this->id());
+
+            XDB::execute('DELETE  v.*
+                            FROM  virtual          AS v
+                      INNER JOIN  virtual_redirect AS r ON (v.vid = r.vid)
+                           WHERE  redirect = {?} OR redirect = {?}',
+                         $this->forlifeEmail(), $this->m4xForlifeEmail());
+            XDB::execute('DELETE FROM  virtual_redirect
+                                WHERE  redirect = {?} OR redirect = {?}',
+                         $this->forlifeEmail(), $this->m4xForlifeEmail());
+
+            if ($globals->mailstorage->googleapps_domain) {
+                require_once 'googleapps.inc.php';
+
+                if (GoogleAppsAccount::account_status($uid)) {
+                    $account = new GoogleAppsAccount($user);
+                    $account->suspend();
+                }
+            }
+        }
+
+        $mmlist = new MMList($this);
+        $mmlist->kill($alias, $clearAll);
+    }
+
     // Return permission flags for a given permission level.
     public static function makePerms($perms, $is_admin)
     {

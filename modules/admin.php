@@ -900,9 +900,9 @@ class AdminModule extends PLModule
                                WHERE  hrpid = {?}', $val, $pid);
                 $page->trigSuccess('Ajout du décès de ' . $name . ' le ' . $val . '.');
                 if($death == '0000-00-00' || empty($death)) {
-                    // TODO: FIX THIS DEPRECATED CALL
-                    require_once('user.func.inc.php');
-                    user_clear_all_subs($uid, false);   // by default, dead ppl do not loose their email
+                    $profile = Profile::get($pid);
+                    $profile->clear();
+                    $profile->owner()->clear(false);
                 }
             }
         }
