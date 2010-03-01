@@ -231,16 +231,14 @@ class Profile
      */
     public function getPhoto($fallback = true)
     {
-        /* TODO: migrate photo table to profile_photo, change uid to pid
-         */
         $cond = '';
         if ($this->visibility) {
             $cond = ' AND pub IN ' . XDB::formatArray($this->visibility);
         }
-        $res = XDB::query('SELECT  *
+        $res = XDB::query("SELECT  *
                              FROM  profile_photos
-                            WHERE  attachmime IN (\'jpeg\', \'png\')
-                                   ' . $cond . ' AND  pid = {?}',
+                            WHERE  attachmime IN ('jpeg', 'png')
+                                   " . $cond . ' AND  pid = {?}',
                           $this->id());
         if ($res->numRows() > 0) {
             $photo = $res->fetchOneAssoc();

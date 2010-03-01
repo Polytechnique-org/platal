@@ -42,10 +42,11 @@ class XnetModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $res = XDB::query("SELECT attachmime, attach
-                             FROM aliases AS a
-                       INNER JOIN photo AS p ON(a.uid = p.uid)
-                            WHERE alias = {?}", $x);
+        $res = XDB::query("SELECT  pp.attachmime, pp.attach
+                             FROM  aliases          AS a
+                       INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.flags))
+                       INNER JOIN  profile_photos   AS pp ON (ap.pid = pp.pid)
+                            WHERE  a.alias = {?}", $x);
 
         if ((list($type, $data) = $res->fetchOneRow())) {
             pl_cached_dynamic_content_headers("image/$type");
