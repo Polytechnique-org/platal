@@ -116,20 +116,21 @@ class ListsModule extends PLModule
             }
         }
 
-        $listes = $this->client->get_lists();
-        $owner  = array_filter($listes, 'filter_owner');
-        $listes = array_diff_key($listes, $owner);
-        $member = array_filter($listes, 'filter_member');
-        $listes = array_diff_key($listes, $member);
-        foreach ($owner as $key=>$liste) {
-            list($subs,$mails) = $this->get_pending_ops($domain, $liste['list']);
-            $owner[$key]['subscriptions'] = $subs;
-            $owner[$key]['mails'] = $mails;
+        if (!is_null($listes = $this->client->get_lists())) {
+            $owner  = array_filter($listes, 'filter_owner');
+            $listes = array_diff_key($listes, $owner);
+            $member = array_filter($listes, 'filter_member');
+            $listes = array_diff_key($listes, $member);
+            foreach ($owner as $key => $liste) {
+                list($subs, $mails) = $this->get_pending_ops($domain, $liste['list']);
+                $owner[$key]['subscriptions'] = $subs;
+                $owner[$key]['mails'] = $mails;
+            }
+            $page->register_modifier('hdc', 'list_header_decode');
+            $page->assign_by_ref('owner',  $owner);
+            $page->assign_by_ref('member', $member);
+            $page->assign_by_ref('public', $listes);
         }
-        $page->register_modifier('hdc', 'list_header_decode');
-        $page->assign_by_ref('owner',  $owner);
-        $page->assign_by_ref('member', $member);
-        $page->assign_by_ref('public', $listes);
     }
 
     function handler_ajax(&$page, $list = null)
