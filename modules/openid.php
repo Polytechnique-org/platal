@@ -207,9 +207,9 @@ class OpenidModule extends PLModule
     {
         $page->setTitle('Sites tiers de confiance');
         $page->assign('title', 'Mes sites tiers de confiance pour OpenId');
-        $table_editor = new PLTableEditor('openid/trusted', 'openid_trusted', 'id');
-        $table_editor->set_where_clause('user_id = ' . XDB::escape(S::user()->id()));
-        $table_editor->vars['user_id']['display'] = false;
+        $table_editor = new PLTableEditor('openid/trusted', 'account_auth_openid', 'id');
+        $table_editor->set_where_clause(XDB::format('uid = {?}',  S::user()->id()));
+        $table_editor->vars['uid']['display'] = false;
         $table_editor->describe('url', 'site tiers', true);
         $page->assign('deleteonly', true);
         $table_editor->apply($page, $action, $id);
@@ -219,9 +219,9 @@ class OpenidModule extends PLModule
     {
         $page->setTitle('Sites tiers de confiance');
         $page->assign('title', 'Sites tiers de confiance globaux pour OpenId');
-        $table_editor = new PLTableEditor('admin/openid/trusted', 'openid_trusted', 'id');
-        $table_editor->set_where_clause('user_id IS NULL');
-        $table_editor->vars['user_id']['display'] = false;
+        $table_editor = new PLTableEditor('admin/openid/trusted', 'account_auth_openid', 'id');
+        $table_editor->set_where_clause('uid IS NULL');
+        $table_editor->vars['uid']['display'] = false;
         $table_editor->describe('url', 'site tiers', true);
         $page->assign('readonly', true);
         $table_editor->apply($page, $action, $id);

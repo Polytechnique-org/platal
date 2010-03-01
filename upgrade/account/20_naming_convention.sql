@@ -46,4 +46,8 @@ CHANGE COLUMN  user_id pid INT(11) not null;
   ALTER TABLE  profile_medals
 CHANGE COLUMN  uid pid INT(11) not null;
 
+# account
+  ALTER TABLE  account_auth_openid
+CHANGE COLUMN  user_id uid INT(11) not null;
+
 # vim:set ft=mysql:

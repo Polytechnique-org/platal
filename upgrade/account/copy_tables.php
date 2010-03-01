@@ -139,7 +139,7 @@ copyTable('#x4dat#.virtual_redirect', 'virtual_redirect');
 copyTable('#x4dat#.watch_nonins', 'watch_nonins');
 copyTable('#x4dat#.watch_promo', 'watch_promo');
 
-copyTable('#x4dat#.openid_trusted', 'openid_trusted', false);
+copyTable('#x4dat#.openid_trusted', 'account_auth_openid', false);
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

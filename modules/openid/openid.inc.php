@@ -138,8 +138,8 @@ class OpenId
     {
         $res = XDB::query(
             "SELECT  COUNT(*)
-               FROM  openid_trusted
-              WHERE  (user_id = {?} OR user_id IS NULL) AND url = {?}",
+               FROM  account_auth_openid
+              WHERE  (uid = {?} OR uid IS NULL) AND url = {?}",
             $user->id(), $this->request->trust_root);
         return ($res->fetchOneCell() > 0);
     }
@@ -151,8 +151,8 @@ class OpenId
         $initial_trust = $this->IsEndpointTrusted($user);
         if (!$initial_trust && $trusted && $permanent_trust) {
             XDB::execute(
-                "INSERT IGNORE INTO  openid_trusted
-                                SET  user_id = {?}, url = {?}",
+                "INSERT IGNORE INTO  account_auth_openid
+                                SET  uid = {?}, url = {?}",
                 $user->id(), $this->request->trust_root);
         }
 
