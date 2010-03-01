@@ -22,6 +22,10 @@ function die() {
     exit 1
 }
 
+function mysql_run() {
+    sed -e "s/#\([0-9a-z]*\)#/${DBPREFIX}\1/g" | $MYSQL $DATABASE
+}
+
 function mailman_stop() {
     echo -n "stops mailman"
     /etc/init.d/mailman stop &>/dev/null
