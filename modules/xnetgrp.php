@@ -590,7 +590,7 @@ class XnetGrpModule extends PLModule
         $not_in_group_ext = array();
 
         foreach ($subscribers as $mail) {
-            $uf = new UserFilter(new UFC_And(new UFC_Group($globals->asso('id')),
+            $uf = new UserFilter(new PFC_And(new UFC_Group($globals->asso('id')),
                                              new UFC_Email($mail)));
             if ($uf->getTotalCount() == 0) {
                 if (User::isForeignEmailAddress($mail)) {
@@ -675,7 +675,7 @@ class XnetGrpModule extends PLModule
         }
         if (empty($users)) {
             list($nom, $prenom) = str_replace(array('-', ' ', "'"), '%', array(Env::t('nom'), Env::t('prenom')));
-            $cond = new UFC_And(new UFC_Not(new UFC_Registered()));
+            $cond = new PFC_And(new PFC_Not(new UFC_Registered()));
             if (!empty($nom)) {
                 $cond->addChild(new UFC_Name(Profile::LASTNAME, $nom, UFC_Name::CONTAINS));
             }

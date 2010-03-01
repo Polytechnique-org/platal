@@ -188,7 +188,7 @@ class Marketing
 
     static public function getAliveUsersCount()
     {
-        $uf = new UserFilter(new UFC_Not(new UFC_Dead()));
+        $uf = new UserFilter(new PFC_Not(new UFC_Dead()));
         return $uf->getTotalCount();
     }
 

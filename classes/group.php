@@ -56,7 +56,7 @@ class Group
     {
         $cond = new UFC_Group($this->id, $admin);
         if (!is_null($extra_cond)) {
-            $cond = new UFC_And($cond, $extra_cond);
+            $cond = new PFC_And($cond, $extra_cond);
         }
         return new UserFilter($cond, $sort);
     }

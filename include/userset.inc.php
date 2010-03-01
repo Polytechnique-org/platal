@@ -98,7 +98,7 @@ class SearchSet extends ProfileSet
 
         if (S::logged() && Env::has('nonins')) {
             $this->conds = new PFC_And($this->conds,
-                new UFC_Not(new UFC_Dead()),
+                new PFC_Not(new UFC_Dead()),
                 new UFC_Registered()
             );
         }
