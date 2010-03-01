@@ -38,24 +38,15 @@ class XnetModule extends PLModule
 
     function handler_photo(&$page, $x = null)
     {
-        if (is_null($x)) {
+        if (!$x || !($profile = Profile::get($x))) {
             return PL_NOT_FOUND;
         }
 
-        $res = XDB::query("SELECT  pp.attachmime, pp.attach
-                             FROM  aliases          AS a
-                       INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.flags))
-                       INNER JOIN  profile_photos   AS pp ON (ap.pid = pp.pid)
-                            WHERE  a.alias = {?}", $x);
+        // Retrieve the photo and its mime type.
+        $photo = $profile->getPhoto(true);
 
-        if ((list($type, $data) = $res->fetchOneRow())) {
-            pl_cached_dynamic_content_headers("image/$type");
-            echo $data;
-        } else {
-            pl_cached_dynamic_content_headers("image/png");
-            echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
-        }
-        exit;
+        // Display the photo, or a default one when not available.
+        $photo->send();
     }
 
     function handler_index(&$page)

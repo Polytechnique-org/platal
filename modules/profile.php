@@ -84,17 +84,17 @@ class ProfileModule extends PLModule
 
     function handler_photo(&$page, $x = null, $req = null)
     {
-        if (!$x || !($user = User::getSilent($x))) {
+        if (!$x || !($profile = Profile::get($x))) {
             return PL_NOT_FOUND;
         }
 
         // Retrieve the photo and its mime type.
         if ($req && S::logged()) {
             include 'validations.inc.php';
-            $myphoto = PhotoReq::get_request($user->id());
+            $myphoto = PhotoReq::get_request($profile->owner()->id());
             $photo = PlImage::fromData($myphoto->data, $myphoto->mimetype);
         } else {
-            $photo = $user->profile()->getPhoto(true);
+            $photo = $profile->getPhoto(true);
         }
 
         // Display the photo, or a default one when not available.
