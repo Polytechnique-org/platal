@@ -123,8 +123,8 @@ class MarketingModule extends PLModule
         $res = XDB::iterator(
                 "SELECT  r.*, a.alias
                    FROM  register_marketing AS r
-              LEFT JOIN  aliases            AS a ON (r.sender=a.uid AND a.type = 'a_vie')
-                  WHERE  uid={?}
+              LEFT JOIN  aliases            AS a ON (r.sender = a.uid AND a.type = 'a_vie')
+                  WHERE  r.uid = {?}
                ORDER BY  date", $user->id());
         $page->assign('addr', $res);
 
