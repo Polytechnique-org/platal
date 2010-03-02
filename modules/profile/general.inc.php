@@ -412,7 +412,7 @@ class ProfileGeneral extends ProfilePage
         if ($this->owner) {
             $res = XDB::query("SELECT  COUNT(*)
                                  FROM  requests
-                                WHERE  type='photo' AND user_id = {?}",
+                                WHERE  type = 'photo' AND uid = {?}",
                               $this->owner->id());
             $this->values['nouvellephoto'] = $res->fetchOneCell();
         } else {

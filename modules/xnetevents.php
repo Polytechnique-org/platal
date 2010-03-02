@@ -203,7 +203,8 @@ class XnetEventsModule extends PLModule
         }
 
         global $globals;
-        $res = XDB::query("SELECT  stamp FROM requests
+        $res = XDB::query("SELECT  stamp
+                             FROM  requests
                             WHERE  type = 'paiements' AND data LIKE {?}",
                            PayReq::same_event($evt['eid'], $globals->asso('id')));
         $page->assign('validation', $res->numRows());
@@ -494,8 +495,9 @@ class XnetEventsModule extends PLModule
             $evt = $res->fetchOneAssoc();
             // find out if there is already a request for a payment for this event
             require_once 'validations.inc.php';
-            $res = XDB::query("SELECT stamp FROM requests
-                                WHERE type = 'paiements' AND data LIKE {?}",
+            $res = XDB::query("SELECT  stamp
+                                 FROM  requests
+                                WHERE  type = 'paiements' AND data LIKE {?}",
                                PayReq::same_event($eid, $globals->asso('id')));
             $stamp = $res->fetchOneCell();
             if ($stamp) {

@@ -50,4 +50,10 @@ CHANGE COLUMN  uid pid INT(11) not null;
   ALTER TABLE  account_auth_openid
 CHANGE COLUMN  user_id uid INT(11) not null;
 
+# request
+  ALTER TABLE  requests
+CHANGE COLUMN  user_id uid INT(11) NOT NULL;
+  ALTER TABLE  requests_hidden
+CHANGE COLUMN  user_id uid INT(11) NOT NULL;
+
 # vim:set ft=mysql:

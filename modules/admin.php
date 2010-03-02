@@ -965,7 +965,9 @@ class AdminModule extends PLModule
         $page->assign('categories', $categories = explode(',', str_replace("'", '', substr($a['Type'], 5, -1))));
 
         $hidden = array();
-        $res = XDB::query('SELECT hidden_requests FROM requests_hidden WHERE user_id = {?}', S::v('uid'));
+        $res = XDB::query('SELECT  hidden_requests
+                             FROM  requests_hidden
+                            WHERE  uid = {?}', S::v('uid'));
         $hide_requests = $res->fetchOneCell();
         if (Post::has('hide')) {
             $hide = array();
@@ -975,7 +977,8 @@ class AdminModule extends PLModule
                     $hide[] = $cat;
                 }
             $hide_requests = join(',', $hide);
-            XDB::query('REPLACE INTO requests_hidden (user_id, hidden_requests) VALUES({?}, {?})',
+            XDB::query('REPLACE INTO  requests_hidden (uid, hidden_requests)
+                              VALUES  ({?}, {?})',
                        S::v('uid'), $hide_requests);
         } elseif ($hide_requests)  {
             foreach (explode(',', $hide_requests) as $hide_type)

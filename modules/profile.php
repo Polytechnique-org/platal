@@ -181,23 +181,23 @@ class ProfileModule extends PLModule
             XDB::execute('DELETE FROM  profile_photos
                                 WHERE  pid = {?}',
                          S::user()->profile()->id());
-            XDB::execute('DELETE FROM  requests
-                                WHERE  user_id = {?} AND type="photo"',
+            XDB::execute("DELETE FROM  requests
+                                WHERE  uid = {?} AND type = 'photo'",
                          S::v('uid'));
             $globals->updateNbValid();
             $page->trigSuccess("Ta photo a bien été supprimée. Elle ne sera plus visible sur le site dans au plus une heure.");
         } elseif (Env::v('cancel')) {
             S::assert_xsrf_token();
 
-            $sql = XDB::query('DELETE FROM  requests
-                                     WHERE  user_id={?} AND type="photo"',
+            $sql = XDB::query("DELETE FROM  requests
+                                     WHERE  uid = {?} AND type = 'photo'",
                               S::v('uid'));
             $globals->updateNbValid();
         }
 
-        $sql = XDB::query('SELECT  COUNT(*)
+        $sql = XDB::query("SELECT  COUNT(*)
                              FROM  requests
-                            WHERE  user_id={?} AND type="photo"',
+                            WHERE  uid = {?} AND type = 'photo'",
                           S::v('uid'));
         $page->assign('submited', $sql->fetchOneCell());
         $page->assign('has_trombi_x', file_exists($trombi_x));
