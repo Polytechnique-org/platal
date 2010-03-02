@@ -66,25 +66,25 @@ class XnetGrpModule extends PLModule
 
         if (S::logged()) {
             if (Env::has('read')) {
-                XDB::query('DELETE group_r.*
-                              FROM group_announces_read AS r
-                        INNER JOIN group_announces AS a ON a.id = r.announce_id
-                             WHERE peremption < CURRENT_DATE()');
-                XDB::query('INSERT INTO group_announces_read
-                                 VALUES ({?}, {?})',
+                XDB::query('DELETE  r.*
+                              FROM  group_announces_read AS r
+                        INNER JOIN  group_announces      AS a ON (a.id = r.announce_id)
+                             WHERE  peremption < CURRENT_DATE()');
+                XDB::query('INSERT INTO  group_announces_read
+                                 VALUES  ({?}, {?})',
                             Env::i('read'), S::i('uid'));
                 pl_redirect("");
             }
             if (Env::has('unread')) {
-                XDB::query('DELETE FROM group_announces_read
-                                  WHERE announce_id={?} AND user_id={?}',
+                XDB::query('DELETE FROM  group_announces_read
+                                  WHERE  announce_id = {?} AND uid = {?}',
                             Env::i('unread'), S::i('uid'));
                 pl_redirect("#art" . Env::i('unread'));
             }
             // XXX: Fix promo_min; promo_max
             $arts = XDB::iterator("SELECT  a.*, FIND_IN_SET('photo', a.flags) AS photo
-                                     FROM  group_announces AS a
-                                LEFT JOIN  group_announces_read AS r ON (r.user_id = {?} AND r.announce_id = a.id)
+                                     FROM  group_announces      AS a
+                                LEFT JOIN  group_announces_read AS r ON (r.uid = {?} AND r.announce_id = a.id)
                                     WHERE  asso_id = {?} AND peremption >= CURRENT_DATE()
                                            AND (promo_min = 0 OR promo_min <= {?})
                                            AND (promo_max = 0 OR promo_max >= {?})
@@ -92,8 +92,8 @@ class XnetGrpModule extends PLModule
                                  ORDER BY  a.peremption",
                                    S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
             $index = XDB::iterator("SELECT  a.id, a.titre, r.user_id IS NULL AS nonlu
-                                      FROM  group_announces AS a
-                                 LEFT JOIN  group_announces_read AS r ON (a.id = r.announce_id AND r.user_id = {?})
+                                      FROM  group_announces      AS a
+                                 LEFT JOIN  group_announces_read AS r ON (a.id = r.announce_id AND r.uid = {?})
                                      WHERE  asso_id = {?} AND peremption >= CURRENT_DATE()
                                             AND (promo_min = 0 OR promo_min <= {?})
                                             AND (promo_max = 0 OR promo_max >= {?})
@@ -101,10 +101,10 @@ class XnetGrpModule extends PLModule
                                    S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
             $page->assign('article_index', $index);
         } else {
-            $arts = XDB::iterator("SELECT  a.*, FIND_IN_SET('photo', a.flags) AS photo
-                                     FROM  group_announces AS a
+            $arts = XDB::iterator("SELECT  *, FIND_IN_SET('photo', flags) AS photo
+                                     FROM  group_announces
                                     WHERE  asso_id = {?} AND peremption >= CURRENT_DATE()
-                                           AND FIND_IN_SET('public', a.flags)",
+                                           AND FIND_IN_SET('public', flags)",
                                   $globals->asso('id'));
         }
         if (may_update()) {
@@ -1006,7 +1006,9 @@ class XnetGrpModule extends PLModule
 
     function handler_photo_announce(&$page, $eid = null) {
         if ($eid) {
-            $res = XDB::query("SELECT * FROM group_announces_photo WHERE eid = {?}", $eid);
+            $res = XDB::query('SELECT  *
+                                 FROM  group_announces_photo
+                                WHERE  eid = {?}', $eid);
             if ($res->numRows()) {
                 $photo = $res->fetchOneAssoc();
                 pl_cached_dynamic_content_headers("image/" . $photo['attachmime']);
@@ -1083,7 +1085,8 @@ class XnetGrpModule extends PLModule
             }
             $art['photo'] = $upload->exists() || Post::i('photo');
             if (Post::v('valid') == 'Pas d\'image' && !is_null($aid)) {
-                XDB::query("DELETE FROM group_announces_photo WHERE eid = {?}", $aid);
+                XDB::query('DELETE FROM  group_announces_photo
+                                  WHERE  eid = {?}', $aid);
                 $upload->rm();
                 Post::kill('valid');
                 $art['photo'] = false;
@@ -1112,17 +1115,16 @@ class XnetGrpModule extends PLModule
                     $post = $banana->post($globals->asso('forum'), null,
                                           $art['titre'], MiniWiki::wikiToText($fulltext, false, 0, 80));
                 }*/
-                XDB::query("INSERT INTO group_announces
-                                 (user_id, asso_id, create_date, titre, texte, contacts,
-                                   peremption, promo_min, promo_max, flags, post_id)
-                            VALUES ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
+                XDB::query('INSERT INTO  group_announces (uid, asso_id, create_date, titre, texte, contacts,
+                                                          peremption, promo_min, promo_max, flags, post_id)
+                                 VALUES  ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                            S::i('uid'), $globals->asso('id'), $art['titre'], $art['texte'], $art['contact_html'],
                            $art['peremption'], $promo_min, $promo_max, $flags, $post);
                 $aid = XDB::insertId();
                 if ($art['photo']) {
                     list($imgx, $imgy, $imgtype) = $upload->imageInfo();
-                    XDB::execute("INSERT INTO group_announces_photo
-                                          SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
+                    XDB::execute('INSERT INTO  group_announces_photo
+                                          SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}',
                                  $aid, $imgtype, $imgx, $imgy, $upload->getContents());
                 }
                 if ($art['xorg']) {
@@ -1143,10 +1145,10 @@ class XnetGrpModule extends PLModule
                     $page->trigWarning("La parution dans la Lettre Mensuelle est en attente de validation.");
                 }
             } else {
-                XDB::query("UPDATE group_announces
-                               SET titre={?}, texte={?}, contacts={?}, peremption={?},
-                                   promo_min={?}, promo_max={?}, flags={?}
-                             WHERE id={?} AND asso_id={?}",
+                XDB::query('UPDATE  group_announces
+                               SET  titre = {?}, texte = {?}, contacts = {?}, peremption = {?},
+                                    promo_min = {?}, promo_max = {?}, flags = {?}
+                             WHERE  id = {?} AND asso_id = {?}',
                            $art['titre'], $art['texte'], $art['contacts'], $art['peremption'],
                            $promo_min, $promo_max,  $flags,
                            $art['id'], $globals->asso('id'));
@@ -1164,10 +1166,10 @@ class XnetGrpModule extends PLModule
         }
 
         if (empty($art) && !is_null($aid)) {
-            $res = XDB::query("SELECT  a.*, FIND_IN_SET('public', a.flags) AS public,
-                                       FIND_IN_SET('photo', a.flags) AS photo
-                                 FROM  group_announces AS a
-                                WHERE  asso_id = {?} AND a.id = {?}",
+            $res = XDB::query("SELECT  *, FIND_IN_SET('public', flags) AS public,
+                                       FIND_IN_SET('photo', flags) AS photo
+                                 FROM  group_announces
+                                WHERE  asso_id = {?} AND id = {?}",
                               $globals->asso('id'), $aid);
             if ($res->numRows()) {
                 $art = $res->fetchOneAssoc();
@@ -1199,14 +1201,14 @@ class XnetGrpModule extends PLModule
 
         if (Env::has('del')) {
             S::assert_xsrf_token();
-            XDB::execute("DELETE  FROM group_announces
-                           WHERE  id = {?} AND asso_id = {?}",
+            XDB::execute('DELETE FROM  group_announces
+                                WHERE  id = {?} AND asso_id = {?}',
                          Env::i('del'), $globals->asso('id'));
         }
-        $res = XDB::iterator("SELECT  a.id, a.titre, a.peremption, a.peremption < CURRENT_DATE() AS perime
-                                FROM  group_announces AS a
-                               WHERE  a.asso_id = {?}
-                            ORDER BY  a.peremption DESC",
+        $res = XDB::iterator('SELECT  id, titre, peremption, peremption < CURRENT_DATE() AS perime
+                                FROM  group_announces
+                               WHERE  asso_id = {?}
+                            ORDER BY  peremption DESC',
                              $globals->asso('id'));
         $page->assign('articles', $res);
     }

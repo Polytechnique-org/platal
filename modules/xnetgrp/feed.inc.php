@@ -75,19 +75,19 @@ class XnetGrpEventFeed extends PlFeed
         global $globals;
         if (!is_null($user)) {
             return new UserFilterIterator(
-                   XDB::iterator("SELECT  a.id, a.titre AS title, a.texte, a.contacts,
-                                          a.create_date AS publication,
-                                          FIND_IN_SET('photo', a.flags) AS photo,
-                                          CONCAT({?}, '/#art', a.id) AS link
-                                    FROM  group_announces AS a
-                                   WHERE  peremption >= NOW() AND a.asso_id = {?}",
+                   XDB::iterator("SELECT  id, titre AS title, texte, contacts,
+                                          create_date AS publication,
+                                          FIND_IN_SET('photo', flags) AS photo,
+                                          CONCAT({?}, '/#art', id) AS link
+                                    FROM  group_announces
+                                   WHERE  peremption >= NOW() AND asso_id = {?}",
                                    $this->link, $globals->asso('id'), $user));
         } else {
-            return  XDB::iterator("SELECT  a.id, a.titre AS title, a.texte, a.create_date AS publication,
-                                           CONCAT({?}, '/#art', a.id) AS link,
+            return  XDB::iterator("SELECT  id, titre AS title, texte, create_date AS publication,
+                                           CONCAT({?}, '/#art', id) AS link,
                                            NULL AS photo, NULL AS contacts
-                                     FROM  group_announces AS a
-                                    WHERE  FIND_IN_SET('public', a.flags) AND peremption >= NOW() AND a.asso_id = {?}",
+                                     FROM  group_announces
+                                    WHERE  FIND_IN_SET('public', flags) AND peremption >= NOW() AND asso_id = {?}",
                                   $this->link, $globals->asso('id'));
         }
     }

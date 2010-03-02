@@ -64,4 +64,10 @@ CHANGE COLUMN  uid pid INT(11) NOT NULL;
   ALTER TABLE  search_name
 CHANGE COLUMN  uid pid INT(11) NOT NULL;
 
+# group
+  ALTER TABLE  group_announces
+CHANGE COLUMN  user_id uid INT(11) NOT NULL;
+  ALTER TABLE  group_announces_read
+CHANGE COLUMN  user_id uid INT(11) NOT NULL;
+
 # vim:set ft=mysql:
