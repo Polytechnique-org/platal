@@ -592,7 +592,10 @@ class EmailModule extends PLModule
         if (!empty($hash) || !empty($login)) {
             $user = User::getSilent($login);
             if ($user) {
-                $req = XDB::query("SELECT 1 FROM newsletter_ins WHERE user_id = {?} AND hash = {?}", $user->id(), $hash);
+                $req = XDB::query('SELECT  1
+                                     FROM  newsletter_ins
+                                    WHERE  uid = {?} AND hash = {?}',
+                                  $user->id(), $hash);
                 if ($req->numRows() == 0) {
                     $user = null;
                 }
@@ -922,7 +925,7 @@ class EmailModule extends PLModule
 
                     if ($x = $sel->fetchOneAssoc()) {
                         if ($x['nb_mails'] == 0) {
-                            register_profile_update($x['user_id'], 'broken');
+                            register_profile_update($x['uid'], 'broken');
                         }
                         fputcsv($csv, array($x['fullname'], $x['promo'], $alias,
                                             join(',', $mails), $x['nb_mails'],

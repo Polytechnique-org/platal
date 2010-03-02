@@ -91,7 +91,7 @@ class XnetGrpModule extends PLModule
                                            AND r.announce_id IS NULL
                                  ORDER BY  a.expiration",
                                    S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
-            $index = XDB::iterator("SELECT  a.id, a.titre, r.user_id IS NULL AS nonlu
+            $index = XDB::iterator("SELECT  a.id, a.titre, r.uid IS NULL AS nonlu
                                       FROM  group_announces      AS a
                                  LEFT JOIN  group_announces_read AS r ON (a.id = r.announce_id AND r.uid = {?})
                                      WHERE  asso_id = {?} AND expiration >= CURRENT_DATE()
@@ -810,7 +810,7 @@ class XnetGrpModule extends PLModule
                 $page->trigError("Le login $login correspond a plusieurs camarades.");
                 return false;
             }
-            $uid = $x[0]['user_id'];
+            $uid = $x[0]['uid'];
             $sub = false;
         } else {
             list($uid, $login) = $res->fetchOneRow();

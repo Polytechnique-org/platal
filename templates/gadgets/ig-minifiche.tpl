@@ -43,10 +43,10 @@
     {if $smarty.session.auth ge AUTH_COOKIE}
     {if !$c.wasinscrit && !$c.dcd}
       {if $show_action eq ajouter}
-        <a href="carnet/notifs/add_nonins/{$c.user_id}?token={xsrf_token}" target="_top">{*
+        <a href="carnet/notifs/add_nonins/{$c.uid}?token={xsrf_token}" target="_top">{*
         *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
       {else}
-        <a href="carnet/notifs/del_nonins/{$c.user_id}?token={xsrf_token}" target="_top">{*
+        <a href="carnet/notifs/del_nonins/{$c.uid}?token={xsrf_token}" target="_top">{*
         *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
       {/if}
     {elseif $c.wasinscrit && !$c.dcd}

@@ -23,9 +23,9 @@
 // Updates the gapps_accounts table with Plat/al information.
 // Cleans-up the job queue, and execute post-queue hooks.
 
-require_once('connect.db.inc.php');
-require_once('plmailer.php');
-require_once('googleapps.inc.php');
+require_once 'connect.db.inc.php';
+require_once 'plmailer.php';
+require_once 'googleapps.inc.php';
 if (!$globals->mailstorage->googleapps_domain) {
   exit;
 }
@@ -44,7 +44,7 @@ while ($account = $res->next()) {
         $account['id'], $account['g_account_name']);
 }
 
-/* Emits a warning for GApps accounts without local user_id. */
+/* Emits a warning for GApps accounts without local uid. */
 $res = XDB::iterator(
     "SELECT  g.g_account_name
        FROM  gapps_accounts AS g
@@ -52,7 +52,7 @@ $res = XDB::iterator(
       WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.uid IS NULL");
 while ($account = $res->next()) {
     if (!preg_match("/^admin-/", $account['g_account_name'])) {
-        printf("Warning: GApps account '%s' has no local user_id.\n", $account['g_account_name']);
+        printf("Warning: GApps account '%s' has no local uid.\n", $account['g_account_name']);
     }
 }
 
@@ -71,7 +71,7 @@ while ($nickname = $res->next()) {
         $nickname['id'], $nickname['g_account_name']);
 }
 
-/* Emits a warning for nicknames without local user_id. */
+/* Emits a warning for nicknames without local uid. */
 $res = XDB::iterator(
     "SELECT  g.g_account_name
        FROM  gapps_nicknames AS g
@@ -79,7 +79,7 @@ $res = XDB::iterator(
       WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.uid IS NULL");
 while ($nickname = $res->next()) {
     if (!preg_match("/^admin-/", $nickname['g_account_name'])) {
-        printf("Warning: Nickname '%s' has no local user_id.\n", $nickname['g_account_name']);
+        printf("Warning: Nickname '%s' has no local uid.\n", $nickname['g_account_name']);
     }
 }
 

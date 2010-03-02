@@ -76,7 +76,7 @@ class XnetSession extends XorgSession
     protected function doAuth($level)
     {
         if (S::identified()) { // ok, c'est bon, on n'a rien à faire
-            return User::getSilentWithValues(null, array('user_id' => S::i('uid')));
+            return User::getSilentWithValues(null, array('uid' => S::i('uid')));
         }
         if (!Get::has('auth')) {
             return null;
@@ -87,7 +87,7 @@ class XnetSession extends XorgSession
         }
         Get::kill('auth');
         S::set('auth', AUTH_MDP);
-        return User::getSilentWithValues(null, array('user_id' => Get::i('uid')));
+        return User::getSilentWithValues(null, array('uid' => Get::i('uid')));
     }
 
     protected function startSessionAs($user, $level)

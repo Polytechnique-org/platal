@@ -42,14 +42,14 @@ class GadgetsModule extends PLModule
         require_once 'gadgets/gadgets.inc.php';
         init_igoogle_html('gadgets/ig-events.tpl', AUTH_COOKIE);
 
-        $events = XDB::iterator('SELECT  SQL_CALC_FOUND_ROWS
+        $events = XDB::iterator("SELECT  SQL_CALC_FOUND_ROWS
                                          e.id, e.titre, UNIX_TIMESTAMP(e.creation_date) AS creation_date,
-                                         IF(u.nom_usage = "", u.nom, u.nom_usage) AS nom, u.prenom, u.promo,
-                                         ev.user_id IS NULL AS nonlu, e.uid
-                                   FROM  announces AS e
+                                         IF(u.nom_usage = '', u.nom, u.nom_usage) AS nom, u.prenom, u.promo,
+                                         ev.uid IS NULL AS nonlu, e.uid
+                                   FROM  announces     AS e
                               LEFT JOIN  announce_read AS ev ON (e.id = ev.evt_id AND ev.uid = {?})
-                                  WHERE  FIND_IN_SET("valide", e.flags) AND expiration >= NOW()
-                               ORDER BY  e.creation_date DESC', S::i('uid'));
+                                  WHERE  FIND_IN_SET('valide', e.flags) AND expiration >= NOW()
+                               ORDER BY  e.creation_date DESC", S::i('uid'));
         $page->assign('event_count', XDB::query("SELECT FOUND_ROWS()")->fetchOneCell());
 
         Platal::load('events', 'feed.inc.php');

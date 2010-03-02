@@ -165,7 +165,7 @@ abstract class MassMailer
         if (is_null($hash)) {
             $hash = XDB::fetchOneCell("SELECT  hash
                                          FROM  {$this->_subscriptionTable}
-                                        WHERE  user_id = {?}", $user->id());
+                                        WHERE  uid = {?}", $user->id());
         }
         if (is_null($hash)) {
             $hash = $this->createHash(array($user->displayName(), $user->fullName(),
@@ -173,7 +173,7 @@ abstract class MassMailer
                                        rand(), "X.org rulez"));
             XDB::execute("UPDATE  {$this->_subscriptionTable} as ni
                              SET  ni.hash = {?}
-                           WHERE  ni.user_id != {?}",
+                           WHERE  ni.uid != {?}",
                          $hash, $user->id());
         }
 
@@ -192,7 +192,7 @@ abstract class MassMailer
         global $globals;
         return  "SELECT  a.uid
                    FROM  {$this->_subscriptionTable}  AS ni
-             INNER JOIN  accounts AS a ON (ni.user_id = a.uid)
+             INNER JOIN  accounts AS a ON (ni.uid = a.uid)
               LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
               LEFT JOIN  emails   AS e ON (e.uid = a.uid AND e.flags='active')
                   WHERE  ni.last < {?} AND ({$this->subscriptionWhere()}) AND
@@ -210,7 +210,7 @@ abstract class MassMailer
                 return;
             }
             foreach ($users as $user) {
-                $sent[] = XDB::format('user_id = {?}', $user->id());
+                $sent[] = XDB::format('uid = {?}', $user->id());
                 $this->sendTo($user, $hash);
             }
             XDB::execute("UPDATE  {$this->_subscriptionTable}

@@ -31,7 +31,7 @@
       </div>
       {/if}
       <a href="events{if !$ev.nonlu}/unread/{$ev.id}{else}#newsid{$ev.id}{/if}" target="_blank" id="link-{$ev.id}"
-         title="Ajouté le {$ev.creation_date|date_format} par {profile user=$ev.user_id link=false sex=false promo=true}">
+         title="Ajouté le {$ev.creation_date|date_format} par {profile user=$ev.uid link=false sex=false promo=true}">
         {tidy}
           {$ev.titre|nl2br}
         {/tidy}

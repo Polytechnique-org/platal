@@ -69,7 +69,7 @@ emails de marketing. Une fois inscrits à Polytechnique.org, l'inscription à la
         Camarade&nbsp;:
         <select name="mk_uid[{$login}]">
         {iterate from=$it item=user}
-          <option value="{$user.user_id}">{$user.prenom} {$user.nom} (X{$user.promo})</option>
+          <option value="{$user.uid}">{$user.prenom} {$user.nom} (X{$user.promo})</option>
         {/iterate}
         </select><br />
         Action*&nbsp;:

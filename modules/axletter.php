@@ -180,7 +180,7 @@ class AXLetterModule extends PLModule
                                       . "https://www.polytechnique.org/ax/edit\n"
                                       . "-- \n"
                                       . "Association Polytechnique.org\n");
-                    $users = User::getBulkUsersWithUIDs(XDB::fetchColumn('SELECT  user_id
+                    $users = User::getBulkUsersWithUIDs(XDB::fetchColumn('SELECT  uid
                                                                             FROM  axletter_rights'));
                     foreach ($users as $user) {
                         $mailer->addTo($user);
@@ -315,13 +315,13 @@ class AXLetterModule extends PLModule
         }
 
         $page->changeTpl('axletter/admin.tpl');
-        $page->assign('admins', User::getBulkUsersWithUIDs(XDB::fetchColumn('SELECT  user_id
+        $page->assign('admins', User::getBulkUsersWithUIDs(XDB::fetchColumn('SELECT  uid
                                                                                FROM  axletter_rights')));
 
         $importer = new CSVImporter('axletter_ins');
-        $importer->registerFunction('user_id', 'email vers Id X.org', array($this, 'idFromMail'));
+        $importer->registerFunction('uid', 'email vers Id X.org', array($this, 'idFromMail'));
         $importer->forceValue('hash', array($this, 'createHash'));
-        $importer->apply($page, "admin/axletter", array('user_id', 'email', 'prenom', 'nom', 'promo', 'flag', 'hash'));
+        $importer->apply($page, "admin/axletter", array('uid', 'email', 'prenom', 'nom', 'promo', 'flag', 'hash'));
     }
 
     function idFromMail($line, $key, $relation = null)

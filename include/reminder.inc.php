@@ -69,12 +69,12 @@ abstract class Reminder
     // Updates (or creates) the reminder line for the pair (|user|, |reminder_id|)
     // using the |status| as status, and the |next_ask| as the delay between now
     // and the next ask (if any).
-    private static function UpdateStatus($user_id, $type_id, $status, $next_ask)
+    private static function UpdateStatus($uid, $type_id, $status, $next_ask)
     {
         XDB::execute('REPLACE INTO  reminder
                                SET  uid = {?}, type_id = {?}, status = {?},
                                     remind_last = NOW(), remind_next = FROM_UNIXTIME({?})',
-                     $user_id, $type_id, $status,
+                     $uid, $type_id, $status,
                      ($next_ask > 0 ? time() + $next_ask * 24 * 60 * 60 : null));
     }
 
@@ -153,12 +153,12 @@ abstract class Reminder
 
     // Static status update methods -------------------------------------------
 
-    // Marks the candidate reminder as having been accepted for user |user_id|.
+    // Marks the candidate reminder as having been accepted for user |uid|.
     // It is intended to be used when a reminder box has been bypassed, and when
     // it should behave as if the user had clicked on 'yes'.
-    protected static function MarkCandidateAsAccepted($user_id, $candidate)
+    protected static function MarkCandidateAsAccepted($uid, $candidate)
     {
-        Reminder::UpdateStatus($user_id, $candidate['type_id'],
+        Reminder::UpdateStatus($uid, $candidate['type_id'],
                                'yes', $candidate['remind_delay_yes']);
     }
 

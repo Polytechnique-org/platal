@@ -205,7 +205,7 @@ class User extends PlUser
             && $this->gender !== null && $this->email_format !== null) {
             return;
         }
-        $this->fillFromArray(self::loadMainFieldsFromUIDs(array($this->user_id))->next());
+        $this->fillFromArray(self::loadMainFieldsFromUIDs(array($this->uid))->next());
     }
 
     // Specialization of the fillFromArray method, to implement hacks to enable
@@ -214,13 +214,6 @@ class User extends PlUser
     // stop being used actively.
     protected function fillFromArray(array $values)
     {
-        // It might happen that the 'user_id' field is called uid in some places
-        // (eg. in sessions), so we hard link uid to user_id to prevent useless
-        // SQL requests.
-        if (!isset($values['user_id']) && isset($values['uid'])) {
-            $values['user_id'] = $values['uid'];
-        }
-
         // Also, if display_name and full_name are not known, but the user's
         // surname and last name are, we can construct the former two.
         if (isset($values['prenom']) && isset($values['nom'])) {

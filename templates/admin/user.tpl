@@ -25,8 +25,8 @@
 <form method="post" action="admin/user">
   {xsrf_token_field}
   <div class="center">
-    <input type="hidden" name="user_id" value="{$smarty.request.user_id}" />
-    Confirmer la suppression de l'utilisateur {$smarty.request.user_id} ({$mr.prenom} {$mr.nom} - X{$mr.promo})&nbsp;&nbsp;
+    <input type="hidden" name="uid" value="{$smarty.request.uid}" />
+    Confirmer la suppression de l'utilisateur {$smarty.request.uid} ({$mr.prenom} {$mr.nom} - X{$mr.promo})&nbsp;&nbsp;
     <input type="submit" name="u_kill" value="continuer" />
   </div>
 </form>
@@ -309,7 +309,7 @@ $(document).ready(function() {
         <input type="text" name="email" size="29" maxlength="60" value="" />
       </td>
       <td class="action">
-        <input type="hidden" name="user_id" value="{$mr.user_id}" />
+        <input type="hidden" name="uid" value="{$mr.uid}" />
         <input type="hidden" name="del_alias" value="" />
         <input type="submit" name="add_alias" value="Ajouter" />
       </td>
@@ -389,7 +389,7 @@ $(document).ready(function() {
         <input type="text" name="email" size="29" maxlength="60" value="" />
       </td>
       <td class="action">
-        <input type="hidden" name="user_id" value="{$mr.user_id}" />
+        <input type="hidden" name="uid" value="{$mr.uid}" />
         <input type="hidden" name="del_fwd" value="" />
         <input type="hidden" name="clean_fwd" value="" />
         <input type="hidden" name="activate_fwd" value="" />
@@ -488,7 +488,7 @@ $(document).ready(function() {
     </tr>
     <tr class="center">
       <td colspan="3">
-        <input type="hidden" name="user_id" value="{$mr.user_id}" />
+        <input type="hidden" name="uid" value="{$mr.uid}" />
         <input type="submit" name="b_edit" value="Modifier" />
       </td>
     </tr>

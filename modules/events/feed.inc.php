@@ -53,7 +53,7 @@ class EventFeed extends PlFeed
                                   WHERE  FIND_IN_SET("valide", e.flags) AND expiration >= NOW()');
         $data = array();
         while ($e = self::nextEvent($events, $user)) {
-            $author = User::getWithUID($e['user_id']);
+            $author = User::getWithUID($e['uid']);
             $promo  = $author->promo();
             $e['author'] = $author->fullName() . ($promo ? ' (' . $promo . ')' : '');
             $e['link'] = $globals->baseurl . '/events#newsid' . $e['id'];

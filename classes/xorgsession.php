@@ -52,7 +52,7 @@ class XorgSession extends PlSession
         return true;
     }
 
-    /** Check the cookie and set the associated user_id in the auth_by_cookie session variable.
+    /** Check the cookie and set the associated uid in the auth_by_cookie session variable.
      */
     private function tryCookie()
     {
@@ -270,7 +270,7 @@ class XorgSession extends PlSession
 
     public function tokenAuth($login, $token)
     {
-        $res = XDB::query('SELECT  a.uid AS user_id, a.hruid
+        $res = XDB::query('SELECT  a.uid, a.hruid
                              FROM  aliases  AS l
                        INNER JOIN  accounts AS a ON (l.uid = a.uid AND a.state = \'active\')
                             WHERE  a.token = {?} AND l.alias = {?} AND l.type != \'homonyme\'',

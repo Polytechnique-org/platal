@@ -855,11 +855,10 @@ class AdminModule extends PLModule
             $res = XDB::iterator(
                     "SELECT  a.alias AS homonyme, s.alias AS forlife,
                              IF(h.homonyme_id = s.id, a.expire, NULL) AS expire,
-                             IF(h.homonyme_id = s.id, a.type, NULL) AS type,
-                             ac.uid AS user_id
+                             IF(h.homonyme_id = s.id, a.type, NULL) AS type, ac.uid
                        FROM  aliases       AS a
-                  LEFT JOIN  homonyms      AS h ON (h.homonyme_id = a.uid)
-                 INNER JOIN  aliases       AS s ON (s.uid = h.uid AND s.type='a_vie')
+                  LEFT JOIN  homonyms      AS h  ON (h.homonyme_id = a.uid)
+                 INNER JOIN  aliases       AS s  ON (s.uid = h.uid AND s.type = 'a_vie')
                  INNER JOIN  accounts      AS ac ON (ac.uid = a.uid)
                       WHERE  a.type = 'homonyme' OR a.expire != ''
                    ORDER BY  a.alias, forlife");
@@ -867,7 +866,7 @@ class AdminModule extends PLModule
             while ($tab = $res->next()) {
                 $hnymes[$tab['homonyme']][] = $tab;
             }
-            $page->assign_by_ref('hnymes',$hnymes);
+            $page->assign_by_ref('hnymes', $hnymes);
         }
     }
 

@@ -32,7 +32,7 @@
         <img src="{$globals->baseurl}/photo/{$p.forlife}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_admin && hasPerm('admin') && !$urlmainsite}
-      <a href="admin/trombino/{$p.user_id}">
+      <a href="admin/trombino/{$p.uid}">
         {icon name=wrench title="[admin]"}</a>
       {/if}
       <br />

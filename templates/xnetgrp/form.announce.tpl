@@ -66,7 +66,7 @@
     <td {if $art.photo}colspan="2"{/if}>
       <div style="float: right">
       <small>
-        Annonce proposée par {profile user=$art.user_id sex=false promo=true groupperms=false}
+        Annonce proposée par {profile user=$art.uid sex=false promo=true groupperms=false}
       </small>
       </div>
       <small>

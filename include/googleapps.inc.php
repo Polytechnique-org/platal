@@ -23,7 +23,7 @@
 function post_queue_u_create($job) {
     global $globals;
 
-    // Retrieves the user parameters (GoogleApps username and user_id).
+    // Retrieves the user parameters (GoogleApps username and uid).
     $parameters = json_decode($job['j_parameters'], true);
     $username = isset($parameters['username']) ? $parameters['username'] : null;
     if (!($user = User::getSilent($username))) {
