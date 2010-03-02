@@ -34,6 +34,8 @@ CHANGE COLUMN  user_id uid INT(11) not null;
 CHANGE COLUMN  peremption expiration DATE NOT NULL;
   ALTER TABLE  announce_read
 CHANGE COLUMN  user_id uid INT(11) not null;
+  ALTER TABLE  tips
+CHANGE COLUMN  peremption expiration DATE NOT NULL;
 
 # profile
   ALTER TABLE  profile_photos
