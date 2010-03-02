@@ -372,7 +372,7 @@ class QuickSearch extends SField
                 $and = "AND FIND_IN_SET('public', sn$i.flags)";
             }
             $myu  = str_replace('snv', "sn$i", $uniq);
-            $join .= "INNER JOIN search_name AS sn$i ON (u.user_id = sn$i.uid $and$myu)\n";
+            $join .= "INNER JOIN search_name AS sn$i ON (u.user_id = sn$i.pid $and$myu)\n";
             $uniq .= " AND sn$i.token != snv.token";
         }
         if (!empty($this->email)) {

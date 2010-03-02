@@ -60,4 +60,8 @@ CHANGE COLUMN  user_id uid INT(11) NOT NULL;
   ALTER TABLE  watch_profile
 CHANGE COLUMN  uid pid INT(11) NOT NULL;
 
+# search_name
+  ALTER TABLE  search_name
+CHANGE COLUMN  uid pid INT(11) NOT NULL;
+
 # vim:set ft=mysql:

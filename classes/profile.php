@@ -606,7 +606,7 @@ class Profile
     public static function rebuildSearchTokens($pid)
     {
         XDB::execute('DELETE FROM  search_name
-                            WHERE  uid = {?}',
+                            WHERE  pid = {?}',
                      $pid);
         $keys = XDB::iterator("SELECT  CONCAT(n.particle, n.name) AS name, e.score,
                                        FIND_IN_SET('public', e.flags) AS public
@@ -625,9 +625,9 @@ class Profile
             while ($toks) {
                 $token = strtolower(replace_accent(array_pop($toks) . $token));
                 $score = ($toks ? 0 : 10 + $first) * ($key['score'] / 10);
-                XDB::execute('REPLACE INTO  search_name (token, uid, soundex, score, flags)
+                XDB::execute('REPLACE INTO  search_name (token, pid, soundex, score, flags)
                                     VALUES  ({?}, {?}, {?}, {?}, {?})',
-                             $token, $uid, soundex_fr($token), $score, $key['public']);
+                             $token, $pid, soundex_fr($token), $score, $key['public']);
                 $first = 0;
             }
         }

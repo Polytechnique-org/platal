@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/classes.inc.php';
+require_once dirname(__FILE__) . '/classes.inc.php';
 
 // {{{ function advancedSearchFromInput
 function getAddressJoin($table) {
@@ -29,9 +29,9 @@ function advancedSearchFromInput()
 {
     if ($with_soundex = Env::has('with_soundex')) {
         $nameField      = new RefWithSoundexSField('name', array('n.soundex'), 'search_name',
-                                                   'n', 'u.user_id = n.uid');
+                                                   'n', 'u.user_id = n.pid');
     } else {
-        $nameField      = new NameSField('name', array('n.token'), 'search_name', 'n', 'u.user_id = n.uid');
+        $nameField      = new NameSField('name', array('n.token'), 'search_name', 'n', 'u.user_id = n.pid');
     }
 
     $promo1Field        = new PromoSField('promo1', 'egal1', array('u.promo'), '');
