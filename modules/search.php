@@ -122,7 +122,6 @@ class SearchModule extends PLModule
             $page->addJsLink('ajax.js');
         }
 
-        $this->load('search.inc.php');
         $page->changeTpl('search/index.tpl');
         $page->setTitle('Annuaire');
     }
@@ -131,7 +130,6 @@ class SearchModule extends PLModule
     {
         global $globals;
         require_once 'geocoding.inc.php';
-        $this->load('search.inc.php');
         $page->assign('advanced',1);
         $page->addJsLink('jquery.autocomplete.js');
 

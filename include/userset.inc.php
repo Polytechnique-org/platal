@@ -53,8 +53,6 @@ class SearchSet extends ProfileSet
 
     public function __construct($quick = false, $no_search = false, PlFilterCondition $cond = null)
     {
-        Platal::load('search', 'search.inc.php');
-
         if ($no_search) {
             return;
         }

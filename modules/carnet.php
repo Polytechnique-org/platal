@@ -296,8 +296,6 @@ class CarnetModule extends PLModule
         }
         if ($search && trim(Env::v('quick'))) {
             $base = 'carnet/contacts/search';
-
-            Platal::load('search', 'classes.inc.php');
             $view = new SearchSet(true, false, new UFC_Contact($user));
         } else {
             $base = 'carnet/contacts';
