@@ -285,7 +285,7 @@ abstract class MultipageView implements PlView
 
     public function limit()
     {
-        return null;
+        return new PlLimit($this->entriesPerPage, $this->offset);
     }
 
     /** Name of the template to use for displaying items of the view
