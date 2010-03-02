@@ -50,7 +50,7 @@ class EventFeed extends PlFeed
                                          e.uid, e.promo_min, e.promo_max
                                    FROM  announces       AS e
                               LEFT JOIN  announce_photos AS p ON (p.eid = e.id)
-                                  WHERE  FIND_IN_SET("valide", e.flags) AND peremption >= NOW()');
+                                  WHERE  FIND_IN_SET("valide", e.flags) AND expiration >= NOW()');
         $data = array();
         while ($e = self::nextEvent($events, $user)) {
             $author = User::getWithUID($e['user_id']);

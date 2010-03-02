@@ -31,6 +31,7 @@ CHANGE COLUMN  user_id uid INT(11) not null;
 # announces
   ALTER TABLE  announces
 CHANGE COLUMN  user_id uid INT(11) not null;
+CHANGE COLUMN  peremption expiration DATE NOT NULL;
   ALTER TABLE  announce_read
 CHANGE COLUMN  user_id uid INT(11) not null;
 
@@ -67,6 +68,7 @@ CHANGE COLUMN  uid pid INT(11) NOT NULL;
 # group
   ALTER TABLE  group_announces
 CHANGE COLUMN  user_id uid INT(11) NOT NULL;
+CHANGE COLUMN  peremption expiration DATE NOT NULL;
   ALTER TABLE  group_announces_read
 CHANGE COLUMN  user_id uid INT(11) NOT NULL;
 

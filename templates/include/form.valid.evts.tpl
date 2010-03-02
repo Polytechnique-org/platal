@@ -31,7 +31,7 @@
 </tr>
 <tr class="pair">
   <td class="titre">Péremption</td>
-  <td>{$valid->peremption|date_format}</td>
+  <td>{$valid->expiration|date_format}</td>
 </tr>
 <tr class="pair">
   <td class="titre">Promos</td>

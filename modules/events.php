@@ -65,7 +65,7 @@ class EventsModule extends PLModule
             $priority = (int)($priority/2);
             $res = XDB::query("SELECT  *
                                  FROM  tips
-                                WHERE  (peremption = '0000-00-00' OR peremption > CURDATE())
+                                WHERE  (expiration = '0000-00-00' OR expiration > CURDATE())
                                        AND (promo_min = 0 OR promo_min <= {?})
                                        AND (promo_max = 0 OR promo_max >= {?})
                                        AND (priorite >= {?})
@@ -134,7 +134,7 @@ class EventsModule extends PLModule
             XDB::execute('DELETE ev.*
                             FROM announce_read AS ev
                       INNER JOIN announces AS e ON e.id = ev.evt_id
-                           WHERE peremption < NOW()');
+                           WHERE expiration < NOW()');
             XDB::execute('REPLACE INTO announce_read VALUES({?},{?})',
                 $eid, S::v('uid'));
             pl_redirect('events#'.$pound);
@@ -154,13 +154,13 @@ class EventsModule extends PLModule
                                      p.x, p.y, p.attach IS NOT NULL AS img, FIND_IN_SET('wiki', e.flags) AS wiki,
                                      FIND_IN_SET('important', e.flags) AS important,
                                      e.creation_date > DATE_SUB(CURDATE(), INTERVAL 2 DAY) AS news,
-                                     e.peremption < DATE_ADD(CURDATE(), INTERVAL 2 DAY) AS end,
+                                     e.expiration < DATE_ADD(CURDATE(), INTERVAL 2 DAY) AS end,
                                      ev.uid IS NULL AS nonlu, e.promo_min, e.promo_max
                                FROM  announces       AS e
                           LEFT JOIN  announce_photos AS p  ON (e.id = p.eid)
                           LEFT JOIN  announce_read   AS ev ON (e.id = ev.evt_id AND ev.uid = {?})
-                              WHERE  FIND_IN_SET('valide', e.flags) AND peremption >= NOW()
-                           ORDER BY  important DESC, news DESC, end DESC, e.peremption, e.creation_date DESC",
+                              WHERE  FIND_IN_SET('valide', e.flags) AND expiration >= NOW()
+                           ORDER BY  important DESC, news DESC, end DESC, e.expiration, e.creation_date DESC",
                             S::i('uid'));
         $cats = array('important', 'news', 'end', 'body');
 
@@ -255,7 +255,7 @@ class EventsModule extends PLModule
         $texte      = Post::v('texte');
         $promo_min  = Post::i('promo_min');
         $promo_max  = Post::i('promo_max');
-        $peremption = Post::i('peremption');
+        $expiration = Post::i('expiration');
         $valid_mesg = Post::v('valid_mesg');
         $action     = Post::v('action');
         $upload     = new PlUpload(S::user()->login(), 'event');
@@ -273,7 +273,7 @@ class EventsModule extends PLModule
         $page->assign('texte', $texte);
         $page->assign('promo_min', $promo_min);
         $page->assign('promo_max', $promo_max);
-        $page->assign('peremption', $peremption);
+        $page->assign('expiration', $expiration);
         $page->assign('valid_mesg', $valid_mesg);
         $page->assign('action', strtolower($action));
         $page->assign_by_ref('upload', $upload);
@@ -288,7 +288,7 @@ class EventsModule extends PLModule
 
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
-                                 $peremption, $valid_mesg, S::user(), $upload);
+                                 $expiration, $valid_mesg, S::user(), $upload);
             $evtreq->submit();
             $page->assign('ok', true);
         } elseif (!Env::v('preview')) {
@@ -308,7 +308,7 @@ class EventsModule extends PLModule
         $page->setTitle('Administration - Astuces');
         $page->assign('title', 'Gestion des Astuces');
         $table_editor = new PLTableEditor('admin/tips', 'tips', 'id');
-        $table_editor->describe('peremption', 'date de péremption', true);
+        $table_editor->describe('expiration', 'date de péremption', true);
         $table_editor->describe('promo_min', 'promo. min (0 aucune)', false);
         $table_editor->describe('promo_max', 'promo. max (0 aucune)', false);
         $table_editor->describe('titre', 'titre', true);
@@ -368,10 +368,10 @@ class EventsModule extends PLModule
 
                 XDB::execute('UPDATE announces
                                  SET creation_date = creation_date,
-                                     titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?},
+                                     titre={?}, texte={?}, expiration={?}, promo_min={?}, promo_max={?},
                                      flags = {?}
                                WHERE id = {?}',
-                              Post::v('titre'), Post::v('texte'), Post::v('peremption'),
+                              Post::v('titre'), Post::v('texte'), Post::v('expiration'),
                               Post::v('promo_min'), Post::v('promo_max'),
                               $flags, $eid);
                 if ($upload->exists() && list($x, $y, $type) = $upload->imageInfo()) {
@@ -384,17 +384,17 @@ class EventsModule extends PLModule
         }
 
         if ($action == 'edit') {
-            $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max, FIND_IN_SET(\'important\', flags),
+            $res = XDB::query('SELECT titre, texte, expiration, promo_min, promo_max, FIND_IN_SET(\'important\', flags),
                                       attach IS NOT NULL
                                  FROM announces       AS e
                             LEFT JOIN announce_photos AS p ON(e.id = p.eid)
                                 WHERE id={?}', $eid);
-            list($titre, $texte, $peremption, $promo_min, $promo_max, $important, $img) = $res->fetchOneRow();
+            list($titre, $texte, $expiration, $promo_min, $promo_max, $important, $img) = $res->fetchOneRow();
             $page->assign('titre',$titre);
             $page->assign('texte',$texte);
             $page->assign('promo_min',$promo_min);
             $page->assign('promo_max',$promo_max);
-            $page->assign('peremption',$peremption);
+            $page->assign('expiration',$expiration);
             $page->assign('important', $important);
             $page->assign('eid', $eid);
             $page->assign('img', $img);
@@ -408,7 +408,7 @@ class EventsModule extends PLModule
                 $day=substr($p_stamp,6,2);
 
                 $select .= "<option value=\"$p_stamp\""
-                        . (($p_stamp == strtr($peremption, array("-" => ""))) ? " selected" : "")
+                        . (($p_stamp == strtr($expiration, array("-" => ""))) ? " selected" : "")
                         . "> $day / $month / $year</option>\n";
             }
             $page->assign('select',$select);
@@ -454,14 +454,14 @@ class EventsModule extends PLModule
             $pid = ($eid && $action == 'preview') ? $eid : -1;
             $sql = "SELECT  e.id, e.titre, e.texte,e.id = $pid AS preview, e.uid,
                             DATE_FORMAT(e.creation_date,'%d/%m/%Y %T') AS creation_date,
-                            DATE_FORMAT(e.peremption,'%d/%m/%Y') AS peremption,
+                            DATE_FORMAT(e.expiration,'%d/%m/%Y') AS expiration,
                             e.promo_min, e.promo_max,
                             FIND_IN_SET('valide', e.flags) AS fvalide,
                             FIND_IN_SET('archive', e.flags) AS farch,
                             FIND_IN_SET('wiki', e.flags) AS wiki
                       FROM  announces    AS e
                      WHERE  ".($arch ? "" : "!")."FIND_IN_SET('archive',e.flags)
-                  ORDER BY  FIND_IN_SET('valide',e.flags), e.peremption DESC";
+                  ORDER BY  FIND_IN_SET('valide',e.flags), e.expiration DESC";
             $page->assign('evs', XDB::iterator($sql));
         }
         $page->assign('arch', $arch);

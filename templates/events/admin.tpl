@@ -63,7 +63,7 @@
         Proposée par {profile user=$ev.uid promo=true sex=false}
       </small>
     </td>
-    <td class="right">{if !$ev.fvalide}<strong>{/if}{$ev.peremption}{if !$ev.fvalide}</strong>{/if}</td>
+    <td class="right">{if !$ev.fvalide}<strong>{/if}{$ev.expiration}{if !$ev.fvalide}</strong>{/if}</td>
     <td class="right" style="width: 42px">
       {if $arch}
         <a href="admin/events/unarchive/{$ev.id}?token={xsrf_token}">{icon name=package_delete title="Désarchiver"}</a><br />

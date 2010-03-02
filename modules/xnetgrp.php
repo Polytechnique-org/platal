@@ -69,7 +69,7 @@ class XnetGrpModule extends PLModule
                 XDB::query('DELETE  r.*
                               FROM  group_announces_read AS r
                         INNER JOIN  group_announces      AS a ON (a.id = r.announce_id)
-                             WHERE  peremption < CURRENT_DATE()');
+                             WHERE  expiration < CURRENT_DATE()');
                 XDB::query('INSERT INTO  group_announces_read
                                  VALUES  ({?}, {?})',
                             Env::i('read'), S::i('uid'));
@@ -85,25 +85,25 @@ class XnetGrpModule extends PLModule
             $arts = XDB::iterator("SELECT  a.*, FIND_IN_SET('photo', a.flags) AS photo
                                      FROM  group_announces      AS a
                                 LEFT JOIN  group_announces_read AS r ON (r.uid = {?} AND r.announce_id = a.id)
-                                    WHERE  asso_id = {?} AND peremption >= CURRENT_DATE()
+                                    WHERE  asso_id = {?} AND expiration >= CURRENT_DATE()
                                            AND (promo_min = 0 OR promo_min <= {?})
                                            AND (promo_max = 0 OR promo_max >= {?})
                                            AND r.announce_id IS NULL
-                                 ORDER BY  a.peremption",
+                                 ORDER BY  a.expiration",
                                    S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
             $index = XDB::iterator("SELECT  a.id, a.titre, r.user_id IS NULL AS nonlu
                                       FROM  group_announces      AS a
                                  LEFT JOIN  group_announces_read AS r ON (a.id = r.announce_id AND r.uid = {?})
-                                     WHERE  asso_id = {?} AND peremption >= CURRENT_DATE()
+                                     WHERE  asso_id = {?} AND expiration >= CURRENT_DATE()
                                             AND (promo_min = 0 OR promo_min <= {?})
                                             AND (promo_max = 0 OR promo_max >= {?})
-                                  ORDER BY  a.peremption",
+                                  ORDER BY  a.expiration",
                                    S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
             $page->assign('article_index', $index);
         } else {
             $arts = XDB::iterator("SELECT  *, FIND_IN_SET('photo', flags) AS photo
                                      FROM  group_announces
-                                    WHERE  asso_id = {?} AND peremption >= CURRENT_DATE()
+                                    WHERE  asso_id = {?} AND expiration >= CURRENT_DATE()
                                            AND FIND_IN_SET('public', flags)",
                                   $globals->asso('id'));
         }
@@ -1052,7 +1052,7 @@ class XnetGrpModule extends PLModule
             $art['prenom']     = S::v('prenom');
             $art['promo']      = S::v('promo');
             $art['hruid']      = S::user()->login();
-            $art['peremption'] = Post::v('peremption');
+            $art['expiration'] = Post::v('expiration');
             $art['public']     = Post::has('public');
             $art['xorg']       = Post::has('xorg');
             $art['nl']         = Post::has('nl');
@@ -1116,10 +1116,10 @@ class XnetGrpModule extends PLModule
                                           $art['titre'], MiniWiki::wikiToText($fulltext, false, 0, 80));
                 }*/
                 XDB::query('INSERT INTO  group_announces (uid, asso_id, create_date, titre, texte, contacts,
-                                                          peremption, promo_min, promo_max, flags, post_id)
+                                                          expiration, promo_min, promo_max, flags, post_id)
                                  VALUES  ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                            S::i('uid'), $globals->asso('id'), $art['titre'], $art['texte'], $art['contact_html'],
-                           $art['peremption'], $promo_min, $promo_max, $flags, $post);
+                           $art['expiration'], $promo_min, $promo_max, $flags, $post);
                 $aid = XDB::insertId();
                 if ($art['photo']) {
                     list($imgx, $imgy, $imgtype) = $upload->imageInfo();
@@ -1130,7 +1130,7 @@ class XnetGrpModule extends PLModule
                 if ($art['xorg']) {
                     require_once('validations.inc.php');
                     $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'], $fulltext,
-                                    $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::user(),
+                                    $art['promo_min'], $art['promo_max'], $art['expiration'], "", S::user(),
                                     $upload);
                     $article->submit();
                     $page->trigWarning("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation.");
@@ -1146,10 +1146,10 @@ class XnetGrpModule extends PLModule
                 }
             } else {
                 XDB::query('UPDATE  group_announces
-                               SET  titre = {?}, texte = {?}, contacts = {?}, peremption = {?},
+                               SET  titre = {?}, texte = {?}, contacts = {?}, expiration = {?},
                                     promo_min = {?}, promo_max = {?}, flags = {?}
                              WHERE  id = {?} AND asso_id = {?}',
-                           $art['titre'], $art['texte'], $art['contacts'], $art['peremption'],
+                           $art['titre'], $art['texte'], $art['contacts'], $art['expiration'],
                            $promo_min, $promo_max,  $flags,
                            $art['id'], $globals->asso('id'));
                 if ($art['photo'] && $upload->exists()) {
@@ -1205,10 +1205,10 @@ class XnetGrpModule extends PLModule
                                 WHERE  id = {?} AND asso_id = {?}',
                          Env::i('del'), $globals->asso('id'));
         }
-        $res = XDB::iterator('SELECT  id, titre, peremption, peremption < CURRENT_DATE() AS perime
+        $res = XDB::iterator('SELECT  id, titre, expiration, expiration < CURRENT_DATE() AS perime
                                 FROM  group_announces
                                WHERE  asso_id = {?}
-                            ORDER BY  peremption DESC',
+                            ORDER BY  expiration DESC',
                              $globals->asso('id'));
         $page->assign('articles', $res);
     }

@@ -80,14 +80,14 @@ class XnetGrpEventFeed extends PlFeed
                                           FIND_IN_SET('photo', flags) AS photo,
                                           CONCAT({?}, '/#art', id) AS link
                                     FROM  group_announces
-                                   WHERE  peremption >= NOW() AND asso_id = {?}",
+                                   WHERE  expiration >= NOW() AND asso_id = {?}",
                                    $this->link, $globals->asso('id'), $user));
         } else {
             return  XDB::iterator("SELECT  id, titre AS title, texte, create_date AS publication,
                                            CONCAT({?}, '/#art', id) AS link,
                                            NULL AS photo, NULL AS contacts
                                      FROM  group_announces
-                                    WHERE  FIND_IN_SET('public', flags) AND peremption >= NOW() AND asso_id = {?}",
+                                    WHERE  FIND_IN_SET('public', flags) AND expiration >= NOW() AND asso_id = {?}",
                                   $this->link, $globals->asso('id'));
         }
     }
