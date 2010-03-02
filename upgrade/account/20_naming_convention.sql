@@ -56,4 +56,8 @@ CHANGE COLUMN  user_id uid INT(11) NOT NULL;
   ALTER TABLE  requests_hidden
 CHANGE COLUMN  user_id uid INT(11) NOT NULL;
 
+# watch
+  ALTER TABLE  watch_profile
+CHANGE COLUMN  uid pid INT(11) NOT NULL;
+
 # vim:set ft=mysql:

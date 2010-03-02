@@ -69,7 +69,7 @@ class WatchProfileUpdate extends WatchOperation
 
     public static function register(Profile &$profile, $field)
     {
-        XDB::execute('REPLACE INTO  watch_profile (uid, ts, field)
+        XDB::execute('REPLACE INTO  watch_profile (pid, ts, field)
                             VALUES  ({?}, NOW(), {?})',
                      $profile->id(), $field);
     }
@@ -109,11 +109,11 @@ class WatchProfileUpdate extends WatchOperation
                                          'photo'        => 'Sa photographie');
     public function getData(PlUser &$user)
     {
-        $data = XDB::fetchColumn('SELECT  field
+        $data = XDB::fetchColumn("SELECT  field
                                     FROM  watch_profile
-                                   WHERE  uid = {?} AND ts > FROM_UNIXTIME({?}) AND field != \'\'
-                                ORDER BY  ts',
-                                 $user->id(), $this->date);
+                                   WHERE  pid = {?} AND ts > FROM_UNIXTIME({?}) AND field != ''
+                                ORDER BY  ts",
+                                 $user->profile()->id(), $this->date);
         if (count($data) == 0) {
             return null;
         } else {
