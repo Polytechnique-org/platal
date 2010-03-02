@@ -55,9 +55,9 @@ abstract class PlUser
      * false means the information is not available.
      */
 
-    // user_id is internal user ID (potentially numeric), whereas hruid is a
+    // uid is internal user ID (potentially numeric), whereas hruid is a
     // "human readable" unique ID
-    protected $user_id = null;
+    protected $uid = null;
     protected $hruid = null;
 
     // User main email aliases (forlife is the for-life email address, bestalias
@@ -94,8 +94,8 @@ abstract class PlUser
 
         // If the user id was not part of the known values, determines it from
         // the login.
-        if (!$this->user_id) {
-            $this->user_id = $this->getLogin($login);
+        if (!$this->uid) {
+            $this->uid = $this->getLogin($login);
         }
 
         // Preloads main properties (assumes the loader will lazily get them
@@ -125,7 +125,7 @@ abstract class PlUser
      */
     public function id()
     {
-        return $this->user_id;
+        return $this->uid;
     }
 
     public function login()
@@ -272,7 +272,7 @@ abstract class PlUser
 
     public static function getWithUID($uid, $callback = false)
     {
-        return User::getWithValues(null, array('user_id' => $uid), $callback);
+        return User::getWithValues(null, array('uid' => $uid), $callback);
     }
 
     // Same as above, but using the silent callback as default.
@@ -288,7 +288,7 @@ abstract class PlUser
 
     public static function getSilentWithUID($uid)
     {
-        return User::getWithValues(null, array('user_id' => $uid), array('User', '_silent_user_callback'));
+        return User::getWithValues(null, array('uid' => $uid), array('User', '_silent_user_callback'));
     }
 
     /**
