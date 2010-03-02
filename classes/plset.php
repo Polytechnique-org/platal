@@ -312,9 +312,9 @@ abstract class MultipageView implements PlView
         $res = $this->set->get($this->limit());
 
         $show_bounds = $this->bounds();
-        $start = current($res);
-        $end   = end($res);
         if ($show_bounds) {
+            $start = current($res);
+            $end   = end($res);
             if ($show_bounds == 1) {
                 $first = $this->getBoundValue($start);
                 $last  = $this->getBoundValue($end);
