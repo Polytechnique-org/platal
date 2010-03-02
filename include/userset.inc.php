@@ -182,7 +182,7 @@ class MinificheView extends MultipageView
             switch ($this->bound_field) {
             case 'name':
                 $name = $obj->name('%l');
-                return strtoupper($name[0]);
+                return strtoupper($name);
             case 'promo':
                 return $obj->promo();
             default:
@@ -240,7 +240,7 @@ class MentorView extends MultipageView
             switch ($this->bound_field) {
             case 'name':
                 $name = $obj->name('%l');
-                return strtoupper($name[0]);
+                return strtoupper($name);
             case 'promo':
                 return $obj->promo();
             default:
@@ -300,7 +300,7 @@ class TrombiView extends MultipageView
             switch ($this->bound_field) {
             case 'name':
                 $name = $obj->name('%l');
-                return strtoupper($name[0]);
+                return strtoupper($name);
             case 'promo':
                 return $obj->promo();
             default:
