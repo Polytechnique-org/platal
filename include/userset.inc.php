@@ -145,7 +145,26 @@ class ArraySet extends UserSet
     }
 }
 
-class MinificheView extends MultipageView
+abstract class ProfileView extends MultipageView
+{
+    protected function getBoundValue($obj)
+    {
+        if ($obj instanceof Profile) {
+            switch ($this->bound_field) {
+            case 'name':
+                $name = $obj->name('%l');
+                return strtoupper($name);
+            case 'promo':
+                return $obj->promo();
+            default:
+                return null;
+            }
+        }
+        return null;
+    }
+}
+
+class MinificheView extends ProfileView
 {
     public function __construct(PlSet &$set, $data, array $params)
     {
@@ -176,22 +195,6 @@ class MinificheView extends MultipageView
         parent::__construct($set, $data, $params);
     }
 
-    protected function getBoundValue($obj)
-    {
-        if ($obj instanceof Profile) {
-            switch ($this->bound_field) {
-            case 'name':
-                $name = $obj->name('%l');
-                return strtoupper($name);
-            case 'promo':
-                return $obj->promo();
-            default:
-                return null;
-            }
-        }
-        return null;
-    }
-
     public function bounds()
     {
         $order = Env::v('order', $this->defaultkey);
@@ -215,7 +218,7 @@ class MinificheView extends MultipageView
     }
 }
 
-class MentorView extends MultipageView
+class MentorView extends ProfileView
 {
     public function __construct(PlSet &$set, $data, array $params)
     {
@@ -232,22 +235,6 @@ class MentorView extends MultipageView
                     new UFO_Name(Profile::DN_SORT),
                 ), 'dernière modification'));
         parent::__construct($set, $data, $params);
-    }
-
-    protected function getBoundValue($obj)
-    {
-        if ($obj instanceof Profile) {
-            switch ($this->bound_field) {
-            case 'name':
-                $name = $obj->name('%l');
-                return strtoupper($name);
-            case 'promo':
-                return $obj->promo();
-            default:
-                return null;
-            }
-        }
-        return null;
     }
 
     public function bounds()
@@ -273,7 +260,7 @@ class MentorView extends MultipageView
     }
 }
 
-class TrombiView extends MultipageView
+class TrombiView extends ProfileView
 {
     public function __construct(PlSet &$set, $data, array $params)
     {
@@ -292,22 +279,6 @@ class TrombiView extends MultipageView
                         new UFO_Name(Profile::DN_SORT),
                     ), 'promotion'));
         parent::__construct($set, $data, $params);
-    }
-
-    protected function getBoundValue($obj)
-    {
-        if ($obj instanceof Profile) {
-            switch ($this->bound_field) {
-            case 'name':
-                $name = $obj->name('%l');
-                return strtoupper($name);
-            case 'promo':
-                return $obj->promo();
-            default:
-                return null;
-            }
-        }
-        return null;
     }
 
     public function bounds()
