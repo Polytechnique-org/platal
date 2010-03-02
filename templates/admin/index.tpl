@@ -103,14 +103,6 @@
       <a href="admin/deaths">Décès</a>
     </td>
   </tr>
-  <tr class="pair">
-    <td class="titre">AX</td>
-    <td>
-      <a href="admin/ax-xorg">AX/X.org</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/synchro_ax">Synchro AX</a>
-    </td>
-  </tr>
   <tr class="impair">
     <td class="titre">Administration</td>
     <td>

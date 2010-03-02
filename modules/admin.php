@@ -27,7 +27,6 @@ class AdminModule extends PLModule
             'phpinfo'                      => $this->make_hook('phpinfo',                AUTH_MDP, 'admin'),
             'get_rights'                   => $this->make_hook('get_rights',             AUTH_MDP, 'admin'),
             'admin'                        => $this->make_hook('default',                AUTH_MDP, 'admin'),
-            'admin/ax-xorg'                => $this->make_hook('ax_xorg',                AUTH_MDP, 'admin'),
             'admin/dead-but-active'        => $this->make_hook('dead_but_active',        AUTH_MDP, 'admin'),
             'admin/deaths'                 => $this->make_hook('deaths',                 AUTH_MDP, 'admin'),
             'admin/downtime'               => $this->make_hook('downtime',               AUTH_MDP, 'admin'),
