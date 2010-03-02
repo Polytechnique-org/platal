@@ -130,9 +130,9 @@ class Profile
     {
         return str_replace(array('%s', '%f', '%l', '%F', '%S', '%p'),
                            array($this->isFemale() ? '•' : '',
-                                 $this->first_name, $this->last_name,
-                                 $this->full_name, $this->short_name,
-                                 $this->promo), $format);
+                                 $this->firstName(), $this->lastName(),
+                                 $this->fullName(), $this->shortName(),
+                                 $this->promo()), $format);
     }
 
     public function fullName($with_promo = false)
