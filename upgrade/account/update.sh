@@ -14,7 +14,7 @@ echo -n "* create database "
 echo "OK"
 
 echo -n "* copying tables "
-(./copy_tables.php | mysql_run) || die "ERROR"
+(./copy_tables.sh | mysql_run) || die "ERROR"
 echo "OK"
 
 for sql in ../newdirectory-0.0.1/*.sql *.sql
