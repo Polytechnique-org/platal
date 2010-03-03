@@ -2,10 +2,8 @@
 
 copyTable() {
     echo "CREATE TABLE $2 LIKE $1;"
-    if [ -z "$3" ] ; then
-        echo "ALTER TABLE $2 ENGINE = InnoDB;"
-    fi
-    echo "INSERT INTO $2 SELECT * FROM $1;"
+    [[ "$3" == *"no-innodb"* ]] || echo "ALTER TABLE $2 ENGINE = InnoDB;"
+    [[ "$3" == *"no-content"* ]] || echo "INSERT INTO $2 SELECT * FROM $1;"
 }
 
 
@@ -50,8 +48,8 @@ copyTable '#x4dat#.evenements' 'announces'
 copyTable '#x4dat#.evenements_photo' 'announce_photos'
 copyTable '#x4dat#.evenements_vus' 'announce_read'
 
-copyTable '#x4dat#.gapps_accounts' 'gapps_accounts' 'false'
-copyTable '#x4dat#.gapps_nicknames' 'gapps_nicknames' 'false'
+copyTable '#x4dat#.gapps_accounts' 'gapps_accounts' no-innodb
+copyTable '#x4dat#.gapps_nicknames' 'gapps_nicknames' no-innodb
 copyTable '#x4dat#.gapps_queue' 'gapps_queue'
 copyTable '#x4dat#.gapps_reporting' 'gapps_reporting'
 
@@ -113,4 +111,4 @@ copyTable '#x4dat#.virtual_redirect' 'virtual_redirect'
 copyTable '#x4dat#.watch_nonins' 'watch_nonins'
 copyTable '#x4dat#.watch_promo' 'watch_promo'
 
-copyTable '#x4dat#.openid_trusted' 'account_auth_openid' 'false'
+copyTable '#x4dat#.openid_trusted' 'account_auth_openid' no-innodb
