@@ -1903,7 +1903,7 @@ class UserFilter extends PlFilter
         $joins = array();
         /** Quick search is much more efficient with sn first and PID second */
         if ($this->with_forced_sn) {
-            $joins['p'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profiles', '$PID = sn.uid');
+            $joins['p'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profiles', '$PID = sn.pid');
             if ($this->with_accounts) {
                 $joins['ap'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'account_profiles', '$ME.pid = $PID');
                 $joins['a'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'accounts', '$UID = ap.uid');
