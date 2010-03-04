@@ -251,9 +251,6 @@
             {/foreach}
           </select>
         </div>
-        {foreach item=contact from=$contacts}
-        <input type="hidden" name="contacts[{$contact->hrpid}]" value="{$contact->display_name} &lt;{$contact->owner()->forlife}&gt;" />
-        {/foreach}
       </td>
     </tr>
     {/if}

@@ -393,10 +393,11 @@ class EmailModule extends PLModule
                 if (!is_array($aliases)) {
                     return null;
                 }
-                $rel = Env::v('contacts');
+                $uf = new UserFilter(new UFC_Hrpid($aliases));
+                $users = $uf->iterUsers();
                 $ret = array();
-                foreach ($aliases as $alias) {
-                    $ret[$alias] = $rel[$alias];
+                while ($user = $users->next()) {
+                    $ret[] = $user->forlife;
                 }
                 return join(', ', $ret);
             }
@@ -480,7 +481,10 @@ class EmailModule extends PLModule
             }
         }
 
-        $contacts = S::user()->getContacts();
+        $uf = new UserFilter(new PFC_And(new UFC_Contact(S::user()),
+                                         new UFC_Registered()),
+                             UserFilter::sortByName());
+        $contacts = $uf->getProfiles();
         $page->assign('contacts', $contacts);
         $page->assign('maxsize', ini_get('upload_max_filesize') . 'o');
         $page->assign('user', S::user());
