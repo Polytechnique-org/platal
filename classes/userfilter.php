@@ -70,8 +70,31 @@ class UFC_Hruid implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $ufc->requireAccounts();
-
         return 'a.hruid IN ' . XDB::formatArray($this->hruids);
+    }
+}
+// }}}
+
+// {{{ class UFC_Hrpid
+/** Filters users based on the hrpid of their profiles
+ * @param $val Either an hrpid, or a list of those
+ */
+class UFC_Hrpid implements UserFilterCondition
+{
+    private $hrpids;
+
+    public function __construct($val)
+    {
+        if (!is_array($val)) {
+            $val = array($val);
+        }
+        $this->hrpids = $val;
+    }
+
+    public function buildCondition(PlFilter &$uf)
+    {
+        $uf->requireProfiles();
+        return 'p.hrpid IN ' . XDB::formatArray($this->hrpids);
     }
 }
 // }}}
