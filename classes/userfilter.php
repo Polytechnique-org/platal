@@ -2509,9 +2509,9 @@ class UserFilter extends PlFilter
         $joins = array();
         foreach ($this->cts as $sub=>$key) {
             if (is_null($key)) {
-                $joins['c' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'contacts', '$ME.contact = $UID');
+                $joins['c' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'contacts', '$ME.contact = $PID');
             } else {
-                $joins['c' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'contacts', XDB::format('$ME.uid = {?} AND $ME.contact = $UID', substr($key, 5)));
+                $joins['c' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'contacts', XDB::format('$ME.uid = {?} AND $ME.contact = $PID', substr($key, 5)));
             }
         }
         return $joins;

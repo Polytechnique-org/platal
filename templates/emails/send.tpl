@@ -211,8 +211,8 @@
         <div style="float: right; width: 40%;">
           <select id="to_contacts" name="to_contacts[]" multiple="multiple" style="width: 100%; height: 5em">
           {foreach key=key item=contact from=$contacts}
-          {if in_array($contact->hruid,$smarty.request.to_contacts)}
-          <option value="{$contact->hruid}">
+          {if in_array($contact->hrpid,$smarty.request.to_contacts)}
+          <option value="{$contact->hrpid}">
             {$contact->full_name}
           </option>
           {/if}
@@ -220,8 +220,8 @@
           </select><br />
           <select id="cc_contacts" name="cc_contacts[]" multiple="multiple" style="width: 100%; height: 5em">
           {foreach key=key item=contact from=$contacts}
-          {if in_array($contact->forlife,$smarty.request.cc_contacts)}
-          <option value="{$contact->forlife}">
+          {if in_array($contact->hrpid,$smarty.request.cc_contacts)}
+          <option value="{$contact->hrpid}">
             {$contact->full_name}
           </option>
           {/if}
@@ -243,8 +243,8 @@
         <div style="float: right; width: 40%">
           <select id="contacts" name="all_contacts[]" multiple="multiple" style="height: 10em; width: 100%">
             {foreach item=contact from=$contacts}
-            {if !in_array($contact->hruid,$smarty.request.to_contacts) && !in_array($contact->hruid,$smarty.request.cc_contacts)}
-            <option value="{$contact->hruid}">
+            {if !in_array($contact->hrpid,$smarty.request.to_contacts) && !in_array($contact->hrpid,$smarty.request.cc_contacts)}
+            <option value="{$contact->hrpid}">
               {$contact->full_name}
             </option>
             {/if}
@@ -252,7 +252,7 @@
           </select>
         </div>
         {foreach item=contact from=$contacts}
-        <input type="hidden" name="contacts[{$contact->hruid}]" value="{$contact->display_name} &lt;{$contact->forlife}&gt;" />
+        <input type="hidden" name="contacts[{$contact->hrpid}]" value="{$contact->display_name} &lt;{$contact->owner()->forlife}&gt;" />
         {/foreach}
       </td>
     </tr>

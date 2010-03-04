@@ -478,19 +478,19 @@ class User extends PlUser
     public function iterContacts()
     {
         $this->fetchContacts();
-        return self::iterOverUIDs(array_keys($this->contacts));
+        return Profile::iterOverPIDs(array_keys($this->contacts));
     }
 
     public function getContacts()
     {
         $this->fetchContacts();
-        return self::getBulkUsersWithUIDs(array_keys($this->contacts));
+        return Profile::getBulkProfilesWithPIDs(array_keys($this->contacts));
     }
 
-    public function isContact(PlUser &$user)
+    public function isContact(Profile &$profile)
     {
         $this->fetchContacts();
-        return isset($this->contacts[$user->id()]);
+        return isset($this->contacts[$profile->id()]);
     }
 
     // Groupes X
