@@ -623,51 +623,22 @@ class UFC_Section implements UserFilterCondition
 // }}}
 
 // {{{ class UFC_Email
-/** Filters users based on email address
- * @param $email Email whose owner we are looking for
+/** Filters users based on an email or a list of emails
+ * @param $emails List of emails whose owner must be selected
  */
 class UFC_Email implements UserFilterCondition
 {
-    private $email;
-    public function __construct($email)
-    {
-        $this->email = $email;
-    }
-
-    public function buildCondition(PlFilter &$uf)
-    {
-        if (User::isForeignEmailAddress($this->email)) {
-            $sub = $uf->addEmailRedirectFilter($this->email);
-            return XDB::format('e' . $sub . '.email IS NOT NULL OR a.email = {?}', $this->email);
-        } else if (User::isVirtualEmailAddress($this->email)) {
-            $sub = $uf->addVirtualEmailFilter($this->email);
-            return 'vr' . $sub . '.redirect IS NOT NULL';
-        } else {
-            @list($user, $domain) = explode('@', $this->email);
-            $sub = $uf->addAliasFilter($user);
-            return 'al' . $sub . '.alias IS NOT NULL';
-        }
-    }
-}
-// }}}
-
-// {{{ class UFC_EmailList
-/** Filters users based on an email list
- * @param $emails List of emails whose owner must be selected
- */
-class UFC_EmailList implements UserFilterCondition
-{
     private $emails;
-    public function __construct($emails)
+    public function __construct()
     {
-        $this->emails = $emails;
+        $this->emails = func_get_args();
     }
 
     public function buildCondition(PlFilter &$uf)
     {
-        $email   = null;
-        $virtual = null;
-        $alias   = null;
+        $foreign = array();
+        $virtual = array();
+        $aliases = array();
         $cond = array();
 
         if (count($this->emails) == 0) {
@@ -676,22 +647,26 @@ class UFC_EmailList implements UserFilterCondition
 
         foreach ($this->emails as $entry) {
             if (User::isForeignEmailAddress($entry)) {
-                if (is_null($email)) {
-                    $email = $uf->addEmailRedirectFilter();
-                }
-                $cond[] = XDB::format('e' . $email . '.email = {?} OR a.email = {?}', $entry, $entry);
+                $foreign[] = $entry;
             } else if (User::isVirtualEmailAddress($entry)) {
-                if (is_null($virtual)) {
-                    $virtual = $uf->addVirtualEmailFilter();
-                }
-                $cond[] = XDB::format('vr' . $virtual . '.redirect IS NOT NULL AND v' . $virtual . '.alias = {?}', $entry);
+                $virtual[] = $entry;
             } else {
-                if (is_null($alias)) {
-                    $alias = $uf->addAliasFilter();
-                }
                 @list($user, $domain) = explode('@', $entry);
-                $cond[] = XDB::format('al' . $alias . '.alias = {?}', $user);
+                $aliases[] = $user;
             }
+        }
+
+        if (count($foreign) > 0) {
+            $sub = $uf->addEmailRedirectFilter($foreign);
+            $cond[] = 'e' . $sub . '.email IS NOT NULL OR a.email IN ' . XDB::formatArray($foreign);
+        }
+        if (count($virtual) > 0) {
+            $sub = $uf->addVirtualEmailFilter($virtual);
+            $cond[] = 'vr' . $sub . '.redirect IS NOT NULL';
+        }
+        if (count($aliases) > 0) {
+            $sub = $uf->addAliasFilter($aliases);
+            $cond[] = 'al' . $sub . '.alias IS NOT NULL';
         }
         return '(' . implode(') OR (', $cond) . ')';
     }
@@ -1876,7 +1851,14 @@ class UserFilter extends PlFilter
 
     static private function getDBSuffix($string)
     {
-        return preg_replace('/[^a-z0-9]/i', '', $string);
+        if (is_array($string)) {
+            if (count($string) == 1) {
+                return self::getDBSuffix(array_pop($string));
+            }
+            return md5(implode('|', $string));
+        } else {
+            return preg_replace('/[^a-z0-9]/i', '', $string);
+        }
     }
 
 
@@ -2222,7 +2204,10 @@ class UserFilter extends PlFilter
             if (is_null($key)) {
                 $joins['e' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'emails', '$ME.uid = $UID AND $ME.flags != \'filter\'');
             } else {
-                $joins['e' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'emails', XDB::format('$ME.uid = $UID AND $ME.flags != \'filter\' AND $ME.email = {?}', $key));
+                if (!is_array($key)) {
+                    $key = array($key);
+                }
+                $joins['e' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'emails', '$ME.uid = $UID AND $ME.flags != \'filter\' AND $ME.email IN ' . XDB::formatArray($key));
             }
         }
         foreach ($this->al as $sub=>$key) {
@@ -2233,14 +2218,20 @@ class UserFilter extends PlFilter
             } else if ($key == self::ALIAS_FORLIFE) {
                 $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.uid = $UID AND $ME.type = \'a_vie\'');
             } else {
-                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', XDB::format('$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND $ME.alias = {?}', $key));
+                if (!is_array($key)) {
+                    $key = array($key);
+                }
+                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND $ME.alias IN ' . XDB::formatArray($key));
             }
         }
         foreach ($this->ve as $sub=>$key) {
             if (is_null($key)) {
                 $joins['v' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'virtual', '$ME.type = \'user\'');
             } else {
-                $joins['v' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'virtual', XDB::format('$ME.type = \'user\' AND $ME.alias = {?}', $key));
+                if (!is_array($key)) {
+                    $key = array($key);
+                }
+                $joins['v' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'virtual', '$ME.type = \'user\' AND $ME.alias IN ' . XDB::formatArray($key));
             }
             $joins['vr' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'virtual_redirect', XDB::format('$ME.vid = v' . $sub . '.vid
                                                                                  AND ($ME.redirect IN (CONCAT(al_forlife.alias, \'@\', {?}),
