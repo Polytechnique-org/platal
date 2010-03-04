@@ -39,10 +39,10 @@ interface UserFilterCondition extends PlFilterCondition
 }
 // }}}
 
-// {{{ class UFC_Profile
+// {{{ class UFC_HasProfile
 /** Filters users who have a profile
  */
-class UFC_Profile implements UserFilterCondition
+class UFC_HasProfile implements UserFilterCondition
 {
     public function buildCondition(PlFilter &$uf)
     {
