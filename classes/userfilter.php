@@ -1908,14 +1908,14 @@ class UserFilter extends PlFilter
         $joins = array();
         /** Quick search is much more efficient with sn first and PID second */
         if ($this->with_forced_sn) {
-            $joins['p'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profiles', '$PID = sn.pid');
+            $joins['p'] = PlSqlJoin::left('profiles', '$PID = sn.pid');
             if ($this->with_accounts) {
-                $joins['ap'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'account_profiles', '$ME.pid = $PID');
-                $joins['a'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'accounts', '$UID = ap.uid');
+                $joins['ap'] = PlSqlJoin::left('account_profiles', '$ME.pid = $PID');
+                $joins['a'] = PlSqlJoin::left('accounts', '$UID = ap.uid');
             }
         } else if ($this->with_profiles && $this->with_accounts) {
-            $joins['ap'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'account_profiles', '$ME.uid = $UID AND FIND_IN_SET(\'owner\', ap.perms)');
-            $joins['p'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profiles', '$PID = ap.pid');
+            $joins['ap'] = PlSqlJoin::left('account_profiles', '$ME.uid = $UID AND FIND_IN_SET(\'owner\', ap.perms)');
+            $joins['p'] = PlSqlJoin::left('profiles', '$PID = ap.pid');
         }
         return $joins;
     }
@@ -1934,7 +1934,7 @@ class UserFilter extends PlFilter
     protected function displayJoins()
     {
         if ($this->pd) {
-            return array('pd' => new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_display', '$ME.pid = $PID'));
+            return array('pd' => PlSqlJoin::left('profile_display', '$ME.pid = $PID'));
         } else {
             return array();
         }
@@ -1954,7 +1954,7 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_logger) {
-            $joins['ls'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'log_sessions', '$ME.uid = $UID');
+            $joins['ls'] = PlSqlJoin::left('log_sessions', '$ME.uid = $UID');
         }
         return $joins;
     }
@@ -1992,7 +1992,7 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         foreach ($this->pn as $sub => $type) {
-            $joins['pn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_name', '$ME.pid = $PID AND $ME.typeid = ' . $type);
+            $joins['pn' . $sub] = PlSqlJoin::left('profile_name', '$ME.pid = $PID AND $ME.typeid = {?}', $type);
         }
         return $joins;
     }
@@ -2014,7 +2014,7 @@ class UserFilter extends PlFilter
         /* We don't return joins, since with_sn forces the SELECT to run on search_name first */
         if ($this->with_sn && !$this->with_forced_sn) {
             return array(
-                'sn' => new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'search_name', '$ME.uid = $PID')
+                'sn' => PlSqlJoin::left('search_name', '$ME.uid = $PID')
             );
         } else {
             return array();
@@ -2035,7 +2035,7 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_nat) {
-            $joins['ngc'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'geoloc_countries', '$ME.iso_3166_1_a2 = p.nationality1 OR $ME.iso_3166_1_a2 = p.nationality2 OR $ME.iso_3166_1_a2 = p.nationality3');
+            $joins['ngc'] = PlSqlJoin::left('geoloc_countries', '$ME.iso_3166_1_a2 = p.nationality1 OR $ME.iso_3166_1_a2 = p.nationality2 OR $ME.iso_3166_1_a2 = p.nationality3');
         }
         return $joins;
     }
@@ -2086,17 +2086,16 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_pee) {
-            $joins['pee'] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'profile_education_enum', 'pee.abbreviation = \'X\'');
+            $joins['pee'] = PlSqlJoin::inner('profile_education_enum', 'pee.abbreviation = \'X\'');
         }
         foreach ($this->pepe as $grade => $sub) {
             if ($this->isGrade($grade)) {
-                $joins['pe' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_education', '$ME.eduid = pee.id AND $ME.pid = $PID');
-                $joins['pede' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid AND $ME.abbreviation LIKE ' .
-                                                  XDB::format('{?}', $grade));
+                $joins['pe' . $sub] = PlSqlJoin::left('profile_education', '$ME.eduid = pee.id AND $ME.pid = $PID');
+                $joins['pede' . $sub] = PlSqlJoin::inner('profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid AND $ME.abbreviation LIKE {?}', $grade);
             } else {
-                $joins['pe' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_education', '$ME.pid = $PID');
-                $joins['pee' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'profile_education_enum', '$ME.id = pe' . $sub . '.eduid');
-                $joins['pede' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid');
+                $joins['pe' . $sub] = PlSqlJoin::left('profile_education', '$ME.pid = $PID');
+                $joins['pee' . $sub] = PlSqlJoin::inner('profile_education_enum', '$ME.id = pe' . $sub . '.eduid');
+                $joins['pede' . $sub] = PlSqlJoin::inner('profile_education_degree_enum', '$ME.id = pe' . $sub . '.degreeid');
             }
         }
         return $joins;
@@ -2130,13 +2129,13 @@ class UserFilter extends PlFilter
         $joins = array();
         foreach ($this->gpm as $sub => $key) {
             if (is_null($key)) {
-                $joins['gpa' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'groups');
-                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'group_members', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
+                $joins['gpa' . $sub] = PlSqlJoin::inner('groups');
+                $joins['gpm' . $sub] = PlSqlJoin::left('group_members', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
             } else if (ctype_digit($key)) {
-                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'group_members', '$ME.uid = $UID AND $ME.asso_id = ' . $key);
+                $joins['gpm' . $sub] = PlSqlJoin::left('group_members', '$ME.uid = $UID AND $ME.asso_id = ' . $key);
             } else {
-                $joins['gpa' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_INNER, 'groups', XDB::format('$ME.diminutif = {?}', $key));
-                $joins['gpm' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'group_members', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
+                $joins['gpa' . $sub] = PlSqlJoin::inner('groups', '$ME.diminutif = {?}', $key);
+                $joins['gpm' . $sub] = PlSqlJoin::left('group_members', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
             }
         }
         return $joins;
@@ -2163,10 +2162,10 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_bi) {
-            $joins['bi'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_binets', '$ME.pid = $PID');
+            $joins['bi'] = PlSqlJoin::left('profile_binets', '$ME.pid = $PID');
         }
         if ($this->with_bd) {
-            $joins['bd'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_binet_enum', '$ME.id = bi.binet_id');
+            $joins['bd'] = PlSqlJoin::left('profile_binet_enum', '$ME.id = bi.binet_id');
         }
         return $joins;
     }
@@ -2202,42 +2201,43 @@ class UserFilter extends PlFilter
         $joins = array();
         foreach ($this->e as $sub=>$key) {
             if (is_null($key)) {
-                $joins['e' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'emails', '$ME.uid = $UID AND $ME.flags != \'filter\'');
+                $joins['e' . $sub] = PlSqlJoin::left('emails', '$ME.uid = $UID AND $ME.flags != \'filter\'');
             } else {
                 if (!is_array($key)) {
                     $key = array($key);
                 }
-                $joins['e' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'emails', '$ME.uid = $UID AND $ME.flags != \'filter\' AND $ME.email IN ' . XDB::formatArray($key));
+                $joins['e' . $sub] = PlSqlJoin::left('emails', '$ME.uid = $UID AND $ME.flags != \'filter\' AND $ME.email IN ' . XDB::formatArray($key));
             }
         }
         foreach ($this->al as $sub=>$key) {
             if (is_null($key)) {
-                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\')');
+                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\')');
             } else if ($key == self::ALIAS_BEST) {
-                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND  FIND_IN_SET(\'bestalias\', $ME.flags)');
+                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND  FIND_IN_SET(\'bestalias\', $ME.flags)');
             } else if ($key == self::ALIAS_FORLIFE) {
-                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.uid = $UID AND $ME.type = \'a_vie\'');
+                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type = \'a_vie\'');
             } else {
                 if (!is_array($key)) {
                     $key = array($key);
                 }
-                $joins['al' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND $ME.alias IN ' . XDB::formatArray($key));
+                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND $ME.alias IN ' . XDB::formatArray($key));
             }
         }
         foreach ($this->ve as $sub=>$key) {
             if (is_null($key)) {
-                $joins['v' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'virtual', '$ME.type = \'user\'');
+                $joins['v' . $sub] = PlSqlJoin::left('virtual', '$ME.type = \'user\'');
             } else {
                 if (!is_array($key)) {
                     $key = array($key);
                 }
-                $joins['v' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'virtual', '$ME.type = \'user\' AND $ME.alias IN ' . XDB::formatArray($key));
+                $joins['v' . $sub] = PlSqlJoin::left('virtual', '$ME.type = \'user\' AND $ME.alias IN ' . XDB::formatArray($key));
             }
-            $joins['vr' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'virtual_redirect', XDB::format('$ME.vid = v' . $sub . '.vid
-                                                                                 AND ($ME.redirect IN (CONCAT(al_forlife.alias, \'@\', {?}),
-                                                                                                       CONCAT(al_forlife.alias, \'@\', {?}),
-                                                                                                       a.email))',
-                                                                                $globals->mail->domain, $globals->mail->domain2));
+            $joins['vr' . $sub] = PlSqlJoin::left('virtual_redirect',
+                                                  '$ME.vid = v' . $sub . '.vid
+                                                   AND ($ME.redirect IN (CONCAT(al_forlife.alias, \'@\', {?}),
+                                                                         CONCAT(al_forlife.alias, \'@\', {?}),
+                                                                         a.email))',
+                                                  $globals->mail->domain, $globals->mail->domain2);
         }
         return $joins;
     }
@@ -2275,13 +2275,13 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_pa) {
-            $joins['pa'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_addresses', '$ME.pid = $PID');
+            $joins['pa'] = PlSqlJoin::left('profile_addresses', '$ME.pid = $PID');
         }
         if ($this->with_pac) {
-            $joins['gc'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'geoloc_countries', '$ME.iso_3166_1_a2 = pa.countryID');
+            $joins['gc'] = PlSqlJoin::left('geoloc_countries', '$ME.iso_3166_1_a2 = pa.countryID');
         }
         if ($this->with_pal) {
-            $joins['gl'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'geoloc_localities', '$ME.id = pa.localityID');
+            $joins['gl'] = PlSqlJoin::left('geoloc_localities', '$ME.id = pa.localityID');
         }
         return $joins;
     }
@@ -2318,13 +2318,13 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->pc) {
-            $joins['pc'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_corps', '$ME.pid = $PID');
+            $joins['pc'] = PlSqlJoin::left('profile_corps', '$ME.pid = $PID');
         }
         if ($this->pcr) {
-            $joins['pcr'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_corps_rank_enum', '$ME.id = pc.rankid');
+            $joins['pcr'] = PlSqlJoin::left('profile_corps_rank_enum', '$ME.id = pc.rankid');
         }
         foreach($this->pce as $sub => $field) {
-            $joins[$sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_corps_enum', '$ME.id = pc.' . $field);
+            $joins[$sub] = PlSqlJoin::left('profile_corps_enum', '$ME.id = pc.' . $field);
         }
         return $joins;
     }
@@ -2393,22 +2393,22 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_pj) {
-            $joins['pj'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job', '$ME.pid = $PID');
+            $joins['pj'] = PlSqlJoin::left('profile_job', '$ME.pid = $PID');
         }
         if ($this->with_pje) {
-            $joins['pje'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job_enum', '$ME.id = pj.jobid');
+            $joins['pje'] = PlSqlJoin::left('profile_job_enum', '$ME.id = pj.jobid');
         }
         if ($this->with_pjse) {
-            $joins['pjse'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job_sector_enum', '$ME.id = pj.sectorid');
+            $joins['pjse'] = PlSqlJoin::left('profile_job_sector_enum', '$ME.id = pj.sectorid');
         }
         if ($this->with_pjsse) {
-            $joins['pjsse'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job_subsector_enum', '$ME.id = pj.subsectorid');
+            $joins['pjsse'] = PlSqlJoin::left('profile_job_subsector_enum', '$ME.id = pj.subsectorid');
         }
         if ($this->with_pjssse) {
-            $joins['pjssse'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job_subsubsector_enum', '$ME.id = pj.subsubsectorid');
+            $joins['pjssse'] = PlSqlJoin::left('profile_job_subsubsector_enum', '$ME.id = pj.subsubsectorid');
         }
         if ($this->with_pja) {
-            $joins['pja'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_job_alternates', '$ME.subsubsectorid = pj.subsubsectorid');
+            $joins['pja'] = PlSqlJoin::left('profile_job_alternates', '$ME.subsubsectorid = pj.subsubsectorid');
         }
         return $joins;
     }
@@ -2428,7 +2428,7 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_pnw) {
-            $joins['pnw'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_networking', '$ME.pid = $PID');
+            $joins['pnw'] = PlSqlJoin::left('profile_networking', '$ME.pid = $PID');
         }
         return $joins;
     }
@@ -2449,7 +2449,7 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_ptel) {
-            $joins['ptel'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_phones', '$ME.pid = $PID');
+            $joins['ptel'] = PlSqlJoin::left('profile_phones', '$ME.pid = $PID');
         }
         return $joins;
     }
@@ -2469,7 +2469,7 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         if ($this->with_pmed) {
-            $joins['pmed'] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'profile_medals', '$ME.pid = $PID');
+            $joins['pmed'] = PlSqlJoin::left('profile_medals', '$ME.pid = $PID');
         }
         return $joins;
     }
@@ -2504,7 +2504,7 @@ class UserFilter extends PlFilter
     {
         $joins = array();
         foreach ($this->pms as $sub => $tab) {
-            $joins[$sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, $tab, '$ME.pid = $PID');
+            $joins[$sub] = PlSqlJoin::left($tab, '$ME.pid = $PID');
         }
         return $joins;
     }
@@ -2523,9 +2523,9 @@ class UserFilter extends PlFilter
         $joins = array();
         foreach ($this->cts as $sub=>$key) {
             if (is_null($key)) {
-                $joins['c' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'contacts', '$ME.contact = $PID');
+                $joins['c' . $sub] = PlSqlJoin::left('contacts', '$ME.contact = $PID');
             } else {
-                $joins['c' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'contacts', XDB::format('$ME.uid = {?} AND $ME.contact = $PID', substr($key, 5)));
+                $joins['c' . $sub] = PlSqlJoin::left('contacts', '$ME.uid = {?} AND $ME.contact = $PID', substr($key, 5));
             }
         }
         return $joins;
@@ -2560,30 +2560,30 @@ class UserFilter extends PlFilter
         $joins = array();
         foreach ($this->w as $sub=>$key) {
             if (is_null($key)) {
-                $joins['w' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch');
+                $joins['w' . $sub] = PlSqlJoin::left('watch');
             } else {
-                $joins['w' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch', XDB::format('$ME.uid = {?}', substr($key, 5)));
+                $joins['w' . $sub] = PlSqlJoin::left('watch', '$ME.uid = {?}', substr($key, 5));
             }
         }
         foreach ($this->wn as $sub=>$key) {
             if (is_null($key)) {
-                $joins['wn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_nonins', '$ME.ni_id = $UID');
+                $joins['wn' . $sub] = PlSqlJoin::left('watch_nonins', '$ME.ni_id = $UID');
             } else {
-                $joins['wn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_nonins', XDB::format('$ME.uid = {?} AND $ME.ni_id = $UID', substr($key, 5)));
+                $joins['wn' . $sub] = PlSqlJoin::left('watch_nonins', '$ME.uid = {?} AND $ME.ni_id = $UID', substr($key, 5));
             }
         }
         foreach ($this->wn as $sub=>$key) {
             if (is_null($key)) {
-                $joins['wn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_nonins', '$ME.ni_id = $UID');
+                $joins['wn' . $sub] = PlSqlJoin::left('watch_nonins', '$ME.ni_id = $UID');
             } else {
-                $joins['wn' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_nonins', XDB::format('$ME.uid = {?} AND $ME.ni_id = $UID', substr($key, 5)));
+                $joins['wn' . $sub] = PlSqlJoin::left('watch_nonins', '$ME.uid = {?} AND $ME.ni_id = $UID', substr($key, 5));
             }
         }
         foreach ($this->wp as $sub=>$key) {
             if (is_null($key)) {
-                $joins['wp' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_promo');
+                $joins['wp' . $sub] = PlSqlJoin::left('watch_promo');
             } else {
-                $joins['wp' . $sub] = new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'watch_promo', XDB::format('$ME.uid = {?}', substr($key, 5)));
+                $joins['wp' . $sub] = PlSqlJoin::left('watch_promo', '$ME.uid = {?}', substr($key, 5));
             }
         }
         return $joins;
@@ -2602,7 +2602,7 @@ class UserFilter extends PlFilter
     protected function marketingJoins()
     {
         if ($this->with_rm) {
-            return array('rm' => new PlSqlJoin(PlSqlJoin::MODE_LEFT, 'register_marketing', '$ME.uid = $UID'));
+            return array('rm' => PlSqlJoin::left('register_marketing', '$ME.uid = $UID'));
         } else {
             return array();
         }
