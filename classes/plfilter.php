@@ -56,8 +56,10 @@ class PlSqlJoin
     const MODE_RIGHT = 'RIGHT';
     const MODE_INNER = 'INNER';
 
-    public function __construct($mode, $table, $condition)
+    private function __construct($mode, $params)
     {
+        $table = array_shift($params);
+        $condition = call_user_func_array(array('XDB', 'format'), $params);
         if ($mode != self::MODE_LEFT && $mode != self::MODE_RIGHT && $mode != self::MODE_INNER) {
             Platal::page()->kill("Join mode error: unknown mode $mode");
             return;
@@ -113,6 +115,36 @@ class PlSqlJoin
             $str .= "\n";
         }
         return $str;
+    }
+
+    /** Build a left join
+     * @param table The name of the table.
+     * @param condition The condition of the jointure
+     */
+    public static function left()
+    {
+        $params = func_get_args();
+        return new PlSqlJoin(self::MODE_LEFT, $params);
+    }
+
+    /** Build a right join
+     * @param table The name of the table.
+     * @param condition The condition of the jointure
+     */
+    public static function right()
+    {
+        $params = func_get_args();
+        return new PlSqlJoin(self::MODE_RIGHT, $params);
+    }
+
+    /** Build a inner join
+     * @param table The name of the table.
+     * @param condition The condition of the jointure
+     */
+    public static function inner()
+    {
+        $params = func_get_args();
+        return new PlSqlJoin(self::MODE_INNER, $params);
     }
 }
 // }}}
@@ -375,4 +407,5 @@ abstract class PlFilter
 }
 // }}}
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
