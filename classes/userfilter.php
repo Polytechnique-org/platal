@@ -374,7 +374,7 @@ class UFC_NameTokens implements UserFilterCondition
         } else {
             $tokconds = array();
             foreach ($this->tokens as $token) {
-                $tokconds[] = $sub . '.token ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $token);
+                $tokconds[] = $sub . '.token ' . XDB::formatWildcards(XDB::WILDCARD_PREFIX, $token);
             }
             $conds[] = implode(' OR ', $tokconds);
         }
@@ -1326,6 +1326,7 @@ class UFC_MarketingHash implements UserFilterCondition
         return XDB::format('rm.hash = {?}', $this->hash);
     }
 }
+// }}}
 
 /******************
  * ORDERS
