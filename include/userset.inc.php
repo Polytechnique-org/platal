@@ -91,8 +91,6 @@ class SearchSet extends ProfileSet
         $this->conds->addChild($ufc);
 
         $orders = $ufb->getOrders();
-        $orders[] = new UFO_Promo(UserFilter::DISPLAY, true);
-        $orders[] = new UFO_Name(Profile::DN_SORT);
 
         if (S::logged() && Env::has('nonins')) {
             $this->conds = new PFC_And($this->conds,
