@@ -260,7 +260,7 @@ class Profile
     {
         $cond = '';
         if ($this->visibility) {
-            $cond = ' AND pub IN ' . XDB::formatArray($this->visibility);
+            $cond = XDB::format(' AND pub IN {?}', $this->visibility);
         }
         $res = XDB::query("SELECT  *
                              FROM  profile_photos
@@ -290,7 +290,7 @@ class Profile
             $where .= ' AND FIND_IN_SET(\'mail\', pa.flags)';
         }
         if ($this->visibility) {
-            $where .= ' AND pa.pub IN ' . XDB::formatArray($this->visibility);
+            $where .= XDB::format(' AND pa.pub IN {?}', $this->visibility);
         }
         $type = array();
         if ($flags & self::ADDRESS_PRO) {
@@ -300,7 +300,7 @@ class Profile
             $type[] = 'home';
         }
         if (count($type) > 0) {
-            $where .= ' AND pa.type IN ' . XDB::formatArray($type);
+            $where .= XDB::format(' AND pa.type IN {?}', $type);
         }
         $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
         return XDB::iterator('SELECT  pa.text, pa.postalCode, pa.type, pa.latitude, pa.longitude,
@@ -379,7 +379,7 @@ class Profile
             $where .= ' AND pn.network_type = 0'; // XXX hardcoded reference to web site index
         }
         if ($this->visibility) {
-            $where .= ' AND pn.pub IN ' . XDB::formatArray($this->visibility);
+            $where .= XDB::format(' AND pn.pub IN {?}', $this->visibility);
         }
         $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
         return XDB::iterator('SELECT  pne.name, pne.icon,
@@ -411,8 +411,8 @@ class Profile
         $where = XDB::format('pj.pid = {?}', $this->id());
         $cond  = 'TRUE';
         if ($this->visibility) {
-            $where .= ' AND pj.pub IN ' . XDB::formatArray($this->visibility);
-            $cond  =  'pj.email_pub IN ' . XDB::formatArray($this->visibility);
+            $where .= XDB::format(' AND pj.pub IN {?}', $this->visibility);
+            $cond  = XDB::format('pj.email_pub IN {?}', $this->visibility);
         }
         $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
         return XDB::iterator('SELECT  pje.name, pje.acronym, pje.url, pje.email, pje.NAF_code,
@@ -510,9 +510,9 @@ class Profile
                            LEFT JOIN  profile_phones AS pp ON (pp.pid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
                            LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
                            LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
-                               WHERE  p.pid IN ' . XDB::formatArray($pids) . '
+                               WHERE  p.pid IN {?}
                             GROUP BY  p.pid
-                                   ' . $order);
+                                   ' . $order, $pids);
     }
 
     public static function getPID($login)
@@ -543,8 +543,8 @@ class Profile
         return XDB::fetchAllAssoc('uid', 'SELECT  ap.uid, ap.pid
                                             FROM  account_profiles AS ap
                                            WHERE  FIND_IN_SET(\'owner\', ap.perms)
-                                                  AND ap.uid IN ' . XDB::formatArray($uids) .'
-                                               ' . $order);
+                                                  AND ap.uid IN {?}
+                                               ' . $order, $uids);
     }
 
     /** Return the profile associated with the given login.

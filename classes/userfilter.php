@@ -70,7 +70,7 @@ class UFC_Hruid implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $ufc->requireAccounts();
-        return 'a.hruid IN ' . XDB::formatArray($this->hruids);
+        return XDB::format('a.hruid IN {?}', $this->hruids);
     }
 }
 // }}}
@@ -94,7 +94,7 @@ class UFC_Hrpid implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $uf->requireProfiles();
-        return 'p.hrpid IN ' . XDB::formatArray($this->hrpids);
+        return XDB::format('p.hrpid IN {?}', $this->hrpids);
     }
 }
 // }}}
@@ -237,7 +237,7 @@ class UFC_EducationSchool implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addEducationFilter();
-        return 'pe' . $sub . '.eduid IN ' . XDB::formatArray($this->val);
+        return XDB::format('pe' . $sub . '.eduid IN {?}', $this->val);
     }
 }
 // }}}
@@ -258,7 +258,7 @@ class UFC_EducationDegree implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addEducationFilter();
-        return 'pee' . $sub . '.degreeid IN ' . XDB::formatArray($this->val);
+        return XDB::format('pee' . $sub . '.degreeid IN {?}', $this->val);
     }
 }
 // }}}
@@ -279,7 +279,7 @@ class UFC_EducationField implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addEducationFilter();
-        return 'pee' . $sub . '.fieldid IN ' . XDB::formatArray($this->val);
+        return XDB::format('pee' . $sub . '.fieldid IN {?}', $this->val);
     }
 }
 // }}}
@@ -368,9 +368,9 @@ class UFC_NameTokens implements UserFilterCondition
         $sub = $uf->addNameTokensFilter(!($this->exact || $this->soundex));
         $conds = array();
         if ($this->soundex) {
-            $conds[] = $sub . '.soundex IN ' . XDB::formatArray($this->tokens);
+            $conds[] = XDB::format($sub . '.soundex IN {?}', $this->tokens);
         } else if ($this->exact) {
-            $conds[] = $sub . '.token IN ' . XDB::formatArray($this->tokens);
+            $conds[] = XDB::format($sub . '.token IN {?}', $this->tokens);
         } else {
             $tokconds = array();
             foreach ($this->tokens as $token) {
@@ -380,7 +380,7 @@ class UFC_NameTokens implements UserFilterCondition
         }
 
         if ($this->flags != null) {
-            $conds[] = $sub . '.flags IN ' . XDB::formatArray($this->flags);
+            $conds[] = XDB::format($sub . '.flags IN {?}', $this->flags);
         }
 
         return implode(' AND ', $conds);
@@ -596,7 +596,7 @@ class UFC_Binet implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addBinetsFilter();
-        return $sub . '.binet_id IN ' . XDB::formatArray($this->val);
+        return XDB::format($sub . '.binet_id IN {?}', $this->val);
     }
 }
 // }}}
@@ -658,7 +658,7 @@ class UFC_Email implements UserFilterCondition
 
         if (count($foreign) > 0) {
             $sub = $uf->addEmailRedirectFilter($foreign);
-            $cond[] = 'e' . $sub . '.email IS NOT NULL OR a.email IN ' . XDB::formatArray($foreign);
+            $cond[] = XDB::format('e' . $sub . '.email IS NOT NULL OR a.email IN {?}', $foreign);
         }
         if (count($virtual) > 0) {
             $sub = $uf->addVirtualEmailFilter($virtual);
@@ -730,7 +730,7 @@ abstract class UFC_Address implements UserFilterCondition
             }
         }
         if (count($types)) {
-            $conds[] = $sub . '.type IN ' . XDB::formatArray($types);
+            $conds[] = XDB::foramt($sub . '.type IN {?}', $types);
         }
 
         if ($this->flags != self::FLAG_ANY) {
@@ -857,7 +857,7 @@ class UFC_AddressField extends UFC_Address
         default:
             Platal::page()->killError('Invalid address field type: ' . $this->fieldtype);
         }
-        $conds[] = $sub . '.' . $field . ' IN ' . XDB::formatArray($this->val);
+        $conds[] = XDB::format($sub . '.' . $field . ' IN {?}', $this->val);
 
         return implode(' AND ', $conds);
     }
@@ -1258,7 +1258,7 @@ class UFC_WatchRegistration extends UFC_UserRelated
         if (count($uids) == 0) {
             return PlFilterCondition::COND_FALSE;
         } else {
-            return '$UID IN ' . XDB::formatArray($uids);
+            return XDB::format('$UID IN {?}', $uids);
         }
     }
 }
@@ -1286,7 +1286,7 @@ class UFC_WatchPromo extends UFC_UserRelated
         } else {
             $sube = $uf->addEducationFilter(true, $this->grade);
             $field = 'pe' . $sube . '.' . UserFilter::promoYear($this->grade);
-            return $field . ' IN ' . XDB::formatArray($promos);
+            return XDB::format($field . ' IN {?}', $promos);
         }
     }
 }
@@ -1602,7 +1602,7 @@ class UserFilter extends PlFilter
         $lim = $limit->getSql();
         $cond = '';
         if (!is_null($uids)) {
-            $cond = ' AND a.uid IN ' . XDB::formatArray($uids);
+            $cond = XDB::format(' AND a.uid IN {?}', $uids);
         }
         $fetched = XDB::fetchColumn('SELECT SQL_CALC_FOUND_ROWS  a.uid
                                     ' . $this->query . $cond . '
@@ -1620,7 +1620,7 @@ class UserFilter extends PlFilter
         $lim = $limit->getSql();
         $cond = '';
         if (!is_null($pids)) {
-            $cond = ' AND p.pid IN ' . XDB::formatArray($pids);
+            $cond = XDB::format(' AND p.pid IN {?}', $pids);
         }
         $fetched = XDB::fetchColumn('SELECT  SQL_CALC_FOUND_ROWS  p.pid
                                     ' . $this->query . $cond . '
@@ -2207,7 +2207,8 @@ class UserFilter extends PlFilter
                 if (!is_array($key)) {
                     $key = array($key);
                 }
-                $joins['e' . $sub] = PlSqlJoin::left('emails', '$ME.uid = $UID AND $ME.flags != \'filter\' AND $ME.email IN ' . XDB::formatArray($key));
+                $joins['e' . $sub] = PlSqlJoin::left('emails', '$ME.uid = $UID AND $ME.flags != \'filter\' 
+                                                               AND $ME.email IN {?}' . $key);
             }
         }
         foreach ($this->al as $sub=>$key) {
@@ -2221,7 +2222,8 @@ class UserFilter extends PlFilter
                 if (!is_array($key)) {
                     $key = array($key);
                 }
-                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') AND $ME.alias IN ' . XDB::formatArray($key));
+                $joins['al' . $sub] = PlSqlJoin::left('aliases', '$ME.uid = $UID AND $ME.type IN (\'alias\', \'a_vie\') 
+                                                                  AND $ME.alias IN {?}', $key);
             }
         }
         foreach ($this->ve as $sub=>$key) {
@@ -2231,7 +2233,7 @@ class UserFilter extends PlFilter
                 if (!is_array($key)) {
                     $key = array($key);
                 }
-                $joins['v' . $sub] = PlSqlJoin::left('virtual', '$ME.type = \'user\' AND $ME.alias IN ' . XDB::formatArray($key));
+                $joins['v' . $sub] = PlSqlJoin::left('virtual', '$ME.type = \'user\' AND $ME.alias IN {?}', $key);
             }
             $joins['vr' . $sub] = PlSqlJoin::left('virtual_redirect',
                                                   '$ME.vid = v' . $sub . '.vid
