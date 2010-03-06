@@ -497,22 +497,19 @@ class Profile
                                 FROM  profiles AS p
                           INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                           INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
-                          INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid
-                                                               AND pn_f.typeid = ' . self::getNameTypeId('firstname', true) . ')
-                          INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid
-                                                               AND pn_l.typeid = ' . self::getNameTypeId('lastname', true) . ')
-                           LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid
-                                                                AND pn_uf.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
-                           LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid
-                                                                AND pn_ul.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
-                           LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid
-                                                               AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
+                          INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid AND pn_f.typeid = {?})
+                          INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid AND pn_l.typeid = {?})
+                           LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid AND pn_uf.typeid = {?})
+                           LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid AND pn_ul.typeid = {?})
+                           LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid AND pn_n.typeid = {?})
                            LEFT JOIN  profile_phones AS pp ON (pp.pid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
                            LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
                            LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
                                WHERE  p.pid IN {?}
                             GROUP BY  p.pid
-                                   ' . $order, $pids);
+                                   ' . $order, self::getNameTypeId('firstname'),
+                            self::getNameTypeId('lastname'), self::getNameTypeId('firstname_ordinary'),
+                            self::getNameTypeId('lastname_ordinary'), self::getNameTypeId('nickname'), $pids);
     }
 
     public static function getPID($login)
@@ -614,20 +611,16 @@ class Profile
             || $name == self::DN_SHORT || $name == self::DN_SORT;
     }
 
-    public static function getNameTypeId($type, $for_sql = false)
+    public static function getNameTypeId($type)
     {
         if (!S::has('name_types')) {
-            $table = XDB::fetchAllAssoc('type', 'SELECT  id, type
-                                                   FROM  profile_name_enum');
+            $table = new PlDict(XDB::fetchAllAssoc('type', 'SELECT  id, type
+                                                              FROM  profile_name_enum'));
             S::set('name_types', $table);
         } else {
             $table = S::v('name_types');
         }
-        if ($for_sql) {
-            return XDB::escape($table[$type]);
-        } else {
-            return $table[$type];
-        }
+        return $table->i($type);
     }
 
     public static function rebuildSearchTokens($pid)
