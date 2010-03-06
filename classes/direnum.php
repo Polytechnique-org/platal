@@ -54,24 +54,30 @@ class DirEnum
 
     static private function init($type)
     {
-        $cls = "DE_" . ucfirst($type);
-        self::$enumerations[$type] = new $cls();
+        if (S::has('__DE_' . $type)) {
+            self::$enumerations[$type] = S::v('__DE_' . $type);
+        } else {
+            $cls = "DE_" . ucfirst($type);
+            $obj = new $cls();
+            self::$enumerations[$type] = $obj;
+            if ($obj->capabilities & DirEnumeration::SAVE_IN_SESSION) {
+                S::set('__DE_' . $type, $obj);
+            }
+        }
     }
 
     /** Retrieves all options for a given type
      * @param $type Type of enum for which options are requested
      * @return Array of the results
      */
-    static public function getOptions()
+    static public function getOptions($type)
     {
-        $args = func_get_args();
-        $type = array_shift($args);
         if (!array_key_exists($type, self::$enumerations)) {
             self::init($type);
         }
         $obj = self::$enumerations[$type];
         if ($obj->capabilities & DirEnumeration::HAS_OPTIONS) {
-            return call_user_func_array(array($obj, 'getOptions'), $args);
+            return call_user_func(array($obj, 'getOptions'));
         } else {
             return array();
         }
@@ -81,16 +87,14 @@ class DirEnum
      * @param $type Type of enum for which options are requested
      * @return PlIterator over the results
      */
-    static public function getOptionsIter()
+    static public function getOptionsIter($type)
     {
-        $args = func_get_args();
-        $type = array_shift($args);
         if (!array_key_exists($type, self::$enumerations)) {
             self::init($type);
         }
         $obj = self::$enumerations[$type];
         if ($obj->capabilities & DirEnumeration::HAS_OPTIONS) {
-            return call_user_func_array(array($obj, 'getOptionsIter'), $args);
+            return call_user_func(array($obj, 'getOptionsIter'));
         } else {
             return PlIteratorUtils::fromArray(array());
         }
@@ -101,16 +105,14 @@ class DirEnum
      * @param $text Text to autocomplete
      * @return PlIterator over the results
      */
-    static public function getAutoComplete()
+    static public function getAutoComplete($type, $text)
     {
-        $args = func_get_args();
-        $type = array_shift($args);
         if (!array_key_exists($type, self::$enumerations)) {
             self::init($type);
         }
         $obj = self::$enumerations[$type];
         if ($obj->capabilities & DirEnumeration::HAS_AUTOCOMP) {
-            return call_user_func_array(array($obj, 'getAutoComplete'), $args);
+            return call_user_func(array($obj, 'getAutoComplete'), $text);
         } else {
             return PlIteratorUtils::fromArray(array());
         }
@@ -141,7 +143,8 @@ class DirEnum
      */
     static public function getID($type, $text, $mode = XDB::WILDCARD_EXACT)
     {
-        return array_shift(self::getIDs($type, $text, $mode));
+        $ids = self::getIDs($type, $text, $mode);
+        return array_shift($ids);
     }
 }
 // }}}
@@ -153,6 +156,7 @@ abstract class DirEnumeration
 
     const HAS_OPTIONS  = 0x001;
     const HAS_AUTOCOMP = 0x002;
+    const SAVE_IN_SESSION = 0x004;
 
     public $capabilities = 0x003; // self::HAS_OPTIONS | self::HAS_AUTOCOMP;
 
@@ -414,7 +418,7 @@ abstract class DE_WithSuboption extends DirEnumeration
 // returns 'system' names ('lastname', 'lastname_marital', ...)
 class DE_NameTypes extends DirEnumeration
 {
-    public $capabilities = self::HAS_OPTIONS;
+    public $capabilities = 0x005; // self::HAS_OPTIONS | self::SAVE_IN_SESSION;
 
     protected $from     = 'profile_name_enum';
     protected $valfield = 'type';
