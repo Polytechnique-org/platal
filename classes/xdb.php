@@ -159,7 +159,7 @@ class XDB
     // Produce the SQL statement representing an array
     public static function formatArray(array $array)
     {
-        return '(' . implode(', ', array_map(array('XDB', 'escape'), $array)) . ')';
+        return self::escape($array);
     }
 
     const WILDCARD_EXACT    = 0x00;
@@ -317,9 +317,12 @@ class XDB
           case 'object':
             if ($var instanceof PlFlagSet) {
                 return "'" . addslashes($var->flags()) . "'";
+            } else {
+                return "'".addslashes(serialize($var))."'";
             }
+
           case 'array':
-            return "'".addslashes(serialize($var))."'";
+            return '(' . implode(', ', array_map(array('XDB', 'escape'), $var)) . ')';
 
           default:
             die(var_export($var, true).' is not a valid for a database entry');
