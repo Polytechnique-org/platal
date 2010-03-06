@@ -49,8 +49,6 @@ class RegisterModule extends PLModule
         }
 
         if ($hash) {
-            require_once 'directory.enums.inc.php';
-
             $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
             $nameTypes = array_flip($nameTypes);
             $res = XDB::query("SELECT  a.uid, pd.promo, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid,
@@ -270,7 +268,6 @@ class RegisterModule extends PLModule
             return PL_FORBIDDEN;
         }
 
-        require_once 'directory.enums.inc.php';
         $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
         $nameTypes = array_flip($nameTypes);
 

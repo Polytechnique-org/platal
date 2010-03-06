@@ -697,7 +697,6 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/add_accounts.tpl');
 
         if (Env::has('add_type') && Env::has('people')) {
-            require_once 'directory.enums.inc.php';
             $lines = explode("\n", Env::t('people'));
             $separator = Env::t('separator');
             $promotion = Env::i('promotion');

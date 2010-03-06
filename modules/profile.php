@@ -638,8 +638,6 @@ class ProfileModule extends PLModule
 
         $page->setTitle('Conseil Pro');
 
-        require_once "directory.enums.inc.php";
-
         // Retrieval of sector names
         $sectors = DirEnum::getOptions(DirEnum::SECTORS);
         $sectors[''] = '';

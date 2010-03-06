@@ -193,7 +193,6 @@ class SearchModule extends PLModule
             die();
         }
 
-        require_once 'directory.enums.inc.php';
         $enums = array(
             'binetTxt'           => DirEnum::BINETS,
             'groupexTxt'         => DirEnum::GROUPESX,
@@ -242,7 +241,6 @@ class SearchModule extends PLModule
     {
         // Give the list of all values possible of type and builds a select input for it
         $ids = null;
-        require_once 'directory.enums.inc.php';
 
         switch ($type) {
         case 'binet':

@@ -485,7 +485,6 @@ class Profile
             $order = '';
         }
 
-        require_once 'directory.enums.inc.php';
         return XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
                                       pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
                                       IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,

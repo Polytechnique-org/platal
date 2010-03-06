@@ -31,6 +31,8 @@ function __autoload($cls)
                 || substr($cls, 0, 8) == 'plfilter') {
             __autoload('plfilter');
             return;
+        } else if (substr($cls, 0, 3) == 'de_') {
+            __autoload('direnum');
         } else if (substr($cls, -3, 3) == 'req') {
             @include 'validations.inc.php';
             return;

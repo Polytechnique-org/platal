@@ -129,7 +129,6 @@ class VCard extends PlVCard
         if (!is_null($user)) {
             $groups = $user->groups();
             if (count($groups)) {
-                require_once "directory.enums.inc.php";
                 $gn = DirEnum::getOptions(DirEnum::GROUPESX);
                 $gns = array();
                 foreach (array_keys($groups) as $gid) {
@@ -142,7 +141,6 @@ class VCard extends PlVCard
         $binets = $pf->getBinets();
 
         if (count($binets)) {
-            require_once "directory.enums.inc.php";
             $bn = DirEnum::getOptions(DirEnum::BINETS);
             $bns = array();
             foreach ($binets as $bid) {
@@ -151,7 +149,6 @@ class VCard extends PlVCard
             $entry->set('X-BINETS', join(', ', $bid));
         }
         if (!empty($pf->section)) {
-            require_once "directory.enums.inc.php";
             $sections = DirEnum::getOptions(DirEnum::SECTIONS);
             $entry->set('X-SECTION', $sections[$pf->section]);
         }

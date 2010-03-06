@@ -175,7 +175,6 @@ function get_nouveau_infos($method, $params) {
     }
     // We check we actually have an identification number.
     if(!empty($params[1])) {
-        require_once 'directory.enums.inc.php';
         $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
         $nameTypes = array_flip($nameTypes);
 
