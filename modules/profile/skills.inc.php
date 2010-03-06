@@ -39,7 +39,7 @@ class ProfileSkill implements ProfileSetting
             $res = XDB::iterRow("SELECT  s.id, s.{$this->text_field}, i.level
                                    FROM  profile_{$this->table}_enum AS s
                              INNER JOIN  profile_{$this->table}s AS i ON(s.id = i.{$this->skill_field})
-                                  WHERE  i.uid = {?}",
+                                  WHERE  i.pid = {?}",
                                 $page->pid());
             while (list($sid, $text, $level) = $res->next()) {
                 $value[$sid] = array('text' => $text, 'level' => $level);
@@ -71,7 +71,7 @@ class ProfileSkill implements ProfileSetting
             return;
         }
         foreach ($value as $id=>&$skill) {
-            XDB::execute("INSERT INTO  profile_{$this->table}s (uid, {$this->skill_field}, level)
+            XDB::execute("INSERT INTO  profile_{$this->table}s (pid, {$this->skill_field}, level)
                                VALUES  ({?}, {?}, {?})",
                          $page->pid(), $id, $skill['level']);
         }
