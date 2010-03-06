@@ -197,7 +197,9 @@ abstract class DirEnumeration
 
     public function getOptionsIter()
     {
-        return PlIteratorUtils::fromArray(self::expandArray($this->getOptions()), 1, true);
+        $options = $this->getOptions();
+        $options = self::expandArray($options);
+        return PlIteratorUtils::fromArray($options, 1, true);
     }
 
     // {{{ function getIDs
@@ -276,7 +278,7 @@ abstract class DirEnumeration
 
         return XDB::iterator('SELECT ' . $this->valfield . ' AS field'
                                        . ($this->ac_distinct ? (', COUNT(DISTINCT ' . $this->ac_unique . ') AS nb') : '')
-                                       . ($this->ac_withid ? (', ' . $this->from . '.' . $this->idfield . ' AS id') : '') . '
+                                       . ($this->ac_withid ? (', ' . $this->idfield . ' AS id') : '') . '
                                 FROM ' . $this->from . '
                                      ' . $this->ac_join . '
                                WHERE ' . $where . '
@@ -456,7 +458,7 @@ class DE_GroupesX extends DirEnumeration
     protected $from      = 'groups';
     protected $where     = 'WHERE (cat = \'GroupesX\' OR cat = \'Institutions\') AND pub = \'public\'';
 
-    protected $ac_join   = "INNER JOIN group_members ON (groups.id = memb.asso_id
+    protected $ac_join   = "INNER JOIN group_members ON (groups.id = group_members.asso_id
                                     AND (groups.cat = 'GroupesX' OR groups.cat = 'Institutions')
                                     AND groups.pub = 'public')";
     protected $ac_unique = 'group_members.uid';
@@ -468,6 +470,7 @@ class DE_GroupesX extends DirEnumeration
 // {{{ class DE_EducationSchools
 class DE_EducationSchools extends DirEnumeration
 {
+    protected $idfield   = 'profile_education_enum.id';
     protected $valfield  = 'profile_education_enum.name';
     protected $valfield2 = 'profile_education_enum.abbreviation';
     protected $from      = 'profile_education_enum';
@@ -526,7 +529,7 @@ class DE_Countries extends DirEnumeration
     protected $valfield2 = 'geoloc_countries.country';
     protected $from      = 'geoloc_countries';
 
-    protected $ac_join   = 'INNER JOIN profile_addresses ON (geoloc_countries.iso_3166_1_a2 = profile_addresses.countryFR';
+    protected $ac_join   = 'INNER JOIN profile_addresses ON (geoloc_countries.iso_3166_1_a2 = profile_addresses.countryId)';
     protected $ac_unique = 'profile_addresses.pid';
 }
 // }}}
@@ -547,10 +550,11 @@ class DE_AdminAreas extends DE_WithSuboption
 // {{{ class DE_Localities
 class DE_Localities extends DirEnumeration
 {
+    protected $idfield   = 'geoloc_localities.id';
     protected $valfield  = 'geoloc_localities.name';
     protected $from      = 'geoloc_localities';
 
-    protected $ac_join   = 'profile_addresses ON (profile_addresses.localityID = geoloc_localities.id)';
+    protected $ac_join   = 'INNER JOIN profile_addresses ON (profile_addresses.localityID = geoloc_localities.id)';
     protected $ac_unique = 'profile_addresses.pid';
 }
 // }}}
@@ -560,6 +564,7 @@ class DE_Localities extends DirEnumeration
 // {{{ class DE_Companies
 class DE_Companies extends DirEnumeration
 {
+    protected $idfield   = 'profile_job_enum.id';
     protected $valfield  = 'profile_job_enum.name';
     protected $valfield2 = 'profile_job_enum.acronym';
     protected $from      = 'profile_job_enum';
@@ -572,6 +577,7 @@ class DE_Companies extends DirEnumeration
 // {{{ class DE_Sectors
 class DE_Sectors extends DirEnumeration
 {
+    protected $idfield   = 'profile_job_sector_enum.id';
     protected $valfield  = 'profile_job_sector_enum.name';
     protected $from      = 'profile_job_sector_enum';
 
@@ -581,7 +587,7 @@ class DE_Sectors extends DirEnumeration
 // }}}
 
 // {{{ class DE_JobDescription
-class DE_JobDescription
+class DE_JobDescription extends DirEnumeration
 {
     protected $valfield = 'profile_job.description';
     protected $from     = 'profile_job';
@@ -601,7 +607,7 @@ class DE_Networking extends DirEnumeration
     protected $from     = 'profile_networking_enum';
 
 
-    protected $ac_join   = 'INNER JOIN profile_networking ON (profile_networking.network_type = profile_networking_enum.network_type';
+    protected $ac_join   = 'INNER JOIN profile_networking ON (profile_networking.network_type = profile_networking_enum.network_type)';
     protected $ac_unique = 'profile_networking.pid';
 }
 // }}}

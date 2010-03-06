@@ -33,6 +33,7 @@ function __autoload($cls)
             return;
         } else if (substr($cls, 0, 3) == 'de_') {
             __autoload('direnum');
+            return;
         } else if (substr($cls, -3, 3) == 'req') {
             @include 'validations.inc.php';
             return;
