@@ -438,6 +438,11 @@ class PlSubIterator implements PlIterator
         return ($this->source->last() && $this->next == null);
     }
 
+    public function first()
+    {
+        return $this->source->first();
+    }
+
     // Called by a subiterator to "rewind" the core iterator
     public function setNext($item)
     {
@@ -516,6 +521,11 @@ class PlInnerSubIterator implements PlIterator
     public function last()
     {
         return $this->over;
+    }
+
+    public function first()
+    {
+        return false;
     }
 
 }
