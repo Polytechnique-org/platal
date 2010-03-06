@@ -2015,7 +2015,7 @@ class UserFilter extends PlFilter
         /* We don't return joins, since with_sn forces the SELECT to run on search_name first */
         if ($this->with_sn && !$this->with_forced_sn) {
             return array(
-                'sn' => PlSqlJoin::left('search_name', '$ME.uid = $PID')
+                'sn' => PlSqlJoin::left('search_name', '$ME.pid = $PID')
             );
         } else {
             return array();

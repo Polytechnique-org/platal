@@ -112,7 +112,7 @@ class UserFilterBuilder
     }
 
     public function i($key, $def = 0) {
-        return intval(trim(Env::i($this->envprefix . $key, $def)));
+        return Env::i($this->envprefix . $key, $def);
     }
 
     public function v($key, $def = null) {
@@ -490,7 +490,7 @@ class UFBF_Quick extends UFB_Field
             } else {
                 $flags = array('public');
             }
-            if ($ufb->i('soundex')) {
+            if ($ufb->i('with_soundex')) {
                 $soundex = true;
                 $st = array();
                 foreach ($strings as $string) {
@@ -1051,4 +1051,6 @@ class UFBF_MentorExpertise extends UFBF_Text
     }
 }
 // }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
