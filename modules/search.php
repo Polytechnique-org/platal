@@ -206,7 +206,7 @@ class SearchModule extends PLModule
             'nationaliteTxt'     => DirEnum::NATIONALITIES,
             'schoolTxt'          => DirEnum::EDUSCHOOLS,
         );
-        if (!array_key_exists($enums, $type)) {
+        if (!array_key_exists($type, $enums)) {
             exit();
         }
 

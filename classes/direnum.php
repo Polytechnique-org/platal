@@ -276,7 +276,7 @@ abstract class DirEnumeration
 
         return XDB::iterator('SELECT ' . $this->valfield . ' AS field'
                                        . ($this->ac_distinct ? (', COUNT(DISTINCT ' . $this->ac_unique . ') AS nb') : '')
-                                       . ($this->ac_withid ? (', ' . $this->idfield . ' AS id') : '') . '
+                                       . ($this->ac_withid ? (', ' . $this->from . '.' . $this->idfield . ' AS id') : '') . '
                                 FROM ' . $this->from . '
                                      ' . $this->ac_join . '
                                WHERE ' . $where . '
