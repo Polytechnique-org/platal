@@ -304,6 +304,11 @@ div.contact-list div.contact {
     color: #000;
 }
 
+div.contact {
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+}
+
 div.contact-list div.grayed {
     font-style: italic;
     color: #444;
@@ -315,12 +320,16 @@ div.contact-list div.contact:hover {
 }
 
 .contact .photo {
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
     float: left;
 }
 
 .contact .photo img {
     width: 40px;
     margin-right: 4px;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
 }
 
 div.contact div.identity {
