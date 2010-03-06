@@ -107,24 +107,44 @@ class UserFilterBuilder
 
     /** Wrappers around Env::i/s/..., to add envprefix
      */
-    public function s($key, $def = '') {
-        return trim(Env::s($this->envprefix . $key, $def));
+    public function s($key, $def = '')
+    {
+        return Env::s($this->envprefix . $key, $def);
     }
 
-    public function i($key, $def = 0) {
+    public function t($key, $def = '')
+    {
+        return Env::t($this->envprefix . $key, $def);
+    }
+
+    public function i($key, $def = 0)
+    {
         return Env::i($this->envprefix . $key, $def);
     }
 
-    public function v($key, $def = null) {
+    public function v($key, $def = null)
+    {
         return Env::v($this->envprefix . $key, $def);
     }
 
-    public function has($key) {
-        return (Env::has($this->envprefix . $key) && strlen($this->s($key, '')) > 0);
+    public function b($key, $def = false)
+    {
+        return Env::b($this->envprefix . $key, $def);
     }
 
-    public function isOn($key) {
-        return (Env::has($this->envprefix . $key) && $this->s($key) == 'on');
+    public function has($key)
+    {
+        return Env::has($this->envprefix . $key);
+    }
+
+    public function blank($key, $strict = false)
+    {
+        return Env::blank($key, $strict);
+    }
+
+    public function isOn($key)
+    {
+        return $this->has($key) && $this->t($key) == 'on';
     }
 }
 // }}}
@@ -280,12 +300,12 @@ abstract class UFBF_Text extends UFB_Field
 
     protected function check(UserFilterBuilder &$ufb)
     {
-        if (!$ufb->has($this->envfield)) {
+        if ($ufb->blank($this->envfield)) {
             $this->empty = true;
             return true;
         }
 
-        $this->val = $ufb->s($this->envfield);
+        $this->val = $ufb->t($this->envfield);
         if (strlen($this->val) < $this->minlength) {
             return $this->raise("Le champ %s est trop court (minimum {$this->minlength}).");
         } else if (strlen($this->val) > $this->maxlength) {
@@ -317,7 +337,7 @@ abstract class UFBF_Range extends UFB_Field
 
     protected function check(UserFilterBuilder &$ufb)
     {
-        if (!$ufb->has($this->envfield)) {
+        if ($ufb->blank($this->envfield)) {
             $this->empty = true;
             return true;
         }
@@ -340,7 +360,7 @@ abstract class UFBF_Index extends UFB_Field
 {
     protected function check(UserFilterBuilder &$ufb)
     {
-        if (!$ufb->has($this->envfield)) {
+        if ($ufb->blank($this->envfield)) {
             $this->empty = true;
         }
         $this->val = $ufb->i($this->envfield);
@@ -365,7 +385,7 @@ abstract class UFBF_Enum extends UFB_Field
 
     protected function check(UserFilterBuilder &$ufb)
     {
-        if (!$ufb->has($this->envfield)) {
+        if ($ufb->blank($this->envfield)) {
             $this->empty = true;
             return true;
         }
@@ -388,12 +408,12 @@ abstract class UFBF_Bool extends UFB_Field
 {
     protected function check(UserFilterBuilder &$ufb)
     {
-        if (!$ufb->has($this->envfield)) {
+        if ($ufb->blank($this->envfield)) {
             $this->empty = true;
             return true;
         }
 
-        $this->val = ($ufb->i($this->envfield) != 0);
+        $this->val = $ufb->b($this->envfield);
         return true;
     }
 }
@@ -418,12 +438,12 @@ abstract class UFBF_Mixed extends UFB_Field
 
     protected function check(UserFilterBuilder &$ufb)
     {
-        if (!$ufb->has($this->envfieldindex) && !$ufb->has($this->envfield)) {
+        if ($ufb->blank($this->envfieldindex) && $ufb->blank($this->envfield)) {
             $this->empty = true;
             return true;
         }
 
-        if ($ufb->has($this->envfieldindex)) {
+        if (!$ufb->blank($this->envfieldindex)) {
             $index = $ufb->v($this->envfieldindex);
             if (is_int($index)) {
                 $index = intval($index);
@@ -432,8 +452,8 @@ abstract class UFBF_Mixed extends UFB_Field
             }
             $this->val = array($index);
         } else {
-            $indexes = DirEnum::getIDs($this->direnum, $ufb->s($this->envfield), 
-                $ufb->i('exact') ? XDB::WILDCARD_EXACT : XDB::WILDCARD_CONTAINS);
+            $indexes = DirEnum::getIDs($this->direnum, $ufb->t($this->envfield), 
+                $ufb->b('exact') ? XDB::WILDCARD_EXACT : XDB::WILDCARD_CONTAINS);
             if (count($indexes) == 0) {
                 return false;
             }
@@ -449,12 +469,12 @@ class UFBF_Quick extends UFB_Field
 {
     protected function check(UserFilterBuilder &$ufb)
     {
-        if (!$ufb->has($this->envfield)) {
+        if ($ufb->blank($this->envfield)) {
             $this->empty = true;
             return true;
         }
 
-        $this->val = str_replace('*', '%', replace_accent($ufb->s($this->envfield)));
+        $this->val = str_replace('*', '%', replace_accent($ufb->t($this->envfield)));
 
         return true;
     }
@@ -490,7 +510,7 @@ class UFBF_Quick extends UFB_Field
             } else {
                 $flags = array('public');
             }
-            if ($ufb->i('with_soundex')) {
+            if ($ufb->b('with_soundex')) {
                 $soundex = true;
                 $st = array();
                 foreach ($strings as $string) {
@@ -500,11 +520,7 @@ class UFBF_Quick extends UFB_Field
                 $soundex = false;
                 $st = $strings;
             }
-            if ($ufb->i('exact')) {
-                $exact = true;
-            } else {
-                $exact = false;
-            }
+            $exact =$ufb->b('exact');
             $conds->addChild(new UFC_NameTokens($st, $flags, $soundex, $exact));
 
             $ufb->addOrder(new UFO_Score());
@@ -565,7 +581,7 @@ class UFBF_Name extends UFBF_Text
 
     protected function buildUFC(UserFilterBuilder &$ufb)
     {
-        return new UFC_NameTokens($this->val, array(), $ufb->i('with_soundex'), $ufb->i('exact'));
+        return new UFC_NameTokens($this->val, array(), $ufb->b('with_soundex'), $ufb->b('exact'));
     }
 }
 // }}}
@@ -585,7 +601,7 @@ class UFBF_Promo extends UFB_Field
 
     protected function check(UserFilterBuilder &$ufb)
     {
-        if (!$ufb->has($this->envfield) || !$ufb->has($this->envfieldcomp)) {
+        if ($ufb->blank($this->envfield) || $ufb->blank($this->envfieldcomp)) {
             $this->empty = true;
             return true;
         }
