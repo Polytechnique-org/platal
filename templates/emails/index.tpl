@@ -30,35 +30,46 @@
   }
 </script>
 {/literal}
-<table class="bicol">
-  <tr>
-    <th>Mes adresses polytechniciennes à vie</th>
-  </tr>
-  <tr class="impair">
-    <td>
-      Tes adresses polytechniciennes sont&nbsp;:<br /><br />
-        <div>
-          {iterate from=$aliases item=a}
-          <label><input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='Ajax.update_html(null,"{$globals->baseurl}/emails/best/{$a.alias}?token={xsrf_token}",bestaliasUpdated)' />
-          {if $a.a_vie}(**){/if}{if $a.cent_ans}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et
-          @{#globals.mail.domain2#}</label>
-          {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
-          <br />
-          {/iterate}
-        </div>
-      <div id="bestalias-msg" style="position:absolute;"></div>
+
+<fieldset>
+  <legend>{icon name="email"} Mes adresses polytechniciennes à vie</legend>
+
+  <div>
+    Tes adresses polytechniciennes sont&nbsp;:<br />
+    <div>
+      {iterate from=$aliases item=a}
+      <label><input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='Ajax.update_html(null,"{$globals->baseurl}/emails/best/{$a.alias}?token={xsrf_token}",bestaliasUpdated)' />
+      {if $a.a_vie}(**){/if}{if $a.cent_ans}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et
+      @{#globals.mail.domain2#}</label>
+      {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
       <br />
-      L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche&hellip;).
-      Coche une autre case pour en changer&nbsp;!
-    </td>
-  </tr>
-  <tr class="pair">
-    <td>
-      (M4X signifie <em>mail for X</em>, son intérêt est de te doter d'une adresse à vie
-      moins "voyante" que l'adresse @{#globals.mail.domain#}).
-    </td>
-  </tr>
-</table>
+      {/iterate}
+    </div>
+    <p class="smaller">
+    L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche&hellip;).
+    <br />Coche une autre case pour en changer&nbsp;!
+    </p>
+
+    <div id="bestalias-msg" style="position:absolute;"></div>
+    {if $melix}
+    <br />
+    <div>
+    Tu dispose également de l'alias&nbsp;: <strong>{$melix}</strong>
+    (<a href="email/alias">changer ou supprimer mon alias melix</a>)
+    </div>
+    {/if}
+  </div>
+  <hr />
+  <div>
+    (M4X signifie <em>mail for X</em>, son intérêt est de te doter d'une adresse à vie
+    moins "voyante" que l'adresse @{#globals.mail.domain#}).
+    {if !$melix}
+    Tu peux ouvrir en supplément une adresse synonyme de ton adresse @{#globals.mail.domain#},
+    sur les domaines @{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#} (melix = Mél X).<br />
+    <div class="center"><a href="email/alias">Créer un alias melix</a></div>
+    {/if}
+  </div>
+</fieldset>
 
 <p class="smaller">
 (*) cette adresse email t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en
@@ -80,79 +91,45 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme «p
 
 <br />
 
-<table class="bicol">
-  <tr>
-    <th>Où est-ce que je reçois les emails qui m'y sont adressés&nbsp;?</th>
-  </tr>
-  <tr class="impair">
-    <td>
-      {if count($mails) eq 0}
-      <p class="erreur">
-        Tu n'as actuellement aucune adresse de redirection. Tout email qui t'est envoyé sur tes
-        adresses polytechniciennes génère une erreur. Modifie au plus vite ta liste de redirection.<br/>
-      </p>
-      {else}
-      Actuellement, tout email qui t'y est adressé, est envoyé
-      {if count($mails) eq 1} à l'adresse{else} aux adresses{/if}&nbsp;:
-      <ul>
-        {foreach from=$mails item=m}
-        <li><strong>{$m->display_email}</strong></li>
-        {/foreach}
-      </ul>
-      {/if}
-      {test_email}
-      Si tu souhaites <strong>modifier ce reroutage de tes emails,</strong>
-      <a href="emails/redirect">il te suffit de te rendre ici&nbsp;!</a>
-    </td>
-  </tr>
-</table>
+<fieldset>
+  <legend>{icon name="email_go"} Où est-ce que je reçois les emails qui m'y sont adressés&nbsp;?</legend>
+
+  <div>
+    {if count($mails) eq 0}
+    <p class="erreur">
+      Tu n'as actuellement aucune adresse de redirection. Tout email qui t'est envoyé sur tes
+      adresses polytechniciennes génère une erreur. Modifie au plus vite ta liste de redirection.<br/>
+    </p>
+    {else}
+    Actuellement, tout email qui t'y est adressé, est envoyé
+    {if count($mails) eq 1} à l'adresse{else} aux adresses{/if}&nbsp;:
+    <ul>
+      {foreach from=$mails item=m}
+      <li><strong>{$m->display_email}</strong></li>
+      {/foreach}
+    </ul>
+    {/if}
+    {test_email}
+    Si tu souhaites <strong>modifier ce reroutage de tes emails,</strong>
+    <a href="emails/redirect">il te suffit de te rendre ici&nbsp;!</a>
+  </div>
+</fieldset>
 
 <br />
 
-<table class="bicol">
-  <tr>
-    <th colspan="2">Antivirus, antispam</th>
-  </tr>
-  <tr class="impair">
-    <td class="half">
-      Tous les emails qui te sont envoyés sur tes adresses polytechniciennes sont
-      <strong>filtrés par un logiciel antivirus</strong> très performant. Il te protège de ces
-      vers très gênants, qui se propagent souvent par email.
-    </td>
-    <td class="half">
-      De même, un <strong>service antispam évolué</strong> est en place. Tu peux lui demander
-      de te débarrasser des spams que tu reçois. Pour en savoir plus, et l'activer,
-      <a href="emails/antispam">c'est très simple, suis ce lien</a>&nbsp;!
-      <br />
-    </td>
-  </tr>
-</table>
+<fieldset>
+  <legend>{icon name="bug_delete" text="Antivirus, antispam"} Antivirus, antispam</legend>
 
-<br />
-
-<table class="bicol">
-  <tr>
-    <th>Un alias sympathique&nbsp;: {#globals.mail.alias_dom#}&nbsp;!</th>
-  </tr>
-  <tr class="impair">
-    <td>
-      Tu peux ouvrir en supplément une adresse synonyme de ton adresse @{#globals.mail.domain#},
-      sur les domaines @{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#} (melix = Mél X).
-    </td>
-  </tr>
-  <tr class="impair">
-    <td>
-      {if $melix}
-      Tu disposes à l'heure actuelle de l'alias <strong>{$melix}</strong>.
-      Pour <strong>demander à la place un autre alias @{#globals.mail.alias_dom#}</strong>,
-      <a href="emails/alias">il te suffit de te rendre ici</a>.
-      {else}
-      À l'heure actuelle <strong>tu n'as pas activé d'adresse @{#globals.mail.alias_dom#}</strong>.
-      Si tu souhaites le faire, <a href="emails/alias">il te suffit de venir ici</a>.
-      {/if}
-    </td>
-  </tr>
-</table>
-
+  <p>
+    Tous les emails qui te sont envoyés sur tes adresses polytechniciennes sont
+    <strong>filtrés par un logiciel antivirus</strong> très performant. Il te protège de ces
+    vers très gênants, qui se propagent souvent par email.
+  </p>
+  <p>
+    De même, un <strong>service antispam évolué</strong> est en place. Tu peux lui demander
+    de te débarrasser des spams que tu reçois. Pour en savoir plus, et l'activer,
+    <a href="emails/antispam">c'est très simple, suis ce lien</a>&nbsp;!
+  </p>
+</fieldset>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
