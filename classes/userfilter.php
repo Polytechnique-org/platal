@@ -2515,7 +2515,7 @@ class UserFilter extends PlFilter
     private $cts = array();
     public function addContactFilter($uid = null)
     {
-        $this->requireAccounts();
+        $this->requireProfiles();
         return $this->register_optional($this->cts, is_null($uid) ? null : 'user_' . $uid);
     }
 
