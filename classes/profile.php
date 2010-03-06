@@ -195,6 +195,21 @@ class Profile
         return array_unique($vals);
     }
 
+    public function nationalities()
+    {
+        $nats = array();
+        if ($this->nationality1) {
+            $nats[] = $this->nationality1;
+        }
+        if ($this->nationality2) {
+            $nats[] = $this->nationality2;
+        }
+        if ($this->nationality3) {
+            $nats[] = $this->nationality3;
+        }
+        return $nats;
+    }
+
     public function __get($name)
     {
         if (property_exists($this, $name)) {

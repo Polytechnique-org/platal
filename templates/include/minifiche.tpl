@@ -60,15 +60,9 @@
     </div>
 
     <div class="edu">
-      {if $profile->nationality1}
-      <img src='images/flags/{$profile->nationality1}.gif' alt='{$profile->nationality1}' height='11' title='{$profile->nationality1}' />&nbsp;
-      {/if}
-      {if $profile->nationality2}
-      <img src='images/flags/{$profile->nationality2}.gif' alt='{$profile->nationality2}' height='11' title='{$profile->nationality2}' />&nbsp;
-      {/if}
-      {if $profile->nationality3}
-      <img src='images/flags/{$profile->nationality3}.gif' alt='{$profile->nationality3}' height='11' title='{$profile->nationality3}' />&nbsp;
-      {/if}
+      {foreach from=$profile->nationalities() item=nat}
+      <img src='images/flags/{$nat}.gif' alt='{$nat}' height='11' title='{$nat}' />&nbsp;
+      {/foreach}
       {$profile->promo()}{*
       *}{iterate from=$profile->getExtraEducations(4) item=edu}, {education_fmt edu=$edu profile=$profile}{/iterate}{*
       *}{if $dead}, {"décédé"|sex:"décédée":$profile} le {$profile->deathdate|date_format}{/if}
