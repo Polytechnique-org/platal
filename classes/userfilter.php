@@ -1965,7 +1965,7 @@ class UserFilter extends PlFilter
 
     static public function assertName($name)
     {
-        if (!Profile::getNameTypeId($name)) {
+        if (!DirEnum::getID(DirEnum::NAMETYPES, $name)) {
             Platal::page()->kill('Invalid name type: ' . $name);
         }
     }
@@ -1985,7 +1985,7 @@ class UserFilter extends PlFilter
         if (!is_null($variant) && $variant == 'other') {
             $sub .= $this->option++;
         }
-        $this->pn[$sub] = Profile::getNameTypeId($ft);
+        $this->pn[$sub] = DirEnum::getID(DirEnum::NAMETYPES, $ft);
         return $sub;
     }
 
