@@ -29,7 +29,7 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
 <form action="carnet/notifs" method="post">
   {xsrf_token_field}
   <fieldset>
-    <legend>Email</legend>
+    <legend>{icon name="email"} Email</legend>
     <label>
       <input type='checkbox' name='mail' onclick="this.form.submit();" {if $flags->hasFlag('mail')}checked="checked"{/if} />
       Recevoir un email hebdomadaire des événements que je n'ai pas déjà vus sur le site.
@@ -41,7 +41,7 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
 <form action="carnet/notifs" method="post">
   {xsrf_token_field}
   <fieldset>
-    <legend>Événements à surveiller</legend>
+    <legend>{icon name="bell"} Événements à surveiller</legend>
     <label>
       <input type="checkbox" name='sub[profile]' {if $actions->hasFlag('profile')}checked="checked"{/if} />
       Mise à jour de fiche<sup>*</sup>
@@ -73,7 +73,7 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
 <form action="carnet/notifs#middle" method="post">
   {xsrf_token_field}
   <fieldset>
-    <legend>Contacts</legend>
+    <legend>{icon name="user_suit"} Contacts</legend>
     <label>
       <input type='checkbox' name='contacts' onclick="this.form.submit();" {if $flags->hasFlag('contacts')}checked="checked"{/if} />
       Surveiller mes contacts
@@ -93,7 +93,7 @@ Attention&nbsp;: pour les promos, tu n'es pas notifié des événements trop fr�
 <form action="carnet/notifs/" method="post">
   {xsrf_token_field}
   <fieldset>
-    <legend>Ajouter une promo</legend>
+    <legend>{icon name="group"} Ajouter une promo</legend>
     Tu peux surveiller des promos (mettre la promo sur 4 chiffres),
     ou des plages de promos (par ex. 1990-1992)&nbsp;:<br />
     <input type='text' name='promo' />
@@ -127,7 +127,7 @@ et cliquer sur les icones {icon name=add} pour les ajouter à cette liste.
 </p>
 
 <fieldset>
-  <legend>Non-inscrits</legend>
+  <legend>{icon name="status_offline" text="Non inscrit"} Non-inscrits</legend>
     {if $nonins|@count eq 0}
     Tu ne surveilles actuellement aucun non-inscrit.
     {else}

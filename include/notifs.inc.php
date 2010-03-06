@@ -257,7 +257,8 @@ class Watch
         if (count($users) == 0) {
             return null;
         } else {
-            return array('operation' => $obj,
+            return array('type'      => $obj->flag,
+                         'operation' => $obj,
                          'title'     => $obj->getTitle(count($users)),
                          'users'     => $users);
         }

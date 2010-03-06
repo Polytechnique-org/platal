@@ -45,7 +45,12 @@ Il faut pour cela se rendre sur la page de <a href='carnet/notifs'>configuration
 
 {foreach from=$notifs item=cat}
 <fieldset style="width: 75%; margin-left: auto; margin-right: auto">
-  <legend>{$cat.title}</legend>
+  <legend>
+  {if $cat.type eq 'birthday'}{icon name="cake"}
+  {elseif $cat.type eq 'death'}{icon name="star"}
+  {elseif $cat.type eq 'profile'}{icon name="user_suit"}
+  {elseif $cat.type eq 'registration'}{icon name="status_offline"}{/if}
+  &nbsp;{$cat.title}</legend>
   {assign var=date value=false}
     {foreach from=$cat.users item=user}
     {assign var=userdate value=$cat.operation->getDate($user)}
