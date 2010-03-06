@@ -485,6 +485,7 @@ class Profile
             $order = '';
         }
 
+        require_once 'directory.enums.inc.php';
         return XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
                                       pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
                                       IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
@@ -507,9 +508,12 @@ class Profile
                            LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
                                WHERE  p.pid IN {?}
                             GROUP BY  p.pid
-                                   ' . $order, self::getNameTypeId('firstname'),
-                            self::getNameTypeId('lastname'), self::getNameTypeId('firstname_ordinary'),
-                            self::getNameTypeId('lastname_ordinary'), self::getNameTypeId('nickname'), $pids);
+                                   ' . $order,
+                             DirEnum::getID(DirEnum::NAMETYPES, 'firstname'),
+                             DirEnum::getID(DirEnum::NAMETYPES, 'lastname'),
+                             DirEnum::getID(DirEnum::NAMETYPES, 'firstname_ordinary'),
+                             DirEnum::getID(DirEnum::NAMETYPES, 'lastname_ordinary'),
+                             DirEnum::getID(DirEnum::NAMETYPES, 'nickname'), $pids);
     }
 
     public static function getPID($login)
@@ -609,18 +613,6 @@ class Profile
             || $name == self::DN_YOURSELF || $name == self::DN_DIRECTORY
             || $name == self::DN_PRIVATE || $name == self::DN_PUBLIC
             || $name == self::DN_SHORT || $name == self::DN_SORT;
-    }
-
-    public static function getNameTypeId($type)
-    {
-        if (!S::has('name_types')) {
-            $table = new PlDict(XDB::fetchAllAssoc('type', 'SELECT  id, type
-                                                              FROM  profile_name_enum'));
-            S::set('name_types', $table);
-        } else {
-            $table = S::v('name_types');
-        }
-        return $table->i($type);
     }
 
     public static function rebuildSearchTokens($pid)

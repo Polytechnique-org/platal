@@ -121,19 +121,27 @@ class DirEnum
      * @param $text Text to search in enum valuees
      * @param $mode Mode of search for those IDs (prefix/suffix/infix)
      */
-    static public function getIDs()
+    static public function getIDs($type, $text, $mode = XDB::WILDCARD_EXACT)
     {
-        $args = func_get_args();
-        $type = array_shift($args);
         if (!array_key_exists($type, self::$enumerations)) {
             self::init($type);
         }
         $obj = self::$enumerations[$type];
         if ($obj->capabilities & DirEnumeration::HAS_OPTIONS) {
-            return call_user_func_array(array($obj, 'getIDs'), $args);
+            return call_user_func(array($obj, 'getIDs'), $text, $mode);
         } else {
             return array();
         }
+    }
+
+    /** Retrieves a single ID for a given type.
+     * @param $type Type of the enum for which an ID is requested
+     * @param $text Text to search in enum values
+     * @param $mode Mode of search of that ID (prefix/suffix/infix/exact)
+     */
+    static public function getID($type, $text, $mode = XDB::WILDCARD_EXACT)
+    {
+        return array_shift(self::getIDs($type, $text, $mode));
     }
 }
 // }}}
@@ -593,4 +601,6 @@ class DE_Networking extends DirEnumeration
     protected $ac_unique = 'profile_networking.pid';
 }
 // }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
