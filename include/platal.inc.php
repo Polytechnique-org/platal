@@ -43,8 +43,10 @@ function pl_autoload($cls, array $pathes = array())
 
     array_unshift($pathes, 'core/classes', 'classes');
     foreach ($pathes as $path) {
-        if (@include_once "$basepath/$path/$cls.php") {
-            return true;
+        if (file_exists("$basepath/$path/$cls.php")) {
+            if (include_once "$basepath/$path/$cls.php") {
+                return true;
+            }
         }
     }
     return false;
