@@ -168,10 +168,11 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ##
 ## jquery
 ##
-
+JQUERY_VERSION=1.3.2
 JQUERY_PLUGINS=color
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
+JQUERY_UI_VERSION=1.7.2
 JQUERY_UI=core tabs
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/ui.,$(addsuffix .js,$(JQUERY_UI)))
 
@@ -180,7 +181,7 @@ JQUERY_UI_PATHES=$(addprefix htdocs/javascript/ui.,$(addsuffix .js,$(JQUERY_UI))
 # we could use is not backward compatible with our current code.
 jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES)
 
-htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-latest.min.js
+htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-$(JQUERY_VERSION).min.js
 htdocs/javascript/jquery.js:
 	@$(download)
 
@@ -188,11 +189,11 @@ $(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F).t
 $(JQUERY_PLUGINS_PATHES):
 	@$(download)
 
-$(JQUERY_UI_PATHES): DOWNLOAD_SRC = http://ui.jquery.com/latest/ui/$(@F)
+$(JQUERY_UI_PATHES): DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/$(@F)
 $(JQUERY_UI_PATHES):
 	@$(download)
 
 ################################################################################
 
-.PHONY: build dist clean core wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http* check
+.PHONY: build dist clean core wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http* check htdocs/javascript/jquery*.js htdocs/javascript/ui.*.js
 
