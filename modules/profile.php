@@ -203,30 +203,23 @@ class ProfileModule extends PLModule
         $page->assign('has_trombi_x', file_exists($trombi_x));
     }
 
-    function handler_profile(&$page, $x = null)
+    function handler_profile(&$page, $id = null)
     {
-        // TODO/note for upcoming developers:
-        // We currently maintain both $user and $login; $user is the old way of
-        // obtaining information, and eventually everything will be loaded
-        // through $login. That is the reason why in the template $user is named
-        // $x, and $login $user (sorry for the confusion).
-
-        // Determines which user to display the profile of, and retrieves basic
-        // information on this user.
-        if (is_null($x)) {
+        // Checks if the identifier corresponds to an actual profile. Numeric
+        // identifiers canonly be user by logged users.
+        if (is_null($id)) {
             return PL_NOT_FOUND;
         }
-
-        $login = (!is_numeric($x) || S::has_perms()) ? Profile::get($x) : null;
-        if (!$login) {
+        $pid = (!is_numeric($id) || S::has_perms()) ? Profile::getPID($id) : null;
+        if (is_null($pid)) {
             if (S::logged()) {
-                $page->trigError($x . ' inconnu dans l\'annuaire');
+                $page->trigError($id . " inconnu dans l'annuaire.");
             }
             return PL_NOT_FOUND;
         }
 
-        // Now that we know this is the profile of an existing user, we can
-        // switch to the appropriate template.
+        // Now that we know this is an existing profile, we can switch to the
+        // appropriate template.
         $page->changeTpl('profile/profile.tpl', SIMPLE);
 
         // Determines the access level at which the profile will be displayed.
@@ -238,72 +231,40 @@ class ProfileModule extends PLModule
             $view = 'private';
         }
 
-        // Determines is the user is registered, and fetches the user infos in
-        // the appropriate way.
-        $owner = $login->owner();
-        if (!$owner || $owner->state != 'pending') {
-            $new  = Env::v('modif') == 'new';
-            // XXX: Deprecated...
-            $user = get_user_details($login->hrid(), S::i('uid'), $view);
-        } else {
-            $new  = false;
-            $user = array();
-            if (S::logged()) {
-                pl_redirect('marketing/public/' . $owner->login());
-            }
+        // Fetches profile's and profile's owner information and redirects to
+        // marketing if the owner has not subscribed and the requirer has logged in.
+        $profile = Profile::getBulkProfilesWithPIDs(array($pid), Profile::FETCH_ALL, $view);
+        $owner = $profile->owner();
+        if (S::logged() && !is_null($owner) && $owner->state == 'pending') {
+            pl_redirect('marketing/public/' . $profile->hrid());
         }
 
         // Profile view are logged.
         if (S::logged()) {
-            S::logger()->log('view_profile', $login->hrid());
+            S::logger()->log('view_profile', $profile->hrid());
         }
 
         // Sets the title of the html page.
-        $page->setTitle($login->fullName());
+        $page->setTitle($profile->fullName());
 
-        // Prepares the display of the user's mugshot.
-        $photo = 'photo/' . $login->hrid() . ($new ? '/req' : '');
+        // Is that really useful???
+        /*$photo = 'photo/' . $profile->hrid() . ($new ? '/req' : '');
         if (!isset($user['photo_pub']) || !has_user_right($user['photo_pub'], $view)) {
             $photo = "";
         }
         $page->assign('photo_url', $photo);
-
-        if (!isset($user['y']) and !isset($user['x'])) {
-            list($user['x'], $user['y']) = getimagesize("images/none.png");
-        }
-        if (!isset($user['y']) or $user['y'] < 1) $user['y']=1;
-        if (!isset($user['x']) or $user['x'] < 1) $user['x']=1;
-        if ($user['x'] > 240) {
-            $user['y'] = (integer)($user['y']*240/$user['x']);
-            $user['x'] = 240;
-        }
-        if ($user['y'] > 300) {
-            $user['x'] = (integer)($user['x']*300/$user['y']);
-            $user['y'] = 300;
-        }
-        if ($user['x'] < 160) {
-            $user['y'] = (integer)($user['y']*160/$user['x']);
-            $user['x'] = 160;
-        }
+        }*/
 
         // Determines and displays the virtual alias.
-        global $globals;
-        $owner = $login->owner();
-        if ($owner) {
+        if (!is_null($owner)) {
             $page->assign('virtualalias', $owner->emailAlias());
         }
 
-        // Adds miscellaneous properties to the display.
-        // Adds the global user property array to the display.
-        $page->assign_by_ref('x', $user);
-        $page->assign_by_ref('user', $owner);
-        $page->assign('logged', has_user_right('private', $view));
-        $page->assign('view', $view);
+        $page->assign_by_ref('profile', $profile);
+        $page->assign_by_ref('owner', $owner);
 
         $page->addJsLink('close_on_esc.js');
-        if (isset($user['date'])) {
-            header('Last-Modified: ' . date('r', strtotime($user['date'])));
-        }
+        header('Last-Modified: ' . date('r', strtotime($profile->last_change)));
     }
 
     function handler_ax(&$page, $user = null)
