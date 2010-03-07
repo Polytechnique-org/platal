@@ -416,7 +416,9 @@ $(document).ready(function() {
 <h1>Autres adresses de l'utilisateur</h1>
 
 <table class="bicol">
-  <th>Virtual aliases auquel l'utilisateur appartient</th>
+  <tr>
+    <th>Virtual aliases auquel l'utilisateur appartient</th>
+  </tr>
   {foreach from=$virtuals item=virtual}
   <tr class="{cycle values="impair,pair"}">
     <td>{$virtual}</td>
