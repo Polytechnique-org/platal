@@ -598,8 +598,8 @@ class AdminModule extends PLModule
         // }}}
 
 
-        $page->addJsLink('ui.core.js');
-        $page->addJsLink('ui.tabs.js');
+        $page->addJsLink('jquery.ui.core.js');
+        $page->addJsLink('jquery.ui.tabs.js');
 
         // Displays last login and last host information.
         $res = XDB::query("SELECT  start, host
