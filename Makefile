@@ -168,11 +168,11 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ##
 ## jquery
 ##
-JQUERY_VERSION=1.3.2
+JQUERY_VERSION=1.4.2
 JQUERY_PLUGINS=color
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
 
-JQUERY_UI_VERSION=1.7.2
+JQUERY_UI_VERSION=1.6
 JQUERY_UI=core tabs
 JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
 
@@ -183,13 +183,15 @@ jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES)
 
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js: DOWNLOAD_SRC = http://jquery.com/src/$(@F)
 htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
+	@-rm htdocs/javascript/jquery-*.min.js
 	@$(download)
 
 htdocs/javascript/jquery.js: htdocs/javascript/jquery-$(JQUERY_VERSION).min.js
-	ln -snf $< $@
+	ln -snf $(<F) $@
 
 $(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F).txt
 $(JQUERY_PLUGINS_PATHES):
+	@-rm htdocs/javascript/jquery.ui*.$*.js
 	@$(download)
 
 htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js: DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/ui.$*.js
@@ -197,7 +199,7 @@ htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js:
 	@$(download)
 
 $(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
-	ln -snf $< $@
+	ln -snf $(<F) $@
 
 ################################################################################
 
