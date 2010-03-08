@@ -542,8 +542,8 @@ class _GetArrayValueCallback
 
     public function get(array $arr)
     {
-        if (array_key_exists($key, $arr)) {
-            return $arr[$key];
+        if (array_key_exists($this->key, $arr)) {
+            return $arr[$this->key];
         } else {
             return null;
         }
