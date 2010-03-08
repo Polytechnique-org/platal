@@ -110,7 +110,7 @@ class PlIteratorUtils
      * @param $property The property to retrieve
      * @return a callback
      */
-    public static function arrayValueCallback($property)
+    public static function objectPropertyCallback($property)
     {
         $callback = new _GetObjectPropertyCallback($property);
         return array($callback, 'get');
