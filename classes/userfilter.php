@@ -2110,7 +2110,7 @@ class UserFilter extends PlFilter
     {
         $this->requireAccounts();
         if (!is_null($group)) {
-            if (ctype_digit($group)) {
+            if (is_int($group) || ctype_digit($group)) {
                 $index = $sub = $group;
             } else {
                 $index = $group;
@@ -2132,7 +2132,7 @@ class UserFilter extends PlFilter
             if (is_null($key)) {
                 $joins['gpa' . $sub] = PlSqlJoin::inner('groups');
                 $joins['gpm' . $sub] = PlSqlJoin::left('group_members', '$ME.uid = $UID AND $ME.asso_id = gpa' . $sub . '.id');
-            } else if (ctype_digit($key)) {
+            } else if (is_int($key) || ctype_digit($key)) {
                 $joins['gpm' . $sub] = PlSqlJoin::left('group_members', '$ME.uid = $UID AND $ME.asso_id = ' . $key);
             } else {
                 $joins['gpa' . $sub] = PlSqlJoin::inner('groups', '$ME.diminutif = {?}', $key);

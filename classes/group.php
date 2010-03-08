@@ -86,7 +86,7 @@ class Group
         if (!$id) {
             return null;
         }
-        if (ctype_digit($id)) {
+        if (is_int($id) || ctype_digit($id)) {
             $where = XDB::format('id = {?}', $id);
         } else {
             $where = XDB::format('diminutif = {?}', $id);

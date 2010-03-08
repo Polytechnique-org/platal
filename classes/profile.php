@@ -522,7 +522,7 @@ class Profile
                                         FROM  account_profiles
                                        WHERE  uid = {?} AND FIND_IN_SET(\'owner\', perms)',
                                      $login->id());
-        } else if (ctype_digit($login)) {
+        } else if (is_int($login) || ctype_digit($login)) {
             return XDB::fetchOneCell('SELECT  pid
                                         FROM  profiles
                                        WHERE  pid = {?}', $login);

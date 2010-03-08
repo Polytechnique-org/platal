@@ -79,7 +79,7 @@ class CarnetModule extends PLModule
 
     private function getSinglePromotion(PlPage &$page, $promo)
     {
-        if (!ctype_digit($promo) || $promo < 1920 || $promo > date('Y')) {
+        if (!(is_int($promo) || ctype_digit($promo)) || $promo < 1920 || $promo > date('Y')) {
             $page->trigError('Promotion invalide&nbsp;: ' . $promo . '.');
             return null;
         }
