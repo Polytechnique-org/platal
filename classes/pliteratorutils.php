@@ -105,6 +105,16 @@ class PlIteratorUtils
         $callback = new _GetArrayValueCallback($key);
         return array($callback, 'get');
     }
+
+    /** Returns the callback for '$x -> $x->prop';
+     * @param $property The property to retrieve
+     * @return a callback
+     */
+    public static function arrayValueCallback($property)
+    {
+        $callback = new _GetObjectPropertyCallback($property);
+        return array($callback, 'get');
+    }
 }
 
 /** Iterates over an array.
@@ -547,6 +557,23 @@ class _GetArrayValueCallback
         } else {
             return null;
         }
+    }
+}
+
+// Wrapper class for 'objectPropertyCallback' (get property ->$blah of the given object)
+class _GetObjectPropertyCallback
+{
+    private $property;
+
+    public function __construct($property)
+    {
+        $this->property = $property;
+    }
+
+    public function get($obj)
+    {
+        $p = $this->property;
+        return @$obj->$p;
     }
 }
 
