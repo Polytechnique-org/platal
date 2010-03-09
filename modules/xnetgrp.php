@@ -312,9 +312,9 @@ class XnetGrpModule extends PLModule
         }
 
         if (Env::b('admin')) {
-            $uf = $globals->asso()->getAdmins(null, $se);
+            $uf = $globals->asso()->getAdminsFilter(null, $se);
         } else {
-            $uf = $globals->asso()->getMembers(null, $se);
+            $uf = $globals->asso()->getMembersFilter(null, $se);
         }
         $users = $uf->getUsers(new PlLimit(NB_PER_PAGE, $ofs * NB_PER_PAGE));
         $count = $uf->getTotalCount();
@@ -340,7 +340,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
         $vcard = new VCard($photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
-        $vcard->addProfiles($globals->asso()->getMembers()->getProfiles());
+        $vcard->addProfiles($globals->asso()->getMembersFilter()->getProfiles());
         $vcard->show();
     }
 
@@ -350,7 +350,7 @@ class XnetGrpModule extends PLModule
         if (is_null($filename)) {
             $filename = $globals->asso('diminutif') . '.csv';
         }
-        $users = $globals->asso()->getMembers(null, new UFO_Name('directory_name'))->getUsers();
+        $users = $globals->asso()->getMembersFilter(null, new UFO_Name('directory_name'))->getUsers();
         header('Content-Type: text/x-csv; charset=utf-8;');
         header('Pragma: ');
         header('Cache-Control: ');
@@ -704,7 +704,7 @@ class XnetGrpModule extends PLModule
 
         if ($globals->asso('notif_unsub')) {
             $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
-            foreach ($globals->asso()->getMembers()->getUsers() as $user) {
+            foreach ($globals->asso()->getMembersFilter()->getUsers() as $user) {
                 $mailer->addTo($user);
             }
             $mailer->assign('group', $globals->asso('nom'));

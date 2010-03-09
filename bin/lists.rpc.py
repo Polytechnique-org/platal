@@ -385,7 +385,7 @@ def subscribe(userdesc, perms, mlist):
     return result
 
 def unsubscribe(userdesc, perms, mlist):
-    """ Unsubscribe from a list
+    "" Unsubscribe from a list
             @mlist
             @edit
     """

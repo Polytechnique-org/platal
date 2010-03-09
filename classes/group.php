@@ -61,14 +61,26 @@ class Group
         return new UserFilter($cond, $sort);
     }
 
-    public function getMembers($extra_cond = null, $sort = null)
+    public function getMembersFilter($extra_cond = null, $sort = null)
     {
         return $this->getUF(false, $extra_cond, $sort);
     }
 
-    public function getAdmins($extra_cond = null, $sort = null)
+    public function getAdminsFilter($extra_cond = null, $sort = null)
     {
         return $this->getUF(true, $extra_cond, $sort);
+    }
+
+    public function iterMembers($extra_cond = null, $sort = null, $limit = null)
+    {
+        $uf = getMembersFilter($extra_cond, $sort);
+        return $uf->iterUsers($limit);
+    }
+
+    public function iterAdmins($extra_cond = null, $sort = null, $limit = null)
+    {
+        $uf = getAdminsFilter($extra_cond, $sort);
+        return $uf->iterUsers($limit);
     }
 
     public function getLogo($fallback = true)
