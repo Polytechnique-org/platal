@@ -704,8 +704,9 @@ class XnetGrpModule extends PLModule
 
         if ($globals->asso('notif_unsub')) {
             $mailer = new PlMailer('xnetgrp/unsubscription-notif.mail.tpl');
-            foreach ($globals->asso()->getMembersFilter()->getUsers() as $user) {
-                $mailer->addTo($user);
+            $admins = $globals->asso()->iterAdmins();
+            while ($admin = $admins->next()) {
+                $mailer->addTo($admin);
             }
             $mailer->assign('group', $globals->asso('nom'));
             $mailer->assign('user', $user);
