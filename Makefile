@@ -31,6 +31,9 @@ build: core conf static banana wiki openid medals jquery
 check:
 	@!(find . -name '*.php' -exec php -l {} ";" | grep -v 'No syntax errors detected')
 
+test:
+	make -C core test
+
 q:
 	@echo -e "Code statistics\n"
 	@sloccount $(filter-out wiki/ spool/, $(wildcard */)) 2> /dev/null | egrep '^[a-z]*:'
@@ -203,5 +206,5 @@ $(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.
 
 ################################################################################
 
-.PHONY: build dist clean core wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http* check
+.PHONY: build dist clean core wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http* check test
 
