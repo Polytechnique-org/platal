@@ -12,6 +12,9 @@ all: build
 
 build: include/version.inc.php
 
+test:
+	make -C ut test
+
 clean:
 	-rm include/version.inc.php
 
@@ -28,4 +31,4 @@ q:
 include/version.inc.php: Makefile ChangeLog
 	echo '<?php define("PLATAL_CORE_VERSION", "${VERSION}"); ?>' > $@
 
-.PHONY: build dist clean q
+.PHONY: build dist clean q test
