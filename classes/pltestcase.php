@@ -19,14 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if (!@include_once dirname(__FILE__) . '/../../include/test.inc.php') {
-    require_once dirname(__FILE__) . '/platal.inc.php';
-    require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Framework.php';
 
-    function __autoload($class)
-    {
-        pl_autoload($class);
-    }
+abstract class PlTestCase extends PHPUnit_Framework_TestCase
+{
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

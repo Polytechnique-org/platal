@@ -13,7 +13,7 @@ all: build
 build: include/version.inc.php
 
 test:
-	make -C ut test
+	phpunit pltestsuite classes/pltestsuite.php
 
 clean:
 	-rm include/version.inc.php

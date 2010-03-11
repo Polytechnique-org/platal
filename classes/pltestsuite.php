@@ -19,13 +19,30 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if (!@include_once dirname(__FILE__) . '/../../include/test.inc.php') {
-    require_once dirname(__FILE__) . '/platal.inc.php';
-    require_once 'PHPUnit/Framework.php';
+require_once dirname(__FILE__) . '/../include/test.inc.php';
+require_once 'PHPUnit/Framework.php';
 
-    function __autoload($class)
+class PlTestSuite
+{
+    public static function suite()
     {
-        pl_autoload($class);
+        $suite = new PHPUnit_Framework_TestSuite('Plat/al');
+        $base = dirname(dirname(dirname(__FILE__)));
+        $pathes = glob($base . '/**/ut/', GLOB_ONLYDIR);
+        if (file_exists($base . '/ut')) {
+            array_push($pathes, $base . '/ut');
+        }
+        foreach ($pathes as $path) {
+            $subsuite = new PHPUnit_Framework_TestSuite('Plat/al: ' . $path);
+            foreach (glob($path . '/*.php') as $f) {
+                $class = basename($f);
+                $class = substr($class, 0, strlen($class) - 4);
+                require_once $f;
+                $subsuite->addTestSuite($class);
+            }
+            $suite->addTest($subsuite);
+        }
+        return $suite;
     }
 }
 

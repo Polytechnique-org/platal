@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-include_once dirname(__FILE__) . '/../include/test.inc.php';
+require_once dirname(__FILE__) . '/../include/test.inc.php';
 
 class XDBTest extends PlTestCase
 {
