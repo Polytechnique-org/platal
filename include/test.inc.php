@@ -19,7 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if (!@include_once dirname(__FILE__) . '/../../include/test.inc.php') {
+$testinclude = dirname(__FILE__) . '/../../include/test.inc.php';
+if (file_exists($testinclude)) {
+    require_once $testinclude;
+} else {
     require_once dirname(__FILE__) . '/platal.inc.php';
     require_once 'PHPUnit/Framework.php';
 
