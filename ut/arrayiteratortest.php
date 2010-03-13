@@ -43,6 +43,8 @@ class ArrayIteratorTest extends PlTestCase
         $this->assertEquals(array('keys' => array(3), 'value' => 4), $it->next());
         $this->assertFalse($it->first());
         $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
     }
 
     public function testSimpleFlat()
@@ -65,6 +67,208 @@ class ArrayIteratorTest extends PlTestCase
         $this->assertEquals(4, $it->next());
         $this->assertFalse($it->first());
         $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
+    }
+
+    public function testAssoc()
+    {
+        $it = PlIteratorUtils::fromArray(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4));
+        $this->assertEquals(4, $it->total());
+
+        $this->assertEquals(array('keys' => array('a'), 'value' => 1), $it->next());
+        $this->assertTrue($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array('b'), 'value' => 2), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array('c'), 'value' => 3), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array('d'), 'value' => 4), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
+    }
+
+    public function testAssocFlat()
+    {
+        $it = PlIteratorUtils::fromArray(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4), 1, true);
+        $this->assertEquals(4, $it->total());
+
+        $this->assertEquals(1, $it->next());
+        $this->assertTrue($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(2, $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(3, $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(4, $it->next());
+        $this->assertFalse($it->first());
+        $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
+    }
+
+    public function testDepth()
+    {
+        $it = PlIteratorUtils::fromArray(array(array(1, 2), array(3, 4)), 1);
+        $this->assertEquals(2, $it->total());
+
+        $this->assertEquals(array('keys' => array(0), 'value' => array(1, 2)), $it->next());
+        $this->assertTrue($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array(1), 'value' => array(3, 4)), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
+
+
+        $it = PlIteratorUtils::fromArray(array(array(1, 2), array(3, 4)), 2);
+        $this->assertEquals(4, $it->total());
+
+        $this->assertEquals(array('keys' => array(0, 0), 'value' => 1), $it->next());
+        $this->assertTrue($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array(0, 1), 'value' => 2), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array(1, 0), 'value' => 3), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array(1, 1), 'value' => 4), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
+    }
+
+    public function testDepthFlat()
+    {
+        $it = PlIteratorUtils::fromArray(array(array(1, 2), array(3, 4)), 1, true);
+        $this->assertEquals(2, $it->total());
+
+        $this->assertEquals(array(1, 2), $it->next());
+        $this->assertTrue($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array(3, 4), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
+
+
+        $it = PlIteratorUtils::fromArray(array(array(1, 2), array(3, 4)), 2, true);
+        $this->assertEquals(4, $it->total());
+
+        $this->assertEquals(1, $it->next());
+        $this->assertTrue($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(2, $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(3, $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(4, $it->next());
+        $this->assertFalse($it->first());
+        $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
+    }
+
+    public function testDepthAssoc()
+    {
+        $it = PlIteratorUtils::fromArray(array('a' => array('b' => 1, 'c' => 2), 'd' => array('e' => 3, 'f' => 4)), 1);
+        $this->assertEquals(2, $it->total());
+
+        $this->assertEquals(array('keys' => array('a'), 'value' => array('b' => 1, 'c' => 2)), $it->next());
+        $this->assertTrue($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array('d'), 'value' => array('e' => 3, 'f' => 4)), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
+
+
+        $it = PlIteratorUtils::fromArray(array('a' => array('b' => 1, 'c' => 2), 'd' => array('e' => 3, 'f' => 4)), 2);
+        $this->assertEquals(4, $it->total());
+
+        $this->assertEquals(array('keys' => array('a', 'b'), 'value' => 1), $it->next());
+        $this->assertTrue($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array('a', 'c'), 'value' => 2), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array('d', 'e'), 'value' => 3), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('keys' => array('d', 'f'), 'value' => 4), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
+    }
+
+    public function testDepthAssocFlat()
+    {
+        $it = PlIteratorUtils::fromArray(array('a' => array('b' => 1, 'c' => 2), 'd' => array('e' => 3, 'f' => 4)), 1, true);
+        $this->assertEquals(2, $it->total());
+
+        $this->assertEquals(array('b' => 1, 'c' => 2), $it->next());
+        $this->assertTrue($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(array('e' => 3, 'f' => 4), $it->next());
+        $this->assertFalse($it->first());
+        $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
+
+
+        $it = PlIteratorUtils::fromArray(array('a' => array('b' => 1, 'c' => 2), 'd' => array('e' => 3, 'f' => 4)), 2, true);
+        $this->assertEquals(4, $it->total());
+
+        $this->assertEquals(1, $it->next());
+        $this->assertTrue($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(2, $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(3, $it->next());
+        $this->assertFalse($it->first());
+        $this->assertFalse($it->last());
+
+        $this->assertEquals(4, $it->next());
+        $this->assertFalse($it->first());
+        $this->assertTrue($it->last());
+
+        $this->assertNull($it->next());
     }
 }
 
