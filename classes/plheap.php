@@ -67,7 +67,7 @@ class PlHeap
 
     public function iterator()
     {
-        return PlIterator::fromArray($this->content);
+        return PlIteratorUtils::fromArray($this->content, 1, true);
     }
 }
 
