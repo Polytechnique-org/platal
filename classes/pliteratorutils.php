@@ -315,45 +315,37 @@ class PlMergeIterator implements PlIterator
 }
 
 
-class PlFilterIterator implements PlIterator {
+class PlFilterIterator implements PlIterator
+{
+    private $pos;
     private $source;
     private $callback;
     private $element;
-    private $start;
 
     public function __construct(PlIterator $source, $callback)
     {
-        $this->source = $source;
+        $this->source   = $source;
         $this->callback = $callback;
-        $this->start = true;
-        $this->element = null;
+        $this->pos      = 0;
+        $this->element  = $this->fetchNext();
     }
 
     private function fetchNext()
     {
         do {
             $current = $this->source->next();
-            if (!$current) {
-                $this->element = null;
-                $this->start   = false;
-                return;
-            }
-            $res = call_user_func($this->callback, $current);
-            if ($res) {
-                $this->element = $current;
-                return;
+            if (is_null($current) || call_user_func($this->callback, $current)) {
+                return $current;
             }
         } while (true);
     }
 
     public function next()
     {
-        if ($this->element && $this->start) {
-            $this->start = false;
-        }
+        ++$this->pos;
         $elt = $this->element;
-        if ($elt) {
-            $this->fetchNext();
+        if (!is_null($this->element)) {
+            $this->element = $this->fetchNext();
         }
         return $elt;
     }
@@ -368,12 +360,12 @@ class PlFilterIterator implements PlIterator {
 
     public function first()
     {
-        return $this->start;
+        return $this->pos == 1;
     }
 
     public function last()
     {
-        return !$this->start && !$this->element;
+        return is_null($this->element);
     }
 }
 
