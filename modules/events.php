@@ -64,11 +64,11 @@ class EventsModule extends PLModule
         do {
             $priority = (int)($priority/2);
             $res = XDB::query("SELECT  *
-                                 FROM  tips
+                                 FROM  reminder_tips
                                 WHERE  (expiration = '0000-00-00' OR expiration > CURDATE())
                                        AND (promo_min = 0 OR promo_min <= {?})
                                        AND (promo_max = 0 OR promo_max >= {?})
-                                       AND (priorite >= {?})
+                                       AND (priority >= {?})
                                        AND (state = 'active')
                                        $exclude
                              ORDER BY  RAND()
@@ -307,7 +307,7 @@ class EventsModule extends PLModule
     {
         $page->setTitle('Administration - Astuces');
         $page->assign('title', 'Gestion des Astuces');
-        $table_editor = new PLTableEditor('admin/tips', 'tips', 'id');
+        $table_editor = new PLTableEditor('admin/tips', 'reminder_tips', 'id');
         $table_editor->describe('expiration', 'date de péremption', true);
         $table_editor->describe('promo_min', 'promo. min (0 aucune)', false);
         $table_editor->describe('promo_max', 'promo. max (0 aucune)', false);

@@ -30,12 +30,16 @@ CHANGE COLUMN  user_id uid INT(11) not null;
 
 # announces
   ALTER TABLE  announces
-CHANGE COLUMN  user_id uid INT(11) not null;
+CHANGE COLUMN  user_id uid INT(11) not null,
 CHANGE COLUMN  peremption expiration DATE NOT NULL;
+
   ALTER TABLE  announce_read
 CHANGE COLUMN  user_id uid INT(11) not null;
-  ALTER TABLE  tips
-CHANGE COLUMN  peremption expiration DATE NOT NULL;
+
+  ALTER TABLE  reminder_tips
+CHANGE COLUMN  peremption expiration DATE NOT NULL,
+CHANGE COLUMN  titre title VARCHAR(64) NOT NULL,
+CHANGE COLUMN  priorite priority TINYINT(2) UNSIGNED NOT NULL DEFAULT 127;
 
 # profile
   ALTER TABLE  profile_photos

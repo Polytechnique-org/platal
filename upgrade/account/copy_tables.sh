@@ -93,7 +93,7 @@ copyTable '#x4dat#.search_autocomplete' 'search_autocomplete'
 copyTable '#x4dat#.search_name' 'search_name'
 
 copyTable '#x4dat#.skins' 'skins'
-copyTable '#x4dat#.tips' 'tips'
+copyTable '#x4dat#.tips' 'reminder_tips'
 
 copyTable '#x4dat#.survey_surveys' 'surveys'
 copyTable '#x4dat#.survey_answers' 'survey_answers'

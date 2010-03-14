@@ -25,7 +25,7 @@
 <fieldset id="tod">
 {/if}
   <legend>{icon name=lightbulb} {if !$tips.special}
-    Astuce&nbsp;: {$tips.titre}
+    Astuce&nbsp;: {$tips.title}
     {if hasPerm('admin') && !$tips.special && !$nochange}
     <a href="admin/tips/edit/{$tips.id}">{icon name="page_edit" title="Editer"}</a>
     {/if}
