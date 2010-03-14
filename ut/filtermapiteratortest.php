@@ -35,19 +35,19 @@ class FilterMapIteratorTest extends PlTestCase
         $this->assertLessThanOrEqual(8, $it->total());
         $this->assertGreaterThanOrEqual(4, $it->total());
 
-        $this->assertEquals(10, $it->next());
+        $this->assertSame(10, $it->next());
         $this->assertTrue($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(9, $it->next());
+        $this->assertSame(9, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(42, $it->next());
+        $this->assertSame(42, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(9, $it->next());
+        $this->assertSame(9, $it->next());
         $this->assertFalse($it->first());
         $this->assertTrue($it->last());
 
@@ -63,29 +63,29 @@ class FilterMapIteratorTest extends PlTestCase
     {
         $it = PlIteratorUtils::fromArray(array(1, 2, 3, 4, 7, 512), 1, true);
         $it = PlIteratorUtils::map($it, array('FilterMapIteratorTest', 'map'));
-        $this->assertEquals(6, $it->total());
+        $this->assertSame(6, $it->total());
 
-        $this->assertEquals(2, $it->next());
+        $this->assertSame(2, $it->next());
         $this->assertTrue($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(4, $it->next());
+        $this->assertSame(4, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(6, $it->next());
+        $this->assertSame(6, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(8, $it->next());
+        $this->assertSame(8, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(14, $it->next());
+        $this->assertSame(14, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(1024, $it->next());
+        $this->assertSame(1024, $it->next());
         $this->assertFalse($it->first());
         $this->assertTrue($it->last());
 

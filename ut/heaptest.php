@@ -31,32 +31,32 @@ class HeapTest extends PlTestCase
     public function testHeap()
     {
         $heap = new PlHeap(array('HeapTest', 'compare'));
-        $this->assertEquals(0, $heap->count());
+        $this->assertSame(0, $heap->count());
         $this->assertNull($heap->pop());
 
         $heap->push(1);
-        $this->assertEquals(1, $heap->count());
-        $this->assertEquals(1, $heap->pop());
-        $this->assertEquals(0, $heap->count());
+        $this->assertSame(1, $heap->count());
+        $this->assertSame(1, $heap->pop());
+        $this->assertSame(0, $heap->count());
         $this->assertNull($heap->pop());
 
         $heap->push(2);
         $heap->push(1);
         $heap->push(4);
         $heap->push(3);
-        $this->assertEquals(4, $heap->count());
-        $this->assertEquals(1, $heap->pop());
-        $this->assertEquals(3, $heap->count());
-        $this->assertEquals(2, $heap->pop());
-        $this->assertEquals(2, $heap->count());
+        $this->assertSame(4, $heap->count());
+        $this->assertSame(1, $heap->pop());
+        $this->assertSame(3, $heap->count());
+        $this->assertSame(2, $heap->pop());
+        $this->assertSame(2, $heap->count());
         $heap->push(-1);
-        $this->assertEquals(3, $heap->count());
-        $this->assertEquals(-1, $heap->pop());
-        $this->assertEquals(2, $heap->count());
-        $this->assertEquals(3, $heap->pop());
-        $this->assertEquals(1, $heap->count());
-        $this->assertEquals(4, $heap->pop());
-        $this->assertEquals(0, $heap->count());
+        $this->assertSame(3, $heap->count());
+        $this->assertSame(-1, $heap->pop());
+        $this->assertSame(2, $heap->count());
+        $this->assertSame(3, $heap->pop());
+        $this->assertSame(1, $heap->count());
+        $this->assertSame(4, $heap->pop());
+        $this->assertSame(0, $heap->count());
         $this->assertNull($heap->pop());
     }
 
@@ -69,26 +69,26 @@ class HeapTest extends PlTestCase
         $heap->push(3);
 
         $it = $heap->iterator();
-        $this->assertEquals(4, $it->total());
+        $this->assertSame(4, $it->total());
 
-        $this->assertEquals(1, $it->next());
+        $this->assertSame(1, $it->next());
         $this->assertTrue($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(2, $it->next());
+        $this->assertSame(2, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(3, $it->next());
+        $this->assertSame(3, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(4, $it->next());
+        $this->assertSame(4, $it->next());
         $this->assertFalse($it->first());
         $this->assertTrue($it->last());
 
         $this->assertNull($it->next());
-        $this->assertEquals(4, $heap->count());
+        $this->assertSame(4, $heap->count());
     }
 
     public function testMergeSortedIterator()
@@ -98,45 +98,45 @@ class HeapTest extends PlTestCase
         $its[] = PlIteratorUtils::fromArray(array(3, 9, 27), 1, true);
         $its[] = PlIteratorUtils::fromArray(array(4, 16, 32), 1, true);
         $it = PlIteratorUtils::merge($its, array('HeapTest', 'compare'));
-        $this->assertEquals(10, $it->total());
+        $this->assertSame(10, $it->total());
 
-        $this->assertEquals(2, $it->next());
+        $this->assertSame(2, $it->next());
         $this->assertTrue($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(3, $it->next());
+        $this->assertSame(3, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(4, $it->next());
+        $this->assertSame(4, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(4, $it->next());
+        $this->assertSame(4, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(8, $it->next());
+        $this->assertSame(8, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(9, $it->next());
+        $this->assertSame(9, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(16, $it->next());
+        $this->assertSame(16, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(16, $it->next());
+        $this->assertSame(16, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(27, $it->next());
+        $this->assertSame(27, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(32, $it->next());
+        $this->assertSame(32, $it->next());
         $this->assertFalse($it->first());
         $this->assertTrue($it->last());
 
@@ -150,45 +150,45 @@ class HeapTest extends PlTestCase
         $its[] = PlIteratorUtils::fromArray(array(3, 27, 9), 1, true);
         $its[] = PlIteratorUtils::fromArray(array(32, 4, 16), 1, true);
         $it = PlIteratorUtils::merge($its, array('HeapTest', 'compare'), false);
-        $this->assertEquals(10, $it->total());
+        $this->assertSame(10, $it->total());
 
-        $this->assertEquals(2, $it->next());
+        $this->assertSame(2, $it->next());
         $this->assertTrue($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(3, $it->next());
+        $this->assertSame(3, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(4, $it->next());
+        $this->assertSame(4, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(4, $it->next());
+        $this->assertSame(4, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(8, $it->next());
+        $this->assertSame(8, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(9, $it->next());
+        $this->assertSame(9, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(16, $it->next());
+        $this->assertSame(16, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(16, $it->next());
+        $this->assertSame(16, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(27, $it->next());
+        $this->assertSame(27, $it->next());
         $this->assertFalse($it->first());
         $this->assertFalse($it->last());
 
-        $this->assertEquals(32, $it->next());
+        $this->assertSame(32, $it->next());
         $this->assertFalse($it->first());
         $this->assertTrue($it->last());
 

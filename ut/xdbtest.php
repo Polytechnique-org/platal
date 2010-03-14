@@ -25,31 +25,31 @@ class XDBTest extends PlTestCase
 {
     public function testEscapeString()
     {
-        $this->assertEquals("'blah'", XDB::format('{?}', 'blah'));
-        $this->assertEquals("'blah\\''", XDB::format('{?}', "blah'"));
-        $this->assertEquals("'bl\\'ah'", XDB::format('{?}', "bl'ah"));
-        $this->assertEquals("'\\'blah\\''", XDB::format('{?}', "'blah'"));
+        $this->assertSame("'blah'", XDB::format('{?}', 'blah'));
+        $this->assertSame("'blah\\''", XDB::format('{?}', "blah'"));
+        $this->assertSame("'bl\\'ah'", XDB::format('{?}', "bl'ah"));
+        $this->assertSame("'\\'blah\\''", XDB::format('{?}', "'blah'"));
     }
 
     public function testEscapeInt()
     {
-        $this->assertEquals("1", XDB::format('{?}', 1));
+        $this->assertSame("1", XDB::format('{?}', 1));
     }
 
     public function testEscapeFlagSet()
     {
         $flagset = new PlFlagSet();
         $flagset->addFlag('toto');
-        $this->assertEquals("'toto'", XDB::format('{?}', $flagset));
+        $this->assertSame("'toto'", XDB::format('{?}', $flagset));
         $flagset->addFlag('titi');
-        $this->assertEquals("'toto,titi'", XDB::format('{?}', $flagset));
+        $this->assertSame("'toto,titi'", XDB::format('{?}', $flagset));
         $flagset->addFlag('titi');
-        $this->assertEquals("'toto,titi'", XDB::format('{?}', $flagset));
+        $this->assertSame("'toto,titi'", XDB::format('{?}', $flagset));
     }
 
     public function testEscapeArray()
     {
-        $this->assertEquals("(1, 'toto')", XDB::format('{?}', array(1, 'toto')));
+        $this->assertSame("(1, 'toto')", XDB::format('{?}', array(1, 'toto')));
     }
 }
 
