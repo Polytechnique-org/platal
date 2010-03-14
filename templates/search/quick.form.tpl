@@ -23,28 +23,34 @@
 <h1>Recherche dans l'annuaire</h1>
 
 <form action="search" method="get"{if $show_js} id="quick_form"{/if}>
-  <table class="bicol" cellspacing="0" cellpadding="4">
-    {if $smarty.session.auth ge AUTH_COOKIE}
-    <tr>
-      <th colspan="2">
-        Recherche simple
-      </th>
-    </tr>
-    <tr>
-      <td colspan="2">
-        <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
-      </td>
-    </tr>
-    <tr class="noprint">
-      <td style="width: 70%">
-        <input type="checkbox" name="with_soundex" id="with_soundex" value="1" {if $smarty.request.with_soundex}checked="checked"{/if} /> <label for="with_soundex">Activer la recherche par proximité sonore.</label>
-        <br /><input type='checkbox' name='order' id="order" value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} /> <label for="order">Mettre les fiches modifiées récemment en premier.</label>
-        <br /><input type='checkbox' name='nonins' id="nonins" {if $smarty.request.nonins}checked='checked'{/if} value='1' /> <label for="nonins">Chercher uniquement des non inscrits.</label>
-      </td>
-      <td class="right">
-        <br /><input type="submit" value="Chercher" />
-      </td>
-    {else}
+  {if $smarty.session.auth ge AUTH_COOKIE}
+  <fieldset>
+    <legend>{icon name=magnifier} Recherche simple</legend>
+
+    <table style="width: 100%">
+      <tr>
+        <td colspan="2">
+          <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
+        </td>
+      </tr>
+      <tr class="noprint">
+        <td style="width: 70%">
+          <input type="checkbox" name="with_soundex" id="with_soundex" value="1" {if $smarty.request.with_soundex}checked="checked"{/if} /> <label for="with_soundex">Activer la recherche par proximité sonore.</label>
+          <br /><input type='checkbox' name='order' id="order" value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} /> <label for="order">Mettre les fiches modifiées récemment en premier.</label>
+          <br /><input type='checkbox' name='nonins' id="nonins" {if $smarty.request.nonins}checked='checked'{/if} value='1' /> <label for="nonins">Chercher uniquement des non inscrits.</label>
+        </td>
+        <td class="right">
+          <br /><input type="submit" value="Chercher" />
+        </td>
+      </tr>
+    </table>
+    <hr />
+    <div class="center">
+      <a href="search/adv">Effectuer une recherche avancée</a>
+    </div>
+  </fieldset>
+  {else}
+  <table style="width: 100%">
     <tr class="noprint">
       <td style="width: 60%">
         <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
@@ -52,21 +58,17 @@
       <td class="right">
         <input type="submit" value="Chercher" />
       </td>
-    {/if}
     </tr>
   </table>
+  {/if}
 </form>
-{if $smarty.session.auth ge AUTH_COOKIE}
-<p class="center">[<a href="search/adv">Effectuer une recherche avancée</a>]</p>
-{/if}
 
 {if $show_js}
 {literal}
 <script type="text/javascript">
-  <!--
-  // Activate the first search input field.
-  document.getElementById("quick_form").quick.focus();
-  // -->
+  $(document).ready(function() {
+    $("#quick_form input[name='quick']").focus();
+  });
 </script>
 {/literal}
 {/if}

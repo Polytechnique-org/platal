@@ -47,15 +47,8 @@ class SearchModule extends PLModule
     {
         global $globals;
 
-        $res = XDB::query("SELECT  MIN(diminutif), MAX(diminutif)
-                             FROM  groups
-                            WHERE  cat = 'Promotions'");
-        list($min, $max) = $res->fetchOneRow();
-        $page->assign('promo_min', $min);
-        $page->assign('promo_max', $max);
-
         if (Env::has('quick') || $action == 'geoloc') {
-            $quick = trim(Env::v('quick'));
+            $quick = trim(Env::t('quick'));
             if (S::logged() && !Env::has('page')) {
                 S::logger()->log('search', 'quick=' . $quick);
             }
@@ -91,6 +84,17 @@ class SearchModule extends PLModule
                 $url .= 'action=search&q=' . urlencode(substr($quick, 4));
                 $url .= '&group=' . urlencode('-Equipe,-Main,-PmWiki,-Site,-Review');
                 pl_redirect($url);
+            } elseif (strpos($quick, 'trombi:') === 0) {
+                $promo = substr($quick, 7);
+                $res = XDB::query("SELECT  diminutif
+                                     FROM  groups
+                                    WHERE  cat = 'Promotions' AND diminutif = {?}",
+                                  $promo);
+                if ($res->numRows() == 0) {
+                    $page->trigWarning("La promotion demandée n'est pas valide: $promo");
+                } else {
+                    http_redirect('http://www.polytechnique.net/login/' . $promo . '/annuaire/trombi');
+                }
             }
 
             $page->assign('formulaire', 0);
