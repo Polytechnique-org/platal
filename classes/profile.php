@@ -320,70 +320,22 @@ class Profile
         }
         return null;
     }
-    /*
-        $cond = '';
-        if ($this->visibility) {
-            $cond = ' AND pub IN ' . XDB::formatArray($this->visibility);
-        }
-        $res = XDB::query("SELECT  *
-                             FROM  profile_photos
-                            WHERE  attachmime IN ('jpeg', 'png')
-                                   " . $cond . ' AND  pid = {?}',
-                          $this->id());
-        if ($res->numRows() > 0) {
-            $photo = $res->fetchOneAssoc();
-            return PlImage::fromData($photo['attach'], 'image/' . $photo['attachmime'],
-                                     $photo['x'], $photo['y']);
-        } else if ($fallback) {
-            return PlImage::fromFile(dirname(__FILE__).'/../htdocs/images/none.png',
-                                     'image/png');
-        }
-        return null;
-    }
-     */
+
     /* Addresses
      */
+    private $addresses = null;
+    public function setAddresses(ProfileAddresses $addr)
+    {
+        $this->addresses = $addr;
+    }
+
     public function getAddresses($flags, $limit = null)
     {
-        $where = XDB::format('pa.pid = {?}', $this->id());
-        if ($flags & self::ADDRESS_MAIN) {
-            $where .= ' AND FIND_IN_SET(\'current\', pa.flags)';
+        if ($this->addresses == null) {
+            return PlIteratorUtils::fromArray(array());
+        } else {
+            return $this->addresses->get($flags, $limit);
         }
-        if ($flags & self::ADDRESS_POSTAL) {
-            $where .= ' AND FIND_IN_SET(\'mail\', pa.flags)';
-        }
-        if ($this->visibility) {
-            $where .= ' AND pa.pub IN ' . XDB::formatArray($this->visibility);
-        }
-        $type = array();
-        if ($flags & self::ADDRESS_PRO) {
-            $type[] = 'job';
-        }
-        if ($flags & self::ADDRESS_PERSO) {
-            $type[] = 'home';
-        }
-        if (count($type) > 0) {
-            $where .= ' AND pa.type IN ' . XDB::formatArray($type);
-        }
-        $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
-        return XDB::iterator('SELECT  pa.text, pa.postalCode, pa.type, pa.latitude, pa.longitude,
-                                      gl.name AS locality, gas.name AS subAdministrativeArea,
-                                      ga.name AS administrativeArea, gc.countryFR AS country,
-                                      ppfix.display_tel AS fixed_tel, ppfax.display_tel AS fax_tel,
-                                      FIND_IN_SET(\'current\', pa.flags) AS current,
-                                      FIND_IN_SET(\'temporary\', pa.flags) AS temporary,
-                                      FIND_IN_SET(\'secondary\', pa.flags) AS secondary,
-                                      FIND_IN_SET(\'mail\', pa.flags) AS mail, pa.type
-                                FROM  profile_addresses AS pa
-                           LEFT JOIN  geoloc_localities AS gl ON (gl.id = pa.localityId)
-                           LEFT JOIN  geoloc_administrativeareas AS ga ON (ga.id = pa.administrativeAreaId)
-                           LEFT JOIN  geoloc_administrativeareas AS gas ON (gas.id = pa.subAdministrativeAreaId)
-                           LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
-                           LEFT JOIN  profile_phones AS ppfix ON (ppfix.link_type = \'address\' AND ppfix.pid = pa.pid AND ppfix.link_id = pa.id AND ppfix.tel_type = \'fixed\')
-                           LEFT JOIN  profile_phones AS ppfax ON (ppfax.link_type = \'address\' AND ppfax.pid = pa.pid AND ppfax.link_id = pa.id AND ppfax.tel_type = \'fax\')
-                               WHERE  ' . $where . '
-                            ORDER BY  pa.id
-                                      ' . $limit);
     }
 
     public function getMainAddress()
@@ -648,7 +600,7 @@ class Profile
 
     /** Return profiles for the list of pids.
      */
-    public static function getBulkProfilesWithPIDs(array $pids, $fields = 0x0000, $visibility = null)
+    public static function getBulkProfilesWithPIDs(array $pids, $fields = self::FETCH_ADDRESSES, $visibility = null)
     {
         if (count($pids) == 0) {
             return array();
@@ -840,17 +792,17 @@ class ProfileDataIterator
         if ($this->fields & Profile::FETCH_PHONES) {
             $phones = $pf[Profile::FETCH_PHONES];
 
-            if ($this->fields & Profile::FETCH_ADDRESSES) {
+            if ($this->fields & Profile::FETCH_ADDRESSES && $pf[Profile::FETCH_ADDRESSES] != null) {
                 $pf[Profile::FETCH_ADDRESSES]->addPhones($phones);
             }
-            if ($this->fields & Profile::FETCH_JOBS) {
+            if ($this->fields & Profile::FETCH_JOBS && $pf[Profile::FETCH_JOBS] != null) {
                 $pf[Profile::FETCH_JOBS]->addPhones($phones);
             }
         }
 
         if ($this->fields & Profile::FETCH_ADDRESSES) {
             $addrs = $pf[Profile::FETCH_ADDRESSES];
-            if ($this->fields & Profile::FETCH_JOBS) {
+            if ($this->fields & Profile::FETCH_JOBS && $pf[Profile::FETCH_JOBS] != null) {
                 $pf[Profile::FETCH_JOBS]->addAddresses($addrs);
             }
         }
@@ -864,7 +816,9 @@ class ProfileDataIterator
 
         $pf = Profile::get($vals[0]);
         if ($this->fields & Profile::FETCH_ADDRESSES) {
-            $pf->setAddresses($vals[Profile::FETCH_ADDRESSES]);
+            if ($vals[Profile::FETCH_ADDRESSES] != null) {
+                $pf->setAddresses($vals[Profile::FETCH_ADDRESSES]);
+            }
         }
         if ($this->fields & Profile::FETCH_CORPS) {
             $pf->setCorps($vals[Profile::FETCH_CORPS]);
