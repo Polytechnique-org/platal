@@ -88,12 +88,12 @@ class PlIteratorUtils
     /** Build an iterator whose values are iterators too; such a 'subIterator' will end
      * when the value of $callback changes
      * @param iterator The source iterator
-     * @param callback The callback for detecting changes.
+     * @param callback The callback for detecting changes. XXX: Might be called twice on a given object
      * @return an iterator
      */
     public static function subIterator(PlIterator $iterator, $callback)
     {
-        return new SubIterator($iterator, $callback);
+        return new PlSubIterator($iterator, $callback);
     }
 
     /** Returns the callback for '$x -> $x[$key]';
@@ -462,6 +462,7 @@ class PlInnerSubIterator implements PlIterator
 
     private $curval = null;
     private $curelt = null;
+    private $begin = true;
     private $stepped = false;
     private $over = false;
 
@@ -490,8 +491,14 @@ class PlInnerSubIterator implements PlIterator
             $this->curelt = $this->next;
             $this->next = null;
         } else {
-            $elt = $this->source->next();
+            $this->curelt = $this->source->next();
         }
+
+        if ($this->begin) {
+            $this->curval = call_user_func($this->callback, $this->curelt);
+            $this->begin = false;
+        }
+
         $this->stepped = true;
     }
 
@@ -500,13 +507,13 @@ class PlInnerSubIterator implements PlIterator
         $this->_step();
         $this->stepped = false;
 
-        if ($this->elt) {
-            $val = call_user_func($this->callback, $this->elt);
+        if ($this->curelt) {
+            $val = call_user_func($this->callback, $this->curelt);
             if ($val == $this->curval) {
                 $this->curval = $val;
-                return $this->elt;
+                return $this->curelt;
             } else {
-                $this->parent->setNext($this->elt);
+                $this->parent->setNext($this->curelt);
             }
         }
         $this->over = true;
