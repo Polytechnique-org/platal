@@ -261,6 +261,11 @@ class Address
     {
         return $this->phones;
     }
+
+    public function hasFlags($flags)
+    {
+        return $flags & $this->flags;
+    }
 }
 // }}}
 
@@ -429,22 +434,42 @@ class ProfileAddresses extends ProfileField
 {
     private $addresses = array();
 
-    private function __construct(PlIterator $addrs)
+    public function __construct(PlIterator $it)
     {
-        while ($addr = $it->next()) {
-            $this->addresses[] = Address::buildFromData($addr);
+        if ($it instanceof PlInnerSubIterator) {
+            $this->pid = $it->value();
         }
+
+        while ($addr = $it->next()) {
+            $this->addresses[] = new Address($addr);
+        }
+    }
+
+    public function get($flags, $limit = null)
+    {
+        $res = array();
+        $nb = 0;
+        foreach ($this->addresses as $addr) {
+            if ($addr->hasFlags($flags)) {
+                $res[] = $addr;
+                $nb++;
+            }
+            if ($limit != null && $nb == $limit) {
+                break;
+            }
+        }
+        return PlIteratorUtils::fromArray($res);
     }
 
     public static function fetchData(array $pids, $visibility)
     {
-        $data = XDB::iterator('SELECT  text, postalCode, type, latitude, longitude,
+        $data = XDB::iterator('SELECT  pid, text, postalCode, type, latitude, longitude,
                                        flags, type
                                  FROM  profile_addresses
                                 WHERE  pid in {?} AND pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                XDB::formatArray($pids),
-                                XDB::formatArray($visibility)
+                                $pids,
+                                $visibility
                             );
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
