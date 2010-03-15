@@ -91,6 +91,8 @@ class Profile
     const FETCH_PHONES     = 0x00040;
     const FETCH_PHOTO      = 0x00080;
 
+    const FETCH_ALL        = 0x000FF;
+
     private $pid;
     private $hrpid;
     private $data = array();
