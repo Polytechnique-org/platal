@@ -96,6 +96,18 @@ class PlIteratorUtils
         return new PlSubIterator($iterator, $callback);
     }
 
+    /** Build an iterator that will iterate over the given set of iterators, returning consistent
+     * sets of values (i.e only the values for which the result of the callback is the same as that
+     * for the master)
+     * @param iterators The set of iterators
+     * @param callbacks A list of callbacks (one for each iterator), or a single, common, callback
+     * @param master The id of the "master" iterator in the first list
+     */
+    public static function parallelIterator(array $iterators, $callbacks, $master)
+    {
+        return new PlParallelIterator($iterators, $callbacks, $master);
+    }
+
     /** Returns the callback for '$x -> $x[$key]';
      * @param $key the index to retrieve in arrays
      * @return a callback
@@ -537,6 +549,133 @@ class PlInnerSubIterator implements PlIterator
         return false;
     }
 
+}
+
+/** Builds an iterator over a set of iterators, from which one is given as 'master';
+ * The arguments are :
+ *  - An array of iterators, to iterate simultaneously
+ *  - An array of callbacks (one attached to each iterator), or a single callback (to
+ *      use for all iterators)
+ *  - The id of the 'master' iterator
+ *
+ * This ParallelIterator will iterate over the iterators, and, at each
+ * step of the master iterator, it will apply the callbacks to the corresponding
+ * iterators and return the values of the "slaves" for which the callback returned the
+ * same value as the callback of the master.
+ *
+ * The callback should compute some kind of index, and never return the same value
+ * twice for a given iterator
+ *
+ * It is assumed that, if the callback for a slave doesn't have the same value
+ * as the value for the master, this means that there is a "hole" in the values
+ * of that slave.
+ *
+ * Example :
+ *   - The callback is 'get the first cell'
+ *   - The master is :
+ *      [0, 1], [1, 13], [2, 42]
+ *   - The first slave (slave1) is :
+ *      [0, 'a'], [2, 'b']
+ *   - The second slave (slave2) is :
+ *      [1, 42], [2, 0]
+ * The resulting iterator would yield :
+ * - array(master => [0, 1], slave1 => [0, 'a'], slave2 => null)
+ * - array(master => [1, 13], slave1 => null, slave2 => [1, 42])
+ * - array(master => [2, 42], slave1 => [1, 'b'], slave2 => [2, 0])
+ */
+class PlParallelIterator implements PlIterator
+{
+    private $iterators;
+    private $ids;
+    private $callbacks;
+
+    private $master_id;
+    private $master;
+
+    private $stepped;
+    private $current_elts = array();
+    private $callback_res = array();
+
+    public function __construct(array $iterators, $callbacks, $master)
+    {
+        $this->iterators = $iterators;
+        $this->master_id = $master;
+        $this->master = $iterators[$master];
+
+        $this->ids = array_keys($iterators);
+
+        if (is_array($callbacks)) {
+            $this->callbacks = $callbacks;
+        } else {
+            $this->callbacks = array();
+            foreach ($this->ids as $id) {
+                $this->callbacks[$id] = $callbacks;
+            }
+        }
+
+        foreach ($this->ids as $id) {
+            $this->stepped[$id] = false;
+            $this->current_elts[$id] = null;
+            $this->callback_res[$id] = null;
+        }
+    }
+
+    private function step($id)
+    {
+        if ($this->stepped[$id]) {
+            return;
+        }
+
+        $it = $this->iterators[$id];
+        $nxt = $it->next();
+        $res = call_user_func($this->callbacks[$id], $nxt);
+        $this->current_elts[$id] = $nxt;
+        $this->callback_res[$id] = $res;
+        $this->stepped[$id] = true;
+    }
+
+    private function stepAll()
+    {
+        foreach ($this->ids as $id) {
+            $this->step($id);
+        }
+    }
+
+    public function next()
+    {
+        $this->stepAll();
+        if ($this->current_elts[$this->master_id] == null) {
+            return null;
+        }
+
+        $res = array();
+        $master = $this->callback_res[$this->master_id];
+        foreach ($this->ids as $id) {
+            if ($this->callback_res[$id] == $master) {
+                $res[$id] = $this->current_elts[$id];
+                $this->stepped[$id] = false;
+            } else {
+                $res[$id] = null;
+            }
+        }
+
+        return $res;
+    }
+
+    public function first()
+    {
+        return $this->master->first();
+    }
+
+    public function total()
+    {
+        return $this->master->total();
+    }
+
+    public function last()
+    {
+        return $this->master->last();
+    }
 }
 
 // Wrapper class for 'arrayValueCallback' (get field $key of the given array)
