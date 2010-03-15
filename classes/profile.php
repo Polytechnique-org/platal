@@ -82,6 +82,15 @@ class Profile
     const NETWORKING_IM      = 0x020000;
     const NETWORKING_SOCIAL  = 0x040000;
 
+    const FETCH_ADDRESSES  = 0x00001;
+    const FETCH_CORPS      = 0x00002;
+    const FETCH_EDU        = 0x00004;
+    const FETCH_JOBS       = 0x00008;
+    const FETCH_MEDALS     = 0x00010;
+    const FETCH_NETWORKING = 0x00020;
+    const FETCH_PHONES     = 0x00040;
+    const FETCH_PHOTO      = 0x00080;
+
     private $pid;
     private $hrpid;
     private $data = array();
@@ -96,6 +105,40 @@ class Profile
         if (!S::logged()) {
             $this->setVisibilityLevel(self::VISIBILITY_PUBLIC);
         }
+    }
+
+    static private $contexts = array();
+
+    /** Returns the best visibility context toward $visibility
+     * @param $visibility A wished visibility level
+     * @return The closest allowed visibility level
+     *
+     * if $visibility is null, the best visibility is returned
+     */
+    static public function getVisibilityContext($visibility = null)
+    {
+        if (array_key_exists($visibility, self::$contexts)) {
+            return self::$contexts[$visibility];
+        }
+
+        $asked_vis = $visibility;
+
+        if (S::logged()) {
+            $minvis = self::VISIBILITY_PRIVATE;
+        } else {
+            $minvis = self::VISIBILITY_PUBLIC;
+        }
+        if ($visibility == null) {
+            $visibility = array($minvis);
+        }
+
+        if ($minvis == self::VISIBILITY_PUBLIC) {
+            $visibility = array(self::VISIBILITY_PUBLIC);
+        }
+
+        self::$contexts[$asked_vis] = $visibility;
+
+        return $visibility;
     }
 
     public function id()
@@ -254,13 +297,33 @@ class Profile
         return in_array($visibility, $this->visibility);
     }
 
+    public static function getCompatibleVisibilities($visibility)
+    {
+        return self::$v_values[$visibility];
+    }
+
     /* Photo
      */
+    private $photo = null;
+    public function setPhoto(ProfilePhoto $photo)
+    {
+        $this->photo = $photo;
+    }
+
     public function getPhoto($fallback = true)
     {
+        if ($this->photo != null) {
+            return $this->photo->pic;
+        } else if ($fallback) {
+            return PlImage::fromFile(dirname(__FILE__).'/../htdocs/images/none.png',
+                                     'image/png');
+        }
+        return null;
+    }
+    /*
         $cond = '';
         if ($this->visibility) {
-            $cond = XDB::format(' AND pub IN {?}', $this->visibility);
+            $cond = ' AND pub IN ' . XDB::formatArray($this->visibility);
         }
         $res = XDB::query("SELECT  *
                              FROM  profile_photos
@@ -277,7 +340,7 @@ class Profile
         }
         return null;
     }
-
+     */
     /* Addresses
      */
     public function getAddresses($flags, $limit = null)
@@ -290,7 +353,7 @@ class Profile
             $where .= ' AND FIND_IN_SET(\'mail\', pa.flags)';
         }
         if ($this->visibility) {
-            $where .= XDB::format(' AND pa.pub IN {?}', $this->visibility);
+            $where .= ' AND pa.pub IN ' . XDB::formatArray($this->visibility);
         }
         $type = array();
         if ($flags & self::ADDRESS_PRO) {
@@ -300,7 +363,7 @@ class Profile
             $type[] = 'home';
         }
         if (count($type) > 0) {
-            $where .= XDB::format(' AND pa.type IN {?}', $type);
+            $where .= ' AND pa.type IN ' . XDB::formatArray($type);
         }
         $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
         return XDB::iterator('SELECT  pa.text, pa.postalCode, pa.type, pa.latitude, pa.longitude,
@@ -379,7 +442,7 @@ class Profile
             $where .= ' AND pn.network_type = 0'; // XXX hardcoded reference to web site index
         }
         if ($this->visibility) {
-            $where .= XDB::format(' AND pn.pub IN {?}', $this->visibility);
+            $where .= ' AND pn.pub IN ' . XDB::formatArray($this->visibility);
         }
         $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
         return XDB::iterator('SELECT  pne.name, pne.icon,
@@ -411,8 +474,8 @@ class Profile
         $where = XDB::format('pj.pid = {?}', $this->id());
         $cond  = 'TRUE';
         if ($this->visibility) {
-            $where .= XDB::format(' AND pj.pub IN {?}', $this->visibility);
-            $cond  = XDB::format('pj.email_pub IN {?}', $this->visibility);
+            $where .= ' AND pj.pub IN ' . XDB::formatArray($this->visibility);
+            $cond  =  'pj.email_pub IN ' . XDB::formatArray($this->visibility);
         }
         $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
         return XDB::iterator('SELECT  pje.name, pje.acronym, pje.url, pje.email, pje.NAF_code,
@@ -473,34 +536,7 @@ class Profile
         return ($isOk && ($maxlen > 2 || $maxlen == strlen($_lastname)));
     }
 
-    /**
-     * Clears a profile.
-     *  *always deletes in: profile_addresses, profile_binets, profile_job,
-     *      profile_langskills, profile_mentor, profile_networking,
-     *      profile_phones, profile_skills, watch_profile
-     *  *always keeps in: profile_corps, profile_display, profile_education,
-     *      profile_medals, profile_name, profile_photos, search_name
-     *  *modifies: profiles
-     */
-    public function clear()
-    {
-        XDB::execute('DELETE FROM  profile_job, profile_langskills, profile_mentor,
-                                   profile_networking, profile_skills, watch_profile
-                            WHERE  pid = {?}',
-                     $this->id());
-        XDB::execute('DELETE FROM  profile_addresses, profile_binets,
-                                   profile_phones
-                            WHERE  pid = {?}',
-                     $this->id());
-        XDB::execute("UPDATE  profiles
-                         SET  cv = NULL, freetext = NULL, freetext_pub = 'private',
-                              medals_pub = 'private', alias_pub = 'private',
-                              email_directory = NULL
-                       WHERE  pid = {?}",
-                     $this->id());
-    }
-
-    private static function fetchProfileData(array $pids, $respect_order = true)
+    private static function fetchProfileData(array $pids, $respect_order = true, $fields = 0x0000, $visibility = null)
     {
         if (count($pids) == 0) {
             return array();
@@ -512,34 +548,36 @@ class Profile
             $order = '';
         }
 
-        return XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
-                                      pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
-                                      IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
-                                      IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
-                                      pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
-                                      pd.directory_name, pp.display_tel AS mobile, pp.pub AS mobile_pub,
-                                      ph.attach IS NOT NULL AS has_photo, ph.pub AS photo_pub,
-                                      p.last_change < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_old,
-                                      ap.uid AS owner_id
-                                FROM  profiles AS p
-                          INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
-                          INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
-                          INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid AND pn_f.typeid = {?})
-                          INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid AND pn_l.typeid = {?})
-                           LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid AND pn_uf.typeid = {?})
-                           LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid AND pn_ul.typeid = {?})
-                           LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid AND pn_n.typeid = {?})
-                           LEFT JOIN  profile_phones AS pp ON (pp.pid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
-                           LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
-                           LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
-                               WHERE  p.pid IN {?}
-                            GROUP BY  p.pid
-                                   ' . $order,
-                             DirEnum::getID(DirEnum::NAMETYPES, 'firstname'),
-                             DirEnum::getID(DirEnum::NAMETYPES, 'lastname'),
-                             DirEnum::getID(DirEnum::NAMETYPES, 'firstname_ordinary'),
-                             DirEnum::getID(DirEnum::NAMETYPES, 'lastname_ordinary'),
-                             DirEnum::getID(DirEnum::NAMETYPES, 'nickname'), $pids);
+
+        $it = XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
+                                     pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
+                                     IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
+                                     IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
+                                     pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
+                                     pd.directory_name, pp.display_tel AS mobile, pp.pub AS mobile_pub,
+                                     ph.attach IS NOT NULL AS has_photo, ph.pub AS photo_pub,
+                                     p.last_change < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_old,
+                                     ap.uid AS owner_id
+                               FROM  profiles AS p
+                         INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
+                         INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                         INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid
+                                                              AND pn_f.typeid = ' . self::getNameTypeId('firstname', true) . ')
+                         INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid
+                                                              AND pn_l.typeid = ' . self::getNameTypeId('lastname', true) . ')
+                          LEFT JOIN  profile_name AS pn_uf ON (pn_uf.pid = p.pid
+                                                               AND pn_uf.typeid = ' . self::getNameTypeId('firstname_ordinary', true) . ')
+                          LEFT JOIN  profile_name AS pn_ul ON (pn_ul.pid = p.pid
+                                                               AND pn_ul.typeid = ' . self::getNameTypeId('lastname_ordinary', true) . ')
+                          LEFT JOIN  profile_name AS pn_n ON (pn_n.pid = p.pid
+                                                              AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
+                          LEFT JOIN  profile_phones AS pp ON (pp.pid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
+                          LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
+                          LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                              WHERE  p.pid IN ' . XDB::formatArray($pids) . '
+                           GROUP BY  p.pid
+                                  ' . $order);
+        return new ProfileDataIterator($it, $pids, $fields, $visibility);
     }
 
     public static function getPID($login)
@@ -549,7 +587,7 @@ class Profile
                                         FROM  account_profiles
                                        WHERE  uid = {?} AND FIND_IN_SET(\'owner\', perms)',
                                      $login->id());
-        } else if (is_int($login) || ctype_digit($login)) {
+        } else if (ctype_digit($login)) {
             return XDB::fetchOneCell('SELECT  pid
                                         FROM  profiles
                                        WHERE  pid = {?}', $login);
@@ -570,20 +608,20 @@ class Profile
         return XDB::fetchAllAssoc('uid', 'SELECT  ap.uid, ap.pid
                                             FROM  account_profiles AS ap
                                            WHERE  FIND_IN_SET(\'owner\', ap.perms)
-                                                  AND ap.uid IN {?}
-                                               ' . $order, $uids);
+                                                  AND ap.uid IN ' . XDB::formatArray($uids) .'
+                                               ' . $order);
     }
 
     /** Return the profile associated with the given login.
      */
-    public static function get($login)
+    public static function get($login, $fields = 0x0000, $visibility = null)
     {
         if (is_array($login)) {
             return new Profile($login);
         }
         $pid = self::getPID($login);
         if (!is_null($pid)) {
-            $it = self::iterOverPIDs(array($pid), false);
+            $it = self::iterOverPIDs(array($pid), false, $fields, $visibility);
             return $it->next();
         } else {
             /* Let say we can identify a profile using the identifiers of its owner.
@@ -598,24 +636,24 @@ class Profile
         }
     }
 
-    public static function iterOverUIDs($uids, $respect_order = true)
+    public static function iterOverUIDs($uids, $respect_order = true, $fields = 0x0000, $visibility = null)
     {
-        return self::iterOverPIDs(self::getPIDsFromUIDs($uids), $respect_order);
+        return self::iterOverPIDs(self::getPIDsFromUIDs($uids), $respect_order, $fields, $visibility);
     }
 
-    public static function iterOverPIDs($pids, $respect_order = true)
+    public static function iterOverPIDs($pids, $respect_order = true, $fields = 0x0000, $visibility = null)
     {
-        return new ProfileIterator(self::fetchProfileData($pids, $respect_order));
+        return self::fetchProfileData($pids, $respect_order, $fields, $visibility);
     }
 
     /** Return profiles for the list of pids.
      */
-    public static function getBulkProfilesWithPIDs(array $pids)
+    public static function getBulkProfilesWithPIDs(array $pids, $fields = 0x0000, $visibility = null)
     {
         if (count($pids) == 0) {
             return array();
         }
-        $it = self::iterOverPIDs($pids);
+        $it = self::iterOverPIDs($pids, true, $fields, $visibility);
         $profiles = array();
         while ($p = $it->next()) {
             $profiles[$p->id()] = $p;
@@ -625,12 +663,12 @@ class Profile
 
     /** Return profiles for uids.
      */
-    public static function getBulkProfilesWithUIDS(array $uids)
+    public static function getBulkProfilesWithUIDS(array $uids, $fields = 0x000, $visibility = null)
     {
         if (count($uids) == 0) {
             return array();
         }
-        return self::getBulkProfilesWithPIDs(self::getPIDsFromUIDs($uids));
+        return self::getBulkProfilesWithPIDs(self::getPIDsFromUIDs($uids), $fields, $visibility);
     }
 
     public static function isDisplayName($name)
@@ -639,6 +677,22 @@ class Profile
             || $name == self::DN_YOURSELF || $name == self::DN_DIRECTORY
             || $name == self::DN_PRIVATE || $name == self::DN_PUBLIC
             || $name == self::DN_SHORT || $name == self::DN_SORT;
+    }
+
+    public static function getNameTypeId($type, $for_sql = false)
+    {
+        if (!S::has('name_types')) {
+            $table = XDB::fetchAllAssoc('type', 'SELECT  id, type
+                                                   FROM  profile_name_enum');
+            S::set('name_types', $table);
+        } else {
+            $table = S::v('name_types');
+        }
+        if ($for_sql) {
+            return XDB::escape($table[$type]);
+        } else {
+            return $table[$type];
+        }
     }
 
     public static function rebuildSearchTokens($pid)
@@ -720,16 +774,162 @@ class Profile
     }
 }
 
+class ProfileDataIterator
+{
+    private $iterator = null;
+    private $fields;
+
+    public function __construct(PlIterator $it, array $pids, $fields = 0x0000, $visibility = null)
+    {
+        require_once 'profilefields.inc.php';
+        $visibility = Profile::getVisibilityContext($visibility);
+        $this->fields = $fields;
+
+        $subits = array();
+        $callbacks = array();
+
+        $subits[0] = $it;
+        $callbacks[0] = PlIteratorUtils::arrayValueCallback('pid');
+        $cb = PlIteratorUtils::objectPropertyCallback('pid');
+
+        if ($fields & Profile::FETCH_ADDRESSES) {
+            $callbacks[Profile::FETCH_ADDRESSES] = $cb;
+            $subits[Profile::FETCH_ADDRESSES] = new ProfileFieldIterator('ProfileAddresses', $pids, $visibility);
+        }
+
+        if ($fields & Profile::FETCH_CORPS) {
+            $callbacks[Profile::FETCH_CORPS] = $cb;
+            $subits[Profile::FETCH_CORPS] = new ProfileFieldIterator('ProfileCorps', $pids, $visibility);
+        }
+
+        if ($fields & Profile::FETCH_EDU) {
+            $callbacks[Profile::FETCH_EDU] = $cb;
+            $subits[Profile::FETCH_EDU] = new ProfileFieldIterator('ProfileEducation', $pids, $visibility);
+        }
+
+        if ($fields & Profile::FETCH_JOBS) {
+            $callbacks[Profile::FETCH_JOBS] = $cb;
+            $subits[Profile::FETCH_JOBS] = new ProfileFieldIterator('ProfileJobs', $pids, $visibility);
+        }
+
+        if ($fields & Profile::FETCH_MEDALS) {
+            $callbacks[Profile::FETCH_MEDALS] = $cb;
+            $subits[Profile::FETCH_MEDALS] = new ProfileFieldIterator('ProfileMedals', $pids, $visibility);
+        }
+
+        if ($fields & Profile::FETCH_NETWORKING) {
+            $callbacks[Profile::FETCH_NETWORKING] = $cb;
+            $subits[Profile::FETCH_NETWORKING] = new ProfileFieldIterator('ProfileNetworking', $pids, $visibility);
+        }
+
+        if ($fields & Profile::FETCH_PHONES) {
+            $callbacks[Profile::FETCH_PHONES] = $cb;
+            $subits[Profile::FETCH_PHONES] = new ProfileFieldIterator('ProfilePhones', $pids, $visibility);
+        }
+
+        if ($fields & Profile::FETCH_PHOTO) {
+            $callbacks[Profile::FETCH_PHOTO] = $cb;
+            $subits[Profile::FETCH_PHOTO] = new ProfileFieldIterator('ProfilePhoto', $pids, $visibility);
+        }
+
+        $this->iterator = PlIteratorUtils::parallelIterator($subits, $callbacks, 0);
+    }
+
+    private function consolidateFields(array $pf)
+    {
+        if ($this->fields & Profile::FETCH_PHONES) {
+            $phones = $pf[Profile::FETCH_PHONES];
+
+            if ($this->fields & Profile::FETCH_ADDRESSES) {
+                $pf[Profile::FETCH_ADDRESSES]->addPhones($phones);
+            }
+            if ($this->fields & Profile::FETCH_JOBS) {
+                $pf[Profile::FETCH_JOBS]->addPhones($phones);
+            }
+        }
+
+        if ($this->fields & Profile::FETCH_ADDRESSES) {
+            $addrs = $pf[Profile::FETCH_ADDRESSES];
+            if ($this->fields & Profile::FETCH_JOBS) {
+                $pf[Profile::FETCH_JOBS]->addAddresses($addrs);
+            }
+        }
+
+        return $pf;
+    }
+
+    private function fillProfile(array $vals)
+    {
+        $vals = $this->consolidateFields($vals);
+
+        $pf = Profile::get($vals[0]);
+        if ($this->fields & Profile::FETCH_ADDRESSES) {
+            $pf->setAddresses($vals[Profile::FETCH_ADDRESSES]);
+        }
+        if ($this->fields & Profile::FETCH_CORPS) {
+            $pf->setCorps($vals[Profile::FETCH_CORPS]);
+        }
+        if ($this->fields & Profile::FETCH_EDU) {
+            $pf->setEdu($vals[Profile::FETCH_EDU]);
+        }
+        if ($this->fields & Profile::FETCH_JOBS) {
+            $pf->setJobs($vals[Profile::FETCH_JOBS]);
+        }
+        if ($this->fields & Profile::FETCH_MEDALS) {
+            $pf->setMedals($vals[Profile::FETCH_MEDALS]);
+        }
+        if ($this->fields & Profile::FETCH_NETWORKING) {
+            $pf->setNetworking($vals[Profile::FETCH_NETWORKING]);
+        }
+        if ($this->fields & Profile::FETCH_PHONES) {
+            $pf->setPhones($vals[Profile::FETCH_PHONES]);
+        }
+        if ($this->fields & Profile::FETCH_PHOTO) {
+            if ($vals[Profile::FETCH_PHOTO] != null) {
+                $pf->setPhoto($vals[Profile::FETCH_PHOTO]);
+            }
+        }
+
+        return $pf;
+    }
+
+    public function next()
+    {
+        $vals = $this->iterator->next();
+        if ($vals == null) {
+            return null;
+        }
+        return $this->fillProfile($vals);
+    }
+
+    public function first()
+    {
+        return $this->iterator->first();
+    }
+
+    public function last()
+    {
+        return $this->iterator->last();
+    }
+
+    public function total()
+    {
+        return $this->iterator->total();
+    }
+}
+
 /** Iterator over a set of Profiles
  * @param an XDB::Iterator obtained from a Profile::fetchProfileData
  */
 class ProfileIterator implements PlIterator
 {
+    private $pdi;
     private $dbiter;
 
-    public function __construct($dbiter)
+    public function __construct(ProfileDataIterator &$pdi)
     {
-        $this->dbiter = $dbiter;
+        $this->pdi = $pdi;
+        $this->dbiter = $pdi->iterator();
     }
 
     public function next()
@@ -738,7 +938,7 @@ class ProfileIterator implements PlIterator
         if ($data == null) {
             return null;
         } else {
-            return Profile::get($data);
+            return $this->pdi->fillProfile(Profile::get($data));
         }
     }
 
