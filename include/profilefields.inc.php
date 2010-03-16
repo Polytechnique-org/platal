@@ -379,38 +379,45 @@ class ProfileMedals extends ProfileField
 class ProfileNetworking extends ProfileField
 {
     private $networks = array();
-    private $visibilities = array();
 
     private function __construct(PlIterator $it)
     {
         while ($network = $it->next()) {
             $this->networks[$network['nwid']] = $network['address'];
-            $this->visibilities[$network['nwid']] = $network['pub'];
         }
     }
 
     public static function fetchData(array $pids, $visibility)
     {
-        $data = XDB::iterator('SELECT  pid, nwid, address, pub
+        $data = XDB::iterator('SELECT  pid, nwid, address, network_type
                                  FROM  profile_networking
                                 WHERE  pid IN {?} AND pub IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                XDB::formatArray($pids),
-                                XDB::formatArray($visibility)
-                            );
+                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
+                                       network_type, nwid',
+                               $pids, $visibility);
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 
-    public function networks()
+    public function get($flags, $limit = null)
     {
         $nws = array();
-        foreach ($this->visibilities as $id => $vis) {
-            if ($this->profile->isVisible($vis)) {
-                $nws[$id] = $this->networks[$id];
+        $nb = 0;
+        foreach ($this->networks as $id => $nw) {
+            // XXX hardcoded reference to web site index
+            if (
+                (($flags & self::NETWORKING_WEB) && $nw['network_type'] == 0)
+                ||
+                (! ($flags & self::NETWORKING_WEB))
+            ) {
+                $nws[$id] = $nw;
+                ++$nb;
+            }
+            if ($nb >= $limit) {
+                break;
             }
         }
-        return $nws;
+        return PlIteratorUtils::fromArray($nws);
     }
 }
 // }}}

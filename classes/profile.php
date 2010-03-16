@@ -354,7 +354,7 @@ class Profile
 
     /* Educations
      */
-    private $educations;
+    private $educations = null;
     public function setEducations(ProfileEducation $edu)
     {
         $this->educations = $edu;
@@ -362,6 +362,9 @@ class Profile
 
     public function getEducations($flags, $limit = null)
     {
+        if ($this->educations == null) {
+            return PlIteratorUtils::fromArray(array());
+        }
         return $this->educations->get($flags, $limit);
     }
 
@@ -373,25 +376,18 @@ class Profile
 
     /** Networking
      */
+    private $networks = null;
+    public function setNetworking(ProfileNetworking $nw)
+    {
+        $this->networks = $nw;
+    }
 
     public function getNetworking($flags, $limit = null)
     {
-        $where = XDB::format('pn.pid = {?}', $this->id());
-        if ($flags & self::NETWORKING_WEB) {
-            $where .= ' AND pn.network_type = 0'; // XXX hardcoded reference to web site index
+        if ($this->networks == null) {
+            return PlIteratorUtils::fromArray(array());
         }
-        if ($this->visibility) {
-            $where .= ' AND pn.pub IN ' . XDB::formatArray($this->visibility);
-        }
-        $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
-        return XDB::iterator('SELECT  pne.name, pne.icon,
-                                      IF (LENGTH(pne.link) > 0, REPLACE(pne.link, \'%s\', pn.address),
-                                                                pn.address) AS address
-                                FROM  profile_networking AS pn
-                          INNER JOIN  profile_networking_enum AS pne ON (pn.network_type = pne.network_type)
-                               WHERE  ' . $where . '
-                            ORDER BY  pn.network_type, pn.nwid
-                                      ' . $limit);
+        return $this->networks->get($flags, $limit);
     }
 
     public function getWebSite()
