@@ -58,6 +58,12 @@ abstract class ProfileField
         }
         return $res;
     }
+
+    public static function getForPID($cls, $pid, $visibility)
+    {
+        $it = new ProfileFieldIterator($cls, array($pid), $visibility);
+        return $it->next();
+    }
 }
 // }}}
 

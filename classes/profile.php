@@ -305,6 +305,11 @@ class Profile
         return self::$v_values[$visibility];
     }
 
+    private function getProfileField($cls)
+    {
+        return ProfileField::getForPID($cls, $this->id(), $this->visibility);
+    }
+
     /* Photo
      */
     private $photo = null;
@@ -315,6 +320,10 @@ class Profile
 
     public function getPhoto($fallback = true)
     {
+        if ($this->photo == null) {
+            $this->setPhoto($this->getProfileField('ProfilePhoto'));
+        }
+
         if ($this->photo != null) {
             return $this->photo->pic;
         } else if ($fallback) {
@@ -335,10 +344,9 @@ class Profile
     public function getAddresses($flags, $limit = null)
     {
         if ($this->addresses == null) {
-            return PlIteratorUtils::fromArray(array());
-        } else {
-            return $this->addresses->get($flags, $limit);
+            $this->setAddresses($this->getProfileField('ProfileAddresses'));
         }
+        return $this->addresses->get($flags, $limit);
     }
 
     public function getMainAddress()
@@ -363,7 +371,7 @@ class Profile
     public function getEducations($flags, $limit = null)
     {
         if ($this->educations == null) {
-            return PlIteratorUtils::fromArray(array());
+            $this->setEducations($this->getProfileField('ProfileEducation'));
         }
         return $this->educations->get($flags, $limit);
     }
@@ -385,7 +393,7 @@ class Profile
     public function getNetworking($flags, $limit = null)
     {
         if ($this->networks == null) {
-            return PlIteratorUtils::fromArray(array());
+            $this->setNetworking($this->getProfileField('ProfileNetworking'));
         }
         return $this->networks->get($flags, $limit);
     }
