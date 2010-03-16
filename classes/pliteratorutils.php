@@ -86,7 +86,8 @@ class PlIteratorUtils
     }
 
     /** Build an iterator whose values are iterators too; such a 'subIterator' will end
-     * when the value of $callback changes
+     * when the value of $callback changes;
+     * WARNING: will fast-forward the current subiterator until it is over !
      * @param iterator The source iterator
      * @param callback The callback for detecting changes. XXX: Might be called twice on a given object
      * @return an iterator
@@ -424,6 +425,8 @@ class PlSubIterator implements PlIterator
     private $source;
     private $callback;
     private $next = null; // The next item, if it has been fetched too early by a subiterator
+    private $pos = 0;
+    private $sub = null;
 
     public function __construct(PlIterator $source, $callback)
     {
@@ -431,12 +434,26 @@ class PlSubIterator implements PlIterator
         $this->callback = $callback;
     }
 
+    /** WARNING: this will "fast-forward" the subiterator to its end
+     */
     public function next()
     {
         if ($this->last()) {
             return null;
         } else {
-            return new PlInnerSubIterator($this->source, $this->callback, $this, $this->next);
+            if ($this->sub != null) {
+                while (!$this->sub->last()) {
+                    $this->sub->next();
+                }
+            }
+
+            if ($this->last()) {
+                return null;
+            }
+
+            ++$this->pos;
+            $this->sub = new PlInnerSubIterator($this->source, $this->callback, $this, $this->next);
+            return $this->sub;
         }
     }
 
@@ -447,14 +464,20 @@ class PlSubIterator implements PlIterator
         return $this->source->total();
     }
 
+    /** This will only return true if the current subiterator was the last one,
+     * and if it has been fully used
+     */
     public function last()
     {
+        if ($this->sub != null && !$this->sub->last()) {
+            return false;
+        }
         return ($this->source->last() && $this->next == null);
     }
 
     public function first()
     {
-        return $this->source->first();
+        return $this->pos == 1;
     }
 
     // Called by a subiterator to "rewind" the core iterator
@@ -474,7 +497,8 @@ class PlInnerSubIterator implements PlIterator
 
     private $curval = null;
     private $curelt = null;
-    private $begin = true;
+    private $val = null;
+    private $pos = 0;
     private $stepped = false;
     private $over = false;
 
@@ -484,6 +508,7 @@ class PlInnerSubIterator implements PlIterator
         $this->callback = $callback;
         $this->parent = $parent;
         $this->next = $next;
+        $this->parent->setNext(null);
     }
 
     public function value()
@@ -503,12 +528,18 @@ class PlInnerSubIterator implements PlIterator
             $this->curelt = $this->next;
             $this->next = null;
         } else {
+            if ($this->source->last()) {
+                $this->over = true;
+                return;
+            }
             $this->curelt = $this->source->next();
         }
 
-        if ($this->begin) {
+        if ($this->pos == 0) {
+            $this->val = call_user_func($this->callback, $this->curelt);
+            $this->curval = $this->val;
+        } else {
             $this->curval = call_user_func($this->callback, $this->curelt);
-            $this->begin = false;
         }
 
         $this->stepped = true;
@@ -516,18 +547,24 @@ class PlInnerSubIterator implements PlIterator
 
     public function next()
     {
+        if ($this->over) {
+            return null;
+        }
+
         $this->_step();
+
+        if ($this->over) {
+            return null;
+        }
+
+        ++$this->pos;
         $this->stepped = false;
 
-        if ($this->curelt) {
-            $val = call_user_func($this->callback, $this->curelt);
-            if ($val == $this->curval) {
-                $this->curval = $val;
-                return $this->curelt;
-            } else {
-                $this->parent->setNext($this->curelt);
-            }
+        if ($this->val == $this->curval) {
+            return $this->curelt;
         }
+
+        $this->parent->setNext($this->curelt);
         $this->over = true;
         return null;
     }
@@ -541,12 +578,16 @@ class PlInnerSubIterator implements PlIterator
 
     public function last()
     {
-        return $this->over;
+        if ($this->over) {
+            return true;
+        }
+        $this->_step();
+        return $this->over || ($this->val != $this->curval);
     }
 
     public function first()
     {
-        return false;
+        return $this->pos == 1;
     }
 
 }
