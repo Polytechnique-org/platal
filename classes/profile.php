@@ -512,7 +512,7 @@ class Profile
                               WHERE  p.pid IN ' . XDB::formatArray($pids) . '
                            GROUP BY  p.pid
                                   ' . $order);
-        return new ProfileDataIterator($it, $pids, $fields, $visibility);
+        return new ProfileIterator($it, $pids, $fields, $visibility);
     }
 
     public static function getPID($login)
@@ -709,7 +709,10 @@ class Profile
     }
 }
 
-class ProfileDataIterator
+
+/** Iterator over a set of Profiles
+ */
+class ProfileIterator implements PlIterator
 {
     private $iterator = null;
     private $fields;
@@ -852,46 +855,6 @@ class ProfileDataIterator
     public function total()
     {
         return $this->iterator->total();
-    }
-}
-
-/** Iterator over a set of Profiles
- * @param an XDB::Iterator obtained from a Profile::fetchProfileData
- */
-class ProfileIterator implements PlIterator
-{
-    private $pdi;
-    private $dbiter;
-
-    public function __construct(ProfileDataIterator &$pdi)
-    {
-        $this->pdi = $pdi;
-        $this->dbiter = $pdi->iterator();
-    }
-
-    public function next()
-    {
-        $data = $this->dbiter->next();
-        if ($data == null) {
-            return null;
-        } else {
-            return $this->pdi->fillProfile(Profile::get($data));
-        }
-    }
-
-    public function total()
-    {
-        return $this->dbiter->total();
-    }
-
-    public function first()
-    {
-        return $this->dbiter->first();
-    }
-
-    public function last()
-    {
-        return $this->dbiter->last();
     }
 }
 
