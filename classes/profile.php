@@ -113,7 +113,7 @@ class Profile
 
     /** Returns the best visibility context toward $visibility
      * @param $visibility A wished visibility level
-     * @return The closest allowed visibility level
+     * @return An array of compatible visibilities
      *
      * if $visibility is null, the best visibility is returned
      */
