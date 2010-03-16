@@ -384,9 +384,7 @@ class ProfilePhoto extends ProfileField
                                  FROM  profile_photos
                                 WHERE  pid IN {?} AND attachmime IN (\'jpeg\', \'png\') AND pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                $pids,
-                                $visibility
-                            );
+                               $pids, $visibility);
 
         return $data;
     }
@@ -468,9 +466,7 @@ class ProfileAddresses extends ProfileField
                                  FROM  profile_addresses
                                 WHERE  pid in {?} AND pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                $pids,
-                                $visibility
-                            );
+                               $pids, $visibility);
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
