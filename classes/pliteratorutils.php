@@ -645,7 +645,8 @@ class PlParallelIterator implements PlIterator
 
         $this->ids = array_keys($iterators);
 
-        if (is_array($callbacks)) {
+        $v = array_values($callbacks);
+        if (is_array($v[0])) {
             $this->callbacks = $callbacks;
         } else {
             $this->callbacks = array();
