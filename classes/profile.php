@@ -354,31 +354,15 @@ class Profile
 
     /* Educations
      */
+    private $educations;
+    public function setEducations(ProfileEducation $edu)
+    {
+        $this->educations = $edu;
+    }
+
     public function getEducations($flags, $limit = null)
     {
-        $where = XDB::format('pe.pid = {?}', $this->id());
-        if ($flags & self::EDUCATION_MAIN) {
-            $where .= ' AND FIND_IN_SET(\'primary\', pe.flags)';
-        } else if ($flags & self::EDUCATION_EXTRA) {
-            $where .= ' AND NOT FIND_IN_SET(\'primary\', pe.flags)';
-        } else if ($flags & self::EDUCATION_FINISHED) {
-            $where .= ' AND pe.grad_year <= YEAR(CURDATE())';
-        } else if ($flags & self::EDUCATION_CURRENT) {
-            $where .= ' AND pe.grad_year > YEAR(CURDATE())';
-        }
-        $limit = is_null($limit) ? '' : XDB::format('LIMIT {?}', (int)$limit);
-        return XDB::iterator('SELECT  pe.entry_year, pe.grad_year, pe.program,
-                                      pee.name AS school, pee.abbreviation AS school_short, pee.url AS school_url, gc.countryFR AS country,
-                                      pede.degree, pede.abbreviation AS degree_short, pede.level AS degree_level, pefe.field,
-                                      FIND_IN_SET(\'primary\', pe.flags) AS prim
-                                FROM  profile_education AS pe
-                          INNER JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
-                           LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pee.country)
-                          INNER JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
-                           LEFT JOIN  profile_education_field_enum AS pefe ON (pe.fieldid = pefe.id)
-                               WHERE  ' . $where . '
-                            ORDER BY  NOT FIND_IN_SET(\'primary\', pe.flags), pe.entry_year, pe.id
-                                      ' . $limit);
+        return $this->educations->get($flags, $limit);
     }
 
     public function getExtraEducations($limit = null)

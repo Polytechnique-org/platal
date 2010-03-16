@@ -268,27 +268,81 @@ class Address
     }
 }
 // }}}
+// {{{ class Education
+class Education
+{
+    public $eduid;
+    public $degreeid;
+    public $fieldid;
+
+    public $entry_year;
+    public $grad_year;
+    public $program;
+    public $flags;
+
+    public function __construct(array $data)
+    {
+        $this->eduid    = $data['eduid'];
+        $this->degreeid = $data['degreeid'];
+        $this->fieldid  = $data['fieldid'];
+
+        $this->entry_year = $data['entry_year'];
+        $this->grad_year  = $data['grad_year'];
+        $this->program    = $data['program'];
+        $this->flags      = new PlFlagSet($data['flags']);
+    }
+}
+// }}}
 
 // {{{ class ProfileEducation                         [ Field ]
 class ProfileEducation extends ProfileField
 {
-    public $schools = array();
+    private $educations = array();
 
     private function __construct(PlIterator $it)
     {
+        $this->pid = $it->value();
         $this->visibility = Profile::VISIBILITY_PUBLIC;
         while ($edu = $it->next()) {
-            $this->schools[$edu['id']] = $edu;
+            $this->educations[$edu['id']] = new Education($edu);
         }
+    }
+
+    public function get($flags, $limit)
+    {
+        $educations = array();
+        $year = getdate();
+        $year = $year['year'];
+        $nb = 0;
+        foreach ($this->educations as $id => $edu) {
+            if (
+                (($flags & Profile::EDUCATION_MAIN) && $edu->flags->hasFlag('primary'))
+                ||
+                (($flags & Profile::EDUCATION_EXTRA) && !$edu->flags->hasFlag('primary'))
+                ||
+                (($flags & Profile::EDUCATION_FINISHED) && $edu->grad_year <= $year)
+                ||
+                (($flags & Profile::EDUCATION_CURRENT) && $edu->grad_year > $year)
+            ) {
+                $educations[$id] = $edu;
+                ++$nb;
+            }
+            if ($limit != null && $nb >= $limit) {
+                break;
+            }
+        }
+        return PlIteratorUtils::fromArray($educations);
     }
 
     public static function fetchData(array $pids, $visibility)
     {
-        $data = XDB::iterator('SELECT  *
+        $data = XDB::iterator('SELECT  id, pid, eduid, degreeid, fieldid,
+                                       entry_year, grad_year, program, flags
                                  FROM  profile_education
                                 WHERE  pid IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                 $pids);
+                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
+                                       NOT FIND_IN_SET(\'primary\', flags), entry_year, id',
+                                $pids);
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
