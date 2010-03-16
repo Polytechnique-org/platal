@@ -310,6 +310,25 @@ class Profile
         return ProfileField::getForPID($cls, $this->id(), $this->visibility);
     }
 
+    /** Consolidates internal data (addresses, phones, jobs)
+     */
+    private function consolidateFields()
+    {
+        if ($this->phones != null) {
+            if ($this->addresses != null) {
+                $this->addresses->addPhones($this->phones);
+            }
+
+            if ($this->jobs != null) {
+                $this->jobs->addPhones($this->phones);
+            }
+        }
+
+        if ($this->addresses != null && $this->jobs != null) {
+            $this->jobs->addAddresses($this->addresses);
+        }
+    }
+
     /* Photo
      */
     private $photo = null;
@@ -339,6 +358,7 @@ class Profile
     public function setAddresses(ProfileAddresses $addr)
     {
         $this->addresses = $addr;
+        $this->consolidateFields();
     }
 
     public function getAddresses($flags, $limit = null)
@@ -781,61 +801,38 @@ class ProfileIterator implements PlIterator
         $this->iterator = PlIteratorUtils::parallelIterator($subits, $callbacks, 0);
     }
 
-    private function consolidateFields(array $pf)
+    private function hasData($flag, $vals)
     {
-        if ($this->fields & Profile::FETCH_PHONES) {
-            $phones = $pf[Profile::FETCH_PHONES];
-
-            if ($this->fields & Profile::FETCH_ADDRESSES && $pf[Profile::FETCH_ADDRESSES] != null) {
-                $pf[Profile::FETCH_ADDRESSES]->addPhones($phones);
-            }
-            if ($this->fields & Profile::FETCH_JOBS && $pf[Profile::FETCH_JOBS] != null) {
-                $pf[Profile::FETCH_JOBS]->addPhones($phones);
-            }
-        }
-
-        if ($this->fields & Profile::FETCH_ADDRESSES) {
-            $addrs = $pf[Profile::FETCH_ADDRESSES];
-            if ($this->fields & Profile::FETCH_JOBS && $pf[Profile::FETCH_JOBS] != null) {
-                $pf[Profile::FETCH_JOBS]->addAddresses($addrs);
-            }
-        }
-
-        return $pf;
+        return ($this->fields & $flag) && ($vals[$flag] != null);
     }
 
     private function fillProfile(array $vals)
     {
-        $vals = $this->consolidateFields($vals);
-
         $pf = Profile::get($vals[0]);
-        if ($this->fields & Profile::FETCH_ADDRESSES) {
-            if ($vals[Profile::FETCH_ADDRESSES] != null) {
-                $pf->setAddresses($vals[Profile::FETCH_ADDRESSES]);
-            }
-        }
-        if ($this->fields & Profile::FETCH_CORPS) {
-            $pf->setCorps($vals[Profile::FETCH_CORPS]);
-        }
-        if ($this->fields & Profile::FETCH_EDU) {
-            $pf->setEdu($vals[Profile::FETCH_EDU]);
-        }
-        if ($this->fields & Profile::FETCH_JOBS) {
-            $pf->setJobs($vals[Profile::FETCH_JOBS]);
-        }
-        if ($this->fields & Profile::FETCH_MEDALS) {
-            $pf->setMedals($vals[Profile::FETCH_MEDALS]);
-        }
-        if ($this->fields & Profile::FETCH_NETWORKING) {
-            $pf->setNetworking($vals[Profile::FETCH_NETWORKING]);
-        }
-        if ($this->fields & Profile::FETCH_PHONES) {
+        if ($this->hasData(Profile::FETCH_PHONES, $vals)) {
             $pf->setPhones($vals[Profile::FETCH_PHONES]);
         }
-        if ($this->fields & Profile::FETCH_PHOTO) {
-            if ($vals[Profile::FETCH_PHOTO] != null) {
-                $pf->setPhoto($vals[Profile::FETCH_PHOTO]);
-            }
+        if ($this->hasData(Profile::FETCH_ADDRESSES, $vals)) {
+            $pf->setAddresses($vals[Profile::FETCH_ADDRESSES]);
+        }
+        if ($this->hasData(Profile::FETCH_JOBS, $vals)) {
+            $pf->setJobs($vals[Profile::FETCH_JOBS]);
+        }
+
+        if ($this->hasData(Profile::FETCH_CORPS, $vals)) {
+            $pf->setCorps($vals[Profile::FETCH_CORPS]);
+        }
+        if ($this->hasData(Profile::FETCH_EDU, $vals)) {
+            $pf->setEdu($vals[Profile::FETCH_EDU]);
+        }
+        if ($this->hasData(Profile::FETCH_MEDALS, $vals)) {
+            $pf->setMedals($vals[Profile::FETCH_MEDALS]);
+        }
+        if ($this->hasData(Profile::FETCH_NETWORKING, $vals)) {
+            $pf->setNetworking($vals[Profile::FETCH_NETWORKING]);
+        }
+        if ($this->hasData(Profile::FETCH_PHOTO, $vals)) {
+            $pf->setPhoto($vals[Profile::FETCH_PHOTO]);
         }
 
         return $pf;
