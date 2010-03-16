@@ -131,13 +131,14 @@ class Profile
             $minvis = self::VISIBILITY_PUBLIC;
         }
         if ($visibility == null) {
-            $visibility = array($minvis);
+            $visibility = $minvis;
         }
 
         if ($minvis == self::VISIBILITY_PUBLIC) {
-            $visibility = array(self::VISIBILITY_PUBLIC);
+            $visibility = self::VISIBILITY_PUBLIC;
         }
 
+        $visibility = self::$v_values[$visibility];
         self::$contexts[$asked_vis] = $visibility;
 
         return $visibility;
