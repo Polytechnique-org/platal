@@ -538,14 +538,13 @@ class ProfileAddresses extends ProfileField
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 
-    public static function addPhones(array $addresses, $phones)
+    public function addPhones($phones)
     {
         foreach ($phones as $phone) {
-            if ($phone->link_type == Phone::LINK_ADDRESS) {
-                $addresses[$phone->link_id]->addPhone($phone);
+            if ($phone->link_type == Phone::LINK_ADDRESS && array_key_exists($phone->link_id, $this->addresses)) {
+                $this->addresses[$phone->link_id]->addPhone($phone);
             }
         }
-        return $addresses;
     }
 }
 // }}}
@@ -582,52 +581,63 @@ class ProfileJobs extends ProfileField
     private function __construct(PlIterator $jobs)
     {
         while ($job = $jobs->next()) {
-            $this->jobs[] = Jobs::buildFromData($job);
+            $this->jobs[$job['id']] = Jobs::buildFromData($job);
         }
     }
 
     public static function fetchData(array $pids, $visibility)
     {
-        $data = XDB::iterator('SELECT  description, url, jobid, IF(email_pub IN {?}, email, NULL) AS email
+        $data = XDB::iterator('SELECT  id, pid, description, url,
+                                       jobid, sectorid, subsctorid, subsubsectorid,
+                                       IF(email_pub IN {?}, email, NULL) AS email
                                  FROM  profile_job
                                 WHERE  pid IN {?} AND pub IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                 XDB::formatArray($visibility),
-                                 XDB::formatArray($pids),
-                                 XDB::formatArray($visibility)
-                             );
+                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
+                                       id',
+                                 $visibility, $pids, $visibility);
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 
-    public static function addPhones(array $jobs, array $phones)
+    public function get($flags, $limit = null)
+    {
+        $jobs = array();
+        $nb = 0;
+        foreach ($this->jobs as $id => $job) {
+            $jobs[$id] = $job;
+            ++$nb;
+            if ($limit != null && $nb >= $limit) {
+                break;
+            }
+        }
+        return PlIteratorUtils::fromArray($jobs);
+    }
+
+    public function addPhones(array $phones)
     {
         foreach ($phones as $phone)
         {
-            if ($phone->link_type == Phone::LINK_JOB) {
-                $jobs[$phone->link_id]->addPhones($phone);
+            if ($phone->link_type == Phone::LINK_JOB && array_key_exists($phone->link_id, $this->jobs)) {
+                $this->jobs[$phone->link_id]->addPhones($phone);
             }
         }
-        return $jobs;
     }
 
-    public static function addAddresses(array $jobs, array $addresses)
+    public static function addAddresses(array $addresses)
     {
         foreach ($addresses as $address)
         {
-            if ($address->link_type == Address::LINK_JOB) {
-                $jobs[$address->link_id]->setAddress($address);
+            if ($address->link_type == Address::LINK_JOB && array_key_exists($address->link_id, $this->jobs)) {
+                $this->jobs[$address->link_id]->setAddress($address);
             }
         }
-        return $jobs;
     }
 
-    public static function addCompanies(array $jobs, array $companies)
+    public static function addCompanies(array $companies)
     {
-        foreach ($jobs as $job)
+        foreach ($this->jobs as $job)
         {
             $job->setCompany($companies[$job->company_id]);
         }
-        return $jobs;
     }
 }
 // }}}
