@@ -21,6 +21,13 @@
 
 class PlIteratorUtils
 {
+    /** Builds a new empty iterator
+     */
+    public static function emptyIterator()
+    {
+        return new PlEmptyIterator();
+    }
+
     /** Build an iterator over an array.
      * @param array The array.
      * @param depth The depth of iteration.
@@ -127,6 +134,31 @@ class PlIteratorUtils
     {
         $callback = new _GetObjectPropertyCallback($property);
         return array($callback, 'get');
+    }
+}
+
+/** Empty iterator
+ */
+class PlEmptyIterator implements PlIterator
+{
+    public function first()
+    {
+        return false;
+    }
+
+    public function last()
+    {
+        return false;
+    }
+
+    public function next()
+    {
+        return null;
+    }
+
+    public function total()
+    {
+        return 0;
     }
 }
 
