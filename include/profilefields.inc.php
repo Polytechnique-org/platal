@@ -305,7 +305,7 @@ class ProfileEducation extends ProfileField
 {
     private $educations = array();
 
-    private function __construct(PlIterator $it)
+    public function __construct(PlIterator $it)
     {
         $this->pid = $it->value();
         $this->visibility = Profile::VISIBILITY_PUBLIC;
@@ -359,7 +359,7 @@ class ProfileMedals extends ProfileField
 {
     public $medals = array();
 
-    private function __construct(PlIterator $it)
+    public function __construct(PlIterator $it)
     {
         while ($medal = $it->next()) {
             $this->medals[$medal['mid']] = $medal['gid'];
@@ -386,7 +386,7 @@ class ProfileNetworking extends ProfileField
 {
     private $networks = array();
 
-    private function __construct(PlIterator $it)
+    public function __construct(PlIterator $it)
     {
         while ($network = $it->next()) {
             $this->networks[$network['nwid']] = $network['address'];
@@ -464,7 +464,7 @@ class ProfileCorps extends ProfileField
     public $current;
     public $rank;
 
-    private function __construct(array $data)
+    public function __construct(array $data)
     {
         $this->original = $data['original_corpsid'];
         $this->current  = $data['current_corpsid'];
@@ -553,7 +553,7 @@ class ProfilePhones extends ProfileField
 {
     private $phones = array();
 
-    private function __construct(PlIterator $phones)
+    public function __construct(PlIterator $phones)
     {
         while ($phone = $it->next()) {
             $this->phones[] = Phone::buildFromData($phone);
@@ -578,7 +578,7 @@ class ProfileJobs extends ProfileField
 {
     private $jobs = array();
 
-    private function __construct(PlIterator $jobs)
+    public function __construct(PlIterator $jobs)
     {
         while ($job = $jobs->next()) {
             $this->jobs[$job['id']] = Jobs::buildFromData($job);
