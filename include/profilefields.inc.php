@@ -603,6 +603,7 @@ class ProfileJobs extends ProfileField
 
     public static function fetchData(array $pids, $visibility)
     {
+        CompanyList::preload($pids);
         $data = XDB::iterator('SELECT  id, pid, description, url,
                                        jobid, sectorid, subsectorid, subsubsectorid,
                                        IF(email_pub IN {?}, email, NULL) AS email
@@ -671,8 +672,8 @@ class CompanyList
         }
         // Load raw data
         if (count($pids)) {
-            $join = 'LEFT JOIN profile_jobs ON (profile_job.jobid = profile_job_enum.id)';
-            $where = 'profile_jobs.pid IN ' . XDB::formatArray($pids);
+            $join = 'LEFT JOIN profile_job ON (profile_job.jobid = pje.id)';
+            $where = 'WHERE profile_job.pid IN ' . XDB::formatArray($pids);
         } else {
             $join = '';
             $where = '';
