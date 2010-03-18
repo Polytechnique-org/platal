@@ -106,6 +106,8 @@ class Profile
         $this->hrpid = $this->data['hrpid'];
         if (!S::logged()) {
             $this->setVisibilityLevel(self::VISIBILITY_PUBLIC);
+        } else {
+            $this->setVisibilityLevel(self::VISIBILITY_PRIVATE);
         }
     }
 
