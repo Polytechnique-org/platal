@@ -581,14 +581,14 @@ class ProfileJobs extends ProfileField
     public function __construct(PlIterator $jobs)
     {
         while ($job = $jobs->next()) {
-            $this->jobs[$job['id']] = Jobs::buildFromData($job);
+            $this->jobs[$job['id']] = new Job($job);
         }
     }
 
     public static function fetchData(array $pids, $visibility)
     {
         $data = XDB::iterator('SELECT  id, pid, description, url,
-                                       jobid, sectorid, subsctorid, subsubsectorid,
+                                       jobid, sectorid, subsectorid, subsubsectorid,
                                        IF(email_pub IN {?}, email, NULL) AS email
                                  FROM  profile_job
                                 WHERE  pid IN {?} AND pub IN {?}

@@ -368,6 +368,10 @@ class Profile
         if ($this->addresses == null) {
             $this->setAddresses($this->getProfileField('ProfileAddresses'));
         }
+
+        if ($this->addresses == null) {
+            return PlIteratorUtils::emptyIterator();
+        }
         return $this->addresses->get($flags, $limit);
     }
 
@@ -395,6 +399,10 @@ class Profile
         if ($this->educations == null) {
             $this->setEducations($this->getProfileField('ProfileEducation'));
         }
+
+        if ($this->educations == null) {
+            return PlIteratorUtils::emptyIterator();
+        }
         return $this->educations->get($flags, $limit);
     }
 
@@ -416,6 +424,9 @@ class Profile
     {
         if ($this->networks == null) {
             $this->setNetworking($this->getProfileField('ProfileNetworking'));
+        }
+        if ($this->networks == null) {
+            return PlIteratorUtils::emptyIterator();
         }
         return $this->networks->get($flags, $limit);
     }
@@ -446,6 +457,9 @@ class Profile
             $this->setJobs($this->getProfileField('ProfileJobs'));
         }
 
+        if ($this->jobs == null) {
+            return PlIteratorUtils::emptyIterator();
+        }
         return $this->jobs->get($flags, $limit);
     }
 
