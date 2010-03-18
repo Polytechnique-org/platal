@@ -150,7 +150,7 @@ class Company
     /** Fields are:
      * $id, $name, $acronym, $url
      */
-    public function __construct($date)
+    public function __construct($data)
     {
         foreach ($data as $key => $val) {
             $this->$key = $val;
@@ -197,6 +197,7 @@ class Job
         foreach ($data as $key => $val) {
             $this->$key = $val;
         }
+        $this->setCompany(CompanyList::get($this->jobid));
     }
 
     public function phones()
@@ -241,7 +242,7 @@ class Address
 
     public $flags;
     public $text;
-    public $postcode;
+    public $postalCode;
     public $country;
 
     private $phones = array();
@@ -538,9 +539,10 @@ class ProfileAddresses extends ProfileField
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 
-    public function addPhones($phones)
+    public function addPhones(ProfilePhones $phones)
     {
-        foreach ($phones as $phone) {
+        $p = $phones->get(0);
+        while ($phone = $p->next()) {
             if ($phone->link_type == Phone::LINK_ADDRESS && array_key_exists($phone->link_id, $this->addresses)) {
                 $this->addresses[$phone->link_id]->addPhone($phone);
             }
@@ -558,6 +560,20 @@ class ProfilePhones extends ProfileField
         while ($phone = $it->next()) {
             $this->phones[] = Phone::buildFromData($phone);
         }
+    }
+
+    public function get($flags, $limit = null)
+    {
+        $phones = array();
+        $nb = 0;
+        foreach ($this->phones as $id => $phone) {
+            $phones[$id] = $phone;
+            ++$nb;
+            if ($limit != null && $nb == $limit) {
+                break;
+            }
+        }
+        return PlIteratorUtils::fromArray($phones);
     }
 
     public static function fetchData(array $pids, $visibility)
@@ -612,20 +628,20 @@ class ProfileJobs extends ProfileField
         return PlIteratorUtils::fromArray($jobs);
     }
 
-    public function addPhones(array $phones)
+    public function addPhones(ProfilePhones $phones)
     {
-        foreach ($phones as $phone)
-        {
+        $p = $phones->get(0);
+        while ($phone = $p->next()) {
             if ($phone->link_type == Phone::LINK_JOB && array_key_exists($phone->link_id, $this->jobs)) {
                 $this->jobs[$phone->link_id]->addPhones($phone);
             }
         }
     }
 
-    public static function addAddresses(array $addresses)
+    public static function addAddresses(ProfileAddresses $addresses)
     {
-        foreach ($addresses as $address)
-        {
+        $a = $addresses->get(Profile::ADDRESS_PRO);
+        while ($address = $a->next()) {
             if ($address->link_type == Address::LINK_JOB && array_key_exists($address->link_id, $this->jobs)) {
                 $this->jobs[$address->link_id]->setAddress($address);
             }
@@ -662,16 +678,16 @@ class CompanyList
             $where = '';
         }
 
-        $it = XDB::iterator('SELECT  pje.id, pje.name, pje.acronmy, pje.url,
-                                     pa.flags, pa.text, pa.postcode, pa.country,
-                                     pa.link_type, pa.pub
+        $it = XDB::iterator('SELECT  pje.id, pje.name, pje.acronym, pje.url,
+                                     pa.flags, pa.text, pa.postalCode, pa.countryId,
+                                     pa.type, pa.pub
                                FROM  profile_job_enum AS pje
                           LEFT JOIN  profile_addresses AS pa ON (pje.id = pa.jobid AND pa.type = \'hq\')
                                   ' . $join . '
                                   ' . $where);
         while ($row = $it->next()) {
-            $cp = Company::buildFromData($row);
-            $addr = Address::buildFromData($row);
+            $cp = new Company($row);
+            $addr = new Address($row);
             $cp->setAddress($addr);
             self::$companies[$row['id']] = $cp;
         }
@@ -682,7 +698,7 @@ class CompanyList
         }
     }
 
-    static public function getCompany($id)
+    static public function get($id)
     {
         if (!array_key_exists($id, self::$companies)) {
             self::preload();
