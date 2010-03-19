@@ -376,8 +376,9 @@ class ProfileMedals extends ProfileField
 {
     public $medals = array();
 
-    public function __construct(PlIterator $it)
+    public function __construct(PlInnerSubIterator $it)
     {
+        $this->pid = $it->value();
         while ($medal = $it->next()) {
             $this->medals[$medal['mid']] = $medal['gid'];
         }
@@ -390,9 +391,7 @@ class ProfileMedals extends ProfileField
                             LEFT JOIN  profiles AS p ON (pm.pid = p.pid)
                                 WHERE  pm.pid IN {?} AND p.medals_pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pm.pid', $pids),
-                                XDB::formatArray($pids),
-                                XDB::formatArray($visibility)
-                            );
+                                $pids, $visibility);
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
@@ -496,9 +495,7 @@ class ProfileCorps extends ProfileField
                                  FROM  profile_corps
                                 WHERE  pid IN {?} AND corps_pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                XDB::formatArray($pids),
-                                XDB::formatArray($visibility)
-                            );
+                                $pids, $visibility);
 
         return $data;
     }
@@ -578,10 +575,11 @@ class ProfilePhones extends ProfileField
 {
     private $phones = array();
 
-    public function __construct(PlIterator $phones)
+    public function __construct(PlInnerSubIterator $it)
     {
+        $this->pid = $it->value();
         while ($phone = $it->next()) {
-            $this->phones[] = Phone::buildFromData($phone);
+            $this->phones[] = new Phone($phone);
         }
     }
 
@@ -601,13 +599,11 @@ class ProfilePhones extends ProfileField
 
     public static function fetchData(array $pids, $visibility)
     {
-        $data = XDB::iterator('SELECT  type, search, display, link_type, comment
+        $data = XDB::iterator('SELECT  tel_type AS type, search_tel AS search, display_tel AS display, link_type, comment
                                  FROM  profile_phones
                                 WHERE  pid IN {?} AND pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                 XDB::formatArray($pids),
-                                 XDB::formatArray($visibility)
-                             );
+                                 $pids, $visibility);
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 }
