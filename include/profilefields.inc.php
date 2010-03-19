@@ -237,12 +237,18 @@ class Address
     const LINK_COMPANY = 'hq';
     const LINK_PROFILE = 'home';
 
+    public $flags;
     public $link_id;
     public $link_type;
 
-    public $flags;
     public $text;
     public $postalCode;
+    public $latitude;
+    public $longitude;
+
+    public $locality;
+    public $subAdministrativeArea;
+    public $administrativeArea;
     public $country;
 
     private $phones = array();
@@ -529,10 +535,17 @@ class ProfileAddresses extends ProfileField
 
     public static function fetchData(array $pids, $visibility)
     {
-        $data = XDB::iterator('SELECT  pid, text, postalCode, type, latitude, longitude,
-                                       flags, type
-                                 FROM  profile_addresses
-                                WHERE  pid in {?} AND pub IN {?}
+        $data = XDB::iterator('SELECT  pa.id, pa.pid, pa.flags, pa.type AS link_type,
+                                       IF(pa.type = \'home\', pid, jobid) AS link_id,
+                                       pa.text, pa.postalCode, pa.latitude, pa.longitude,
+                                       gl.name AS locality, gas.name AS subAdministrativeArea,
+                                       ga.name AS administrativeArea, gc.countryFR AS country
+                                 FROM  profile_addresses AS pa
+                            LEFT JOIN  geoloc_localities AS gl ON (gl.id = pa.localityId)
+                            LEFT JOIN  geoloc_administrativeareas AS ga ON (ga.id = pa.administrativeAreaId)
+                            LEFT JOIN  geoloc_administrativeareas AS gas ON (gas.id = pa.subAdministrativeAreaId)
+                            LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
+                                WHERE  pa.pid in {?} AND pa.pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
                                $pids, $visibility);
 
