@@ -179,15 +179,19 @@ class Job
     public $pid;
     public $id;
 
-    private $company = null;
+    public $company = null;
     private $phones = array();
     private $address = null;
 
-    public $company_id;
+    public $jobid;
 
     public $description;
-    public $url;
-    public $email;
+    public $user_site;
+    public $user_email;
+
+    public $sector;
+    public $subsector;
+    public $subsubsector;
 
     /** Fields are:
      * pid, id, company_id, description, url, email
@@ -197,17 +201,12 @@ class Job
         foreach ($data as $key => $val) {
             $this->$key = $val;
         }
-        $this->setCompany(CompanyList::get($this->jobid));
+        $this->company = CompanyList::get($this->jobid);
     }
 
     public function phones()
     {
         return $this->phones;
-    }
-
-    public function company()
-    {
-        return $this->company;
     }
 
     public function addPhone(Phone &$phone)
@@ -222,11 +221,6 @@ class Job
         if ($address->link_id == Address::LINK_JOB && $address->link_id == $this->id && $address->pid == $this->pid) {
             $this->address = $address;
         }
-    }
-
-    public function setCompany(Company $company)
-    {
-        $this->company = $company;
     }
 }
 // }}}
@@ -617,13 +611,17 @@ class ProfileJobs extends ProfileField
     public static function fetchData(array $pids, $visibility)
     {
         CompanyList::preload($pids);
-        $data = XDB::iterator('SELECT  id, pid, description, url,
-                                       jobid, sectorid, subsectorid, subsubsectorid,
-                                       IF(email_pub IN {?}, email, NULL) AS email
-                                 FROM  profile_job
-                                WHERE  pid IN {?} AND pub IN {?}
+        $data = XDB::iterator('SELECT  pj.id, pj.pid, pj.description, pj.url as user_site,
+                                       IF(pj.email_pub IN {?}, pj.email, NULL) AS user_email,
+                                       pj.jobid, pjse.name AS sector, pjsse.name AS subsector,
+                                       pjssse.name AS subsubsector
+                                 FROM  profile_job AS pj
+                            LEFT JOIN  profile_job_sector_enum AS pjse ON (pjse.id = pj.sectorid)
+                            LEFT JOIN  profile_job_subsector_enum AS pjsse ON (pjsse.id = pj.subsectorid)
+                            LEFT JOIN  profile_job_subsubsector_enum AS pjssse ON (pjssse.id = pj.subsubsectorid)
+                                WHERE  pj.pid IN {?} AND pj.pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
-                                       id',
+                                       pj.id',
                                  $visibility, $pids, $visibility);
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
@@ -666,7 +664,7 @@ class ProfileJobs extends ProfileField
     {
         foreach ($this->jobs as $job)
         {
-            $job->setCompany($companies[$job->company_id]);
+            $job->company = $companies[$job->jobid];
         }
     }
 }
