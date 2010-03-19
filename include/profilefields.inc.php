@@ -34,8 +34,12 @@ abstract class ProfileField
      * @param $pids An array of pids
      * @param $visibility The level of visibility fetched fields must have
      * @return a PlIterator yielding data suitable for a "new ProfileBlah($data)"
+     * XXX MUST be reimplemented for each kind of ProfileField
      */
-    abstract public static function fetchData(array $pids, $visibility);
+    public static function fetchData(array $pids, $visibility)
+    {
+        return PlIteratorUtils::emptyIterator();
+    }
 
     public static function buildForPID($cls, $pid, $visibility)
     {
