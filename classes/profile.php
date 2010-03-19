@@ -82,16 +82,17 @@ class Profile
     const NETWORKING_IM      = 0x020000;
     const NETWORKING_SOCIAL  = 0x040000;
 
-    const FETCH_ADDRESSES  = 0x00001;
-    const FETCH_CORPS      = 0x00002;
-    const FETCH_EDU        = 0x00004;
-    const FETCH_JOBS       = 0x00008;
-    const FETCH_MEDALS     = 0x00010;
-    const FETCH_NETWORKING = 0x00020;
-    const FETCH_PHONES     = 0x00040;
-    const FETCH_PHOTO      = 0x00080;
+    const FETCH_ADDRESSES    = 0x000001;
+    const FETCH_CORPS        = 0x000002;
+    const FETCH_EDU          = 0x000004;
+    const FETCH_JOBS         = 0x000008;
+    const FETCH_MEDALS       = 0x000010;
+    const FETCH_NETWORKING   = 0x000020;
+    const FETCH_PHONES       = 0x000040;
+    const FETCH_PHOTO        = 0x000080;
 
-    const FETCH_ALL        = 0x000FF;
+    // xor of all FETCH_XYZ
+    const FETCH_ALL          = 0x0000FF;
 
     private $pid;
     private $hrpid;
