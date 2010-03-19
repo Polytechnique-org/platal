@@ -282,25 +282,29 @@ class Address
 // {{{ class Education
 class Education
 {
-    public $eduid;
-    public $degreeid;
-    public $fieldid;
+    public $id;
+    public $pid;
 
     public $entry_year;
     public $grad_year;
     public $program;
     public $flags;
 
+    public $school;
+    public $school_short;
+    public $school_url;
+    public $country;
+
+    public $degree;
+    public $degree_short;
+    public $degree_level;
+
     public function __construct(array $data)
     {
-        $this->eduid    = $data['eduid'];
-        $this->degreeid = $data['degreeid'];
-        $this->fieldid  = $data['fieldid'];
-
-        $this->entry_year = $data['entry_year'];
-        $this->grad_year  = $data['grad_year'];
-        $this->program    = $data['program'];
-        $this->flags      = new PlFlagSet($data['flags']);
+        foreach ($data as $key => $val) {
+            $this->$key = $val;
+        }
+        $this->flags      = new PlFlagSet($this->flags);
     }
 }
 // }}}
@@ -310,7 +314,7 @@ class ProfileEducation extends ProfileField
 {
     private $educations = array();
 
-    public function __construct(PlIterator $it)
+    public function __construct(PlInnerSubIterator $it)
     {
         $this->pid = $it->value();
         $this->visibility = Profile::VISIBILITY_PUBLIC;
@@ -342,17 +346,25 @@ class ProfileEducation extends ProfileField
                 break;
             }
         }
-        return PlIteratorUtils::fromArray($educations);
+        return PlIteratorUtils::fromArray($educations, 1, true);
     }
 
     public static function fetchData(array $pids, $visibility)
     {
-        $data = XDB::iterator('SELECT  id, pid, eduid, degreeid, fieldid,
-                                       entry_year, grad_year, program, flags
-                                 FROM  profile_education
-                                WHERE  pid IN {?}
+        $data = XDB::iterator('SELECT  pe.id, pe.pid,
+                                       pe.entry_year, pe.grad_year, pe.program, pe.flags,
+                                       pee.name AS school, pee.abbreviation AS school_short,
+                                       pee.url AS school_url, gc.countryFR AS country,
+                                       pede.degree, pede.abbreviation AS degree_short, pede.level AS degree_level,
+                                       pefe.field
+                                 FROM  profile_education AS pe
+                            LEFT JOIN  profile_education_enum AS pee ON (pee.id = pe.eduid)
+                            LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pee.country)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pede.id = pe.degreeid)
+                            LEFT JOIN  profile_education_field_enum AS pefe ON (pefe.id = pe.fieldid)
+                                WHERE  pe.pid IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
-                                       NOT FIND_IN_SET(\'primary\', flags), entry_year, id',
+                                       NOT FIND_IN_SET(\'primary\', pe.flags), pe.entry_year, pe.id',
                                 $pids);
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));

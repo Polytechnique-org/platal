@@ -164,8 +164,8 @@ function _education_fmt($params, &$smarty)
     } else {
         $sex = $params->b('sex');
     }
-    return education_fmt($edu['school_short'], $edu['school_url'], $edu['degree_short'], $edu['grad_year'],
-                         $edu['field'], $edu['program'], $sex, $params->b('long'));
+    return education_fmt($edu->school_short, $edu->school_url, $edu->degree_short, $edu->grad_year,
+                         $edu->field, $edu->program, $sex, $params->b('long'));
 }
 Platal::page()->register_function('education_fmt', '_education_fmt');
 
