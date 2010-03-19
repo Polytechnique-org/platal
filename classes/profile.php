@@ -481,6 +481,13 @@ class Profile
                                    FROM  profile_binets
                                   WHERE  pid = {?}', $this->id());
     }
+    public function getBinetsNames()
+    {
+        return XDB::fetchColumn('SELECT  text
+                                   FROM  profile_binets AS pb
+                              LEFT JOIN  profile_binet_enum AS pbe ON (pbe.id = pb.binet_id)
+                                  WHERE  pb.pid = {?}', $this->id());
+    }
 
     /* Medals
      */
@@ -538,7 +545,7 @@ class Profile
         }
 
 
-        $it = XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
+        $it = XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year, pse.text AS section,
                                      pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
                                      IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
                                      IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
@@ -550,6 +557,7 @@ class Profile
                                FROM  profiles AS p
                          INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                          INNER JOIN  profile_education AS pe ON (pe.pid = p.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                          LEFT JOIN  profile_section_enum AS pse ON (pse.id = p.section)
                          INNER JOIN  profile_name AS pn_f ON (pn_f.pid = p.pid
                                                               AND pn_f.typeid = ' . self::getNameTypeId('firstname', true) . ')
                          INNER JOIN  profile_name AS pn_l ON (pn_l.pid = p.pid
