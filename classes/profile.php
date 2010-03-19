@@ -482,6 +482,24 @@ class Profile
                                   WHERE  pid = {?}', $this->id());
     }
 
+    /* Medals
+     */
+    private $medals = null;
+    public function setMedals(ProfileMedals $medals)
+    {
+        $this->medals = $medals;
+    }
+
+    public function getMedals()
+    {
+        if ($this->medals == null) {
+            $this->setMedals($this->getProfileField('ProfileMedals'));
+        }
+        if ($this->medals == null) {
+            return array();
+        }
+        return $this->medals->medals;
+    }
 
     public function owner()
     {
@@ -831,7 +849,7 @@ class ProfileIterator implements PlIterator
             $pf->setCorps($vals[Profile::FETCH_CORPS]);
         }
         if ($this->hasData(Profile::FETCH_EDU, $vals)) {
-            $pf->setEdu($vals[Profile::FETCH_EDU]);
+            $pf->setEducations($vals[Profile::FETCH_EDU]);
         }
         if ($this->hasData(Profile::FETCH_MEDALS, $vals)) {
             $pf->setMedals($vals[Profile::FETCH_MEDALS]);
