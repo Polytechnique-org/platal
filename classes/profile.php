@@ -464,7 +464,7 @@ class Profile
         return $this->jobs->get($flags, $limit);
     }
 
-    public function getMailJob()
+    public function getMainJob()
     {
         $job = $this->getJobs(self::JOBS_MAIN, 1);
         if ($job->total() != 1) {
