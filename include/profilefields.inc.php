@@ -428,7 +428,7 @@ class ProfileNetworking extends ProfileField
                 break;
             }
         }
-        return PlIteratorUtils::fromArray($nws);
+        return PlIteratorUtils::fromArray($nws, 1, true);
     }
 }
 // }}}
@@ -528,7 +528,7 @@ class ProfileAddresses extends ProfileField
                 break;
             }
         }
-        return PlIteratorUtils::fromArray($res);
+        return PlIteratorUtils::fromArray($res, 1, true);
     }
 
     public static function fetchData(array $pids, $visibility)
@@ -584,7 +584,7 @@ class ProfilePhones extends ProfileField
                 break;
             }
         }
-        return PlIteratorUtils::fromArray($phones);
+        return PlIteratorUtils::fromArray($phones, 1, true);
     }
 
     public static function fetchData(array $pids, $visibility)
@@ -605,8 +605,9 @@ class ProfileJobs extends ProfileField
 {
     private $jobs = array();
 
-    public function __construct(PlIterator $jobs)
+    public function __construct(PlInnerSubIterator $jobs)
     {
+        $this->pid = $jobs->value();
         while ($job = $jobs->next()) {
             $this->jobs[$job['id']] = new Job($job);
         }
@@ -641,7 +642,7 @@ class ProfileJobs extends ProfileField
                 break;
             }
         }
-        return PlIteratorUtils::fromArray($jobs);
+        return PlIteratorUtils::fromArray($jobs, 1, true);
     }
 
     public function addPhones(ProfilePhones $phones)
