@@ -233,7 +233,7 @@ class ProfileModule extends PLModule
 
         // Fetches profile's and profile's owner information and redirects to
         // marketing if the owner has not subscribed and the requirer has logged in.
-        $profile = Profile::getBulkProfilesWithPIDs(array($pid), Profile::FETCH_ALL, $view);
+        $profile = Profile::get($pid, Profile::FETCH_ALL, $view);
         $owner = $profile->owner();
         if (S::logged() && !is_null($owner) && $owner->state == 'pending') {
             pl_redirect('marketing/public/' . $profile->hrid());
