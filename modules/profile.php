@@ -247,21 +247,14 @@ class ProfileModule extends PLModule
         // Sets the title of the html page.
         $page->setTitle($profile->fullName());
 
-        // Is that really useful???
-        /*$photo = 'photo/' . $profile->hrid() . ($new ? '/req' : '');
-        if (!isset($user['photo_pub']) || !has_user_right($user['photo_pub'], $view)) {
-            $photo = "";
-        }
-        $page->assign('photo_url', $photo);
-        }*/
-
         // Determines and displays the virtual alias.
         if (!is_null($owner)) {
             $page->assign('virtualalias', $owner->emailAlias());
         }
 
-        $page->assign_by_ref('profile', $profile);
-        $page->assign_by_ref('owner', $owner);
+        $page->assign_by_ref('p', $profile);
+        $page->assign_by_ref('o', $owner);
+        $page->assign('logged', S::logged());
 
         $page->addJsLink('close_on_esc.js');
         header('Last-Modified: ' . date('r', strtotime($profile->last_change)));
