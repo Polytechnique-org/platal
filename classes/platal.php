@@ -111,7 +111,7 @@ abstract class Platal
 
         $hook = $this->__hooks[$p];
 
-        if (!is_callable($hook['hook'])) {
+        if (!is_callable($hook['hook']) && $hook['hook'] != PL_WIKI_HOOK) {
             return null;
         }
 
