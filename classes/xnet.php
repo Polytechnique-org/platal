@@ -23,8 +23,8 @@ class Xnet extends Platal
 {
     public function __construct()
     {
-        $modules = func_get_args();
-        parent::__construct($modules);
+        parent::__construct('xnet', 'xnetgrp', 'xnetlists', 'xnetevents',
+                            'payment', 'bandeau');
 
         global $globals;
         if ($globals->asso()) {

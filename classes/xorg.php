@@ -21,6 +21,24 @@
 
 class Xorg extends Platal
 {
+    public function __construct()
+    {
+        parent::__construct('auth', 'carnet', 'email', 'events', 'forums',
+                            'lists', 'marketing', 'payment', 'platal',
+                            'profile', 'register', 'search', 'stats', 'admin',
+                            'newsletter', 'axletter', 'bandeau', 'survey',
+                            'fusionax', 'gadgets', 'googleapps', 'poison',
+                            'openid', 'reminder');
+    }
+
+    public function find_hook()
+    {
+        if ($this->path{0} >= 'A' && $this->path{0} <= 'Z') {
+            return self::wiki_hook();
+        }
+        return parent::find_hook();
+    }
+
     public function force_login(PlPage &$page)
     {
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');

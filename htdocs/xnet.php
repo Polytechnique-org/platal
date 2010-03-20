@@ -20,18 +20,8 @@
  ***************************************************************************/
 
 $GLOBALS['IS_XNET_SITE'] = true;
-
 require_once dirname(__FILE__).'/../include/xnet.inc.php';
-
-$platal = new Xnet('xnet', 'xnetgrp', 'xnetlists', 'xnetevents', 'payment', 'bandeau');
-if (!($path = Env::v('n')) || substr($path, 0, 4) != 'Xnet') {
-    $platal->run();
-    exit;
-}
-
-/*** WIKI CODE ***/
-
-include pl_core_include('wiki.engine.inc.php');
+require_once pl_core_include('run.inc.php');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
