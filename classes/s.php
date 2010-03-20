@@ -119,7 +119,11 @@ class S
     public static function &user()
     {
         if (self::$user == null && class_exists('User')) {
-            self::$user = User::getSilentWithValues(S::i('uid'), $_SESSION);
+            if (S::has('user') && S::v('user') instanceof User) {
+                self::$user = S::v('user');
+            } else {
+                self::$user = User::getSilentWithValues(S::i('uid'), $_SESSION);
+            }
         }
         return self::$user;
     }
