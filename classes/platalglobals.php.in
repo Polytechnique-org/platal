@@ -52,15 +52,17 @@ class PlatalGlobals extends PlGlobals
 
     public function asso($key = null)
     {
+        static $fetched = false;
         static $aid = null;
 
-        if (isset($GLOBALS['IS_XNET_SITE']) && is_null($aid)) {
+        if (isset($GLOBALS['IS_XNET_SITE']) && !$fetched) {
             $gp = Get::v('n');
             if ($p = strpos($gp, '/')) {
                 $gp = substr($gp, 0, $p);
             }
 
             $aid = Group::get($gp);
+            $fetched = true;
         }
         if (empty($key)) {
             return $aid;
