@@ -22,6 +22,8 @@
 define('PL_DO_AUTH',   300);
 define('PL_FORBIDDEN', 403);
 define('PL_NOT_FOUND', 404);
+define('PL_WIKI',      500);
+define('PL_WIKI_HOOK', '@@WIKI@@');
 
 abstract class Platal
 {
@@ -82,6 +84,14 @@ abstract class Platal
             return $this->argv[0];
 
         return join('/', array_slice($this->argv, 0, $n));
+    }
+
+    public static function wiki_hook($auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)
+    {
+        return array('hook'  => PL_WIKI_HOOK,
+                     'auth'  => $auth,
+                     'perms' => $perms,
+                     'type'  => $type);
     }
 
     protected function find_hook()
@@ -272,6 +282,9 @@ abstract class Platal
             }
         }
 
+        if ($hook['hook'] == PL_WIKI_HOOK) {
+            return PL_WIKI;
+        }
         $val = call_user_func_array($hook['hook'], $args);
         if ($val == PL_DO_AUTH) {
             // The handler need a better auth with the current args
@@ -304,6 +317,9 @@ abstract class Platal
           case PL_NOT_FOUND:
             $this->__mods['core']->handler_404($page);
             break;
+
+          case PL_WIKI:
+            return PL_WIKI;
         }
 
         $page->assign('platal', $this);

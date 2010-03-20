@@ -56,6 +56,13 @@ abstract class PLModule
                      'type'  => $type);
     }
 
+    /** Register a hook that points to a wiki page.
+     */
+    public function make_wiki_hook($auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)
+    {
+        return Platal::wiki_hook($auth, $perms, $type);
+    }
+
     /** Include a 'module-specific' file.
      * Module specific includes must be in the in the path modules/{modulename}.
      */
