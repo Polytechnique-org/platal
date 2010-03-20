@@ -225,6 +225,11 @@ class Profile
         return $this->sex == PlUser::GENDER_FEMALE;
     }
 
+    public function isDead()
+    {
+        return ($this->deathdate != null);
+    }
+
     public function data()
     {
         $this->first_name;
