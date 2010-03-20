@@ -506,6 +506,20 @@ class User extends PlUser
         return $this->groups;
     }
 
+    public function groupNames($institutions = false)
+    {
+        if ($institutions) {
+            $where = ' AND (g.cat = \'GroupesX\' OR g.cat = \'Institutions\')';
+        } else {
+            $where = '';
+        }
+        return XDB::fetchAllAssoc('SELECT  g.diminutif, g.nom, g.site
+                                     FROM  group_members AS gm
+                                LEFT JOIN  groups AS g ON (g.id = gm.asso_id)
+                                    WHERE  gm.uid = {?}' . $where,
+                                  $this->id());
+    }
+
     /**
      * Clears a user.
      *  *always deletes in: account_lost_passwords, register_marketing,
