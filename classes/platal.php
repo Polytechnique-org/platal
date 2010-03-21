@@ -42,11 +42,17 @@ abstract class Platal
     {
         global $platal, $session, $globals;
         $platal  =& $this;
-        $globalclass = PL_GLOBALS_CLASS;
-        $globals = new $globalclass();
+
+        /* Assign globals first, then call init: init must be used for operations
+         * that requires access to the content of $globals (e.g. XDB requires
+         * $globals to be assigned.
+         */
+        $globals = $this->buildGlobals();
         $globals->init();
-        $sessionclass = PL_SESSION_CLASS;
-        $session = new $sessionclass();
+
+        /* Get the current session: assign first, then activate the session.
+         */
+        $session = $this->buildSession();
         if (!$session->startAvailableAuth()) {
             Platal::page()->trigError("Données d'authentification invalides.");
         }
@@ -372,34 +378,63 @@ abstract class Platal
         }
     }
 
-	public static function assert($cond, $error, $userfriendly)
-	{
-		global $globals;
-		if ($cond === false) {
-			header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
-			$file = fopen($globals->spoolroot . '/spool/tmp/assert_erros', 'a');
-			fwrite($file, '<pre>' . pl_entities($error) . '</pre>\n');
-			fclose($file);
+    public static function assert($cond, $error, $userfriendly)
+    {
+        global $globals;
+        if ($cond === false) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
+            $file = fopen($globals->spoolroot . '/spool/tmp/assert_erros', 'a');
+            fwrite($file, '<pre>' . pl_entities($error) . '</pre>\n');
+            fclose($file);
 
-			Platal::page()->kill($userfriendly);
-		}
-	}
+            Platal::page()->kill($userfriendly);
+        }
+    }
 
+    public function &buildLogger($uid, $suid)
+    {
+        if (define('PL_LOGGER_CLASS')) {
+            $class = PL_LOGGER_CLASS;
+            return new $class($uid, $suid);
+        } else {
+            return new DummyLogger($uid, $suid);
+        }
+    }
+
+    protected function &buildPage()
+    {
+        $pageclass = PL_PAGE_CLASS;
+        $page = new $pageclass();
+        return $page;
+    }
 
     static public function &page()
     {
-        global $platal;
         if (is_null(self::$_page)) {
-            $pageclass = PL_PAGE_CLASS;
-            self::$_page = new $pageclass();
+            global $platal;
+            self::$_page = $platal->buildPage();
         }
         return self::$_page;
+    }
+
+    protected function &buildSession()
+    {
+        $sessionclass = PL_SESSION_CLASS;
+        $session = new $sessionclass();
+        return $session;
     }
 
     static public function &session()
     {
         global $session;
         return $session;
+    }
+
+    protected function &buildGlobals()
+    {
+        $globalclass = PL_GLOBALS_CLASS;
+        $globals = new $globalclass();
+        return $globals;
     }
 
     static public function &globals()

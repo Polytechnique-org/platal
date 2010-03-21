@@ -47,12 +47,8 @@ abstract class PlLogger
      */
     public static function get($uid, $suid = 0)
     {
-        if (defined('PL_LOGGER_CLASS')) {
-            $class = PL_LOGGER_CLASS;
-            return new $class($uid, $suid);
-        } else {
-            return new DummyLogger($uid, $suid);
-        }
+        global $platal;
+        return $platal->buildLogger();
     }
 
     /** Return a dummy logger.
