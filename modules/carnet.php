@@ -255,7 +255,7 @@ class CarnetModule extends PLModule
         $this->_add_rss_link($page);
 
         $uid  = S::i('uid');
-        $user = Env::v('user');
+        $user = S::user();
 
         // For XSRF protection, checks both the normal xsrf token, and the special RSS token.
         // It allows direct linking to contact adding in the RSS feed.
@@ -285,7 +285,6 @@ class CarnetModule extends PLModule
         }
 
         $search = false;
-        $user = S::user();
 
         require_once 'userset.inc.php';
 
