@@ -48,7 +48,7 @@ abstract class PlLogger
     public static function get($uid, $suid = 0)
     {
         global $platal;
-        return $platal->buildLogger();
+        return $platal->buildLogger($uid, $suid);
     }
 
     /** Return a dummy logger.

@@ -393,7 +393,7 @@ abstract class Platal
 
     public function &buildLogger($uid, $suid)
     {
-        if (define('PL_LOGGER_CLASS')) {
+        if (defined('PL_LOGGER_CLASS')) {
             $class = PL_LOGGER_CLASS;
             return new $class($uid, $suid);
         } else {
