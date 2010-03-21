@@ -95,11 +95,12 @@ class S
     {
         $uid = S::i('uid', $uid);
         if (!S::has('log') || !S::v('log')->isValid($uid)) {
+            global $platal;
             if (S::has('suid')) {
                 $suid = S::v('suid');
-                S::set('log', PlLogger::get(S::i('uid', $uid), $suid['uid']));
+                S::set('log', $platal->buildLogger(S::i('uid', $uid), $suid['uid']));
             } else if (S::has('uid') || $uid) {
-                S::set('log', PlLogger::get(S::i('uid', $uid)));
+                S::set('log', $platal->buildLogger(S::i('uid', $uid)));
             } else {
                 S::set('log', PlLogger::dummy($uid));
             }

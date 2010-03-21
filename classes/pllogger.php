@@ -43,14 +43,6 @@ abstract class PlLogger
      */
     abstract public function isValid($uid);
 
-    /** Build a logger.
-     */
-    public static function get($uid, $suid = 0)
-    {
-        global $platal;
-        return $platal->buildLogger($uid, $suid);
-    }
-
     /** Return a dummy logger.
      */
     public static function dummy($uid, $suid = 0) {

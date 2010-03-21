@@ -41,7 +41,7 @@ abstract class Platal
     public function __construct()
     {
         global $platal, $session, $globals;
-        $platal  =& $this;
+        $platal  = $this;
 
         /* Assign globals first, then call init: init must be used for operations
          * that requires access to the content of $globals (e.g. XDB requires
@@ -391,13 +391,13 @@ abstract class Platal
         }
     }
 
-    public function &buildLogger($uid, $suid)
+    public function &buildLogger($uid, $suid = 0)
     {
         if (defined('PL_LOGGER_CLASS')) {
             $class = PL_LOGGER_CLASS;
             return new $class($uid, $suid);
         } else {
-            return new DummyLogger($uid, $suid);
+            return PlLogger::dummy($uid, $suid);
         }
     }
 
