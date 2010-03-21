@@ -24,7 +24,7 @@
 {if $mail_part eq 'head'}
 {from full=#from#}
 {to addr=$to}
-{subject text="Validation de la demande de réécriture pour l'adresse `$mail->email`"}
+{subject text="Validation de la demande de réécriture pour l\'adresse `$mail->email`"}
 {elseif $mail_part eq 'wiki'}
 Bonjour,
 
