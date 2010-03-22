@@ -380,15 +380,16 @@ class ProfileMedals extends ProfileField
     {
         $this->pid = $it->value();
         while ($medal = $it->next()) {
-            $this->medals[$medal['mid']] = $medal['gid'];
+            $this->medals[$medal['mid']] = $medal;
         }
     }
 
     public static function fetchData(array $pids, $visibility)
     {
-        $data = XDB::iterator('SELECT  pm.pid, pm.mid, pm.gid
+        $data = XDB::iterator('SELECT  pm.pid, pm.mid, pm.gid, pme.text, pme.img
                                  FROM  profile_medals AS pm
                             LEFT JOIN  profiles AS p ON (pm.pid = p.pid)
+                            LEFT JOIN  profile_medal_enum AS pme ON (pme.id = pm.mid)
                                 WHERE  pm.pid IN {?} AND p.medals_pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pm.pid', $pids),
                                 $pids, $visibility);
