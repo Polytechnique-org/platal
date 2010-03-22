@@ -38,10 +38,7 @@ class ProfileVisibility
 
     public function setLevel($level = self::VIS_PUBLIC)
     {
-        if ($level != null
-         && $level != self::VIS_PRIVATE
-         && $level != self::VIS_AX
-         && $level != self::VIS_PUBLIC) {
+        if ($level != null && $level != self::VIS_PRIVATE && $level != self::VIS_AX && $level != self::VIS_PUBLIC) {
             Platal::page()->kill("Invalid visibility: " . $level);
         }
 
@@ -144,15 +141,18 @@ class Profile
     const FETCH_NETWORKING   = 0x000020;
     const FETCH_PHONES       = 0x000040;
 
-    const FETCH_MINIFICHES   = 0x00004D; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_PHONES
+    const FETCH_MINIFICHES   = 0x00006D; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_NETWORKING | FETCH_PHONES
 
     const FETCH_ALL          = 0x0000FF; // OR of FETCH_*
+
+    private $fetched_fields  = 0x000000;
 
     private $pid;
     private $hrpid;
     private $data = array();
 
     private $visibility = null;
+
 
     private function __construct(array $data)
     {
@@ -315,8 +315,40 @@ class Profile
         return $this->visibility->isVisible($visibility);
     }
 
-    private function getProfileField($cls)
+    /** Stores the list of fields which have already been fetched for this Profile
+     */
+    public function setFetchedFields($fields)
     {
+        if (($fields | self::FETCH_ALL) != self::FETCH_ALL) {
+            Platal::page()->kill("Invalid fetched fields: $fields");
+        }
+
+        $this->fetched_fields = $fields;
+    }
+
+    private function fetched($field)
+    {
+        if (!array_key_exists($field, ProfileField::$fields)) {
+            Platal::page()->kill("Invalid field: $field");
+        }
+
+        return ($this->fetched_fields & $field);
+    }
+
+    /** If not already done, fetches data for the given field
+     * @param $field One of the Profile::FETCH_*
+     * @return A ProfileField, or null
+     */
+    private function getProfileField($field)
+    {
+        if ($this->fetched($field)) {
+            return null;
+        } else {
+            $this->fetched_fields = $this->fetched_fields | $field;
+        }
+
+        $cls = ProfileField::$fields[$field];
+
         return ProfileField::getForPID($cls, $this->id(), $this->visibility);
     }
 
@@ -347,8 +379,8 @@ class Profile
         if ($this->has_photo) {
             if ($data && ($this->photo == null || $this->photo->mimeType == null)) {
                 $res = XDB::fetchOneAssoc('SELECT  attach, attachmime, x, y
-                                         FROM  profile_photos
-                                        WHERE  pid = {?}', $this->pid);
+                                             FROM  profile_photos
+                                            WHERE  pid = {?}', $this->pid);
                 $this->photo = PlImage::fromData($res['attach'], $res['attachmime'], $res['x'], $res['y']);
             } else if ($this->photo == null) {
                 $this->photo = PlImage::fromData(null, null, $this->photo_width, $this->photo_height);
@@ -372,8 +404,8 @@ class Profile
 
     public function getAddresses($flags, $limit = null)
     {
-        if ($this->addresses == null) {
-            $this->setAddresses($this->getProfileField('ProfileAddresses'));
+        if ($this->addresses == null  && !$this->fetched(self::FETCH_ADDRESSES)) {
+            $this->setAddresses($this->getProfileField(self::FETCH_ADDRESSES));
         }
 
         if ($this->addresses == null) {
@@ -408,8 +440,8 @@ class Profile
 
     public function getPhones($flags, $limit = null)
     {
-        if ($this->phones == null) {
-            $this->setPhones($this->getProfileField('ProfilePhones'));
+        if ($this->phones == null && !$this->fetched(self::FETCH_PHONES)) {
+            $this->setPhones($this->getProfileField(self::FETCH_PHONES));
         }
 
         if ($this->phones == null) {
@@ -428,8 +460,8 @@ class Profile
 
     public function getEducations($flags, $limit = null)
     {
-        if ($this->educations == null) {
-            $this->setEducations($this->getProfileField('ProfileEducation'));
+        if ($this->educations == null && !$this->fetched(self::FETCH_EDU)) {
+            $this->setEducations($this->getProfileField(self::FETCH_EDU));
         }
 
         if ($this->educations == null) {
@@ -453,8 +485,8 @@ class Profile
 
     public function getCorps()
     {
-        if ($this->corps == null) {
-            $this->setCorps($this->getProfileField('ProfileCorps'));
+        if ($this->corps == null && !$this->fetched(self::FETCH_CORPS)) {
+            $this->setCorps($this->getProfileField(self::FETCH_CORPS));
         }
         return $this->corps;
     }
@@ -469,8 +501,8 @@ class Profile
 
     public function getNetworking($flags, $limit = null)
     {
-        if ($this->networks == null) {
-            $this->setNetworking($this->getProfileField('ProfileNetworking'));
+        if ($this->networks == null && !$this->fetched(self::FETCH_NETWORKING)) {
+            $this->setNetworking($this->getProfileField(self::FETCH_NETWORKING));
         }
         if ($this->networks == null) {
             return array();
@@ -500,8 +532,8 @@ class Profile
 
     public function getJobs($flags, $limit = null)
     {
-        if ($this->jobs == null) {
-            $this->setJobs($this->getProfileField('ProfileJobs'));
+        if ($this->jobs == null && !$this->fetched(self::FETCH_JOBS)) {
+            $this->setJobs($this->getProfileField(self::FETCH_JOBS));
         }
 
         if ($this->jobs == null) {
@@ -545,8 +577,8 @@ class Profile
 
     public function getMedals()
     {
-        if ($this->medals == null) {
-            $this->setMedals($this->getProfileField('ProfileMedals'));
+        if ($this->medals == null && !$this->fetched(self::FETCH_MEDALS)) {
+            $this->setMedals($this->getProfileField(self::FETCH_MEDALS));
         }
         if ($this->medals == null) {
             return array();
@@ -888,15 +920,16 @@ class ProfileIterator implements PlIterator
         $this->iterator = PlIteratorUtils::parallelIterator($subits, $callbacks, 0);
     }
 
-    private function hasData($flag, $vals)
+    private function hasData($field, $vals)
     {
-        return ($this->fields & $flag) && ($vals[$flag] != null);
+        return ($this->fields & $field) && ($vals[$field] != null);
     }
 
     private function fillProfile(array $vals)
     {
         $pf = Profile::get($vals[0]);
         $pf->setVisibilityLevel($this->visibility->level());
+        $pf->setFetchedFields($this->fields);
 
         if ($this->hasData(Profile::FETCH_PHONES, $vals)) {
             $pf->setPhones($vals[Profile::FETCH_PHONES]);

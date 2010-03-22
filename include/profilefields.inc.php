@@ -25,6 +25,16 @@
  */
 abstract class ProfileField
 {
+    public static $fields = array(
+        Profile::FETCH_ADDRESSES  => 'ProfileAddresses',
+        Profile::FETCH_CORPS      => 'ProfileCorps',
+        Profile::FETCH_EDU        => 'ProfileEducation',
+        Profile::FETCH_JOBS       => 'ProfileJobs',
+        Profile::FETCH_MEDALS     => 'ProfileMedals',
+        Profile::FETCH_NETWORKING => 'ProfileNetworking',
+        Profile::FETCH_PHONES     => 'ProfilePhones',
+    );
+
     /** The profile to which this field belongs
      */
     public $pid;
