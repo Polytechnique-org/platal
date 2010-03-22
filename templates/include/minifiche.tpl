@@ -64,7 +64,7 @@
       <img src='images/flags/{$nat}.gif' alt='{$nat}' height='11' title='{$nat}' />&nbsp;
       {/foreach}
       {$profile->promo()}{*
-      *}{iterate from=$profile->getExtraEducations(4) item=edu}, {education_fmt edu=$edu profile=$profile}{/iterate}{*
+      *}{iterate from=$profile->getExtraEducations(4) item=edu}, {display_education edu=$edu profile=$profile}{/iterate}{*
       *}{if $dead}, {"décédé"|sex:"décédée":$profile} le {$profile->deathdate|date_format}{/if}
     </div>
   </div>
