@@ -25,23 +25,23 @@ function smarty_function_display_phones($param, &$smarty)
     if (count($param['tels'])) {
         foreach ($param['tels'] as $tel) {
             $tel_type = ($param['dcd'] ? 'Dernier ' : '');
-            switch ($tel['tel_type']) {
-              case 'fixed':
+            switch ($tel->type) {
+              case Phone::TYPE_FIXED:
                 $tel_type .= 'Tél';
                 break;
-              case 'fax':
+              case Phone::TYPE_FAX:
                 $tel_type .= 'Fax';
                 break;
-              case 'mobile':
+              case Phone::TYPE_MOBILE:
                 $tel_type .= 'Mob';
                 break;
               default:
-                $tel_type .= $tel['tel_type'];
+                $tel_type .= $tel->type;
             }
-            $txthtml .= "<div>\n<em>" . $tel_type . "&nbsp;: </em>\n<strong>" . $tel['tel'] . "</strong>\n";
+            $txthtml .= "<div>\n<em>" . $tel_type . "&nbsp;: </em>\n<strong>" . $tel->display . "</strong>\n";
             $comment = "";
-            if ($tel['comment'] != "") {
-                $commentHtml = str_replace(array('&', '"'), array('&amp;', '&quot;'), $tel['comment']);
+            if ($tel->comment != "") {
+                $commentHtml = str_replace(array('&', '"'), array('&amp;', '&quot;'), $tel->comment);
                 $commentJs = str_replace(array('\\', '\''), array('\\\\', '\\\''), $commentHtml);
                 $txthtml .= "<img style=\"margin-left: 5px;\" src=\"images/icons/comments.gif\""
                             . " onmouseover=\"return overlib('"
