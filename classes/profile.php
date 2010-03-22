@@ -19,15 +19,69 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+class ProfileVisibility
+{
+    static private $v_values = array(self::VIS_PUBLIC  => array(self::VIS_PUBLIC),
+                                     self::VIS_AX      => array(self::VIS_AX, self::VIS_PUBLIC),
+                                     self::VIS_PRIVATE => array(self::VIS_PRIVATE, self::VIS_AX, self::VIS_PUBLIC));
+
+    const VIS_PUBLIC  = 'public';
+    const VIS_AX      = 'ax';
+    const VIS_PRIVATE = 'private';
+
+    private $level;
+
+    public function __construct($level = null)
+    {
+        $this->setLevel($level);
+    }
+
+    public function setLevel($level = self::VIS_PUBLIC)
+    {
+        if ($level != null
+         && $level != self::VIS_PRIVATE
+         && $level != self::VIS_AX
+         && $level != self::VIS_PUBLIC) {
+            Platal::page()->kill("Invalid visibility: " . $level);
+        }
+
+        if (!S::logged()) {
+            $level = self::VIS_PUBLIC;
+        } else if ($level == null) {
+            $level = self::VIS_PRIVATE;
+        }
+
+        if ($this->level == null || $this->level == self::VIS_PRIVATE) {
+            $this->level = $level;
+        } else if ($this->level == self::VIS_AX && $level == self::VIS_PRIVATE) {
+            return;
+        } else {
+            $this->level = self::VIS_PUBLIC;
+        }
+    }
+
+    public function level()
+    {
+        if ($this->level == null) {
+            return self::VIS_PUBLIC;
+        } else {
+            return $this->level;
+        }
+    }
+
+    public function levels()
+    {
+        return self::$v_values[$this->level()];
+    }
+
+    public function isVisible($visibility)
+    {
+        return in_array($visibility, $this->levels());
+    }
+}
+
 class Profile
 {
-    static private $v_values = array('public'  => array('public'),
-                                     'ax'      => array('ax', 'public'),
-                                     'private' => array('private', 'ax', 'public'));
-
-    const VISIBILITY_PUBLIC  = 'public';
-    const VISIBILITY_AX      = 'ax';
-    const VISIBILITY_PRIVATE = 'private';
 
     /* name tokens */
     const LASTNAME  = 'lastname';
@@ -105,46 +159,7 @@ class Profile
         $this->data = $data;
         $this->pid = $this->data['pid'];
         $this->hrpid = $this->data['hrpid'];
-        if (!S::logged()) {
-            $this->setVisibilityLevel(self::VISIBILITY_PUBLIC);
-        } else {
-            $this->setVisibilityLevel(self::VISIBILITY_PRIVATE);
-        }
-    }
-
-    static private $contexts = array();
-
-    /** Returns the best visibility context toward $visibility
-     * @param $visibility A wished visibility level
-     * @return An array of compatible visibilities
-     *
-     * if $visibility is null, the best visibility is returned
-     */
-    static public function getVisibilityContext($visibility = null)
-    {
-        if (array_key_exists($visibility, self::$contexts)) {
-            return self::$contexts[$visibility];
-        }
-
-        $asked_vis = $visibility;
-
-        if (S::logged()) {
-            $minvis = self::VISIBILITY_PRIVATE;
-        } else {
-            $minvis = self::VISIBILITY_PUBLIC;
-        }
-        if ($visibility == null) {
-            $visibility = $minvis;
-        }
-
-        if ($minvis == self::VISIBILITY_PUBLIC) {
-            $visibility = self::VISIBILITY_PUBLIC;
-        }
-
-        $visibility = self::$v_values[$visibility];
-        self::$contexts[$asked_vis] = $visibility;
-
-        return $visibility;
+        $this->visibility = new ProfileVisibility();
     }
 
     public function id()
@@ -284,19 +299,11 @@ class Profile
 
     /** Sets the level of visibility of the profile
      * Sets $this->visibility to a list of valid visibilities.
-     * @param one of the self::VISIBILITY_* values
+     * @param one of the self::VIS_* values
      */
     public function setVisibilityLevel($visibility)
     {
-        if ($visibility != self::VISIBILITY_PRIVATE
-         && $visibility != self::VISIBILITY_AX
-         && $visibility != self::VISIBILITY_PUBLIC) {
-            Platal::page()->kill("Visibility invalide: " . $visibility);
-        }
-        $this->visibility = self::$v_values[$visibility];
-        if ($this->mobile && !in_array($this->mobile_pub, $this->visibility)) {
-            unset($this->data['mobile']);
-        }
+        $this->visibility->setLevel($visibility);
     }
 
     /** Determine whether an item with visibility $visibility can be displayed
@@ -305,12 +312,7 @@ class Profile
      */
     public function isVisible($visibility)
     {
-        return in_array($visibility, $this->visibility);
-    }
-
-    public static function getCompatibleVisibilities($visibility)
-    {
-        return self::$v_values[$visibility];
+        return $this->visibility->isVisible($visibility);
     }
 
     private function getProfileField($cls)
@@ -339,23 +341,19 @@ class Profile
 
     /* Photo
      */
-    private $_photo = null;
+    private $photo = null;
     public function getPhoto($fallback = true, $data = false)
     {
-        if ($data && $this->has_photo && $this->isVisible($this->photo_pub) &&
-                ($this->_photo == null || $this->_photo->mimeType() == null)) {
-            $res = XDB::fetchOneAssoc('SELECT  attach, attachmime, x, y
+        if ($this->has_photo) {
+            if ($data && ($this->photo == null || $this->photo->mimeType == null)) {
+                $res = XDB::fetchOneAssoc('SELECT  attach, attachmime, x, y
                                          FROM  profile_photos
                                         WHERE  pid = {?}', $this->pid);
-            $this->_photo = PlImage::fromData($res['attach'], $res['attachmime'], $res['x'], $res['y']);
-        }
-
-        if (!$data && $this->_photo == null) {
-            $this->_photo = PlImage::fromData(null, null, $this->photo_width, $this->photo_height);
-        }
-
-        if ($this->has_photo && $this->isVisible($this->photo_pub)) {
-            return $this->_photo;
+                $this->photo = PlImage::fromData($res['attach'], $res['attachmime'], $res['x'], $res['y']);
+            } else if ($this->photo == null) {
+                $this->photo = PlImage::fromData(null, null, $this->photo_width, $this->photo_height);
+            }
+            return $this->photo;
         } else if ($fallback) {
             return PlImage::fromFile(dirname(__FILE__).'/../htdocs/images/none.png',
                                      'image/png');
@@ -592,14 +590,15 @@ class Profile
             $order = '';
         }
 
+        $visibility = new ProfileVisibility($visibility);
 
         $it = XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year, pse.text AS section,
                                      pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
                                      IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
                                      IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
                                      pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
-                                     pd.directory_name, pp.display_tel AS mobile, pp.pub AS mobile_pub,
-                                     ph.attach IS NOT NULL AS has_photo, ph.pub AS photo_pub,
+                                     pd.directory_name, IF(pp.pub IN {?}, pp.display_tel, NULL) AS mobile,
+                                     (ph.pub IN {?} AND ph.attach IS NOT NULL) AS has_photo,
                                      ph.x AS photo_width, ph.y AS photo_height,
                                      p.last_change < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_old,
                                      pm.expertise AS mentor_expertise,
@@ -624,7 +623,7 @@ class Profile
                           LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
                               WHERE  p.pid IN ' . XDB::formatArray($pids) . '
                            GROUP BY  p.pid
-                                  ' . $order);
+                                  ' . $order, $visibility->levels(), $visibility->levels());
         return new ProfileIterator($it, $pids, $fields, $visibility);
     }
 
@@ -665,7 +664,9 @@ class Profile
     public static function get($login, $fields = 0x0000, $visibility = null)
     {
         if (is_array($login)) {
-            return new Profile($login);
+            $pf = new Profile($login);
+            $pf->setVisibilityLevel($visibility);
+            return $pf;
         }
         $pid = self::getPID($login);
         if (!is_null($pid)) {
@@ -696,7 +697,7 @@ class Profile
 
     /** Return profiles for the list of pids.
      */
-    public static function getBulkProfilesWithPIDs(array $pids, $fields = self::FETCH_ADDRESSES, $visibility = null)
+    public static function getBulkProfilesWithPIDs(array $pids, $fields = 0x0000, $visibility = null)
     {
         if (count($pids) == 0) {
             return array();
@@ -829,12 +830,18 @@ class ProfileIterator implements PlIterator
 {
     private $iterator = null;
     private $fields;
+    private $visibility;
 
-    public function __construct(PlIterator $it, array $pids, $fields = 0x0000, $visibility = null)
+    public function __construct(PlIterator $it, array $pids, $fields = 0x0000, ProfileVisibility $visibility = null)
     {
         require_once 'profilefields.inc.php';
-        $visibility = Profile::getVisibilityContext($visibility);
+
+        if ($visibility == null) {
+            $visibility = new ProfileVisibility();
+        }
+
         $this->fields = $fields;
+        $this->visibility = $visibility;
 
         $subits = array();
         $callbacks = array();
@@ -889,6 +896,8 @@ class ProfileIterator implements PlIterator
     private function fillProfile(array $vals)
     {
         $pf = Profile::get($vals[0]);
+        $pf->setVisibilityLevel($this->visibility->level());
+
         if ($this->hasData(Profile::FETCH_PHONES, $vals)) {
             $pf->setPhones($vals[Profile::FETCH_PHONES]);
         }

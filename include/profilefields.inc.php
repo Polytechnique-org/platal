@@ -36,12 +36,12 @@ abstract class ProfileField
      * @return a PlIterator yielding data suitable for a "new ProfileBlah($data)"
      * XXX MUST be reimplemented for each kind of ProfileField
      */
-    public static function fetchData(array $pids, $visibility)
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         return PlIteratorUtils::emptyIterator();
     }
 
-    public static function buildForPID($cls, $pid, $visibility)
+    public static function buildForPID($cls, $pid, ProfileVisibility $visibility)
     {
         $res = self::buildFromPIDs($cls, array($pid), $visibility);
         return array_pop($res);
@@ -53,7 +53,7 @@ abstract class ProfileField
      * @param $visibility An array of allowed visibility contexts
      * @return An array of $pid => ProfileField
      */
-    public static function buildFromPIDs($cls, array $pids, $visibility)
+    public static function buildFromPIDs($cls, array $pids, ProfileVisibility $visibility)
     {
         $it = new ProfileFieldIterator($cls, $pids, $visibility);
         $res = array();
@@ -63,7 +63,7 @@ abstract class ProfileField
         return $res;
     }
 
-    public static function getForPID($cls, $pid, $visibility)
+    public static function getForPID($cls, $pid, ProfileVisibility $visibility)
     {
         $it = new ProfileFieldIterator($cls, array($pid), $visibility);
         return $it->next();
@@ -77,7 +77,7 @@ class ProfileFieldIterator implements PlIterator
     private $data;
     private $cls;
 
-    public function __construct($cls, array $pids, $visibility)
+    public function __construct($cls, array $pids, ProfileVisibility $visibility)
     {
         $this->data = call_user_func(array($cls, 'fetchData'), $pids, $visibility);
         $this->cls = $cls;
@@ -327,7 +327,6 @@ class ProfileEducation extends ProfileField
     public function __construct(PlInnerSubIterator $it)
     {
         $this->pid = $it->value();
-        $this->visibility = Profile::VISIBILITY_PUBLIC;
         while ($edu = $it->next()) {
             $this->educations[$edu['id']] = new Education($edu);
         }
@@ -361,7 +360,7 @@ class ProfileEducation extends ProfileField
         return $educations;
     }
 
-    public static function fetchData(array $pids, $visibility)
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         $data = XDB::iterator('SELECT  pe.id, pe.pid,
                                        pe.entry_year, pe.grad_year, pe.program, pe.flags,
@@ -396,7 +395,7 @@ class ProfileMedals extends ProfileField
         }
     }
 
-    public static function fetchData(array $pids, $visibility)
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         $data = XDB::iterator('SELECT  pm.pid, pm.mid, pm.gid, pme.text, pme.img
                                  FROM  profile_medals AS pm
@@ -404,7 +403,7 @@ class ProfileMedals extends ProfileField
                             LEFT JOIN  profile_medal_enum AS pme ON (pme.id = pm.mid)
                                 WHERE  pm.pid IN {?} AND p.medals_pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pm.pid', $pids),
-                                $pids, $visibility);
+                                $pids, $visibility->levels());
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
@@ -422,14 +421,14 @@ class ProfileNetworking extends ProfileField
         }
     }
 
-    public static function fetchData(array $pids, $visibility)
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         $data = XDB::iterator('SELECT  pid, nwid, address, network_type
                                  FROM  profile_networking
                                 WHERE  pid IN {?} AND pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
                                        network_type, nwid',
-                               $pids, $visibility);
+                               $pids, $visibility->levels());
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
@@ -479,7 +478,7 @@ class ProfileCorps extends ProfileField
         }
     }
 
-    public static function fetchData(array $pids, $visibility)
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         $data = XDB::iterator('SELECT  pc.pid, pc.original_corpsid AS original, pc.current_corpsid AS current,
                                        pceo.name AS original_name, pceo.abbreviation AS original_abbrev,
@@ -494,7 +493,7 @@ class ProfileCorps extends ProfileField
                             LEFT JOIN  profile_corps_rank_enum AS pcrec ON (pcrec.id = pc.rankid)
                                 WHERE  pc.pid IN {?} AND pc.corps_pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                $pids, $visibility);
+                                $pids, $visibility->levels());
 
         return $data;
     }
@@ -549,7 +548,7 @@ class ProfileAddresses extends ProfileField
         return $res;
     }
 
-    public static function fetchData(array $pids, $visibility)
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         $data = XDB::iterator('SELECT  pa.id, pa.pid, pa.flags, pa.type AS link_type,
                                        IF(pa.type = \'home\', pid, jobid) AS link_id,
@@ -563,7 +562,7 @@ class ProfileAddresses extends ProfileField
                             LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pa.countryId)
                                 WHERE  pa.pid in {?} AND pa.pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                               $pids, $visibility);
+                               $pids, $visibility->levels());
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
@@ -606,13 +605,13 @@ class ProfilePhones extends ProfileField
         return $phones;
     }
 
-    public static function fetchData(array $pids, $visibility)
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         $data = XDB::iterator('SELECT  tel_type AS type, search_tel AS search, display_tel AS display, link_type, comment
                                  FROM  profile_phones
                                 WHERE  pid IN {?} AND pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                                 $pids, $visibility);
+                                 $pids, $visibility->levels());
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 }
@@ -630,7 +629,7 @@ class ProfileJobs extends ProfileField
         }
     }
 
-    public static function fetchData(array $pids, $visibility)
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         CompanyList::preload($pids);
         $data = XDB::iterator('SELECT  pj.id, pj.pid, pj.description, pj.url as user_site,
@@ -644,7 +643,7 @@ class ProfileJobs extends ProfileField
                                 WHERE  pj.pid IN {?} AND pj.pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
                                        pj.id',
-                                 $visibility, $pids, $visibility);
+                                 $visibility->levels(), $pids, $visibility->levels());
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 
