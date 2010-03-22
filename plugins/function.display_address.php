@@ -39,8 +39,9 @@ function display_address_isIdentity($idt, $value, $test_reverse = true)
 function smarty_function_display_address($param, &$smarty)
 {
     require_once('geocoding.inc.php');
-    $txtad = $param['adr']['text'];
-    if (!$txtad && !$param['adr']['tels'] && !count($param['adr']['tels'])) {
+    $adr = $param['adr'];
+    $txtad = $adr->text;
+    if (!$txtad && !$adr->phones() && !count($adr->phones())) {
         return "";
     }
 
@@ -61,7 +62,7 @@ function smarty_function_display_address($param, &$smarty)
     $comment = "";
     if ($param['adr']['comment'] != "")
     {
-        $commentHtml = str_replace(array('&', '"'), array('&amp;', '&quot;'), $param['adr']['comment']);
+        $commentHtml = str_replace(array('&', '"'), array('&amp;', '&quot;'), $adr->comment);
         $commentJs = str_replace(array('\\', '\''), array('\\\\', '\\\''), $commentHtml);
         $comment = "<img style=\"margin-left: 5px;\" src=\"images/icons/comments.gif\""
             . " onmouseover=\"return overlib('"
@@ -86,9 +87,9 @@ function smarty_function_display_address($param, &$smarty)
     {
         $txthtml .= "<strong>".$line."</strong><br/>\n";
     }
-    if(isset($param['adr']['tels'])) {
+    if($adr->phones() != null) {
         require_once('function.display_phones.php');
-        $txthtml .= smarty_function_display_phones($param['adr'],$smarty);
+        $txthtml .= smarty_function_display_phones(array('tels' => $adr->phones()),$smarty);
     }
     if (!$param['nodiv']) {
         $pos = $param['pos'] ? " style='float: " . $param['pos'] . "'" : '';
