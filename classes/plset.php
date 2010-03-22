@@ -86,6 +86,17 @@ abstract class PlSet
      */
     abstract protected function buildFilter(PlFilterCondition &$cond, $orders);
 
+    /** This function returns the results of the given filter
+     * wihtin $limit ; available when the PlFilter getter isn't the usual get
+     * @param &$pf The filter
+     * @param $limit The PlLimit
+     * @return The results of the filter
+     */
+    protected function &getFilterResults(PlFilter &$pf, PlLimit $limit)
+    {
+        return $pf->get($limit);
+    }
+
     /** This function returns the values of the set
      * @param $limit A PlLimit for selecting users
      * @param $orders An optional array of PFO to use before the "default" ones
@@ -104,7 +115,7 @@ abstract class PlSet
         if (is_null($limit)) {
             $limit = new PlLimit(self::DEFAULT_MAX_RES, 0);
         }
-        $it          = $pf->get($limit);
+        $it          = $this->getFilterResults($pf, $limit);
         $this->count = $pf->getTotalCount();
         return $it;
     }
