@@ -481,22 +481,38 @@ class ProfileCorps extends ProfileField
 {
     public $original;
     public $current;
-    public $rank;
+
+    public $original_name;
+    public $original_abbrev;
+    public $original_still_exists;
+
+    public $current_name;
+    public $current_abbrev;
+    public $current_still_exists;
+    public $current_rank;
+    public $current_rank_abbrev;
 
     public function __construct(array $data)
     {
-        $this->original = $data['original_corpsid'];
-        $this->current  = $data['current_corpsid'];
-        $this->rank     = $data['rankid'];
-        $this->visibility = $data['corps_pub'];
+        foreach ($data as $key => $val) {
+            $this->$key = $val;
+        }
     }
 
     public static function fetchData(array $pids, $visibility)
     {
-        $data = XDB::iterator('SELECT  pid, original_corpsid, current_corpsid,
+        $data = XDB::iterator('SELECT  pc.pid, pc.original_corpsid AS original, pc.current_corpsid AS current,
+                                       pceo.name AS original_name, pceo.abbreviation AS original_abbrev,
+                                       pceo.still_exists AS original_still_exists,
+                                       pcec.name AS current_name, pcec.abbreviation AS current_abbrev,
+                                       pcec.still_exists AS current_still_exists,
+                                       pcrec.name AS current_rank, pcrec.abbreviation AS current_rank_abbrev,
                                        rankid
-                                 FROM  profile_corps
-                                WHERE  pid IN {?} AND corps_pub IN {?}
+                                 FROM  profile_corps AS pc
+                            LEFT JOIN  profile_corps_enum AS pceo ON (pceo.id = pc.original_corpsid)
+                            LEFT JOIN  profile_corps_enum AS pcec ON (pcec.id = pc.current_corpsid)
+                            LEFT JOIN  profile_corps_rank_enum AS pcrec ON (pcrec.id = pc.rankid)
+                                WHERE  pc.pid IN {?} AND pc.corps_pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
                                 $pids, $visibility);
 

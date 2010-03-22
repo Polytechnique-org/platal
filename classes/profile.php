@@ -437,6 +437,21 @@ class Profile
         return $this->getEducations(self::EDUCATION_EXTRA, $limit);
     }
 
+    /* Corps
+     */
+    private $corps = null;
+    public function setCorps(ProfileCorps $corps)
+    {
+        $this->corps = $corps;
+    }
+
+    public function getCorps()
+    {
+        if ($this->corps == null) {
+            $this->setCorps($this->getProfileField('ProfileCorps'));
+        }
+        return $this->corps;
+    }
 
     /** Networking
      */
