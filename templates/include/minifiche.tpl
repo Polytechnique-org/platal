@@ -119,7 +119,7 @@
     {assign var=address value=$profile->getMainAddress()}
     {assign var=web     value=$profile->getWebSite()}
     {assign var=job     value=$profile->getMainJob()}
-    {if $web || $profile->mobile || $address.country || $job || (!$dead && !$registered)}
+    {if $web || $profile->mobile || $address->country || $job || (!$dead && !$registered)}
     <table cellspacing="0" cellpadding="0">
       {if $web}
       <tr>
@@ -127,10 +127,10 @@
         <td class="rt"><a href="{$web}">{$web}</a></td>
       </tr>
       {/if}
-      {if $address.country && !$c.dcd}
+      {if $address->country && !$c.dcd}
       <tr>
         <td class="lt">Géographie&nbsp;:</td>
-        <td class="rt">{if $address.locality}{$address.locality}, {/if}{$address.country}</td>
+        <td class="rt">{if $address->locality}{$address->locality}, {/if}{$address->country}</td>
       </tr>
       {/if}
       {if $profile->mobile && !$dead}
