@@ -151,6 +151,8 @@ class Profile
 
     private $pid;
     private $hrpid;
+    private $owner;
+    private $owner_fetched = false;
     private $data = array();
 
     private $visibility = null;
@@ -172,6 +174,15 @@ class Profile
     public function hrid()
     {
         return $this->hrpid;
+    }
+
+    public function owner()
+    {
+        if ($this->owner == null && !$this->owner_fetched) {
+            $this->owner_fetched = true;
+            $this->owner = User::getSilent($this);
+        }
+        return $this->owner;
     }
 
     public function promo()
@@ -245,6 +256,16 @@ class Profile
     public function isDead()
     {
         return ($this->deathdate != null);
+    }
+
+    public function displayEmail()
+    {
+        $o = $this->owner();
+        if ($o != null) {
+            return $o->bestEmail();
+        } else {
+            return $this->email_directory;
+        }
     }
 
     public function data()
@@ -626,11 +647,6 @@ class Profile
             return array();
         }
         return $this->medals->medals;
-    }
-
-    public function owner()
-    {
-        return User::getSilent($this);
     }
 
     public function compareNames($firstname, $lastname)
