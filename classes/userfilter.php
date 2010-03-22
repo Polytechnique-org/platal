@@ -1772,24 +1772,24 @@ class UserFilter extends PlFilter
         return User::iterOverUIDs($this->getUIDs($limit));
     }
 
-    public function getProfiles($limit = null)
+    public function getProfiles($limit = null, $fields = 0x0000, $visibility = null)
     {
-        return Profile::getBulkProfilesWithPIDs($this->getPIDs($limit));
+        return Profile::getBulkProfilesWithPIDs($this->getPIDs($limit), $fields, $visibility);
     }
 
-    public function getProfile($pos = 0)
+    public function getProfile($pos = 0, $fields = 0x0000, $visibility = null)
     {
         $pid = $this->getPID($pos);
         if ($pid == null) {
             return null;
         } else {
-            return Profile::get($pid);
+            return Profile::get($pid, $fields, $visibility);
         }
     }
 
-    public function iterProfiles($limit = null)
+    public function iterProfiles($limit = null, $fields = 0x0000, $visibility = null)
     {
-        return Profile::iterOverPIDs($this->getPIDs($limit));
+        return Profile::iterOverPIDs($this->getPIDs($limit), true, $fields, $visibility);
     }
 
     public function get($limit = null)
