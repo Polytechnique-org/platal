@@ -249,6 +249,8 @@ class Address
     public $administrativeArea;
     public $country;
 
+    public $comment;
+
     private $phones = array();
 
     /** Fields are:
@@ -259,6 +261,7 @@ class Address
         foreach ($data as $key => $val) {
             $this->$key = $val;
         }
+        $this->flags = new PlFlagSet($this->flags);
     }
 
     public function addPhone(Phone &$phone)
@@ -273,9 +276,9 @@ class Address
         return $this->phones;
     }
 
-    public function hasFlags($flags)
+    public function hasFlag($flag)
     {
-        return $flags & $this->flags;
+        return $this->flags->hasFlag($flag);
     }
 }
 // }}}
@@ -548,7 +551,17 @@ class ProfileAddresses extends ProfileField
         $res = array();
         $nb = 0;
         foreach ($this->addresses as $addr) {
-            if ($addr->hasFlags($flags)) {
+            if (
+                ($flags & Profile::ADDRESS_ALL)
+                ||
+                (($flags & Profile::ADDRESS_MAIN) && $addr->hasFlag('current'))
+                ||
+                (($flags & Profile::ADDRESS_POSTAL) && $addr->hasFlag('mail'))
+                ||
+                (($flags & Profile::ADDRESS_PERSO) && $addr->link_type == 'home')
+                ||
+                (($flags & Profile::ADDRESS_PRO) && $addr->link_type == 'job')
+            ) {
                 $res[] = $addr;
                 $nb++;
             }
@@ -563,7 +576,7 @@ class ProfileAddresses extends ProfileField
     {
         $data = XDB::iterator('SELECT  pa.id, pa.pid, pa.flags, pa.type AS link_type,
                                        IF(pa.type = \'home\', pid, jobid) AS link_id,
-                                       pa.text, pa.postalCode, pa.latitude, pa.longitude,
+                                       pa.text, pa.postalCode, pa.latitude, pa.longitude, pa.comment,
                                        gl.name AS locality, gas.name AS subAdministrativeArea,
                                        ga.name AS administrativeArea, gc.countryFR AS country
                                  FROM  profile_addresses AS pa
