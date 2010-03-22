@@ -213,6 +213,11 @@ class Job
         return $this->phones;
     }
 
+    public function address()
+    {
+        return $this->address;
+    }
+
     public function addPhone(Phone &$phone)
     {
         if ($phone->link_type == Phone::LINK_JOB && $phone->link_id == $this->id && $phone->pid == $this->pid) {
