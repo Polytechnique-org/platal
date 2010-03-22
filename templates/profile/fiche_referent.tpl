@@ -33,13 +33,13 @@
   </div>
   <div class="spacer"></div>
 
-  {if $expertise != '' || $sectors|count || $countries|count }
+  {if $profile->expertise != '' || $sectors|count || $countries|count }
   <div id="part">
     <h2>Informations de référent&nbsp;:</h2>
-    {if $expertise}
+    {if $profile->expertise}
     <div class="rubrique_referent">
       <em>Expertise&nbsp;: </em><br />
-      <span>{$expertise|nl2br}</span>
+      <span>{$profile->expertise|nl2br}</span>
     </div>
     {/if}
     {if $sectors|count}
