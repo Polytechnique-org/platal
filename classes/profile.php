@@ -376,18 +376,23 @@ class Profile
         }
 
         if ($this->addresses == null) {
-            return PlIteratorUtils::emptyIterator();
+            return array();
         }
         return $this->addresses->get($flags, $limit);
     }
 
+    public function iterAddresses($flags, $limit = null)
+    {
+        return PlIteratorUtils::fromArray($this->getAddresses($flags, $limit), 1, true);
+    }
+
     public function getMainAddress()
     {
-        $it = $this->getAddresses(self::ADDRESS_PERSO | self::ADDRESS_MAIN);
-        if ($it->total() == 0) {
+        $addr = $this->getAddresses(self::ADDRESS_PERSO | self::ADDRESS_MAIN);
+        if (count($addr) == 0) {
             return null;
         } else {
-            return $it->next();
+            return array_pop($addr);
         }
     }
 
@@ -407,7 +412,7 @@ class Profile
         }
 
         if ($this->phones == null) {
-            return PlIteratorUtils::emptyIterator();
+            return array();
         }
         return $this->phones->get($flags, $limit);
     }
@@ -427,7 +432,7 @@ class Profile
         }
 
         if ($this->educations == null) {
-            return PlIteratorUtils::emptyIterator();
+            return array();
         }
         return $this->educations->get($flags, $limit);
     }
@@ -467,7 +472,7 @@ class Profile
             $this->setNetworking($this->getProfileField('ProfileNetworking'));
         }
         if ($this->networks == null) {
-            return PlIteratorUtils::emptyIterator();
+            return array();
         }
         return $this->networks->get($flags, $limit);
     }
@@ -475,10 +480,10 @@ class Profile
     public function getWebSite()
     {
         $site = $this->getNetworking(self::NETWORKING_WEB, 1);
-        if ($site->total() != 1) {
+        if (count($site) != 1) {
             return null;
         }
-        $site = $site->next();
+        $site = array_pop($site);
         return $site['address'];
     }
 
@@ -499,7 +504,7 @@ class Profile
         }
 
         if ($this->jobs == null) {
-            return PlIteratorUtils::emptyIterator();
+            return array();
         }
         return $this->jobs->get($flags, $limit);
     }
@@ -507,10 +512,10 @@ class Profile
     public function getMainJob()
     {
         $job = $this->getJobs(self::JOBS_MAIN, 1);
-        if ($job->total() != 1) {
+        if (count($job) != 1) {
             return null;
         }
-        return $job->next();
+        return array_pop($job);
     }
 
     /* Binets

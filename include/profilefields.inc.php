@@ -348,7 +348,7 @@ class ProfileEducation extends ProfileField
                 break;
             }
         }
-        return PlIteratorUtils::fromArray($educations, 1, true);
+        return $educations;
     }
 
     public static function fetchData(array $pids, $visibility)
@@ -442,7 +442,7 @@ class ProfileNetworking extends ProfileField
                 break;
             }
         }
-        return PlIteratorUtils::fromArray($nws, 1, true);
+        return $nws;
     }
 }
 // }}}
@@ -556,7 +556,7 @@ class ProfileAddresses extends ProfileField
                 break;
             }
         }
-        return PlIteratorUtils::fromArray($res, 1, true);
+        return $res;
     }
 
     public static function fetchData(array $pids, $visibility)
@@ -581,7 +581,7 @@ class ProfileAddresses extends ProfileField
     public function addPhones(ProfilePhones $phones)
     {
         $p = $phones->get(0);
-        while ($phone = $p->next()) {
+        foreach ($p as $phone) {
             if ($phone->link_type == Phone::LINK_ADDRESS && array_key_exists($phone->link_id, $this->addresses)) {
                 $this->addresses[$phone->link_id]->addPhone($phone);
             }
@@ -613,7 +613,7 @@ class ProfilePhones extends ProfileField
                 break;
             }
         }
-        return PlIteratorUtils::fromArray($phones, 1, true);
+        return $phones;
     }
 
     public static function fetchData(array $pids, $visibility)
@@ -669,13 +669,13 @@ class ProfileJobs extends ProfileField
                 break;
             }
         }
-        return PlIteratorUtils::fromArray($jobs, 1, true);
+        return $jobs;
     }
 
     public function addPhones(ProfilePhones $phones)
     {
         $p = $phones->get(0);
-        while ($phone = $p->next()) {
+        foreach ($p as $phone) {
             if ($phone->link_type == Phone::LINK_JOB && array_key_exists($phone->link_id, $this->jobs)) {
                 $this->jobs[$phone->link_id]->addPhones($phone);
             }
@@ -685,7 +685,7 @@ class ProfileJobs extends ProfileField
     public static function addAddresses(ProfileAddresses $addresses)
     {
         $a = $addresses->get(Profile::ADDRESS_PRO);
-        while ($address = $a->next()) {
+        foreach ($a as $address) {
             if ($address->link_type == Address::LINK_JOB && array_key_exists($address->link_id, $this->jobs)) {
                 $this->jobs[$address->link_id]->setAddress($address);
             }

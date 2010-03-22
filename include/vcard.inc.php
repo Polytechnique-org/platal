@@ -83,7 +83,7 @@ class VCard extends PlVCard
         }
 
         // Homes
-        $adrs = $pf->getAddresses(Profile::ADDRESS_PERSO);
+        $adrs = $pf->iterAddresses(Profile::ADDRESS_PERSO);
         while ($adr = $adrs->next()) {
             // TODO : find a way to fetch only the "street" part of the address
             $group = $entry->addHome($adr['text'], null, null, $adr['postalCode'],
@@ -98,7 +98,7 @@ class VCard extends PlVCard
         }
 
         // Pro
-        $adrs = $pf->getAddresses(Profile::ADDRESS_PRO);
+        $adrs = $pf->iterAddresses(Profile::ADDRESS_PRO);
         while ($adr = $adrs->next()) {
             // TODO : link address to company
             $group = $entry->addWork(null, null, null, null,

@@ -315,7 +315,7 @@ class ContactsPDF extends FPDF
             $self->TableRow('mobile', utf8_decode($profile->mobile), 'Mono');
         }
 
-        $it = $profile->getAddresses(Profile::ADDRESS_ALL);
+        $it = $profile->iterAddresses(Profile::ADDRESS_ALL);
         while ($a = $it->next()) {
             foreach ($a as &$value) {
                 $value = utf8_decode($value);
@@ -323,7 +323,7 @@ class ContactsPDF extends FPDF
             $self->Space();
             $self->Address($a);
         }
-        $it = $profile->getAddresses(Profile::ADDRESS_PRO);
+        $it = $profile->iterAddresses(Profile::ADDRESS_PRO);
         while ($a = $it->next()) {
             foreach ($a as &$value) {
                 $value = utf8_decode($value);
