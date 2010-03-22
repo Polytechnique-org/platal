@@ -115,17 +115,9 @@ class SearchSet extends ProfileSet
         $this->conds->addChild($ufb->getUFC());
     }
 
-    public function &get(PlLimit $limit = null, $orders = array())
+    protected function &getFilterResults(PlFilter &$pf, PlLimit $limit)
     {
-        $orders = array_merge($orders, $this->orders);
-
-        $uf = $this->buildFilter($this->conds, $orders);
-        if (is_null($limit)) {
-            $limit = new PlLimit(20, 0);
-        }
-        $it          = $uf->getProfiles($limit);
-        $this->count = $uf->getTotalCount();
-        return $it;
+        return $pf->getProfiles($limit, Profile::FETCH_MINIFICHES);
     }
 }
 
