@@ -254,6 +254,7 @@ class ProfileModule extends PLModule
 
         $page->assign_by_ref('p', $profile);
         $page->assign_by_ref('o', $owner);
+        $page->assign('view', $view);
         $page->assign('logged', S::logged());
 
         $page->addJsLink('close_on_esc.js');
