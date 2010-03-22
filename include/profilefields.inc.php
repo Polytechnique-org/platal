@@ -307,6 +307,8 @@ class Education
     public $degree_short;
     public $degree_level;
 
+    public $field;
+
     public function __construct(array $data)
     {
         foreach ($data as $key => $val) {
