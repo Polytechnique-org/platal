@@ -94,7 +94,7 @@ class ProfileModule extends PLModule
             $myphoto = PhotoReq::get_request($profile->owner()->id());
             $photo = PlImage::fromData($myphoto->data, $myphoto->mimetype);
         } else {
-            $photo = $profile->getPhoto(true);
+            $photo = $profile->getPhoto(true, true);
         }
 
         // Display the photo, or a default one when not available.

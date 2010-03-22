@@ -456,36 +456,6 @@ class ProfileNetworking extends ProfileField
     }
 }
 // }}}
-// {{{ class ProfilePhoto                             [ Field ]
-class ProfilePhoto extends ProfileField
-{
-    public $pic;
-
-    public function __construct(array $data)
-    {
-        if ($data == null || count($data) == 0) {
-            $this->pic = null;
-        } else {
-            $this->pid = $data['pid'];
-            $this->pic = PlImage::fromDATA($data['attach'],
-                                           $data['attachmime'],
-                                           $data['x'],
-                                           $data['y']);
-        }
-    }
-
-    public static function fetchData(array $pids, $visibility)
-    {
-        $data = XDB::iterator('SELECT  *
-                                 FROM  profile_photos
-                                WHERE  pid IN {?} AND attachmime IN (\'jpeg\', \'png\') AND pub IN {?}
-                             ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
-                               $pids, $visibility);
-
-        return $data;
-    }
-}
-// }}}
 // {{{ class ProfileCorps                             [ Field ]
 class ProfileCorps extends ProfileField
 {

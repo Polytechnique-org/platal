@@ -89,9 +89,8 @@ class Profile
     const FETCH_MEDALS       = 0x000010;
     const FETCH_NETWORKING   = 0x000020;
     const FETCH_PHONES       = 0x000040;
-    const FETCH_PHOTO        = 0x000080;
 
-    const FETCH_MINIFICHES   = 0x0000CD; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_PHONES | FETCH_PHOTO
+    const FETCH_MINIFICHES   = 0x00004D; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_PHONES
 
     const FETCH_ALL          = 0x0000FF; // OR of FETCH_*
 
@@ -340,20 +339,23 @@ class Profile
 
     /* Photo
      */
-    private $photo = null;
-    public function setPhoto(ProfilePhoto $photo)
+    private $_photo = null;
+    public function getPhoto($fallback = true, $data = false)
     {
-        $this->photo = $photo;
-    }
-
-    public function getPhoto($fallback = true)
-    {
-        if ($this->photo == null) {
-            $this->setPhoto($this->getProfileField('ProfilePhoto'));
+        if ($data && $this->has_photo && $this->isVisible($this->photo_pub) &&
+                ($this->_photo == null || $this->_photo->mimeType() == null)) {
+            $res = XDB::fetchOneAssoc('SELECT  attach, attachmime, x, y
+                                         FROM  profile_photos
+                                        WHERE  pid = {?}', $this->pid);
+            $this->_photo = PlImage::fromData($res['attach'], $res['attachmime'], $res['x'], $res['y']);
         }
 
-        if ($this->photo != null) {
-            return $this->photo->pic;
+        if (!$data && $this->_photo == null) {
+            $this->_photo = PlImage::fromData(null, null, $this->photo_width, $this->photo_height);
+        }
+
+        if ($this->has_photo && $this->isVisible($this->photo_pub)) {
+            return $this->_photo;
         } else if ($fallback) {
             return PlImage::fromFile(dirname(__FILE__).'/../htdocs/images/none.png',
                                      'image/png');
@@ -598,6 +600,7 @@ class Profile
                                      pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
                                      pd.directory_name, pp.display_tel AS mobile, pp.pub AS mobile_pub,
                                      ph.attach IS NOT NULL AS has_photo, ph.pub AS photo_pub,
+                                     ph.x AS photo_width, ph.y AS photo_height,
                                      p.last_change < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_old,
                                      pm.expertise AS mentor_expertise,
                                      ap.uid AS owner_id
@@ -875,11 +878,6 @@ class ProfileIterator implements PlIterator
             $subits[Profile::FETCH_PHONES] = new ProfileFieldIterator('ProfilePhones', $pids, $visibility);
         }
 
-        if ($fields & Profile::FETCH_PHOTO) {
-            $callbacks[Profile::FETCH_PHOTO] = $cb;
-            $subits[Profile::FETCH_PHOTO] = new ProfileFieldIterator('ProfilePhoto', $pids, $visibility);
-        }
-
         $this->iterator = PlIteratorUtils::parallelIterator($subits, $callbacks, 0);
     }
 
@@ -912,9 +910,6 @@ class ProfileIterator implements PlIterator
         }
         if ($this->hasData(Profile::FETCH_NETWORKING, $vals)) {
             $pf->setNetworking($vals[Profile::FETCH_NETWORKING]);
-        }
-        if ($this->hasData(Profile::FETCH_PHOTO, $vals)) {
-            $pf->setPhoto($vals[Profile::FETCH_PHOTO]);
         }
 
         return $pf;
