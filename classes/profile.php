@@ -91,9 +91,9 @@ class Profile
     const FETCH_PHONES       = 0x000040;
     const FETCH_PHOTO        = 0x000080;
 
-    const FETCH_MINIFICHES   = 0x0000CD; // FETCH_ADDRESSES & FETCH_EDU & FETCH_JOBS & FETCH_PHONES & FETCH_PHOTO
+    const FETCH_MINIFICHES   = 0x0000CD; // FETCH_ADDRESSES | FETCH_EDU | FETCH_JOBS | FETCH_PHONES | FETCH_PHOTO
 
-    const FETCH_ALL          = 0x0000FF; // xor of all FETCH_*
+    const FETCH_ALL          = 0x0000FF; // OR of FETCH_*
 
     private $pid;
     private $hrpid;
