@@ -73,7 +73,7 @@
   <div class="noprint bits">
     <div>
       {if !$registered && !$dead && $hasowner}
-        {if $show_action eq 'ajouter'}
+        {if $show_action && ($show_action eq 'ajouter')}
     <a href="carnet/notifs/add_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
         {else}
@@ -88,11 +88,11 @@
     *}{icon name=vcard title="Afficher la carte de visite"}</a>
     <a href="mailto:{$user->bestEmail()}">{*
     *}{icon name=email title="Envoyer un email"}</a>
-          {if !$smarty.session.user->isContact($user)}
-    <a href="carnet/contacts?action=ajouter&amp;user={$user->login()}&amp;token={xsrf_token}">{*
+          {if !$smarty.session.user->isContact($profile)}
+    <a href="carnet/contacts?action=ajouter&amp;user={$profile->hrid()}&amp;token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à mes contacts"}</a>
           {else}
-    <a href="carnet/contacts?action=retirer&amp;user={$user->login()}&amp;token={xsrf_token}">{*
+    <a href="carnet/contacts?action=retirer&amp;user={$profile->hrid()}&amp;token={xsrf_token}">{*
     *}{icon name=cross title="Retirer de mes contacts"}</a>
           {/if}
         {/if}
@@ -119,7 +119,7 @@
     {assign var=address value=$profile->getMainAddress()}
     {assign var=web     value=$profile->getWebSite()}
     {assign var=job     value=$profile->getMainJob()}
-    {if $web || $profile->mobile || $address->country || $job || (!$dead && !$registered)}
+    {if $web || $profile->mobile || ($address && $address->country) || $job || !$registered}
     <table cellspacing="0" cellpadding="0">
       {if $web}
       <tr>
@@ -127,7 +127,7 @@
         <td class="rt"><a href="{$web}">{$web}</a></td>
       </tr>
       {/if}
-      {if $address->country && !$c.dcd}
+      {if $address && $address->country}
       <tr>
         <td class="lt">Géographie&nbsp;:</td>
         <td class="rt">{if $address->locality}{$address->locality}, {/if}{$address->country}</td>
