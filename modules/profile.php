@@ -538,27 +538,18 @@ class ProfileModule extends PLModule
         }
     }
 
-    function handler_referent(&$page, $user)
+    function handler_referent(&$page, $pf)
     {
         $page->changeTpl('profile/fiche_referent.tpl', SIMPLE);
 
-        $user = Profile::get($user);
-        if (!$user) {
+        $pf = Profile::get($pf);
+        if (!$pf) {
             return PL_NOT_FOUND;
         }
 
-        $page->assign_by_ref('user', $user);
-        $page->assign('cv', MiniWiki::WikiToHTML($user->cv, true));
-        //TODO: waiting for job refactoring to be done
-        //$page->assign('adr_pro', get_user_details_pro($user->id()));
+        $page->assign_by_ref('profile', $pf);
 
         /////  recuperations infos referent
-
-        //expertise
-        $res = XDB::query('SELECT  expertise
-                             FROM  profile_mentor
-                            WHERE  pid = {?}', $user->id());
-        $page->assign('expertise', $res->fetchOneCell());
 
         // Sectors
         $sectors = $subSectors = Array();
@@ -567,7 +558,7 @@ class ProfileModule extends PLModule
                    FROM  profile_mentor_sector      AS m
               LEFT JOIN  profile_job_sector_enum    AS s  ON(m.sectorid = s.id)
               LEFT JOIN  profile_job_subsector_enum AS ss ON(m.sectorid = ss.sectorid AND m.subsectorid = ss.id)
-                  WHERE  pid = {?}", $user->id());
+                  WHERE  pid = {?}", $pf->id());
         while (list($sector, $subSector) = $res->next()) {
             $sectors[]    = $sector;
             $subSectors[] = $subSector;
@@ -580,7 +571,7 @@ class ProfileModule extends PLModule
                 "SELECT  gc.countryFR
                    FROM  profile_mentor_country AS m
               LEFT JOIN  geoloc_countries       AS gc ON (m.country = gc.iso_3166_1_a2)
-                  WHERE  pid = {?}", $user->id());
+                  WHERE  pid = {?}", $pf->id());
         $page->assign('pays', $res->fetchColumn());
 
         $page->addJsLink('close_on_esc.js');

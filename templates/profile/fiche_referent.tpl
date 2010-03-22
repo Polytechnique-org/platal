@@ -21,17 +21,19 @@
 {**************************************************************************}
 
 {javascript name=ajax}
+{assign var=sectors value=$profile->getMentoringSectors()}
+{assign var=countries value=$profile->getMentoringCountries()}
 <div id="fiche">
 <div id="fiche_referent">
   <div id="fiche_identite">
     <div class="civilite">
-      <strong>{$user->fullName()}</strong><br />
-      <span>{$user->promo()}&nbsp;-&nbsp;</span> <a href="mailto:{$user->bestEmail()}">{$user->bestEmail()}</a>
+      <strong>{$profile->fullName()}</strong><br />
+      <span>{$profile->promo()}&nbsp;-&nbsp;</span> <a href="mailto:{$profile->displayEmail()}">{$profile->displayEmail()}</a>
     </div>
   </div>
   <div class="spacer"></div>
 
-  {if $expertise != '' || $sectors|count || $pays|count }
+  {if $expertise != '' || $sectors|count || $countries|count }
   <div id="part">
     <h2>Informations de référent&nbsp;:</h2>
     {if $expertise}
@@ -45,12 +47,12 @@
       <em>Secteurs&nbsp;:</em><br />
       <ul>
         {foreach from=$sectors item="sector" key="i"}
-        <li>{$sector}{if $subSector.$i != ''} ({$subSector.$i}){/if}</li>
+        <li>{$sector.sector}{if $sector.subsector != ''} ({$sector.subsector}){/if}</li>
         {/foreach}
       </ul>
     </div>
     {/if}
-    {if $pays|count}
+    {if $countries|count}
     <div class="rubrique_referent">
       <em>Pays&nbsp;:</em>
       <ul>
@@ -64,20 +66,22 @@
   </div>
   {/if}
 
+  {assign var=jobs value=$profile->getJobs(2)}
   <div class="part">
-    {foreach from=$adr_pro item="address" key="i"}
-    <h2>{$address.entreprise}</h2>
-    {include file="include/emploi.tpl" address=$address}
-    {include file="geoloc/address.tpl" address=$address titre="Adresse&nbsp;: " for=$address.entreprise}
-
-    <div class="spacer">&nbsp;</div>
-  {/foreach}
+    {foreach from=$jobs item="job"}
+      <h2>{$job->company->name}</h2>
+      {include file="include/emploi.tpl" job=$job}
+      {if $job->address()}
+        {include file="geoloc/address.tpl" address=$job->address titre="Adresse&nbsp;: " for=$job->company->name}
+      {/if}
+      <div class="spacer">&nbsp;</div>
+    {/foreach}
   </div>
 
-  {if $cv}
+  {if $profile->cv}
   <div class="part">
     <h2>Curriculum Vitae&nbsp;: </h2>
-    <div style="padding: 0 2ex">{$cv|smarty:nodefaults}</div>
+    <div style="padding: 0 2ex">{$profile->cv|smarty:nodefaults}</div>
   </div>
   {/if}
 
