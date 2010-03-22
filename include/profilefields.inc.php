@@ -338,6 +338,8 @@ class ProfileEducation extends ProfileField
                 (($flags & Profile::EDUCATION_FINISHED) && $edu->grad_year <= $year)
                 ||
                 (($flags & Profile::EDUCATION_CURRENT) && $edu->grad_year > $year)
+                ||
+                ($flags & Profile::EDUCATION_ALL)
             ) {
                 $educations[$id] = $edu;
                 ++$nb;
