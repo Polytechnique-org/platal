@@ -26,13 +26,15 @@
 abstract class ProfileField
 {
     public static $fields = array(
-        Profile::FETCH_ADDRESSES  => 'ProfileAddresses',
-        Profile::FETCH_CORPS      => 'ProfileCorps',
-        Profile::FETCH_EDU        => 'ProfileEducation',
-        Profile::FETCH_JOBS       => 'ProfileJobs',
-        Profile::FETCH_MEDALS     => 'ProfileMedals',
-        Profile::FETCH_NETWORKING => 'ProfileNetworking',
-        Profile::FETCH_PHONES     => 'ProfilePhones',
+        Profile::FETCH_ADDRESSES      => 'ProfileAddresses',
+        Profile::FETCH_CORPS          => 'ProfileCorps',
+        Profile::FETCH_EDU            => 'ProfileEducation',
+        Profile::FETCH_JOBS           => 'ProfileJobs',
+        Profile::FETCH_MEDALS         => 'ProfileMedals',
+        Profile::FETCH_NETWORKING     => 'ProfileNetworking',
+        Profile::FETCH_PHONES         => 'ProfilePhones',
+        Profile::FETCH_MENTOR_SECTOR  => 'ProfileMentoringSectors',
+        Profile::FETCH_MENTOR_COUNTRY => 'ProfileMentoringCountries',
     );
 
     /** The profile to which this field belongs
@@ -506,6 +508,59 @@ class ProfileCorps extends ProfileField
                                 $pids, $visibility->levels());
 
         return $data;
+    }
+}
+// }}}
+// {{{ class ProfileMentoringSectors                  [ Field ]
+class ProfileMentoringSectors extends ProfileField
+{
+    public $sectors = array();
+
+    public function __construct(PlInnerSubIterator $it)
+    {
+        $this->pid = $it->value();
+        while ($sector = $it->next()) {
+            $this->sectors[] = $sector;
+        }
+    }
+
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    {
+        $data = XDB::iterator('SELECT  pms.pid, pjse.name AS sector, pjsse.name AS subsector
+                                 FROM  profile_mentor_sector AS pms
+                            LEFT JOIN  profile_job_sector_enum AS pjse ON (pjse.id = pms.sectorid)
+                            LEFT JOIN  profile_job_subsector_enum AS pjsse ON (pjsse.id = pms.subsectorid)
+                                WHERE  pms.pid IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('pms.pid', $pids),
+                                $pids);
+
+        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
+    }
+}
+// }}}
+// {{{ class ProfileMentoringCountries                [ Field ]
+class ProfileMentoringCountries extends ProfileField
+{
+    public $countries = array();
+
+    public function __construct(PlInnerSubIterator $it)
+    {
+        $this->pid = $it->value();
+        while ($country = $it->next()) {
+            $this->countries[$country['id']] = $country['name'];
+        }
+    }
+
+    public static function fetchData(array $pids, ProfileVisibility $visibility)
+    {
+        $data = XDB::iterator('SELECT  pmc.pid, pmc.country AS id, gc.countryFR AS name
+                                 FROM  profile_mentor_country AS pmc
+                            LEFT JOIN  geoloc_countries AS gc ON (gc.iso_3166_1_a2 = pmc.country)
+                                WHERE  pmc.pid IN {?}
+                             ORDER BY  ' . XDB::formatCustomOrder('pmc.pid', $pids),
+                                $pids);
+
+        return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
     }
 }
 // }}}
