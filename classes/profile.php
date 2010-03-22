@@ -391,6 +391,26 @@ class Profile
         }
     }
 
+    /* Phones
+     */
+    private $phones = null;
+    public function setPhones(ProfilePhones $phones)
+    {
+        $this->phones = $phones;
+        $this->consolidateFields();
+    }
+
+    public function getPhones($flags, $limit = null)
+    {
+        if ($this->phones == null) {
+            $this->setPhones($this->getProfileField('ProfilePhones'));
+        }
+
+        if ($this->phones == null) {
+            return PlIteratorUtils::emptyIterator();
+        }
+        return $this->phones->get($flags, $limit);
+    }
 
     /* Educations
      */
@@ -558,6 +578,7 @@ class Profile
                                      pd.directory_name, pp.display_tel AS mobile, pp.pub AS mobile_pub,
                                      ph.attach IS NOT NULL AS has_photo, ph.pub AS photo_pub,
                                      p.last_change < DATE_SUB(NOW(), INTERVAL 365 DAY) AS is_old,
+                                     pm.expertise AS mentor_expertise,
                                      ap.uid AS owner_id
                                FROM  profiles AS p
                          INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
@@ -575,6 +596,7 @@ class Profile
                                                               AND pn_n.typeid = ' . self::getNameTypeId('nickname', true) . ')
                           LEFT JOIN  profile_phones AS pp ON (pp.pid = p.pid AND pp.link_type = \'user\' AND tel_type = \'mobile\')
                           LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
+                          LEFT JOIN  profile_mentor AS pm ON (pm.pid = p.pid)
                           LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
                               WHERE  p.pid IN ' . XDB::formatArray($pids) . '
                            GROUP BY  p.pid
