@@ -41,56 +41,7 @@ class MarketingModule extends PLModule
         $page->changeTpl('marketing/index.tpl');
 
         $page->setTitle('Marketing');
-
-        // Some statistics
-        $res = XDB::query(
-                "SELECT  COUNT(*) AS vivants,
-                         COUNT(NULLIF(perms='admin' OR perms='user', 0)) AS inscrits,
-                         100*COUNT(NULLIF(perms='admin' OR perms='user', 0))/COUNT(*) AS ins_rate,
-                         COUNT(NULLIF(promo >= 1972, 0)) AS vivants72,
-                         COUNT(NULLIF(promo >= 1972 AND (perms='admin' OR perms='user'), 0)) AS inscrits72,
-                         100 * COUNT(NULLIF(promo >= 1972 AND (perms='admin' OR perms='user'), 0)) /
-                             COUNT(NULLIF(promo >= 1972, 0)) AS ins72_rate,
-                         COUNT(NULLIF(FIND_IN_SET('femme', flags), 0)) AS vivantes,
-                         COUNT(NULLIF(FIND_IN_SET('femme', flags) AND (perms='admin' OR perms='user'), 0)) AS inscrites,
-                         100 * COUNT(NULLIF(FIND_IN_SET('femme', flags) AND (perms='admin' OR perms='user'), 0)) /
-                             COUNT(NULLIF(FIND_IN_SET('femme', flags), 0)) AS inse_rate
-                   FROM  auth_user_md5
-                  WHERE  deces = 0");
-        $stats = $res->fetchOneAssoc();
-        $page->assign('stats', $stats);
-
-        $res = XDB::query('SELECT  COUNT(*)
-                             FROM  auth_user_md5
-                            WHERE  date_ins > ' . date('Ymd000000', strtotime('1 week ago')));
-        $page->assign('nbInsSem', $res->fetchOneCell());
-
-        $res = XDB::query("SELECT  COUNT(*)
-                             FROM  register_pending
-                            WHERE  hash != 'INSCRIT'");
-        $page->assign('nbInsEnCours', $res->fetchOneCell());
-
-        $res = XDB::query('SELECT  COUNT(*) AS count
-                             FROM  register_marketing
-                         GROUP BY  sender = 0');
-        $nbInsMarketNo = $res->fetchAllAssoc();
-        $res = XDB::query('SELECT  COUNT(*)
-                             FROM  register_marketing
-                            WHERE  TO_DAYS(NOW()) - TO_DAYS(last) <= 7');
-        $page->assign('nbInsMarketNoPerso', $nbInsMarketNo[0]['count']);
-        $page->assign('nbInsMarketNoXorg', $nbInsMarketNo[1]['count']);
-        $page->assign('nbInsMarketNoWeek', $res->fetchOneCell());
-
-        $res = XDB::query('SELECT  COUNT(*) AS count
-                             FROM  register_mstats
-                         GROUP BY  sender = 0');
-        $nbInsMarketOk = $res->fetchAllAssoc();
-        $res = XDB::query('SELECT  COUNT(*)
-                             FROM  register_mstats
-                            WHERE  TO_DAYS(NOW()) - TO_DAYS(success) <= 7');
-        $page->assign('nbInsMarketOkPerso', $nbInsMarketOk[0]['count']);
-        $page->assign('nbInsMarketOkXorg', $nbInsMarketOk[1]['count']);
-        $page->assign('nbInsMarketOkWeek', $res->fetchOneCell());
+        $page->trigWarning("Les statistiques sont momentanéement désactivées");
     }
 
     function handler_private(&$page, $hruid = null,
@@ -105,17 +56,15 @@ class MarketingModule extends PLModule
         }
 
         // Retrieves marketed user details.
-        $res = XDB::query(
-            "SELECT  matricule
-               FROM  auth_user_md5
-              WHERE  user_id = {?} AND perms = 'pending'", $user->id());
-        if (!($matricule = $res->fetchOneCell())) {
-            $page->kill("Cet utilisateur est déjà inscrit au site.");
+        if ($user->state != 'pending') {
+            $page->kill('Cet utilisateur est déjà inscrit');
         }
+        if (!$user->hasProfile()) {
+            $page->kill('Cet utilisateur n\'est pas concerné par le marketing');
+        }
+        $matricule = $user->profile()->xorg_id;
 
-        require_once('user.func.inc.php');
-        $matricule = $res->fetchOneCell();
-        $matricule_X = get_X_mat($matricule);
+        $matricule_X = Profile::getSchoolId($matricule);
 
         $page->assign('full_name', $user->fullName());
         $page->assign('promo', $user->promo());
@@ -174,8 +123,8 @@ class MarketingModule extends PLModule
         $res = XDB::iterator(
                 "SELECT  r.*, a.alias
                    FROM  register_marketing AS r
-              LEFT JOIN  aliases            AS a ON (r.sender=a.id AND a.type = 'a_vie')
-                  WHERE  uid={?}
+              LEFT JOIN  aliases            AS a ON (r.sender = a.uid AND a.type = 'a_vie')
+                  WHERE  r.uid = {?}
                ORDER BY  date", $user->id());
         $page->assign('addr', $res);
 
@@ -204,13 +153,15 @@ class MarketingModule extends PLModule
             pl_redirect('emails/redirect');
         }
 
-        $res = XDB::query(
-                "SELECT  u.deces = '0000-00-00' AS alive, e.last,
-                         IF(e.email IS NOT NULL, e.email, IF(FIND_IN_SET('googleapps', u.mail_storage), 'googleapps', NULL)) AS email
-                   FROM  auth_user_md5 AS u
-              LEFT JOIN  emails        AS e ON (e.flags = 'active' AND e.uid = u.user_id)
-                  WHERE  u.user_id = {?}
-               ORDER BY  e.panne_level, e.last", $user->id());
+        $res = XDB::query('SELECT  p.deathdate IS NULL AS alive, e.last,
+                                   IF(e.email IS NOT NULL, e.email,
+                                         IF(FIND_IN_SET(\'googleapps\', eo.storage), \'googleapps\', NULL)) AS email
+                             FROM  email_options AS eo
+                        LEFT JOIN  account_profiles AS ap ON (ap.uid = eo.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                        LEFT JOIN  profiles AS p ON (p.pid = ap.pid)
+                        LEFT JOIN  emails        AS e ON (e.flags = \'active\' AND e.uid = eo.uid)
+                            WHERE  eo.uid = {?}
+                         ORDER BY  e.panne_level, e.last', $user->id());
         if (!$res->numRows()) {
             return PL_NOT_FOUND;
         }
@@ -258,15 +209,11 @@ class MarketingModule extends PLModule
         }
         $page->assign('promo', $promo);
 
-        $sql = "SELECT  u.user_id, u.hruid, u.nom, u.prenom, u.last_known_email,
-                        IF(MAX(m.last) > p.relance, MAX(m.last), p.relance) AS dern_rel, p.email
-                  FROM  auth_user_md5      AS u
-             LEFT JOIN  register_pending   AS p ON p.uid = u.user_id
-             LEFT JOIN  register_marketing AS m ON m.uid = u.user_id
-                 WHERE  u.promo = {?} AND u.deces = 0 AND u.perms='pending'
-              GROUP BY  u.user_id
-              ORDER BY  nom, prenom";
-        $page->assign('nonins', XDB::iterator($sql, $promo));
+        $uf = new UserFilter(new PFC_And(new UFC_Promo('=', UserFilter::DISPLAY, $promo),
+                                            new PFC_Not(new UFC_Registered())),
+                                array(new UFO_Name(Profile::LASTNAME), new UFO_Name(Profile::FIRSTNAME)));
+        $users = $uf->getUsers();
+        $page->assign('nonins', $users);
     }
 
     function handler_public(&$page, $hruid = null)
@@ -275,16 +222,12 @@ class MarketingModule extends PLModule
 
         // Retrieves the user info, and checks the user is not yet registered.
         $user = User::getSilent($hruid);
-        if (!$user) {
+        if (!$user || !$user->hasProfile()) {
             return PL_NOT_FOUND;
         }
 
-        $res = XDB::query(
-            "SELECT  COUNT(*)
-               FROM  auth_user_md5
-              WHERE  user_id = {?} AND perms = 'pending'", $user->id());
-        if (!$res->fetchOneCell()) {
-            $page->kill("Cet utilisateur est déjà inscrit au site.");
+        if ($user->state != 'pending') {
+            $page->kill('Cet utilisateur est déjà inscrit');
         }
 
         // Displays the page, and handles the eventual user actions.
@@ -338,14 +281,10 @@ class MarketingModule extends PLModule
     {
         $page->changeTpl('marketing/this_week.tpl');
 
-        $sort = $sorting == 'per_promo' ? 'promo' : 'date_ins';
+        $sort = $sorting == 'per_promo' ? new UFO_Promo() : new UFO_Registration();
 
-        $sql = "SELECT  a.alias AS forlife, u.date_ins, u.promo, u.nom, u.prenom
-                  FROM  auth_user_md5  AS u
-            INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
-                 WHERE  u.date_ins > ".date("Ymd000000", strtotime ('1 week ago'))."
-              ORDER BY  u.$sort DESC";
-        $page->assign('ins', XDB::iterator($sql));
+        $uf = new UserFilter(new UFC_Registered(false, '>', strtotime('1 week ago')), $sort);
+        $page->assign('users', $uf->getUsers());
     }
 
     function handler_volontaire(&$page, $promo = null)
@@ -353,22 +292,21 @@ class MarketingModule extends PLModule
         $page->changeTpl('marketing/volontaire.tpl');
 
         $res = XDB::query(
-                "SELECT
-               DISTINCT  a.promo
+                'SELECT DISTINCT  pd.promo
                    FROM  register_marketing AS m
-             INNER JOIN  auth_user_md5      AS a  ON a.user_id = m.uid
-               ORDER BY  a.promo");
+             INNER JOIN  account_profiles AS ap ON (m.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
+             INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid)
+               ORDER BY  pd.promo');
         $page->assign('promos', $res->fetchColumn());
 
 
         if (!is_null($promo)) {
-            $sql = "SELECT  a.nom, a.prenom, a.user_id,
-                            m.email, sa.alias AS forlife
-                      FROM  register_marketing AS m
-                INNER JOIN  auth_user_md5      AS a  ON a.user_id = m.uid AND a.promo = {?}
-                INNER JOIN  aliases            AS sa ON (m.sender = sa.id AND sa.type='a_vie')
-                  ORDER BY  a.nom";
-            $page->assign('addr', XDB::iterator($sql, $promo));
+            $it = XDB::iterator('SELECT  m.uid, m.email
+                                   FROM  register_marketing AS m
+                             INNER JOIN  account_profiles AS ap ON (m.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                             INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid)
+                                  WHERE  pd.promo = {?}', $promo);
+            $page->assign('addr', $it);
         }
     }
 
@@ -377,24 +315,22 @@ class MarketingModule extends PLModule
         $page->changeTpl('marketing/relance.tpl');
 
         if (Post::has('relancer')) {
-            $res   = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
-            $nbdix = $res->fetchOneCell();
+            $nbdix = Marketing::getAliveUsersCount();
 
             $sent  = Array();
-            foreach (array_keys($_POST['relance']) as $uid) {
-                if ($tmp = Marketing::relance($uid, $nbdix)) {
+            $users = User::getBulkUsersWithUIDs($_POST['relance']);
+            foreach ($users as $user) {
+                if ($tmp = Marketing::relance($user, $nbdix)) {
                     $sent[] = $tmp . ' a été relancé.';
                 }
             }
             $page->assign('sent', $sent);
         }
 
-        $sql = "SELECT  r.date, r.relance, r.uid, u.promo, u.nom, u.prenom
-                  FROM  register_pending AS r
-            INNER JOIN  auth_user_md5    AS u ON r. uid = u.user_id
-                 WHERE  hash!='INSCRIT'
-              ORDER BY  date DESC";
-        $page->assign('relance', XDB::iterator($sql));
+        $page->assign('relance', XDB::iterator('SELECT  r.date, r.relance, r.uid
+                                                  FROM  register_pending AS r
+                                                 WHERE  hash != \'INSCRIT\'
+                                              ORDER BY  date DESC'));
     }
 }
 

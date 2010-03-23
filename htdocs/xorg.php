@@ -20,21 +20,7 @@
  ***************************************************************************/
 
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
-
-$platal = new Xorg('auth', 'carnet', 'email', 'events', 'forums',
-                   'geoloc', 'lists', 'marketing', 'payment', 'platal',
-                   'profile', 'register', 'search', 'stats', 'admin',
-                   'newsletter', 'axletter', 'bandeau', 'survey',
-                   'gadgets', 'googleapps', 'poison', 'openid', 'reminder');
-
-if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
-    $platal->run();
-    exit;
-}
-
-/*** WIKI CODE ***/
-
-include pl_core_include('wiki.engine.inc.php');
+require_once pl_core_include('run.inc.php');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

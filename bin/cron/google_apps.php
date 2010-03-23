@@ -23,9 +23,9 @@
 // Updates the gapps_accounts table with Plat/al information.
 // Cleans-up the job queue, and execute post-queue hooks.
 
-require_once('connect.db.inc.php');
-require_once('plmailer.php');
-require_once('googleapps.inc.php');
+require_once 'connect.db.inc.php';
+require_once 'plmailer.php';
+require_once 'googleapps.inc.php';
 if (!$globals->mailstorage->googleapps_domain) {
   exit;
 }
@@ -35,7 +35,7 @@ $res = XDB::iterator(
     "SELECT  g.g_account_name, a.id
        FROM  gapps_accounts AS g
   LEFT JOIN  aliases as a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
-      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.id IS NOT NULL");
+      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.uid IS NOT NULL");
 while ($account = $res->next()) {
     XDB::execute(
         "UPDATE  gapps_accounts
@@ -44,15 +44,15 @@ while ($account = $res->next()) {
         $account['id'], $account['g_account_name']);
 }
 
-/* Emits a warning for GApps accounts without local user_id. */
+/* Emits a warning for GApps accounts without local uid. */
 $res = XDB::iterator(
     "SELECT  g.g_account_name
        FROM  gapps_accounts AS g
   LEFT JOIN  aliases as a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
-      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.id IS NULL");
+      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.uid IS NULL");
 while ($account = $res->next()) {
     if (!preg_match("/^admin-/", $account['g_account_name'])) {
-        printf("Warning: GApps account '%s' has no local user_id.\n", $account['g_account_name']);
+        printf("Warning: GApps account '%s' has no local uid.\n", $account['g_account_name']);
     }
 }
 
@@ -61,7 +61,7 @@ $res = XDB::iterator(
     "SELECT  g.g_account_name, a.id
        FROM  gapps_nicknames AS g
   LEFT JOIN  aliases AS a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
-      WHERE  (g.l_userid IS NULL or g.l_userid <= 0) AND a.id IS NOT NULL
+      WHERE  (g.l_userid IS NULL or g.l_userid <= 0) AND a.uid IS NOT NULL
    GROUP BY  g_account_name");
 while ($nickname = $res->next()) {
     XDB::execute(
@@ -71,15 +71,15 @@ while ($nickname = $res->next()) {
         $nickname['id'], $nickname['g_account_name']);
 }
 
-/* Emits a warning for nicknames without local user_id. */
+/* Emits a warning for nicknames without local uid. */
 $res = XDB::iterator(
     "SELECT  g.g_account_name
        FROM  gapps_nicknames AS g
   LEFT JOIN  aliases as a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
-      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.id IS NULL");
+      WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.uid IS NULL");
 while ($nickname = $res->next()) {
     if (!preg_match("/^admin-/", $nickname['g_account_name'])) {
-        printf("Warning: Nickname '%s' has no local user_id.\n", $nickname['g_account_name']);
+        printf("Warning: Nickname '%s' has no local uid.\n", $nickname['g_account_name']);
     }
 }
 
@@ -88,8 +88,8 @@ while ($nickname = $res->next()) {
 $res = XDB::iterator(
     "SELECT  g.l_userid AS id, f.alias AS username, a.alias AS nickname
        FROM  gapps_accounts AS g
- INNER JOIN  aliases AS f ON (f.id = g.l_userid AND f.type = 'a_vie')
- INNER JOIN  aliases AS a ON (a.id = g.l_userid AND a.type = 'alias')
+ INNER JOIN  aliases AS f ON (f.uid = g.l_userid AND f.type = 'a_vie')
+ INNER JOIN  aliases AS a ON (a.uid = g.l_userid AND a.type = 'alias')
   LEFT JOIN  gapps_nicknames AS n ON (n.l_userid = g.l_userid AND n.g_nickname = a.alias)
       WHERE  g.g_status = 'active' AND n.g_nickname IS NULL AND g.l_userid IS NOT NULL");
 while ($nickname = $res->next()) {
@@ -111,7 +111,7 @@ while ($nickname = $res->next()) {
 $res = XDB::iterator(
     "SELECT  g.l_userid AS id, g.g_nickname AS nickname
        FROM  gapps_nicknames AS g
-  LEFT JOIN  aliases AS a ON (a.id = g.l_userid AND a.type = 'alias' AND a.alias = g.g_nickname)
+  LEFT JOIN  aliases AS a ON (a.uid = g.l_userid AND a.type = 'alias' AND a.alias = g.g_nickname)
       WHERE  g.l_userid IS NOT NULL AND a.alias IS NULL");
 while ($nickname = $res->next()) {
     XDB::execute(

@@ -53,10 +53,9 @@
 {else}
   La redirection n'est pas utilisée&hellip;
 {/if}
-</p>
 
 <p>
-  Pour modifier cette redirection remplis le champ suivant et clique sur <strong>Valider</strong>.
+  Pour modifier ta redirection remplis le champ suivant et clique sur <strong>Valider</strong>.
 {if $carva}
   Si tu veux annuler ta redirection, clique sur <strong>Supprimer</strong>.
 {/if}

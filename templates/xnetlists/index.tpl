@@ -34,9 +34,9 @@
 
 {else}
 
-<h1>{$asso.nom}&nbsp;: Listes de diffusion</h1>
+<h1>{$asso->nom}&nbsp;: Listes de diffusion</h1>
 
-<h2>Listes de diffusion du groupe {$asso.nom}&nbsp;:</h2>
+<h2>Listes de diffusion du groupe {$asso->nom}&nbsp;:</h2>
 
 <p class="descr">
 Une liste dont <strong>la diffusion</strong> est modérée est une liste dont les emails sont validés
@@ -62,7 +62,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
   {foreach from=$listes item=l}
   <tr>
     <td class='center'>
-      <a href="mailto:{$l.list}@{$asso.mail_domain}">{icon name=email title="email"}</a>
+      <a href="mailto:{$l.list}@{$asso->mail_domain}">{icon name=email title="email"}</a>
     </td>
     <td>
       {if $l.own}
@@ -106,7 +106,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscrip
 t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
 </p>
         
-<h2>Voici les alias existants pour le groupe {$asso.nom}&nbsp;:</h2>
+<h2>Voici les alias existants pour le groupe {$asso->nom}&nbsp;:</h2>
 
 <table cellspacing="0" cellpadding="0" class='large'>
   <tr>

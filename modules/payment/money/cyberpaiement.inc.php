@@ -49,10 +49,8 @@ class CyberPayment
 
         $roboturl = str_replace("https://","http://", $globals->baseurl)
             . '/' . $platal->ns . "payment/cyber_return/".S::v('uid')."?comment=".urlencode(Env::v('comment'))."&CHAMPBPX";
-        $req = XDB::query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom
-                             FROM auth_user_md5
-                            WHERE user_id = {?}",S::v('uid'));
-        $name = $req->fetchOneCell();
+        $user = S::user();
+        $name = $user->lastName();
 
         // on constuit la reference de la transaction
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();

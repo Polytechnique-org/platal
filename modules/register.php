@@ -24,86 +24,93 @@ class RegisterModule extends PLModule
     function handlers()
     {
         return array(
-            'register'         => $this->make_hook('register', AUTH_PUBLIC),
-            'register/end'     => $this->make_hook('end',      AUTH_PUBLIC),
+            'register'     => $this->make_hook('register', AUTH_PUBLIC),
+            'register/end' => $this->make_hook('end',      AUTH_PUBLIC),
         );
     }
 
     function handler_register(&$page, $hash = null)
     {
-        $alert     = null;
-        $sub_state = S::v('sub_state', Array());
-        if (!isset($sub_state['step'])) {
-            $sub_state['step'] = 0;
+        $alert = null;
+        $subState = new PlDict(S::v('subState', array()));
+        if (!$subState->has('step')) {
+            $subState->set('step', 0);
         }
-        if (!isset($sub_state['backs'])) {
-            $sub_state['backs'] = array();
+        if (!$subState->has('backs')) {
+            $subState->set('backs', new PlDict());
         }
-        if (Get::has('back') && Get::i('back') < $sub_state['step']) {
-            $sub_state['step'] = max(0,Get::i('back'));
-            $state = $sub_state;
-            unset($state['backs']);
-            $sub_state['backs'][] = $state;
-            if (count($sub_state['backs']) == 3) {
+        if (Get::has('back') && Get::i('back') < $subState->i('step')) {
+            $subState->set('step', max(0, Get::i('back')));
+            $subState->v('back')->set($subState->v('back')->count() + 1, $subState->dict());
+            $subState->v('back')->kill('back');
+            if ($subState->v('backs')->count() == 3) {
                 $alert .= "Tentative d'inscription très hésitante - ";
             }
         }
 
         if ($hash) {
-            $res = XDB::query(
-                    "SELECT  m.uid, u.promo, u.nom, u.prenom, u.matricule, u.naissance_ini, FIND_IN_SET('watch', u.flags)
-                       FROM  register_marketing AS m
-                 INNER JOIN  auth_user_md5      AS u ON u.user_id = m.uid
-                      WHERE  m.hash={?}", $hash);
-            if (list($uid, $promo, $nom, $prenom, $ourmat, $naiss, $watch) = $res->fetchOneRow()) {
-                $sub_state['uid']    = $uid;
-                $sub_state['hash']   = $hash;
-                $sub_state['promo']  = $promo;
-                $sub_state['nom']    = $nom;
-                $sub_state['prenom'] = $prenom;
-                $sub_state['ourmat'] = $ourmat;
-                $sub_state['watch']  = $watch;
-                $sub_state['naissance_ini'] = $naiss;
-
-                XDB::execute(
-                        "REPLACE INTO  register_mstats (uid,sender,success)
-                               SELECT  m.uid, m.sender, 0
+            $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
+            $nameTypes = array_flip($nameTypes);
+            $res = XDB::query("SELECT  a.uid, pd.promo, pnl.name AS lastname, pnf.name AS firstname, p.xorg_id AS xorgid,
+                                       p.birthdate_ref AS birthdateRef, FIND_IN_SET('watch', a.flags) AS watch, m.hash
                                  FROM  register_marketing AS m
-                                WHERE  m.hash", $sub_state['hash']);
+                           INNER JOIN  accounts           AS a   ON (m.uid = a.uid)
+                           INNER JOIN  account_profiles   AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+                           INNER JOIN  profiles           AS p   ON (p.pid = ap.uid)
+                           INNER JOIN  profile_display    AS pd  ON (p.pid = pd.pid)
+                           INNER JOIN  profile_name       AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
+                           INNER JOIN  profile_name       AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
+                                WHERE  m.hash = {?}",
+                              $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
+
+            if ($res->numRows() == 1) {
+                $subState->merge($res->fetchOneRow());
+                $subState->set('yearpromo', substr($subState->s('promo'), 1, 4));
+
+                XDB::execute('REPLACE INTO  register_mstats (uid,sender,success)
+                                    SELECT  m.uid, m.sender, 0
+                                      FROM  register_marketing AS m
+                                     WHERE  m.hash',
+                             $subState->s('hash'));
             }
         }
 
-        switch ($sub_state['step']) {
+        switch ($subState->i('step')) {
             case 0:
                 $wp = new PlWikiPage('Reference.Charte');
                 $wp->buildCache();
                 if (Post::has('step1')) {
-                    $sub_state['step'] = 1;
-                    if (isset($sub_state['hash'])) {
-                        $sub_state['step'] = 3;
+                    $subState->set('step', 1);
+                    if ($subState->has('hash')) {
+                        $subState->set('step', 3);
                         $this->load('register.inc.php');
-                        create_aliases($sub_state);
+                        createAliases($subState);
                     }
                 }
                 break;
 
             case 1:
-                if (Post::has('promo')) {
-                    $promo = Post::i('promo');
-                    $res = XDB::query("SELECT COUNT(*)
-                                         FROM auth_user_md5
-                                        WHERE  perms='pending' AND deces = '0000-00-00'
-                                               AND promo = {?}",
+                if (Post::has('yearpromo')) {
+                    $promo = Post::t('edu_type') . Post::t('yearpromo');
+                    $yearpromo = Post::i('yearpromo');
+                    $res = XDB::query("SELECT  COUNT(*)
+                                         FROM  accounts         AS a
+                                   INNER JOIN  account_profiles AS ap ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+                                   INNER JOIN  profiles         AS p  ON (p.pid = ap.pid)
+                                   INNER JOIN  profile_display  AS pd ON (p.pid = pd.pid)
+                                        WHERE  a.state = 'pending' AND p.deathdate IS NULL AND pd.promo = {?}",
                                       $promo);
+
                     if (!$res->fetchOneCell()) {
-                        $err = "La promotion saisie est incorrecte ou tous les camarades de cette promotion sont inscrits !";
+                        $error = 'La promotion saisie est incorrecte ou tous les camarades de cette promotion sont inscrits !';
                     } else {
-                        $sub_state['step']  = 2;
-                        $sub_state['promo'] = $promo;
-                        if ($promo >= 1996 && $promo<2000) {
-                            $sub_state['mat'] = ($promo % 100)*10 . '???';
-                        } elseif($promo >= 2000) {
-                            $sub_state['mat'] = 100 + ($promo % 100) . '???';
+                        $subState->set('step', 2);
+                        $subState->set('promo', $promo);
+                        $subState->set('yearpromo', $yearpromo);
+                        if ($yearpromo >= 1996 && $yearpromo < 2000) {
+                            $subState->set('schoolid', ($yearpromo % 100) * 10 . '???');
+                        } elseif($yearpromo >= 2000) {
+                            $subState->set('schoolid', 100 + ($yearpromo % 100) . '???');
                         }
                     }
                 }
@@ -112,16 +119,18 @@ class RegisterModule extends PLModule
             case 2:
                 if (count($_POST)) {
                     $this->load('register.inc.php');
-                    $sub_state['prenom'] = Post::v('prenom');
-                    $sub_state['nom']    = Post::v('nom');
-                    $sub_state['mat']    = Post::v('mat');
-                    $err = check_new_user($sub_state);
+                    $subState->set('firstname', Post::t('firstname'));
+                    $subState->set('lastname', Post::t('lastname'));
+                    $subState->set('schoolid', Post::i('schoolid'));
+                    $error = checkNewUser($subState);
 
-                    if ($err !== true) { break; }
-                    $err = create_aliases($sub_state);
-                    if ($err === true) {
-                        unset($err);
-                        $sub_state['step'] = 3;
+                    if ($error !== true) {
+                        break;
+                    }
+                    $error = createAliases($subState);
+                    if ($error === true) {
+                        unset($error);
+                        $subState->set('step', 3);
                     }
                 }
                 break;
@@ -132,28 +141,31 @@ class RegisterModule extends PLModule
 
                     // Validate the email address format and domain.
                     require_once 'emails.inc.php';
+
                     if (!isvalid_email(Post::v('email'))) {
-                        $err[] = "Le champ 'Email' n'est pas valide.";
+                        $error[] = "Le champ 'Email' n'est pas valide.";
                     } elseif (!isvalid_email_redirection(Post::v('email'))) {
-                        $err[] = $sub_state['forlife']." doit renvoyer vers un email existant ".
-                            "valide, en particulier, il ne peut pas être renvoyé vers lui-même.";
+                        $error[] = $subState->s('forlife') . ' doit renvoyer vers un email existant '
+                                 . 'valide, en particulier, il ne peut pas être renvoyé vers lui-même.';
                     }
 
                     // Validate the birthday format and range.
-                    $birth = trim(Env::v('naissance'));
+                    $birth = Post::t('birthdate');
                     if (!preg_match('@^[0-3]?\d/[01]?\d/(19|20)?\d{2}$@', $birth)) {
-                        $err[] = "La 'Date de naissance' n'est pas correcte.";
+                        $error[] = "La 'Date de naissance' n'est pas correcte.";
                     } else {
                         $birth = explode('/', $birth, 3);
-                        for ($i = 0; $i < 3; $i++)
+                        for ($i = 0; $i < 3; ++$i)
                             $birth[$i] = intval($birth[$i]);
-                        if ($birth[2] < 100) $birth[2] += 1900;
+                        if ($birth[2] < 100) {
+                            $birth[2] += 1900;
+                        }
                         $year  = $birth[2];
-                        $promo = (int)$sub_state['promo'];
+                        $promo = $subState->i('yearpromo');
                         if ($year > $promo - 15 || $year < $promo - 30) {
-                            $err[] = "La 'Date de naissance' n'est pas correcte.";
+                            $error[] = "La 'Date de naissance' n'est pas correcte.";
                             $alert = "Date de naissance incorrecte à l'inscription - ";
-                            $sub_state['wrong_naissance'] = $birth;
+                            $subState->set('wrong_birthdate', $birth);
                         }
                     }
 
@@ -164,110 +176,116 @@ class RegisterModule extends PLModule
                             $services[] = $service;
                         }
                     }
-                    $sub_state['services'] = $services;
+                    $subState->set('services', $services);
 
                     // Validate the password.
                     if (!Post::v('response2', false)) {
-                        $err[] = "Le mot de passe n'est pas valide.";
+                        $error[] = "Le mot de passe n'est pas valide.";
                     }
 
                     // Check if the given email is known as dangerous.
-                    $res = XDB::query("SELECT  w.state, w.description
-                                         FROM  emails_watch AS w
-                                        WHERE  w.email = {?} AND w.state != 'safe'",
-                                        Post::v('email'));
-                    $email_banned = false;
+                    $res = XDB::query("SELECT  state, description
+                                         FROM  email_watch
+                                        WHERE  email = {?} AND state != 'safe'",
+                                      Post::v('email'));
+                    $bannedEmail = false;
                     if ($res->numRows()) {
                         list($state, $description) = $res->fetchOneRow();
                         $alert .= "Email surveillé proposé à l'inscription - ";
-                        $sub_state['email_desc'] = $description;
+                        $subState->set('email_desc', $description);
                         if ($state == 'dangerous') {
-                            $email_banned = true;
+                            $bannedEmail = true;
                         }
                     }
-                    if ($sub_state['watch']) {
+                    if ($subState->i('watch') != 0) {
                         $alert .= "Inscription d'un utilisateur surveillé - ";
                     }
 
-                    if (($ip_banned = check_ip('unsafe'))) {
-                        unset($err);
+                    if (($bannedIp = check_ip('unsafe'))) {
+                        unset($error);
                     }
 
-                    if (isset($err)) {
-                        $err = join('<br />', $err);
+                    if (isset($error)) {
+                        $error = join('<br />', $error);
                     } else {
-                        $sub_state['naissance'] = sprintf("%04d-%02d-%02d",
-                                                          intval($birth[2]), intval($birth[1]), intval($birth[0]));
-                        $sub_state['email']     = Post::v('email');
-                        $sub_state['password']  = Post::v('response2');
+                        $subState->set('birthdate', sprintf("%04d-%02d-%02d",
+                                                            intval($birth[2]), intval($birth[1]), intval($birth[0])));
+                        $subState->set('email', Post::t('email'));
+                        $subState->set('password', Post::t('response2'));
 
                         // Update the current alert if the birthdate is incorrect,
                         // or if the IP address of the user has been banned.
-                        if ($sub_state['naissance_ini'] != '0000-00-00' && $sub_state['naissance'] != $sub_state['naissance_ini']) {
+                        if ($subState->s('birthdateRef') != '0000-00-00'
+                            && $subState->s('birthdateRef') != $subState->s('birthdate')) {
                             $alert .= "Date de naissance incorrecte à l'inscription - ";
                         }
-                        if ($ip_banned) {
+                        if ($bannedIp) {
                             $alert .= "Tentative d'inscription depuis une IP surveillée";
                         }
 
                         // Prevent banned user from actually registering; save the current state for others.
-                        if ($email_banned || $ip_banned) {
+                        if ($bannedEmail || $bannedIp) {
                             global $globals;
-                            $err = "Une erreur s'est produite lors de l'inscription."
+                            $error = "Une erreur s'est produite lors de l'inscription."
                                  . " Merci de contacter <a href='mailto:register@{$globals->mail->domain}>"
                                  . " register@{$globals->mail->domain}</a>"
-                                 . " pour nous faire part de cette erreur";
+                                 . " pour nous faire part de cette erreur.";
                         } else {
-                            $sub_state['step'] = 4;
-                            if (count($sub_state['backs']) >= 3) {
-                                $alert .= "Fin d'une inscription hésitante";
+                            $subState->set('step', 4);
+                            if ($subState->v('backs')->count() >= 3) {
+                                $alert .= "Fin d'une inscription hésitante.";
                             }
-                            finish_ins($sub_state);
+                            finishRegistration($subState);
                         }
                     }
                 }
                 break;
         }
 
-        $_SESSION['sub_state'] = $sub_state;
+        $_SESSION['subState'] = $subState->dict();
         if (!empty($alert)) {
             send_warning_mail($alert);
         }
 
-        $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
+        $page->changeTpl('register/step' . $subState->i('step') . '.tpl');
         $page->addJsLink('motdepasse.js');
-        if (isset($err)) {
-            $page->trigError($err);
+        if (isset($error)) {
+            $page->trigError($error);
         }
     }
 
     function handler_end(&$page, $hash = null)
     {
         global $globals;
-        $_SESSION['sub_state'] = array('step' => 5);
+        $_SESSION['subState'] = array('step' => 5);
 
         // Reject registration requests from unsafe IP addresses (and remove the
         // registration information from the database, to prevent IP changes).
         if (check_ip('unsafe')) {
-            send_warning_mail('Une IP surveillée a tenté de finaliser son inscription');
+            send_warning_mail('Une IP surveillée a tenté de finaliser son inscription.');
             XDB::execute("DELETE FROM  register_pending
                                 WHERE  hash = {?} AND hash != 'INSCRIT'", $hash);
             return PL_FORBIDDEN;
         }
 
-        require_once('user.func.inc.php');
+        $nameTypes = DirEnum::getOptions(DirEnum::NAMETYPES);
+        $nameTypes = array_flip($nameTypes);
 
         // Retrieve the pre-registration information using the url-provided
         // authentication token.
-        if ($hash) {
-            $res = XDB::query(
-                    "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2,
-                             r.password, r.email, r.services, r.naissance, u.nom, u.prenom,
-                             u.promo, FIND_IN_SET('femme', u.flags), u.naissance_ini
-                       FROM  register_pending AS r
-                 INNER JOIN  auth_user_md5    AS u ON r.uid = u.user_id
-                      WHERE  hash = {?} AND hash != 'INSCRIT'", $hash);
-        }
+        $res = XDB::query("SELECT  r.uid, p.pid, r.forlife, r.bestalias, r.mailorg2,
+                                   r.password, r.email, r.services, r.naissance,
+                                   pnl.name AS lastname, pnf.name AS firstname,
+                                   pd.promo, p.sex, p.birthdate_ref
+                             FROM  register_pending AS r
+                       INNER JOIN  accounts         AS a   ON (r.uid = a.uid)
+                       INNER JOIN  account_profiles AS ap  ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+                       INNER JOIN  profiles         AS p   ON (p.pid = ap.uid)
+                       INNER JOIN  profile_name     AS pnl ON (p.pid = pnl.pid AND pnl.typeid = {?})
+                       INNER JOIN  profile_name     AS pnf ON (p.pid = pnf.pid AND pnf.typeid = {?})
+                       INNER JOIN  profile_display  AS pd  ON (p.pid = pd.pid)
+                            WHERE  hash = {?} AND hash != 'INSCRIT'",
+                          $nameTypes['name_ini'], $nameTypes['firstname_ini'], $hash);
         if (!$hash || $res->numRows() == 0) {
             $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
                          <p>Causes probables&nbsp;:</p>
@@ -277,28 +295,27 @@ class RegisterModule extends PLModule
                            <li>Tu as peut-être mal copié l'adresse reçue par
                                email, vérifie-la à la main.</li>
                            <li>Tu as peut-être attendu trop longtemps pour
-                               confirmer.  Les pré-inscriptions sont annulées
+                               confirmer. Les pré-inscriptions sont annulées
                                tous les 30 jours.</li>
                            <li>Tu es en fait déjà inscrit.</li>
                         </ol>");
         }
 
-        list($uid, $forlife, $bestalias, $mailorg2, $password, $email, $services,
-             $naissance, $nom, $prenom, $promo, $femme, $naiss_ini) = $res->fetchOneRow();
+        list($uid, $pid, $forlife, $bestalias, $emailXorg2, $password, $email, $services,
+             $birthdate, $lastname, $firstname, $promo, $sex, $birthdate_ref) = $res->fetchOneRow();
+        $yearpromo = substr($promo, 1, 4);
 
         // Prepare the template for display.
         $page->changeTpl('register/end.tpl');
         $page->addJsLink('do_challenge_response_logged.js');
         $page->assign('forlife', $forlife);
-        $page->assign('prenom', $prenom);
-        $page->assign('femme', $femme);
+        $page->assign('firstname', $firstname);
 
         // Check if the user did enter a valid password; if not (or if none is found),
         // get her an information page.
-        if (Env::has('response')) {
-            require_once 'secure_hash.inc.php';
-            $expected_response = hash_encrypt("$forlife:$password:" . S::v('challenge'));
-            if (Env::v('response') != $expected_response) {
+        if (Post::has('response')) {
+            $expected_response = sha1("$forlife:$password:" . S::v('challenge'));
+            if (Post::v('response') != $expected_response) {
                 $page->trigError("Mot de passe invalide.");
                 S::logger($uid)->log('auth_fail', 'bad password (register/end)');
                 return;
@@ -310,57 +327,57 @@ class RegisterModule extends PLModule
         //
         // Create the user account.
         //
-        XDB::execute("UPDATE  auth_user_md5
-                         SET  password = {?}, perms = 'user',
-                              date = NOW(), naissance = {?}, date_ins = NOW()
-                       WHERE  user_id = {?}", $password, $naissance, $uid);
-        XDB::execute("REPLACE INTO auth_user_quick (user_id) VALUES ({?})", $uid);
-        XDB::execute("INSERT INTO  aliases (id, alias, type)
+        XDB::execute("UPDATE  accounts
+                         SET  password = {?}, state = 'active',
+                              registration_date = NOW()
+                       WHERE  uid = {?}", $password, $uid);
+        XDB::execute("UPDATE  profiles
+                         SET  birthdate = {?}, last_change = NOW()
+                       WHERE  pid = {?}", $birthdate, $pid);
+        XDB::execute("INSERT INTO  aliases (uid, alias, type)
                            VALUES  ({?}, {?}, 'a_vie')", $uid, $forlife);
-        XDB::execute("INSERT INTO  aliases (id, alias, type, flags)
+        XDB::execute("INSERT INTO  aliases (uid, alias, type, flags)
                            VALUES  ({?}, {?}, 'alias', 'bestalias')", $uid, $bestalias);
-        if ($mailorg2) {
-            XDB::execute("INSERT INTO  aliases (id, alias, type)
-                               VALUES  ({?}, {?}, 'alias')", $uid, $mailorg2);
+        if ($emailXorg2) {
+            XDB::execute("INSERT INTO  aliases (uid, alias, type)
+                               VALUES  ({?}, {?}, 'alias')", $uid, $emailXorg2);
         }
 
         // Add the registration email address as first and only redirection.
-        require_once('emails.inc.php');
-        $user = User::getSilent($uid);
+        require_once 'emails.inc.php';
+        $user = User::getSilentWithUID($uid);
         $redirect = new Redirect($user);
         $redirect->add_email($email);
 
         // Try to start a session (so the user don't have to log in); we will use
         // the password available in Post:: to authenticate the user.
-        Platal::session()->start(AUTH_MDP);
+        $success = Platal::session()->start(AUTH_MDP);
 
         // Subscribe the user to the services she did request at registration time.
         foreach (explode(',', $services) as $service) {
             switch ($service) {
                 case 'ax_letter':
                     Platal::load('axletter', 'axletter.inc.php');
-                    AXLetter::subscribe(S::user()->id());
+                    AXLetter::subscribe($uid);
                     break;
                 case 'imap':
-                    require_once 'emails.inc.php';
-                    $user = S::user();
                     $storage = new EmailStorage($user, 'imap');
                     $storage->activate();
                     break;
                 case 'ml_promo':
-                    $r = XDB::query('SELECT id FROM #groupex#.asso WHERE diminutif = {?}', S::user()->promo());
+                    $r = XDB::query('SELECT id FROM groups WHERE diminutif = {?}', $yearpromo);
                     if ($r->numRows()) {
                         $asso_id = $r->fetchOneCell();
-                        XDB::execute('REPLACE INTO  #groupex#.membres (uid, asso_id)
+                        XDB::execute('REPLACE INTO  group_members (uid, asso_id)
                                             VALUES  ({?}, {?})',
-                                     S::user()->id(), $asso_id);
-                        $mmlist = new MMList(S::user()->id(), S::v('password'));
+                                     $uid, $asso_id);
+                        $mmlist = new MMList($uid, S::v('password'));
                         $mmlist->subscribe("promo" . S::v('promo'));
                     }
                     break;
                 case 'nl':
                     require_once 'newsletter.inc.php';
-                    NewsLetter::subscribe();
+                    NewsLetter::subscribe($uid);
                     break;
             }
         }
@@ -372,37 +389,42 @@ class RegisterModule extends PLModule
                        WHERE  uid = {?}", $uid);
 
         // Congratulate our newly registered user by email.
-        $mymail = new PlMailer('register/inscription.reussie.tpl');
+        $mymail = new PlMailer('register/success.mail.tpl');
         $mymail->assign('forlife', $forlife);
-        $mymail->assign('prenom', $prenom);
+        $mymail->assign('firstname', $firstname);
         $mymail->send();
 
         // Index the user, to allow her to appear in searches.
-        require_once('user.func.inc.php');
-        user_reindex($uid);
+        Profile::rebuildSearchTokens($uid);
 
         // Notify other users which were watching for her arrival.
-        require_once 'notifs.inc.php';
-        register_watch_op($uid, WATCH_INSCR);
-        inscription_notifs_base($uid);
+        XDB::execute('REPLACE INTO  contacts (uid, contact)
+                            SELECT  uid, ni_id
+                              FROM  watch_nonins
+                             WHERE  ni_id = {?}', $uid);
+        XDB::execute('DELETE FROM  watch_nonins
+                            WHERE  ni_id = {?}', $uid);
+        Platal::session()->updateNbNotifs();
 
         // Forcibly register the new user on default forums.
-        $promo_forum = 'xorg.promo.x' . $promo;
-        $registered_forums = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements', $promo_forum);
-        foreach ($registered_forums as $forum) {
-            XDB::execute("INSERT INTO  #forums#.abos (fid,uid)
+        $promoForum = 'xorg.promo.' . strtolower($promo);
+        $registeredForums = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements', $promoForum);
+        foreach ($registeredForums as $forum) {
+            XDB::execute("INSERT INTO  forum_subs (fid, uid)
                                SELECT  fid, {?}
-                                 FROM  #forums#.list
-                                WHERE  nom = {?}",
-                                $uid, $val);
+                                 FROM  forums
+                                WHERE  name = {?}",
+                         $uid, $val);
 
             // Notify the newsgroup admin of the promotion forum needs be created.
-            if (XDB::affectedRows() == 0 && $forum == $promo_forum) {
-                $res = XDB::query("SELECT  SUM(perms IN ('admin','user') AND deces = 0), COUNT(*)
-                                     FROM  auth_user_md5
-                                    WHERE  promo = {?}", $promo);
-                list($promo_registered_count, $promo_count) = $res->fetchOneRow();
-                if ($promo_registered_count > 0.2 * $promo_count) {
+            if (XDB::affectedRows() == 0 && $forum == $promoForum) {
+                $promoFull = new UserFilter(new UFC_Promo('=', UserFilter::DISPLAY, $promo));
+                $promoRegistered = new UserFilter(new PFC_And(
+                        new UFC_Promo('=', UserFilter::DISPLAY, $promo),
+                        new UFC_Registered(true),
+                        new PFC_Not(new UFC_Dead())
+                ));
+                if ($promoRegistered->getTotalCount() > 0.2 * $promoFull->getTotalCount()) {
                     $mymail = new PlMailer('admin/forums-promo.mail.tpl');
                     $mymail->assign('promo', $promo);
                     $mymail->send();
@@ -418,63 +440,45 @@ class RegisterModule extends PLModule
         //
 
         // Email the referrer(s) of this new user.
-        $res = XDB::iterRow(
-                "SELECT  sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom,
-                         s.prenom, FIND_IN_SET('femme', s.flags) AS femme,
-                         GROUP_CONCAT(m.email) AS mails, MAX(m.last) AS dateDernier
-                   FROM  register_marketing AS m
-             INNER JOIN  auth_user_md5      AS s  ON (m.sender = s.user_id)
-             INNER JOIN  aliases            AS sa ON (sa.id = m.sender
-                                                      AND FIND_IN_SET('bestalias', sa.flags))
-                  WHERE  m.uid = {?}
-               GROUP BY  m.sender
-               ORDER BY  dateDernier DESC", $uid);
+        $res = XDB::iterRow("SELECT  sender, GROUP_CONCAT(email SEPARATOR ', ') AS mails, MAX(last) AS lastDate
+                               FROM  register_marketing
+                              WHERE  uid = {?}
+                           GROUP BY  sender
+                           ORDER BY  lastDate DESC", $uid);
         XDB::execute("UPDATE  register_mstats
                          SET  success = NOW()
                        WHERE  uid = {?}", $uid);
 
-        $market = array();
-        while (list($salias, $snom, $sprenom, $sfemme, $mails, $dateDernier) = $res->next()) {
-            $market[] = " - par $snom $sprenom sur $mails (le plus récemment le $dateDernier)";
-            $mymail = new PlMailer();
-            $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
-            $mymail->setFrom('"Marketing Polytechnique.org" <register@' . $globals->mail->domain . '>');
-            $mymail->addTo("\"$sprenom $snom\" <$salias@{$globals->mail->domain}>");
-            $msg = ($sfemme?'Chère':'Cher')." $sprenom,\n\n"
-                 . "Nous t'écrivons pour t'informer que $prenom $nom (X$promo), "
-                 . "que tu avais incité".($femme?'e':'')." à s'inscrire à Polytechnique.org, "
-                 . "vient à l'instant de terminer son inscription.\n\n"
-                 . "Merci de ta participation active à la reconnaissance de ce site !!!\n\n"
-                 . "Bien cordialement,\n"
-                 . "-- \n"
-                 . "L'équipe Polytechnique.org";
+        while (list($senderid, $maketingEmails, $lastDate) = $res->next()) {
+            $sender = User::getWithUID($senderid);
+            $market[] = " - par $sender->fullName() sur $maketingEmails (le plus récemment le $lastDate)";
+            $mymail = new PlMailer('register/marketer.mail.tpl');
+            $mymail->setSubject("$firstname $lastname s'est inscrit à Polytechnique.org !");
+            $mymail->addTo("\"$sender->fullName()\" <$sender->bestEmail()@{$globals->mail->domain}>");
+            $mymail->assign('sender', $sender);
+            $mymail->assign('firstname', $firstname);
+            $mymail->assign('lastname', $lastname);
+            $mymail->assign('promo', $promo);
+            $mymail->assign('sex', $sex);
             $mymail->setTxtBody(wordwrap($msg, 72));
             $mymail->send();
         }
 
         // Email the plat/al administrators about the registration.
         if ($globals->register->notif) {
-            $mymail = new PlMailer();
-            $mymail->setSubject("Inscription de $prenom $nom (X$promo)");
-            $mymail->setFrom('"Webmaster Polytechnique.org" <web@' . $globals->mail->domain . '>');
-            $mymail->addTo($globals->register->notif);
-            $mymail->addHeader('Reply-To', $globals->register->notif);
-            $msg = "$prenom $nom (X$promo) a terminé son inscription avec les données suivantes :\n"
-                 . " - nom       : $nom\n"
-                 . " - prenom    : $prenom\n"
-                 . " - promo     : $promo\n"
-                 . " - naissance : $naissance (date connue : $naiss_ini)\n"
-                 . " - forlife   : $forlife\n"
-                 . " - email     : $email\n"
-                 . " - sexe      : $femme\n"
-                 . " - ip        : " . S::logger()->ip . " (" . S::logger()->host . ")\n"
-                 . (S::logger()->proxy_ip ? " - proxy     : " . S::logger()->proxy_ip . " (" . S::logger()->proxy_host . ")\n" : "")
-                 . "\n\n";
+            $mymail = new PlMailer('register/registration.mail.tpl');
+            $mymail->setSubject("Inscription de $firstname $lastname ($promo)");
+            $mymail->assign('firstname', $firstname);
+            $mymail->assign('lastname', $lastname);
+            $mymail->assign('promo', $promo);
+            $mymail->assign('sex', $sex);
+            $mymail->assign('birthdate', $birthdate);
+            $mymail->assign('birthdate_ref', $birthdate_ref);
+            $mymail->assign('forlife', $forlife);
+            $mymail->assign('email', $email);
+            $mymail->assign('logger', S::logger());
             if (count($market) > 0) {
-                $msg .= "Les marketings suivants avaient été effectués :\n"
-                     . implode("\n", $market);
-            } else {
-                $msg .= "$prenom $nom n'a jamais reçu d'email de marketing.";
+                $mymail->assign('market', implode("\n", $market));
             }
             $mymail->setTxtBody($msg);
             $mymail->send();

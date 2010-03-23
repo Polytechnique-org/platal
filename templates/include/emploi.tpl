@@ -19,39 +19,34 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-{if $address.entreprise || $address.secteur || $address.fonction ||
-  $address.poste || $address.fonction || $address.email || $address.web}
+{if $job->company || $job->sector || $job->subsector ||
+  $job->subsubsector || $job->description || $job->user_email}
       <div class="adresse" style="float: left">
       	<table>
-        {if $address.entreprise || $address.web}
+        {if $job->company || $job->user_site}
         <tr>
           <td><em>Ent/Org&nbsp;: </em></td>
-          <td><strong>{$address.entreprise}{if $address.web} [<a href='{$address.web}'>site</a>]{/if}</strong></td>
+          <td><strong>{if $job->company->url}<a href='{$job->company->url}'>{$job->company->name}</a>{else}{$job->company->name}{/if}
+          {if $job->user_site} [<a href='{$job->user_site}'>Page perso</a>]{/if}</strong></td>
         </tr>
         {/if}
-        {if $address.secteur}
+        {if $job->sector}
         <tr>
           <td><em>Secteur&nbsp;: </em></td>
-          <td><strong>{$address.secteur}{if $address.ss_secteur} ({$address.ss_secteur}){/if}</strong></td>
+          <td><strong>{$job->sector}{if $job->subsector} ({$job->subsector}){/if}</strong></td>
         </tr>
         {/if}
 
-        {if $address.fonction}
+        {if $job->description}
         <tr>
           <td><em>Fonction&nbsp;: </em></td>
-          <td><strong>{$address.fonction}</strong></td>
+          <td><strong>{$job->description}</strong></td>
         </tr>
         {/if}
-        {if $address.poste}
-        <tr>
-          <td><em>Poste&nbsp;: </em></td>
-          <td><strong>{$address.poste}</strong></td>
-        </tr>
-        {/if}
-        {if $address.email}
+        {if $job->user_email}
         <tr>
           <td><em>Email&nbsp;: </em></td>
-          <td><strong>{$address.email}</strong></td>
+          <td><strong>{$job->user_email}</strong></td>
         </tr>
         {/if}
         </table>

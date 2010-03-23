@@ -32,12 +32,12 @@
         <img src="{$globals->baseurl}/photo/{$p.forlife}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_admin && hasPerm('admin') && !$urlmainsite}
-      <a href="admin/trombino/{$p.user_id}">
+      <a href="admin/trombino/{$p.uid}">
         {icon name=wrench title="[admin]"}</a>
       {/if}
       <br />
       <a href="{if $urlmainsite}{$urlmainsite}{/if}profile/{$p.forlife}" class="popup2">
-        {$p.prenom} {$p.nom}{if $trombi_show_promo} ({$p.promo}){/if}
+        <span {if $p.name_tooltip}class="hinted" title="{$p.name_tooltip}"{/if}>{$p.name_display}</span>{if $trombi_show_promo} ({$p.promo_display}){/if}
       </a>
     </td>
   {if $loop eq "3"}

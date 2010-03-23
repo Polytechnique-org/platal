@@ -133,7 +133,7 @@ class NewsLetter extends MassMailer
         $user = is_null($uid) ? S::v('uid') : $uid;
         $res = XDB::query("SELECT  1
                              FROM  newsletter_ins
-                            WHERE  user_id={?}", $user);
+                            WHERE  uid={?}", $user);
         return $res->fetchOneCell();
     }
 
@@ -141,13 +141,13 @@ class NewsLetter extends MassMailer
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
         XDB::execute("DELETE FROM  newsletter_ins
-                            WHERE  user_id={?}", $user);
+                            WHERE  uid={?}", $user);
     }
 
     static public function subscribe($uid = null)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
-        XDB::execute("REPLACE INTO  newsletter_ins (user_id,last)
+        XDB::execute("REPLACE INTO  newsletter_ins (uid,last)
                             VALUES  ({?}, 0)", $user);
     }
 

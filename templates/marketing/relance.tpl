@@ -32,7 +32,6 @@
   <table class="bicol" summary="liste des inscriptions non confirmées">
     <tr>
       <th>Date</th>
-      <th>Promo</th> 
       <th>Nom</th>
       <th>Dernière relance</th>
       <th>&nbsp;</th>
@@ -40,8 +39,7 @@
     {iterate from=$relance item=it}
     <tr class="{cycle values="pair,impair"}">
       <td class="center">{$it.date}</td>
-      <td class="center">{$it.promo}</td>
-      <td>{$it.nom} {$it.prenom}</td>
+      <td>{profile user=$it.uid promo=true}</td>
       <td class="center">
         {if $it.relance eq "0000-00-00"}Jamais{else}{$it.relance}{/if}
       </td>

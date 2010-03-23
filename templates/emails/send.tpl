@@ -211,18 +211,18 @@
         <div style="float: right; width: 40%;">
           <select id="to_contacts" name="to_contacts[]" multiple="multiple" style="width: 100%; height: 5em">
           {foreach key=key item=contact from=$contacts}
-          {if in_array($contact.forlife, $smarty.request.to_contacts)}
-          <option value="{$contact.forlife}">
-            {$contact.prenom} {$contact.nom} (X{$contact.promo})
+          {if in_array($contact->hrpid,$smarty.request.to_contacts)}
+          <option value="{$contact->hrpid}">
+            {$contact->full_name}
           </option>
           {/if}
           {/foreach}
           </select><br />
           <select id="cc_contacts" name="cc_contacts[]" multiple="multiple" style="width: 100%; height: 5em">
           {foreach key=key item=contact from=$contacts}
-          {if in_array($contact.forlife, $smarty.request.cc_contacts)}
-          <option value="{$contact.forlife}">
-            {$contact.prenom} {$contact.nom} (X{$contact.promo})
+          {if in_array($contact->hrpid,$smarty.request.cc_contacts)}
+          <option value="{$contact->hrpid}">
+            {$contact->full_name}
           </option>
           {/if}
           {/foreach}
@@ -243,17 +243,14 @@
         <div style="float: right; width: 40%">
           <select id="contacts" name="all_contacts[]" multiple="multiple" style="height: 10em; width: 100%">
             {foreach item=contact from=$contacts}
-            {if !in_array($contact.forlife, $smarty.request.to_contacts) && !in_array($contact.forlife, $smarty.request.cc_contacts)}
-            <option value="{$contact.forlife}">
-              {$contact.prenom} {$contact.nom} (X{$contact.promo})
+            {if !in_array($contact->hrpid,$smarty.request.to_contacts) && !in_array($contact->hrpid,$smarty.request.cc_contacts)}
+            <option value="{$contact->hrpid}">
+              {$contact->full_name}
             </option>
             {/if}
             {/foreach}
           </select>
         </div>
-        {foreach item=contact from=$contacts}
-        <input type="hidden" name="contacts[{$contact.forlife}]" value="{$contact.prenom} {$contact.nom} &lt;{$contact.forlife}@{#globals.mail.domain#}&gt;" />
-        {/foreach}
       </td>
     </tr>
     {/if}
@@ -283,7 +280,7 @@
 {$smarty.request.contenu}
 {if !$smarty.request.contenu}
 -- 
-{$smarty.session.prenom} {$smarty.session.nom}
+{$smarty.session.user->full_name}
 {/if}</textarea>
     <script type="text/javascript">//<![CDATA[
       {literal}

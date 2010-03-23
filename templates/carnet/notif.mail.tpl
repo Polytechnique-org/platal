@@ -42,9 +42,7 @@ Tu trouveras les mêmes informations sur [[https://www.polytechnique.org/carnet/
 {/foreach}
 
 {/foreach}
--- \\
-L'Équipe de Polytechnique.org
-
+{include file="signature.mail.tpl"}
 ''Note :''  Tu reçois cet email car tu as activé la notification automatique par email des événements que tu surveilles.\\
 Tu peux changer cette option sur la [[https://www.polytechnique.org/carnet/notifs|page de configuration des notifications]].
 

@@ -20,6 +20,67 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<table class="bicol" style="margin-bottom: 1em" summary="Profil : Noms">
+  <tr>
+    <th colspan="3">Noms</th>
+  </tr>
+  <tr>
+    <td class="titre">
+      {icon name="flag_green" title="site public"}&nbsp;Affichage public
+    </td>
+    <td id="public_name">
+      {$public_name}
+    </td>
+    <td rowspan="2">
+      <a href="javascript:toggleNamesAdvanced();">
+        {icon name="page_edit" title="Plus de détail"}
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">
+      {icon name="flag_red" title="site privé"}&nbsp;Affichage privé
+    </td>
+    <td id="private_name">
+      {$private_name}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <span class="titre">Comment t'appeller</span><br />
+      <span class="smaller">sur le site, dans la lettre mensuelle...</span>
+    </td>
+    <td>
+      <input type="text" name="yourself" value="{$yourself}" size="25"/>
+    </td>
+    <td></td>
+  </tr>
+  <tr class="names_advanced" {if !$errors.search_names}style="display: none"{/if}>
+    <td colspan="3">
+      <span class="titre">Gestion de tes noms, prénoms, surnoms...</span>
+      <span class="smaller">Ils déterminent la façon dont ton nom apparaît sur les annuaires
+      en ligne et papier et ta fiche apparaitra quand on cherche un de ces noms. Pour plus
+      d'explications sur l'icône suivante
+      <a href="profile/name_info" class="popup3">{icon name="information" title="Plus d'infos"}</a>.</span><br/>
+      <div class="small center">Si un de tes noms commence par une particule,
+      coche la case en bout de ligne.</div>
+    </td>
+  </tr>
+  {foreach from=$search_names item=sn key=id}
+    {include file="profile/general.searchname.tpl" i=$id sn=$sn
+    class="names_advanced" style="display: none" error_name=$errors.search_names}
+  {/foreach}
+  <tr class="names_advanced" id="searchname" {if !$errors.search_names}style="display: none"{/if}>
+    <td colspan="2">
+      <div id="sn_add" class="center">
+        <a href="javascript:addSearchName();">
+          {icon name=add title="Ajouter un nom"} Ajouter un nom
+        </a>
+      </div>
+    </td>
+  </tr>
+</table>
+
 <table class="bicol" style="margin-bottom: 1em"
   summary="Profil&nbsp;: Informations générales">
   <tr>
@@ -33,130 +94,95 @@
   </tr>
   <tr>
     <td>
-      <span class="titre">Nom</span>
-      <span class="comm"></span>
-    </td>
-    <td>
-      <input type='text' name='nom' {if $errors.nom}class="error"{/if} value="{$nom}" />
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <span class="titre">Prénom</span>
-      <span class="comm"></span>
-    </td>
-    <td>
-      <input type='text' name='prenom' {if $errors.prenom}class="error"{/if} value="{$prenom}" />
-    </td>
-  </tr>
-  <tr>
-    <td>
       <span class="titre">Promotion</span>
     </td>
     <td>
-      <span class="nom">X{$promo}{if ($promo != $promo_sortie - 3)} - X{math equation="a - b" a=$promo_sortie b=3}{/if}</span>
-      <span class="lien"><a href="profile/orange">modifier</a>{if ($promo_sortie -3 == $promo)} pour les oranges{/if}</span>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <span class="titre">Nom d'usage</span><br />
-      {if $smarty.session.sexe}
-      <span class="comm">(Notamment nom d'épouse)</span>
+      {if !$promo_choice}
+        <span class="nom">{$promo}</span>
+        <input type="hidden" name="promo" value="{$promo}"/>
       {else}
-      <span class="comm">(si différent de {$nom} seulement)</span>
+        <select name="promo">
+        {foreach from=$promo_choice item="promo_to_display"}
+          <option value="{$promo_to_display}" {if $promo_to_display eq $promo}selected="selected"{/if}>{$promo_to_display}</option>
+        {/foreach}
+        </select>
       {/if}
-    </td>
-    <td>
-      <span class="nom">{$nom_usage|default:"Aucun"}</span>
-      <span class="lien"><a href="profile/usage">{if $nom_usage}modifier{else}Faire une demande{/if}</a></span>
+      <span class="lien"><a href="profile/orange" {if ($grad_year -3 == $entry_year)} {popup text="pour les oranges"}{/if}>{icon name="page_edit" title="modifier"}</a></span>
     </td>
   </tr>
   <tr>
-    <td class="titre">Date de naissance</td>
-    <td><input type="text" {if $errors.naissance}class="error"{/if} name="naissance" value="{$naissance}" /></td>
+    <td>
+      <span class="titre">Date de naissance</span>
+    </td>
+    <td><input type="text" {if $errors.birthdate}class="error"{/if} name="birthdate" value="{$birthdate}" /></td>
   </tr>
   <tr>
     <td>
       <span class="titre">Nationalité</span>
     </td>
     <td>
-      <select name="nationalite">
-        {select_nat valeur=$nationalite}
+      <select name="nationality1">
+        {select_nat valeur=$nationality1 pad=1}
       </select>
+      <a href="javascript:addNationality();">{icon name=add title="Ajouter une nationalité"}</a>
     </td>
   </tr>
-  <tr class="pair">
+  <tr id="nationality2" {if !$nationality2}style="display: none"{/if}>
+    <td></td>
     <td>
-      <span class="titre">Application</span><br />
-      <span class="comm">(4e année de l'X)</span>
-    </td>
-    <td>
-      <select name="appli1[id]" onchange="fillType(this.form['appli1[type]'], this.selectedIndex-1);">
-        {applis_options selected=$appli1.id}
+      <select name="nationality2">
+        {select_nat valeur=$nationality2 pad=1}
       </select>
-      <br />
-      <input type="hidden" name="appli1_tmp" value="{$appli1.type}" />
-      <select name="appli1[type]">
-        <option value=""></option>
-      </select>
+      <a href="javascript:delNationality('2');">{icon name=cross title="Supprimer cette nationalité"}</a>
     </td>
   </tr>
-  <tr class="pair">
+  <tr id="nationality3" {if !$nationality3}style="display: none"{/if}>
+    <td></td>
     <td>
-      <span class="titre">Post-application</span>
-    </td>
-    <td>
-      <select name="appli2[id]" onchange="fillType(this.form['appli2[type]'], this.selectedIndex-1);">
-        {applis_options selected=$appli2.id}
+      <select name="nationality3">
+        {select_nat valeur=$nationality3 pad=1}
       </select>
-      <br />
-      <input type="hidden" name="appli2_tmp" value="{$appli2.type}" />
-      <select name="appli2[type]">
-        <option value=""></option>
-      </select>
+      <a href="javascript:delNationality('3');">{icon name=cross title="Supprimer cette nationalité"}</a>
     </td>
   </tr>
-  <tr class="pair">
+</table>
+
+<table class="bicol" style="margin-bottom: 1em" summary="Profil&nbsp;: Formations">
+  <tr>
+    <th colspan="2">
+      <div class="flags" style="float: left">
+        <input type="checkbox" disabled="disabled" checked="checked" />
+        {icon name="flag_green" title="site public"}
+      </div>
+      Formations
+    </th>
+  </tr>
+  {foreach from=$edus key=eduid item=edu}
+    {cycle values="impair, pair" assign=class}
+    {include file="profile/general.edu.tpl" eduid=$eduid edu=$edu edu_fields=$edu_fields class=$class}
+  {/foreach}
+  {if $edus|@count eq 0}
+    {cycle values="impair, pair" assign=class}
+    {include file="profile/general.edu.tpl" eduid=0 edu=0 class=$class}
+  {/if}
+  {cycle values="impair, pair" assign=class}
+  {assign var=eduaddid value=$edus|@count}
+  <tr id="edu_add" class="edu_{$eduaddid} {$class}">
+    <td colspan="2">
+      <div class="center" style="clear: both; padding-top: 4px;">
+        <a href="javascript:addEdu();">
+          {icon name=add title="Ajouter une formation"} Ajouter une formation
+        </a>
+      </div>
+    </td>
+  </tr>
+  <tr class="{$class}">
     <td class="center" colspan="2">
       <small>Si ta formation ne figure pas dans la liste,
       <a href="mailto:support@{#globals.mail.domain#}">contacte-nous</a>.</small>
     </td>
   </tr>
  </table>
-
-{if !$no_private_key}
-<table class="bicol"  style="margin-bottom: 1em"
-  summary="Profil&nbsp;: Informations générales">
-  <tr>
-    <th>
-      Synchronisation avec l'AX
-    </th>
-  </tr>
-  <tr>
-    <td class="flags">
-      <input type="checkbox" name="synchro_ax" {if $synchro_ax}checked="checked" {/if}/>
-      {icon name="flag_orange" title="transmis à l'AX"}
-      <span class="texte">
-        Autoriser la synchronisation vers l'AX par des administrateurs ou des scripts automatiques.
-      </span>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <p>
-        Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met à jour l'annuaire papier à partir des informations que tu lui fournis. Tu peux choisir ici d'envoyer directement les données de ta fiche Polytechnique.org vers ta <a href="profile/ax/{$hruid}">fiche AX</a>.
-      </p>
-      <p>
-        L'opération de synchronisation prend en compte toutes les informations que tu as marquées comme transmises à l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations sur ta <a href="profile/ax/{$hruid}">fiche AX</a> selon ce qui s'y trouve déjà.
-      </p>
-      <p class="center">
-        <a href="profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation&nbsp;?')"><input type="button" value="Synchroniser"/></a>
-      </p>
-    </td>
-  </tr>
-</table>
-{/if}
 
 <table class="bicol"  style="margin-bottom: 1em"
   summary="Profil&nbsp;: Trombinoscope">
@@ -172,17 +198,17 @@
   <tr>
     <td {if !$nouvellephoto}colspan="2"{/if} class="center" style="width: 49%">
       <div class="titre">Ta photo actuelle</div>
-      <img src="photo/{$smarty.session.hruid}" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
+      <img src="photo/{$profile->hrid()}" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
     </td>
     {if $nouvellephoto}
     <td class="center" style="width: 49%">
       <div class="titre">Photo en attente de validation</div>
       <div>
-        <a href="profile/{$smarty.session.hruid}?modif=new" class="popup2">
+        <a href="profile/{$profile->hrid()}?modif=new" class="popup2">
           Ta fiche avec cette photo
         </a>
       </div>
-      <img src="photo/{$smarty.session.hruid}/req" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
+      <img src="photo/{$profile->hrid()}/req" alt=" [ PHOTO ] " style="max-height: 250px; margin-top: 1em" />
     </td>
     {/if}
   </tr>
@@ -206,41 +232,53 @@
     </th>
   </tr>
   <tr>
-    <td>
-      <span class="flags">
-        <input type="checkbox" checked="checked" disabled="disabled" />
-        {icon name="flag_red" title="privé"}
-      </span>&nbsp;
-      <span class="titre">Surnom</span>
-    </td>
-    <td>
-      <input type="text" size="35" maxlength="64"
-             {if $errors.nick}class="error"{/if} name="nick" value="{$nick}" />
+    <td colspan="2">
+      <span class="titre">Téléphones personnels</span>
     </td>
   </tr>
   <tr>
-    <td>
-      <span class="titre">Téléphone mobile</span>
-    </td>
-    <td>
-      <input type="text" size="18" maxlength="18" name="mobile"
-             {if $errors.mobile}class="error"{/if} value="{$mobile}" />
-      <span class="flags">
-        {include file="include/flags.radio.tpl" name="mobile_pub" val=$mobile_pub}
-      </span>
+    <td colspan="2">
+      {foreach from=$tels key=telid item=tel}
+        <div id="tels_{$telid}" style="clear: both; padding-top: 4px; padding-bottom: 4px">
+          {include file="profile/phone.tpl" prefname='tels' prefid='tels' telid=$telid tel=$tel}
+        </div>
+      {/foreach}
+      {if $tels|@count eq 0}
+        <div id="tels_0" style="clear: both; padding-top: 4px; padding-bottom: 4px">
+          {include file="profile/phone.tpl" prefname='tels' preid='tels' telid=0 tel=0}
+        </div>
+      {/if}
+      <div id="tels_add" class="center" style="clear: both; padding-top: 4px;">
+        <a href="javascript:addTel('tels', 'tels');">
+          {icon name=add title="Ajouter un téléphone"} Ajouter un téléphone
+        </a>
+      </div>
     </td>
   </tr>
+  {if $email_error}
+    {include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory_error error=$email_error i="0"}
+  {else}{include file="include/emails.combobox.tpl" name="email_directory" val=$email_directory error=$email_error i="0"}{/if}
   <tr>
-    <td>
-      <span class="flags">
-        <label><input type="checkbox" name="web_pub" {if $web_pub eq 'public'}checked="checked"{/if} />
-        {icon name="flag_green" title="site public"}</label>
-      </span>&nbsp;
-      <span class="titre">Page web Perso</span>
+    <td colspan="2">
+      <span class="titre">Messageries, networking et sites web</span>
     </td>
-    <td>
-      <input type="text" size="35" maxlength="95" name="web"
-             {if $errors.web}class="error"{/if} value="{$web}" />
+  </tr>
+  {foreach from=$networking item=network key=id}
+    {include file="profile/general.networking.tpl" nw=$network i=$id}
+  {/foreach}
+  <tr id="networking">
+    <script type="text/javascript">//<![CDATA[
+      var nw_list = new Array();
+      {foreach from=$network_list item=network}
+        nw_list['{$network.name}'] = {$network.type};
+      {/foreach}
+    //]]></script>
+    <td colspan="2">
+      <div id="nw_add" class="center">
+        <a href="javascript:addNetworking();">
+          {icon name=add title="Ajouter une adresse"} Ajouter une adresse
+        </a>
+      </div>
     </td>
   </tr>
   <tr class="pair">
@@ -250,8 +288,7 @@
           <label><input type="checkbox" name="freetext_pub" {if $freetext_pub eq 'public'}checked="checked"{/if} />
           {icon name="flag_green" title="site public"}</label>
         </span>&nbsp;
-        <span class="titre">Complément libre</span><br />
-        <span class="comm">Commentaire, ICQ&hellip;&nbsp;?</span>
+        <span class="titre">Commentaire</span>
       </div>
       <div class="smaller" style="margin-top: 30px">
         <a href="wiki_help/notitle" class="popup3">

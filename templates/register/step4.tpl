@@ -29,14 +29,14 @@ La pré-inscription que tu viens de soumettre a été enregistrée.
 </p>
 <p>
 Les instructions te permettant de valider ton inscription viennent de t'être envoyés
-à l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
+à l'adresse <strong>{$smarty.session.subState.email}</strong>.
 </p>
 <p>
 Tu n'as que quelques jours pour suivre ces instructions. Ensuite, la pré-inscription
 est effacée automatiquement de notre base de données et il faut tout recommencer.
 </p>
 <p>
-Si tu ne reçois rien, vérifie bien l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
+Si tu ne reçois rien, vérifie bien l'adresse <strong>{$smarty.session.subState.email}</strong>.
 En particulier, vérifie si l'email n'a pas été rejeté par ton filtre anti-spam. L'adresse
 d'expéditeur est <code>register@polytechnique.org</code>.
 </p>

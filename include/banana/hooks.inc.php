@@ -76,7 +76,7 @@ function hook_platalRSS($group)
     } else {
         $group = '';
     }
-    return '/rss/' . $group . S::v('hruid') . '/' . S::v('core_rss_hash') . '/rss.xml';
+    return '/rss/' . $group . S::v('hruid') . '/' . S::s('token') . '/rss.xml';
 }
 
 function hook_platalMessageLink($params)
@@ -177,20 +177,25 @@ function hook_hasXFace($headers)
 
 function hook_getXFace($headers)
 {
-    $login = @$headers['x-org-id'];
-    if (!$login) {
-        @list($login, ) = explode('@', $headers['x-org-mail']);
+    $login = null;
+    foreach (array('x-org-id', 'x-org-mail') as $key) {
+        if (isset($headers[$key])) {
+            $login = $headers[$key];
+            break;
+        }
     }
-    if (!$login) {
+    if (is_null($login)) {
+        // No login, fallback to default handler
         return false;
     }
     if (isset($headers['x-face'])) {
-        $res = XDB::query("SELECT  p.uid
-                             FROM  #forums#.profils AS p
-                       INNER JOIN  #x4dat#.aliases  AS a ON (p.uid = a.id)
-                            WHERE  FIND_IN_SET('xface', p.flags) AND a.alias = {?}",
-                          $login);
+        $user = User::getSilent($login);
+        $res = XDB::query("SELECT  pf.uid
+                             FROM  forum_profiles AS pf
+                            WHERE  pf.uid = {?} AND FIND_IN_SET('xface', pf.flags)",
+                          $user->id());
         if ($res->numRows()) {
+            // User wants his xface to be showed, fallback to default handler
             return false;
         }
     }

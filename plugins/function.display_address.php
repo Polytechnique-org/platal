@@ -38,14 +38,12 @@ function display_address_isIdentity($idt, $value, $test_reverse = true)
 
 function smarty_function_display_address($param, &$smarty)
 {
-    require_once('geoloc.inc.php');
-    $txtad = get_address_text($param['adr']);
-    if (!$txtad &&
-        !$param['adr']['tels'] && !count($param['adr']['tels']) &&
-        !$param['adr']['tel'] &&
-        !$param['adr']['fax'] &&
-        !$param['adr']['mobile']) return "";
-
+    require_once('geocoding.inc.php');
+    $adr = $param['adr'];
+    $txtad = $adr->text;
+    if (!$txtad && !$adr->phones() && !count($adr->phones())) {
+        return "";
+    }
 
     $lines = explode("\n", $txtad);
     $idt   = array_shift($lines);
@@ -61,29 +59,37 @@ function smarty_function_display_address($param, &$smarty)
     $map = "<a href=\"http://maps.google.fr/?q="
         .   urlencode(implode(", ", $lines) . " ($idt)")
         . "\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
+    $comment = "";
+    if ($param['adr']['comment'] != "")
+    {
+        $commentHtml = str_replace(array('&', '"'), array('&amp;', '&quot;'), $adr->comment);
+        $commentJs = str_replace(array('\\', '\''), array('\\\\', '\\\''), $commentHtml);
+        $comment = "<img style=\"margin-left: 5px;\" src=\"images/icons/comments.gif\""
+            . " onmouseover=\"return overlib('"
+            . $commentJs
+            . "',WIDTH,250);\""
+            . " onmouseout=\"nd();\""
+            . " alt=\"Commentaire\" title=\""
+            . $commentHtml
+            . "\"/>";
+    }
     if ($restore) {
         array_unshift($lines, $idt);
     }
     if ($param['titre'])
     {
         if ($param['titre_div'])
-            $txthtml .= "<div class='titre'>".pl_entity_decode($param['titre'])."&nbsp;".$map."</div>\n";
+            $txthtml .= "<div class='titre'>".pl_entity_decode($param['titre'])."&nbsp;".$map.$comment."</div>\n";
         else
-            $txthtml .= "<em>".pl_entity_decode($param['titre'])."&nbsp;</em>".$map."<br />\n";
+            $txthtml .= "<em>".pl_entity_decode($param['titre'])."&nbsp;</em>".$map.$comment."<br />\n";
     }
     foreach ($lines as $line)
     {
         $txthtml .= "<strong>".$line."</strong><br/>\n";
     }
-    if ($param['adr']['tel'])
-        $txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['tel']."</strong>\n</div>\n";
-    if ($param['adr']['fax'])
-        $txthtml .= "<div>\n<em>Fax : </em>\n<strong>".$param['adr']['fax']."</strong>\n</div>\n";
-    if ($param['adr']['mobile'])
-        $txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['mobile']."</strong>\n</div>\n";
-    if ($param['adr']['tels'] && count($param['adr']['tels'])) {
-        foreach ($param['adr']['tels'] as $tel)
-            $txthtml .= "<div>\n<em>".$tel['tel_type']."&nbsp;: </em>\n<strong>".$tel['tel']."</strong>\n</div>\n";
+    if($adr->phones() != null) {
+        require_once('function.display_phones.php');
+        $txthtml .= smarty_function_display_phones(array('tels' => $adr->phones()),$smarty);
     }
     if (!$param['nodiv']) {
         $pos = $param['pos'] ? " style='float: " . $param['pos'] . "'" : '';

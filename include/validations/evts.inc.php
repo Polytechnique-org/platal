@@ -30,7 +30,7 @@ class EvtReq extends Validate
     public $texte;
     public $pmin;
     public $pmax;
-    public $peremption;
+    public $expiration;
     public $comment;
 
     public $imgtype;
@@ -41,14 +41,14 @@ class EvtReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, User &$_user, PlUpload &$upload = null)
+    public function __construct($_titre, $_texte, $_pmin, $_pmax, $_expiration, $_comment, User &$_user, PlUpload &$upload = null)
     {
         parent::__construct($_user, false, 'evts');
         $this->titre      = $_titre;
         $this->texte      = $_texte;
         $this->pmin       = $_pmin;
         $this->pmax       = $_pmax;
-        $this->peremption = $_peremption;
+        $this->expiration = $_expiration;
         $this->comment    = $_comment;
         if ($upload) {
             $this->readImage($upload);
@@ -92,7 +92,7 @@ class EvtReq extends Validate
         $this->texte      = Env::v('texte');
         $this->pmin       = Env::i('promo_min');
         $this->pmax       = Env::i('promo_max');
-        $this->peremption = Env::v('peremption');
+        $this->expiration = Env::v('expiration');
         if (@$_FILES['image']['tmp_name']) {
             $upload = PlUpload::get($_FILES['image'], S::user()->login(), 'event');
             if (!$upload) {
@@ -134,14 +134,14 @@ class EvtReq extends Validate
 
     public function commit()
     {
-        if (XDB::execute("INSERT INTO  evenements
-                         SET  user_id = {?}, creation_date=NOW(), titre={?}, texte={?},
-                              peremption={?}, promo_min={?}, promo_max={?}, flags=CONCAT(flags,',valide,wiki')",
+        if (XDB::execute("INSERT INTO  announces
+                         SET  uid = {?}, creation_date=NOW(), titre={?}, texte={?},
+                              expiration={?}, promo_min={?}, promo_max={?}, flags=CONCAT(flags,',valide,wiki')",
                 $this->user->id(), $this->titre, $this->texte,
-                $this->peremption, $this->pmin, $this->pmax)) {
+                $this->expiration, $this->pmin, $this->pmax)) {
             $eid = XDB::insertId();
             if ($this->img) {
-                XDB::execute("INSERT INTO evenements_photo
+                XDB::execute("INSERT INTO announce_photos
                                       SET eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}",
                              XDB::insertId(), $this->imgtype, $this->imgx, $this->imgy, $this->img);
             }
@@ -153,7 +153,7 @@ class EvtReq extends Validate
                                       $globals->banana->event_reply,
                                       $this->titre, MiniWiki::wikiToText($this->texte, false, 0, 80));
                 if ($post != -1) {
-                    XDB::execute("UPDATE  evenements
+                    XDB::execute("UPDATE  announces
                                      SET  creation_date = creation_date, post_id = {?}
                                    WHERE  id = {?}", $post, $eid);
                 }

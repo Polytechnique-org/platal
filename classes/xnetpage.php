@@ -90,7 +90,6 @@ class XnetPage extends PlPage
             if ($perms->hasFlag('groupannu')) {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
                 $sub['trombinoscope'] = "$dim/trombi";
-                $sub['planisphère'] = "$dim/geoloc";
             }
             if ($perms->hasFlag('groupmember')) {
                 if ($globals->asso('forum')) {
@@ -142,11 +141,10 @@ function list_all_my_groups($params)
     if (!S::logged()) {
         return;
     }
-    $res = XDB::iterRow(
-            "SELECT  a.nom, a.diminutif
-               FROM  #groupex#.asso    AS a
-         INNER JOIN  #groupex#.membres AS m ON m.asso_id = a.id
-              WHERE  m.uid={?}", S::v('uid'));
+    $res = XDB::iterRow('SELECT  a.nom, a.diminutif
+                           FROM  groups    AS a
+                     INNER JOIN  group_members AS m ON m.asso_id = a.id
+                          WHERE  m.uid = {?}', S::i('uid'));
     $links = '<a href="exit">déconnexion</a>';
     $html = '<div>Mes groupes (' . $links . ') :</div>';
     while (list($nom, $mini) = $res->next()) {

@@ -31,8 +31,6 @@ Cher {$prenom},
 Nous t'écrivons pour t'informer que le télépaiement associé à l'événement '''{$evt}''' du groupe {$asso} vient d'être activé. Tu peux donc finaliser ton inscription.
 
 Pour ceci, va simplement sur [[http://www.polytechnique.net/{$diminutif}/payment/{$payment}?montant={$topay}|cette page]].
-
-Cordialement,\\
-L'Equipe de Polytechnique.org
+{include file="signature.mail.tpl"}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2: *}

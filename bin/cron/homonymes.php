@@ -19,30 +19,28 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
+
 /**
- * crée des demandes de validation pour les kill d'alias
- * une demande 10 jours avant pour un warning, puis une autre pour le robot
+ * Requires destruction of aliases: a first notification 10 days before
+ * destruction, a second on the date.
  */
+require 'connect.db.inc.php';
+require_once 'validations/homonymes.inc.php';
 
-require('connect.db.inc.php');
-require_once('validations/homonymes.inc.php');
-
-$resRobot = XDB::iterator(
-        "SELECT  id, alias, expire
-           FROM  aliases
-          WHERE  (expire = NOW() + INTERVAL 7 DAY OR expire <= NOW())
-                 AND type = 'alias'");
+$resRobot = XDB::iterator("SELECT  uid, alias, expire
+                             FROM  aliases
+                            WHERE  (expire = NOW() + INTERVAL 7 DAY OR expire <= NOW())
+                                   AND type = 'alias'");
 while ($old = $resRobot->next()) {
-    $res = XDB::query(
-            "SELECT  u.hruid
-               FROM  homonymes AS h
-         INNER JOIN  auth_user_md5 AS u USING (user_id)
-              WHERE  homonyme_id = {?}",
-            $old['id']);
+    $res = XDB::query('SELECT  a.hruid
+                         FROM  homonyms AS h
+                   INNER JOIN  accounts AS a (h.uid = a.uid)
+                        WHERE  homonyme_id = {?}',
+                      $old['id']);
     $hruids = $res->fetchColumn();
 
-    $homonyme = User::getSilent($old['id']);
-    $req = new HomonymeReq($homonyme, $old['alias'], $hruids, $old['expire'] > date("Y-m-d"));
+    $homonym = User::getSilent($old['id']);
+    $req = new HomonymeReq($homonym, $old['alias'], $hruids, $old['expire'] > date("Y-m-d"));
     $req->submit();
 }
 

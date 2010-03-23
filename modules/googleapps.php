@@ -136,7 +136,7 @@ class GoogleAppsModule extends PLModule
             "SELECT  q_id, q_recipient_id, a.alias, j_type, j_parameters,
                      UNIX_TIMESTAMP(q.p_entry_date) AS p_entry_date
                FROM  gapps_queue AS q
-          LEFT JOIN  aliases AS a ON (a.id = q_recipient_id AND a.type = 'a_vie')
+          LEFT JOIN  aliases AS a ON (a.uid = q_recipient_id AND a.type = 'a_vie')
               WHERE  p_status IN ('idle', 'active', 'softfail') AND
                      p_admin_request IS TRUE
            ORDER BY  p_entry_date");
@@ -154,7 +154,7 @@ class GoogleAppsModule extends PLModule
             "SELECT  q.q_id, q.q_recipient_id, a.alias, q.j_type, q.r_result,
                      UNIX_TIMESTAMP(q.p_entry_date) AS p_entry_date
                FROM  gapps_queue AS q
-          LEFT JOIN  aliases AS a ON (a.id = q.q_recipient_id AND a.type = 'a_vie')
+          LEFT JOIN  aliases AS a ON (a.uid = q.q_recipient_id AND a.type = 'a_vie')
               WHERE  q.p_status = 'hardfail'
            ORDER BY  p_entry_date DESC
               LIMIT  20");
@@ -171,8 +171,8 @@ class GoogleAppsModule extends PLModule
             $res = XDB::query(
                 "SELECT  q.*, ao.alias AS q_owner, ar.alias AS q_recipient
                    FROM  gapps_queue AS q
-              LEFT JOIN  aliases AS ao ON (ao.id = q.q_owner_id AND ao.type = 'a_vie')
-              LEFT JOIN  aliases AS ar ON (ar.id = q.q_recipient_id AND ar.type = 'a_vie')
+              LEFT JOIN  aliases AS ao ON (ao.uid = q.q_owner_id AND ao.type = 'a_vie')
+              LEFT JOIN  aliases AS ar ON (ar.uid = q.q_recipient_id AND ar.type = 'a_vie')
                   WHERE  q_id = {?}", $job);
             $sql_job = $res->fetchOneAssoc();
             $sql_job['decoded_parameters'] = var_export(json_decode($sql_job['j_parameters'], true), true);
@@ -206,12 +206,10 @@ class GoogleAppsModule extends PLModule
                 $account->do_unsuspend();
                 $page->trigSuccess('Le compte est en cours de réactivation.');
             } else if (Post::has('forcesync') && $account->active() && $account->sync_password) {
-                $res = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id = {?}", $user->id());
-                $account->set_password($res->fetchOneCell());
+                $account->set_password($user->password());
                 $page->trigSuccess('Le mot de passe est en cours de synchronisation.');
             } else if (Post::has('sync') && $account->active()) {
-                $res = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id = {?}", $user->id());
-                $account->set_password($res->fetchOneCell());
+                $account->set_password($user->password());
                 $account->set_password_sync(true);
             } else if (Post::has('nosync') && $account->active()) {
                 $account->set_password_sync(false);

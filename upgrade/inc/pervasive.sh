@@ -13,7 +13,18 @@ fi
 if [[ -n "${DBPREFIX}" ]]; then
     echo "Using non-default database ${DBPREFIX}x4dat."
 fi
-declare -r DATABASE="${DBPREFIX}x4dat"
+if [[ -z "${DATABASE}" ]]; then
+  DATABASE="${DBPREFIX}x4dat"
+fi
+
+function die() {
+    echo $1
+    exit 1
+}
+
+function mysql_run() {
+    sed -e "s/#\([0-9a-z]*\)#/${DBPREFIX}\1/g" | $MYSQL $DATABASE
+}
 
 function mailman_stop() {
     echo -n "stops mailman"

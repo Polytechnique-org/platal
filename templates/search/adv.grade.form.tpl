@@ -23,8 +23,10 @@
 <select name="diploma">
 <option value=""> - </option>
 {section name=diploma loop=$choix_diplomas}
-<option value="{$choix_diplomas[diploma]}">
-  {$choix_diplomas[diploma]}
+{assign var=i value=$choix_diplomas[diploma]}
+{assign var=id value=$i-1}
+<option value="{$i}">
+  {$name_diplomas[$id]}
 </option>
 {/section}
 </select>

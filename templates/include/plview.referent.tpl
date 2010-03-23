@@ -21,30 +21,30 @@
 {**************************************************************************}
 
 <div class="contact-list" style="clear: both">
-{foreach from=$set item=p} 
-  <div class="contact"> 
-    <div class="nom"> 
-      {$p.nom} {$p.prenom} 
-    </div> 
-    <div class="appli"> 
-      X{$p.promo} 
-    </div> 
-    <div class="bits" style="width: 40%;"> 
-      <span class='smaller'> 
+{foreach from=$set item=p}
+  <div class="contact">
+    <div class="nom">
+      <span {if $p.name_tooltip}class="hinted" title="{$p.name_tooltip}"{/if}>{$p.name_display}</span>
+    </div>
+    <div class="edu">
+      {$p.promo_display}
+    </div>
+    <div class="bits" style="width: 40%;">
+      <span class='smaller'>
       <a href="profile/{$p.hruid}" class="popup2">
-        {icon name=user_suit title="Voir sa fiche"}</a> - 
+        {icon name=user_suit title="Voir sa fiche"}</a> -
         <a href="referent/{$p.hruid}" class="popup2">Voir sa fiche référent</a>
-      </span> 
-    </div> 
-    <div class="long"> 
-     <table cellspacing="0" cellpadding="0"> 
-      <tr> 
-        <td class="lt">Expertise&nbsp;:</td> 
-        <td class="rt" colspan="2">{$p.expertise|nl2br}</td> 
-      </tr> 
-     </table> 
-    </div> 
-  </div> 
+      </span>
+    </div>
+    <div class="long">
+     <table cellspacing="0" cellpadding="0">
+      <tr>
+        <td class="lt">Expertise&nbsp;:</td>
+        <td class="rt" colspan="2">{$p.expertise|nl2br}</td>
+      </tr>
+     </table>
+    </div>
+  </div>
 {/foreach}
 </div>
 

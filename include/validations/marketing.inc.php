@@ -57,10 +57,10 @@ class MarkReq extends Validate
     public function formu()
     {
         $res = XDB::query('SELECT  IF(MAX(m.last)>p.relance, MAX(m.last), p.relance)
-                             FROM  auth_user_md5      AS u
-                        LEFT JOIN  register_pending   AS p ON p.uid = u.user_id
-                        LEFT JOIN  register_marketing AS m ON m.uid = u.user_id
-                            WHERE  user_id = {?}',
+                             FROM  accounts           AS a
+                        LEFT JOIN  register_pending   AS p ON p.uid = a.uid
+                        LEFT JOIN  register_marketing AS m ON m.uid = a.uid
+                            WHERE  a.uid = {?}',
                           $this->m_user->id());
         $this->m_relance = $res->fetchOneCell();
         return 'include/form.valid.mark.tpl';

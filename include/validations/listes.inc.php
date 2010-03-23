@@ -139,7 +139,7 @@ class ListeReq extends Validate
             return 1;
         }
 
-        $list = new MMList(S::user()->id(), S::v('password'), $this->domain);
+        $list = new MMList(S::user()->id(), $this->domain);
         $ret = $list->create_list($this->liste, utf8_decode($this->desc), $this->advertise,
                                   $this->modlevel, $this->inslevel,
                                   $this->owners, $this->members);

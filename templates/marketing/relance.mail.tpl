@@ -46,11 +46,6 @@ Rends-toi sur la page web suivante afin d'achever ton inscription, et de changer
 Si le lien ci-dessus ne fonctionne pas en cliquant dessus, copie le intégralement dans la barre d'adresse de ton navigateur.
 
 En cas de difficulté, nous sommes bien entendu à ton entière disposition !
-
-Bien cordialement,
-
--- 
-L'équipe de Polytechnique.org,
-Le portail des élèves & anciens élèves de l'École polytechnique
+{include file="signature.mail.tpl"}
 {/if}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

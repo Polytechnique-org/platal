@@ -73,17 +73,19 @@ if ( PEAR::isError($opts) ) {
 
 /* Validite des flags de transmission */
 check("SELECT  u.user_id, nom, prenom, promo,
-               profile_mobile_pub, emails_alias_pub, profile_web_pub, profile_freetext_pub, profile_medals_pub
+               emails_alias_pub, profile_freetext_pub, profile_medal_enum_pub
          FROM  auth_user_md5 AS u
    INNER JOIN  auth_user_quick AS q USING(user_id)
-        WHERE  (profile_mobile_pub != 'private' AND profile_mobile_pub != 'ax' AND profile_mobile_pub != 'public')
-           OR  (emails_alias_pub != 'private' AND emails_alias_pub != 'public')
-           OR  (profile_web_pub != 'private' AND profile_web_pub != 'public')
+        WHERE  (emails_alias_pub != 'private' AND emails_alias_pub != 'public')
            OR  (profile_freetext_pub != 'private' AND profile_freetext_pub != 'public')
-           OR  (profile_medals_pub != 'private' AND profile_medals_pub != 'public')",
+           OR  (profile_medal_enum_pub != 'private' AND profile_medal_enum_pub != 'public')",
     "Utilisateur n'ayant pas de flag de publicite pour leurs donnees de profil");
-check("select uid from adresses where pub != 'private' and pub !='ax' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour une adresse");
-check("select uid from tels where tel_pub != 'private' and tel_pub !='ax' and tel_pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour un numero de telephone");
+check("SELECT  pid
+         FROM  profile_addresses
+        WHERE  pub != 'private' AND pub !='ax' AND pub != 'public'",
+      "Utiliseur n'ayant pas de flag de publicité pour une adresse.");
+check("select pid from profile_phones where pub != 'private' and pub != 'ax' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour un numero de téléphone");
+check("select pid from profile_networking where pub != 'private' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicité pour une adresse de networking");
 
 /* validite des hruid */
 check("SELECT user_id, nom, prenom, promo FROM auth_user_md5 WHERE hruid IS NULL OR hruid = ''",
@@ -92,16 +94,16 @@ check("SELECT user_id, nom, prenom, promo FROM auth_user_md5 WHERE hruid IS NULL
 /* validite de aliases */
 check("SELECT a.*
         FROM aliases       AS a
-        LEFT JOIN auth_user_md5 AS u ON u.user_id=a.id
+        LEFT JOIN auth_user_md5 AS u ON u.user_id=a.uid
         WHERE (a.type='alias' OR a.type='a_vie') AND u.prenom is null");
 
-/* validite de applis_ins */
-check("select a.* from applis_ins as a left join auth_user_md5 as u on u.user_id=a.uid where u.prenom is null");
-check("select a.* from applis_ins as a left join applis_def as ad on ad.id=a.aid where ad.text is null");
+/* validite de profile_education */
+check("select a.* from profile_education as a left join auth_user_md5 as u on u.user_id=a.pid where u.prenom is null");
+check("select a.* from profile_education as a left join profile_education_enum as ad on ad.id=a.eduid where ad.name is null");
 
 /* validite de binet_users */
-check("select b.* from binets_ins as b left join auth_user_md5 as u on u.user_id=b.user_id where u.prenom is null");
-check("select b.* from binets_ins as b left join binets_def as bd on bd.id=b.binet_id where bd.text is null");
+check("select b.* from profile_binets as b left join auth_user_md5 as u on u.user_id=b.user_id where u.prenom is null");
+check("select b.* from profile_binets as b left join profile_binet_enum as bd on bd.id=b.binet_id where bd.text is null");
 
 /* validite de contacts */
 check("select c.* from contacts as c left join auth_user_md5 as u on u.user_id=c.uid where u.prenom is null");
@@ -123,10 +125,24 @@ check("select g.* from groupesx_ins as g left join groupesx_def as gd on g.gid=g
 /* validite de photo */
 check("select p.* from photo as p left join auth_user_md5 as u on u.user_id=p.uid where u.prenom is null");
 
-/* validite des champ pays et region */
-check("SELECT a.uid, a.country FROM adresses AS a LEFT JOIN geoloc_pays AS gp ON a.country = gp.a2 WHERE gp.pays IS NULL","donne la liste des pays dans les profils qui n'ont pas d'entree correspondante dans geoloc_pays");
-/* les régions ne sont valides que dans les adresses pros */
-//check("SELECT e.uid, e.country, e.region FROM entreprises AS e LEFT JOIN geoloc_region AS gr ON (e.country = gr.a2 AND e.region = gr.region) WHERE e.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils pros qui n'ont pas d'entree correspondante dans geoloc_region");
+/* validite des formats téléphoniques */
+check("SELECT DISTINCT  g.phonePrefix
+                  FROM  geoloc_countries AS g
+          WHERE EXISTS  (SELECT  h.phonePrefix
+                           FROM  geoloc_countries AS h
+                          WHERE  h.phonePrefix = g.phonePrefix
+                                 AND h.phoneFormat != (SELECT  i.phoneFormat
+                                                         FROM  geoloc_countries AS i
+                                                        WHERE  i.phonePrefix = g.phonePrefix
+                                                        LIMIT  1))",
+      "Préfixes téléphoniques qui ont des formats de numéros de téléphones différents selon les pays");
+
+/* validite des champ pays */
+check("SELECT  a.pid, a.countryId
+         FROM  profile_addresses AS a
+    LEFT JOIN  geoloc_countries  AS gc ON (a.countryId = gc.iso_3166_1_a2)
+        WHERE  gc.countryFR IS NULL OR gc.countryFR = ''",
+      "donne la liste des pays dans les profils qui n'ont pas d'entree correspondante dans geoloc_countries");
 
 /* donne la liste des emails douteux que les administrateurs n'ont pas encore traité */
 check("SELECT  a1.alias, a2.alias, e1.email, e2.flags
@@ -134,11 +150,11 @@ check("SELECT  a1.alias, a2.alias, e1.email, e2.flags
         INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND
             (e1.uid<e2.uid  OR  NOT FIND_IN_SET('active', e2.flags))
             )
-        INNER JOIN  emails_watch  AS w  ON(w.email = e1.email AND w.state = 'pending')
-        INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
-        INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
-        INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
-        INNER JOIN  auth_user_md5 AS u2 ON(a2.id=u2.user_id)
+        INNER JOIN  email_watch  AS w  ON(w.email = e1.email AND w.state = 'pending')
+        INNER JOIN  aliases       AS a1 ON(a1.uid=e1.uid AND a1.type='a_vie')
+        INNER JOIN  aliases       AS a2 ON(a2.uid=e2.uid AND a2.type='a_vie')
+        INNER JOIN  auth_user_md5 AS u1 ON(a1.uid=u1.user_id)
+        INNER JOIN  auth_user_md5 AS u2 ON(a2.uid=u2.user_id)
         WHERE  FIND_IN_SET('active', e1.flags) AND u1.nom!=u2.nom_usage AND u2.nom!=u1.nom_usage
         ORDER BY  a1.alias",
         "donne la liste des emails douteux actuellement non traites par les administrateurs");
@@ -149,11 +165,11 @@ info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state
         INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND
             (e1.uid<e2.uid  OR  NOT FIND_IN_SET('active', e2.flags))
             )
-        INNER JOIN  emails_watch  AS w  ON(w.email = e1.email AND w.state != 'safe')
-        INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
-        INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
-        INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
-        INNER JOIN  auth_user_md5 AS u2 ON(a2.id=u2.user_id)
+        INNER JOIN  email_watch  AS w  ON(w.email = e1.email AND w.state != 'safe')
+        INNER JOIN  aliases       AS a1 ON(a1.uid=e1.uid AND a1.type='a_vie')
+        INNER JOIN  aliases       AS a2 ON(a2.uid=e2.uid AND a2.type='a_vie')
+        INNER JOIN  auth_user_md5 AS u1 ON(a1.uid=u1.user_id)
+        INNER JOIN  auth_user_md5 AS u2 ON(a2.uid=u2.user_id)
         WHERE  FIND_IN_SET('active', e1.flags) AND u1.nom!=u2.nom_usage AND u2.nom!=u1.nom_usage
         ORDER BY  a1.alias",
         "donne la liste des emails dangereux ou douteux");
@@ -161,7 +177,7 @@ info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state
 /* donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois */
 check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
         FROM  aliases AS a
-        INNER JOIN  aliases AS b ON ( a.id=b.id AND b.type != 'homonyme' and b.expire < NOW() )
+        INNER JOIN  aliases AS b ON ( a.uid=b.uid AND b.type != 'homonyme' and b.expire < NOW() )
         WHERE  a.type = 'a_vie'",
         "donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias");
 
@@ -169,8 +185,8 @@ check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
 
 check("SELECT  a.alias AS a_un_pb, email, rewrite AS broken
         FROM  aliases AS a
-        INNER JOIN  emails  AS e ON (a.id=e.uid AND rewrite!='')
-        LEFT  JOIN  aliases AS b ON (b.id=a.id AND rewrite LIKE CONCAT(b.alias,'@%') AND b.type!='homonyme')
+        INNER JOIN  emails  AS e ON (a.uid=e.uid AND rewrite!='')
+        LEFT  JOIN  aliases AS b ON (b.uid=a.uid AND rewrite LIKE CONCAT(b.alias,'@%') AND b.type!='homonyme')
         WHERE  a.type='a_vie' AND b.type IS NULL","gens qui ont des rewrite sur un alias perdu");
 
 /* validite du champ matricule_ax de la table auth_user_md5 */
@@ -180,10 +196,16 @@ check("SELECT  matricule,nom,prenom,matricule_ax,COUNT(matricule_ax) AS c
         GROUP BY  matricule_ax
         having  c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (auth_user_md5) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
 
+/* no alumni is allowed to have empty names */
+check("SELECT  s.uid, d.public_name
+         FROM  profile_name    AS s
+   INNER JOIN  profile_display AS d ON (d.pid = s.uid)
+        WHERE  name = ''", "liste des personnes qui ont un de leur nom de recherche vide");
+
 /* verifie qu'il n'y a pas d'utilisateurs ayant un compte Google Apps désactivé et une redirection encore active vers Google Apps */
 check("SELECT  a.alias, g.g_status, u.mail_storage
          FROM  auth_user_md5 AS u
-   INNER JOIN  aliases AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+   INNER JOIN  aliases AS a ON (a.uid = u.user_id AND a.type = 'a_vie')
    INNER JOIN  gapps_accounts AS g ON (g.l_userid = u.user_id)
         WHERE  FIND_IN_SET('googleapps', u.mail_storage) > 0 AND g.g_status != 'active'",
       "utilisateurs ayant une redirection vers Google Apps alors que leur compte GApps n'est pas actif");

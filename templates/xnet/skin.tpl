@@ -44,12 +44,12 @@
   </head>
   <body>
     {include core=plpage.devel.tpl}
-    {if !$simple}
+    {if !t($simple)}
       {include file=skin/common.bandeau.tpl}
     {/if}
 
     <table id="layout" cellspacing="0" cellpadding="0">
-    {if !$simple}
+    {if !t($simple)}
       <tr>
         <td colspan="2">
         <table cellspacing="0" cellpadding="0" id="top">
@@ -58,10 +58,10 @@
               <a href="{if $is_logged}login{/if}"><img src="images/asso-montants.png" alt="Logo Assos" /></a>
             </td>
             <td style="width: 106px">
-              {if $xnet_type}
+              {if t($xnet_type)}
               <img src="images/logo_{$xnet_type}.png" alt="Logo {$xnet_type}" width="106" height="96" />
               {else}
-              <img src="images/logo_institutions.png" alt="Logo {$xnet_type}" width="106" height="96" />
+              <img src="images/logo_institutions.png" alt="Logo institutions" width="106" height="96" />
               {/if}
             </td>
             <td style="width: 44px">
@@ -70,14 +70,14 @@
             <td style="width: auto;">
               <img src="images/bandeau.jpg" alt="bandeau" height="96" width="100%" />
             </td>
-            {if $xnet_type}
+            {if t($xnet_type)}
             <td style="width: 280px">
-              <a href="{if $xnet_type eq plan}plan{else}groups/{$xnet_type}{/if}"><img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" /></a>
+              <a href="{if $xnet_type eq 'plan'}plan{else}groups/{$xnet_type}{/if}"><img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" /></a>
             </td>
-            {if $asso}
+            {if t($asso)}
             <td class="logo">
-              {if $asso.site}
-                <a href="{$asso.site}"><img src='{$platal->ns}logo' alt="LOGO" height="80" /></a>
+              {if t($asso->site)}
+                <a href="{$asso->site}"><img src='{$platal->ns}logo' alt="LOGO" height="80" /></a>
               {else}
                 <img src='{$platal->ns}logo' alt="LOGO" height="80"/>
               {/if}
@@ -97,7 +97,7 @@
       </tr>
     {/if}{* fin simple *}
 
-      {if $menu && !$simple}
+      {if $menu && !t($simple)}
       <tr>
         <td id="menu">
           {foreach from=$menu key=title item=submenu}
@@ -110,9 +110,10 @@
               {/if}
             {/foreach}
           {/foreach}
-          {if $asso && ($is_admin ||
+          {assign var=asso_id value=$asso->id}
+          {if $asso && $is_admin ||
                       ($smarty.session.suid && ($smarty.session.suid.perms->hasFlag('admin') ||
-                                                $smarty.session.suid.may_update[$asso.id])))}
+                                                $smarty.session.suid.may_update[$asso_id]))}
           <h1>Voir le site comme&hellip;</h1>
           <form method="post" action="{$platal->ns}change_rights">
             <div>
@@ -138,7 +139,7 @@
           {include core=plpage.content.tpl}
         </td>
       </tr>
-      {if !$simple}
+      {if !t($simple)}
       <tr class="hideable"><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
       <tr class="hideable">
@@ -156,7 +157,7 @@
       </tr>
       {/if}
       {/if}
-    {if !$simple}
+    {if !t($simple)}
       <tr class="hideable"><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
       <tr class="hideable">

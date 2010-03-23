@@ -58,20 +58,14 @@ class NewsletterModule extends PLModule
 
         try {
             $nl = new NewsLetter($nid);
+            $user =& S::user();
             if (Get::has('text')) {
-                $nl->toText($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+                $nl->toText($page, $user);
             } else {
-                $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+                $nl->toHtml($page, $user);
             }
             if (Post::has('send')) {
-                $res = XDB::query("SELECT  hash
-                                     FROM  newsletter_ins
-                                    WHERE  user_id = {?}",
-                                  S::i('uid'));
-                $nl->sendTo(S::user()->login(), S::user()->bestEmail(),
-                            S::v('prenom'), S::v('nom'),
-                            S::v('femme'), S::v('mail_fmt') != 'texte',
-                            $res->fetchOneCell());
+                $nl->sendTo($user);
             }
         } catch (MailNotFound $e) {
             return PL_NOT_FOUND;
@@ -151,11 +145,14 @@ class NewsletterModule extends PLModule
 
         if ($action == 'edit' && $aid != 'update') {
             $eaid = $aid;
-            if(Post::has('title')) {
+            if (Post::has('title')) {
                 $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
                                       $eaid, Post::v('cid'), Post::v('pos'));
             } else {
                 $art = ($eaid == 'new') ? new NLArticle() : $nl->getArt($eaid);
+            }
+            if ($art && !$art->check()) {
+                $page->trigError("Cet article est trop long.");
             }
             $page->assign('art', $art);
         }

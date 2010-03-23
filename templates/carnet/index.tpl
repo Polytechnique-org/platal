@@ -53,8 +53,8 @@
 <table class="bicol">
   <tr>
     <th colspan="2">
-      {if $smarty.session.core_rss_hash}
-      <a href="carnet/rss/{$smarty.session.hruid}/{$smarty.session.core_rss_hash}/rss.xml" style="display:block;float:right" title="Notifications">
+      {if $smarty.session.token}
+      <a href="carnet/rss/{$smarty.session.hruid}/{$smarty.session.token}/rss.xml" style="display:block;float:right" title="Notifications">
         {icon name=feed title='fil rss'}
       </a>
       {else}

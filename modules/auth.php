@@ -49,43 +49,25 @@ class AuthModule extends PLModule
 
         $cle = $globals->core->econfiance;
 
+        $res = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<membres>\n\n";
+
         if (S::v('chall') && $_GET['PASS'] == md5(S::v('chall').$cle)) {
-
-            $res  = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id=10154");
-            $pass = $res->fetchOneCell();
-
-            $list = new MMList(10154, $pass, "x-econfiance.polytechnique.org");
+            $list = new MMList(User::getWithUID(10154), "x-econfiance.polytechnique.org");
             $members = $list->get_members('membres');
             if (is_array($members)) {
                 $membres = Array();
                 foreach($members[1] as $member) {
-                    if (preg_match('/^([^.]*.[^.]*.(\d\d\d\d))@polytechnique.org$/',
-                                   $member[1], $matches))
-                    {
-                        $membres[] = "a.alias='{$matches[1]}'";
+                    $user = User::getSilent($member[1]);
+                    if ($user && $user->hasProfile()) {
+                        $profile = $user->profile();
+                        $res .= "<membre>\n";
+                        $res .= "\t<nom>" . $profile->lastName() . "</nom>\n";
+                        $res .= "\t<prenom>" . $profile->firstName() . "</prenom>\n";
+                        $res .= "\t<email>" . $user->forlifeEmail() . "</email>\n";
+                        $res .= "</membre>\n\n";
                     }
                 }
             }
-
-            $where = join(' OR ',$membres);
-
-            $all = XDB::iterRow(
-                    "SELECT  u.prenom,u.nom,a.alias
-                       FROM  auth_user_md5 AS u
-                 INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND a.type!='homonyme' )
-                      WHERE  $where
-                   ORDER BY  nom");
-
-            $res = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<membres>\n\n";
-
-            while (list ($prenom1,$nom1,$email1) = $all->next()) {
-                    $res .= "<membre>\n";
-                    $res .= "\t<nom>$nom1</nom>\n";
-                    $res .= "\t<prenom>$prenom1</prenom>\n";
-                    $res .= "\t<email>$email1</email>\n";
-                    $res .= "</membre>\n\n";
-            }
-
             $res .= "</membres>\n\n";
 
             pl_content_headers("text/xml");
@@ -148,13 +130,13 @@ class AuthModule extends PLModule
 
         // Update the last login information (unless the user is in SUID).
         $uid = S::i('uid');
-        if (!isset($_SESSION['suid'])) {
+        if (!S::suid()) {
             global $platal;
             S::logger($uid)->log('connexion_auth_ext', $platal->path);
         }
 
         // Iterate over the auth token to find which one did sign the request.
-        $res = XDB::iterRow('SELECT privkey, name, datafields, returnurls FROM groupesx_auth');
+        $res = XDB::iterRow('SELECT privkey, name, datafields, returnurls FROM group_auth');
         while (list($privkey,$name,$datafields,$returnurls) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {
                 $returnurls = trim($returnurls);
@@ -179,7 +161,7 @@ class AuthModule extends PLModule
     {
         $page->setTitle('Administration - Auth groupes X');
         $page->assign('title', 'Gestion de l\'authentification centralisée');
-        $table_editor = new PLTableEditor('admin/auth-groupes-x','groupesx_auth','id');
+        $table_editor = new PLTableEditor('admin/auth-groupes-x','group_auth','id');
         $table_editor->describe('name','nom',true);
         $table_editor->describe('privkey','clé privée',false);
         $table_editor->describe('datafields','champs renvoyés',true);

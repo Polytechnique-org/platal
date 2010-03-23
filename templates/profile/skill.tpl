@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<table class="bicol" style="margin-bottom: 1em">
+<table class="bicol" id="competences_table" style="margin-bottom: 1em">
   <tr>
     <th>
       <div class="flags" style="float: left">
@@ -33,7 +33,7 @@
   <tr>
     <td>
       <span class="titre">Domaine&nbsp;:</span>
-      <select name="competences_sel" onchange="updateSkill('competences')">
+      <select name="competences_sel" onchange="updateElement('competences')">
         <option value=""></option>
         {assign var=ingroup value=false}
         {iterate from=$comp_list item=comp}
@@ -60,7 +60,7 @@
   </tr>
 </table>
 
-<table class="bicol">
+<table class="bicol" id="langues_table">
   <tr>
     <th>
       <div class="flags" style="float: left">
@@ -73,7 +73,7 @@
   <tr>
     <td>
       <span class="titre">Domaine&nbsp;:</span>
-      <select name="langues_sel" onchange="updateSkill('langues')">
+      <select name="langues_sel" onchange="updateElement('langues')">
         <option value=""></option>
         {iterate from=$lang_list item=lang}
         <option value="{$lang.id}">{$lang.langue_fr}</option>

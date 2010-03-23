@@ -22,11 +22,7 @@
 
 <div class="contact-list" style="clear: both">
 {foreach from=$set item=res}
-  {if $res.contact}
-  {include file="include/minifiche.tpl" c=$res show_action="retirer"}
-  {else}
-  {include file="include/minifiche.tpl" c=$res show_action="ajouter"}
-  {/if}
+  {include file="include/minifiche.tpl" profile=$res}
 {/foreach}
 </div>
 

@@ -101,39 +101,19 @@ class AXLetter extends MassMailer
                        WHERE  id={?}", $this->_id);
     }
 
-    protected function getAllRecipients()
-    {
-        global $globals;
-        return "SELECT  ni.user_id, IF(ni.user_id = 0, NULL, u.hruid) AS hruid,
-                        IF(ni.user_id = 0, ni.email, CONCAT(a.alias, '@{$globals->mail->domain}')) AS alias,
-                        IF(ni.user_id = 0, ni.prenom, u.prenom) AS prenom,
-                        IF(ni.user_id = 0, ni.nom, IF(u.nom_usage='', u.nom, u.nom_usage)) AS nom,
-                        FIND_IN_SET('femme', IF(ni.user_id = 0, ni.flag, u.flags)) AS sexe,
-                        IF(ni.user_id = 0, 'html', q.core_mail_fmt) AS pref,
-                        IF(ni.user_id = 0, ni.hash, 0) AS hash
-                  FROM  axletter_ins  AS ni
-             LEFT JOIN  auth_user_md5   AS u  USING(user_id)
-             LEFT JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
-             LEFT JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
-             LEFT JOIN  emails          AS e  ON(e.uid=u.user_id AND e.flags='active')
-                 WHERE  ni.last < {?} AND {$this->subscriptionWhere()}
-                        AND (e.email IS NOT NULL OR FIND_IN_SET('googleapps', u.mail_storage) OR ni.user_id = 0)
-              GROUP BY  u.user_id";
-    }
-
     static public function subscriptionState($uid = null)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
         $res = XDB::query("SELECT  1
                              FROM  axletter_ins
-                            WHERE  user_id={?}", $user);
+                            WHERE  uid={?}", $user);
         return $res->fetchOneCell();
     }
 
     static public function unsubscribe($uid = null, $hash = false)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
-        $field = !$hash ? 'user_id' : 'hash';
+        $field = !$hash ? 'uid' : 'hash';
         if (is_null($uid) && $hash) {
             return false;
         }
@@ -151,7 +131,7 @@ class AXLetter extends MassMailer
     static public function subscribe($uid = null)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
-        XDB::execute("REPLACE INTO  axletter_ins (user_id,last)
+        XDB::execute("REPLACE INTO  axletter_ins (uid,last)
                             VALUES  ({?}, 0)", $user);
     }
 
@@ -162,32 +142,32 @@ class AXLetter extends MassMailer
         }
         $res = XDB::query("SELECT  COUNT(*)
                              FROM  axletter_rights
-                            WHERE  user_id = {?}", S::i('uid'));
+                            WHERE  uid = {?}", S::i('uid'));
         return ($res->fetchOneCell() > 0);
     }
 
     static public function grantPerms($uid)
     {
         if (!is_numeric($uid)) {
-            $res = XDB::query("SELECT id FROM aliases WHERE alias = {?}", $uid);
+            $res = XDB::query("SELECT uid FROM aliases WHERE alias = {?}", $uid);
             $uid = $res->fetchOneCell();
         }
         if (!$uid) {
             return false;
         }
-        return XDB::execute("INSERT IGNORE INTO axletter_rights SET user_id = {?}", $uid);
+        return XDB::execute("INSERT IGNORE INTO axletter_rights SET uid = {?}", $uid);
     }
 
     static public function revokePerms($uid)
     {
         if (!is_numeric($uid)) {
-            $res = XDB::query("SELECT id FROM aliases WHERE alias = {?}", $uid);
+            $res = XDB::query("SELECT uid FROM aliases WHERE alias = {?}", $uid);
             $uid = $res->fetchOneCell();
         }
         if (!$uid) {
             return false;
         }
-        return XDB::execute("DELETE FROM axletter_rights WHERE user_id = {?}", $uid);
+        return XDB::execute("DELETE FROM axletter_rights WHERE uid = {?}", $uid);
     }
 
     protected function subscriptionWhere()
@@ -197,10 +177,10 @@ class AXLetter extends MassMailer
         }
         $where = array();
         if ($this->_promo_min) {
-            $where[] = "((ni.user_id = 0 AND ni.promo >= {$this->_promo_min}) OR (ni.user_id != 0 AND u.promo >= {$this->_promo_min}))";
+            $where[] = "((ni.uid = 0 AND ni.promo >= {$this->_promo_min}) OR (ni.uid != 0 AND u.promo >= {$this->_promo_min}))";
         }
         if ($this->_promo_max) {
-            $where[] = "((ni.user_id = 0 AND ni.promo <= {$this->_promo_max}) OR (ni.user_id != 0 AND u.promo <= {$this->_promo_max}))";
+            $where[] = "((ni.uid = 0 AND ni.promo <= {$this->_promo_max}) OR (ni.uid != 0 AND u.promo <= {$this->_promo_max}))";
         }
         if ($this->_subset) {
             require_once("emails.inc.php");
@@ -208,9 +188,9 @@ class AXLetter extends MassMailer
             $ids_list = implode(',', $ids);
             if(count($ids) > 0) {
                 if ($this->_subset_rm) {
-                    $where[] = "ni.user_id NOT IN ($ids_list)";
+                    $where[] = "ni.uid NOT IN ($ids_list)";
                 } else {
-                    $where[] = "ni.user_id IN ($ids_list)";
+                    $where[] = "ni.uid IN ($ids_list)";
                 }
             } else {
                 // No valid email

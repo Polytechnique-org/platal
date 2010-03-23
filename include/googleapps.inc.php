@@ -23,7 +23,7 @@
 function post_queue_u_create($job) {
     global $globals;
 
-    // Retrieves the user parameters (GoogleApps username and user_id).
+    // Retrieves the user parameters (GoogleApps username and uid).
     $parameters = json_decode($job['j_parameters'], true);
     $username = isset($parameters['username']) ? $parameters['username'] : null;
     if (!($user = User::getSilent($username))) {
@@ -40,18 +40,12 @@ function post_queue_u_create($job) {
     }
 
     // Sends the 'account created' email to the user, with basic documentation.
-    $res = XDB::query(
-        "SELECT  FIND_IN_SET('femme', u.flags), prenom
-           FROM  auth_user_md5 AS u
-          WHERE  u.user_id = {?}", $user->id());
-    list($sexe, $prenom) = $res->fetchOneRow();
-
     $mailer = new PlMailer('googleapps/create.mail.tpl');
     $mailer->assign('account', $account);
     $mailer->assign('email', $user->bestEmail());
     $mailer->assign('googleapps_domain', $globals->mailstorage->googleapps_domain);
-    $mailer->assign('prenom', $prenom);
-    $mailer->assign('sexe', $sexe);
+    $mailer->assign('prenom', $user->displayName());
+    $mailer->assign('sexe', $user->isFemale());
     $mailer->send();
 }
 
@@ -79,17 +73,11 @@ function post_queue_u_update($job) {
             }
 
             // Sends an email to the account owner.
-            $res = XDB::query(
-                "SELECT  FIND_IN_SET('femme', u.flags), prenom
-                   FROM  auth_user_md5 AS u
-                  WHERE  u.user_id = {?}", $user->id());
-            list($sexe, $prenom) = $res->fetchOneRow();
-
             $mailer = new PlMailer('googleapps/unsuspend.mail.tpl');
             $mailer->assign('account', $account);
             $mailer->assign('email', $user->bestEmail());
-            $mailer->assign('prenom', $prenom);
-            $mailer->assign('sexe', $sexe);
+            $mailer->assign('prenom', $user->displayName());
+            $mailer->assign('sexe', $user->isFemale());
             $mailer->send();
         }
     }
@@ -369,17 +357,7 @@ class GoogleAppsAccount
 
         if (!$this->pending_update_suspension) {
             if ($this->sync_password) {
-                $res = XDB::query(
-                    "SELECT  password
-                       FROM  auth_user_md5
-                      WHERE  user_id = {?}", $this->user->id());
-                $password = ($res->numRows() > 0 ? $res->fetchOneCell() : false);
-            } else {
-                $password = false;
-            }
-
-            if ($password) {
-                $this->create_queue_job('u_update', array('suspended' => false, 'password' => $password));
+                $this->create_queue_job('u_update', array('suspended' => false, 'password' => $this->user->password()));
             } else {
                 $this->create_queue_job('u_update', array('suspended' => false));
             }
@@ -390,18 +368,22 @@ class GoogleAppsAccount
     }
 
     // Creates a new Google Apps account with the @p local parameters.
-    public function create($password_sync, $password, $redirect_mails) {
+    public function create($password_sync, $password, $redirect_mails)
+    {
         if ($this->g_status != NULL) {
             return;
         }
 
         if (!$this->pending_create) {
             // Retrieves information on the new account.
-            $res = XDB::query(
-                "SELECT  nom, nom_usage, prenom
-                   FROM  auth_user_md5
-                  WHERE  user_id = {?}", $this->user->id());
-            list($nom, $nom_usage, $prenom) = $res->fetchOneRow();
+            // TODO: retreive first_name and last_name from the profile.
+            if (!$user->hasProfile()) {
+                $prenom = $user->displayName();
+                $nom    = $user->fullName();
+            } else {
+                $prenom = $user->profile()->firstName();
+                $nom    = $user->profile()->lastName();
+            }
 
             // Adds an 'unprovisioned' entry in the gapps_accounts table.
             XDB::execute(
@@ -417,8 +399,7 @@ class GoogleAppsAccount
                 $password_sync,
                 $redirect_mails,
                 $this->g_account_name,
-                $prenom,
-                ($nom_usage ? $nom_usage : $nom));
+                $prenom, $nom);
 
             // Adds the creation job in the GApps queue.
             $this->create_queue_job(
@@ -426,7 +407,7 @@ class GoogleAppsAccount
                 array(
                     'username' => $this->g_account_name,
                     'first_name' => $prenom,
-                    'last_name' => ($nom_usage ? $nom_usage : $nom),
+                    'last_name' => $nom,
                     'password' => $password,
                 ));
 

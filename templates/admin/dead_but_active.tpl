@@ -42,10 +42,10 @@
       <a href="profile/ax/{$d.hruid}">{icon name=user_gray title="fiche AX"}</a>
       <a href="admin/user/{$d.hruid}">{icon name=wrench title='Administrer user'}</a>
     </td>
-    <td>{$d.prenom} {$d.nom}</td>
-    <td style="text-align: center">{$d.deces}</td>
+    <td>{$d.directory_name}</td>
+    <td style="text-align: center">{$d.deathdate}</td>
     <td style="text-align: center">
-      {if $d.last gt $d.deces}<strong>{$d.last}</strong>{elseif $d.last}{$d.last}{else}-{/if}
+      {if $d.last gt $d.deathdate}<strong>{$d.last}</strong>{elseif $d.last}{$d.last}{else}-{/if}
     </td>
   </tr>
   {/iterate}

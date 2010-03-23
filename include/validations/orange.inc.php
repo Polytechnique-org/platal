@@ -27,20 +27,26 @@ class OrangeReq extends Validate
 
     public $unique = true;
 
-    public $promo_sortie;
+    public $oldGradYear;
+    public $newGradYear;
+    public $entryYear;
 
-    public $rules = "A priori accepter (la validation sert à repousser les
-    petits malins). Refuse si tu connais la personne et que tu es sure
+    public $rules = "À priori accepter (la validation sert à repousser les
+    petits malins). Refuse si tu connais la personne et que tu es sûr
     qu'elle n'est pas orange.";
 
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, $_sortie)
+    public function __construct(User &$_user, $_newGradYear)
     {
         parent::__construct($_user, true, 'orange');
-        $this->promo_sortie  = $_sortie;
-        $res = XDB::query("SELECT promo FROM auth_user_md5 WHERE user_id = {?}", $_user->id());
+        $this->newGradYear  = $_newGradYear;
+        $res = XDB::query("SELECT  entry_year
+                             FROM  profile_education
+                            WHERE  pid = {?} AND FIND_IN_SET('primary', flags)", $this->user->profile()->id());
+        $this->entryYear   = $res->fetchOneCell();
+        $this->oldGradYear = $this->entryYear + 3;
     }
 
     // }}}
@@ -65,10 +71,11 @@ class OrangeReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            $res = "  La demande de changement de promo de sortie que tu as demandée vient d'être effectuée.";
-            return $res;
+            return "  La demande de changement de promotion de sortie que tu as demandée vient d'être effectuée. "
+                   . "Si tu le souhaites, tu peux maintenant modifier l'affichage de ta promotion sur le site sur la page suivante : "
+                   . "https://www.polytechnique.org/profile/edit";
         } else {
-            return "  La demande de changement de promo de sortie tu avais faite a été refusée.";
+            return "  La demande de changement de promotion de sortie tu avais faite a été refusée.";
         }
     }
 
@@ -77,7 +84,9 @@ class OrangeReq extends Validate
 
     public function commit()
     {
-        XDB::execute("UPDATE auth_user_md5 set promo_sortie = {?} WHERE user_id = {?}",$this->promo_sortie, $this->user->id());
+        XDB::execute("UPDATE  profile_education
+                         SET  grad_year = {?}
+                       WHERE  pid = {?} AND FIND_IN_SET('primary', flags)", $this->newGradYear, $this->user->profile()->id());
         return true;
     }
 

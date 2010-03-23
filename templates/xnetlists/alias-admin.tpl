@@ -25,32 +25,32 @@
 <h1>Membres de {$platal->argv[1]}</h1>
       
 <table class='tinybicol'>
-  {if $mem->total()}
-  {iterate from=$mem item=m}
+  {if $mem|@count}
+  {foreach from=$mem item=m}
   <tr>
     <td>
-      {if $m.nom}
+      {if $m.user}
       {if $m.admin}<strong>{/if}
-      {if $m.alias}<a href="https://www.polytechnique.org/profile/{$m.alias}" class="popup2">{/if}
-      {$m.prenom} {$m.nom}
-      {if $m.alias}</a>{/if}
+      <a href="https://www.polytechnique.org/profile/{$m.user->login()}" class="popup2">{$m.user->fullName()}</a>
       {if $m.admin}</strong>{/if}
       {else}
-      {$m.redirect}
+      {$m.email}
       {/if}
     </td>
     <td class="right">
+      {if $m.user}
       {if $m.admin}<strong>{/if}
-      {$m.promo}
+      {$m.user->promo()}
       {if $m.admin}</strong>{/if}
+      {/if}
     </td>
     <td class="center">
-      <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.redirect|urlencode}&amp;token={xsrf_token}'>
+      <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.email|urlencode}&amp;token={xsrf_token}'>
       {icon name=delete title='retirer membre'}
       </a>
     </td>
   </tr>
-  {/iterate}
+  {/foreach}
   {else}
   <tr>
     <td colspan="3">

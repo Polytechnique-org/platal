@@ -1,0 +1,24 @@
+DataBase upgrade:
+-----------------
+
+* Activate forums database drop
+
+
+Configuration changes:
+----------------------
+
+[Banana]
+* table_prefix deprecated
+
+
+Affected services:
+------------------
+
+News:
+* authentication must use account + account_types with weakpass.
+* forums base dropped and moved to forum_ namespace.
+
+
+Email:
+* auth_user_md5.smtppass -> accounts.weak_password. This password is NULL when empty, but a check must be added for empty passwords.
+* auth_user_md5.mail_storage -> email_options.storage

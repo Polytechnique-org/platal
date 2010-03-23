@@ -68,7 +68,7 @@
 {/literal}
 
 <p class="center">
-   <a href="Site/AllRecentChanges?action=rss&user={$smarty.session.hruid}&hash={$smarty.session.core_rss_hash}" style="display:block;float:right" title="Changements">{icon name=feed title='fil rss'}</a>
+   <a href="Site/AllRecentChanges?action=rss&user={$smarty.session.hruid}&hash={$smarty.session.token}" style="display:block;float:right" title="Changements">{icon name=feed title='fil rss'}</a>
    {icon name=magnifier} <a href="Site/AllRecentChanges">Voir les changements récents</a>
 </p>
 

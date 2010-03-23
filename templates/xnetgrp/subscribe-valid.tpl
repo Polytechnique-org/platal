@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: validation des inscriptions</h1>
+<h1>{$asso->nom}&nbsp;: validation des inscriptions</h1>
 
 <script type="text/javascript">//<![CDATA[
 {literal}
@@ -50,7 +50,7 @@
     {iterate from=$valid item=user}
     <tr>
       <td><input type="checkbox" name="subs[{$user.hruid}]" value="1" class="select_sub" /></td>
-      <td><a href="profile/{$user.hruid}" class="popup2">{$user.prenom} {$user.nom} (X{$user.promo})</a></td>
+      <td>{profile user=$user.uid promo=true}</td>
       <td>{$user.date|date_format}</td>
       <td><a href="{$platal->ns}subscribe/{$user.hruid}">{icon name=magnifier title="Détails"}</a></td>
     </tr>

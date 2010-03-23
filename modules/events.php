@@ -41,9 +41,9 @@ class EventsModule extends PLModule
         global $globals;
         // Add a new special tip when changing plat/al version
         if ($globals->version != S::v('last_version') && is_null($exclude)) {
-            XDB::execute('UPDATE auth_user_quick
+            XDB::execute('UPDATE accounts
                              SET last_version = {?}
-                           WHERE user_id = {?}',
+                           WHERE uid = {?}',
                            $globals->version, S::i('uid'));
             return array('id' => 0,
                          'titre' => 'Bienvenue sur la nouvelle version du site !',
@@ -64,11 +64,11 @@ class EventsModule extends PLModule
         do {
             $priority = (int)($priority/2);
             $res = XDB::query("SELECT  *
-                                 FROM  tips
-                                WHERE  (peremption = '0000-00-00' OR peremption > CURDATE())
+                                 FROM  reminder_tips
+                                WHERE  (expiration = '0000-00-00' OR expiration > CURDATE())
                                        AND (promo_min = 0 OR promo_min <= {?})
                                        AND (promo_max = 0 OR promo_max >= {?})
-                                       AND (priorite >= {?})
+                                       AND (priority >= {?})
                                        AND (state = 'active')
                                        $exclude
                              ORDER BY  RAND()
@@ -114,58 +114,59 @@ class EventsModule extends PLModule
         }
 
         // Wishes "Happy birthday" when required
-        $res = XDB::query(
-            'SELECT  MONTH(naissance) = MONTH(NOW())
-                     AND DAYOFMONTH(naissance) = DAYOFMONTH(NOW()) AS is_birthday
-               FROM  auth_user_md5
-              WHERE  user_id = {?}',
-            $user->id());
-        $page->assign('birthday', $res->fetchOneCell());
+        $profile = $user->profile();
+        if (!is_null($profile)) {
+            if ($profile->next_birthday == date('Y-m-d')) {
+                $birthyear = (int)date('Y', strtotime($profile->birthdate));
+                $curyear   = (int)date('Y');
+                $page->assign('birthday', $curyear - $birthyear);
+            }
+        }
 
         // Direct link to the RSS feed, when available.
-        if (S::rssActivated()) {
+        if (S::hasAuthToken()) {
             $page->setRssLink('Polytechnique.org :: News',
-                              '/rss/'.S::v('hruid') .'/'.S::v('core_rss_hash').'/rss.xml');
+                              '/rss/'.S::v('hruid') .'/'.S::v('token').'/rss.xml');
         }
 
         // Hide the read event, and reload the page to get to the next event.
         if ($action == 'read' && $eid) {
             XDB::execute('DELETE ev.*
-                            FROM evenements_vus AS ev
-                      INNER JOIN evenements AS e ON e.id = ev.evt_id
-                           WHERE peremption < NOW()');
-            XDB::execute('REPLACE INTO evenements_vus VALUES({?},{?})',
+                            FROM announce_read AS ev
+                      INNER JOIN announces AS e ON e.id = ev.evt_id
+                           WHERE expiration < NOW()');
+            XDB::execute('REPLACE INTO announce_read VALUES({?},{?})',
                 $eid, S::v('uid'));
             pl_redirect('events#'.$pound);
         }
 
         // Unhide the requested event, and reload the page to display it.
         if ($action == 'unread' && $eid) {
-            XDB::execute('DELETE FROM evenements_vus
-                           WHERE evt_id = {?} AND user_id = {?}',
+            XDB::execute('DELETE FROM announce_read
+                           WHERE evt_id = {?} AND uid = {?}',
                                    $eid, S::v('uid'));
             pl_redirect('events#newsid'.$eid);
         }
 
         // Fetch the events to display, along with their metadata.
         $array = array();
-        $it = XDB::iterator("SELECT  e.id,e.titre,e.texte,e.post_id,a.user_id,a.nom,a.prenom,a.promo,a.hruid,
+        $it = XDB::iterator("SELECT  e.id, e.titre, e.texte, e.post_id, e.uid,
                                      p.x, p.y, p.attach IS NOT NULL AS img, FIND_IN_SET('wiki', e.flags) AS wiki,
                                      FIND_IN_SET('important', e.flags) AS important,
                                      e.creation_date > DATE_SUB(CURDATE(), INTERVAL 2 DAY) AS news,
-                                     e.peremption < DATE_ADD(CURDATE(), INTERVAL 2 DAY) AS end,
-                                     ev.user_id IS NULL AS nonlu
-                               FROM  evenements       AS e
-                          LEFT JOIN  evenements_photo AS p ON (e.id = p.eid)
-                         INNER JOIN  auth_user_md5    AS a ON e.user_id=a.user_id
-                          LEFT JOIN  evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
-                              WHERE  FIND_IN_SET('valide', e.flags) AND peremption >= NOW()
-                                     AND (e.promo_min = 0 || e.promo_min <= {?})
-                                     AND (e.promo_max = 0 || e.promo_max >= {?})
-                           ORDER BY  important DESC, news DESC, end DESC, e.peremption, e.creation_date DESC",
-                            S::i('uid'), S::i('promo'), S::i('promo'));
+                                     e.expiration < DATE_ADD(CURDATE(), INTERVAL 2 DAY) AS end,
+                                     ev.uid IS NULL AS nonlu, e.promo_min, e.promo_max
+                               FROM  announces       AS e
+                          LEFT JOIN  announce_photos AS p  ON (e.id = p.eid)
+                          LEFT JOIN  announce_read   AS ev ON (e.id = ev.evt_id AND ev.uid = {?})
+                              WHERE  FIND_IN_SET('valide', e.flags) AND expiration >= NOW()
+                           ORDER BY  important DESC, news DESC, end DESC, e.expiration, e.creation_date DESC",
+                            S::i('uid'));
         $cats = array('important', 'news', 'end', 'body');
-        $body  = $it->next();
+
+        $this->load('feed.inc.php');
+        $user = S::user();
+        $body  = EventFeed::nextEvent($it, $user);
         foreach ($cats as $cat) {
             $data = array();
             if (!$body) {
@@ -177,19 +178,20 @@ class EventsModule extends PLModule
                 } else {
                     break;
                 }
-                $body = $it->next();
+                $body = EventFeed::nextEvent($it, $user);
             } while ($body);
             if (!empty($data)) {
                 $array[$cat] = $data;
             }
         }
+
         $page->assign_by_ref('events', $array);
     }
 
     function handler_photo(&$page, $eid = null, $valid = null)
     {
         if ($eid && $eid != 'valid') {
-            $res = XDB::query("SELECT * FROM evenements_photo WHERE eid = {?}", $eid);
+            $res = XDB::query("SELECT * FROM announce_photos WHERE eid = {?}", $eid);
             if ($res->numRows()) {
                 $photo = $res->fetchOneAssoc();
                 pl_cached_dynamic_content_headers("image/" . $photo['attachmime']);
@@ -253,7 +255,7 @@ class EventsModule extends PLModule
         $texte      = Post::v('texte');
         $promo_min  = Post::i('promo_min');
         $promo_max  = Post::i('promo_max');
-        $peremption = Post::i('peremption');
+        $expiration = Post::i('expiration');
         $valid_mesg = Post::v('valid_mesg');
         $action     = Post::v('action');
         $upload     = new PlUpload(S::user()->login(), 'event');
@@ -271,7 +273,7 @@ class EventsModule extends PLModule
         $page->assign('texte', $texte);
         $page->assign('promo_min', $promo_min);
         $page->assign('promo_max', $promo_max);
-        $page->assign('peremption', $peremption);
+        $page->assign('expiration', $expiration);
         $page->assign('valid_mesg', $valid_mesg);
         $page->assign('action', strtolower($action));
         $page->assign_by_ref('upload', $upload);
@@ -286,7 +288,7 @@ class EventsModule extends PLModule
 
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
-                                 $peremption, $valid_mesg, S::user(), $upload);
+                                 $expiration, $valid_mesg, S::user(), $upload);
             $evtreq->submit();
             $page->assign('ok', true);
         } elseif (!Env::v('preview')) {
@@ -305,8 +307,8 @@ class EventsModule extends PLModule
     {
         $page->setTitle('Administration - Astuces');
         $page->assign('title', 'Gestion des Astuces');
-        $table_editor = new PLTableEditor('admin/tips', 'tips', 'id');
-        $table_editor->describe('peremption', 'date de péremption', true);
+        $table_editor = new PLTableEditor('admin/tips', 'reminder_tips', 'id');
+        $table_editor->describe('expiration', 'date de péremption', true);
         $table_editor->describe('promo_min', 'promo. min (0 aucune)', false);
         $table_editor->describe('promo_max', 'promo. max (0 aucune)', false);
         $table_editor->describe('titre', 'titre', true);
@@ -339,7 +341,7 @@ class EventsModule extends PLModule
         if (Post::v('action') == 'Pas d\'image' && $eid) {
             S::assert_xsrf_token();
             $upload->rm();
-            XDB::execute("DELETE FROM evenements_photo WHERE eid = {?}", $eid);
+            XDB::execute("DELETE FROM announce_photos WHERE eid = {?}", $eid);
             $action = 'edit';
         } elseif (Post::v('action') == 'Supprimer l\'image' && $eid) {
             S::assert_xsrf_token();
@@ -355,7 +357,7 @@ class EventsModule extends PLModule
                 $page->trigError("L'intervalle de promotions $promo_min -> $promo_max n'est pas valide");
                 $action = 'edit';
             } else {
-                $res = XDB::query('SELECT flags FROM evenements WHERE id = {?}', $eid);
+                $res = XDB::query('SELECT flags FROM announces WHERE id = {?}', $eid);
                 $flags = new PlFlagSet($res->fetchOneCell());
                 $flags->addFlag('wiki');
                 if (Post::v('important')) {
@@ -364,16 +366,16 @@ class EventsModule extends PLModule
                     $flags->rmFlag('important');
                 }
 
-                XDB::execute('UPDATE evenements
+                XDB::execute('UPDATE announces
                                  SET creation_date = creation_date,
-                                     titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?},
+                                     titre={?}, texte={?}, expiration={?}, promo_min={?}, promo_max={?},
                                      flags = {?}
                                WHERE id = {?}',
-                              Post::v('titre'), Post::v('texte'), Post::v('peremption'),
+                              Post::v('titre'), Post::v('texte'), Post::v('expiration'),
                               Post::v('promo_min'), Post::v('promo_max'),
                               $flags, $eid);
                 if ($upload->exists() && list($x, $y, $type) = $upload->imageInfo()) {
-                    XDB::execute('REPLACE INTO  evenements_photo
+                    XDB::execute('REPLACE INTO  announce_photos
                                            SET  eid = {?}, attachmime = {?}, x = {?}, y = {?}, attach = {?}',
                                  $eid, $type, $x, $y, $upload->getContents());
                     $upload->rm();
@@ -382,17 +384,17 @@ class EventsModule extends PLModule
         }
 
         if ($action == 'edit') {
-            $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max, FIND_IN_SET(\'important\', flags),
+            $res = XDB::query('SELECT titre, texte, expiration, promo_min, promo_max, FIND_IN_SET(\'important\', flags),
                                       attach IS NOT NULL
-                                 FROM evenements       AS e
-                            LEFT JOIN evenements_photo AS p ON(e.id = p.eid)
+                                 FROM announces       AS e
+                            LEFT JOIN announce_photos AS p ON(e.id = p.eid)
                                 WHERE id={?}', $eid);
-            list($titre, $texte, $peremption, $promo_min, $promo_max, $important, $img) = $res->fetchOneRow();
+            list($titre, $texte, $expiration, $promo_min, $promo_max, $important, $img) = $res->fetchOneRow();
             $page->assign('titre',$titre);
             $page->assign('texte',$texte);
             $page->assign('promo_min',$promo_min);
             $page->assign('promo_max',$promo_max);
-            $page->assign('peremption',$peremption);
+            $page->assign('expiration',$expiration);
             $page->assign('important', $important);
             $page->assign('eid', $eid);
             $page->assign('img', $img);
@@ -406,7 +408,7 @@ class EventsModule extends PLModule
                 $day=substr($p_stamp,6,2);
 
                 $select .= "<option value=\"$p_stamp\""
-                        . (($p_stamp == strtr($peremption, array("-" => ""))) ? " selected" : "")
+                        . (($p_stamp == strtr($expiration, array("-" => ""))) ? " selected" : "")
                         . "> $day / $month / $year</option>\n";
             }
             $page->assign('select',$select);
@@ -414,20 +416,20 @@ class EventsModule extends PLModule
             switch ($action) {
                 case 'delete':
                     S::assert_xsrf_token();
-                    XDB::execute('DELETE from evenements
+                    XDB::execute('DELETE from announces
                                    WHERE id = {?}', $eid);
                     break;
 
                 case "archive":
                     S::assert_xsrf_token();
-                    XDB::execute('UPDATE evenements
+                    XDB::execute('UPDATE announces
                                      SET creation_date = creation_date, flags = CONCAT(flags,",archive")
                                    WHERE id = {?}', $eid);
                     break;
 
                 case "unarchive":
                     S::assert_xsrf_token();
-                    XDB::execute('UPDATE evenements
+                    XDB::execute('UPDATE announces
                                      SET creation_date = creation_date, flags = REPLACE(flags,"archive","")
                                    WHERE id = {?}', $eid);
                     $action = 'archives';
@@ -436,32 +438,30 @@ class EventsModule extends PLModule
 
                 case "valid":
                     S::assert_xsrf_token();
-                    XDB::execute('UPDATE evenements
+                    XDB::execute('UPDATE announces
                                      SET creation_date = creation_date, flags = CONCAT(flags,",valide")
                                    WHERE id = {?}', $eid);
                     break;
 
                 case "unvalid":
                     S::assert_xsrf_token();
-                    XDB::execute('UPDATE evenements
+                    XDB::execute('UPDATE announces
                                      SET creation_date = creation_date, flags = REPLACE(flags,"valide", "")
                                    WHERE id = {?}', $eid);
                     break;
             }
 
             $pid = ($eid && $action == 'preview') ? $eid : -1;
-            $sql = "SELECT  e.id, e.titre, e.texte,e.id = $pid AS preview,
+            $sql = "SELECT  e.id, e.titre, e.texte,e.id = $pid AS preview, e.uid,
                             DATE_FORMAT(e.creation_date,'%d/%m/%Y %T') AS creation_date,
-                            DATE_FORMAT(e.peremption,'%d/%m/%Y') AS peremption,
+                            DATE_FORMAT(e.expiration,'%d/%m/%Y') AS expiration,
                             e.promo_min, e.promo_max,
                             FIND_IN_SET('valide', e.flags) AS fvalide,
                             FIND_IN_SET('archive', e.flags) AS farch,
-                            u.promo, u.nom, u.prenom, u.hruid,
                             FIND_IN_SET('wiki', e.flags) AS wiki
-                      FROM  evenements    AS e
-                INNER JOIN  auth_user_md5 AS u ON(e.user_id = u.user_id)
+                      FROM  announces    AS e
                      WHERE  ".($arch ? "" : "!")."FIND_IN_SET('archive',e.flags)
-                  ORDER BY  FIND_IN_SET('valide',e.flags), e.peremption DESC";
+                  ORDER BY  FIND_IN_SET('valide',e.flags), e.expiration DESC";
             $page->assign('evs', XDB::iterator($sql));
         }
         $page->assign('arch', $arch);

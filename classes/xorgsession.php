@@ -21,6 +21,11 @@
 
 class XorgSession extends PlSession
 {
+    const INVALID_USER = -2;
+    const NO_COOKIE = -1;
+    const COOKIE_SUCCESS = 0;
+    const INVALID_COOKIE = 1;
+
     public function __construct()
     {
         parent::__construct();
@@ -29,10 +34,15 @@ class XorgSession extends PlSession
     public function startAvailableAuth()
     {
         if (!S::logged()) {
-            $cookie = $this->tryCookie();
-            if ($cookie == 0) {
-                return $this->start(AUTH_COOKIE);
-            } else if ($cookie == 1 || $cookie == -2) {
+            switch ($this->tryCookie()) {
+              case self::COOKIE_SUCCESS:
+                if (!$this->start(AUTH_COOKIE)) {
+                    return false;
+                }
+                break;
+
+              case self::INVALID_USER:
+              case self::INVALID_COOKIE:
                 return false;
             }
         }
@@ -42,65 +52,41 @@ class XorgSession extends PlSession
         return true;
     }
 
-    /** Check the cookie and set the associated user_id in the auth_by_cookie session variable.
+    /** Check the cookie and set the associated uid in the auth_by_cookie session variable.
      */
     private function tryCookie()
     {
         S::kill('auth_by_cookie');
         if (Cookie::v('access') == '' || !Cookie::has('uid')) {
-            return -1;
+            return self::NO_COOKIE;
         }
 
-        $res = XDB::query('SELECT  user_id, password
-                             FROM  auth_user_md5
-                            WHERE  user_id = {?} AND perms IN(\'admin\', \'user\')',
+        $res = XDB::query('SELECT  uid, password
+                             FROM  accounts
+                            WHERE  uid = {?} AND state = \'active\'',
                          Cookie::i('uid'));
         if ($res->numRows() != 0) {
             list($uid, $password) = $res->fetchOneRow();
-            require_once 'secure_hash.inc.php';
-            $expected_value = hash_encrypt($password);
-            if ($expected_value == Cookie::v('access')) {
+            if (sha1($password) == Cookie::v('access')) {
                 S::set('auth_by_cookie', $uid);
-                return 0;
+                return self::COOKIE_SUCCESS;
             } else {
-                return 1;
+                return self::INVALID_COOKIE;
             }
         }
-        return -2;
+        return self::INVALID_USER;
     }
 
     private function checkPassword($uname, $login, $response, $login_type)
     {
-        $res = XDB::query('SELECT  u.user_id, u.password
-                             FROM  auth_user_md5 AS u
-                       INNER JOIN  aliases       AS a ON (a.id = u.user_id AND type != \'homonyme\')
-                             WHERE  a.' . $login_type . ' = {?} AND u.perms IN(\'admin\', \'user\')',
+        $res = XDB::query('SELECT  a.uid, a.password
+                             FROM  accounts AS a
+                       INNER JOIN  aliases  AS l ON (l.uid = a.uid AND l.type != \'homonyme\')
+                            WHERE  l.' . $login_type . ' = {?} AND a.state = \'active\'',
                           $login);
         if (list($uid, $password) = $res->fetchOneRow()) {
-            require_once 'secure_hash.inc.php';
-            $expected_response = hash_encrypt("$uname:$password:" . S::v('challenge'));
-            if ($response != $expected_response && Env::has('xorpass')
-                && !preg_match('/^0*$/', Env::v('xorpass'))) {
-                $new_password = hash_xor(Env::v('xorpass'), $password);
-                $expected_response = hash_encrypt("$uname:$new_password:" . S::v('challenge'));
-                if ($response == $expected_response) {
-                    XDB::execute('UPDATE  auth_user_md5
-                                     SET  password = {?}
-                                   WHERE  user_id = {?}',
-                                 $new_password, $uid);
-
-                    // Update the GoogleApps password as well, if required.
-                    global $globals;
-                    if ($globals->mailstorage->googleapps_domain) {
-                        require_once 'googleapps.inc.php';
-                        $user = User::getSilent($uid);
-                        $account = new GoogleAppsAccount($user);
-                        if ($account->active() && $account->sync_password) {
-                            $account->set_password($new_password);
-                        }
-                    }
-                }
-            }
+            $expected_response = sha1("$uname:$password:" . S::v('challenge'));
+            /* XXX: Deprecates len(password) > 10 conversion */
             if ($response != $expected_response) {
                 if (!S::logged()) {
                     Platal::page()->trigError('Mot de passe ou nom d\'utilisateur invalide');
@@ -132,7 +118,7 @@ class XorgSession extends PlSession
             if (!S::logged()) {
                 S::set('auth', AUTH_COOKIE);
             }
-            return S::i('auth_by_cookie');
+            return User::getSilentWithUID(S::i('auth_by_cookie'));
         }
 
 
@@ -144,9 +130,8 @@ class XorgSession extends PlSession
 
         /** We come from an authentication form.
          */
-        if (S::has('suid')) {
-            $suid  = S::v('suid');
-            $login = $uname = $suid['uid'];
+        if (S::suid()) {
+            $login = $uname = S::suid('uid');
             $redirect = false;
         } else {
             $uname = Env::v('username');
@@ -168,10 +153,9 @@ class XorgSession extends PlSession
             }
         }
 
-        $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && is_numeric($uname)) ? 'id' : 'alias');
-        if (!is_null($uid) && S::has('suid')) {
-            $suid = S::v('suid');
-            if ($suid['uid'] == $uid) {
+        $uid = $this->checkPassword($uname, $login, Post::v('response'), (!$redirect && is_numeric($uname)) ? 'uid' : 'alias');
+        if (!is_null($uid) && S::suid()) {
+            if (S::suid('uid') == $uid) {
                 $uid = S::i('uid');
             } else {
                 $uid = null;
@@ -179,7 +163,7 @@ class XorgSession extends PlSession
         }
         if (!is_null($uid)) {
             S::set('auth', AUTH_MDP);
-            if (!S::has('suid')) {
+            if (!S::suid()) {
                 if (Post::has('domain')) {
                     if (($domain = Post::v('domain', 'login')) == 'alias') {
                         Cookie::set('domain', 'alias', 300);
@@ -191,12 +175,13 @@ class XorgSession extends PlSession
             S::kill('challenge');
             S::logger($uid)->log('auth_ok');
         }
-        return $uid;
+        return User::getSilentWithUID($uid);
     }
 
-    protected function startSessionAs($uid, $level)
+    protected function startSessionAs($user, $level)
     {
-        if ((!is_null(S::v('user')) && S::i('user') != $uid) || (S::has('uid') && S::i('uid') != $uid)) {
+        if ((!is_null(S::user()) && S::user()->id() != $user->id())
+            || (S::has('uid') && S::i('uid') != $user->id())) {
             return false;
         } else if (S::has('uid')) {
             return true;
@@ -206,17 +191,24 @@ class XorgSession extends PlSession
         }
 
         // Retrieves main user properties.
-        $res  = XDB::query("SELECT  u.user_id AS uid, u.hruid, prenom, prenom_ini, nom, nom_ini, nom_usage, perms, promo, promo_sortie,
-                                    matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
-                                    q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash,
-                                    FIND_IN_SET('watch', u.flags) AS watch_account, q.last_version, g.g_account_name IS NOT NULL AS googleapps,
-                                    UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
-                              FROM  auth_user_md5   AS u
-                        INNER JOIN  auth_user_quick AS q  USING(user_id)
-                         LEFT JOIN  gapps_accounts  AS g  ON (u.user_id = g.l_userid AND g.g_status = 'active')
-                         LEFT JOIN  #logger#.last_sessions AS ls ON (ls.uid = u.user_id)
-                         LEFT JOIN  #logger#.sessions AS s  ON(s.id = ls.id)
-                             WHERE  u.user_id = {?} AND u.perms IN('admin', 'user')", $uid);
+        /** TODO: Move needed informations to account tables */
+        /** TODO: Currently suppressed data are matricule, promo */
+        /** TODO: Use the User object to fetch all this */
+        $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name,
+                                    a.sex = 'female' AS femme, a.email_format,
+                                    a.token, FIND_IN_SET('watch', a.flags) AS watch_account,
+                                    UNIX_TIMESTAMP(fp.last_seen) AS banana_last, UNIX_TIMESTAMP(w.last) AS watch_last,
+                                    a.last_version, g.g_account_name IS NOT NULL AS googleapps,
+                                    UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
+                                    a.is_admin, at.perms
+                              FROM  accounts          AS a
+                        INNER JOIN  account_types     AS at ON (a.type = at.type)
+                         LEFT JOIN  watch             AS w  ON (w.uid = a.uid)
+                         LEFT JOIN  forum_profiles    AS fp ON (fp.uid = a.uid)
+                         LEFT JOIN  gapps_accounts    AS g  ON (a.uid = g.l_userid AND g.g_status = 'active')
+                         LEFT JOIN  log_last_sessions AS ls ON (ls.uid = a.uid)
+                         LEFT JOIN  log_sessions      AS s  ON(s.id = ls.id)
+                             WHERE  a.uid = {?} AND a.state = 'active'", $user->id());
         if ($res->numRows() != 1) {
             return false;
         }
@@ -229,24 +221,21 @@ class XorgSession extends PlSession
         $_SESSION = array_merge($_SESSION, $sess);
 
         // Starts the session's logger, and sets up the permanent cookie.
-        if (S::has('suid')) {
-            $suid = S::v('suid');
-            $logger = S::logger($uid);
-            $logger->log("suid_start", S::v('hruid') . " by " . $suid['hruid']);
+        if (S::suid()) {
+            S::logger()->log("suid_start", S::v('hruid') . ' by ' . S::suid('hruid'));
         } else {
-            $logger = S::logger($uid);
-            $logger->saveLastSession();
-            Cookie::set('uid', $uid, 300);
+            S::logger()->saveLastSession();
+            Cookie::set('uid', $user->id(), 300);
 
-            if (S::i('auth_by_cookie') == $uid || Post::v('remember', 'false') == 'true') {
-                $this->setAccessCookie(false, S::i('auth_by_cookie') != $uid);
+            if (S::i('auth_by_cookie') == $user->id() || Post::v('remember', 'false') == 'true') {
+                $this->setAccessCookie(false, S::i('auth_by_cookie') != $user->id());
             } else {
                 $this->killAccessCookie();
             }
         }
 
         // Finalizes the session setup.
-        S::set('perms', User::makePerms($perms));
+        $this->makePerms($perms, S::b('is_admin'));
         $this->securityChecks();
         $this->setSkin();
         $this->updateNbNotifs();
@@ -281,40 +270,29 @@ class XorgSession extends PlSession
 
     public function tokenAuth($login, $token)
     {
-        $res = XDB::query('SELECT  u.hruid
-                             FROM  aliases         AS a
-                       INNER JOIN  auth_user_md5   AS u ON (a.id = u.user_id AND u.perms IN ("admin", "user"))
-                       INNER JOIN  auth_user_quick AS q ON (a.id = q.user_id AND q.core_rss_hash = {?})
-                            WHERE  a.alias = {?} AND a.type != "homonyme"', $token, $login);
+        $res = XDB::query('SELECT  a.uid, a.hruid
+                             FROM  aliases  AS l
+                       INNER JOIN  accounts AS a ON (l.uid = a.uid AND a.state = \'active\')
+                            WHERE  a.token = {?} AND l.alias = {?} AND l.type != \'homonyme\'',
+                           $token, $login);
         if ($res->numRows() == 1) {
-            $data = $res->fetchOneAssoc();
-            return new User($data['hruid'], $data);
+            return new User(null, $res->fetchOneAssoc());
         }
         return null;
     }
 
     protected function makePerms($perm, $is_admin)
     {
-        $flags = new PlFlagSet();
-        if ($perm == 'disabled' || $perm == 'ext') {
-            S::set('perms', $flags);
-            return;
-        }
-        $flags->addFlag(PERMS_USER);
-        if ($perm == 'admin') {
-            $flags->addFlag(PERMS_ADMIN);
-        }
-        S::set('perms', $flags);
+        S::set('perms', User::makePerms($perm, $is_admin));
     }
 
     public function setSkin()
     {
-        if (S::logged() && (!S::has('skin') || S::has('suid'))) {
-            $uid = S::v('uid');
-            $res = XDB::query("SELECT  skin_tpl
-                                 FROM  auth_user_quick AS a
-                           INNER JOIN  skins           AS s ON a.skin = s.id
-                                WHERE  user_id = {?} AND skin_tpl != ''", $uid);
+        if (S::logged() && (!S::has('skin') || S::suid())) {
+            $res = XDB::query('SELECT  skin_tpl
+                                 FROM  accounts AS a
+                           INNER JOIN  skins    AS s on (a.skin = s.id)
+                                WHERE  a.uid = {?} AND skin_tpl != \'\'', S::i('uid'));
             S::set('skin', $res->fetchOneCell());
         }
     }
@@ -333,16 +311,16 @@ class XorgSession extends PlSession
     public function updateNbNotifs()
     {
         require_once 'notifs.inc.php';
-        $n = select_notifs(false, S::i('uid'), S::v('watch_last'), false);
-        S::set('notifs', $n->numRows());
+        $user = S::user();
+        $n = Watch::getCount($user);
+        S::set('notifs', $n);
     }
 
     public function setAccessCookie($replace = false, $log = true) {
-        if (S::has('suid') || ($replace && !Cookie::blank('access'))) {
+        if (S::suid() || ($replace && !Cookie::blank('access'))) {
             return;
         }
-        require_once('secure_hash.inc.php');
-        Cookie::set('access', hash_encrypt(S::v('password')), 300, true);
+        Cookie::set('access', sha1(S::user()->password()), 300, true);
         if ($log) {
             S::logger()->log('cookie_on');
         }

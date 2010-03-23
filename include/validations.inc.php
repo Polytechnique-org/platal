@@ -85,6 +85,7 @@ abstract class Validate
         $this->stamp  = date('YmdHis');
         $this->unique = $_unique;
         $this->type   = $_type;
+        $this->promo  = $this->user->promo();
     }
 
     // }}}
@@ -96,11 +97,14 @@ abstract class Validate
     public function submit()
     {
         if ($this->unique) {
-            XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->user->id(), $this->type);
+            XDB::execute('DELETE FROM  requests
+                                WHERE  uid = {?} AND type = {?}',
+                         $this->user->id(), $this->type);
         }
 
         $this->stamp = date('YmdHis');
-        XDB::execute('INSERT INTO requests (user_id, type, data, stamp) VALUES ({?}, {?}, {?}, {?})',
+        XDB::execute('INSERT INTO  requests (uid, type, data, stamp)
+                           VALUES  ({?}, {?}, {?}, {?})',
                 $this->user->id(), $this->type, $this, $this->stamp);
 
         global $globals;
@@ -113,8 +117,9 @@ abstract class Validate
 
     protected function update()
     {
-        XDB::execute('UPDATE requests SET data={?}, stamp=stamp
-                       WHERE user_id={?} AND type={?} AND stamp={?}',
+        XDB::execute('UPDATE  requests
+                         SET  data = {?}, stamp = stamp
+                       WHERE  uid = {?} AND type = {?} AND stamp = {?}',
                      $this, $this->user->id(), $this->type, $this->stamp);
         return true;
     }
@@ -130,10 +135,12 @@ abstract class Validate
         global $globals;
 
         if ($this->unique) {
-            $success = XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
+            $success = XDB::execute('DELETE FROM  requests
+                                           WHERE  uid = {?} AND type = {?}',
                                     $this->user->id(), $this->type);
         } else {
-            $success =  XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
+            $success =  XDB::execute('DELETE FROM  requests
+                                            WHERE  uid = {?} AND type = {?} AND stamp = {?}',
                                       $this->user->id(), $this->type, $this->stamp);
         }
         $globals->updateNbValid();
@@ -276,9 +283,15 @@ abstract class Validate
     static public function get_typed_request($uid, $type, $stamp = -1)
     {
         if ($stamp == -1) {
-            $res = XDB::query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
+            $res = XDB::query('SELECT  data
+                                 FROM  requests
+                                WHERE  uid = {?} and type = {?}',
+                              $uid, $type);
         } else {
-            $res = XDB::query('SELECT data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s") FROM requests WHERE user_id={?} AND type={?} and stamp={?}', $uid, $type, $stamp);
+            $res = XDB::query('SELECT  data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s")
+                                 FROM  requests
+                                WHERE  uid = {?} AND type = {?} and stamp = {?}',
+                              $uid, $type, $stamp);
         }
         if ($result = $res->fetchOneCell()) {
             $result = Validate::unserialize($result);
@@ -304,7 +317,10 @@ abstract class Validate
      */
     static public function get_typed_requests($uid, $type)
     {
-        $res = XDB::iterRow('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
+        $res = XDB::iterRow('SELECT  data
+                               FROM  requests
+                              WHERE  uid = {?} and type = {?}',
+                            $uid, $type);
         $array = array();
         while (list($data) = $res->next()) {
             $array[] = Validate::unserialize($data);
@@ -319,7 +335,10 @@ abstract class Validate
      */
     static public function get_typed_requests_count($uid, $type)
     {
-        $res = XDB::query('SELECT COUNT(data) FROM requests WHERE user_id={?} and type={?}', $uid, $type);
+        $res = XDB::query('SELECT  COUNT(data)
+                             FROM  requests
+                            WHERE  uid = {?} and type = {?}',
+                          $uid, $type);
         return $res->fetchOneCell();
     }
 

@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: Gestion des télépaiements </h1>
+<h1>{$asso->nom}&nbsp;: Gestion des télépaiements </h1>
 
 <p class="descr">
-Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}&nbsp;:
+Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;:
 </p>
 
 {foreach from=$titres item=p}
@@ -114,14 +114,12 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}&nbsp;:
   <tr>
     <td class="center">{$p.date|date_format:"%d/%m/%y"}</td>
     <td>
-      <a href="https://www.polytechnique.org/profile/{$p.alias}" class="popup2">
-        {$p.nom|mb_strtoupper} {$p.prenom}
-       </a>
+      {profile user=$p.user promo=false}
     </td>
     <td>
-      <a href="mailto:{$p.alias}@{#globals.mail.domain#}">{icon name=email title="email"}</a>
+      <a href="mailto:{$p.user->bestEmail()}">{icon name=email title="email"}</a>
     </td>
-    <td class="center">{$p.promo}</td>
+    <td class="center">{$p.user->promo()}</td>
     <td>{$p.comment|comment_decode}</td>
     <td class="right">{$p.montant}</td>
   </tr>

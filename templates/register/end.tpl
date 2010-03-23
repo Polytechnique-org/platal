@@ -24,7 +24,7 @@
 
 <h1>Confirmation de ton inscription</h1>
 
-<p>Merci {$prenom} d'avoir choisi de t'inscrire. Pour finaliser ton inscription,
+<p>Merci {$firstname} d'avoir choisi de t'inscrire. Pour finaliser ton inscription,
 il te suffit de taper ton mot de passe ci-dessous. Tu pourras ensuite librement
 accéder au site, et à notre annuaire en ligne&nbsp;!</p>
 

@@ -20,6 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 <h1>ChangeLog</h1>
+{if !$core}
 <p>Voici la liste des modifications faites sur <a href="http://opensource.polytechnique.org/platal/">plat/al</a>, le support libre de ce site.</p>
+
+<p>Cette version utilise <a href="changelog/core">plat/al-core {$globals->coreVersion}</a>.</p>
+{else}
+<p>Voici la liste des modifications faites sur la bibliothèque plat/al-core.</p>
+{/if}
+
 {$ChangeLog|smarty:nodefaults}
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -21,10 +21,10 @@
 {**************************************************************************}
 
 {if !$is_admin}
-<h1>{$asso.nom}&nbsp;: Événements</h1>
+<h1>{$asso->nom}&nbsp;: Événements</h1>
 {else}
 <h1>
-  {$asso.nom}&nbsp;: 
+  {$asso->nom}&nbsp;: 
   {if $archive}[<a href="{$platal->ns}events">Événements</a>] {else}Événements {/if}
   {if $archive}Archives {else}[<a href="{$platal->ns}events/archive">Archives</a>] {/if}
 </h1>
@@ -97,9 +97,7 @@
 
   <tr>
     <td class="titre">Annonceur&nbsp;:</td>
-    <td>
-      <a href='https://www.polytechnique.org/profile/{$e.alias}' class='popup2'>{$e.prenom} {$e.nom} ({$e.promo})</a>
-    </td>
+    <td>{profile user=$e.organisateur_uid promo=true groupperms=false}</td>
   </tr>
 
   {if $is_admin || $e.show_participants || ($e.deadline_inscription && $e.inscr_open)}

@@ -94,21 +94,13 @@
   <tr class="impair">
     <td class="titre">Comptes</td>
     <td>
-      <a href="admin/promo">Ajout promotion</a>
+      <a href="admin/add_accounts">Ajout de comptes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/user">Edition</a>
+      <a href="admin/user">Édition</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/homonyms">Homonymes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/deaths">Décès</a>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td class="titre">AX</td>
-    <td>
-      <a href="admin/ax-xorg">AX/X.org</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/synchro_ax">Synchro AX</a>
     </td>
   </tr>
   <tr class="impair">
@@ -124,15 +116,27 @@
 
   <tr><th colspan="2">{icon name=user_gray} Champs</th></tr>
   <tr class="impair">
+    <td class="titre">Formation</td>
+    <td>
+      <a href="admin/education">Formations</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/education_field">Domaines de formation</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/education_degree">Niveau de formation</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/education_degree_set">Niveau par formation</a>
+    </td>
+  </tr>
+  <tr class="impair">
     <td class="titre">Emploi</td>
     <td>
-      <a href="admin/formations">Formations</a>
+      <a href="admin/sectors">Secteurs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/secteurs">Secteurs</a>
+      <a href="admin/jobs">Entreprises</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/ss_secteurs">Sous-secteurs</a>
+      <a href="admin/corps_enum">Corps</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/fonctions">Fonctions</a>
+      <a href="admin/corps_rank">Grade</a>
     </td>
   </tr>
   <tr class="pair">
@@ -143,17 +147,13 @@
       <a href="admin/medals">Décorations</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/sections">Sections</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/names">Noms</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/networking">Networking</a>
     </td>
   </tr>
   <tr class="impair">
-    <td class="titre">Géoloc</td>
-    <td>
-      <a href="admin/geoloc">Synchro</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/geoloc/dynamap">Dynamap</a>
-    </td>
-  </tr>
-  <tr class="pair">
     <td class="titre">Compte</td>
     <td>
       <a href="admin/skins">Skins</a>

@@ -27,7 +27,7 @@
 {else}
 
 <h1 id='pagetop'>
-Bienvenue {$smarty.session.prenom}{if $birthday}
+Bienvenue {$smarty.session.display_name}{if $birthday}
   &nbsp;et joyeux anniversaire de la part de toute l'équipe&nbsp;!
 {else},
 {/if}
@@ -52,8 +52,8 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
     <tr class="pair" style="height: 18px">
       <td class="half titre" style="height: 18px; padding-top: 1px; padding-bottom: 1px;">
         {if $smarty.foreach.events.first}
-        {if $smarty.session.core_rss_hash}
-        <a href="rss/{$smarty.session.hruid}/{$smarty.session.core_rss_hash}/rss.xml" style="display:block;float:right" title="Annonces">
+        {if $smarty.session.token}
+        <a href="rss/{$smarty.session.hruid}/{$smarty.session.token}/rss.xml" style="display:block;float:right" title="Annonces">
           {icon name=feed title='fil rss'}
         </a>
         {else}
@@ -92,8 +92,8 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
     {if !$has_evts}
     <tr>
       <td class="half">
-        {if $smarty.session.core_rss_hash}
-        <a href="rss/{$smarty.session.hruid}/{$smarty.session.core_rss_hash}/rss.xml" style="display:block;float:right" title="Annonces">
+        {if $smarty.session.token}
+        <a href="rss/{$smarty.session.hruid}/{$smarty.session.token}/rss.xml" style="display:block;float:right" title="Annonces">
           {icon name=feed title='fil rss'}
         </a>
         {else}
@@ -189,10 +189,7 @@ Bienvenue {$smarty.session.prenom}{if $birthday}
             <img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/>
           </a>
         </div>
-        Annonce proposée par
-        <a href="profile/{$ev.hruid}" class="popup2">
-          {$ev.prenom} {$ev.nom} X{$ev.promo}
-        </a>
+        Annonce proposée par {profile user=$ev.uid sex=false promo=true}
       </td>
     </tr>
   </table>

@@ -36,7 +36,7 @@ class ContactsPDF extends FPDF
 
     private $report = 0;
 
-    function ContactsPDF()
+    public function __construct()
     {
         $this->report = error_reporting(0);
         parent::FPDF();
@@ -53,7 +53,7 @@ class ContactsPDF extends FPDF
         $this->AddPage();
     }
 
-    function Output($name='mescontacts.pdf', $dest='I')
+    public function Output($name='mescontacts.pdf', $dest='I')
     {
         Header('Pragma: public');
         error_reporting(0);
@@ -61,7 +61,7 @@ class ContactsPDF extends FPDF
         error_reporting($this->report);
     }
 
-    function Rotate($angle, $x=-1, $y=-1)
+    private function Rotate($angle, $x=-1, $y=-1)
     {
         if ($x==-1) {
             $x = $this->x;
@@ -84,7 +84,7 @@ class ContactsPDF extends FPDF
         }
     }
 
-    function Header()
+    public function Header()
     {
 
         $this->SetFont('Vera Sans', 'B', 20);
@@ -111,7 +111,7 @@ class ContactsPDF extends FPDF
         $this->ColSetup(false);
     }
 
-    function Footer()
+    public function Footer()
     {
         $this->setLeftMargin(5);
         $this->setRightMargin(5);
@@ -122,7 +122,7 @@ class ContactsPDF extends FPDF
         $this->Cell(0, 10, '(en date du '.strftime('%d %B %Y').')', 0, 0, 'R');
     }
 
-    function ColSetup($col)
+    private function ColSetup($col)
     {
         $this->col = $col;
         $x = 10 + $this->col * 100;
@@ -132,7 +132,7 @@ class ContactsPDF extends FPDF
         $this->SetY($this->y0);
     }
 
-    function NextCol()
+    private function NextCol()
     {
         $this->ColSetup(1 - $this->col);
         if ($this->col == 0) {
@@ -140,12 +140,12 @@ class ContactsPDF extends FPDF
         }
     }
 
-    function AcceptPageBreak()
+    public function AcceptPageBreak()
     {
         $this->broken = true;
     }
 
-    function Space($w=0.1, $h=0.5)
+    private function Space($w=0.1, $h=0.5)
     {
         $x = $this->getX();
         $y = $this->getY();
@@ -154,7 +154,7 @@ class ContactsPDF extends FPDF
         $this->Ln($h);
     }
 
-    function TableRow($l, $r, $font = 'Sans')
+    private function TableRow($l, $r, $font = 'Sans')
     {
         $this->SetFont('Vera Sans', 'B', 8);
         $y = $this->getY();
@@ -173,36 +173,41 @@ class ContactsPDF extends FPDF
         $this->setX($x);
     }
 
-    function Address($a)
+    private function Address($a)
     {
+        if (!$a['text']) {
+            return;
+        }
         $l = "adresse\n";
-        if ($a['active']) {
+        if ($a['current']) {
             $l .= 'actuelle';
-        } elseif ($a['secondaire']) {
+        } elseif ($a['secondary']) {
             $l .= 'secondaire';
         } else {
             $l .= 'principale';
         }
 
-        $r = '';
-        $r = trim("$r\n".$a['adr1']);
+        $r = utf8_decode($a['text']);
+/*        $r = trim("$r\n".$a['adr1']);
         $r = trim("$r\n".$a['adr2']);
         $r = trim("$r\n".$a['adr3']);
         $r = trim("$r\n".trim($a['postcode'].' '.$a['city']));
-
+*/
         $this->TableRow($l, $r);
-
+/*
         if (!empty($a['tels'])) {
             foreach ($a['tels'] as $tel) {
                 if (!empty($tel['tel'])) {
                     $this->TableRow(utf8_decode($tel['tel_type']), $tel['tel'], 'Mono');
                 }
             }
-        }
+        }*/
     }
 
-    function AddressPro($a)
+    private function AddressPro($a)
     {
+        return;
+
         if ($a['entreprise']) {
             $this->TableRow('Entreprise', $a['entreprise']);
         }
@@ -224,12 +229,12 @@ class ContactsPDF extends FPDF
         }
     }
 
-    function Error($msg)
+    public function Error($msg)
     {
         $this->error = true;
     }
 
-    function wordwrap($text, $maxwidth = 90) {
+    private function wordwrap($text, $maxwidth = 90) {
         $text = trim($text);
         if ($text==='') { return 0; }
         $space = $this->GetStringWidth(' ');
@@ -259,7 +264,7 @@ class ContactsPDF extends FPDF
         return $count;
     }
 
-    static function AddContact($self, $x, $wp = true)
+    public static function AddContact(ContactsPDF $self, Profile &$profile, $wp = true)
     {
         /* infamous hack :
            1- we store the current state.
@@ -274,25 +279,20 @@ class ContactsPDF extends FPDF
         $self->SetFillColor(245, 248, 252);
         $self->SetLineWidth(0.4);
 
-        $nom = $x['prenom'].' '
-              .($x['nom_usage'] ? "{$x['nom_usage']} ({$x['nom']})" : $x['nom'])
-              ." ({$x['promo']})";
+        $nom = utf8_decode($profile->full_name);
         $ok  = false;
 
         if ($wp) {
-            $res = XDB::query("SELECT * FROM photo WHERE attachmime IN ('jpeg', 'png') AND uid={?}",
-                              $x['user_id']);
-            if ($i = $res->numRows()) {
+            $photo = $profile->getPhoto(false);
+            if ($photo) {
                 $old2  = clone $self;
-                $photo = $res->fetchOneAssoc();
-                $width = $photo['x'] * 20/$photo['y'];
-                $GLOBALS["p{$x['user_id']}"] = $photo['attach'];
-
+                $width = $photo->width() * 20 / $photo->height();
                 $_x = $self->getX();
                 $_y = $self->getY();
                 $self->Cell(0, 20, '', '', 0, '', 1);
                 error_reporting(0);
-                $self->Image("var://p{$x['user_id']}", $_x, $_y, $width, 20, $photo['attachmime']);
+                $mime = explode('/', $photo->mimeType());
+                $self->Image($photo->path(), $_x, $_y, $width, 20, $mime[1]);
                 error_reporting($self->report);
 
                 if ($self->error) {
@@ -300,7 +300,7 @@ class ContactsPDF extends FPDF
                 } else {
                     $self->setX($_x);
                     $self->Cell($width, 20, '', "T");
-                    $h = 20 / $self->wordwrap($nom, 90-$width);
+                    $h = 20 / $self->wordwrap($nom, 90 - $width);
                     $self->MultiCell(0, $h, $nom, 'T', 'C');
                     $ok = true;
                 }
@@ -310,43 +310,33 @@ class ContactsPDF extends FPDF
             $self->MultiCell(0, 6, $nom, "T", 'C', 1);
         }
 
-        if ($x['mobile']) {
+        if ($profile->mobile) {
             $self->Space();
-            $self->TableRow('mobile', $x['mobile'], 'Mono');
+            $self->TableRow('mobile', utf8_decode($profile->mobile), 'Mono');
         }
 
-        foreach ($x['adr'] as $a) {
-            $self->Space();
+        $it = $profile->iterAddresses(Profile::ADDRESS_ALL);
+        while ($a = $it->next()) {
             foreach ($a as &$value) {
-                if (is_utf8($value)) {
-                    $value = utf8_decode($value);
-                }
+                $value = utf8_decode($value);
             }
+            $self->Space();
             $self->Address($a);
         }
-
-        if (!empty($x['adr_pro'])) {
-            foreach ($x['adr_pro'] as $a) {
-                if ( ! ($a['entreprise'] || $a['tel'] || $a['fax']
-                        || $a['adr1'] || $a['adr2'] || $a['adr3'] || $a['postcode'] || $a['city']) )
-                {
-                    continue;
-                }
-                foreach ($a as &$value) {
-                    if (is_utf8($value)) {
-                        $value = utf8_decode($value);
-                    }
-                }
-                $self->Space();
-                $self->AddressPro($a);
+        $it = $profile->iterAddresses(Profile::ADDRESS_PRO);
+        while ($a = $it->next()) {
+            foreach ($a as &$value) {
+                $value = utf8_decode($value);
             }
+            $self->Space();
+            $self->AddressPro($a);
         }
 
         $self->Space(0.4, 5);
 
         if ($self->broken) {
             $old->NextCol();
-            $self = ContactsPDF::AddContact($old, $x, $wp);
+            $self = ContactsPDF::AddContact($old, $profile, $wp);
         }
 
         return $self;

@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Edition de message</h1>
+<h1>Édition de message</h1>
 
 <form action="{$platal->pl_self()}" method="post">
   {xsrf_token_field}

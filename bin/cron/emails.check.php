@@ -47,19 +47,17 @@ if (PEAR::isError($opts)) {
 /*
  * Check duplicated addresses
  */
-$sql = "SELECT  a1.alias, a2.alias, e1.email
-          FROM  emails        AS e1
-    INNER JOIN  emails        AS e2 ON (e1.email = e2.email AND e1.uid != e2.uid
-                                       AND (e1.uid < e2.uid OR NOT FIND_IN_SET('active', e2.flags)))
-     LEFT JOIN  emails_watch  AS w  ON (e1.email = w.email)
-    INNER JOIN  aliases       AS a1 ON (a1.id = e1.uid AND a1.type = 'a_vie')
-    INNER JOIN  aliases       AS a2 ON (a2.id = e2.uid AND a2.type = 'a_vie')
-    INNER JOIN  auth_user_md5 AS u1 ON (a1.id = u1.user_id)
-    INNER JOIN  auth_user_md5 AS u2 ON (a2.id = u2.user_id)
-         WHERE  FIND_IN_SET('active', e1.flags) AND u1.nom != u2.nom_usage AND u2.nom != u1.nom_usage AND w.email IS NULL
-      ORDER BY  a1.alias";
-
-$it = Xdb::iterRow($sql);
+$it = Xdb::iterRow("SELECT  al1.alias, al2.alias, e1.email
+                      FROM  emails      AS e1
+                INNER JOIN  emails      AS e2  ON (e1.email = e2.email AND e1.uid != e2.uid
+                                                   AND (e1.uid < e2.uid OR NOT FIND_IN_SET('active', e2.flags)))
+                INNER JOIN  aliases     AS al1 ON (al1.uid = e1.uid AND al1.type = 'a_vie')
+                INNER JOIN  aliases     AS al2 ON (al2.uid = e2.uid AND al2.type = 'a_vie')
+                INNER JOIN  accounts    AS a1  ON (al1.uid = a1.uid)
+                INNER JOIN  accounts    AS a2  ON (al2.uid = a2.uid)
+                 LEFT JOIN  email_watch AS w   ON (e1.email = w.email)
+                     WHERE  FIND_IN_SET('active', e1.flags) AND w.email IS NULL
+                  ORDER BY  al1.alias");
 
 $insert   = array();
 $conflits = array();
@@ -74,7 +72,7 @@ if (count($conflits) > 0) {
         . "https://www.polytechnique.org/admin/emails/duplicated";
 
     echo "\n\n";
-    $sql = "INSERT IGNORE INTO  emails_watch (email, state, detection, last)
+    $sql = "INSERT IGNORE INTO  email_watch (email, state, detection, last)
                         VALUES  " . join(", ", $insert);
     XDB::execute($sql);
     if (XDB::errno() != 0) {
@@ -86,12 +84,12 @@ if (count($conflits) > 0) {
  * Check dead emails
  */
 if ($panne_level > 0) {
-    $sql = "SELECT  e.email, u.hruid
-              FROM  emails        AS e
-        INNER JOIN  auth_user_md5 AS u ON u.user_id = e.uid
-             WHERE  e.panne_level = $panne_level AND e.flags = 'active'
-          ORDER BY  u.hruid";
-    $res = Xdb::query($sql);
+    $res = Xdb::query("SELECT  e.email, a.hruid
+                         FROM  emails   AS e
+                   INNER JOIN  accounts AS a ON (a.uid = e.uid)
+                        WHERE  e.panne_level = {?} AND e.flags = 'active'
+                     ORDER BY  a.hruid",
+                      $panne_level);
 
     if ($res->numRows()) {
         $result = $res->fetchAllAssoc();
@@ -106,9 +104,10 @@ if ($panne_level > 0) {
                        WHERE  panne_level = 3 AND flags = 'active'");
     }
 
-    Xdb::execute("UPDATE  emails
-                     SET  panne_level = $panne_level
-                   WHERE  panne_level > $panne_level");
+    Xdb::execute('UPDATE  emails
+                     SET  panne_level = {?}
+                   WHERE  panne_level > {?}',
+                 $panne_level, $panne_level);
 }
 
 /*
@@ -116,12 +115,13 @@ if ($panne_level > 0) {
  * inactive redirection.
  */
 if ($opt_verbose) {
-    $res = XDB::query("SELECT  u.hruid, ei.email
-                         FROM  auth_user_md5   AS u
-                    LEFT JOIN  emails          AS ea ON (ea.uid = u.user_id AND ea.flags='active')
-                   INNER JOIN  emails          AS ei ON (ei.uid = u.user_id AND ei.flags='')
-                        WHERE  FIND_IN_SET('googleapps', u.mail_storage) = 0 AND ea.email IS NULL
-                     GROUP BY  u.user_id");
+    $res = XDB::query("SELECT  a.hruid, ei.email
+                         FROM  accounts      AS a
+                    LEFT JOIN  emails        AS ea ON (ea.uid = a.uid AND ea.flags = 'active')
+                   INNER JOIN  emails        AS ei ON (ei.uid = a.uid AND ei.flags = '')
+                   INNER JOIN  email_options AS eo ON (eo.uid = a.uid)
+                        WHERE  NOT FIND_IN_SET('googleapps', eo.storage) AND ea.email IS NULL
+                     GROUP BY  a.uid");
 
     if ($res->numRows()) {
         $result = $res->fetchAllAssoc();

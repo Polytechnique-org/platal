@@ -28,6 +28,12 @@ all: build
 
 build: core conf static banana wiki openid medals jquery
 
+check:
+	@!(find . -name '*.php' -exec php -l {} ";" | grep -v 'No syntax errors detected')
+
+test:
+	make -C core test
+
 q:
 	@echo -e "Code statistics\n"
 	@sloccount $(filter-out wiki/ spool/, $(wildcard */)) 2> /dev/null | egrep '^[a-z]*:'
@@ -165,24 +171,40 @@ $(MEDAL_THUMBNAILS): $(subst /medals/thumb/,/medals/,$(@F))
 ##
 ## jquery
 ##
-
+JQUERY_VERSION=1.4.2
 JQUERY_PLUGINS=color
 JQUERY_PLUGINS_PATHES=$(addprefix htdocs/javascript/jquery.,$(addsuffix .js,$(JQUERY_PLUGINS)))
+
+JQUERY_UI_VERSION=1.6
+JQUERY_UI=core tabs
+JQUERY_UI_PATHES=$(addprefix htdocs/javascript/jquery.ui.,$(addsuffix .js,$(JQUERY_UI)))
 
 # TODO: jquery.autocomplete.js should rather be downloaded from an official source. The issue
 # is that the version we use is not available anymore on the Internet, and the latest version
 # we could use is not backward compatible with our current code.
-jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES)
+jquery: htdocs/javascript/jquery.js $(JQUERY_PLUGINS_PATHES) $(JQUERY_UI_PATHES)
 
-htdocs/javascript/jquery.js: DOWNLOAD_SRC = http://jquery.com/src/jquery-latest.min.js
-htdocs/javascript/jquery.js:
+htdocs/javascript/jquery-$(JQUERY_VERSION).min.js: DOWNLOAD_SRC = http://jquery.com/src/$(@F)
+htdocs/javascript/jquery-$(JQUERY_VERSION).min.js:
+	@-rm htdocs/javascript/jquery-*.min.js
 	@$(download)
+
+htdocs/javascript/jquery.js: htdocs/javascript/jquery-$(JQUERY_VERSION).min.js
+	ln -snf $(<F) $@
 
 $(JQUERY_PLUGINS_PATHES): DOWNLOAD_SRC = http://plugins.jquery.com/files/$(@F).txt
 $(JQUERY_PLUGINS_PATHES):
+	@-rm htdocs/javascript/jquery.ui*.$*.js
 	@$(download)
+
+htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js: DOWNLOAD_SRC = http://jquery-ui.googlecode.com/svn/tags/$(JQUERY_UI_VERSION)/ui/ui.$*.js
+htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js:
+	@$(download)
+
+$(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
+	ln -snf $(<F) $@
 
 ################################################################################
 
-.PHONY: build dist clean core wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http*
+.PHONY: build dist clean core wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http* check test
 

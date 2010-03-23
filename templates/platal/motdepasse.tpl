@@ -35,51 +35,48 @@
   stocké chiffré irréversiblement sur nos serveurs.
 </p>
 <br />
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass">
-  <table class="tinybicol" cellpadding="3" cellspacing="0"
-    summary="Formulaire de mot de passe">
-    <tr>
-      <th colspan="2">
-        Saisie du nouveau mot de passe
-      </th>
-    </tr>
-    <tr>
-      <td class="titre">
-        Mot de passe&nbsp;:
-      </td>
-      <td>
-        <input type="password" size="10" maxlength="256" name="nouveau" />
-      </td>
-    </tr>
-    <tr>
-      <td class="titre">
-        Retape-le une fois&nbsp;:
-      </td>
-      <td>
-        <input type="password" size="10" maxlength="256" name="nouveau2" />
-      </td>
-    </tr>
-    <tr>
-      <td class="titre">
-        Sécurité
-      </td>
-      <td>
-        {checkpasswd prompt="nouveau" submit="submitn"}
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" class="center">
-        <input type="submit" value="Changer" name="submitn" onclick="EnCryptedResponse(); return false;" />
-      </td>
-    </tr>
-  </table>
-</form>
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass2">
-<p>
-{xsrf_token_field}
-<input type="hidden" name="response2"  value="" />
-</p>
-</form>
+<fieldset style="width: 70%; margin-left: 15%">
+  <legend>{icon name=lock} Saisie du nouveau mot de passe</legend>
+  <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass">
+    <table style="width: 100%">
+      <tr>
+        <td class="titre">
+          Mot de passe&nbsp;:
+        </td>
+        <td>
+          <input type="password" size="10" maxlength="256" name="nouveau" />
+        </td>
+      </tr>
+      <tr>
+        <td class="titre">
+          Retape-le une fois&nbsp;:
+        </td>
+        <td>
+          <input type="password" size="10" maxlength="256" name="nouveau2" />
+        </td>
+      </tr>
+      <tr>
+        <td class="titre">
+          Sécurité
+        </td>
+        <td>
+          {checkpasswd prompt="nouveau" submit="submitn"}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="center">
+          <input type="submit" value="Changer" name="submitn" onclick="EnCryptedResponse(); return false;" />
+        </td>
+      </tr>
+    </table>
+  </form>
+  <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass2">
+  <p>
+  {xsrf_token_field}
+  <input type="hidden" name="response2"  value="" />
+  </p>
+  </form>
+</fieldset>
 
 <p>
   Note bien qu'il s'agit là du mot de passe te permettant de t'authentifier sur le site {#globals.core.sitename#}&nbsp;;

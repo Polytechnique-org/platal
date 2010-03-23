@@ -76,7 +76,7 @@ class XnetSession extends XorgSession
     protected function doAuth($level)
     {
         if (S::identified()) { // ok, c'est bon, on n'a rien à faire
-            return S::i('uid');
+            return User::getSilentWithValues(null, array('uid' => S::i('uid')));
         }
         if (!Get::has('auth')) {
             return null;
@@ -87,25 +87,25 @@ class XnetSession extends XorgSession
         }
         Get::kill('auth');
         S::set('auth', AUTH_MDP);
-        return Get::i('uid');
+        return User::getSilentWithValues(null, array('uid' => Get::i('uid')));
     }
 
     protected function startSessionAs($user, $level)
     {
-        if ($level == -1) {
+        if ($level == AUTH_SUID) {
             S::set('auth', AUTH_MDP);
         }
-        $res  = XDB::query("SELECT  u.user_id AS uid, u.hruid, prenom, nom, perms, promo, password, FIND_IN_SET('femme', u.flags) AS femme,
-                                    q.core_mail_fmt AS mail_fmt, q.core_rss_hash
-                              FROM  auth_user_md5   AS u
-                        INNER JOIN  auth_user_quick AS q  USING(user_id)
-                             WHERE  u.user_id = {?} AND u.perms IN('admin', 'user')
-                             LIMIT  1", $user);
+        $res  = XDB::query("SELECT  a.uid, a.hruid, a.display_name, a.full_name,
+                                    a.sex = 'female' AS femme,
+                                    a.email_format, a.token,
+                                    at.perms, a.is_admin
+                              FROM  accounts AS a
+                        INNER JOIN  account_types AS at ON (at.type = a.type)
+                             WHERE  a.uid = {?} AND a.state = 'active'
+                             LIMIT  1", $user->id());
         $sess = $res->fetchOneAssoc();
-        $perms = $sess['perms'];
-        unset($sess['perms']);
         $_SESSION = array_merge($_SESSION, $sess);
-        S::set('perms', User::makePerms($perms));
+        $this->makePerms(S::s('perms'), S::b('is_admin'));
         S::kill('challenge');
         S::kill('loginX');
         S::kill('may_update');
@@ -122,7 +122,8 @@ class XnetSession extends XorgSession
 
     public function doSelfSuid()
     {
-        if (!$this->startSUID(S::i('uid'))) {
+        $user =& S::user();
+        if (!$this->startSUID($user)) {
             return false;
         }
         S::set('perms', User::makePerms('user'));
@@ -131,14 +132,13 @@ class XnetSession extends XorgSession
 
     public function stopSUID()
     {
-        $suid = S::v('suid');
+        $perms = S::suid('perms');
         if (!parent::stopSUID()) {
             return false;
         }
-        S::kill('suid');
         S::kill('may_update');
         S::kill('is_member');
-        S::set('perms', $suid['perms']);
+        S::set('perms', $perms);
         return true;
     }
 }
@@ -162,11 +162,11 @@ function may_update($force = false, $lose = false)
         return false;
     } elseif ($lose) {
         $may_update[$asso_id] = false;
-    } elseif (S::admin() || (S::has('suid') && $force)) {
+    } elseif (S::admin() || (S::suid() && $force)) {
         $may_update[$asso_id] = true;
     } elseif (!isset($may_update[$asso_id]) || $force) {
         $res = XDB::query("SELECT  perms
-                             FROM  #groupex#.membres
+                             FROM  group_members
                             WHERE  uid={?} AND asso_id={?}",
                           S::v('uid'), $asso_id);
         $may_update[$asso_id] = ($res->fetchOneCell() == 'admin');
@@ -194,11 +194,11 @@ function is_member($force = false, $lose = false)
         return false;
     } elseif ($lose) {
         $is_member[$asso_id] = false;
-    } elseif (S::has('suid') && $force) {
+    } elseif (S::suid() && $force) {
         $is_member[$asso_id] = true;
     } elseif (!isset($is_member[$asso_id]) || $force) {
         $res = XDB::query("SELECT  COUNT(*)
-                             FROM  #groupex#.membres
+                             FROM  group_members
                             WHERE  uid={?} AND asso_id={?}",
                 S::v('uid'), $asso_id);
         $is_member[$asso_id] = ($res->fetchOneCell() == 1);

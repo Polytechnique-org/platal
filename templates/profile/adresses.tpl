@@ -20,18 +20,18 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{foreach key=i item=adr from=$addresses}
+{foreach key=i item=address from=$addresses}
 <div id="{"addresses_`$i`_cont"}">
-{include file="profile/adresses.address.tpl" i=$i adr=$adr}
+{include file="profile/adresses.address.tpl" i=$i address=$address}
 </div>
 {/foreach}
 {if $addresses|@count eq 0}
 <div id="addresses_0_cont">
-{include file="profile/adresses.address.tpl" i=0 adr=0}
+{include file="profile/adresses.address.tpl" i=0 address=0}
 </div>
 {/if}
 
-<div id="add_adr" class="center">
+<div id="add_address" class="center">
   <a href="javascript:addAddress()">
     {icon name=add title="Ajouter une adresse"} Ajouter une adresse
   </a>

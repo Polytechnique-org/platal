@@ -75,19 +75,13 @@
 
     if (schoolId) {
       $(".autocomplete[name='schoolTxt']").addClass('hidden_valid');
-
-      $("[name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
-          if ($("select[name='diploma']").children("option").size() > 1) {
-            $("select[name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
-          } else {
-            $("select[name='diploma']").attr('value', '');
-          }
-        });
     } else {
       $(".autocomplete[name='schoolTxt']").removeClass('hidden_valid');
-
-      $("select[name='diploma']").attr('value', '');
     }
+
+    $("[name='diploma']").parent().load(baseurl + 'list/diploma/', { school:schoolId }, function() {
+        $("select[name='diploma']").attr('value', '{/literal}{$smarty.request.diploma}{literal}');
+      });
   }
 
   // when choosing autocomplete from list, must validate
@@ -184,23 +178,11 @@
       </th>
     </tr>
     <tr>
-      <td>Nom</td>
+      <td>Nom, prénom, surnom...</td>
       <td>
         <input type="hidden" name="rechercher" value="Chercher"/>
         <input type="submit" style="display:none"/>
-        <input type="text" class="autocomplete" name="name" size="32" value="{$smarty.request.name}" />
-      </td>
-    </tr>
-    <tr>
-      <td>Prénom</td>
-      <td>
-        <input class="autocomplete" type="text" name="firstname" size="32" value="{$smarty.request.firstname}" />
-      </td>
-    </tr>
-    <tr>
-      <td>Surnom</td>
-      <td>
-        <input class="autocomplete" type="text" name="nickname" size="32" value="{$smarty.request.nickname}" />
+        <input type="text" name="name" size="32" value="{$smarty.request.name}" />
       </td>
     </tr>
     <tr>
@@ -325,8 +307,8 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
       </td>
     </tr>
     <tr>
-      <td>Poste</td>
-      <td><input type="text" class="autocomplete" name="poste" size="32" value="{$smarty.request.poste}" /></td>
+      <td>Description</td>
+      <td><input type="text" class="autocomplete" name="description" size="32" value="{$smarty.request.description}" /></td>
     </tr>
     <tr>
       <td>Secteur</td>
@@ -404,6 +386,29 @@ checked="checked"{/if}/>Chercher uniquement les adresses où les camarades sont 
     <tr>
       <td>Commentaire contient</td>
       <td><input type="text" name="free" size="32" value="{$smarty.request.free}" /></td>
+    </tr>
+    <tr>
+      <td>Numéro de téléphone</td>
+      <td><input type="text" name="phone_number" size="32" value="{$smarty.request.phone_number}"/></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: middle">
+        <span>Networking et sites webs</span>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td style="padding-left: 0px;">
+              <input type="text" name="networking_address" size="32" value="{$smarty.request.networking_address}" />
+            </td>
+            <td>
+              <input type="text" name="networking_typeTxt" class="autocomplete" size="10" value="{$smarty.request.networking_typeTxt}" />
+              <input name="networking_type" class="autocompleteTarget" type="hidden" value="{$smarty.request.networking_type}"/>
+              <a href="networking_type" class="autocompleteToSelect">{icon name="table" title="Tous les types d'adresse"}</a>
+            </td>
+          </tr>
+        </table>
+      </td>
     </tr>
         {if $smarty.session.auth ge AUTH_COOKIE}
     <tr>

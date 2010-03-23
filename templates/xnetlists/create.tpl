@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: Création d'une liste de diffusion</h1>
+<h1>{$asso->nom}&nbsp;: Création d'une liste de diffusion</h1>
 
 <p class="descr">
 <strong>Note&nbsp;:</strong> les listes de diffusion sont un outil particulièrement adapté pour des
@@ -42,7 +42,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement<
     <tr>
       <td><strong>Adresse&nbsp;souhaitée&nbsp;:</strong></td>
       <td colspan='3'>
-        <input type='text' name='liste' value='{$smarty.post.liste}' />@{$asso.mail_domain}
+        <input type='text' name='liste' value='{$smarty.post.liste}' />@{$asso->mail_domain}
       </td>
     </tr>
     <tr>

@@ -31,7 +31,49 @@
   <a href="javascript:addJob()">
     {icon name=add title="Ajouter un emploi"} Ajouter un emploi
   </a>
+  <br/><br/>
 </div>
+
+<table class="bicol" style="margin-bottom: 1em" summary="Corps">
+  <tr>
+    <th colspan="2">
+      <div class="flags" style="float: left; text-align: left">
+        {include file="include/flags.radio.tpl" name="corps[pub]" val=$corps.pub}
+      </div>
+      Corps
+    </th>
+  </tr>
+  <tr>
+    <td class="titre">Corps d'origine</td>
+    <td>
+      <select name="corps[original]">
+        {foreach from=$original_corps item=o_corps}
+        <option value="{$o_corps.id}" {if $o_corps.id eq $corps.original}selected="selected"{/if}>{$o_corps.name}</option>
+        {/foreach}
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Corps actuel</td>
+    <td>
+      <select name="corps[current]">
+        {foreach from=$current_corps item=c_corps}
+        <option value="{$c_corps.id}" {if $c_corps.id eq $corps.current}selected="selected"{/if}>{$c_corps.name}</option>
+        {/foreach}
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td class="titre">Grade</td>
+    <td>
+      <select name="corps[rank]">
+        {foreach from=$corps_rank item=rank}
+        <option value="{$rank.id}" {if $rank.id eq $corps.rank}selected="selected"{/if}>{$rank.name}</option>
+        {/foreach}
+      </select>
+    </td>
+  </tr>
+</table>
 
 <table class="bicol" summary="CV" style="margin-top: 1.5em">
   <tr>

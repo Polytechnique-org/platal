@@ -34,7 +34,7 @@
         <img src="photo/{$set[trombi.index_prev].hruid}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_with_admin && hasPerm('admin')}
-      <a href="{$mainsiteurl}admin/trombino/{$set[trombi.index_prev].user_id}">{icon name=wrench title="[admin]"}</a>
+      <a href="{$mainsiteurl}admin/trombino/{$set[trombi.index_prev].uid}">{icon name=wrench title="[admin]"}</a>
       {/if}
     </td>
     <td class="center" style="vertical-align: middle">
@@ -42,7 +42,7 @@
         <img src="photo/{$set[trombi].hruid}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_with_admin && hasPerm('admin')}
-      <a href="{$mainsiteurl}admin/trombino/{$set[trombi].user_id}">{icon name=wrench title="[admin]"}</a>
+      <a href="{$mainsiteurl}admin/trombino/{$set[trombi].uid}">{icon name=wrench title="[admin]"}</a>
       {/if}
     </td>
     <td class="center" style="vertical-align: middle">
@@ -51,7 +51,7 @@
         <img src="photo/{$set[trombi.index_next].hruid}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_with_admin && hasPerm('admin')}
-      <a href="{$mainsiteurl}admin/trombino/{$set[trombi.index_next].user_id}">{icon name=wrench title="[admin]"}</a>
+      <a href="{$mainsiteurl}admin/trombino/{$set[trombi.index_next].uid}">{icon name=wrench title="[admin]"}</a>
       {/if}
     {/if}
     </td>
@@ -59,18 +59,19 @@
   <tr>
     <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
       <a href="{$mainsiteurl}profile/{$set[trombi.index_prev].hruid}" class="popup2">
-        {$set[trombi.index_prev].prenom} {$set[trombi.index_prev].nom}{if $trombi_with_promo} ({$set[trombi.index_prev].promo}){/if}
+        <span {if $set[trombi.index_prev].name_tooltip}class="hinted"
+        title="{$set[trombi.index_prev].name_tooltip}"{/if}>{$set[trombi.index_prev].name_display}</span>{if $trombi_with_promo} ({$set[trombi.index_prev].promo_display}){/if}
       </a>
     </td>
     <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
       <a href="{$mainsiteurl}profile/{$set[trombi].hruid}" class="popup2">
-        {$set[trombi].prenom} {$set[trombi].nom}{if $trombi_with_promo} ({$set[trombi].promo}){/if}
+        <span {if $set[trombi].name_tooltip}class="hinted" title="{$set[trombi].name_tooltip}"{/if}>{$set[trombi].name_display}</span>{if $trombi_with_promo} ({$set[trombi].promo_display}){/if}
       </a>
     </td>
     <td class="center" style="vertical-align: bottom; padding-bottom: 15px">
     {if $set[trombi.index_next]}
       <a href="{$mainsiteurl}profile/{$set[trombi.index_next].hruid}" class="popup2">
-        {$set[trombi.index_next].prenom} {$set[trombi.index_next].nom}{if $trombi_with_promo} ({$set[trombi.index_next].promo}){/if}
+        <span {if $set[trombi.index_next].name_tooltip}class="hinted" title="{$set[trombi.index_next].name_tooltip}"{/if}>{$set[trombi.index_next].name_display}</span>{if $trombi_with_promo} ({$set[trombi.index_next].promo_display}){/if}
       </a>
     {/if}
     </td>
@@ -82,7 +83,7 @@
         <img src="photo/{$set[trombi].hruid}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_with_admin && hasPerm('admin')}
-      <a href="{$mainsiteurl}admin/trombino/{$set[trombi].user_id}">{icon name=wrench title="[admin]"}</a>
+      <a href="{$mainsiteurl}admin/trombino/{$set[trombi].uid}">{icon name=wrench title="[admin]"}</a>
       {/if}
     </td>
     <td></td><td></td>
@@ -90,7 +91,8 @@
   <tr style="margin-top: 0; padding-top: 0">
     <td class="center" style="vertical-align: bottom">
       <a href="{$mainsiteurl}profile/{$set[trombi].hruid}" class="popup2">
-        {$set[trombi].prenom} {$set[trombi].nom}{if $trombi_with_promo} ({$set[trombi].promo}){/if}
+      <a href="{$mainsiteurl}profile/{$set[trombi].forlife}" class="popup2">
+        <span {if $set[trombi].name_tooltip}class="hinted" title="{$set[trombi].name_tooltip}"{/if}>{$set[trombi].name_display}</span>{if $trombi_with_promo} ({$set[trombi].promo_display}){/if}
       </a>
     </td>
     <td></td><td></td>

@@ -19,9 +19,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileNom implements ProfileSetting
+class ProfileSearchNames implements ProfileSetting
 {
-    private function matchWord($old, $new, $newLen) {
+    private $private_name_end;
+    private $search_names;
+
+    private function matchWord($old, $new, $newLen)
+    {
         return ($i = strpos($old, $new)) !== false
             && ($i == 0 || $old{$i-1} == ' ')
             && ($i + $newLen == strlen($old) || $old{$i + $newLen} == ' ');
@@ -33,59 +37,317 @@ class ProfileNom implements ProfileSetting
         return preg_replace('/[^A-Z]/', ' ', $value);
     }
 
-    public function value(ProfilePage &$page, $field, $value, &$success)
+    private function prepare(ProfilePage &$page, $field, $value, $init, &$success)
     {
         $success = true;
-        $current = S::v($field);
-        $init    = S::v($field . '_ini');
-        if (is_null($value)) {
-            return $current;
-        }
-        if ($value == $current || $value == $init) {
-            return $value;
-        }
-        $ini = $this->prepareField($init);
-        $old = $this->prepareField($current);
-        $new = $this->prepareField($value);
-        $newLen = strlen($new);
-        $success = $this->matchWord($old, $new, $newLen)
-                || $this->matchWord($ini, $new, $newLen)
-                || ($field == 'nom' && $new == 'DE ' . $old);
+        $ini     = $this->prepareField($init);
+        $new     = $this->prepareField($value);
+        $newLen  = strlen($new);
+        $success = $this->matchWord($ini, $new, $newLen)
+                   || ($field == 'lastname' && $new == 'DE ' . $ini);
         if (!$success) {
-            Platal::page()->trigError("Le $field que tu as choisi ($value) est trop loin de ton $field initial ($init)"
-                                    . (($init == $current)? "" : " et de ton prénom précédent ($current)"));
+            $field = strtolower($field);
+            Platal::page()->trigError("Le " . $field . " que tu as choisi (" . $value .
+                                      ") est trop loin de ton " . $field . " initial (" . $init . ").");
         }
-        return $success ? $value : $current;
+        return $success ? $value : $init;
     }
 
-    public function save(ProfilePage &$page, $field, $new_value)
+    public function value(ProfilePage &$page, $field, $value, &$success)
     {
-        $_SESSION[$field] = $new_value;
+        $success     = true;
+        $success_tmp = true;
+
+        if (is_null($value)) {
+            $sn_all = XDB::iterator("SELECT  CONCAT(sn.particle, sn.name) AS name,
+                                             sn.particle, sn.typeid, e.type, e.name AS type_name,
+                                             FIND_IN_SET('has_particle', e.flags) AS has_particle,
+                                             FIND_IN_SET('always_displayed', e.flags) AS always_displayed,
+                                             FIND_IN_SET('public', e.flags) AS pub
+                                       FROM  profile_name      AS sn
+                                 INNER JOIN  profile_name_enum AS e  ON (e.id = sn.typeid)
+                                      WHERE  sn.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)
+                                   ORDER BY  NOT FIND_IN_SET('always_displayed', e.flags), e.id, sn.name",
+                                     $page->pid());
+
+            $sn_types = XDB::iterator("SELECT  id, type, name,
+                                               FIND_IN_SET('has_particle', flags) AS has_particle
+                                         FROM  profile_name_enum
+                                        WHERE  NOT FIND_IN_SET('not_displayed', flags)
+                                               AND FIND_IN_SET('always_displayed', flags)
+                                     ORDER BY  id");
+
+            $value = array();
+            $sn = $sn_all->next();
+            while ($sn_type = $sn_types->next()) {
+                if ($sn_type['id'] == $sn['typeid']) {
+                    $value[] = $sn;
+                    if ($sn) {
+                        $sn = $sn_all->next();
+                    }
+                } else {
+                    $value[] = array('name'             => '',
+                                     'particle'         => '',
+                                     'typeid'           => $sn_type['id'],
+                                     'type'             => $sn_type['type'],
+                                     'type_name'        => $sn_type['name'],
+                                     'has_particle'     => $sn_type['has_particle'],
+                                     'always_displayed' => 1,
+                                     'pub'              => 1);
+                }
+            }
+            if ($sn) {
+                do {
+                    $value[] = $sn;
+                } while ($sn = $sn_all->next());
+            }
+        } else {
+            require_once 'name.func.inc.php';
+
+            $res = XDB::query("SELECT  s.particle, s.name
+                                 FROM  profile_name      AS s
+                           INNER JOIN  profile_name_enum AS e ON (e.id = s.typeid)
+                                WHERE  s.pid = {?} AND e.type LIKE '%ini'
+                             ORDER BY  e.type = 'firstname_ini'",
+                             $page->pid());
+            $res = $res->fetchAllAssoc();
+            $initial = array();
+            $initial['lastname'] = $res[0]['particle'] . $res[0]['name'];
+            $initial['firstname'] = $res[1]['name'];
+            $sn_types = build_types();
+            $this->search_names = array();
+            foreach ($value as &$sn) {
+                $sn['name'] = trim($sn['name']);
+                if ($sn['type'] == 'firstname' || $sn['type'] == 'lastname') {
+                    $sn['name'] = $this->prepare($page, $sn['type'], $sn['name'],
+                                                 $initial[$sn['type']], $success_tmp);
+                    $success = $success && $success_tmp;
+                }
+                if ($sn['pub']) {
+                    if (isset($sn['particle']) && ($sn['particle'] != '')) {
+                        list($particle, $name) = explode(' ', $sn['name'], 2);
+                        $particle = trim($particle) . ' ';
+                        if (!$name) {
+                            list($particle, $name) = explode('\'', $sn['name'], 2);
+                            $particle = trim($particle);
+                        }
+                    } else {
+                        $particle = '';
+                        $name     = $sn['name'];
+                    }
+                }
+                if ($sn['name'] != '') {
+                    if ($sn['pub']) {
+                        $this->search_names[$sn['typeid']] = array('fullname' => $sn['name'],
+                                                                   'name'     => $name,
+                                                                   'particle' => $particle,
+                                                                   'pub'      => $sn['pub']);
+                    } else {
+                        if (isset($this->search_names[$sn['typeid']])) {
+                            $this->search_names[$sn['typeid']][] = $sn['name'];
+                        } else {
+                            $this->search_names[$sn['typeid']] = array('fullname' => $sn['name']);
+                        }
+                        $sn['type_name'] = $sn_types[$sn['typeid']];
+                    }
+                }
+            }
+            $res = XDB::query("SELECT  public_name, private_name
+                                 FROM  profile_display
+                                WHERE  pid = {?}",
+                              S::v('uid'));
+            list($public_name, $private_name) = $res->fetchOneRow();
+            if ($success) {
+                $sn_types_private       = build_types('private');
+                $this->private_name_end = build_private_name($this->search_names, $sn_types_private);
+                $private_name           = $public_name . $this->private_name_end;
+            }
+            Platal::page()->assign('public_name', $public_name);
+            Platal::page()->assign('private_name', $private_name);
+        }
+
+        return $value;
+    }
+
+    public function save(ProfilePage &$page, $field, $value)
+    {
+        require_once 'name.func.inc.php';
+        $sn_old = build_sn_pub();
+        XDB::execute("DELETE FROM  s
+                            USING  profile_name      AS s
+                       INNER JOIN  profile_name_enum AS e ON (s.typeid = e.id)
+                            WHERE  s.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)",
+                     $page->pid());
+        $has_new = set_alias_names($this->search_names, $sn_old);
+
+        // Only requires validation if modification in public names
+        if ($has_new) {
+            $new_names = new NamesReq(S::user(), $this->search_names, $this->private_name_end);
+            $new_names->submit();
+            Platal::page()->trigWarning("La demande de modification de tes noms a bien été prise en compte." .
+                                        " Tu recevras un email dès que ces changements auront été effectués.");
+        } else {
+            $display_names = array();
+            build_display_names($display_names, $this->search_names, $this->private_name_end);
+            set_profile_display($display_names);
+        }
     }
 }
 
-class ProfileAppli implements ProfileSetting
+class ProfileEdu implements ProfileSetting
 {
+    public function __construct() {
+    }
+
+    static function sortByGradYear($line1, $line2) {
+        $a = (int) $line1['grad_year'];
+        $b = (int) $line2['grad_year'];
+        if ($a == $b) {
+            return 0;
+        }
+        return ($a < $b) ? -1 : 1;
+    }
+
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
-        if (is_null($value)) {
-            return $page->values[$field];
+        if (is_null($value) || !is_array($value)) {
+            $value = array();
+            $value = XDB::fetchAllAssoc("SELECT  eduid, degreeid, fieldid, grad_year, program
+                                           FROM  profile_education
+                                          WHERE  pid = {?} AND !FIND_IN_SET('primary', flags)
+                                       ORDER BY  id",
+                                        $page->pid());
+        } else {
+            $i = 0;
+            foreach ($value as $key=>&$edu) {
+                if (($edu['grad_year'] < 1921) || ($edu['grad_year'] > (date('Y') + 4))) {
+                    Platal::page()->trigError('L\'année d\'obtention du diplôme est mal renseignée, elle doit être du type : 2004.');
+                    $edu['error'] = true;
+                    $success = false;
+                }
+                if ($key != $i) {
+                    $value[$i] = $edu;
+                    unset($value[$key]);
+                }
+                $i++;
+            }
+            usort($value, array("ProfileEdu", "sortByGradYear"));
         }
         return $value;
     }
 
-    public function save(ProfilePage &$page, $field, $new_value)
+    public function save(ProfilePage &$page, $field, $value)
     {
-        $index = ($field == 'appli1' ? 0 : 1);
-        if ($new_value['id'] > 0) {
-            XDB::execute("REPLACE INTO  applis_ins
-                                   SET  uid = {?}, aid = {?}, type = {?}, ordre = {?}",
-                         S::i('uid'), $new_value['id'], $new_value['type'], $index);
-        } else {
-            XDB::execute("DELETE FROM  applis_ins
-                                WHERE  uid = {?} AND ordre = {?}",
-                         S::i('uid'), $index);
+        XDB::execute("DELETE FROM  profile_education
+                            WHERE  pid = {?} AND !FIND_IN_SET('primary', flags)",
+                     $page->pid());
+        foreach ($value as $eduid=>&$edu) {
+            if ($edu['eduid'] != '') {
+                XDB::execute("INSERT INTO  profile_education
+                                      SET  id = {?}, pid = {?}, eduid = {?}, degreeid = {?},
+                                           fieldid = {?}, grad_year = {?}, program = {?}",
+                             $eduid, $page->pid(), $edu['eduid'], $edu['degreeid'],
+                             $edu['fieldid'], $edu['grad_year'], $edu['program']);
+            }
+        }
+    }
+}
+
+class ProfileEmailDirectory implements ProfileSetting
+{
+    public function __construct(){}
+    public function save(ProfilePage &$page, $field, $value){}
+
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        $p = Platal::page();
+
+        $success = true;
+        if (!is_null($value)) {
+            $email_stripped = strtolower(trim($value));
+            if ((!isvalid_email($email_stripped)) && ($email_stripped) && ($page->values['email_directory'] == "new@example.org")) {
+                $p->assign('email_error', '1');
+                $p->assign('email_directory_error', $email_stripped);
+                $p->trigError('Adresse Email invalide');
+                $success = false;
+            } else {
+                $p->assign('email_error', '0');
+            }
+        }
+        return $value;
+    }
+}
+
+class ProfileNetworking implements ProfileSetting
+{
+    private $email;
+    private $pub;
+    private $web;
+    private $number;
+
+    public function __construct()
+    {
+        $this->email  = new ProfileEmail();
+        $this->pub    = new ProfilePub();
+        $this->web    = new ProfileWeb();
+        $this->number = new ProfileNumber();
+    }
+
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        if (is_null($value)) {
+            $value = XDB::fetchAllAssoc("SELECT  n.address, n.network_type AS type, n.pub, m.name
+                                           FROM  profile_networking AS n
+                                     INNER JOIN  profile_networking_enum AS m ON (n.network_type = m.network_type)
+                                          WHERE  n.pid = {?}",
+                                         $page->pid());
+        }
+        if (!is_array($value)) {
+            $value = array();
+        }
+        $filters = XDB::fetchAllAssoc('type', 'SELECT  filter, network_type AS type
+                                                 FROM  profile_networking_enum;');
+        $success = true;
+        foreach($value as $i=>&$network) {
+            if (!trim($network['address'])) {
+                unset($value[$i]);
+            } else {
+                if (!isset($network['pub'])) {
+                    $network['pub'] = 'private';
+                }
+                $network['error'] = false;
+                $network['pub'] = $this->pub->value($page, 'pub', $network['pub'], $s);
+                $s = true;
+                if ($filters[$network['type']] == 'web') {
+                    $network['address'] = $this->web->value($page, 'address', $network['address'], $s);
+                } elseif ($filters[$network['type']] == 'email') {
+                    $network['address'] = $this->email->value($page, 'address', $network['address'], $s);
+                } elseif ($filters[$network['type']] == 'number') {
+                    $network['address'] = $this->number->value($page, 'address', $network['address'], $s);
+                }
+                if (!$s) {
+                    $success = false;
+                    $network['error'] = true;
+                }
+            }
+        }
+        return $value;
+    }
+
+    public function save(ProfilePage &$page, $field, $value)
+    {
+        XDB::execute("DELETE FROM profile_networking
+                            WHERE pid = {?}",
+                     $page->pid());
+        if (!count($value)) {
+            return;
+        }
+        $insert = array();
+        foreach ($value as $id=>$network) {
+            XDB::execute("INSERT INTO  profile_networking (pid, nwid, network_type, address, pub)
+                               VALUES  ({?}, {?}, {?}, {?}, {?})",
+                         $page->pid(), $id, $network['type'], $network['address'], $network['pub']);
         }
     }
 }
@@ -97,108 +359,148 @@ class ProfileGeneral extends ProfilePage
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['nom'] = $this->settings['prenom']
-                               = new ProfileNom();
-        $this->settings['naissance'] = new ProfileDate();
-        $this->settings['mobile_pub']
-                                  = $this->settings['web_pub']
-                                  = $this->settings['freetext_pub']
+        $this->settings['search_names']
+                                  = new ProfileSearchNames();
+        $this->settings['birthdate'] = new ProfileDate();
+        $this->settings['freetext_pub']
                                   = $this->settings['photo_pub']
                                   = new ProfilePub();
         $this->settings['freetext']
-                                  = $this->settings['nationalite']
-                                  = $this->settings['nick']
+                                  = $this->settings['nationality1']
+                                  = $this->settings['nationality2']
+                                  = $this->settings['nationality3']
+                                  = $this->settings['yourself']
+                                  = $this->settings['promo']
                                   = null;
-        $this->settings['synchro_ax']
-                                  = new ProfileBool();
-        $this->settings['mobile'] = new ProfileTel();
-        $this->settings['web'] = new ProfileWeb();
-        $this->settings['appli1']
-                                  = $this->settings['appli2']
-                                  = new ProfileAppli();
-        $this->watched= array('nom' => true, 'freetext' => true, 'mobile' => true, 'web' => true,
-                       'appli1' => true, 'appli2' => true, 'nationalite' => true, 'nick' => true);
+        $this->settings['email_directory']
+                                  = new ProfileEmail();
+        $this->settings['email_directory_new']
+                                  = new ProfileEmailDirectory();
+        $this->settings['networking'] = new ProfileNetworking();
+        $this->settings['tels']   = new ProfilePhones('user', 0);
+        $this->settings['edus']   = new ProfileEdu();
+        $this->watched= array('freetext' => true, 'tels' => true,
+                              'networking' => true, 'edus' => true,
+                              'nationality1' => true, 'nationality2' => true,
+                              'nationality3' => true, 'search_names' => true);
     }
 
     protected function _fetchData()
     {
         // Checkout all data...
-        $res = XDB::query("SELECT  u.promo, u.promo_sortie, u.nom_usage, u.nationalite, u.naissance,
-                                   q.profile_mobile as mobile, q.profile_mobile_pub as mobile_pub,
-                                   q.profile_web as web, q.profile_web_pub as web_pub,
-                                   q.profile_freetext as freetext, q.profile_freetext_pub as freetext_pub,
-                                   q.profile_nick as nick, q.profile_from_ax as synchro_ax, u.hruid,
-                                   IF(a1.aid IS NULL, -1, a1.aid) as appli_id1, a1.type as appli_type1,
-                                   IF(a2.aid IS NULL, -1, a2.aid) as appli_id2, a2.type as appli_type2
-                             FROM  auth_user_md5   AS u
-                       INNER JOIN  auth_user_quick AS q  USING(user_id)
-                        LEFT JOIN  applis_ins      AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)
-                        LEFT JOIN  applis_ins      AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
-                            WHERE  u.user_id = {?}", S::v('uid', -1));
+        $res = XDB::query("SELECT  p.promo, e.entry_year AS entry_year, e.grad_year AS grad_year,
+                                   pr.nationality1, pr.nationality2, pr.nationality3, pr.birthdate,
+                                   t.display_tel as mobile, t.pub as mobile_pub,
+                                   pr.email_directory as email_directory,
+                                   pr.freetext, pr.freetext_pub, pr.ax_id AS matricule_ax, p.yourself
+                             FROM  profiles              AS pr
+                       INNER JOIN  profile_display       AS p ON (p.pid = pr.pid)
+                       INNER JOIN  profile_education     AS e ON (e.pid = pr.pid AND FIND_IN_SET('primary', e.flags))
+                        LEFT JOIN  profile_phones        AS t ON (t.pid = pr.pid AND link_type = 'user')
+                            WHERE  pr.pid = {?}", $this->pid());
         $this->values = $res->fetchOneAssoc();
-
-        // Reformat formation data
-        $this->values['appli1'] = array('id'    => $this->values['appli_id1'],
-                                        'type'  => $this->values['appli_type1']);
-        unset($this->values['appli_id1']);
-        unset($this->values['appli_type1']);
-        $this->values['appli2'] = array('id'    => $this->values['appli_id2'],
-                                        'type'  => $this->values['appli_type2']);
-        unset($this->values['appli_id2']);
-        unset($this->values['appli_type2']);
+        if ($this->owner) {
+            $this->values['yourself'] = $this->owner->displayName();
+        }
 
         // Retreive photo informations
         $res = XDB::query("SELECT  pub
-                             FROM  photo
-                            WHERE  uid = {?}", S::v('uid'));
+                             FROM  profile_photos
+                            WHERE  pid = {?}", $this->pid());
         $this->values['photo_pub'] = $res->fetchOneCell();
 
-        $res = XDB::query("SELECT  COUNT(*)
-                             FROM  requests
-                            WHERE  type='photo' AND user_id = {?}",
-                          S::v('uid'));
-        $this->values['nouvellephoto'] = $res->fetchOneCell();
+        if ($this->owner) {
+            $res = XDB::query("SELECT  COUNT(*)
+                                 FROM  requests
+                                WHERE  type = 'photo' AND uid = {?}",
+                              $this->owner->id());
+            $this->values['nouvellephoto'] = $res->fetchOneCell();
+        } else {
+            $this->values['nouvellephoto'] = 0;
+        }
+
+        // Proposes choice for promotion
+        if ($this->values['entry_year'] != $this->values['grad_year'] - 3) {
+            for ($i = $this->values['entry_year']; $i < $this->values['grad_year'] - 2; $i++) {
+                $this->values['promo_choice'][] = "X" . $i;
+            }
+        }
     }
 
     protected function _saveData()
     {
-        if ($this->changed['nationalite'] || $this->changed['nom'] || $this->changed['prenom']
-            || $this->changed['naissance']) {
-           XDB::execute("UPDATE  auth_user_md5
-                            SET  nationalite = {?}, nom={?}, prenom={?}, naissance={?}
-                          WHERE  user_id = {?}",
-                         $this->values['nationalite'], $this->values['nom'], $this->values['prenom'],
-                         preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['naissance']),
-                         S::v('uid'));
-        }
-        if ($this->changed['nick'] || $this->changed['mobile'] || $this->changed['mobile_pub']
-            || $this->changed['web'] || $this->changed['web_pub'] || $this->changed['freetext']
-            || $this->changed['freetext_pub'] || $this->changed['synchro_ax']) {
-            XDB::execute("UPDATE  auth_user_quick
-                             SET  profile_nick= {?}, profile_mobile={?}, profile_mobile_pub={?}, 
-                                  profile_web={?}, profile_web_pub={?}, profile_freetext={?}, 
-                                  profile_freetext_pub={?}, profile_from_ax = {?} 
-                           WHERE  user_id = {?}", 
-                         $this->values['nick'], $this->values['mobile'], $this->values['mobile_pub'],
-                         $this->values['web'], $this->values['web_pub'],
-                         $this->values['freetext'], $this->values['freetext_pub'],
-                         $this->values['synchro_ax'], S::v('uid'));
-        }
-        if ($this->changed['nick']) {
-            require_once('user.func.inc.php');
-            user_reindex(S::v('uid'));
+        if ($this->changed['nationality1'] || $this->changed['nationality2'] || $this->changed['nationality3']
+            || $this->changed['birthdate'] || $this->changed['freetext'] || $this->changed['freetext_pub']
+            || $this->changed['email_directory']) {
+            if ($this->values['nationality3'] == "") {
+                $this->values['nationality3'] = NULL;
+            }
+            if ($this->values['nationality2'] == "") {
+                $this->values['nationality2'] = $this->values['nationality3'];
+                $this->values['nationality3'] = NULL;
+            }
+            if ($this->values['nationality1'] == "") {
+                $this->values['nationality1']  = $this->values['nationality2'];
+                $this->values['nationality2'] = $this->values['nationality3'];
+                $this->values['nationality3'] = NULL;
+            }
+            $new_email = ($this->values['email_directory'] == "new@example.org") ?
+                $this->values['email_directory_new'] : $this->values['email_directory'];
+            if ($new_email == "") {
+                $new_email = NULL;
+            }
+
+            XDB::execute("UPDATE  profiles
+                             SET  nationality1 = {?}, nationality2 = {?}, nationality3 = {?}, birthdate = {?},
+                                  freetext = {?}, freetext_pub = {?}, email_directory = {?}
+                           WHERE  pid = {?}",
+                          $this->values['nationality1'], $this->values['nationality2'], $this->values['nationality3'],
+                          preg_replace('@(\d{2})/(\d{2})/(\d{4})@', '\3-\2-\1', $this->values['birthdate']),
+                          $this->values['freetext'], $this->values['freetext_pub'], $new_email, $this->pid());
         }
         if ($this->changed['photo_pub']) {
-            XDB::execute("UPDATE  photo
+            XDB::execute("UPDATE  profile_photos
                              SET  pub = {?}
-                           WHERE  uid = {?}",
-                         $this->values['photo_pub'], S::v('uid'));
+                           WHERE  pid = {?}",
+                         $this->values['photo_pub'], $this->pid());
+        }
+        if ($this->changed['yourself']) {
+            XDB::execute('UPDATE  accounts
+                             SET  display_name = {?}
+                           WHERE  pid = {?}', $this->pid());
+        }
+        if ($this->changed['promo']) {
+            XDB::execute("UPDATE  profile_display
+                             SET  promo = {?}
+                           WHERE  pid = {?}",
+                         $this->values['promo'], $this->pid());
         }
     }
 
     public function _prepare(PlPage &$page, $id)
     {
-        require_once "applis.func.inc.php";
+        require_once "education.func.inc.php";
+
+        $res = XDB::query("SELECT  id, field
+                             FROM  profile_education_field_enum
+                         ORDER BY  field");
+        $page->assign('edu_fields', $res->fetchAllAssoc());
+
+        require_once "emails.combobox.inc.php";
+        fill_email_combobox($page, $this->owner, $this->profile);
+
+        $res = XDB::query("SELECT  nw.network_type AS type, nw.name
+                             FROM  profile_networking_enum AS nw
+                         ORDER BY  name");
+        $page->assign('network_list', $res->fetchAllAssoc());
+
+        $res = XDB::query("SELECT  public_name, private_name
+                             FROM  profile_display
+                            WHERE  pid = {?}",
+                          $this->pid());
+        $res = $res->fetchOneRow();
+        $page->assign('public_name', $res[0]);
+        $page->assign('private_name', $res[1]);
     }
 }
 

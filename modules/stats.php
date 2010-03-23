@@ -59,17 +59,18 @@ class StatsModule extends PLModule
 
     function handler_graph_evo(&$page, $jours = 365)
     {
-        define('DUREEJOUR',24*3600);
+        define('DUREEJOUR', 24 * 3600);
 
         //recupere le nombre d'inscriptions par jour sur la plage concernée
-        $res = XDB::iterRow(
-                "SELECT  IF( date_ins>DATE_SUB(NOW(),INTERVAL $jours DAY),
-                             TO_DAYS(date_ins)-TO_DAYS(NOW()),
-                            ".(-($jours+1)).") AS jour,
-                         COUNT(user_id) AS nb
-                   FROM  auth_user_md5
-                  WHERE  perms IN ('admin','user') AND deces = 0
-               GROUP BY  jour");
+        $res = XDB::iterRow('SELECT  IF(registration_date > DATE_SUB(NOW(), INTERVAL {?} DAY),
+                                        TO_DAYS(registration_date) - TO_DAYS(NOW()),
+                                        -{?}) AS jour,
+                                     COUNT(uid) AS nb
+                               FROM  accounts AS a
+                          LEFT JOIN  account_profiles AS ap ON(ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.flags))
+                          LEFT JOIN  profiles AS p ON (ap.pid = p.pid)
+                              WHERE  state = \'active\' AND p.deathdate IS NULL
+                           GROUP BY  jour', (int)$jours, 1 + (int)$jours);
 
         //genere des donnees compatibles avec GNUPLOT
         $inscrits='';
@@ -127,11 +128,13 @@ EOF2;
             $depart = 1930;
 
             //recupere le nombre d'inscriptions par jour sur la plage concernée
-            $res = XDB::iterRow(
-                    "SELECT  promo, SUM(perms IN ('admin', 'user')) / COUNT(*) * 100
-                       FROM  auth_user_md5
-                      WHERE  promo >= $depart AND deces = 0
-                   GROUP BY  promo");
+            $res = XDB::iterRow("SELECT  pe.entry_year AS promo, SUM(state = 'active') / COUNT(*) * 100
+                                   FROM  accounts AS a
+                             INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                             INNER JOIN  profiles AS p ON (p.pid = ap.pid)
+                             INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET('primary', pe.flags))
+                                  WHERE  pe.entry_year >= {?} AND p.deathdate IS NULL
+                               GROUP BY  promo", $depart);
 
             //genere des donnees compatibles avec GNUPLOT
             $inscrits='';
@@ -173,23 +176,25 @@ EOF2;
         } else {
             //nombre de jours sur le graph
             $jours = 365;
-            define('DUREEJOUR',24*3600);
-            $res = XDB::query(
-                    "SELECT  min(TO_DAYS(date_ins)-TO_DAYS(now()))
-                       FROM  auth_user_md5
-                      WHERE  promo = {?} AND perms IN ('admin', 'user') AND deces = 0",
-                    $promo);
+            define('DUREEJOUR', 24 * 3600);
+
+            $res = XDB::query("SELECT  MIN(TO_DAYS(a.registration_date) - TO_DAYS(NOW()))
+                                 FROM  accounts AS a
+                           INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET('primary', pe.flags))
+                                WHERE  pe.entry_year = {?} AND a.state = 'active'", (int)$promo);
             $jours = -$res->fetchOneCell();
 
             //recupere le nombre d'inscriptions par jour sur la plage concernée
-            $res = XDB::iterRow(
-                    "SELECT  IF( date_ins>DATE_SUB(NOW(),INTERVAL $jours DAY),
-                                 TO_DAYS(date_ins)-TO_DAYS(NOW()),
-                                ".(-($jours+1)).") AS jour,
-                             COUNT(user_id) AS nb
-                       FROM  auth_user_md5
-                      WHERE  promo = {?} AND perms IN ('admin','user') AND deces = 0
-                   GROUP BY  jour", $promo);
+            $res = XDB::iterRow("SELECT  IF(a.registration_date > DATE_SUB(NOW(), INTERVAL {?} DAY),
+                                            TO_DAYS(a.registration_date) - TO_DAYS(NOW()),
+                                            -{?}) AS jour,
+                                         COUNT(a.uid) AS nb
+                                   FROM  accounts AS a
+                             INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET('owner', ap.perms))
+                             INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET('primary', pe.flags))
+                                  WHERE  pe.entry_year = {?} AND a.state = 'active'
+                               GROUP BY  jour", (int)$jours, 1 + (int)$jours, (int)$promo);
 
             //genere des donnees compatibles avec GNUPLOT
             $inscrits='';
@@ -245,12 +250,13 @@ EOF2;
     {
         $page->changeTpl('stats/nb_by_promo.tpl');
 
-        $res = XDB::iterRow(
-                "SELECT  promo,COUNT(*)
-                   FROM  auth_user_md5
-                  WHERE  promo > 1900 AND perms IN ('admin','user') AND deces = 0
-               GROUP BY  promo
-               ORDER BY  promo");
+        $res = XDB::iterRow('SELECT  pe.entry_year AS promo, COUNT(*)
+                               FROM  accounts AS a
+                         INNER JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
+                         INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'primary\', pe.flags))
+                              WHERE  pe.entry_year >= 1900  AND a.state = \'active\'
+                           GROUP BY  promo
+                           ORDER BY  promo');
         $max=0; $min=3000;
 
         while (list($p,$nb) = $res->next()) {
@@ -275,7 +281,7 @@ EOF2;
             $res = XDB::query("SELECT  debut,
                                        TIME_FORMAT(duree,'%kh%i') AS duree,
                                        resume, description, services
-                                 FROM  coupures
+                                 FROM  downtimes
                                 WHERE  id = {?}", $cp_id);
             $cp  = $res->fetchOneAssoc();
         }
@@ -286,7 +292,7 @@ EOF2;
         } else {
             $beginning_date = date("Ymd", time() - 3600*24*21) . "000000";
             $sql = "SELECT  id, debut, resume, services
-                      FROM  coupures where debut > '$beginning_date' order by debut desc";
+                      FROM  downtimes where debut > '$beginning_date' order by debut desc";
             $page->assign('coupures', XDB::iterator($sql));
             $res = XDB::iterator("SELECT  host, text
                                     FROM  mx_watch

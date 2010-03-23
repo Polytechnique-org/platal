@@ -34,7 +34,7 @@
 {$am->title()}
 ====================================================================
 
-{$am->head($prenom, $nom, $sexe, 'text')}
+{$am->head($user, 'text')}
 
 {$am->body('text')}
 
@@ -75,7 +75,7 @@ ne plus recevoir : &lt;https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/i
 {/if}
     <div class='ax_mail'>
       <div class="title">{$am->title()}</div>
-      <div class="intro">{$am->head($prenom, $nom, $sexe, 'html')|smarty:nodefaults}</div>
+      <div class="intro">{$am->head($user, 'html')|smarty:nodefaults}</div>
       <div class="body">{$am->body('html')|smarty:nodefaults}</div>
       <div class="signature">{$am->signature('html')|smarty:nodefaults}</div>
       <div class="foot1">

@@ -19,48 +19,29 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileAddress extends ProfileGeoloc
+class ProfileAddress extends ProfileGeocoding
 {
     private $bool;
     private $pub;
-    private $tel;
 
     public function __construct()
     {
         $this->bool = new ProfileBool();
         $this->pub  = new ProfilePub();
-        $this->tel  = new ProfileTel();
     }
 
-    private function cleanAddress(ProfilePage &$page, array &$address, &$success)
+    private function cleanAddress(ProfilePage &$page, $addrid, array &$address)
     {
-        if (@$address['changed']) {
-            $address['datemaj'] = time();
+        if (!isset($address['tel'])) {
+            $address['tel'] = array();
         }
-        $success = true;
-        foreach ($address['tel'] as $t=>&$tel) {
-            if (@$tel['removed'] || !trim($tel['tel'])) {
-                unset($address['tel'][$t]);
-            } else {
-                $tel['pub'] = $this->pub->value($page, 'pub', $tel['pub'], $s);
-                $tel['tel'] = $this->tel->value($page, 'tel', $tel['tel'], $s);
-                if (!$s) {
-                    $tel['error'] = true;
-                    $success = false;
-                }
-            }
-            unset($tel['removed']);
-        }
-        $address['checked'] = $this->bool->value($page, 'checked', $address['checked'], $s);
-        $address['secondaire'] = $this->bool->value($page, 'secondaire', $address['secondaire'], $s);
-        $address['mail'] = $this->bool->value($page, 'mail', $address['mail'], $s);
+        $profiletel           = new ProfilePhones('address', $addrid);
+        $address['tel']       = $profiletel->value($page, 'tel',       $address['tel'],       $s);
+        $address['current']   = $this->bool->value($page, 'current',   $address['current'],   $s);
         $address['temporary'] = $this->bool->value($page, 'temporary', $address['temporary'], $s);
-        $address['current'] = $this->bool->value($page, 'current', @$address['current'], $s);
-        $address['pub'] = $this->pub->value($page, 'pub', $address['pub'], $s);
-        unset($address['parsevalid']);
-        unset($address['changed']);
-        unset($address['removed']);
-        unset($address['display']);
+        $address['secondary'] = $this->bool->value($page, 'secondary', $address['secondary'], $s);
+        $address['mail']      = $this->bool->value($page, 'mail',      $address['mail'],      $s);
+        $address['pub']       = $this->pub->value($page,  'pub',       $address['pub'],       $s);
     }
 
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -68,101 +49,82 @@ class ProfileAddress extends ProfileGeoloc
         $init = false;
         if (is_null($value)) {
             $value = $page->values['addresses'];
-            $init = true;
+            $init  = true;
         }
-        foreach ($value as $key=>&$adr) {
-            if (@$adr['removed']) {
+        foreach ($value as $key => &$address) {
+            if (isset($address['removed']) && $address['removed']) {
                 unset($value[$key]);
             }
         }
         $current = 0;
         $success = true;
-        foreach ($value as $key=>&$adr) {
-            if (@$adr['current']) {
+        foreach ($value as $key => &$address) {
+            if (isset($address['current']) && $address['current']) {
                 $current++;
             }
         }
         if ($current == 0 && count($value) > 0) {
-            foreach ($value as $key=>&$adr) {
-                $adr['current'] = true;
+            foreach ($value as $address) {
+                $address['current'] = true;
                 break;
             }
-        } else if ($current > 1) {
+        } elseif ($current > 1) {
             $success = false;
         }
-        foreach ($value as $key=>&$adr) {
-            $ls = true;
-            $this->geolocAddress($adr, $s);
-            $ls = ($ls && $s);
-            $this->cleanAddress($page, $adr, $s);
-            $ls = ($ls && $s);
-            if (!trim($adr['text'])) {
+        foreach ($value as $key => &$address) {
+            if (!trim($address['text'])) {
                 unset($value[$key]);
-            } else if (!$init) {
-                $success = ($success && $ls);
+            } elseif (!$init) {
+                $this->geocodeAddress($address, $s);
+                $success = $success && $s;
             }
+            $this->cleanAddress($page, $key, $address);
         }
         return $value;
     }
 
-    private function saveTel($adrid, $telid, array &$tel)
+    private function saveAddress($pid, $addrid, array &$address, $type)
     {
-        XDB::execute("INSERT INTO  tels (uid, adrid, telid,
-                                         tel_type, tel_pub, tel)
-                           VALUES  ({?}, {?}, {?},
-                                    {?}, {?}, {?})",
-                    S::i('uid'), $adrid, $telid,
-                    $tel['type'], $tel['pub'], $tel['tel']);
-    }
+        require_once "geocoding.inc.php";
 
-    private function saveAddress($adrid, array &$address)
-    {
         $flags = new PlFlagSet();
-        if ($address['secondaire']) {
-            $flags->addFlag('res-secondaire');
-        }
-        if ($address['mail']) {
-            $flags->addFlag('courrier');
-        }
-        if ($address['temporary']) {
-            $flags->addFlag('temporaire');
-        }
-        if ($address['current']) {
-            $flags->addFlag('active');
-        }
-        if ($address['checked']) {
-            $flags->addFlag('coord-checked');
-        }
-        XDB::execute("INSERT INTO  adresses (adr1, adr2, adr3,
-                                              postcode, city, cityid,
-                                              country, region, regiontxt,
-                                              pub, datemaj, statut,
-                                              uid, adrid, glat, glng)
-                           VALUES  ({?}, {?}, {?},
-                                    {?}, {?}, {?},
-                                    {?}, {?}, {?},
-                                    {?}, FROM_UNIXTIME({?}), {?},
-                                    {?}, {?}, {?}, {?})",
-                     $address['adr1'], $address['adr2'], $address['adr3'],
-                     $address['postcode'], $address['city'], $address['cityid'],
-                     $address['country'], $address['region'], $address['regiontxt'],
-                     $address['pub'], $address['datemaj'], $flags,
-                     S::i('uid'), $adrid, $address['precise_lat'], $address['precise_lon']);
-        foreach ($address['tel'] as $telid=>&$tel) {
-            $this->saveTel($adrid, $telid, $tel);
-        }
+        $flags->addFlag('current', $address['current']);
+        $flags->addFlag('temporary', $address['temporary']);
+        $flags->addFlag('secondary', $address['secondary']);
+        $flags->addFlag('mail', $address['mail']);
+        $flags->addFlag('cedex', $address['cedex'] =
+            (strpos(strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"),
+                                            array("", "\n"), $address['text'])), 'CEDEX')) !== false);
+        Geocoder::getAreaId($address, "administrativeArea");
+        Geocoder::getAreaId($address, "subAdministrativeArea");
+        Geocoder::getAreaId($address, "locality");
+        XDB::execute("INSERT INTO  profile_addresses (pid, type, id, flags, accuracy,
+                                                      text, postalText, postalCode, localityId,
+                                                      subAdministrativeAreaId, administrativeAreaId,
+                                                      countryId, latitude, longitude, updateTime, pub, comment,
+                                                      north, south, east, west)
+                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?},
+                                    {?}, {?}, FROM_UNIXTIME({?}), {?}, {?}, {?}, {?}, {?}, {?})",
+                     $pid, $type, $addrid, $flags, $address['accuracy'],
+                     $address['text'], $address['postalText'], $address['postalCode'], $address['localityId'],
+                     $address['subAdministrativeAreaId'], $address['administrativeAreaId'],
+                     $address['countryId'], $address['latitude'], $address['longitude'],
+                     $address['updateTime'], $address['pub'], $address['comment'],
+                     $address['north'], $address['south'], $address['east'], $address['west']);
     }
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute("DELETE FROM  adresses
-                            WHERE  uid = {?}",
-                     S::i('uid'));
-        XDB::execute("DELETE FROM  tels
-                            WHERE  uid = {?}",
-                     S::i('uid'));
-        foreach ($value as $adrid=>&$address) {
-            $this->saveAddress($adrid, $address);
+        XDB::execute("DELETE FROM  profile_addresses
+                            WHERE  pid = {?} AND type = 'home'",
+                     $page->pid());
+        XDB::execute("DELETE FROM  profile_phones
+                            WHERE  pid = {?} AND link_type = 'address'",
+                     $page->pid());
+        foreach ($value as $addrid => &$address) {
+            $this->saveAddress($page->pid(), $addrid, $address, 'home');
+            $profiletel = new ProfilePhones('address', $addrid);
+            $profiletel->saveTels($page->pid(), 'tel', $address['tel']);
         }
     }
 }
@@ -175,44 +137,41 @@ class ProfileAddresses extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['addresses'] = new ProfileAddress();
-        $this->watched['addresses'] = true;
+        $this->watched['addresses']  = true;
     }
 
     protected function _fetchData()
     {
-        // Build the addresses tree
-        $res = XDB::query("SELECT  a.adrid AS id, a.adr1, a.adr2, a.adr3,
-                                   UNIX_TIMESTAMP(a.datemaj) AS datemaj,
-                                   a.postcode, a.city, a.cityid, a.region, a.regiontxt,
-                                   a.pub, a.country, gp.pays AS countrytxt, gp.display,
-                                   FIND_IN_SET('coord-checked', a.statut) AS checked,
-                                   FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
-                                   FIND_IN_SET('courrier', a.statut) AS mail,
-                                   FIND_IN_SET('temporaire', a.statut) AS temporary,
-                                   FIND_IN_SET('active', a.statut) AS current,
-                                   a.glat AS precise_lat, a.glng AS precise_lon
-                             FROM  adresses AS a
-                       INNER JOIN  geoloc_pays AS gp ON(gp.a2 = a.country)
-                            WHERE  uid = {?} AND NOT FIND_IN_SET('pro', statut)
-                         ORDER BY  adrid",
-                           S::i('uid'));
+        $res = XDB::query("SELECT  id, accuracy, text, postalText,
+                                   postalCode, localityId, subAdministrativeAreaId, administrativeAreaId,
+                                   countryId, latitude, longitude, pub, comment, UNIX_TIMESTAMP(updateTime) AS updateTime,
+                                   north, south, east, west,
+                                   FIND_IN_SET('current', flags) AS current,
+                                   FIND_IN_SET('temporary', flags) AS temporary,
+                                   FIND_IN_SET('secondary', flags) AS secondary,
+                                   FIND_IN_SET('mail', flags) AS mail,
+                                   FIND_IN_SET('cedex', flags) AS cedex
+                             FROM  profile_addresses
+                            WHERE  pid = {?} AND type = 'home'
+                         ORDER BY  id",
+                           $this->pid());
         if ($res->numRows() == 0) {
             $this->values['addresses'] = array();
         } else {
             $this->values['addresses'] = $res->fetchAllAssoc();
         }
 
-        $res = XDB::iterator("SELECT  adrid, tel_type AS type, tel_pub AS pub, tel
-                                FROM  tels
-                               WHERE  uid = {?}
-                            ORDER BY  adrid",
-                             S::i('uid'));
+        $res = XDB::iterator("SELECT  link_id AS addrid, tel_type AS type, pub, display_tel AS tel, comment
+                                FROM  profile_phones
+                               WHERE  pid = {?} AND link_type = 'address'
+                            ORDER BY  link_id",
+                             $this->pid());
         $i = 0;
         $adrNb = count($this->values['addresses']);
         while ($tel = $res->next()) {
-            $adrid = $tel['adrid'];
-            unset($tel['adrid']);
-            while ($i < $adrNb && $this->values['addresses'][$i]['id'] < $adrid) {
+            $addrid = $tel['addrid'];
+            unset($tel['addrid']);
+            while ($i < $adrNb && $this->values['addresses'][$i]['id'] < $addrid) {
                 $i++;
             }
             if ($i >= $adrNb) {
@@ -222,15 +181,24 @@ class ProfileAddresses extends ProfilePage
             if (!isset($address['tel'])) {
                 $address['tel'] = array();
             }
-            if ($address['id'] == $adrid) {
+            if ($address['id'] == $addrid) {
                 $address['tel'][] = $tel;
             }
         }
-        foreach ($this->values['addresses'] as $id=>&$address) {
+        foreach ($this->values['addresses'] as $id => &$address) {
             if (!isset($address['tel'])) {
-                $address['tel'] = array();
+                $address['tel'] = array(
+                                 0 => array(
+                                     'type'    => 'fixed',
+                                     'tel'     => '',
+                                     'pub'     => 'private',
+                                     'comment' => '',
+                                     )
+                                 );
             }
             unset($address['id']);
+            $address['changed'] = 0;
+            $address['removed'] = 0;
         }
     }
 }

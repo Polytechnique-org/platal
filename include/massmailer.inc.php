@@ -110,15 +110,15 @@ abstract class MassMailer
         return $mail ? $this->_title_mail : $this->_title;
     }
 
-    public function head($prenom = null, $nom = null, $sexe = null, $type = 'text')
+    public function head($user = null, $type = 'text')
     {
-        if (is_null($prenom)) {
+        if (is_null($user)) {
             return $this->_head;
         } else {
             $head = $this->_head;
-            $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
-            $head = str_replace('<prenom>', $prenom, $head);
-            $head = str_replace('<nom>',    $nom,    $head);
+            $head = str_replace('<cher>',   $user->isFemale() ? 'Chère' : 'Cher', $head);
+            $head = str_replace('<prenom>', $user->displayName(), $head);
+            $head = str_replace('<nom>', '', $head);
             return format_text($head, $type, 2, 64);
         }
     }
@@ -134,26 +134,22 @@ abstract class MassMailer
         }
     }
 
-    public function toText(&$page, $prenom, $nom, $sexe)
+    public function toText(&$page, $user)
     {
         $this->css($page);
         $page->assign('is_mail', false);
         $page->assign('mail_part', 'text');
-        $page->assign('prenom', $prenom);
-        $page->assign('nom', $nom);
-        $page->assign('sexe', $sexe);
+        $page->assign('user', $user);
         $this->assignData($page);
     }
 
-    public function toHtml(&$page, $prenom, $nom, $sexe)
+    public function toHtml(&$page, $user)
     {
         $this->css($page);
         $page->assign('prefix', $this->_prefix . '/' . $this->id());
         $page->assign('is_mail', false);
         $page->assign('mail_part', 'html');
-        $page->assign('prenom', $prenom);
-        $page->assign('nom', $nom);
-        $page->assign('sexe', $sexe);
+        $page->assign('user', $user);
         $this->assignData($page);
     }
 
@@ -164,71 +160,58 @@ abstract class MassMailer
         return $hash;
     }
 
-    public function sendTo($hruid, $email, $prenom, $nom, $sexe, $html, $hash = 0)
+    public function sendTo($user, $hash = null)
     {
-        // If $email is not a real email address, tries to compute it up from
-        // the hruid. Otherwise, we suppose that caller will have used a valid
-        // and canonical email address.
-        if (strpos($email, '@') === false) {
-            if (!($user = User::getSilent($email))) {
-                Platal::page()->trigError("'$email' is neither a valid email address nor a valid login; did not send the email.");
-            }
-            $email = $user->bestEmail();
+        if (is_null($hash)) {
+            $hash = XDB::fetchOneCell("SELECT  hash
+                                         FROM  {$this->_subscriptionTable}
+                                        WHERE  uid = {?}", $user->id());
         }
-
-        if ($hruid && (is_null($hash) || $hash == 0)) {
-            $hash = $this->createHash(array($email, $prenom, $nom, $sexe, $html, rand(), "X.org rulez"));
-            XDB::query("UPDATE  {$this->_subscriptionTable} as ni
-                    INNER JOIN  auth_user_md5 AS u USING (user_id)
-                           SET  ni.hash = {?}
-                         WHERE  ni.user_id != 0 AND u.hruid = {?}",
-                       $hash, $hruid);
+        if (is_null($hash)) {
+            $hash = $this->createHash(array($user->displayName(), $user->fullName(),
+                                       $user->isFemale(), $user->isEmailFormatHtml(),
+                                       rand(), "X.org rulez"));
+            XDB::execute("UPDATE  {$this->_subscriptionTable} as ni
+                             SET  ni.hash = {?}
+                           WHERE  ni.uid != {?}",
+                         $hash, $user->id());
         }
 
         $mailer = new PlMailer($this->_tpl);
         $this->assignData($mailer);
         $mailer->assign('is_mail', true);
-        $mailer->assign('prenom',  $prenom);
-        $mailer->assign('nom',     $nom);
-        $mailer->assign('sexe',    $sexe);
+        $mailer->assign('user', $user);
         $mailer->assign('prefix',  null);
         $mailer->assign('hash',    $hash);
-        $mailer->assign('email',   $email);
-        $mailer->assign('alias',   $hruid);
-        $mailer->addTo("\"$prenom $nom\" <$email>");
-        $mailer->send($html);
+        $mailer->addTo('"' . $user->fullName() . '" <' . $user->bestEmail() . '>');
+        $mailer->send($user->isEmailFormatHtml());
     }
 
     protected function getAllRecipients()
     {
         global $globals;
-        return  "SELECT  u.user_id, u.hruid, CONCAT(a.alias, '@{$globals->mail->domain}'),
-                         u.prenom, IF(u.nom_usage='', u.nom, u.nom_usage),
-                         FIND_IN_SET('femme', u.flags),
-                         q.core_mail_fmt AS pref, ni.hash AS hash
+        return  "SELECT  a.uid
                    FROM  {$this->_subscriptionTable}  AS ni
-             INNER JOIN  auth_user_md5   AS u  USING(user_id)
-             INNER JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
-             INNER JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
-              LEFT JOIN  emails          AS e  ON(e.uid=u.user_id AND e.flags='active')
+             INNER JOIN  accounts AS a ON (ni.uid = a.uid)
+              LEFT JOIN  email_options AS eo ON (eo.uid = a.uid)
+              LEFT JOIN  emails   AS e ON (e.uid = a.uid AND e.flags='active')
                   WHERE  ni.last < {?} AND ({$this->subscriptionWhere()}) AND
-                         (e.email IS NOT NULL OR FIND_IN_SET('googleapps', u.mail_storage))
-               GROUP BY  u.user_id";
+                         (e.email IS NOT NULL OR FIND_IN_SET('googleapps', eo.storage))
+               GROUP BY  a.uid";
     }
 
     public function sendToAll()
     {
         $this->setSent();
-        $query = $this->getAllRecipients() . " LIMIT {?}";
+        $query = XDB::format($this->getAllRecipients(), $this->id()) . ' LIMIT 60';
         while (true) {
-            $res = XDB::iterRow($query, $this->_id, 60);
-            if (!$res->total()) {
+            $users = User::getBulkUsersWithUIDs(XDB::fetchColumn($query));
+            if (count($users) == 0) {
                 return;
             }
-            $sent = array();
-            while (list($uid, $hruid, $email, $prenom, $nom, $sexe, $fmt, $hash) = $res->next()) {
-                $sent[] = "(user_id='$uid'" . (!$uid ? " AND email='$email')": ')');
-                $this->sendTo($hruid, $email, $prenom, $nom, $sexe, $fmt=='html', $hash);
+            foreach ($users as $user) {
+                $sent[] = XDB::format('uid = {?}', $user->id());
+                $this->sendTo($user, $hash);
             }
             XDB::execute("UPDATE  {$this->_subscriptionTable}
                              SET  last = {?}

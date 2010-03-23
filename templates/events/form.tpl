@@ -32,8 +32,8 @@
 {if $smarty.request.promo_max}
 {assign var=promo_max value=$smarty.request.promo_max|smarty:nodefaults}
 {/if}
-{if $smarty.request.peremption}
-{assign var=peremption value=$smarty.request.peremption|smarty:nodefaults}
+{if $smarty.request.expiration}
+{assign var=expiration value=$smarty.request.expiration|smarty:nodefaults}
 {/if}
 {if $smarty.request.important}
 {assign var=important value=$smarty.request.important|smarty:nodefaults}
@@ -170,7 +170,7 @@
         Dernier jour d'affichage
       </td>
       <td>
-        {valid_date name="peremption" value=$peremption to=60}
+        {valid_date name="expiration" value=$expiration to=60}
       </td>
     </tr>
     {if $admin_evts}

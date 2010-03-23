@@ -20,7 +20,7 @@
 *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 ***************************************************************************/
 
-require('./connect.db.inc.php');
+require './connect.db.inc.php';
 
 /**
  * Discards from the logger database session details for users.
@@ -31,21 +31,38 @@ require('./connect.db.inc.php');
  *      no matter what.
  */
 function discardExpiredSessions($userPerms, $retentionPeriod, $minimalBacklog) {
+    switch ($userPerms) {
+      case 'user':
+        $state   = 'active';
+        $isAdmin = 0;
+        break;
+      case 'admin':
+        $state   = 'active';
+        $isAdmin = 1;
+        break;
+      case 'disabled':
+        $state   = 'disabled';
+        $isAdmin = 0;
+        break;
+      default:
+        return;
+    }
+
     XDB::execute(
-        "DELETE  #logger#.s
-           FROM  #logger#.sessions AS s
-           JOIN  (SELECT  u.user_id,
+        "DELETE  s
+           FROM  log_sessions AS s
+           JOIN  (SELECT  a.uid,
                           (SELECT  us.start
-                             FROM  #logger#.sessions AS us
-                            WHERE  us.uid = u.user_id
+                             FROM  log_sessions AS us
+                            WHERE  us.uid = a.uid
                          ORDER BY  us.start DESC
                             LIMIT  {?}, 1) AS no_discard_limit
-                    FROM  #x4dat#.auth_user_md5 AS u
-                   WHERE  u.perms = {?}
-                ORDER BY  u.user_id ASC) AS ut ON (ut.user_id = s.uid)
+                    FROM  #x5dat#.accounts AS a
+                   WHERE  a.state = {?} AND a.is_admin = {?}
+                ORDER BY  a.uid ASC) AS ut ON (ut.uid = s.uid)
           WHERE  s.start < DATE_SUB(NOW(), INTERVAL {?} MONTH)
                  AND s.start < ut.no_discard_limit",
-        $minimalBacklog - 1, $userPerms, $retentionPeriod);
+        $minimalBacklog - 1, $state, $isAdmin, $retentionPeriod);
 
     $affectedRows = XDB::affectedRows();
     echo "Users with permission '$userPerms': removed $affectedRows sessions.\n";
@@ -57,9 +74,9 @@ function discardExpiredSessions($userPerms, $retentionPeriod, $minimalBacklog) {
 function checkOrphanedSessions() {
     $res = XDB::query(
         "SELECT  COUNT(*)
-           FROM  #logger#.sessions AS s
-      LEFT JOIN  #x4dat#.auth_user_md5 AS u ON (u.user_id = s.uid)
-          WHERE  u.user_id IS NULL");
+           FROM  log_sessions     AS s
+      LEFT JOIN  #x5dat#.accounts AS a ON (a.uid = s.uid)
+          WHERE  a.uid IS NULL");
     if (($count = $res->fetchOneCell())) {
         echo "Orphaned sessions: found $count orphaned sessions. Please fix that.\n";
     }
@@ -70,9 +87,9 @@ function checkOrphanedSessions() {
  */
 function purgeOrphanedEvents() {
     XDB::execute(
-        "DELETE  #logger#.e
-           FROM  #logger#.events AS e
-      LEFT JOIN  #logger#.sessions AS s ON (s.id = e.session)
+        "DELETE  e
+           FROM  log_events AS e
+      LEFT JOIN  log_sessions AS s ON (s.id = e.session)
           WHERE  s.id IS NULL");
     $affectedRows = XDB::affectedRows();
     echo "Orphaned events: removed $affectedRows events.\n";
@@ -93,8 +110,8 @@ checkOrphanedSessions();
 purgeOrphanedEvents();
 
 // Many rows have been removed from the two logger tables. Let's optimize them.
-XDB::execute("OPTIMIZE TABLE #logger#.events");
-XDB::execute("OPTIMIZE TABLE #logger#.sessions");
+XDB::execute("OPTIMIZE TABLE log_events");
+XDB::execute("OPTIMIZE TABLE log_sessions");
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -24,24 +24,15 @@
   <table class="bicol">
     <tr>
       <td>
-        <input type="submit" value="GO" style="visibility: hidden" />
-        <input type="submit" value="&lt;&lt;" name="sub10" />
-      </td>
-      <td><input type="submit" value="&lt;"  name="sub01" /></td>
-      <td>
         Promotion&nbsp;:
-        <input type="text" name="promo" value="{$promo}" size="4" maxlength="4" />
+        <input type="text" name="promo" value="{$promo}" size="5" maxlength="5" />
         <input type="submit" value="GO" />
-      </td>
-      <td><input type="submit" value="&gt;"  name="add01" /></td>
-      <td>
-        <input type="submit" value="&gt;&gt;" name="add10" />
-        <input type="submit" value="GO" style="visibility: hidden" />
       </td>
     </tr>
   </table>
 </form>
 
+{if t($decedes)}
 <form action="admin/deaths/{$promo}/validate" id="deathDateList" method="post">
   {xsrf_token_field}
   <table class="bicol" summary="liste des dates de décès">
@@ -51,9 +42,9 @@
     </tr>
     {iterate item=x from=$decedes}
     <tr class="{cycle values="impair,pair"}">
-      <td>{$x.nom} {$x.prenom}</td>
+      <td>{$x.directory_name}</td>
       <td class="center">
-        <input type="text" class="deathDate" name="{$x.matricule}" value="{$x.deces}" size="10" maxlength="10" />
+        <input type="text" class="deathDate" name="{$x.hrpid}" value="{$x.deathdate}" size="10" maxlength="10" />
       </td>
     </tr>
     {/iterate}
@@ -77,6 +68,6 @@
   });
   {/literal}
 //]]></script>
-
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

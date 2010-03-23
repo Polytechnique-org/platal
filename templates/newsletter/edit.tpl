@@ -169,7 +169,6 @@
 [<a href="admin/newsletter/edit/{$nl->_id}">retour</a>]
 </p>
 
-{if !$art->check()}<p class='erreur'>article trop long !</p>{/if}
 <table class='bicol'>
   <tr><th>Version texte</th></tr>
   <tr id='text'>

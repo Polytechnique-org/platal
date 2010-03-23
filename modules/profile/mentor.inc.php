@@ -19,19 +19,19 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileSecteurs implements ProfileSetting
+class ProfileSectors implements ProfileSetting
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
         if (is_null($value)) {
             $value = array();
-            $res = XDB::iterRow("SELECT  m.secteur, m.ss_secteur, ss.label
-                                   FROM  mentor_secteurs AS m
-                             INNER JOIN  emploi_secteur  AS s ON(m.secteur = s.id)
-                             INNER JOIN  emploi_ss_secteur AS ss ON(s.id = ss.secteur AND m.ss_secteur = ss.id)
-                                  WHERE  m.uid = {?}",
-                                S::i('uid'));
+            $res = XDB::iterRow("SELECT  m.sectorid, m.subsectorid, ss.name
+                                   FROM  profile_mentor_sector      AS m
+                             INNER JOIN  profile_job_sector_enum    AS s  ON (m.sectorid = s.id)
+                             INNER JOIN  profile_job_subsector_enum AS ss ON (s.id = ss.sectorid AND m.subsectorid = ss.id)
+                                  WHERE  m.pid = {?}",
+                                $page->pid());
             while (list($s, $ss, $ssname) = $res->next()) {
                 if (!isset($value[$s])) {
                     $value[$s] = array($ss => $ssname);
@@ -39,10 +39,10 @@ class ProfileSecteurs implements ProfileSetting
                     $value[$s][$ss] = $ssname;
                 }
             }
-        } else if (!is_array($value)) {
+        } elseif (!is_array($value)) {
             $value = array();
-        } else if (count($value) > 10) {
-            Platal::page()->trigError("Le nombre de secteurs d'expertise est limité à 10");
+        } elseif (count($value) > 10) {
+            Platal::page()->trigError("Le nombre de secteurs d'expertise est limité à 10.");
             $success = false;
         }
         ksort($value);
@@ -55,17 +55,17 @@ class ProfileSecteurs implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
 
-        XDB::execute("DELETE FROM  mentor_secteurs
-                            WHERE  uid = {?}",
-                     S::i('uid'));
+        XDB::execute("DELETE FROM  profile_mentor_sector
+                            WHERE  pid = {?}",
+                     $page->pid());
         if (!count($value)) {
             return;
         }
-        foreach ($value as $id=>&$sect) {
-            foreach ($sect as $sid=>&$name) {
-                XDB::execute("INSERT INTO  mentor_secteurs (uid, secteur, ss_secteur)
+        foreach ($value as $id => $sect) {
+            foreach ($sect as $sid => $name) {
+                XDB::execute("INSERT INTO  profile_mentor_sector (pid, sectorid, subsectorid)
                                    VALUES  ({?}, {?}, {?})",
-                             S::i('uid'), $id, $sid);
+                             $page->pid(), $id, $sid);
             }
         }
     }
@@ -78,11 +78,11 @@ class ProfileCountry implements ProfileSetting
         $success = true;
         if (is_null($value)) {
             $value = array();
-            $res = XDB::iterRow("SELECT  m.pid, p.pays
-                                   FROM  mentor_pays AS m
-                             INNER JOIN  geoloc_pays AS p ON(m.pid = p.a2)
-                                  WHERE  m.uid = {?}",
-                                S::i('uid'));
+            $res = XDB::iterRow("SELECT  m.country, gc.countryFR
+                                   FROM  profile_mentor_country AS m
+                             INNER JOIN  geoloc_countries       AS gc ON (m.country = gc.iso_3166_1_a2)
+                                  WHERE  m.pid = {?}",
+                                $page->pid());
             while (list($id, $name) = $res->next()) {
                 $value[$id] = $name;
             }
@@ -98,13 +98,13 @@ class ProfileCountry implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute("DELETE FROM  mentor_pays
-                            WHERE  uid = {?}",
-                     S::i('uid'));
+        XDB::execute("DELETE FROM  profile_mentor_country
+                            WHERE  pid = {?}",
+                     $page->pid());
         foreach ($value as $id=>&$name) {
-            XDB::execute("INSERT INTO  mentor_pays (uid, pid)
+            XDB::execute("INSERT INTO  profile_mentor_country (pid, country)
                                VALUES  ({?}, {?})",
-                         S::i('uid'), $id);
+                         $page->pid(), $id);
         }
     }
 }
@@ -118,16 +118,16 @@ class ProfileMentor extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['expertise'] = null;
-        $this->settings['secteurs'] = new ProfileSecteurs();
+        $this->settings['sectors'] = new ProfileSectors();
         $this->settings['countries'] = new ProfileCountry();
     }
 
     protected function _fetchData()
     {
         $res = XDB::query("SELECT  expertise
-                             FROM  mentor
-                            WHERE  uid = {?}",
-                          S::i('uid'));
+                             FROM  profile_mentor
+                            WHERE  pid = {?}",
+                          $this->pid());
         $this->values['expertise'] = $res->fetchOneCell();
     }
 
@@ -136,14 +136,14 @@ class ProfileMentor extends ProfilePage
         if ($this->changed['expertise']) {
             $expertise = trim($this->values['expertise']);
             if (empty($expertise)) {
-                XDB::execute("DELETE FROM  mentor
-                                    WHERE  uid = {?}",
-                             S::i('uid'));
+                XDB::execute("DELETE FROM  profile_mentor
+                                    WHERE  pid = {?}",
+                             $this->pid());
                 $this->values['expertise'] = null;
             } else {
-                XDB::execute("REPLACE INTO  mentor (uid, expertise)
+                XDB::execute("REPLACE INTO  profile_mentor (pid, expertise)
                                     VALUES  ({?}, {?})",
-                             S::i('uid'), $expertise);
+                             $this->pid(), $expertise);
                 $this->values['expertise'] = $expertise;
             }
         }
@@ -151,8 +151,12 @@ class ProfileMentor extends ProfilePage
 
     public function _prepare(PlPage &$page, $id)
     {
-        $page->assign('secteurs_sel', XDB::iterator("SELECT  id, label
-                                                       FROM  emploi_secteur"));
+        $page->assign('sectorList', XDB::iterator('SELECT  id, name
+                                                     FROM  profile_job_sector_enum'));
+
+        $page->assign('countryList', XDB::iterator("SELECT  iso_3166_1_a2, countryFR
+                                                      FROM  geoloc_countries
+                                                  ORDER BY  countryFR"));
     }
 }
 

@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom}&nbsp;: <a href='{$platal->ns}events'>Événements</a> </h1>
+<h1>{$asso->nom}&nbsp;: <a href='{$platal->ns}events'>Événements</a> </h1>
 
 <p>
   {if $evt.titre || count($moments) eq 1}
@@ -87,15 +87,15 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
   {iterate from=$oubliinscription item=m}
   <tr class="pair">
     <td>
-      {if $is_admin}<a href="javascript:remplitAuto('{$m.email}')">{/if}
-        {if $m.femme}&bull;{/if}{if !$m.prenom && !$m.nom}{$m.email}{else}{$m.prenom} {$m.nom}{/if}
+      {if $is_admin}<a href="javascript:remplitAuto('{$m.user->login()}')">{/if}
+        {profile user=$m.user link=false}
       {if $is_admin}</a>{/if}
     </td>
-    <td>{$m.promo}</td>
+    <td>{$m.user->promo()}</td>
     <td>
-      <a href="https://www.polytechnique.org/profile/{$m.email}">{icon name=user_suit title="fiche"}</a>
-      <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="vcard"}</a>
-      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="email"}</a>
+      <a href="https://www.polytechnique.org/profile/{$m.user->login()}">{icon name=user_suit title="fiche"}</a>
+      <a href="https://www.polytechnique.org/vcard/{$m.user->login()}.vcf">{icon name=vcard title="vcard"}</a>
+      <a href="mailto:{$m.user->bestEmail()}">{icon name=email title="email"}</a>
     </td>
     <td>{$m.montant}</td>
   </tr>
@@ -141,18 +141,18 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
   {foreach from=$participants item=m}
   <tr>
     <td>
-      {if $is_admin}<a href="javascript:remplitAuto('{$m.email}')">{/if}
-        {if $m.femme}&bull;{/if}{if !$m.prenom && !$m.nom}{$m.email}{else}{$m.prenom} {$m.nom}{/if}
+      {if $is_admin}<a href="javascript:remplitAuto('{$m.user->login()}')">{/if}
+        {profile user=$m.user promo=false link=false}
       {if $is_admin}</a>{/if}
     </td>
-    <td>{$m.promo}</td>
+    <td>{$m.user->promo()}</td>
     <td>
-      {if $m.x}
-      <a href="https://www.polytechnique.org/profile/{$m.email}">{icon name=user_suit title="fiche"}</a>
-      <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="vcard"}</a>
-      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="email"}</a>
+      {if $m.user->hasProfile()}
+      <a href="https://www.polytechnique.org/profile/{$m.user->login()}">{icon name=user_suit title="fiche"}</a>
+      <a href="https://www.polytechnique.org/vcard/{$m.user->login()}.vcf">{icon name=vcard title="vcard"}</a>
+      <a href="mailto:{$m.user->bestEmail()}">{icon name=email title="email"}</a>
       {else}
-      <a href="mailto:{$m.email}">{icon name=email title="email"}</a>
+      <a href="mailto:{$m.user->bestEmail()}">{icon name=email title="email"}</a>
       {/if}
     </td>
     {if $tout}
@@ -198,7 +198,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
 {/foreach}
 </p>
 
-{if $absents->total()}
+{if $absents|@count}
 
 <hr />
 
@@ -206,18 +206,18 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
 
 <table class="tinybicol">
   <tr><th>Prénom NOM</th><th>Origine</th></tr>
-  {iterate from=$absents item=m}
+  {foreach from=$absents item=m}
   <tr>
     <td>
-      {if $is_admin}<a href="javascript:remplitAuto('{$m.email}')">{/if}
-      {if $m.sexe}&bull;{/if}{$m.prenom} {$m.nom}
+      {if $is_admin}<a href="javascript:remplitAuto('{$m->login()}')">{/if}
+      {profile user=$m link=false promo=false}
       {if $is_admin}</a>{/if}
     </td>
     <td>
-      {$m.promo}
+      {$m->promo()}
     </td>
   </tr>
-  {/iterate}
+  {/foreach}
 </table>
 
 {/if}

@@ -77,8 +77,8 @@ class MedalReq extends Validate
         //var_dump($this);
         $r = XDB::query("
             SELECT IF (g.text IS NOT NULL, CONCAT(m.text,' - ', g.text), m.text)
-              FROM profile_medals AS m
-         LEFT JOIN profile_medals_grades AS g ON(g.mid = m.id AND g.gid = {?})
+              FROM profile_medal_enum AS m
+         LEFT JOIN profile_medal_enum_grades AS g ON(g.mid = m.id AND g.gid = {?})
              WHERE m.id = {?}", $this->gid, $this->mid);
         return $r->fetchOneCell();
     }
@@ -89,7 +89,7 @@ class MedalReq extends Validate
     public function submit()
     {
         $res = XDB::query("SELECT  FIND_IN_SET('validation', flags)
-                             FROM  profile_medals
+                             FROM  profile_medal_enum
                             WHERE  id = {?}", $this->mid);
         if ($res->fetchOneCell()) {
             parent::submit();
@@ -105,9 +105,9 @@ class MedalReq extends Validate
     {
         require_once 'notifs.inc.php';
         register_watch_op($this->user->id(), WATCH_FICHE, '', 'medals');
-        return XDB::execute('REPLACE INTO  profile_medals_sub
+        return XDB::execute('REPLACE INTO  profile_medals
                                    VALUES  ({?}, {?}, {?})',
-                            $this->user->id(), $this->mid,
+                            $this->user->profile()->id(), $this->mid,
                             is_null($this->gid) ? 0 : $this->gid);
     }
 

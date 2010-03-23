@@ -34,7 +34,7 @@
 {$nl->title()}
 ====================================================================
 
-{$nl->head($prenom, $nom, $sexe, 'text')}
+{$nl->head($user, 'text')}
 
 
 {foreach from=$nl->_arts key=cid item=arts name=cats}
@@ -51,7 +51,7 @@
 --------------------------------------------------------------------
 
 {foreach from=$arts item=art}
-{$art->toText($hash, $alias)}
+{$art->toText($hash, $user->login())}
 
 {/foreach}
 {/foreach}
@@ -93,7 +93,7 @@ ne plus recevoir : &lt;https://www.polytechnique.org/nl/out&gt;
 {/if}
     <div class='nl'>
       <div class="title"><a href="{$globals->baseurl}">{$nl->title()}</a></div>
-      <div class="intro">{$nl->head($prenom, $nom, $sexe, 'html')|smarty:nodefaults}</div>
+      <div class="intro">{$nl->head($user, 'html')|smarty:nodefaults}</div>
       <a id="top_lnk"></a>
       {foreach from=$nl->_arts key=cid item=arts name=cats}
       <div class="lnk">
@@ -109,7 +109,7 @@ ne plus recevoir : &lt;https://www.polytechnique.org/nl/out&gt;
         {$nl->_cats[$cid]}
       </h1>
       {foreach from=$arts item=art}
-        {$art->toHtml($hash, $alias)|smarty:nodefaults}
+        {$art->toHtml($hash, $user->login())|smarty:nodefaults}
         <div class="top_lnk"><a href="{$prefix}#top_lnk">Revenir au sommaire</a></div>
       {/foreach}
       {/foreach}

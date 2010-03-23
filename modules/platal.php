@@ -69,7 +69,7 @@ class PlatalModule extends PLModule
         if (S::logged()) {
             pl_redirect('events');
         } else if (!@$GLOBALS['IS_XNET_SITE']) {
-            pl_redirect('review');
+            $this->handler_review($page);
         }
     }
 
@@ -80,40 +80,48 @@ class PlatalModule extends PLModule
         exit;
     }
 
-    function handler_changelog(&$page)
+    function handler_changelog(&$page, $core = null)
     {
         $page->changeTpl('platal/changeLog.tpl');
 
-        $clog = pl_entities(file_get_contents(dirname(__FILE__).'/../ChangeLog'));
-        $clog = preg_replace('/===+\s*/', '</pre><hr /><pre>', $clog);
-        // url catch only (not all wiki syntax)
-        $clog = preg_replace(array(
-            '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/ui',
-            '/(\s|^)www\.((?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/iu',
-            '/(?:mailto:)?([a-z0-9.\-+_]+@([\-.+_]?[a-z0-9])+)/i'),
-          array(
-            '<a href="\\0">\\0</a>',
-            '\\1<a href="http://www.\\2">www.\\2</a>',
-            '<a href="mailto:\\0">\\0</a>'),
-          $clog);
-        $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
-        $clog = preg_replace('!vim:.*$!', '', $clog);
-        $clog = preg_replace("!(<hr />(\\s|\n)*)?<pre>(\s|\n)*</pre>((\\s|\n)*<hr />)?!m", "", "<pre>$clog</pre>");
-        $page->assign('ChangeLog', $clog);
+        function formatChangeLog($file) {
+            $clog = pl_entities(file_get_contents($file));
+            $clog = preg_replace('/===+\s*/', '</pre><hr /><pre>', $clog);
+            // url catch only (not all wiki syntax)
+            $clog = preg_replace(array(
+                '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/ui',
+                '/(\s|^)www\.((?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/iu',
+                '/(?:mailto:)?([a-z0-9.\-+_]+@([\-.+_]?[a-z0-9])+)/i'),
+              array(
+                '<a href="\\0">\\0</a>',
+                '\\1<a href="http://www.\\2">www.\\2</a>',
+                '<a href="mailto:\\0">\\0</a>'),
+              $clog);
+            $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
+            $clog = preg_replace('!vim:.*$!', '', $clog);
+            return preg_replace("!(<hr />(\\s|\n)*)?<pre>(\s|\n)*</pre>((\\s|\n)*<hr />)?!m", "", "<pre>$clog</pre>");
+        }
+        if ($core != 'core') {
+            $page->assign('core', false);
+            $page->assign('ChangeLog', formatChangeLog(dirname(__FILE__).'/../ChangeLog'));
+        } else {
+            $page->assign('core', true);
+            $page->assign('ChangeLog', formatChangeLog(dirname(__FILE__).'/../core/ChangeLog'));
+        }
     }
 
     function __set_rss_state($state)
     {
         if ($state) {
-            $_SESSION['core_rss_hash'] = rand_url_id(16);
-            XDB::execute('UPDATE  auth_user_quick
-                                   SET  core_rss_hash={?} WHERE user_id={?}',
-                                   S::v('core_rss_hash'), S::v('uid'));
+            S::set('token', rand_url_id(16));
+            XDB::execute('UPDATE  accounts
+                             SET  token = {?}
+                           WHERE  uid = {?}', S::s('token'), S::i('uid'));
         } else {
-            XDB::execute('UPDATE  auth_user_quick
-                                   SET  core_rss_hash="" WHERE user_id={?}',
-                                   S::v('uid'));
-            S::kill('core_rss_hash');
+            S::kill('token');
+            XDB::execute('UPDATE  accounts
+                             SET  token = NULL
+                           WHERE  uid = {?}', S::i('uid'));
         }
     }
 
@@ -122,14 +130,13 @@ class PlatalModule extends PLModule
         $page->changeTpl('platal/preferences.tpl');
         $page->setTitle('Mes préférences');
 
-        if (Post::has('mail_fmt')) {
-            $fmt = Post::v('mail_fmt');
-            if ($fmt != 'texte') $fmt = 'html';
-            XDB::execute("UPDATE auth_user_quick
-                                       SET core_mail_fmt = '$fmt'
-                                     WHERE user_id = {?}",
-                                     S::v('uid'));
-            $_SESSION['mail_fmt'] = $fmt;
+        if (Post::has('email_format')) {
+            $fmt = Post::s('email_format');
+            XDB::execute("UPDATE accounts
+                             SET email_format = {?}
+                           WHERE uid = {?}",
+                         $fmt, S::v('uid'));
+            S::set('email_format', $fmt);
         }
 
         if (Post::has('rss')) {
@@ -140,7 +147,7 @@ class PlatalModule extends PLModule
         # carva will extend to users not in the main domain.
         $res = XDB::query("SELECT  alias
                              FROM  aliases
-                            WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                            WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
                           S::user()->id());
         $page->assign('bestalias', $res->fetchOneCell());
     }
@@ -148,39 +155,37 @@ class PlatalModule extends PLModule
     function handler_webredir(&$page)
     {
         $page->changeTpl('platal/webredirect.tpl');
-
         $page->setTitle('Redirection de page WEB');
 
-        $log =& S::v('log');
-        $url = Env::v('url');
-
-        if (Env::v('submit') == 'Valider' and Env::has('url')) {
-            XDB::execute('UPDATE auth_user_quick
-                                       SET redirecturl = {?} WHERE user_id = {?}',
-                                   $url, S::v('uid'));
-            S::logger()->log('carva_add', 'http://'.Env::v('url'));
-            $page->trigSuccess("Redirection activée vers <a href='http://$url'>$url</a>");
-        } elseif (Env::v('submit') == "Supprimer") {
-            XDB::execute("UPDATE auth_user_quick
-                                       SET redirecturl = ''
-                                     WHERE user_id = {?}",
-                                   S::v('uid'));
-            S::logger()->log("carva_del", $url);
+        if (Env::v('submit') == 'Valider' && !Env::blank('url')) {
+            if (Env::blank('url')) {
+                $page->trigError('URL invalide');
+            } else {
+                $url = Env::t('url');
+                XDB::execute('REPLACE INTO  carvas (uid, url)
+                                    VALUES  ({?}, {?})',
+                             S::i('uid'), $url);
+                S::logger()->log('carva_add', 'http://' . $url);
+                $page->trigSuccess("Redirection activée vers <a href='http://$url'>$url</a>");
+            }
+        } elseif (Env::v('submit') == 'Supprimer') {
+            XDB::execute('DELETE FROM carvas
+                                WHERE uid = {?}', S::i('uid'));
             Post::kill('url');
+            S::logger()->log('carva_del');
             $page->trigSuccess('Redirection supprimée');
         }
 
-        $res = XDB::query('SELECT redirecturl
-                                       FROM auth_user_quick
-                                      WHERE user_id = {?}',
-                                    S::v('uid'));
-        $page->assign('carva', $res->fetchOneCell());
+        $url = XDB::fetchOneCell('SELECT  url
+                                    FROM  carvas
+                                   WHERE  uid = {?}', S::i('uid'));
+        $page->assign('carva', $url);
 
         # FIXME: this code is not multi-domain compatible. We should decide how
         # carva will extend to users not in the main domain.
         $res = XDB::query("SELECT  alias
                              FROM  aliases
-                            WHERE  id = {?} AND FIND_IN_SET('bestalias', flags)",
+                            WHERE  uid = {?} AND FIND_IN_SET('bestalias', flags)",
                           S::user()->id());
         $page->assign('bestalias', $res->fetchOneCell());
     }
@@ -202,15 +207,13 @@ class PlatalModule extends PLModule
         global $globals;
 
         if (Post::has('response2'))  {
-            require_once 'secure_hash.inc.php';
             S::assert_xsrf_token();
 
-            $_SESSION['password'] = $password = Post::v('response2');
-
-            XDB::execute('UPDATE  auth_user_md5
-                             SET  password={?}
-                           WHERE  user_id={?}', $password,
-                           S::v('uid'));
+            S::set('password', $password = Post::v('response2'));
+            XDB::execute('UPDATE  accounts
+                             SET  password = {?}
+                           WHERE  uid={?}', $password,
+                         S::i('uid'));
 
             // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
             // updates the Google Apps password as well.
@@ -244,27 +247,27 @@ class PlatalModule extends PLModule
         $wp = new PlWikiPage('Xorg.NNTPSécurisé');
         $wp->buildCache();
 
-        $uid  = S::v('uid');
+        $uid  = S::i('uid');
         $pass = Env::v('smtppass1');
-        $log  = S::v('log');
 
         if (Env::v('op') == "Valider" && strlen($pass) >= 6
-        &&  Env::v('smtppass1') == Env::v('smtppass2'))
-        {
-            XDB::execute('UPDATE auth_user_md5 SET smtppass = {?}
-                                     WHERE user_id = {?}', $pass, $uid);
+            &&  Env::v('smtppass1') == Env::v('smtppass2')) {
+            XDB::execute('UPDATE  accounts
+                             SET  weak_password = {?}
+                           WHERE  uid = {?}', $pass, $uid);
             $page->trigSuccess('Mot de passe enregistré');
             S::logger()->log("passwd_ssl");
         } elseif (Env::v('op') == "Supprimer") {
-            XDB::execute('UPDATE auth_user_md5 SET smtppass = ""
-                                     WHERE user_id = {?}', $uid);
+            XDB::execute('UPDATE  accounts
+                             SET  weak_password = NULL
+                           WHERE  uid = {?}', $uid);
             $page->trigSuccess('Compte SMTP et NNTP supprimé');
             S::logger()->log("passwd_del");
         }
 
-        $res = XDB::query("SELECT IF(smtppass != '', 'actif', '')
-                                       FROM auth_user_md5
-                                      WHERE user_id = {?}", $uid);
+        $res = XDB::query("SELECT  weak_password IS NOT NULL
+                             FROM  accounts
+                            WHERE  uid = {?}", $uid);
         $page->assign('actif', $res->fetchOneCell());
     }
 
@@ -290,54 +293,50 @@ class PlatalModule extends PLModule
 
         $mailorg = strtok(Env::v('login'), '@');
 
-        // paragraphe rajouté : si la date de naissance dans la base n'existe pas, on l'update
-        // avec celle fournie ici en espérant que c'est la bonne
+        $profile = Profile::get(Env::t('login'));
+        if (is_null($profile) || $profile->birthdate != $birth) {
+            $page->trigError('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
+                        'Si tu as un homonyme, utilise prenom.nom.promo comme login');
+            return;
+        }
 
-        $res = XDB::query(
-                "SELECT  user_id, naissance
-                   FROM  auth_user_md5 AS u
-             INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type != 'homonyme')
-                  WHERE  a.alias={?} AND u.perms IN ('admin','user') AND u.deces=0", $mailorg);
-        list($uid, $naissance) = $res->fetchOneRow();
+        $user = $profile->owner();
+        if ($user->state != 'active') {
+            $page->trigError('Ton compte n\'est pas activé.');
+            return;
+        }
 
-        if ($naissance == $birth) {
-            $res = XDB::query("SELECT  COUNT(*)
-                                 FROM  emails
-                                WHERE  uid = {?} AND flags != 'panne' AND flags != 'filter'", $uid);
-            $count = intval($res->fetchOneCell());
-            if ($count == 0) {
-                $page->assign('no_addr', true);
-                return;
-            }
+        $res = XDB::query("SELECT  COUNT(*)
+                             FROM  emails
+                            WHERE  uid = {?} AND flags != 'panne' AND flags != 'filter'", $user->id());
+        $count = intval($res->fetchOneCell());
+        if ($count == 0) {
+            $page->assign('no_addr', true);
+            return;
+        }
 
-            $page->assign('ok', true);
+        $page->assign('ok', true);
 
-            $url   = rand_url_id();
-            XDB::execute('INSERT INTO  perte_pass (certificat,uid,created)
-                               VALUES  ({?},{?},NOW())', $url, $uid);
-            $res   = XDB::query('SELECT  email
+        $url   = rand_url_id();
+        XDB::execute('INSERT INTO  account_lost_passwords (certificat,uid,created)
+                           VALUES  ({?},{?},NOW())', $url, $user->id());
+        $res   = XDB::query('SELECT  email
+                               FROM  emails
+                              WHERE  uid = {?} AND email = {?}',
+                            $user->id(), Post::v('email'));
+        if ($res->numRows()) {
+            $mails = $res->fetchOneCell();
+        } else {
+            $res   = XDB::query("SELECT  email
                                    FROM  emails
-                                  WHERE  uid = {?} AND email = {?}',
-                                $uid, Post::v('email'));
-            if ($res->numRows()) {
-                $mails = $res->fetchOneCell();
-            } else {
-                $user  = User::getSilent($uid);
-                $mails = $user->bestEmail();
-                $res   = XDB::query("SELECT  email
-                                       FROM  emails
-                                      WHERE  uid = {?} AND NOT FIND_IN_SET('filter', flags)
-                                             AND NOT FIND_IN_SET('active', flags)",
-                                    $uid);
-                if ($res->numRows() > 0) {
-                    $mails .= ', ' . implode(', ', $res->fetchColumn());
-                }
-            }
-            $mymail = new PlMailer();
-            $mymail->setFrom('"Gestion des mots de passe" <support+password@' . $globals->mail->domain . '>');
-            $mymail->addTo($mails);
-            $mymail->setSubject('Ton certificat d\'authentification');
-            $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
+                                  WHERE  uid = {?} AND NOT FIND_IN_SET('filter', flags)", $user->id());
+            $mails = implode(', ', $res->fetchColumn());
+        }
+        $mymail = new PlMailer();
+        $mymail->setFrom('"Gestion des mots de passe" <support+password@' . $globals->mail->domain . '>');
+        $mymail->addTo($mails);
+        $mymail->setSubject("Ton certificat d'authentification");
+        $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
 {$globals->baseurl}/tmpPWD/$url
 
 Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur. Si tu n'as pas utilisé ce lien dans six heures, tu peux tout simplement recommencer cette procédure.
@@ -348,23 +347,21 @@ Polytechnique.org
 
 Email envoyé à ".Env::v('login') . (Post::has('email') ? "
 Adresse de secours : " . Post::v('email') : ""));
-            $mymail->send();
+        $mymail->send();
 
-            // on cree un objet logger et on log l'evenement
-            S::logger($uid)->log('recovery', $mails);
-        } else {
-            $page->trigError('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
-                        'Si tu as un homonyme, utilise prenom.nom.promo comme login');
-        }
+        // on cree un objet logger et on log l'evenement
+        S::logger($user->id())->log('recovery', $mails);
     }
 
     function handler_tmpPWD(&$page, $certif = null)
     {
         global $globals;
-        XDB::execute('DELETE FROM perte_pass
-                                      WHERE DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
+        // XXX: recovery requires data from the profile
+        XDB::execute('DELETE FROM  account_lost_passwords
+                            WHERE  DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
 
-        $res   = XDB::query('SELECT uid FROM perte_pass WHERE certificat={?}', $certif);
+        $res = XDB::query('SELECT  uid
+                             FROM  account_lost_passwords WHERE certificat={?}', $certif);
         $ligne = $res->fetchOneAssoc();
         if (!$ligne) {
             $page->changeTpl('platal/index.tpl');
@@ -374,10 +371,12 @@ Adresse de secours : " . Post::v('email') : ""));
         $uid = $ligne["uid"];
         if (Post::has('response2')) {
             $password = Post::v('response2');
-            XDB::query('UPDATE  auth_user_md5 SET password={?}
-                                   WHERE  user_id={?} AND perms IN("admin","user")',
-                                 $password, $uid);
-            XDB::query('DELETE FROM perte_pass WHERE certificat={?}', $certif);
+            XDB::query('UPDATE  accounts
+                           SET  password={?}
+                         WHERE  uid = {?} AND state = \'active\'',
+                       $password, $uid);
+            XDB::query('DELETE FROM  account_lost_passwords
+                              WHERE  certificat={?}', $certif);
 
             // If GoogleApps is enabled, and the user did choose to use synchronized passwords,
             // updates the Google Apps password as well.
@@ -405,30 +404,31 @@ Adresse de secours : " . Post::v('email') : ""));
         $page->setTitle('Skins');
 
         if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
-            XDB::execute('UPDATE auth_user_quick
-                             SET skin={?} WHERE user_id={?}',
-                         Env::i('newskin'), S::v('uid'));
+            XDB::execute('UPDATE  accounts
+                             SET  skin = {?}
+                           WHERE  uid = {?}',
+                         Env::i('newskin'), S::i('uid'));
             S::kill('skin');
             Platal::session()->setSkin();
         }
 
-        $res = XDB::query('SELECT id FROM skins WHERE skin_tpl={?}', S::v('skin'));
+        $res = XDB::query('SELECT  id
+                             FROM  skins
+                            WHERE  skin_tpl = {?}', S::v('skin'));
         $page->assign('skin_id', $res->fetchOneCell());
 
-        $sql = "SELECT s.*,auteur,count(*) AS nb
-                  FROM skins AS s
-             LEFT JOIN auth_user_quick AS a ON s.id=a.skin
-                 WHERE skin_tpl != '' AND ext != ''
-              GROUP BY id ORDER BY s.date DESC";
+        $sql = 'SELECT  s.*, auteur, COUNT(*) AS nb
+                  FROM  skins AS s
+             LEFT JOIN  accounts AS a ON (a.skin = s.id)
+                 WHERE  skin_tpl != \'\' AND ext != \'\'
+              GROUP BY  id ORDER BY s.date DESC';
         $page->assign('skins', XDB::iterator($sql));
     }
 
     function handler_exit(&$page, $level = null)
     {
-        if (S::has('suid')) {
-            $suid = S::v('suid');
-            $log  = S::v('log');
-            S::logger()->log("suid_stop", S::user()->login() . " by " . $suid['hruid']);
+        if (S::suid()) {
+            S::logger()->log('suid_stop', S::user()->login() . " by " . S::suid('hruid'));
             Platal::session()->stopSUID();
             pl_redirect('admin/user/' . S::user()->login());
         }

@@ -1,4 +1,22 @@
 ================================================================================
+VERSION 0.f.0                                                         XX XX XXXX
+
+New:
+    * Core:
+        - Centralises email management through an email combobox           -JAC
+
+Bug/Wish:
+    * Profile:
+        - #16, #528, #917: Changes job interface, updates business sectors -JAC
+        - #188: Adds informations about the Corps d'État                   -JAC
+        - #209: Thoroughly changes education's implementation              -JAC
+        - #373: User now chooses the name we use to talk to him/her        -JAC
+        - #386: Adds the possibility to fill in multiple nationalities     -JAC
+        - #443: Adds concept of ordinary firstname                         -JAC
+        - #450: Adds marital name, thus ordinary name can be any name      -JAC
+        - #891: Improves education display                                 -JAC
+
+================================================================================
 VERSION 0.10.3                                                        XX XX XXXX
 
 New:
@@ -1408,7 +1426,9 @@ ACRONYMS:
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
     * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
+    * GUI: Guillaume Bandet     (GUI)       <guillaume.bandet@m4x.org>
     * JAC: Stéphane Jacob       (jacou)     <stephane.jacob@m4x.org>
+    * JM : Jean-Marc Bécu                   <jean-marc.becu@m4x.org>
     * JS : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
     * mYk: Aymeric Augustin     (mYk)       <aymeric.augustin@m4x.org>

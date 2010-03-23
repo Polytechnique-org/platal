@@ -24,7 +24,7 @@
 <br />
 <textarea rows="10" cols="60" name="texte">{$valid->texte}</textarea>
 <br />
-<strong>Péremption&nbsp;:</strong> <input type="text" name="peremption" size="10" value="{$valid->peremption}" />
+<strong>Péremption&nbsp;:</strong> <input type="text" name="expiration" size="10" value="{$valid->expiration}" />
 <strong>Promos&nbsp;:&nbsp;</strong>
 min <input type="text" name="promo_min" size="4" maxlength="4" value="{$valid->pmin}" />
 &nbsp;->&nbsp;max <input type="text" name="promo_max" size="4" maxlength="4" value="{$valid->pmax}" /><br />

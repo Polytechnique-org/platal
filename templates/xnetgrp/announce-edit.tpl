@@ -32,7 +32,7 @@ function visibilityChange(box)
 }
 {/literal}
 </script>
-<h1>{$asso.nom}&nbsp;: Édition d'une annonce</h1>
+<h1>{$asso->nom}&nbsp;: Édition d'une annonce</h1>
 
 {if $art.texte}
 <div>
@@ -136,7 +136,7 @@ function visibilityChange(box)
     <tr>
       <td class="titre">Date de péremption&nbsp;:</td>
       <td>
-        {valid_date name="peremption" value=$art.peremption}
+        {valid_date name="expiration" value=$art.expiration}
       </td>
     </tr>
     {if $events}

@@ -35,13 +35,6 @@
   Accès réservé aux polytechniciens
 </h1>
 {/if}
-{if $smarty.session.auth ge AUTH_COOKIE}
-<p>
-<strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>
-Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi sur
-<a href="register/">la page d'inscription</a>.
-</p>
-{/if}
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;" style="display: none">
   <table class="bicol" cellpadding="4" summary="Formulaire de login">

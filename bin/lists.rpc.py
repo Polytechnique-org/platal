@@ -67,6 +67,7 @@ def get_config(sec, val, default=None):
 
 MYSQL_USER     = get_config('Core', 'dbuser')
 MYSQL_PASS     = get_config('Core', 'dbpwd')
+MYSQL_DB       = get_config('Core', 'dbdb')
 
 PLATAL_DOMAIN  = get_config('Mail', 'domain')
 PLATAL_DOMAIN2 = get_config('Mail', 'domain2', '')
@@ -124,19 +125,22 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.end_headers()
 
     def getUser(self, uid, md5, vhost):
-        res = mysql_fetchone ("""SELECT  CONCAT(u.prenom, ' ', u.nom), a.alias, u.perms
-                                   FROM  auth_user_md5 AS u
-                             INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.type='a_vie' )
-                                  WHERE  u.user_id = '%s' AND u.password = '%s' AND u.perms IN ('admin', 'user')
-                                  LIMIT  1""" %( uid, md5 ) )
+        res = mysql_fetchone ("""SELECT  a.full_name, aa.alias, IF (a.is_admin, 'admin', NULL)
+                                   FROM  accounts AS a
+                             INNER JOIN  aliases  AS aa ON (a.uid = aa.uid AND aa.type = 'a_vie')
+                                  WHERE  a.uid = '%s' AND a.password = '%s' AND a.state = 'active'
+                                  LIMIT  1""" \
+                              % (uid, md5))
         if res:
             name, forlife, perms = res
             if vhost != PLATAL_DOMAIN:
-                res = mysql_fetchone ("""SELECT  uid
-                                          FROM  groupex.membres AS m
-                                    INNER JOIN  groupex.asso    AS a ON (m.asso_id = a.id)
-                                         WHERE  perms='admin' AND uid='%s' AND mail_domain='%s'""" %( uid , vhost ) )
-                if res: perms= 'admin'
+                res = mysql_fetchone ("""SELECT  m.uid
+                                           FROM  group_members AS m
+                                     INNER JOIN  groups        AS g ON (m.asso_id = g.id)
+                                          WHERE  perms = 'admin' AND uid = '%s' AND mail_domain = '%s'""" \
+                                      % (uid, vhost))
+                if res:
+                    perms= 'admin'
             userdesc = UserDesc(forlife+'@'+PLATAL_DOMAIN, name, None, 0)
             return (userdesc, perms, vhost)
         else:
@@ -152,7 +156,7 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
 
 def connectDB():
     db = MySQLdb.connect(
-            db='x4dat',
+            db=MYSQL_DB,
             user=MYSQL_USER,
             passwd=MYSQL_PASS,
             unix_socket='/var/run/mysqld/mysqld.sock')
@@ -189,12 +193,14 @@ def to_forlife(email):
         mbox = email
         fqdn = PLATAL_DOMAIN
     if ( fqdn == PLATAL_DOMAIN ) or ( fqdn == PLATAL_DOMAIN2 ):
-        res = mysql_fetchone("""SELECT  CONCAT(f.alias, '@%s'), CONCAT(u.prenom, ' ', u.nom)
-                                  FROM  auth_user_md5 AS u
-                            INNER JOIN  aliases       AS f ON (f.id=u.user_id AND f.type='a_vie')
-                            INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s' AND a.type!='homonyme')
-                                 WHERE  u.perms IN ('admin', 'user')
-                                 LIMIT  1""" %( PLATAL_DOMAIN, mbox ) )
+        res = mysql_fetchone("""SELECT  CONCAT(f.alias, '@%s'), a.full_name
+                                  FROM  accounts AS a
+                            INNER JOIN  aliases  AS f ON (f.uid = a.uid AND f.type = 'a_vie')
+                            INNER JOIN  aliases  AS aa ON (aa.uid = a.uid AND aa.alias = '%s'
+                                                           AND a.type != 'homonyme')
+                                 WHERE  a.state = 'active'
+                                 LIMIT  1""" \
+                              % (PLATAL_DOMAIN, mbox))
         if res:
             return res
         else:

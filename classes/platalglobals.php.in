@@ -25,11 +25,11 @@ class PlatalGlobals extends PlGlobals
     public $version = '@VERSION@';
 
     /** db params */
-    public $dbdb               = 'x4dat';
+    public $dbdb               = null;
     public $dbprefix           = '';
     public $dbhost             = 'localhost';
-    public $dbuser             = 'x4dat';
-    public $dbpwd              = 'x4dat';
+    public $dbuser             = null;
+    public $dbpwd              = null;
     public $dbcharset          = 'utf8';
 
     /** default skin */
@@ -50,46 +50,34 @@ class PlatalGlobals extends PlGlobals
         $this->bootstrap(array('NbValid'), array($this, 'updateNbValid'));
     }
 
-    public function asso($key=null)
+    public function asso($key = null)
     {
+        static $fetched = false;
         static $aid = null;
 
-        if (is_null($aid)) {
+        if (isset($GLOBALS['IS_XNET_SITE']) && !$fetched) {
             $gp = Get::v('n');
             if ($p = strpos($gp, '/')) {
                 $gp = substr($gp, 0, $p);
             }
 
-            if ($gp) {
-                $res = XDB::query("SELECT  a.*, d.nom AS domnom,
-                                           FIND_IN_SET('notif_unsub', a.flags) AS notif_unsub,
-                                           FIND_IN_SET('has_ml', a.flags) AS has_ml
-                                     FROM  #groupex#.asso AS a
-                                LEFT JOIN  #groupex#.dom  AS d ON d.id = a.dom
-                                    WHERE  diminutif = {?}",
-                                  $gp);
-                if (!($aid = $res->fetchOneAssoc())) {
-                    $aid = array();
-                }
-            } else {
-                $aid = array();
-            }
+            $aid = Group::get($gp);
+            $fetched = true;
         }
         if (empty($key)) {
             return $aid;
-        } elseif ( isset($aid[$key]) ) {
-            return $aid[$key];
+        } elseif (isset($aid->$key) ) {
+            return $aid->$key;
         } else {
             return null;
         }
     }
 
-
     public function updateNbIns()
     {
         $res = XDB::query("SELECT  COUNT(*)
-                             FROM  auth_user_md5
-                            WHERE  perms IN ('admin','user') AND deces=0");
+                             FROM  accounts
+                            WHERE  state = 'active'");
         $cnt = $res->fetchOneCell();
         $this->changeDynamicConfig(array('NbIns' => $cnt));
     }

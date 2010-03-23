@@ -37,10 +37,10 @@ class ProfileSkill implements ProfileSetting
         if (is_null($value)) {
             $value = array();
             $res = XDB::iterRow("SELECT  s.id, s.{$this->text_field}, i.level
-                                   FROM  {$this->table}_def AS s
-                             INNER JOIN  {$this->table}_ins AS i ON(s.id = i.{$this->skill_field})
-                                  WHERE  i.uid = {?}",
-                                S::i('uid'));
+                                   FROM  profile_{$this->table}_enum AS s
+                             INNER JOIN  profile_{$this->table}s AS i ON(s.id = i.{$this->skill_field})
+                                  WHERE  i.pid = {?}",
+                                $page->pid());
             while (list($sid, $text, $level) = $res->next()) {
                 $value[$sid] = array('text' => $text, 'level' => $level);
             }
@@ -51,7 +51,7 @@ class ProfileSkill implements ProfileSetting
             foreach ($value as $id=>&$skill) {
                 if (!isset($skill['text']) || empty($skill['text'])) {
                     $res = XDB::query("SELECT  {$this->text_field}
-                                         FROM  {$this->table}_def
+                                         FROM  profile_{$this->table}_enum
                                         WHERE  id = {?}", $id);
                     $skill['text'] = $res->fetchOneCell();
                 }
@@ -64,16 +64,16 @@ class ProfileSkill implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        XDB::execute("DELETE FROM  {$this->table}_ins
-                            WHERE  uid = {?}",
-                     S::i('uid'));
+        XDB::execute("DELETE FROM  profile_{$this->table}s
+                            WHERE  pid = {?}",
+                     $page->pid());
         if (!count($value)) {
             return;
         }
         foreach ($value as $id=>&$skill) {
-            XDB::execute("INSERT INTO  {$this->table}_ins (uid, {$this->skill_field}, level)
+            XDB::execute("INSERT INTO  profile_{$this->table}s (pid, {$this->skill_field}, level)
                                VALUES  ({?}, {?}, {?})",
-                         S::i('uid'), $id, $skill['level']);
+                         $page->pid(), $id, $skill['level']);
         }
     }
 }
@@ -85,19 +85,19 @@ class ProfileSkills extends ProfilePage
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['competences'] = new ProfileSkill('competences', 'cid', 'text_fr');
-        $this->settings['langues'] = new ProfileSkill('langues', 'lid', 'langue_fr');
+        $this->settings['competences'] = new ProfileSkill('skill', 'cid', 'text_fr');
+        $this->settings['langues'] = new ProfileSkill('langskill', 'lid', 'langue_fr');
     }
 
     public function _prepare(PlPage &$page, $id)
     {
         $page->assign('comp_list', XDB::iterator("SELECT  id, text_fr, FIND_IN_SET('titre',flags) AS title
-                                                    FROM  competences_def"));
+                                                    FROM  profile_skill_enum"));
         $page->assign('comp_level', array('initié' => 'initié',
                                           'bonne connaissance' => 'bonne connaissance',
                                           'expert' => 'expert'));
         $page->assign('lang_list', XDB::iterator("SELECT  id, langue_fr
-                                                    FROM  langues_def"));
+                                                    FROM  profile_langskill_enum"));
         $page->assign('lang_level', array(1 => 'connaissance basique',
                                           2 => 'maîtrise des bases',
                                           3 => 'maîtrise limitée',

@@ -1,0 +1,1 @@
+../../bin/cron/notifs.birthday.php

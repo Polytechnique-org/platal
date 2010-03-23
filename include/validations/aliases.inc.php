@@ -19,26 +19,22 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ class AliasReq
-
+// class AliasReq {{{1
 class AliasReq extends Validate
 {
-    // {{{ properties
-
+    // properties {{{2
     public $alias;
     public $raison;
     public $unique = true;
 
-    public $old='';
-    public $public='private';
+    public $old    = '';
+    public $public = 'private';
 
     public $rules = "Interdire ce qui peut nous servir (virus@, postmaster@&hellip;),
                   les alias vulgaires, et les prenom.nom (sauf si c'est pour l'utilisateur prenom.nom).
                   Pas de contrainte pour les tirets ou les points, en revanche le souligné (_) est interdit.";
 
-    // }}}
-    // {{{ constructor
-
+    // constructor {{{2
     public function __construct(User &$_user, $_alias, $_raison, $_public, $_stamp=0)
     {
         global $globals;
@@ -46,97 +42,67 @@ class AliasReq extends Validate
         $this->alias  = $_alias.'@'.$globals->mail->alias_dom;
         $this->raison = $_raison;
         $this->public = $_public;
-
-        $res = XDB::query("
-                SELECT  v.alias
-                  FROM  virtual_redirect AS vr
-            INNER JOIN  virtual          AS v  ON (v.vid=vr.vid AND v.alias LIKE '%@{$globals->mail->alias_dom}')
-                 WHERE  vr.redirect = {?} OR vr.redirect = {?}",
-                $this->user->forlifeEmail(),
-                // TODO: remove this über-ugly hack. The issue is that you need
-                // to remove all @m4x.org addresses in virtual_redirect first.
-                $this->user->login() . '@' . $globals->mail->domain2);
-        $this->old = $res->fetchOneCell();
+        $this->old    = $user->emailAlias();
         if (empty($this->old)) {
             unset($this->old);
         }
     }
 
-    // }}}
-    // {{{ function get_request()
-
+    // function get_request() {{{2
     static public function get_request($uid)
     {
         return parent::get_typed_request($uid, 'alias');
     }
 
-    // }}}
-    // {{{ function formu()
-
+    // function formu() {{{2
     public function formu()
     {
         return 'include/form.valid.aliases.tpl';
     }
 
-    // }}}
-    // {{{ function _mail_subj
-
+    // function _mail_subj {{{2
     protected function _mail_subj()
     {
         return "[Polytechnique.org/MELIX] Demande de l'alias {$this->alias}";
     }
 
-    // }}}
-    // {{{ function _mail_body
-
+    // function _mail_body {{{2
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  L'adresse email {$this->alias} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance." . (($this->public == 'public') ? " À ta demande, cette adresse apparaît maintenant sur ta fiche." : "");
+            return "  L'adresse email {$this->alias} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance."
+                 . ($this->public == 'public' ? ' À ta demande, cette adresse apparaît maintenant sur ta fiche.' : '');
         } else {
             return "  La demande que tu avais faite pour l'alias {$this->alias} a été refusée.";
         }
     }
 
-    // }}}
-    // {{{ function shorter_domain
-
-    private function shorter_domain()
+    // function commit() {{{2
+    public function commit()
     {
-        global $globals;
-
-        $mail = $globals->mail;
-
-        if (empty($mail->domain2) || strlen($mail->domain2) > strlen($mail->domain)) {
-            return $mail->domain;
-        } else {
-            return $mail->domain2;
+        if ($this->user->hasProfile()) {
+            XDB::execute('UPDATE  profiles
+                             SET  alias_pub = {?}
+                           WHERE  pid = {?}',
+                         $this->public, $this->user->profile()->id());
         }
-    }
-
-    // }}}
-    // {{{ function commit()
-
-    public function commit ()
-    {
-        XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = {?} WHERE user_id = {?}",
-                     $this->public, $this->user->id());
 
         if ($this->old) {
-            return XDB::execute("UPDATE virtual SET alias = {?} WHERE alias = {?}",
+            return XDB::execute('UPDATE  virtual
+                                    SET  alias = {?}
+                                  WHERE  alias = {?}',
                                 $this->alias, $this->old);
         } else {
-            XDB::execute("INSERT INTO virtual SET alias = {?},type='user'", $this->alias);
+            XDB::execute('INSERT INTO  virtual
+                                  SET  alias = {?}, type=\'user\'',
+                         $this->alias);
             $vid = XDB::insertId();
-            return XDB::query("INSERT INTO virtual_redirect (vid,redirect) VALUES ({?}, {?})",
-                              $vid, $this->user->forlifeEmail());
+            return XDB::execute('INSERT INTO  virtual_redirect (vid, redirect)
+                                      VALUES  ({?}, {?})',
+                                $vid, $this->user->forlifeEmail());
         }
     }
-
-    // }}}
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

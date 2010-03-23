@@ -22,42 +22,6 @@
 
 {include file=search/quick.form.tpl show_js=1}
 
-{if hasPerm('user')}
-<h1>Voir le trombi d'une promotion</h1>
-
-<div id="message" style="position:absolute;"></div><br />
-
-<script type="text/javascript">
-  <!--
-  {literal}
-  function showPromo()
-  {
-      var value = document.getElementById('promo').value;
-      if (value < {/literal}{$promo_min}{literal} || value > {/literal}{$promo_max}{literal}) {
-        showTempMessage('message', "La promotion doit être entre {/literal}{$promo_min} et {$promo_max}{literal}.", false);
-        return false;
-      }
-      window.open("http://www.polytechnique.net/login/" + value + "/annuaire/trombi");
-      return false;
-  }
-  {/literal}
-  -->
-</script>
-
-<form action="" method="post" onsubmit="return showPromo();">
-<table class="tinybicol" style="width: auto; margin: auto">
-  <tr>
-    <td class="titre">Promotion&nbsp;:</td>
-    <td>
-      <input type="text" name="promo" id="promo" size="4" value="" />
-      <input type="submit" name="submit_promo" value="Voir" />
-    </td>
-  </tr>
-</table>
-</form>
-
-{/if}
-
 <h1>Comment faire une recherche&nbsp;?</h1>
 
 <h2>Nom, Prénom, Promotion&hellip;</h2>
@@ -98,6 +62,7 @@ notre base de données.
 </p>
 <ul>
   <li><code>fiche:prenom.nom.promo</code> ouvre la fiche du camarade indiquée&nbsp;;</li>
+  <li><code>trombi:promo</code> affiche le trombinoscope de la promotion indiquée&nbsp;;</li>
   <li><code>ref:prenom.nom.promo</code> ouvre la fiche référent du camarade indiquée&nbsp;;</li>
   <li><code>doc:phrase</code> recherche <em>phrase</em> dans la documentation du site&nbsp;;</li>
   {if hasPerm('admin')}

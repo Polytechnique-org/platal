@@ -34,19 +34,19 @@
     <td class="titre" style="width: 30%">{if $old}ex-{/if}Section</td>
     <td>
       <select name="section">
-        {select_db_table table="sections" valeur=$section}
+        {select_db_table table="profile_section_enum" valeur=$section}
       </select>
     </td>
   </tr>
   <!-- Binets -->
-  <tr id="binets">
+  <tr id="binets_table">
     <td class="titre">{if $old}ex-{/if}Binet(s)</td>
     <td>
-      <select name="binets_sel" onchange="updateGroup('binets')">
-        {select_db_table table="binets_def" valeur=0 champ="text" pad='1'}
+      <select name="binets_sel" onchange="updateElement('binets')">
+        {select_db_table table="profile_binet_enum" valeur=0 champ="text" pad='1'}
       </select>
       <a id="binets_add" style="display: none"
-         href="javascript:addGroup('binets')">{icon name="add" title="Ajouter ce binet"}</a>
+         href="javascript:addBinet()">{icon name="add" title="Ajouter ce binet"}</a>
     </td>
   </tr>
   {foreach item=text key=bid from=$binets}
@@ -58,7 +58,7 @@
       <div style="float: left; width: 70%">
         {$text}
       </div>
-      <a href="javascript:removeGroup('binets', {$bid})">{icon name="cross" title="Supprimer ce binet"}</a>
+      <a href="javascript:removeElement('binets', {$bid})">{icon name="cross" title="Supprimer ce binet"}</a>
     </td>
   </tr>
   {/foreach}
@@ -88,7 +88,7 @@
     <td>
       {assign var=groupcat value=""}
       {assign var=ingroup value=false}
-      <select name="groupesx_sub" onchange="updateGroupSubLink(this)">
+      <select name="groupesx_sub" onchange="updateGroupSubLink()">
         {iterate from=$listgroups item=group}
         {if $group.dom neq $groupcat}
           {if $ingroup}
@@ -148,9 +148,9 @@
     <td colspan="2" class="smaller">
       <div class="titre">Signification des symboles&nbsp;:</div>
       {if $grp_public}{icon name=error} L'annuaire du groupe est à visibilité restreinte et ce groupe n'apparaîtra pas sur ta
-      fiche{/if}
+      fiche.{/if}
       {if $grp_public && $grp_admin}<br />{/if}
-      {if $grp_admin}{icon name=wrench} Tu es administrateur du groupe{/if}
+      {if $grp_admin}{icon name=wrench} Tu es administrateur du groupe.{/if}
     </td>
   </tr>
   {/if}

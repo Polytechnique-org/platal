@@ -76,6 +76,22 @@ class ProfileEmail extends ProfileNoSave
     }
 }
 
+class ProfileNumber extends ProfileNoSave
+{
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        if (is_null($value)) {
+            return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
+        }
+        $value = trim($value);
+        $success = empty($value) || is_numeric($value);
+        if (!$success) {
+            Platal::page()->trigError('Numéro invalide');
+        }
+        return $value;
+    }
+}
+
 
 class ProfileTel extends ProfileNoSave
 {
@@ -84,11 +100,108 @@ class ProfileTel extends ProfileNoSave
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
         }
-        $success = !preg_match('/[<>{}@&#~\/:;?,!§*_`\[\]|%$^=]/', $value, $matches);
+        require_once('profil.func.inc.php');
+        $value = format_phone_number($value);
+        if($value == '') {
+            $success = true;
+            return $value;
+        }
+        $value = format_display_number($value,$error);
+        $success = !$error;
         if (!$success) {
-            Platal::page()->trigError('Le numéro de téléphone contient un caractère interdit : ' . pl_entities($matches[0][0]));
+            Platal::page()->trigError('Le préfixe international du numéro de téléphone est inconnu. ');
         }
         return $value;
+    }
+}
+
+class ProfilePhones implements ProfileSetting
+{
+    private $tel;
+    private $pub;
+    protected $link_type;
+    protected $link_id;
+
+    public function __construct($type, $link_id)
+    {
+        $this->tel = new ProfileTel();
+        $this->pub = new ProfilePub();
+        $this->link_type = $type;
+        $this->link_id   = $link_id;
+    }
+
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        $success = true;
+        if (is_null($value)) {
+            $value = array();
+            $res = XDB::iterator('SELECT  display_tel AS tel, tel_type AS type, pub, comment
+                                    FROM  profile_phones
+                                   WHERE  pid = {?} AND link_type = {?}
+                                ORDER BY  tel_id',
+                                 $page->pid(), $this->link_type);
+            if ($res->numRows() > 0) {
+                $value = $res->fetchAllAssoc();
+            } else {
+                $value = array(
+                        0 => array(
+                            'type'    => 'fixed',
+                            'tel'     => '',
+                            'pub'     => 'private',
+                            'comment' => '',
+                            )
+                        );
+            }
+        }
+        foreach ($value as $key=>&$phone) {
+            if (isset($phone['removed']) && $phone['removed']) {
+                unset($value[$key]);
+            } else {
+                unset($phone['removed']);
+                $phone['pub'] = $this->pub->value($page, 'pub', $phone['pub'], $s);
+                $phone['tel'] = $this->tel->value($page, 'tel', $phone['tel'], $s);
+                if(!isset($phone['type']) || ($phone['type'] != 'fixed' && $phone['type'] != 'mobile' && $phone['type'] != 'fax')) {
+                    $phone['type'] = 'fixed';
+                    $s = false;
+                }
+                if (!$s) {
+                    $phone['error'] = true;
+                    $success = false;
+                }
+                if (!isset($phone['comment'])) {
+                    $phone['comment'] = '';
+                }
+            }
+        }
+        return $value;
+    }
+
+    private function saveTel($pid, $telid, array &$phone)
+    {
+        if ($phone['tel'] != '') {
+            XDB::execute("INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type,
+                                       search_tel, display_tel, pub, comment)
+                               VALUES  ({?}, {?}, {?}, {?}, {?},
+                                       {?}, {?}, {?}, {?})",
+                         $pid, $this->link_type, $this->link_id, $telid, $phone['type'],
+                         format_phone_number($phone['tel']), $phone['tel'], $phone['pub'], $phone['comment']);
+        }
+    }
+
+    public function save(ProfilePage &$page, $field, $value)
+    {
+        XDB::execute("DELETE FROM  profile_phones
+                            WHERE  pid = {?} AND link_type = {?} AND link_id = {?}",
+                     $page->pid(), $this->link_type, $this->link_id);
+        $this->saveTels($page->pid(), $field, $value);
+    }
+
+    //Only saves phones without a delete operation
+    public function saveTels($pid, $field, $value)
+    {
+        foreach ($value as $telid=>&$phone) {
+            $this->saveTel($pid, $telid, $phone);
+        }
     }
 }
 
@@ -100,9 +213,9 @@ class ProfilePub extends ProfileNoSave
         if (is_null($value)) {
             return isset($page->values[$field]) ? $page->values[$field] : S::v($field);
         }
-        if (is_null($value) || !$value) {
+        if (!$value) {
             $value = 'private';
-        } else if ($value == 'on') { // Checkbox
+        } elseif ($value == 'on') { // Checkbox
             $value = 'public';
         }
         return $value;
@@ -115,7 +228,7 @@ class ProfileBool extends ProfileNoSave
     {
         $success = true;
         if (is_null($value)) {
-            $value = @$page->values[$field];
+            $value = isset($page->values[$field]) ? $page->values[$field] : null;
         }
         return $value ? "1" : "";
     }
@@ -146,47 +259,30 @@ class ProfileDate extends ProfileNoSave
     }
 }
 
-abstract class ProfileGeoloc implements ProfileSetting
+abstract class ProfileGeocoding implements ProfileSetting
 {
-    protected function geolocAddress(array &$address, &$success)
+    protected function geocodeAddress(array &$address, &$success)
     {
-        require_once 'geoloc.inc.php';
+        require_once 'geocoding.inc.php';
         $success = true;
-        unset($address['geoloc']);
-        unset($address['geoloc_cityid']);
-        if (@$address['parsevalid']
-            || (@$address['text'] && @$address['changed'])
-            || (@$address['text'] && !@$address['cityid'])) {
-            $address = array_merge($address, empty_address());
-            $new = get_address_infos(@$address['text']);
-            if (compare_addresses_text(@$address['text'], $geotxt = get_address_text($new))
-                || (@$address['parsevalid'] && @$address['cityid'])) {
-                $address = array_merge($address, $new);
-                $address['checked'] = true;
-            } else if (@$address['parsevalid']) {
-                $address = array_merge($address, cut_address(@$address['text']));
-                $address['checked'] = true;
-                $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
-                $mailer->assign('text', get_address_text($address));
-                $mailer->assign('geoloc', $geotxt);
-                $mailer->send();
-            } else if (@$address['changed'] || !@$address['checked']) {
+        if (isset($address['changed']) && $address['changed'] == 1) {
+            $gmapsGeocoder = new GMapsGeocoder();
+            $address = $gmapsGeocoder->getGeocodedAddress($address);
+            if (isset($address['geoloc'])) {
                 $success = false;
-                $address = array_merge($address, cut_address(@$address['text']));
-                $address['checked'] = false;
-                $address['geoloc'] = $geotxt;
-                $address['geoloc_cityid'] = $new['cityid'];
-            } else {
-                $address = array_merge($address, cut_address(@$address['text']));
-                $address['checked'] = true;
             }
         } elseif (@$address['changed'] && !@$address['text']) {
             $address = empty_address();
             $address['pub'] = 'private';
         }
-        $address['precise_lat'] = rtrim($address['precise_lat'], '.0');
-        $address['precise_lon'] = rtrim($address['precise_lon'], '.0'); 
-        $address['text'] = get_address_text($address);
+        if (isset($address['geoloc_choice']) && ($address['geoloc_choice'] == 0)) {
+            $mailer = new PlMailer('geoloc/geoloc.mail.tpl');
+            $mailer->assign('text', $address['text']);
+            $mailer->assign('geoloc', $address['geoloc']);
+            $mailer->send();
+            $gmapsGeocoder = new GMapsGeocoder();
+            $address = $gmapsGeocoder->stripGeocodingFromAddress($address);
+        }
     }
 }
 
@@ -202,10 +298,14 @@ abstract class ProfilePage implements PlWizardPage
 
     public $orig     = array();
     public $values   = array();
+    public $profile  = null;
+    public $owner    = null;
 
     public function __construct(PlWizard &$wiz)
     {
         $this->wizard =& $wiz;
+        $this->profile = $this->wizard->getUserData('profile');
+        $this->owner   = $this->wizard->getUserData('owner');
     }
 
     protected function _fetchData()
@@ -244,19 +344,17 @@ abstract class ProfilePage implements PlWizardPage
                 $setting->save($this, $field, $this->values[$field]);
             }
             if ($this->changed[$field] && @$this->watched[$field]) {
-                register_profile_update(S::i('uid'), $field);
+                WatchProfileUpdate::register($this->profile, $field);
             }
         }
         $this->_saveData();
 
         // Update the last modification date
-        XDB::execute('REPLACE INTO  user_changes
-                               SET  user_id = {?}', S::v('uid'));
-        if (!S::has('suid')) {
-            register_watch_op(S::i('uid'), WATCH_FICHE);
-        }
+        XDB::execute('UPDATE  profiles
+                         SET  last_change = NOW()
+                       WHERE  pid = {?}', $this->pid());
         global $platal;
-        S::logger()->log('profil', $platal->pl_self(1));
+        S::logger()->log('profil', $platal->pl_self(2));
     }
 
     protected function checkChanges()
@@ -286,6 +384,16 @@ abstract class ProfilePage implements PlWizardPage
         return 'profile/base.tpl';
     }
 
+    public function pid()
+    {
+        return $this->profile->id();
+    }
+
+    public function hrpid()
+    {
+        return $this->profile->hrpid();
+    }
+
     protected function _prepare(PlPage &$page, $id)
     {
     }
@@ -299,6 +407,8 @@ abstract class ProfilePage implements PlWizardPage
             $page->assign($field, $value);
         }
         $this->_prepare($page, $id);
+        $page->assign('profile', $this->profile);
+        $page->assign('owner', $this->owner);
         $page->assign('profile_page', $this->pg_template);
         $page->assign('errors', $this->errors);
     }

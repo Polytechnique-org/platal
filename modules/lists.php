@@ -47,13 +47,16 @@ class ListsModule extends PLModule
         );
     }
 
-    function prepare_client(&$page)
+    function prepare_client(&$page, $user = null)
     {
         global $globals;
 
         $this->load('lists.inc.php');
+        if (is_null($user)) {
+            $user = S::user();
+        }
 
-        $this->client = new MMList(S::v('uid'), S::v('password'));
+        $this->client = new MMList($user);
         return $globals->mail->domain;
     }
 
@@ -61,7 +64,7 @@ class ListsModule extends PLModule
     {
         list($subs,$mails) = $this->client->get_pending_ops($list);
         $res = XDB::query("SELECT  mid
-                             FROM  ml_moderate
+                             FROM  email_list_moderate
                             WHERE  ml = {?} AND domain = {?}",
                           $list, $domain);
         $mids = $res->fetchColumn();
@@ -113,20 +116,21 @@ class ListsModule extends PLModule
             }
         }
 
-        $listes = $this->client->get_lists();
-        $owner  = array_filter($listes, 'filter_owner');
-        $listes = array_diff_key($listes, $owner);
-        $member = array_filter($listes, 'filter_member');
-        $listes = array_diff_key($listes, $member);
-        foreach ($owner as $key=>$liste) {
-            list($subs,$mails) = $this->get_pending_ops($domain, $liste['list']);
-            $owner[$key]['subscriptions'] = $subs;
-            $owner[$key]['mails'] = $mails;
+        if (!is_null($listes = $this->client->get_lists())) {
+            $owner  = array_filter($listes, 'filter_owner');
+            $listes = array_diff_key($listes, $owner);
+            $member = array_filter($listes, 'filter_member');
+            $listes = array_diff_key($listes, $member);
+            foreach ($owner as $key => $liste) {
+                list($subs, $mails) = $this->get_pending_ops($domain, $liste['list']);
+                $owner[$key]['subscriptions'] = $subs;
+                $owner[$key]['mails'] = $mails;
+            }
+            $page->register_modifier('hdc', 'list_header_decode');
+            $page->assign_by_ref('owner',  $owner);
+            $page->assign_by_ref('member', $member);
+            $page->assign_by_ref('public', $listes);
         }
-        $page->register_modifier('hdc', 'list_header_decode');
-        $page->assign_by_ref('owner',  $owner);
-        $page->assign_by_ref('member', $member);
-        $page->assign_by_ref('public', $listes);
     }
 
     function handler_ajax(&$page, $list = null)
@@ -255,7 +259,7 @@ class ListsModule extends PLModule
             if ($asso == "groupex") {
                 $groupex_name = Post::v('groupex_name');
 
-                $res_groupe = XDB::query('SELECT mail_domain FROM #groupex#.asso WHERE nom={?}', $groupex_name);
+                $res_groupe = XDB::query('SELECT mail_domain FROM groups WHERE nom={?}', $groupex_name);
                 $domain = $res_groupe->fetchOneCell();
 
                 if (!$domain) {
@@ -392,7 +396,8 @@ class ListsModule extends PLModule
         if (empty($GLOBALS['IS_XNET_SITE'])) {
             $view->addMod('minifiche', 'Mini-fiches', false);
         }
-        $view->addMod('geoloc', 'Planisphère');
+        // TODO: Reactivate when the new map is completed.
+        // $view->addMod('geoloc', 'Planisphère');
         $view->apply("lists/annu/$liste", $page, $action, $subaction);
         if ($action == 'geoloc' && $subaction) {
             return;
@@ -435,27 +440,22 @@ class ListsModule extends PLModule
 
     function handler_rss(&$page, $liste = null, $alias = null, $hash = null)
     {
-        require_once('rss.inc.php');
-        $uid = init_rss(null, $alias, $hash);
-        if (!$uid || !$liste) {
-            exit;
+        if (!$liste) {
+            return PL_NOT_FOUND;
+        }
+        $user = Platal::session()->tokenAuth($alias, $hash);
+        if (is_null($user)) {
+            return PL_FORBIDDEN;
         }
 
-        $res = XDB::query("SELECT user_id AS uid, password, alias AS forlife
-                             FROM auth_user_md5 AS u
-                       INNER JOIN aliases       AS a ON (a.id = u.user_id AND a.type = 'a_vie')
-                            WHERE u.user_id = {?}", $uid);
-        $row = $res->fetchOneAssoc();
-        $_SESSION = array_merge($row, $_SESSION);
-
-        $domain = $this->prepare_client($page);
+        $domain = $this->prepare_client($page, $user);
         if (list($det) = $this->client->get_members($liste)) {
             if (substr($liste,0,5) != 'promo' && ($det['ins'] || $det['priv'])
                     && !$det['own'] && ($det['sub'] < 2)) {
                 exit;
             }
             require_once('banana/ml.inc.php');
-            $banana = new MLBanana(S::user(), Array('listname' => $liste, 'domain' => $domain, 'action' => 'rss2'));
+            $banana = new MLBanana($user, Array('listname' => $liste, 'domain' => $domain, 'action' => 'rss2'));
             $banana->run();
         }
         exit;
@@ -473,7 +473,7 @@ class ListsModule extends PLModule
             return false;
         }
         Get::kill('mid');
-        return XDB::execute("INSERT IGNORE INTO  ml_moderate
+        return XDB::execute("INSERT IGNORE INTO  email_list_moderate
                                          VALUES  ({?}, {?}, {?}, {?}, {?}, NOW(), {?}, NULL)",
                             $liste, $domain, $mid, S::i('uid'), $action, Post::v('reason'));
     }
@@ -580,9 +580,9 @@ class ListsModule extends PLModule
 
     static public function no_login_callback($login)
     {
-        require_once 'user.func.inc.php';
         global $list_unregistered, $globals;
 
+        /* TODO: fixes this call to a removed function. */
         $users = get_not_registered_user($login, true);
         if ($users && $users->total()) {
             if (!isset($list_unregistered)) {
@@ -896,12 +896,13 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_admin_all(&$page) {
+    function handler_admin_all(&$page)
+    {
         $page->changeTpl('lists/admin_all.tpl');
         $page->setTitle('Administration - Mailing lists');
 
-        $client = new MMList(S::v('uid'), S::v('password'));
-        $listes = $client->get_all_lists();
+        $this->prepare_client($page);
+        $listes = $this->client->get_all_lists();
         $page->assign_by_ref('listes', $listes);
     }
 }

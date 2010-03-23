@@ -41,12 +41,12 @@
     {assign var="has_cs" value="true"}
   {/if}
   {/iterate}
-  <tr class="impair"> 
+  <tr class="impair">
     <td class="half">
       {if !$has_cs}Aucun sondage en cours{/if}
       {if $smarty.session.auth}<a style="display: block; float: right;" href="survey/edit/new">{icon name=page_edit} Proposer un sondage</a>{/if}
-    </td> 
-  </tr> 
+    </td>
+  </tr>
 </table>
 
 <br />

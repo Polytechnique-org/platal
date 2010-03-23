@@ -91,7 +91,7 @@ class SurveyReq extends Validate
 
     public function commit()
     {
-        $sql = 'INSERT INTO survey_surveys
+        $sql = 'INSERT INTO surveys
                         SET questions={?},
                             title={?},
                             description={?},

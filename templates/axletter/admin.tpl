@@ -35,12 +35,12 @@
         <input type="submit" name="action" value="add" />
       </td>
     </tr>
-    {iterate item=a from=$admins}
+    {foreach item=a from=$admins}
     <tr class="{cycle values="impair, pair"}">
-      <td><a href="profile/{$a.hruid}" class="popup2">{$a.prenom} {$a.nom} (X{$a.promo}){icon name=user_suit}</a></td>
-      <td class="right"><a href="admin/axletter/del/{$a.hruid}?token={xsrf_token}">{icon name=cross title="Retirer"}</a></td>
+      <td>{profile user=$a promo=true}</td>
+      <td class="right"><a href="admin/axletter/del/{$a->login()}?token={xsrf_token}">{icon name=cross title="Retirer"}</a></td>
     </tr>
-    {/iterate}
+    {/foreach}
   </table>
 </form>
 

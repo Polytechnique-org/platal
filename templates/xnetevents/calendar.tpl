@@ -25,13 +25,13 @@ VERSION:2.0
 CALSCALE:GREGORIAN
 X-WR-TIMEZONE:Europe/Paris
 METHOD:PUBLISH
-{display_ical name="x-wr-calname" value=$asso.nom}
+{display_ical name="x-wr-calname" value=$asso->nom}
 BEGIN:VEVENT
 DSTAMP:{$timestamp|date_format:"%Y%m%dT%H%M%SZ"}
 DTSTART;VALUE=DATE;TZID=Europe/Paris:{$e.debut}
 DTEND;VALUE=DATE;TZID=Europe/Paris:{$e.fin}
 ORGANIZER;CN="{$e.prenom} {$e.nom}":MAILTO:{$e.alias}@polytechnique.org
-UID:event-{$e.short_name}-{$e.eid}@{$asso.diminutif}.polytechnique.org
+UID:event-{$e.short_name}-{$e.eid}@{$asso->diminutif}.polytechnique.org
 {if $admin}
 {foreach from=$participants item=m}
 {if $m.x}

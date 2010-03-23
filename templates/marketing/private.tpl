@@ -64,7 +64,10 @@ Sa dernière relance date du {$relance|date_format}.
     {iterate from=$addr item=a}
     <tr class="{cycle values='impair,pair'}">
       <td>{$a.email}</td>
-      <td>{if $a.alias}<a href="profile/{$a.alias}" class="popup2">{$a.alias}</a> {if $a.type eq user}(*){/if}{/if}</td>
+      <td>
+        {if $a.alias neq ''}<a href="profile/{$a.alias}" class="popup2">{$a.alias}</a>
+        {if $a.type eq user}(*){/if}{else}Email connu de l'AX{/if}
+      </td>
       <td>{$a.date|date_format|default:'-'}</td>
       <td>{$a.last|date_format|default:'-'}</td>
       <td class='center'>{$a.nb|default:"-"}</td>
@@ -100,7 +103,7 @@ Sa dernière relance date du {$relance|date_format}.
   {xsrf_token_field}
   <table class="bicol">
     <tr class="pair">
-      <th colspan="2">Edition de l'email de relance</th>
+      <th colspan="2">Édition de l'email de relance</th>
     </tr>
     <tr class="pair">
       <td align="right"><strong>From&nbsp;:</strong></td>
