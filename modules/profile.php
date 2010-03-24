@@ -252,8 +252,8 @@ class ProfileModule extends PLModule
             $page->assign('virtualalias', $owner->emailAlias());
         }
 
-        $page->assign_by_ref('p', $profile);
-        $page->assign_by_ref('o', $owner);
+        $page->assign_by_ref('profile', $profile);
+        $page->assign_by_ref('owner', $owner);
         $page->assign('view', $view);
         $page->assign('logged', S::logged());
 

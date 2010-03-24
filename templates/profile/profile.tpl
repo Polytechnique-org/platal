@@ -41,19 +41,19 @@ function chgMainWinLoc(strPage)
 
 <div id="fiche">
   <div id="photo" class="part">
-    {assign var=photo value=$p->getPhoto(false)}
-    {if $photo}<img alt="Photo de {$p->fullName()}" src="photo/{$p->hrid()}" width="{$photo->width()}"/>{/if}
+    {assign var=photo value=$profile->getPhoto(false)}
+    {if $photo}<img alt="Photo de {$profile->fullName()}" src="photo/{$profile->hrid()}" width="{$photo->width()}"/>{/if}
 
-    {if $logged && ( $p->section|smarty:nodefaults || $p->getBinets()|smarty:nodefaults || ($o && $o->groups()|smarty:nodefaults))}
+    {if $logged && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($o && $owner->groups()|smarty:nodefaults))}
       <h2>À l'X&hellip;</h2>
-      {if $p->section}<div><em class="intitule">Section&nbsp;: </em><span>{$p->section}</span></div>{/if}
+      {if $profile->section}<div><em class="intitule">Section&nbsp;: </em><span>{$profile->section}</span></div>{/if}
 
-      {assign var=binets value=$p->getBinets()}
+      {assign var=binets value=$profile->getBinets()}
       {if $binets|@count}<div><em class="intitule">Binet{if count($binets) > 1}s{/if}&nbsp;: </em>
-      <span>{', '|implode:$p->getBinetsNames()}</span></div>{/if}
+      <span>{', '|implode:$profile->getBinetsNames()}</span></div>{/if}
 
       {if $o}
-        {assign var=groups value=$o->groupNames(true)}
+        {assign var=groups value=$owner->groupNames(true)}
         {if $groups|@count}<div><em class="intitule">Groupe{if count($groups) > 1}s{/if} et institution{if count($groups) > 1}s{/if} X&nbsp;: </em>
         <span><br/>
         {foreach from=$groups item=group key=gk}{if $gk != 0}, {/if}<span title="{$group.nom}"><a href="{$group.site}">{$group.nom}</a></span>{/foreach}
@@ -62,7 +62,7 @@ function chgMainWinLoc(strPage)
 
     {/if}
 
-    {assign var=networking value=$p->getNetworking(0)}
+    {assign var=networking value=$profile->getNetworking(0)}
     {if count($networking) > 0}
       <h2>Sur le web...</h2>
       {foreach from=$networking item=network}
@@ -78,39 +78,39 @@ function chgMainWinLoc(strPage)
       {/foreach}
     {/if}
 
-    {if $p->freetext}
+    {if $profile->freetext}
       <h2>Commentaires&nbsp;:</h2>
-      <span>{$p->freetext|miniwiki|smarty:nodefaults}</span>
+      <span>{$profile->freetext|miniwiki|smarty:nodefaults}</span>
     {/if}
 
   </div>
 
   <div id="fiche_identite" class="part">
     <div class="civilite">
-      {if $p->isFemale()}&bull;{/if}
-        <span {if $p->name_tooltip neq ""}class="hinted" title="{$p->name_tooltip}"{/if}>{$p->shortName()}</span>
+      {if $profile->isFemale()}&bull;{/if}
+        <span {if $profile->name_tooltip neq ""}class="hinted" title="{$profile->name_tooltip}"{/if}>{$profile->shortName()}</span>
       {if $logged}
-        {if $p->nickname} (alias {$p->nickname}){/if}
+        {if $profile->nickname} (alias {$profile->nickname}){/if}
       {/if}
 
       {if $logged}
-        &nbsp;{if !$p->isDead()}<a href="vcard/{$o->login()}.vcf">{*
+        &nbsp;{if !$profile->isDead()}<a href="vcard/{$owner->login()}.vcf">{*
           *}{icon name=vcard title="Afficher la carte de visite"}</a>{/if}
 
         {if !$smarty.session.user->isContact($p)}
-        <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$o->login()}&amp;token={xsrf_token}')">
+        <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$owner->login()}&amp;token={xsrf_token}')">
           {icon name=add title="Ajouter à mes contacts"}</a>
         {else}
-        <a href="javascript:chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$o->login()}&amp;token={xsrf_token}')">
+        <a href="javascript:chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$owner->login()}&amp;token={xsrf_token}')">
           {icon name=cross title="Retirer de mes contacts"}</a>
         {/if}
 
         {if hasPerm('admin')}
-        <a href="javascript:chgMainWinLoc('admin/user/{$o->login()}')">
+        <a href="javascript:chgMainWinLoc('admin/user/{$owner->login()}')">
           {icon name=wrench title="administrer user"}</a>
         {/if}
 
-        {if $o->login() eq $smarty.session.hruid}
+        {if $owner->login() eq $smarty.session.hruid}
         <a href="javascript:chgMainWinLoc('profile/edit')">{icon name="user_edit" title="Modifier ma fiche"}</a>
         {/if}
 
@@ -120,53 +120,53 @@ function chgMainWinLoc(strPage)
     {if $logged}
     <div class='maj'>
       Fiche mise à jour<br />
-      le {$p->last_change|date_format}
+      le {$profile->last_change|date_format}
     </div>
     {/if}
 
-    {assign var=phones value=$p->getPhones(0)}
+    {assign var=phones value=$profile->getPhones(0)}
     {if $logged || count($phones) > 0}
     <div class="contact">
       {if $logged}
       <div class='email'>
-        {if $p->isDead()}
-        Décédé{if $p->isFemale()}e{/if} le {$p->deathdate|date_format}
-        {elseif $o && $o->lost}
-        Ce{if $p->isFemale()}tte{/if} camarade n'a plus d'adresse de redirection valide,<br />
-        <a href="marketing/broken/{$o->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
-        {elseif $o && $o->state != 'active'}
+        {if $profile->isDead()}
+        Décédé{if $profile->isFemale()}e{/if} le {$profile->deathdate|date_format}
+        {elseif $o && $owner->lost}
+        Ce{if $profile->isFemale()}tte{/if} camarade n'a plus d'adresse de redirection valide,<br />
+        <a href="marketing/broken/{$owner->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
+        {elseif $o && $owner->state != 'active'}
         Cette personne n'est pas inscrite à Polytechnique.org,<br />
-        <a href="marketing/public/{$o->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
+        <a href="marketing/public/{$owner->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
         {else}
         {if $virtualalias}
         <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />
         {/if}
-        <a href="mailto:{$o->bestEmail()}">{$o->bestEmail()}</a>
-        {if $o->bestEmail() neq $o->forlifeEmail()}<br />
-        <a href="mailto:{$o->forlifeEmail()}">{$o->forlifeEmail()}</a>
+        <a href="mailto:{$owner->bestEmail()}">{$owner->bestEmail()}</a>
+        {if $owner->bestEmail() neq $owner->forlifeEmail()}<br />
+        <a href="mailto:{$owner->forlifeEmail()}">{$owner->forlifeEmail()}</a>
         {/if}
         {/if}
       </div>
       {/if}
       {if count($phones) > 0}
-        {display_phones tels=$phones dcd=$p->isDead()}
+        {display_phones tels=$phones dcd=$profile->isDead()}
       {/if}
       <div class='spacer'></div>
     </div>
     {/if}
 
     <div class='formation'>
-      {foreach from=$p->nationalities() item=nat}
+      {foreach from=$profile->nationalities() item=nat}
         <img src='images/flags/{$nat}.gif' alt='{$nat}' height='11' title='{$nat}' />&nbsp;
       {/foreach}
 
-      {$p->promo()}
+      {$profile->promo()}
 
-      {if $logged && $p->mentor_expertise}
-      [<a href="referent/{$p->hrid()}" class='popup2'>Ma fiche référent</a>]
+      {if $logged && $profile->mentor_expertise}
+      [<a href="referent/{$profile->hrid()}" class='popup2'>Ma fiche référent</a>]
       {/if}
 
-      {assign var=educations value=$p->getEducations(64)}
+      {assign var=educations value=$profile->getEducations(64)}
       {if count($educations) > 0}
         &nbsp;-&nbsp;Formation&nbsp;:
         <ul>
@@ -176,7 +176,7 @@ function chgMainWinLoc(strPage)
         </ul>
       {/if}
 
-      {assign var=corps value=$p->getCorps()}
+      {assign var=corps value=$profile->getCorps()}
       {if $corps && ($corps->current || $corps->original)}
       <ul>
         {if $corps->current}
@@ -191,11 +191,11 @@ function chgMainWinLoc(strPage)
     </div>
   </div>
 
-  {assign var=addr value=$p->getAddresses(3)}
+  {assign var=addr value=$profile->getAddresses(3)}
   {if count($addr) > 0}
   <div class="part">
     <h2>Contact&nbsp;: </h2>
-    {if $p->isDead()}
+    {if $profile->isDead()}
       {assign var=address_name value="Dernière adresse"}
     {else}
       {assign var=address_name value="Adresse"}
@@ -208,20 +208,20 @@ function chgMainWinLoc(strPage)
       {/if}
       {if $address->hasFlag('current')}
       {include file="geoloc/address.tpl" address=$address titre_div=true titre=$address_name|@cat:" actuelle&nbsp;:"
-               for="`$p->firstname` `$p->lastname`" pos=$pos}
+               for="`$profile->firstname` `$profile->lastname`" pos=$pos}
       {elseif $address->hasFlag('secondary')}
       {include file="geoloc/address.tpl" address=$address titre_div=true titre=$address_name|@cat:" secondaire&nbsp;:"
-               for="`$p->firstname` `$p->lastname`" pos=$pos}
+               for="`$profile->firstname` `$profile->lastname`" pos=$pos}
       {else}
       {include file="geoloc/address.tpl" address=$address titre_div=true titre=$address_name|@cat:" principale&nbsp;:"
-               for="`$p->firstname` `$p->lastname`" pos=$pos}
+               for="`$profile->firstname` `$profile->lastname`" pos=$pos}
       {/if}
       {if $smarty.foreach.addresses.iteration is even}<div class="spacer"></div>{/if}
     {/foreach}
   </div>
   {/if}
 
-  {assign var=jobs value=$p->getJobs(2)}
+  {assign var=jobs value=$profile->getJobs(2)}
   {if count($jobs) > 0}
   <div class="part">
     <h2>Informations professionnelles&nbsp;:</h2>
@@ -236,7 +236,7 @@ function chgMainWinLoc(strPage)
   </div>
   {/if}
 
-  {assign var=medals value=$p->getMedals()}
+  {assign var=medals value=$profile->getMedals()}
   {if count($medals) > 0}
     <div class="part">
       <h2>Distinctions&nbsp;: </h2>
@@ -252,10 +252,10 @@ function chgMainWinLoc(strPage)
     </div>
   {/if}
 
-  {if $logged && $p->cv}
+  {if $logged && $profile->cv}
   <div class="part">
     <h2>Curriculum Vitae&nbsp;:</h2>
-    {$p->cv|miniwiki:title|smarty:nodefaults}
+    {$profile->cv|miniwiki:title|smarty:nodefaults}
   </div>
   {/if}
 
@@ -263,7 +263,7 @@ function chgMainWinLoc(strPage)
   <div class="part">
     <small>
     Cette fiche est publique et visible par tout internaute,<br />
-    vous pouvez aussi voir <a href="profile/private/{$p->hrid()}?display=light">celle&nbsp;réservée&nbsp;aux&nbsp;X</a>.
+    vous pouvez aussi voir <a href="profile/private/{$profile->hrid()}?display=light">celle&nbsp;réservée&nbsp;aux&nbsp;X</a>.
     </small>
   </div>
   {elseif $view eq 'ax'}
