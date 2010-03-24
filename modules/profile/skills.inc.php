@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileSkill implements ProfileSetting
+class ProfileSettingSkill implements ProfileSetting
 {
     private $table;
     private $skill_field;
@@ -78,15 +78,15 @@ class ProfileSkill implements ProfileSetting
     }
 }
 
-class ProfileSkills extends ProfilePage
+class ProfileSettingSkills extends ProfilePage
 {
     protected $pg_template = 'profile/skill.tpl';
 
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['competences'] = new ProfileSkill('skill', 'cid', 'text_fr');
-        $this->settings['langues'] = new ProfileSkill('langskill', 'lid', 'langue_fr');
+        $this->settings['competences'] = new ProfileSettingSkill('skill', 'cid', 'text_fr');
+        $this->settings['langues'] = new ProfileSettingSkill('langskill', 'lid', 'langue_fr');
     }
 
     public function _prepare(PlPage &$page, $id)

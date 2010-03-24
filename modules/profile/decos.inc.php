@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileDeco implements ProfileSetting
+class ProfileSettingDeco implements ProfileSetting
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -84,15 +84,15 @@ class ProfileDeco implements ProfileSetting
     }
 }
 
-class ProfileDecos extends ProfilePage
+class ProfileSettingDecos extends ProfilePage
 {
     protected $pg_template = 'profile/deco.tpl';
 
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['medals'] = new ProfileDeco();
-        $this->settings['medals_pub'] = new ProfilePub();
+        $this->settings['medals'] = new ProfileSettingDeco();
+        $this->settings['medals_pub'] = new ProfileSettingPub();
         $this->watched['medals'] = true;
     }
 

@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileSearchNames implements ProfileSetting
+class ProfileSettingSearchNames implements ProfileSetting
 {
     private $private_name_end;
     private $search_names;
@@ -194,7 +194,7 @@ class ProfileSearchNames implements ProfileSetting
     }
 }
 
-class ProfileEdu implements ProfileSetting
+class ProfileSettingEdu implements ProfileSetting
 {
     public function __construct() {
     }
@@ -232,7 +232,7 @@ class ProfileEdu implements ProfileSetting
                 }
                 $i++;
             }
-            usort($value, array("ProfileEdu", "sortByGradYear"));
+            usort($value, array("ProfileSettingEdu", "sortByGradYear"));
         }
         return $value;
     }
@@ -254,7 +254,7 @@ class ProfileEdu implements ProfileSetting
     }
 }
 
-class ProfileEmailDirectory implements ProfileSetting
+class ProfileSettingEmailDirectory implements ProfileSetting
 {
     public function __construct(){}
     public function save(ProfilePage &$page, $field, $value){}
@@ -279,7 +279,7 @@ class ProfileEmailDirectory implements ProfileSetting
     }
 }
 
-class ProfileNetworking implements ProfileSetting
+class ProfileSettingNetworking implements ProfileSetting
 {
     private $email;
     private $pub;
@@ -288,10 +288,10 @@ class ProfileNetworking implements ProfileSetting
 
     public function __construct()
     {
-        $this->email  = new ProfileEmail();
-        $this->pub    = new ProfilePub();
-        $this->web    = new ProfileWeb();
-        $this->number = new ProfileNumber();
+        $this->email  = new ProfileSettingEmail();
+        $this->pub    = new ProfileSettingPub();
+        $this->web    = new ProfileSettingWeb();
+        $this->number = new ProfileSettingNumber();
     }
 
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -352,7 +352,7 @@ class ProfileNetworking implements ProfileSetting
     }
 }
 
-class ProfileGeneral extends ProfilePage
+class ProfileSettingGeneral extends ProfilePage
 {
     protected $pg_template = 'profile/general.tpl';
 
@@ -360,11 +360,11 @@ class ProfileGeneral extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['search_names']
-                                  = new ProfileSearchNames();
-        $this->settings['birthdate'] = new ProfileDate();
+                                  = new ProfileSettingSearchNames();
+        $this->settings['birthdate'] = new ProfileSettingDate();
         $this->settings['freetext_pub']
                                   = $this->settings['photo_pub']
-                                  = new ProfilePub();
+                                  = new ProfileSettingPub();
         $this->settings['freetext']
                                   = $this->settings['nationality1']
                                   = $this->settings['nationality2']
@@ -373,12 +373,12 @@ class ProfileGeneral extends ProfilePage
                                   = $this->settings['promo']
                                   = null;
         $this->settings['email_directory']
-                                  = new ProfileEmail();
+                                  = new ProfileSettingEmail();
         $this->settings['email_directory_new']
-                                  = new ProfileEmailDirectory();
-        $this->settings['networking'] = new ProfileNetworking();
-        $this->settings['tels']   = new ProfilePhones('user', 0);
-        $this->settings['edus']   = new ProfileEdu();
+                                  = new ProfileSettingEmailDirectory();
+        $this->settings['networking'] = new ProfileSettingNetworking();
+        $this->settings['tels']   = new ProfileSettingPhones('user', 0);
+        $this->settings['edus']   = new ProfileSettingEdu();
         $this->watched= array('freetext' => true, 'tels' => true,
                               'networking' => true, 'edus' => true,
                               'nationality1' => true, 'nationality2' => true,

@@ -43,7 +43,7 @@ abstract class ProfileNoSave implements ProfileSetting
     public function save(ProfilePage &$page, $field, $new_value) { }
 }
 
-class ProfileWeb extends ProfileNoSave
+class ProfileSettingWeb extends ProfileNoSave
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -60,7 +60,7 @@ class ProfileWeb extends ProfileNoSave
     }
 }
 
-class ProfileEmail extends ProfileNoSave
+class ProfileSettingEmail extends ProfileNoSave
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -76,7 +76,7 @@ class ProfileEmail extends ProfileNoSave
     }
 }
 
-class ProfileNumber extends ProfileNoSave
+class ProfileSettingNumber extends ProfileNoSave
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -93,7 +93,7 @@ class ProfileNumber extends ProfileNoSave
 }
 
 
-class ProfileTel extends ProfileNoSave
+class ProfileSettingTel extends ProfileNoSave
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -115,7 +115,7 @@ class ProfileTel extends ProfileNoSave
     }
 }
 
-class ProfilePhones implements ProfileSetting
+class ProfileSettingPhones implements ProfileSetting
 {
     private $tel;
     private $pub;
@@ -124,8 +124,8 @@ class ProfilePhones implements ProfileSetting
 
     public function __construct($type, $link_id)
     {
-        $this->tel = new ProfileTel();
-        $this->pub = new ProfilePub();
+        $this->tel = new ProfileSettingTel();
+        $this->pub = new ProfileSettingPub();
         $this->link_type = $type;
         $this->link_id   = $link_id;
     }
@@ -205,7 +205,7 @@ class ProfilePhones implements ProfileSetting
     }
 }
 
-class ProfilePub extends ProfileNoSave
+class ProfileSettingPub extends ProfileNoSave
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -222,7 +222,7 @@ class ProfilePub extends ProfileNoSave
     }
 }
 
-class ProfileBool extends ProfileNoSave
+class ProfileSettingBool extends ProfileNoSave
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -234,7 +234,7 @@ class ProfileBool extends ProfileNoSave
     }
 }
 
-class ProfileDate extends ProfileNoSave
+class ProfileSettingDate extends ProfileNoSave
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -259,7 +259,7 @@ class ProfileDate extends ProfileNoSave
     }
 }
 
-abstract class ProfileGeocoding implements ProfileSetting
+abstract class ProfileSettingGeocoding implements ProfileSetting
 {
     protected function geocodeAddress(array &$address, &$success)
     {

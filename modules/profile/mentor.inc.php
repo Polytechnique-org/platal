@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileSectors implements ProfileSetting
+class ProfileSettingSectors implements ProfileSetting
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -71,7 +71,7 @@ class ProfileSectors implements ProfileSetting
     }
 }
 
-class ProfileCountry implements ProfileSetting
+class ProfileSettingCountry implements ProfileSetting
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -110,7 +110,7 @@ class ProfileCountry implements ProfileSetting
 }
 
 
-class ProfileMentor extends ProfilePage
+class ProfileSettingMentor extends ProfilePage
 {
     protected $pg_template = 'profile/mentor.tpl';
 
@@ -118,8 +118,8 @@ class ProfileMentor extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['expertise'] = null;
-        $this->settings['sectors'] = new ProfileSectors();
-        $this->settings['countries'] = new ProfileCountry();
+        $this->settings['sectors'] = new ProfileSettingSectors();
+        $this->settings['countries'] = new ProfileSettingCountry();
     }
 
     protected function _fetchData()

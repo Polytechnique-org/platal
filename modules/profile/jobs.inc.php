@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileJob extends ProfileGeocoding
+class ProfileSettingJob extends ProfileSettingGeocoding
 {
     private $pub;
     private $email_new;
@@ -30,12 +30,12 @@ class ProfileJob extends ProfileGeocoding
 
     public function __construct()
     {
-        $this->pub    = new ProfilePub();
+        $this->pub    = new ProfileSettingPub();
         $this->email
                       = $this->email_new
-                      = new ProfileEmail();
-        $this->url    = new ProfileWeb();
-        $this->bool   = new ProfileBool();
+                      = new ProfileSettingEmail();
+        $this->url    = new ProfileSettingWeb();
+        $this->bool   = new ProfileSettingBool();
         $this->checks = array('url'      => array('w_url'),
                               'email'    => array('w_email'),
                               'pub'      => array('pub', 'w_email_pub'),
@@ -171,7 +171,7 @@ class ProfileJob extends ProfileGeocoding
         if (!isset($job['w_phone'])) {
             $job['w_phone'] = array();
         }
-        $profiletel = new ProfilePhones('pro', $jobid);
+        $profiletel = new ProfileSettingPhones('pro', $jobid);
         $job['w_phone'] = $profiletel->value($page, 'tel', $job['w_phone'], $s);
 
         unset($job['removed']);
@@ -244,16 +244,16 @@ class ProfileJob extends ProfileGeocoding
                                  $this->pid(), $id, $job['description'], $job['sector'], $job['subSector'],
                                  $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub']);
                 }
-                $address = new ProfileAddress();
+                $address = new ProfileSettingAddress();
                 $address->saveAddress($id, $job['w_address'], 'job');
-                $profiletel = new ProfilePhones('pro', $id);
+                $profiletel = new ProfileSettingPhones('pro', $id);
                 $profiletel->saveTels('tel', $job['w_phone']);
             }
         }
     }
 }
 
-class ProfileJobs extends ProfilePage
+class ProfileSettingJobs extends ProfilePage
 {
     protected $pg_template = 'profile/jobs.tpl';
 
@@ -262,7 +262,7 @@ class ProfileJobs extends ProfilePage
         parent::__construct($wiz);
         $this->settings['cv'] = null;
         $this->settings['corps'] = null;
-        $this->settings['jobs'] = new ProfileJob();
+        $this->settings['jobs'] = new ProfileSettingJob();
         $this->watched = array('cv' => true, 'jobs' => true, 'corps' => true);
     }
 

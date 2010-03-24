@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileSection implements ProfileSetting
+class ProfileSettingSection implements ProfileSetting
 {
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
@@ -43,7 +43,7 @@ class ProfileSection implements ProfileSetting
     }
 }
 
-class ProfileBinets implements ProfileSetting
+class ProfileSettingBinets implements ProfileSetting
 {
     public function __construct()
     {
@@ -87,15 +87,15 @@ class ProfileBinets implements ProfileSetting
     }
 }
 
-class ProfileGroups extends ProfilePage
+class ProfileSettingGroups extends ProfilePage
 {
     protected $pg_template = 'profile/groups.tpl';
 
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['section']  = new ProfileSection();
-        $this->settings['binets']   = new ProfileBinets();
+        $this->settings['section']  = new ProfileSettingSection();
+        $this->settings['binets']   = new ProfileSettingBinets();
         $this->watched['section'] = $this->watched['binets'] = true;
     }
 

@@ -303,13 +303,13 @@ class ProfileModule extends PLModule
         $wiz->addUserData('profile', $user);
         $wiz->addUserData('owner', $user->owner());
         $this->load('page.inc.php');
-        $wiz->addPage('ProfileGeneral', 'Général', 'general');
-        $wiz->addPage('ProfileAddresses', 'Adresses personnelles', 'adresses');
-        $wiz->addPage('ProfileGroups', 'Groupes X - Binets', 'poly');
-        $wiz->addPage('ProfileDecos', 'Décorations - Medailles', 'deco');
-        $wiz->addPage('ProfileJobs', 'Informations professionnelles', 'emploi');
-        $wiz->addPage('ProfileSkills', 'Compétences diverses', 'skill');
-        $wiz->addPage('ProfileMentor', 'Mentoring', 'mentor');
+        $wiz->addPage('ProfileSettingGeneral', 'Général', 'general');
+        $wiz->addPage('ProfileSettingAddresses', 'Adresses personnelles', 'adresses');
+        $wiz->addPage('ProfileSettingGroups', 'Groupes X - Binets', 'poly');
+        $wiz->addPage('ProfileSettingDecos', 'Décorations - Medailles', 'deco');
+        $wiz->addPage('ProfileSettingJobs', 'Informations professionnelles', 'emploi');
+        $wiz->addPage('ProfileSettingSkills', 'Compétences diverses', 'skill');
+        $wiz->addPage('ProfileSettingMentor', 'Mentoring', 'mentor');
         $wiz->apply($page, 'profile/edit/' . $user->hrid(), $opened_tab, $mode);
 
         if (!$user->birthdate) {

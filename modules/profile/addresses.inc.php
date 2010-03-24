@@ -19,15 +19,15 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class ProfileAddress extends ProfileGeocoding
+class ProfileSettingAddress extends ProfileSettingGeocoding
 {
     private $bool;
     private $pub;
 
     public function __construct()
     {
-        $this->bool = new ProfileBool();
-        $this->pub  = new ProfilePub();
+        $this->bool = new ProfileSettingBool();
+        $this->pub  = new ProfileSettingPub();
     }
 
     private function cleanAddress(ProfilePage &$page, $addrid, array &$address)
@@ -35,7 +35,7 @@ class ProfileAddress extends ProfileGeocoding
         if (!isset($address['tel'])) {
             $address['tel'] = array();
         }
-        $profiletel           = new ProfilePhones('address', $addrid);
+        $profiletel           = new ProfileSettingPhones('address', $addrid);
         $address['tel']       = $profiletel->value($page, 'tel',       $address['tel'],       $s);
         $address['current']   = $this->bool->value($page, 'current',   $address['current'],   $s);
         $address['temporary'] = $this->bool->value($page, 'temporary', $address['temporary'], $s);
@@ -123,20 +123,20 @@ class ProfileAddress extends ProfileGeocoding
                      $page->pid());
         foreach ($value as $addrid => &$address) {
             $this->saveAddress($page->pid(), $addrid, $address, 'home');
-            $profiletel = new ProfilePhones('address', $addrid);
+            $profiletel = new ProfileSettingPhones('address', $addrid);
             $profiletel->saveTels($page->pid(), 'tel', $address['tel']);
         }
     }
 }
 
-class ProfileAddresses extends ProfilePage
+class ProfileSettingAddresses extends ProfilePage
 {
     protected $pg_template = 'profile/adresses.tpl';
 
     public function __construct(PlWizard &$wiz)
     {
         parent::__construct($wiz);
-        $this->settings['addresses'] = new ProfileAddress();
+        $this->settings['addresses'] = new ProfileSettingAddress();
         $this->watched['addresses']  = true;
     }
 
