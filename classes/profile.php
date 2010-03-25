@@ -195,6 +195,25 @@ class Profile
         return intval(substr($this->promo, 1, 4));
     }
 
+    public function mainEducation()
+    {
+        return $this->promo{0};
+    }
+
+    public function mainEducationDuration()
+    {
+        switch ($this->mainEducation()) {
+          case 'X':
+            return 3;
+          case 'M':
+            return 2;
+          case 'D':
+            return 3;
+          default:
+            return 0;
+        }
+    }
+
     /** Print a name with the given formatting:
      * %s = • for women
      * %f = firstname
