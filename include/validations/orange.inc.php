@@ -42,11 +42,12 @@ class OrangeReq extends Validate
     {
         parent::__construct($_user, true, 'orange');
         $this->newGradYear  = $_newGradYear;
-        $res = XDB::query("SELECT  entry_year
+        $res = XDB::query("SELECT  entry_year, grad_year
                              FROM  profile_education
                             WHERE  pid = {?} AND FIND_IN_SET('primary', flags)", $this->user->profile()->id());
-        $this->entryYear   = $res->fetchOneCell();
-        $this->oldGradYear = $this->entryYear + 3;
+        $years = $res->fetchOneRow();
+        $this->entryYear   = $years[0];
+        $this->oldGradYear = $years[1];
     }
 
     // }}}
@@ -71,11 +72,11 @@ class OrangeReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  La demande de changement de promotion de sortie que tu as demandée vient d'être effectuée. "
+            return "  La demande de changement de promotion que tu as demandée vient d'être effectuée. "
                    . "Si tu le souhaites, tu peux maintenant modifier l'affichage de ta promotion sur le site sur la page suivante : "
                    . "https://www.polytechnique.org/profile/edit";
         } else {
-            return "  La demande de changement de promotion de sortie tu avais faite a été refusée.";
+            return "  La demande de changement de promotion tu avais faite a été refusée.";
         }
     }
 
@@ -86,7 +87,8 @@ class OrangeReq extends Validate
     {
         XDB::execute("UPDATE  profile_education
                          SET  grad_year = {?}
-                       WHERE  pid = {?} AND FIND_IN_SET('primary', flags)", $this->newGradYear, $this->user->profile()->id());
+                       WHERE  pid = {?} AND FIND_IN_SET('primary', flags)",
+                     $this->newGradYear, $this->user->profile()->id());
         return true;
     }
 

@@ -98,16 +98,31 @@
     </td>
     <td>
       {if !$promo_choice}
-        <span class="nom">{$promo}</span>
-        <input type="hidden" name="promo" value="{$promo}"/>
+        <span class="nom">{$profile->promo()}</span>
+        <input type="hidden" name="promo_display" value="{$profile->promo()}"/>
       {else}
-        <select name="promo">
+        <select name="promo_display">
         {foreach from=$promo_choice item="promo_to_display"}
-          <option value="{$promo_to_display}" {if $promo_to_display eq $promo}selected="selected"{/if}>{$promo_to_display}</option>
+          <option value="{$promo_to_display}" {if $promo_to_display eq $promo_display}selected="selected"{/if}>{$promo_to_display}</option>
         {/foreach}
         </select>
       {/if}
-      <span class="lien"><a href="profile/orange" {if ($grad_year -3 == $entry_year)} {popup text="pour les oranges"}{/if}>{icon name="page_edit" title="modifier"}</a></span>
+      <span class="lien"><a href="javascript:togglePromotionEdition();" {popup text="pour les oranges"}>{icon name="page_edit" title="modifier"}</a></span>
+    </td>
+  </tr>
+  <tr class="promotion_edition" style="display: none">
+    <td colspan="2">
+      Afin de pouvoir être considéré{if $profile->isFemale()}e{/if} à la fois dans ta promotion d'origine et ta
+      ou tes promotions d'adoption tu peux entrer ici ta promotion d'adoption.
+      <br /><span class="smaller"><span class="titre">Attention&nbsp;:</span>
+      cette modification ne sera prise en compte qu'après validation par les administrateurs du site.</span>
+    </td>
+  </tr>
+  <tr class="promotion_edition" style="display: none">
+    <td class="titre">Promotion d'adoption</td>
+    <td>
+      {$profile->mainEducation()}<input type="text" name="promo" size="4" maxlength="4" value="{$promo}" />
+      <span class="smaller"> (que les chiffres)</span>
     </td>
   </tr>
   <tr>

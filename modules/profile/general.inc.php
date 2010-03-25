@@ -352,6 +352,73 @@ class ProfileSettingNetworking implements ProfileSetting
     }
 }
 
+class ProfileSettingPromo implements ProfileSetting
+{
+    public function __construct(){}
+
+    public function save(ProfilePage &$page, $field, $value)
+    {
+        $gradYearNew = $value;
+        if ($page->profile->mainEducation() == 'X') {
+            $gradYearNew += $page->profile->mainEducationDuration();
+        }
+        if ($value == $page->profile->entry_year + $page->profile->mainEducationDuration()) {
+            XDB::execute('UPDATE  profile_display
+                             SET  promo = {?}
+                           WHERE  pid = {?}',
+                         $page->profile->mainEducation() . strval($value), $page->profile->id());
+            XDB::execute('UPDATE  profile_education
+                             SET  grad_year = {?}
+                           WHERE  pid = {?} AND FIND_IN_SET(\'primary\', flags)',
+                         $gradYearNew, $page->profile->id());
+            $page->trigSuccess('Ton statut "orange" a été supprimé.');
+        } else {
+            require_once 'validations.inc.php';
+
+            $myorange = new OrangeReq(S::user(), $gradYearNew);
+            $myorange->submit();
+            Platal::page()->trigSuccess('Tu pourras changer l\'affichage de ta promotion dès que ta nouvelle promotion aura été validée.');
+        }
+    }
+
+    public function value(ProfilePage &$page, $field, $value, &$success)
+    {
+        $entryYear = $page->profile->entry_year;
+        $gradYear  = $page->profile->grad_year;
+        $success   = true;
+        if (is_null($value) || $value == $page->profile->yearpromo()) {
+            if ($gradYear != $entryYear + $page->profile->mainEducationDuration()) {
+                $promoChoice = array();
+                for ($i = $entryYear + $page->profile->mainEducationDuration(); $i <= $gradYear; ++$i) {
+                    $promoChoice[] = $page->profile->mainEducation() . strval($i);
+                }
+                Platal::page()->assign('promo_choice', $promoChoice);
+            }
+            if ($page->profile->mainEducation() == 'X') {
+                return $page->profile->grad_year - $page->profile->mainEducationDuration();
+            }
+            return $page->profile->yearpromo();
+        }
+
+        // If this profile belongs to an X, $promoNew needs to be changed to
+        // the graduation year.
+        $gradYearNew = $value;
+        if ($page->profile->mainEducation() == 'X') {
+            $gradYearNew += $page->profile->mainEducationDuration();
+        }
+
+        if ($value < 1000 || $value > 9999) {
+            Platal::page()->trigError('L\'année de sortie doit être un nombre de quatre chiffres.');
+            $success = false;
+        } elseif ($gradYearNew < $entryYear + $page->profile->mainEducationDuration()) {
+            Platal::page()->trigError('Trop tôt&nbsp;!');
+            $success = false;
+        }
+        return intval($value);
+    }
+}
+
+
 class ProfileSettingGeneral extends ProfilePage
 {
     protected $pg_template = 'profile/general.tpl';
@@ -370,7 +437,7 @@ class ProfileSettingGeneral extends ProfilePage
                                   = $this->settings['nationality2']
                                   = $this->settings['nationality3']
                                   = $this->settings['yourself']
-                                  = $this->settings['promo']
+                                  = $this->settings['promo_display']
                                   = null;
         $this->settings['email_directory']
                                   = new ProfileSettingEmail();
@@ -379,6 +446,7 @@ class ProfileSettingGeneral extends ProfilePage
         $this->settings['networking'] = new ProfileSettingNetworking();
         $this->settings['tels']   = new ProfileSettingPhones('user', 0);
         $this->settings['edus']   = new ProfileSettingEdu();
+        $this->settings['promo']  = new ProfileSettingPromo();
         $this->watched= array('freetext' => true, 'tels' => true,
                               'networking' => true, 'edus' => true,
                               'nationality1' => true, 'nationality2' => true,
@@ -388,16 +456,14 @@ class ProfileSettingGeneral extends ProfilePage
     protected function _fetchData()
     {
         // Checkout all data...
-        $res = XDB::query("SELECT  p.promo, e.entry_year AS entry_year, e.grad_year AS grad_year,
-                                   pr.nationality1, pr.nationality2, pr.nationality3, pr.birthdate,
-                                   t.display_tel as mobile, t.pub as mobile_pub,
-                                   pr.email_directory as email_directory,
-                                   pr.freetext, pr.freetext_pub, pr.ax_id AS matricule_ax, p.yourself
-                             FROM  profiles              AS pr
-                       INNER JOIN  profile_display       AS p ON (p.pid = pr.pid)
-                       INNER JOIN  profile_education     AS e ON (e.pid = pr.pid AND FIND_IN_SET('primary', e.flags))
-                        LEFT JOIN  profile_phones        AS t ON (t.pid = pr.pid AND link_type = 'user')
-                            WHERE  pr.pid = {?}", $this->pid());
+        $res = XDB::query("SELECT  p.nationality1, p.nationality2, p.nationality3, p.birthdate,
+                                   pp.display_tel as mobile, pp.pub as mobile_pub,
+                                   p.email_directory as email_directory, pd.promo AS promo_display,
+                                   p.freetext, p.freetext_pub, p.ax_id AS matricule_ax, pd.yourself
+                             FROM  profiles              AS p
+                       INNER JOIN  profile_display       AS pd ON (pd.pid = p.pid)
+                        LEFT JOIN  profile_phones        AS pp ON (pp.pid = p.pid AND link_type = 'user')
+                            WHERE  p.pid = {?}", $this->pid());
         $this->values = $res->fetchOneAssoc();
         if ($this->owner) {
             $this->values['yourself'] = $this->owner->displayName();
@@ -417,13 +483,6 @@ class ProfileSettingGeneral extends ProfilePage
             $this->values['nouvellephoto'] = $res->fetchOneCell();
         } else {
             $this->values['nouvellephoto'] = 0;
-        }
-
-        // Proposes choice for promotion
-        if ($this->values['entry_year'] != $this->values['grad_year'] - 3) {
-            for ($i = $this->values['entry_year']; $i < $this->values['grad_year'] - 2; $i++) {
-                $this->values['promo_choice'][] = "X" . $i;
-            }
         }
     }
 
@@ -469,11 +528,14 @@ class ProfileSettingGeneral extends ProfilePage
                              SET  display_name = {?}
                            WHERE  pid = {?}', $this->pid());
         }
-        if ($this->changed['promo']) {
-            XDB::execute("UPDATE  profile_display
-                             SET  promo = {?}
-                           WHERE  pid = {?}",
-                         $this->values['promo'], $this->pid());
+        if ($this->changed['promo_display']) {
+            if ($this->values['promo_display']{0} == $this->profile->mainEducation()
+                && intval(substr($this->values['promo_display'], 1, 4)) >= $this->profile->entry_year + $this->profile->mainEducationDuration()) {
+                XDB::execute('UPDATE  profile_display
+                                 SET  promo = {?}
+                               WHERE  pid = {?}',
+                             $this->values['promo_display'], $this->pid());
+            }
         }
     }
 

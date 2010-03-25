@@ -22,7 +22,7 @@
 
 
 <tr class="impair">
-  <td class="titre">Promotion&nbsp;:</td>
+  <td class="titre">Année d'entrée&nbsp;:</td>
   <td>{$valid->entryYear}</td>
 </tr>
 <tr class="impair">

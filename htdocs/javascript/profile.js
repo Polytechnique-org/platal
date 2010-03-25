@@ -129,6 +129,13 @@ function toggleParticle(id)
     }
 }
 
+// Promotions {{{1
+
+function togglePromotionEdition()
+{
+    $(".promotion_edition").toggle();
+}
+
 // Nationalities {{{1
 
 function delNationality(i)

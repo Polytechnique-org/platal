@@ -48,7 +48,6 @@ class ProfileModule extends PLModule
             'javascript/grades.js'       => $this->make_hook('grades_js',                  AUTH_COOKIE),
             'profile/medal'              => $this->make_hook('medal',                      AUTH_PUBLIC),
             'profile/name_info'          => $this->make_hook('name_info',                  AUTH_PUBLIC),
-            'profile/orange'             => $this->make_hook('p_orange',                   AUTH_MDP),
 
             'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE),
             'emploi'                     => $this->make_hook('ref_search',                 AUTH_COOKIE),
@@ -490,52 +489,6 @@ class ProfileModule extends PLModule
         $page->changeTpl('profile/general.buildnames.tpl', NO_SKIN);
         require_once 'name.func.inc.php';
         $page->assign('names', build_javascript_names($data));
-    }
-
-    function handler_p_orange(&$page, $pid = null)
-    {
-        $page->changeTpl('profile/orange.tpl');
-
-        require_once 'validations.inc.php';
-        $profile = Profile::get($pid);
-        if (is_null($profile)) {
-            return PL_NOT_FOUND;
-        }
-        $page->assign('promo_sortie_old', $profile->grad_year);
-        $page->assign('promo', $profile->entry_year);
-        $page->assign('promo_display', $profile->promo());
-        $page->assign('sexe', $profile->isFemale());
-
-        if (!Env::has('promo_sortie')) {
-            return;
-        } else {
-            S::assert_xsrf_token();
-        }
-
-        $promo_sortie = Env::i('promo_sortie');
-        $promo = $profile->entry_year;
-        if ($promo_sortie < 1000 || $promo_sortie > 9999) {
-            $page->trigError('L\'année de sortie doit être un nombre de quatre chiffres.');
-        } elseif ($promo_sortie < $promo + 3) {
-            $page->trigError('Trop tôt !');
-        } elseif ($promo_sortie == $promo_sortie_old) {
-            $page->trigWarning('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
-        } elseif ($promo_sortie == $promo + 3) {
-            XDB::execute('UPDATE  profile_education
-                             SET  grad_year = {?}
-                           WHERE  pid = {?} AND FIND_IN_SET(\'primary\', flags)',
-                         $promo_sortie, $profile->id());
-            $page->trigSuccess('Ton statut "orange" a été supprimé.');
-            $page->assign('promo_sortie_old', $promo_sortie);
-        } else {
-            $page->assign('promo_sortie', $promo_sortie);
-
-            if (Env::has('submit')) {
-                $myorange = new OrangeReq(S::user(), $promo_sortie);
-                $myorange->submit();
-                $page->assign('myorange', $myorange);
-            }
-        }
     }
 
     function handler_referent(&$page, $pf)
