@@ -423,7 +423,7 @@ abstract class Platal
         }
     }
 
-    public static function assert($cond, $error, $userfriendly)
+    public static function assert($cond, $error, $userfriendly = null)
     {
         global $globals;
         if ($cond === false) {
@@ -432,6 +432,11 @@ abstract class Platal
             fwrite($file, '<pre>' . pl_entities($error) . '</pre>\n');
             fclose($file);
 
+            if ($userfriendly == null) {
+                $userfriendly = "Une erreur interne s'est produite.
+                    Merci de réessayer la manipulation qui a déclenché l'erreur ;
+                    si cela ne fonctionne toujours pas, merci de nous signaler le problème rencontré.";
+            }
             Platal::page()->kill($userfriendly);
         }
     }
