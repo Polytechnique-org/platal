@@ -378,6 +378,9 @@ WHERE name = 'Univ Madrid';
 UPDATE profile_education_enum
 SET abbreviation = 'UPF', name = 'Universitat Pompeu Fabra', country = 'ES'
 WHERE name = 'Univ Pompeu Fabra';
+UPDATE profile_education_enum
+SET abbreviation = 'IE', country = 'ES'
+WHERE name = 'Instituto de Empresa';
 
 UPDATE profile_education_enum
 SET abbreviation = 'Chalmers', name = 'Chalmers Tekniska Högskola', country = 'SE'
