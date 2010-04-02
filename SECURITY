@@ -12,5 +12,6 @@
 # The commit id should refer to the id in the "master" branch, if the initial
 # commit in a version branch had another name.
 
+2010-04-02 3e2442cd Fix freetext visibility
 2009-10-19 e10bc2ef Prevents auth-groupex from leaking data to third-party attackers.
 2008-12-21 a25cdc91 Fixes a SQL injection in geoloc.inc.php.
