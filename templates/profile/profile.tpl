@@ -97,7 +97,7 @@ function chgMainWinLoc(strPage)
         &nbsp;{if !$profile->isDead()}<a href="vcard/{$owner->login()}.vcf">{*
           *}{icon name=vcard title="Afficher la carte de visite"}</a>{/if}
 
-        {if !$smarty.session.user->isContact($p)}
+        {if !$smarty.session.user->isContact($profile)}
         <a href="javascript:chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$owner->login()}&amp;token={xsrf_token}')">
           {icon name=add title="Ajouter à mes contacts"}</a>
         {else}
@@ -171,7 +171,7 @@ function chgMainWinLoc(strPage)
         &nbsp;-&nbsp;Formation&nbsp;:
         <ul>
         {foreach from=$educations item=edu}
-          <li>{display_education edu=$edu profile=$p}</li>
+          <li>{display_education edu=$edu profile=$profile}</li>
         {/foreach}
         </ul>
       {/if}
