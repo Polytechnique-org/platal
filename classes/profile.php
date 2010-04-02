@@ -637,16 +637,24 @@ class Profile
      */
     public function getBinets()
     {
-        return XDB::fetchColumn('SELECT  binet_id
-                                   FROM  profile_binets
-                                  WHERE  pid = {?}', $this->id());
+        if ($this->visibility->isVisible(ProfileVisibility::VIS_PRIVATE)) {
+            return XDB::fetchColumn('SELECT  binet_id
+                                       FROM  profile_binets
+                                      WHERE  pid = {?}', $this->id());
+        } else {
+            return array();
+        }
     }
     public function getBinetsNames()
     {
-        return XDB::fetchColumn('SELECT  text
-                                   FROM  profile_binets AS pb
-                              LEFT JOIN  profile_binet_enum AS pbe ON (pbe.id = pb.binet_id)
-                                  WHERE  pb.pid = {?}', $this->id());
+        if ($this->visibility->isVisible(ProfileVisibility::VIS_PRIVATE)) {
+            return XDB::fetchColumn('SELECT  text
+                                       FROM  profile_binets AS pb
+                                  LEFT JOIN  profile_binet_enum AS pbe ON (pbe.id = pb.binet_id)
+                                      WHERE  pb.pid = {?}', $this->id());
+        } else {
+            return array();
+        }
     }
 
     /* Medals
@@ -701,7 +709,8 @@ class Profile
 
         $visibility = new ProfileVisibility($visibility);
 
-        $it = XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year, pse.text AS section,
+        $it = XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
+                                     IF ({?} IN {?}, pse.text, NULL) AS section,
                                      pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
                                      IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
                                      IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
@@ -732,7 +741,7 @@ class Profile
                           LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
                               WHERE  p.pid IN ' . XDB::formatArray($pids) . '
                            GROUP BY  p.pid
-                                  ' . $order, $visibility->levels(), $visibility->levels());
+                                  ' . $order, ProfileVisibility::VIS_PRIVATE, $visibility->levels(), $visibility->levels(), $visibility->levels());
         return new ProfileIterator($it, $pids, $fields, $visibility);
     }
 
