@@ -709,7 +709,12 @@ class Profile
 
         $visibility = new ProfileVisibility($visibility);
 
-        $it = XDB::Iterator('SELECT  p.*, p.sex = \'female\' AS sex, pe.entry_year, pe.grad_year,
+        $it = XDB::Iterator('SELECT  p.pid, p.hrpid, p.xorg_id, p.ax_id, p.birthdate, p.birthdate_ref,
+                                     p.next_birthday, p.deathdate, p.deathdate_rec, p.sex = \'female\' AS sex,
+                                     p.cv, p.medals_pub, p.alias_pub, p.email_directory, p.last_change,
+                                     p.nationality1, p.nationality2, p.nationality3,
+                                     IF (p.freetext_pub IN {?}, p.freetext, NULL) AS freetext,
+                                     pe.entry_year, pe.grad_year,
                                      IF ({?} IN {?}, pse.text, NULL) AS section,
                                      pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
                                      IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
@@ -739,9 +744,14 @@ class Profile
                           LEFT JOIN  profile_photos AS ph ON (ph.pid = p.pid)
                           LEFT JOIN  profile_mentor AS pm ON (pm.pid = p.pid)
                           LEFT JOIN  account_profiles AS ap ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', ap.perms))
-                              WHERE  p.pid IN ' . XDB::formatArray($pids) . '
+                              WHERE  p.pid IN {?}
                            GROUP BY  p.pid
-                                  ' . $order, ProfileVisibility::VIS_PRIVATE, $visibility->levels(), $visibility->levels(), $visibility->levels());
+                                     ' . $order,
+                           $visibility->levels(),
+                           ProfileVisibility::VIS_PRIVATE, $visibility->levels(),
+                           $visibility->levels(), $visibility->levels(),
+                           $pids
+                       );
         return new ProfileIterator($it, $pids, $fields, $visibility);
     }
 
