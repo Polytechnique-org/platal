@@ -291,7 +291,7 @@ class AnnuaireMarketing implements MarketingEngine
         $page->assign('intro', $this->getIntro());
         $page->assign('u', $user);
         $page->assign('sign', $this->getSignature());
-        $page->assign('num_users', self::getAliveUsersCount());
+        $page->assign('num_users', Marketing::getAliveUsersCount());
         $page->assign('personal_notes', $this->getPersonalNotes());
     }
 

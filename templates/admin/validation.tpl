@@ -47,7 +47,7 @@ function toggleField(name, id, obj) {
     <td class="titre" style="width: 20%">Demandeur&nbsp;:</td>
     <td>
       <a href="profile/{$valid->user->login()}" class="popup2">
-        {$valid->user->fullName()} (X{$valid->user->promo()})
+        {$valid->user->fullName()} ({$valid->user->promo()})
       </a>
     </td>
   </tr>

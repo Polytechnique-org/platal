@@ -935,7 +935,7 @@ class AdminModule extends PLModule
 
     function handler_validate(&$page, $action = 'list', $id = null)
     {
-        $page->changeTpl('admin/valider.tpl');
+        $page->changeTpl('admin/validation.tpl');
         $page->setTitle('Administration - Valider une demande');
                 $page->addCssLink('nl.css');
         $page->addJsLink('ajax.js');
