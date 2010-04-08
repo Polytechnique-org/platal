@@ -26,7 +26,7 @@ INSERT INTO  profile_education_degree_enum (abbreviation, degree, level)
 
 -- Updates universities
 UPDATE profile_education_enum
-SET abbreviation = 'Université Claude Bernard', name = 'Université Claude Bernard (Lyon I)'
+SET abbreviation = 'Université Claude Bernard', name = 'Université Claude Bernard (Lyon 1)'
 WHERE name = 'Université Claude Bernard';
 UPDATE profile_education_enum
 SET abbreviation = 'Télécom', name = 'Télécom ParisTech', url = 'http://www.telecom-paristech.fr/'
@@ -160,6 +160,9 @@ WHERE name = 'ENSIC';
 UPDATE profile_education_enum
 SET abbreviation = 'Grenoble INP', name = 'Institut Polytechnique de Grenoble', url = 'http://www.grenoble-inp.fr/'
 WHERE name = 'INPG';
+UPDATE profile_education_enum
+SET abbreviation = 'UJF'
+WHERE name = 'Université Joseph-Fourier (Grenoble 1)';
 UPDATE profile_education_enum
 SET abbreviation = 'ESSEC', name = 'École Supérieure des Sciences Économiques et Commerciales'
 WHERE name = 'ESSEC';
