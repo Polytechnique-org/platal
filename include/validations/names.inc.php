@@ -122,10 +122,8 @@ class NamesReq extends Validate
 
     public function commit()
     {
-        require_once 'notifs.inc.php';
         require_once 'name.func.inc.php';
 
-        register_watch_op($this->user->id(), WATCH_FICHE, '', 'search_names');
         set_profile_display($this->display_names);
         set_alias_names($this->sn_new, $this->sn_old, true, $this->new_alias);
 

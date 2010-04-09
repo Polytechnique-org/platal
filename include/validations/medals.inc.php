@@ -103,8 +103,6 @@ class MedalReq extends Validate
 
     public function commit ()
     {
-        require_once 'notifs.inc.php';
-        register_watch_op($this->user->id(), WATCH_FICHE, '', 'medals');
         return XDB::execute('REPLACE INTO  profile_medals
                                    VALUES  ({?}, {?}, {?})',
                             $this->user->profile()->id(), $this->mid,
