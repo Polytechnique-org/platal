@@ -5,8 +5,8 @@ require_once 'geocoding.inc.php';
 
 $globals->debug = 0; // Do not store backtraces.
 
-$res = XDB::query('SELECT  MIN(user_id), MAX(user_id)
-                     FROM  auth_user_md5');
+$res = XDB::query('SELECT  MIN(pid), MAX(pid)
+                     FROM  profiles');
 
 $pids = $res->fetchOneRow();
 
@@ -28,10 +28,11 @@ for ($pid = $minPid; $pid < $maxPid + 1; ++$pid) {
                                    FIND_IN_SET('active', a.statut) AS current,
                                    FIND_IN_SET('pro', a.statut) AS pro,
                                    a.glat AS precise_lat, a.glng AS precise_lon
-                             FROM  adresses AS a
-                       INNER JOIN  geoloc_pays AS gp ON(gp.a2 = a.country)
-                            WHERE  uid = {?}
-                         ORDER BY  adrid",
+                             FROM  #x4dat#.adresses    AS a
+                       INNER JOIN  #x4dat#.geoloc_pays AS gp ON (gp.a2 = a.country)
+                       INNER JOIN  account_profiles    AS ap ON (a.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+                            WHERE  ap.pid = {?}
+                         ORDER BY  a.adrid",
                            $pid);
 
     while ($address = $res->next()) {
@@ -95,39 +96,39 @@ echo "Geocoding is over.\n";
 
 function get_address_text($adr)
 {
-    $t = "";
-    if (isset($adr['adr1']) && $adr['adr1']) $t.= $adr['adr1'];
-    if (isset($adr['adr2']) && $adr['adr2']) $t.= "\n".$adr['adr2'];
-    if (isset($adr['adr3']) && $adr['adr3']) $t.= "\n".$adr['adr3'];
-    $l = "";
+    $t = '';
+    if (isset($adr['adr1']) && $adr['adr1']) $t .= $adr['adr1'];
+    if (isset($adr['adr2']) && $adr['adr2']) $t .= "\n".$adr['adr2'];
+    if (isset($adr['adr3']) && $adr['adr3']) $t .= "\n".$adr['adr3'];
+    $l = '';
     if (isset($adr['display']) && $adr['display']) {
         $keys = explode(' ', $adr['display']);
         foreach ($keys as $key) {
             if (isset($adr[$key])) {
-                $l .= " ".$adr[$key];
+                $l .= ' ' . $adr[$key];
             } else {
-                $l .= " ".$key;
+                $l .= ' ' . $key;
             }
         }
         if ($l) substr($l, 1);
     } elseif ($adr['country'] == 'US' || $adr['country'] == 'CA' || $adr['country'] == 'GB') {
-        if ($adr['city']) $l .= $adr['city'].",\n";
-        if ($adr['region']) $l .= $adr['region']." ";
+        if ($adr['city']) $l .= $adr['city'] . ",\n";
+        if ($adr['region']) $l .= $adr['region'] . ' ';
         if ($adr['postcode']) $l .= $adr['postcode'];
     } else {
-        if (isset($adr['postcode']) && $adr['postcode']) $l .= $adr['postcode']." ";
+        if (isset($adr['postcode']) && $adr['postcode']) $l .= $adr['postcode'] . ' ';
         if (isset($adr['city']) && $adr['city']) $l .= $adr['city'];
     }
-    if ($l) $t .= "\n".trim($l);
+    if ($l) $t .= "\n" . trim($l);
     if ($adr['country'] != '00' && (!$adr['countrytxt'] || $adr['countrytxt'] == strtoupper($adr['countrytxt']))) {
-        $res = XDB::query('SELECT  pays
-                             FROM  geoloc_pays
-                            WHERE  a2 = {?}',
+        $res = XDB::query('SELECT  countryFR
+                             FROM  geoloc_countries
+                            WHERE  iso_3166_1_a2 = {?}',
                           $adr['country']);
         $adr['countrytxt'] = $res->fetchOneCell();
     }
     if (isset($adr['countrytxt']) && $adr['countrytxt']) {
-        $t .= "\n".$adr['countrytxt'];
+        $t .= "\n" . $adr['countrytxt'];
     }
     return trim($t);
 }
