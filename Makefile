@@ -5,7 +5,6 @@
 
 VERSNUM := $(shell grep VERSION ChangeLog | head -1 | sed -e "s/VERSION //;s/ .*//")
 VERSTAG := $(shell grep VERSION ChangeLog | head -1 | grep 'XX' > /dev/null 2> /dev/null && echo 'beta')
-BANANA  := $(shell ( [ -d ../banana ] && echo `pwd`"/../banana" ) || echo "/home/web/dev/banana")
 
 VERSION = $(VERSNUM)$(VERSTAG)
 
@@ -148,14 +147,17 @@ spool/openid/store:
 ##
 
 banana: htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php
-htdocs/images/banana:
-	cd $(@D) && ln -snf $(BANANA)/img $(@F)
+htdocs/images/banana: banana-sub
+	cd $(@D) && ln -snf banana/banana/img $(@F)
 
-htdocs/css/banana.css:
-	cd $(@D) && ln -snf $(BANANA)/css/style.css $(@F)
+htdocs/css/banana.css: banana-sub
+	cd $(@D) && ln -snf banana/css/style.css $(@F)
 
-include/banana/banana.inc.php:
-	cd $(@D) && find $(BANANA)/banana/ -name '*.php' -exec ln -snf {} . ";"
+include/banana/banana.inc.php: banana-sub
+	cd $(@D) && find ../../banana/banana/ -name '*.php' -exec ln -snf {} . ";"
+
+banana-sub:
+	make -C banana
 
 ##
 ## Medal thumbnails
@@ -206,5 +208,5 @@ $(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.
 
 ################################################################################
 
-.PHONY: build dist clean core wiki build-wiki banana htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http* check test
+.PHONY: build dist clean core wiki build-wiki banana banana-sub htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http* check test
 

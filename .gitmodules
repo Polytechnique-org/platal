@@ -1,3 +1,6 @@
 [submodule "core"]
 	path = core
 	url = ./
+[submodule "banana"]
+	path = banana
+	url = git://git.polytechnique.org/banana.git
