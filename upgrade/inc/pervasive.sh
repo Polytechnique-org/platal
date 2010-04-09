@@ -5,9 +5,9 @@ MYSQL='mysql -u admin '
 
 set -e
 
-if [ "$UID" != 0 ]; then
+if [ "$UID" != 0 ] && [ "$1" != "-u" ] ; then
     echo "has to be run as root"
-#    exit 1
+    exit 1
 fi
 
 if [[ -n "${DBPREFIX}" ]]; then
