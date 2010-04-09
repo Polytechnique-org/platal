@@ -105,9 +105,10 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
         except:
             raise Exception('method "%s" is not supported' % method)
 
+    def is_rpc_path_valid(self):
+        return True
 
     def _dispatch(self, method, params):
-        new_params = list(params)
         return list_call_dispatcher(self._get_function(method), self.data[0], self.data[1], self.data[2], *params)
 
     def do_POST(self):
