@@ -148,10 +148,10 @@ spool/openid/store:
 
 banana: htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php
 htdocs/images/banana: banana-sub
-	cd $(@D) && ln -snf banana/banana/img $(@F)
+	cd $(@D) && ln -snf ../../banana/img $(@F)
 
 htdocs/css/banana.css: banana-sub
-	cd $(@D) && ln -snf banana/css/style.css $(@F)
+	cd $(@D) && ln -snf ../../banana/css/style.css $(@F)
 
 include/banana/banana.inc.php: banana-sub
 	cd $(@D) && find ../../banana/banana/ -name '*.php' -exec ln -snf {} . ";"
