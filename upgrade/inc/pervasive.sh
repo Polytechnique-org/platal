@@ -7,7 +7,7 @@ set -e
 
 if [ "$UID" != 0 ]; then
     echo "has to be run as root"
-    exit 1
+#    exit 1
 fi
 
 if [[ -n "${DBPREFIX}" ]]; then
@@ -22,8 +22,32 @@ function die() {
     exit 1
 }
 
-function mysql_run() {
+function confirm() {
+    echo "$1"
+    echo "* press ^D to start import (^C to cancel)"
+    cat
+}
+
+function mysql_pipe() {
     sed -e "s/#\([0-9a-z]*\)#/${DBPREFIX}\1/g" | $MYSQL $DATABASE
+}
+
+function mysql_run() {
+    echo -n "* running $1"
+    (cat $1 | mysql_pipe) || die "ERROR"
+    echo "OK"
+}
+
+function mysql_run_directory() {
+    for sql in $1/*.sql ; do
+        mysql_run $sql
+    done
+}
+
+function script_run() {
+    echo -n "* running $1"
+    $1 || die "ERROR"
+    echo "OK"
 }
 
 function mailman_stop() {

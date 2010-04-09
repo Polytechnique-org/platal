@@ -5,33 +5,22 @@
 ###########################################################
 [ "$DATABASE" != "x4dat" ] || die "Cannot target x4dat"
 
-echo "Setting up new database: target db is \"$DATABASE\", source prefix is \"$DBPREFIX\""
-echo "* press ^D to start import (^C to cancel)"
-cat
+confirm "Setting up new database: target db is \"$DATABASE\", source prefix is \"$DBPREFIX\""
 
 echo -n "* create database "
-(echo "CREATE DATABASE IF NOT EXISTS $DATABASE;" | mysql_run) || die "ERROR"
+(echo "CREATE DATABASE IF NOT EXISTS $DATABASE;" | mysql_pipe) || die "ERROR"
 echo "OK"
 
 echo -n "* copying tables "
-(./copy_tables.sh | mysql_run) || die "ERROR"
+(./copy_tables.sh | mysql_pipe) || die "ERROR"
 echo "OK"
 
-for sql in ../newdirectory-0.0.1/*.sql *.sql
-do
-    echo -n "* running $sql "
-    (cat $sql | mysql_run) || die "ERROR"
-    echo "OK"
-done
+mysql_run_directory ../newdirectory-0.0.1
+mysql_run_directory .
 
 ###########################################################
-echo -n "Importing phone numbers "
-
-../newdirectory-0.0.1/phones.php || die "ERROR"
-echo "OK"
-
-###########################################################
-echo "Updating birthday dates "
-
-./birthday.php || die "ERROR"
-echo "OK"
+confirm "Running upgrade scripts"
+script_run ../newdirectory-0.0.1/phones.php
+script_run ../newdirectory-0.0.1/addresses.php
+script_run ../newdirectory-0.0.1/alternate_subsubsectors.php
+script_run ./birthday.php
