@@ -19,7 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'banana/banana.inc.php';
 require_once 'banana/hooks.inc.php';
 
 class PlatalBananaMLPage extends PlatalBananaPage

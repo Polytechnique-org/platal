@@ -146,15 +146,12 @@ spool/openid/store:
 ## banana
 ##
 
-banana: htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php
+banana: htdocs/images/banana htdocs/css/banana.css
 htdocs/images/banana: banana-sub
 	cd $(@D) && ln -snf ../../banana/img $(@F)
 
 htdocs/css/banana.css: banana-sub
 	cd $(@D) && ln -snf ../../banana/css/style.css $(@F)
-
-include/banana/banana.inc.php: banana-sub
-	cd $(@D) && find ../../banana/banana/ -name '*.php' -exec ln -snf {} . ";"
 
 banana-sub:
 	make -C banana
@@ -208,5 +205,6 @@ $(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.
 
 ################################################################################
 
-.PHONY: build dist clean core wiki build-wiki banana banana-sub htdocs/images/banana htdocs/css/banana.css include/banana/banana.inc.php http* check test
-
+.PHONY: build dist clean core http* check test
+.PHONY: wiki build-wiki
+.PHONY: banana banana-sub htdocs/images/banana htdocs/css/banana.css

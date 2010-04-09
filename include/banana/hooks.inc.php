@@ -19,7 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'banana/banana.inc.php';
+require_once dirname(__FILE__) . '/../../banana/banana/banana.inc.php';
+require_once dirname(__FILE__) . '/../../banana/banana/message.func.inc.php';
 
 function hook_formatDisplayHeader($_header, $_text, $in_spool = false)
 {

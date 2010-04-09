@@ -38,7 +38,7 @@ function __autoload($cls)
             include 'validations.inc.php';
             return;
         } else if (substr($cls, 0, 6) == 'banana') {
-            require_once 'banana/banana.inc.php';
+            require_once 'banana/hooks.inc.php';
             Banana::load(substr($cls, 6));
             return;
         }
