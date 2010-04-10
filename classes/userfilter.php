@@ -69,7 +69,7 @@ class UFC_Hruid implements UserFilterCondition
 
     public function buildCondition(PlFilter &$uf)
     {
-        $ufc->requireAccounts();
+        $uf->requireAccounts();
         return XDB::format('a.hruid IN {?}', $this->hruids);
     }
 }
