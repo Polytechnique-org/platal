@@ -45,7 +45,7 @@ class XnetModule extends PLModule
         }
 
         // Retrieve the photo and its mime type.
-        $photo = $profile->getPhoto(true);
+        $photo = $profile->getPhoto(true, true);
 
         // Display the photo, or a default one when not available.
         $photo->send();

@@ -121,7 +121,7 @@ class SearchSet extends ProfileSet
     }
 }
 
-class ArraySet extends UserSet
+class ArraySet extends ProfileSet
 {
     public function __construct(array $users)
     {
@@ -268,6 +268,7 @@ class TrombiView extends ProfileView
                         new UFO_Promo(UserFilter::DISPLAY, true),
                         new UFO_Name(Profile::DN_SORT),
                     ), 'promotion'));
+        $set->addCond(new UFC_Photo());
         parent::__construct($set, $data, $params);
     }
 

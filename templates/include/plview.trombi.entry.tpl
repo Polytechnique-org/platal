@@ -20,40 +20,23 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $plset_count eq 0}
-<p class="erreur">
-  Aucun des camarades concernés n'a de photographie sur sa fiche
-</p>
-{else}
-<table cellpadding="0" cellspacing="2" style="width: 100%">
-  {section name=trombi loop=$set_keys start=0}
-  {if $smarty.section.trombi.index % 3 == 1}
-  {assign var=key_prev value=$set_keys[trombi.index_prev]}
-  {assign var=key_cur  value=$set_keys[trombi]}
-  {assign var=key_next value=$set_keys[trombi.index_next]}
-  <tr>
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_prev] photo=true}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=true}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_next] photo=true}
-  </tr>
-  <tr>
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_prev] photo=false}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=false}
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_next] photo=false}
-  </tr>
-  {elseif ($smarty.section.trombi.index % 3 == 0) && ($smarty.section.trombi.last)}
-  {assign var=key_cur  value=$set_keys[trombi]}
-  <tr>
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=true}
-    <td></td><td></td>
-  </tr>
-  <tr style="margin-top: 0; padding-top: 0">
-    {include file="include/plview.trombi.entry.tpl" profile=$set[$key_cur] photo=false}
-    <td></td><td></td>
-  </tr>
+{if $profile}
+{if $photo}
+<td class="center" style="vertical-align: middle">
+  <a href="profile/{$profile->hrid()}" class="popup2">
+    <img src="photo/{$profile->hrid()}" width="110" alt=" [ PHOTO ] " />
+  </a>
+  {if $trombi_with_admin && hasPerm('admin')}
+  <a href="{$mainsiteurl}admin/trombino/{$profile->id()}">{icon name=wrench title="[admin]"}</a>
   {/if}
-  {/section}
-</table>
+</td>
+{else}
+<td class="center" style="vertical-align: bottom; padding-bottom: 15px">
+  <a href="profile/{$profile->hrid()}" class="popup2">
+    <span {if $profile->name_tooltip}class="hinted"
+    title="{$profile->directory_name}"{/if}>{$profile->directory_name}</span> 
+    {if $trombi_with_promo && $profile->promo()}({$profile->promo()}){/if}
+  </a>
+</td>
 {/if}
-
-{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
+{/if}

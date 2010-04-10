@@ -1144,6 +1144,19 @@ class UFC_Medal implements UserFilterCondition
 }
 // }}}
 
+// {{{ class UFC_Photo
+/** Filters profiles with photo
+ */
+class UFC_Photo implements UserFilterCondition
+{
+    public function buildCondition(PlFilter &$uf)
+    {
+        $uf->addPhotoFilter();
+        return 'photo.attach IS NOT NULL';
+    }
+}
+// }}}
+
 // {{{ class UFC_Mentor_Expertise
 /** Filters users by mentoring expertise
  * @param $expertise Domain of expertise
@@ -2590,6 +2603,25 @@ class UserFilter extends PlFilter
             }
         }
         return $joins;
+    }
+
+
+    /** PHOTOS
+     */
+    private $with_photo;
+    public function addPhotoFilter()
+    {
+        $this->requireProfiles();
+        $this->with_photo = true;
+    }
+
+    protected function photoJoins()
+    {
+        if ($this->with_photo) {
+            return array('photo' => PlSqlJoin::left('profile_photos', '$ME.pid = $PID'));
+        } else {
+            return array();
+        }
     }
 
 
