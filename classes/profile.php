@@ -197,7 +197,11 @@ class Profile
 
     public function mainEducation()
     {
-        return $this->promo{0};
+        if (empty($this->promo)) {
+            return null;
+        } else {
+            return $this->promo{0};
+        }
     }
 
     public function mainEducationDuration()
