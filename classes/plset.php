@@ -94,7 +94,8 @@ abstract class PlSet
      */
     protected function &getFilterResults(PlFilter &$pf, PlLimit $limit)
     {
-        return $pf->get($limit);
+        $res = $pf->get($limit);
+        return $res;
     }
 
     /** This function returns the values of the set
@@ -341,6 +342,9 @@ abstract class MultipageView implements PlView
         $page->assign('order', Env::v('order', $this->defaultkey));
         $page->assign('orders', $this->sortkeys);
         $page->assign_by_ref('plview', $this);
+        if (is_array($res)) {
+            $page->assign('set_keys', array_keys($res));
+        }
         $page->assign_by_ref('set', $res);
         $count = $this->set->count();
         $this->pages = intval(ceil($count / $this->entriesPerPage));
