@@ -43,7 +43,7 @@ function list_sort_owners(&$members, $tri_promo = true)
             if ($tri_promo) {
                 $promo = null;
             }
-            $membres[$key][$nom.$m] = Array('n' => $nom, 'l' => $m, 'p' => $promo, 'x' => $uid, 'b' => $broken);
+            $membres[$key][$nom.$mem] = Array('n' => $nom, 'l' => $mem, 'p' => $promo, 'x' => $uid, 'b' => $broken);
         }
     }
 
