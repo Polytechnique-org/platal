@@ -57,7 +57,7 @@ core:
 
 conf: spool/templates_c spool/mails_c classes/platalglobals.php configs/platal.cron htdocs/.htaccess spool/conf spool/tmp 
 
-spool/templates_c spool/mails_c spool/uploads spool/conf spool/tmp:
+spool/templates_c spool/mails_c spool/uploads spool/conf spool/tmp spool/run:
 	mkdir -p $@
 	chmod o+w $@
 
@@ -145,7 +145,6 @@ spool/openid/store:
 ##
 ## banana
 ##
-
 banana: htdocs/images/banana htdocs/css/banana.css
 htdocs/images/banana: banana-sub
 	cd $(@D) && ln -snf ../../banana/img $(@F)
@@ -203,8 +202,26 @@ htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js:
 $(JQUERY_UI_PATHES): htdocs/javascript/jquery.ui.%.js: htdocs/javascript/jquery.ui-$(JQUERY_UI_VERSION).%.js
 	ln -snf $(<F) $@
 
+##
+## lists rpc
+##
+start-listrpc: spool/run
+	sudo -u list /sbin/start-stop-daemon --pidfile spool/run/listrpc.pid -m -b -x $$PWD/bin/lists.rpc.py --start
+	@sleep 2
+	@sudo -u list kill -0 $$(cat spool/run/listrpc.pid)
+
+start-listrpc-fg: spool/run
+	sudo -u list ./bin/lists.rpc.py
+
+stop-listrpc:
+	-sudo -u list /sbin/start-stop-daemon --pidfile spool/run/listrpc.pid --stop
+	@-rm -f spool/run/listrpc.pid
+
+restart-listrpc: stop-listrpc start-listrpc
+
 ################################################################################
 
 .PHONY: build dist clean core http* check test
 .PHONY: wiki build-wiki
 .PHONY: banana banana-sub htdocs/images/banana htdocs/css/banana.css
+.PHONY: start-listrpc start-listrpc-fg stop-listrpc restart-listrpc
