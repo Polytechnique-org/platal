@@ -20,13 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<p>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$smarty.session.hruid}">fiche référent</a> qui n'est accessible que par les X.
-</p>
+<div>{icon name=information title="Afficher ma fiche référent"}Tu peux consulter ta <a class="popup2" href="referent/{$smarty.session.hruid}">fiche référent</a> qui n'est accessible que par les X.
+</div>
 {if (!$expertise)||(!($sectors|@count))}
-  <p>
-    <strong>Attention&nbsp;: pour figurer dans la base de données des mentors, il faut remplir la
+  <br /><div>
+    <strong>{icon name=error title="Attention"} Attention&nbsp;: pour figurer dans la base de données des mentors, il faut remplir la
     dernière case en bas de cette page et avoir au moins un secteur d'activité de prédilection.</strong><br />
-  </p>
+  </div>
 {/if}
 <p>
   Si tu acceptes que des camarades te contactent afin de te demander
