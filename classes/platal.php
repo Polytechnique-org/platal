@@ -23,12 +23,206 @@ define('PL_DO_AUTH',   300);
 define('PL_FORBIDDEN', 403);
 define('PL_NOT_FOUND', 404);
 define('PL_WIKI',      500);
-define('PL_WIKI_HOOK', '@@WIKI@@');
+
+abstract class PlHook
+{
+    protected $auth;
+    protected $perms;
+    protected $type;
+
+    protected function __construct($auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)
+    {
+        $this->auth  = $auth;
+        $this->perms = $perms;
+        $this->type  = $type;
+    }
+
+    public function needAuth()
+    {
+        return $this->auth > S::i('auth', AUTH_PUBLIC);
+    }
+
+    public function checkPerms()
+    {
+        if (!$this->perms || $this->auth == AUTH_PUBLIC) { // No perms, no check
+            return true;
+        }
+        $s_perms = S::v('perms');
+        return $s_perms->hasFlagCombination($this->perms);
+    }
+
+    public function hasType($type)
+    {
+        return ($this->type & $type) == $type;
+    }
+
+    abstract protected function run(PlPage &$page, array $args);
+
+    public function call(PlPage &$page, array $args)
+    {
+        global $globals, $session, $platal;
+        if ($this->needAuth()) {
+            if ($this->hasType(DO_AUTH)) {
+                if (!$session->start($this->auth)) {
+                    $platal->force_login($page);
+                }
+            } else {
+                return PL_FORBIDDEN;
+            }
+        }
+        if (!$this->checkPerms()) {
+            if (!Platal::notAllowed()) {
+                return PL_FORBIDDEN;
+            }
+        }
+        return $this->run($page, $args);
+    }
+}
+
+class PlStdHook extends PlHook
+{
+    private $hook;
+
+    public function __construct($callback, $auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)
+    {
+        parent::__construct($auth, $perms, $type);
+        $this->hook = $callback;
+    }
+
+    protected function run(PlPage &$page, array $args)
+    {
+        global $session, $platal;
+
+        $args[0] = $page;
+        $val = call_user_func_array($this->hook, $args);
+        if ($val == PL_DO_AUTH) {
+            if (!$session->start($session->loggedLevel())) {
+                $platal->force_login($page);
+            }
+            $val = call_user_func_array($this->hook, $args);
+        }
+        return $val;
+    }
+}
+
+class PlWikiHook extends PlHook
+{
+    public function __construct($callback, $auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)
+    {
+        parent::__construct($auth, $perms, $type);
+    }
+
+    protected function run(PlPage &$page, array $args)
+    {
+        return PL_WIKI;
+    }
+}
+
+class PlHookTree
+{
+    public $hook = null;
+    public $aliased  = null;
+    public $children = array();
+
+    public function addChild(array $path, PlHook $hook)
+    {
+        global $platal;
+        $next = array_shift($path);
+        $alias = null;
+        if ($next && $next{0} == '%') {
+            $alias = $next;
+            $next = $platal->hook_map(substr($next, 1));
+        }
+        if (!$next) {
+            return;
+        }
+        @$child =& $this->children[$next];
+        if (!$child) {
+            $child = new PlHookTree();
+            $this->children[$next] =& $child;
+            $child->aliased = $alias;
+        }
+        if (empty($path)) {
+            $child->hook = $hook;
+        } else {
+            $child->addChild($path, $hook);
+        }
+    }
+
+    private function findChildAux(array $remain, array $matched, array $aliased)
+    {
+        $next = @$remain[0];
+        if ($this->aliased) {
+            $aliased = $matched;
+        }
+        if (!empty($next)) {
+            $child = @$this->children[$next];
+            if ($child) {
+                array_shift($remain);
+                $matched[] = $next;
+                return $child->findChildAux($remain, $matched, $aliased);
+            }
+        }
+        return array($this->hook, $matched, $remain, $aliased);
+    }
+
+    public function findChild(array $path)
+    {
+        return $this->findChildAux($path, array(), array());
+    }
+
+    private function findNearestChildAux(array $remain, array $matched, array $aliased)
+    {
+        $next = @$remain[0];
+        if ($this->aliased) {
+            $aliased = $matched;
+        }
+        if (!empty($next)) {
+            $child = @$this->children[$next];
+            if (!$child) {
+                $nearest_lev = 50;
+                $nearest_sdx = 50;
+                $match = null;
+                foreach ($this->children as $path=>$hook) {
+                    $lev = levenshtein($next, $path);
+                    if ($lev <= $nearest_lev
+                        && ($lev < strlen($next) / 2 || strpos($next, $path) !== false
+                            || strpos($path, $next) !== false)) {
+                        $sdx = levenshtein(soundex($next), soundex($path));
+                        if ($lev == $nearest_lev || $sdx < $nearest_sdx) {
+                            $child = $hook;
+                            $nearest_lev = $lev;
+                            $nearest_sdx = $sdx;
+                            $match = $path;
+                        }
+                    }
+                }
+                $next = $match;
+            }
+            if ($child) {
+                array_shift($remain);
+                $matched[] = $next;
+                return $child->findNearestChildAux($remain, $matched, $aliased);
+            }
+            if (($pos = strpos($next, '.php')) !== false) {
+                $remain[0] = substr($next, 0, $pos);
+                return $this->findNearestChildAux($remain, $matched, $aliased);
+            }
+        }
+        return array($this->hook, $matched, $remain, $aliased);
+    }
+
+    public function findNearestChild(array $path)
+    {
+        return $this->findNearestChildAux($path, array(), array());
+    }
+}
+
 
 abstract class Platal
 {
-    private $__mods;
-    private $__hooks;
+    private $mods;
+    private $hooks;
 
     protected $https;
 
@@ -63,14 +257,17 @@ abstract class Platal
         }
         $this->path = trim(Get::_get('n', null), '/');
 
-        $this->__mods  = array();
-        $this->__hooks = array();
+        $this->mods  = array();
+        $this->hooks = new PlHookTree();
 
         array_unshift($modules, 'core');
         foreach ($modules as $module) {
             $module = strtolower($module);
-            $this->__mods[$module] = $m = PLModule::factory($module);
-            $this->__hooks = $m->handlers() + $this->__hooks;
+            $this->mods[$module] = $m = PLModule::factory($module);
+            $hooks = $m->handlers();
+            foreach ($hooks as $path=>$hook) {
+                $this->hooks->addChild(split('/', $path), $hook);
+            }
         }
 
         if ($globals->mode == '') {
@@ -94,169 +291,46 @@ abstract class Platal
 
     public static function wiki_hook($auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)
     {
-        return array('hook'  => PL_WIKI_HOOK,
-                     'auth'  => $auth,
-                     'perms' => $perms,
-                     'type'  => $type);
+        return new PlWikiHook($auth, $perms, $type);
+    }
+
+    public function hook_map($name)
+    {
+        return null;
     }
 
     protected function find_hook()
     {
-        $p = $this->path;
-
-        while ($p) {
-            if (array_key_exists($p, $this->__hooks))
-                break;
-
-            $p = substr($p, 0, strrpos($p, '/'));
-        }
-
-        if (empty($this->__hooks[$p])) {
+        $p = split('/', $this->path);
+        list($hook, $matched, $remain, $aliased) = $this->hooks->findChild($p);
+        if (empty($hook)) {
             return null;
         }
-
-        $hook = $this->__hooks[$p];
-
-        if (!is_callable($hook['hook']) && $hook['hook'] != PL_WIKI_HOOK) {
-            return null;
+        $this->argv = $remain;
+        array_unshift($this->argv, implode('/', $matched));
+        if (!empty($aliased)) {
+            $this->ns = implode('/', $aliased) . '/';
         }
-
-        $this->https = ($hook['type'] & NO_HTTPS) ? false : true;
-        $this->argv    = explode('/', substr($this->path, strlen($p)));
-        $this->argv[0] = $p;
-
+        $this->https = !$hook->hasType(NO_HTTPS);
         return $hook;
-    }
-
-    protected function find_nearest_key($key, array &$array)
-    {
-        $keys    = array_keys($array);
-        if (in_array($key, $keys)) {
-            return $key;
-        }
-
-        if (($pos = strpos($key, '.php')) !== false) {
-            $key = substr($key, 0, $pos);
-        }
-
-        $has_end = in_array("#final#", $keys);
-        if (strlen($key) > 24 && $has_end) {
-            return "#final#";
-        }
-
-        foreach ($keys as $k) {
-            if ($k == "#final#") {
-                continue;
-            }
-            $lev = levenshtein($key, $k);
-
-            if ((!isset($val) || $lev < $val)
-                && ($lev <= strlen($k)/2 || strpos($k, $key) !== false || strpos($key, $k) !== false)) {
-                $val  = $lev;
-                $best = $k;
-            }
-        }
-        if (!isset($best) && $has_end) {
-            return "#final#";
-        } else if (isset($best)) {
-            return $best;
-        }
-        return null;
     }
 
     public function near_hook()
     {
-        $hooks = array();
-        $leafs = array();
-        foreach ($this->__hooks as $hook=>$handler) {
-            if (!$this->check_perms($handler['perms'])) {
-                continue;
-            }
-            $parts = split('/', $hook);
-            $place =& $hooks;
-            foreach ($parts as $part) {
-                if (!isset($place[$part])) {
-                    $place[$part] = array();
-                }
-                $place =& $place[$part];
-            }
-            $leaf = $parts[count($parts)-1];
-            if (!isset($leafs[$leaf])) {
-                $leafs[$leaf] = $hook;
-            } else if (is_array($leafs[$leaf])) {
-                $leafs[$leaf][] = $hook;
-            } else {
-                $leafs[$leaf] = array($hook, $leafs[$leaf]);
-            }
-            $place["#final#"] = array();
-        }
-
-        // search for the nearest full path
         $p = split('/', $this->path);
-        $place =& $hooks;
-        $link  = '';
-        foreach ($p as $k) {
-            if (!isset($ended)) {
-                $key = $this->find_nearest_key($k, $place);
-            } else {
-                $key = $k;
-            }
-            if ($key == "#final#") {
-                if (!array_key_exists($link, $this->__hooks)) {
-                    $link = '';
-                    break;
-                }
-                $key = $k;
-                $ended = true;
-            }
-            if (!is_null($key)) {
-                if (!empty($link)) {
-                    $link .= '/';
-                }
-                $link .= $key;
-                $place =& $place[$key];
-            } else {
-                $link = '';
-                break;
-            }
+        list($hook, $matched, $remain, $aliased) = $this->hooks->findNearestChild($p);
+        if (empty($hook)) {
+            return null;
         }
-        if ($link == $this->path) {
-            $link = '';
+        $url = implode('/', $matched);
+        if (!empty($remain)) {
+            $url .= '/' . implode('/', $remain);
         }
-        if ($link && levenshtein($link, $this->path) < strlen($link)/3) {
-            return $link;
+        if ($url == $this->path || levenshtein($url, $this->path) > strlen($url) / 3
+            || !$hook->checkPerms()) {
+            return null;
         }
-
-        // search for missing namespace (the given name is a leaf)
-        $leaf = array_shift($p);
-        $args = count($p) ? '/' . implode('/', $p) : '';
-        if (isset($leafs[$leaf]) && !is_array($leafs[$leaf]) && $leafs[$leaf] != $this->path) {
-            return $leafs[$leaf] . $args;
-        }
-        unset($val);
-        $best = null;
-        foreach ($leafs as $k=>&$path) {
-            if (is_array($path)) {
-                continue;
-            }
-            $lev = levenshtein($leaf, $k);
-
-            if ((!isset($val) || $lev < $val)
-                && ($lev <= strlen($k)/2 || strpos($k, $leaf) !== false || strpos($leaf, $k) !== false)) {
-                $val  = $lev;
-                $best = $path;
-            }
-        }
-        return $best == null ? ( $link ? $link : null ) : $best . $args;
-    }
-
-    protected function check_perms($perms)
-    {
-        if (!$perms) { // No perms, no check
-            return true;
-        }
-        $s_perms = S::v('perms');
-        return $s_perms->hasFlagCombination($perms);
+        return $url;
     }
 
     private function call_hook(PlPage &$page)
@@ -270,36 +344,7 @@ abstract class Platal
             http_redirect('https://' . $globals->core->secure_domain . $_SERVER['REQUEST_URI']);
         }
 
-        $args    =  $this->argv;
-        $args[0] =& $page;
-
-        if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
-            if ($hook['type'] & DO_AUTH) {
-                if (!$session->start($hook['auth'])) {
-                    $this->force_login($page);
-                }
-            } else {
-                return PL_FORBIDDEN;
-            }
-        }
-        if ($hook['auth'] != AUTH_PUBLIC && !$this->check_perms($hook['perms'])) {
-            if (self::notAllowed()) {
-                return PL_FORBIDDEN;
-            }
-        }
-
-        if ($hook['hook'] == PL_WIKI_HOOK) {
-            return PL_WIKI;
-        }
-        $val = call_user_func_array($hook['hook'], $args);
-        if ($val == PL_DO_AUTH) {
-            // The handler need a better auth with the current args
-            if (!$session->start($session->loggedLevel())) {
-                $this->force_login($page);
-            }
-            $val = call_user_func_array($hook['hook'], $args);
-        }
-        return $val;
+        return $hook->call($page, $this->argv);
     }
 
     /** Show the authentication form.
@@ -317,11 +362,11 @@ abstract class Platal
         $page->assign('platal', $this);
         switch ($this->call_hook($page)) {
           case PL_FORBIDDEN:
-            $this->__mods['core']->handler_403($page);
+            $this->mods['core']->handler_403($page);
             break;
 
           case PL_NOT_FOUND:
-            $this->__mods['core']->handler_404($page);
+            $this->mods['core']->handler_404($page);
             break;
 
           case PL_WIKI:
@@ -336,7 +381,7 @@ abstract class Platal
     {
         $page =& self::page();
 
-        $this->__mods['core']->handler_403($page);
+        $this->mods['core']->handler_403($page);
         $page->assign('platal', $this);
         $page->run();
     }
@@ -345,7 +390,7 @@ abstract class Platal
     {
         $page =& self::page();
 
-        $this->__mods['core']->handler_404($page);
+        $this->mods['core']->handler_404($page);
         $page->assign('platal', $this);
         $page->run();
     }
@@ -364,11 +409,11 @@ abstract class Platal
     {
         global $platal;
         $modname = strtolower($modname);
-        if (isset($platal->__mods[$modname])) {
+        if (isset($platal->mods[$modname])) {
             if (is_null($include)) {
                 return;
             }
-            $platal->__mods[$modname]->load($include);
+            $platal->mods[$modname]->load($include);
         } else {
             if (is_null($include)) {
                 require_once PLModule::path($modname) . '.php';

@@ -50,17 +50,15 @@ abstract class PLModule
      */
     public function make_hook($fun, $auth, $perms = 'user', $type = DO_AUTH)
     {
-        return array('hook'  => array($this, 'handler_'.$fun),
-                     'auth'  => $auth,
-                     'perms' => $perms,
-                     'type'  => $type);
+        return new PlStdHook(array($this, 'handler_' . $fun),
+                             $auth, $perms, $type);
     }
 
     /** Register a hook that points to a wiki page.
      */
     public function make_wiki_hook($auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)
     {
-        return Platal::wiki_hook($auth, $perms, $type);
+        return new PlWikiHook($auth, $perms, $type);
     }
 
     /** Include a 'module-specific' file.
