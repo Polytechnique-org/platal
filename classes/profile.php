@@ -451,7 +451,10 @@ class Profile
     public function getAddresses($flags, $limit = null)
     {
         if ($this->addresses == null  && !$this->fetched(self::FETCH_ADDRESSES)) {
-            $this->setAddresses($this->getProfileField(self::FETCH_ADDRESSES));
+            $addr = $this->getProfileField(self::FETCH_ADDRESSES);
+            if ($addr) {
+                $this->setAddresses($addr);
+            }
         }
 
         if ($this->addresses == null) {
@@ -582,7 +585,10 @@ class Profile
     public function getJobs($flags, $limit = null)
     {
         if ($this->jobs == null && !$this->fetched(self::FETCH_JOBS)) {
-            $this->setJobs($this->getProfileField(self::FETCH_JOBS));
+            $jobs = $this->getProfileField(self::FETCH_JOBS);
+            if ($jobs) {
+                $this->setJobs($jobs);
+            }
         }
 
         if ($this->jobs == null) {
