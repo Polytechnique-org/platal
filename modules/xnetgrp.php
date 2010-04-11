@@ -286,7 +286,12 @@ class XnetGrpModule extends PLModule
             http_redirect("https://www.polytechnique.org/search/adv?rechercher=Chercher&groupex={$globals->asso('id')}"
                         . "&cityid=" . Env::v('cityid') . "&mapid=" . Env::v('mapid'));
         } else if ($action == 'geoloc' || $action == 'trombi') {
-            $view = new UserSet();
+            __autoload('userset');
+            if ($action == 'trombi') {
+                $view = new ProfileSet(new UFC_Group($globals->asso('id')));
+            } else {
+                $view = new UserSet(new UFC_Group($globals->asso('id')));
+            }
             $view->addMod('trombi', 'Trombinoscope');
             // TODO: Reactivate when the new map is completed.
             // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'annuaire/search'));
