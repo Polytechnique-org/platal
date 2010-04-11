@@ -152,6 +152,23 @@ abstract class ProfileView extends MultipageView
         }
         return null;
     }
+
+    public function bounds()
+    {
+        $order = Env::v('order', $this->defaultkey);
+        $show_bounds = 0;
+        if (($order == "name") || ($order == "-name")) {
+            $this->bound_field = "name";
+            $show_bounds = 1;
+        } elseif (($order == "promo") || ($order == "-promo")) {
+            $this->bound_field = "promo";
+            $show_bounds = -1;
+        }
+        if ($order{0} == '-') {
+            $show_bounds = -$show_bounds;
+        }
+        return $show_bounds;
+    }
 }
 
 class MinificheView extends ProfileView
@@ -185,23 +202,6 @@ class MinificheView extends ProfileView
         parent::__construct($set, $data, $params);
     }
 
-    public function bounds()
-    {
-        $order = Env::v('order', $this->defaultkey);
-        $show_bounds = 0;
-        if (($order == "name") || ($order == "-name")) {
-            $this->bound_field = "name";
-            $show_bounds = 1;
-        } elseif (($order == "promo") || ($order == "-promo")) {
-            $this->bound_field = "promo";
-            $show_bounds = -1;
-        }
-        if ($order{0} == '-') {
-            $show_bounds = -$show_bounds;
-        }
-        return $show_bounds;
-    }
-
     public function templateName()
     {
         return 'include/plview.minifiche.tpl';
@@ -227,23 +227,6 @@ class MentorView extends ProfileView
         parent::__construct($set, $data, $params);
     }
 
-    public function bounds()
-    {
-        $order = Env::v('order', $this->defaultkey);
-        $show_bounds = 0;
-        if (($order == "name") || ($order == "-name")) {
-            $this->bound_field = "nom";
-            $show_bounds = 1;
-        } elseif (($order == "promo") || ($order == "-promo")) {
-            $this->bound_field = "promo";
-            $show_bounds = -1;
-        }
-        if ($order{0} == '-') {
-            $show_bounds = -$show_bounds;
-        }
-        return $show_bounds;
-    }
-
     public function templateName()
     {
         return 'include/plview.referent.tpl';
@@ -255,6 +238,7 @@ class TrombiView extends ProfileView
     public function __construct(PlSet &$set, $data, array $params)
     {
         $this->entriesPerPage = 24;
+        $this->defaultkey = 'name';
         if (@$params['with_score']) {
             $this->addSort(new PlViewOrder('score', array(
                             new UFO_Score(true),
@@ -263,30 +247,13 @@ class TrombiView extends ProfileView
                             new UFO_Name(Profile::DN_SORT),
             ), 'pertinence'));
         }
+        $set->addCond(new UFC_Photo());
         $this->addSort(new PlViewOrder('name', array(new UFO_Name(Profile::DN_SORT)), 'nom'));
         $this->addSort(new PlViewOrder('promo', array(
                         new UFO_Promo(UserFilter::DISPLAY, true),
                         new UFO_Name(Profile::DN_SORT),
                     ), 'promotion'));
-        $set->addCond(new UFC_Photo());
         parent::__construct($set, $data, $params);
-    }
-
-    public function bounds()
-    {
-        $order = Env::v('order', $this->defaultkey);
-        $show_bounds = 0;
-        if (($order == "name") || ($order == "-name")) {
-            $this->bound_field = "nom";
-            $show_bounds = 1;
-        } elseif (($order == "promo") || ($order == "-promo")) {
-            $this->bound_field = "promo";
-            $show_bounds = -1;
-        }
-        if ($order{0} == '-') {
-            $show_bounds = -$show_bounds;
-        }
-        return $show_bounds;
     }
 
     public function templateName()

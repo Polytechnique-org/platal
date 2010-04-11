@@ -282,10 +282,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        if ($action == 'search') {
-            http_redirect("https://www.polytechnique.org/search/adv?rechercher=Chercher&groupex={$globals->asso('id')}"
-                        . "&cityid=" . Env::v('cityid') . "&mapid=" . Env::v('mapid'));
-        } else if ($action == 'geoloc' || $action == 'trombi') {
+        if ($action == 'trombi') {
             __autoload('userset');
             if ($action == 'trombi') {
                 $view = new ProfileSet(new UFC_Group($globals->asso('id')));
@@ -293,15 +290,12 @@ class XnetGrpModule extends PLModule
                 $view = new UserSet(new UFC_Group($globals->asso('id')));
             }
             $view->addMod('trombi', 'Trombinoscope');
-            // TODO: Reactivate when the new map is completed.
-            // $view->addMod('geoloc', 'Planisphère', false, array('with_annu' => 'annuaire/search'));
             $view->apply('annuaire', $page, $action, $subaction);
-            if ($action == 'geoloc' && $subaction) {
-                return;
-            }
+            $page->changeTpl('xnetgrp/annuaire.tpl');
+            return;
         }
-        $page->changeTpl('xnetgrp/annuaire.tpl');
 
+        $page->changeTpl('xnetgrp/annuaire.tpl');
         $sort = Env::s('order', 'directory_name');
         $ofs  = Env::i('offset');
         if ($ofs < 0) {
