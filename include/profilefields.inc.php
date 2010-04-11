@@ -452,9 +452,9 @@ class ProfileNetworking extends ProfileField
         foreach ($this->networks as $id => $nw) {
             // XXX hardcoded reference to web site index
             if (
-                (($flags & self::NETWORKING_WEB) && $nw['network_type'] == 0)
+                (($flags & Profile::NETWORKING_WEB) && $nw['network_type'] == 0)
                 ||
-                (! ($flags & self::NETWORKING_WEB))
+                (! ($flags & Profile::NETWORKING_WEB))
             ) {
                 $nws[$id] = $nw;
                 ++$nb;

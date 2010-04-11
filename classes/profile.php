@@ -548,7 +548,10 @@ class Profile
     public function getNetworking($flags, $limit = null)
     {
         if ($this->networks == null && !$this->fetched(self::FETCH_NETWORKING)) {
-            $this->setNetworking($this->getProfileField(self::FETCH_NETWORKING));
+            $nw = $this->getProfileField(self::FETCH_NETWORKING);
+            if ($nw) {
+                $this->setNetworking($nw);
+            }
         }
         if ($this->networks == null) {
             return array();
@@ -563,7 +566,7 @@ class Profile
             return null;
         }
         $site = array_pop($site);
-        return $site['address'];
+        return $site;
     }
 
 
