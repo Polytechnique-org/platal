@@ -730,7 +730,7 @@ abstract class UFC_Address implements UserFilterCondition
             }
         }
         if (count($types)) {
-            $conds[] = XDB::foramt($sub . '.type IN {?}', $types);
+            $conds[] = XDB::format($sub . '.type IN {?}', $types);
         }
 
         if ($this->flags != self::FLAG_ANY) {
