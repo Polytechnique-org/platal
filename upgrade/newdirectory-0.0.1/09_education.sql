@@ -146,11 +146,14 @@ UPDATE profile_education_enum
 SET abbreviation = 'ENS Cachan', name = 'École Normale Supérieure de Cachan'
 WHERE name = 'ENS Cachan';
 UPDATE profile_education_enum
-SET abbreviation = 'ESPCI', name = 'ESPCI ParisTech'
+xSET abbreviation = 'ESPCI', name = 'ESPCI ParisTech'
 WHERE name = 'ESPCI';
 UPDATE profile_education_enum
 SET abbreviation = 'Sciences Po', name = 'Institut d\'Études Politiques de Paris'
 WHERE name = 'IEP Paris';
+UPDATE profile_education_enum
+SET abbreviation = 'Sciences Po Aix', name = 'Institut d\'Études Politiques d\'Aix-en-Provence'
+WHERE name = 'IEP Aix'
 UPDATE profile_education_enum
 SET abbreviation = 'EHESS', name = 'École des Hautes Études en Sciences Sociales'
 WHERE name = 'EHESS';
