@@ -107,7 +107,7 @@ class PlStdHook extends PlHook
 
 class PlWikiHook extends PlHook
 {
-    public function __construct($callback, $auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)
+    public function __construct($auth = AUTH_PUBLIC, $perms = 'user', $type = DO_AUTH)
     {
         parent::__construct($auth, $perms, $type);
     }
