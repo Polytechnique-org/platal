@@ -46,7 +46,8 @@ class UFC_HasProfile implements UserFilterCondition
 {
     public function buildCondition(PlFilter &$uf)
     {
-        return '$PID IS NOT NULL';
+        $uf->requireProfiles();
+        return 'p.pid IS NOT NULL';
     }
 }
 // }}}
@@ -1809,6 +1810,7 @@ class UserFilter extends PlFilter
     {
         return $this->getUsers($limit);
     }
+
 
     public function getTotalCount()
     {
