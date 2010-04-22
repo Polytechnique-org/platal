@@ -121,8 +121,10 @@ class XDB
                 $text .= '<pre>' . pl_entities(XDB::_reformatQuery($query)) . '</pre>';
             } else {
                 $file = fopen($globals->spoolroot . '/spool/tmp/query_errors', 'a');
-                fwrite($file, '<pre>' . pl_entities(XDB::_reformatQuery($query)) . '</pre>'
-                            . '<pre>' . XDB::$mysqli->error . '</pre>' . "\n");
+                fwrite($file, '<pre>' . date("Y-m-d G:i:s") . '</pre>'
+                            . '<pre>' . pl_entities(XDB::_reformatQuery($query)) . '</pre>'
+                            . '<pre>' . XDB::$mysqli->error . '</pre>'
+                            . "--------------------------------------------------------------------------------\n");
                 fclose($file);
             }
             Platal::page()->kill($text);
