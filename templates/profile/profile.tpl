@@ -44,7 +44,7 @@ function chgMainWinLoc(strPage)
     {assign var=photo value=$profile->getPhoto(false)}
     {if $photo}<img alt="Photo de {$profile->fullName()}" src="photo/{$profile->hrid()}" width="{$photo->width()}"/>{/if}
 
-    {if $logged && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($o && $owner->groups()|smarty:nodefaults))}
+    {if $logged && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups()|smarty:nodefaults))}
       <h2>À l'X&hellip;</h2>
       {if $profile->section}<div><em class="intitule">Section&nbsp;: </em><span>{$profile->section}</span></div>{/if}
 
@@ -52,7 +52,7 @@ function chgMainWinLoc(strPage)
       {if $binets|@count}<div><em class="intitule">Binet{if count($binets) > 1}s{/if}&nbsp;: </em>
       <span>{', '|implode:$profile->getBinetsNames()}</span></div>{/if}
 
-      {if $o}
+      {if $owner}
         {assign var=groups value=$owner->groupNames(true)}
         {if $groups|@count}<div><em class="intitule">Groupe{if count($groups) > 1}s{/if} et institution{if count($groups) > 1}s{/if} X&nbsp;: </em>
         <span><br/>
@@ -131,10 +131,10 @@ function chgMainWinLoc(strPage)
       <div class='email'>
         {if $profile->isDead()}
         Décédé{if $profile->isFemale()}e{/if} le {$profile->deathdate|date_format}
-        {elseif $o && $owner->lost}
+        {elseif $owner && $owner->lost}
         Ce{if $profile->isFemale()}tte{/if} camarade n'a plus d'adresse de redirection valide,<br />
         <a href="marketing/broken/{$owner->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
-        {elseif $o && $owner->state != 'active'}
+        {elseif $owner && $owner->state != 'active'}
         Cette personne n'est pas inscrite à Polytechnique.org,<br />
         <a href="marketing/public/{$owner->login()}" class="popup">clique ici si tu connais son adresse email&nbsp;!</a>
         {else}
