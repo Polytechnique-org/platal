@@ -92,6 +92,9 @@ class UserFilterTest extends PlTestCase
 
     /**
      * @dataProvider simpleUserProvider
+     * @param $query A MySQL query
+     * @param $cond  The UFC to test
+     * @param $expcount The expected number of results (-1 if that number is unknown)
      */
     public function testSimpleUser($query, $cond, $expcount = null)
     {
@@ -112,10 +115,7 @@ class UserFilterTest extends PlTestCase
         sort($ids);
 
         $uf = new UserFilter($cond);
-        /* XXX: API issue, there's no guarantee getTotalCount()
-           returns the number of users.
-        */
-        //$this->assertEquals($count, $uf->getTotalCount());
+        $this->assertEquals($count, $uf->getTotalUserCount());
         $got = $uf->getUIDs();
         $this->assertEquals($count, count($got));
         sort($got);
