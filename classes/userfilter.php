@@ -1549,7 +1549,8 @@ class UserFilter extends PlFilter
     private $query = null;
     private $orderby = null;
 
-    private $lastcount = null;
+    private $lastusercount = null;
+    private $lastprofilecount = null;
 
     public function __construct($cond = null, $sort = null)
     {
@@ -1623,7 +1624,7 @@ class UserFilter extends PlFilter
                                    GROUP BY  a.uid
                                     ' . $this->orderby . '
                                     ' . $lim);
-        $this->lastcount = (int)XDB::fetchOneCell('SELECT FOUND_ROWS()');
+        $this->lastusercount = (int)XDB::fetchOneCell('SELECT FOUND_ROWS()');
         return $fetched;
     }
 
@@ -1641,7 +1642,7 @@ class UserFilter extends PlFilter
                                    GROUP BY  p.pid
                                     ' . $this->orderby . '
                                     ' . $lim);
-        $this->lastcount = (int)XDB::fetchOneCell('SELECT FOUND_ROWS()');
+        $this->lastprofilecount = (int)XDB::fetchOneCell('SELECT FOUND_ROWS()');
         return $fetched;
     }
 
@@ -1814,17 +1815,30 @@ class UserFilter extends PlFilter
 
     public function getTotalCount()
     {
-        if (is_null($this->lastcount)) {
+        return $this->getTotalUserCount();
+    }
+
+    public function getTotalUserCount()
+    {
+        if (is_null($this->lastusercount)) {
+            $this->requireAccounts();
             $this->buildQuery();
-            if ($this->with_accounts) {
-                $field = 'a.uid';
-            } else {
-                $field = 'p.pid';
-            }
-            return (int)XDB::fetchOneCell('SELECT  COUNT(DISTINCT ' . $field . ')
+            return (int)XDB::fetchOneCell('SELECT  COUNT(DISTINCT a.uid)
                                           ' . $this->query);
         } else {
-            return $this->lastcount;
+            return $this->lastusercount;
+        }
+    }
+
+    public function getTotalProfileCount()
+    {
+        if (is_null($this->lastprofilecount)) {
+            $this->requireProfiles();
+            $this->buildQuery();
+            return (int)XDB::fetchOneCell('SELECT  COUNT(DISTINCT p.pid)
+                                          ' . $this->query);
+        } else {
+            return $this->lastprofilecount;
         }
     }
 
@@ -2653,6 +2667,16 @@ class ProfileFilter extends UserFilter
     public function get($limit = null)
     {
         return $this->getProfiles($limit);
+    }
+
+    public function filter(array $profiles, $limit = null)
+    {
+        return $this->filterProfiles($profiles, self::defaultLimit($limit));
+    }
+
+    public function getTotalCount()
+    {
+        return $this->getTotalProfileCount();
     }
 }
 // }}}
