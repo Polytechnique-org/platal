@@ -284,7 +284,7 @@ class UserFilterTest extends PlTestCase
         $id_FieldDroit = XDB::fetchOneCell('SELECT  id
                                               FROM  profile_education_field_enum
                                              WHERE  field = {?}', 'Droit');
-        // FIXME: Replaces 0 by -1 in following queries when profile_education will be filled with fieldids
+        // FIXME: Replace 0 by -1 in following queries when profile_education will be filled with fieldids
         $tests[] = array(
             array(XDB::format('SELECT  DISTINCT ap.uid
                                  FROM  account_profiles AS ap
@@ -298,6 +298,64 @@ class UserFilterTest extends PlTestCase
                             LEFT JOIN  profile_education_field_enum AS pefe ON (pe.fieldid = pefe.id)
                                 WHERE  pefe.field IN {?}', array('Informatique', 'Droit')),
                 new UFC_EducationField($id_FieldInfo, $id_FieldDroit), 0), // FIXME: should be -1
+        );
+
+            /* UFC_Name
+             */
+        $id_Lastname = DirEnum::getID(DirEnum::NAMETYPES, Profile::LASTNAME);
+        $id_Firstname = DirEnum::getID(DirEnum::NAMETYPES, Profile::FIRSTNAME);
+        $tests[] = array(
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE {?} AND pn.typeid = {?}', 'BARROIS', $id_Lastname),
+                new UFC_Name(Profile::LASTNAME, 'BARROIS', UFC_Name::EXACT), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'BARR%\' AND pn.typeid = {?}', $id_Lastname),
+                new UFC_Name(Profile::LASTNAME, 'BARR', UFC_Name::PREFIX), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'%OIS\' AND pn.typeid = {?}', $id_Lastname),
+                new UFC_Name(Profile::LASTNAME, 'OIS', UFC_Name::SUFFIX), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'%ARRO%\' AND pn.typeid = {?}', $id_Lastname),
+                new UFC_Name(Profile::LASTNAME, 'ARRO', UFC_Name::CONTAINS), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'%ZZZZZZ%\' AND pn.typeid = {?}', $id_Lastname),
+                new UFC_Name(Profile::LASTNAME, 'ZZZZZZ', UFC_Name::CONTAINS), 0),
+
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE {?} AND pn.typeid = {?}', 'Raphaël', $id_Firstname),
+                new UFC_Name(Profile::FIRSTNAME, 'Raphaël', UFC_Name::EXACT), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'Raph%\' AND pn.typeid = {?}', $id_Firstname),
+                new UFC_Name(Profile::FIRSTNAME, 'Raph', UFC_Name::PREFIX), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'%aël\' AND pn.typeid = {?}', $id_Firstname),
+                new UFC_Name(Profile::FIRSTNAME, 'aël', UFC_Name::SUFFIX), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'%apha%\' AND pn.typeid = {?}', $id_Firstname),
+                new UFC_Name(Profile::FIRSTNAME, 'apha', UFC_Name::CONTAINS), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'%zzzzzz%\' AND pn.typeid = {?}', $id_Firstname),
+                new UFC_Name(Profile::FIRSTNAME, 'zzzzzz', UFC_Name::CONTAINS), 0),
         );
 
         $testcases = array();
