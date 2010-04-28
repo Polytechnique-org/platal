@@ -304,7 +304,12 @@ class UserFilterTest extends PlTestCase
              */
         $id_Lastname = DirEnum::getID(DirEnum::NAMETYPES, Profile::LASTNAME);
         $id_Firstname = DirEnum::getID(DirEnum::NAMETYPES, Profile::FIRSTNAME);
+        $id_Nickname = DirEnum::getID(DirEnum::NAMETYPES, Profile::NICKNAME);
+        $id_Lastname_Marital = DirEnum::getID(DirEnum::NAMETYPES, Profile::LASTNAME . '_' . Profile::VN_MARITAL);
+        $id_Lastname_Ordinary = DirEnum::getID(DirEnum::NAMETYPES, Profile::LASTNAME . '_' . Profile::VN_ORDINARY);
+
         $tests[] = array(
+            // Lastname
             array(XDB::format('SELECT  DISTINCT ap.uid
                                  FROM  account_profiles AS ap
                             LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
@@ -331,6 +336,7 @@ class UserFilterTest extends PlTestCase
                                 WHERE  pn.name LIKE \'%ZZZZZZ%\' AND pn.typeid = {?}', $id_Lastname),
                 new UFC_Name(Profile::LASTNAME, 'ZZZZZZ', UFC_Name::CONTAINS), 0),
 
+            // Firstname
             array(XDB::format('SELECT  DISTINCT ap.uid
                                  FROM  account_profiles AS ap
                             LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
@@ -356,6 +362,92 @@ class UserFilterTest extends PlTestCase
                             LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
                                 WHERE  pn.name LIKE \'%zzzzzz%\' AND pn.typeid = {?}', $id_Firstname),
                 new UFC_Name(Profile::FIRSTNAME, 'zzzzzz', UFC_Name::CONTAINS), 0),
+
+            // Nickname
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE {?} AND pn.typeid = {?}', 'Xelnor', $id_Nickname),
+                new UFC_Name(Profile::NICKNAME, 'Xelnor', UFC_Name::EXACT), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'Xel%\' AND pn.typeid = {?}', $id_Nickname),
+                new UFC_Name(Profile::NICKNAME, 'Xel', UFC_Name::PREFIX), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'%nor\' AND pn.typeid = {?}', $id_Nickname),
+                new UFC_Name(Profile::NICKNAME, 'nor', UFC_Name::SUFFIX), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'%lno%\' AND pn.typeid = {?}', $id_Nickname),
+                new UFC_Name(Profile::NICKNAME, 'lno', UFC_Name::CONTAINS), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE \'%zzzzzz%\' AND pn.typeid = {?}', $id_Nickname),
+                new UFC_Name(Profile::NICKNAME, 'zzzzzz', UFC_Name::CONTAINS), 0),
+
+            // Lastname + particle
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  CONCAT(pn.particle, \' \', pn.name) LIKE {?} AND pn.typeid = {?}', 'DE SINGLY', $id_Lastname),
+                new UFC_Name(Profile::LASTNAME, 'DE SINGLY', UFC_Name::PARTICLE | UFC_Name::EXACT), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  CONCAT(pn.particle, \' \', pn.name) LIKE \'DE SI%\' AND pn.typeid = {?}', $id_Lastname),
+                new UFC_Name(Profile::LASTNAME, 'DE SI', UFC_Name::PARTICLE | UFC_Name::PREFIX), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  CONCAT(pn.particle, \' \', pn.name) LIKE \'%GLY\' AND pn.typeid = {?}', $id_Lastname),
+                new UFC_Name(Profile::LASTNAME, 'GLY', UFC_NAME::PARTICLE | UFC_Name::SUFFIX), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  CONCAT(pn.particle, \' \', pn.name) LIKE \'%E SIN%\' AND pn.typeid = {?}', $id_Lastname),
+                new UFC_Name(Profile::LASTNAME, 'E SIN', UFC_Name::PARTICLE | UFC_Name::CONTAINS), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  CONCAT(pn.particle, \' \', pn.name) LIKE \'%ZZZZZZ%\' AND pn.typeid = {?}', $id_Lastname),
+                new UFC_Name(Profile::LASTNAME, 'ZZZZZZ', UFC_Name::PARTICLE | UFC_Name::CONTAINS), 0),
+
+            // Lastname_ordinary
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE {?} AND pn.typeid IN {?}',
+                                'ALBIZZATI', array($id_Lastname, $id_Lastname_Marital, $id_Lastname_Ordinary)),
+                new UFC_Name(Profile::LASTNAME, 'ALBIZZATI', UFC_Name::VARIANTS | UFC_Name::EXACT), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE {?} AND pn.typeid IN {?}',
+                                'ALBIZ%', array($id_Lastname, $id_Lastname_Marital, $id_Lastname_Ordinary)),
+                new UFC_Name(Profile::LASTNAME, 'ALBIZ', UFC_Name::VARIANTS | UFC_Name::PREFIX), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE {?} AND pn.typeid IN {?}',
+                                '%ZATI', array($id_Lastname, $id_Lastname_Marital, $id_Lastname_Ordinary)),
+                new UFC_Name(Profile::LASTNAME, 'ZATI', UFC_NAME::VARIANTS | UFC_Name::SUFFIX), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE {?} AND pn.typeid IN {?}',
+                                '%BIZZ%', array($id_Lastname, $id_Lastname_Marital, $id_Lastname_Ordinary)),
+                new UFC_Name(Profile::LASTNAME, 'BIZZ', UFC_Name::VARIANTS | UFC_Name::CONTAINS), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  profile_name AS pn ON (ap.pid = pn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pn.name LIKE {?} AND pn.typeid IN {?}',
+                                '%ZZZZZZ%', array($id_Lastname, $id_Lastname_Marital, $id_Lastname_Ordinary)),
+                new UFC_Name(Profile::LASTNAME, 'ZZZZZZ', UFC_Name::VARIANTS | UFC_Name::CONTAINS), 0),
         );
 
         $testcases = array();
