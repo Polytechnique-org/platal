@@ -278,8 +278,9 @@ class UFC_EducationField implements UserFilterCondition
  */
 class UFC_Name implements UserFilterCondition
 {
-    const PREFIX   = XDB::WILDCARD_PREFIX; // 0x001
-    const SUFFIX   = XDB::WILDCARD_SUFFIX; // 0x002
+    const EXACT    = XDB::WILDCARD_EXACT;    // 0x000
+    const PREFIX   = XDB::WILDCARD_PREFIX;   // 0x001
+    const SUFFIX   = XDB::WILDCARD_SUFFIX;   // 0x002
     const CONTAINS = XDB::WILDCARD_CONTAINS; // 0x003
     const PARTICLE = 0x007; // self::CONTAINS | 0x004
     const VARIANTS = 0x008;
