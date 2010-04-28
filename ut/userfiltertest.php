@@ -276,6 +276,29 @@ class UserFilterTest extends PlTestCase
                                 WHERE  pede.abbreviation IN {?}', array('Ing.', 'PhD')),
                 new UFC_EducationDegree(array($id_DegreeIng, $id_DegreePhd)), -1),
         );
+            /* UFC_EducationField
+             */
+        $id_FieldInfo = XDB::fetchOneCell('SELECT  id
+                                             FROM  profile_education_field_enum
+                                            WHERE  field = {?}', 'Informatique');
+        $id_FieldDroit = XDB::fetchOneCell('SELECT  id
+                                              FROM  profile_education_field_enum
+                                             WHERE  field = {?}', 'Droit');
+        // FIXME: Replaces 0 by -1 in following queries when profile_education will be filled with fieldids
+        $tests[] = array(
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_field_enum AS pefe ON (pe.fieldid = pefe.id)
+                                WHERE  pefe.field = {?}', 'Informatique'),
+                new UFC_EducationField($id_FieldInfo), 0), // FIXME: should be -1
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_field_enum AS pefe ON (pe.fieldid = pefe.id)
+                                WHERE  pefe.field IN {?}', array('Informatique', 'Droit')),
+                new UFC_EducationField(array($id_FieldInfo, $id_FieldDroit)), 0), // FIXME: should be -1
+        );
 
         $testcases = array();
         foreach ($tests as $t) {
