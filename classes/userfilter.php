@@ -60,12 +60,9 @@ class UFC_Hruid implements UserFilterCondition
 {
     private $hruids;
 
-    public function __construct($val)
+    public function __construct()
     {
-        if (!is_array($val)) {
-            $val = array($val);
-        }
-        $this->hruids = $val;
+        $this->hruids = pl_flatten(func_get_args());
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -84,12 +81,9 @@ class UFC_Hrpid implements UserFilterCondition
 {
     private $hrpids;
 
-    public function __construct($val)
+    public function __construct()
     {
-        if (!is_array($val)) {
-            $val = array($val);
-        }
-        $this->hrpids = $val;
+        $this->hrpids = pl_flatten(func_get_args());
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -227,12 +221,9 @@ class UFC_EducationSchool implements UserFilterCondition
 {
     private $val;
 
-    public function __construct($val)
+    public function __construct()
     {
-        if (!is_array($val)) {
-            $val = array($val);
-        }
-        $this->val = $val;
+        $this->val = pl_flatten(func_get_args());
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -248,12 +239,9 @@ class UFC_EducationDegree implements UserFilterCondition
 {
     private $diploma;
 
-    public function __construct($diploma)
+    public function __construct()
     {
-        if (! is_array($diploma)) {
-            $diploma = array($diploma);
-        }
-        $this->diploma = $diploma;
+        $this->diploma = pl_flatten(func_get_args());
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -269,12 +257,9 @@ class UFC_EducationField implements UserFilterCondition
 {
     private $val;
 
-    public function __construct($val)
+    public function __construct()
     {
-        if (!is_array($val)) {
-            $val = array($val);
-        }
-        $this->val = $val;
+        $this->val = pl_flatten(func_get_args());
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -394,12 +379,9 @@ class UFC_Nationality implements UserFilterCondition
 {
     private $val;
 
-    public function __construct($val)
+    public function __construct()
     {
-        if (!is_array($val)) {
-            $val = array($val);
-        }
-        $this->val = $val;
+        $this->val = pl_flatten(func_get_args());
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -586,12 +568,9 @@ class UFC_Binet implements UserFilterCondition
 {
     private $val;
 
-    public function __construct($val)
+    public function __construct()
     {
-        if (!is_array($val)) {
-            $val = array($val);
-        }
-        $this->val = $val;
+        $this->val = pl_flatten(func_get_args());
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -610,15 +589,15 @@ class UFC_Section implements UserFilterCondition
 {
     private $section;
 
-    public function __construct($section)
+    public function __construct()
     {
-        $this->section = $section;
+        $this->section = pl_flatten(func_get_args());
     }
 
     public function buildCondition(PlFilter &$uf)
     {
         $uf->requireProfiles();
-        return 'p.section = ' . XDB::format('{?}', $this->section);
+        return XDB::format('p.section IN {?}', $this->section);
     }
 }
 // }}}
@@ -632,7 +611,7 @@ class UFC_Email implements UserFilterCondition
     private $emails;
     public function __construct()
     {
-        $this->emails = func_get_args();
+        $this->emails = pl_flatten(func_get_args());
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -1187,15 +1166,15 @@ class UFC_Mentor_Country implements UserFilterCondition
 {
     private $country;
 
-    public function __construct($country)
+    public function __construct()
     {
-        $this->country = $country;
+        $this->country = pl_flatten(func_get_args());
     }
 
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addMentorFilter(UserFilter::MENTOR_COUNTRY);
-        return $sub . '.country = ' . XDB::format('{?}', $this->country);
+        return $sub . '.country IN ' . XDB::format('{?}', $this->country);
     }
 }
 // }}}

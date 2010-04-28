@@ -59,12 +59,12 @@ class UserFilterTest extends PlTestCase
                                  FROM  accounts
                                 WHERE  hruid IN {?}', array('florent.bruneau.2003',
                                                             'stephane.jacob.2004')),
-                  new UFC_Hruid(array('florent.bruneau.2003', 'stephane.jacob.2004')), 2),
+                  new UFC_Hruid('florent.bruneau.2003', 'stephane.jacob.2004'), 2),
             array(XDB::format('SELECT  DISTINCT uid
                                  FROM  accounts
                                 WHERE  hruid IN {?}', array('florent.bruneau.2004',
                                                             'stephane.jacob.2004')),
-                  new UFC_Hruid(array('florent.bruneau.2004', 'stephane.jacob.2004')), 1),
+                  new UFC_Hruid('florent.bruneau.2004', 'stephane.jacob.2004'), 1),
 
             /* UFC_Hrpid
              */
@@ -83,13 +83,13 @@ class UserFilterTest extends PlTestCase
                            INNER JOIN  profiles AS p ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', perms))
                                 WHERE  hrpid IN {?}', array('florent.bruneau.2003',
                                                             'stephane.jacob.2004')),
-                  new UFC_Hrpid(array('florent.bruneau.2003', 'stephane.jacob.2004')), 2),
+                  new UFC_Hrpid('florent.bruneau.2003', 'stephane.jacob.2004'), 2),
             array(XDB::format('SELECT  DISTINCT uid
                                  FROM  account_profiles AS ap
                            INNER JOIN  profiles AS p ON (ap.pid = p.pid AND FIND_IN_SET(\'owner\', perms))
                                 WHERE  hrpid IN {?}', array('florent.bruneau.2004',
                                                             'stephane.jacob.2004')),
-                  new UFC_Hrpid(array('florent.bruneau.2004', 'stephane.jacob.2004')), 1),
+                  new UFC_Hrpid('florent.bruneau.2004', 'stephane.jacob.2004'), 1),
 
             /* UFC_IP
              */
@@ -251,7 +251,7 @@ class UserFilterTest extends PlTestCase
                            INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
                             LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
                                 WHERE  pee.abbreviation IN {?}', array('X', 'HEC')),
-                new UFC_EducationSchool(array($id_X, $id_HEC)), -1),
+                new UFC_EducationSchool($id_X, $id_HEC), -1),
         );
 
             /* UFC_EducationDegree
@@ -274,7 +274,7 @@ class UserFilterTest extends PlTestCase
                            INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
                             LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
                                 WHERE  pede.abbreviation IN {?}', array('Ing.', 'PhD')),
-                new UFC_EducationDegree(array($id_DegreeIng, $id_DegreePhd)), -1),
+                new UFC_EducationDegree($id_DegreeIng, $id_DegreePhd), -1),
         );
             /* UFC_EducationField
              */
@@ -297,7 +297,7 @@ class UserFilterTest extends PlTestCase
                            INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
                             LEFT JOIN  profile_education_field_enum AS pefe ON (pe.fieldid = pefe.id)
                                 WHERE  pefe.field IN {?}', array('Informatique', 'Droit')),
-                new UFC_EducationField(array($id_FieldInfo, $id_FieldDroit)), 0), // FIXME: should be -1
+                new UFC_EducationField($id_FieldInfo, $id_FieldDroit), 0), // FIXME: should be -1
         );
 
         $testcases = array();
