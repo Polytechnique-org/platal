@@ -87,6 +87,136 @@ class UserFilterTest extends PlTestCase
                                 WHERE  ip = {?} OR forward_ip = {?}',
                               ip_to_uint('129.104.247.2'), ip_to_uint('129.104.247.2')),
                   new UFC_Ip('129.104.247.2'), -1),
+            /* TODO: UFC_Comment
+             */
+            /* UFC_Promo
+             */
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pd.promo = {?}', 'X2004'),
+                new UFC_Promo('=', UserFilter::DISPLAY, 'X2004'), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pd.promo < {?}', 'X2004'),
+                new UFC_Promo('<', UserFilter::DISPLAY, 'X2004'), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pd.promo > {?}', 'X2004'),
+                new UFC_Promo('>', UserFilter::DISPLAY, 'X2004'), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pd.promo < {?}', 'X1900'),
+                new UFC_Promo('<', UserFilter::DISPLAY, 'X1900'), 0),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  pd.promo < {?}', 'X1900'),
+                new UFC_Promo('<', UserFilter::DISPLAY, 'X1900'), 0),
+
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.entry_year = {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '2004', 'Ing.'),
+                new UFC_Promo('=', UserFilter::GRADE_ING, 2004), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.entry_year <= {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '1960', 'Ing.'),
+                new UFC_Promo('<=', UserFilter::GRADE_ING, 1960), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.entry_year > {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '2004', 'Ing.'),
+                new UFC_Promo('>', UserFilter::GRADE_ING, 2004), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.entry_year < {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '1900', 'Ing.'),
+                new UFC_Promo('<', UserFilter::GRADE_ING, 1900), 0),
+
+            /* XXX : tests disabled until there are Masters and doctors in the DB
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.grad_year = {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '2009', 'MSc'),
+                new UFC_Promo('=', UserFilter::GRADE_MST, 2009), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.grad_year <= {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '2009', 'MSc'),
+                new UFC_Promo('<=', UserFilter::GRADE_MST, 2009), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.grad_year > {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '2009', 'MSc'),
+                new UFC_Promo('>', UserFilter::GRADE_MST, 2009), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.grad_year < {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '1980', 'MSc'),
+                new UFC_Promo('<', UserFilter::GRADE_MST, 1980), 0),
+
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.grad_year = {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '2009', 'PhD'),
+                new UFC_Promo('=', UserFilter::GRADE_PHD, 2009), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.grad_year <= {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '2009', 'PhD'),
+                new UFC_Promo('<=', UserFilter::GRADE_PHD, 2009), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.grad_year > {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '2009', 'PhD'),
+                new UFC_Promo('>', UserFilter::GRADE_PHD, 2009), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pe.grad_year < {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
+                                '1980', 'PhD'),
+                new UFC_Promo('<', UserFilter::GRADE_PHD, 1980), 0),
+*/
         );
     }
 
