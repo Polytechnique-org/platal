@@ -254,6 +254,29 @@ class UserFilterTest extends PlTestCase
                 new UFC_EducationSchool(array($id_X, $id_HEC)), -1),
         );
 
+            /* UFC_EducationDegree
+             */
+        $id_DegreeIng = XDB::fetchOneCell('SELECT  id
+                                             FROM  profile_education_degree_enum
+                                            WHERE  abbreviation = {?}', 'Ing.');
+        $id_DegreePhd = XDB::fetchOneCell('SELECT  id
+                                             FROM  profile_education_degree_enum
+                                            WHERE  abbreviation = {?}', 'PhD');
+        $tests[] = array(
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pede.abbreviation = {?}', 'Ing.'),
+                new UFC_EducationDegree($id_DegreeIng), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
+                                WHERE  pede.abbreviation IN {?}', array('Ing.', 'PhD')),
+                new UFC_EducationDegree(array($id_DegreeIng, $id_DegreePhd)), -1),
+        );
+
         $testcases = array();
         foreach ($tests as $t) {
             $testcases = array_merge($testcases, $t);
