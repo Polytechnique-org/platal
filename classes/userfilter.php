@@ -280,7 +280,7 @@ class UFC_EducationField implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addEducationFilter();
-        return XDB::format('pee' . $sub . '.fieldid IN {?}', $this->val);
+        return XDB::format('pe' . $sub . '.fieldid IN {?}', $this->val);
     }
 }
 // }}}
