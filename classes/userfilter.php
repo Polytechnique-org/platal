@@ -2077,7 +2077,7 @@ class UserFilter extends PlFilter
     const GRADE_MST = 'M%';
     static public function isGrade($grade)
     {
-        return $grade == self::GRADE_ING || $grade == self::GRADE_PHD || $grade == self::GRADE_MST;
+        return ($grade !== 0) && ($grade == self::GRADE_ING || $grade == self::GRADE_PHD || $grade == self::GRADE_MST);
     }
 
     static public function assertGrade($grade)
