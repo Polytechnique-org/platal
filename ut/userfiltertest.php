@@ -23,8 +23,18 @@ require_once dirname(__FILE__) . '/../include/test.inc.php';
 
 class UserFilterTest extends PlTestCase
 {
+    private static function checkPlatal()
+    {
+        global $platal;
+        if($platal == null)
+        {
+            $platal = new Xorg();
+        }
+    }
+
     public static function simpleUserProvider()
     {
+        self::checkPlatal();
         return array(
             /* UFC_Hrpid
              */
@@ -212,19 +222,40 @@ class UserFilterTest extends PlTestCase
                                 '1980', 'PhD'),
                 new UFC_Promo('<', UserFilter::GRADE_PHD, 1980), 0),
 */
+            /* TODO: UFC_SchoolId
+             */
+            /* UFC_EducationSchool
+             */
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                                WHERE  pee.abbreviation = {?}', 'X'),
+                new UFC_EducationSchool(DirEnum::getId(DirEnum::EDUSCHOOLS, 'X')), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                           INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                            LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
+                                WHERE  pee.abbreviation IN {?}', array('X', 'HEC')),
+                new UFC_EducationSchool(array(
+                        DirEnum::getId(DirEnum::EDUSCHOOLS, 'X'),
+                        DirEnum::getId(DirEnum::EDUSCHOOLS, 'HEC'),
+                    )), -1),
         );
     }
 
     /**
      * @dataProvider simpleUserProvider
-     * @param $query A MySQL query
-     * @param $cond  The UFC to test
-     * @param $expcount The expected number of results (-1 if that number is unknown)
      */
     public function testSimpleUser($query, $cond, $expcount = null)
     {
-        global $globals, $platal;
-        $platal = new Xorg();
+        /*
+         * @param $query A MySQL query
+         * @param $cond  The UFC to test
+         * @param $expcount The expected number of results (-1 if that number is unknown)
+         */
+
+        self::checkPlatal();
 
         $query = XDB::query($query);
         $count = $query->numRows();
