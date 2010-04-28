@@ -111,11 +111,6 @@ class UserFilterTest extends PlTestCase
                            INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
                                 WHERE  pd.promo < {?}', 'X1900'),
                 new UFC_Promo('<', UserFilter::DISPLAY, 'X1900'), 0),
-            array(XDB::format('SELECT  DISTINCT ap.uid
-                                 FROM  account_profiles AS ap
-                           INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
-                                WHERE  pd.promo < {?}', 'X1900'),
-                new UFC_Promo('<', UserFilter::DISPLAY, 'X1900'), 0),
 
             array(XDB::format('SELECT  DISTINCT ap.uid
                                  FROM  account_profiles AS ap
