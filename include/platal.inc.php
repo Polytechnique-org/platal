@@ -182,6 +182,24 @@ function pl_entity_decode($text, $mode = ENT_COMPAT)
     return html_entity_decode($text, $mode, 'UTF-8');
 }
 
+function pl_flatten_aux(array &$dest, array $src)
+{
+    foreach ($src as $val) {
+        if (is_array($val)) {
+            pl_flatten_aux($dest, $val);
+        } else {
+            $dest[] = $val;
+        }
+    }
+}
+
+function pl_flatten(array $array)
+{
+    $res = array();
+    pl_flatten_aux($res, $array);
+    return $res;
+}
+
 /**
  * Returns the path of a static content, including, when appropriate, the
  * version number. This is used to avoid cross-version cache issues, by ensuiring
