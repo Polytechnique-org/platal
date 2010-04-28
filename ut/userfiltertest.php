@@ -35,7 +35,9 @@ class UserFilterTest extends PlTestCase
     public static function simpleUserProvider()
     {
         self::checkPlatal();
-        return array(
+        $tests = array();
+
+        $tests[] = array(
             /* UFC_Hrpid
              */
             array('SELECT  DISTINCT uid
@@ -97,10 +99,13 @@ class UserFilterTest extends PlTestCase
                                 WHERE  ip = {?} OR forward_ip = {?}',
                               ip_to_uint('129.104.247.2'), ip_to_uint('129.104.247.2')),
                   new UFC_Ip('129.104.247.2'), -1),
+        );
             /* TODO: UFC_Comment
              */
+
             /* UFC_Promo
              */
+        $tests[] = array(
             array(XDB::format('SELECT  DISTINCT ap.uid
                                  FROM  account_profiles AS ap
                            INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
@@ -221,27 +226,39 @@ class UserFilterTest extends PlTestCase
                                 WHERE  pe.grad_year < {?} AND pee.abbreviation = \'X\' AND pede.abbreviation = {?}',
                                 '1980', 'PhD'),
                 new UFC_Promo('<', UserFilter::GRADE_PHD, 1980), 0),
-*/
+             */
+        );
+
             /* TODO: UFC_SchoolId
              */
             /* UFC_EducationSchool
              */
+        $id_X = XDB::fetchOneCell('SELECT  id
+                                     FROM  profile_education_enum
+                                    WHERE  abbreviation = {?}', 'X');
+        $id_HEC = XDB::fetchOneCell('SELECT  id
+                                       FROM  profile_education_enum
+                                      WHERE  abbreviation = {?}', 'HEC');
+        $tests[] = array(
             array(XDB::format('SELECT  DISTINCT ap.uid
                                  FROM  account_profiles AS ap
                            INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
                             LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
                                 WHERE  pee.abbreviation = {?}', 'X'),
-                new UFC_EducationSchool(DirEnum::getId(DirEnum::EDUSCHOOLS, 'X')), -1),
+                new UFC_EducationSchool($id_X), -1),
             array(XDB::format('SELECT  DISTINCT ap.uid
                                  FROM  account_profiles AS ap
                            INNER JOIN  profile_education AS pe ON (pe.pid = ap.pid AND FIND_IN_SET(\'owner\', ap.perms))
                             LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
                                 WHERE  pee.abbreviation IN {?}', array('X', 'HEC')),
-                new UFC_EducationSchool(array(
-                        DirEnum::getId(DirEnum::EDUSCHOOLS, 'X'),
-                        DirEnum::getId(DirEnum::EDUSCHOOLS, 'HEC'),
-                    )), -1),
+                new UFC_EducationSchool(array($id_X, $id_HEC)), -1),
         );
+
+        $testcases = array();
+        foreach ($tests as $t) {
+            $testcases = array_merge($testcases, $t);
+        }
+        return $testcases;
     }
 
     /**
