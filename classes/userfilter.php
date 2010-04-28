@@ -259,7 +259,7 @@ class UFC_EducationDegree implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $sub = $uf->addEducationFilter();
-        return XDB::format('pee' . $sub . '.degreeid IN {?}', $this->val);
+        return XDB::format('pe' . $sub . '.degreeid IN {?}', $this->diploma);
     }
 }
 // }}}
