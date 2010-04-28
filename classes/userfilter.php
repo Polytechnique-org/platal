@@ -182,7 +182,7 @@ class UFC_Promo implements UserFilterCondition
  * @param type Parameter type (Xorg, AX, School)
  * @param value School id value
  */
-class UFC_SchooldId implements UserFilterCondition
+class UFC_SchoolId implements UserFilterCondition
 {
     const AX     = 'ax';
     const Xorg   = 'xorg';
