@@ -450,6 +450,86 @@ class UserFilterTest extends PlTestCase
                 new UFC_Name(Profile::LASTNAME, 'ZZZZZZ', UFC_Name::VARIANTS | UFC_Name::CONTAINS), 0),
         );
 
+            /* UFC_NameTokens
+             */
+        $tests[] = array(
+            // !soundex, !exact
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.token LIKE \'xelnor%\''),
+                new UFC_NameTokens('xelnor'), 1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.token LIKE \'xe%\''),
+                new UFC_NameTokens('xe'), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.token LIKE \'xe%\' OR sn.token LIKE \'barr%\''),
+                new UFC_NameTokens(array('xe', 'barr')), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.token LIKE \'zzzzzzzz%\''),
+                new UFC_NameTokens('zzzzzzzz'), 0),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.token LIKE \'barr%\' AND FIND_IN_SET(\'public\', sn.flags)'),
+                new UFC_NameTokens('barr', UFC_NameTokens::FLAG_PUBLIC), -1),
+
+            // !soundex, exact
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.token = \'xelnor\''),
+                new UFC_NameTokens('xelnor', array(), false, true), 1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.token IN (\'xelnor\', \'barrois\')'),
+                new UFC_NameTokens(array('xelnor', 'barrois'), array(), false, true), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.token = \'zzzzzzzz\''),
+                new UFC_NameTokens('zzzzzzzz', array(), false, true), 0),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.token IN (\'zzzzzzzz\', \'yyyyyyyy\')'),
+                new UFC_NameTokens(array('zzzzzzzz', 'yyyyyyyy'), array(), false, true), 0),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.token = \'barrois\' AND FIND_IN_SET(\'public\', sn.flags)'),
+                new UFC_NameTokens('barrois', UFC_NameTokens::FLAG_PUBLIC, false, true), -1),
+
+            // soundex, !exact
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.soundex = \'XLNO\''),
+                new UFC_NameTokens('XLNO', array(), true), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.soundex IN (\'XLNO\', \'BROS\')'),
+                new UFC_NameTokens(array('XLNO', 'BROS'), array(), true), -1),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.soundex = \'ZZZZZZ\''),
+                new UFC_NameTokens('ZZZZZZ', array(), true), 0),
+            array(XDB::format('SELECT  DISTINCT ap.uid
+                                 FROM  account_profiles AS ap
+                            LEFT JOIN  search_name AS sn ON (ap.pid = sn.pid AND FIND_IN_SET(\'owner\', ap.perms))
+                                WHERE  sn.soundex = \'BROS\' AND FIND_IN_SET(\'public\', sn.flags)'),
+                new UFC_NameTokens('BROS', UFC_NameTokens::FLAG_PUBLIC, true), -1),
+        );
+
         $testcases = array();
         foreach ($tests as $t) {
             $testcases = array_merge($testcases, $t);
