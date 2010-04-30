@@ -340,7 +340,11 @@ class UFC_NameTokens implements UserFilterCondition
 
     public function __construct($tokens, $flags = array(), $soundex = false, $exact = false)
     {
-        $this->tokens = $tokens;
+        if (is_array($tokens)) {
+            $this->tokens = $tokens;
+        } else {
+            $this->tokens = array($tokens);
+        }
         if (is_array($flags)) {
             $this->flags = $flags;
         } else {
