@@ -22,6 +22,7 @@
 class XDB
 {
     private static $mysqli = null;
+    private static $fatalErrors = true;
 
     public static function connect()
     {
@@ -37,6 +38,11 @@ class XDB
         self::$mysqli->autocommit(true);
         self::$mysqli->set_charset($globals->dbcharset);
         return true;
+    }
+
+    public static function setNonFatalError()
+    {
+        self::$fatalErrors = false;
     }
 
     public static function _prepare($args)
@@ -127,8 +133,12 @@ class XDB
                             . "--------------------------------------------------------------------------------\n");
                 fclose($file);
             }
-            Platal::page()->kill($text);
-            exit;
+            if (self::$fatalErrors) {
+                Platal::page()->kill($text);
+                exit;
+            } else {
+                throw new Exception($text . " :\n" . $query);
+            }
         }
         return $res;
     }
