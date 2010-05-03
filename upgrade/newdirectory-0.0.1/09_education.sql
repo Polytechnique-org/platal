@@ -220,6 +220,9 @@ WHERE name = 'Conservatoire national supérieur de musique et de danse de Paris'
 UPDATE profile_education_enum
 SET name = 'École Normale de Musique de Paris'
 WHERE name = 'École normale de musique de Paris';
+UPDATE profile_education_enum
+SET abbreviation = 'ENSMN'
+WHERE name = 'École Nationale Supérieure des Mines de Nancy';
 
 UPDATE profile_education_enum
 SET abbreviation = 'NDU', country = 'US'
