@@ -204,14 +204,17 @@ abstract class MassMailer
     {
         $this->setSent();
         $query = XDB::format($this->getAllRecipients(), $this->id()) . ' LIMIT 60';
+        $emailsCount = 0;
+
         while (true) {
             $users = User::getBulkUsersWithUIDs(XDB::fetchColumn($query));
             if (count($users) == 0) {
-                return;
+                return $emailsCount;
             }
             foreach ($users as $user) {
                 $sent[] = XDB::format('uid = {?}', $user->id());
                 $this->sendTo($user, $hash);
+                ++$emailsCount;
             }
             XDB::execute("UPDATE  {$this->_subscriptionTable}
                              SET  last = {?}
