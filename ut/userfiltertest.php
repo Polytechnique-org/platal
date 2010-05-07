@@ -445,6 +445,18 @@ class UserFilterTest extends PlTestCase
                 new UFC_NameTokens('BROS', UFC_NameTokens::FLAG_PUBLIC, true), -1),
         );
 
+        /* UFC_Nationality
+         */
+        $tests[] = array(
+            array(self::buildProfileQuery('WHERE p.nationality1 IN {?} OR p.nationality2 IN {?} OR p.nationality3 IN {?}', array('BR'), array('BR'), array('BR')),
+                new UFC_Nationality('BR'), -1),
+            array(self::buildProfileQuery('WHERE p.nationality1 IN {?} OR p.nationality2 IN {?} OR p.nationality3 IN {?}', array('BR', 'US'), array('BR', 'US'), array('BR', 'US')),
+                new UFC_Nationality('BR', 'US'), -1),
+            array(self::buildProfileQuery('WHERE p.nationality1 IN {?} OR p.nationality2 IN {?} OR p.nationality3 IN {?}', array('__'), array('__'), array('__')),
+                new UFC_Nationality('__'), 0),
+        );
+
+
         $testcases = array();
         foreach ($tests as $t) {
             $testcases = array_merge($testcases, $t);
