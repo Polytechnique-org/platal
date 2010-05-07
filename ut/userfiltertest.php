@@ -456,6 +456,28 @@ class UserFilterTest extends PlTestCase
                 new UFC_Nationality('__'), 0),
         );
 
+        /* UFC_Dead
+         */
+        $tests[] = array(
+            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL'),
+                new UFC_Dead(), -1),
+            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', '2008-01-01'),
+                new UFC_Dead('>', '2008-01-01'), -1),
+            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', '2008-01-01'),
+                new UFC_Dead('>', new DateTime('2008-01-01')), -1),
+            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', '2008-01-01'),
+                new UFC_Dead('>', strftime('2008-01-01')), -1),
+            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate < {?}', '1600-01-01'),
+                new UFC_Dead('<', '1600-01-01'), 0),
+            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate < {?}', '1600-01-01'),
+                new UFC_Dead('<', new DateTime('1600-01-01')), 0),
+            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', date('Y-m-d')),
+                new UFC_Dead('>', 'now'), 0),
+            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', date('Y-m-d')),
+                new UFC_Dead('>', new DateTime()), 0),
+            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', date('Y-m-d')),
+                new UFC_Dead('>', time()), 0),
+        );
 
         $testcases = array();
         foreach ($tests as $t) {
