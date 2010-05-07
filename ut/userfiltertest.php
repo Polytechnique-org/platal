@@ -218,8 +218,24 @@ class UserFilterTest extends PlTestCase
              */
         );
 
-            /* TODO: UFC_SchoolId
+            /* UFC_SchoolId
              */
+        $tests[] = array(
+            array(self::buildProfileQuery('WHERE  p.xorg_id = {?}', 20060076),
+                new UFC_SchoolId(UFC_SchoolId::Xorg, 20060076), 1),
+            array(self::buildProfileQuery('WHERE  p.ax_id = {?}', 20060062),
+                new UFC_SchoolId(UFC_SchoolId::AX, 20060062), 1),
+            array(self::buildProfileQuery('WHERE  p.xorg_id = {?}', 007),
+                new UFC_SchoolId(UFC_SchoolId::Xorg, 007), 0),
+            array(self::buildProfileQuery('WHERE  p.ax_id = {?}', 007),
+                new UFC_SchoolId(UFC_SchoolId::AX, 007), 0),
+            /* FIXME: disabled until we have some examples of school_id
+            array(self::buildProfileQuery('WHERE  p.school_id = {?}', 12345678),
+                new UFC_SchoolId(UFC_SchoolId::School, 12345678), 1),
+            array(self::buildProfileQuery('WHERE  p.school_id = {?}', 007),
+                new UFC_SchoolId(UFC_SchoolId::School, 007), 0),
+             */
+        );
             /* UFC_EducationSchool
              */
         $id_X = XDB::fetchOneCell('SELECT  id
