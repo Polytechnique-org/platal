@@ -406,7 +406,7 @@ class UFC_Nationality implements UserFilterCondition
 // {{{ class UFC_Dead
 /** Filters users based on death date
  * @param $comparison Comparison operator
- * @param $date Date to which death date should be compared
+ * @param $date Date to which death date should be compared (DateTime object, string or timestamp)
  */
 class UFC_Dead implements UserFilterCondition
 {
@@ -416,7 +416,13 @@ class UFC_Dead implements UserFilterCondition
     public function __construct($comparison = null, $date = null)
     {
         $this->comparison = $comparison;
-        $this->date = $date;
+        if ($date instanceof DateTime) {
+            $this->date = $date;
+        } else if (is_int($date)) {
+            $this->date = new DateTime("@$date");
+        } else {
+            $this->date = new DateTime($date);
+        }
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -424,7 +430,7 @@ class UFC_Dead implements UserFilterCondition
         $uf->requireProfiles();
         $str = 'p.deathdate IS NOT NULL';
         if (!is_null($this->comparison)) {
-            $str .= ' AND p.deathdate ' . $this->comparison . ' ' . XDB::format('{?}', date('Y-m-d', $this->date));
+            $str .= ' AND p.deathdate ' . $this->comparison . ' ' . XDB::format('{?}', $this->date->format('Y-m-d'));
         }
         return $str;
     }
