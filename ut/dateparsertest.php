@@ -19,14 +19,25 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_modifier_date_format($string, $format = '%x', $default_date=null)
-{
-    $d = empty($string) ? $default_date : $string;
-    if (empty($format) || preg_match('/^[ 0\-]*$/', $d)) return;
-    $f = str_replace('%X', '%T', str_replace('%x', '%e %B %Y', $format));
+require_once dirname(__FILE__) . '/../include/test.inc.php';
 
-    $d = make_datetime($d);
-    return $d->format($f);
+class DateParserTest extends PlTestCase
+{
+    public function testNumeric()
+    {
+        $this->assertEquals(make_datetime('12000101'), new DateTime('1200-01-01'));
+        $this->assertEquals(make_datetime('20100101'), new DateTime('2010-01-01'));
+        $this->assertEquals(make_datetime('20100101124213'), new DateTime('2010-01-01 12:42:13'));
+        $this->assertEquals(make_datetime('1273232546'), new DateTime('2010-05-07 13:42:26'));
+        $this->assertEquals(make_datetime(1273232546), new DateTime('2010-05-07 13:42:42'));
+    }
+
+    public function testText()
+    {
+        $this->assertEquals(make_datetime('2010-01-01'), new DateTime('2010-01-01'));
+        $this->assertEquals(make_datetime('1600-01-01'), new DateTime('1600-01-01'));
+        $this->assertEquals(make_datetime('2010-01-01 08:09:10'), new DateTime('2010-01-01 08:09:10'));
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

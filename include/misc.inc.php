@@ -189,5 +189,25 @@ function uint_to_ip($uint)
     return long2ip($uint);
 }
 
+/** Converts DateTime / string / timestamp to DateTime object
+ */
+function make_datetime($date)
+{
+    if ($date instanceof DateTime) {
+        return $date;
+    } elseif (preg_match('/^\d{14}$/', $date) || preg_match('/^\d{8}$/', $date)) {
+        return new DateTime($date);
+    } elseif (is_int($date) || is_numeric($date)) {
+        return new DateTime("@$date");
+    } else {
+        try {
+            $d = new DateTime($date);
+            return $d;
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>
