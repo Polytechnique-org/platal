@@ -23,20 +23,44 @@ require_once dirname(__FILE__) . '/../include/test.inc.php';
 
 class DateParserTest extends PlTestCase
 {
+    protected function assertSameDate($d1, $d2)
+    {
+        $this->assertTrue($d1 instanceof DateTime);
+        $this->assertTrue($d2 instanceof DateTime);
+        $this->assertEquals($d1->format('c'), $d2->format('c'));
+    }
+
+    protected function assertNotSameDate($d1, $d2)
+    {
+        $this->assertTrue($d1 instanceof DateTime);
+        $this->assertTrue($d2 instanceof DateTime);
+        $this->assertNotEquals($d1->format('c'), $d2->format('c'));
+    }
+
     public function testNumeric()
     {
-        $this->assertEquals(make_datetime('12000101'), new DateTime('1200-01-01'));
-        $this->assertEquals(make_datetime('20100101'), new DateTime('2010-01-01'));
-        $this->assertEquals(make_datetime('20100101124213'), new DateTime('2010-01-01 12:42:13'));
-        $this->assertEquals(make_datetime('1273232546'), new DateTime('2010-05-07 13:42:26'));
-        $this->assertEquals(make_datetime(1273232546), new DateTime('2010-05-07 13:42:42'));
+        $this->assertSameDate(make_datetime('12000101'), new DateTime('1200-01-01'));
+        $this->assertSameDate(make_datetime('20100101'), new DateTime('2010-01-01'));
+        $this->assertSameDate(make_datetime('20100101124213'), new DateTime('2010-01-01 12:42:13'));
+        $this->assertSameDate(make_datetime('1273232546'), new DateTime('@1273232546'));
+        $this->assertSameDate(make_datetime(1273232546), new DateTime('@1273232546'));
+
+        $this->assertNotSameDate(make_datetime('12000101'), new DateTime('1200-01-02'));
+        $this->assertNotSameDate(make_datetime('20100101'), new DateTime('2010-01-02'));
+        $this->assertNotSameDate(make_datetime('20100101124213'), new DateTime('2010-01-01 12:42:14'));
+        $this->assertNotSameDate(make_datetime('1273232546'), new DateTime('@1273232547'));
+        $this->assertNotSameDate(make_datetime(1273232546), new DateTime('@1273232547'));
     }
 
     public function testText()
     {
-        $this->assertEquals(make_datetime('2010-01-01'), new DateTime('2010-01-01'));
-        $this->assertEquals(make_datetime('1600-01-01'), new DateTime('1600-01-01'));
-        $this->assertEquals(make_datetime('2010-01-01 08:09:10'), new DateTime('2010-01-01 08:09:10'));
+        $this->assertSameDate(make_datetime('2010-01-01'), new DateTime('2010-01-01'));
+        $this->assertSameDate(make_datetime('1600-01-01'), new DateTime('1600-01-01'));
+        $this->assertSameDate(make_datetime('2010-01-01 08:09:10'), new DateTime('2010-01-01 08:09:10'));
+
+        $this->assertNotSameDate(make_datetime('2010-01-01'), new DateTime('2010-01-02'));
+        $this->assertNotSameDate(make_datetime('1600-01-01'), new DateTime('1600-01-02'));
+        $this->assertNotSameDate(make_datetime('2010-01-01 08:09:10'), new DateTime('2010-01-01 08:09:11'));
     }
 }
 
