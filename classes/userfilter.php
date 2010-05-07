@@ -459,7 +459,7 @@ class UFC_Registered implements UserFilterCondition
             $date = 'a.uid IS NOT NULL AND a.state != \'pending\'';
         }
         if (!is_null($this->comparison)) {
-            $date .= ' AND a.registration_date ' . $this->comparison . ' ' . XDB::format('{?}', $this->date->format('Y-m-d'));
+            $date .= ' AND a.registration_date != \'0000-00-00 00:00:00\' AND a.registration_date ' . $this->comparison . ' ' . XDB::format('{?}', $this->date->format('Y-m-d'));
         }
         return $date;
     }
