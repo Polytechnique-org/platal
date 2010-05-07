@@ -416,13 +416,7 @@ class UFC_Dead implements UserFilterCondition
     public function __construct($comparison = null, $date = null)
     {
         $this->comparison = $comparison;
-        if ($date instanceof DateTime) {
-            $this->date = $date;
-        } else if (is_int($date)) {
-            $this->date = new DateTime("@$date");
-        } else {
-            $this->date = new DateTime($date);
-        }
+        $this->date = make_datetime($date);
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -453,7 +447,7 @@ class UFC_Registered implements UserFilterCondition
     {
         $this->active = $active;
         $this->comparison = $comparison;
-        $this->date = $date;
+        $this->date = make_datetime($date);
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -465,7 +459,7 @@ class UFC_Registered implements UserFilterCondition
             $date = 'a.uid IS NOT NULL AND a.state != \'pending\'';
         }
         if (!is_null($this->comparison)) {
-            $date .= ' AND a.registration_date ' . $this->comparison . ' ' . XDB::format('{?}', date('Y-m-d', $this->date));
+            $date .= ' AND a.registration_date ' . $this->comparison . ' ' . XDB::format('{?}', $this->date->format('Y-m-d'));
         }
         return $date;
     }
