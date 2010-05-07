@@ -463,20 +463,31 @@ class UserFilterTest extends PlTestCase
                 new UFC_Dead(), -1),
             array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', '2008-01-01'),
                 new UFC_Dead('>', '2008-01-01'), -1),
-            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', '2008-01-01'),
-                new UFC_Dead('>', new DateTime('2008-01-01')), -1),
-            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', '2008-01-01'),
-                new UFC_Dead('>', strftime('2008-01-01')), -1),
             array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate < {?}', '1600-01-01'),
                 new UFC_Dead('<', '1600-01-01'), 0),
-            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate < {?}', '1600-01-01'),
-                new UFC_Dead('<', new DateTime('1600-01-01')), 0),
             array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', date('Y-m-d')),
                 new UFC_Dead('>', 'now'), 0),
-            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', date('Y-m-d')),
-                new UFC_Dead('>', new DateTime()), 0),
-            array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', date('Y-m-d')),
-                new UFC_Dead('>', time()), 0),
+        );
+
+        /* UFC_Registered
+         */
+        $tests[] = array(
+            array(self::buildAccountQuery('WHERE a.uid IS NOT NULL AND a.state = \'active\''),
+                new UFC_Registered(true), -1),
+            array(self::buildAccountQuery('WHERE a.uid IS NOT NULL AND a.state != \'pending\''),
+                new UFC_Registered(), -1),
+            array(self::buildAccountQuery('WHERE a.uid IS NOT NULL AND a.state = \'active\' AND a.registration_date != \'0000-00-00 00:00:00\' AND a.registration_date > {?}', '2008-01-01'),
+                new UFC_Registered(true, '>', '2008-01-01'), -1),
+            array(self::buildAccountQuery('WHERE a.uid IS NOT NULL AND a.state != \'pending\' AND a.registration_date != \'0000-00-00 00:00:00\' AND a.registration_date > {?}', '2008-01-01'),
+                new UFC_Registered(false, '>', '2008-01-01'), -1),
+            array(self::buildAccountQuery('WHERE a.uid IS NOT NULL AND a.state = \'active\' AND a.registration_date != \'0000-00-00 00:00:00\' AND a.registration_date < {?}', '1700-01-01'),
+                new UFC_Registered(true, '<', '1700-01-01'), 0),
+            array(self::buildAccountQuery('WHERE a.uid IS NOT NULL AND a.state != \'pending\' AND a.registration_date != \'0000-00-00 00:00:00\' AND a.registration_date < {?}', '1700-01-01'),
+                new UFC_Registered(false, '<', '1700-01-01'), 0),
+            array(self::buildAccountQuery('WHERE a.uid IS NOT NULL AND a.state = \'active\' AND a.registration_date != \'0000-00-00 00:00:00\' AND a.registration_date > {?}', date('Y-m-d')),
+                new UFC_Registered(true, '>', 'now'), 0),
+            array(self::buildAccountQuery('WHERE a.uid IS NOT NULL AND a.state != \'pending\' AND a.registration_date != \'0000-00-00 00:00:00\' AND a.registration_date > {?}', date('Y-m-d')),
+                new UFC_Registered(false, '>', 'now'), 0),
         );
 
         $testcases = array();
