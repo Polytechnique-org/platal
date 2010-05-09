@@ -65,7 +65,7 @@ class UserFilterTest extends PlTestCase
         self::checkPlatal();
         $tests = array();
 
-        $tests[] = array(
+        $tests['id'] = array(
             /* UFC_Hrpid
              */
             array(self::buildAccountQuery('INNER JOIN  account_profiles AS ap2 ON (ap2.uid = a.uid)
@@ -110,7 +110,7 @@ class UserFilterTest extends PlTestCase
 
             /* UFC_Promo
              */
-        $tests[] = array(
+        $tests['promo'] = array(
             array(self::buildProfileQuery('INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                                                 WHERE  pd.promo = {?}', 'X2004'),
                 new UFC_Promo('=', UserFilter::DISPLAY, 'X2004'), -1),
@@ -211,7 +211,7 @@ class UserFilterTest extends PlTestCase
 
             /* UFC_SchoolId
              */
-        $tests[] = array(
+        $tests['schoolid'] = array(
             array(self::buildProfileQuery('WHERE  p.xorg_id = {?}', 20060076),
                 new UFC_SchoolId(UFC_SchoolId::Xorg, 20060076), 1),
             array(self::buildProfileQuery('WHERE  p.ax_id = {?}', 20060062),
@@ -235,7 +235,7 @@ class UserFilterTest extends PlTestCase
         $id_HEC = XDB::fetchOneCell('SELECT  id
                                        FROM  profile_education_enum
                                       WHERE  abbreviation = {?}', 'HEC');
-        $tests[] = array(
+        $tests['school'] = array(
             array(self::buildProfileQuery('INNER JOIN  profile_education AS pe ON (pe.pid = p.pid)
                                             LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
                                                 WHERE  pee.abbreviation = {?}', 'X'),
@@ -254,7 +254,7 @@ class UserFilterTest extends PlTestCase
         $id_DegreePhd = XDB::fetchOneCell('SELECT  id
                                              FROM  profile_education_degree_enum
                                             WHERE  abbreviation = {?}', 'PhD');
-        $tests[] = array(
+        $tests['degree'] = array(
             array(self::buildProfileQuery('INNER JOIN  profile_education AS pe ON (pe.pid = p.pid)
                                             LEFT JOIN  profile_education_degree_enum AS pede ON (pe.degreeid = pede.id)
                                                 WHERE  pede.abbreviation = {?}', 'Ing.'),
@@ -273,7 +273,7 @@ class UserFilterTest extends PlTestCase
                                               FROM  profile_education_field_enum
                                              WHERE  field = {?}', 'Droit');
         // FIXME: Replace 0 by -1 in following queries when profile_education will be filled with fieldids
-        $tests[] = array(
+        $tests['edufield'] = array(
             array(self::buildProfileQuery('INNER JOIN  profile_education AS pe ON (pe.pid = p.pid)
                                             LEFT JOIN  profile_education_field_enum AS pefe ON (pe.fieldid = pefe.id)
                                                 WHERE  pefe.field = {?}', 'Informatique'),
@@ -292,7 +292,7 @@ class UserFilterTest extends PlTestCase
         $id_Lastname_Marital = DirEnum::getID(DirEnum::NAMETYPES, Profile::LASTNAME . '_' . Profile::VN_MARITAL);
         $id_Lastname_Ordinary = DirEnum::getID(DirEnum::NAMETYPES, Profile::LASTNAME . '_' . Profile::VN_ORDINARY);
 
-        $tests[] = array(
+        $tests['name'] = array(
             // Lastname
             array(self::buildProfileQuery('LEFT JOIN  profile_name AS pn ON (pn.pid = p.pid)
                                                WHERE  pn.name LIKE {?} AND pn.typeid = {?}', 'BARROIS', $id_Lastname),
@@ -386,7 +386,7 @@ class UserFilterTest extends PlTestCase
 
             /* UFC_NameTokens
              */
-        $tests[] = array(
+        $tests['nametoken'] = array(
             // !soundex, !exact
             array(self::buildProfileQuery('LEFT JOIN  search_name AS sn ON (p.pid = sn.pid)
                                                WHERE  sn.token LIKE \'xelnor%\''),
@@ -438,7 +438,7 @@ class UserFilterTest extends PlTestCase
 
         /* UFC_Nationality
          */
-        $tests[] = array(
+        $tests['nationality'] = array(
             array(self::buildProfileQuery('WHERE p.nationality1 IN {?} OR p.nationality2 IN {?} OR p.nationality3 IN {?}', array('BR'), array('BR'), array('BR')),
                 new UFC_Nationality('BR'), -1),
             array(self::buildProfileQuery('WHERE p.nationality1 IN {?} OR p.nationality2 IN {?} OR p.nationality3 IN {?}', array('BR', 'US'), array('BR', 'US'), array('BR', 'US')),
@@ -449,7 +449,7 @@ class UserFilterTest extends PlTestCase
 
         /* UFC_Dead
          */
-        $tests[] = array(
+        $tests['dead'] = array(
             array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL'),
                 new UFC_Dead(), -1),
             array(self::buildProfileQuery('WHERE p.deathdate IS NOT NULL AND p.deathdate > {?}', '2008-01-01'),
@@ -462,7 +462,7 @@ class UserFilterTest extends PlTestCase
 
         /* UFC_Registered
          */
-        $tests[] = array(
+        $tests['register'] = array(
             array(self::buildAccountQuery('WHERE a.uid IS NOT NULL AND a.state = \'active\''),
                 new UFC_Registered(true), -1),
             array(self::buildAccountQuery('WHERE a.uid IS NOT NULL AND a.state != \'pending\''),
@@ -482,8 +482,10 @@ class UserFilterTest extends PlTestCase
         );
 
         $testcases = array();
-        foreach ($tests as $t) {
-            $testcases = array_merge($testcases, $t);
+        foreach ($tests as $name => $t) {
+            foreach ($t as $id => $case) {
+                $testcases[$name . '-' . $id] = $case;
+            }
         }
         return $testcases;
     }
