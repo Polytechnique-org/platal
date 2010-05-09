@@ -1489,7 +1489,7 @@ class UFO_Uid extends UserFilterOrder
         return 'a.uid';
     }
 }
-// }}
+// }}}
 
 // {{{ class UFO_Hruid
 /** Sorts users based on their hruid
@@ -1515,7 +1515,7 @@ class UFO_Pid extends UserFilterOrder
         return 'p.pid';
     }
 }
-// }}
+// }}}
 
 // {{{ class UFO_Hrpid
 /** Sorts users based on their hrpid
