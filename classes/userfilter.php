@@ -155,6 +155,9 @@ class UFC_Promo implements UserFilterCondition
         if ($this->grade != UserFilter::DISPLAY) {
             UserFilter::assertGrade($this->grade);
         }
+        if ($this->grade == UserFilter::DISPLAY && $this->comparison != '=') {
+            Platal::page()->killError('Comparison ' . $this->comparison . ' not allowed on displaid promo');
+        }
     }
 
     public function buildCondition(PlFilter &$uf)
@@ -1430,6 +1433,7 @@ class UFO_Registration extends UserFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
+        $uf->requireAccounts();
         return 'a.registration_date';
     }
 }
@@ -1442,6 +1446,7 @@ class UFO_Birthday extends UserFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
+        $uf->requireProfiles();
         return 'p.next_birthday';
     }
 }
@@ -1454,6 +1459,7 @@ class UFO_ProfileUpdate extends UserFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
+        $uf->requireProfiles();
         return 'p.last_change';
     }
 }
@@ -1466,7 +1472,60 @@ class UFO_Death extends UserFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
+        $uf->requireProfiles();
         return 'p.deathdate';
+    }
+}
+// }}}
+
+// {{{ class UFO_Uid
+/** Sorts users based on their uid
+ */
+class UFO_Uid extends UserFilterOrder
+{
+    protected function getSortTokens(PlFilter &$uf)
+    {
+        $uf->requireAccounts();
+        return 'a.uid';
+    }
+}
+// }}
+
+// {{{ class UFO_Hruid
+/** Sorts users based on their hruid
+ */
+class UFO_Hruid extends UserFilterOrder
+{
+    protected function getSortTokens(PlFilter &$uf)
+    {
+        $uf->requireAccounts();
+        return 'a.hruid';
+    }
+}
+// }}}
+
+// {{{ class UFO_Pid
+/** Sorts users based on their pid
+ */
+class UFO_Pid extends UserFilterOrder
+{
+    protected function getSortTokens(PlFilter &$uf)
+    {
+        $uf->requireProfiles();
+        return 'p.pid';
+    }
+}
+// }}
+
+// {{{ class UFO_Hrpid
+/** Sorts users based on their hrpid
+ */
+class UFO_Hrpid extends UserFilterOrder
+{
+    protected function getSortTokens(PlFilter &$uf)
+    {
+        $uf->requireProfiles();
+        return 'p.hrpid';
     }
 }
 // }}}

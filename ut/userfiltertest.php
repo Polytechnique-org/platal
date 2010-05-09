@@ -114,15 +114,6 @@ class UserFilterTest extends PlTestCase
             array(self::buildProfileQuery('INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
                                                 WHERE  pd.promo = {?}', 'X2004'),
                 new UFC_Promo('=', UserFilter::DISPLAY, 'X2004'), -1),
-            array(self::buildProfileQuery('INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
-                                                WHERE  pd.promo < {?}', 'X2004'),
-                new UFC_Promo('<', UserFilter::DISPLAY, 'X2004'), -1),
-            array(self::buildProfileQuery('INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
-                                                WHERE  pd.promo > {?}', 'X2004'),
-                new UFC_Promo('>', UserFilter::DISPLAY, 'X2004'), -1),
-            array(self::buildProfileQuery('INNER JOIN  profile_display AS pd ON (pd.pid = p.pid)
-                                                WHERE  pd.promo < {?}', 'X1900'),
-                new UFC_Promo('<', UserFilter::DISPLAY, 'X1900'), 0),
 
             array(self::buildProfileQuery('INNER JOIN  profile_education AS pe ON (pe.pid = p.pid)
                                             LEFT JOIN  profile_education_enum AS pee ON (pe.eduid = pee.id)
@@ -583,6 +574,74 @@ class UserFilterTest extends PlTestCase
         $this->assertEquals($count, $uf->getTotalProfileCount());
     }
 
+
+    public static function sortProvider()
+    {
+        return array(
+            array(self::buildAccountQuery('ORDER BY  a.uid'), new UFO_Uid()),
+            array(self::buildAccountQuery('ORDER BY  a.hruid'), new UFO_Hruid()),
+            array(self::buildAccountQuery('ORDER BY  a.uid DESC'), new UFO_Uid(true)),
+            array(self::buildAccountQuery('ORDER BY  a.hruid DESC'), new UFO_Hruid(true)),
+            array(self::buildProfileQuery('ORDER BY  p.pid'), new UFO_Pid()),
+            array(self::buildProfileQuery('ORDER BY  p.hrpid'), new UFO_Hrpid()),
+            array(self::buildProfileQuery('ORDER BY  p.pid DESC'), new UFO_Pid(true)),
+            array(self::buildProfileQuery('ORDER BY  p.hrpid DESC'), new UFO_Hrpid(true)),
+            array(self::buildProfileQuery('WHERE  p.deathdate IS NOT NULL
+                                        ORDER BY  p.deathdate, p.pid'),
+                                          array(new UFO_Death(), new UFO_Pid()), new UFC_Dead()),
+            array(self::buildProfileQuery('WHERE  p.deathdate IS NOT NULL
+                                        ORDER BY  p.deathdate DESC, p.pid'),
+                                          array(new UFO_Death(true), new UFO_Pid()), new UFC_Dead()),
+        );
+    }
+
+    /**
+     * @dataProvider sortProvider
+     */
+    public function testUserSortAndLimits($query, $sort, $cond = null)
+    {
+        self::checkPlatal();
+
+        $query = XDB::query($query[0]);
+        $count = $query->numRows();
+        $ids = $query->fetchColumn();
+        $this->assertSame($count, count($ids));
+
+        if ($cond == null ) {
+            $cond = new PFC_True();
+        }
+        $uf = new UserFilter($cond, $sort);
+        for ($i = 0 ; $i < $count ; $i += 7987) {
+            $got = $uf->getUIDs(new PlLimit(100, $i));
+            $this->assertSame($count, $uf->getTotalUserCount());
+            $part = array_slice($ids, $i, 100);
+            $this->assertSame($part, $got);
+        }
+    }
+
+    /**
+     * @dataProvider sortProvider
+     */
+    public function testProfileSortAndLimits($query, $sort, $cond = null)
+    {
+        self::checkPlatal();
+
+        $query = XDB::query($query[1]);
+        $count = $query->numRows();
+        $ids = $query->fetchColumn();
+        $this->assertSame($count, count($ids));
+
+        if ($cond == null ) {
+            $cond = new PFC_True();
+        }
+        $uf = new UserFilter($cond, $sort);
+        for ($i = 0 ; $i < $count ; $i += 7987) {
+            $got = $uf->getPIDs(new PlLimit(100, $i));
+            $this->assertSame($count, $uf->getTotalProfileCount());
+            $part = array_slice($ids, $i, 100);
+            $this->assertSame($part, $got);
+        }
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
