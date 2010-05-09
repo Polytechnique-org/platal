@@ -592,6 +592,18 @@ class UserFilterTest extends PlTestCase
             array(self::buildProfileQuery('WHERE  p.deathdate IS NOT NULL
                                         ORDER BY  p.deathdate DESC, p.pid'),
                                           array(new UFO_Death(true), new UFO_Pid()), new UFC_Dead()),
+            array(self::buildProfileQuery('ORDER BY  p.next_birthday, p.pid'),
+                  array(new UFO_Birthday(), new UFO_Pid())),
+            array(self::buildProfileQuery('ORDER BY  p.next_birthday DESC, p.pid'),
+                  array(new UFO_Birthday(true), new UFO_Pid())),
+            array(self::buildProfileQuery('ORDER BY  p.last_change, p.pid'),
+                  array(new UFO_ProfileUpdate(), new UFO_Pid())),
+            array(self::buildProfileQuery('ORDER BY  p.last_change DESC, p.pid'),
+                  array(new UFO_ProfileUpdate(true), new UFO_Pid())),
+            array(self::buildAccountQuery('ORDER BY  a.registration_date, a.uid'),
+                  array(new UFO_Registration(), new UFO_Uid())),
+            array(self::buildAccountQuery('ORDER BY  a.registration_date DESC, a.uid'),
+                  array(new UFO_Registration(true), new UFO_Uid())),
         );
     }
 
