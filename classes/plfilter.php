@@ -246,10 +246,14 @@ abstract class PFC_NChildren implements PlFilterCondition
 
     public function __construct()
     {
-        $children = func_get_args();
-        foreach ($children as &$child) {
-            if (!is_null($child) && ($child instanceof PlFilterCondition)) {
-                $this->addChild($child);
+        $this->addChildren(pl_flatten(func_get_args()));
+    }
+
+    public function addChildren(array $conds)
+    {
+        foreach ($conds as &$cond) {
+            if (!is_null($cond) && ($cond instanceof PlFilterCondition)) {
+                $this->addChild($cond);
             }
         }
     }
