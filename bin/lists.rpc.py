@@ -882,8 +882,11 @@ def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, ins
 
     # avoid the "-1 mail to moderate" bug
     mlist = MailList.MailList(name)
-    mlist._UpdateRecords()
-    mlist.Save()
+    try:
+        mlist._UpdateRecords()
+        mlist.Save()
+    finally:
+        mlist.Unlock()
     return 1
 
 def delete_list(userdesc, perms, mlist, del_archives=0):
