@@ -153,6 +153,23 @@ class AXLetterModule extends PLModule
             }
 
             switch (@Post::v('valid')) {
+              case 'Vérifier':
+                // Same as 'preview', but performs a test of all provided emails
+                if ($subset) {
+                    require_once 'emails.inc.php';
+                    $ids = ids_from_mails($subset_to);
+                    $has_error = false;
+                    foreach ($subset_to as $e) {
+                        if (!array_key_exists($e, $ids)) {
+                            if (!$has_error) {
+                                $page->trigError("Emails inconnus :");
+                                $has_error = true;
+                            }
+                            $page->trigError($e);
+                        }
+                    }
+                }
+                // XXX : no break here, since Vérifier is a subcase of Aperçu.
               case 'Aperçu':
                 $this->load('axletter.inc.php');
                 $al = new AXLetter(array($id, $short_name, $subject, $title, $body, $signature,

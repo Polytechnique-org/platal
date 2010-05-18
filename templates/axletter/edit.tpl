@@ -109,6 +109,9 @@
     <input type="hidden" name="echeance" value="{$echeance}" />
     {/if}
     <input type="submit" name="valid" value="Aperçu" />
+    {if $subset}
+    <input type="submit" name="valid" value="Vérifier" />
+    {/if}
     {if !$new}
     <input type="submit" name="valid" value="Confirmer" />
     {/if}

@@ -151,7 +151,7 @@ function ids_from_mails(array $emails)
                             WHERE   email IN ($list)");
         foreach ($res->fetchAllRow() as $row) {
             list ($email, $uid) = $row;
-            $uids[$other_mails[$email]] = $uid;
+            $uids[$email] = $uid;
         }
     }
 
