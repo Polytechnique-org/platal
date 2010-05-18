@@ -801,16 +801,15 @@ class XnetGrpModule extends PLModule
                             WHERE  a.alias = {?}",
                           $login);
         if ($res->numRows() == 0) {
-            // TODO: replace this call to a removed function.
-            $x = get_not_registered_user($login);
-            if (!$x) {
-                $page->trigError("Le login $login ne correspond à aucun X.");
+            $accounts = User::getPendingAccounts($login);
+            if (!$accounts) {
+                $page->trigError("L'identifiant $login ne correspond à aucun X.");
                 return false;
-            } else if (count($x) > 1) {
-                $page->trigError("Le login $login correspond a plusieurs camarades.");
+            } else if (count($accounts) > 1) {
+                $page->trigError("L'identifiant $login correspond à plusieurs camarades.");
                 return false;
             }
-            $uid = $x[0]['uid'];
+            $uid = $accounts[0]['uid'];
             $sub = false;
         } else {
             list($uid, $login) = $res->fetchOneRow();

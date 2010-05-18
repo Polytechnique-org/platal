@@ -582,8 +582,7 @@ class ListsModule extends PLModule
     {
         global $list_unregistered, $globals;
 
-        /* TODO: fixes this call to a removed function. */
-        $users = get_not_registered_user($login, true);
+        $users = User::getPendingAccounts($login, true);
         if ($users && $users->total()) {
             if (!isset($list_unregistered)) {
                 $list_unregistered = array();

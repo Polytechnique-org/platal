@@ -653,6 +653,35 @@ class User extends PlUser
             || $dom == $globals->mail->alias_dom2;
     }
 
+    /* Tries to find pending accounts with an hruid close to $login. */
+    public static function getPendingAccounts($login, $iterator = false)
+    {
+        global $globals;
+
+        if (strpos($login, '@') === false) {
+            return null;
+        }
+
+        list($login, $domain) = explode('@', $login);
+
+        if ($domain && $domain != $globals->mail->domain && $domain != $globals->mail->domain2) {
+            return null;
+        }
+
+        $sql = "SELECT  uid, full_name
+                  FROM  accounts
+                 WHERE  state = 'pending' AND REPLACE(hruid, '-', '') LIKE
+                        CONCAT('%', REPLACE(REPLACE(REPLACE({?}, ' ', ''), '-', ''), '\'', ''), '%')
+              ORDER BY  full_name";
+        if ($iterator) {
+            return XDB::iterator($sql, $login);
+        } else {
+            $res = XDB::query($sql, $login);
+            return $res->fetchAllAssoc();
+        }
+    }
+
+
     public static function iterOverUIDs($uids, $respect_order = true)
     {
         return new UserIterator(self::loadMainFieldsFromUIDs($uids, $respect_order));
