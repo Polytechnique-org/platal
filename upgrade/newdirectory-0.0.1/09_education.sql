@@ -495,6 +495,9 @@ WHERE name = 'Univ Cardiff';
 UPDATE profile_education_enum
 SET abbreviation = 'UNSW', name = 'The University of New South Wales', country = 'AU'
 WHERE name = 'Univ New South Wales  (Sydney Australia)';
+UPDATE profile_education_enum
+SET abbreviation = 'USyd', country = 'AU'
+WHERE name = 'University of Sydney';
 
 UPDATE profile_education_enum
 SET abbreviation = 'THU', name = 'Tsinghua University', country = 'CN'
