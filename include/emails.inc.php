@@ -99,11 +99,11 @@ function ids_from_mails(array $emails)
         if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
             list($user) = explode('+', $user);
             list($user) = explode('_', $user);
-            $alias_mails[$user] = $email;
+            $alias_mails[$email] = $user . "@" . $globals->mail->alias_dom;
         } elseif ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
             list($user) = explode('+', $user);
             list($user) = explode('_', $user);
-            $domain_mails[$user] = $email;
+            $domain_mails[$email] = $user;
         } else {
             $other_mails[] = $email;
         }
@@ -111,44 +111,45 @@ function ids_from_mails(array $emails)
     $uids = array();
 
     // Look up user ids for addresses in domain
+    $alias_uids = array();
     if (count($domain_mails)) {
-        $domain_users = array_map(array('XDB', 'escape'), array_keys($domain_mails));
-        $list = implode(',', $domain_users);
         $res = XDB::query("SELECT   alias, uid
                              FROM   aliases
-                            WHERE   alias IN ($list)");
+                            WHERE   alias IN {?}", array_unique($domain_mails));
         foreach ($res->fetchAllRow() as $row) {
             list ($alias, $id) = $row;
-            $uids[$domain_mails[$alias]] = $id;
+            $domain_uids[$alias] = $id;
         }
+    }
+    // Connect emails with uids
+    foreach ($domain_mails as $email => $user) {
+        $uids[$email] = $domain_uids[$user];
     }
 
     // Look up user ids for addresses in our alias domain
+    $alias_uids = array();
     if (count($alias_mails)) {
-        $alias_users = array();
-        foreach (array_keys($alias_mails) as $user) {
-            $alias_users[] = XDB::escape($user."@".$globals->mail->alias_dom);
-        }
-        $list = implode(',', $alias_users);
         $res = XDB::query("SELECT   v.alias, a.uid
                              FROM   virtual             AS v
                        INNER JOIN   virtual_redirect    AS r USING(vid)
                        INNER JOIN   aliases             AS a ON (a.type = 'a_vie'
                                     AND r.redirect = CONCAT(a.alias, '@{$globals->mail->domain2}'))
-                            WHERE   v.alias IN ($list)");
+                            WHERE   v.alias IN {?}", array_unique($alias_mails));
         foreach ($res->fetchAllRow() as $row) {
             list ($alias, $id) = $row;
-            $uids[$alias_mails[$alias]] = $id;
+            $alias_uids[$alias] = $id;
         }
+    }
+    // Connect emails with uids
+    foreach ($alias_mails as $email => $user) {
+        $uids[$email] = $alias_uids[$user];
     }
 
     // Look up user ids for other addresses in the email redirection list
     if (count($other_mails)) {
-        $other_users = array_map(array('XDB', 'escape'), $other_mails);
-        $list = implode(',', $other_users);
         $res = XDB::query("SELECT   email, uid
                              FROM   emails
-                            WHERE   email IN ($list)");
+                            WHERE   email IN {?}", $other_mails);
         foreach ($res->fetchAllRow() as $row) {
             list ($email, $uid) = $row;
             $uids[$email] = $uid;
