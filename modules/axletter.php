@@ -158,16 +158,22 @@ class AXLetterModule extends PLModule
                 if ($subset) {
                     require_once 'emails.inc.php';
                     $ids = ids_from_mails($subset_to);
-                    $has_error = false;
+                    $nb_error = 0;
                     foreach ($subset_to as $e) {
                         if (!array_key_exists($e, $ids)) {
-                            if (!$has_error) {
+                            if ($nb_error == 0) {
                                 $page->trigError("Emails inconnus :");
-                                $has_error = true;
                             }
+                            $nb_error++;
                             $page->trigError($e);
                         }
                     }
+                    if ($nb_error == 0) {
+                        $page->trigSuccess("Les " . count($subset_to) . " emails soumis ont été reconnus avec succès.");
+                    } else {
+                        $page->trigError("Total : $nb_error erreur" . ($nb_error > 1 ? "s" : "") . " sur " . count($subset_to) . " adresses mail soumises.");
+                    }
+                    $page->trigSuccess("Les adresses soumises correspondent à un total de " . count(array_unique($ids)) . " camarades.");
                 }
                 // XXX : no break here, since Vérifier is a subcase of Aperçu.
               case 'Aperçu':
