@@ -672,7 +672,7 @@ class ProfilePhones extends ProfileField
 
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
-        $data = XDB::iterator('SELECT  tel_type AS type, search_tel AS search, display_tel AS display, link_type, comment
+        $data = XDB::iterator('SELECT  tel_type AS type, search_tel AS search, display_tel AS display, link_type, comment, pid
                                  FROM  profile_phones
                                 WHERE  pid IN {?} AND pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
