@@ -395,7 +395,7 @@ class AdminModule extends PLModule
             pl_redirect("admin/logger?loguser=$login&year=".date('Y')."&month=".date('m'));
         }
 
-        if(Post::has('su_button') && $registered) {
+        if(Post::has('su_account') && $registered) {
             if (!Platal::session()->startSUID($user)) {
                 $page->trigError('Impossible d\'effectuer un SUID sur ' . $user->login());
             } else {
