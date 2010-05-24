@@ -30,6 +30,7 @@ class DirEnum
      * being DE_$basename).
      */
     const NAMETYPES      = 'nametypes';
+    const NAMES          = 'names';
 
     const BINETS         = 'binets';
     const GROUPESX       = 'groupesx';
@@ -424,6 +425,18 @@ class DE_NameTypes extends DirEnumeration
 
     protected $from     = 'profile_name_enum';
     protected $valfield = 'type';
+}
+// }}}
+
+// {{{ class DE_Names
+// returns 'system' names ('lastname', 'lastname_marital', ...)
+class DE_Names extends DirEnumeration
+{
+    public $capabilities = 0x005; // self::HAS_OPTIONS | self::SAVE_IN_SESSION;
+
+    protected $from     = 'profile_name_enum';
+    protected $idfield  = 'type';
+    protected $valfield = 'name';
 }
 // }}}
 

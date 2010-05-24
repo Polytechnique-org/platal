@@ -23,6 +23,11 @@ class ProfileSettingSearchNames implements ProfileSetting
 {
     private $private_name_end;
     private $search_names;
+    private $name_types;
+
+    public function __construct() {
+            $this->name_types = DirEnum::getOptions(DirEnum::NAMES);
+    }
 
     private function matchWord($old, $new, $newLen)
     {
@@ -47,10 +52,31 @@ class ProfileSettingSearchNames implements ProfileSetting
                    || ($field == 'lastname' && $new == 'DE ' . $ini);
         if (!$success) {
             $field = strtolower($field);
-            Platal::page()->trigError("Le " . $field . " que tu as choisi (" . $value .
-                                      ") est trop loin de ton " . $field . " initial (" . $init . ").");
+            Platal::page()->trigError("Le " . $this->name_types[$field] . " que tu as choisi (" . $value .
+                                      ") est trop loin de ton " . $this->name_types[$field] . " initial (" . $init . ").");
         }
         return $success ? $value : $init;
+    }
+
+    /* Removes duplicated entries for the fields that do not allow them. */
+    private function clean($value)
+    {
+        $single_types = XDB::fetchAllAssoc('id',
+                                           'SELECT  id, 0
+                                              FROM  profile_name_enum
+                                             WHERE  NOT FIND_IN_SET(\'allow_duplicates\', flags)');
+
+        foreach ($value as $key => $item) {
+            if (isset($single_types[$item['typeid']])) {
+                if ($single_types[$item['typeid']] === true) {
+                    unset($value[$key]);
+                } else {
+                    $single_types[$item['typeid']] = true;
+                }
+            }
+        }
+
+        return $value;
     }
 
     public function value(ProfilePage &$page, $field, $value, &$success)
@@ -101,9 +127,11 @@ class ProfileSettingSearchNames implements ProfileSetting
                     $value[] = $sn;
                 } while ($sn = $sn_all->next());
             }
+            $value = $this->clean($value);
         } else {
             require_once 'name.func.inc.php';
 
+            $value = $this->clean($value);
             $res = XDB::query("SELECT  s.particle, s.name
                                  FROM  profile_name      AS s
                            INNER JOIN  profile_name_enum AS e ON (e.id = s.typeid)
@@ -184,8 +212,8 @@ class ProfileSettingSearchNames implements ProfileSetting
         if ($has_new) {
             $new_names = new NamesReq(S::user(), $this->search_names, $this->private_name_end);
             $new_names->submit();
-            Platal::page()->trigWarning("La demande de modification de tes noms a bien été prise en compte." .
-                                        " Tu recevras un email dès que ces changements auront été effectués.");
+            Platal::page()->trigWarning('La demande de modification de tes noms a bien été prise en compte.' .
+                                        ' Tu recevras un email dès que ces changements auront été effectués.');
         } else {
             $display_names = array();
             build_display_names($display_names, $this->search_names, $this->private_name_end);
