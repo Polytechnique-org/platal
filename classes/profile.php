@@ -897,7 +897,7 @@ class Profile
                                 WHERE  n.pid = {?}",
                               $pid);
 
-        foreach ($keys as $i => $key) {
+        while ($key = $keys->next()) {
             if ($key['name'] == '') {
                 continue;
             }

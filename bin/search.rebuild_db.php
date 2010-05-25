@@ -20,17 +20,17 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require('./connect.db.inc.php');
+require './connect.db.inc.php';
 
-ini_set('memory_limit', "16M");
+ini_set('memory_limit', '16M');
 $globals->debug = 0; // Do not store backtraces
 
 $res = XDB::iterRow('SELECT  pid
                        FROM  profiles');
 $i = 0;
 $n = $res->total();
-while ($pid = $res->next()->fetchOneCell()) {
-    Profile::rebuildSearchTokens($pid);
+while ($pid = $res->next()) {
+    Profile::rebuildSearchTokens(intval($pid[0]));
     printf("\r%u / %u",  ++$i, $n);
 }
 
