@@ -395,7 +395,7 @@ class RegisterModule extends PLModule
         $mymail->send();
 
         // Index the user, to allow her to appear in searches.
-        Profile::rebuildSearchTokens($uid);
+        Profile::rebuildSearchTokens($pid);
 
         // Notify other users which were watching for her arrival.
         XDB::execute('REPLACE INTO  contacts (uid, contact)
