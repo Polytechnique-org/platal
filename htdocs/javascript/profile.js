@@ -79,10 +79,10 @@ function addSearchName()
     });
 }
 
-function removeSearchName(i)
+function removeSearchName(i, isFemale)
 {
     $('#search_name_' + i).remove();
-    updateNameDisplay();
+    updateNameDisplay(isFemale);
 }
 
 function changeNameFlag(i)
@@ -104,7 +104,7 @@ function changeNameFlag(i)
     }
 }
 
-function updateNameDisplay()
+function updateNameDisplay(isFemale)
 {
     var searchnames = '';
     for (var i = 0; i < 10; i++) {
@@ -113,7 +113,7 @@ function updateNameDisplay()
             searchnames += $('#search_name_' + i).find(':text').val() + ';;';
         }
     }
-    Ajax.update_html(null, 'profile/ajax/buildnames/' + searchnames, function(data){
+    Ajax.update_html(null, 'profile/ajax/buildnames/' + searchnames + '/' + isFemale, function(data){
         var name = data.split(';');
         $('#public_name').html(name[0]);
         $('#private_name').html(name[0] + name[1]);

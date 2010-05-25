@@ -45,12 +45,13 @@ class NamesReq extends Validate
         require_once 'name.func.inc.php';
 
         $this->sn_types  = build_types();
-        $this->sn_old    = build_sn_pub();
+        $this->sn_old    = build_sn_pub($this->user->profile()->id());
         $this->sn_new    = $_search_names;
         $this->new_alias = true;
         $this->display_names = array();
 
-        build_display_names($this->display_names, $_search_names, $_private_name_end, $this->new_alias);
+        build_display_names($this->display_names, $_search_names,
+                            $this->user->profile()->isFemale(), $_private_name_end, $this->new_alias);
         foreach ($this->sn_new AS $key => &$sn) {
             if (!isset($sn['pub'])) {
                 unset($this->sn_new[$key]);
@@ -124,8 +125,9 @@ class NamesReq extends Validate
     {
         require_once 'name.func.inc.php';
 
-        set_profile_display($this->display_names);
-        set_alias_names($this->sn_new, $this->sn_old, true, $this->new_alias);
+        set_profile_display($this->display_names, $this->user->profile()->id());
+        set_alias_names($this->sn_new, $this->sn_old, $this->user->profile()->id(),
+                        $this->user->id(), true, $this->new_alias);
 
         // Update the local User object, to pick up the new bestalias.
         $this->user = User::getSilent($this->user->id());

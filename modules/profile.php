@@ -483,12 +483,12 @@ class ProfileModule extends PLModule
         $page->assign('i', $id);
     }
 
-    function handler_ajax_buildnames(&$page, $data)
+    function handler_ajax_buildnames(&$page, $data, $isFemale)
     {
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/general.buildnames.tpl', NO_SKIN);
         require_once 'name.func.inc.php';
-        $page->assign('names', build_javascript_names($data));
+        $page->assign('names', build_javascript_names($data, $isFemale));
     }
 
     function handler_referent(&$page, $pf)

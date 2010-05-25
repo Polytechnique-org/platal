@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function build_javascript_names($data)
+function build_javascript_names($data, $isFemale)
 {
     $data_array = explode(';;', $data);
     $n = count($data_array);
@@ -35,15 +35,15 @@ function build_javascript_names($data)
 
     $sn_types_public  = build_types('public');
     $sn_types_private = build_types('private');
-    $full_name        = build_full_name($search_names, $sn_types_public);
+    $full_name        = build_full_name($search_names, $sn_types_public, $isFemale);
     return build_public_name($search_names, $sn_types_public, $full_name) . ';' .
            build_private_name($search_names, $sn_types_private);
 }
 
-function build_display_names(&$display_names, $search_names, $private_name_end = null, &$alias = null)
+function build_display_names(&$display_names, $search_names, $isFemale, $private_name_end = null, &$alias = null)
 {
     $sn_types_public  = build_types('public');
-    $full_name        = build_full_name($search_names, $sn_types_public);
+    $full_name        = build_full_name($search_names, $sn_types_public, $isFemale);
     $display_names['public_name']    = build_public_name($search_names, $sn_types_public, $full_name);
     $display_names['private_name']   = $display_names['public_name'] . $private_name_end;
     $display_names['directory_name'] = build_directory_name($search_names, $sn_types_public, $full_name);
@@ -75,7 +75,7 @@ function build_types($pub = null)
     return $types;
 }
 
-function build_full_name(&$search_names, &$sn_types)
+function build_full_name(&$search_names, &$sn_types, $isFemale)
 {
     $name = "";
     if (isset($search_names[$sn_types['lastname_ordinary']])) {
@@ -88,8 +88,7 @@ function build_full_name(&$search_names, &$sn_types)
         || isset($search_names[$sn_types['pseudonym']])) {
         $name .= " (";
         if (isset($search_names[$sn_types['lastname_marital']])) {
-            $user = S::user();
-            if ($user->isFemale()) {
+            if ($isFemale) {
                 $name .= "Mme ";
             } else {
                 $name .= "M ";
@@ -190,7 +189,7 @@ function build_sort_name(&$search_names, &$sn_types)
     return $name;
 }
 
-function set_profile_display(&$display_names)
+function set_profile_display(&$display_names, $pid)
 {
     XDB::execute("UPDATE  profile_display
                      SET  public_name = {?}, private_name = {?},
@@ -198,10 +197,10 @@ function set_profile_display(&$display_names)
                    WHERE  pid = {?}",
                  $display_names['public_name'], $display_names['private_name'],
                  $display_names['directory_name'], $display_names['short_name'],
-                 $display_names['sort_name'], S::v('uid'));
+                 $display_names['sort_name'], $pid);
 }
 
-function build_sn_pub()
+function build_sn_pub($pid)
 {
     $res = XDB::iterator("SELECT  CONCAT(sn.particle, sn.name) AS fullname, sn.typeid,
                                   sn.particle, sn.name, sn.id
@@ -210,7 +209,7 @@ function build_sn_pub()
                            WHERE  sn.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)
                                   AND FIND_IN_SET('public', e.flags)
                         ORDER BY  NOT FIND_IN_SET('always_displayed', e.flags), e.id, sn.name",
-                        S::i('uid'));
+                         $pid);
     $sn_old = array();
     while ($old = $res->next()) {
         $sn_old[$old['typeid']] = array('fullname' => $old['fullname'],
@@ -221,7 +220,7 @@ function build_sn_pub()
     return $sn_old;
 }
 
-function set_alias_names(&$sn_new, $sn_old, $update_new = false, $new_alias = null)
+function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $new_alias = null)
 {
     $has_new = false;
     foreach ($sn_new as $typeid => $sn) {
@@ -230,13 +229,13 @@ function set_alias_names(&$sn_new, $sn_old, $update_new = false, $new_alias = nu
                 XDB::execute("UPDATE  profile_name
                                  SET  particle = {?}, name = {?}, typeid = {?}
                                WHERE  id = {?} AND pid = {?}",
-                             $sn['particle'], $sn['name'], $typeid, $sn_old[$typeid]['id'], S::i('uid'));
+                             $sn['particle'], $sn['name'], $typeid, $sn_old[$typeid]['id'], $pid);
                 unset($sn_old[$typeid]);
             } elseif ($update_new
                       || (isset($sn_old[$typeid]) && $sn_old[$typeid]['fullname'] == $sn['fullname'])) {
                 XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
                                    VALUES  ({?}, {?}, {?}, {?})",
-                             $sn['particle'], $sn['name'], $typeid, S::i('uid'));
+                             $sn['particle'], $sn['name'], $typeid, $pid);
                 unset($sn_old[$typeid]);
             } else {
                 $has_new = true;
@@ -245,13 +244,13 @@ function set_alias_names(&$sn_new, $sn_old, $update_new = false, $new_alias = nu
             if ($sn['fullname'] != '') {
                 XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
                                    VALUES  ('', {?}, {?}, {?})",
-                             $sn['fullname'], $typeid, S::i('uid'));
+                             $sn['fullname'], $typeid, $pid);
             }
             $i = 0;
             while (isset($sn[$i])) {
                 XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
                                    VALUES  ('', {?}, {?}, {?})",
-                             $sn[$i], $typeid, S::i('uid'));
+                             $sn[$i], $typeid, $pid);
                 $i++;
             }
         }
@@ -262,27 +261,27 @@ function set_alias_names(&$sn_new, $sn_old, $update_new = false, $new_alias = nu
             foreach ($sn_old as $typeid => $sn) {
                 XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
                                    VALUES  ({?}, {?}, {?}, {?})",
-                             $sn['particle'], $sn['name'], $typeid, S::i('uid'));
+                             $sn['particle'], $sn['name'], $typeid, $pid);
             }
         } else {
             foreach ($sn_old as $typeid => $sn) {
                 XDB::execute("DELETE FROM  profile_name
                                     WHERE  pid = {?} AND id = {?}",
-                             S::i('uid'), $sn['id']);
+                             $pid, $sn['id']);
             }
         }
     }
     if ($update_new) {
         XDB::execute("DELETE FROM  aliases
                             WHERE  FIND_IN_SET('usage', flags) AND uid = {?}",
-                     S::i('uid'));
+                     $uid);
     }
     if ($new_alias) {
         XDB::execute("INSERT INTO  aliases (alias, type, flags, uid)
                            VALUES  ({?}, 'alias', 'usage', {?})",
-                     $new_alias, S::i('uid'));
+                     $new_alias, $uid);
     }
-    Profile::rebuildSearchTokens(S::i('uid'));
+    Profile::rebuildSearchTokens($pid);
     return $has_new;
 }
 

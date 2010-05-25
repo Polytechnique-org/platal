@@ -200,13 +200,13 @@ class ProfileSettingSearchNames implements ProfileSetting
     public function save(ProfilePage &$page, $field, $value)
     {
         require_once 'name.func.inc.php';
-        $sn_old = build_sn_pub();
+        $sn_old = build_sn_pub($page->pid());
         XDB::execute("DELETE FROM  s
                             USING  profile_name      AS s
                        INNER JOIN  profile_name_enum AS e ON (s.typeid = e.id)
                             WHERE  s.pid = {?} AND NOT FIND_IN_SET('not_displayed', e.flags)",
                      $page->pid());
-        $has_new = set_alias_names($this->search_names, $sn_old);
+        $has_new = set_alias_names($this->search_names, $sn_old, $page->pid(), $page->owner->id());
 
         // Only requires validation if modification in public names
         if ($has_new) {
@@ -216,8 +216,9 @@ class ProfileSettingSearchNames implements ProfileSetting
                                         ' Tu recevras un email dès que ces changements auront été effectués.');
         } else {
             $display_names = array();
-            build_display_names($display_names, $this->search_names, $this->private_name_end);
-            set_profile_display($display_names);
+            build_display_names($display_names, $this->search_names,
+                                $page->profile->isFemale(), $this->private_name_end);
+            set_profile_display($display_names, $page->pid());
         }
     }
 }
@@ -591,6 +592,7 @@ class ProfileSettingGeneral extends ProfilePage
         $res = $res->fetchOneRow();
         $page->assign('public_name', $res[0]);
         $page->assign('private_name', $res[1]);
+        $page->assign('isFemale', $this->profile->isFemale() ? 1 : 0);
     }
 }
 

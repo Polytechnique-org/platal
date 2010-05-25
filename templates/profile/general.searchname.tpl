@@ -30,7 +30,8 @@
       {else}{icon name="flag_red" title="site privé"}{/if}</span>
     </span>&nbsp;
     {if $sn_type_list}
-    <select id="search_name_select_{$i}" name="search_names[{$i}][typeid]" onchange="changeNameFlag({$i});updateNameDisplay();">
+    <select id="search_name_select_{$i}" name="search_names[{$i}][typeid]"
+      onchange="changeNameFlag({$i});updateNameDisplay({$isFemale});">
         {foreach from=$sn_type_list item=sn_type}
           <option value="{$sn_type.id}">{$sn_type.name}</option>
         {/foreach}
@@ -49,14 +50,14 @@
   <td>
     <input type="text" name="search_names[{$i}][name]" value="{$sn.name}"
       {if $sn.has_particle}title="Coche la case en bout de ligne si ton nom commence par une particle."{/if}
-      {if $sn.error} class="error"{/if} size="25" onkeyup="updateNameDisplay();"/>
+      {if $sn.error} class="error"{/if} size="25" onkeyup="updateNameDisplay({$isFemale});"/>
   </td>
   <td>
     {if $sn.has_particle}<input type="checkbox"{if $sn.particle neq ''} checked="checked"{/if}
       title="Coche cette case si ton nom commence par une particle." onchange="toggleParticle({$i});"/>
     {/if}
     <input type="hidden"  name="search_names[{$i}][particle]" value="{$sn.particle}"/>
-    {if !$sn.always_displayed}<a href="javascript:removeSearchName({$i})">
+    {if !$sn.always_displayed}<a href="javascript:removeSearchName({$i}, {$isFemale})">
       {icon name=cross title="Supprimer ce nom"}
     </a>{/if}
   </td>
