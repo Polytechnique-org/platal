@@ -359,22 +359,20 @@ class UFC_NameTokens implements UserFilterCondition
 
     public function buildCondition(PlFilter &$uf)
     {
-        $sub = $uf->addNameTokensFilter(!($this->exact || $this->soundex));
         $conds = array();
-        if ($this->soundex) {
-            $conds[] = XDB::format($sub . '.soundex IN {?}', $this->tokens);
-        } else if ($this->exact) {
-            $conds[] = XDB::format($sub . '.token IN {?}', $this->tokens);
-        } else {
-            $tokconds = array();
-            foreach ($this->tokens as $token) {
-                $tokconds[] = $sub . '.token ' . XDB::formatWildcards(XDB::WILDCARD_PREFIX, $token);
+        foreach ($this->tokens as $i => $token) {
+            $sub = $uf->addNameTokensFilter($token);
+            if ($this->soundex) {
+                $c = XDB::format($sub . '.soundex = {?}', $token);
+            } else if ($this->exact) {
+                $c = XDB::format($sub . '.token = {?}', $token);
+            } else {
+                $c = $sub . '.token ' . XDB::formatWildcards(XDB::WILDCARD_PREFIX, $token);
             }
-            $conds[] = implode(' OR ', $tokconds);
-        }
-
-        if ($this->flags != null) {
-            $conds[] = XDB::format($sub . '.flags IN {?}', $this->flags);
+            if ($this->flags != null) {
+                $c .= XDB::format(' AND ' . $sub . '.flags IN {?}', $this->flags);
+            }
+            $conds[] = $c;
         }
 
         return implode(' AND ', $conds);
@@ -1420,8 +1418,12 @@ class UFO_Score extends UserFilterOrder
 {
     protected function getSortTokens(PlFilter &$uf)
     {
-        $sub = $uf->addNameTokensFilter();
-        return 'SUM(' . $sub . '.score)';
+        $toks = $uf->getNameTokens();
+        $scores = array();
+        foreach ($toks as $sub => $token) {
+            $scores[] = XDB::format('SUM(' . $sub . '.score + IF (' . $sub . '.token = {?}, 5, 0) )', $token);
+        }
+        return implode(' + ', $scores);
     }
 }
 // }}}
@@ -1624,6 +1626,11 @@ class UserFilter extends PlFilter
 
     private function buildQuery()
     {
+        // The root condition is built first because some orders need info
+        // available only once all UFC have set their conditions (UFO_Score)
+        if (is_null($this->query)) {
+            $where = $this->root->buildCondition($this);
+        }
         if (is_null($this->orderby)) {
             $orders = array();
             foreach ($this->sort as $sort) {
@@ -1636,11 +1643,7 @@ class UserFilter extends PlFilter
             }
         }
         if (is_null($this->query)) {
-            $where = $this->root->buildCondition($this);
-            if ($this->with_forced_sn) {
-                $this->requireProfiles();
-                $from = 'search_name AS sn';
-            } else if ($this->with_accounts) {
+            if ($this->with_accounts) {
                 $from = 'accounts AS a';
             } else {
                 $this->requireProfiles();
@@ -1959,7 +1962,6 @@ class UserFilter extends PlFilter
      */
     private $with_profiles  = false;
     private $with_accounts  = false;
-    private $with_forced_sn = false;
     public function requireAccounts()
     {
         $this->with_accounts = true;
@@ -1970,23 +1972,10 @@ class UserFilter extends PlFilter
         $this->with_profiles = true;
     }
 
-    /** Forces the "FROM" to use search_name instead of accounts or profiles */
-    public function forceSearchName()
-    {
-        $this->with_forced_sn = true;
-    }
-
     protected function accountJoins()
     {
         $joins = array();
-        /** Quick search is much more efficient with sn first and PID second */
-        if ($this->with_forced_sn) {
-            $joins['p'] = PlSqlJoin::left('profiles', '$PID = sn.pid');
-            if ($this->with_accounts) {
-                $joins['ap'] = PlSqlJoin::left('account_profiles', '$ME.pid = $PID');
-                $joins['a'] = PlSqlJoin::left('accounts', '$UID = ap.uid');
-            }
-        } else if ($this->with_profiles && $this->with_accounts) {
+        if ($this->with_profiles && $this->with_accounts) {
             $joins['ap'] = PlSqlJoin::left('account_profiles', '$ME.uid = $UID AND FIND_IN_SET(\'owner\', ap.perms)');
             $joins['p'] = PlSqlJoin::left('profiles', '$PID = ap.pid');
         }
@@ -2072,26 +2061,31 @@ class UserFilter extends PlFilter
 
     /** NAMETOKENS
      */
-    private $with_sn = false;
-    // Set $doingQuickSearch to true if you wish to optimize the query
-    public function addNameTokensFilter($doingQuickSearch = false)
+    private $name_tokens = array();
+    private $nb_tokens = 0;
+
+    public function addNameTokensFilter($token)
     {
         $this->requireProfiles();
-        $this->with_forced_sn = ($this->with_forced_sn || $doingQuickSearch);
-        $this->with_sn = true;
-        return 'sn';
+        $sub = 'sn' . (1 + $this->nb_tokens);
+        $this->nb_tokens++;
+        $this->name_tokens[$sub] = $token;
+        return $sub;
     }
 
     protected function nameTokensJoins()
     {
         /* We don't return joins, since with_sn forces the SELECT to run on search_name first */
-        if ($this->with_sn && !$this->with_forced_sn) {
-            return array(
-                'sn' => PlSqlJoin::left('search_name', '$ME.pid = $PID')
-            );
-        } else {
-            return array();
+        $joins = array();
+        foreach ($this->name_tokens as $sub => $token) {
+            $joins[$sub] = PlSqlJoin::left('search_name', '$ME.pid = $PID');
         }
+        return $joins;
+    }
+
+    public function getNameTokens()
+    {
+        return $this->name_tokens;
     }
 
     /** NATIONALITY
