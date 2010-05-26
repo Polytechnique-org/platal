@@ -209,5 +209,116 @@ function make_datetime($date)
     }
 }
 
+/** Here to allow clean date formats instead of PHP's erroneous system...
+ * Format :
+ * %a: Mon...Sun
+ * %A: Monday...Sunday
+ * %d: day, two digits
+ * %e: day, space before single digits
+ * %j: day of year
+ * %u: day of week (1 for monday, 7 for sunday)
+ * %w: day of week (0 for sunday, 6 for saturday)
+ *
+ * //%U: week number (first week is that with the first sunday)
+ * //%V: week number (ISO 8601-1988: first week is that with at least 4 week days)
+ * %W: week number (first week is that with the first monday)
+ *
+ * %b: Jan...Dec
+ * %B: January...December
+ * %h: = %b
+ * %m: month, two digits
+ *
+ * %C: century, two digits
+ * %g: year, two digits (ISO 8601-1988)
+ * %G: %g with four digits
+ * %y: year, two digits
+ * %Y: year, four digits
+ *
+ * %H: hour, two digits, 24h format
+ * %h: hour, two digits, 12h format
+ * %l: hour, two digits, space before single, 12h format
+ * %M: minute, two digits
+ * %p: AM/PM
+ * %P: am/pm
+ * %r: %I:%M:%S %p
+ * %R: %H:%M
+ * %S: second, two digits
+ * %T: %H:%M:%S
+ * %z: timezone (offset)
+ * %Z: timezone (abbrev)
+ *
+ * %x: %e %B %Y
+ * %X: %T
+ * %s: unix timestamp
+ * %%: %
+ */
+function format_datetime($date, $format)
+{
+    $format = str_replace(array('%X', '%x', '%R', '%r', '%T', '%%'),
+                     array('%T', '%e %B %Y', '%H:%M', '%I:%M:%S %p', '%H:%M:%S', '%%'),
+                     $format);
+
+    $date = make_datetime($date);
+    $yy = (int) $date->format('Y');
+//    if ($yy > 1901 && $yy < 2038) {
+//        return strftime($format, $date->format('U'));
+//    } else {
+        $w = (int) $date->format('w');
+        $u = $w;
+        if ($u == 0) {
+            $u = 7;
+        }
+        $weekday = new DateTime('2010-05-' . (10 + $u));
+        $aa = strftime('%A', $weekday->format('U'));
+        $a = strftime('%a', $weekday->format('U'));
+
+        $m = $date->format('m');
+        $monthday = new DateTime('2010-' . $m . '-01');
+        $bb = strftime('%B', $monthday->format('U'));
+        $b = strftime('%b', $monthday->format('U'));
+        $y = $date->format('y');
+
+        $j  = $date->format('z'); // Day of year
+        $d  = $date->format('d'); // Day of month, 2 digits
+        $e  = $date->format('j'); // Day of month, leanding space
+        if (strlen($e) == 1) {
+            $e = ' ' . $e;
+        }
+
+        $yy = "$yy";
+        $cc = substr($yy, 0, 2); // Century
+        $ww = $date->format('W'); // Week number
+
+        $hh = $date->format('H'); // Hour, 24h
+        $h  = $date->format('h'); // Hour, 12h
+        $l  = $date->format('g'); // Hour, 12h with leading space
+        if (strlen($l) == 1) {
+            $l = ' ' . $l;
+        }
+
+        $mm = $date->format('i'); // Minutes
+        $p  = $date->format('A'); // AM/PM
+        $pp = $date->format('a'); // am/pm
+        $ss = $date->format('s'); // Seconds
+
+        $s  = $date->format('U'); // Timestamp
+        $zz = $date->format('T'); // Timezone abbrev
+        $z  = $date->format('Z'); // Timezone offset
+
+        $txt = str_replace(
+            array('%a', '%A', '%d', '%e', '%j', '%u', '%w',
+                  '%W', '%b', '%B', '%h', '%m', '%C', '%y', '%Y',
+                  '%H', '%h', '%l', '%M', '%p', '%P', '%S', '%z', '%Z',
+                  '%%'),
+            array($a, $aa, $d, $e, $j, $u, $w,
+                  $ww, $b, $bb, $b, $m, $cc, $y, $yy,
+                  $hh, $h, $l, $mm, $p, $pp, $ss, $z, $zz,
+                  '%'),
+            $format);
+
+        return $txt;
+//    }
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

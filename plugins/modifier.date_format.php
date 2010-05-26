@@ -19,14 +19,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// %x stands for 15 mai 2010, %X for 12:14:26
 function smarty_modifier_date_format($string, $format = '%x', $default_date=null)
 {
     $d = empty($string) ? $default_date : $string;
     if (empty($format) || preg_match('/^[ 0\-]*$/', $d)) return;
-    $f = str_replace('%X', '%T', str_replace('%x', '%e %B %Y', $format));
 
-    $d = make_datetime($d);
-    return $d->format($f);
+    return format_datetime($d, $format);
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
