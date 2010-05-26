@@ -1,4 +1,4 @@
-#! /bin/ash
+#!/bin/sh
 
 TEMPLATES='/etc/mailman/xorg'
 URL='http://listes.polytechnique.org'

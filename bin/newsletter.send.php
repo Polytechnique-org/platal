@@ -20,13 +20,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('connect.db.inc.php');
-require_once('plmailer.php');
-require_once('newsletter.inc.php');
+require_once 'connect.db.inc.php';
+require_once 'plmailer.php';
+require_once 'newsletter.inc.php';
 
 $opt = getopt('i:h');
 
-if(empty($opt['i']) || isset($opt['h'])) {
+if (empty($opt['i']) || isset($opt['h'])) {
     echo <<<EOF
 usage: send_nl.php -i nl_id
        sends the NewsLetter of id "id"

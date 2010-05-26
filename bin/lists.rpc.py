@@ -196,7 +196,7 @@ def to_forlife(email):
     if ( fqdn == PLATAL_DOMAIN ) or ( fqdn == PLATAL_DOMAIN2 ):
         res = mysql_fetchone("""SELECT  CONCAT(f.alias, '@%s'), a.full_name
                                   FROM  accounts AS a
-                            INNER JOIN  aliases  AS f ON (f.uid = a.uid AND f.type = 'a_vie')
+                            INNER JOIN  aliases  AS f  ON (f.uid = a.uid AND f.type = 'a_vie')
                             INNER JOIN  aliases  AS aa ON (aa.uid = a.uid AND aa.alias = '%s'
                                                            AND a.type != 'homonyme')
                                  WHERE  a.state = 'active'

@@ -9,7 +9,7 @@
  ********************************************************************************/
 
 require_once 'connect.db.inc.php';
-require_once dirname(__FILE__).'/../include/banana/forum.inc.php';
+require_once dirname(__FILE__) . '/../include/banana/forum.inc.php';
 ini_set('memory_limit', '128M');
 
 Banana::$mbox_helper = $globals->banana->mbox_helper;

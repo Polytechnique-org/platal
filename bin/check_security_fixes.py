@@ -25,10 +25,10 @@ patches.
 
 Important notice: do not execute this script directly from an automatic checkout
 of plat/al. It would be extremely unwise to execute it with root privileges from
-a place where everybody can change it !
+a place where everybody can change it!
 
 Usage (-w updates the local .htaccess to disable guilty working copies):
-  check_security_fixes.py [-w] -b REFERENCE_PLATAL PLATAL_TO_CHECK ...
+  check_security_fixes.py [-w] -b REFERENCE_PLATAL PLATAL_TO_CHECK...
 """
 
 import optparse
@@ -143,7 +143,7 @@ def SelfCheckIsLatestVersion(base_path):
   most deployment will want to execute this script with root privileges,
   which implies that this script is deployed in a safe directory, and not
   just executed from an automatically updated checkout of plat/al (how
-  unsafe would that be ...)."""
+  unsafe would that be...)."""
 
   base_script = os.path.join(base_path, 'bin/check_security_fixes.py')
   local_script = os.path.abspath(sys.argv[0])

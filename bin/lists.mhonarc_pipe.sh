@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 SPOOL=/var/spool/platal/archives/
 OUTDIR="${SPOOL}/$1/`date +'%Y/%m/'`"
