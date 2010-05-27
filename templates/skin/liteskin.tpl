@@ -50,10 +50,10 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <a href=""><img src="images/skins/liteskin_logo.png" alt="[ LOGO ]" /></a>
+          <a href="index"><img src="images/skins/liteskin_logo.png" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <a href=""><img src="images/skins/liteskin_titre.png" alt="[ Polytechnique.org ]" /></a>
+          <a href="index"><img src="images/skins/liteskin_titre.png" alt="[ Polytechnique.org ]" /></a>
           {include file="skin/common.title.header.tpl"}
         </td>
       </tr>

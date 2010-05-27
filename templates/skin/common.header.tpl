@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" href="css/base.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="css/print.css" media="print"/>
 
-    <link rel="index"  href="" />
+    <link rel="index"  href="index" />
     <link rel="author" href="changelog" />
     <link rel="search" href="search" />
     {if hasPerm('user')}
