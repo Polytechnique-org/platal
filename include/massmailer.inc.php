@@ -222,6 +222,7 @@ abstract class MassMailer
 
             sleep(60);
         }
+        return $emailsCount;
     }
 
     abstract protected function assignData(&$smarty);

@@ -25,7 +25,7 @@
 <form action="{$platal->pl_self()}" method="post">
   {xsrf_token_field}
   {if $am}
-  {include file="axletter/letter.tpl"}
+  {include file="axletter/letter.mail.tpl"}
 
   <p class="center">
     <input type="hidden" name="id" value="{$id}" />

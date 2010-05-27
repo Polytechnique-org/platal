@@ -29,7 +29,7 @@ if ($al) {
     echo ' ' . date("H:i:s") . " -> début de l'envoi\n";
     $emailsCount = $al->sendToAll();
     echo ' ' . date("H:i:s") . " -> fin de l'envoi\n\n";
-    echo $emailsCount . "emails ont été envoyés lors de cet envoi.\n";
+    echo $emailsCount . " emails ont été envoyés lors de cet envoi.\n";
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
