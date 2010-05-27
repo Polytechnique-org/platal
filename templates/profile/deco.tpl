@@ -34,7 +34,7 @@
     <td>
       <div style="clear: both; margin-top: 0.2em" id="medals">
         <select name="medal_sel" onchange="updateMedal()">
-          <option value=''></option>
+          <option value=''>&nbsp;</option>
           {foreach from=$medal_list key=type item=list}
           <optgroup label="{$trad[$type]}&hellip;">
             {foreach from=$list item=m}

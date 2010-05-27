@@ -38,7 +38,7 @@
   <td>
     <input type="hidden" name="edu_{$eduid}_tmp" value="{$edu.degreeid}" />
     <select name="{$eduname}[degreeid]">
-      <option value=""></option>
+      <option value="">&nbsp;</option>
     </select>
   </td>
 </tr>

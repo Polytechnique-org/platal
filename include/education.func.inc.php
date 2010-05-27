@@ -21,7 +21,7 @@
 
 function education_options($current = 0)
 {
-    $html = '<option value="-1"></option>';
+    $html = '<option value="-1">&nbsp;</option>';
     $res  = XDB::iterator("SELECT  e.id AS id, gc.countryFR AS country,
                                    IF(CHAR_LENGTH(e.name) > 76, e.abbreviation, e.name) AS name
                              FROM  profile_education_enum AS e
@@ -33,14 +33,20 @@ function education_options($current = 0)
     $country = "";
     while ($arr_edu = $res->next()) {
         if ($arr_edu["country"] != $country) {
+            if ($country) {
+                $html .= '</optgroup>';
+            }
             $country = $arr_edu["country"];
-            $html .= "<optgroup label=" . $country . ">";
+            $html .= '<optgroup label="' . $country . '">';
         }
         $html .= '<option value="' . $arr_edu["id"] . '"';
         if ($arr_edu["id"] == $current) {
             $html .= " selected='selected'";
         }
         $html .= '>' . htmlspecialchars($arr_edu["name"]) . "</option>\n";
+    }
+    if ($country) {
+        $html .= '</optgroup>';
     }
     return $html;
 }

@@ -44,7 +44,7 @@
 <div id="{$id}_comment" style="clear: both;{if $tel.comment eq ''} display:none{/if}">
   Commentaire :
   <input type="text" size="45" maxlength="80" name="{$telpref}[comment]" {if $tel.error}class="error"{/if} value="{$tel.comment}"/>
-  <a href="javascript:removePhoneComment('{$id}', '{$telpref}')">
+  <a href="javascript:removePhoneComment('{$id}','{$telpref}')">
     {icon name=cross title="Supprimer le commentaire"}
   </a>
 </div>

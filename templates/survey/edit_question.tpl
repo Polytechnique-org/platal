@@ -46,7 +46,7 @@
         fid = "t" + id[name];
         $("#" + name + "_" + tid).before('<div id="' + name + '_' + fid + '">' 
             + '<input id="' + name + '_' + fid + '_field" type="text" name="survey_question[' + name + '][' + fid + ']" size="50" maxlength="200" value="" />&nbsp;'
-            + '<a href="javascript:removeField(&quot;' + name + '&quot;, &quot;' + fid + '&quot;)"><img src="images/icons/delete.gif" alt="" title="Supprimer" /></a>'
+            + '<a href="javascript:removeField(&quot;' + name + '&quot;,&quot;' + fid + '&quot;)"><img src="images/icons/delete.gif" alt="" title="Supprimer" /></a>'
             + '</div>'); 
         id[name]++; 
         $("#" + name + "_" + fid + "_field").focus();

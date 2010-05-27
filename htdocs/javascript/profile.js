@@ -376,7 +376,7 @@ function addBinet()
              + '    <div style="float: left; width: 70%">'
              +        text
              + '    </div>'
-             + '    <a href="javascript:removeElement(\'binets\', ' + id + ')">'
+             + '    <a href="javascript:removeElement(\'binets\',' + id + ')">'
              + '      <img src="images/icons/cross.gif" alt="cross" title="Supprimer ce groupe" />'
              + '    </a>'
              + '  </td>'
@@ -549,7 +549,7 @@ function addCountry()
     var val  = $('#countries_table').find('[name=countries_sel] :selected').val();
     var text = $('#countries_table').find('[name=countries_sel] :selected').text();
     var html = '<div id="countries_' + val + '" style="clear: both; margin-bottom: 0.7em">'
-        + '  <a href="javascript:removeElement(\'countries\', \'' + val + '\')" style="display: block; float:right">'
+        + '  <a href="javascript:removeElement(\'countries\',\'' + val + '\')" style="display: block; float:right">'
         + '    <img src="images/icons/cross.gif" alt="" title="Supprimer ce pays" />'
         + '  </a>'
         + '  <div style="float: left; width: 50%">' + text + '</div>'
@@ -601,7 +601,7 @@ function addSector()
     var sst = $('#subSectorSelection').find("[name='jobs[-1][subSector]'] :selected").text();
 
     var html = '<div id="sectors_' + s + '_' + ss + '" style="clear: both; margin-top: 0.5em" class="titre">'
-             + '  <a href="javascript:removeSector(\'' + s + '\', \'' + ss + '\')" style="display: block; float: right">'
+             + '  <a href="javascript:removeSector(\'' + s + '\',\'' + ss + '\')" style="display: block; float: right">'
              + '    <img src="images/icons/cross.gif" alt="" title="Supprimer ce secteur" />'
              + '  </a>'
              + '  <input type="hidden" name="sectors[' + s + '][' + ss + ']" value="' + sst + '" />'

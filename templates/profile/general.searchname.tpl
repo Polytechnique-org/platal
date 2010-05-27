@@ -57,7 +57,7 @@
       title="Coche cette case si ton nom commence par une particle." onchange="toggleParticle({$i});"/>
     {/if}
     <input type="hidden"  name="search_names[{$i}][particle]" value="{$sn.particle}"/>
-    {if !$sn.always_displayed}<a href="javascript:removeSearchName({$i}, {$isFemale})">
+    {if !$sn.always_displayed}<a href="javascript:removeSearchName({$i},{$isFemale})">
       {icon name=cross title="Supprimer ce nom"}
     </a>{/if}
   </td>

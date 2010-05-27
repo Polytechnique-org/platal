@@ -27,11 +27,11 @@
         {foreach from=$survey_current.subquestions key=value item=subquestion}
         <div id="subquestions_t{$value}">
           <input type="text" name="survey_question[subquestions][t{$value}]" size="50" maxlength="200" value="{$subquestion}" />
-          <a href="javascript:removeField('subquestions', 't{$value}')">{icon name=delete title="Supprimer"}</a>
+          <a href="javascript:removeField('subquestions','t{$value}')">{icon name=delete title="Supprimer"}</a>
         </div>
         {/foreach}
         <div id="subquestions_last">
-          <a href="javascript:newField('subquestions', 'last')">{icon name=add}</a>
+          <a href="javascript:newField('subquestions','last')">{icon name=add}</a>
         </div>
       </td>
     </tr>

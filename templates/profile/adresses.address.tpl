@@ -26,7 +26,7 @@
   <tr>
     <th class="grayed">
       <div style="float: right">
-        <a href="javascript:toggleAddress('{$i}', 0)">{icon name=arrow_refresh title="Restaurer l'adresse"}</a>
+        <a href="javascript:toggleAddress('{$i}',0)">{icon name=arrow_refresh title="Restaurer l'adresse"}</a>
       </div>
       Restaurer l'adresse n°{$i+1}
     </th>
@@ -43,7 +43,7 @@
         </label>
       </div>
       <div style="float: right">
-        <a href="javascript:toggleAddress('{$i}', 1)">
+        <a href="javascript:toggleAddress('{$i}',1)">
           {icon name=cross title="Supprimer l'adresse"}
         </a>
       </div>
@@ -114,7 +114,7 @@
         </div>
       {/if}
       <div id="{$prefid}_tel_add" class="center" style="clear: both; padding-top: 4px">
-        <a href="javascript:addTel('{$prefid}_tel', '{$prefname}[tel]')">
+        <a href="javascript:addTel('{$prefid}_tel','{$prefname}[tel]')">
           {icon name=add title="Ajouter un numéro de téléphone"} Ajouter un numéro de téléphone
         </a>
       </div>

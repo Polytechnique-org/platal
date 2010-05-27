@@ -26,9 +26,9 @@
 </div>
 <div class="{$prefid}_geoloc">
   <ul>
-    <li><a href="javascript:validGeoloc('{$prefid}', '{$id}', 0)" style="color: red">ton adresse (à gauche)</a>&nbsp;;</li>
-    <li><a href="javascript:validGeoloc('{$prefid}', '{$id}', 1)" style="color: green">notre suggestion (à droite)</a>&nbsp;;</li>
-    <li><a href="javascript:validGeoloc('{$prefid}', '{$id}', 2)"
+    <li><a href="javascript:validGeoloc('{$prefid}','{$id}',0)" style="color: red">ton adresse (à gauche)</a>&nbsp;;</li>
+    <li><a href="javascript:validGeoloc('{$prefid}','{$id}',1)" style="color: green">notre suggestion (à droite)</a>&nbsp;;</li>
+    <li><a href="javascript:validGeoloc('{$prefid}','{$id}',2)"
            title="Garder le texte de l'adresse que tu as renseignée tout en utilisant les informations trouvées par le géocodage pour te localiser sur le planisphère et dans lors d'une recherche dans l'annuaire.">
       le texte de ton adresse localisé à l'endroit que nous te suggérons</a>.</li>
   </ul>

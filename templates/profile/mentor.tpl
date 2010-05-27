@@ -61,9 +61,9 @@
         <a href="javascript:addCountry()">{icon name=add title="Ajouter ce pays"}</a>
       </div>
       <select name="countries_sel" onchange="updateElement('countries')">
-        <option value=""></option>
+        <option value="">&nbsp;</option>
         {iterate from=$countryList item=country}
-        <option value="{$country.iso_3166_1_a2}">{$country.countryFR}</option>
+        <option value="{$country.iso_3166_1_a2}">{$country.countryFR|default:"&nbsp;"}</option>
         {/iterate}
       </select>
     </td>
@@ -73,7 +73,7 @@
       {foreach from=$countries item=country key=i}
       <div id="countries_{$i}" style="clear: both; margin-bottom: 0.7em">
         <a style="display: block; float: right"
-           href="javascript:removeElement('countries', '{$i}')">{icon name=cross title="Supprimer ce pays"}</a>
+           href="javascript:removeElement('countries','{$i}')">{icon name=cross title="Supprimer ce pays"}</a>
         <div class="titre">{$country}</div>
         <input type="hidden" name="countries[{$i}]" value="{$country}" />
       </div>
@@ -115,7 +115,7 @@
       {foreach from=$sectors item=sector key=s}
       {foreach from=$sector item=subSector key=ss}
       <div id="sectors_{$s}_{$ss}" style="clear: both; margin-top: 0.5em" class="titre">
-        <a href="javascript:removeSector('{$s}', '{$ss}')" style="display: block; float: right">
+        <a href="javascript:removeSector('{$s}','{$ss}')" style="display: block; float: right">
           {icon name=cross title="Supprimer ce secteur"}
         </a>
         <input type="hidden" name="sectors[{$s}][{$ss}]" value="{$subSector}" />

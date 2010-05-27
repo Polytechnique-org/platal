@@ -69,7 +69,7 @@
       </td>
       <td>
         <select name="dom">
-          <option value=""></option>
+          <option value="">&nbsp;</option>
           {iterate from=$dom item=d}
           <option value="{$d.id}" {if $d.id eq $asso->dom}selected="selected"{/if}>{$d.nom} [{$d.cat}]</option>
           {/iterate}

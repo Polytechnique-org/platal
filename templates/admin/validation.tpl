@@ -136,7 +136,7 @@ function toggleField(name, id, obj) {
         <div>
           Réponse préremplie&nbsp;:
           <select onchange="this.form.comm.value=this.value">
-            <option value=""></option>
+            <option value="">&nbsp;</option>
             {foreach from=$valid->answers() item=automatic_answer}
               <option value="{$automatic_answer.answer}">{$automatic_answer.title}</option>
             {/foreach}

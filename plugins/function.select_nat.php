@@ -30,10 +30,10 @@ function select_nat($valeur, $pad=false) {
     // on ajoute une entree vide si $pad est vrai
     $html = "";
     if ($pad) {
-	      $html .= sprintf("<option value=\"\"%s></option>\n", ($valeur ? $sel : ""));
+	      $html .= sprintf("<option value=\"\"%s>&nbsp;</option>\n", ($valeur ? $sel : ""));
     }
     while (list($my_id, $my_text) = $res->next()) {
-        $html .= sprintf("<option value=\"%s\"%s>%s</option>\n", $my_id, ($valeur==$my_id ? $sel : ""), $my_text);
+        $html .= sprintf("<option value=\"%s\"%s>%s</option>\n", $my_id, ($valeur==$my_id ? $sel : ""), $my_text?$my_text:"&nbsp;");
     }
 
     return $html;

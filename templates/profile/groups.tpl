@@ -58,7 +58,7 @@
       <div style="float: left; width: 70%">
         {$text}
       </div>
-      <a href="javascript:removeElement('binets', {$bid})">{icon name="cross" title="Supprimer ce binet"}</a>
+      <a href="javascript:removeElement('binets',{$bid})">{icon name="cross" title="Supprimer ce binet"}</a>
     </td>
   </tr>
   {/foreach}

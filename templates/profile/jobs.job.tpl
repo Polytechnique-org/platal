@@ -34,7 +34,7 @@
     <tr>
       <th class="grayed">
         <div style="float: right">
-          <a href="javascript:restoreJob('{$jobid}', '{$jobpref}')">{icon name=arrow_refresh title="Restaure l'emploi"}</a>
+          <a href="javascript:restoreJob('{$jobid}','{$jobpref}')">{icon name=arrow_refresh title="Restaure l'emploi"}</a>
         </div>
         Restaurer l'entreprise n°{$i+1}&nbsp;:&nbsp;<span id="{$jobid}_grayed_name"></span>
       </th>
@@ -52,7 +52,7 @@
         <input type="text" class="enterpriseName {if $job.name_error}error{/if}" size="35" maxlength="100"
                name="{$jobpref}[name]" value="{$job.name}" />
         {/if}
-        <a href="javascript:removeJob('{$jobid}', '{$jobpref}')">
+        <a href="javascript:removeJob('{$jobid}','{$jobpref}')">
           {icon name=cross title="Supprimer cet emploi"}
         </a>
       </th>
@@ -193,7 +193,7 @@
           </div>
         {/if}
         <div id="{$jobid}_w_phone_add" class="center" style="clear: both; padding-top: 4px;">
-          <a href="javascript:addTel('{$jobid}_w_phone', '{$jobpref}[w_phone]')">
+          <a href="javascript:addTel('{$jobid}_w_phone','{$jobpref}[w_phone]')">
             {icon name=add title="Ajouter un numéro de téléphone"} Ajouter un numéro de téléphone
           </a>
         </div>

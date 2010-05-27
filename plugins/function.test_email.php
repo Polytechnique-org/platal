@@ -26,8 +26,8 @@ function smarty_function_test_email($params, &$smarty) {
     return '<div class="center">'
          . '  <div id="mail_sent" style="position: absolute;"></div><br />'
          . '  <form action="emails/test" method="get" onsubmit="return sendTestEmail(' . $token . $hruid . ')">'
-         . '    <input type="hidden" name="token" value="' . S::v('xsrf_token') . '" />'
-         . '    <div><input type="submit" name="send" value="' . $label . '" /></div>'
+         . '    <div><input type="hidden" name="token" value="' . S::v('xsrf_token') . '" />'
+         . '    <input type="submit" name="send" value="' . $label . '" /></div>'
          . '  </form>'
          . '</div>';
 }

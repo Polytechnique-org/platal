@@ -22,7 +22,7 @@
 
 <?xml version="1.0" encoding="utf-8"?>
 <select name="jobs[{$id}][subSubSector]" onchange="updateJobAlternates({$id})">
-  <option value="0"></option>
+  <option value="0">&nbsp;</option>
   {iterate from=$subSubSectors item=subSubSector}
   <option value="{$subSubSector.id}" {if $subSubSector.id eq $sel}selected="selected"{/if}>{$subSubSector.name}</option>
   {/iterate}

@@ -30,7 +30,7 @@
     <option value="{$lid}" {if $skill.level eq $lid}selected="selected"{/if}>{$level}</option>
     {/foreach}
   </select>
-  <a href="javascript:removeElement('{$cat}', '{$id}')">{icon name=cross title="Supprimer"}</a>
+  <a href="javascript:removeElement('{$cat}','{$id}')">{icon name=cross title="Supprimer"}</a>
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

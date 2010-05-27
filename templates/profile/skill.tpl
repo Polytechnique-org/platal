@@ -34,7 +34,7 @@
     <td>
       <span class="titre">Domaine&nbsp;:</span>
       <select name="competences_sel" onchange="updateElement('competences')">
-        <option value=""></option>
+        <option value="">&nbsp;</option>
         {assign var=ingroup value=false}
         {iterate from=$comp_list item=comp}
         {if $comp.title}
@@ -74,7 +74,7 @@
     <td>
       <span class="titre">Domaine&nbsp;:</span>
       <select name="langues_sel" onchange="updateElement('langues')">
-        <option value=""></option>
+        <option value="">&nbsp;</option>
         {iterate from=$lang_list item=lang}
         <option value="{$lang.id}">{$lang.langue_fr}</option>
         {/iterate}

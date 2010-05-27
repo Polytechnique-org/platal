@@ -27,7 +27,7 @@
   {else}
   Camarades correspondants&nbsp;:
   <select name="userid" onchange="document.getElementById('marketing').style.display = (this.value == 0 ? 'none' : '')">
-    <option value="0"></option>
+    <option value="0">&nbsp;</option>
     {foreach item=user from=$users}
     <option value="{$user->id()}" {if $users|@count == 1}selected="selected"{/if}>{profile user=$user link=false promo=true}</option>
     {/foreach}

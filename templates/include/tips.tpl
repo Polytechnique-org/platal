@@ -38,7 +38,7 @@
   {/tidy}
   {if !$nochange}
   <div class="right">
-    <a href="" onclick="Ajax.update_html('tod', 'ajax/tips/{$tips.id}'); return false" style="text-decoration: none">
+    <a href="events" onclick="Ajax.update_html('tod', 'ajax/tips/{$tips.id}'); return false" style="text-decoration: none">
       Astuce suivante {icon name=resultset_next title="Astuce suivante"}
     </a>
   </div>

@@ -63,7 +63,7 @@
     <td class="half">
       {if $smarty.session.email_format eq html}
       <h3>
-        <a href="javascript:dynpostkv('prefs', 'email_format', 'text')">Recevoir les emails en format texte</a>
+        <a href="javascript:dynpostkv('prefs','email_format','text')">Recevoir les emails en format texte</a>
       </h3>
       <div class='explication'>
         Tu recois tous les emails envoyés par le site
@@ -72,7 +72,7 @@
       </div>
       {else}
       <h3>
-        <a href="javascript:dynpostkv('prefs', 'email_format', 'html')">Recevoir les emails en HTML</a>
+        <a href="javascript:dynpostkv('prefs','email_format','html')">Recevoir les emails en HTML</a>
       </h3>
       <div class='explication'>
         Tu recois tous les emails envoyés par le site
@@ -84,9 +84,9 @@
     <td class="half">
       <h3>
         {if $smarty.session.token}
-        <a href="javascript:dynpostkv('prefs', 'rss', 0)">Désactiver les fils rss</a>
+        <a href="javascript:dynpostkv('prefs','rss',0)">Désactiver les fils rss</a>
         {else}
-        <a href="javascript:dynpostkv('prefs', 'rss', 1)">Activer les fils rss</a>
+        <a href="javascript:dynpostkv('prefs','rss',1)">Activer les fils rss</a>
         {/if}
       </h3>
       <div class='explication'>

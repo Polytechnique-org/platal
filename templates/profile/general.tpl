@@ -264,7 +264,7 @@
         </div>
       {/if}
       <div id="tels_add" class="center" style="clear: both; padding-top: 4px;">
-        <a href="javascript:addTel('tels', 'tels');">
+        <a href="javascript:addTel('tels','tels');">
           {icon name=add title="Ajouter un téléphone"} Ajouter un téléphone
         </a>
       </div>
@@ -282,13 +282,13 @@
     {include file="profile/general.networking.tpl" nw=$network i=$id}
   {/foreach}
   <tr id="networking">
-    <script type="text/javascript">//<![CDATA[
-      var nw_list = new Array();
-      {foreach from=$network_list item=network}
-        nw_list['{$network.name}'] = {$network.type};
-      {/foreach}
-    //]]></script>
     <td colspan="2">
+      <script type="text/javascript">//<![CDATA[
+        var nw_list = new Array();
+        {foreach from=$network_list item=network}
+          nw_list['{$network.name}'] = {$network.type};
+        {/foreach}
+      //]]></script>
       <div id="nw_add" class="center">
         <a href="javascript:addNetworking();">
           {icon name=add title="Ajouter une adresse"} Ajouter une adresse
