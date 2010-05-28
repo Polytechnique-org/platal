@@ -665,7 +665,8 @@ class PlParallelIterator implements PlIterator
     private $master_id;
     private $master;
 
-    private $stepped;
+    private $over = array();
+    private $stepped = array();
     private $current_elts = array();
     private $callback_res = array();
 
@@ -689,6 +690,7 @@ class PlParallelIterator implements PlIterator
 
         foreach ($this->ids as $id) {
             $this->stepped[$id] = false;
+            $this->over[$id] = false;
             $this->current_elts[$id] = null;
             $this->callback_res[$id] = null;
         }
@@ -700,12 +702,24 @@ class PlParallelIterator implements PlIterator
             return;
         }
 
+        // Don't do anything if the iterator is at its end
+        if ($this->over[$id]) {
+            $this->stepped[$id] = true;
+            return;
+        }
+
         $it = $this->iterators[$id];
         $nxt = $it->next();
+        $this->stepped[$id] = true;
+        if ($nxt === null) {
+            $this->over[$id] = true;
+            $this->current_elts[$id] = null;
+            $this->callback_res[$id] = null;
+            return;
+        }
         $res = call_user_func($this->callbacks[$id], $nxt);
         $this->current_elts[$id] = $nxt;
         $this->callback_res[$id] = $res;
-        $this->stepped[$id] = true;
     }
 
     private function stepAll()
@@ -718,7 +732,7 @@ class PlParallelIterator implements PlIterator
     public function next()
     {
         $this->stepAll();
-        if ($this->current_elts[$this->master_id] == null) {
+        if ($this->current_elts[$this->master_id] === null) {
             return null;
         }
 
