@@ -62,7 +62,9 @@ function display_education($name, $url, $degree, $grad_year, $field, $program, $
             $txt .= $name;
         }
     }
-    $txt .= "</span>";
+    if ($grad_year || $field || $program) {
+        $txt .= "</span>";
+    }
 
     return $txt;
 }

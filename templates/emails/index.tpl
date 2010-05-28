@@ -55,7 +55,7 @@
     <br />
     <div>
     Tu dispose également de l'alias&nbsp;: <strong>{$melix}</strong>
-    (<a href="email/alias">changer ou supprimer mon alias melix</a>)
+    (<a href="emails/alias">changer ou supprimer mon alias melix</a>)
     </div>
     {/if}
   </div>
@@ -66,7 +66,7 @@
     {if !$melix}
     Tu peux ouvrir en supplément une adresse synonyme de ton adresse @{#globals.mail.domain#},
     sur les domaines @{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#} (melix = Mél X).<br />
-    <div class="center"><a href="email/alias">Créer un alias melix</a></div>
+    <div class="center"><a href="emails/alias">Créer un alias melix</a></div>
     {/if}
   </div>
 </fieldset>

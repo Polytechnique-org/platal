@@ -26,25 +26,23 @@
   Ma liste personnelle de contacts
 </h1>
 
-<p>
+<form id="add_user" action="carnet/contacts" method="post">
   <div style="float: right">
-  <form id="add_user" action="carnet/contacts" method="post">
     {xsrf_token_field}
-    <div>
     <input type="hidden" name="action" value="ajouter" />
     <input type="text" size="30" name="user" class="quick_search"
            value="ajouter prenom.nom"
            onfocus="if (this.value == 'ajouter prenom.nom') this.value=''; $('#add_button').show()"
            onblur="if (this.value == '') this.value='ajouter prenom.nom'"
-           size="20" maxlength="70"/>
-    <a id="add_button" href="" style="display: none" onclick="document.getElementById('add_user').submit(); return false;">
+           maxlength="70"/>
+    <a id="add_button" href="carnet/contacts/add" style="display: none" onclick="document.getElementById('add_user').submit(); return false;">
       {icon name=add title="Ajouter la personne"}
     </a>
-    </div>
-  </form>
   </div>
+<p>
   Ajouter à tes contacts&nbsp;:
 </p>
+</form>
 <p style="clear: both">
   Sur la page de résultats d'une recherche, tu peux ajouter un contact en cliquant sur {icon name=add}.
 </p>
@@ -75,18 +73,16 @@
   </li>
 </ul>
 
-<p>
+<form action="carnet/contacts/search#plset_content" method="get">
   <div style="float: right">
-    <form action="carnet/contacts/search#plset_content" method="get">
-      <div>
       <input type="text" size="30" name="quick" class="quick_search"
              value="{$smarty.request.quick|default:'recherche dans tes contacts'}"
              onfocus="if (this.value == 'recherche dans tes contacts') this.value=''"
              onblur="if (this.value == '') this.value='recherche dans tes contacts'"/>
       <a href="carnet/contacts">{icon name=cross title='Annuler la recherche'}</a>
-      </div>
-    </form>
   </div>
+</form>
+<p>
   Rechercher dans tes contacts&nbsp;:
 </p>
 

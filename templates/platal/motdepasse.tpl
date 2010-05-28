@@ -71,16 +71,18 @@
     </table>
   </form>
   <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass2">
-  <p>
+  <div>
   {xsrf_token_field}
   <input type="hidden" name="response2"  value="" />
-  </p>
+  </div>
   </form>
 </fieldset>
 
 <p>
   Note bien qu'il s'agit là du mot de passe te permettant de t'authentifier sur le site {#globals.core.sitename#}&nbsp;;
-  le mot de passe te permettant d'utiliser le serveur <a href="./Xorg/SMTPSécurisé">SMTP</a> et <a href="Xorg/NNTPSécurisé">NNTP</a>
+  le mot de passe te permettant d'utiliser le serveur <a
+  href="{"./Xorg/SMTPSécurisé"|urlencode}">SMTP</a>
+  et <a href="{"Xorg/NNTPSécurisé"|urlencode}">NNTP</a>
   de {#globals.core.sitename#} (si tu as <a href="./password/smtp">activé l'accès SMTP et NNTP</a>)
   est indépendant de celui-ci et tu peux le modifier <a href="./password/smtp">ici</a>.
 </p>

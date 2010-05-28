@@ -103,7 +103,7 @@
                 <input type="checkbox" name="public" {if $mail_public}checked="checked"{/if} id="pub_add"/>
               </td>
               <td class="texte">
-                <label for="pub_add">adresse publique (apparaît sur ta fiche).
+                <label for="pub_add">adresse publique (apparaît sur ta fiche).</label>
               </td>
              </tr>
           </table>
