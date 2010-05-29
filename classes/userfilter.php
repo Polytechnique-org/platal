@@ -1257,7 +1257,7 @@ class UFC_WatchRegistration extends UFC_UserRelated
         if (count($uids) == 0) {
             return PlFilterCondition::COND_FALSE;
         } else {
-            return XDB::format('$UID IN {?}', $uids);
+            return XDB::format('a.uid IN {?}', $uids);
         }
     }
 }

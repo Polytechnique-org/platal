@@ -71,9 +71,10 @@
 
   {if $withAuth}
   <div class="noprint bits">
+    {if $registered || (!$dead && $hasowner)}
     <div>
       {if !$registered && !$dead && $hasowner}
-        {if $show_action && ($show_action eq 'ajouter')}
+        {if !$smarty.session.user->isWatchedUser($profile)}
     <a href="carnet/notifs/add_nonins/{$user->login()}?token={xsrf_token}">{*
     *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
         {else}
@@ -98,6 +99,7 @@
         {/if}
       {/if}
     </div>
+    {/if}
 
     {if hasPerm('admin') && $hasowner}
     <div>
@@ -154,7 +156,7 @@
         <td class="smaller" colspan="2">
           {"Ce"|sex:"Cette":$profile} camarade n'est pas {"inscrit"|sex:"inscrite":$profile}.
           <a href="marketing/public/{$user->login()}" class='popup'>Si tu connais son adresse email,
-          <strong>n'hésite pas à nous la transmettre !</a>
+          <strong>n'hésite pas à nous la transmettre !</strong></a>
         </td>
       </tr>
       {elseif $user->state neq 'disabled' && $user->lost}

@@ -493,6 +493,11 @@ class User extends PlUser
         return isset($this->contacts[$profile->id()]);
     }
 
+    public function isWatchedUser(Profile &$profile)
+    {
+        return in_array($profile->id(), $this->watchUsers());
+    }
+
     // Groupes X
     private $groups = null;
     public function groups()
