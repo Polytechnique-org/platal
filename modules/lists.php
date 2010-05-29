@@ -169,14 +169,20 @@ class ListsModule extends PLModule
 
         $page->changeTpl('lists/create.tpl');
 
-        $user_promo  = S::i('promo');
+        $user_promo  = S::user()->profile()->yearPromo();
         $year        = date('Y');
         $month       = date('m');
+        // scolar year starts in september
+        $scolarmonth = ($year - $user_promo) * 12 + ($month - 8);
         $young_promo = $very_young_promo = 0;
-        if ((($year > $user_promo) && ($month > 3)) && ($year < $user_promo + 5)) {
+        // binet are accessible only in april in the first year and until
+        // march of the 5th year
+        if ($scolarmonth >= 8 && $scolarmonth < 56) {
             $young_promo = 1;
         }
-        if ((($year > $user_promo) && ($month > 7)) && (($year < $user_promo + 1) && ($month < 8))) {
+        // PSC aliases are accesible only between september and june of the second
+        // year of scolarity
+        if ($scolarmonth >= 12 && $scolarmonth < 22) {
             $very_young_promo = 1;
         }
         $page->assign('young_promo', $young_promo);
