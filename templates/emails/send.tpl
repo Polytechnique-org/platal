@@ -150,6 +150,13 @@
       saveMessage();
       return true;
     });
+  $(document).ready(
+    function() {
+      // Remove empty options in select (they were added only for HTML
+      // compatibility).
+      $('#to_contacts option[value=""]').remove();
+      $('#cc_contacts option[value=""]').remove();
+    });
   {/literal}
 //]]>
 </script>
@@ -215,29 +222,42 @@
           <option value="{$contact->hrpid}">
             {$contact->full_name}
           </option>
+          {assign var="to_not_empty" value="true"}
           {/if}
           {/foreach}
-          </select><br />
+          {if !$to_not_empty}
+          {* HTML compatibility *}
+          <option value="">&nbsp;</option>
+          {/if}
+          </select>
+          {if !$to_not_empty}
+          {/if}
+          <br />
           <select id="cc_contacts" name="cc_contacts[]" multiple="multiple" style="width: 100%; height: 5em">
           {foreach key=key item=contact from=$contacts}
           {if in_array($contact->hrpid,$smarty.request.cc_contacts)}
           <option value="{$contact->hrpid}">
             {$contact->full_name}
           </option>
+          {assign var="cc_not_empty" value="true"}
           {/if}
           {/foreach}
+          {if !$cc_not_empty}
+          {* HTML compatibility *}
+          <option value="">&nbsp;</option>
+          {/if}
           </select>
         </div>
         <div style="width: 19%; text-align: center; height: 8em; float: right;">
           <div style="height: 4em">
               Destinataires<br />
-              <a href="" onclick="addTo(); return false" style="text-decoration: none">&gt;&gt; &gt;&gt;</a><br />
-              <a href="" onclick="removeTo(); return false" style="text-decoration: none">&lt;&lt; &lt;&lt;</a>
+              <a href="emails/send/addTo" onclick="addTo(); return false" style="text-decoration: none">&gt;&gt; &gt;&gt;</a><br />
+              <a href="emails/send/removeTo" onclick="removeTo(); return false" style="text-decoration: none">&lt;&lt; &lt;&lt;</a>
           </div>
           <div style="height: 4em">
               En copie<br />
-              <a href="" onclick="addCc(); return false" style="text-decoration: none">&gt;&gt; &gt;&gt;</a><br />
-              <a href="" onclick="removeCc(); return false" style="text-decoration: none">&lt;&lt; &lt;&lt;</a>
+              <a href="emails/send/addCc" onclick="addCc(); return false" style="text-decoration: none">&gt;&gt; &gt;&gt;</a><br />
+              <a href="emails/send/removeCc" onclick="removeCc(); return false" style="text-decoration: none">&lt;&lt; &lt;&lt;</a>
           </div>
         </div>
         <div style="float: right; width: 40%">

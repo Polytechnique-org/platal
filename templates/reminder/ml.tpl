@@ -41,10 +41,10 @@
 
   <div class="center">
     <input type="submit" value="M'inscrire aux listes" /> -
-    <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/no'); return false" style="text-decoration: none">
+    <a href="reminder/no" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/no'); return false" style="text-decoration: none">
       {icon name=delete} Ne pas m'inscrire
     </a> -
-    <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
+    <a href="reminder/later" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
       {icon name=cross} Décider plus tard
     </a>
   </div>

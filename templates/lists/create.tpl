@@ -62,7 +62,7 @@ liste&nbsp;:
     <tr class='promo'>
       <td class='titre'>Promotion&nbsp;:</td>
       <td><input type='text' name='promo' size='4' maxlength='4'
-        {if $smarty.post.promo}value='{$smarty.post.promo}'{else}value='{$smarty.session.promo}'{/if} />
+        {if $smarty.post.promo}value='{$smarty.post.promo}'{else}value='{$smarty.session.promo}'{/if} /></td>
       <td class='smaller' colspan='3'>Par exemple&nbsp;: 2004</td>
     </tr>
     <tr class='groupex'>
@@ -79,31 +79,6 @@ liste&nbsp;:
         <input type='text' name='liste' size='15' value='{$smarty.post.liste}' />@<span class='promo'><span id='promotion'></span>.</span><span class='groupex'><span class='smaller'>diminutifdugroupe</span>.</span>polytechnique.org
       </td>
     </tr>
-    <script type="text/javascript">//<![CDATA[
-      {literal}
-      $(function() {
-        $(":radio[name=asso]").change(function() {
-          var asso = $(":radio[name=asso]:checked").val();
-          if ((asso == "binet") || (asso == "alias")) {
-            $(".groupex").hide();
-            $(".promo").show();
-          } else if (asso == "groupex") {
-            $(".promo").hide();
-            $(".groupex").show();
-          } else {
-            $(".groupex").hide();
-            $(".promo").hide();
-          }
-        }).change();
-      });
-      $(function() {
-        $(":text[name=promo]").change(function () {
-          var str = $(":text[name=promo]").val();
-          $("span#promotion").text(str);
-        }).change();
-      });
-      {/literal}
-    // ]]></script>
     <tr>
       <td class='titre'>Sujet (bref)&nbsp;:</td>
       <td colspan='4'>
@@ -183,6 +158,31 @@ liste&nbsp;:
       </td>
     </tr>
   </table>
+  <script type="text/javascript">//<![CDATA[
+    {literal}
+    $(function() {
+      $(":radio[name=asso]").change(function() {
+        var asso = $(":radio[name=asso]:checked").val();
+        if ((asso == "binet") || (asso == "alias")) {
+          $(".groupex").hide();
+          $(".promo").show();
+        } else if (asso == "groupex") {
+          $(".promo").hide();
+          $(".groupex").show();
+        } else {
+          $(".groupex").hide();
+          $(".promo").hide();
+        }
+      }).change();
+    });
+    $(function() {
+      $(":text[name=promo]").change(function () {
+        var str = $(":text[name=promo]").val();
+        $("span#promotion").text(str);
+      }).change();
+    });
+    {/literal}
+  // ]]></script>
   <p>
   La création de la liste sera soumise à un contrôle manuel avant d'être validée. Ce contrôle a
   pour but notamment de vérifier qu'il n'y aura pas ambiguité entre les membres de la liste et son

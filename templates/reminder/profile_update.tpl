@@ -37,7 +37,7 @@
 {/if}
 
 <div class="right">
-  <a href="" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
+  <a href="reminder/later" onclick="Ajax.update_html('reminder', '{$reminder->baseurl()}/dismiss'); return false" style="text-decoration: none">
     {icon name=cross} Mettre à jour plus tard
   </a>
 </div>

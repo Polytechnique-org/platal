@@ -53,6 +53,7 @@
 {else}
   La redirection n'est pas utilisée&hellip;
 {/if}
+</p>
 
 <p>
   Pour modifier ta redirection remplis le champ suivant et clique sur <strong>Valider</strong>.
