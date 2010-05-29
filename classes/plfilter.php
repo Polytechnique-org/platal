@@ -162,7 +162,7 @@ abstract class PlFilterOrder
 
     public function toggleDesc()
     {
-        $this->desc = !$desc;
+        $this->desc = !$this->desc;
     }
 
     public function setDescending($desc = true)
