@@ -9,7 +9,5 @@ mailman_start
 ###########################################################
 for sql in *.sql
 do
-    echo -n $sql
-    $MYSQL $DATABASE < $sql &>/dev/null || echo -n " ERROR"
-    echo .
+    mysql_run $sql
 done

@@ -7,12 +7,12 @@
 
 confirm "Setting up new database: target db is \"$DATABASE\", source prefix is \"$DBPREFIX\""
 
-echo -n "* create database "
-(echo "CREATE DATABASE IF NOT EXISTS $DATABASE;" | mysql_pipe) || die "ERROR"
+echo "* create database"
+mysql_exec "CREATE DATABASE IF NOT EXISTS $DATABASE;"
 echo "OK"
 
-echo -n "* copying tables "
-(../account/copy_tables.sh | mysql_pipe) || die "ERROR"
+echo "* copying tables "
+(../account/copy_tables.sh | while read line; do mysql_exec "$line"; done) || die "ERROR"
 echo "OK"
 
 mysql_run_directory ../newdirectory-0.0.1
@@ -20,7 +20,7 @@ mysql_run_directory ../account
 mysql_run_directory .
 
 ###########################################################
-confirm "Running upgrade scripts"
+confirm "* Running upgrade scripts"
 script_run ../newdirectory-0.0.1/phones.php
 script_run ../newdirectory-0.0.1/addresses.php
 script_run ../newdirectory-0.0.1/alternate_subsubsectors.php
