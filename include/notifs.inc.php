@@ -191,11 +191,17 @@ class WatchBirthday extends WatchOperation
 
     protected function buildCondition(PlUser &$user)
     {
-        return new PFC_And(new PFC_OR(new UFC_Birthday('=', time()),
-                                      new PFC_And(new UFC_Birthday('<=', time() + self::WATCH_LIMIT),
-                                                  new UFC_Birthday('>', $this->date + self::WATCH_LIMIT))),
-                           new PFC_Or(new UFC_WatchPromo($user),
-                                      new UFC_WatchContact($user)));
+        $select_date = new PFC_OR(new UFC_Birthday('=', time()),
+                                  new PFC_And(new UFC_Birthday('<=', time() + self::WATCH_LIMIT),
+                                              new UFC_Birthday('>', $this->date + self::WATCH_LIMIT)));
+        $profile = $user->profile();
+        $cond = new UFC_WatchContact($user);
+        if ($profile) {
+            $cond = new PFC_Or(new PFC_And(new UFC_WatchPromo($user),
+                                           new UFC_Promo('>=', $profile->mainGrade(), $profile->yearpromo() - 1),
+                                           new UFC_Promo('<=', $profile->mainGrade(), $profile->yearpromo() + 1)));
+        }
+        return new PFC_And($select_date, $cond);
     }
 
     public function getOrder()
@@ -228,6 +234,18 @@ class Watch
                                      'WatchDeath',
                                      'WatchBirthday');
 
+    private static function getDate(PlUser &$user, $date)
+    {
+        if (is_null($date)) {
+            $date = $user->watchLast();
+            $limit = time() - (7 * 86400);
+            if ($date < $limit) {
+                $date = $limit;
+            }
+        }
+        return $date;
+    }
+
     private static function fetchCount(PlUser &$user, $date, $class)
     {
         $obj = new $class();
@@ -238,9 +256,7 @@ class Watch
     public static function getCount(PlUser &$user, $date = null)
     {
         $count = 0;
-        if (is_null($date)) {
-            $date = $user->watchLast();
-        }
+        $date = self::getDate($user, $date);
         foreach (self::$classes as $class) {
             $count += self::fetchCount($user, $date, $class);
         }
@@ -266,9 +282,7 @@ class Watch
 
     public static function getEvents(PlUser &$user, $date = null)
     {
-        if (is_null($date)) {
-            $date = $user->watchLast();
-        }
+        $date = self::getDate($user, $date);
         $events = array();
         foreach (self::$classes as $class) {
             $e = self::fetchEvents($user, $date, $class);

@@ -312,7 +312,11 @@ class XorgSession extends PlSession
     {
         require_once 'notifs.inc.php';
         $user = S::user();
-        $n = Watch::getCount($user);
+        $date = null;
+        if (S::has('watch_last')) {
+            $date = S::i('watch_last');
+        }
+        $n = Watch::getCount($user, $date);
         S::set('notifs', $n);
     }
 
