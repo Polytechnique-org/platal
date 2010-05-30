@@ -72,8 +72,8 @@
 </fieldset>
 
 <p class="smaller">
-(*) cette adresse email t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en
-{$smarty.session.promo+100}).
+{assign var="profile" value=$smarty.session.user->profile()}
+(*) cette adresse email t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en {$profile->yearpromo()+100}).
 </p>
 <p class="smaller">
 (**) cette adresse email t'est réservée à vie.

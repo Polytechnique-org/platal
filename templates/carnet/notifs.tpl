@@ -59,7 +59,8 @@ S'il n'y a rien à te signaler l'email ne t'est pas envoyé.</p>
       Anniversaires<sup>o</sup>
     </label><br />
     <span class='smaller'><sup>*</sup>: ne concerne pas les promos (événements très fréquents).</span><br />
-    <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$smarty.session.promo-1} et {$promo_sortie-2} que tu surveilles.</span>
+    {assign var="profile" value=$smarty.session.user->profile()}
+    <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$profile->yearpromo()-1} et {$profile->yearpromo()+1} que tu surveilles.</span>
   </fieldset>
   <div class='center'>
     <input type='submit' name='subs' value='valider' />

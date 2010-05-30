@@ -25,7 +25,8 @@
 
 <form enctype="multipart/form-data" action="photo/change" method="post">
   {xsrf_token_field}
-  {if ($session.promo ge 1995) || ($session.promo le 2002)}
+  {assign var="profile" value=$smarty.session.user->profile()}
+  {if $profile && (($profile->yearpromo() ge 1995) || ($profile->yearpromo() le 2002))}
   <p>
   Si tu n'as pas encore fourni de photo, c'est celle du trombinoscope de l'X qui est
   affichée par défaut dans le profil. Si elle ne te plaît pas, ou si tu n'es quand même

@@ -62,7 +62,8 @@ liste&nbsp;:
     <tr class='promo'>
       <td class='titre'>Promotion&nbsp;:</td>
       <td><input type='text' name='promo' size='4' maxlength='4'
-        {if $smarty.post.promo}value='{$smarty.post.promo}'{else}value='{$smarty.session.promo}'{/if} /></td>
+        {assign var="profile" value=$smarty.session.user->profile()}
+        {if $smarty.post.promo}value='{$smarty.post.promo}'{else}value='{$profile->yearpromo()}'{/if} /></td>
       <td class='smaller' colspan='3'>Par exemple&nbsp;: 2004</td>
     </tr>
     <tr class='groupex'>
