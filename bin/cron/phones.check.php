@@ -1,10 +1,10 @@
 #!/usr/bin/php5
 <?php
 
-require('./connect.db.inc.php');
-require_once('profil.func.inc.php');
+require './connect.db.inc.php';
+require_once 'profil.func.inc.php';
 
-$globals->debug = 0; //do not store backtraces
+$globals->debug = 0; // do not store backtraces
 
 
 function do_update_by_block($values)

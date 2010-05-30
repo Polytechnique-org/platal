@@ -29,17 +29,17 @@ $handler    = time();
 while ($sent_mails < $globals->lists->max_mail_per_min
        && time() - $handler < 60) {
     // take a lock on a mail
-    XDB::execute("UPDATE  email_list_moderate
+    XDB::execute('UPDATE  email_list_moderate
                      SET  handler = {?}
                    WHERE  handler IS NULL
                 ORDER BY  ts
-                LIMIT  1", $handler);
+                LIMIT  1', $handler);
     if (XDB::affectedRows() == 0) {
         break;
     }
     $query = XDB::query('SELECT  a.fullname, a.uid, a.password,
                                  ml.ml, ml.domain, ml.mid, ml.action, ml.message
-                           FROM  accounts    AS a
+                           FROM  accounts            AS a
                      INNER JOIN  email_list_moderate AS ml ON (a.uid = ml.uid)
                           WHERE  ml.handler = {?}', $handler);
     list($fullname, $uid, $password, $list, $domain, $mid, $action, $reason) = $query->fetchOneRow();
@@ -48,7 +48,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     $client = new MMList($uid, $password, $domain);
 
     // send the mail
-    $mail    = $client->get_pending_mail($list, $mid);
+    $mail = $client->get_pending_mail($list, $mid);
     list($det,$mem,$own) = $client->get_members($list);
     $count = 0;
     switch ($action) {
@@ -70,7 +70,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
         $action = 3;    /** 3 = DISCARD **/
         $subject = "Message supprimé";
         $append  = "a été supprimé par $fullname.\n\n"
-                 . "Rappel: il ne faut utiliser cette opération "
+                 . "Rappel : il ne faut utiliser cette opération "
                  . "que dans le cas de spams ou de virus !\n";
         $type = 'spam';
         $count += count($own);
@@ -115,7 +115,8 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     }
 
     // release the lock
-    XDB::execute("DELETE FROM email_list_moderate WHERE handler = {?}",
+    XDB::execute('DELETE FROM  email_list_moderate
+                        WHERE  handler = {?}',
                  $handler);
     sleep(60 * $count / $globals->lists->max_mail_per_min);
 }

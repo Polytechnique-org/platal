@@ -24,8 +24,8 @@
  */
 $panne_level = 3;
 
-require('./connect.db.inc.php');
-require("Console/Getopt.php");
+require './connect.db.inc.php';
+require 'Console/Getopt.php';
 
 /*
  * Parse the command-line options.

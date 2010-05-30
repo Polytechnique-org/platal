@@ -20,7 +20,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require('./connect.db.inc.php');
+require './connect.db.inc.php';
 
 $it = 0;
 do {

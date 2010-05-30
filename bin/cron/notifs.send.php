@@ -20,9 +20,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('connect.db.inc.php');
-require_once('plmailer.php');
-require_once('notifs.inc.php');
+require_once 'connect.db.inc.php';
+require_once 'plmailer.php';
+require_once 'notifs.inc.php';
 
 $all = new AllNotifs();
 
