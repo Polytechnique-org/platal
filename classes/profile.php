@@ -204,6 +204,20 @@ class Profile
         }
     }
 
+    public function mainGrade()
+    {
+        switch ($this->mainEducation()) {
+          case 'X':
+            return UserFilter::GRADE_ING;
+          case 'M':
+            return UserFilter::GRADE_MST;
+          case 'D':
+            return UserFilter::GRADE_PHD;
+          default:
+            return null;
+        }
+    }
+
     public function mainEducationDuration()
     {
         switch ($this->mainEducation()) {
