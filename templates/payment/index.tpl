@@ -102,7 +102,6 @@ function payment_submit(form)
 </script>
 
 <form method="post" action="{$platal->pl_self()}">
-  </p>
   <table class="bicol">
     <tr>
       <th colspan="2">Effectuer un télépaiement</th>

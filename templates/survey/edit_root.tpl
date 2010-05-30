@@ -40,8 +40,6 @@
       <td class="titre">Date de fin</td>
       <td>
         {valid_date name="survey_question[end]" value=$survey_current.end to=90}
-      </td>
-    </tr>
     <script type="text/javascript">//<![CDATA[
       {literal}
       $(document).ready(function() {
@@ -59,6 +57,8 @@
       });
       {/literal}
     //]]></script>
+      </td>
+    </tr>
     <tr>
       <td class="titre">Type de sondage</td>
       <td>

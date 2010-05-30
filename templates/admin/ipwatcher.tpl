@@ -42,7 +42,7 @@
   <tr class="{cycle values="pair,impair"}">
     <td>
       <strong>{$ip.ip}/{$ip.mask}</strong><br />
-      <small>{$ip.host}</small><br />
+      {if $ip.host}<small>{$ip.host}</small><br />{/if}
       Ajoutée le {$ip.detection|date_format}
     </td>
     <td>

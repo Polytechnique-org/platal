@@ -24,6 +24,7 @@
 
 <form method="post" action="{$platal->ns}admin/emails/broken" enctype="multipart/form-data">
   {xsrf_token_field}
+  <div>
   <textarea name="list" cols="60" rows="30">{if $valid_emails || $invalid_emails}{foreach from=$valid_emails item=email}{$email}
 {/foreach}
 
@@ -33,6 +34,7 @@
          value="Trie et supprime les doublons de la liste d'adresses" /><br />
   <input type="submit" name="process_broken"
          value="Traite les adresses en panne et met à jour la BDD" />
+  </div>
 </form>
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -33,5 +33,6 @@
       <td>
         <a href="profile/{$looser.hruid}" class="popup2">{$looser.hruid}</a>
       </td>
+    </tr>
   {/iterate}
 </table>
