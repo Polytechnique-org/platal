@@ -303,7 +303,7 @@ function checkPassword(box, okLabel) {
         color = "#4f4";
         bgcolor = "#050";
         ok = true;
-    } else if (prop >= 40) {
+    } else if (prop >= 35) {
         color = "#ff4";
         bgcolor = "#750";
         ok = true;
