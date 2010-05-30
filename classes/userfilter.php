@@ -47,7 +47,7 @@ class UFC_HasProfile implements UserFilterCondition
     public function buildCondition(PlFilter &$uf)
     {
         $uf->requireProfiles();
-        return 'p.pid IS NOT NULL';
+        return '$PID IS NOT NULL';
     }
 }
 // }}}
@@ -455,9 +455,9 @@ class UFC_Registered implements UserFilterCondition
     {
         $uf->requireAccounts();
         if ($this->active) {
-            $date = 'a.uid IS NOT NULL AND a.state = \'active\'';
+            $date = '$UID IS NOT NULL AND a.state = \'active\'';
         } else {
-            $date = 'a.uid IS NOT NULL AND a.state != \'pending\'';
+            $date = '$UID IS NOT NULL AND a.state != \'pending\'';
         }
         if (!is_null($this->comparison)) {
             $date .= ' AND a.registration_date != \'0000-00-00 00:00:00\' AND a.registration_date ' . $this->comparison . ' ' . XDB::format('{?}', $this->date->format('Y-m-d'));
@@ -1257,7 +1257,7 @@ class UFC_WatchRegistration extends UFC_UserRelated
         if (count($uids) == 0) {
             return PlFilterCondition::COND_FALSE;
         } else {
-            return XDB::format('a.uid IN {?}', $uids);
+            return XDB::format('$UID IN {?}', $uids);
         }
     }
 }
@@ -1488,7 +1488,7 @@ class UFO_Uid extends UserFilterOrder
     protected function getSortTokens(PlFilter &$uf)
     {
         $uf->requireAccounts();
-        return 'a.uid';
+        return '$UID';
     }
 }
 // }}}
@@ -1514,7 +1514,7 @@ class UFO_Pid extends UserFilterOrder
     protected function getSortTokens(PlFilter &$uf)
     {
         $uf->requireProfiles();
-        return 'p.pid';
+        return '$PID';
     }
 }
 // }}}
