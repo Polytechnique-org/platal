@@ -16,6 +16,9 @@ Bug/Wish:
         - #450: Adds marital name, thus ordinary name can be any name      -JAC
         - #891: Improves education display                                 -JAC
 
+    * XnetLists:
+        - #1010: Prevent empty list creation                               -Car
+
 ================================================================================
 VERSION 0.10.2                                                        13 11 2009
 

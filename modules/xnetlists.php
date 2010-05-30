@@ -142,7 +142,7 @@ class XnetListsModule extends ListsModule
             S::assert_xsrf_token();
         }
 
-        if (!Post::has('liste')) {
+        if (!Post::has('liste') || !Post::v('liste')) {
             $page->trigError('Le champs «&nbsp;adresse souhaitée&nbsp;» est vide.');
             return;
         }
