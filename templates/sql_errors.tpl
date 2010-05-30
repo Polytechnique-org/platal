@@ -21,13 +21,13 @@
 {**************************************************************************}
 
 <h1>Erreurs MySQL</h1>
-<p>
   {if $errors}
     {$errors|smarty:nodefaults}
   {else}
+<p>
     Il n'y a pas d'erreurs actuellement recensées.
-  {/if}
 </p>
+  {/if}
 <form action="sql_errors" method="post">
   <div>
     <input type="submit" name="clear" value="Effacer les erreurs" />
