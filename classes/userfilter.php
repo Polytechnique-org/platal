@@ -1630,6 +1630,9 @@ class UserFilter extends PlFilter
         // available only once all UFC have set their conditions (UFO_Score)
         if (is_null($this->query)) {
             $where = $this->root->buildCondition($this);
+            $where = str_replace(array_keys($this->joinMetas),
+                                 $this->joinMetas,
+                                 $where);
         }
         if (is_null($this->orderby)) {
             $orders = array();
@@ -1641,6 +1644,9 @@ class UserFilter extends PlFilter
             } else {
                 $this->orderby = 'ORDER BY  ' . implode(', ', $orders);
             }
+            $this->orderby = str_replace(array_keys($this->joinMetas),
+                                         $this->joinMetas,
+                                         $this->orderby);
         }
         if (is_null($this->query)) {
             if ($this->with_accounts) {
