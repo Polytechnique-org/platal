@@ -103,7 +103,7 @@ class AXLetterModule extends PLModule
             $res = XDB::query("SELECT * FROM axletter WHERE FIND_IN_SET('new', bits)");
             if ($res->numRows()) {
                 extract($res->fetchOneAssoc(), EXTR_OVERWRITE);
-                $subset_to = ($subset ? explode("\n", $subset) : null);
+                $subset_to = ($subset ? explode("\n", $subset) : array());
                 $subset = (count($subset_to) > 0);
                 $saved = true;
             } else  {
