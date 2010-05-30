@@ -9,5 +9,5 @@ En effet,
 
     %(reason)s
 
-Vous serez informé de l'action prise par le modérateur dans
-les plus brefs délais.
+Si le modérateur venait à refuser votre message, vous en serez
+informé dans les plus brefs délais.
