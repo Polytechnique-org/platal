@@ -30,7 +30,7 @@
     showTempMessage('bogo-msg', "Le changement de réglage de l'antispam a bien été effectué.", true);
   }
   {/literal}
-</script>
+//]]></script>
   <fieldset>
     <legend><strong>Choisis ton propre réglage&nbsp;:</strong></legend>
     <input id='s0' type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value, bogoUpdated)" />
