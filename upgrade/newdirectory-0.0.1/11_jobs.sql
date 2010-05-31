@@ -27,13 +27,14 @@ CREATE TABLE profile_job (
   email VARCHAR(255) NOT NULL DEFAULT '',
   pub ENUM('private', 'ax', 'public') DEFAULT 'private',
   email_pub ENUM('private', 'ax', 'public') DEFAULT 'private',
-  PRIMARY KEY (uid, id),
-  INDEX uid (uid)
+  PRIMARY KEY (pid, id),
+  INDEX pid (pid)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT IGNORE INTO  profile_job_enum (name, url)
             SELECT  entreprise, web
-              FROM  #x4dat#.entreprises;
+              FROM  #x4dat#.entreprises
+             WHERE  entreprise != '';
 
 INSERT INTO  profile_job (id, pid, jobid, email, pub, email_pub, description)
      SELECT  e.entrid, e.uid, j.id, e.email, e.pub, e.email_pub,
@@ -43,6 +44,7 @@ INSERT INTO  profile_job (id, pid, jobid, email, pub, email_pub, description)
  INNER JOIN  profile_job_enum  AS j  ON (e.entreprise = j.name)
   LEFT JOIN  #x4dat#.fonctions_def     AS f  ON (f.id = e.fonction)
   LEFT JOIN  #x4dat#.emploi_ss_secteur AS ss ON (ss.id = e.ss_secteur)
-  LEFT JOIN  #x4dat#.emploi_secteur    AS s  ON (s.id = e.secteur);
+  LEFT JOIN  #x4dat#.emploi_secteur    AS s  ON (s.id = e.secteur)
+      WHERE  e.entreprise != '';
 
 -- vim:set syntax=mysql:
