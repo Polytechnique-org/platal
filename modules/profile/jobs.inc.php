@@ -153,7 +153,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                                 WHERE  name = {?}",
                               $job['name']);
             if ($res->numRows() != 1) {
-                $user = S::user();
+                $user = $page->profile->owner;
                 $this->geocodeAddress($job['hq_address'], $s);
                 if (!$s) {
                     $gmapsGeocoder = new GMapsGeocoder();
@@ -180,8 +180,8 @@ class ProfileSettingJob extends ProfileSettingGeocoding
 
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
-        require_once('validations.inc.php');
-        $entreprise = Validate::get_typed_requests(S::i('uid'), 'entreprise');
+        require_once 'validations.inc.php';
+        $entreprise = Validate::get_typed_requests($page->profile->owner->id(), 'entreprise');
         $entr_val = 0;
 
         $init = false;
@@ -190,17 +190,20 @@ class ProfileSettingJob extends ProfileSettingGeocoding
             $init = true;
         }
         $success = true;
-        foreach ($value as $key=>&$job) {
+        foreach ($value as $key => &$job) {
             $job['name'] = trim($job['name']);
-            if (!$job['name'] && $entreprise) {
+            if ($job['name'] == '' && $entreprise) {
                 $job['tmp_name'] = $entreprise[$entr_val]->name;
-                $entr_val ++;
+                ++$entr_val;
+            } else if ($job['name'] == '') {
+                $job['name_error'] = true;
+                $success = false;
             }
             if (isset($job['removed']) && $job['removed']) {
                 unset($value[$key]);
             }
         }
-        foreach ($value as $key=>&$job) {
+        foreach ($value as $key => &$job) {
             $ls = true;
             $this->geocodeAddress($job['w_address'], $s);
             $ls = ($ls && $s);
@@ -217,35 +220,35 @@ class ProfileSettingJob extends ProfileSettingGeocoding
     {
         // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
 
-        require_once('profil.func.inc.php');
-        require_once('validations.inc.php');
+        require_once 'profil.func.inc.php';
+        require_once 'validations.inc.php';
 
         XDB::execute("DELETE FROM  profile_job
                             WHERE  pid = {?}",
-                     $this->pid());
+                     $page->pid());
         XDB::execute("DELETE FROM  profile_addresses
                             WHERE  pid = {?} AND type = 'job'",
-                     $this->pid());
+                     $page->pid());
         XDB::execute("DELETE FROM  profile_phones
                             WHERE  pid = {?} AND link_type = 'pro'",
-                     $this->pid());
-        foreach ($value as $id=>&$job) {
+                     $page->pid());
+        foreach ($value as $id => &$job) {
             if (isset($job['name']) && $job['name']) {
                 if (isset($job['jobid']) && $job['jobid']) {
                     XDB::execute("INSERT INTO  profile_job (pid, id, description, sectorid, subsectorid,
                                                             subsubsectorid, email, url, pub, email_pub, jobid)
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                                 $this->pid(), $id, $job['description'], $job['sector'], $job['subSector'],
+                                 $page->pid(), $id, $job['description'], $job['sector'], $job['subSector'],
                                  $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub'], $job['jobid']);
                 } else {
                     XDB::execute("INSERT INTO  profile_job (pid, id, description, sectorid, subsectorid,
                                                             subsubsectorid, email, url, pub, email_pub)
                                        VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                                 $this->pid(), $id, $job['description'], $job['sector'], $job['subSector'],
+                                 $page->pid(), $id, $job['description'], $job['sector'], $job['subSector'],
                                  $job['subSubSector'], $job['w_email'], $job['w_url'], $job['pub'], $job['w_email_pub']);
                 }
                 $address = new ProfileSettingAddress();
-                $address->saveAddress($id, $job['w_address'], 'job');
+                $address->saveAddress($page->pid(), $id, $job['w_address'], 'job');
                 $profiletel = new ProfileSettingPhones('pro', $id);
                 $profiletel->saveTels('tel', $job['w_phone']);
             }
@@ -378,7 +381,7 @@ class ProfileSettingJobs extends ProfilePage
                                     FROM  profile_phones
                                    WHERE  pid = {?} AND link_type = 'pro'
                                 ORDER BY  link_id",
-                                 S::i('uid'));
+                                 $this->pid());
             $i = 0;
             $jobNb = count($this->values['jobs']);
             while ($phone = $res->next()) {
@@ -471,7 +474,7 @@ class ProfileSettingJobs extends ProfilePage
 
     public function _prepare(PlPage &$page, $id)
     {
-        require_once "emails.combobox.inc.php";
+        require_once 'emails.combobox.inc.php';
         fill_email_combobox($page, $this->owner, $this->profile);
 
         $res = XDB::query("SELECT  id, name AS label

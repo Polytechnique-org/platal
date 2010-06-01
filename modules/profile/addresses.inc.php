@@ -83,9 +83,9 @@ class ProfileSettingAddress extends ProfileSettingGeocoding
         return $value;
     }
 
-    private function saveAddress($pid, $addrid, array &$address, $type)
+    public function saveAddress($pid, $addrid, array &$address, $type)
     {
-        require_once "geocoding.inc.php";
+        require_once 'geocoding.inc.php';
 
         $flags = new PlFlagSet();
         $flags->addFlag('current', $address['current']);
