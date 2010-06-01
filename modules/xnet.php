@@ -117,7 +117,7 @@ class XnetModule extends PLModule
                 XDB::execute('INSERT INTO  groups (id, diminutif)
                                    VALUES  (NULL, {?})',
                              Post::v('diminutif'));
-                pl_redirect('../' . Post::v('diminutif') . '/edit');
+                pl_redirect(Post::v('diminutif') . '/edit');
             } else {
                 $page->trigError('Le diminutif demandé est déjà pris.');
             }

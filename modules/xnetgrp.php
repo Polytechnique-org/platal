@@ -164,10 +164,6 @@ class XnetGrpModule extends PLModule
                 $site = "";
             }
             if (S::admin()) {
-                $dom = XDB::iterator('SELECT  *
-                                        FROM  group_dom
-                                    ORDER BY  nom');
-                $page->assign('dom', $dom);
                 $page->assign('super', true);
 
                 if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
@@ -226,7 +222,15 @@ class XnetGrpModule extends PLModule
                 }
             }
 
-            pl_redirect('../'.Post::v('diminutif', $globals->asso('diminutif')).'/edit');
+            pl_redirect('../' . Post::v('diminutif', $globals->asso('diminutif')) . '/edit');
+        }
+
+        if (S::admin()) {
+            $dom = XDB::iterator('SELECT  *
+                                    FROM  group_dom
+                                ORDER BY  nom');
+            $page->assign('dom', $dom);
+            $page->assign('super', true);
         }
     }
 
