@@ -34,8 +34,8 @@ CREATE TABLE profile_addresses (
   INDEX countryId (countryId)
 ) ENGINE=InnoDB, CHARSET=utf8;
 
-INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, latitude, longitude, countryId,
-                                type, flags)
+INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, latitude, longitude,
+                                IF(countryId = '' OR countryId = '00', NULL, countryId), type, flags)
      SELECT  uid, adrid, postcode, datemaj, pub, NULL, glat, glng, country,
              IF(FIND_IN_SET('pro', 'statut'), 'job', 'home'),
              CONCAT(IF(FIND_IN_SET('res-secondaire', 'statut'), 'secondary,', ''),
