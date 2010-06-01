@@ -69,6 +69,16 @@ class CheckDB extends PlTestCase
                     LEFT JOIN  geoloc_countries  AS gc ON (pa.countryId = gc.iso_3166_1_a2)
                         WHERE  gc.countryFR IS NULL OR gc.countryFR = \'\''),
 
+            'missing nationalities' =>
+                array('SELECT  p.pid, p.nationality1, p.nationality2, p.nationality3
+                         FROM  profiles         AS p
+                    LEFT JOIN  geoloc_countries AS g1 ON (p.nationality1 = g1.iso_3166_1_a2)
+                    LEFT JOIN  geoloc_countries AS g2 ON (p.nationality2 = g2.iso_3166_1_a2)
+                    LEFT JOIN  geoloc_countries AS g3 ON (p.nationality3 = g3.iso_3166_1_a2)
+                        WHERE  (p.nationality1 IS NOT NULL AND (g1.nationalityFR IS NULL OR g1.nationalityFR = \'\'))
+                               OR (p.nationality2 IS NOT NULL AND (g2.nationalityFR IS NULL OR g2.nationalityFR = \'\'))
+                               OR (p.nationality3 IS NOT NULL AND (g3.nationalityFR IS NULL OR g3.nationalityFR = \'\'))'),
+
             'ax_id' =>
                 array('SELECT  pid, hrpid, ax_id, COUNT(ax_id) AS c
                          FROM  profiles
