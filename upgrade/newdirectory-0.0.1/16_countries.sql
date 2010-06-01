@@ -1,7 +1,7 @@
 ALTER TABLE geoloc_countries MODIFY COLUMN phoneFormat VARCHAR(255) NOT NULL DEFAULT "";
 
 DELETE FROM  geoloc_countries
-      WHERE  iso_3166_1_a2 = "TP" OR iso_3166_1_a2 = "YU";
+      WHERE  iso_3166_1_a2 = "TP" OR iso_3166_1_a2 = "YU" OR iso_3166_1_a2 = "00";
 
 INSERT INTO  geoloc_countries (iso_3166_1_a2, iso_3166_1_a3, iso_3166_1_num, worldRegion,
                                country, countryFR, capital, nationalityFR,
@@ -647,7 +647,7 @@ UPDATE  geoloc_countries
  WHERE  iso_3166_1_a2 = "PY";
 
 UPDATE  geoloc_countries
-   SET  nationalityFR = NULL, belongsTo = "US"
+   SET  nationalityFR = "Porto-ricain", belongsTo = "US"
  WHERE  iso_3166_1_a2 = "PR";
 
 UPDATE  geoloc_countries
@@ -659,7 +659,7 @@ UPDATE  geoloc_countries
  WHERE  iso_3166_1_a2 = "RW";
 
 UPDATE  geoloc_countries
-   SET  nationalityFR = NULL, capital = ""
+   SET  nationalityFR = "Saharien occidental", capital = ""
  WHERE  iso_3166_1_a2 = "EH";
 
 UPDATE  geoloc_countries
