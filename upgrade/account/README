@@ -1,15 +1,27 @@
-DataBase upgrade:
------------------
+Database structure:
+-------------------
 
-* Activate forums database drop
+* plat/al uses a single database instead of 5. The new database is built from scratch and *must* not be x4dat.
+* most tables of the database are prefixed by the category of the table:
+ - account -> related to user account (identifier master, password, permissions)
+ - profile -> related to the directory
+ - email, aliases, virtual -> related to email management
+ - group -> related to X.net
+ - forum -> related to innd and banana
+ - ...
+* some table does not follow this convention and may be renamed in the future.
+
+* account identifiers are called uid (hruid for a human readable identifier for display purpose)
+* profile identifiers are called pid (hrpid for a human readable identifier for display purpose)
+
+* most tables have been switched to innodb in order to use foreign keys in a future release.
 
 
 Configuration changes:
 ----------------------
 
-[Banana]
-* table_prefix deprecated
-
+* Core.dbdb must be set to the name of the new database.
+* Banana.table_prefix is deprecated
 
 Affected services:
 ------------------
@@ -22,3 +34,5 @@ News:
 Email:
 * auth_user_md5.smtppass -> accounts.weak_password. This password is NULL when empty, but a check must be added for empty passwords.
 * auth_user_md5.mail_storage -> email_options.storage
+* aliases.id -> aliases.uid
+* virtual* and emails should be unchanged
