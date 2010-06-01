@@ -61,6 +61,7 @@ $phones = XDB::iterRow('SELECT  ap.pid, q.profile_mobile_pub, q.profile_mobile
                     INNER JOIN  account_profiles        AS ap ON (q.user_id = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
                          WHERE  q.profile_mobile <> \'\'');
 while (list($pid, $pub, $phone) = $phones->next()) {
+    $pub = ($pub == '' ? 'private' : $pub);
     $fmt_phone = format_phone_number($phone);
     if ($fmt_phone != '') {
         $display = format_display_number($fmt_phone, $error);
@@ -80,6 +81,7 @@ $phones = XDB::iterator('SELECT  ap.pid, e.entrid, e.tel, e.fax, e.mobile, e.tel
                      INNER JOIN  account_profiles    AS ap ON (e.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
                        ORDER BY  ap.pid');
 while ($row = $phones->next()) {
+    $row['tel_pub'] = ($row['tel_pub'] == '' ? 'private' : $row['tel_pub']);
     $request = 'INSERT INTO  profile_phones (pid, link_type, link_id, tel_id, tel_type, search_tel, display_tel, pub)
                      VALUES  ({?}, \'pro\', {?}, {?}, {?}, {?}, {?}, {?})';
     $fmt_fixed   = format_phone_number($row['tel']);
@@ -117,6 +119,7 @@ $phones = XDB::iterator('SELECT  ap.pid, t.adrid, t.telid, t.tel_type, t.tel_pub
 $conversions = array();
 $other_count = 0;
 while ($row = $phones->next()) {
+    $row['tel_pub'] = ($row['tel_pub'] == '' ? 'private' : $row['tel_pub']);
     $fmt_phone  = format_phone_number($row['tel']);
     if ($fmt_phone != '') {
         $display    = format_display_number($fmt_phone, $error);
