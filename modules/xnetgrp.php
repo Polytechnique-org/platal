@@ -164,8 +164,18 @@ class XnetGrpModule extends PLModule
                 $site = "";
             }
             if (S::has_perms()) {
+                $dom = XDB::iterator('SELECT  *
+                                        FROM  group_dom
+                                    ORDER BY  nom');
+                $page->assign('dom', $dom);
+                $page->assign('super', true);
+
                 if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
                     $page->trigError('Le domaine doit être un FQDN (aucune modification effectuée)&nbsp;!!!');
+                    return;
+                }
+                if (Post::t('nom') == '' || Post::t('diminutif') == '') {
+                    $page->trigError('Ni le nom ni le diminutif du groupe ne peuvent être vide.');
                     return;
                 }
                 XDB::execute(
@@ -217,12 +227,6 @@ class XnetGrpModule extends PLModule
             }
 
             pl_redirect('../'.Post::v('diminutif', $globals->asso('diminutif')).'/edit');
-        }
-
-        if (S::admin()) {
-            $dom = XDB::iterator('SELECT * FROM group_dom ORDER BY nom');
-            $page->assign('dom', $dom);
-            $page->assign('super', true);
         }
     }
 
