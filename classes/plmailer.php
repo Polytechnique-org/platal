@@ -212,7 +212,7 @@ class PlMailer extends Mail_Mime {
     public function setSubject($subject)
     {
         if (!preg_match('/^[\x20-\x7e]*$/', $subject)) {
-            $subject = '=?UTF-8?Q?' . preg_replace('/[^\x21-\x3C\x3e-\x7e]/e', 'PlMailer::encodeQP("\0")', $subject)
+            $subject = '=?UTF-8?Q?' . preg_replace('/[^\x21-\x3C\x3e\x40-\x7e]/e', 'PlMailer::encodeQP("\0")', $subject)
                      . '?=';
         }
         return parent::setSubject($subject);
