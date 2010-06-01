@@ -37,7 +37,7 @@ INSERT IGNORE INTO  profile_job_enum (name, url)
              WHERE  entreprise != '';
 
 INSERT INTO  profile_job (id, pid, jobid, email, pub, email_pub, description)
-     SELECT  e.entrid, e.uid, j.id, e.email, e.pub, e.email_pub,
+     SELECT  e.entrid, e.uid, j.id, e.email, IF(e.pub = '', 'private', e.pub), IF(e.email_pub = '', 'private', e.email_pub),
              CONCAT_WS(', ', IF(e.poste = '', NULL, e.poste), IF(e.fonction = 0, NULL, f.fonction_fr),
                        IF(e.ss_secteur IS NULL , IF(e.secteur IS NULL, NULL, s.label), ss.label))
        FROM  #x4dat#.entreprises       AS e
