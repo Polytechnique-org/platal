@@ -8,6 +8,7 @@ New:
 Bug/Wish:
     * Core:
         - #1019: Allow 35 points passwords as announced                    -Car
+        - #1059: Fix support of '?' in mail subjects                       -FRU
 
     * Profile:
         - #16, #528, #917: Changes job interface, updates business sectors -JAC
