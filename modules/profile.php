@@ -209,7 +209,7 @@ class ProfileModule extends PLModule
         if (is_null($id)) {
             return PL_NOT_FOUND;
         }
-        $pid = (!is_numeric($id) || S::has_perms()) ? Profile::getPID($id) : null;
+        $pid = (!is_numeric($id) || S::admin()) ? Profile::getPID($id) : null;
         if (is_null($pid)) {
             if (S::logged()) {
                 $page->trigError($id . " inconnu dans l'annuaire.");

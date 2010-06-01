@@ -163,7 +163,7 @@ class XnetGrpModule extends PLModule
             } else {
                 $site = "";
             }
-            if (S::has_perms()) {
+            if (S::admin()) {
                 $dom = XDB::iterator('SELECT  *
                                         FROM  group_dom
                                     ORDER BY  nom');
