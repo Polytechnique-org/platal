@@ -736,7 +736,7 @@ class ProfileJobs extends ProfileField
         }
     }
 
-    public static function addAddresses(ProfileAddresses $addresses)
+    public function addAddresses(ProfileAddresses $addresses)
     {
         $a = $addresses->get(Profile::ADDRESS_PRO);
         foreach ($a as $address) {
@@ -746,11 +746,10 @@ class ProfileJobs extends ProfileField
         }
     }
 
-    public static function addCompanies(array $companies)
+    public function addCompanies(array $companies)
     {
-        foreach ($this->jobs as $job)
-        {
-            $job->company = $companies[$job->jobid];
+        foreach ($this->jobs as $job) {
+            $this->company = $companies[$job->jobid];
         }
     }
 }
