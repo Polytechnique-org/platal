@@ -433,10 +433,10 @@ class AdminModule extends PLModule
             if (Post::i('token_access', 0) != ($user->token_access ? 1 : 0)) {
                 $to_update['token'] = Post::i('token_access') ? rand_url_id(16) : null;
             }
-            if (Post::i('skin', 0) != $user->skin) {
-                $to_update['skin'] = Post::i('skin', 0);
+            if (Post::i('skin') != $user->skin) {
+                $to_update['skin'] = Post::i('skin');
                 if ($to_update['skin'] == 0) {
-                    $to_update['skin'] = null;
+                    $to_update['skin'] = 1;
                 }
             }
             if (Post::s('state') != $user->state) {
