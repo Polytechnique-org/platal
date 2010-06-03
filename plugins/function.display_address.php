@@ -60,7 +60,7 @@ function smarty_function_display_address($param, &$smarty)
         .   urlencode(implode(", ", $lines) . " ($idt)")
         . "\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
     $comment = "";
-    if ($param['adr']['comment'] != "")
+    if ($adr->comment != "")
     {
         $commentHtml = str_replace(array('&', '"'), array('&amp;', '&quot;'), $adr->comment);
         $commentJs = str_replace(array('\\', '\''), array('\\\\', '\\\''), $commentHtml);
