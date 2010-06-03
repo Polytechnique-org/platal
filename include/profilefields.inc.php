@@ -295,6 +295,9 @@ class Address
 
     public function hasFlag($flag)
     {
+        if (!$this->flags instanceof PlFlagSet) {
+            $this->flags = new PlFlagSet($this->flags);
+        }
         return $this->flags->hasFlag($flag);
     }
 }

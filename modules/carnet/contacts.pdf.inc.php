@@ -175,19 +175,19 @@ class ContactsPDF extends FPDF
 
     private function Address($a)
     {
-        if (!$a['text']) {
+        if (!$a->text) {
             return;
         }
         $l = "adresse\n";
-        if ($a['current']) {
+        if ($a->hasFlag('current')) {
             $l .= 'actuelle';
-        } elseif ($a['secondary']) {
+        } elseif ($a->hasFlag('secondary')) {
             $l .= 'secondaire';
         } else {
             $l .= 'principale';
         }
 
-        $r = utf8_decode($a['text']);
+        $r = utf8_decode($a->text);
 /*        $r = trim("$r\n".$a['adr1']);
         $r = trim("$r\n".$a['adr2']);
         $r = trim("$r\n".$a['adr3']);
@@ -283,7 +283,7 @@ class ContactsPDF extends FPDF
         $ok  = false;
 
         if ($wp) {
-            $photo = $profile->getPhoto(false);
+            $photo = $profile->getPhoto(false, true);
             if ($photo) {
                 $old2  = clone $self;
                 $width = $photo->width() * 20 / $photo->height();
@@ -291,8 +291,7 @@ class ContactsPDF extends FPDF
                 $_y = $self->getY();
                 $self->Cell(0, 20, '', '', 0, '', 1);
                 error_reporting(0);
-                $mime = explode('/', $photo->mimeType());
-                $self->Image($photo->path(), $_x, $_y, $width, 20, $mime[1]);
+                $self->Image($photo->path(), $_x, $_y, $width, 20, $photo->mimeType());
                 error_reporting($self->report);
 
                 if ($self->error) {
