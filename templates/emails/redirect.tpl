@@ -79,7 +79,7 @@
 
     function removeRedirect(link, email)
     {
-        if (confirm("Supprimer l'adresse " + email + "&nbsp;?")) {
+        if (confirm("Supprimer l'adresse " + email + " ?")) {
           $.get(link.href, {},function() {
             $('tr[@id=line_' + email.replace('@', '_at_') + ']').remove();
             showRemove();
