@@ -18,6 +18,7 @@ Bug/Wish:
         - #386: Adds the possibility to fill in multiple nationalities     -JAC
         - #443: Adds concept of ordinary firstname                         -JAC
         - #450: Adds marital name, thus ordinary name can be any name      -JAC
+        - #670: Adds Outlook CSV format for birthdays and contacts         -Car
         - #891: Improves education display                                 -JAC
 
     * XnetLists:

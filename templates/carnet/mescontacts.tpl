@@ -61,15 +61,23 @@
   [<a href="carnet/contacts/pdf/photos/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
   </li>
   <li>
-    {icon name=calendar_view_day title='Anniversaires'} 
-    <a href="carnet/contacts/ical/{$smarty.session.hruid}/{$smarty.session.token}/anniv-x.ics" title="Anniversaires">
-      Le calendrier des anniversaires
+    Le calendrier des anniversaires&nbsp;:
+    <a href="carnet/contacts/ical/{$smarty.session.hruid}/{$smarty.session.token}/anniv-x.ics">
+      {icon name=calendar_view_day title='Anniversaires au format iCal'}
+    </a>
+    <a href="carnet/contacts/csv/birthday/{$smarty.session.hruid}/{$smarty.session.token}/anniv-x.csv">
+      {icon name=outlook title='Anniversaires au format Outlook'}
     </a>
   </li>
   <li>
-    {icon name=vcard title='Carte de visite'} 
-    <a href="carnet/contacts/vcard/photos/MesContactsXorg.vcf">La carte de visite électronique</a>
+    La carte de visite électronique&nbsp;:
+    <a href="carnet/contacts/vcard/photos/MesContactsXorg.vcf">
+      {icon name=vcard title='Carte de visite au format vCard'}
+    </a>
     (<a href="carnet/contacts/vcard/MesContactsXorg.vcf">sans les photos</a>)
+    <a href="carnet/contacts/csv/{$smarty.session.hruid}/{$smarty.session.token}/MesContactsXorg.csv">
+      {icon name=outlook title='Contacts au format Outlook'}
+    </a>
   </li>
 </ul>
 

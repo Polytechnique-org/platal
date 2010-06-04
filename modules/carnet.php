@@ -32,6 +32,8 @@ class CarnetModule extends PLModule
             'carnet/contacts/pdf'   => $this->make_hook('pdf',      AUTH_COOKIE),
             'carnet/contacts/vcard' => $this->make_hook('vcard',    AUTH_COOKIE),
             'carnet/contacts/ical'  => $this->make_hook('ical',     AUTH_PUBLIC, 'user', NO_HTTPS),
+            'carnet/contacts/csv'   => $this->make_hook('csv',     AUTH_PUBLIC, 'user', NO_HTTPS),
+            'carnet/contacts/csv/birthday'  => $this->make_hook('csv_birthday',     AUTH_PUBLIC, 'user', NO_HTTPS),
 
             'carnet/rss'            => $this->make_hook('rss',      AUTH_PUBLIC, 'user', NO_HTTPS),
         );
@@ -357,6 +359,38 @@ class CarnetModule extends PLModule
         );
     }
 
+    function handler_csv_birthday(&$page, $alias = null, $hash = null)
+    {
+        $user = Platal::session()->tokenAuth($alias, $hash);
+        if (is_null($user)) {
+            if (S::logged()) {
+                $user == S::user();
+            } else {
+                return PL_FORBIDDEN;
+            }
+        }
+
+        $page->changeTpl('carnet/calendar.outlook.tpl', NO_SKIN);
+        $filter = new UserFilter(new UFC_Contact($user));
+        $profiles = $filter->iterProfiles();
+        $page->assign('events', PlIteratorUtils::map($profiles, array($this, 'buildBirthRef')));
+        $years = array(date("Y"));
+        for ($i = 1; $i <= 10; ++$i) {
+            $years[] = $years[0] + $i;
+        }
+        $page->assign('years', $years);
+        $lang = 'fr';
+        if (preg_match('/([a-zA-Z]{2,8})($|[^a-zA-Z])/', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $matches)) {
+            $lang = strtolower($matches[1]);
+        }
+        $page->assign('lang', $lang);
+        if ($lang == 'fr') {
+            $encoding = 'iso8859-15';
+        } else {
+            $encoding = 'utf-8';
+        }
+        pl_content_headers("text/comma-separated-values;charset=".$encoding);
+    }
 
     function handler_ical(&$page, $alias = null, $hash = null)
     {
@@ -386,6 +420,23 @@ class CarnetModule extends PLModule
         $vcard = new VCard($photos == 'photos');
         $vcard->addProfiles($pf->getProfiles());
         $vcard->show();
+    }
+
+    function handler_csv(&$page, $alias = null, $hash = null)
+    {
+        $user = Platal::session()->tokenAuth($alias, $hash);
+        if (is_null($user)) {
+            if (S::logged()) {
+                $user == S::user();
+            } else {
+                return PL_FORBIDDEN;
+            }
+        }
+
+        $page->changeTpl('carnet/mescontacts.outlook.tpl', NO_SKIN);
+        $pf = new ProfileFilter(new UFC_Contact($user));
+        require_once 'carnet/outlook.inc.php';
+        Outlook::output_profiles($pf->getProfiles(), 'fr');
     }
 }
 
