@@ -20,7 +20,7 @@ insert into accounts
             prenom AS display_name,
             IF(FIND_IN_SET('femme', flags), 'female', 'male') AS sex,
             IF(q.core_mail_fmt = 'html', 'html', 'text') AS email_format,
-            IF(q.skin IS NULL OR q.skin = 0, 1, q.skin) AS skin,
+            IF(q.skin = 0, NULL, q.skin) AS skin,
             q.last_version AS last_version
        from #x4dat#.auth_user_md5 as u
   left join #x4dat#.auth_user_quick as q on (q.user_id = u.user_id)

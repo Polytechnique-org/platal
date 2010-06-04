@@ -436,7 +436,7 @@ class AdminModule extends PLModule
             if (Post::i('skin') != $user->skin) {
                 $to_update['skin'] = Post::i('skin');
                 if ($to_update['skin'] == 0) {
-                    $to_update['skin'] = 1;
+                    $to_update['skin'] = null;
                 }
             }
             if (Post::s('state') != $user->state) {

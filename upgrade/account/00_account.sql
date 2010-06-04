@@ -25,7 +25,7 @@ CREATE TABLE accounts (
   display_name varchar(255) default null,
   sex enum('female', 'male') not null default 'male',
   email_format enum('text', 'html') not null default 'html',
-  skin tinyint(1) unsigned not null default 1,
+  skin tinyint(1) unsigned default null,
   last_version varchar(16) not null,
 
   primary key uid (uid),
