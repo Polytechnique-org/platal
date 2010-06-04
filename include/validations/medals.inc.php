@@ -76,10 +76,9 @@ class MedalReq extends Validate
     {
         //var_dump($this);
         $r = XDB::query("
-            SELECT IF (g.text IS NOT NULL, CONCAT(m.text,' - ', g.text), m.text)
+            SELECT m.text
               FROM profile_medal_enum AS m
-         LEFT JOIN profile_medal_enum_grades AS g ON(g.mid = m.id AND g.gid = {?})
-             WHERE m.id = {?}", $this->gid, $this->mid);
+             WHERE m.id = {?}", $this->mid);
         return $r->fetchOneCell();
     }
 
