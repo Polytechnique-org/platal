@@ -104,7 +104,9 @@ class Survey
             if ((preg_match('#^\d{4}$#', $p) && $p == $promo) ||
                 (preg_match('#^\d{4}-$#', $p) && intval(substr($p, 0, 4)) <= $promo) ||
                 (preg_match('#^-\d{4}$#', $p) && intval(substr($p, 1)) >= $promo) ||
-                (preg_match('#^\d{4}-\d{4}$#', $p) && intval(substr($p, 0, 4)) <= $promo && intval(substr($p, 5)) >= $promo)) {
+                (preg_match('#^\d{4}-\d{4}$#', $p) &&
+                    (intval(substr($p, 0, 4)) <= $promo && intval(substr($p, 5)) >= $promo ||
+                     intval(substr($p, 0, 4)) >= $promo && intval(substr($p, 5)) <= $promo ))) {
                     return true;
             }
         }

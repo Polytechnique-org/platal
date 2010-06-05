@@ -31,6 +31,9 @@ Bug/Wish:
         - #891: Improves education display                                 -JAC
         - #1081: Sorts language alphabetically in skill tab                -Car
 
+    * Survey:
+        - #1002: Lets the user set promo interval in both ways             -Car
+
     * XnetLists:
         - #1010: Prevent empty list creation                               -Car
 
