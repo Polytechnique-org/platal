@@ -3,6 +3,9 @@ VERSION 1.0.0                                                         XX XX XXXX
 
 New:
     * Core:
+        - New directory format                                             -JAC
+        - Split user management into accounts and profiles                 -FRU
+        - New database abstraction for user selection                  -FRU/XEL
         - Centralises email management through an email combobox           -JAC
 
 Bug/Wish:
