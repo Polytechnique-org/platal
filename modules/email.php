@@ -131,6 +131,9 @@ class EmailModule extends PLModule
         // Fetch existing @alias_dom aliases.
         $alias = $user->emailAlias();
         $visibility = $user->hasProfile() && $user->profile()->alias_pub;
+        $page->assign('actuel', $alias);
+        $page->assign('user', $user);
+        $page->assign('mail_public', $visibility);
 
         if ($action == 'ask' && Env::has('alias') && Env::has('raison')) {
             S::assert_xsrf_token();
