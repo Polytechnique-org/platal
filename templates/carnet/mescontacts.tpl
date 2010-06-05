@@ -87,7 +87,7 @@
              value="{$smarty.request.quick|default:'recherche dans tes contacts'}"
              onfocus="if (this.value == 'recherche dans tes contacts') this.value=''"
              onblur="if (this.value == '') this.value='recherche dans tes contacts'"/>
-      <a href="carnet/contacts">{icon name=cross title='Annuler la recherche'}</a>
+      {if $smarty.request.quick}<a href="carnet/contacts">{icon name=arrow_refresh title='Annuler la recherche'}</a>{/if}
   </div>
 </form>
 <p>

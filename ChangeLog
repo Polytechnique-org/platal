@@ -9,6 +9,9 @@ New:
         - Centralises email management through an email combobox           -JAC
 
 Bug/Wish:
+    * Carnet:
+        - #1074: Removes the red cross to reset contact search             -Car
+
     * Core:
         - #1019: Allow 35 points passwords as announced                    -Car
         - #1059: Fix support of '?' in mail subjects                       -FRU
