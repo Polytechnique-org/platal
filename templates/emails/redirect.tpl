@@ -81,7 +81,7 @@
     {
         if (confirm("Supprimer l'adresse " + email + " ?")) {
           $.get(link.href, {},function() {
-            $('tr[@id=line_' + email.replace('@', '_at_') + ']').remove();
+            $('#line_' + email.replace('@', '_at_').replace('.','\\.')).remove();
             showRemove();
             activeEnable();
           });
@@ -123,6 +123,7 @@
   {test_email}
   <div id="redirect-msg" style="position:absolute;"></div><br />
   <div class="center">
+    <form action="emails/redirect" method="post">
     <table class="bicol" summary="Adresses de redirection">
       <tr>
         <th>Redirection</th>
@@ -171,21 +172,20 @@
             {icon name=cross title="Supprimer"}
           </a>
           {else}
-          {if $e->sufficient}<span class="remove_email"></span>{/if}
+          {if $e->sufficient}<span class="remove_email"><span style="display:none">&nbsp;</span></span>{/if}
           <a href="emails/redirect#{$e->email}">{icon name=information title="Plus d'informations"}</a>
           {/if}
         </td>
       </tr>
       {/foreach}
-      <form action="emails/redirect" method="post">
         {cycle values="pair,impair" assign=class_combobox}
         {include file="include/emails.combobox.tpl" name="email" val=$email class=$class_combobox error=$error_email i="0"}
         <tr class="{$class_combobox}"><td colspan="4"><div>
           <input type="submit" value="ajouter" name="emailop" />
           {xsrf_token_field}
         </div></td></tr>
-      </form>
     </table>
+    </form>
     <script type="text/javascript">showRemove(); activeEnable();</script>
   </div>
 <p class="smaller center">
