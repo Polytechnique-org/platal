@@ -64,7 +64,7 @@ class CarnetModule extends PLModule
                              SET  last = FROM_UNIXTIME({?})
                            WHERE  uid = {?}',
                          Get::i('read'), S::i('uid'));
-            S::set('watch_last', Get::i('read'));
+            S::user()->invalidWatchCache();
             Platal::session()->updateNbNotifs();
             pl_redirect('carnet/panel');
         }
@@ -131,6 +131,8 @@ class CarnetModule extends PLModule
         }
         XDB::execute('INSERT IGNORE INTO  watch_promo (uid, promo)
                                   VALUES  ' . implode(', ', $to_add));
+        S::user()->invalidWatchCache();
+        Platal::session()->updateNbNotifs();
     }
 
     private function delPromo(PlPage &$page, $promo)
@@ -146,12 +148,16 @@ class CarnetModule extends PLModule
         XDB::execute('DELETE FROM  watch_promo
                             WHERE  ' . XDB::format('uid = {?}', S::i('uid')) . '
                                    AND promo IN (' . implode(', ', $to_delete) . ')');
+        S::user()->invalidWatchCache();
+        Platal::session()->updateNbNotifs();
     }
 
     public function addNonRegistered(PlPage &$page, PlUser &$user)
     {
         XDB::execute('INSERT IGNORE INTO  watch_nonins (uid, ni_id)
                                   VALUES  ({?}, {?})', S::i('uid'), $user->id());
+        S::user()->invalidWatchCache();
+        Platal::session()->updateNbNotifs();
     }
 
     public function delNonRegistered(PlPage &$page, PlUser &$user)
@@ -159,6 +165,8 @@ class CarnetModule extends PLModule
         XDB::execute('DELETE FROM  watch_nonins
                             WHERE  uid = {?} AND ni_id = {?}',
                     S::i('uid'), $user->id());
+        S::user()->invalidWatchCache();
+        Platal::session()->updateNbNotifs();
     }
 
     public function handler_notifs(&$page, $action = null, $arg = null)
@@ -201,6 +209,8 @@ class CarnetModule extends PLModule
             XDB::execute('UPDATE  watch
                              SET  actions = {?}
                            WHERE  uid = {?}', $flags, S::i('uid'));
+            S::user()->invalidWatchCache();
+            Platal::session()->updateNbNotifs();
         }
 
         if (Env::has('flags_contacts')) {
@@ -208,6 +218,8 @@ class CarnetModule extends PLModule
             XDB::execute('UPDATE  watch
                              SET  ' . XDB::changeFlag('flags', 'contacts', Env::b('contacts')) . '
                            WHERE  uid = {?}', S::i('uid'));
+            S::user()->invalidWatchCache();
+            Platal::session()->updateNbNotifs();
         }
 
         if (Env::has('flags_mail')) {
@@ -215,6 +227,8 @@ class CarnetModule extends PLModule
             XDB::execute('UPDATE  watch
                              SET  ' . XDB::changeFlag('flags', 'mail', Env::b('mail')) . '
                            WHERE  uid = {?}', S::i('uid'));
+            S::user()->invalidWatchCache();
+            Platal::session()->updateNbNotifs();
         }
 
         $user = S::user();

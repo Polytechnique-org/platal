@@ -462,6 +462,14 @@ class User extends PlUser
         return $this->watch_last;
     }
 
+    public function invalidWatchCache()
+    {
+        unset($this->watch_actions);
+        unset($this->watch_users);
+        unset($this->watch_last);
+        unset($this->watch_promos);
+    }
+
 
     // Contacts
     private $contacts = null;
