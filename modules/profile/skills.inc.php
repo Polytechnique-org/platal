@@ -97,7 +97,8 @@ class ProfileSettingSkills extends ProfilePage
                                           'bonne connaissance' => 'bonne connaissance',
                                           'expert' => 'expert'));
         $page->assign('lang_list', XDB::iterator("SELECT  id, langue_fr
-                                                    FROM  profile_langskill_enum"));
+                                                    FROM  profile_langskill_enum
+                                                ORDER BY  langue_fr"));
         $page->assign('lang_level', array(1 => 'connaissance basique',
                                           2 => 'maîtrise des bases',
                                           3 => 'maîtrise limitée',

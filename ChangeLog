@@ -29,6 +29,7 @@ Bug/Wish:
         - #450: Adds marital name, thus ordinary name can be any name      -JAC
         - #670: Adds Outlook CSV format for birthdays and contacts         -Car
         - #891: Improves education display                                 -JAC
+        - #1081: Sorts language alphabetically in skill tab                -Car
 
     * XnetLists:
         - #1010: Prevent empty list creation                               -Car
