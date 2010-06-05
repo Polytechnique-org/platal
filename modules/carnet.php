@@ -270,6 +270,7 @@ class CarnetModule extends PLModule
                     if (XDB::execute("DELETE FROM  contacts
                                             WHERE  uid = {?} AND contact = {?}",
                                      $uid, $contact->id())) {
+                        Platal::session()->updateNbNotifs();
                         $page->trigSuccess("Contact retiré&nbsp;!");
                     }
                 }
@@ -280,6 +281,7 @@ class CarnetModule extends PLModule
                     if (XDB::execute("REPLACE INTO  contacts (uid, contact)
                                             VALUES  ({?}, {?})",
                                      $uid, $contact->id())) {
+                        Platal::session()->updateNbNotifs();
                         $page->trigSuccess('Contact ajouté&nbsp;!');
                     } else {
                         $page->trigWarning('Contact déjà dans la liste&nbsp;!');
