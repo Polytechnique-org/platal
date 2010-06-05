@@ -176,7 +176,11 @@ class PlMailer extends Mail_Mime {
         if ($email instanceof PlUser) {
             $email = self::formatUser($email);
         }
-        return preg_replace('!(^|, *)([^<"]+?) *(<[^>]*>)!u', '\1"\2" \3', $email);
+        $email = preg_replace('!(^|, *)([^<"]+?) *(<[^>]*>)!ue',
+                              '\1 "\2" \3', $email);
+        return preg_replace('/"([^<]+)"/e',
+                            '"\\"" . PlMailer::encodeStringQP("\1") . "\\""',
+                            $email);
     }
 
     public function addTo($email)
@@ -204,6 +208,16 @@ class PlMailer extends Mail_Mime {
         return parent::setFrom($this->correct_emails($email));
     }
 
+    static function encodeStringQP($string)
+    {
+        if (!preg_match('/^[\x20-\x7e]*$/', $string)) {
+            $string = '=?UTF-8?Q?' . preg_replace('/[^\x21-\x3C\x3e\x40-\x7e]/e', 'PlMailer::encodeQP("\0")', $string)
+                     . '?=';
+        }
+        return $string;
+    }
+
+
     static function encodeQP($char)
     {
         return sprintf('=%02X', ord($char));
@@ -211,11 +225,7 @@ class PlMailer extends Mail_Mime {
 
     public function setSubject($subject)
     {
-        if (!preg_match('/^[\x20-\x7e]*$/', $subject)) {
-            $subject = '=?UTF-8?Q?' . preg_replace('/[^\x21-\x3C\x3e\x40-\x7e]/e', 'PlMailer::encodeQP("\0")', $subject)
-                     . '?=';
-        }
-        return parent::setSubject($subject);
+        return parent::setSubject(self::encodeStringQP($subject));
     }
 
     public function addHeader($hdr,$val)
