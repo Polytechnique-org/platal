@@ -38,7 +38,7 @@ class ProfileSettingSearchNames implements ProfileSetting
 
     private function prepareField($value)
     {
-        $value = mb_strtoupper($value);
+        $value = mb_strtoupper(replace_accent($value));
         return preg_replace('/[^A-Z]/', ' ', $value);
     }
 
