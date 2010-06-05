@@ -555,7 +555,8 @@ class ProfileSettingGeneral extends ProfilePage
         if ($this->changed['yourself']) {
             XDB::execute('UPDATE  accounts
                              SET  display_name = {?}
-                           WHERE  pid = {?}', $this->pid());
+                           WHERE  uid = {?}',
+                         $this->values['yourself'], $this->owner->id());
         }
         if ($this->changed['promo_display']) {
             if ($this->values['promo_display']{0} == $this->profile->mainEducation()
