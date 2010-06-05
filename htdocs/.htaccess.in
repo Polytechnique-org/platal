@@ -10,6 +10,7 @@ RewriteRule ^(.*)$ ?n=$1 [L,QSA]
 # Caches the immutable resources for seven days. Generated files (images and JS
 # served by PHP) are not affected.
 ExpiresActive On
+ExpiresByType application/javascript "access plus 7 days"
 ExpiresByType application/x-javascript "access plus 7 days"
 ExpiresByType image/gif "access plus 7 days"
 ExpiresByType image/jpeg "access plus 7 days"
