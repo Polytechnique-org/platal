@@ -192,6 +192,15 @@ abstract class PlUser
         return property_exists($this, $name) || isset($this->data[$name]);
     }
 
+    public function __unset($name)
+    {
+        if (property_exists($this, $name)) {
+            $this->$name = null;
+        } else {
+            unset($this->data[$name]);
+        }
+    }
+
     /**
      * Fills the object properties using the @p associative array; the intended
      * user case is to fill the object using SQL obtained arrays.
