@@ -233,8 +233,6 @@ class PLTableEditor
         }
         if ($action == 'new') {
             if (!$this->idfield_editable) {
-                $r = XDB::query("SELECT MAX({$this->idfield})+1 FROM {$this->table}");
-                $page->assign('id', $r->fetchOneCell());
                 $page->assign('entry', $this->prepare_new());
             }
             $list = false;
@@ -279,9 +277,9 @@ class PLTableEditor
                 if ($this->idfield_editable && ($id != Post::v($this->idfield)) && $action != 'new')
                     XDB::execute("UPDATE {$this->table} SET {$this->idfield} = {?} WHERE {$this->idfield} = {?} AND {$this->whereclause}", Post::v($this->idfield), $id);
                 XDB::execute("REPLACE INTO {$this->table} VALUES ($values)");
-                if ($id !== false)
+                if ($id !== false && $id !== null) {
                     $page->trigSuccess("L'entrée ".$id." a été mise à jour.");
-                else {
+                } else {
                     $page->trigSuccess("Une nouvelle entrée a été créée.");
                     $id = XDB::insertId();
                 }
