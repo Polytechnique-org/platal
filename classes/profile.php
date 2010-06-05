@@ -357,6 +357,16 @@ class Profile
         return property_exists($this, $name) || isset($this->data[$name]);
     }
 
+    public function __unset($name)
+    {
+        if (property_exists($this, $name)) {
+            $this->$name = null;
+        } else {
+            unset($this->data[$name]);
+        }
+    }
+
+
     /** Sets the level of visibility of the profile
      * Sets $this->visibility to a list of valid visibilities.
      * @param one of the self::VIS_* values
