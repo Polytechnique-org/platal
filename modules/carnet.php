@@ -266,18 +266,20 @@ class CarnetModule extends PLModule
         }
         switch (Env::v('action')) {
             case 'retirer':
-                if (($user = User::get(Env::v('user')))) {
+                if (($contact = User::get(Env::v('user')))) {
                     if (XDB::execute("DELETE FROM  contacts
-                                            WHERE  uid = {?} AND contact = {?}", $uid, $user->id())) {
+                                            WHERE  uid = {?} AND contact = {?}",
+                                     $uid, $contact->id())) {
                         $page->trigSuccess("Contact retiré&nbsp;!");
                     }
                 }
                 break;
 
             case 'ajouter':
-                if (($user = User::get(Env::v('user')))) {
+                if (($contact = User::get(Env::v('user')))) {
                     if (XDB::execute("REPLACE INTO  contacts (uid, contact)
-                                            VALUES  ({?}, {?})", $uid, $user->id())) {
+                                            VALUES  ({?}, {?})",
+                                     $uid, $contact->id())) {
                         $page->trigSuccess('Contact ajouté&nbsp;!');
                     } else {
                         $page->trigWarning('Contact déjà dans la liste&nbsp;!');
