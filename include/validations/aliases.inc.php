@@ -42,7 +42,7 @@ class AliasReq extends Validate
         $this->alias  = $_alias.'@'.$globals->mail->alias_dom;
         $this->raison = $_raison;
         $this->public = $_public;
-        $this->old    = $user->emailAlias();
+        $this->old    = $_user->emailAlias();
         if (empty($this->old)) {
             unset($this->old);
         }
