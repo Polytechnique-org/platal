@@ -410,7 +410,6 @@ class SurveyModule extends PLModule
             // checks promotion
             $allowed = false;
             foreach ($profile->yearspromo() as $p) {
-                var_dump($p);
                 if ($survey->checkPromo($p)) {
                     $allowed = true;
                     break;
