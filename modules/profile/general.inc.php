@@ -153,11 +153,18 @@ class ProfileSettingSearchNames implements ProfileSetting
                 }
                 if ($sn['pub']) {
                     if (isset($sn['particle']) && ($sn['particle'] != '')) {
+                        // particle is before first blank
                         list($particle, $name) = explode(' ', $sn['name'], 2);
                         $particle = trim($particle) . ' ';
                         if (!$name) {
+                            // particle is before first quote
                             list($particle, $name) = explode('\'', $sn['name'], 2);
                             $particle = trim($particle);
+                            if (!$name) {
+                                // actually there is no particle
+                                $particle = '';
+                                $name = $sn['name'];
+                            }
                         }
                     } else {
                         $particle = '';
