@@ -35,7 +35,7 @@
 <h1>{$asso->nom}&nbsp;: gestion des membres</h1>
 
 <h2>
-  Suppression du membre&nbsp;: {$user.prenom} {$user.nom}
+  Suppression du membre&nbsp;: {profile user=$user groupperms=false sex=false promo=true}
 </h2>
 
 
@@ -47,7 +47,7 @@
     Êtes-vous sûr de vouloir vous désinscrire du groupe {$asso->nom} et de toutes
     les listes de diffusion associées&nbsp;?
     {else}
-    Êtes-vous sûr de vouloir supprimer {$user.prenom} {$user.nom} du groupe,
+    Êtes-vous sûr de vouloir supprimer {$user->fullName()} du groupe,
     lui retirer tous les droits associés à son statut de membre
     et le désabonner de toutes les listes de diffusion du groupe&nbsp;?
     {/if}

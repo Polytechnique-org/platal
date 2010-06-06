@@ -731,18 +731,20 @@ class XnetGrpModule extends PLModule
 
         $may_update = may_update();
         $warning    = false;
-        foreach ($listes as $liste) {
-            if ($liste['sub'] == 2) {
-                if ($may_update) {
-                    $mmlist->mass_unsubscribe($liste['list'], Array($user->forlifeEmail()));
-                } else {
-                    $mmlist->unsubscribe($liste['list']);
+        if (is_array($listes)) {
+            foreach ($listes as $liste) {
+                if ($liste['sub'] == 2) {
+                    if ($may_update) {
+                        $mmlist->mass_unsubscribe($liste['list'], Array($user->forlifeEmail()));
+                    } else {
+                        $mmlist->unsubscribe($liste['list']);
+                    }
+                } elseif ($liste['sub']) {
+                    Platal::page()->trigWarning($user->fullName() . " a une"
+                                               ." demande d'inscription en cours sur la"
+                                               ." liste {$liste['list']}@ !");
+                    $warning = true;
                 }
-            } elseif ($liste['sub']) {
-                Platal::page()->trigWarning($user->fullName() . " a une"
-                                           ." demande d'inscription en cours sur la"
-                                           ." liste {$liste['list']}@ !");
-                $warning = true;
             }
         }
 

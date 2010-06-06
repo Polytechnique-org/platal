@@ -73,13 +73,13 @@ class Group
 
     public function iterMembers($extra_cond = null, $sort = null, $limit = null)
     {
-        $uf = getMembersFilter($extra_cond, $sort);
+        $uf = $this->getMembersFilter($extra_cond, $sort);
         return $uf->iterUsers($limit);
     }
 
     public function iterAdmins($extra_cond = null, $sort = null, $limit = null)
     {
-        $uf = getAdminsFilter($extra_cond, $sort);
+        $uf = $this->getAdminsFilter($extra_cond, $sort);
         return $uf->iterUsers($limit);
     }
 
