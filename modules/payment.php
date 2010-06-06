@@ -454,6 +454,11 @@ class PaymentModule extends PLModule
         $table_editor->describe('amount_max','montant maximum',false);
         $table_editor->describe('mail','email contact',true);
         $table_editor->describe('confirmation','message confirmation',false);
+
+        // adds a column with the start date of the linked event if there is one
+        $table_editor->add_option_table('group_events','group_events.paiement_id = t.id');
+        $table_editor->add_option_field('group_events.debut', 'related_event', 'évènement', 'timestamp');
+
         $table_editor->apply($page, $action, $id);
     }
 }

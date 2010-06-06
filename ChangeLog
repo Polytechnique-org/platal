@@ -19,6 +19,9 @@ Bug/Wish:
     * Email:
         - #1077: Removes email redirections <tr> line when ajax returns    -Car
 
+    * Payments:
+        - #932: Adds the date of linked event in payments admin listing    -Car
+
     * Profile:
         - #16, #528, #917: Changes job interface, updates business sectors -JAC
         - #188: Adds informations about the Corps d'État                   -JAC
