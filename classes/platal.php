@@ -445,7 +445,8 @@ abstract class Platal
     {
         if (defined('PL_LOGGER_CLASS')) {
             $class = PL_LOGGER_CLASS;
-            return new $class($uid, $suid);
+            $logger = new $class($uid, $suid);
+            return $logger;
         } else {
             return PlLogger::dummy($uid, $suid);
         }
