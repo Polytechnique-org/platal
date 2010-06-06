@@ -19,6 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once 'name.func.inc.php';
+
 class ProfileSettingSearchNames implements ProfileSetting
 {
     private $private_name_end;
@@ -38,8 +40,7 @@ class ProfileSettingSearchNames implements ProfileSetting
 
     private function prepareField($value)
     {
-        $value = mb_strtoupper(replace_accent($value));
-        return preg_replace('/[^A-Z]/', ' ', $value);
+        return name_to_basename($value);
     }
 
     private function prepare(ProfilePage &$page, $field, $value, $init, &$success)

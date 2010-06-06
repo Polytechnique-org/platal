@@ -220,6 +220,25 @@ function build_sn_pub($pid)
     return $sn_old;
 }
 
+/** Transform a name to its canonical value so it can be compared
+ * to another form (different case, with accents or with - instead
+ * of blanks).
+ * @see compare_basename to compare
+ */
+function name_to_basename($value) {
+    $value = mb_strtoupper(replace_accent($value));
+    return preg_replace('/[^A-Z]/', ' ', $value);
+}
+
+/** Compares two strings and check if they are two forms of the
+ * same name (different case, with accents or with - instead of
+ * blanks).
+ * @see name_to_basename to retreive the compared string
+ */
+function compare_basename($a, $b) {
+    return name_to_basename($a) == name_to_basename($b);
+}
+
 function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $new_alias = null)
 {
     $has_new = false;
@@ -232,7 +251,7 @@ function set_alias_names(&$sn_new, $sn_old, $pid, $uid, $update_new = false, $ne
                              $sn['particle'], $sn['name'], $typeid, $sn_old[$typeid]['id'], $pid);
                 unset($sn_old[$typeid]);
             } elseif ($update_new
-                      || (isset($sn_old[$typeid]) && $sn_old[$typeid]['fullname'] == $sn['fullname'])) {
+                      || (isset($sn_old[$typeid]) && compare_basename($sn_old[$typeid]['fullname'], $sn['fullname']))) {
                 XDB::execute("INSERT INTO  profile_name (particle, name, typeid, pid)
                                    VALUES  ({?}, {?}, {?}, {?})",
                              $sn['particle'], $sn['name'], $typeid, $pid);
