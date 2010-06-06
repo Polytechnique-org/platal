@@ -27,6 +27,20 @@ class PLTableEditor
     public $table;
     // joint tables to delete when deleting an entry
     public $jtables = array();
+    /** joint tables to add optional infos
+     * associative array : keys are the tables names, values are the joint
+     * clauses
+     * @see add_option_fields
+     */
+    public $otables = array();
+    /** optional fields
+     * These fields are used to display additionnal infos in listing (an only
+     * there). The additionnal infos are retreived from other tables. This var
+     * is an associative array : keys are the sql name of the fields
+     * (table.field) where table must be in $otables, values are a list of the
+     * name used in $vars, the description and the type of the field.
+     */
+    public $ofields = array();
     // sorting field
     public $sort = array();
     // the id field
@@ -162,6 +176,32 @@ class PLTableEditor
     {
         if ($joindel)
             $this->jtables[$name] = array("joinid" => $joinid,"joinextra" => $joinextra?(" AND ".$joinextra):"");
+    }
+
+    /** Add optional table
+     * @see add_option_field
+     * @param $name the table sql name
+     * @param $jointclause the full joint clause. Use t as main table alias
+     * name.
+     */
+    public function add_option_table($name, $jointclause)
+    {
+        $this->otables[$name] = $jointclause;
+    }
+
+    /** Add optional field
+     * These fields are used to display additionnal infos in listing (and only
+     * there). The additionnal infos are retreived from other tables.
+     * @param $sqlname is the full sql name (table.field) where table must be
+     * added with add_option_table
+     * @param $name the name used for sort (please make it different from
+     * other fields in main table or subtables)
+     * @param $desc the description displayed as column header
+     * @param $type the typed used for display
+     */
+    public function add_option_field($sqlname, $name, $desc, $type)
+    {
+        $this->ofields[$sqlname] = array($name, $desc, $type);
     }
 
     // add a sort key
@@ -308,7 +348,21 @@ class PLTableEditor
             if (count($this->sort) > 0) {
                 $sort = 'ORDER BY ' . join($this->sort, ',');
             }
-            $it = XDB::iterator("SELECT * FROM {$this->table} WHERE {$this->whereclause} $sort");
+            // optional infos columns
+            $optional_fields = '';
+            foreach ($this->ofields as $sqlname => $ofieldvalues) {
+                list($aliasname, $desc, $type) = $ofieldvalues;
+                $optional_fields .= ', '.$sqlname.' AS '.$aliasname;
+                $this->describe($aliasname, $desc, true);
+                $this->vars[$aliasname]['optional'] = true;
+                $this->vars[$aliasname]['Type'] = $type;
+                $this->vars[$aliasname]['Field'] = $aliasname;
+            }
+            $optional_joints = '';
+            foreach ($this->otables as $tablename => $jointclause) {
+                $optional_joints .= ' LEFT JOIN '.$tablename.' ON ('.$jointclause.')';
+            }
+            $it = XDB::iterator("SELECT t.* {$optional_fields} FROM {$this->table} AS t {$optional_joints} WHERE {$this->whereclause} $sort");
             $this->nbfields = 0;
             foreach ($this->vars as $field => $descr)
                 if ($descr['display']) $this->nbfields++;
