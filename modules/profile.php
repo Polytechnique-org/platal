@@ -334,7 +334,7 @@ class ProfileModule extends PLModule
         pl_cached_content_headers("text/javascript", "utf-8");
         $page->changeTpl('profile/grades.js.tpl', NO_SKIN);
         $res    = XDB::iterator("SELECT  *
-                                   FROM  profile_medal_enum_grades
+                                   FROM  profile_medal_grade_enum
                                ORDER BY  mid, pos");
         $grades = array();
         while ($tmp = $res->next()) {
@@ -792,29 +792,29 @@ class ProfileModule extends PLModule
             $mid = $id;
 
             if (Post::v('act') == 'del') {
-                XDB::execute('DELETE FROM  profile_medal_enum_grades
+                XDB::execute('DELETE FROM  profile_medal_grade_enum
                                     WHERE  mid={?} AND gid={?}', $mid, Post::i('gid'));
             } else {
                 foreach (Post::v('grades', array()) as $gid=>$text) {
                     if ($gid === 0) {
                         if (!empty($text)) {
                             $res = XDB::query('SELECT  MAX(gid)
-                                                 FROM  profile_medal_enum_grades
+                                                 FROM  profile_medal_grade_enum
                                                 WHERE  mid = {?}', $mid);
                             $gid = $res->fetchOneCell() + 1;
 
-                            XDB::execute('INSERT INTO  profile_medal_enum_grades (mid, gid, text, pos)
+                            XDB::execute('INSERT INTO  profile_medal_grade_enum (mid, gid, text, pos)
                                                VALUES  ({?}, {?}, {?}, {?})',
                                 $mid, $gid, $text, $_POST['pos']['0']);
                         }
                     } else {
-                        XDB::execute('UPDATE  profile_medal_enum_grades
+                        XDB::execute('UPDATE  profile_medal_grade_enum
                                          SET  pos={?}, text={?}
                                        WHERE  gid={?} AND mid={?}', $_POST['pos'][$gid], $text, $gid, $mid);
                     }
                 }
             }
-            $res = XDB::iterator('SELECT gid, text, pos FROM profile_medal_enum_grades WHERE mid={?} ORDER BY pos', $mid);
+            $res = XDB::iterator('SELECT gid, text, pos FROM profile_medal_grade_enum WHERE mid={?} ORDER BY pos', $mid);
             $page->assign('grades', $res);
         }
     }

@@ -24,11 +24,11 @@ subgrades = new Array();
 names     = new Array();
 {foreach from=$medal_list key=type item=list}
   {foreach from=$list item=m}
-    names[{$m.id}] = "{$m.text}";
+    names[{$m.id}] = "{$m.text|regex_replace:"/\r?\n/":"\\n"}";
     {if $grades[$m.id]|@count}
       subgrades[{$m.id}] = new Array({$grades[$m.id]|@count});
       {foreach from=$grades[$m.id] item=g}
-        subgrades[{$m.id}][{$g.gid-1}] = [{$g.gid},"{$g.text}"];
+        subgrades[{$m.id}][{$g.gid-1}] = [{$g.gid},"{$g.text|regex_replace:"/\r?\n/":"\\n"}"];
       {/foreach}
     {/if}
   {/foreach}
