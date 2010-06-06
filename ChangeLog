@@ -32,6 +32,7 @@ Bug/Wish:
         - #1081: Sorts language alphabetically in skill tab                -Car
 
     * Survey:
+        - #993: Enables survey for oranges                                 -Car
         - #1002: Lets the user set promo interval in both ways             -Car
 
     * XnetLists:

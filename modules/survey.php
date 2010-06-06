@@ -403,7 +403,20 @@ class SurveyModule extends PLModule
             if (!S::logged()) {
                 return false;
             }
-            if (!$survey->checkPromo(S::v('promo'))) { // checks promotion
+            $profile = S::user()->profile();
+            if (!$profile) {
+                return false;
+            }
+            // checks promotion
+            $allowed = false;
+            foreach ($profile->yearspromo() as $p) {
+                var_dump($p);
+                if ($survey->checkPromo($p)) {
+                    $allowed = true;
+                    break;
+                }
+            }
+            if (!$allowed) {
                 $page->kill("Tu n'as pas accès à ce sondage car il est réservé à d'autres promotions.");
             }
         }

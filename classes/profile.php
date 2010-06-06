@@ -195,6 +195,25 @@ class Profile
         return intval(substr($this->promo, 1, 4));
     }
 
+    /** Check if user is an orange (associated with several promos)
+     */
+    public function isMultiPromo()
+    {
+        return $this->grad_year != $this->entry_year + $this->mainEducationDuration();
+    }
+
+    /** Returns an array with all associated promo years.
+     */
+    public function yearspromo()
+    {
+        $promos = array();
+        $d = -$this->deltaPromoToGradYear();
+        for ($g = $this->entry_year + $this->mainEducationDuration(); $g <= $this->grad_year; ++$g) {
+            $promos[] = $g + $d;
+        }
+        return $promos;
+    }
+
     public function mainEducation()
     {
         if (empty($this->promo)) {
@@ -230,6 +249,18 @@ class Profile
           default:
             return 0;
         }
+    }
+
+    /** Number of years between the promotion year until the
+     * graduation year. In standard schools it's 0, but for
+     * Polytechnique the promo year is the entry year.
+     */
+    public function deltaPromoToGradYear()
+    {
+        if ($this->mainEducation() == 'X') {
+            return $this->mainEducationDuration();
+        }
+        return 0;
     }
 
     /** Print a name with the given formatting:
