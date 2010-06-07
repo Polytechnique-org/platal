@@ -463,10 +463,8 @@ class ProfileSettingJobs extends ProfilePage
         }
 
         if ($this->changed['corps']) {
-            XDB::execute("UPDATE  profile_corps
-                             SET  original_corpsid = {?}, current_corpsid = {?},
-                                  rankid = {?}, corps_pub = {?}
-                           WHERE  pid = {?}",
+            XDB::execute('REPLACE INTO  profile_corps (original_corpsid, current_corpsid, rankid, corps_pub, pid)
+                                VALUES  ({?}, {?}, {?}, {?}, {?})',
                           $this->values['corps']['original'], $this->values['corps']['current'],
                           $this->values['corps']['rank'], $this->values['corps']['pub'], $this->pid());
         }
