@@ -540,7 +540,7 @@ class XnetEventsModule extends PLModule
         if (may_update() && Post::v('adm')) {
             S::assert_xsrf_token();
 
-            $member = get_infos(Post::v('mail'));
+            $member = User::getSilent(Post::v('mail'));
             if (!$member) {
                 $page->trigError("Membre introuvable");
             }
@@ -551,7 +551,7 @@ class XnetEventsModule extends PLModule
                                  SET paid = paid + {?}
                                WHERE uid = {?} AND eid = {?} AND item_id = 1",
                         strtr(Env::v('montant'), ',', '.'),
-                        $member['uid'], $evt['eid']);
+                        $member->uid, $evt['eid']);
             }
 
             // change the number of personns coming with a participant
@@ -559,7 +559,7 @@ class XnetEventsModule extends PLModule
                 $res = XDB::query("SELECT paid
                                      FROM group_event_participants
                                     WHERE uid = {?} AND eid = {?}",
-                                  $member['uid'], $evt['eid']);
+                                  $member->uid, $evt['eid']);
 
                 $paid = intval($res->fetchOneCell());
                 $nbs  = Post::v('nb', array());
@@ -568,17 +568,17 @@ class XnetEventsModule extends PLModule
                     $nb = max(intval($nb), 0);
                     XDB::execute("REPLACE INTO group_event_participants
                                         VALUES ({?}, {?}, {?}, {?}, {?}, {?})",
-                                  $evt['eid'], $member['uid'], $id, $nb, '', $id == 1 ? $paid : 0);
+                                  $evt['eid'], $member->uid, $id, $nb, '', $id == 1 ? $paid : 0);
                 }
 
                 $res = XDB::query("SELECT COUNT(uid) AS cnt, SUM(nb) AS nb
                                      FROM group_event_participants
                                     WHERE uid = {?} AND eid = {?}
                                  GROUP BY uid",
-                                            $member['uid'], $evt['eid']);
+                                            $member->uid, $evt['eid']);
                 $u = $res->fetchOneAssoc();
                 $u = $u['cnt'] ? $u['nb'] : null;
-                subscribe_lists_event($u, $member['uid'], $evt, $paid);
+                subscribe_lists_event($u, $member->uid, $evt, $paid);
             }
 
             $evt = get_event_detail($eid, $item_id);
