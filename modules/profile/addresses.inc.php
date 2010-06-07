@@ -64,7 +64,7 @@ class ProfileSettingAddress extends ProfileSettingGeocoding
             }
         }
         if ($current == 0 && count($value) > 0) {
-            foreach ($value as $address) {
+            foreach ($value as &$address) {
                 $address['current'] = true;
                 break;
             }
