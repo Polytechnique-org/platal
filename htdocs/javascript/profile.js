@@ -146,13 +146,13 @@ function delNationality(i)
 function addNationality()
 {
     var i = 0;
-    if ($('#nationalite2').find('select').val() == "") {
+    if ($('#nationality2').find('select').val() == "") {
         i = 2;
-    } else if ($('#nationalite3').find('select').val() == "") {
+    } else if ($('#nationality3').find('select').val() == "") {
         i = 3;
     }
     if ((i == 2) || (i == 3)) {
-        $('#nationalite' + i).show();
+        $('#nationality' + i).show();
     }
 }
 
