@@ -499,6 +499,16 @@ function updateJobAlternates(id)
     }
 }
 
+function emptyJobSubSector(id)
+{
+    Ajax.update_html('job_' + id + '_subSubSector', 'profile/ajax/sub_sector/' + id + '/-1/-1');
+}
+
+function emptyJobAlternates(id)
+{
+    Ajax.update_html('job_' + id + '_alternates', 'profile/ajax/alternates/' + id + '/-1');
+}
+
 function displayAllSector(id)
 {
     $('.sector_text_' + id).remove();

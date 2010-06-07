@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 <?xml version="1.0" encoding="utf-8"?>
-<select name="jobs[{$id}][subSector]" {if ($change)}onchange="updateJobSubSector({$id}, '')"{/if}>
+<select name="jobs[{$id}][subSector]" {if ($change)}onchange="updateJobSubSector({$id}, ''); emptyJobAlternates({$id});"{/if}>
   <option value="0">&nbsp;</option>
   {iterate from=$subSectors item=subSector}
   {if $subSector.optgroup}
