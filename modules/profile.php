@@ -443,10 +443,13 @@ class ProfileModule extends PLModule
                             ORDER BY  id',
                              $sssect);
         $page->changeTpl('profile/jobs.alternates.tpl', NO_SKIN);
-        $alternate  = $res->next();
-        $alternates = $alternate['name'];
-        while ($alternate  = $res->next()) {
-            $alternates .= ', ' . $alternate['name'];
+        $alternates = '';
+        if ($res->total() > 0) {
+            $alternate  = $res->next();
+            $alternates = $alternate['name'];
+            while ($alternate  = $res->next()) {
+                $alternates .= ', ' . $alternate['name'];
+            }
         }
         $page->assign('alternates', $alternates);
     }

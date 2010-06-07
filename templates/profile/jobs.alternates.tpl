@@ -21,6 +21,11 @@
 {**************************************************************************}
 
 <?xml version="1.0" encoding="utf-8"?>
-<small>({$alternates})</small>
+{if $alternates}
+  <small>({$alternates})</small>
+{else}
+  <small class="erreur">Il faut renseigner les 3 champs concernant le secteur
+    pour que celui-ci soit pris en compte lors de la validation.</small>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
