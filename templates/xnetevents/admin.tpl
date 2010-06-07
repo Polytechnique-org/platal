@@ -225,7 +225,7 @@ Ils ont payé mais ont oublié de s'inscrire&nbsp;:
 {if $is_admin}
 
 <p class="descr">
-  <a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">
+  <a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule|escape:url}{if $evt.titre}.{$evt.titre|escape:url}{/if}.csv">
     {icon name=page_excel title="Télécharger au format Excel"} Télécharger le fichier Excel
   </a>
 </p>
@@ -254,6 +254,12 @@ Donne ici son email, ainsi que le nombre de participants.
     {/foreach}
     {/if}
     <input type="submit" />
+  </p>
+  <p class="descr">
+    Tu peux aussi enlever toute trace de son inscription ou de sa décision de ne pas s'insscrire (s'il n'a rien payé).
+    <div class="center">
+      <input type="submit" name="cancel" value="Annuler l'inscription" />
+    </div>
   </p>
 </form>
 

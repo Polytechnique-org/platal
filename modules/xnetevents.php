@@ -577,7 +577,14 @@ class XnetEventsModule extends PLModule
                                  GROUP BY uid",
                                             $member->uid, $evt['eid']);
                 $u = $res->fetchOneAssoc();
-                $u = $u['cnt'] ? $u['nb'] : null;
+                if ($u['cnt'] == 1 && $paid == 0 && Post::v('cancel')) {
+                    XDB::execute("DELETE FROM group_event_participants
+                                        WHERE uid = {?} AND eid = {?}",
+                                    $member->uid, $evt['eid']);
+                    $u = 0;
+                } else {
+                    $u = $u['cnt'] ? $u['nb'] : null;
+                }
                 subscribe_lists_event($u, $member->uid, $evt, $paid);
             }
 
