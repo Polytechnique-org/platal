@@ -493,7 +493,8 @@ class ProfileSettingJobs extends ProfilePage
         $page->assign('current_corps', $res->fetchAllAssoc());
 
         $res = XDB::iterator("SELECT  id, name
-                                FROM  profile_corps_rank_enum");
+                                FROM  profile_corps_rank_enum
+                            ORDER BY  id = 1 DESC, name");
         $page->assign('corps_rank', $res->fetchAllAssoc());
     }
 }

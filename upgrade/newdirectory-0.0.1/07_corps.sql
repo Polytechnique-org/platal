@@ -4,9 +4,9 @@ DROP TABLE IF EXISTS profile_corps_rank_enum;
 
 CREATE TABLE profile_corps (
   pid INT(11) NOT NULL,
-  original_corpsid INT(4) UNSIGNED NOT NULL DEFAULT 0,
-  current_corpsid INT(4) UNSIGNED NOT NULL DEFAULT 0,
-  rankid INT(4) UNSIGNED NOT NULL DEFAULT 0,
+  original_corpsid INT(4) UNSIGNED NOT NULL DEFAULT 1,
+  current_corpsid INT(4) UNSIGNED NOT NULL DEFAULT 1,
+  rankid INT(4) UNSIGNED NOT NULL DEFAULT 1,
   corps_pub ENUM('private', 'ax', 'public') NOT NULL DEFAULT 'private',
   PRIMARY KEY(pid)
 ) ENGINE=InnoDB, CHARSET=utf8;
