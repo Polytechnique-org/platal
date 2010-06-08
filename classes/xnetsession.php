@@ -64,6 +64,8 @@ class XnetSession extends XorgSession
                 if ($globals->asso('pub') != 'private') {
                     $perms->addFlag('groupannu');
                 }
+            } else if ($globals->asso('pub') == 'public') {
+                $perms->addFlag('groupannu');
             }
             if ($globals->asso('cat') == 'Promotions') {
                 $perms->addFlag('groupannu');
