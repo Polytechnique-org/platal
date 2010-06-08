@@ -67,13 +67,13 @@ function toggleNamesAdvanced()
     $('.names_advanced').toggle();
 }
 
-function addSearchName()
+function addSearchName(isFemale)
 {
     var i = 0;
     while ($('#search_name_' + i).length != 0) {
         i++;
     }
-    Ajax.update_html('search_name_' + i, 'profile/ajax/searchname/' + i, function(data){
+    Ajax.update_html('search_name_' + i, 'profile/ajax/searchname/' + i + '/' + isFemale, function(data){
         $('#searchname').before(data);
         changeNameFlag(i);
     });

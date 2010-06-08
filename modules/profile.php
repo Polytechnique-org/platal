@@ -474,7 +474,7 @@ class ProfileModule extends PLModule
         }
     }
 
-    function handler_ajax_searchname(&$page, $id)
+    function handler_ajax_searchname(&$page, $id, $isFemale)
     {
         header('Content-Type: text/html; charset=utf-8');
         $page->changeTpl('profile/general.searchname.tpl', NO_SKIN);
@@ -483,6 +483,7 @@ class ProfileModule extends PLModule
                             WHERE  NOT FIND_IN_SET('not_displayed', flags)
                                    AND NOT FIND_IN_SET('always_displayed', flags)");
         $page->assign('sn_type_list', $res->fetchAllAssoc());
+        $page->assign('isFemale', $isFemale);
         $page->assign('i', $id);
     }
 
