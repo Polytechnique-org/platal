@@ -140,7 +140,7 @@ function togglePromotionEdition()
 
 function delNationality(i)
 {
-    $('#nationalite' + i).hide().find('select').val('');
+    $('#nationality' + i).hide().find('select').val('');
 }
 
 function addNationality()
