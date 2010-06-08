@@ -51,8 +51,8 @@
     </p>
 
     <div id="bestalias-msg" style="position:absolute;"></div>
-    {if $melix}
     <br />
+    {if $melix}
     <div>
     Tu dispose également de l'alias&nbsp;: <strong>{$melix}</strong>
     (<a href="emails/alias">changer ou supprimer mon alias melix</a>)
