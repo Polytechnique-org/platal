@@ -93,15 +93,15 @@ class Group
         return null;
     }
 
-    static public function get($id)
+    static public function get($id, $can_be_shortname = true)
     {
         if (!$id) {
             return null;
         }
-        if (is_int($id) || ctype_digit($id)) {
-            $where = XDB::format('id = {?}', $id);
+        if (!$can_be_shortname) {
+            $where = XDB::format('a.id = {?}', $id);
         } else {
-            $where = XDB::format('diminutif = {?}', $id);
+            $where = XDB::format('a.diminutif = {?}', $id);
         }
         $res = XDB::query('SELECT  a.*, d.nom AS domnom,
                                    FIND_IN_SET(\'wiki_desc\', a.flags) AS wiki_desc,
@@ -110,6 +110,9 @@ class Group
                         LEFT JOIN  group_dom  AS d ON d.id = a.dom
                             WHERE  ' . $where);
         if ($res->numRows() != 1) {
+            if ($can_be_shortname && (is_int($id) || ctype_digit($id))) {
+                return Group::get($id, false);
+            }
             return null;
         }
         return new Group($res->fetchOneAssoc());
