@@ -106,6 +106,7 @@ Le groupe {$asso->nom} compte {$nb_tot} membres&nbsp;:
   <tr>
     <td>
       {profile user=$user promo=false}
+    </td>
     <td>
       {if $user->group_perms eq 'admin'}<strong>{/if}
       {$user->promo()}
