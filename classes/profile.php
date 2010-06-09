@@ -766,7 +766,7 @@ class Profile
     private static function fetchProfileData(array $pids, $respect_order = true, $fields = 0x0000, $visibility = null)
     {
         if (count($pids) == 0) {
-            return array();
+            return null;
         }
 
         if ($respect_order) {

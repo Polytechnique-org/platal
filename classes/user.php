@@ -733,7 +733,11 @@ class User extends PlUser
         $table = array();
         if ($fetchProfile) {
             $profiles = Profile::iterOverUIDS($uids, true);
-            $profile = $profiles->next();
+            if ($profiles != null) {
+                $profile = $profiles->next();
+            } else {
+                $profile = null;
+            }
         }
 
         /** We iterate through the users, moving in
@@ -743,7 +747,7 @@ class User extends PlUser
          */
         while (($user = $users->next())) {
             if ($fetchProfile) {
-                if ($profile->owner_id == $user->id()) {
+                if ($profile != null && $profile->owner_id == $user->id()) {
                     $user->_profile = $profile;
                     $profile = $profiles->next();
                 }
