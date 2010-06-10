@@ -47,7 +47,7 @@ function smarty_function_profile($params, &$smarty)
             $name = '<a href="profile/' . $profile->hrid() . '" class="popup2">' . $name . '</a>';
         }
     }
-    if ($with_groupperms && $user instanceof User && $user->group_perms == 'admin') {
+    if ($with_groupperms && $user instanceof User && $user->group_perms == 'admin' && !empty($name)) {
         $name = '<strong>' . $name . '</strong>';
     }
     return $name;
