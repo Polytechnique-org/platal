@@ -25,7 +25,6 @@
     <input type="hidden" name="search_names[{$i}][always_displayed]" value="{$sn.always_displayed}"/>
     <input type="hidden" name="search_names[{$i}][has_particle]" value="{$sn.has_particle}"/>
     <span class="flags">
-      <input id="flag_cb_{$i}" type="checkbox" checked="checked" disabled="disabled"/>
       <span id="flag_{$i}">{if $sn.pub}{icon name="flag_green" title="site public"}
       {else}{icon name="flag_red" title="site privé"}{/if}</span>
     </span>&nbsp;
