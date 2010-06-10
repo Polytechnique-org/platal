@@ -147,12 +147,16 @@ function ids_from_mails(array $emails)
 
     // Look up user ids for other addresses in the email redirection list
     if (count($other_mails)) {
+        $lowerupper = array();
+        foreach ($other_mails as $mail) {
+            $lowerupper[strtolower($mail)] = $mail;
+        }
         $res = XDB::query("SELECT   email, uid
                              FROM   emails
                             WHERE   email IN {?}", $other_mails);
         foreach ($res->fetchAllRow() as $row) {
             list ($email, $uid) = $row;
-            $uids[$email] = $uid;
+            $uids[$lowerupper[strtolower($email)]] = $uid;
         }
     }
 
