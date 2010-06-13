@@ -135,11 +135,17 @@ abstract class PlUser
 
     public function bestEmail()
     {
-        return $this->bestalias;
+        if (!empty($this->bestalias)) {
+            return $this->bestalias;
+        }
+        return $this->email;
     }
     public function forlifeEmail()
     {
-        return $this->forlife;
+        if (!empty($this->forlife)) {
+            return $this->forlife;
+        }
+        return $this->email;
     }
 
     public function displayName()
