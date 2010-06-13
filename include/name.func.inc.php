@@ -126,7 +126,7 @@ function build_private_name(&$search_names, &$sn_types)
                 $i++;
             }
             if (isset($search_names[$sn_types['name_other']])
-                || isset($search_names[$sn_types['name_other']])) {
+                || isset($search_names[$sn_types['firstname_other']])) {
                 $name .= ", ";
             }
         }
