@@ -622,50 +622,59 @@ class XnetGrpModule extends PLModule
 
         if (is_null($email)) {
             return;
-        } else {
-            S::assert_xsrf_token();
         }
 
+        S::assert_xsrf_token();
+
+        // Finds or creates account
         if (!User::isForeignEmailAddress($email)) {
+            // standard x account
             $user = User::get($email);
-            if ($user) {
-                XDB::execute("REPLACE INTO  group_members (uid, asso_id, origine)
-                                    VALUES  ({?}, {?}, 'X')",
-                             $user->id(), $globals->asso('id'));
-                pl_redirect("member/" . $user->login());
+        } else if (!isvalid_email($email)) {
+            // email might not be a regular email but an alias or a hruid
+            $user = User::get($email);
+            if (!$user) {
+                // need a valid email address
+                $page->trigError("«&nbsp;<strong>$email</strong>&nbsp;» n'est pas une adresse email valide.");
+                return;
+            }
+        } else if (Env::v('x') && Env::i('userid')) {
+            // user is an x but might not yet be registered
+            $user = User::getWithUID(Env::i('userid'));
+            if (!$user) {
+                $page->trigError("Utilisateur invalide");
+                return;
+            }
+            // add email for marketing if unknown
+            if ($user->state == 'pending' && Env::v('market')) {
+                $market = Marketing::get($user->uid, $email);
+                if (!$market) {
+                    $market = new Marketing($user->uid, $email, 'group', $globals->asso('nom'),
+                                            Env::v('market_from'), S::v('uid'));
+                    $market->add();
+                }
             }
         } else {
-            if (isvalid_email($email)) {
-                if (Env::v('x') && Env::i('userid')) {
-                    $uid = Env::i('userid');
-                    $user = User::getWithUID($uid);
-                    if ($user && $user->state == 'pending') {
-                        if (Env::v('market')) {
-                            $market = Marketing::get($uid, $email);
-                            if (!$market) {
-                                $market = new Marketing($uid, $email, 'group', $globals->asso('nom'),
-                                                        Env::v('market_from'), S::v('uid'));
-                                $market->add();
-                            }
-                        }
-                        XDB::execute('REPLACE INTO  group_members (uid, asso_id, origine, email)
-                                            VALUES  ({?}, {?}, "X", {?})',
-                                     $uid, $globals->asso('id'), $email);
-                        $this->removeSubscriptionRequest($uid);
-                        pl_redirect("member/$email");
-                    }
-                    $page->trigError("Utilisateur invalide");
-                } else {
-                    $res = XDB::query('SELECT MAX(uid) + 1 FROM group_members');
-                    $uid = max(intval($res->fetchOneCell()), 50001);
-                    XDB::execute('REPLACE INTO  group_members (uid, asso_id, origine, email)
-                                        VALUES  ({?}, {?}, "ext", {?})',
-                                 $uid, $globals->asso('id'), $email);
-                    pl_redirect("member/$email");
-                }
-            } else {
-                $page->trigError("«&nbsp;<strong>$email</strong>&nbsp;» n'est pas une adresse email valide.");
+            // user is not an x
+            $hruid = strtolower(str_replace('@','.',$email).'.ext');
+            // might already exists (in another group for example)
+            $user = User::get($hruid);
+            if (empty($user)) {
+                // creates new account: build names from email address
+                $display_name = ucwords(strtolower(substr($hruid, strpos('.', $hruid))));
+                $full_name = ucwords(strtolower(str_replace('.', ' ',substr($email, strpos('@', $email)))));
+                XDB::execute("INSERT INTO accounts (hruid, display_name, full_name, email, type)
+                    VALUES({?}, {?}, {?}, {?}, 'xnet')",
+                    $hruid, $display_name, $full_name, $email);
+                $user = User::get($hruid);
             }
+        }
+        if ($user) {
+            XDB::execute("REPLACE INTO  group_members (uid, asso_id)
+                                VALUES  ({?}, {?})",
+                         $user->id(), $globals->asso('id'));
+            $this->removeSubscriptionRequest($user->id());
+            pl_redirect("member/" . $user->login());
         }
     }
 
@@ -805,12 +814,8 @@ class XnetGrpModule extends PLModule
     private function changeLogin(PlPage &$page, PlUser &$user, MMList &$mmlist, $login)
     {
         // Search the uid of the user...
-        $res = XDB::query("SELECT  f.uid, f.alias
-                             FROM  aliases AS a
-                       INNER JOIN  aliases AS f ON (f.uid = a.uid AND f.type = 'a_vie')
-                            WHERE  a.alias = {?}",
-                          $login);
-        if ($res->numRows() == 0) {
+        $xuser = User::getSilent($login);
+        if (!$xuser) {
             $accounts = User::getPendingAccounts($login);
             if (!$accounts) {
                 $page->trigError("L'identifiant $login ne correspond à aucun X.");
@@ -819,55 +824,34 @@ class XnetGrpModule extends PLModule
                 $page->trigError("L'identifiant $login correspond à plusieurs camarades.");
                 return false;
             }
-            $uid = $accounts[0]['uid'];
+            $xuser = User::getSilent($accounts[0]['uid']);
             $sub = false;
-        } else {
-            list($uid, $login) = $res->fetchOneRow();
-            $sub = true;
         }
 
-        // Check if the user is already in the group
-        global $globals;
-        $res = XDB::query("SELECT  uid, email
-                             FROM  group_members
-                            WHERE  uid = {?} AND asso_id = {?}",
-                          $uid, $globals->asso('id'));
-        if ($res->numRows()) {
-            list($uid, $email) = $res->fetchOneRow();
-            XDB::execute("DELETE FROM group_members
-                                WHERE uid = {?}",
-                         $user['uid']);
-        } else {
-            $email = $user['email'];
-            XDB::execute("UPDATE  group_members
-                             SET  uid = {?}, origine = 'X'
-                           WHERE  uid = {?} AND asso_id = {?}",
-                         $uid, $user['uid'], $globals->asso('id'));
+        if (!$xuser) {
+            return false;
         }
-        if ($sub) {
-            $email = $login . '@' . $globals->mail->domain;
-        }
+
+        // Check if the user is in some groups as an X and as an ext
+        XDB::execute("DELETE g1 FROM group_members AS g1, group_members AS g2
+                            WHERE g1.uid = {?} AND g2.uid = {?} AND g1.asso_id = g2.asso_id",
+                     $user->id(), $xuser->id());
+        XDB::execute("UPDATE  group_members
+                         SET  uid = {?}
+                       WHERE  uid = {?}",
+                     $xuser->id(), $user->id());
 
         // Update subscription to aliases
-        if ($email != $user['email']) {
+        if ($sub && $user->forlifeEmail() != $xuser->forlifeEmail()) {
             XDB::execute("UPDATE IGNORE  virtual_redirect AS vr
-                             INNER JOIN  virtual AS v ON(vr.vid = v.vid AND SUBSTRING_INDEX(alias, '@', -1) = {?})
                                     SET  vr.redirect = {?}
                                   WHERE  vr.redirect = {?}",
-                         $globals->asso('mail_domain'), $email, $user['email']);
-            XDB::execute("DELETE  vr.*
-                            FROM  virtual_redirect AS vr
-                      INNER JOIN  virtual AS v ON(vr.vid = v.vid AND SUBSTRING_INDEX(alias, '@', -1) = {?})
-                           WHERE  vr.redirect = {?}",
-                         $globals->asso('mail_domain'), $user['email']);
+                         $xuser->forlifeEmail(), $user->forlifeEmail());
             foreach (Env::v('ml1', array()) as $ml => $state) {
-                $mmlist->replace_email($ml, $user['email'], $email);
+                $mmlist->replace_email($ml, $user->forlifeEmail(), $xuser->forlifeEmail());
             }
         }
-        if ($sub) {
-            return $login;
-        }
-        return $user['email'];
+        return $xuser->login();
     }
 
     function handler_admin_member(&$page, $user)
@@ -887,7 +871,7 @@ class XnetGrpModule extends PLModule
             S::assert_xsrf_token();
 
             // Convert user status to X
-            if (Post::blank('login_X')) {
+            if (!Post::blank('login_X')) {
                 // TODO: Rewrite changeLogin!!!
                 $forlife = $this->changeLogin($page, $user, $mmlist, Post::t('login_X'));
                 if ($forlife) {
@@ -896,85 +880,89 @@ class XnetGrpModule extends PLModule
             }
 
             // Update user info
-            $email_changed = ($user['origine'] != 'X' && strtolower($user['email']) != strtolower(Post::v('email')));
-            $from_email = $user['email'];
-            if ($user['origine'] != 'X') {
-                $user['nom']     = Post::v('nom');
-                $user['prenom']  = (Post::v('origine') == 'ext') ? Post::v('prenom') : '';
-                $user['sexe']    = (Post::v('origine') == 'ext') ? Post::v('sexe') : 0;
-                $user['origine'] = Post::v('origine');
-                XDB::query('UPDATE  group_members
-                               SET  prenom = {?}, nom = {?}, email = {?}, sexe = {?}, origine = {?}
-                             WHERE  uid = {?} AND asso_id = {?}',
-                           $user['prenom'], $user['nom'], Post::v('email'),
-                           $user['sexe'], $user['origine'],
-                           $user['uid'], $globals->asso('id'));
-                $user['email']   = Post::v('email');
-                $user['email2']  = Post::v('email');
-                $page->trigSuccess('Données de l\'utilisateur mise à jour.');
+            $email_changed = (!$user->profile() && strtolower($user->forlifeEmail()) != strtolower(Post::v('email')));
+            $from_email = $user->forlifeEmail();
+            if (!$user->profile()) {
+                XDB::query('UPDATE  accounts
+                               SET  full_name = {?}, display_name = {?}, sex = {?}, email = {?}, type = {?}
+                             WHERE  uid = {?}',
+                            Post::v('full_name'), Post::v('display_name'), (Post::v('sex') == 'male')?'male':'female', Post::v('email'), (Post::v('type') == 'xnet')?'xnet':'virtual',
+                            $user->id());
+                if (XDB::affectedRows()) {
+                    $page->trigSuccess('Données de l\'utilisateur mise à jour.');
+                }
             }
 
-            $perms = Post::i('is_admin');
+            // Update group params for user
+            $perms = Post::v('group_perms');
             $comm  = Post::t('comm');
-            if ($user['perms'] != $perms || $user['comm'] != $comm) {
+            if ($user->group_perms != $perms || $user->group_comm != $comm) {
                 XDB::query('UPDATE  group_members
                                SET  perms = {?}, comm = {?}
                              WHERE  uid = {?} AND asso_id = {?}',
-                            $perms ? 'admin' : 'membre', $comm,
-                            $user['uid'], $globals->asso('id'));
-                if ($perms != $user['perms']) {
+                            ($perms == 'admin') ? 'admin' : 'membre', $comm,
+                            $user->id(), $globals->asso('id'));
+                if ($perms != $user->group_perms) {
                     $page->trigSuccess('Permissions modifiées&nbsp;!');
                 }
-                if ($comm != $user['comm']) {
+                if ($comm != $user->group_comm) {
                     $page->trigSuccess('Commentaire mis à jour.');
                 }
-                $user['perms'] = $perms;
-                $user['comm'] = $comm;
             }
+
+            // Gets user info again as they might have change
+            $user = User::getSilent($user->id());
 
             // Update ML subscriptions
             foreach (Env::v('ml1', array()) as $ml => $state) {
                 $ask = empty($_REQUEST['ml2'][$ml]) ? 0 : 2;
                 if ($ask == $state) {
                     if ($state && $email_changed) {
-                        $mmlist->replace_email($ml, $from_email, $user['email2']);
-                        $page->trigSuccess("L'abonnement de {$user['prenom']} {$user['nom']} à $ml@ a été mis à jour.");
+                        $mmlist->replace_email($ml, $from_email, $user->forlifeEmail());
+                        $page->trigSuccess("L'abonnement de {$user->fullName()} à $ml@ a été mis à jour.");
                     }
                     continue;
                 }
                 if ($state == '1') {
-                    $page->trigWarning("{$user['prenom']} {$user['nom']} a "
+                    $page->trigWarning("{$user->fullName()} a "
                                ."actuellement une demande d'inscription en "
                                ."cours sur <strong>$ml@</strong> !!!");
                 } elseif ($ask) {
-                    $mmlist->mass_subscribe($ml, Array($user['email2']));
-                    $page->trigSuccess("{$user['prenom']} {$user['nom']} a été abonné à $ml@.");
+                    $mmlist->mass_subscribe($ml, Array($user->forlifeEmail()));
+                    $page->trigSuccess("{$user->fullName()} a été abonné à $ml@.");
                 } else {
                     if ($email_changed) {
                         $mmlist->mass_unsubscribe($ml, Array($from_email));
                     } else {
-                        $mmlist->mass_unsubscribe($ml, Array($user['email2']));
+                        $mmlist->mass_unsubscribe($ml, Array($user->forlifeEmail()));
                     }
-                    $page->trigSuccess("{$user['prenom']} {$user['nom']} a été désabonné de $ml@.");
+                    $page->trigSuccess("{$user->fullName()} a été désabonné de $ml@.");
                 }
             }
 
             // Change subscriptioin to aliases
             foreach (Env::v('ml3', array()) as $ml => $state) {
                 $ask = !empty($_REQUEST['ml4'][$ml]);
-                if($state == $ask) continue;
-                if($ask) {
+                if($state == $ask) {
+                    if ($state && $email_changed) {
+                        XDB::query("UPDATE  virtual_redirect AS vr, virtual AS v
+                                       SET  vr.redirect = {?}
+                                     WHERE  vr.vid = v.vid AND v.alias = {?} AND vr.redirect = {?}",
+                                     $user->forlifeEmail(), $ml, $from_email);
+                        $page->trigSuccess("L'abonnement de {$user->fullName()} à $ml a été mis à jour.");
+                    }
+                } else if($ask) {
                     XDB::query("INSERT INTO  virtual_redirect (vid,redirect)
                                      SELECT  vid,{?} FROM virtual WHERE alias={?}",
-                               $user['email'], $ml);
-                    $page->trigSuccess("{$user['prenom']} {$user['nom']} a été abonné à $ml.");
+                               $user->forlifeEmail(), $ml);
+                    $page->trigSuccess("{$user->fullName()} a été abonné à $ml.");
                 } else {
                     XDB::query("DELETE FROM  virtual_redirect
                                       USING  virtual_redirect
                                  INNER JOIN  virtual USING(vid)
                                       WHERE  redirect={?} AND alias={?}",
-                               $user['email'], $ml);
-                    $page->trigSuccess("{$user['prenom']} {$user['nom']} a été désabonné de $ml.");
+                               $from_email, $ml);
+                    $page->trigSuccess("{$user->fullName()} a été désabonné de $ml.");
                 }
             }
         }

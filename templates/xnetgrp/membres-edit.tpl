@@ -24,7 +24,7 @@
 {literal}
   function showInformations(box)
   {
-      var state = (box.value == 'ext') ? '' : 'none';
+      var state = (box.value != 'virtual') ? '' : 'none';
       document.getElementById('prenom').style.display = state;
       document.getElementById('sexe').style.display = state;
       document.getElementById('make_X').style.display = state;
@@ -59,37 +59,38 @@
         Permissions&nbsp;:
       </td>
       <td>
-        <select name="is_admin">
-          <option value="0" {if $user->group_perms eq 'membre'}</option>}selected="selected"{/if}>Membre</option>
-          <option value="1" {if $user->group_perms eq 'admin'}</option>}selected="selected"{/if}>Animateur</option>
+        <select name="group_perms">
+          <option value="membre" {if $user->group_perms eq 'membre'}selected="selected"{/if}>Membre</option>
+          <option value="admin" {if $user->group_perms eq 'admin'}selected="selected"{/if}>Animateur</option>
         </select>
       </td>
     </tr>
+    {if !$user->profile()}
     <tr class="impair">
       <td class="titre">
         Type d'utilisateur&nbsp;:
       </td>
       <td>
-        <select name="origine" onchange="showInformations(this); return true">
-          <option value="ext" {if $user->type neq 'virtual'}selected="selected"{/if}>Personne physique</option>
-          <option value="groupe" {if $user->type eq "virtual"}selected="selected"{/if}>Personne morale</option>
+        <select name="type" onchange="showInformations(this); return true"{if $user->profile()} disabled="disabled"{/if}>
+          <option value="xnet" {if $user->type neq 'virtual'}selected="selected"{/if}>Personne physique</option>
+          <option value="virtual" {if $user->type eq "virtual"}selected="selected"{/if}>Personne morale</option>
         </select>
       </td>
     </tr>
       <tr id="prenom" class="impair" {if $user->type eq "virtual"}style="display: none"{/if}>
       <td class="titre">
-        Prénom&nbsp;:
+        Nom affiché&nbsp;:
       </td>
       <td>
-        <input type="text" value="{$user->displayName()}" name="prenom" size="40" />
+        <input type="text" value="{$user->displayName()}" name="display_name" size="40"{if $user->profile()} disabled="disabled"{/if} />
       </td>
     </tr>
     <tr class="impair">
       <td class="titre">
-        Nom&nbsp;:
+        Nom complet&nbsp;:
       </td>
       <td>
-        <input type="text" value="{$user->fullName()}" name="nom" size="40" />
+        <input type="text" value="{$user->fullName()}" name="full_name" size="40"{if $user->profile()} disabled="disabled"{/if} />
       </td>
     </tr>
     <tr id="sexe" class="impair" {if $user->type eq "virtual"}style="display: none"{/if}>
@@ -97,9 +98,9 @@
         Sexe&nbsp;:
       </td>
       <td>
-        <select name="sexe">
-          <option value="0"{if !$user->isFemale()} selected="selected"{/if}>Homme</option>
-          <option value="1"{if $user->isFemale()} selected="selected"{/if}>Femme</option>
+        <select name="sex"{if $user->profile()} disabled="disabled"{/if}>
+          <option value="male"{if !$user->isFemale()} selected="selected"{/if}>Homme</option>
+          <option value="female"{if $user->isFemale()} selected="selected"{/if}>Femme</option>
         </select>
       </td>
     </tr>
@@ -108,9 +109,10 @@
         Email&nbsp;:
       </td>
       <td>
-        <input type="text" value="{$user->forlifeEmail()}" name="email" size="40" />
+        <input type="text" value="{$user->forlifeEmail()}" name="email" size="40"{if $user->profile()} disabled="disabled"{/if} />
       </td>
     </tr>
+    {/if}
     <tr class="impair">
       <td class="titre">
         Commentaire&nbsp;:
@@ -120,7 +122,7 @@
         <small>Poste, origine&hellip; (accessible à toutes les personnes autorisées à consulter l'annuaire)</small>
       </td>
     </tr>
-    {if $user->type eq 'ext'}
+    {if $user->type eq 'xnet'}
     <tr id="make_X">
       <td colspan="2">
         <span id="make_X_cb">

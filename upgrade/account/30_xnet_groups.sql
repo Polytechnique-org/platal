@@ -6,7 +6,7 @@ UPDATE group_members SET nom = NULL WHERE LENGTH(TRIM(nom)) = 0;
 INSERT INTO accounts (
   SELECT NULL AS uid,
          CONCAT(LOWER(REPLACE(email,'@','.')),'.ext') AS hruid,
-         'xnet' AS type,
+         IF(origine = 'ext','xnet','virtual') AS type,
          0 as is_admin,
          'disabled' AS state,
          NULL as password,
@@ -26,7 +26,7 @@ INSERT INTO accounts (
          'html' AS email_format,
          1 AS skin,
          NULL as last_version
-  FROM group_members WHERE origine = 'ext' GROUP BY hruid);
+  FROM group_members WHERE origine != 'x' GROUP BY hruid);
 
 # Make Upper case for first letters in fake full_names and display_names
 UPDATE accounts AS a, group_members AS g
@@ -38,18 +38,29 @@ UPDATE accounts AS a, group_members AS g
         LEFT(a.full_name, POSITION(' ' IN a.full_name)),
         UPPER(MID(a.full_name, POSITION(' ' IN a.full_name) + 1, 1)),
         MID(a.full_name, POSITION(' '  IN a.full_name) + 2))
- WHERE a.hruid =  CONCAT(LOWER(REPLACE(g.email,'@','.')),'.ext') AND POSITION(' ' IN a.full_name);
+ WHERE a.hruid = CONCAT(LOWER(REPLACE(g.email,'@','.')),'.ext') AND g.prenom IS NULL AND POSITION(' ' IN a.full_name);
 
 # Delete person that are several time in same asso
 DELETE g2
         FROM group_members AS g1
   INNER JOIN group_members AS g2 ON (g1.asso_id = g2.asso_id AND g1.email = g2.email AND g1.uid < g2.uid)
-  WHERE g1.origine = 'ext' AND g2.origine = 'ext';
+  WHERE g1.origine != 'x' AND g2.origine != 'x';
 
 # Update uids
 UPDATE group_members AS g, accounts AS a
   SET g.uid = a.uid
-  WHERE g.origine = 'ext' AND
+  WHERE g.origine != 'x' AND
    a.hruid = CONCAT(LOWER(REPLACE(g.email,'@','.')),'.ext');
+
+# Enable virtual accounts (for groups) with no rights
+INSERT IGNORE INTO account_types VALUES('virtual', '');
+
+# Drop now unused columns
+ALTER TABLE group_members
+  DROP COLUMN sexe,
+  DROP COLUMN prenom,
+  DROP COLUMN nom,
+  DROP COLUMN origine,
+  DROP COLUMN email;
 
 # vim:set syntax=mysql:

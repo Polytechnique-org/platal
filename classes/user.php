@@ -171,9 +171,9 @@ class User extends PlUser
         $uids = array_map(array('XDB', 'escape'), $uids);
 
         return XDB::iterator('SELECT  a.uid, a.hruid, a.registration_date, ah.alias AS homonym,
-                                      CONCAT(af.alias, \'@' . $globals->mail->domain . '\') AS forlife,
+                                      IF (af.alias IS NULL, a.email, CONCAT(af.alias, \'@' . $globals->mail->domain . '\')) AS forlife,
                                       CONCAT(af.alias, \'@' . $globals->mail->domain2 . '\') AS forlife_alternate,
-                                      CONCAT(ab.alias, \'@' . $globals->mail->domain . '\') AS bestalias,
+                                      IF (ab.alias IS NULL, a.email, CONCAT(ab.alias, \'@' . $globals->mail->domain . '\')) AS bestalias,
                                       CONCAT(ab.alias, \'@' . $globals->mail->domain2 . '\') AS bestalias_alternate,
                                       a.full_name, a.display_name, a.sex = \'female\' AS gender,
                                       IF(a.state = \'active\', at.perms, \'\') AS perms,
