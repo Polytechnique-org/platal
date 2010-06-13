@@ -35,6 +35,9 @@ Bug/Wish:
         - #1068: Fixes addresses display on profile                        -JAC
         - #1081: Sorts language alphabetically in skill tab                -Car
 
+    * Search:
+        - #870: Fixes region selection when choosing country from list     -Car
+
     * Survey:
         - #993: Enables survey for oranges                                 -Car
         - #1002: Lets the user set promo interval in both ways             -Car

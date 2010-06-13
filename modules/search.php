@@ -243,6 +243,10 @@ class SearchModule extends PLModule
 
     function handler_list(&$page, $type = null, $idVal = null)
     {
+        $page->assign('name', $type);
+        $page->assign('with_text_value', true);
+        $page->assign('onchange', "document.forms.recherche.{$type}Txt.value = this.options[this.selectedIndex].text");
+
         // Give the list of all values possible of type and builds a select input for it
         $ids = null;
 
@@ -270,9 +274,9 @@ class SearchModule extends PLModule
           case 'nationalite':
             $ids = DirEnum::getOptionsIter(DirEnum::NATIONALITIES);
             break;
-        case 'region':
-            if ($isset($_REQUEST['country'])) {
-                $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS, $_REQUEST['country']);
+          case 'region':
+            if (Env::has('country')) {
+                $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS, Env::v('country'));
             } else {
                 $ids = DirEnum::getOptionsIter(DirEnum::ADMINAREAS);
             }
@@ -296,10 +300,7 @@ class SearchModule extends PLModule
         }
         pl_content_headers("text/xml");
         $page->changeTpl('include/field.select.tpl', NO_SKIN);
-        $page->assign('name', $type);
         $page->assign('list', $ids);
-        $page->assign('with_text_value', true);
-        $page->assign('onchange', "document.forms.recherche.{$type}Txt.value = this.options[this.selectedIndex].text");
     }
 }
 

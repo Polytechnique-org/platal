@@ -94,8 +94,10 @@ class DirEnum
             self::init($type);
         }
         $obj = self::$enumerations[$type];
+        $args = func_get_args();
+        array_shift($args);
         if ($obj->capabilities & DirEnumeration::HAS_OPTIONS) {
-            return call_user_func(array($obj, 'getOptionsIter'));
+            return call_user_func_array(array($obj, 'getOptionsIter'), $args);
         } else {
             return PlIteratorUtils::fromArray(array());
         }
@@ -344,7 +346,7 @@ abstract class DE_WithSuboption extends DirEnumeration
         } else if (array_key_exists($subid, $this->suboptions)) {
             return $this->suboptions[$subid];
         } else {
-            return false;
+            return array();
         }
     }
 
