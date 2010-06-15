@@ -132,7 +132,7 @@ class AuthModule extends PLModule
         $uid = S::i('uid');
         if (!S::suid()) {
             global $platal;
-            S::logger($uid)->log('connexion_auth_ext', $platal->path);
+            S::logger($uid)->log('connexion_auth_ext', $platal->path.' '.urldecode($_GET['url']));
         }
 
         // Iterate over the auth token to find which one did sign the request.

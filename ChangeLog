@@ -9,6 +9,9 @@ New:
         - Centralises email management through an email combobox           -JAC
 
 Bug/Wish:
+    * Auth:
+        - #1089: Also logs the return url in auth for groupesx             -Car
+
     * Carnet:
         - #1074: Removes the red cross to reset contact search             -Car
 
