@@ -498,7 +498,44 @@ $(document).ready(function() {
 </form>
 </div>
 
+{else}
 
+{literal}
+<script type="text/javascript">
+/* <![CDATA[ */
+  function add_user_to_url(f) {
+    f.action += '/' + f.login.value;
+  }
+/* ]]> */
+</script>
+{/literal}
+<form method="post" action="admin/user" onsubmit="add_user_to_url(this); return true">
+  {xsrf_token_field}
+  <table class="tinybicol" cellspacing="0" cellpadding="2">
+    <tr>
+      <th>
+        Administrer
+      </th>
+    </tr>
+    <tr class="pair">
+      <td class="center">
+        Il est possible d'entrer ici n'importe quelle adresse mail&nbsp;: redirection, melix, ou alias.
+      </td>
+    </tr>
+    <tr>
+      <td class="center">
+        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login|default:$mr.forlife}" />
+      </td>
+    </tr>
+    <tr>
+      <td class="center">
+        <input type="submit" name="select" value=" edit " /> &nbsp;&nbsp;
+        <input type="submit" name="su_account" value=" su " />  &nbsp;&nbsp;
+        <input type="submit" name="log_account" value=" logs " />
+      </td>
+    </tr>
+  </table>
+</form>
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
