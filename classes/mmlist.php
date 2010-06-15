@@ -39,6 +39,27 @@ class MMList extends XmlrpcClient
             $this->bt = new PlBacktrace('MMList');
         }
     }
+
+    /**
+     * Replace email in all lists where user has subscribe
+     * @param $old_email old email address used in mailing lits
+     * @param $new_email new email to use in place of the old one
+     * @return number of mailing lists changed
+     */
+    public function replace_email_in_all($old_email, $new_email) {
+        $all_lists = $this->get_lists($old_email);
+        if (!$all_lists) {
+            return 0;
+        }
+        $changed_lists = 0;
+        foreach ($all_lists as $list) {
+            if ($list->sub) {
+                $this->replace_email($list->list, $old_email, $new_email);
+                $changed_lists++;
+            }
+        }
+        return $changed_lists;
+    }
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
