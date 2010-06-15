@@ -617,6 +617,67 @@ class User extends PlUser
         $mmlist->kill($alias, $clearAll);
     }
 
+    // Merge all infos in other user and then clean this one
+    public function mergeIn(User &$newuser) {
+        if ($this->profile() || !$newuser->id()) {
+            // don't disable user with profile in this way
+            return false;
+        }
+        // TODO check all tables to see if there is no other info to use
+
+        $newemail = $newuser->forlifeEmail();
+        if (!$newemail && $this->forlifeEmail()) {
+            XDB::execute("UPDATE  accounts
+                             SET  email = {?}
+                           WHERE  uid = {?} AND email IS NULL",
+                    $this->forlifeEmail(), $newuser->id());
+            $newemail = $this->forlifeEmail();
+        }
+
+        // change email used in aliases and mailing lists
+        if ($this->forlifeEmail() != $newemail && $this->forlifeEmail()) {
+            // virtual_redirect (email aliases)
+            XDB::execute("DELETE  v1
+                            FROM  virtual_redirect AS v1, virtual_redirect AS v2
+                           WHERE  v1.vid = v2.vid AND v1.redirect = {?} AND v2.redirect = {?}",
+                    $this->forlifeEmail(), $newemail);
+            XDB::execute("UPDATE  virtual_redirect
+                             SET  redirect = {?}
+                           WHERE  redirect = {?}",
+                    $newemail, $this->forlifeEmail());
+
+            // require_once 'mmlist.php';
+
+            // group mailing lists
+            $group_domains = XDB::fetchColumn("SELECT  g.mail_domain
+                          FROM  groups AS g
+                    INNER JOIN  group_members AS gm ON(g.id = gm.asso_id)
+                         WHERE  g.mail_domain != '' AND gm.uid = {?}",
+                    $this->id());
+            foreach ($group_domains as $mail_domain) {
+                $mmlist = new MMList($this, $mail_domain);
+                $mmlist->replace_email_in_all($this->forlifeEmail(), $newmail);
+            }
+            // main domain lists
+            $mmlist = new MMList($this);
+            $mmlist->replace_email_in_all($this->forlifeEmail(), $newmail);
+        }
+
+        // group_members (xnet group membership)
+        XDB::execute("DELETE  g1
+                        FROM  group_members AS g1, group_members AS g2
+                       WHERE  g1.uid = {?} AND g2.uid = {?} AND g1.asso_id = g2.asso_id",
+                    $this->id(), $newuser->id());
+        XDB::execute("UPDATE  group_members
+                         SET  uid = {?}
+                       WHERE  uid = {?}",
+                    $this->id(), $newuser->id());
+
+        XDB::execute("DELETE FROM accounts WHERE uid = {?}", $this->id());
+
+        return true;
+    }
+
     // Return permission flags for a given permission level.
     public static function makePerms($perms, $is_admin)
     {

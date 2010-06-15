@@ -14,7 +14,7 @@ INSERT INTO accounts (
          NULL as weak_password,
          NULL as registration_date,
          '' AS flags,
-         comm AS comment,
+         NULL AS comment,
          email,
          IF(prenom IS NULL,
             REPLACE(LEFT(email, POSITION('@' IN email)-1),'.',' '),

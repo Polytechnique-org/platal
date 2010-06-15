@@ -832,25 +832,8 @@ class XnetGrpModule extends PLModule
             return false;
         }
 
-        // Check if the user is in some groups as an X and as an ext
-        XDB::execute("DELETE g1 FROM group_members AS g1, group_members AS g2
-                            WHERE g1.uid = {?} AND g2.uid = {?} AND g1.asso_id = g2.asso_id",
-                     $user->id(), $xuser->id());
-        XDB::execute("UPDATE  group_members
-                         SET  uid = {?}
-                       WHERE  uid = {?}",
-                     $xuser->id(), $user->id());
+        $user->mergeIn($xuser);
 
-        // Update subscription to aliases
-        if ($sub && $user->forlifeEmail() != $xuser->forlifeEmail()) {
-            XDB::execute("UPDATE IGNORE  virtual_redirect AS vr
-                                    SET  vr.redirect = {?}
-                                  WHERE  vr.redirect = {?}",
-                         $xuser->forlifeEmail(), $user->forlifeEmail());
-            foreach (Env::v('ml1', array()) as $ml => $state) {
-                $mmlist->replace_email($ml, $user->forlifeEmail(), $xuser->forlifeEmail());
-            }
-        }
         return $xuser->login();
     }
 
@@ -872,7 +855,6 @@ class XnetGrpModule extends PLModule
 
             // Convert user status to X
             if (!Post::blank('login_X')) {
-                // TODO: Rewrite changeLogin!!!
                 $forlife = $this->changeLogin($page, $user, $mmlist, Post::t('login_X'));
                 if ($forlife) {
                     pl_redirect('member/' . $forlife);
