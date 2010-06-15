@@ -853,8 +853,8 @@ class AdminModule extends PLModule
         if ($op == 'list') {
             $res = XDB::iterator(
                     "SELECT  a.alias AS homonyme, s.alias AS forlife,
-                             IF(h.homonyme_id = s.id, a.expire, NULL) AS expire,
-                             IF(h.homonyme_id = s.id, a.type, NULL) AS type, ac.uid
+                             IF(h.homonyme_id = s.uid, a.expire, NULL) AS expire,
+                             IF(h.homonyme_id = s.uid, a.type, NULL) AS type, ac.uid
                        FROM  aliases       AS a
                   LEFT JOIN  homonyms      AS h  ON (h.homonyme_id = a.uid)
                  INNER JOIN  aliases       AS s  ON (s.uid = h.uid AND s.type = 'a_vie')
