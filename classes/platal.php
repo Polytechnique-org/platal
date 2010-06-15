@@ -65,6 +65,7 @@ abstract class PlHook
             if ($this->hasType(DO_AUTH)) {
                 if (!$session->start($this->auth)) {
                     $platal->force_login($page);
+                    return PL_FORBIDDEN;
                 }
             } else {
                 return PL_FORBIDDEN;
