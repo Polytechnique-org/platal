@@ -121,7 +121,9 @@
     </td>
     <td class="action">
       <a href="admin/logger/session/{$mysess.id}">session</a>
+      {if !$loguser || ($loguser neq $mysess.username) || $year || $month || $day}
       <a href="admin/logger/user/{$mysess.username}">user's log</a>
+      {/if}
     </td>
   </tr>
   {/foreach}

@@ -132,7 +132,8 @@ class AdminModule extends PLModule
     function _getDays($year, $month)
     {
         // give a 'no filter' option
-        $months[0] = "----";
+        $days = array();
+        $days[0] = "----";
 
         if ($year && $month) {
             $day_max = Array(-1, 31, checkdate(2, 29, $year) ? 29 : 28 , 31,
@@ -174,6 +175,7 @@ class AdminModule extends PLModule
     function _getMonths($year)
     {
         // give a 'no filter' option
+        $months = array();
         $months[0] = "----";
 
         if ($year) {
@@ -206,6 +208,7 @@ class AdminModule extends PLModule
     function _getYears()
     {
         // give a 'no filter' option
+        $years = array();
         $years[0] = "----";
 
         // retrieve available years
@@ -236,7 +239,7 @@ class AdminModule extends PLModule
         $where = array();
 
         if ($uid)
-            array_push($where, "uid='$uid'");
+            array_push($where, "s.uid='$uid'");
 
         // we were given at least a year
         if ($year) {
@@ -393,7 +396,7 @@ class AdminModule extends PLModule
         }
 
         // Handles specific requests (AX sync, su, ...).
-        if(Post::has('logs_account')) {
+        if(Post::has('log_account')) {
             pl_redirect("admin/logger?loguser=$login&year=".date('Y')."&month=".date('m'));
         }
 
