@@ -47,7 +47,12 @@ class Xnet extends Platal
 
     public function force_login(PlPage &$page)
     {
-        http_redirect(S::v('loginX'));
+        $redirect = S::v('loginX');
+        if (!$redirect) {
+            $page->trigError('Impossible de s\'authentifier. Problème de configuration de plat/al.');
+            return;
+        }
+        http_redirect($redirect);
     }
 }
 
