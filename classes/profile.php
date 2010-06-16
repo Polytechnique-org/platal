@@ -787,7 +787,7 @@ class Profile
                                      pn_f.name AS firstname, pn_l.name AS lastname, pn_n.name AS nickname,
                                      IF(pn_uf.name IS NULL, pn_f.name, pn_uf.name) AS firstname_ordinary,
                                      IF(pn_ul.name IS NULL, pn_l.name, pn_ul.name) AS lastname_ordinary,
-                                     pd.promo AS promo, pd.short_name, pd.directory_name AS full_name,
+                                     pd.yourself, pd.promo, pd.short_name, pd.directory_name AS full_name,
                                      pd.directory_name, IF(pp.pub IN {?}, pp.display_tel, NULL) AS mobile,
                                      (ph.pub IN {?} AND ph.attach IS NOT NULL) AS has_photo,
                                      ph.x AS photo_width, ph.y AS photo_height,
