@@ -13,6 +13,7 @@ Bug/Wish:
         - #1089: Also logs the return url in auth for groupesx             -Car
 
     * Carnet:
+        - #507: Uses full name in notification email                       -JAC
         - #1074: Removes the red cross to reset contact search             -Car
 
     * Core:

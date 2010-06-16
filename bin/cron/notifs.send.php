@@ -24,16 +24,25 @@ require_once 'connect.db.inc.php';
 require_once 'plmailer.php';
 require_once 'notifs.inc.php';
 
-$all = new AllNotifs();
+$uids = XDB::query('SELECT  uid
+                      FROM  watch
+                     WHERE  FIND_IN_SET(\'mail\', flags)
+                  ORDER BY  uid');
+$iterator = User::iterOverUIDs($uids->fetchColumn());
 
 $mailer = new PlMailer('carnet/notif.mail.tpl');
-foreach ($all->_data as $u) {
-    $mailer = new PlMailer('carnet/notif.mail.tpl');
-    $mailer->assign('u', $u);
-    $mailer->assign('week', date("W - Y"));
-    $mailer->assign('cats', $all->_cats);
-    $mailer->addTo('"' . $u['prenom'] . ' ' . $u['nom'] . '" <' . $u['bestalias'] . '@polytechnique.org>');
-    $mailer->send($u['mail_fmt'] == 'html');
+while($user = $iterator->next()) {
+    if (Watch::getCount($user) > 0) {
+        $notifs = Watch::getEvents($user, time() - (7 * 86400));
+        $mailer->assign('sex', $user->profile()->isFemale());
+        $mailer->assign('yourself', $user->profile()->yourself);
+        $mailer->assign('week', date('W - Y'));
+        $mailer->assign('notifs', $notifs);
+        $mailer->addTo('"' . $user->full_name . '" <' . $user->bestalias . '>');
+        $mailer->send($user->email_format == 'html');
+        unset($notifs);
+    }
+    unset($user);
 }
 
 XDB::execute("UPDATE  watch_profile

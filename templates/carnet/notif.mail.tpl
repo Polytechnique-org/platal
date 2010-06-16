@@ -27,18 +27,18 @@
 {if isset(#replyto#)}{add_header name='Reply-To' value=#replyto#}{/if}
 {if isset(#retpath#)}{add_header name='Return-Path' value=#retpath#}{/if}
 {elseif $mail_part eq 'wiki'}
-{if $u.sexe}Chère{else}Cher{/if} {$u.prenom},
+{if $sex}Chère{else}Cher{/if} {$yourself},
 
 Voici les événements survenus dans la semaine écoulée, et depuis ta dernière visite sur le site.
 
 Tu trouveras les mêmes informations sur [[https://www.polytechnique.org/carnet/panel|cette page]].
 
-{foreach from=$u.data key=cid item=d}
+{foreach from=$notifs item=cat}
+{$cat.title} :
 
-'''{if $d|@count eq 1}{if $d[0].sexe}{$cats[$cid].mail_sg_xette}{else}{$cats[$cid].mail_sg}{/if}{else}{$cats[$cid].mail}{/if} :'''
-
-{foreach from=$d item=x}
-* (X{$x.promo}), le {$x.date|date_format:"%d %B %Y"}, [[https://www.polytechnique.org/profile/private/{$x.bestalias}|{$x.prenom} {$x.nom}]]
+{foreach from=$cat.users item=user}
+{assign var=profile value=$user->profile()}
+* Le {$cat.operation->getDate($user)|date_format:"%d %B %Y"}, [[https://www.polytechnique.org/profile/private/{$profile->hrid()}|{$profile->fullname(true)}]]
 {/foreach}
 
 {/foreach}
