@@ -85,6 +85,12 @@ INSERT INTO  profile_name (pid, name, typeid)
       WHERE  nom_ini != '';
 
 INSERT INTO  profile_name (pid, name, typeid)
+     SELECT  u.user_id, u.nom, e.id
+       FROM  #x4dat#.auth_user_md5     AS u
+ INNER JOIN  profile_name_enum AS e ON (e.name = 'Nom initial')
+      WHERE  nom_ini = '';
+
+INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.prenom, e.id
        FROM  #x4dat#.auth_user_md5     AS u
  INNER JOIN  profile_name_enum AS e ON (e.name = 'Prénom')
@@ -95,6 +101,12 @@ INSERT INTO  profile_name (pid, name, typeid)
        FROM  #x4dat#.auth_user_md5     AS u
  INNER JOIN  profile_name_enum AS e ON (e.name = 'Prénom initial')
       WHERE  prenom_ini != '';
+
+INSERT INTO  profile_name (pid, name, typeid)
+     SELECT  u.user_id, u.prenom, e.id
+       FROM  #x4dat#.auth_user_md5     AS u
+ INNER JOIN  profile_name_enum AS e ON (e.name = 'Prénom initial')
+      WHERE  prenom_ini = '';
 
 INSERT INTO  profile_name (pid, name, typeid)
      SELECT  u.user_id, u.nom_usage, e.id
