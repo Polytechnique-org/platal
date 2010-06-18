@@ -136,8 +136,8 @@ class ProfileSettingSearchNames implements ProfileSetting
             $res = XDB::query("SELECT  s.particle, s.name
                                  FROM  profile_name      AS s
                            INNER JOIN  profile_name_enum AS e ON (e.id = s.typeid)
-                                WHERE  s.pid = {?} AND e.type LIKE '%ini'
-                             ORDER BY  e.type = 'firstname_ini'",
+                                WHERE  s.pid = {?} AND (e.type = 'lastname' OR e.type = 'firstname')
+                             ORDER BY  e.type = 'firstname'",
                              $page->pid());
             $res = $res->fetchAllAssoc();
             $initial = array();
