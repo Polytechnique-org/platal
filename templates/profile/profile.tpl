@@ -149,7 +149,9 @@ function chgMainWinLoc(strPage)
       </div>
       {/if}
       {if count($phones) > 0}
+      <div style="float: right">
         {display_phones tels=$phones dcd=$profile->isDead()}
+      </div>
       {/if}
       <div class='spacer'></div>
     </div>
