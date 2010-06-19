@@ -507,7 +507,7 @@ class ProfileCorps extends ProfileField
                             LEFT JOIN  profile_corps_enum AS pceo ON (pceo.id = pc.original_corpsid)
                             LEFT JOIN  profile_corps_enum AS pcec ON (pcec.id = pc.current_corpsid)
                             LEFT JOIN  profile_corps_rank_enum AS pcrec ON (pcrec.id = pc.rankid)
-                                WHERE  pc.pid IN {?} AND pc.corps_pub IN {?}
+                                WHERE  pc.pid IN {?} AND pc.corps_pub IN {?} AND pceo.id != 1
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
                                 $pids, $visibility->levels());
 
