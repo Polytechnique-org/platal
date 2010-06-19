@@ -168,7 +168,7 @@ function chgMainWinLoc(strPage)
       [<a href="referent/{$profile->hrid()}" class='popup2'>Ma fiche référent</a>]
       {/if}
 
-      {assign var=educations value=$profile->getEducations(64)}
+      {assign var=educations value=$profile->getEducations(32)}
       {if count($educations) > 0}
         &nbsp;-&nbsp;Formation&nbsp;:
         <ul>
