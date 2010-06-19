@@ -32,16 +32,17 @@ $iterator = User::iterOverUIDs($uids->fetchColumn());
 
 $mailer = new PlMailer('carnet/notif.mail.tpl');
 while($user = $iterator->next()) {
-    if (Watch::getCount($user) > 0) {
-        $notifs = Watch::getEvents($user, time() - (7 * 86400));
-        $mailer->assign('sex', $user->profile()->isFemale());
-        $mailer->assign('yourself', $user->profile()->yourself);
+    $watch = new Watch($user);
+    if ($watch->count() > 0) {
+        $notifs = $watch->events();
+        $mailer->assign('sex', $user->isFemale());
+        $mailer->assign('yourself', $user->display_name);
         $mailer->assign('week', date('W - Y'));
         $mailer->assign('notifs', $notifs);
-        $mailer->addTo('"' . $user->full_name . '" <' . $user->bestalias . '>');
-        $mailer->send($user->email_format == 'html');
+        $mailer->sendTo($user);
         unset($notifs);
     }
+    unset($watch);
     unset($user);
 }
 
