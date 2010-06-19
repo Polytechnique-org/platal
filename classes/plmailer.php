@@ -193,6 +193,12 @@ class PlMailer extends Mail_Mime {
         }
     }
 
+    public function setTo($email)
+    {
+        $email = $this->correct_emails($email);
+        $this->_headers['To'] = $email;
+    }
+
     public function addCc($email)
     {
         return parent::addCc($this->correct_emails($email));
@@ -327,7 +333,7 @@ class PlMailer extends Mail_Mime {
 
     public function sendTo(PlUser &$user)
     {
-        $this->addTo($user);
+        $this->setTo($user);
         $this->assign_by_ref('user', $user);
         return $this->send($user->isEmailFormatHtml());
     }
