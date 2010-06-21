@@ -41,7 +41,7 @@ function mysql_pipe() {
 function mysql_exec() {
     echo -n " * executing $1 "
     if [[ -z "${DRY_RUN}" ]]; then
-        (echo $1 | mysql_pipe) || die "ERROR"
+        (echo "$1" | mysql_pipe) || die "ERROR"
     fi
     echo "OK"
 }
@@ -53,7 +53,7 @@ function mysql_pipe_nodb() {
 function mysql_exec_nodb() {
     echo -n " * executing $1 "
     if [[ -z "${DRY_RUN}" ]]; then
-        (echo $1 | mysql_pipe_nodb) || die "ERROR"
+        (echo "$1" | mysql_pipe_nodb) || die "ERROR"
     fi
     echo "OK"
 }
@@ -61,7 +61,7 @@ function mysql_exec_nodb() {
 function mysql_run() {
     echo -n " * running $1 "
     if [[ -z "${DRY_RUN}" ]]; then
-        (cat $1 | mysql_pipe) || die "ERROR"
+        (cat "$1" | mysql_pipe) || die "ERROR"
     fi
     echo "OK"
 }
