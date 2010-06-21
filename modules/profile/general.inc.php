@@ -399,7 +399,9 @@ class ProfileSettingPromo implements ProfileSetting
         if ($page->profile->mainEducation() == 'X') {
             $gradYearNew += $page->profile->mainEducationDuration();
         }
-        if ($value == $page->profile->entry_year + $page->profile->mainEducationDuration()) {
+        if (($page->profile->mainEducation() != 'X'
+             && $value == $page->profile->entry_year + $page->profile->mainEducationDuration())
+           || ($page->profile->mainEducation() == 'X' && $value == $page->profile->entry_year)) {
             XDB::execute('UPDATE  profile_display
                              SET  promo = {?}
                            WHERE  pid = {?}',
@@ -408,7 +410,7 @@ class ProfileSettingPromo implements ProfileSetting
                              SET  grad_year = {?}
                            WHERE  pid = {?} AND FIND_IN_SET(\'primary\', flags)',
                          $gradYearNew, $page->profile->id());
-            $page->trigSuccess('Ton statut "orange" a été supprimé.');
+            Platal::page()->trigSuccess('Ton statut « orange » a été supprimé.');
         } else {
             require_once 'validations.inc.php';
 
@@ -422,19 +424,24 @@ class ProfileSettingPromo implements ProfileSetting
     {
         $entryYear = $page->profile->entry_year;
         $gradYear  = $page->profile->grad_year;
+        $yearpromo = $page->profile->grad_year;
+        if ($page->profile->mainEducation() == 'X') {
+            $yearpromo -= $page->profile->mainEducationDuration();
+        }
         $success   = true;
-        if (is_null($value) || $value == $page->profile->yearpromo()) {
+        if (is_null($value) || $value == $yearpromo) {
             if ($gradYear != $entryYear + $page->profile->mainEducationDuration()) {
                 $promoChoice = array();
-                for ($i = $entryYear + $page->profile->mainEducationDuration(); $i <= $gradYear; ++$i) {
-                    $promoChoice[] = $page->profile->mainEducation() . strval($i);
+                for ($i = $entryYear; $i <= $gradYear - $page->profile->mainEducationDuration(); ++$i) {
+                    if ($page->profile->mainEducation() == 'X') {
+                        $promoChoice[] = $page->profile->mainEducation() . strval($i);
+                    } else {
+                        $promoChoice[] = $page->profile->mainEducation() . strval($i + $page->profile->mainEducationDuration());
+                    }
                 }
                 Platal::page()->assign('promo_choice', $promoChoice);
             }
-            if ($page->profile->mainEducation() == 'X') {
-                return $page->profile->grad_year - $page->profile->mainEducationDuration();
-            }
-            return $page->profile->yearpromo();
+            return $yearpromo;
         }
 
         // If this profile belongs to an X, $promoNew needs to be changed to
@@ -567,12 +574,16 @@ class ProfileSettingGeneral extends ProfilePage
                          $this->values['yourself'], $this->owner->id());
         }
         if ($this->changed['promo_display']) {
-            if ($this->values['promo_display']{0} == $this->profile->mainEducation()
-                && intval(substr($this->values['promo_display'], 1, 4)) >= $this->profile->entry_year + $this->profile->mainEducationDuration()) {
-                XDB::execute('UPDATE  profile_display
-                                 SET  promo = {?}
-                               WHERE  pid = {?}',
-                             $this->values['promo_display'], $this->pid());
+            if ($this->values['promo_display']{0} == $this->profile->mainEducation()) {
+                if (($this->profile->mainEducation() == 'X'
+                     && intval(substr($this->values['promo_display'], 1, 4)) >= $this->profile->entry_year)
+                    || ($this->profile->mainEducation() != 'X'
+                        && intval(substr($this->values['promo_display'], 1, 4)) >= $this->profile->entry_year + $this->profile->mainEducationDuration())) {
+                    XDB::execute('UPDATE  profile_display
+                                     SET  promo = {?}
+                                   WHERE  pid = {?}',
+                                 $this->values['promo_display'], $this->pid());
+                }
             }
         }
     }
