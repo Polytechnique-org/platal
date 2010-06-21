@@ -85,19 +85,20 @@ INSERT IGNORE INTO  watch_profile (uid, ts, field)
               FROM  watch_profile
              WHERE  field = 'appli2';
 
-ALTER TABLE watch_profile MODIFY field enum('nom', 'freetext', 'mobile', 'nationalite', 'nationalite2',
-                                            'nationalite3', 'nick', 'web', 'networking', 'appli1', 'appli2',
-                                            'edus', 'addresses', 'section', 'binets', 'medals', 'cv', 'jobs',
-                                            'photo');
+ALTER TABLE  watch_profile
+     MODIFY  field ENUM('nom', 'freetext', 'mobile', 'nationality1', 'nationality2', 'nationality3',
+                        'nick', 'networking', 'appli1', 'appli2', 'edus', 'addresses', 'section',
+                        'binets', 'medals', 'cv', 'jobs', 'photo');
 
 UPDATE watch_profile SET field = 'edus' WHERE field = 'appli1';
 
 
 DELETE FROM watch_profile WHERE field = 'appli2';
 
-ALTER TABLE watch_profile MODIFY field enum('nom', 'freetext', 'mobile', 'nationalite', 'nationalite2',
-                                            'nationalite3', 'nick', 'web', 'networking', 'edus', 'addresses',
-                                            'section', 'binets', 'medals', 'cv', 'jobs', 'photo');
+ALTER TABLE  watch_profile
+     MODIFY  field ENUM('nom', 'freetext', 'mobile', 'nationality1', 'nationality2', 'nationality3',
+                        'nick', 'networking', 'edus', 'addresses', 'section', 'binets', 'medals',
+                        'cv', 'jobs', 'photo');
 
 # vim:set syntax=mysql:
 

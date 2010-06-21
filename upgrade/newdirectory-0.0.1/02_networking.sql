@@ -31,16 +31,16 @@ INSERT INTO `profile_networking` (`pid`, `nwid`, `network_type`, `address`, `pub
       WHERE `profile_web` <> "";
 
 -- Modify watch_profile to update 'field' from web to networking
-ALTER TABLE `watch_profile`
-     MODIFY `field` enum('nom', 'freetext', 'mobile', 'nationalite', 'nick',
-                         'web', 'networking', 'appli1', 'appli2', 'addresses',
-                         'section', 'binets', 'medals', 'cv', 'jobs', 'photo');
+ALTER TABLE  watch_profile
+     MODIFY  field ENUM('nom', 'freetext', 'mobile', 'nationality1', 'nationality2', 'nationality3',
+                        'nick', 'web', 'networking', 'appli1', 'appli2', 'addresses', 'section',
+                        'binets', 'medals', 'cv', 'jobs', 'photo');
 
 UPDATE `watch_profile` SET `field` = 'networking' WHERE `field` = 'web';
 
-ALTER TABLE `watch_profile`
-     MODIFY `field` enum('nom', 'freetext', 'mobile', 'nationalite', 'nick',
-                         'networking', 'appli1', 'appli2', 'addresses',
-                         'section', 'binets', 'medals', 'cv', 'jobs', 'photo');
+ALTER TABLE  watch_profile
+     MODIFY  field ENUM('nom', 'freetext', 'mobile', 'nationality1', 'nationality2', 'nationality3',
+                        'nick', 'networking', 'appli1', 'appli2', 'addresses', 'section',
+                        'binets', 'medals', 'cv', 'jobs', 'photo');
 
 # vim:set syntax=mysql:

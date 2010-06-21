@@ -656,8 +656,9 @@ INSERT IGNORE INTO  profile_corps_enum (abbreviation, name, still_exists)
                     ("INSEE", "Administrateurs de l'INSEE", 1),
                     ("Off", "Officiers des Armées", 1);
 
-ALTER TABLE watch_profile MODIFY field ENUM('nom', 'freetext', 'mobile', 'nationalite', 'nationalite2',
-                                            'nationalite3', 'nick', 'web', 'networking', 'edus', 'addresses',
-                                            'section', 'binets', 'medals', 'cv', 'jobs', 'photo', 'corps');
+ALTER TABLE  watch_profile
+     MODIFY  field ENUM('nom', 'freetext', 'mobile', 'nationality1', 'nationality2', 'nationality3',
+                        'nick', 'networking', 'edus', 'addresses', 'section', 'binets', 'medals',
+                        'cv', 'jobs', 'photo', 'corps');
 
 --  vim:set syntax=mysql:
