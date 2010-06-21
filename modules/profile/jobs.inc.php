@@ -250,7 +250,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 $address = new ProfileSettingAddress();
                 $address->saveAddress($page->pid(), $id, $job['w_address'], 'job');
                 $profiletel = new ProfileSettingPhones('pro', $id);
-                $profiletel->saveTels('tel', $job['w_phone']);
+                $profiletel->saveTels($page->pid(), 'tel', $job['w_phone']);
             }
         }
     }
