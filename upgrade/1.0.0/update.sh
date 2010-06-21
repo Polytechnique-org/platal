@@ -8,7 +8,7 @@
 confirm "Setting up new database: target db is \"$DATABASE\", source prefix is \"$DBPREFIX\""
 
 echo "* create database"
-mysql_exec "CREATE DATABASE IF NOT EXISTS $DATABASE;"
+mysql_exec_nodb "CREATE DATABASE IF NOT EXISTS $DATABASE;"
 echo "OK"
 
 echo "* copying tables "
