@@ -46,6 +46,18 @@ function mysql_exec() {
     echo "OK"
 }
 
+function mysql_pipe_nodb() {
+    sed -e "s/#\([0-9a-z]*\)#/${DBPREFIX}\1/g" | $MYSQL
+}
+
+function mysql_exec_nodb() {
+    echo -n " * executing $1 "
+    if [[ -z "${DRY_RUN}" ]]; then
+        (echo $1 | mysql_pipe_nodb) || die "ERROR"
+    fi
+    echo "OK"
+}
+
 function mysql_run() {
     echo -n " * running $1 "
     if [[ -z "${DRY_RUN}" ]]; then
