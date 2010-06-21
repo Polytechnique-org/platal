@@ -124,7 +124,8 @@ function chgMainWinLoc(strPage)
     </div>
     {/if}
 
-    {assign var=phones value=$profile->getPhones(0)}
+    {* 121634816 is Profile::PHONE_LINK_PROFILE | Profile::PHONE_TYPE_ANY = 0x7400000 *}
+    {assign var=phones value=$profile->getPhones(121634816)}
     {if $logged || count($phones) > 0}
     <div class="contact">
       {if $logged}

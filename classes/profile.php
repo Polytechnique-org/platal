@@ -111,27 +111,40 @@ class Profile
             self::FIRSTNAME => array(self::VN_ORDINARY, self::VN_INI, self::VN_OTHER)
         );
 
-    const ADDRESS_MAIN       = 0x000001;
-    const ADDRESS_PERSO      = 0x000002;
-    const ADDRESS_PRO        = 0x000004;
-    const ADDRESS_ALL        = 0x000006;
-    const ADDRESS_POSTAL     = 0x000008;
+    const ADDRESS_MAIN       = 0x00000001;
+    const ADDRESS_PERSO      = 0x00000002;
+    const ADDRESS_PRO        = 0x00000004;
+    const ADDRESS_ALL        = 0x00000006;
+    const ADDRESS_POSTAL     = 0x00000008;
 
-    const EDUCATION_MAIN     = 0x000010;
-    const EDUCATION_EXTRA    = 0x000020;
-    const EDUCATION_ALL      = 0x000040;
-    const EDUCATION_FINISHED = 0x000080;
-    const EDUCATION_CURRENT  = 0x000100;
+    const EDUCATION_MAIN     = 0x00000010;
+    const EDUCATION_EXTRA    = 0x00000020;
+    const EDUCATION_ALL      = 0x00000040;
+    const EDUCATION_FINISHED = 0x00000080;
+    const EDUCATION_CURRENT  = 0x00000100;
 
-    const JOBS_MAIN          = 0x001000;
-    const JOBS_ALL           = 0x002000;
-    const JOBS_FINISHED      = 0x004000;
-    const JOBS_CURRENT       = 0x008000;
+    const JOBS_MAIN          = 0x00001000;
+    const JOBS_ALL           = 0x00002000;
+    const JOBS_FINISHED      = 0x00004000;
+    const JOBS_CURRENT       = 0x00008000;
 
-    const NETWORKING_ALL     = 0x000000;
-    const NETWORKING_WEB     = 0x010000;
-    const NETWORKING_IM      = 0x020000;
-    const NETWORKING_SOCIAL  = 0x040000;
+    const NETWORKING_ALL     = 0x00000000;
+    const NETWORKING_WEB     = 0x00010000;
+    const NETWORKING_IM      = 0x00020000;
+    const NETWORKING_SOCIAL  = 0x00040000;
+
+    const PHONE_LINK_JOB     = 0x00100000;
+    const PHONE_LINK_ADDRESS = 0x00200000;
+    const PHONE_LINK_PROFILE = 0x00400000;
+    const PHONE_LINK_COMPANY = 0x00800000;
+    const PHONE_LINK_ANY     = 0x00F00000;
+
+    const PHONE_TYPE_FAX     = 0x01000000;
+    const PHONE_TYPE_FIXED   = 0x02000000;
+    const PHONE_TYPE_MOBILE  = 0x04000000;
+    const PHONE_TYPE_ANY     = 0x07000000;
+
+    const PHONE_ANY          = 0x07F00000;
 
     const FETCH_ADDRESSES      = 0x000001;
     const FETCH_CORPS          = 0x000002;

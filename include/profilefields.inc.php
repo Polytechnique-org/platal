@@ -151,6 +151,42 @@ class Phone
             $this->$key = $val;
         }
     }
+
+    public function hasFlags($flags) {
+        return $this->hasType($flags) && $this->hasLink($flags);
+    }
+
+    /** Returns true if this phone's type matches the flags
+     */
+    public function hasType($flags) {
+        $flags = $flags & Profile::PHONE_TYPE_ANY;
+        return (
+            ($flags == Profile::PHONE_TYPE_ANY)
+            ||
+            (($flags & Profile::PHONE_TYPE_FAX) && $this->type == self::TYPE_FAX)
+            ||
+            (($flags & Profile::PHONE_TYPE_FIXED) && $this->type == self::TYPE_FIXED)
+            ||
+            (($flags & Profile::PHONE_TYPE_MOBILE) && $this->type == self::TYPE_MOBILE)
+        );
+    }
+
+    /** Returns true if this phone's link matches the flags
+     */
+    public function hasLink($flags) {
+        $flags = $flags & Profile::PHONE_LINK_ANY;
+        return (
+            ($flags == Profile::PHONE_LINK_ANY)
+            ||
+            (($flags & Profile::PHONE_LINK_COMPANY) && $this->link_type == self::LINK_COMPANY)
+            ||
+            (($flags & Profile::PHONE_LINK_JOB) && $this->link_type == self::LINK_JOB)
+            ||
+            (($flags & Profile::PHONE_LINK_ADDRESS) && $this->link_type == self::LINK_ADDRESS)
+            ||
+            (($flags & Profile::PHONE_LINK_PROFILE) && $this->link_type == self::LINK_PROFILE)
+        );
+    }
 }
 // }}}
 // {{{ class Company
@@ -665,10 +701,12 @@ class ProfilePhones extends ProfileField
         $phones = array();
         $nb = 0;
         foreach ($this->phones as $id => $phone) {
-            $phones[$id] = $phone;
-            ++$nb;
-            if ($limit != null && $nb == $limit) {
-                break;
+            if ($phone->hasFlags($flags)) {
+                $phones[$id] = $phone;
+                ++$nb;
+                if ($limit != null && $nb == $limit) {
+                    break;
+                }
             }
         }
         return $phones;
