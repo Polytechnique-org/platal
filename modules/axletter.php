@@ -153,7 +153,7 @@ class AXLetterModule extends PLModule
             }
 
             switch (@Post::v('valid')) {
-              case 'Vérifier':
+              case 'Vérifier les emails':
                 // Same as 'preview', but performs a test of all provided emails
                 if ($subset) {
                     require_once 'emails.inc.php';
@@ -169,7 +169,11 @@ class AXLetterModule extends PLModule
                         }
                     }
                     if ($nb_error == 0) {
-                        $page->trigSuccess("Les " . count($subset_to) . " emails soumis ont été reconnus avec succès.");
+                        if (count($subset_to) == 1) {
+                            $page->trigSuccess("L'email soumis a été reconnu avec succès.");
+                        } else {
+                            $page->trigSuccess("Les " . count($subset_to) . " emails soumis ont été reconnus avec succès.");
+                        }
                     } else {
                         $page->trigError("Total : $nb_error erreur" . ($nb_error > 1 ? "s" : "") . " sur " . count($subset_to) . " adresses mail soumises.");
                     }

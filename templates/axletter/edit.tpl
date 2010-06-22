@@ -110,7 +110,7 @@
     {/if}
     <input type="submit" name="valid" value="Aperçu" />
     {if $subset}
-    <input type="submit" name="valid" value="Vérifier" />
+    <input type="submit" name="valid" value="Vérifier les emails" />
     {/if}
     {if !$new}
     <input type="submit" name="valid" value="Confirmer" />
