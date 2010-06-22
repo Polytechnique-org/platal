@@ -3,4 +3,4 @@ Il faudra déplacer le yourself qui est mis dans profile_display dans le script 
 Le 12_secteurs.sql est à faire avant le alternate_subsubsectors.php et pour que ce dernier fonctionne, il faut que le fichier
 arbo-UTF8.xml soit dans le même dossier.
 
-Le script addresses.php *doit* être lancé dans un screen - il prend plusieurs jours à tourner.
+Le script geocding.php *doit* être lancé dans un screen - il prend plusieurs jours à tourner.
