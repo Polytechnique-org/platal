@@ -466,20 +466,23 @@ class ProfileNetworking extends ProfileField
 {
     private $networks = array();
 
-    public function __construct(PlIterator $it)
+    public function __construct(PlInnerSubIterator $it)
     {
+        $this->pid = $it->value();
         while ($network = $it->next()) {
-            $this->networks[$network['nwid']] = $network['address'];
+            $network['network_type'] = new PlFlagSet($network['network_type']);
+            $this->networks[$network['id']] = $network;
         }
     }
 
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
-        $data = XDB::iterator('SELECT  pid, nwid, address, network_type
-                                 FROM  profile_networking
+        $data = XDB::iterator('SELECT  pid, id, address, pne.network_type, pne.filter, pne.link
+                                 FROM  profile_networking AS pn
+                            LEFT JOIN  profile_networking_enum AS pne USING(nwid)
                                 WHERE  pid IN {?} AND pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids) . ',
-                                       network_type, nwid',
+                                       pn.nwid, id',
                                $pids, $visibility->levels());
 
         return PlIteratorUtils::subIterator($data, PlIteratorUtils::arrayValueCallback('pid'));
@@ -487,20 +490,21 @@ class ProfileNetworking extends ProfileField
 
     public function get($flags, $limit = null)
     {
+        if (!$flags) {
+            $flags = Profile::NETWORKING_ALL;
+        }
         $nws = array();
         $nb = 0;
         foreach ($this->networks as $id => $nw) {
-            // XXX hardcoded reference to web site index
-            if (
-                (($flags & Profile::NETWORKING_WEB) && $nw['network_type'] == 0)
-                ||
-                (! ($flags & Profile::NETWORKING_WEB))
-            ) {
+            if (($flags & Profile::NETWORKING_WEB) && $nw['network_type']->hasFlag('web') ||
+                ($flags & Profile::NETWORKING_IM) && $nw['network_type']->hasFlag('im') ||
+                ($flags & Profile::NETWORKING_SOCIAL) && $nw['network_type']->hasFlag('social') ||
+                ($flags & Profile::NETWORKING_ALL)) {
                 $nws[$id] = $nw;
                 ++$nb;
-            }
-            if ($nb >= $limit) {
-                break;
+                if ($nb >= $limit) {
+                    break;
+                }
             }
         }
         return $nws;

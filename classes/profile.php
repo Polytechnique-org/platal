@@ -128,7 +128,7 @@ class Profile
     const JOBS_FINISHED      = 0x00004000;
     const JOBS_CURRENT       = 0x00008000;
 
-    const NETWORKING_ALL     = 0x00000000;
+    const NETWORKING_ALL     = 0x00070000;
     const NETWORKING_WEB     = 0x00010000;
     const NETWORKING_IM      = 0x00020000;
     const NETWORKING_SOCIAL  = 0x00040000;
