@@ -180,7 +180,7 @@ class AXLetterModule extends PLModule
                 $this->load('axletter.inc.php');
                 $al = new AXLetter(array($id, $short_name, $subject, $title, $body, $signature,
                                          $promo_min, $promo_max, $subset, $subset_rm, $echeance, 0, 'new'));
-                $al->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+                $al->toHtml($page, S::user());
                 break;
 
               case 'Confirmer':
