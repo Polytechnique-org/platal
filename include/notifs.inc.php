@@ -69,7 +69,7 @@ class WatchProfileUpdate extends WatchOperation
     private static $order = null;
 
     public $flag  = 'profile';
-    public $title = 'Mise$s à jour de fiche';
+    public $title = 'Mises à jour de fiche';
 
     public static function register(Profile &$profile, $field)
     {
