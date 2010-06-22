@@ -477,7 +477,7 @@ class ProfileNetworking extends ProfileField
 
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
-        $data = XDB::iterator('SELECT  pid, id, address, pne.network_type, pne.filter, pne.link
+        $data = XDB::iterator('SELECT  pid, id, address, pne.nwid, pne.network_type, pne.link, pne.name
                                  FROM  profile_networking AS pn
                             LEFT JOIN  profile_networking_enum AS pne USING(nwid)
                                 WHERE  pid IN {?} AND pub IN {?}
@@ -502,7 +502,7 @@ class ProfileNetworking extends ProfileField
                 ($flags & Profile::NETWORKING_ALL)) {
                 $nws[$id] = $nw;
                 ++$nb;
-                if ($nb >= $limit) {
+                if (isset($limit) && $nb >= $limit) {
                     break;
                 }
             }

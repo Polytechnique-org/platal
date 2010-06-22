@@ -334,16 +334,15 @@ class ProfileSettingNetworking implements ProfileSetting
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         if (is_null($value)) {
-            $value = XDB::fetchAllAssoc("SELECT  n.address, n.network_type AS type, n.pub, m.name
+            $value = XDB::fetchAllAssoc("SELECT  n.address, n.pub, n.nwid AS type
                                            FROM  profile_networking AS n
-                                     INNER JOIN  profile_networking_enum AS m ON (n.network_type = m.network_type)
                                           WHERE  n.pid = {?}",
                                          $page->pid());
         }
         if (!is_array($value)) {
             $value = array();
         }
-        $filters = XDB::fetchAllAssoc('type', 'SELECT  filter, network_type AS type
+        $filters = XDB::fetchAllAssoc('type', 'SELECT  filter, nwid AS type, name
                                                  FROM  profile_networking_enum;');
         $success = true;
         foreach($value as $i=>&$network) {
@@ -356,11 +355,12 @@ class ProfileSettingNetworking implements ProfileSetting
                 $network['error'] = false;
                 $network['pub'] = $this->pub->value($page, 'pub', $network['pub'], $s);
                 $s = true;
-                if ($filters[$network['type']] == 'web') {
+                $network['name'] = $filters[$network['type']]['name'];
+                if ($filters[$network['type']]['filter'] == 'web') {
                     $network['address'] = $this->web->value($page, 'address', $network['address'], $s);
-                } elseif ($filters[$network['type']] == 'email') {
+                } elseif ($filters[$network['type']]['filter'] == 'email') {
                     $network['address'] = $this->email->value($page, 'address', $network['address'], $s);
-                } elseif ($filters[$network['type']] == 'number') {
+                } elseif ($filters[$network['type']]['filter'] == 'number') {
                     $network['address'] = $this->number->value($page, 'address', $network['address'], $s);
                 }
                 if (!$s) {
@@ -382,7 +382,7 @@ class ProfileSettingNetworking implements ProfileSetting
         }
         $insert = array();
         foreach ($value as $id=>$network) {
-            XDB::execute("INSERT INTO  profile_networking (pid, nwid, network_type, address, pub)
+            XDB::execute("INSERT INTO  profile_networking (pid, id, nwid, address, pub)
                                VALUES  ({?}, {?}, {?}, {?}, {?})",
                          $page->pid(), $id, $network['type'], $network['address'], $network['pub']);
         }
@@ -600,7 +600,7 @@ class ProfileSettingGeneral extends ProfilePage
         require_once "emails.combobox.inc.php";
         fill_email_combobox($page, $this->owner, $this->profile);
 
-        $res = XDB::query("SELECT  nw.network_type AS type, nw.name
+        $res = XDB::query("SELECT  nw.nwid AS type, nw.name
                              FROM  profile_networking_enum AS nw
                          ORDER BY  name");
         $page->assign('network_list', $res->fetchAllAssoc());

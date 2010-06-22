@@ -617,12 +617,12 @@ class DE_JobDescription extends DirEnumeration
 // {{{ class DE_Networking
 class DE_Networking extends DirEnumeration
 {
-    protected $idfield  = 'profile_networking_enum.network_type';
+    protected $idfield  = 'profile_networking_enum.nwid';
     protected $valfield = 'profile_networking_enum.name';
     protected $from     = 'profile_networking_enum';
 
 
-    protected $ac_join   = 'INNER JOIN profile_networking ON (profile_networking.network_type = profile_networking_enum.network_type)';
+    protected $ac_join   = 'INNER JOIN profile_networking ON (profile_networking.nwid = profile_networking_enum.nwid)';
     protected $ac_unique = 'profile_networking.pid';
 }
 // }}}

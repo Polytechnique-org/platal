@@ -134,7 +134,7 @@ class ProfileModule extends PLModule
     {
         $res = XDB::query("SELECT  icon
                              FROM  profile_networking_enum
-                            WHERE  network_type = {?}",
+                            WHERE  nwid = {?}",
                           $mid);
         $img  = dirname(__FILE__) . '/../htdocs/images/networking/' . $res->fetchOneCell();
         $type = mime_content_type($img);
@@ -758,7 +758,7 @@ class ProfileModule extends PLModule
     function handler_admin_networking(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title', 'Polytechnique.org - Administration - Networking');
         $page->assign('title', 'Gestion des types de networking');
-        $table_editor = new PLTableEditor('admin/networking', 'profile_networking_enum', 'network_type');
+        $table_editor = new PLTableEditor('admin/networking', 'profile_networking_enum', 'nwid');
         $table_editor->describe('name', 'intitulé', true);
         $table_editor->describe('icon', 'nom de l\'icône', false);
         $table_editor->describe('filter', 'filtre', true);

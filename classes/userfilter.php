@@ -1048,7 +1048,7 @@ class UFC_Networking implements UserFilterCondition
         $conds = array();
         $conds[] = $sub . '.address ' . XDB::formatWildcards(XDB::WILDCARD_CONTAINS, $this->value);
         if ($this->type != -1) {
-            $conds[] = $sub . '.network_type = ' . XDB::format('{?}', $this->type);
+            $conds[] = $sub . '.nwid = ' . XDB::format('{?}', $this->type);
         }
         return implode(' AND ', $conds);
     }

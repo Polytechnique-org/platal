@@ -66,11 +66,9 @@ function chgMainWinLoc(strPage)
     {if count($networking) > 0}
       <h2>Sur le web...</h2>
       {foreach from=$networking item=network}
-        <img style="width: auto; padding: 0" src="profile/networking/{$network.network_type}" alt="{$network.name}" title="{$network.name}"/>
-        {if $network.filter == 'web'}
-          <a href="{$network.address}">{$network.address}</a>
-        {elseif $network.link != ''}
-          <a href="{$network.link}">{$network.address}</a>
+        <img style="width: auto; padding: 0" src="profile/networking/{$network.nwid}" alt="{$network.name}" title="{$network.name}"/>
+        {if $network.link}
+          <a href="{$network.link|replace:'%s':$network.address}">{$network.address}</a>
         {else}
           {$network.address}
         {/if}
