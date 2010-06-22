@@ -35,8 +35,8 @@ CREATE TABLE profile_addresses (
 ) ENGINE=InnoDB, CHARSET=utf8;
 
 INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, latitude, longitude,
-                                IF(countryId = '' OR countryId = '00', NULL, countryId), type, flags)
-     SELECT  uid, adrid, postcode, datemaj, pub, NULL, glat, glng, country,
+                                countryId, type, flags)
+     SELECT  uid, adrid, postcode, datemaj, pub, NULL, glat, glng, IF(country = '' OR country = '00', NULL, country),
              IF(FIND_IN_SET('pro', 'statut'), 'job', 'home'),
              CONCAT(IF(FIND_IN_SET('res-secondaire', 'statut'), 'secondary,', ''),
                     IF(FIND_IN_SET('courrier', 'statut'), 'mail,', ''),
@@ -287,7 +287,7 @@ INSERT INTO  geoloc_countries (iso_3166_1_a2, iso_3166_1_a3, iso_3166_1_num, wor
                      WHEN "ER" THEN 232
                      ELSE n3 END,
              worldrgn, pays, country, capital, nat,
-             phoneprf, phoneformat, t.code
+             phoneprf, '', t.code
        FROM  #x4dat#.geoloc_pays AS g
  INNER JOIN  tmp_update_geoloc_pays AS t ON (t.a2 = g.a2);
 

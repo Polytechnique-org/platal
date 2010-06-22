@@ -153,7 +153,7 @@ SET abbreviation = 'Sciences Po', name = 'Institut d\'Études Politiques de Pari
 WHERE name = 'IEP Paris';
 UPDATE profile_education_enum
 SET abbreviation = 'Sciences Po Aix', name = 'Institut d\'Études Politiques d\'Aix-en-Provence'
-WHERE name = 'IEP Aix'
+WHERE name = 'IEP Aix';
 UPDATE profile_education_enum
 SET abbreviation = 'EHESS', name = 'École des Hautes Études en Sciences Sociales'
 WHERE name = 'EHESS';
