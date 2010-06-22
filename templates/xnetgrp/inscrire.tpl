@@ -87,11 +87,11 @@ Merci d'avance d'avoir la gentillesse de valider mon inscription.
 
 Bien cordialement,
 {assign var="profile" value=$smarty.session.user->profile()}
-{$smarty.session.prenom} {$smarty.session.nom} ({$profile->promo()})
+{$profile->fullname("promo")}
 
 --
 Ma fiche sur Polytechnique.org&nbsp;:
-https://www.polytechnique.org/profile/{$smarty.session.hruid}
+https://www.polytechnique.org/profile/{$profile->hrpid}
 </textarea>
   <div class="center">
     <input type="submit" name="inscrire" value="M'inscrire !" />
