@@ -232,7 +232,7 @@ class PLTableEditor
     {
         $page->coreTpl('table-editor.tpl');
         $list = true;
-        if ($action == 'delete') {
+        if ($action == 'delete' && $id !== false) {
             S::assert_xsrf_token();
 
             if (!isset($this->delete_action)) {
@@ -251,7 +251,7 @@ class PLTableEditor
                 $page->trigError("Impossible de supprimer l'entrée.");
             }
         }
-        if ($action == 'edit') {
+        if ($action == 'edit' && $id !== false) {
             $r = XDB::query("SELECT * FROM {$this->table} WHERE {$this->idfield} = {?} AND {$this->whereclause}",$id);
             $entry = $r->fetchOneAssoc();
             $page->assign('entry', $this->prepare_edit($entry));
@@ -284,9 +284,13 @@ class PLTableEditor
             $cancel = false;
             foreach ($this->vars as $field => $descr) {
                 if ($values) $values .= ',';
-                if (($field == $this->idfield) && !$this->idfield_editable)
-                    $val = "'".addslashes($id)."'";
-                elseif ($descr['Type'] == 'set') {
+                if (($field == $this->idfield) && !$this->idfield_editable) {
+                    if ($id === false || $id === null) {
+                        $val = "'".addslashes(XDB::fetchOneCell("SELECT MAX( {$field} ) + 1 FROM {$this->table}"))."'";
+                    } else {
+                        $val = "'".addslashes($id)."'";
+                    }
+                } elseif ($descr['Type'] == 'set') {
                     $val = "";
                     if (Post::has($field)) foreach (Post::v($field) as $option) {
                         if ($val) $val .= ',';
@@ -314,7 +318,7 @@ class PLTableEditor
                 $values .= $val;
             }
             if (!$cancel) {
-                if ($this->idfield_editable && ($id != Post::v($this->idfield)) && $action != 'new')
+                if ($this->idfield_editable && $id != Post::v($this->idfield))
                     XDB::execute("UPDATE {$this->table} SET {$this->idfield} = {?} WHERE {$this->idfield} = {?} AND {$this->whereclause}", Post::v($this->idfield), $id);
                 XDB::execute("REPLACE INTO {$this->table} VALUES ($values)");
                 if ($id !== false && $id !== null) {

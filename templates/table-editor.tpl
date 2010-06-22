@@ -106,7 +106,7 @@
   <table class="bicol">
     <tr class="impair">
       <th colspan="2">
-        {if $id}
+        {if $id !== null}
             modification de l'entrée 
         {else}
             nouvelle entrée
