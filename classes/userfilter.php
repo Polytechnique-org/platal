@@ -1795,7 +1795,7 @@ class UserFilter extends PlFilter
 
     public function getUID($pos = 0)
     {
-        $uids =$this->getUIDList(null, new PlFilter(1, $pos));
+        $uids =$this->getUIDList(null, new PlLimit(1, $pos));
         if (count($uids) == 0) {
             return null;
         } else {
@@ -1811,7 +1811,7 @@ class UserFilter extends PlFilter
 
     public function getPID($pos = 0)
     {
-        $pids =$this->getPIDList(null, new PlFilter(1, $pos));
+        $pids =$this->getPIDList(null, new PlLimit(1, $pos));
         if (count($pids) == 0) {
             return null;
         } else {
