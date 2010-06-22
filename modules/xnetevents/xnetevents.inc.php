@@ -117,7 +117,7 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $count = 
     $money  = $evt['money'] && (function_exists('may_update')) && may_update();
     $pay_id = $evt['paiement_id'];
 
-    $append = $item_id ? XDB::foramt(' AND ep.item_id = {?}', $item_id) : '';
+    $append = $item_id ? XDB::format(' AND ep.item_id = {?}', $item_id) : '';
     $query = XDB::fetchAllAssoc('uid', 'SELECT  ep.uid, SUM(ep.paid) AS paid, SUM(ep.nb) AS nb,
                                                 FIND_IN_SET(\'notify_payment\', ep.flags) AS notify_payment
                                           FROM  group_event_participants AS ep
