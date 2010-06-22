@@ -477,16 +477,13 @@ class XnetGrpModule extends PLModule
             XDB::execute("INSERT INTO  group_member_sub_requests (asso_id, uid, ts, reason)
                                VALUES  ({?}, {?}, NOW(), {?})",
                          $globals->asso('id'), S::i('uid'), Post::v('message'));
-            $res = XDB::query('SELECT  IF(m.email IS NULL,
-                                          CONCAT(al.alias,"@polytechnique.org"),
-                                           m.email)
-                                 FROM  group_members AS m
-                           INNER JOIN  aliases   AS al ON (al.type = "a_vie"
-                                                                 AND al.uid = m.uid)
-                                WHERE  perms="admin" AND m.asso_id = {?}',
-                             $globals->asso('id'));
-            $emails = $res->fetchColumn();
-            $to     = implode(',', $emails);
+            $uf = New UserFilter(New UFC_Group($globals->asso('id'), true));
+            $admins = $uf->iterUsers();
+            $admin = $admins->next();
+            $to = $admin->bestalias;
+            while ($admin = $admins->next()) {
+                $to .= ', ' . $admin->bestalias;
+            }
 
             $append = "\n"
                     . "-- \n"
