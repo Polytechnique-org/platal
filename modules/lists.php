@@ -112,7 +112,7 @@ class ListsModule extends PLModule
             if ($promo >= 1900 and $promo < 2100) {
                 $this->client->subscribe("promo$promo");
             } else {
-                $page->trigSuccess("promo incorrecte, il faut une promo sur 4 chiffres.");
+                $page->trigError("promo incorrecte, il faut une promo sur 4 chiffres.");
             }
         }
 
