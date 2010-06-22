@@ -768,12 +768,13 @@ class XnetGrpModule extends PLModule
     function handler_unsubscribe(&$page)
     {
         $page->changeTpl('xnetgrp/membres-del.tpl');
-        $user = S::user()->id();
-        if (empty($user)) {
+        $user = S::user();
+        $uid  = S::user()->id();
+        if (empty($uid)) {
             return PL_NOT_FOUND;
         }
         $page->assign('self', true);
-        $page->assign('user', $user);
+        $page->assign('user', $uid);
 
         if (!Post::has('confirm')) {
             return;
