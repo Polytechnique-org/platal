@@ -920,19 +920,21 @@ class EmailModule extends PLModule
                     $sel = Xdb::query(
                         "SELECT  acc.uid, count(e.email) AS nb_mails,
                                  IFNULL(pd.public_name, acc.full_name) AS fullname,
-                                 IFNULL(pd.promo, 0) AS promo,
-                           FROM  aliases    AS a
-                     INNER JOIN  accounts   AS acc ON a.id = acc.uid
-                      LEFT JOIN  emails     AS e ON (e.uid = acc.uid
-                                                        AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
-                      LEFT JOIN  account_profiles AS ap ON (acc.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
-                      LEFT JOIN  profile_display AS pd ON (pd.pid = ap.pid)
+                                 IFNULL(pd.promo, 0) AS promo
+                           FROM  aliases          AS a
+                     INNER JOIN  accounts         AS acc ON (a.uid = acc.uid)
+                      LEFT JOIN  emails           AS e   ON (e.uid = acc.uid
+                                                             AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
+                      LEFT JOIN  account_profiles AS ap  ON (acc.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+                      LEFT JOIN  profile_display  AS pd  ON (pd.pid = ap.pid)
                           WHERE  a.alias = {?}
                        GROUP BY  acc.uid", $alias);
 
                     if ($x = $sel->fetchOneAssoc()) {
                         if ($x['nb_mails'] == 0) {
-                            register_profile_update($x['uid'], 'broken');
+                            $user = User::getSilentWithUID($x['uid']);
+                            $profile = $user->profile();
+                            WatchProfileUpdate::register($profile, 'broken');
                         }
                         fputcsv($csv, array($x['fullname'], $x['promo'], $alias,
                                             join(',', $mails), $x['nb_mails'],
