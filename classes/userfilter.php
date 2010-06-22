@@ -1420,6 +1420,12 @@ class UFO_Score extends UserFilterOrder
     {
         $toks = $uf->getNameTokens();
         $scores = array();
+
+        // If there weren't any sort tokens, we shouldn't sort by score, sort by NULL instead
+        if (count($toks) == 0) {
+            return 'NULL';
+        }
+
         foreach ($toks as $sub => $token) {
             $scores[] = XDB::format('SUM(' . $sub . '.score + IF (' . $sub . '.token = {?}, 5, 0) )', $token);
         }
