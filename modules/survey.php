@@ -110,6 +110,7 @@ class SurveyModule extends PLModule
         }
         if ($show == 'csv') {
             pl_content_headers("text/csv");
+            header('Content-Disposition: attachment; filename="'.addslashes($survey->getTitle()).'.csv"');
             echo $survey->toCSV();
             exit;
         } else {
