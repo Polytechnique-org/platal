@@ -90,10 +90,12 @@ class PaymentModule extends PLModule
         return array(
             'payment'                    => $this->make_hook('payment',       AUTH_MDP),
             'payment/cyber_return'       => $this->make_hook('cyber_return',  AUTH_PUBLIC, 'user', NO_HTTPS),
+            'payment/cyber2_return'      => $this->make_hook('cyber2_return', AUTH_PUBLIC, 'user', NO_HTTPS),
             'payment/paypal_return'      => $this->make_hook('paypal_return', AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/paiement'              => $this->make_hook('xnet_payment',  AUTH_MDP),
             '%grp/payment'               => $this->make_hook('xnet_payment',  AUTH_MDP),
             '%grp/payment/cyber_return'  => $this->make_hook('cyber_return',  AUTH_PUBLIC, 'user', NO_HTTPS),
+            '%grp/payment/cyber2_return' => $this->make_hook('cyber2_return', AUTH_PUBLIC, 'user', NO_HTTPS),
             '%grp/payment/paypal_return' => $this->make_hook('paypal_return', AUTH_PUBLIC, 'user', NO_HTTPS),
             'admin/payments'             => $this->make_hook('admin',         AUTH_MDP,    'admin'),
 
@@ -131,7 +133,7 @@ class PaymentModule extends PLModule
             $page->trigError("La transaction selectionnée est périmée.");
             $pay = new Payment();
         }
-        $val = Env::v('montant') != 0 ? Env::v('montant') : $pay->montant_def;
+        $val = Env::v('montant') != 0 ? Env::v('montant') : $pay->amount_def;
 
         if (($e = $pay->check($val)) !== true) {
             $page->trigError($e);
@@ -216,6 +218,98 @@ class PaymentModule extends PLModule
         XDB::execute("INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
                            VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
                      $champ901, $user->id(), $ref, $champ200, $montant, $champ905, Env::v('comment'));
+
+        // We check if it is an Xnet payment and then update the related ML.
+        $res = XDB::query('SELECT  eid
+                             FROM  group_events
+                            WHERE  paiement_id = {?}', $ref);
+        if ($eid = $res->fetchOneCell()) {
+            require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
+            $evt = get_event_detail($eid);
+            subscribe_lists_event(0, $uid, $evt, $montant, true);
+        }
+
+        /* on genere le mail de confirmation */
+        $conf_text = str_replace(
+            array('<prenom>', '<nom>', '<promo>', '<montant>', '<salutation>', '<cher>', 'comment>'),
+            array($user->firstName(), $user->lastName(), $user->promo(), $montant,
+                  $user->isFemale() ? 'Chère' : 'Cher', $user->isFemale() ? 'Chère' : 'Cher',
+                  Env::v('comment')), $conf_text);
+
+        global $globals;
+        $mymail = new PlMailer();
+        $mymail->setFrom($conf_mail);
+        $mymail->addCc($conf_mail);
+        $mymail->setSubject($conf_title);
+        $mymail->setWikiBody($conf_text);
+        $mymail->sendTo($user);
+
+        /* on envoie les details de la transaction à telepaiement@ */
+        $mymail = new PlMailer();
+        $mymail->setFrom("webmaster@" . $globals->mail->domain);
+        $mymail->addTo($globals->money->email);
+        $mymail->setSubject($conf_title);
+        $msg = 'utilisateur : ' . $user->login() . ' (' . $user->id() . ')' . "\n" .
+               'mail : ' . $user->forlifeEmail() . "\n\n" .
+               "paiement : $conf_title ($conf_mail)\n".
+               "reference : $champ200\n".
+               "montant : $montant\n\n".
+               "dump de REQUEST:\n".
+               var_export($_REQUEST,true);
+        $mymail->setTxtBody($msg);
+        $mymail->send();
+        exit;
+    }
+
+    function handler_cyber2_return(&$page, $uid = null)
+    {
+        global $globals, $platal;
+        
+        /* on vérifie la signature */
+        $vads_params = array();
+        foreach($_REQUEST as $key => $value)
+        	if(substr($key,0,5) == "vads_")
+        		$vads_params[$key] = $value;
+        ksort($vads_params);
+        $signature = sha1(join('+',$vads_params).'+'.$globals->money->cyperplus_key);
+        //if($signature != Env::v('signature')) {
+        //    cb_erreur("signature invalide");
+        //}
+        
+        /* on extrait les informations sur l'utilisateur */
+        $user = User::get(Env::v('vads_cust_id'));
+        if (!$user) {
+            cb_erreur("uid invalide");
+        }
+
+        /* on extrait la reference de la commande */
+        if (!ereg('-([0-9]+)$', Env::v('vads_order_id'), $matches)) {
+            cb_erreur("référence de commande invalide");
+        }
+
+        echo ($ref = $matches[1]);
+        $res = XDB::query("SELECT  mail, text, confirmation
+                             FROM  payments
+                            WHERE  id={?}", $ref);
+        if (!list($conf_mail, $conf_title, $conf_text) = $res->fetchOneRow()) {
+            cb_erreur("référence de commande inconnue");
+        }
+        
+        /* on extrait le montant */
+        if (Env::v('vads_currency') != "978") {
+            cb_erreur("monnaie autre que l'euro");
+        }
+        $montant = sprintf("%.02f", ((float)Env::v('vads_amount'))/100) . " EUR";
+
+        /* on extrait le code de retour */
+        if (Env::v('vads_result') != "00") {
+            cb_erreur("erreur lors du paiement : ?? (".Env::v('vads_result').")");
+        }
+		
+        /* on fait l'insertion en base de donnees */
+        XDB::execute("INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
+                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
+                     Env::v('vads_trans_date'), $user->id(), $ref, Env::v('vads_order_id'), $montant, "", Env::v('vads_order_info'));
 
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid
@@ -380,7 +474,7 @@ class PaymentModule extends PLModule
 
         $res = XDB::query(
                 "SELECT  id, text, url
-                   FROM  {$globals->money->mpay_tprefix}paiements
+                   FROM  payments
                   WHERE  asso_id = {?} AND NOT FIND_IN_SET('old', flags)
                ORDER BY  id DESC", $globals->asso('id'));
         $tit = $res->fetchAllAssoc();
@@ -394,7 +488,7 @@ class PaymentModule extends PLModule
             $pid = $foo['id'];
             if (may_update()) {
                 $res = XDB::query('SELECT  t.uid, timestamp AS `date`, t.comment, montant
-                                     FROM  ' . $globals->money->mpay_tprefix . 'transactions AS t
+                                     FROM  payment_transactions AS t
                                     WHERE  t.ref = {?}', $pid);
                 $trans[$pid] = User::getBulkUsersWithUIDs($res->fetchAllAssoc(), 'uid', 'user');
                 $sum = 0;
@@ -425,7 +519,7 @@ class PaymentModule extends PLModule
                 }
             }
             $res = XDB::query("SELECT montant
-                                 FROM {$globals->money->mpay_tprefix}transactions AS t
+                                 FROM payment_transactions AS t
                                 WHERE ref = {?} AND uid = {?}", $pid, S::v('uid'));
             $montants = $res->fetchColumn();
 

@@ -28,9 +28,9 @@ class Payment
     var $url;
     var $flags;
     var $mail;
-    var $montant_min;
-    var $montant_max;
-    var $montant_def;
+    var $amount_min;
+    var $amount_max;
+    var $amount_def;
     var $asso_id;
 
     var $api = null;
@@ -42,13 +42,13 @@ class Payment
     {
         global $globals;
         $r   = $ref==-1 ? $globals->money->mpay_def_id : $ref;
-        $res = XDB::query("SELECT  id, text, url, flags, mail, montant_min, montant_max, montant_def, asso_id
-                             FROM  {$globals->money->mpay_tprefix}paiements WHERE id={?}", $r);
+        $res = XDB::query("SELECT  id, text, url, flags, mail, amount_min, amount_max, amount_def, asso_id
+                             FROM  payments WHERE id={?}", $r);
         list($this->id, $this->text, $this->url, $flags, $this->mail,
-             $this->montant_min, $this->montant_max, $this->montant_def, $this->asso_id) = $res->fetchOneRow();
+             $this->amount_min, $this->amount_max, $this->amount_def, $this->asso_id) = $res->fetchOneRow();
 
-        $this->montant_min = (float)$this->montant_min;
-        $this->montant_max = (float)$this->montant_max;
+        $this->amount_min = (float)$this->amount_min;
+        $this->amount_max = (float)$this->amount_max;
         $this->flags       = new PlFlagSet($flags);
     }
 
@@ -58,10 +58,10 @@ class Payment
     function check($value)
     {
         $v = (float)strtr($value, ',', '.');
-        if ($this->montant_min > $v) {
-            return "Montant inférieur au minimum autorisé ({$this->montant_min}).";
-        } elseif ($v > $this->montant_max) {
-            return "Montant supérieur au maximum autorisé ({$this->montant_max}).";
+        if ($this->amount_min > $v) {
+            return "Montant inférieur au minimum autorisé ({$this->amount_min}).";
+        } elseif ($v > $this->amount_max) {
+            return "Montant supérieur au maximum autorisé ({$this->amount_max}).";
         } else {
             return true;
         }
@@ -118,7 +118,7 @@ class PayMethod
     {
         global $globals;
         $i   = $id==-1 ? $globals->money->mpay_def_meth : $id;
-        $res = XDB::query("SELECT id,text,include FROM {$globals->money->mpay_tprefix}methodes WHERE id={?}", $i);
+        $res = XDB::query("SELECT id,text,include FROM payment_methods WHERE id={?}", $i);
         list($this->id, $this->text, $this->inc) = $res->fetchOneRow();
     }
 
