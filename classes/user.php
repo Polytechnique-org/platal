@@ -405,6 +405,20 @@ class User extends PlUser
     }
 
 
+    /** Format of the emails sent by the site
+     */
+    public function setEmailFormat($format)
+    {
+        Platal::assert($format == self::FORMAT_HTML || $format == self::FORMAT_TEXT,
+                       "Invalid email format \"$format\"");
+        XDB::execute("UPDATE  accounts
+                         SET  email_format = {?}
+                       WHERE  uid = {?}",
+                     $format, $this->uid);
+        $this->email_format = $format;
+    }
+
+
     /** Get watch informations
      */
     private function fetchWatchData()

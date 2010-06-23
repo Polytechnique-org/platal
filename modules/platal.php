@@ -132,10 +132,7 @@ class PlatalModule extends PLModule
 
         if (Post::has('email_format')) {
             $fmt = Post::s('email_format');
-            XDB::execute("UPDATE accounts
-                             SET email_format = {?}
-                           WHERE uid = {?}",
-                         $fmt, S::v('uid'));
+            S::user()->setEmailFormat($fmt);
             S::set('email_format', $fmt);
         }
 
