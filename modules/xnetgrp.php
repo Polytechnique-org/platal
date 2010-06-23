@@ -1029,6 +1029,7 @@ class XnetGrpModule extends PLModule
             $art['prenom']     = S::v('prenom');
             $art['promo']      = S::v('promo');
             $art['hruid']      = S::user()->login();
+            $art['uid']        = S::user()->id();
             $art['expiration'] = Post::v('expiration');
             $art['public']     = Post::has('public');
             $art['xorg']       = Post::has('xorg');
