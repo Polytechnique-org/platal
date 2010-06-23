@@ -51,7 +51,7 @@
       <td class="center">
         {if $it->lastMarketingRelance() && $it->lastMarketingRelance() != '0000-00-00'}
         Relance le&nbsp;: {$it->lastMarketingRelance()}
-        {elseif $it.email}
+        {elseif $it->lastKnownEmail()}
         En cours&nbsp;: {$it->lastKnownEmail()}
         {else}
         -

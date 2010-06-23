@@ -379,6 +379,7 @@ class User extends PlUser
         if (isset($this->last_known_email)) {
             return;
         }
+        // FIXME: We should fetch the last known email as well as the pending registration email (they aren't the same !)
         $infos = XDB::fetchOneAssoc('SELECT  IF (MAX(m.last) > p.relance, MAX(m.last), p.relance) AS last_relance,
                                              p.email AS last_known_email
                                        FROM  register_pending AS p
