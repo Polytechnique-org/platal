@@ -187,40 +187,25 @@ class ContactsPDF extends FPDF
             $l .= 'principale';
         }
 
-        $r = $a->text;
-        $this->TableRow($l, $r);
-/*
-        if (!empty($a['tels'])) {
-            foreach ($a['tels'] as $tel) {
-                if (!empty($tel['tel'])) {
-                    $this->TableRow(utf8_decode($tel['tel_type']), $tel['tel'], 'Mono');
-                }
-            }
-        }*/
+        $this->TableRow($l, utf8_decode($a->text));
+
+        foreach ($a->phones() as $phone) {
+            $this->TableRow(utf8_decode($phone->type),
+                            utf8_decode($phone->display), 'Mono');
+        }
     }
 
     private function AddressPro($a)
     {
-        return;
-
-        if ($a['entreprise']) {
-            $this->TableRow('Entreprise', $a['entreprise']);
+        if ($a->company) {
+            $this->TableRow('Entreprise', utf8_decode($a->company->name));
         }
-
-        if ($a['adr1'] || $a['adr2'] || $a['adr3'] || $a['postcode'] || $a['city']) {
-            $r = '';
-            $r = trim("$r\n".$a['adr1']);
-            $r = trim("$r\n".$a['adr2']);
-            $r = trim("$r\n".$a['adr3']);
-            $r = trim("$r\n".trim($a['postcode'].' '.$a['city']));
-            $this->TableRow('adresse pro', $r);
+        if ($a->address()) {
+            $this->TableRow('adresse pro', utf8_decode($a->address()->text));
         }
-
-        if ($a['tel']) {
-            $this->TableRow(utf8_decode('Téléphone'), $a['tel'], 'Mono');
-        }
-        if ($a['fax']) {
-            $this->TableRow('Fax', $a['fax'], 'Mono');
+        foreach ($a->phones() as $phone) {
+            $this->TableRow(utf8_decode($phone->type),
+                            utf8_decode($phone->display), 'Mono');
         }
     }
 
@@ -311,17 +296,11 @@ class ContactsPDF extends FPDF
 
         $it = $profile->iterAddresses(Profile::ADDRESS_ALL);
         while ($a = $it->next()) {
-            foreach ($a as &$value) {
-                $value = utf8_decode($value);
-            }
             $self->Space();
             $self->Address($a);
         }
-        $it = $profile->iterAddresses(Profile::ADDRESS_PRO);
-        while ($a = $it->next()) {
-            foreach ($a as &$value) {
-                $value = utf8_decode($value);
-            }
+        $it = $profile->getJobs(Profile::JOBS_CURRENT);
+        foreach ($it as $a) {
             $self->Space();
             $self->AddressPro($a);
         }
