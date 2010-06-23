@@ -230,7 +230,12 @@ function chgMainWinLoc(strPage)
       {if $i neq 0}<hr />{/if}
       {include file="include/emploi.tpl" job=$job}
       {if $job->address()}
-        {include file="geoloc/address.tpl" address=$job->address titre="Adresse&nbsp;: " for=$job->company->name pos="left"}
+        {include file="geoloc/address.tpl" address=$job->address() titre="Adresse&nbsp;: " for=$job->company->name pos="left"}
+      {elseif $job->company->address}
+        {include file="geoloc/address.tpl" address=$job->company->address titre="Addresse&nbsp;: " for=$job->company->name pos="left"}
+      {/if}
+      {if $job->phones()}
+        {display_phones tels=$job->phones()}
       {/if}
       <div class="spacer">&nbsp;</div>
     {/foreach}

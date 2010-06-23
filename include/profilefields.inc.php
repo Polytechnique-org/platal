@@ -135,12 +135,14 @@ class Phone
     public $display;
     public $comment = '';
 
-    const LINK_JOB     = 'job';
+    const LINK_JOB     = 'pro';
     const LINK_ADDRESS = 'address';
     const LINK_PROFILE = 'user';
     const LINK_COMPANY = 'hq';
     public $link_type;
     public $link_id;
+
+    public $id;
 
     /** Fields are :
      * $type, $search, $display, $link_type, $link_id, $comment, $pid, $id
@@ -320,7 +322,7 @@ class Address
     public function addPhone(Phone &$phone)
     {
         if ($phone->link_type == Phone::LINK_ADDRESS && $phone->link_id == $this->id && $phone->pid == $this->pid) {
-            $this->phones[] = $phone;
+            $this->phones[$phone->id] = $phone;
         }
     }
 
@@ -627,7 +629,7 @@ class ProfileAddresses extends ProfileField
         }
 
         while ($addr = $it->next()) {
-            $this->addresses[] = new Address($addr);
+            $this->addresses[$addr['id']] = new Address($addr);
         }
     }
 
@@ -637,15 +639,13 @@ class ProfileAddresses extends ProfileField
         $nb = 0;
         foreach ($this->addresses as $addr) {
             if (
-                ($flags & Profile::ADDRESS_ALL)
-                ||
                 (($flags & Profile::ADDRESS_MAIN) && $addr->hasFlag('current'))
                 ||
                 (($flags & Profile::ADDRESS_POSTAL) && $addr->hasFlag('mail'))
                 ||
-                (($flags & Profile::ADDRESS_PERSO) && $addr->link_type == 'home')
+                (($flags & Profile::ADDRESS_PERSO) && $addr->link_type == Address::LINK_PROFILE)
                 ||
-                (($flags & Profile::ADDRESS_PRO) && $addr->link_type == 'job')
+                (($flags & Profile::ADDRESS_PRO) && $addr->link_type == Address::LINK_JOB)
             ) {
                 $res[] = $addr;
                 $nb++;
@@ -678,7 +678,7 @@ class ProfileAddresses extends ProfileField
 
     public function addPhones(ProfilePhones $phones)
     {
-        $p = $phones->get(0);
+        $p = $phones->get(Profile::PHONE_LINK_ADDRESS | Profile::PHONE_TYPE_ANY);
         foreach ($p as $phone) {
             if ($phone->link_type == Phone::LINK_ADDRESS && array_key_exists($phone->link_id, $this->addresses)) {
                 $this->addresses[$phone->link_id]->addPhone($phone);
@@ -718,7 +718,7 @@ class ProfilePhones extends ProfileField
 
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
-        $data = XDB::iterator('SELECT  tel_type AS type, search_tel AS search, display_tel AS display, link_type, comment, pid
+        $data = XDB::iterator('SELECT  tel_type AS type, search_tel AS search, display_tel AS display, link_type, comment, pid, link_id, tel_id AS id
                                  FROM  profile_phones
                                 WHERE  pid IN {?} AND pub IN {?}
                              ORDER BY  ' . XDB::formatCustomOrder('pid', $pids),
@@ -774,10 +774,10 @@ class ProfileJobs extends ProfileField
 
     public function addPhones(ProfilePhones $phones)
     {
-        $p = $phones->get(0);
+        $p = $phones->get(Profile::PHONE_LINK_JOB | Profile::PHONE_TYPE_ANY);
         foreach ($p as $phone) {
             if ($phone->link_type == Phone::LINK_JOB && array_key_exists($phone->link_id, $this->jobs)) {
-                $this->jobs[$phone->link_id]->addPhones($phone);
+                $this->jobs[$phone->link_id]->addPhone($phone);
             }
         }
     }
@@ -828,14 +828,28 @@ class CompanyList
                           LEFT JOIN  profile_addresses AS pa ON (pje.id = pa.jobid AND pa.type = \'hq\')
                                   ' . $join . '
                                   ' . $where);
+        $newcompanies = array();
         while ($row = $it->next()) {
             $cp = new Company($row);
             $addr = new Address($row);
             $cp->setAddress($addr);
+            if (!array_key_exists($row['id'], self::$companies)) {
+                $newcompanies[] = $row['id'];
+            }
             self::$companies[$row['id']] = $cp;
         }
 
-        // TODO: add phones to addresses
+        // TODO: determine whether there can be phones attached to a hq's address
+        // Add phones to hq
+        $it = XDB::iterator('SELECT  search_tel AS search, display_tel AS display, comment, link_id, tel_type AS type, link_type, tel_id AS id
+                               FROM  profile_phones
+                              WHERE  link_id IN {?} AND link_type = \'hq\'',
+                                $newcompanies);
+        while ($row = $it->next()) {
+            $p = new Phone($row);
+            self::$companies[$row['link_id']]->setPhone($p);
+        }
+
         if (count($pids) == 0) {
             self::$fullload = true;
         }
