@@ -23,9 +23,9 @@
 <table class="bicol">
   <tr class="pair">
     <td></td>
-  {foreach from=$squestion.choices item=schoice}
-    <td>{$schoice}</td>
-  {/foreach}
+    {foreach from=$squestion.choices item=schoice}
+      <td>{$schoice}</td>
+    {/foreach}
   </tr>
 {foreach from=$squestion.subquestions item=ssubq key=ssqid}
   <tr class="{cycle values="impair,pair"}">
@@ -45,6 +45,7 @@
     </td>
     {/foreach}
   {/if}
+  </tr>
 {/foreach}
 </table>
 

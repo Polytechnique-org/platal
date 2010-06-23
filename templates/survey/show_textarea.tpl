@@ -21,12 +21,25 @@
 {**************************************************************************}
 
 {if $survey_resultmode}
-  Quelques réponses données par les personnes sondées&nbsp;:
-  <ul>
-  {foreach item=sresult from=$squestion.result}
-    <li>{$sresult.answer}</li>
-  {/foreach}
-  </ul>
+  {if count($squestion.result) == 0}
+  Aucune réponse n'a été donnée.
+  {else}
+    {if count($squestion.result) ==1}
+    Une réponse donnée par une d{else}Quelques réponses données par li{/if}es personnes sondées&nbsp;:
+    <ul>
+    {assign var=nbhidden value=0}
+    {foreach item=sresult from=$squestion.result}
+      {if trim($result.answer)}
+      <li>{$sresult.answer}</li>
+      {else}
+      {assign var=nbhidden value=$nbhidden+1}
+      {/if}
+    {/foreach}
+    {if $nbhidden > 0}
+      <li><em>{$nbhidden} réponse{if $nbhidden > 1}s{/if} vide{if $nbhidden > 1}s{/if}</em></li>
+    {/if}
+    </ul>
+  {/if}
 {else}
   <textarea name="survey{$survey.id}[{$squestion.id}]" rows="5" cols="60" {if !$survey_votemode}disabled="disabled"{/if}></textarea>
 {/if}

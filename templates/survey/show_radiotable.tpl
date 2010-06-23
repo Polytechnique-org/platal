@@ -30,21 +30,21 @@
 {foreach from=$squestion.subquestions item=ssubq key=ssqid}
   <tr class="{cycle values="impair,pair"}">
     <td>{$ssubq}</td>
-  {assign var=sid value=$survey.id}
-  {assign var=sqid value=$squestion.id}
-  {if $survey_resultmode}
-    {foreach from=$squestion.choices item=schoice key=value}
-    <td>
-      {$squestion.result.$ssqid.$value*100/$survey.votes|string_format:"%.1f"}% ({$squestion.result.$ssqid.$value} votes)
-    </td>
-    {/foreach}
-  {else}
-    {foreach from=$squestion.choices item=schoice key=value}
-    <td>
-      <label><input type="radio" name="survey{$sid}[{$sqid}][{$ssqid}]" value="{$value}" {if !$survey_votemode}disabled="disabled" {/if}/></label>
-    </td>
-    {/foreach}
-  {/if}
+    {assign var=sid value=$survey.id}
+    {assign var=sqid value=$squestion.id}
+    {if $survey_resultmode}
+      {foreach from=$squestion.choices item=schoice key=value}
+        <td>
+          {$squestion.result.$ssqid.$value*100/$survey.votes|string_format:"%.1f"}% ({$squestion.result.$ssqid.$value} votes)
+        </td>
+      {/foreach}
+    {else}
+      {foreach from=$squestion.choices item=schoice key=value}
+        <td>
+          <label><input type="radio" name="survey{$sid}[{$sqid}][{$ssqid}]" value="{$value}" {if !$survey_votemode}disabled="disabled" {/if}/></label>
+        </td>
+      {/foreach}
+    {/if}
   </tr>
 {/foreach}
 </table>
