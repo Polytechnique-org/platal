@@ -301,11 +301,13 @@ class MarketingModule extends PLModule
 
 
         if (!is_null($promo)) {
-            $it = XDB::iterator('SELECT  m.uid, m.email
+            $it = XDB::iterator('SELECT  m.uid, m.email, s.alias AS forlife
                                    FROM  register_marketing AS m
                              INNER JOIN  account_profiles AS ap ON (m.uid = ap.uid AND FIND_IN_SET(\'owner\', ap.perms))
                              INNER JOIN  profile_display AS pd ON (pd.pid = ap.pid)
-                                  WHERE  pd.promo = {?}', $promo);
+                              LEFT JOIN  aliases AS s ON (m.sender = s.uid AND s.type = \'a_vie\')
+                                  WHERE  pd.promo = {?}
+                               ORDER BY  pd.sort_name', $promo);
             $page->assign('addr', $it);
         }
     }
