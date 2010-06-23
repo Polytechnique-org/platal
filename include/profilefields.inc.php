@@ -841,13 +841,15 @@ class CompanyList
 
         // TODO: determine whether there can be phones attached to a hq's address
         // Add phones to hq
-        $it = XDB::iterator('SELECT  search_tel AS search, display_tel AS display, comment, link_id, tel_type AS type, link_type, tel_id AS id
-                               FROM  profile_phones
-                              WHERE  link_id IN {?} AND link_type = \'hq\'',
-                                $newcompanies);
-        while ($row = $it->next()) {
-            $p = new Phone($row);
-            self::$companies[$row['link_id']]->setPhone($p);
+        if (count($newcompanies)) {
+            $it = XDB::iterator('SELECT  search_tel AS search, display_tel AS display, comment, link_id, tel_type AS type, link_type, tel_id AS id
+                                   FROM  profile_phones
+                                  WHERE  link_id IN {?} AND link_type = \'hq\'',
+                                    $newcompanies);
+            while ($row = $it->next()) {
+                $p = new Phone($row);
+                self::$companies[$row['link_id']]->setPhone($p);
+            }
         }
 
         if (count($pids) == 0) {
