@@ -205,7 +205,7 @@ class MarketingModule extends PLModule
         $page->changeTpl('marketing/promo.tpl');
 
         if (is_null($promo)) {
-            $promo = S::v('promo');
+            $promo = S::v('promo', S::user()->promo());
         }
         $page->assign('promo', $promo);
 
