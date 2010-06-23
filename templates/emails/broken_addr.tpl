@@ -22,6 +22,11 @@
 
 <h1>Pattes cassées</h1>
 
+<p>
+  La liste de pattes cassées (adresses de redirections en panne)
+  doit comprendre un email par ligne.
+</p>
+
 <form method="post" action="{$platal->ns}admin/emails/broken" enctype="multipart/form-data">
   {xsrf_token_field}
   <div>
