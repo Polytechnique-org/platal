@@ -85,7 +85,7 @@ function smarty_function_display_address($param, &$smarty)
     }
     foreach ($lines as $line)
     {
-        $txthtml .= "<strong>".$line."</strong><br/>\n";
+        $txthtml .= "<strong>" . pl_entities($line) . "</strong><br/>\n";
     }
     if($adr->phones() != null) {
         require_once('function.display_phones.php');
