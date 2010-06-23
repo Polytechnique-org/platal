@@ -46,9 +46,6 @@ class BPLCCyberPlus
         global $globals, $platal;
         $log = S::v('log');
 
-        $url_return = str_replace("https://","http://", $globals->baseurl)
-            . '/' . $platal->ns . "payment/cyber2_return/";
-
         // on constuit la reference de la transaction
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
         $fullref = substr("$prefix-{$pay->id}",-12); // FIXME : check for duplicates
@@ -61,7 +58,7 @@ class BPLCCyberPlus
         $this->infos['commercant'] = Array(
             'vads_site_id' => $globals->money->cyperplus_account,
             'vads_return_mode' => 'NONE',
-            'vads_url_return' => $url_return);
+            'vads_url_return' => $pay->url ? $pay->url : $globals->baseurl . '/' . $platal->ns);
         $this->infos['client'] = Array(
             'vads_cust_email' => S::user()->bestEmail(),
             'vads_cust_id' => S::v('uid'),
