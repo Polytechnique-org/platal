@@ -74,7 +74,6 @@ class MedalReq extends Validate
 
     public function medal_name()
     {
-        //var_dump($this);
         $r = XDB::query("
             SELECT m.text
               FROM profile_medal_enum AS m

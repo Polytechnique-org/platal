@@ -714,7 +714,6 @@ class AdminModule extends PLModule
                 $eduSchools = array_flip($eduSchools);
                 $eduDegrees = DirEnum::getOptions(DirEnum::EDUDEGREES);
                 $eduDegrees = array_flip($eduDegrees);
-                var_dump($eduDegrees);
                 switch (Env::t('edu_type')) {
                   case 'X':
                     $degreeid = $eduDegrees[Profile::DEGREE_X];
