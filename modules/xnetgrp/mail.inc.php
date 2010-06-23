@@ -56,17 +56,17 @@ function get_all_redirects($membres, $mls, &$client)
 function _send_xnet_mail($user, $body, $wiki, $mailer, $replyto = null)
 {
     if ($user instanceof PlUser) {
-        $cher = $user->isFemale() ? 'Chère' : 'Cher';
-        $nom  = $user->displayName();
-        $pnom = '';
+        $dear      = $user->isFemale() ? 'Chère' : 'Cher';
+        $lastname  = $user->lastName();
+        $firstname = $user->firstName();
     } else {
-        $cher = 'Cher(e)';
-        $nom  = $user;
-        $pnom = '';
+        $dear      = 'Cher(e)';
+        $lastname  = '';
+        $firstname = $user;
     }
 
     $text = str_ireplace(array('<cher>', '<nom>', '<prenom>'),
-                         array($cher, $nom, $pnom), $body);
+                         array($dear, $lastname, $firstname), $body);
     $mailer->addTo($user);
     if ($replyto) {
         $mailer->addHeader('Reply-To', $replyto);
