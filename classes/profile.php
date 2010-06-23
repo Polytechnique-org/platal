@@ -516,14 +516,20 @@ class Profile
         $this->consolidateFields();
     }
 
-    public function getAddresses($flags, $limit = null)
+    private function fetchAddresses()
     {
         if ($this->addresses == null  && !$this->fetched(self::FETCH_ADDRESSES)) {
             $addr = $this->getProfileField(self::FETCH_ADDRESSES);
             if ($addr) {
                 $this->setAddresses($addr);
+                $this->fetchPhones();
             }
         }
+    }
+
+    public function getAddresses($flags, $limit = null)
+    {
+        $this->fetchAddresses();
 
         if ($this->addresses == null) {
             return array();
@@ -555,12 +561,16 @@ class Profile
         $this->consolidateFields();
     }
 
-    public function getPhones($flags, $limit = null)
+    private function fetchPhones()
     {
         if ($this->phones == null && !$this->fetched(self::FETCH_PHONES)) {
             $this->setPhones($this->getProfileField(self::FETCH_PHONES));
         }
+    }
 
+    public function getPhones($flags, $limit = null)
+    {
+        $this->fetchPhones();
         if ($this->phones == null) {
             return array();
         }
@@ -650,14 +660,20 @@ class Profile
         $this->consolidateFields();
     }
 
-    public function getJobs($flags, $limit = null)
+    private function fetchJobs()
     {
         if ($this->jobs == null && !$this->fetched(self::FETCH_JOBS)) {
             $jobs = $this->getProfileField(self::FETCH_JOBS);
             if ($jobs) {
                 $this->setJobs($jobs);
+                $this->fetchAddresses();
             }
         }
+    }
+
+    public function getJobs($flags, $limit = null)
+    {
+        $this->fetchJobs();
 
         if ($this->jobs == null) {
             return array();
