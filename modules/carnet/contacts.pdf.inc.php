@@ -187,12 +187,7 @@ class ContactsPDF extends FPDF
             $l .= 'principale';
         }
 
-        $r = utf8_decode($a->text);
-/*        $r = trim("$r\n".$a['adr1']);
-        $r = trim("$r\n".$a['adr2']);
-        $r = trim("$r\n".$a['adr3']);
-        $r = trim("$r\n".trim($a['postcode'].' '.$a['city']));
-*/
+        $r = $a->text;
         $this->TableRow($l, $r);
 /*
         if (!empty($a['tels'])) {
