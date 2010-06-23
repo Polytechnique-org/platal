@@ -185,7 +185,8 @@ Ton inscription à [METS LE NOM DE L'ÉVÉNEMENT ICI] a bien été enregistrée 
 À très bientôt,
 
 -- 
-{$smarty.session.prenom} {$smarty.session.nom}{/if}</textarea><br />
+{assign var="profile" value=$smarty.session.user->profile()}
+{$profile->fullName("promo")}{/if}</textarea><br />
         {assign var='asso_url' value=$globals->baseurl|cat:'/'|cat:$platal->ns}
         Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$paiement_site|default:$asso.site|default:$asso_url}" /><br />
         Le nouveau paiement sera activé automatiquement après validation par le trésorier de Polytechnique.org,
