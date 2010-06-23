@@ -114,7 +114,7 @@ class Outlook {
     }
 
     public static function output_profiles(&$profiles, $lang) {
-        header("Content-Type: text/plain;charset=iso8859-15");
+        pl_content_headers("text/plain", "iso8859-15");
         $fields =& Outlook::$contact_fields[$lang];
         foreach ($fields as $i => $k) {
             if ($i != 0) {

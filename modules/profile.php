@@ -119,7 +119,7 @@ class ProfileModule extends PLModule
 
     function handler_name_info(&$page)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('profile/name_info.tpl', SIMPLE);
         $res = XDB::iterator("SELECT  name, explanations,
                                       FIND_IN_SET('public', flags) AS public,
@@ -137,8 +137,7 @@ class ProfileModule extends PLModule
                             WHERE  nwid = {?}",
                           $mid);
         $img  = dirname(__FILE__) . '/../htdocs/images/networking/' . $res->fetchOneCell();
-        $type = mime_content_type($img);
-        header("Content-Type: $type");
+        pl_cached_content_headers(mime_content_type($img));
         echo file_get_contents($img);
         exit;
     }
@@ -372,7 +371,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_edu(&$page, $eduid, $class)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('profile/general.edu.tpl', NO_SKIN);
         $res = XDB::iterator("SELECT  id, field
                                 FROM  profile_education_field_enum
@@ -424,7 +423,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_sub_sector(&$page, $id, $ssect, $sssect = -1)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $res = XDB::iterator("SELECT  id, name
                                 FROM  profile_job_subsubsector_enum
                                WHERE  subsectorid = {?}", $ssect);
@@ -436,7 +435,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_alternates(&$page, $id, $sssect)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $res = XDB::iterator('SELECT  name
                                 FROM  profile_job_alternates
                                WHERE  subsubsectorid = {?}
@@ -476,7 +475,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_searchname(&$page, $id, $isFemale)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('profile/general.searchname.tpl', NO_SKIN);
         $res = XDB::query("SELECT  id, name, FIND_IN_SET('public', flags) AS pub
                              FROM  profile_name_enum
@@ -489,7 +488,7 @@ class ProfileModule extends PLModule
 
     function handler_ajax_buildnames(&$page, $data, $isFemale)
     {
-        header('Content-Type: text/html; charset=utf-8');
+        pl_content_headers("text/html");
         $page->changeTpl('profile/general.buildnames.tpl', NO_SKIN);
         require_once 'name.func.inc.php';
         $page->assign('names', build_javascript_names($data, $isFemale));
