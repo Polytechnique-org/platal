@@ -44,7 +44,7 @@ function chgMainWinLoc(strPage)
     {assign var=photo value=$profile->getPhoto(false)}
     {if $photo}<img alt="Photo de {$profile->fullName()}" src="photo/{$profile->hrid()}" width="{$photo->width()}"/>{/if}
 
-    {if $logged && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups()|smarty:nodefaults))}
+    {if $logged && $view eq 'private' && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups()|smarty:nodefaults))}
       <h2>À l'X&hellip;</h2>
       {if $profile->section}<div><em class="intitule">Section&nbsp;: </em><span>{$profile->section}</span></div>{/if}
 
@@ -52,7 +52,7 @@ function chgMainWinLoc(strPage)
       {if $binets|@count}<div><em class="intitule">Binet{if count($binets) > 1}s{/if}&nbsp;: </em>
       <span>{', '|implode:$profile->getBinetsNames()}</span></div>{/if}
 
-      {if $owner}
+      {if $owner && $view eq 'private'}
         {assign var=groups value=$owner->groupNames(true)}
         {if $groups|@count}<div><em class="intitule">Groupe{if count($groups) > 1}s{/if} et institution{if count($groups) > 1}s{/if} X&nbsp;: </em>
         <span><br/>
@@ -115,7 +115,7 @@ function chgMainWinLoc(strPage)
       {/if}
     </div>
 
-    {if $logged}
+    {if $logged && $view eq 'private'}
     <div class='maj'>
       Fiche mise à jour<br />
       le {$profile->last_change|date_format}
@@ -124,9 +124,9 @@ function chgMainWinLoc(strPage)
 
     {* 121634816 is Profile::PHONE_LINK_PROFILE | Profile::PHONE_TYPE_ANY = 0x7400000 *}
     {assign var=phones value=$profile->getPhones(121634816)}
-    {if $logged || count($phones) > 0}
+    {if ($logged && $view eq 'private') || count($phones) > 0}
     <div class="contact">
-      {if $logged}
+      {if $logged && $view eq 'private'}
       <div class='email'>
         {if $profile->isDead()}
         Décédé{if $profile->isFemale()}e{/if} le {$profile->deathdate|date_format}
