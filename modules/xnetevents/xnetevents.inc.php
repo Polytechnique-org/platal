@@ -90,8 +90,8 @@ function get_event_detail($eid, $item_id = false, $asso_id = null)
         $evt['notify_payment'] = $evt['notify_payment'] || $m['notify_payment'];
     }
 
-    $montants = XDB::fetchColumn('SELECT  montant
-                                    FROM  ' . $globals->money->mpay_tprefix . 'transactions AS t
+    $montants = XDB::fetchColumn('SELECT  amount
+                                    FROM  payment_transactions AS t
                                    WHERE  ref = {?} AND uid = {?}',
                                    $evt['paiement_id'], S::v('uid'));
     $evt['telepaid'] = 0;
@@ -144,8 +144,8 @@ function get_event_participants(&$evt, $item_id, array $tri = array(), $count = 
         $u['adminpaid'] = $u['paid'];
         $u['montant'] = 0;
         if ($money && $pay_id) {
-            $montants = XDB::fetchColumn('SELECT  montant
-                                            FROM  ' . $globals->money->mpay_tprefix . 'transactions AS t
+            $montants = XDB::fetchColumn('SELECT  amount
+                                            FROM  payment_transactions AS t
                                            WHERE  ref = {?} AND uid = {?}',
                                          $pay_id, $uid);
             foreach ($montants as $m) {

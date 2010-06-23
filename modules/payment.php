@@ -159,8 +159,6 @@ class PaymentModule extends PLModule
         $page->assign('meth', $meth);
         $page->assign('pay',  $pay);
         $page->assign('evtlink', $pay->event());
-
-        $page->assign('prefix', $globals->money->mpay_tprefix);
     }
 
     function handler_cyber_return(&$page, $uid = null)
@@ -487,17 +485,17 @@ class PaymentModule extends PLModule
         foreach($tit as $foo) {
             $pid = $foo['id'];
             if (may_update()) {
-                $res = XDB::query('SELECT  t.uid, timestamp AS `date`, t.comment, montant
+                $res = XDB::query('SELECT  t.uid, timestamp AS `date`, t.comment, amount
                                      FROM  payment_transactions AS t
                                     WHERE  t.ref = {?}', $pid);
                 $trans[$pid] = User::getBulkUsersWithUIDs($res->fetchAllAssoc(), 'uid', 'user');
                 $sum = 0;
                 foreach ($trans[$pid] as $i => $t) {
-                    $sum += strtr(substr($t['montant'], 0, strpos($t['montant'], 'EUR')), ',', '.');
-                    $trans[$pid][$i]['montant'] = str_replace('EUR', '€', $t['montant']);
+                    $sum += strtr(substr($t['amount'], 0, strpos($t['amount'], 'EUR')), ',', '.');
+                    $trans[$pid][$i]['amount'] = str_replace('EUR', '€', $t['amount']);
                 }
                 $trans[$pid][] = array('nom' => 'somme totale',
-                                       'montant' => strtr($sum, '.', ',').' €');
+                                       'amount' => strtr($sum, '.', ',').' €');
             }
             $res = XDB::iterRow("SELECT e.eid, e.short_name, e.intitule, ep.nb, ei.montant, ep.paid
                                    FROM group_events AS e
@@ -518,7 +516,7 @@ class PaymentModule extends PLModule
                     $event[$pid]['paid']      = $paid;
                 }
             }
-            $res = XDB::query("SELECT montant
+            $res = XDB::query("SELECT amount
                                  FROM payment_transactions AS t
                                 WHERE ref = {?} AND uid = {?}", $pid, S::v('uid'));
             $montants = $res->fetchColumn();

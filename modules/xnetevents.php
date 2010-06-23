@@ -154,8 +154,8 @@ class XnetEventsModule extends PLModule
             }
 
             $query = XDB::query(
-                "SELECT montant
-                   FROM {$globals->money->mpay_tprefix}transactions AS t
+                "SELECT amount
+                   FROM payment_transactions AS t
                  WHERE ref = {?} AND uid = {?}", $e['paiement_id'], S::v('uid'));
             $montants = $query->fetchColumn();
 
@@ -477,7 +477,7 @@ class XnetEventsModule extends PLModule
 
         // get a list of all the payment for this asso
         $res = XDB::iterator("SELECT id, text
-                                FROM {$globals->money->mpay_tprefix}paiements
+                                FROM payments
                                WHERE asso_id = {?}", $globals->asso('id'));
         $paiements = array();
         while ($a = $res->next()) $paiements[$a['id']] = $a['text']; {
@@ -600,8 +600,8 @@ class XnetEventsModule extends PLModule
 
         if ($evt['paiement_id']) {
             $infos = User::getBulkUsersWithUIDs(
-                            XDB::fetchAllAssoc('SELECT  t.uid, t.montant
-                                                  FROM  ' . $globals->money->mpay_tprefix . 'transactions AS t
+                            XDB::fetchAllAssoc('SELECT  t.uid, t.amount
+                                                  FROM  payment_transactions AS t
                                              LEFT JOIN  group_event_participants AS ep ON(ep.uid = t.uid AND ep.eid = {?})
                                                  WHERE  t.ref = {?} AND ep.uid IS NULL',
                                                $evt['eid'], $evt['paiement_id']),

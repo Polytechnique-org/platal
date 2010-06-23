@@ -100,7 +100,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;
       {/if}Commentaire</a>
     </th>
     <th>
-      {if $order eq 'montant'}
+      {if $order eq 'amount'}
         <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
       {else}
@@ -121,7 +121,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;
     </td>
     <td class="center">{$p.user->promo()}</td>
     <td>{$p.comment|comment_decode}</td>
-    <td class="right">{$p.montant}</td>
+    <td class="right">{$p.amount}</td>
   </tr>
   {elseif $smarty.foreach.people.first}
   <tr>
@@ -130,7 +130,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso->nom}&nbsp;
   {else}
   <tr class="pair">
     <td class="right" colspan="5"><strong>Total </strong></td>
-    <th class="right">{$p.montant}</th>
+    <th class="right">{$p.amount}</th>
   </tr>
   {/if}
   {/foreach}
