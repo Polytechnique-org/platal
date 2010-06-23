@@ -396,30 +396,34 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function check_surveyPerms() : checks the particular surveys access permissions
-    function check_surveyPerms(&$page, $survey)
+    function check_surveyPerms(&$page, $survey, $silent = false)
     {
         $this->load('survey.inc.php');
-        if (!$survey->isMode(Survey::MODE_ALL)) { // if the survey is reserved to alumni
-            if (!S::logged()) {
-                return false;
-            }
-            $profile = S::user()->profile();
-            if (!$profile) {
-                return false;
-            }
-            // checks promotion
-            $allowed = false;
-            foreach ($profile->yearspromo() as $p) {
-                if ($survey->checkPromo($p)) {
-                    $allowed = true;
-                    break;
-                }
-            }
-            if (!$allowed) {
-                $page->kill("Tu n'as pas accès à ce sondage car il est réservé à d'autres promotions.");
+        if ($survey->isMode(Survey::MODE_ALL)) { // if the survey is not reserved to alumni
+            return true;
+        }
+        if (!S::logged()) {
+            return false;
+        }
+        $profile = S::user()->profile();
+        if (!$profile) {
+            return false;
+        }
+        // checks promotion
+        $allowed = false;
+        foreach ($profile->yearspromo() as $p) {
+            if ($survey->checkPromo($p)) {
+                $allowed = true;
+                break;
             }
         }
-        return true;
+        if ($allowed) {
+            return true;
+        }
+        if (!$silent) {
+            $page->kill("Tu n'as pas accès à ce sondage car il est réservé à d'autres promotions.");
+        }
+        return false;
     }
     // }}}
 
