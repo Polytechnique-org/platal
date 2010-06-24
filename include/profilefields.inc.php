@@ -154,6 +154,15 @@ class Phone
         }
     }
 
+    /** Returns the unique ID of a phone
+     * This ID will allow to link it to an address, a user or a job
+     * The format is address_addressId_phoneId (where phoneId is the id
+     * of the phone in the list of those associated with the address)
+     */
+    public function uid() {
+        return $this->link_type . '_' . $this->link_id . '_' . $this->id;
+    }
+
     public function hasFlags($flags) {
         return $this->hasType($flags) && $this->hasLink($flags);
     }
@@ -287,13 +296,13 @@ class Job
     public function addPhone(Phone &$phone)
     {
         if ($phone->link_type == Phone::LINK_JOB && $phone->link_id == $this->id && $phone->pid == $this->pid) {
-            $this->phones[] = $phone;
+            $this->phones[$phone->uid()] = $phone;
         }
     }
 
     public function setAddress(Address $address)
     {
-        if ($address->link_id == Address::LINK_JOB && $address->link_id == $this->id && $address->pid == $this->pid) {
+        if ($address->link_type == Address::LINK_JOB && $address->link_id == $this->id && $address->pid == $this->pid) {
             $this->address = $address;
         }
     }
@@ -307,7 +316,8 @@ class Address
     const LINK_PROFILE = 'home';
 
     public $flags;
-    public $link_id;
+    public $id; // The ID of the address among those associated with its link
+    public $link_id; // The ID of the object to which the address is linked (profile, job, company)
     public $link_type;
 
     public $text;
@@ -335,10 +345,20 @@ class Address
         $this->flags = new PlFlagSet($this->flags);
     }
 
+    public function uid() {
+        $uid = $this->link_type . '_';
+        if ($this->link_type != self::LINK_COMPANY) {
+            $uid .= $this->pid . '_';
+        }
+        $uid .= $this->link_id . '_' . $this->id;
+    }
+
     public function addPhone(Phone &$phone)
     {
-        if ($phone->link_type == Phone::LINK_ADDRESS && $phone->link_id == $this->id && $phone->pid == $this->pid) {
-            $this->phones[$phone->id] = $phone;
+        if (
+            $phone->link_type == Phone::LINK_ADDRESS && $phone->link_id == $this->id &&
+            ($this->link_type == self::LINK_COMPANY || $phone->pid == $this->pid) ) {
+            $this->phones[$phone->uid()] = $phone;
         }
     }
 
@@ -676,7 +696,7 @@ class ProfileAddresses extends ProfileField
     public static function fetchData(array $pids, ProfileVisibility $visibility)
     {
         $data = XDB::iterator('SELECT  pa.id, pa.pid, pa.flags, pa.type AS link_type,
-                                       IF(pa.type = \'home\', pid, jobid) AS link_id,
+                                       IF(pa.type = \'home\', pid, IF(pa.type = \'job\', pa.id, jobid)) AS link_id,
                                        pa.text, pa.postalCode, pa.latitude, pa.longitude, pa.comment,
                                        gl.name AS locality, gas.name AS subAdministrativeArea,
                                        ga.name AS administrativeArea, gc.countryFR AS country
