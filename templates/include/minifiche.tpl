@@ -125,8 +125,8 @@
     <table cellspacing="0" cellpadding="0">
       {if $web}
       <tr>
-        <td class="lt">Page web&nbsp;:</td>
-        <td class="rt"><a href="{$web}">{$web}</a></td>
+        <td class="lt">{$web.name}&nbsp;:</td>
+        <td class="rt"><a href="{$web.address}">{$web.address}</a></td>
       </tr>
       {/if}
       {if $address && $address->country}
