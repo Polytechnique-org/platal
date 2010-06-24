@@ -173,6 +173,22 @@ class Phone
         );
     }
 
+    /** User accessible version of the type
+     */
+    public function displayType($short = false)
+    {
+        switch ($this->type) {
+          case Phone::TYPE_FIXED:
+            return $short ? 'Tél' : 'Fixe';
+          case Phone::TYPE_FAX:
+            return 'Fax';
+          case Phone::TYPE_MOBILE:
+            return $short ? 'Mob' : 'Mobile';
+          default:
+            return $this->type;
+        }
+    }
+
     /** Returns true if this phone's link matches the flags
      */
     public function hasLink($flags) {

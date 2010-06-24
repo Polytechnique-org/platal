@@ -190,7 +190,7 @@ class ContactsPDF extends FPDF
         $this->TableRow($l, utf8_decode($a->text));
 
         foreach ($a->phones() as $phone) {
-            $this->TableRow(utf8_decode($phone->type),
+            $this->TableRow(utf8_decode($phone->displayType()),
                             utf8_decode($phone->display), 'Mono');
         }
     }
@@ -204,7 +204,7 @@ class ContactsPDF extends FPDF
             $this->TableRow('adresse pro', utf8_decode($a->address()->text));
         }
         foreach ($a->phones() as $phone) {
-            $this->TableRow(utf8_decode($phone->type),
+            $this->TableRow(utf8_decode($phone->displayType()),
                             utf8_decode($phone->display), 'Mono');
         }
     }

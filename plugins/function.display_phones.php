@@ -25,19 +25,7 @@ function smarty_function_display_phones($param, &$smarty)
     if (count($param['tels'])) {
         foreach ($param['tels'] as $tel) {
             $tel_type = ($param['dcd'] ? 'Dernier ' : '');
-            switch ($tel->type) {
-              case Phone::TYPE_FIXED:
-                $tel_type .= 'Tél';
-                break;
-              case Phone::TYPE_FAX:
-                $tel_type .= 'Fax';
-                break;
-              case Phone::TYPE_MOBILE:
-                $tel_type .= 'Mob';
-                break;
-              default:
-                $tel_type .= $tel->type;
-            }
+            $tel_type .= $tel->displayType(true);
             $txthtml .= "<div>\n<em>" . $tel_type . "&nbsp;: </em>\n<strong>" . $tel->display . "</strong>\n";
             $comment = "";
             if ($tel->comment != "") {
