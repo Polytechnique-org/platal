@@ -68,8 +68,8 @@
     {/if}
     {if $survey_editmode}
     <td style="width: 30%">
-      <a href='survey/edit/question/root'>{icon name=page_edit} Modifier la description</a>
-      {if $survey_editallmode}<br /><a href='survey/edit/add/0'>{icon name=add} Ajouter une question au début</a>{/if}
+      <a href='survey/edit/question/root'>{icon name=page_edit alt="Modifier" title="Modifier la description"}</a>
+      {if $survey_editallmode}<br /><a href='survey/edit/add/0'>{icon name=add title="Ajouter une question au début" alt="Ajouter"}</a>{/if}
     </td>
     {/if}
   </tr>
@@ -81,9 +81,9 @@
     </td>
     {if $survey_editallmode}
     <td class="smaller" style="width: 30%; vertical-align: middle">
-      <a href='survey/edit/question/{$squestion.id}'>{icon name=page_edit} Modifier cette question</a><br />
-      <a href='survey/edit/del/{$squestion.id}'>{icon name=delete} Supprimer cette question</a><br />
-      <a href='survey/edit/add/{$squestion.id+1}'>{icon name=add} Ajouter une question après</a>
+      <a href='survey/edit/question/{$squestion.id}'>{icon name=page_edit title="Modifier cette question" alt="Modifier"}</a><br />
+      <a href='survey/edit/del/{$squestion.id}'>{icon name=delete title="Supprimer cette question" alt="Supprimer"}</a><br />
+      <a href='survey/edit/add/{$squestion.id+1}'>{icon name=add title="Ajouter une question après" alt="Ajouter"}</a>
     </td>
     {/if}
   </tr>
@@ -91,14 +91,14 @@
   {/if}
 </table>
 <p class="center">
-  {if $survey_editmode}
+  {if $survey_editmode && !$survey_updatemode}
   <a href='survey/edit/valid'>
     {icon name=tick}
-    {if $survey_updatemode}Enregistrer les modifications{else}Proposer ce sondage{/if}
+    Proposer ce sondage
   </a> |
   <a href='survey/edit/cancel'>
-    {icon name=cross} Annuler
-    {if $survey_updatemode}les modifications{else}totalement la création de ce sondage{/if}
+    {icon name=cross}
+    Annuler totalement la création de ce sondage
   </a>
   {elseif $survey_adminmode}
   {if !$survey.valid}<a href="survey/admin/valid/{$survey.id}">Valider ce sondage</a> | {/if}

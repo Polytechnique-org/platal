@@ -47,6 +47,7 @@ Bug/Wish:
         - #993: Enables survey for oranges                                 -Car
         - #1002: Lets the user set promo interval in both ways             -Car
         - #967: Lets admin see surveys even when not in targeted promos    -Car
+        - #1119: Removes useless links on post-edit admin page             -Car
 
     * XnetGrp:
         - #1086: Fixes view members of group even if not in group          -Car
