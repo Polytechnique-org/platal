@@ -539,11 +539,14 @@ class ProfileModule extends PLModule
         $wp = new PlWikiPage('Docs.Emploi');
         $wp->buildCache();
 
-        $page->setTitle('Conseil Pro');
+        $page->setTitle('Emploi et Carrières');
 
         // Retrieval of sector names
-        $sectors = DirEnum::getOptions(DirEnum::SECTORS);
-        $sectors[''] = '';
+        $sectors = XDB::fetchAllAssoc('id', 'SELECT  pjse.id, pjse.name
+                                               FROM  profile_job_sector_enum AS pjse
+                                         INNER JOIN  profile_mentor_sector AS pms ON (pms.sectorid = pjse.id)
+                                           GROUP BY  pjse.id
+                                           ORDER BY  pjse.name');
         $page->assign_by_ref('sectors', $sectors);
 
         // nb de mentors
@@ -574,9 +577,12 @@ class ProfileModule extends PLModule
         $page->assign('onchange', 'setSSectors()');
         $page->assign('id', 'ssect_field');
         $page->assign('name', 'subSector');
-        $it = XDB::iterator("SELECT  id, name AS field
-                               FROM  profile_job_subsector_enum
-                              WHERE  sectorid = {?}", $sect);
+        $it = XDB::iterator("SELECT  pjsse.id, pjsse.name AS field
+                               FROM  profile_job_subsector_enum AS pjsse
+                         INNER JOIN  profile_mentor_sector AS pms ON (pms.sectorid = pjsse.sectorid AND pms.subsectorid = pjsse.id)
+                              WHERE  pjsse.sectorid = {?}
+                           GROUP BY  pjsse.id
+                           ORDER BY  pjsse.name", $sect);
         $page->assign('list', $it);
     }
 

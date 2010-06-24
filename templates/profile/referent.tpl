@@ -73,6 +73,7 @@ function setSubSectors()
       </td>
       <td>
         <select name="sector" id="sect_field" onchange="setSector(this.value)">
+          <option name=""></option>
           {html_options options=$sectors selected=$sectorSelection}
         </select>
       </td>
