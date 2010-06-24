@@ -653,6 +653,64 @@ class ProfileMentoringCountries extends ProfileField
  * 3) attach addresses to jobs and profiles
  */
 
+// {{{ Database schema (profile_address, profile_phones, profile_jobs)
+/** The database for this is very unclear, so here is a little schema :
+ * profile_job describes a Job, links to:
+ * - a Profile, through `pid`
+ * - a Company, through `jobid`
+ * The `id` field is the id of this job in the list of the jobs of its profile
+ *
+ * profile_addresses describes an Address, which
+ * related to either a Profile, a Job or a Company:
+ * - for a Profile:
+ *   - `type` is set to 'home'
+ *   - `pid` is set to the related profile pid
+ *   - `id` is the id of the address in the list of those related to that profile
+ *   - `jobid` is empty
+ *
+ * - for a Company:
+ *   - `type` is set to 'hq'
+ *   - `pid` is set to 0
+ *   - `jobid` is set to the id of the company
+ *   - `id` is set to 0 (only one address per Company)
+ *
+ * - for a Job:
+ *   - `type` is set to 'job'
+ *   - `pid` is set to the pid of the Profile of the related Job
+ *   - `jobid` is set to the Company of the job (this information is redundant
+ *              with that of the row of profile_job for the related job)
+ *   - `id` is the id of the job to which we refer (i.e `profile_job.id`)
+ *
+ * profile_phone describes a Phone, which can be related to an Address,
+ * a Job, a Profile or a Company:
+ * - for a Profile:
+ *   - `link_type` is set to 'user'
+ *   - `link_id` is set to 0
+ *   - `pid` is set to the id of the related Profile
+ *
+ * - for a Company:
+ *   - `link_type` is set to 'hq'
+ *   - `link_id` is set to the id of the related Company
+ *   - `pid` is set to 0
+ *
+ * - for an Address (this is only possible for a *personal* address)
+ *   - `link_type` is set to 'address'
+ *   - `link_id` is set to the related Address `id`
+ *   - `pid` is set to the related Address `pid`
+ *
+ * - for a Job:
+ *   - `link_type` is set to 'pro'
+ *   - `link_id` is set to the related Job `id` (not `jobid`)
+ *   - `pid` is set to the related Job `pid`
+ *
+ *
+ * The possible relations are as follow:
+ * An Address can be linked to a Company, a Profile, a Job
+ * A Job is linked to a Company and a Profile
+ * A Phone can be linked to a Company, a Profile, a Job, or a Profile-related Address
+ */
+// }}}
+
 // {{{ class ProfileAddresses                         [ Field ]
 class ProfileAddresses extends ProfileField
 {
