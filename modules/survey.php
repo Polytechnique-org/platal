@@ -70,6 +70,10 @@ class SurveyModule extends PLModule
             return PL_DO_AUTH;
         }
         if (Post::has('survey_submit')) { // checks if the survey has already been filled in
+            // admins can see the survey but not vote
+            if (!$this->check_surveyPerms($page, $survey, false, false)) {
+                return PL_DO_AUTH;
+            }
             $uid = 0;
             if (!$survey->isMode(Survey::MODE_ALL)) { // if survey is restriced to alumni
                 $uid = S::v('uid');
@@ -397,7 +401,7 @@ class SurveyModule extends PLModule
     // }}}
 
     // {{{ function check_surveyPerms() : checks the particular surveys access permissions
-    function check_surveyPerms(&$page, $survey, $silent = false)
+    function check_surveyPerms(&$page, $survey, $silent = false, $admin_allowed = true)
     {
         $this->load('survey.inc.php');
         if ($survey->isMode(Survey::MODE_ALL)) { // if the survey is not reserved to alumni
@@ -419,6 +423,12 @@ class SurveyModule extends PLModule
             }
         }
         if ($allowed) {
+            return true;
+        }
+        if (S::admin() && $admin_allowed) {
+            if (!$silent) {
+                $page->trigWarning('Tu as accès à ce sondage car tu es administrateur du site.');
+            }
             return true;
         }
         if (!$silent) {
