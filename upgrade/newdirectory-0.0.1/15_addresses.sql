@@ -46,9 +46,10 @@ INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, l
 
 INSERT INTO  profile_addresses (pid, jobid, id, postalCode, pub, comment,
                                 latitude, longitude, countryId, type)
-     SELECT  uid, entrid, 0, postcode, adr_pub, NULL, glat, glng,
-             IF(country = '' OR country = '00', NULL, country), 'job'
-       FROM  #x4dat#.entreprises;
+     SELECT  e.uid, j.id, e.entrid, e.postcode, e.adr_pub, NULL, e.glat, e.glng,
+             IF(e.country = '' OR e.country = '00', NULL, e.country), 'job'
+       FROM  #x4dat#.entreprises AS e
+ INNER JOIN  profile_job_enum    AS j ON (e.entreprise = j.name);
 
 DROP TABLE IF EXISTS geoloc_countries;
 CREATE TABLE geoloc_countries (
