@@ -38,7 +38,8 @@ class PLTableEditor
      * there). The additionnal infos are retreived from other tables. This var
      * is an associative array : keys are the sql name of the fields
      * (table.field) where table must be in $otables, values are a list of the
-     * name used in $vars, the description and the type of the field.
+     * name used in $vars, the description and the type of the field, and the
+     * var it should precede.
      */
     public $ofields = array();
     // sorting field
@@ -199,9 +200,9 @@ class PLTableEditor
      * @param $desc the description displayed as column header
      * @param $type the typed used for display
      */
-    public function add_option_field($sqlname, $name, $desc, $type)
+    public function add_option_field($sqlname, $name, $desc, $type = null, $nextvar = null)
     {
-        $this->ofields[$sqlname] = array($name, $desc, $type);
+        $this->ofields[$sqlname] = array($name, $desc, $type, $nextvar);
     }
 
     // add a sort key
@@ -354,13 +355,38 @@ class PLTableEditor
             }
             // optional infos columns
             $optional_fields = '';
-            foreach ($this->ofields as $sqlname => $ofieldvalues) {
-                list($aliasname, $desc, $type) = $ofieldvalues;
-                $optional_fields .= ', '.$sqlname.' AS '.$aliasname;
-                $this->describe($aliasname, $desc, true);
-                $this->vars[$aliasname]['optional'] = true;
-                $this->vars[$aliasname]['Type'] = $type;
-                $this->vars[$aliasname]['Field'] = $aliasname;
+            if (count($this->ofields)) {
+                $order = array();
+                foreach ($this->vars as $i => $aliasname) {
+                    $order[sprintf('%f',count($order))] = $i;
+                }
+                // delta for indexing optional columns between existing ones
+                $changeorder = 0.5;
+                foreach ($this->ofields as $sqlname => $ofieldvalues) {
+                    list($aliasname, $desc, $type, $nextvar) = $ofieldvalues;
+                    $optional_fields .= ', '.$sqlname.' AS '.$aliasname;
+                    $this->describe($aliasname, $desc, true);
+                    $this->vars[$aliasname]['optional'] = true;
+                    if (isset($type)) {
+                        $this->vars[$aliasname]['Type'] = $type;
+                    }
+                    if (isset($nextvar) && isset($this->vars[$nextvar]) && $nextvar != $aliasname) {
+                        $nextkey = array_search($nextvar, $order);
+                        $order[sprintf('%f',$nextkey - $changeorder)] = $aliasname;
+                        $changeorder = $changeorder / 2;
+                    } else {
+                        $order[sprintf('%f',count($order))] = $aliasname;
+                    }
+                    $this->vars[$aliasname]['Field'] = $aliasname;
+                }
+                if ($changeorder != 0.5) {
+                    ksort($order);
+                    $orderedvars = array();
+                    foreach ($order as $aliasname) {
+                        $orderedvars[$aliasname] = $this->vars[$aliasname];
+                    }
+                    $this->vars = $orderedvars;
+                }
             }
             $optional_joints = '';
             foreach ($this->otables as $tablename => $jointclause) {
