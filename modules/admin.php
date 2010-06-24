@@ -1398,8 +1398,8 @@ class AdminModule extends PLModule
                                        t.display_tel AS tel, f.display_tel AS fax, a.text AS address
                                  FROM  profile_job_enum  AS e
                             LEFT JOIN  profile_job_enum  AS h ON (e.holdingid = h.id)
-                            LEFT JOIN  profile_phones    AS t ON (t.pid = e.id AND link_type = 'hq' AND tel_id = 0)
-                            LEFT JOIN  profile_phones    AS f ON (f.pid = e.id AND link_type = 'hq' AND tel_id = 1)
+                            LEFT JOIN  profile_phones    AS t ON (t.pid = e.id AND t.link_type = 'hq' AND t.tel_id = 0)
+                            LEFT JOIN  profile_phones    AS f ON (f.pid = e.id AND f.link_type = 'hq' AND f.tel_id = 1)
                             LEFT JOIN  profile_addresses AS a ON (a.jobid = e.id AND a.type = 'hq')
                                 WHERE  e.id = {?}",
                               $id);
