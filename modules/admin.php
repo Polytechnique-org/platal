@@ -656,10 +656,11 @@ class AdminModule extends PLModule
         return null;
     }
 
-    private static function formatNewUser($infosLine, $separator, $promo, $size)
+    private static function formatNewUser(&$page, $infosLine, $separator, $promo, $size)
     {
         $infos = explode($separator, $infosLine);
-        if (sizeof($infos) != $size) {
+        if (sizeof($infos) > $size || sizeof($infos) < 2) {
+            $page->trigError("La ligne $infosLine n'a pas été ajoutée.");
             return false;
         }
 
@@ -672,7 +673,7 @@ class AdminModule extends PLModule
                               FROM  profiles
                              WHERE  hrpid = {?}', $hrid);
         if (is_null($hrid) || $res1->fetchOneCell() > 0 || $res2->fetchOneCell() > 0) {
-            $page->trigError("La ligne $line n'a pas été ajoutée.");
+            $page->trigError("La ligne $infosLine n'a pas été ajoutée.");
             return false;
         }
         $infos['hrid'] = $hrid;
@@ -738,52 +739,60 @@ class AdminModule extends PLModule
                 }
 
                 foreach ($lines as $line) {
-                    if (($infos = self::formatNewUser($line, $separator, $promotion, 6))
-                        && ($sex = self::formatSex($page, $infos[3], $line))) {
-                        $name = $infos[1] . ' ' . $infos[0];
-                        $birthDate = self::formatBirthDate($infos[2]);
-                        $xorgId = Profile::getXorgId($infos[4]);
+                    if ($infos = self::formatNewUser($page, $line, $separator, $promotion, 6)) {
+                        $sex = self::formatSex($page, $infos[3], $line);
+                        if (!is_null($sex)) {
+                            $name = $infos[1] . ' ' . $infos[0];
+                            $birthDate = self::formatBirthDate($infos[2]);
+                            $xorgId = Profile::getXorgId($infos[4]);
+                            if (is_null($xorgId)) {
+                                $page->trigError("La ligne $line n'a pas été ajoutée car le matricule École est mal renseigné.");
+                                continue;
+                            }
 
-                        XDB::execute('INSERT INTO  profiles (hrpid, xorg_id, ax_id, birthdate_ref, sex)
-                                           VALUES  ({?}, {?}, {?}, {?})',
-                                     $infos['hrid'], $xorgId, $infos[5], $birthDate, $sex);
-                        $pid = XDB::insertId();
-                        XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
-                                           VALUES  ({?}, {?}, {?})',
-                                     $pid, $infos[0], $nameTypes['name_ini']);
-                        XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
-                                           VALUES  ({?}, {?}, {?})',
-                                     $pid, $infos[1], $nameTypes['firstname_ini']);
-                        XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
-                                                                    directory_name, short_name, sort_name, promo)
-                                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                     $pid, $infos[1], $name, $name, $name, $name, $infos[0] . ' ' . $infos[1], $promo);
-                        XDB::execute('INSERT INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
-                                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
-                                     $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
-                        XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, display_name, sex)
-                                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                     $infos['hrid'], $type, 0, 'active', $name, $infos[1], $sex);
-                        $uid = XDB::insertId();
-                        XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
-                                           VALUES  ({?}, {?}, {?})',
-                                     $uid, $pid, 'owner');
+                            XDB::execute('INSERT INTO  profiles (hrpid, xorg_id, ax_id, birthdate_ref, sex)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $xorgId, $infos[5], $birthDate, $sex);
+                            $pid = XDB::insertId();
+                            XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
+                                               VALUES  ({?}, {?}, {?})',
+                                         $pid, $infos[0], $nameTypes['name_ini']);
+                            XDB::execute('INSERT INTO  profile_name (pid, name, typeid)
+                                               VALUES  ({?}, {?}, {?})',
+                                         $pid, $infos[1], $nameTypes['firstname_ini']);
+                            XDB::execute('INSERT INTO  profile_display (pid, yourself, public_name, private_name,
+                                                                        directory_name, short_name, sort_name, promo)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                         $pid, $infos[1], $name, $name, $name, $name, $infos[0] . ' ' . $infos[1], $promo);
+                            XDB::execute('INSERT INTO  profile_education (pid, eduid, degreeid, entry_year, grad_year, flags)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?})',
+                                         $pid, $eduSchools[Profile::EDU_X], $degreeid, $entry_year, $grad_year, 'primary');
+                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, full_name, display_name, sex)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'active', $name, $infos[1], $sex);
+                            $uid = XDB::insertId();
+                            XDB::execute('INSERT INTO  account_profiles (uid, pid, perms)
+                                               VALUES  ({?}, {?}, {?})',
+                                         $uid, $pid, 'owner');
+                        }
                     }
                 }
             } else if (Env::t('add_type') == 'account') {
                 $type = Env::t('type');
                 foreach ($lines as $line) {
-                    if (($infos = self::formatNewUser($line, $separator, $type, 4))
-                        && ($sex = self::formatSex(&$page, $infos[3], $line))) {
-                        XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, display_name, sex)
-                                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
-                                     $infos['hrid'], $type, 0, 'active', $infos[2], $infos[1] . ' ' . $infos[0], $infos[1], $sex);
+                    if ($infos = self::formatNewUser($page, $line, $separator, $type, 4)) {
+                        $sex = self::formatSex($page, $infos[3], $line);
+                        if (!is_null($sex)) {
+                            XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, display_name, sex)
+                                               VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
+                                         $infos['hrid'], $type, 0, 'active', $infos[2], $infos[1] . ' ' . $infos[0], $infos[1], $sex);
+                        }
                     }
                 }
             } else if (Env::t('add_type') == 'ax_id') {
                 $type = 'x';
                 foreach ($lines as $line) {
-                    if ($infos = self::formatNewUser($line, $separator, $promotion, 3)) {
+                    if ($infos = self::formatNewUser($page, $line, $separator, $promotion, 3)) {
                         XDB::execute('UPDATE  profiles
                                          SET  ax_id = {?}
                                        WHERE  hrpid = {?}',
@@ -792,11 +801,12 @@ class AdminModule extends PLModule
                 }
             }
 
-            if ($page->nb_errs == 0) {
+            $errors = $page->nb_errs();
+            if ($errors == 0) {
                 $page->trigSuccess("L'opération a été effectuée avec succès.");
             } else {
-                $page->trigSuccess("L'opération a été effectuée avec succès, sauf pour les "
-                                   . $page->nb_errs . 'erreurs signalées ci-dessus.');
+                $page->trigSuccess('L\'opération a été effectuée avec succès, sauf pour '
+                                   . (($errors == 1) ? 'l\'erreur signalée' : "les $errors erreurs signalées") . ' ci-dessus.');
             }
         } else if (Env::has('add_type')) {
             $res = XDB::query('SELECT  type
