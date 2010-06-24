@@ -25,7 +25,7 @@
   Aucune réponse n'a été donnée.
   {else}
     {if count($squestion.result) ==1}
-    Une réponse donnée par une d{else}Quelques réponses données par li{/if}es personnes sondées&nbsp;:
+    Une réponse donnée par une d{else}Quelques réponses données par l{/if}es personnes sondées&nbsp;:
     <ul>
     {assign var=nbhidden value=0}
     {foreach item=sresult from=$squestion.result}
