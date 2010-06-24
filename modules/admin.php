@@ -904,29 +904,29 @@ class AdminModule extends PLModule
         if ($validate) {
             S::assert_xsrf_token();
 
-            $res = XDB::iterRow('SELECT  p.hrpid, pd.directory_name, p.deathdate
+            $res = XDB::iterRow('SELECT  p.pid, pd.directory_name, p.deathdate
                                    FROM  profiles AS p
                              INNER JOIN  profile_display AS pd ON (p.pid = pd.pid)
                                   WHERE  pd.promo = {?}', $promo);
             while (list($pid, $name, $death) = $res->next()) {
-                $val = Env::v($pid);
-                if($val == $deces || empty($val)) {
+                $val = Env::v('death_' . $pid);
+                if($val == $death || empty($val)) {
                     continue;
                 }
 
                 XDB::execute('UPDATE  profiles
                                  SET  deathdate = {?}, deathdate_rec = NOW()
-                               WHERE  hrpid = {?}', $val, $pid);
+                               WHERE  pid = {?}', $val, $pid);
                 $page->trigSuccess('Ajout du décès de ' . $name . ' le ' . $val . '.');
                 if($death == '0000-00-00' || empty($death)) {
-                    $profile = Profile::get($pid);
+                    $profile = Profile::getPID($pid);
                     $profile->clear();
                     $profile->owner()->clear(false);
                 }
             }
         }
 
-        $res = XDB::iterator('SELECT  p.hrpid, pd.directory_name, p.deathdate
+        $res = XDB::iterator('SELECT  p.pid, pd.directory_name, p.deathdate
                                 FROM  profiles AS p
                           INNER JOIN  profile_display AS pd ON (p.pid = pd.pid)
                                WHERE  pd.promo = {?}

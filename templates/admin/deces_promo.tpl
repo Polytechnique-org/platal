@@ -44,7 +44,7 @@
     <tr class="{cycle values="impair,pair"}">
       <td>{$x.directory_name}</td>
       <td class="center">
-        <input type="text" class="deathDate" name="{$x.hrpid}" value="{$x.deathdate}" size="10" maxlength="10" />
+        <input type="text" class="deathDate" name="death_{$x.pid}" value="{$x.deathdate}" size="10" maxlength="10" />
       </td>
     </tr>
     {/iterate}
