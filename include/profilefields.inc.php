@@ -645,7 +645,7 @@ class ProfileAddresses extends ProfileField
         }
 
         while ($addr = $it->next()) {
-            $this->addresses[$addr['id']] = new Address($addr);
+            $this->addresses[] = new Address($addr);
         }
     }
 
