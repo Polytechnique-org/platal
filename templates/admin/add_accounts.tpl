@@ -22,6 +22,17 @@
 
 <h1>Mise à jour de l'annuaire</h1>
 
+{if $newAccounts}
+<p>
+  Les comptes suivants ont été ajoutés&nbsp;:
+  <ul>
+  {foreach from=$newAccounts key=hruid item=name}
+    <li><a href="{$platal->ns}admin/user/{$hruid}">{$name}</a></li>
+  {/foreach}
+  </ul>
+</p>
+{/if}
+
 {if !$add_type}
 <form action="{$platal->pl_self()}" method="post">
 <table class="tinybicol">

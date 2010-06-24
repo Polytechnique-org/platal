@@ -779,6 +779,7 @@ class AdminModule extends PLModule
                 }
             } else if (Env::t('add_type') == 'account') {
                 $type = Env::t('type');
+                $newAccounts = array();
                 foreach ($lines as $line) {
                     if ($infos = self::formatNewUser($page, $line, $separator, $type, 4)) {
                         $sex = self::formatSex($page, $infos[3], $line);
@@ -786,8 +787,12 @@ class AdminModule extends PLModule
                             XDB::execute('INSERT INTO  accounts (hruid, type, is_admin, state, email, full_name, display_name, sex)
                                                VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})',
                                          $infos['hrid'], $type, 0, 'active', $infos[2], $infos[1] . ' ' . $infos[0], $infos[1], $sex);
+                            $newAccounts[$infos['hrid']] = $infos[1] . ' ' . $infos[0];
                         }
                     }
+                }
+                if (!empty($newAccounts)) {
+                    $page->assign('newAccounts', $newAccounts);
                 }
             } else if (Env::t('add_type') == 'ax_id') {
                 $type = 'x';
