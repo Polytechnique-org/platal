@@ -23,24 +23,28 @@
 <div class="contact-list" style="clear: both">
 {foreach from=$set item=p}
   <div class="contact">
+    <div class="photo">
+      <img src="photo/{$p->hrid()}" alt="{$p->directory_name}" />
+    </div>
+
     <div class="nom">
-      <span {if $p.name_tooltip}class="hinted" title="{$p.name_tooltip}"{/if}>{$p.name_display}</span>
+      {$p->fullName()}
     </div>
     <div class="edu">
-      {$p.promo_display}
+      {$p->promo()}
     </div>
     <div class="bits" style="width: 40%;">
       <span class='smaller'>
-      <a href="profile/{$p.hruid}" class="popup2">
+      <a href="profile/{$p->hrid()}" class="popup2">
         {icon name=user_suit title="Voir sa fiche"}</a> -
-        <a href="referent/{$p.hruid}" class="popup2">Voir sa fiche référent</a>
+        <a href="referent/{$p->hrid()}" class="popup2">Voir sa fiche référent</a>
       </span>
     </div>
     <div class="long">
      <table cellspacing="0" cellpadding="0">
       <tr>
         <td class="lt">Expertise&nbsp;:</td>
-        <td class="rt" colspan="2">{$p.expertise|nl2br}</td>
+        <td class="rt" colspan="2">{$p->mentor_expertise|nl2br}</td>
       </tr>
      </table>
     </div>
