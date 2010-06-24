@@ -46,12 +46,14 @@ function setSector(sector)
         document.getElementById('scat').style.display = 'none';
         document.getElementById('country').style.display = 'none';
         document.getElementById('keywords').style.display = 'none';
+        document.getElementById('search_referent').disabled = 'disabled';
     } else {
         Ajax.update_html('ssect_chg', baseurl + 'ssect/' + sector);
         Ajax2.update_html('country_chg', baseurl + 'country/' + sector);
         document.getElementById('scat').style.display = ''; 
         document.getElementById('country').style.display = ''; 
         document.getElementById('keywords').style.display = ''; 
+        document.getElementById('search_referent').disabled = '';
     }
 }
 
@@ -102,8 +104,11 @@ function setSubSectors()
     </tr>
   </table>
   <div class="center" style="margin-top: 1em;">
-    <input type="submit" value="Chercher" name="Chercher" />
+    <input id="search_referent" type="submit" value="Chercher" name="Chercher" />
   </div>
 </form>
 
+<script type="text/javascript">
+setSector(document.getElementById('sect_field').value);
+</script>
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
