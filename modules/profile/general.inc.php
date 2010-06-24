@@ -568,10 +568,16 @@ class ProfileSettingGeneral extends ProfilePage
                          $this->values['photo_pub'], $this->pid());
         }
         if ($this->changed['yourself']) {
-            XDB::execute('UPDATE  accounts
-                             SET  display_name = {?}
-                           WHERE  uid = {?}',
-                         $this->values['yourself'], $this->owner->id());
+            if ($this->owner) {
+                XDB::execute('UPDATE  accounts
+                                 SET  display_name = {?}
+                               WHERE  uid = {?}',
+                             $this->values['yourself'], $this->owner->id());
+            }
+            XDB::execute('UPDATE  profile_display
+                             SET  yourself = {?}
+                           WHERE  pid = {?}', $this->values['yourself'],
+                         $this->pid());
         }
         if ($this->changed['promo_display']) {
             if ($this->values['promo_display']{0} == $this->profile->mainEducation()) {

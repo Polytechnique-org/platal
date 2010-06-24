@@ -198,6 +198,16 @@ function set_profile_display(&$display_names, $pid)
                  $display_names['public_name'], $display_names['private_name'],
                  $display_names['directory_name'], $display_names['short_name'],
                  $display_names['sort_name'], $pid);
+
+    /* XXX: Inefficient, should directly take the profile as parameter */
+    $profile = Profile::get($pid);
+    $owner = $profile->owner();
+    if ($owner) {
+        XDB::execute('UPDATE  accounts
+                         SET  full_name = {?}
+                       WHERE  uid = {?}',
+                     $display_names['public_name'], $owner->id());
+    }
 }
 
 function build_sn_pub($pid)
