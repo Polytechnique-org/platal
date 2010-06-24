@@ -249,15 +249,18 @@ class EmailModule extends PLModule
             $actifs = Env::v('emails_actifs', Array());
             print_r(Env::v('emails_rewrite'));
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
+                $error_email = false;
                 $new_email = Env::v('email');
                 if ($new_email == "new@example.org") {
                     $new_email = Env::v('email_new');
                 }
                 $result = $redirect->add_email($new_email);
                 if ($result == ERROR_INVALID_EMAIL) {
+                    $error_email = true;
                     $page->assign('email', $new_email);
                 }
                 $page->assign('retour', $result);
+                $page->assign('error_email', $error_email);
             } elseif (empty($actifs)) {
                 $result = ERROR_INACTIVE_REDIRECTION;
             } elseif (is_array($actifs)) {
@@ -271,7 +274,7 @@ class EmailModule extends PLModule
                              . $user->forlifeEmail() . ' ne fonctionnerait plus.');
             break;
           case ERROR_INVALID_EMAIL:
-            $page->trigError('Erreur: l\'email n\'est pas valide.');
+            $page->trigError('Erreur : l\'email n\'est pas valide.');
             break;
           case ERROR_LOOP_EMAIL:
             $page->trigError('Erreur : ' . $user->forlifeEmail()

@@ -179,6 +179,7 @@
       </tr>
       {/foreach}
         {cycle values="pair,impair" assign=class_combobox}
+        {$error_email}
         {include file="include/emails.combobox.tpl" name="email" val=$email class=$class_combobox error=$error_email i="0"}
         <tr class="{$class_combobox}"><td colspan="4"><div>
           <input type="submit" value="ajouter" name="emailop" />

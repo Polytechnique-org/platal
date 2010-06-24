@@ -25,7 +25,7 @@
 <tr {if $class}class="{$class}"{/if}>
   <td class="titre">
   {if $name eq "email_directory"}
-      Email&nbsp;annuaire&nbsp;AX
+    Email&nbsp;annuaire&nbsp;AX
   {elseif $name eq "email"}
     Ajouter&nbsp;une&nbsp;adresse&nbsp;email
   {else}
@@ -78,9 +78,8 @@
       </optgroup>
       {/if}
       <optgroup label="Autres choix">
-        <option value="new@example.org" {if $error}selected="selected"{/if}>Utiliser une autre adresse email</option>
-        <option value="" {if (($val eq '') && (!$error))}selected="selected"{/if}>{if
-        $name neq "email"}Ne pas mettre d'adresse email{else}&nbsp;{/if}</option>
+        <option value="new@example.org" {if ((($val eq '') && (!$error)) || $error)}selected="selected"{/if}>Nouvelle adresse email</option>
+        <option value="">{if $name neq "email"}Ne pas mettre d'adresse email{else}&nbsp;{/if}</option>
       </optgroup>
     </select>
     {if $name neq "email"}
