@@ -38,6 +38,7 @@ Bug/Wish:
         - #891: Improves education display                                 -JAC
         - #1068: Fixes addresses display on profile                        -JAC
         - #1081: Sorts language alphabetically in skill tab                -Car
+        - #1124: Displays grades and education names in admin tableditor   -Car
 
     * Search:
         - #870: Fixes region selection when choosing country from list     -Car
