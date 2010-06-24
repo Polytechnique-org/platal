@@ -28,6 +28,7 @@
     </div>
 
     <div class="nom">
+      {if $p->isFemale()}&bull;{/if}
       {$p->fullName()}
     </div>
     <div class="edu">
