@@ -44,6 +44,12 @@ INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, l
                     IF(FIND_IN_SET('temporaire', 'statut'), 'temporary', ''))
        FROM  #x4dat#.adresses;
 
+INSERT INTO  profile_addresses (pid, jobid, id, postalCode, pub, comment,
+                                latitude, longitude, countryId, type)
+     SELECT  uid, entrid, 0, postcode, adr_pub, NULL, glat, glng,
+             IF(country = '' OR country = '00', NULL, country), 'job'
+       FROM  #x4dat#.entreprises;
+
 DROP TABLE IF EXISTS geoloc_countries;
 CREATE TABLE geoloc_countries (
   iso_3166_1_a2 CHAR(2) NOT NULL,

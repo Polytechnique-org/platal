@@ -17,6 +17,7 @@ echo "This will take a few minutes.\n";
 
 // Fills the 'text' field in profile_addresses.
 for ($pid = $minPid; $pid < $maxPid + 1; ++$pid) {
+    // First deals with home addresses (located in #x4dat#.adresses).
     $res  = XDB::iterator("SELECT  a.adrid AS id, a.adr1, a.adr2, a.adr3,
                                    UNIX_TIMESTAMP(a.datemaj) AS datemaj,
                                    a.postcode, a.city, a.cityid, a.region, a.regiontxt,
@@ -41,6 +42,26 @@ for ($pid = $minPid; $pid < $maxPid + 1; ++$pid) {
                           SET  text = {?}
                         WHERE  pid = {?} AND type = {?} AND id = {?}',
                       $text, $pid, $address['pro'] ? 'job' : 'home', $address['id']);
+    }
+
+    // Then deals with job addresses (located in #x4dat#.entreprises).
+    $res  = XDB::iterator("SELECT  e.entrid AS jobid, 0 AS id, e.adr1, e.adr2, e.adr3,
+                                   e.postcode, e.city, e.cityid, e.region, e.regiontxt,
+                                   e.adr_pub AS pub, e.country, gp.pays AS countrytxt, gp.display,
+                                   e.glat AS precise_lat, e.glng AS precise_lon
+                             FROM  #x4dat#.entreprises AS e
+                       INNER JOIN  #x4dat#.geoloc_pays AS gp ON (gp.a2 = e.country)
+                       INNER JOIN  account_profiles    AS ap ON (e.uid = ap.uid AND FIND_IN_SET('owner', ap.perms))
+                            WHERE  ap.pid = {?}
+                         ORDER BY  e.entrid",
+                           $pid);
+
+    while ($address = $res->next()) {
+        $text = get_address_text($address);
+        XDB::iterator('UPDATE  profile_addresses
+                          SET  text = {?}
+                        WHERE  pid = {?} AND type = {?} AND id = {?} AND jobid = {?}',
+                      $text, $pid, 'job', $address['id'], $address['jobid']);
     }
 }
 
