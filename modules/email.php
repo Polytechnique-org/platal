@@ -198,6 +198,7 @@ class EmailModule extends PLModule
                             $value, $user->profile()->id());
             }
             $visibility = ($value == 'public');
+            exit;
         }
 
         $page->assign('actuel', $alias);
