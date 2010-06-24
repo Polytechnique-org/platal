@@ -38,10 +38,10 @@ INSERT INTO  profile_addresses (pid, id, postalCode, updateTime, pub, comment, l
                                 countryId, type, flags)
      SELECT  uid, adrid, postcode, datemaj, pub, NULL, glat, glng, IF(country = '' OR country = '00', NULL, country),
              IF(FIND_IN_SET('pro', 'statut'), 'job', 'home'),
-             CONCAT(IF(FIND_IN_SET('res-secondaire', 'statut'), 'secondary,', ''),
-                    IF(FIND_IN_SET('courrier', 'statut'), 'mail,', ''),
-                    IF(FIND_IN_SET('active', 'statut'), 'current,', ''),
-                    IF(FIND_IN_SET('temporaire', 'statut'), 'temporary', ''))
+             CONCAT(IF(FIND_IN_SET('res-secondaire', statut), 'secondary,', ''),
+                    IF(FIND_IN_SET('courrier', statut), 'mail,', ''),
+                    IF(FIND_IN_SET('active', statut), 'current,', ''),
+                    IF(FIND_IN_SET('temporaire', statut), 'temporary', ''))
        FROM  #x4dat#.adresses;
 
 INSERT INTO  profile_addresses (pid, jobid, id, postalCode, pub, comment,
