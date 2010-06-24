@@ -51,6 +51,7 @@ class ProfileModule extends PLModule
 
             'referent'                   => $this->make_hook('referent',                   AUTH_COOKIE),
             'emploi'                     => $this->make_hook('ref_search',                 AUTH_COOKIE),
+            'jobs'                       => $this->make_hook('ref_search',                 AUTH_COOKIE),
             'referent/search'            => $this->make_hook('ref_search',                 AUTH_COOKIE),
             'referent/ssect'             => $this->make_hook('ref_sect',                   AUTH_COOKIE, 'user', NO_AUTH),
             'referent/country'           => $this->make_hook('ref_country',                AUTH_COOKIE, 'user', NO_AUTH),
