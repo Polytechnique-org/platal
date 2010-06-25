@@ -237,8 +237,8 @@ class ProfileSettingEdu implements ProfileSetting
     }
 
     static function sortByGradYear($line1, $line2) {
-        $a = (int) $line1['grad_year'];
-        $b = (int) $line2['grad_year'];
+        $a = (isset($line1['grad_year'])) ? (int) $line1['grad_year'] : 0;
+        $b = (isset($line2['grad_year'])) ? (int) $line2['grad_year'] : 0;
         if ($a == $b) {
             return 0;
         }
@@ -259,9 +259,8 @@ class ProfileSettingEdu implements ProfileSetting
             $i = 0;
             foreach ($value as $key=>&$edu) {
                 if (($edu['grad_year'] < 1921) || ($edu['grad_year'] > (date('Y') + 4))) {
-                    Platal::page()->trigError('L\'année d\'obtention du diplôme est mal renseignée, elle doit être du type : 2004.');
-                    $edu['error'] = true;
-                    $success = false;
+                    Platal::page()->trigWarning('L\'année d\'obtention du diplôme est mal ou non renseignée, elle doit être du type : 2004.');
+                    $edu['warning'] = true;
                 }
                 if ($key != $i) {
                     $value[$i] = $edu;

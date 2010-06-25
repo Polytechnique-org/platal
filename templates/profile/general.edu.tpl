@@ -59,7 +59,7 @@
     <span class="titre">Année d'obtention du diplôme&nbsp;:</span>
   </td>
   <td>
-    <input type="text" {if $edu.error}class="error"{/if} name="{$eduname}[grad_year]"
+    <input type="text" {if $edu.warning}class="warning"{/if} name="{$eduname}[grad_year]"
     value="{$edu.grad_year}" size="4" maxlength="4" />
     <small>(par exemple&nbsp;: 2008)</small>
   </td>
