@@ -29,9 +29,8 @@
     <option value="mobile"{if $tel.type eq 'mobile'} selected="selected"{/if}>Mobile</option>
     <option value="fax"{if $tel.type eq 'fax'} selected="selected"{/if}>Fax</option>
   </select>
-  <input type="hidden" name="{$telpref}[removed]" value="0"/>
   <input type="text" size="19" maxlength="28" name="{$telpref}[tel]" {if $tel.error}class="error"{/if} value="{$tel.tel}" />
-  <a href="javascript:removeTel('{$id}')">
+  <a class="removeTel" href="javascript:removeTel('{$telid}')">
     {icon name=cross title="Supprimer ce numéro de téléphone"}
   </a>
   <a id="{$id}_addComment" href="javascript:addPhoneComment('{$id}')" {if $tel.comment neq ''}style="display:none" {/if}>
@@ -44,7 +43,7 @@
 <div id="{$id}_comment" style="clear: both;{if $tel.comment eq ''} display:none{/if}">
   Commentaire :
   <input type="text" size="45" maxlength="80" name="{$telpref}[comment]" {if $tel.error}class="error"{/if} value="{$tel.comment}"/>
-  <a href="javascript:removePhoneComment('{$id}','{$telpref}')">
+  <a class="removePhoneComment" href="javascript:removePhoneComment('{$id}','{$telpref}')">
     {icon name=cross title="Supprimer le commentaire"}
   </a>
 </div>

@@ -200,7 +200,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 $success = false;
             }
             if (isset($job['removed']) && $job['removed']) {
-                unset($value[$key]);
+                array_splice($value, $key, 1);
             }
         }
         foreach ($value as $key => &$job) {

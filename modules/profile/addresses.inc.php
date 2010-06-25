@@ -53,7 +53,7 @@ class ProfileSettingAddress extends ProfileSettingGeocoding
         }
         foreach ($value as $key => &$address) {
             if (isset($address['removed']) && $address['removed']) {
-                unset($value[$key]);
+                array_splice($value, $key, 1);
             }
         }
         $current = 0;

@@ -153,26 +153,23 @@ class ProfileSettingPhones implements ProfileSetting
                         );
             }
         }
+
         foreach ($value as $key=>&$phone) {
-            if (isset($phone['removed']) && $phone['removed']) {
-                unset($value[$key]);
-            } else {
-                unset($phone['removed']);
-                $phone['pub'] = $this->pub->value($page, 'pub', $phone['pub'], $s);
-                $phone['tel'] = $this->tel->value($page, 'tel', $phone['tel'], $s);
-                if(!isset($phone['type']) || ($phone['type'] != 'fixed' && $phone['type'] != 'mobile' && $phone['type'] != 'fax')) {
-                    $phone['type'] = 'fixed';
-                    $s = false;
-                }
-                if (!$s) {
-                    $phone['error'] = true;
-                    $success = false;
-                }
-                if (!isset($phone['comment'])) {
-                    $phone['comment'] = '';
-                }
+            $phone['pub'] = $this->pub->value($page, 'pub', $phone['pub'], $s);
+            $phone['tel'] = $this->tel->value($page, 'tel', $phone['tel'], $s);
+            if(!isset($phone['type']) || ($phone['type'] != 'fixed' && $phone['type'] != 'mobile' && $phone['type'] != 'fax')) {
+                $phone['type'] = 'fixed';
+                $s = false;
+            }
+            if (!$s) {
+                $phone['error'] = true;
+                $success = false;
+            }
+            if (!isset($phone['comment'])) {
+                $phone['comment'] = '';
             }
         }
+
         return $value;
     }
 
