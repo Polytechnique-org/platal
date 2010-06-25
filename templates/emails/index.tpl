@@ -109,9 +109,9 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme «p
       {/foreach}
     </ul>
     {/if}
-    {test_email}
     Si tu souhaites <strong>modifier ce reroutage de tes emails,</strong>
     <a href="emails/redirect">il te suffit de te rendre ici&nbsp;!</a>
+    {test_email}
   </div>
 </fieldset>
 
