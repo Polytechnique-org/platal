@@ -411,6 +411,36 @@ class Profile
     }
 
 
+    /**
+     * Clears a profile.
+     *  *always deletes in: profile_addresses, profile_binets, profile_job,
+     *      profile_langskills, profile_mentor, profile_networking,
+     *      profile_phones, profile_skills, watch_profile
+     *  *always keeps in: profile_corps, profile_display, profile_education,
+     *      profile_medals, profile_name, profile_photos, search_name
+     *  *modifies: profiles
+     */
+    public function clear()
+    {
+        $tables = array(
+            'profile_job', 'profile_langskills', 'profile_mentor',
+            'profile_networking', 'profile_skills', 'watch_profile',
+            'profile_phones', 'profile_addresses', 'profile_binets');
+
+        foreach ($tables as $t) {
+            XDB::execute('DELETE FROM  ' . $t . '
+                                WHERE  pid = {?}',
+                                $this->id());
+        }
+
+        XDB::execute("UPDATE  profiles
+                         SET  cv = NULL, freetext = NULL, freetext_pub = 'private',
+                              medals_pub = 'private', alias_pub = 'private',
+                              email_directory = NULL
+                       WHERE  pid = {?}",
+                     $this->id());
+    }
+
     /** Sets the level of visibility of the profile
      * Sets $this->visibility to a list of valid visibilities.
      * @param one of the self::VIS_* values

@@ -569,11 +569,15 @@ class User extends PlUser
      */
     public function clear($clearAll = true)
     {
-        XDB::execute('DELETE FROM  account_lost_passwords, register_marketing,
-                                   register_pending, register_subs, watch_nonins,
-                                   watch, watch_promo
-                            WHERE  uid = {?}',
-                     $this->id());
+        $tables = array('account_lost_passwords', 'register_marketing',
+                        'register_pending', 'register_subs', 'watch_nonins',
+                        'watch', 'watch_promo');
+
+        foreach ($tables as $t) {
+            XDB::execute('DELETE FROM  ' . $t . '
+                                WHERE  uid = {?}',
+                                $this->id());
+        }
 
         if ($clearAll) {
             $groupIds = XDB::iterator('SELECT  asso_id
@@ -595,14 +599,19 @@ class User extends PlUser
                 }
             }
 
-            XDB::execute('DELETE FROM  account_auth_openid, announce_read, contacts,
-                                       email_options, email_send_save, emails,
-                                       forum_innd, forum_profiles, forum_subs,
-                                       gapps_accounts, gapps_nicknames, group_announces_read,
-                                       group_members, group_member_sub_requests, reminder, requests,
-                                       requests_hidden
-                                WHERE  uid = {?}',
-                         $this->id());
+            $tables = array('account_auth_openid', 'gannounce_read', 'contacts',
+                            'email_options', 'gemail_send_save', 'emails',
+                            'forum_innd', 'gforum_profiles', 'forum_subs',
+                            'gapps_accounts', 'ggapps_nicknames', 'group_announces_read',
+                            'group_members', 'ggroup_member_sub_requests', 'reminder', 'requests',
+                            'requests_hidden');
+
+            foreach ($tables as $t) {
+                XDB::execute('DELETE FROM  ' . $t . '
+                                    WHERE  uid = {?}',
+                    $this->id());
+            }
+
             XDB::execute("UPDATE  accounts
                              SET  registration_date = 0, state = 'pending', password = NULL,
                                   weak_password = NULL, token = NULL, is_admin = 0
