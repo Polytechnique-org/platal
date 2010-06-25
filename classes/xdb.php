@@ -49,7 +49,7 @@ class XDB
     {
         global $globals;
         $query    = array_map(Array('XDB', 'escape'), $args);
-        $query[0] = preg_replace('/#([a-z0-9]*)#/', $globals->dbprefix . '$1', $args[0]);
+        $query[0] = preg_replace('/#([a-z0-9]+)#/', $globals->dbprefix . '$1', $args[0]);
         $query[0] = str_replace('%',   '%%', $query[0]);
         $query[0] = str_replace('{?}', '%s', $query[0]);
         return call_user_func_array('sprintf', $query);
