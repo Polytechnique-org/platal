@@ -919,7 +919,7 @@ class AdminModule extends PLModule
                                WHERE  pid = {?}', $val, $pid);
                 $page->trigSuccess('Ajout du décès de ' . $name . ' le ' . $val . '.');
                 if($death == '0000-00-00' || empty($death)) {
-                    $profile = Profile::getPID($pid);
+                    $profile = Profile::get($pid);
                     $profile->clear();
                     $profile->owner()->clear(false);
                 }
