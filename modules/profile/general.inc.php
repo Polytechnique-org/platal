@@ -542,10 +542,22 @@ class ProfileSettingGeneral extends ProfilePage
                 $this->values['nationality3'] = NULL;
             }
             if ($this->values['nationality1'] == "") {
-                $this->values['nationality1']  = $this->values['nationality2'];
+                $this->values['nationality1'] = $this->values['nationality2'];
                 $this->values['nationality2'] = $this->values['nationality3'];
                 $this->values['nationality3'] = NULL;
             }
+            if ($this->values['nationality1'] == $this->values['nationality2']
+                && $this->values['nationality2'] == $this->values['nationality3']) {
+                $this->values['nationality2'] = NULL;
+                $this->values['nationality3'] = NULL;
+            } else if ($this->values['nationality1'] == $this->values['nationality2']) {
+                $this->values['nationality2'] = $this->values['nationality3'];
+                $this->values['nationality3'] = NULL;
+            } else if ($this->values['nationality2'] == $this->values['nationality3']
+                    || $this->values['nationality1'] == $this->values['nationality3']) {
+                $this->values['nationality3'] = NULL;
+            }
+
             $new_email = ($this->values['email_directory'] == "new@example.org") ?
                 $this->values['email_directory_new'] : $this->values['email_directory'];
             if ($new_email == "") {
