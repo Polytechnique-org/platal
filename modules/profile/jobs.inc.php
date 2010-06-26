@@ -199,7 +199,11 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 $job['name_error'] = true;
                 $success = false;
             }
+
             if (isset($job['removed']) && $job['removed']) {
+                if ($job['name'] == '' && $entreprise) {
+                    $entreprise[$entr_val - 1]->clean();
+                }
                 array_splice($value, $key, 1);
             }
         }
