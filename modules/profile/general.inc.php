@@ -191,7 +191,7 @@ class ProfileSettingSearchNames implements ProfileSetting
             $res = XDB::query("SELECT  public_name, private_name
                                  FROM  profile_display
                                 WHERE  pid = {?}",
-                              S::v('uid'));
+                              $page->pid());
             list($public_name, $private_name) = $res->fetchOneRow();
             if ($success) {
                 $sn_types_private       = build_types('private');
