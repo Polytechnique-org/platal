@@ -30,7 +30,7 @@
     <option value="fax"{if $tel.type eq 'fax'} selected="selected"{/if}>Fax</option>
   </select>
   <input type="text" size="19" maxlength="28" name="{$telpref}[tel]" {if $tel.error}class="error"{/if} value="{$tel.tel}" />
-  <a class="removeTel" href="javascript:removeTel('{$telid}')">
+  <a class="removeTel" href="javascript:removeTel('{$prefname}','{$prefid}','{$telid}')">
     {icon name=cross title="Supprimer ce numéro de téléphone"}
   </a>
   <a id="{$id}_addComment" href="javascript:addPhoneComment('{$id}')" {if $tel.comment neq ''}style="display:none" {/if}>

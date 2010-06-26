@@ -344,15 +344,15 @@ function addTel(prefid, prefname)
     Ajax.update_html(prefix + i, 'profile/ajax/tel/' + prefid + '/' + prefname + '/' + i);
 }
 
-function removeTel(id)
+function removeTel(prefname, prefid, id)
 {
     var total = 0;
-    while ($('#tels_' + total).length != 0) {
+    while ($('#' + prefid + '_' + total).length != 0) {
         ++total;
     }
-    $('#tels_' + id).remove();
+    $('#' + prefid + '_' + id).remove();
     for (var i = parseInt(id) + 1; i < total; ++i) {
-        renumberPhone(i);
+        renumberPhone(prefname, prefid, i);
     }
 }
 
@@ -369,25 +369,25 @@ function removePhoneComment(id, pref)
     $('#' + id + '_addComment').show();
 }
 
-function renumberPhone(i)
+function renumberPhone(prefname, prefid, i)
 {
     var telid = i - 1;
-    var telprefOld = 'tels[' + i + ']';
-    var telpref = 'tels[' + telid + ']';
-    var idOld = 'tels_' + i;
-    var id = 'tels_' + telid;
+    var telprefOld = prefname + '[' + i + ']';
+    var telpref = prefname + '[' + telid + ']';
+    var idOld = prefid + '_' + i;
+    var id = prefid + '_' + telid;
 
-    $('#tels_' + i).attr('id', 'tels_' + telid);
-    $('#tels_' + telid).find('div.titre').html('N°' + i);
-    $('#tels_' + telid).find('a.removeTel').attr('href', 'javascript:removeTel(' + telid + ')');
-    $('#tels_' + telid).find('select').attr('name', telpref + '[type]');
-    $('#tels_' + telid).find("[name='" + telprefOld + "[tel]']").attr('name', telpref + '[tel]');
-    $('#tels_' + telid).find("[name='" + telprefOld + "[comment]']").attr('name', telpref + '[comment]');
-    $('#tels_' + telid).find('a.removePhoneComment').attr('href', 'javascript:removePhoneComment(' + id + ',' + telpref + ')');
-    $('#tels_' + telid).find('#' + idOld + '_addComment').attr('id', id + '_addComment');
-    $('#tels_' + telid).find('#' + id + '_addComment').attr('href', 'javascript:addPhoneComment(' + id + ')');
-    $('#tels_' + telid).find('#' + idOld + '_comment').attr('id', id + '_comment');
-    $('#tels_' + telid).find("[name='" + telprefOld + "[pub]']").attr('name', telpref + '[pub]');
+    $('#' + idOld).attr('id', id);
+    $('#' + id).find('div.titre').html('N°' + i);
+    $('#' + id).find('a.removeTel').attr('href', 'javascript:removeTel(\'' + prefname + '\',\'' + prefid + '\',' + telid + ')');
+    $('#' + id).find('select').attr('name', telpref + '[type]');
+    $('#' + id).find("[name='" + telprefOld + "[tel]']").attr('name', telpref + '[tel]');
+    $('#' + id).find("[name='" + telprefOld + "[comment]']").attr('name', telpref + '[comment]');
+    $('#' + id).find('a.removePhoneComment').attr('href', 'javascript:removePhoneComment(' + id + ',' + telpref + ')');
+    $('#' + id).find('#' + idOld + '_addComment').attr('id', id + '_addComment');
+    $('#' + id).find('#' + id + '_addComment').attr('href', 'javascript:addPhoneComment(' + id + ')');
+    $('#' + id).find('#' + idOld + '_comment').attr('id', id + '_comment');
+    $('#' + id).find("[name='" + telprefOld + "[pub]']").attr('name', telpref + '[pub]');
 }
 
 // {{{1 Groups
