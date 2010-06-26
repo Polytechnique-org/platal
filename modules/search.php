@@ -48,10 +48,20 @@ class SearchModule extends PLModule
         global $globals;
 
         if (Env::has('quick') || $action == 'geoloc') {
-            $quick = trim(Env::t('quick'));
+            $quick = Env::t('quick');
             if (S::logged() && !Env::has('page')) {
                 S::logger()->log('search', 'quick=' . $quick);
             }
+
+            if ($quick == '') {
+                $page->trigWarning('Aucun critère de recherche n\'est spécifié.');
+                $page->changeTpl('search/index.tpl');
+                $page->setTitle('Annuaire');
+                $page->assign('formulaire', 1);
+                $page->addJsLink('ajax.js');
+                return;
+            }
+
             $list = 'profile|prf|fiche|fic|referent|ref|mentor';
             if (S::admin()) {
                 $list .= '|admin|adm|ax';
