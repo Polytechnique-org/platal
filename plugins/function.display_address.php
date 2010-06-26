@@ -87,9 +87,12 @@ function smarty_function_display_address($param, &$smarty)
     {
         $txthtml .= "<strong>" . pl_entities($line) . "</strong><br/>\n";
     }
-    if($adr->phones() != null) {
-        require_once('function.display_phones.php');
+    if ($adr->phones() != null) {
+        require_once 'function.display_phones.php';
         $txthtml .= smarty_function_display_phones(array('tels' => $adr->phones()),$smarty);
+    } else if ($param['phones'] != null) {
+        require_once 'function.display_phones.php';
+        $txthtml .= smarty_function_display_phones(array('tels' => $param['phones']),$smarty);
     }
     if (!$param['nodiv']) {
         $pos = $param['pos'] ? " style='float: " . $param['pos'] . "'" : '';

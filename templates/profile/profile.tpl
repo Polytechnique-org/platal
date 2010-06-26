@@ -229,13 +229,11 @@ function chgMainWinLoc(strPage)
     {foreach from=$jobs item="job" key="i"}
       {if $i neq 0}<hr />{/if}
       {include file="include/emploi.tpl" job=$job}
+      {assign var=phones value=$job->phones()}
       {if $job->address()}
-        {include file="geoloc/address.tpl" address=$job->address() titre="Adresse&nbsp;: " for=$job->company->name pos="left"}
-      {elseif $job->company->address}
-        {include file="geoloc/address.tpl" address=$job->company->address titre="Addresse&nbsp;: " for=$job->company->name pos="left"}
-      {/if}
-      {if $job->phones()}
-        {display_phones tels=$job->phones()}
+        {include file="geoloc/address.tpl" address=$job->address() titre="Adresse&nbsp;: " for=$job->company->name pos="left" phones=$phones}
+      {elseif $phones}
+        {display_phones tels=$phones}
       {/if}
       <div class="spacer">&nbsp;</div>
     {/foreach}
