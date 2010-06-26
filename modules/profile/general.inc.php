@@ -260,6 +260,7 @@ class ProfileSettingEdu implements ProfileSetting
             foreach ($value as $key=>&$edu) {
                 if (($edu['grad_year'] < 1921) || ($edu['grad_year'] > (date('Y') + 4))) {
                     Platal::page()->trigWarning('L\'année d\'obtention du diplôme est mal ou non renseignée, elle doit être du type : 2004.');
+                    $edu['grad_year'] = null;
                     $edu['warning'] = true;
                 }
                 if ($key != $i) {
