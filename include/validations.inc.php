@@ -33,27 +33,29 @@ class ValidateIterator extends XOrgDBIterator
 
     public function __construct ()
     {
-        parent::__construct('SELECT data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s") FROM requests ORDER BY stamp', MYSQL_NUM);
+        parent::__construct('SELECT  data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s")
+                               FROM  requests
+                           ORDER BY  stamp', MYSQL_NUM);
     }
 
     // }}}
     // {{{ function next()
 
-    public function next ()
+    public function next()
     {
         if (list($result, $stamp) = parent::next()) {
             $result = Validate::unserialize($result);
             $result->stamp = $stamp;
-            return($result);
-        } else {
-            return null;
+            return $result;
         }
+
+        return null;
     }
 
     // }}}
 }
 
-/** classe "virtuelle" à dériver pour chaque nouvelle implémentation
+/** Virtual class to adapt for every possible implementation.
  */
 abstract class Validate
 {
@@ -63,21 +65,21 @@ abstract class Validate
 
     public $stamp;
     public $unique;
-    // enable the refuse button
+    // Enable the refuse button.
     public $refuse = true;
 
     public $type;
     public $comments = Array();
-    // the validations rules : comments for admins
-    public $rules = "Mieux vaut laisser une demande de validation à un autre admin que de valider une requête illégale ou que de refuser une demande légitime";
+    // Validations rules: comments for administrators.
+    public $rules = 'Mieux vaut laisser une demande de validation à un autre administrateur que de valider une requête illégale ou que de refuser une demande légitime.';
 
     // }}}
     // {{{ constructor
 
-    /** constructeur
-     * @param       $_user      user object
-     * @param       $_unique    requête pouvant être multiple ou non
-     * @param       $_type      type de la donnée comme dans le champ type de x4dat.requests
+    /** Constructor
+     * @param $_user: user object that required the validation.
+     * @param $_unique: set to false if a profile can have multiple requests of this type.
+     * @param $_type: request's type.
      */
     public function __construct(User &$_user, $_unique, $_type)
     {
@@ -91,8 +93,9 @@ abstract class Validate
     // }}}
     // {{{ function submit()
 
-    /** fonction à utiliser pour envoyer les données à la modération
-     * cette fonction supprimme les doublons sur un couple ($user,$type) si $this->unique est vrai
+    /** Sends data to validation.
+     * It also deletes multiple requests for a couple (profile, type)
+     * when $this->unique is set to true.
      */
     public function submit()
     {
@@ -105,7 +108,7 @@ abstract class Validate
         $this->stamp = date('YmdHis');
         XDB::execute('INSERT INTO  requests (uid, type, data, stamp)
                            VALUES  ({?}, {?}, {?}, {?})',
-                $this->user->id(), $this->type, $this, $this->stamp);
+                     $this->user->id(), $this->type, $this, $this->stamp);
 
         global $globals;
         $globals->updateNbValid();
@@ -127,8 +130,8 @@ abstract class Validate
     // }}}
     // {{{ function clean()
 
-    /** fonction à utiliser pour nettoyer l'entrée de la requête dans la table requests
-     * attention, tout est supprimé si c'est un unique
+    /** Deletes request from 'requests' table.
+     * If $this->unique is set, it deletes every requests of this type.
      */
     public function clean()
     {
@@ -150,27 +153,27 @@ abstract class Validate
     // }}}
     // {{{ function handle_formu()
 
-    /** fonction à réaliser en cas de validation du formulaire
+    /** Handles form validation.
      */
     public function handle_formu()
     {
         if (Env::has('delete')) {
             $this->clean();
-            $this->trigSuccess('Requête supprimée');
+            $this->trigSuccess('Requête supprimée.');
             return true;
         }
 
-        // mise à jour des informations
+        // Data updates.
         if (Env::has('edit')) {
             if ($this->handle_editor()) {
                 $this->update();
-                $this->trigSuccess('Requête mise à jour');
+                $this->trigSuccess('Requête mise à jour.');
                 return true;
             }
             return false;
         }
 
-        // ajout d'un commentaire
+        // Comment addition.
         if (Env::has('hold') && Env::has('comm')) {
             $formid = Env::i('formid');
             foreach ($this->comments as $comment) {
@@ -181,9 +184,9 @@ abstract class Validate
             if (!strlen(trim(Env::v('comm')))) {
                 return true;
             }
-            $this->comments[] = Array(S::user()->login(), Env::v('comm'), $formid);
+            $this->comments[] = array(S::user()->login(), Env::v('comm'), $formid);
 
-            // envoi d'un mail à hotliners
+            // Sends email to our hotline.
             global $globals;
             $mailer = new PlMailer();
             $mailer->setSubject("Commentaires de validation {$this->type}");
@@ -199,7 +202,7 @@ abstract class Validate
             $mailer->send();
 
             $this->update();
-            $this->trigSuccess('Commentaire ajouté');
+            $this->trigSuccess('Commentaire ajouté.');
             return true;
         }
 
@@ -219,7 +222,7 @@ abstract class Validate
             if (Env::v('comm')) {
                 $this->sendmail(false);
                 $this->clean();
-                $this->trigSuccess('Email de refus envoyé');
+                $this->trigSuccess('Email de refus envoyé.');
                 return true;
             } else {
                 $this->trigError('Pas de motivation pour le refus&nbsp;!!!');
@@ -272,13 +275,12 @@ abstract class Validate
     // }}}
     // {{{ function get_typed_request()
 
-    /** fonction statique qui renvoie la requête de l'utilisateur d'id $uidau timestamp $t
-     * @param   $uid    l'id de l'utilisateur concerné
-     * @param   $type   le type de la requête
-     * @param   $stamp  le timestamp de la requête
+    /**
+     * @param $pid: profile's pid
+     * @param $type: request's type
+     * @param $stamp: request's timestamp
      *
-     * XXX fonction "statique" XXX
-     * à utiliser uniquement pour récupérer un objet dans la BD avec Validate::get_typed_request(...)
+     * Should only be used to retrieve an object in the databse with Validate::get_typed_request(...)
      */
     static public function get_typed_request($uid, $type, $stamp = -1)
     {
@@ -313,7 +315,7 @@ abstract class Validate
     // }}}
     // {{{ function get_typed_requests()
 
-    /** same as get_typed_request() but return an array of objects
+    /** Same as get_typed_request() but return an array of objects.
      */
     static public function get_typed_requests($uid, $type)
     {
@@ -331,7 +333,7 @@ abstract class Validate
     // }}}
     // {{{ function get_typed_requests_count()
 
-    /** same as get_typed_requests() but return the count of available requests.
+    /** Same as get_typed_requests() but return the count of available requests.
      */
     static public function get_typed_requests_count($uid, $type)
     {
@@ -363,20 +365,20 @@ abstract class Validate
     // }}}
     // {{{ function commit()
 
-    /** fonction à utiliser pour insérer les données dans x4dat
+    /** Inserts data in database.
      */
     abstract public function commit();
 
     // }}}
     // {{{ function formu()
 
-    /** nom du template qui contient le formulaire */
+    /** Retunrs the name of the form's template. */
     abstract public function formu();
 
     // }}}
     // {{{ function editor()
 
-    /** nom du formulaire d'édition */
+    /** Returns the name of the edition form's template. */
     public function editor()
     {
         return null;
@@ -385,19 +387,22 @@ abstract class Validate
     // }}}
     // {{{ function answers()
 
-    /** automatic answers table for this type of validation */
+    /** Automatic answers table for this type of validation. */
     public function answers()
     {
         static $answers_table;
         if (!isset($answers_table[$this->type])) {
-            $r = XDB::query("SELECT id, title, answer FROM requests_answers WHERE category = {?}", $this->type);
+            $r = XDB::query('SELECT  id, title, answer
+                               FROM  requests_answers
+                              WHERE  category = {?}',
+                            $this->type);
             $answers_table[$this->type] = $r->fetchAllAssoc();
         }
         return $answers_table[$this->type];
     }
 
     // }}}
-    // {{{ function id()
+    // {{{ function id()
 
     public function id()
     {
@@ -417,13 +422,7 @@ abstract class Validate
 
     public static function unserialize($data)
     {
-        $obj = unserialize($data);
-        /* XXX: Temporary for hruid migration */
-        if (!isset($obj->user) || !is_object($obj)) {
-            $obj->user =& User::get($obj->forlife);
-        }
-        /* XXX: End temporary block */
-        return $obj;
+        return unserialize($data);
     }
 
     // }}}
@@ -442,7 +441,7 @@ abstract class ProfileValidate extends Validate
     // }}}
     // {{{ constructor
 
-    /** constructor
+    /** Constructor
      * @param $_user: user object that required the validation.
      * @param $_profile: profile object that is to be modified,
      *                   its owner (if exists) can differ from $_user.
@@ -619,19 +618,11 @@ abstract class ProfileValidate extends Validate
     }
 
     // }}}
-    // {{{ function id()
+    // {{{ function id()
 
     public function id()
     {
         return $this->profile->id() . '_' . $this->type . '_' . $this->stamp;
-    }
-
-    // }}}
-    // {{{ function unserialize()
-
-    public static function unserialize($data)
-    {
-        return unserialize($data);
     }
 
     // }}}
