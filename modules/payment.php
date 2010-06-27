@@ -22,12 +22,14 @@
 /* sort en affichant une erreur */
 function cb_erreur($text) {
     global $globals;
+    echo "Error.\n";
     $mymail = new PlMailer();
     $mymail->addTo($globals->money->email);
     $mymail->setFrom("webmaster@" . $globals->mail->domain);
     $mymail->setSubject("erreur lors d'un télépaiement (CyberPaiement)");
     $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
     $mymail->send();
+    echo "Notification sent.\n";
     exit;
 }
 
@@ -54,7 +56,7 @@ function luhn($nombre) {
     $s = strrev($nombre);
     $sum = 0;
     for ($i = 0; $i < strlen($s); $i++) {
-	$dgt = $s{$i};
+    $dgt = $s{$i};
         $sum += ($i % 2) ? (2*$dgt) % 9 : $dgt;
     }
     return $sum % 10;
@@ -266,8 +268,8 @@ class PaymentModule extends PLModule
         /* on vérifie la signature */
         $vads_params = array();
         foreach($_REQUEST as $key => $value)
-        	if(substr($key,0,5) == "vads_")
-        		$vads_params[$key] = $value;
+            if(substr($key,0,5) == "vads_")
+                $vads_params[$key] = $value;
         ksort($vads_params);
         $signature = sha1(join('+',$vads_params).'+'.$globals->money->cyperplus_key);
         //if($signature != Env::v('signature')) {
@@ -285,7 +287,7 @@ class PaymentModule extends PLModule
             cb_erreur("référence de commande invalide");
         }
 
-        echo ($ref = $matches[1]);
+        $ref = $matches[1];
         $res = XDB::query("SELECT  mail, text, confirmation
                              FROM  payments
                             WHERE  id={?}", $ref);
@@ -303,12 +305,13 @@ class PaymentModule extends PLModule
         if (Env::v('vads_result') != "00") {
             cb_erreur("erreur lors du paiement : ?? (".Env::v('vads_result').")");
         }
-		
+        
         /* on fait l'insertion en base de donnees */
         XDB::execute("INSERT INTO  payment_transactions (id, uid, ref, fullref, amount, pkey, comment)
                            VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?})",
                      Env::v('vads_trans_date'), $user->id(), $ref, Env::v('vads_order_id'), $montant, "", Env::v('vads_order_info'));
-
+        echo "Paiement stored.\n";
+        
         // We check if it is an Xnet payment and then update the related ML.
         $res = XDB::query('SELECT  eid
                              FROM  group_events
@@ -316,7 +319,7 @@ class PaymentModule extends PLModule
         if ($eid = $res->fetchOneCell()) {
             require_once dirname(__FILE__) . '/xnetevents/xnetevents.inc.php';
             $evt = get_event_detail($eid);
-            subscribe_lists_event(0, $uid, $evt, $montant, true);
+            subscribe_lists_event(0, $user->id(), $evt, $montant, true);
         }
 
         /* on genere le mail de confirmation */
@@ -342,12 +345,13 @@ class PaymentModule extends PLModule
         $msg = 'utilisateur : ' . $user->login() . ' (' . $user->id() . ')' . "\n" .
                'mail : ' . $user->forlifeEmail() . "\n\n" .
                "paiement : $conf_title ($conf_mail)\n".
-               "reference : $champ200\n".
+               "reference : " . Env::v('vads_order_id') . "\n".
                "montant : $montant\n\n".
                "dump de REQUEST:\n".
                var_export($_REQUEST,true);
         $mymail->setTxtBody($msg);
         $mymail->send();
+        echo "Notifications sent.\n";
         exit;
     }
 
