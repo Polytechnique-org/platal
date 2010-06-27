@@ -176,10 +176,6 @@
     {cycle values="impair, pair" assign=class}
     {include file="profile/general.edu.tpl" eduid=$eduid edu=$edu edu_fields=$edu_fields class=$class}
   {/foreach}
-  {if $edus|@count eq 0}
-    {cycle values="impair, pair" assign=class}
-    {include file="profile/general.edu.tpl" eduid=0 edu=0 class=$class}
-  {/if}
   {cycle values="impair, pair" assign=class}
   {assign var=eduaddid value=$edus|@count}
   <tr id="edu_add" class="edu_{$eduaddid} {$class}">

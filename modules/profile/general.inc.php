@@ -248,13 +248,15 @@ class ProfileSettingEdu implements ProfileSetting
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         $success = true;
-        if (is_null($value) || !is_array($value)) {
+        if (is_null($value)) {
             $value = array();
             $value = XDB::fetchAllAssoc("SELECT  eduid, degreeid, fieldid, grad_year, program
                                            FROM  profile_education
                                           WHERE  pid = {?} AND !FIND_IN_SET('primary', flags)
                                        ORDER BY  id",
                                         $page->pid());
+        } else if (!is_array($value)) {
+            $value = null;
         } else {
             $i = 0;
             foreach ($value as $key=>&$edu) {
