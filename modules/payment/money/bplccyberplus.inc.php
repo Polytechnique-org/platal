@@ -19,6 +19,21 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+/*
+    Numéros de cartes de test :
+    Commerçant non enrôlé 3D-Secure
+    4970 1000 0000 0003 Paiement accepté (autorisation accordée)
+    Commerçant enrôlé 3D-Secure
+    4970 1000 0000 0000 Paiement accepté avec authentification internaute
+    4970 1000 0000 0001 Paiement accepté sans authentification internaute (Internaute non enrôlé 3D-Secure)
+    4970 1000 0000 0002 contacter l'émetteur de carte (Transaction à forcer). Authentification réalisée avec succès.
+    4970 1000 0000 0006 Problème technique lors du calcul de la garantie de paiement
+    4970 1000 0000 0007 Problème technique lors de l’authentification porteur
+    4970 1000 0000 0097 Paiement refusé pour cause d’authentification 3D-Secure échouée (l'internaute n'est pas parvenu à s'authentifier)
+    4970 1000 0000 0098 Paiement refusé (autorisation refusée pour cause de plafond dépassé)
+    4970 1000 0000 0099 Paiement refusé (autorisation refusée suite à erreur dans le cryptogramme visuel saisi)
+*/
+
 class BPLCCyberPlus
 {
     // {{{ properties
@@ -73,7 +88,7 @@ class BPLCCyberPlus
             'vads_order_info' => Env::v('comment'));
         $this->infos['divers'] = Array(
             'vads_version' => 'V2',
-            'vads_ctx_mode' => 'TEST',
+            'vads_ctx_mode' => $globals->money->cyperplus_prod,
             'vads_page_action' => 'PAYMENT',
             'vads_action_mode' => 'INTERACTIVE');
         
