@@ -414,6 +414,7 @@ abstract class Validate
 
     // }}}
     // {{{ function unserialize()
+
     public static function unserialize($data)
     {
         $obj = unserialize($data);
@@ -424,10 +425,220 @@ abstract class Validate
         /* XXX: End temporary block */
         return $obj;
     }
+
+    // }}}
 }
 
-foreach (glob(dirname(__FILE__).'/validations/*.inc.php') as $file) {
-    require_once($file);
+/** Virtual class for profile related validation.
+ */
+abstract class ProfileValidate extends Validate
+{
+    // {{{ properties
+
+    public $profile;
+    public $profileOwner;
+    public $userIsProfileOwner;
+
+    // }}}
+    // {{{ constructor
+
+    /** constructor
+     * @param $_user: user object that required the validation.
+     * @param $_profile: profile object that is to be modified,
+     *                   its owner (if exists) can differ from $_user.
+     * @param $_unique: set to false if a profile can have multiple requests of this type.
+     * @param $_type: request's type.
+     */
+    public function __construct(User &$_user, Profile &$_profile, $_unique, $_type)
+    {
+        parent::__construct($_user, $_unique, $_type);
+        $this->profile = &$_profile;
+        $this->profileOwner = $this->profile->owner();
+        if (!is_null($this->profileOwner) && $this->profileOwner->id() == $this->user->id()) {
+            $this->userIsProfileOwner = true;
+        } else {
+            $this->userIsProfileOwner = false;
+        }
+    }
+
+    // }}}
+    // {{{ function submit()
+
+    /** Sends data to validation.
+     * It also deletes multiple requests for a couple (profile, type)
+     * when $this->unique is set to true.
+     */
+    public function submit()
+    {
+        if ($this->unique) {
+            XDB::execute('DELETE FROM  requests
+                                WHERE  pid = {?} AND type = {?}',
+                         $this->profile->id(), $this->type);
+        }
+
+        $this->stamp = date('YmdHis');
+        XDB::execute('INSERT INTO  requests (uid, pid, type, data, stamp)
+                           VALUES  ({?}, {?}, {?}, {?})',
+                     $this->user->id(), $this->profile->id(), $this->type, $this, $this->stamp);
+
+        global $globals;
+        $globals->updateNbValid();
+        return true;
+    }
+
+    // }}}
+    // {{{ function update()
+
+    protected function update()
+    {
+        XDB::execute('UPDATE  requests
+                         SET  data = {?}, stamp = stamp
+                       WHERE  pid = {?} AND type = {?} AND stamp = {?}',
+                     $this, $this->profile->id(), $this->type, $this->stamp);
+        return true;
+    }
+
+    // }}}
+    // {{{ function clean()
+
+    /** Deletes request from 'requests' table.
+     * If $this->unique is set, it deletes every requests of this type.
+     */
+    public function clean()
+    {
+        global $globals;
+
+        if ($this->unique) {
+            $success = XDB::execute('DELETE FROM  requests
+                                           WHERE  pid = {?} AND type = {?}',
+                                    $this->profile->id(), $this->type);
+        } else {
+            $success =  XDB::execute('DELETE FROM  requests
+                                            WHERE  pid = {?} AND type = {?} AND stamp = {?}',
+                                      $this->profile->id(), $this->type, $this->stamp);
+        }
+        $globals->updateNbValid();
+        return $success;
+    }
+
+    // }}}
+    // {{{ function sendmail
+
+    protected function sendmail($isok)
+    {
+        global $globals;
+        $mailer = new PlMailer();
+        $mailer->setSubject($this->_mail_subj());
+        $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
+        $mailer->addTo("\"{$this->profile->fullName()}\" <{$this->profile->bestEmail()}>");
+        if (!$this->userIsProfileOwner) {
+            $mailer->addCc("\"{$this->user->fullName()}\" <{$this->user->bestEmail()}>");
+        }
+        $mailer->addCc("validation+{$this->type}@{$globals->mail->domain}");
+
+        $body = ($this->profile->isFemale() ? "Chère camarade,\n\n" : "Cher camarade,\n\n")
+              . $this->_mail_body($isok)
+              . (Env::has('comm') ? "\n\n" . Env::v('comm') : '')
+              . "\n\nCordialement,\n-- \nL'équipe de Polytechnique.org\n"
+              . $this->_mail_ps($isok);
+
+        $mailer->setTxtBody(wordwrap($body));
+        $mailer->send();
+    }
+
+    // }}}
+    // {{{ function get_typed_request()
+
+    /**
+     * @param $pid: profile's pid
+     * @param $type: request's type
+     * @param $stamp: request's timestamp
+     *
+     * Should only be used to retrieve an object in the databse with Validate::get_typed_request(...)
+     */
+    static public function get_typed_request($pid, $type, $stamp = -1)
+    {
+        if ($stamp == -1) {
+            $res = XDB::query('SELECT  data
+                                 FROM  requests
+                                WHERE  pid = {?} and type = {?}',
+                              $pid, $type);
+        } else {
+            $res = XDB::query('SELECT  data, DATE_FORMAT(stamp, "%Y%m%d%H%i%s")
+                                 FROM  requests
+                                WHERE  pid = {?} AND type = {?} and stamp = {?}',
+                              $pid, $type, $stamp);
+        }
+        if ($result = $res->fetchOneCell()) {
+            $result = Validate::unserialize($result);
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    // }}}
+    // {{{ function get_request_by_id()
+
+    static public function get_request_by_id($id)
+    {
+        list($pid, $type, $stamp) = explode('_', $id, 3);
+        return Validate::get_typed_request($pid, $type, $stamp);
+    }
+
+    // }}}
+    // {{{ function get_typed_requests()
+
+    /** Same as get_typed_request() but return an array of objects.
+     */
+    static public function get_typed_requests($pid, $type)
+    {
+        $res = XDB::iterRow('SELECT  data
+                               FROM  requests
+                              WHERE  pid = {?} and type = {?}',
+                            $pid, $type);
+        $array = array();
+        while (list($data) = $res->next()) {
+            $array[] = Validate::unserialize($data);
+        }
+        return $array;
+    }
+
+    // }}}
+    // {{{ function get_typed_requests_count()
+
+    /** Same as get_typed_requests() but returns the count of available requests.
+     */
+    static public function get_typed_requests_count($pid, $type)
+    {
+        $res = XDB::query('SELECT  COUNT(data)
+                             FROM  requests
+                            WHERE  pid = {?} and type = {?}',
+                          $pid, $type);
+        return $res->fetchOneCell();
+    }
+
+    // }}}
+    // {{{ function id()
+
+    public function id()
+    {
+        return $this->profile->id() . '_' . $this->type . '_' . $this->stamp;
+    }
+
+    // }}}
+    // {{{ function unserialize()
+
+    public static function unserialize($data)
+    {
+        return unserialize($data);
+    }
+
+    // }}}
+}
+
+foreach (glob(dirname(__FILE__) . '/validations/*.inc.php') as $file) {
+    require_once $file;
 }
 
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 foldmethod=marker enc=utf-8: */
