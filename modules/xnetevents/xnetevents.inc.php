@@ -184,15 +184,7 @@ function subscribe_lists_event($participate, $uid, $evt, $paid, $payment = null)
     $payed_list        = $evt['payed_list'];
 
     $user = User::getSilent($uid);
-    if ($user) {
-        $email = $user->forlifeEmail();
-    } else {
-        $res = XDB::query("SELECT  email
-                             FROM  group_members
-                            WHERE  uid = {?} AND asso_id = {?}",
-                          $uid, $globals->asso('id'));
-        $email = $res->fetchOneCell();
-    }
+    $email = $user->forlifeEmail();
 
     function subscribe($list, $email)
     {
