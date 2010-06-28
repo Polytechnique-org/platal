@@ -51,6 +51,16 @@ function toggleField(name, id, obj) {
       </a>
     </td>
   </tr>
+  {if $valid->profile}
+  <tr>
+    <td class="titre" style="width: 20%">Profil concerné&nbsp;:</td>
+    <td>
+      <a href="profile/{$valid->profile->hrpid}" class="popup2">
+        {$valid->profile->fullName("promo")}
+      </a>
+    </td>
+  </tr>
+  {/if}
   <tr>
     <td class="titre" style="width: 20%">Date de demande&nbsp;:</td>
     <td>
