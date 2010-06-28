@@ -21,7 +21,7 @@
 
 // {{{ class EntrReq
 
-class EntrReq extends Validate
+class EntrReq extends ProfileValidate
 {
     // {{{ properties
 
@@ -43,9 +43,9 @@ class EntrReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, $_id, $_name, $_acronym, $_url, $_email, $_tel, $_fax, $_address, $_stamp = 0)
+    public function __construct(User &$_user, Profile &$_profile, $_id, $_name, $_acronym, $_url, $_email, $_tel, $_fax, $_address, $_stamp = 0)
     {
-        parent::__construct($_user, false, 'entreprise', $_stamp);
+        parent::__construct($_user, $_profile, false, 'entreprise', $_stamp);
         $this->id       = $_id;
         $this->name     = $_name;
         $this->acronym  = $_acronym;
@@ -99,18 +99,18 @@ class EntrReq extends Validate
     protected function handle_editor()
     {
         if (Env::has('holdingid')) {
-            $this->holdingid = trim(Env::v('holdingid'));
+            $this->holdingid = Env::t('holdingid');
         }
         if (Env::has('name')) {
-            $this->name = trim(Env::v('name'));
+            $this->name = Env::t('name');
             if (Env::has('acronym')) {
-                $this->acronym = trim(Env::v('acronym'));
+                $this->acronym = Env::t('acronym');
                 if (Env::has('url')) {
-                    $this->url = trim(Env::v('url'));
+                    $this->url = Env::t('url');
                     if (Env::has('NAF_code')) {
-                        $this->NAF_code = trim(Env::v('NAF_code'));
+                        $this->NAF_code = Env::t('NAF_code');
                         if (Env::has('AX_code')) {
-                            $this->AX_code = trim(Env::v('AX_code'));
+                            $this->AX_code = Env::t('AX_code');
                             return true;
                         }
                     }
@@ -196,7 +196,7 @@ class EntrReq extends Validate
         return XDB::execute('UPDATE  profile_job
                                 SET  jobid = {?}
                               WHERE  pid = {?} AND id = {?}',
-                            $jobid, $this->user->profile()->id(), $this->id);
+                            $jobid, $this->profile->id(), $this->id);
     }
 
     // }}}

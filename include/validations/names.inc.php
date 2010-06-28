@@ -21,7 +21,7 @@
 
 // {{{ class NamesReq4
 
-class NamesReq extends Validate
+class NamesReq extends ProfileValidate
 {
     // {{{ properties
 
@@ -39,36 +39,39 @@ class NamesReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, $_search_names, $_private_name_end)
+    public function __construct(User &$_user, Profile &$_profile, $_search_names, $_private_name_end)
     {
-        parent::__construct($_user, true, 'usage');
+        parent::__construct($_user, $_profile, true, 'usage');
         require_once 'name.func.inc.php';
 
         $this->sn_types  = build_types();
-        $this->sn_old    = build_sn_pub($this->user->profile()->id());
+        $this->sn_old    = build_sn_pub($this->profile->id());
         $this->sn_new    = $_search_names;
         $this->new_alias = true;
         $this->display_names = array();
 
         build_display_names($this->display_names, $_search_names,
-                            $this->user->profile()->isFemale(), $_private_name_end, $this->new_alias);
+                            $this->profile->isFemale(), $_private_name_end, $this->new_alias);
         foreach ($this->sn_new AS $key => &$sn) {
             if (!isset($sn['pub'])) {
                 unset($this->sn_new[$key]);
             }
         }
-        $res = XDB::query("SELECT  alias
-                             FROM  aliases
-                            WHERE  uid = {?} AND type = 'alias' AND FIND_IN_SET('usage', flags)",
-                          $this->user->id());
-        $this->old_alias  = $res->fetchOneCell();
-        if ($this->old_alias != $this->new_alias) {
-            $res = XDB::query("SELECT  uid
+
+        if (!is_null($this->profileOwner)) {
+            $res = XDB::query("SELECT  alias
                                  FROM  aliases
-                                WHERE  alias = {?}",
-                              $this->new_alias);
-            if ($res->fetchOneCell()) {
-                $this->new_alias = null;
+                                WHERE  uid = {?} AND type = 'alias' AND FIND_IN_SET('usage', flags)",
+                              $this->profileOwner->id());
+            $this->old_alias  = $res->fetchOneCell();
+            if ($this->old_alias != $this->new_alias) {
+                $res = XDB::query("SELECT  uid
+                                     FROM  aliases
+                                    WHERE  alias = {?}",
+                                  $this->new_alias);
+                if ($res->fetchOneCell()) {
+                    $this->new_alias = null;
+                }
             }
         }
     }
@@ -97,19 +100,21 @@ class NamesReq extends Validate
         global $globals;
         if ($isok) {
             $res = "  Le changement de nom que tu as demandé vient d'être effectué.";
-            if ($this->old_alias != $this->new_alias) {
-                if ($this->old_alias) {
-                    $res .= "\n\n  Les alias {$this->old_alias}@{$globals->mail->domain} et @{$globals->mail->domain2} ont été supprimés.";
+            if (!is_null($this->profileOwner)) {
+                if ($this->old_alias != $this->new_alias) {
+                    if ($this->old_alias) {
+                        $res .= "\n\n  Les alias {$this->old_alias}@{$globals->mail->domain} et @{$globals->mail->domain2} ont été supprimés.";
+                    }
+                    if ($this->new_alias) {
+                        $res .= "\n\n  Les alias {$this->new_alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant à ta disposition !";
+                    }
                 }
-                if ($this->new_alias) {
-                    $res .= "\n\n  Les alias {$this->new_alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant à ta disposition !";
-                }
-            }
-            if ($globals->mailstorage->googleapps_domain) {
-                require_once 'googleapps.inc.php';
-                $account = new GoogleAppsAccount($this->user);
-                if ($account->active()) {
-                    $res .= "\n\n  Si tu utilises Google Apps, tu peux changer ton nom d'usage sur https://mail.google.com/a/polytechnique.org/#settings/accounts.";
+                if ($globals->mailstorage->googleapps_domain) {
+                    require_once 'googleapps.inc.php';
+                    $account = new GoogleAppsAccount($this->profileOwner);
+                    if ($account->active()) {
+                        $res .= "\n\n  Si tu utilises Google Apps, tu peux changer ton nom d'usage sur https://mail.google.com/a/polytechnique.org/#settings/accounts.";
+                    }
                 }
             }
             return $res;
@@ -125,12 +130,15 @@ class NamesReq extends Validate
     {
         require_once 'name.func.inc.php';
 
-        set_profile_display($this->display_names, $this->user->profile()->id());
-        set_alias_names($this->sn_new, $this->sn_old, $this->user->profile()->id(),
-                        $this->user->id(), true, $this->new_alias);
+        set_profile_display($this->display_names, $this->profile->id());
 
-        // Update the local User object, to pick up the new bestalias.
-        $this->user = User::getSilent($this->user->id());
+        if (!is_null($this->profileOwner)) {
+            set_alias_names($this->sn_new, $this->sn_old, $this->profile->id(),
+                            $this->profileOwner->id(), true, $this->new_alias);
+
+            // Update the local User object, to pick up the new bestalias.
+            $this->profileOwner = User::getSilent($this->profileOwner->id());
+        }
 
         return true;
     }

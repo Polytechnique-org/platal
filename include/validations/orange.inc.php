@@ -21,7 +21,7 @@
 
 // {{{ class OrangeReq
 
-class OrangeReq extends Validate
+class OrangeReq extends ProfileValidate
 {
     // {{{ properties
 
@@ -38,13 +38,14 @@ class OrangeReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, $_newGradYear)
+    public function __construct(User &$_user, Profile &$_profile, $_newGradYear)
     {
-        parent::__construct($_user, true, 'orange');
+        parent::__construct($_user, $_profile, true, 'orange');
         $this->newGradYear  = $_newGradYear;
         $res = XDB::query("SELECT  entry_year, grad_year
                              FROM  profile_education
-                            WHERE  pid = {?} AND FIND_IN_SET('primary', flags)", $this->user->profile()->id());
+                            WHERE  pid = {?} AND FIND_IN_SET('primary', flags)",
+                          $this->profile->id());
         $years = $res->fetchOneRow();
         $this->entryYear   = $years[0];
         $this->oldGradYear = $years[1];
@@ -88,7 +89,7 @@ class OrangeReq extends Validate
         XDB::execute("UPDATE  profile_education
                          SET  grad_year = {?}
                        WHERE  pid = {?} AND FIND_IN_SET('primary', flags)",
-                     $this->newGradYear, $this->user->profile()->id());
+                     $this->newGradYear, $this->profile->id());
         return true;
     }
 

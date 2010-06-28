@@ -21,7 +21,7 @@
 
 // {{{ class MedalReq
 
-class MedalReq extends Validate
+class MedalReq extends ProfileValidate
 {
     // {{{ properties
 
@@ -31,9 +31,9 @@ class MedalReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, $_idmedal, $_subidmedal, $_stamp=0)
+    public function __construct(User &$_user, Profile &$_profile, $_idmedal, $_subidmedal, $_stamp = 0)
     {
-        parent::__construct($_user, false, 'medal', $_stamp);
+        parent::__construct($_user, $_profile, false, 'medal', $_stamp);
         $this->mid = $_idmedal;
         $this->gid = $_subidmedal;
         if (is_null($this->gid)) {
@@ -54,7 +54,7 @@ class MedalReq extends Validate
 
     protected function _mail_subj()
     {
-        return "[Polytechnique.org/Décoration] Demande de décoration : ".$this->medal_name();
+        return '[Polytechnique.org/Décoration] Demande de décoration : ' . $this->medal_name();
     }
 
     // }}}
@@ -63,9 +63,9 @@ class MedalReq extends Validate
     protected function _mail_body($isok)
     {
         if ($isok) {
-            return "  La décoration ".$this->medal_name()." vient d'être ajoutée à ta fiche.";
+            return '  La décoration ' . $this->medal_name() . ' vient d\'être ajoutée à ta fiche.';
         } else {
-            return "  La demande que tu avais faite pour la décoration ".$this->medal_name()." a été refusée.";
+            return '  La demande que tu avais faite pour la décoration ' . $this->medal_name() . ' a été refusée.';
         }
     }
 
@@ -74,11 +74,10 @@ class MedalReq extends Validate
 
     public function medal_name()
     {
-        $r = XDB::query("
-            SELECT m.text
-              FROM profile_medal_enum AS m
-             WHERE m.id = {?}", $this->mid);
-        return $r->fetchOneCell();
+        $res = XDB::query('SELECT  m.text
+                             FROM  profile_medal_enum AS m
+                            WHERE  m.id = {?}', $this->mid);
+        return $res->fetchOneCell();
     }
 
     // }}}
@@ -103,16 +102,16 @@ class MedalReq extends Validate
     {
         return XDB::execute('REPLACE INTO  profile_medals
                                    VALUES  ({?}, {?}, {?})',
-                            $this->user->profile()->id(), $this->mid,
+                            $this->profile->id(), $this->mid,
                             is_null($this->gid) ? 0 : $this->gid);
     }
 
     // }}}
     // {{{ function get_request($medal)
 
-    static public function get_request($uid, $type)
+    static public function get_request($pid, $type)
     {
-        $reqs = Validate::get_typed_requests($uid, 'medal');
+        $reqs = parent::get_typed_requests($pid, 'medal');
         foreach ($reqs as &$req) {
             if ($req->mid == $type) {
                 return $req;

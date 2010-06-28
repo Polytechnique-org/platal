@@ -21,7 +21,7 @@
 
 // {{{ class PhotoReq
 
-class PhotoReq extends Validate
+class PhotoReq extends ProfileValidate
 {
     // {{{ properties
 
@@ -43,9 +43,9 @@ class PhotoReq extends Validate
     // }}}
     // {{{ constructor
 
-    public function __construct(User &$_user, PlUpload &$upload, $_stamp=0)
+    public function __construct(User &$_user, Profile &$_profile, PlUpload &$upload, $_stamp = 0)
     {
-        parent::__construct($_user, true, 'photo', $_stamp);
+        parent::__construct($_user, $_profile, true, 'photo', $_stamp);
         $this->read($upload);
     }
 
@@ -56,7 +56,7 @@ class PhotoReq extends Validate
     {
         $this->valid = $upload->resizeImage(240, 300, 160, 0, SIZE_MAX);
         if (!$this->valid) {
-            $this->trigError('Le fichier que tu as transmis n\'est pas une image valide, ou est trop gros pour être traité');
+            $this->trigError('Le fichier que tu as transmis n\'est pas une image valide, ou est trop gros pour être traité.');
         }
         $this->data = $upload->getContents();
         list($this->x, $this->y, $this->mimetype) = $upload->imageInfo();
@@ -64,7 +64,7 @@ class PhotoReq extends Validate
     }
 
     // }}}
-    // {{{ function isValid()
+    // {{{ function isValid()
 
     public function isValid()
     {
@@ -74,9 +74,9 @@ class PhotoReq extends Validate
     // }}}
     // {{{ function get_request()
 
-    static public function get_request($uid)
+    static public function get_request($pid)
     {
-        return parent::get_typed_request($uid, 'photo');
+        return parent::get_typed_request($pid, 'photo');
     }
 
     // }}}
@@ -103,7 +103,7 @@ class PhotoReq extends Validate
         if (isset($_FILES['userfile'])) {
             $upload =& PlUpload::get($_FILES['userfile'], S::user()->login(), 'photo');
             if (!$upload) {
-                $this->trigError('Une erreur est survenue lors du téléchargement du fichier');
+                $this->trigError('Une erreur est survenue lors du téléchargement du fichier.');
                 return false;
             }
             $this->read($upload);
@@ -139,7 +139,7 @@ class PhotoReq extends Validate
     {
         XDB::execute('REPLACE INTO  profile_photos (pid, attachmime, attach, x, y)
                             VALUES  ({?},{?},{?},{?},{?})',
-                     $this->user->profile()->id(), $this->mimetype, $this->data, $this->x, $this->y);
+                     $this->profile->id(), $this->mimetype, $this->data, $this->x, $this->y);
 
         return true;
     }
