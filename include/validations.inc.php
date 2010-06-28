@@ -477,7 +477,7 @@ abstract class ProfileValidate extends Validate
 
         $this->stamp = date('YmdHis');
         XDB::execute('INSERT INTO  requests (uid, pid, type, data, stamp)
-                           VALUES  ({?}, {?}, {?}, {?})',
+                           VALUES  ({?}, {?}, {?}, {?}, {?})',
                      $this->user->id(), $this->profile->id(), $this->type, $this, $this->stamp);
 
         global $globals;
