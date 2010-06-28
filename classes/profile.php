@@ -594,7 +594,10 @@ class Profile
     private function fetchPhones()
     {
         if ($this->phones == null && !$this->fetched(self::FETCH_PHONES)) {
-            $this->setPhones($this->getProfileField(self::FETCH_PHONES));
+            $phones = $this->getProfileField(self::FETCH_PHONES);
+            if (isset($phones)) {
+                $this->setPhones($phones);
+            }
         }
     }
 

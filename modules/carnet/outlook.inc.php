@@ -31,8 +31,15 @@ class Outlook {
         $contact['Ville ('.$adr_type.')'] = $adr->locality;
         $contact['Dép/Région ('.$adr_type.')'] = $adr->administrativeArea;
         $contact['Pays ('.$adr_type.')'] = $adr->country;
-        $contact['Téléphone ('.$adr_type.')'] = $adr->fixed_tel;
-        $contact['Télécopie ('.$adr_type.')'] = $adr->fax_tel;
+        $phones = $adr->phones();
+        foreach ($phones as $p) {
+            if ($p->hasType(Profile::PHONE_TYPE_FIXED)) {
+                $contact['Téléphone ('.$adr_type.')'] = $p->display;
+            }
+            if ($p->hasType(Profile::PHONE_TYPE_FAX)) {
+                $contact['Télécopie ('.$adr_type.')'] = $p->display;
+            }
+        }
     }
 
     private static function profile_to_contact(&$p) {
@@ -105,7 +112,7 @@ class Outlook {
         return $contact;
     }
 
-    private static function protect($t) {
+    private static function protect(&$t) {
         if (empty($t)) {
             return '""';
         }
@@ -113,7 +120,7 @@ class Outlook {
         return '"'.strtr(utf8_decode($t),'"', '\\"').'"';
     }
 
-    public static function output_profiles(&$profiles, $lang) {
+    public static function output_profiles($profiles, $lang) {
         pl_content_headers("text/plain", "iso8859-15");
         $fields =& Outlook::$contact_fields[$lang];
         foreach ($fields as $i => $k) {
@@ -131,7 +138,8 @@ class Outlook {
                     echo Outlook::protect($values[$k]);
                 } else {
                     // HACK to fix fullname
-                    echo Outlook::protect($p->firstName()." ".$p->lastName());
+                    $fullname = $p->firstName()." ".$p->lastName();
+                    echo Outlook::protect($fullname);
                 }
         }
             echo "\r\n";
