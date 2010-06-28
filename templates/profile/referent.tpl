@@ -57,7 +57,7 @@ function setSector(sector)
     }
 }
 
-function setSubSectors()
+function setSSectors()
 {
     var sect  = document.getElementById('sect_field').value;
     var ssect = document.getElementById('ssect_field').value;
