@@ -529,7 +529,7 @@ abstract class ProfileValidate extends Validate
         $mailer = new PlMailer();
         $mailer->setSubject($this->_mail_subj());
         $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
-        $mailer->addTo("\"{$this->profile->fullName()}\" <{$this->profile->bestEmail()}>");
+        $mailer->addTo("\"{$this->profile->fullName()}\" <{$this->profileOwner->bestEmail()}>");
         if (!$this->userIsProfileOwner) {
             $mailer->addCc("\"{$this->user->fullName()}\" <{$this->user->bestEmail()}>");
         }
@@ -622,7 +622,11 @@ abstract class ProfileValidate extends Validate
 
     public function id()
     {
-        return $this->profile->id() . '_' . $this->type . '_' . $this->stamp;
+        if (!is_null($this->profile)) {
+            return $this->profile->id() . '_' . $this->type . '_' . $this->stamp;
+        } else {
+            return $this->user->id() . '_' . $this->type . '_' . $this->stamp;
+        }
     }
 
     // }}}
