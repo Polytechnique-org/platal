@@ -153,13 +153,12 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                                 WHERE  name = {?}",
                               $job['name']);
             if ($res->numRows() != 1) {
-                $user = $page->profile->owner;
                 $this->geocodeAddress($job['hq_address'], $s);
                 if (!$s) {
                     $gmapsGeocoder = new GMapsGeocoder();
                     $job['hq_address'] = $gmapsGeocoder->stripGeocodingFromAddress($job['hq_address']);
                 }
-                $req = new EntrReq($user, $jobid, $job['name'], $job['hq_acronym'], $job['hq_url'],
+                $req = new EntrReq(S::user(), $page->profile, $jobid, $job['name'], $job['hq_acronym'], $job['hq_url'],
                                    $job['hq_email'], $job['hq_fixed'], $job['hq_fax'], $job['hq_address']);
                 $req->submit();
                 $job['jobid'] = null;
@@ -181,7 +180,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
     public function value(ProfilePage &$page, $field, $value, &$success)
     {
         require_once 'validations.inc.php';
-        $entreprise = Validate::get_typed_requests($page->profile->owner->id(), 'entreprise');
+        $entreprise = ProfileValidate::get_typed_requests($page->pid(), 'entreprise');
         $entr_val = 0;
 
         $init = false;
@@ -225,7 +224,6 @@ class ProfileSettingJob extends ProfileSettingGeocoding
         // TODO: use address and phone classes to update profile_job_enum and profile_phones once they are done.
 
         require_once 'profil.func.inc.php';
-        require_once 'validations.inc.php';
 
         XDB::execute("DELETE FROM  profile_job
                             WHERE  pid = {?}",

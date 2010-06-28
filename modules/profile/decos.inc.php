@@ -38,8 +38,8 @@ class ProfileSettingDeco implements ProfileSetting
             }
 
             // Fetch not yet validated medals
-            require_once('validations.inc.php');
-            $medals = Validate::get_typed_requests(S::i('uid'), 'medal');
+            require_once 'validations.inc.php';
+            $medals = ProfileValidate::get_typed_requests($page->pid(), 'medal');
             foreach ($medals as &$medal) {
                 $value[$medal->mid] = array('grade' => $medal->gid,
                                             'valid' => '0');
@@ -53,7 +53,7 @@ class ProfileSettingDeco implements ProfileSetting
 
     public function save(ProfilePage &$page, $field, $value)
     {
-        require_once('validations.inc.php');
+        require_once 'validations.inc.php';
 
         $orig =& $page->orig[$field];
 
@@ -65,7 +65,7 @@ class ProfileSettingDeco implements ProfileSetting
                                         WHERE  pid = {?} AND mid = {?}",
                                  $page->pid(), $id);
                 } else {
-                    $req = MedalReq::get_request(S::i('uid'), $id);
+                    $req = MedalReq::get_request($page->pid(), $id);
                     if ($req) {
                         $req->clean();
                     }
@@ -76,7 +76,7 @@ class ProfileSettingDeco implements ProfileSetting
         // Add new ones
         foreach ($value as $id=>&$val) {
             if (!isset($orig[$id]) || $orig[$id]['grade'] != $val['grade']) {
-                $req = new MedalReq(S::user(), $id, $val['grade']);
+                $req = new MedalReq(S::user(), $page->profile, $id, $val['grade']);
                 $req->submit();
                 sleep(1);
             }
