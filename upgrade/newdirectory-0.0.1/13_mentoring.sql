@@ -26,9 +26,17 @@ INSERT INTO  profile_mentor_country (pid, country)
 CREATE TABLE profile_mentor_sector (
   pid INT(11) NOT NULL DEFAULT 0,
   sectorid TINYINT(2) UNSIGNED NOT NULL,
-  subsectorid TINYINT(3) UNSIGNED NOT NULL,
+  subsectorid SMALLINT(3) UNSIGNED NOT NULL,
   PRIMARY KEY (pid, sectorid, subsectorid),
   INDEX pid (pid)
 ) ENGINE=InnoDB, CHARSET=utf8;
+
+INSERT IGNORE INTO profile_mentor_sector (pid, sectorid, subsectorid)
+     SELECT ms4.uid, s.id, ss.id
+       FROM #x4dat#.mentor_secteurs AS ms4
+ INNER JOIN #x4dat#.emploi_secteur AS s4 ON (s4.id = ms4.secteur)
+ INNER JOIN profile_job_sector_enum AS s ON (s.name = s4.label)
+  LEFT JOIN #x4dat#.emploi_ss_secteur AS ss4 ON (ss4.id = ms4.ss_secteur)
+  LEFT JOIN profile_job_subsector_enum AS ss ON (ss.name = ss4.label);
 
 -- vim:set syntax=mysql:

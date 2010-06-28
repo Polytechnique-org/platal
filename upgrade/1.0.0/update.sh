@@ -23,5 +23,4 @@ mysql_run_directory .
 confirm "* Running upgrade scripts"
 script_run ../newdirectory-0.0.1/phones.php
 script_run ../newdirectory-0.0.1/addresses.php
-script_run ../newdirectory-0.0.1/alternate_subsubsectors.php
 script_run ../account/birthday.php
