@@ -172,16 +172,6 @@ if ($warnings) {
         . " There is $warnings phone numbers that couldn't be imported.\n"
         . " They need to be manually inserted.\n";
 }
-echo  "\nAfter solving any import problem and checking automatic conversions,\n"
-    . "you can drop useless columns and tables by these requests:\n"
-    . "DROP TABLE IF EXISTS tels;\n"
-    . "ALTER TABLE auth_user_quick DROP COLUMN profile_mobile;\n"
-    . "ALTER TABLE auth_user_quick DROP COLUMN profile_mobile_pub;\n"
-    . "ALTER TABLE entreprises DROP COLUMN tel;\n"
-    . "ALTER TABLE entreprises DROP COLUMN fax;\n"
-    . "ALTER TABLE entreprises DROP COLUMN mobile;\n"
-    . "ALTER TABLE entreprises DROP COLUMN tel_pub;\n";
-
 
 // auxilliary functions
 
