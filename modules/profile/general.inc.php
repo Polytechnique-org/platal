@@ -524,7 +524,7 @@ class ProfileSettingGeneral extends ProfilePage
         if ($this->owner) {
             $res = XDB::query("SELECT  COUNT(*)
                                  FROM  requests
-                                WHERE  type = 'photo' AND uid = {?}",
+                                WHERE  type = 'photo' AND pid = {?}",
                               $this->owner->id());
             $this->values['nouvellephoto'] = $res->fetchOneCell();
         } else {
