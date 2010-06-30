@@ -91,7 +91,7 @@ class ProfileModule extends PLModule
         // Retrieve the photo and its mime type.
         if ($req && S::logged()) {
             include 'validations.inc.php';
-            $myphoto = PhotoReq::get_request($profile->owner()->id());
+            $myphoto = PhotoReq::get_request($profile->id());
             $photo = PlImage::fromData($myphoto->data, $myphoto->mimetype);
         } else {
             $photo = $profile->getPhoto(true, true);
@@ -143,22 +143,51 @@ class ProfileModule extends PLModule
         exit;
     }
 
-    function handler_photo_change(&$page)
+    /** Tries to return the correct user from given hrpid
+     * Will redirect to $returnurl$hrpid if $hrpid was empty
+     */
+    private function findProfile($returnurl, $hrpid = null)
+    {
+        if (is_null($hrpid)) {
+            $user = S::user();
+            if (!$user->hasProfile()) {
+                return PL_NOT_FOUND;
+            } else {
+                pl_redirect($returnurl . $user->profile()->hrid());
+            }
+        } else {
+            $profile = Profile::get($hrpid);
+            if (!$profile) {
+                return PL_NOT_FOUND;
+            } else if (!S::user()->canEdit($profile) && Platal::notAllowed()) {
+                return PL_FORBIDDEN;
+            }
+        }
+        return $profile;
+    }
+
+    function handler_photo_change(&$page, $hrpid = null)
     {
         global $globals;
+        $profile = $this->findProfile('photo/change/', $hrpid);
+        if (! ($profile instanceof Profile) && ($profile == PL_NOT_FOUND || $profile == PL_FORBIDDEN)) {
+            return $profile;
+        }
+
         $page->changeTpl('profile/trombino.tpl');
+        $page->assign('hrpid', $profile->hrid());
 
         require_once('validations.inc.php');
 
-        $trombi_x = '/home/web/trombino/photos' . S::v('promo') . '/' . S::user()->login() . '.jpg';
+        $trombi_x = '/home/web/trombino/photos' . $profile->promo() . '/' . $profile->hrid() . '.jpg';
         if (Env::has('upload')) {
             S::assert_xsrf_token();
 
-            $upload = new PlUpload(S::user()->login(), 'photo');
+            $upload = new PlUpload($profile->hrid(), 'photo');
             if (!$upload->upload($_FILES['userfile']) && !$upload->download(Env::v('photo'))) {
                 $page->trigError('Une erreur est survenue lors du téléchargement du fichier');
             } else {
-                $myphoto = new PhotoReq(S::user(), $upload);
+                $myphoto = new PhotoReq(S::user(), $profile, $upload);
                 if ($myphoto->isValid()) {
                     $myphoto->submit();
                 }
@@ -166,9 +195,9 @@ class ProfileModule extends PLModule
         } elseif (Env::has('trombi')) {
             S::assert_xsrf_token();
 
-            $upload = new PlUpload(S::user()->login(), 'photo');
+            $upload = new PlUpload($profile->hrid(), 'photo');
             if ($upload->copyFrom($trombi_x)) {
-                $myphoto = new PhotoReq(S::user(), $upload);
+                $myphoto = new PhotoReq(S::user(), $profile, $upload);
                 if ($myphoto->isValid()) {
                     $myphoto->commit();
                     $myphoto->clean();
@@ -179,25 +208,25 @@ class ProfileModule extends PLModule
 
             XDB::execute('DELETE FROM  profile_photos
                                 WHERE  pid = {?}',
-                         S::user()->profile()->id());
+                         $profile->id());
             XDB::execute("DELETE FROM  requests
-                                WHERE  uid = {?} AND type = 'photo'",
-                         S::v('uid'));
+                                WHERE  pid = {?} AND type = 'photo'",
+                         $profile->id());
             $globals->updateNbValid();
             $page->trigSuccess("Ta photo a bien été supprimée. Elle ne sera plus visible sur le site dans au plus une heure.");
         } elseif (Env::v('cancel')) {
             S::assert_xsrf_token();
 
             $sql = XDB::query("DELETE FROM  requests
-                                     WHERE  uid = {?} AND type = 'photo'",
-                              S::v('uid'));
+                                     WHERE  pid = {?} AND type = 'photo'",
+                              $profile->id());
             $globals->updateNbValid();
         }
 
         $sql = XDB::query("SELECT  COUNT(*)
                              FROM  requests
-                            WHERE  uid = {?} AND type = 'photo'",
-                          S::v('uid'));
+                            WHERE  pid = {?} AND type = 'photo'",
+                          $profile->id());
         $page->assign('submited', $sql->fetchOneCell());
         $page->assign('has_trombi_x', file_exists($trombi_x));
     }
@@ -272,24 +301,13 @@ class ProfileModule extends PLModule
         http_redirect("http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&ancc_id=" . $user->ax_id);
     }
 
-    function handler_p_edit(&$page, $user = null, $opened_tab = null, $mode = null, $success = null)
+    function handler_p_edit(&$page, $hrpid = null, $opened_tab = null, $mode = null, $success = null)
     {
         global $globals;
 
-        if (is_null($user)) {
-            $user = S::user();
-            if (!$user->hasProfile()) {
-                return PL_NOT_FOUND;
-            } else {
-                pl_redirect('profile/edit/' . $user->profile()->hrid());
-            }
-        } else {
-            $user = Profile::get($user);
-            if (!$user) {
-                return PL_NOT_FOUND;
-            } else if (!S::user()->canEdit($user) && Platal::notAllowed()) {
-                return PL_FORBIDDEN;
-            }
+        $profile = $this->findProfile('profile/edit/', $hrpid);
+        if (! ($profile instanceof Profile) && ($profile == PL_NOT_FOUND || $profile == PL_FORBIDDEN)) {
+            return $profile;
         }
 
         // Build the page
@@ -299,8 +317,8 @@ class ProfileModule extends PLModule
         $page->addJsLink('profile.js');
         $page->addJsLink('jquery.autocomplete.js');
         $wiz = new PlWizard('Profil', PlPage::getCoreTpl('plwizard.tpl'), true, true, false);
-        $wiz->addUserData('profile', $user);
-        $wiz->addUserData('owner', $user->owner());
+        $wiz->addUserData('profile', $profile);
+        $wiz->addUserData('owner', $profile->owner());
         $this->load('page.inc.php');
         $wiz->addPage('ProfileSettingGeneral', 'Général', 'general');
         $wiz->addPage('ProfileSettingAddresses', 'Adresses personnelles', 'adresses');
@@ -309,9 +327,9 @@ class ProfileModule extends PLModule
         $wiz->addPage('ProfileSettingJobs', 'Informations professionnelles', 'emploi');
         $wiz->addPage('ProfileSettingSkills', 'Compétences diverses', 'skill');
         $wiz->addPage('ProfileSettingMentor', 'Mentoring', 'mentor');
-        $wiz->apply($page, 'profile/edit/' . $user->hrid(), $opened_tab, $mode);
+        $wiz->apply($page, 'profile/edit/' . $profile->hrid(), $opened_tab, $mode);
 
-        if (!$user->birthdate) {
+        if (!$profile->birthdate) {
             $page->trigWarning("Ta date de naissance n'est pas renseignée, ce qui t'empêcheras de réaliser"
                       . " la procédure de récupération de mot de passe si un jour tu le perdais.");
         }

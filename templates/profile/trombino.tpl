@@ -23,7 +23,7 @@
 
 <h1>Trombinoscope</h1>
 
-<form enctype="multipart/form-data" action="photo/change" method="post">
+<form enctype="multipart/form-data" action="photo/change/{$hrpid}" method="post">
   {xsrf_token_field}
   {assign var="profile" value=$smarty.session.user->profile()}
   {if $profile && (($profile->yearpromo() ge 1995) || ($profile->yearpromo() le 2002))}
@@ -45,11 +45,11 @@
     </tr>
     <tr>
       <td class="center">
-        <img src="photo/{$smarty.session.hruid}" width="200" alt=" [ PHOTO ] " />
+        <img src="photo/{$hrpid}" width="200" alt=" [ PHOTO ] " />
       </td>
       <td class="center half">
         {if $submited}
-        <img src="photo/{$smarty.session.hruid}/req" width="200" alt=" [ PHOTO ] " />
+        <img src="photo/{$hrpid}/req" width="200" alt=" [ PHOTO ] " />
         {else}
         Pas d'image soumise
         {/if}

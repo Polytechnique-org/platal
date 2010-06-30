@@ -229,7 +229,7 @@
       quelque part (sur ton ordinateur ou sur Internet) d'une photo
       d'identité (dans un fichier au format JPEG, PNG ou GIF).<br />
       <div class="center">
-        <a href="photo/change">Éditer ta photo</a>
+        <a href="photo/change/{$profile->hrid()}">Éditer ta photo</a>
       </div>
     </td>
   </tr>
