@@ -229,7 +229,7 @@ abstract class Platal
 
     public $ns;
     public $path;
-    public $argv;
+    public $argv = array();
 
     static private $_page = null;
 
