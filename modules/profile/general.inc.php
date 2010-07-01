@@ -218,7 +218,7 @@ class ProfileSettingSearchNames implements ProfileSetting
 
         // Only requires validation if modification in public names
         if ($has_new) {
-            $new_names = new NamesReq(S::user(), $this->profile, $this->search_names, $this->private_name_end);
+            $new_names = new NamesReq(S::user(), $page->profile, $this->search_names, $this->private_name_end);
             $new_names->submit();
             Platal::page()->trigWarning('La demande de modification de tes noms a bien été prise en compte.' .
                                         ' Tu recevras un email dès que ces changements auront été effectués.');
@@ -416,7 +416,7 @@ class ProfileSettingPromo implements ProfileSetting
         } else {
             require_once 'validations.inc.php';
 
-            $myorange = new OrangeReq(S::user(), $this->profile, $gradYearNew);
+            $myorange = new OrangeReq(S::user(), $page->profile, $gradYearNew);
             $myorange->submit();
             Platal::page()->trigSuccess('Tu pourras changer l\'affichage de ta promotion dès que ta nouvelle promotion aura été validée.');
         }
