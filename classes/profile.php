@@ -841,8 +841,8 @@ class Profile
 
         $it = XDB::Iterator('SELECT  p.pid, p.hrpid, p.xorg_id, p.ax_id, p.birthdate, p.birthdate_ref,
                                      p.next_birthday, p.deathdate, p.deathdate_rec, p.sex = \'female\' AS sex,
-                                     p.cv, p.medals_pub, p.alias_pub, p.email_directory, p.last_change,
-                                     p.nationality1, p.nationality2, p.nationality3,
+                                     IF ({?}, p.cv, NULL) AS cv, p.medals_pub, p.alias_pub, p.email_directory,
+                                     p.last_change, p.nationality1, p.nationality2, p.nationality3,
                                      IF (p.freetext_pub IN {?}, p.freetext, NULL) AS freetext,
                                      pe.entry_year, pe.grad_year,
                                      IF ({?}, pse.text, NULL) AS section,
@@ -878,11 +878,12 @@ class Profile
                               WHERE  p.pid IN {?}
                            GROUP BY  p.pid
                                      ' . $order,
-                           $visibility->levels(),
-                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE),
-                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE),
-                           $visibility->levels(),
-                           $visibility->levels(),
+                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // CV
+                           $visibility->levels(), // freetext
+                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // section
+                           $visibility->isVisible(ProfileVisibility::VIS_PRIVATE), // nickname
+                           $visibility->levels(), // mobile
+                           $visibility->levels(), // photo
                            $pids
                        );
         return new ProfileIterator($it, $pids, $fields, $visibility);
