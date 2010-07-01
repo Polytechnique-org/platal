@@ -173,7 +173,7 @@ abstract class MassMailer
                                        rand(), "X.org rulez"));
             XDB::execute("UPDATE  {$this->_subscriptionTable} as ni
                              SET  ni.hash = {?}
-                           WHERE  ni.uid != {?}",
+                           WHERE  ni.uid = {?}",
                          $hash, $user->id());
         }
 
