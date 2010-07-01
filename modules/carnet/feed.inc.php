@@ -48,6 +48,7 @@ class CarnetFeedIterator implements PlIterator
                                  'hruid'       => $user->login(),
                                  'dead'        => $user->deathdate,
                                  'profile'     => $user->profile()->hrid(),
+                                 'link'        => Platal::globals()->baseurl . '/profile/' . $profile->hrid(),
                                  'user'        => $user,
                                  'contact'     => $owner->isContact($profile));
             }
