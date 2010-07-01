@@ -216,7 +216,6 @@ abstract class MassMailer
                 $this->sendTo($user, $hash);
                 ++$emailsCount;
             }
-            print_r($sent);
             XDB::execute("UPDATE  {$this->_subscriptionTable}
                              SET  last = {?}
                            WHERE " . implode(' OR ', $sent), $this->_id);
