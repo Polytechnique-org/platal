@@ -79,8 +79,9 @@ function smarty_function_display_education($params, &$smarty)
     } else {
         $sex = $params->b('sex');
     }
-    return display_education($edu->school_short, $edu->school_url, $edu->degree_short, $edu->grad_year,
-                         $edu->field, $edu->program, $sex, $params->b('long'));
+    return display_education(($edu->school_short == '') ?  $edu->school : $edu->school_short,
+                             $edu->school_url, $edu->degree_short, $edu->grad_year,
+                             $edu->field, $edu->program, $sex, $params->b('long'));
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
