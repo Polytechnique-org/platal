@@ -56,8 +56,9 @@ class VCard extends PlVCard
     protected function buildEntry($pf)
     {
         global $globals;
+        $pf = $pf['value'];
 
-        $entry = new PlVCardEntry($pf->firstNames(), $pf->lastNames, null, null, $pf->nickname);
+        $entry = new PlVCardEntry($pf->firstNames(), $pf->lastNames(), null, null, $pf->nickname);
 
         $user = $pf->owner();
 
@@ -86,14 +87,16 @@ class VCard extends PlVCard
         $adrs = $pf->iterAddresses(Profile::ADDRESS_PERSO);
         while ($adr = $adrs->next()) {
             // TODO : find a way to fetch only the "street" part of the address
-            $group = $entry->addHome($adr['text'], null, null, $adr['postalCode'],
-                            $adr['locality'], $adr['administrativeArea'], $adr['country'],
-                            $adr['current'], $adr['mail'], $adr['mail']);
-            if (!empty($adr['fixed_tel'])) {
-                $entry->addTel($group, $adr['fixed_tel'], false, true, true, false, false, $adr['current'] && empty($pf->mobile));
-            }
-            if (!empty($adr['fax_tel'])) {
-                $entry->addTel($group, $adr['fax_tel'], true, false, false, false, false, false);
+            $group = $entry->addHome($adr->text, null, null, $adr->postalCode,
+                            $adr->locality, $adr->administrativeArea, $adr->country,
+                            $adr->hasFlag('current'), $adr->hasFlag('mail'), $adr->hasFlag('mail'));
+            foreach ($adr->phones() as $phone) {
+                if ($phone->type == Phone::TYPE_FIXED) {
+                    $entry->addTel($group, $phone->display, false, true, true, false, false,
+                                   $adr->hasFlag('current') && empty($pf->mobile));
+                } else if ($phone->type == Phone::TYPE_FAX) {
+                    $entry->addTel($group, $phone->display, true, false, false, false, false, false);
+                }
             }
         }
 
@@ -102,19 +105,15 @@ class VCard extends PlVCard
         while ($adr = $adrs->next()) {
             // TODO : link address to company
             $group = $entry->addWork(null, null, null, null,
-                            $adr['text'], null, null, $adr['postalCode'],
-                            $adr['locality'], $adr['administrativeArea'], $adr['country']);
-            if (!empty($adr['fixed_tel'])) {
-                $entry->addTel($group, $adr['fixed_tel']);
-            }
-            if (!empty($adr['fax_tel'])) {
-                $entry->addTel($group, $adr['display_tel'], true);
-            }
-            /* TODO : fetch email for jobs, too
-                if (!empty($pro['email'])) {
-                    $entry->addMail($group, $pro['email']);
+                                     $adr->text, null, null, $adr->postalCode,
+                                     $adr->locality, $adr->administrativeArea, $adr->country);
+            foreach ($adr->phones() as $phone) {
+                if ($phone->type == Phone::TYPE_FIXED) {
+                    $entry->addTel($group, $phone->display);
+                } else if ($phone->type == Phone::TYPE_FAX) {
+                    $entry->addTel($group, $phone->display, true);
                 }
-             */
+            }
         }
 
         // Melix
@@ -146,7 +145,7 @@ class VCard extends PlVCard
             foreach ($binets as $bid) {
                 $bns[$bid] = $bn[$bid];
             }
-            $entry->set('X-BINETS', join(', ', $bid));
+            $entry->set('X-BINETS', join(', ', $bns));
         }
         if (!empty($pf->section)) {
             $sections = DirEnum::getOptions(DirEnum::SECTIONS);
@@ -157,8 +156,8 @@ class VCard extends PlVCard
         if ($this->photos) {
             $res = XDB::query(
                     "SELECT  attach, attachmime
-                       FROM  photo AS p
-                      WHERE  p.uid = {?}", $pf->id());
+                       FROM  profile_photos AS p
+                      WHERE  p.pid = {?}", $pf->id());
             if ($res->numRows()) {
                 list($data, $type) = $res->fetchOneRow();
                 $entry->setPhoto($data, strtoupper($type));
