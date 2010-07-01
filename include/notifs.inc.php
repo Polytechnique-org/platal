@@ -70,6 +70,7 @@ class WatchProfileUpdate extends WatchOperation
 
     public $flag  = 'profile';
     public $title = 'Mise$s à jour de fiche';
+    private $date = null;
 
     public static function register(Profile &$profile, $field)
     {
@@ -80,6 +81,7 @@ class WatchProfileUpdate extends WatchOperation
 
     protected function buildCondition(Watch $watch)
     {
+        $this->date = $watch->date();
         return new PFC_And(new UFC_ProfileUpdated('>', $watch->date()),
                            $watch->contactCondition());
     }
