@@ -32,7 +32,7 @@ if (!$globals->mailstorage->googleapps_domain) {
 
 /* Updates the l_userid parameter for newer user accounts. */
 $res = XDB::iterator(
-    "SELECT  g.g_account_name, a.id
+    "SELECT  g.g_account_name, a.uid
        FROM  gapps_accounts AS g
   LEFT JOIN  aliases as a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
       WHERE  (g.l_userid IS NULL OR g.l_userid <= 0) AND a.uid IS NOT NULL");
@@ -58,7 +58,7 @@ while ($account = $res->next()) {
 
 /* Updates the l_userid parameter for newer nicknames. */
 $res = XDB::iterator(
-    "SELECT  g.g_account_name, a.id
+    "SELECT  g.g_account_name, a.uid
        FROM  gapps_nicknames AS g
   LEFT JOIN  aliases AS a ON (a.alias = g.g_account_name AND a.type = 'a_vie')
       WHERE  (g.l_userid IS NULL or g.l_userid <= 0) AND a.uid IS NOT NULL

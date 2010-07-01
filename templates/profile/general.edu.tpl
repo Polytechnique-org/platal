@@ -48,6 +48,7 @@
   </td>
   <td>
     <select name="{$eduname}[fieldid]">
+      <option value="">&nbsp;</option>
       {foreach from=$edu_fields item=field}
       <option value="{$field.id}" {if $field.id eq $edu.fieldid}selected="selected"{/if}>{$field.field}</option>
       {/foreach}

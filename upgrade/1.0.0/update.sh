@@ -5,7 +5,8 @@
 ###########################################################
 [ "$DATABASE" != "x4dat" ] || die "Cannot target x4dat"
 
-confirm "Setting up new database: target db is \"$DATABASE\", source prefix is \"$DBPREFIX\""
+echo "Setting up new database: target db is \"$DATABASE\", source prefix is \"$DBPREFIX\""
+confirm "Please ensure your platal.conf is configured to use \"$DATABASE\""
 
 echo "* create database"
 mysql_exec_nodb "CREATE DATABASE IF NOT EXISTS $DATABASE;"

@@ -181,10 +181,10 @@ function chgMainWinLoc(strPage)
       {if $corps && ($corps->current || $corps->original)}
       <ul>
         {if $corps->current}
-          <li>Corps actuel&nbsp;: {$corps->current_name} {$corps->current_rank}
+          <li>Corps actuel&nbsp;: {$corps->current_name} {$corps->current_rank}</li>
         {/if}
         {if $corps->original}
-          <li>Corps d'origine&nbsp;: {$corps->original_name}
+          <li>Corps d'origine&nbsp;: {$corps->original_name}</li>
         {/if}
       </ul>
       {/if}

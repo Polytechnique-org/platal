@@ -1,5 +1,5 @@
 ================================================================================
-VERSION 1.0.0                                                         XX XX XXXX
+VERSION 1.0.0                                                         30 06 2010
 
 New:
     * Core:
@@ -20,13 +20,11 @@ Bug/Wish:
         - #1019: Allow 35 points passwords as announced                    -Car
         - #1059: Fix support of '?' in mail subjects                       -FRU
 
-    * Email:
-        - #1077: Removes email redirections <tr> line when ajax returns    -Car
-
     * Payments:
         - #932: Adds the date of linked event in payments admin listing    -Car
 
     * Profile:
+        - New contact/networking fields                                 -GUI/JM
         - #16, #528, #917: Changes job interface, updates business sectors -JAC
         - #188: Adds informations about the Corps d'État                   -JAC
         - #209: Thoroughly changes education's implementation              -JAC
@@ -36,9 +34,6 @@ Bug/Wish:
         - #450: Adds marital name, thus ordinary name can be any name      -JAC
         - #670: Adds Outlook CSV format for birthdays and contacts         -Car
         - #891: Improves education display                                 -JAC
-        - #1068: Fixes addresses display on profile                        -JAC
-        - #1081: Sorts language alphabetically in skill tab                -Car
-        - #1124: Displays grades and education names in admin tableditor   -Car
 
     * Search:
         - #870: Fixes region selection when choosing country from list     -Car

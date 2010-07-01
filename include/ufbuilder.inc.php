@@ -603,8 +603,8 @@ class UFBF_Promo extends UFB_Field
             return true;
         }
 
-        $this->val  = $ubf->i($this->envfield);
-        $this->comp = $ubf->v($this->envfieldcomp);
+        $this->val  = $ufb->i($this->envfield);
+        $this->comp = $ufb->v($this->envfieldcomp);
 
         if (!in_array($this->comp, self::$validcomps)) {
             return $this->raise("Le critère {$this->comp} n'est pas valide pour le champ %s");
