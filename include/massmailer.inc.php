@@ -203,7 +203,7 @@ abstract class MassMailer
     public function sendToAll()
     {
         $this->setSent();
-        $query = XDB::format($this->getAllRecipients(), $this->id()) . ' LIMIT 60';
+        $query = XDB::format($this->getAllRecipients(), $this->_id) . ' LIMIT 60';
         $emailsCount = 0;
 
         while (true) {
@@ -216,6 +216,7 @@ abstract class MassMailer
                 $this->sendTo($user, $hash);
                 ++$emailsCount;
             }
+            print_r($sent);
             XDB::execute("UPDATE  {$this->_subscriptionTable}
                              SET  last = {?}
                            WHERE " . implode(' OR ', $sent), $this->_id);
