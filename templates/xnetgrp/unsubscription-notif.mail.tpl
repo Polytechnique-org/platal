@@ -23,7 +23,7 @@
 {config_load file="mails.conf" section="xnet_unsubscription"}
 {if $mail_part eq 'head'}
 {from full=#from#}
-{subject text="[`$group`] Désinscription de `$prenom->fullName()`"}
+{subject text="[`$group`] Désinscription de `$user->full_name`"}
 {elseif $mail_part eq 'wiki'}
 Chers animateurs du groupe {$group},
 
