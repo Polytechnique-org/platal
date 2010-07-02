@@ -17,18 +17,18 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************/
+ **************************************************************************/
 
-$testinclude = dirname(__FILE__) . '/../../include/test.inc.php';
-if (file_exists($testinclude)) {
-    require_once $testinclude;
-} else {
-    require_once dirname(__FILE__) . '/platal.inc.php';
-    require_once 'PHPUnit/Framework.php';
+class PlException extends Exception {
+    private $internalMessage;
 
-    function __autoload($class)
-    {
-        pl_autoload($class);
+    public function __construct($publicMessage, $internalMessage) {
+        parent::__construct($publicMessage);
+        $this->internalMessage = $internalMessage;
+    }
+
+    public function __toString() {
+        return $this->internalMessage . "\n\n" . parent::__toString();
     }
 }
 

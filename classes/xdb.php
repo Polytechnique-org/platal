@@ -19,10 +19,21 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  **************************************************************************/
 
+class XDBException extends PlException {
+    public function __construct($query, $error) {
+        if (strpos($query, 'INSERT') === false && strpos($query, 'UPDATE') === false
+            && strpos($query, 'REPLACE') === false && strpos($query, 'DELETE') === false) {
+            $text = 'Erreur lors de l\'interrogation de la base de données';
+        } else {
+            $text = 'Erreur lors de l\'écriture dans la base de données';
+        }
+        parent::__construct($text, $query . "\n" . $error);
+    }
+}
+
 class XDB
 {
     private static $mysqli = null;
-    private static $fatalErrors = true;
 
     public static function connect()
     {
@@ -38,11 +49,6 @@ class XDB
         self::$mysqli->autocommit(true);
         self::$mysqli->set_charset($globals->dbcharset);
         return true;
-    }
-
-    public static function setNonFatalError()
-    {
-        self::$fatalErrors = false;
     }
 
     public static function _prepare($args)
@@ -113,32 +119,7 @@ class XDB
         }
 
         if ($res === false) {
-            header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
-            if (strpos($query, 'INSERT') === false && strpos($query, 'UPDATE') === false
-                && strpos($query, 'REPLACE') === false && strpos($query, 'DELETE') === false) {
-                $text = 'Erreur lors de l\'interrogation de la base de données';
-            } else {
-                $text = 'Erreur lors de l\'écriture dans la base de données';
-            }
-            if (php_sapi_name() == 'cli') {
-                $text .= "\n" . XDB::_reformatQuery($query)
-                       . "\n" . XDB::$mysqli->error;
-            } else if ($globals->debug) {
-                $text .= '<pre>' . pl_entities(XDB::_reformatQuery($query)) . '</pre>';
-            } else {
-                $file = fopen($globals->spoolroot . '/spool/tmp/query_errors', 'a');
-                fwrite($file, '<pre>' . date("Y-m-d G:i:s") . '</pre>'
-                            . '<pre>' . pl_entities(XDB::_reformatQuery($query)) . '</pre>'
-                            . '<pre>' . XDB::$mysqli->error . '</pre>'
-                            . "--------------------------------------------------------------------------------\n");
-                fclose($file);
-            }
-            if (self::$fatalErrors) {
-                Platal::page()->kill($text);
-                exit;
-            } else {
-                throw new Exception($text . " :\n" . $query);
-            }
+            throw new XDBException(XDB::_reformatQuery($query), XDB::$mysqli->error);
         }
         return $res;
     }

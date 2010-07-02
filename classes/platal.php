@@ -360,18 +360,35 @@ abstract class Platal
             $this->path = 'index';
         }
 
-        $page->assign('platal', $this);
-        switch ($this->call_hook($page)) {
-          case PL_FORBIDDEN:
-            $this->mods['core']->handler_403($page);
-            break;
+        try {
+            $page->assign('platal', $this);
+            switch ($this->call_hook($page)) {
+              case PL_FORBIDDEN:
+                $this->mods['core']->handler_403($page);
+                break;
 
-          case PL_NOT_FOUND:
-            $this->mods['core']->handler_404($page);
-            break;
+              case PL_NOT_FOUND:
+                $this->mods['core']->handler_404($page);
+                break;
 
-          case PL_WIKI:
-            return PL_WIKI;
+              case PL_WIKI:
+                return PL_WIKI;
+            }
+        } catch (Exception $e) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
+
+            $file = fopen(self::globals()->spoolroot . '/spool/tmp/site_errors', 'a');
+            fwrite($file, '<pre>' . date('Y-m-d G:i:s') . '</pre>'
+                        . '<pre>' . pl_entities("" . $e) . '</pre>'
+                        . '------------------------------------------------------------------' . "\n");
+            fclose($file);
+
+            if (self::globals()->debug) {
+                $page->kill(pl_entities($e->getMessage())
+                            . '<pre>' . pl_entities("" . $e) . '</pre>');
+            } else {
+                $page->kill(pl_entities($e->getMessage()));
+            }
         }
 
         $page->assign('platal', $this);
@@ -426,19 +443,13 @@ abstract class Platal
 
     public static function assert($cond, $error, $userfriendly = null)
     {
-        global $globals;
         if ($cond === false) {
-            header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
-            $file = fopen($globals->spoolroot . '/spool/tmp/assert_erros', 'a');
-            fwrite($file, '<pre>' . pl_entities($error) . '</pre>\n');
-            fclose($file);
-
             if ($userfriendly == null) {
                 $userfriendly = "Une erreur interne s'est produite.
                     Merci de réessayer la manipulation qui a déclenché l'erreur ;
                     si cela ne fonctionne toujours pas, merci de nous signaler le problème rencontré.";
             }
-            Platal::page()->kill($userfriendly);
+            throw new PlException($userfriendly, $error);
         }
     }
 

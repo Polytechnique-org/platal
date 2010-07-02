@@ -30,8 +30,9 @@ class CoreModule extends PLModule
             'send_bug'      => $this->make_hook('bug',           AUTH_COOKIE),
             'purge_cache'   => $this->make_hook('purge_cache',   AUTH_COOKIE, 'admin'),
             'kill_sessions' => $this->make_hook('kill_sessions', AUTH_COOKIE, 'admin'),
-            'sql_errors'    => $this->make_hook('sqlerror',      AUTH_COOKIE, 'admin'),
-            'assert_errors' => $this->make_hook('asserterror',      AUTH_COOKIE, 'admin'),
+            'sql_errors'    => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
+            'assert_errors' => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
+            'site_errors'   => $this->make_hook('siteerror',     AUTH_COOKIE, 'admin'),
 
             'wiki_help'     => $this->make_hook('wiki_help',     AUTH_PUBLIC),
             'wiki_preview'  => $this->make_hook('wiki_preview',  AUTH_COOKIE, 'user', NO_AUTH),
@@ -177,29 +178,16 @@ class CoreModule extends PLModule
         exit;
     }
 
-    function handler_sqlerror(&$page) {
+    function handler_siteerror(&$page) {
         global $globals;
-        $page->coreTpl('sql_errors.tpl');
-        $file = @file_get_contents($globals->spoolroot . '/spool/tmp/query_errors');
+        $page->coreTpl('site_errors.tpl');
+        $file = @file_get_contents($globals->spoolroot . '/spool/tmp/site_errors');
         if ($file !== false) {
             $page->assign('errors', utf8_encode($file));
         }
         if (Post::has('clear')) {
-            @unlink($globals->spoolroot . '/spool/tmp/query_errors');
-            $page->trigSuccess("Erreurs MySQL effacées.");
-        }
-    }
-
-    function handler_asserterror(&$page) {
-        global $globals;
-        $page->coreTpl('assert_errors.tpl');
-        $file = @file_get_contents($globals->spoolroot . '/spool/tmp/assert_errors');
-        if ($file !== false) {
-            $page->assign('errors', utf8_encode($file));
-        }
-        if (Post::has('clear')) {
-            @unlink($globals->spoolroot . '/spool/tmp/assert_errors');
-            $page->trigSuccess("Erreurs d'assertion effacées.");
+            @unlink($globals->spoolroot . '/spool/tmp/site_errors');
+            $page->trigSuccess("Erreurs effacées.");
         }
     }
 }

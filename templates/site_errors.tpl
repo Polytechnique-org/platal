@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Erreurs MySQL</h1>
+<h1>Erreurs d'exécution</h1>
   {if $errors}
     {$errors|smarty:nodefaults}
   {else}
@@ -28,7 +28,7 @@
     Il n'y a pas d'erreurs actuellement recensées.
 </p>
   {/if}
-<form action="sql_errors" method="post">
+<form action="site_errors" method="post">
   <div>
     <input type="submit" name="clear" value="Effacer les erreurs" />
   </div>
