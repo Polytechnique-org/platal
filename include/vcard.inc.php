@@ -68,8 +68,7 @@ class VCard extends PlVCard
             $freetext .= "\n" . $this->freetext;
         }
         $entry->set('NOTE', $freetext);
-        // Mobile
-        if (!empty($pf->mobile)) {
+        if ($pf->mobile) {
             $entry->addTel(null, $pf->mobile, false, true, true, false, true, true);
         }
 
@@ -86,10 +85,16 @@ class VCard extends PlVCard
         // Homes
         $adrs = $pf->iterAddresses(Profile::ADDRESS_PERSO);
         while ($adr = $adrs->next()) {
-            // TODO : find a way to fetch only the "street" part of the address
-            $group = $entry->addHome($adr->text, null, null, $adr->postalCode,
-                            $adr->locality, $adr->administrativeArea, $adr->country,
-                            $adr->hasFlag('current'), $adr->hasFlag('mail'), $adr->hasFlag('mail'));
+            if (!$adr->postalCode || !$adr->locality || !$adr->country) {
+                $group = $entry->addHome($adr->text, null, null, null,
+                                null, $adr->administrativeArea, null,
+                                $adr->hasFlag('current'), $adr->hasFlag('mail'), $adr->hasFlag('mail'));
+            } else {
+                // TODO : find a way to fetch only the "street" part of the address
+                $group = $entry->addHome($adr->text, null, null, $adr->postalCode,
+                                $adr->locality, $adr->administrativeArea, $adr->country,
+                                $adr->hasFlag('current'), $adr->hasFlag('mail'), $adr->hasFlag('mail'));
+            }
             foreach ($adr->phones() as $phone) {
                 if ($phone->type == Phone::TYPE_FIXED) {
                     $entry->addTel($group, $phone->display, false, true, true, false, false,
@@ -103,10 +108,16 @@ class VCard extends PlVCard
         // Pro
         $adrs = $pf->iterAddresses(Profile::ADDRESS_PRO);
         while ($adr = $adrs->next()) {
-            // TODO : link address to company
-            $group = $entry->addWork(null, null, null, null,
-                                     $adr->text, null, null, $adr->postalCode,
-                                     $adr->locality, $adr->administrativeArea, $adr->country);
+            if (!$adr->postalCode || !$adr->locality || !$adr->country) {
+                $group = $entry->addWork(null, null, null, null,
+                                         $adr->text, null, null, null,
+                                         null, $adr->administrativeArea, null);
+            } else {
+                // TODO : link address to company
+                $group = $entry->addWork(null, null, null, null,
+                                         $adr->text, null, null, $adr->postalCode,
+                                         $adr->locality, $adr->administrativeArea, $adr->country);
+            }
             foreach ($adr->phones() as $phone) {
                 if ($phone->type == Phone::TYPE_FIXED) {
                     $entry->addTel($group, $phone->display);
@@ -119,7 +130,7 @@ class VCard extends PlVCard
         // Melix
         if (!is_null($user)) {
             $alias = $user->emailAlias();
-            if (!is_null($alias)) {
+            if (!is_null($alias) && $pf->alias_pub == 'pub') {
                 $entry->addMail(null, $alias);
             }
         }
