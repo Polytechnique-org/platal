@@ -37,7 +37,7 @@ while ($sent_mails < $globals->lists->max_mail_per_min
     if (XDB::affectedRows() == 0) {
         break;
     }
-    $query = XDB::query('SELECT  a.fullname, a.uid, a.password,
+    $query = XDB::query('SELECT  a.full_name, a.uid, a.password,
                                  ml.ml, ml.domain, ml.mid, ml.action, ml.message
                            FROM  accounts            AS a
                      INNER JOIN  email_list_moderate AS ml ON (a.uid = ml.uid)
