@@ -42,7 +42,7 @@ function chgMainWinLoc(strPage)
 <div id="fiche">
   <div id="photo" class="part">
     {assign var=photo value=$profile->getPhoto(false)}
-    {if $photo}<img alt="Photo de {$profile->fullName()}" src="photo/{$profile->hrid()}" width="{$photo->width()}"/>{/if}
+    {if $photo}<img alt="Photo de {$profile->fullName()}" src="photo/{$profile->hrid()}{if $with_pending_pic}/req{/if}" width="{$photo->width()}"/>{/if}
 
     {if $logged && $view eq 'private' && ( $profile->section|smarty:nodefaults || $profile->getBinets()|smarty:nodefaults || ($owner && $owner->groups()|smarty:nodefaults))}
       <h2>À l'X&hellip;</h2>

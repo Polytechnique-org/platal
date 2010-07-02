@@ -259,6 +259,11 @@ class ProfileModule extends PLModule
             $view = 'private';
         }
 
+        // Display pending picture
+        if (S::logged() && Env::v('modif') == 'new') {
+            $page->assign('with_pending_pic', true);
+        }
+
         // Fetches profile's and profile's owner information and redirects to
         // marketing if the owner has not subscribed and the requirer has logged in.
         $profile = Profile::get($pid, Profile::FETCH_ALL, $view);
