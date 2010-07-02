@@ -42,7 +42,7 @@ query('ALTER TABLE  profile_corps_enum
 query('ALTER TABLE  profile_corps_rank_enum
           ORDER BY  name');
 query('ALTER TABLE  profile_education_degree_enum
-          ORDER BY  name');
+          ORDER BY  degree');
 query('ALTER TABLE  profile_education_field_enum
           ORDER BY  field');
 query('ALTER TABLE  profile_job_enum
