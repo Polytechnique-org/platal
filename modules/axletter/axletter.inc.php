@@ -117,10 +117,10 @@ class AXLetter extends MassMailer
         if (is_null($uid) && $hash) {
             return false;
         }
-        $res = XDB::query("SELECT *
+        $res = XDB::query("SELECT uid
                              FROM axletter_ins
                             WHERE $field={?}", $user);
-        if (!$res->numRows()) {
+        if ($res->numRows() != 1) {
             return false;
         }
         XDB::execute("DELETE FROM  axletter_ins

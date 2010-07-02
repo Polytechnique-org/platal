@@ -173,7 +173,7 @@ abstract class MassMailer
                                        rand(), "X.org rulez"));
             XDB::execute("UPDATE  {$this->_subscriptionTable} as ni
                              SET  ni.hash = {?}
-                           WHERE  ni.uid != {?}",
+                           WHERE  ni.uid = {?}",
                          $hash, $user->id());
         }
 
@@ -203,7 +203,7 @@ abstract class MassMailer
     public function sendToAll()
     {
         $this->setSent();
-        $query = XDB::format($this->getAllRecipients(), $this->id()) . ' LIMIT 60';
+        $query = XDB::format($this->getAllRecipients(), $this->_id) . ' LIMIT 60';
         $emailsCount = 0;
 
         while (true) {

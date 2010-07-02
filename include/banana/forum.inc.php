@@ -131,8 +131,8 @@ class ForumsBanana extends Banana
                            WHERE  uid = {?}',
                          $time, $this->user->id());
             if (XDB::affectedRows() == 0) {
-                XDB::execute('INSERT INTO  forum_profiles (uid, last_seen)
-                                   VALUES  ({?}, FROM_UNIXTIME({?}))',
+                XDB::execute('INSERT IGNORE INTO  forum_profiles (uid, last_seen)
+                                          VALUES  ({?}, FROM_UNIXTIME({?}))',
                              $this->user->id(), $time);
             }
         }

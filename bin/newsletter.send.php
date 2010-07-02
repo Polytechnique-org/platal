@@ -23,6 +23,7 @@
 require_once 'connect.db.inc.php';
 require_once 'plmailer.php';
 require_once 'newsletter.inc.php';
+ini_set('memory_limit', '128M');
 
 $opt = getopt('i:h');
 

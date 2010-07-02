@@ -37,6 +37,7 @@ class CarnetFeedIterator implements PlIterator
                 $date = $op->getDate($user);
                 @$datetext = new Date($date);
                 @$datetext = $datetext->format('%e %B %Y');
+                $profile = $user->profile();
                 $infos[] = array('operation'   => $op,
                                  'title'       => '[' . $op->getTitle(1) . ']  - ' . $user->fullName() . ' le ' . $datetext,
                                  'author'      => $user->fullName(),
@@ -47,8 +48,9 @@ class CarnetFeedIterator implements PlIterator
                                  'hruid'       => $user->login(),
                                  'dead'        => $user->deathdate,
                                  'profile'     => $user->profile()->hrid(),
+                                 'link'        => Platal::globals()->baseurl . '/profile/' . $profile->hrid(),
                                  'user'        => $user,
-                                 'contact'     => $owner->isContact($user));
+                                 'contact'     => $owner->isContact($profile));
             }
         }
         $this->it = PlIteratorUtils::fromArray($infos);

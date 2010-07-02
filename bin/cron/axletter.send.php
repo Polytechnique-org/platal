@@ -22,6 +22,7 @@
 
 require_once './connect.db.inc.php';
 require_once '../../modules/axletter/axletter.inc.php';
+ini_set('memory_limit', '128M');
 
 $al = AXLetter::toSend();
 if ($al) {

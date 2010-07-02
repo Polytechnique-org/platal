@@ -2286,7 +2286,7 @@ class UserFilter extends PlFilter
                     $key = array($key);
                 }
                 $joins['e' . $sub] = PlSqlJoin::left('emails', '$ME.uid = $UID AND $ME.flags != \'filter\' 
-                                                               AND $ME.email IN {?}' . $key);
+                                                               AND $ME.email IN {?}', $key);
             }
         }
         foreach ($this->al as $sub=>$key) {

@@ -23,6 +23,7 @@
 require_once 'connect.db.inc.php';
 require_once 'plmailer.php';
 require_once 'notifs.inc.php';
+ini_set('memory_limit', '128M');
 
 $uids = XDB::query('SELECT  uid
                       FROM  watch

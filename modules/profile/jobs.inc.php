@@ -195,6 +195,13 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                 $job['tmp_name'] = $entreprise[$entr_val]->name;
                 ++$entr_val;
             } else if ($job['name'] == '') {
+                if ($job['subSubSectorName'] == '' && $job['description'] == '' && $job['w_url'] == ''
+                    && $job['w_address']['text'] == '' && $job['w_email'] == ''
+                    && count($job['w_phone']) == 1 && $job['w_phone']['tel'] == '') {
+                    array_splice($value, $key, 1);
+                    continue;
+                }
+
                 $job['name_error'] = true;
                 $success = false;
             }

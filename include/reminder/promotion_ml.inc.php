@@ -23,18 +23,19 @@ class ReminderPromotionMl extends Reminder
 {
     public function HandleAction($action)
     {
+        $user = S::user();
         switch ($action) {
           case 'yes':
             $res = XDB::query('SELECT  id
                                  FROM  groups
                                 WHERE  diminutif = {?}',
-                            S::v('promo'));
+                              $user->profile()->yearPromo());
             $asso_id = $res->fetchOneCell();
             XDB::execute('REPLACE INTO  group_members (uid, asso_id)
                                 VALUES  ({?}, {?})',
-                         S::v('uid'), $asso_id);
-            $mmlist = new MMList(S::v('uid'), S::v('password'));
-            $mmlist->subscribe('promo' . S::v('promo'));
+                         $user->id(), $asso_id);
+            $mmlist = new MMList($user);
+            $mmlist->subscribe('promo' . $user->profile()->yearPromo());
 
             $this->UpdateOnYes();
             break;
@@ -71,8 +72,7 @@ class ReminderPromotionMl extends Reminder
                             WHERE  uid = {?} AND asso_id = (SELECT  id
                                                               FROM  groups
                                                              WHERE  diminutif = {?})',
-                          $user->id(), S::v('promo'));
-
+                          $user->id(), $user->profile()->yearPromo());
         $mlCount = $res->fetchOneCell();
         if ($mlCount) {
             Reminder::MarkCandidateAsAccepted($user->id(), $candidate);
