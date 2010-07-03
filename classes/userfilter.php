@@ -1674,7 +1674,7 @@ class UserFilter extends PlFilter
         $this->buildQuery();
         $lim = $limit->getSql();
         $cond = '';
-        if (!is_null($uids)) {
+        if (!empty($uids)) {
             $cond = XDB::format(' AND a.uid IN {?}', $uids);
         }
         $fetched = XDB::fetchColumn('SELECT SQL_CALC_FOUND_ROWS  a.uid
