@@ -104,7 +104,7 @@ class MLBanana extends Banana
     }
 }
 
-require_once('banana/mbox.inc.php');
+require_once dirname(__FILE__) . '/../../banana/banana/mbox.inc.php';
 
 class BananaMLArchive extends BananaMBox
 {

@@ -414,9 +414,9 @@ class GMapsGeocoder extends Geocoder {
         }
 
         if ($isPseudoCountry) {
-            return $address['text'];
+            return implode("\n", array_slice($textLines, 0, -1));
         }
-        return implode("\n", array_slice($textLines, 0, -1));
+        return $address['text'];
     }
 
     // Search for the lign from the given address that is the closest to the geocoded thoroughfareName

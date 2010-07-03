@@ -117,7 +117,8 @@ class SearchSet extends ProfileSet
 
     protected function &getFilterResults(PlFilter &$pf, PlLimit $limit)
     {
-        return $pf->getProfiles($limit, Profile::FETCH_MINIFICHES);
+        $profiles = $pf->getProfiles($limit, Profile::FETCH_MINIFICHES);
+        return $profiles;
     }
 }
 

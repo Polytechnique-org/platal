@@ -31,16 +31,17 @@ $uids = XDB::query('SELECT  uid
                   ORDER BY  uid');
 $iterator = User::iterOverUIDs($uids->fetchColumn());
 
-$mailer = new PlMailer('carnet/notif.mail.tpl');
 while($user = $iterator->next()) {
     $watch = new Watch($user);
     if ($watch->count() > 0) {
         $notifs = $watch->events();
+        $mailer = new PlMailer('carnet/notif.mail.tpl');
         $mailer->assign('sex', $user->isFemale());
         $mailer->assign('yourself', $user->display_name);
         $mailer->assign('week', date('W - Y'));
         $mailer->assign('notifs', $notifs);
         $mailer->sendTo($user);
+        unset($mailer);
         unset($notifs);
     }
     unset($watch);

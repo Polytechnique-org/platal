@@ -29,7 +29,7 @@ function checkId(&$subState)
     }
 
     $uf = new UserFilter(new PFC_And(
-            new UFC_UID($subState->i('xorg_id')),
+            new UFC_SchoolId('xorg', $subState->i('xorgid')),
             new PFC_Not(new UFC_Dead())
     ));
     $profile = $uf->getProfile();
