@@ -25,11 +25,7 @@
 {elseif $set}
 <div class="contact-list">
 {foreach from=$set item=res}
-  {if $res.contact}
-  {include file="gadgets/ig-minifiche.tpl" c=$res show_action="retirer"}
-  {else}
-  {include file="gadgets/ig-minifiche.tpl" c=$res show_action="ajouter"}
-  {/if}
+  {include file="gadgets/ig-minifiche.tpl" profile=$res}
 {/foreach}
 </div>
 <div class="more">

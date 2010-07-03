@@ -44,7 +44,6 @@ class GadgetsModule extends PLModule
 
         $events = XDB::iterator("SELECT  SQL_CALC_FOUND_ROWS
                                          e.id, e.titre, UNIX_TIMESTAMP(e.creation_date) AS creation_date,
-                                         IF(u.nom_usage = '', u.nom, u.nom_usage) AS nom, u.prenom, u.promo,
                                          ev.uid IS NULL AS nonlu, e.uid
                                    FROM  announces     AS e
                               LEFT JOIN  announce_read AS ev ON (e.id = ev.evt_id AND ev.uid = {?})
@@ -72,7 +71,9 @@ class GadgetsModule extends PLModule
     function handler_ig_search(&$page)
     {
         if (Env::has('quick') && Env::s('quick') != '') {
+            global $globals;
             require_once 'userset.inc.php';
+
             $view = new SearchSet(true);
             $view->addMod('gadget', 'Gadget', true);
             $view->apply(null, $page);
@@ -86,6 +87,8 @@ class GadgetsModule extends PLModule
                 $page->assign('error', 'Recherche trop générale.');
             } elseif (empty($nb_tot)) {
                 $page->assign('error', 'Il n\'existe personne correspondant à ces critères dans la base !');
+            } else {
+                $page->assign('error', false);
             }
         }
 

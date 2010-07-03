@@ -29,9 +29,6 @@
     {javascript name=ajax}
     {javascript name=xorg}
     {javascript name=igoogle}
-    {foreach from=$gadget_js item=js}
-    <script type="text/javascript" src="{$js}"></script>
-    {/foreach}
   </head>
   <body onload="igOnLoadHandler();">
 {if $gadget_tpl}{include file=$gadget_tpl}{/if}

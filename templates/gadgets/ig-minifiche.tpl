@@ -20,62 +20,83 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if (!$c.inscrit && $smarty.session.auth ge AUTH_COOKIE) || $c.dcd}<div class='grayed'>{/if}
-<div class="contact" {if $c.inscrit}{if $smarty.session.auth ge AUTH_COOKIE}title="Fiche mise à jour le {$c.date|date_format}"{/if}{/if}>
+{assign var=dead    value=$profile->deathdate}
+{if $smarty.session.auth ge AUTH_COOKIE}
+  {assign var=withAuth value=true}
+  {assign var=user value=$profile->owner()}
+  {if $user == null}
+    {assign var=hasowner value=false}
+    {assign var=registered value=false}
+  {else}
+    {assign var=hasowner value=true}
+    {if $user->state neq 'pending'}
+      {assign var=registered value=true}
+    {else}
+      {assign var=registered value=false}
+    {/if}
+  {/if}
+{else}
+  {* Without auth, all profiles appear as registered and with owner *}
+  {assign var=hasowner value=true}
+  {assign var=registered value=true}
+  {assign var=withAuth value=false}
+{/if}
+
+<div class="contact {if !$registered || $dead }grayed{/if}"
+     {if $registered}title="fiche mise à jour le {$profile->last_change|date_format}"{/if}>
   <div class="nom">
-    {if $c.sexe}&bull;{/if}
-    {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}<a href="profile/{$c.hruid}" class="popup2">{/if}
-    {if $c.nom_usage}{$c.nom_usage} {$c.prenom}<br />({$c.nom}){else}{$c.nom} {$c.prenom}{/if}
-    {if !$c.dcd && ($c.inscrit || $smarty.session.auth eq AUTH_PUBLIC)}</a>{/if}
+    {if $profile->isFemale()}&bull;{/if}
+    {if !$dead && $registered}<a href="profile/{$profile->hrid()}" class="popup2">{/if}
+    {$profile->full_name}
+    {if !$dead && $registered}</a>{/if}
   </div>
   <div class="autre">
-    {if $c.iso3166_1}
-    <img src='images/flags/{$c.iso3166_1}.gif' alt='{$c.nat1}' height='11' title='{$c.nat1}' />&nbsp;
-    {/if}
-    {if $c.iso3166_2}
-    <img src='images/flags/{$c.iso3166_2}.gif' alt='{$c.nat2}' height='11' title='{$c.nat2}' />&nbsp;
-    {/if}
-    {if $c.iso3166_3}
-    <img src='images/flags/{$c.iso3166_3}.gif' alt='{$c.nat3}' height='11' title='{$c.nat3}' />&nbsp;
-    {/if}
-    (X {$c.promo})
-    {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
-    {if $smarty.session.auth ge AUTH_COOKIE}
-    {if !$c.wasinscrit && !$c.dcd}
-      {if $show_action eq ajouter}
-        <a href="carnet/notifs/add_nonins/{$c.uid}?token={xsrf_token}" target="_top">{*
-        *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
-      {else}
-        <a href="carnet/notifs/del_nonins/{$c.uid}?token={xsrf_token}" target="_top">{*
-        *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
+    {foreach from=$profile->nationalities() item=nat}
+    <img src='images/flags/{$nat}.gif' alt='{$nat}' height='11' title='{$nat}' />&nbsp;
+    {/foreach}
+    {$profile->promo()}{*
+    *}{if $dead}, {"décédé"|sex:"décédée":$profile} le {$profile->deathdate|date_format}{/if}
+    {if $withAuth}
+      {if $registered || (!$dead && $hasowner)}
+        {if !$registered && !$dead && $hasowner}
+          {if !$smarty.session.user->isWatchedUser($profile)}
+      <a href="carnet/notifs/add_nonins/{$user->login()}?token={xsrf_token}">{*
+      *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
+          {else}
+      <a href="carnet/notifs/del_nonins/{$user->login()}?token={xsrf_token}">{*
+      *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
+          {/if}
+        {elseif $registered}
+          {if !$dead}
+      <a href="vcard/{$profile->hrid()}.vcf">{*
+      *}{icon name=vcard title="Afficher la carte de visite"}</a>
+            {if !$smarty.session.user->isContact($profile)}
+      <a href="carnet/contacts?action=ajouter&amp;user={$profile->hrid()}&amp;token={xsrf_token}">{*
+      *}{icon name=add title="Ajouter à mes contacts"}</a>
+            {else}
+      <a href="carnet/contacts?action=retirer&amp;user={$profile->hrid()}&amp;token={xsrf_token}">{*
+      *}{icon name=cross title="Retirer de mes contacts"}</a>
+            {/if}
+          {/if}
+        {/if}
       {/if}
-    {elseif $c.wasinscrit && !$c.dcd}
-        <a href="vcard/{$c.hruid}.vcf">{*
-        *}{icon name=vcard title="Afficher la carte de visite"}</a>
-      {if $show_action eq ajouter}
-        <a href="carnet/contacts?action={$show_action}&amp;user={$c.hruid}&amp;token={xsrf_token}" target="_top">{*
-        *}{icon name=add title="Ajouter à mes contacts"}</a>
-      {else}
-        <a href="carnet/contacts?action={$show_action}&amp;user={$c.hruid}&amp;token={xsrf_token}" target="_top">{*
-        *}{icon name=cross title="Retirer de mes contacts"}</a>
-      {/if}
-    {/if}
     {/if}
   </div>
   <div class="long">
-  {if $c.wasinscrit}
-    {if $c.mobile || $c.countrytxt || $c.city}
+  {if !$dead}
+    {assign var=address value=$profile->getMainAddress()}
+    {if $profile->mobile || ($address && $address->country)}
     <table cellspacing="0" cellpadding="0">
-      {if $c.countrytxt || $c.city}
+      {if $address && $address->country}
       <tr>
         <td class="lt">Géographie&nbsp;:</td>
-        <td class="rt">{$c.city}{if $c.city && $c.countrytxt}, {/if}{$c.countrytxt}</td>
+        <td class="rt">{if $address->locality}{$address->locality}, {/if}{$address->country}</td>
       </tr>
       {/if}
-      {if $c.mobile && !$c.dcd}
+      {if $profile->mobile && !$dead}
       <tr>
         <td class="lt">Mobile&nbsp;:</td>
-        <td class="rt">{$c.mobile}</td>
+        <td class="rt">{$profile->mobile}</td>
       </tr>
       {/if}
     </table>
@@ -83,6 +104,5 @@
   {/if}
   </div>
 </div>
-{if !$c.inscrit || $c.dcd}</div>{/if}
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}
