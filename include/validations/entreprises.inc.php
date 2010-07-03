@@ -191,12 +191,17 @@ class EntrReq extends ProfileValidate
                          $this->address['east'], $this->address['west']);
         } else {
             $jobid = $res->fetchOneCell();
-            $success = true;
         }
-        return XDB::execute('UPDATE  profile_job
-                                SET  jobid = {?}
-                              WHERE  pid = {?} AND id = {?}',
-                            $jobid, $this->profile->id(), $this->id);
+        XDB::execute('UPDATE  profile_job
+                         SET  jobid = {?}
+                       WHERE  pid = {?} AND id = {?}',
+                     $jobid, $this->profile->id(), $this->id);
+        if (XDB::affectedRows() == 0) {
+            return XDB::execute('INSERT INTO  profile_job (jobid, pid, id)
+                                      VALUES  ({?}, {?}, {?})',
+                                $jobid, $this->profile->id(), $this->id);
+        }
+        return true;
     }
 
     // }}}
