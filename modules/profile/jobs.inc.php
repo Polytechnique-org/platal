@@ -162,6 +162,7 @@ class ProfileSettingJob extends ProfileSettingGeocoding
                                    $job['hq_email'], $job['hq_fixed'], $job['hq_fax'], $job['hq_address']);
                 $req->submit();
                 $job['jobid'] = null;
+                sleep(1);
             } else {
                 $job['jobid'] = $res->fetchOneCell();
             }
