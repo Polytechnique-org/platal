@@ -68,12 +68,14 @@ class EntrReq extends ProfileValidate
                 $where .= "name LIKE '%" . $name_array[$i] . "%'";
             }
         }
-        $res = XDB::iterator('SELECT  name
-                                FROM  profile_job_enum
-                               WHERE  ' . $where);
-        $this->suggestions = "| ";
-        while ($sug = $res->next()) {
-            $this->suggestions .= $sug['name'] . " | ";
+        if ($where != '') {
+            $res = XDB::iterator('SELECT  name
+                                    FROM  profile_job_enum
+                                   WHERE  ' . $where);
+            $this->suggestions = "| ";
+            while ($sug = $res->next()) {
+                $this->suggestions .= $sug['name'] . " | ";
+            }
         }
     }
 
