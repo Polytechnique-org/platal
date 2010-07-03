@@ -620,7 +620,7 @@ class UFBF_Promo extends UFB_Field
     }
 
     protected function buildUFC(UserFilterBuilder &$ufb) {
-        return new UFC_Promo($this->comp, UserFilter::DISPLAY, 'X' . $this->val);
+        return new UFC_Promo($this->comp, UserFilter::GRADE_ING, $this->val);
     }
 }
 // }}}
