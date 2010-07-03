@@ -55,7 +55,7 @@
 </tr>
 <tr class="pair">
   <td class="titre">Adresse&nbsp;:</td>
-  <td>{$valid->address[text]}</td>
+  <td>{$valid->address.text}</td>
 </tr>
 <tr class="pair">
   <td class="titre">Téléphone&nbsp;:</td>

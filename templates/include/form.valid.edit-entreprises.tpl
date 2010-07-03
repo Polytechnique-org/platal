@@ -27,7 +27,7 @@
 <strong>Site web&nbsp;:</strong>
 <input type="text" name="url" size="25" maxlength="200" value="{$valid->url}" /><br />
 <strong>Email&nbsp;:</strong>
-<input type="text" name="url" size="25" maxlength="200" value="{$valid->email}" /><br />
+<input type="text" name="email" size="25" maxlength="200" value="{$valid->email}" /><br />
 <strong>Holding&nbsp;:</strong>
 <input type="text" name="holdingid" size="25" maxlength="200" value="{$valid->holdingid}" /><br />
 <strong>Code NAF&nbsp;:</strong>
@@ -35,7 +35,7 @@
 <strong>Code AX&nbsp;:</strong>
 <input type="text" name="AX_code" size="25" maxlength="200" value="{$valid->AX_code}" /><br />
 <strong>Adresse&nbsp;:</strong>
-<textarea cols="30" rows="4" name="address">{$valid->address['text']}</textarea><br />
+<textarea cols="30" rows="4" name="address">{$valid->address.text}</textarea><br />
 <strong>Téléphone&nbsp;:</strong>
 <input type="text" name="tel" size="25" maxlength="200" value="{$valid->tel}" /><br />
 <strong>Fax&nbsp;:</strong>

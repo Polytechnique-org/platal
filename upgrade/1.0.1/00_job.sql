@@ -1,0 +1,6 @@
+ALTER TABLE profile_job_enum MODIFY COLUMN acronym VARCHAR(255) DEFAULT NULL;
+ALTER TABLE profile_job_enum MODIFY COLUMN url VARCHAR(255) DEFAULT NULL;
+ALTER TABLE profile_job_enum MODIFY COLUMN email VARCHAR(255) DEFAULT NULL;
+ALTER TABLE profile_job_enum MODIFY COLUMN NAF_code CHAR(5) DEFAULT NULL;
+
+-- vim:set syntax=mysql:

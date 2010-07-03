@@ -98,26 +98,37 @@ class EntrReq extends ProfileValidate
 
     protected function handle_editor()
     {
-        if (Env::has('holdingid')) {
-            $this->holdingid = Env::t('holdingid');
-        }
         if (Env::has('name')) {
             $this->name = Env::t('name');
-            if (Env::has('acronym')) {
-                $this->acronym = Env::t('acronym');
-                if (Env::has('url')) {
-                    $this->url = Env::t('url');
-                    if (Env::has('NAF_code')) {
-                        $this->NAF_code = Env::t('NAF_code');
-                        if (Env::has('AX_code')) {
-                            $this->AX_code = Env::t('AX_code');
-                            return true;
-                        }
-                    }
-                }
-            }
         }
-        return false;
+        if (Env::has('acronym')) {
+            $this->acronym = Env::t('acronym');
+        }
+        if (Env::has('url')) {
+            $this->url = Env::t('url');
+        }
+        if (Env::has('email')) {
+            $this->email = Env::t('email');
+        }
+        if (Env::has('holdingid')) {
+            $this->holdingid = Env::i('holdingid');
+        }
+        if (Env::has('NAF_code')) {
+            $this->NAF_code = Env::t('NAF_code');
+        }
+        if (Env::has('AX_code')) {
+            $this->AX_code = Env::i('AX_code');
+        }
+        if (Env::has('address')) {
+            $this->address['text'] = Env::t('address');
+        }
+        if (Env::has('tel')) {
+            $this->tel = Env::t('tel');
+        }
+        if (Env::has('fax')) {
+            $this->fax = Env::t('fax');
+        }
+        return true;
     }
 
     // }}}
