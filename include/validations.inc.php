@@ -622,11 +622,7 @@ abstract class ProfileValidate extends Validate
 
     public function id()
     {
-        if (!is_null($this->profile)) {
-            return $this->profile->id() . '_' . $this->type . '_' . $this->stamp;
-        } else {
-            return $this->user->id() . '_' . $this->type . '_' . $this->stamp;
-        }
+        return $this->profile->id() . '_' . $this->type . '_' . $this->stamp;
     }
 
     // }}}
