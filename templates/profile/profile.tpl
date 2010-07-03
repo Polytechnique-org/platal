@@ -177,14 +177,17 @@ function chgMainWinLoc(strPage)
 
       {assign var=corps value=$profile->getCorps()}
       {if $corps && ($corps->current || $corps->original)}
-      <ul>
+        <ul>
         {if $corps->current}
-          <li>Corps actuel&nbsp;: {$corps->current_name} {$corps->current_rank}</li>
+          <li>
+            Corps actuel&nbsp;: {$corps->current_name}
+            {if $corps->current_rank}({$corps->current_rank}){/if}
+          </li>
         {/if}
-        {if $corps->original}
+        {if $corps->current != $corps->original && $corps->original}
           <li>Corps d'origine&nbsp;: {$corps->original_name}</li>
         {/if}
-      </ul>
+        </ul>
       {/if}
 
     </div>
