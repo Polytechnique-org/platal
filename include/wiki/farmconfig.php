@@ -97,8 +97,8 @@ function doBicol($column=false)
 function doPlatalLink($link, $text)
 {
     if (strlen(trim($text)) == 0) {
-        $user = User::get($link);
-        $text = $user->fullName();
+        $profile = Profile::get($link);
+        $text = $profile->fullName();
     }
     return '<a href="profile/' . $link . '" class="popup2">' . $text . '</a>';
 }
