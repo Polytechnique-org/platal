@@ -51,7 +51,7 @@ function toggleField(name, id, obj) {
       </a>
     </td>
   </tr>
-  {if $valid->profile}
+  {if $valid->profile && !$valid->userIsProfileOwner}
   <tr>
     <td class="titre" style="width: 20%">Profil concerné&nbsp;:</td>
     <td>
