@@ -264,6 +264,19 @@ class ProfileSettingJob extends ProfileSettingGeocoding
             }
         }
     }
+
+    public function getText($value) {
+        $jobs = array();
+        foreach ($value as $id => $job) {
+            $address = new ProfileSettingAddress();
+            $phones = new ProfileSettingPhones('pro', $id);
+            $jobs[] = 'Entreprise : ' . $job['name'] . ', secteur : ' . $job['subSubSectorName']
+                    . ', description : ' . $job['description'] . ', web : ' . $job['w_url']
+                    . ', email : ' . $job['w_email']
+                    . ', ' . $phones->getText($job['w_phone']) . ', ' .  $address->getText($job['w_address']);
+        }
+        return implode(' ; ' , $jobs);
+    }
 }
 
 class ProfileSettingJobs extends ProfilePage
@@ -274,6 +287,7 @@ class ProfileSettingJobs extends ProfilePage
     {
         parent::__construct($wiz);
         $this->settings['cv'] = null;
+        /* TODO: ProfileSettingCorps, required for notifications. */
         $this->settings['corps'] = null;
         $this->settings['jobs'] = new ProfileSettingJob();
         $this->watched = array('cv' => true, 'jobs' => true, 'corps' => true);

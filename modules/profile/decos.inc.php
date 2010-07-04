@@ -82,6 +82,15 @@ class ProfileSettingDeco implements ProfileSetting
             }
         }
     }
+
+    public function getText($value) {
+        $medalsList = DirEnum::getOptions(DirEnum::MEDALS);
+        $medals = array();
+        foreach ($value as $id => $medal) {
+            $medals[] = $medalsList[$id];
+        }
+        return implode(', ', $medals);
+    }
 }
 
 class ProfileSettingDecos extends ProfilePage

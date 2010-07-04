@@ -234,6 +234,16 @@ class ProfileSettingSearchNames implements ProfileSetting
             set_profile_display($display_names, $page->pid());
         }
     }
+
+    public function getText($value) {
+        $names = array();
+        foreach ($value as $name) {
+            if ($name['name'] != '') {
+                $names[] = $name['type_name'] . ' : ' . $name['name'];
+            }
+        }
+        return implode(', ' , $names);
+    }
 }
 
 class ProfileSettingEdu implements ProfileSetting
@@ -296,6 +306,21 @@ class ProfileSettingEdu implements ProfileSetting
             }
         }
     }
+
+    public function getText($value) {
+        $schoolsList = DirEnum::getOptions(DirEnum::EDUSCHOOLS);
+        $degreesList = DirEnum::getOptions(DirEnum::EDUDEGREES);
+        $fieldsList = DirEnum::getOptions(DirEnum::EDUFIELDS);
+        $educations = array();
+        foreach ($value as $education) {
+            $educations[] = 'Université : ' . $schoolsList[$education['eduid']]
+                          . ', diplôme : ' . $degreesList[$education['degreeid']]
+                          . ', domaine : ' . $fieldsList[$education['fieldid']]
+                          . ', année d\'obtention : ' . $education['grad_year']
+                          . ', intitulé : ' . $education['program'];
+        }
+        return implode(', ', $educations);
+    }
 }
 
 class ProfileSettingEmailDirectory implements ProfileSetting
@@ -319,6 +344,10 @@ class ProfileSettingEmailDirectory implements ProfileSetting
                 $p->assign('email_error', '0');
             }
         }
+        return $value;
+    }
+
+    public function getText($value) {
         return $value;
     }
 }
@@ -394,6 +423,15 @@ class ProfileSettingNetworking implements ProfileSetting
                          $page->pid(), $id, $network['type'], $network['address'], $network['pub']);
         }
     }
+
+    public function getText($value) {
+        $networkings = array();
+        foreach ($value as $network) {
+            $networkings[] = 'nom : ' . $network['name'] . ', adresse : ' . $network['address']
+                           . ', affichage : ' . $network['pub'];
+        }
+        return implode(' ; ' , $networkings);
+    }
 }
 
 class ProfileSettingPromo implements ProfileSetting
@@ -466,6 +504,10 @@ class ProfileSettingPromo implements ProfileSetting
             $success = false;
         }
         return intval($value);
+    }
+
+    public function getText($value) {
+        return $value;
     }
 }
 

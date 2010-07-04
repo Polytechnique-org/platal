@@ -437,6 +437,7 @@ abstract class ProfileValidate extends Validate
     public $profile;
     public $profileOwner;
     public $userIsProfileOwner;
+    public $ownerIsRegistered;
 
     // }}}
     // {{{ constructor
@@ -453,11 +454,9 @@ abstract class ProfileValidate extends Validate
         parent::__construct($_user, $_unique, $_type);
         $this->profile = &$_profile;
         $this->profileOwner = $this->profile->owner();
-        if (!is_null($this->profileOwner) && $this->profileOwner->id() == $this->user->id()) {
-            $this->userIsProfileOwner = true;
-        } else {
-            $this->userIsProfileOwner = false;
-        }
+        $this->userIsProfileOwner = (!is_null($this->profileOwner)
+                                     && $this->profileOwner->id() == $this->user->id());
+        $this->ownerIsRegistered = $this->profile->isActive();
     }
 
     // }}}
@@ -525,24 +524,23 @@ abstract class ProfileValidate extends Validate
 
     protected function sendmail($isok)
     {
-        global $globals;
-        $mailer = new PlMailer();
-        $mailer->setSubject($this->_mail_subj());
-        $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
-        $mailer->addTo("\"{$this->profile->fullName()}\" <{$this->profileOwner->bestEmail()}>");
-        if (!$this->userIsProfileOwner) {
-            $mailer->addCc("\"{$this->user->fullName()}\" <{$this->user->bestEmail()}>");
+        // Only sends email if the profile's owner exists and is registered.
+        if ($this->ownerIsRegistered) {
+            global $globals;
+
+            $mailer = new PlMailer();
+            $mailer->setSubject($this->_mail_subj());
+            $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
+            $mailer->addTo("\"{$this->profile->fullName()}\" <{$this->profileOwner->bestEmail()}>");
+            $mailer->addCc("validation+{$this->type}@{$globals->mail->domain}");
+            $body = ($this->profile->isFemale() ? "Chère camarade,\n\n" : "Cher camarade,\n\n")
+                  . $this->_mail_body($isok)
+                  . (Env::has('comm') ? "\n\n" . Env::v('comm') : '')
+                  . "\n\nCordialement,\n-- \nL'équipe de Polytechnique.org\n"
+                  . $this->_mail_ps($isok);
+            $mailer->setTxtBody(wordwrap($body));
+            $mailer->send();
         }
-        $mailer->addCc("validation+{$this->type}@{$globals->mail->domain}");
-
-        $body = ($this->profile->isFemale() ? "Chère camarade,\n\n" : "Cher camarade,\n\n")
-              . $this->_mail_body($isok)
-              . (Env::has('comm') ? "\n\n" . Env::v('comm') : '')
-              . "\n\nCordialement,\n-- \nL'équipe de Polytechnique.org\n"
-              . $this->_mail_ps($isok);
-
-        $mailer->setTxtBody(wordwrap($body));
-        $mailer->send();
     }
 
     // }}}

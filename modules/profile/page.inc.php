@@ -36,11 +36,19 @@ interface ProfileSetting
     /** Save the new value for the given field.
      */
     public function save(ProfilePage &$page, $field, $new_value);
+
+    /** Get text from the value.
+     */
+    public function getText($value);
 }
 
 abstract class ProfileNoSave implements ProfileSetting
 {
     public function save(ProfilePage &$page, $field, $new_value) { }
+
+    public function getText($value) {
+        return $value;
+    }
 }
 
 class ProfileSettingWeb extends ProfileNoSave
@@ -200,6 +208,17 @@ class ProfileSettingPhones implements ProfileSetting
             $this->saveTel($pid, $telid, $phone);
         }
     }
+
+    public function getText($value) {
+        $phones = array();
+        foreach ($value as $phone) {
+            if ($phone['tel'] != '') {
+                $phones[] = 'type : ' . $phone['type'] .', numéro : ' . $phone['tel']
+                          . ', commentaire : « ' . $phone['comment'] . ' », affichage : ' . $phone['pub'];
+            }
+        }
+        return implode(' ; ' , $phones);
+    }
 }
 
 class ProfileSettingPub extends ProfileNoSave
@@ -215,6 +234,10 @@ class ProfileSettingPub extends ProfileNoSave
         } elseif ($value == 'on') { // Checkbox
             $value = 'public';
         }
+        return $value;
+    }
+
+    public function getText($value) {
         return $value;
     }
 }
@@ -281,6 +304,10 @@ abstract class ProfileSettingGeocoding implements ProfileSetting
             $address = $gmapsGeocoder->stripGeocodingFromAddress($address);
         }
     }
+
+    public function getText($value) {
+        return $value;
+    }
 }
 
 
@@ -336,12 +363,26 @@ abstract class ProfilePage implements PlWizardPage
     protected function saveData()
     {
         require_once 'notifs.inc.php';
+        $changedFields = array();
         foreach ($this->settings as $field=>&$setting) {
-            if (!is_null($setting) && $this->changed[$field]) {
-                $setting->save($this, $field, $this->values[$field]);
-            }
-            if ($this->changed[$field] && @$this->watched[$field]) {
-                WatchProfileUpdate::register($this->profile, $field);
+            if ($this->changed[$field]) {
+                if (!is_null($setting)) {
+                    $changedFields[$field] = array(
+                        str_replace("\n", " - ", $setting->getText($this->orig[$field])),
+                        str_replace("\n", " - ", $setting->getText($this->values[$field])),
+                    );
+                } else {
+                    $changedFields[$field] = array(
+                        str_replace("\n", " - ", $this->orig[$field]),
+                        str_replace("\n", " - ", $this->values[$field]),
+                    );
+                }
+                if (!is_null($setting)) {
+                    $setting->save($this, $field, $this->values[$field]);
+                }
+                if (isset($this->watched[$field]) && $this->watched[$field]) {
+                    WatchProfileUpdate::register($this->profile, $field);
+                }
             }
         }
         $this->_saveData();
@@ -352,6 +393,20 @@ abstract class ProfilePage implements PlWizardPage
                        WHERE  pid = {?}', $this->pid());
         global $platal;
         S::logger()->log('profil', $platal->pl_self(2));
+
+        /** If the update was made by a third party and the profile corresponds
+         * to a registered user, stores both former and new text.
+         * This will be daily sent to the user.
+         */
+        $owner = $this->profile->owner();
+        $user = S::user();
+        if ($owner->isActive() && $owner->id() != $user->id()) {
+            foreach ($changedFields as $field => $values) {
+                XDB::execute('REPLACE INTO  profile_modifications (pid, uid, field, oldText, newText)
+                                    VALUES  ({?}, {?}, {?}, {?}, {?})',
+                             $this->pid(), $user->id(), $field, $values[0], $values[1]);
+            }
+        }
     }
 
     protected function checkChanges()

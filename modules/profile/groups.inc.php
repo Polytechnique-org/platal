@@ -41,6 +41,11 @@ class ProfileSettingSection implements ProfileSetting
                        WHERE  pid = {?}",
                      $value, $page->pid());
     }
+
+    public function getText($value) {
+        $sectionsList = DirEnum::getOptions(DirEnum::SECTIONS);
+        return $sectionsList[$value];
+    }
 }
 
 class ProfileSettingBinets implements ProfileSetting
@@ -84,6 +89,10 @@ class ProfileSettingBinets implements ProfileSetting
         }
         XDB::execute("INSERT INTO  profile_binets (pid, binet_id)
                            VALUES  " . implode(',', $insert));
+    }
+
+    public function getText($value) {
+        return implode(', ', $value);
     }
 }
 

@@ -69,6 +69,16 @@ class ProfileSettingSectors implements ProfileSetting
             }
         }
     }
+
+    public function getText($value) {
+        $sectors = array();
+        foreach ($value as $sector) {
+            foreach ($sector as $subsector) {
+                $sectors[] = $subsector;
+            }
+        }
+        return implode(', ', $sectors);
+    }
 }
 
 class ProfileSettingCountry implements ProfileSetting
@@ -106,6 +116,10 @@ class ProfileSettingCountry implements ProfileSetting
                                VALUES  ({?}, {?})",
                          $page->pid(), $id);
         }
+    }
+
+    public function getText($value) {
+        return implode(', ', $value);
     }
 }
 

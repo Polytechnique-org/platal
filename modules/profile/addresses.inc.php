@@ -127,6 +127,19 @@ class ProfileSettingAddress extends ProfileSettingGeocoding
             $profiletel->saveTels($page->pid(), 'tel', $address['tel']);
         }
     }
+
+    public function getText($value) {
+        $addresses = array();
+        foreach ($value as $addrid => $address) {
+            $phones = new ProfileSettingPhones('address', $addrid);
+            $addresses[] = 'Adresse : ' . $address['text'] . ', affichage : ' . $address['pub']
+                         . ', commentaire : ' . $address['comment'] . ', actuelle : ' . ($address['current'] ? 'oui' : 'non')
+                         . ', temporaire : ' . ($address['temporary'] ? 'oui' : 'non') . ', secondaire : '
+                         . ($address['secondary'] ? 'oui' : 'non') . ', conctactable par courier : '
+                         . ($address['mail'] ? 'oui' : 'non') . ', ' . $phones->getText($address['tel']);
+        }
+        return implode(' ; ' , $addresses);
+    }
 }
 
 class ProfileSettingAddresses extends ProfilePage

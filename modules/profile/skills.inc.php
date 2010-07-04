@@ -76,6 +76,14 @@ class ProfileSettingSkill implements ProfileSetting
                          $page->pid(), $id, $skill['level']);
         }
     }
+
+    public function getText($value) {
+        $skills = array();
+        foreach ($value as $skill) {
+            $skills[] = 'Compétance : ' . $skill['text'] . ', niveau : ' . $skill['level'];
+        }
+        return implode(' ; ' , $skills);
+    }
 }
 
 class ProfileSettingSkills extends ProfilePage
