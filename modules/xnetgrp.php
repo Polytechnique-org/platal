@@ -300,6 +300,11 @@ class XnetGrpModule extends PLModule
             $view->addMod('trombi', 'Trombinoscope');
             $view->apply('annuaire', $page, $action, $subaction);
             $page->changeTpl('xnetgrp/annuaire.tpl');
+            $count = XDB::fetchOneCell('SELECT  COUNT(*)
+                                          FROM  group_members
+                                         WHERE  asso_id = {?}',
+                                       $globals->asso('id'));
+            $page->assign('nb_tot', $count);
             return;
         }
 
@@ -326,6 +331,7 @@ class XnetGrpModule extends PLModule
         $users = $uf->getUsers(new PlLimit(NB_PER_PAGE, $ofs * NB_PER_PAGE));
         $count = $uf->getTotalCount();
 
+        $page->assign('nb_tot', $count);
         $page->assign('pages', floor(($count + NB_PER_PAGE - 1) / NB_PER_PAGE));
         $page->assign('current', $ofs);
         $page->assign('order', $sort);

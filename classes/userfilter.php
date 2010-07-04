@@ -156,7 +156,8 @@ class UFC_Promo implements UserFilterCondition
             UserFilter::assertGrade($this->grade);
         }
         if ($this->grade == UserFilter::DISPLAY && $this->comparison != '=') {
-            Platal::page()->killError('Comparison ' . $this->comparison . ' not allowed on displaid promo');
+            // XXX: we might try to guess the grade from the first char of the promo and forbid only '<= 2004', but allow '<= X2004'
+            Platal::page()->killError("Il n'est pas possible d'appliquer la comparaison '" . $this->comparison . "' aux promotions sans spécifier de formation (X/M/D)");
         }
     }
 
