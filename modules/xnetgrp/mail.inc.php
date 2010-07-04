@@ -67,7 +67,7 @@ function _send_xnet_mail($user, $body, $wiki, $mailer, $replyto = null)
 
     $text = str_ireplace(array('<cher>', '<nom>', '<prenom>'),
                          array($dear, $lastname, $firstname), $body);
-    $mailer->addTo($user);
+    $mailer->setTo($user);
     if ($replyto) {
         $mailer->addHeader('Reply-To', $replyto);
     }
