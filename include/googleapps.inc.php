@@ -376,13 +376,12 @@ class GoogleAppsAccount
 
         if (!$this->pending_create) {
             // Retrieves information on the new account.
-            // TODO: retreive first_name and last_name from the profile.
-            if (!$user->hasProfile()) {
-                $prenom = $user->displayName();
-                $nom    = $user->fullName();
+            if (!$this->user->hasProfile()) {
+                $prenom = $this->user->displayName();
+                $nom    = $this->user->fullName();
             } else {
-                $prenom = $user->profile()->firstName();
-                $nom    = $user->profile()->lastName();
+                $prenom = $this->user->profile()->firstName();
+                $nom    = $this->user->profile()->lastName();
             }
 
             // Adds an 'unprovisioned' entry in the gapps_accounts table.
