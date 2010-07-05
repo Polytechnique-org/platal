@@ -65,9 +65,9 @@ class StatsModule extends PLModule
         $res = XDB::iterRow('SELECT  IF(registration_date > DATE_SUB(NOW(), INTERVAL {?} DAY),
                                         TO_DAYS(registration_date) - TO_DAYS(NOW()),
                                         -{?}) AS jour,
-                                     COUNT(uid) AS nb
+                                     COUNT(a.uid) AS nb
                                FROM  accounts AS a
-                          LEFT JOIN  account_profiles AS ap ON(ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.flags))
+                          LEFT JOIN  account_profiles AS ap ON (ap.uid = a.uid AND FIND_IN_SET(\'owner\', ap.perms))
                           LEFT JOIN  profiles AS p ON (ap.pid = p.pid)
                               WHERE  state = \'active\' AND p.deathdate IS NULL
                            GROUP BY  jour', (int)$jours, 1 + (int)$jours);
